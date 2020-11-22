@@ -33,7 +33,7 @@ class AdminOrphanComponent
   public failure: boolean;
   public fields = [...baseFields, ...extendedFields];
 
-  constructor(private route: ActivatedRoute) {
+  public constructor(private route: ActivatedRoute) {
     super();
   }
 

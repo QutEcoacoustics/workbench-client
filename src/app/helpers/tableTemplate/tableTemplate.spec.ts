@@ -12,7 +12,7 @@ import { TableTemplate } from "./tableTemplate";
 class MockComponent extends TableTemplate<{ id: number | string }> {
   public columns = [{ prop: "id" }];
 
-  constructor() {
+  public constructor() {
     super(() => true);
   }
 

@@ -40,7 +40,7 @@ export class Dataset extends AbstractModel implements IDataset {
   @Updater<Dataset>()
   public updater?: User;
 
-  constructor(dataset: IDataset, injector?: Injector) {
+  public constructor(dataset: IDataset, injector?: Injector) {
     super(dataset, injector);
   }
 

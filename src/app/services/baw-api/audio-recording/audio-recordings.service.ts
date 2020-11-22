@@ -21,7 +21,7 @@ const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}${option}`;
 
 @Injectable()
 export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

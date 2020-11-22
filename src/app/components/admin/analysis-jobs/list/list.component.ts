@@ -39,7 +39,7 @@ class AdminAnalysisJobsComponent
     statusUpdated: "overallStatusModifiedAt",
   };
 
-  constructor(api: AnalysisJobsService) {
+  public constructor(api: AnalysisJobsService) {
     super(api, (analysisJobs) =>
       analysisJobs.map((analysisJob) => ({
         id: analysisJob.id,

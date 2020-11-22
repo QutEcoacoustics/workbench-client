@@ -76,8 +76,11 @@ export function filterByForeignKey<T>(
 export type Empty = "";
 export type New = "new";
 export type Filter = "filter";
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const Empty: Empty = "";
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const New: New = "new";
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const Filter: Filter = "filter";
 
 /**

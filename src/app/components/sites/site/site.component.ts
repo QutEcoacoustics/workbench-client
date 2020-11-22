@@ -26,7 +26,7 @@ class SiteComponent extends PageComponent implements OnInit {
   public recordingsStart: DateTimeTimezone;
   public marker: List<MapMarkerOption>;
 
-  constructor() {
+  public constructor() {
     super();
   }
 

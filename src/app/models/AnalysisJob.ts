@@ -93,7 +93,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   @HasOne<AnalysisJob, SavedSearch>(SAVED_SEARCH, "savedSearchId")
   public savedSearch?: SavedSearch;
 
-  constructor(analysisJob: IAnalysisJob, injector?: Injector) {
+  public constructor(analysisJob: IAnalysisJob, injector?: Injector) {
     super(analysisJob, injector);
   }
 

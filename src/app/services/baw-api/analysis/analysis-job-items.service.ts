@@ -27,7 +27,7 @@ export class AnalysisJobItemsService extends ReadonlyApi<
   AnalysisJobItem,
   [IdOr<AnalysisJob>]
 > {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

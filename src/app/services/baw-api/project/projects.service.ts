@@ -27,7 +27,7 @@ const endpoint = stringTemplate`/projects/${projectId}${option}`;
  */
 @Injectable()
 export class ProjectsService extends StandardApi<Project> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

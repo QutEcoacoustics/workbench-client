@@ -31,7 +31,7 @@ export class AudioEventsService extends StandardApi<
   AudioEvent,
   [IdOr<AudioRecording>]
 > {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -78,7 +78,7 @@ export class AudioEventsService extends StandardApi<
 export class ShallowAudioEventsService
   extends BawApiService<AudioEvent>
   implements ApiFilter<AudioEvent> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

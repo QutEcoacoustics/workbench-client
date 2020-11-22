@@ -41,7 +41,7 @@ export class Study extends AbstractModel implements IStudy {
   @HasOne<Study, Dataset>(DATASET, "datasetId")
   public dataset?: Dataset;
 
-  constructor(study: IStudy, injector?: Injector) {
+  public constructor(study: IStudy, injector?: Injector) {
     super(study, injector);
   }
 

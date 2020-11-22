@@ -16,7 +16,7 @@ export class ResolverHandlerComponent
   implements OnInit {
   public error: ApiErrorDetails;
 
-  constructor(private route: ActivatedRoute) {
+  public constructor(private route: ActivatedRoute) {
     super();
   }
 

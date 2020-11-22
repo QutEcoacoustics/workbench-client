@@ -21,7 +21,7 @@ const endpoint = stringTemplate`/datasets/${datasetId}${option}`;
 
 @Injectable()
 export class DatasetsService extends StandardApi<Dataset> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

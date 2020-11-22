@@ -32,7 +32,7 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   public fields = fields;
   public title: string;
 
-  constructor(
+  public constructor(
     private api: SitesService,
     notifications: ToastrService,
     route: ActivatedRoute,

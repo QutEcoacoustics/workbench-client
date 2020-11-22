@@ -26,7 +26,7 @@ const endpoint = stringTemplate`/tag_groups/${tagGroupId}${option}`;
  */
 @Injectable()
 export class TagGroupsService extends StandardApi<TagGroup> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

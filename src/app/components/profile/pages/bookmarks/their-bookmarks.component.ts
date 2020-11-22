@@ -23,7 +23,7 @@ const accountKey = "account";
 class TheirBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
   public sortKeys = { category: "category" };
 
-  constructor(api: BookmarksService, route: ActivatedRoute) {
+  public constructor(api: BookmarksService, route: ActivatedRoute) {
     super(
       api,
       (bookmarks) =>

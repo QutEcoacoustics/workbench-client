@@ -42,7 +42,7 @@ export class Tagging extends AbstractModel implements ITagging {
   @HasOne<Tagging, Tag>(TAG, "tagId")
   public tag?: Tag;
 
-  constructor(tagging: ITagging, injector?: Injector) {
+  public constructor(tagging: ITagging, injector?: Injector) {
     super(tagging, injector);
   }
 

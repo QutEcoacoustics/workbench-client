@@ -24,7 +24,7 @@ class AdminOrphansComponent
   implements OnInit {
   public assignSitesLabel = assignSiteMenuItem.label;
 
-  constructor(api: ShallowSitesService) {
+  public constructor(api: ShallowSitesService) {
     super(api, (sites) =>
       sites.map((site) => ({
         id: site.id,

@@ -70,7 +70,8 @@ export class StrongRoute {
   /**
    * A base level (root) route component
    */
-  static get Base() {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public static get Base() {
     return new StrongRoute(null, null, {});
   }
 
@@ -205,7 +206,7 @@ export class StrongRoute {
   /**
    * Route config
    */
-  get routeConfig() {
+  public get routeConfig() {
     return this.config;
   }
 

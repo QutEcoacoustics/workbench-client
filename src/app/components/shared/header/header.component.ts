@@ -46,10 +46,11 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
     profile: myAccountMenuItem,
     register: registerMenuItem,
   };
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public ImageSizes = ImageSizes;
   public isNavigableMenuItem = isNavigableMenuItem;
 
-  constructor(
+  public constructor(
     private api: SecurityService,
     private env: AppConfigService,
     private notifications: ToastrService,

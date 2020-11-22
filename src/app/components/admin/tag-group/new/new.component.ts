@@ -33,7 +33,7 @@ import { fields } from "../tag-group.schema.json";
 class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
   public fields = fields;
 
-  constructor(
+  public constructor(
     private api: TagGroupsService,
     notifications: ToastrService,
     route: ActivatedRoute,

@@ -36,7 +36,7 @@ import { projectsMenuItemActions } from "../list/list.component";
 class NewComponent extends FormTemplate<Project> {
   public fields = fields;
 
-  constructor(
+  public constructor(
     private api: ProjectsService,
     notifications: ToastrService,
     route: ActivatedRoute,

@@ -21,7 +21,7 @@ const endpoint = stringTemplate`/progress_events/${progressEventId}${option}`;
 
 @Injectable()
 export class ProgressEventsService extends ReadAndCreateApi<ProgressEvent> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

@@ -30,7 +30,7 @@ const endpoint = stringTemplate`/tags/${tagId}${option}`;
 
 @Injectable()
 export class TagsService extends StandardApi<Tag> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -107,7 +107,7 @@ class TagTypeResolvers extends BawResolver<
   TagsService,
   { tagTypes: string }
 > {
-  constructor() {
+  public constructor() {
     super([TagsService], undefined, undefined);
   }
 

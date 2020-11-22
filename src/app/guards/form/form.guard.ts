@@ -22,9 +22,10 @@ export interface FormCheckingComponent {
  *
  * @param Base Class to extend
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
   @Directive()
-  class FormCheckingPageComponent
+  class FormCheckingPageDirective
     extends Base
     implements FormCheckingComponent {
     @ViewChildren(FormComponent) public appForms: QueryList<FormComponent>;
@@ -44,7 +45,7 @@ export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
     }
   }
 
-  return FormCheckingPageComponent;
+  return FormCheckingPageDirective;
 }
 
 /**

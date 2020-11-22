@@ -38,7 +38,7 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
   public fields = fields;
   public title: string;
 
-  constructor(
+  public constructor(
     private api: TagsService,
     notifications: ToastrService,
     route: ActivatedRoute,

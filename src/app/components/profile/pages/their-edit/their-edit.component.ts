@@ -46,7 +46,7 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
   public fields = fields;
   public title: string;
 
-  constructor(
+  public constructor(
     private api: AccountsService,
     notifications: ToastrService,
     route: ActivatedRoute,

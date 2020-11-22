@@ -117,6 +117,7 @@ export interface MenuLink extends MenuItem {
   uri: Href;
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MenuLink<T extends Omit<MenuLink, "kind">>(item: T): MenuLink {
   return Object.assign(item, {
     kind: "MenuLink" as "MenuLink",
@@ -144,6 +145,7 @@ export interface MenuRoute extends MenuItem {
   parent?: MenuRoute;
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MenuRoute<T extends Omit<MenuRoute, "kind">>(
   item: T
 ): MenuRoute {
@@ -166,6 +168,7 @@ export interface MenuAction extends MenuItem {
   action: () => any | void;
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MenuAction<T extends Omit<MenuAction, "kind">>(
   item: T
 ): MenuAction {

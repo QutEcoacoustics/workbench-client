@@ -65,7 +65,7 @@ export class Script extends AbstractModel implements IScript {
   @HasOne<Script, Script>(SCRIPT, "groupId")
   public group?: Script;
 
-  constructor(script: IScript, injector?: Injector) {
+  public constructor(script: IScript, injector?: Injector) {
     super(script, injector);
 
     this.executableSettingsMediaType =

@@ -44,7 +44,7 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   @HasOne<AnalysisJobItem, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
 
-  constructor(analysisJobItem: IAnalysisJobItem, injector?: Injector) {
+  public constructor(analysisJobItem: IAnalysisJobItem, injector?: Injector) {
     super(analysisJobItem, injector);
   }
 

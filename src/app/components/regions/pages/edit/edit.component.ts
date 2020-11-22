@@ -47,7 +47,7 @@ class EditComponent extends FormTemplate<Region> implements OnInit {
   public fields = fields;
   public title: string;
 
-  constructor(
+  public constructor(
     private api: RegionsService,
     notifications: ToastrService,
     route: ActivatedRoute,

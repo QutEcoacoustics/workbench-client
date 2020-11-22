@@ -8,9 +8,11 @@ describe("IsGhostUserPipe", () => {
   const createPipe = createPipeFactory(IsGhostUserPipe);
 
   function assertPipe(val: boolean) {
-    val
-      ? expect(spec.element).toHaveText("true")
-      : expect(spec.element).toHaveText("false");
+    if (val) {
+      expect(spec.element).toHaveText("true");
+    } else {
+      expect(spec.element).toHaveText("false");
+    }
   }
 
   function setup(value: User, type: "unknown" | "deleted" | "all") {

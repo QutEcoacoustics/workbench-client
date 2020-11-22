@@ -5,7 +5,7 @@
     {
       "files": ["*.ts"],
       "parserOptions": {
-        "project": ["tsconfig.json", "e2e/tsconfig.json"],
+        "project": ["tsconfig.json", "tsconfig.e2e.json"],
         "createDefaultProgram": true
       },
       "extends": [
@@ -15,6 +15,11 @@
       ],
       "plugins": ["eslint-plugin-rxjs", "rxjs-angular"],
       "rules": {
+        "no-underscore-dangle": "off",
+        "@typescript-eslint/member-ordering": "off",
+        "@typescript-eslint/ban-types": "off",
+        "no-shadow": "off",
+        "@typescript-eslint/no-shadow": ["error"],
         "quotes": ["error", "double", { "avoidEscape": true }],
         "@typescript-eslint/quotes": [
           "error",
@@ -73,7 +78,7 @@
         "rxjs/no-internal": "error",
         "rxjs/no-nested-subscribe": "error",
         "rxjs/no-unsafe-takeuntil": "error",
-        "rxjs-angular/prefer-takeuntil": "error",
+        "rxjs-angular/prefer-takeuntil": ["error", { "checkDestroy": false }],
         "space-before-function-paren": [
           "error",
           {

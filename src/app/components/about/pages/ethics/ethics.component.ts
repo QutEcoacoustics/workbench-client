@@ -9,7 +9,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class EthicsComponent extends PageComponent {
-  public page = CMS.ETHICS;
+  public page = CMS.ethics;
 }
 
 EthicsComponent.LinkComponentToPageInfo({

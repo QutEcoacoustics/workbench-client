@@ -24,7 +24,7 @@ export class SecurityService extends BawApiService<SessionUser> {
   private authTrigger = new BehaviorSubject<void>(null);
   private handleError: (err: ApiErrorDetails) => ObservableInput<any>;
 
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     private userService: UserService,
@@ -114,7 +114,7 @@ export class LoginDetails
   @BawPersistAttr
   public readonly password: string;
 
-  constructor(details: LoginDetailsInterface) {
+  public constructor(details: LoginDetailsInterface) {
     super(details);
   }
 

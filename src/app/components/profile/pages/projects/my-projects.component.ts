@@ -27,7 +27,7 @@ class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
     { name: "Permission" },
   ];
 
-  constructor(api: ProjectsService, route: ActivatedRoute) {
+  public constructor(api: ProjectsService, route: ActivatedRoute) {
     super(
       api,
       (projects) =>

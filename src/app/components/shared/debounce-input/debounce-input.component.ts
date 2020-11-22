@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { noop, Subject } from "rxjs";
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { defaultDebounceTime } from "src/app/app.helper";
 
 @Component({
@@ -20,7 +21,9 @@ import { defaultDebounceTime } from "src/app/app.helper";
     </div>
   `,
 })
-export class DebounceInputComponent implements OnInit {
+export class DebounceInputComponent
+  extends WithUnsubscribe()
+  implements OnInit {
   @Input() public label: string;
   @Input() public placeholder = "";
   @Input() public default = "";
@@ -30,7 +33,11 @@ export class DebounceInputComponent implements OnInit {
 
   public ngOnInit() {
     this.input$
-      .pipe(debounceTime(defaultDebounceTime), distinctUntilChanged())
+      .pipe(
+        debounceTime(defaultDebounceTime),
+        distinctUntilChanged(),
+        takeUntil(this.unsubscribe)
+      )
       .subscribe((input) => this.filter.next(input), noop);
   }
 

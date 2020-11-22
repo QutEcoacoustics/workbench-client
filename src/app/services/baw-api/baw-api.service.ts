@@ -74,11 +74,11 @@ export abstract class BawApiService<Model extends AbstractModel> {
     return null;
   }
 
-  constructor(
+  public constructor(
     protected http: HttpClient,
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
-    classBuilder: new (_: object, injector?: Injector) => Model,
+    classBuilder: new (_: object, _injector?: Injector) => Model,
     protected injector: Injector
   ) {
     this.platform = injector.get(PLATFORM_ID);
@@ -333,7 +333,7 @@ export interface Comparisons {
  * set here: https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
  */
 export class RangeInterval {
-  constructor(public interval: string) {
+  public constructor(public interval: string) {
     const regex = /(\[|\()(.*),(.*)(\)|\])/;
     if (!regex.test(this.interval)) {
       throw Error("Range Interval: Invalid pattern provided");

@@ -34,7 +34,7 @@ class AdminAudioRecordingsComponent
     recorded: "recordedDate",
   };
 
-  constructor(api: AudioRecordingsService) {
+  public constructor(api: AudioRecordingsService) {
     super(api, (audioRecordings) =>
       audioRecordings.map((audioRecording) => ({
         id: audioRecording.id,

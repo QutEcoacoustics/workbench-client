@@ -7,7 +7,7 @@ import { Meta } from "../services/baw-api/baw-api.service";
  * BAW Server Abstract Model
  */
 export abstract class AbstractModel {
-  constructor(raw: object, protected injector?: Injector) {
+  public constructor(raw: object, protected injector?: Injector) {
     return Object.assign(this, raw);
   }
 
@@ -107,15 +107,15 @@ export class UnresolvedModel extends AbstractModel {
   private static readonly models = Object.freeze([]);
   public readonly kind = "UnresolvedModel";
 
-  static get one(): Readonly<UnresolvedModel> {
+  public static get one(): Readonly<UnresolvedModel> {
     return this.model;
   }
 
-  static get many(): Readonly<UnresolvedModel[]> {
+  public static get many(): Readonly<UnresolvedModel[]> {
     return this.models;
   }
 
-  constructor() {
+  public constructor() {
     super({});
   }
 

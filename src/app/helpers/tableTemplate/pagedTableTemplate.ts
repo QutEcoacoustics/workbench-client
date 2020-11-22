@@ -31,8 +31,11 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
   @ViewChild(DatatableComponent) public table: DatatableComponent;
 
   // Table variables
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public ColumnMode = ColumnMode;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public SortType = SortType;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public SelectionType = SelectionType;
   public columns: TableColumn[] = [];
   public rows: T[];
@@ -56,7 +59,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
   public filterEvent$ = new Subject<string>();
   private filters: Filters<M>;
 
-  constructor(
+  public constructor(
     protected api: ApiFilter<any, any>,
     private rowsCallback: (models: M[]) => T[],
     private route?: ActivatedRoute,

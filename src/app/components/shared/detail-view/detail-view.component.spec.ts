@@ -19,7 +19,7 @@ class MockModel extends AbstractModel {
   @HasMany<MockModel, AbstractModel>(MOCK, "id")
   public readonly childModels: AssociatedModel[];
 
-  constructor(opts: any, injector?: Injector) {
+  public constructor(opts: any, injector?: Injector) {
     super(opts, injector);
   }
 
@@ -143,7 +143,7 @@ describe("DetailViewComponent", () => {
         ];
         component.model = new MockModel({
           id: 5,
-          string: "10",
+          text: "10",
           object: { test: "value" },
         });
         fixture.detectChanges();

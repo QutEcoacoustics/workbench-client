@@ -38,7 +38,7 @@ export class FormComponent extends WithUnsubscribe() implements OnInit {
 
   public form: FormGroup;
 
-  constructor(private notifications: ToastrService) {
+  public constructor(private notifications: ToastrService) {
     super();
   }
 

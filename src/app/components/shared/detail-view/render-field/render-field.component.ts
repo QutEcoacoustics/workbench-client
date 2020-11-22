@@ -16,17 +16,17 @@ import { takeUntil } from "rxjs/operators";
   selector: "baw-render-field",
   template: `
     <!-- Display plain text -->
-    <dl *ngIf="styling === FieldStyling.Plain">
+    <dl *ngIf="styling === FieldStyling.plain">
       <p id="plain" class="m-0">{{ display }}</p>
     </dl>
 
     <!-- Display code/objects -->
-    <dl *ngIf="styling === FieldStyling.Code">
+    <dl *ngIf="styling === FieldStyling.code">
       <pre id="code" class="m-0">{{ display }}</pre>
     </dl>
 
     <!-- Display checkbox -->
-    <dl *ngIf="styling === FieldStyling.Checkbox">
+    <dl *ngIf="styling === FieldStyling.checkbox">
       <baw-checkbox
         id="checkbox"
         class="m-0"
@@ -37,17 +37,17 @@ import { takeUntil } from "rxjs/operators";
     </dl>
 
     <!-- Display AbstractModel -->
-    <dl *ngIf="styling === FieldStyling.Model">
+    <dl *ngIf="styling === FieldStyling.model">
       <a id="model" [routerLink]="model.viewUrl">{{ model }}</a>
     </dl>
 
     <!-- Display Image -->
-    <dl *ngIf="styling === FieldStyling.Image">
+    <dl *ngIf="styling === FieldStyling.image">
       <img id="image" alt="model image alt" [src]="getSource()" />
     </dl>
 
     <!-- Display nested fields -->
-    <ng-container *ngIf="styling === FieldStyling.Children">
+    <ng-container *ngIf="styling === FieldStyling.children">
       <baw-render-field
         *ngFor="let child of children"
         id="children"
@@ -73,14 +73,15 @@ export class RenderFieldComponent
   @Input() public value: ModelView;
   public children: ModelView[];
   public display: string | number | boolean | ImageUrl[];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public FieldStyling = FieldStyling;
   public model: AbstractModel;
-  public styling: FieldStyling = FieldStyling.Plain;
+  public styling: FieldStyling = FieldStyling.plain;
   private errorText = "(error)";
   private loadingText = "(loading)";
   private noValueText = "(no value)";
 
-  constructor(private ref: ChangeDetectorRef) {
+  public constructor(private ref: ChangeDetectorRef) {
     super();
   }
   public ngOnChanges(): void {
@@ -114,7 +115,7 @@ export class RenderFieldComponent
       // TODO Implement optional treeview
       this.humanizeObject(value);
     } else if (typeof value === "boolean") {
-      this.styling = FieldStyling.Checkbox;
+      this.styling = FieldStyling.checkbox;
       this.display = value;
     } else if (typeof value === "string") {
       this.humanizeString(value);
@@ -132,7 +133,7 @@ export class RenderFieldComponent
     if (value instanceof UnresolvedModel) {
       this.setLoading();
     } else {
-      this.styling = FieldStyling.Model;
+      this.styling = FieldStyling.model;
       this.display = "";
       this.model = value;
     }
@@ -151,8 +152,8 @@ export class RenderFieldComponent
       value,
       () => {
         // String is image URL, display image
-        this.styling = FieldStyling.Image;
-        this.display = [{ url: value, size: ImageSizes.UNKNOWN }];
+        this.styling = FieldStyling.image;
+        this.display = [{ url: value, size: ImageSizes.unknown }];
         this.ref.detectChanges();
       },
       () => {}
@@ -168,7 +169,7 @@ export class RenderFieldComponent
     this.setLoading();
 
     try {
-      this.styling = FieldStyling.Code;
+      this.styling = FieldStyling.code;
       this.display = JSON.stringify(value);
     } catch (err) {
       this.display = this.errorText;
@@ -185,7 +186,7 @@ export class RenderFieldComponent
     // TODO Implement new method (https://developer.mozilla.org/en-US/docs/Web/API/Blob/text)
     const reader = new FileReader();
     reader.addEventListener("loadend", (e) => {
-      this.styling = FieldStyling.Code;
+      this.styling = FieldStyling.code;
       this.display = e.target.result.toString();
     });
     reader.onerror = () => {
@@ -225,10 +226,10 @@ export class RenderFieldComponent
   private humanizeArray(value: ModelView[] | ImageUrl[]) {
     if (value.length > 0) {
       if (isImageUrl(value[0])) {
-        this.styling = FieldStyling.Image;
+        this.styling = FieldStyling.image;
         this.display = value as ImageUrl[];
       } else {
-        this.styling = FieldStyling.Children;
+        this.styling = FieldStyling.children;
         this.children = value;
       }
     } else {
@@ -240,7 +241,7 @@ export class RenderFieldComponent
    * Indicate view is still loading
    */
   private setLoading() {
-    this.styling = FieldStyling.Plain;
+    this.styling = FieldStyling.plain;
     this.display = this.loadingText;
   }
 
@@ -258,6 +259,7 @@ export class RenderFieldComponent
     invalidCallback: () => void
   ) {
     // Url from https://urlregex.com/
+    // eslint-disable-next-line max-len
     const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
     if (!urlRegex.test(src)) {
       invalidCallback();
@@ -294,11 +296,11 @@ export type ModelView =
   | ModelView[];
 
 enum FieldStyling {
-  Checkbox,
-  Code,
-  Plain,
-  Route,
-  Model,
-  Image,
-  Children,
+  checkbox,
+  code,
+  plain,
+  route,
+  model,
+  image,
+  children,
 }

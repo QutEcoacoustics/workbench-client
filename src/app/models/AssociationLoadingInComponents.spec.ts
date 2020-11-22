@@ -19,7 +19,7 @@ class MockModel extends AbstractModel {
   @HasMany<MockModel, AbstractModel>(MOCK, "id")
   public readonly childModels: AssociatedModel[];
 
-  constructor(opts: any, injector?: Injector) {
+  public constructor(opts: any, injector?: Injector) {
     super(opts, injector);
   }
 

@@ -10,7 +10,7 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
   exports: [FontAwesomeModule],
 })
 export class IconsModule {
-  constructor(library: FaIconLibrary) {
+  public constructor(library: FaIconLibrary) {
     library.addIconPacks(fas);
   }
 }

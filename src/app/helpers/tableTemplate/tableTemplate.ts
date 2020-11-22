@@ -18,15 +18,18 @@ export abstract class TableTemplate<T> extends PageComponent {
   @ViewChild(DatatableComponent) public table: DatatableComponent;
 
   // Table variables
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public ColumnMode = ColumnMode;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public SortType = SortType;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public SelectionType = SelectionType;
   public columns: TableColumn[] = [];
   public rows: T[];
   public filterTempRows: T[];
   public selected: T[] = [];
 
-  constructor(private filterMatch: (val: string, row: T) => boolean) {
+  public constructor(private filterMatch: (val: string, row: T) => boolean) {
     super();
   }
 

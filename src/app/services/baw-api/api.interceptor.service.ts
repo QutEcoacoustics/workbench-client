@@ -25,7 +25,7 @@ import { SecurityService } from "./security/security.service";
  */
 @Injectable()
 export class BawApiInterceptor implements HttpInterceptor {
-  constructor(
+  public constructor(
     @Inject(API_ROOT) private apiRoot: string,
     public api: SecurityService
   ) {}
@@ -50,7 +50,9 @@ export class BawApiInterceptor implements HttpInterceptor {
     if (request.responseType !== "text") {
       request = request.clone({
         setHeaders: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           Accept: "application/json",
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           "Content-Type": "application/json",
         },
       });
@@ -60,6 +62,7 @@ export class BawApiInterceptor implements HttpInterceptor {
     if (this.api.isLoggedIn()) {
       request = request.clone({
         setHeaders: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           Authorization: `Token token="${this.api.getLocalUser().authToken}"`,
         },
       });

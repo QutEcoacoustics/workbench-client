@@ -115,7 +115,7 @@ export class User extends AbstractModel implements IUser {
   @BawDateTime()
   public readonly lastSeenAt?: DateTimeTimezone;
 
-  constructor(user: IUser) {
+  public constructor(user: IUser) {
     super(user);
     this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
   }
@@ -168,7 +168,7 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   @BawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
 
-  constructor(user: ISessionUser & Partial<IUser>) {
+  public constructor(user: ISessionUser & Partial<IUser>) {
     super(user);
 
     this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;

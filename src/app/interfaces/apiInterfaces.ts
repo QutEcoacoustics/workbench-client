@@ -80,13 +80,13 @@ export type Longitude = string;
  * BAW API Image Sizes
  */
 export enum ImageSizes {
-  EXTRA_LARGE = "extralarge",
-  LARGE = "large",
-  MEDIUM = "medium",
-  SMALL = "small",
-  TINY = "tiny",
-  DEFAULT = "default",
-  UNKNOWN = "unknown",
+  extraLarge = "extralarge",
+  large = "large",
+  medium = "medium",
+  small = "small",
+  tiny = "tiny",
+  default = "default",
+  unknown = "unknown",
 }
 
 /**

@@ -46,7 +46,7 @@ const regionKey = "region";
 class DeleteComponent extends FormTemplate<Region> implements OnInit {
   public title: string;
 
-  constructor(
+  public constructor(
     private api: RegionsService,
     notifications: ToastrService,
     route: ActivatedRoute,

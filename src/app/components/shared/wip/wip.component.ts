@@ -25,7 +25,7 @@ import { AppConfigService } from "@services/app-config/app-config.service";
 export class WIPComponent implements OnInit {
   public tooltip: string;
 
-  constructor(private env: AppConfigService) {}
+  public constructor(private env: AppConfigService) {}
 
   public ngOnInit() {
     this.tooltip = this.env.config.production

@@ -26,7 +26,7 @@ const pageKey = "page";
   template: "",
 })
 class MockComponent extends PaginationTemplate<Project> {
-  constructor(
+  public constructor(
     router: Router,
     route: ActivatedRoute,
     config: NgbPaginationConfig,

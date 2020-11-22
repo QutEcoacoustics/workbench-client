@@ -27,7 +27,7 @@ class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
     { name: "Description" },
   ];
 
-  constructor(api: BookmarksService, route: ActivatedRoute) {
+  public constructor(api: BookmarksService, route: ActivatedRoute) {
     super(
       api,
       (bookmarks) =>

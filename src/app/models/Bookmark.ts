@@ -56,7 +56,7 @@ export class Bookmark extends AbstractModel implements IBookmark {
   @HasOne<Bookmark, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
 
-  constructor(bookmark: IBookmark, injector?: Injector) {
+  public constructor(bookmark: IBookmark, injector?: Injector) {
     super(bookmark, injector);
   }
 

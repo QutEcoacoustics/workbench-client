@@ -21,7 +21,7 @@ export class SiteMapComponent extends WithUnsubscribe() implements OnInit {
   @Input() public region: Region;
   public markers: List<MapMarkerOption> = List([]);
 
-  constructor(private sitesApi: SitesService) {
+  public constructor(private sitesApi: SitesService) {
     super();
   }
 

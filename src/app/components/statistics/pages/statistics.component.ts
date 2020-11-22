@@ -29,7 +29,7 @@ class StatisticsComponent extends PageComponent implements OnInit {
   public recentAnnotations: Annotation[] | AnnotationExpanded[];
   public recentRecordings: Recording[] | RecordingExpanded[];
 
-  constructor() {
+  public constructor() {
     super();
   }
 

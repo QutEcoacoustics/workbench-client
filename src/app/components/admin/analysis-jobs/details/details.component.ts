@@ -35,7 +35,7 @@ class AdminAnalysisJobComponent
   public failure: boolean;
   public fields = fields;
 
-  constructor(private route: ActivatedRoute) {
+  public constructor(private route: ActivatedRoute) {
     super();
   }
 

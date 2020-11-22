@@ -36,7 +36,7 @@ export class Question extends AbstractModel implements IQuestion {
   @Updater<Question>()
   public updater?: User;
 
-  constructor(question: IQuestion, injector?: Injector) {
+  public constructor(question: IQuestion, injector?: Injector) {
     super(question, injector);
   }
 

@@ -9,7 +9,7 @@ import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class SendAudioComponent extends PageComponent {
-  public page = CMS.DATA_UPLOAD;
+  public page = CMS.dataUpload;
 }
 
 SendAudioComponent.LinkComponentToPageInfo({

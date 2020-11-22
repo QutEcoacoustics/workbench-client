@@ -23,7 +23,7 @@ const endpoint = stringTemplate`/bookmarks/${bookmarkId}${option}`;
 
 @Injectable()
 export class BookmarksService extends StandardApi<Bookmark> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

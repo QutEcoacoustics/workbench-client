@@ -31,7 +31,7 @@ class ReportProblemComponent
   public loading: boolean;
   public subTitle: string;
 
-  constructor() {
+  public constructor() {
     super();
   }
 

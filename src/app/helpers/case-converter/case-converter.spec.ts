@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { toCamelCase, toSnakeCase } from "./case-converter";
 
 const conversionCallbacks = [

@@ -31,7 +31,7 @@ export class ProgressEvent extends AbstractModel implements IProgressEvent {
   public creator?: User;
   // TODO Add association to DatasetItem
 
-  constructor(progressEvent: IProgressEvent, injector?: Injector) {
+  public constructor(progressEvent: IProgressEvent, injector?: Injector) {
     super(progressEvent, injector);
   }
 

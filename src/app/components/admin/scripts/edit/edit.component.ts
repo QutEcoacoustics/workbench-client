@@ -39,7 +39,7 @@ class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
   public fields = fields;
   public title: string;
 
-  constructor(
+  public constructor(
     private api: ScriptsService,
     notifications: ToastrService,
     route: ActivatedRoute,

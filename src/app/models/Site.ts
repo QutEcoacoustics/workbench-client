@@ -101,7 +101,7 @@ export class Site extends AbstractModel implements ISite {
   @HasMany<Site, Project>(PROJECT, "projectIds")
   public projects?: Project[];
 
-  constructor(site: ISite, injector?: Injector) {
+  public constructor(site: ISite, injector?: Injector) {
     super(site, injector);
 
     this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;

@@ -29,7 +29,7 @@ const siteKey = "site";
 class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
   public title: string;
 
-  constructor(
+  public constructor(
     private api: SitesService,
     notifications: ToastrService,
     route: ActivatedRoute,

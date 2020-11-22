@@ -31,7 +31,7 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
   public site: Site;
   public user: SessionUser;
 
-  constructor(
+  public constructor(
     @Inject(API_ROOT) public apiRoot: string,
     private route: ActivatedRoute,
     private api: SecurityService

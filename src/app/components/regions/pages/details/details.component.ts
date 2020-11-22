@@ -92,7 +92,7 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
   public region: Region;
   public sites: List<Site> = List([]);
 
-  constructor(
+  public constructor(
     router: Router,
     route: ActivatedRoute,
     config: NgbPaginationConfig,

@@ -19,7 +19,7 @@ import { audioAnalysisMenuItem, libraryMenuItem } from "./externalMenus";
 /**
  * Default secondary menu items
  */
-export const DefaultMenu = {
+export const defaultMenu = {
   contextLinks: List<NavigableMenuItem>([
     homeMenuItem,
     loginMenuItem,

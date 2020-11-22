@@ -43,7 +43,7 @@ export class Response extends AbstractModel implements IResponse {
   @HasOne<Response, Study>(STUDY, "studyId")
   public study?: Study;
 
-  constructor(question: IResponse, injector?: Injector) {
+  public constructor(question: IResponse, injector?: Injector) {
     super(question, injector);
   }
 

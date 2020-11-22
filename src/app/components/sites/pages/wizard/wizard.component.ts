@@ -62,7 +62,7 @@ class WizardComponent extends PageComponent implements OnInit {
   public isCreating = { site: false, region: false };
   public project: Project;
 
-  constructor(private route: ActivatedRoute) {
+  public constructor(private route: ActivatedRoute) {
     super();
   }
 

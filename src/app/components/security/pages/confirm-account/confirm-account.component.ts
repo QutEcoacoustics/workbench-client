@@ -34,7 +34,7 @@ class ConfirmPasswordComponent
   public fields = fields;
   public loading: boolean;
 
-  constructor() {
+  public constructor() {
     super();
   }
 

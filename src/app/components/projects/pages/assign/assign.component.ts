@@ -36,7 +36,7 @@ class AssignComponent extends PagedTableTemplate<TableRow, Site> {
     description: "descriptionHtmlTagline",
   };
 
-  constructor(api: ShallowSitesService, route: ActivatedRoute) {
+  public constructor(api: ShallowSitesService, route: ActivatedRoute) {
     super(
       api,
       (sites) =>

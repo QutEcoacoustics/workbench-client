@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
@@ -21,13 +22,13 @@ export function BawImage<T extends AbstractModel>(
   opts?: BawDecoratorOptions<T>
 ) {
   // Retrieve default image and prepend site url if required
-  const defaultImage: ImageUrl = { size: ImageSizes.DEFAULT, url: defaultUrl };
+  const defaultImage: ImageUrl = { size: ImageSizes.default, url: defaultUrl };
 
   function sortImageUrls(a: ImageUrl, b: ImageUrl): number {
     // Default image should always be last in array
-    if (a.size === ImageSizes.DEFAULT) {
+    if (a.size === ImageSizes.default) {
       return 1;
-    } else if (b.size === ImageSizes.DEFAULT) {
+    } else if (b.size === ImageSizes.default) {
       return -1;
     }
 
@@ -37,7 +38,7 @@ export function BawImage<T extends AbstractModel>(
   }
 
   function missingDefault(images: ImageUrl[]): boolean {
-    return !images.find((image) => image.size === ImageSizes.DEFAULT);
+    return !images.find((image) => image.size === ImageSizes.default);
   }
 
   return createDecorator<T>(
@@ -46,7 +47,7 @@ export function BawImage<T extends AbstractModel>(
       // Convert string to ImageURL[] and append default image
       if (typeof imageUrls === "string") {
         model[key] = [
-          { size: ImageSizes.UNKNOWN, url: imageUrls },
+          { size: ImageSizes.unknown, url: imageUrls },
           defaultImage,
         ];
       } else if (imageUrls instanceof Array && imageUrls.length > 0) {

@@ -35,7 +35,7 @@ export class MenuExternalLinkComponent implements OnChanges {
   @Input() public uri: string;
   public href: string;
 
-  constructor(@Inject(API_ROOT) private apiRoot: string) {}
+  public constructor(@Inject(API_ROOT) private apiRoot: string) {}
 
   public ngOnChanges() {
     // Prepend apiRoot to relative links

@@ -27,7 +27,7 @@ class PointNewComponent extends SiteNewComponent {
   public fields = fields;
   public title = "New Point";
 
-  constructor(
+  public constructor(
     api: SitesService,
     notifications: ToastrService,
     route: ActivatedRoute,

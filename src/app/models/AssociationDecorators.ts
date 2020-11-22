@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { ApiFilter, ApiShow } from "@baw-api/api-common";
 import { Filters } from "@baw-api/baw-api.service";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";

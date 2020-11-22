@@ -26,12 +26,13 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IndicatorComponent {
-  @Input() public status: Status = Status.Success;
+  @Input() public status: Status = Status.success;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public Status = Status;
 }
 
 export enum Status {
-  Success,
-  Warning,
-  Error,
+  success,
+  warning,
+  error,
 }

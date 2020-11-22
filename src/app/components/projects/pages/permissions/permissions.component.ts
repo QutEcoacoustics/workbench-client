@@ -37,7 +37,10 @@ class PermissionsComponent extends TableTemplate<TableRow> implements OnInit {
   public userOptions: ISelectableItem[];
   public visitorOptions: ISelectableItem[];
 
-  constructor(private route: ActivatedRoute, private api: ProjectsService) {
+  public constructor(
+    private route: ActivatedRoute,
+    private api: ProjectsService
+  ) {
     super((val, row) => this.checkMatch(val, row.user));
   }
 

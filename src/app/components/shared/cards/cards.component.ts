@@ -49,7 +49,7 @@ export class CardsComponent implements OnChanges {
   @Input() public cards: List<Card>;
   public imageCards: boolean;
 
-  constructor(private ref: ChangeDetectorRef) {}
+  public constructor(private ref: ChangeDetectorRef) {}
 
   public ngOnChanges() {
     this.cards = this.cards ?? List<Card>([]);

@@ -50,7 +50,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    */
   private _page: number;
 
-  constructor(
+  public constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     /**

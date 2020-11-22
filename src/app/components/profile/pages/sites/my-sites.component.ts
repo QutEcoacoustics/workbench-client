@@ -29,7 +29,7 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
     { name: "Annotation" },
   ];
 
-  constructor(api: ShallowSitesService, route: ActivatedRoute) {
+  public constructor(api: ShallowSitesService, route: ActivatedRoute) {
     // TODO Add missing details
     // https://github.com/QutEcoacoustics/baw-server/issues/438
     // https://github.com/QutEcoacoustics/baw-server/issues/406

@@ -19,7 +19,7 @@ export class DatatableDirective implements OnInit {
   @Input() public rowHeight: ((row: any) => number) | number | "auto" = "auto";
   @Input() public scrollbarH = true;
 
-  constructor(
+  public constructor(
     @Host() private datatable: DatatableComponent,
     private datatableRef: ElementRef
   ) {}

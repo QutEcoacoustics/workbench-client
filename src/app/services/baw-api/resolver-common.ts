@@ -39,7 +39,7 @@ export abstract class BawResolver<
   // Resolver output model name
   T = { customResolver: string }
 > {
-  constructor(
+  public constructor(
     protected deps: Type<A>[],
     protected id?: string,
     protected ids?: string[]
@@ -51,7 +51,7 @@ export abstract class BawResolver<
     const resolverFn = this.resolverFn;
 
     class Resolver implements Resolve<ResolvedModel<O>> {
-      constructor(private api: A) {}
+      public constructor(private api: A) {}
 
       /**
        * Resolve the model
@@ -119,7 +119,7 @@ export class Resolvers<
   M extends AbstractModel,
   A extends ApiList<M, any[]> & ApiShow<M, any[], IdOr<M>>
 > {
-  constructor(
+  public constructor(
     private deps: Type<A>[],
     private id?: string,
     private ids?: string[]
@@ -152,7 +152,7 @@ export class ListResolver<
   M extends AbstractModel,
   A extends ApiList<M, any[]>
 > extends BawResolver<M[], M, A, { list: string }> {
-  constructor(deps: Type<A>[], ids?: string[]) {
+  public constructor(deps: Type<A>[], ids?: string[]) {
     super(deps, undefined, ids);
   }
 
@@ -187,7 +187,7 @@ export class ShowResolver<
   M extends AbstractModel,
   A extends ApiShow<M, any[], IdOr<M>>
 > extends BawResolver<M, M, A, { show: string }> {
-  constructor(deps: Type<A>[], id?: string, ids?: string[]) {
+  public constructor(deps: Type<A>[], id?: string, ids?: string[]) {
     super(deps, id, ids);
   }
 

@@ -38,7 +38,7 @@ export class TagGroup extends AbstractModel implements ITagGroup {
   @HasOne<TagGroup, Tag>(TAG, "tagId")
   public tag?: Tag;
 
-  constructor(tagGroup: ITagGroup, injector?: Injector) {
+  public constructor(tagGroup: ITagGroup, injector?: Injector) {
     super(tagGroup, injector);
   }
 

@@ -58,7 +58,7 @@ export class ItemComponent implements OnInit {
   public link: string;
   public internalLink: boolean;
 
-  constructor(private route: ActivatedRoute) {}
+  public constructor(private route: ActivatedRoute) {}
 
   public ngOnInit() {
     if (!this.uri) {

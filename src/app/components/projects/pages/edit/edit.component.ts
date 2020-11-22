@@ -44,7 +44,7 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
   public fields = fields;
   public title: string;
 
-  constructor(
+  public constructor(
     private api: ProjectsService,
     notifications: ToastrService,
     route: ActivatedRoute,

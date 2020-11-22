@@ -63,7 +63,7 @@ describe("Attribute Decorators", () => {
       defaultImageUrls = modelData.imageUrls();
       defaultImageUrl = {
         url: `${assetRoot}/broken_link.png`,
-        size: ImageSizes.DEFAULT,
+        size: ImageSizes.default,
       };
     });
 
@@ -107,7 +107,7 @@ describe("Attribute Decorators", () => {
     it("should convert single url string", () => {
       const imageUrl: ImageUrl = {
         url: modelData.imageUrl(),
-        size: ImageSizes.UNKNOWN,
+        size: ImageSizes.unknown,
       };
       const model = createModel({ image: imageUrl.url });
       expect(model.image).toEqual([imageUrl, defaultImageUrl]);

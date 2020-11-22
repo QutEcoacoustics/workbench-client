@@ -45,7 +45,7 @@ const projectKey = "project";
 class DeleteComponent extends FormTemplate<Project> implements OnInit {
   public title: string;
 
-  constructor(
+  public constructor(
     private api: ProjectsService,
     notifications: ToastrService,
     route: ActivatedRoute,

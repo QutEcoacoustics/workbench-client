@@ -49,7 +49,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
   public isExternalLink = isExternalLink;
   public isAction = isButton;
 
-  constructor(
+  public constructor(
     private api: SecurityService,
     private route: ActivatedRoute,
     private componentFactoryResolver: ComponentFactoryResolver

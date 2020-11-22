@@ -35,7 +35,7 @@ const typeOfTagsKey = "typeOfTags";
 class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
   public fields = fields;
 
-  constructor(
+  public constructor(
     private api: TagsService,
     notifications: ToastrService,
     route: ActivatedRoute,

@@ -25,7 +25,7 @@ const endpoint = stringTemplate`/analysis_jobs/${analysisJobId}${option}`;
  */
 @Injectable()
 export class AnalysisJobsService extends ReadAndUpdateApi<AnalysisJob> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

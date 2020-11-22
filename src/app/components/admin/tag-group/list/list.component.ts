@@ -33,7 +33,7 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
     group: "groupIdentifier",
   };
 
-  constructor(api: TagGroupsService) {
+  public constructor(api: TagGroupsService) {
     super(api, (tagGroups) =>
       tagGroups.map((tagGroup) => ({
         tag: tagGroup.tagId,

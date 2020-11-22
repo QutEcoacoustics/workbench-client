@@ -45,7 +45,7 @@ export class DatasetItem extends AbstractModel implements IDatasetItem {
   @HasOne<DatasetItem, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
 
-  constructor(datasetItem: IDatasetItem, injector?: Injector) {
+  public constructor(datasetItem: IDatasetItem, injector?: Injector) {
     super(datasetItem, injector);
   }
 

@@ -21,7 +21,7 @@ const endpoint = stringTemplate`/saved_searches/${savedSearchId}${option}`;
 
 @Injectable()
 export class SavedSearchesService extends ImmutableApi<SavedSearch> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

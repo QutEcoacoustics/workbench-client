@@ -29,7 +29,7 @@ const endpointShallow = stringTemplate`/regions/${regionId}${option}`;
  */
 @Injectable()
 export class RegionsService extends StandardApi<Region, [IdOr<Project>]> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -69,7 +69,7 @@ export class RegionsService extends StandardApi<Region, [IdOr<Project>]> {
  */
 @Injectable()
 export class ShallowRegionsService extends StandardApi<Region> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

@@ -30,9 +30,12 @@ export function nStepObservable<T>(
           return waitOne();
         }
 
-        isError
-          ? subject.error(callback() as ApiErrorDetails)
-          : subject.next(callback() as T);
+        if (isError) {
+          subject.error(callback() as ApiErrorDetails);
+        } else {
+          subject.next(callback() as T);
+        }
+
         resolve();
       }, testStepInterval);
     }

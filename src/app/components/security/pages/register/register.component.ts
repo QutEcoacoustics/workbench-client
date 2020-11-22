@@ -29,7 +29,7 @@ class RegisterComponent extends PageComponent implements OnInit {
   public fields = fields;
   public loading: boolean;
 
-  constructor(
+  public constructor(
     private api: SecurityService,
     private notifications: ToastrService
   ) {

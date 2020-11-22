@@ -40,7 +40,7 @@ class AdminTagGroupsDeleteComponent
   implements OnInit {
   public title: string;
 
-  constructor(
+  public constructor(
     private api: TagGroupsService,
     notifications: ToastrService,
     route: ActivatedRoute,

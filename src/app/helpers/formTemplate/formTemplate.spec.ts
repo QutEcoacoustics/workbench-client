@@ -38,7 +38,7 @@ class MockModel extends AbstractModel {
   template: "<div><baw-form></baw-form></div>",
 })
 class MockComponent extends FormTemplate<MockModel> {
-  constructor(
+  public constructor(
     protected notifications: ToastrService,
     protected route: ActivatedRoute,
     protected router: Router

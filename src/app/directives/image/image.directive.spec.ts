@@ -131,22 +131,22 @@ describe("ImageDirective", () => {
   describe("thumbnail", () => {
     it("given a valid thumbnail, it displays the thumbnail url", () => {
       const imageUrls = modelData.imageUrls();
-      imageUrls[1].size = ImageSizes.MEDIUM;
-      spectator = createThumbnailDirective(imageUrls, ImageSizes.MEDIUM);
+      imageUrls[1].size = ImageSizes.medium;
+      spectator = createThumbnailDirective(imageUrls, ImageSizes.medium);
       assertImage(getImage(), imageUrls[1].url, "alt");
     });
 
     it("given a missing thumbnail, it loads the next available url", () => {
       const imageUrls = modelData.imageUrls();
       // DEFAULT image size is not set by modelData.imageUrls
-      spectator = createThumbnailDirective(imageUrls, ImageSizes.DEFAULT);
+      spectator = createThumbnailDirective(imageUrls, ImageSizes.default);
       assertImage(getImage(), imageUrls[0].url, "alt");
     });
 
     it("given an invalid thumbnail, it loads the next available url", () => {
       const imageUrls = modelData.imageUrls();
-      imageUrls[1].size = ImageSizes.MEDIUM;
-      spectator = createThumbnailDirective(imageUrls, ImageSizes.MEDIUM);
+      imageUrls[1].size = ImageSizes.medium;
+      spectator = createThumbnailDirective(imageUrls, ImageSizes.medium);
       const image = getImage();
       createImgErrorEvent(image);
       assertImage(image, imageUrls[0].url, "alt");
@@ -312,7 +312,7 @@ describe("ImageDirective", () => {
 
     it("should display default image last", () => {
       const imageUrls = modelData.imageUrls();
-      imageUrls[0].size = ImageSizes.DEFAULT;
+      imageUrls[0].size = ImageSizes.default;
       spectator = createDefaultDirective(undefined);
       const image = getImage();
 

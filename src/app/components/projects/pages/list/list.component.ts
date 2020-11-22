@@ -57,7 +57,7 @@ export const projectsMenuItemActions = [
 class ListComponent extends PaginationTemplate<Project> {
   public cardList: List<Card> = List([]);
 
-  constructor(
+  public constructor(
     router: Router,
     route: ActivatedRoute,
     config: NgbPaginationConfig,

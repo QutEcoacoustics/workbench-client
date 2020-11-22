@@ -7,7 +7,7 @@ export function generateSite(id?: Id, hasRegion?: boolean): Required<ISite> {
     id: modelData.id(id),
     name: modelData.param(),
     imageUrl: modelData.imageUrl(),
-    locationObfuscated: modelData.boolean(),
+    locationObfuscated: modelData.bool(),
     projectIds: modelData.ids(),
     // This is purposefully disabled by default as it changes the behavior of the model
     regionId: hasRegion ? modelData.id() : undefined,

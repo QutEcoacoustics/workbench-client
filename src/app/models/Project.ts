@@ -89,7 +89,7 @@ export class Project extends AbstractModel implements IProject {
   @Owner<Project>()
   public owner?: User;
 
-  constructor(project: IProject, injector?: Injector) {
+  public constructor(project: IProject, injector?: Injector) {
     super(project, injector);
   }
 

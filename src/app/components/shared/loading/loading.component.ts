@@ -24,7 +24,7 @@ export class LoadingComponent implements OnInit {
 
   public spinnerClass: { [klass: string]: true };
 
-  constructor() {}
+  public constructor() {}
 
   public ngOnInit(): void {
     this.spinnerClass = {

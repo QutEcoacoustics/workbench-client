@@ -15,7 +15,7 @@ export const API_ROOT = new InjectionToken<string>("baw.api.root");
  */
 @Injectable()
 export class AppInitializer {
-  constructor() {}
+  public constructor() {}
 
   public static initializerFactory(
     @Inject(API_CONFIG)
@@ -84,7 +84,7 @@ export class Configuration implements Configuration {
   public environment: Environment;
   public values: Values;
 
-  constructor(configuration: Partial<Configuration>) {
+  public constructor(configuration: Partial<Configuration>) {
     Object.assign(this, configuration);
   }
 }

@@ -20,7 +20,7 @@ export class AppComponent extends WithUnsubscribe() implements OnInit {
   public fullscreen: boolean;
   public delayedProgress$: Observable<number>;
 
-  constructor(
+  public constructor(
     private env: AppConfigService,
     private router: Router,
     private route: ActivatedRoute,

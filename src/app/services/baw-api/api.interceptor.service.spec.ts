@@ -185,10 +185,12 @@ describe("BawApiInterceptor", () => {
           .get<any>("https://brokenlink/brokenapiroute")
           .subscribe((response) => {
             expect(response).toBeTruthy();
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             expect(response).toEqual({ dummy_response: true });
           }, shouldNotFail);
 
         const req = httpMock.expectOne("https://brokenlink/brokenapiroute");
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         req.flush({ dummy_response: true });
       });
 
@@ -197,10 +199,12 @@ describe("BawApiInterceptor", () => {
           .post<any>("https://brokenlink/brokenapiroute", {})
           .subscribe((response) => {
             expect(response).toBeTruthy();
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             expect(response).toEqual({ dummy_response: true });
           }, shouldNotFail);
 
         const req = httpMock.expectOne("https://brokenlink/brokenapiroute");
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         req.flush({ dummy_response: true });
       });
     });
@@ -251,6 +255,7 @@ describe("BawApiInterceptor", () => {
           .subscribe(noop, noop, noop);
 
         const req = httpMock.expectOne(apiRoot + "/brokenapiroute");
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         expect(req.request.body).toEqual({ should_convert: true });
       });
 
@@ -282,6 +287,7 @@ describe("BawApiInterceptor", () => {
         }, shouldNotFail);
 
         const req = httpMock.expectOne(apiRoot + "/brokenapiroute");
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         req.flush({ dummy_response: true });
       });
 
@@ -294,6 +300,7 @@ describe("BawApiInterceptor", () => {
           }, shouldNotFail);
 
         const req = httpMock.expectOne(apiRoot + "/brokenapiroute");
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         req.flush({ dummy_response: true });
       });
     });

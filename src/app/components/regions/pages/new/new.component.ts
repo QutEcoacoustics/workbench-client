@@ -41,7 +41,7 @@ class NewComponent extends FormTemplate<Region> {
   @Input() public hideTitle: boolean;
   public fields = fields;
 
-  constructor(
+  public constructor(
     private api: RegionsService,
     notifications: ToastrService,
     route: ActivatedRoute,

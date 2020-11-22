@@ -9,7 +9,7 @@ import { ResolvedModel } from "@services/baw-api/resolver-common";
 import filesize from "filesize";
 import { List } from "immutable";
 import { Observable, Subscription, timer } from "rxjs";
-import { map, startWith, takeWhile } from "rxjs/operators";
+import { map, startWith, takeUntil, takeWhile } from "rxjs/operators";
 import {
   harvestProjectMenuItem,
   projectCategory,
@@ -98,7 +98,7 @@ class HarvestComponent extends PageComponent implements OnInit {
     takeWhile(() => this.progress < 100)
   );
 
-  constructor(private route: ActivatedRoute) {
+  public constructor(private route: ActivatedRoute) {
     super();
   }
 
@@ -136,11 +136,13 @@ class HarvestComponent extends PageComponent implements OnInit {
     const mockTimer = this.stages[this.stage].timer;
     if (mockTimer.enable) {
       this.subscription?.unsubscribe();
-      this.subscription = this.mockTimer.subscribe(
-        () => {},
-        () => {},
-        mockTimer.callback ? mockTimer.callback : () => {}
-      );
+      this.subscription = this.mockTimer
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe(
+          () => {},
+          () => {},
+          mockTimer.callback ? mockTimer.callback : () => {}
+        );
     }
   }
 }

@@ -24,6 +24,7 @@ import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import { ItemInterface } from "@shared/items/item/item.component";
 import { List } from "immutable";
+import { takeUntil } from "rxjs/operators";
 
 export const theirProfileActions = [
   theirEditMenuItem,
@@ -54,7 +55,7 @@ class TheirProfileComponent extends PageComponent implements OnInit {
     { icon: ["fas", "bullseye"], name: "Annotations", value: "Unknown" },
   ]);
 
-  constructor(
+  public constructor(
     private route: ActivatedRoute,
     private projectsApi: ProjectsService,
     private sitesApi: ShallowSitesService,
@@ -78,29 +79,41 @@ class TheirProfileComponent extends PageComponent implements OnInit {
       ? this.user.lastSeenAt.toRelative()
       : "Unknown time since last logged in";
 
-    this.projectsApi.filterByCreator({}, this.user).subscribe(
-      (models) => this.extractTotal(0, models),
-      () => this.handleError(0)
-    );
+    this.projectsApi
+      .filterByCreator({}, this.user)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (models) => this.extractTotal(0, models),
+        () => this.handleError(0)
+      );
 
-    this.tagsApi.filterByCreator({}, this.user).subscribe(
-      (models) => {
-        this.extractTotal(1, models);
-        // TODO Extract tags by order of popularity https://github.com/QutEcoacoustics/baw-server/issues/449
-        this.tags = models;
-      },
-      () => this.handleError(0)
-    );
+    this.tagsApi
+      .filterByCreator({}, this.user)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (models) => {
+          this.extractTotal(1, models);
+          // TODO Extract tags by order of popularity https://github.com/QutEcoacoustics/baw-server/issues/449
+          this.tags = models;
+        },
+        () => this.handleError(0)
+      );
 
-    this.bookmarksApi.filterByCreator({}, this.user).subscribe(
-      (models) => this.extractTotal(2, models),
-      () => this.handleError(0)
-    );
+    this.bookmarksApi
+      .filterByCreator({}, this.user)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (models) => this.extractTotal(2, models),
+        () => this.handleError(0)
+      );
 
-    this.sitesApi.filterByCreator({}, this.user).subscribe(
-      (models) => this.extractTotal(3, models),
-      () => this.handleError(3)
-    );
+    this.sitesApi
+      .filterByCreator({}, this.user)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (models) => this.extractTotal(3, models),
+        () => this.handleError(3)
+      );
   }
 
   private extractTotal(index: number, models: AbstractModel[]) {

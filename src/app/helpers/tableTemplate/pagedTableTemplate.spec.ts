@@ -37,7 +37,7 @@ class MockComponent extends PagedTableTemplate<
 > {
   public columns = [{ prop: "id" }];
 
-  constructor(api: ProjectsService, route: ActivatedRoute) {
+  public constructor(api: ProjectsService, route: ActivatedRoute) {
     super(
       api,
       (models) => models.map((model) => ({ id: model.id, name: model.name })),

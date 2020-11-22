@@ -120,7 +120,7 @@ class DetailsComponent extends PaginationTemplate<any> implements OnInit {
    */
   private apiReturnCount = 0;
 
-  constructor(
+  public constructor(
     route: ActivatedRoute,
     router: Router,
     config: NgbPaginationConfig,

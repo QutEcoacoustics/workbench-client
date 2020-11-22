@@ -29,7 +29,7 @@ export class FooterComponent implements OnInit {
     statistics: statisticsMenuItem,
   };
 
-  constructor(private env: AppConfigService) {}
+  public constructor(private env: AppConfigService) {}
 
   public ngOnInit() {
     this.version = this.env.config.version;

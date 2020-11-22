@@ -52,7 +52,7 @@ export abstract class FormTemplate<M extends AbstractModel>
    * @param successMsg Success message
    * @param errorMsg Error message
    */
-  constructor(
+  public constructor(
     protected notifications: ToastrService,
     protected route: ActivatedRoute,
     protected router: Router,

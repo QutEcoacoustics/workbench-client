@@ -49,7 +49,7 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
   public project: Project;
   public site: Site;
 
-  constructor(protected route: ActivatedRoute) {
+  public constructor(protected route: ActivatedRoute) {
     super();
   }
 

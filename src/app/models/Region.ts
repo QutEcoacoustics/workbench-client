@@ -89,7 +89,7 @@ export class Region extends AbstractModel implements IRegion {
   @Owner<Region>()
   public owner?: User;
 
-  constructor(region: IRegion, injector?: Injector) {
+  public constructor(region: IRegion, injector?: Injector) {
     super(region, injector);
   }
 

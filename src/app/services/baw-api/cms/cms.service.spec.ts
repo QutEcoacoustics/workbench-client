@@ -20,7 +20,7 @@ describe("CmsService", () => {
     imports: [MockAppConfigModule],
     providers: [SecurityService, UserService],
   });
-  const defaultUrl = CMS.HOME;
+  const defaultUrl = CMS.home;
 
   beforeEach(() => {
     spectator = createService();

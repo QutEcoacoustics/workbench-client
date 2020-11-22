@@ -27,7 +27,7 @@ const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
  */
 @Injectable()
 export class AccountsService extends StandardApi<User> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

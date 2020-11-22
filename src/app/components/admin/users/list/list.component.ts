@@ -33,7 +33,7 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
     lastLogin: "lastSeenAt",
   };
 
-  constructor(api: AccountsService) {
+  public constructor(api: AccountsService) {
     super(api, (accounts) =>
       accounts.map((account) => ({
         account,

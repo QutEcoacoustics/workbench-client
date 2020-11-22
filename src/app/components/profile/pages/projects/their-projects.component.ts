@@ -29,7 +29,7 @@ class TheirProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   ];
   protected api: ProjectsService;
 
-  constructor(api: ProjectsService, route: ActivatedRoute) {
+  public constructor(api: ProjectsService, route: ActivatedRoute) {
     super(
       api,
       (projects) =>

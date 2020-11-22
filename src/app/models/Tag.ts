@@ -52,7 +52,7 @@ export class Tag extends AbstractModel implements ITag {
   @Updater<Tag>()
   public updater?: User;
 
-  constructor(tag: ITag, injector?: Injector) {
+  public constructor(tag: ITag, injector?: Injector) {
     super(tag, injector);
   }
 
@@ -70,7 +70,7 @@ export class TagType extends AbstractData {
   public readonly kind = "TagType";
   public readonly name: string;
 
-  constructor(data: { name: string }) {
+  public constructor(data: { name: string }) {
     super(data);
   }
 }

@@ -1,0 +1,5 @@
+node_modules/
+coverage/
+dist/
+decorate-angular-cli.js
+e2e/protractor.conf.js

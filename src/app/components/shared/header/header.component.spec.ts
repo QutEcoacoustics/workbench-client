@@ -237,19 +237,19 @@ describe("HeaderComponent", () => {
               ...user,
               imageUrls: [
                 {
-                  size: ImageSizes.MEDIUM,
+                  size: ImageSizes.medium,
                   url: modelData.image.imageUrl(140, 140),
                   width: 140,
                   height: 140,
                 },
                 {
-                  size: ImageSizes.SMALL,
+                  size: ImageSizes.small,
                   url,
                   width: 60,
                   height: 60,
                 },
                 {
-                  size: ImageSizes.TINY,
+                  size: ImageSizes.tiny,
                   url: modelData.image.imageUrl(30, 30),
                   width: 30,
                   height: 30,

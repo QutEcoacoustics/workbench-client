@@ -12,7 +12,7 @@ const specialCharRegex = /[^\w\s]/gi;
 export const modelData = {
   accessLevel: () =>
     faker.random.arrayElement<AccessLevel>(["Reader", "Writer", "Owner"]),
-  boolean: () => faker.random.boolean(),
+  bool: () => faker.random.boolean(),
   description: () => faker.lorem.sentence().replace(specialCharRegex, ""),
   descriptionLong: () =>
     [0, 1, 2, 3, 4]
@@ -145,11 +145,11 @@ function shuffleArray<T>(array: T[]): T[] {
  */
 function imageUrls(url?: string): ImageUrl[] {
   return [
-    { image: ImageSizes.EXTRA_LARGE, size: 300 },
-    { image: ImageSizes.LARGE, size: 220 },
-    { image: ImageSizes.MEDIUM, size: 140 },
-    { image: ImageSizes.SMALL, size: 60 },
-    { image: ImageSizes.TINY, size: 30 },
+    { image: ImageSizes.extraLarge, size: 300 },
+    { image: ImageSizes.large, size: 220 },
+    { image: ImageSizes.medium, size: 140 },
+    { image: ImageSizes.small, size: 60 },
+    { image: ImageSizes.tiny, size: 30 },
   ].map(({ image, size }) => ({
     size: image,
     url: url ? url + "/300/300" : faker.image.imageUrl(size, size),
@@ -246,7 +246,7 @@ function randomArray<T>(
  * @param min Minimum number of keys
  * @param max Maximum number of keys
  */
-function randomObject(min: number, max: number): object {
+function randomObject(min: number, max: number): Record<string, string> {
   const len = faker.random.number({ min, max });
   const obj = {};
 

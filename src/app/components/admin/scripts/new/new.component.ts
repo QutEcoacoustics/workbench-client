@@ -38,7 +38,7 @@ import {
 class AdminScriptsNewComponent extends FormTemplate<Script> {
   public fields = fields;
 
-  constructor(
+  public constructor(
     private api: ScriptsService,
     notifications: ToastrService,
     route: ActivatedRoute,

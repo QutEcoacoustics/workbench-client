@@ -50,7 +50,7 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
   public mapOptions: google.maps.MapOptions = { mapTypeId: "satellite" };
   public markerOptions: google.maps.MarkerOptions = {};
 
-  constructor(private ref: ChangeDetectorRef) {
+  public constructor(private ref: ChangeDetectorRef) {
     super();
   }
 

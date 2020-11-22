@@ -18,7 +18,7 @@ export class HarvestCompleteComponent
   public columns = [{ name: "Id" }, { name: "Name" }, { name: "Actions" }];
   public sortKeys = { id: "id", name: "name" };
 
-  constructor(api: SitesService) {
+  public constructor(api: SitesService) {
     super(
       api,
       (sites) =>

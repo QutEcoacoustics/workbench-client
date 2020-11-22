@@ -27,7 +27,7 @@ export class DatasetItemsService extends ImmutableApi<
   DatasetItem,
   [IdOr<Dataset>]
 > {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

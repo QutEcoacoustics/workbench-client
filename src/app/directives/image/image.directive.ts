@@ -48,7 +48,7 @@ export class AuthenticatedImageDirective implements OnChanges {
    */
   private defaultImage: string;
 
-  constructor(
+  public constructor(
     @Inject(API_ROOT) private apiRoot: string,
     private securityApi: SecurityService,
     private imageRef: ElementRef<HTMLImageElement>
@@ -77,13 +77,13 @@ export class AuthenticatedImageDirective implements OnChanges {
     // Prepend new urls (except default urls) to urls set
     this.urls = OrderedSet<string>(
       this._src
-        ?.filter((imageUrl) => imageUrl.size !== ImageSizes.DEFAULT)
+        ?.filter((imageUrl) => imageUrl.size !== ImageSizes.default)
         .map((imageUrl) => imageUrl.url) ?? []
     ).concat(this.urls);
 
     // Retrieve default image if exists
     this.defaultImage =
-      this._src?.find((imageUrl) => imageUrl.size === ImageSizes.DEFAULT)
+      this._src?.find((imageUrl) => imageUrl.size === ImageSizes.default)
         ?.url ?? this.defaultImage;
 
     this.displayThumbnail = !!this.thumbnail;

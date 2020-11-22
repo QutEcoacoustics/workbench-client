@@ -15,5 +15,5 @@ describe("AboutCreditsComponent", () => {
 
   beforeEach(() => (spectator = createComponent({ detectChanges: false })));
 
-  assertCms<CreditsComponent>(() => spectator, CMS.CREDITS);
+  assertCms<CreditsComponent>(() => spectator, CMS.credits);
 });

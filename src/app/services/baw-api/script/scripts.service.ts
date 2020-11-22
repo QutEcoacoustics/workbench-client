@@ -25,7 +25,7 @@ const endpoint = stringTemplate`/scripts/${scriptId}${option}`;
  */
 @Injectable()
 export class ScriptsService extends NonDestructibleApi<Script> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

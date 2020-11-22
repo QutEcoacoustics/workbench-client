@@ -39,7 +39,7 @@ export class MenuInternalLinkComponent implements OnChanges {
   public active: boolean;
   public disabled: boolean;
 
-  constructor(private location: Location) {}
+  public constructor(private location: Location) {}
 
   public ngOnChanges() {
     this.disabled = this.link.disabled;

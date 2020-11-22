@@ -11,7 +11,7 @@ export class PillListComponent implements OnInit {
   public ellipsis: boolean;
   public compress: boolean;
 
-  constructor() {}
+  public constructor() {}
 
   public ngOnInit() {
     this.compress = this.numPills < this.text.length;

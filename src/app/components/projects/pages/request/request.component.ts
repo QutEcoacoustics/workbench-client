@@ -39,7 +39,7 @@ class RequestComponent extends WithFormCheck(PageComponent) implements OnInit {
   public model = {};
   public projects: Project[];
 
-  constructor(private api: ProjectsService) {
+  public constructor(private api: ProjectsService) {
     super();
   }
 

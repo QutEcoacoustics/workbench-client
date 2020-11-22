@@ -52,7 +52,7 @@ class MyEditComponent extends WithFormCheck(PageComponent) implements OnInit {
   public model: User;
   public fields = fields;
 
-  constructor(private route: ActivatedRoute, private api: UserService) {
+  public constructor(private route: ActivatedRoute, private api: UserService) {
     super();
   }
 

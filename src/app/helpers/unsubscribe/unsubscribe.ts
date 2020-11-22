@@ -7,6 +7,7 @@ import { Subject } from "rxjs";
  *
  * @param Base Base Class
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function WithUnsubscribe<T extends Type<{}>>(Base: T = class {} as any) {
   return class extends Base implements OnDestroy {
     protected unsubscribe = new Subject<void>();

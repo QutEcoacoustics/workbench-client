@@ -36,7 +36,7 @@ export class PageInfo implements IPageInfo {
   public fullscreen: boolean;
   public resolvers: ResolverList;
 
-  constructor(args: IPageInfo) {
+  public constructor(args: IPageInfo) {
     Object.assign(this, args);
     this.resolvers = args.resolvers ?? {};
   }

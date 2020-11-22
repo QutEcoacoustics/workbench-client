@@ -187,7 +187,7 @@ describe("SecurityService", () => {
           rolesMask: 1,
           imageUrls: [
             {
-              size: ImageSizes.EXTRA_LARGE,
+              size: ImageSizes.extraLarge,
               url: "path.png",
               width: 300,
               height: 300,
@@ -241,7 +241,7 @@ describe("SecurityService", () => {
           authToken: "xxxxxxxxxxxxxxxx",
           imageUrls: [
             {
-              size: ImageSizes.EXTRA_LARGE,
+              size: ImageSizes.extraLarge,
               url: "path.png",
               width: 300,
               height: 300,

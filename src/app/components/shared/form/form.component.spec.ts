@@ -7,7 +7,7 @@ import { ToastrService } from "ngx-toastr";
 import { FormComponent } from "./form.component";
 
 /** Button events to pass to `DebugElement.triggerEventHandler` for RouterLink event handler */
-export const ButtonClickEvents = {
+export const buttonClickEvents = {
   left: { button: 0 },
   right: { button: 2 },
 };
@@ -15,7 +15,7 @@ export const ButtonClickEvents = {
 /** Simulate element click. Defaults to mouse left-button click event. */
 export function click(
   el: DebugElement | HTMLElement,
-  eventObj: any = ButtonClickEvents.left
+  eventObj: any = buttonClickEvents.left
 ): void {
   if (el instanceof HTMLElement) {
     el.click();

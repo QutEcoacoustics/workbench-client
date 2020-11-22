@@ -45,7 +45,7 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   @Deleter<SavedSearch>()
   public deleter?: User;
 
-  constructor(savedSearches: ISavedSearch, injector?: Injector) {
+  public constructor(savedSearches: ISavedSearch, injector?: Injector) {
     super(savedSearches, injector);
   }
 

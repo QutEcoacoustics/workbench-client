@@ -25,7 +25,7 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   public sortKeys = { updated: "updatedAt" };
   protected api: ShallowAudioEventsService;
 
-  constructor(api: ShallowAudioEventsService, route: ActivatedRoute) {
+  public constructor(api: ShallowAudioEventsService, route: ActivatedRoute) {
     super(
       api,
       (audioEvents) =>

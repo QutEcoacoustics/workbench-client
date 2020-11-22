@@ -6,7 +6,7 @@ export class MockModel extends AbstractModel {
   public kind = "MockModel";
   public readonly id: Id;
 
-  constructor(raw: object, protected injector?: Injector) {
+  public constructor(raw: object, protected injector?: Injector) {
     super({ id: 1, ...raw }, injector);
   }
 
@@ -21,7 +21,7 @@ export class MockModel extends AbstractModel {
 
 @Injectable()
 export class MockBawApiService {
-  constructor() {}
+  public constructor() {}
 
   public isLoggedIn() {
     return false;

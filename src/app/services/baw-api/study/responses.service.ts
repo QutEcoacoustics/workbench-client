@@ -25,7 +25,7 @@ const endpointShallow = stringTemplate`/responses/${responseId}${option}`;
 
 @Injectable()
 export class ResponsesService extends StandardApi<Response, [IdOr<Study>]> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -61,7 +61,7 @@ export class ResponsesService extends StandardApi<Response, [IdOr<Study>]> {
 
 @Injectable()
 export class ShallowResponsesService extends StandardApi<Response> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

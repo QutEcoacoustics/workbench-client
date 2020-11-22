@@ -81,7 +81,7 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   @HasOne<AudioRecording, Site>(SHALLOW_SITE, "siteId")
   public site?: Site;
 
-  constructor(audioRecording: IAudioRecording, injector?: Injector) {
+  public constructor(audioRecording: IAudioRecording, injector?: Injector) {
     super(audioRecording, injector);
   }
 

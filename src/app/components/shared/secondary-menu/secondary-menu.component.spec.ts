@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { DefaultMenu } from "@helpers/page/defaultMenus";
+import { defaultMenu } from "@helpers/page/defaultMenus";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import {
   AnyMenuItem,
@@ -78,20 +78,20 @@ describe("SecondaryMenuComponent", () => {
 
   beforeAll(() => {
     // Make a non-referenced copy of DefaultMenuItem
-    storedDefaultMenu = fromJS(DefaultMenu);
+    storedDefaultMenu = fromJS(defaultMenu);
   });
 
   beforeEach(() => {
     // Clear DefaultMenu
-    DefaultMenu.contextLinks = List<NavigableMenuItem>([]);
-    DefaultMenu.defaultCategory = homeCategory;
+    defaultMenu.contextLinks = List<NavigableMenuItem>([]);
+    defaultMenu.defaultCategory = homeCategory;
   });
 
   afterAll(() => {
     // Restore DefaultMenu
     const temp = storedDefaultMenu.toJS();
-    DefaultMenu.contextLinks = temp.contextLinks;
-    DefaultMenu.defaultCategory = temp.defaultCategory;
+    defaultMenu.contextLinks = temp.contextLinks;
+    defaultMenu.defaultCategory = temp.defaultCategory;
   });
 
   describe("title", () => {
@@ -502,7 +502,7 @@ describe("SecondaryMenuComponent", () => {
     it("should handle single link", () => {
       const homeRoute = StrongRoute.Base.add("");
 
-      DefaultMenu.contextLinks = List<NavigableMenuItem>([
+      defaultMenu.contextLinks = List<NavigableMenuItem>([
         MenuRoute({
           icon: ["fas", "home"],
           label: "Home",
@@ -536,7 +536,7 @@ describe("SecondaryMenuComponent", () => {
       const homeRoute = StrongRoute.Base.add("");
       const projectsRoute = StrongRoute.Base.add("projects");
 
-      DefaultMenu.contextLinks = List<NavigableMenuItem>([
+      defaultMenu.contextLinks = List<NavigableMenuItem>([
         MenuRoute({
           icon: ["fas", "home"],
           label: "Home",
@@ -589,7 +589,7 @@ describe("SecondaryMenuComponent", () => {
         order: 4,
       });
 
-      DefaultMenu.contextLinks = List<NavigableMenuItem>([
+      defaultMenu.contextLinks = List<NavigableMenuItem>([
         MenuRoute({
           icon: ["fas", "home"],
           label: "Home",

@@ -43,7 +43,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   private redirectBack: boolean;
   private redirectUrl: string;
 
-  constructor(
+  public constructor(
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(DOCUMENT) private document: Document,
     private api: SecurityService,

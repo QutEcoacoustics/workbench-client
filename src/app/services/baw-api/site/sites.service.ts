@@ -36,7 +36,7 @@ const endpointOrphan = stringTemplate`/sites/orphans/${orphanOption}`;
  */
 @Injectable()
 export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -76,7 +76,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
  */
 @Injectable()
 export class ShallowSitesService extends StandardApi<Site> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

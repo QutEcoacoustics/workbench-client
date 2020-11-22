@@ -9,7 +9,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class CreditsComponent extends PageComponent {
-  public page = CMS.CREDITS;
+  public page = CMS.credits;
 }
 
 CreditsComponent.LinkComponentToPageInfo({

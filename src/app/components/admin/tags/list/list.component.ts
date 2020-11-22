@@ -35,7 +35,7 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
     type: "typeOfTag",
   };
 
-  constructor(api: TagsService) {
+  public constructor(api: TagsService) {
     super(api, (tags) =>
       tags.map((tag) => ({
         text: tag.text,

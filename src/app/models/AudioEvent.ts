@@ -71,7 +71,7 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   @HasMany<AudioEvent, Tag>(TAG, "tagIds")
   public tags?: Tag[];
 
-  constructor(audioEvent: IAudioEvent, injector?: Injector) {
+  public constructor(audioEvent: IAudioEvent, injector?: Injector) {
     super(audioEvent, injector);
     this.taggings = ((audioEvent.taggings ?? []) as ITagging[]).map(
       (tagging) => new Tagging(tagging, injector)

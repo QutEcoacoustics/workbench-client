@@ -73,7 +73,7 @@ function assertCheckbox(view: HTMLDListElement, value: boolean) {
   expect(!!checkbox.checked).toBe(value);
 }
 
-function assertCode(view: HTMLDListElement, value: object) {
+function assertCode(view: HTMLDListElement, value: Record<string, any>) {
   const code: HTMLElement = view.querySelector("#code");
   expect(code.innerHTML.trim()).toBe(JSON.stringify(value));
 }
@@ -127,7 +127,7 @@ export interface Detail extends View {
 
 interface View {
   checkbox?: boolean;
-  code?: object;
+  code?: Record<string, any>;
   plain?: string | number | DateTime | Duration;
   model?: string;
   image?: string | ImageUrl[];

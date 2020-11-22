@@ -12,7 +12,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class DisclaimersComponent extends PageComponent {
-  public page = CMS.PRIVACY;
+  public page = CMS.privacy;
 }
 
 DisclaimersComponent.LinkComponentToPageInfo({

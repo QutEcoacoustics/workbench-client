@@ -29,7 +29,7 @@ export class TaggingsService extends StandardApi<
   Tagging,
   [IdOr<AnalysisJob>, IdOr<AudioEvent>]
 > {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

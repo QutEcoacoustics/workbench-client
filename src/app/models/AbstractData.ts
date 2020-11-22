@@ -1,5 +1,5 @@
 export abstract class AbstractData {
-  constructor(raw: object) {
+  public constructor(raw: object) {
     return Object.assign(this, raw);
   }
 

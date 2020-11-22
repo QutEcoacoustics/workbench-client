@@ -25,6 +25,7 @@ export class PageComponent extends WithUnsubscribe() implements IPageComponent {
   /**
    * Creates and links the page info for the page component
    */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public static LinkComponentToPageInfo(info: IPageInfo): typeof PageComponent {
     this._pageInfo = new PageInfo(info);
     return this;
@@ -34,6 +35,7 @@ export class PageComponent extends WithUnsubscribe() implements IPageComponent {
    * Sets the menu route for the page component, and updates it to link to the
    * page info
    */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public static AndMenuRoute(menu: MenuRoute): typeof PageComponent {
     if (!this._pageInfo) {
       throw new Error(

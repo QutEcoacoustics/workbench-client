@@ -15,5 +15,5 @@ describe("AboutEthicsComponent", () => {
 
   beforeEach(() => (spectator = createComponent({ detectChanges: false })));
 
-  assertCms<EthicsComponent>(() => spectator, CMS.ETHICS);
+  assertCms<EthicsComponent>(() => spectator, CMS.ethics);
 });
