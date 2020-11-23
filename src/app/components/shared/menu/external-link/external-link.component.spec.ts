@@ -1,5 +1,5 @@
 import { RouterTestingModule } from "@angular/router/testing";
-import { menuLink } from "@interfaces/menusInterfaces";
+import { MenuLink, menuLink } from "@interfaces/menusInterfaces";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";

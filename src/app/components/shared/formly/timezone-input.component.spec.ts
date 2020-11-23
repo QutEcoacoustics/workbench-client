@@ -38,7 +38,7 @@ describe("FormlyTimezoneInput", () => {
     spectator = createHost(
       `
       <form [formGroup]="formGroup">
-        <formly-timezone-input></formly-timezone-input>
+        <baw-timezone-input></baw-timezone-input>
       </form>
       `,
       {

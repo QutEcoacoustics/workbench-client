@@ -1,5 +1,5 @@
 import { Type } from "@angular/core";
-import { menuRoute } from "@interfaces/menusInterfaces";
+import { MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
 import { withUnsubscribe } from "../unsubscribe/unsubscribe";
 import { IPageInfo, PageInfo } from "./pageInfo";
 

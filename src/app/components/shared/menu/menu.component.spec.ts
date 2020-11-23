@@ -2,7 +2,14 @@ import { Data, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
-import { menuAction, menuLink, menuRoute } from "@interfaces/menusInterfaces";
+import {
+  MenuAction,
+  menuAction,
+  MenuLink,
+  menuLink,
+  MenuRoute,
+  menuRoute,
+} from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { WidgetDirective } from "@menu/widget.directive";
 import { SessionUser } from "@models/User";

@@ -10,6 +10,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ImageSizes } from "@interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
+  MenuLink,
   menuLink,
   NavigableMenuItem,
 } from "@interfaces/menusInterfaces";

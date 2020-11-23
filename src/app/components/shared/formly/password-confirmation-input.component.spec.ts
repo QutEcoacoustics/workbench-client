@@ -51,7 +51,7 @@ describe("FormlyPasswordConfirmationInput", () => {
     spectator = createHost(
       `
       <form [formGroup]="formGroup">
-        <formly-password-confirmation-input></formly-password-confirmation-input>
+        <baw-password-confirmation-input></baw-password-confirmation-input>
       </form>
       `,
       {

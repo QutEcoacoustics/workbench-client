@@ -1,6 +1,6 @@
 import { Location } from "@angular/common";
 import { RouterTestingModule } from "@angular/router/testing";
-import { menuRoute } from "@interfaces/menusInterfaces";
+import { MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import {

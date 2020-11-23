@@ -6,7 +6,7 @@ import {
   OnChanges,
 } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { menuLink } from "@interfaces/menusInterfaces";
+import { MenuLink, menuLink } from "@interfaces/menusInterfaces";
 import { Placement } from "@ng-bootstrap/ng-bootstrap";
 
 /**

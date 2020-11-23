@@ -1,4 +1,4 @@
-import { menuAction } from "@interfaces/menusInterfaces";
+import { MenuAction, menuAction } from "@interfaces/menusInterfaces";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { assertAttribute, assertIcon, assertTooltip } from "@test/helpers/html";
 import { SharedModule } from "../../shared.module";
