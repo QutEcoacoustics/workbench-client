@@ -72,10 +72,8 @@ export type HttpClientBody =
   | Blob
   | string
   | number
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  | Object
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  | (string | number | Object | null)[]
+  | Record<string, any>
+  | (string | number | Record<string, any> | null)[]
   | null;
 
 export interface HttpClientOpts {

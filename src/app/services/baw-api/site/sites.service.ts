@@ -7,8 +7,8 @@ import { ISite, Site } from "@models/Site";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   filterByForeignKey,
   id,
   IdOr,
@@ -45,28 +45,28 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   }
 
   public list(project: IdOr<Project>): Observable<Site[]> {
-    return this.apiList(endpoint(project, Empty, Empty));
+    return this.apiList(endpoint(project, emptyParam, emptyParam));
   }
   public filter(
     filters: Filters<ISite>,
     project: IdOr<Project>
   ): Observable<Site[]> {
-    return this.apiFilter(endpoint(project, Empty, Filter), filters);
+    return this.apiFilter(endpoint(project, emptyParam, filterParam), filters);
   }
   public show(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
-    return this.apiShow(endpoint(project, model, Empty));
+    return this.apiShow(endpoint(project, model, emptyParam));
   }
   public create(model: Site, project: IdOr<Project>): Observable<Site> {
-    return this.apiCreate(endpoint(project, Empty, Empty), model);
+    return this.apiCreate(endpoint(project, emptyParam, emptyParam), model);
   }
   public update(model: Site, project: IdOr<Project>): Observable<Site> {
-    return this.apiUpdate(endpoint(project, model, Empty), model);
+    return this.apiUpdate(endpoint(project, model, emptyParam), model);
   }
   public destroy(
     model: IdOr<Site>,
     project: IdOr<Project>
   ): Observable<Site | void> {
-    return this.apiDestroy(endpoint(project, model, Empty));
+    return this.apiDestroy(endpoint(project, model, emptyParam));
   }
 }
 
@@ -85,38 +85,38 @@ export class ShallowSitesService extends StandardApi<Site> {
   }
 
   public list(): Observable<Site[]> {
-    return this.apiList(endpointShallow(Empty, Empty));
+    return this.apiList(endpointShallow(emptyParam, emptyParam));
   }
   public filter(filters: Filters<ISite>): Observable<Site[]> {
-    return this.apiFilter(endpointShallow(Empty, Filter), filters);
+    return this.apiFilter(endpointShallow(emptyParam, filterParam), filters);
   }
   public filterByCreator(
     filters: Filters<ISite>,
     user?: IdOr<User>
   ): Observable<Site[]> {
     return this.apiFilter(
-      endpointShallow(Empty, Filter),
+      endpointShallow(emptyParam, filterParam),
       user ? filterByForeignKey<Site>(filters, "creatorId", user) : filters
     );
   }
   public show(model: IdOr<Site>): Observable<Site> {
-    return this.apiShow(endpointShallow(model, Empty));
+    return this.apiShow(endpointShallow(model, emptyParam));
   }
   public create(model: Site): Observable<Site> {
-    return this.apiCreate(endpointShallow(Empty, Empty), model);
+    return this.apiCreate(endpointShallow(emptyParam, emptyParam), model);
   }
   public update(model: Site): Observable<Site> {
-    return this.apiUpdate(endpointShallow(model, Empty), model);
+    return this.apiUpdate(endpointShallow(model, emptyParam), model);
   }
   public destroy(model: IdOr<Site>): Observable<Site | void> {
-    return this.apiDestroy(endpointShallow(model, Empty));
+    return this.apiDestroy(endpointShallow(model, emptyParam));
   }
 
   /**
    * Retrieve orphaned sites (sites which have no parent projects)
    */
   public orphanList(): Observable<Site[]> {
-    return this.apiList(endpointOrphan(Empty));
+    return this.apiList(endpointOrphan(emptyParam));
   }
 
   /**
@@ -125,7 +125,7 @@ export class ShallowSitesService extends StandardApi<Site> {
    * @param filters Filters to apply
    */
   public orphanFilter(filters: Filters<ISite>): Observable<Site[]> {
-    return this.apiFilter(endpointOrphan(Filter), filters);
+    return this.apiFilter(endpointOrphan(filterParam), filters);
   }
 }
 

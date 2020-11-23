@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { ProjectsModule } from "@components/projects/projects.module";
-import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { DeleteComponent } from "./pages/delete/delete.component";
 import { DetailsComponent } from "./pages/details/details.component";
@@ -16,7 +16,7 @@ const components = [
   NewComponent,
 ];
 
-const routes = regionsRoute.compileRoutes(GetRouteConfigForPage);
+const routes = regionsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: components,

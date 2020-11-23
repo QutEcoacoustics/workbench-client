@@ -1,8 +1,8 @@
 import { Params } from "@angular/router";
-import { MenuLink } from "@interfaces/menusInterfaces";
+import { menuLink } from "@interfaces/menusInterfaces";
 import { stringTemplate } from "../stringTemplate/stringTemplate";
 
-export const audioAnalysisMenuItem = MenuLink({
+export const audioAnalysisMenuItem = menuLink({
   icon: ["fas", "server"],
   label: "Audio Analysis",
   tooltip: () => "View audio analysis jobs",
@@ -10,7 +10,7 @@ export const audioAnalysisMenuItem = MenuLink({
   uri: () => "/audio_analysis",
 });
 
-export const libraryMenuItem = MenuLink({
+export const libraryMenuItem = menuLink({
   icon: ["fas", "book"],
   label: "Library",
   tooltip: () => "Annotation library",
@@ -18,21 +18,21 @@ export const libraryMenuItem = MenuLink({
   uri: () => "/library",
 });
 
-export const exploreAudioMenuItem = MenuLink({
+export const exploreAudioMenuItem = menuLink({
   uri: (params) => visualizeUri(params),
   icon: ["fas", "map"],
   label: "Explore audio",
   tooltip: () => "Explore audio",
 });
 
-export const analysisJobMenuItem = MenuLink({
+export const analysisJobMenuItem = menuLink({
   icon: ["fas", "exclamation-triangle"],
   label: "Analysis Job Details",
   uri: () => "/fix_me",
   tooltip: () => "View analysis job",
 });
 
-export const listenMenuItem = MenuLink({
+export const listenMenuItem = menuLink({
   icon: ["fas", "exclamation-triangle"],
   label: "Listen (NOT IMPLEMENTED)",
   tooltip: () => "Listen (NOT IMPLEMENTED)",

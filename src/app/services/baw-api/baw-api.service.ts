@@ -78,7 +78,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
     protected http: HttpClient,
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
-    classBuilder: new (_: object, _injector?: Injector) => Model,
+    classBuilder: new (_: Record<string, any>, _injector?: Injector) => Model,
     protected injector: Injector
   ) {
     this.platform = injector.get(PLATFORM_ID);
@@ -254,10 +254,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected httpPost(
-    path: string,
-    body?: object
-  ): Observable<ApiResponse<Model>> {
+  protected httpPost(path: string, body?: any): Observable<ApiResponse<Model>> {
     return this.http.post<ApiResponse<Model>>(this.getPath(path), body);
   }
 
@@ -270,7 +267,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
    */
   protected httpPatch(
     path: string,
-    body?: object
+    body?: any
   ): Observable<ApiResponse<Model>> {
     return this.http.patch<ApiResponse<Model>>(this.getPath(path), body);
   }
@@ -382,7 +379,7 @@ export interface Subsets {
 /**
  * Api response inner filter
  */
-export type InnerFilter<T = {}> = Combinations<T> &
+export type InnerFilter<T = unknown> = Combinations<T> &
   Comparisons &
   Subsets &
   { [P in keyof T]?: Combinations<T> & Comparisons & Subsets };
@@ -391,7 +388,7 @@ export type InnerFilter<T = {}> = Combinations<T> &
  * Filter metadata from api response
  * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
  */
-export interface Filters<T = {}, K extends keyof T = keyof T> {
+export interface Filters<T = unknown, K extends keyof T = keyof T> {
   /** Filter settings */
   filter?: InnerFilter<T>;
   /** Include or exclude keys from response */

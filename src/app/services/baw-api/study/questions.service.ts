@@ -6,8 +6,8 @@ import { IQuestion, Question } from "@models/Question";
 import { Study } from "@models/Study";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   id,
   IdOr,
   IdParam,
@@ -34,28 +34,28 @@ export class QuestionsService extends StandardApi<Question, [IdOr<Study>]> {
   }
 
   public list(study: IdOr<Study>): Observable<Question[]> {
-    return this.apiList(endpoint(study, Empty, Empty));
+    return this.apiList(endpoint(study, emptyParam, emptyParam));
   }
   public filter(
     filters: Filters<IQuestion>,
     study: IdOr<Study>
   ): Observable<Question[]> {
-    return this.apiFilter(endpoint(study, Empty, Filter), filters);
+    return this.apiFilter(endpoint(study, emptyParam, filterParam), filters);
   }
   public show(model: IdOr<Question>, study: IdOr<Study>): Observable<Question> {
-    return this.apiShow(endpoint(study, model, Empty));
+    return this.apiShow(endpoint(study, model, emptyParam));
   }
   public create(model: Question, study: IdOr<Study>): Observable<Question> {
-    return this.apiCreate(endpoint(study, Empty, Empty), model);
+    return this.apiCreate(endpoint(study, emptyParam, emptyParam), model);
   }
   public update(model: Question, study: IdOr<Study>): Observable<Question> {
-    return this.apiUpdate(endpoint(study, model, Empty), model);
+    return this.apiUpdate(endpoint(study, model, emptyParam), model);
   }
   public destroy(
     model: IdOr<Question>,
     study: IdOr<Study>
   ): Observable<Question | void> {
-    return this.apiDestroy(endpoint(study, model, Empty));
+    return this.apiDestroy(endpoint(study, model, emptyParam));
   }
 }
 
@@ -70,22 +70,22 @@ export class ShallowQuestionsService extends StandardApi<Question> {
   }
 
   public list(): Observable<Question[]> {
-    return this.apiList(endpointShallow(Empty, Empty));
+    return this.apiList(endpointShallow(emptyParam, emptyParam));
   }
   public filter(filters: Filters<IQuestion>): Observable<Question[]> {
-    return this.apiFilter(endpointShallow(Empty, Filter), filters);
+    return this.apiFilter(endpointShallow(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<Question>): Observable<Question> {
-    return this.apiShow(endpointShallow(model, Empty));
+    return this.apiShow(endpointShallow(model, emptyParam));
   }
   public create(model: Question): Observable<Question> {
-    return this.apiCreate(endpointShallow(Empty, Empty), model);
+    return this.apiCreate(endpointShallow(emptyParam, emptyParam), model);
   }
   public update(model: Question): Observable<Question> {
-    return this.apiUpdate(endpointShallow(model, Empty), model);
+    return this.apiUpdate(endpointShallow(model, emptyParam), model);
   }
   public destroy(model: IdOr<Question>): Observable<Question | void> {
-    return this.apiDestroy(endpointShallow(model, Empty));
+    return this.apiDestroy(endpointShallow(model, emptyParam));
   }
 }
 

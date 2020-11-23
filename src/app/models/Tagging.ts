@@ -6,8 +6,8 @@ import {
   Id,
 } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, HasOne, Updater } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { creator, hasOne, updater } from "./AssociationDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import type { AudioEvent } from "./AudioEvent";
 import type { Tag } from "./Tag";
 import type { User } from "./User";
@@ -20,26 +20,26 @@ export interface ITagging extends HasCreatorAndUpdater {
 
 export class Tagging extends AbstractModel implements ITagging {
   public readonly kind = "Tagging";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly audioEventId?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly tagId?: Id;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
-  @Creator<Tagging>()
+  @creator<Tagging>()
   public creator?: User;
-  @Updater<Tagging>()
+  @updater<Tagging>()
   public updater?: User;
   // TODO Add association with AudioEvent
-  @HasOne<Tagging, Tag>(TAG, "tagId")
+  @hasOne<Tagging, Tag>(TAG, "tagId")
   public tag?: Tag;
 
   public constructor(tagging: ITagging, injector?: Injector) {

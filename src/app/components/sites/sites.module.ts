@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { RegionsModule } from "@components/regions/regions.module";
-import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { MapModule } from "@shared/map/map.module";
 import { SharedModule } from "@shared/shared.module";
 import { SiteDeleteComponent } from "./pages/delete/site.component";
@@ -23,7 +23,7 @@ const components = [
   WizardComponent,
 ];
 
-const routes = sitesRoute.compileRoutes(GetRouteConfigForPage);
+const routes = sitesRoute.compileRoutes(getRouteConfigForPage);
 
 /**
  * Sites Module

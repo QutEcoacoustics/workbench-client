@@ -8,8 +8,8 @@ import { IPageInfo } from "@helpers/page/pageInfo";
 import {
   AnyMenuItem,
   Category,
-  MenuLink,
-  MenuRoute,
+  menuLink,
+  menuRoute,
   NavigableMenuItem,
 } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -24,9 +24,9 @@ describe("SecondaryMenuComponent", () => {
   let component: SecondaryMenuComponent;
   let fixture: ComponentFixture<SecondaryMenuComponent>;
   let storedDefaultMenu: any;
-  const defaultRoute = StrongRoute.Base.add("/");
+  const defaultRoute = StrongRoute.base.add("/");
   const selfLinkCount = 1;
-  const defaultPageRouteLink = MenuRoute({
+  const defaultPageRouteLink = menuRoute({
     label: "Self Label",
     icon: ["fas", "question-circle"],
     tooltip: () => "Self Tooltip",
@@ -167,13 +167,13 @@ describe("SecondaryMenuComponent", () => {
         menus: {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([
-            MenuRoute({
+            menuRoute({
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
               route: defaultRoute,
             }),
-            MenuLink({
+            menuLink({
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
@@ -193,7 +193,7 @@ describe("SecondaryMenuComponent", () => {
   describe("self link", () => {
     it("should handle self link", () => {
       createTestBed({}, {
-        pageRoute: MenuRoute({
+        pageRoute: menuRoute({
           label: "Custom Label",
           icon: ["fas", "exclamation-triangle"],
           tooltip: () => "Custom Tooltip",
@@ -217,9 +217,9 @@ describe("SecondaryMenuComponent", () => {
     });
 
     it("should handle parent link", () => {
-      const parentRoute = StrongRoute.Base.add("home");
+      const parentRoute = StrongRoute.base.add("home");
       const childRoute = parentRoute.add("house");
-      const parentLink = MenuRoute({
+      const parentLink = menuRoute({
         label: "Parent Label",
         icon: ["fas", "question"],
         order: 999,
@@ -228,7 +228,7 @@ describe("SecondaryMenuComponent", () => {
       });
 
       createTestBed({}, {
-        pageRoute: MenuRoute({
+        pageRoute: menuRoute({
           label: "Child Label",
           icon: ["fas", "exclamation-triangle"],
           tooltip: () => "Custom Tooltip 2",
@@ -257,17 +257,17 @@ describe("SecondaryMenuComponent", () => {
     });
 
     it("should handle grandparent link", () => {
-      const grandParentRoute = StrongRoute.Base.add("home");
+      const grandParentRoute = StrongRoute.base.add("home");
       const parentRoute = grandParentRoute.add("house");
       const childRoute = parentRoute.add("door");
-      const grandParentLink = MenuRoute({
+      const grandParentLink = menuRoute({
         label: "GrandParent Label",
         icon: ["fas", "question"],
         order: 999,
         tooltip: () => "Custom Tooltip 1",
         route: grandParentRoute,
       });
-      const parentLink = MenuRoute({
+      const parentLink = menuRoute({
         label: "Parent Label",
         icon: ["fas", "question-circle"],
         order: 999,
@@ -277,7 +277,7 @@ describe("SecondaryMenuComponent", () => {
       });
 
       createTestBed({}, {
-        pageRoute: MenuRoute({
+        pageRoute: menuRoute({
           label: "Child Label",
           icon: ["fas", "exclamation-triangle"],
           tooltip: () => "Custom Tooltip 3",
@@ -310,9 +310,9 @@ describe("SecondaryMenuComponent", () => {
     });
 
     it("should not hide self link if predicate fails", () => {
-      const parentRoute = StrongRoute.Base.add("home");
+      const parentRoute = StrongRoute.base.add("home");
       const childRoute = parentRoute.add("house");
-      const parentLink = MenuRoute({
+      const parentLink = menuRoute({
         label: "Parent Label",
         icon: ["fas", "question"],
         order: 999,
@@ -322,7 +322,7 @@ describe("SecondaryMenuComponent", () => {
       });
 
       createTestBed({}, {
-        pageRoute: MenuRoute({
+        pageRoute: menuRoute({
           label: "Child Label",
           icon: ["fas", "exclamation-triangle"],
           tooltip: () => "Custom Tooltip 2",
@@ -360,7 +360,7 @@ describe("SecondaryMenuComponent", () => {
         menus: {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([
-            MenuRoute({
+            menuRoute({
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
@@ -391,13 +391,13 @@ describe("SecondaryMenuComponent", () => {
         menus: {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([
-            MenuRoute({
+            menuRoute({
               label: "Custom Label 1",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip 1",
               route: defaultRoute,
             }),
-            MenuRoute({
+            menuRoute({
               label: "Custom Label 2",
               icon: ["fas", "tags"],
               tooltip: () => "Custom Tooltip 2",
@@ -434,7 +434,7 @@ describe("SecondaryMenuComponent", () => {
         menus: {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([
-            MenuLink({
+            menuLink({
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
@@ -464,13 +464,13 @@ describe("SecondaryMenuComponent", () => {
         menus: {
           actions: List<AnyMenuItem>([]),
           links: List<NavigableMenuItem>([
-            MenuLink({
+            menuLink({
               label: "Custom Label 1",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip 1",
               uri: () => "http://brokenlink/1",
             }),
-            MenuLink({
+            menuLink({
               label: "Custom Label 2",
               icon: ["fas", "tags"],
               tooltip: () => "Custom Tooltip 2",
@@ -500,10 +500,10 @@ describe("SecondaryMenuComponent", () => {
 
   describe("default menu", () => {
     it("should handle single link", () => {
-      const homeRoute = StrongRoute.Base.add("");
+      const homeRoute = StrongRoute.base.add("");
 
       defaultMenu.contextLinks = List<NavigableMenuItem>([
-        MenuRoute({
+        menuRoute({
           icon: ["fas", "home"],
           label: "Home",
           route: homeRoute,
@@ -533,18 +533,18 @@ describe("SecondaryMenuComponent", () => {
     });
 
     it("should handle multiple links", () => {
-      const homeRoute = StrongRoute.Base.add("");
-      const projectsRoute = StrongRoute.Base.add("projects");
+      const homeRoute = StrongRoute.base.add("");
+      const projectsRoute = StrongRoute.base.add("projects");
 
       defaultMenu.contextLinks = List<NavigableMenuItem>([
-        MenuRoute({
+        menuRoute({
           icon: ["fas", "home"],
           label: "Home",
           route: homeRoute,
           tooltip: () => "Home page",
           order: 1,
         }),
-        MenuRoute({
+        menuRoute({
           icon: ["fas", "globe-asia"],
           label: "Projects",
           route: projectsRoute,
@@ -578,10 +578,10 @@ describe("SecondaryMenuComponent", () => {
     });
 
     it("should hide duplicate if self link exists in default menu", () => {
-      const homeRoute = StrongRoute.Base.add("");
-      const projectsRoute = StrongRoute.Base.add("projects");
+      const homeRoute = StrongRoute.base.add("");
+      const projectsRoute = StrongRoute.base.add("projects");
 
-      const selfRoute = MenuRoute({
+      const selfRoute = menuRoute({
         icon: ["fas", "globe-asia"],
         label: "Projects",
         route: projectsRoute,
@@ -590,7 +590,7 @@ describe("SecondaryMenuComponent", () => {
       });
 
       defaultMenu.contextLinks = List<NavigableMenuItem>([
-        MenuRoute({
+        menuRoute({
           icon: ["fas", "home"],
           label: "Home",
           route: homeRoute,

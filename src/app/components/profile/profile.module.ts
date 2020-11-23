@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { MyAnnotationsComponent } from "./pages/annotations/my-annotations.component";
 import { TheirAnnotationsComponent } from "./pages/annotations/their-annotations.component";
@@ -33,8 +33,8 @@ const theirProfileComponents = [
   TheirAnnotationsComponent,
 ];
 
-const myAccountRoutes = myAccountRoute.compileRoutes(GetRouteConfigForPage);
-const profileRoutes = theirProfileRoute.compileRoutes(GetRouteConfigForPage);
+const myAccountRoutes = myAccountRoute.compileRoutes(getRouteConfigForPage);
+const profileRoutes = theirProfileRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: myAccountComponents,

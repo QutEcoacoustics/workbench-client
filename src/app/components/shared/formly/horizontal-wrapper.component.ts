@@ -6,8 +6,7 @@ import { FieldWrapper } from "@ngx-formly/core";
  * ! Warning, test manually after changes
  */
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: "formly-horizontal-wrapper",
+  selector: "baw-horizontal-wrapper",
   template: `
     <div class="form-group row">
       <label [attr.for]="id" class="col-sm-2 col-form-label" *ngIf="to.label">
@@ -26,5 +25,4 @@ import { FieldWrapper } from "@ngx-formly/core";
     </div>
   `,
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
-export class FormlyHorizontalWrapper extends FieldWrapper {}
+export class HorizontalWrapperComponent extends FieldWrapper {}

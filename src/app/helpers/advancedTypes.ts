@@ -18,7 +18,7 @@ export type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
  * Allow either type, but not both
  * TODO Add support for infinite number of types using variadic tuple types
  */
-export type XOR<T, U> = T | U extends object
+export type XOR<T, U> = T | U extends Record<string, any>
   ? (Without<T, U> & U) | (Without<U, T> & T)
   : T | U;
 

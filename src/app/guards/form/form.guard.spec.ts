@@ -6,7 +6,7 @@ import { appLibraryImports } from "src/app/app.module";
 import {
   FormCheckingComponent,
   FormTouchedGuard,
-  WithFormCheck,
+  withFormCheck,
 } from "./form.guard";
 
 describe("FormTouchedGuard", () => {
@@ -80,7 +80,7 @@ describe("WithFormCheck", () => {
       </div>
     `,
   })
-  class MockComponent extends WithFormCheck() implements OnInit {
+  class MockComponent extends withFormCheck() implements OnInit {
     public schemas = [];
     public numForms = 0;
 

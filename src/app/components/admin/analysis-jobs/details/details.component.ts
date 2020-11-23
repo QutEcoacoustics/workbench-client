@@ -5,7 +5,7 @@ import { retrieveResolvers } from "@baw-api/resolver-common";
 import { adminAnalysisJobsMenuItem } from "@components/admin/admin.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { List } from "immutable";
 import { fields } from "../analysis-job.schema.json";
@@ -29,7 +29,7 @@ const analysisJobKey = "analysisJob";
   `,
 })
 class AdminAnalysisJobComponent
-  extends WithUnsubscribe(PageComponent)
+  extends withUnsubscribe(PageComponent)
   implements OnInit {
   public analysisJob: AnalysisJob;
   public failure: boolean;
@@ -52,12 +52,12 @@ class AdminAnalysisJobComponent
   }
 }
 
-AdminAnalysisJobComponent.LinkComponentToPageInfo({
+AdminAnalysisJobComponent.linkComponentToPageInfo({
   category: adminAnalysisJobsCategory,
   menus: {
     actions: List([adminAnalysisJobsMenuItem, adminAnalysisJobMenuItem]),
   },
   resolvers: { [analysisJobKey]: analysisJobResolvers.show },
-}).AndMenuRoute(adminAnalysisJobMenuItem);
+}).andMenuRoute(adminAnalysisJobMenuItem);
 
 export { AdminAnalysisJobComponent };

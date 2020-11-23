@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
+import { menuLink, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { HeaderDropdownComponent } from "./header-dropdown.component";
 
@@ -22,7 +22,7 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "test",
       items: [
-        MenuLink({
+        menuLink({
           label: "label",
           uri: () => "uri",
           icon: ["fas", "home"],
@@ -38,7 +38,7 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "Custom Title",
       items: [
-        MenuLink({
+        menuLink({
           label: "label",
           uri: () => "uri",
           icon: ["fas", "home"],
@@ -57,7 +57,7 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "test",
       items: [
-        MenuLink({
+        menuLink({
           label: "label",
           uri: () => "uri",
           icon: ["fas", "home"],
@@ -79,7 +79,7 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "test",
       items: [
-        MenuLink({
+        menuLink({
           label: "label",
           uri: () => "uri",
           icon: ["fas", "home"],
@@ -106,11 +106,11 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "test",
       items: [
-        MenuRoute({
+        menuRoute({
           label: "Custom Label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.Base.add("home"),
+          route: StrongRoute.base.add("home"),
         }),
       ],
     };
@@ -131,17 +131,17 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "test",
       items: [
-        MenuRoute({
+        menuRoute({
           label: "Custom Label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.Base.add("home"),
+          route: StrongRoute.base.add("home"),
         }),
-        MenuRoute({
+        menuRoute({
           label: "Custom Label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.Base.add("house"),
+          route: StrongRoute.base.add("house"),
         }),
       ],
     };
@@ -169,7 +169,7 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "test",
       items: [
-        MenuLink({
+        menuLink({
           label: "Custom Label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
@@ -189,13 +189,13 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "test",
       items: [
-        MenuLink({
+        menuLink({
           label: "Custom Label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
           uri: () => "http://brokenlink/1",
         }),
-        MenuLink({
+        menuLink({
           label: "Custom Label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
@@ -217,17 +217,17 @@ describe("HeaderDropdownComponent", () => {
     component.links = {
       headerTitle: "test",
       items: [
-        MenuLink({
+        menuLink({
           label: "Custom Label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
           uri: () => "http://brokenlink/1",
         }),
-        MenuRoute({
+        menuRoute({
           label: "Custom Label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.Base.add("house"),
+          route: StrongRoute.base.add("house"),
         }),
       ],
     };

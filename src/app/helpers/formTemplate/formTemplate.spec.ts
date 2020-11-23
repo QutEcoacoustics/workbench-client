@@ -28,7 +28,7 @@ class MockModel extends AbstractModel {
   public get viewUrl(): string {
     return "";
   }
-  public toJSON(): object {
+  public toJSON(): Record<string, any> {
     return this;
   }
 }

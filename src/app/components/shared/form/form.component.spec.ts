@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
+import { noop } from "rxjs";
 import { FormComponent } from "./form.component";
 
 /** Button events to pass to `DebugElement.triggerEventHandler` for RouterLink event handler */
@@ -373,10 +374,7 @@ describe("FormComponent", () => {
 
     function submit() {
       buttonPressed = false;
-      // eslint-disable-next-line
-      component.submitFunction.subscribe((data) => {
-        buttonPressed = true;
-      });
+      component.submit.subscribe(() => (buttonPressed = true), noop);
       fixture.detectChanges();
     }
 
@@ -393,12 +391,11 @@ describe("FormComponent", () => {
 
     it("should call submit function OnClick with user input", (done) => {
       component.fields = defaultFields;
-      // eslint-disable-next-line
-      component.submitFunction.subscribe((data) => {
+      component.submit.subscribe((data) => {
         expect(data).toBeTruthy();
         expect(data).toEqual({ input: "user input" });
         done();
-      });
+      }, noop);
 
       fixture.detectChanges();
 
@@ -442,12 +439,11 @@ describe("FormComponent", () => {
           },
         },
       ];
-      // eslint-disable-next-line
-      component.submitFunction.subscribe((data) => {
+      component.submit.subscribe((data) => {
         expect(data).toBeTruthy();
         expect(data).toEqual({ input: "user input" });
         done();
-      });
+      }, noop);
 
       fixture.detectChanges();
 

@@ -6,8 +6,8 @@ import { Dataset } from "@models/Dataset";
 import { DatasetItem, IDatasetItem } from "@models/DatasetItem";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   id,
   IdOr,
   IdParam,
@@ -36,31 +36,31 @@ export class DatasetItemsService extends ImmutableApi<
   }
 
   public list(dataset: IdOr<Dataset>): Observable<DatasetItem[]> {
-    return this.apiList(endpoint(dataset, Empty, Empty));
+    return this.apiList(endpoint(dataset, emptyParam, emptyParam));
   }
   public filter(
     filters: Filters<IDatasetItem>,
     dataset: IdOr<Dataset>
   ): Observable<DatasetItem[]> {
-    return this.apiFilter(endpoint(dataset, Empty, Filter), filters);
+    return this.apiFilter(endpoint(dataset, emptyParam, filterParam), filters);
   }
   public show(
     model: IdOr<DatasetItem>,
     dataset: IdOr<Dataset>
   ): Observable<DatasetItem> {
-    return this.apiShow(endpoint(dataset, model, Empty));
+    return this.apiShow(endpoint(dataset, model, emptyParam));
   }
   public create(
     model: DatasetItem,
     dataset: IdOr<Dataset>
   ): Observable<DatasetItem> {
-    return this.apiCreate(endpoint(dataset, Empty, Empty), model);
+    return this.apiCreate(endpoint(dataset, emptyParam, emptyParam), model);
   }
   public destroy(
     model: IdOr<DatasetItem>,
     dataset: IdOr<Dataset>
   ): Observable<DatasetItem | void> {
-    return this.apiDestroy(endpoint(dataset, model, Empty));
+    return this.apiDestroy(endpoint(dataset, model, emptyParam));
   }
 }
 

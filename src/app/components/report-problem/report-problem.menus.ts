@@ -1,12 +1,12 @@
 import { homeCategory } from "@components/home/home.menus";
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 
-export const reportProblemsRoute = StrongRoute.Base.add("report_problem");
+export const reportProblemsRoute = StrongRoute.base.add("report_problem");
 
 export const reportProblemsCategory: Category = homeCategory;
 
-export const reportProblemMenuItem = MenuRoute({
+export const reportProblemMenuItem = menuRoute({
   icon: ["fas", "bug"],
   label: "Report Problem",
   route: reportProblemsRoute,

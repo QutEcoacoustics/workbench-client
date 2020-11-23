@@ -9,23 +9,23 @@ import {
   Id,
   Ids,
   ImageUrl,
-  Notes,
+  Hash,
   Param,
 } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/app-config/app-config.service";
 import { AbstractModel } from "./AbstractModel";
 import {
-  Creator,
-  HasMany,
-  HasOne,
-  Owner,
-  Updater,
+  creator,
+  hasMany,
+  hasOne,
+  owner,
+  updater,
 } from "./AssociationDecorators";
 import {
-  BawCollection,
-  BawDateTime,
-  BawImage,
-  BawPersistAttr,
+  bawCollection,
+  bawDateTime,
+  bawImage,
+  bawPersistAttr,
 } from "./AttributeDecorators";
 import { Project } from "./Project";
 import { Site } from "./Site";
@@ -39,7 +39,7 @@ export interface IRegion extends HasAllUsers, HasDescription {
   name?: Param;
   projectId?: Id;
   siteIds?: Id[] | Ids;
-  notes?: Notes;
+  notes?: Hash;
 }
 
 /**
@@ -47,46 +47,46 @@ export interface IRegion extends HasAllUsers, HasDescription {
  */
 export class Region extends AbstractModel implements IRegion {
   public readonly kind = "Region";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly name?: Param;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly imageUrl?: string;
-  @BawImage<Region>(`${assetRoot}/images/site/site_span4.png`, {
+  @bawImage<Region>(`${assetRoot}/images/site/site_span4.png`, {
     key: "imageUrl",
   })
   public readonly image?: ImageUrl[];
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly projectId?: Id;
-  @BawCollection({ persist: true })
+  @bawCollection({ persist: true })
   public readonly siteIds?: Ids;
-  @BawPersistAttr
-  public readonly notes?: Notes;
+  @bawPersistAttr
+  public readonly notes?: Hash;
 
   // Associations
-  @HasOne<Region, Project>(PROJECT, "projectId")
+  @hasOne<Region, Project>(PROJECT, "projectId")
   public project?: Project;
-  @HasMany<Region, Site>(SHALLOW_SITE, "siteIds")
+  @hasMany<Region, Site>(SHALLOW_SITE, "siteIds")
   public sites?: Site[];
-  @Creator<Region>()
+  @creator<Region>()
   public creator?: User;
-  @Updater<Region>()
+  @updater<Region>()
   public updater?: User;
-  @Owner<Region>()
+  @owner<Region>()
   public owner?: User;
 
   public constructor(region: IRegion, injector?: Injector) {

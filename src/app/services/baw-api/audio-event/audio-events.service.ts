@@ -8,8 +8,8 @@ import { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
   ApiFilter,
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   filterByForeignKey,
   id,
   IdOr,
@@ -40,37 +40,43 @@ export class AudioEventsService extends StandardApi<
   }
 
   public list(audioRecording: IdOr<AudioRecording>): Observable<AudioEvent[]> {
-    return this.apiList(endpoint(audioRecording, Empty, Empty));
+    return this.apiList(endpoint(audioRecording, emptyParam, emptyParam));
   }
   public filter(
     filters: Filters<IAudioEvent>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent[]> {
-    return this.apiFilter(endpoint(audioRecording, Empty, Filter), filters);
+    return this.apiFilter(
+      endpoint(audioRecording, emptyParam, filterParam),
+      filters
+    );
   }
   public show(
     model: IdOr<AudioEvent>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent> {
-    return this.apiShow(endpoint(audioRecording, model, Empty));
+    return this.apiShow(endpoint(audioRecording, model, emptyParam));
   }
   public create(
     model: AudioEvent,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent> {
-    return this.apiCreate(endpoint(audioRecording, Empty, Empty), model);
+    return this.apiCreate(
+      endpoint(audioRecording, emptyParam, emptyParam),
+      model
+    );
   }
   public update(
     model: AudioEvent,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent> {
-    return this.apiUpdate(endpoint(audioRecording, model, Empty), model);
+    return this.apiUpdate(endpoint(audioRecording, model, emptyParam), model);
   }
   public destroy(
     model: IdOr<AudioEvent>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent | void> {
-    return this.apiDestroy(endpoint(audioRecording, model, Empty));
+    return this.apiDestroy(endpoint(audioRecording, model, emptyParam));
   }
 }
 
@@ -87,7 +93,7 @@ export class ShallowAudioEventsService
   }
 
   public filter(filters: Filters<IAudioEvent>): Observable<AudioEvent[]> {
-    return this.apiFilter(shallowEndpoint(Empty, Filter), filters);
+    return this.apiFilter(shallowEndpoint(emptyParam, filterParam), filters);
   }
 
   public filterByCreator(filters: Filters<IAudioEvent>, user?: IdOr<User>) {

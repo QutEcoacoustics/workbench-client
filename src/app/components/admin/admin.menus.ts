@@ -1,15 +1,15 @@
-import { Category, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuLink, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { isAdminPredicate } from "src/app/app.menus";
 
-export const adminRoute = StrongRoute.Base.add("admin");
+export const adminRoute = StrongRoute.base.add("admin");
 export const adminCategory: Category = {
   icon: ["fas", "cog"],
   label: "Admin",
   route: adminRoute,
 };
 
-export const adminDashboardMenuItem = MenuRoute({
+export const adminDashboardMenuItem = menuRoute({
   icon: ["fas", "toolbox"],
   label: "Admin Home",
   route: adminRoute,
@@ -17,7 +17,7 @@ export const adminDashboardMenuItem = MenuRoute({
   predicate: isAdminPredicate,
 });
 
-export const adminUserListMenuItem = MenuRoute({
+export const adminUserListMenuItem = menuRoute({
   icon: ["fas", "user-cog"],
   label: "Users",
   route: adminRoute.add("user_accounts"),
@@ -26,7 +26,7 @@ export const adminUserListMenuItem = MenuRoute({
   predicate: isAdminPredicate,
 });
 
-export const adminAnalysisJobsMenuItem = MenuRoute({
+export const adminAnalysisJobsMenuItem = menuRoute({
   icon: ["fas", "server"],
   label: "Analysis Jobs",
   route: adminRoute.add("analysis_jobs"),
@@ -35,7 +35,7 @@ export const adminAnalysisJobsMenuItem = MenuRoute({
   predicate: isAdminPredicate,
 });
 
-export const adminJobStatusMenuItem = MenuLink({
+export const adminJobStatusMenuItem = menuLink({
   icon: ["fas", "tasks"],
   label: "Job Status",
   tooltip: () => "Job queue status overview",

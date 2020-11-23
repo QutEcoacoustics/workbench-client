@@ -6,7 +6,7 @@ import { fields as baseFields } from "@components/sites/site.base.json";
 import { fields as extendedFields } from "@components/sites/site.extended.json";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import {
@@ -27,7 +27,7 @@ const siteKey = "site";
   `,
 })
 class AdminOrphanComponent
-  extends WithUnsubscribe(PageComponent)
+  extends withUnsubscribe(PageComponent)
   implements OnInit {
   public site: Site;
   public failure: boolean;
@@ -49,12 +49,12 @@ class AdminOrphanComponent
   }
 }
 
-AdminOrphanComponent.LinkComponentToPageInfo({
+AdminOrphanComponent.linkComponentToPageInfo({
   category: adminOrphansCategory,
   menus: {
     actions: List([adminOrphansMenuItem, adminOrphanMenuItem]),
   },
   resolvers: { [siteKey]: shallowSiteResolvers.show },
-}).AndMenuRoute(adminOrphanMenuItem);
+}).andMenuRoute(adminOrphanMenuItem);
 
 export { AdminOrphanComponent };

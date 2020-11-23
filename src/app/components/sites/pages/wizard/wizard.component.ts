@@ -81,10 +81,10 @@ class WizardComponent extends PageComponent implements OnInit {
   }
 }
 
-WizardComponent.LinkComponentToPageInfo({
+WizardComponent.linkComponentToPageInfo({
   category: projectCategory,
   menus: { actions: List([projectMenuItem, ...projectMenuItemActions]) },
   resolvers: { [projectKey]: projectResolvers.show },
-}).AndMenuRoute(newSiteMenuItem);
+}).andMenuRoute(newSiteMenuItem);
 
 export { WizardComponent };

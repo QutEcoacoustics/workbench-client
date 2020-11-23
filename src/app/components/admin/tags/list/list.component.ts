@@ -62,7 +62,7 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
   }
 }
 
-AdminTagsComponent.LinkComponentToPageInfo({
+AdminTagsComponent.linkComponentToPageInfo({
   category: adminTagsCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -70,7 +70,7 @@ AdminTagsComponent.LinkComponentToPageInfo({
       ...adminTagsMenuItemActions,
     ]),
   },
-}).AndMenuRoute(adminTagsMenuItem);
+}).andMenuRoute(adminTagsMenuItem);
 
 export { AdminTagsComponent };
 

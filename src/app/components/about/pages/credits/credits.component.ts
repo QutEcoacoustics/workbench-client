@@ -12,8 +12,8 @@ class CreditsComponent extends PageComponent {
   public page = CMS.credits;
 }
 
-CreditsComponent.LinkComponentToPageInfo({
+CreditsComponent.linkComponentToPageInfo({
   category: aboutCategory,
-}).AndMenuRoute(creditsMenuItem);
+}).andMenuRoute(creditsMenuItem);
 
 export { CreditsComponent };

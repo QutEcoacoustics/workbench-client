@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
+import { menuLink, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { assertRoute } from "@test/helpers/html";
 import { HeaderItemComponent } from "./header-item.component";
@@ -25,11 +25,11 @@ describe("HeaderItemComponent", () => {
   });
 
   it("should handle internal link", () => {
-    component.link = MenuRoute({
+    component.link = menuRoute({
       label: "Custom Label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      route: StrongRoute.Base.add("home"),
+      route: StrongRoute.base.add("home"),
     });
     fixture.detectChanges();
 
@@ -39,11 +39,11 @@ describe("HeaderItemComponent", () => {
   });
 
   it("internal link should have router link", () => {
-    component.link = MenuRoute({
+    component.link = menuRoute({
       label: "Custom Label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      route: StrongRoute.Base.add("home"),
+      route: StrongRoute.base.add("home"),
     });
     fixture.detectChanges();
 
@@ -52,11 +52,11 @@ describe("HeaderItemComponent", () => {
   });
 
   it("internal link should have router link active attribute", () => {
-    component.link = MenuRoute({
+    component.link = menuRoute({
       label: "Custom Label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      route: StrongRoute.Base.add("home"),
+      route: StrongRoute.base.add("home"),
     });
     fixture.detectChanges();
 
@@ -70,7 +70,7 @@ describe("HeaderItemComponent", () => {
   });
 
   it("should handle external link", () => {
-    component.link = MenuLink({
+    component.link = menuLink({
       label: "Custom Label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",

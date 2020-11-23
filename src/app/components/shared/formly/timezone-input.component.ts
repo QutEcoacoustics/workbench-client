@@ -16,8 +16,7 @@ import {
  * Timezone Input
  */
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: "formly-timezone-input",
+  selector: "baw-timezone-input",
   template: `
     <div class="form-group">
       <label *ngIf="to.label" [for]="field.id">
@@ -64,8 +63,7 @@ import {
     </div>
   `,
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
-export class FormlyTimezoneInput extends FieldType implements OnInit {
+export class TimezoneInputComponent extends FieldType implements OnInit {
   @ViewChild("instance", { static: true }) public instance: NgbTypeahead;
   public formControl: FormControl;
   public click$ = new Subject<string>();

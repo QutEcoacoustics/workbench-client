@@ -4,7 +4,7 @@ import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordin
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AudioRecording } from "@models/AudioRecording";
 import { List } from "immutable";
 import { fields } from "../audio-recording.schema.json";
@@ -29,7 +29,7 @@ const audioRecordingKey = "audioRecording";
   `,
 })
 class AdminAudioRecordingComponent
-  extends WithUnsubscribe(PageComponent)
+  extends withUnsubscribe(PageComponent)
   implements OnInit {
   public audioRecording: AudioRecording;
   public failure: boolean;
@@ -51,12 +51,12 @@ class AdminAudioRecordingComponent
   }
 }
 
-AdminAudioRecordingComponent.LinkComponentToPageInfo({
+AdminAudioRecordingComponent.linkComponentToPageInfo({
   category: adminAudioRecordingsCategory,
   menus: {
     actions: List([adminAudioRecordingsMenuItem, adminAudioRecordingMenuItem]),
   },
   resolvers: { [audioRecordingKey]: audioRecordingResolvers.show },
-}).AndMenuRoute(adminAudioRecordingMenuItem);
+}).andMenuRoute(adminAudioRecordingMenuItem);
 
 export { AdminAudioRecordingComponent };

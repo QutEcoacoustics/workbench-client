@@ -15,8 +15,8 @@ class DisclaimersComponent extends PageComponent {
   public page = CMS.privacy;
 }
 
-DisclaimersComponent.LinkComponentToPageInfo({
+DisclaimersComponent.linkComponentToPageInfo({
   category: aboutCategory,
-}).AndMenuRoute(disclaimersMenuItem);
+}).andMenuRoute(disclaimersMenuItem);
 
 export { DisclaimersComponent };

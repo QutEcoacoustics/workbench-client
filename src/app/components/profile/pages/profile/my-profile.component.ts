@@ -18,7 +18,7 @@ import {
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { siteMenuItem } from "@components/sites/sites.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Tag } from "@models/Tag";
@@ -43,7 +43,7 @@ const userKey = "user";
   styleUrls: ["./profile.component.scss"],
 })
 class MyProfileComponent
-  extends WithUnsubscribe(PageComponent)
+  extends withUnsubscribe(PageComponent)
   implements OnInit {
   public lastSeenAt: string;
   public tags: Tag[];
@@ -133,10 +133,10 @@ class MyProfileComponent
   }
 }
 
-MyProfileComponent.LinkComponentToPageInfo({
+MyProfileComponent.linkComponentToPageInfo({
   category: myAccountCategory,
   menus: { actions: List<AnyMenuItem>(myAccountActions) },
   resolvers: { [userKey]: userResolvers.show },
-}).AndMenuRoute(myAccountMenuItem);
+}).andMenuRoute(myAccountMenuItem);
 
 export { MyProfileComponent };

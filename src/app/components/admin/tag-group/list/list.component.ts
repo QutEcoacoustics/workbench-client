@@ -58,7 +58,7 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
   }
 }
 
-AdminTagGroupsComponent.LinkComponentToPageInfo({
+AdminTagGroupsComponent.linkComponentToPageInfo({
   category: adminTagGroupsCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -66,7 +66,7 @@ AdminTagGroupsComponent.LinkComponentToPageInfo({
       ...adminTagGroupsMenuItemActions,
     ]),
   },
-}).AndMenuRoute(adminTagGroupsMenuItem);
+}).andMenuRoute(adminTagGroupsMenuItem);
 
 export { AdminTagGroupsComponent };
 

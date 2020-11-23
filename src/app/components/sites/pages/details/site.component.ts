@@ -65,7 +65,7 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
   }
 }
 
-SiteDetailsComponent.LinkComponentToPageInfo({
+SiteDetailsComponent.linkComponentToPageInfo({
   category: sitesCategory,
   menus: {
     actions: List([projectMenuItem, ...siteMenuItemActions]),
@@ -75,6 +75,6 @@ SiteDetailsComponent.LinkComponentToPageInfo({
     [projectKey]: projectResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-}).AndMenuRoute(siteMenuItem);
+}).andMenuRoute(siteMenuItem);
 
 export { SiteDetailsComponent };

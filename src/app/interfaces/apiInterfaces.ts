@@ -44,9 +44,7 @@ export type Description = string;
 /**
  * BAW API Notes
  */
-export interface Notes {
-  [key: string]: any;
-}
+export type Hash = Record<string, any>;
 
 /**
  * BAW API DateTime

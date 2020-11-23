@@ -9,7 +9,7 @@ import { pageNotFoundMenuItem } from "./error.menus";
 })
 class PageNotFoundComponent extends PageComponent {}
 
-PageNotFoundComponent.LinkComponentToPageInfo({
+PageNotFoundComponent.linkComponentToPageInfo({
   category: homeCategory,
-}).AndMenuRoute(pageNotFoundMenuItem);
+}).andMenuRoute(pageNotFoundMenuItem);
 export { PageNotFoundComponent };

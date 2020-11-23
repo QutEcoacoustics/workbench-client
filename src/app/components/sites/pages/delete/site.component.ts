@@ -61,7 +61,7 @@ class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
   }
 }
 
-SiteDeleteComponent.LinkComponentToPageInfo({
+SiteDeleteComponent.linkComponentToPageInfo({
   category: sitesCategory,
   menus: {
     actions: List([siteMenuItem, ...siteMenuItemActions]),
@@ -71,6 +71,6 @@ SiteDeleteComponent.LinkComponentToPageInfo({
     [projectKey]: projectResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-}).AndMenuRoute(deleteSiteMenuItem);
+}).andMenuRoute(deleteSiteMenuItem);
 
 export { SiteDeleteComponent };

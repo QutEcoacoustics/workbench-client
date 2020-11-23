@@ -21,7 +21,7 @@ export type IdParamOptional<T extends AbstractModel> = (
   _: IdOr<T> | Empty
 ) => string;
 export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
-  if (x === Empty) {
+  if (x === emptyParam) {
     return x;
   } else if (x instanceof AbstractModel) {
     return x.id.toString();
@@ -45,7 +45,7 @@ export function param(x: Param) {
  * @param x Api option
  */
 export function option(x?: New | Filter | Empty) {
-  return x ? x : Empty;
+  return x ? x : emptyParam;
 }
 
 /**
@@ -76,12 +76,9 @@ export function filterByForeignKey<T>(
 export type Empty = "";
 export type New = "new";
 export type Filter = "filter";
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const Empty: Empty = "";
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const New: New = "new";
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const Filter: Filter = "filter";
+export const emptyParam: Empty = "";
+export const newParam: New = "new";
+export const filterParam: Filter = "filter";
 
 /**
  * API List functionality

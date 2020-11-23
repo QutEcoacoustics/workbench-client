@@ -7,7 +7,7 @@ import {
   myAccountMenuItem,
   myEditMenuItem,
 } from "@components/profile/profile.menus";
-import { WithFormCheck } from "@guards/form/form.guard";
+import { withFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
@@ -47,7 +47,7 @@ const userKey = "user";
     </baw-wip>
   `,
 })
-class MyEditComponent extends WithFormCheck(PageComponent) implements OnInit {
+class MyEditComponent extends withFormCheck(PageComponent) implements OnInit {
   public loading: boolean;
   public model: User;
   public fields = fields;
@@ -86,12 +86,12 @@ class MyEditComponent extends WithFormCheck(PageComponent) implements OnInit {
   }
 }
 
-MyEditComponent.LinkComponentToPageInfo({
+MyEditComponent.linkComponentToPageInfo({
   category: myAccountCategory,
   menus: {
     actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
   },
   resolvers: { [userKey]: userResolvers.show },
-}).AndMenuRoute(myEditMenuItem);
+}).andMenuRoute(myEditMenuItem);
 
 export { MyEditComponent };

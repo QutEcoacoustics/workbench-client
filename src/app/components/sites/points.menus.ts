@@ -1,5 +1,5 @@
 import { regionMenuItem } from "@components/regions/regions.menus";
-import { Category, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuLink, menuRoute } from "@interfaces/menusInterfaces";
 import {
   deleteSiteMenuItem,
   editSiteMenuItem,
@@ -18,7 +18,7 @@ export const pointsCategory: Category = {
   route: pointsRoute.add(":siteId"),
 };
 
-export const pointMenuItem = MenuRoute({
+export const pointMenuItem = menuRoute({
   ...siteMenuItem,
   label: "Point",
   parent: regionMenuItem,
@@ -26,7 +26,7 @@ export const pointMenuItem = MenuRoute({
   tooltip: () => "The current point",
 });
 
-export const newPointMenuItem = MenuRoute({
+export const newPointMenuItem = menuRoute({
   ...newSiteMenuItem,
   label: "New point",
   parent: regionMenuItem,
@@ -34,13 +34,13 @@ export const newPointMenuItem = MenuRoute({
   tooltip: () => "Create a new point",
 });
 
-export const pointAnnotationsMenuItem = MenuLink({
+export const pointAnnotationsMenuItem = menuLink({
   ...siteAnnotationsMenuItem,
   tooltip: () => "Download annotations for this point",
   uri: () => "REPLACE_ME",
 });
 
-export const editPointMenuItem = MenuRoute({
+export const editPointMenuItem = menuRoute({
   ...editSiteMenuItem,
   label: "Edit this point",
   parent: pointMenuItem,
@@ -48,14 +48,14 @@ export const editPointMenuItem = MenuRoute({
   tooltip: () => "Change the details for this point",
 });
 
-export const pointHarvestMenuItem = MenuRoute({
+export const pointHarvestMenuItem = menuRoute({
   ...siteHarvestMenuItem,
   parent: pointMenuItem,
   route: pointMenuItem.route.add("harvest"),
   tooltip: () => "Upload new audio to this point",
 });
 
-export const deletePointMenuItem = MenuRoute({
+export const deletePointMenuItem = menuRoute({
   ...deleteSiteMenuItem,
   label: "Delete point",
   parent: pointMenuItem,

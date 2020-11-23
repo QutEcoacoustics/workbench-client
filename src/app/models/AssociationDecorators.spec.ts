@@ -10,11 +10,18 @@ import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { nStepObservable } from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
-import { HasMany, HasOne } from "./AssociationDecorators";
+import { hasMany, hasOne } from "./AssociationDecorators";
 
 describe("Association Decorators", () => {
   let injector: Injector;
   let api: MockStandardApiService;
+
+  function updateDecorator<T extends Record<string, any>>(
+    model: T,
+    key: keyof T
+  ) {
+    return model[key];
+  }
 
   /**
    * Assert model matches output. Assumes observable will take 0 milliseconds to return
@@ -25,8 +32,7 @@ describe("Association Decorators", () => {
     key: string,
     output: AbstractModel | AbstractModel[]
   ) {
-    // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
-    model[key];
+    updateDecorator(model, key);
     await promise;
     expect(model[key]).toEqual(output);
   }
@@ -46,7 +52,7 @@ describe("Association Decorators", () => {
 
   describe("HasMany", () => {
     function createModel(
-      data: object,
+      data: any,
       modelInjector: Injector,
       key?: string,
       ...modelParameters: string[]
@@ -55,7 +61,7 @@ describe("Association Decorators", () => {
         public readonly ids: Ids;
         public readonly param1: Id;
         public readonly param2: Id;
-        @HasMany<MockModel, AbstractModel>(
+        @hasMany<MockModel, AbstractModel>(
           MOCK,
           "ids",
           key as any,
@@ -140,8 +146,7 @@ describe("Association Decorators", () => {
             undefined,
             "param1"
           );
-          // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
-          model.childModels;
+          updateDecorator(model, "childModels");
           expect(api.filter).toHaveBeenCalledWith(
             { filter: { id: { in: [1, 2] } } },
             5
@@ -157,8 +162,7 @@ describe("Association Decorators", () => {
             "param1",
             "param2"
           );
-          // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
-          model.childModels;
+          updateDecorator(model, "childModels");
           expect(api.filter).toHaveBeenCalledWith(
             { filter: { id: { in: [1, 2] } } },
             5,
@@ -178,8 +182,7 @@ describe("Association Decorators", () => {
         it("should handle default primary key", () => {
           interceptApiRequest([]);
           const model = createModel({ ids: idsType.multiple }, injector);
-          // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
-          model.childModels;
+          updateDecorator(model, "childModels");
           expect(api.filter).toHaveBeenCalledWith({
             filter: { id: { in: [1, 2] } },
           });
@@ -192,8 +195,7 @@ describe("Association Decorators", () => {
             injector,
             "customKey"
           );
-          // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
-          model.childModels;
+          updateDecorator(model, "childModels");
           expect(api.filter).toHaveBeenCalledWith({
             filter: { customKey: { in: [1, 2] } },
           });
@@ -208,8 +210,7 @@ describe("Association Decorators", () => {
 
           const model = createModel({ ids: idsType.single }, injector);
           for (let i = 0; i < 5; i++) {
-            // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
-            model.childModels;
+            updateDecorator(model, "childModels");
           }
 
           await assertModel(promise, model, "childModels", childModels);
@@ -221,7 +222,7 @@ describe("Association Decorators", () => {
 
   describe("HasOne", () => {
     function createModel(
-      data: object,
+      data: any,
       modelInjector: Injector,
       modelParameters?: string[],
       failureValue?: any
@@ -230,7 +231,7 @@ describe("Association Decorators", () => {
         public readonly id: Id;
         public readonly param1: Id;
         public readonly param2: Id;
-        @HasOne<MockModel, AbstractModel>(
+        @hasOne<MockModel, AbstractModel>(
           MOCK,
           "id",
           modelParameters as any,
@@ -285,8 +286,7 @@ describe("Association Decorators", () => {
     it("should handle single parameter", () => {
       interceptApiRequest(new ChildModel({ id: 1 }));
       const model = createModel({ id: 1, param1: 5 }, injector, ["param1"]);
-      // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
-      model.childModel;
+      updateDecorator(model, "childModel");
       expect(api.show).toHaveBeenCalledWith(1, 5);
     });
 
@@ -296,8 +296,7 @@ describe("Association Decorators", () => {
         "param1",
         "param2",
       ]);
-      // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
-      model.childModel;
+      updateDecorator(model, "childModel");
       expect(api.show).toHaveBeenCalledWith(1, 5, 10);
     });
 
@@ -307,8 +306,7 @@ describe("Association Decorators", () => {
         "param1",
         "param2",
       ]);
-      // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
-      model.childModel;
+      updateDecorator(model, "childModel");
       expect(api.show).toHaveBeenCalledWith(1, 5, undefined);
     });
 
@@ -330,8 +328,7 @@ describe("Association Decorators", () => {
 
       const model = createModel({ id: 1 }, injector);
       for (let i = 0; i < 5; i++) {
-        // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
-        model.childModel;
+        updateDecorator(model, "childModel");
       }
 
       await assertModel(promise, model, "childModel", childModel);

@@ -64,7 +64,7 @@ class AdminTagsDeleteComponent extends FormTemplate<Tag> implements OnInit {
   }
 }
 
-AdminTagsDeleteComponent.LinkComponentToPageInfo({
+AdminTagsDeleteComponent.linkComponentToPageInfo({
   category: adminTagsCategory,
   menus: {
     actions: List([
@@ -75,6 +75,6 @@ AdminTagsDeleteComponent.LinkComponentToPageInfo({
     ]),
   },
   resolvers: { [tagKey]: tagResolvers.show },
-}).AndMenuRoute(adminDeleteTagMenuItem);
+}).andMenuRoute(adminDeleteTagMenuItem);
 
 export { AdminTagsDeleteComponent };

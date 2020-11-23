@@ -1,9 +1,9 @@
 import { Subject } from "rxjs";
-import { WithUnsubscribe } from "./unsubscribe";
+import { withUnsubscribe } from "./unsubscribe";
 
 describe("WithUnsubscribe", () => {
   it("should accept empty base class", () => {
-    class MockClass extends WithUnsubscribe() {
+    class MockClass extends withUnsubscribe() {
       public test = "MockClass";
     }
 
@@ -17,7 +17,7 @@ describe("WithUnsubscribe", () => {
     class MockBaseClass {
       public base = "MockBaseClass";
     }
-    class MockClass extends WithUnsubscribe(MockBaseClass) {
+    class MockClass extends withUnsubscribe(MockBaseClass) {
       public test = "Custom Test";
     }
 
@@ -29,7 +29,7 @@ describe("WithUnsubscribe", () => {
   });
 
   it("should provide unsubscribe observable", () => {
-    class MockClass extends WithUnsubscribe() {}
+    class MockClass extends withUnsubscribe() {}
     const mockClass = new MockClass();
 
     expect(mockClass["unsubscribe"]).toBeTruthy();
@@ -37,7 +37,7 @@ describe("WithUnsubscribe", () => {
   });
 
   it("should call next() when ngOnDestroy is called", () => {
-    class MockClass extends WithUnsubscribe() {}
+    class MockClass extends withUnsubscribe() {}
     const mockClass = new MockClass();
     const spy = spyOn(mockClass["unsubscribe"], "next").and.callThrough();
 
@@ -46,7 +46,7 @@ describe("WithUnsubscribe", () => {
   });
 
   it("should call complete() when ngOnDestroy is called", () => {
-    class MockClass extends WithUnsubscribe() {}
+    class MockClass extends withUnsubscribe() {}
     const mockClass = new MockClass();
     const spy = spyOn(mockClass["unsubscribe"], "complete").and.callThrough();
 

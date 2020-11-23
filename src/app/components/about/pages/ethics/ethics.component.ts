@@ -12,8 +12,8 @@ class EthicsComponent extends PageComponent {
   public page = CMS.ethics;
 }
 
-EthicsComponent.LinkComponentToPageInfo({
+EthicsComponent.linkComponentToPageInfo({
   category: aboutCategory,
-}).AndMenuRoute(ethicsMenuItem);
+}).andMenuRoute(ethicsMenuItem);
 
 export { EthicsComponent };

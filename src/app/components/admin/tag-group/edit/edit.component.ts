@@ -65,12 +65,12 @@ class AdminTagGroupsEditComponent
   }
 }
 
-AdminTagGroupsEditComponent.LinkComponentToPageInfo({
+AdminTagGroupsEditComponent.linkComponentToPageInfo({
   category: adminTagGroupsCategory,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
   },
   resolvers: { [tagGroupKey]: tagGroupResolvers.show },
-}).AndMenuRoute(adminEditTagGroupMenuItem);
+}).andMenuRoute(adminEditTagGroupMenuItem);
 
 export { AdminTagGroupsEditComponent };

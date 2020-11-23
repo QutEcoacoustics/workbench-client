@@ -5,8 +5,8 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ITagGroup, TagGroup } from "@models/TagGroup";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   id,
   IdOr,
   IdParamOptional,
@@ -35,22 +35,22 @@ export class TagGroupsService extends StandardApi<TagGroup> {
   }
 
   public list(): Observable<TagGroup[]> {
-    return this.apiList(endpoint(Empty, Empty));
+    return this.apiList(endpoint(emptyParam, emptyParam));
   }
   public filter(filters: Filters<ITagGroup>): Observable<TagGroup[]> {
-    return this.apiFilter(endpoint(Empty, Filter), filters);
+    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<TagGroup>): Observable<TagGroup> {
-    return this.apiShow(endpoint(model, Empty));
+    return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: TagGroup): Observable<TagGroup> {
-    return this.apiCreate(endpoint(Empty, Empty), model);
+    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
   }
   public update(model: TagGroup): Observable<TagGroup> {
-    return this.apiUpdate(endpoint(model, Empty), model);
+    return this.apiUpdate(endpoint(model, emptyParam), model);
   }
   public destroy(model: IdOr<TagGroup>): Observable<TagGroup | void> {
-    return this.apiDestroy(endpoint(model, Empty));
+    return this.apiDestroy(endpoint(model, emptyParam));
   }
 }
 

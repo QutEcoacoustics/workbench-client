@@ -125,7 +125,7 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
   }
 }
 
-DetailsComponent.LinkComponentToPageInfo({
+DetailsComponent.linkComponentToPageInfo({
   category: regionsCategory,
   menus: {
     actions: List([projectMenuItem, ...regionMenuItemActions]),
@@ -135,6 +135,6 @@ DetailsComponent.LinkComponentToPageInfo({
     [projectKey]: projectResolvers.show,
     [regionKey]: regionResolvers.show,
   },
-}).AndMenuRoute(regionMenuItem);
+}).andMenuRoute(regionMenuItem);
 
 export { DetailsComponent };

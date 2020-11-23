@@ -3,8 +3,8 @@ import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import type { AnalysisJob } from "./AnalysisJob";
-import { HasOne } from "./AssociationDecorators";
-import { BawDateTime } from "./AttributeDecorators";
+import { hasOne } from "./AssociationDecorators";
+import { bawDateTime } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 
 export interface IAnalysisJobItem {
@@ -27,21 +27,21 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   public readonly audioRecordingId?: Id;
   public readonly queueId?: string;
   public readonly status?: AnalysisJobItemStatus;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly queuedAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly workStartedAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly completedAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly cancelStartedAt?: DateTimeTimezone;
 
   // Associations
-  @HasOne<AnalysisJobItem, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
+  @hasOne<AnalysisJobItem, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
   public analysisJob?: AnalysisJob;
-  @HasOne<AnalysisJobItem, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
+  @hasOne<AnalysisJobItem, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
 
   public constructor(analysisJobItem: IAnalysisJobItem, injector?: Injector) {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { ApiFilter, ApiShow } from "@baw-api/api-common";
 import { Filters } from "@baw-api/baw-api.service";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
@@ -11,29 +10,29 @@ import { User } from "./User";
 /**
  * Creates an association between the ownerId and its user model
  */
-export function Owner<Parent extends AbstractModel & { ownerId?: Id }>() {
-  return HasOne<Parent, User>(ACCOUNT, "ownerId");
+export function owner<Parent extends AbstractModel & { ownerId?: Id }>() {
+  return hasOne<Parent, User>(ACCOUNT, "ownerId");
 }
 
 /**
  * Creates an association between the creatorId and its user model
  */
-export function Creator<Parent extends AbstractModel & { creatorId?: Id }>() {
-  return HasOne<Parent, User>(ACCOUNT, "creatorId");
+export function creator<Parent extends AbstractModel & { creatorId?: Id }>() {
+  return hasOne<Parent, User>(ACCOUNT, "creatorId");
 }
 
 /**
  * Creates an association between the updaterId and its user model
  */
-export function Updater<Parent extends AbstractModel & { updaterId?: Id }>() {
-  return HasOne<Parent, User>(ACCOUNT, "updaterId");
+export function updater<Parent extends AbstractModel & { updaterId?: Id }>() {
+  return hasOne<Parent, User>(ACCOUNT, "updaterId");
 }
 
 /**
  * Creates an association between the deleterId and its user model
  */
-export function Deleter<Parent extends AbstractModel & { deleterId?: Id }>() {
-  return HasOne<Parent, User>(ACCOUNT, "deleterId");
+export function deleter<Parent extends AbstractModel & { deleterId?: Id }>() {
+  return hasOne<Parent, User>(ACCOUNT, "deleterId");
 }
 
 /**
@@ -46,7 +45,7 @@ export function Deleter<Parent extends AbstractModel & { deleterId?: Id }>() {
  * @param routeParams Additional route params required for the filter request.
  * This is a list of keys from the parent where the values can be retrieved
  */
-export function HasMany<
+export function hasMany<
   Parent extends AbstractModel,
   Child extends AbstractModel,
   Params extends any[] = []
@@ -85,7 +84,7 @@ export function HasMany<
  * This is a list of keys from the parent where the values can be retrieved
  * @param failureValue Value to represent a failure to retrieve the model/s
  */
-export function HasOne<
+export function hasOne<
   Parent extends AbstractModel,
   Child extends AbstractModel,
   Params extends any[] = []

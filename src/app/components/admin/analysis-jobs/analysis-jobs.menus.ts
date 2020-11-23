@@ -1,4 +1,4 @@
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { isAdminPredicate } from "src/app/app.menus";
 import { adminDashboardMenuItem, adminRoute } from "../admin.menus";
 
@@ -12,7 +12,7 @@ export const adminAnalysisJobsCategory: Category = {
   route: adminAnalysisJobsRoute,
 };
 
-export const adminAnalysisJobsMenuItem = MenuRoute({
+export const adminAnalysisJobsMenuItem = menuRoute({
   icon: ["fas", "server"],
   label: "Analysis Jobs",
   route: adminAnalysisJobsCategory.route,
@@ -21,7 +21,7 @@ export const adminAnalysisJobsMenuItem = MenuRoute({
   predicate: isAdminPredicate,
 });
 
-export const adminAnalysisJobMenuItem = MenuRoute({
+export const adminAnalysisJobMenuItem = menuRoute({
   icon: ["fas", "server"],
   label: "Analysis Job",
   route: adminAnalysisJobsMenuItem.route.add(":analysisJobId"),

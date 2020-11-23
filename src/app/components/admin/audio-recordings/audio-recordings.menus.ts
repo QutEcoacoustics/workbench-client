@@ -1,4 +1,4 @@
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { defaultAudioIcon, isAdminPredicate } from "src/app/app.menus";
 import { adminDashboardMenuItem, adminRoute } from "../admin.menus";
 
@@ -12,7 +12,7 @@ export const adminAudioRecordingsCategory: Category = {
   route: adminAudioRecordingsRoute,
 };
 
-export const adminAudioRecordingsMenuItem = MenuRoute({
+export const adminAudioRecordingsMenuItem = menuRoute({
   icon: defaultAudioIcon,
   label: "Audio Recordings",
   route: adminAudioRecordingsCategory.route,
@@ -21,7 +21,7 @@ export const adminAudioRecordingsMenuItem = MenuRoute({
   predicate: isAdminPredicate,
 });
 
-export const adminAudioRecordingMenuItem = MenuRoute({
+export const adminAudioRecordingMenuItem = menuRoute({
   icon: defaultAudioIcon,
   label: "Audio Recording",
   route: adminAudioRecordingsMenuItem.route.add(":audioRecordingId"),

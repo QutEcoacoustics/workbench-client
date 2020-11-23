@@ -51,8 +51,8 @@ class RegisterComponent extends PageComponent implements OnInit {
   }
 }
 
-RegisterComponent.LinkComponentToPageInfo({
+RegisterComponent.linkComponentToPageInfo({
   category: securityCategory,
-}).AndMenuRoute(registerMenuItem);
+}).andMenuRoute(registerMenuItem);
 
 export { RegisterComponent };

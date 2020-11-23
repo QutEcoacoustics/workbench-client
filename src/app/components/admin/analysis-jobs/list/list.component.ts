@@ -55,10 +55,10 @@ class AdminAnalysisJobsComponent
   }
 }
 
-AdminAnalysisJobsComponent.LinkComponentToPageInfo({
+AdminAnalysisJobsComponent.linkComponentToPageInfo({
   category: adminAnalysisJobsCategory,
   menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
-}).AndMenuRoute(adminAnalysisJobsMenuItem);
+}).andMenuRoute(adminAnalysisJobsMenuItem);
 
 export { AdminAnalysisJobsComponent };
 

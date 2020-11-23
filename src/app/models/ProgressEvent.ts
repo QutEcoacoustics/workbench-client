@@ -2,8 +2,8 @@ import { Injector } from "@angular/core";
 import { DATASET_ITEM } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, HasCreator, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, HasOne } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { creator, hasOne } from "./AssociationDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import { Dataset } from "./Dataset";
 import type { DatasetItem } from "./DatasetItem";
 import type { User } from "./User";
@@ -16,18 +16,18 @@ export interface IProgressEvent extends HasCreator {
 
 export class ProgressEvent extends AbstractModel implements IProgressEvent {
   public readonly kind = "ProgressEvent";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
   public readonly creatorId?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly datasetItemId?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly activity?: string;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
 
   // Associations
-  @Creator<ProgressEvent>()
+  @creator<ProgressEvent>()
   public creator?: User;
   // TODO Add association to DatasetItem
 

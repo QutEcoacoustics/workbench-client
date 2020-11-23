@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
 
 /**
@@ -24,7 +24,7 @@ import { takeUntil } from "rxjs/operators";
     <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
   `,
 })
-export class CmsComponent extends WithUnsubscribe() implements OnInit {
+export class CmsComponent extends withUnsubscribe() implements OnInit {
   @Input() public page: CMS;
   public error: ApiErrorDetails;
   public loading: boolean;

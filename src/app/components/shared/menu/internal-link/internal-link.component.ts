@@ -5,7 +5,7 @@ import {
   Input,
   OnChanges,
 } from "@angular/core";
-import { MenuRoute } from "@interfaces/menusInterfaces";
+import { menuRoute } from "@interfaces/menusInterfaces";
 import { Placement } from "@ng-bootstrap/ng-bootstrap";
 
 /**

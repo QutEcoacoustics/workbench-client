@@ -60,14 +60,14 @@ class AssignComponent extends PagedTableTemplate<TableRow, Site> {
   }
 }
 
-AssignComponent.LinkComponentToPageInfo({
+AssignComponent.linkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [projectKey]: projectResolvers.show },
-}).AndMenuRoute(assignSiteMenuItem);
+}).andMenuRoute(assignSiteMenuItem);
 
 export { AssignComponent };
 

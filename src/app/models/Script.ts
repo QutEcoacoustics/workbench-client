@@ -6,12 +6,13 @@ import {
   Description,
   HasCreator,
   HasDescription,
+  Hash,
   Id,
   Param,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, HasOne } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { creator, hasOne } from "./AssociationDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import type { User } from "./User";
 
 /**
@@ -27,42 +28,42 @@ export interface IScript extends HasCreator, HasDescription {
   executableCommand?: string;
   executableSettings?: string;
   executableSettingsMediaType?: string;
-  analysisActionParams?: object;
+  analysisActionParams?: Hash;
 }
 
 export class Script extends AbstractModel implements IScript {
   public readonly kind = "Script";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly name?: Param;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly analysisIdentifier?: string;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly version?: number;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly verified?: boolean;
   public readonly groupId?: Id;
   public readonly creatorId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly executableCommand?: string;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly executableSettings?: string;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly executableSettingsMediaType?: string;
-  @BawPersistAttr
-  public readonly analysisActionParams?: object;
+  @bawPersistAttr
+  public readonly analysisActionParams?: Hash;
 
   // Associations
-  @Creator<Script>()
+  @creator<Script>()
   public creator?: User;
-  @HasOne<Script, Script>(SCRIPT, "groupId")
+  @hasOne<Script, Script>(SCRIPT, "groupId")
   public group?: Script;
 
   public constructor(script: IScript, injector?: Injector) {

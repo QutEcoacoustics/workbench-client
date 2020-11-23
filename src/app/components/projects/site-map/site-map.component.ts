@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
 import { SitesService } from "@baw-api/site/sites.service";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
@@ -14,7 +14,7 @@ import { switchMap, takeUntil } from "rxjs/operators";
   selector: "baw-site-map",
   template: '<baw-map [markers]="markers"></baw-map>',
 })
-export class SiteMapComponent extends WithUnsubscribe() implements OnInit {
+export class SiteMapComponent extends withUnsubscribe() implements OnInit {
   // TODO Implement system to change colour of selected sites
   @Input() public selected: List<Site>;
   @Input() public project: Project;

@@ -9,13 +9,13 @@ import {
 } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import {
-  Creator,
-  Deleter,
-  HasMany,
-  HasOne,
-  Updater,
+  creator,
+  deleter,
+  hasMany,
+  hasOne,
+  updater,
 } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 import type { Tag } from "./Tag";
 import { ITagging, Tagging } from "./Tagging";
@@ -34,41 +34,41 @@ export interface IAudioEvent extends HasAllUsers {
 
 export class AudioEvent extends AbstractModel implements IAudioEvent {
   public readonly kind = "AudioEvent";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly audioRecordingId?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly startTimeSeconds?: number;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly endTimeSeconds?: number;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly lowFrequencyHertz?: number;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly highFrequencyHertz?: number;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly isReference?: boolean;
   public readonly taggings?: Tagging[];
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
 
   // Associations
-  @Creator<AudioEvent>()
+  @creator<AudioEvent>()
   public creator?: User;
-  @Updater<AudioEvent>()
+  @updater<AudioEvent>()
   public updater?: User;
-  @Deleter<AudioEvent>()
+  @deleter<AudioEvent>()
   public deleter?: User;
-  @HasOne<AudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
+  @hasOne<AudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
-  @HasMany<AudioEvent, Tag>(TAG, "tagIds")
+  @hasMany<AudioEvent, Tag>(TAG, "tagIds")
   public tags?: Tag[];
 
   public constructor(audioEvent: IAudioEvent, injector?: Injector) {

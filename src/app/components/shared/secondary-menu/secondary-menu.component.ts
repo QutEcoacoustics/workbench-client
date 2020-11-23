@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { defaultMenu } from "@helpers/page/defaultMenus";
 import { PageInfo } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { MenuRoute, NavigableMenuItem } from "@interfaces/menusInterfaces";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
@@ -27,7 +27,7 @@ import { takeUntil } from "rxjs/operators";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SecondaryMenuComponent
-  extends WithUnsubscribe()
+  extends withUnsubscribe()
   implements OnInit {
   public contextLinks: List<NavigableMenuItem>;
   public linksWidget: WidgetMenuItem;

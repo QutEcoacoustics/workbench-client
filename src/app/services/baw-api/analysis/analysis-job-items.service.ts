@@ -6,8 +6,8 @@ import { AnalysisJob } from "@models/AnalysisJob";
 import { AnalysisJobItem, IAnalysisJobItem } from "@models/AnalysisJobItem";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   id,
   IdOr,
   IdParam,
@@ -36,19 +36,22 @@ export class AnalysisJobItemsService extends ReadonlyApi<
   }
 
   public list(analysisJob: IdOr<AnalysisJob>): Observable<AnalysisJobItem[]> {
-    return this.apiList(endpoint(analysisJob, Empty, Empty));
+    return this.apiList(endpoint(analysisJob, emptyParam, emptyParam));
   }
   public filter(
     filters: Filters<IAnalysisJobItem>,
     analysisJob: IdOr<AnalysisJob>
   ): Observable<AnalysisJobItem[]> {
-    return this.apiFilter(endpoint(analysisJob, Empty, Filter), filters);
+    return this.apiFilter(
+      endpoint(analysisJob, emptyParam, filterParam),
+      filters
+    );
   }
   public show(
     model: IdOr<AnalysisJobItem>,
     analysisJob: IdOr<AnalysisJob>
   ): Observable<AnalysisJobItem> {
-    return this.apiShow(endpoint(analysisJob, model, Empty));
+    return this.apiShow(endpoint(analysisJob, model, emptyParam));
   }
 }
 

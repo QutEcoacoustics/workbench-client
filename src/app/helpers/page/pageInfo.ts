@@ -2,7 +2,7 @@ import { Type } from "@angular/core";
 import { Data } from "@angular/router";
 import {
   Category,
-  MenuRoute,
+  menuRoute,
   Menus,
   ResolverList,
 } from "@interfaces/menusInterfaces";

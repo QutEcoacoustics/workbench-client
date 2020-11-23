@@ -6,7 +6,7 @@ export class MockModel extends AbstractModel {
   public kind = "MockModel";
   public readonly id: Id;
 
-  public constructor(raw: object, protected injector?: Injector) {
+  public constructor(raw: Record<string, any>, protected injector?: Injector) {
     super({ id: 1, ...raw }, injector);
   }
 

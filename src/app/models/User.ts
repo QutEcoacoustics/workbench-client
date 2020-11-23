@@ -12,7 +12,7 @@ import {
   UserName,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { BawDateTime, BawImage, BawPersistAttr } from "./AttributeDecorators";
+import { bawDateTime, bawImage, bawPersistAttr } from "./AttributeDecorators";
 
 /**
  * A user model.
@@ -70,49 +70,49 @@ export class User extends AbstractModel implements IUser {
   }
 
   public readonly kind = "User";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly email?: string;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly userName?: UserName;
   public readonly signInCount?: number;
   public readonly failedAttempts?: number;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly imageUrls?: ImageUrl[];
-  @BawImage<User>(`${assetRoot}/images/user/user_span4.png`, {
+  @bawImage<User>(`${assetRoot}/images/user/user_span4.png`, {
     key: "imageUrls",
   })
   public readonly image: ImageUrl[];
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly preferences?: any;
   public readonly isConfirmed?: boolean;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly rolesMask?: number;
   public readonly rolesMaskNames?: string[];
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly tzinfoTz?: string;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
-  @BawDateTime()
+  @bawDateTime()
   public readonly resetPasswordSentAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly rememberCreatedAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly currentSignInAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly lastSignInAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly confirmedAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly confirmationSentAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly lockedAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly lastSeenAt?: DateTimeTimezone;
 
   public constructor(user: IUser) {
@@ -147,25 +147,25 @@ export interface ISessionUser extends IUser {
 export class SessionUser extends AbstractModel implements ISessionUser {
   // ! All fields are persisted because model is saved to, and read from, localstorage
   public readonly kind = "SessionUser";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly authToken?: AuthToken;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly userName?: UserName;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly imageUrls?: ImageUrl[];
-  @BawImage<SessionUser>("/assets/images/user/user_span4.png", {
+  @bawImage<SessionUser>("/assets/images/user/user_span4.png", {
     key: "imageUrls",
   })
   public readonly image: ImageUrl[];
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly preferences?: any;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly rolesMask?: number;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly tzinfoTz?: string;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
 
   public constructor(user: ISessionUser & Partial<IUser>) {

@@ -1,5 +1,5 @@
 import { RouterTestingModule } from "@angular/router/testing";
-import { MenuLink } from "@interfaces/menusInterfaces";
+import { menuLink } from "@interfaces/menusInterfaces";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { AppConfigService } from "@services/app-config/app-config.service";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
@@ -58,7 +58,7 @@ describe("MenuExternalLinkComponent", () => {
   }
 
   beforeEach(() => {
-    defaultLink = MenuLink({
+    defaultLink = menuLink({
       icon: ["fas", "home"],
       label: "home",
       uri: () => "http://link/",
@@ -74,7 +74,7 @@ describe("MenuExternalLinkComponent", () => {
 
   it("should have icon", () => {
     setup({
-      link: MenuLink({
+      link: menuLink({
         ...defaultLink,
         icon: ["fas", "exclamation-triangle"],
       }),
@@ -84,7 +84,7 @@ describe("MenuExternalLinkComponent", () => {
   });
 
   it("should have label", () => {
-    setup({ link: MenuLink({ ...defaultLink, label: "custom label" }) });
+    setup({ link: menuLink({ ...defaultLink, label: "custom label" }) });
     spec.detectChanges();
 
     // Expects label to be above disabled user tooltip
@@ -97,7 +97,7 @@ describe("MenuExternalLinkComponent", () => {
     it("should have tooltip", () => {
       setup({
         tooltip: "custom tooltip",
-        link: MenuLink({ ...defaultLink, tooltip: () => "custom tooltip" }),
+        link: menuLink({ ...defaultLink, tooltip: () => "custom tooltip" }),
       });
       spec.detectChanges();
       assertTooltip(retrieveWrapper(), "custom tooltip");
@@ -106,7 +106,7 @@ describe("MenuExternalLinkComponent", () => {
     it("should not use link tooltip", () => {
       setup({
         tooltip: "custom tooltip",
-        link: MenuLink({ ...defaultLink, tooltip: () => "wrong tooltip" }),
+        link: menuLink({ ...defaultLink, tooltip: () => "wrong tooltip" }),
       });
       spec.detectChanges();
       assertTooltip(retrieveWrapper(), "custom tooltip");
@@ -129,7 +129,7 @@ describe("MenuExternalLinkComponent", () => {
     it("should not use link uri", () => {
       setup({
         uri: "http://brokenlink/",
-        link: MenuLink({ ...defaultLink, uri: () => "http://wronglink/" }),
+        link: menuLink({ ...defaultLink, uri: () => "http://wronglink/" }),
       });
       console.log(spec.component);
       spec.detectChanges();
@@ -139,7 +139,7 @@ describe("MenuExternalLinkComponent", () => {
     it("should link to external website", () => {
       setup({
         uri: "http://brokenlink/",
-        link: MenuLink({ ...defaultLink, uri: () => "http://brokenlink/" }),
+        link: menuLink({ ...defaultLink, uri: () => "http://brokenlink/" }),
       });
       spec.detectChanges();
       assertHref(retrieveLink(), "http://brokenlink/");
@@ -148,7 +148,7 @@ describe("MenuExternalLinkComponent", () => {
     it("should convert links to AngularJS server", () => {
       setup({
         uri: "/brokenlink/",
-        link: MenuLink({ ...defaultLink, uri: () => "/brokenlink/" }),
+        link: menuLink({ ...defaultLink, uri: () => "/brokenlink/" }),
       });
       spec.detectChanges();
       assertHref(retrieveLink(), env.environment.apiRoot + "/brokenlink/");
@@ -165,19 +165,19 @@ describe("MenuExternalLinkComponent", () => {
     }
 
     it("should default as enabled if disabled is undefined", () => {
-      setup({ link: MenuLink({ ...defaultLink, disabled: undefined }) });
+      setup({ link: menuLink({ ...defaultLink, disabled: undefined }) });
       spec.detectChanges();
       assertDisabled(false);
     });
 
     it("should be enabled if disabled is false", () => {
-      setup({ link: MenuLink({ ...defaultLink, disabled: false }) });
+      setup({ link: menuLink({ ...defaultLink, disabled: false }) });
       spec.detectChanges();
       assertDisabled(false);
     });
 
     it("should be disabled if disabled is true", () => {
-      setup({ link: MenuLink({ ...defaultLink, disabled: true }) });
+      setup({ link: menuLink({ ...defaultLink, disabled: true }) });
       spec.detectChanges();
       assertDisabled(true);
     });

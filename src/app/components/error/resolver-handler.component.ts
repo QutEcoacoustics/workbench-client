@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { apiReturnCodes } from "@baw-api/baw-api.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
 
 @Component({
@@ -12,7 +12,7 @@ import { takeUntil } from "rxjs/operators";
   `,
 })
 export class ResolverHandlerComponent
-  extends WithUnsubscribe()
+  extends withUnsubscribe()
   implements OnInit {
   public error: ApiErrorDetails;
 

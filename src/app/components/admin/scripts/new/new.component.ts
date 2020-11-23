@@ -54,7 +54,7 @@ class AdminScriptsNewComponent extends FormTemplate<Script> {
   }
 }
 
-AdminScriptsNewComponent.LinkComponentToPageInfo({
+AdminScriptsNewComponent.linkComponentToPageInfo({
   category: adminScriptsCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -62,6 +62,6 @@ AdminScriptsNewComponent.LinkComponentToPageInfo({
       ...adminScriptsMenuItemActions,
     ]),
   },
-}).AndMenuRoute(adminNewScriptsMenuItem);
+}).andMenuRoute(adminNewScriptsMenuItem);
 
 export { AdminScriptsNewComponent };

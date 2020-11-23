@@ -51,7 +51,7 @@ class AdminOrphansComponent
   }
 }
 
-AdminOrphansComponent.LinkComponentToPageInfo({
+AdminOrphansComponent.linkComponentToPageInfo({
   category: adminOrphansCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -59,7 +59,7 @@ AdminOrphansComponent.LinkComponentToPageInfo({
       ...adminMenuItemActions,
     ]),
   },
-}).AndMenuRoute(adminOrphansMenuItem);
+}).andMenuRoute(adminOrphansMenuItem);
 
 export { AdminOrphansComponent };
 

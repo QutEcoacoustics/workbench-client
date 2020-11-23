@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { noop, Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { defaultDebounceTime } from "src/app/app.helper";
@@ -22,7 +22,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
   `,
 })
 export class DebounceInputComponent
-  extends WithUnsubscribe()
+  extends withUnsubscribe()
   implements OnInit {
   @Input() public label: string;
   @Input() public placeholder = "";

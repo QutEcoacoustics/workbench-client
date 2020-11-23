@@ -129,7 +129,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   }
 }
 
-LoginComponent.LinkComponentToPageInfo({
+LoginComponent.linkComponentToPageInfo({
   category: securityCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -138,6 +138,6 @@ LoginComponent.LinkComponentToPageInfo({
       unlockAccountMenuItem,
     ]),
   },
-}).AndMenuRoute(loginMenuItem);
+}).andMenuRoute(loginMenuItem);
 
 export { LoginComponent };

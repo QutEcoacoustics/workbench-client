@@ -9,15 +9,15 @@ import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule, FormlyTemplateOptions } from "@ngx-formly/core";
 import { formlyRoot } from "src/app/app.helper";
-import { FormlyTimezoneInput } from "./timezone-input.component";
+import { TimezoneInputComponent } from "./timezone-input.component";
 
 // TODO Implement
 describe("FormlyTimezoneInput", () => {
   let model: { timezone?: string };
   let formGroup: FormGroup;
-  let spectator: SpectatorHost<FormlyTimezoneInput>;
+  let spectator: SpectatorHost<TimezoneInputComponent>;
   const createHost = createHostFactory({
-    component: FormlyTimezoneInput,
+    component: TimezoneInputComponent,
     imports: [
       NgbModule,
       FormsModule,

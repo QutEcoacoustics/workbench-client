@@ -3,11 +3,12 @@ import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
   Id,
+  Hash,
 } from "../interfaces/apiInterfaces";
 import { AbstractData } from "./AbstractData";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, Updater } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { creator, updater } from "./AssociationDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import type { User } from "./User";
 
 /**
@@ -19,7 +20,7 @@ export interface ITag extends HasCreatorAndUpdater {
   isTaxonomic?: boolean;
   typeOfTag?: string;
   retired?: boolean;
-  notes?: Blob | object;
+  notes?: Hash;
 }
 
 /**
@@ -27,29 +28,29 @@ export interface ITag extends HasCreatorAndUpdater {
  */
 export class Tag extends AbstractModel implements ITag {
   public readonly kind = "Tag";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly text?: string;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly isTaxonomic?: boolean;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly typeOfTag?: string;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly retired?: boolean;
-  @BawPersistAttr
-  public readonly notes?: Blob;
+  @bawPersistAttr
+  public readonly notes?: Hash;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
-  @Creator<Tag>()
+  @creator<Tag>()
   public creator?: User;
-  @Updater<Tag>()
+  @updater<Tag>()
   public updater?: User;
 
   public constructor(tag: ITag, injector?: Injector) {

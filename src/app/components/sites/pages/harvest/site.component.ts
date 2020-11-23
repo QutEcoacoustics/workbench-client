@@ -53,13 +53,13 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
   }
 }
 
-SiteHarvestComponent.LinkComponentToPageInfo({
+SiteHarvestComponent.linkComponentToPageInfo({
   category: sitesCategory,
   menus: { actions: List(siteMenuItemActions) },
   resolvers: {
     [projectKey]: projectResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-}).AndMenuRoute(siteHarvestMenuItem);
+}).andMenuRoute(siteHarvestMenuItem);
 
 export { SiteHarvestComponent };

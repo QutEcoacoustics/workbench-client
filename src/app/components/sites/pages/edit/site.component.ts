@@ -69,7 +69,7 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   }
 }
 
-SiteEditComponent.LinkComponentToPageInfo({
+SiteEditComponent.linkComponentToPageInfo({
   category: sitesCategory,
   menus: {
     actions: List([siteMenuItem, ...siteMenuItemActions]),
@@ -79,6 +79,6 @@ SiteEditComponent.LinkComponentToPageInfo({
     [projectKey]: projectResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-}).AndMenuRoute(editSiteMenuItem);
+}).andMenuRoute(editSiteMenuItem);
 
 export { SiteEditComponent };

@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { aboutRoute } from "./about.menus";
 import { ContactUsComponent } from "./pages/contact-us/contact-us.component";
@@ -15,7 +15,7 @@ const components = [
   EthicsComponent,
 ];
 
-const routes = aboutRoute.compileRoutes(GetRouteConfigForPage);
+const routes = aboutRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: components,

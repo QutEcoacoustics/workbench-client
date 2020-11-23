@@ -13,9 +13,7 @@ import { getPageInfo, PageComponent } from "./pageComponent";
  * @param page Angular component page info
  * @returns List of routes
  */
-// TODO
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function GetRouteConfigForPage(
+export function getRouteConfigForPage(
   component: Type<PageComponent>,
   config: Partial<Route>
 ) {

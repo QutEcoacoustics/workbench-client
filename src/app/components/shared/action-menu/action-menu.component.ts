@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { defaultMenu } from "@helpers/page/defaultMenus";
 import { PageInfo } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AnyMenuItem, LabelAndIcon } from "@interfaces/menusInterfaces";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
@@ -25,7 +25,7 @@ import { takeUntil } from "rxjs/operators";
     ></baw-menu>
   `,
 })
-export class ActionMenuComponent extends WithUnsubscribe() implements OnInit {
+export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   public actionTitle: LabelAndIcon;
   public actionLinks: List<AnyMenuItem>;
   public actionWidget: WidgetMenuItem;

@@ -6,11 +6,11 @@ import {
   HeaderDropDownConvertedLink,
   isHeaderLink,
 } from "@helpers/app-initializer/app-initializer";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ImageSizes } from "@interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
-  MenuLink,
+  menuLink,
   NavigableMenuItem,
 } from "@interfaces/menusInterfaces";
 import { SessionUser } from "@models/User";
@@ -33,7 +33,7 @@ import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.scss"],
 })
-export class HeaderComponent extends WithUnsubscribe() implements OnInit {
+export class HeaderComponent extends withUnsubscribe() implements OnInit {
   public activeLink: string;
   public collapsed: boolean;
   public headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
@@ -46,8 +46,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
     profile: myAccountMenuItem,
     register: registerMenuItem,
   };
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  public ImageSizes = ImageSizes;
+  public thumbnail = ImageSizes.small;
   public isNavigableMenuItem = isNavigableMenuItem;
 
   public constructor(
@@ -147,7 +146,7 @@ export class HeaderComponent extends WithUnsubscribe() implements OnInit {
    * @param item Item to convert
    */
   private generateLink(item: any): MenuLink {
-    return MenuLink({
+    return menuLink({
       label: item.title,
       icon: ["fas", "home"],
       tooltip: () => "UPDATE ME",

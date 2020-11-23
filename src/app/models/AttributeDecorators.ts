@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
@@ -6,7 +5,7 @@ import { AbstractModel } from "./AbstractModel";
 /**
  * Add key to the models attributes
  */
-export function BawPersistAttr(model: AbstractModel, key: string) {
+export function bawPersistAttr(model: AbstractModel, key: string) {
   if (!model[AbstractModel.attributeKey]) {
     model[AbstractModel.attributeKey] = [];
   }
@@ -17,7 +16,7 @@ export function BawPersistAttr(model: AbstractModel, key: string) {
 /**
  * Convert image url/s into an array of image urls
  */
-export function BawImage<T extends AbstractModel>(
+export function bawImage<T extends AbstractModel>(
   defaultUrl: string,
   opts?: BawDecoratorOptions<T>
 ) {
@@ -71,7 +70,7 @@ export function BawImage<T extends AbstractModel>(
 /**
  * Convert a collection of ids into a set
  */
-export function BawCollection<T extends AbstractModel>(
+export function bawCollection<T extends AbstractModel>(
   opts?: BawDecoratorOptions<T>
 ) {
   return createDecorator<T>(opts, (model, key, ids: Id[] | Ids) => {
@@ -86,7 +85,7 @@ export function BawCollection<T extends AbstractModel>(
 /**
  * Convert timestamp string into DateTimeTimezone
  */
-export function BawDateTime<T extends AbstractModel>(
+export function bawDateTime<T extends AbstractModel>(
   opts?: BawDecoratorOptions<T>
 ) {
   return createDecorator<T>(
@@ -106,7 +105,7 @@ export function BawDateTime<T extends AbstractModel>(
 /**
  * Convert duration string into Duration
  */
-export function BawDuration<T extends AbstractModel>(
+export function bawDuration<T extends AbstractModel>(
   opts?: BawDecoratorOptions<T>
 ) {
   return createDecorator<T>(opts, (model, key, seconds: number | Duration) => {
@@ -186,7 +185,7 @@ function createDecorator<T extends AbstractModel>(
 
     if (opts.persist) {
       // Add key to toJSON method
-      BawPersistAttr(model, key);
+      bawPersistAttr(model, key);
     }
   };
 }

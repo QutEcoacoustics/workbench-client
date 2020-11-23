@@ -8,8 +8,8 @@ import { User } from "@models/User";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   filterByForeignKey,
   id,
   IdOr,
@@ -39,32 +39,32 @@ export class TagsService extends StandardApi<Tag> {
   }
 
   public list(): Observable<Tag[]> {
-    return this.apiList(endpoint(Empty, Empty));
+    return this.apiList(endpoint(emptyParam, emptyParam));
   }
   public filter(filters: Filters<ITag>): Observable<Tag[]> {
-    return this.apiFilter(endpoint(Empty, Filter), filters);
+    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
   public filterByCreator(
     filters: Filters<ITag>,
     user?: IdOr<User>
   ): Observable<Tag[]> {
     return this.apiFilter(
-      endpoint(Empty, Filter),
+      endpoint(emptyParam, filterParam),
       user ? filterByForeignKey<Tag>(filters, "creatorId", user) : filters
     );
   }
   public show(model: IdOr<Tag>): Observable<Tag> {
-    return this.apiShow(endpoint(model, Empty));
+    return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: Tag): Observable<Tag> {
-    return this.apiCreate(endpoint(Empty, Empty), model);
+    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
   }
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/449
   public update(model: Tag): Observable<Tag> {
-    return this.apiUpdate(endpoint(model, Empty), model);
+    return this.apiUpdate(endpoint(model, emptyParam), model);
   }
   public destroy(model: IdOr<Tag>): Observable<Tag | void> {
-    return this.apiDestroy(endpoint(model, Empty));
+    return this.apiDestroy(endpoint(model, emptyParam));
   }
   /**
    * List type of tags

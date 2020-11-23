@@ -5,7 +5,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { LoadingBarService } from "@ngx-loading-bar/core";
 import { noop, Observable } from "rxjs";
 import { delay, filter, map, takeUntil, withLatestFrom } from "rxjs/operators";
-import { WithUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { AppConfigService } from "./services/app-config/app-config.service";
 
 /**
@@ -16,7 +16,7 @@ import { AppConfigService } from "./services/app-config/app-config.service";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
 })
-export class AppComponent extends WithUnsubscribe() implements OnInit {
+export class AppComponent extends withUnsubscribe() implements OnInit {
   public fullscreen: boolean;
   public delayedProgress$: Observable<number>;
 

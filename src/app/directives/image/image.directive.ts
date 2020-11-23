@@ -128,7 +128,6 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Handle image error event
    */
   private errorHandler() {
-    // eslint-disable-next-line no-console
     console.warn("Failed to load image: ", this.imageRef.nativeElement.src);
 
     // No longer attempt to use thumbnail

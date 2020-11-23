@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { WithFormCheck } from "@guards/form/form.guard";
+import { withFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
 import { fields as requestFields } from "./data-request.schema.json";
@@ -46,7 +46,7 @@ import { fields as annotationFields } from "./download-annotations.schema.json";
     </baw-wip>
   `,
 })
-class DataRequestComponent extends WithFormCheck(PageComponent) {
+class DataRequestComponent extends withFormCheck(PageComponent) {
   public annotationLoading: boolean;
   public annotationModel = {};
   public annotationFields = annotationFields;
@@ -77,8 +77,8 @@ class DataRequestComponent extends WithFormCheck(PageComponent) {
   }
 }
 
-DataRequestComponent.LinkComponentToPageInfo({
+DataRequestComponent.linkComponentToPageInfo({
   category: dataRequestCategory,
-}).AndMenuRoute(dataRequestMenuItem);
+}).andMenuRoute(dataRequestMenuItem);
 
 export { DataRequestComponent };

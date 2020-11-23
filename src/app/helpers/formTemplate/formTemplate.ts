@@ -2,7 +2,7 @@ import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
-import { WithFormCheck } from "@guards/form/form.guard";
+import { withFormCheck } from "@guards/form/form.guard";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -15,7 +15,7 @@ import { PageInfo } from "../page/pageInfo";
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class FormTemplate<M extends AbstractModel>
-  extends WithFormCheck(PageComponent)
+  extends withFormCheck(PageComponent)
   implements OnInit {
   /**
    * Form Submission Function Loading

@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { AdminTagGroupsDeleteComponent } from "./delete/delete.component";
 import { AdminTagGroupsEditComponent } from "./edit/edit.component";
@@ -14,7 +14,7 @@ const components = [
   AdminTagGroupsEditComponent,
   AdminTagGroupsNewComponent,
 ];
-const routes = adminTagGroupsRoute.compileRoutes(GetRouteConfigForPage);
+const routes = adminTagGroupsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: components,

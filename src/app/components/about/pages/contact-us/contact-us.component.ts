@@ -3,7 +3,7 @@ import {
   aboutCategory,
   contactUsMenuItem,
 } from "@components/about/about.menus";
-import { WithFormCheck } from "@guards/form/form.guard";
+import { withFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { fields } from "./contact-us.schema.json";
 
@@ -23,7 +23,7 @@ import { fields } from "./contact-us.schema.json";
   `,
 })
 class ContactUsComponent
-  extends WithFormCheck(PageComponent)
+  extends withFormCheck(PageComponent)
   implements OnInit {
   public model = {};
   public fields = fields;
@@ -47,8 +47,8 @@ class ContactUsComponent
   }
 }
 
-ContactUsComponent.LinkComponentToPageInfo({
+ContactUsComponent.linkComponentToPageInfo({
   category: aboutCategory,
-}).AndMenuRoute(contactUsMenuItem);
+}).andMenuRoute(contactUsMenuItem);
 
 export { ContactUsComponent };

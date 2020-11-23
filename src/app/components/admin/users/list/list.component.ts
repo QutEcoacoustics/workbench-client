@@ -68,7 +68,7 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   }
 }
 
-AdminUserListComponent.LinkComponentToPageInfo({
+AdminUserListComponent.linkComponentToPageInfo({
   category: adminCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -76,7 +76,7 @@ AdminUserListComponent.LinkComponentToPageInfo({
       ...adminMenuItemActions,
     ]),
   },
-}).AndMenuRoute(adminUserListMenuItem);
+}).andMenuRoute(adminUserListMenuItem);
 
 export { AdminUserListComponent };
 

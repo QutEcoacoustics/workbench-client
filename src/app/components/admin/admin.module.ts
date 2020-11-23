@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { adminRoute } from "./admin.menus";
 import { AnalysisJobsModule } from "./analysis-jobs/analysis-jobs.module";
@@ -21,7 +21,7 @@ const modules = [
   TagsModule,
 ];
 const components = [AdminDashboardComponent, AdminUserListComponent];
-const routes = adminRoute.compileRoutes(GetRouteConfigForPage);
+const routes = adminRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: components,

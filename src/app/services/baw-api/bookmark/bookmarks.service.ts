@@ -6,8 +6,8 @@ import { Bookmark, IBookmark } from "@models/Bookmark";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   filterByForeignKey,
   id,
   IdOr,
@@ -32,10 +32,10 @@ export class BookmarksService extends StandardApi<Bookmark> {
   }
 
   public list(): Observable<Bookmark[]> {
-    return this.apiList(endpoint(Empty, Empty));
+    return this.apiList(endpoint(emptyParam, emptyParam));
   }
   public filter(filters: Filters<IBookmark>): Observable<Bookmark[]> {
-    return this.apiFilter(endpoint(Empty, Filter), filters);
+    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
   public filterByCreator(
     filters: Filters<IBookmark>,
@@ -46,16 +46,16 @@ export class BookmarksService extends StandardApi<Bookmark> {
     );
   }
   public show(model: IdOr<Bookmark>): Observable<Bookmark> {
-    return this.apiShow(endpoint(model, Empty));
+    return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: Bookmark): Observable<Bookmark> {
-    return this.apiCreate(endpoint(Empty, Empty), model);
+    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
   }
   public update(model: Bookmark): Observable<Bookmark> {
-    return this.apiUpdate(endpoint(model, Empty), model);
+    return this.apiUpdate(endpoint(model, emptyParam), model);
   }
   public destroy(model: IdOr<Bookmark>): Observable<Bookmark | void> {
-    return this.apiDestroy(endpoint(model, Empty));
+    return this.apiDestroy(endpoint(model, emptyParam));
   }
 }
 

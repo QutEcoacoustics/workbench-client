@@ -2,8 +2,8 @@ import { Injector } from "@angular/core";
 import { AUDIO_RECORDING, DATASET } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, HasOne } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { creator, hasOne } from "./AssociationDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 import type { Dataset } from "./Dataset";
 import type { User } from "./User";
@@ -21,28 +21,28 @@ export interface IDatasetItem {
 
 export class DatasetItem extends AbstractModel implements IDatasetItem {
   public readonly kind = "DatasetItem";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly datasetId?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly audioRecordingId?: Id;
   public readonly creatorId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly startTimeSeconds?: number;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly endTimeSeconds?: number;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly order?: number;
 
   // Associations
-  @Creator<DatasetItem>()
+  @creator<DatasetItem>()
   public creator?: User;
-  @HasOne<DatasetItem, Dataset>(DATASET, "datasetId")
+  @hasOne<DatasetItem, Dataset>(DATASET, "datasetId")
   public dataset?: Dataset;
-  @HasOne<DatasetItem, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
+  @hasOne<DatasetItem, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
 
   public constructor(datasetItem: IDatasetItem, injector?: Injector) {

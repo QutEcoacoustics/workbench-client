@@ -3,8 +3,8 @@ import { TAG } from "@baw-api/ServiceTokens";
 import { adminTagGroupsMenuItem } from "@components/admin/tag-group/tag-group.menus";
 import { DateTimeTimezone, HasCreator, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, HasOne } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { creator, hasOne } from "./AssociationDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import type { Tag } from "./Tag";
 import type { User } from "./User";
 
@@ -22,20 +22,20 @@ export interface ITagGroup extends HasCreator {
  */
 export class TagGroup extends AbstractModel implements ITagGroup {
   public readonly kind = "TagGroup";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly groupIdentifier?: string;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly tagId?: Id;
   public readonly creatorId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
 
   // Associations
-  @Creator<TagGroup>()
+  @creator<TagGroup>()
   public creator?: User;
-  @HasOne<TagGroup, Tag>(TAG, "tagId")
+  @hasOne<TagGroup, Tag>(TAG, "tagId")
   public tag?: Tag;
 
   public constructor(tagGroup: ITagGroup, injector?: Injector) {

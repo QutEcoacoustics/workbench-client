@@ -55,13 +55,13 @@ class TheirSitesComponent extends PagedTableTemplate<TableRow, Site> {
   }
 }
 
-TheirSitesComponent.LinkComponentToPageInfo({
+TheirSitesComponent.linkComponentToPageInfo({
   category: theirProfileCategory,
   menus: {
     actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
   },
   resolvers: { [accountKey]: accountResolvers.show },
-}).AndMenuRoute(theirSitesMenuItem);
+}).andMenuRoute(theirSitesMenuItem);
 
 export { TheirSitesComponent };
 

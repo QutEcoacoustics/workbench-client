@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { MapModule } from "@shared/map/map.module";
 import { SharedModule } from "@shared/shared.module";
 import { HarvestCompleteComponent } from "./harvest-complete/harvest-complete.component";
@@ -36,7 +36,7 @@ const components = [
   SiteMapComponent,
 ];
 
-const routes = projectsRoute.compileRoutes(GetRouteConfigForPage);
+const routes = projectsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: components,

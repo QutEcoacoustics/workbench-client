@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
   ImageSizes,
   ImageUrl,
@@ -16,17 +16,17 @@ import { takeUntil } from "rxjs/operators";
   selector: "baw-render-field",
   template: `
     <!-- Display plain text -->
-    <dl *ngIf="styling === FieldStyling.plain">
+    <dl *ngIf="styling === fieldStyling.plain">
       <p id="plain" class="m-0">{{ display }}</p>
     </dl>
 
     <!-- Display code/objects -->
-    <dl *ngIf="styling === FieldStyling.code">
+    <dl *ngIf="styling === fieldStyling.code">
       <pre id="code" class="m-0">{{ display }}</pre>
     </dl>
 
     <!-- Display checkbox -->
-    <dl *ngIf="styling === FieldStyling.checkbox">
+    <dl *ngIf="styling === fieldStyling.checkbox">
       <baw-checkbox
         id="checkbox"
         class="m-0"
@@ -37,17 +37,17 @@ import { takeUntil } from "rxjs/operators";
     </dl>
 
     <!-- Display AbstractModel -->
-    <dl *ngIf="styling === FieldStyling.model">
+    <dl *ngIf="styling === fieldStyling.model">
       <a id="model" [routerLink]="model.viewUrl">{{ model }}</a>
     </dl>
 
     <!-- Display Image -->
-    <dl *ngIf="styling === FieldStyling.image">
+    <dl *ngIf="styling === fieldStyling.image">
       <img id="image" alt="model image alt" [src]="getSource()" />
     </dl>
 
     <!-- Display nested fields -->
-    <ng-container *ngIf="styling === FieldStyling.children">
+    <ng-container *ngIf="styling === fieldStyling.children">
       <baw-render-field
         *ngFor="let child of children"
         id="children"
@@ -68,13 +68,12 @@ import { takeUntil } from "rxjs/operators";
   ],
 })
 export class RenderFieldComponent
-  extends WithUnsubscribe()
+  extends withUnsubscribe()
   implements OnChanges {
   @Input() public value: ModelView;
   public children: ModelView[];
   public display: string | number | boolean | ImageUrl[];
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  public FieldStyling = FieldStyling;
+  public fieldStyling = FieldStyling;
   public model: AbstractModel;
   public styling: FieldStyling = FieldStyling.plain;
   private errorText = "(error)";
@@ -165,7 +164,7 @@ export class RenderFieldComponent
    *
    * @param value Display input
    */
-  private humanizeObject(value: object) {
+  private humanizeObject(value: Record<string, any>) {
     this.setLoading();
 
     try {
@@ -291,7 +290,7 @@ export type ModelView =
   | Duration
   | AbstractModel
   | Blob
-  | object
+  | Record<string, any>
   | ImageUrl[]
   | ModelView[];
 

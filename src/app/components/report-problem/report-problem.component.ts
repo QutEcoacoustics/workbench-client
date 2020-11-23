@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { WithFormCheck } from "@guards/form/form.guard";
+import { withFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import {
   reportProblemMenuItem,
@@ -24,7 +24,7 @@ import { fields } from "./report-problem.schema.json";
   `,
 })
 class ReportProblemComponent
-  extends WithFormCheck(PageComponent)
+  extends withFormCheck(PageComponent)
   implements OnInit {
   public model = {};
   public fields = fields;
@@ -52,8 +52,8 @@ class ReportProblemComponent
   }
 }
 
-ReportProblemComponent.LinkComponentToPageInfo({
+ReportProblemComponent.linkComponentToPageInfo({
   category: reportProblemsCategory,
-}).AndMenuRoute(reportProblemMenuItem);
+}).andMenuRoute(reportProblemMenuItem);
 
 export { ReportProblemComponent };

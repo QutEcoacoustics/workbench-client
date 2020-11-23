@@ -1,4 +1,4 @@
-import { Category, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuLink, menuRoute } from "@interfaces/menusInterfaces";
 import {
   defaultAudioIcon,
   defaultDeleteIcon,
@@ -17,7 +17,7 @@ export const sitesCategory: Category = {
   route: sitesRoute.add(":siteId"),
 };
 
-export const siteMenuItem = MenuRoute({
+export const siteMenuItem = menuRoute({
   icon: ["fas", "map-marker-alt"],
   label: "Site",
   parent: projectMenuItem,
@@ -25,7 +25,7 @@ export const siteMenuItem = MenuRoute({
   tooltip: () => "The current site",
 });
 
-export const newSiteMenuItem = MenuRoute({
+export const newSiteMenuItem = menuRoute({
   icon: defaultNewIcon,
   label: "New site",
   parent: projectMenuItem,
@@ -34,7 +34,7 @@ export const newSiteMenuItem = MenuRoute({
   tooltip: () => "Create a new site",
 });
 
-export const siteAnnotationsMenuItem = MenuLink({
+export const siteAnnotationsMenuItem = menuLink({
   icon: ["fas", "border-all"],
   label: "Download annotations",
   predicate: isLoggedInPredicate,
@@ -42,7 +42,7 @@ export const siteAnnotationsMenuItem = MenuLink({
   uri: () => "REPLACE_ME",
 });
 
-export const editSiteMenuItem = MenuRoute({
+export const editSiteMenuItem = menuRoute({
   icon: defaultEditIcon,
   label: "Edit this site",
   parent: siteMenuItem,
@@ -51,7 +51,7 @@ export const editSiteMenuItem = MenuRoute({
   tooltip: () => "Change the details for this site",
 });
 
-export const siteHarvestMenuItem = MenuRoute({
+export const siteHarvestMenuItem = menuRoute({
   icon: defaultAudioIcon,
   label: "Harvesting",
   parent: siteMenuItem,
@@ -60,7 +60,7 @@ export const siteHarvestMenuItem = MenuRoute({
   tooltip: () => "Upload new audio to this site",
 });
 
-export const deleteSiteMenuItem = MenuRoute({
+export const deleteSiteMenuItem = menuRoute({
   icon: defaultDeleteIcon,
   label: "Delete site",
   parent: siteMenuItem,

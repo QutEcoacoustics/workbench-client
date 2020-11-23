@@ -61,7 +61,7 @@ class PointDetailsComponent extends SiteDetailsComponent implements OnInit {
   }
 }
 
-PointDetailsComponent.LinkComponentToPageInfo({
+PointDetailsComponent.linkComponentToPageInfo({
   category: pointsCategory,
   menus: {
     actions: List([regionMenuItem, ...pointMenuItemActions]),
@@ -72,6 +72,6 @@ PointDetailsComponent.LinkComponentToPageInfo({
     [regionKey]: regionResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-}).AndMenuRoute(pointMenuItem);
+}).andMenuRoute(pointMenuItem);
 
 export { PointDetailsComponent };

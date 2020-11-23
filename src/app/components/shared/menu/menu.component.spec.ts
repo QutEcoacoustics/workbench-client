@@ -2,7 +2,7 @@ import { Data, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
-import { MenuAction, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
+import { menuAction, menuLink, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { WidgetDirective } from "@menu/widget.directive";
 import { SessionUser } from "@models/User";
@@ -69,23 +69,23 @@ describe("MenuComponent", () => {
 
   beforeEach(() => {
     defaultUser = new SessionUser(generateSessionUser());
-    defaultMenuAction = MenuAction({
+    defaultMenuAction = menuAction({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       action: () => {},
     });
-    defaultMenuLink = MenuLink({
+    defaultMenuLink = menuLink({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
       uri: () => "http://brokenlink/",
     });
-    defaultMenuRoute = MenuRoute({
+    defaultMenuRoute = menuRoute({
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      route: StrongRoute.Base.add("home"),
+      route: StrongRoute.base.add("home"),
     });
   });
 
@@ -169,26 +169,26 @@ describe("MenuComponent", () => {
     {
       title: "Menu Action",
       baseLink: () => defaultMenuAction,
-      create: (data) => MenuAction(data),
+      create: (data) => menuAction(data),
       getLink: () => getMenuActions(),
       action: true,
     },
     {
       title: "Menu External Link",
       baseLink: () => defaultMenuLink,
-      create: (data) => MenuLink(data),
+      create: (data) => menuLink(data),
       getLink: () => getMenuLinks(),
       link: true,
     },
     {
       title: "Menu Internal Link",
       baseLink: () => defaultMenuRoute,
-      create: (data) => MenuRoute(data),
+      create: (data) => menuRoute(data),
       getLink: () => getMenuRoutes(),
       route: true,
     },
   ].forEach((test) => {
-    function createLink(args: object = {}) {
+    function createLink(args: any = {}) {
       return test.create({ ...test.baseLink(), ...args });
     }
 
@@ -329,7 +329,7 @@ describe("MenuComponent", () => {
 
     it("should set uri route with parameter", () => {
       const params = { attribute: 10 };
-      const link = MenuLink({
+      const link = menuLink({
         ...defaultMenuLink,
         uri: (_params: Params) => `http://broken_link/${_params.attribute}`,
       });
@@ -348,9 +348,9 @@ describe("MenuComponent", () => {
 
     it("should set link route with parameter", () => {
       const params = { attribute: 10 };
-      const link = MenuRoute({
+      const link = menuRoute({
         ...defaultMenuRoute,
-        route: StrongRoute.Base.add("home").add(":attribute"),
+        route: StrongRoute.base.add("home").add(":attribute"),
       });
       setup({ menuType: "action", links: List([link]) }, undefined, params);
       spec.detectChanges();
@@ -361,9 +361,9 @@ describe("MenuComponent", () => {
   describe("item ordering", () => {
     function arrange(a: number, b: number, c: number) {
       // Labels are set so that lexicographical order can be determined
-      const linkA = MenuRoute({ ...defaultMenuRoute, label: "b", order: a });
-      const linkB = MenuLink({ ...defaultMenuLink, label: "a", order: b });
-      const linkC = MenuAction({ ...defaultMenuAction, label: "z", order: c });
+      const linkA = menuRoute({ ...defaultMenuRoute, label: "b", order: a });
+      const linkB = menuLink({ ...defaultMenuLink, label: "a", order: b });
+      const linkC = menuAction({ ...defaultMenuAction, label: "z", order: c });
       return List([linkA, linkB, linkC]);
     }
 
@@ -426,8 +426,8 @@ describe("MenuComponent", () => {
         });
 
         it("should order sub-links", () => {
-          const parent = MenuRoute({ ...defaultMenuRoute, order: 1 });
-          const child = MenuRoute({ ...defaultMenuRoute, parent, order: 1 });
+          const parent = menuRoute({ ...defaultMenuRoute, order: 1 });
+          const child = menuRoute({ ...defaultMenuRoute, parent, order: 1 });
           setup({ menuType, links: List([child, parent]) });
           spec.detectChanges();
 
@@ -437,14 +437,14 @@ describe("MenuComponent", () => {
         });
 
         it("should order sub-links inside a parent", () => {
-          const parent = MenuRoute({ ...defaultMenuRoute, order: 1 });
-          const child1 = MenuRoute({
+          const parent = menuRoute({ ...defaultMenuRoute, order: 1 });
+          const child1 = menuRoute({
             ...defaultMenuRoute,
             parent,
             label: "b",
             order: 1,
           });
-          const child2 = MenuRoute({
+          const child2 = menuRoute({
             ...defaultMenuRoute,
             parent,
             label: "a",

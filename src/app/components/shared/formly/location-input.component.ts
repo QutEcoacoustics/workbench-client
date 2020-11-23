@@ -10,8 +10,7 @@ import { List } from "immutable";
  * ! Warning, test manually after changes
  */
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: "formly-location-input",
+  selector: "baw-location-input",
   template: `
     <div class="form-group">
       <label for="latitude"> Latitude {{ to.required ? " *" : "" }} </label>
@@ -62,8 +61,7 @@ import { List } from "immutable";
     </div>
   `,
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
-export class FormlyLocationInput extends FieldType implements OnInit {
+export class LocationInputComponent extends FieldType implements OnInit {
   public formControl: FormControl;
   public latitude: number;
   public latitudeError: boolean;

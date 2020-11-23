@@ -49,11 +49,11 @@ class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
   }
 }
 
-AdminTagGroupsNewComponent.LinkComponentToPageInfo({
+AdminTagGroupsNewComponent.linkComponentToPageInfo({
   category: adminTagGroupsCategory,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupsMenuItemActions]),
   },
-}).AndMenuRoute(adminNewTagGroupMenuItem);
+}).andMenuRoute(adminNewTagGroupMenuItem);
 
 export { AdminTagGroupsNewComponent };

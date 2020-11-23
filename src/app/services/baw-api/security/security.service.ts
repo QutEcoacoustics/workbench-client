@@ -3,7 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AbstractModel } from "@models/AbstractModel";
-import { BawPersistAttr } from "@models/AttributeDecorators";
+import { bawPersistAttr } from "@models/AttributeDecorators";
 import { SessionUser } from "@models/User";
 import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
 import { catchError, map, mergeMap } from "rxjs/operators";
@@ -109,9 +109,9 @@ export class LoginDetails
   extends AbstractModel
   implements LoginDetailsInterface {
   public readonly kind: "LoginDetails" = "LoginDetails";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly login: string;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly password: string;
 
   public constructor(details: LoginDetailsInterface) {

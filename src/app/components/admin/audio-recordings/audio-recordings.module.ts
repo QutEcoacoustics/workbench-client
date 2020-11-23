@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { adminAudioRecordingsRoute } from "./audio-recordings.menus";
 import { AdminAudioRecordingComponent } from "./details/details.component";
@@ -10,7 +10,7 @@ const components = [
   AdminAudioRecordingsComponent,
   AdminAudioRecordingComponent,
 ];
-const routes = adminAudioRecordingsRoute.compileRoutes(GetRouteConfigForPage);
+const routes = adminAudioRecordingsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: components,

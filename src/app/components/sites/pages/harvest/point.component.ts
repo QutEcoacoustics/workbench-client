@@ -59,7 +59,7 @@ class PointHarvestComponent extends PageComponent implements OnInit {
   }
 }
 
-PointHarvestComponent.LinkComponentToPageInfo({
+PointHarvestComponent.linkComponentToPageInfo({
   category: pointsCategory,
   menus: { actions: List(pointMenuItemActions) },
   resolvers: {
@@ -67,6 +67,6 @@ PointHarvestComponent.LinkComponentToPageInfo({
     [regionKey]: regionResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-}).AndMenuRoute(pointHarvestMenuItem);
+}).andMenuRoute(pointHarvestMenuItem);
 
 export { PointHarvestComponent };
