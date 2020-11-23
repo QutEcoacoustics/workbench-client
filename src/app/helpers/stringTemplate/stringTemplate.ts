@@ -8,7 +8,7 @@
  * @param placeholders Placeholders that are substituted for token when
  *  templating is done. Note these are transform functions.
  */
-export function stringTemplate<T extends((input: any) => any)[]>(
+export function stringTemplate<T extends ((input: any) => any)[]>(
   strings: TemplateStringsArray,
   ...placeholders: T
 ) {
