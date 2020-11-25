@@ -1,7 +1,7 @@
 {
   "fields": [
     {
-      "key": "name",
+      "key": "userName",
       "type": "input",
       "templateOptions": {
         "label": "User name",
@@ -26,10 +26,13 @@
       }
     },
     {
-      "key": "confirmation",
-      "type": "passwordConfirmation",
+      "key": "imageUrls",
+      "type": "input",
       "templateOptions": {
-        "required": true
+        "label": "Image",
+        "type": "file",
+        "required": false,
+        "disabled": true
       }
     },
     {
@@ -41,15 +44,6 @@
         "required": true,
         "minLength": 6,
         "description": "we need your current password to confirm your changes"
-      }
-    },
-    {
-      "key": "imageUrls",
-      "type": "input",
-      "templateOptions": {
-        "label": "Image",
-        "type": "file",
-        "required": false
       }
     }
   ]

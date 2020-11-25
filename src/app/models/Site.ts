@@ -3,10 +3,15 @@ import { id, IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import {
+  exploreAudioMenuItem,
+  listenMenuItem,
+} from "@helpers/page/externalMenus";
 import { assetRoot } from "@services/app-config/app-config.service";
 import { MapMarkerOption } from "@shared/map/map.component";
 import { siteMenuItem } from "../components/sites/sites.menus";
 import {
+  AccessLevel,
   DateTimeTimezone,
   Description,
   HasAllUsers,
@@ -18,7 +23,7 @@ import {
   Param,
   TimezoneInformation,
 } from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { Creator, HasMany, Updater } from "./AssociationDecorators";
 import {
   BawCollection,
@@ -122,6 +127,14 @@ export class Site extends AbstractModel implements ISite {
     return this.getViewUrl(this.projectIds.values().next().value);
   }
 
+  public get playUrl(): string {
+    return listenMenuItem.uri();
+  }
+
+  public get visualizeUrl(): string {
+    return exploreAudioMenuItem.uri({ siteId: this.id });
+  }
+
   public getViewUrl(project: IdOr<Project>): string {
     if (isInstantiated(this.regionId)) {
       return pointMenuItem.route.format({
@@ -135,6 +148,28 @@ export class Site extends AbstractModel implements ISite {
         siteId: this.id,
       });
     }
+  }
+
+  public get accessLevel(): AccessLevel {
+    if ((this.projects as any) === UnresolvedModel.many) {
+      return AccessLevel.unresolved;
+    }
+
+    if (this.projects.length === 0) {
+      return AccessLevel.unknown;
+    }
+
+    let isWriter = false;
+
+    for (const project of this.projects) {
+      if (project.accessLevel === AccessLevel.owner) {
+        return project.accessLevel;
+      } else if (project.accessLevel === AccessLevel.writer) {
+        isWriter = true;
+      }
+    }
+
+    return isWriter ? AccessLevel.writer : AccessLevel.reader;
   }
 
   /**

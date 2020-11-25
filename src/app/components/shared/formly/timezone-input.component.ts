@@ -33,6 +33,7 @@ import {
       <div class="input-group">
         <input
           #instance="ngbTypeahead"
+          [id]="field.id + 'tz-selector'"
           type="text"
           class="form-control"
           placeholder="Type a city or country name."
@@ -74,25 +75,11 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
   public timezone: TimeZone;
   public timezones: TimeZone[] = [];
 
-  public async ngOnInit() {
+  public ngOnInit() {
     this.timezones = getTimeZones();
-    this.formControl.setValidators(() => {
-      if (!isInstantiated(this.timezone)) {
-        if (this.to.required && this.formControl.dirty) {
-          return { [this.field.key.toString()]: "You must select a timezone" };
-        } else {
-          return null;
-        }
-      }
-
-      this.error = !this.timezones.find(
-        (timezone) => timezone === this.timezone
-      );
-      return this.error
-        ? { [this.field.key.toString()]: "Invalid timezone selected" }
-        : null;
-    });
+    this.formControl.setValidators(() => this.timezoneValidator());
     this.formControl.updateValueAndValidity();
+    this.setDefaultValue();
   }
 
   public getError(): string {
@@ -132,15 +119,54 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
   };
 
   /**
+   * Validate a timezone input
+   * @returns Object containing key and error message if validation fails, else null
+   */
+  private timezoneValidator(): object | null {
+    if (!isInstantiated(this.timezone)) {
+      if (this.to.required && this.formControl.dirty) {
+        return { [this.field.key.toString()]: "You must select a timezone" };
+      } else {
+        return null;
+      }
+    }
+
+    this.error = !this.timezones.find((timezone) => timezone === this.timezone);
+    return this.error
+      ? { [this.field.key.toString()]: "Invalid timezone selected" }
+      : null;
+  }
+
+  /**
+   * Set the default timezone value
+   */
+  private setDefaultValue() {
+    const key = this.field.key as string;
+    const defaultValue = this.model[key] ?? this.field.defaultValue;
+
+    if (isInstantiated(defaultValue)) {
+      // Find all matching timezones, and select the first match
+      const tzs = this.searchTimezones(defaultValue, "name");
+      if (tzs.length > 0) {
+        this.timezone = tzs[0];
+        this.updateValue();
+      }
+    }
+  }
+
+  /**
    * Search timezones and select any which reference the input
    * @param term Term to search for
    */
-  private searchTimezones(term: string): TimeZone[] {
+  private searchTimezones(
+    term: string,
+    timezoneKey: keyof TimeZone = "currentTimeFormat"
+  ): TimeZone[] {
     let zones = this.timezones;
 
     if (term?.length > 0) {
       zones = zones.filter((zone) =>
-        zone.currentTimeFormat
+        (zone[timezoneKey] as string)
           .toLocaleLowerCase()
           .includes(term.toLocaleLowerCase())
       );

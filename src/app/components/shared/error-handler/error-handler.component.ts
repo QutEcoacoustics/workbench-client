@@ -15,6 +15,9 @@ import { reportProblemMenuItem } from "@components/report-problem/report-problem
           <ng-container *ngSwitchCase="apiReturnCodes.unauthorized">
             Unauthorized Access
           </ng-container>
+          <ng-container *ngSwitchCase="apiReturnCodes.forbidden">
+            Access Forbidden
+          </ng-container>
           <ng-container *ngSwitchCase="apiReturnCodes.notFound">
             Not Found
           </ng-container>

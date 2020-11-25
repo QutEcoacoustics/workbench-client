@@ -115,52 +115,52 @@ describe("SiteCardComponent", () => {
   ];
 
   inputTypes.forEach((inputType) => {
-    function getButtons() {
+    function getLinks() {
       return {
-        details: spectator.query<HTMLButtonElement>("#details"),
-        play: spectator.query<HTMLButtonElement>("#play"),
-        visualize: spectator.query<HTMLButtonElement>("#visualize"),
+        details: spectator.query<HTMLAnchorElement>("#details"),
+        play: spectator.query<HTMLAnchorElement>("#play"),
+        visualize: spectator.query<HTMLAnchorElement>("#visualize"),
       };
     }
 
-    function assertButton(button: HTMLButtonElement, text: string) {
-      expect(button.innerText.trim()).toBe(text);
+    function assertLink(link: HTMLAnchorElement, text: string) {
+      expect(link).toHaveText(text);
     }
 
-    describe(inputType.modelType + " buttons", () => {
+    describe(inputType.modelType + " links", () => {
       beforeEach(() => {
         inputType.setup();
         spectator.detectChanges();
       });
 
-      it("should display details button", () => {
-        assertButton(getButtons().details, "Details");
+      it("should display details link", () => {
+        assertLink(getLinks().details, "Details");
       });
 
-      it("should navigate user to site when clicking details button", () => {
+      it("should navigate user to site when clicking details link", () => {
         assertRoute(
-          getButtons().details,
+          getLinks().details,
           spectator.component.model.getViewUrl(defaultProject)
         );
       });
 
       if (inputType.play) {
-        it("should display play button if site model", () => {
-          assertButton(getButtons().play, "Play");
+        it("should display play link if site model", () => {
+          assertLink(getLinks().play, "Play");
         });
 
-        xit("should navigate user to listen page when clicking play button", () => {});
+        xit("should navigate user to listen page when clicking play link", () => {});
       } else {
-        it("should not display play button", () => {
-          expect(getButtons().play).toBeFalsy();
+        it("should not display play link", () => {
+          expect(getLinks().play).toBeFalsy();
         });
       }
 
-      it("should display visualize button", () => {
-        assertButton(getButtons().visualize, "Visualise");
+      it("should display visualize link", () => {
+        assertLink(getLinks().visualize, "Visualise");
       });
 
-      xit("should navigate user to visualizer page when clicking play button", () => {});
+      xit("should navigate user to visualizer page when clicking play link", () => {});
     });
   });
 

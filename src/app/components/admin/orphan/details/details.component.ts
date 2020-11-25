@@ -7,6 +7,8 @@ import { fields as extendedFields } from "@components/sites/site.extended.json";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import {
@@ -53,6 +55,7 @@ AdminOrphanComponent.LinkComponentToPageInfo({
   category: adminOrphansCategory,
   menus: {
     actions: List([adminOrphansMenuItem, adminOrphanMenuItem]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [siteKey]: shallowSiteResolvers.show },
 }).AndMenuRoute(adminOrphanMenuItem);

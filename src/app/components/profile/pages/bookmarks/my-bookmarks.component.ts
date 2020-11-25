@@ -8,7 +8,6 @@ import {
   myBookmarksMenuItem,
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
 import { List } from "immutable";
@@ -21,6 +20,7 @@ const userKey = "user";
   templateUrl: "./bookmarks.component.html",
 })
 class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
+  public api: BookmarksService;
   public columns = [
     { name: "Bookmark" },
     { name: "Category" },
@@ -34,7 +34,7 @@ class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
         bookmarks.map((bookmark) => ({
           bookmark,
           category: bookmark.category,
-          description: bookmark.description,
+          description: bookmark.descriptionHtmlTagline,
         })),
       route
     );
@@ -47,9 +47,7 @@ class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
 
 MyBookmarksComponent.LinkComponentToPageInfo({
   category: myAccountCategory,
-  menus: {
-    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
-  },
+  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
 }).AndMenuRoute(myBookmarksMenuItem);
 

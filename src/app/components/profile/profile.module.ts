@@ -6,7 +6,9 @@ import { MyAnnotationsComponent } from "./pages/annotations/my-annotations.compo
 import { TheirAnnotationsComponent } from "./pages/annotations/their-annotations.component";
 import { MyBookmarksComponent } from "./pages/bookmarks/my-bookmarks.component";
 import { TheirBookmarksComponent } from "./pages/bookmarks/their-bookmarks.component";
+import { MyDeleteComponent } from "./pages/my-delete/my-delete.component";
 import { MyEditComponent } from "./pages/my-edit/my-edit.component";
+import { MyPasswordComponent } from "./pages/my-password/my-password.component";
 import { MyProfileComponent } from "./pages/profile/my-profile.component";
 import { TheirProfileComponent } from "./pages/profile/their-profile.component";
 import { MyProjectsComponent } from "./pages/projects/my-projects.component";
@@ -17,6 +19,8 @@ import { TheirEditComponent } from "./pages/their-edit/their-edit.component";
 import { myAccountRoute, theirProfileRoute } from "./profile.menus";
 
 const MyAccountComponents = [
+  MyDeleteComponent,
+  MyPasswordComponent,
   MyProfileComponent,
   MyEditComponent,
   MyProjectsComponent,

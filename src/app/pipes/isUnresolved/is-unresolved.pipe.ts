@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
+import { AccessLevel } from "@interfaces/apiInterfaces";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 
 /**
@@ -9,10 +10,15 @@ import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 })
 export class IsUnresolvedPipe implements PipeTransform {
   public transform(
-    value: AbstractModel | AbstractModel[] | Readonly<AbstractModel[]>
+    value:
+      | AbstractModel
+      | AbstractModel[]
+      | Readonly<AbstractModel[]>
+      | AccessLevel
   ): boolean {
+    const isUnresolvedAccessLevel = value === AccessLevel.unresolved;
     const isSingle = value === UnresolvedModel.one;
     const isMultiple = value === UnresolvedModel.many;
-    return isSingle || isMultiple;
+    return isUnresolvedAccessLevel || isSingle || isMultiple;
   }
 }

@@ -65,6 +65,7 @@
     {
       "key": "executableSettingsMediaType",
       "type": "input",
+      "defaultValue": "text/plain",
       "templateOptions": {
         "label": "Executable Settings Media Type",
         "type": "text",
@@ -82,10 +83,10 @@
     },
     {
       "key": "verified",
-      "hide": true,
+      "type": "checkbox",
+      "wrappers": ["form-field-horizontal"],
       "templateOptions": {
-        "label": "Verified",
-        "disabled": true
+        "label": "Verified"
       }
     },
     {

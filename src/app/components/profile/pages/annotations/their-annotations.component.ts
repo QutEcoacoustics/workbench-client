@@ -31,9 +31,7 @@ class TheirAnnotationsComponent extends MyAnnotationsComponent {
 
 TheirAnnotationsComponent.LinkComponentToPageInfo({
   category: theirProfileCategory,
-  menus: {
-    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
-  },
+  menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
   resolvers: { [accountKey]: accountResolvers.show },
 }).AndMenuRoute(theirAnnotationsMenuItem);
 

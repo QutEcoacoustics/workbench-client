@@ -8,38 +8,24 @@ import {
   theirProfileMenuItem,
   theirProjectsMenuItem,
 } from "@components/profile/profile.menus";
-import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Project } from "@models/Project";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { theirProfileActions } from "../profile/their-profile.component";
+import { MyProjectsComponent } from "./my-projects.component";
 
 const accountKey = "account";
 
+/**
+ * TODO Permissions field does not show the correct users access level
+ * TODO List of projects is filtered incorrectly
+ */
 @Component({
   selector: "baw-their-projects",
   templateUrl: "./projects.component.html",
 })
-class TheirProjectsComponent extends PagedTableTemplate<TableRow, Project> {
-  public columns = [
-    { name: "Project" },
-    { name: "Sites" },
-    { name: "Permission" },
-  ];
-  protected api: ProjectsService;
-
+class TheirProjectsComponent extends MyProjectsComponent {
   constructor(api: ProjectsService, route: ActivatedRoute) {
-    super(
-      api,
-      (projects) =>
-        projects.map((project) => ({
-          project,
-          sites: project.siteIds.size,
-          permission: "FIX ME",
-        })),
-      route
-    );
+    super(api, route);
   }
 
   public get account(): User {
@@ -53,16 +39,8 @@ class TheirProjectsComponent extends PagedTableTemplate<TableRow, Project> {
 
 TheirProjectsComponent.LinkComponentToPageInfo({
   category: theirProfileCategory,
-  menus: {
-    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
-  },
+  menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
   resolvers: { [accountKey]: accountResolvers.show },
 }).AndMenuRoute(theirProjectsMenuItem);
 
 export { TheirProjectsComponent };
-
-interface TableRow {
-  project: Project;
-  sites: number;
-  permission: string;
-}

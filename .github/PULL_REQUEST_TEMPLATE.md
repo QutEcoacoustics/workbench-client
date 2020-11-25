@@ -26,3 +26,4 @@ If the PR has any visual changes to the website, post pictures of the new pages 
 - [ ] Ensure project linter is not producing any warnings (`npm run lint`)
 - [ ] Ensure build is passing on all browsers (`npm run test:all`)
 - [ ] Ensure CI build is passing
+- [ ] Ensure docker container is passing ([docs](https://github.com/QutEcoacoustics/workbench-client#docker))

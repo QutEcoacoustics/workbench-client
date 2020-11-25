@@ -34,7 +34,13 @@ export type AuthToken = string;
 /**
  * BAW API Access Levels
  */
-export type AccessLevel = "Reader" | "Writer" | "Owner";
+export enum AccessLevel {
+  reader = "Reader",
+  writer = "Writer",
+  owner = "Owner",
+  unresolved = "Unresolved",
+  unknown = "Unknown",
+}
 
 /**
  * BAW API Item Description
@@ -55,7 +61,7 @@ export type DateTimeTimezone = DateTime;
 
 /**
  * Humanize a durations length of time.
- * TODO Replace with luxon official solution
+ * TODO Replace with luxon official solution (https://github.com/moment/luxon/issues/688)
  * @param dur Duration
  */
 export function toRelative(

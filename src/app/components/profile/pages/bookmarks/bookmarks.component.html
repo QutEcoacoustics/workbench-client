@@ -1,40 +1,55 @@
-<div *ngIf="rows && !error && !failure">
-  <h1>
-    Bookmarks
-    <small class="text-muted">accessible by {{ account.userName }}</small>
-  </h1>
+<ng-container *ngIf="!failure">
+  <ng-container *ngIf="!error">
+    <h1>
+      Bookmarks
+      <small class="text-muted">accessible by {{ account.userName }}</small>
+    </h1>
 
-  <p>
-    Displaying <strong>{{ pageSize }}</strong> of
-    <strong>all {{ totalModels }}</strong> bookmarks.
-  </p>
+    <p>
+      Displaying <strong>{{ pageSize }}</strong> of
+      <strong>all {{ totalModels }}</strong> bookmarks.
+    </p>
 
-  <ngx-datatable
-    #table
-    bawDatatableDefaults
-    [columnMode]="ColumnMode.force"
-    [columns]="columns"
-    [rows]="rows"
-    [count]="totalModels"
-    [offset]="pageNumber"
-    (page)="setPage($event)"
-    (sort)="onSort($event)"
-  >
-    <ngx-datatable-column name="Bookmark">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <a [routerLink]="[value.viewUrl]">{{ value.name }}</a>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Category">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <span [innerText]="value"></span>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Description"> </ngx-datatable-column>
-  </ngx-datatable>
-</div>
+    <ngx-datatable
+      *ngIf="rows"
+      #table
+      bawDatatableDefaults
+      [columnMode]="ColumnMode.force"
+      [columns]="columns"
+      [rows]="rows"
+      [count]="totalModels"
+      [offset]="pageNumber"
+      (page)="setPage($event)"
+      (sort)="onSort($event)"
+    >
+      <ngx-datatable-column
+        name="Bookmark"
+        width="200"
+        maxWidth="200"
+        [sortable]="false"
+      >
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <a [routerLink]="[value.viewUrl]">{{ value.name }}</a>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        name="Category"
+        width="125"
+        maxWidth="125"
+        [sortable]="false"
+      >
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <!-- Use innerText because categories can look like HTML and will be sanitized -->
+          <span [innerText]="value"></span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Description" [sortable]="false">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <span [innerHTML]="value"></span>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </ng-container>
 
-<baw-error-handler
-  *ngIf="!failure && error"
-  [error]="error"
-></baw-error-handler>
+  <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+</ng-container>

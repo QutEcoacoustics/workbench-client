@@ -79,6 +79,7 @@
       "type": "image",
       "templateOptions": {
         "label": "Image",
+        "disabled": true,
         "required": false
       }
     },
