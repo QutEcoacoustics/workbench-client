@@ -1,4 +1,5 @@
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
+import { AccessLevel } from "@interfaces/apiInterfaces";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { createPipeFactory, SpectatorPipe } from "@ngneat/spectator";
 import { IsUnresolvedPipe } from "./is-unresolved.pipe";
@@ -16,7 +17,11 @@ describe("IsUnresolvedPipe", () => {
   }
 
   function setup(
-    value: AbstractModel | AbstractModel[] | Readonly<AbstractModel[]>
+    value:
+      | AbstractModel
+      | AbstractModel[]
+      | Readonly<AbstractModel[]>
+      | AccessLevel
   ) {
     spec = createPipe(`<p>{{ value | isUnresolved }}</p>`, {
       hostProps: { value },
@@ -67,5 +72,22 @@ describe("IsUnresolvedPipe", () => {
     });
   });
 
-  //TODO Add test cases for AccessLevel
+  describe("access level", () => {
+    [
+      AccessLevel.reader,
+      AccessLevel.writer,
+      AccessLevel.owner,
+      AccessLevel.unknown,
+    ].forEach((accessLevel) => {
+      it(`should return false for ${accessLevel} access level`, () => {
+        setup(accessLevel);
+        assertPipeIsFalse();
+      });
+    });
+
+    it(`should return true for ${AccessLevel.unresolved} access level`, () => {
+      setup(AccessLevel.unresolved);
+      assertPipeIsTrue();
+    });
+  });
 });
