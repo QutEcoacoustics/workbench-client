@@ -4,7 +4,8 @@
     "angular.json": "*",
     "package.json": "*",
     "tsconfig.base.json": "*",
-    "tslint.json": "*",
+    ".eslintrc.json": "*",
+    ".eslintignore.json": "*",
     "nx.json": "*"
   },
   "projects": {
