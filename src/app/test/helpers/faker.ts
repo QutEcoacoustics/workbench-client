@@ -11,7 +11,11 @@ const specialCharRegex = /[^\w\s]/gi;
 
 export const modelData = {
   accessLevel: () =>
-    faker.random.arrayElement<AccessLevel>(["Reader", "Writer", "Owner"]),
+    faker.random.arrayElement<AccessLevel>([
+      AccessLevel.reader,
+      AccessLevel.writer,
+      AccessLevel.owner,
+    ]),
   boolean: () => faker.random.boolean(),
   description: () => faker.lorem.sentence().replace(specialCharRegex, ""),
   descriptionLong: () =>

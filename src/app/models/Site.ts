@@ -11,6 +11,7 @@ import { assetRoot } from "@services/app-config/app-config.service";
 import { MapMarkerOption } from "@shared/map/map.component";
 import { siteMenuItem } from "../components/sites/sites.menus";
 import {
+  AccessLevel,
   DateTimeTimezone,
   Description,
   HasAllUsers,
@@ -22,7 +23,7 @@ import {
   Param,
   TimezoneInformation,
 } from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { Creator, HasMany, Updater } from "./AssociationDecorators";
 import {
   BawCollection,
@@ -147,6 +148,28 @@ export class Site extends AbstractModel implements ISite {
         siteId: this.id,
       });
     }
+  }
+
+  public get accessLevel(): AccessLevel {
+    if ((this.projects as any) === UnresolvedModel.many) {
+      return AccessLevel.unresolved;
+    }
+
+    if (this.projects.length === 0) {
+      return AccessLevel.unknown;
+    }
+
+    let isWriter = false;
+
+    for (const project of this.projects) {
+      if (project.accessLevel === AccessLevel.owner) {
+        return project.accessLevel;
+      } else if (project.accessLevel === AccessLevel.writer) {
+        isWriter = true;
+      }
+    }
+
+    return isWriter ? AccessLevel.writer : AccessLevel.reader;
   }
 
   /**

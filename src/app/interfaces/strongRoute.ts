@@ -111,7 +111,7 @@ export class StrongRoute {
       throw new Error(msg);
     }
 
-    const prepareArgs = (x: StrongRoute) => {
+    const prepareParam = (x: StrongRoute) => {
       if (x.isParameter) {
         const key = x.name.substr(1, x.name.length - 1);
 
@@ -127,7 +127,7 @@ export class StrongRoute {
       }
     };
 
-    return this.full.map(prepareArgs).join("/");
+    return this.full.map(prepareParam).join("/");
   }
 
   /**

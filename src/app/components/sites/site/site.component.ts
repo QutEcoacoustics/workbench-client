@@ -7,6 +7,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
+import { Tagging } from "@models/Tagging";
 import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
 import { DateTime } from "luxon";
@@ -29,7 +30,7 @@ class SiteComponent extends PageComponent implements OnInit {
   public recordingsEnd: DateTime;
   public recordingsStart: DateTime;
   public marker: List<MapMarkerOption>;
-  public annotations: AudioEvent[];
+  public taggings: Tagging[];
 
   constructor(
     private audioEventsApi: ShallowAudioEventsService,
@@ -60,14 +61,13 @@ class SiteComponent extends PageComponent implements OnInit {
       .subscribe(
         (events) => {
           // Limit the selection of audio events by tagging count
-          let count = 0;
           const maxTags = 10;
-          this.annotations = [];
-          for (const event of events) {
-            this.annotations.push(event);
-            count++;
+          this.taggings = [];
 
-            if (count > maxTags) {
+          for (const event of events) {
+            this.taggings.push(...event.taggings);
+
+            if (this.taggings.length > maxTags) {
               return;
             }
           }

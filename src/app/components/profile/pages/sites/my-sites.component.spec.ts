@@ -146,7 +146,7 @@ describe("MySitesComponent", () => {
     });
 
     describe("access level", () => {
-      (["Reader", "Writer", "Owner"] as AccessLevel[]).forEach(
+      [AccessLevel.reader, AccessLevel.writer, AccessLevel.owner].forEach(
         (accessLevel) => {
           it(`should display ${accessLevel} permissions`, async () => {
             const site = new Site({ ...defaultSite, projectIds: [1] });
@@ -183,9 +183,9 @@ describe("MySitesComponent", () => {
         setup(defaultUser);
         interceptSiteRequest([site]);
         const projectPromise = interceptProjectRequest([
-          new Project({ ...defaultProject, accessLevel: "Reader" }),
-          new Project({ ...defaultProject, accessLevel: "Owner" }),
-          new Project({ ...defaultProject, accessLevel: "Writer" }),
+          new Project({ ...defaultProject, accessLevel: AccessLevel.reader }),
+          new Project({ ...defaultProject, accessLevel: AccessLevel.owner }),
+          new Project({ ...defaultProject, accessLevel: AccessLevel.writer }),
         ]);
         spec.detectChanges();
         await projectPromise;
@@ -200,9 +200,9 @@ describe("MySitesComponent", () => {
         setup(defaultUser);
         interceptSiteRequest([site]);
         const projectPromise = interceptProjectRequest([
-          new Project({ ...defaultProject, accessLevel: "Reader" }),
-          new Project({ ...defaultProject, accessLevel: "Writer" }),
-          new Project({ ...defaultProject, accessLevel: "Reader" }),
+          new Project({ ...defaultProject, accessLevel: AccessLevel.reader }),
+          new Project({ ...defaultProject, accessLevel: AccessLevel.writer }),
+          new Project({ ...defaultProject, accessLevel: AccessLevel.reader }),
         ]);
         spec.detectChanges();
         await projectPromise;

@@ -41,13 +41,11 @@
       >
         <ng-template let-value="value" ngx-datatable-cell-template>
           <baw-loading
-            *ngIf="value.projects | isUnresolved"
+            *ngIf="value.accessLevel | isUnresolved; else loaded"
             size="sm"
           ></baw-loading>
 
-          <span *ngIf="!(value.projects | isUnresolved)">
-            {{ resolveHighestAccessLevel(value.projects) }}
-          </span>
+          <ng-template #loaded>{{ value.accessLevel }} </ng-template>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column

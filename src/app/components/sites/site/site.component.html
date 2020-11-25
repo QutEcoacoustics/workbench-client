@@ -42,11 +42,13 @@
       </p>
 
       <!-- TODO Statistics about recordings -->
-      <p style="display: none">
-        This site covers 4 days, 23 hours, 20 minutes, and 51 seconds and there
-        are recordings for 4.0 days, 23.0 hours, 16.0 minutes, and 35 seconds of
-        that time.
-      </p>
+      <baw-wip>
+        <p>
+          This site covers 4 days, 23 hours, 20 minutes, and 51 seconds and
+          there are recordings for 4.0 days, 23.0 hours, 16.0 minutes, and 35
+          seconds of that time.
+        </p>
+      </baw-wip>
 
       <!-- Play and Visualize links -->
       <ul class="nav nav-pills mb-0">
@@ -69,35 +71,33 @@
 
       <ul class="nav nav-pills">
         <!-- Loading animation -->
-        <baw-loading *ngIf="!annotations"></baw-loading>
+        <baw-loading *ngIf="!taggings"></baw-loading>
 
         <!-- Handle no annotations -->
-        <p *ngIf="annotations.length === 0">No recent annotations found</p>
+        <p *ngIf="taggings?.length === 0">No recent annotations found</p>
 
         <!-- For each annotation and tagging -->
-        <ng-container *ngFor="let annotation of annotations" class="nav-item">
-          <li *ngFor="let tagging of annotation.taggings" class="nav-item">
-            <!-- Annotation link -->
-            <a class="nav-link" [routerLink]="tagging.viewUrl">
-              <!-- Loading when unresolved -->
-              <ng-container
-                *ngIf="
-                  (tagging.tag | isUnresolved) ||
-                    (tagging.tag?.creator | isUnresolved);
-                  else loaded
-                "
-              >
-                <baw-loading size="sm"></baw-loading>
-              </ng-container>
+        <li *ngFor="let tagging of taggings" class="nav-item">
+          <!-- Annotation link -->
+          <a class="nav-link" [routerLink]="tagging.viewUrl">
+            <!-- Loading when unresolved -->
+            <ng-container
+              *ngIf="
+                (tagging.tag | isUnresolved) ||
+                  (tagging.tag?.creator | isUnresolved);
+                else loaded
+              "
+            >
+              <baw-loading size="sm"></baw-loading>
+            </ng-container>
 
-              <!-- Annotation details -->
-              <ng-template #loaded>
-                "{{ tagging.tag?.text }}" by
-                {{ tagging.tag?.creator?.userName }}
-              </ng-template>
-            </a>
-          </li>
-        </ng-container>
+            <!-- Annotation details -->
+            <ng-template #loaded>
+              "{{ tagging.tag?.text }}" by
+              {{ tagging.tag?.creator?.userName }}
+            </ng-template>
+          </a>
+        </li>
       </ul>
     </ng-container>
   </div>
