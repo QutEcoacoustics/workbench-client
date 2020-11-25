@@ -24,7 +24,7 @@ const accountKey = "account";
   templateUrl: "./bookmarks.component.html",
 })
 class TheirBookmarksComponent extends MyBookmarksComponent {
-  constructor(api: BookmarksService, route: ActivatedRoute) {
+  public constructor(api: BookmarksService, route: ActivatedRoute) {
     super(api, route);
   }
 

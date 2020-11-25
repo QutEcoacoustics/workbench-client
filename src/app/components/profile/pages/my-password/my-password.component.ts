@@ -38,7 +38,7 @@ class MyPasswordComponent extends FormTemplate<User> {
   public fields = fields;
   public title: string;
 
-  constructor(
+  public constructor(
     private api: AccountsService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -54,10 +54,10 @@ class MyPasswordComponent extends FormTemplate<User> {
   }
 }
 
-MyPasswordComponent.LinkComponentToPageInfo({
+MyPasswordComponent.linkComponentToPageInfo({
   category: myAccountCategory,
   menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
-}).AndMenuRoute(myPasswordMenuItem);
+}).andMenuRoute(myPasswordMenuItem);
 
 export { MyPasswordComponent };

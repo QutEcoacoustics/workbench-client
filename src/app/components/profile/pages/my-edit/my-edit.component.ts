@@ -38,7 +38,7 @@ class MyEditComponent extends FormTemplate<User> {
   public fields = fields;
   public title: string;
 
-  constructor(
+  public constructor(
     private api: AccountsService,
     notifications: ToastrService,
     route: ActivatedRoute,

@@ -1,4 +1,4 @@
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { AbstractModel } from "@models/AbstractModel";
 import type { User } from "@models/User";
@@ -43,7 +43,7 @@ export const myEditMenuItem = menuRoute({
   tooltip: () => "Change the details for your profile",
 });
 
-export const myPasswordMenuItem = MenuRoute({
+export const myPasswordMenuItem = menuRoute({
   icon: ["fas", "key"],
   label: "Edit my password",
   parent: myAccountMenuItem,
@@ -52,7 +52,7 @@ export const myPasswordMenuItem = MenuRoute({
   tooltip: () => "Change the password for your profile",
 });
 
-export const myDeleteMenuItem = MenuRoute({
+export const myDeleteMenuItem = menuRoute({
   icon: defaultDeleteIcon,
   label: "Cancel my account",
   parent: myAccountMenuItem,
@@ -61,7 +61,7 @@ export const myDeleteMenuItem = MenuRoute({
   tooltip: () => "Remove your account from this website",
 });
 
-export const myProjectsMenuItem = MenuRoute({
+export const myProjectsMenuItem = menuRoute({
   icon: ["fas", "globe-asia"],
   label: "My Projects",
   parent: myAccountMenuItem,

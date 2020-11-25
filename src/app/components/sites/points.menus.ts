@@ -1,6 +1,6 @@
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import {
   deleteSiteMenuItem,
   editSiteMenuItem,
@@ -35,7 +35,7 @@ export const newPointMenuItem = menuRoute({
 });
 
 // TODO Add site id, region id, and project id to route params
-export const pointAnnotationsMenuItem = MenuRoute({
+export const pointAnnotationsMenuItem = menuRoute({
   ...dataRequestMenuItem,
   label: "Download Annotations",
   tooltip: () => "Download annotations for this point",

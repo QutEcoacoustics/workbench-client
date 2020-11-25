@@ -44,7 +44,7 @@ class AssignComponent
   protected api: ShallowSitesService;
   private oldSiteIds: Id[];
 
-  constructor(
+  public constructor(
     siteApi: ShallowSitesService,
     private notifications: ToastrService,
     route: ActivatedRoute

@@ -24,7 +24,7 @@ import { PageComponent } from "../page/pageComponent";
  * which requires the use of external sorting and paging.
  */
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   extends PageComponent
   implements OnInit {

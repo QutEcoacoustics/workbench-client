@@ -18,7 +18,7 @@ import { TheirSitesComponent } from "./pages/sites/their-sites.component";
 import { TheirEditComponent } from "./pages/their-edit/their-edit.component";
 import { myAccountRoute, theirProfileRoute } from "./profile.menus";
 
-const MyAccountComponents = [
+const myAccountComponents = [
   MyDeleteComponent,
   MyPasswordComponent,
   MyProfileComponent,

@@ -25,7 +25,7 @@ import { ToastrService } from "ngx-toastr";
 export class FormComponent extends withUnsubscribe() implements OnInit {
   @Input() public btnColor: BootstrapColorTypes = "primary";
   @Input() public fields: FormlyFieldConfig[] = [];
-  @Input() public model: object = {};
+  @Input() public model: Record<string, any> = {};
   @Input() public size: "small" | "default" = "default";
   @Input() public submitLabel = "Submit";
   @Input() public submitLoading: boolean;

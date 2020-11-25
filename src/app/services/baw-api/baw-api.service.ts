@@ -209,6 +209,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
   /**
    * Get response from update route
    * TODO Add option to switch between Put and Patch requests
+   *
    * @param path API path
    * @param body Request body
    */
@@ -417,7 +418,7 @@ export interface Filters<T = unknown, K extends keyof T = keyof T> {
 /**
  * Metadata from api response
  */
-export interface Meta<T = {}> extends Filters<T> {
+export interface Meta<T = unknown> extends Filters<T> {
   /** Response status */
   status?: number;
   /** Human readable response status */

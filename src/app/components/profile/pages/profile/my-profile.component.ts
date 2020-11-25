@@ -67,15 +67,15 @@ class MyProfileComponent
     { icon: myAnnotationsMenuItem.icon, name: "Annotations", value: "..." },
   ]);
   protected indexes = {
-    PROJECTS: 0,
-    TAGS: 1,
-    BOOKMARKS: 2,
-    SITES: 3,
-    POINTS: 4,
-    ANNOTATIONS: 5,
+    projects: 0,
+    tags: 1,
+    bookmarks: 2,
+    sites: 3,
+    points: 4,
+    annotations: 5,
   };
 
-  constructor(
+  public constructor(
     protected route: ActivatedRoute,
     protected audioEventsApi: ShallowAudioEventsService,
     protected bookmarksApi: BookmarksService,
@@ -100,6 +100,7 @@ class MyProfileComponent
 
   /**
    * Update user details
+   *
    * @param user User model
    */
   protected updateUserProfile(user: User) {
@@ -111,6 +112,7 @@ class MyProfileComponent
 
   /**
    * Retrieve user statistics and update page
+   *
    * @param user User model
    */
   protected updateStatistics(user: User) {
@@ -119,8 +121,8 @@ class MyProfileComponent
       .filterByCreator({}, user)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (models) => this.extractTotal(this.indexes.PROJECTS, models),
-        () => this.handleError(this.indexes.PROJECTS)
+        (models) => this.extractTotal(this.indexes.projects, models),
+        () => this.handleError(this.indexes.projects)
       );
 
     // Bookmarks
@@ -128,8 +130,8 @@ class MyProfileComponent
       .filterByCreator({}, user)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (models) => this.extractTotal(this.indexes.BOOKMARKS, models),
-        () => this.handleError(this.indexes.BOOKMARKS)
+        (models) => this.extractTotal(this.indexes.bookmarks, models),
+        () => this.handleError(this.indexes.bookmarks)
       );
 
     // Sites
@@ -137,8 +139,8 @@ class MyProfileComponent
       .filterByCreator({}, user)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (models) => this.extractTotal(this.indexes.SITES, models),
-        () => this.handleError(this.indexes.SITES)
+        (models) => this.extractTotal(this.indexes.sites, models),
+        () => this.handleError(this.indexes.sites)
       );
 
     // Points
@@ -146,8 +148,8 @@ class MyProfileComponent
       .filterByCreator({ filter: { regionId: { notEqual: null } } }, user)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (models) => this.extractTotal(this.indexes.POINTS, models),
-        () => this.handleError(this.indexes.POINTS)
+        (models) => this.extractTotal(this.indexes.points, models),
+        () => this.handleError(this.indexes.points)
       );
 
     // Annotations
@@ -155,8 +157,8 @@ class MyProfileComponent
       .filterByCreator({}, user)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (models) => this.extractTotal(this.indexes.ANNOTATIONS, models),
-        () => this.handleError(this.indexes.ANNOTATIONS)
+        (models) => this.extractTotal(this.indexes.annotations, models),
+        () => this.handleError(this.indexes.annotations)
       );
 
     // Tags
@@ -171,15 +173,16 @@ class MyProfileComponent
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (models) => {
-          this.extractTotal(this.indexes.TAGS, models);
+          this.extractTotal(this.indexes.tags, models);
           this.tags = models;
         },
-        () => this.handleError(this.indexes.TAGS)
+        () => this.handleError(this.indexes.tags)
       );
   }
 
   /**
    * Extract the maximum number of models a user has access to
+   *
    * @param index Statistic index in userStatistics array
    * @param models Model list
    */

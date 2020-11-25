@@ -24,7 +24,7 @@ const accountKey = "account";
   templateUrl: "./projects.component.html",
 })
 class TheirProjectsComponent extends MyProjectsComponent {
-  constructor(api: ProjectsService, route: ActivatedRoute) {
+  public constructor(api: ProjectsService, route: ActivatedRoute) {
     super(api, route);
   }
 

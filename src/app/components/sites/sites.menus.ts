@@ -1,5 +1,5 @@
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import {
   defaultAudioIcon,
   defaultDeleteIcon,
@@ -35,7 +35,7 @@ export const newSiteMenuItem = menuRoute({
 });
 
 // TODO Add site id and project id to route params
-export const siteAnnotationsMenuItem = MenuRoute({
+export const siteAnnotationsMenuItem = menuRoute({
   ...dataRequestMenuItem,
   label: "Download Annotations",
   tooltip: () => "Download annotations for this site",

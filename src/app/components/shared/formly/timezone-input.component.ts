@@ -122,9 +122,10 @@ export class TimezoneInputComponent extends FieldType implements OnInit {
 
   /**
    * Validate a timezone input
+   *
    * @returns Object containing key and error message if validation fails, else null
    */
-  private timezoneValidator(): object | null {
+  private timezoneValidator(): Record<string, string> | null {
     if (!isInstantiated(this.timezone)) {
       if (this.to.required && this.formControl.dirty) {
         return { [this.field.key.toString()]: "You must select a timezone" };

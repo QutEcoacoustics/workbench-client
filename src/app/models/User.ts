@@ -198,6 +198,7 @@ function isModelAdmin(model: User | SessionUser): boolean {
 
 /**
  * Determines if user is a deleted user
+ *
  * @param model User to evaluate
  */
 export function isDeletedUser(model: User): boolean {
@@ -206,6 +207,7 @@ export function isDeletedUser(model: User): boolean {
 
 /**
  * Determines if user is an unknown user
+ *
  * @param model User to evaluate
  */
 export function isUnknownUser(model: User): boolean {

@@ -38,7 +38,7 @@ const accountKey = "account";
 class TheirProfileComponent extends MyProfileComponent implements OnInit {
   public thirdPerson = true;
 
-  constructor(
+  public constructor(
     route: ActivatedRoute,
     audioEventsApi: ShallowAudioEventsService,
     bookmarksApi: BookmarksService,

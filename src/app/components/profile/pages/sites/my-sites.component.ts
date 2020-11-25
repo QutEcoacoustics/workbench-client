@@ -33,7 +33,7 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   public annotationLink = dataRequestMenuItem.route.toString();
   protected api: ShallowSitesService;
 
-  constructor(api: ShallowSitesService, route: ActivatedRoute) {
+  public constructor(api: ShallowSitesService, route: ActivatedRoute) {
     super(
       api,
       (sites) =>
