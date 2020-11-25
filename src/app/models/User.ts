@@ -14,6 +14,9 @@ import {
 import { AbstractModel } from "./AbstractModel";
 import { bawDateTime, bawImage, bawPersistAttr } from "./AttributeDecorators";
 
+const deletedUserId = -1;
+const unknownUserId = -2;
+
 /**
  * A user model.
  */
@@ -52,7 +55,7 @@ export class User extends AbstractModel implements IUser {
    */
   public static get deletedUser(): User {
     return new User({
-      id: -1,
+      id: deletedUserId,
       email: "deleted-user@noreply.com.au",
       userName: "Deleted User",
     });
@@ -63,7 +66,7 @@ export class User extends AbstractModel implements IUser {
    */
   public static get unknownUser(): User {
     return new User({
-      id: -2,
+      id: unknownUserId,
       email: "unknown-user@noreply.com.au",
       userName: "Unknown User",
     });
@@ -132,7 +135,6 @@ export class User extends AbstractModel implements IUser {
     return super.toString(this.userName);
   }
 }
-
 /**
  * A user model for the website user
  */
@@ -192,4 +194,20 @@ export class SessionUser extends AbstractModel implements ISessionUser {
 function isModelAdmin(model: User | SessionUser): boolean {
   // eslint-disable-next-line no-bitwise
   return !!(model.rolesMask & 1);
+}
+
+/**
+ * Determines if user is a deleted user
+ * @param model User to evaluate
+ */
+export function isDeletedUser(model: User): boolean {
+  return model.id === deletedUserId;
+}
+
+/**
+ * Determines if user is an unknown user
+ * @param model User to evaluate
+ */
+export function isUnknownUser(model: User): boolean {
+  return model.id === unknownUserId;
 }

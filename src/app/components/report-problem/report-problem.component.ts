@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { withFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import {
@@ -13,7 +13,10 @@ import { fields } from "./report-problem.schema.json";
     <baw-wip>
       <baw-form
         title="Report Problem"
-        [subTitle]="subTitle"
+        subTitle="
+          Complete the form below to report a problem.
+          Alternatively, we have a <a href='https://github.com/QutEcoacoustics/baw-server/issues'>Github Issues</a> page.
+        "
         [model]="model"
         [fields]="fields"
         submitLabel="Submit"
@@ -23,22 +26,11 @@ import { fields } from "./report-problem.schema.json";
     </baw-wip>
   `,
 })
-class ReportProblemComponent
-  extends withFormCheck(PageComponent)
-  implements OnInit {
+class ReportProblemComponent extends withFormCheck(PageComponent) {
   public model = {};
   public fields = fields;
   public loading: boolean;
   public subTitle: string;
-
-  public constructor() {
-    super();
-  }
-
-  public ngOnInit() {
-    this.subTitle = `Complete the form below to report a problem.
-    Alternatively, we have a <a href='https://github.com/QutEcoacoustics/baw-server/issues'>Github Issues</a> page.`;
-  }
 
   /**
    * Form submission

@@ -1,6 +1,14 @@
 {
   "fields": [
     {
+      "key": "group",
+      "hide": true,
+      "templateOptions": {
+        "label": "Group",
+        "disabled": true
+      }
+    },
+    {
       "key": "creator",
       "hide": true,
       "templateOptions": {

@@ -1,10 +1,10 @@
-import { Category, menuLink, menuRoute } from "@interfaces/menusInterfaces";
+import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
+import { Category, MenuRoute } from "@interfaces/menusInterfaces";
 import {
   defaultAudioIcon,
   defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
-  isLoggedInPredicate,
   isProjectOwnerPredicate,
 } from "src/app/app.menus";
 import { projectMenuItem } from "../projects/projects.menus";
@@ -34,12 +34,11 @@ export const newSiteMenuItem = menuRoute({
   tooltip: () => "Create a new site",
 });
 
-export const siteAnnotationsMenuItem = menuLink({
-  icon: ["fas", "border-all"],
-  label: "Download annotations",
-  predicate: isLoggedInPredicate,
+// TODO Add site id and project id to route params
+export const siteAnnotationsMenuItem = MenuRoute({
+  ...dataRequestMenuItem,
+  label: "Download Annotations",
   tooltip: () => "Download annotations for this site",
-  uri: () => "REPLACE_ME",
 });
 
 export const editSiteMenuItem = menuRoute({

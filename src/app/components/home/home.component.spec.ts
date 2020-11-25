@@ -81,7 +81,10 @@ describe("HomeComponent", () => {
 
     it("should request 3 projects", async () => {
       await interceptProjects();
-      expect(projectApi.filter).toHaveBeenCalledWith({ paging: { items: 3 } });
+      expect(projectApi.filter).toHaveBeenCalledWith({
+        paging: { items: 3 },
+        sorting: { orderBy: "updatedAt", direction: "desc" },
+      });
     });
 
     it("should handle filter error", async () => {

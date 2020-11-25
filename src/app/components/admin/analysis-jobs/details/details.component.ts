@@ -6,6 +6,8 @@ import { adminAnalysisJobsMenuItem } from "@components/admin/admin.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { List } from "immutable";
 import { fields } from "../analysis-job.schema.json";
@@ -56,6 +58,7 @@ AdminAnalysisJobComponent.linkComponentToPageInfo({
   category: adminAnalysisJobsCategory,
   menus: {
     actions: List([adminAnalysisJobsMenuItem, adminAnalysisJobMenuItem]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [analysisJobKey]: analysisJobResolvers.show },
 }).andMenuRoute(adminAnalysisJobMenuItem);

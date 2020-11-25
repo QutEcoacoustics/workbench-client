@@ -1,5 +1,6 @@
 import { Injector } from "@angular/core";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { listenMenuItem } from "@helpers/page/externalMenus";
 import { Duration } from "luxon";
 import {
   DateTimeTimezone,
@@ -87,7 +88,7 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
 
   public get viewUrl(): string {
     console.warn("AudioRecording viewUrl not implement.");
-    return "/FIX_ME";
+    return listenMenuItem.uri();
   }
 }
 

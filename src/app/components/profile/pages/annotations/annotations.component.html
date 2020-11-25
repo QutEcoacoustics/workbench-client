@@ -1,73 +1,78 @@
-<div *ngIf="rows && !error && !failure">
-  <h1>
-    Annotations
-    <small class="text-muted">accessible by {{ account.userName }}</small>
-  </h1>
+<ng-container *ngIf="!failure">
+  <ng-container *ngIf="!error">
+    <h1>
+      Annotations
+      <small class="text-muted">accessible by {{ account.userName }}</small>
+    </h1>
 
-  <p>
-    Displaying <strong>{{ pageSize }}</strong> of
-    <strong>all {{ totalModels }}</strong> annotations.
-  </p>
+    <p>
+      Displaying <strong>{{ pageSize }}</strong> of
+      <strong>all {{ totalModels }}</strong> annotations.
+    </p>
 
-  <ngx-datatable
-    #table
-    bawDatatableDefaults
-    [columnMode]="ColumnMode.force"
-    [columns]="columns"
-    [rows]="rows"
-    [count]="totalModels"
-    [offset]="pageNumber"
-    (page)="setPage($event)"
-    (sort)="onSort($event)"
-  >
-    <ngx-datatable-column name="Site" [sortable]="false">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <span>{{ value.audioRecording?.site?.name }}</span>
-        <baw-loading
-          *ngIf="!value.audioRecording?.site?.name"
-          size="sm"
-        ></baw-loading>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Updated">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        {{ value }}
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Tags" [sortable]="false">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <ng-container *ngFor="let tag of value.tags">
-          <span class="badge badge-primary mr-1">
-            {{ tag.text }}
-          </span>
-        </ng-container>
-        <baw-loading *ngIf="value.tags | isUnresolved" size="sm"></baw-loading>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column
-      name="Model"
-      [width]="160"
-      [maxWidth]="160"
-      [sortable]="false"
+    <ngx-datatable
+      #table
+      bawDatatableDefaults
+      [columnMode]="ColumnMode.force"
+      [columns]="columns"
+      [rows]="rows"
+      [count]="totalModels"
+      [offset]="pageNumber"
+      (page)="setPage($event)"
+      (sort)="onSort($event)"
     >
-      <ng-template let-column="column" ngx-datatable-header-template>
-      </ng-template>
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <a
-          class="btn btn-sm btn-primary mr-1"
-          [routerLink]="[value.listenViewUrl]"
-        >
-          Play
-        </a>
-        <a class="btn btn-sm btn-secondary" [routerLink]="[value.viewUrl]">
-          Annotation
-        </a>
-      </ng-template>
-    </ngx-datatable-column>
-  </ngx-datatable>
-</div>
+      <ngx-datatable-column name="Site" [sortable]="false">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <span>{{ value.audioRecording?.site?.name }}</span>
+          <baw-loading
+            *ngIf="
+              (value.audioRecording | isUnresolved) ||
+              (value.audioRecording?.site | isUnresolved)
+            "
+            size="sm"
+          ></baw-loading>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Updated">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Tags" [sortable]="false">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngFor="let tag of value.tags">
+            <span class="badge badge-primary mr-1">
+              {{ tag.text }}
+            </span>
+          </ng-container>
+          <baw-loading
+            *ngIf="value.tags | isUnresolved"
+            size="sm"
+          ></baw-loading>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        name="Model"
+        [width]="160"
+        [maxWidth]="160"
+        [sortable]="false"
+      >
+        <ng-template let-column="column" ngx-datatable-header-template>
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <a
+            class="btn btn-sm btn-primary mr-1"
+            [routerLink]="[value.listenViewUrl]"
+          >
+            Play
+          </a>
+          <a class="btn btn-sm btn-secondary" [routerLink]="value.viewUrl">
+            Annotation
+          </a>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </ng-container>
 
-<baw-error-handler
-  *ngIf="!failure && error"
-  [error]="error"
-></baw-error-handler>
+  <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+</ng-container>

@@ -41,15 +41,17 @@ import { Site } from "@models/Site";
             </a>
           </li>
           <li *ngIf="site" class="nav-item">
-            <!-- TODO -->
-            <a id="play" class="nav-link" href="not_developed">
+            <a id="play" class="nav-link" [routerLink]="site.playUrl">
               <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
               Play
             </a>
           </li>
           <li class="nav-item">
-            <!-- TODO -->
-            <a id="visualize" class="nav-link" href="not_developed">
+            <a
+              id="visualize"
+              class="nav-link"
+              [routerLink]="model.visualizeUrl"
+            >
               <fa-icon [icon]="['fas', 'eye']"></fa-icon>
               Visualise
             </a>

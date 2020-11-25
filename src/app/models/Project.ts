@@ -95,7 +95,6 @@ export class Project extends AbstractModel implements IProject {
 
   /**
    * Generate card-item details
-   * TODO Extract this out, should not be implemented here
    */
   public getCard(): Card {
     return {

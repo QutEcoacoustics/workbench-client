@@ -8,7 +8,6 @@ import {
 } from "@components/projects/projects.menus";
 import { withFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
@@ -78,9 +77,7 @@ class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
 
 RequestComponent.linkComponentToPageInfo({
   category: projectsCategory,
-  menus: {
-    actions: List<AnyMenuItem>([projectsMenuItem, ...projectsMenuItemActions]),
-  },
+  menus: { actions: List([projectsMenuItem, ...projectsMenuItemActions]) },
 }).andMenuRoute(requestProjectMenuItem);
 
 export { RequestComponent };

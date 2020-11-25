@@ -5,7 +5,7 @@ import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
   myAccountMenuItem,
-  myEditMenuItem,
+  myDeleteMenuItem,
 } from "@components/profile/profile.menus";
 import {
   defaultSuccessMsg,
@@ -15,27 +15,26 @@ import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { myAccountActions } from "../profile/my-profile.component";
-import { fields } from "./my-edit.schema.json";
 
 const userKey = "user";
 
 @Component({
-  selector: "baw-my-edit",
+  selector: "baw-my-delete",
   template: `
     <baw-form
       *ngIf="!failure"
-      title="Profile Settings"
+      title="Cancel my account"
+      subTitle="Unhappy? You can permanently cancel your account."
       [model]="model"
-      [fields]="fields"
-      btnColor="warning"
-      submitLabel="Update"
+      [fields]="[]"
+      btnColor="danger"
+      submitLabel="Cancel my account"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
 })
-class MyEditComponent extends FormTemplate<User> {
-  public fields = fields;
+class MyDeleteComponent extends FormTemplate<User> {
   public title: string;
 
   constructor(
@@ -45,19 +44,19 @@ class MyEditComponent extends FormTemplate<User> {
     router: Router
   ) {
     super(notifications, route, router, userKey, (model) =>
-      defaultSuccessMsg("updated", model.userName)
+      defaultSuccessMsg("destroyed", model.userName)
     );
   }
 
   protected apiAction(model: Partial<User>) {
-    return this.api.update(new User(model));
+    return this.api.destroy(new User(model));
   }
 }
 
-MyEditComponent.linkComponentToPageInfo({
+MyDeleteComponent.LinkComponentToPageInfo({
   category: myAccountCategory,
   menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
-}).andMenuRoute(myEditMenuItem);
+}).AndMenuRoute(myDeleteMenuItem);
 
-export { MyEditComponent };
+export { MyDeleteComponent };

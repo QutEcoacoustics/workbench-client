@@ -1,139 +1,133 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
-import { userResolvers } from "@baw-api/user/user.service";
-import { IProject, Project } from "@models/Project";
+import { AccessLevel } from "@interfaces/apiInterfaces";
+import { Project } from "@models/Project";
 import { User } from "@models/User";
-import { SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateUser } from "@test/fakes/User";
 import { assertErrorHandler, assertRoute } from "@test/helpers/html";
-import { mockActivatedRoute } from "@test/helpers/testbed";
 import { BehaviorSubject } from "rxjs";
 import { MyProjectsComponent } from "./my-projects.component";
 
 describe("MyProjectsComponent", () => {
   let api: SpyObject<ProjectsService>;
-  let component: MyProjectsComponent;
   let defaultUser: User;
-  let fixture: ComponentFixture<MyProjectsComponent>;
+  let defaultProject: Project;
+  let spec: SpectatorRouting<MyProjectsComponent>;
+  const createComponent = createRoutingFactory({
+    component: MyProjectsComponent,
+    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    stubsEnabled: false,
+  });
 
-  function configureTestingModule(model?: User, error?: ApiErrorDetails) {
-    TestBed.configureTestingModule({
-      declarations: [MyProjectsComponent],
-      imports: [SharedModule, RouterTestingModule, MockBawApiModule],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
-            { user: userResolvers.show },
-            { user: { model, error } }
-          ),
-        },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(MyProjectsComponent);
-    api = TestBed.inject(ProjectsService) as SpyObject<ProjectsService>;
-    component = fixture.componentInstance;
-  }
-
-  function setProject(data?: IProject): Project {
-    if (!data) {
-      api.filter.and.callFake(() => new BehaviorSubject<Project[]>([]));
-      return;
-    }
-
-    const project = new Project({ ...generateProject(), ...data });
-    project.addMetadata({
-      status: 200,
-      message: "OK",
-      paging: {
-        page: 1,
-        items: defaultApiPageSize,
-        total: 1,
-        maxPage: 1,
+  function setup(model: User, error?: ApiErrorDetails) {
+    spec = createComponent({
+      detectChanges: false,
+      data: {
+        resolvers: { user: "resolver" },
+        user: { model, error },
       },
     });
+    api = spec.inject(ProjectsService);
+  }
 
-    api.filter.and.callFake(
-      () => new BehaviorSubject<Project[]>([project])
-    );
+  function interceptRequest(projects: Project[]) {
+    projects?.forEach((project) => {
+      project.addMetadata({
+        paging: {
+          page: 1,
+          items: defaultApiPageSize,
+          total: 1,
+          maxPage: 1,
+        },
+      });
+    });
 
-    return project;
+    api.filter.and.callFake(() => new BehaviorSubject(projects));
   }
 
   beforeEach(() => {
     defaultUser = new User(generateUser());
+    defaultProject = new Project(generateProject());
   });
 
   it("should create", () => {
-    configureTestingModule(defaultUser);
-    setProject();
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+    setup(defaultUser);
+    interceptRequest([]);
+    spec.detectChanges();
+    expect(spec.component).toBeTruthy();
   });
 
   it("should display username in title", () => {
-    configureTestingModule(
-      new User({ ...generateUser(), userName: "custom username" })
-    );
-    setProject();
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("small");
-    expect(title.innerText.trim()).toContain("custom username");
+    setup(defaultUser);
+    interceptRequest([]);
+    spec.detectChanges();
+    expect(spec.query("h1 small")).toHaveText(defaultUser.userName);
   });
 
   it("should handle user error", () => {
-    configureTestingModule(undefined, generateApiErrorDetails());
-    setProject();
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
-
-    assertErrorHandler(fixture);
+    setup(undefined, generateApiErrorDetails());
+    interceptRequest([]);
+    spec.detectChanges();
+    assertErrorHandler(spec.fixture);
   });
 
   describe("table", () => {
-    function getCells(): NodeListOf<HTMLDivElement> {
-      return fixture.nativeElement.querySelectorAll("datatable-body-cell");
+    function getCells() {
+      return spec.queryAll<HTMLDivElement>("datatable-body-cell");
     }
 
-    it("should display project name", () => {
-      configureTestingModule(defaultUser);
-      setProject({ name: "custom project" });
-      fixture.detectChanges();
+    describe("project name", () => {
+      it("should display project name", () => {
+        setup(defaultUser);
+        interceptRequest([defaultProject]);
+        spec.detectChanges();
 
-      expect(getCells()[0].innerText.trim()).toBe("custom project");
+        expect(getCells()[0]).toHaveText(defaultProject.name);
+      });
+
+      it("should display project name link", () => {
+        setup(defaultUser);
+        interceptRequest([defaultProject]);
+        spec.detectChanges();
+
+        const link = getCells()[0].querySelector("a");
+        assertRoute(link, defaultProject.viewUrl);
+      });
     });
 
-    it("should display project name link", () => {
-      configureTestingModule(defaultUser);
-      const project = setProject({ name: "custom project" });
-      fixture.detectChanges();
+    it("should display number of site ids", () => {
+      setup(defaultUser);
+      interceptRequest([defaultProject]);
+      spec.detectChanges();
 
-      const link = getCells()[0].querySelector("a");
-      assertRoute(link, project.viewUrl);
+      expect(getCells()[1]).toHaveText(defaultProject.siteIds.size.toString());
     });
 
-    it("should display number of sites", () => {
-      configureTestingModule(defaultUser);
-      setProject({ siteIds: [1, 2, 3, 4, 5] });
-      fixture.detectChanges();
+    describe("access level", () => {
+      (["Reader", "Writer", "Owner"] as AccessLevel[]).forEach(
+        (accessLevel) => {
+          it(`should display ${accessLevel} permissions`, async () => {
+            const project = new Project({ ...generateProject(), accessLevel });
 
-      expect(getCells()[1].innerText).toBe("5");
+            setup(defaultUser);
+            interceptRequest([project]);
+            spec.detectChanges();
+
+            expect(getCells()[2]).toHaveText(accessLevel);
+          });
+        }
+      );
     });
-
-    // TODO Implement
-    xit("should display reader permissions", () => {});
-    xit("should display writer permissions", () => {});
-    xit("should display owner permissions", () => {});
-    xit("should display owner permissions link", () => {});
   });
 });

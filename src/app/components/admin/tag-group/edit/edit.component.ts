@@ -8,6 +8,8 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -69,6 +71,7 @@ AdminTagGroupsEditComponent.linkComponentToPageInfo({
   category: adminTagGroupsCategory,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [tagGroupKey]: tagGroupResolvers.show },
 }).andMenuRoute(adminEditTagGroupMenuItem);

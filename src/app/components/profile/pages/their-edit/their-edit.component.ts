@@ -13,7 +13,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -25,7 +24,7 @@ const accountKey = "account";
 @Component({
   selector: "baw-their-edit",
   template: `
-    <baw-wip *ngIf="!failure">
+    <ng-container *ngIf="!failure">
       <baw-form
         [title]="title"
         btnColor="warning"
@@ -38,13 +37,17 @@ const accountKey = "account";
 
       <hr />
 
-      <baw-detail-view [model]="model" [fields]="fields"></baw-detail-view>
-    </baw-wip>
+      <baw-detail-view
+        [model]="originalModel"
+        [fields]="fields"
+      ></baw-detail-view>
+    </ng-container>
   `,
 })
 class TheirEditComponent extends FormTemplate<User> implements OnInit {
   public fields = fields;
   public title: string;
+  public originalModel: User;
 
   public constructor(
     private api: AccountsService,
@@ -62,6 +65,7 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
 
     if (!this.failure) {
       this.title = `Editing profile for ${this.model.userName}`;
+      this.originalModel = Object.assign({}, this.model);
     }
   }
 
@@ -72,9 +76,7 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
 
 TheirEditComponent.linkComponentToPageInfo({
   category: theirProfileCategory,
-  menus: {
-    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
-  },
+  menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
   resolvers: { [accountKey]: accountResolvers.show },
 }).andMenuRoute(theirEditMenuItem);
 

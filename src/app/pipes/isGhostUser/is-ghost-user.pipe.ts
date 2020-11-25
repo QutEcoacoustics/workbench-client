@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { User } from "@models/User";
+import { isDeletedUser, isUnknownUser, User } from "@models/User";
 
 /**
  * Evaluate if a model is a ghost user or undefined
@@ -23,8 +23,8 @@ export class IsGhostUserPipe implements PipeTransform {
       return true;
     }
 
-    const isDeleted = value.id === User.deletedUser.id;
-    const isUnknown = value.id === User.unknownUser.id;
+    const isDeleted = isDeletedUser(value);
+    const isUnknown = isUnknownUser(value);
 
     switch (type) {
       case "all":

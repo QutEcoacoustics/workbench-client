@@ -1,5 +1,6 @@
 import { Injector } from "@angular/core";
-import { AUDIO_EVENT, TAG } from "@baw-api/ServiceTokens";
+import { TAG } from "@baw-api/ServiceTokens";
+import { listenMenuItem } from "@helpers/page/externalMenus";
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
@@ -8,7 +9,6 @@ import {
 import { AbstractModel } from "./AbstractModel";
 import { creator, hasOne, updater } from "./AssociationDecorators";
 import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
-import type { AudioEvent } from "./AudioEvent";
 import type { Tag } from "./Tag";
 import type { User } from "./User";
 
@@ -47,6 +47,7 @@ export class Tagging extends AbstractModel implements ITagging {
   }
 
   public get viewUrl(): string {
-    throw new Error("Tagging viewUrl not implemented.");
+    console.error("Tagging viewUrl not fully implemented");
+    return listenMenuItem.uri();
   }
 }

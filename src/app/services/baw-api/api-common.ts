@@ -1,4 +1,5 @@
 import { PartialWith } from "@helpers/advancedTypes";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
@@ -23,8 +24,8 @@ export type IdParamOptional<T extends AbstractModel> = (
 export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
   if (x === emptyParam) {
     return x;
-  } else if (x instanceof AbstractModel) {
-    return x.id.toString();
+  } else if (isInstantiated(x?.["id"])) {
+    return x?.["id"].toString();
   } else {
     return x.toString();
   }

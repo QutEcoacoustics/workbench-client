@@ -188,7 +188,8 @@ export class StrongRoute {
 
   /**
    * String representation of the route
-   * eg. "/home/house"
+   *
+   * Example output: "/home/house"
    */
   public toString(): string {
     return "/" + (this.fullRoute ? this.fullRoute : "");
@@ -196,7 +197,10 @@ export class StrongRoute {
 
   /**
    * Router representation of the route
-   * eg. ["home", "house"]
+   * ! This will use a path relative to the current page if directly
+   * inserted into the [routerLink] directive
+   *
+   * Example output: ["home", "house"]
    */
   public toRoute(): string[] {
     return this.full.slice(1).map((x) => x.name);

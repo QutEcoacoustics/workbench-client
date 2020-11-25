@@ -5,7 +5,7 @@ import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
   myAccountMenuItem,
-  myEditMenuItem,
+  myPasswordMenuItem,
 } from "@components/profile/profile.menus";
 import {
   defaultSuccessMsg,
@@ -15,16 +15,16 @@ import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { myAccountActions } from "../profile/my-profile.component";
-import { fields } from "./my-edit.schema.json";
+import { fields } from "./my-password.schema.json";
 
 const userKey = "user";
 
 @Component({
-  selector: "baw-my-edit",
+  selector: "baw-my-password",
   template: `
     <baw-form
       *ngIf="!failure"
-      title="Profile Settings"
+      title="Update my password"
       [model]="model"
       [fields]="fields"
       btnColor="warning"
@@ -34,7 +34,7 @@ const userKey = "user";
     ></baw-form>
   `,
 })
-class MyEditComponent extends FormTemplate<User> {
+class MyPasswordComponent extends FormTemplate<User> {
   public fields = fields;
   public title: string;
 
@@ -54,10 +54,10 @@ class MyEditComponent extends FormTemplate<User> {
   }
 }
 
-MyEditComponent.linkComponentToPageInfo({
+MyPasswordComponent.LinkComponentToPageInfo({
   category: myAccountCategory,
   menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
-}).andMenuRoute(myEditMenuItem);
+}).AndMenuRoute(myPasswordMenuItem);
 
-export { MyEditComponent };
+export { MyPasswordComponent };

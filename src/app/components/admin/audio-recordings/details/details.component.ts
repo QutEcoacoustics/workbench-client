@@ -5,6 +5,8 @@ import { retrieveResolvers } from "@baw-api/resolver-common";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
 import { List } from "immutable";
 import { fields } from "../audio-recording.schema.json";
@@ -55,6 +57,7 @@ AdminAudioRecordingComponent.linkComponentToPageInfo({
   category: adminAudioRecordingsCategory,
   menus: {
     actions: List([adminAudioRecordingsMenuItem, adminAudioRecordingMenuItem]),
+    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [audioRecordingKey]: audioRecordingResolvers.show },
 }).andMenuRoute(adminAudioRecordingMenuItem);

@@ -24,8 +24,8 @@ import { PageComponent } from "../page/pageComponent";
  * which requires the use of external sorting and paging.
  */
 @Directive()
-// eslint-disable-next-line @angular-eslint/directive-class-suffix
-export abstract class PagedTableTemplate<T, M extends AbstractModel>
+// tslint:disable-next-line: directive-class-suffix
+export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   extends PageComponent
   implements OnInit {
   @ViewChild(DatatableComponent) public table: DatatableComponent;
@@ -38,8 +38,8 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public SelectionType = SelectionType;
   public columns: TableColumn[] = [];
-  public rows: T[];
-  public selected: T[] = [];
+  public rows: TableRow[];
+  public selected: TableRow[] = [];
   public sortKeys: { [key: string]: string };
   public filterKey: keyof M;
   public totalModels = 0;
@@ -61,9 +61,10 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
 
   public constructor(
     protected api: ApiFilter<any, any>,
-    private rowsCallback: (models: M[]) => T[],
+    private rowsCallback: (models: M[]) => TableRow[],
     private route?: ActivatedRoute,
-    private getUrlParameters: (component: any) => AbstractModel[] = () => []
+    private getUrlParameters: (component: any) => AbstractModel[] = () => [],
+    private preselectRows: (rows: TableRow[]) => void = () => {}
   ) {
     super();
     this.pageNumber = 0;
@@ -122,7 +123,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
       this.filters.sorting = undefined;
     } else {
       this.filters.sorting = {
-        orderBy: this.sortKeys[event.column.prop],
+        orderBy: this.sortKeys[event.column.prop] as keyof M,
         direction: event.newValue,
       };
     }
@@ -139,6 +140,7 @@ export abstract class PagedTableTemplate<T, M extends AbstractModel>
       .subscribe(
         (models: M[]) => {
           this.rows = this.rowsCallback(models);
+          this.preselectRows(this.rows);
           this.loadingData = false;
 
           this.pageSize = models.length;

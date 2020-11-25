@@ -1,25 +1,29 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { userResolvers } from "@baw-api/user/user.service";
+import { adminTagsMenuItem } from "@components/admin/tags/tags.menus";
+import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import {
   myAccountCategory,
   myAccountMenuItem,
   myAnnotationsMenuItem,
   myBookmarksMenuItem,
+  myDeleteMenuItem,
   myEditMenuItem,
+  myPasswordMenuItem,
   myProjectsMenuItem,
   mySitesMenuItem,
 } from "@components/profile/profile.menus";
 import { projectsMenuItem } from "@components/projects/projects.menus";
-import { siteMenuItem } from "@components/sites/sites.menus";
+import { pointMenuItem } from "@components/sites/points.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
@@ -29,6 +33,8 @@ import { takeUntil } from "rxjs/operators";
 
 export const myAccountActions = [
   myEditMenuItem,
+  myPasswordMenuItem,
+  myDeleteMenuItem,
   myProjectsMenuItem,
   mySitesMenuItem,
   myBookmarksMenuItem,
@@ -45,25 +51,37 @@ const userKey = "user";
 class MyProfileComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit {
+  public dataRequest = dataRequestMenuItem;
   public lastSeenAt: string;
+  public membershipLength: string;
   public tags: Tag[];
   public thirdPerson = false;
   public user: User;
   public userStatistics: List<ItemInterface> = List([
     { icon: projectsMenuItem.icon, name: "Projects", value: "..." },
-    { icon: ["fas", "tags"], name: "Tags", value: "..." },
-    { icon: ["fas", "bookmark"], name: "Bookmarks", value: "..." },
-    { icon: siteMenuItem.icon, name: "Sites", value: "..." },
-    // TODO Implement
-    { icon: ["fas", "bullseye"], name: "Annotations", value: "Unknown" },
+    // TODO Update icon
+    { icon: adminTagsMenuItem.icon, name: "Tags", value: "..." },
+    { icon: myBookmarksMenuItem.icon, name: "Bookmarks", value: "..." },
+    { icon: mySitesMenuItem.icon, name: "Sites", value: "..." },
+    { icon: pointMenuItem.icon, name: "Points", value: "..." },
+    { icon: myAnnotationsMenuItem.icon, name: "Annotations", value: "..." },
   ]);
+  protected indexes = {
+    PROJECTS: 0,
+    TAGS: 1,
+    BOOKMARKS: 2,
+    SITES: 3,
+    POINTS: 4,
+    ANNOTATIONS: 5,
+  };
 
-  public constructor(
-    private route: ActivatedRoute,
-    private projectsApi: ProjectsService,
-    private sitesApi: ShallowSitesService,
-    private tagsApi: TagsService,
-    private bookmarksApi: BookmarksService
+  constructor(
+    protected route: ActivatedRoute,
+    protected audioEventsApi: ShallowAudioEventsService,
+    protected bookmarksApi: BookmarksService,
+    protected projectsApi: ProjectsService,
+    protected sitesApi: ShallowSitesService,
+    protected tagsApi: TagsService
   ) {
     super();
   }
@@ -76,48 +94,96 @@ class MyProfileComponent
     }
 
     this.user = userModel.model;
-    this.lastSeenAt = this.user.lastSeenAt
-      ? this.user.lastSeenAt.toRelative()
-      : "Unknown time since last logged in";
+    this.updateUserProfile(this.user);
+    this.updateStatistics(this.user);
+  }
 
+  /**
+   * Update user details
+   * @param user User model
+   */
+  protected updateUserProfile(user: User) {
+    this.lastSeenAt =
+      user.lastSeenAt?.toRelative() || "Unknown time since last logged in";
+    this.membershipLength =
+      user.createdAt?.toRelative() || "Unknown membership length";
+  }
+
+  /**
+   * Retrieve user statistics and update page
+   * @param user User model
+   */
+  protected updateStatistics(user: User) {
+    // Projects
     this.projectsApi
-      .list()
+      .filterByCreator({}, user)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (models) => this.extractTotal(0, models),
-        () => this.handleError(0)
+        (models) => this.extractTotal(this.indexes.PROJECTS, models),
+        () => this.handleError(this.indexes.PROJECTS)
       );
 
+    // Bookmarks
+    this.bookmarksApi
+      .filterByCreator({}, user)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (models) => this.extractTotal(this.indexes.BOOKMARKS, models),
+        () => this.handleError(this.indexes.BOOKMARKS)
+      );
+
+    // Sites
+    this.sitesApi
+      .filterByCreator({}, user)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (models) => this.extractTotal(this.indexes.SITES, models),
+        () => this.handleError(this.indexes.SITES)
+      );
+
+    // Points
+    this.sitesApi
+      .filterByCreator({ filter: { regionId: { notEqual: null } } }, user)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (models) => this.extractTotal(this.indexes.POINTS, models),
+        () => this.handleError(this.indexes.POINTS)
+      );
+
+    // Annotations
+    this.audioEventsApi
+      .filterByCreator({}, user)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (models) => this.extractTotal(this.indexes.ANNOTATIONS, models),
+        () => this.handleError(this.indexes.ANNOTATIONS)
+      );
+
+    // Tags
     this.tagsApi
-      .list()
+      .filterByCreator(
+        {
+          paging: { items: 10 },
+          sorting: { orderBy: "updatedAt", direction: "desc" },
+        },
+        user
+      )
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (models) => {
-          this.extractTotal(1, models);
-          // TODO Extract tags by order of popularity https://github.com/QutEcoacoustics/baw-server/issues/449
+          this.extractTotal(this.indexes.TAGS, models);
           this.tags = models;
         },
-        () => this.handleError(0)
-      );
-
-    this.bookmarksApi
-      .list()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (models) => this.extractTotal(2, models),
-        () => this.handleError(0)
-      );
-
-    this.sitesApi
-      .list()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (models) => this.extractTotal(3, models),
-        () => this.handleError(3)
+        () => this.handleError(this.indexes.TAGS)
       );
   }
 
-  private extractTotal(index: number, models: AbstractModel[]) {
+  /**
+   * Extract the maximum number of models a user has access to
+   * @param index Statistic index in userStatistics array
+   * @param models Model list
+   */
+  protected extractTotal(index: number, models: AbstractModel[]) {
     const total = models.length > 0 ? models[0].getMetadata().paging.total : 0;
     this.userStatistics = this.userStatistics.update(index, (statistic) => ({
       ...statistic,
@@ -125,7 +191,10 @@ class MyProfileComponent
     }));
   }
 
-  private handleError(index: number) {
+  /**
+   * Set failed statistic value to unknown
+   */
+  protected handleError(index: number) {
     this.userStatistics = this.userStatistics.update(index, (statistic) => ({
       ...statistic,
       value: "Unknown",
@@ -135,7 +204,7 @@ class MyProfileComponent
 
 MyProfileComponent.linkComponentToPageInfo({
   category: myAccountCategory,
-  menus: { actions: List<AnyMenuItem>(myAccountActions) },
+  menus: { actions: List(myAccountActions) },
   resolvers: { [userKey]: userResolvers.show },
 }).andMenuRoute(myAccountMenuItem);
 

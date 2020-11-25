@@ -1,68 +1,85 @@
-<baw-wip>
-  <ng-container *ngIf="!!user">
-    <!-- Username -->
-    <h1>{{ user.userName }}</h1>
+<ng-container *ngIf="user">
+  <!-- Username -->
+  <h1>{{ user.userName }}</h1>
 
-    <div class="row">
-      <!-- Left aligned content -->
-      <div class="col-sm-4">
-        <!-- User profile picture and details -->
-        <div class="thumbnail">
-          <img [alt]="user.userName + 'profile image'" [src]="user.image" />
-          <div class="caption">
-            <p>
-              <fa-icon [icon]="['fas', 'clock']"></fa-icon>
-              {{ lastSeenAt }}
-            </p>
-            <p>
-              <fa-icon [icon]="['fas', 'user']"></fa-icon>
-              Unknown membership length
-            </p>
-          </div>
-        </div>
-
-        <!-- User annotations (Disabled in third person) -->
-        <div class="row" *ngIf="!thirdPerson">
-          <div class="col-sm-12 pb-3">
-            <div class="card">
-              <div class="card-header">Download</div>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item text-center">
-                  <a href="BROKEN LINK" class="mx-auto text-center">
-                    Annotations you've created
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
+  <div class="row">
+    <!-- Left aligned content -->
+    <div class="col-sm-4">
+      <!-- User profile picture and details -->
+      <div class="thumbnail">
+        <img [alt]="user.userName + ' profile image'" [src]="user.image" />
+        <div class="caption">
+          <!-- Last time user was seen -->
+          <p id="last-seen-at">
+            <fa-icon [icon]="['fas', 'clock']"></fa-icon>
+            {{ lastSeenAt }}
+          </p>
+          <!-- Amount of time user has been a member -->
+          <p id="membership-length">
+            <fa-icon [icon]="['fas', 'user']"></fa-icon>
+            {{ membershipLength }}
+          </p>
         </div>
       </div>
 
-      <!-- Right aligned content -->
-      <div class="col-sm-8">
-        <baw-items [items]="userStatistics"></baw-items>
+      <!-- Download annotations (Disabled in third person) -->
+      <div id="annotations-link" class="row" *ngIf="!thirdPerson">
+        <div class="col-sm-12 pb-3">
+          <div class="card">
+            <!-- Header -->
+            <div class="card-header">Download</div>
 
-        <!-- Users most popular tags -->
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="card">
-              <!-- Header -->
-              <div class="card-header">Most Popular Tags</div>
-
-              <!-- Tags -->
-              <ul class="list-group list-group-flush">
-                <li *ngFor="let tag of tags" class="list-group-item">
-                  <!-- Item icon -->
-                  <fa-icon id="icon" [icon]="['fas', 'tag']"></fa-icon>
-                  <a [routerLink]="tag.viewUrl">
-                    {{ tag.text }}
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item text-center">
+                <!-- Link to download -->
+                <a
+                  class="mx-auto text-center"
+                  [routerLink]="dataRequest.route.toString()"
+                  [queryParams]="{ userId: user.id }"
+                >
+                  Annotations you've created
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
-  </ng-container>
-</baw-wip>
+
+    <!-- Right aligned content -->
+    <div class="col-sm-8">
+      <baw-items [items]="userStatistics"></baw-items>
+
+      <!-- Users most popular tags -->
+      <div id="tags" class="row">
+        <div class="col-sm-12">
+          <div class="card">
+            <!-- Header -->
+            <div class="card-header">Most Popular Tags</div>
+
+            <!-- Tags -->
+            <ul class="list-group list-group-flush">
+              <!-- Spinner -->
+              <li *ngIf="!tags" class="list-group-item">
+                <baw-loading></baw-loading>
+              </li>
+
+              <!-- Placeholder if no tags -->
+              <li *ngIf="tags?.length === 0" class="list-group-item">
+                User has not created any tags yet
+              </li>
+
+              <!-- Individual tag -->
+              <li *ngFor="let tag of tags" class="list-group-item">
+                <fa-icon id="icon" [icon]="['fas', 'tag']"></fa-icon>
+                <a [routerLink]="tag.viewUrl">
+                  {{ tag.text }}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

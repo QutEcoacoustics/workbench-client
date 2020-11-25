@@ -1,134 +1,255 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
+import { Injector } from "@angular/core";
 import { RouterTestingModule } from "@angular/router/testing";
-import { accountResolvers } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { ProjectsService } from "@baw-api/project/projects.service";
+import { PROJECT } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { ISite, Site } from "@models/Site";
+import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
+import { AccessLevel } from "@interfaces/apiInterfaces";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { User } from "@models/User";
-import { SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
-import { assertErrorHandler, assertRoute } from "@test/helpers/html";
-import { mockActivatedRoute } from "@test/helpers/testbed";
-import { BehaviorSubject } from "rxjs";
+import { nStepObservable } from "@test/helpers/general";
+import {
+  assertErrorHandler,
+  assertHref,
+  assertRoute,
+} from "@test/helpers/html";
+import { websiteHttpUrl } from "@test/helpers/url";
+import { BehaviorSubject, Subject } from "rxjs";
 import { MySitesComponent } from "./my-sites.component";
 
 describe("MySitesComponent", () => {
-  let api: SpyObject<ShallowSitesService>;
-  let component: MySitesComponent;
+  let injector: Injector;
   let defaultUser: User;
-  let fixture: ComponentFixture<MySitesComponent>;
+  let defaultSite: Site;
+  let defaultProject: Project;
+  let sitesApi: SpyObject<ShallowSitesService>;
+  let projectsApi: SpyObject<ProjectsService>;
+  let spec: SpectatorRouting<MySitesComponent>;
+  const createComponent = createRoutingFactory({
+    component: MySitesComponent,
+    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    stubsEnabled: false,
+  });
 
-  function configureTestingModule(model?: User, error?: ApiErrorDetails) {
-    TestBed.configureTestingModule({
-      declarations: [MySitesComponent],
-      imports: [SharedModule, RouterTestingModule, MockBawApiModule],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
-            { user: accountResolvers.show },
-            { user: { model, error } }
-          ),
-        },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(MySitesComponent);
-    api = TestBed.inject(ShallowSitesService) as SpyObject<ShallowSitesService>;
-    component = fixture.componentInstance;
-  }
-
-  function setSite(data?: ISite): Site {
-    if (!data) {
-      api.filter.and.callFake(() => new BehaviorSubject<Site[]>([]));
-      return;
-    }
-
-    const site = new Site({ ...generateSite(), ...data });
-    site.addMetadata({
-      status: 200,
-      message: "OK",
-      paging: {
-        page: 1,
-        items: defaultApiPageSize,
-        total: 1,
-        maxPage: 1,
+  function setup(model: User, error?: ApiErrorDetails) {
+    spec = createComponent({
+      detectChanges: false,
+      data: {
+        resolvers: { user: "resolver" },
+        user: { model, error },
       },
     });
+    injector = spec.inject(Injector);
+    sitesApi = spec.inject(ShallowSitesService);
+    projectsApi = spec.inject(PROJECT.token);
+  }
 
-    api.filter.and.callFake(
-      () => new BehaviorSubject<Site[]>([site])
-    );
+  function interceptSiteRequest(sites: Site[]) {
+    sites?.forEach((site) => {
+      site["injector"] = injector;
+      site.addMetadata({
+        paging: {
+          page: 1,
+          items: defaultApiPageSize,
+          total: 1,
+          maxPage: 1,
+        },
+      });
+    });
 
-    return site;
+    sitesApi.filter.and.callFake(() => new BehaviorSubject(sites));
+  }
+
+  function interceptProjectRequest(
+    projects: Project[],
+    error?: ApiErrorDetails
+  ) {
+    const subject = new Subject();
+    projectsApi.filter.and.callFake(() => subject);
+    return nStepObservable(subject, () => projects || error, !projects);
   }
 
   beforeEach(() => {
     defaultUser = new User(generateUser());
+    defaultSite = new Site(generateSite());
+    defaultProject = new Project(generateProject());
   });
 
-  it("should create", () => {
-    configureTestingModule(defaultUser);
-    setSite();
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+  it("should create", async () => {
+    setup(defaultUser);
+    interceptSiteRequest([]);
+    spec.detectChanges();
+    expect(spec.component).toBeTruthy();
   });
 
-  it("should display username in title", () => {
-    configureTestingModule(
-      new User({ ...generateUser(), userName: "custom username" })
-    );
-    setSite();
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("small");
-    expect(title.innerText.trim()).toContain("custom username");
+  it("should display username in title", async () => {
+    setup(defaultUser);
+    interceptSiteRequest([]);
+    spec.detectChanges();
+    expect(spec.query("h1 small")).toHaveText(defaultUser.userName);
   });
 
-  it("should handle user error", () => {
-    configureTestingModule(undefined, generateApiErrorDetails());
-    setSite();
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
-
-    assertErrorHandler(fixture);
+  it("should handle user error", async () => {
+    setup(undefined, generateApiErrorDetails());
+    interceptSiteRequest([]);
+    spec.detectChanges();
+    assertErrorHandler(spec.fixture);
   });
 
   describe("table", () => {
-    function getCells(): NodeListOf<HTMLDivElement> {
-      return fixture.nativeElement.querySelectorAll("datatable-body-cell");
+    function getCells() {
+      return spec.queryAll<HTMLDivElement>("datatable-body-cell");
     }
 
-    it("should display site name", () => {
-      configureTestingModule(defaultUser);
-      setSite({ name: "custom site" });
-      fixture.detectChanges();
+    describe("site name", () => {
+      it("should display site name", async () => {
+        setup(defaultUser);
+        interceptSiteRequest([defaultSite]);
+        interceptProjectRequest([]);
+        spec.detectChanges();
 
-      expect(getCells()[0].innerText.trim()).toBe("custom site");
+        expect(getCells()[0]).toHaveText(defaultSite.name);
+      });
+
+      it("should display site name link", async () => {
+        setup(defaultUser);
+        interceptSiteRequest([defaultSite]);
+        interceptProjectRequest([]);
+        spec.detectChanges();
+
+        const link = getCells()[0].querySelector("a");
+        assertRoute(link, defaultSite.viewUrl);
+      });
     });
 
-    it("should display site name link", () => {
-      configureTestingModule(defaultUser);
-      const site = setSite({ projectIds: new Set([1]) });
-      fixture.detectChanges();
+    it("should display last modified time", async () => {
+      setup(defaultUser);
+      interceptSiteRequest([defaultSite]);
+      interceptProjectRequest([]);
+      spec.detectChanges();
 
-      const link = getCells()[0].querySelector("a");
-      assertRoute(link, site.viewUrl);
+      expect(getCells()[1]).toHaveText(defaultSite.updatedAt.toRelative());
     });
 
-    // TODO Implement
-    xit("should display no recent audio upload", () => {});
-    xit("should display recent audio upload", () => {});
-    xit("should display reader permissions", () => {});
-    xit("should display writer permissions", () => {});
-    xit("should display owner permissions", () => {});
-    xit("should display owner permissions link", () => {});
-    xit("should display annotation link", () => {});
+    describe("access level", () => {
+      [AccessLevel.reader, AccessLevel.writer, AccessLevel.owner].forEach(
+        (accessLevel) => {
+          it(`should display ${accessLevel} permissions`, async () => {
+            const site = new Site({ ...defaultSite, projectIds: [1] });
+            const project = new Project({ ...generateProject(), accessLevel });
+
+            setup(defaultUser);
+            interceptSiteRequest([site]);
+            const projectPromise = interceptProjectRequest([project]);
+            spec.detectChanges();
+            await projectPromise;
+            spec.detectChanges();
+
+            expect(getCells()[2]).toHaveText(accessLevel);
+          });
+        }
+      );
+
+      it("should display unknown permissions when no projects found", async () => {
+        const site = new Site({ ...defaultSite, projectIds: [] });
+
+        setup(defaultUser);
+        interceptSiteRequest([site]);
+        const projectPromise = interceptProjectRequest([]);
+        spec.detectChanges();
+        await projectPromise;
+        spec.detectChanges();
+
+        expect(getCells()[2]).toHaveText("Unknown");
+      });
+
+      it("should prioritize owner level permission if multiple projects", async () => {
+        const site = new Site({ ...defaultSite, projectIds: [1] });
+
+        setup(defaultUser);
+        interceptSiteRequest([site]);
+        const projectPromise = interceptProjectRequest([
+          new Project({ ...defaultProject, accessLevel: AccessLevel.reader }),
+          new Project({ ...defaultProject, accessLevel: AccessLevel.owner }),
+          new Project({ ...defaultProject, accessLevel: AccessLevel.writer }),
+        ]);
+        spec.detectChanges();
+        await projectPromise;
+        spec.detectChanges();
+
+        expect(getCells()[2]).toHaveText("Owner");
+      });
+
+      it("should prioritize writer level permission if multiple projects and no owner", async () => {
+        const site = new Site({ ...defaultSite, projectIds: [1] });
+
+        setup(defaultUser);
+        interceptSiteRequest([site]);
+        const projectPromise = interceptProjectRequest([
+          new Project({ ...defaultProject, accessLevel: AccessLevel.reader }),
+          new Project({ ...defaultProject, accessLevel: AccessLevel.writer }),
+          new Project({ ...defaultProject, accessLevel: AccessLevel.reader }),
+        ]);
+        spec.detectChanges();
+        await projectPromise;
+        spec.detectChanges();
+
+        expect(getCells()[2]).toHaveText("Writer");
+      });
+    });
+
+    describe("annotation link", () => {
+      async function createTable() {
+        interceptSiteRequest([defaultSite]);
+        const projectPromise = interceptProjectRequest([]);
+        spec.detectChanges();
+        await projectPromise;
+        spec.detectChanges();
+      }
+
+      function getLink() {
+        return getCells()[3].querySelector("a");
+      }
+
+      it("should display annotation link", async () => {
+        setup(defaultUser);
+        await createTable();
+
+        expect(getCells()[3]).toHaveText("Annotation");
+      });
+
+      it("should create annotation link", async () => {
+        setup(defaultUser);
+        await createTable();
+
+        assertRoute(getLink(), dataRequestMenuItem.route.toString());
+      });
+
+      it("should create annotation link query params", async () => {
+        setup(defaultUser);
+        await createTable();
+
+        const relativePath = dataRequestMenuItem.route.toString();
+        assertHref(
+          getLink(),
+          `${websiteHttpUrl}${relativePath}?siteId=${defaultSite.id}`,
+          true
+        );
+      });
+    });
   });
 });

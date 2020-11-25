@@ -7,7 +7,10 @@ import { AccountsService } from "./account/accounts.service";
 import { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import { AnalysisJobsService } from "./analysis/analysis-jobs.service";
 import { BawApiInterceptor } from "./api.interceptor.service";
-import { AudioEventsService } from "./audio-event/audio-events.service";
+import {
+  AudioEventsService,
+  ShallowAudioEventsService,
+} from "./audio-event/audio-events.service";
 import { AudioRecordingsService } from "./audio-recording/audio-recordings.service";
 import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
 import { BookmarksService } from "./bookmark/bookmarks.service";
@@ -48,6 +51,7 @@ const mockProviders: Provider[] = [
   mockProvider(AnalysisJobsService),
   mockProvider(AnalysisJobItemsService),
   mockProvider(AudioEventsService),
+  mockProvider(ShallowAudioEventsService),
   mockProvider(AudioRecordingsService),
   mockProvider(BookmarksService),
   mockProvider(DatasetsService),

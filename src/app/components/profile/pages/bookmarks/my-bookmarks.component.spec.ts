@@ -1,76 +1,126 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
-import { userResolvers } from "@baw-api/user/user.service";
+import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
-import { SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBookmark } from "@test/fakes/Bookmark";
 import { generateUser } from "@test/fakes/User";
-import { assertErrorHandler } from "@test/helpers/html";
-import { mockActivatedRoute } from "@test/helpers/testbed";
-import { Subject } from "rxjs";
-import { MyProjectsComponent } from "../projects/my-projects.component";
+import { assertErrorHandler, assertRoute } from "@test/helpers/html";
+import { BehaviorSubject } from "rxjs";
 import { MyBookmarksComponent } from "./my-bookmarks.component";
 
 describe("MyBookmarksComponent", () => {
   let api: SpyObject<BookmarksService>;
-  let component: MyBookmarksComponent;
   let defaultUser: User;
-  let fixture: ComponentFixture<MyBookmarksComponent>;
+  let defaultBookmark: Bookmark;
+  let spec: SpectatorRouting<MyBookmarksComponent>;
+  const createComponent = createRoutingFactory({
+    component: MyBookmarksComponent,
+    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    stubsEnabled: false,
+  });
 
-  function configureTestingModule(model?: User, error?: ApiErrorDetails) {
-    TestBed.configureTestingModule({
-      declarations: [MyProjectsComponent],
-      imports: [SharedModule, RouterTestingModule, MockBawApiModule],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
-            { user: userResolvers.show },
-            { user: { model, error } }
-          ),
+  function setup(model: User, error?: ApiErrorDetails) {
+    spec = createComponent({
+      detectChanges: false,
+      data: {
+        resolvers: { user: "resolver" },
+        user: { model, error },
+      },
+    });
+    api = spec.inject(BookmarksService);
+  }
+
+  function interceptRequest(bookmarks: Bookmark[]) {
+    bookmarks?.forEach((bookmark) => {
+      bookmark.addMetadata({
+        paging: {
+          page: 1,
+          items: defaultApiPageSize,
+          total: 1,
+          maxPage: 1,
         },
-      ],
-    }).compileComponents();
+      });
+    });
 
-    fixture = TestBed.createComponent(MyBookmarksComponent);
-    api = TestBed.inject(BookmarksService) as SpyObject<BookmarksService>;
-    component = fixture.componentInstance;
-
-    api.filter.and.callFake(() => new Subject());
+    api.filter.and.callFake(() => new BehaviorSubject(bookmarks));
   }
 
   beforeEach(() => {
     defaultUser = new User(generateUser());
+    defaultBookmark = new Bookmark(generateBookmark());
   });
 
   it("should create", () => {
-    configureTestingModule(defaultUser);
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+    setup(defaultUser);
+    interceptRequest([]);
+    spec.detectChanges();
+    expect(spec.component).toBeTruthy();
   });
 
   it("should display username in title", () => {
-    configureTestingModule(
-      new User({ ...generateUser(), userName: "custom username" })
-    );
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("small");
-    expect(title.innerText.trim()).toContain("custom username");
+    setup(defaultUser);
+    interceptRequest([]);
+    spec.detectChanges();
+    expect(spec.query("h1 small")).toHaveText(defaultUser.userName);
   });
 
   it("should handle user error", () => {
-    configureTestingModule(undefined, generateApiErrorDetails());
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
-
-    assertErrorHandler(fixture);
+    setup(undefined, generateApiErrorDetails());
+    interceptRequest([]);
+    spec.detectChanges();
+    assertErrorHandler(spec.fixture);
   });
 
-  // TODO Write Tests
+  describe("table", () => {
+    function getCells() {
+      return spec.queryAll<HTMLDivElement>("datatable-body-cell");
+    }
+
+    describe("bookmark name", () => {
+      it("should display bookmark name", () => {
+        setup(defaultUser);
+        interceptRequest([defaultBookmark]);
+        spec.detectChanges();
+
+        expect(getCells()[0]).toHaveText(defaultBookmark.name);
+      });
+
+      it("should display bookmark name link", () => {
+        setup(defaultUser);
+        interceptRequest([defaultBookmark]);
+        spec.detectChanges();
+
+        const link = getCells()[0].querySelector("a");
+        assertRoute(link, defaultBookmark.viewUrl);
+      });
+    });
+
+    it("should display category", () => {
+      setup(defaultUser);
+      interceptRequest([defaultBookmark]);
+      spec.detectChanges();
+
+      expect(getCells()[1]).toHaveText(defaultBookmark.category);
+    });
+
+    it("should display description", () => {
+      setup(defaultUser);
+      interceptRequest([defaultBookmark]);
+      spec.detectChanges();
+
+      expect(getCells()[2].querySelector("span").innerHTML).toContain(
+        defaultBookmark.descriptionHtmlTagline
+      );
+    });
+  });
 });

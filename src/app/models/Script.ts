@@ -68,9 +68,6 @@ export class Script extends AbstractModel implements IScript {
 
   public constructor(script: IScript, injector?: Injector) {
     super(script, injector);
-
-    this.executableSettingsMediaType =
-      script.executableSettingsMediaType ?? "text/plain";
   }
 
   public get viewUrl(): string {

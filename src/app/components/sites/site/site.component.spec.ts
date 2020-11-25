@@ -1,18 +1,30 @@
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@components/shared/shared.module";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { AudioEvent } from "@models/AudioEvent";
+import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { assetRoot } from "@services/app-config/app-config.service";
 import { MapComponent } from "@shared/map/map.component";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
+import { FilterExpectations, nStepObservable } from "@test/helpers/general";
 import { assertImage } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { MockComponent } from "ng-mocks";
+import { Subject } from "rxjs";
 import { SiteComponent } from "./site.component";
 
 const mockMapComponent = MockComponent(MapComponent);
@@ -21,7 +33,9 @@ describe("SiteComponent", () => {
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
-  let spectator: Spectator<SiteComponent>;
+  let eventsApi: SpyObject<ShallowAudioEventsService>;
+  let recordingsApi: SpyObject<AudioRecordingsService>;
+  let spec: Spectator<SiteComponent>;
   const createComponent = createComponentFactory({
     imports: [SharedModule, MockBawApiModule, RouterTestingModule],
     declarations: [mockMapComponent],
@@ -29,10 +43,53 @@ describe("SiteComponent", () => {
   });
 
   function setup(project: Project, site: Site, region?: Region) {
-    spectator = createComponent({
+    spec = createComponent({
       detectChanges: false,
       props: { project, site, region },
     });
+
+    eventsApi = spec.inject(ShallowAudioEventsService);
+    recordingsApi = spec.inject(AudioRecordingsService);
+  }
+
+  function interceptEventsRequest(
+    audioEvents: AudioEvent[] | ApiErrorDetails = [],
+    expectation: FilterExpectations<AudioEvent> = () => {}
+  ) {
+    const subject = new Subject<AudioEvent[]>();
+    eventsApi.filter.andCallFake((filters) => {
+      expectation(filters);
+      return subject;
+    });
+    return nStepObservable(
+      subject,
+      () => audioEvents,
+      isInstantiated(audioEvents["status"])
+    );
+  }
+
+  function interceptRecordingsRequest(
+    recordings: AudioRecording[] | ApiErrorDetails = [],
+    newExpectation: FilterExpectations<AudioEvent> = () => {},
+    oldExpectation: FilterExpectations<AudioEvent> = () => {}
+  ) {
+    const subject = new Subject<AudioRecording[]>();
+
+    recordingsApi.filter.andCallFake((filters) => {
+      if (filters.sorting.direction === "asc") {
+        oldExpectation(filters);
+      } else {
+        newExpectation(filters);
+      }
+
+      return subject;
+    });
+
+    return nStepObservable(
+      subject,
+      () => recordings,
+      isInstantiated(recordings["status"])
+    );
   }
 
   beforeEach(() => {
@@ -43,16 +100,20 @@ describe("SiteComponent", () => {
 
   it("should create", () => {
     setup(defaultProject, defaultSite);
-    spectator.detectChanges();
-    expect(spectator.component).toBeTruthy();
+    interceptEventsRequest();
+    interceptRecordingsRequest();
+    spec.detectChanges();
+    expect(spec.component).toBeTruthy();
   });
 
   describe("Project", () => {
     it("should display project name", () => {
       setup(defaultProject, defaultSite);
-      spectator.detectChanges();
+      interceptEventsRequest();
+      interceptRecordingsRequest();
+      spec.detectChanges();
 
-      const title = spectator.query<HTMLHeadingElement>("h2");
+      const title = spec.query<HTMLHeadingElement>("h2");
       expect(title).toBeTruthy();
       expect(title.innerText).toContain(`Project: ${defaultProject.name}`);
     });
@@ -61,17 +122,21 @@ describe("SiteComponent", () => {
   describe("Region", () => {
     it("should not display region name if doesn't exist", () => {
       setup(defaultProject, defaultSite, undefined);
-      spectator.detectChanges();
+      interceptEventsRequest();
+      interceptRecordingsRequest();
+      spec.detectChanges();
 
-      const title = spectator.query<HTMLHeadingElement>("h3");
+      const title = spec.query<HTMLHeadingElement>("h3");
       expect(title).toBeFalsy();
     });
 
     it("should display region name if exists", () => {
       setup(defaultProject, defaultSite, defaultRegion);
-      spectator.detectChanges();
+      interceptEventsRequest();
+      interceptRecordingsRequest();
+      spec.detectChanges();
 
-      const title = spectator.query<HTMLHeadingElement>("h3");
+      const title = spec.query<HTMLHeadingElement>("h3");
       expect(title).toBeTruthy();
       expect(title.innerText).toContain(`Site: ${defaultRegion.name}`);
     });
@@ -80,9 +145,11 @@ describe("SiteComponent", () => {
   describe("Site", () => {
     it("should display site name", () => {
       setup(defaultProject, defaultSite);
-      spectator.detectChanges();
+      interceptEventsRequest();
+      interceptRecordingsRequest();
+      spec.detectChanges();
 
-      const title = spectator.query<HTMLHeadingElement>("h1");
+      const title = spec.query<HTMLHeadingElement>("h1");
       expect(title).toBeTruthy();
       expect(title.innerText).toContain(defaultSite.name);
     });
@@ -90,9 +157,11 @@ describe("SiteComponent", () => {
     it("should display default site image", () => {
       const site = new Site({ ...generateSite(), imageUrl: undefined });
       setup(defaultProject, site);
-      spectator.detectChanges();
+      interceptEventsRequest();
+      interceptRecordingsRequest();
+      spec.detectChanges();
 
-      const image = spectator.query<HTMLImageElement>("img");
+      const image = spec.query<HTMLImageElement>("img");
       assertImage(
         image,
         `${websiteHttpUrl}${assetRoot}/images/site/site_span4.png`,
@@ -102,46 +171,73 @@ describe("SiteComponent", () => {
 
     it("should display custom site image", () => {
       setup(defaultProject, defaultSite);
-      spectator.detectChanges();
+      interceptEventsRequest();
+      interceptRecordingsRequest();
+      spec.detectChanges();
 
-      const image = spectator.query<HTMLImageElement>("img");
+      const image = spec.query<HTMLImageElement>("img");
       assertImage(image, defaultSite.imageUrl, `${defaultSite.name} image`);
     });
 
     it("should display default description if model has none", () => {
       const site = new Site({ ...generateSite(), descriptionHtml: undefined });
       setup(defaultProject, site);
-      spectator.detectChanges();
+      interceptEventsRequest();
+      interceptRecordingsRequest();
+      spec.detectChanges();
 
-      const description = spectator.query("#site_description");
+      const description = spec.query("#site_description");
       expect(description).toBeTruthy();
       expect(description.innerHTML).toContain("<i>No description found</i>");
     });
 
     it("should display site description with html markup", () => {
       setup(defaultProject, defaultSite);
-      spectator.detectChanges();
+      interceptEventsRequest();
+      interceptRecordingsRequest();
+      spec.detectChanges();
 
-      const description = spectator.query("#site_description");
+      const description = spec.query("#site_description");
       expect(description).toBeTruthy();
       expect(description.innerHTML).toContain(defaultSite.descriptionHtml);
     });
   });
 
   describe("Google Maps", () => {
-    it("should create google maps component", () => {
+    beforeEach(() => {
       setup(defaultProject, defaultSite);
-      spectator.detectChanges();
-      expect(spectator.query(mockMapComponent)).toBeTruthy();
+      interceptEventsRequest();
+      interceptRecordingsRequest();
+      spec.detectChanges();
+    });
+
+    it("should create google maps component", () => {
+      expect(spec.query(mockMapComponent)).toBeTruthy();
     });
 
     it("should create site marker", () => {
-      setup(defaultProject, defaultSite);
-      spectator.detectChanges();
-      const maps = spectator.query(mockMapComponent);
+      const maps = spec.query(mockMapComponent);
       expect(maps.markers.toArray()).toEqual([defaultSite.getMapMarker()]);
     });
   });
 
-  // TODO Implement tests for audio recordings
+  // TODO
+  xdescribe("Recordings", () => {
+    it("should display spinner while audio recordings load", () => {});
+    it("should display placeholder if no audio recordings", () => {});
+    it("should display start and end date of audio recordings", () => {});
+    it("should display play link", () => {});
+    it("should display visualize link", () => {});
+  });
+
+  // TODO
+  xdescribe("Tags", () => {
+    it("should display spinner while tags are unresolved", () => {});
+    it("should display placeholder if no tags", () => {});
+    it("should display single tag", () => {});
+    it("should display tag text", () => {});
+    it("should display tag creator", () => {});
+    it("should route to tag", () => {});
+    it("should display multiple tags", () => {});
+  });
 });

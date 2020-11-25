@@ -8,7 +8,6 @@ import {
   myProjectsMenuItem,
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
 import { List } from "immutable";
@@ -21,11 +20,13 @@ const userKey = "user";
   templateUrl: "./projects.component.html",
 })
 class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
+  protected api: ProjectsService;
   public columns = [
     { name: "Project" },
     { name: "Sites" },
     { name: "Permission" },
   ];
+  public sortKeys = { project: "name" };
 
   public constructor(api: ProjectsService, route: ActivatedRoute) {
     super(
@@ -34,7 +35,7 @@ class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
         projects.map((project) => ({
           project,
           sites: project.siteIds.size,
-          permission: "UNKNOWN", // TODO After https://github.com/QutEcoacoustics/baw-server/issues/425
+          permission: project.accessLevel,
         })),
       route
     );
@@ -47,9 +48,7 @@ class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
 
 MyProjectsComponent.linkComponentToPageInfo({
   category: myAccountCategory,
-  menus: {
-    actions: List<AnyMenuItem>([myAccountMenuItem, ...myAccountActions]),
-  },
+  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
 }).andMenuRoute(myProjectsMenuItem);
 

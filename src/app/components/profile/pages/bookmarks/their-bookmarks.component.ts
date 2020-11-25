@@ -1,59 +1,46 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
+import { Filters } from "@baw-api/baw-api.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import {
   theirBookmarksMenuItem,
   theirProfileCategory,
   theirProfileMenuItem,
 } from "@components/profile/profile.menus";
-import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
-import { Bookmark } from "@models/Bookmark";
+import { IBookmark } from "@models/Bookmark";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { theirProfileActions } from "../profile/their-profile.component";
+import { MyBookmarksComponent } from "./my-bookmarks.component";
 
 const accountKey = "account";
 
+/**
+ * TODO List of bookmarks is filtered incorrectly
+ */
 @Component({
   selector: "baw-their-bookmarks",
   templateUrl: "./bookmarks.component.html",
 })
-class TheirBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
-  public sortKeys = { category: "category" };
-
-  public constructor(api: BookmarksService, route: ActivatedRoute) {
-    super(
-      api,
-      (bookmarks) =>
-        bookmarks.map((bookmark) => ({
-          bookmark,
-          category: bookmark.category,
-          description: bookmark.description,
-        })),
-      route,
-      (component: TheirBookmarksComponent) => [component.account]
-    );
+class TheirBookmarksComponent extends MyBookmarksComponent {
+  constructor(api: BookmarksService, route: ActivatedRoute) {
+    super(api, route);
   }
 
   public get account(): User {
     return this.models[accountKey] as User;
   }
+
+  protected apiAction(filters: Filters<IBookmark>) {
+    return this.api.filterByCreator(filters, this.account);
+  }
 }
 
 TheirBookmarksComponent.linkComponentToPageInfo({
   category: theirProfileCategory,
-  menus: {
-    actions: List<AnyMenuItem>([theirProfileMenuItem, ...theirProfileActions]),
-  },
+  menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
   resolvers: { [accountKey]: accountResolvers.show },
 }).andMenuRoute(theirBookmarksMenuItem);
 
 export { TheirBookmarksComponent };
-
-interface TableRow {
-  bookmark: Bookmark;
-  category: string;
-  description: string;
-}

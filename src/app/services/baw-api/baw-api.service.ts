@@ -201,19 +201,19 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected apiCreate(path: string, body: AbstractModel): Observable<Model> {
-    return this.httpPost(path, body.toJSON()).pipe(
+    return this.httpPost(path, body.toJSON?.() ?? body).pipe(
       map(this.handleSingleResponse)
     );
   }
 
   /**
    * Get response from update route
-   *
+   * TODO Add option to switch between Put and Patch requests
    * @param path API path
    * @param body Request body
    */
   protected apiUpdate(path: string, body: AbstractModel): Observable<Model> {
-    return this.httpPatch(path, body.toJSON()).pipe(
+    return this.httpPatch(path, body.toJSON?.() ?? body).pipe(
       map(this.handleSingleResponse)
     );
   }
@@ -280,6 +280,16 @@ export abstract class BawApiService<Model extends AbstractModel> {
   private getPath(path: string): string {
     return this.apiRoot + path;
   }
+}
+
+/**
+ * Sorting metadata from api response
+ */
+export interface Sorting<K> {
+  /** Which key to sort by */
+  orderBy: K;
+  /** Sorting direction */
+  direction: "desc" | "asc";
 }
 
 /**
@@ -399,12 +409,7 @@ export interface Filters<T = unknown, K extends keyof T = keyof T> {
     exclude?: K[];
   };
   /** Current sorting options */
-  sorting?: {
-    /** Which key to sort by */
-    orderBy: string;
-    /** Sorting direction */
-    direction: "desc" | "asc";
-  };
+  sorting?: Sorting<K>;
   /** Current page data */
   paging?: Paging;
 }
@@ -412,7 +417,7 @@ export interface Filters<T = unknown, K extends keyof T = keyof T> {
 /**
  * Metadata from api response
  */
-export interface Meta extends Filters {
+export interface Meta<T = {}> extends Filters<T> {
   /** Response status */
   status?: number;
   /** Human readable response status */

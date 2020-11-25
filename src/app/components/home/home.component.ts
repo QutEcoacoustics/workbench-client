@@ -30,7 +30,12 @@ class HomeComponent extends PageComponent implements OnInit {
     this.securityApi
       .getAuthTrigger()
       .pipe(
-        mergeMap(() => this.projectApi.filter({ paging: { items: 3 } })),
+        mergeMap(() =>
+          this.projectApi.filter({
+            paging: { items: 3 },
+            sorting: { orderBy: "updatedAt", direction: "desc" },
+          })
+        ),
         map((data) => List(data.map((project) => project.getCard()))),
         takeUntil(this.unsubscribe)
       )

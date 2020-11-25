@@ -1,10 +1,10 @@
+import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
-import { Category, menuLink, menuRoute } from "@interfaces/menusInterfaces";
+import { Category, MenuRoute } from "@interfaces/menusInterfaces";
 import {
   deleteSiteMenuItem,
   editSiteMenuItem,
   newSiteMenuItem,
-  siteAnnotationsMenuItem,
   siteHarvestMenuItem,
   siteMenuItem,
   sitesCategory,
@@ -34,10 +34,11 @@ export const newPointMenuItem = menuRoute({
   tooltip: () => "Create a new point",
 });
 
-export const pointAnnotationsMenuItem = menuLink({
-  ...siteAnnotationsMenuItem,
+// TODO Add site id, region id, and project id to route params
+export const pointAnnotationsMenuItem = MenuRoute({
+  ...dataRequestMenuItem,
+  label: "Download Annotations",
   tooltip: () => "Download annotations for this point",
-  uri: () => "REPLACE_ME",
 });
 
 export const editPointMenuItem = menuRoute({

@@ -39,6 +39,13 @@ export const listenMenuItem = menuLink({
   uri: () => "/listen",
 });
 
+export const tagMenuItem = MenuLink({
+  icon: ["fas", "exclamation-triangle"],
+  label: "Tag (NOT IMPLEMENTED)",
+  tooltip: () => "Tag (NOT IMPLEMENTED)",
+  uri: () => "/broken_link",
+});
+
 function ids(params: Params): string {
   if (!params) {
     return "";

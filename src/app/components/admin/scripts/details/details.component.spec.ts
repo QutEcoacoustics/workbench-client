@@ -5,8 +5,11 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { scriptResolvers } from "@baw-api/script/scripts.service";
-import { ACCOUNT } from "@baw-api/ServiceTokens";
+import {
+  scriptResolvers,
+  ScriptsService,
+} from "@baw-api/script/scripts.service";
+import { ACCOUNT, SCRIPT } from "@baw-api/ServiceTokens";
 import { Script } from "@models/Script";
 import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
@@ -50,21 +53,31 @@ describe("ScriptComponent", () => {
     const accountsApi = TestBed.inject(
       ACCOUNT.token
     ) as SpyObject<AccountsService>;
+    const scriptsApi = TestBed.inject(
+      SCRIPT.token
+    ) as SpyObject<ScriptsService>;
     component = fixture.componentInstance;
 
-    const subject = new Subject<User>();
-    const promise = nStepObservable(
-      subject,
-      () => new User({ id: 1, userName: "custom username" })
-    );
-    accountsApi.show.and.callFake(() => subject);
+    const accountsSubject = new Subject<User>();
+    accountsApi.show.and.callFake(() => accountsSubject);
+    const scriptsSubject = new Subject<Script>();
+    scriptsApi.show.and.callFake(() => scriptsSubject);
 
     // Update model to contain injector
     if (model) {
       model["injector"] = injector;
     }
 
-    return promise;
+    return Promise.all([
+      nStepObservable(
+        accountsSubject,
+        () => new User({ id: 1, userName: "custom username" })
+      ),
+      nStepObservable(
+        scriptsSubject,
+        () => new Script({ id: 1, name: "custom script" })
+      ),
+    ]);
   }
 
   it("should create", () => {
@@ -122,6 +135,7 @@ describe("ScriptComponent", () => {
       },
       { label: "Verified", key: "verified", checkbox: model.verified },
       { label: "Group Id", key: "groupId", plain: model.groupId },
+      { label: "Group", key: "group", model: "Script: custom script (1)" },
       { label: "Creator", key: "creator", model: "User: custom username (1)" },
       { label: "Created At", key: "createdAt", plain: model.createdAt },
     ];
