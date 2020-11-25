@@ -12,7 +12,7 @@ module.exports = function (config) {
       require("karma-firefox-launcher"),
       require("@chiragrupani/karma-chromium-edge-launcher"),
       require("karma-jasmine-html-reporter"),
-      require("karma-coverage-istanbul-reporter"),
+      require("karma-coverage"),
       require("@angular-devkit/build-angular/plugins/karma"),
       require("karma-junit-reporter"),
     ],

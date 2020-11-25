@@ -23,7 +23,7 @@ export async function embedGoogleMaps(key?: string) {
   document.getElementsByTagName("head")[0].appendChild(node);
 
   // Detect when google maps properly embeds
-  await new Promise((resolve, reject) => {
+  await new Promise<void>((resolve, reject) => {
     let count = 0;
 
     function mapLoaded() {
