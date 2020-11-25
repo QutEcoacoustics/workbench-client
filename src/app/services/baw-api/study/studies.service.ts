@@ -5,8 +5,8 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IStudy, Study } from "@models/Study";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   id,
   IdOr,
   IdParamOptional,
@@ -21,7 +21,7 @@ const endpoint = stringTemplate`/studies/${studyId}${option}`;
 
 @Injectable()
 export class StudiesService extends StandardApi<Study> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -30,22 +30,22 @@ export class StudiesService extends StandardApi<Study> {
   }
 
   public list(): Observable<Study[]> {
-    return this.apiList(endpoint(Empty, Empty));
+    return this.apiList(endpoint(emptyParam, emptyParam));
   }
   public filter(filters: Filters<IStudy>): Observable<Study[]> {
-    return this.apiFilter(endpoint(Empty, Filter), filters);
+    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<Study>): Observable<Study> {
-    return this.apiShow(endpoint(model, Empty));
+    return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: Study): Observable<Study> {
-    return this.apiCreate(endpoint(Empty, Empty), model);
+    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
   }
   public update(model: Study): Observable<Study> {
-    return this.apiUpdate(endpoint(model, Empty), model);
+    return this.apiUpdate(endpoint(model, emptyParam), model);
   }
   public destroy(model: IdOr<Study>): Observable<Study | void> {
-    return this.apiDestroy(endpoint(model, Empty));
+    return this.apiDestroy(endpoint(model, emptyParam));
   }
 }
 

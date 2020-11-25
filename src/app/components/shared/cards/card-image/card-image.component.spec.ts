@@ -22,7 +22,7 @@ export class CardImageMockModel extends AbstractModel {
   public readonly id: Id = 1;
   public readonly image: ImageUrl[];
 
-  constructor(data: { id?: Id; image: ImageUrl[] }) {
+  public constructor(data: { id?: Id; image: ImageUrl[] }) {
     super(data);
   }
 

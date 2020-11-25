@@ -49,7 +49,7 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
   public title: string;
   public originalModel: User;
 
-  constructor(
+  public constructor(
     private api: AccountsService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -74,10 +74,10 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
   }
 }
 
-TheirEditComponent.LinkComponentToPageInfo({
+TheirEditComponent.linkComponentToPageInfo({
   category: theirProfileCategory,
   menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
   resolvers: { [accountKey]: accountResolvers.show },
-}).AndMenuRoute(theirEditMenuItem);
+}).andMenuRoute(theirEditMenuItem);
 
 export { TheirEditComponent };

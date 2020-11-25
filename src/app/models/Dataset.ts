@@ -8,8 +8,8 @@ import {
   Param,
 } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, Updater } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { creator, updater } from "./AssociationDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import type { User } from "./User";
 
 export interface IDataset extends HasCreatorAndUpdater, HasDescription {
@@ -19,28 +19,28 @@ export interface IDataset extends HasCreatorAndUpdater, HasDescription {
 
 export class Dataset extends AbstractModel implements IDataset {
   public readonly kind = "Dataset";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly name?: Param;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
-  @Creator<Dataset>()
+  @creator<Dataset>()
   public creator: User;
-  @Updater<Dataset>()
+  @updater<Dataset>()
   public updater?: User;
 
-  constructor(dataset: IDataset, injector?: Injector) {
+  public constructor(dataset: IDataset, injector?: Injector) {
     super(dataset, injector);
   }
 

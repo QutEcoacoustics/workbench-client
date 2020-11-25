@@ -120,7 +120,7 @@ class DetailsComponent extends PaginationTemplate<any> implements OnInit {
    */
   private apiReturnCount = 0;
 
-  constructor(
+  public constructor(
     route: ActivatedRoute,
     router: Router,
     config: NgbPaginationConfig,
@@ -192,13 +192,13 @@ class DetailsComponent extends PaginationTemplate<any> implements OnInit {
   }
 }
 
-DetailsComponent.LinkComponentToPageInfo({
+DetailsComponent.linkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List([projectsMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [projectKey]: projectResolvers.show },
-}).AndMenuRoute(projectMenuItem);
+}).andMenuRoute(projectMenuItem);
 
 export { DetailsComponent };

@@ -4,12 +4,12 @@ import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 import {
-  BawCollection,
-  BawDateTime,
+  bawCollection,
+  bawDateTime,
   BawDecoratorOptions,
-  BawDuration,
-  BawImage,
-  BawPersistAttr,
+  bawDuration,
+  bawImage,
+  bawPersistAttr,
 } from "./AttributeDecorators";
 
 class BaseModel extends AbstractModel {
@@ -22,7 +22,7 @@ describe("Attribute Decorators", () => {
   describe("BawPersistAttr", () => {
     it("should append key to model attributes", () => {
       class MockModel extends BaseModel {
-        @BawPersistAttr
+        @bawPersistAttr
         public readonly name: string;
       }
 
@@ -32,9 +32,9 @@ describe("Attribute Decorators", () => {
 
     it("should append multiple keys to model attributes", () => {
       class MockModel extends BaseModel {
-        @BawPersistAttr
+        @bawPersistAttr
         public readonly name: string;
-        @BawPersistAttr
+        @bawPersistAttr
         public readonly value: number;
       }
 
@@ -44,9 +44,9 @@ describe("Attribute Decorators", () => {
 
     it("should output keys in model toJSON", () => {
       class MockModel extends BaseModel {
-        @BawPersistAttr
+        @bawPersistAttr
         public readonly name: string;
-        @BawPersistAttr
+        @bawPersistAttr
         public readonly value: number;
       }
 
@@ -63,7 +63,7 @@ describe("Attribute Decorators", () => {
       defaultImageUrls = modelData.imageUrls();
       defaultImageUrl = {
         url: `${assetRoot}/broken_link.png`,
-        size: ImageSizes.DEFAULT,
+        size: ImageSizes.default,
       };
     });
 
@@ -72,7 +72,7 @@ describe("Attribute Decorators", () => {
       opts?: BawDecoratorOptions<any>
     ) {
       class MockModel extends BaseModel {
-        @BawImage(defaultImageUrl.url, opts)
+        @bawImage(defaultImageUrl.url, opts)
         public readonly image: ImageUrl[];
         public readonly imageUrls: ImageUrl[];
       }
@@ -107,7 +107,7 @@ describe("Attribute Decorators", () => {
     it("should convert single url string", () => {
       const imageUrl: ImageUrl = {
         url: modelData.imageUrl(),
-        size: ImageSizes.UNKNOWN,
+        size: ImageSizes.unknown,
       };
       const model = createModel({ image: imageUrl.url });
       expect(model.image).toEqual([imageUrl, defaultImageUrl]);
@@ -148,7 +148,7 @@ describe("Attribute Decorators", () => {
       opts?: BawDecoratorOptions<any>
     ) {
       class MockModel extends BaseModel {
-        @BawCollection(opts)
+        @bawCollection(opts)
         public readonly ids: Ids;
         public readonly overrideIds: Id[];
       }
@@ -210,7 +210,7 @@ describe("Attribute Decorators", () => {
       opts?: BawDecoratorOptions<any>
     ) {
       class MockModel extends BaseModel {
-        @BawDateTime(opts)
+        @bawDateTime(opts)
         public readonly date: DateTime;
         public readonly timestamp: string;
       }
@@ -260,7 +260,7 @@ describe("Attribute Decorators", () => {
       opts?: BawDecoratorOptions<any>
     ) {
       class MockModel extends BaseModel {
-        @BawDuration(opts)
+        @bawDuration(opts)
         public readonly duration: Duration;
         public readonly seconds: number;
       }

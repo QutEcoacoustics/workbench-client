@@ -19,11 +19,13 @@ export interface FormCheckingComponent {
 
 /**
  * Add form checking to the component
- * @param Base Class to extend
+ *
+ * @param base Class to extend
  */
-export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
+export function withFormCheck<T extends Type<any>>(base: T = class {} as any) {
   @Directive()
-  class FormCheckingPageComponent extends Base
+  class FormCheckingPageDirective
+    extends base
     implements FormCheckingComponent {
     @ViewChildren(FormComponent) public appForms: QueryList<FormComponent>;
 
@@ -42,7 +44,7 @@ export function WithFormCheck<T extends Type<{}>>(Base: T = class {} as any) {
     }
   }
 
-  return FormCheckingPageComponent;
+  return FormCheckingPageDirective;
 }
 
 /**

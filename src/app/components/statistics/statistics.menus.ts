@@ -1,12 +1,12 @@
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { homeCategory } from "../home/home.menus";
 
-export const statisticsRoute = StrongRoute.Base.add("website_statistics");
+export const statisticsRoute = StrongRoute.base.add("website_statistics");
 
 export const statisticsCategory: Category = homeCategory;
 
-export const statisticsMenuItem = MenuRoute({
+export const statisticsMenuItem = menuRoute({
   icon: ["fas", "chart-line"],
   label: "Statistics",
   route: statisticsRoute,

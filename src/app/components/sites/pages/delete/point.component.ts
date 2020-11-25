@@ -31,7 +31,7 @@ class PointDeleteComponent extends SiteDeleteComponent {
     return this.region.viewUrl;
   }
 }
-PointDeleteComponent.LinkComponentToPageInfo({
+PointDeleteComponent.linkComponentToPageInfo({
   category: pointsCategory,
   menus: {
     actions: List([pointMenuItem, ...pointMenuItemActions]),
@@ -42,5 +42,5 @@ PointDeleteComponent.LinkComponentToPageInfo({
     [regionKey]: regionResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-}).AndMenuRoute(deletePointMenuItem);
+}).andMenuRoute(deletePointMenuItem);
 export { PointDeleteComponent };

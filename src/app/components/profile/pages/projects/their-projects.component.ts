@@ -24,7 +24,7 @@ const accountKey = "account";
   templateUrl: "./projects.component.html",
 })
 class TheirProjectsComponent extends MyProjectsComponent {
-  constructor(api: ProjectsService, route: ActivatedRoute) {
+  public constructor(api: ProjectsService, route: ActivatedRoute) {
     super(api, route);
   }
 
@@ -37,10 +37,10 @@ class TheirProjectsComponent extends MyProjectsComponent {
   }
 }
 
-TheirProjectsComponent.LinkComponentToPageInfo({
+TheirProjectsComponent.linkComponentToPageInfo({
   category: theirProfileCategory,
   menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
   resolvers: { [accountKey]: accountResolvers.show },
-}).AndMenuRoute(theirProjectsMenuItem);
+}).andMenuRoute(theirProjectsMenuItem);
 
 export { TheirProjectsComponent };

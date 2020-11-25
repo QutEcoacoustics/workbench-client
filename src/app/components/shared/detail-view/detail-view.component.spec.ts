@@ -6,7 +6,7 @@ import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
-import { HasMany, HasOne } from "@models/AssociationDecorators";
+import { hasMany, hasOne } from "@models/AssociationDecorators";
 import { nStepObservable } from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { DetailViewComponent } from "./detail-view.component";
@@ -14,19 +14,19 @@ import { RenderFieldComponent } from "./render-field/render-field.component";
 
 class MockModel extends AbstractModel {
   public id: Id;
-  @HasOne<MockModel, AbstractModel>(MOCK, "id")
+  @hasOne<MockModel, AbstractModel>(MOCK, "id")
   public readonly childModel: AssociatedModel;
-  @HasMany<MockModel, AbstractModel>(MOCK, "id")
+  @hasMany<MockModel, AbstractModel>(MOCK, "id")
   public readonly childModels: AssociatedModel[];
 
-  constructor(opts: any, injector?: Injector) {
+  public constructor(opts: any, injector?: Injector) {
     super(opts, injector);
   }
 
   public get viewUrl(): string {
     throw new Error("Method not implemented.");
   }
-  public toJSON(): object {
+  public toJSON(): Record<string, any> {
     throw new Error("Method not implemented.");
   }
 }
@@ -129,7 +129,7 @@ describe("DetailViewComponent", () => {
             },
           },
           {
-            key: "string",
+            key: "text",
             templateOptions: {
               label: "custom label 1",
             },
@@ -143,7 +143,7 @@ describe("DetailViewComponent", () => {
         ];
         component.model = new MockModel({
           id: 5,
-          string: "10",
+          text: "10",
           object: { test: "value" },
         });
         fixture.detectChanges();

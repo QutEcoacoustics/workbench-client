@@ -12,18 +12,21 @@ export const defaultUserIcon: IconProp = ["fas", "user"];
 
 /**
  * Returns true only if user is a guest
+ *
  * @param user Session User Data
  */
 export const isGuestPredicate = (user: SessionUser): boolean => !user;
 
 /**
  * Returns true only if user is logged in
+ *
  * @param user Session User Data
  */
 export const isLoggedInPredicate = (user: SessionUser): boolean => !!user;
 
 /**
  * Returns true only if user is an admin or user id matches project owner id
+ *
  * @param user Session User Data
  * @param data Page Data
  */
@@ -40,6 +43,7 @@ export const isProjectOwnerPredicate = (
 
 /**
  * Returns true only if user is an admin
+ *
  * @param user Session User Data
  */
 export const isAdminPredicate = (user: SessionUser): boolean =>

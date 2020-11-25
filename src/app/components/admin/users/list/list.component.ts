@@ -33,7 +33,7 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
     lastLogin: "lastSeenAt",
   };
 
-  constructor(api: AccountsService) {
+  public constructor(api: AccountsService) {
     super(api, (accounts) =>
       accounts.map((account) => ({
         account,
@@ -49,6 +49,7 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   /**
    * Return the user redirect path.
    * This is outside the HTML file for static compiler analysis
+   *
    * @param user User account
    */
   public viewPath(user: User) {
@@ -57,6 +58,7 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
 
   /**
    * Produce the router path to the edit their account page
+   *
    * @param user User Account
    */
   public editPath(user: User) {
@@ -66,7 +68,7 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   }
 }
 
-AdminUserListComponent.LinkComponentToPageInfo({
+AdminUserListComponent.linkComponentToPageInfo({
   category: adminCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -74,7 +76,7 @@ AdminUserListComponent.LinkComponentToPageInfo({
       ...adminMenuItemActions,
     ]),
   },
-}).AndMenuRoute(adminUserListMenuItem);
+}).andMenuRoute(adminUserListMenuItem);
 
 export { AdminUserListComponent };
 

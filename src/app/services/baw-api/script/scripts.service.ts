@@ -5,8 +5,8 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IScript, Script } from "@models/Script";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   id,
   IdOr,
   IdParamOptional,
@@ -25,7 +25,7 @@ const endpoint = stringTemplate`/scripts/${scriptId}${option}`;
  */
 @Injectable()
 export class ScriptsService extends NonDestructibleApi<Script> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -34,21 +34,21 @@ export class ScriptsService extends NonDestructibleApi<Script> {
   }
 
   public list(): Observable<Script[]> {
-    return this.apiList(endpoint(Empty, Empty));
+    return this.apiList(endpoint(emptyParam, emptyParam));
   }
   public filter(filters: Filters<IScript>): Observable<Script[]> {
-    return this.apiFilter(endpoint(Empty, Filter), filters);
+    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<Script>): Observable<Script> {
-    return this.apiShow(endpoint(model, Empty));
+    return this.apiShow(endpoint(model, emptyParam));
   }
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
   public create(model: Script): Observable<Script> {
-    return this.apiCreate(endpoint(Empty, Empty), model);
+    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
   }
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
   public update(model: Script): Observable<Script> {
-    return this.apiUpdate(endpoint(model, Empty), model);
+    return this.apiUpdate(endpoint(model, emptyParam), model);
   }
 }
 

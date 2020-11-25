@@ -22,7 +22,7 @@ export type IdParamOptional<T extends AbstractModel> = (
   _: IdOr<T> | Empty
 ) => string;
 export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
-  if (x === Empty) {
+  if (x === emptyParam) {
     return x;
   } else if (isInstantiated(x?.["id"])) {
     return x?.["id"].toString();
@@ -33,6 +33,7 @@ export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
 
 /**
  * Create parameter (used by stringTemplate)
+ *
  * @param x Api parameter
  */
 export function param(x: Param) {
@@ -41,14 +42,16 @@ export function param(x: Param) {
 
 /**
  * Create option (used by stringTemplate)
+ *
  * @param x Api option
  */
 export function option(x?: New | Filter | Empty) {
-  return x ? x : Empty;
+  return x ? x : emptyParam;
 }
 
 /**
  * Modify a base filter to add a foreign key condition
+ *
  * @param filters Base Filters
  * @param key Foreign key
  * @param model Foreign key value
@@ -74,9 +77,9 @@ export function filterByForeignKey<T>(
 export type Empty = "";
 export type New = "new";
 export type Filter = "filter";
-export const Empty: Empty = "";
-export const New: New = "new";
-export const Filter: Filter = "filter";
+export const emptyParam: Empty = "";
+export const newParam: New = "new";
+export const filterParam: Filter = "filter";
 
 /**
  * API List functionality
@@ -84,6 +87,7 @@ export const Filter: Filter = "filter";
 export interface ApiList<M, P extends any[] = []> {
   /**
    * Get list of models
+   *
    * @param args URL parameter values
    */
   list(...urlParameters: P): Observable<M[]>;
@@ -95,6 +99,7 @@ export interface ApiList<M, P extends any[] = []> {
 export interface ApiFilter<M extends AbstractModel, P extends any[] = []> {
   /**
    * Get list of models, but filtered using the filter API
+   *
    * @param args URL parameter values
    */
   filter(filters: Filters<M>, ...urlParameters: P): Observable<M[]>;
@@ -110,6 +115,7 @@ export interface ApiShow<
 > {
   /**
    * Get individual model
+   *
    * @param args URL parameter values
    */
   show(model: M | I, ...urlParameters: P): Observable<M>;
@@ -121,6 +127,7 @@ export interface ApiShow<
 export interface ApiCreate<M extends AbstractModel, P extends any[] = []> {
   /**
    * Get individual model
+   *
    * @param args URL parameter values
    */
   create(model: M, ...urlParameters: P): Observable<M>;
@@ -132,6 +139,7 @@ export interface ApiCreate<M extends AbstractModel, P extends any[] = []> {
 export interface ApiUpdate<M extends AbstractModel, P extends any[] = []> {
   /**
    * Get individual model
+   *
    * @param args URL parameter values
    */
   update(model: PartialWith<M, "id">, ...urlParameters: P): Observable<M>;
@@ -146,6 +154,7 @@ export interface ApiDestroy<
 > {
   /**
    * destroy  individual model
+   *
    * @param args URL parameter values
    */
   destroy(model: I, ...urlParameters: P): Observable<M | void>;

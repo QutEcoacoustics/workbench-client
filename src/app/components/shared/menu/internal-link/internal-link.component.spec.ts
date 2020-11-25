@@ -1,6 +1,6 @@
 import { Location } from "@angular/common";
 import { RouterTestingModule } from "@angular/router/testing";
-import { MenuRoute } from "@interfaces/menusInterfaces";
+import { MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import {
@@ -66,10 +66,10 @@ describe("MenuInternalLinkComponent", () => {
   }
 
   beforeEach(() => {
-    defaultLink = MenuRoute({
+    defaultLink = menuRoute({
       icon: ["fas", "home"],
       label: "home",
-      route: StrongRoute.Base.add("home"),
+      route: StrongRoute.base.add("home"),
       tooltip: () => "tooltip",
     });
   });
@@ -82,7 +82,7 @@ describe("MenuInternalLinkComponent", () => {
 
   it("should have icon", () => {
     setup({
-      link: MenuRoute({
+      link: menuRoute({
         ...defaultLink,
         icon: ["fas", "exclamation-triangle"],
       }),
@@ -92,7 +92,7 @@ describe("MenuInternalLinkComponent", () => {
   });
 
   it("should have label", () => {
-    setup({ link: MenuRoute({ ...defaultLink, label: "custom label" }) });
+    setup({ link: menuRoute({ ...defaultLink, label: "custom label" }) });
     spec.detectChanges();
 
     // Expects label to be above disabled user tooltip
@@ -105,7 +105,7 @@ describe("MenuInternalLinkComponent", () => {
     it("should have tooltip", () => {
       setup({
         tooltip: "custom tooltip",
-        link: MenuRoute({ ...defaultLink, tooltip: () => "custom tooltip" }),
+        link: menuRoute({ ...defaultLink, tooltip: () => "custom tooltip" }),
       });
       spec.detectChanges();
       assertTooltip(retrieveWrapper(), "custom tooltip");
@@ -114,7 +114,7 @@ describe("MenuInternalLinkComponent", () => {
     it("should not use link tooltip", () => {
       setup({
         tooltip: "custom tooltip",
-        link: MenuRoute({ ...defaultLink, tooltip: () => "wrong tooltip" }),
+        link: menuRoute({ ...defaultLink, tooltip: () => "wrong tooltip" }),
       });
       spec.detectChanges();
       assertTooltip(retrieveWrapper(), "custom tooltip");
@@ -137,9 +137,9 @@ describe("MenuInternalLinkComponent", () => {
     it("should create routerLink", () => {
       setup({
         route: "/brokenlink",
-        link: MenuRoute({
+        link: menuRoute({
           ...defaultLink,
-          route: StrongRoute.Base.add("brokenlink"),
+          route: StrongRoute.base.add("brokenlink"),
         }),
       });
       spec.detectChanges();
@@ -149,9 +149,9 @@ describe("MenuInternalLinkComponent", () => {
     it("should not use link route", () => {
       setup({
         route: "/brokenlink",
-        link: MenuRoute({
+        link: menuRoute({
           ...defaultLink,
-          route: StrongRoute.Base.add("wronglink"),
+          route: StrongRoute.base.add("wronglink"),
         }),
       });
       spec.detectChanges();
@@ -183,25 +183,25 @@ describe("MenuInternalLinkComponent", () => {
     }
 
     it("should default as enabled if disabled is undefined", () => {
-      setup({ link: MenuRoute({ ...defaultLink, disabled: undefined }) });
+      setup({ link: menuRoute({ ...defaultLink, disabled: undefined }) });
       spec.detectChanges();
       assertDisabled(false);
     });
 
     it("should be enabled if disabled is false", () => {
-      setup({ link: MenuRoute({ ...defaultLink, disabled: false }) });
+      setup({ link: menuRoute({ ...defaultLink, disabled: false }) });
       spec.detectChanges();
       assertDisabled(false);
     });
 
     it("should be disabled if disabled is true", () => {
-      setup({ link: MenuRoute({ ...defaultLink, disabled: true }) });
+      setup({ link: menuRoute({ ...defaultLink, disabled: true }) });
       spec.detectChanges();
       assertDisabled(true);
     });
 
     it("should be active is disabled is true", () => {
-      setup({ link: MenuRoute({ ...defaultLink, disabled: true }) });
+      setup({ link: menuRoute({ ...defaultLink, disabled: true }) });
       spec.detectChanges();
       assertActive(true);
     });

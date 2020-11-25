@@ -17,12 +17,12 @@ export const image404RelativeSrc = `${assetRoot}/images/404.png`;
 @Directive({
   // Directive applies directly to all image tags instead of being
   // explicitly called
-  // tslint:disable-next-line: directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "img",
 })
 export class AuthenticatedImageDirective implements OnChanges {
   /** Image src, only accessible if using [src] */
-  @Input() public src: ImageUrl[];
+  @Input() public src: ImageUrl[] | string;
   /** Image thumbnail size to display if exists */
   @Input() public thumbnail: ImageSizes;
   /** Do not append auth token to image url */
@@ -30,6 +30,7 @@ export class AuthenticatedImageDirective implements OnChanges {
   /** Disable authenticated image directive on image */
   @Input() public disableAuth: boolean;
 
+  private _src: ImageUrl[];
   /**
    * Tracks potential url options to be used for src
    */
@@ -47,16 +48,18 @@ export class AuthenticatedImageDirective implements OnChanges {
    */
   private defaultImage: string;
 
-  constructor(
+  public constructor(
     @Inject(API_ROOT) private apiRoot: string,
     private securityApi: SecurityService,
     private imageRef: ElementRef<HTMLImageElement>
   ) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (this.disableAuth) {
+    if (this.disableAuth || typeof this.src === "string") {
       return;
     }
+
+    this._src = this.src;
 
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
@@ -73,15 +76,15 @@ export class AuthenticatedImageDirective implements OnChanges {
 
     // Prepend new urls (except default urls) to urls set
     this.urls = OrderedSet<string>(
-      this.src
-        ?.filter((imageUrl) => imageUrl.size !== ImageSizes.DEFAULT)
+      this._src
+        ?.filter((imageUrl) => imageUrl.size !== ImageSizes.default)
         .map((imageUrl) => imageUrl.url) ?? []
     ).concat(this.urls);
 
     // Retrieve default image if exists
     this.defaultImage =
-      this.src?.find((imageUrl) => imageUrl.size === ImageSizes.DEFAULT)?.url ??
-      this.defaultImage;
+      this._src?.find((imageUrl) => imageUrl.size === ImageSizes.default)
+        ?.url ?? this.defaultImage;
 
     this.displayThumbnail = !!this.thumbnail;
     this.setImageSrc();
@@ -103,7 +106,7 @@ export class AuthenticatedImageDirective implements OnChanges {
 
     // Find thumbnail if exists
     if (!url && this.displayThumbnail) {
-      url = this.src.find((imageUrl) => imageUrl.size === this.thumbnail)?.url;
+      url = this._src.find((imageUrl) => imageUrl.size === this.thumbnail)?.url;
     }
 
     // Retrieve first url from set
@@ -125,7 +128,6 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Handle image error event
    */
   private errorHandler() {
-    // tslint:disable-next-line: no-console
     console.warn("Failed to load image: ", this.imageRef.nativeElement.src);
 
     // No longer attempt to use thumbnail
@@ -142,6 +144,7 @@ export class AuthenticatedImageDirective implements OnChanges {
   /**
    * Append authentication token to url if logged in
    * and disableAuthentication is not set.
+   *
    * @param url Url to append to, must be fully formed (not a relative path)
    */
   private appendAuthToken(url: string): string {
@@ -166,11 +169,12 @@ export class AuthenticatedImageDirective implements OnChanges {
       ? this.urls.count() + 1 === this.usedUrls.count()
       : this.urls.count() === this.usedUrls.count();
 
-    return !this.src || hasDefaultImageAvailable;
+    return !this._src || hasDefaultImageAvailable;
   }
 
   /**
    * Returns true if the default image is the only option available
+   *
    * @param url Url
    */
   private useDefaultImage(url: string): boolean {

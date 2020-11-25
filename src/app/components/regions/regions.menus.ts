@@ -6,7 +6,7 @@ import {
   siteMenuItem,
   sitesCategory,
 } from "@components/sites/sites.menus";
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 
 export const regionsRoute = projectMenuItem.route.addFeatureModule("regions");
 
@@ -16,24 +16,24 @@ export const regionsCategory: Category = {
   route: regionsRoute.add(":regionId"),
 };
 
-export const regionMenuItem = MenuRoute({
+export const regionMenuItem = menuRoute({
   ...siteMenuItem,
   icon: ["fas", "map-signs"],
   route: regionsCategory.route,
 });
 
-export const newRegionMenuItem = MenuRoute({
+export const newRegionMenuItem = menuRoute({
   ...newSiteMenuItem,
   route: regionsRoute.add("new"),
 });
 
-export const editRegionMenuItem = MenuRoute({
+export const editRegionMenuItem = menuRoute({
   ...editSiteMenuItem,
   parent: regionMenuItem,
   route: regionMenuItem.route.add("edit"),
 });
 
-export const deleteRegionMenuItem = MenuRoute({
+export const deleteRegionMenuItem = menuRoute({
   ...deleteSiteMenuItem,
   parent: regionMenuItem,
   route: regionMenuItem.route.add("delete"),

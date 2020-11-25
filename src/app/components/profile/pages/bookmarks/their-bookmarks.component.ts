@@ -24,7 +24,7 @@ const accountKey = "account";
   templateUrl: "./bookmarks.component.html",
 })
 class TheirBookmarksComponent extends MyBookmarksComponent {
-  constructor(api: BookmarksService, route: ActivatedRoute) {
+  public constructor(api: BookmarksService, route: ActivatedRoute) {
     super(api, route);
   }
 
@@ -37,10 +37,10 @@ class TheirBookmarksComponent extends MyBookmarksComponent {
   }
 }
 
-TheirBookmarksComponent.LinkComponentToPageInfo({
+TheirBookmarksComponent.linkComponentToPageInfo({
   category: theirProfileCategory,
   menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
   resolvers: { [accountKey]: accountResolvers.show },
-}).AndMenuRoute(theirBookmarksMenuItem);
+}).andMenuRoute(theirBookmarksMenuItem);
 
 export { TheirBookmarksComponent };

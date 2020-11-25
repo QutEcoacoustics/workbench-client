@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { AdminScriptComponent } from "./details/details.component";
 import { AdminScriptsEditComponent } from "./edit/edit.component";
@@ -14,7 +14,7 @@ const components = [
   AdminScriptsNewComponent,
   AdminScriptsEditComponent,
 ];
-const routes = adminScriptsRoute.compileRoutes(GetRouteConfigForPage);
+const routes = adminScriptsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: components,

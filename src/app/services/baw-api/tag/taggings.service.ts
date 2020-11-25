@@ -7,8 +7,8 @@ import { AudioEvent } from "@models/AudioEvent";
 import { ITagging, Tagging } from "@models/Tagging";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   id,
   IdOr,
   IdParam,
@@ -29,7 +29,7 @@ export class TaggingsService extends StandardApi<
   Tagging,
   [IdOr<AnalysisJob>, IdOr<AudioEvent>]
 > {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -41,7 +41,9 @@ export class TaggingsService extends StandardApi<
     analysisJob: IdOr<AnalysisJob>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging[]> {
-    return this.apiList(endpoint(analysisJob, audioEvent, Empty, Empty));
+    return this.apiList(
+      endpoint(analysisJob, audioEvent, emptyParam, emptyParam)
+    );
   }
   public filter(
     filters: Filters<ITagging>,
@@ -49,7 +51,7 @@ export class TaggingsService extends StandardApi<
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging[]> {
     return this.apiFilter(
-      endpoint(analysisJob, audioEvent, Empty, Filter),
+      endpoint(analysisJob, audioEvent, emptyParam, filterParam),
       filters
     );
   }
@@ -58,7 +60,7 @@ export class TaggingsService extends StandardApi<
     analysisJob: IdOr<AnalysisJob>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging> {
-    return this.apiShow(endpoint(analysisJob, audioEvent, model, Empty));
+    return this.apiShow(endpoint(analysisJob, audioEvent, model, emptyParam));
   }
   public create(
     model: Tagging,
@@ -66,7 +68,7 @@ export class TaggingsService extends StandardApi<
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging> {
     return this.apiCreate(
-      endpoint(analysisJob, audioEvent, Empty, Empty),
+      endpoint(analysisJob, audioEvent, emptyParam, emptyParam),
       model
     );
   }
@@ -76,7 +78,7 @@ export class TaggingsService extends StandardApi<
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging> {
     return this.apiUpdate(
-      endpoint(analysisJob, audioEvent, model, Empty),
+      endpoint(analysisJob, audioEvent, model, emptyParam),
       model
     );
   }
@@ -85,7 +87,9 @@ export class TaggingsService extends StandardApi<
     analysisJob: IdOr<AnalysisJob>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging | void> {
-    return this.apiDestroy(endpoint(analysisJob, audioEvent, model, Empty));
+    return this.apiDestroy(
+      endpoint(analysisJob, audioEvent, model, emptyParam)
+    );
   }
 }
 

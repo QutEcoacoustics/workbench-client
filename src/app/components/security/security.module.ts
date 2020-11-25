@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { ConfirmPasswordComponent } from "./pages/confirm-account/confirm-account.component";
 import { LoginComponent } from "./pages/login/login.component";
@@ -17,7 +17,7 @@ const components = [
   UnlockAccountComponent,
 ];
 
-const routes = securityRoute.compileRoutes(GetRouteConfigForPage);
+const routes = securityRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: components,

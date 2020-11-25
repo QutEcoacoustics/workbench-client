@@ -3,7 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AbstractModel } from "@models/AbstractModel";
-import { BawPersistAttr } from "@models/AttributeDecorators";
+import { bawPersistAttr } from "@models/AttributeDecorators";
 import { SessionUser } from "@models/User";
 import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
 import { catchError, map, mergeMap } from "rxjs/operators";
@@ -24,7 +24,7 @@ export class SecurityService extends BawApiService<SessionUser> {
   private authTrigger = new BehaviorSubject<void>(null);
   private handleError: (err: ApiErrorDetails) => ObservableInput<any>;
 
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     private userService: UserService,
@@ -54,6 +54,7 @@ export class SecurityService extends BawApiService<SessionUser> {
   /**
    * Login the user, this function can only be called if user
    * is not logged in.
+   *
    * @param details Details provided by login form
    */
   public signIn(details: LoginDetails): Observable<void> {
@@ -75,6 +76,7 @@ export class SecurityService extends BawApiService<SessionUser> {
 
   /**
    * Handle register/login authentication requests
+   *
    * @param apiRequest API Request
    */
   private handleAuth(apiRequest: Observable<SessionUser>): Observable<void> {
@@ -103,15 +105,16 @@ export interface LoginDetailsInterface {
   password?: string;
 }
 
-export class LoginDetails extends AbstractModel
+export class LoginDetails
+  extends AbstractModel
   implements LoginDetailsInterface {
   public readonly kind: "LoginDetails" = "LoginDetails";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly login: string;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly password: string;
 
-  constructor(details: LoginDetailsInterface) {
+  public constructor(details: LoginDetailsInterface) {
     super(details);
   }
 

@@ -5,7 +5,7 @@ describe("AbstractModel", () => {
   describe("toJSON", () => {
     function createModel(attributes: string[], data: any) {
       class MockModel extends AbstractModel {
-        constructor(modelData: any) {
+        public constructor(modelData: any) {
           super(modelData);
           this[AbstractModel.attributeKey] = attributes;
         }
@@ -91,7 +91,7 @@ describe("AbstractModel", () => {
     let model: AbstractModel;
     beforeEach(() => {
       class MockModel extends AbstractModel {
-        constructor() {
+        public constructor() {
           super({ id: 1 });
         }
 

@@ -5,8 +5,8 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   id,
   IdOr,
   IdParamOptional,
@@ -21,7 +21,7 @@ const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}${option}`;
 
 @Injectable()
 export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -30,13 +30,15 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
   }
 
   public list(): Observable<AudioRecording[]> {
-    return this.apiList(endpoint(Empty, Empty));
+    return this.apiList(endpoint(emptyParam, emptyParam));
   }
-  public filter(filters: Filters<IAudioRecording>): Observable<AudioRecording[]> {
-    return this.apiFilter(endpoint(Empty, Filter), filters);
+  public filter(
+    filters: Filters<IAudioRecording>
+  ): Observable<AudioRecording[]> {
+    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<AudioRecording>): Observable<AudioRecording> {
-    return this.apiShow(endpoint(model, Empty));
+    return this.apiShow(endpoint(model, emptyParam));
   }
 }
 

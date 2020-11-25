@@ -17,40 +17,40 @@
     (page)="setPage($event)"
     (sort)="onSort($event)"
   >
-    <ngx-datatable-column name="Id" width="50" maxWidth="50">
+    <ngx-datatable-column name="Id" [width]="50" [maxWidth]="50">
     </ngx-datatable-column>
     <ngx-datatable-column name="Name"></ngx-datatable-column>
     <ngx-datatable-column
       name="Script"
-      width="50"
-      maxWidth="50"
+      [width]="50"
+      [maxWidth]="50"
       [sortable]="false"
     ></ngx-datatable-column>
     <ngx-datatable-column
       name="Creator"
-      width="60"
-      maxWidth="60"
+      [width]="60"
+      [maxWidth]="60"
       [sortable]="false"
     ></ngx-datatable-column>
     <ngx-datatable-column
       name="Started"
-      width="110"
-      maxWidth="110"
+      [width]="110"
+      [maxWidth]="110"
     ></ngx-datatable-column>
     <ngx-datatable-column
       name="Status"
-      width="95"
-      maxWidth="95"
+      [width]="95"
+      [maxWidth]="95"
     ></ngx-datatable-column>
     <ngx-datatable-column
       name="Status Updated"
-      width="115"
-      maxWidth="115"
+      [width]="115"
+      [maxWidth]="115"
     ></ngx-datatable-column>
     <ngx-datatable-column
       name="Model"
-      width="140"
-      maxWidth="140"
+      [width]="140"
+      [maxWidth]="140"
       [sortable]="false"
     >
       <ng-template let-column="column" ngx-datatable-header-template>

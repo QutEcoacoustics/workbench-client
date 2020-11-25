@@ -54,15 +54,15 @@ describe("AdminAnalysisJobComponent", () => {
 
     fixture = TestBed.createComponent(AdminAnalysisJobComponent);
     injector = TestBed.inject(Injector);
-    const accountsApi = TestBed.inject(ACCOUNT.token) as SpyObject<
-      AccountsService
-    >;
-    const scriptsApi = TestBed.inject(SCRIPT.token) as SpyObject<
-      ScriptsService
-    >;
-    const savedSearchesApi = TestBed.inject(SAVED_SEARCH.token) as SpyObject<
-      SavedSearchesService
-    >;
+    const accountsApi = TestBed.inject(
+      ACCOUNT.token
+    ) as SpyObject<AccountsService>;
+    const scriptsApi = TestBed.inject(
+      SCRIPT.token
+    ) as SpyObject<ScriptsService>;
+    const savedSearchesApi = TestBed.inject(
+      SAVED_SEARCH.token
+    ) as SpyObject<SavedSearchesService>;
     component = fixture.componentInstance;
 
     const accountsSubject = new Subject<User>();

@@ -15,7 +15,7 @@ describe("ToRelativePipe", () => {
     value: Duration | DateTime,
     options?: HumanizeDurationOptions | ToRelativeOptions
   ) {
-    spec = createPipe(`<p>{{ value | toRelative: options }}</p>`, {
+    spec = createPipe("<p>{{ value | toRelative: options }}</p>", {
       hostProps: { value, options },
     });
   }

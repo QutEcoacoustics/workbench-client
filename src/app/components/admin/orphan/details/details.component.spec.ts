@@ -50,12 +50,12 @@ describe("AdminOrphanComponent", () => {
 
     fixture = TestBed.createComponent(AdminOrphanComponent);
     injector = TestBed.inject(Injector);
-    const accountsApi = TestBed.inject(ACCOUNT.token) as SpyObject<
-      AccountsService
-    >;
-    const projectsApi = TestBed.inject(PROJECT.token) as SpyObject<
-      ProjectsService
-    >;
+    const accountsApi = TestBed.inject(
+      ACCOUNT.token
+    ) as SpyObject<AccountsService>;
+    const projectsApi = TestBed.inject(
+      PROJECT.token
+    ) as SpyObject<ProjectsService>;
     component = fixture.componentInstance;
 
     const accountsSubject = new Subject<User>();

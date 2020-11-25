@@ -12,15 +12,15 @@ describe("StrongRoute", () => {
     const parents = [
       {
         title: "Base Route",
-        parent: () => StrongRoute.Base,
+        parent: () => StrongRoute.base,
       },
       {
         title: "Child Route",
-        parent: () => StrongRoute.Base.add("parent"),
+        parent: () => StrongRoute.base.add("parent"),
       },
       {
         title: "Feature Module Route",
-        parent: () => StrongRoute.Base.add("test").addFeatureModule("testing"),
+        parent: () => StrongRoute.base.add("test").addFeatureModule("testing"),
       },
     ];
 
@@ -66,7 +66,7 @@ describe("StrongRoute", () => {
     let strongRoute: StrongRoute;
 
     beforeEach(() => {
-      strongRoute = StrongRoute.Base;
+      strongRoute = StrongRoute.base;
     });
 
     it("should format base route", () => {
@@ -94,12 +94,12 @@ describe("StrongRoute", () => {
       {
         title: "Base Route",
         baseRef: "",
-        parent: () => StrongRoute.Base,
+        parent: () => StrongRoute.base,
       },
       {
         title: "Feature Module Route",
         baseRef: "test/testing/",
-        parent: () => StrongRoute.Base.add("test").addFeatureModule("testing"),
+        parent: () => StrongRoute.base.add("test").addFeatureModule("testing"),
       },
     ];
 
@@ -346,7 +346,7 @@ describe("StrongRoute", () => {
     let strongRoute: StrongRoute;
 
     beforeEach(() => {
-      strongRoute = StrongRoute.Base;
+      strongRoute = StrongRoute.base;
     });
 
     it("should handle base StrongRoute", () => {
@@ -378,7 +378,7 @@ describe("StrongRoute", () => {
     let strongRoute: StrongRoute;
 
     beforeEach(() => {
-      strongRoute = StrongRoute.Base;
+      strongRoute = StrongRoute.base;
     });
 
     it("should handle child route", () => {

@@ -6,6 +6,8 @@
 
 import "zone.js/dist/zone-node";
 
+import { existsSync, readFileSync } from "fs";
+import { join } from "path";
 import { APP_BASE_HREF } from "@angular/common";
 import {
   API_CONFIG,
@@ -14,8 +16,6 @@ import {
 import { ngExpressEngine } from "@nguniversal/express-engine";
 import { assetRoot } from "@services/app-config/app-config.service";
 import express from "express";
-import { existsSync, readFileSync } from "fs";
-import { join } from "path";
 import { environment } from "src/environments/environment";
 import { AppServerModule } from "./src/main.server";
 
@@ -93,6 +93,7 @@ function run(configPath: string): void {
 // Webpack will replace 'require' with '__webpack_require__'
 // '__non_webpack_require__' is a proxy to Node 'require'
 // The below code is to ensure that the server is run only when not requiring the bundle.
+// eslint-disable-next-line @typescript-eslint/naming-convention
 declare const __non_webpack_require__: NodeRequire;
 const mainModule = __non_webpack_require__.main;
 const moduleFilename = (mainModule && mainModule.filename) || "";

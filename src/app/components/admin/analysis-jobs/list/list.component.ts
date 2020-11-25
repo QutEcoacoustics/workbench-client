@@ -36,7 +36,7 @@ class AdminAnalysisJobsComponent
     statusUpdated: "overallStatusModifiedAt",
   };
 
-  constructor(api: AnalysisJobsService) {
+  public constructor(api: AnalysisJobsService) {
     super(api, (analysisJobs) =>
       analysisJobs.map((analysisJob) => ({
         id: analysisJob.id,
@@ -52,10 +52,10 @@ class AdminAnalysisJobsComponent
   }
 }
 
-AdminAnalysisJobsComponent.LinkComponentToPageInfo({
+AdminAnalysisJobsComponent.linkComponentToPageInfo({
   category: adminAnalysisJobsCategory,
   menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
-}).AndMenuRoute(adminAnalysisJobsMenuItem);
+}).andMenuRoute(adminAnalysisJobsMenuItem);
 
 export { AdminAnalysisJobsComponent };
 

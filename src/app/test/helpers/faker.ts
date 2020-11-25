@@ -16,7 +16,7 @@ export const modelData = {
       AccessLevel.writer,
       AccessLevel.owner,
     ]),
-  boolean: () => faker.random.boolean(),
+  bool: () => faker.random.boolean(),
   description: () => faker.lorem.sentence().replace(specialCharRegex, ""),
   descriptionLong: () =>
     [0, 1, 2, 3, 4]
@@ -119,6 +119,7 @@ export const modelData = {
 
 /**
  * Randomly shuffle array using Fisher-Yates Shuffle
+ *
  * @param array Array to shuffle
  */
 function shuffleArray<T>(array: T[]): T[] {
@@ -143,15 +144,16 @@ function shuffleArray<T>(array: T[]): T[] {
 
 /**
  * Generate image urls
+ *
  * @param url Base url for image urls. Do not end url with '/' ie /broken_links/.
  */
 function imageUrls(url?: string): ImageUrl[] {
   return [
-    { image: ImageSizes.EXTRA_LARGE, size: 300 },
-    { image: ImageSizes.LARGE, size: 220 },
-    { image: ImageSizes.MEDIUM, size: 140 },
-    { image: ImageSizes.SMALL, size: 60 },
-    { image: ImageSizes.TINY, size: 30 },
+    { image: ImageSizes.extraLarge, size: 300 },
+    { image: ImageSizes.large, size: 220 },
+    { image: ImageSizes.medium, size: 140 },
+    { image: ImageSizes.small, size: 60 },
+    { image: ImageSizes.tiny, size: 30 },
   ].map(({ image, size }) => ({
     size: image,
     url: url ? url + "/300/300" : faker.image.imageUrl(size, size),
@@ -191,6 +193,7 @@ function timezone(): TimezoneInformation {
 
 /**
  * Generate a series of hexadecimal digits
+ *
  * @param count Size of hash
  */
 function hexaDecimal(count: number = 1): string {
@@ -221,6 +224,7 @@ function hexaDecimal(count: number = 1): string {
 
 /**
  * Create an array of random elements with random length
+ *
  * @param min Minimum number of elements
  * @param max Maximum number of elements
  * @param callback Callback function to generate element
@@ -242,10 +246,11 @@ function randomArray<T>(
 
 /**
  * Create an object containing random key-value pairs
+ *
  * @param min Minimum number of keys
  * @param max Maximum number of keys
  */
-function randomObject(min: number, max: number): object {
+function randomObject(min: number, max: number): Record<string, string> {
   const len = faker.random.number({ min, max });
   const obj = {};
 

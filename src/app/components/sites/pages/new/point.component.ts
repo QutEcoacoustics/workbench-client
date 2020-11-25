@@ -27,7 +27,7 @@ class PointNewComponent extends SiteNewComponent {
   public fields = fields;
   public title = "New Point";
 
-  constructor(
+  public constructor(
     api: SitesService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -48,13 +48,13 @@ class PointNewComponent extends SiteNewComponent {
   }
 }
 
-PointNewComponent.LinkComponentToPageInfo({
+PointNewComponent.linkComponentToPageInfo({
   category: pointsCategory,
   menus: { actions: List([regionMenuItem, ...regionMenuItemActions]) },
   resolvers: {
     [projectKey]: projectResolvers.show,
     [regionKey]: regionResolvers.show,
   },
-}).AndMenuRoute(newPointMenuItem);
+}).andMenuRoute(newPointMenuItem);
 
 export { PointNewComponent };

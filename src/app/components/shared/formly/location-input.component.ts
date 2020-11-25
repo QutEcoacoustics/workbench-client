@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { FormControl } from "@angular/forms";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { FieldType } from "@ngx-formly/core";
 import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
@@ -9,8 +10,7 @@ import { List } from "immutable";
  * ! Warning, test manually after changes
  */
 @Component({
-  // tslint:disable-next-line: component-selector
-  selector: "formly-location-input",
+  selector: "baw-location-input",
   template: `
     <div class="form-group">
       <label for="latitude"> Latitude {{ to.required ? " *" : "" }} </label>
@@ -61,8 +61,8 @@ import { List } from "immutable";
     </div>
   `,
 })
-// tslint:disable-next-line: component-class-suffix
-export class FormlyLocationInput extends FieldType implements OnInit {
+export class LocationInputComponent extends FieldType implements OnInit {
+  public formControl: FormControl;
   public latitude: number;
   public latitudeError: boolean;
   public longitude: number;
@@ -99,6 +99,7 @@ export class FormlyLocationInput extends FieldType implements OnInit {
 
   /**
    * Set marker position, or set to null if lat/lng missing
+   *
    * @param latitude Latitude
    * @param longitude Longitude
    */

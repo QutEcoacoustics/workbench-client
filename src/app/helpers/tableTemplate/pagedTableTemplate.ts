@@ -24,15 +24,18 @@ import { PageComponent } from "../page/pageComponent";
  * which requires the use of external sorting and paging.
  */
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   extends PageComponent
   implements OnInit {
   @ViewChild(DatatableComponent) public table: DatatableComponent;
 
   // Table variables
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public ColumnMode = ColumnMode;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public SortType = SortType;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public SelectionType = SelectionType;
   public columns: TableColumn[] = [];
   public rows: TableRow[];
@@ -56,7 +59,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   public filterEvent$ = new Subject<string>();
   private filters: Filters<M>;
 
-  constructor(
+  public constructor(
     protected api: ApiFilter<any, any>,
     private rowsCallback: (models: M[]) => TableRow[],
     private route?: ActivatedRoute,

@@ -5,7 +5,7 @@ import { AbstractModel } from "./AbstractModel";
 /**
  * Add key to the models attributes
  */
-export function BawPersistAttr(model: AbstractModel, key: string) {
+export function bawPersistAttr(model: AbstractModel, key: string) {
   if (!model[AbstractModel.attributeKey]) {
     model[AbstractModel.attributeKey] = [];
   }
@@ -16,18 +16,18 @@ export function BawPersistAttr(model: AbstractModel, key: string) {
 /**
  * Convert image url/s into an array of image urls
  */
-export function BawImage<T extends AbstractModel>(
+export function bawImage<T extends AbstractModel>(
   defaultUrl: string,
   opts?: BawDecoratorOptions<T>
 ) {
   // Retrieve default image and prepend site url if required
-  const defaultImage: ImageUrl = { size: ImageSizes.DEFAULT, url: defaultUrl };
+  const defaultImage: ImageUrl = { size: ImageSizes.default, url: defaultUrl };
 
   function sortImageUrls(a: ImageUrl, b: ImageUrl): number {
     // Default image should always be last in array
-    if (a.size === ImageSizes.DEFAULT) {
+    if (a.size === ImageSizes.default) {
       return 1;
-    } else if (b.size === ImageSizes.DEFAULT) {
+    } else if (b.size === ImageSizes.default) {
       return -1;
     }
 
@@ -37,7 +37,7 @@ export function BawImage<T extends AbstractModel>(
   }
 
   function missingDefault(images: ImageUrl[]): boolean {
-    return !images.find((image) => image.size === ImageSizes.DEFAULT);
+    return !images.find((image) => image.size === ImageSizes.default);
   }
 
   return createDecorator<T>(
@@ -46,7 +46,7 @@ export function BawImage<T extends AbstractModel>(
       // Convert string to ImageURL[] and append default image
       if (typeof imageUrls === "string") {
         model[key] = [
-          { size: ImageSizes.UNKNOWN, url: imageUrls },
+          { size: ImageSizes.unknown, url: imageUrls },
           defaultImage,
         ];
       } else if (imageUrls instanceof Array && imageUrls.length > 0) {
@@ -70,7 +70,7 @@ export function BawImage<T extends AbstractModel>(
 /**
  * Convert a collection of ids into a set
  */
-export function BawCollection<T extends AbstractModel>(
+export function bawCollection<T extends AbstractModel>(
   opts?: BawDecoratorOptions<T>
 ) {
   return createDecorator<T>(opts, (model, key, ids: Id[] | Ids) => {
@@ -85,7 +85,7 @@ export function BawCollection<T extends AbstractModel>(
 /**
  * Convert timestamp string into DateTimeTimezone
  */
-export function BawDateTime<T extends AbstractModel>(
+export function bawDateTime<T extends AbstractModel>(
   opts?: BawDecoratorOptions<T>
 ) {
   return createDecorator<T>(
@@ -105,7 +105,7 @@ export function BawDateTime<T extends AbstractModel>(
 /**
  * Convert duration string into Duration
  */
-export function BawDuration<T extends AbstractModel>(
+export function bawDuration<T extends AbstractModel>(
   opts?: BawDecoratorOptions<T>
 ) {
   return createDecorator<T>(opts, (model, key, seconds: number | Duration) => {
@@ -133,6 +133,7 @@ export function BawDuration<T extends AbstractModel>(
 
 /**
  * Abstract code required for baw decorators
+ *
  * @param opts Options to apply
  * @param setValue Set the value of the models decorated key
  */
@@ -184,7 +185,7 @@ function createDecorator<T extends AbstractModel>(
 
     if (opts.persist) {
       // Add key to toJSON method
-      BawPersistAttr(model, key);
+      bawPersistAttr(model, key);
     }
   };
 }

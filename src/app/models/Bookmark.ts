@@ -10,8 +10,8 @@ import {
   Param,
 } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, HasOne, Updater } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { creator, hasOne, updater } from "./AssociationDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 import type { User } from "./User";
 
@@ -28,36 +28,36 @@ export interface IBookmark extends HasCreatorAndUpdater, HasDescription {
 
 export class Bookmark extends AbstractModel implements IBookmark {
   public readonly kind = "Bookmark";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly audioRecordingId?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly offsetSeconds?: number;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly name?: Param;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly category?: string;
 
   // Associations
-  @Creator<Bookmark>()
+  @creator<Bookmark>()
   public creator?: User;
-  @Updater<Bookmark>()
+  @updater<Bookmark>()
   public updater?: User;
-  @HasOne<Bookmark, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
+  @hasOne<Bookmark, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
 
-  constructor(bookmark: IBookmark, injector?: Injector) {
+  public constructor(bookmark: IBookmark, injector?: Injector) {
     super(bookmark, injector);
   }
 

@@ -10,6 +10,7 @@ import {
 } from "@baw-api/api.interceptor.service";
 import { MockShowApiService } from "@baw-api/mock/apiMocks.service";
 import { ImageSizes } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
 import { ISessionUser, IUser, SessionUser, User } from "@models/User";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
@@ -114,7 +115,7 @@ describe("SecurityService", () => {
       user?: User
     ): void {
       spyOn(service as any, "apiCreate").and.callFake(
-        (createPath: string, createDetails: object) => {
+        (createPath: string, createDetails: AbstractModel) => {
           expect(createPath).toBe(path);
           expect(createDetails).toEqual(details);
 
@@ -187,7 +188,7 @@ describe("SecurityService", () => {
           rolesMask: 1,
           imageUrls: [
             {
-              size: ImageSizes.EXTRA_LARGE,
+              size: ImageSizes.extraLarge,
               url: "path.png",
               width: 300,
               height: 300,
@@ -241,7 +242,7 @@ describe("SecurityService", () => {
           authToken: "xxxxxxxxxxxxxxxx",
           imageUrls: [
             {
-              size: ImageSizes.EXTRA_LARGE,
+              size: ImageSizes.extraLarge,
               url: "path.png",
               width: 300,
               height: 300,

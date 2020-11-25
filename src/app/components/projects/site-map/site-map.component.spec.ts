@@ -16,19 +16,18 @@ import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { interceptApiRequests, nStepObservable } from "@test/helpers/general";
+import { interceptApiRequests } from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
-import { Subject } from "rxjs";
 import { SiteMapComponent } from "./site-map.component";
 
-const MockMap = MockComponent(MapComponent);
+const mockMap = MockComponent(MapComponent);
 
 describe("SiteMapComponent", () => {
   let api: SpyObject<SitesService>;
   let spectator: Spectator<SiteMapComponent>;
   const createComponent = createComponentFactory({
     component: SiteMapComponent,
-    declarations: [MockMap],
+    declarations: [mockMap],
     imports: [SharedModule, MockBawApiModule],
   });
 
@@ -76,7 +75,7 @@ describe("SiteMapComponent", () => {
   }
 
   function getMapMarkers() {
-    return spectator.query(MockMap).markers.toArray();
+    return spectator.query(mockMap).markers.toArray();
   }
 
   function interceptApiRequest(

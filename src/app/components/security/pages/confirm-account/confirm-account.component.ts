@@ -6,7 +6,7 @@ import {
   securityCategory,
   unlockAccountMenuItem,
 } from "@components/security/security.menus";
-import { WithFormCheck } from "@guards/form/form.guard";
+import { withFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
@@ -28,13 +28,13 @@ import { fields } from "./confirm-account.schema.json";
   `,
 })
 class ConfirmPasswordComponent
-  extends WithFormCheck(PageComponent)
+  extends withFormCheck(PageComponent)
   implements OnInit {
   public model = {};
   public fields = fields;
   public loading: boolean;
 
-  constructor() {
+  public constructor() {
     super();
   }
 
@@ -49,7 +49,7 @@ class ConfirmPasswordComponent
   }
 }
 
-ConfirmPasswordComponent.LinkComponentToPageInfo({
+ConfirmPasswordComponent.linkComponentToPageInfo({
   category: securityCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -59,6 +59,6 @@ ConfirmPasswordComponent.LinkComponentToPageInfo({
       unlockAccountMenuItem,
     ]),
   },
-}).AndMenuRoute(confirmAccountMenuItem);
+}).andMenuRoute(confirmAccountMenuItem);
 
 export { ConfirmPasswordComponent };

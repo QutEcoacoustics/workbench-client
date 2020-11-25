@@ -2,6 +2,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 
 /**
  * Test form fields match expected outputs
+ *
  * @param formInputs Fields to test
  */
 export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {

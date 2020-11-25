@@ -5,15 +5,15 @@ import { PageComponent } from "@helpers/page/pageComponent";
 
 @Component({
   selector: "baw-about-credits",
-  template: `<baw-cms [page]="page"></baw-cms>`,
+  template: '<baw-cms [page]="page"></baw-cms>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class CreditsComponent extends PageComponent {
-  public page = CMS.CREDITS;
+  public page = CMS.credits;
 }
 
-CreditsComponent.LinkComponentToPageInfo({
+CreditsComponent.linkComponentToPageInfo({
   category: aboutCategory,
-}).AndMenuRoute(creditsMenuItem);
+}).andMenuRoute(creditsMenuItem);
 
 export { CreditsComponent };

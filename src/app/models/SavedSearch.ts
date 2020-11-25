@@ -9,8 +9,8 @@ import {
   Param,
 } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, Deleter } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { creator, deleter } from "./AssociationDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 import type { User } from "./User";
 
@@ -22,30 +22,30 @@ export interface ISavedSearch extends HasCreatorAndDeleter, HasDescription {
 
 export class SavedSearch extends AbstractModel implements ISavedSearch {
   public readonly kind = "Saved Search";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly name?: Param;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly storedQuery?: InnerFilter<AudioRecording>;
   public readonly creatorId?: Id;
   public readonly deleterId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
 
   // Associations
-  @Creator<SavedSearch>()
+  @creator<SavedSearch>()
   public creator?: User;
-  @Deleter<SavedSearch>()
+  @deleter<SavedSearch>()
   public deleter?: User;
 
-  constructor(savedSearches: ISavedSearch, injector?: Injector) {
+  public constructor(savedSearches: ISavedSearch, injector?: Injector) {
     super(savedSearches, injector);
   }
 

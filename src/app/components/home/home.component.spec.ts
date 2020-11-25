@@ -74,7 +74,7 @@ describe("HomeComponent", () => {
   assertCms<HomeComponent>(async () => {
     projectApi.filter.and.callFake(() => new Subject());
     return spectator;
-  }, CMS.HOME);
+  }, CMS.home);
 
   describe("api", () => {
     beforeEach(() => handleCms());

@@ -33,7 +33,7 @@ class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script> {
     id: "id",
   };
 
-  constructor(api: ScriptsService) {
+  public constructor(api: ScriptsService) {
     super(api, (scripts) =>
       scripts.map((script) => ({
         name: script.name,
@@ -52,7 +52,7 @@ class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script> {
   }
 }
 
-AdminScriptsComponent.LinkComponentToPageInfo({
+AdminScriptsComponent.linkComponentToPageInfo({
   category: adminScriptsCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -60,7 +60,7 @@ AdminScriptsComponent.LinkComponentToPageInfo({
       ...adminScriptsMenuItemActions,
     ]),
   },
-}).AndMenuRoute(adminScriptsMenuItem);
+}).andMenuRoute(adminScriptsMenuItem);
 
 export { AdminScriptsComponent };
 

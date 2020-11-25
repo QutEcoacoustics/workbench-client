@@ -24,9 +24,9 @@
     (sort)="onSort($event)"
   >
     <ngx-datatable-column name="Text"> </ngx-datatable-column>
-    <ngx-datatable-column name="Taxonomic" width="100" maxWidth="100">
+    <ngx-datatable-column name="Taxonomic" [width]="100" [maxWidth]="100">
     </ngx-datatable-column>
-    <ngx-datatable-column name="Retired" width="90" maxWidth="90">
+    <ngx-datatable-column name="Retired" [width]="90" [maxWidth]="90">
       <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
         <baw-checkbox
           [id]="row.text"

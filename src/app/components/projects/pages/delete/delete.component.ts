@@ -45,7 +45,7 @@ const projectKey = "project";
 class DeleteComponent extends FormTemplate<Project> implements OnInit {
   public title: string;
 
-  constructor(
+  public constructor(
     private api: ProjectsService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -73,13 +73,13 @@ class DeleteComponent extends FormTemplate<Project> implements OnInit {
   }
 }
 
-DeleteComponent.LinkComponentToPageInfo({
+DeleteComponent.linkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [projectKey]: projectResolvers.show },
-}).AndMenuRoute(deleteProjectMenuItem);
+}).andMenuRoute(deleteProjectMenuItem);
 
 export { DeleteComponent };

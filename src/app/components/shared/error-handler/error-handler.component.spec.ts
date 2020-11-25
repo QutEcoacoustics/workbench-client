@@ -14,7 +14,7 @@ import { ErrorHandlerComponent } from "./error-handler.component";
 class MockComponent implements OnInit {
   public error: ApiErrorDetails;
 
-  constructor(private ref: ChangeDetectorRef) {}
+  public constructor(private ref: ChangeDetectorRef) {}
 
   public ngOnInit() {
     this.error = {

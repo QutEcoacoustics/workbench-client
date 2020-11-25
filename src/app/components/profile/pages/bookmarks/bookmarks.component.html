@@ -24,8 +24,8 @@
     >
       <ngx-datatable-column
         name="Bookmark"
-        width="200"
-        maxWidth="200"
+        [width]="200"
+        [maxWidth]="200"
         [sortable]="false"
       >
         <ng-template let-value="value" ngx-datatable-cell-template>
@@ -34,8 +34,8 @@
       </ngx-datatable-column>
       <ngx-datatable-column
         name="Category"
-        width="125"
-        maxWidth="125"
+        [width]="125"
+        [maxWidth]="125"
         [sortable]="false"
       >
         <ng-template let-value="value" ngx-datatable-cell-template>

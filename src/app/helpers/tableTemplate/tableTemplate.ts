@@ -13,20 +13,23 @@ import { PageComponent } from "../page/pageComponent";
  * Handles creating all the generic logic required for a simple datatable containing component.
  */
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class TableTemplate<T> extends PageComponent {
   @ViewChild(DatatableComponent) public table: DatatableComponent;
 
   // Table variables
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public ColumnMode = ColumnMode;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public SortType = SortType;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public SelectionType = SelectionType;
   public columns: TableColumn[] = [];
   public rows: T[];
   public filterTempRows: T[];
   public selected: T[] = [];
 
-  constructor(private filterMatch: (val: string, row: T) => boolean) {
+  public constructor(private filterMatch: (val: string, row: T) => boolean) {
     super();
   }
 
@@ -37,15 +40,16 @@ export abstract class TableTemplate<T> extends PageComponent {
 
   /**
    * Update table with filtered results
+   *
    * @param $event Update event
    */
   public updateFilter($event: any): void {
     const val: string = $event.target.value;
 
     // filter our data
-    const temp = this.filterTempRows.filter((row) => {
-      return !val || this.filterMatch(val, row);
-    });
+    const temp = this.filterTempRows.filter(
+      (row) => !val || this.filterMatch(val, row)
+    );
 
     // update the rows
     this.rows = temp;
@@ -55,6 +59,7 @@ export abstract class TableTemplate<T> extends PageComponent {
 
   /**
    * Check if val contains field. Case insensitive.
+   *
    * @param filter Filter value
    * @param cell Cell value to compare
    */

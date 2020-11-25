@@ -33,7 +33,7 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   public annotationLink = dataRequestMenuItem.route.toString();
   protected api: ShallowSitesService;
 
-  constructor(api: ShallowSitesService, route: ActivatedRoute) {
+  public constructor(api: ShallowSitesService, route: ActivatedRoute) {
     super(
       api,
       (sites) =>
@@ -70,11 +70,11 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   }
 }
 
-MySitesComponent.LinkComponentToPageInfo({
+MySitesComponent.linkComponentToPageInfo({
   category: myAccountCategory,
   menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
-}).AndMenuRoute(mySitesMenuItem);
+}).andMenuRoute(mySitesMenuItem);
 
 export { MySitesComponent };
 

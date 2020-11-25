@@ -18,7 +18,7 @@ export const assetRoot = "/assets";
 export class AppConfigService {
   private _config: Configuration;
 
-  constructor(private notification: ToastrService) {
+  public constructor(private notification: ToastrService) {
     if (!isConfiguration(environment)) {
       console.error("Detected invalid environment.");
       this.notification.error(

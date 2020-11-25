@@ -5,8 +5,8 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IProgressEvent, ProgressEvent } from "@models/ProgressEvent";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   id,
   IdOr,
   IdParamOptional,
@@ -21,7 +21,7 @@ const endpoint = stringTemplate`/progress_events/${progressEventId}${option}`;
 
 @Injectable()
 export class ProgressEventsService extends ReadAndCreateApi<ProgressEvent> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -30,16 +30,16 @@ export class ProgressEventsService extends ReadAndCreateApi<ProgressEvent> {
   }
 
   public list(): Observable<ProgressEvent[]> {
-    return this.apiList(endpoint(Empty, Empty));
+    return this.apiList(endpoint(emptyParam, emptyParam));
   }
   public filter(filters: Filters<IProgressEvent>): Observable<ProgressEvent[]> {
-    return this.apiFilter(endpoint(Empty, Filter), filters);
+    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<ProgressEvent>): Observable<ProgressEvent> {
-    return this.apiShow(endpoint(model, Empty));
+    return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: ProgressEvent): Observable<ProgressEvent> {
-    return this.apiCreate(endpoint(Empty, Empty), model);
+    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
   }
 }
 

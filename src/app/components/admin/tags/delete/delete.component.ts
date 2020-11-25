@@ -36,7 +36,7 @@ const tagKey = "tag";
 class AdminTagsDeleteComponent extends FormTemplate<Tag> implements OnInit {
   public title: string;
 
-  constructor(
+  public constructor(
     private api: TagsService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -64,7 +64,7 @@ class AdminTagsDeleteComponent extends FormTemplate<Tag> implements OnInit {
   }
 }
 
-AdminTagsDeleteComponent.LinkComponentToPageInfo({
+AdminTagsDeleteComponent.linkComponentToPageInfo({
   category: adminTagsCategory,
   menus: {
     actions: List([
@@ -75,6 +75,6 @@ AdminTagsDeleteComponent.LinkComponentToPageInfo({
     ]),
   },
   resolvers: { [tagKey]: tagResolvers.show },
-}).AndMenuRoute(adminDeleteTagMenuItem);
+}).andMenuRoute(adminDeleteTagMenuItem);
 
 export { AdminTagsDeleteComponent };

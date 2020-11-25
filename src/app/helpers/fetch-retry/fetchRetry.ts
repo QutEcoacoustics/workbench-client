@@ -1,5 +1,6 @@
 /**
  * Fetch request with multiple attempts
+ *
  * @param input Fetch input details (URL)
  * @param delay Delay amount in milliseconds
  * @param limit Maximum number of attempts

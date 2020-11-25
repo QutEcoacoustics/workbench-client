@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { GetRouteConfigForPage } from "@helpers/page/pageRouting";
+import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { MyAnnotationsComponent } from "./pages/annotations/my-annotations.component";
 import { TheirAnnotationsComponent } from "./pages/annotations/their-annotations.component";
@@ -18,7 +18,7 @@ import { TheirSitesComponent } from "./pages/sites/their-sites.component";
 import { TheirEditComponent } from "./pages/their-edit/their-edit.component";
 import { myAccountRoute, theirProfileRoute } from "./profile.menus";
 
-const MyAccountComponents = [
+const myAccountComponents = [
   MyDeleteComponent,
   MyPasswordComponent,
   MyProfileComponent,
@@ -28,7 +28,7 @@ const MyAccountComponents = [
   MyBookmarksComponent,
   MyAnnotationsComponent,
 ];
-const TheirProfileComponents = [
+const theirProfileComponents = [
   TheirProfileComponent,
   TheirEditComponent,
   TheirProjectsComponent,
@@ -37,19 +37,19 @@ const TheirProfileComponents = [
   TheirAnnotationsComponent,
 ];
 
-const myAccountRoutes = myAccountRoute.compileRoutes(GetRouteConfigForPage);
-const profileRoutes = theirProfileRoute.compileRoutes(GetRouteConfigForPage);
+const myAccountRoutes = myAccountRoute.compileRoutes(getRouteConfigForPage);
+const profileRoutes = theirProfileRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  declarations: MyAccountComponents,
+  declarations: myAccountComponents,
   imports: [SharedModule, RouterModule.forChild(myAccountRoutes)],
-  exports: [RouterModule, ...MyAccountComponents],
+  exports: [RouterModule, ...myAccountComponents],
 })
 export class MyAccountModule {}
 
 @NgModule({
-  declarations: TheirProfileComponents,
+  declarations: theirProfileComponents,
   imports: [SharedModule, RouterModule.forChild(profileRoutes)],
-  exports: [RouterModule, ...TheirProfileComponents],
+  exports: [RouterModule, ...theirProfileComponents],
 })
 export class ProfileModule {}

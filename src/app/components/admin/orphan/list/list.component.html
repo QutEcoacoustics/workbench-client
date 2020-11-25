@@ -32,13 +32,13 @@
     (page)="setPage($event)"
     (sort)="onSort($event)"
   >
-    <ngx-datatable-column name="Id" width="50" maxWidth="50">
+    <ngx-datatable-column name="Id" [width]="50" [maxWidth]="50">
     </ngx-datatable-column>
     <ngx-datatable-column name="Site"> </ngx-datatable-column>
     <ngx-datatable-column
       name="Model"
-      width="100"
-      maxWidth="100"
+      [width]="100"
+      [maxWidth]="100"
       [sortable]="false"
     >
       <ng-template let-column="column" ngx-datatable-header-template>

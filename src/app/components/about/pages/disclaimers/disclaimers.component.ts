@@ -8,15 +8,15 @@ import { PageComponent } from "@helpers/page/pageComponent";
 
 @Component({
   selector: "baw-about-disclaimers",
-  template: `<baw-cms [page]="page"></baw-cms>`,
+  template: '<baw-cms [page]="page"></baw-cms>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class DisclaimersComponent extends PageComponent {
-  public page = CMS.PRIVACY;
+  public page = CMS.privacy;
 }
 
-DisclaimersComponent.LinkComponentToPageInfo({
+DisclaimersComponent.linkComponentToPageInfo({
   category: aboutCategory,
-}).AndMenuRoute(disclaimersMenuItem);
+}).andMenuRoute(disclaimersMenuItem);
 
 export { DisclaimersComponent };

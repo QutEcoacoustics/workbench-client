@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import { MenuAction } from "@interfaces/menusInterfaces";
+import { MenuAction, menuAction } from "@interfaces/menusInterfaces";
 import { Placement } from "@ng-bootstrap/ng-bootstrap";
 
 /**

@@ -23,7 +23,7 @@ export class SelectableItemsComponent implements OnInit {
   @Input() public inline = false;
   @Output() public selectionChange = new EventEmitter<number>();
 
-  constructor() {}
+  public constructor() {}
 
   public ngOnInit() {}
 

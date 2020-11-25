@@ -39,7 +39,7 @@ class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
   public fields = fields;
   public title: string;
 
-  constructor(
+  public constructor(
     private api: ScriptsService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -63,10 +63,10 @@ class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
   }
 }
 
-AdminScriptsEditComponent.LinkComponentToPageInfo({
+AdminScriptsEditComponent.linkComponentToPageInfo({
   category: adminScriptsCategory,
   menus: { actions: List([adminScriptMenuItem, ...adminScriptActions]) },
   resolvers: { [scriptKey]: scriptResolvers.show },
-}).AndMenuRoute(adminEditScriptMenuItem);
+}).andMenuRoute(adminEditScriptMenuItem);
 
 export { AdminScriptsEditComponent };

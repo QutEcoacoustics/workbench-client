@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { DefaultMenu } from "@helpers/page/defaultMenus";
+import { defaultMenu } from "@helpers/page/defaultMenus";
 import { PageInfo } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AnyMenuItem, LabelAndIcon } from "@interfaces/menusInterfaces";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
@@ -25,12 +25,12 @@ import { takeUntil } from "rxjs/operators";
     ></baw-menu>
   `,
 })
-export class ActionMenuComponent extends WithUnsubscribe() implements OnInit {
+export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   public actionTitle: LabelAndIcon;
   public actionLinks: List<AnyMenuItem>;
   public actionWidget: WidgetMenuItem;
 
-  constructor(private route: ActivatedRoute) {
+  public constructor(private route: ActivatedRoute) {
     super();
   }
 
@@ -48,7 +48,7 @@ export class ActionMenuComponent extends WithUnsubscribe() implements OnInit {
             : null;
 
         this.actionTitle =
-          page && page.category ? page.category : DefaultMenu.defaultCategory;
+          page && page.category ? page.category : defaultMenu.defaultCategory;
         this.actionLinks = actionMenu;
         this.actionWidget = actionWidget;
       },

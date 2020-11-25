@@ -7,20 +7,23 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
  * input.
  */
 @Directive({
-  // tslint:disable-next-line
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "input[type=file]",
-  // tslint:disable-next-line: no-host-metadata-property
+  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     "(change)": "onChange($event.target.files)",
     "(blur)": "onTouched()",
   },
   providers: [
-    { provide: NG_VALUE_ACCESSOR, useExisting: FileValueAccessor, multi: true },
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: FileValueAccessorDirective,
+      multi: true,
+    },
   ],
 })
 // https://github.com/angular/angular/issues/7341
-// tslint:disable-next-line: directive-class-suffix
-export class FileValueAccessor implements ControlValueAccessor {
+export class FileValueAccessorDirective implements ControlValueAccessor {
   public value: any;
   public onChange = (_) => {};
   public onTouched = () => {};

@@ -7,7 +7,7 @@ import { Meta } from "../services/baw-api/baw-api.service";
  * BAW Server Abstract Model
  */
 export abstract class AbstractModel {
-  constructor(raw: object, protected injector?: Injector) {
+  public constructor(raw: Record<string, any>, protected injector?: Injector) {
     return Object.assign(this, raw);
   }
 
@@ -45,6 +45,7 @@ export abstract class AbstractModel {
    * Redirect path to view model on website. This is a string which can be
    * used by `Router.navigateByUrl()` without any processing. For example,
    * for the project abstract model, this path should direct to the project page.
+   *
    * @param args Url arguments
    */
   public getViewUrl(...args: any[]): string {
@@ -73,6 +74,7 @@ export abstract class AbstractModel {
 
   /**
    * Convert model to string.
+   *
    * @param value Display custom value
    */
   public toString(value?: string): string {
@@ -85,6 +87,7 @@ export abstract class AbstractModel {
 
   /**
    * Add hidden metadata to model
+   *
    * @param meta Metadata
    */
   public addMetadata(meta: Meta): void {
@@ -104,15 +107,15 @@ export class UnresolvedModel extends AbstractModel {
   private static readonly models = Object.freeze([]);
   public readonly kind = "UnresolvedModel";
 
-  static get one(): Readonly<UnresolvedModel> {
+  public static get one(): Readonly<UnresolvedModel> {
     return this.model;
   }
 
-  static get many(): Readonly<UnresolvedModel[]> {
+  public static get many(): Readonly<UnresolvedModel[]> {
     return this.models;
   }
 
-  constructor() {
+  public constructor() {
     super({});
   }
 

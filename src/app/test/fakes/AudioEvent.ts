@@ -17,7 +17,7 @@ export function generateAudioEvent(id?: Id): Required<IAudioEvent> {
     lowFrequencyHertz,
     highFrequencyHertz,
     taggings: modelData.randomArray(0, 5, (i) => generateTagging(i)),
-    isReference: modelData.boolean(),
+    isReference: modelData.bool(),
     ...modelData.model.generateAllUsers(),
   };
 }

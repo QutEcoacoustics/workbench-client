@@ -5,8 +5,8 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob, IAnalysisJob } from "@models/AnalysisJob";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   id,
   IdOr,
   IdParamOptional,
@@ -25,7 +25,7 @@ const endpoint = stringTemplate`/analysis_jobs/${analysisJobId}${option}`;
  */
 @Injectable()
 export class AnalysisJobsService extends ReadAndUpdateApi<AnalysisJob> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -34,16 +34,16 @@ export class AnalysisJobsService extends ReadAndUpdateApi<AnalysisJob> {
   }
 
   public list(): Observable<AnalysisJob[]> {
-    return this.apiList(endpoint(Empty, Empty));
+    return this.apiList(endpoint(emptyParam, emptyParam));
   }
   public filter(filters: Filters<IAnalysisJob>): Observable<AnalysisJob[]> {
-    return this.apiFilter(endpoint(Empty, Filter), filters);
+    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<AnalysisJob>): Observable<AnalysisJob> {
-    return this.apiShow(endpoint(model, Empty));
+    return this.apiShow(endpoint(model, emptyParam));
   }
   public update(model: AnalysisJob): Observable<AnalysisJob> {
-    return this.apiUpdate(endpoint(model, Empty), model);
+    return this.apiUpdate(endpoint(model, emptyParam), model);
   }
 }
 

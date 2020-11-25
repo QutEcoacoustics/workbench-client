@@ -33,7 +33,7 @@ import { fields } from "../tag-group.schema.json";
 class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
   public fields = fields;
 
-  constructor(
+  public constructor(
     private api: TagGroupsService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -49,11 +49,11 @@ class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
   }
 }
 
-AdminTagGroupsNewComponent.LinkComponentToPageInfo({
+AdminTagGroupsNewComponent.linkComponentToPageInfo({
   category: adminTagGroupsCategory,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupsMenuItemActions]),
   },
-}).AndMenuRoute(adminNewTagGroupMenuItem);
+}).andMenuRoute(adminNewTagGroupMenuItem);
 
 export { AdminTagGroupsNewComponent };

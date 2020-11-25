@@ -1,6 +1,6 @@
 import { Type } from "@angular/core";
-import { MenuRoute } from "@interfaces/menusInterfaces";
-import { WithUnsubscribe } from "../unsubscribe/unsubscribe";
+import { MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
+import { withUnsubscribe } from "../unsubscribe/unsubscribe";
 import { IPageInfo, PageInfo } from "./pageInfo";
 
 export interface IPageComponent {
@@ -11,7 +11,7 @@ export interface IPageComponentStatic extends Type<IPageComponent> {
   readonly pageInfo: PageInfo;
 }
 
-export class PageComponent extends WithUnsubscribe() implements IPageComponent {
+export class PageComponent extends withUnsubscribe() implements IPageComponent {
   private static _pageInfo: PageInfo;
 
   public static get pageInfo(): PageInfo {
@@ -25,7 +25,7 @@ export class PageComponent extends WithUnsubscribe() implements IPageComponent {
   /**
    * Creates and links the page info for the page component
    */
-  public static LinkComponentToPageInfo(info: IPageInfo): typeof PageComponent {
+  public static linkComponentToPageInfo(info: IPageInfo): typeof PageComponent {
     this._pageInfo = new PageInfo(info);
     return this;
   }
@@ -34,7 +34,7 @@ export class PageComponent extends WithUnsubscribe() implements IPageComponent {
    * Sets the menu route for the page component, and updates it to link to the
    * page info
    */
-  public static AndMenuRoute(menu: MenuRoute): typeof PageComponent {
+  public static andMenuRoute(menu: MenuRoute): typeof PageComponent {
     if (!this._pageInfo) {
       throw new Error(
         "AndMenuRoute must be called after LinkComponentToPageInfo"
@@ -48,6 +48,7 @@ export class PageComponent extends WithUnsubscribe() implements IPageComponent {
 
 /**
  * Get the page info interface of an angular component
+ *
  * @param component Angular component or null if not exists
  */
 export function getPageInfo(component: Type<IPageComponent>): PageInfo {

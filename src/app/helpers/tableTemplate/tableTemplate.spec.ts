@@ -12,7 +12,7 @@ import { TableTemplate } from "./tableTemplate";
 class MockComponent extends TableTemplate<{ id: number | string }> {
   public columns = [{ prop: "id" }];
 
-  constructor() {
+  public constructor() {
     super(() => true);
   }
 
@@ -34,11 +34,10 @@ describe("TableTemplate", () => {
   }
 
   function checkMatch(filterMatch: (filter: string, cell: any) => boolean) {
-    spyOn(component as any, "filterMatch").and.callFake(
-      (val: string, row: any) => {
-        return filterMatch(val, row);
-      }
-    );
+    spyOn(
+      component as any,
+      "filterMatch"
+    ).and.callFake((val: string, row: any) => filterMatch(val, row));
   }
 
   beforeEach(() => {
@@ -90,9 +89,7 @@ describe("TableTemplate", () => {
     it("should handle no rows", () => {
       const rows = [];
       createRows(rows);
-      checkMatch((filter, cell) => {
-        return component["checkMatch"](filter, cell.id);
-      });
+      checkMatch((filter, cell) => component["checkMatch"](filter, cell.id));
       fixture.detectChanges();
 
       component["updateFilter"]({ target: { value: "filter" } });
@@ -103,9 +100,7 @@ describe("TableTemplate", () => {
     it("should handle no characters", () => {
       const rows = [{ id: "a" }, { id: "b" }, { id: "c" }];
       createRows(rows);
-      checkMatch((filter, cell) => {
-        return component["checkMatch"](filter, cell.id);
-      });
+      checkMatch((filter, cell) => component["checkMatch"](filter, cell.id));
       fixture.detectChanges();
 
       component["updateFilter"]({ target: { value: "" } });
@@ -120,9 +115,7 @@ describe("TableTemplate", () => {
     it("should handle single character", () => {
       const rows = [{ id: "a" }, { id: "b" }, { id: "c" }];
       createRows(rows);
-      checkMatch((filter, cell) => {
-        return component["checkMatch"](filter, cell.id);
-      });
+      checkMatch((filter, cell) => component["checkMatch"](filter, cell.id));
       fixture.detectChanges();
 
       component["updateFilter"]({ target: { value: "a" } });
@@ -133,9 +126,7 @@ describe("TableTemplate", () => {
     it("should handle multiple characters", () => {
       const rows = [{ id: "aa" }, { id: "ab" }, { id: "ac" }];
       createRows(rows);
-      checkMatch((filter, cell) => {
-        return component["checkMatch"](filter, cell.id);
-      });
+      checkMatch((filter, cell) => component["checkMatch"](filter, cell.id));
       fixture.detectChanges();
 
       component["updateFilter"]({ target: { value: "ab" } });
@@ -146,9 +137,7 @@ describe("TableTemplate", () => {
     it("should any substr", () => {
       const rows = [{ id: "ad" }, { id: "ae" }, { id: "af" }];
       createRows(rows);
-      checkMatch((filter, cell) => {
-        return component["checkMatch"](filter, cell.id);
-      });
+      checkMatch((filter, cell) => component["checkMatch"](filter, cell.id));
       fixture.detectChanges();
 
       component["updateFilter"]({ target: { value: "ae" } });
@@ -159,9 +148,7 @@ describe("TableTemplate", () => {
     it("should handle no matches", () => {
       const rows = [{ id: "aa" }, { id: "ac" }, { id: "ad" }];
       createRows(rows);
-      checkMatch((filter, cell) => {
-        return component["checkMatch"](filter, cell.id);
-      });
+      checkMatch((filter, cell) => component["checkMatch"](filter, cell.id));
       fixture.detectChanges();
 
       component["updateFilter"]({ target: { value: "ab" } });
@@ -172,9 +159,7 @@ describe("TableTemplate", () => {
     it("should clear filter", () => {
       const rows = [{ id: "aa" }, { id: "ac" }, { id: "ad" }];
       createRows(rows);
-      checkMatch((filter, cell) => {
-        return component["checkMatch"](filter, cell.id);
-      });
+      checkMatch((filter, cell) => component["checkMatch"](filter, cell.id));
       fixture.detectChanges();
 
       component["updateFilter"]({ target: { value: "ab" } });

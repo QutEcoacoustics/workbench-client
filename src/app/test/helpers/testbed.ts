@@ -31,6 +31,7 @@ export const testFormImports = [
 
 /**
  * Create a mock ActivatedRoute class
+ *
  * @param resolvers Activated Route Data Resolvers
  * @param data Activated Route Data
  * @param params Activated Route Params
@@ -71,10 +72,8 @@ export type HttpClientBody =
   | Blob
   | string
   | number
-  // tslint:disable-next-line: ban-types
-  | Object
-  // tslint:disable-next-line: ban-types
-  | (string | number | Object | null)[]
+  | Record<string, any>
+  | (string | number | Record<string, any> | null)[]
   | null;
 
 export interface HttpClientOpts {

@@ -4,10 +4,13 @@ import { Subject } from "rxjs";
 /**
  * Create unsubscribe subject. This can be used by `takeUntil` to automatically
  * complete subjects.
- * @param Base Base Class
+ *
+ * @param base Base Class
  */
-export function WithUnsubscribe<T extends Type<{}>>(Base: T = class {} as any) {
-  return class extends Base implements OnDestroy {
+export function withUnsubscribe<T extends Type<any>>(
+  base: T = class {} as any
+) {
+  return class extends base implements OnDestroy {
     protected unsubscribe = new Subject<void>();
 
     public ngOnDestroy() {

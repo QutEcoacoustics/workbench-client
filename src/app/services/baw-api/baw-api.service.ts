@@ -29,7 +29,7 @@ export const apiReturnCodes = {
   internalServerFailure: 500,
 };
 
-export let STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
+export const STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
 
 /**
  * Interface with BAW Server Rest API
@@ -55,12 +55,14 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Handle API collection response
+   *
    * @param response Api Response
    */
   private handleCollectionResponse: (response: ApiResponse<Model>) => Model[];
 
   /**
    * Handle API single model response
+   *
    * @param response Api Response
    */
   private handleSingleResponse: (response: ApiResponse<Model>) => Model;
@@ -72,11 +74,11 @@ export abstract class BawApiService<Model extends AbstractModel> {
     return null;
   }
 
-  constructor(
+  public constructor(
     protected http: HttpClient,
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
-    classBuilder: new (_: object, injector?: Injector) => Model,
+    classBuilder: new (_: Record<string, any>, _injector?: Injector) => Model,
     protected injector: Injector
   ) {
     this.platform = injector.get(PLATFORM_ID);
@@ -145,6 +147,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Add user session data to the local storage
+   *
    * @param user User details
    */
   protected storeLocalUser(user: SessionUser): void {
@@ -160,6 +163,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Get response from list route
+   *
    * @param path API path
    */
   protected apiList(path: string): Observable<Model[]> {
@@ -168,6 +172,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Get response from filter route
+   *
    * @param path API path
    * @param filters API filters
    */
@@ -182,6 +187,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Get response from show route
+   *
    * @param path API path
    */
   protected apiShow(path: string): Observable<Model> {
@@ -190,6 +196,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Get response from create route
+   *
    * @param path API path
    * @param body Request body
    */
@@ -202,6 +209,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
   /**
    * Get response from update route
    * TODO Add option to switch between Put and Patch requests
+   *
    * @param path API path
    * @param body Request body
    */
@@ -213,6 +221,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
 
   /**
    * Get response from destroy route
+   *
    * @param path API path
    */
   protected apiDestroy(path: string): Observable<Model | void> {
@@ -222,6 +231,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
   /**
    * Constructs a `GET` request
    * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   *
    * @param path API path
    */
   protected httpGet(path: string): Observable<ApiResponse<Model | Model[]>> {
@@ -231,6 +241,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
   /**
    * Constructs a `DELETE` request
    * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   *
    * @param path API path
    */
   protected httpDelete(path: string): Observable<ApiResponse<Model | void>> {
@@ -240,31 +251,31 @@ export abstract class BawApiService<Model extends AbstractModel> {
   /**
    * Constructs a `POST` request
    * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   *
    * @param path API path
    * @param body Request body
    */
-  protected httpPost(
-    path: string,
-    body?: object
-  ): Observable<ApiResponse<Model>> {
+  protected httpPost(path: string, body?: any): Observable<ApiResponse<Model>> {
     return this.http.post<ApiResponse<Model>>(this.getPath(path), body);
   }
 
   /**
    * Constructs a `PATCH` request
    * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   *
    * @param path API path
    * @param body Request body
    */
   protected httpPatch(
     path: string,
-    body?: object
+    body?: any
   ): Observable<ApiResponse<Model>> {
     return this.http.patch<ApiResponse<Model>>(this.getPath(path), body);
   }
 
   /**
    * Concatenates path with apiRoot to form a full URL.
+   *
    * @param path Path fragment
    */
   private getPath(path: string): string {
@@ -330,8 +341,8 @@ export interface Comparisons {
  * set here: https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
  */
 export class RangeInterval {
-  constructor(public interval: string) {
-    const regex: RegExp = /(\[|\()(.*),(.*)(\)|\])/;
+  public constructor(public interval: string) {
+    const regex = /(\[|\()(.*),(.*)(\)|\])/;
     if (!regex.test(this.interval)) {
       throw Error("Range Interval: Invalid pattern provided");
     }
@@ -379,7 +390,7 @@ export interface Subsets {
 /**
  * Api response inner filter
  */
-export type InnerFilter<T = {}> = Combinations<T> &
+export type InnerFilter<T = unknown> = Combinations<T> &
   Comparisons &
   Subsets &
   { [P in keyof T]?: Combinations<T> & Comparisons & Subsets };
@@ -388,7 +399,7 @@ export type InnerFilter<T = {}> = Combinations<T> &
  * Filter metadata from api response
  * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
  */
-export interface Filters<T = {}, K extends keyof T = keyof T> {
+export interface Filters<T = unknown, K extends keyof T = keyof T> {
   /** Filter settings */
   filter?: InnerFilter<T>;
   /** Include or exclude keys from response */
@@ -407,7 +418,7 @@ export interface Filters<T = {}, K extends keyof T = keyof T> {
 /**
  * Metadata from api response
  */
-export interface Meta<T = {}> extends Filters<T> {
+export interface Meta<T = unknown> extends Filters<T> {
   /** Response status */
   status?: number;
   /** Human readable response status */

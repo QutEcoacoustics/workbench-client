@@ -6,8 +6,8 @@ import { Project } from "@models/Project";
 import { IRegion, Region } from "@models/Region";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   id,
   IdOr,
   IdParam,
@@ -29,7 +29,7 @@ const endpointShallow = stringTemplate`/regions/${regionId}${option}`;
  */
 @Injectable()
 export class RegionsService extends StandardApi<Region, [IdOr<Project>]> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -38,28 +38,28 @@ export class RegionsService extends StandardApi<Region, [IdOr<Project>]> {
   }
 
   public list(project: IdOr<Project>): Observable<Region[]> {
-    return this.apiList(endpoint(project, Empty, Empty));
+    return this.apiList(endpoint(project, emptyParam, emptyParam));
   }
   public filter(
     filters: Filters<IRegion>,
     project: IdOr<Project>
   ): Observable<Region[]> {
-    return this.apiFilter(endpoint(project, Empty, Filter), filters);
+    return this.apiFilter(endpoint(project, emptyParam, filterParam), filters);
   }
   public show(model: IdOr<Region>, project: IdOr<Project>): Observable<Region> {
-    return this.apiShow(endpoint(project, model, Empty));
+    return this.apiShow(endpoint(project, model, emptyParam));
   }
   public create(model: Region, project: IdOr<Project>): Observable<Region> {
-    return this.apiCreate(endpoint(project, Empty, Empty), model);
+    return this.apiCreate(endpoint(project, emptyParam, emptyParam), model);
   }
   public update(model: Region, project: IdOr<Project>): Observable<Region> {
-    return this.apiUpdate(endpoint(project, model, Empty), model);
+    return this.apiUpdate(endpoint(project, model, emptyParam), model);
   }
   public destroy(
     model: IdOr<Region>,
     project: IdOr<Project>
   ): Observable<Region | void> {
-    return this.apiDestroy(endpoint(project, model, Empty));
+    return this.apiDestroy(endpoint(project, model, emptyParam));
   }
 }
 
@@ -69,7 +69,7 @@ export class RegionsService extends StandardApi<Region, [IdOr<Project>]> {
  */
 @Injectable()
 export class ShallowRegionsService extends StandardApi<Region> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -78,22 +78,22 @@ export class ShallowRegionsService extends StandardApi<Region> {
   }
 
   public list(): Observable<Region[]> {
-    return this.apiList(endpointShallow(Empty, Empty));
+    return this.apiList(endpointShallow(emptyParam, emptyParam));
   }
   public filter(filters: Filters<IRegion>): Observable<Region[]> {
-    return this.apiFilter(endpointShallow(Empty, Filter), filters);
+    return this.apiFilter(endpointShallow(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<Region>): Observable<Region> {
-    return this.apiShow(endpointShallow(model, Empty));
+    return this.apiShow(endpointShallow(model, emptyParam));
   }
   public create(model: Region): Observable<Region> {
-    return this.apiCreate(endpointShallow(Empty, Empty), model);
+    return this.apiCreate(endpointShallow(emptyParam, emptyParam), model);
   }
   public update(model: Region): Observable<Region> {
-    return this.apiUpdate(endpointShallow(model, Empty), model);
+    return this.apiUpdate(endpointShallow(model, emptyParam), model);
   }
   public destroy(model: IdOr<Region>): Observable<Region | void> {
-    return this.apiDestroy(endpointShallow(model, Empty));
+    return this.apiDestroy(endpointShallow(model, emptyParam));
   }
 }
 

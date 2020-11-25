@@ -25,17 +25,16 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   public sortKeys = { updated: "updatedAt" };
   protected api: ShallowAudioEventsService;
 
-  constructor(api: ShallowAudioEventsService, route: ActivatedRoute) {
+  public constructor(api: ShallowAudioEventsService, route: ActivatedRoute) {
     super(
       api,
-      (audioEvents) => {
-        return audioEvents.map((audioEvent) => ({
+      (audioEvents) =>
+        audioEvents.map((audioEvent) => ({
           site: audioEvent,
           updated: audioEvent.updatedAt.toRelative(),
           tags: audioEvent,
           model: audioEvent,
-        }));
-      },
+        })),
       route
     );
   }
@@ -49,11 +48,11 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   }
 }
 
-MyAnnotationsComponent.LinkComponentToPageInfo({
+MyAnnotationsComponent.linkComponentToPageInfo({
   category: myAccountCategory,
   menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
-}).AndMenuRoute(myAnnotationsMenuItem);
+}).andMenuRoute(myAnnotationsMenuItem);
 
 export { MyAnnotationsComponent };
 

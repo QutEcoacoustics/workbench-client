@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { HttpClient, HttpClientModule, HttpParams } from "@angular/common/http";
 import {
   HttpClientTestingModule,
@@ -47,11 +48,11 @@ describe("BawApiInterceptor", () => {
 
   function setLoggedIn(authToken?: string) {
     spyOn(api, "isLoggedIn").and.callFake(() => true);
-    spyOn(api, "getLocalUser").and.callFake(() => {
-      return authToken
+    spyOn(api, "getLocalUser").and.callFake(() =>
+      authToken
         ? new SessionUser({ ...generateSessionUser(), authToken })
-        : new SessionUser(generateSessionUser());
-    });
+        : new SessionUser(generateSessionUser())
+    );
   }
 
   beforeEach(() => {

@@ -38,7 +38,7 @@ class MyEditComponent extends FormTemplate<User> {
   public fields = fields;
   public title: string;
 
-  constructor(
+  public constructor(
     private api: AccountsService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -54,10 +54,10 @@ class MyEditComponent extends FormTemplate<User> {
   }
 }
 
-MyEditComponent.LinkComponentToPageInfo({
+MyEditComponent.linkComponentToPageInfo({
   category: myAccountCategory,
   menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
-}).AndMenuRoute(myEditMenuItem);
+}).andMenuRoute(myEditMenuItem);
 
 export { MyEditComponent };

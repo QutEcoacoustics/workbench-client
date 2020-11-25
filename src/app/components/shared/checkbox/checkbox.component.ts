@@ -29,7 +29,7 @@ export class CheckboxComponent implements OnInit {
   @Input() public disabled: boolean;
   @Input() public isCentered = true;
 
-  constructor() {}
+  public constructor() {}
 
   public ngOnInit(): void {}
 }

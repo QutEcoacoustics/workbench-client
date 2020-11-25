@@ -7,8 +7,7 @@ import { FieldType } from "@ngx-formly/core";
  * ! Warning, test manually after changes
  */
 @Component({
-  // tslint:disable-next-line: component-selector
-  selector: "formly-image-input",
+  selector: "baw-image-input",
   template: `
     <div class="form-group">
       <label *ngIf="to.label" [for]="field.id">
@@ -30,7 +29,6 @@ import { FieldType } from "@ngx-formly/core";
     </div>
   `,
 })
-// tslint:disable-next-line: component-class-suffix
-export class FormlyImageInput extends FieldType {
+export class ImageInputComponent extends FieldType {
   public formControl: FormControl;
 }

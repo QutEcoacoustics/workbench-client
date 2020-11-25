@@ -27,7 +27,7 @@ const siteKey = "site";
 class PointEditComponent extends SiteEditComponent {
   public fields = fields;
 
-  constructor(
+  public constructor(
     api: SitesService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -37,7 +37,7 @@ class PointEditComponent extends SiteEditComponent {
   }
 }
 
-PointEditComponent.LinkComponentToPageInfo({
+PointEditComponent.linkComponentToPageInfo({
   category: pointsCategory,
   menus: {
     actions: List([pointMenuItem, ...pointMenuItemActions]),
@@ -48,6 +48,6 @@ PointEditComponent.LinkComponentToPageInfo({
     [regionKey]: regionResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-}).AndMenuRoute(editPointMenuItem);
+}).andMenuRoute(editPointMenuItem);
 
 export { PointEditComponent };

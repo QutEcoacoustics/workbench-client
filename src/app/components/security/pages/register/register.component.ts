@@ -29,7 +29,7 @@ class RegisterComponent extends PageComponent implements OnInit {
   public fields = fields;
   public loading: boolean;
 
-  constructor(
+  public constructor(
     private api: SecurityService,
     private notifications: ToastrService
   ) {
@@ -51,8 +51,8 @@ class RegisterComponent extends PageComponent implements OnInit {
   }
 }
 
-RegisterComponent.LinkComponentToPageInfo({
+RegisterComponent.linkComponentToPageInfo({
   category: securityCategory,
-}).AndMenuRoute(registerMenuItem);
+}).andMenuRoute(registerMenuItem);
 
 export { RegisterComponent };

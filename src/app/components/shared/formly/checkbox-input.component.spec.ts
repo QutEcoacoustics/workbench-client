@@ -8,14 +8,14 @@ import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule, FormlyTemplateOptions } from "@ngx-formly/core";
 import { formlyRoot } from "src/app/app.helper";
-import { FormlyCheckboxInput } from "./checkbox-input.component";
+import { CheckboxInputComponent } from "./checkbox-input.component";
 
 describe("FormlyCheckboxInput", () => {
-  let model: object;
+  let model: any;
   let formGroup: FormGroup;
-  let spectator: SpectatorHost<FormlyCheckboxInput>;
+  let spectator: SpectatorHost<CheckboxInputComponent>;
   const createHost = createHostFactory({
-    component: FormlyCheckboxInput,
+    component: CheckboxInputComponent,
     imports: [
       FormsModule,
       ReactiveFormsModule,
@@ -38,7 +38,7 @@ describe("FormlyCheckboxInput", () => {
     spectator = createHost(
       `
       <form [formGroup]="formGroup">
-        <formly-checkbox-input></formly-checkbox-input>
+        <baw-checkbox-input></baw-checkbox-input>
       </form>
       `,
       {

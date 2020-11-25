@@ -8,15 +8,16 @@ import {
   Description,
   HasAllUsers,
   HasDescription,
+  Hash,
   Id,
   Param,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
+import { creator, deleter, hasOne, updater } from "./AssociationDecorators";
 import {
-  BawDateTime,
-  BawDuration,
-  BawPersistAttr,
+  bawDateTime,
+  bawDuration,
+  bawPersistAttr,
 } from "./AttributeDecorators";
 import type { SavedSearch } from "./SavedSearch";
 import type { Script } from "./Script";
@@ -29,13 +30,13 @@ export interface IAnalysisJob extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
   annotationName?: Param;
-  customSettings?: Blob | object;
+  customSettings?: Hash;
   scriptId?: Id;
   savedSearchId?: Id;
   startedAt?: DateTimeTimezone | string;
   overallStatus?: AnalysisJobStatus;
   overallStatusModifiedAt?: DateTimeTimezone | string;
-  overallProgress?: object;
+  overallProgress?: Hash;
   overallProgressModifiedAt?: DateTimeTimezone | string;
   overallCount?: number;
   overallDurationSeconds?: number;
@@ -44,15 +45,15 @@ export interface IAnalysisJob extends HasAllUsers, HasDescription {
 
 export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly kind = "AnalysisJob";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly name?: Param;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly annotationName?: Param;
-  @BawPersistAttr
-  public readonly customSettings?: Blob;
-  @BawPersistAttr
+  @bawPersistAttr
+  public readonly customSettings?: Hash;
+  @bawPersistAttr
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
@@ -60,40 +61,40 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
   public readonly savedSearchId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly startedAt?: DateTimeTimezone;
   public readonly overallStatus?: AnalysisJobStatus;
-  @BawDateTime()
+  @bawDateTime()
   public readonly overallStatusModifiedAt?: DateTimeTimezone;
-  public readonly overallProgress?: object;
-  @BawDateTime()
+  public readonly overallProgress?: Hash;
+  @bawDateTime()
   public readonly overallProgressModifiedAt?: DateTimeTimezone;
   public readonly overallCount?: number;
-  @BawDuration<AnalysisJob>({ key: "overallDurationSeconds" })
+  @bawDuration<AnalysisJob>({ key: "overallDurationSeconds" })
   public readonly overallDuration?: Duration;
   public readonly overallDurationSeconds?: number;
   public readonly overallDataLengthBytes?: number;
 
   // Associations
-  @Creator<AnalysisJob>()
+  @creator<AnalysisJob>()
   public creator: User;
-  @Updater<AnalysisJob>()
+  @updater<AnalysisJob>()
   public updater?: User;
-  @Deleter<AnalysisJob>()
+  @deleter<AnalysisJob>()
   public deleter?: User;
-  @HasOne<AnalysisJob, Script>(SCRIPT, "scriptId")
+  @hasOne<AnalysisJob, Script>(SCRIPT, "scriptId")
   public script?: Script;
-  @HasOne<AnalysisJob, SavedSearch>(SAVED_SEARCH, "savedSearchId")
+  @hasOne<AnalysisJob, SavedSearch>(SAVED_SEARCH, "savedSearchId")
   public savedSearch?: SavedSearch;
 
-  constructor(analysisJob: IAnalysisJob, injector?: Injector) {
+  public constructor(analysisJob: IAnalysisJob, injector?: Injector) {
     super(analysisJob, injector);
   }
 

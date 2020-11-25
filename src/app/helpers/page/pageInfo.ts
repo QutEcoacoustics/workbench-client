@@ -3,6 +3,7 @@ import { Data } from "@angular/router";
 import {
   Category,
   MenuRoute,
+  menuRoute,
   Menus,
   ResolverList,
 } from "@interfaces/menusInterfaces";
@@ -13,6 +14,7 @@ import { PageComponent } from "./pageComponent";
  * This stores information required to generate the various menus of the page.
  * Also stores metadata about the page, like the icon to use, and the route
  * for that page.
+ *
  * @extends Data
  */
 export interface IPageInfo extends Data {
@@ -35,7 +37,7 @@ export class PageInfo implements IPageInfo {
   public fullscreen: boolean;
   public resolvers: ResolverList;
 
-  constructor(args: IPageInfo) {
+  public constructor(args: IPageInfo) {
     Object.assign(this, args);
     this.resolvers = args.resolvers ?? {};
   }

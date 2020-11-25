@@ -16,6 +16,7 @@ export function getDatatableRows(fixture: ComponentFixture<any>) {
 
 /**
  * Get all cells from a row of a datatable component
+ *
  * @param row Row to query
  */
 export function getDatatableCells(row: any) {
@@ -34,6 +35,7 @@ function assignModelMetadata(models: AbstractModel[], paging: Paging) {
 
 /**
  * Mock an API response for the datatable component
+ *
  * @param api Filter API
  * @param models Models to return
  * @param paging Override paging defaults
@@ -116,6 +118,7 @@ export function assertPagination<
     /**
      * Click button after a period of time. This is to allow the
      * first response to complete before sending a second request.
+     *
      * @param button Button Element
      */
     function click(button: HTMLButtonElement) {

@@ -8,7 +8,7 @@ import {
   ViewChildren,
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 
@@ -36,7 +36,7 @@ import { takeUntil } from "rxjs/operators";
   `,
   styleUrls: ["./map.component.scss"],
 })
-export class MapComponent extends WithUnsubscribe() implements OnChanges {
+export class MapComponent extends withUnsubscribe() implements OnChanges {
   @ViewChild(GoogleMap, { static: false }) public map: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) public info: MapInfoWindow;
   @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
@@ -50,7 +50,7 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
   public mapOptions: google.maps.MapOptions = { mapTypeId: "satellite" };
   public markerOptions: google.maps.MarkerOptions = {};
 
-  constructor(private ref: ChangeDetectorRef) {
+  public constructor(private ref: ChangeDetectorRef) {
     super();
   }
 
@@ -90,6 +90,7 @@ export class MapComponent extends WithUnsubscribe() implements OnChanges {
 
 /**
  * Validate a marker
+ *
  * @param marker Marker to validate
  */
 function isMarkerValid(marker: MapMarkerOption): boolean {

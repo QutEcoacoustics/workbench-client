@@ -1,4 +1,4 @@
-import { MenuAction } from "@interfaces/menusInterfaces";
+import { MenuAction, menuAction } from "@interfaces/menusInterfaces";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { assertAttribute, assertIcon, assertTooltip } from "@test/helpers/html";
 import { SharedModule } from "../../shared.module";
@@ -42,7 +42,7 @@ describe("MenuButtonComponent", () => {
   }
 
   beforeEach(() => {
-    defaultLink = MenuAction({
+    defaultLink = menuAction({
       action: () => {},
       label: "home",
       icon: ["fas", "home"],
@@ -58,7 +58,7 @@ describe("MenuButtonComponent", () => {
 
   it("should have icon", () => {
     setup({
-      link: MenuAction({
+      link: menuAction({
         ...defaultLink,
         icon: ["fas", "exclamation-triangle"],
       }),
@@ -68,7 +68,7 @@ describe("MenuButtonComponent", () => {
   });
 
   it("should have label", () => {
-    setup({ link: MenuAction({ ...defaultLink, label: "custom label" }) });
+    setup({ link: menuAction({ ...defaultLink, label: "custom label" }) });
     spec.detectChanges();
 
     // Expects label to be above disabled user tooltip
@@ -81,7 +81,7 @@ describe("MenuButtonComponent", () => {
     it("should have tooltip", () => {
       setup({
         tooltip: "custom tooltip",
-        link: MenuAction({ ...defaultLink, tooltip: () => "custom tooltip" }),
+        link: menuAction({ ...defaultLink, tooltip: () => "custom tooltip" }),
       });
       spec.detectChanges();
       assertTooltip(retrieveButton(), "custom tooltip");
@@ -90,7 +90,7 @@ describe("MenuButtonComponent", () => {
     it("should not use link tooltip", () => {
       setup({
         tooltip: "custom tooltip",
-        link: MenuAction({ ...defaultLink, tooltip: () => "wrong tooltip" }),
+        link: menuAction({ ...defaultLink, tooltip: () => "wrong tooltip" }),
       });
       spec.detectChanges();
       assertTooltip(retrieveButton(), "custom tooltip");
@@ -112,7 +112,7 @@ describe("MenuButtonComponent", () => {
   describe("action", () => {
     it("should execute action", () => {
       const spy = jasmine.createSpy("button action");
-      setup({ link: MenuAction({ ...defaultLink, action: spy }) });
+      setup({ link: menuAction({ ...defaultLink, action: spy }) });
       spec.detectChanges();
       retrieveButton().click();
       expect(spy).toHaveBeenCalled();
@@ -120,7 +120,7 @@ describe("MenuButtonComponent", () => {
 
     it("should not execute action without button press", () => {
       const spy = jasmine.createSpy("button action");
-      setup({ link: MenuAction({ ...defaultLink, action: spy }) });
+      setup({ link: menuAction({ ...defaultLink, action: spy }) });
       spec.detectChanges();
       expect(spy).not.toHaveBeenCalled();
     });
@@ -136,19 +136,19 @@ describe("MenuButtonComponent", () => {
     }
 
     it("should default as enabled if disabled is undefined", () => {
-      setup({ link: MenuAction({ ...defaultLink, disabled: undefined }) });
+      setup({ link: menuAction({ ...defaultLink, disabled: undefined }) });
       spec.detectChanges();
       assertDisabled(false);
     });
 
     it("should be enabled if disabled is false", () => {
-      setup({ link: MenuAction({ ...defaultLink, disabled: false }) });
+      setup({ link: menuAction({ ...defaultLink, disabled: false }) });
       spec.detectChanges();
       assertDisabled(false);
     });
 
     it("should be disabled if disabled is true", () => {
-      setup({ link: MenuAction({ ...defaultLink, disabled: true }) });
+      setup({ link: menuAction({ ...defaultLink, disabled: true }) });
       spec.detectChanges();
       assertDisabled(true);
     });

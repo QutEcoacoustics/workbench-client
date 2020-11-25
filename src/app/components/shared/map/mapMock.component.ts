@@ -22,7 +22,7 @@ export class MockMapComponent implements OnInit {
   @Input() public markers: List<MapMarkerOption>;
   public hasMarkers = false;
 
-  constructor() {}
+  public constructor() {}
 
   public ngOnInit() {
     this.hasMarkers = sanitizeMapMarkers(this.markers.toArray())?.size > 0;

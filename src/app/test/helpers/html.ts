@@ -9,6 +9,7 @@ declare const ng: any;
 
 /**
  * Assert icon
+ *
  * @param target Target element
  * @param prop Icon
  */
@@ -23,6 +24,7 @@ export function assertIcon(target: HTMLElement, prop: string) {
 
 /**
  * Assert image
+ *
  * @param target Target element
  * @param src Image src
  * @param alt Image alt
@@ -54,6 +56,7 @@ export function assertImage(
 
 /**
  * Assert html element tooltip
+ *
  * @param target Target element
  * @param tooltip Tooltip text
  */
@@ -90,6 +93,7 @@ export function assertHref(
 
 /**
  * Assert router link
+ *
  * @param target Target element
  * @param route Route text
  */
@@ -100,6 +104,7 @@ export function assertRoute(target: HTMLElement, route: string) {
 
 /**
  * Assert html angular attribute
+ *
  * @param target Target element
  * @param key Attribute key (minus ng-reflect-)
  * @param value Expected value of attribute
@@ -115,6 +120,7 @@ export function assertAttribute(target: HTMLElement, key: string, value: any) {
 
 /**
  * Get trimmed text content from an element
+ *
  * @param target Target element
  * @param selector HTML selector
  */
@@ -126,6 +132,7 @@ export function getText(target: DebugElement, selector: string) {
 
 /**
  * Get formly field inputs from the component
+ *
  * @param fixture Component Fixture
  */
 export function getInputs(fixture: ComponentFixture<any>) {
@@ -135,6 +142,7 @@ export function getInputs(fixture: ComponentFixture<any>) {
 /**
  * TODO Replace with spectator method
  * Insert value into input element
+ *
  * @param wrapper Wrapper element
  * @param selector HTML selector
  * @param value Value to insert
@@ -148,6 +156,7 @@ export function inputValue(wrapper: any, selector: string, value: string) {
 /**
  * Click formly form submit button and update component.
  * Requires `fakeAsync` to use.
+ *
  * @param fixture Component fixture
  */
 export function submitForm(fixture: ComponentFixture<any>) {
@@ -160,6 +169,7 @@ export function submitForm(fixture: ComponentFixture<any>) {
 
 /**
  * Assert validation message for formly field
+ *
  * @param wrapper Wrapper element
  * @param message Validation message
  */
@@ -171,6 +181,7 @@ export function assertValidationMessage(wrapper: any, message: string) {
 
 /**
  * Assert form component handles pre-loading model failure
+ *
  * @param fixture Component fixture
  * @param internal Is the baw-error-handler inside the component
  */
@@ -189,6 +200,7 @@ export function assertErrorHandler(
 
 /**
  * Assert whether spinner is visible
+ *
  * @param fixture Component fixture
  * @param visible Is spinner visible
  */

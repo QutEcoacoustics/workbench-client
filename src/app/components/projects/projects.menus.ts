@@ -1,4 +1,4 @@
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import {
   defaultAudioIcon,
@@ -14,14 +14,14 @@ import {
 /*
   Projects Category
 */
-export const projectsRoute = StrongRoute.Base.add("projects");
+export const projectsRoute = StrongRoute.base.add("projects");
 export const projectsCategory: Category = {
   label: "Projects",
   icon: ["fas", "globe-asia"],
   route: projectsRoute,
 };
 
-export const projectsMenuItem = MenuRoute({
+export const projectsMenuItem = menuRoute({
   icon: ["fas", "globe-asia"],
   label: "Projects",
   order: 4,
@@ -29,7 +29,7 @@ export const projectsMenuItem = MenuRoute({
   tooltip: () => "View projects I have access to",
 });
 
-export const newProjectMenuItem = MenuRoute({
+export const newProjectMenuItem = menuRoute({
   icon: defaultNewIcon,
   label: "New project",
   parent: projectsMenuItem,
@@ -38,7 +38,7 @@ export const newProjectMenuItem = MenuRoute({
   tooltip: () => "Create a new project",
 });
 
-export const requestProjectMenuItem = MenuRoute({
+export const requestProjectMenuItem = menuRoute({
   icon: defaultPermissionsIcon,
   label: "Request access",
   parent: projectsMenuItem,
@@ -57,7 +57,7 @@ export const projectCategory: Category = {
   route: projectsRoute.add(":projectId"),
 };
 
-export const projectMenuItem = MenuRoute({
+export const projectMenuItem = menuRoute({
   icon: ["fas", "folder-open"],
   label: "Project",
   parent: projectsMenuItem,
@@ -65,7 +65,7 @@ export const projectMenuItem = MenuRoute({
   tooltip: () => "The current project",
 });
 
-export const editProjectMenuItem = MenuRoute({
+export const editProjectMenuItem = menuRoute({
   icon: defaultEditIcon,
   label: "Edit this project",
   parent: projectMenuItem,
@@ -74,7 +74,7 @@ export const editProjectMenuItem = MenuRoute({
   tooltip: () => "Change the details for this project",
 });
 
-export const editProjectPermissionsMenuItem = MenuRoute({
+export const editProjectPermissionsMenuItem = menuRoute({
   icon: defaultPermissionsIcon,
   label: "Edit permissions",
   parent: projectMenuItem,
@@ -83,7 +83,7 @@ export const editProjectPermissionsMenuItem = MenuRoute({
   tooltip: () => "Edit this projects permissions",
 });
 
-export const assignSiteMenuItem = MenuRoute({
+export const assignSiteMenuItem = menuRoute({
   icon: ["fas", "toolbox"],
   label: "Assign sites",
   parent: projectMenuItem,
@@ -93,7 +93,7 @@ export const assignSiteMenuItem = MenuRoute({
   tooltip: () => "Change which sites belong to this project",
 });
 
-export const deleteProjectMenuItem = MenuRoute({
+export const deleteProjectMenuItem = menuRoute({
   icon: defaultDeleteIcon,
   label: "Delete Project",
   parent: projectMenuItem,
@@ -102,7 +102,7 @@ export const deleteProjectMenuItem = MenuRoute({
   tooltip: () => "Delete this project",
 });
 
-export const harvestProjectMenuItem = MenuRoute({
+export const harvestProjectMenuItem = menuRoute({
   icon: defaultAudioIcon,
   label: "Harvest Data",
   parent: projectMenuItem,

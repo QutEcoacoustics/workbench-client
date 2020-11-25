@@ -78,7 +78,7 @@ describe("BawApiService", () => {
       testConvert?: string;
     };
 
-    constructor(data: MockModelInterface, modelInjector: Injector) {
+    public constructor(data: MockModelInterface, modelInjector: Injector) {
       super(data, modelInjector);
     }
 
@@ -340,9 +340,10 @@ describe("BawApiService", () => {
         });
 
         it("should handle error response", () => {
-          const response = { meta: errorMeta, data: null } as ApiResponse<
-            MockModel
-          >;
+          const response = {
+            meta: errorMeta,
+            data: null,
+          } as ApiResponse<MockModel>;
 
           service[httpMethod.functionName](
             "/broken_link",
@@ -356,9 +357,10 @@ describe("BawApiService", () => {
         });
 
         it("should handle error response with info", () => {
-          const response = { meta: errorInfoMeta, data: null } as ApiResponse<
-            MockModel
-          >;
+          const response = {
+            meta: errorInfoMeta,
+            data: null,
+          } as ApiResponse<MockModel>;
 
           service[httpMethod.functionName](
             "/broken_link",
@@ -411,6 +413,7 @@ describe("BawApiService", () => {
               caseConversion: "value",
             }).subscribe();
             const req = catchRequest("/broken_link", httpMethod.method);
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             expect(req.request.body).toEqual({ case_conversion: "value" });
           });
 
@@ -422,6 +425,7 @@ describe("BawApiService", () => {
             }).subscribe();
             const req = catchRequest("/broken_link", httpMethod.method);
             expect(req.request.body).toEqual({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               case_conversion: { nested_conversion: 42 },
             });
           });

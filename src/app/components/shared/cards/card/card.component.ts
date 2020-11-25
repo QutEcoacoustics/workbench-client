@@ -46,7 +46,7 @@ export class CardComponent implements OnChanges {
   @Input() public card: Card;
   public description: string;
 
-  constructor(private ref: ChangeDetectorRef) {}
+  public constructor(private ref: ChangeDetectorRef) {}
 
   public ngOnChanges() {
     this.description = this.card.description

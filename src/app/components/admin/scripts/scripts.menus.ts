@@ -1,4 +1,4 @@
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import {
   defaultEditIcon,
   defaultNewIcon,
@@ -14,7 +14,7 @@ export const adminScriptsCategory: Category = {
   route: adminScriptsRoute,
 };
 
-export const adminScriptsMenuItem = MenuRoute({
+export const adminScriptsMenuItem = menuRoute({
   icon: ["fas", "scroll"],
   label: "Scripts",
   route: adminScriptsCategory.route,
@@ -23,7 +23,7 @@ export const adminScriptsMenuItem = MenuRoute({
   predicate: isAdminPredicate,
 });
 
-export const adminNewScriptsMenuItem = MenuRoute({
+export const adminNewScriptsMenuItem = menuRoute({
   icon: defaultNewIcon,
   label: "New Script",
   route: adminScriptsMenuItem.route.add("new"),
@@ -34,7 +34,7 @@ export const adminNewScriptsMenuItem = MenuRoute({
 
 const adminScriptRoute = adminScriptsRoute.add(":scriptId");
 
-export const adminScriptMenuItem = MenuRoute({
+export const adminScriptMenuItem = menuRoute({
   icon: ["fas", "scroll"],
   label: "Script",
   route: adminScriptRoute,
@@ -43,7 +43,7 @@ export const adminScriptMenuItem = MenuRoute({
   predicate: isAdminPredicate,
 });
 
-export const adminEditScriptMenuItem = MenuRoute({
+export const adminEditScriptMenuItem = menuRoute({
   icon: defaultEditIcon,
   label: "New Version",
   route: adminScriptRoute.add("edit"),

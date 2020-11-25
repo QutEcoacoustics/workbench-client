@@ -27,7 +27,7 @@ class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
     { name: "Description" },
   ];
 
-  constructor(api: BookmarksService, route: ActivatedRoute) {
+  public constructor(api: BookmarksService, route: ActivatedRoute) {
     super(
       api,
       (bookmarks) =>
@@ -45,11 +45,11 @@ class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
   }
 }
 
-MyBookmarksComponent.LinkComponentToPageInfo({
+MyBookmarksComponent.linkComponentToPageInfo({
   category: myAccountCategory,
   menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
-}).AndMenuRoute(myBookmarksMenuItem);
+}).andMenuRoute(myBookmarksMenuItem);
 
 export { MyBookmarksComponent };
 

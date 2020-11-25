@@ -9,8 +9,8 @@ import {
   Uuid,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, Deleter, HasOne, Updater } from "./AssociationDecorators";
-import { BawDateTime, BawDuration } from "./AttributeDecorators";
+import { creator, deleter, hasOne, updater } from "./AssociationDecorators";
+import { bawDateTime, bawDuration } from "./AttributeDecorators";
 import type { Site } from "./Site";
 import type { User } from "./User";
 
@@ -44,10 +44,10 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   public readonly id?: Id;
   public readonly uuid?: Uuid;
   public readonly uploaderId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly recordedDate?: DateTimeTimezone;
   public readonly siteId?: Id;
-  @BawDuration<AudioRecording>({ key: "durationSeconds" })
+  @bawDuration<AudioRecording>({ key: "durationSeconds" })
   public readonly duration: Duration;
   public readonly durationSeconds?: number;
   public readonly sampleRateHertz?: number;
@@ -61,28 +61,28 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
   public readonly originalFileName?: string;
   public readonly recordedUtcOffset?: string;
 
   // Associations
-  @Creator<AudioRecording>()
+  @creator<AudioRecording>()
   public creator?: User;
-  @Updater<AudioRecording>()
+  @updater<AudioRecording>()
   public updater?: User;
-  @Deleter<AudioRecording>()
+  @deleter<AudioRecording>()
   public deleter?: User;
-  @HasOne<AudioRecording, User>(ACCOUNT, "uploaderId")
+  @hasOne<AudioRecording, User>(ACCOUNT, "uploaderId")
   public uploader?: User;
-  @HasOne<AudioRecording, Site>(SHALLOW_SITE, "siteId")
+  @hasOne<AudioRecording, Site>(SHALLOW_SITE, "siteId")
   public site?: Site;
 
-  constructor(audioRecording: IAudioRecording, injector?: Injector) {
+  public constructor(audioRecording: IAudioRecording, injector?: Injector) {
     super(audioRecording, injector);
   }
 

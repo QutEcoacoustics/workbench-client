@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { DefaultMenu } from "@helpers/page/defaultMenus";
+import { defaultMenu } from "@helpers/page/defaultMenus";
 import { PageInfo } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { MenuRoute, NavigableMenuItem } from "@interfaces/menusInterfaces";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
@@ -27,12 +27,12 @@ import { takeUntil } from "rxjs/operators";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SecondaryMenuComponent
-  extends WithUnsubscribe()
+  extends withUnsubscribe()
   implements OnInit {
   public contextLinks: List<NavigableMenuItem>;
   public linksWidget: WidgetMenuItem;
 
-  constructor(private route: ActivatedRoute) {
+  public constructor(private route: ActivatedRoute) {
     super();
   }
 
@@ -40,7 +40,7 @@ export class SecondaryMenuComponent
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (page: PageInfo) => {
         // get default links
-        const defaultLinks = DefaultMenu.contextLinks;
+        const defaultLinks = defaultMenu.contextLinks;
 
         // and current page
         const current = page.pageRoute;

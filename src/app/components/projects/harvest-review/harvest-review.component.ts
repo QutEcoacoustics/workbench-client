@@ -20,7 +20,7 @@ export class HarvestReviewComponent implements OnInit {
   public files = [];
   public columns = 4;
 
-  constructor() {}
+  public constructor() {}
 
   public ngOnInit(): void {
     const projectPool = [
@@ -100,7 +100,7 @@ export class HarvestReviewComponent implements OnInit {
     sitePool: Site[],
     pointPool: Site[]
   ) {
-    let status: Status = Status.Success;
+    let status: Status = Status.success;
     const children = [];
     const models = {
       projects: new Set([]),
@@ -156,7 +156,7 @@ export class HarvestReviewComponent implements OnInit {
     sitePool: Site[],
     pointPool: Site[]
   ) {
-    let status = Status.Success;
+    let status = Status.success;
     const children = [];
     const models = {
       projects: new Set([]),
@@ -205,7 +205,7 @@ export class HarvestReviewComponent implements OnInit {
     status: Status,
     isPoint?: boolean
   ) {
-    if ((isPoint && status >= Status.Warning) || status === Status.Error) {
+    if ((isPoint && status >= Status.warning) || status === Status.error) {
       return new Set([]);
     } else {
       return new Set([pool[Math.floor(Math.random() * pool.length)]]);
@@ -215,11 +215,11 @@ export class HarvestReviewComponent implements OnInit {
   private getRandomStatus() {
     const rand = Math.random();
     if (rand > 0.999) {
-      return Status.Error;
+      return Status.error;
     } else if (rand > 0.99) {
-      return Status.Warning;
+      return Status.warning;
     } else {
-      return Status.Success;
+      return Status.success;
     }
   }
 }

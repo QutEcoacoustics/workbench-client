@@ -36,7 +36,7 @@ import { projectsMenuItemActions } from "../list/list.component";
 class NewComponent extends FormTemplate<Project> {
   public fields = fields;
 
-  constructor(
+  public constructor(
     private api: ProjectsService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -57,17 +57,18 @@ class NewComponent extends FormTemplate<Project> {
   }
 }
 
-NewComponent.LinkComponentToPageInfo({
+NewComponent.linkComponentToPageInfo({
   category: projectsCategory,
   menus: {
     actions: List<AnyMenuItem>([projectsMenuItem, ...projectsMenuItemActions]),
   },
-}).AndMenuRoute(newProjectMenuItem);
+}).andMenuRoute(newProjectMenuItem);
 
 export { NewComponent };
 
 /**
  * Handle project form error messages
+ *
  * @param err Api error details
  */
 export function projectErrorMsg(err: ApiErrorDetails) {

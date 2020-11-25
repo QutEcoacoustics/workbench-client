@@ -10,23 +10,23 @@ import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { nStepObservable } from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
-import { HasMany, HasOne } from "./AssociationDecorators";
+import { hasMany, hasOne } from "./AssociationDecorators";
 
 class MockModel extends AbstractModel {
   public id: Id;
-  @HasOne<MockModel, AbstractModel>(MOCK, "id")
+  @hasOne<MockModel, AbstractModel>(MOCK, "id")
   public readonly childModel: AssociatedModel;
-  @HasMany<MockModel, AbstractModel>(MOCK, "id")
+  @hasMany<MockModel, AbstractModel>(MOCK, "id")
   public readonly childModels: AssociatedModel[];
 
-  constructor(opts: any, injector?: Injector) {
+  public constructor(opts: any, injector?: Injector) {
     super(opts, injector);
   }
 
   public get viewUrl(): string {
     throw new Error("Method not implemented.");
   }
-  public toJSON(): object {
+  public toJSON(): Record<string, any> {
     throw new Error("Method not implemented.");
   }
 }

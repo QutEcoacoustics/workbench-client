@@ -34,7 +34,7 @@ class AdminAudioRecordingsComponent
     recorded: "recordedDate",
   };
 
-  constructor(api: AudioRecordingsService) {
+  public constructor(api: AudioRecordingsService) {
     super(api, (audioRecordings) =>
       audioRecordings.map((audioRecording) => ({
         id: audioRecording.id,
@@ -55,6 +55,7 @@ class AdminAudioRecordingsComponent
 
   /**
    * Path to view audio recording details
+   *
    * @param model Audio Recording
    */
   public detailsPath(model: AudioRecording) {
@@ -64,10 +65,10 @@ class AdminAudioRecordingsComponent
   }
 }
 
-AdminAudioRecordingsComponent.LinkComponentToPageInfo({
+AdminAudioRecordingsComponent.linkComponentToPageInfo({
   category: adminAudioRecordingsCategory,
   menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
-}).AndMenuRoute(adminAudioRecordingsMenuItem);
+}).andMenuRoute(adminAudioRecordingsMenuItem);
 
 export { AdminAudioRecordingsComponent };
 

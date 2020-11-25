@@ -16,7 +16,7 @@ describe("IndicatorComponent", () => {
   });
 
   it("should display success", () => {
-    spectator.setInput("status", Status.Success);
+    spectator.setInput("status", Status.success);
     spectator.detectChanges();
 
     const icon = spectator.query("fa-icon");
@@ -24,7 +24,7 @@ describe("IndicatorComponent", () => {
   });
 
   it("should display warning", () => {
-    spectator.setInput("status", Status.Warning);
+    spectator.setInput("status", Status.warning);
     spectator.detectChanges();
 
     const icon = spectator.query("fa-icon");
@@ -32,7 +32,7 @@ describe("IndicatorComponent", () => {
   });
 
   it("should display error", () => {
-    spectator.setInput("status", Status.Error);
+    spectator.setInput("status", Status.error);
     spectator.detectChanges();
 
     const icon = spectator.query("fa-icon");

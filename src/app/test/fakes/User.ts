@@ -13,7 +13,7 @@ export function generateUser(id?: Id, isAdmin?: boolean): Required<IUser> {
     rolesMaskNames: isAdmin ? ["admin"] : ["user"],
     imageUrls: modelData.imageUrls(),
     preferences: modelData.randomObject(0, 5),
-    isConfirmed: modelData.boolean(),
+    isConfirmed: modelData.bool(),
     timezoneInformation: modelData.timezone(),
     resetPasswordSentAt: modelData.timestamp(),
     rememberCreatedAt: modelData.timestamp(),

@@ -15,5 +15,5 @@ describe("AboutDisclaimersComponent", () => {
 
   beforeEach(() => (spectator = createComponent({ detectChanges: false })));
 
-  assertCms<DisclaimersComponent>(() => spectator, CMS.PRIVACY);
+  assertCms<DisclaimersComponent>(() => spectator, CMS.privacy);
 });

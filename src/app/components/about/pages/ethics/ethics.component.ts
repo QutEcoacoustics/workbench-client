@@ -5,15 +5,15 @@ import { PageComponent } from "@helpers/page/pageComponent";
 
 @Component({
   selector: "baw-about-ethics",
-  template: `<baw-cms [page]="page"></baw-cms>`,
+  template: '<baw-cms [page]="page"></baw-cms>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class EthicsComponent extends PageComponent {
-  public page = CMS.ETHICS;
+  public page = CMS.ethics;
 }
 
-EthicsComponent.LinkComponentToPageInfo({
+EthicsComponent.linkComponentToPageInfo({
   category: aboutCategory,
-}).AndMenuRoute(ethicsMenuItem);
+}).andMenuRoute(ethicsMenuItem);
 
 export { EthicsComponent };

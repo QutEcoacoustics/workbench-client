@@ -1,6 +1,6 @@
 import { defaultDebounceTime } from "src/app/app.helper";
 
-declare var google: any;
+declare let google: any;
 
 export const googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js";
 let node: HTMLScriptElement;
@@ -8,6 +8,7 @@ let node: HTMLScriptElement;
 /**
  * Embed google maps script into the document. This should only be
  * access by `main.ts` or unit tests.
+ *
  * @param key Google maps API key
  */
 export async function embedGoogleMaps(key?: string) {

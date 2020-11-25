@@ -44,7 +44,7 @@ class AssignComponent
   protected api: ShallowSitesService;
   private oldSiteIds: Id[];
 
-  constructor(
+  public constructor(
     siteApi: ShallowSitesService,
     private notifications: ToastrService,
     route: ActivatedRoute
@@ -158,14 +158,14 @@ class AssignComponent
   }
 }
 
-AssignComponent.LinkComponentToPageInfo({
+AssignComponent.linkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [projectKey]: projectResolvers.show },
-}).AndMenuRoute(assignSiteMenuItem);
+}).andMenuRoute(assignSiteMenuItem);
 
 export { AssignComponent };
 

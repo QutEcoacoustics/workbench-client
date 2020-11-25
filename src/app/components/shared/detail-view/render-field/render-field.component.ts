@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
   ImageSizes,
   ImageUrl,
@@ -16,38 +16,38 @@ import { takeUntil } from "rxjs/operators";
   selector: "baw-render-field",
   template: `
     <!-- Display plain text -->
-    <dl *ngIf="styling === FieldStyling.Plain">
+    <dl *ngIf="styling === fieldStyling.plain">
       <p id="plain" class="m-0">{{ display }}</p>
     </dl>
 
     <!-- Display code/objects -->
-    <dl *ngIf="styling === FieldStyling.Code">
+    <dl *ngIf="styling === fieldStyling.code">
       <pre id="code" class="m-0">{{ display }}</pre>
     </dl>
 
     <!-- Display checkbox -->
-    <dl *ngIf="styling === FieldStyling.Checkbox">
+    <dl *ngIf="styling === fieldStyling.checkbox">
       <baw-checkbox
         id="checkbox"
         class="m-0"
-        [checked]="display"
+        [checked]="isChecked()"
         [disabled]="true"
         [isCentered]="false"
       ></baw-checkbox>
     </dl>
 
     <!-- Display AbstractModel -->
-    <dl *ngIf="styling === FieldStyling.Model">
+    <dl *ngIf="styling === fieldStyling.model">
       <a id="model" [routerLink]="model.viewUrl">{{ model }}</a>
     </dl>
 
     <!-- Display Image -->
-    <dl *ngIf="styling === FieldStyling.Image">
-      <img id="image" alt="model image alt" [src]="display" />
+    <dl *ngIf="styling === fieldStyling.image">
+      <img id="image" alt="model image alt" [src]="getSource()" />
     </dl>
 
     <!-- Display nested fields -->
-    <ng-container *ngIf="styling === FieldStyling.Children">
+    <ng-container *ngIf="styling === fieldStyling.children">
       <baw-render-field
         *ngFor="let child of children"
         id="children"
@@ -68,23 +68,31 @@ import { takeUntil } from "rxjs/operators";
   ],
 })
 export class RenderFieldComponent
-  extends WithUnsubscribe()
+  extends withUnsubscribe()
   implements OnChanges {
   @Input() public value: ModelView;
   public children: ModelView[];
   public display: string | number | boolean | ImageUrl[];
-  public FieldStyling = FieldStyling;
+  public fieldStyling = FieldStyling;
   public model: AbstractModel;
-  public styling: FieldStyling = FieldStyling.Plain;
+  public styling: FieldStyling = FieldStyling.plain;
   private errorText = "(error)";
   private loadingText = "(loading)";
   private noValueText = "(no value)";
 
-  constructor(private ref: ChangeDetectorRef) {
+  public constructor(private ref: ChangeDetectorRef) {
     super();
   }
   public ngOnChanges(): void {
     this.humanize(this.value);
+  }
+
+  public isChecked(): boolean {
+    return this.display as boolean;
+  }
+
+  public getSource(): ImageUrl[] {
+    return this.display as ImageUrl[];
   }
 
   private humanize(value: ModelView) {
@@ -106,7 +114,7 @@ export class RenderFieldComponent
       // TODO Implement optional treeview
       this.humanizeObject(value);
     } else if (typeof value === "boolean") {
-      this.styling = FieldStyling.Checkbox;
+      this.styling = FieldStyling.checkbox;
       this.display = value;
     } else if (typeof value === "string") {
       this.humanizeString(value);
@@ -117,13 +125,14 @@ export class RenderFieldComponent
 
   /**
    * Convert abstract model to human readable output
+   *
    * @param value Display input
    */
   private humanizeAbstractModel(value: AbstractModel) {
     if (value instanceof UnresolvedModel) {
       this.setLoading();
     } else {
-      this.styling = FieldStyling.Model;
+      this.styling = FieldStyling.model;
       this.display = "";
       this.model = value;
     }
@@ -132,6 +141,7 @@ export class RenderFieldComponent
   /**
    * Convert string to human readable output. Currently this only checks if the
    * string is an image url.
+   *
    * @param value Display input
    */
   private humanizeString(value: string) {
@@ -141,8 +151,8 @@ export class RenderFieldComponent
       value,
       () => {
         // String is image URL, display image
-        this.styling = FieldStyling.Image;
-        this.display = [{ url: value, size: ImageSizes.UNKNOWN }];
+        this.styling = FieldStyling.image;
+        this.display = [{ url: value, size: ImageSizes.unknown }];
         this.ref.detectChanges();
       },
       () => {}
@@ -151,13 +161,14 @@ export class RenderFieldComponent
 
   /**
    * Convert object to human readable output
+   *
    * @param value Display input
    */
-  private humanizeObject(value: object) {
+  private humanizeObject(value: Record<string, any>) {
     this.setLoading();
 
     try {
-      this.styling = FieldStyling.Code;
+      this.styling = FieldStyling.code;
       this.display = JSON.stringify(value);
     } catch (err) {
       this.display = this.errorText;
@@ -166,6 +177,7 @@ export class RenderFieldComponent
 
   /**
    * Convert blob to human readable output
+   *
    * @param value Display input
    */
   private humanizeBlob(value: Blob) {
@@ -173,7 +185,7 @@ export class RenderFieldComponent
     // TODO Implement new method (https://developer.mozilla.org/en-US/docs/Web/API/Blob/text)
     const reader = new FileReader();
     reader.addEventListener("loadend", (e) => {
-      this.styling = FieldStyling.Code;
+      this.styling = FieldStyling.code;
       this.display = e.target.result.toString();
     });
     reader.onerror = () => {
@@ -185,6 +197,7 @@ export class RenderFieldComponent
 
   /**
    * Convert observable to human readable output
+   *
    * @param value Display input
    */
   private humanizeObservable(
@@ -206,15 +219,16 @@ export class RenderFieldComponent
   /**
    * Convert array to human readable output. This also handles
    * an array of image urls.
+   *
    * @param value Display input
    */
   private humanizeArray(value: ModelView[] | ImageUrl[]) {
     if (value.length > 0) {
       if (isImageUrl(value[0])) {
-        this.styling = FieldStyling.Image;
+        this.styling = FieldStyling.image;
         this.display = value as ImageUrl[];
       } else {
-        this.styling = FieldStyling.Children;
+        this.styling = FieldStyling.children;
         this.children = value;
       }
     } else {
@@ -226,13 +240,14 @@ export class RenderFieldComponent
    * Indicate view is still loading
    */
   private setLoading() {
-    this.styling = FieldStyling.Plain;
+    this.styling = FieldStyling.plain;
     this.display = this.loadingText;
   }
 
   /**
    * Determine if image is valid
    * ! This function is untested, edit carefully
+   *
    * @param src Source URL
    * @param validCallback Valid image callback
    * @param invalidCallback Invalid image callback
@@ -243,6 +258,7 @@ export class RenderFieldComponent
     invalidCallback: () => void
   ) {
     // Url from https://urlregex.com/
+    // eslint-disable-next-line max-len
     const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
     if (!urlRegex.test(src)) {
       invalidCallback();
@@ -258,6 +274,7 @@ export class RenderFieldComponent
 
 /**
  * Create a human readable datetime string
+ *
  * @param value DateTime value
  */
 export function humanizeDateTime(value: DateTime): string {
@@ -273,16 +290,16 @@ export type ModelView =
   | Duration
   | AbstractModel
   | Blob
-  | object
+  | Record<string, any>
   | ImageUrl[]
   | ModelView[];
 
 enum FieldStyling {
-  Checkbox,
-  Code,
-  Plain,
-  Route,
-  Model,
-  Image,
-  Children,
+  checkbox,
+  code,
+  plain,
+  route,
+  model,
+  image,
+  children,
 }

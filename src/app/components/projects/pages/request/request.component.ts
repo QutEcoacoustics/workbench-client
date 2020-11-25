@@ -6,7 +6,7 @@ import {
   projectsMenuItem,
   requestProjectMenuItem,
 } from "@components/projects/projects.menus";
-import { WithFormCheck } from "@guards/form/form.guard";
+import { withFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Project } from "@models/Project";
 import { List } from "immutable";
@@ -31,14 +31,14 @@ import { fields } from "./request.schema.json";
     </baw-wip>
   `,
 })
-class RequestComponent extends WithFormCheck(PageComponent) implements OnInit {
+class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
   public error: ApiErrorDetails;
   public fields = fields;
   public loading: boolean;
   public model = {};
   public projects: Project[];
 
-  constructor(private api: ProjectsService) {
+  public constructor(private api: ProjectsService) {
     super();
   }
 
@@ -65,6 +65,7 @@ class RequestComponent extends WithFormCheck(PageComponent) implements OnInit {
 
   /**
    * Form submission
+   *
    * @param $event Form response
    */
   public submit($event: any) {
@@ -74,9 +75,9 @@ class RequestComponent extends WithFormCheck(PageComponent) implements OnInit {
   }
 }
 
-RequestComponent.LinkComponentToPageInfo({
+RequestComponent.linkComponentToPageInfo({
   category: projectsCategory,
   menus: { actions: List([projectsMenuItem, ...projectsMenuItemActions]) },
-}).AndMenuRoute(requestProjectMenuItem);
+}).andMenuRoute(requestProjectMenuItem);
 
 export { RequestComponent };

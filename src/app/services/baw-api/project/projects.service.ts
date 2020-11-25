@@ -6,8 +6,8 @@ import { IProject, Project } from "@models/Project";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   filterByForeignKey,
   id,
   IdOr,
@@ -27,7 +27,7 @@ const endpoint = stringTemplate`/projects/${projectId}${option}`;
  */
 @Injectable()
 export class ProjectsService extends StandardApi<Project> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -36,31 +36,31 @@ export class ProjectsService extends StandardApi<Project> {
   }
 
   public list(): Observable<Project[]> {
-    return this.apiList(endpoint(Empty, Empty));
+    return this.apiList(endpoint(emptyParam, emptyParam));
   }
   public filter(filters: Filters<IProject>): Observable<Project[]> {
-    return this.apiFilter(endpoint(Empty, Filter), filters);
+    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
   public filterByCreator(
     filters: Filters<IProject>,
     user?: IdOr<User>
   ): Observable<Project[]> {
     return this.apiFilter(
-      endpoint(Empty, Filter),
+      endpoint(emptyParam, filterParam),
       user ? filterByForeignKey<Project>(filters, "creatorId", user) : filters
     );
   }
   public show(model: IdOr<Project>): Observable<Project> {
-    return this.apiShow(endpoint(model, Empty));
+    return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: Project): Observable<Project> {
-    return this.apiCreate(endpoint(Empty, Empty), model);
+    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
   }
   public update(model: Project): Observable<Project> {
-    return this.apiUpdate(endpoint(model, Empty), model);
+    return this.apiUpdate(endpoint(model, emptyParam), model);
   }
   public destroy(model: IdOr<Project>): Observable<Project | void> {
-    return this.apiDestroy(endpoint(model, Empty));
+    return this.apiDestroy(endpoint(model, emptyParam));
   }
 }
 

@@ -5,15 +5,15 @@ import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
 
 @Component({
   selector: "baw-send-audio",
-  template: `<baw-cms [page]="page"></baw-cms>`,
+  template: '<baw-cms [page]="page"></baw-cms>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class SendAudioComponent extends PageComponent {
-  public page = CMS.DATA_UPLOAD;
+  public page = CMS.dataUpload;
 }
 
-SendAudioComponent.LinkComponentToPageInfo({
+SendAudioComponent.linkComponentToPageInfo({
   category: sendAudioCategory,
-}).AndMenuRoute(sendAudioMenuItem);
+}).andMenuRoute(sendAudioMenuItem);
 
 export { SendAudioComponent };

@@ -10,24 +10,27 @@ import {
   WrapperOption,
 } from "@ngx-formly/core/lib/services/formly.config";
 import { MapModule } from "@shared/map/map.module";
-import { FormlyCheckboxInput } from "./checkbox-input.component";
-import { FileValueAccessor } from "./file-input.directive";
-import { FormlyHorizontalWrapper } from "./horizontal-wrapper.component";
-import { FormlyImageInput } from "./image-input.component";
-import { FormlyLocationInput } from "./location-input.component";
-import { FormlyPasswordConfirmationInput } from "./password-confirmation-input.component";
-import { FormlyTimezoneInput } from "./timezone-input.component";
+import { CheckboxInputComponent } from "./checkbox-input.component";
+import { FileValueAccessorDirective } from "./file-input.directive";
+import { HorizontalWrapperComponent } from "./horizontal-wrapper.component";
+import { ImageInputComponent } from "./image-input.component";
+import { LocationInputComponent } from "./location-input.component";
+import { PasswordConfirmationInputComponent } from "./password-confirmation-input.component";
+import { TimezoneInputComponent } from "./timezone-input.component";
 
 export const formlyInputTypes: TypeOption[] = [
-  { name: "checkbox", component: FormlyCheckboxInput },
-  { name: "image", component: FormlyImageInput },
-  { name: "timezone", component: FormlyTimezoneInput },
-  { name: "location", component: FormlyLocationInput },
-  { name: "passwordConfirmation", component: FormlyPasswordConfirmationInput },
+  { name: "checkbox", component: CheckboxInputComponent },
+  { name: "image", component: ImageInputComponent },
+  { name: "timezone", component: TimezoneInputComponent },
+  { name: "location", component: LocationInputComponent },
+  {
+    name: "passwordConfirmation",
+    component: PasswordConfirmationInputComponent,
+  },
 ];
 
 export const formlyWrappers: WrapperOption[] = [
-  { name: "form-field-horizontal", component: FormlyHorizontalWrapper },
+  { name: "form-field-horizontal", component: HorizontalWrapperComponent },
 ];
 
 export const formlyValidationMessages: ValidationMessageOption[] = [
@@ -55,13 +58,13 @@ export const formlyValidationMessages: ValidationMessageOption[] = [
 ];
 
 const components = [
-  FileValueAccessor,
-  FormlyCheckboxInput,
-  FormlyHorizontalWrapper,
-  FormlyImageInput,
-  FormlyLocationInput,
-  FormlyPasswordConfirmationInput,
-  FormlyTimezoneInput,
+  FileValueAccessorDirective,
+  CheckboxInputComponent,
+  HorizontalWrapperComponent,
+  ImageInputComponent,
+  LocationInputComponent,
+  PasswordConfirmationInputComponent,
+  TimezoneInputComponent,
 ];
 
 @NgModule({

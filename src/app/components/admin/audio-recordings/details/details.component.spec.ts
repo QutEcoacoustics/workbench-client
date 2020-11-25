@@ -49,12 +49,12 @@ describe("AdminAudioRecordingComponent", () => {
 
     fixture = TestBed.createComponent(AdminAudioRecordingComponent);
     injector = TestBed.inject(Injector);
-    const accountsApi = TestBed.inject(ACCOUNT.token) as SpyObject<
-      AccountsService
-    >;
-    const sitesApi = TestBed.inject(SHALLOW_SITE.token) as SpyObject<
-      ShallowSitesService
-    >;
+    const accountsApi = TestBed.inject(
+      ACCOUNT.token
+    ) as SpyObject<AccountsService>;
+    const sitesApi = TestBed.inject(
+      SHALLOW_SITE.token
+    ) as SpyObject<ShallowSitesService>;
     component = fixture.componentInstance;
 
     const accountsSubject = new Subject<User>();

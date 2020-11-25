@@ -46,34 +46,34 @@ describe("CmsComponent", () => {
 
   it("should request page from api", async (done) => {
     const promise = interceptApiRequest("page content", undefined, (page) => {
-      expect(page).toBe(CMS.HOME);
+      expect(page).toBe(CMS.home);
       done();
     });
-    spectator.setInput("page", CMS.HOME);
+    spectator.setInput("page", CMS.home);
     spectator.detectChanges();
     await promise;
   });
 
   it("should change request based on page", async (done) => {
     const promise = interceptApiRequest("page content", undefined, (page) => {
-      expect(page).toBe(CMS.CREDITS);
+      expect(page).toBe(CMS.credits);
       done();
     });
-    spectator.setInput("page", CMS.CREDITS);
+    spectator.setInput("page", CMS.credits);
     spectator.detectChanges();
     await promise;
   });
 
   it("should initially display loading animation", () => {
     interceptApiRequest("page content");
-    spectator.setInput("page", CMS.HOME);
+    spectator.setInput("page", CMS.home);
     spectator.detectChanges();
     assertSpinner(spectator.fixture, true);
   });
 
   it("should hide loading animation after success response", async () => {
     const promise = interceptApiRequest("page content");
-    spectator.setInput("page", CMS.HOME);
+    spectator.setInput("page", CMS.home);
     spectator.detectChanges();
     await promise;
     spectator.detectChanges();
@@ -82,7 +82,7 @@ describe("CmsComponent", () => {
 
   it("should hide loading animation after error response", async () => {
     const promise = interceptApiRequest(undefined, generateApiErrorDetails());
-    spectator.setInput("page", CMS.HOME);
+    spectator.setInput("page", CMS.home);
     spectator.detectChanges();
     await promise;
     spectator.detectChanges();
@@ -91,7 +91,7 @@ describe("CmsComponent", () => {
 
   it("should display cms response containing plaintext", async () => {
     const promise = interceptApiRequest("cms content");
-    spectator.setInput("page", CMS.HOME);
+    spectator.setInput("page", CMS.home);
     spectator.detectChanges();
     await promise;
     spectator.detectChanges();
@@ -104,7 +104,7 @@ describe("CmsComponent", () => {
       <h1>Response</h1>
       <p>Example HTML response from API</p>
     `);
-    spectator.setInput("page", CMS.HOME);
+    spectator.setInput("page", CMS.home);
     spectator.detectChanges();
     await promise;
     spectator.detectChanges();
@@ -120,7 +120,7 @@ describe("CmsComponent", () => {
       <style>p { color: #420; }</style>
       <p>Example HTML response from API</p>
     `);
-    spectator.setInput("page", CMS.HOME);
+    spectator.setInput("page", CMS.home);
     spectator.detectChanges();
     await promise;
     spectator.detectChanges();
@@ -135,7 +135,7 @@ describe("CmsComponent", () => {
       <p id='test'>Example HTML response from API</p>
       <script>document.getElementById('test').style.color = '#420';</script>
     `);
-    spectator.setInput("page", CMS.HOME);
+    spectator.setInput("page", CMS.home);
     spectator.detectChanges();
     await promise;
     spectator.detectChanges();
@@ -148,7 +148,7 @@ describe("CmsComponent", () => {
   it("should display error message on failure", async () => {
     const error = generateApiErrorDetails();
     const promise = interceptApiRequest(undefined, error);
-    spectator.setInput("page", CMS.HOME);
+    spectator.setInput("page", CMS.home);
     spectator.detectChanges();
     await promise;
     spectator.detectChanges();

@@ -1,6 +1,7 @@
 /**
  * Templates a string by substituting placeholders for tokens later in execution.
  * It is designed to work as the tag function for tagged interpolated strings.
+ *
  * @returns A reusable template function that is statically checked for arity and
  * parameter type compatibility with the placeholders from the interpolated string.
  * @param strings The strings around the tokens to template

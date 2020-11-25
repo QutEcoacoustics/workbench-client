@@ -22,7 +22,7 @@ export class SiteNewComponent extends FormTemplate<Site> {
   public fields = fields;
   public title = "";
 
-  constructor(
+  public constructor(
     protected api: SitesService,
     notifications: ToastrService,
     route: ActivatedRoute,

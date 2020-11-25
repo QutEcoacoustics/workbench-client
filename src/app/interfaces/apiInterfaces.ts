@@ -50,9 +50,7 @@ export type Description = string;
 /**
  * BAW API Notes
  */
-export interface Notes {
-  [key: string]: any;
-}
+export type Hash = Record<string, any>;
 
 /**
  * BAW API DateTime
@@ -62,6 +60,7 @@ export type DateTimeTimezone = DateTime;
 /**
  * Humanize a durations length of time.
  * TODO Replace with luxon official solution (https://github.com/moment/luxon/issues/688)
+ *
  * @param dur Duration
  */
 export function toRelative(
@@ -85,13 +84,13 @@ export type Longitude = string;
  * BAW API Image Sizes
  */
 export enum ImageSizes {
-  EXTRA_LARGE = "extralarge",
-  LARGE = "large",
-  MEDIUM = "medium",
-  SMALL = "small",
-  TINY = "tiny",
-  DEFAULT = "default",
-  UNKNOWN = "unknown",
+  extraLarge = "extralarge",
+  large = "large",
+  medium = "medium",
+  small = "small",
+  tiny = "tiny",
+  default = "default",
+  unknown = "unknown",
 }
 
 /**
@@ -117,6 +116,7 @@ export interface ImageUrl {
 
 /**
  * Evaluate if value is an ImageUrl
+ *
  * @param value Value to evaluate
  */
 export function isImageUrl(value: any): value is ImageUrl {

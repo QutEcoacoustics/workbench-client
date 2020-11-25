@@ -15,11 +15,11 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   templateUrl: "./home.component.html",
 })
 class HomeComponent extends PageComponent implements OnInit {
-  public page = CMS.HOME;
+  public page = CMS.home;
   public projectsLink = projectsMenuItem.route.toString();
   public projectList: List<Card> = List([]);
 
-  constructor(
+  public constructor(
     private projectApi: ProjectsService,
     private securityApi: SecurityService
   ) {
@@ -46,9 +46,9 @@ class HomeComponent extends PageComponent implements OnInit {
   }
 }
 
-HomeComponent.LinkComponentToPageInfo({
+HomeComponent.linkComponentToPageInfo({
   category: homeCategory,
   fullscreen: true,
-}).AndMenuRoute(homeMenuItem);
+}).andMenuRoute(homeMenuItem);
 
 export { HomeComponent };

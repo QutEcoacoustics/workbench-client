@@ -6,8 +6,8 @@ import { IResponse, Response } from "@models/Response";
 import { Study } from "@models/Study";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   id,
   IdOr,
   IdParam,
@@ -25,7 +25,7 @@ const endpointShallow = stringTemplate`/responses/${responseId}${option}`;
 
 @Injectable()
 export class ResponsesService extends StandardApi<Response, [IdOr<Study>]> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -34,34 +34,34 @@ export class ResponsesService extends StandardApi<Response, [IdOr<Study>]> {
   }
 
   public list(study: IdOr<Study>): Observable<Response[]> {
-    return this.apiList(endpoint(study, Empty, Empty));
+    return this.apiList(endpoint(study, emptyParam, emptyParam));
   }
   public filter(
     filters: Filters<IResponse>,
     study: IdOr<Study>
   ): Observable<Response[]> {
-    return this.apiFilter(endpoint(study, Empty, Filter), filters);
+    return this.apiFilter(endpoint(study, emptyParam, filterParam), filters);
   }
   public show(model: IdOr<Response>, study: IdOr<Study>): Observable<Response> {
-    return this.apiShow(endpoint(study, model, Empty));
+    return this.apiShow(endpoint(study, model, emptyParam));
   }
   public create(model: Response, study: IdOr<Study>): Observable<Response> {
-    return this.apiCreate(endpoint(study, Empty, Empty), model);
+    return this.apiCreate(endpoint(study, emptyParam, emptyParam), model);
   }
   public update(model: Response, study: IdOr<Study>): Observable<Response> {
-    return this.apiUpdate(endpoint(study, model, Empty), model);
+    return this.apiUpdate(endpoint(study, model, emptyParam), model);
   }
   public destroy(
     model: IdOr<Response>,
     study: IdOr<Study>
   ): Observable<Response | void> {
-    return this.apiDestroy(endpoint(study, model, Empty));
+    return this.apiDestroy(endpoint(study, model, emptyParam));
   }
 }
 
 @Injectable()
 export class ShallowResponsesService extends StandardApi<Response> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -70,22 +70,22 @@ export class ShallowResponsesService extends StandardApi<Response> {
   }
 
   public list(): Observable<Response[]> {
-    return this.apiList(endpointShallow(Empty, Empty));
+    return this.apiList(endpointShallow(emptyParam, emptyParam));
   }
   public filter(filters: Filters<IResponse>): Observable<Response[]> {
-    return this.apiFilter(endpointShallow(Empty, Filter), filters);
+    return this.apiFilter(endpointShallow(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<Response>): Observable<Response> {
-    return this.apiShow(endpointShallow(model, Empty));
+    return this.apiShow(endpointShallow(model, emptyParam));
   }
   public create(model: Response): Observable<Response> {
-    return this.apiCreate(endpointShallow(Empty, Empty), model);
+    return this.apiCreate(endpointShallow(emptyParam, emptyParam), model);
   }
   public update(model: Response): Observable<Response> {
-    return this.apiUpdate(endpointShallow(model, Empty), model);
+    return this.apiUpdate(endpointShallow(model, emptyParam), model);
   }
   public destroy(model: IdOr<Response>): Observable<Response | void> {
-    return this.apiDestroy(endpointShallow(model, Empty));
+    return this.apiDestroy(endpointShallow(model, emptyParam));
   }
 }
 

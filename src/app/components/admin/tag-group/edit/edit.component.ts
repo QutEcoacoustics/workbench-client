@@ -43,7 +43,7 @@ class AdminTagGroupsEditComponent
   public fields = fields;
   public title: string;
 
-  constructor(
+  public constructor(
     private api: TagGroupsService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -67,13 +67,13 @@ class AdminTagGroupsEditComponent
   }
 }
 
-AdminTagGroupsEditComponent.LinkComponentToPageInfo({
+AdminTagGroupsEditComponent.linkComponentToPageInfo({
   category: adminTagGroupsCategory,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [tagGroupKey]: tagGroupResolvers.show },
-}).AndMenuRoute(adminEditTagGroupMenuItem);
+}).andMenuRoute(adminEditTagGroupMenuItem);
 
 export { AdminTagGroupsEditComponent };

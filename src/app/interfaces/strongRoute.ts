@@ -26,6 +26,7 @@ export class StrongRoute {
 
   /**
    * Constructor
+   *
    * @param parent Components parent
    * @param name Route name
    * @param config Additional router configurations
@@ -69,12 +70,13 @@ export class StrongRoute {
   /**
    * A base level (root) route component
    */
-  static get Base() {
+  public static get base() {
     return new StrongRoute(null, null, {});
   }
 
   /**
    * Add a child route
+   *
    * @param name Route name
    * @param config Additional router configurations
    */
@@ -84,6 +86,7 @@ export class StrongRoute {
 
   /**
    * Add a new feature module route (inherit parent path without recalculating parent routes)
+   *
    * @param name Route name
    * @param config Additional router configurations
    */
@@ -132,6 +135,7 @@ export class StrongRoute {
 
   /**
    * Compile the list of routes for a module
+   *
    * @param callback Callback function (usually: GetRouteConfigForPage)
    */
   public compileRoutes(callback: RouteConfigCallback): Routes {
@@ -205,7 +209,7 @@ export class StrongRoute {
   /**
    * Route config
    */
-  get routeConfig() {
+  public get routeConfig() {
     return this.config;
   }
 

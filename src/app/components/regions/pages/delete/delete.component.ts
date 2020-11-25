@@ -46,7 +46,7 @@ const regionKey = "region";
 class DeleteComponent extends FormTemplate<Region> implements OnInit {
   public title: string;
 
-  constructor(
+  public constructor(
     private api: RegionsService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -78,7 +78,7 @@ class DeleteComponent extends FormTemplate<Region> implements OnInit {
   }
 }
 
-DeleteComponent.LinkComponentToPageInfo({
+DeleteComponent.linkComponentToPageInfo({
   category: regionsCategory,
   menus: {
     actions: List([regionMenuItem, ...regionMenuItemActions]),
@@ -88,6 +88,6 @@ DeleteComponent.LinkComponentToPageInfo({
     [projectKey]: projectResolvers.show,
     [regionKey]: regionResolvers.show,
   },
-}).AndMenuRoute(deleteRegionMenuItem);
+}).andMenuRoute(deleteRegionMenuItem);
 
 export { DeleteComponent };

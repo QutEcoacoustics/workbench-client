@@ -4,7 +4,7 @@ import { retrieveResolvers } from "@baw-api/resolver-common";
 import { scriptResolvers } from "@baw-api/script/scripts.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { Script } from "@models/Script";
@@ -31,13 +31,13 @@ const scriptKey = "script";
   `,
 })
 class AdminScriptComponent
-  extends WithUnsubscribe(PageComponent)
+  extends withUnsubscribe(PageComponent)
   implements OnInit {
   public script: Script;
   public failure: boolean;
   public fields = [...baseFields, ...extendedFields];
 
-  constructor(private route: ActivatedRoute) {
+  public constructor(private route: ActivatedRoute) {
     super();
   }
 
@@ -53,13 +53,13 @@ class AdminScriptComponent
   }
 }
 
-AdminScriptComponent.LinkComponentToPageInfo({
+AdminScriptComponent.linkComponentToPageInfo({
   category: adminScriptsCategory,
   menus: {
     actions: List([adminScriptsMenuItem, ...adminScriptActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [scriptKey]: scriptResolvers.show },
-}).AndMenuRoute(adminScriptMenuItem);
+}).andMenuRoute(adminScriptMenuItem);
 
 export { AdminScriptComponent };

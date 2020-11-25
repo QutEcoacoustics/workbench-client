@@ -40,7 +40,7 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
   public model: AbstractModel;
   public pageData: any;
 
-  constructor(private route: ActivatedRoute) {}
+  public constructor(private route: ActivatedRoute) {}
 
   public ngOnInit() {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);

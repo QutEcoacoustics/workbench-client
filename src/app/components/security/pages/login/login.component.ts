@@ -43,7 +43,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   private redirectBack: boolean;
   private redirectUrl: string;
 
-  constructor(
+  public constructor(
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(DOCUMENT) private document: Document,
     private api: SecurityService,
@@ -121,6 +121,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
    * Redirect to an external website.
    * ! Do not change, this is inside a function to stop unit tests from redirecting
    * TODO Remove this once website is entirely moved to workbench-client
+   *
    * @param redirect Redirect url
    */
   public externalRedirect(redirect: string) {
@@ -128,7 +129,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   }
 }
 
-LoginComponent.LinkComponentToPageInfo({
+LoginComponent.linkComponentToPageInfo({
   category: securityCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -137,6 +138,6 @@ LoginComponent.LinkComponentToPageInfo({
       unlockAccountMenuItem,
     ]),
   },
-}).AndMenuRoute(loginMenuItem);
+}).andMenuRoute(loginMenuItem);
 
 export { LoginComponent };

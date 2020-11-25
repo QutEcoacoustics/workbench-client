@@ -79,7 +79,7 @@ export const appImports = [
   exports: [],
 })
 export class AppModule implements DoBootstrap {
-  constructor() {}
+  public constructor() {}
 
   public ngDoBootstrap(app: any): void {
     app.bootstrap(AppComponent);

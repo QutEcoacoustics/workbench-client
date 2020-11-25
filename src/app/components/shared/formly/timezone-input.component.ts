@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
+import { FormControl } from "@angular/forms";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
 import { FieldType } from "@ngx-formly/core";
@@ -15,8 +16,7 @@ import {
  * Timezone Input
  */
 @Component({
-  // tslint:disable-next-line: component-selector
-  selector: "formly-timezone-input",
+  selector: "baw-timezone-input",
   template: `
     <div class="form-group">
       <label *ngIf="to.label" [for]="field.id">
@@ -64,9 +64,9 @@ import {
     </div>
   `,
 })
-// tslint:disable-next-line: component-class-suffix
-export class FormlyTimezoneInput extends FieldType implements OnInit {
+export class TimezoneInputComponent extends FieldType implements OnInit {
   @ViewChild("instance", { static: true }) public instance: NgbTypeahead;
+  public formControl: FormControl;
   public click$ = new Subject<string>();
   public focus$ = new Subject<string>();
   public defaultTime = "(no match)";
@@ -95,12 +95,14 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
 
   /**
    * Format typeahead output to show current time format of timezone
+   *
    * @param selected Selected timezone
    */
   public formatter = (selected: TimeZone): string => selected.currentTimeFormat;
 
   /**
    * Update typeahead dropdown list whenever event is detected
+   *
    * @param text$ Search event
    */
   public search = (text$: Observable<string>): Observable<TimeZone[]> => {
@@ -120,9 +122,10 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
 
   /**
    * Validate a timezone input
+   *
    * @returns Object containing key and error message if validation fails, else null
    */
-  private timezoneValidator(): object | null {
+  private timezoneValidator(): Record<string, string> | null {
     if (!isInstantiated(this.timezone)) {
       if (this.to.required && this.formControl.dirty) {
         return { [this.field.key.toString()]: "You must select a timezone" };
@@ -156,6 +159,7 @@ export class FormlyTimezoneInput extends FieldType implements OnInit {
 
   /**
    * Search timezones and select any which reference the input
+   *
    * @param term Term to search for
    */
   private searchTimezones(

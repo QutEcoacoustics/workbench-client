@@ -7,8 +7,8 @@ import {
   Param,
 } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, HasOne, Updater } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { creator, hasOne, updater } from "./AssociationDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import type { Dataset } from "./Dataset";
 import type { User } from "./User";
 
@@ -20,28 +20,28 @@ export interface IStudy extends HasCreatorAndUpdater {
 
 export class Study extends AbstractModel implements IStudy {
   public readonly kind = "Studies";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly name?: Param;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly datasetId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
-  @Creator<Study>()
+  @creator<Study>()
   public creator?: User;
-  @Updater<Study>()
+  @updater<Study>()
   public updater?: User;
-  @HasOne<Study, Dataset>(DATASET, "datasetId")
+  @hasOne<Study, Dataset>(DATASET, "datasetId")
   public dataset?: Dataset;
 
-  constructor(study: IStudy, injector?: Injector) {
+  public constructor(study: IStudy, injector?: Injector) {
     super(study, injector);
   }
 

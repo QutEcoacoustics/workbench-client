@@ -46,7 +46,7 @@ export class HeaderItemComponent implements OnInit {
   public isExternalLink = isExternalLink;
   public getRoute = getRoute;
 
-  constructor(private route: ActivatedRoute) {
+  public constructor(private route: ActivatedRoute) {
     this.params = this.route.snapshot.params;
   }
 

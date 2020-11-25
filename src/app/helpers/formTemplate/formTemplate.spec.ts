@@ -28,17 +28,17 @@ class MockModel extends AbstractModel {
   public get viewUrl(): string {
     return "";
   }
-  public toJSON(): object {
+  public toJSON(): Record<string, any> {
     return this;
   }
 }
 
 @Component({
   selector: "baw-test-component",
-  template: `<div><baw-form></baw-form></div>`,
+  template: "<div><baw-form></baw-form></div>",
 })
 class MockComponent extends FormTemplate<MockModel> {
-  constructor(
+  public constructor(
     protected notifications: ToastrService,
     protected route: ActivatedRoute,
     protected router: Router
@@ -96,9 +96,8 @@ describe("formTemplate", () => {
   beforeEach(() => {
     defaultError = generateApiErrorDetails();
     defaultModel = new MockModel({ id: 1 });
-    successResponse = (model) => {
-      return new BehaviorSubject<MockModel>(new MockModel(model));
-    };
+    successResponse = (model) =>
+      new BehaviorSubject<MockModel>(new MockModel(model));
     errorResponse = () => {
       const subject = new Subject<MockModel>();
       subject.error(defaultError);

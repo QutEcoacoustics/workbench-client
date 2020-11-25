@@ -19,17 +19,17 @@ import {
   Id,
   Ids,
   ImageUrl,
-  Notes,
+  Hash,
   Param,
   TimezoneInformation,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
-import { Creator, HasMany, Updater } from "./AssociationDecorators";
+import { creator, hasMany, updater } from "./AssociationDecorators";
 import {
-  BawCollection,
-  BawDateTime,
-  BawImage,
-  BawPersistAttr,
+  bawCollection,
+  bawDateTime,
+  bawImage,
+  bawPersistAttr,
 } from "./AttributeDecorators";
 import type { Project } from "./Project";
 import type { User } from "./User";
@@ -50,7 +50,7 @@ export interface ISite extends HasAllUsers, HasDescription {
   customLongitude?: number;
   tzinfoTz?: string;
   timezoneInformation?: TimezoneInformation;
-  notes?: Notes;
+  notes?: Hash;
 }
 
 /**
@@ -58,17 +58,17 @@ export interface ISite extends HasAllUsers, HasDescription {
  */
 export class Site extends AbstractModel implements ISite {
   public readonly kind = "Site";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly name?: Param;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly imageUrl?: string;
-  @BawImage<Site>(`${assetRoot}/images/site/site_span4.png`, {
+  @bawImage<Site>(`${assetRoot}/images/site/site_span4.png`, {
     key: "imageUrl",
   })
   public readonly image?: ImageUrl[];
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
@@ -76,37 +76,37 @@ export class Site extends AbstractModel implements ISite {
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
-  @BawCollection({ persist: true })
+  @bawCollection({ persist: true })
   public readonly projectIds?: Ids;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly regionId?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly latitude?: number;
   public readonly customLatitude?: number;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly longitude?: number;
   public readonly customLongitude?: number;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly tzinfoTz?: string;
   public readonly timezoneInformation?: TimezoneInformation;
-  @BawPersistAttr
-  public readonly notes?: Notes;
+  @bawPersistAttr
+  public readonly notes?: Hash;
 
   // Associations
-  @Creator<Site>()
+  @creator<Site>()
   public creator?: User;
-  @Updater<Site>()
+  @updater<Site>()
   public updater?: User;
-  @HasMany<Site, Project>(PROJECT, "projectIds")
+  @hasMany<Site, Project>(PROJECT, "projectIds")
   public projects?: Project[];
 
-  constructor(site: ISite, injector?: Injector) {
+  public constructor(site: ISite, injector?: Injector) {
     super(site, injector);
 
     this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;

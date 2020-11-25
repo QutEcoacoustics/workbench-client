@@ -37,7 +37,7 @@ const userKey = "user";
 class MyDeleteComponent extends FormTemplate<User> {
   public title: string;
 
-  constructor(
+  public constructor(
     private api: AccountsService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -53,10 +53,10 @@ class MyDeleteComponent extends FormTemplate<User> {
   }
 }
 
-MyDeleteComponent.LinkComponentToPageInfo({
+MyDeleteComponent.linkComponentToPageInfo({
   category: myAccountCategory,
   menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
-}).AndMenuRoute(myDeleteMenuItem);
+}).andMenuRoute(myDeleteMenuItem);
 
 export { MyDeleteComponent };

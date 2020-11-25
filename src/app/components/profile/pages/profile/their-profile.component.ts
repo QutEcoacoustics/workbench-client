@@ -38,7 +38,7 @@ const accountKey = "account";
 class TheirProfileComponent extends MyProfileComponent implements OnInit {
   public thirdPerson = true;
 
-  constructor(
+  public constructor(
     route: ActivatedRoute,
     audioEventsApi: ShallowAudioEventsService,
     bookmarksApi: BookmarksService,
@@ -71,10 +71,10 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
   }
 }
 
-TheirProfileComponent.LinkComponentToPageInfo({
+TheirProfileComponent.linkComponentToPageInfo({
   category: theirProfileCategory,
   menus: { actions: List(theirProfileActions) },
   resolvers: { [accountKey]: accountResolvers.show },
-}).AndMenuRoute(theirProfileMenuItem);
+}).andMenuRoute(theirProfileMenuItem);
 
 export { TheirProfileComponent };

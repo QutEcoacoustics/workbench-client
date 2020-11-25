@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { WithFormCheck } from "@guards/form/form.guard";
+import { withFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
 import { fields as requestFields } from "./data-request.schema.json";
@@ -32,7 +32,11 @@ import { fields as annotationFields } from "./download-annotations.schema.json";
       ></baw-form>
       <baw-form
         title="Custom Data Request"
-        subTitle="Use this form to request a customized annotations list or other data related to the audio recordings on this website. You <strong>do not need</strong> to use this form if you need the standard <strong>annotations CSV</strong> download. "
+        subTitle="
+          Use this form to request a customized annotations list or other data related to the
+          audio recordings on this website. You <strong>do not need</strong> to use this form
+          if you need the standard <strong>annotations CSV</strong> download.
+        "
         submitLabel="Submit"
         [model]="requestModel"
         [fields]="requestFields"
@@ -42,7 +46,7 @@ import { fields as annotationFields } from "./download-annotations.schema.json";
     </baw-wip>
   `,
 })
-class DataRequestComponent extends WithFormCheck(PageComponent) {
+class DataRequestComponent extends withFormCheck(PageComponent) {
   public annotationLoading: boolean;
   public annotationModel = {};
   public annotationFields = annotationFields;
@@ -52,6 +56,7 @@ class DataRequestComponent extends WithFormCheck(PageComponent) {
 
   /**
    * Form submission
+   *
    * @param $event Form response
    */
   public submitDownloadAnnotation($event: any) {
@@ -62,6 +67,7 @@ class DataRequestComponent extends WithFormCheck(PageComponent) {
 
   /**
    * Form submission
+   *
    * @param $event Form response
    */
   public submitDataRequest($event: any) {
@@ -71,8 +77,8 @@ class DataRequestComponent extends WithFormCheck(PageComponent) {
   }
 }
 
-DataRequestComponent.LinkComponentToPageInfo({
+DataRequestComponent.linkComponentToPageInfo({
   category: dataRequestCategory,
-}).AndMenuRoute(dataRequestMenuItem);
+}).andMenuRoute(dataRequestMenuItem);
 
 export { DataRequestComponent };

@@ -15,9 +15,10 @@ const endpoint = stringTemplate`/my_account/`;
  * Handles API routes pertaining to session user.
  */
 @Injectable()
-export class UserService extends BawApiService<User>
+export class UserService
+  extends BawApiService<User>
   implements ApiShow<User, [], IdOr<User>> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

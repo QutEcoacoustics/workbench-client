@@ -1,20 +1,52 @@
-/*
-  This is a "Solution Style" tsconfig.json file, and is used by editors and TypeScript’s language server to improve development experience.
-  It is not intended to be used to perform a compilation.
-
-  To learn more about this file see: https://angular.io/config/solution-tsconfig.
-*/
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    },
-    {
-      "path": "./tsconfig.server.json"
+  "compileOnSave": false,
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "declaration": false,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "lib": ["ES2019", "dom"],
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": false,
+    "outDir": "./dist/out-tsc",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "strict": false,
+    "target": "ES2015",
+
+    "paths": {
+      "@assets/*": ["./src/assets/*"],
+      "@menu/*": [
+        "./src/app/components/shared/menu/permissions-shield/*",
+        "./src/app/components/shared/menu/widget/*",
+        "./src/app/components/shared/menu/*"
+      ],
+      "@shared/*": ["./src/app/components/shared/*"],
+      "@components/*": ["./src/app/components/*"],
+      "@directives/*": ["./src/app/directives/*"],
+      "@pipes/*": ["./src/app/pipes/*"],
+      "@guards/*": ["./src/app/guards/*"],
+      "@helpers/*": ["./src/app/helpers/*"],
+      "@interfaces/*": ["./src/app/interfaces/*"],
+      "@models/*": ["./src/app/models/*"],
+      "@baw-api/*": ["./src/app/services/baw-api/*"],
+      "@services/*": ["./src/app/services/*"],
+      "@test/*": ["./src/app/test/*"]
     }
-  ]
+  },
+  "angularCompilerOptions": {
+    "disableTypeScriptVersionCheck": true,
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
 }

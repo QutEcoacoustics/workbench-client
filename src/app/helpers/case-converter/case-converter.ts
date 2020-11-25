@@ -7,6 +7,7 @@ import * as whitelist from "./whitelist.json";
 /**
  * Deeply converts keys of an object from one case to another.
  * Function was created here: https://github.com/travelperk/case-converter (repo no longer exists)
+ *
  * @copyright MIT
  * @author travelperk
  * @param oldObject to convert
@@ -60,12 +61,14 @@ const convertCase = (
 
 /**
  * Convert object to camelCase
+ *
  * @param obj Object to convert
  */
 export const toCamelCase = (obj: any) => convertCase(obj, camelCase);
 
 /**
  * Convert object to snake_case
+ *
  * @param obj Object to convert
  */
 export const toSnakeCase = (obj: any) => convertCase(obj, snakeCase);

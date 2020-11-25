@@ -10,18 +10,18 @@ import {
   Id,
   Ids,
   ImageUrl,
-  Notes,
+  Hash,
   Param,
 } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/app-config/app-config.service";
 import { Card } from "@shared/cards/cards.component";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, HasMany, Owner, Updater } from "./AssociationDecorators";
+import { creator, hasMany, owner, updater } from "./AssociationDecorators";
 import {
-  BawCollection,
-  BawDateTime,
-  BawImage,
-  BawPersistAttr,
+  bawCollection,
+  bawDateTime,
+  bawImage,
+  bawPersistAttr,
 } from "./AttributeDecorators";
 import type { Region } from "./Region";
 import type { Site } from "./Site";
@@ -38,7 +38,7 @@ export interface IProject extends HasAllUsers, HasDescription {
   ownerId?: Id;
   siteIds?: Ids | Id[];
   regionIds?: Ids | Id[];
-  notes?: Notes;
+  notes?: Hash;
 }
 
 /**
@@ -46,16 +46,16 @@ export interface IProject extends HasAllUsers, HasDescription {
  */
 export class Project extends AbstractModel implements IProject {
   public readonly kind = "Project";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly name?: Param;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
   public readonly imageUrl?: string;
-  @BawImage<Project>(`${assetRoot}/images/project/project_span4.png`, {
+  @bawImage<Project>(`${assetRoot}/images/project/project_span4.png`, {
     key: "imageUrl",
   })
   public readonly image: ImageUrl[];
@@ -63,33 +63,33 @@ export class Project extends AbstractModel implements IProject {
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
   public readonly ownerId?: Id;
-  @BawCollection({ persist: true })
+  @bawCollection({ persist: true })
   public readonly siteIds?: Ids;
-  @BawCollection({ persist: true })
+  @bawCollection({ persist: true })
   public readonly regionIds?: Ids;
-  @BawPersistAttr
-  public readonly notes?: Notes;
+  @bawPersistAttr
+  public readonly notes?: Hash;
 
   // Associations
-  @HasMany<Project, Site>(SHALLOW_SITE, "siteIds")
+  @hasMany<Project, Site>(SHALLOW_SITE, "siteIds")
   public sites?: Site[];
-  @HasMany<Project, Region>(SHALLOW_REGION, "regionIds")
+  @hasMany<Project, Region>(SHALLOW_REGION, "regionIds")
   public regions?: Region[];
-  @Creator<Project>()
+  @creator<Project>()
   public creator?: User;
-  @Updater<Project>()
+  @updater<Project>()
   public updater?: User;
-  @Owner<Project>()
+  @owner<Project>()
   public owner?: User;
 
-  constructor(project: IProject, injector?: Injector) {
+  public constructor(project: IProject, injector?: Injector) {
     super(project, injector);
   }
 

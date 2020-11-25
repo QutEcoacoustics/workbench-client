@@ -1,8 +1,8 @@
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { defaultUserIcon, isGuestPredicate } from "src/app/app.menus";
 
-export const securityRoute = StrongRoute.Base.add("security");
+export const securityRoute = StrongRoute.base.add("security");
 
 export const securityCategory: Category = {
   icon: defaultUserIcon,
@@ -10,7 +10,7 @@ export const securityCategory: Category = {
   route: securityRoute,
 };
 
-export const loginMenuItem = MenuRoute({
+export const loginMenuItem = menuRoute({
   icon: ["fas", "sign-in-alt"],
   label: "Log in",
   tooltip: () => "Log into the website",
@@ -19,7 +19,7 @@ export const loginMenuItem = MenuRoute({
   order: 2,
 });
 
-export const registerMenuItem = MenuRoute({
+export const registerMenuItem = menuRoute({
   icon: ["fas", "user-plus"],
   label: "Register",
   route: securityRoute.add("register"),
@@ -28,7 +28,7 @@ export const registerMenuItem = MenuRoute({
   order: 3,
 });
 
-export const confirmAccountMenuItem = MenuRoute({
+export const confirmAccountMenuItem = menuRoute({
   icon: ["fas", "envelope"],
   label: "Confirm account",
   route: securityRoute.add("confirmation"),
@@ -36,7 +36,7 @@ export const confirmAccountMenuItem = MenuRoute({
   parent: loginMenuItem,
 });
 
-export const resetPasswordMenuItem = MenuRoute({
+export const resetPasswordMenuItem = menuRoute({
   icon: ["fas", "key"],
   label: "Reset password",
   route: securityRoute.add("reset_password"),
@@ -44,7 +44,7 @@ export const resetPasswordMenuItem = MenuRoute({
   parent: loginMenuItem,
 });
 
-export const unlockAccountMenuItem = MenuRoute({
+export const unlockAccountMenuItem = menuRoute({
   icon: ["fas", "lock-open"],
   label: "Unlock account",
   route: securityRoute.add("unlock_account"),

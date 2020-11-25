@@ -1,12 +1,12 @@
 import { Component, OnInit } from "@angular/core";
+import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
 
 /**
  * Location Input
  */
 @Component({
-  // tslint:disable-next-line: component-selector
-  selector: "formly-password-confirmation-input",
+  selector: "baw-password-confirmation-input",
   template: `
     <div class="form-group">
       <label for="password">Password {{ to.required ? " *" : "" }}</label>
@@ -57,10 +57,10 @@ import { FieldType } from "@ngx-formly/core";
     <input type="hidden" [id]="field.id" [formControl]="formControl" />
   `,
 })
-// tslint:disable-next-line: component-class-suffix
-export class FormlyPasswordConfirmationInput
+export class PasswordConfirmationInputComponent
   extends FieldType
   implements OnInit {
+  public formControl: FormControl;
   public password = "";
   public passwordError: boolean;
   public confirmation = "";

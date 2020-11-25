@@ -9,7 +9,8 @@ button {
     color: black;
   }
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background-color: var(--theme-highlight-light);
   }
 }

@@ -7,9 +7,9 @@ import { IPageInfo } from "@helpers/page/pageInfo";
 import {
   AnyMenuItem,
   Category,
-  MenuAction,
-  MenuLink,
-  MenuRoute,
+  menuAction,
+  menuLink,
+  menuRoute,
   NavigableMenuItem,
 } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -22,8 +22,8 @@ import { ActionMenuComponent } from "./action-menu.component";
 describe("ActionMenuComponent", () => {
   let component: ActionMenuComponent;
   let fixture: ComponentFixture<ActionMenuComponent>;
-  const defaultRoute = StrongRoute.Base.add("/");
-  const defaultSelfLink = MenuRoute({
+  const defaultRoute = StrongRoute.base.add("/");
+  const defaultSelfLink = menuRoute({
     label: "Self Label",
     icon: ["fas", "question-circle"],
     tooltip: () => "Self Tooltip",
@@ -75,10 +75,10 @@ describe("ActionMenuComponent", () => {
 
   describe("category", () => {
     it("should display custom title", () => {
-      const route = StrongRoute.Base.add("/");
+      const route = StrongRoute.base.add("/");
 
       createTestBed({}, {
-        pageRoute: MenuRoute({
+        pageRoute: menuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -101,10 +101,10 @@ describe("ActionMenuComponent", () => {
     });
 
     it("should display custom icon", () => {
-      const route = StrongRoute.Base.add("/");
+      const route = StrongRoute.base.add("/");
 
       createTestBed({}, {
-        pageRoute: MenuRoute({
+        pageRoute: menuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -127,10 +127,10 @@ describe("ActionMenuComponent", () => {
     });
 
     it("should display default title", () => {
-      const route = StrongRoute.Base.add("/");
+      const route = StrongRoute.base.add("/");
 
       createTestBed({}, {
-        pageRoute: MenuRoute({
+        pageRoute: menuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -148,10 +148,10 @@ describe("ActionMenuComponent", () => {
     });
 
     it("should display default icon", () => {
-      const route = StrongRoute.Base.add("/");
+      const route = StrongRoute.base.add("/");
 
       createTestBed({}, {
-        pageRoute: MenuRoute({
+        pageRoute: menuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -171,10 +171,10 @@ describe("ActionMenuComponent", () => {
 
   describe("links", () => {
     it("should handle undefined links", () => {
-      const route = StrongRoute.Base.add("/");
+      const route = StrongRoute.base.add("/");
 
       createTestBed({}, {
-        pageRoute: MenuRoute({
+        pageRoute: menuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -199,10 +199,10 @@ describe("ActionMenuComponent", () => {
     });
 
     it("should handle no links", () => {
-      const route = StrongRoute.Base.add("/");
+      const route = StrongRoute.base.add("/");
 
       createTestBed({}, {
-        pageRoute: MenuRoute({
+        pageRoute: menuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -227,10 +227,10 @@ describe("ActionMenuComponent", () => {
     });
 
     it("should handle mixed links", () => {
-      const route = StrongRoute.Base.add("/");
+      const route = StrongRoute.base.add("/");
 
       createTestBed({}, {
-        pageRoute: MenuRoute({
+        pageRoute: menuRoute({
           label: "Custom Label",
           icon: ["fas", "question-circle"],
           tooltip: () => "Custom Tooltip",
@@ -243,19 +243,19 @@ describe("ActionMenuComponent", () => {
         },
         menus: {
           actions: List<AnyMenuItem>([
-            MenuRoute({
+            menuRoute({
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
               route,
             }),
-            MenuLink({
+            menuLink({
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
               uri: () => "http://brokenlink/",
             }),
-            MenuAction({
+            menuAction({
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
@@ -281,7 +281,7 @@ describe("ActionMenuComponent", () => {
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([
-            MenuRoute({
+            menuRoute({
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
@@ -311,13 +311,13 @@ describe("ActionMenuComponent", () => {
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([
-            MenuRoute({
+            menuRoute({
               label: "Custom Label 1",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip 1",
               route: defaultRoute,
             }),
-            MenuRoute({
+            menuRoute({
               label: "Custom Label 2",
               icon: ["fas", "tags"],
               tooltip: () => "Custom Tooltip 2",
@@ -353,7 +353,7 @@ describe("ActionMenuComponent", () => {
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([
-            MenuLink({
+            menuLink({
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
@@ -383,13 +383,13 @@ describe("ActionMenuComponent", () => {
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([
-            MenuLink({
+            menuLink({
               label: "Custom Label 1",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip 1",
               uri: () => "http://brokenlink/1",
             }),
-            MenuLink({
+            menuLink({
               label: "Custom Label 2",
               icon: ["fas", "tags"],
               tooltip: () => "Custom Tooltip 2",
@@ -425,7 +425,7 @@ describe("ActionMenuComponent", () => {
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([
-            MenuAction({
+            menuAction({
               label: "Custom Label",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip",
@@ -455,13 +455,13 @@ describe("ActionMenuComponent", () => {
         category: defaultCategory,
         menus: {
           actions: List<AnyMenuItem>([
-            MenuAction({
+            menuAction({
               label: "Custom Label 1",
               icon: ["fas", "tag"],
               tooltip: () => "Custom Tooltip 1",
               action: () => {},
             }),
-            MenuAction({
+            menuAction({
               label: "Custom Label 2",
               icon: ["fas", "tags"],
               tooltip: () => "Custom Tooltip 2",

@@ -28,15 +28,15 @@
           </a>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column name="Last Modified" width="150" maxWidth="150">
+      <ngx-datatable-column name="Last Modified" [width]="150" [maxWidth]="150">
         <ng-template let-value="value" ngx-datatable-cell-template>
           {{ value | toRelative }}
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column
         name="Permission"
-        width="100"
-        maxWidth="100"
+        [width]="100"
+        [maxWidth]="100"
         [sortable]="false"
       >
         <ng-template let-value="value" ngx-datatable-cell-template>
@@ -50,8 +50,8 @@
       </ngx-datatable-column>
       <ngx-datatable-column
         name="Annotation"
-        width="115"
-        maxWidth="115"
+        [width]="115"
+        [maxWidth]="115"
         [sortable]="false"
       >
         <ng-template let-value="value" ngx-datatable-cell-template>

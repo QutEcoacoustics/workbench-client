@@ -43,7 +43,7 @@ Third party contributions should be made by:
 
 Please do:
 
-- **DO** follow our style (enforced by tslint)
+- **DO** follow our style (enforced by eslint)
 - **DO** give priority to the current style of the project or file you're changing even if it diverges from the general
   guidelines.
 - **DO** include tests when adding new features. When fixing bugs, start with adding a test that highlights how the

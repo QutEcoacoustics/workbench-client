@@ -23,12 +23,13 @@ import {
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import { ItemInterface } from "@shared/items/item/item.component";
 import { List } from "immutable";
+import { takeUntil } from "rxjs/operators";
 
 export const myAccountActions = [
   myEditMenuItem,
@@ -48,7 +49,7 @@ const userKey = "user";
   styleUrls: ["./profile.component.scss"],
 })
 class MyProfileComponent
-  extends WithUnsubscribe(PageComponent)
+  extends withUnsubscribe(PageComponent)
   implements OnInit {
   public dataRequest = dataRequestMenuItem;
   public lastSeenAt: string;
@@ -66,15 +67,15 @@ class MyProfileComponent
     { icon: myAnnotationsMenuItem.icon, name: "Annotations", value: "..." },
   ]);
   protected indexes = {
-    PROJECTS: 0,
-    TAGS: 1,
-    BOOKMARKS: 2,
-    SITES: 3,
-    POINTS: 4,
-    ANNOTATIONS: 5,
+    projects: 0,
+    tags: 1,
+    bookmarks: 2,
+    sites: 3,
+    points: 4,
+    annotations: 5,
   };
 
-  constructor(
+  public constructor(
     protected route: ActivatedRoute,
     protected audioEventsApi: ShallowAudioEventsService,
     protected bookmarksApi: BookmarksService,
@@ -99,6 +100,7 @@ class MyProfileComponent
 
   /**
    * Update user details
+   *
    * @param user User model
    */
   protected updateUserProfile(user: User) {
@@ -110,40 +112,54 @@ class MyProfileComponent
 
   /**
    * Retrieve user statistics and update page
+   *
    * @param user User model
    */
   protected updateStatistics(user: User) {
     // Projects
-    this.projectsApi.filterByCreator({}, user).subscribe(
-      (models) => this.extractTotal(this.indexes.PROJECTS, models),
-      () => this.handleError(this.indexes.PROJECTS)
-    );
+    this.projectsApi
+      .filterByCreator({}, user)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (models) => this.extractTotal(this.indexes.projects, models),
+        () => this.handleError(this.indexes.projects)
+      );
 
     // Bookmarks
-    this.bookmarksApi.filterByCreator({}, user).subscribe(
-      (models) => this.extractTotal(this.indexes.BOOKMARKS, models),
-      () => this.handleError(this.indexes.BOOKMARKS)
-    );
+    this.bookmarksApi
+      .filterByCreator({}, user)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (models) => this.extractTotal(this.indexes.bookmarks, models),
+        () => this.handleError(this.indexes.bookmarks)
+      );
 
     // Sites
-    this.sitesApi.filterByCreator({}, user).subscribe(
-      (models) => this.extractTotal(this.indexes.SITES, models),
-      () => this.handleError(this.indexes.SITES)
-    );
+    this.sitesApi
+      .filterByCreator({}, user)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (models) => this.extractTotal(this.indexes.sites, models),
+        () => this.handleError(this.indexes.sites)
+      );
 
     // Points
     this.sitesApi
       .filterByCreator({ filter: { regionId: { notEqual: null } } }, user)
+      .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (models) => this.extractTotal(this.indexes.POINTS, models),
-        () => this.handleError(this.indexes.POINTS)
+        (models) => this.extractTotal(this.indexes.points, models),
+        () => this.handleError(this.indexes.points)
       );
 
     // Annotations
-    this.audioEventsApi.filterByCreator({}, user).subscribe(
-      (models) => this.extractTotal(this.indexes.ANNOTATIONS, models),
-      () => this.handleError(this.indexes.ANNOTATIONS)
-    );
+    this.audioEventsApi
+      .filterByCreator({}, user)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (models) => this.extractTotal(this.indexes.annotations, models),
+        () => this.handleError(this.indexes.annotations)
+      );
 
     // Tags
     this.tagsApi
@@ -154,17 +170,19 @@ class MyProfileComponent
         },
         user
       )
+      .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (models) => {
-          this.extractTotal(this.indexes.TAGS, models);
+          this.extractTotal(this.indexes.tags, models);
           this.tags = models;
         },
-        () => this.handleError(this.indexes.TAGS)
+        () => this.handleError(this.indexes.tags)
       );
   }
 
   /**
    * Extract the maximum number of models a user has access to
+   *
    * @param index Statistic index in userStatistics array
    * @param models Model list
    */
@@ -187,10 +205,10 @@ class MyProfileComponent
   }
 }
 
-MyProfileComponent.LinkComponentToPageInfo({
+MyProfileComponent.linkComponentToPageInfo({
   category: myAccountCategory,
   menus: { actions: List(myAccountActions) },
   resolvers: { [userKey]: userResolvers.show },
-}).AndMenuRoute(myAccountMenuItem);
+}).andMenuRoute(myAccountMenuItem);
 
 export { MyProfileComponent };

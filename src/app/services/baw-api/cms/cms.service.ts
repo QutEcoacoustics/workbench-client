@@ -14,11 +14,11 @@ import { Observable } from "rxjs";
  * what pages are available.
  */
 export enum CMS {
-  HOME = "",
-  CREDITS = "credits",
-  DATA_UPLOAD = "data_upload",
-  ETHICS = "ethics",
-  PRIVACY = "privacy",
+  home = "",
+  credits = "credits",
+  dataUpload = "data_upload",
+  ethics = "ethics",
+  privacy = "privacy",
 }
 
 const page = (x?: CMS) => x;
@@ -26,7 +26,7 @@ const endpoint = stringTemplate`/cms/${page}`;
 
 @Injectable()
 export class CmsService {
-  constructor(
+  public constructor(
     private http: HttpClient,
     @Inject(API_ROOT) private apiRoot: string
   ) {}

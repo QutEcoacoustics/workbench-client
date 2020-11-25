@@ -1,4 +1,4 @@
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { isAdminPredicate } from "src/app/app.menus";
 import { adminDashboardMenuItem, adminRoute } from "../admin.menus";
 
@@ -10,7 +10,7 @@ export const adminOrphansCategory: Category = {
   route: adminOrphansRoute,
 };
 
-export const adminOrphansMenuItem = MenuRoute({
+export const adminOrphansMenuItem = menuRoute({
   icon: adminOrphansCategory.icon,
   label: "Orphan Sites",
   route: adminOrphansCategory.route,
@@ -19,7 +19,7 @@ export const adminOrphansMenuItem = MenuRoute({
   predicate: isAdminPredicate,
 });
 
-export const adminOrphanMenuItem = MenuRoute({
+export const adminOrphanMenuItem = menuRoute({
   icon: ["fas", "map-marker-alt"],
   label: "Orphan Site",
   route: adminOrphansMenuItem.route.add(":siteId"),

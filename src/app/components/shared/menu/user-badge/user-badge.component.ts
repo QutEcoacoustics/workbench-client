@@ -73,5 +73,5 @@ export class UserBadgeComponent {
   @Input() public label: string;
   @Input() public user: User;
   @Input() public timestamp?: DateTime;
-  public thumbnail = ImageSizes.SMALL;
+  public thumbnail = ImageSizes.small;
 }

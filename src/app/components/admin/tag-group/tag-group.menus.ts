@@ -1,4 +1,4 @@
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import {
   defaultDeleteIcon,
   defaultEditIcon,
@@ -15,7 +15,7 @@ export const adminTagGroupsCategory: Category = {
   route: adminTagGroupsRoute,
 };
 
-export const adminTagGroupsMenuItem = MenuRoute({
+export const adminTagGroupsMenuItem = menuRoute({
   icon: ["fas", "tags"],
   label: "Tag Group",
   route: adminTagGroupsRoute,
@@ -24,7 +24,7 @@ export const adminTagGroupsMenuItem = MenuRoute({
   predicate: isAdminPredicate,
 });
 
-export const adminNewTagGroupMenuItem = MenuRoute({
+export const adminNewTagGroupMenuItem = menuRoute({
   icon: defaultNewIcon,
   label: "New Tag Group",
   route: adminTagGroupsRoute.add("new"),
@@ -35,7 +35,7 @@ export const adminNewTagGroupMenuItem = MenuRoute({
 
 const adminTagGroupRoute = adminTagGroupsRoute.add(":tagGroupId");
 
-export const adminEditTagGroupMenuItem = MenuRoute({
+export const adminEditTagGroupMenuItem = menuRoute({
   icon: defaultEditIcon,
   label: "Edit Tag Group",
   route: adminTagGroupRoute.add("edit"),
@@ -44,7 +44,7 @@ export const adminEditTagGroupMenuItem = MenuRoute({
   predicate: isAdminPredicate,
 });
 
-export const adminDeleteTagGroupMenuItem = MenuRoute({
+export const adminDeleteTagGroupMenuItem = menuRoute({
   icon: defaultDeleteIcon,
   label: "Delete Tag Group",
   route: adminTagGroupRoute.add("delete"),

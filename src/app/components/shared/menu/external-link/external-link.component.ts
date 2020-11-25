@@ -6,7 +6,7 @@ import {
   OnChanges,
 } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { MenuLink } from "@interfaces/menusInterfaces";
+import { MenuLink, menuLink } from "@interfaces/menusInterfaces";
 import { Placement } from "@ng-bootstrap/ng-bootstrap";
 
 /**
@@ -35,7 +35,7 @@ export class MenuExternalLinkComponent implements OnChanges {
   @Input() public uri: string;
   public href: string;
 
-  constructor(@Inject(API_ROOT) private apiRoot: string) {}
+  public constructor(@Inject(API_ROOT) private apiRoot: string) {}
 
   public ngOnChanges() {
     // Prepend apiRoot to relative links

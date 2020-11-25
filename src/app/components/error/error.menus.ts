@@ -1,8 +1,8 @@
-import { MenuRoute } from "@interfaces/menusInterfaces";
+import { menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 
-export const pageNotFoundRoute = StrongRoute.Base.add("**");
-export const pageNotFoundMenuItem = MenuRoute({
+export const pageNotFoundRoute = StrongRoute.base.add("**");
+export const pageNotFoundMenuItem = menuRoute({
   icon: ["fas", "exclamation-triangle"],
   label: "Page Not Found",
   route: pageNotFoundRoute,

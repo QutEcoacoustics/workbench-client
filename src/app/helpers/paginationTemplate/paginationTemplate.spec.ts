@@ -23,10 +23,10 @@ const pageKey = "page";
 
 @Component({
   selector: "baw-test",
-  template: ``,
+  template: "",
 })
 class MockComponent extends PaginationTemplate<Project> {
-  constructor(
+  public constructor(
     router: Router,
     route: ActivatedRoute,
     config: NgbPaginationConfig,

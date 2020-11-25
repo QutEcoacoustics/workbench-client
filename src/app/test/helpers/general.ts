@@ -10,6 +10,7 @@ export const testStepInterval = 0;
 
 /**
  * Create an observable which will return after a number of steps
+ *
  * @param subject Subject to update
  * @param callback Return value for subject
  * @param isError Call `subject.error()`
@@ -29,9 +30,12 @@ export function nStepObservable<T>(
           return waitOne();
         }
 
-        isError
-          ? subject.error(callback() as ApiErrorDetails)
-          : subject.next(callback() as T);
+        if (isError) {
+          subject.error(callback() as ApiErrorDetails);
+        } else {
+          subject.next(callback() as T);
+        }
+
         resolve();
       }, testStepInterval);
     }

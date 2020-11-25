@@ -5,8 +5,8 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ISavedSearch, SavedSearch } from "@models/SavedSearch";
 import { Observable } from "rxjs";
 import {
-  Empty,
-  Filter,
+  emptyParam,
+  filterParam,
   id,
   IdOr,
   IdParamOptional,
@@ -21,7 +21,7 @@ const endpoint = stringTemplate`/saved_searches/${savedSearchId}${option}`;
 
 @Injectable()
 export class SavedSearchesService extends ImmutableApi<SavedSearch> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -30,19 +30,19 @@ export class SavedSearchesService extends ImmutableApi<SavedSearch> {
   }
 
   public list(): Observable<SavedSearch[]> {
-    return this.apiList(endpoint(Empty, Empty));
+    return this.apiList(endpoint(emptyParam, emptyParam));
   }
   public filter(filters: Filters<ISavedSearch>): Observable<SavedSearch[]> {
-    return this.apiFilter(endpoint(Empty, Filter), filters);
+    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<SavedSearch>): Observable<SavedSearch> {
-    return this.apiShow(endpoint(model, Empty));
+    return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: SavedSearch): Observable<SavedSearch> {
-    return this.apiCreate(endpoint(Empty, Empty), model);
+    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
   }
   public destroy(model: IdOr<SavedSearch>): Observable<SavedSearch | void> {
-    return this.apiDestroy(endpoint(model, Empty));
+    return this.apiDestroy(endpoint(model, emptyParam));
   }
 }
 

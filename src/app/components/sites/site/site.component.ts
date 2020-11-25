@@ -32,7 +32,7 @@ class SiteComponent extends PageComponent implements OnInit {
   public marker: List<MapMarkerOption>;
   public taggings: Tagging[];
 
-  constructor(
+  public constructor(
     private audioEventsApi: ShallowAudioEventsService,
     private audioRecordingsApi: AudioRecordingsService
   ) {

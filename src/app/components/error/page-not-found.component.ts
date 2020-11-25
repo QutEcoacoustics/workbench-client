@@ -5,11 +5,11 @@ import { pageNotFoundMenuItem } from "./error.menus";
 
 @Component({
   selector: "baw-page-not-found",
-  template: `<div>Not Found! TODO: make me better!</div>`,
+  template: "<div>Not Found! TODO: make me better!</div>",
 })
 class PageNotFoundComponent extends PageComponent {}
 
-PageNotFoundComponent.LinkComponentToPageInfo({
+PageNotFoundComponent.linkComponentToPageInfo({
   category: homeCategory,
-}).AndMenuRoute(pageNotFoundMenuItem);
+}).andMenuRoute(pageNotFoundMenuItem);
 export { PageNotFoundComponent };

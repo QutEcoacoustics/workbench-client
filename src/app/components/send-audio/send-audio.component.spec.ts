@@ -15,5 +15,5 @@ describe("SendAudioComponent", () => {
 
   beforeEach(() => (spectator = createComponent({ detectChanges: false })));
 
-  assertCms<SendAudioComponent>(() => spectator, CMS.DATA_UPLOAD);
+  assertCms<SendAudioComponent>(() => spectator, CMS.dataUpload);
 });

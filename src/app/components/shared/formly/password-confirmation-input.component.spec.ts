@@ -8,14 +8,14 @@ import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule, FormlyTemplateOptions } from "@ngx-formly/core";
 import { formlyRoot } from "src/app/app.helper";
-import { FormlyPasswordConfirmationInput } from "./password-confirmation-input.component";
+import { PasswordConfirmationInputComponent } from "./password-confirmation-input.component";
 
 describe("FormlyPasswordConfirmationInput", () => {
   let model: { password?: string };
   let formGroup: FormGroup;
-  let spectator: SpectatorHost<FormlyPasswordConfirmationInput>;
+  let spectator: SpectatorHost<PasswordConfirmationInputComponent>;
   const createHost = createHostFactory({
-    component: FormlyPasswordConfirmationInput,
+    component: PasswordConfirmationInputComponent,
     imports: [
       FormsModule,
       ReactiveFormsModule,
@@ -51,7 +51,7 @@ describe("FormlyPasswordConfirmationInput", () => {
     spectator = createHost(
       `
       <form [formGroup]="formGroup">
-        <formly-password-confirmation-input></formly-password-confirmation-input>
+        <baw-password-confirmation-input></baw-password-confirmation-input>
       </form>
       `,
       {

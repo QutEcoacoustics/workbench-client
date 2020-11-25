@@ -8,7 +8,7 @@ import {
 import { ActivatedRoute, Params } from "@angular/router";
 import { SecurityService } from "@baw-api/security/security.service";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { WithUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
   AnyMenuItem,
   isButton,
@@ -32,7 +32,7 @@ import { WidgetMenuItem } from "./widget/widgetItem";
   templateUrl: "./menu.component.html",
   styleUrls: ["./menu.component.scss"],
 })
-export class MenuComponent extends WithUnsubscribe() implements OnInit {
+export class MenuComponent extends withUnsubscribe() implements OnInit {
   @Input() public title?: LabelAndIcon;
   @Input() public links: List<AnyMenuItem>;
   @Input() public menuType: "action" | "secondary";
@@ -49,7 +49,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
   public isExternalLink = isExternalLink;
   public isAction = isButton;
 
-  constructor(
+  public constructor(
     private api: SecurityService,
     private route: ActivatedRoute,
     private componentFactoryResolver: ComponentFactoryResolver
@@ -96,6 +96,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
 
   /**
    * Calculate the indentation of a secondary link item
+   *
    * @param link Link to calculate padding for
    */
   public calculateIndentation(link: AnyMenuItem) {
@@ -128,6 +129,7 @@ export class MenuComponent extends WithUnsubscribe() implements OnInit {
 
   /**
    * Sort function for list of menu items
+   *
    * @param a First menu item
    * @param b Second menu item
    */

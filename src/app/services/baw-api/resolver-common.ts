@@ -39,7 +39,7 @@ export abstract class BawResolver<
   // Resolver output model name
   T = { customResolver: string }
 > {
-  constructor(
+  public constructor(
     protected deps: Type<A>[],
     protected id?: string,
     protected ids?: string[]
@@ -51,10 +51,11 @@ export abstract class BawResolver<
     const resolverFn = this.resolverFn;
 
     class Resolver implements Resolve<ResolvedModel<O>> {
-      constructor(private api: A) {}
+      public constructor(private api: A) {}
 
       /**
        * Resolve the model
+       *
        * @param route Route Snapshot
        */
       public resolve(
@@ -70,9 +71,9 @@ export abstract class BawResolver<
         return resolverFn(route, this.api, modelId, args).pipe(
           map((model) => ({ model })), // Modify output to match ResolvedModel interface
           take(1), // Only take first response
-          catchError((error: ApiErrorDetails) => {
-            return of({ error }); // Modify output to match ResolvedModel interface
-          })
+          catchError(
+            (error: ApiErrorDetails) => of({ error }) // Modify output to match ResolvedModel interface
+          )
         );
       }
     }
@@ -82,6 +83,7 @@ export abstract class BawResolver<
 
   /**
    * Create providers required for app modules
+   *
    * @param name Resolver name
    * @param resolver Resolver class
    * @param deps Resolver dependencies
@@ -94,6 +96,7 @@ export abstract class BawResolver<
 
   /**
    * Create resolver api request
+   *
    * @param route Activated Route Snapshot
    * @param api Baw api service
    * @param id Model id
@@ -116,7 +119,7 @@ export class Resolvers<
   M extends AbstractModel,
   A extends ApiList<M, any[]> & ApiShow<M, any[], IdOr<M>>
 > {
-  constructor(
+  public constructor(
     private deps: Type<A>[],
     private id?: string,
     private ids?: string[]
@@ -124,6 +127,7 @@ export class Resolvers<
 
   /**
    * Create providers
+   *
    * @param name Name of provider
    */
   public create(name: string) {
@@ -148,7 +152,7 @@ export class ListResolver<
   M extends AbstractModel,
   A extends ApiList<M, any[]>
 > extends BawResolver<M[], M, A, { list: string }> {
-  constructor(deps: Type<A>[], ids?: string[]) {
+  public constructor(deps: Type<A>[], ids?: string[]) {
     super(deps, undefined, ids);
   }
 
@@ -183,7 +187,7 @@ export class ShowResolver<
   M extends AbstractModel,
   A extends ApiShow<M, any[], IdOr<M>>
 > extends BawResolver<M, M, A, { show: string }> {
-  constructor(deps: Type<A>[], id?: string, ids?: string[]) {
+  public constructor(deps: Type<A>[], id?: string, ids?: string[]) {
     super(deps, id, ids);
   }
 
@@ -230,6 +234,7 @@ export interface ResolvedModel<
 
 /**
  * Convert URL ID param to Id type
+ *
  * @param id ID parameter
  */
 function convertToId(id: string): Id {
@@ -239,6 +244,7 @@ function convertToId(id: string): Id {
 /**
  * Verify all resolvers resolve without errors. Returns object containing all
  * resolved models using the resolver key as the object key.
+ *
  * @param data Page Data
  */
 export function retrieveResolvers(data: PageInfo): ResolvedModelList | false {

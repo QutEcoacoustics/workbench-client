@@ -2,7 +2,7 @@ import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
-import { WithFormCheck } from "@guards/form/form.guard";
+import { withFormCheck } from "@guards/form/form.guard";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -13,9 +13,9 @@ import { PageComponent } from "../page/pageComponent";
 import { PageInfo } from "../page/pageInfo";
 
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class FormTemplate<M extends AbstractModel>
-  extends WithFormCheck(PageComponent)
+  extends withFormCheck(PageComponent)
   implements OnInit {
   /**
    * Form Submission Function Loading
@@ -44,6 +44,7 @@ export abstract class FormTemplate<M extends AbstractModel>
 
   /**
    * Customize form template
+   *
    * @param notifications Notifications service
    * @param route Activated route service
    * @param router Router service
@@ -51,7 +52,7 @@ export abstract class FormTemplate<M extends AbstractModel>
    * @param successMsg Success message
    * @param errorMsg Error message
    */
-  constructor(
+  public constructor(
     protected notifications: ToastrService,
     protected route: ActivatedRoute,
     protected router: Router,
@@ -67,9 +68,7 @@ export abstract class FormTemplate<M extends AbstractModel>
   public ngOnInit() {
     // Override form checking
     if (!this.hasFormCheck) {
-      this.isFormTouched = () => {
-        return false;
-      };
+      this.isFormTouched = () => false;
 
       this.resetForms = () => {};
     }
@@ -108,6 +107,7 @@ export abstract class FormTemplate<M extends AbstractModel>
 
   /**
    * Form submit handler
+   *
    * @param event Form submission
    */
   public submit(event: Partial<M>) {
@@ -139,6 +139,7 @@ export abstract class FormTemplate<M extends AbstractModel>
 
   /**
    * Redirect user after successful submission
+   *
    * @param model Model
    */
   protected redirectUser(model: M): void {
@@ -147,6 +148,7 @@ export abstract class FormTemplate<M extends AbstractModel>
 
   /**
    * Redirection path after successful submission
+   *
    * @param model Model
    */
   protected redirectionPath(model: M): string {
@@ -155,6 +157,7 @@ export abstract class FormTemplate<M extends AbstractModel>
 
   /**
    * API Action to perform
+   *
    * @param model Form model submission (JSON only, convert to model)
    */
   protected abstract apiAction(model: Partial<M>): Observable<M | void>;
@@ -162,6 +165,7 @@ export abstract class FormTemplate<M extends AbstractModel>
 
 /**
  * Default success message on form submission
+ *
  * @param name Model name
  */
 export function defaultSuccessMsg(
@@ -173,6 +177,7 @@ export function defaultSuccessMsg(
 
 /**
  * Default error message on form submission
+ *
  * @param err API error details
  */
 export function defaultErrorMsg(err: ApiErrorDetails): string {
@@ -181,6 +186,7 @@ export function defaultErrorMsg(err: ApiErrorDetails): string {
 
 /**
  * Error message on form submission with additional information
+ *
  * @param err API error details
  * @param info API error info handlers
  */

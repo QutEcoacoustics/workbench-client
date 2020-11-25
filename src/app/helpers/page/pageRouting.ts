@@ -9,10 +9,11 @@ import { getPageInfo, PageComponent } from "./pageComponent";
 
 /**
  * Dynamically create routes for an angular component
+ *
  * @param page Angular component page info
  * @returns List of routes
  */
-export function GetRouteConfigForPage(
+export function getRouteConfigForPage(
   component: Type<PageComponent>,
   config: Partial<Route>
 ) {

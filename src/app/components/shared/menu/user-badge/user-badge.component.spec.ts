@@ -130,7 +130,7 @@ describe("UserBadgeComponent", () => {
     it("should display custom image", () => {
       const imageIndex = 1;
       const user = new User({ ...generateUser(), userName: "custom username" });
-      user.image[imageIndex].size = ImageSizes.SMALL;
+      user.image[imageIndex].size = ImageSizes.small;
       setup({ user });
       spec.detectChanges();
       assertImage(

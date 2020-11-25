@@ -25,7 +25,7 @@ import { SecurityService } from "./security/security.service";
  */
 @Injectable()
 export class BawApiInterceptor implements HttpInterceptor {
-  constructor(
+  public constructor(
     @Inject(API_ROOT) private apiRoot: string,
     public api: SecurityService
   ) {}
@@ -34,6 +34,7 @@ export class BawApiInterceptor implements HttpInterceptor {
    * Intercept http requests and handle appending login tokens and errors.
    * This interceptor also handles converting the variable names in json objects
    * from snake case to camel case, and back again for outgoing and ingoing requests.
+   *
    * @param request Http Request
    * @param next Function to be run after interceptor
    */
@@ -49,7 +50,9 @@ export class BawApiInterceptor implements HttpInterceptor {
     if (request.responseType !== "text") {
       request = request.clone({
         setHeaders: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           Accept: "application/json",
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           "Content-Type": "application/json",
         },
       });
@@ -59,6 +62,7 @@ export class BawApiInterceptor implements HttpInterceptor {
     if (this.api.isLoggedIn()) {
       request = request.clone({
         setHeaders: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           Authorization: `Token token="${this.api.getLocalUser().authToken}"`,
         },
       });
@@ -92,17 +96,18 @@ export class BawApiInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       // Convert incoming data
-      map((response) => {
-        if (response instanceof HttpResponse) {
-          return response.clone({ body: toCamelCase(response.body) });
-        }
-      }),
+      map((response) =>
+        response instanceof HttpResponse
+          ? response.clone({ body: toCamelCase(response.body) })
+          : response
+      ),
       catchError(this.handleError)
     );
   }
 
   /**
    * Writes error to console and throws error
+   *
    * @param response HTTP Error
    * @throws Observable<never>
    */
@@ -147,6 +152,7 @@ interface ApiErrorResponse extends HttpErrorResponse {
 
 /**
  * Determine if error response has already been processed
+ *
  * @param errorResponse Error response
  */
 function isErrorDetails(
@@ -160,6 +166,7 @@ function isErrorDetails(
 
 /**
  * Determine if error response is from API
+ *
  * @param errorResponse Error response
  */
 function isErrorResponse(

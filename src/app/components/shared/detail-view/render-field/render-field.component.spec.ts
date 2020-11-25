@@ -50,7 +50,7 @@ describe("RenderFieldComponent", () => {
 
   function setup(value: ModelView) {
     spec = createComponent(
-      `<baw-render-field [value]="value"></baw-render-field>`,
+      '<baw-render-field [value]="value"></baw-render-field>',
       { detectChanges: false, hostProps: { value } }
     );
   }

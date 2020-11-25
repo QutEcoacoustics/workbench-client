@@ -30,10 +30,10 @@ class TheirSitesComponent extends MySitesComponent {
   }
 }
 
-TheirSitesComponent.LinkComponentToPageInfo({
+TheirSitesComponent.linkComponentToPageInfo({
   category: theirProfileCategory,
   menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
   resolvers: { [accountKey]: accountResolvers.show },
-}).AndMenuRoute(theirSitesMenuItem);
+}).andMenuRoute(theirSitesMenuItem);
 
 export { TheirSitesComponent };

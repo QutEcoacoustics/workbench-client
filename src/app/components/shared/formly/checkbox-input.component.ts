@@ -7,8 +7,7 @@ import { FieldType } from "@ngx-formly/core";
  * ! Warning, test manually after changes
  */
 @Component({
-  // tslint:disable-next-line: component-selector
-  selector: "formly-checkbox-input",
+  selector: "baw-checkbox-input",
   template: `
     <div
       style="width: 24px;"
@@ -25,7 +24,6 @@ import { FieldType } from "@ngx-formly/core";
     </div>
   `,
 })
-// tslint:disable-next-line: component-class-suffix
-export class FormlyCheckboxInput extends FieldType {
+export class CheckboxInputComponent extends FieldType {
   public formControl: FormControl;
 }

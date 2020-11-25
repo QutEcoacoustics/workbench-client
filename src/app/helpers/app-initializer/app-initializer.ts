@@ -3,10 +3,10 @@ import { XOR } from "@helpers/advancedTypes";
 import { NavigableMenuItem } from "@interfaces/menusInterfaces";
 import { environment } from "src/environments/environment";
 
-export let API_CONFIG = new InjectionToken<Promise<Configuration>>(
+export const API_CONFIG = new InjectionToken<Promise<Configuration>>(
   "baw.api.config"
 );
-export let API_ROOT = new InjectionToken<string>("baw.api.root");
+export const API_ROOT = new InjectionToken<string>("baw.api.root");
 
 /**
  * App Initializer class.
@@ -15,7 +15,7 @@ export let API_ROOT = new InjectionToken<string>("baw.api.root");
  */
 @Injectable()
 export class AppInitializer {
-  constructor() {}
+  public constructor() {}
 
   public static initializerFactory(
     @Inject(API_CONFIG)
@@ -84,13 +84,14 @@ export class Configuration implements Configuration {
   public environment: Environment;
   public values: Values;
 
-  constructor(configuration: Partial<Configuration>) {
+  public constructor(configuration: Partial<Configuration>) {
     Object.assign(this, configuration);
   }
 }
 
 /**
  * Determine if a variable is of the Configuration type
+ *
  * @param config Variable to evaluate
  */
 export function isConfiguration(
@@ -108,6 +109,7 @@ type Links = XOR<HeaderLink, HeaderDropDownLink>;
 
 /**
  * Determine if a variable is of the HeaderLink type
+ *
  * @param link Variable to evaluate
  */
 export function isHeaderLink(link: Links): link is HeaderLink {

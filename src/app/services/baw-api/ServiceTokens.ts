@@ -75,7 +75,7 @@ export class ServiceToken<
   public params: Params;
   public token: InjectionToken<Service>;
 
-  constructor(_desc: string) {
+  public constructor(_desc: string) {
     this.kind = (_desc as unknown) as Service;
     this.token = new InjectionToken<Service>(_desc);
   }

@@ -9,7 +9,7 @@
   </small>
 
   <div class="clearfix">
-    <form [formGroup]="form" (ngSubmit)="submit(model)">
+    <form [formGroup]="form" (ngSubmit)="onSubmit(model)">
       <!-- Spinner -->
       <ng-container *ngIf="!fields">
         <h4 class="text-center">Loading</h4>

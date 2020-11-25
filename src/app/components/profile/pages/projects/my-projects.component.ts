@@ -28,7 +28,7 @@ class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   ];
   public sortKeys = { project: "name" };
 
-  constructor(api: ProjectsService, route: ActivatedRoute) {
+  public constructor(api: ProjectsService, route: ActivatedRoute) {
     super(
       api,
       (projects) =>
@@ -46,11 +46,11 @@ class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   }
 }
 
-MyProjectsComponent.LinkComponentToPageInfo({
+MyProjectsComponent.linkComponentToPageInfo({
   category: myAccountCategory,
   menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
-}).AndMenuRoute(myProjectsMenuItem);
+}).andMenuRoute(myProjectsMenuItem);
 
 export { MyProjectsComponent };
 

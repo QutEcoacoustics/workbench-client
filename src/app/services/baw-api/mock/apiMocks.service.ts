@@ -21,21 +21,15 @@ export const MOCK = new ServiceToken<MockStandardApiService>(
   "STANDARD_API_SERVICE"
 );
 
-const multipleModels = (...args: any[]) => {
-  return new Observable<MockModel[]>();
-};
+const multipleModels = (...args: any[]) => new Observable<MockModel[]>();
 
-const singleModel = (...args: any[]) => {
-  return new Observable<MockModel>();
-};
+const singleModel = (...args: any[]) => new Observable<MockModel>();
 
-const deleteMock = (...args: any[]) => {
-  return new Observable<MockModel | void>();
-};
+const deleteMock = (...args: any[]) => new Observable<MockModel | void>();
 
 @Injectable()
 export class MockStandardApiService extends StandardApi<MockModel> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -53,7 +47,7 @@ export class MockStandardApiService extends StandardApi<MockModel> {
 
 @Injectable()
 export class MockImmutableApiService extends ImmutableApi<MockModel> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -69,10 +63,8 @@ export class MockImmutableApiService extends ImmutableApi<MockModel> {
 }
 
 @Injectable()
-export class MockNonDestructibleApiService extends NonDestructibleApi<
-  MockModel
-> {
-  constructor(
+export class MockNonDestructibleApiService extends NonDestructibleApi<MockModel> {
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -89,7 +81,7 @@ export class MockNonDestructibleApiService extends NonDestructibleApi<
 
 @Injectable()
 export class MockReadAndCreateApiService extends ReadAndCreateApi<MockModel> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -105,7 +97,7 @@ export class MockReadAndCreateApiService extends ReadAndCreateApi<MockModel> {
 
 @Injectable()
 export class MockReadAndUpdateApiService extends ReadAndUpdateApi<MockModel> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -121,7 +113,7 @@ export class MockReadAndUpdateApiService extends ReadAndUpdateApi<MockModel> {
 
 @Injectable()
 export class MockReadonlyApiService extends ReadonlyApi<MockModel> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -135,9 +127,10 @@ export class MockReadonlyApiService extends ReadonlyApi<MockModel> {
 }
 
 @Injectable()
-export class MockShowApiService extends BawApiService<MockModel>
+export class MockShowApiService
+  extends BawApiService<MockModel>
   implements ApiShow<MockModel, [], IdOr<MockModel>> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector
@@ -149,9 +142,10 @@ export class MockShowApiService extends BawApiService<MockModel>
 }
 
 @Injectable()
-export class MockFilterApiService extends BawApiService<MockModel>
+export class MockFilterApiService
+  extends BawApiService<MockModel>
   implements ApiFilter<MockModel> {
-  constructor(
+  public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     injector: Injector

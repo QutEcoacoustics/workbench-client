@@ -40,7 +40,7 @@ class AdminTagGroupsDeleteComponent
   implements OnInit {
   public title: string;
 
-  constructor(
+  public constructor(
     private api: TagGroupsService,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -67,12 +67,12 @@ class AdminTagGroupsDeleteComponent
   }
 }
 
-AdminTagGroupsDeleteComponent.LinkComponentToPageInfo({
+AdminTagGroupsDeleteComponent.linkComponentToPageInfo({
   category: adminTagGroupsCategory,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
   },
   resolvers: { [tagGroupKey]: tagGroupResolvers.show },
-}).AndMenuRoute(adminDeleteTagGroupMenuItem);
+}).andMenuRoute(adminDeleteTagGroupMenuItem);
 
 export { AdminTagGroupsDeleteComponent };

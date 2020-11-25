@@ -1,4 +1,4 @@
-import { Category, MenuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { AbstractModel } from "@models/AbstractModel";
 import type { User } from "@models/User";
@@ -14,7 +14,7 @@ function getUserName(user: AbstractModel) {
   return user ? (user as User).userName : "unknown";
 }
 
-export const myAccountRoute = StrongRoute.Base.add("my_account");
+export const myAccountRoute = StrongRoute.base.add("my_account");
 
 /**
  * My Account Menus
@@ -25,7 +25,7 @@ export const myAccountCategory: Category = {
   route: myAccountRoute,
 };
 
-export const myAccountMenuItem = MenuRoute({
+export const myAccountMenuItem = menuRoute({
   icon: defaultUserIcon,
   label: "My Profile",
   order: 2,
@@ -34,7 +34,7 @@ export const myAccountMenuItem = MenuRoute({
   tooltip: () => "View profile",
 });
 
-export const myEditMenuItem = MenuRoute({
+export const myEditMenuItem = menuRoute({
   icon: defaultEditIcon,
   label: "Edit my profile",
   parent: myAccountMenuItem,
@@ -43,7 +43,7 @@ export const myEditMenuItem = MenuRoute({
   tooltip: () => "Change the details for your profile",
 });
 
-export const myPasswordMenuItem = MenuRoute({
+export const myPasswordMenuItem = menuRoute({
   icon: ["fas", "key"],
   label: "Edit my password",
   parent: myAccountMenuItem,
@@ -52,7 +52,7 @@ export const myPasswordMenuItem = MenuRoute({
   tooltip: () => "Change the password for your profile",
 });
 
-export const myDeleteMenuItem = MenuRoute({
+export const myDeleteMenuItem = menuRoute({
   icon: defaultDeleteIcon,
   label: "Cancel my account",
   parent: myAccountMenuItem,
@@ -61,7 +61,7 @@ export const myDeleteMenuItem = MenuRoute({
   tooltip: () => "Remove your account from this website",
 });
 
-export const myProjectsMenuItem = MenuRoute({
+export const myProjectsMenuItem = menuRoute({
   icon: ["fas", "globe-asia"],
   label: "My Projects",
   parent: myAccountMenuItem,
@@ -70,7 +70,7 @@ export const myProjectsMenuItem = MenuRoute({
   tooltip: (user) => `Projects ${getUserName(user)} can access`,
 });
 
-export const mySitesMenuItem = MenuRoute({
+export const mySitesMenuItem = menuRoute({
   icon: ["fas", "map-marker-alt"],
   label: "My Sites",
   parent: myAccountMenuItem,
@@ -79,7 +79,7 @@ export const mySitesMenuItem = MenuRoute({
   tooltip: (user) => `Sites ${getUserName(user)} can access`,
 });
 
-export const myBookmarksMenuItem = MenuRoute({
+export const myBookmarksMenuItem = menuRoute({
   icon: ["fas", "bookmark"],
   label: "My Bookmarks",
   parent: myAccountMenuItem,
@@ -88,7 +88,7 @@ export const myBookmarksMenuItem = MenuRoute({
   tooltip: (user) => `Bookmarks created by ${getUserName(user)}`,
 });
 
-export const myAnnotationsMenuItem = MenuRoute({
+export const myAnnotationsMenuItem = menuRoute({
   icon: ["fas", "bullseye"],
   label: "My Annotations",
   order: 3,
@@ -100,9 +100,9 @@ export const myAnnotationsMenuItem = MenuRoute({
 /**
  * Their Profile Menus
  */
-export const theirProfileRoute = StrongRoute.Base.add("user_accounts").add(
-  ":accountId"
-);
+export const theirProfileRoute = StrongRoute.base
+  .add("user_accounts")
+  .add(":accountId");
 
 export const theirProfileCategory: Category = {
   icon: ["fas", "user-circle"],
@@ -110,7 +110,7 @@ export const theirProfileCategory: Category = {
   route: theirProfileRoute,
 };
 
-export const theirProfileMenuItem = MenuRoute({
+export const theirProfileMenuItem = menuRoute({
   icon: theirProfileCategory.icon,
   label: "Their Profile",
   order: myAccountMenuItem.order,
@@ -119,7 +119,7 @@ export const theirProfileMenuItem = MenuRoute({
   tooltip: () => "View their profile",
 });
 
-export const theirEditMenuItem = MenuRoute({
+export const theirEditMenuItem = menuRoute({
   icon: myEditMenuItem.icon,
   label: "Edit their profile",
   parent: theirProfileMenuItem,
@@ -128,7 +128,7 @@ export const theirEditMenuItem = MenuRoute({
   tooltip: () => "Change the details for this profile",
 });
 
-export const theirProjectsMenuItem = MenuRoute({
+export const theirProjectsMenuItem = menuRoute({
   icon: myProjectsMenuItem.icon,
   label: "Their Projects",
   parent: theirProfileMenuItem,
@@ -137,7 +137,7 @@ export const theirProjectsMenuItem = MenuRoute({
   tooltip: () => "Projects they can access",
 });
 
-export const theirSitesMenuItem = MenuRoute({
+export const theirSitesMenuItem = menuRoute({
   icon: mySitesMenuItem.icon,
   label: "Their Sites",
   parent: theirProfileMenuItem,
@@ -146,7 +146,7 @@ export const theirSitesMenuItem = MenuRoute({
   tooltip: () => "Sites they can access",
 });
 
-export const theirBookmarksMenuItem = MenuRoute({
+export const theirBookmarksMenuItem = menuRoute({
   icon: myBookmarksMenuItem.icon,
   label: "Their Bookmarks",
   parent: theirProfileMenuItem,
@@ -155,7 +155,7 @@ export const theirBookmarksMenuItem = MenuRoute({
   tooltip: () => "Bookmarks created by them",
 });
 
-export const theirAnnotationsMenuItem = MenuRoute({
+export const theirAnnotationsMenuItem = menuRoute({
   icon: myAnnotationsMenuItem.icon,
   label: "Their Annotations",
   parent: theirProfileMenuItem,

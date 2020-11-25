@@ -1,8 +1,8 @@
 import { Injector } from "@angular/core";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { Creator, Updater } from "./AssociationDecorators";
-import { BawDateTime, BawPersistAttr } from "./AttributeDecorators";
+import { creator, updater } from "./AssociationDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import type { User } from "./User";
 
 export interface IQuestion {
@@ -17,26 +17,26 @@ export interface IQuestion {
 
 export class Question extends AbstractModel implements IQuestion {
   public readonly kind = "Question";
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly id?: Id;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly text?: string;
-  @BawPersistAttr
+  @bawPersistAttr
   public readonly data?: Blob;
   public creatorId?: Id;
   public updaterId?: Id;
-  @BawDateTime()
+  @bawDateTime()
   public createdAt?: DateTimeTimezone;
-  @BawDateTime()
+  @bawDateTime()
   public updatedAt?: DateTimeTimezone;
 
   // Associations
-  @Creator<Question>()
+  @creator<Question>()
   public creator?: User;
-  @Updater<Question>()
+  @updater<Question>()
   public updater?: User;
 
-  constructor(question: IQuestion, injector?: Injector) {
+  public constructor(question: IQuestion, injector?: Injector) {
     super(question, injector);
   }
 

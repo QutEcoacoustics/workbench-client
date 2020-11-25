@@ -50,12 +50,12 @@ describe("ScriptComponent", () => {
 
     fixture = TestBed.createComponent(AdminScriptComponent);
     injector = TestBed.inject(Injector);
-    const accountsApi = TestBed.inject(ACCOUNT.token) as SpyObject<
-      AccountsService
-    >;
-    const scriptsApi = TestBed.inject(SCRIPT.token) as SpyObject<
-      ScriptsService
-    >;
+    const accountsApi = TestBed.inject(
+      ACCOUNT.token
+    ) as SpyObject<AccountsService>;
+    const scriptsApi = TestBed.inject(
+      SCRIPT.token
+    ) as SpyObject<ScriptsService>;
     component = fixture.componentInstance;
 
     const accountsSubject = new Subject<User>();

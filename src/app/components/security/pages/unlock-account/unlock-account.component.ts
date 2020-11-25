@@ -6,7 +6,7 @@ import {
   securityCategory,
   unlockAccountMenuItem,
 } from "@components/security/security.menus";
-import { WithFormCheck } from "@guards/form/form.guard";
+import { withFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
@@ -28,13 +28,13 @@ import { fields } from "./unlock-account.schema.json";
   `,
 })
 class UnlockAccountComponent
-  extends WithFormCheck(PageComponent)
+  extends withFormCheck(PageComponent)
   implements OnInit {
   public model = {};
   public fields = fields;
   public loading: boolean;
 
-  constructor() {
+  public constructor() {
     super();
   }
 
@@ -49,7 +49,7 @@ class UnlockAccountComponent
   }
 }
 
-UnlockAccountComponent.LinkComponentToPageInfo({
+UnlockAccountComponent.linkComponentToPageInfo({
   category: securityCategory,
   menus: {
     actions: List<AnyMenuItem>([
@@ -59,6 +59,6 @@ UnlockAccountComponent.LinkComponentToPageInfo({
       unlockAccountMenuItem,
     ]),
   },
-}).AndMenuRoute(unlockAccountMenuItem);
+}).andMenuRoute(unlockAccountMenuItem);
 
 export { UnlockAccountComponent };
