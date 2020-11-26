@@ -23,7 +23,7 @@ export function filterMock<M extends AbstractModel>(
   classBuilder: (index: number) => M
 ): Observable<M[]> {
   const models: M[] = [];
-  const meta: Meta = {
+  const meta: Meta<any> = {
     status: 200,
     message: "OK",
     filter: filters.filter,

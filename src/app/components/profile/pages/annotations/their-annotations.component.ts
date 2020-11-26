@@ -6,7 +6,6 @@ import {
   theirProfileCategory,
   theirProfileMenuItem,
 } from "@components/profile/profile.menus";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { IAudioEvent } from "@models/AudioEvent";
 import { User } from "@models/User";
 import { List } from "immutable";
@@ -25,7 +24,7 @@ class TheirAnnotationsComponent extends MyAnnotationsComponent {
   }
 
   protected apiAction(filters: Filters<IAudioEvent>) {
-    return this.api.filterByCreator(filters, this.account.id);
+    return this.api.filterByCreator(filters, this.account);
   }
 }
 

@@ -54,7 +54,7 @@ export function option(x?: New | Filter | Empty) {
  *
  * @param filters Base Filters
  * @param key Foreign key
- * @param model Foreign key value
+ * @param model Foreign key value (if undefined, returns base filters)
  */
 export function filterByForeignKey<T>(
   filters: Filters<T>,
@@ -62,6 +62,11 @@ export function filterByForeignKey<T>(
   model: AbstractModel | string | number
 ): Filters<T> {
   const { filter, ...meta } = filters;
+
+  // Only return if model is undefined, not null (which is a valid input)
+  if (model === undefined) {
+    return filters;
+  }
 
   return {
     ...meta,

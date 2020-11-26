@@ -122,10 +122,10 @@ export abstract class BawApiService<Model extends AbstractModel> {
   /**
    * Retrieve user details from session cookie. Null if no user exists.
    */
-  public getLocalUser(): SessionUser | null {
+  public getLocalUser(): SessionUser | undefined {
     // local storage does not exist on server
     if (!isPlatformBrowser(this.platform)) {
-      return null;
+      return undefined;
     }
 
     // Will return null if no item exists
@@ -142,7 +142,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
       }
     }
 
-    return null;
+    return undefined;
   }
 
   /**

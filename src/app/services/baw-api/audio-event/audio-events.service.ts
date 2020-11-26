@@ -4,6 +4,7 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
+import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
@@ -96,11 +97,27 @@ export class ShallowAudioEventsService
     return this.apiFilter(shallowEndpoint(emptyParam, filterParam), filters);
   }
 
+  /**
+   * Filter audio events by creator id
+   *
+   * @param filters Audio event filters
+   * @param user User to filter by
+   */
   public filterByCreator(filters: Filters<IAudioEvent>, user?: IdOr<User>) {
     return this.filter(
-      user
-        ? filterByForeignKey<IAudioEvent>(filters, "creatorId", user)
-        : filters
+      filterByForeignKey<IAudioEvent>(filters, "creatorId", user)
+    );
+  }
+
+  /**
+   * Filter audio events by site id
+   *
+   * @param filters Audio event filters
+   * @param site Site to filter by
+   */
+  public filterBySite(filters: Filters<IAudioEvent>, site: IdOr<Site>) {
+    return this.filter(
+      filterByForeignKey(filters, "audio_recordings.site_id" as any, site)
     );
   }
 }
