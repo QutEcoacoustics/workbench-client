@@ -1,6 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
@@ -14,37 +13,26 @@ import {
   validateApiUpdate,
 } from "@test/helpers/api-common";
 
+type Model = TagGroup;
+type Params = [];
+type Service = TagGroupsService;
+
 describe("TagGroupService", function () {
+  const createModel = () => new TagGroup(generateTagGroup(5));
+  const baseUrl = "/tag_groups/";
+
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        MockAppConfigModule,
-      ],
+      imports: [HttpClientTestingModule, MockAppConfigModule],
       providers: [TagGroupsService],
     });
     this.service = TestBed.inject(TagGroupsService);
   });
 
-  validateApiList<TagGroup, TagGroupsService>("/tag_groups/");
-  validateApiFilter<TagGroup, TagGroupsService>("/tag_groups/filter");
-  validateApiShow<TagGroup, TagGroupsService>(
-    "/tag_groups/5",
-    5,
-    new TagGroup(generateTagGroup(5))
-  );
-  validateApiCreate<TagGroup, TagGroupsService>(
-    "/tag_groups/",
-    new TagGroup(generateTagGroup(5))
-  );
-  validateApiUpdate<TagGroup, TagGroupsService>(
-    "/tag_groups/5",
-    new TagGroup(generateTagGroup(5))
-  );
-  validateApiDestroy<TagGroup, TagGroupsService>(
-    "/tag_groups/5",
-    5,
-    new TagGroup(generateTagGroup(5))
-  );
+  validateApiList<Model, Params, Service>(baseUrl);
+  validateApiFilter<Model, Params, Service>(baseUrl + "filter");
+  validateApiShow<Model, Params, Service>(baseUrl + "5", 5, createModel);
+  validateApiCreate<Model, Params, Service>(baseUrl, createModel);
+  validateApiUpdate<Model, Params, Service>(baseUrl + "5", createModel);
+  validateApiDestroy<Model, Params, Service>(baseUrl + "5", 5, createModel);
 });

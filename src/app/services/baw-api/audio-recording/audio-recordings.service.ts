@@ -52,7 +52,7 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
   public filterBySite(filters: Filters<IAudioRecording>, site: IdOr<Site>) {
     return this.apiFilter(
       endpoint(emptyParam, filterParam),
-      filterByForeignKey(filters, "sites.id" as any, site)
+      filterByForeignKey(filters, "siteId", site)
     );
   }
 }

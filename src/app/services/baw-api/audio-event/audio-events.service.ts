@@ -103,7 +103,7 @@ export class ShallowAudioEventsService
    * @param filters Audio event filters
    * @param user User to filter by
    */
-  public filterByCreator(filters: Filters<IAudioEvent>, user?: IdOr<User>) {
+  public filterByCreator(filters: Filters<IAudioEvent>, user: IdOr<User>) {
     return this.filter(
       filterByForeignKey<IAudioEvent>(filters, "creatorId", user)
     );

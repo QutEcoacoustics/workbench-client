@@ -62,7 +62,7 @@ export class ProjectsService extends StandardApi<Project> {
    */
   public filterByCreator(
     filters: Filters<IProject>,
-    user?: IdOr<User>
+    user: IdOr<User>
   ): Observable<Project[]> {
     return this.apiFilter(
       endpoint(emptyParam, filterParam),

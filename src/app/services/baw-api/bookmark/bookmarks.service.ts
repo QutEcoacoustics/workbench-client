@@ -58,7 +58,7 @@ export class BookmarksService extends StandardApi<Bookmark> {
    */
   public filterByCreator(
     filters: Filters<IBookmark>,
-    user?: IdOr<User>
+    user: IdOr<User>
   ): Observable<Bookmark[]> {
     return this.filter(
       filterByForeignKey<IBookmark>(filters, "creatorId", user)

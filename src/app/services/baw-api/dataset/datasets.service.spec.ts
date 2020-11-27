@@ -1,6 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { Dataset } from "@models/Dataset";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { generateDataset } from "@test/fakes/Dataset";
@@ -14,38 +13,27 @@ import {
 } from "@test/helpers/api-common";
 import { DatasetsService } from "./datasets.service";
 
+type Model = Dataset;
+type Params = [];
+type Service = DatasetsService;
+
 describe("DatasetsService", function () {
+  const createModel = () => new Dataset(generateDataset(5));
+  const baseUrl = "/datasets/";
+
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        MockAppConfigModule,
-      ],
+      imports: [HttpClientTestingModule, MockAppConfigModule],
       providers: [DatasetsService],
     });
 
     this.service = TestBed.inject(DatasetsService);
   });
 
-  validateApiList<Dataset, DatasetsService>("/datasets/");
-  validateApiFilter<Dataset, DatasetsService>("/datasets/filter");
-  validateApiShow<Dataset, DatasetsService>(
-    "/datasets/5",
-    5,
-    new Dataset(generateDataset(5))
-  );
-  validateApiCreate<Dataset, DatasetsService>(
-    "/datasets/",
-    new Dataset(generateDataset(5))
-  );
-  validateApiUpdate<Dataset, DatasetsService>(
-    "/datasets/5",
-    new Dataset(generateDataset(5))
-  );
-  validateApiDestroy<Dataset, DatasetsService>(
-    "/datasets/5",
-    5,
-    new Dataset(generateDataset(5))
-  );
+  validateApiList<Model, Params, Service>(baseUrl);
+  validateApiFilter<Model, Params, Service>(baseUrl + "filter");
+  validateApiShow<Model, Params, Service>(baseUrl + "5", 5, createModel);
+  validateApiCreate<Model, Params, Service>(baseUrl, createModel);
+  validateApiUpdate<Model, Params, Service>(baseUrl + "5", createModel);
+  validateApiDestroy<Model, Params, Service>(baseUrl + "5", 5, createModel);
 });

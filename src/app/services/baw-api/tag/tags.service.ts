@@ -66,7 +66,7 @@ export class TagsService extends StandardApi<Tag> {
    */
   public filterByCreator(
     filters: Filters<ITag>,
-    user?: IdOr<User>
+    user: IdOr<User>
   ): Observable<Tag[]> {
     return this.apiFilter(
       endpoint(emptyParam, filterParam),

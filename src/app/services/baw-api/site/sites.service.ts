@@ -3,7 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import type { Project } from "@models/Project";
-import { Region } from "@models/Region";
+import type { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
@@ -132,7 +132,7 @@ export class ShallowSitesService extends StandardApi<Site> {
    */
   public filterByCreator(
     filters: Filters<ISite>,
-    user?: IdOr<User>
+    user: IdOr<User>
   ): Observable<Site[]> {
     return this.apiFilter(
       endpointShallow(emptyParam, filterParam),
