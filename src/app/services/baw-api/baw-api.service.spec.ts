@@ -231,7 +231,7 @@ describe("BawApiService", () => {
     });
 
     it("should not return user", () => {
-      expect(service.getLocalUser()).toBe(null);
+      expect(service.getLocalUser()).toBe(undefined);
     });
 
     it("should be logged in after user saved to local storage", () => {
@@ -254,12 +254,12 @@ describe("BawApiService", () => {
     it("should not return user after user removed from local storage", () => {
       signIn("xxxxxxxxxxxxxxx", "username");
       signOut();
-      expect(service.getLocalUser()).toBe(null);
+      expect(service.getLocalUser()).toBe(undefined);
     });
 
     it("should handle corrupted user data", () => {
       localStorage.setItem("baw.client.user", '{"');
-      expect(service.getLocalUser()).toBe(null);
+      expect(service.getLocalUser()).toBe(undefined);
       expect(service.isLoggedIn()).toBe(false);
     });
   });

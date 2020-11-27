@@ -80,10 +80,11 @@ describe("SiteMapComponent", () => {
 
   function interceptApiRequest(
     responses: (Site[] | ApiErrorDetails)[],
-    expectations?: ((filter: Filters<ISite>, project: Project) => void)[]
+    expectations?: ((filter: Filters<ISite>, project: Project) => void)[],
+    hasRegion?: boolean
   ): Promise<void>[] {
     return interceptApiRequests<ISite, Site[]>(
-      api.filter,
+      hasRegion ? api.filterByRegion : api.filter,
       responses,
       expectations
     );
@@ -157,16 +158,13 @@ describe("SiteMapComponent", () => {
 
   describe("api", () => {
     function assertFilter(page: number, project: Project, region?: Region) {
-      return (filters: Filters<ISite>, model: Project) => {
-        expect(filters).toEqual(
-          region
-            ? {
-                paging: { page },
-                filter: { regionId: { equal: region.id } },
-              }
-            : { paging: { page } }
-        );
-        expect(model).toEqual(project);
+      return (filters: Filters<ISite>, _project: Project, _region?: Region) => {
+        expect(filters).toEqual({ paging: { page } });
+        expect(_project).toEqual(project);
+
+        if (region) {
+          expect(_region).toEqual(region);
+        }
       };
     }
 
@@ -203,13 +201,17 @@ describe("SiteMapComponent", () => {
       spectator.setInput("region", new Region(generateRegion()));
       const sites = generatePagedSites(1);
       const promise = Promise.all(
-        interceptApiRequest(sites, [
-          assertFilter(
-            1,
-            spectator.component.project,
-            spectator.component.region
-          ),
-        ])
+        interceptApiRequest(
+          sites,
+          [
+            assertFilter(
+              1,
+              spectator.component.project,
+              spectator.component.region
+            ),
+          ],
+          true
+        )
       );
 
       spectator.detectChanges();

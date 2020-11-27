@@ -109,7 +109,7 @@ describe("ProjectDetailsComponent", () => {
     regionExpectations?: FilterExpectations<IRegion>[]
   ) {
     const sitePromises = interceptApiRequests<ISite, Site[]>(
-      siteApi.filter,
+      siteApi.filterByRegion,
       siteResponses,
       siteExpectations
     );
@@ -383,7 +383,6 @@ describe("ProjectDetailsComponent", () => {
         {
           test: "sites",
           isSite: true,
-          filter: { regionId: { equal: null } },
           list: "sites",
           stateTracker: "hasSites",
           createModels: (numModels: number) => createSitesWithMeta(numModels),
@@ -391,111 +390,107 @@ describe("ProjectDetailsComponent", () => {
         {
           test: "regions",
           isSite: false,
-          filter: {},
           list: "regions",
           stateTracker: "hasRegions",
           createModels: (numModels: number) => createRegionsWithMeta(numModels),
         },
-      ].forEach(
-        ({ test, isSite, filter, list, stateTracker, createModels }) => {
-          describe(test, () => {
-            it(`should create initial ${test} api filter request`, async (done) => {
-              setup(defaultProject);
-              const expectation = (filters, project) => {
-                expect(project).toEqual(defaultProject.id);
-                expect(filters).toEqual({ paging: { page: 1 }, filter });
-                done();
-              };
-              await handleOnInit(isSite, [expectation]);
-            });
+      ].forEach(({ test, isSite, list, stateTracker, createModels }) => {
+        describe(test, () => {
+          it(`should create initial ${test} api filter request`, async (done) => {
+            setup(defaultProject);
+            const expectation = (filters, project) => {
+              expect(project).toEqual(defaultProject.id);
+              expect(filters).toEqual({ paging: { page: 1 }, filter: {} });
+              done();
+            };
+            await handleOnInit(isSite, [expectation]);
+          });
 
-            it(`should create paged ${test} api filter request`, async (done) => {
-              setup(defaultProject);
-              const expectation = (filters, project) => {
-                expect(project).toEqual(defaultProject.id);
-                expect(filters).toEqual({ paging: { page: 5 }, filter });
-                done();
-              };
-              await handleOnInit(isSite, [initialExpectation, expectation], 5);
-            });
+          it(`should create paged ${test} api filter request`, async (done) => {
+            setup(defaultProject);
+            const expectation = (filters, project) => {
+              expect(project).toEqual(defaultProject.id);
+              expect(filters).toEqual({ paging: { page: 5 }, filter: {} });
+              done();
+            };
+            await handleOnInit(isSite, [initialExpectation, expectation], 5);
+          });
 
-            if (isSite) {
-              it("should handle site api filter request with regionId", async (done) => {
-                const spy = jasmine.createSpy();
-                setup(defaultProject);
-                component["generateFilter"] = spy.and.callFake(() => ({
+          if (isSite) {
+            it("should handle site api filter request with regionId", async (done) => {
+              const spy = jasmine.createSpy();
+              setup(defaultProject);
+              component["generateFilter"] = spy.and.callFake(() => ({
+                paging: { page: 1 },
+                filter: undefined,
+              }));
+              const expectation = (filters) => {
+                expect(filters).toEqual({
                   paging: { page: 1 },
                   filter: undefined,
-                }));
-                const expectation = (filters) => {
-                  expect(filters).toEqual({ paging: { page: 1 }, filter });
-                  done();
-                };
-                await handleOnInit(
-                  isSite,
-                  [initialExpectation, expectation],
-                  1
-                );
-              });
-
-              it("should not override site api filter request with regionId", async (done) => {
-                setup(defaultProject);
-                const expectation = (filters) => {
-                  expect(filters).toEqual({
-                    paging: { page: 5 },
-                    filter: { ...filter, name: { contains: "custom filter" } },
-                  });
-                  done();
-                };
-                await handleOnInit(
-                  isSite,
-                  [initialExpectation, expectation],
-                  5,
-                  "custom filter"
-                );
-              });
-            }
-
-            it("should set empty model list", () => {
-              setup(defaultProject);
-              interceptApiRequest(emptyResponse, emptyResponse);
-              spectator.detectChanges();
-              component["getModels"]();
-              component["apiUpdate"]([]);
-              expect(component[list].toArray()).toEqual([]);
+                });
+                done();
+              };
+              await handleOnInit(isSite, [initialExpectation, expectation], 1);
             });
 
-            it("should set multiple models in list", () => {
-              const models = createModels(3);
+            it("should not override site api filter request with regionId", async (done) => {
               setup(defaultProject);
-              interceptApiRequest(emptyResponse, emptyResponse);
-              spectator.detectChanges();
-              component["getModels"]();
-              component["apiUpdate"](models[0]);
-              expect(component[list].toArray()).toEqual(models[0]);
+              const expectation = (filters) => {
+                expect(filters).toEqual({
+                  paging: { page: 5 },
+                  filter: { name: { contains: "custom filter" } },
+                });
+                done();
+              };
+              await handleOnInit(
+                isSite,
+                [initialExpectation, expectation],
+                5,
+                "custom filter"
+              );
             });
+          }
 
-            it(`should set ${stateTracker} to false if no sites`, () => {
-              setup(defaultProject);
-              interceptApiRequest(emptyResponse, emptyResponse);
-              spectator.detectChanges();
-              component["getModels"]();
-              component["apiUpdate"]([]);
-              expect(component[stateTracker]).toBeFalsy();
-            });
-
-            it(`should set ${stateTracker} to true if sites exist`, () => {
-              const models = createModels(3);
-              setup(defaultProject);
-              interceptApiRequest(emptyResponse, emptyResponse);
-              spectator.detectChanges();
-              component["getModels"]();
-              component["apiUpdate"](models[0]);
-              expect(component[stateTracker]).toBeTruthy();
-            });
+          it("should set empty model list", () => {
+            setup(defaultProject);
+            interceptApiRequest(emptyResponse, emptyResponse);
+            spectator.detectChanges();
+            component["getModels"]();
+            component["apiUpdate"]([]);
+            expect(component[list].toArray()).toEqual([]);
           });
-        }
-      );
+
+          it("should set multiple models in list", () => {
+            const models = createModels(3);
+            setup(defaultProject);
+            interceptApiRequest(emptyResponse, emptyResponse);
+            spectator.detectChanges();
+            component["getModels"]();
+            component["apiUpdate"](models[0]);
+            expect(component[list].toArray()).toEqual(models[0]);
+          });
+
+          it(`should set ${stateTracker} to false if no sites`, () => {
+            setup(defaultProject);
+            interceptApiRequest(emptyResponse, emptyResponse);
+            spectator.detectChanges();
+            component["getModels"]();
+            component["apiUpdate"]([]);
+            expect(component[stateTracker]).toBeFalsy();
+          });
+
+          it(`should set ${stateTracker} to true if sites exist`, () => {
+            const models = createModels(3);
+            setup(defaultProject);
+            interceptApiRequest(emptyResponse, emptyResponse);
+            spectator.detectChanges();
+            component["getModels"]();
+            component["apiUpdate"](models[0]);
+            expect(component[stateTracker]).toBeTruthy();
+          });
+        });
+      });
     });
 
     describe("collectionSize", () => {

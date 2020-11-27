@@ -291,7 +291,7 @@ describe("MenuComponent", () => {
         it("should not provide user to predicate function when unauthenticated", (done) => {
           const link = createLink({
             predicate: (_user) => {
-              expect(_user).toBe(null);
+              expect(_user).toBe(undefined);
               done();
             },
           });
