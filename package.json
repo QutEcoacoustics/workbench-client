@@ -111,7 +111,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-opera-launcher": "^1.0.0",
     "karma-viewport": "^1.0.7",
-    "ng-mocks": "^11.1.2",
+    "ng-mocks": "^11.1.4",
     "protractor": "^7.0.0",
     "ts-node": "^9.0.0",
     "typescript": "^4.1.2",
