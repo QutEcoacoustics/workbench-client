@@ -32,6 +32,14 @@ $ npm start
 
 Then open a web browser to `http://localhost:4200`.
 
+### Environment
+
+There are a couple settings you may wish to modify in the `./src/assets/environment.json` file as the website may not work otherwise.
+
+- `apiRoot`: Modifying this value will change which api the website will interact with. Currently this defaults to the staging version of the ecosounds api
+- `siteRoot`: Modifying this value will change what the website thinks its current domain is. Currently this is just a redirect to `localhost:4200`
+- `siteDir`: Modifying this value will change what the website thinks its current directory inside the current domain is
+
 ### Access the ng tool
 
 ```bash

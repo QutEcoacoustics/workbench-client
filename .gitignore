@@ -75,3 +75,6 @@ documentation
 
 # Angular crash reports
 report.*.*.*.*.*.json
+
+# Old Client
+src/assets/old-client/

@@ -1,32 +1,114 @@
-.app {
+@import "./styles/media-mixin";
+
+/*
+ * Ensure styling is extremely restricted to a specific element
+ * because ViewEncapsulation is off. Generic changes here will
+ * affect all components in the entire app
+ */
+
+/*
+ * Make angular app 100% height and use flex to ensure wrapper
+ * takes up any room left by header and footer.
+ */
+#app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-}
 
-.content {
-  flex: 1;
+  // Fullscreen Layout
+  > .container-fluid {
+    // Make component full size
+    #page {
+      flex: 0 0 100%;
+      max-width: 100%;
+      padding: 0;
+      width: 100%;
+    }
 
-  &:last-child {
+    // Hide secondary/action menus when fullscreen
+    > #secondary,> #action {
+      display: none;
+    }
+  }
+
+  // Menu Layout
+  > .container {
+    // Compact/inline menus on displays smaller than large
+    @include media("<large") {
+      flex-direction: column;
+    }
+
+    // Add padding to edges
+    #page {
+      padding: 1rem;
+    }
+
+    > #secondary {
+      flex: 2;
+      order: 1;
+
+      /*
+       * Make secondary menu only take up size of contents when
+       * compressed
+       */
+      @include media("<large") {
+        flex: 0;
+      }
+    }
+
+    > #action {
+      flex: 2;
+      order: 3;
+
+      /*
+        * Make action menu only take up size of contents when
+        * compressed. This also moves the menu to sit below the
+        * secondary menu
+        */
+      @include media("<large") {
+        flex: 0;
+        order: 2;
+      }
+    }
+  }
+
+  /*
+   * Styles which apply to both the fullscreen and menu
+   * layouts
+   */
+  > .container,
+  > .container-fluid {
+    // Make container fill full page
+    display: flex;
+    flex: 1;
     min-height: 100%;
+    padding: 0px;
+
+    /*
+      * Page content, uses column flexbox because error outlet
+      * exists inside this section
+      */
+    > #page {
+      display: flex;
+      flex-direction: column;
+      flex: 8;
+      order: 2;
+
+      // Change order to swap with action menu when compacted
+      @include media("<large") {
+        flex: 1;
+        order: 3;
+      }
+
+      @include media(">=large", "<extra-large") {
+        flex: 6;
+      }
+
+      // Make page component fill screen
+      > :last-child {
+        flex: 1;
+      }
+    }
   }
 }
 
-div.container {
-  min-height: 100%;
-}
-
-.page {
-  padding: 1rem;
-}
-
-.full-width {
-  flex: 0 0 100%;
-  max-width: 100%;
-  padding: 0;
-  width: 100%;
-}
-
-.hidden {
-  display: none;
-}

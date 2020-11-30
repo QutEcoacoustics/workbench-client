@@ -19,6 +19,7 @@ import {
 } from "./baw-api.service.spec";
 
 // TODO Add tests for CMS
+// TODO Add tests to validate cookies are added to requests
 describe("BawApiInterceptor", () => {
   let api: SecurityService;
   let http: HttpClient;

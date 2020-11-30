@@ -11,6 +11,7 @@ import { ConfigService, assetRoot } from "@services/config/config.service";
 import { IconsModule } from "@shared/icons/icons.module";
 import { generateSessionUser, generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
+import { viewports } from "@test/helpers/general";
 import { assertImage, assertRoute } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { MockProvider } from "ng-mocks";
@@ -59,7 +60,7 @@ describe("HeaderComponent", () => {
     api = spec.inject(SecurityService);
     config = spec.inject(ConfigService);
     router = spec.inject(Router);
-    viewport.set("extra-large");
+    viewport.set(viewports.extraLarge);
   });
 
   afterAll(() => viewport.reset());
@@ -399,28 +400,28 @@ describe("HeaderComponent", () => {
     });
 
     it("should hide toggle button at large screen size", () => {
-      viewport.set("large");
+      viewport.set(viewports.large);
       setUser(false);
       spec.detectChanges();
       expect(getToggleButton()).toHaveStyle({ display: "none" });
     });
 
     it("should display toggle button at medium screen size", () => {
-      viewport.set("medium");
+      viewport.set(viewports.medium);
       setUser(false);
       spec.detectChanges();
       expect(getToggleButton()).not.toHaveStyle({ display: "none" });
     });
 
     it("navbar should initially be collapsed", () => {
-      viewport.set("medium");
+      viewport.set(viewports.medium);
       setUser(false);
       spec.detectChanges();
       assertCollapsed(true);
     });
 
     it("navbar should open on toggle button press", () => {
-      viewport.set("medium");
+      viewport.set(viewports.medium);
       setUser(false);
       spec.detectChanges();
 
@@ -432,7 +433,7 @@ describe("HeaderComponent", () => {
     });
 
     it("navbar should close on toggle button press", () => {
-      viewport.set("medium");
+      viewport.set(viewports.medium);
       setUser(false);
       spec.detectChanges();
 

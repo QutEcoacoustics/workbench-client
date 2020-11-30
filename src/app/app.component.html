@@ -1,42 +1,23 @@
-<div class="app">
+<div id="app">
   <baw-header></baw-header>
   <ngx-loading-bar [value]="(delayedProgress$ | async) || 0"></ngx-loading-bar>
 
   <!-- App Content-->
-  <div class="content">
-    <div
-      class="p-0"
-      [ngClass]="{ container: !fullscreen, 'container-fluid': fullscreen }"
-    >
-      <div class="d-flex flex-wrap col p-0">
-        <!-- Secondary Menu (only active on menuLayout) -->
-        <div
-          id="secondary"
-          class="p-0 order-1 col-lg-2 col-sm-12"
-          [ngClass]="{ hidden: fullscreen }"
-        >
-          <router-outlet name="secondary"></router-outlet>
-        </div>
+  <div [ngClass]="{ container: !fullscreen, 'container-fluid': fullscreen }">
+    <!-- Secondary Menu (only visible when layout is not fullscreen) -->
+    <div id="secondary">
+      <router-outlet name="secondary"></router-outlet>
+    </div>
 
-        <!-- Default and Error Menus -->
-        <div
-          id="page"
-          class="order-lg-2 order-3 col-lg-8 col-12"
-          [ngClass]="{ page: !fullscreen, 'full-width': fullscreen }"
-        >
-          <router-outlet></router-outlet>
-          <router-outlet name="error"></router-outlet>
-        </div>
+    <!-- Default and Error Segments -->
+    <div id="page">
+      <router-outlet name="error"></router-outlet>
+      <router-outlet (activate)="updatePageLayout($event)"></router-outlet>
+    </div>
 
-        <!-- Action Menu (only active on menuLayout) -->
-        <div
-          id="action"
-          class="p-0 order-lg-3 order-2 col-lg-2 col-12"
-          [ngClass]="{ hidden: fullscreen }"
-        >
-          <router-outlet name="action"></router-outlet>
-        </div>
-      </div>
+    <!-- Action Menu (only visible when layout is not fullscreen) -->
+    <div id="action">
+      <router-outlet name="action"></router-outlet>
     </div>
   </div>
 

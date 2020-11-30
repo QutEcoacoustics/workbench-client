@@ -70,6 +70,7 @@ export class BawApiInterceptor implements HttpInterceptor {
 
     // Convert outgoing data
     request = request.clone({
+      withCredentials: true,
       body: toSnakeCase(request.body),
     });
 
