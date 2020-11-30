@@ -1,23 +1,28 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { listenRoute } from "@components/listen/listen.menus";
+import { ListenModule } from "@components/listen/listen.module";
+import { AudioRecording } from "@models/AudioRecording";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { validateBawClientPage } from "@test/helpers/baw-client";
+import { BehaviorSubject } from "rxjs";
 import { ListenRecordingComponent } from "./details.component";
 
-xdescribe("ListenRecordingComponent", () => {
-  let component: ListenRecordingComponent;
-  let fixture: ComponentFixture<ListenRecordingComponent>;
+describe("ListenRecordingComponent", () => {
+  validateBawClientPage(
+    listenRoute,
+    ListenRecordingComponent,
+    [ListenModule],
+    "/listen/123",
+    "Download from this item",
+    (spec) => {
+      const recordingApi = spec.inject(AudioRecordingsService);
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ListenRecordingComponent],
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ListenRecordingComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
+      recordingApi.show.andCallFake(
+        (modelId) =>
+          new BehaviorSubject(
+            new AudioRecording(generateAudioRecording(modelId))
+          )
+      );
+    }
+  );
 });

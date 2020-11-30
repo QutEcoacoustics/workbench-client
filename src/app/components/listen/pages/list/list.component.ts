@@ -5,6 +5,7 @@ import {
 } from "@components/listen/listen.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 
+//TODO: OLD-CLIENT REMOVE
 @Component({
   selector: "baw-listen",
   template: "<baw-client></baw-client>",
