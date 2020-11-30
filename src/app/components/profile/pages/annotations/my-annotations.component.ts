@@ -44,7 +44,7 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   }
 
   protected apiAction(filters: Filters<IAudioEvent>) {
-    return this.api.filterByCreator(filters, this.api.getLocalUser().id);
+    return this.api.filterByCreator(filters, this.api.getLocalUser()?.id);
   }
 }
 

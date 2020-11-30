@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { Direction, Filters } from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { AudioEvent } from "@models/AudioEvent";
-import { AudioRecording } from "@models/AudioRecording";
+import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
+import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -53,10 +54,10 @@ class SiteComponent extends PageComponent implements OnInit {
 
   private getAnnotations() {
     this.audioEventsApi
-      .filter({
-        filter: { ["audio_recordings.site_id"]: { eq: this.site.id } } as any,
-        sorting: { orderBy: "updatedAt", direction: "desc" },
-      })
+      .filterBySite(
+        { sorting: { orderBy: "updatedAt", direction: "desc" } },
+        this.site
+      )
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (events) => {
@@ -77,11 +78,7 @@ class SiteComponent extends PageComponent implements OnInit {
   }
 
   private getNewestDates() {
-    this.audioRecordingsApi
-      .filter({
-        filter: { ["sites.id"]: { eq: this.site.id } } as any,
-        sorting: { orderBy: "recordedDate", direction: "desc" },
-      })
+    this.filterByDates("desc")
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (recordings) => {
@@ -93,17 +90,22 @@ class SiteComponent extends PageComponent implements OnInit {
   }
 
   private getOldestDates() {
-    this.audioRecordingsApi
-      .filter({
-        filter: { ["sites.id"]: { eq: this.site.id } } as any,
-        sorting: { orderBy: "recordedDate", direction: "asc" },
-        paging: { items: 1 },
-      })
+    this.filterByDates("asc", { paging: { items: 1 } })
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (recordings) => (this.recordingsStart = recordings[0]?.recordedDate),
         (err) => console.log({ err })
       );
+  }
+
+  private filterByDates(
+    direction: Direction,
+    filters: Filters<IAudioRecording> = {}
+  ) {
+    return this.audioRecordingsApi.filterBySite(
+      { sorting: { orderBy: "recordedDate", direction }, ...filters },
+      this.site
+    );
   }
 }
 

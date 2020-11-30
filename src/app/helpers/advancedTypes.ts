@@ -26,3 +26,8 @@ export type XOR<T, U> = T | U extends Record<string, any>
  * Response may be a promise, or may return in real time
  */
 export type MayBeAsync<T> = T | Promise<T>;
+
+/** Extract keys from a type which return a specific type */
+export type KeysOfType<T, TProp> = {
+  [P in keyof T]: T[P] extends TProp ? P : never;
+}[keyof T];

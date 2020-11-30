@@ -8,7 +8,6 @@ import { Observable } from "rxjs";
 import {
   emptyParam,
   filterParam,
-  filterByForeignKey,
   id,
   IdOr,
   IdParamOptional,
@@ -37,14 +36,6 @@ export class BookmarksService extends StandardApi<Bookmark> {
   public filter(filters: Filters<IBookmark>): Observable<Bookmark[]> {
     return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
-  public filterByCreator(
-    filters: Filters<IBookmark>,
-    user?: IdOr<User>
-  ): Observable<Bookmark[]> {
-    return this.filter(
-      user ? filterByForeignKey<IBookmark>(filters, "creatorId", user) : filters
-    );
-  }
   public show(model: IdOr<Bookmark>): Observable<Bookmark> {
     return this.apiShow(endpoint(model, emptyParam));
   }
@@ -56,6 +47,21 @@ export class BookmarksService extends StandardApi<Bookmark> {
   }
   public destroy(model: IdOr<Bookmark>): Observable<Bookmark | void> {
     return this.apiDestroy(endpoint(model, emptyParam));
+  }
+
+  /**
+   * Filter bookmarks by creator
+   *
+   * @param filters Bookmark filters
+   * @param user user to filter by
+   */
+  public filterByCreator(
+    filters: Filters<IBookmark>,
+    user: IdOr<User>
+  ): Observable<Bookmark[]> {
+    return this.filter(
+      this.filterByForeignKey(filters, "creatorId", user) as Filters
+    );
   }
 }
 

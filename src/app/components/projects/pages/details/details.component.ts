@@ -22,7 +22,7 @@ import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
-import { ISite, Site } from "@models/Site";
+import { Site } from "@models/Site";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { merge } from "rxjs";
@@ -179,15 +179,13 @@ class DetailsComponent extends PaginationTemplate<any> implements OnInit {
     this.collectionSizes = { sites: 0, regions: 0 };
     this.apiReturnCount = 0;
 
-    // Filter sites to those which don't have region ids
-    const siteFilter = this.generateFilter() as Filters<ISite>;
-    siteFilter.filter = siteFilter.filter
-      ? { ...siteFilter.filter, regionId: { equal: null } }
-      : { regionId: { equal: null } };
-
     return merge(
       this.regionsApi.filter(this.generateFilter() as Filters, this.project.id),
-      this.sitesApi.filter(siteFilter, this.project.id)
+      this.sitesApi.filterByRegion(
+        this.generateFilter() as Filters,
+        this.project.id,
+        null
+      )
     );
   }
 }

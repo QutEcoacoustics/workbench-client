@@ -5,7 +5,7 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
-import { Id } from "@interfaces/apiInterfaces";
+import { Id, Ids } from "@interfaces/apiInterfaces";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { nStepObservable } from "@test/helpers/general";
 import { Subject } from "rxjs";
@@ -14,9 +14,10 @@ import { hasMany, hasOne } from "./AssociationDecorators";
 
 class MockModel extends AbstractModel {
   public id: Id;
+  public ids: Ids;
   @hasOne<MockModel, AbstractModel>(MOCK, "id")
   public readonly childModel: AssociatedModel;
-  @hasMany<MockModel, AbstractModel>(MOCK, "id")
+  @hasMany<MockModel, AbstractModel>(MOCK, "ids")
   public readonly childModels: AssociatedModel[];
 
   public constructor(opts: any, injector?: Injector) {
@@ -30,6 +31,8 @@ class MockModel extends AbstractModel {
     throw new Error("Method not implemented.");
   }
 }
+
+export { MockModel as MockModelWithDecorators };
 
 @Component({
   selector: "baw-test",
@@ -156,7 +159,7 @@ describe("Association Decorators Loading In Components", () => {
   });
 
   it("should display hasMany unresolved model", () => {
-    component.model = new MockModel({ id: 0 }, injector);
+    component.model = new MockModel({ id: 0, ids: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModels
     fixture.detectChanges(); // Displays childModels
@@ -166,7 +169,7 @@ describe("Association Decorators Loading In Components", () => {
   it("should display empty hasMany resolved model", async () => {
     const associatedModels = [];
     const promise = interceptMultipleModels(undefined, associatedModels);
-    component.model = new MockModel({ id: 0 }, injector);
+    component.model = new MockModel({ id: 0, ids: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel
     await promise;
@@ -177,7 +180,7 @@ describe("Association Decorators Loading In Components", () => {
   it("should display single hasMany resolved model", async () => {
     const associatedModels = [new AssociatedModel({ id: 1 })];
     const promise = interceptMultipleModels(undefined, associatedModels);
-    component.model = new MockModel({ id: 0 }, injector);
+    component.model = new MockModel({ id: 0, ids: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel
     await promise;
@@ -192,7 +195,7 @@ describe("Association Decorators Loading In Components", () => {
       new AssociatedModel({ id: 3 }),
     ];
     const promise = interceptMultipleModels(undefined, associatedModels);
-    component.model = new MockModel({ id: 0 }, injector);
+    component.model = new MockModel({ id: 0, ids: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel
     await promise;
@@ -204,7 +207,7 @@ describe("Association Decorators Loading In Components", () => {
     const promise = interceptMultipleModels(
       generateApiErrorDetails("Not Found")
     );
-    component.model = new MockModel({ id: 0 }, injector);
+    component.model = new MockModel({ id: 0, ids: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel
     await promise;

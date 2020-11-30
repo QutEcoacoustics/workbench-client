@@ -8,7 +8,6 @@ import { Observable } from "rxjs";
 import {
   emptyParam,
   filterParam,
-  filterByForeignKey,
   id,
   IdOr,
   IdParamOptional,
@@ -41,15 +40,6 @@ export class ProjectsService extends StandardApi<Project> {
   public filter(filters: Filters<IProject>): Observable<Project[]> {
     return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
-  public filterByCreator(
-    filters: Filters<IProject>,
-    user?: IdOr<User>
-  ): Observable<Project[]> {
-    return this.apiFilter(
-      endpoint(emptyParam, filterParam),
-      user ? filterByForeignKey<Project>(filters, "creatorId", user) : filters
-    );
-  }
   public show(model: IdOr<Project>): Observable<Project> {
     return this.apiShow(endpoint(model, emptyParam));
   }
@@ -61,6 +51,21 @@ export class ProjectsService extends StandardApi<Project> {
   }
   public destroy(model: IdOr<Project>): Observable<Project | void> {
     return this.apiDestroy(endpoint(model, emptyParam));
+  }
+
+  /**
+   * Filter projects by creator
+   *
+   * @param filters Project filters
+   * @param user user to filter by
+   */
+  public filterByCreator(
+    filters: Filters<IProject>,
+    user: IdOr<User>
+  ): Observable<Project[]> {
+    return this.filter(
+      this.filterByForeignKey(filters, "creatorId", user) as Filters
+    );
   }
 }
 

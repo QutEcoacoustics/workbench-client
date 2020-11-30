@@ -1,6 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { User } from "@models/User";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
@@ -14,39 +13,28 @@ import {
   validateApiUpdate,
 } from "@test/helpers/api-common";
 
+type Model = User;
+type Params = [];
+type Service = AccountsService;
+
 describe("AccountsService", () => {
+  const createModel = () => new User(generateUser(5));
+  const baseUrl = "/user_accounts/";
+
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        MockAppConfigModule,
-      ],
+      imports: [HttpClientTestingModule, MockAppConfigModule],
       providers: [AccountsService],
     });
 
     this.service = TestBed.inject(AccountsService);
   });
 
-  validateApiList<User, AccountsService>("/user_accounts/");
-  validateApiFilter<User, AccountsService>("/user_accounts/filter");
+  validateApiList<Model, Params, Service>(baseUrl);
+  validateApiFilter<Model, Params, Service>(baseUrl + "filter");
   // TODO Implement additional show unit tests
-  validateApiShow<User, AccountsService>(
-    "/user_accounts/5",
-    5,
-    new User(generateUser(5))
-  );
-  validateApiCreate<User, AccountsService>(
-    "/user_accounts/",
-    new User(generateUser(5))
-  );
-  validateApiUpdate<User, AccountsService>(
-    "/user_accounts/5",
-    new User(generateUser(5))
-  );
-  validateApiDestroy<User, AccountsService>(
-    "/user_accounts/5",
-    5,
-    new User(generateUser(5))
-  );
+  validateApiShow<Model, Params, Service>(baseUrl + "5", 5, createModel);
+  validateApiCreate<Model, Params, Service>(baseUrl, createModel);
+  validateApiUpdate<Model, Params, Service>(baseUrl + "5", createModel);
+  validateApiDestroy<Model, Params, Service>(baseUrl + "5", 5, createModel);
 });

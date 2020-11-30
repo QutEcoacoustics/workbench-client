@@ -28,17 +28,22 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
   public ngOnInit(): void {
     const filters: Filters<ISite> = { paging: { page: 1 } };
 
-    if (this.region) {
-      filters.filter = { regionId: { equal: this.region.id } };
-    }
-
-    this.sitesApi
-      .filter(filters, this.project)
+    this.getFilter(filters, this.project, this.region)
       .pipe(
         switchMap((models) => this.getMarkers(models)),
         takeUntil(this.unsubscribe)
       )
       .subscribe((sites) => this.pushMarkers(sites), noop);
+  }
+
+  private getFilter(
+    filters: Filters<ISite>,
+    project: Project,
+    region?: Region
+  ) {
+    return this.region
+      ? this.sitesApi.filterByRegion(filters, project, region)
+      : this.sitesApi.filter(filters, project);
   }
 
   /**
@@ -51,7 +56,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
     // Can skip first page because initial filter produces the results
     for (let page = 2; page <= numPages; page++) {
       observables.push(
-        this.sitesApi.filter({ paging: { page } }, this.project)
+        this.getFilter({ paging: { page } }, this.project, this.region)
       );
     }
 

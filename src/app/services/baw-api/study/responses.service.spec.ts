@@ -1,7 +1,8 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import { IdOr } from "@baw-api/api-common";
 import { Response } from "@models/Response";
+import { Study } from "@models/Study";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { generateResponse } from "@test/fakes/Response";
 import {
@@ -14,51 +15,32 @@ import {
 } from "@test/helpers/api-common";
 import { ResponsesService } from "./responses.service";
 
+type Model = Response;
+type Params = [IdOr<Study>];
+type Service = ResponsesService;
+
 describe("ResponsesService", function () {
+  const createModel = () => new Response(generateResponse(10));
+  const baseUrl = "/studies/5/responses/";
+
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        MockAppConfigModule,
-      ],
+      imports: [HttpClientTestingModule, MockAppConfigModule],
       providers: [ResponsesService],
     });
 
     this.service = TestBed.inject(ResponsesService);
   });
 
-  validateApiList<Response, ResponsesService>(
-    "/studies/5/responses/",
-    undefined,
-    5
-  );
-  validateApiFilter<Response, ResponsesService>(
-    "/studies/5/responses/filter",
-    undefined,
-    undefined,
-    5
-  );
-  validateApiShow<Response, ResponsesService>(
-    "/studies/5/responses/10",
+  validateApiList<Model, Params, Service>(baseUrl, 5);
+  validateApiFilter<Model, Params, Service>(baseUrl + "filter", 5);
+  validateApiShow<Model, Params, Service>(baseUrl + "10", 10, createModel, 5);
+  validateApiCreate<Model, Params, Service>(baseUrl, createModel, 5);
+  validateApiUpdate<Model, Params, Service>(baseUrl + "10", createModel, 5);
+  validateApiDestroy<Model, Params, Service>(
+    baseUrl + "10",
     10,
-    new Response(generateResponse(10)),
-    5
-  );
-  validateApiCreate<Response, ResponsesService>(
-    "/studies/5/responses/",
-    new Response(generateResponse(10)),
-    5
-  );
-  validateApiUpdate<Response, ResponsesService>(
-    "/studies/5/responses/10",
-    new Response(generateResponse(10)),
-    5
-  );
-  validateApiDestroy<Response, ResponsesService>(
-    "/studies/5/responses/10",
-    10,
-    new Response(generateResponse(10)),
+    createModel,
     5
   );
 });

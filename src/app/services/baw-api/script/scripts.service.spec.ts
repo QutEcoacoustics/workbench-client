@@ -1,6 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { Script } from "@models/Script";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
@@ -12,28 +11,24 @@ import {
   validateApiShow,
 } from "@test/helpers/api-common";
 
+type Model = Script;
+type Params = [];
+type Service = ScriptsService;
+
 describe("ScriptsService", function () {
+  const createModel = () => new Script(generateScript(5));
+  const baseUrl = "/scripts/";
+
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        MockAppConfigModule,
-      ],
+      imports: [HttpClientTestingModule, MockAppConfigModule],
       providers: [ScriptsService],
     });
     this.service = TestBed.inject(ScriptsService);
   });
 
-  validateApiList<Script, ScriptsService>("/scripts/");
-  validateApiFilter<Script, ScriptsService>("/scripts/filter");
-  validateApiShow<Script, ScriptsService>(
-    "/scripts/5",
-    5,
-    new Script(generateScript(5))
-  );
-  validateApiCreate<Script, ScriptsService>(
-    "/scripts/",
-    new Script(generateScript(5))
-  );
+  validateApiList<Model, Params, Service>(baseUrl);
+  validateApiFilter<Model, Params, Service>(baseUrl + "filter");
+  validateApiShow<Model, Params, Service>(baseUrl + "5", 5, createModel);
+  validateApiCreate<Model, Params, Service>(baseUrl, createModel);
 });

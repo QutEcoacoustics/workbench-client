@@ -3,21 +3,21 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import type { Project } from "@models/Project";
+import type { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
+  Empty,
   emptyParam,
+  Filter,
   filterParam,
-  filterByForeignKey,
   id,
   IdOr,
   IdParam,
   IdParamOptional,
   option,
   StandardApi,
-  Filter,
-  Empty,
 } from "../api-common";
 import { Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
@@ -70,6 +70,24 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   ): Observable<Site | void> {
     return this.apiDestroy(endpoint(project, model, emptyParam));
   }
+
+  /**
+   * Filter project sites by region
+   *
+   * @param filters Site filters
+   * @param project Project to filter by
+   * @param region Region to filter by (null if you want sites which are not part of a region)
+   */
+  public filterByRegion(
+    filters: Filters<ISite>,
+    project: IdOr<Project>,
+    region: IdOr<Region>
+  ): Observable<Site[]> {
+    return this.filter(
+      this.filterByForeignKey(filters, "regionId", region) as Filters,
+      project
+    );
+  }
 }
 
 /**
@@ -92,15 +110,6 @@ export class ShallowSitesService extends StandardApi<Site> {
   public filter(filters: Filters<ISite>): Observable<Site[]> {
     return this.apiFilter(endpointShallow(emptyParam, filterParam), filters);
   }
-  public filterByCreator(
-    filters: Filters<ISite>,
-    user?: IdOr<User>
-  ): Observable<Site[]> {
-    return this.apiFilter(
-      endpointShallow(emptyParam, filterParam),
-      user ? filterByForeignKey<Site>(filters, "creatorId", user) : filters
-    );
-  }
   public show(model: IdOr<Site>): Observable<Site> {
     return this.apiShow(endpointShallow(model, emptyParam));
   }
@@ -112,6 +121,36 @@ export class ShallowSitesService extends StandardApi<Site> {
   }
   public destroy(model: IdOr<Site>): Observable<Site | void> {
     return this.apiDestroy(endpointShallow(model, emptyParam));
+  }
+
+  /**
+   * Filter sites by creator
+   *
+   * @param filters Site filters
+   * @param user user to filter by
+   */
+  public filterByCreator(
+    filters: Filters<ISite>,
+    user: IdOr<User>
+  ): Observable<Site[]> {
+    return this.filter(
+      this.filterByForeignKey(filters, "creatorId", user) as Filters
+    );
+  }
+
+  /**
+   * Filter sites by region
+   *
+   * @param filters Site filters
+   * @param region Region to filter by (null if you want sites which are not part of a region)
+   */
+  public filterByRegion(
+    filters: Filters<ISite>,
+    region: IdOr<Region>
+  ): Observable<Site[]> {
+    return this.filter(
+      this.filterByForeignKey(filters, "regionId", region) as Filters
+    );
   }
 
   /**

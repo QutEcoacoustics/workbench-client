@@ -57,7 +57,7 @@ describe("SiteComponent", () => {
     expectation: FilterExpectations<AudioEvent> = () => {}
   ) {
     const subject = new Subject<AudioEvent[]>();
-    eventsApi.filter.andCallFake((filters) => {
+    eventsApi.filterBySite.andCallFake((filters) => {
       expectation(filters);
       return subject;
     });
@@ -75,7 +75,7 @@ describe("SiteComponent", () => {
   ) {
     const subject = new Subject<AudioRecording[]>();
 
-    recordingsApi.filter.andCallFake((filters) => {
+    recordingsApi.filterBySite.andCallFake((filters) => {
       if (filters.sorting.direction === "asc") {
         oldExpectation(filters);
       } else {

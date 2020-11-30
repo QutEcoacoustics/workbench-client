@@ -49,31 +49,6 @@ export function option(x?: New | Filter | Empty) {
   return x ? x : emptyParam;
 }
 
-/**
- * Modify a base filter to add a foreign key condition
- *
- * @param filters Base Filters
- * @param key Foreign key
- * @param model Foreign key value
- */
-export function filterByForeignKey<T>(
-  filters: Filters<T>,
-  key: keyof T,
-  model: AbstractModel | string | number
-): Filters<T> {
-  const { filter, ...meta } = filters;
-
-  return {
-    ...meta,
-    filter: {
-      ...filter,
-      [key]: {
-        eq: model instanceof AbstractModel ? model.id : model,
-      },
-    },
-  };
-}
-
 export type Empty = "";
 export type New = "new";
 export type Filter = "filter";

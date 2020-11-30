@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { Filters } from "@baw-api/baw-api.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
@@ -25,10 +26,12 @@ import { pointMenuItem } from "@components/sites/points.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
+import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import { ItemInterface } from "@shared/items/item/item.component";
 import { List } from "immutable";
+import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
 export const myAccountActions = [
@@ -66,14 +69,6 @@ class MyProfileComponent
     { icon: pointMenuItem.icon, name: "Points", value: "..." },
     { icon: myAnnotationsMenuItem.icon, name: "Annotations", value: "..." },
   ]);
-  protected indexes = {
-    projects: 0,
-    tags: 1,
-    bookmarks: 2,
-    sites: 3,
-    points: 4,
-    annotations: 5,
-  };
 
   public constructor(
     protected route: ActivatedRoute,
@@ -98,11 +93,7 @@ class MyProfileComponent
     this.updateStatistics(this.user);
   }
 
-  /**
-   * Update user details
-   *
-   * @param user User model
-   */
+  /** Update user details */
   protected updateUserProfile(user: User) {
     this.lastSeenAt =
       user.lastSeenAt?.toRelative() || "Unknown time since last logged in";
@@ -110,93 +101,71 @@ class MyProfileComponent
       user.createdAt?.toRelative() || "Unknown membership length";
   }
 
-  /**
-   * Retrieve user statistics and update page
-   *
-   * @param user User model
-   */
+  /** Retrieve user statistics and update page */
   protected updateStatistics(user: User) {
-    // Projects
-    this.projectsApi
-      .filterByCreator({}, user)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (models) => this.extractTotal(this.indexes.projects, models),
-        () => this.handleError(this.indexes.projects)
-      );
+    const projects = 0;
+    const tags = 1;
+    const bookmarks = 2;
+    const sites = 3;
+    const points = 4;
+    const annotations = 5;
 
-    // Bookmarks
-    this.bookmarksApi
-      .filterByCreator({}, user)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (models) => this.extractTotal(this.indexes.bookmarks, models),
-        () => this.handleError(this.indexes.bookmarks)
-      );
+    this.updateStatistic(this.projectsApi, projects, user);
+    this.updateStatistic<Tag, TagsService>(
+      this.tagsApi,
+      tags,
+      user,
+      {
+        paging: { items: 10 },
+        sorting: { orderBy: "updatedAt", direction: "desc" },
+      },
+      (models) => (this.tags = models)
+    );
+    this.updateStatistic(this.bookmarksApi, bookmarks, user);
+    this.updateStatistic(this.sitesApi, sites, user);
+    this.updateStatistic<Site, ShallowSitesService>(
+      this.sitesApi,
+      points,
+      user,
+      { filter: { regionId: { notEqual: null } } }
+    );
+    this.updateStatistic(this.audioEventsApi, annotations, user);
+  }
 
-    // Sites
-    this.sitesApi
-      .filterByCreator({}, user)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (models) => this.extractTotal(this.indexes.sites, models),
-        () => this.handleError(this.indexes.sites)
-      );
+  /** Update an individual statistic */
+  protected updateStatistic<
+    M,
+    S extends {
+      filterByCreator: (filters: Filters<M>, user: User) => Observable<M[]>;
+    }
+  >(
+    api: S,
+    index: number,
+    user: User,
+    additionalFilters: Filters<M> = {},
+    callback?: (models: M[]) => void
+  ) {
+    function getPageTotal(model: M) {
+      return ((model as unknown) as AbstractModel).getMetadata().paging.total;
+    }
 
-    // Points
-    this.sitesApi
-      .filterByCreator({ filter: { regionId: { notEqual: null } } }, user)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (models) => this.extractTotal(this.indexes.points, models),
-        () => this.handleError(this.indexes.points)
-      );
-
-    // Annotations
-    this.audioEventsApi
-      .filterByCreator({}, user)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (models) => this.extractTotal(this.indexes.annotations, models),
-        () => this.handleError(this.indexes.annotations)
-      );
-
-    // Tags
-    this.tagsApi
-      .filterByCreator(
-        {
-          paging: { items: 10 },
-          sorting: { orderBy: "updatedAt", direction: "desc" },
-        },
-        user
-      )
+    api
+      .filterByCreator(additionalFilters, user)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (models) => {
-          this.extractTotal(this.indexes.tags, models);
-          this.tags = models;
+          const total = models.length > 0 ? getPageTotal(models[0]) : 0;
+          this.userStatistics = this.userStatistics.update(
+            index,
+            (statistic) => ({ ...statistic, value: total })
+          );
+          callback?.(models);
         },
-        () => this.handleError(this.indexes.tags)
+        () => this.handleError(index)
       );
   }
 
-  /**
-   * Extract the maximum number of models a user has access to
-   *
-   * @param index Statistic index in userStatistics array
-   * @param models Model list
-   */
-  protected extractTotal(index: number, models: AbstractModel[]) {
-    const total = models.length > 0 ? models[0].getMetadata().paging.total : 0;
-    this.userStatistics = this.userStatistics.update(index, (statistic) => ({
-      ...statistic,
-      value: total,
-    }));
-  }
-
-  /**
-   * Set failed statistic value to unknown
-   */
+  /** Set failed statistic value to unknown */
   protected handleError(index: number) {
     this.userStatistics = this.userStatistics.update(index, (statistic) => ({
       ...statistic,

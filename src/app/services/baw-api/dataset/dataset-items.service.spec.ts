@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import { IdOr } from "@baw-api/api-common";
+import { Dataset } from "@models/Dataset";
 import { DatasetItem } from "@models/DatasetItem";
 import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
 import { generateDatasetItem } from "@test/fakes/DatasetItem";
@@ -13,46 +14,31 @@ import {
 } from "@test/helpers/api-common";
 import { DatasetItemsService } from "./dataset-items.service";
 
+type Model = DatasetItem;
+type Params = [IdOr<Dataset>];
+type Service = DatasetItemsService;
+
 describe("DatasetItemsService", function () {
+  const createModel = () => new DatasetItem(generateDatasetItem(10));
+  const baseUrl = "/datasets/5/items/";
+
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        MockAppConfigModule,
-      ],
+      imports: [HttpClientTestingModule, MockAppConfigModule],
       providers: [DatasetItemsService],
     });
 
     this.service = TestBed.inject(DatasetItemsService);
   });
 
-  validateApiList<DatasetItem, DatasetItemsService>(
-    "/datasets/5/items/",
-    undefined,
-    5
-  );
-  validateApiFilter<DatasetItem, DatasetItemsService>(
-    "/datasets/5/items/filter",
-    undefined,
-    undefined,
-    5
-  );
-  validateApiShow<DatasetItem, DatasetItemsService>(
-    "/datasets/5/items/10",
+  validateApiList<Model, Params, Service>(baseUrl, 5);
+  validateApiFilter<Model, Params, Service>(baseUrl + "filter", 5);
+  validateApiShow<Model, Params, Service>(baseUrl + "10", 10, createModel, 5);
+  validateApiCreate<Model, Params, Service>(baseUrl, createModel, 5);
+  validateApiDestroy<Model, Params, Service>(
+    baseUrl + "10",
     10,
-    new DatasetItem(generateDatasetItem(10)),
-    5
-  );
-  validateApiCreate<DatasetItem, DatasetItemsService>(
-    "/datasets/5/items/",
-    new DatasetItem(generateDatasetItem(10)),
-    5
-  );
-  validateApiDestroy<DatasetItem, DatasetItemsService>(
-    "/datasets/5/items/10",
-    10,
-    new DatasetItem(generateDatasetItem(10)),
+    createModel,
     5
   );
 });

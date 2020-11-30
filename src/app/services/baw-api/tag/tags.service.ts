@@ -10,7 +10,6 @@ import { map } from "rxjs/operators";
 import {
   emptyParam,
   filterParam,
-  filterByForeignKey,
   id,
   IdOr,
   IdParamOptional,
@@ -44,15 +43,6 @@ export class TagsService extends StandardApi<Tag> {
   public filter(filters: Filters<ITag>): Observable<Tag[]> {
     return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
-  public filterByCreator(
-    filters: Filters<ITag>,
-    user?: IdOr<User>
-  ): Observable<Tag[]> {
-    return this.apiFilter(
-      endpoint(emptyParam, filterParam),
-      user ? filterByForeignKey<Tag>(filters, "creatorId", user) : filters
-    );
-  }
   public show(model: IdOr<Tag>): Observable<Tag> {
     return this.apiShow(endpoint(model, emptyParam));
   }
@@ -66,6 +56,22 @@ export class TagsService extends StandardApi<Tag> {
   public destroy(model: IdOr<Tag>): Observable<Tag | void> {
     return this.apiDestroy(endpoint(model, emptyParam));
   }
+
+  /**
+   * Filter tags by creator
+   *
+   * @param filters Tag filters
+   * @param user user to filter by
+   */
+  public filterByCreator(
+    filters: Filters<ITag>,
+    user: IdOr<User>
+  ): Observable<Tag[]> {
+    return this.filter(
+      this.filterByForeignKey(filters, "creatorId", user) as Filters
+    );
+  }
+
   /**
    * List type of tags
    * TODO Replace with reference to baw server

@@ -4,32 +4,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
-import { Id } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "@models/AbstractModel";
-import { hasMany, hasOne } from "@models/AssociationDecorators";
+import { MockModelWithDecorators as MockModel } from "@models/AssociationLoadingInComponents.spec";
 import { nStepObservable } from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { DetailViewComponent } from "./detail-view.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
-
-class MockModel extends AbstractModel {
-  public id: Id;
-  @hasOne<MockModel, AbstractModel>(MOCK, "id")
-  public readonly childModel: AssociatedModel;
-  @hasMany<MockModel, AbstractModel>(MOCK, "id")
-  public readonly childModels: AssociatedModel[];
-
-  public constructor(opts: any, injector?: Injector) {
-    super(opts, injector);
-  }
-
-  public get viewUrl(): string {
-    throw new Error("Method not implemented.");
-  }
-  public toJSON(): Record<string, any> {
-    throw new Error("Method not implemented.");
-  }
-}
 
 describe("DetailViewComponent", () => {
   let api: MockStandardApiService;
@@ -180,7 +159,7 @@ describe("DetailViewComponent", () => {
             templateOptions: { label: "custom label" },
           },
         ];
-        component.model = new MockModel({ id: 0 }, injector);
+        component.model = new MockModel({ id: 0, ids: 0 }, injector);
         fixture.detectChanges();
       }
 

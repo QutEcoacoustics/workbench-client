@@ -1,38 +1,41 @@
 import { ApiFilter, ApiShow } from "@baw-api/api-common";
 import { Filters } from "@baw-api/baw-api.service";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
+import { KeysOfType } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { Id, Ids } from "@interfaces/apiInterfaces";
+import {
+  HasCreator,
+  HasDeleter,
+  HasUpdater,
+  Id,
+  Ids,
+} from "@interfaces/apiInterfaces";
 import { Observable, Subscription } from "rxjs";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { User } from "./User";
 
 /**
- * Creates an association between the ownerId and its user model
- */
-export function owner<Parent extends AbstractModel & { ownerId?: Id }>() {
-  return hasOne<Parent, User>(ACCOUNT, "ownerId");
-}
-
-/**
  * Creates an association between the creatorId and its user model
  */
-export function creator<Parent extends AbstractModel & { creatorId?: Id }>() {
-  return hasOne<Parent, User>(ACCOUNT, "creatorId");
+export function creator<Parent extends AbstractModel & HasCreator>() {
+  const key: keyof Parent = "creatorId";
+  return hasOne<Parent, User>(ACCOUNT, key as any);
 }
 
 /**
  * Creates an association between the updaterId and its user model
  */
-export function updater<Parent extends AbstractModel & { updaterId?: Id }>() {
-  return hasOne<Parent, User>(ACCOUNT, "updaterId");
+export function updater<Parent extends AbstractModel & HasUpdater>() {
+  const key: keyof Parent = "updaterId";
+  return hasOne<Parent, User>(ACCOUNT, key as any);
 }
 
 /**
  * Creates an association between the deleterId and its user model
  */
-export function deleter<Parent extends AbstractModel & { deleterId?: Id }>() {
-  return hasOne<Parent, User>(ACCOUNT, "deleterId");
+export function deleter<Parent extends AbstractModel & HasDeleter>() {
+  const key: keyof Parent = "deleterId";
+  return hasOne<Parent, User>(ACCOUNT, key as any);
 }
 
 /**
@@ -51,7 +54,7 @@ export function hasMany<
   Params extends any[] = []
 >(
   serviceToken: ServiceToken<ApiFilter<Child, Params>>,
-  identifierKeys?: keyof Parent,
+  identifierKeys?: KeysOfType<Parent, Id[] | Set<Id>>,
   childIdentifier: keyof Child = "id",
   routeParams: ReadonlyArray<keyof Parent> = []
 ) {
@@ -79,7 +82,7 @@ export function hasMany<
  * of retrieving a single model linked by an id in the parent model
  *
  * @param serviceToken Injection token API service used to retrieve the child model
- * @param identifierKeys Parent model key used to retrieve the id for the child model
+ * @param identifierKey Parent model key used to retrieve the id for the child model
  * @param routeParams Additional route params required for the filter request.
  * This is a list of keys from the parent where the values can be retrieved
  * @param failureValue Value to represent a failure to retrieve the model/s
@@ -90,16 +93,16 @@ export function hasOne<
   Params extends any[] = []
 >(
   serviceToken: ServiceToken<ApiShow<Child, Params>>,
-  identifierKeys: keyof Parent,
+  identifierKey: KeysOfType<Parent, Id>,
   routeParams: ReadonlyArray<keyof Parent> = [],
   failureValue: any = null
 ) {
   return createModelDecorator<Parent, Child, Params, ApiShow<Child, Params>>(
     serviceToken,
-    identifierKeys,
+    identifierKey,
     routeParams,
     (service, parent: Parent, params: Params) =>
-      service.show(parent[identifierKeys] as any, ...params),
+      service.show(parent[identifierKey] as any, ...params),
     UnresolvedModel.one,
     failureValue
   );

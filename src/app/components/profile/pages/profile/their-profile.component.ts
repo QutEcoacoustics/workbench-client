@@ -63,6 +63,7 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
 
     if (isDeletedUser(this.user) || isUnknownUser(this.user)) {
       // Set statistics to unknown
+      this.tags = [];
       this.userStatistics.forEach((_, index) => this.handleError(index));
     } else {
       // Update statistics if user exists
