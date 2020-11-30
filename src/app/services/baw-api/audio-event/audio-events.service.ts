@@ -1,10 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
+import { AudioRecordings, Taggings } from "@baw-api/assocationFilters";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { AudioEvent } from "@models/AudioEvent";
+import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
+import { ITag } from "@models/Tag";
 import { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
@@ -21,6 +23,11 @@ import {
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
+type AudioEventComments = `audioEventComments.${keyof IAudioEvent}`;
+type Tags = `taggings.tags${keyof ITag}`;
+type ExtraFilters = AudioRecordings | AudioEventComments | Taggings | Tags;
+export type AudioEventFilters = Filters<IAudioEvent, ExtraFilters>;
+
 const audioRecordingId: IdParam<AudioRecording> = id;
 const audioEventId: IdParamOptional<AudioEvent> = id;
 const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}/audio_events/${audioEventId}${option}`;
@@ -28,6 +35,8 @@ const shallowEndpoint = stringTemplate`/audio_events/${audioEventId}${option}`;
 
 @Injectable()
 export class AudioEventsService extends StandardApi<
+  IAudioEvent,
+  ExtraFilters,
   AudioEvent,
   [IdOr<AudioRecording>]
 > {
@@ -43,7 +52,7 @@ export class AudioEventsService extends StandardApi<
     return this.apiList(endpoint(audioRecording, emptyParam, emptyParam));
   }
   public filter(
-    filters: Filters<AudioEvent>,
+    filters: AudioEventFilters,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent[]> {
     return this.apiFilter(
@@ -82,8 +91,8 @@ export class AudioEventsService extends StandardApi<
 
 @Injectable()
 export class ShallowAudioEventsService
-  extends BawApiService<AudioEvent>
-  implements ApiFilter<AudioEvent> {
+  extends BawApiService<AudioEvent, IAudioEvent, ExtraFilters>
+  implements ApiFilter<AudioEventFilters, AudioEvent> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
@@ -92,7 +101,7 @@ export class ShallowAudioEventsService
     super(http, apiRoot, AudioEvent, injector);
   }
 
-  public filter(filters: Filters<AudioEvent>): Observable<AudioEvent[]> {
+  public filter(filters: AudioEventFilters): Observable<AudioEvent[]> {
     return this.apiFilter(shallowEndpoint(emptyParam, filterParam), filters);
   }
 
@@ -103,7 +112,7 @@ export class ShallowAudioEventsService
    * @param user User to filter by
    */
   public filterByCreator(
-    filters: Filters<AudioEvent>,
+    filters: AudioEventFilters,
     user: IdOr<User>
   ): Observable<AudioEvent[]> {
     return this.filter(this.filterByForeignKey(filters, "creatorId", user));
@@ -116,11 +125,11 @@ export class ShallowAudioEventsService
    * @param site Site to filter by
    */
   public filterBySite(
-    filters: Filters<AudioEvent>,
+    filters: AudioEventFilters,
     site: IdOr<Site>
   ): Observable<AudioEvent[]> {
     return this.filter(
-      this.filterByForeignKey(filters, "audio_recordings.site_id" as any, site)
+      this.filterByForeignKey(filters, "audioRecordings.siteId", site)
     );
   }
 }

@@ -9,6 +9,7 @@ import {
 } from "@angular/core";
 import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { Observable } from "rxjs";
@@ -35,7 +36,12 @@ export const STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
  * Interface with BAW Server Rest API
  */
 @Injectable()
-export abstract class BawApiService<Model extends AbstractModel> {
+export abstract class BawApiService<
+  Model extends AbstractModel,
+  Interface = unknown,
+  ExtraFilters = unknown,
+  ModelFilters = Filters<Interface, ExtraFilters>
+> {
   private platform: any;
 
   /*
@@ -180,7 +186,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
    */
   protected apiFilter(
     path: string,
-    filters: Filters<Model>
+    filters: ModelFilters
   ): Observable<Model[]> {
     return this.httpPost(path, filters).pipe(
       map(this.handleCollectionResponse)
@@ -283,23 +289,21 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param model Foreign key value (if undefined, returns base filters)
    */
   protected filterByForeignKey(
-    filters: Filters<Model>,
-    key: KeysOfType<Model, number | string>,
+    filters: ModelFilters,
+    key: keyof Interface | ExtraFilters,
     model: AbstractModel | string | number
-  ): Filters<Model> {
-    const { filter, ...meta } = filters;
+  ): ModelFilters {
+    const { filter, ...meta } = filters as any;
 
     // Only return if model is undefined, not null (which is a valid input)
     if (model === undefined) {
       return filters;
     }
 
+    const id = model instanceof AbstractModel ? model.id : model;
     return {
       ...meta,
-      filter: {
-        ...filter,
-        [key]: { eq: model instanceof AbstractModel ? model.id : model },
-      },
+      filter: { ...filter, [key as any]: { eq: id } },
     };
   }
 
@@ -322,7 +326,7 @@ export interface Sorting<K> {
   /** Which key to sort by */
   orderBy: K;
   /** Sorting direction */
-  direction: "desc" | "asc";
+  direction: Direction;
 }
 
 /**
@@ -431,18 +435,22 @@ export type InnerFilter<T = unknown> = Combinations<T> &
  * Filter metadata from api response
  * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
  */
-export interface Filters<T = unknown, K extends keyof T = keyof T> {
+export interface Filters<
+  Model = unknown,
+  ExtraKeys = unknown,
+  Keys extends keyof Model = keyof Model
+> {
   /** Filter settings */
-  filter?: InnerFilter<T>;
+  filter?: InnerFilter<Model | ExtraKeys>;
   /** Include or exclude keys from response */
   projection?: {
     /** Include keys in response */
-    include?: K[];
+    include?: Keys[];
     /** Exclude keys from response */
-    exclude?: K[];
+    exclude?: Keys[];
   };
   /** Current sorting options */
-  sorting?: Sorting<K>;
+  sorting?: Sorting<Keys>;
   /** Current page data */
   paging?: Paging;
 }
