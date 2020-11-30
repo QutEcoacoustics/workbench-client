@@ -2,14 +2,6 @@ import { Params } from "@angular/router";
 import { menuLink } from "@interfaces/menusInterfaces";
 import { stringTemplate } from "../stringTemplate/stringTemplate";
 
-export const audioAnalysisMenuItem = menuLink({
-  icon: ["fas", "server"],
-  label: "Audio Analysis",
-  tooltip: () => "View audio analysis jobs",
-  order: 5,
-  uri: () => "/audio_analysis",
-});
-
 export const libraryMenuItem = menuLink({
   icon: ["fas", "book"],
   label: "Library",

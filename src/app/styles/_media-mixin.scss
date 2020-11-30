@@ -1,0 +1,10 @@
+@import "../../../node_modules/include-media/dist/include-media";
+@import "./variables";
+
+$breakpoints: (
+  extra-small: $grid-xs,
+  small: $grid-sm,
+  medium: $grid-md,
+  large: $grid-lg,
+  extra-large: $grid-xl
+);

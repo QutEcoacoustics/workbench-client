@@ -5,7 +5,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
 import { MockModelWithDecorators as MockModel } from "@models/AssociationLoadingInComponents.spec";
-import { nStepObservable } from "@test/helpers/general";
+import { nStepObservable, viewports } from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { DetailViewComponent } from "./detail-view.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
@@ -238,7 +238,7 @@ describe("DetailViewComponent", () => {
     });
 
     it("should inline field and value on small screen", () => {
-      viewport.set("small");
+      viewport.set(viewports.small);
 
       const parentEl = getWrapper();
       const parent = window.getComputedStyle(parentEl);
@@ -252,7 +252,7 @@ describe("DetailViewComponent", () => {
     });
 
     it("should expand field and value on smallest screen", () => {
-      viewport.set("extra-small");
+      viewport.set(viewports.extraSmall);
 
       const parentEl = getWrapper();
       const parent = window.getComputedStyle(parentEl);
@@ -266,7 +266,7 @@ describe("DetailViewComponent", () => {
     });
 
     it("should right align field on small screen", () => {
-      viewport.set("small");
+      viewport.set(viewports.small);
 
       const field = getFields()[0];
       const fieldStyle = window.getComputedStyle(field);
@@ -275,7 +275,7 @@ describe("DetailViewComponent", () => {
     });
 
     it("should left align field on smallest screen", () => {
-      viewport.set("extra-small");
+      viewport.set(viewports.extraSmall);
 
       const field = getFields()[0];
       const fieldStyle = window.getComputedStyle(field);

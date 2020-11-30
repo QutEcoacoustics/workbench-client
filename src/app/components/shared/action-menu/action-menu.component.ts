@@ -29,6 +29,7 @@ export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   public actionTitle: LabelAndIcon;
   public actionLinks: List<AnyMenuItem>;
   public actionWidget: WidgetMenuItem;
+  private defaultCategory = defaultMenu.defaultCategory;
 
   public constructor(private route: ActivatedRoute) {
     super();
@@ -37,7 +38,7 @@ export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   public ngOnInit() {
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (page: PageInfo) => {
-        this.actionTitle = page.category ?? defaultMenu.defaultCategory;
+        this.actionTitle = page.category ?? this.defaultCategory;
         this.actionLinks = page.menus?.actions ?? List();
         this.actionWidget = page.menus?.actionsWidget ?? null;
       },

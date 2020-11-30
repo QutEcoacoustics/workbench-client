@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { defaultMenu } from "@helpers/page/defaultMenus";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -30,7 +31,7 @@ export class SecondaryMenuComponent
   implements OnInit {
   public contextLinks: List<NavigableMenuItem>;
   public linksWidget: WidgetMenuItem;
-  private defaultLinks: List<NavigableMenuItem> = defaultMenu.contextLinks;
+  private defaultLinks = defaultMenu.contextLinks;
 
   public constructor(private route: ActivatedRoute) {
     super();
@@ -60,7 +61,7 @@ export class SecondaryMenuComponent
           current
         );
       },
-      (err) => {}
+      (err: ApiErrorDetails) => console.error("SecondaryMenuComponent", err)
     );
   }
 }

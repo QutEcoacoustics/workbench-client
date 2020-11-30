@@ -1,7 +1,6 @@
 import { Title } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
 import {
-  ActivatedRouteStub,
   createRoutingFactory,
   mockProvider,
   SpectatorRouting,
@@ -28,36 +27,31 @@ describe("AppComponent", () => {
     imports: [RouterTestingModule, MockAppConfigModule],
   });
 
-  function setup(firstChild?: ActivatedRouteStub) {
-    spec = createComponent({ detectChanges: true, firstChild });
-  }
+  beforeEach(() => {
+    spec = createComponent({ detectChanges: true });
+  });
 
   it("should create the app", () => {
-    setup();
     spec.detectChanges();
     expect(spec.component).toBeTruthy();
   });
 
   it("should create header", () => {
-    setup();
     spec.detectChanges();
     expect(spec.query("baw-header")).toBeTruthy();
   });
 
   it("should create footer", () => {
-    setup();
     spec.detectChanges();
     expect(spec.query("baw-footer")).toBeTruthy();
   });
 
   it("should create loading bar", () => {
-    setup();
     spec.detectChanges();
     expect(spec.query("ngx-loading-bar")).toBeTruthy();
   });
 
   it("should change the title to match the environment title", () => {
-    setup();
     const title = spec.inject(Title);
     const config = spec.inject(ConfigService);
     spec.detectChanges();
@@ -65,100 +59,59 @@ describe("AppComponent", () => {
   });
 
   describe("updatePageLayout", () => {
-    function createFirstChild(depth: number, component: any) {
-      let activatedRouteStub = new ActivatedRouteStub({
-        firstChild: { component } as any,
-      });
-
-      for (let i = 0; i < depth - 1; i++) {
-        activatedRouteStub = new ActivatedRouteStub({
-          firstChild: activatedRouteStub,
-        });
+    function updatePageLayout(
+      fullscreen: boolean,
+      initialFullscreenValue?: boolean
+    ) {
+      if (initialFullscreenValue) {
+        // Set the fullscreen value to a value other than the expected
+        // to ensure it is overridden properly
+        spec.component.fullscreen = initialFullscreenValue;
       }
 
-      return activatedRouteStub;
-    }
-
-    function createPageComponent(fullscreen: boolean) {
-      return { pageInfo: { fullscreen } };
-    }
-
-    function updatePageLayout(initialFullscreenValue: boolean) {
-      // Set the fullscreen value to a value other than the expected
-      // to ensure it is overridden properly
-      spec.component.fullscreen = initialFullscreenValue;
-      spec.component["updatePageLayout"]();
+      spec.component["updatePageLayout"]({
+        constructor: { pageInfo: { fullscreen } },
+      });
       spec.detectChanges();
     }
 
-    function assertFullscreen() {
-      // Should have all 4 router-outlets
-      expect(spec.queryAll("router-outlet").length).toBe(4);
-      // Secondary and action outlets are hidden
-      expect(spec.queryAll(".hidden router-outlet").length).toBe(2);
-    }
+    function assertLayout(isFullscreen: boolean) {
+      const routerOutlets = spec.queryAll("router-outlet");
+      const secondaryMenu = routerOutlets[0].parentElement;
+      const actionMenu = routerOutlets[3].parentElement;
 
-    function assertMenuLayout() {
-      // Should have all 4 router-outlets
-      expect(spec.queryAll("router-outlet").length).toBe(4);
-      expect(spec.queryAll(".hidden router-outlet").length).toBe(0);
+      expect(routerOutlets.length).toBe(4, "Wrong number of router-outlets");
+
+      if (isFullscreen) {
+        expect(secondaryMenu).toHaveStyle({ display: "none" });
+        expect(actionMenu).toHaveStyle({ display: "none" });
+      } else {
+        expect(secondaryMenu).not.toHaveStyle({ display: "none" });
+        expect(actionMenu).not.toHaveStyle({ display: "none" });
+      }
     }
 
     it("should default to fullscreen", () => {
-      setup();
       spec.detectChanges();
-      assertFullscreen();
+      assertLayout(true);
     });
 
     it("should set menu layout if fullscreen is undefined", () => {
-      setup(createFirstChild(1, { pageInfo: { fullscreen: undefined } }));
+      updatePageLayout(undefined);
       spec.detectChanges();
-      assertFullscreen();
+      assertLayout(false);
     });
 
     it("should detect fullscreen component", () => {
-      setup(createFirstChild(1, createPageComponent(true)));
-      updatePageLayout(false);
-      assertFullscreen();
+      updatePageLayout(true, false);
+      assertLayout(true);
     });
 
     it("should detect menu layout component", () => {
-      setup(createFirstChild(1, createPageComponent(false)));
-      updatePageLayout(true);
-      assertMenuLayout();
-    });
-
-    it("should detect nested fullscreen component", () => {
-      setup(createFirstChild(5, createPageComponent(true)));
-      updatePageLayout(false);
-      assertFullscreen();
-    });
-
-    it("should detect nested menu layout component", () => {
-      setup(createFirstChild(5, createPageComponent(false)));
-      updatePageLayout(true);
-      assertMenuLayout();
-    });
-
-    it("should default to fullscreen if no page component found", () => {
-      setup(createFirstChild(1, {}));
-      updatePageLayout(false);
-      assertFullscreen();
-    });
-
-    it("should default to fullscreen if no component found", () => {
-      setup(createFirstChild(1, undefined));
-      updatePageLayout(false);
-      assertFullscreen();
-    });
-
-    it("should default to fullscreen after depth of 50 components reached", () => {
-      setup(createFirstChild(51, createPageComponent(false)));
-      updatePageLayout(false);
-      assertFullscreen();
+      updatePageLayout(false, true);
+      assertLayout(false);
     });
   });
 
-  // TODO Add tests for router events
   // TODO Add tests for progress bar
 });

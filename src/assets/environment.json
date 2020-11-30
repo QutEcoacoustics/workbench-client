@@ -2,7 +2,7 @@
   "environment": {
     "environment": "development",
     "apiRoot": "https://staging.ecosounds.org",
-    "siteRoot": "http://localhost:4200",
+    "siteRoot": "http://development.ecosounds.org:4200",
     "siteDir": "/",
     "keys": {
       "googleMaps": "",

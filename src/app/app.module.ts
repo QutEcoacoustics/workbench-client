@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BawApiModule } from "@baw-api/baw-api.module";
+import { AudioAnalysisModule } from "@components/audio-analysis/audio-analysis.module";
 import { RegionsModule } from "@components/regions/regions.module";
 import { GuardModule } from "@guards/guards.module";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
@@ -47,6 +48,7 @@ export const appImports = [
   SharedModule,
   AboutModule,
   AdminModule,
+  AudioAnalysisModule,
   DataRequestModule,
   MyAccountModule,
   PointsModule,

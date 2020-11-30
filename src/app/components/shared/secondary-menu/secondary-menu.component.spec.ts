@@ -13,6 +13,8 @@ import { MenuComponent } from "@menu/menu.component";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { List } from "immutable";
 import { MockComponent } from "ng-mocks";
+import { assertIcon, assertTooltip } from "@test/helpers/html";
+import { SharedModule } from "../shared.module";
 import { SecondaryMenuComponent } from "./secondary-menu.component";
 
 const mockMenu = MockComponent(MenuComponent);
