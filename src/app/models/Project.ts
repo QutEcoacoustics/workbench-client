@@ -1,5 +1,5 @@
 import { Injector } from "@angular/core";
-import { SHALLOW_REGION, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { ACCOUNT, SHALLOW_REGION, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import {
   AccessLevel,
@@ -7,16 +7,22 @@ import {
   Description,
   HasAllUsers,
   HasDescription,
+  Hash,
   Id,
   Ids,
   ImageUrl,
-  Hash,
   Param,
 } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/app-config/app-config.service";
 import { Card } from "@shared/cards/cards.component";
 import { AbstractModel } from "./AbstractModel";
-import { creator, hasMany, owner, updater } from "./AssociationDecorators";
+import {
+  creator,
+  deleter,
+  hasMany,
+  hasOne,
+  updater,
+} from "./AssociationDecorators";
 import {
   bawCollection,
   bawDateTime,
@@ -82,12 +88,14 @@ export class Project extends AbstractModel implements IProject {
   public sites?: Site[];
   @hasMany<Project, Region>(SHALLOW_REGION, "regionIds")
   public regions?: Region[];
+  @hasOne<Project, User>(ACCOUNT, "ownerId")
+  public owner?: User;
   @creator<Project>()
   public creator?: User;
   @updater<Project>()
   public updater?: User;
-  @owner<Project>()
-  public owner?: User;
+  @deleter<Project>()
+  public deleter?: User;
 
   public constructor(project: IProject, injector?: Injector) {
     super(project, injector);

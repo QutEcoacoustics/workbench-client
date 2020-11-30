@@ -3,23 +3,21 @@ import { Filters } from "@baw-api/baw-api.service";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { KeysOfType } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { Id, Ids } from "@interfaces/apiInterfaces";
+import {
+  HasCreator,
+  HasDeleter,
+  HasUpdater,
+  Id,
+  Ids,
+} from "@interfaces/apiInterfaces";
 import { Observable, Subscription } from "rxjs";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { User } from "./User";
 
 /**
- * Creates an association between the ownerId and its user model
- */
-export function owner<Parent extends AbstractModel & { ownerId?: Id }>() {
-  const key: keyof Parent = "ownerId";
-  return hasOne<Parent, User>(ACCOUNT, key as any);
-}
-
-/**
  * Creates an association between the creatorId and its user model
  */
-export function creator<Parent extends AbstractModel & { creatorId?: Id }>() {
+export function creator<Parent extends AbstractModel & HasCreator>() {
   const key: keyof Parent = "creatorId";
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }
@@ -27,7 +25,7 @@ export function creator<Parent extends AbstractModel & { creatorId?: Id }>() {
 /**
  * Creates an association between the updaterId and its user model
  */
-export function updater<Parent extends AbstractModel & { updaterId?: Id }>() {
+export function updater<Parent extends AbstractModel & HasUpdater>() {
   const key: keyof Parent = "updaterId";
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }
@@ -35,7 +33,7 @@ export function updater<Parent extends AbstractModel & { updaterId?: Id }>() {
 /**
  * Creates an association between the deleterId and its user model
  */
-export function deleter<Parent extends AbstractModel & { deleterId?: Id }>() {
+export function deleter<Parent extends AbstractModel & HasDeleter>() {
   const key: keyof Parent = "deleterId";
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }

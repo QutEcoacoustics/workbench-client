@@ -7,19 +7,19 @@ import {
   Description,
   HasAllUsers,
   HasDescription,
+  Hash,
   Id,
   Ids,
   ImageUrl,
-  Hash,
   Param,
 } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/app-config/app-config.service";
 import { AbstractModel } from "./AbstractModel";
 import {
   creator,
+  deleter,
   hasMany,
   hasOne,
-  owner,
   updater,
 } from "./AssociationDecorators";
 import {
@@ -87,8 +87,8 @@ export class Region extends AbstractModel implements IRegion {
   public creator?: User;
   @updater<Region>()
   public updater?: User;
-  @owner<Region>()
-  public owner?: User;
+  @deleter<Region>()
+  public deleter?: User;
 
   public constructor(region: IRegion, injector?: Injector) {
     super(region, injector);
