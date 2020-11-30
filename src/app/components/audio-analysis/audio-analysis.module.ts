@@ -4,9 +4,8 @@ import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { audioAnalysisRoute } from "./audio-analysis.menus";
 import { ListComponent } from "./pages/list/list.component";
-import { NewComponent } from "./pages/new/new.component";
 
-const components = [ListComponent, NewComponent];
+const components = [ListComponent];
 
 const routes = audioAnalysisRoute.compileRoutes(getRouteConfigForPage);
 

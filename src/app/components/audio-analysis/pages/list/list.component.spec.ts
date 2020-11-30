@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ListComponent } from "./list.component";
 
-xdescribe("ListComponent", () => {
+describe("ListComponent", () => {
   let component: ListComponent;
   let fixture: ComponentFixture<ListComponent>;
 
