@@ -7,6 +7,7 @@ import {
 import { PageComponent } from "@helpers/page/pageComponent";
 import { List } from "immutable";
 
+//TODO: OLD-CLIENT REMOVE
 @Component({
   selector: "baw-audio-analyses",
   template: "<baw-client></baw-client>",

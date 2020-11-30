@@ -1,23 +1,14 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { listenRoute } from "@components/listen/listen.menus";
+import { ListenModule } from "@components/listen/listen.module";
+import { validateBawClientPage } from "@test/helpers/baw-client";
 import { ListenComponent } from "./list.component";
 
-xdescribe("ListenComponent", () => {
-  let component: ListenComponent;
-  let fixture: ComponentFixture<ListenComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ListenComponent],
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ListenComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
+describe("ListenComponent", () => {
+  validateBawClientPage(
+    listenRoute,
+    ListenComponent,
+    [ListenModule],
+    "/listen",
+    "Recent Audio Recordings"
+  );
 });

@@ -7,6 +7,7 @@ import { assetRoot } from "@services/config/config.service";
 import { interval } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
 
+//TODO: OLD-CLIENT REMOVE
 @Component({
   selector: "baw-client",
   template: `

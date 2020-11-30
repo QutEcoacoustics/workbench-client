@@ -1,23 +1,14 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { audioAnalysesRoute } from "@components/audio-analysis/audio-analysis.menus";
+import { AudioAnalysisModule } from "@components/audio-analysis/audio-analysis.module";
+import { validateBawClientPage } from "@test/helpers/baw-client";
 import { NewAudioAnalysisComponent } from "./new.component";
 
-xdescribe("NewAudioAnalysisComponent", () => {
-  let component: NewAudioAnalysisComponent;
-  let fixture: ComponentFixture<NewAudioAnalysisComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [NewAudioAnalysisComponent],
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NewAudioAnalysisComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
+describe("NewAudioAnalysisComponent", () => {
+  validateBawClientPage(
+    audioAnalysesRoute,
+    NewAudioAnalysisComponent,
+    [AudioAnalysisModule],
+    "/audio_analysis/new",
+    "Use this page to select the data to analyze, choose the analysis to run"
+  );
 });

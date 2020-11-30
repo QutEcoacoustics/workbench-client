@@ -5,8 +5,71 @@ on:
   pull_request:
 
 jobs:
+  baw-client:
+    name: Build Baw Client
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Baw Client
+        uses: actions/checkout@v2
+        with:
+          repository: QutEcoacoustics/baw-client
+          ref: migration
+
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: Create environment
+        run: |
+          echo '{
+              "environments": {
+                "production": {
+                  "apiRoot": "https://staging.ecosounds.org",
+                  "siteRoot": "http://development.ecosounds.org:4200",
+                  "siteDir": "/assets/old-client/",
+                  "ga": { "trackingId": "" }
+                }
+              },
+              "values": {
+                "keys": { "googleMaps": "" },
+                "brand": {
+                  "name": "<<brand name here>>",
+                  "title": "<<brand name here>> | Acoustic Workbench"
+                },
+                "content": {
+                  "research": {
+                    "header_title": "Custom Menu",
+                    "items": [
+                      {
+                        "innerText": "Example",
+                        "url": "http://www.EXAMPLE.org/awebpage"
+                      }
+                    ]
+                  }
+                }
+              }
+            }' > ./buildConfig/environmentSettings.json
+
+      - name: Read environment
+        run: cat buildConfig/environmentSettings.json
+
+      - name: NPM install
+        run: npm install
+
+      - name: Build
+        run: npm run build -- --production
+
+      - name: Publish build files
+        uses: actions/upload-artifact@v2
+        with:
+          path: bin/
+          name: baw-client
+
   test:
     name: Unit Tests (${{ matrix.os }})
+    needs: baw-client
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -17,12 +80,21 @@ jobs:
           - windows-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Workbench Client
+        uses: actions/checkout@v2
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: baw-client
 
       - name: Install Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
+
+      - name: Copy baw-client to assets
+        run: cp -r baw-client/* src/assets/old-client
 
       - name: NPM install
         run: npm install
