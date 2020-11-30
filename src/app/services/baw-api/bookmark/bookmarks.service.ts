@@ -60,7 +60,7 @@ export class BookmarksService extends StandardApi<Bookmark> {
     user: IdOr<User>
   ): Observable<Bookmark[]> {
     return this.filter(
-      this.filterByForeignKey(filters, "creatorId", user) as Filters
+      this.filterThroughAssociation(filters, "creatorId", user) as Filters
     );
   }
 }

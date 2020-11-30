@@ -85,9 +85,9 @@
     padding: 0px;
 
     /*
-      * Page content, uses column flexbox because error outlet
-      * exists inside this section
-      */
+    * Page content, uses column flexbox because error outlet
+    * exists inside this section
+    */
     > #page {
       display: flex;
       flex-direction: column;

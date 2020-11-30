@@ -17,6 +17,8 @@ import {
 } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
 import { MapComponent } from "@shared/map/map.component";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -29,10 +31,14 @@ import { SiteComponent } from "./site.component";
 
 const mockMapComponent = MockComponent(MapComponent);
 
+// TODO This component is doing too many things. Split it into
+// smaller components to simplify tests and logic
+
 describe("SiteComponent", () => {
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
+  let defaultRecording: AudioRecording;
   let eventsApi: SpyObject<ShallowAudioEventsService>;
   let recordingsApi: SpyObject<AudioRecordingsService>;
   let spec: Spectator<SiteComponent>;
@@ -70,16 +76,16 @@ describe("SiteComponent", () => {
 
   function interceptRecordingsRequest(
     recordings: AudioRecording[] | ApiErrorDetails = [],
-    newExpectation: FilterExpectations<AudioEvent> = () => {},
-    oldExpectation: FilterExpectations<AudioEvent> = () => {}
+    newExpectation: FilterExpectations<AudioRecording> = () => {},
+    oldExpectation: FilterExpectations<AudioRecording> = () => {}
   ) {
     const subject = new Subject<AudioRecording[]>();
 
-    recordingsApi.filterBySite.andCallFake((filters) => {
+    recordingsApi.filterBySite.andCallFake((filters, site) => {
       if (filters.sorting.direction === "asc") {
-        oldExpectation(filters);
+        oldExpectation(filters, site);
       } else {
-        newExpectation(filters);
+        newExpectation(filters, site);
       }
 
       return subject;
@@ -96,6 +102,7 @@ describe("SiteComponent", () => {
     defaultProject = new Project(generateProject());
     defaultRegion = new Region(generateRegion());
     defaultSite = new Site(generateSite());
+    defaultRecording = new AudioRecording(generateAudioRecording());
   });
 
   it("should create", () => {
@@ -221,17 +228,193 @@ describe("SiteComponent", () => {
     });
   });
 
-  // TODO
-  xdescribe("Recordings", () => {
-    it("should display spinner while audio recordings load", () => {});
-    it("should display placeholder if no audio recordings", () => {});
-    it("should display start and end date of audio recordings", () => {});
-    it("should display play link", () => {});
-    it("should display visualize link", () => {});
+  describe("Recordings", () => {
+    describe("spinner", () => {
+      function getRecordingsLoader() {
+        return spec.query("#recordings-loader");
+      }
+
+      beforeEach(() => {
+        setup(defaultProject, defaultSite);
+        interceptEventsRequest();
+      });
+
+      it("should display spinner while audio recordings load", () => {
+        interceptRecordingsRequest();
+        spec.detectChanges();
+        expect(getRecordingsLoader()).toBeTruthy();
+      });
+
+      it("should clear spinner if no audio recordings", async () => {
+        const promise = interceptRecordingsRequest();
+        spec.detectChanges();
+        await promise;
+        spec.detectChanges();
+        expect(getRecordingsLoader()).toBeFalsy();
+      });
+
+      it("should clear spinner if audio recordings", async () => {
+        const promise = interceptRecordingsRequest([defaultRecording]);
+        spec.detectChanges();
+        await promise;
+        spec.detectChanges();
+        expect(getRecordingsLoader()).toBeFalsy();
+      });
+    });
+
+    describe("description", () => {
+      function getPlaceholderDescription() {
+        return spec.query("#recordings-placeholder-description");
+      }
+
+      function getErrorDescription() {
+        return spec.query("#recordings-error-description");
+      }
+
+      function getRecordingDates() {
+        return spec.query("#recording-dates");
+      }
+
+      async function setupRecordings(
+        recordings: AudioRecording[] | ApiErrorDetails
+      ) {
+        setup(defaultProject, defaultSite);
+        interceptEventsRequest();
+        const promise = interceptRecordingsRequest(recordings);
+        spec.detectChanges();
+        await promise;
+        spec.detectChanges();
+      }
+
+      [
+        {
+          label: "no audio recordings",
+          recordings: () => [],
+          placeholder: true,
+          error: false,
+          dates: false,
+        },
+        {
+          label: "audio recordings error",
+          recordings: () => generateApiErrorDetails(),
+          placeholder: false,
+          error: true,
+          dates: false,
+        },
+        {
+          label: "audio recordings exist",
+          recordings: () => [defaultRecording],
+          placeholder: false,
+          error: false,
+          dates: true,
+        },
+      ].forEach((test) => {
+        it(`should ${test.placeholder ? "" : "not "}display placeholder if ${
+          test.label
+        }`, async () => {
+          await setupRecordings(test.recordings());
+          const placeholder = getPlaceholderDescription();
+          if (test.placeholder) {
+            expect(placeholder).toBeTruthy();
+            expect(placeholder).toHaveText(
+              "This site does not contain any audio recordings."
+            );
+          } else {
+            expect(placeholder).toBeFalsy();
+          }
+        });
+
+        it(`should ${test.error ? "" : "not "}display error message if ${
+          test.label
+        }`, async () => {
+          await setupRecordings(test.recordings());
+          const placeholder = getErrorDescription();
+          if (test.error) {
+            expect(placeholder).toBeTruthy();
+            expect(placeholder).toHaveText("Unable to load site recordings.");
+          } else {
+            expect(placeholder).toBeFalsy();
+          }
+        });
+
+        it(`should ${test.dates ? "" : "not "}display recording dates if ${
+          test.label
+        }`, async () => {
+          await setupRecordings(test.recordings());
+          const dates = getRecordingDates();
+          if (test.dates) {
+            expect(dates).toBeTruthy();
+          } else {
+            expect(dates).toBeFalsy();
+          }
+        });
+      });
+    });
+
+    xdescribe("dates", () => {
+      it("should display start and end date of audio recordings", async () => {});
+    });
+
+    xdescribe("play", () => {
+      it("should initially display loading animation", () => {});
+      it("should clear loading animation on load", () => {});
+      it("should create play link", () => {});
+      it("should route to correct location", () => {});
+    });
+
+    xdescribe("visualize", () => {
+      it("should create visualize link", () => {});
+      it("should route to correct location", () => {});
+    });
+
+    describe("filterByDates", () => {
+      it("should request list of newest audio recordings", async (done) => {
+        setup(defaultProject, defaultSite);
+        interceptEventsRequest();
+        const promise = interceptRecordingsRequest([], (filter, site) => {
+          expect(filter).toEqual({
+            sorting: { orderBy: "recordedDate", direction: "desc" },
+          });
+          expect(site).toEqual(defaultSite);
+          done();
+        });
+        spec.detectChanges();
+        await promise;
+      });
+
+      it("should request list of oldest audio recordings", async (done) => {
+        setup(defaultProject, defaultSite);
+        interceptEventsRequest();
+        const promise = interceptRecordingsRequest(
+          [],
+          undefined,
+          (filter, site) => {
+            expect(filter).toEqual({
+              sorting: { orderBy: "recordedDate", direction: "asc" },
+              paging: { items: 1 },
+            });
+            expect(site).toEqual(defaultSite);
+            done();
+          }
+        );
+        spec.detectChanges();
+        await promise;
+      });
+
+      it("should make two requests", async () => {
+        setup(defaultProject, defaultSite);
+        interceptEventsRequest();
+        const promise = interceptRecordingsRequest();
+        spec.detectChanges();
+        await promise;
+
+        expect(recordingsApi.filterBySite).toHaveBeenCalledTimes(2);
+      });
+    });
   });
 
   // TODO
-  xdescribe("Tags", () => {
+  xdescribe("annotations", () => {
     it("should display spinner while tags are unresolved", () => {});
     it("should display placeholder if no tags", () => {});
     it("should display single tag", () => {});

@@ -3,6 +3,8 @@ import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
+import { libraryMenuItem } from "@components/library/library.menus";
+import { listenMenuItem } from "@components/listen/listen.menus";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { SessionUser } from "@models/User";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -82,6 +84,12 @@ describe("HeaderComponent", () => {
       describe(userType.type + " user", () => {
         let isLoggedIn: boolean;
         let defaultUser: SessionUser;
+        const linkIndex = {
+          project: 0,
+          listen: 1,
+          library: 2,
+          contactUs: 4,
+        };
 
         function getNavLinks() {
           return spec.queryAll<HTMLElement>("a.nav-link");
@@ -111,29 +119,27 @@ describe("HeaderComponent", () => {
           expect(brand.innerText).toContain(config.values.brand.name);
         });
 
-        it("should create projects link", () => {
-          setUser(isLoggedIn, defaultUser);
-          spec.detectChanges();
+        [
+          { link: "projects", index: 0, menuItem: projectsMenuItem },
+          { link: "listen", index: 1, menuItem: listenMenuItem },
+          { link: "library", index: 2, menuItem: libraryMenuItem },
+          { link: "contact us", index: 4, menuItem: contactUsMenuItem },
+        ].forEach(({ link, index, menuItem }) => {
+          it(`should create ${link} link`, () => {
+            setUser(isLoggedIn, defaultUser);
+            spec.detectChanges();
 
-          const link = getNavLinks()[0];
-          assertRoute(link, projectsMenuItem.route.toRouterLink());
-          expect(link.innerText).toContain(projectsMenuItem.label);
-        });
-
-        it("should create contact us link", () => {
-          setUser(isLoggedIn, defaultUser);
-          spec.detectChanges();
-
-          const link = getNavLinks()[2];
-          assertRoute(link, contactUsMenuItem.route.toRouterLink());
-          expect(link.innerText).toContain(contactUsMenuItem.label);
+            const item = getNavLinks()[index];
+            assertRoute(item, menuItem.route.toRouterLink());
+            expect(item.innerText).toContain(menuItem.label);
+          });
         });
 
         it("should create header links from external config", () => {
           setUser(isLoggedIn, defaultUser);
           spec.detectChanges();
 
-          const link = getNavLinks()[1];
+          const link = getNavLinks()[3];
           expect(link).toBeTruthy();
           expect(link.innerText).toContain("<< content1 >>");
         });
@@ -342,7 +348,7 @@ describe("HeaderComponent", () => {
       loggedInTrigger.next(null);
       spec.detectChanges();
 
-      const link = spec.queryAll<HTMLElement>("a.nav-link")[3];
+      const link = spec.queryAll<HTMLElement>("a.nav-link")[5];
       expect(link).toBeTruthy();
       expect(link.innerText).toContain(registerMenuItem.label);
       assertRoute(link, registerMenuItem.route.toRouterLink());
@@ -368,7 +374,7 @@ describe("HeaderComponent", () => {
       loggedInTrigger.next(null);
       spec.detectChanges();
 
-      const link = spec.queryAll<HTMLElement>("a.nav-link")[4];
+      const link = spec.queryAll<HTMLElement>("a.nav-link")[6];
       expect(link).toBeTruthy();
       expect(link.innerText).toContain(loginMenuItem.label);
       assertRoute(link, loginMenuItem.route.toRouterLink());

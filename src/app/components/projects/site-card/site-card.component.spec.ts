@@ -1,23 +1,32 @@
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { listenRecordingMenuItem } from "@components/listen/listen.menus";
+import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
+import { LoadingComponent } from "@shared/loading/loading.component";
 import { SharedModule } from "@shared/shared.module";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
+import { nStepObservable } from "@test/helpers/general";
 import { assertImage, assertRoute } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
+import { Subject } from "rxjs";
 import { SiteCardComponent } from "./site-card.component";
 
 describe("SiteCardComponent", () => {
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
-  let spectator: Spectator<SiteCardComponent>;
+  let defaultRecording: AudioRecording;
+  let spec: Spectator<SiteCardComponent>;
   const createComponent = createComponentFactory({
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
     component: SiteCardComponent,
@@ -27,59 +36,71 @@ describe("SiteCardComponent", () => {
     defaultProject = new Project(generateProject());
     defaultRegion = new Region(generateRegion());
     defaultSite = new Site(generateSite());
+    defaultRecording = new AudioRecording(generateAudioRecording());
   });
 
-  function setup(site?: Site | boolean, region?: Region | boolean) {
-    spectator = createComponent({
+  function setup(
+    isSite: boolean,
+    model?: Site | Region,
+    recording?: AudioRecording | ApiErrorDetails
+  ): Promise<void> {
+    const site = isSite ? (model as Site) ?? defaultSite : undefined;
+    const region = !isSite ? (model as Region) ?? defaultRegion : undefined;
+    let recordings: AudioRecording[] | ApiErrorDetails = [defaultRecording];
+    if (recording === null) {
+      recordings = [null];
+    } else if (recording) {
+      recordings =
+        recording instanceof AudioRecording ? [recording] : recording;
+    }
+
+    spec = createComponent({
       detectChanges: false,
-      props: {
-        project: defaultProject,
-        site: site ? (site instanceof Site ? site : defaultSite) : undefined,
-        region: region
-          ? region instanceof Region
-            ? region
-            : defaultRegion
-          : undefined,
-      },
+      props: { project: defaultProject, site, region },
     });
+
+    const subject = new Subject<AudioRecording[]>();
+    const recordingApi = spec.inject(AudioRecordingsService);
+    recordingApi.filterBySite.and.callFake(() => subject);
+    return nStepObservable(subject, () => recordings);
   }
 
   it("should create", () => {
     setup(true);
-    spectator.detectChanges();
-    expect(spectator.component).toBeTruthy();
+    spec.detectChanges();
+    expect(spec.component).toBeTruthy();
   });
 
   describe("title", () => {
     it("should display site name", () => {
       setup(true);
-      spectator.detectChanges();
-      const name = spectator.query<HTMLHeadingElement>("h5#name");
+      spec.detectChanges();
+      const name = spec.query<HTMLHeadingElement>("h5#name");
       expect(name).toBeTruthy();
       expect(name.innerText).toContain(defaultSite.name);
     });
 
     it("should navigate user to site when clicking site name", () => {
       setup(true);
-      spectator.detectChanges();
-      const name = spectator.query<HTMLAnchorElement>("#nameLink");
+      spec.detectChanges();
+      const name = spec.query<HTMLAnchorElement>("#nameLink");
       assertRoute(name, defaultSite.getViewUrl(defaultProject));
     });
   });
 
   describe("image", () => {
     function getImage() {
-      return spectator.query<HTMLImageElement>("img");
+      return spec.query<HTMLImageElement>("img");
     }
 
     function getImageLink() {
-      return spectator.query<HTMLAnchorElement>("#imageLink");
+      return spec.query<HTMLAnchorElement>("#imageLink");
     }
 
     it("should display site image", () => {
       const site = new Site({ ...generateSite(), imageUrl: undefined });
-      setup(site);
-      spectator.detectChanges();
+      setup(true, site);
+      spec.detectChanges();
 
       assertImage(
         getImage(),
@@ -90,13 +111,13 @@ describe("SiteCardComponent", () => {
 
     it("should display custom site image", () => {
       setup(true);
-      spectator.detectChanges();
+      spec.detectChanges();
       assertImage(getImage(), defaultSite.imageUrl, `${defaultSite.name} alt`);
     });
 
     it("should navigate user to site when clicking site image", () => {
       setup(true);
-      spectator.detectChanges();
+      spec.detectChanges();
       assertRoute(getImageLink(), defaultSite.getViewUrl(defaultProject));
     });
   });
@@ -104,12 +125,12 @@ describe("SiteCardComponent", () => {
   const inputTypes = [
     {
       modelType: "site",
-      setup: () => setup(true),
+      setup: (recording?: AudioRecording) => setup(true, undefined, recording),
       play: true,
     },
     {
       modelType: "region",
-      setup: () => setup(false, true),
+      setup: () => setup(false),
       play: false,
     },
   ];
@@ -117,9 +138,10 @@ describe("SiteCardComponent", () => {
   inputTypes.forEach((inputType) => {
     function getLinks() {
       return {
-        details: spectator.query<HTMLAnchorElement>("#details"),
-        play: spectator.query<HTMLAnchorElement>("#play"),
-        visualize: spectator.query<HTMLAnchorElement>("#visualize"),
+        details: spec.query<HTMLAnchorElement>("#details"),
+        play: spec.query<HTMLAnchorElement>("#play"),
+        noAudio: spec.query<HTMLAnchorElement>("#no-audio"),
+        visualize: spec.query<HTMLAnchorElement>("#visualize"),
       };
     }
 
@@ -128,35 +150,75 @@ describe("SiteCardComponent", () => {
     }
 
     describe(inputType.modelType + " links", () => {
-      beforeEach(() => {
-        inputType.setup();
-        spectator.detectChanges();
-      });
+      let recordingPromise: Promise<any>;
+
+      function initializeComponent() {
+        recordingPromise = inputType.setup();
+        spec.detectChanges();
+      }
 
       it("should display details link", () => {
+        initializeComponent();
         assertLink(getLinks().details, "Details");
       });
 
       it("should navigate user to site when clicking details link", () => {
+        initializeComponent();
         assertRoute(
           getLinks().details,
-          spectator.component.model.getViewUrl(defaultProject)
+          spec.component.model.getViewUrl(defaultProject)
         );
       });
 
       if (inputType.play) {
-        it("should display play link if site model", () => {
+        it("should display loading spinner", () => {
+          initializeComponent();
+          expect(spec.query(LoadingComponent)).toBeTruthy();
+        });
+
+        it("should clear loading spinner when recording retrieved", async () => {
+          initializeComponent();
+          await recordingPromise;
+          spec.detectChanges();
+          expect(spec.query(LoadingComponent)).toBeFalsy();
+        });
+
+        it("should display play link if recording exists", async () => {
+          initializeComponent();
+          await recordingPromise;
+          spec.detectChanges();
           assertLink(getLinks().play, "Play");
         });
 
-        xit("should navigate user to listen page when clicking play link", () => {});
+        it("should display no audio placeholder if no recordings", async () => {
+          recordingPromise = inputType.setup(null);
+          spec.detectChanges();
+          await recordingPromise;
+          spec.detectChanges();
+          debugger;
+          assertLink(getLinks().noAudio, "No Audio");
+        });
+
+        it("should navigate user to listen page when clicking play link", async () => {
+          initializeComponent();
+          await recordingPromise;
+          spec.detectChanges();
+          assertRoute(
+            getLinks().play,
+            listenRecordingMenuItem.route.toRouterLink({
+              audioRecordingId: defaultRecording.id,
+            })
+          );
+        });
       } else {
         it("should not display play link", () => {
+          initializeComponent();
           expect(getLinks().play).toBeFalsy();
         });
       }
 
       it("should display visualize link", () => {
+        initializeComponent();
         assertLink(getLinks().visualize, "Visualise");
       });
 
@@ -166,26 +228,26 @@ describe("SiteCardComponent", () => {
 
   describe("points", () => {
     function getPoints() {
-      return spectator.query<HTMLSpanElement>("span.badge");
+      return spec.query<HTMLSpanElement>("span.badge");
     }
 
     it("should not display if site model", () => {
       setup(true);
-      spectator.detectChanges();
+      spec.detectChanges();
       expect(getPoints()).toBeFalsy();
     });
 
     it("should display 0 region points", () => {
       const region = new Region({ ...generateRegion(), siteIds: undefined });
       setup(false, region);
-      spectator.detectChanges();
+      spec.detectChanges();
       expect(getPoints().innerText.trim()).toBe("0 Points");
     });
 
     it("should display multiple region points", () => {
       const region = new Region({ ...generateRegion(), siteIds: [1, 2, 3] });
       setup(false, region);
-      spectator.detectChanges();
+      spec.detectChanges();
       expect(getPoints().innerText.trim()).toBe("3 Points");
     });
   });

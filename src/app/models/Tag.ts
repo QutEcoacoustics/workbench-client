@@ -1,10 +1,10 @@
 import { Injector } from "@angular/core";
-import { tagMenuItem } from "@helpers/page/externalMenus";
+import { libraryMenuItem } from "@components/library/library.menus";
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
-  Id,
   Hash,
+  Id,
 } from "../interfaces/apiInterfaces";
 import { AbstractData } from "./AbstractData";
 import { AbstractModel } from "./AbstractModel";
@@ -59,8 +59,13 @@ export class Tag extends AbstractModel implements ITag {
   }
 
   public get viewUrl(): string {
-    console.warn("Tag viewUrl method not implemented");
-    return tagMenuItem.uri();
+    console.warn("Tag viewLibraryUrl method not implemented");
+    // /library?reference=all&tagsPartial=[tag.text]
+    // TODO This link is not working (issue #772)
+    return libraryMenuItem.route.toRouterLink({
+      reference: "all",
+      tagsPartial: this.text,
+    });
   }
 
   public toString(): string {
