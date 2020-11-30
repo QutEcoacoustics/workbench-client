@@ -16,6 +16,7 @@ import { List } from "immutable";
 
 const audioAnalysisKey = "audioAnalysis";
 
+//TODO: OLD-CLIENT REMOVE
 @Component({
   selector: "baw-audio-analysis",
   template: "<baw-client></baw-client>",

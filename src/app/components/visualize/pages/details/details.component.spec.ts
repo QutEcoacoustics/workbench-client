@@ -1,23 +1,14 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { visualizeRoute } from "@components/visualize/visualize.menus";
+import { VisualizeModule } from "@components/visualize/visualize.module";
+import { validateBawClientPage } from "@test/helpers/baw-client";
 import { VisualizeComponent } from "./details.component";
 
 describe("VisualizeComponent", () => {
-  let component: VisualizeComponent;
-  let fixture: ComponentFixture<VisualizeComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [VisualizeComponent],
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(VisualizeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
+  validateBawClientPage(
+    visualizeRoute,
+    VisualizeComponent,
+    [VisualizeModule],
+    "/visualize",
+    "Audio distribution"
+  );
 });

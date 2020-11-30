@@ -195,7 +195,6 @@ describe("SiteCardComponent", () => {
           spec.detectChanges();
           await recordingPromise;
           spec.detectChanges();
-          debugger;
           assertLink(getLinks().noAudio, "No Audio");
         });
 
