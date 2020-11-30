@@ -8,7 +8,6 @@ import { Observable } from "rxjs";
 import {
   emptyParam,
   filterParam,
-  filterByForeignKey,
   id,
   IdOr,
   IdParamOptional,
@@ -61,7 +60,7 @@ export class BookmarksService extends StandardApi<Bookmark> {
     user: IdOr<User>
   ): Observable<Bookmark[]> {
     return this.filter(
-      filterByForeignKey<IBookmark>(filters, "creatorId", user)
+      this.filterByForeignKey(filters, "creatorId", user) as Filters
     );
   }
 }

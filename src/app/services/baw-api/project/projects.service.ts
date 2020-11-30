@@ -8,7 +8,6 @@ import { Observable } from "rxjs";
 import {
   emptyParam,
   filterParam,
-  filterByForeignKey,
   id,
   IdOr,
   IdParamOptional,
@@ -64,9 +63,8 @@ export class ProjectsService extends StandardApi<Project> {
     filters: Filters<IProject>,
     user: IdOr<User>
   ): Observable<Project[]> {
-    return this.apiFilter(
-      endpoint(emptyParam, filterParam),
-      filterByForeignKey<Project>(filters, "creatorId", user)
+    return this.filter(
+      this.filterByForeignKey(filters, "creatorId", user) as Filters
     );
   }
 }

@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
+import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
@@ -11,7 +11,6 @@ import {
   ApiFilter,
   emptyParam,
   filterParam,
-  filterByForeignKey,
   id,
   IdOr,
   IdParam,
@@ -44,7 +43,7 @@ export class AudioEventsService extends StandardApi<
     return this.apiList(endpoint(audioRecording, emptyParam, emptyParam));
   }
   public filter(
-    filters: Filters<IAudioEvent>,
+    filters: Filters<AudioEvent>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent[]> {
     return this.apiFilter(
@@ -93,7 +92,7 @@ export class ShallowAudioEventsService
     super(http, apiRoot, AudioEvent, injector);
   }
 
-  public filter(filters: Filters<IAudioEvent>): Observable<AudioEvent[]> {
+  public filter(filters: Filters<AudioEvent>): Observable<AudioEvent[]> {
     return this.apiFilter(shallowEndpoint(emptyParam, filterParam), filters);
   }
 
@@ -103,10 +102,11 @@ export class ShallowAudioEventsService
    * @param filters Audio event filters
    * @param user User to filter by
    */
-  public filterByCreator(filters: Filters<IAudioEvent>, user: IdOr<User>) {
-    return this.filter(
-      filterByForeignKey<IAudioEvent>(filters, "creatorId", user)
-    );
+  public filterByCreator(
+    filters: Filters<AudioEvent>,
+    user: IdOr<User>
+  ): Observable<AudioEvent[]> {
+    return this.filter(this.filterByForeignKey(filters, "creatorId", user));
   }
 
   /**
@@ -115,9 +115,12 @@ export class ShallowAudioEventsService
    * @param filters Audio event filters
    * @param site Site to filter by
    */
-  public filterBySite(filters: Filters<IAudioEvent>, site: IdOr<Site>) {
+  public filterBySite(
+    filters: Filters<AudioEvent>,
+    site: IdOr<Site>
+  ): Observable<AudioEvent[]> {
     return this.filter(
-      filterByForeignKey(filters, "audio_recordings.site_id" as any, site)
+      this.filterByForeignKey(filters, "audio_recordings.site_id" as any, site)
     );
   }
 }

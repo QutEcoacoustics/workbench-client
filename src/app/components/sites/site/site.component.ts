@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { Filters } from "@baw-api/baw-api.service";
+import { Direction, Filters } from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
@@ -99,7 +99,7 @@ class SiteComponent extends PageComponent implements OnInit {
   }
 
   private filterByDates(
-    direction: "desc" | "asc",
+    direction: Direction,
     filters: Filters<IAudioRecording> = {}
   ) {
     return this.audioRecordingsApi.filterBySite(

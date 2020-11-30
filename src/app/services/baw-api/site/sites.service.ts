@@ -8,17 +8,16 @@ import { ISite, Site } from "@models/Site";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
+  Empty,
   emptyParam,
+  Filter,
   filterParam,
-  filterByForeignKey,
   id,
   IdOr,
   IdParam,
   IdParamOptional,
   option,
   StandardApi,
-  Filter,
-  Empty,
 } from "../api-common";
 import { Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
@@ -84,9 +83,9 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
     project: IdOr<Project>,
     region: IdOr<Region>
   ): Observable<Site[]> {
-    return this.apiFilter(
-      endpoint(project, emptyParam, filterParam),
-      filterByForeignKey<Site>(filters, "regionId", region)
+    return this.filter(
+      this.filterByForeignKey(filters, "regionId", region) as Filters,
+      project
     );
   }
 }
@@ -134,9 +133,8 @@ export class ShallowSitesService extends StandardApi<Site> {
     filters: Filters<ISite>,
     user: IdOr<User>
   ): Observable<Site[]> {
-    return this.apiFilter(
-      endpointShallow(emptyParam, filterParam),
-      filterByForeignKey<Site>(filters, "creatorId", user)
+    return this.filter(
+      this.filterByForeignKey(filters, "creatorId", user) as Filters
     );
   }
 
@@ -150,9 +148,8 @@ export class ShallowSitesService extends StandardApi<Site> {
     filters: Filters<ISite>,
     region: IdOr<Region>
   ): Observable<Site[]> {
-    return this.apiFilter(
-      endpointShallow(emptyParam, filterParam),
-      filterByForeignKey<Site>(filters, "regionId", region)
+    return this.filter(
+      this.filterByForeignKey(filters, "regionId", region) as Filters
     );
   }
 

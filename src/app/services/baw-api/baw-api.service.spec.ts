@@ -196,7 +196,7 @@ describe("BawApiService", () => {
         { provide: STUB_MODEL_BUILDER, useValue: MockModel },
       ],
     });
-    service = TestBed.inject(BawApiService);
+    service = TestBed.inject<BawApiService<MockModel>>(BawApiService);
     env = TestBed.inject(AppConfigService);
     httpMock = TestBed.inject(HttpTestingController);
 

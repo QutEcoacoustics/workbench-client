@@ -2,7 +2,7 @@ import { Directive, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { Filters } from "@baw-api/baw-api.service";
+import { Direction, Filters } from "@baw-api/baw-api.service";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel } from "@models/AbstractModel";
@@ -173,8 +173,8 @@ export interface TablePage {
 }
 
 export interface SortEvent {
-  newValue: "asc" | "desc";
-  prevValue: "asc" | "desc";
+  newValue: Direction;
+  prevValue: Direction;
   column: {
     sortable: boolean;
     prop: string;

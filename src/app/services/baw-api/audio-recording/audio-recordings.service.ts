@@ -7,7 +7,6 @@ import { Site } from "@models/Site";
 import { Observable } from "rxjs";
 import {
   emptyParam,
-  filterByForeignKey,
   filterParam,
   id,
   IdOr,
@@ -50,9 +49,8 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
    * @param site Site to filter by
    */
   public filterBySite(filters: Filters<IAudioRecording>, site: IdOr<Site>) {
-    return this.apiFilter(
-      endpoint(emptyParam, filterParam),
-      filterByForeignKey(filters, "siteId", site)
+    return this.filter(
+      this.filterByForeignKey(filters, "siteId", site) as Filters
     );
   }
 }

@@ -7,7 +7,7 @@ import {
   Injector,
   PLATFORM_ID,
 } from "@angular/core";
-import { XOR } from "@helpers/advancedTypes";
+import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
@@ -120,7 +120,9 @@ export abstract class BawApiService<Model extends AbstractModel> {
   }
 
   /**
-   * Retrieve user details from session cookie. Null if no user exists.
+   * Retrieve user details from session cookie. Returns undefined if
+   * no user so that it will properly interact with the
+   * filterByForeignKey function.
    */
   public getLocalUser(): SessionUser | undefined {
     // local storage does not exist on server
@@ -274,6 +276,34 @@ export abstract class BawApiService<Model extends AbstractModel> {
   }
 
   /**
+   * Modify a base filter to add a foreign key condition
+   *
+   * @param filters Base Filters
+   * @param key Foreign key
+   * @param model Foreign key value (if undefined, returns base filters)
+   */
+  protected filterByForeignKey(
+    filters: Filters<Model>,
+    key: KeysOfType<Model, number | string>,
+    model: AbstractModel | string | number
+  ): Filters<Model> {
+    const { filter, ...meta } = filters;
+
+    // Only return if model is undefined, not null (which is a valid input)
+    if (model === undefined) {
+      return filters;
+    }
+
+    return {
+      ...meta,
+      filter: {
+        ...filter,
+        [key]: { eq: model instanceof AbstractModel ? model.id : model },
+      },
+    };
+  }
+
+  /**
    * Concatenates path with apiRoot to form a full URL.
    *
    * @param path Path fragment
@@ -282,6 +312,8 @@ export abstract class BawApiService<Model extends AbstractModel> {
     return this.apiRoot + path;
   }
 }
+
+export type Direction = "desc" | "asc";
 
 /**
  * Sorting metadata from api response
