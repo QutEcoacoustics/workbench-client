@@ -21,6 +21,12 @@ export type IdParam<T extends AbstractModel> = (_: IdOr<T>) => string;
 export type IdParamOptional<T extends AbstractModel> = (
   _: IdOr<T> | Empty
 ) => string;
+
+/**
+ * Create id (used by stringTemplate)
+ *
+ * @param x Api Id
+ */
 export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
   if (x === emptyParam) {
     return x;
@@ -47,6 +53,15 @@ export function param(x: Param) {
  */
 export function option(x?: New | Filter | Empty) {
   return x ? x : emptyParam;
+}
+
+/**
+ * Determine if input is an id instead of the AbstractModel
+ *
+ * @param x Api id
+ */
+export function isId<T extends AbstractModel>(x: IdOr<T> | Empty): x is number {
+  return typeof x === "number";
 }
 
 export type Empty = "";

@@ -5,7 +5,9 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BawApiModule } from "@baw-api/baw-api.module";
 import { AudioAnalysisModule } from "@components/audio-analysis/audio-analysis.module";
+import { LibraryModule } from "@components/library/library.module";
 import { RegionsModule } from "@components/regions/regions.module";
+import { VisualizeModule } from "@components/visualize/visualize.module";
 import { GuardModule } from "@guards/guards.module";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -21,6 +23,7 @@ import { AdminModule } from "./components/admin/admin.module";
 import { DataRequestModule } from "./components/data-request/data-request.module";
 import { ErrorModule } from "./components/error/error.module";
 import { HomeModule } from "./components/home/home.module";
+import { ListenModule } from "./components/listen/listen.module";
 import {
   MyAccountModule,
   ProfileModule,
@@ -50,6 +53,8 @@ export const appImports = [
   AdminModule,
   AudioAnalysisModule,
   DataRequestModule,
+  LibraryModule,
+  ListenModule,
   MyAccountModule,
   PointsModule,
   ProfileModule,
@@ -60,6 +65,7 @@ export const appImports = [
   SendAudioModule,
   SitesModule,
   StatisticsModule,
+  VisualizeModule,
   // these last two must be last!
   HomeModule,
   ErrorModule,

@@ -64,7 +64,7 @@ export class ProjectsService extends StandardApi<Project> {
     user: IdOr<User>
   ): Observable<Project[]> {
     return this.filter(
-      this.filterByForeignKey(filters, "creatorId", user) as Filters
+      this.filterThroughAssociation(filters, "creatorId", user) as Filters
     );
   }
 }

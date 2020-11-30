@@ -1,12 +1,12 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "baw-site-card",
@@ -41,10 +41,30 @@ import { Site } from "@models/Site";
             </a>
           </li>
           <li *ngIf="site" class="nav-item">
-            <a id="play" class="nav-link" [routerLink]="site.playUrl">
+            <!-- Play link if recording exists -->
+            <a
+              *ngIf="recording"
+              id="play"
+              class="nav-link"
+              [routerLink]="recording?.viewUrl"
+            >
               <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
               Play
             </a>
+            <!-- No audio -->
+            <a
+              *ngIf="recording === null"
+              id="no-audio"
+              class="nav-link disabled"
+            >
+              <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
+              No Audio
+            </a>
+            <!-- Loading while retrieving recording -->
+            <baw-loading
+              *ngIf="recording === undefined"
+              size="sm"
+            ></baw-loading>
           </li>
           <li class="nav-item">
             <a
@@ -61,19 +81,47 @@ import { Site } from "@models/Site";
     </li>
   `,
   styleUrls: ["./site-card.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SiteCardComponent implements OnInit {
+export class SiteCardComponent extends withUnsubscribe() implements OnInit {
   @Input() public project: Project;
   @Input() public region: Region;
   @Input() public site: Site;
   public model: Site | Region;
+  public recording: AudioRecording;
+
+  public constructor(private recordingApi: AudioRecordingsService) {
+    super();
+  }
 
   public ngOnInit() {
     this.model = this.region || this.site;
+
+    if (this.site) {
+      this.getRecording();
+    }
   }
 
   public numPoints() {
     return this.region?.siteIds?.size || 0;
+  }
+
+  private getRecording() {
+    this.recordingApi
+      .filterBySite(
+        {
+          sorting: { orderBy: "recordedDate", direction: "asc" },
+          paging: { items: 1 },
+        },
+        this.site
+      )
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (recordings) =>
+          (this.recording = recordings.length > 0 ? recordings[0] : null),
+        (err: ApiErrorDetails) => {
+          console.error(err);
+          this.recording = null;
+        }
+      );
   }
 }

@@ -1,6 +1,5 @@
 import { Injector } from "@angular/core";
 import { TAG } from "@baw-api/ServiceTokens";
-import { listenMenuItem } from "@helpers/page/externalMenus";
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
@@ -47,7 +46,6 @@ export class Tagging extends AbstractModel implements ITagging {
   }
 
   public get viewUrl(): string {
-    console.error("Tagging viewUrl not fully implemented");
-    return listenMenuItem.uri();
+    throw Error("Tagging viewUrl not implemented");
   }
 }

@@ -4,7 +4,7 @@ import { regionResolvers } from "@baw-api/region/regions.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { regionMenuItem } from "@components/regions/regions.menus";
-import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
+import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
@@ -23,7 +23,7 @@ import {
 import { SiteDetailsComponent } from "./site.component";
 
 export const pointMenuItemActions = [
-  exploreAudioMenuItem,
+  visualizeMenuItem,
   pointAnnotationsMenuItem,
   editPointMenuItem,
   pointHarvestMenuItem,

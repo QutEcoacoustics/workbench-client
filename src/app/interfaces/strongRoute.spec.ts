@@ -358,8 +358,8 @@ describe("StrongRoute", () => {
       });
 
       it("should navigate to location with query parameter", async () => {
-        const childRoute = baseRoute[test]("home", (params) => ({
-          siteId: params.siteId,
+        const childRoute = baseRoute[test]("home", ({ siteId }) => ({
+          siteId,
         }));
         setup(childRoute.toRouterLink(), childRoute.queryParams({ siteId: 5 }));
         expect(location.path()).toBe("");
@@ -370,9 +370,9 @@ describe("StrongRoute", () => {
       });
 
       it("should navigate to location with multiple query parameters", async () => {
-        const childRoute = baseRoute[test]("home", (params) => ({
-          siteId: params.siteId,
-          projectId: params.projectId,
+        const childRoute = baseRoute[test]("home", ({ siteId, projectId }) => ({
+          siteId,
+          projectId,
         }));
         setup(
           childRoute.toRouterLink(),

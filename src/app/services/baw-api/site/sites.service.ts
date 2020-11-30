@@ -84,7 +84,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
     region: IdOr<Region>
   ): Observable<Site[]> {
     return this.filter(
-      this.filterByForeignKey(filters, "regionId", region) as Filters,
+      this.filterThroughAssociation(filters, "regionId", region) as Filters,
       project
     );
   }
@@ -134,7 +134,7 @@ export class ShallowSitesService extends StandardApi<Site> {
     user: IdOr<User>
   ): Observable<Site[]> {
     return this.filter(
-      this.filterByForeignKey(filters, "creatorId", user) as Filters
+      this.filterThroughAssociation(filters, "creatorId", user) as Filters
     );
   }
 
@@ -149,7 +149,7 @@ export class ShallowSitesService extends StandardApi<Site> {
     region: IdOr<Region>
   ): Observable<Site[]> {
     return this.filter(
-      this.filterByForeignKey(filters, "regionId", region) as Filters
+      this.filterThroughAssociation(filters, "regionId", region) as Filters
     );
   }
 

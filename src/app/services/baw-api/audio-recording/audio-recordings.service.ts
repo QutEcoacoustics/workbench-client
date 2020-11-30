@@ -3,7 +3,8 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
-import { Site } from "@models/Site";
+import type { Region } from "@models/Region";
+import type { Site } from "@models/Site";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -11,6 +12,7 @@ import {
   id,
   IdOr,
   IdParamOptional,
+  isId,
   option,
   ReadonlyApi,
 } from "../api-common";
@@ -50,7 +52,36 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
    */
   public filterBySite(filters: Filters<IAudioRecording>, site: IdOr<Site>) {
     return this.filter(
-      this.filterByForeignKey(filters, "siteId", site) as Filters
+      this.filterThroughAssociation(filters, "siteId", site) as Filters
+    );
+  }
+
+  /**
+   * Filter audio recordings by region id. For better performance
+   * provide the region model instead of id
+   *
+   * @param filters Audio recording filters
+   * @param region Region to filter by
+   */
+  public filterByRegion(
+    filters: Filters<IAudioRecording>,
+    region: IdOr<Region>
+  ) {
+    if (isId(region)) {
+      return this.filterThroughAssociation(
+        filters,
+        "sites.regionId" as any,
+        region
+      );
+    }
+
+    // If we know the site ids, no need to make unnecessary db request
+    return this.filter(
+      this.filterThroughAssociations(
+        filters,
+        "siteId",
+        Array.from(region.siteIds)
+      ) as Filters
     );
   }
 }
