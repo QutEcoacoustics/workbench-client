@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormControl } from "@angular/forms";
+import { Potential } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
 import { FieldType } from "@ngx-formly/core";
@@ -125,7 +126,7 @@ export class TimezoneInputComponent extends FieldType implements OnInit {
    *
    * @returns Object containing key and error message if validation fails, else null
    */
-  private timezoneValidator(): Record<string, string> | null {
+  private timezoneValidator(): Potential<Record<string, string>> {
     if (!isInstantiated(this.timezone)) {
       if (this.to.required && this.formControl.dirty) {
         return { [this.field.key.toString()]: "You must select a timezone" };

@@ -129,7 +129,7 @@ describe("StrongRoute", () => {
             path:
               parent.baseRef.length > 0
                 ? parent.baseRef.substr(0, parent.baseRef.length - 1)
-                : null,
+                : undefined,
             pathMatch: "full",
             children: [
               {

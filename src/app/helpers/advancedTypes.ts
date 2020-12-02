@@ -31,3 +31,6 @@ export type MayBeAsync<T> = T | Promise<T>;
 export type KeysOfType<T, TProp> = {
   [P in keyof T]: T[P] extends TProp ? P : never;
 }[keyof T];
+
+/** Sets type to either be T or null */
+export type Potential<T> = T | null;

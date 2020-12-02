@@ -1,9 +1,11 @@
 import { Type } from "@angular/core";
 import { Route, Routes } from "@angular/router";
+import { Potential } from "@helpers/advancedTypes";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 
 export type RouteConfigCallback = (
-  component: Type<PageComponent> | null,
+  component: Potential<Type<PageComponent>>,
   config: Partial<Route>
 ) => Route;
 
@@ -13,15 +15,25 @@ export type RouteConfigCallback = (
  * dynamically create routes for the various page components.
  */
 export class StrongRoute {
-  public pageComponent: Type<PageComponent> | null;
-  public readonly root: any;
-  public readonly parent: StrongRoute;
-  public readonly name: string;
+  /** Page component associated with this strong route */
+  public pageComponent: Potential<Type<PageComponent>>;
+  /** Root strong route of this strong route */
+  public readonly root: StrongRoute;
+  /** Parent strong route of this strong route */
+  public readonly parent?: StrongRoute;
+  /** Route path/name to add/create in the strong route tree */
+  public readonly name?: string;
+  /** Is this strong route a parameter (ie. :siteId) */
   public readonly isParameter: boolean;
-  public readonly fullRoute: string;
+  /** Full route to this strong route as a string */
+  public readonly fullRoute?: string;
+  /** Children strong routes of this strong route */
   public readonly children: StrongRoute[] = [];
+  /** List of parameter strong routes in this strong routes path */
   private readonly parameters: StrongRoute[];
+  /** List of parent strong routes (including current strong route) */
   private readonly full: StrongRoute[];
+  /** Additional configuration options to append to this strong route */
   private readonly config: Partial<Route>;
 
   /**
@@ -33,15 +45,14 @@ export class StrongRoute {
    * @param isRoot Is this a root StrongRoute
    */
   private constructor(
-    parent: StrongRoute,
-    name: string,
-    config: Partial<Route>,
+    parent?: StrongRoute,
+    name?: string,
+    config: Partial<Route> = {},
     isRoot?: boolean
   ) {
     this.root = this;
     this.name = name;
-    this.parent = null;
-    this.isParameter = this.name ? name.startsWith(":") : false;
+    this.isParameter = name ? name.startsWith(":") : false;
 
     if (parent) {
       this.parent = parent;
@@ -60,8 +71,6 @@ export class StrongRoute {
       this.fullRoute = this.toRoute().join("/");
     } else if (full.length === 1) {
       this.fullRoute = this.name;
-    } else {
-      this.fullRoute = undefined;
     }
 
     this.config = { path: this.fullRoute, pathMatch: "full", ...config };
@@ -71,7 +80,7 @@ export class StrongRoute {
    * A base level (root) route component
    */
   public static get base() {
-    return new StrongRoute(null, null, {});
+    return new StrongRoute();
   }
 
   /**
@@ -80,7 +89,7 @@ export class StrongRoute {
    * @param name Route name
    * @param config Additional router configurations
    */
-  public add(name: string, config: Partial<Route> = {}) {
+  public add(name: string, config?: Partial<Route>) {
     return new StrongRoute(this, name, config);
   }
 
@@ -90,7 +99,7 @@ export class StrongRoute {
    * @param name Route name
    * @param config Additional router configurations
    */
-  public addFeatureModule(name: string, config: Partial<Route> = {}) {
+  public addFeatureModule(name: string, config?: Partial<Route>) {
     return new StrongRoute(this, name, config, true);
   }
 
@@ -136,17 +145,20 @@ export class StrongRoute {
   /**
    * Compile the list of routes for a module
    *
-   * @param callback Callback function (usually: GetRouteConfigForPage)
+   * @param callback Callback function (usually: getRouteConfigForPage)
    */
   public compileRoutes(callback: RouteConfigCallback): Routes {
     const rootRoute = this.root;
     const output: Routes = [];
 
     const sortRoutes = (a: Route, b: Route): -1 | 0 | 1 => {
-      if (a.path === null && b.path === null) {
+      const aPathExists = isInstantiated(a.path);
+      const bPathExists = isInstantiated(b.path);
+
+      if (!aPathExists && !bPathExists) {
         return 0;
-      } else if (a.path === null || b.path === null) {
-        return a.path === null ? -1 : 1;
+      } else if (!aPathExists || !bPathExists) {
+        return aPathExists ? 1 : -1;
       }
 
       const aRoutes = a.path.split("/");
@@ -187,6 +199,7 @@ export class StrongRoute {
   }
 
   /**
+   * TODO Rewrite
    * String representation of the route
    *
    * Example output: "/home/house"
@@ -196,6 +209,7 @@ export class StrongRoute {
   }
 
   /**
+   * TODO Rewrite
    * Router representation of the route
    * ! This will use a path relative to the current page if directly
    * inserted into the [routerLink] directive
@@ -220,7 +234,7 @@ export class StrongRoute {
     const fragments = [];
     const parameters = [];
     let current: StrongRoute = this;
-    while (current !== null) {
+    while (isInstantiated(current)) {
       fragments.push(current);
       if (current.isParameter) {
         parameters.push(current);
