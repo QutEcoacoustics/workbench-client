@@ -1,5 +1,5 @@
 import { Type } from "@angular/core";
-import { Route, Routes } from "@angular/router";
+import { Params, Route, Routes } from "@angular/router";
 import { Potential } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -15,7 +15,7 @@ export type RouteConfigCallback = (
  * dynamically create routes for the various page components.
  */
 export class StrongRoute {
-  private static rootPath = "";
+  private static readonly rootPath = "";
 
   /** Page component associated with this strong route */
   public pageComponent: Potential<Type<PageComponent>>;
@@ -25,10 +25,12 @@ export class StrongRoute {
   public readonly parent?: StrongRoute;
   /** Route path/name to add/create in the strong route tree */
   public readonly name?: string;
+  /** Route query parameters */
+  public readonly queryParams?: Params;
   /** Is this strong route a parameter (ie. :siteId) */
-  public readonly isParameter: boolean;
+  private readonly isParameter: boolean;
   /** Children strong routes of this strong route */
-  public readonly children: StrongRoute[] = [];
+  private readonly children: StrongRoute[] = [];
   /** List of parameter strong routes in this strong routes path */
   private readonly parameters: StrongRoute[];
   /** List of parent strong routes (including current strong route) */
@@ -47,11 +49,13 @@ export class StrongRoute {
   private constructor(
     parent: StrongRoute = undefined,
     name: string = StrongRoute.rootPath,
+    qsp: Params = {},
     config: Partial<Route> = {},
     isRoot?: boolean
   ) {
     this.root = this;
     this.name = name;
+    this.queryParams = qsp;
     this.isParameter = name ? name.startsWith(":") : false;
 
     if (parent) {
@@ -85,20 +89,22 @@ export class StrongRoute {
    * Add a child route
    *
    * @param name Route name
+   * @param qsp Route query parameters
    * @param config Additional router configurations
    */
-  public add(name: string, config?: Partial<Route>) {
-    return new StrongRoute(this, name, config);
+  public add(name: string, qsp?: Params, config?: Partial<Route>) {
+    return new StrongRoute(this, name, qsp, config);
   }
 
   /**
    * Add a new feature module route (inherit parent path without recalculating parent routes)
    *
    * @param name Route name
+   * @param qsp Route query parameters
    * @param config Additional router configurations
    */
-  public addFeatureModule(name: string, config?: Partial<Route>) {
-    return new StrongRoute(this, name, config, true);
+  public addFeatureModule(name: string, qsp?: Params, config?: Partial<Route>) {
+    return new StrongRoute(this, name, qsp, config, true);
   }
 
   /**

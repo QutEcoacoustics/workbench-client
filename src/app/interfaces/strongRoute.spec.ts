@@ -47,6 +47,10 @@ describe("StrongRoute", () => {
     ],
   });
 
+  function assertChildren(route: StrongRoute, children: StrongRoute[]) {
+    expect(route["children"]).toEqual(children);
+  }
+
   beforeEach(() => (baseRoute = StrongRoute.base));
 
   type ToOutput = KeysOfType<StrongRoute, () => string | string[]>;
@@ -144,10 +148,6 @@ describe("StrongRoute", () => {
       });
     });
   });
-
-  function assertChildren(route: StrongRoute, children: StrongRoute[]) {
-    expect(route.children).toEqual(children);
-  }
 
   describe("StrongRoutes", () => {
     const parents = [
@@ -333,7 +333,9 @@ describe("StrongRoute", () => {
               redirectTo: "/test",
             }),
           ];
-          const paramRoute = strongRoute.add(":id", { redirectTo: "/test" });
+          const paramRoute = strongRoute.add(":id", undefined, {
+            redirectTo: "/test",
+          });
           paramRoute.pageComponent = MockComponent;
 
           const compiledRoutes = paramRoute.compileRoutes(callback);
@@ -369,6 +371,22 @@ describe("StrongRoute", () => {
 
           const compiledRoutes = strongRoute.compileRoutes(callback);
           expect(compiledRoutes).toEqual(routes);
+        });
+      });
+    });
+  });
+
+  describe("Query Parameters", () => {
+    ["add", "addFeatureModule"].forEach((funcName) => {
+      describe(funcName, () => {
+        it("should create with empty object with query parameters by default", () => {
+          expect(baseRoute[funcName]("home").queryParams).toEqual({});
+        });
+
+        it("should create with query parameters", () => {
+          expect(
+            baseRoute[funcName]("home", { test: "value" }).queryParams
+          ).toEqual({ test: "value" });
         });
       });
     });
