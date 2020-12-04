@@ -15,6 +15,8 @@ export type RouteConfigCallback = (
  * dynamically create routes for the various page components.
  */
 export class StrongRoute {
+  private static rootPath = "";
+
   /** Page component associated with this strong route */
   public pageComponent: Potential<Type<PageComponent>>;
   /** Root strong route of this strong route */
@@ -25,8 +27,6 @@ export class StrongRoute {
   public readonly name?: string;
   /** Is this strong route a parameter (ie. :siteId) */
   public readonly isParameter: boolean;
-  /** Full route to this strong route as a string */
-  public readonly fullRoute?: string;
   /** Children strong routes of this strong route */
   public readonly children: StrongRoute[] = [];
   /** List of parameter strong routes in this strong routes path */
@@ -40,13 +40,13 @@ export class StrongRoute {
    * Constructor
    *
    * @param parent Components parent
-   * @param name Route name
+   * @param name Route name (do not include '/')
    * @param config Additional router configurations
    * @param isRoot Is this a root StrongRoute
    */
   private constructor(
-    parent?: StrongRoute,
-    name?: string,
+    parent: StrongRoute = undefined,
+    name: string = StrongRoute.rootPath,
     config: Partial<Route> = {},
     isRoot?: boolean
   ) {
@@ -66,14 +66,12 @@ export class StrongRoute {
     const [full, parameters] = this.rootToHere();
     this.full = full;
     this.parameters = parameters;
-
-    if (full.length > 1) {
-      this.fullRoute = this.toRoute().join("/");
-    } else if (full.length === 1) {
-      this.fullRoute = this.name;
-    }
-
-    this.config = { path: this.fullRoute, pathMatch: "full", ...config };
+    this.config = {
+      // Remove initial '/' from route path
+      path: this.toString().substr(1),
+      pathMatch: "full",
+      ...config,
+    };
   }
 
   /**
@@ -152,9 +150,13 @@ export class StrongRoute {
     const output: Routes = [];
 
     const sortRoutes = (a: Route, b: Route): -1 | 0 | 1 => {
+      // Root route wins
+      if (a.path === StrongRoute.rootPath || b.path === StrongRoute.rootPath) {
+        return a.path === StrongRoute.rootPath ? -1 : 1;
+      }
+
       const aPathExists = isInstantiated(a.path);
       const bPathExists = isInstantiated(b.path);
-
       if (!aPathExists && !bPathExists) {
         return 0;
       } else if (!aPathExists || !bPathExists) {
@@ -199,25 +201,31 @@ export class StrongRoute {
   }
 
   /**
-   * TODO Rewrite
    * String representation of the route
    *
    * Example output: "/home/house"
    */
   public toString(): string {
-    return "/" + (this.fullRoute ? this.fullRoute : "");
+    // Prevent double '/' at start of route string
+    return this.toRoute().join("/").substr(1);
   }
 
   /**
-   * TODO Rewrite
    * Router representation of the route
-   * ! This will use a path relative to the current page if directly
    * inserted into the [routerLink] directive
    *
-   * Example output: ["home", "house"]
+   * Example output: ["/", "home", "house"]
    */
   public toRoute(): string[] {
-    return this.full.slice(1).map((x) => x.name);
+    if (this.full.length > 0) {
+      const fullRoute = this.full
+        .map((x) => x.name)
+        .filter((fragment) => !!fragment);
+
+      return ["/", ...fullRoute];
+    }
+
+    return ["/"];
   }
 
   /**
