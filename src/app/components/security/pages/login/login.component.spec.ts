@@ -1,6 +1,5 @@
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   LoginDetails,
@@ -18,7 +17,7 @@ import { Subject } from "rxjs";
 import { LoginComponent } from "./login.component";
 import { fields } from "./login.schema.json";
 
-describe("LoginComponent New", () => {
+describe("LoginComponent", () => {
   let api: SecurityService;
   let router: Router;
   let location: Location;

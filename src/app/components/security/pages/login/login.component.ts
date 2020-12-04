@@ -19,6 +19,7 @@ import {
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
 import { AnyMenuItem } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { fields } from "./login.schema.json";
@@ -41,7 +42,7 @@ import { fields } from "./login.schema.json";
 class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   public fields = fields;
   private redirectBack: boolean;
-  private redirectUrl: string;
+  private redirectUrl: string | StrongRoute;
 
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
@@ -70,7 +71,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
       this.notifications.error("You are already logged in.");
     }
 
-    this.redirectUrl = homeMenuItem.route.toString();
+    this.redirectUrl = homeMenuItem.route;
     const noHistory = 1;
     const navigationId =
       (this.location.getState() as any)?.navigationId ?? noHistory;
@@ -78,7 +79,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
 
     // If no redirect, redirect home
     if (typeof redirect === "boolean" && !redirect) {
-      this.redirectUrl = homeMenuItem.route.toString();
+      this.redirectUrl = homeMenuItem.route;
       return;
     }
 
@@ -106,6 +107,8 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   protected redirectUser() {
     if (this.redirectBack) {
       this.location.back();
+    } else if (this.redirectUrl instanceof StrongRoute) {
+      this.router.navigateByUrl(this.redirectUrl.toString());
     } else if (this.redirectUrl.startsWith("/")) {
       this.router.navigateByUrl(this.redirectUrl);
     } else {

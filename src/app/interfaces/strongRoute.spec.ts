@@ -223,6 +223,28 @@ describe("StrongRoute", () => {
   });
 
   describe("Compile Routes", () => {
+    function createRoute(
+      path: string,
+      component?: any,
+      config: Partial<Route> = {}
+    ) {
+      return {
+        path,
+        pathMatch: "full",
+        children: [{ path: "", component }],
+        ...config,
+      };
+    }
+
+    it('should compile root ("") route', () => {
+      const routes: Routes = [createRoute(""), createRoute("", MockComponent)];
+      const homeRoute = StrongRoute.base.add("");
+      homeRoute.pageComponent = MockComponent;
+
+      const compiledRoutes = homeRoute.compileRoutes(callback);
+      expect(compiledRoutes).toEqual(routes);
+    });
+
     const parents = [
       {
         title: "Base Route",
@@ -246,19 +268,6 @@ describe("StrongRoute", () => {
       describe(parent.title, () => {
         let strongRoute: StrongRoute;
         let rootRoute: Route;
-
-        function createRoute(
-          path: string,
-          component?: any,
-          config: Partial<Route> = {}
-        ) {
-          return {
-            path,
-            pathMatch: "full",
-            children: [{ path: "", component }],
-            ...config,
-          };
-        }
 
         beforeEach(() => {
           strongRoute = parent.parent();

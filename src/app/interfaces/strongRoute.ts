@@ -207,7 +207,8 @@ export class StrongRoute {
    */
   public toString(): string {
     // Prevent double '/' at start of route string
-    return this.toRoute().join("/").substr(1);
+    const path = this.toRoute().join("/");
+    return path.length >= 2 ? path.substr(1) : path;
   }
 
   /**
