@@ -1,4 +1,5 @@
 import { Location } from "@angular/common";
+import { RouterLink } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -47,6 +48,7 @@ describe("MenuInternalLinkComponent", () => {
         [placement]="placement"
         [tooltip]="tooltip"
         [route]="route"
+        [qsp]="params"
       ></baw-menu-internal-link>
     `,
       {
@@ -57,6 +59,7 @@ describe("MenuInternalLinkComponent", () => {
           placement: "left",
           tooltip: "tooltip",
           route: "/home",
+          qsp: {},
           ...inputs,
         },
       }
@@ -170,6 +173,18 @@ describe("MenuInternalLinkComponent", () => {
       spyOn(location, "path").and.callFake(() => "/customRoute");
       spec.detectChanges();
       assertActive(true);
+    });
+
+    it("should handle empty qsp object", () => {
+      setup({ qsp: {} });
+      spec.detectChanges();
+      expect(spec.query(RouterLink).queryParams).toEqual({});
+    });
+
+    it("should handle qsp object", () => {
+      setup({ qsp: { test: "value" } });
+      spec.detectChanges();
+      expect(spec.query(RouterLink).queryParams).toEqual({ test: "value" });
     });
   });
 

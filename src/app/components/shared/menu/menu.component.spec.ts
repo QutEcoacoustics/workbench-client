@@ -363,6 +363,25 @@ describe("MenuComponent", () => {
       spec.detectChanges();
       expect(getMenuRoutes()[0].route).toBe("/home/10");
     });
+
+    it("should handle undefined query parameters", () => {
+      setup({ menuType: "action", links: List([defaultMenuRoute]) });
+      spec.detectChanges();
+      expect(getMenuRoutes()[0].qsp).toEqual({});
+    });
+
+    it("should set link query parameters", () => {
+      const params = { projectId: 5 };
+      const link = menuRoute({
+        ...defaultMenuRoute,
+        route: StrongRoute.base.add("home", ({ projectId }) => ({
+          id: projectId,
+        })),
+      });
+      setup({ menuType: "action", links: List([link]) }, undefined, params);
+      spec.detectChanges();
+      expect(getMenuRoutes()[0].qsp).toEqual({ id: 5 });
+    });
   });
 
   describe("item ordering", () => {
