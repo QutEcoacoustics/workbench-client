@@ -72,6 +72,31 @@ jobs:
       # - name: Run e2e test suite
       #   run: npm run e2e
 
+  ssr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: NPM install
+        run: npm install
+
+      - name: Build container
+        run: docker build -t qutecoacoustics/workbench-client .
+
+      - name: Run docker container
+        run: docker run -d -p 4000:4000 -v "$(pwd)/src/assets/environment.json:/environment.json" qutecoacoustics/workbench-client
+
+      - name: Validate Build
+        run: curl localhost:4000 | grep "<title>&lt;&lt; brandName &gt;&gt;</title>"
+
+      - name: This should fail
+        run: curl localhost:4000 | grep "<title>&lt;&lt; wrongName &gt;&gt;</title>"
+
   build:
     runs-on: ubuntu-latest
     steps:
