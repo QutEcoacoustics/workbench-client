@@ -9,11 +9,11 @@ import { fromJS } from "immutable";
 import { ToastrModule, ToastrService } from "ngx-toastr";
 import { toastrRoot } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
-import { AppConfigService } from "./app-config.service";
-import { testApiConfig } from "./appConfigMock.service";
+import { ConfigService } from "./config.service";
+import { testApiConfig } from "./configMock.service";
 
 describe("AppConfigService", () => {
-  let service: AppConfigService;
+  let service: ConfigService;
   let toastr: ToastrService;
   let tempEnvironment: any;
 
@@ -61,14 +61,14 @@ describe("AppConfigService", () => {
             resolve(apiConfig);
           }),
         },
-        AppConfigService,
+        ConfigService,
       ],
     });
 
     toastr = TestBed.inject(ToastrService);
     spyOn(toastr, "error").and.callThrough();
 
-    service = TestBed.inject(AppConfigService);
+    service = TestBed.inject(ConfigService);
   }
 
   it("should be created", () => {

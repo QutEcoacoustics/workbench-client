@@ -1,5 +1,5 @@
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
-import { assetRoot } from "@services/app-config/app-config.service";
+import { assetRoot } from "@services/config/config.service";
 import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";

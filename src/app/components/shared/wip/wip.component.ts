@@ -4,7 +4,7 @@ import {
   OnInit,
   ViewEncapsulation,
 } from "@angular/core";
-import { AppConfigService } from "@services/app-config/app-config.service";
+import { ConfigService } from "@services/config/config.service";
 
 /**
  * Work In Progress Component
@@ -25,10 +25,10 @@ import { AppConfigService } from "@services/app-config/app-config.service";
 export class WIPComponent implements OnInit {
   public tooltip: string;
 
-  public constructor(private env: AppConfigService) {}
+  public constructor(private config: ConfigService) {}
 
   public ngOnInit() {
-    this.tooltip = this.env.config.production
+    this.tooltip = this.config.config.production
       ? "This feature is currently not functional."
       : null;
   }

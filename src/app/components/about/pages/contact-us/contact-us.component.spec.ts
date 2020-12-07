@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
 import { ContactUsComponent } from "./contact-us.component";

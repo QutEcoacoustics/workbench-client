@@ -3,7 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { IdOr } from "@baw-api/api-common";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateRegion } from "@test/fakes/Region";
 import {
   validateApiCreate,

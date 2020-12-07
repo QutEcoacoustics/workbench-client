@@ -5,7 +5,7 @@ import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { Id, ImageUrl } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { assetRoot } from "@services/app-config/app-config.service";
+import { assetRoot } from "@services/config/config.service";
 import { modelData } from "@test/helpers/faker";
 import {
   assertHref,

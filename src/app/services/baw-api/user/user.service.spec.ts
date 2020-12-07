@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { User } from "@models/User";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateUser } from "@test/fakes/User";
 import { validateApiShow } from "@test/helpers/api-common";
 import { UserService } from "./user.service";

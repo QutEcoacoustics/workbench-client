@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
-import { AppConfigService } from "@services/app-config/app-config.service";
+import { ConfigService } from "@services/config/config.service";
 import {
   contactUsMenuItem,
   creditsMenuItem,
@@ -29,9 +29,9 @@ export class FooterComponent implements OnInit {
     statistics: statisticsMenuItem,
   };
 
-  public constructor(private env: AppConfigService) {}
+  public constructor(private config: ConfigService) {}
 
   public ngOnInit() {
-    this.version = this.env.config.version;
+    this.version = this.config.config.version;
   }
 }

@@ -4,7 +4,7 @@ import { IdOr } from "@baw-api/api-common";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateSite } from "@test/fakes/Site";
 import {
   validateApiCreate,

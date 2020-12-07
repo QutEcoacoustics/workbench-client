@@ -9,7 +9,7 @@ import {
 import { SecurityService } from "@baw-api/security/security.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
-import { assetRoot } from "@services/app-config/app-config.service";
+import { assetRoot } from "@services/config/config.service";
 import { OrderedSet } from "immutable";
 
 export const image404RelativeSrc = `${assetRoot}/images/404.png`;

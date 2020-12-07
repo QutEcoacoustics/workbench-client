@@ -6,7 +6,7 @@ import { UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { PipesModule } from "@pipes/pipes.module";
-import { assetRoot } from "@services/app-config/app-config.service";
+import { assetRoot } from "@services/config/config.service";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { generateUser } from "@test/fakes/User";
 import { assertImage, assertRoute, assertSpinner } from "@test/helpers/html";

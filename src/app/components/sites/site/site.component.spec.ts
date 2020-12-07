@@ -15,7 +15,7 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { assetRoot } from "@services/app-config/app-config.service";
+import { assetRoot } from "@services/config/config.service";
 import { MapComponent } from "@shared/map/map.component";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";

@@ -21,8 +21,8 @@ import { SecurityService } from "@baw-api/security/security.service";
 import { UserService } from "@baw-api/user/user.service";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
-import { AppConfigService } from "@services/app-config/app-config.service";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { ConfigService } from "@services/config/config.service";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { BehaviorSubject, Subject } from "rxjs";
 import { MockShowApiService } from "./mock/apiMocks.service";
@@ -96,7 +96,7 @@ describe("BawApiService", () => {
   }
 
   let service: BawApiService<MockModel>;
-  let env: AppConfigService;
+  let config: ConfigService;
   let httpMock: HttpTestingController;
 
   // Multi response metadata
@@ -157,7 +157,7 @@ describe("BawApiService", () => {
 
   function catchRequest(route: string, method: string) {
     return httpMock.expectOne({
-      url: env.environment.apiRoot + route,
+      url: config.environment.apiRoot + route,
       method,
     });
   }
@@ -197,7 +197,7 @@ describe("BawApiService", () => {
       ],
     });
     service = TestBed.inject<BawApiService<MockModel>>(BawApiService);
-    env = TestBed.inject(AppConfigService);
+    config = TestBed.inject(ConfigService);
     httpMock = TestBed.inject(HttpTestingController);
 
     multiMeta = {

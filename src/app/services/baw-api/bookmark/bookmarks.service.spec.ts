@@ -3,7 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { IdOr } from "@baw-api/api-common";
 import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateBookmark } from "@test/fakes/Bookmark";
 import {
   validateApiCreate,

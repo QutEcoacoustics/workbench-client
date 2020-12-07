@@ -2,7 +2,7 @@ import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { NgModule, Provider } from "@angular/core";
 import { mockProvider } from "@ngneat/spectator";
-import { MockAppConfigModule } from "../app-config/app-configMock.module";
+import { MockAppConfigModule } from "../config/configMock.module";
 import { AccountsService } from "./account/accounts.service";
 import { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import { AnalysisJobsService } from "./analysis/analysis-jobs.service";

@@ -3,7 +3,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
-import { assetRoot } from "@services/app-config/app-config.service";
+import { assetRoot } from "@services/config/config.service";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { modelData } from "@test/helpers/faker";
 import { assertImage, assertRoute } from "@test/helpers/html";

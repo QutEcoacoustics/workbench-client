@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateTagGroup } from "@test/fakes/TagGroup";
 import {
   validateApiCreate,

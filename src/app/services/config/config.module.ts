@@ -5,7 +5,7 @@ import {
   AppInitializer,
 } from "@helpers/app-initializer/app-initializer";
 import { ToastrModule } from "ngx-toastr";
-import { AppConfigService } from "./app-config.service";
+import { ConfigService } from "./config.service";
 
 @NgModule({
   imports: [ToastrModule],
@@ -20,7 +20,7 @@ import { AppConfigService } from "./app-config.service";
       provide: API_ROOT,
       useFactory: AppInitializer.apiRootFactory,
     },
-    AppConfigService,
+    ConfigService,
   ],
 })
 export class AppConfigModule {}

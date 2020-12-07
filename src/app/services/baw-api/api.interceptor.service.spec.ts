@@ -9,7 +9,7 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { SessionUser } from "@models/User";
-import { AppConfigService } from "@services/app-config/app-config.service";
+import { ConfigService } from "@services/config/config.service";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateSessionUser } from "@test/fakes/User";
 import {
@@ -22,7 +22,7 @@ import {
 describe("BawApiInterceptor", () => {
   let api: SecurityService;
   let http: HttpClient;
-  let config: AppConfigService;
+  let config: ConfigService;
   let httpMock: HttpTestingController;
   let apiRoot: string;
 
@@ -63,7 +63,7 @@ describe("BawApiInterceptor", () => {
     api = TestBed.inject(SecurityService);
     http = TestBed.inject(HttpClient);
     httpMock = TestBed.inject(HttpTestingController);
-    config = TestBed.inject(AppConfigService);
+    config = TestBed.inject(ConfigService);
 
     apiRoot = config.environment.apiRoot;
   });

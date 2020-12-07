@@ -6,7 +6,7 @@ import { LoadingBarService } from "@ngx-loading-bar/core";
 import { noop, Observable } from "rxjs";
 import { delay, filter, map, takeUntil, withLatestFrom } from "rxjs/operators";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
-import { AppConfigService } from "./services/app-config/app-config.service";
+import { ConfigService } from "./services/config/config.service";
 
 /**
  * App Root Component
@@ -21,7 +21,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
   public delayedProgress$: Observable<number>;
 
   public constructor(
-    private env: AppConfigService,
+    private config: ConfigService,
     private router: Router,
     private route: ActivatedRoute,
     private title: Title,
@@ -31,7 +31,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
   }
 
   public ngOnInit() {
-    this.title.setTitle(this.env.values.brand.name);
+    this.title.setTitle(this.config.values.brand.name);
     this.fullscreen = true;
 
     // Delay showing loading bar

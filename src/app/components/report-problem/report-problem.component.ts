@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { withFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { AppConfigService } from "@services/app-config/app-config.service";
+import { ConfigService } from "@services/config/config.service";
 import {
   reportProblemMenuItem,
   reportProblemsCategory,
@@ -32,7 +32,7 @@ class ReportProblemComponent
   public loading: boolean;
   public subTitle: string;
 
-  public constructor(private config: AppConfigService) {
+  public constructor(private config: ConfigService) {
     super();
   }
 

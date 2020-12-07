@@ -7,7 +7,7 @@ import {
   SecurityService,
 } from "@baw-api/security/security.service";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
-import { testApiConfig } from "@services/app-config/appConfigMock.service";
+import { testApiConfig } from "@services/config/configMock.service";
 import { FormComponent } from "@shared/form/form.component";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { testFormlyFields } from "@test/helpers/formly";

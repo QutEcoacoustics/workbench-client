@@ -1,8 +1,8 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { MenuLink, menuLink } from "@interfaces/menusInterfaces";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
-import { AppConfigService } from "@services/app-config/app-config.service";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { ConfigService } from "@services/config/config.service";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import {
   assertAttribute,
   assertHref,
@@ -13,7 +13,7 @@ import { SharedModule } from "../../shared.module";
 import { MenuExternalLinkComponent } from "./external-link.component";
 
 describe("MenuExternalLinkComponent", () => {
-  let env: AppConfigService;
+  let config: ConfigService;
   let defaultLink: MenuLink;
   let spec: SpectatorHost<MenuExternalLinkComponent>;
   let component: MenuExternalLinkComponent;
@@ -54,7 +54,7 @@ describe("MenuExternalLinkComponent", () => {
       }
     );
     component = spec.component;
-    env = spec.inject(AppConfigService);
+    config = spec.inject(ConfigService);
   }
 
   beforeEach(() => {
@@ -151,7 +151,7 @@ describe("MenuExternalLinkComponent", () => {
         link: menuLink({ ...defaultLink, uri: () => "/brokenlink/" }),
       });
       spec.detectChanges();
-      assertHref(retrieveLink(), env.environment.apiRoot + "/brokenlink/");
+      assertHref(retrieveLink(), config.environment.apiRoot + "/brokenlink/");
     });
   });
 

@@ -14,7 +14,7 @@ import {
   Configuration,
 } from "@helpers/app-initializer/app-initializer";
 import { ngExpressEngine } from "@nguniversal/express-engine";
-import { assetRoot } from "@services/app-config/app-config.service";
+import { assetRoot } from "@services/config/config.service";
 import express from "express";
 import { environment } from "src/environments/environment";
 import { AppServerModule } from "./src/main.server";

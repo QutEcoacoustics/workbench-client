@@ -5,7 +5,7 @@ import { SecurityService } from "@baw-api/security/security.service";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { SessionUser } from "@models/User";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import { testApiConfig } from "@services/app-config/appConfigMock.service";
+import { testApiConfig } from "@services/config/configMock.service";
 import { generateSessionUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertImage } from "@test/helpers/html";

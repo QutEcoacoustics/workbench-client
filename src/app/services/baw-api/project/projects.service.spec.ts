@@ -4,7 +4,7 @@ import { IdOr } from "@baw-api/api-common";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateProject } from "@test/fakes/Project";
 import {
   validateApiCreate,

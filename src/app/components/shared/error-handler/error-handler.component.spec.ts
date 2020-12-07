@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { apiReturnCodes } from "@baw-api/baw-api.service";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { SharedModule } from "../shared.module";
 import { ErrorHandlerComponent } from "./error-handler.component";
