@@ -199,7 +199,14 @@ export class StrongRoute {
       const route = callback(current.pageComponent, current.config);
       current.children.forEach(recursiveAdd);
 
-      if (route) {
+      // Ignore root route with no component
+      if (
+        route &&
+        !(
+          route.path === StrongRoute.rootPath &&
+          route.children[0].component === undefined
+        )
+      ) {
         output.push(route);
       }
     };

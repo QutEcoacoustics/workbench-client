@@ -227,7 +227,7 @@ describe("StrongRoute", () => {
       path: string,
       component?: any,
       config: Partial<Route> = {}
-    ) {
+    ): Route {
       return {
         path,
         pathMatch: "full",
@@ -237,7 +237,7 @@ describe("StrongRoute", () => {
     }
 
     it('should compile root ("") route', () => {
-      const routes: Routes = [createRoute(""), createRoute("", MockComponent)];
+      const routes: Routes = [createRoute("", MockComponent)];
       const homeRoute = StrongRoute.base.add("");
       homeRoute.pageComponent = MockComponent;
 
@@ -248,8 +248,8 @@ describe("StrongRoute", () => {
     const parents = [
       {
         title: "Base Route",
-        baseRef: "",
-        parent: () => StrongRoute.base,
+        baseRef: "test/",
+        parent: () => StrongRoute.base.add("test"),
       },
       {
         title: "Feature Module Route",
@@ -289,7 +289,7 @@ describe("StrongRoute", () => {
         });
 
         it("should compile StrongRoute with route", () => {
-          const routes: Routes = [
+          const routes = [
             rootRoute,
             createRoute(parent.baseRef + "home", MockComponent),
           ];
@@ -301,7 +301,7 @@ describe("StrongRoute", () => {
         });
 
         it("should compile StrongRoute with parameter route", () => {
-          const routes: Routes = [
+          const routes = [
             rootRoute,
             createRoute(parent.baseRef + ":id", MockComponent),
           ];
@@ -313,7 +313,7 @@ describe("StrongRoute", () => {
         });
 
         it("should compile StrongRoute with mixed routes", () => {
-          const routes: Routes = [
+          const routes = [
             rootRoute,
             createRoute(parent.baseRef + "home"),
             createRoute(parent.baseRef + "home/:id"),
@@ -327,7 +327,7 @@ describe("StrongRoute", () => {
         });
 
         it("should compile StrongRoute with custom config", () => {
-          const routes: Routes = [
+          const routes = [
             rootRoute,
             createRoute(parent.baseRef + ":id", MockComponent, {
               redirectTo: "/test",
@@ -343,7 +343,7 @@ describe("StrongRoute", () => {
         });
 
         it("should order child StrongRoute routes", () => {
-          const routes: Routes = [
+          const routes = [
             rootRoute,
             createRoute(parent.baseRef + "home"),
             createRoute(parent.baseRef + "home/house"),
@@ -358,7 +358,7 @@ describe("StrongRoute", () => {
         });
 
         it("should order base StrongRoute routes", () => {
-          const routes: Routes = [
+          const routes = [
             rootRoute,
             createRoute(parent.baseRef + "home"),
             createRoute(parent.baseRef + "house"),
