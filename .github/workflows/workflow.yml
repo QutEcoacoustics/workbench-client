@@ -95,12 +95,13 @@ jobs:
         run: curl --trace-ascii dump.txt localhost:4000
 
       - name: Read log
+        if: success() || failure()
         run: cat dump.txt
 
       # | grep "<title>&lt;&lt; brandName &gt;&gt;</title>"
 
-      - name: This should fail
-        run: curl localhost:4000 | grep "<title>&lt;&lt; wrongName &gt;&gt;</title>"
+      # - name: This should fail
+      #   run: curl localhost:4000 | grep "<title>&lt;&lt; wrongName &gt;&gt;</title>"
 
   build:
     runs-on: ubuntu-latest
