@@ -3,11 +3,14 @@ import { Params, Route, Routes } from "@angular/router";
 import { Potential } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { Param } from "./apiInterfaces";
 
 export type RouteConfigCallback = (
   component: Potential<Type<PageComponent>>,
   config: Partial<Route>
 ) => Route;
+
+type QSP = (params: Params) => Params;
 
 /**
  * Strong Route class. This provides a workaround for issues related to the
@@ -26,7 +29,7 @@ export class StrongRoute {
   /** Route path/name to add/create in the strong route tree */
   public readonly name?: string;
   /** Route query parameters */
-  public readonly queryParams?: Params;
+  private readonly qsp?: QSP;
   /** Is this strong route a parameter (ie. :siteId) */
   private readonly isParameter: boolean;
   /** Children strong routes of this strong route */
@@ -49,13 +52,13 @@ export class StrongRoute {
   private constructor(
     parent: StrongRoute = undefined,
     name: string = StrongRoute.rootPath,
-    qsp: Params = {},
+    qsp: QSP = () => ({}),
     config: Partial<Route> = {},
     isRoot?: boolean
   ) {
     this.root = this;
     this.name = name;
-    this.queryParams = qsp;
+    this.qsp = qsp;
     this.isParameter = name ? name.startsWith(":") : false;
 
     if (parent) {
@@ -92,7 +95,7 @@ export class StrongRoute {
    * @param qsp Route query parameters
    * @param config Additional router configurations
    */
-  public add(name: string, qsp?: Params, config?: Partial<Route>) {
+  public add(name: string, qsp?: QSP, config?: Partial<Route>) {
     return new StrongRoute(this, name, qsp, config);
   }
 
@@ -103,7 +106,7 @@ export class StrongRoute {
    * @param qsp Route query parameters
    * @param config Additional router configurations
    */
-  public addFeatureModule(name: string, qsp?: Params, config?: Partial<Route>) {
+  public addFeatureModule(name: string, qsp?: QSP, config?: Partial<Route>) {
     return new StrongRoute(this, name, qsp, config, true);
   }
 
@@ -218,8 +221,8 @@ export class StrongRoute {
   }
 
   /**
-   * Router representation of the route
-   * inserted into the [routerLink] directive
+   * Router representation of the route inserted into the
+   * [routerLink] directive
    *
    * Example output: ["/", "home", "house"]
    */
@@ -233,6 +236,16 @@ export class StrongRoute {
     }
 
     return ["/"];
+  }
+
+  /**
+   * Query parameters which should be supplied with this route
+   * and should be inserted into the [queryParams] directive
+   *
+   * @param params Route data parameters
+   */
+  public queryParams(params: Params) {
+    return this.qsp(params);
   }
 
   /**

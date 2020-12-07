@@ -4,7 +4,7 @@
       <h6 class="nav-link disabled m-0">
         <ng-container *ngIf="title; else linksTitle">
           <fa-icon [icon]="title.icon"></fa-icon>
-          {{ title.label.toUpperCase() }}
+          {{ title.label | uppercase }}
         </ng-container>
         <ng-template #linksTitle>MENU</ng-template>
       </h6>
@@ -32,6 +32,7 @@
             [placement]="placement"
             [tooltip]="link.tooltip(user)"
             [route]="link.route.format(params)"
+            [qsp]="link.route.queryParams(params)"
           >
           </baw-menu-internal-link>
         </ng-container>

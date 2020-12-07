@@ -5,7 +5,8 @@ import {
   Input,
   OnChanges,
 } from "@angular/core";
-import { MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
+import { Params } from "@angular/router";
+import { MenuRoute } from "@interfaces/menusInterfaces";
 import { Placement } from "@ng-bootstrap/ng-bootstrap";
 
 /**
@@ -19,6 +20,7 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
         class="nav-link"
         [ngClass]="{ active: active, disabled: disabled }"
         [routerLink]="route"
+        [queryParams]="qsp"
       >
         <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
         <span id="label">{{ link.label }}</span>
@@ -34,6 +36,7 @@ export class MenuInternalLinkComponent implements OnChanges {
   @Input() public id: string;
   @Input() public link: MenuRoute;
   @Input() public route: string;
+  @Input() public qsp: Params;
   @Input() public placement: Placement;
   @Input() public tooltip: string;
   public active: boolean;

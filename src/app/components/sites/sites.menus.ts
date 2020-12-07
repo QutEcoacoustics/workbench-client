@@ -34,7 +34,6 @@ export const newSiteMenuItem = menuRoute({
   tooltip: () => "Create a new site",
 });
 
-// TODO Add site id and project id to route params
 export const siteAnnotationsMenuItem = menuRoute({
   ...dataRequestMenuItem,
   label: "Download Annotations",
