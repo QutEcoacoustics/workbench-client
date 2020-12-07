@@ -91,8 +91,13 @@ jobs:
       - name: Run docker container
         run: docker run -d -p 4000:4000 -v "$(pwd)/src/assets/environment.json:/environment.json" qutecoacoustics/workbench-client
 
-      - name: Validate Build
-        run: curl localhost:4000 | grep "<title>&lt;&lt; brandName &gt;&gt;</title>"
+      - name: Read home page
+        run: curl --trace-ascii dump.txt localhost:4000
+
+      - name: Read log
+        run: cat dump.txt
+
+      # | grep "<title>&lt;&lt; brandName &gt;&gt;</title>"
 
       - name: This should fail
         run: curl localhost:4000 | grep "<title>&lt;&lt; wrongName &gt;&gt;</title>"
