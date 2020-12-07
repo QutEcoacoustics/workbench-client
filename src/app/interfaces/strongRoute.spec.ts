@@ -51,16 +51,16 @@ describe("StrongRoute", () => {
     expect(route["children"]).toEqual(children);
   }
 
+  function setup(link?: string | string[], params?: Params | null) {
+    spec = createComponent({ props: { link, params } });
+    location = spec.inject(Location);
+    ngZone = spec.inject(NgZone);
+  }
+
   beforeEach(() => (baseRoute = StrongRoute.base));
 
   type ToOutput = KeysOfType<StrongRoute, () => string | string[]>;
   (["toString", "toRoute"] as ToOutput[]).forEach((funcName) => {
-    function setup(link?: string | string[], params?: Params | null) {
-      spec = createComponent({ props: { link, params } });
-      location = spec.inject(Location);
-      ngZone = spec.inject(NgZone);
-    }
-
     function urlTree(commands: string | string[]) {
       return spec.router.createUrlTree(
         Array.isArray(commands) ? commands : [commands]
@@ -377,16 +377,58 @@ describe("StrongRoute", () => {
   });
 
   describe("Query Parameters", () => {
-    ["add", "addFeatureModule"].forEach((funcName) => {
+    type CreateStrongRoute = KeysOfType<
+      StrongRoute,
+      (...inputs: any[]) => StrongRoute
+    >;
+
+    (["add", "addFeatureModule"] as CreateStrongRoute[]).forEach((funcName) => {
       describe(funcName, () => {
+        function createQspRoute(qsp?: (params: Params) => Params) {
+          return baseRoute[funcName]("home", qsp);
+        }
+
         it("should create with empty object with query parameters by default", () => {
-          expect(baseRoute[funcName]("home").queryParams).toEqual({});
+          expect(createQspRoute().queryParams({})).toEqual({});
         });
 
         it("should create with query parameters", () => {
-          expect(
-            baseRoute[funcName]("home", { test: "value" }).queryParams
-          ).toEqual({ test: "value" });
+          const qsp = () => ({ test: "value" });
+          expect(createQspRoute(qsp).queryParams({})).toEqual({
+            test: "value",
+          });
+        });
+
+        it("should insert route data into query parameters", () => {
+          const qsp = ({ projectId }) => ({ id: projectId });
+          expect(createQspRoute(qsp).queryParams({ projectId: 5 })).toEqual({
+            id: 5,
+          });
+        });
+
+        it("should navigate to location with query parameters", async () => {
+          const qsp = ({ projectId }) => ({ projectId });
+          const route = createQspRoute(qsp);
+          setup(route.toString(), route.queryParams({ projectId: 5 }));
+          expect(location.path()).toBe("");
+
+          spec.click("a");
+          await spec.fixture.whenStable();
+          expect(location.path()).toBe("/home?projectId=5");
+        });
+
+        it("should navigate to location with multiple query parameters", async () => {
+          const qsp = ({ projectId, siteId }) => ({ projectId, siteId });
+          const route = createQspRoute(qsp);
+          setup(
+            route.toString(),
+            route.queryParams({ projectId: 5, siteId: 10 })
+          );
+          expect(location.path()).toBe("");
+
+          spec.click("a");
+          await spec.fixture.whenStable();
+          expect(location.path()).toBe("/home?projectId=5&siteId=10");
         });
       });
     });

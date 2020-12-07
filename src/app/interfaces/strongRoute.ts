@@ -3,7 +3,6 @@ import { Params, Route, Routes } from "@angular/router";
 import { Potential } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Param } from "./apiInterfaces";
 
 export type RouteConfigCallback = (
   component: Potential<Type<PageComponent>>,
@@ -113,7 +112,7 @@ export class StrongRoute {
   /**
    * Method used for templating a route with parameters.
    * Use this in a template like so:
-   * <a [routerlink]="route.Format({projectId: 1, siteId: 1})" />
+   * <a [routerlink]="route.format({projectId: 1, siteId: 1})" />
    */
   public format(args: { [key: string]: string | number }): string {
     if (!args) {
