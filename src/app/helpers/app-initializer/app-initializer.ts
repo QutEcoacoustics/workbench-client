@@ -38,13 +38,11 @@ export class AppInitializer {
  * App values
  */
 export interface Values {
-  keys: {
-    googleMaps: string;
-  };
   brand: {
     name: string;
     title: string;
   };
+  links: Record<string, string>;
   content: Links[];
 }
 
@@ -56,9 +54,12 @@ export interface Environment {
   apiRoot: string;
   siteRoot: string;
   siteDir: string;
-  ga: {
-    domain: string;
-    trackingId: string;
+  keys: {
+    googleMaps: string;
+    googleAnalytics: {
+      domain: string;
+      trackingId: string;
+    };
   };
 }
 

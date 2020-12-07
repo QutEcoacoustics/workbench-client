@@ -4,18 +4,21 @@
     "apiRoot": "https://staging.ecosounds.org",
     "siteRoot": "http://localhost:4200",
     "siteDir": "/",
-    "ga": {
-      "domain": "",
-      "trackingId": ""
+    "keys": {
+      "googleMaps": "",
+      "googleAnalytics": {
+        "domain": "",
+        "trackingId": ""
+      }
     }
   },
   "values": {
-    "keys": {
-      "googleMaps": ""
-    },
     "brand": {
       "name": "<< brandName >>",
       "title": "<< brandName >> | Acoustic Workbench"
+    },
+    "links": {
+      "githubBawServerIssues": "https://github.com/QutEcoacoustics/baw-server/issues"
     },
     "content": [
       {
