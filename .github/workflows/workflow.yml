@@ -83,11 +83,14 @@ jobs:
       - name: Run docker container
         run: docker run -d -p 4000:4000 -v "$(pwd)/src/assets/environment.json:/environment.json" qutecoacoustics/workbench-client
 
-      - name: Read home page
+      - name: Retrieve home page
         run: wget localhost:4000
 
-      - name: Validate home page
-        run: cat index.html | grep "<title>&lt;&lt; brandName &gt;&gt;</title>"
+      - name: Validate title
+        run: cat index.html | grep -o "<title>&lt;&lt; brandName &gt;&gt;</title>"
+
+      - name: Validate routing
+        run: cat index.html | grep -o "<router-outlet _ngcontent-sc115=\"\"></router-outlet><baw-home _nghost-sc258=\"\">"
 
   build:
     runs-on: ubuntu-latest
