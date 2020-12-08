@@ -94,14 +94,11 @@ jobs:
       - name: Read home page
         run: wget localhost:4000
 
-      - name: Read log
-        if: success() || failure()
-        run: cat index.html
+      - name: Validate home page
+        run: cat index.html | grep "<title>&lt;&lt; brandName &gt;&gt;</title>"
 
-      # | grep "<title>&lt;&lt; brandName &gt;&gt;</title>"
-
-      # - name: This should fail
-      #   run: curl localhost:4000 | grep "<title>&lt;&lt; wrongName &gt;&gt;</title>"
+      - name: This should fail
+        run: curl localhost:4000 | grep "<title>&lt;&lt; wrongName &gt;&gt;</title>"
 
   build:
     runs-on: ubuntu-latest
