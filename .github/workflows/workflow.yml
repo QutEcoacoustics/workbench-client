@@ -92,11 +92,11 @@ jobs:
         run: docker run -d -p 4000:4000 -v "$(pwd)/src/assets/environment.json:/environment.json" qutecoacoustics/workbench-client
 
       - name: Read home page
-        run: curl --trace-ascii dump.txt localhost:4000
+        run: wget localhost:4000
 
       - name: Read log
         if: success() || failure()
-        run: cat dump.txt
+        run: cat index.html
 
       # | grep "<title>&lt;&lt; brandName &gt;&gt;</title>"
 
