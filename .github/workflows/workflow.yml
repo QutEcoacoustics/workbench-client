@@ -77,14 +77,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-
-      - name: NPM install
-        run: npm install
-
       - name: Build container
         run: docker build -t qutecoacoustics/workbench-client .
 
@@ -96,9 +88,6 @@ jobs:
 
       - name: Validate home page
         run: cat index.html | grep "<title>&lt;&lt; brandName &gt;&gt;</title>"
-
-      - name: This should fail
-        run: curl localhost:4000 | grep "<title>&lt;&lt; wrongName &gt;&gt;</title>"
 
   build:
     runs-on: ubuntu-latest
