@@ -1,5 +1,5 @@
 import { Type } from "@angular/core";
-import { Potential } from "@helpers/advancedTypes";
+import { Option } from "@helpers/advancedTypes";
 import { MenuRoute } from "@interfaces/menusInterfaces";
 import { withUnsubscribe } from "../unsubscribe/unsubscribe";
 import { IPageInfo, PageInfo } from "./pageInfo";
@@ -53,7 +53,7 @@ export class PageComponent extends withUnsubscribe() implements IPageComponent {
  * @param component Angular component or null if not exists
  */
 export function getPageInfo(
-  component: Potential<Type<IPageComponent>>
-): Potential<PageInfo> {
+  component: Option<Type<IPageComponent>>
+): Option<PageInfo> {
   return (component as IPageComponentStatic)?.pageInfo ?? null;
 }

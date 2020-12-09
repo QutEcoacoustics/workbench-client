@@ -1,5 +1,5 @@
 import { Directive, ViewChild } from "@angular/core";
-import { Potential } from "@helpers/advancedTypes";
+import { Option } from "@helpers/advancedTypes";
 import {
   ColumnMode,
   DatatableComponent,
@@ -64,7 +64,7 @@ export abstract class TableTemplate<T> extends PageComponent {
    * @param filter Filter value
    * @param cell Cell value to compare
    */
-  protected checkMatch(filter: string, cell: Potential<string>): boolean {
+  protected checkMatch(filter: string, cell: Option<string>): boolean {
     if (!cell) {
       return false;
     }

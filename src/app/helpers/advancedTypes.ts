@@ -33,4 +33,4 @@ export type KeysOfType<T, TProp> = {
 }[keyof T];
 
 /** Sets type to either be T or null */
-export type Potential<T> = T | null;
+export type Option<T> = T | null;

@@ -1,11 +1,11 @@
 import { Type } from "@angular/core";
 import { Params, Route, Routes } from "@angular/router";
-import { Potential } from "@helpers/advancedTypes";
+import { Option } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 
 export type RouteConfigCallback = (
-  component: Potential<Type<PageComponent>>,
+  component: Option<Type<PageComponent>>,
   config: Partial<Route>
 ) => Route;
 
@@ -20,7 +20,7 @@ export class StrongRoute {
   private static readonly rootPath = "";
 
   /** Page component associated with this strong route */
-  public pageComponent: Potential<Type<PageComponent>>;
+  public pageComponent: Option<Type<PageComponent>>;
   /** Root strong route of this strong route */
   public readonly root: StrongRoute;
   /** Parent strong route of this strong route */

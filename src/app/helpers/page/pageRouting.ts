@@ -2,7 +2,7 @@ import { Type } from "@angular/core";
 import { Route } from "@angular/router";
 import { ResolverHandlerComponent } from "@components/error/resolver-handler.component";
 import { FormTouchedGuard } from "@guards/form/form.guard";
-import { Potential } from "@helpers/advancedTypes";
+import { Option } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { ActionMenuComponent } from "@shared/action-menu/action-menu.component";
 import { SecondaryMenuComponent } from "@shared/secondary-menu/secondary-menu.component";
@@ -15,9 +15,9 @@ import { getPageInfo, PageComponent } from "./pageComponent";
  * @returns List of routes
  */
 export function getRouteConfigForPage(
-  component: Potential<Type<PageComponent>>,
+  component: Option<Type<PageComponent>>,
   config: Partial<Route>
-): Potential<Route> {
+): Option<Route> {
   const page = getPageInfo(component);
 
   if (!page || !isInstantiated(page.route.name)) {
