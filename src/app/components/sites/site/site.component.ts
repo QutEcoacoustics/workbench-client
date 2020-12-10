@@ -3,7 +3,6 @@ import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.ser
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";

@@ -50,15 +50,11 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
   }
 
   public editPath(tag: Tag): string {
-    return adminEditTagMenuItem.route
-      .toString()
-      .replace(":tagId", tag.id.toString());
+    return adminEditTagMenuItem.route.toRouterLink({ tagId: tag.id });
   }
 
   public deletePath(tag: Tag): string {
-    return adminDeleteTagMenuItem.route
-      .toString()
-      .replace(":tagId", tag.id.toString());
+    return adminDeleteTagMenuItem.route.toRouterLink({ tagId: tag.id });
   }
 }
 

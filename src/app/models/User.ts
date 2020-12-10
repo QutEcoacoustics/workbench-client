@@ -181,7 +181,7 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   }
 
   public get viewUrl(): string {
-    return myAccountMenuItem.route.toString();
+    return myAccountMenuItem.route.toRouterLink();
   }
 }
 

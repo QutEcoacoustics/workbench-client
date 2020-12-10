@@ -126,7 +126,7 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
             this.reloadPage();
           } else {
             // Else just redirect back to home
-            this.router.navigate(homeMenuItem.route.toRoute());
+            this.router.navigateByUrl(homeMenuItem.route.toRouterLink());
           }
         },
       });

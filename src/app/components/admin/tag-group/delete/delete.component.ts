@@ -59,7 +59,7 @@ class AdminTagGroupsDeleteComponent
     }
   }
   protected redirectionPath() {
-    return adminTagGroupsMenuItem.route.toString();
+    return adminTagGroupsMenuItem.route.toRouterLink();
   }
 
   protected apiAction(model: Partial<TagGroup>) {

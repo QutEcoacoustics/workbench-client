@@ -223,7 +223,7 @@ export function isExternalLink(menuItem: AnyMenuItem): menuItem is MenuLink {
  * @returns Either full route, or uri
  */
 export function getRoute(link: NavigableMenuItem, params?: Params): string {
-  return isInternalRoute(link) ? link.route.toString() : link.uri(params);
+  return isInternalRoute(link) ? link.route.toRouterLink() : link.uri(params);
 }
 
 /**

@@ -36,6 +36,6 @@ import { reportProblemMenuItem } from "@components/report-problem/report-problem
 })
 export class ErrorHandlerComponent {
   @Input() public error: ApiErrorDetails;
-  public reportUrl = reportProblemMenuItem.route.toString();
+  public reportUrl = reportProblemMenuItem.route.toRouterLink();
   public apiReturnCodes = apiReturnCodes;
 }

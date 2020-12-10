@@ -100,7 +100,7 @@ export const myAnnotationsMenuItem = menuRoute({
 /**
  * Their Profile Menus
  */
-export const theirProfileRoute = StrongRoute.newRoot
+export const theirProfileRoute = StrongRoute.newRoot()
   .add("user_accounts")
   .add(":accountId");
 

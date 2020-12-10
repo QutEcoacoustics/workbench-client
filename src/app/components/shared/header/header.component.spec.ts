@@ -316,8 +316,8 @@ describe("HeaderComponent", () => {
       spec.detectChanges();
 
       getLogoutButton().click();
-      expect(router.navigate).toHaveBeenCalledWith(
-        homeMenuItem.route.toRoute()
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        homeMenuItem.route.toRouterLink()
       );
     });
 

@@ -67,7 +67,7 @@ export class ItemComponent implements OnInit {
 
     if (typeof this.uri === "object") {
       this.internalLink = true;
-      this.link = this.uri.toString();
+      this.link = this.uri.toRouterLink();
     } else {
       const params = this.route.snapshot.params;
 

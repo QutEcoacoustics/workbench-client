@@ -62,9 +62,7 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
    * @param user User Account
    */
   public editPath(user: User) {
-    return theirEditMenuItem.route
-      .toString()
-      .replace(":accountId", user.id.toString());
+    return theirEditMenuItem.route.toRouterLink({ accountId: user.id });
   }
 }
 

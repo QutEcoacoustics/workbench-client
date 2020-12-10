@@ -20,7 +20,7 @@ export function getRouteConfigForPage(
 ): Option<Route> {
   const page = getPageInfo(component);
 
-  if (!page || !isInstantiated(page.route.name)) {
+  if (!page || !isInstantiated(page.route.pathFragment)) {
     return null;
   }
 

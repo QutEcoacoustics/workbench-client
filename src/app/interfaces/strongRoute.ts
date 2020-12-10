@@ -9,6 +9,8 @@ export type RouteConfigCallback = (
   config: Partial<Route>
 ) => Route;
 
+export type RouteParams = Record<string, string | number>;
+
 type QSPCallback = (params: Params) => Params;
 
 /**
@@ -68,7 +70,7 @@ export class StrongRoute {
    * Example usage:
    * ```html
    * <a
-   *  [routerLink]="strongRoute.toRoute()"
+   *  [routerLink]="strongRoute.toRouterLink()"
    *  [queryParams]="strongRoute.qsp({projectId: 5})"
    *  />
    * ```
@@ -145,15 +147,21 @@ export class StrongRoute {
    * root path.
    * @param queryParams Function to produce the query parameters when navigating to
    * the StrongRoute
-   * @param config Additional configuration options to apply to the
+   * @param angularRouteConfig Additional configuration options to apply to the
    * compiled Route
    */
   public addFeatureModule(
     pathFragment: string,
     queryParams?: QSPCallback,
-    config?: Partial<Route>
+    angularRouteConfig?: Partial<Route>
   ) {
-    return new StrongRoute(this, pathFragment, queryParams, config, true);
+    return new StrongRoute(
+      this,
+      pathFragment,
+      queryParams,
+      angularRouteConfig,
+      true
+    );
   }
 
   /**
@@ -181,8 +189,13 @@ export class StrongRoute {
    * Example output: `"projects/:projectId/sites/:siteId"`
    */
   public toRouteCompilePath(): string {
-    if (this.full.length > 0) {
-      return this.full.map((x) => x.pathFragment).join("/");
+    if (this.full.length > 1) {
+      return this.full
+        .slice(1)
+        .map((x) => x.pathFragment)
+        .join("/");
+    } else if (this.full.length === 1) {
+      return this.full[0].pathFragment;
     }
 
     return "";
@@ -204,7 +217,7 @@ export class StrongRoute {
    *
    * @param params Route parameters
    */
-  public toRouterLink(params: Record<string, string | number>): string {
+  public toRouterLink(params: RouteParams = {}): string {
     if (!params) {
       // Should only be unit tests which encounter this
       console.error("Route arguments are " + params);
@@ -234,7 +247,10 @@ export class StrongRoute {
       }
     };
 
-    return this.full.map(prepareParam).join("/");
+    const route = this.full.map(prepareParam).join("/");
+    return route.startsWith(StrongRoute.rootRoute)
+      ? route
+      : StrongRoute.rootRoute + route;
   }
 
   /**
@@ -257,8 +273,8 @@ export class StrongRoute {
    * @param queryParams Query parameters
    */
   public format(
-    routeParams: Record<string, string | number>,
-    queryParams: Params
+    routeParams: RouteParams = {},
+    queryParams: Params = {}
   ): string {
     const qsp = this.queryParams(queryParams);
     const keys = Object.keys(qsp);
@@ -268,8 +284,11 @@ export class StrongRoute {
       return basePath;
     }
 
-    const qspString = keys.map((key) => `${key}=${qsp[key]}`).join("&");
-    return `${basePath}?${qspString}`;
+    const qspString = keys
+      .filter((key) => isInstantiated(qsp[key]))
+      .map((key) => `${key}=${qsp[key]}`)
+      .join("&");
+    return qspString.length > 0 ? `${basePath}?${qspString}` : basePath;
   }
 
   /**

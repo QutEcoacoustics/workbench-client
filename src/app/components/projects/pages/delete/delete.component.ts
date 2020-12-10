@@ -65,7 +65,7 @@ class DeleteComponent extends FormTemplate<Project> implements OnInit {
   }
 
   protected redirectionPath() {
-    return projectsMenuItem.route.toString();
+    return projectsMenuItem.route.toRouterLink();
   }
 
   protected apiAction(model: Partial<Project>) {

@@ -34,8 +34,10 @@
                 <!-- Link to download -->
                 <a
                   class="mx-auto text-center"
-                  [routerLink]="dataRequest.route.toString()"
-                  [queryParams]="{ userId: user.id }"
+                  [routerLink]="dataRequest.route.toRouterLink()"
+                  [queryParams]="
+                    dataRequest.route.queryParams({ userId: user.id })
+                  "
                 >
                   Annotations you've created
                 </a>

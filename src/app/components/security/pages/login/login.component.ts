@@ -108,7 +108,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
     if (this.redirectBack) {
       this.location.back();
     } else if (this.redirectUrl instanceof StrongRoute) {
-      this.router.navigateByUrl(this.redirectUrl.toString());
+      this.router.navigateByUrl(this.redirectUrl.toRouterLink());
     } else if (this.redirectUrl.startsWith("/")) {
       this.router.navigateByUrl(this.redirectUrl);
     } else {
