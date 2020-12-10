@@ -72,7 +72,7 @@ describe("MenuInternalLinkComponent", () => {
     defaultLink = menuRoute({
       icon: ["fas", "home"],
       label: "home",
-      route: StrongRoute.base.add("home"),
+      route: StrongRoute.newRoot().add("home"),
       tooltip: () => "tooltip",
     });
   });
@@ -142,7 +142,7 @@ describe("MenuInternalLinkComponent", () => {
         route: "/brokenlink",
         link: menuRoute({
           ...defaultLink,
-          route: StrongRoute.base.add("brokenlink"),
+          route: StrongRoute.newRoot().add("brokenlink"),
         }),
       });
       spec.detectChanges();
@@ -154,7 +154,7 @@ describe("MenuInternalLinkComponent", () => {
         route: "/brokenlink",
         link: menuRoute({
           ...defaultLink,
-          route: StrongRoute.base.add("wronglink"),
+          route: StrongRoute.newRoot().add("wronglink"),
         }),
       });
       spec.detectChanges();

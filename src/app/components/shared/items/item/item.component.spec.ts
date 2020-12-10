@@ -113,7 +113,7 @@ describe("ItemComponent", () => {
     component.icon = ["fas", "home"] as IconProp;
     component.name = "Test";
     component.value = "unknown";
-    component.uri = StrongRoute.base.add("home");
+    component.uri = StrongRoute.newRoot().add("home");
 
     fixture.detectChanges();
     const anchor = fixture.nativeElement.querySelector("a");

@@ -22,7 +22,7 @@ import { ActionMenuComponent } from "./action-menu.component";
 describe("ActionMenuComponent", () => {
   let component: ActionMenuComponent;
   let fixture: ComponentFixture<ActionMenuComponent>;
-  const defaultRoute = StrongRoute.base.add("/");
+  const defaultRoute = StrongRoute.newRoot().add("/");
   const defaultSelfLink = menuRoute({
     label: "Self Label",
     icon: ["fas", "question-circle"],
@@ -75,7 +75,7 @@ describe("ActionMenuComponent", () => {
 
   describe("category", () => {
     it("should display custom title", () => {
-      const route = StrongRoute.base.add("/");
+      const route = StrongRoute.newRoot().add("/");
 
       createTestBed({}, {
         pageRoute: menuRoute({
@@ -101,7 +101,7 @@ describe("ActionMenuComponent", () => {
     });
 
     it("should display custom icon", () => {
-      const route = StrongRoute.base.add("/");
+      const route = StrongRoute.newRoot().add("/");
 
       createTestBed({}, {
         pageRoute: menuRoute({
@@ -127,7 +127,7 @@ describe("ActionMenuComponent", () => {
     });
 
     it("should display default title", () => {
-      const route = StrongRoute.base.add("/");
+      const route = StrongRoute.newRoot().add("/");
 
       createTestBed({}, {
         pageRoute: menuRoute({
@@ -148,7 +148,7 @@ describe("ActionMenuComponent", () => {
     });
 
     it("should display default icon", () => {
-      const route = StrongRoute.base.add("/");
+      const route = StrongRoute.newRoot().add("/");
 
       createTestBed({}, {
         pageRoute: menuRoute({
@@ -171,7 +171,7 @@ describe("ActionMenuComponent", () => {
 
   describe("links", () => {
     it("should handle undefined links", () => {
-      const route = StrongRoute.base.add("/");
+      const route = StrongRoute.newRoot().add("/");
 
       createTestBed({}, {
         pageRoute: menuRoute({
@@ -199,7 +199,7 @@ describe("ActionMenuComponent", () => {
     });
 
     it("should handle no links", () => {
-      const route = StrongRoute.base.add("/");
+      const route = StrongRoute.newRoot().add("/");
 
       createTestBed({}, {
         pageRoute: menuRoute({
@@ -227,7 +227,7 @@ describe("ActionMenuComponent", () => {
     });
 
     it("should handle mixed links", () => {
-      const route = StrongRoute.base.add("/");
+      const route = StrongRoute.newRoot().add("/");
 
       createTestBed({}, {
         pageRoute: menuRoute({

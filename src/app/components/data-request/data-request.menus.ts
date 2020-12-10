@@ -3,7 +3,7 @@ import { homeCategory } from "@components/home/home.menus";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 
-export const dataRequestRoute = StrongRoute.base.add(
+export const dataRequestRoute = StrongRoute.newRoot().add(
   "data_request",
   (params: Params) => ({
     projectId: params?.projectId,

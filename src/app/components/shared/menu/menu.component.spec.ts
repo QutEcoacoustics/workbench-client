@@ -92,7 +92,7 @@ describe("MenuComponent", () => {
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      route: StrongRoute.base.add("home"),
+      route: StrongRoute.newRoot().add("home"),
     });
   });
 
@@ -357,7 +357,7 @@ describe("MenuComponent", () => {
       const params = { attribute: 10 };
       const link = menuRoute({
         ...defaultMenuRoute,
-        route: StrongRoute.base.add("home").add(":attribute"),
+        route: StrongRoute.newRoot.add("home").add(":attribute"),
       });
       setup({ menuType: "action", links: List([link]) }, undefined, params);
       spec.detectChanges();
@@ -374,7 +374,7 @@ describe("MenuComponent", () => {
       const params = { projectId: 5 };
       const link = menuRoute({
         ...defaultMenuRoute,
-        route: StrongRoute.base.add("home", ({ projectId }) => ({
+        route: StrongRoute.newRoot.add("home", ({ projectId }) => ({
           id: projectId,
         })),
       });

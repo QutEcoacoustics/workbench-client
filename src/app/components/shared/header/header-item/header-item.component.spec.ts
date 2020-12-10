@@ -29,7 +29,7 @@ describe("HeaderItemComponent", () => {
       label: "Custom Label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      route: StrongRoute.base.add("home"),
+      route: StrongRoute.newRoot().add("home"),
     });
     fixture.detectChanges();
 
@@ -43,7 +43,7 @@ describe("HeaderItemComponent", () => {
       label: "Custom Label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      route: StrongRoute.base.add("home"),
+      route: StrongRoute.newRoot().add("home"),
     });
     fixture.detectChanges();
 
@@ -56,7 +56,7 @@ describe("HeaderItemComponent", () => {
       label: "Custom Label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      route: StrongRoute.base.add("home"),
+      route: StrongRoute.newRoot().add("home"),
     });
     fixture.detectChanges();
 

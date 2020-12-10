@@ -2,7 +2,7 @@ import { Category, menuLink, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { isAdminPredicate } from "src/app/app.menus";
 
-export const adminRoute = StrongRoute.base.add("admin");
+export const adminRoute = StrongRoute.newRoot().add("admin");
 export const adminCategory: Category = {
   icon: ["fas", "cog"],
   label: "Admin",

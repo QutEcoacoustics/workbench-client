@@ -1,7 +1,7 @@
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 
-export const aboutRoute = StrongRoute.base.add("about");
+export const aboutRoute = StrongRoute.newRoot().add("about");
 
 export const aboutCategory: Category = {
   icon: ["fas", "info-circle"],

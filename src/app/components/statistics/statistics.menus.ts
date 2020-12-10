@@ -2,7 +2,7 @@ import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { homeCategory } from "../home/home.menus";
 
-export const statisticsRoute = StrongRoute.base.add("website_statistics");
+export const statisticsRoute = StrongRoute.newRoot().add("website_statistics");
 
 export const statisticsCategory: Category = homeCategory;
 

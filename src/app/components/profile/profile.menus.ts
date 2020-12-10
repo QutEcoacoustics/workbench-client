@@ -14,7 +14,7 @@ function getUserName(user: AbstractModel) {
   return user ? (user as User).userName : "unknown";
 }
 
-export const myAccountRoute = StrongRoute.base.add("my_account");
+export const myAccountRoute = StrongRoute.newRoot().add("my_account");
 
 /**
  * My Account Menus
@@ -100,7 +100,7 @@ export const myAnnotationsMenuItem = menuRoute({
 /**
  * Their Profile Menus
  */
-export const theirProfileRoute = StrongRoute.base
+export const theirProfileRoute = StrongRoute.newRoot
   .add("user_accounts")
   .add(":accountId");
 

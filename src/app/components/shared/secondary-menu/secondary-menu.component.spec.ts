@@ -24,7 +24,7 @@ describe("SecondaryMenuComponent", () => {
   let component: SecondaryMenuComponent;
   let fixture: ComponentFixture<SecondaryMenuComponent>;
   let storedDefaultMenu: any;
-  const defaultRoute = StrongRoute.base.add("/");
+  const defaultRoute = StrongRoute.newRoot().add("/");
   const selfLinkCount = 1;
   const defaultPageRouteLink = menuRoute({
     label: "Self Label",
@@ -217,7 +217,7 @@ describe("SecondaryMenuComponent", () => {
     });
 
     it("should handle parent link", () => {
-      const parentRoute = StrongRoute.base.add("home");
+      const parentRoute = StrongRoute.newRoot().add("home");
       const childRoute = parentRoute.add("house");
       const parentLink = menuRoute({
         label: "Parent Label",
@@ -257,7 +257,7 @@ describe("SecondaryMenuComponent", () => {
     });
 
     it("should handle grandparent link", () => {
-      const grandParentRoute = StrongRoute.base.add("home");
+      const grandParentRoute = StrongRoute.newRoot().add("home");
       const parentRoute = grandParentRoute.add("house");
       const childRoute = parentRoute.add("door");
       const grandParentLink = menuRoute({
@@ -310,7 +310,7 @@ describe("SecondaryMenuComponent", () => {
     });
 
     it("should not hide self link if predicate fails", () => {
-      const parentRoute = StrongRoute.base.add("home");
+      const parentRoute = StrongRoute.newRoot().add("home");
       const childRoute = parentRoute.add("house");
       const parentLink = menuRoute({
         label: "Parent Label",
@@ -500,7 +500,7 @@ describe("SecondaryMenuComponent", () => {
 
   describe("default menu", () => {
     it("should handle single link", () => {
-      const homeRoute = StrongRoute.base.add("");
+      const homeRoute = StrongRoute.newRoot().add("");
 
       defaultMenu.contextLinks = List<NavigableMenuItem>([
         menuRoute({
@@ -533,8 +533,8 @@ describe("SecondaryMenuComponent", () => {
     });
 
     it("should handle multiple links", () => {
-      const homeRoute = StrongRoute.base.add("");
-      const projectsRoute = StrongRoute.base.add("projects");
+      const homeRoute = StrongRoute.newRoot().add("");
+      const projectsRoute = StrongRoute.newRoot().add("projects");
 
       defaultMenu.contextLinks = List<NavigableMenuItem>([
         menuRoute({
@@ -578,8 +578,8 @@ describe("SecondaryMenuComponent", () => {
     });
 
     it("should hide duplicate if self link exists in default menu", () => {
-      const homeRoute = StrongRoute.base.add("");
-      const projectsRoute = StrongRoute.base.add("projects");
+      const homeRoute = StrongRoute.newRoot().add("");
+      const projectsRoute = StrongRoute.newRoot().add("projects");
 
       const selfRoute = menuRoute({
         icon: ["fas", "globe-asia"],

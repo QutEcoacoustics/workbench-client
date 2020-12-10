@@ -57,7 +57,7 @@ describe("StrongRoute", () => {
     ngZone = spec.inject(NgZone);
   }
 
-  beforeEach(() => (baseRoute = StrongRoute.base));
+  beforeEach(() => (baseRoute = StrongRoute.newRoot()));
 
   type ToOutput = KeysOfType<StrongRoute, () => string | string[]>;
   (["toString", "toRoute"] as ToOutput[]).forEach((funcName) => {
@@ -153,15 +153,16 @@ describe("StrongRoute", () => {
     const parents = [
       {
         title: "Base Route",
-        parent: () => StrongRoute.base,
+        parent: () => StrongRoute.newRoot(),
       },
       {
         title: "Child Route",
-        parent: () => StrongRoute.base.add("parent"),
+        parent: () => StrongRoute.newRoot().add("parent"),
       },
       {
         title: "Feature Module Route",
-        parent: () => StrongRoute.base.add("test").addFeatureModule("testing"),
+        parent: () =>
+          StrongRoute.newRoot().add("test").addFeatureModule("testing"),
       },
     ];
 
@@ -238,7 +239,7 @@ describe("StrongRoute", () => {
 
     it('should compile root ("") route', () => {
       const routes: Routes = [createRoute("", MockComponent)];
-      const homeRoute = StrongRoute.base.add("");
+      const homeRoute = StrongRoute.newRoot().add("");
       homeRoute.pageComponent = MockComponent;
 
       const compiledRoutes = homeRoute.compileRoutes(callback);
@@ -249,12 +250,13 @@ describe("StrongRoute", () => {
       {
         title: "Base Route",
         baseRef: "test/",
-        parent: () => StrongRoute.base.add("test"),
+        parent: () => StrongRoute.newRoot().add("test"),
       },
       {
         title: "Feature Module Route",
         baseRef: "test/testing/",
-        parent: () => StrongRoute.base.add("test").addFeatureModule("testing"),
+        parent: () =>
+          StrongRoute.newRoot().add("test").addFeatureModule("testing"),
       },
     ];
 

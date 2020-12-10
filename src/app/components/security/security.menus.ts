@@ -2,7 +2,7 @@ import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { defaultUserIcon, isGuestPredicate } from "src/app/app.menus";
 
-export const securityRoute = StrongRoute.base.add("security");
+export const securityRoute = StrongRoute.newRoot().add("security");
 
 export const securityCategory: Category = {
   icon: defaultUserIcon,
