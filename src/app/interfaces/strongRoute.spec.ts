@@ -2,10 +2,10 @@ import { Location } from "@angular/common";
 import { Component, Input, NgZone, Type } from "@angular/core";
 import { Params, Route, Routes } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { KeysOfType } from "@helpers/advancedTypes";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
-import { StrongRoute } from "./strongRoute";
+import { modelData } from "@test/helpers/faker";
+import { RouteParams, StrongRoute } from "./strongRoute";
 
 @Component({
   selector: "baw-dummy",
@@ -51,6 +51,18 @@ describe("StrongRoute", () => {
     expect(route["children"]).toEqual(children);
   }
 
+  function urlTree(commands: string | string[]) {
+    return spec.router.createUrlTree(
+      Array.isArray(commands) ? commands : [commands]
+    );
+  }
+
+  async function navigate(route: string | string[]) {
+    await ngZone.run(
+      async () => await spec.router.navigateByUrl(urlTree(route))
+    );
+  }
+
   function setup(link?: string | string[], params?: Params | null) {
     spec = createComponent({ props: { link, params } });
     location = spec.inject(Location);
@@ -59,74 +71,271 @@ describe("StrongRoute", () => {
 
   beforeEach(() => (baseRoute = StrongRoute.newRoot()));
 
-  type ToOutput = KeysOfType<StrongRoute, () => string | string[]>;
-  (["toString", "toRoute"] as ToOutput[]).forEach((funcName) => {
-    function urlTree(commands: string | string[]) {
-      return spec.router.createUrlTree(
-        Array.isArray(commands) ? commands : [commands]
-      );
-    }
-
-    async function navigate(route: string | string[]) {
-      await ngZone.run(
-        async () => await spec.router.navigateByUrl(urlTree(route))
-      );
-    }
-
-    describe(`${funcName} Router`, () => {
-      beforeEach(() => setup());
-
-      it("should handle base StrongRoute", async () => {
-        await navigate(baseRoute[funcName]());
-        expect(location.path()).toBe("/");
-      });
-
-      it("should handle root route", async () => {
-        const childRoute = baseRoute.add("");
-        await navigate(childRoute[funcName]());
-        expect(location.path()).toBe("/");
-      });
-
-      it("should handle child route", async () => {
-        const childRoute = baseRoute.add("home");
-        await navigate(childRoute[funcName]());
-        expect(location.path()).toBe("/home");
-      });
-
-      it("should handle grandchild route", async () => {
-        const grandChildRoute = baseRoute.add("home").add("house");
-        await navigate(grandChildRoute[funcName]());
-        expect(location.path()).toBe("/home/house");
-      });
-
-      it("should handle mixed routes", async () => {
-        const grandChildRoute = baseRoute.add("home").add(":id").add("house");
-        await navigate(grandChildRoute[funcName]());
-        expect(location.path()).toBe("/home/:id/house");
-      });
-
-      it("should handle parameter route", async () => {
-        const childRoute = baseRoute.add(":id");
-        await navigate(childRoute[funcName]());
-        expect(location.path()).toBe("/:id");
-      });
-
-      it("should handle navigating between different route chains", async () => {
-        const initialRoute = baseRoute.add("home").add(":id").add("house");
-        const finalRoute = baseRoute.add(":id");
-
-        await navigate(initialRoute[funcName]());
-        expect(location.path()).toBe("/home/:id/house");
-
-        await navigate(finalRoute[funcName]());
-        expect(location.path()).toBe("/:id");
-      });
+  describe("pathFragment", () => {
+    it("should error if pathFragment begins with a /", () => {
+      expect(function () {
+        StrongRoute.newRoot().add("/home");
+      }).toThrowError();
     });
 
-    describe(`${funcName} RouterLink`, () => {
-      it("example testing routerLink", async () => {
-        const childRoute = baseRoute.add("home");
-        setup(childRoute[funcName]());
+    it("should not error if pathFragment contains a /", () => {
+      expect(function () {
+        StrongRoute.newRoot().add("home/house");
+      }).not.toThrowError();
+    });
+  });
+
+  describe("angularRouteConfig", () => {
+    it("should set pathMatch to full", () => {
+      expect(
+        StrongRoute.newRoot().add("home").angularRouteConfig
+      ).toHaveAttribute("pathMatch", "full");
+    });
+
+    it("should set path", () => {
+      expect(
+        StrongRoute.newRoot().add("home").angularRouteConfig
+      ).toHaveAttribute("path", "home");
+    });
+
+    it("should not set path with query parameters", () => {
+      expect(
+        StrongRoute.newRoot().add("home", () => ({ test: "value" }))
+          .angularRouteConfig
+      ).toHaveAttribute("path", "home");
+    });
+
+    it("should not set path with route parameters set", () => {
+      expect(
+        StrongRoute.newRoot().add(":id").angularRouteConfig
+      ).toHaveAttribute("path", ":id");
+    });
+
+    it("should allow custom config values", () => {
+      expect(
+        StrongRoute.newRoot().add("home", undefined, { outlet: "custom" })
+          .angularRouteConfig
+      ).toHaveAttribute("outlet", "custom");
+    });
+  });
+
+  [
+    {
+      method: "toString",
+      leadingChar: "/",
+      routeParams: undefined,
+      queryParams: undefined,
+      outputQsp: true,
+    },
+    {
+      method: "toRouteCompilePath",
+      leadingChar: "",
+      routeParams: undefined,
+      queryParams: undefined,
+      outputQsp: false,
+    },
+    {
+      method: "toRouterLink",
+      leadingChar: "/",
+      routeParams: { id: 5 },
+      queryParams: undefined,
+      outputQsp: false,
+    },
+    {
+      method: "format",
+      leadingChar: "/",
+      routeParams: { id: 5 },
+      queryParams: { test: "value", example: 5, property: "working" },
+      outputQsp: true,
+    },
+  ].forEach(({ method, leadingChar, routeParams, queryParams, outputQsp }) => {
+    describe(method, () => {
+      let output: { id: any; test: any; example: any; property: any };
+
+      function assertMethod(
+        route: StrongRoute,
+        _routeParams: RouteParams,
+        _queryParams: Params,
+        expectation: string
+      ) {
+        expect(route[method](_routeParams, _queryParams)).toBe(expectation);
+      }
+
+      beforeEach(() => {
+        output = {
+          id: ":id",
+          test: ":value0",
+          example: ":value1",
+          property: ":value2",
+          ...routeParams,
+          ...queryParams,
+        };
+      });
+
+      it("should handle base StrongRoute", () => {
+        assertMethod(baseRoute, undefined, undefined, leadingChar);
+      });
+
+      it("should handle root route", () => {
+        const route = baseRoute.add("");
+        assertMethod(route, undefined, undefined, leadingChar);
+      });
+
+      it("should handle child route", () => {
+        const route = baseRoute.add("home");
+        assertMethod(route, undefined, undefined, leadingChar + "home");
+      });
+
+      it("should handle parameter route", () => {
+        const route = baseRoute.add(":id");
+        assertMethod(route, routeParams, undefined, leadingChar + output.id);
+      });
+
+      it("should handle grandchild route", () => {
+        const route = baseRoute.add("home").add("house");
+        assertMethod(route, undefined, undefined, leadingChar + "home/house");
+      });
+
+      it("should handle mixed routes", () => {
+        const route = baseRoute.add("home").add(":id").add("house");
+        assertMethod(
+          route,
+          routeParams,
+          undefined,
+          leadingChar + "home/" + output.id + "/house"
+        );
+      });
+
+      it("should handle query parameter", () => {
+        const route = baseRoute.add("home", () => ({ test: output.test }));
+        const expectation =
+          leadingChar + (outputQsp ? "home?test=" + output.test : "home");
+        assertMethod(route, undefined, queryParams, expectation);
+      });
+
+      it("should handle multiple query parameters", () => {
+        const route = baseRoute.add("home", () => ({
+          test: output.test,
+          example: output.example,
+          property: output.property,
+        }));
+        const expectation =
+          leadingChar +
+          (outputQsp
+            ? "home?test=" +
+              output.test +
+              "&example=" +
+              output.example +
+              "&property=" +
+              output.property
+            : "home");
+        assertMethod(route, undefined, queryParams, expectation);
+      });
+    });
+  });
+
+  describe("toRouterLink", () => {
+    it("should throw error if number of params is less than the expected number of params", () => {
+      expect(function () {
+        StrongRoute.newRoot().add(":id").toRouterLink();
+      }).toThrowError();
+    });
+
+    it("should throw error if parameter is missing", () => {
+      expect(function () {
+        StrongRoute.newRoot().add(":id").toRouterLink({ siteId: 5 });
+      }).toThrowError();
+    });
+
+    it("should not throw error if number of params is more than the expected number of params", () => {
+      expect(function () {
+        StrongRoute.newRoot().add(":id").toRouterLink({ id: 5, siteId: 10 });
+      }).not.toThrowError();
+    });
+  });
+
+  describe("format", () => {
+    it("should filter undefined query params", () => {
+      const qsp = { test: 5, example: "value", property: undefined };
+      const route = baseRoute.add("home", () => qsp);
+      expect(route.format(undefined, qsp)).toBe("/home?test=5&example=value");
+    });
+
+    it("should remove ? if all query params are undefined", () => {
+      const qsp = { test: undefined, example: undefined, property: undefined };
+      const route = baseRoute.add("home", () => qsp);
+      expect(route.format(undefined, qsp)).toBe("/home");
+    });
+
+    it("should supply params to queryParams", (done) => {
+      const qsp = { test: 5, example: "value" };
+      const route = baseRoute.add("home", (params) => {
+        expect(params).toEqual(qsp);
+        done();
+        return {};
+      });
+      route.format(undefined, qsp);
+    });
+  });
+
+  describe("Router navigation", () => {
+    beforeEach(() => setup());
+
+    it("should handle base StrongRoute", async () => {
+      await navigate(baseRoute.toRouterLink());
+      expect(location.path()).toBe("/");
+    });
+
+    it("should handle root route", async () => {
+      const childRoute = baseRoute.add("");
+      await navigate(childRoute.toRouterLink());
+      expect(location.path()).toBe("/");
+    });
+
+    it("should handle child route", async () => {
+      const childRoute = baseRoute.add("home");
+      await navigate(childRoute.toRouterLink());
+      expect(location.path()).toBe("/home");
+    });
+
+    it("should handle grandchild route", async () => {
+      const grandChildRoute = baseRoute.add("home").add("house");
+      await navigate(grandChildRoute.toRouterLink());
+      expect(location.path()).toBe("/home/house");
+    });
+
+    it("should handle mixed routes", async () => {
+      const id = modelData.id();
+      const grandChildRoute = baseRoute.add("home").add(":id").add("house");
+      await navigate(grandChildRoute.toRouterLink({ id }));
+      expect(location.path()).toBe(`/home/${id}/house`);
+    });
+
+    it("should handle parameter route", async () => {
+      const id = modelData.id();
+      const childRoute = baseRoute.add(":id");
+      await navigate(childRoute.toRouterLink({ id }));
+      expect(location.path()).toBe(`/${id}`);
+    });
+
+    it("should handle navigating between different route chains", async () => {
+      const id = modelData.id();
+      const initialRoute = baseRoute.add("home").add(":id").add("house");
+      const finalRoute = baseRoute.add(":id");
+
+      await navigate(initialRoute.toRouterLink({ id }));
+      expect(location.path()).toBe(`/home/${id}/house`);
+
+      await navigate(finalRoute.toRouterLink({ id }));
+      expect(location.path()).toBe(`/${id}`);
+    });
+  });
+
+  ["add", "addFeatureModule"].forEach((test) => {
+    describe(test + " RouterLink", () => {
+      it("should navigate to location", async () => {
+        const childRoute = baseRoute[test]("home");
+        setup(childRoute.toRouterLink());
         expect(location.path()).toBe("");
 
         spec.click("a");
@@ -135,91 +344,95 @@ describe("StrongRoute", () => {
       });
 
       it("should handle navigating between different route chains", async () => {
-        const initialRoute = baseRoute.add("home").add(":id").add("house");
-        const finalRoute = baseRoute.add(":id");
-        setup(finalRoute[funcName]());
+        const id = modelData.id();
+        const initialRoute = baseRoute[test]("home").add(":id").add("house");
+        const finalRoute = baseRoute[test](":id");
+        setup(finalRoute.toRouterLink({ id }));
 
-        await navigate(initialRoute[funcName]());
-        expect(location.path()).toBe("/home/:id/house");
+        await navigate(initialRoute.toRouterLink({ id }));
+        expect(location.path()).toBe(`/home/${id}/house`);
 
         spec.click("a");
         await spec.fixture.whenStable();
-        expect(location.path()).toBe("/:id");
+        expect(location.path()).toBe(`/${id}`);
+      });
+
+      it("should navigate to location with query parameter", async () => {
+        const childRoute = baseRoute[test]("home", (params) => ({
+          siteId: params.siteId,
+        }));
+        setup(childRoute.toRouterLink(), childRoute.queryParams({ siteId: 5 }));
+        expect(location.path()).toBe("");
+
+        spec.click("a");
+        await spec.fixture.whenStable();
+        expect(location.path()).toBe("/home?siteId=5");
+      });
+
+      it("should navigate to location with multiple query parameters", async () => {
+        const childRoute = baseRoute[test]("home", (params) => ({
+          siteId: params.siteId,
+          projectId: params.projectId,
+        }));
+        setup(
+          childRoute.toRouterLink(),
+          childRoute.queryParams({ siteId: 5, projectId: 10 })
+        );
+        expect(location.path()).toBe("");
+
+        spec.click("a");
+        await spec.fixture.whenStable();
+        expect(location.path()).toBe("/home?siteId=5&projectId=10");
       });
     });
   });
 
-  describe("StrongRoutes", () => {
-    const parents = [
-      {
-        title: "Base Route",
-        parent: () => StrongRoute.newRoot(),
-      },
-      {
-        title: "Child Route",
-        parent: () => StrongRoute.newRoot().add("parent"),
-      },
-      {
-        title: "Feature Module Route",
-        parent: () =>
-          StrongRoute.newRoot().add("test").addFeatureModule("testing"),
-      },
-    ];
+  [
+    {
+      title: "Base Route",
+      parent: () => StrongRoute.newRoot(),
+    },
+    {
+      title: "Child Route",
+      parent: () => StrongRoute.newRoot().add("parent"),
+    },
+    {
+      title: "Feature Module Route",
+      parent: () =>
+        StrongRoute.newRoot().add("test").addFeatureModule("testing"),
+    },
+  ].forEach((parent) => {
+    let parentRoute: StrongRoute;
 
-    parents.forEach((parent) => {
-      let parentRoute: StrongRoute;
+    describe(parent.title, () => {
+      beforeEach(() => (parentRoute = parent.parent()));
 
-      describe(parent.title, () => {
-        beforeEach(() => (parentRoute = parent.parent()));
-
-        it("should create base route", () => {
-          expect(parentRoute).toBeTruthy();
-          assertChildren(parentRoute, []);
-        });
-
-        it("should add route", () => {
-          const homeRoute = parentRoute.add("home");
-          assertChildren(parentRoute, [homeRoute]);
-        });
-
-        it("should add multiple routes", () => {
-          const homeRoute = parentRoute.add("home");
-          const houseRoute = parentRoute.add("house");
-          assertChildren(parentRoute, [homeRoute, houseRoute]);
-        });
-
-        it("should add parameter route", () => {
-          const paramRoute = parentRoute.add(":id");
-          assertChildren(parentRoute, [paramRoute]);
-        });
-
-        it("should add mixed routes", () => {
-          const homeRoute = parentRoute.add("home");
-          const paramRoute = parentRoute.add(":id");
-          assertChildren(parentRoute, [homeRoute, paramRoute]);
-        });
+      it("should create base route", () => {
+        expect(parentRoute).toBeTruthy();
+        assertChildren(parentRoute, []);
       });
-    });
-  });
 
-  describe("Formatting", () => {
-    it("should format base route", () => {
-      expect(baseRoute.format(undefined)).toBe("");
-    });
+      it("should add route", () => {
+        const homeRoute = parentRoute.add("home");
+        assertChildren(parentRoute, [homeRoute]);
+      });
 
-    it("should format single parameter route", () => {
-      const paramRoute = baseRoute.add(":id");
-      expect(paramRoute.format({ id: 1 })).toBe("/1");
-    });
+      it("should add multiple routes", () => {
+        const homeRoute = parentRoute.add("home");
+        const houseRoute = parentRoute.add("house");
+        assertChildren(parentRoute, [homeRoute, houseRoute]);
+      });
 
-    it("should format multiple parameter routes", () => {
-      const paramRoute = baseRoute.add(":siteId").add(":projectId");
-      expect(paramRoute.format({ siteId: 1, projectId: 5 })).toBe("/1/5");
-    });
+      it("should add parameter route", () => {
+        const paramRoute = parentRoute.add(":id");
+        assertChildren(parentRoute, [paramRoute]);
+      });
 
-    it("should format mix routes", () => {
-      const paramRoute = baseRoute.add("home").add(":id").add("house");
-      expect(paramRoute.format({ id: 1 })).toBe("/home/1/house");
+      it("should add mixed routes", () => {
+        const homeRoute = parentRoute.add("home");
+        const paramRoute = parentRoute.add(":id");
+        assertChildren(parentRoute, [homeRoute, paramRoute]);
+      });
     });
   });
 
@@ -237,12 +450,30 @@ describe("StrongRoute", () => {
       };
     }
 
-    it('should compile root ("") route', () => {
-      const routes: Routes = [createRoute("", MockComponent)];
-      const homeRoute = StrongRoute.newRoot().add("");
-      homeRoute.pageComponent = MockComponent;
+    it("should compile base (StrongRoute.newRoute()) route", () => {
+      const routes = [
+        createRoute("", MockComponent),
+        createRoute("home", MockComponent),
+        createRoute("house", MockComponent),
+      ];
+      const rootRoute = StrongRoute.newRoot();
+      rootRoute.add("home").pageComponent = MockComponent;
+      rootRoute.add("").pageComponent = MockComponent;
+      rootRoute.add("house").pageComponent = MockComponent;
 
-      const compiledRoutes = homeRoute.compileRoutes(callback);
+      // Compile from the base StrongRoute
+      const compiledRoutes = rootRoute.compileRoutes(callback);
+      expect(compiledRoutes).toEqual(routes);
+    });
+
+    it('should compile index ("") route', () => {
+      const routes = [createRoute("", MockComponent)];
+      const rootRoute = StrongRoute.newRoot();
+      const indexRoute = rootRoute.add("");
+      indexRoute.pageComponent = MockComponent;
+
+      // Compile from the child StrongRoute
+      const compiledRoutes = indexRoute.compileRoutes(callback);
       expect(compiledRoutes).toEqual(routes);
     });
 
@@ -347,15 +578,17 @@ describe("StrongRoute", () => {
         it("should order child StrongRoute routes", () => {
           const routes = [
             rootRoute,
+            createRoute(parent.baseRef + "house"),
             createRoute(parent.baseRef + "home"),
             createRoute(parent.baseRef + "home/house"),
             createRoute(parent.baseRef + "home/:id"),
           ];
+          strongRoute.add("house");
           const homeRoute = strongRoute.add("home");
           homeRoute.add(":id");
           homeRoute.add("house");
 
-          const compiledRoutes = homeRoute.compileRoutes(callback);
+          const compiledRoutes = strongRoute.compileRoutes(callback);
           expect(compiledRoutes).toEqual(routes);
         });
 
@@ -376,70 +609,5 @@ describe("StrongRoute", () => {
         });
       });
     });
-  });
-
-  describe("Query Parameters", () => {
-    type CreateStrongRoute = KeysOfType<
-      StrongRoute,
-      (...inputs: any[]) => StrongRoute
-    >;
-
-    (["add", "addFeatureModule"] as CreateStrongRoute[]).forEach((funcName) => {
-      describe(funcName, () => {
-        function createQspRoute(qsp?: (params: Params) => Params) {
-          return baseRoute[funcName]("home", qsp);
-        }
-
-        it("should create with empty object with query parameters by default", () => {
-          expect(createQspRoute().queryParams({})).toEqual({});
-        });
-
-        it("should create with query parameters", () => {
-          const qsp = () => ({ test: "value" });
-          expect(createQspRoute(qsp).queryParams({})).toEqual({
-            test: "value",
-          });
-        });
-
-        it("should insert route data into query parameters", () => {
-          const qsp = ({ projectId }) => ({ id: projectId });
-          expect(createQspRoute(qsp).queryParams({ projectId: 5 })).toEqual({
-            id: 5,
-          });
-        });
-
-        it("should navigate to location with query parameters", async () => {
-          const qsp = ({ projectId }) => ({ projectId });
-          const route = createQspRoute(qsp);
-          setup(route.toString(), route.queryParams({ projectId: 5 }));
-          expect(location.path()).toBe("");
-
-          spec.click("a");
-          await spec.fixture.whenStable();
-          expect(location.path()).toBe("/home?projectId=5");
-        });
-
-        it("should navigate to location with multiple query parameters", async () => {
-          const qsp = ({ projectId, siteId }) => ({ projectId, siteId });
-          const route = createQspRoute(qsp);
-          setup(
-            route.toString(),
-            route.queryParams({ projectId: 5, siteId: 10 })
-          );
-          expect(location.path()).toBe("");
-
-          spec.click("a");
-          await spec.fixture.whenStable();
-          expect(location.path()).toBe("/home?projectId=5&siteId=10");
-        });
-      });
-    });
-  });
-
-  // Currently this doesn't appear to be in use
-  xdescribe("routeConfig", () => {
-    it("should handle child StrongRoute", () => {});
-    it("should handle grandchild StrongRoute", () => {});
-    it("should handle parameter StrongRoute", () => {});
   });
 });

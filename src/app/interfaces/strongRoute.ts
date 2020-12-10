@@ -86,13 +86,13 @@ export class StrongRoute {
     isRoot?: boolean
   ) {
     // Check pathFragment does not have a leading '/'
-    if (pathFragment?.startsWith("/")) {
+    if (pathFragment.startsWith("/")) {
       const msg = "StrongRoute pathFragment should not start with a '/'";
       console.error(msg, this);
       throw Error(msg);
     }
 
-    this.isParameter = pathFragment?.startsWith(":") ?? false;
+    this.isParameter = pathFragment.startsWith(":");
     this.angularRouteConfig = angularRouteConfig;
 
     if (parent && !isRoot) {
@@ -106,8 +106,7 @@ export class StrongRoute {
     this.full = full;
     this.parameters = parameters;
     this.angularRouteConfig = {
-      // Remove initial '/' from route path
-      path: this.toString().substr(1),
+      path: this.toRouteCompilePath(),
       pathMatch: "full",
       ...angularRouteConfig,
     };
@@ -194,11 +193,9 @@ export class StrongRoute {
         .slice(1)
         .map((x) => x.pathFragment)
         .join("/");
-    } else if (this.full.length === 1) {
-      return this.full[0].pathFragment;
     }
 
-    return "";
+    return this.full[0].pathFragment;
   }
 
   /**
@@ -218,12 +215,6 @@ export class StrongRoute {
    * @param params Route parameters
    */
   public toRouterLink(params: RouteParams = {}): string {
-    if (!params) {
-      // Should only be unit tests which encounter this
-      console.error("Route arguments are " + params);
-      return "";
-    }
-
     const numArgs = Object.keys(params).length;
     if (numArgs < this.parameters.length) {
       const msg = `Got ${numArgs} route arguments but expected ${this.parameters.length}`;
@@ -311,16 +302,8 @@ export class StrongRoute {
     const sortRoutes = (a: Route, b: Route): -1 | 0 | 1 => {
       // Root route wins
       if (a.path === StrongRoute.rootPath || b.path === StrongRoute.rootPath) {
+        // Cannot have multiple root routes
         return a.path === StrongRoute.rootPath ? -1 : 1;
-      }
-
-      // Route with existing path wins
-      if (!isInstantiated(a.path) || !isInstantiated(b.path)) {
-        if (!isInstantiated(a.path) && !isInstantiated(b.path)) {
-          // If neither route has a path, return a draw
-          return 0;
-        }
-        return isInstantiated(a.path) ? 1 : -1;
       }
 
       const aRoutes = a.path.split("/");
@@ -335,12 +318,8 @@ export class StrongRoute {
 
       // If one of the routes is a parameter route
       if (aParamRoute || bParamRoute) {
-        // If both are parameter routes, they are equal
-        if (aParamRoute && bParamRoute) {
-          return 0;
-        }
-
-        // Else give priority to the non-parameter route
+        // Give priority to the non-parameter route
+        // Cannot have multiple parameter routes at the same level
         return aParamRoute ? 1 : -1;
       }
 
