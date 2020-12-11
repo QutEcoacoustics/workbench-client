@@ -16,6 +16,7 @@ export function withUnsubscribe<T extends Type<any>>(
     public ngOnDestroy() {
       this.unsubscribe.next();
       this.unsubscribe.complete();
+      super.ngOnDestroy?.();
     }
   };
 }
