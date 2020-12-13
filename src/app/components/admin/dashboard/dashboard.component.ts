@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
 import {
   adminAnalysisJobsMenuItem,
@@ -38,7 +37,7 @@ class AdminDashboardComponent extends PageComponent {}
 
 AdminDashboardComponent.linkComponentToPageInfo({
   category: adminCategory,
-  menus: { actions: List<AnyMenuItem>(adminMenuItemActions) },
+  menus: { actions: List(adminMenuItemActions) },
 }).andMenuRoute(adminDashboardMenuItem);
 
 export { AdminDashboardComponent };

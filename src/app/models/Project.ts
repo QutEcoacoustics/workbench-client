@@ -114,6 +114,6 @@ export class Project extends AbstractModel implements IProject {
   }
 
   public get viewUrl(): string {
-    return projectMenuItem.route.format({ projectId: this.id });
+    return projectMenuItem.route.toRouterLink({ projectId: this.id });
   }
 }

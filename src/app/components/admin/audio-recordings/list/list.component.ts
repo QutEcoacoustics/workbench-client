@@ -4,7 +4,6 @@ import { adminDashboardMenuItem } from "@components/admin/admin.menus";
 import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.component";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, toRelative } from "@interfaces/apiInterfaces";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { List } from "immutable";
 import {
@@ -20,6 +19,7 @@ import {
 class AdminAudioRecordingsComponent
   extends PagedTableTemplate<TableRow, AudioRecording>
   implements OnInit {
+  public detailsPath = adminAudioRecordingMenuItem.route;
   public columns = [
     { name: "Id" },
     { name: "Site" },
@@ -51,17 +51,6 @@ class AdminAudioRecordingsComponent
 
   public ngOnInit(): void {
     this.getPageData();
-  }
-
-  /**
-   * Path to view audio recording details
-   *
-   * @param model Audio Recording
-   */
-  public detailsPath(model: AudioRecording) {
-    return adminAudioRecordingMenuItem.route.format({
-      audioRecordingId: model.id,
-    });
   }
 }
 

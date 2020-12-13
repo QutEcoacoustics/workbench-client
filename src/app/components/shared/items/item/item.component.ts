@@ -22,23 +22,19 @@ import { StrongRoute } from "@interfaces/strongRoute";
       <!-- Item name -->
       <span id="name">
         <ng-container *ngIf="uri; else plainText">
+          <!-- URI is internal link -->
           <ng-container *ngIf="internalLink; else externalLink">
-            <!-- URI is internal link -->
-            <a [routerLink]="link">
-              {{ name }}
-            </a>
+            <a [routerLink]="link">{{ name }} </a>
           </ng-container>
+
+          <!-- URI is external link -->
           <ng-template #externalLink>
-            <!-- URI is external link -->
-            <a [href]="link">
-              {{ name }}
-            </a>
+            <a [href]="link">{{ name }} </a>
           </ng-template>
         </ng-container>
-        <ng-template #plainText>
-          <!-- No URI -->
-          {{ name }}
-        </ng-template>
+
+        <!-- No URI -->
+        <ng-template #plainText>{{ name }} </ng-template>
       </span>
 
       <!-- Item value -->

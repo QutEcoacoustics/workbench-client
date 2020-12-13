@@ -106,7 +106,9 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
    * Gets the route path for the admin details page for this model
    */
   public get adminViewUrl(): string {
-    return adminAnalysisJobMenuItem.route.format({ analysisJobId: this.id });
+    return adminAnalysisJobMenuItem.route.toRouterLink({
+      analysisJobId: this.id,
+    });
   }
 }
 

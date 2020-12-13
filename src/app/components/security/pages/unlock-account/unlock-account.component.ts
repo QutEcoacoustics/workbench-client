@@ -8,7 +8,6 @@ import {
 } from "@components/security/security.menus";
 import { withFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { List } from "immutable";
 import { fields } from "./unlock-account.schema.json";
 
@@ -52,7 +51,7 @@ class UnlockAccountComponent
 UnlockAccountComponent.linkComponentToPageInfo({
   category: securityCategory,
   menus: {
-    actions: List<AnyMenuItem>([
+    actions: List([
       loginMenuItem,
       confirmAccountMenuItem,
       resetPasswordMenuItem,

@@ -6,6 +6,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 export const dataRequestRoute = StrongRoute.newRoot().add(
   "data_request",
   (params: Params) => ({
+    userId: params?.userId,
     projectId: params?.projectId,
     regionId: params?.regionId,
     siteId: params?.siteId,

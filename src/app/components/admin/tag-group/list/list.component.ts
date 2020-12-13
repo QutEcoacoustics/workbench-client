@@ -3,7 +3,6 @@ import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { adminDashboardMenuItem } from "@components/admin/admin.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import {
@@ -28,10 +27,9 @@ export const adminTagGroupMenuItemActions = [
 })
 class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
   public columns = [{ name: "Tag" }, { name: "Group" }, { name: "Model" }];
-  public sortKeys = {
-    tag: "tagId",
-    group: "groupIdentifier",
-  };
+  public sortKeys = { tag: "tagId", group: "groupIdentifier" };
+  public editPath = adminEditTagGroupMenuItem.route;
+  public deletePath = adminDeleteTagGroupMenuItem.route;
 
   public constructor(api: TagGroupsService) {
     super(api, (tagGroups) =>
@@ -44,27 +42,12 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
 
     this.filterKey = "groupIdentifier";
   }
-
-  public editPath(tagGroup: TagGroup): string {
-    return adminEditTagGroupMenuItem.route.toRouterLink({
-      tagGroupId: tagGroup.id,
-    });
-  }
-
-  public deletePath(tag: TagGroup): string {
-    return adminDeleteTagGroupMenuItem.route.toRouterLink({
-      tagGroupId: tag.id,
-    });
-  }
 }
 
 AdminTagGroupsComponent.linkComponentToPageInfo({
   category: adminTagGroupsCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      adminDashboardMenuItem,
-      ...adminTagGroupsMenuItemActions,
-    ]),
+    actions: List([adminDashboardMenuItem, ...adminTagGroupsMenuItemActions]),
   },
 }).andMenuRoute(adminTagGroupsMenuItem);
 

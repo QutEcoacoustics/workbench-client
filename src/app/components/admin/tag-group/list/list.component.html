@@ -34,10 +34,18 @@
       <ng-template let-column="column" ngx-datatable-header-template>
       </ng-template>
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <a class="btn btn-sm btn-warning mr-1" [routerLink]="[editPath(value)]">
+        <a
+          class="btn btn-sm btn-warning mr-1"
+          [strongRoute]="editPath"
+          [routeParams]="{ tagGroupId: value.id }"
+        >
           Edit
         </a>
-        <a class="btn btn-sm btn-danger" [routerLink]="[deletePath(value)]">
+        <a
+          class="btn btn-sm btn-danger"
+          [strongRoute]="deletePath"
+          [routeParams]="{ tagGroupId: value.id }"
+        >
           Delete
         </a>
       </ng-template>

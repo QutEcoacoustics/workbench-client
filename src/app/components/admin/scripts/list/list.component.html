@@ -39,7 +39,11 @@
       <ng-template let-column="column" ngx-datatable-header-template>
       </ng-template>
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <a class="btn btn-sm btn-default mr-1" [routerLink]="updatePath(value)">
+        <a
+          class="btn btn-sm btn-default mr-1"
+          [strongRoute]="updatePath"
+          [routeParams]="{ scriptId: value.id }"
+        >
           Update
         </a>
         <a class="btn btn-sm btn-default" [routerLink]="value.viewUrl">

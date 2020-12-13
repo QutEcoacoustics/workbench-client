@@ -34,7 +34,8 @@
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a
           class="btn btn-sm btn-default mr-2"
-          [routerLink]="detailsPath(value)"
+          [strongRoute]="detailsPath"
+          [routeParams]="{ audioRecordingId: value.id }"
         >
           Details
         </a>

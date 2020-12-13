@@ -18,7 +18,6 @@ import {
   defaultErrorMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -135,7 +134,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
 LoginComponent.linkComponentToPageInfo({
   category: securityCategory,
   menus: {
-    actions: List<AnyMenuItem>([
+    actions: List([
       confirmAccountMenuItem,
       resetPasswordMenuItem,
       unlockAccountMenuItem,
