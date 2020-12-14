@@ -72,6 +72,26 @@ jobs:
       # - name: Run e2e test suite
       #   run: npm run e2e
 
+  ssr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build container
+        run: docker build -t qutecoacoustics/workbench-client .
+
+      - name: Run docker container
+        run: docker run -d -p 4000:4000 -v "$(pwd)/src/assets/environment.json:/environment.json" qutecoacoustics/workbench-client
+
+      - name: Retrieve home page
+        run: wget localhost:4000
+
+      - name: Validate title
+        run: cat index.html | grep -o "<title>&lt;&lt; brandName &gt;&gt;</title>"
+
+      - name: Validate routing
+        run: cat index.html | grep -o "<router-outlet _ngcontent-sc115=\"\"></router-outlet><baw-home _nghost-sc258=\"\">"
+
   build:
     runs-on: ubuntu-latest
     steps:
