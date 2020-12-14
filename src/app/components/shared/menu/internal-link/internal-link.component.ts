@@ -7,7 +7,6 @@ import {
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { MenuRoute } from "@interfaces/menusInterfaces";
-import { StrongRoute } from "@interfaces/strongRoute";
 import { Placement } from "@ng-bootstrap/ng-bootstrap";
 
 /**
@@ -20,7 +19,7 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
       <a
         class="nav-link"
         [ngClass]="{ active: active, disabled: disabled }"
-        [strongRoute]="this.route"
+        [strongRoute]="link.route"
       >
         <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
         <span id="label">{{ link.label }}</span>
@@ -35,7 +34,6 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
 export class MenuInternalLinkComponent implements OnChanges {
   @Input() public id: string;
   @Input() public link: MenuRoute;
-  @Input() public route: StrongRoute;
   @Input() public placement: Placement;
   @Input() public tooltip: string;
   public active: boolean;
@@ -48,7 +46,7 @@ export class MenuInternalLinkComponent implements OnChanges {
 
   public ngOnChanges() {
     const routeParams = this.activatedRoute.snapshot.params;
-    const currentRoute = this.route.toRouterLink(routeParams);
+    const currentRoute = this.link.route.toRouterLink(routeParams);
 
     this.disabled = this.link.disabled;
     this.active =

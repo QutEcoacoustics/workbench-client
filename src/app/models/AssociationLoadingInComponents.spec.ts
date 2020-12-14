@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Component, Injector, Input } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
@@ -66,7 +67,7 @@ describe("Association Decorators Loading In Components", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [MockComponent],
-      imports: [HttpClientTestingModule, MockBawApiModule],
+      imports: [RouterTestingModule, MockBawApiModule],
       providers: [
         MockStandardApiService,
         { provide: MOCK.token, useExisting: MockStandardApiService },

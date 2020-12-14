@@ -309,7 +309,7 @@ describe("HeaderComponent", () => {
     it("should redirect to home page when logging out if location is undefined", () => {
       setUser(true, defaultUser);
       handleLogout();
-      spyOn(router, "navigate").and.stub();
+      spyOn(router, "navigateByUrl").and.stub();
       spec.component["hasLocationGlobal"] = jasmine
         .createSpy()
         .and.callFake(() => false);

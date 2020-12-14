@@ -1,3 +1,4 @@
+import { LocationStrategy } from "@angular/common";
 import { Directive, Input, OnChanges, SimpleChanges } from "@angular/core";
 import {
   ActivatedRoute,
@@ -36,6 +37,14 @@ export class StrongRouteDirective
   /** Points to original classes 'route' */
   private _route: ActivatedRoute;
   private angularRouteParams: Params;
+
+  public constructor(
+    router: Router,
+    route: ActivatedRoute,
+    locationStrategy: LocationStrategy
+  ) {
+    super(router, route, locationStrategy);
+  }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (!this._router || !this._route) {

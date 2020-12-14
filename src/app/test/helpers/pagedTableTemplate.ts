@@ -10,7 +10,9 @@ import { BehaviorSubject, Subject } from "rxjs";
 /**
  * Get all rows from datatable component
  */
-export function getDatatableRows(fixture: ComponentFixture<any>) {
+export function getDatatableRows(
+  fixture: ComponentFixture<any>
+): HTMLElement[] {
   return fixture.nativeElement.querySelectorAll("datatable-body-row");
 }
 
@@ -19,7 +21,7 @@ export function getDatatableRows(fixture: ComponentFixture<any>) {
  *
  * @param row Row to query
  */
-export function getDatatableCells(row: any) {
+export function getDatatableCells(row: any): HTMLElement[] {
   return row.querySelectorAll("datatable-body-cell");
 }
 

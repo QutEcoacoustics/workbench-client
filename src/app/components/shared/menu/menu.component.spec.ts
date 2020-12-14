@@ -350,7 +350,7 @@ describe("MenuComponent", () => {
     it("should set link route", () => {
       setup({ menuType: "action", links: List([defaultMenuRoute]) });
       spec.detectChanges();
-      expect(getMenuRoutes()[0].route).toBe(defaultMenuRoute.route.format({}));
+      expect(getMenuRoutes()[0].link.route).toBe(defaultMenuRoute.route);
     });
 
     it("should set link route with parameter", () => {
@@ -361,26 +361,7 @@ describe("MenuComponent", () => {
       });
       setup({ menuType: "action", links: List([link]) }, undefined, params);
       spec.detectChanges();
-      expect(getMenuRoutes()[0].route).toBe("/home/10");
-    });
-
-    it("should handle undefined query parameters", () => {
-      setup({ menuType: "action", links: List([defaultMenuRoute]) });
-      spec.detectChanges();
-      expect(getMenuRoutes()[0].qsp).toEqual({});
-    });
-
-    it("should set link query parameters", () => {
-      const params = { projectId: 5 };
-      const link = menuRoute({
-        ...defaultMenuRoute,
-        route: StrongRoute.newRoot().add("home", ({ projectId }) => ({
-          id: projectId,
-        })),
-      });
-      setup({ menuType: "action", links: List([link]) }, undefined, params);
-      spec.detectChanges();
-      expect(getMenuRoutes()[0].qsp).toEqual({ id: 5 });
+      expect(getMenuRoutes()[0].link.route).toEqual(link.route);
     });
   });
 

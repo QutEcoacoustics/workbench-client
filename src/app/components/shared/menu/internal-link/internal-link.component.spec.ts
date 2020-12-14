@@ -1,6 +1,7 @@
 import { Location } from "@angular/common";
 import { RouterLink, RouterLinkWithHref } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
@@ -137,56 +138,27 @@ describe("MenuInternalLinkComponent", () => {
   });
 
   describe("link", () => {
-    it("should create routerLink", () => {
-      setup({
-        route: "/brokenlink",
-        link: menuRoute({
-          ...defaultLink,
-          route: StrongRoute.newRoot().add("brokenlink"),
-        }),
-      });
+    it("should create router link", () => {
+      const route = StrongRoute.newRoot().add("brokenlink");
+      setup({ link: menuRoute({ ...defaultLink, route }) });
       spec.detectChanges();
-      assertRoute(retrieveLink(), "/brokenlink");
-    });
-
-    it("should not use link route", () => {
-      setup({
-        route: "/brokenlink",
-        link: menuRoute({
-          ...defaultLink,
-          route: StrongRoute.newRoot().add("wronglink"),
-        }),
-      });
-      spec.detectChanges();
-      assertRoute(retrieveLink(), "/brokenlink");
+      expect(spec.query(StrongRouteDirective).strongRoute).toEqual(route);
     });
 
     it("should not highlight link when not active", () => {
-      setup({ route: "/brokenlink" });
+      const route = StrongRoute.newRoot().add("brokenlink");
+      setup({ link: menuRoute({ ...defaultLink, route }) });
       spyOn(location, "path").and.callFake(() => "/customRoute");
       spec.detectChanges();
       assertActive(false);
     });
 
     it("should highlight link when active", () => {
-      setup({ route: "/customRoute" });
+      const route = StrongRoute.newRoot().add("customRoute");
+      setup({ link: menuRoute({ ...defaultLink, route }) });
       spyOn(location, "path").and.callFake(() => "/customRoute");
       spec.detectChanges();
       assertActive(true);
-    });
-
-    it("should handle empty qsp object", () => {
-      setup({ qsp: {} });
-      spec.detectChanges();
-      expect(spec.query(RouterLinkWithHref).queryParams).toEqual({});
-    });
-
-    it("should handle qsp object", () => {
-      setup({ qsp: { test: "value" } });
-      spec.detectChanges();
-      expect(spec.query(RouterLinkWithHref).queryParams).toEqual({
-        test: "value",
-      });
     });
   });
 
