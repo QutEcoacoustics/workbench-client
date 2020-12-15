@@ -106,7 +106,7 @@ describe("HeaderComponent", () => {
           spec.detectChanges();
 
           const brand = spec.query<HTMLElement>("a.navbar-brand");
-          assertRoute(brand, homeMenuItem.route.toString());
+          assertRoute(brand, homeMenuItem.route.toRouterLink());
           expect(brand.innerText).toContain(config.values.brand.name);
         });
 
@@ -115,7 +115,7 @@ describe("HeaderComponent", () => {
           spec.detectChanges();
 
           const link = getNavLinks()[0];
-          assertRoute(link, projectsMenuItem.route.toString());
+          assertRoute(link, projectsMenuItem.route.toRouterLink());
           expect(link.innerText).toContain(projectsMenuItem.label);
         });
 
@@ -124,7 +124,7 @@ describe("HeaderComponent", () => {
           spec.detectChanges();
 
           const link = getNavLinks()[2];
-          assertRoute(link, contactUsMenuItem.route.toString());
+          assertRoute(link, contactUsMenuItem.route.toRouterLink());
           expect(link.innerText).toContain(contactUsMenuItem.label);
         });
 
@@ -160,7 +160,7 @@ describe("HeaderComponent", () => {
           const link = spec.query<HTMLElement>("#register-header-link");
 
           if (userType.links.register) {
-            assertRoute(link, registerMenuItem.route.toString());
+            assertRoute(link, registerMenuItem.route.toRouterLink());
             expect(link.innerText).toContain(registerMenuItem.label);
           } else {
             expect(link).toBeFalsy();
@@ -176,7 +176,7 @@ describe("HeaderComponent", () => {
           const link = spec.query<HTMLElement>("#login-header-link");
 
           if (userType.links.login) {
-            assertRoute(link, loginMenuItem.route.toString());
+            assertRoute(link, loginMenuItem.route.toRouterLink());
             expect(link.innerText).toContain(loginMenuItem.label);
           } else {
             expect(link).toBeFalsy();
@@ -192,7 +192,7 @@ describe("HeaderComponent", () => {
           const profile = spec.query<HTMLElement>("#login-widget");
 
           if (userType.links.profile) {
-            assertRoute(profile, myAccountMenuItem.route.toString());
+            assertRoute(profile, myAccountMenuItem.route.toRouterLink());
             expect(profile.innerText.trim()).toBe(defaultUser.userName);
           } else {
             expect(profile).toBeFalsy();
@@ -257,7 +257,7 @@ describe("HeaderComponent", () => {
 
           if (userType.links.admin) {
             expect(settings).toBeTruthy();
-            assertRoute(settings, adminDashboardMenuItem.route.toString());
+            assertRoute(settings, adminDashboardMenuItem.route.toRouterLink());
           } else {
             expect(settings).toBeFalsy();
           }
@@ -344,7 +344,7 @@ describe("HeaderComponent", () => {
       const link = spec.queryAll<HTMLElement>("a.nav-link")[3];
       expect(link).toBeTruthy();
       expect(link.innerText).toContain(registerMenuItem.label);
-      assertRoute(link, registerMenuItem.route.toString());
+      assertRoute(link, registerMenuItem.route.toRouterLink());
     });
 
     // TODO Move to E2E Tests
@@ -370,7 +370,7 @@ describe("HeaderComponent", () => {
       const link = spec.queryAll<HTMLElement>("a.nav-link")[4];
       expect(link).toBeTruthy();
       expect(link.innerText).toContain(loginMenuItem.label);
-      assertRoute(link, loginMenuItem.route.toString());
+      assertRoute(link, loginMenuItem.route.toRouterLink());
     }));
   });
 

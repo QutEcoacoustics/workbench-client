@@ -1,16 +1,10 @@
 import { Location } from "@angular/common";
-import { RouterLink, RouterLinkWithHref } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
-import {
-  assertAttribute,
-  assertIcon,
-  assertRoute,
-  assertTooltip,
-} from "@test/helpers/html";
+import { assertAttribute, assertIcon, assertTooltip } from "@test/helpers/html";
 import { SharedModule } from "../../shared.module";
 import { MenuInternalLinkComponent } from "./internal-link.component";
 

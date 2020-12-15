@@ -55,7 +55,7 @@ export class StrongRouteDirective
         .subscribe((params) => (this.angularRouteParams = params));
     }
 
-    this.routerLink = this.strongRoute.toRouterLink({
+    this.routerLink = this.strongRoute?.toRouterLink({
       ...this.angularRouteParams,
       ...this.routeParams,
     });
@@ -67,7 +67,7 @@ export class StrongRouteDirective
 
     return this._router.createUrlTree(this["commands"], {
       relativeTo: this._route,
-      queryParams: this.strongRoute.queryParams(queryParams),
+      queryParams: this.strongRoute?.queryParams(queryParams) ?? undefined,
       fragment: this.fragment,
       queryParamsHandling: this.queryParamsHandling,
       preserveFragment: this.preserveFragment,

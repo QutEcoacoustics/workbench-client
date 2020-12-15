@@ -23,12 +23,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
 import { nStepObservable } from "@test/helpers/general";
-import {
-  assertErrorHandler,
-  assertHref,
-  assertRoute,
-} from "@test/helpers/html";
-import { websiteHttpUrl } from "@test/helpers/url";
+import { assertErrorHandler, assertRoute } from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
 import { MySitesComponent } from "./my-sites.component";
 
@@ -229,7 +224,6 @@ describe("MySitesComponent", () => {
       it("should display annotation link", async () => {
         setup(defaultUser);
         await createTable();
-
         expect(getCells()[3]).toHaveText("Annotation");
       });
 

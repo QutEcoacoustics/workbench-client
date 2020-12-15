@@ -34,11 +34,9 @@ import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
 import {
   assertErrorHandler,
-  assertHref,
   assertImage,
   assertRoute,
 } from "@test/helpers/html";
-import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
 import { MyProfileComponent } from "./my-profile.component";
 
