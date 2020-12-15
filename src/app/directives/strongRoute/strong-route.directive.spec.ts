@@ -7,7 +7,6 @@ import {
 import { RouterTestingModule } from "@angular/router/testing";
 import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import { websiteHttpUrl } from "@test/helpers/url";
 import { StrongRouteDirective } from "./strong-route.directive";
 
 // TODO Some tests work by bypassing the angular router. This can be solved by navigating
@@ -73,7 +72,7 @@ describe("StrongRouteDirective", () => {
 
     const routerLink = spectator.query(RouterLinkWithHref);
     expect(routerLink).toBeTruthy();
-    expect(routerLink.href).toBe(websiteHttpUrl + "/home?test=value");
+    expect(routerLink.href).toContain("/home?test=value");
   });
 
   // TODO Current implementation does not work with routerLinkActive
