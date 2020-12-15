@@ -10,6 +10,10 @@ import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { StrongRouteDirective } from "./strong-route.directive";
 
+// TODO Some tests work by bypassing the angular router. This can be solved by navigating
+// to a page with parameters set in the url. This will allow simulating the route changes
+// within the constraints of the testing framework
+
 describe("StrongRouteDirective", () => {
   let router: Router;
   let route: ActivatedRoute;
