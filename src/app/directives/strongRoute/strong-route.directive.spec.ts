@@ -42,7 +42,7 @@ describe("StrongRouteDirective", () => {
   }
 
   function assertRoute(url: string) {
-    expect(spec.query<HTMLAnchorElement>("a").href).toBe(websiteHttpUrl + url);
+    expect(spec.query<HTMLAnchorElement>("a").href).toContain(url);
   }
 
   function setup(
