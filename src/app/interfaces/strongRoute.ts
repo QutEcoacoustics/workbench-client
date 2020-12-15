@@ -293,7 +293,9 @@ export class StrongRoute {
    * );
    * ```
    *
-   * @param callback Callback function (usually: getRouteConfigForPage)
+   * @param callback Callback function (usually: `getRouteConfigForPage`)
+   * which allows the 'pages' to add extra route data or modifications when
+   * they are set up
    */
   public compileRoutes(callback: RouteConfigCallback): Routes {
     const rootRoute = this.root;
