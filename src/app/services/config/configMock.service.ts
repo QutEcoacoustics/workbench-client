@@ -43,7 +43,7 @@ export const testApiConfig = new Configuration({
       title: "<< brandTitle >>",
     },
     links: {
-      githubBawServerIssues: "http://broken_link",
+      sourceRepository: "http://broken_link",
     },
     content: [
       {

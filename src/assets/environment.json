@@ -18,7 +18,7 @@
       "title": "<< brandName >> | Acoustic Workbench"
     },
     "links": {
-      "githubBawServerIssues": "https://github.com/QutEcoacoustics/baw-server/issues"
+      "sourceRepository": "https://github.com/QutEcoacoustics/baw-server/issues"
     },
     "content": [
       {

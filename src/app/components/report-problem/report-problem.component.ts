@@ -39,7 +39,7 @@ class ReportProblemComponent
   public ngOnInit() {
     this.subTitle = `
       Complete the form below to report a problem.
-      Alternatively, we have a <a href='${this.config.values.links.githubBawServerIssues}'>
+      Alternatively, we have a <a href='${this.config.values.links.sourceRepository}'>
       Github Issues</a> page.
     `;
   }

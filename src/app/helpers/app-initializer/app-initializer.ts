@@ -42,7 +42,9 @@ export interface Values {
     name: string;
     title: string;
   };
-  links: Record<string, string>;
+  links: {
+    sourceRepository: string;
+  };
   content: Links[];
 }
 
