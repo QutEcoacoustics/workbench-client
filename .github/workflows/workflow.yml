@@ -90,7 +90,7 @@ jobs:
         run: cat index.html | grep -o "<title>&lt;&lt; brandName &gt;&gt;</title>"
 
       - name: Validate routing
-        run: cat index.html | grep -o "<router-outlet _ngcontent-sc115=\"\"></router-outlet><baw-home _nghost-sc258=\"\">"
+        run: cat index.html | grep -o "<\/router-outlet><baw-home.*<\/baw-home>"
 
   build:
     runs-on: ubuntu-latest
