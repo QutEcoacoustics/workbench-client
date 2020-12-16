@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import {
   audioAnalysisCategory,
   audioAnalysisMenuItem,
@@ -7,12 +7,9 @@ import { PageComponent } from "@helpers/page/pageComponent";
 
 @Component({
   selector: "baw-audio-analyses",
-  templateUrl: "./list.component.html",
-  styleUrls: ["./list.component.scss"],
+  template: "<baw-iframe></baw-iframe>",
 })
-class ListComponent extends PageComponent implements OnInit {
-  public ngOnInit(): void {}
-}
+class ListComponent extends PageComponent {}
 
 ListComponent.linkComponentToPageInfo({
   category: audioAnalysisCategory,
