@@ -9,7 +9,16 @@ import { takeUntil } from "rxjs/operators";
 @Component({
   selector: "baw-iframe",
   template: `
-    <iframe #content [src]="url" (load)="updateIframeSize()"></iframe>
+    <baw-loading *ngIf="loading"></baw-loading>
+
+    <iframe #content [src]="url" (load)="updateIframeSize()">
+      <!-- This warning only shows on browsers which don't support iframes -->
+      <p>
+        Unfortunately your browser does not support iframes. Please ensure you
+        are utilising a common browser which is running the most up to date
+        version.
+      </p>
+    </iframe>
   `,
   styles: [
     `
@@ -24,6 +33,7 @@ import { takeUntil } from "rxjs/operators";
 export class IFrameComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("content") private iframeRef: ElementRef<HTMLIFrameElement>;
   public url: SafeResourceUrl;
+  public loading = true;
   /** Used to track the height of the iframe */
   private previousHeight = 0;
 
@@ -54,6 +64,7 @@ export class IFrameComponent extends withUnsubscribe() implements OnInit {
       return;
     }
 
+    this.loading = false;
     const padding = 50;
     this.previousHeight = currentHeight;
     iframe.style.height = currentHeight + padding + "px";
