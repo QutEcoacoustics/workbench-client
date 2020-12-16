@@ -4,7 +4,7 @@ import { IdOr } from "@baw-api/api-common";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { AudioEvent } from "@models/AudioEvent";
 import { Tagging } from "@models/Tagging";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateTagging } from "@test/fakes/Tagging";
 import {
   validateApiCreate,

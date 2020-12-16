@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ProgressEvent } from "@models/ProgressEvent";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateProgressEvent } from "@test/fakes/ProgressEvent";
 import {
   validateApiCreate,

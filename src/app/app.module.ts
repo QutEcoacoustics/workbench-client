@@ -10,7 +10,7 @@ import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
-import { AppConfigModule } from "@services/app-config/app-config.module";
+import { AppConfigModule } from "@services/config/config.module";
 import { ToastrModule } from "ngx-toastr";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";

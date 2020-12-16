@@ -1,6 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { withFormCheck } from "@guards/form/form.guard";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { ConfigService } from "@services/config/config.service";
 import {
   reportProblemMenuItem,
   reportProblemsCategory,
@@ -13,24 +14,35 @@ import { fields } from "./report-problem.schema.json";
     <baw-wip>
       <baw-form
         title="Report Problem"
-        subTitle="
-          Complete the form below to report a problem.
-          Alternatively, we have a <a href='https://github.com/QutEcoacoustics/baw-server/issues'>Github Issues</a> page.
-        "
+        submitLabel="Submit"
+        [subTitle]="subTitle"
         [model]="model"
         [fields]="fields"
-        submitLabel="Submit"
         [submitLoading]="loading"
         (onSubmit)="submit($event)"
       ></baw-form>
     </baw-wip>
   `,
 })
-class ReportProblemComponent extends withFormCheck(PageComponent) {
+class ReportProblemComponent
+  extends withFormCheck(PageComponent)
+  implements OnInit {
   public model = {};
   public fields = fields;
   public loading: boolean;
   public subTitle: string;
+
+  public constructor(private config: ConfigService) {
+    super();
+  }
+
+  public ngOnInit() {
+    this.subTitle = `
+      Complete the form below to report a problem.
+      Alternatively, we have a <a href='${this.config.values.links.sourceRepository}'>
+      Github Issues</a> page.
+    `;
+  }
 
   /**
    * Form submission

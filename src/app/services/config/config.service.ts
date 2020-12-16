@@ -11,11 +11,11 @@ import { environment } from "src/environments/environment";
 export const assetRoot = "/assets";
 
 /**
- * App Config Service.
+ * Config Service.
  * Handles access to the deployment environment.
  */
 @Injectable()
-export class AppConfigService {
+export class ConfigService {
   private _config: Configuration;
 
   public constructor(private notification: ToastrService) {

@@ -13,7 +13,7 @@ import {
   ImageUrl,
   Param,
 } from "@interfaces/apiInterfaces";
-import { assetRoot } from "@services/app-config/app-config.service";
+import { assetRoot } from "@services/config/config.service";
 import { AbstractModel } from "./AbstractModel";
 import {
   creator,

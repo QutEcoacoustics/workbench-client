@@ -7,8 +7,8 @@ import {
   SpectatorRouting,
 } from "@ngneat/spectator";
 import { LoadingBarComponent, LoadingBarService } from "@ngx-loading-bar/core";
-import { AppConfigService } from "@services/app-config/app-config.service";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { ConfigService } from "@services/config/config.service";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { FooterComponent } from "@shared/footer/footer.component";
 import { HeaderComponent } from "@shared/header/header.component";
 import { MockComponent } from "ng-mocks";
@@ -59,9 +59,9 @@ describe("AppComponent", () => {
   it("should change the title to match the environment title", () => {
     setup();
     const title = spec.inject(Title);
-    const env = spec.inject(AppConfigService);
+    const config = spec.inject(ConfigService);
     spec.detectChanges();
-    expect(title.getTitle()).toBe(env.values.brand.name);
+    expect(title.getTitle()).toBe(config.values.brand.name);
   });
 
   describe("updatePageLayout", () => {

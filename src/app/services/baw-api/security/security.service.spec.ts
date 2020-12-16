@@ -12,7 +12,7 @@ import { MockShowApiService } from "@baw-api/mock/apiMocks.service";
 import { ImageSizes } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { ISessionUser, IUser, SessionUser, User } from "@models/User";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { BehaviorSubject, Subject } from "rxjs";
 import {

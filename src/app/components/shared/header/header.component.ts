@@ -16,7 +16,7 @@ import {
   NavigableMenuItem,
 } from "@interfaces/menusInterfaces";
 import { SessionUser } from "@models/User";
-import { AppConfigService } from "@services/app-config/app-config.service";
+import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { filter, takeUntil } from "rxjs/operators";
@@ -53,7 +53,7 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
 
   public constructor(
     private api: SecurityService,
-    private env: AppConfigService,
+    private config: ConfigService,
     private notifications: ToastrService,
     private router: Router
   ) {
@@ -63,7 +63,7 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
   public ngOnInit() {
     this.collapsed = true;
     this.activeLink = "projects";
-    this.title = this.env.values.brand.name;
+    this.title = this.config.values.brand.name;
 
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
     this.headers = List([
@@ -136,7 +136,7 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
    * Retrieve header links from app config
    */
   private retrieveHeaderLinks() {
-    return this.env.values.content.map((header) => {
+    return this.config.values.content.map((header) => {
       if (!isHeaderLink(header)) {
         return {
           headerTitle: header.headerTitle,

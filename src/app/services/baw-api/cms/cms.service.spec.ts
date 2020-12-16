@@ -5,8 +5,8 @@ import {
   HttpMethod,
   SpectatorHttp,
 } from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
-import { testApiConfig } from "@services/app-config/appConfigMock.service";
+import { MockAppConfigModule } from "@services/config/configMock.module";
+import { testApiConfig } from "@services/config/configMock.service";
 import { noop } from "rxjs";
 import { CMS, CmsService } from "./cms.service";
 

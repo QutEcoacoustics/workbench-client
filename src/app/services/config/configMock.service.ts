@@ -29,18 +29,21 @@ export const testApiConfig = new Configuration({
     apiRoot: "https://www.testing.com/api",
     siteRoot: "https://www.testing.com/site",
     siteDir: "/website",
-    ga: {
-      domain: "<< domain >>",
-      trackingId: "<< googleAnalytics >>",
+    keys: {
+      googleMaps: "<< googleMaps >>",
+      googleAnalytics: {
+        domain: "<< domain >>",
+        trackingId: "<< googleAnalytics >>",
+      },
     },
   },
   values: {
-    keys: {
-      googleMaps: "<< googleMaps >>",
-    },
     brand: {
       name: "<< brandName >>",
       title: "<< brandTitle >>",
+    },
+    links: {
+      sourceRepository: "http://broken_link",
     },
     content: [
       {

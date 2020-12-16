@@ -1,4 +1,4 @@
-import { assetRoot } from "@services/app-config/app-config.service";
+import { assetRoot } from "@services/config/config.service";
 import {
   myAccountMenuItem,
   theirProfileMenuItem,

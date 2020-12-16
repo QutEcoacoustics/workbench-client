@@ -4,8 +4,8 @@ import {
   API_ROOT,
   Configuration,
 } from "@helpers/app-initializer/app-initializer";
-import { AppConfigService } from "./app-config.service";
-import { AppConfigMockService, testApiConfig } from "./appConfigMock.service";
+import { ConfigService } from "./config.service";
+import { AppConfigMockService, testApiConfig } from "./configMock.service";
 @NgModule({
   providers: [
     {
@@ -19,7 +19,7 @@ import { AppConfigMockService, testApiConfig } from "./appConfigMock.service";
       }),
     },
     {
-      provide: AppConfigService,
+      provide: ConfigService,
       useClass: AppConfigMockService,
     },
   ],

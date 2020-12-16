@@ -7,7 +7,7 @@ import {
   exploreAudioMenuItem,
   listenMenuItem,
 } from "@helpers/page/externalMenus";
-import { assetRoot } from "@services/app-config/app-config.service";
+import { assetRoot } from "@services/config/config.service";
 import { MapMarkerOption } from "@shared/map/map.component";
 import { siteMenuItem } from "../components/sites/sites.menus";
 import {

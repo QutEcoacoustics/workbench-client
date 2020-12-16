@@ -3,7 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { IdOr } from "@baw-api/api-common";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
-import { MockAppConfigModule } from "@services/app-config/app-configMock.module";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import {
   validateApiFilter,

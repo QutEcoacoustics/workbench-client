@@ -7,10 +7,7 @@ import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { SessionUser } from "@models/User";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import {
-  AppConfigService,
-  assetRoot,
-} from "@services/app-config/app-config.service";
+import { ConfigService, assetRoot } from "@services/config/config.service";
 import { IconsModule } from "@shared/icons/icons.module";
 import { generateSessionUser, generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
@@ -31,7 +28,7 @@ import { HeaderComponent } from "./header.component";
 
 describe("HeaderComponent", () => {
   let api: SecurityService;
-  let env: AppConfigService;
+  let config: ConfigService;
   let router: Router;
   let spec: Spectator<HeaderComponent>;
   const createComponent = createComponentFactory({
@@ -60,7 +57,7 @@ describe("HeaderComponent", () => {
     spec.component["reloadPage"] = jasmine.createSpy().and.stub();
 
     api = spec.inject(SecurityService);
-    env = spec.inject(AppConfigService);
+    config = spec.inject(ConfigService);
     router = spec.inject(Router);
     viewport.set("extra-large");
   });
@@ -110,7 +107,7 @@ describe("HeaderComponent", () => {
 
           const brand = spec.query<HTMLElement>("a.navbar-brand");
           assertRoute(brand, homeMenuItem.route.toString());
-          expect(brand.innerText).toContain(env.values.brand.name);
+          expect(brand.innerText).toContain(config.values.brand.name);
         });
 
         it("should create projects link", () => {
