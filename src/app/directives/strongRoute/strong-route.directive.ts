@@ -31,10 +31,7 @@ export class StrongRouteDirective
    * to the StrongRoute.
    */
   @Input() public queryParams: Params;
-
-  /** Points to original classes 'router' */
   private _router: Router;
-  /** Points to original classes 'route' */
   private _route: ActivatedRoute;
   private angularRouteParams: Params;
 

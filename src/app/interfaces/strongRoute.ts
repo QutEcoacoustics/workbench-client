@@ -43,17 +43,6 @@ export class StrongRoute {
    * Is this StrongRoute segment a route parameters? (ie. `":siteId"`)
    */
   private readonly isParameter: boolean;
-  /**
-   * List of StrongRoutes which have isParameter set to true in the hierarchy
-   * from the root StrongRoute, to the current StrongRoute
-   * (ie. `[":siteId", ":projectId"]`)
-   */
-  private readonly parameters: StrongRoute[];
-  /**
-   * List of all StrongRoutes in the hierarchy going from the root StrongRoute, to
-   * the current StrongRoute
-   */
-  private readonly full: StrongRoute[];
 
   /**
    * Constructor
@@ -102,9 +91,6 @@ export class StrongRoute {
       this.root = this;
     }
 
-    const [full, parameters] = this.rootToHere();
-    this.full = full;
-    this.parameters = parameters;
     this.angularRouteConfig = {
       path: this.toRouteCompilePath(),
       pathMatch: "full",
@@ -188,14 +174,15 @@ export class StrongRoute {
    * Example output: `"projects/:projectId/sites/:siteId"`
    */
   public toRouteCompilePath(): string {
-    if (this.full.length > 1) {
-      return this.full
+    const [full] = this.rootToHere();
+    if (full.length > 1) {
+      return full
         .slice(1)
         .map((x) => x.pathFragment)
         .join("/");
     }
 
-    return this.full[0].pathFragment;
+    return full[0].pathFragment;
   }
 
   /**
@@ -215,9 +202,10 @@ export class StrongRoute {
    * @param params Route parameters
    */
   public toRouterLink(params: RouteParams = {}): string {
+    const [full, parameters] = this.rootToHere();
     const numArgs = Object.keys(params).length;
-    if (numArgs < this.parameters.length) {
-      const msg = `Got ${numArgs} route arguments but expected ${this.parameters.length}`;
+    if (numArgs < parameters.length) {
+      const msg = `Got ${numArgs} route arguments but expected ${parameters.length}`;
       console.error(msg);
       throw new Error(msg);
     }
@@ -238,7 +226,7 @@ export class StrongRoute {
       }
     };
 
-    const route = this.full.map(prepareParam).join("/");
+    const route = full.map(prepareParam).join("/");
     return route.startsWith(StrongRoute.rootRoute)
       ? route
       : StrongRoute.rootRoute + route;

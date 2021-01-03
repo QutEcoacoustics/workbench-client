@@ -82,13 +82,13 @@ describe("StrongRouteDirective", () => {
     it("should handle undefined strongRoute", () => {
       setup(undefined);
       spec.detectChanges();
-      expect(spec.directive).toBeTruthy();
+      expect(spec.directive instanceof StrongRouteDirective).toBeTrue();
     });
 
     it("should handle null strongRoute", () => {
       setup(null);
       spec.detectChanges();
-      expect(spec.directive).toBeTruthy();
+      expect(spec.directive instanceof StrongRouteDirective).toBeTrue();
     });
 
     it("should handle root strongRoute", () => {
