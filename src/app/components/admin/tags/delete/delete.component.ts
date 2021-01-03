@@ -56,7 +56,7 @@ class AdminTagsDeleteComponent extends FormTemplate<Tag> implements OnInit {
   }
 
   protected redirectionPath() {
-    return adminTagsMenuItem.route.toString();
+    return adminTagsMenuItem.route.toRouterLink();
   }
 
   protected apiAction(model: Partial<Tag>) {

@@ -28,7 +28,7 @@ import { reportProblemMenuItem } from "@components/report-problem/report-problem
       <p>{{ error.message }}</p>
       <p>
         If you continue to encounter this error, please go to the
-        <a [routerLink]="[reportUrl]">Report Problems</a> page and report the
+        <a [strongRoute]="reportProblem">Report Problems</a> page and report the
         issue.
       </p>
     </ng-container>
@@ -36,6 +36,6 @@ import { reportProblemMenuItem } from "@components/report-problem/report-problem
 })
 export class ErrorHandlerComponent {
   @Input() public error: ApiErrorDetails;
-  public reportUrl = reportProblemMenuItem.route.toString();
+  public reportProblem = reportProblemMenuItem.route;
   public apiReturnCodes = apiReturnCodes;
 }

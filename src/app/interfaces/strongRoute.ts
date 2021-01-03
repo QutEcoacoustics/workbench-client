@@ -1,11 +1,17 @@
 import { Type } from "@angular/core";
-import { Route, Routes } from "@angular/router";
+import { Params, Route, Routes } from "@angular/router";
+import { Option } from "@helpers/advancedTypes";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 
 export type RouteConfigCallback = (
-  component: Type<PageComponent> | null,
+  component: Option<Type<PageComponent>>,
   config: Partial<Route>
 ) => Route;
+
+export type RouteParams = Record<string, string | number>;
+
+type QSPCallback = (params: Params) => Params;
 
 /**
  * Strong Route class. This provides a workaround for issues related to the
@@ -13,140 +19,281 @@ export type RouteConfigCallback = (
  * dynamically create routes for the various page components.
  */
 export class StrongRoute {
-  public pageComponent: Type<PageComponent> | null;
-  public readonly root: any;
-  public readonly parent: StrongRoute;
-  public readonly name: string;
-  public readonly isParameter: boolean;
-  public readonly fullRoute: string;
+  private static readonly rootPath = "";
+  private static readonly rootRoute = "/";
+
+  /**
+   * Page component associated with this strong route. This will be the
+   * component which is displayed when the user navigates to the path
+   * of this StrongRoute. If no pageComponent is supplied, the StrongRoute
+   * will display a page not found error message when navigated to.
+   */
+  public pageComponent: Option<Type<PageComponent>>;
+  /**
+   * Root StrongRoute of this StrongRoute, all children of this root
+   * StrongRoute will be compiled together
+   */
+  public readonly root: StrongRoute;
+  /**
+   * Children StrongRoutes of this StrongRoute. This allows for tracing
+   * down the hierarchical tree of StrongRoutes.
+   */
   public readonly children: StrongRoute[] = [];
-  private readonly parameters: StrongRoute[];
-  private readonly full: StrongRoute[];
-  private readonly config: Partial<Route>;
+  /**
+   * Is this StrongRoute segment a route parameters? (ie. `":siteId"`)
+   */
+  private readonly isParameter: boolean;
 
   /**
    * Constructor
    *
-   * @param parent Components parent
-   * @param name Route name
-   * @param config Additional router configurations
+   * @param parent
+   * Parent StrongRoute of this StrongRoute. This allows for tracing
+   * up the hierarchical tree of StrongRoutes, up to the root StrongRoute.
+   * @param pathFragment
+   * Route path fragment to add to the StrongRoute hierarchical tree
+   * (ie `"home"`). The pathFragment does not include a leading `'/'` if it is
+   * a root path.
+   * @param queryParams
+   * Function to produce the query parameters when navigating to the StrongRoute.
+   * Example usage:
+   * ```html
+   * <a
+   *  [routerLink]="strongRoute.toRouterLink()"
+   *  [queryParams]="strongRoute.qsp({projectId: 5})"
+   *  />
+   * ```
+   * @param angularRouteConfig
+   * Additional configuration options to apply to the compiled Route
    * @param isRoot Is this a root StrongRoute
    */
   private constructor(
-    parent: StrongRoute,
-    name: string,
-    config: Partial<Route>,
+    public readonly parent?: StrongRoute,
+    public readonly pathFragment: string = StrongRoute.rootPath,
+    public readonly queryParams: QSPCallback = () => ({}),
+    public readonly angularRouteConfig: Partial<Route> = {},
     isRoot?: boolean
   ) {
-    this.root = this;
-    this.name = name;
-    this.parent = null;
-    this.isParameter = this.name ? name.startsWith(":") : false;
-
-    if (parent) {
-      this.parent = parent;
-
-      if (!isRoot) {
-        this.root = parent.root;
-        this.parent.children.push(this);
-      }
+    // Check pathFragment does not have a leading '/'
+    if (pathFragment.startsWith("/")) {
+      const msg = "StrongRoute pathFragment should not start with a '/'";
+      console.error(msg, this);
+      throw Error(msg);
     }
 
-    const [full, parameters] = this.rootToHere();
-    this.full = full;
-    this.parameters = parameters;
+    this.isParameter = pathFragment.startsWith(":");
+    this.angularRouteConfig = angularRouteConfig;
 
-    if (full.length > 1) {
-      this.fullRoute = this.toRoute().join("/");
-    } else if (full.length === 1) {
-      this.fullRoute = this.name;
+    if (parent && !isRoot) {
+      this.root = parent.root;
+      this.parent.children.push(this);
     } else {
-      this.fullRoute = undefined;
+      this.root = this;
     }
 
-    this.config = { path: this.fullRoute, pathMatch: "full", ...config };
+    this.angularRouteConfig = {
+      path: this.toRouteCompilePath(),
+      pathMatch: "full",
+      ...angularRouteConfig,
+    };
   }
 
   /**
-   * A base level (root) route component
+   * Create a new root StrongRoute
    */
-  public static get base() {
-    return new StrongRoute(null, null, {});
+  public static newRoot() {
+    return new StrongRoute();
   }
 
   /**
    * Add a child route
    *
-   * @param name Route name
-   * @param config Additional router configurations
+   * @param pathFragment Route path fragment to add to the StrongRoute hierarchical
+   * tree (ie `"home"`). The pathFragment does not include a leading `'/'` if it is a
+   * root path.
+   * @param queryParams Function to produce the query parameters when navigating to
+   * the StrongRoute
+   * @param angularRouteConfig Additional configuration options to apply to the
+   * compiled Route
    */
-  public add(name: string, config: Partial<Route> = {}) {
-    return new StrongRoute(this, name, config);
+  public add(
+    pathFragment: string,
+    queryParams?: QSPCallback,
+    angularRouteConfig?: Partial<Route>
+  ) {
+    return new StrongRoute(this, pathFragment, queryParams, angularRouteConfig);
   }
 
   /**
    * Add a new feature module route (inherit parent path without recalculating parent routes)
    *
-   * @param name Route name
-   * @param config Additional router configurations
+   * @param pathFragment Route path fragment to add to the StrongRoute hierarchical
+   * tree (ie `"home"`). The pathFragment does not include a leading `'/'` if it is a
+   * root path.
+   * @param queryParams Function to produce the query parameters when navigating to
+   * the StrongRoute
+   * @param angularRouteConfig Additional configuration options to apply to the
+   * compiled Route
    */
-  public addFeatureModule(name: string, config: Partial<Route> = {}) {
-    return new StrongRoute(this, name, config, true);
+  public addFeatureModule(
+    pathFragment: string,
+    queryParams?: QSPCallback,
+    angularRouteConfig?: Partial<Route>
+  ) {
+    return new StrongRoute(
+      this,
+      pathFragment,
+      queryParams,
+      angularRouteConfig,
+      true
+    );
   }
 
   /**
-   * Method used for templating a route with parameters.
-   * Use this in a template like so:
-   * <a [routerlink]="route.Format({projectId: 1, siteId: 1})" />
+   * Diagnostic representation of the StrongRoute
+   *
+   * Example output: `"/projects/:projectId/sites/:siteId?filter_name=:value0"`
    */
-  public format(args: { [key: string]: string | number }): string {
-    if (!args) {
-      // Should only be unit tests which encounter this
-      console.error("Route arguments are " + args);
-      return "";
+  public toString(): string {
+    const keys = Object.keys(this.queryParams({}));
+    const basePath = StrongRoute.rootRoute + this.toRouteCompilePath();
+
+    if (keys.length === 0) {
+      return basePath;
     }
 
-    if (Object.keys(args).length < this.parameters.length) {
-      const msg = `Got ${
-        Object.keys(args).length
-      } route arguments but expected ${this.parameters.length}`;
+    const qsp = keys.map((key, index) => `${key}=:value${index}`).join("&");
+    return `${basePath}?${qsp}`;
+  }
+
+  /**
+   * Returns a string representation of the StrongRoute which is compatible
+   * with the Angular Route module. This should only be used during the
+   * compilation of routes.
+   *
+   * Example output: `"projects/:projectId/sites/:siteId"`
+   */
+  public toRouteCompilePath(): string {
+    const [full] = this.rootToHere();
+    if (full.length > 1) {
+      return full
+        .slice(1)
+        .map((x) => x.pathFragment)
+        .join("/");
+    }
+
+    return full[0].pathFragment;
+  }
+
+  /**
+   * Returns a string representation of the StrongRoute which is compatible
+   * with the RouterLink directive.
+   *
+   * Example output: `"/projects/5/sites/10"`
+   *
+   * Example usage:
+   * ```html
+   * <a
+   *  [routerLink]="strongRoute.toRouterLink({projectId: 5, siteId: 10})"
+   *  [queryParams]="strongRoute.queryParams()"
+   *  />
+   * ```
+   *
+   * @param params Route parameters
+   */
+  public toRouterLink(params: RouteParams = {}): string {
+    const [full, parameters] = this.rootToHere();
+    const numArgs = Object.keys(params).length;
+    if (numArgs < parameters.length) {
+      const msg = `Got ${numArgs} route arguments but expected ${parameters.length}`;
       console.error(msg);
       throw new Error(msg);
     }
 
-    const prepareParam = (x: StrongRoute) => {
+    const prepareParam = (x: StrongRoute): string | number => {
       if (x.isParameter) {
-        const key = x.name.substr(1, x.name.length - 1);
+        const key = x.pathFragment.substr(1, x.pathFragment.length - 1);
 
-        if (args.hasOwnProperty(key)) {
-          return args[key];
+        if (params.hasOwnProperty(key)) {
+          return params[key];
         } else {
-          const msg = `Parameter named ${x.name} was not supplied a value and a default value was not given`;
+          const msg = `Parameter named ${x.pathFragment} was not supplied a value and a default value was not given`;
           console.error(msg);
           throw new Error(msg);
         }
       } else {
-        return x.name;
+        return x.pathFragment;
       }
     };
 
-    return this.full.map(prepareParam).join("/");
+    const route = full.map(prepareParam).join("/");
+    return route.startsWith(StrongRoute.rootRoute)
+      ? route
+      : StrongRoute.rootRoute + route;
   }
 
   /**
-   * Compile the list of routes for a module
+   * Returns a string representation of the StrongRoute which is compatible
+   * with default HTML links.
    *
-   * @param callback Callback function (usually: GetRouteConfigForPage)
+   * Example output: `"/projects/5?filter_name='id'"`
+   *
+   * Example usage:
+   * ```html
+   * <a
+   *  [href]="strongRoute.format(
+   *    {projectId: 5},
+   *    {filter_name: 'id'}
+   *  )"
+   *  />
+   * ```
+   *
+   * @param routeParams Route parameters
+   * @param queryParams Query parameters
+   */
+  public format(
+    routeParams: RouteParams = {},
+    queryParams: Params = {}
+  ): string {
+    const qsp = this.queryParams(queryParams);
+    const keys = Object.keys(qsp);
+    const basePath = this.toRouterLink(routeParams);
+
+    if (keys.length === 0) {
+      return basePath;
+    }
+
+    const qspString = keys
+      .filter((key) => isInstantiated(qsp[key]))
+      .map((key) => `${key}=${qsp[key]}`)
+      .join("&");
+    return qspString.length > 0 ? `${basePath}?${qspString}` : basePath;
+  }
+
+  /**
+   * Compile the Routes list to insert into the RouterModule. This is
+   * how StrongRoute converts to the Angular Route system.
+   *
+   * Example usage:
+   * ```typescript
+   * RouterModule.forChild(
+   *  strongRoute.compileRoutes(getRouteConfigForPage)
+   * );
+   * ```
+   *
+   * @param callback Callback function (usually: `getRouteConfigForPage`)
+   * which allows the 'pages' to add extra route data or modifications when
+   * they are set up
    */
   public compileRoutes(callback: RouteConfigCallback): Routes {
     const rootRoute = this.root;
     const output: Routes = [];
 
     const sortRoutes = (a: Route, b: Route): -1 | 0 | 1 => {
-      if (a.path === null && b.path === null) {
-        return 0;
-      } else if (a.path === null || b.path === null) {
-        return a.path === null ? -1 : 1;
+      // Root route wins
+      if (a.path === StrongRoute.rootPath || b.path === StrongRoute.rootPath) {
+        // Cannot have multiple root routes
+        return a.path === StrongRoute.rootPath ? -1 : 1;
       }
 
       const aRoutes = a.path.split("/");
@@ -161,12 +308,8 @@ export class StrongRoute {
 
       // If one of the routes is a parameter route
       if (aParamRoute || bParamRoute) {
-        // If both are parameter routes, they are equal
-        if (aParamRoute && bParamRoute) {
-          return 0;
-        }
-
-        // Else give priority to the non-parameter route
+        // Give priority to the non-parameter route
+        // Cannot have multiple parameter routes at the same level
         return aParamRoute ? 1 : -1;
       }
 
@@ -174,10 +317,17 @@ export class StrongRoute {
     };
 
     const recursiveAdd = (current: StrongRoute): void => {
-      const route = callback(current.pageComponent, current.config);
+      const route = callback(current.pageComponent, current.angularRouteConfig);
       current.children.forEach(recursiveAdd);
 
-      if (route) {
+      // Ignore root route with no component
+      if (
+        route &&
+        !(
+          route.path === StrongRoute.rootPath &&
+          route.children[0].component === undefined
+        )
+      ) {
         output.push(route);
       }
     };
@@ -187,40 +337,17 @@ export class StrongRoute {
   }
 
   /**
-   * String representation of the route
+   * Map the routes from the root (base) StrongRoute to the current StrongRoute.
+   * The output is split so that a list of parameter StrongRoutes is produced
+   * alongside the full list of StrongRoutes.
    *
-   * Example output: "/home/house"
-   */
-  public toString(): string {
-    return "/" + (this.fullRoute ? this.fullRoute : "");
-  }
-
-  /**
-   * Router representation of the route
-   * ! This will use a path relative to the current page if directly
-   * inserted into the [routerLink] directive
-   *
-   * Example output: ["home", "house"]
-   */
-  public toRoute(): string[] {
-    return this.full.slice(1).map((x) => x.name);
-  }
-
-  /**
-   * Route config
-   */
-  public get routeConfig() {
-    return this.config;
-  }
-
-  /**
-   * Map the routes from the root (base) route to the current route
+   * Output: [StrongRoutes list, parameter StrongRoutes list]
    */
   private rootToHere(): [StrongRoute[], StrongRoute[]] {
     const fragments = [];
     const parameters = [];
     let current: StrongRoute = this;
-    while (current !== null) {
+    while (isInstantiated(current)) {
       fragments.push(current);
       if (current.isParameter) {
         parameters.push(current);

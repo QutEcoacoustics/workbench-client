@@ -34,7 +34,7 @@
                 <!-- Link to download -->
                 <a
                   class="mx-auto text-center"
-                  [routerLink]="dataRequest.route.toString()"
+                  [strongRoute]="dataRequest"
                   [queryParams]="{ userId: user.id }"
                 >
                   Annotations you've created

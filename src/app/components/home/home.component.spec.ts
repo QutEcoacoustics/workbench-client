@@ -4,7 +4,8 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
-import { SecurityService } from "@baw-api/security/security.service";
+import { projectsMenuItem } from "@components/projects/projects.menus";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { Project } from "@models/Project";
 import {
   createComponentFactory,
@@ -17,13 +18,11 @@ import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { assertCms } from "@test/helpers/api-common";
 import { nStepObservable } from "@test/helpers/general";
-import { assertRoute } from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
   let projectApi: SpyObject<ProjectsService>;
-  let securityApi: SpyObject<SecurityService>;
   let cmsService: SpyObject<CmsService>;
   let spectator: Spectator<HomeComponent>;
   const createComponent = createComponentFactory({
@@ -68,7 +67,6 @@ describe("HomeComponent", () => {
   beforeEach(() => {
     spectator = createComponent({ detectChanges: false });
     projectApi = spectator.inject(ProjectsService);
-    securityApi = spectator.inject(SecurityService);
   });
 
   assertCms<HomeComponent>(async () => {
@@ -176,8 +174,10 @@ describe("HomeComponent", () => {
 
       const button = getButton();
       expect(button).toBeTruthy();
-      expect(button.innerText.trim()).toBe("More Projects");
-      assertRoute(button, "/projects");
+      expect(button).toHaveText("More Projects");
+      expect(spectator.queryLast(StrongRouteDirective).strongRoute).toEqual(
+        projectsMenuItem.route
+      );
     });
   });
 });

@@ -1,8 +1,9 @@
 import { NgModule } from "@angular/core";
 import { DatatableDirective } from "./datatable/datatable.directive";
 import { AuthenticatedImageModule } from "./image/image.module";
+import { StrongRouteDirective } from "./strongRoute/strong-route.directive";
 
-const directives = [DatatableDirective];
+const directives = [DatatableDirective, StrongRouteDirective];
 
 /**
  * App Shared Directives

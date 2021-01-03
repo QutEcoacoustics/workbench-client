@@ -69,7 +69,10 @@
       </p>
       <baw-cards [cards]="projectList">
         <ng-container>
-          <a class="m-auto btn btn-outline-primary" [routerLink]="projectsLink">
+          <a
+            class="m-auto btn btn-outline-primary"
+            [strongRoute]="projectsLink"
+          >
             More Projects
           </a>
         </ng-container>

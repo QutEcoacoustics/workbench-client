@@ -95,7 +95,7 @@ export class Region extends AbstractModel implements IRegion {
   }
 
   public get viewUrl(): string {
-    return regionMenuItem.route.format({
+    return regionMenuItem.route.toRouterLink({
       projectId: this.projectId,
       regionId: this.id,
     });

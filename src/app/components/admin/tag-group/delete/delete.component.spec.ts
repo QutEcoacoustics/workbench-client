@@ -96,7 +96,7 @@ describe("AdminTagGroupsDeleteComponent", () => {
 
       component.submit({});
       expect(router.navigateByUrl).toHaveBeenCalledWith(
-        adminTagGroupsMenuItem.route.toString()
+        adminTagGroupsMenuItem.route.toRouterLink()
       );
     });
   });

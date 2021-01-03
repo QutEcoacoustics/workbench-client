@@ -7,6 +7,7 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { PROJECT } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { AccessLevel } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
@@ -22,12 +23,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
 import { nStepObservable } from "@test/helpers/general";
-import {
-  assertErrorHandler,
-  assertHref,
-  assertRoute,
-} from "@test/helpers/html";
-import { websiteHttpUrl } from "@test/helpers/url";
+import { assertErrorHandler, assertRoute } from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
 import { TheirSitesComponent } from "./their-sites.component";
 
@@ -222,33 +218,25 @@ describe("TheirSitesComponent", () => {
       }
 
       function getLink() {
-        return getCells()[3].querySelector("a");
+        return spec.queryLast(StrongRouteDirective);
       }
 
       it("should display annotation link", async () => {
         setup(defaultUser);
         await createTable();
-
         expect(getCells()[3]).toHaveText("Annotation");
       });
 
       it("should create annotation link", async () => {
         setup(defaultUser);
         await createTable();
-
-        assertRoute(getLink(), dataRequestMenuItem.route.toString());
+        expect(getLink().strongRoute).toEqual(dataRequestMenuItem.route);
       });
 
       it("should create annotation link query params", async () => {
         setup(defaultUser);
         await createTable();
-
-        const relativePath = dataRequestMenuItem.route.toString();
-        assertHref(
-          getLink(),
-          `${websiteHttpUrl}${relativePath}?siteId=${defaultSite.id}`,
-          true
-        );
+        expect(getLink().queryParams).toEqual({ siteId: defaultSite.id });
       });
     });
   });

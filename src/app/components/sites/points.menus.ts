@@ -34,7 +34,6 @@ export const newPointMenuItem = menuRoute({
   tooltip: () => "Create a new point",
 });
 
-// TODO Add site id, region id, and project id to route params
 export const pointAnnotationsMenuItem = menuRoute({
   ...dataRequestMenuItem,
   label: "Download Annotations",

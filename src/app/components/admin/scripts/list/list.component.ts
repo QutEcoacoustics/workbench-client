@@ -3,7 +3,6 @@ import { ScriptsService } from "@baw-api/script/scripts.service";
 import { adminDashboardMenuItem } from "@components/admin/admin.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Script } from "@models/Script";
 import { List } from "immutable";
 import {
@@ -32,6 +31,7 @@ class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script> {
     version: "version",
     id: "id",
   };
+  public updatePath = adminEditScriptMenuItem.route;
 
   public constructor(api: ScriptsService) {
     super(api, (scripts) =>
@@ -46,19 +46,12 @@ class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script> {
 
     this.filterKey = "name";
   }
-
-  public updatePath(model: Script): string {
-    return adminEditScriptMenuItem.route.format({ scriptId: model.id });
-  }
 }
 
 AdminScriptsComponent.linkComponentToPageInfo({
   category: adminScriptsCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      adminDashboardMenuItem,
-      ...adminScriptsMenuItemActions,
-    ]),
+    actions: List([adminDashboardMenuItem, ...adminScriptsMenuItemActions]),
   },
 }).andMenuRoute(adminScriptsMenuItem);
 

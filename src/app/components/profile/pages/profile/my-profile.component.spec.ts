@@ -7,6 +7,7 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { AudioEvent } from "@models/AudioEvent";
@@ -33,11 +34,9 @@ import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
 import {
   assertErrorHandler,
-  assertHref,
   assertImage,
   assertRoute,
 } from "@test/helpers/html";
-import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
 import { MyProfileComponent } from "./my-profile.component";
 
@@ -166,24 +165,21 @@ describe("MyProfileComponent", () => {
     });
 
     it("should link to data request page", () => {
-      const route = dataRequestMenuItem.route.toString();
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      assertRoute(getAnnotationsLink(), route);
+      expect(spec.query(StrongRouteDirective).strongRoute).toEqual(
+        dataRequestMenuItem.route
+      );
     });
 
     it("should have site id in parameters", () => {
-      const href =
-        websiteHttpUrl +
-        dataRequestMenuItem.route.toString() +
-        "?userId=" +
-        defaultUser.id;
-
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      assertHref(getAnnotationsLink(), href, true);
+      expect(spec.query(StrongRouteDirective).queryParams).toEqual({
+        userId: defaultUser.id,
+      });
     });
   });
 

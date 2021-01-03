@@ -80,7 +80,7 @@ describe("ProjectsDeleteComponent", () => {
 
       spectator.component.submit({});
       expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
-        projectsMenuItem.route.toString()
+        projectsMenuItem.route.toRouterLink()
       );
     });
   });

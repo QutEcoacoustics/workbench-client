@@ -6,7 +6,6 @@ import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.comp
 import { assignSiteMenuItem } from "@components/projects/projects.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import {
@@ -22,6 +21,7 @@ import {
 class AdminOrphansComponent
   extends PagedTableTemplate<TableRow, Site>
   implements OnInit {
+  public detailsPath = adminOrphanMenuItem.route;
   public assignSitesLabel = assignSiteMenuItem.label;
 
   public constructor(api: ShallowSitesService) {
@@ -42,10 +42,6 @@ class AdminOrphansComponent
     this.getPageData();
   }
 
-  public detailsPath(site: Site): string {
-    return adminOrphanMenuItem.route.format({ siteId: site.id });
-  }
-
   protected apiAction(filters: Filters) {
     return (this.api as ShallowSitesService).orphanFilter(filters);
   }
@@ -54,10 +50,7 @@ class AdminOrphansComponent
 AdminOrphansComponent.linkComponentToPageInfo({
   category: adminOrphansCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      adminDashboardMenuItem,
-      ...adminMenuItemActions,
-    ]),
+    actions: List([adminDashboardMenuItem, ...adminMenuItemActions]),
   },
 }).andMenuRoute(adminOrphansMenuItem);
 

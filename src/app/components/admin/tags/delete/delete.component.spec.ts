@@ -93,7 +93,7 @@ describe("AdminTagsDeleteComponent", () => {
 
       component.submit({});
       expect(router.navigateByUrl).toHaveBeenCalledWith(
-        adminTagsMenuItem.route.toString()
+        adminTagsMenuItem.route.toRouterLink()
       );
     });
   });

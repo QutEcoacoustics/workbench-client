@@ -12,7 +12,6 @@ import {
   extendedErrorMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -60,7 +59,7 @@ class NewComponent extends FormTemplate<Project> {
 NewComponent.linkComponentToPageInfo({
   category: projectsCategory,
   menus: {
-    actions: List<AnyMenuItem>([projectsMenuItem, ...projectsMenuItemActions]),
+    actions: List([projectsMenuItem, ...projectsMenuItemActions]),
   },
 }).andMenuRoute(newProjectMenuItem);
 

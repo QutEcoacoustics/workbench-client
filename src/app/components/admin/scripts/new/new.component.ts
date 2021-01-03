@@ -5,7 +5,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Script } from "@models/Script";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -57,10 +56,7 @@ class AdminScriptsNewComponent extends FormTemplate<Script> {
 AdminScriptsNewComponent.linkComponentToPageInfo({
   category: adminScriptsCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      adminScriptsMenuItem,
-      ...adminScriptsMenuItemActions,
-    ]),
+    actions: List([adminScriptsMenuItem, ...adminScriptsMenuItemActions]),
   },
 }).andMenuRoute(adminNewScriptsMenuItem);
 

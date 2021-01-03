@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
+import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { PipesModule } from "@pipes/pipes.module";
@@ -35,6 +36,7 @@ import { WidgetDirective } from "./widget/widget.directive";
     AuthenticatedImageModule,
     LoadingModule,
     PipesModule,
+    DirectivesModule,
   ],
   exports: [MenuComponent, PermissionsShieldComponent, WidgetDirective],
 })

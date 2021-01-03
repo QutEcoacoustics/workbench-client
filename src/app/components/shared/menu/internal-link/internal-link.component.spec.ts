@@ -1,14 +1,10 @@
 import { Location } from "@angular/common";
 import { RouterTestingModule } from "@angular/router/testing";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
-import {
-  assertAttribute,
-  assertIcon,
-  assertRoute,
-  assertTooltip,
-} from "@test/helpers/html";
+import { assertAttribute, assertIcon, assertTooltip } from "@test/helpers/html";
 import { SharedModule } from "../../shared.module";
 import { MenuInternalLinkComponent } from "./internal-link.component";
 
@@ -47,6 +43,7 @@ describe("MenuInternalLinkComponent", () => {
         [placement]="placement"
         [tooltip]="tooltip"
         [route]="route"
+        [qsp]="qsp"
       ></baw-menu-internal-link>
     `,
       {
@@ -57,6 +54,7 @@ describe("MenuInternalLinkComponent", () => {
           placement: "left",
           tooltip: "tooltip",
           route: "/home",
+          qsp: {},
           ...inputs,
         },
       }
@@ -69,7 +67,7 @@ describe("MenuInternalLinkComponent", () => {
     defaultLink = menuRoute({
       icon: ["fas", "home"],
       label: "home",
-      route: StrongRoute.base.add("home"),
+      route: StrongRoute.newRoot().add("home"),
       tooltip: () => "tooltip",
     });
   });
@@ -134,39 +132,24 @@ describe("MenuInternalLinkComponent", () => {
   });
 
   describe("link", () => {
-    it("should create routerLink", () => {
-      setup({
-        route: "/brokenlink",
-        link: menuRoute({
-          ...defaultLink,
-          route: StrongRoute.base.add("brokenlink"),
-        }),
-      });
+    it("should create router link", () => {
+      const route = StrongRoute.newRoot().add("brokenlink");
+      setup({ link: menuRoute({ ...defaultLink, route }) });
       spec.detectChanges();
-      assertRoute(retrieveLink(), "/brokenlink");
-    });
-
-    it("should not use link route", () => {
-      setup({
-        route: "/brokenlink",
-        link: menuRoute({
-          ...defaultLink,
-          route: StrongRoute.base.add("wronglink"),
-        }),
-      });
-      spec.detectChanges();
-      assertRoute(retrieveLink(), "/brokenlink");
+      expect(spec.query(StrongRouteDirective).strongRoute).toEqual(route);
     });
 
     it("should not highlight link when not active", () => {
-      setup({ route: "/brokenlink" });
+      const route = StrongRoute.newRoot().add("brokenlink");
+      setup({ link: menuRoute({ ...defaultLink, route }) });
       spyOn(location, "path").and.callFake(() => "/customRoute");
       spec.detectChanges();
       assertActive(false);
     });
 
     it("should highlight link when active", () => {
-      setup({ route: "/customRoute" });
+      const route = StrongRoute.newRoot().add("customRoute");
+      setup({ link: menuRoute({ ...defaultLink, route }) });
       spyOn(location, "path").and.callFake(() => "/customRoute");
       spec.detectChanges();
       assertActive(true);

@@ -14,7 +14,6 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";
@@ -65,7 +64,7 @@ class DeleteComponent extends FormTemplate<Project> implements OnInit {
   }
 
   protected redirectionPath() {
-    return projectsMenuItem.route.toString();
+    return projectsMenuItem.route.toRouterLink();
   }
 
   protected apiAction(model: Partial<Project>) {
@@ -76,7 +75,7 @@ class DeleteComponent extends FormTemplate<Project> implements OnInit {
 DeleteComponent.linkComponentToPageInfo({
   category: projectCategory,
   menus: {
-    actions: List<AnyMenuItem>([projectMenuItem, ...projectMenuItemActions]),
+    actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
   },
   resolvers: { [projectKey]: projectResolvers.show },

@@ -92,7 +92,7 @@ describe("MenuComponent", () => {
       label: "label",
       icon: ["fas", "home"],
       tooltip: () => "tooltip",
-      route: StrongRoute.base.add("home"),
+      route: StrongRoute.newRoot().add("home"),
     });
   });
 
@@ -350,18 +350,18 @@ describe("MenuComponent", () => {
     it("should set link route", () => {
       setup({ menuType: "action", links: List([defaultMenuRoute]) });
       spec.detectChanges();
-      expect(getMenuRoutes()[0].route).toBe(defaultMenuRoute.route.format({}));
+      expect(getMenuRoutes()[0].link.route).toBe(defaultMenuRoute.route);
     });
 
     it("should set link route with parameter", () => {
       const params = { attribute: 10 };
       const link = menuRoute({
         ...defaultMenuRoute,
-        route: StrongRoute.base.add("home").add(":attribute"),
+        route: StrongRoute.newRoot().add("home").add(":attribute"),
       });
       setup({ menuType: "action", links: List([link]) }, undefined, params);
       spec.detectChanges();
-      expect(getMenuRoutes()[0].route).toBe("/home/10");
+      expect(getMenuRoutes()[0].link.route).toEqual(link.route);
     });
   });
 

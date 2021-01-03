@@ -137,13 +137,13 @@ export class Site extends AbstractModel implements ISite {
 
   public getViewUrl(project: IdOr<Project>): string {
     if (isInstantiated(this.regionId)) {
-      return pointMenuItem.route.format({
+      return pointMenuItem.route.toRouterLink({
         projectId: id(project),
         regionId: this.regionId,
         siteId: this.id,
       });
     } else {
-      return siteMenuItem.route.format({
+      return siteMenuItem.route.toRouterLink({
         projectId: id(project),
         siteId: this.id,
       });

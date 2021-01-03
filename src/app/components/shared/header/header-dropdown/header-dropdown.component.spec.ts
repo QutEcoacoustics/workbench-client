@@ -110,7 +110,7 @@ describe("HeaderDropdownComponent", () => {
           label: "Custom Label",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.base.add("home"),
+          route: StrongRoute.newRoot().add("home"),
         }),
       ],
     };
@@ -135,13 +135,13 @@ describe("HeaderDropdownComponent", () => {
           label: "Custom Label 1",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.base.add("home"),
+          route: StrongRoute.newRoot().add("home"),
         }),
         menuRoute({
           label: "Custom Label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.base.add("house"),
+          route: StrongRoute.newRoot().add("house"),
         }),
       ],
     };
@@ -227,7 +227,7 @@ describe("HeaderDropdownComponent", () => {
           label: "Custom Label 2",
           icon: ["fas", "home"],
           tooltip: () => "tooltip",
-          route: StrongRoute.base.add("house"),
+          route: StrongRoute.newRoot().add("house"),
         }),
       ],
     };

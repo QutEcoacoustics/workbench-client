@@ -54,7 +54,7 @@ const userKey = "user";
 class MyProfileComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit {
-  public dataRequest = dataRequestMenuItem;
+  public dataRequest = dataRequestMenuItem.route;
   public lastSeenAt: string;
   public membershipLength: string;
   public tags: Tag[];

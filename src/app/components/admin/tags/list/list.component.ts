@@ -2,7 +2,6 @@ import { Component } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { adminDashboardMenuItem } from "@components/admin/admin.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { Tag } from "@models/Tag";
 import { List } from "immutable";
 import {
@@ -34,6 +33,8 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
     retired: "retired",
     type: "typeOfTag",
   };
+  public editPath = adminEditTagMenuItem.route;
+  public deletePath = adminDeleteTagMenuItem.route;
 
   public constructor(api: TagsService) {
     super(api, (tags) =>
@@ -48,27 +49,12 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
 
     this.filterKey = "text";
   }
-
-  public editPath(tag: Tag): string {
-    return adminEditTagMenuItem.route
-      .toString()
-      .replace(":tagId", tag.id.toString());
-  }
-
-  public deletePath(tag: Tag): string {
-    return adminDeleteTagMenuItem.route
-      .toString()
-      .replace(":tagId", tag.id.toString());
-  }
 }
 
 AdminTagsComponent.linkComponentToPageInfo({
   category: adminTagsCategory,
   menus: {
-    actions: List<AnyMenuItem>([
-      adminDashboardMenuItem,
-      ...adminTagsMenuItemActions,
-    ]),
+    actions: List([adminDashboardMenuItem, ...adminTagsMenuItemActions]),
   },
 }).andMenuRoute(adminTagsMenuItem);
 

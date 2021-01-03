@@ -11,7 +11,6 @@ import {
   theirProfileMenuItem,
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { AnyMenuItem } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { List } from "immutable";
 
@@ -28,10 +27,8 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
     { name: "Last Login" },
     { name: "Confirmed" },
   ];
-  public sortKeys = {
-    user: "userName",
-    lastLogin: "lastSeenAt",
-  };
+  public sortKeys = { user: "userName", lastLogin: "lastSeenAt" };
+  public editPath = theirEditMenuItem.route;
 
   public constructor(api: AccountsService) {
     super(api, (accounts) =>
@@ -55,27 +52,11 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   public viewPath(user: User) {
     return user.viewUrl;
   }
-
-  /**
-   * Produce the router path to the edit their account page
-   *
-   * @param user User Account
-   */
-  public editPath(user: User) {
-    return theirEditMenuItem.route
-      .toString()
-      .replace(":accountId", user.id.toString());
-  }
 }
 
 AdminUserListComponent.linkComponentToPageInfo({
   category: adminCategory,
-  menus: {
-    actions: List<AnyMenuItem>([
-      adminDashboardMenuItem,
-      ...adminMenuItemActions,
-    ]),
-  },
+  menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
 }).andMenuRoute(adminUserListMenuItem);
 
 export { AdminUserListComponent };

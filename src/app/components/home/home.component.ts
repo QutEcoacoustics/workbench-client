@@ -16,7 +16,7 @@ import { homeCategory, homeMenuItem } from "./home.menus";
 })
 class HomeComponent extends PageComponent implements OnInit {
   public page = CMS.home;
-  public projectsLink = projectsMenuItem.route.toString();
+  public projectsLink = projectsMenuItem.route;
   public projectList: List<Card> = List([]);
 
   public constructor(

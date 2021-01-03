@@ -23,9 +23,7 @@
     >
       <ngx-datatable-column name="Site">
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <a [routerLink]="[value.viewUrl]">
-            {{ value.name }}
-          </a>
+          <a [routerLink]="value.viewUrl">{{ value.name }} </a>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column name="Last Modified" [width]="150" [maxWidth]="150">
@@ -57,7 +55,7 @@
         <ng-template let-value="value" ngx-datatable-cell-template>
           <a
             class="btn btn-sm btn-default"
-            [routerLink]="[annotationLink]"
+            [strongRoute]="annotationLink"
             [queryParams]="{ siteId: value.id }"
           >
             Annotation

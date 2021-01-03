@@ -3,7 +3,7 @@
     <!-- Brand Logo -->
     <a
       class="navbar-brand"
-      [routerLink]="routes.home.route.toString()"
+      [routerLink]="routes.home.route.toRouterLink()"
       routerLinkActive="active"
     >
       {{ title }}
@@ -40,7 +40,7 @@
           <a
             id="register-header-link"
             class="nav-link"
-            [routerLink]="routes.register.route.toString()"
+            [routerLink]="routes.register.route.toRouterLink()"
             routerLinkActive="active"
           >
             {{ routes.register.label }}
@@ -50,7 +50,7 @@
           <a
             id="login-header-link"
             class="nav-link"
-            [routerLink]="routes.login.route.toString()"
+            [routerLink]="routes.login.route.toRouterLink()"
             routerLinkActive="active"
           >
             {{ routes.login.label }}
@@ -64,7 +64,7 @@
           <a
             id="admin-settings"
             class="nav-link"
-            [routerLink]="routes.admin.route.toString()"
+            [routerLink]="routes.admin.route.toRouterLink()"
             routerLinkActive="active"
           >
             <fa-icon [icon]="routes.admin.icon"></fa-icon>

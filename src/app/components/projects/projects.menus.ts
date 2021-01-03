@@ -14,7 +14,7 @@ import {
 /*
   Projects Category
 */
-export const projectsRoute = StrongRoute.base.add("projects");
+export const projectsRoute = StrongRoute.newRoot().add("projects");
 export const projectsCategory: Category = {
   label: "Projects",
   icon: ["fas", "globe-asia"],
