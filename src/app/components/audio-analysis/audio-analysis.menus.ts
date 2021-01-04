@@ -18,14 +18,6 @@ export const audioAnalysesMenuItem = menuRoute({
   route: audioAnalysesRoute,
 });
 
-export const newAudioAnalysisMenuItem = menuRoute({
-  icon: defaultNewIcon,
-  label: "New Analysis Job",
-  tooltip: () => "Create a custom analysis job",
-  route: audioAnalysesRoute.add("new"),
-  parent: audioAnalysesMenuItem,
-});
-
 export const audioAnalysisRoute = audioAnalysesRoute.add(":analysisJobId");
 
 export const audioAnalysisMenuItem = menuRoute({
@@ -74,4 +66,11 @@ export const downloadAudioAnalysisResultsMenuItem = menuAction({
   tooltip: () => "Download a folder containing the analysis results",
   disabled: true,
   action: () => {},
+});
+
+export const newAudioAnalysisMenuItem = menuRoute({
+  icon: defaultNewIcon,
+  label: "New Analysis Job",
+  tooltip: () => "Create a custom analysis job",
+  route: audioAnalysisRoute.add("new"),
 });
