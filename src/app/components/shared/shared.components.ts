@@ -26,7 +26,6 @@ import { FormComponent } from "./form/form.component";
 import { CustomInputsModule } from "./formly/custom-inputs.module";
 import { HeaderModule } from "./header/header.module";
 import { IconsModule } from "./icons/icons.module";
-import { IFrameComponent } from "./iframe/iframe.component";
 import { IndicatorModule } from "./indicator/indicator.module";
 import { ItemsModule } from "./items/items.module";
 import { LoadingModule } from "./loading/loading.module";
@@ -43,7 +42,6 @@ export const sharedComponents = [
   ErrorHandlerComponent,
   FooterComponent,
   FormComponent,
-  IFrameComponent,
   SecondaryMenuComponent,
   WIPComponent,
 ];
