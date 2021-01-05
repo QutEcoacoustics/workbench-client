@@ -23,4 +23,5 @@ export const newAudioAnalysisMenuItem = menuRoute({
   label: "New Analysis Job",
   tooltip: () => "Create a custom analysis job",
   route: audioAnalysisRoute.add("new"),
+  parent: audioAnalysisMenuItem,
 });
