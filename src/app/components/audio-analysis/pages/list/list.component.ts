@@ -9,7 +9,7 @@ import { List } from "immutable";
 
 @Component({
   selector: "baw-audio-analyses",
-  template: "<baw-iframe></baw-iframe>",
+  template: "<baw-client></baw-client>",
 })
 class ListComponent extends PageComponent {}
 
