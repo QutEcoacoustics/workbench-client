@@ -64,7 +64,7 @@
     "ngx-toastr": "^13.2.0",
     "rxjs": "^6.6.3",
     "snazzy-info-window": "^1.1.1",
-    "tslib": "^2.0.3",
+    "tslib": "^2.1.0",
     "zone.js": "^0.11.3"
   },
   "devDependencies": {
