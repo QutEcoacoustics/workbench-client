@@ -2,7 +2,7 @@ import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { defaultNewIcon } from "src/app/app.menus";
 
-export const audioAnalysisRoute = StrongRoute.base.add("audio_analysis");
+export const audioAnalysisRoute = StrongRoute.newRoot().add("audio_analysis");
 
 export const audioAnalysisCategory: Category = {
   icon: ["fas", "server"],
