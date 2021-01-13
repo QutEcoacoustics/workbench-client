@@ -9,10 +9,10 @@ import { PageComponent } from "@helpers/page/pageComponent";
   selector: "baw-new-audio-analyses",
   template: "<baw-client></baw-client>",
 })
-class NewComponent extends PageComponent {}
+class NewAudioAnalysisComponent extends PageComponent {}
 
-NewComponent.linkComponentToPageInfo({
+NewAudioAnalysisComponent.linkComponentToPageInfo({
   category: audioAnalysisCategory,
 }).andMenuRoute(newAudioAnalysisMenuItem);
 
-export { NewComponent };
+export { NewAudioAnalysisComponent };

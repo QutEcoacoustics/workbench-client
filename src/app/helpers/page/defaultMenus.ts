@@ -1,4 +1,4 @@
-import { audioAnalysisMenuItem } from "@components/audio-analysis/audio-analysis.menus";
+import { audioAnalysesMenuItem } from "@components/audio-analysis/audio-analysis.menus";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import { homeCategory, homeMenuItem } from "@components/home/home.menus";
 import {
@@ -28,7 +28,7 @@ export const defaultMenu = {
     myAccountMenuItem,
     myAnnotationsMenuItem,
     projectsMenuItem,
-    audioAnalysisMenuItem,
+    audioAnalysesMenuItem,
     libraryMenuItem,
     dataRequestMenuItem,
     sendAudioMenuItem,
