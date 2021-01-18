@@ -124,8 +124,8 @@ describe("StrongRouteDirective", () => {
 
   describe("queryParams", () => {
     it("should handle strongRoute with query parameter", () => {
-      const childRoute = StrongRoute.newRoot().add("home", (params) => ({
-        test: params.test,
+      const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
+        test,
       }));
       setup(childRoute, undefined, { test: "value" });
       spec.detectChanges();
@@ -133,10 +133,13 @@ describe("StrongRouteDirective", () => {
     });
 
     it("should handle strongRoute with multiple query parameter", () => {
-      const childRoute = StrongRoute.newRoot().add("home", (params) => ({
-        test: params.test,
-        example: params.example,
-      }));
+      const childRoute = StrongRoute.newRoot().add(
+        "home",
+        ({ test, example }) => ({
+          test,
+          example,
+        })
+      );
       setup(childRoute, undefined, { example: 5, test: "value" });
       spec.detectChanges();
       assertRoute("/home?test=value&example=5");
@@ -144,8 +147,8 @@ describe("StrongRouteDirective", () => {
 
     // TODO Update this to work through the router instead of bypassing it
     it("should handle strongRoute with router query parameter", () => {
-      const childRoute = StrongRoute.newRoot().add("home", (params) => ({
-        testing: params.test,
+      const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
+        testing: test,
       }));
       setup(childRoute);
       spec.detectChanges();
@@ -155,10 +158,13 @@ describe("StrongRouteDirective", () => {
 
     // TODO Update this to work through the router instead of bypassing it
     it("should handle strongRoute with multiple router query parameter", () => {
-      const childRoute = StrongRoute.newRoot().add("home", (params) => ({
-        testing: params.test,
-        testing2: params.example,
-      }));
+      const childRoute = StrongRoute.newRoot().add(
+        "home",
+        ({ test, example }) => ({
+          testing: test,
+          testing2: example,
+        })
+      );
       setup(childRoute);
       spec.detectChanges();
       spec.directive["angularRouteParams"] = { example: 5, test: "value" };
@@ -167,10 +173,13 @@ describe("StrongRouteDirective", () => {
 
     // TODO Update this to work through the router instead of bypassing it
     it("should combine route query parameters and queryParams", () => {
-      const childRoute = StrongRoute.newRoot().add("home", (params) => ({
-        testing: params.test,
-        testing2: params.example,
-      }));
+      const childRoute = StrongRoute.newRoot().add(
+        "home",
+        ({ test, example }) => ({
+          testing: test,
+          testing2: example,
+        })
+      );
       setup(childRoute, undefined, { test: "value" });
       spec.detectChanges();
       spec.directive["angularRouteParams"] = { example: 5 };
@@ -195,8 +204,8 @@ describe("StrongRouteDirective", () => {
 
     // TODO Update this to work through the router instead of bypassing it
     it("should create url tree with query parameters from router", () => {
-      const childRoute = StrongRoute.newRoot().add("home", (params) => ({
-        testing: params.example,
+      const childRoute = StrongRoute.newRoot().add("home", ({ example }) => ({
+        testing: example,
       }));
       setup(childRoute);
       spec.detectChanges();
@@ -205,8 +214,8 @@ describe("StrongRouteDirective", () => {
     });
 
     it("should create url tree with custom query parameters", () => {
-      const childRoute = StrongRoute.newRoot().add("home", (params) => ({
-        testing: params.test,
+      const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
+        testing: test,
       }));
       setup(childRoute, undefined, { test: "value" });
       spec.detectChanges();
@@ -215,10 +224,13 @@ describe("StrongRouteDirective", () => {
 
     // TODO Update this to work through the router instead of bypassing it
     it("should create url tree with with custom and router query parameters", () => {
-      const childRoute = StrongRoute.newRoot().add("home", (params) => ({
-        testing: params.test,
-        testing2: params.example,
-      }));
+      const childRoute = StrongRoute.newRoot().add(
+        "home",
+        ({ test, example }) => ({
+          testing: test,
+          testing2: example,
+        })
+      );
       setup(childRoute, undefined, { test: "value" });
       spec.detectChanges();
       spec.directive["angularRouteParams"] = { example: 5 };
