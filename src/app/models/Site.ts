@@ -1,12 +1,10 @@
 import { Injector } from "@angular/core";
 import { id, IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
+import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import {
-  exploreAudioMenuItem,
-  listenMenuItem,
-} from "@helpers/page/externalMenus";
+import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
 import { assetRoot } from "@services/config/config.service";
 import { MapMarkerOption } from "@shared/map/map.component";
 import { siteMenuItem } from "../components/sites/sites.menus";
@@ -16,10 +14,10 @@ import {
   Description,
   HasAllUsers,
   HasDescription,
+  Hash,
   Id,
   Ids,
   ImageUrl,
-  Hash,
   Param,
   TimezoneInformation,
 } from "../interfaces/apiInterfaces";
@@ -127,11 +125,18 @@ export class Site extends AbstractModel implements ISite {
     return this.getViewUrl(this.projectIds.values().next().value);
   }
 
+  /**
+   * ! This link is invalid (requires audioRecordingId)
+   */
   public get playUrl(): string {
-    return listenMenuItem.uri();
+    // TODO This link is wrong
+    // /listen/[audioRecording.id]?start=0&end=30
+    return listenRecordingMenuItem.route.toRouterLink();
   }
 
   public get visualizeUrl(): string {
+    // TODO This link is wrong
+    // /visualize?siteId=[siteId]
     return exploreAudioMenuItem.uri({ siteId: this.id });
   }
 

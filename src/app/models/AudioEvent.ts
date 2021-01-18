@@ -1,6 +1,7 @@
 import { Injector } from "@angular/core";
 import { AUDIO_RECORDING, TAG } from "@baw-api/ServiceTokens";
-import { libraryMenuItem, listenMenuItem } from "@helpers/page/externalMenus";
+import { listenMenuItem } from "@components/listen/listen.menus";
+import { libraryMenuItem } from "@helpers/page/externalMenus";
 import {
   DateTimeTimezone,
   HasAllUsers,
@@ -83,7 +84,8 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   }
 
   public get listenViewUrl(): string {
-    return listenMenuItem.uri([]);
+    // TODO This link is wrong
+    return listenMenuItem.route.toRouterLink();
   }
 
   public get tagIds(): Ids {

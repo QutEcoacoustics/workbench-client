@@ -1,10 +1,10 @@
 import { Injector } from "@angular/core";
-import { tagMenuItem } from "@helpers/page/externalMenus";
+import { libraryMenuItem } from "@helpers/page/externalMenus";
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
-  Id,
   Hash,
+  Id,
 } from "../interfaces/apiInterfaces";
 import { AbstractData } from "./AbstractData";
 import { AbstractModel } from "./AbstractModel";
@@ -58,9 +58,11 @@ export class Tag extends AbstractModel implements ITag {
     super(tag, injector);
   }
 
+  // TODO Link to library reference
   public get viewUrl(): string {
-    console.warn("Tag viewUrl method not implemented");
-    return tagMenuItem.uri();
+    console.warn("Tag viewLibraryUrl method not implemented");
+    // /library?reference=all&tagsPartial=[tag.text]
+    return libraryMenuItem.uri({ reference: "all", tagsPartial: this.text });
   }
 
   public toString(): string {
