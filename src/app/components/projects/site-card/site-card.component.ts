@@ -41,6 +41,7 @@ import { Site } from "@models/Site";
             </a>
           </li>
           <li *ngIf="site" class="nav-item">
+            <!-- TODO This link is broken -->
             <a id="play" class="nav-link" [routerLink]="site.playUrl">
               <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
               Play

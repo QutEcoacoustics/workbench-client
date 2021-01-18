@@ -5,6 +5,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BawApiModule } from "@baw-api/baw-api.module";
 import { AudioAnalysisModule } from "@components/audio-analysis/audio-analysis.module";
+import { LibraryModule } from "@components/library/library.module";
 import { RegionsModule } from "@components/regions/regions.module";
 import { GuardModule } from "@guards/guards.module";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
@@ -51,6 +52,7 @@ export const appImports = [
   AdminModule,
   AudioAnalysisModule,
   DataRequestModule,
+  LibraryModule,
   ListenModule,
   MyAccountModule,
   PointsModule,

@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { SecurityService } from "@baw-api/security/security.service";
+import { libraryMenuItem } from "@components/library/library.menus";
 import { listenMenuItem } from "@components/listen/listen.menus";
 import {
   HeaderDropDownConvertedLink,
@@ -70,6 +71,7 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
     this.headers = List([
       projectsMenuItem,
       listenMenuItem,
+      libraryMenuItem,
       ...this.retrieveHeaderLinks(),
       contactUsMenuItem,
     ]);

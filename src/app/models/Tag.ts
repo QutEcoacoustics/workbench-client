@@ -1,5 +1,5 @@
 import { Injector } from "@angular/core";
-import { libraryMenuItem } from "@helpers/page/externalMenus";
+import { libraryMenuItem } from "@components/library/library.menus";
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
@@ -62,7 +62,11 @@ export class Tag extends AbstractModel implements ITag {
   public get viewUrl(): string {
     console.warn("Tag viewLibraryUrl method not implemented");
     // /library?reference=all&tagsPartial=[tag.text]
-    return libraryMenuItem.uri({ reference: "all", tagsPartial: this.text });
+    // TODO This link is not working
+    return libraryMenuItem.route.toRouterLink({
+      reference: "all",
+      tagsPartial: this.text,
+    });
   }
 
   public toString(): string {
