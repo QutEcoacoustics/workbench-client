@@ -79,7 +79,8 @@
         <!-- For each annotation and tagging -->
         <li *ngFor="let tagging of taggings" class="nav-item">
           <!-- Annotation link -->
-          <a class="nav-link" [routerLink]="tagging.viewUrl">
+          <!-- TODO Fix this broken link -->
+          <a class="nav-link" [routerLink]="tagging.tag.viewUrl">
             <!-- Loading when unresolved -->
             <ng-container
               *ngIf="

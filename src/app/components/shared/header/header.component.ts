@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { SecurityService } from "@baw-api/security/security.service";
+import { listenMenuItem } from "@components/listen/listen.menus";
 import {
   HeaderDropDownConvertedLink,
   isHeaderLink,
@@ -68,6 +69,7 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
     this.headers = List([
       projectsMenuItem,
+      listenMenuItem,
       ...this.retrieveHeaderLinks(),
       contactUsMenuItem,
     ]);

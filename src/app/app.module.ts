@@ -21,6 +21,7 @@ import { AdminModule } from "./components/admin/admin.module";
 import { DataRequestModule } from "./components/data-request/data-request.module";
 import { ErrorModule } from "./components/error/error.module";
 import { HomeModule } from "./components/home/home.module";
+import { ListenModule } from "./components/listen/listen.module";
 import {
   MyAccountModule,
   ProfileModule,
@@ -50,6 +51,7 @@ export const appImports = [
   AdminModule,
   AudioAnalysisModule,
   DataRequestModule,
+  ListenModule,
   MyAccountModule,
   PointsModule,
   ProfileModule,
