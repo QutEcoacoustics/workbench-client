@@ -125,15 +125,6 @@ export class Site extends AbstractModel implements ISite {
     return this.getViewUrl(this.projectIds.values().next().value);
   }
 
-  /**
-   * ! This link is invalid (requires audioRecordingId)
-   */
-  public get playUrl(): string {
-    // TODO This link is wrong
-    // /listen/[audioRecording.id]?start=0&end=30
-    return listenRecordingMenuItem.route.toRouterLink();
-  }
-
   public get visualizeUrl(): string {
     // TODO This link is wrong
     // /visualize?siteId=[siteId]

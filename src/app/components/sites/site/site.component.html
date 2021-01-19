@@ -37,8 +37,8 @@
       <!-- Description -->
       <p id="audio_recording_description">
         This site contains recordings from
-        {{ humanizeDate(recordingsStart) }} to
-        {{ humanizeDate(recordingsEnd) }}.
+        {{ humanizeDate(oldestRecording) }} to
+        {{ humanizeDate(newestRecording) }}.
       </p>
 
       <!-- TODO Statistics about recordings -->
@@ -53,10 +53,19 @@
       <!-- Play and Visualize links -->
       <ul class="nav nav-pills mb-0">
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="site.playUrl">
+          <a
+            *ngIf="oldestRecording"
+            class="nav-link"
+            [routerLink]="oldestRecording?.viewUrl"
+          >
             <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
             Play
           </a>
+          <!-- Loading while retrieving recording -->
+          <baw-loading
+            *ngIf="oldestRecording === undefined"
+            size="sm"
+          ></baw-loading>
         </li>
         <li class="nav-item">
           <a class="nav-link" [routerLink]="site.visualizeUrl">

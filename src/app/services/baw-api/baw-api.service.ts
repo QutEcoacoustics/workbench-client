@@ -281,16 +281,52 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param filters Base Filters
    * @param key Foreign key
    * @param model Foreign key value (if undefined, returns base filters)
+   * @param comparison Comparison to be performed
    */
   protected filterByForeignKey(
     filters: Filters<Model>,
-    key: KeysOfType<Model, number | string>,
-    model: AbstractModel | string | number
+    key: KeysOfType<Model, number | string | Set<string> | Set<number>>,
+    model: AbstractModel | string | number,
+    comparison: keyof (Comparisons & Subsets) = "equal"
   ): Filters<Model> {
+    return this.customFilterByForeignKey(filters, key, model, comparison);
+  }
+
+  /**
+   * Modify a base filter to add a foreign key condition
+   *
+   * @param filters Base Filters
+   * @param key Foreign key
+   * @param models Foreign key values (if undefined, returns base filters)
+   * @param comparison Comparison to be performed
+   */
+  protected filterByForeignKeys(
+    filters: Filters<Model>,
+    key: KeysOfType<Model, number | string | Set<string> | Set<number>>,
+    models: string[] | number[],
+    comparison: keyof Subsets = "contain"
+  ) {
+    return this.customFilterByForeignKey(filters, key, models, comparison);
+  }
+
+  /**
+   * Modify a base filter to add a foreign key condition
+   *
+   * @param filters Base Filters
+   * @param key Foreign key
+   * @param models Foreign key value (if undefined, returns base filters)
+   * @param comparison Comparison to be performed
+   */
+  private customFilterByForeignKey(
+    filters: Filters<Model>,
+    key: KeysOfType<Model, number | string | Set<string> | Set<number>>,
+    models: AbstractModel | string | number | string[] | number[],
+    comparison: keyof (Comparisons & Subsets)
+  ) {
     const { filter, ...meta } = filters;
 
     // Only return if model is undefined, not null (which is a valid input)
-    if (model === undefined) {
+    if (models === undefined) {
       return filters;
     }
 
@@ -298,7 +334,9 @@ export abstract class BawApiService<Model extends AbstractModel> {
       ...meta,
       filter: {
         ...filter,
-        [key]: { eq: model instanceof AbstractModel ? model.id : model },
+        [key]: {
+          [comparison]: models instanceof AbstractModel ? models.id : models,
+        },
       },
     };
   }

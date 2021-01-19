@@ -27,8 +27,8 @@ class SiteComponent extends PageComponent implements OnInit {
   @Input() public site: Site;
   public defaultDescription = "<i>No description found</i>";
   public recordings: AudioRecording[];
-  public recordingsEnd: DateTime;
-  public recordingsStart: DateTime;
+  public oldestRecording: AudioRecording;
+  public newestRecording: AudioRecording;
   public marker: List<MapMarkerOption>;
   public taggings: Tagging[];
 
@@ -47,8 +47,10 @@ class SiteComponent extends PageComponent implements OnInit {
     this.getOldestDates();
   }
 
-  public humanizeDate(date: DateTime) {
-    return date ? date.toLocaleString(DateTime.DATETIME_FULL) : "(loading)";
+  public humanizeDate(audioRecording: AudioRecording) {
+    return audioRecording
+      ? audioRecording.recordedDate.toLocaleString(DateTime.DATETIME_FULL)
+      : "(loading)";
   }
 
   private getAnnotations() {
@@ -81,7 +83,7 @@ class SiteComponent extends PageComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (recordings) => {
-          this.recordingsEnd = recordings[0]?.recordedDate;
+          this.newestRecording = recordings[0];
           this.recordings = recordings;
         },
         (err) => console.log({ err })
@@ -92,7 +94,8 @@ class SiteComponent extends PageComponent implements OnInit {
     this.filterByDates("asc", { paging: { items: 1 } })
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (recordings) => (this.recordingsStart = recordings[0]?.recordedDate),
+        (recordings) =>
+          (this.oldestRecording = recordings.length > 0 ? recordings[0] : null),
         (err) => console.log({ err })
       );
   }
