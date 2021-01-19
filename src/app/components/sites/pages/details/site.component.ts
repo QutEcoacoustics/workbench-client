@@ -4,7 +4,7 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { projectMenuItem } from "@components/projects/projects.menus";
-import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
+import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
@@ -22,7 +22,7 @@ import {
 } from "../../sites.menus";
 
 export const siteMenuItemActions = [
-  exploreAudioMenuItem,
+  visualizeMenuItem,
   siteAnnotationsMenuItem,
   editSiteMenuItem,
   siteHarvestMenuItem,

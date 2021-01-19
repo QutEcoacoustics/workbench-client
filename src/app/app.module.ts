@@ -7,6 +7,7 @@ import { BawApiModule } from "@baw-api/baw-api.module";
 import { AudioAnalysisModule } from "@components/audio-analysis/audio-analysis.module";
 import { LibraryModule } from "@components/library/library.module";
 import { RegionsModule } from "@components/regions/regions.module";
+import { VisualizeModule } from "@components/visualize/visualize.module";
 import { GuardModule } from "@guards/guards.module";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -64,6 +65,7 @@ export const appImports = [
   SendAudioModule,
   SitesModule,
   StatisticsModule,
+  VisualizeModule,
   // these last two must be last!
   HomeModule,
   ErrorModule,
