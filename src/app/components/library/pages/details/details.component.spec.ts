@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AnnotationComponent } from "./details.component";
 
-describe("AnnotationComponent", () => {
+xdescribe("AnnotationComponent", () => {
   let component: AnnotationComponent;
   let fixture: ComponentFixture<AnnotationComponent>;
 

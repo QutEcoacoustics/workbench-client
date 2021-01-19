@@ -1,6 +1,9 @@
 import { Injector } from "@angular/core";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import { listenMenuItem } from "@components/listen/listen.menus";
+import {
+  listenMenuItem,
+  listenRecordingMenuItem,
+} from "@components/listen/listen.menus";
 import { Duration } from "luxon";
 import {
   DateTimeTimezone,
@@ -87,9 +90,9 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   }
 
   public get viewUrl(): string {
-    console.warn("AudioRecording viewUrl not implement.");
-    // TODO This link is wrong
-    return listenMenuItem.route.toRouterLink();
+    return listenRecordingMenuItem.route.toRouterLink({
+      audioRecordingId: this.id,
+    });
   }
 }
 
