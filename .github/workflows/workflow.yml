@@ -22,12 +22,9 @@ jobs:
           node-version: 12.x
 
       - name: Create environment
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: ./buildConfig/environmentSettings.json
-          write-mode: overwrite
-          contents: |
-            {
+        run: |
+          "
+          {
               "environments": {
                 "production": {
                   "apiRoot": "https://staging.ecosounds.org",
@@ -55,6 +52,10 @@ jobs:
                 }
               }
             }
+          " > buildConfig/environmentSettings.json
+
+      - name: Read environment
+        run: cat buildConfig/environmentSettings.json
 
       - name: NPM install
         run: npm install
@@ -65,11 +66,12 @@ jobs:
       - name: Publish build files
         uses: actions/upload-artifact@v2
         with:
-          path: ./bin/
+          path: bin/
           name: baw-client
 
   test:
     name: Unit Tests (${{ matrix.os }})
+    needs: baw-client
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -83,10 +85,18 @@ jobs:
       - name: Checkout Workbench Client
         uses: actions/checkout@v2
 
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: baw-client
+
       - name: Install Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
+
+      - name: Copy baw-client to assets
+        run: cp baw-client src/assets/old-client
 
       - name: NPM install
         run: npm install
