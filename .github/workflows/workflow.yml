@@ -22,12 +22,8 @@ jobs:
           node-version: 12.x
 
       - name: Create environment
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: ./buildConfig/environmentSettings.json
-          write-mode: overwrite
-          contents: |
-            {
+        run: |
+          echo '{
               "environments": {
                 "production": {
                   "apiRoot": "https://staging.ecosounds.org",
@@ -54,7 +50,7 @@ jobs:
                   }
                 }
               }
-            }
+            }' > ./buildConfig/environmentSettings.json
 
       - name: Read environment
         run: cat buildConfig/environmentSettings.json
