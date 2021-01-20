@@ -9,6 +9,37 @@ jobs:
     name: Build Baw Client
     runs-on: ubuntu-latest
 
+    env:
+      environment: |
+        "{
+          "environments": {
+            "production": {
+              "apiRoot": "https://staging.ecosounds.org",
+              "siteRoot": "http://development.ecosounds.org:4200",
+              "siteDir": "/assets/old-client/",
+              "ga": { "trackingId": "" }
+            }
+          },
+          "values": {
+            "keys": { "googleMaps": "" },
+            "brand": {
+              "name": "<<brand name here>>",
+              "title": "<<brand name here>> | Acoustic Workbench"
+            },
+            "content": {
+              "research": {
+                "header_title": "Custom Menu",
+                "items": [
+                  {
+                    "innerText": "Example",
+                    "url": "http://www.EXAMPLE.org/awebpage"
+                  }
+                ]
+              }
+            }
+          }
+        }"
+
     steps:
       - name: Checkout Baw Client
         uses: actions/checkout@v2
@@ -22,37 +53,7 @@ jobs:
           node-version: 12.x
 
       - name: Create environment
-        run: |
-          echo "
-          {
-              "environments": {
-                "production": {
-                  "apiRoot": "https://staging.ecosounds.org",
-                  "siteRoot": "http://development.ecosounds.org:4200",
-                  "siteDir": "/assets/old-client/",
-                  "ga": { "trackingId": "" }
-                }
-              },
-              "values": {
-                "keys": { "googleMaps": "" },
-                "brand": {
-                  "name": "<<brand name here>>",
-                  "title": "<<brand name here>> | Acoustic Workbench"
-                },
-                "content": {
-                  "research": {
-                    "header_title": "Custom Menu",
-                    "items": [
-                      {
-                        "innerText": "Example",
-                        "url": "http://www.EXAMPLE.org/awebpage"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          " > buildConfig/environmentSettings.json
+        run: echo "${{environment}}" > buildConfig/environmentSettings.json
 
       - name: Read environment
         run: cat buildConfig/environmentSettings.json
