@@ -22,7 +22,7 @@ jobs:
           node-version: 12.x
 
       - name: Create environment
-        uses: DamianReeves/write-file-action
+        uses: DamianReeves/write-file-action@v1.0
         with:
           path: ./buildConfig/environmentSettings.json
           write-mode: overwrite
