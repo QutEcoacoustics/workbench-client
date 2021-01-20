@@ -1,13 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { Filters } from "@baw-api/baw-api.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
+import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -113,7 +108,11 @@ export class SiteCardComponent extends withUnsubscribe() implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (recordings) =>
-          (this.recording = recordings.length > 0 ? recordings[0] : null)
+          (this.recording = recordings.length > 0 ? recordings[0] : null),
+        (err: ApiErrorDetails) => {
+          console.error(err);
+          this.recording = null;
+        }
       );
   }
 }
