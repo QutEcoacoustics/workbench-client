@@ -23,7 +23,7 @@ jobs:
 
       - name: Create environment
         run: |
-          "
+          echo "
           {
               "environments": {
                 "production": {
