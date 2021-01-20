@@ -287,7 +287,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
     filters: Filters<Model>,
     key: KeysOfType<Model, number | string | Set<string> | Set<number>>,
     model: AbstractModel | string | number,
-    comparison: keyof (Comparisons & Subsets) = "equal"
+    comparison: keyof (Comparisons & Subsets) = "eq"
   ): Filters<Model> {
     return this.customFilterByForeignKey(filters, key, model, comparison);
   }

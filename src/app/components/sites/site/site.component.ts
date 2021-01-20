@@ -3,11 +3,11 @@ import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.ser
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { Tagging } from "@models/Tagging";
 import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
 import { DateTime } from "luxon";
@@ -30,7 +30,7 @@ class SiteComponent extends PageComponent implements OnInit {
   public oldestRecording: AudioRecording;
   public newestRecording: AudioRecording;
   public marker: List<MapMarkerOption>;
-  public taggings: Tagging[];
+  public events: AudioEvent[];
 
   public constructor(
     private audioEventsApi: ShallowAudioEventsService,
@@ -48,9 +48,13 @@ class SiteComponent extends PageComponent implements OnInit {
   }
 
   public humanizeDate(audioRecording: AudioRecording) {
-    return audioRecording
-      ? audioRecording.recordedDate.toLocaleString(DateTime.DATETIME_FULL)
-      : "(loading)";
+    if (audioRecording) {
+      return audioRecording.recordedDate.toLocaleString(DateTime.DATETIME_FULL);
+    } else if (audioRecording === null) {
+      return "unknown";
+    } else {
+      return "(loading)";
+    }
   }
 
   private getAnnotations() {
@@ -64,12 +68,19 @@ class SiteComponent extends PageComponent implements OnInit {
         (events) => {
           // Limit the selection of audio events by tagging count
           const maxTags = 10;
-          this.taggings = [];
+          let numTags = 0;
+          this.events = [];
 
           for (const event of events) {
-            this.taggings.push(...event.taggings);
+            // Don't insert events with no tags
+            if (event.taggings.length === 0) {
+              continue;
+            }
 
-            if (this.taggings.length > maxTags) {
+            this.events.push(event);
+            numTags += event.taggings.length;
+
+            if (numTags > maxTags) {
               return;
             }
           }
@@ -86,7 +97,11 @@ class SiteComponent extends PageComponent implements OnInit {
           this.newestRecording = recordings[0];
           this.recordings = recordings;
         },
-        (err) => console.log({ err })
+        (err) => {
+          console.log({ err });
+          this.newestRecording = null;
+          this.recordings = null;
+        }
       );
   }
 
@@ -96,7 +111,10 @@ class SiteComponent extends PageComponent implements OnInit {
       .subscribe(
         (recordings) =>
           (this.oldestRecording = recordings.length > 0 ? recordings[0] : null),
-        (err) => console.log({ err })
+        (err) => {
+          console.log({ err });
+          this.oldestRecording = null;
+        }
       );
   }
 

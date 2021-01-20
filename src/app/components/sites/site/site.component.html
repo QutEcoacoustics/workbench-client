@@ -25,17 +25,22 @@
   <!-- Details in left column -->
   <div class="col-sm-6">
     <!-- Loading animation -->
-    <baw-loading *ngIf="!recordings"></baw-loading>
+    <baw-loading *ngIf="!recordings" id="recordings-loader"></baw-loading>
+
+    <!-- Handle recordings error -->
+    <p *ngIf="recordings === null" id="recordings-error-description">
+      Unable to load site recordings.
+    </p>
 
     <!-- Handle no recordings -->
-    <p *ngIf="recordings?.length === 0">
+    <p *ngIf="recordings?.length === 0" id="recordings-placeholder-description">
       This site does not contain any audio recordings.
     </p>
 
     <!-- Handle recordings-->
     <ng-container *ngIf="recordings?.length > 0">
       <!-- Description -->
-      <p id="audio_recording_description">
+      <p id="recording-dates">
         This site contains recordings from
         {{ humanizeDate(oldestRecording) }} to
         {{ humanizeDate(newestRecording) }}.
@@ -64,6 +69,7 @@
           <!-- Loading while retrieving recording -->
           <baw-loading
             *ngIf="oldestRecording === undefined"
+            id="play-loader"
             size="sm"
           ></baw-loading>
         </li>
@@ -80,34 +86,35 @@
 
       <ul class="nav nav-pills">
         <!-- Loading animation -->
-        <baw-loading *ngIf="!taggings"></baw-loading>
+        <baw-loading *ngIf="!events" id="annotation-loader"></baw-loading>
 
         <!-- Handle no annotations -->
-        <p *ngIf="taggings?.length === 0">No recent annotations found</p>
+        <p *ngIf="events?.length === 0">No recent annotations found</p>
 
         <!-- For each annotation and tagging -->
-        <li *ngFor="let tagging of taggings" class="nav-item">
-          <!-- Annotation link -->
-          <!-- TODO Fix this broken link -->
-          <a class="nav-link" [routerLink]="tagging.tag.viewUrl">
-            <!-- Loading when unresolved -->
-            <ng-container
-              *ngIf="
-                (tagging.tag | isUnresolved) ||
-                  (tagging.tag?.creator | isUnresolved);
-                else loaded
-              "
-            >
-              <baw-loading size="sm"></baw-loading>
-            </ng-container>
+        <ng-container *ngFor="let event of events">
+          <li *ngFor="let tagging of event.taggings" class="nav-item">
+            <!-- Annotation link -->
+            <a class="nav-link" [routerLink]="event.listenViewUrl">
+              <!-- Loading when unresolved -->
+              <ng-container
+                *ngIf="
+                  (tagging.tag | isUnresolved) ||
+                    (tagging.tag?.creator | isUnresolved);
+                  else loaded
+                "
+              >
+                <baw-loading id="tag-loader" size="sm"></baw-loading>
+              </ng-container>
 
-            <!-- Annotation details -->
-            <ng-template #loaded>
-              "{{ tagging.tag?.text }}" by
-              {{ tagging.tag?.creator?.userName }}
-            </ng-template>
-          </a>
-        </li>
+              <!-- Annotation details -->
+              <ng-template #loaded>
+                "{{ tagging.tag?.text }}" by
+                {{ tagging.tag?.creator?.userName }}
+              </ng-template>
+            </a>
+          </li>
+        </ng-container>
       </ul>
     </ng-container>
   </div>
