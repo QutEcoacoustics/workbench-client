@@ -43,7 +43,7 @@
     "@fortawesome/angular-fontawesome": "^0.8.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
-    "@ng-bootstrap/ng-bootstrap": "^9.0.0",
+    "@ng-bootstrap/ng-bootstrap": "^9.0.1",
     "@nguniversal/express-engine": "^11.0.0",
     "@ngx-formly/bootstrap": "^5.10.6",
     "@ngx-formly/core": "^5.10.6",
