@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
 import {
   listenCategory,
   listenRecordingMenuItem,
@@ -14,6 +15,7 @@ class ListenRecordingComponent extends PageComponent {}
 ListenRecordingComponent.linkComponentToPageInfo({
   category: listenCategory,
   fullscreen: true,
+  resolvers: { audioRecording: audioRecordingResolvers.show },
 }).andMenuRoute(listenRecordingMenuItem);
 
 export { ListenRecordingComponent };

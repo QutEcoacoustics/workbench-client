@@ -1,4 +1,6 @@
 import { Component } from "@angular/core";
+import { audioEventResolvers } from "@baw-api/audio-event/audio-events.service";
+import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
 import {
   annotationMenuItem,
   annotationsCategory,
@@ -13,6 +15,10 @@ class AnnotationComponent extends PageComponent {}
 
 AnnotationComponent.linkComponentToPageInfo({
   category: annotationsCategory,
+  resolvers: {
+    audioRecording: audioRecordingResolvers.show,
+    audioEvent: audioEventResolvers.show,
+  },
 }).andMenuRoute(annotationMenuItem);
 
 export { AnnotationComponent };
