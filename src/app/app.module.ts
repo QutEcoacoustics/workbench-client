@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientJsonpModule, HttpClientModule } from "@angular/common/http";
 import { DoBootstrap, NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -69,6 +69,7 @@ export const appImports = [
     BrowserModule.withServerTransition({ appId: "workbench-client" }),
     AppRoutingModule,
     HttpClientModule,
+    HttpClientJsonpModule,
     AppConfigModule,
     BawApiModule,
     GuardModule,

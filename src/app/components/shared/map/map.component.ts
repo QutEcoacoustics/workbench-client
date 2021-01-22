@@ -4,11 +4,13 @@ import {
   Input,
   OnChanges,
   QueryList,
+  SimpleChanges,
   ViewChild,
   ViewChildren,
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { MapService } from "@services/map/map.service";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 
@@ -19,10 +21,11 @@ import { takeUntil } from "rxjs/operators";
 @Component({
   selector: "baw-map",
   template: `
-    <ng-container *ngIf="hasMarkers; else placeholderMap">
+    <!-- Display Maps -->
+    <ng-container *ngIf="hasMarkers && mapLoaded">
       <google-map height="100%" width="100%" [options]="mapOptions">
         <map-marker
-          *ngFor="let marker of filteredMarkers"
+          *ngFor="let marker of validMarkers"
           [options]="markerOptions"
           [position]="marker.position"
         >
@@ -30,9 +33,21 @@ import { takeUntil } from "rxjs/operators";
         <map-info-window>{{ infoContent }}</map-info-window>
       </google-map>
     </ng-container>
-    <ng-template #placeholderMap>
-      <div class="map-placeholder"><p>No locations specified</p></div>
+
+    <!-- Map Failure -->
+    <ng-container *ngIf="hasMarkers && mapFailure">
+      <div class="map-placeholder"><p>Failure to load map</p></div>
+    </ng-container>
+
+    <!-- Map Loading -->
+    <ng-template *ngIf="hasMarkers && !mapFailure && !mapLoaded">
+      <div class="map-placeholder"><baw-loading></baw-loading></div>
     </ng-template>
+
+    <!-- No Map Markers -->
+    <ng-container *ngIf="!hasMarkers">
+      <div class="map-placeholder"><p>No locations specified</p></div>
+    </ng-container>
   `,
   styleUrls: ["./map.component.scss"],
 })
@@ -42,7 +57,9 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
 
   @Input() public markers: List<MapMarkerOption>;
-  public filteredMarkers: MapMarkerOption[];
+  public mapLoaded: boolean;
+  public mapFailure: boolean;
+  public validMarkers: List<MapMarkerOption>;
   public hasMarkers = false;
   public infoContent = "";
 
@@ -50,36 +67,54 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public mapOptions: google.maps.MapOptions = { mapTypeId: "satellite" };
   public markerOptions: google.maps.MarkerOptions = {};
 
-  public constructor(private ref: ChangeDetectorRef) {
+  public constructor(
+    public mapService: MapService,
+    private ref: ChangeDetectorRef
+  ) {
     super();
   }
 
-  public ngOnChanges() {
-    this.hasMarkers = false;
-    this.filteredMarkers = [];
-    // Calculate pin boundaries so that map can be auto-focused properly
-    const bounds = new google.maps.LatLngBounds();
-    this.markers?.forEach((marker) => {
-      if (isMarkerValid(marker)) {
-        this.hasMarkers = true;
-        this.filteredMarkers.push(marker);
-        bounds.extend(marker.position);
-      }
-    });
+  public ngOnChanges(changes: SimpleChanges) {
+    if (changes.markers.isFirstChange()) {
+      this.mapService.isMapLoaded$
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe((state) => {
+          if (state === MapService.mapState.success) {
+            this.mapLoaded = true;
+          } else if (state === MapService.mapState.failure) {
+            this.mapFailure = true;
+          }
+        });
+    }
+
+    this.validMarkers = (this.markers ??= List([])).filter((marker) =>
+      this.mapService.isMarkerValid(marker)
+    );
+    this.hasMarkers = this.validMarkers.count() > 0;
 
     if (!this.hasMarkers) {
       return;
     }
 
+    if (this.mapLoaded) {
+      this.setMarkers();
+    }
+  }
+
+  private setMarkers() {
+    // Calculate pin boundaries so that map can be auto-focused properly
+    const bounds = new google.maps.LatLngBounds();
+    this.validMarkers.forEach((marker) => bounds.extend(marker.position));
+
     // Detect changes required so map loads
     this.ref.detectChanges();
-    this.map.fitBounds(bounds);
-    this.map.panToBounds(bounds);
+    this.map?.fitBounds(bounds);
+    this.map?.panToBounds(bounds);
     // Setup info windows for each marker
     this.mapMarkers?.forEach((marker, index) => {
       marker.mapMouseover.pipe(takeUntil(this.unsubscribe)).subscribe(
         () => {
-          this.infoContent = this.filteredMarkers[index].label as string;
+          this.infoContent = this.validMarkers.get(index).label as string;
           this.info.open(marker);
         },
         () => console.error("Failed to create info content for map marker")

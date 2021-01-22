@@ -1,6 +1,5 @@
 import { enableProdMode } from "@angular/core";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
-import { embedGoogleMaps } from "@helpers/embedGoogleMaps/embedGoogleMaps";
 import { AppModule } from "./app/app.module";
 import {
   API_CONFIG,
@@ -19,10 +18,7 @@ const apiConfigPromise = fetchRetry<Partial<Configuration>>(
   1000,
   5
 )
-  .then(async (data) => {
-    await embedGoogleMaps(data?.environment?.keys?.googleMaps);
-    return new Configuration(data);
-  })
+  .then((data) => new Configuration(data))
   .catch((err: any) => {
     console.error("API_CONFIG Failed to load configuration file: ", err);
     return new Configuration(undefined);
