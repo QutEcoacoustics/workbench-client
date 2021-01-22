@@ -10,7 +10,7 @@ import {
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { MapService } from "@services/map/map.service";
+import { MapMarkerOption, MapService } from "@services/map/map.service";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 
@@ -122,40 +122,3 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     });
   }
 }
-
-/**
- * Validate a marker
- *
- * @param marker Marker to validate
- */
-function isMarkerValid(marker: MapMarkerOption): boolean {
-  return (
-    typeof marker?.position?.lat === "number" &&
-    typeof marker?.position?.lng === "number"
-  );
-}
-
-/**
- * Handles sanitization of map markers so change detection will run properly
- */
-export function sanitizeMapMarkers(
-  markers: MapMarkerOption | MapMarkerOption[]
-): List<MapMarkerOption> {
-  const output: MapMarkerOption[] = [];
-
-  if (markers instanceof Array) {
-    markers.forEach((marker) => {
-      if (isMarkerValid(marker)) {
-        output.push(marker);
-      }
-    });
-  } else {
-    if (isMarkerValid(markers)) {
-      output.push(markers);
-    }
-  }
-
-  return List(output);
-}
-
-export type MapMarkerOption = google.maps.ReadonlyMarkerOptions;

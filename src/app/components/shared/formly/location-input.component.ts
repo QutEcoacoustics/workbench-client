@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { FieldType } from "@ngx-formly/core";
-import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
+import { MapMarkerOption, MapService } from "@services/map/map.service";
 import { List } from "immutable";
 
 /**
@@ -69,6 +69,10 @@ export class LocationInputComponent extends FieldType implements OnInit {
   public longitudeError: boolean;
   public marker: List<MapMarkerOption>;
 
+  public constructor(private map: MapService) {
+    super();
+  }
+
   public ngOnInit() {
     this.latitude = this.model["latitude"];
     this.longitude = this.model["longitude"];
@@ -104,12 +108,14 @@ export class LocationInputComponent extends FieldType implements OnInit {
    * @param longitude Longitude
    */
   private setMarker(latitude: number, longitude: number) {
-    this.marker = sanitizeMapMarkers(
+    this.marker = this.map.sanitizeMarkers(
       isInstantiated(latitude) && isInstantiated(longitude)
-        ? {
-            position: { lat: latitude, lng: longitude },
-            label: `Position (${latitude},${longitude})`,
-          }
+        ? [
+            {
+              position: { lat: latitude, lng: longitude },
+              label: `Position (${latitude},${longitude})`,
+            },
+          ]
         : null
     );
   }

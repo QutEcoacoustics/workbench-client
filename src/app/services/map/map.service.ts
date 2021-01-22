@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Option } from "@helpers/advancedTypes";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
@@ -20,6 +21,7 @@ enum MapState {
 @Injectable({ providedIn: "root" })
 export class MapService extends withUnsubscribe() {
   public static mapState = MapState;
+  private static mapUrl = "https://maps.googleapis.com/maps/api/js";
   public isMapLoaded$: BehaviorSubject<MapState>;
 
   public constructor(private http: HttpClient, private config: ConfigService) {
@@ -34,35 +36,18 @@ export class MapService extends withUnsubscribe() {
   public isMarkerValid(marker: MapMarkerOption): boolean {
     return (
       typeof marker?.position?.lat === "number" &&
-      typeof marker?.position?.lng === "number"
+      typeof marker.position.lng === "number"
     );
   }
 
-  public sanitizeMapMarkers(
-    markers: MapMarkerOption | MapMarkerOption[]
-  ): List<MapMarkerOption> {
-    const output: MapMarkerOption[] = [];
-
-    if (markers instanceof Array) {
-      markers.forEach((marker) => {
-        if (this.isMarkerValid(marker)) {
-          output.push(marker);
-        }
-      });
-    } else {
-      if (this.isMarkerValid(markers)) {
-        output.push(markers);
-      }
-    }
-
-    return List(output);
+  public sanitizeMarkers(markers: MapMarkerOption[]): List<MapMarkerOption> {
+    return List((markers ?? []).filter((marker) => this.isMarkerValid(marker)));
   }
 
   private loadMap() {
-    const mapsKey = this.config.environment.keys.googleMaps;
-    let mapsUrl = "https://maps.googleapis.com/maps/api/js";
-    if (mapsKey) {
-      mapsUrl += "?key=" + mapsKey;
+    let mapsUrl = MapService.mapUrl;
+    if (this.apiKey) {
+      mapsUrl += "?key=" + this.apiKey;
     }
 
     this.isMapLoaded$ = new BehaviorSubject(MapState.loading);
@@ -73,6 +58,10 @@ export class MapService extends withUnsubscribe() {
         () => this.isMapLoaded$.next(MapState.success),
         () => this.isMapLoaded$.next(MapState.failure)
       );
+  }
+
+  private get apiKey(): Option<string> {
+    return this.config.environment.keys.googleMaps;
   }
 }
 

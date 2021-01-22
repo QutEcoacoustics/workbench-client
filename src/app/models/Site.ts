@@ -8,7 +8,7 @@ import {
   listenMenuItem,
 } from "@helpers/page/externalMenus";
 import { assetRoot } from "@services/config/config.service";
-import { MapMarkerOption } from "@shared/map/map.component";
+import { MapMarkerOption } from "@services/map/map.service";
 import { siteMenuItem } from "../components/sites/sites.menus";
 import {
   AccessLevel,
