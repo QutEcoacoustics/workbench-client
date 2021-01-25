@@ -91,6 +91,11 @@ export interface MenuItem extends LabelAndIcon {
    */
   indentation?: number;
   /**
+   * Force highlighting of this link, this is similar to setting the links `active`
+   * property to true.
+   */
+  highlight?: boolean;
+  /**
    * Tracks whether this link, or one of its children is currently actively being displayed.
    * It allows the link to skip its predicate temporarily.
    */
@@ -151,7 +156,7 @@ export function menuRoute<T extends Omit<MenuRoute, "kind">>(
     kind: "MenuRoute" as "MenuRoute",
     active: false,
     indentation: item.parent ? item.parent.indentation + 1 : 0,
-    order: item.parent ? item.parent.order : item.order,
+    order: item.parent?.order ?? item.order,
   });
 }
 

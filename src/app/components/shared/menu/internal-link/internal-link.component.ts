@@ -15,11 +15,16 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
 @Component({
   selector: "baw-menu-internal-link",
   template: `
-    <span [placement]="placement" [ngbTooltip]="tooltip">
+    <span
+      [placement]="placement"
+      [ngbTooltip]="tooltip"
+      [class.disabled]="link.disabled"
+    >
       <a
         class="nav-link"
-        [ngClass]="{ active: active, disabled: disabled }"
         [strongRoute]="link.route"
+        [class.active]="active"
+        [class.disabled]="link.disabled"
       >
         <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
         <span id="label">{{ link.label }}</span>
@@ -37,7 +42,6 @@ export class MenuInternalLinkComponent implements OnChanges {
   @Input() public placement: Placement;
   @Input() public tooltip: string;
   public active: boolean;
-  public disabled: boolean;
 
   public constructor(
     private activatedRoute: ActivatedRoute,
@@ -48,8 +52,9 @@ export class MenuInternalLinkComponent implements OnChanges {
     const routeParams = this.activatedRoute.snapshot.params;
     const currentRoute = this.link.route.toRouterLink(routeParams);
 
-    this.disabled = this.link.disabled;
     this.active =
-      currentRoute === this.location.path().split("?")[0] || this.disabled;
+      this.link.active ||
+      this.link.highlight ||
+      currentRoute === this.location.path().split("?")[0];
   }
 }

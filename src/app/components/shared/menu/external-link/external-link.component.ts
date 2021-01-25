@@ -15,8 +15,12 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
 @Component({
   selector: "baw-menu-external-link",
   template: `
-    <span [placement]="placement" [ngbTooltip]="tooltip">
-      <a class="nav-link" [ngClass]="{ disabled: link.disabled }" [href]="href">
+    <span
+      [placement]="placement"
+      [ngbTooltip]="tooltip"
+      [class.disabled]="link.disabled"
+    >
+      <a class="nav-link" [href]="href" [class.disabled]="link.disabled">
         <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
         <span id="label">{{ link.label }}</span>
         <span class="d-none" [id]="id">{{ tooltip }}</span>

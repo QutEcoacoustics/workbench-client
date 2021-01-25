@@ -7,5 +7,6 @@ export const pageNotFoundMenuItem = menuRoute({
   label: "Page Not Found",
   route: pageNotFoundRoute,
   disabled: true,
+  highlight: true,
   tooltip: () => "The requested page was not found",
 });
