@@ -9,7 +9,7 @@ import { generateSite } from "@test/fakes/Site";
 import { List } from "immutable";
 import { MapComponent } from "./map.component";
 
-describe("MapComponent", () => {
+xdescribe("MapComponent", () => {
   let spectator: Spectator<MapComponent>;
   const createComponent = createComponentFactory({
     component: MapComponent,

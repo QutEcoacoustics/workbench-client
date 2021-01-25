@@ -69,7 +69,7 @@ describe("SiteNewComponent", () => {
     ]);
   });
 
-  describe("component", () => {
+  xdescribe("component", () => {
     let api: SpyObject<SitesService>;
     let defaultProject: Project;
 
