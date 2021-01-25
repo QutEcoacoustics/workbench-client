@@ -21,13 +21,13 @@ import { List } from "immutable";
 import { MockComponent } from "ng-mocks";
 import { MenuButtonComponent } from "./button/button.component";
 import { MenuExternalLinkComponent } from "./external-link/external-link.component";
-import { MenuInternalLinkComponent } from "./internal-link/internal-link.component";
+import { MenuLinkComponent } from "./link/link.component";
 import { MenuComponent } from "./menu.component";
 
 const mock = {
   action: MockComponent(MenuButtonComponent),
   external: MockComponent(MenuExternalLinkComponent),
-  internal: MockComponent(MenuInternalLinkComponent),
+  internal: MockComponent(MenuLinkComponent),
 };
 
 describe("MenuComponent", () => {

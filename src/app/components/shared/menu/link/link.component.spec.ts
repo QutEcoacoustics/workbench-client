@@ -1,25 +1,21 @@
+import { Location } from "@angular/common";
 import { RouterTestingModule } from "@angular/router/testing";
-import { MenuLink, menuLink } from "@interfaces/menusInterfaces";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
-import { ConfigService } from "@services/config/config.service";
-import { MockAppConfigModule } from "@services/config/configMock.module";
-import {
-  assertAttribute,
-  assertHref,
-  assertIcon,
-  assertTooltip,
-} from "@test/helpers/html";
+import { assertAttribute, assertIcon, assertTooltip } from "@test/helpers/html";
 import { SharedModule } from "../../shared.module";
-import { MenuExternalLinkComponent } from "./external-link.component";
+import { MenuLinkComponent } from "./link.component";
 
-describe("MenuExternalLinkComponent", () => {
-  let config: ConfigService;
-  let defaultLink: MenuLink;
-  let spec: SpectatorHost<MenuExternalLinkComponent>;
-  let component: MenuExternalLinkComponent;
+describe("MenuLinkComponent", () => {
+  let defaultLink: MenuRoute;
+  let location: Location;
+  let spec: SpectatorHost<MenuLinkComponent>;
+  let component: MenuLinkComponent;
   const createHost = createHostFactory({
-    component: MenuExternalLinkComponent,
-    imports: [SharedModule, RouterTestingModule, MockAppConfigModule],
+    component: MenuLinkComponent,
+    imports: [SharedModule, RouterTestingModule],
   });
 
   function retrieveWrapper() {
@@ -30,16 +26,25 @@ describe("MenuExternalLinkComponent", () => {
     return spec.query<HTMLAnchorElement>("a");
   }
 
-  function setup(inputs: Partial<MenuExternalLinkComponent> = {}) {
+  function assertActive(isActive: boolean) {
+    if (isActive) {
+      expect(spec.query("a.active")).toBeTruthy();
+    } else {
+      expect(spec.query("a.active")).toBeFalsy();
+    }
+  }
+
+  function setup(inputs: Partial<MenuLinkComponent> = {}) {
     spec = createHost(
       `
-      <baw-menu-external-link
+      <baw-menu-internal-link
         [id]="id"
         [link]="link"
         [placement]="placement"
         [tooltip]="tooltip"
-        [uri]="uri"
-      ></baw-menu-external-link>
+        [route]="route"
+        [qsp]="qsp"
+      ></baw-menu-internal-link>
     `,
       {
         detectChanges: false,
@@ -48,20 +53,21 @@ describe("MenuExternalLinkComponent", () => {
           link: defaultLink,
           placement: "left",
           tooltip: "tooltip",
-          uri: "http://link/",
+          route: "/home",
+          qsp: {},
           ...inputs,
         },
       }
     );
     component = spec.component;
-    config = spec.inject(ConfigService);
+    location = spec.inject(Location);
   }
 
   beforeEach(() => {
-    defaultLink = menuLink({
+    defaultLink = menuRoute({
       icon: ["fas", "home"],
       label: "home",
-      uri: () => "http://link/",
+      route: StrongRoute.newRoot().add("home"),
       tooltip: () => "tooltip",
     });
   });
@@ -74,7 +80,7 @@ describe("MenuExternalLinkComponent", () => {
 
   it("should have icon", () => {
     setup({
-      link: menuLink({
+      link: menuRoute({
         ...defaultLink,
         icon: ["fas", "exclamation-triangle"],
       }),
@@ -84,7 +90,7 @@ describe("MenuExternalLinkComponent", () => {
   });
 
   it("should have label", () => {
-    setup({ link: menuLink({ ...defaultLink, label: "custom label" }) });
+    setup({ link: menuRoute({ ...defaultLink, label: "custom label" }) });
     spec.detectChanges();
 
     // Expects label to be above disabled user tooltip
@@ -97,7 +103,7 @@ describe("MenuExternalLinkComponent", () => {
     it("should have tooltip", () => {
       setup({
         tooltip: "custom tooltip",
-        link: menuLink({ ...defaultLink, tooltip: () => "custom tooltip" }),
+        link: menuRoute({ ...defaultLink, tooltip: () => "custom tooltip" }),
       });
       spec.detectChanges();
       assertTooltip(retrieveWrapper(), "custom tooltip");
@@ -106,7 +112,7 @@ describe("MenuExternalLinkComponent", () => {
     it("should not use link tooltip", () => {
       setup({
         tooltip: "custom tooltip",
-        link: menuLink({ ...defaultLink, tooltip: () => "wrong tooltip" }),
+        link: menuRoute({ ...defaultLink, tooltip: () => "wrong tooltip" }),
       });
       spec.detectChanges();
       assertTooltip(retrieveWrapper(), "custom tooltip");
@@ -126,32 +132,27 @@ describe("MenuExternalLinkComponent", () => {
   });
 
   describe("link", () => {
-    it("should not use link uri", () => {
-      setup({
-        uri: "http://brokenlink/",
-        link: menuLink({ ...defaultLink, uri: () => "http://wronglink/" }),
-      });
-      console.log(spec.component);
+    it("should create router link", () => {
+      const route = StrongRoute.newRoot().add("brokenlink");
+      setup({ link: menuRoute({ ...defaultLink, route }) });
       spec.detectChanges();
-      assertHref(retrieveLink(), "http://brokenlink/");
+      expect(spec.query(StrongRouteDirective).strongRoute).toEqual(route);
     });
 
-    it("should link to external website", () => {
-      setup({
-        uri: "http://brokenlink/",
-        link: menuLink({ ...defaultLink, uri: () => "http://brokenlink/" }),
-      });
+    it("should not highlight link when not active", () => {
+      const route = StrongRoute.newRoot().add("brokenlink");
+      setup({ link: menuRoute({ ...defaultLink, route }) });
+      spyOn(location, "path").and.callFake(() => "/customRoute");
       spec.detectChanges();
-      assertHref(retrieveLink(), "http://brokenlink/");
+      assertActive(false);
     });
 
-    it("should convert links to AngularJS server", () => {
-      setup({
-        uri: "/brokenlink/",
-        link: menuLink({ ...defaultLink, uri: () => "/brokenlink/" }),
-      });
+    it("should highlight link when active", () => {
+      const route = StrongRoute.newRoot().add("customRoute");
+      setup({ link: menuRoute({ ...defaultLink, route }) });
+      spyOn(location, "path").and.callFake(() => "/customRoute");
       spec.detectChanges();
-      assertHref(retrieveLink(), config.environment.apiRoot + "/brokenlink/");
+      assertActive(true);
     });
   });
 
@@ -165,21 +166,27 @@ describe("MenuExternalLinkComponent", () => {
     }
 
     it("should default as enabled if disabled is undefined", () => {
-      setup({ link: menuLink({ ...defaultLink, disabled: undefined }) });
+      setup({ link: menuRoute({ ...defaultLink, disabled: undefined }) });
       spec.detectChanges();
       assertDisabled(false);
     });
 
     it("should be enabled if disabled is false", () => {
-      setup({ link: menuLink({ ...defaultLink, disabled: false }) });
+      setup({ link: menuRoute({ ...defaultLink, disabled: false }) });
       spec.detectChanges();
       assertDisabled(false);
     });
 
     it("should be disabled if disabled is true", () => {
-      setup({ link: menuLink({ ...defaultLink, disabled: true }) });
+      setup({ link: menuRoute({ ...defaultLink, disabled: true }) });
       spec.detectChanges();
       assertDisabled(true);
+    });
+
+    it("should be active is disabled is true", () => {
+      setup({ link: menuRoute({ ...defaultLink, disabled: true }) });
+      spec.detectChanges();
+      assertActive(true);
     });
   });
 });
