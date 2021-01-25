@@ -1,73 +1,92 @@
 import { Location } from "@angular/common";
+import { ActivatedRoute, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
-import { MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
+import {
+  menuLink,
+  MenuLink,
+  MenuRoute,
+  menuRoute,
+} from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
-import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
+import {
+  ActivatedRouteStub,
+  createHostFactory,
+  SpectatorHost,
+} from "@ngneat/spectator";
+import { ConfigService } from "@services/config/config.service";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { assertAttribute, assertIcon, assertTooltip } from "@test/helpers/html";
 import { SharedModule } from "../../shared.module";
 import { MenuLinkComponent } from "./link.component";
 
 describe("MenuLinkComponent", () => {
-  let defaultLink: MenuRoute;
-  let location: Location;
+  let defaultRoute: MenuRoute;
+  let defaultLink: MenuLink;
+  let config: ConfigService;
   let spec: SpectatorHost<MenuLinkComponent>;
   let component: MenuLinkComponent;
   const createHost = createHostFactory({
     component: MenuLinkComponent,
-    imports: [SharedModule, RouterTestingModule],
+    imports: [MockAppConfigModule, SharedModule, RouterTestingModule],
   });
 
-  function retrieveWrapper() {
-    return spec.query<HTMLElement>("span");
+  function getWrapper(): HTMLSpanElement {
+    return spec.query("span");
   }
 
-  function retrieveLink() {
-    return spec.query<HTMLAnchorElement>("a");
+  function getLink(): HTMLAnchorElement {
+    return spec.query("a");
   }
 
-  function assertActive(isActive: boolean) {
-    if (isActive) {
-      expect(spec.query("a.active")).toBeTruthy();
-    } else {
-      expect(spec.query("a.active")).toBeFalsy();
-    }
+  function setRouteParams(params: Params) {
+    const activatedRoute = spec.inject(ActivatedRoute);
+    const routeStub = new ActivatedRouteStub({ params });
+    activatedRoute.snapshot.params = routeStub.snapshot.params;
+    activatedRoute.params = routeStub.params;
+  }
+
+  function setLocationPath(path: string) {
+    const location: Location = spec.inject(Location);
+    spyOn(location, "path").and.callFake(() => path);
   }
 
   function setup(inputs: Partial<MenuLinkComponent> = {}) {
     spec = createHost(
       `
-      <baw-menu-internal-link
+      <baw-menu-link
         [id]="id"
         [link]="link"
         [placement]="placement"
         [tooltip]="tooltip"
-        [route]="route"
-        [qsp]="qsp"
-      ></baw-menu-internal-link>
+      ></baw-menu-link>
     `,
       {
         detectChanges: false,
         hostProps: {
           id: "id",
-          link: defaultLink,
+          link: defaultRoute,
           placement: "left",
           tooltip: "tooltip",
-          route: "/home",
-          qsp: {},
           ...inputs,
         },
       }
     );
     component = spec.component;
-    location = spec.inject(Location);
+    config = spec.inject(ConfigService);
   }
 
   beforeEach(() => {
-    defaultLink = menuRoute({
+    defaultRoute = menuRoute({
       icon: ["fas", "home"],
       label: "home",
       route: StrongRoute.newRoot().add("home"),
+      tooltip: () => "tooltip",
+    });
+    defaultLink = menuLink({
+      icon: ["fas", "home"],
+      label: "home",
+      uri: () => "https://broken_link/",
       tooltip: () => "tooltip",
     });
   });
@@ -75,118 +94,194 @@ describe("MenuLinkComponent", () => {
   it("should create", () => {
     setup();
     spec.detectChanges();
-    expect(component).toBeTruthy();
+    expect(component).toBeInstanceOf(MenuLinkComponent);
   });
 
-  it("should have icon", () => {
-    setup({
-      link: menuRoute({
-        ...defaultLink,
-        icon: ["fas", "exclamation-triangle"],
-      }),
-    });
-    spec.detectChanges();
-    assertIcon(spec.element, "fas,exclamation-triangle");
-  });
-
-  it("should have label", () => {
-    setup({ link: menuRoute({ ...defaultLink, label: "custom label" }) });
-    spec.detectChanges();
-
-    // Expects label to be above disabled user tooltip
-    const label = spec.query<HTMLElement>("#label");
-    expect(label).toBeTruthy("Label element should contain id='label'");
-    expect(label.innerText).toBe("custom label");
-  });
-
-  describe("tooltip", () => {
-    it("should have tooltip", () => {
-      setup({
-        tooltip: "custom tooltip",
-        link: menuRoute({ ...defaultLink, tooltip: () => "custom tooltip" }),
+  [
+    {
+      label: "internal link",
+      link: (data: Partial<MenuRoute>) =>
+        menuRoute({ ...defaultRoute, ...data }),
+    },
+    {
+      label: "external link",
+      link: (data: Partial<MenuLink>) => menuLink({ ...defaultLink, ...data }),
+    },
+  ].forEach(({ label, link }) => {
+    describe(label, () => {
+      it("should have icon", () => {
+        setup({ link: link({ icon: ["fas", "ad"] }) });
+        spec.detectChanges();
+        assertIcon(spec.element, "fas,ad");
       });
-      spec.detectChanges();
-      assertTooltip(retrieveWrapper(), "custom tooltip");
-    });
 
-    it("should not use link tooltip", () => {
-      setup({
-        tooltip: "custom tooltip",
-        link: menuRoute({ ...defaultLink, tooltip: () => "wrong tooltip" }),
+      it("should have label", () => {
+        setup({ link: link({ label: "custom label" }) });
+        spec.detectChanges();
+        // Expects label to be above disabled user tooltip
+        expect(spec.query("#label")).toHaveText("custom label");
       });
-      spec.detectChanges();
-      assertTooltip(retrieveWrapper(), "custom tooltip");
-    });
 
-    it("should handle left placement of tooltip", () => {
-      setup({ placement: "left" });
-      spec.detectChanges();
-      assertAttribute(retrieveWrapper(), "placement", "left");
-    });
+      describe("tooltip", () => {
+        it("should have tooltip", () => {
+          setup({
+            tooltip: "custom tooltip",
+            link: link({ tooltip: () => "custom tooltip" }),
+          });
+          spec.detectChanges();
+          assertTooltip(getWrapper(), "custom tooltip");
+        });
 
-    it("should handle right placement of tooltip", () => {
-      setup({ placement: "right" });
-      spec.detectChanges();
-      assertAttribute(retrieveWrapper(), "placement", "right");
+        it("should not use link tooltip", () => {
+          setup({
+            tooltip: "custom tooltip",
+            link: link({ tooltip: () => "wrong tooltip" }),
+          });
+          spec.detectChanges();
+          assertTooltip(getWrapper(), "custom tooltip");
+        });
+
+        it("should handle left placement of tooltip", () => {
+          setup({ placement: "left" });
+          spec.detectChanges();
+          assertAttribute(getWrapper(), "placement", "left");
+        });
+
+        it("should handle right placement of tooltip", () => {
+          setup({ placement: "right" });
+          spec.detectChanges();
+          assertAttribute(getWrapper(), "placement", "right");
+        });
+      });
+
+      describe("disabled", () => {
+        function assertDisabled(isDisabled: boolean) {
+          if (isDisabled) {
+            expect(getLink()).toHaveClass("disabled");
+          } else {
+            expect(getLink()).not.toHaveClass("disabled");
+          }
+        }
+
+        it("should set disabled class on wrapper", () => {
+          setup({ link: link({ disabled: true }) });
+          spec.detectChanges();
+          expect(getWrapper()).toHaveClass("disabled");
+        });
+
+        it("should default as enabled if disabled is undefined", () => {
+          setup({ link: link({ disabled: undefined }) });
+          spec.detectChanges();
+          assertDisabled(false);
+        });
+
+        it("should be enabled if disabled is false", () => {
+          setup({ link: link({ disabled: false }) });
+          spec.detectChanges();
+          assertDisabled(false);
+        });
+
+        it("should be disabled if disabled is true", () => {
+          setup({ link: link({ disabled: true }) });
+          spec.detectChanges();
+          assertDisabled(true);
+        });
+      });
     });
   });
 
-  describe("link", () => {
+  describe("internal link", () => {
+    function assertActive(isActive: boolean) {
+      if (isActive) {
+        expect(getLink()).toHaveClass("active");
+      } else {
+        expect(getLink()).not.toHaveClass("active");
+      }
+    }
+
     it("should create router link", () => {
       const route = StrongRoute.newRoot().add("brokenlink");
-      setup({ link: menuRoute({ ...defaultLink, route }) });
+      setup({ link: menuRoute({ ...defaultRoute, route }) });
       spec.detectChanges();
       expect(spec.query(StrongRouteDirective).strongRoute).toEqual(route);
     });
 
-    it("should not highlight link when not active", () => {
+    it("should not be highlighted by default", () => {
       const route = StrongRoute.newRoot().add("brokenlink");
-      setup({ link: menuRoute({ ...defaultLink, route }) });
-      spyOn(location, "path").and.callFake(() => "/customRoute");
+      setup({ link: menuRoute({ ...defaultRoute, route }) });
+      setLocationPath("/customRoute");
       spec.detectChanges();
       assertActive(false);
     });
 
-    it("should highlight link when active", () => {
+    it("should highlight link when location path matches route", () => {
       const route = StrongRoute.newRoot().add("customRoute");
-      setup({ link: menuRoute({ ...defaultLink, route }) });
-      spyOn(location, "path").and.callFake(() => "/customRoute");
+      setup({ link: menuRoute({ ...defaultRoute, route }) });
+      setLocationPath("/customRoute");
+      spec.detectChanges();
+      assertActive(true);
+    });
+
+    it("should highlight link when location path matches route with route parameters", () => {
+      console.log("~~~~~~~~~");
+      const route = StrongRoute.newRoot().add("customRoute").add(":id");
+      setup({ link: menuRoute({ ...defaultRoute, route }) });
+      setRouteParams({ id: 10 });
+      setLocationPath("/customRoute/10");
+      spec.detectChanges();
+      assertActive(true);
+      console.log("~~~~~~~~~");
+    });
+
+    it("should highlight link when location path matches route with query parameters", () => {
+      const route = StrongRoute.newRoot().add("customRoute");
+      setup({ link: menuRoute({ ...defaultRoute, route }) });
+      setLocationPath("/customRoute?page=2");
+      spec.detectChanges();
+      assertActive(true);
+    });
+
+    it("should highlight link when active property set", () => {
+      defaultRoute.active = true;
+      setup({ link: defaultRoute });
+      spec.detectChanges();
+      assertActive(true);
+    });
+
+    it("should highlight link when highlight property set", () => {
+      setup({ link: menuRoute({ ...defaultRoute, highlight: true }) });
       spec.detectChanges();
       assertActive(true);
     });
   });
 
-  describe("disabled", () => {
-    function assertDisabled(isDisabled: boolean) {
-      if (isDisabled) {
-        expect(spec.query("a.disabled")).toBeTruthy();
-      } else {
-        expect(spec.query("a.disabled")).toBeFalsy();
-      }
-    }
-
-    it("should default as enabled if disabled is undefined", () => {
-      setup({ link: menuRoute({ ...defaultLink, disabled: undefined }) });
+  describe("external link", () => {
+    it("should link to external website", () => {
+      setup({
+        link: menuLink({ ...defaultLink, uri: () => "https://broken_link/" }),
+      });
       spec.detectChanges();
-      assertDisabled(false);
+      expect(getLink()).toHaveAttribute({ href: "https://broken_link/" });
     });
 
-    it("should be enabled if disabled is false", () => {
-      setup({ link: menuRoute({ ...defaultLink, disabled: false }) });
+    it("should link to same-domain website", () => {
+      setup({ link: menuLink({ ...defaultLink, uri: () => "/brokenlink/" }) });
       spec.detectChanges();
-      assertDisabled(false);
+      expect(getLink()).toHaveAttribute({
+        href: config.environment.apiRoot + "/brokenlink/",
+      });
     });
 
-    it("should be disabled if disabled is true", () => {
-      setup({ link: menuRoute({ ...defaultLink, disabled: true }) });
+    it("should provide route parameters to uri", () => {
+      setup({
+        link: menuLink({
+          ...defaultLink,
+          uri: ({ id }) => `https://broken_link/${id}`,
+        }),
+      });
+      setRouteParams({ id: 10 });
       spec.detectChanges();
-      assertDisabled(true);
-    });
-
-    it("should be active is disabled is true", () => {
-      setup({ link: menuRoute({ ...defaultLink, disabled: true }) });
-      spec.detectChanges();
-      assertActive(true);
+      expect(getLink()).toHaveAttribute({ href: "https://broken_link/10" });
     });
   });
 });
