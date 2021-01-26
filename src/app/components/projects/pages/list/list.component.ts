@@ -8,14 +8,31 @@ import {
   requestProjectMenuItem,
 } from "@components/projects/projects.menus";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import { IProject, Project } from "@models/Project";
+import { menuAction, menuLink } from "@interfaces/menusInterfaces";
+import { Project } from "@models/Project";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
+import { defaultAudioIcon } from "src/app/app.menus";
+
+const temp = menuAction({
+  icon: defaultAudioIcon,
+  label: "Testing",
+  action: () => {},
+  tooltip: () => "Tooltip",
+});
+const temp2 = menuLink({
+  icon: defaultAudioIcon,
+  label: "TEsting 2",
+  tooltip: () => "TOoltip",
+  uri: () => "/projects",
+});
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
   requestProjectMenuItem,
+  temp,
+  temp2,
 ];
 
 @Component({

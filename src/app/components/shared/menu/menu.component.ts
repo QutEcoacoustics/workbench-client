@@ -127,6 +127,10 @@ export class MenuComponent extends withUnsubscribe() implements OnInit {
     (componentRef.instance as WidgetComponent).pageData = this.widget.pageData;
   }
 
+  public createId(index: number) {
+    return this.menuType + "-tooltip-" + index;
+  }
+
   /**
    * Sort function for list of menu items
    *
