@@ -3,7 +3,6 @@ import { Data } from "@angular/router";
 import {
   Category,
   MenuRoute,
-  menuRoute,
   Menus,
   ResolverList,
 } from "@interfaces/menusInterfaces";
@@ -18,7 +17,7 @@ import { PageComponent } from "./pageComponent";
  * @extends Data
  */
 export interface IPageInfo extends Data {
-  category: Category;
+  category?: Category;
   /** Stores modified menuroute */
   pageRoute?: MenuRoute & { pageComponent?: Type<PageComponent> };
   fullscreen?: boolean;
