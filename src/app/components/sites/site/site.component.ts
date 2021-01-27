@@ -35,13 +35,13 @@ class SiteComponent extends PageComponent implements OnInit {
   public constructor(
     private audioEventsApi: ShallowAudioEventsService,
     private audioRecordingsApi: AudioRecordingsService,
-    private mapService: MapService
+    private map: MapService
   ) {
     super();
   }
 
   public ngOnInit() {
-    this.marker = this.mapService.sanitizeMarkers([this.site.getMapMarker()]);
+    this.marker = this.map.sanitizeMarkers([this.site.getMapMarker()]);
 
     this.getAnnotations();
     this.getNewestDates();

@@ -28,6 +28,7 @@ import { IconsModule } from "./icons/icons.module";
 import { IndicatorModule } from "./indicator/indicator.module";
 import { ItemsModule } from "./items/items.module";
 import { LoadingModule } from "./loading/loading.module";
+import { MapModule } from "./map/map.module";
 import { MenuModule } from "./menu/menu.module";
 import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
 import { WIPComponent } from "./wip/wip.component";
@@ -62,6 +63,7 @@ export const sharedModules = [
   ToastrModule,
 
   IconsModule,
+  MapModule,
   DirectivesModule,
   PipesModule,
   CustomInputsModule,
