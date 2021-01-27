@@ -2,10 +2,6 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
-import {
-  destroyGoogleMaps,
-  embedGoogleMaps,
-} from "@helpers/embedGoogleMaps/embedGoogleMaps";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import {
@@ -74,8 +70,6 @@ describe("RegionsNewComponent", () => {
       spectator.detectChanges();
     }
 
-    beforeAll(async () => await embedGoogleMaps());
-    afterAll(() => destroyGoogleMaps());
     beforeEach(() => {
       defaultProject = new Project(generateProject());
     });

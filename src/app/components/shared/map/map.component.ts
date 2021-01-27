@@ -16,7 +16,7 @@ import { takeUntil } from "rxjs/operators";
 
 /**
  * Google Maps Wrapper Component
- * ! Manually test when editing, unit test coverage is poor
+ * ! Manually test when editing, unit test coverage is limited
  */
 @Component({
   selector: "baw-map",
@@ -36,17 +36,23 @@ import { takeUntil } from "rxjs/operators";
 
     <!-- Map Failure -->
     <ng-container *ngIf="hasMarkers && mapFailure">
-      <div class="map-placeholder"><p>Failure to load map</p></div>
+      <div id="failure" class="map-placeholder">
+        <p>Failure to load map</p>
+      </div>
     </ng-container>
 
     <!-- Map Loading -->
-    <ng-template *ngIf="hasMarkers && !mapFailure && !mapLoaded">
-      <div class="map-placeholder"><baw-loading></baw-loading></div>
-    </ng-template>
+    <ng-container *ngIf="hasMarkers && !mapFailure && !mapLoaded">
+      <div id="loading" class="map-placeholder">
+        <baw-loading></baw-loading>
+      </div>
+    </ng-container>
 
     <!-- No Map Markers -->
     <ng-container *ngIf="!hasMarkers">
-      <div class="map-placeholder"><p>No locations specified</p></div>
+      <div id="placeholder" class="map-placeholder">
+        <p>No locations specified</p>
+      </div>
     </ng-container>
   `,
   styleUrls: ["./map.component.scss"],

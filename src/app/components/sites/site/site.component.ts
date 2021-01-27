@@ -8,7 +8,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tagging } from "@models/Tagging";
-import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
+import { MapMarkerOption, MapService } from "@services/map/map.service";
 import { List } from "immutable";
 import { DateTime } from "luxon";
 import { takeUntil } from "rxjs/operators";
@@ -34,13 +34,14 @@ class SiteComponent extends PageComponent implements OnInit {
 
   public constructor(
     private audioEventsApi: ShallowAudioEventsService,
-    private audioRecordingsApi: AudioRecordingsService
+    private audioRecordingsApi: AudioRecordingsService,
+    private mapService: MapService
   ) {
     super();
   }
 
   public ngOnInit() {
-    this.marker = sanitizeMapMarkers(this.site.getMapMarker());
+    this.marker = this.mapService.sanitizeMarkers([this.site.getMapMarker()]);
 
     this.getAnnotations();
     this.getNewestDates();

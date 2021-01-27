@@ -5,10 +5,6 @@ import {
   regionResolvers,
   RegionsService,
 } from "@baw-api/region/regions.service";
-import {
-  destroyGoogleMaps,
-  embedGoogleMaps,
-} from "@helpers/embedGoogleMaps/embedGoogleMaps";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import {
@@ -85,8 +81,6 @@ describe("RegionsEditComponent", () => {
       spectator.detectChanges();
     }
 
-    beforeAll(async () => await embedGoogleMaps());
-    afterAll(() => destroyGoogleMaps());
     beforeEach(() => {
       defaultProject = new Project(generateProject());
       defaultRegion = new Region(generateRegion());

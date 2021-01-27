@@ -2,10 +2,6 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { SitesService } from "@baw-api/site/sites.service";
-import {
-  destroyGoogleMaps,
-  embedGoogleMaps,
-} from "@helpers/embedGoogleMaps/embedGoogleMaps";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import {
@@ -87,8 +83,6 @@ describe("SiteNewComponent", () => {
       spectator.detectChanges();
     }
 
-    beforeAll(async () => await embedGoogleMaps());
-    afterAll(() => destroyGoogleMaps());
     beforeEach(() => {
       defaultProject = new Project(generateProject());
     });
