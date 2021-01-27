@@ -23,11 +23,8 @@ import { generateSite } from "@test/fakes/Site";
 import { FilterExpectations, nStepObservable } from "@test/helpers/general";
 import { assertImage } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
-import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { SiteComponent } from "./site.component";
-
-const mockMapComponent = MockComponent(MapComponent);
 
 describe("SiteComponent", () => {
   let defaultProject: Project;
@@ -38,7 +35,6 @@ describe("SiteComponent", () => {
   let spec: Spectator<SiteComponent>;
   const createComponent = createComponentFactory({
     imports: [SharedModule, MockBawApiModule, RouterTestingModule],
-    declarations: [mockMapComponent],
     component: SiteComponent,
   });
 
@@ -212,11 +208,11 @@ describe("SiteComponent", () => {
     });
 
     it("should create google maps component", () => {
-      expect(spec.query(mockMapComponent)).toBeTruthy();
+      expect(spec.query(MapComponent)).toBeTruthy();
     });
 
     it("should create site marker", () => {
-      const maps = spec.query(mockMapComponent);
+      const maps = spec.query(MapComponent);
       expect(maps.markers.toArray()).toEqual([defaultSite.getMapMarker()]);
     });
   });

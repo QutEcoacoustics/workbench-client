@@ -17,17 +17,13 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { interceptApiRequests } from "@test/helpers/general";
-import { MockComponent } from "ng-mocks";
 import { SiteMapComponent } from "./site-map.component";
-
-const mockMap = MockComponent(MapComponent);
 
 describe("SiteMapComponent", () => {
   let api: SpyObject<SitesService>;
   let spectator: Spectator<SiteMapComponent>;
   const createComponent = createComponentFactory({
     component: SiteMapComponent,
-    declarations: [mockMap],
     imports: [SharedModule, MockBawApiModule],
   });
 
@@ -75,7 +71,7 @@ describe("SiteMapComponent", () => {
   }
 
   function getMapMarkers() {
-    return spectator.query(mockMap).markers.toArray();
+    return spectator.query(MapComponent).markers.toArray();
   }
 
   function interceptApiRequest(

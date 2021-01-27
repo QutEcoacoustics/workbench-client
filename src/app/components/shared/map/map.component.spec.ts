@@ -103,7 +103,7 @@ describe("MapComponent", () => {
     },
     {
       label: "map",
-      getComponent: () => spec.query(mockMap),
+      getComponent: () => getMap(),
       assertComponent: (comp: GoogleMap) =>
         expect(comp).toBeInstanceOf(GoogleMap),
       invalidMarkers: false,
