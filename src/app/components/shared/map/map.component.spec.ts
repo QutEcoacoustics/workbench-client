@@ -5,6 +5,7 @@ import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { MapMarkerOption, MapService } from "@services/map/map.service";
 import { MockMapService } from "@services/map/mapMock.service";
+import { LoadingComponent } from "@shared/loading/loading.component";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { List } from "immutable";
 import { MockComponent, MockDirective } from "ng-mocks";
@@ -69,153 +70,137 @@ describe("MapComponent", () => {
     expect(spec.component).toBeInstanceOf(MapComponent);
   });
 
-  describe("no locations placeholder", () => {
-    function getPlaceholder() {
-      return spec.query("#placeholder p");
+  [
+    {
+      label: "no locations placeholder",
+      getComponent: () => spec.query("#placeholder p"),
+      assertComponent: (comp: Element) =>
+        expect(comp).toHaveText("No locations specified"),
+      invalidMarkers: true,
+      mapLoading: false,
+      mapSuccess: false,
+      mapFailure: false,
+    },
+    {
+      label: "loading maps spinner",
+      getComponent: () => spec.query(LoadingComponent),
+      assertComponent: (comp: LoadingComponent) =>
+        expect(comp).toBeInstanceOf(LoadingComponent),
+      invalidMarkers: false,
+      mapLoading: true,
+      mapSuccess: false,
+      mapFailure: false,
+    },
+    {
+      label: "map failure placeholder",
+      getComponent: () => spec.query("#failure p"),
+      assertComponent: (comp: Element) =>
+        expect(comp).toHaveText("Failure to load map"),
+      invalidMarkers: false,
+      mapLoading: false,
+      mapSuccess: false,
+      mapFailure: true,
+    },
+    {
+      label: "map",
+      getComponent: () => spec.query(mockMap),
+      assertComponent: (comp: GoogleMap) =>
+        expect(comp).toBeInstanceOf(GoogleMap),
+      invalidMarkers: false,
+      mapLoading: false,
+      mapSuccess: true,
+      mapFailure: false,
+    },
+  ].forEach((test) => {
+    function should(shouldDisplay: boolean, label: string) {
+      return (shouldDisplay ? "should" : "should not") + " display " + label;
     }
 
-    function assertPlaceholder() {
-      expect(getPlaceholder()).toHaveText("No locations specified");
+    function assertComponent(shouldExist: boolean) {
+      if (shouldExist) {
+        test.assertComponent(test.getComponent() as any);
+      } else {
+        expect(test.getComponent()).toBeFalsy();
+      }
     }
 
-    it("should display placeholder if markers is undefined", () => {
+    it(`${should(
+      test.invalidMarkers,
+      test.label
+    )} if markers is undefined`, () => {
       spec.setHostInput("markers", undefined);
       spec.detectChanges();
-      assertPlaceholder();
+      assertComponent(test.invalidMarkers);
     });
 
-    it("should display placeholder if empty list of markers", () => {
+    it(`${should(
+      test.invalidMarkers,
+      test.label
+    )} if empty list of markers`, () => {
       spec.setHostInput("markers", List([]));
       spec.detectChanges();
-      assertPlaceholder();
+      assertComponent(test.invalidMarkers);
     });
 
-    it("should display placeholder if no valid markers", () => {
+    it(`${should(test.invalidMarkers, test.label)} if no valid markers`, () => {
       spec.setHostInput("markers", List(invalidMarkers));
       spec.detectChanges();
-      assertPlaceholder();
+      assertComponent(test.invalidMarkers);
     });
 
-    it("should clear placeholder if valid markers", () => {
+    it(`${should(test.mapLoading, test.label)} if valid markers`, () => {
       spec.setHostInput("markers", List(validMarkers));
       spec.detectChanges();
-      expect(getPlaceholder()).toBeFalsy();
+      assertComponent(test.mapLoading);
     });
 
-    it("should clear placeholder if mix of valid and invalid markers", () => {
+    it(`${should(
+      test.mapLoading,
+      test.label
+    )} if mix of valid markers and invalid markers`, () => {
       spec.setHostInput("markers", List([...validMarkers, ...invalidMarkers]));
       spec.detectChanges();
-      expect(getPlaceholder()).toBeFalsy();
-    });
-  });
-
-  describe("loading maps placeholder", () => {
-    function getSpinner() {
-      return spec.query("#loading baw-loading");
-    }
-
-    it("should not display placeholder if markers is undefined", () => {
-      spec.setHostInput("markers", undefined);
-      spec.detectChanges();
-      expect(getSpinner()).toBeFalsy();
+      assertComponent(test.mapLoading);
     });
 
-    it("should not display placeholder if empty list of markers", () => {
-      spec.setHostInput("markers", List([]));
-      spec.detectChanges();
-      expect(getSpinner()).toBeFalsy();
-    });
-
-    it("should not display placeholder if no valid markers", () => {
-      spec.setHostInput("markers", List(invalidMarkers));
-      spec.detectChanges();
-      expect(getSpinner()).toBeFalsy();
-    });
-
-    it("should display placeholder if valid markers", () => {
-      spec.setHostInput("markers", List(validMarkers));
-      spec.detectChanges();
-      expect(getSpinner()).toBeTruthy();
-    });
-
-    it("should display placeholder if mix of valid and invalid markers", () => {
-      spec.setHostInput("markers", List([...validMarkers, ...invalidMarkers]));
-      spec.detectChanges();
-      expect(getSpinner()).toBeTruthy();
-    });
-  });
-
-  describe("map failure placeholder", () => {
-    function getPlaceholder() {
-      return spec.query("#failure p");
-    }
-
-    function assertPlaceholder() {
-      expect(getPlaceholder()).toHaveText("Failure to load map");
-    }
-
-    it("should not display placeholder if markers is undefined", () => {
-      spec.setHostInput("markers", undefined);
-      spec.detectChanges();
-      expect(getPlaceholder()).toBeFalsy();
-    });
-
-    it("should not display placeholder if empty list of markers", () => {
-      spec.setHostInput("markers", List([]));
-      spec.detectChanges();
-      expect(getPlaceholder()).toBeFalsy();
-    });
-
-    it("should not display placeholder if no valid markers", () => {
-      spec.setHostInput("markers", List(invalidMarkers));
-      spec.detectChanges();
-      expect(getPlaceholder()).toBeFalsy();
-    });
-
-    it("should not display placeholder if valid markers and map loaded", () => {
-      spec.setHostInput("markers", List(validMarkers));
-      spec.detectChanges();
-      expect(getPlaceholder()).toBeFalsy();
-    });
-
-    it("should not display placeholder if mix of valid and invalid markers and map loaded", () => {
-      spec.setHostInput("markers", List([...validMarkers, ...invalidMarkers]));
-      spec.detectChanges();
-      expect(getPlaceholder()).toBeFalsy();
-    });
-
-    it("should display placeholder if valid markers and map failed to load", () => {
+    it(`${should(test.mapFailure, test.label)} if map failed to load`, () => {
       spec.setHostInput("markers", List(validMarkers));
       spec.detectChanges();
       spec.inject(MapService).isMapLoaded$.next(MapService.mapState.failure);
       spec.detectChanges();
-      assertPlaceholder();
+      assertComponent(test.mapFailure);
     });
-  });
 
-  describe("map", () => {
-    it("should display map", () => {
+    it(`${should(
+      test.mapSuccess,
+      test.label
+    )} if map successfully loaded with valid markers`, () => {
       spec.setHostInput("markers", List(validMarkers));
       spec.detectChanges();
       spec.inject(MapService).isMapLoaded$.next(MapService.mapState.success);
       spec.detectChanges();
-      expect(getMap()).toBeTruthy();
+      assertComponent(test.mapSuccess);
     });
 
-    it("should display map if mix of valid and invalid markers", () => {
+    it(`${should(
+      test.mapSuccess,
+      test.label
+    )} if map successfully loaded with mix of valid markers and invalid markers`, () => {
       spec.setHostInput("markers", List([...validMarkers, ...invalidMarkers]));
       spec.detectChanges();
       spec.inject(MapService).isMapLoaded$.next(MapService.mapState.success);
       spec.detectChanges();
-      expect(getMap()).toBeTruthy();
+      assertComponent(test.mapSuccess);
     });
+  });
 
+  describe("map", () => {
     it("should have info window", () => {
       spec.setHostInput("markers", List(validMarkers));
       spec.detectChanges();
       spec.inject(MapService).isMapLoaded$.next(MapService.mapState.success);
       spec.detectChanges();
-      expect(getInfoWindow()).toBeTruthy();
+      expect(getInfoWindow()).toBeInstanceOf(MapInfoWindow);
     });
 
     it("should display single site", () => {
