@@ -26,15 +26,6 @@ describe("workbench-client", () => {
     expect(page.getLogo()).toEqual("<< brandName >>");
   });
 
-  xit("should update navbar on login", () => {
-    page.login();
-    loginPage.getUsernameInput().sendKeys("username");
-    loginPage.getPasswordInput().sendKeys("password");
-    loginPage.submitForm();
-
-    page.logout();
-  });
-
   xit("should update navbar on logout", () => {});
 
   xit("should update home component on logout", () => {});

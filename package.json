@@ -9,6 +9,7 @@
   "scripts": {
     "build": "nx build --prod",
     "e2e": "nx e2e",
+    "e2e:debug": "node --max_old_space_size=4096 --inspect-brk ./node_modules/protractor/bin/protractor e2e/protractor.conf.js",
     "lint": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js .",
     "ng": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng",
     "nx": "nx",
