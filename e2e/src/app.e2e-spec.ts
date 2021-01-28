@@ -12,7 +12,7 @@ describe("workbench-client", () => {
     page.navigateTo();
   });
 
-  afterEach(async () => {
+  /* afterEach(async () => {
     // Assert that there are no errors emitted from the browser
     const logs = await browser.manage().logs().get(logging.Type.BROWSER);
     expect(logs).not.toContain(
@@ -20,7 +20,7 @@ describe("workbench-client", () => {
         level: logging.Level.SEVERE,
       } as logging.Entry)
     );
-  });
+  }); */
 
   it("should display ecosounds title", () => {
     expect(page.getLogo()).toEqual("<< brandName >>");
@@ -37,17 +37,9 @@ describe("workbench-client", () => {
 
   xit("should update navbar on logout", () => {});
 
-  xit("should handle fullscreen pages", () => {});
-
-  xit("should handle menu pages", () => {});
-
   xit("should update home component on logout", () => {});
-
-  xit("should display loading bar for long API requests", () => {});
 
   xit("should run form guard and detect dirty forms", () => {});
 
   xit("should load config from API", () => {});
-
-  xit("should insert google maps api key in index.html", () => {});
 });
