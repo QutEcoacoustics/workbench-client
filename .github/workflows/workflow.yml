@@ -62,11 +62,10 @@ jobs:
       - name: NPM install
         run: npm install
 
-      - name: Get chrome version
-        run: version=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
-
-      - name: Set chrome driver
-        run: npm run webdriver -- update --versions.chrome $version
+      - name: Ensure webdriver installs correct adapter for current chrome version
+        run: |
+          version=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
+          run: npm run webdriver -- update --versions.chrome $version
 
       - name: Run e2e test suite
         run: npm run e2e -- --webdriver-update=false
