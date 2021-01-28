@@ -48,7 +48,7 @@ jobs:
         run: npm run lint
 
   e2e:
-    name: E2E Tests (${{ matrix.os }})
+    name: E2E Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -65,7 +65,7 @@ jobs:
       - name: Ensure webdriver installs correct adapter for current chrome version
         run: |
           version=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
-          run: npm run webdriver -- update --versions.chrome $version
+          npm run webdriver -- update --versions.chrome $version
 
       - name: Run e2e test suite
         run: npm run e2e -- --webdriver-update=false
