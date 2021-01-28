@@ -128,14 +128,16 @@ export class LocationInputComponent extends FieldType implements OnInit {
     this.longitudeError = false;
 
     // XOR if latitude or longitude is set
-    if (!isInstantiated(this.latitude) !== !isInstantiated(this.longitude)) {
+    if (!isInstantiated(this.latitude)) {
       this.latitudeError = !isInstantiated(this.latitude);
+      return "Both latitude and longitude must be set or left empty";
+    } else if (!isInstantiated(this.longitude)) {
       this.longitudeError = !isInstantiated(this.longitude);
       return "Both latitude and longitude must be set or left empty";
-    } else if (this.latitude < -90 || this.latitude > 90) {
+    } else if (this.map.isLatitudeValid(this.latitude)) {
       this.latitudeError = true;
       return "Latitude must be between -90 and 90";
-    } else if (this.longitude < -180 || this.longitude > 180) {
+    } else if (this.map.isLongitudeValid(this.longitude)) {
       this.longitudeError = true;
       return "Longitude must be between -180 and 180";
     }

@@ -46,10 +46,33 @@ export class MapService extends withUnsubscribe() {
    * Determine if a map marker is valid
    */
   public isMarkerValid(marker: MapMarkerOption): boolean {
-    return (
-      typeof marker?.position?.lat === "number" &&
-      typeof marker.position.lng === "number"
-    );
+    const latitude = marker?.position?.lat;
+    const longitude = marker?.position?.lng;
+    return this.isLatitudeValid(latitude) && this.isLongitudeValid(longitude);
+  }
+
+  /**
+   * Determine if a latitude value is valid
+   *
+   * @param latitude Latitude coordinate
+   */
+  public isLatitudeValid(latitude: any) {
+    if (typeof latitude !== "number") {
+      return false;
+    }
+    return latitude >= -90 && latitude <= 90;
+  }
+
+  /**
+   * Determine if a longitude value is valid
+   *
+   * @param longitude Longitude coordinate
+   */
+  public isLongitudeValid(longitude: any) {
+    if (longitude !== "number") {
+      return false;
+    }
+    return longitude >= -180 && longitude <= 180;
   }
 
   /**
@@ -64,10 +87,16 @@ export class MapService extends withUnsubscribe() {
    * Load google maps bundle
    */
   protected loadMap() {
-    // Only add api key if it exists
     let mapsUrl = MapService.mapUrl;
+
     if (this.apiKey) {
+      // Only add api key if it exists
       mapsUrl += "?key=" + this.apiKey;
+    } else if (this.config.config.production) {
+      // Return error state if production build and no api key found
+      this.isMapLoaded$.next(MapState.failure);
+      console.error("Failed to load google maps api key from config");
+      return;
     }
 
     // Jsonp requests allow us to run the api bundle without
