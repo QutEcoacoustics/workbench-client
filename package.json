@@ -25,7 +25,8 @@
     "serve:ssr": "node dist/workbench-client/server/main.js",
     "build:ssr": "nx build --prod && ng run workbench-client:server:production",
     "prerender": "nx run workbench-client:prerender",
-    "postinstall": "node --max_old_space_size=4096 ./decorate-angular-cli.js"
+    "postinstall": "node --max_old_space_size=4096 ./decorate-angular-cli.js",
+    "webdriver": "node ./node_modules/protractor/node_modules/webdriver-manager/bin/webdriver-manager"
   },
   "private": true,
   "dependencies": {

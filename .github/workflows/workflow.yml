@@ -49,14 +49,8 @@ jobs:
 
   e2e:
     name: E2E Tests (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macOS-latest
-          - windows-latest
     steps:
       - uses: actions/checkout@v2
 
@@ -68,8 +62,17 @@ jobs:
       - name: NPM install
         run: npm install
 
+      - name: Get chrome version
+        run: version=$(google-chrome --version | grep -o '[[:digit:]+\.[:digit:]+\.[:digit:]+\.[:digit:]+\.]')
+
+      - name: Log chrome version
+        run: echo $version
+
+      - name: Set chrome driver
+        run: npm run webdriver -- update --versions.chrome $version
+
       - name: Run e2e test suite
-        run: npm run e2e
+        run: npm run e2e -- --webdriver-update=false
 
   ssr:
     runs-on: ubuntu-latest
