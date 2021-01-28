@@ -63,10 +63,7 @@ jobs:
         run: npm install
 
       - name: Get chrome version
-        run: version=$(google-chrome --version | grep -o '[[:digit:]+\.[:digit:]+\.[:digit:]+\.[:digit:]+\.]')
-
-      - name: Log chrome version
-        run: echo $version
+        run: version=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
 
       - name: Set chrome driver
         run: npm run webdriver -- update --versions.chrome $version
