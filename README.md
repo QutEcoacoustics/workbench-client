@@ -56,6 +56,12 @@ $ npm run e2e
 
 Note: Make sure you are running the 64 bit version of chrome installed to the following folder: `C:/Program Files/Google/Chrome/Application/chrome.exe`. Otherwise the e2e tests will fail with the following error: `E/launcher - WebDriverError: unknown error: cannot find Chrome binary`
 
+To debug the e2e tests, read the following [guide](https://medium.com/@scott.williams.dev/how-to-debug-protractor-tests-a19568e9016f) and run the following command:
+
+```bash
+$ npm run e2e:debug
+```
+
 #### Unit tests
 
 This project has a number of options when it comes to testing. For development we utilize the chrome browser for testing, however the application should support the following browsers: Chrome, Firefox, Edge. When attempting to test a specific file/component/service, either use the Test Explorer plugin for VSCode, or modify the `src/test.ts` file so that its regex will find the file you wish to test.

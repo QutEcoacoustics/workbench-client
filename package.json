@@ -9,6 +9,7 @@
   "scripts": {
     "build": "nx build --prod",
     "e2e": "nx e2e",
+    "e2e:debug": "node --max_old_space_size=4096 --inspect-brk ./node_modules/protractor/bin/protractor e2e/protractor.conf.js",
     "lint": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js .",
     "ng": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng",
     "nx": "nx",
@@ -24,7 +25,8 @@
     "serve:ssr": "node dist/workbench-client/server/main.js",
     "build:ssr": "nx build --prod && ng run workbench-client:server:production",
     "prerender": "nx run workbench-client:prerender",
-    "postinstall": "node --max_old_space_size=4096 ./decorate-angular-cli.js"
+    "postinstall": "node --max_old_space_size=4096 ./decorate-angular-cli.js",
+    "webdriver": "node ./node_modules/protractor/node_modules/webdriver-manager/bin/webdriver-manager"
   },
   "private": true,
   "dependencies": {
