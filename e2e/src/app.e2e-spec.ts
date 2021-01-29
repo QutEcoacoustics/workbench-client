@@ -1,4 +1,3 @@
-import { browser, logging } from "protractor";
 import { AppPage } from "./app.po";
 import { LoginPage } from "./login.po";
 
@@ -11,21 +10,6 @@ describe("workbench-client", () => {
     loginPage = new LoginPage();
     page.navigateTo();
   });
-
-  /**
-   * While this expectation is good, currently it will always fail because
-   * the CMS throws an error when attempting to insert styles/scripts from
-   * a different domain.
-   */
-  /* afterEach(async () => {
-    // Assert that there are no errors emitted from the browser
-    const logs = await browser.manage().logs().get(logging.Type.BROWSER);
-    expect(logs).not.toContain(
-      jasmine.objectContaining({
-        level: logging.Level.SEVERE,
-      } as logging.Entry)
-    );
-  }); */
 
   it("should display ecosounds title", () => {
     expect(page.getLogo()).toEqual("<< brandName >>");

@@ -62,10 +62,12 @@ jobs:
       - name: NPM install
         run: npm install
 
+      # Webdriver downloads the latest driver version by default. If the version does not match the version of chrome
+      # installed, it will crash during e2e tests. Best solution appears to be to download the version of the webdriver
+      # which matches the CIs google chrome
+      # https://github.com/angular/protractor/issues/5460
       - name: Ensure webdriver installs correct adapter for current chrome version
-        run: |
-          version=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
-          npm run webdriver -- update --versions.chrome $version
+        run: npm run webdriver -- update --versions.chrome=$(google-chrome --version | cut -d ' ' -f 3)
 
       - name: Run e2e test suite
         run: npm run e2e -- --webdriver-update=false
