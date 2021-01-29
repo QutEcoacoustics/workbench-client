@@ -87,6 +87,8 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
         .subscribe((state) => {
           if (state === MapService.mapState.success) {
             this.mapLoaded = true;
+            this.ref.detectChanges();
+            this.setMarkers();
           } else if (state === MapService.mapState.failure) {
             this.mapFailure = true;
           }
@@ -108,12 +110,15 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   }
 
   private setMarkers() {
+    // Detect changes required so map loads before referencing google namespace
+    // and map component
+    this.ref.detectChanges();
+
     // Calculate pin boundaries so that map can be auto-focused properly
     const bounds = new google.maps.LatLngBounds();
     this.validMarkers.forEach((marker) => bounds.extend(marker.position));
 
-    // Detect changes required so map loads
-    this.ref.detectChanges();
+    // Create map markers
     this.map?.fitBounds(bounds);
     this.map?.panToBounds(bounds);
     // Setup info windows for each marker

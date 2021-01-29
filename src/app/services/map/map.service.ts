@@ -69,7 +69,7 @@ export class MapService extends withUnsubscribe() {
    * @param longitude Longitude coordinate
    */
   public isLongitudeValid(longitude: any) {
-    if (longitude !== "number") {
+    if (typeof longitude !== "number") {
       return false;
     }
     return longitude >= -180 && longitude <= 180;
@@ -87,11 +87,12 @@ export class MapService extends withUnsubscribe() {
    * Load google maps bundle
    */
   protected loadMap() {
+    const apiKey = this.config.environment.keys.googleMaps;
     let mapsUrl = MapService.mapUrl;
 
-    if (this.apiKey) {
+    if (apiKey) {
       // Only add api key if it exists
-      mapsUrl += "?key=" + this.apiKey;
+      mapsUrl += "?key=" + apiKey;
     } else if (this.config.config.production) {
       // Return error state if production build and no api key found
       this.isMapLoaded$.next(MapState.failure);
@@ -108,14 +109,6 @@ export class MapService extends withUnsubscribe() {
         () => this.isMapLoaded$.next(MapState.success),
         () => this.isMapLoaded$.next(MapState.failure)
       );
-  }
-
-  /**
-   * Retrieve google maps api key from config. Extracted to function
-   * to make testing simpler
-   */
-  private get apiKey(): Option<string> {
-    return this.config.environment.keys.googleMaps;
   }
 }
 

@@ -102,22 +102,18 @@ export class LocationInputComponent extends FieldType implements OnInit {
   }
 
   /**
-   * Set marker position, or set to null if lat/lng missing
+   * Set marker position
    *
    * @param latitude Latitude
    * @param longitude Longitude
    */
   private setMarker(latitude: number, longitude: number) {
-    this.marker = this.map.sanitizeMarkers(
-      isInstantiated(latitude) && isInstantiated(longitude)
-        ? [
-            {
-              position: { lat: latitude, lng: longitude },
-              label: `Position (${latitude},${longitude})`,
-            },
-          ]
-        : null
-    );
+    this.marker = this.map.sanitizeMarkers([
+      {
+        position: { lat: latitude, lng: longitude },
+        label: `Position (${latitude},${longitude})`,
+      },
+    ]);
   }
 
   /**
@@ -129,10 +125,10 @@ export class LocationInputComponent extends FieldType implements OnInit {
 
     // XOR if latitude or longitude is set
     if (!isInstantiated(this.latitude)) {
-      this.latitudeError = !isInstantiated(this.latitude);
+      this.latitudeError = true;
       return "Both latitude and longitude must be set or left empty";
     } else if (!isInstantiated(this.longitude)) {
-      this.longitudeError = !isInstantiated(this.longitude);
+      this.longitudeError = true;
       return "Both latitude and longitude must be set or left empty";
     } else if (this.map.isLatitudeValid(this.latitude)) {
       this.latitudeError = true;
