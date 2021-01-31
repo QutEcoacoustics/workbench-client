@@ -95,7 +95,7 @@
     "codelyzer": "^6.0.1",
     "eslint": "^7.18.0",
     "eslint-plugin-import": "2.22.1",
-    "eslint-plugin-jsdoc": "31.4.0",
+    "eslint-plugin-jsdoc": "31.5.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-rxjs": "latest",
     "eslint-plugin-rxjs-angular": "^1.0.4",
