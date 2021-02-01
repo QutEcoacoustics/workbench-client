@@ -81,6 +81,13 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   }
 
   public ngOnChanges(changes: SimpleChanges) {
+    this.validMarkers = (this.markers ?? List([])).filter((marker) =>
+      this.mapService.isMarkerValid(marker)
+    );
+    this.hasMarkers = this.validMarkers.count() > 0;
+
+    // Check map is loaded after markers are calculated
+    // This prevents setMarkers() from running early
     if (changes.markers.isFirstChange()) {
       this.mapService.isMapLoaded$
         .pipe(takeUntil(this.unsubscribe))
@@ -95,16 +102,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
         });
     }
 
-    this.validMarkers = (this.markers ??= List([])).filter((marker) =>
-      this.mapService.isMarkerValid(marker)
-    );
-    this.hasMarkers = this.validMarkers.count() > 0;
-
-    if (!this.hasMarkers) {
-      return;
-    }
-
-    if (this.mapLoaded) {
+    if (this.hasMarkers && this.mapLoaded) {
       this.setMarkers();
     }
   }

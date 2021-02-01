@@ -1,4 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { FieldType } from "@ngx-formly/core";
@@ -61,7 +66,9 @@ import { List } from "immutable";
     </div>
   `,
 })
-export class LocationInputComponent extends FieldType implements OnInit {
+export class LocationInputComponent
+  extends FieldType
+  implements OnInit, AfterViewInit {
   public formControl: FormControl;
   public latitude: number;
   public latitudeError: boolean;
@@ -69,7 +76,7 @@ export class LocationInputComponent extends FieldType implements OnInit {
   public longitudeError: boolean;
   public marker: List<MapMarkerOption>;
 
-  public constructor(private map: MapService) {
+  public constructor(private map: MapService, private ref: ChangeDetectorRef) {
     super();
   }
 
@@ -82,6 +89,14 @@ export class LocationInputComponent extends FieldType implements OnInit {
       return error ? { [this.field.key.toString()]: error } : null;
     });
     this.formControl.updateValueAndValidity();
+  }
+
+  public ngAfterViewInit() {
+    /*
+     * This prevents the following error: ExpressionChangedAfterItHasBeenCheckedError
+     * https://github.com/ngx-formly/ngx-formly/issues/2451
+     */
+    this.ref.detectChanges();
   }
 
   /**
@@ -130,10 +145,10 @@ export class LocationInputComponent extends FieldType implements OnInit {
     } else if (!isInstantiated(this.longitude)) {
       this.longitudeError = true;
       return "Both latitude and longitude must be set or left empty";
-    } else if (this.map.isLatitudeValid(this.latitude)) {
+    } else if (!this.map.isLatitudeValid(this.latitude)) {
       this.latitudeError = true;
       return "Latitude must be between -90 and 90";
-    } else if (this.map.isLongitudeValid(this.longitude)) {
+    } else if (!this.map.isLongitudeValid(this.longitude)) {
       this.longitudeError = true;
       return "Longitude must be between -180 and 180";
     }

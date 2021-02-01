@@ -10,6 +10,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
+import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
@@ -25,7 +26,7 @@ describe("SiteEditComponent", () => {
   let spectator: SpectatorRouting<SiteEditComponent>;
   const createComponent = createRoutingFactory({
     component: SiteEditComponent,
-    imports: [...testFormImports, MockBawApiModule],
+    imports: [...testFormImports, SharedModule, MockBawApiModule],
     declarations: [FormComponent],
     mocks: [ToastrService],
     stubsEnabled: true,

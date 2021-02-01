@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Option } from "@helpers/advancedTypes";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
@@ -16,6 +15,9 @@ enum MapState {
 /**
  * Map Service for Google Maps Wrapper. This prevents the google maps
  * api bundle being inserted into the application multiple times.
+ * This service is based on the documentation provided by angular for
+ * lazy loading google maps:
+ * https://github.com/angular/components/tree/master/src/google-maps
  */
 @Injectable({ providedIn: "root" })
 export class MapService extends withUnsubscribe() {
@@ -40,6 +42,21 @@ export class MapService extends withUnsubscribe() {
    */
   public get isMapLoaded(): MapState {
     return this.isMapLoaded$.getValue();
+  }
+
+  /**
+   * Get google namespace safely
+   */
+  public get google(): typeof google {
+    if (!this.isMapLoaded) {
+      return undefined;
+    }
+
+    try {
+      return google;
+    } catch (error) {
+      return undefined;
+    }
   }
 
   /**
@@ -100,8 +117,12 @@ export class MapService extends withUnsubscribe() {
       return;
     }
 
-    // Jsonp requests allow us to run the api bundle without
-    // dealing with cors issues
+    /*
+     * JsonP requests allow us to request an external script across domains without
+     * issues due to cors policies. When the response occurs it will insert the
+     * script into the webpage. In this case, we are using it to insert the google
+     * maps api bundle into the website on service load
+     */
     this.http
       .jsonp(mapsUrl, "callback")
       .pipe(takeUntil(this.unsubscribe))
