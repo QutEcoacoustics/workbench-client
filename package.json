@@ -81,7 +81,7 @@
     "@angular/language-service": "^11.1.1",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.1.0",
     "@ngneat/spectator": "^7.0.0",
-    "@nguniversal/builders": "^11.1.0",
+    "@nguniversal/builders": "^11.1.1",
     "@nrwl/nx-cloud": "^11.1.2",
     "@nrwl/workspace": "^11.2.6",
     "@types/express": "^4.17.11",
