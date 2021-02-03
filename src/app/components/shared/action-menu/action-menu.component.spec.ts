@@ -1,492 +1,200 @@
-import { HttpClientModule } from "@angular/common/http";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
+import { Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { defaultMenu } from "@helpers/page/defaultMenus";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import {
-  AnyMenuItem,
   Category,
+  MenuAction,
   menuAction,
+  MenuLink,
   menuLink,
+  MenuRoute,
   menuRoute,
-  NavigableMenuItem,
 } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
-import { assertIcon, assertTooltip } from "@test/helpers/html";
-import { mockActivatedRoute } from "@test/helpers/testbed";
+import { MenuComponent } from "@menu/menu.component";
+import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { List } from "immutable";
-import { SharedModule } from "../shared.module";
+import { MockComponent } from "ng-mocks";
 import { ActionMenuComponent } from "./action-menu.component";
 
+const mockMenu = MockComponent(MenuComponent);
+
 describe("ActionMenuComponent", () => {
-  let component: ActionMenuComponent;
-  let fixture: ComponentFixture<ActionMenuComponent>;
-  const defaultRoute = StrongRoute.newRoot().add("");
-  const defaultSelfLink = menuRoute({
-    label: "Self Label",
-    icon: ["fas", "question-circle"],
-    tooltip: () => "Self Tooltip",
-    order: 999,
-    route: defaultRoute,
+  let defaultRoute: StrongRoute;
+  let defaultCategory: Category;
+  let defaultPageRoute: MenuRoute;
+  let defaultMenuRoute: MenuRoute;
+  let defaultMenuLink: MenuLink;
+  let defaultMenuAction: MenuAction;
+  let spec: SpectatorRouting<ActionMenuComponent>;
+  const createComponent = createRoutingFactory({
+    component: ActionMenuComponent,
+    imports: [RouterTestingModule],
+    declarations: [mockMenu],
   });
-  const defaultCategory = {
-    label: "Custom Category",
-    icon: ["fas", "home"],
-    route: defaultRoute,
-  } as Category;
 
-  function assertTitle(target: HTMLElement, header: string) {
-    expect(target).toBeTruthy("Title is missing");
-    expect(target.innerText.trim()).toBe(header);
+  function setup(data: IPageInfo) {
+    spec = createComponent({ data });
   }
 
-  function assertLabel(target: HTMLElement, labelText: string) {
-    const label: HTMLElement = target.querySelector("#label");
-    expect(label).toBeTruthy("Label is missing");
-    expect(label.innerText.trim()).toBe(labelText);
+  function getMenu() {
+    return spec.query(mockMenu);
   }
 
-  function findLinks(
-    selector: "internal-link" | "external-link" | "button"
-  ): HTMLElement[] {
-    return fixture.nativeElement.querySelectorAll("baw-menu-" + selector);
-  }
+  beforeEach(() => {
+    defaultRoute = StrongRoute.newRoot().add("");
+    defaultCategory = {
+      label: "Category",
+      icon: ["fas", "home"],
+      route: defaultRoute,
+    };
+    defaultMenuRoute = menuRoute({
+      label: "Menu Route",
+      icon: ["fas", "ad"],
+      tooltip: () => "Tooltip",
+      route: defaultRoute,
+    });
+    defaultMenuLink = menuLink({
+      label: "Menu Link",
+      icon: ["fas", "ad"],
+      tooltip: () => "Tooltip",
+      uri: () => "https://broken_link/",
+    });
+    defaultMenuAction = menuAction({
+      label: "Menu Action",
+      icon: ["fas", "ad"],
+      tooltip: () => "Tooltip",
+      action: () => {},
+    });
+    defaultPageRoute = menuRoute({ ...defaultMenuRoute, order: 999 });
+  });
 
-  function createTestBed(params: any, data: IPageInfo) {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        HttpClientModule,
-        SharedModule,
-        MockBawApiModule,
-      ],
-      declarations: [ActionMenuComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useClass: mockActivatedRoute(undefined, data, params),
-        },
-      ],
-    }).compileComponents();
-    fixture = TestBed.createComponent(ActionMenuComponent);
-    component = fixture.componentInstance;
-  }
+  it("should create menu component", () => {
+    setup({ pageRoute: defaultPageRoute });
+    spec.detectChanges();
+    expect(getMenu()).toBeInstanceOf(MenuComponent);
+  });
+
+  it("should set menu to action menu", () => {
+    setup({ pageRoute: defaultPageRoute });
+    spec.detectChanges();
+    expect(getMenu().menuType).toBe("action");
+  });
 
   describe("category", () => {
-    it("should display custom title", () => {
-      const route = StrongRoute.newRoot().add("");
-
-      createTestBed({}, {
-        pageRoute: menuRoute({
-          label: "Custom Label",
-          icon: ["fas", "question-circle"],
-          tooltip: () => "Custom Tooltip",
-          route,
-        }),
-        category: {
-          label: "Custom Category",
-          icon: ["fas", "home"],
-          route,
-        },
-        menus: {
-          actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([]),
-        },
-      } as IPageInfo);
-
-      fixture.detectChanges();
-
-      assertTitle(fixture.nativeElement, "CUSTOM CATEGORY");
+    it("should display default category", () => {
+      setup({ pageRoute: defaultPageRoute });
+      spec.detectChanges();
+      expect(getMenu().title).toEqual(defaultMenu.defaultCategory);
     });
 
-    it("should display custom icon", () => {
-      const route = StrongRoute.newRoot().add("");
-
-      createTestBed({}, {
-        pageRoute: menuRoute({
-          label: "Custom Label",
-          icon: ["fas", "question-circle"],
-          tooltip: () => "Custom Tooltip",
-          route,
-        }),
-        category: {
-          label: "Custom Category",
-          icon: ["fas", "circle"],
-          route,
-        },
-        menus: {
-          actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([]),
-        },
-      } as IPageInfo);
-
-      fixture.detectChanges();
-
-      assertIcon(fixture.nativeElement, "fas,circle");
-    });
-
-    it("should display default title", () => {
-      const route = StrongRoute.newRoot().add("");
-
-      createTestBed({}, {
-        pageRoute: menuRoute({
-          label: "Custom Label",
-          icon: ["fas", "question-circle"],
-          tooltip: () => "Custom Tooltip",
-          route,
-        }),
-        menus: {
-          actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([]),
-        },
-      } as IPageInfo);
-
-      fixture.detectChanges();
-
-      assertTitle(fixture.nativeElement, "HOME");
-    });
-
-    it("should display default icon", () => {
-      const route = StrongRoute.newRoot().add("");
-
-      createTestBed({}, {
-        pageRoute: menuRoute({
-          label: "Custom Label",
-          icon: ["fas", "question-circle"],
-          tooltip: () => "Custom Tooltip",
-          route,
-        }),
-        menus: {
-          actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([]),
-        },
-      } as IPageInfo);
-
-      fixture.detectChanges();
-
-      assertIcon(fixture.nativeElement, "fas,home");
+    it("should display custom category", () => {
+      const category: Category = {
+        ...defaultCategory,
+        label: "Custom Category",
+      };
+      setup({ pageRoute: defaultPageRoute, category });
+      spec.detectChanges();
+      expect(getMenu().title).toEqual(category);
     });
   });
 
   describe("links", () => {
     it("should handle undefined links", () => {
-      const route = StrongRoute.newRoot().add("");
-
-      createTestBed({}, {
-        pageRoute: menuRoute({
-          label: "Custom Label",
-          icon: ["fas", "question-circle"],
-          tooltip: () => "Custom Tooltip",
-          route,
-        }),
-        category: {
-          label: "Custom Category",
-          icon: ["fas", "home"],
-          route,
-        },
-        menus: {
-          actions: undefined,
-          links: List<NavigableMenuItem>([]),
-        },
-      } as IPageInfo);
-
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(findLinks("button").length).toBe(0);
+      setup({
+        pageRoute: defaultPageRoute,
+        menus: { actions: undefined },
+      });
+      spec.detectChanges();
+      expect(getMenu().links.toArray()).toEqual([]);
     });
 
     it("should handle no links", () => {
-      const route = StrongRoute.newRoot().add("");
-
-      createTestBed({}, {
-        pageRoute: menuRoute({
-          label: "Custom Label",
-          icon: ["fas", "question-circle"],
-          tooltip: () => "Custom Tooltip",
-          route,
-        }),
-        category: {
-          label: "Custom Category",
-          icon: ["fas", "home"],
-          route,
-        },
-        menus: {
-          actions: List<AnyMenuItem>([]),
-          links: List<NavigableMenuItem>([]),
-        },
-      } as IPageInfo);
-
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(findLinks("button").length).toBe(0);
+      setup({
+        pageRoute: defaultPageRoute,
+        menus: { actions: List([]) },
+      });
+      spec.detectChanges();
+      expect(getMenu().links.toArray()).toEqual([]);
     });
 
     it("should handle mixed links", () => {
-      const route = StrongRoute.newRoot().add("");
-
-      createTestBed({}, {
-        pageRoute: menuRoute({
-          label: "Custom Label",
-          icon: ["fas", "question-circle"],
-          tooltip: () => "Custom Tooltip",
-          route,
-        }),
-        category: {
-          label: "Custom Category",
-          icon: ["fas", "home"],
-          route,
-        },
+      setup({
+        pageRoute: defaultPageRoute,
         menus: {
-          actions: List<AnyMenuItem>([
-            menuRoute({
-              label: "Custom Label",
-              icon: ["fas", "tag"],
-              tooltip: () => "Custom Tooltip",
-              route,
-            }),
-            menuLink({
-              label: "Custom Label",
-              icon: ["fas", "tag"],
-              tooltip: () => "Custom Tooltip",
-              uri: () => "http://brokenlink/",
-            }),
-            menuAction({
-              label: "Custom Label",
-              icon: ["fas", "tag"],
-              tooltip: () => "Custom Tooltip",
-              action: () => {},
-            }),
-          ]),
-          links: List<NavigableMenuItem>([]),
+          actions: List([defaultMenuRoute, defaultMenuLink, defaultMenuAction]),
         },
-      } as IPageInfo);
-
-      fixture.detectChanges();
-
-      expect(findLinks("internal-link").length).toBe(1);
-      expect(findLinks("external-link").length).toBe(1);
-      expect(findLinks("button").length).toBe(1);
+      });
+      spec.detectChanges();
+      expect(getMenu().links.toArray()).toEqual([
+        defaultMenuRoute,
+        defaultMenuLink,
+        defaultMenuAction,
+      ]);
     });
   });
 
   describe("internal links", () => {
     it("should handle single link", () => {
-      createTestBed({}, {
-        pageRoute: defaultSelfLink,
-        category: defaultCategory,
-        menus: {
-          actions: List<AnyMenuItem>([
-            menuRoute({
-              label: "Custom Label",
-              icon: ["fas", "tag"],
-              tooltip: () => "Custom Tooltip",
-              route: defaultRoute,
-            }),
-          ]),
-          links: List<NavigableMenuItem>([]),
-        },
-      } as IPageInfo);
-
-      fixture.detectChanges();
-
-      const links = findLinks("internal-link");
-
-      expect(links.length).toBe(1);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(findLinks("button").length).toBe(0);
-
-      assertLabel(links[0], "Custom Label");
-      assertTooltip(links[0], "Custom Tooltip");
-      assertIcon(links[0], "fas,tag");
+      setup({
+        pageRoute: defaultPageRoute,
+        menus: { actions: List([defaultMenuRoute]) },
+      });
+      spec.detectChanges();
+      expect(getMenu().links.toArray()).toEqual([defaultMenuRoute]);
     });
 
     it("should handle multiple links", () => {
-      createTestBed({}, {
-        pageRoute: defaultSelfLink,
-        category: defaultCategory,
-        menus: {
-          actions: List<AnyMenuItem>([
-            menuRoute({
-              label: "Custom Label 1",
-              icon: ["fas", "tag"],
-              tooltip: () => "Custom Tooltip 1",
-              route: defaultRoute,
-            }),
-            menuRoute({
-              label: "Custom Label 2",
-              icon: ["fas", "tags"],
-              tooltip: () => "Custom Tooltip 2",
-              route: defaultRoute,
-            }),
-          ]),
-          links: List<NavigableMenuItem>([]),
-        },
-      } as IPageInfo);
-
-      fixture.detectChanges();
-
-      const links = findLinks("internal-link");
-
-      expect(links.length).toBe(2);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(findLinks("button").length).toBe(0);
-
-      assertLabel(links[0], "Custom Label 1");
-      assertTooltip(links[0], "Custom Tooltip 1");
-      assertIcon(links[0], "fas,tag");
-
-      assertLabel(links[1], "Custom Label 2");
-      assertTooltip(links[1], "Custom Tooltip 2");
-      assertIcon(links[1], "fas,tags");
+      const actions = [
+        menuRoute({ ...defaultMenuRoute, label: "Custom Link 1" }),
+        menuRoute({ ...defaultMenuRoute, label: "Custom Link 2" }),
+      ];
+      setup({ pageRoute: defaultPageRoute, menus: { actions: List(actions) } });
+      spec.detectChanges();
+      expect(getMenu().links.toArray()).toEqual(actions);
     });
   });
 
   describe("external links", () => {
     it("should handle single link", () => {
-      createTestBed({}, {
-        pageRoute: defaultSelfLink,
-        category: defaultCategory,
-        menus: {
-          actions: List<AnyMenuItem>([
-            menuLink({
-              label: "Custom Label",
-              icon: ["fas", "tag"],
-              tooltip: () => "Custom Tooltip",
-              uri: () => "http://brokenlink/",
-            }),
-          ]),
-          links: List<NavigableMenuItem>([]),
-        },
-      } as IPageInfo);
-
-      fixture.detectChanges();
-
-      const links = findLinks("external-link");
-
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(links.length).toBe(1);
-      expect(findLinks("button").length).toBe(0);
-
-      assertLabel(links[0], "Custom Label");
-      assertTooltip(links[0], "Custom Tooltip");
-      assertIcon(links[0], "fas,tag");
+      setup({
+        pageRoute: defaultPageRoute,
+        menus: { actions: List([defaultMenuLink]) },
+      });
+      spec.detectChanges();
+      expect(getMenu().links.toArray()).toEqual([defaultMenuLink]);
     });
 
     it("should handle multiple links", () => {
-      createTestBed({}, {
-        pageRoute: defaultSelfLink,
-        category: defaultCategory,
-        menus: {
-          actions: List<AnyMenuItem>([
-            menuLink({
-              label: "Custom Label 1",
-              icon: ["fas", "tag"],
-              tooltip: () => "Custom Tooltip 1",
-              uri: () => "http://brokenlink/1",
-            }),
-            menuLink({
-              label: "Custom Label 2",
-              icon: ["fas", "tags"],
-              tooltip: () => "Custom Tooltip 2",
-              uri: () => "http://brokenlink/2",
-            }),
-          ]),
-          links: List<NavigableMenuItem>([]),
-        },
-      } as IPageInfo);
-
-      fixture.detectChanges();
-
-      const links = findLinks("external-link");
-
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(links.length).toBe(2);
-      expect(findLinks("button").length).toBe(0);
-
-      assertLabel(links[0], "Custom Label 1");
-      assertTooltip(links[0], "Custom Tooltip 1");
-      assertIcon(links[0], "fas,tag");
-
-      assertLabel(links[1], "Custom Label 2");
-      assertTooltip(links[1], "Custom Tooltip 2");
-      assertIcon(links[1], "fas,tags");
+      const actions = [
+        menuLink({ ...defaultMenuLink, label: "Custom Link 1" }),
+        menuLink({ ...defaultMenuLink, label: "Custom Link 2" }),
+      ];
+      setup({ pageRoute: defaultPageRoute, menus: { actions: List(actions) } });
+      spec.detectChanges();
+      expect(getMenu().links.toArray()).toEqual(actions);
     });
   });
 
   describe("action buttons", () => {
-    it("should handle single action button", () => {
-      createTestBed({}, {
-        pageRoute: defaultSelfLink,
-        category: defaultCategory,
-        menus: {
-          actions: List<AnyMenuItem>([
-            menuAction({
-              label: "Custom Label",
-              icon: ["fas", "tag"],
-              tooltip: () => "Custom Tooltip",
-              action: () => {},
-            }),
-          ]),
-          links: List<NavigableMenuItem>([]),
-        },
-      } as IPageInfo);
-
-      fixture.detectChanges();
-
-      const links = findLinks("button");
-
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(links.length).toBe(1);
-
-      assertLabel(links[0], "Custom Label");
-      assertTooltip(links[0], "Custom Tooltip");
-      assertIcon(links[0], "fas,tag");
+    it("should handle single link", () => {
+      setup({
+        pageRoute: defaultPageRoute,
+        menus: { actions: List([defaultMenuAction]) },
+      });
+      spec.detectChanges();
+      expect(getMenu().links.toArray()).toEqual([defaultMenuAction]);
     });
 
-    it("should handle multiple action button", () => {
-      createTestBed({}, {
-        pageRoute: defaultSelfLink,
-        category: defaultCategory,
-        menus: {
-          actions: List<AnyMenuItem>([
-            menuAction({
-              label: "Custom Label 1",
-              icon: ["fas", "tag"],
-              tooltip: () => "Custom Tooltip 1",
-              action: () => {},
-            }),
-            menuAction({
-              label: "Custom Label 2",
-              icon: ["fas", "tags"],
-              tooltip: () => "Custom Tooltip 2",
-              action: () => {},
-            }),
-          ]),
-          links: List<NavigableMenuItem>([]),
-        },
-      } as IPageInfo);
-
-      fixture.detectChanges();
-
-      const links = findLinks("button");
-
-      expect(findLinks("internal-link").length).toBe(0);
-      expect(findLinks("external-link").length).toBe(0);
-      expect(links.length).toBe(2);
-
-      assertLabel(links[0], "Custom Label 1");
-      assertTooltip(links[0], "Custom Tooltip 1");
-      assertIcon(links[0], "fas,tag");
-
-      assertLabel(links[1], "Custom Label 2");
-      assertTooltip(links[1], "Custom Tooltip 2");
-      assertIcon(links[1], "fas,tags");
+    it("should handle multiple links", () => {
+      const actions = [
+        menuAction({ ...defaultMenuAction, label: "Custom Link 1" }),
+        menuAction({ ...defaultMenuAction, label: "Custom Link 2" }),
+      ];
+      setup({ pageRoute: defaultPageRoute, menus: { actions: List(actions) } });
+      spec.detectChanges();
+      expect(getMenu().links.toArray()).toEqual(actions);
     });
   });
 

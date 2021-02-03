@@ -8,7 +8,7 @@ import {
   requestProjectMenuItem,
 } from "@components/projects/projects.menus";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import { IProject, Project } from "@models/Project";
+import { Project } from "@models/Project";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";

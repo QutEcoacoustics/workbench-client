@@ -21,8 +21,7 @@ import { takeUntil } from "rxjs/operators";
       [links]="contextLinks"
       [widget]="linksWidget"
       [menuType]="'secondary'"
-    >
-    </baw-menu>
+    ></baw-menu>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -31,6 +30,7 @@ export class SecondaryMenuComponent
   implements OnInit {
   public contextLinks: List<NavigableMenuItem>;
   public linksWidget: WidgetMenuItem;
+  private defaultLinks: List<NavigableMenuItem> = defaultMenu.contextLinks;
 
   public constructor(private route: ActivatedRoute) {
     super();
@@ -39,10 +39,7 @@ export class SecondaryMenuComponent
   public ngOnInit() {
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (page: PageInfo) => {
-        // get default links
-        const defaultLinks = defaultMenu.contextLinks;
-
-        // and current page
+        // get current page
         const current = page.pageRoute;
         current.active = true; // Ignore predicate
 
@@ -52,27 +49,16 @@ export class SecondaryMenuComponent
         while (menuRoute.parent) {
           menuRoute = menuRoute.parent;
           menuRoute.active = true; // Ignore predicate
-
           parentMenuRoutes.push(menuRoute);
         }
 
-        // with any links from route
-        const links = page.menus?.links
-          ? page.menus.links
-          : List<NavigableMenuItem>();
-        const linksWidget = page.menus?.linksWidget
-          ? page.menus.linksWidget
-          : null;
-
         // and add it all together
-        const allLinks = defaultLinks.concat(
-          links,
-          List<MenuRoute>(parentMenuRoutes).reverse(), // List lineage correctly
+        this.linksWidget = page.menus?.linksWidget ?? null;
+        this.contextLinks = this.defaultLinks.concat(
+          page.menus?.links ?? List(),
+          List(parentMenuRoutes).reverse(), // List lineage correctly
           current
         );
-
-        this.contextLinks = allLinks;
-        this.linksWidget = linksWidget;
       },
       (err) => {}
     );

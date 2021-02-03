@@ -19,30 +19,17 @@
       >
         <ng-container *ngIf="isAction(link)">
           <baw-menu-button
-            [id]="menuType + '-tooltip-' + i"
             [link]="link"
             [placement]="placement"
             [tooltip]="link.tooltip(user)"
           ></baw-menu-button>
         </ng-container>
-        <ng-container *ngIf="isInternalLink(link)">
-          <baw-menu-internal-link
-            [id]="menuType + '-tooltip-' + i"
+        <ng-container *ngIf="!isAction(link)">
+          <baw-menu-link
             [link]="link"
             [placement]="placement"
             [tooltip]="link.tooltip(user)"
-          >
-          </baw-menu-internal-link>
-        </ng-container>
-        <ng-container *ngIf="isExternalLink(link)">
-          <baw-menu-external-link
-            [id]="menuType + '-tooltip-' + i"
-            [link]="link"
-            [placement]="placement"
-            [tooltip]="link.tooltip(user)"
-            [uri]="link.uri(params)"
-          >
-          </baw-menu-external-link>
+          ></baw-menu-link>
         </ng-container>
       </li>
 

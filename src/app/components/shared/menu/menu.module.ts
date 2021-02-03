@@ -8,8 +8,7 @@ import { PipesModule } from "@pipes/pipes.module";
 import { IconsModule } from "@shared/icons/icons.module";
 import { LoadingModule } from "../loading/loading.module";
 import { MenuButtonComponent } from "./button/button.component";
-import { MenuExternalLinkComponent } from "./external-link/external-link.component";
-import { MenuInternalLinkComponent } from "./internal-link/internal-link.component";
+import { MenuLinkComponent } from "./link/link.component";
 import { MenuComponent } from "./menu.component";
 import { PermissionsShieldComponent } from "./permissions-shield/permissions-shield.component";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
@@ -21,8 +20,7 @@ import { WidgetDirective } from "./widget/widget.directive";
 @NgModule({
   declarations: [
     MenuButtonComponent,
-    MenuExternalLinkComponent,
-    MenuInternalLinkComponent,
+    MenuLinkComponent,
     MenuComponent,
     PermissionsShieldComponent,
     UserBadgeComponent,

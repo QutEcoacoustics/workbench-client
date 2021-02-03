@@ -37,20 +37,9 @@ export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   public ngOnInit() {
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (page: PageInfo) => {
-        const actionMenu =
-          page && page.menus && page.menus.actions
-            ? page.menus.actions
-            : List<AnyMenuItem>();
-
-        const actionWidget =
-          page && page.menus && page.menus.actions
-            ? page.menus.actionsWidget
-            : null;
-
-        this.actionTitle =
-          page && page.category ? page.category : defaultMenu.defaultCategory;
-        this.actionLinks = actionMenu;
-        this.actionWidget = actionWidget;
+        this.actionTitle = page.category ?? defaultMenu.defaultCategory;
+        this.actionLinks = page.menus?.actions ?? List();
+        this.actionWidget = page.menus?.actionsWidget ?? null;
       },
       (err: ApiErrorDetails) => console.error("ActionMenuComponent", err)
     );
