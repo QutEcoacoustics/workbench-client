@@ -224,19 +224,6 @@ describe("MenuComponent", () => {
           assertLinks(2);
         });
 
-        it(`should set link id for ${menuType} menu`, () => {
-          setup({ menuType, links: List([createLink()]) });
-          spec.detectChanges();
-          expect(test.getLink()[0].id).toBe(`${menuType}-tooltip-0`);
-        });
-
-        it(`should set link ids for ${menuType} menu`, () => {
-          setup({ menuType, links: List([createLink(), createLink()]) });
-          spec.detectChanges();
-          expect(test.getLink()[0].id).toBe(`${menuType}-tooltip-0`);
-          expect(test.getLink()[1].id).toBe(`${menuType}-tooltip-1`);
-        });
-
         it(`should set link placement for ${menuType} menu`, () => {
           setup({ menuType, links: List([createLink()]) });
           spec.detectChanges();

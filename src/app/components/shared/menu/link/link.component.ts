@@ -49,7 +49,6 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
     <ng-template #linkDetails>
       <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
       <span id="label">{{ link.label }}</span>
-      <span class="d-none" [id]="id">{{ tooltip }}</span>
     </ng-template>
   `,
   styleUrls: ["./link.component.scss"],
@@ -57,7 +56,6 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuLinkComponent implements OnChanges {
-  @Input() public id: string;
   @Input() public link: MenuRoute | MenuLink;
   @Input() public placement: Placement;
   @Input() public tooltip: string;
@@ -105,7 +103,12 @@ export class MenuLinkComponent implements OnChanges {
   private handleExternalLink(params: Params) {
     const uri = this.externalLink.uri(params);
 
-    // Prepend apiRoot to relative links
+    /*
+     * TODO This is a potential future point of failure if the website and the api
+     * do not exist on the same domain
+     *
+     * Prepend apiRoot to relative links
+     */
     this.href = uri.startsWith("/") ? this.apiRoot + uri : uri;
   }
 }

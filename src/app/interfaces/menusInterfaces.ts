@@ -92,7 +92,8 @@ export interface MenuItem extends LabelAndIcon {
   indentation?: number;
   /**
    * Force highlighting of this link, this is similar to setting the links `active`
-   * property to true.
+   * property to true. This is needed for links which should appear active regardless
+   * of current route, such as the page not found menu item.
    */
   highlight?: boolean;
   /**

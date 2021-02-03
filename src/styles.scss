@@ -45,6 +45,15 @@ body {
   }
 }
 
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.75;
+
+  &:hover, &:focus {
+    background-color: unset !important;
+  }
+}
+
 /* BACKWARDS COMPATIBILITY */
 
 // Create a grey coloured bootstrap button. This is used by the selectable-items component

@@ -11,15 +11,6 @@ button {
   &:focus {
     background-color: var(--theme-highlight-light);
   }
-
-  &:disabled {
-    cursor: not-allowed;
-
-    &:hover,
-    &:focus {
-      background-color: transparent;
-    }
-  }
 }
 
 .icon {

@@ -19,7 +19,6 @@
       >
         <ng-container *ngIf="isAction(link)">
           <baw-menu-button
-            [id]="createId(i)"
             [link]="link"
             [placement]="placement"
             [tooltip]="link.tooltip(user)"
@@ -27,7 +26,6 @@
         </ng-container>
         <ng-container *ngIf="!isAction(link)">
           <baw-menu-link
-            [id]="createId(i)"
             [link]="link"
             [placement]="placement"
             [tooltip]="link.tooltip(user)"
