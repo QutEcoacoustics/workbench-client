@@ -1,10 +1,8 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { BehaviorSubject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
 
 enum MapState {
   loading = 0,
@@ -15,9 +13,10 @@ enum MapState {
 /**
  * Map Service for Google Maps Wrapper. This prevents the google maps
  * api bundle being inserted into the application multiple times.
- * This service is based on the documentation provided by angular for
- * lazy loading google maps:
+ * This service is a mixture of resources given by:
  * https://github.com/angular/components/tree/master/src/google-maps
+ * https://developers.google.com/maps/documentation/javascript/overview#Loading_the_Maps_API
+ * https://github.com/googlemaps/js-api-loader/blob/master/src/index.ts
  */
 @Injectable({ providedIn: "root" })
 export class MapService extends withUnsubscribe() {
@@ -32,7 +31,7 @@ export class MapService extends withUnsubscribe() {
    */
   public isMapLoaded$ = new BehaviorSubject<MapState>(MapState.loading);
 
-  public constructor(private http: HttpClient, private config: ConfigService) {
+  public constructor(private config: ConfigService) {
     super();
     this.loadMap();
   }
@@ -109,7 +108,7 @@ export class MapService extends withUnsubscribe() {
 
     if (apiKey) {
       // Only add api key if it exists
-      mapsUrl += "?key=" + apiKey;
+      mapsUrl += `?key=${apiKey}`;
     } else if (this.config.config.production) {
       // Return error state if production build and no api key found
       this.isMapLoaded$.next(MapState.failure);
@@ -117,19 +116,27 @@ export class MapService extends withUnsubscribe() {
       return;
     }
 
-    /*
-     * JsonP requests allow us to request an external script across domains without
-     * issues due to cors policies. When the response occurs it will insert the
-     * script into the webpage. In this case, we are using it to insert the google
-     * maps api bundle into the website on service load
-     */
-    this.http
-      .jsonp(mapsUrl, "callback")
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        () => this.isMapLoaded$.next(MapState.success),
-        () => this.isMapLoaded$.next(MapState.failure)
-      );
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = mapsUrl;
+    script.defer = true; // Run after page load
+    script.async = true; // Run script async with rest of page
+
+    script.addEventListener("error", () =>
+      this.isMapLoaded$.next(MapState.failure)
+    );
+    script.addEventListener("load", () =>
+      this.isMapLoaded$.next(MapState.success)
+    );
+    this.insertMapIntoDocument(script);
+  }
+
+  /**
+   * Insert script to load google maps bundle into website document.
+   * This is a separate function to make it easier for unit tests.
+   */
+  private insertMapIntoDocument(script: HTMLScriptElement) {
+    document.head.appendChild(script);
   }
 }
 
