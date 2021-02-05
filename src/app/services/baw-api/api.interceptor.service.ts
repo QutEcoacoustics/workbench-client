@@ -46,7 +46,7 @@ export class BawApiInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    // Don't add these headers to requests to cms service
+    // Don't add these headers to requests to non json requests
     if (request.responseType !== "text") {
       request = request.clone({
         setHeaders: {
