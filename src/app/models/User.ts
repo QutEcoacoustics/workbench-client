@@ -75,7 +75,6 @@ export class User extends AbstractModel implements IUser {
   public readonly kind = "User";
   @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
   public readonly email?: string;
   @bawPersistAttr
   public readonly userName?: UserName;

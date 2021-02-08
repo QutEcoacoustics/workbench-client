@@ -16,7 +16,7 @@ function timestamp(x: number) {
 }
 
 const registerEndpoint = stringTemplate`/security/`;
-const signInEndpoint = stringTemplate`/my_account/sign_in`;
+const signInEndpoint = stringTemplate`/my_account/sign_in/`;
 const signOutEndpoint = stringTemplate`/security/`;
 const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${timestamp}`;
 
