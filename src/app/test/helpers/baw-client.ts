@@ -7,6 +7,7 @@ import { BawClientComponent } from "@shared/baw-client/baw-client.component";
 import { SharedModule } from "@shared/shared.module";
 import { websiteHttpUrl } from "./url";
 
+//TODO: OLD-CLIENT REMOVE
 export function validateBawClientPage<Component extends Type<any>>(
   routes: StrongRoute,
   component: Component,
