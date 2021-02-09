@@ -1,6 +1,7 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { NavigationEnd, Router } from "@angular/router";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { assetRoot } from "@services/config/config.service";
 import { interval } from "rxjs";
@@ -32,6 +33,11 @@ import { filter, takeUntil } from "rxjs/operators";
 })
 export class BawClientComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("content") private iframeRef: ElementRef<HTMLIFrameElement>;
+  /**
+   * Forces baw-client to render a specific page. The page url should be relative,
+   * beginning with a `/`
+   */
+  @Input() public page: string;
   public url: SafeResourceUrl;
   public loading = true;
   /** Used to track the height of the iframe */
@@ -42,13 +48,21 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
   }
 
   public ngOnInit() {
-    this.updateUrl(this.router.url);
-    this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe((event: NavigationEnd) => this.updateUrl(event.url));
+    if (isInstantiated(this.page)) {
+      // Use page provided
+      this.updateUrl(this.page);
+    } else {
+      // Use router url
+      this.updateUrl(this.router.url);
+
+      // Monitor any changes to current url
+      this.router.events
+        .pipe(
+          filter((event) => event instanceof NavigationEnd),
+          takeUntil(this.unsubscribe)
+        )
+        .subscribe((event: NavigationEnd) => this.updateUrl(event.url));
+    }
 
     // Update iframe size every 250 milliseconds
     interval(250)

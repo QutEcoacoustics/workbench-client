@@ -9,6 +9,7 @@ import { DeviceDetectorService } from "ngx-device-detector";
 import { BehaviorSubject } from "rxjs";
 import { BawClientComponent } from "./baw-client.component";
 
+// TODO Add tests for page input when used
 describe("BawClientComponent", () => {
   let isFirefox: boolean;
   let events: BehaviorSubject<NavigationEnd>;
