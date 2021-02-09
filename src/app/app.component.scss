@@ -83,6 +83,32 @@
     flex: 1;
     min-height: 100%;
     padding: 0px;
+
+    /*
+    * Page content, uses column flexbox because error outlet
+    * exists inside this section
+    */
+    > #page {
+      display: flex;
+      flex-direction: column;
+      flex: 8;
+      order: 2;
+
+      // Change order to swap with action menu when compacted
+      @include media("<large") {
+        flex: 1;
+        order: 3;
+      }
+
+      @include media(">=large", "<extra-large") {
+        flex: 6;
+      }
+
+      // Make page component fill screen
+      > :last-child {
+        flex: 1;
+      }
+    }
   }
 }
 
