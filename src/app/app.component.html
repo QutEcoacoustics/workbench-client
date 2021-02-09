@@ -4,18 +4,18 @@
 
   <!-- App Content-->
   <div [ngClass]="{ container: !fullscreen, 'container-fluid': fullscreen }">
-    <!-- Secondary Menu (only active on menuLayout) -->
+    <!-- Secondary Menu (only visible when layout is not fullscreen) -->
     <div id="secondary">
       <router-outlet name="secondary"></router-outlet>
     </div>
 
-    <!-- Default and Error Menus -->
+    <!-- Default and Error Segments -->
     <div id="page">
       <router-outlet name="error"></router-outlet>
       <router-outlet (activate)="updatePageLayout($event)"></router-outlet>
     </div>
 
-    <!-- Action Menu (only active on menuLayout) -->
+    <!-- Action Menu (only visible when layout is not fullscreen) -->
     <div id="action">
       <router-outlet name="action"></router-outlet>
     </div>

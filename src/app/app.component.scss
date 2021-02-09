@@ -33,7 +33,7 @@
 
   // Menu Layout
   > .container {
-    // Compact menus on large displays
+    // Compact/inline menus on displays smaller than large
     @include media("<large") {
       flex-direction: column;
     }

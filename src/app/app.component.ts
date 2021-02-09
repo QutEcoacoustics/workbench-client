@@ -47,7 +47,12 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
   }
 
   /**
-   * Determine whether the currently shown component uses the menu layout or fullscreen
+   * Determine whether the currently shown component uses the menu layout or fullscreen.
+   * Router-outlets emit an activate event `(activate)` when a new component is
+   * instantiated, this event contains a reference to the enclosed component. This
+   * allows us to hook into the default router-outlet's component (which is the page
+   * component) and read the pageInfo from the component. This will run whenever the
+   * component rendered inside the router-outlet changes.
    */
   public updatePageLayout(component: any) {
     this.fullscreen = !!(component?.constructor?.pageInfo as PageInfo)
