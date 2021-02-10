@@ -102,7 +102,8 @@ export class Region extends AbstractModel implements IRegion {
   }
 
   public get visualizeUrl(): string {
-    // TODO This link does not route correctly
-    return visualizeMenuItem.route.toRouterLink({ regionId: this.id });
+    // TODO This link does not route correctly (issue #772)
+    // /visualize?siteIds=[1,2,3,4]
+    return visualizeMenuItem.route.toRouterLink();
   }
 }

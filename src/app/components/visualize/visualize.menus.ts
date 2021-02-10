@@ -1,24 +1,25 @@
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 
 export const visualizeRoute = StrongRoute.newRoot().add(
   "visualize",
-  ({ siteId, regionId, projectId, extent0, extent1, lane }) => {
+  ({ siteIds, siteId, regionId, projectId, extent0, extent1, lane }) => {
     const qsp = {
       extent0,
       extent1,
       lane,
     };
 
-    if (siteId) {
-      return { siteId, ...qsp };
-    } else if (regionId) {
-      return { regionId, ...qsp };
-    } else if (projectId) {
-      return { projectId, ...qsp };
-    } else {
-      return qsp;
-    }
+    const priority = [
+      { key: "siteId", value: siteId },
+      { key: "siteIds", value: siteIds },
+      { key: "projectId", value: projectId },
+    ];
+    const keyValuePair = priority.find((kvp) => isInstantiated(kvp.value));
+    return keyValuePair
+      ? qsp
+      : { ...qsp, [keyValuePair.key]: keyValuePair.value };
   }
 );
 
