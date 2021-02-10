@@ -106,7 +106,9 @@ export class ShallowAudioEventsService
     filters: Filters<AudioEvent>,
     user: IdOr<User>
   ): Observable<AudioEvent[]> {
-    return this.filter(this.filterByForeignKey(filters, "creatorId", user));
+    return this.filter(
+      this.filterThroughAssociation(filters, "creatorId", user)
+    );
   }
 
   /**
@@ -120,7 +122,11 @@ export class ShallowAudioEventsService
     site: IdOr<Site>
   ): Observable<AudioEvent[]> {
     return this.filter(
-      this.filterByForeignKey(filters, "audio_recordings.site_id" as any, site)
+      this.filterThroughAssociation(
+        filters,
+        "audio_recordings.site_id" as any,
+        site
+      )
     );
   }
 }

@@ -52,7 +52,7 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
    */
   public filterBySite(filters: Filters<IAudioRecording>, site: IdOr<Site>) {
     return this.filter(
-      this.filterByForeignKey(filters, "siteId", site) as Filters
+      this.filterThroughAssociation(filters, "siteId", site) as Filters
     );
   }
 
@@ -68,12 +68,16 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
     region: IdOr<Region>
   ) {
     if (isId(region)) {
-      return this.filterByForeignKey(filters, "sites.regionId" as any, region);
+      return this.filterThroughAssociation(
+        filters,
+        "sites.regionId" as any,
+        region
+      );
     }
 
     // If we know the site ids, no need to make unnecessary db request
     return this.filter(
-      this.filterByForeignKeys(
+      this.filterThroughAssociations(
         filters,
         "siteId",
         Array.from(region.siteIds)
