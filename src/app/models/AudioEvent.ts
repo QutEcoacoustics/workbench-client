@@ -87,7 +87,7 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   }
 
   public get listenViewUrl(): string {
-    // TODO Add start and end query params
+    // TODO Add start and end query params (issue #772)
     return listenRecordingMenuItem.route.toRouterLink({
       audioRecordingId: this.audioRecordingId,
       audioEventId: this.id,

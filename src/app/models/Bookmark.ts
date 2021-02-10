@@ -63,14 +63,14 @@ export class Bookmark extends AbstractModel implements IBookmark {
 
   public listenViewUrl(recordingId: Id, startOffset?: number): string {
     console.warn("Bookmark listenViewUrl not implemented.");
-    // TODO This link is wrong
+    // TODO This link is wrong (issue #772)
     return listenMenuItem.route.toRouterLink();
   }
 
   public get viewUrl(): string {
     // return `https://www.ecosounds.org/listen/${this.audioRecordingId}?start=${this.offsetSeconds}&end=${???}`;
     console.warn("Bookmark viewUrl not implemented.");
-    // TODO This link is wrong
+    // TODO This link is wrong (issue #772)
     return listenMenuItem.route.toRouterLink();
   }
 }

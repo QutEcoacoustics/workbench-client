@@ -126,7 +126,7 @@ export class Site extends AbstractModel implements ISite {
   }
 
   public get visualizeUrl(): string {
-    // TODO This link is wrong
+    // TODO This link is wrong (issue #772)
     // /visualize?siteId=[siteId]
     return visualizeMenuItem.route.toRouterLink({ siteId: this.id });
   }
