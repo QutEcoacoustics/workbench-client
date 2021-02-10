@@ -12,6 +12,7 @@ import {
   id,
   IdOr,
   IdParamOptional,
+  isId,
   option,
   ReadonlyApi,
 } from "../api-common";
@@ -66,7 +67,7 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
     filters: Filters<IAudioRecording>,
     region: IdOr<Region>
   ) {
-    if (typeof region === "number") {
+    if (isId(region)) {
       return this.filterByForeignKey(filters, "sites.regionId" as any, region);
     }
 
