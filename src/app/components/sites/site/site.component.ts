@@ -30,7 +30,7 @@ class SiteComponent extends PageComponent implements OnInit {
   public oldestRecording: AudioRecording;
   public newestRecording: AudioRecording;
   public marker: List<MapMarkerOption>;
-  public events: AudioEvent[];
+  public recentAudioEvents: AudioEvent[];
 
   public constructor(
     private audioEventsApi: ShallowAudioEventsService,
@@ -69,16 +69,12 @@ class SiteComponent extends PageComponent implements OnInit {
           // Limit the selection of audio events by tagging count
           const maxTags = 10;
           let numTags = 0;
-          this.events = [];
+          this.recentAudioEvents = [];
 
           for (const event of events) {
-            // Don't insert events with no tags
-            if (event.taggings.length === 0) {
-              continue;
-            }
-
-            this.events.push(event);
-            numTags += event.taggings.length;
+            this.recentAudioEvents.push(event);
+            // An event with no taggings will still show a (not tagged) tag
+            numTags += Math.max(event.taggings.length, 1);
 
             if (numTags > maxTags) {
               return;

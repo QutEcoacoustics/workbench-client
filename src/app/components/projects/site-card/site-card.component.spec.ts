@@ -47,7 +47,9 @@ describe("SiteCardComponent", () => {
     const site = isSite ? (model as Site) ?? defaultSite : undefined;
     const region = !isSite ? (model as Region) ?? defaultRegion : undefined;
     let recordings: AudioRecording[] | ApiErrorDetails = [defaultRecording];
-    if (recording) {
+    if (recording === null) {
+      recordings = [null];
+    } else if (recording) {
       recordings =
         recording instanceof AudioRecording ? [recording] : recording;
     }
@@ -123,7 +125,7 @@ describe("SiteCardComponent", () => {
   const inputTypes = [
     {
       modelType: "site",
-      setup: () => setup(true),
+      setup: (recording?: AudioRecording) => setup(true, undefined, recording),
       play: true,
     },
     {
@@ -138,6 +140,7 @@ describe("SiteCardComponent", () => {
       return {
         details: spec.query<HTMLAnchorElement>("#details"),
         play: spec.query<HTMLAnchorElement>("#play"),
+        noAudio: spec.query<HTMLAnchorElement>("#no-audio"),
         visualize: spec.query<HTMLAnchorElement>("#visualize"),
       };
     }
@@ -149,16 +152,18 @@ describe("SiteCardComponent", () => {
     describe(inputType.modelType + " links", () => {
       let recordingPromise: Promise<any>;
 
-      beforeEach(() => {
+      function initializeComponent() {
         recordingPromise = inputType.setup();
         spec.detectChanges();
-      });
+      }
 
       it("should display details link", () => {
+        initializeComponent();
         assertLink(getLinks().details, "Details");
       });
 
       it("should navigate user to site when clicking details link", () => {
+        initializeComponent();
         assertRoute(
           getLinks().details,
           spec.component.model.getViewUrl(defaultProject)
@@ -167,22 +172,35 @@ describe("SiteCardComponent", () => {
 
       if (inputType.play) {
         it("should display loading spinner", () => {
+          initializeComponent();
           expect(spec.query(LoadingComponent)).toBeTruthy();
         });
 
         it("should clear loading spinner when recording retrieved", async () => {
+          initializeComponent();
           await recordingPromise;
           spec.detectChanges();
           expect(spec.query(LoadingComponent)).toBeFalsy();
         });
 
-        it("should display play link if site model", async () => {
+        it("should display play link if recording exists", async () => {
+          initializeComponent();
           await recordingPromise;
           spec.detectChanges();
           assertLink(getLinks().play, "Play");
         });
 
+        it("should display no audio placeholder if no recordings", async () => {
+          recordingPromise = inputType.setup(null);
+          spec.detectChanges();
+          await recordingPromise;
+          spec.detectChanges();
+          debugger;
+          assertLink(getLinks().noAudio, "No Audio");
+        });
+
         it("should navigate user to listen page when clicking play link", async () => {
+          initializeComponent();
           await recordingPromise;
           spec.detectChanges();
           assertRoute(
@@ -194,11 +212,13 @@ describe("SiteCardComponent", () => {
         });
       } else {
         it("should not display play link", () => {
+          initializeComponent();
           expect(getLinks().play).toBeFalsy();
         });
       }
 
       it("should display visualize link", () => {
+        initializeComponent();
         assertLink(getLinks().visualize, "Visualise");
       });
 

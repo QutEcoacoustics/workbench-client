@@ -86,13 +86,24 @@
 
       <ul class="nav nav-pills">
         <!-- Loading animation -->
-        <baw-loading *ngIf="!events" id="annotation-loader"></baw-loading>
+        <baw-loading
+          *ngIf="!recentAudioEvents"
+          id="annotation-loader"
+        ></baw-loading>
 
         <!-- Handle no annotations -->
-        <p *ngIf="events?.length === 0">No recent annotations found</p>
+        <p *ngIf="recentAudioEvents?.length === 0">
+          No recent annotations found
+        </p>
 
         <!-- For each annotation and tagging -->
-        <ng-container *ngFor="let event of events">
+        <ng-container *ngFor="let event of recentAudioEvents">
+          <li *ngIf="event.taggings.length === 0" class="nav-item">
+            <!-- Annotation link -->
+            <a class="nav-link" [routerLink]="event.listenViewUrl">
+              "(not tagged)" by {{ event.creator?.userName }}
+            </a>
+          </li>
           <li *ngFor="let tagging of event.taggings" class="nav-item">
             <!-- Annotation link -->
             <a class="nav-link" [routerLink]="event.listenViewUrl">

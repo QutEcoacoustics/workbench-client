@@ -51,6 +51,15 @@ import { takeUntil } from "rxjs/operators";
               <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
               Play
             </a>
+            <!-- No audio -->
+            <a
+              *ngIf="recording === null"
+              id="no-audio"
+              class="nav-link disabled"
+            >
+              <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
+              No Audio
+            </a>
             <!-- Loading while retrieving recording -->
             <baw-loading
               *ngIf="recording === undefined"
