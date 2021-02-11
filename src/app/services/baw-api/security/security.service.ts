@@ -1,19 +1,22 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
+import { param } from "@baw-api/api-common";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AbstractModel } from "@models/AbstractModel";
 import { bawPersistAttr } from "@models/AttributeDecorators";
-import { SessionUser } from "@models/User";
+import { SessionUser, User } from "@models/User";
 import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
-import { catchError, map, mergeMap } from "rxjs/operators";
+import { catchError, map, mergeMap, tap } from "rxjs/operators";
 import { ApiErrorDetails } from "../api.interceptor.service";
-import { BawApiService } from "../baw-api.service";
+import { apiReturnCodes, BawApiService } from "../baw-api.service";
 import { UserService } from "../user/user.service";
 
 const registerEndpoint = stringTemplate`/security/`;
-const signInEndpoint = stringTemplate`/security/`;
+const signInEndpoint = stringTemplate`/my_account/sign_in/`;
 const signOutEndpoint = stringTemplate`/security/`;
+const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
 
 /**
  * Security Service.
@@ -58,7 +61,63 @@ export class SecurityService extends BawApiService<SessionUser> {
    * @param details Details provided by login form
    */
   public signIn(details: LoginDetails): Observable<void> {
-    return this.handleAuth(this.apiCreate(signInEndpoint(), details));
+    function setFormData(page: any, body: URLSearchParams) {
+      const err: ApiErrorDetails = {
+        status: apiReturnCodes.unknown,
+        message: "Unable to retrieve authenticity token for login request",
+      };
+
+      // Catch wrong type of response
+      if (typeof page !== "string") {
+        throwError(err);
+        return;
+      }
+
+      // Extract auth token if exists
+      const token = page.match(/name="authenticity_token" value="(.+?)"/);
+      if (!isInstantiated(token?.[1])) {
+        throwError(err);
+        return;
+      }
+
+      // Set form data
+      body.set("user[login]", details.login);
+      body.set("user[password]", details.password);
+      body.set("user[remember_me]", "0");
+      body.set("commit", "Log+in");
+      body.set("authenticity_token", token[1]);
+    }
+
+    const formData = new URLSearchParams();
+
+    // Request login form page
+    return this.http
+      .get(this.getPath(signInEndpoint()), { responseType: "text" })
+      .pipe(
+        // Extract form data from login form
+        tap((page: string) => setFormData(page, formData)),
+        // Mimic a traditional form-based sign in to get a well-formed auth cookie
+        // Needed because of https://github.com/QutEcoacoustics/baw-server/issues/509
+        mergeMap(() => this.signInWithFormData(formData)),
+        // Trade the cookie for an API auth token (mimicking old baw-client)
+        mergeMap(() =>
+          this.apiShow(sessionUserEndpoint(Date.now().toString()))
+        ),
+        // Save to local storage
+        tap((user: SessionUser) => this.storeLocalUser(user)),
+        // Get user details
+        mergeMap(() => this.userService.show()),
+        // Update session user with user details and save to local storage
+        tap((user: User) =>
+          this.storeLocalUser(
+            new SessionUser({ ...this.getLocalUser(), ...user.toJSON() })
+          )
+        ),
+        // Trigger auth observable
+        tap(() => this.authTrigger.next(null)),
+        // Handle errors
+        catchError(this.handleError)
+      );
   }
 
   /**
@@ -72,6 +131,22 @@ export class SecurityService extends BawApiService<SessionUser> {
       }),
       catchError(this.handleError)
     );
+  }
+
+  /**
+   * Use the form-based sign in to authenticate. The server will issue a
+   * traditional session cookie which we will later trade for an auth token
+   */
+  private signInWithFormData(formData: URLSearchParams) {
+    return this.http.post(this.getPath(signInEndpoint()), formData.toString(), {
+      responseType: "text",
+      headers: new HttpHeaders({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Accept: "text/html",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        "Content-Type": "application/x-www-form-urlencoded",
+      }),
+    });
   }
 
   /**

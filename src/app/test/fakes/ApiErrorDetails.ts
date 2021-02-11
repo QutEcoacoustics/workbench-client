@@ -1,5 +1,5 @@
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { apiReturnCodes } from "@baw-api/baw-api.service";
+import { ApiResponse, apiReturnCodes } from "@baw-api/baw-api.service";
 
 type HTTPStatus =
   | "Unauthorized"
@@ -8,6 +8,13 @@ type HTTPStatus =
   | "Unprocessable Entity"
   | "Custom";
 
+/**
+ * Used to generate a well constructed error object after the interceptor
+ * has intercepted and converted the API response
+ *
+ * @param type Http status type
+ * @param custom Custom error details
+ */
 export function generateApiErrorDetails(
   type: HTTPStatus = "Unauthorized",
   custom?: Partial<ApiErrorDetails>
@@ -38,5 +45,31 @@ export function generateApiErrorDetails(
     status: custom?.status ?? status ?? apiReturnCodes.unknown,
     message: custom?.message ?? message ?? "Unknown",
     info: custom?.info ?? undefined,
+  };
+}
+
+/**
+ * Used to generate a well constructed error object for API responses
+ * that do not conform to the standard
+ *
+ * @param type Http status type
+ * @param custom Custom error details
+ */
+export function generateApiErrorResponse(
+  type: HTTPStatus = "Unauthorized",
+  custom?: Partial<ApiErrorDetails>
+): ApiResponse<null> {
+  const details = generateApiErrorDetails(type, custom);
+
+  return {
+    meta: {
+      status: details.status,
+      message: type,
+      error: {
+        details: custom?.message ?? details.message,
+        info: custom?.info,
+      },
+    },
+    data: null,
   };
 }

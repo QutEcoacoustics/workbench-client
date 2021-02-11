@@ -237,7 +237,10 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected httpGet(path: string): Observable<ApiResponse<Model | Model[]>> {
-    return this.http.get<ApiResponse<Model>>(this.getPath(path));
+    return this.http.get<ApiResponse<Model>>(this.getPath(path), {
+      // Set responseType for interceptor
+      responseType: "json",
+    });
   }
 
   /**
@@ -247,7 +250,10 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected httpDelete(path: string): Observable<ApiResponse<Model | void>> {
-    return this.http.delete<ApiResponse<null>>(this.getPath(path));
+    return this.http.delete<ApiResponse<null>>(this.getPath(path), {
+      // Set responseType for interceptor
+      responseType: "json",
+    });
   }
 
   /**
@@ -258,7 +264,10 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected httpPost(path: string, body?: any): Observable<ApiResponse<Model>> {
-    return this.http.post<ApiResponse<Model>>(this.getPath(path), body);
+    return this.http.post<ApiResponse<Model>>(this.getPath(path), body, {
+      // Set responseType for interceptor
+      responseType: "json",
+    });
   }
 
   /**
@@ -272,7 +281,10 @@ export abstract class BawApiService<Model extends AbstractModel> {
     path: string,
     body?: any
   ): Observable<ApiResponse<Model>> {
-    return this.http.patch<ApiResponse<Model>>(this.getPath(path), body);
+    return this.http.patch<ApiResponse<Model>>(this.getPath(path), body, {
+      // Set responseType for interceptor
+      responseType: "json",
+    });
   }
 
   /**
@@ -310,6 +322,15 @@ export abstract class BawApiService<Model extends AbstractModel> {
   }
 
   /**
+   * Concatenates path with apiRoot to form a full URL.
+   *
+   * @param path Path fragment beginning with a `/`
+   */
+  protected getPath(path: string): string {
+    return this.apiRoot + path;
+  }
+
+  /**
    * Modify a base filter to add an association to another model/group of models
    *
    * @param filters Base Filters
@@ -339,15 +360,6 @@ export abstract class BawApiService<Model extends AbstractModel> {
         },
       },
     };
-  }
-
-  /**
-   * Concatenates path with apiRoot to form a full URL.
-   *
-   * @param path Path fragment
-   */
-  private getPath(path: string): string {
-    return this.apiRoot + path;
   }
 }
 
