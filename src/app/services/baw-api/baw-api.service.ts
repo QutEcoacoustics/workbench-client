@@ -310,6 +310,15 @@ export abstract class BawApiService<Model extends AbstractModel> {
   }
 
   /**
+   * Concatenates path with apiRoot to form a full URL.
+   *
+   * @param path Path fragment
+   */
+  protected getPath(path: string): string {
+    return this.apiRoot + path;
+  }
+
+  /**
    * Modify a base filter to add an association to another model/group of models
    *
    * @param filters Base Filters
