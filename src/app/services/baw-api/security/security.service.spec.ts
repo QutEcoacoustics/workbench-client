@@ -51,6 +51,8 @@ describe("SecurityService", () => {
   });
 
   beforeEach(() => {
+    localStorage.clear();
+
     spec = createService();
     userApi = spec.inject(UserService);
     apiRoot = spec.inject(ConfigService).environment.apiRoot;
