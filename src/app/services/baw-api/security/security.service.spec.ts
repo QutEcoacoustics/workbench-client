@@ -267,8 +267,8 @@ describe("SecurityService", () => {
         handleLoginForm(defaultAuthToken);
         handleCookie(true);
 
-        // Validate timestamp within 100 ms
-        const timestamp = Math.floor(Date.now() / 100);
+        // Validate timestamp within 1000 ms
+        const timestamp = Math.floor(Date.now() / 1000);
         expect(
           (spec.service["apiShow"] as jasmine.Spy).calls.mostRecent().args[0]
         ).toContain("/security/user?antiCache=" + timestamp);
