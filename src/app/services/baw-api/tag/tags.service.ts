@@ -68,7 +68,7 @@ export class TagsService extends StandardApi<Tag> {
     user: IdOr<User>
   ): Observable<Tag[]> {
     return this.filter(
-      this.filterByForeignKey(filters, "creatorId", user) as Filters
+      this.filterThroughAssociation(filters, "creatorId", user) as Filters
     );
   }
 

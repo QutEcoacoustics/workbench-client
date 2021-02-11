@@ -41,12 +41,12 @@ export class StrongRouteDirective
     locationStrategy: LocationStrategy
   ) {
     super(router, route, locationStrategy);
+    this._router = this["router"];
+    this._route = this["route"];
   }
 
   public ngOnChanges(changes: SimpleChanges) {
-    if (!this._router || !this._route) {
-      this._router = this["router"];
-      this._route = this["route"];
+    if (changes.strongRoute.isFirstChange) {
       this._route.params
         .pipe(takeUntil(this.unsubscribe))
         .subscribe((params) => (this.angularRouteParams = params));

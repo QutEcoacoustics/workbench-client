@@ -13,6 +13,7 @@ import { LineTruncationLibModule } from "ngx-line-truncation";
 import { ToastrModule } from "ngx-toastr";
 import { DirectivesModule } from "src/app/directives/directives.module";
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
+import { BawClientModule } from "./baw-client/baw-client.module";
 import { CardsModule } from "./cards/cards.module";
 import { CheckboxComponent } from "./checkbox/checkbox.component";
 import { CmsComponent } from "./cms/cms.component";
@@ -64,6 +65,7 @@ export const sharedModules = [
   IconsModule,
   DirectivesModule,
   PipesModule,
+  BawClientModule,
   CustomInputsModule,
   CardsModule,
   HeaderModule,

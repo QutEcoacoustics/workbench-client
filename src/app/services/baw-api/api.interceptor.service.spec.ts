@@ -1,54 +1,44 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { HttpClient, HttpClientModule, HttpParams } from "@angular/common/http";
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import { TestRequest } from "@angular/common/http/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { SessionUser } from "@models/User";
+import {
+  createHttpFactory,
+  HttpMethod,
+  SpectatorHttp,
+} from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateApiErrorResponse } from "@test/fakes/ApiErrorDetails";
 import { generateSessionUser } from "@test/fakes/User";
+import { noop } from "rxjs";
+import { ApiResponse } from "./baw-api.service";
 import {
   apiErrorInfoDetails,
   shouldNotFail,
   shouldNotSucceed,
 } from "./baw-api.service.spec";
 
-// TODO Add tests for CMS
 describe("BawApiInterceptor", () => {
-  let api: SecurityService;
+  let apiRoot: string;
   let http: HttpClient;
   let config: ConfigService;
-  let httpMock: HttpTestingController;
-  let apiRoot: string;
+  let spec: SpectatorHttp<SecurityService>;
+  const createService = createHttpFactory({
+    service: SecurityService,
+    imports: [HttpClientModule, MockBawApiModule],
+  });
 
-  function errorResponse(
-    url: string,
-    status: number,
-    statusText: string,
-    error: any
-  ) {
-    const req = httpMock.expectOne(url);
-    req.flush(
-      {
-        meta: {
-          status,
-          message: statusText,
-          error,
-        },
-        data: null,
-      },
-      { status, statusText }
-    );
+  function getPath(path: string) {
+    return apiRoot + path;
   }
 
   function setLoggedIn(authToken?: string) {
-    spyOn(api, "isLoggedIn").and.callFake(() => true);
-    spyOn(api, "getLocalUser").and.callFake(() =>
+    spyOn(spec.service, "isLoggedIn").and.callFake(() => true);
+    spyOn(spec.service, "getLocalUser").and.callFake(() =>
       authToken
         ? new SessionUser({ ...generateSessionUser(), authToken })
         : new SessionUser(generateSessionUser())
@@ -56,126 +46,126 @@ describe("BawApiInterceptor", () => {
   }
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientModule, HttpClientTestingModule, MockBawApiModule],
-    });
-
-    api = TestBed.inject(SecurityService);
-    http = TestBed.inject(HttpClient);
-    httpMock = TestBed.inject(HttpTestingController);
-    config = TestBed.inject(ConfigService);
-
-    apiRoot = config.environment.apiRoot;
-  });
-
-  afterEach(() => {
-    httpMock.verify();
+    spec = createService();
+    http = spec.inject(HttpClient);
+    config = spec.inject(ConfigService);
+    apiRoot = spec.inject(API_ROOT);
   });
 
   describe("error handling", () => {
+    function convertErrorResponseToDetails(
+      response: ApiResponse<null>
+    ): ApiErrorDetails {
+      return {
+        status: response.meta.status,
+        message: response.meta.error.details,
+        info: response.meta.error.info,
+      };
+    }
+
     it("should handle api error response", () => {
+      const error = generateApiErrorResponse("Unauthorized", {
+        message: "Incorrect user name",
+      });
+
       http
-        .get<any>(apiRoot + "/brokenapiroute")
-        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
-          expect(err).toEqual(
-            generateApiErrorDetails("Unauthorized", {
-              message: "Incorrect user name",
-              info: undefined,
-            })
-          );
+        .get(getPath("/brokenapiroute"))
+        .subscribe(shouldNotSucceed, (err) => {
+          expect(err).toEqual(convertErrorResponseToDetails(error));
         });
 
-      errorResponse(apiRoot + "/brokenapiroute", 401, "Unauthorized", {
-        details: "Incorrect user name",
+      spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET).flush(error, {
+        status: error.meta.status,
+        statusText: error.meta.message,
       });
     });
 
     it("should handle api error response with info", () => {
+      const error = generateApiErrorResponse("Unprocessable Entity", {
+        info: apiErrorInfoDetails.info,
+      });
+
       http
-        .get<any>(apiRoot + "/brokenapiroute")
-        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
-          expect(err).toEqual(
-            generateApiErrorDetails("Unprocessable Entity", {
-              info: apiErrorInfoDetails.info,
-            })
-          );
+        .get(getPath("/brokenapiroute"))
+        .subscribe(shouldNotSucceed, (err) => {
+          expect(err).toEqual(convertErrorResponseToDetails(error));
         });
 
-      errorResponse(apiRoot + "/brokenapiroute", 422, "Unprocessable Entity", {
-        details: "Record could not be saved",
-        info: apiErrorInfoDetails.info,
+      spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET).flush(error, {
+        status: error.meta.status,
+        statusText: error.meta.message,
       });
     });
 
     it("should handle http error response", () => {
       http
-        .get<any>(apiRoot + "/brokenapiroute")
-        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
+        .get(getPath("/brokenapiroute"))
+        .subscribe(shouldNotSucceed, (err) => {
           expect(err).toEqual({
             status: 404,
             message: `Http failure response for ${apiRoot}/brokenapiroute: 404 Page Not Found`,
           });
         });
 
-      const req = httpMock.expectOne(apiRoot + "/brokenapiroute");
-      req.flush({}, { status: 404, statusText: "Page Not Found" });
+      spec
+        .expectOne(getPath("/brokenapiroute"), HttpMethod.GET)
+        .flush({}, { status: 404, statusText: "Page Not Found" });
     });
   });
 
   describe("non baw api traffic", () => {
-    const noop = () => {};
-
     describe("outgoing data", () => {
-      it("should not set accept header", () => {
-        http.get<any>("https://brokenlink").subscribe(noop, noop, noop);
+      function makeRequest() {
+        http.get("https://brokenlink").subscribe(noop, noop);
+        return spec.expectOne("https://brokenlink", HttpMethod.GET);
+      }
 
-        const req = httpMock.expectOne("https://brokenlink");
+      it("should not set accept header", () => {
+        const req = makeRequest();
         expect(req.request.headers.has("Accept")).toBeFalsy();
       });
 
       it("should not set Authorization header when not logged in", () => {
-        http.get<any>("https://brokenlink").subscribe(noop, noop, noop);
-
-        const req = httpMock.expectOne("https://brokenlink");
+        const req = makeRequest();
         expect(req.request.headers.has("Authorization")).toBeFalsy();
       });
 
       it("should not set Authorization header when logged in", () => {
         setLoggedIn();
-        http.get<any>("https://brokenlink").subscribe(noop, noop, noop);
-
-        const req = httpMock.expectOne("https://brokenlink");
+        const req = makeRequest();
         expect(req.request.headers.has("Authorization")).toBeFalsy();
       });
 
       it("should not set content-type header", () => {
-        http.get<any>("https://brokenlink").subscribe(noop, noop, noop);
-
-        const req = httpMock.expectOne("https://brokenlink");
+        const req = makeRequest();
         expect(req.request.headers.has("Content-Type")).toBeFalsy();
       });
 
       it("should not convert into snake case for GET requests", () => {
-        const params = new HttpParams().set("shouldNotConvert", "true");
-
         http
-          .get<any>("https://brokenlink/brokenapiroute", { params })
-          .subscribe(noop, noop, noop);
-
-        const req = httpMock.expectOne(
-          "https://brokenlink/brokenapiroute?shouldNotConvert=true"
-        );
-        expect(req).toBeTruthy();
+          .get("https://brokenlink/brokenapiroute", {
+            params: new HttpParams().set("shouldNotConvert", "true"),
+          })
+          .subscribe(noop, noop);
+        expect(
+          spec.expectOne(
+            "https://brokenlink/brokenapiroute?shouldNotConvert=true",
+            HttpMethod.GET
+          )
+        ).toBeInstanceOf(TestRequest);
       });
 
       it("should not convert into snake case for POST requests", () => {
         http
-          .post<any>("https://brokenlink/brokenapiroute", {
+          .post("https://brokenlink/brokenapiroute", {
             shouldNotConvert: true,
           })
-          .subscribe(noop, noop, noop);
+          .subscribe(noop, noop);
 
-        const req = httpMock.expectOne("https://brokenlink/brokenapiroute");
+        const req = spec.expectOne(
+          "https://brokenlink/brokenapiroute",
+          HttpMethod.POST
+        );
         expect(req.request.body).toEqual({ shouldNotConvert: true });
       });
     });
@@ -183,92 +173,103 @@ describe("BawApiInterceptor", () => {
     describe("incoming data", () => {
       it("should not convert into camel case for GET requests", () => {
         http
-          .get<any>("https://brokenlink/brokenapiroute")
-          .subscribe((response) => {
-            expect(response).toBeTruthy();
-            expect(response).toEqual({ dummy_response: true });
-          }, shouldNotFail);
-
-        const req = httpMock.expectOne("https://brokenlink/brokenapiroute");
-        req.flush({ dummy_response: true });
+          .get("https://brokenlink/brokenapiroute")
+          .subscribe(
+            (response) => expect(response).toEqual({ dummy_response: true }),
+            shouldNotFail
+          );
+        spec
+          .expectOne("https://brokenlink/brokenapiroute", HttpMethod.GET)
+          .flush({ dummy_response: true });
       });
 
       it("should not convert into camel case for POST requests", () => {
         http
-          .post<any>("https://brokenlink/brokenapiroute", {})
-          .subscribe((response) => {
-            expect(response).toBeTruthy();
-            expect(response).toEqual({ dummy_response: true });
-          }, shouldNotFail);
-
-        const req = httpMock.expectOne("https://brokenlink/brokenapiroute");
-        req.flush({ dummy_response: true });
+          .post("https://brokenlink/brokenapiroute", {})
+          .subscribe(
+            (response) => expect(response).toEqual({ dummy_response: true }),
+            shouldNotFail
+          );
+        spec
+          .expectOne("https://brokenlink/brokenapiroute", HttpMethod.POST)
+          .flush({ dummy_response: true });
       });
     });
   });
 
   describe("baw api traffic", () => {
-    const noop = () => {};
-
     describe("outgoing data", () => {
       it("should set accept header", () => {
-        http.get<any>(apiRoot + "/brokenapiroute").subscribe(noop, noop, noop);
-
-        const req = httpMock.expectOne(apiRoot + "/brokenapiroute");
-        expect(req.request.headers.has("Accept")).toBeTruthy();
+        http.get(getPath("/brokenapiroute")).subscribe(noop, noop);
+        const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
         expect(req.request.headers.get("Accept")).toBe("application/json");
       });
 
-      it("should set content-type header", () => {
-        http.get<any>(apiRoot + "/brokenapiroute").subscribe(noop, noop, noop);
+      it("should not set accept header on non json requests", () => {
+        http
+          .get(getPath("/brokenapiroute"), { responseType: "text" })
+          .subscribe(noop, noop);
+        const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
+        expect(req.request.headers.get("Accept")).not.toBe("application/json");
+      });
 
-        const req = httpMock.expectOne(apiRoot + "/brokenapiroute");
-        expect(req.request.headers.has("Content-Type")).toBeTruthy();
+      it("should set content-type header", () => {
+        http.get(getPath("/brokenapiroute")).subscribe(noop, noop);
+        const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
         expect(req.request.headers.get("Content-Type")).toBe(
           "application/json"
         );
       });
 
-      it("should convert into snake case for GET requests", () => {
-        const params = new HttpParams().set("shouldConvert", "true");
-
+      it("should not set content-type header on non json requests", () => {
         http
-          .get<any>(apiRoot + "/brokenapiroute", {
-            params,
-          })
-          .subscribe(noop, noop, noop);
-
-        const req = httpMock.expectOne(
-          apiRoot + "/brokenapiroute?should_convert=true"
+          .get(getPath("/brokenapiroute"), { responseType: "text" })
+          .subscribe(noop, noop);
+        const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
+        expect(req.request.headers.get("Content-Type")).not.toBe(
+          "application/json"
         );
-        expect(req).toBeTruthy();
+      });
+
+      it("should set cookies", () => {
+        http.get(getPath("/brokenapiroute")).subscribe(noop, noop);
+        const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
+        expect(req.request.withCredentials).toBeTrue();
+      });
+
+      it("should convert into snake case for GET requests", () => {
+        http
+          .get(getPath("/brokenapiroute"), {
+            params: new HttpParams().set("shouldConvert", "true"),
+          })
+          .subscribe(noop, noop);
+
+        expect(
+          spec.expectOne(
+            getPath("/brokenapiroute?should_convert=true"),
+            HttpMethod.GET
+          )
+        ).toBeInstanceOf(TestRequest);
       });
 
       it("should convert into snake case for POST requests", () => {
         http
-          .post<any>(apiRoot + "/brokenapiroute", {
-            shouldConvert: true,
-          })
-          .subscribe(noop, noop, noop);
-
-        const req = httpMock.expectOne(apiRoot + "/brokenapiroute");
+          .post(getPath("/brokenapiroute"), { shouldConvert: true })
+          .subscribe(noop, noop);
+        const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.POST);
         expect(req.request.body).toEqual({ should_convert: true });
       });
 
       it("should not attach Authorization when unauthenticated", () => {
-        http.get<any>(apiRoot + "/brokenapiroute").subscribe(noop, noop, noop);
-
-        const req = httpMock.expectOne(apiRoot + "/brokenapiroute");
+        http.get(getPath("/brokenapiroute")).subscribe(noop, noop);
+        const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
         expect(req.request.headers.has("Authorization")).toBeFalsy();
       });
 
       it("should attach Authorization when authenticated", () => {
         setLoggedIn("xxxxxxxxxxxxxxxxxxxx");
-
-        http.get<any>(apiRoot + "/brokenapiroute").subscribe(noop, noop, noop);
-
-        const req = httpMock.expectOne(apiRoot + "/brokenapiroute");
-        expect(req.request.headers.has("Authorization")).toBeTruthy();
+        http.get(getPath("/brokenapiroute")).subscribe(noop, noop);
+        const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
         expect(req.request.headers.get("Authorization")).toBe(
           'Token token="xxxxxxxxxxxxxxxxxxxx"'
         );
@@ -277,25 +278,29 @@ describe("BawApiInterceptor", () => {
 
     describe("incoming data", () => {
       it("should convert into camel case for GET requests", () => {
-        http.get<any>(apiRoot + "/brokenapiroute").subscribe((response) => {
-          expect(response).toBeTruthy();
-          expect(response).toEqual({ dummyResponse: true });
-        }, shouldNotFail);
+        http
+          .get(getPath("/brokenapiroute"))
+          .subscribe(
+            (response) => expect(response).toEqual({ dummyResponse: true }),
+            shouldNotFail
+          );
 
-        const req = httpMock.expectOne(apiRoot + "/brokenapiroute");
-        req.flush({ dummy_response: true });
+        spec
+          .expectOne(getPath("/brokenapiroute"), HttpMethod.GET)
+          .flush({ dummy_response: true });
       });
 
       it("should convert incoming data from baw api into camel case for POST requests", () => {
         http
-          .post<any>(apiRoot + "/brokenapiroute", {})
-          .subscribe((response) => {
-            expect(response).toBeTruthy();
-            expect(response).toEqual({ dummyResponse: true });
-          }, shouldNotFail);
+          .post(getPath("/brokenapiroute"), {})
+          .subscribe(
+            (response) => expect(response).toEqual({ dummyResponse: true }),
+            shouldNotFail
+          );
 
-        const req = httpMock.expectOne(apiRoot + "/brokenapiroute");
-        req.flush({ dummy_response: true });
+        spec
+          .expectOne(getPath("/brokenapiroute"), HttpMethod.POST)
+          .flush({ dummy_response: true });
       });
     });
   });

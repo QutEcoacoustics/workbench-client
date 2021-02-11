@@ -1,0 +1,39 @@
+$primary: #337ab7;
+$secondary: #6c757d;
+$success: #28a745;
+$danger: #dc3545;
+$warning: #ffc107;
+$info: #17a2b8;
+$light: #f8f9fa;
+$dark: #343a40;
+$white: #fff;
+$enable-responsive-font-sizes: true;
+
+$ngx-datatable-selected-active-background: lightgrey;
+$ngx-datatable-selected-active-background-hover: rgba(lightgrey, 0.5);
+
+$grid-xs: 0;
+$grid-sm: 576px;
+$grid-md: 768px;
+$grid-lg: 992px;
+$grid-xl: 1200px;
+
+$grid-breakpoints: (
+  xs: $grid-xs,
+  sm: $grid-sm,
+  md: $grid-md,
+  lg: $grid-lg,
+  xl: $grid-xl
+);
+
+$container-sm: 540px;
+$container-md: 720px;
+$container-lg: 960px;
+$container-xl: 1140px;
+
+$container-max-widths: (
+  sm: $container-sm,
+  md: $container-md,
+  lg: $container-lg,
+  xl: $container-xl
+);

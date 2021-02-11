@@ -237,7 +237,10 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected httpGet(path: string): Observable<ApiResponse<Model | Model[]>> {
-    return this.http.get<ApiResponse<Model>>(this.getPath(path));
+    return this.http.get<ApiResponse<Model>>(this.getPath(path), {
+      // Set responseType for interceptor
+      responseType: "json",
+    });
   }
 
   /**
@@ -247,7 +250,10 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected httpDelete(path: string): Observable<ApiResponse<Model | void>> {
-    return this.http.delete<ApiResponse<null>>(this.getPath(path));
+    return this.http.delete<ApiResponse<null>>(this.getPath(path), {
+      // Set responseType for interceptor
+      responseType: "json",
+    });
   }
 
   /**
@@ -258,7 +264,10 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected httpPost(path: string, body?: any): Observable<ApiResponse<Model>> {
-    return this.http.post<ApiResponse<Model>>(this.getPath(path), body);
+    return this.http.post<ApiResponse<Model>>(this.getPath(path), body, {
+      // Set responseType for interceptor
+      responseType: "json",
+    });
   }
 
   /**
@@ -272,25 +281,73 @@ export abstract class BawApiService<Model extends AbstractModel> {
     path: string,
     body?: any
   ): Observable<ApiResponse<Model>> {
-    return this.http.patch<ApiResponse<Model>>(this.getPath(path), body);
+    return this.http.patch<ApiResponse<Model>>(this.getPath(path), body, {
+      // Set responseType for interceptor
+      responseType: "json",
+    });
   }
 
   /**
-   * Modify a base filter to add a foreign key condition
+   * Modify a base filter to to add an association to a model
    *
    * @param filters Base Filters
    * @param key Foreign key
    * @param model Foreign key value (if undefined, returns base filters)
+   * @param comparison Comparison to be performed
    */
-  protected filterByForeignKey(
+  protected filterThroughAssociation(
     filters: Filters<Model>,
-    key: KeysOfType<Model, number | string>,
-    model: AbstractModel | string | number
+    key: AssociationKeys<Model>,
+    model: AbstractModel | string | number,
+    comparison: keyof (Comparisons & Subsets) = "eq"
   ): Filters<Model> {
+    return this.associationFilter(filters, key, model, comparison);
+  }
+
+  /**
+   * Modify a base filter to add an association to another group of model
+   *
+   * @param filters Base Filters
+   * @param key Foreign key
+   * @param models Foreign key values (if undefined, returns base filters)
+   * @param comparison Comparison to be performed
+   */
+  protected filterThroughAssociations(
+    filters: Filters<Model>,
+    key: AssociationKeys<Model>,
+    models: string[] | number[],
+    comparison: keyof Subsets = "contain"
+  ) {
+    return this.associationFilter(filters, key, models, comparison);
+  }
+
+  /**
+   * Concatenates path with apiRoot to form a full URL.
+   *
+   * @param path Path fragment beginning with a `/`
+   */
+  protected getPath(path: string): string {
+    return this.apiRoot + path;
+  }
+
+  /**
+   * Modify a base filter to add an association to another model/group of models
+   *
+   * @param filters Base Filters
+   * @param key Foreign key
+   * @param models Foreign key value (if undefined, returns base filters)
+   * @param comparison Comparison to be performed
+   */
+  private associationFilter(
+    filters: Filters<Model>,
+    key: AssociationKeys<Model>,
+    models: AbstractModel | string | number | string[] | number[],
+    comparison: keyof (Comparisons & Subsets)
+  ) {
     const { filter, ...meta } = filters;
 
     // Only return if model is undefined, not null (which is a valid input)
-    if (model === undefined) {
+    if (models === undefined) {
       return filters;
     }
 
@@ -298,20 +355,21 @@ export abstract class BawApiService<Model extends AbstractModel> {
       ...meta,
       filter: {
         ...filter,
-        [key]: { eq: model instanceof AbstractModel ? model.id : model },
+        [key]: {
+          [comparison]: models instanceof AbstractModel ? models.id : models,
+        },
       },
     };
   }
-
-  /**
-   * Concatenates path with apiRoot to form a full URL.
-   *
-   * @param path Path fragment
-   */
-  private getPath(path: string): string {
-    return this.apiRoot + path;
-  }
 }
+
+/**
+ * Model keys which may be a valid association to another model
+ */
+type AssociationKeys<Model extends AbstractModel> = KeysOfType<
+  Model,
+  number | string | Set<string> | Set<number>
+>;
 
 export type Direction = "desc" | "asc";
 

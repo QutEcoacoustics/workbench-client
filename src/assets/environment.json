@@ -2,7 +2,7 @@
   "environment": {
     "environment": "development",
     "apiRoot": "https://staging.ecosounds.org",
-    "siteRoot": "http://localhost:4200",
+    "siteRoot": "http://development.ecosounds.org:4200",
     "siteDir": "/",
     "keys": {
       "googleMaps": "",
@@ -21,14 +21,6 @@
       "sourceRepository": "https://github.com/QutEcoacoustics/baw-server/issues"
     },
     "content": [
-      {
-        "title": "Listen",
-        "url": "https://staging.ecosounds.org/listen"
-      },
-      {
-        "title": "Library",
-        "url": "https://staging.ecosounds.org/library"
-      },
       {
         "headerTitle": "Research",
         "items": [

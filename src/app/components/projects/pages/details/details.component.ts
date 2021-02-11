@@ -15,7 +15,7 @@ import {
   projectsMenuItem,
 } from "@components/projects/projects.menus";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
-import { exploreAudioMenuItem } from "@helpers/page/externalMenus";
+import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
@@ -28,7 +28,7 @@ import { List } from "immutable";
 import { merge } from "rxjs";
 
 export const projectMenuItemActions = [
-  exploreAudioMenuItem,
+  visualizeMenuItem,
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
   newSiteMenuItem,

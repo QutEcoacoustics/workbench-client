@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { viewports } from "@test/helpers/general";
 import { CheckboxComponent } from "./checkbox.component";
 
 describe("CheckboxComponent", () => {
@@ -24,7 +25,7 @@ describe("CheckboxComponent", () => {
   });
 
   it("should be centered", () => {
-    viewport.set("large");
+    viewport.set(viewports.large);
 
     component.isCentered = true;
     fixture.detectChanges();
@@ -40,7 +41,7 @@ describe("CheckboxComponent", () => {
   });
 
   it("should not be centered", () => {
-    viewport.set("large");
+    viewport.set(viewports.large);
 
     component.isCentered = false;
     fixture.detectChanges();

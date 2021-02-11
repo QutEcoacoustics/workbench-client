@@ -182,6 +182,8 @@ describe("BawApiService", () => {
   }
 
   beforeEach(() => {
+    localStorage.clear();
+
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, MockAppConfigModule],
       providers: [

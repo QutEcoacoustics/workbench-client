@@ -3,11 +3,11 @@ import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.ser
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { Tagging } from "@models/Tagging";
 import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
 import { DateTime } from "luxon";
@@ -27,10 +27,10 @@ class SiteComponent extends PageComponent implements OnInit {
   @Input() public site: Site;
   public defaultDescription = "<i>No description found</i>";
   public recordings: AudioRecording[];
-  public recordingsEnd: DateTime;
-  public recordingsStart: DateTime;
+  public oldestRecording: AudioRecording;
+  public newestRecording: AudioRecording;
   public marker: List<MapMarkerOption>;
-  public taggings: Tagging[];
+  public recentAudioEvents: AudioEvent[];
 
   public constructor(
     private audioEventsApi: ShallowAudioEventsService,
@@ -47,8 +47,14 @@ class SiteComponent extends PageComponent implements OnInit {
     this.getOldestDates();
   }
 
-  public humanizeDate(date: DateTime) {
-    return date ? date.toLocaleString(DateTime.DATETIME_FULL) : "(loading)";
+  public humanizeDate(audioRecording: AudioRecording) {
+    if (audioRecording) {
+      return audioRecording.recordedDate.toLocaleString(DateTime.DATETIME_FULL);
+    } else if (audioRecording === null) {
+      return "unknown";
+    } else {
+      return "(loading)";
+    }
   }
 
   private getAnnotations() {
@@ -62,12 +68,15 @@ class SiteComponent extends PageComponent implements OnInit {
         (events) => {
           // Limit the selection of audio events by tagging count
           const maxTags = 10;
-          this.taggings = [];
+          let numTags = 0;
+          this.recentAudioEvents = [];
 
           for (const event of events) {
-            this.taggings.push(...event.taggings);
+            this.recentAudioEvents.push(event);
+            // An event with no taggings will still show a (not tagged) tag
+            numTags += Math.max(event.taggings.length, 1);
 
-            if (this.taggings.length > maxTags) {
+            if (numTags > maxTags) {
               return;
             }
           }
@@ -81,10 +90,14 @@ class SiteComponent extends PageComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (recordings) => {
-          this.recordingsEnd = recordings[0]?.recordedDate;
+          this.newestRecording = recordings[0];
           this.recordings = recordings;
         },
-        (err) => console.log({ err })
+        (err) => {
+          console.log({ err });
+          this.newestRecording = null;
+          this.recordings = null;
+        }
       );
   }
 
@@ -92,8 +105,12 @@ class SiteComponent extends PageComponent implements OnInit {
     this.filterByDates("asc", { paging: { items: 1 } })
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (recordings) => (this.recordingsStart = recordings[0]?.recordedDate),
-        (err) => console.log({ err })
+        (recordings) =>
+          (this.oldestRecording = recordings.length > 0 ? recordings[0] : null),
+        (err) => {
+          console.log({ err });
+          this.oldestRecording = null;
+        }
       );
   }
 
