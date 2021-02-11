@@ -8,6 +8,13 @@ type HTTPStatus =
   | "Unprocessable Entity"
   | "Custom";
 
+/**
+ * Used to generate a well constructed error object after the interceptor
+ * has intercepted and converted the API response
+ *
+ * @param type Http status type
+ * @param custom Custom error details
+ */
 export function generateApiErrorDetails(
   type: HTTPStatus = "Unauthorized",
   custom?: Partial<ApiErrorDetails>
@@ -41,6 +48,13 @@ export function generateApiErrorDetails(
   };
 }
 
+/**
+ * Used to generate a well constructed error object for API responses
+ * that do not conform to the standard
+ *
+ * @param type Http status type
+ * @param custom Custom error details
+ */
 export function generateApiErrorResponse(
   type: HTTPStatus = "Unauthorized",
   custom?: Partial<ApiErrorDetails>

@@ -324,7 +324,7 @@ export abstract class BawApiService<Model extends AbstractModel> {
   /**
    * Concatenates path with apiRoot to form a full URL.
    *
-   * @param path Path fragment
+   * @param path Path fragment beginning with a `/`
    */
   protected getPath(path: string): string {
     return this.apiRoot + path;
