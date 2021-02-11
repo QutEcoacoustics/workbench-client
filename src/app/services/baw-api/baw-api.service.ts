@@ -237,7 +237,10 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected httpGet(path: string): Observable<ApiResponse<Model | Model[]>> {
-    return this.http.get<ApiResponse<Model>>(this.getPath(path));
+    return this.http.get<ApiResponse<Model>>(this.getPath(path), {
+      // Set responseType for interceptor
+      responseType: "json",
+    });
   }
 
   /**
@@ -247,7 +250,10 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected httpDelete(path: string): Observable<ApiResponse<Model | void>> {
-    return this.http.delete<ApiResponse<null>>(this.getPath(path));
+    return this.http.delete<ApiResponse<null>>(this.getPath(path), {
+      // Set responseType for interceptor
+      responseType: "json",
+    });
   }
 
   /**
@@ -258,7 +264,10 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected httpPost(path: string, body?: any): Observable<ApiResponse<Model>> {
-    return this.http.post<ApiResponse<Model>>(this.getPath(path), body);
+    return this.http.post<ApiResponse<Model>>(this.getPath(path), body, {
+      // Set responseType for interceptor
+      responseType: "json",
+    });
   }
 
   /**
@@ -272,7 +281,10 @@ export abstract class BawApiService<Model extends AbstractModel> {
     path: string,
     body?: any
   ): Observable<ApiResponse<Model>> {
-    return this.http.patch<ApiResponse<Model>>(this.getPath(path), body);
+    return this.http.patch<ApiResponse<Model>>(this.getPath(path), body, {
+      // Set responseType for interceptor
+      responseType: "json",
+    });
   }
 
   /**

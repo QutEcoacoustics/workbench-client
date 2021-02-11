@@ -46,8 +46,8 @@ export class BawApiInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    // Don't add these headers to requests to non json requests
-    if (request.responseType !== "text") {
+    // Only set these headers if this is a json request
+    if (request.responseType === "json") {
       request = request.clone({
         setHeaders: {
           // eslint-disable-next-line @typescript-eslint/naming-convention

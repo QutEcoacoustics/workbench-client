@@ -33,8 +33,6 @@ export class CmsService {
 
   public get(cms: CMS): Observable<string> {
     return this.http.get(this.apiRoot + endpoint(cms), {
-      // Set response type so that interceptor can identify this is not
-      // json traffic
       responseType: "text",
     });
   }
