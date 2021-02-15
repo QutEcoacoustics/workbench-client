@@ -5,6 +5,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BawApiModule } from "@baw-api/baw-api.module";
 import { AudioAnalysisModule } from "@components/audio-analysis/audio-analysis.module";
+import { CitizenScienceModule } from "@components/citizen-science/citizen-science.module";
 import { LibraryModule } from "@components/library/library.module";
 import { RegionsModule } from "@components/regions/regions.module";
 import { VisualizeModule } from "@components/visualize/visualize.module";
@@ -52,6 +53,7 @@ export const appImports = [
   AboutModule,
   AdminModule,
   AudioAnalysisModule,
+  CitizenScienceModule,
   DataRequestModule,
   LibraryModule,
   ListenModule,
