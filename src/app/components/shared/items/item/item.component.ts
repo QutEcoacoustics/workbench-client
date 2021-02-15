@@ -1,13 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { Href } from "@interfaces/menusInterfaces";
-import { StrongRoute } from "@interfaces/strongRoute";
 
 /**
  * Item Component
@@ -20,22 +12,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
       <fa-icon id="icon" [icon]="icon"></fa-icon>
 
       <!-- Item name -->
-      <span id="name">
-        <ng-container *ngIf="uri; else plainText">
-          <!-- URI is internal link -->
-          <ng-container *ngIf="internalLink; else externalLink">
-            <a [routerLink]="link">{{ name }} </a>
-          </ng-container>
-
-          <!-- URI is external link -->
-          <ng-template #externalLink>
-            <a [href]="link">{{ name }} </a>
-          </ng-template>
-        </ng-container>
-
-        <!-- No URI -->
-        <ng-template #plainText>{{ name }} </ng-template>
-      </span>
+      <span id="name">{{ name }}</span>
 
       <!-- Item value -->
       <span id="value" class="badge badge-pill badge-secondary float-right">
@@ -46,36 +23,14 @@ import { StrongRoute } from "@interfaces/strongRoute";
   // Pure Component
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ItemComponent implements OnInit {
+export class ItemComponent {
   @Input() public icon: IconProp;
   @Input() public name: string;
   @Input() public value: string | number;
-  @Input() public uri?: Href | StrongRoute;
-  public link: string;
-  public internalLink: boolean;
-
-  public constructor(private route: ActivatedRoute) {}
-
-  public ngOnInit() {
-    if (!this.uri) {
-      return;
-    }
-
-    if (typeof this.uri === "object") {
-      this.internalLink = true;
-      this.link = this.uri.toRouterLink();
-    } else {
-      const params = this.route.snapshot.params;
-
-      this.internalLink = false;
-      this.link = this.uri(params);
-    }
-  }
 }
 
 export interface ItemInterface {
   icon: IconProp;
   name: string;
   value: string | number;
-  uri?: Href | StrongRoute;
 }
