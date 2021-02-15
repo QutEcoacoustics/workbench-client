@@ -17,9 +17,9 @@ export const visualizeRoute = StrongRoute.newRoot().add(
       { key: "projectId", value: projectId },
     ];
     const keyValuePair = priority.find((kvp) => isInstantiated(kvp.value));
-    return keyValuePair
-      ? qsp
-      : { ...qsp, [keyValuePair.key]: keyValuePair.value };
+    return isInstantiated(keyValuePair)
+      ? { ...qsp, [keyValuePair.key]: keyValuePair.value }
+      : qsp;
   }
 );
 

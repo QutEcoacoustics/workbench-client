@@ -1,7 +1,8 @@
 import { LocationStrategy } from "@angular/common";
-import { Directive, Input, OnChanges } from "@angular/core";
+import { Directive, Input } from "@angular/core";
 import {
   ActivatedRoute,
+  Params,
   Router,
   RouterLinkWithHref,
   UrlTree,
@@ -12,24 +13,35 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "a[uri]",
 })
-export class UriDirective
-  extends withUnsubscribe(RouterLinkWithHref)
-  implements OnChanges {
+export class UriDirective extends withUnsubscribe(RouterLinkWithHref) {
   @Input() public uri: string;
-  private _router: Router;
 
   public constructor(
-    router: Router,
-    route: ActivatedRoute,
-    locationStrategy: LocationStrategy
+    private _router: Router,
+    private _route: ActivatedRoute,
+    _locationStrategy: LocationStrategy
   ) {
-    super(router, route, locationStrategy);
-    this._router = this["router"];
-    this._route = this["route"];
+    super(_router, _route, _locationStrategy);
   }
 
   public get urlTree(): UrlTree {
-    //TODO Validate this directs to correct path
-    return this._router.parseUrl(this.uri);
+    // Construct URL from uri, baseURI does not matter
+    const url = new URL(this.uri, document?.baseURI || "http://localhost/");
+
+    // Extract query parameters from uri
+    const queryParams: Params = {};
+    url.searchParams.forEach((value, key) => (queryParams[key] = value));
+
+    return this._router.createUrlTree([url.pathname], {
+      relativeTo: this.relativeTo !== undefined ? this.relativeTo : this._route,
+      queryParams: { ...this.queryParams, ...queryParams },
+      fragment: this.fragment,
+      queryParamsHandling: this.queryParamsHandling,
+      preserveFragment: attrBoolValue(this.preserveFragment),
+    });
   }
+}
+
+function attrBoolValue(s: any): boolean {
+  return s === "" || !!s;
 }
