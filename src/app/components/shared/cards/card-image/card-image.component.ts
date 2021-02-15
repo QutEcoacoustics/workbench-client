@@ -24,7 +24,7 @@ import { Card } from "../cards.component";
         </ng-container>
 
         <ng-template #route>
-          <a [routerLink]="card.route">
+          <a [uri]="card.route">
             <img [alt]="card.title + ' image'" [src]="card.model.image" />
           </a>
         </ng-template>
@@ -44,9 +44,7 @@ import { Card } from "../cards.component";
             </ng-container>
 
             <ng-template #route>
-              <a [routerLink]="card.route">
-                {{ card.title }}
-              </a>
+              <a [uri]="card.route">{{ card.title }}</a>
             </ng-template>
           </ng-container>
 

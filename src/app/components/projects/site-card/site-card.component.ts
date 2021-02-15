@@ -13,7 +13,7 @@ import { takeUntil } from "rxjs/operators";
   template: `
     <li class="list-group-item">
       <div class="image">
-        <a id="imageLink" [routerLink]="model.getViewUrl(project)">
+        <a id="imageLink" [uri]="model.getViewUrl(project)">
           <img id="image" [src]="model.image" [alt]="model.name + ' alt'" />
         </a>
       </div>

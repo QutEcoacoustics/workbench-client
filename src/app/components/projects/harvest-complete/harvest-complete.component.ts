@@ -37,11 +37,11 @@ export class HarvestCompleteComponent
   }
 
   public playPath(site: Site) {
-    return "/broken_link";
+    return "/play_url";
   }
 
   public visualizePath(site: Site) {
-    return "/broken_link";
+    return site.visualizeUrl;
   }
 }
 

@@ -61,7 +61,7 @@
           <a
             *ngIf="oldestRecording"
             class="nav-link"
-            [routerLink]="oldestRecording?.viewUrl"
+            [uri]="oldestRecording?.viewUrl"
           >
             <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
             Play
@@ -74,7 +74,7 @@
           ></baw-loading>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="site.visualizeUrl">
+          <a class="nav-link" [uri]="site.visualizeUrl">
             <fa-icon [icon]="['fas', 'eye']"></fa-icon>
             Visualise
           </a>
@@ -100,13 +100,13 @@
         <ng-container *ngFor="let event of recentAudioEvents">
           <li *ngIf="event.taggings.length === 0" class="nav-item">
             <!-- Annotation link -->
-            <a class="nav-link" [routerLink]="event.listenViewUrl">
+            <a class="nav-link" [uri]="event.listenViewUrl">
               "(not tagged)" by {{ event.creator?.userName }}
             </a>
           </li>
           <li *ngFor="let tagging of event.taggings" class="nav-item">
             <!-- Annotation link -->
-            <a class="nav-link" [routerLink]="event.listenViewUrl">
+            <a class="nav-link" [uri]="event.listenViewUrl">
               <!-- Loading when unresolved -->
               <ng-container
                 *ngIf="
