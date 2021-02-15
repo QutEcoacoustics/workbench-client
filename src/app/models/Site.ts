@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { id, IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
-import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -118,6 +117,8 @@ export class Site extends AbstractModel implements ISite {
 
   public get viewUrl(): string {
     if (this.projectIds.size === 0) {
+      // TODO Figure out how to better handle this issue? It should only happen
+      // for admin users in the orphan sites page
       console.error("Site model has no project id, cannot find url.");
       return "";
     }
@@ -126,20 +127,18 @@ export class Site extends AbstractModel implements ISite {
   }
 
   public get visualizeUrl(): string {
-    // TODO This link is wrong (issue #772)
-    // /visualize?siteId=[siteId]
-    return visualizeMenuItem.route.toRouterLink({ siteId: this.id });
+    return visualizeMenuItem.route.format(undefined, { siteId: this.id });
   }
 
   public getViewUrl(project: IdOr<Project>): string {
     if (isInstantiated(this.regionId)) {
-      return pointMenuItem.route.toRouterLink({
+      return pointMenuItem.route.format({
         projectId: id(project),
         regionId: this.regionId,
         siteId: this.id,
       });
     } else {
-      return siteMenuItem.route.toRouterLink({
+      return siteMenuItem.route.format({
         projectId: id(project),
         siteId: this.id,
       });

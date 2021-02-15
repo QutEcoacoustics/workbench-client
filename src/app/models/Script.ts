@@ -71,6 +71,10 @@ export class Script extends AbstractModel implements IScript {
   }
 
   public get viewUrl(): string {
-    return adminScriptMenuItem.route.toRouterLink({ scriptId: this.id });
+    throw Error("Script viewUrl not implement");
+  }
+
+  public get adminViewUrl(): string {
+    return adminScriptMenuItem.route.format({ scriptId: this.id });
   }
 }

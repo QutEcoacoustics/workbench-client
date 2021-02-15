@@ -1,9 +1,6 @@
 import { Injector } from "@angular/core";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import {
-  listenMenuItem,
-  listenRecordingMenuItem,
-} from "@components/listen/listen.menus";
+import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { Duration } from "luxon";
 import {
   DateTimeTimezone,
@@ -90,9 +87,7 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
   }
 
   public get viewUrl(): string {
-    return listenRecordingMenuItem.route.toRouterLink({
-      audioRecordingId: this.id,
-    });
+    return listenRecordingMenuItem.route.format({ audioRecordingId: this.id });
   }
 }
 

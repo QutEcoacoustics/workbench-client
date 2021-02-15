@@ -1,6 +1,6 @@
 import { Injector } from "@angular/core";
 import { AUDIO_RECORDING } from "@baw-api/ServiceTokens";
-import { listenMenuItem } from "@components/listen/listen.menus";
+import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import {
   DateTimeTimezone,
   Description,
@@ -61,16 +61,10 @@ export class Bookmark extends AbstractModel implements IBookmark {
     super(bookmark, injector);
   }
 
-  public listenViewUrl(recordingId: Id, startOffset?: number): string {
-    console.warn("Bookmark listenViewUrl not implemented.");
-    // TODO This link is wrong (issue #772)
-    return listenMenuItem.route.toRouterLink();
-  }
-
   public get viewUrl(): string {
-    // return `https://www.ecosounds.org/listen/${this.audioRecordingId}?start=${this.offsetSeconds}&end=${???}`;
-    console.warn("Bookmark viewUrl not implemented.");
-    // TODO This link is wrong (issue #772)
-    return listenMenuItem.route.toRouterLink();
+    return listenRecordingMenuItem.route.format(
+      { audioRecordingId: this.audioRecordingId },
+      { start: this.offsetSeconds }
+    );
   }
 }

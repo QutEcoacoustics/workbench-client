@@ -1,7 +1,7 @@
 import { Injector } from "@angular/core";
 import { SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
 import { adminAnalysisJobMenuItem } from "@components/admin/analysis-jobs/analysis-jobs.menus";
-import { analysisJobMenuItem } from "@helpers/page/externalMenus";
+import { audioAnalysisMenuItem } from "@components/audio-analysis/audio-analysis.menus";
 import { Duration } from "luxon";
 import {
   DateTimeTimezone,
@@ -99,14 +99,16 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   }
 
   public get viewUrl(): string {
-    return analysisJobMenuItem.uri(undefined);
+    return audioAnalysisMenuItem.route.format({
+      analysisJobId: this.id,
+    });
   }
 
   /**
    * Gets the route path for the admin details page for this model
    */
   public get adminViewUrl(): string {
-    return adminAnalysisJobMenuItem.route.toRouterLink({
+    return adminAnalysisJobMenuItem.route.format({
       analysisJobId: this.id,
     });
   }

@@ -12,6 +12,7 @@ export abstract class AbstractModel {
   }
 
   /**
+   * TODO Update comment
    * Redirect path to view model on website. This is a string which can be
    * used by `Router.navigateByUrl()` without any processing. For example,
    * for the project abstract model, this path should direct to the project page.
@@ -42,6 +43,7 @@ export abstract class AbstractModel {
   public readonly kind: string;
 
   /**
+   * TODO Update comment
    * Redirect path to view model on website. This is a string which can be
    * used by `Router.navigateByUrl()` without any processing. For example,
    * for the project abstract model, this path should direct to the project page.

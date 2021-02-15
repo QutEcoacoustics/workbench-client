@@ -43,6 +43,10 @@ export class TagGroup extends AbstractModel implements ITagGroup {
   }
 
   public get viewUrl(): string {
-    return adminTagGroupsMenuItem.route.toRouterLink();
+    throw Error("TagGroup viewUrl not implemented");
+  }
+
+  public get adminViewUrl(): string {
+    return adminTagGroupsMenuItem.route.format();
   }
 }

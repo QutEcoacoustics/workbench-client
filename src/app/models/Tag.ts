@@ -59,10 +59,7 @@ export class Tag extends AbstractModel implements ITag {
   }
 
   public get viewUrl(): string {
-    console.warn("Tag viewLibraryUrl method not implemented");
-    // /library?reference=all&tagsPartial=[tag.text]
-    // TODO This link is not working (issue #772)
-    return libraryMenuItem.route.toRouterLink({
+    return libraryMenuItem.route.format(undefined, {
       reference: "all",
       tagsPartial: this.text,
     });

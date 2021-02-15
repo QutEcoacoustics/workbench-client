@@ -95,15 +95,13 @@ export class Region extends AbstractModel implements IRegion {
   }
 
   public get viewUrl(): string {
-    return regionMenuItem.route.toRouterLink({
+    return regionMenuItem.route.format({
       projectId: this.projectId,
       regionId: this.id,
     });
   }
 
   public get visualizeUrl(): string {
-    // TODO This link does not route correctly (issue #772)
-    // /visualize?siteIds=[1,2,3,4]
-    return visualizeMenuItem.route.toRouterLink();
+    return visualizeMenuItem.route.format(undefined, { siteIds: this.siteIds });
   }
 }
