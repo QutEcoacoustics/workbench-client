@@ -17,7 +17,6 @@ import { List } from "immutable";
 @Component({
   selector: "baw-admin-users",
   templateUrl: "./list.component.html",
-  styleUrls: ["./list.component.scss"],
 })
 class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   public userIcon = theirProfileMenuItem.icon;
@@ -41,16 +40,6 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
     );
 
     this.filterKey = "userName";
-  }
-
-  /**
-   * Return the user redirect path.
-   * This is outside the HTML file for static compiler analysis
-   *
-   * @param user User account
-   */
-  public viewPath(user: User) {
-    return user.viewUrl;
   }
 }
 

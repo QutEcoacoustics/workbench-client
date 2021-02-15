@@ -21,7 +21,6 @@ import {
 class AdminOrphansComponent
   extends PagedTableTemplate<TableRow, Site>
   implements OnInit {
-  public detailsPath = adminOrphanMenuItem.route;
   public assignSitesLabel = assignSiteMenuItem.label;
 
   public constructor(api: ShallowSitesService) {

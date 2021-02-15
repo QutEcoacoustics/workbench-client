@@ -1,6 +1,7 @@
 import { Injector } from "@angular/core";
 import { id, IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
+import { adminOrphanMenuItem } from "@components/admin/orphan/orphans.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -124,6 +125,10 @@ export class Site extends AbstractModel implements ISite {
     }
 
     return this.getViewUrl(this.projectIds.values().next().value);
+  }
+
+  public get adminViewUrl(): string {
+    return adminOrphanMenuItem.route.format({ siteId: this.id });
   }
 
   public get visualizeUrl(): string {

@@ -1,5 +1,6 @@
 import { Injector } from "@angular/core";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { adminAudioRecordingMenuItem } from "@components/admin/audio-recordings/audio-recordings.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { Duration } from "luxon";
 import {
@@ -88,6 +89,12 @@ export class AudioRecording extends AbstractModel implements IAudioRecording {
 
   public get viewUrl(): string {
     return listenRecordingMenuItem.route.format({ audioRecordingId: this.id });
+  }
+
+  public get adminViewUrl(): string {
+    return adminAudioRecordingMenuItem.route.format({
+      audioRecordingId: this.id,
+    });
   }
 }
 

@@ -56,15 +56,10 @@
       <ng-template let-column="column" ngx-datatable-header-template>
       </ng-template>
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <a
-          class="btn btn-sm btn-default mr-2"
-          [routerLink]="value.adminViewUrl"
-        >
+        <a class="btn btn-sm btn-default mr-2" [uri]="value.adminViewUrl">
           Details
         </a>
-        <a class="btn btn-sm btn-default" [routerLink]="value.viewUrl">
-          View
-        </a>
+        <a class="btn btn-sm btn-default" [uri]="value.viewUrl">View</a>
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>
