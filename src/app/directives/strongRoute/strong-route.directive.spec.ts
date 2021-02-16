@@ -40,8 +40,10 @@ describe("StrongRouteDirective", () => {
     );
   }
 
-  function assertRoute(url: string) {
-    expect(spec.query<HTMLAnchorElement>("a").href).toContain(url);
+  function assertRoute(link: string) {
+    const href = spec.query<HTMLAnchorElement>("a").href;
+    const url = new URL(href, document.baseURI);
+    expect(url.pathname + url.search).toBe(link);
   }
 
   function setup(
@@ -71,7 +73,7 @@ describe("StrongRouteDirective", () => {
     spectator.detectChanges();
 
     const routerLink = spectator.query(RouterLinkWithHref);
-    expect(routerLink).toBeTruthy();
+    expect(routerLink).toBeInstanceOf(RouterLinkWithHref);
     expect(routerLink.href).toContain("/home?test=value");
   });
 

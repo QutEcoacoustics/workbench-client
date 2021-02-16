@@ -93,8 +93,7 @@ class SiteComponent extends PageComponent implements OnInit {
           this.newestRecording = recordings[0];
           this.recordings = recordings;
         },
-        (err) => {
-          console.log({ err });
+        () => {
           this.newestRecording = null;
           this.recordings = null;
         }
@@ -107,10 +106,7 @@ class SiteComponent extends PageComponent implements OnInit {
       .subscribe(
         (recordings) =>
           (this.oldestRecording = recordings.length > 0 ? recordings[0] : null),
-        (err) => {
-          console.log({ err });
-          this.oldestRecording = null;
-        }
+        () => (this.oldestRecording = null)
       );
   }
 
