@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { Id, ImageUrl } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
@@ -10,7 +11,7 @@ import { modelData } from "@test/helpers/faker";
 import {
   assertHref,
   assertImage,
-  assertRoute,
+  assertUri,
   assertTruncation,
 } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
@@ -40,6 +41,7 @@ describe("CardImageComponent", () => {
       HttpClientTestingModule,
       RouterTestingModule,
       MockBawApiModule,
+      DirectivesModule,
       AuthenticatedImageModule,
       LineTruncationLibModule,
     ],
@@ -143,7 +145,7 @@ describe("CardImageComponent", () => {
     spectator.setInput("card", { ...defaultCard, route: "/broken_link" });
 
     const route = spectator.query("a img").parentElement as HTMLAnchorElement;
-    assertRoute(route, "/broken_link");
+    assertUri(route, "/broken_link");
   });
 
   it("should have title route when route provided", () => {
@@ -154,6 +156,6 @@ describe("CardImageComponent", () => {
     });
 
     const link = spectator.query<HTMLAnchorElement>("h4 a");
-    assertRoute(link, "/broken_link");
+    assertUri(link, "/broken_link");
   });
 });

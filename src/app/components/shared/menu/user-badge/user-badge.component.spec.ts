@@ -1,5 +1,6 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { ImageSizes } from "@interfaces/apiInterfaces";
 import { UnresolvedModel } from "@models/AbstractModel";
@@ -9,7 +10,7 @@ import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { generateUser } from "@test/fakes/User";
-import { assertImage, assertRoute, assertSpinner } from "@test/helpers/html";
+import { assertImage, assertUri, assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime } from "luxon";
 import { UserBadgeComponent } from "./user-badge.component";
@@ -21,6 +22,7 @@ describe("UserBadgeComponent", () => {
     imports: [
       RouterTestingModule,
       AuthenticatedImageModule,
+      DirectivesModule,
       MockBawApiModule,
       LoadingModule,
       PipesModule,
@@ -109,7 +111,7 @@ describe("UserBadgeComponent", () => {
       const user = new User(generateUser());
       setup({ user });
       spec.detectChanges();
-      assertRoute(getUsername(), user.viewUrl);
+      assertUri(getUsername(), user.viewUrl);
     });
 
     it("should display default image", () => {
@@ -144,7 +146,7 @@ describe("UserBadgeComponent", () => {
       const user = new User(generateUser());
       setup({ user });
       spec.detectChanges();
-      assertRoute(getImageWrapper(), user.viewUrl);
+      assertUri(getImageWrapper(), user.viewUrl);
     });
 
     it("should not display undefined timestamp", () => {

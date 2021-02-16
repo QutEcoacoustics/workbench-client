@@ -25,6 +25,10 @@ export class UriDirective extends withUnsubscribe(RouterLinkWithHref) {
   }
 
   public get urlTree(): UrlTree {
+    if (!this.uri) {
+      return super.urlTree;
+    }
+
     // Construct URL from uri, baseURI does not matter
     const url = new URL(this.uri, document?.baseURI || "http://localhost/");
 

@@ -23,7 +23,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
 import { nStepObservable } from "@test/helpers/general";
-import { assertErrorHandler, assertRoute } from "@test/helpers/html";
+import { assertErrorHandler, assertUri } from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
 import { TheirSitesComponent } from "./their-sites.component";
 
@@ -128,7 +128,7 @@ describe("TheirSitesComponent", () => {
         spec.detectChanges();
 
         const link = getCells()[0].querySelector("a");
-        assertRoute(link, defaultSite.viewUrl);
+        assertUri(link, defaultSite.viewUrl);
       });
     });
 

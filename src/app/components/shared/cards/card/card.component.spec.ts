@@ -1,14 +1,16 @@
-import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import { RouterTestingModule } from "@angular/router/testing";
+import { DirectivesModule } from "@directives/directives.module";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { modelData } from "@test/helpers/faker";
-import { assertHref, assertRoute, assertTruncation } from "@test/helpers/html";
+import { assertHref, assertTruncation, assertUri } from "@test/helpers/html";
 import { LineTruncationLibModule } from "ngx-line-truncation";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
-  let spectator: SpectatorRouting<CardComponent>;
-  const createComponent = createRoutingFactory({
+  let spectator: Spectator<CardComponent>;
+  const createComponent = createComponentFactory({
     component: CardComponent,
-    imports: [LineTruncationLibModule],
+    imports: [LineTruncationLibModule, DirectivesModule, RouterTestingModule],
   });
 
   beforeEach(() => (spectator = createComponent({ detectChanges: false })));
@@ -70,10 +72,9 @@ describe("CardComponent", () => {
 
   it("should create route link", () => {
     spectator.setInput("card", { title: "title", route: "/brokenlink" });
-
     const links = spectator.queryAll<HTMLAnchorElement>("a");
     expect(links.length).toBe(1);
     expect(links[0].innerText).toContain("title");
-    assertRoute(links[0], "/brokenlink");
+    assertUri(links[0], "/brokenlink");
   });
 });

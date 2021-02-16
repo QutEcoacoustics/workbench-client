@@ -1,12 +1,13 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { modelData } from "@test/helpers/faker";
-import { assertImage, assertRoute } from "@test/helpers/html";
+import { assertImage, assertUri } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -17,7 +18,12 @@ describe("RenderFieldComponent", () => {
   const createComponent = createHostFactory({
     component: RenderFieldComponent,
     declarations: [CheckboxComponent],
-    imports: [RouterTestingModule, AuthenticatedImageModule, MockBawApiModule],
+    imports: [
+      RouterTestingModule,
+      DirectivesModule,
+      AuthenticatedImageModule,
+      MockBawApiModule,
+    ],
   });
 
   function getLoadingElements() {
@@ -390,7 +396,7 @@ describe("RenderFieldComponent", () => {
       setup(createModel({ id: 1 }, "/broken_link"));
       spec.detectChanges();
       const value = getModelValues()[0];
-      assertRoute(value, "/broken_link");
+      assertUri(value, "/broken_link");
     });
   });
 

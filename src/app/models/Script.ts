@@ -71,7 +71,8 @@ export class Script extends AbstractModel implements IScript {
   }
 
   public get viewUrl(): string {
-    throw Error("Script viewUrl not implement");
+    console.warn("Script viewUrl not implemented.");
+    return "not_implemented";
   }
 
   public get adminViewUrl(): string {

@@ -14,7 +14,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateBookmark } from "@test/fakes/Bookmark";
 import { generateUser } from "@test/fakes/User";
-import { assertErrorHandler, assertRoute } from "@test/helpers/html";
+import { assertErrorHandler, assertUri } from "@test/helpers/html";
 import { BehaviorSubject } from "rxjs";
 import { TheirBookmarksComponent } from "./their-bookmarks.component";
 
@@ -101,7 +101,7 @@ describe("TheirBookmarksComponent", () => {
         spec.detectChanges();
 
         const link = getCells()[0].querySelector("a");
-        assertRoute(link, defaultBookmark.viewUrl);
+        assertUri(link, defaultBookmark.viewUrl);
       });
     });
 

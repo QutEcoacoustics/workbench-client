@@ -2,21 +2,23 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { menuLink, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { assertRoute } from "@test/helpers/html";
 import { HeaderItemComponent } from "./header-item.component";
 
 describe("HeaderItemComponent", () => {
   let component: HeaderItemComponent;
   let fixture: ComponentFixture<HeaderItemComponent>;
+  let spec: Spectator<HeaderItemComponent>;
+  const createComponent = createComponentFactory({
+    component: HeaderItemComponent,
+    imports: [RouterTestingModule],
+  });
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [HeaderItemComponent],
-      imports: [RouterTestingModule],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(HeaderItemComponent);
-    component = fixture.componentInstance;
+    spec = createComponent({ detectChanges: false });
+    fixture = spec.fixture;
+    component = spec.component;
   });
 
   it("should create", () => {
