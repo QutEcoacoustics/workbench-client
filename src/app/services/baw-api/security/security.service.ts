@@ -13,7 +13,7 @@ import { ApiErrorDetails } from "../api.interceptor.service";
 import { apiReturnCodes, BawApiService } from "../baw-api.service";
 import { UserService } from "../user/user.service";
 
-const registerEndpoint = stringTemplate`/security/`;
+const signUpEndpoint = stringTemplate`/my_account/sign_up/`;
 const signInEndpoint = stringTemplate`/my_account/sign_in/`;
 const signOutEndpoint = stringTemplate`/security/`;
 const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
@@ -50,8 +50,68 @@ export class SecurityService extends BawApiService<SessionUser> {
   }
 
   // TODO Register account. Path needs to be checked and inputs ascertained.
-  public register(details: any): Observable<void> {
-    return this.handleAuth(this.apiCreate(registerEndpoint(), details));
+  public signUp(details: RegisterDetails): Observable<void> {
+    function setFormData(page: any, body: URLSearchParams) {
+      const err: ApiErrorDetails = {
+        status: apiReturnCodes.unknown,
+        message:
+          "Unable to retrieve authenticity token for registration request",
+      };
+
+      // Catch wrong type of response
+      if (typeof page !== "string") {
+        throwError(err);
+        return;
+      }
+
+      // Extract auth token if exists
+      const token = page.match(/name="authenticity_token" value="(.+?)"/);
+      if (!isInstantiated(token?.[1])) {
+        throwError(err);
+        return;
+      }
+
+      // Set form data
+      body.set("user[user_name]", details.userName);
+      body.set("user[email]", details.email);
+      body.set("user[password]", details.password);
+      body.set("user[password_confirmation]", details.passwordConfirmation);
+      body.set("commit", "Register");
+      body.set("authenticity_token", token[1]);
+      // body.set("g-recaptcha-response-data[register]", undefined);
+      // body.set("g-recaptcha-response", undefined);
+    }
+
+    const formData = new URLSearchParams();
+
+    return this.http
+      .get(this.getPath(signUpEndpoint()), { responseType: "text" })
+      .pipe(
+        // Extract form data from register form
+        tap((page: string) => setFormData(page, formData)),
+        // Mimic a traditional form-based sign up
+        // Needed because of https://github.com/QutEcoacoustics/baw-server/issues/424
+        mergeMap(() => this.signUpWithFormData(formData)),
+        // Trade the cookie for an API auth token (mimicking old baw-client)
+        mergeMap((response) => {
+          console.log(response);
+          return this.apiShow(sessionUserEndpoint(Date.now().toString()));
+        }),
+        // Save to local storage
+        tap((user: SessionUser) => this.storeLocalUser(user)),
+        // Get user details
+        mergeMap(() => this.userService.show()),
+        // Update session user with user details and save to local storage
+        tap((user: User) =>
+          this.storeLocalUser(
+            new SessionUser({ ...this.getLocalUser(), ...user.toJSON() })
+          )
+        ),
+        // Trigger auth observable
+        tap(() => this.authTrigger.next(null)),
+        // Handle errors
+        catchError(this.handleError)
+      );
   }
 
   /**
@@ -138,7 +198,19 @@ export class SecurityService extends BawApiService<SessionUser> {
    * traditional session cookie which we will later trade for an auth token
    */
   private signInWithFormData(formData: URLSearchParams) {
-    return this.http.post(this.getPath(signInEndpoint()), formData.toString(), {
+    return this.formDataRequest(this.getPath(signInEndpoint()), formData);
+  }
+
+  /**
+   * Use the form-based sign in to authenticate. The server will issue a
+   * traditional session cookie which we will later trade for an auth token
+   */
+  private signUpWithFormData(formData: URLSearchParams) {
+    return this.formDataRequest(this.getPath(signUpEndpoint()), formData);
+  }
+
+  private formDataRequest(path: string, formData: URLSearchParams) {
+    return this.http.post(path, formData.toString(), {
       responseType: "text",
       headers: new HttpHeaders({
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -175,21 +247,46 @@ export class SecurityService extends BawApiService<SessionUser> {
   }
 }
 
-export interface LoginDetailsInterface {
+export interface ILoginDetails {
   login?: string;
   password?: string;
 }
 
-export class LoginDetails
-  extends AbstractModel
-  implements LoginDetailsInterface {
-  public readonly kind: "LoginDetails" = "LoginDetails";
+export class LoginDetails extends AbstractModel implements ILoginDetails {
+  public readonly kind = "LoginDetails";
   @bawPersistAttr
   public readonly login: string;
   @bawPersistAttr
   public readonly password: string;
 
-  public constructor(details: LoginDetailsInterface) {
+  public constructor(details: ILoginDetails) {
+    super(details);
+  }
+
+  public get viewUrl(): string {
+    throw new Error("Not Implemented");
+  }
+}
+
+export interface IRegisterDetails {
+  userName: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+}
+
+export class RegisterDetails extends AbstractModel implements IRegisterDetails {
+  public readonly kind = "RegisterDetails";
+  @bawPersistAttr
+  public readonly userName: string;
+  @bawPersistAttr
+  public readonly email: string;
+  @bawPersistAttr
+  public readonly password: string;
+  @bawPersistAttr
+  public readonly passwordConfirmation: string;
+
+  public constructor(details: IRegisterDetails) {
     super(details);
   }
 

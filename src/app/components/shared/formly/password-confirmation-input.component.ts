@@ -80,8 +80,10 @@ export class PasswordConfirmationInputComponent
   public updateModel() {
     this.formControl.setValue({
       password: this.password,
+      passwordConfirmation: this.confirmation,
     });
     this.model["password"] = this.password;
+    this.model["passwordConfirmation"] = this.confirmation;
   }
 
   public getError(): string {
