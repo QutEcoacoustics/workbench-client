@@ -7,6 +7,7 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AbstractModel } from "@models/AbstractModel";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 import { SessionUser, User } from "@models/User";
+import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
 import { catchError, map, mergeMap, tap } from "rxjs/operators";
 import { ApiErrorDetails } from "../api.interceptor.service";
@@ -29,8 +30,7 @@ export class SecurityService extends BawApiService<SessionUser> {
   private handleError = (
     err: ApiErrorDetails | Error
   ): ObservableInput<any> => {
-    this.clearSessionUser();
-    this.authTrigger.next(null);
+    this.clearData();
 
     if (err instanceof Error) {
       return throwError({
@@ -45,6 +45,7 @@ export class SecurityService extends BawApiService<SessionUser> {
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
     private userService: UserService,
+    private cookies: CookieService,
     injector: Injector
   ) {
     super(http, apiRoot, SessionUser, injector);
@@ -57,55 +58,48 @@ export class SecurityService extends BawApiService<SessionUser> {
     return this.authTrigger;
   }
 
+  /**
+   * Returns the recaptcha seed for the registration form
+   */
   public signUpSeed(): Observable<string> {
-    return this.http
-      .get(this.getPath(signUpSeed()), { responseType: "text" })
-      .pipe(
-        map((page: string) => {
-          const errMsg =
-            "Unable to retrieve recaptcha seed for registration request";
-
-          // Catch wrong type of response
-          if (typeof page !== "string") {
-            throw new Error(errMsg);
-          }
-
-          const token = page.match(
-            /id="g-recaptcha-response-data-register" data-sitekey="(.+?)"/
-          );
-          if (!isInstantiated(token?.[1])) {
-            throw new Error(errMsg);
-          }
-
+    return this.formHtmlRequest(signUpSeed()).pipe(
+      // Extract token from page
+      map((page: string) =>
+        page.match(
+          /id="g-recaptcha-response-data-register" data-sitekey="(.+?)"/
+        )
+      ),
+      // Return token if exists
+      map((token: RegExpMatchArray) => {
+        if (isInstantiated(token?.[1])) {
           return token[1];
-        }),
-        // Handle errors
-        catchError(this.handleError)
-      );
+        }
+        throw new Error(
+          "Unable to retrieve recaptcha seed for registration request"
+        );
+      }),
+      // Handle errors
+      catchError(this.handleError)
+    );
   }
 
   /**
-   * Register the user
+   * Sign up the user
    *
    * @param details Details provided by registration form
    */
   public signUp(details: RegisterDetails): Observable<void> {
-    function setFormData(page: any, body: URLSearchParams) {
-      const errMsg =
-        "Unable to retrieve authenticity token for registration request";
-
-      // Catch wrong type of response
-      if (typeof page !== "string") {
-        throw new Error(errMsg);
-      }
-
+    return this.handleAuth(signUpSeed(), signUpEndpoint(), (page: string) => {
       // Extract auth token if exists
       const token = page.match(/name="authenticity_token" value="(.+?)"/);
       if (!isInstantiated(token?.[1])) {
-        throw new Error(errMsg);
+        throw new Error(
+          "Unable to retrieve authenticity token for sign up request"
+        );
       }
 
       // Set form data
+      const body = new URLSearchParams();
       body.set("user[user_name]", details.userName);
       body.set("user[email]", details.email);
       body.set("user[password]", details.password);
@@ -114,37 +108,8 @@ export class SecurityService extends BawApiService<SessionUser> {
       body.set("authenticity_token", token[1]);
       body.set("g-recaptcha-response-data[register]", details.recaptchaToken);
       body.set("g-recaptcha-response", "");
-    }
-
-    const formData = new URLSearchParams();
-
-    return this.http
-      .get(this.getPath(signUpSeed()), { responseType: "text" })
-      .pipe(
-        // Extract form data from register form
-        tap((page: string) => setFormData(page, formData)),
-        // Mimic a traditional form-based sign up
-        // Needed because of https://github.com/QutEcoacoustics/baw-server/issues/424
-        mergeMap(() => this.signUpWithFormData(formData)),
-        // Trade the cookie for an API auth token (mimicking old baw-client)
-        mergeMap(() =>
-          this.apiShow(sessionUserEndpoint(Date.now().toString()))
-        ),
-        // Save to local storage
-        tap((user: SessionUser) => this.storeLocalUser(user)),
-        // Get user details
-        mergeMap(() => this.userService.show()),
-        // Update session user with user details and save to local storage
-        tap((user: User) =>
-          this.storeLocalUser(
-            new SessionUser({ ...this.getLocalUser(), ...user.toJSON() })
-          )
-        ),
-        // Trigger auth observable
-        tap(() => this.authTrigger.next(null)),
-        // Handle errors
-        catchError(this.handleError)
-      );
+      return body;
+    });
   }
 
   /**
@@ -153,91 +118,120 @@ export class SecurityService extends BawApiService<SessionUser> {
    * @param details Details provided by login form
    */
   public signIn(details: LoginDetails): Observable<void> {
-    function setFormData(page: any, body: URLSearchParams) {
-      const errMsg = "Unable to retrieve authenticity token for login request";
+    return this.handleAuth(
+      signInEndpoint(),
+      signInEndpoint(),
+      (page: string) => {
+        // Extract auth token if exists
+        const token = page.match(/name="authenticity_token" value="(.+?)"/);
+        if (!isInstantiated(token?.[1])) {
+          throw new Error(
+            "Unable to retrieve authenticity token for sign in request"
+          );
+        }
 
-      // Catch wrong type of response
-      if (typeof page !== "string") {
-        throw new Error(errMsg);
+        // Set form data
+        const body = new URLSearchParams();
+        body.set("user[login]", details.login);
+        body.set("user[password]", details.password);
+        body.set("user[remember_me]", "0");
+        body.set("commit", "Log+in");
+        body.set("authenticity_token", token[1]);
+        return body;
       }
-
-      // Extract auth token if exists
-      const token = page.match(/name="authenticity_token" value="(.+?)"/);
-      if (!isInstantiated(token?.[1])) {
-        throw new Error(errMsg);
-      }
-
-      // Set form data
-      body.set("user[login]", details.login);
-      body.set("user[password]", details.password);
-      body.set("user[remember_me]", "0");
-      body.set("commit", "Log+in");
-      body.set("authenticity_token", token[1]);
-    }
-
-    const formData = new URLSearchParams();
-
-    // Request login form page
-    return this.http
-      .get(this.getPath(signInEndpoint()), { responseType: "text" })
-      .pipe(
-        // Extract form data from login form
-        tap((page: string) => setFormData(page, formData)),
-        // Mimic a traditional form-based sign in to get a well-formed auth cookie
-        // Needed because of https://github.com/QutEcoacoustics/baw-server/issues/509
-        mergeMap(() => this.signInWithFormData(formData)),
-        // Trade the cookie for an API auth token (mimicking old baw-client)
-        mergeMap(() =>
-          this.apiShow(sessionUserEndpoint(Date.now().toString()))
-        ),
-        // Save to local storage
-        tap((user: SessionUser) => this.storeLocalUser(user)),
-        // Get user details
-        mergeMap(() => this.userService.show()),
-        // Update session user with user details and save to local storage
-        tap((user: User) =>
-          this.storeLocalUser(
-            new SessionUser({ ...this.getLocalUser(), ...user.toJSON() })
-          )
-        ),
-        // Trigger auth observable
-        tap(() => this.authTrigger.next(null)),
-        // Handle errors
-        catchError(this.handleError)
-      );
+    );
   }
 
   /**
    * Logout user and clear session storage values
-   * TODO Clear cookies
    */
   public signOut(): Observable<void> {
     return this.apiDestroy(signOutEndpoint()).pipe(
-      map(() => {
-        this.clearSessionUser();
-        this.authTrigger.next(null);
-      }),
+      tap(() => this.clearData()),
       catchError(this.handleError)
     );
   }
 
   /**
-   * Use the form-based sign in to authenticate. The server will issue a
-   * traditional session cookie which we will later trade for an auth token
+   * Handle authentication request
+   *
+   * @param formEndpoint Endpoint to retrieve form html
+   * @param authEndpoint Endpoint to sign in/sign up user, should set an auth cookie
+   * @param getFormData Get form data to insert into api request
    */
-  private signInWithFormData(formData: URLSearchParams) {
-    return this.formDataRequest(this.getPath(signInEndpoint()), formData);
+  private handleAuth(
+    formEndpoint: string,
+    authEndpoint: string,
+    getFormData: (page: string) => URLSearchParams
+  ) {
+    // Request form page
+    return this.formHtmlRequest(formEndpoint).pipe(
+      // Extract form data from login/registration form, and create request body
+      map((page: string) => getFormData(page)),
+      /*
+       * Mimic a traditional form-based sign in/sign up to get a well-formed auth cookie
+       * Needed because of:
+       * - https://github.com/QutEcoacoustics/baw-server/issues/509
+       * - https://github.com/QutEcoacoustics/baw-server/issues/424
+       */
+      mergeMap((formData: URLSearchParams) =>
+        this.formDataRequest(this.getPath(authEndpoint), formData)
+      ),
+      // Trade the cookie for an API auth token (mimicking old baw-client)
+      mergeMap(() => this.apiShow(sessionUserEndpoint(Date.now().toString()))),
+      // Save to local storage
+      tap((user: SessionUser) => this.storeLocalUser(user)),
+      // Get user details
+      mergeMap(() => this.userService.show()),
+      // Update session user with user details and save to local storage
+      tap((user: User) =>
+        this.storeLocalUser(
+          new SessionUser({ ...this.getLocalUser(), ...user.toJSON() })
+        )
+      ),
+      // Trigger auth observable
+      tap(() => this.authTrigger.next(null)),
+      // Handle errors
+      catchError(this.handleError)
+    );
   }
 
   /**
-   * Use the form-based sign in to authenticate. The server will issue a
-   * traditional session cookie which we will later trade for an auth token
+   * Clear session and cookie data, then trigger authTrigger
    */
-  private signUpWithFormData(formData: URLSearchParams) {
-    return this.formDataRequest(this.getPath(signUpEndpoint()), formData);
+  private clearData() {
+    this.clearSessionUser();
+    this.cookies.deleteAll();
+    this.authTrigger.next(null);
   }
 
-  private formDataRequest(path: string, formData: URLSearchParams) {
+  /**
+   * Request a HTML page from the API. This will be used to extract important
+   * information required to make form-based requests later on
+   */
+  private formHtmlRequest(path: string): Observable<string> {
+    return this.http.get(this.getPath(path), { responseType: "text" }).pipe(
+      // Throw error if api response has not returned a html page
+      map((page: any) => {
+        if (typeof page !== "string") {
+          throw new Error("Failed to retrieve auth form.");
+        }
+        return page;
+      })
+    );
+  }
+
+  /**
+   * Use the form-based request to authenticate. The server will issue a
+   * traditional session cookie which we can later trade for an auth token
+   *
+   * @param path API route path
+   * @param formData API body
+   */
+  private formDataRequest(
+    path: string,
+    formData: URLSearchParams
+  ): Observable<string> {
     return this.http.post(path, formData.toString(), {
       responseType: "text",
       headers: new HttpHeaders({
