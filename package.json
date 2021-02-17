@@ -72,7 +72,7 @@
     "zone.js": "^0.11.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.1101.4",
+    "@angular-devkit/build-angular": "^0.1102.0",
     "@angular-eslint/builder": "1.2.0",
     "@angular-eslint/eslint-plugin": "1.2.0",
     "@angular-eslint/eslint-plugin-template": "1.2.0",
@@ -83,7 +83,7 @@
     "@angular/language-service": "^11.2.0",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.1.0",
     "@ngneat/spectator": "^7.0.0",
-    "@nguniversal/builders": "^11.1.2",
+    "@nguniversal/builders": "^11.2.0",
     "@nrwl/nx-cloud": "^11.1.4",
     "@nrwl/workspace": "^11.2.12",
     "@types/express": "^4.17.11",
