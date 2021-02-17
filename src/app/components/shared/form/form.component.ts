@@ -2,7 +2,8 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnInit,
+  OnChanges,
+  OnDestroy,
   Output,
   ViewEncapsulation,
 } from "@angular/core";
@@ -10,6 +11,7 @@ import { FormGroup } from "@angular/forms";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { NgRecaptcha3Service } from "ng-recaptcha3";
 import { ToastrService } from "ngx-toastr";
 
 /**
@@ -22,7 +24,9 @@ import { ToastrService } from "ngx-toastr";
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
 })
-export class FormComponent extends withUnsubscribe() implements OnInit {
+export class FormComponent
+  extends withUnsubscribe()
+  implements OnChanges, OnDestroy {
   @Input() public btnColor: BootstrapColorTypes = "primary";
   @Input() public fields: FormlyFieldConfig[] = [];
   @Input() public model: Record<string, any> = {};
@@ -31,19 +35,50 @@ export class FormComponent extends withUnsubscribe() implements OnInit {
   @Input() public submitLoading: boolean;
   @Input() public subTitle?: string;
   @Input() public title?: string;
+  /**
+   * Recaptcha seed, using the following rules:
+   * string: Seed value
+   * true: Will set seed
+   * false: Will not set seed
+   */
+  @Input() public seed?: string | boolean = false;
+  private loadingSeed: boolean;
 
   // Rename is required to stop formly from hijacking the variable
   // eslint-disable-next-line @angular-eslint/no-output-rename
   @Output("onSubmit") public submit = new EventEmitter<any>();
 
-  public form: FormGroup;
+  public form = new FormGroup({});
 
-  public constructor(private notifications: ToastrService) {
+  public constructor(
+    private notifications: ToastrService,
+    private recaptcha: NgRecaptcha3Service
+  ) {
     super();
   }
 
-  public ngOnInit() {
-    this.form = new FormGroup({});
+  public async ngOnChanges() {
+    if (this.loadingSeed) {
+      return;
+    }
+
+    if (this.seed === true) {
+      this.submitLoading = true;
+    } else if (typeof this.seed === "string") {
+      this.loadingSeed = true;
+      const status = (await this.recaptcha.init(this.seed)) as RecaptchaStatus;
+
+      if (status === "error") {
+        this.notifications.error("Failed to load recaptcha");
+        return;
+      }
+
+      this.submitLoading = false;
+    }
+  }
+
+  public ngOnDestroy() {
+    this.recaptcha.destroy();
   }
 
   /**
@@ -51,11 +86,17 @@ export class FormComponent extends withUnsubscribe() implements OnInit {
    *
    * @param model Form response
    */
-  public onSubmit(model: any) {
+  public async onSubmit(model: any) {
     if (this.form.status === "VALID") {
-      this.submit.emit(model);
+      return this.submit.emit(
+        this.seed
+          ? { ...model, recaptchaToken: await this.recaptcha.getToken() }
+          : model
+      );
     } else {
       this.notifications.error("Please fill all required fields.");
     }
   }
 }
+
+type RecaptchaStatus = "success" | "error";

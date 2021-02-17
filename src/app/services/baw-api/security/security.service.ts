@@ -13,7 +13,8 @@ import { ApiErrorDetails } from "../api.interceptor.service";
 import { apiReturnCodes, BawApiService } from "../baw-api.service";
 import { UserService } from "../user/user.service";
 
-const signUpEndpoint = stringTemplate`/my_account/sign_up/`;
+const signUpSeed = stringTemplate`/my_account/sign_up/`;
+const signUpEndpoint = stringTemplate`/my_account/`;
 const signInEndpoint = stringTemplate`/my_account/sign_in/`;
 const signOutEndpoint = stringTemplate`/security/`;
 const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
@@ -25,7 +26,20 @@ const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
 @Injectable()
 export class SecurityService extends BawApiService<SessionUser> {
   private authTrigger = new BehaviorSubject<void>(null);
-  private handleError: (err: ApiErrorDetails) => ObservableInput<any>;
+  private handleError = (
+    err: ApiErrorDetails | Error
+  ): ObservableInput<any> => {
+    this.clearSessionUser();
+    this.authTrigger.next(null);
+
+    if (err instanceof Error) {
+      return throwError({
+        status: apiReturnCodes.unknown,
+        message: err.message,
+      } as ApiErrorDetails);
+    }
+    return throwError(err);
+  };
 
   public constructor(
     http: HttpClient,
@@ -34,12 +48,6 @@ export class SecurityService extends BawApiService<SessionUser> {
     injector: Injector
   ) {
     super(http, apiRoot, SessionUser, injector);
-
-    this.handleError = (err: ApiErrorDetails) => {
-      this.clearSessionUser();
-      this.authTrigger.next(null);
-      return throwError(err);
-    };
   }
 
   /**
@@ -49,26 +57,52 @@ export class SecurityService extends BawApiService<SessionUser> {
     return this.authTrigger;
   }
 
-  // TODO Register account. Path needs to be checked and inputs ascertained.
+  public signUpSeed(): Observable<string> {
+    return this.http
+      .get(this.getPath(signUpSeed()), { responseType: "text" })
+      .pipe(
+        map((page: string) => {
+          const errMsg =
+            "Unable to retrieve recaptcha seed for registration request";
+
+          // Catch wrong type of response
+          if (typeof page !== "string") {
+            throw new Error(errMsg);
+          }
+
+          const token = page.match(
+            /id="g-recaptcha-response-data-register" data-sitekey="(.+?)"/
+          );
+          if (!isInstantiated(token?.[1])) {
+            throw new Error(errMsg);
+          }
+
+          return token[1];
+        }),
+        // Handle errors
+        catchError(this.handleError)
+      );
+  }
+
+  /**
+   * Register the user
+   *
+   * @param details Details provided by registration form
+   */
   public signUp(details: RegisterDetails): Observable<void> {
     function setFormData(page: any, body: URLSearchParams) {
-      const err: ApiErrorDetails = {
-        status: apiReturnCodes.unknown,
-        message:
-          "Unable to retrieve authenticity token for registration request",
-      };
+      const errMsg =
+        "Unable to retrieve authenticity token for registration request";
 
       // Catch wrong type of response
       if (typeof page !== "string") {
-        throwError(err);
-        return;
+        throw new Error(errMsg);
       }
 
       // Extract auth token if exists
       const token = page.match(/name="authenticity_token" value="(.+?)"/);
       if (!isInstantiated(token?.[1])) {
-        throwError(err);
-        return;
+        throw new Error(errMsg);
       }
 
       // Set form data
@@ -78,14 +112,14 @@ export class SecurityService extends BawApiService<SessionUser> {
       body.set("user[password_confirmation]", details.passwordConfirmation);
       body.set("commit", "Register");
       body.set("authenticity_token", token[1]);
-      // body.set("g-recaptcha-response-data[register]", undefined);
-      // body.set("g-recaptcha-response", undefined);
+      body.set("g-recaptcha-response-data[register]", details.recaptchaToken);
+      body.set("g-recaptcha-response", "");
     }
 
     const formData = new URLSearchParams();
 
     return this.http
-      .get(this.getPath(signUpEndpoint()), { responseType: "text" })
+      .get(this.getPath(signUpSeed()), { responseType: "text" })
       .pipe(
         // Extract form data from register form
         tap((page: string) => setFormData(page, formData)),
@@ -93,10 +127,9 @@ export class SecurityService extends BawApiService<SessionUser> {
         // Needed because of https://github.com/QutEcoacoustics/baw-server/issues/424
         mergeMap(() => this.signUpWithFormData(formData)),
         // Trade the cookie for an API auth token (mimicking old baw-client)
-        mergeMap((response) => {
-          console.log(response);
-          return this.apiShow(sessionUserEndpoint(Date.now().toString()));
-        }),
+        mergeMap(() =>
+          this.apiShow(sessionUserEndpoint(Date.now().toString()))
+        ),
         // Save to local storage
         tap((user: SessionUser) => this.storeLocalUser(user)),
         // Get user details
@@ -115,29 +148,23 @@ export class SecurityService extends BawApiService<SessionUser> {
   }
 
   /**
-   * Login the user, this function can only be called if user
-   * is not logged in.
+   * Login the user
    *
    * @param details Details provided by login form
    */
   public signIn(details: LoginDetails): Observable<void> {
     function setFormData(page: any, body: URLSearchParams) {
-      const err: ApiErrorDetails = {
-        status: apiReturnCodes.unknown,
-        message: "Unable to retrieve authenticity token for login request",
-      };
+      const errMsg = "Unable to retrieve authenticity token for login request";
 
       // Catch wrong type of response
       if (typeof page !== "string") {
-        throwError(err);
-        return;
+        throw new Error(errMsg);
       }
 
       // Extract auth token if exists
       const token = page.match(/name="authenticity_token" value="(.+?)"/);
       if (!isInstantiated(token?.[1])) {
-        throwError(err);
-        return;
+        throw new Error(errMsg);
       }
 
       // Set form data
@@ -182,6 +209,7 @@ export class SecurityService extends BawApiService<SessionUser> {
 
   /**
    * Logout user and clear session storage values
+   * TODO Clear cookies
    */
   public signOut(): Observable<void> {
     return this.apiDestroy(signOutEndpoint()).pipe(
@@ -220,31 +248,6 @@ export class SecurityService extends BawApiService<SessionUser> {
       }),
     });
   }
-
-  /**
-   * Handle register/login authentication requests
-   *
-   * @param apiRequest API Request
-   */
-  private handleAuth(apiRequest: Observable<SessionUser>): Observable<void> {
-    return apiRequest.pipe(
-      mergeMap((sessionUser: SessionUser) => {
-        // Store authToken before making api request
-        this.storeLocalUser(sessionUser);
-
-        return this.userService
-          .show()
-          .pipe(
-            map((user) => new SessionUser({ ...sessionUser, ...user.toJSON() }))
-          );
-      }),
-      map((sessionUser: SessionUser) => {
-        this.storeLocalUser(sessionUser);
-        this.authTrigger.next(null);
-      }),
-      catchError(this.handleError)
-    );
-  }
 }
 
 export interface ILoginDetails {
@@ -273,6 +276,7 @@ export interface IRegisterDetails {
   email: string;
   password: string;
   passwordConfirmation: string;
+  recaptchaToken: string;
 }
 
 export class RegisterDetails extends AbstractModel implements IRegisterDetails {
@@ -285,6 +289,8 @@ export class RegisterDetails extends AbstractModel implements IRegisterDetails {
   public readonly password: string;
   @bawPersistAttr
   public readonly passwordConfirmation: string;
+  @bawPersistAttr
+  public readonly recaptchaToken: string;
 
   public constructor(details: IRegisterDetails) {
     super(details);

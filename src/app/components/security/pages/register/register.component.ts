@@ -14,6 +14,7 @@ import {
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
 import { ToastrService } from "ngx-toastr";
+import { takeUntil } from "rxjs/operators";
 import { fields } from "./register.schema.json";
 
 @Component({
@@ -26,6 +27,7 @@ import { fields } from "./register.schema.json";
       [fields]="fields"
       submitLabel="Register"
       [submitLoading]="loading"
+      [seed]="seed"
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
@@ -35,6 +37,7 @@ class RegisterComponent
   implements OnInit {
   public fields = fields;
   public loading: boolean;
+  public seed: string | boolean = true;
 
   public constructor(
     private api: SecurityService,
@@ -60,11 +63,19 @@ class RegisterComponent
       // Disable submit button
       this.loading = true;
       this.notifications.error("You are already logged in.");
+      return;
     }
+
+    this.api
+      .signUpSeed()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (seed) => (this.seed = seed),
+        (err) => console.error(err)
+      );
   }
 
   protected apiAction(model: IRegisterDetails) {
-    console.log(model);
     return this.api.signUp(new RegisterDetails(model));
   }
 }
