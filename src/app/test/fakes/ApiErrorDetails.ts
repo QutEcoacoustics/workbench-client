@@ -6,6 +6,7 @@ type HTTPStatus =
   | "Not Found"
   | "Bad Request"
   | "Unprocessable Entity"
+  | "Internal Server Error"
   | "Custom";
 
 /**
@@ -38,6 +39,10 @@ export function generateApiErrorDetails(
     case "Unprocessable Entity":
       status = apiReturnCodes.unprocessableEntity;
       message = "Record could not be saved";
+      break;
+    case "Internal Server Error":
+      status = apiReturnCodes.internalServerFailure;
+      message = "Internal Server Failure";
       break;
   }
 

@@ -9,7 +9,7 @@ import { bawPersistAttr } from "@models/AttributeDecorators";
 import { SessionUser, User } from "@models/User";
 import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
-import { catchError, map, mergeMap, tap } from "rxjs/operators";
+import { catchError, map, mergeMap, take, tap } from "rxjs/operators";
 import { ApiErrorDetails } from "../api.interceptor.service";
 import { apiReturnCodes, BawApiService } from "../baw-api.service";
 import { UserService } from "../user/user.service";
@@ -63,6 +63,12 @@ export class SecurityService extends BawApiService<SessionUser> {
    */
   public signUpSeed(): Observable<string> {
     return this.formHtmlRequest(signUpSeed()).pipe(
+      // Validate api response, and get form data if valid
+      tap((page: any) => {
+        if (typeof page !== "string") {
+          throw new Error("Failed to retrieve auth form");
+        }
+      }),
       // Extract token from page
       map((page: string) =>
         page.match(
@@ -95,6 +101,12 @@ export class SecurityService extends BawApiService<SessionUser> {
       if (!isInstantiated(token?.[1])) {
         throw new Error(
           "Unable to retrieve authenticity token for sign up request"
+        );
+      }
+
+      if (!isInstantiated(details.recaptchaToken)) {
+        throw new Error(
+          "Unable to retrieve recaptcha token for sign up request"
         );
       }
 
@@ -166,8 +178,13 @@ export class SecurityService extends BawApiService<SessionUser> {
   ) {
     // Request form page
     return this.formHtmlRequest(formEndpoint).pipe(
-      // Extract form data from login/registration form, and create request body
-      map((page: string) => getFormData(page)),
+      // Validate api response, and get form data if valid
+      map((page: any) => {
+        if (typeof page !== "string") {
+          throw new Error("Failed to retrieve auth form");
+        }
+        return getFormData(page);
+      }),
       /*
        * Mimic a traditional form-based sign in/sign up to get a well-formed auth cookie
        * Needed because of:
@@ -175,7 +192,7 @@ export class SecurityService extends BawApiService<SessionUser> {
        * - https://github.com/QutEcoacoustics/baw-server/issues/424
        */
       mergeMap((formData: URLSearchParams) =>
-        this.formDataRequest(this.getPath(authEndpoint), formData)
+        this.formDataRequest(authEndpoint, formData)
       ),
       // Trade the cookie for an API auth token (mimicking old baw-client)
       mergeMap(() => this.apiShow(sessionUserEndpoint(Date.now().toString()))),
@@ -191,6 +208,8 @@ export class SecurityService extends BawApiService<SessionUser> {
       ),
       // Trigger auth observable
       tap(() => this.authTrigger.next(null)),
+      // Complete observable
+      take(1),
       // Handle errors
       catchError(this.handleError)
     );
@@ -209,16 +228,12 @@ export class SecurityService extends BawApiService<SessionUser> {
    * Request a HTML page from the API. This will be used to extract important
    * information required to make form-based requests later on
    */
-  private formHtmlRequest(path: string): Observable<string> {
-    return this.http.get(this.getPath(path), { responseType: "text" }).pipe(
-      // Throw error if api response has not returned a html page
-      map((page: any) => {
-        if (typeof page !== "string") {
-          throw new Error("Failed to retrieve auth form.");
-        }
-        return page;
-      })
-    );
+  private formHtmlRequest(path: string): Observable<any> {
+    return this.http.get(this.getPath(path), {
+      responseType: "text",
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      headers: new HttpHeaders({ Accept: "text/html" }),
+    });
   }
 
   /**
@@ -231,8 +246,8 @@ export class SecurityService extends BawApiService<SessionUser> {
   private formDataRequest(
     path: string,
     formData: URLSearchParams
-  ): Observable<string> {
-    return this.http.post(path, formData.toString(), {
+  ): Observable<any> {
+    return this.http.post(this.getPath(path), formData.toString(), {
       responseType: "text",
       headers: new HttpHeaders({
         // eslint-disable-next-line @typescript-eslint/naming-convention

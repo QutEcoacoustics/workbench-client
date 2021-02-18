@@ -24,7 +24,7 @@ describe("RegisterComponent", () => {
       {
         testGroup: "Username Input",
         field: fields[0],
-        key: "username",
+        key: "userName",
         type: "input",
         required: true,
         label: "Username",
