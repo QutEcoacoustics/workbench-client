@@ -12,10 +12,11 @@ export abstract class AbstractModel {
   }
 
   /**
-   * TODO Update comment
-   * Redirect path to view model on website. This is a string which can be
-   * used by `Router.navigateByUrl()` without any processing. For example,
-   * for the project abstract model, this path should direct to the project page.
+   * Redirect path to view model on website. This is a string which can be used
+   * by the UrlDirective (`[bawUrl]`) to navigate. For example using the project
+   * abstract model, this path would direct to the project page. The url may
+   * include query parameters, and is thus incompatible with `[routerLink]` and
+   * `Router.navigateByUrl()`.
    */
   public abstract get viewUrl(): string;
 
@@ -43,10 +44,11 @@ export abstract class AbstractModel {
   public readonly kind: string;
 
   /**
-   * TODO Update comment
-   * Redirect path to view model on website. This is a string which can be
-   * used by `Router.navigateByUrl()` without any processing. For example,
-   * for the project abstract model, this path should direct to the project page.
+   * Redirect path to view model on website. This is a string which can be used
+   * by the UrlDirective (`[bawUrl]`) to navigate. For example using the project
+   * abstract model, this path would direct to the project page. The url may
+   * include query parameters, and is thus incompatible with `[routerLink]` and
+   * `Router.navigateByUrl()`.
    *
    * @param args Url arguments
    */
