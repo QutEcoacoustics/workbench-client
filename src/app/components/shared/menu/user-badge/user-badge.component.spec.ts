@@ -10,7 +10,7 @@ import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { generateUser } from "@test/fakes/User";
-import { assertImage, assertUri, assertSpinner } from "@test/helpers/html";
+import { assertImage, assertUrl, assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime } from "luxon";
 import { UserBadgeComponent } from "./user-badge.component";
@@ -111,7 +111,7 @@ describe("UserBadgeComponent", () => {
       const user = new User(generateUser());
       setup({ user });
       spec.detectChanges();
-      assertUri(getUsername(), user.viewUrl);
+      assertUrl(getUsername(), user.viewUrl);
     });
 
     it("should display default image", () => {
@@ -146,7 +146,7 @@ describe("UserBadgeComponent", () => {
       const user = new User(generateUser());
       setup({ user });
       spec.detectChanges();
-      assertUri(getImageWrapper(), user.viewUrl);
+      assertUrl(getImageWrapper(), user.viewUrl);
     });
 
     it("should not display undefined timestamp", () => {

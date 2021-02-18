@@ -25,7 +25,7 @@
   >
     <ngx-datatable-column name="User">
       <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        <a [uri]="row.account.viewUrl">{{ value }}</a>
+        <a [url]="row.account.viewUrl">{{ value }}</a>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Last Login"> </ngx-datatable-column>

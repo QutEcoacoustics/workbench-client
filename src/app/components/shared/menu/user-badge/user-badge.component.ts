@@ -25,7 +25,7 @@ import { DateTime } from "luxon";
           <a
             *ngIf="!(user | isGhostUser); else userImage"
             id="imageLink"
-            [uri]="user.viewUrl"
+            [url]="user.viewUrl"
           >
             <ng-container *ngTemplateOutlet="userImage"></ng-container>
           </a>
@@ -49,7 +49,7 @@ import { DateTime } from "luxon";
 
           <!-- Normal User -->
           <ng-template #isUser>
-            <a id="username" class="heading" [uri]="user.viewUrl">
+            <a id="username" class="heading" [url]="user.viewUrl">
               {{ user.userName }}
             </a>
           </ng-template>

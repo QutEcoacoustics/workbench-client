@@ -11,10 +11,10 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: "a[uri]",
+  selector: "a[url]",
 })
-export class UriDirective extends withUnsubscribe(RouterLinkWithHref) {
-  @Input() public uri: string;
+export class UrlDirective extends withUnsubscribe(RouterLinkWithHref) {
+  @Input() public url: string;
 
   public constructor(
     private _router: Router,
@@ -25,14 +25,14 @@ export class UriDirective extends withUnsubscribe(RouterLinkWithHref) {
   }
 
   public get urlTree(): UrlTree {
-    if (!this.uri) {
+    if (!this.url) {
       return super.urlTree;
     }
 
-    // Construct URL from uri, baseURI does not matter
-    const url = new URL(this.uri, document?.baseURI || "http://localhost/");
+    // Construct URL from url, baseURI does not matter
+    const url = new URL(this.url, document?.baseURI || "http://localhost/");
 
-    // Extract query parameters from uri
+    // Extract query parameters from url
     const queryParams: Params = {};
     url.searchParams.forEach((value, key) => (queryParams[key] = value));
 

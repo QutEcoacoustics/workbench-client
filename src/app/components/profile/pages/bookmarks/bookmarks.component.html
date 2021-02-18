@@ -29,7 +29,7 @@
         [sortable]="false"
       >
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <a [uri]="value.viewUrl">{{ value.name }}</a>
+          <a [url]="value.viewUrl">{{ value.name }}</a>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column

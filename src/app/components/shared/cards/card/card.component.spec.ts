@@ -2,7 +2,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { DirectivesModule } from "@directives/directives.module";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { modelData } from "@test/helpers/faker";
-import { assertHref, assertTruncation, assertUri } from "@test/helpers/html";
+import { assertHref, assertTruncation, assertUrl } from "@test/helpers/html";
 import { LineTruncationLibModule } from "ngx-line-truncation";
 import { CardComponent } from "./card.component";
 
@@ -75,6 +75,6 @@ describe("CardComponent", () => {
     const links = spectator.queryAll<HTMLAnchorElement>("a");
     expect(links.length).toBe(1);
     expect(links[0].innerText).toContain("title");
-    assertUri(links[0], "/brokenlink");
+    assertUrl(links[0], "/brokenlink");
   });
 });

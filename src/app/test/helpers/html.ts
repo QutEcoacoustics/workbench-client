@@ -103,14 +103,14 @@ export function assertRoute(target: HTMLElement, route: string) {
 }
 
 /**
- * Assert uri link
+ * Assert url link
  *
  * @param target Target element
  * @param route Route text
  */
-export function assertUri(target: HTMLElement, route: string) {
+export function assertUrl(target: HTMLElement, route: string) {
   expect(target).toBeTruthy("No route detected");
-  expect(target).toHaveAttribute("ng-reflect-uri");
+  expect(target).toHaveAttribute("ng-reflect-url");
   expect(target).toHaveAttribute("href", encodeURI(route));
 }
 

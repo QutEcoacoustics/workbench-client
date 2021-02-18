@@ -8,14 +8,14 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import { UriDirective } from "./uri.directive";
+import { UrlDirective } from "./url.directive";
 
-describe("UriDirective", () => {
+describe("UrlDirective", () => {
   let router: Router;
   let route: ActivatedRoute;
-  let spec: SpectatorDirective<UriDirective>;
+  let spec: SpectatorDirective<UrlDirective>;
   const createDirective = createDirectiveFactory({
-    directive: UriDirective,
+    directive: UrlDirective,
     imports: [RouterTestingModule],
   });
 
@@ -43,13 +43,13 @@ describe("UriDirective", () => {
     expect(url.pathname + url.search).toBe(link);
   }
 
-  function setup(uri: string) {
-    spec = createDirective('<a [uri]="uri"></a>', { hostProps: { uri } });
+  function setup(url: string) {
+    spec = createDirective('<a [url]="url"></a>', { hostProps: { url } });
     router = spec.inject(Router);
     route = spec.inject(ActivatedRoute);
   }
 
-  it("should not interfere with routerLink if no [uri]", () => {
+  it("should not interfere with routerLink if no [url]", () => {
     const spectator = createRouterLink(
       '<a [routerLink]="link" [queryParams]="params"></a>',
       { hostProps: { link: "/home", params: { test: "value" } } }
@@ -64,18 +64,18 @@ describe("UriDirective", () => {
   // TODO Current implementation does not work with routerLinkActive
   xit("should not interfere with routerLinkActive", () => {});
 
-  describe("uri", () => {
+  describe("url", () => {
     let root: StrongRoute;
 
     beforeEach(() => (root = StrongRoute.newRoot()));
 
-    it("should handle undefined uri", () => {
+    it("should handle undefined url", () => {
       setup(undefined);
       spec.detectChanges();
       assertRoute("/");
     });
 
-    it("should handle null uri", () => {
+    it("should handle null url", () => {
       setup(null);
       spec.detectChanges();
       assertRoute("/");

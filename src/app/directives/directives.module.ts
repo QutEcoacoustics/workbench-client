@@ -3,9 +3,9 @@ import { RouterModule } from "@angular/router";
 import { DatatableDirective } from "./datatable/datatable.directive";
 import { AuthenticatedImageModule } from "./image/image.module";
 import { StrongRouteDirective } from "./strongRoute/strong-route.directive";
-import { UriDirective } from "./uri/uri.directive";
+import { UrlDirective } from "./url/url.directive";
 
-const directives = [DatatableDirective, StrongRouteDirective, UriDirective];
+const directives = [DatatableDirective, StrongRouteDirective, UrlDirective];
 
 /**
  * App Shared Directives

@@ -32,7 +32,7 @@ import { generateTag } from "@test/fakes/Tag";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
-import { assertErrorHandler, assertImage, assertUri } from "@test/helpers/html";
+import { assertErrorHandler, assertImage, assertUrl } from "@test/helpers/html";
 import { Subject } from "rxjs";
 import { MyProfileComponent } from "./my-profile.component";
 
@@ -351,7 +351,7 @@ describe("MyProfileComponent", () => {
       spec.detectChanges();
 
       const tags = getTags();
-      assertUri(tags[0].querySelector("a"), defaultTag.viewUrl);
+      assertUrl(tags[0].querySelector("a"), defaultTag.viewUrl);
     });
 
     it("should display multiple tags", async () => {

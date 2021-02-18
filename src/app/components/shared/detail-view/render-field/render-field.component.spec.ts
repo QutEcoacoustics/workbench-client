@@ -7,7 +7,7 @@ import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { modelData } from "@test/helpers/faker";
-import { assertImage, assertUri } from "@test/helpers/html";
+import { assertImage, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -396,7 +396,7 @@ describe("RenderFieldComponent", () => {
       setup(createModel({ id: 1 }, "/broken_link"));
       spec.detectChanges();
       const value = getModelValues()[0];
-      assertUri(value, "/broken_link");
+      assertUrl(value, "/broken_link");
     });
   });
 

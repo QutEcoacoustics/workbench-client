@@ -13,13 +13,13 @@ import { takeUntil } from "rxjs/operators";
   template: `
     <li class="list-group-item">
       <div class="image">
-        <a id="imageLink" [uri]="model.getViewUrl(project)">
+        <a id="imageLink" [url]="model.getViewUrl(project)">
           <img id="image" [src]="model.image" [alt]="model.name + ' alt'" />
         </a>
       </div>
       <div class="body">
         <div class="heading">
-          <a id="nameLink" [uri]="model.getViewUrl(project)">
+          <a id="nameLink" [url]="model.getViewUrl(project)">
             <h5 id="name">{{ model.name }}</h5>
           </a>
         </div>
@@ -31,7 +31,7 @@ import { takeUntil } from "rxjs/operators";
             </span>
           </li>
           <li class="nav-item">
-            <a id="details" class="nav-link" [uri]="model.getViewUrl(project)">
+            <a id="details" class="nav-link" [url]="model.getViewUrl(project)">
               <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
               Details
             </a>
@@ -42,7 +42,7 @@ import { takeUntil } from "rxjs/operators";
               *ngIf="recording"
               id="play"
               class="nav-link"
-              [uri]="recording?.viewUrl"
+              [url]="recording?.viewUrl"
             >
               <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
               Play
@@ -63,7 +63,7 @@ import { takeUntil } from "rxjs/operators";
             ></baw-loading>
           </li>
           <li class="nav-item">
-            <a id="visualize" class="nav-link" [uri]="model.visualizeUrl">
+            <a id="visualize" class="nav-link" [url]="model.visualizeUrl">
               <fa-icon [icon]="['fas', 'eye']"></fa-icon>
               Visualise
             </a>

@@ -8,7 +8,7 @@ import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateUser } from "@test/fakes/User";
-import { assertUri } from "@test/helpers/html";
+import { assertUrl } from "@test/helpers/html";
 import {
   assertPagination,
   datatableApiResponse,
@@ -166,7 +166,7 @@ describe("AdminUserListComponent", () => {
       const row = getDatatableRows(spec.fixture)[0];
       const usernameCell = getDatatableCells(row)[0];
       const userLink = usernameCell.querySelector("a");
-      assertUri(userLink, "/user_accounts/5");
+      assertUrl(userLink, "/user_accounts/5");
     });
 
     it("should link to edit user account", () => {

@@ -16,7 +16,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { nStepObservable } from "@test/helpers/general";
-import { assertImage, assertRoute, assertUri } from "@test/helpers/html";
+import { assertImage, assertRoute, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
 import { SiteCardComponent } from "./site-card.component";
@@ -84,7 +84,7 @@ describe("SiteCardComponent", () => {
       setup(true);
       spec.detectChanges();
       const name = spec.query<HTMLAnchorElement>("#nameLink");
-      assertUri(name, defaultSite.getViewUrl(defaultProject));
+      assertUrl(name, defaultSite.getViewUrl(defaultProject));
     });
   });
 
@@ -118,7 +118,7 @@ describe("SiteCardComponent", () => {
     it("should navigate user to site when clicking site image", () => {
       setup(true);
       spec.detectChanges();
-      assertUri(getImageLink(), defaultSite.getViewUrl(defaultProject));
+      assertUrl(getImageLink(), defaultSite.getViewUrl(defaultProject));
     });
   });
 
@@ -164,7 +164,7 @@ describe("SiteCardComponent", () => {
 
       it("should navigate user to site when clicking details link", () => {
         initializeComponent();
-        assertUri(
+        assertUrl(
           getLinks().details,
           spec.component.model.getViewUrl(defaultProject)
         );
@@ -202,7 +202,7 @@ describe("SiteCardComponent", () => {
           initializeComponent();
           await recordingPromise;
           spec.detectChanges();
-          assertUri(getLinks().play, spec.component.recording.viewUrl);
+          assertUrl(getLinks().play, spec.component.recording.viewUrl);
         });
       } else {
         it("should not display play link", () => {

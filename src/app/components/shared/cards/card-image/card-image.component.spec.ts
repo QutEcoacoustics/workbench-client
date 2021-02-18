@@ -11,7 +11,7 @@ import { modelData } from "@test/helpers/faker";
 import {
   assertHref,
   assertImage,
-  assertUri,
+  assertUrl,
   assertTruncation,
 } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
@@ -145,7 +145,7 @@ describe("CardImageComponent", () => {
     spectator.setInput("card", { ...defaultCard, route: "/broken_link" });
 
     const route = spectator.query("a img").parentElement as HTMLAnchorElement;
-    assertUri(route, "/broken_link");
+    assertUrl(route, "/broken_link");
   });
 
   it("should have title route when route provided", () => {
@@ -156,6 +156,6 @@ describe("CardImageComponent", () => {
     });
 
     const link = spectator.query<HTMLAnchorElement>("h4 a");
-    assertUri(link, "/broken_link");
+    assertUrl(link, "/broken_link");
   });
 });

@@ -32,10 +32,10 @@
       <ng-template let-column="column" ngx-datatable-header-template>
       </ng-template>
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <a class="btn btn-sm btn-default mr-2" [uri]="value.adminViewUrl">
+        <a class="btn btn-sm btn-default mr-2" [url]="value.adminViewUrl">
           Details
         </a>
-        <a class="btn btn-sm btn-default" [uri]="value.viewUrl">Play</a>
+        <a class="btn btn-sm btn-default" [url]="value.viewUrl">Play</a>
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>
