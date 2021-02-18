@@ -38,7 +38,7 @@ import { takeUntil } from "rxjs/operators";
 
     <!-- Display AbstractModel -->
     <dl *ngIf="styling === fieldStyling.model">
-      <a id="model" [url]="model.viewUrl">{{ model }}</a>
+      <a id="model" [bawUrl]="model.viewUrl">{{ model }}</a>
     </dl>
 
     <!-- Display Image -->

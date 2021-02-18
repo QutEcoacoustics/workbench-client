@@ -72,7 +72,7 @@
               <!-- Individual tag -->
               <li *ngFor="let tag of tags" class="list-group-item">
                 <fa-icon id="icon" [icon]="['fas', 'tag']"></fa-icon>
-                <a [url]="tag.viewUrl">{{ tag.text }}</a>
+                <a [bawUrl]="tag.viewUrl">{{ tag.text }}</a>
               </li>
             </ul>
           </div>

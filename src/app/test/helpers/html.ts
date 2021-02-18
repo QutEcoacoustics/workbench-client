@@ -110,7 +110,7 @@ export function assertRoute(target: HTMLElement, route: string) {
  */
 export function assertUrl(target: HTMLElement, route: string) {
   expect(target).toBeTruthy("No route detected");
-  expect(target).toHaveAttribute("ng-reflect-url");
+  expect(target).toHaveAttribute("ng-reflect-baw-url");
   expect(target).toHaveAttribute("href", encodeURI(route));
 }
 

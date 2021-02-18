@@ -23,7 +23,7 @@
     >
       <ngx-datatable-column name="Site">
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <a [url]="value.viewUrl">{{ value.name }} </a>
+          <a [bawUrl]="value.viewUrl">{{ value.name }} </a>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column name="Last Modified" [width]="150" [maxWidth]="150">

@@ -44,12 +44,12 @@ describe("UrlDirective", () => {
   }
 
   function setup(url: string) {
-    spec = createDirective('<a [url]="url"></a>', { hostProps: { url } });
+    spec = createDirective('<a [bawUrl]="url"></a>', { hostProps: { url } });
     router = spec.inject(Router);
     route = spec.inject(ActivatedRoute);
   }
 
-  it("should not interfere with routerLink if no [url]", () => {
+  it("should not interfere with routerLink if no [bawUrl]", () => {
     const spectator = createRouterLink(
       '<a [routerLink]="link" [queryParams]="params"></a>',
       { hostProps: { link: "/home", params: { test: "value" } } }

@@ -22,7 +22,7 @@ import { Card } from "../cards.component";
           </ng-container>
 
           <ng-template #route>
-            <a [url]="card.route">{{ card.title }}</a>
+            <a [bawUrl]="card.route">{{ card.title }}</a>
           </ng-template>
         </ng-container>
 

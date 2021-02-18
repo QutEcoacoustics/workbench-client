@@ -9,12 +9,9 @@ import {
 } from "@angular/router";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 
-@Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: "a[url]",
-})
+@Directive({ selector: "a[bawUrl]" })
 export class UrlDirective extends withUnsubscribe(RouterLinkWithHref) {
-  @Input() public url: string;
+  @Input() public bawUrl: string;
 
   public constructor(
     private _router: Router,
@@ -25,12 +22,12 @@ export class UrlDirective extends withUnsubscribe(RouterLinkWithHref) {
   }
 
   public get urlTree(): UrlTree {
-    if (!this.url) {
+    if (!this.bawUrl) {
       return super.urlTree;
     }
 
     // Construct URL from url, baseURI does not matter
-    const url = new URL(this.url, document?.baseURI || "http://localhost/");
+    const url = new URL(this.bawUrl, document?.baseURI || "http://localhost/");
 
     // Extract query parameters from url
     const queryParams: Params = {};
