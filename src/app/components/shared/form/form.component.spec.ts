@@ -25,6 +25,7 @@ export function click(
   }
 }
 
+// TODO Implement tests for recaptcha
 describe("FormComponent", () => {
   let component: FormComponent;
   let defaultFields: FormlyFieldConfig[];
