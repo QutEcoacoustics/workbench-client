@@ -9,6 +9,7 @@ import {
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { NgRecaptcha3Service } from "ng-recaptcha3";
@@ -56,7 +57,7 @@ export class FormComponent
   }
 
   public async ngOnChanges() {
-    if (this.loadingSeed) {
+    if (!isInstantiated(this.recaptchaSeed) || this.loadingSeed) {
       return;
     }
 
