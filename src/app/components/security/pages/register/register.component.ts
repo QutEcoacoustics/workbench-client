@@ -73,7 +73,10 @@ class RegisterComponent
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (seed) => (this.recaptchaSeed = { state: "loaded", seed }),
-        (err) => console.error(err)
+        (err) => {
+          console.error(err);
+          this.notifications.error("Failed to load form");
+        }
       );
   }
 

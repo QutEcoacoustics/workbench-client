@@ -5,10 +5,14 @@ import {
 } from "@baw-api/security/security.service";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateRegisterDetails } from "@test/fakes/RegisterDetails";
+import { modelData } from "@test/helpers/faker";
 import { testFormlyFields } from "@test/helpers/formly";
+import { nStepObservable } from "@test/helpers/general";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
+import { Subject } from "rxjs";
 import { RegisterComponent } from "./register.component";
 import { fields } from "./register.schema.json";
 
@@ -56,9 +60,9 @@ describe("RegisterComponent", () => {
     ]);
   });
 
-  xdescribe("component", () => {
+  describe("component", () => {
     beforeEach(() => {
-      spec = createComponent({ detectChanges: true });
+      spec = createComponent({ detectChanges: false });
       api = spec.inject(SecurityService);
       toastr = spec.inject(ToastrService);
 
@@ -83,11 +87,36 @@ describe("RegisterComponent", () => {
       );
     });
 
-    // TODO
     describe("recaptcha", () => {
-      it("should request recaptcha seed", () => {});
+      it("should request recaptcha seed", () => {
+        spyOn(api, "signUpSeed").and.callThrough();
+        spec.detectChanges();
+        expect(api.signUpSeed).toHaveBeenCalled();
+        expect(spec.component.recaptchaSeed).toEqual({ state: "loading" });
+      });
 
-      it("should set recaptcha seed", () => {});
+      it("should set recaptcha seed", async () => {
+        const seed = modelData.random.alpha({ count: 10 });
+        const subject = new Subject<string>();
+        const promise = nStepObservable(subject, () => seed);
+        spyOn(api, "signUpSeed").and.callFake(() => subject);
+        spec.detectChanges();
+        await promise;
+        expect(spec.component.recaptchaSeed).toEqual({ state: "loaded", seed });
+      });
+
+      it("should show error if failed to capture recaptcha seed", async () => {
+        const subject = new Subject<string>();
+        const promise = nStepObservable(
+          subject,
+          () => generateApiErrorDetails(),
+          true
+        );
+        spyOn(api, "signUpSeed").and.callFake(() => subject);
+        spec.detectChanges();
+        await promise;
+        expect(toastr.error).toHaveBeenCalledWith("Failed to load form");
+      });
     });
 
     describe("authenticated user", () => {
