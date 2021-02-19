@@ -1,6 +1,8 @@
 import { HttpTestingController } from "@angular/common/http/testing";
 import { DebugElement } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
@@ -25,24 +27,24 @@ export function click(
   }
 }
 
-// TODO Implement tests for recaptcha
 describe("FormComponent", () => {
-  let component: FormComponent;
   let defaultFields: FormlyFieldConfig[];
-  let errorSpy: jasmine.Spy;
-  let fixture: ComponentFixture<FormComponent>;
-  let httpMock: HttpTestingController;
-  let notifications: ToastrService;
+  let toastr: ToastrService;
+  let spec: Spectator<FormComponent>;
+  const createComponent = createComponentFactory({
+    component: FormComponent,
+    imports: testFormImports,
+  });
+
+  function getSubmitButton(): HTMLButtonElement {
+    return spec.query<HTMLButtonElement>("button");
+  }
 
   function findInput(
     selector: string = "input",
     position: number = 0
   ): HTMLElement {
-    const input = fixture.nativeElement.querySelectorAll("form " + selector)[
-      position
-    ];
-
-    return input;
+    return spec.queryAll<HTMLElement>("form " + selector)[position];
   }
 
   function assertInput(input: any, type?: string, required?: boolean) {
@@ -54,501 +56,274 @@ describe("FormComponent", () => {
     }
   }
 
+  function createInputField(
+    type?: string,
+    required?: boolean,
+    opts?: { key?: string; label?: string }
+  ) {
+    return {
+      key: opts?.key ?? "input",
+      type: "input",
+      templateOptions: {
+        label: opts?.label ?? "input element",
+        type,
+        required,
+      },
+    };
+  }
+
+  function createTextareaField(required?: boolean) {
+    return {
+      key: "message",
+      type: "textarea",
+      templateOptions: {
+        label: "Message",
+        rows: 8,
+        required,
+      },
+    };
+  }
+
+  function setup(props?: Partial<FormComponent>) {
+    spec = createComponent({ detectChanges: false, props });
+    toastr = TestBed.inject(ToastrService);
+
+    spyOn(toastr, "success").and.stub();
+    spyOn(toastr, "error").and.stub();
+  }
+
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: testFormImports,
-      declarations: [FormComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(FormComponent);
-    component = fixture.componentInstance;
-    httpMock = TestBed.inject(HttpTestingController);
-    notifications = TestBed.inject(ToastrService);
-
-    errorSpy = spyOn(notifications, "error").and.stub();
-
     defaultFields = [
       {
         key: "input",
         type: "input",
-        templateOptions: {
-          label: "input element",
-          required: false,
-        },
+        templateOptions: { label: "input element", required: false },
       },
     ];
   });
 
   it("should create", () => {
-    component.fields = defaultFields;
-    component.submitLabel = "Label";
-    component.submitLoading = false;
-    fixture.detectChanges();
-
-    expect(component).toBeTruthy();
+    setup();
+    spec.detectChanges();
+    expect(spec.component).toBeInstanceOf(FormComponent);
   });
 
   describe("Form Layout", () => {
     it("should create form", () => {
-      component.fields = defaultFields;
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-      fixture.detectChanges();
-
-      const form = fixture.nativeElement.querySelector("form");
-      expect(form).toBeTruthy();
+      setup();
+      spec.detectChanges();
+      expect(spec.query("form")).toBeInstanceOf(HTMLFormElement);
     });
 
     it("should create form with title", () => {
-      component.fields = defaultFields;
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-      component.title = "Title";
-      fixture.detectChanges();
-
-      const title = fixture.nativeElement.querySelector("h2");
-      expect(title).toBeTruthy();
-      expect(title.innerText).toContain("Title");
+      setup({ title: "Title" });
+      spec.detectChanges();
+      expect(spec.query("h2")).toContainText("Title");
     });
 
     it("should create form with subtitle", () => {
-      component.fields = defaultFields;
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-      component.subTitle = "Sub Title";
-      fixture.detectChanges();
-
-      const subtitle = fixture.nativeElement.querySelector("h6");
-      expect(subtitle).toBeTruthy();
-      expect(subtitle.innerText).toContain("Sub Title");
+      setup({ subTitle: "Sub Title" });
+      spec.detectChanges();
+      expect(spec.query("h6")).toContainText("Sub Title");
     });
 
     it("should create form with submit button label", () => {
-      component.fields = defaultFields;
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-      fixture.detectChanges();
-
-      const button = fixture.nativeElement.querySelector("button");
-      expect(button).toBeTruthy();
-      expect(button.innerText).toContain("Label");
+      setup({ submitLabel: "Submit Label" });
+      spec.detectChanges();
+      expect(getSubmitButton()).toContainText("Submit Label");
     });
   });
 
   describe("Submit Button Type", () => {
-    beforeEach(() => {
-      component.fields = defaultFields;
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-    });
-
     function assertSubmit(className: string) {
-      const submit = fixture.nativeElement.querySelector(
-        "button[type='submit']"
-      );
+      const submit = spec.query("button[type='submit']");
       expect(submit).toBeTruthy();
-      expect(submit.classList.value).toContain(className);
+      expect(submit).toHaveClass(className);
     }
 
     it("should create form with default submit button", () => {
-      fixture.detectChanges();
+      setup();
+      spec.detectChanges();
       assertSubmit("btn-primary");
     });
 
-    it("should create form with danger submit button", () => {
-      component.btnColor = "danger";
-      fixture.detectChanges();
-      assertSubmit("btn-danger");
-    });
-
-    it("should create form with success submit button", () => {
-      component.btnColor = "success";
-      fixture.detectChanges();
-      assertSubmit("btn-success");
-    });
-
-    it("should create form with warning submit button", () => {
-      component.btnColor = "warning";
-      fixture.detectChanges();
-      assertSubmit("btn-warning");
-    });
-
-    it("should create form with primary submit button", () => {
-      component.btnColor = "primary";
-      fixture.detectChanges();
-      assertSubmit("btn-primary");
-    });
-
-    it("should create form with secondary submit button", () => {
-      component.btnColor = "secondary";
-      fixture.detectChanges();
-      assertSubmit("btn-secondary");
-    });
-
-    it("should create form with info submit button", () => {
-      component.btnColor = "info";
-      fixture.detectChanges();
-      assertSubmit("btn-info");
+    const types: BootstrapColorTypes[] = [
+      "danger",
+      "dark",
+      "info",
+      "light",
+      "primary",
+      "secondary",
+      "success",
+      "warning",
+    ];
+    types.forEach((type) => {
+      it(`should create form with ${type} submit button`, () => {
+        setup({ btnColor: type });
+        spec.detectChanges();
+        assertSubmit(`btn-${type}`);
+      });
     });
   });
 
   describe("Input Types", () => {
-    beforeEach(() => {
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-    });
+    // Tests all input types and textareas, whether required or not
+    [true, false].forEach((isRequired) => {
+      ["text", "password", "email"].forEach((type) => {
+        it(`should create ${isRequired ? "required " : ""}${type} form`, () => {
+          setup({ fields: [createInputField(type, isRequired)] });
+          spec.detectChanges();
+          assertInput(findInput(), type, isRequired);
+        });
+      });
 
-    it("should create input form", () => {
-      component.fields = [
-        {
-          key: "input",
-          type: "input",
-          templateOptions: {
-            label: "input element",
-            required: false,
-          },
-        },
-      ];
-      fixture.detectChanges();
-
-      const input = findInput();
-      assertInput(input, "text");
-    });
-
-    it("should create password form", () => {
-      component.fields = [
-        {
-          key: "input",
-          type: "input",
-          templateOptions: {
-            type: "password",
-            label: "input element",
-            required: false,
-          },
-        },
-      ];
-      fixture.detectChanges();
-
-      const input = findInput();
-      assertInput(input, "password");
-    });
-
-    it("should create email form", () => {
-      component.fields = [
-        {
-          key: "input",
-          type: "input",
-          templateOptions: {
-            type: "email",
-            label: "input element",
-            required: false,
-          },
-        },
-      ];
-      fixture.detectChanges();
-
-      const input = findInput();
-      assertInput(input, "email");
-    });
-
-    it("should create textarea form", () => {
-      component.fields = [
-        {
-          key: "message",
-          type: "textarea",
-          templateOptions: {
-            label: "Message",
-            rows: 8,
-            required: false,
-          },
-        },
-      ];
-      fixture.detectChanges();
-
-      const input = findInput("textarea");
-      assertInput(input);
+      it(`should create ${isRequired ? "required " : ""}textarea form`, () => {
+        setup({ fields: [createTextareaField(isRequired)] });
+        spec.detectChanges();
+        assertInput(findInput("textarea"), undefined, isRequired);
+      });
     });
 
     it("should create multi form", () => {
-      component.fields = [
-        {
-          key: "input",
-          type: "input",
-          templateOptions: {
-            label: "input element",
-            required: false,
-          },
-        },
-        {
-          key: "password",
-          type: "input",
-          templateOptions: {
-            type: "password",
-            label: "password element",
-            required: false,
-          },
-        },
-        {
-          key: "email",
-          type: "input",
-          templateOptions: {
-            type: "email",
-            label: "email element",
-            required: false,
-          },
-        },
-      ];
-      fixture.detectChanges();
-
-      const textInput = findInput(undefined, 0);
-      const passwordInput = findInput(undefined, 1);
-      const emailInput = findInput(undefined, 2);
-      assertInput(textInput, "text");
-      assertInput(passwordInput, "password");
-      assertInput(emailInput, "email");
-    });
-
-    it("should create required input form", () => {
-      component.fields = [
-        {
-          key: "input",
-          type: "input",
-          templateOptions: {
-            label: "input element",
-            required: true,
-          },
-        },
-      ];
-      fixture.detectChanges();
-
-      const input = findInput();
-      assertInput(input, "text", true);
+      setup({
+        fields: [
+          createInputField("text"),
+          createInputField("password"),
+          createInputField("email"),
+        ],
+      });
+      spec.detectChanges();
+      assertInput(findInput(undefined, 0), "text");
+      assertInput(findInput(undefined, 1), "password");
+      assertInput(findInput(undefined, 2), "email");
     });
 
     it("should create required multi input form", () => {
-      component.fields = [
-        {
-          key: "input",
-          type: "input",
-          templateOptions: {
-            label: "input element",
-            required: true,
-          },
-        },
-        {
-          key: "password",
-          type: "input",
-          templateOptions: {
-            type: "password",
-            label: "password element",
-            required: true,
-          },
-        },
-        {
-          key: "email",
-          type: "input",
-          templateOptions: {
-            type: "email",
-            label: "email element",
-            required: true,
-          },
-        },
-      ];
-      fixture.detectChanges();
-
-      const textInput = findInput(undefined, 0);
-      const passwordInput = findInput(undefined, 1);
-      const emailInput = findInput(undefined, 2);
-      assertInput(textInput, "text", true);
-      assertInput(passwordInput, "password", true);
-      assertInput(emailInput, "email", true);
+      setup({
+        fields: [
+          createInputField("text", true),
+          createInputField("password", true),
+          createInputField("email", true),
+        ],
+      });
+      spec.detectChanges();
+      assertInput(findInput(undefined, 0), "text", true);
+      assertInput(findInput(undefined, 1), "password", true);
+      assertInput(findInput(undefined, 2), "email", true);
     });
   });
 
   describe("Submit", () => {
     let buttonPressed: boolean;
 
-    beforeEach(() => {
-      component.submitLabel = "Label";
-      component.submitLoading = false;
-    });
+    function getHints() {
+      return spec.queryAll("div.invalid-feedback");
+    }
+
+    function getInputs() {
+      return spec.queryAll<HTMLInputElement>("input");
+    }
 
     function submit() {
       buttonPressed = false;
-      component.submit.subscribe(() => (buttonPressed = true), noop);
-      fixture.detectChanges();
+      spec.component.submit.subscribe(() => (buttonPressed = true), noop);
+      spec.detectChanges();
     }
 
     it("should call submit function OnClick", () => {
-      component.fields = defaultFields;
+      setup({ fields: defaultFields });
       submit();
-
-      const button = fixture.nativeElement.querySelector("button");
-      click(button);
-      fixture.detectChanges();
-
+      click(getSubmitButton());
+      spec.detectChanges();
       expect(buttonPressed).toBeTruthy();
     });
 
     it("should call submit function OnClick with user input", (done) => {
-      component.fields = defaultFields;
-      component.submit.subscribe((data) => {
-        expect(data).toBeTruthy();
+      setup({ fields: defaultFields });
+      spec.component.submit.subscribe((data) => {
         expect(data).toEqual({ input: "user input" });
         done();
       }, noop);
+      spec.detectChanges();
 
-      fixture.detectChanges();
-
-      const input = fixture.nativeElement.querySelector("input");
+      const input = getInputs()[0];
       input.value = "user input";
       input.dispatchEvent(new Event("input"));
 
-      const button = fixture.nativeElement.querySelector("button");
-      click(button);
-      fixture.detectChanges();
+      click(getSubmitButton());
+      spec.detectChanges();
     });
 
     it("should not call submit function OnClick when required field is empty", () => {
-      component.fields = [
-        {
-          key: "input",
-          type: "input",
-          templateOptions: {
-            label: "input element",
-            required: true,
-          },
-        },
-      ];
+      setup({ fields: [createInputField("text", true)] });
       submit();
-
-      const button = fixture.nativeElement.querySelector("button");
-      click(button);
-      fixture.detectChanges();
-
+      click(getSubmitButton());
+      spec.detectChanges();
       expect(buttonPressed).toBeFalsy();
     });
 
     it("should call submit function OnClick with filled required user input", (done) => {
-      component.fields = [
-        {
-          key: "input",
-          type: "input",
-          templateOptions: {
-            label: "input element",
-            required: true,
-          },
-        },
-      ];
-      component.submit.subscribe((data) => {
-        expect(data).toBeTruthy();
+      setup({ fields: [createInputField("text", true)] });
+      spec.component.submit.subscribe((data) => {
         expect(data).toEqual({ input: "user input" });
         done();
       }, noop);
+      spec.detectChanges();
 
-      fixture.detectChanges();
-
-      const input = fixture.nativeElement.querySelector("input");
+      const input = getInputs()[0];
       input.value = "user input";
       input.dispatchEvent(new Event("input"));
 
-      const button = fixture.nativeElement.querySelector("button");
-      click(button);
-      fixture.detectChanges();
+      click(getSubmitButton());
+      spec.detectChanges();
     });
 
     it("should show error message when required field is empty OnSubmit", () => {
-      component.fields = [
-        {
-          key: "input",
-          type: "input",
-          templateOptions: {
-            label: "input element",
-            required: true,
-          },
-        },
-      ];
+      setup({ fields: [createInputField("text", true)] });
       submit();
-
-      const button = fixture.nativeElement.querySelector("button");
-      click(button);
-      fixture.detectChanges();
-
-      expect(errorSpy).toHaveBeenCalledWith("Please fill all required fields.");
+      click(getSubmitButton());
+      spec.detectChanges();
+      expect(toastr.error).toHaveBeenCalledWith(
+        "Please fill all required fields."
+      );
     });
 
     it("should highlight missing field when required field is empty OnSubmit", () => {
-      component.fields = [
-        {
-          key: "input",
-          type: "input",
-          templateOptions: {
-            label: "input element",
-            required: true,
-          },
-        },
-      ];
+      setup({ fields: [createInputField("text", true)] });
       submit();
-
-      const button = fixture.nativeElement.querySelector("button");
-      click(button);
-      fixture.detectChanges();
-
-      expect(buttonPressed).toBeFalsy();
-
-      const input = fixture.nativeElement.querySelector("input");
-      const hint = fixture.nativeElement.querySelector("div.invalid-feedback");
-
-      expect(input).toBeTruthy();
-      expect(input.classList.value).toContain("is-invalid");
-      expect(hint).toBeTruthy();
+      click(getSubmitButton());
+      spec.detectChanges();
+      expect(getInputs()[0]).toHaveClass("is-invalid");
+      expect(getHints()[0]).toBeTruthy();
     });
 
     it("should highlight multiple missing fields when required fields are empty OnSubmit", () => {
-      component.fields = [
-        {
-          key: "input",
-          type: "input",
-          templateOptions: {
-            label: "input element",
-            required: true,
-          },
-        },
-        {
-          key: "input2",
-          type: "input",
-          templateOptions: {
-            label: "input element",
-            required: false,
-          },
-        },
-        {
-          key: "input3",
-          type: "input",
-          templateOptions: {
-            label: "input element",
-            required: true,
-          },
-        },
-      ];
+      setup({
+        fields: [
+          createInputField("text", true, { key: "input1" }),
+          createInputField("text", false, { key: "input2" }),
+          createInputField("text", true, { key: "input3" }),
+        ],
+      });
       submit();
+      click(getSubmitButton());
+      spec.detectChanges();
 
-      const button = fixture.nativeElement.querySelector("button");
-      click(button);
-      fixture.detectChanges();
-
-      expect(buttonPressed).toBeFalsy();
-
-      const inputs = fixture.nativeElement.querySelectorAll("input");
-      const hints = fixture.nativeElement.querySelectorAll(
-        "div.invalid-feedback"
-      );
-
-      expect(inputs[0].classList.value).toContain("is-invalid");
-      expect(inputs[1].classList.value).toContain("ng-valid");
-      expect(inputs[2].classList.value).toContain("is-invalid");
-      expect(hints.length).toBe(2);
+      const inputs = getInputs();
+      expect(inputs[0]).toHaveClass("is-invalid");
+      expect(inputs[1]).toHaveClass("ng-valid");
+      expect(inputs[2]).toHaveClass("is-invalid");
+      expect(getHints().length).toBe(2);
     });
+  });
+
+  // TODO Implement
+  describe("Recaptcha", () => {
+    it("should disable submit button while loading recaptcha seed", () => {});
+
+    it("should re-enable submit button when recaptcha seed loaded", () => {});
+    it("should display error notification if recaptcha fails to load", () => {});
+    it("should insert recaptcha token into model on submit", () => {});
   });
 
   // TODO Add tests for spinner
