@@ -36,12 +36,10 @@ export class FormComponent
   @Input() public subTitle?: string;
   @Input() public title?: string;
   /**
-   * Recaptcha seed, using the following rules:
-   * string: Seed value
-   * true: Will set seed
-   * false: Will not set seed
+   * Recaptcha seed. If set, form will be disabled until recaptcha
+   * seed is loaded
    */
-  @Input() public seed?: string | boolean = false;
+  @Input() public recaptchaSeed?: RecaptchaState;
   private loadingSeed: boolean;
 
   // Rename is required to stop formly from hijacking the variable
@@ -62,11 +60,13 @@ export class FormComponent
       return;
     }
 
-    if (this.seed === true) {
+    if (this.recaptchaSeed.state === "loading") {
       this.submitLoading = true;
-    } else if (typeof this.seed === "string") {
+    } else if (this.recaptchaSeed.state === "loaded") {
       this.loadingSeed = true;
-      const status = (await this.recaptcha.init(this.seed)) as RecaptchaStatus;
+      const status = (await this.recaptcha.init(
+        this.recaptchaSeed.seed
+      )) as RecaptchaStatus;
 
       if (status === "error") {
         this.notifications.error("Failed to load recaptcha");
@@ -89,7 +89,7 @@ export class FormComponent
   public async onSubmit(model: any) {
     if (this.form.status === "VALID") {
       return this.submit.emit(
-        this.seed
+        this.recaptchaSeed
           ? { ...model, recaptchaToken: await this.recaptcha.getToken() }
           : model
       );
@@ -99,4 +99,12 @@ export class FormComponent
   }
 }
 
-type RecaptchaStatus = "success" | "error";
+interface RecaptchaLoadingState {
+  state: "loading";
+}
+interface RecaptchaLoadedState {
+  state: "loaded";
+  seed: string;
+}
+export type RecaptchaState = RecaptchaLoadedState | RecaptchaLoadingState;
+export type RecaptchaStatus = "success" | "error";

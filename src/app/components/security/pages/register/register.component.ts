@@ -5,6 +5,7 @@ import {
   RegisterDetails,
   SecurityService,
 } from "@baw-api/security/security.service";
+import { homeMenuItem } from "@components/home/home.menus";
 import {
   registerMenuItem,
   securityCategory,
@@ -13,6 +14,7 @@ import {
   defaultErrorMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
+import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
 import { fields } from "./register.schema.json";
@@ -27,7 +29,7 @@ import { fields } from "./register.schema.json";
       [fields]="fields"
       submitLabel="Register"
       [submitLoading]="loading"
-      [seed]="seed"
+      [recaptchaSeed]="recaptchaSeed"
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
@@ -37,7 +39,7 @@ class RegisterComponent
   implements OnInit {
   public fields = fields;
   public loading: boolean;
-  public seed: string | boolean = true;
+  public recaptchaSeed: RecaptchaState = { state: "loading" };
 
   public constructor(
     private api: SecurityService,
@@ -70,13 +72,17 @@ class RegisterComponent
       .signUpSeed()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (seed) => (this.seed = seed),
+        (seed) => (this.recaptchaSeed = { state: "loaded", seed }),
         (err) => console.error(err)
       );
   }
 
   protected apiAction(model: IRegisterDetails) {
     return this.api.signUp(new RegisterDetails(model));
+  }
+
+  protected redirectionPath(): string {
+    return homeMenuItem.route.toRouterLink();
   }
 }
 
