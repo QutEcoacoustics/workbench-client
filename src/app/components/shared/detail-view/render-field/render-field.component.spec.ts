@@ -2,7 +2,11 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
-import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
+import {
+  AbstractModel,
+  unknownViewUrl,
+  UnresolvedModel,
+} from "@models/AbstractModel";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
@@ -26,33 +30,17 @@ describe("RenderFieldComponent", () => {
     ],
   });
 
-  function getLoadingElements() {
-    return getNormalValues();
-  }
-
-  function getCodeValues() {
-    return spec.queryAll<HTMLPreElement>("dl pre");
-  }
-
-  function getNormalValues() {
-    return spec.queryAll<HTMLParagraphElement>("dl p");
-  }
-
-  function getModelValues() {
-    return spec.queryAll<HTMLAnchorElement>("dl a");
-  }
-
-  function getImageValues() {
-    return spec.queryAll<HTMLImageElement>("dl img");
-  }
-
-  function getCheckboxValues() {
-    return spec.queryAll<HTMLElement>("dl baw-checkbox");
-  }
-
-  function getValues() {
-    return spec.queryAll("dl").map((el) => el.firstElementChild as HTMLElement);
-  }
+  const getElement = {
+    loading: () => getElement.normal(),
+    code: () => spec.queryAll<HTMLPreElement>("dl #code"),
+    normal: () => spec.queryAll<HTMLParagraphElement>("dl #plain"),
+    model: () =>
+      spec.queryAll<HTMLAnchorElement | HTMLSpanElement>("dl #model"),
+    image: () => spec.queryAll<HTMLImageElement>("dl #image"),
+    checkbox: () => spec.queryAll<HTMLElement>("dl #checkbox"),
+    values: () =>
+      spec.queryAll("dl").map((el) => el.firstElementChild as HTMLElement),
+  };
 
   function setup(value: ModelView) {
     spec = createComponent(
@@ -65,14 +53,14 @@ describe("RenderFieldComponent", () => {
     it("should handle undefined value", () => {
       setup(undefined);
       spec.detectChanges();
-      expect(getValues().length).toBe(1);
-      expect(getNormalValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.normal().length).toBe(1);
     });
 
     it("should display undefined value", () => {
       setup(undefined);
       spec.detectChanges();
-      const value = getNormalValues()[0];
+      const value = getElement.normal()[0];
       expect(value.innerText.trim()).toBe("(no value)");
     });
   });
@@ -90,15 +78,15 @@ describe("RenderFieldComponent", () => {
       setup("testing");
       spyOnIsImage();
       spec.detectChanges();
-      expect(getValues().length).toBe(1);
-      expect(getNormalValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.normal().length).toBe(1);
     });
 
     it("should display empty string value", () => {
       setup("");
       spyOnIsImage();
       spec.detectChanges();
-      const value = getNormalValues()[0];
+      const value = getElement.normal()[0];
       expect(value.innerText.trim()).toBe("");
     });
 
@@ -106,7 +94,7 @@ describe("RenderFieldComponent", () => {
       setup("testing");
       spyOnIsImage();
       spec.detectChanges();
-      const value = getNormalValues()[0];
+      const value = getElement.normal()[0];
       expect(value.innerText.trim()).toBe("testing");
     });
   });
@@ -115,21 +103,21 @@ describe("RenderFieldComponent", () => {
     it("should handle number value", () => {
       setup(1);
       spec.detectChanges();
-      expect(getValues().length).toBe(1);
-      expect(getNormalValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.normal().length).toBe(1);
     });
 
     it("should display zero number value", () => {
       setup(0);
       spec.detectChanges();
-      const value = getNormalValues()[0];
+      const value = getElement.normal()[0];
       expect(value.innerText.trim()).toBe("0");
     });
 
     it("should display number value", () => {
       setup(1);
       spec.detectChanges();
-      const value = getNormalValues()[0];
+      const value = getElement.normal()[0];
       expect(value.innerText.trim()).toBe("1");
     });
   });
@@ -138,14 +126,14 @@ describe("RenderFieldComponent", () => {
     it("should handle true input", () => {
       setup(true);
       spec.detectChanges();
-      expect(getValues().length).toBe(1);
-      expect(getCheckboxValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.checkbox().length).toBe(1);
     });
 
     it("should display true input", () => {
       setup(true);
       spec.detectChanges();
-      const value = getCheckboxValues()[0].querySelector("input");
+      const value = getElement.checkbox()[0].querySelector("input");
       expect(value.checked).toBeTruthy();
       expect(value.disabled).toBeTruthy();
     });
@@ -153,14 +141,14 @@ describe("RenderFieldComponent", () => {
     it("should handle false input", () => {
       setup(false);
       spec.detectChanges();
-      expect(getValues().length).toBe(1);
-      expect(getCheckboxValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.checkbox().length).toBe(1);
     });
 
     it("should display false input", () => {
       setup(false);
       spec.detectChanges();
-      const value = getCheckboxValues()[0].querySelector("input");
+      const value = getElement.checkbox()[0].querySelector("input");
       expect(value.checked).toBeFalsy();
       expect(value.disabled).toBeTruthy();
     });
@@ -170,21 +158,21 @@ describe("RenderFieldComponent", () => {
     it("should handle object value", () => {
       setup({ testing: 42 });
       spec.detectChanges();
-      expect(getValues().length).toBe(1);
-      expect(getCodeValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.code().length).toBe(1);
     });
 
     it("should display empty object value", () => {
       setup({});
       spec.detectChanges();
-      const value = getCodeValues()[0];
+      const value = getElement.code()[0];
       expect(value.innerText.trim()).toBe("{}");
     });
 
     it("should display object value", () => {
       setup({ value1: 42, value2: "test" });
       spec.detectChanges();
-      const value = getCodeValues()[0];
+      const value = getElement.code()[0];
       expect(value.innerText.trim()).toBe('{"value1":42,"value2":"test"}');
     });
 
@@ -195,7 +183,7 @@ describe("RenderFieldComponent", () => {
 
       setup(cyclicObject);
       spec.detectChanges();
-      const value = getCodeValues()[0];
+      const value = getElement.code()[0];
       expect(value.innerText.trim()).toBe("(error)");
     });
   });
@@ -212,8 +200,8 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should handle DateTime value", () => {
-      expect(getValues().length).toBe(1);
-      expect(getNormalValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.normal().length).toBe(1);
     });
 
     it("should call toRelative", () => {
@@ -225,7 +213,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display DateTime value", () => {
-      const value = getNormalValues()[0];
+      const value = getElement.normal()[0];
       expect(value.innerText.trim()).toBe("toISO (toRelative)");
     });
   });
@@ -240,12 +228,12 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should handle Duration value", () => {
-      expect(getValues().length).toBe(1);
-      expect(getNormalValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.normal().length).toBe(1);
     });
 
     it("should display Duration value", () => {
-      const value = getNormalValues()[0];
+      const value = getElement.normal()[0];
       expect(value.innerText.trim()).toBe(
         "PT1H10M50S (1 hour, 10 minutes, 50 seconds)"
       );
@@ -256,23 +244,23 @@ describe("RenderFieldComponent", () => {
     it("should handle array values", () => {
       setup(["test 1", 2, { testing: "value" }]);
       spec.detectChanges();
-      expect(getValues().length).toBe(3);
-      expect(getNormalValues().length).toBe(2);
-      expect(getCodeValues().length).toBe(1);
+      expect(getElement.values().length).toBe(3);
+      expect(getElement.normal().length).toBe(2);
+      expect(getElement.code().length).toBe(1);
     });
 
     it("should handle empty array", () => {
       setup([]);
       spec.detectChanges();
-      const values = getValues();
-      expect(getValues().length).toBe(1);
+      const values = getElement.values();
+      expect(getElement.values().length).toBe(1);
       expect(values[0].innerText.trim()).toBe("(no value)");
     });
 
     it("should display array values", () => {
       setup(["test 1", 2, { testing: "value" }]);
       spec.detectChanges();
-      const values = getValues();
+      const values = getElement.values();
       expect(values[0].innerText.trim()).toBe("test 1");
       expect(values[1].innerText.trim()).toBe("2");
       expect(values[2].innerText.trim()).toBe('{"testing":"value"}');
@@ -305,25 +293,25 @@ describe("RenderFieldComponent", () => {
 
     it("should display loading while blob incomplete", () => {
       setBlob(false);
-      const value = getLoadingElements()[0];
+      const value = getElement.loading()[0];
       expect(value.innerText.trim()).toBe("(loading)");
     });
 
     it("should hide loading when blob complete", () => {
       setBlob(true, "testing");
-      const value = getLoadingElements()[0];
+      const value = getElement.loading()[0];
       expect(value).toBeFalsy();
     });
 
     it("should handle Blob value", () => {
       setBlob(true, "testing");
-      expect(getValues().length).toBe(1);
-      expect(getCodeValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.code().length).toBe(1);
     });
 
     it("should display text output", () => {
       setBlob(true, "testing");
-      const value = getCodeValues()[0];
+      const value = getElement.code()[0];
       expect(value.innerText.trim()).toBe("testing");
     });
 
@@ -331,52 +319,56 @@ describe("RenderFieldComponent", () => {
       setBlob(true, "testing");
       spy.onerror(undefined);
       spec.detectChanges();
-      const value = getCodeValues()[0];
+      const value = getElement.code()[0];
       expect(value.innerText.trim()).toBe("(error)");
     });
   });
 
-  // TODO Add tests for model with invalid viewUrl
   describe("AbstractModel input", () => {
+    const throwError = () => {
+      throw new Error();
+    };
+
     function createModel(
       data: any,
-      link: string = "",
+      link: () => string = () => "",
       toString?: (model) => string
     ) {
       class MockModel extends AbstractModel {
         public kind = "MockModel";
-        public viewUrl = link;
+        public get viewUrl() {
+          return link();
+        }
         public toString = () => (toString ? toString(this) : super.toString());
       }
-
       return new MockModel(data);
     }
 
     it("should handle unresolved model", () => {
       setup(UnresolvedModel.one);
       spec.detectChanges();
-      expect(getValues().length).toBe(1);
-      expect(getNormalValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.normal().length).toBe(1);
     });
 
     it("should display unresolved model", () => {
       setup(UnresolvedModel.one);
       spec.detectChanges();
-      const value = getNormalValues()[0];
+      const value = getElement.normal()[0];
       expect(value.innerText.trim()).toBe("(loading)");
     });
 
     it("should handle abstract model", () => {
       setup(createModel({ id: 1 }));
       spec.detectChanges();
-      expect(getValues().length).toBe(1);
-      expect(getModelValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.model().length).toBe(1);
     });
 
     it("should display default model toString()", () => {
       setup(createModel({ id: 1 }));
       spec.detectChanges();
-      const value = getModelValues()[0];
+      const value = getElement.model()[0];
       expect(value.innerText.trim()).toBe("MockModel: 1");
     });
 
@@ -389,15 +381,43 @@ describe("RenderFieldComponent", () => {
         )
       );
       spec.detectChanges();
-      const value = getModelValues()[0];
+      const value = getElement.model()[0];
       expect(value.innerText.trim()).toBe("custom model");
     });
 
-    it("should create model link", () => {
-      setup(createModel({ id: 1 }, "/broken_link"));
+    it("should display model if viewUrl throws error", () => {
+      setup(
+        createModel(
+          { id: 1, name: "custom model" },
+          throwError,
+          (model) => model.name
+        )
+      );
       spec.detectChanges();
-      const value = getModelValues()[0];
+      const value = getElement.model()[0];
+      expect(value.innerText.trim()).toBe("custom model");
+    });
+
+    it("should create model link if viewUrl is valid", () => {
+      setup(createModel({ id: 1 }, () => "/broken_link"));
+      spec.detectChanges();
+      const value = getElement.model()[0];
+      expect(value).toBeInstanceOf(HTMLAnchorElement);
       assertUrl(value, "/broken_link");
+    });
+
+    it("should not create model link if viewUrl returns unknownViewUrl", () => {
+      setup(createModel({ id: 1 }, () => unknownViewUrl));
+      spec.detectChanges();
+      const value = getElement.model()[0];
+      expect(value).toBeInstanceOf(HTMLSpanElement);
+    });
+
+    it("should not create model link if viewUrl throws error", () => {
+      setup(createModel({ id: 1 }, throwError));
+      spec.detectChanges();
+      const value = getElement.model()[0];
+      expect(value).toBeInstanceOf(HTMLSpanElement);
     });
   });
 
@@ -421,28 +441,28 @@ describe("RenderFieldComponent", () => {
     it("should display loading", () => {
       setup(createObservable(false));
       spec.detectChanges();
-      const value = getLoadingElements()[0];
+      const value = getElement.loading()[0];
       expect(value.innerText.trim()).toBe("(loading)");
     });
 
     it("should hide loading when observable returns", () => {
       setup(createObservable(true, "value"));
       spec.detectChanges();
-      const value = getLoadingElements()[0];
+      const value = getElement.loading()[0];
       expect(value.innerText.trim()).not.toBe("(loading)");
     });
 
     it("should hide loading when observable errors", () => {
       setup(createObservable(true, undefined, { error: true }));
       spec.detectChanges();
-      const value = getLoadingElements()[0];
+      const value = getElement.loading()[0];
       expect(value.innerText.trim()).not.toBe("(loading)");
     });
 
     it("should handle single model value", () => {
       setup(createObservable(true, "value"));
       spec.detectChanges();
-      const values = getNormalValues();
+      const values = getElement.normal();
       expect(values.length).toBe(1);
       const value = values[0];
       expect(value.innerText.trim()).toBe("value");
@@ -452,7 +472,7 @@ describe("RenderFieldComponent", () => {
       setup(createObservable(true, ["test 1", 2, { testing: "value" }]));
       spec.detectChanges();
 
-      const values = getValues();
+      const values = getElement.values();
       expect(values[0].innerText.trim()).toBe("test 1");
       expect(values[1].innerText.trim()).toBe("2");
       expect(values[2].innerText.trim()).toBe('{"testing":"value"}');
@@ -461,7 +481,7 @@ describe("RenderFieldComponent", () => {
     it("should display error output", () => {
       setup(createObservable(true, undefined, { error: true }));
       spec.detectChanges();
-      const value = getLoadingElements()[0];
+      const value = getElement.loading()[0];
       expect(value.innerText.trim()).toBe("(error)");
     });
   });
@@ -480,8 +500,8 @@ describe("RenderFieldComponent", () => {
       setup(`${assetRoot}/test/test.png`);
       setImageSpy((src) => expect(src).toBe(`${assetRoot}/test/test.png`));
       spec.detectChanges();
-      expect(getValues().length).toBe(1);
-      expect(getImageValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.image().length).toBe(1);
     });
 
     it("should handle external image URL", () => {
@@ -490,15 +510,15 @@ describe("RenderFieldComponent", () => {
         expect(src).toBe("https://staging.ecosounds.org/test.png")
       );
       spec.detectChanges();
-      expect(getValues().length).toBe(1);
-      expect(getImageValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.image().length).toBe(1);
     });
 
     it("should display image", () => {
       setup(`${assetRoot}/test/test.png`);
       setImageSpy();
       spec.detectChanges();
-      const value = getImageValues()[0];
+      const value = getElement.image()[0];
       assertImage(
         value,
         `${websiteHttpUrl}${assetRoot}/test/test.png`,
@@ -512,15 +532,15 @@ describe("RenderFieldComponent", () => {
       const imageUrls = modelData.imageUrls();
       setup(imageUrls);
       spec.detectChanges();
-      expect(getValues().length).toBe(1);
-      expect(getImageValues().length).toBe(1);
+      expect(getElement.values().length).toBe(1);
+      expect(getElement.image().length).toBe(1);
     });
 
     it("should display imageUrls array", () => {
       const imageUrls = modelData.imageUrls().slice(0, 1);
       setup(imageUrls);
       spec.detectChanges();
-      const value = getImageValues()[0];
+      const value = getElement.image()[0];
       assertImage(value, imageUrls[0].url, "model image alt");
     });
 
@@ -528,7 +548,7 @@ describe("RenderFieldComponent", () => {
       const imageUrls = modelData.imageUrls();
       setup(imageUrls);
       spec.detectChanges();
-      const value = getImageValues()[0];
+      const value = getElement.image()[0];
       assertImage(value, imageUrls[0].url, "model image alt");
     });
 
@@ -536,7 +556,7 @@ describe("RenderFieldComponent", () => {
       const imageUrls = modelData.imageUrls();
       setup(imageUrls);
       spec.detectChanges();
-      const value = getImageValues()[0];
+      const value = getElement.image()[0];
       value.onerror("unit test");
       spec.detectChanges();
       assertImage(value, imageUrls[1].url, "model image alt");
