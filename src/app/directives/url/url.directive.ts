@@ -2,7 +2,7 @@ import { LocationStrategy } from "@angular/common";
 import { Directive, Input } from "@angular/core";
 import {
   ActivatedRoute,
-  Params,
+  DefaultUrlSerializer,
   Router,
   RouterLinkWithHref,
   UrlTree,
@@ -14,11 +14,11 @@ export class UrlDirective extends withUnsubscribe(RouterLinkWithHref) {
   @Input() public bawUrl: string;
 
   public constructor(
-    private _router: Router,
-    private _route: ActivatedRoute,
-    _locationStrategy: LocationStrategy
+    router: Router,
+    route: ActivatedRoute,
+    locationStrategy: LocationStrategy
   ) {
-    super(_router, _route, _locationStrategy);
+    super(router, route, locationStrategy);
   }
 
   public get urlTree(): UrlTree {
@@ -26,23 +26,14 @@ export class UrlDirective extends withUnsubscribe(RouterLinkWithHref) {
       return super.urlTree;
     }
 
-    // Construct URL from url, baseURI does not matter
-    const url = new URL(this.bawUrl, document?.baseURI || "http://localhost/");
-
-    // Extract query parameters from url
-    const queryParams: Params = {};
-    url.searchParams.forEach((value, key) => (queryParams[key] = value));
-
-    return this._router.createUrlTree([url.pathname], {
-      relativeTo: this.relativeTo !== undefined ? this.relativeTo : this._route,
-      queryParams: { ...this.queryParams, ...queryParams },
-      fragment: this.fragment,
-      queryParamsHandling: this.queryParamsHandling,
-      preserveFragment: attrBoolValue(this.preserveFragment),
-    });
+    const tree = new DefaultUrlSerializer().parse(this.bawUrl);
+    tree.fragment = this.fragment;
+    /*
+     * Assign to queryParams before a request to queryParamMap occurs
+     * otherwise this change will never affect queryParamMap.
+     * https://github.com/angular/angular/blob/e3f09ce845cef9fd2c89d39d0d822114c51e68fa/packages/router/src/url_tree.ts#L119-L124
+     */
+    Object.assign(tree.queryParams, this.queryParams);
+    return tree;
   }
-}
-
-function attrBoolValue(s: any): boolean {
-  return s === "" || !!s;
 }

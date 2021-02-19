@@ -26,15 +26,14 @@ describe("UrlDirective", () => {
   });
 
   function assertUrlTree(url: string, queryParams?: Params) {
-    expect(spec.directive.urlTree).toEqual(
-      router.createUrlTree([url], {
-        queryParams,
-        relativeTo: route,
-        fragment: spec.directive.fragment,
-        queryParamsHandling: spec.directive.queryParamsHandling,
-        preserveFragment: spec.directive.preserveFragment,
-      })
-    );
+    const expectation = router.createUrlTree([url], {
+      queryParams,
+      relativeTo: route,
+      fragment: spec.directive.fragment,
+      queryParamsHandling: spec.directive.queryParamsHandling,
+      preserveFragment: spec.directive.preserveFragment,
+    });
+    expect(spec.directive.urlTree).toEqual(expectation);
   }
 
   function assertRoute(link: string) {
@@ -173,7 +172,6 @@ describe("UrlDirective", () => {
       assertUrlTree("/5");
     });
 
-    // TODO Update this to work through the router instead of bypassing it
     it("should create url tree with query parameters", () => {
       const childRoute = StrongRoute.newRoot().add(
         "home",
@@ -181,11 +179,10 @@ describe("UrlDirective", () => {
       );
       setup(childRoute.format(undefined, { name: "example" }));
       spec.detectChanges();
-      spec.directive["queryParams"] = { test: 5 };
-      assertUrlTree("/home", { test: 5, name: "example" });
+      spec.directive["queryParams"] = { test: "5" };
+      assertUrlTree("/home", { test: "5", name: "example" });
     });
 
-    // TODO Update this to work through the router instead of bypassing it
     it("should create url tree with with route and query parameters", () => {
       const childRoute = StrongRoute.newRoot().add(":id", ({ test, name }) => ({
         test,
@@ -193,8 +190,8 @@ describe("UrlDirective", () => {
       }));
       setup(childRoute.format({ id: 5 }, { name: "example" }));
       spec.detectChanges();
-      spec.directive["queryParams"] = { test: 5 };
-      assertUrlTree("/5", { test: 5, name: "example" });
+      spec.directive["queryParams"] = { test: "5" };
+      assertUrlTree("/5", { test: "5", name: "example" });
     });
   });
 });
