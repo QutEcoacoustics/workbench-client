@@ -120,8 +120,7 @@ export class Site extends AbstractModel implements ISite {
     if (this.projectIds.size === 0) {
       // TODO Figure out how to better handle this issue? It should only happen
       // for admin users in the orphan sites page
-      console.error("Site model has no project id, cannot find url.");
-      return "";
+      throw new Error("Site model has no project id, cannot find url.");
     }
 
     return this.getViewUrl(this.projectIds.values().next().value);

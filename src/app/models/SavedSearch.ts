@@ -50,7 +50,6 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   }
 
   public get viewUrl(): string {
-    console.warn("SavedSearch viewUrl not implemented.");
-    return "not_implemented";
+    throw new Error("SavedSearch viewUrl not implemented.");
   }
 }

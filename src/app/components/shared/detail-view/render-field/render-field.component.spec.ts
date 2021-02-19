@@ -336,6 +336,7 @@ describe("RenderFieldComponent", () => {
     });
   });
 
+  // TODO Add tests for model with invalid viewUrl
   describe("AbstractModel input", () => {
     function createModel(
       data: any,

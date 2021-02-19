@@ -131,3 +131,9 @@ export class UnresolvedModel extends AbstractModel {
     throw new Error("Method not implemented.");
   }
 }
+
+export const unknownViewUrl = "/not_implemented";
+export function getUnknownViewUrl(errorMsg: string) {
+  console.warn(errorMsg);
+  return unknownViewUrl;
+}

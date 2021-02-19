@@ -3,14 +3,12 @@ import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
-import { SecurityService } from "@baw-api/security/security.service";
-import { siteResolvers } from "@baw-api/site/sites.service";
+import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
   pointHarvestMenuItem,
   pointsCategory,
 } from "@components/sites/points.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -18,6 +16,7 @@ import { Site } from "@models/Site";
 import { SessionUser } from "@models/User";
 import { List } from "immutable";
 import { pointMenuItemActions } from "../details/point.component";
+import { SiteHarvestComponent } from "./site.component";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -30,32 +29,28 @@ const siteKey = "site";
   selector: "baw-points-harvest",
   templateUrl: "./harvest.component.html",
 })
-class PointHarvestComponent extends PageComponent implements OnInit {
+class PointHarvestComponent extends SiteHarvestComponent implements OnInit {
   public project: Project;
   public region: Region;
   public site: Site;
   public user: SessionUser;
 
   public constructor(
-    @Inject(API_ROOT) public apiRoot: string,
-    private route: ActivatedRoute,
-    private api: SecurityService
+    @Inject(API_ROOT) apiRoot: string,
+    route: ActivatedRoute,
+    api: SitesService
   ) {
-    super();
+    super(apiRoot, route, api);
   }
 
   public ngOnInit() {
-    const resolvers = retrieveResolvers(this.route.snapshot.data as PageInfo);
-    if (resolvers) {
-      this.project = resolvers[projectKey] as Project;
-      this.region = resolvers[regionKey] as Region;
-      this.site = resolvers[siteKey] as Site;
+    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+    if (models) {
+      this.project = models[projectKey] as Project;
+      this.region = models[regionKey] as Region;
+      this.site = models[siteKey] as Site;
       this.user = this.api.getLocalUser();
     }
-  }
-
-  public getHarvestFileRoute() {
-    return "not_implemented";
   }
 }
 

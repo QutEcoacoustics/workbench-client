@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
+import { getUnknownViewUrl } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 
@@ -32,16 +33,10 @@ export class HarvestCompleteComponent
     );
   }
 
-  public detailsPath(site: Site) {
-    return site.getViewUrl(this.project);
-  }
-
   public playPath(site: Site) {
-    return "/play_url";
-  }
-
-  public visualizePath(site: Site) {
-    return site.visualizeUrl;
+    // TODO Fix this, need audio recording for site
+    // listenRecordingMenuItem
+    return getUnknownViewUrl("Feature not implemented yet");
   }
 }
 

@@ -19,13 +19,16 @@
   <ngx-datatable-column name="Name"></ngx-datatable-column>
   <ngx-datatable-column name="Actions" [sortable]="false">
     <ng-template let-value="value" ngx-datatable-cell-template>
-      <a class="btn btn-sm btn-primary mr-1" [bawUrl]="detailsPath(value)">
+      <a
+        class="btn btn-sm btn-primary mr-1"
+        [bawUrl]="value.getViewUrl(project)"
+      >
         Details
       </a>
       <a class="btn btn-sm btn-primary mr-1" [routerLink]="playPath(value)">
         Play
       </a>
-      <a class="btn btn-sm btn-primary" [bawUrl]="visualizePath(value)">
+      <a class="btn btn-sm btn-primary" [bawUrl]="value.visualizeUrl">
         Visualize
       </a>
     </ng-template>

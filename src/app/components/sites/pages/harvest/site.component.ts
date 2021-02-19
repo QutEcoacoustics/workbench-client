@@ -2,8 +2,7 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
-import { SecurityService } from "@baw-api/security/security.service";
-import { siteResolvers } from "@baw-api/site/sites.service";
+import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
@@ -33,8 +32,8 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
 
   public constructor(
     @Inject(API_ROOT) public apiRoot: string,
-    private route: ActivatedRoute,
-    private api: SecurityService
+    protected route: ActivatedRoute,
+    protected api: SitesService
   ) {
     super();
   }
@@ -49,7 +48,7 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
   }
 
   public getHarvestFileRoute() {
-    return "not_implemented";
+    return this.api.harvestFile(this.site, this.project);
   }
 }
 
