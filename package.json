@@ -63,7 +63,7 @@
     "just-camel-case": "^4.0.2",
     "just-snake-case": "^1.1.0",
     "luxon": "^1.26.0",
-    "ngx-device-detector": "^2.0.5",
+    "ngx-device-detector": "^2.0.6",
     "ngx-line-truncation": "^1.6.7",
     "ngx-toastr": "^13.2.0",
     "rxjs": "^6.6.6",
