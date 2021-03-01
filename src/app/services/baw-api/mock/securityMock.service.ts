@@ -5,16 +5,20 @@ import { BawApiService } from "../baw-api.service";
 
 @Injectable()
 export class MockSecurityService extends BawApiService<SessionUser> {
-  public register() {
-    return new Observable<SessionUser>();
+  public signUpSeed() {
+    return new Observable();
+  }
+
+  public signUp() {
+    return new Observable();
   }
 
   public signIn() {
-    return new Observable<SessionUser>();
+    return new Observable();
   }
 
   public signOut() {
-    return new Observable<void>();
+    return new Observable();
   }
 
   public getAuthTrigger() {

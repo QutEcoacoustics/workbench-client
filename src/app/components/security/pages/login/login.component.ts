@@ -2,6 +2,7 @@ import { DOCUMENT, Location } from "@angular/common";
 import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
+  ILoginDetails,
   LoginDetails,
   SecurityService,
 } from "@baw-api/security/security.service";
@@ -27,7 +28,6 @@ import { fields } from "./login.schema.json";
   selector: "baw-authentication-login",
   template: `
     <baw-form
-      *ngIf="!failure"
       title="Log in"
       size="small"
       [model]="model"
@@ -115,7 +115,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
     }
   }
 
-  protected apiAction(model: Partial<LoginDetails>) {
+  protected apiAction(model: ILoginDetails) {
     return this.api.signIn(new LoginDetails(model));
   }
 
