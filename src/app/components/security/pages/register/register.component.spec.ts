@@ -1,19 +1,30 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SecurityService } from "@baw-api/security/security.service";
+import {
+  RegisterDetails,
+  SecurityService,
+} from "@baw-api/security/security.service";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
-import { WIPComponent } from "@shared/wip/wip.component";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateRegisterDetails } from "@test/fakes/RegisterDetails";
+import { modelData } from "@test/helpers/faker";
 import { testFormlyFields } from "@test/helpers/formly";
+import { nStepObservable } from "@test/helpers/general";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
+import { Subject } from "rxjs";
 import { RegisterComponent } from "./register.component";
 import { fields } from "./register.schema.json";
 
 describe("RegisterComponent", () => {
   let api: SecurityService;
-  let component: RegisterComponent;
-  let fixture: ComponentFixture<RegisterComponent>;
-  let notifications: ToastrService;
+  let toastr: ToastrService;
+  let spec: Spectator<RegisterComponent>;
+  const createComponent = createComponentFactory({
+    component: RegisterComponent,
+    imports: [...testFormImports, MockBawApiModule],
+    declarations: [FormComponent],
+  });
 
   function isSignedIn(signedIn: boolean = true) {
     spyOn(api, "isLoggedIn").and.callFake(() => signedIn);
@@ -24,7 +35,7 @@ describe("RegisterComponent", () => {
       {
         testGroup: "Username Input",
         field: fields[0],
-        key: "username",
+        key: "userName",
         type: "input",
         required: true,
         label: "Username",
@@ -51,46 +62,74 @@ describe("RegisterComponent", () => {
 
   describe("component", () => {
     beforeEach(() => {
-      TestBed.configureTestingModule({
-        imports: [...testFormImports, MockBawApiModule],
-        declarations: [RegisterComponent, FormComponent, WIPComponent],
-      }).compileComponents();
+      spec = createComponent({ detectChanges: false });
+      api = spec.inject(SecurityService);
+      toastr = spec.inject(ToastrService);
 
-      fixture = TestBed.createComponent(RegisterComponent);
-      component = fixture.componentInstance;
-      api = TestBed.inject(SecurityService);
-      notifications = TestBed.inject(ToastrService);
-
-      spyOn(notifications, "success").and.stub();
-      spyOn(notifications, "error").and.stub();
+      spyOn(toastr, "success").and.stub();
+      spyOn(toastr, "error").and.stub();
     });
 
     it("should create", () => {
       isSignedIn(false);
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
+      spec.detectChanges();
+      expect(spec.component).toBeInstanceOf(RegisterComponent);
     });
 
-    // TODO
-    xit("should call api", () => {});
+    it("should call api", () => {
+      spyOn(api, "signUp").and.callThrough();
+      spec.detectChanges();
+
+      const registerDetails = generateRegisterDetails();
+      spec.component.submit(registerDetails);
+      expect(api.signUp).toHaveBeenCalledWith(
+        new RegisterDetails(registerDetails)
+      );
+    });
+
+    describe("recaptcha", () => {
+      it("should request recaptcha seed", () => {
+        spyOn(api, "signUpSeed").and.callThrough();
+        spec.detectChanges();
+        expect(api.signUpSeed).toHaveBeenCalled();
+        expect(spec.component.recaptchaSeed).toEqual({ state: "loading" });
+      });
+
+      it("should set recaptcha seed", async () => {
+        const seed = modelData.random.alpha({ count: 10 });
+        const subject = new Subject<string>();
+        const promise = nStepObservable(subject, () => seed);
+        spyOn(api, "signUpSeed").and.callFake(() => subject);
+        spec.detectChanges();
+        await promise;
+        expect(spec.component.recaptchaSeed).toEqual({ state: "loaded", seed });
+      });
+
+      it("should show error if failed to capture recaptcha seed", async () => {
+        const subject = new Subject<string>();
+        const promise = nStepObservable(
+          subject,
+          () => generateApiErrorDetails(),
+          true
+        );
+        spyOn(api, "signUpSeed").and.callFake(() => subject);
+        spec.detectChanges();
+        await promise;
+        expect(toastr.error).toHaveBeenCalledWith("Failed to load form");
+      });
+    });
 
     describe("authenticated user", () => {
       it("should show error for authenticated user", () => {
         isSignedIn(true);
-        fixture.detectChanges();
-
-        expect(notifications.error).toHaveBeenCalledWith(
-          "You are already logged in."
-        );
+        spec.detectChanges();
+        expect(toastr.error).toHaveBeenCalledWith("You are already logged in.");
       });
 
       it("should disable submit button for authenticated user", () => {
         isSignedIn(true);
-        fixture.detectChanges();
-
-        const button = fixture.nativeElement.querySelector(
-          "button[type='submit']"
-        );
+        spec.detectChanges();
+        const button = spec.query<HTMLButtonElement>("button[type='submit']");
         expect(button).toBeTruthy();
         expect(button.disabled).toBeTruthy();
       });
