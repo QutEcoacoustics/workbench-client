@@ -1,5 +1,6 @@
 import { Injector } from "@angular/core";
 import { DATASET } from "@baw-api/ServiceTokens";
+import { citSciAboutMenuItem } from "@components/citizen-science/citizen-science.menus";
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
@@ -46,6 +47,6 @@ export class Study extends AbstractModel implements IStudy {
   }
 
   public get viewUrl(): string {
-    throw new Error("Study viewUrl not implemented.");
+    return citSciAboutMenuItem.route.format({ studyName: this.name });
   }
 }

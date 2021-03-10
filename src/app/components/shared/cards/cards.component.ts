@@ -85,5 +85,5 @@ export interface Card {
   model?: AbstractModel & { image: ImageUrl[] };
   description?: string;
   link?: string;
-  route?: string | [string, string];
+  route?: string;
 }

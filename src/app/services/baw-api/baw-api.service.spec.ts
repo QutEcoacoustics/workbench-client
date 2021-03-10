@@ -19,7 +19,7 @@ import {
 import { MockSecurityService } from "@baw-api/mock/securityMock.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { UserService } from "@baw-api/user/user.service";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
@@ -91,7 +91,7 @@ describe("BawApiService", () => {
     }
 
     public get viewUrl(): string {
-      return "";
+      return getUnknownViewUrl("MockModel does not have a viewUrl");
     }
   }
 

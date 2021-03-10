@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import {
@@ -26,7 +26,7 @@ class MockModel extends AbstractModel {
   public kind: "MockModel" = "MockModel";
 
   public get viewUrl(): string {
-    return "";
+    return getUnknownViewUrl("MockModel does not have a viewUrl");
   }
   public toJSON(): Record<string, any> {
     return this;

@@ -17,7 +17,6 @@ export const adminTagsMenuItemActions = [adminNewTagMenuItem];
 @Component({
   selector: "baw-admin-tags",
   templateUrl: "./list.component.html",
-  styleUrls: ["./list.component.scss"],
 })
 class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
   public columns = [

@@ -1,6 +1,6 @@
 import { Injectable, Injector } from "@angular/core";
 import { Id } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
 
 export class MockModel extends AbstractModel {
   public kind = "MockModel";
@@ -15,7 +15,7 @@ export class MockModel extends AbstractModel {
   }
 
   public get viewUrl(): string {
-    return "";
+    return getUnknownViewUrl("MockModel does not have a viewUrl");
   }
 }
 

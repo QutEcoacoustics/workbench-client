@@ -60,13 +60,10 @@
         <ng-template let-column="column" ngx-datatable-header-template>
         </ng-template>
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <a
-            class="btn btn-sm btn-primary mr-1"
-            [routerLink]="value.listenViewUrl"
-          >
+          <a class="btn btn-sm btn-primary mr-1" [bawUrl]="value.listenViewUrl">
             Play
           </a>
-          <a class="btn btn-sm btn-secondary" [routerLink]="value.viewUrl">
+          <a class="btn btn-sm btn-secondary" [bawUrl]="value.viewUrl">
             Annotation
           </a>
         </ng-template>

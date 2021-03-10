@@ -120,7 +120,6 @@ describe("PageNotFoundComponent", () => {
         data: generateData({ model: new MockModel({}) }),
       });
       spec.detectChanges();
-      console.log(spec.component);
       assertErrorHandler();
     });
 
@@ -130,7 +129,6 @@ describe("PageNotFoundComponent", () => {
       spec.detectChanges();
       spec.triggerNavigation({ data: generateData({ error }) });
       spec.detectChanges();
-      console.log(spec.component);
       assertErrorHandler(error);
     });
   });

@@ -49,6 +49,7 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   }
 
   public get viewUrl(): string {
+    // Potentially "/audio_analysis/{analysisJobId}/results{path}"?
     throw new Error("AnalysisJobItem viewUrl not implemented.");
   }
 }

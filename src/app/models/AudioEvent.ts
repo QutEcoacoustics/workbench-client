@@ -80,18 +80,21 @@ export class AudioEvent extends AbstractModel implements IAudioEvent {
   }
 
   public get viewUrl(): string {
-    return annotationMenuItem.route.toRouterLink({
+    return this.annotationViewUrl;
+  }
+
+  public get annotationViewUrl(): string {
+    return annotationMenuItem.route.format({
       audioRecordingId: this.audioRecordingId,
       audioEventId: this.id,
     });
   }
 
   public get listenViewUrl(): string {
-    // TODO Add start and end query params (issue #772)
-    return listenRecordingMenuItem.route.toRouterLink({
-      audioRecordingId: this.audioRecordingId,
-      audioEventId: this.id,
-    });
+    return listenRecordingMenuItem.route.format(
+      { audioRecordingId: this.audioRecordingId },
+      { start: this.startTimeSeconds, end: this.endTimeSeconds }
+    );
   }
 
   public get tagIds(): Ids {

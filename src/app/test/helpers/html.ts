@@ -80,14 +80,13 @@ export function assertHref(
   href: string,
   isRoute?: boolean
 ) {
-  expect(target).toBeTruthy();
-  expect(target.href).toBe(href);
+  expect(target).toBeTruthy("No link detected");
+  expect(target).toHaveAttribute("href", href);
 
-  const routerLink = target.attributes.getNamedItem("ng-reflect-router-link");
   if (isRoute) {
-    expect(routerLink).toBeTruthy();
+    expect(target).toHaveAttribute("ng-reflect-router-link");
   } else {
-    expect(routerLink).toBeFalsy();
+    expect(target).not.toHaveAttribute("ng-reflect-router-link");
   }
 }
 
@@ -99,7 +98,20 @@ export function assertHref(
  */
 export function assertRoute(target: HTMLElement, route: string) {
   expect(target).toBeTruthy("No route detected");
-  assertAttribute(target, "router-link", route);
+  expect(target).toHaveAttribute("ng-reflect-router-link");
+  expect(target).toHaveAttribute("href", encodeURI(route));
+}
+
+/**
+ * Assert url link
+ *
+ * @param target Target element
+ * @param route Route text
+ */
+export function assertUrl(target: HTMLElement, route: string) {
+  expect(target).toBeTruthy("No route detected");
+  expect(target).toHaveAttribute("ng-reflect-baw-url");
+  expect(target).toHaveAttribute("href", encodeURI(route));
 }
 
 /**

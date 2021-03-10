@@ -98,18 +98,12 @@ class AssignComponent
       (newId) => !this.oldSiteIds.some((id) => id === newId)
     );
 
-    const createFilter = (site: Site) => {
-      console.log({
-        id: site.id,
-        site: { projectIds: Array.from(site.projectIds) },
-      });
-
-      // Weird filter because of https://github.com/QutEcoacoustics/baw-server/issues/502
-      return this.api.update({
+    // Weird filter because of https://github.com/QutEcoacoustics/baw-server/issues/502
+    const createFilter = (site: Site) =>
+      this.api.update({
         id: site.id,
         site: { projectIds: Array.from(site.projectIds) },
       } as any);
-    };
 
     // Workaround required because API ignores changes to project ids
     forkJoin([

@@ -31,18 +31,14 @@ export class StrongRouteDirective
    * to the StrongRoute.
    */
   @Input() public queryParams: Params;
-  private _router: Router;
-  private _route: ActivatedRoute;
   private angularRouteParams: Params;
 
   public constructor(
-    router: Router,
-    route: ActivatedRoute,
-    locationStrategy: LocationStrategy
+    private _router: Router,
+    private _route: ActivatedRoute,
+    _locationStrategy: LocationStrategy
   ) {
-    super(router, route, locationStrategy);
-    this._router = this["router"];
-    this._route = this["route"];
+    super(_router, _route, _locationStrategy);
   }
 
   public ngOnChanges(changes: SimpleChanges) {
@@ -67,7 +63,11 @@ export class StrongRouteDirective
       queryParams: this.strongRoute?.queryParams(queryParams) ?? undefined,
       fragment: this.fragment,
       queryParamsHandling: this.queryParamsHandling,
-      preserveFragment: this.preserveFragment,
+      preserveFragment: attrBoolValue(this.preserveFragment),
     });
   }
+}
+
+function attrBoolValue(s: any): boolean {
+  return s === "" || !!s;
 }

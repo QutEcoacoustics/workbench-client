@@ -143,11 +143,15 @@ export abstract class FormTemplate<M extends AbstractModel>
    * @param model Model
    */
   protected redirectUser(model: M): void {
+    // TODO This is a potential point of failure as the model.viewUrl
+    // path is not completely compatible with router.navigateByUrl
     this.router.navigateByUrl(this.redirectionPath(model));
   }
 
   /**
-   * Redirection path after successful submission
+   * Redirection path after successful submission. If you are using
+   * a models viewUrl method, ensure that it does not require query
+   * parameters to function properly
    *
    * @param model Model
    */

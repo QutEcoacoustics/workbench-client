@@ -1,6 +1,7 @@
 <nav class="container-fluid navbar navbar-expand-lg navbar-dark fixed-top">
   <div class="container">
     <!-- Brand Logo -->
+    <!-- Using routerLink so that routerLinkActive will work-->
     <a
       class="navbar-brand"
       [routerLink]="routes.home.route.toRouterLink()"
@@ -37,6 +38,7 @@
       <!-- Right aligned unauthenticated links -->
       <ul class="navbar-nav" *ngIf="!user">
         <li class="nav-item">
+          <!-- Using routerLink so that routerLinkActive will work-->
           <a
             id="register-header-link"
             class="nav-link"
@@ -47,6 +49,7 @@
           </a>
         </li>
         <li class="nav-item">
+          <!-- Using routerLink so that routerLinkActive will work-->
           <a
             id="login-header-link"
             class="nav-link"
@@ -61,6 +64,7 @@
       <!-- Right aligned authenticated links -->
       <ul class="navbar-nav" *ngIf="user">
         <li *ngIf="user.isAdmin" class="nav-item">
+          <!-- Using routerLink so that routerLinkActive will work-->
           <a
             id="admin-settings"
             class="nav-link"
@@ -71,6 +75,7 @@
           </a>
         </li>
         <li class="nav-item">
+          <!-- Using routerLink so that routerLinkActive will work-->
           <a
             id="login-widget"
             class="nav-link"

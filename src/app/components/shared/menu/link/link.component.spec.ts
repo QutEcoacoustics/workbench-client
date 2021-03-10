@@ -223,14 +223,12 @@ describe("MenuLinkComponent", () => {
     });
 
     it("should highlight link when location path matches route with route parameters", () => {
-      console.log("~~~~~~~~~");
       const route = StrongRoute.newRoot().add("customRoute").add(":id");
       setup({ link: menuRoute({ ...defaultRoute, route }) });
       setRouteParams({ id: 10 });
       setLocationPath("/customRoute/10");
       spec.detectChanges();
       assertActive(true);
-      console.log("~~~~~~~~~");
     });
 
     it("should highlight link when location path matches route with query parameters", () => {

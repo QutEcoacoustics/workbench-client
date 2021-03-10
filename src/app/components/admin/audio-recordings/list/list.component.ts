@@ -7,7 +7,6 @@ import { Id, toRelative } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { List } from "immutable";
 import {
-  adminAudioRecordingMenuItem,
   adminAudioRecordingsCategory,
   adminAudioRecordingsMenuItem,
 } from "../audio-recordings.menus";
@@ -19,7 +18,6 @@ import {
 class AdminAudioRecordingsComponent
   extends PagedTableTemplate<TableRow, AudioRecording>
   implements OnInit {
-  public detailsPath = adminAudioRecordingMenuItem.route;
   public columns = [
     { name: "Id" },
     { name: "Site" },

@@ -32,16 +32,10 @@
       <ng-template let-column="column" ngx-datatable-header-template>
       </ng-template>
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <a
-          class="btn btn-sm btn-default mr-2"
-          [strongRoute]="detailsPath"
-          [routeParams]="{ audioRecordingId: value.id }"
-        >
+        <a class="btn btn-sm btn-default mr-2" [bawUrl]="value.adminViewUrl">
           Details
         </a>
-        <a class="btn btn-sm btn-default" [routerLink]="value.viewUrl">
-          Play
-        </a>
+        <a class="btn btn-sm btn-default" [bawUrl]="value.viewUrl">Play</a>
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>

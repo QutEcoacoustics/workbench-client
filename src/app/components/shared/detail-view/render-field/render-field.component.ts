@@ -7,7 +7,11 @@ import {
   isImageUrl,
   toRelative,
 } from "@interfaces/apiInterfaces";
-import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
+import {
+  AbstractModel,
+  unknownViewUrl,
+  UnresolvedModel,
+} from "@models/AbstractModel";
 import { DateTime, Duration } from "luxon";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -38,7 +42,16 @@ import { takeUntil } from "rxjs/operators";
 
     <!-- Display AbstractModel -->
     <dl *ngIf="styling === fieldStyling.model">
-      <a id="model" [routerLink]="model.viewUrl">{{ model }}</a>
+      <a
+        *ngIf="hasViewUrl(); else noViewUrl"
+        id="model"
+        [bawUrl]="model.viewUrl"
+      >
+        {{ model }}
+      </a>
+      <ng-template #noViewUrl>
+        <span id="model">{{ model }}</span>
+      </ng-template>
     </dl>
 
     <!-- Display Image -->
@@ -93,6 +106,17 @@ export class RenderFieldComponent
 
   public getSource(): ImageUrl[] {
     return this.display as ImageUrl[];
+  }
+
+  public hasViewUrl() {
+    try {
+      return (
+        isInstantiated(this.model.viewUrl) &&
+        this.model.viewUrl !== unknownViewUrl
+      );
+    } catch (err) {
+      return false;
+    }
   }
 
   private humanize(value: ModelView) {

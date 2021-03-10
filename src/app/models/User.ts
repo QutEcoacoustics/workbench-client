@@ -127,7 +127,7 @@ export class User extends AbstractModel implements IUser {
   }
 
   public get viewUrl(): string {
-    return theirProfileMenuItem.route.toRouterLink({ accountId: this.id });
+    return theirProfileMenuItem.route.format({ accountId: this.id });
   }
 
   public toString(): string {
@@ -180,7 +180,7 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   }
 
   public get viewUrl(): string {
-    return myAccountMenuItem.route.toRouterLink();
+    return myAccountMenuItem.route.format();
   }
 }
 

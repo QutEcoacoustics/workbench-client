@@ -31,6 +31,7 @@ const siteId: IdParamOptional<Site> = id;
 const endpoint = stringTemplate`/projects/${projectId}/sites/${siteId}${option}`;
 const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
 const endpointOrphan = stringTemplate`/sites/orphans/${orphanOption}`;
+const harvestEndpoint = stringTemplate`/projects/${projectId}/sites/${siteId}/harvest.yml`;
 
 /**
  * Sites Service.
@@ -87,6 +88,15 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
       this.filterThroughAssociation(filters, "regionId", region) as Filters,
       project
     );
+  }
+
+  /**
+   * Retrieve path to generate a harvest file. Insert into the `[href]` of a link
+   * to create a download link which contains a template for creating a harvest
+   * request.
+   */
+  public harvestFile(model: IdOr<Site>, project: IdOr<Project>): string {
+    return this.getPath(harvestEndpoint(project, model));
   }
 }
 
