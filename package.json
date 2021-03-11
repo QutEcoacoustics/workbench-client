@@ -36,7 +36,7 @@
     "@angular/compiler": "^11.1.0",
     "@angular/core": "^11.1.0",
     "@angular/forms": "^11.1.0",
-    "@angular/google-maps": "^11.2.2",
+    "@angular/google-maps": "^11.2.4",
     "@angular/localize": "^11.1.0",
     "@angular/platform-browser": "^11.1.0",
     "@angular/platform-browser-dynamic": "^11.1.0",
