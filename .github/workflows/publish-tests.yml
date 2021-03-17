@@ -11,9 +11,7 @@ jobs:
     name: "Publish Unit Tests Results"
     runs-on: ubuntu-latest
     if: >
-      github.event.workflow_run.event == 'pull_request' &&
-      github.event.workflow_run.conclusion != 'skipped'
-      github.event.workflow_run.head_repository.full_name != github.repository
+      github.event.workflow_run.event == 'pull_request'
 
     steps:
       - name: Download Artifacts
