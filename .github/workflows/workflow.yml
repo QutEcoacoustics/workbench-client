@@ -94,7 +94,7 @@ jobs:
           node-version: 12.x
 
       - name: Copy baw-client to assets
-        run: cp -r baw-client/* src/assets/old-client
+        run: mkdir src/assets/old-client && cp -r baw-client/baw-client/* src/assets/old-client
 
       - name: NPM install
         run: npm install
