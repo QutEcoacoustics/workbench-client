@@ -16,11 +16,7 @@ import { generateApiErrorResponse } from "@test/fakes/ApiErrorDetails";
 import { generateSessionUser } from "@test/fakes/User";
 import { noop } from "rxjs";
 import { ApiResponse } from "./baw-api.service";
-import {
-  apiErrorInfoDetails,
-  shouldNotFail,
-  shouldNotSucceed,
-} from "./baw-api.service.spec";
+import { shouldNotFail, shouldNotSucceed } from "./baw-api.service.spec";
 
 describe("BawApiInterceptor", () => {
   let apiRoot: string;
@@ -82,7 +78,7 @@ describe("BawApiInterceptor", () => {
 
     it("should handle api error response with info", () => {
       const error = generateApiErrorResponse("Unprocessable Entity", {
-        info: apiErrorInfoDetails.info,
+        info: { name: ["has already been taken"] },
       });
 
       http

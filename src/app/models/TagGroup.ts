@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { TAG } from "@baw-api/ServiceTokens";
 import { adminTagGroupsMenuItem } from "@components/admin/tag-group/tag-group.menus";
 import { DateTimeTimezone, HasCreator, Id } from "@interfaces/apiInterfaces";
@@ -20,7 +19,7 @@ export interface ITagGroup extends HasCreator {
 /**
  * A tag group model
  */
-export class TagGroup extends AbstractModel implements ITagGroup {
+export class TagGroup extends AbstractModel<ITagGroup> implements ITagGroup {
   public readonly kind = "TagGroup";
   @bawPersistAttr
   public readonly id?: Id;
@@ -37,10 +36,6 @@ export class TagGroup extends AbstractModel implements ITagGroup {
   public creator?: User;
   @hasOne<TagGroup, Tag>(TAG, "tagId")
   public tag?: Tag;
-
-  public constructor(tagGroup: ITagGroup, injector?: Injector) {
-    super(tagGroup, injector);
-  }
 
   public get viewUrl(): string {
     throw Error("TagGroup viewUrl not implemented");

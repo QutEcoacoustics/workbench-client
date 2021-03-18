@@ -1,4 +1,5 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { RecaptchaSettings } from "@baw-api/baw-form-api.service";
 import {
   RegisterDetails,
   SecurityService,
@@ -95,18 +96,23 @@ describe("RegisterComponent", () => {
         expect(spec.component.recaptchaSeed).toEqual({ state: "loading" });
       });
 
-      it("should set recaptcha seed", async () => {
+      it("should set recaptcha settings", async () => {
         const seed = modelData.random.alpha({ count: 10 });
-        const subject = new Subject<string>();
-        const promise = nStepObservable(subject, () => seed);
+        const action = "register";
+        const subject = new Subject<RecaptchaSettings>();
+        const promise = nStepObservable(subject, () => ({ seed, action }));
         spyOn(api, "signUpSeed").and.callFake(() => subject);
         spec.detectChanges();
         await promise;
-        expect(spec.component.recaptchaSeed).toEqual({ state: "loaded", seed });
+        expect(spec.component.recaptchaSeed).toEqual({
+          state: "loaded",
+          seed,
+          action,
+        });
       });
 
       it("should show error if failed to capture recaptcha seed", async () => {
-        const subject = new Subject<string>();
+        const subject = new Subject<RecaptchaSettings>();
         const promise = nStepObservable(
           subject,
           () => generateApiErrorDetails(),

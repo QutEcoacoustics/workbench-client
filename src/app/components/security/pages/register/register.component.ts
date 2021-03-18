@@ -38,7 +38,6 @@ class RegisterComponent
   extends FormTemplate<RegisterDetails>
   implements OnInit {
   public fields = fields;
-  public loading: boolean;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
 
   public constructor(
@@ -72,7 +71,8 @@ class RegisterComponent
       .signUpSeed()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (seed) => (this.recaptchaSeed = { state: "loaded", seed }),
+        ({ seed, action }) =>
+          (this.recaptchaSeed = { state: "loaded", seed, action }),
         (err) => {
           console.error(err);
           this.notifications.error("Failed to load form");

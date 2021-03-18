@@ -11,11 +11,17 @@ import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
-import { Observable } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { map } from "rxjs/operators";
+import { ApiErrorDetails } from "./api.interceptor.service";
 
 export const defaultApiPageSize = 25;
 
+export const unknownErrorCode = -1;
+
+/**
+ * @deprecated Use STATUS_CODES instead
+ */
 export const apiReturnCodes = {
   unknown: -1,
   success: 200,
@@ -35,7 +41,7 @@ export const STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
  * Interface with BAW Server Rest API
  */
 @Injectable()
-export abstract class BawApiService<Model extends AbstractModel> {
+export class BawApiService<Model extends AbstractModel> {
   private platform: any;
 
   /*
@@ -161,6 +167,21 @@ export abstract class BawApiService<Model extends AbstractModel> {
    */
   protected clearSessionUser(): void {
     localStorage.removeItem(this.userLocalStorageKey);
+  }
+
+  /**
+   * Handle custom Errors thrown in API services
+   *
+   * @param err Error
+   */
+  protected handleError(err: ApiErrorDetails | Error): Observable<never> {
+    if (err instanceof Error) {
+      return throwError({
+        status: unknownErrorCode,
+        message: err.message,
+      } as ApiErrorDetails);
+    }
+    return throwError(err);
   }
 
   /**
@@ -527,7 +548,7 @@ export interface Meta<T = unknown> extends Filters<T> {
  */
 export interface ApiResponse<T> {
   /** Response metadata */
-  meta: Meta;
+  meta: Meta<T | unknown>;
   /** Response data */
   data: T[] | T;
 }

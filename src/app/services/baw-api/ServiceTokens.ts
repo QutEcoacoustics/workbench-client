@@ -44,6 +44,11 @@ import type {
   RegionsService,
   ShallowRegionsService,
 } from "./region/regions.service";
+import type { ContactUs, ContactUsService } from "./report/contact-us.service";
+import type {
+  ReportProblem,
+  ReportProblemService,
+} from "./report/report-problem.service";
 import type { SavedSearchesService } from "./saved-search/saved-searches.service";
 import type { ScriptsService } from "./script/scripts.service";
 import type { ShallowSitesService, SitesService } from "./site/sites.service";
@@ -100,6 +105,9 @@ export const AUDIO_RECORDING = new ServiceToken<
   AudioRecordingsService,
   AudioRecording
 >("RECORDING");
+export const CONTACT_US = new ServiceToken<ContactUsService, ContactUs>(
+  "CONTACT_US"
+);
 export const BOOKMARK = new ServiceToken<BookmarksService, Bookmark>(
   "BOOKMARK"
 );
@@ -123,6 +131,10 @@ export const REGION = new ServiceToken<RegionsService, Region>("REGION");
 export const SHALLOW_REGION = new ServiceToken<ShallowRegionsService, Region>(
   "S_REGION"
 );
+export const REPORT_PROBLEM = new ServiceToken<
+  ReportProblemService,
+  ReportProblem
+>("REPORT_PROBLEM");
 export const RESPONSE = new ServiceToken<ResponsesService, Response>(
   "RESPONSE"
 );

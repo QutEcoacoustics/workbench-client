@@ -100,3 +100,7 @@ export type FilterExpectations<T> = (
   filter: Filters<T>,
   ...params: any[]
 ) => void;
+
+export function getCallArgs(spy: jasmine.Spy) {
+  return spy.calls.mostRecent().args;
+}

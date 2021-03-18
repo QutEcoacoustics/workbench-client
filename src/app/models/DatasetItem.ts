@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { AUDIO_RECORDING, DATASET } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
@@ -19,7 +18,9 @@ export interface IDatasetItem {
   order?: number;
 }
 
-export class DatasetItem extends AbstractModel implements IDatasetItem {
+export class DatasetItem
+  extends AbstractModel<IDatasetItem>
+  implements IDatasetItem {
   public readonly kind = "DatasetItem";
   @bawPersistAttr
   public readonly id?: Id;
@@ -44,10 +45,6 @@ export class DatasetItem extends AbstractModel implements IDatasetItem {
   public dataset?: Dataset;
   @hasOne<DatasetItem, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
-
-  public constructor(datasetItem: IDatasetItem, injector?: Injector) {
-    super(datasetItem, injector);
-  }
 
   public get viewUrl(): string {
     throw new Error("DatasetItem viewUrl not implemented.");

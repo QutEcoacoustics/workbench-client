@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import {
   DateTimeTimezone,
   Description,
@@ -17,7 +16,7 @@ export interface IDataset extends HasCreatorAndUpdater, HasDescription {
   name?: Param;
 }
 
-export class Dataset extends AbstractModel implements IDataset {
+export class Dataset extends AbstractModel<IDataset> implements IDataset {
   public readonly kind = "Dataset";
   @bawPersistAttr
   public readonly id?: Id;
@@ -39,10 +38,6 @@ export class Dataset extends AbstractModel implements IDataset {
   public creator: User;
   @updater<Dataset>()
   public updater?: User;
-
-  public constructor(dataset: IDataset, injector?: Injector) {
-    super(dataset, injector);
-  }
 
   public get viewUrl(): string {
     throw new Error("Dataset viewUrl not implemented.");

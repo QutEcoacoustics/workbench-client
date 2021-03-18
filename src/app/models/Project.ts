@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { ACCOUNT, SHALLOW_REGION, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import {
@@ -50,7 +49,7 @@ export interface IProject extends HasAllUsers, HasDescription {
 /**
  * A project model.
  */
-export class Project extends AbstractModel implements IProject {
+export class Project extends AbstractModel<IProject> implements IProject {
   public readonly kind = "Project";
   @bawPersistAttr
   public readonly id?: Id;
@@ -96,10 +95,6 @@ export class Project extends AbstractModel implements IProject {
   public updater?: User;
   @deleter<Project>()
   public deleter?: User;
-
-  public constructor(project: IProject, injector?: Injector) {
-    super(project, injector);
-  }
 
   /**
    * Generate card-item details

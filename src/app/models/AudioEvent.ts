@@ -33,7 +33,9 @@ export interface IAudioEvent extends HasAllUsers {
   taggings?: ITagging[] | Tagging[];
 }
 
-export class AudioEvent extends AbstractModel implements IAudioEvent {
+export class AudioEvent
+  extends AbstractModel<IAudioEvent>
+  implements IAudioEvent {
   public readonly kind = "AudioEvent";
   @bawPersistAttr
   public readonly id?: Id;

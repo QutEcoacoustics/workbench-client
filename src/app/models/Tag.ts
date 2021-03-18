@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { libraryMenuItem } from "@components/library/library.menus";
 import {
   DateTimeTimezone,
@@ -27,7 +26,7 @@ export interface ITag extends HasCreatorAndUpdater {
 /**
  * Tag model
  */
-export class Tag extends AbstractModel implements ITag {
+export class Tag extends AbstractModel<ITag> implements ITag {
   public readonly kind = "Tag";
   @bawPersistAttr
   public readonly id?: Id;
@@ -53,10 +52,6 @@ export class Tag extends AbstractModel implements ITag {
   public creator?: User;
   @updater<Tag>()
   public updater?: User;
-
-  public constructor(tag: ITag, injector?: Injector) {
-    super(tag, injector);
-  }
 
   public get viewUrl(): string {
     return libraryMenuItem.route.format(undefined, {

@@ -6,8 +6,8 @@ import { Meta } from "../services/baw-api/baw-api.service";
 /**
  * BAW Server Abstract Model
  */
-export abstract class AbstractModel {
-  public constructor(raw: Record<string, any>, protected injector?: Injector) {
+export abstract class AbstractModel<Model = Record<string, any>> {
+  public constructor(raw: Model, protected injector?: Injector) {
     return Object.assign(this, raw);
   }
 

@@ -36,6 +36,8 @@ import {
   shallowRegionResolvers,
   ShallowRegionsService,
 } from "./region/regions.service";
+import { ContactUsService } from "./report/contact-us.service";
+import { ReportProblemService } from "./report/report-problem.service";
 import { BawProvider } from "./resolver-common";
 import {
   SavedSearchesService,
@@ -91,7 +93,6 @@ const serviceList = [
   {
     serviceToken: Tokens.SHALLOW_AUDIO_EVENT,
     service: ShallowAudioEventsService,
-    resolvers: undefined,
   },
   {
     serviceToken: Tokens.AUDIO_RECORDING,
@@ -102,6 +103,10 @@ const serviceList = [
     serviceToken: Tokens.BOOKMARK,
     service: BookmarksService,
     resolvers: bookmarkResolvers,
+  },
+  {
+    serviceToken: Tokens.CONTACT_US,
+    service: ContactUsService,
   },
   {
     serviceToken: Tokens.DATASET,
@@ -142,6 +147,10 @@ const serviceList = [
     serviceToken: Tokens.SHALLOW_REGION,
     service: ShallowRegionsService,
     resolvers: shallowRegionResolvers,
+  },
+  {
+    serviceToken: Tokens.REPORT_PROBLEM,
+    service: ReportProblemService,
   },
   {
     serviceToken: Tokens.RESPONSE,

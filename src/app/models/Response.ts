@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { SHALLOW_QUESTION, STUDY } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
@@ -18,7 +17,7 @@ export interface IResponse {
   createdAt?: DateTimeTimezone | string;
 }
 
-export class Response extends AbstractModel implements IResponse {
+export class Response extends AbstractModel<IResponse> implements IResponse {
   public readonly kind = "Answer";
   @bawPersistAttr
   public readonly id?: Id;
@@ -42,10 +41,6 @@ export class Response extends AbstractModel implements IResponse {
   public question?: Question;
   @hasOne<Response, Study>(STUDY, "studyId")
   public study?: Study;
-
-  public constructor(question: IResponse, injector?: Injector) {
-    super(question, injector);
-  }
 
   public get viewUrl(): string {
     throw new Error("Response viewUrl not implemented.");
