@@ -396,28 +396,28 @@ describe("ProjectDetailsComponent", () => {
         },
       ].forEach(({ test, isSite, list, stateTracker, createModels }) => {
         describe(test, () => {
-          it(`should create initial ${test} api filter request`, async (done) => {
+          it(`should create initial ${test} api filter request`, (done) => {
             setup(defaultProject);
             const expectation = (filters, project) => {
               expect(project).toEqual(defaultProject.id);
               expect(filters).toEqual({ paging: { page: 1 }, filter: {} });
               done();
             };
-            await handleOnInit(isSite, [expectation]);
+            handleOnInit(isSite, [expectation]);
           });
 
-          it(`should create paged ${test} api filter request`, async (done) => {
+          it(`should create paged ${test} api filter request`, (done) => {
             setup(defaultProject);
             const expectation = (filters, project) => {
               expect(project).toEqual(defaultProject.id);
               expect(filters).toEqual({ paging: { page: 5 }, filter: {} });
               done();
             };
-            await handleOnInit(isSite, [initialExpectation, expectation], 5);
+            handleOnInit(isSite, [initialExpectation, expectation], 5);
           });
 
           if (isSite) {
-            it("should handle site api filter request with regionId", async (done) => {
+            it("should handle site api filter request with regionId", (done) => {
               const spy = jasmine.createSpy();
               setup(defaultProject);
               component["generateFilter"] = spy.and.callFake(() => ({
@@ -431,10 +431,10 @@ describe("ProjectDetailsComponent", () => {
                 });
                 done();
               };
-              await handleOnInit(isSite, [initialExpectation, expectation], 1);
+              handleOnInit(isSite, [initialExpectation, expectation], 1);
             });
 
-            it("should not override site api filter request with regionId", async (done) => {
+            it("should not override site api filter request with regionId", (done) => {
               setup(defaultProject);
               const expectation = (filters) => {
                 expect(filters).toEqual({
@@ -443,7 +443,7 @@ describe("ProjectDetailsComponent", () => {
                 });
                 done();
               };
-              await handleOnInit(
+              handleOnInit(
                 isSite,
                 [initialExpectation, expectation],
                 5,

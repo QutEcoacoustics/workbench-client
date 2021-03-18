@@ -368,10 +368,10 @@ describe("SiteComponent", () => {
     });
 
     describe("filterByDates", () => {
-      it("should request list of newest audio recordings", async (done) => {
+      it("should request list of newest audio recordings", (done) => {
         setup(defaultProject, defaultSite);
         interceptEventsRequest();
-        const promise = interceptRecordingsRequest([], (filter, site) => {
+        interceptRecordingsRequest([], (filter, site) => {
           expect(filter).toEqual({
             sorting: { orderBy: "recordedDate", direction: "desc" },
           });
@@ -379,26 +379,20 @@ describe("SiteComponent", () => {
           done();
         });
         spec.detectChanges();
-        await promise;
       });
 
-      it("should request list of oldest audio recordings", async (done) => {
+      it("should request list of oldest audio recordings", (done) => {
         setup(defaultProject, defaultSite);
         interceptEventsRequest();
-        const promise = interceptRecordingsRequest(
-          [],
-          undefined,
-          (filter, site) => {
-            expect(filter).toEqual({
-              sorting: { orderBy: "recordedDate", direction: "asc" },
-              paging: { items: 1 },
-            });
-            expect(site).toEqual(defaultSite);
-            done();
-          }
-        );
+        interceptRecordingsRequest([], undefined, (filter, site) => {
+          expect(filter).toEqual({
+            sorting: { orderBy: "recordedDate", direction: "asc" },
+            paging: { items: 1 },
+          });
+          expect(site).toEqual(defaultSite);
+          done();
+        });
         spec.detectChanges();
-        await promise;
       });
 
       it("should make two requests", async () => {

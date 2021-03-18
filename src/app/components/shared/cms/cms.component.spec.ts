@@ -1,4 +1,4 @@
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { SafeHtml } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -44,24 +44,22 @@ describe("CmsComponent", () => {
     cmsService = spectator.inject(CmsService);
   });
 
-  it("should request page from api", async (done) => {
-    const promise = interceptApiRequest("page content", undefined, (page) => {
+  it("should request page from api", (done) => {
+    interceptApiRequest("page content", undefined, (page) => {
       expect(page).toBe(CMS.home);
       done();
     });
     spectator.setInput("page", CMS.home);
     spectator.detectChanges();
-    await promise;
   });
 
-  it("should change request based on page", async (done) => {
-    const promise = interceptApiRequest("page content", undefined, (page) => {
+  it("should change request based on page", (done) => {
+    interceptApiRequest("page content", undefined, (page) => {
       expect(page).toBe(CMS.credits);
       done();
     });
     spectator.setInput("page", CMS.credits);
     spectator.detectChanges();
-    await promise;
   });
 
   it("should initially display loading animation", () => {

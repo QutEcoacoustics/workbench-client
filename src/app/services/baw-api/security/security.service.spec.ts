@@ -398,7 +398,7 @@ describe("SecurityService", () => {
         );
       });
 
-      it("should handle getFormData throwing error", async (done) => {
+      it("should handle getFormData throwing error", (done) => {
         interceptDataRequest();
         handleAuth({
           getFormData: () => {
@@ -409,10 +409,9 @@ describe("SecurityService", () => {
             done();
           },
         });
-        await initialRequests;
       });
 
-      it("should handle formDataRequest failure", async (done) => {
+      it("should handle formDataRequest failure", (done) => {
         interceptDataRequest(defaultError);
         handleAuth({
           error: (err: ApiErrorDetails) => {
@@ -420,7 +419,6 @@ describe("SecurityService", () => {
             done();
           },
         });
-        await initialRequests;
       });
     });
 
@@ -455,7 +453,7 @@ describe("SecurityService", () => {
         expect(argument).toContain("/security/user?antiCache=" + timestamp);
       });
 
-      it("should handle session user details failure", async (done) => {
+      it("should handle session user details failure", (done) => {
         interceptSessionUser(undefined, defaultError);
         handleAuth({
           error: (err: ApiErrorDetails) => {
@@ -463,7 +461,6 @@ describe("SecurityService", () => {
             done();
           },
         });
-        await initialRequests;
       });
     });
 
@@ -485,7 +482,7 @@ describe("SecurityService", () => {
         expect(userApi.show).toHaveBeenCalled();
       });
 
-      it("should handle user details failure", async (done) => {
+      it("should handle user details failure", (done) => {
         interceptUser(undefined, defaultError);
         handleAuth({
           error: (err: ApiErrorDetails) => {
@@ -493,7 +490,6 @@ describe("SecurityService", () => {
             done();
           },
         });
-        await initialRequests;
       });
     });
 
@@ -530,8 +526,8 @@ describe("SecurityService", () => {
         expect(trigger.next).toHaveBeenCalledTimes(1);
       });
 
-      it("should call next", async (done) => {
-        const promise = interceptRequests();
+      it("should call next", (done) => {
+        interceptRequests();
         handleAuth({
           next: () => {
             expect(true).toBeTrue();
@@ -539,11 +535,10 @@ describe("SecurityService", () => {
           },
           error: shouldNotFail,
         });
-        await promise;
       });
 
-      it("should complete observable", async (done) => {
-        const promise = interceptRequests();
+      it("should complete observable", (done) => {
+        interceptRequests();
         handleAuth({
           error: shouldNotFail,
           complete: () => {
@@ -551,7 +546,6 @@ describe("SecurityService", () => {
             done();
           },
         });
-        await promise;
       });
     });
 
