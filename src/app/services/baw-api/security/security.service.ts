@@ -4,6 +4,7 @@ import { param } from "@baw-api/api-common";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { Param, UserName } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 import { SessionUser, User } from "@models/User";
@@ -260,16 +261,16 @@ export class SecurityService extends BawApiService<SessionUser> {
 }
 
 export interface ILoginDetails {
-  login?: string;
-  password?: string;
+  login?: Param;
+  password?: Param;
 }
 
 export class LoginDetails extends AbstractModel implements ILoginDetails {
   public readonly kind = "LoginDetails";
   @bawPersistAttr
-  public readonly login: string;
+  public readonly login: Param;
   @bawPersistAttr
-  public readonly password: string;
+  public readonly password: Param;
 
   public constructor(details: ILoginDetails) {
     super(details);
@@ -281,23 +282,23 @@ export class LoginDetails extends AbstractModel implements ILoginDetails {
 }
 
 export interface IRegisterDetails {
-  userName: string;
-  email: string;
-  password: string;
-  passwordConfirmation: string;
+  userName: UserName;
+  email: Param;
+  password: Param;
+  passwordConfirmation: Param;
   recaptchaToken: string;
 }
 
 export class RegisterDetails extends AbstractModel implements IRegisterDetails {
   public readonly kind = "RegisterDetails";
   @bawPersistAttr
-  public readonly userName: string;
+  public readonly userName: UserName;
   @bawPersistAttr
-  public readonly email: string;
+  public readonly email: Param;
   @bawPersistAttr
-  public readonly password: string;
+  public readonly password: Param;
   @bawPersistAttr
-  public readonly passwordConfirmation: string;
+  public readonly passwordConfirmation: Param;
   @bawPersistAttr
   public readonly recaptchaToken: string;
 

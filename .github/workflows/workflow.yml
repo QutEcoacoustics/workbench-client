@@ -194,7 +194,7 @@ jobs:
     # Do not run on dependabot requests because of https://github.com/EnricoMi/publish-unit-test-result-action/issues/95
     if: >
       github.event_name == 'pull_request' &&
-      !(startsWith(github.ref, 'refs/heads/dependabot/'))
+      github.actor != 'dependabot[bot]'
 
     steps:
       - name: Download Artifacts
@@ -240,7 +240,9 @@ jobs:
     needs: ["test", "build"]
     # needs: ["test", "e2e", "build"]
 
-    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    if: >
+      github.event_name == 'pull_request' &&
+      github.actor == 'dependabot[bot]'
 
     steps:
       - name: "Merge pull request"
