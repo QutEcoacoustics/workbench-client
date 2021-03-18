@@ -193,9 +193,8 @@ jobs:
     runs-on: ubuntu-latest
     # Do not run on dependabot requests because of https://github.com/EnricoMi/publish-unit-test-result-action/issues/95
     if: >
-      always() &&
       github.event_name == 'pull_request' &&
-      (! startsWith(github.ref, 'refs/heads/dependabot/'))
+      !(startsWith(github.ref, 'refs/heads/dependabot/'))
 
     steps:
       - name: Download Artifacts
