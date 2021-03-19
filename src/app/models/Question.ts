@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { creator, updater } from "./AssociationDecorators";
@@ -15,7 +14,7 @@ export interface IQuestion {
   updatedAt?: DateTimeTimezone | string;
 }
 
-export class Question extends AbstractModel implements IQuestion {
+export class Question extends AbstractModel<IQuestion> implements IQuestion {
   public readonly kind = "Question";
   @bawPersistAttr
   public readonly id?: Id;
@@ -35,10 +34,6 @@ export class Question extends AbstractModel implements IQuestion {
   public creator?: User;
   @updater<Question>()
   public updater?: User;
-
-  public constructor(question: IQuestion, injector?: Injector) {
-    super(question, injector);
-  }
 
   public get viewUrl(): string {
     throw new Error("Question viewUrl not implemented.");

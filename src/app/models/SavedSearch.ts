@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import {
   DateTimeTimezone,
@@ -20,7 +19,9 @@ export interface ISavedSearch extends HasCreatorAndDeleter, HasDescription {
   storedQuery?: InnerFilter<AudioRecording>;
 }
 
-export class SavedSearch extends AbstractModel implements ISavedSearch {
+export class SavedSearch
+  extends AbstractModel<ISavedSearch>
+  implements ISavedSearch {
   public readonly kind = "Saved Search";
   @bawPersistAttr
   public readonly id?: Id;
@@ -44,10 +45,6 @@ export class SavedSearch extends AbstractModel implements ISavedSearch {
   public creator?: User;
   @deleter<SavedSearch>()
   public deleter?: User;
-
-  public constructor(savedSearches: ISavedSearch, injector?: Injector) {
-    super(savedSearches, injector);
-  }
 
   public get viewUrl(): string {
     throw new Error("SavedSearch viewUrl not implemented.");

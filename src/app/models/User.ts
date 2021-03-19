@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { assetRoot } from "@services/config/config.service";
 import {
   myAccountMenuItem,
@@ -48,7 +49,7 @@ export interface IUser {
 /**
  * A user model.
  */
-export class User extends AbstractModel implements IUser {
+export class User extends AbstractModel<IUser> implements IUser {
   /**
    * Deleted User. This is used when a user has been soft deleted
    * from the API.
@@ -117,8 +118,8 @@ export class User extends AbstractModel implements IUser {
   @bawDateTime()
   public readonly lastSeenAt?: DateTimeTimezone;
 
-  public constructor(user: IUser) {
-    super(user);
+  public constructor(user: IUser, injector?: Injector) {
+    super(user, injector);
     this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
   }
 
@@ -145,7 +146,9 @@ export interface ISessionUser extends IUser {
 /**
  * A user model for the website user
  */
-export class SessionUser extends AbstractModel implements ISessionUser {
+export class SessionUser
+  extends AbstractModel<ISessionUser>
+  implements ISessionUser {
   // ! All fields are persisted because model is saved to, and read from, localstorage
   public readonly kind = "SessionUser";
   @bawPersistAttr
@@ -169,9 +172,8 @@ export class SessionUser extends AbstractModel implements ISessionUser {
   @bawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
 
-  public constructor(user: ISessionUser & Partial<IUser>) {
-    super(user);
-
+  public constructor(user: ISessionUser & Partial<IUser>, injector?: Injector) {
+    super(user, injector);
     this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
   }
 

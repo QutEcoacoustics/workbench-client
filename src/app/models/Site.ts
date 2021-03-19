@@ -54,7 +54,7 @@ export interface ISite extends HasAllUsers, HasDescription {
 /**
  * A site model.
  */
-export class Site extends AbstractModel implements ISite {
+export class Site extends AbstractModel<ISite> implements ISite {
   public readonly kind = "Site";
   @bawPersistAttr
   public readonly id?: Id;

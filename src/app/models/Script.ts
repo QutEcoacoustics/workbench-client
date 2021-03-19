@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { SCRIPT } from "@baw-api/ServiceTokens";
 import { adminScriptMenuItem } from "@components/admin/scripts/scripts.menus";
 import {
@@ -31,7 +30,7 @@ export interface IScript extends HasCreator, HasDescription {
   analysisActionParams?: Hash;
 }
 
-export class Script extends AbstractModel implements IScript {
+export class Script extends AbstractModel<IScript> implements IScript {
   public readonly kind = "Script";
   @bawPersistAttr
   public readonly id?: Id;
@@ -65,10 +64,6 @@ export class Script extends AbstractModel implements IScript {
   public creator?: User;
   @hasOne<Script, Script>(SCRIPT, "groupId")
   public group?: Script;
-
-  public constructor(script: IScript, injector?: Injector) {
-    super(script, injector);
-  }
 
   public get viewUrl(): string {
     throw new Error("Script viewUrl not implemented.");

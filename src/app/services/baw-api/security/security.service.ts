@@ -265,16 +265,14 @@ export interface ILoginDetails {
   password?: Param;
 }
 
-export class LoginDetails extends AbstractModel implements ILoginDetails {
+export class LoginDetails
+  extends AbstractModel<ILoginDetails>
+  implements ILoginDetails {
   public readonly kind = "LoginDetails";
   @bawPersistAttr
   public readonly login: Param;
   @bawPersistAttr
   public readonly password: Param;
-
-  public constructor(details: ILoginDetails) {
-    super(details);
-  }
 
   public get viewUrl(): string {
     throw new Error("Not Implemented");
@@ -289,7 +287,9 @@ export interface IRegisterDetails {
   recaptchaToken: string;
 }
 
-export class RegisterDetails extends AbstractModel implements IRegisterDetails {
+export class RegisterDetails
+  extends AbstractModel<IRegisterDetails>
+  implements IRegisterDetails {
   public readonly kind = "RegisterDetails";
   @bawPersistAttr
   public readonly userName: UserName;
@@ -301,10 +301,6 @@ export class RegisterDetails extends AbstractModel implements IRegisterDetails {
   public readonly passwordConfirmation: Param;
   @bawPersistAttr
   public readonly recaptchaToken: string;
-
-  public constructor(details: IRegisterDetails) {
-    super(details);
-  }
 
   public get viewUrl(): string {
     throw new Error("Not Implemented");
