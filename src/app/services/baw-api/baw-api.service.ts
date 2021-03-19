@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from "@angular/common";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import {
   Inject,
   Injectable,
@@ -9,10 +9,11 @@ import {
 } from "@angular/core";
 import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { catchError, map, tap } from "rxjs/operators";
 
 export const defaultApiPageSize = 25;
 
@@ -145,6 +146,43 @@ export abstract class BawApiService<Model extends AbstractModel> {
     }
 
     return undefined;
+  }
+
+  /**
+   * Retrieve a recatpcha seed for a form
+   *
+   * @param path Path to retrieve recatpcha seed from
+   * @param extractSeed Regex to extract recaptcha seed from HTML response
+   */
+  protected getRecaptchaSeed(
+    path: string,
+    extractSeed: RegExp = /name="authenticity_token" value="(.+?)"/
+  ): Observable<string> {
+    return this.http
+      .get(this.getPath(path), {
+        responseType: "text",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        headers: new HttpHeaders({ Accept: "text/html" }),
+      })
+      .pipe(
+        // Validate api response, and get form data if valid
+        tap((page: any) => {
+          if (typeof page !== "string") {
+            throw new Error("Failed to retrieve auth form");
+          }
+        }),
+        // Extract token from page
+        map((page: string) => extractSeed.exec(page)),
+        // Return token if exists
+        map((token: RegExpMatchArray) => {
+          if (isInstantiated(token?.[1])) {
+            return token[1];
+          }
+          throw new Error(
+            "Unable to retrieve recaptcha seed for registration request"
+          );
+        })
+      );
   }
 
   /**

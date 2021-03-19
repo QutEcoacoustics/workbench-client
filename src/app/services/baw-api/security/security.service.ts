@@ -63,30 +63,9 @@ export class SecurityService extends BawApiService<SessionUser> {
    * Returns the recaptcha seed for the registration form
    */
   public signUpSeed(): Observable<string> {
-    return this.formHtmlRequest(signUpSeed()).pipe(
-      // Validate api response, and get form data if valid
-      tap((page: any) => {
-        if (typeof page !== "string") {
-          throw new Error("Failed to retrieve auth form");
-        }
-      }),
-      // Extract token from page
-      map((page: string) =>
-        page.match(
-          /id="g-recaptcha-response-data-register" data-sitekey="(.+?)"/
-        )
-      ),
-      // Return token if exists
-      map((token: RegExpMatchArray) => {
-        if (isInstantiated(token?.[1])) {
-          return token[1];
-        }
-        throw new Error(
-          "Unable to retrieve recaptcha seed for registration request"
-        );
-      }),
-      // Handle errors
-      catchError(this.handleError)
+    return this.getRecaptchaSeed(
+      signUpSeed(),
+      /id="g-recaptcha-response-data-register" data-sitekey="(.+?)"/
     );
   }
 

@@ -2,9 +2,13 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { BawApiService } from "@baw-api/baw-api.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Description, Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { bawPersistAttr } from "@models/AttributeDecorators";
+
+const contactUsEndpoint = stringTemplate`/contact_us`;
+const reportProblemEndpoint = stringTemplate`/bug_report`;
 
 class NoModel extends AbstractModel {
   public get viewUrl(): string {
@@ -24,7 +28,15 @@ export class ReportService extends BawApiService<NoModel> {
 
   public contactUs(details: ContactUs) {}
 
+  public contactUsSeed() {
+    return this.getRecaptchaSeed(contactUsEndpoint());
+  }
+
   public reportProblem(details: BugReport) {}
+
+  public reportProblemSeed() {
+    return this.getRecaptchaSeed(reportProblemEndpoint());
+  }
 }
 
 export interface IContactUs {
