@@ -1,14 +1,20 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { IReportProblem, ReportProblem, ReportProblemService } from "@baw-api/report/report-problem.service";
-import { defaultErrorMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
+import {
+  ReportProblem,
+  ReportProblemService,
+} from "@baw-api/report/report-problem.service";
+import {
+  defaultErrorMsg,
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
 import { ConfigService } from "@services/config/config.service";
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
 import {
   reportProblemMenuItem,
-  reportProblemsCategory
+  reportProblemsCategory,
 } from "./report-problem.menus";
 import { fields } from "./report-problem.schema.json";
 
@@ -47,7 +53,7 @@ class ReportProblemComponent
       router,
       undefined,
       () =>
-        "Thank you, your report was successfully submitted."+
+        "Thank you, your report was successfully submitted." +
         "If you entered an email address, we will let you know if the problems you describe are resolved.",
       defaultErrorMsg
     );
@@ -78,7 +84,6 @@ class ReportProblemComponent
   }
 
   protected apiAction(model: ReportProblem) {
-    console.log({ model });
     return this.api.reportProblem(new ReportProblem(model));
   }
 

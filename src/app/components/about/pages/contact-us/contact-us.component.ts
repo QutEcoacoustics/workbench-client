@@ -74,7 +74,6 @@ class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
   }
 
   protected apiAction(model: IContactUs) {
-    console.log({ model });
     return this.api.contactUs(new ContactUs(model));
   }
 

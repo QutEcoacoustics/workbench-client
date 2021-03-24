@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
-import { BawApiService } from "@baw-api/baw-api.service";
+import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Description, Param } from "@interfaces/apiInterfaces";
@@ -13,7 +13,7 @@ import { map } from "rxjs/operators";
 const reportProblemEndpoint = stringTemplate`/bug_report`;
 
 @Injectable()
-export class ReportProblemService extends BawApiService<ReportProblem> {
+export class ReportProblemService extends BawFormApiService<ReportProblem> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
@@ -47,7 +47,9 @@ export interface IReportProblem {
   recaptchaToken: string;
 }
 
-export class ReportProblem extends AbstractModel<IReportProblem> implements IReportProblem {
+export class ReportProblem
+  extends AbstractModel<IReportProblem>
+  implements IReportProblem {
   public readonly kind = "ReportProblem";
   @bawPersistAttr
   public readonly name: Param;
