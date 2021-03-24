@@ -27,20 +27,12 @@ const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
  */
 @Injectable()
 export class SecurityService extends BawApiService<SessionUser> {
-  private authTrigger = new BehaviorSubject<void>(null);
-  private handleError = (
-    err: ApiErrorDetails | Error
-  ): ObservableInput<any> => {
+  protected handleError = (err: ApiErrorDetails | Error): Observable<never> => {
     this.clearData();
-
-    if (err instanceof Error) {
-      return throwError({
-        status: apiReturnCodes.unknown,
-        message: err.message,
-      } as ApiErrorDetails);
-    }
-    return throwError(err);
+    return super.handleError(err);
   };
+
+  private authTrigger = new BehaviorSubject<void>(null);
 
   public constructor(
     http: HttpClient,
@@ -63,10 +55,7 @@ export class SecurityService extends BawApiService<SessionUser> {
    * Returns the recaptcha seed for the registration form
    */
   public signUpSeed(): Observable<string> {
-    return this.getRecaptchaSeed(
-      signUpSeed(),
-      /id="g-recaptcha-response-data-register" data-sitekey="(.+?)"/
-    );
+    return this.getRecaptchaSeed(signUpSeed());
   }
 
   /**
@@ -75,15 +64,7 @@ export class SecurityService extends BawApiService<SessionUser> {
    * @param details Details provided by registration form
    */
   public signUp(details: RegisterDetails): Observable<void> {
-    return this.handleAuth(signUpSeed(), signUpEndpoint(), (page: string) => {
-      // Extract auth token if exists
-      const token = page.match(/name="authenticity_token" value="(.+?)"/);
-      if (!isInstantiated(token?.[1])) {
-        throw new Error(
-          "Unable to retrieve authenticity token for sign up request"
-        );
-      }
-
+    return this.handleAuth(signUpSeed(), signUpEndpoint(), (token: string) => {
       if (!isInstantiated(details.recaptchaToken)) {
         throw new Error(
           "Unable to retrieve recaptcha token for sign up request"
@@ -97,7 +78,7 @@ export class SecurityService extends BawApiService<SessionUser> {
       body.set("user[password]", details.password);
       body.set("user[password_confirmation]", details.passwordConfirmation);
       body.set("commit", "Register");
-      body.set("authenticity_token", token[1]);
+      body.set("authenticity_token", token);
       body.set("g-recaptcha-response-data[register]", details.recaptchaToken);
       body.set("g-recaptcha-response", "");
       return body;
@@ -113,22 +94,14 @@ export class SecurityService extends BawApiService<SessionUser> {
     return this.handleAuth(
       signInEndpoint(),
       signInEndpoint(),
-      (page: string) => {
-        // Extract auth token if exists
-        const token = page.match(/name="authenticity_token" value="(.+?)"/);
-        if (!isInstantiated(token?.[1])) {
-          throw new Error(
-            "Unable to retrieve authenticity token for sign in request"
-          );
-        }
-
+      (token: string) => {
         // Set form data
         const body = new URLSearchParams();
         body.set("user[login]", details.login);
         body.set("user[password]", details.password);
         body.set("user[remember_me]", "0");
         body.set("commit", "Log+in");
-        body.set("authenticity_token", token[1]);
+        body.set("authenticity_token", token);
         return body;
       }
     );
@@ -141,7 +114,7 @@ export class SecurityService extends BawApiService<SessionUser> {
     return this.apiDestroy(signOutEndpoint()).pipe(
       tap(() => this.clearData()),
       catchError(this.handleError)
-    );
+    ) as Observable<void>;
   }
 
   /**
@@ -154,26 +127,15 @@ export class SecurityService extends BawApiService<SessionUser> {
   private handleAuth(
     formEndpoint: string,
     authEndpoint: string,
-    getFormData: (page: string) => URLSearchParams
-  ) {
-    // Request form page
-    return this.formHtmlRequest(formEndpoint).pipe(
-      // Validate api response, and get form data if valid
-      map((page: any) => {
-        if (typeof page !== "string") {
-          throw new Error("Failed to retrieve auth form");
-        }
-        return getFormData(page);
-      }),
-      /*
-       * Mimic a traditional form-based sign in/sign up to get a well-formed auth cookie
-       * Needed because of:
-       * - https://github.com/QutEcoacoustics/baw-server/issues/509
-       * - https://github.com/QutEcoacoustics/baw-server/issues/424
-       */
-      mergeMap((formData: URLSearchParams) =>
-        this.formDataRequest(authEndpoint, formData)
-      ),
+    getFormData: (authToken: string) => URLSearchParams
+  ): Observable<void> {
+    /*
+     * Mimic a traditional form-based sign in/sign up to get a well-formed auth cookie
+     * Needed because of:
+     * - https://github.com/QutEcoacoustics/baw-server/issues/509
+     * - https://github.com/QutEcoacoustics/baw-server/issues/424
+     */
+    return this.makeFormRequest(formEndpoint, authEndpoint, getFormData).pipe(
       // Trade the cookie for an API auth token (mimicking old baw-client)
       mergeMap(() => this.apiShow(sessionUserEndpoint(Date.now().toString()))),
       // Save to local storage
@@ -188,10 +150,8 @@ export class SecurityService extends BawApiService<SessionUser> {
       ),
       // Trigger auth observable
       tap(() => this.authTrigger.next(null)),
-      // Complete observable
-      take(1),
-      // Handle errors
-      catchError(this.handleError)
+      // Void output
+      map(() => undefined)
     );
   }
 
@@ -202,40 +162,6 @@ export class SecurityService extends BawApiService<SessionUser> {
     this.clearSessionUser();
     this.cookies.deleteAll();
     this.authTrigger.next(null);
-  }
-
-  /**
-   * Request a HTML page from the API. This will be used to extract important
-   * information required to make form-based requests later on
-   */
-  private formHtmlRequest(path: string): Observable<any> {
-    return this.http.get(this.getPath(path), {
-      responseType: "text",
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: new HttpHeaders({ Accept: "text/html" }),
-    });
-  }
-
-  /**
-   * Use the form-based request to authenticate. The server will issue a
-   * traditional session cookie which we can later trade for an auth token
-   *
-   * @param path API route path
-   * @param formData API body
-   */
-  private formDataRequest(
-    path: string,
-    formData: URLSearchParams
-  ): Observable<any> {
-    return this.http.post(this.getPath(path), formData.toString(), {
-      responseType: "text",
-      headers: new HttpHeaders({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: "text/html",
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        "Content-Type": "application/x-www-form-urlencoded",
-      }),
-    });
   }
 }
 

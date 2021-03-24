@@ -6,6 +6,7 @@ import { withFormCheck } from "@guards/form/form.guard";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -37,6 +38,10 @@ export abstract class FormTemplate<M extends AbstractModel>
    * Formly fields
    */
   public fields: FormlyFieldConfig[] = [];
+  /**
+   * Recaptcha state tracker, undefined if not used
+   */
+  public recaptchaSeed: RecaptchaState;
   /**
    * Success Message
    */

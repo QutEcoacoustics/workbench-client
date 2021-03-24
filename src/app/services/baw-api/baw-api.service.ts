@@ -1,5 +1,9 @@
 import { isPlatformBrowser } from "@angular/common";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from "@angular/common/http";
 import {
   Inject,
   Injectable,
@@ -12,8 +16,9 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
-import { Observable } from "rxjs";
-import { catchError, map, tap } from "rxjs/operators";
+import { Observable, throwError } from "rxjs";
+import { catchError, map, mergeMap, take, tap } from "rxjs/operators";
+import { ApiErrorDetails } from "./api.interceptor.service";
 
 export const defaultApiPageSize = 25;
 
@@ -31,6 +36,21 @@ export const apiReturnCodes = {
 };
 
 export const STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
+
+/*
+ * Looks for hidden input in HTML document, id of input contains
+ * "g-recaptcha-response-data-" followed by the name of the form
+ * (ie. "g-recaptcha-response-data-contact-us"). The seed is set inside
+ * the data-sitekey property.
+ */
+const recaptchaSeedRegex = /id="g-recaptcha-response-data-.+?" data-sitekey="(.+?)"/;
+
+/*
+ * Looks for a hidden input in HTML document, name of input is
+ * "authenticity_token". The auth token, which is required for form
+ * based requests, is set inside the value property.
+ */
+const authTokenRegex = /name="authenticity_token" value="(.+?)"/;
 
 /**
  * Interface with BAW Server Rest API
@@ -53,6 +73,21 @@ export abstract class BawApiService<Model extends AbstractModel> {
    * User local storage location
    */
   protected userLocalStorageKey = "baw.client.user";
+
+  /**
+   * Handle custom Errors thrown in API services
+   *
+   * @param err Error
+   */
+  protected handleError = (err: ApiErrorDetails | Error): Observable<never> => {
+    if (err instanceof Error) {
+      return throwError({
+        status: apiReturnCodes.unknown,
+        message: err.message,
+      } as ApiErrorDetails);
+    }
+    return throwError(err);
+  }
 
   /**
    * Handle API collection response
@@ -149,6 +184,42 @@ export abstract class BawApiService<Model extends AbstractModel> {
   }
 
   /**
+   * Make a form request on non-JSON api endpoints with recaptcha
+   * token
+   *
+   * @param formEndpoint Endpoint to retrieve form HTML
+   * @param submissionEndpoint Endpoint to send form data to
+   * @param body Form data to insert into api request
+   */
+  protected makeFormRequest(
+    formEndpoint: string,
+    submissionEndpoint: string,
+    body: (authToken: string) => URLSearchParams
+  ): Observable<boolean> {
+    // Request HTML document to retrieve form containing auth token
+    return this.apiHtmlRequest(formEndpoint).pipe(
+      map((page: string) => {
+        // Extract auth token if exists
+        const token = authTokenRegex.exec(page)?.[1];
+        if (!isInstantiated(token)) {
+          throw new Error(
+            "Unable to retrieve authenticity token for sign up request"
+          );
+        }
+        return token;
+      }),
+      // Mimic a traditional form-based request
+      mergeMap((token: string) =>
+        this.apiFormRequest(submissionEndpoint, body(token))
+      ),
+      // Complete observable
+      take(1),
+      // Set output to true for successful request
+      map(() => true)
+    );
+  }
+
+  /**
    * Retrieve a recatpcha seed for a form
    *
    * @param path Path to retrieve recatpcha seed from
@@ -156,33 +227,41 @@ export abstract class BawApiService<Model extends AbstractModel> {
    */
   protected getRecaptchaSeed(
     path: string,
-    extractSeed: RegExp = /name="authenticity_token" value="(.+?)"/
+    extractSeed: RegExp = recaptchaSeedRegex
   ): Observable<string> {
-    return this.http
-      .get(this.getPath(path), {
-        responseType: "text",
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        headers: new HttpHeaders({ Accept: "text/html" }),
-      })
-      .pipe(
-        // Validate api response, and get form data if valid
-        tap((page: any) => {
-          if (typeof page !== "string") {
-            throw new Error("Failed to retrieve auth form");
-          }
-        }),
+    // Mock a HTML request to the server
+    return this.apiHtmlRequest(path).pipe(
+      map((page: any) => {
+        // Check response is HTML document
+        if (typeof page !== "string") {
+          throw new Error("Failed to retrieve auth form");
+        }
+
         // Extract token from page
-        map((page: string) => extractSeed.exec(page)),
-        // Return token if exists
-        map((token: RegExpMatchArray) => {
-          if (isInstantiated(token?.[1])) {
-            return token[1];
-          }
+        const token = extractSeed.exec(page)?.[1];
+        if (!token) {
           throw new Error(
             "Unable to retrieve recaptcha seed for registration request"
           );
-        })
-      );
+        }
+
+        return token;
+      }),
+      // Complete observable
+      take(1),
+      // Handle custom errors
+      catchError((err: string | ApiErrorDetails) => {
+        if (typeof err !== "string") {
+          return throwError(err);
+        }
+
+        const errDetails: ApiErrorDetails = {
+          status: apiReturnCodes.unknown,
+          message: err,
+        };
+        return throwError(errDetails);
+      })
+    );
   }
 
   /**
@@ -266,6 +345,43 @@ export abstract class BawApiService<Model extends AbstractModel> {
    */
   protected apiDestroy(path: string): Observable<Model | void> {
     return this.httpDelete(path).pipe(map(this.handleEmptyResponse));
+  }
+
+  /**
+   * Request a HTML page from the API. This will be used to extract important
+   * information required to make form-based requests later on
+   *
+   * @param path API path
+   */
+  protected apiHtmlRequest(path: string): Observable<string> {
+    return this.http.get(this.getPath(path), {
+      responseType: "text",
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      headers: new HttpHeaders({ Accept: "text/html" }),
+    });
+  }
+
+  /**
+   * Create a form-based request to interface with non JSON API endpoints of the
+   * baw-server. As a side affect, this will also generate a session cookies
+   * which can be used to create an auth token.
+   *
+   * @param path API path
+   * @param formData Request body
+   */
+  protected apiFormRequest(
+    path: string,
+    formData: URLSearchParams
+  ): Observable<string> {
+    return this.http.post(this.getPath(path), formData.toString(), {
+      responseType: "text",
+      headers: new HttpHeaders({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Accept: "text/html",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        "Content-Type": "application/x-www-form-urlencoded",
+      }),
+    });
   }
 
   /**

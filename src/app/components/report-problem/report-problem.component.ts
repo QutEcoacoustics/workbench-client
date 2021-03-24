@@ -1,58 +1,89 @@
 import { Component, OnInit } from "@angular/core";
-import { withFormCheck } from "@guards/form/form.guard";
-import { PageComponent } from "@helpers/page/pageComponent";
+import { ActivatedRoute, Router } from "@angular/router";
+import { IReportProblem, ReportProblem, ReportProblemService } from "@baw-api/report/report-problem.service";
+import { defaultErrorMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { ConfigService } from "@services/config/config.service";
+import { RecaptchaState } from "@shared/form/form.component";
+import { ToastrService } from "ngx-toastr";
+import { takeUntil } from "rxjs/operators";
 import {
   reportProblemMenuItem,
-  reportProblemsCategory,
+  reportProblemsCategory
 } from "./report-problem.menus";
 import { fields } from "./report-problem.schema.json";
 
 @Component({
   selector: "baw-report-problem",
   template: `
-    <baw-wip>
-      <baw-form
-        title="Report Problem"
-        submitLabel="Submit"
-        [subTitle]="subTitle"
-        [model]="model"
-        [fields]="fields"
-        [submitLoading]="loading"
-        (onSubmit)="submit($event)"
-      ></baw-form>
-    </baw-wip>
+    <baw-form
+      title="Report Problem"
+      submitLabel="Submit"
+      [subTitle]="subTitle"
+      [model]="model"
+      [fields]="fields"
+      [submitLoading]="loading"
+      [recaptchaSeed]="recaptchaSeed"
+      (onSubmit)="submit($event)"
+    ></baw-form>
   `,
 })
 class ReportProblemComponent
-  extends withFormCheck(PageComponent)
+  extends FormTemplate<ReportProblem>
   implements OnInit {
-  public model = {};
   public fields = fields;
-  public loading: boolean;
+  public recaptchaSeed: RecaptchaState = { state: "loading" };
   public subTitle: string;
 
-  public constructor(private config: ConfigService) {
-    super();
+  public constructor(
+    private api: ReportProblemService,
+    private config: ConfigService,
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
+  ) {
+    super(
+      notifications,
+      route,
+      router,
+      undefined,
+      () =>
+        "Thank you, your report was successfully submitted."+
+        "If you entered an email address, we will let you know if the problems you describe are resolved.",
+      defaultErrorMsg
+    );
   }
 
   public ngOnInit() {
+    super.ngOnInit();
+
     this.subTitle = `
       Complete the form below to report a problem.
       Alternatively, we have a <a href='${this.config.values.links.sourceRepository}'>
       Github Issues</a> page.
     `;
+
+    this.api
+      .seed()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (seed) => {
+          console.log("Contact Us Seed: " + seed);
+          this.recaptchaSeed = { state: "loaded", seed };
+        },
+        (err) => {
+          console.error(err);
+          this.notifications.error("Failed to load form");
+        }
+      );
   }
 
-  /**
-   * Form submission
-   *
-   * @param $event Form response
-   */
-  public submit($event: any) {
-    this.loading = true;
-    console.log($event);
-    this.loading = false;
+  protected apiAction(model: ReportProblem) {
+    console.log({ model });
+    return this.api.reportProblem(new ReportProblem(model));
+  }
+
+  protected redirectUser() {
+    // Do nothing
   }
 }
 

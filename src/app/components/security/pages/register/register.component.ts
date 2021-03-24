@@ -38,7 +38,6 @@ class RegisterComponent
   extends FormTemplate<RegisterDetails>
   implements OnInit {
   public fields = fields;
-  public loading: boolean;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
 
   public constructor(
