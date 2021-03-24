@@ -130,6 +130,24 @@ export class SecurityService extends BawFormApiService<SessionUser> {
     authEndpoint: string,
     getFormData: (authToken: string) => URLSearchParams
   ): Observable<void> {
+    // Read page response for unique username error
+    const validateUniqueUsername = (page: string) => {
+      const errMsg =
+        'id="user_user_name" /><span class="help-block">has already been taken';
+      if (page.includes(errMsg)) {
+        throw Error("Username has already been taken");
+      }
+    };
+
+    // Read page response for unique email error
+    const validateUniqueEmail = (page: string) => {
+      const errMsg =
+        'id="user_email" /><span class="help-block">has already been taken';
+      if (page.includes(errMsg)) {
+        throw Error("Email address has already been taken");
+      }
+    };
+
     /*
      * Mimic a traditional form-based sign in/sign up to get a well-formed auth cookie
      * Needed because of:
@@ -137,6 +155,8 @@ export class SecurityService extends BawFormApiService<SessionUser> {
      * - https://github.com/QutEcoacoustics/baw-server/issues/424
      */
     return this.makeFormRequest(formEndpoint, authEndpoint, getFormData).pipe(
+      tap(validateUniqueUsername),
+      tap(validateUniqueEmail),
       // Trade the cookie for an API auth token (mimicking old baw-client)
       mergeMap(() => this.apiShow(sessionUserEndpoint(Date.now().toString()))),
       // Save to local storage
