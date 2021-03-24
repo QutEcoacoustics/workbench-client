@@ -73,7 +73,7 @@ class ReportProblemComponent
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (seed) => {
-          console.log("Contact Us Seed: " + seed);
+          console.log("Report Problem Seed: " + seed);
           this.recaptchaSeed = { state: "loaded", seed };
         },
         (err) => {

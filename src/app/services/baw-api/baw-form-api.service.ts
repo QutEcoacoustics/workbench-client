@@ -3,11 +3,9 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
-import { Observable, throwError } from "rxjs";
-import { map, mergeMap, take, catchError } from "rxjs/operators";
-import { ApiErrorDetails } from "./api.interceptor.service";
-import { apiReturnCodes, BawApiService } from "./baw-api.service";
-import { STUB_MODEL_BUILDER } from "./baw-api.service";
+import { Observable } from "rxjs";
+import { catchError, map, mergeMap, take, tap } from "rxjs/operators";
+import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
 
 /*
  * Looks for hidden input in HTML document, id of input contains
@@ -50,14 +48,23 @@ export abstract class BawFormApiService<
    * @param formEndpoint Endpoint to retrieve form HTML
    * @param submissionEndpoint Endpoint to send form data to
    * @param body Form data to insert into api request
+   * @returns HTML page for request. Response may be a success, however the
+   * html contains error messages which need to be extracted
    */
   protected makeFormRequest(
     formEndpoint: string,
     submissionEndpoint: string,
     body: (authToken: string) => URLSearchParams
-  ): Observable<boolean> {
+  ): Observable<string> {
     // Request HTML document to retrieve form containing auth token
     return this.apiHtmlRequest(formEndpoint).pipe(
+      tap((response: string) => {
+        // Check for recaptcha error message in page body
+        const errorMsg = "Captcha response was not correct.";
+        if (response.includes(errorMsg)) {
+          throw Error(errorMsg);
+        }
+      }),
       map((page: string) => {
         // Extract auth token if exists
         const token = authTokenRegex.exec(page)?.[1];
@@ -74,8 +81,8 @@ export abstract class BawFormApiService<
       ),
       // Complete observable
       take(1),
-      // Set output to true for successful request
-      map(() => true)
+      // Handle custom errors
+      catchError(this.handleError)
     );
   }
 
@@ -98,29 +105,18 @@ export abstract class BawFormApiService<
         }
 
         // Extract token from page
-        const token = extractSeed.exec(page)?.[1];
-        if (!token) {
+        const seed = extractSeed.exec(page)?.[1];
+        if (!seed) {
           throw new Error(
             "Unable to retrieve recaptcha seed for registration request"
           );
         }
-
-        return token;
+        return seed;
       }),
       // Complete observable
       take(1),
       // Handle custom errors
-      catchError((err: string | ApiErrorDetails) => {
-        if (typeof err !== "string") {
-          return throwError(err);
-        }
-
-        const errDetails: ApiErrorDetails = {
-          status: apiReturnCodes.unknown,
-          message: err,
-        };
-        return throwError(errDetails);
-      })
+      catchError(this.handleError)
     );
   }
 

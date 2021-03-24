@@ -1,6 +1,7 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { param } from "@baw-api/api-common";
+import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
@@ -9,10 +10,9 @@ import { AbstractModel } from "@models/AbstractModel";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 import { SessionUser, User } from "@models/User";
 import { CookieService } from "ngx-cookie-service";
-import { BehaviorSubject, Observable, ObservableInput, throwError } from "rxjs";
-import { catchError, map, mergeMap, take, tap } from "rxjs/operators";
+import { BehaviorSubject, Observable } from "rxjs";
+import { catchError, map, mergeMap, tap } from "rxjs/operators";
 import { ApiErrorDetails } from "../api.interceptor.service";
-import { apiReturnCodes, BawApiService } from "../baw-api.service";
 import { UserService } from "../user/user.service";
 
 const signUpSeed = stringTemplate`/my_account/sign_up/`;
@@ -26,12 +26,7 @@ const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
  * Handles API routes pertaining to security.
  */
 @Injectable()
-export class SecurityService extends BawApiService<SessionUser> {
-  protected handleError = (err: ApiErrorDetails | Error): Observable<never> => {
-    this.clearData();
-    return super.handleError(err);
-  };
-
+export class SecurityService extends BawFormApiService<SessionUser> {
   private authTrigger = new BehaviorSubject<void>(null);
 
   public constructor(
@@ -42,6 +37,12 @@ export class SecurityService extends BawApiService<SessionUser> {
     injector: Injector
   ) {
     super(http, apiRoot, SessionUser, injector);
+
+    // After constructor so that we can access super
+    this.handleError = (err: ApiErrorDetails | Error): Observable<never> => {
+      this.clearData();
+      return super.handleError(err);
+    };
   }
 
   /**
