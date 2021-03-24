@@ -58,13 +58,6 @@ export abstract class BawFormApiService<
   ): Observable<string> {
     // Request HTML document to retrieve form containing auth token
     return this.apiHtmlRequest(formEndpoint).pipe(
-      tap((response: string) => {
-        // Check for recaptcha error message in page body
-        const errorMsg = "Captcha response was not correct.";
-        if (response.includes(errorMsg)) {
-          throw Error(errorMsg);
-        }
-      }),
       map((page: string) => {
         // Extract auth token if exists
         const token = authTokenRegex.exec(page)?.[1];
@@ -79,6 +72,13 @@ export abstract class BawFormApiService<
       mergeMap((token: string) =>
         this.apiFormRequest(submissionEndpoint, body(token))
       ),
+      tap((response: string) => {
+        // Check for recaptcha error message in page body
+        const errorMsg = "Captcha response was not correct.";
+        if (response.includes(errorMsg)) {
+          throw Error(errorMsg);
+        }
+      }),
       // Complete observable
       take(1),
       // Handle custom errors
