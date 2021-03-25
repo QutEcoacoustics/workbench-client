@@ -9,6 +9,8 @@ import {
   aboutCategory,
   contactUsMenuItem,
 } from "@components/about/about.menus";
+import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
+import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import {
   defaultErrorMsg,
   FormTemplate,
@@ -29,12 +31,20 @@ import { fields } from "./contact-us.schema.json";
       [submitLoading]="loading"
       [recaptchaSeed]="recaptchaSeed"
       (onSubmit)="submit($event)"
-    ></baw-form>
+    >
+      <p id="subTitle">
+        This form is for general enquiries. We have separate forms to
+        <a [strongRoute]="dataRequestRoute">request data</a> or
+        <a [strongRoute]="reportProblemRoute">report issues</a>.
+      </p>
+    </baw-form>
   `,
 })
 class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
   public fields = fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
+  public dataRequestRoute = dataRequestMenuItem.route;
+  public reportProblemRoute = reportProblemMenuItem.route;
 
   public constructor(
     private api: ContactUsService,

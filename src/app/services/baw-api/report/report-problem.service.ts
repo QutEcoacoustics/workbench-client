@@ -4,7 +4,7 @@ import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Description, Param } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractForm } from "@models/AbstractForm";
 import { bawDateTime, bawPersistAttr } from "@models/AttributeDecorators";
 import { DateTime } from "luxon";
 import { Observable } from "rxjs";
@@ -48,7 +48,7 @@ export interface IReportProblem {
 }
 
 export class ReportProblem
-  extends AbstractModel<IReportProblem>
+  extends AbstractForm<IReportProblem>
   implements IReportProblem {
   public readonly kind = "ReportProblem";
   @bawPersistAttr
@@ -65,6 +65,7 @@ export class ReportProblem
   public readonly recaptchaToken: string;
 
   public getBody(token: string): URLSearchParams {
+    this.validateRecaptchaToken();
     const body = new URLSearchParams();
     body.set("data_class_bug_report[name]", this.name ?? "");
     body.set("data_class_bug_report[email]", this.email ?? "");
@@ -76,9 +77,5 @@ export class ReportProblem
     body.set("commit", "Submit");
     body.set("authenticity_token", token);
     return body;
-  }
-
-  public get viewUrl(): string {
-    throw new Error("Method not implemented.");
   }
 }

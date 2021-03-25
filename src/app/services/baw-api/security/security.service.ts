@@ -3,10 +3,9 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { param } from "@baw-api/api-common";
 import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Param, UserName } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractForm } from "@models/AbstractForm";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 import { SessionUser, User } from "@models/User";
 import { CookieService } from "ngx-cookie-service";
@@ -65,25 +64,9 @@ export class SecurityService extends BawFormApiService<SessionUser> {
    * @param details Details provided by registration form
    */
   public signUp(details: RegisterDetails): Observable<void> {
-    return this.handleAuth(signUpSeed(), signUpEndpoint(), (token: string) => {
-      if (!isInstantiated(details.recaptchaToken)) {
-        throw new Error(
-          "Unable to retrieve recaptcha token for sign up request"
-        );
-      }
-
-      // Set form data
-      const body = new URLSearchParams();
-      body.set("user[user_name]", details.userName);
-      body.set("user[email]", details.email);
-      body.set("user[password]", details.password);
-      body.set("user[password_confirmation]", details.passwordConfirmation);
-      body.set("commit", "Register");
-      body.set("authenticity_token", token);
-      body.set("g-recaptcha-response-data[register]", details.recaptchaToken);
-      body.set("g-recaptcha-response", "");
-      return body;
-    });
+    return this.handleAuth(signUpSeed(), signUpEndpoint(), (token: string) =>
+      details.getBody(token)
+    );
   }
 
   /**
@@ -95,16 +78,7 @@ export class SecurityService extends BawFormApiService<SessionUser> {
     return this.handleAuth(
       signInEndpoint(),
       signInEndpoint(),
-      (token: string) => {
-        // Set form data
-        const body = new URLSearchParams();
-        body.set("user[login]", details.login);
-        body.set("user[password]", details.password);
-        body.set("user[remember_me]", "0");
-        body.set("commit", "Log+in");
-        body.set("authenticity_token", token);
-        return body;
-      }
+      (token: string) => details.getBody(token)
     );
   }
 
@@ -192,7 +166,7 @@ export interface ILoginDetails {
 }
 
 export class LoginDetails
-  extends AbstractModel<ILoginDetails>
+  extends AbstractForm<ILoginDetails>
   implements ILoginDetails {
   public readonly kind = "LoginDetails";
   @bawPersistAttr
@@ -200,8 +174,14 @@ export class LoginDetails
   @bawPersistAttr
   public readonly password: Param;
 
-  public get viewUrl(): string {
-    throw new Error("Not Implemented");
+  public getBody(token: string): URLSearchParams {
+    const body = new URLSearchParams();
+    body.set("user[login]", this.login);
+    body.set("user[password]", this.password);
+    body.set("user[remember_me]", "0");
+    body.set("commit", "Log+in");
+    body.set("authenticity_token", token);
+    return body;
   }
 }
 
@@ -214,7 +194,7 @@ export interface IRegisterDetails {
 }
 
 export class RegisterDetails
-  extends AbstractModel<IRegisterDetails>
+  extends AbstractForm<IRegisterDetails>
   implements IRegisterDetails {
   public readonly kind = "RegisterDetails";
   @bawPersistAttr
@@ -228,7 +208,17 @@ export class RegisterDetails
   @bawPersistAttr
   public readonly recaptchaToken: string;
 
-  public get viewUrl(): string {
-    throw new Error("Not Implemented");
+  public getBody(token: string): URLSearchParams {
+    this.validateRecaptchaToken();
+    const body = new URLSearchParams();
+    body.set("user[user_name]", this.userName);
+    body.set("user[email]", this.email);
+    body.set("user[password]", this.password);
+    body.set("user[password_confirmation]", this.passwordConfirmation);
+    body.set("commit", "Register");
+    body.set("authenticity_token", token);
+    body.set("g-recaptcha-response-data[register]", this.recaptchaToken);
+    body.set("g-recaptcha-response", "");
+    return body;
   }
 }
