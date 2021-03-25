@@ -32,11 +32,11 @@ import { fields } from "./contact-us.schema.json";
       [recaptchaSeed]="recaptchaSeed"
       (onSubmit)="submit($event)"
     >
-      <p id="subTitle">
+      <span id="subTitle">
         This form is for general enquiries. We have separate forms to
         <a [strongRoute]="dataRequestRoute">request data</a> or
         <a [strongRoute]="reportProblemRoute">report issues</a>.
-      </p>
+      </span>
     </baw-form>
   `,
 })

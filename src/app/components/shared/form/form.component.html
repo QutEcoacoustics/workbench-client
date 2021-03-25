@@ -6,7 +6,7 @@
   <h2 *ngIf="title" class="text-center" [innerHTML]="title"></h2>
   <small class="text-muted">
     <h6 *ngIf="subTitle" [innerHTML]="subTitle"></h6>
-    <ng-content select="#subTitle"></ng-content>
+    <h6><ng-content select="#subTitle"></ng-content></h6>
   </small>
 
   <div class="clearfix">

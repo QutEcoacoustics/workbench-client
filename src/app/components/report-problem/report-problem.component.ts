@@ -24,13 +24,17 @@ import { fields } from "./report-problem.schema.json";
     <baw-form
       title="Report Problem"
       submitLabel="Submit"
-      [subTitle]="subTitle"
       [model]="model"
       [fields]="fields"
       [submitLoading]="loading"
       [recaptchaSeed]="recaptchaSeed"
       (onSubmit)="submit($event)"
-    ></baw-form>
+    >
+      <span id="subTitle">
+        Complete the form below to report a problem. Alternatively, we have a
+        <a [href]="sourceRepoLink">Github Issues</a> page.
+      </span>
+    </baw-form>
   `,
 })
 class ReportProblemComponent
@@ -39,6 +43,7 @@ class ReportProblemComponent
   public fields = fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
   public subTitle: string;
+  public sourceRepoLink: string;
 
   public constructor(
     private api: ReportProblemService,
@@ -62,12 +67,7 @@ class ReportProblemComponent
   public ngOnInit() {
     super.ngOnInit();
 
-    this.subTitle = `
-      Complete the form below to report a problem.
-      Alternatively, we have a <a href='${this.config.values.links.sourceRepository}'>
-      Github Issues</a> page.
-    `;
-
+    this.sourceRepoLink = this.config.values.links.sourceRepository;
     this.api
       .seed()
       .pipe(takeUntil(this.unsubscribe))
