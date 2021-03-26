@@ -4,7 +4,7 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
-import { catchError, map, mergeMap, take, tap } from "rxjs/operators";
+import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
 import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
 
 /*
@@ -28,7 +28,7 @@ const authTokenRegex = /name="authenticity_token" value="(.+?)"/;
  * treated as a temporary measure while the baw-server lags behind development.
  */
 @Injectable()
-export abstract class BawFormApiService<
+export class BawFormApiService<
   Model extends AbstractModel
 > extends BawApiService<Model> {
   public constructor(
@@ -63,7 +63,7 @@ export abstract class BawFormApiService<
         const token = authTokenRegex.exec(page)?.[1];
         if (!isInstantiated(token)) {
           throw new Error(
-            "Unable to retrieve authenticity token for sign up request"
+            "Unable to retrieve authenticity token for form request."
           );
         }
         return token;
@@ -80,7 +80,7 @@ export abstract class BawFormApiService<
         }
       }),
       // Complete observable
-      take(1),
+      first(),
       // Handle custom errors
       catchError(this.handleError)
     );
@@ -98,23 +98,16 @@ export abstract class BawFormApiService<
   ): Observable<string> {
     // Mock a HTML request to the server
     return this.apiHtmlRequest(path).pipe(
-      map((page: any) => {
-        // Check response is HTML document
-        if (typeof page !== "string") {
-          throw new Error("Failed to retrieve auth form");
-        }
-
+      map((page: string) => {
         // Extract token from page
         const seed = extractSeed.exec(page)?.[1];
         if (!seed) {
-          throw new Error(
-            "Unable to retrieve recaptcha seed for registration request"
-          );
+          throw new Error("Unable to setup recaptcha.");
         }
         return seed;
       }),
       // Complete observable
-      take(1),
+      first(),
       // Handle custom errors
       catchError(this.handleError)
     );

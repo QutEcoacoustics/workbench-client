@@ -10,7 +10,7 @@ import { bawPersistAttr } from "@models/AttributeDecorators";
 import { SessionUser, User } from "@models/User";
 import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable } from "rxjs";
-import { catchError, map, mergeMap, tap } from "rxjs/operators";
+import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
 import { ApiErrorDetails } from "../api.interceptor.service";
 import { UserService } from "../user/user.service";
 
@@ -64,8 +64,32 @@ export class SecurityService extends BawFormApiService<SessionUser> {
    * @param details Details provided by registration form
    */
   public signUp(details: RegisterDetails): Observable<void> {
-    return this.handleAuth(signUpSeed(), signUpEndpoint(), (token: string) =>
-      details.getBody(token)
+    // Read page response for unique username error
+    const validateUniqueUsername = (page: string) => {
+      const errMsg =
+        'id="user_user_name" /><span class="help-block">has already been taken';
+      if (page.includes(errMsg)) {
+        throw Error("Username has already been taken.");
+      }
+    };
+
+    // Read page response for unique email error
+    const validateUniqueEmail = (page: string) => {
+      const errMsg =
+        'id="user_email" /><span class="help-block">has already been taken';
+      if (page.includes(errMsg)) {
+        throw Error("Email address has already been taken.");
+      }
+    };
+
+    return this.handleAuth(
+      signUpSeed(),
+      signUpEndpoint(),
+      (token: string) => details.getBody(token),
+      (page) => {
+        validateUniqueUsername(page);
+        validateUniqueEmail(page);
+      }
     );
   }
 
@@ -102,26 +126,9 @@ export class SecurityService extends BawFormApiService<SessionUser> {
   private handleAuth(
     formEndpoint: string,
     authEndpoint: string,
-    getFormData: (authToken: string) => URLSearchParams
+    getFormData: (authToken: string) => URLSearchParams,
+    pageValidation: (page: string) => void = () => {}
   ): Observable<void> {
-    // Read page response for unique username error
-    const validateUniqueUsername = (page: string) => {
-      const errMsg =
-        'id="user_user_name" /><span class="help-block">has already been taken';
-      if (page.includes(errMsg)) {
-        throw Error("Username has already been taken");
-      }
-    };
-
-    // Read page response for unique email error
-    const validateUniqueEmail = (page: string) => {
-      const errMsg =
-        'id="user_email" /><span class="help-block">has already been taken';
-      if (page.includes(errMsg)) {
-        throw Error("Email address has already been taken");
-      }
-    };
-
     /*
      * Mimic a traditional form-based sign in/sign up to get a well-formed auth cookie
      * Needed because of:
@@ -129,8 +136,7 @@ export class SecurityService extends BawFormApiService<SessionUser> {
      * - https://github.com/QutEcoacoustics/baw-server/issues/424
      */
     return this.makeFormRequest(formEndpoint, authEndpoint, getFormData).pipe(
-      tap(validateUniqueUsername),
-      tap(validateUniqueEmail),
+      tap((page) => pageValidation(page)),
       // Trade the cookie for an API auth token (mimicking old baw-client)
       mergeMap(() => this.apiShow(sessionUserEndpoint(Date.now().toString()))),
       // Save to local storage
@@ -146,8 +152,15 @@ export class SecurityService extends BawFormApiService<SessionUser> {
       // Trigger auth observable
       tap(() => this.authTrigger.next(null)),
       // Void output
-      map(() => undefined)
-    );
+      map(() => undefined),
+      // Complete observable
+      first(),
+      catchError((err) => {
+        this.clearData();
+        return this.handleError(err);
+      })
+    ) as Observable<any>;
+    // !Type conversion needed because first() operator changes type for some reason
   }
 
   /**
