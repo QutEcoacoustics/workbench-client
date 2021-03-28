@@ -16,7 +16,6 @@ import {
   audioRecordingResolvers,
   AudioRecordingsService,
 } from "./audio-recording/audio-recordings.service";
-import { BawApiService } from "./baw-api.service";
 import {
   bookmarkResolvers,
   BookmarksService,

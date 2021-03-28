@@ -44,8 +44,8 @@ import type {
   RegionsService,
   ShallowRegionsService,
 } from "./region/regions.service";
-import { ContactUs, ContactUsService } from "./report/contact-us.service";
-import {
+import type { ContactUs, ContactUsService } from "./report/contact-us.service";
+import type {
   ReportProblem,
   ReportProblemService,
 } from "./report/report-problem.service";

@@ -8,8 +8,6 @@ import { ToastrService } from "ngx-toastr";
 import { noop } from "rxjs";
 import { FormComponent } from "./form.component";
 
-// TODO Add test for subTitle html input
-
 /** Button events to pass to `DebugElement.triggerEventHandler` for RouterLink event handler */
 export const buttonClickEvents = {
   left: { button: 0 },
@@ -318,14 +316,14 @@ describe("FormComponent", () => {
     });
   });
 
-  // TODO Implement
+  // TODO Add tests for recaptcha
   describe("Recaptcha", () => {
     it("should disable submit button while loading recaptcha seed", () => {});
-
     it("should re-enable submit button when recaptcha seed loaded", () => {});
     it("should display error notification if recaptcha fails to load", () => {});
     it("should insert recaptcha token into model on submit", () => {});
   });
 
   // TODO Add tests for spinner
+  // TODO Add test for subTitle html input
 });

@@ -72,10 +72,7 @@ class ReportProblemComponent
       .seed()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (seed) => {
-          console.log("Report Problem Seed: " + seed);
-          this.recaptchaSeed = { state: "loaded", seed };
-        },
+        (seed) => (this.recaptchaSeed = { state: "loaded", seed }),
         (err) => {
           console.error(err);
           this.notifications.error("Failed to load form");
