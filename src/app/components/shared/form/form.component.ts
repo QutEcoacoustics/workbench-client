@@ -89,11 +89,25 @@ export class FormComponent
    */
   public async onSubmit(model: any) {
     if (this.form.status === "VALID") {
-      return this.submit.emit(
-        this.recaptchaSeed
-          ? { ...model, recaptchaToken: await this.recaptcha.getToken() }
-          : model
-      );
+      console.log("onSubmit", model, this.recaptchaSeed);
+      if (!this.recaptchaSeed) {
+        return this.submit.emit(model);
+      }
+
+      try {
+        return this.submit.emit({
+          ...model,
+          recaptchaToken: await this.recaptcha.getToken(),
+        });
+      } catch (err) {
+        // https://github.com/armenstepanyan/ng-recaptcha3/issues/16
+        console.error(
+          "Recaptcha failed. A potential cause is that the domain of the website is not whitelisted for the recaptcha seed."
+        );
+        this.notifications.error(
+          "Recaptcha failed, please try refreshing the website."
+        );
+      }
     } else {
       this.notifications.error("Please fill all required fields.");
     }
