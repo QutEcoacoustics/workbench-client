@@ -1,7 +1,6 @@
 import { DebugElement } from "@angular/core";
 import { ComponentFixture, tick } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
-import { Params } from "@angular/router";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import { LineTruncationDirective } from "ngx-line-truncation";
 

@@ -16,25 +16,7 @@ import { map } from "rxjs/operators";
 import { ApiErrorDetails } from "./api.interceptor.service";
 
 export const defaultApiPageSize = 25;
-
 export const unknownErrorCode = -1;
-
-/**
- * @deprecated Use STATUS_CODES instead
- */
-export const apiReturnCodes = {
-  unknown: -1,
-  success: 200,
-  created: 201,
-  badRequest: 400,
-  unauthorized: 401,
-  forbidden: 403,
-  notFound: 404,
-  unsupportedMediaType: 415,
-  unprocessableEntity: 422,
-  internalServerFailure: 500,
-};
-
 export const STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
 
 /**

@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { apiReturnCodes } from "@baw-api/baw-api.service";
+import { unknownErrorCode } from "@baw-api/baw-api.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { SharedModule } from "../shared.module";
@@ -117,7 +117,7 @@ describe("ErrorHandlerComponent", () => {
 
   it("should handle unknown code", () => {
     component.error = generateApiErrorDetails("Custom", {
-      status: apiReturnCodes.unknown,
+      status: unknownErrorCode,
       message: "Unknown error has occurred.",
     });
     fixture.detectChanges();

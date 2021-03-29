@@ -8,11 +8,7 @@ import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { Site } from "@models/Site";
 import { List } from "immutable";
-import {
-  adminOrphanMenuItem,
-  adminOrphansCategory,
-  adminOrphansMenuItem,
-} from "../orphans.menus";
+import { adminOrphansCategory, adminOrphansMenuItem } from "../orphans.menus";
 
 @Component({
   selector: "baw-admin-orphans",

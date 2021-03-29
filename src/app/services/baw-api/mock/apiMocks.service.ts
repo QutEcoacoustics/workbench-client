@@ -21,10 +21,13 @@ export const MOCK = new ServiceToken<MockStandardApiService>(
   "STANDARD_API_SERVICE"
 );
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const multipleModels = (...args: any[]) => new Observable<MockModel[]>();
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const singleModel = (...args: any[]) => new Observable<MockModel>();
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const deleteMock = (...args: any[]) => new Observable<MockModel | void>();
 
 @Injectable()

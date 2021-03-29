@@ -79,7 +79,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
       .subscribe(
         () => this.getPageData(),
         // Filter event doesn't have an error output
-        (err) => {}
+        (err) => console.error(err)
       );
   }
 

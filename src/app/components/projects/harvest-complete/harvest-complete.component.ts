@@ -33,7 +33,7 @@ export class HarvestCompleteComponent
     );
   }
 
-  public playPath(site: Site) {
+  public playPath(_site: Site) {
     // TODO Fix this, need audio recording for site
     // listenRecordingMenuItem
     return getUnknownViewUrl("Feature not implemented yet");

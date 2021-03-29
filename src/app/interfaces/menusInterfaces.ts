@@ -125,7 +125,7 @@ export interface MenuLink extends MenuItem {
 
 export function menuLink<T extends Omit<MenuLink, "kind">>(item: T): MenuLink {
   return Object.assign(item, {
-    kind: "MenuLink" as "MenuLink",
+    kind: "MenuLink" as const,
     active: false,
     indentation: 0,
   });
@@ -154,7 +154,7 @@ export function menuRoute<T extends Omit<MenuRoute, "kind">>(
   item: T
 ): MenuRoute {
   return Object.assign(item, {
-    kind: "MenuRoute" as "MenuRoute",
+    kind: "MenuRoute" as const,
     active: false,
     indentation: item.parent ? item.parent.indentation + 1 : 0,
     order: item.parent?.order ?? item.order,
@@ -176,7 +176,7 @@ export function menuAction<T extends Omit<MenuAction, "kind">>(
   item: T
 ): MenuAction {
   return Object.assign(item, {
-    kind: "MenuAction" as "MenuAction",
+    kind: "MenuAction" as const,
     active: false,
     indentation: 0,
   });

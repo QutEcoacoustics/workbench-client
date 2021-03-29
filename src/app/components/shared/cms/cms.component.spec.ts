@@ -18,7 +18,6 @@ import { CmsComponent } from "./cms.component";
 
 describe("CmsComponent", () => {
   let cmsService: SpyObject<CmsService>;
-  let component: CmsComponent;
   let spectator: Spectator<CmsComponent>;
   const createComponent = createComponentFactory({
     component: CmsComponent,
@@ -40,7 +39,6 @@ describe("CmsComponent", () => {
 
   beforeEach(() => {
     spectator = createComponent({ detectChanges: false });
-    component = spectator.component;
     cmsService = spectator.inject(CmsService);
   });
 

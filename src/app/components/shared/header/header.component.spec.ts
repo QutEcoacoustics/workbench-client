@@ -84,12 +84,6 @@ describe("HeaderComponent", () => {
       describe(userType.type + " user", () => {
         let isLoggedIn: boolean;
         let defaultUser: SessionUser;
-        const linkIndex = {
-          project: 0,
-          listen: 1,
-          library: 2,
-          contactUs: 4,
-        };
 
         function getNavLinks() {
           return spec.queryAll<HTMLElement>("a.nav-link");

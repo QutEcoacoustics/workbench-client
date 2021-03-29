@@ -12,7 +12,6 @@ import { AdminOrphansComponent } from "./list.component";
 
 describe("AdminOrphansComponent", () => {
   let api: ShallowSitesService;
-  let defaultModel: Site;
   let defaultModels: Site[];
   let fixture: ComponentFixture<AdminOrphansComponent>;
 
@@ -30,7 +29,6 @@ describe("AdminOrphansComponent", () => {
     fixture = TestBed.createComponent(AdminOrphansComponent);
     api = TestBed.inject(ShallowSitesService);
 
-    defaultModel = new Site(generateSite());
     defaultModels = [];
     for (let i = 0; i < defaultApiPageSize; i++) {
       defaultModels.push(new Site(generateSite()));

@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { userResolvers, UserService } from "@baw-api/user/user.service";
+import { userResolvers } from "@baw-api/user/user.service";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
 import { generateUser } from "@test/fakes/User";
@@ -12,7 +12,6 @@ import { appLibraryImports } from "src/app/app.module";
 import { MyEditComponent } from "./my-edit.component";
 
 describe("MyProfileEditComponent", () => {
-  let api: UserService;
   let component: MyEditComponent;
   let fixture: ComponentFixture<MyEditComponent>;
   let defaultUser: User;
@@ -39,7 +38,6 @@ describe("MyProfileEditComponent", () => {
 
     fixture = TestBed.createComponent(MyEditComponent);
     component = fixture.componentInstance;
-    api = TestBed.inject(UserService);
 
     fixture.detectChanges();
   }

@@ -214,7 +214,7 @@ export class StrongRoute {
       if (x.isParameter) {
         const key = x.pathFragment.substr(1, x.pathFragment.length - 1);
 
-        if (params.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(params, key)) {
           return params[key];
         } else {
           const msg = `Parameter named ${x.pathFragment} was not supplied a value and a default value was not given`;
@@ -346,6 +346,7 @@ export class StrongRoute {
   private rootToHere(): [StrongRoute[], StrongRoute[]] {
     const fragments = [];
     const parameters = [];
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let current: StrongRoute = this;
     while (isInstantiated(current)) {
       fragments.push(current);
