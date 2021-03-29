@@ -14,6 +14,7 @@ import {
   IdOr,
   IdParamOptional,
   option,
+  param,
   StandardApi,
 } from "../api-common";
 import { Filters } from "../baw-api.service";
@@ -21,6 +22,7 @@ import { Resolvers } from "../resolver-common";
 
 const userId: IdParamOptional<User> = id;
 const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
+const downloadAnnotations = stringTemplate`/user_accounts/${id}/audio_events/download?selected_timezone_name=${param}`;
 
 /**
  * Account Service.
@@ -67,6 +69,14 @@ export class AccountsService extends StandardApi<User> {
   }
   public destroy(model: IdOr<User>): Observable<User | void> {
     return this.apiDestroy(endpoint(model, emptyParam));
+  }
+
+  public downloadAnnotations(selectedTimezone: string): Observable<any> {
+    return this.http.get(
+      this.getPath(
+        downloadAnnotations(this.getLocalUser().id, selectedTimezone)
+      )
+    );
   }
 }
 

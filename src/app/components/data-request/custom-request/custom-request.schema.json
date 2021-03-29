@@ -18,7 +18,7 @@
       }
     },
     {
-      "key": "organization",
+      "key": "group",
       "type": "input",
       "templateOptions": {
         "label": "Organization",
@@ -26,7 +26,7 @@
       }
     },
     {
-      "key": "organization_type",
+      "key": "group_type",
       "type": "select",
       "templateOptions": {
         "label": "Organization Type",
@@ -42,7 +42,7 @@
       }
     },
     {
-      "key": "request",
+      "key": "content",
       "type": "textarea",
       "templateOptions": {
         "label": "Request details",

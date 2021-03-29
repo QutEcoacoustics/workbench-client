@@ -133,6 +133,7 @@ describe("BawApiService", () => {
 
   function verifyHeaders(req: TestRequest) {
     const headers = req.request.headers;
+    expect(req.request.responseType).toBe("json");
     expect(headers.get("Accept")).toBe(
       "application/json",
       "Request should contain Accept Headers set to 'application/json'"
