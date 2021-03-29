@@ -15,12 +15,12 @@ import {
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
+import { FormTemplate } from "./formTemplate";
 import {
-  defaultErrorMsg,
   defaultSuccessMsg,
+  defaultErrorMsg,
   extendedErrorMsg,
-  FormTemplate,
-} from "./formTemplate";
+} from "./simpleFormTemplate";
 
 class MockModel extends AbstractModel {
   public kind: "MockModel" = "MockModel";

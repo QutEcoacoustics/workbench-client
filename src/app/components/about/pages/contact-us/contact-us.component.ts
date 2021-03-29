@@ -2,8 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   ContactUs,
-  IContactUs,
   ContactUsService,
+  IContactUs,
 } from "@baw-api/report/contact-us.service";
 import {
   aboutCategory,
@@ -13,8 +13,8 @@ import { dataRequestMenuItem } from "@components/data-request/data-request.menus
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import {
   defaultErrorMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+  SimpleFormTemplate,
+} from "@helpers/formTemplate/simpleFormTemplate";
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
@@ -40,7 +40,9 @@ import { fields } from "./contact-us.schema.json";
     </baw-form>
   `,
 })
-class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
+class ContactUsComponent
+  extends SimpleFormTemplate<ContactUs>
+  implements OnInit {
   public fields = fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
   public dataRequestRoute = dataRequestMenuItem.route;
@@ -56,7 +58,6 @@ class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
       notifications,
       route,
       router,
-      undefined,
       () =>
         "Thank you for contacting us. " +
         "If you've asked us to contact you or we need more information, " +
@@ -83,10 +84,6 @@ class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
 
   protected apiAction(model: IContactUs) {
     return this.api.contactUs(new ContactUs(model));
-  }
-
-  protected redirectUser() {
-    // Do nothing
   }
 }
 

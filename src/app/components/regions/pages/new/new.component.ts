@@ -8,10 +8,8 @@ import {
   projectMenuItem,
 } from "@components/projects/projects.menus";
 import { newRegionMenuItem } from "@components/regions/regions.menus";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
+import { defaultSuccessMsg } from "@helpers/formTemplate/simpleFormTemplate";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";

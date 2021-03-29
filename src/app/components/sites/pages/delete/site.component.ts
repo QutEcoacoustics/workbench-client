@@ -7,10 +7,8 @@ import {
   siteMenuItem,
   sitesCategory,
 } from "@components/sites/sites.menus";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
+import { defaultSuccessMsg } from "@helpers/formTemplate/simpleFormTemplate";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";

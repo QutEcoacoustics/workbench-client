@@ -7,10 +7,8 @@ import {
   myAccountMenuItem,
   myPasswordMenuItem,
 } from "@components/profile/profile.menus";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
+import { defaultSuccessMsg } from "@helpers/formTemplate/simpleFormTemplate";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";

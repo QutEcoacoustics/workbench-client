@@ -7,11 +7,11 @@ import {
   projectsCategory,
   projectsMenuItem,
 } from "@components/projects/projects.menus";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import {
   defaultSuccessMsg,
   extendedErrorMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+} from "@helpers/formTemplate/simpleFormTemplate";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";

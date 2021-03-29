@@ -4,10 +4,8 @@ import {
   tagGroupResolvers,
   TagGroupsService,
 } from "@baw-api/tag/tag-group.service";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
+import { defaultSuccessMsg } from "@helpers/formTemplate/simpleFormTemplate";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { TagGroup } from "@models/TagGroup";

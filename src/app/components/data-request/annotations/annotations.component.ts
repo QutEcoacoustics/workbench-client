@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { defaultErrorMsg } from "@helpers/formTemplate/formTemplate";
-import { SimpleFormTemplate } from "@helpers/formTemplate/simpleFormTemplate";
+import {
+  defaultErrorMsg,
+  SimpleFormTemplate,
+} from "@helpers/formTemplate/simpleFormTemplate";
 import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { fields } from "./annotations.schema.json";
@@ -30,15 +32,7 @@ export class AnnotationsComponent
     route: ActivatedRoute,
     router: Router
   ) {
-    super(
-      notifications,
-      route,
-      router,
-      undefined,
-      () => "TODO",
-      defaultErrorMsg,
-      false
-    );
+    super(notifications, route, router, () => "TODO", defaultErrorMsg, false);
   }
 
   protected onSuccess(model: void | { timezone: string }): void {

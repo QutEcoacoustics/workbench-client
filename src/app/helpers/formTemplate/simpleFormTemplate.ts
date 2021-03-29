@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import { withFormCheck } from "@guards/form/form.guard";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
@@ -10,41 +11,30 @@ import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "../page/pageComponent";
 import { PageInfo } from "../page/pageInfo";
-import { defaultErrorMsg, defaultSuccessMsg } from "./formTemplate";
 
+/**
+ * Simple Form Template which makes little assumption about the model
+ * and onSubmit events
+ */
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class SimpleFormTemplate<Model>
   extends withFormCheck(PageComponent)
   implements OnInit {
-  /**
-   * Form Submission Function Loading
-   */
+  /** Form Submission Function Loading */
   public loading: boolean;
-  /**
-   * Initial setup failed
-   */
+  /** Initial setup failed*/
   public failure: boolean;
-  /**
-   * Model to edit using form
-   */
+  /** Model to edit using form*/
   public model: Model;
-  /**
-   * Extra models stored in data
-   */
+  /** Extra models stored in data*/
   public models: ResolvedModelList = {};
-  /**
-   * Formly fields
-   */
+  /** Formly fields*/
   public fields: FormlyFieldConfig[] = [];
-  /**
-   * Recaptcha state tracker, undefined if not used
-   */
+  /** Recaptcha state tracker, undefined if not used*/
   public recaptchaSeed: RecaptchaState;
-  /**
-   * Success Message
-   */
-  private successMessage: string;
+  /** Success Message*/
+  protected successMessage: string;
 
   /**
    * Customize form template
@@ -52,7 +42,6 @@ export abstract class SimpleFormTemplate<Model>
    * @param notifications Notifications service
    * @param route Activated route service
    * @param router Router service
-   * @param modelKey Primary model resolver key
    * @param successMsg Success message
    * @param errorMsg Error message
    */
@@ -60,10 +49,10 @@ export abstract class SimpleFormTemplate<Model>
     protected notifications: ToastrService,
     protected route: ActivatedRoute,
     protected router: Router,
-    private successMsg: (model: Model | void) => string = () =>
+    protected successMsg: (model: Model | void) => string = () =>
       defaultSuccessMsg("updated", "model"),
-    private errorMsg: (err: ApiErrorDetails) => string = defaultErrorMsg,
-    private hasFormCheck = true
+    protected errorMsg: (err: ApiErrorDetails) => string = defaultErrorMsg,
+    protected hasFormCheck = true
   ) {
     super();
   }
@@ -121,7 +110,7 @@ export abstract class SimpleFormTemplate<Model>
    *
    * @param model API response
    */
-  protected abstract onSuccess(model: Model | void): void;
+  protected onSuccess(model: Model | void): void {}
 
   /**
    * API Action to perform
@@ -129,4 +118,50 @@ export abstract class SimpleFormTemplate<Model>
    * @param model Form model submission (JSON only, convert to model)
    */
   protected abstract apiAction(model: Partial<Model>): Observable<Model | void>;
+}
+
+/**
+ * Default success message on form submission
+ *
+ * @param name Model name
+ */
+export function defaultSuccessMsg(
+  action: "created" | "updated" | "destroyed",
+  name: string
+) {
+  return `Successfully ${action} ${name}`;
+}
+
+/**
+ * Default error message on form submission
+ *
+ * @param err API error details
+ */
+export function defaultErrorMsg(err: ApiErrorDetails): string {
+  return err.message;
+}
+
+/**
+ * Error message on form submission with additional information
+ *
+ * @param err API error details
+ * @param info API error info handlers
+ */
+export function extendedErrorMsg(
+  err: ApiErrorDetails,
+  info: { [key: string]: (value: any) => string }
+): string {
+  let errMsg = err.message;
+
+  if (!err.info) {
+    return errMsg;
+  }
+
+  // Handle additional error details
+  for (const key of Object.keys(err.info)) {
+    if (isInstantiated(info[key])) {
+      errMsg = errMsg + "<br />" + info[key](err.info[key]);
+    }
+  }
+  return errMsg;
 }

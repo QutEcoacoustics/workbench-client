@@ -15,10 +15,8 @@ import {
   unlockAccountMenuItem,
 } from "@components/security/security.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import {
-  defaultErrorMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
+import { defaultErrorMsg } from "@helpers/formTemplate/simpleFormTemplate";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";

@@ -10,10 +10,8 @@ import {
   registerMenuItem,
   securityCategory,
 } from "@components/security/security.menus";
-import {
-  defaultErrorMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
+import { defaultErrorMsg } from "@helpers/formTemplate/simpleFormTemplate";
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";

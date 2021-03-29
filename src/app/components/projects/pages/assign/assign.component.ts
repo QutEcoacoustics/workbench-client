@@ -8,7 +8,7 @@ import {
   projectCategory,
   projectMenuItem,
 } from "@components/projects/projects.menus";
-import { defaultErrorMsg } from "@helpers/formTemplate/formTemplate";
+import { defaultErrorMsg } from "@helpers/formTemplate/simpleFormTemplate";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";

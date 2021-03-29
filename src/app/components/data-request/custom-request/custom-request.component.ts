@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
-  FormTemplate,
   defaultErrorMsg,
-} from "@helpers/formTemplate/formTemplate";
+  SimpleFormTemplate,
+} from "@helpers/formTemplate/simpleFormTemplate";
 import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { fields } from "./custom-request.schema.json";
@@ -27,7 +27,7 @@ import { fields } from "./custom-request.schema.json";
   `,
 })
 export class CustomRequestComponent
-  extends FormTemplate<any>
+  extends SimpleFormTemplate<any>
   implements OnInit {
   public fields = fields;
 
@@ -36,22 +36,10 @@ export class CustomRequestComponent
     route: ActivatedRoute,
     router: Router
   ) {
-    super(
-      notifications,
-      route,
-      router,
-      undefined,
-      () => "TODO",
-      defaultErrorMsg,
-      false
-    );
+    super(notifications, route, router, () => "TODO", defaultErrorMsg, false);
   }
 
   protected apiAction(model: Partial<any>): Observable<any> {
     throw new Error("Method not implemented.");
-  }
-
-  protected redirectUser() {
-    // Do nothing
   }
 }

@@ -2,11 +2,11 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { SitesService } from "@baw-api/site/sites.service";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import {
   defaultSuccessMsg,
   extendedErrorMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+} from "@helpers/formTemplate/simpleFormTemplate";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { ToastrService } from "ngx-toastr";
