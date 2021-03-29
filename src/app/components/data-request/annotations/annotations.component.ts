@@ -1,12 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  defaultErrorMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { defaultErrorMsg } from "@helpers/formTemplate/formTemplate";
+import { SimpleFormTemplate } from "@helpers/formTemplate/simpleFormTemplate";
 import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
-import { fields } from "./download-annotations.schema.json";
+import { fields } from "./annotations.schema.json";
 
 @Component({
   selector: "baw-request-annotations",
@@ -22,7 +20,9 @@ import { fields } from "./download-annotations.schema.json";
     ></baw-form>
   `,
 })
-export class AnnotationsComponent extends FormTemplate<any> implements OnInit {
+export class AnnotationsComponent
+  extends SimpleFormTemplate<{ timezone: string }>
+  implements OnInit {
   public fields = fields;
 
   public constructor(
@@ -41,11 +41,12 @@ export class AnnotationsComponent extends FormTemplate<any> implements OnInit {
     );
   }
 
-  protected apiAction(model: Partial<any>): Observable<any> {
+  protected onSuccess(model: void | { timezone: string }): void {
     throw new Error("Method not implemented.");
   }
-
-  protected redirectUser() {
-    // Do nothing
+  protected apiAction(
+    model: Partial<{ timezone: string }>
+  ): Observable<void | { timezone: string }> {
+    throw new Error("Method not implemented.");
   }
 }
