@@ -1,11 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import {
   defaultErrorMsg,
   SimpleFormTemplate,
 } from "@helpers/formTemplate/simpleFormTemplate";
 import { ToastrService } from "ngx-toastr";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { fields } from "./annotations.schema.json";
 
 @Component({
@@ -23,24 +24,32 @@ import { fields } from "./annotations.schema.json";
   `,
 })
 export class AnnotationsComponent
-  extends SimpleFormTemplate<{ timezone: string }>
+  extends SimpleFormTemplate<Model>
   implements OnInit {
   public fields = fields;
 
   public constructor(
+    private accountsApi: AccountsService,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, () => "TODO", defaultErrorMsg, false);
+    super(
+      notifications,
+      route,
+      router,
+      () =>
+        "Successfully downloaded annotations. Please accept pop-ups if they are disabled.",
+      defaultErrorMsg,
+      false
+    );
   }
 
-  protected onSuccess(model: void | { timezone: string }): void {
-    throw new Error("Method not implemented.");
+  protected apiAction(model: Partial<Model>): Observable<void> {
+    return this.accountsApi.downloadAnnotations(model.timezone);
   }
-  protected apiAction(
-    model: Partial<{ timezone: string }>
-  ): Observable<void | { timezone: string }> {
-    throw new Error("Method not implemented.");
-  }
+}
+
+interface Model {
+  timezone: string;
 }

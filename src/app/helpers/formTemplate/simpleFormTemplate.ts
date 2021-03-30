@@ -74,6 +74,7 @@ export abstract class SimpleFormTemplate<Model>
       return;
     }
     this.models = models;
+    this.model = {} as Model;
   }
 
   /**

@@ -2,11 +2,13 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IUser, User } from "@models/User";
 import httpCodes from "http-status";
 import { Observable, of, throwError } from "rxjs";
-import { catchError } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
+import { downloadBlob } from "src/app/app.helper";
 import {
   emptyParam,
   filterParam,
@@ -72,11 +74,26 @@ export class AccountsService extends StandardApi<User> {
   }
 
   public downloadAnnotations(selectedTimezone: string): Observable<any> {
-    return this.http.get(
-      this.getPath(
-        downloadAnnotations(this.getLocalUser().id, selectedTimezone)
-      )
-    );
+    const localUserId = this.getLocalUser()?.id;
+
+    // If not logged in, throw error
+    if (!isInstantiated(localUserId)) {
+      return throwError(
+        new Error("Unauthorized access, please log in first.")
+      ).pipe(catchError(this.handleError));
+    }
+
+    return this.http
+      .get(this.getPath(downloadAnnotations(localUserId, selectedTimezone)), {
+        responseType: "arraybuffer",
+      })
+      .pipe(
+        map((data) => {
+          const blob = new Blob([data], { type: "text/plain" });
+          downloadBlob(blob, "annotations.csv");
+        }),
+        catchError(this.handleError)
+      );
   }
 }
 
