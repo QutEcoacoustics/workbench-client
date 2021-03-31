@@ -1,11 +1,17 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
+  DataRequest,
+  DataRequestService,
+  IDataRequest,
+} from "@baw-api/data-request/data-request.service";
+import {
   defaultErrorMsg,
   SimpleFormTemplate,
 } from "@helpers/formTemplate/simpleFormTemplate";
 import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { fields } from "./custom-request.schema.json";
 
 @Component({
@@ -13,25 +19,29 @@ import { fields } from "./custom-request.schema.json";
   template: `
     <baw-form
       title="Custom Data Request"
-      subTitle="
-        Use this form to request a customized annotations list or other data related to the
-        audio recordings on this website. You <strong>do not need</strong> to use this form
-        if you need the standard <strong>annotations CSV</strong> download.
-      "
       submitLabel="Submit"
       [model]="model"
       [fields]="fields"
       [submitLoading]="loading"
+      [recaptchaSeed]="recaptchaSeed"
       (onSubmit)="submit($event)"
-    ></baw-form>
+    >
+      <span id="subTitle">
+        Use this form to request a customized annotations list or other data
+        related to the audio recordings on this website.<br />
+        You <strong>do not need</strong> to use this form if you need the
+        standard <strong>annotations CSV</strong> download.
+      </span>
+    </baw-form>
   `,
 })
 export class CustomRequestComponent
-  extends SimpleFormTemplate<any>
+  extends SimpleFormTemplate<DataRequest>
   implements OnInit {
   public fields = fields;
 
   public constructor(
+    private api: DataRequestService,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router
@@ -39,7 +49,22 @@ export class CustomRequestComponent
     super(notifications, route, router, () => "TODO", defaultErrorMsg, false);
   }
 
-  protected apiAction(model: Partial<any>): Observable<any> {
-    throw new Error("Method not implemented.");
+  public ngOnInit() {
+    super.ngOnInit();
+
+    this.api
+      .seed()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (seed) => (this.recaptchaSeed = { state: "loaded", seed }),
+        (err) => {
+          console.error(err);
+          this.notifications.error("Failed to load form");
+        }
+      );
+  }
+
+  protected apiAction(model: IDataRequest): Observable<void> {
+    return this.api.dataRequest(new DataRequest(model));
   }
 }

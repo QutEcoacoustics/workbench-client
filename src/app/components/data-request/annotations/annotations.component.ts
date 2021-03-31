@@ -6,7 +6,7 @@ import {
   SimpleFormTemplate,
 } from "@helpers/formTemplate/simpleFormTemplate";
 import { ToastrService } from "ngx-toastr";
-import { Observable, Subject } from "rxjs";
+import { Observable } from "rxjs";
 import { fields } from "./annotations.schema.json";
 
 @Component({

@@ -79,7 +79,7 @@ export class DataRequest
     body.set("data_class_data_request[name]", this.name);
     body.set("data_class_data_request[email]", this.email);
     body.set("data_class_data_request[group]", this.group);
-    body.set("data_class_data_request[groupType]", this.groupType);
+    body.set("data_class_data_request[group_type]", this.groupType);
     body.set("data_class_data_request[content]", this.content);
     body.set("g-recaptcha-response-data[data_request]", this.recaptchaToken);
     body.set("g-recaptcha-response", "");

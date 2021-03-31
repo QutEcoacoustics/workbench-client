@@ -36,6 +36,10 @@ import type {
 } from "./audio-event/audio-events.service";
 import type { AudioRecordingsService } from "./audio-recording/audio-recordings.service";
 import type { BookmarksService } from "./bookmark/bookmarks.service";
+import type {
+  DataRequest,
+  DataRequestService,
+} from "./data-request/data-request.service";
 import type { DatasetItemsService } from "./dataset/dataset-items.service";
 import type { DatasetsService } from "./dataset/datasets.service";
 import type { ProgressEventsService } from "./progress-event/progress-events.service";
@@ -114,6 +118,9 @@ export const BOOKMARK = new ServiceToken<BookmarksService, Bookmark>(
 export const DATASET = new ServiceToken<DatasetsService, Dataset>("DATASET");
 export const DATASET_ITEM = new ServiceToken<DatasetItemsService, DatasetItem>(
   "D_ITEM"
+);
+export const DATA_REQUEST = new ServiceToken<DataRequestService, DataRequest>(
+  "DATA_REQUEST"
 );
 export const PROGRESS_EVENT = new ServiceToken<
   ProgressEventsService,
