@@ -69,6 +69,7 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
   public async onSubmit(model: any) {
     if (this.form.status !== "VALID") {
       this.notifications.error("Please fill all required fields.");
+      return;
     }
 
     if (!this.recaptchaSeed) {

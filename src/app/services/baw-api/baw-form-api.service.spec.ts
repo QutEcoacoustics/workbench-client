@@ -187,9 +187,11 @@ describe("bawFormApiService", () => {
         "/broken_link",
         "/broken_form_link",
         () => defaultBody
-      ).subscribe(noop, noop, () => {
-        expect(true).toBeTrue();
-        done();
+      ).subscribe({
+        complete: () => {
+          expect(true).toBeTrue();
+          done();
+        },
       });
     });
   });
@@ -203,8 +205,8 @@ describe("bawFormApiService", () => {
       return intercept(apiHtmlRequestSpy, page, error);
     }
 
-    function getRecaptchaSeed(page: string, extractSeed?: RegExp) {
-      return spec.service["getRecaptchaSeed"](page, extractSeed);
+    function getRecaptchaSeed(page: string) {
+      return spec.service["getRecaptchaSeed"](page);
     }
 
     it("should call apiHtmlRequest", () => {
@@ -215,11 +217,24 @@ describe("bawFormApiService", () => {
 
     it("should extract seed from page", (done) => {
       const seed = modelData.authToken();
+      const action = "test_action";
       interceptHtmlRequest(
-        `<html><input id="g-recaptcha-response-data-register" data-sitekey="${seed}"></input></html>`
+        `grecaptcha.execute('${seed}', {action: '${action}'})`
       );
-      getRecaptchaSeed("/broken_link").subscribe((_seed) => {
-        expect(_seed).toBe(seed);
+      getRecaptchaSeed("/broken_link").subscribe((settings) => {
+        expect(settings.seed).toBe(seed);
+        done();
+      }, shouldNotFail);
+    });
+
+    it("should extract action from page", (done) => {
+      const seed = modelData.authToken();
+      const action = "test_action";
+      interceptHtmlRequest(
+        `grecaptcha.execute('${seed}', {action: '${action}'})`
+      );
+      getRecaptchaSeed("/broken_link").subscribe((settings) => {
+        expect(settings.action).toBe(action);
         done();
       }, shouldNotFail);
     });
@@ -237,8 +252,9 @@ describe("bawFormApiService", () => {
 
     it("should complete on success", (done) => {
       const seed = modelData.authToken();
+      const action = "test_action";
       interceptHtmlRequest(
-        `<html><input id="g-recaptcha-response-data-register" data-sitekey="${seed}"></input></html>`
+        `grecaptcha.execute('${seed}', {action: '${action}'})`
       );
       getRecaptchaSeed("/broken_link").subscribe(noop, noop, () => {
         expect(true).toBeTrue();

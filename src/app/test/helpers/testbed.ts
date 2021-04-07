@@ -11,6 +11,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LoadingModule } from "@shared/loading/loading.module";
+import { NgxCaptchaModule } from "ngx-captcha";
 import { ToastrModule } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { formlyRoot, toastrRoot } from "src/app/app.helper";
@@ -27,6 +28,7 @@ export const testFormImports = [
   HttpClientTestingModule,
   RouterTestingModule,
   LoadingModule,
+  NgxCaptchaModule,
 ];
 
 /**
