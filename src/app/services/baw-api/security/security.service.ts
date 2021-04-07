@@ -159,8 +159,7 @@ export class SecurityService extends BawFormApiService<SessionUser> {
         this.clearData();
         return this.handleError(err);
       })
-    ) as Observable<any>;
-    // !Type conversion needed because first() operator changes type for some reason
+    );
   }
 
   /**

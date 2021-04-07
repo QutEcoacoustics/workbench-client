@@ -8,7 +8,7 @@ import { AbstractForm } from "@models/AbstractForm";
 import { bawDateTime, bawPersistAttr } from "@models/AttributeDecorators";
 import { DateTime } from "luxon";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { catchError, first, map } from "rxjs/operators";
 
 const reportProblemEndpoint = stringTemplate`/bug_report`;
 
@@ -23,13 +23,23 @@ export class ReportProblemService extends BawFormApiService<ReportProblem> {
   }
 
   public reportProblem(details: ReportProblem): Observable<void> {
+    const validateEmail = (page: string): void => {
+      const errMsg =
+        'id="data_class_bug_report_email" /><span class="help-block">is invalid';
+      if (page.includes(errMsg)) {
+        throw Error("Email address is invalid");
+      }
+    };
+
     return this.makeFormRequest(
       reportProblemEndpoint(),
       reportProblemEndpoint(),
       (token) => details.getBody(token)
     ).pipe(
-      // Void output
-      map(() => undefined)
+      map((page) => validateEmail(page)),
+      // Complete observable
+      first(),
+      catchError(this.handleError)
     );
   }
 
