@@ -105,6 +105,21 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
         "Recaptcha failed, please try refreshing the website."
       );
     }
+
+    if (!this.recaptchaSeed) {
+      return this.submit.emit(model);
+    }
+
+    try {
+      const action = (this.recaptchaSeed as RecaptchaLoadedState).action;
+      const token = await this.recaptcha.getToken({ action });
+      return this.submit.emit({ ...model, recaptchaToken: token });
+    } catch (err) {
+      console.error(err);
+      this.notifications.error(
+        "Recaptcha failed, please try refreshing the website."
+      );
+    }
   }
 }
 
