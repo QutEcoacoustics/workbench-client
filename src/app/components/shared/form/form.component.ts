@@ -111,8 +111,8 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
     }
 
     try {
-      const action = (this.recaptchaSeed as RecaptchaLoadedState).action;
-      const token = await this.recaptcha.getToken({ action });
+      const { seed, action } = this.recaptchaSeed as RecaptchaLoadedState;
+      const token = await this.recaptcha.executeAsPromise(seed, action);
       return this.submit.emit({ ...model, recaptchaToken: token });
     } catch (err) {
       console.error(err);
