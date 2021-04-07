@@ -9,6 +9,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { PipesModule } from "@pipes/pipes.module";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { NgxCaptchaModule } from "ngx-captcha";
 import { LineTruncationLibModule } from "ngx-line-truncation";
 import { ToastrModule } from "ngx-toastr";
 import { DirectivesModule } from "src/app/directives/directives.module";
@@ -75,4 +76,8 @@ export const sharedModules = [
   IndicatorModule,
 ];
 
-export const internalModules = [...sharedModules, LineTruncationLibModule];
+export const internalModules = [
+  ...sharedModules,
+  LineTruncationLibModule,
+  NgxCaptchaModule,
+];
