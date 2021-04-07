@@ -77,40 +77,6 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
     }
 
     try {
-      return this.submit.emit({
-        ...model,
-        recaptchaToken: await this.recaptcha.getToken(),
-      });
-    } catch (err) {
-      // https://github.com/armenstepanyan/ng-recaptcha3/issues/16
-      console.error(
-        "Recaptcha failed. A potential cause is that the domain of the website is not whitelisted for the recaptcha seed."
-      );
-      this.notifications.error(
-        "Recaptcha failed, please try refreshing the website."
-      );
-    }
-
-    if (!this.recaptchaSeed) {
-      return this.submit.emit(model);
-    }
-
-    try {
-      const { seed, action } = this.recaptchaSeed as RecaptchaLoadedState;
-      const token = await this.recaptcha.executeAsPromise(seed, action);
-      return this.submit.emit({ ...model, recaptchaToken: token });
-    } catch (err) {
-      console.error(err);
-      this.notifications.error(
-        "Recaptcha failed, please try refreshing the website."
-      );
-    }
-
-    if (!this.recaptchaSeed) {
-      return this.submit.emit(model);
-    }
-
-    try {
       const { seed, action } = this.recaptchaSeed as RecaptchaLoadedState;
       const token = await this.recaptcha.executeAsPromise(seed, action);
       return this.submit.emit({ ...model, recaptchaToken: token });
