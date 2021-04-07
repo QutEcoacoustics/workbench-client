@@ -89,13 +89,14 @@ export class ShallowResponsesService extends StandardApi<Response> {
   }
 }
 
-export const responseResolvers = new Resolvers<Response, ResponsesService>(
-  [ResponsesService],
-  "responseId",
-  ["studyId"]
-).create("Response");
+export const responseResolvers = new Resolvers<
+  Response,
+  [IdOr<Study>],
+  ResponsesService
+>([ResponsesService], "responseId", ["studyId"]).create("Response");
 
 export const shallowResponseResolvers = new Resolvers<
   Response,
+  [],
   ShallowResponsesService
 >([ShallowResponsesService], "responseId").create("ShallowResponse");

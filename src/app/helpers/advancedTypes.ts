@@ -34,3 +34,9 @@ export type KeysOfType<T, TProp> = {
 
 /** Sets type to either be T or null */
 export type Option<T> = T | null;
+
+export interface FixedLengthArray<T extends any, L extends number>
+  extends Array<T> {
+  0: T;
+  length: L;
+}

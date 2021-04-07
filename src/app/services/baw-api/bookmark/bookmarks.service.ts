@@ -65,7 +65,7 @@ export class BookmarksService extends StandardApi<Bookmark> {
   }
 }
 
-export const bookmarkResolvers = new Resolvers<Bookmark, BookmarksService>(
+export const bookmarkResolvers = new Resolvers<Bookmark, [], BookmarksService>(
   [BookmarksService],
   "bookmarkId"
 ).create("Bookmark");

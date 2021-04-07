@@ -97,7 +97,7 @@ export class AccountsService extends StandardApi<User> {
   }
 }
 
-export const accountResolvers = new Resolvers<User, AccountsService>(
+export const accountResolvers = new Resolvers<User, [], AccountsService>(
   [AccountsService],
   "accountId"
 ).create("Account");

@@ -57,6 +57,7 @@ export class AnalysisJobItemsService extends ReadonlyApi<
 
 export const analysisJobItemResolvers = new Resolvers<
   AnalysisJobItem,
+  [IdOr<AnalysisJob>],
   AnalysisJobItemsService
 >([AnalysisJobItemsService], "analysisJobItemId", ["analysisJobId"]).create(
   "AnalysisJobItem"

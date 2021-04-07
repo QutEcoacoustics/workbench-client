@@ -17,12 +17,7 @@ import {
   StandardApi,
 } from "../api-common";
 import { Filters } from "../baw-api.service";
-import {
-  BawProvider,
-  BawResolver,
-  ResolvedModel,
-  Resolvers,
-} from "../resolver-common";
+import { BawResolver, ResolvedModel, Resolvers } from "../resolver-common";
 
 const tagId: IdParamOptional<Tag> = id;
 const endpoint = stringTemplate`/tags/${tagId}${option}`;
@@ -89,7 +84,7 @@ export class TagsService extends StandardApi<Tag> {
 
 class TagResolvers {
   public create(name: string) {
-    const additionalProvider = new Resolvers<Tag, TagsService>(
+    const additionalProvider = new Resolvers<Tag, [], TagsService>(
       [TagsService],
       "tagId"
     ).create(name);
@@ -98,18 +93,14 @@ class TagResolvers {
       ...additionalProvider.providers,
       ...tagTypeProvider.providers,
     ];
-
-    return {
-      ...additionalProvider,
-      ...tagTypeProvider,
-      providers,
-    };
+    return { ...additionalProvider, ...tagTypeProvider, providers };
   }
 }
 
 class TagTypeResolvers extends BawResolver<
   TagType[],
   Tag,
+  [],
   TagsService,
   { tagTypes: string }
 > {
@@ -121,17 +112,11 @@ class TagTypeResolvers extends BawResolver<
     name: string,
     resolver: Type<Resolve<ResolvedModel<TagType[]>>>,
     deps: Type<TagsService>[]
-  ): { tagTypes: string } & {
-    providers: BawProvider[];
-  } {
+  ) {
     return {
       tagTypes: name + "TagTypesResolver",
       providers: [
-        {
-          provide: name + "TagTypesResolver",
-          useClass: resolver,
-          deps,
-        },
+        { provide: name + "TagTypesResolver", useClass: resolver, deps },
       ],
     };
   }

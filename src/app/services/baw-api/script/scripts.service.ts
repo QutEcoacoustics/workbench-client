@@ -52,7 +52,7 @@ export class ScriptsService extends NonDestructibleApi<Script> {
   }
 }
 
-export const scriptResolvers = new Resolvers<Script, ScriptsService>(
+export const scriptResolvers = new Resolvers<Script, [], ScriptsService>(
   [ScriptsService],
   "scriptId"
 ).create("Script");
