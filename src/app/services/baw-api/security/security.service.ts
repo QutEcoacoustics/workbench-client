@@ -54,7 +54,7 @@ export class SecurityService extends BawFormApiService<SessionUser> {
   /**
    * Returns the recaptcha seed for the registration form
    */
-  public signUpSeed(): Observable<string> {
+  public signUpSeed() {
     return this.getRecaptchaSeed(signUpSeed());
   }
 

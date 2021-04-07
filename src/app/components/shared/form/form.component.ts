@@ -88,28 +88,23 @@ export class FormComponent
    * @param model Form response
    */
   public async onSubmit(model: any) {
-    if (this.form.status === "VALID") {
-      console.log("onSubmit", model, this.recaptchaSeed);
-      if (!this.recaptchaSeed) {
-        return this.submit.emit(model);
-      }
-
-      try {
-        return this.submit.emit({
-          ...model,
-          recaptchaToken: await this.recaptcha.getToken(),
-        });
-      } catch (err) {
-        // https://github.com/armenstepanyan/ng-recaptcha3/issues/16
-        console.error(
-          "Recaptcha failed. A potential cause is that the domain of the website is not whitelisted for the recaptcha seed."
-        );
-        this.notifications.error(
-          "Recaptcha failed, please try refreshing the website."
-        );
-      }
-    } else {
+    if (this.form.status !== "VALID") {
       this.notifications.error("Please fill all required fields.");
+    }
+
+    if (!this.recaptchaSeed) {
+      return this.submit.emit(model);
+    }
+
+    try {
+      const action = (this.recaptchaSeed as RecaptchaLoadedState).action;
+      const token = await this.recaptcha.getToken({ action });
+      return this.submit.emit({ ...model, recaptchaToken: token });
+    } catch (err) {
+      console.error(err);
+      this.notifications.error(
+        "Recaptcha failed, please try refreshing the website."
+      );
     }
   }
 }
@@ -120,6 +115,7 @@ interface RecaptchaLoadingState {
 interface RecaptchaLoadedState {
   state: "loaded";
   seed: string;
+  action: string;
 }
 export type RecaptchaState = RecaptchaLoadedState | RecaptchaLoadingState;
 export type RecaptchaStatus = "success" | "error";

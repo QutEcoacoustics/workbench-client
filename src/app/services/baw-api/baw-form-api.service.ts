@@ -8,12 +8,10 @@ import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
 import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
 
 /*
- * Looks for hidden input in HTML document, id of input contains
- * "g-recaptcha-response-data-" followed by the name of the form
- * (ie. "g-recaptcha-response-data-contact-us"). The seed is set inside
- * the data-sitekey property.
+ * Reads through a HTML document for recaptcha setup code to extract the
+ * seed and action.
  */
-const recaptchaSeedRegex = /id="g-recaptcha-response-data-.+?" data-sitekey="(.+?)"/;
+const extractRecaptchaValues = /grecaptcha\.execute\('(.+?)', {action: '(.+?)'}\)/;
 
 /*
  * Looks for a hidden input in HTML document, name of input is
@@ -92,19 +90,19 @@ export class BawFormApiService<
    * @param path Path to retrieve recatpcha seed from
    * @param extractSeed Regex to extract recaptcha seed from HTML response
    */
-  protected getRecaptchaSeed(
-    path: string,
-    extractSeed: RegExp = recaptchaSeedRegex
-  ): Observable<string> {
+  protected getRecaptchaSeed(path: string): Observable<RecaptchaSettings> {
     // Mock a HTML request to the server
     return this.apiHtmlRequest(path).pipe(
       map((page: string) => {
-        // Extract token from page
-        const seed = extractSeed.exec(page)?.[1];
-        if (!seed) {
+        // Extract seed and action from page
+        const values = extractRecaptchaValues.exec(page);
+        const seed = values?.[1];
+        const action = values?.[2];
+
+        if (!seed || !action) {
           throw new Error("Unable to setup recaptcha.");
         }
-        return seed;
+        return { seed, action };
       }),
       // Complete observable
       first(),
@@ -149,4 +147,9 @@ export class BawFormApiService<
       }),
     });
   }
+}
+
+export interface RecaptchaSettings {
+  seed: string;
+  action: string;
 }
