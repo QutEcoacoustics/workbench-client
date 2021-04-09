@@ -19,9 +19,24 @@ import { PasswordConfirmationInputComponent } from "./password-confirmation-inpu
 import { TimezoneInputComponent } from "./timezone-input.component";
 
 export const formlyInputTypes: TypeOption[] = [
-  { name: "checkbox", component: CheckboxInputComponent },
+  {
+    name: "checkbox",
+    component: CheckboxInputComponent,
+    wrappers: ["form-field-horizontal"],
+  },
   { name: "image", component: ImageInputComponent },
-  { name: "timezone", component: TimezoneInputComponent },
+  {
+    name: "timezone",
+    component: TimezoneInputComponent,
+    defaultOptions: {
+      /*
+       * Sets default timezone selection to location of server. This is
+       * a solution to bypass an exception thrown by ngx-formly:
+       * https://github.com/ngx-formly/ngx-formly/issues/1410
+       */
+      defaultValue: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
+  },
   { name: "location", component: LocationInputComponent },
   {
     name: "passwordConfirmation",

@@ -1,6 +1,6 @@
 import { Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
-import { FixedLengthArray, Option } from "@helpers/advancedTypes";
+import { FixedLengthTuple, Option } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { Id } from "@interfaces/apiInterfaces";
@@ -48,7 +48,7 @@ export abstract class BawResolver<
     /** Unique ID of model to retrieve */
     protected uniqueId?: string,
     /** Parameters supplied to service request */
-    protected params?: FixedLengthArray<string, ServiceParams["length"]>
+    protected params?: FixedLengthTuple<string, ServiceParams["length"]>
   ) {}
 
   public create(name: string): ResolverName & { providers: BawProvider[] } {
@@ -156,7 +156,7 @@ export class Resolvers<
   public constructor(
     private serviceDeps: Type<Service>[],
     private uniqueId?: string,
-    private params?: FixedLengthArray<string, Params["length"]>
+    private params?: FixedLengthTuple<string, Params["length"]>
   ) {}
 
   /**
@@ -193,7 +193,7 @@ export class ListResolver<
 > extends BawResolver<Model[], Model, Params, Service, { list: string }> {
   public constructor(
     deps: Type<Service>[],
-    params?: FixedLengthArray<string, Params["length"]>
+    params?: FixedLengthTuple<string, Params["length"]>
   ) {
     super(deps, undefined, params);
   }
@@ -227,7 +227,7 @@ export class ShowResolver<
   public constructor(
     deps: Type<Service>[],
     uniqueId?: string,
-    params?: FixedLengthArray<string, Params["length"]>
+    params?: FixedLengthTuple<string, Params["length"]>
   ) {
     super(deps, uniqueId, params);
   }
