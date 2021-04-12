@@ -56,7 +56,8 @@ export class CustomRequestComponent
       .seed()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (seed) => (this.recaptchaSeed = { state: "loaded", seed }),
+        ({ seed, action }) =>
+          (this.recaptchaSeed = { state: "loaded", seed, action }),
         (err) => {
           console.error(err);
           this.notifications.error("Failed to load form");
