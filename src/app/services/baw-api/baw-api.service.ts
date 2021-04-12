@@ -12,7 +12,8 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { Observable, throwError } from "rxjs";
-import { map } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
+import { downloadBlob } from "src/app/app.helper";
 import { ApiErrorDetails } from "./api.interceptor.service";
 
 export const defaultApiPageSize = 25;
@@ -231,6 +232,25 @@ export class BawApiService<Model extends AbstractModel> {
    */
   protected apiDestroy(path: string): Observable<Model | void> {
     return this.httpDelete(path).pipe(map(this.handleEmptyResponse));
+  }
+
+  protected apiDownload(
+    path: string,
+    selectedTimezone: string
+  ): Observable<void> {
+    // Ensure path ends with a '/'
+    if (!path.endsWith("/")) {
+      path += "/";
+    }
+
+    const downloadPath = `${path}audio_events/download?selected_timezone_name=${selectedTimezone}`;
+    return this.http
+      .get(this.getPath(downloadPath), { responseType: "arraybuffer" })
+      .pipe(
+        map((data: ArrayBuffer) => new Blob([data], { type: "text/plain" })),
+        map((blob: Blob) => downloadBlob(blob, "annotations.csv")),
+        catchError(this.handleError)
+      );
   }
 
   /**

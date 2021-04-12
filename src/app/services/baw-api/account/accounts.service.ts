@@ -7,8 +7,7 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IUser, User } from "@models/User";
 import httpCodes from "http-status";
 import { Observable, of, throwError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
-import { downloadBlob } from "src/app/app.helper";
+import { catchError } from "rxjs/operators";
 import {
   emptyParam,
   filterParam,
@@ -16,7 +15,6 @@ import {
   IdOr,
   IdParamOptional,
   option,
-  param,
   StandardApi,
 } from "../api-common";
 import { Filters } from "../baw-api.service";
@@ -24,7 +22,6 @@ import { Resolvers } from "../resolver-common";
 
 const userId: IdParamOptional<User> = id;
 const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
-const downloadAnnotations = stringTemplate`/user_accounts/${id}/audio_events/download?selected_timezone_name=${param}`;
 
 /**
  * Account Service.
@@ -73,7 +70,7 @@ export class AccountsService extends StandardApi<User> {
     return this.apiDestroy(endpoint(model, emptyParam));
   }
 
-  public downloadAnnotations(selectedTimezone: string): Observable<any> {
+  public downloadAnnotations(selectedTimezone: string): Observable<void> {
     const localUserId = this.getLocalUser()?.id;
 
     // If not logged in, throw error
@@ -83,17 +80,10 @@ export class AccountsService extends StandardApi<User> {
       ).pipe(catchError(this.handleError));
     }
 
-    return this.http
-      .get(this.getPath(downloadAnnotations(localUserId, selectedTimezone)), {
-        responseType: "arraybuffer",
-      })
-      .pipe(
-        map((data) => {
-          const blob = new Blob([data], { type: "text/plain" });
-          downloadBlob(blob, "annotations.csv");
-        }),
-        catchError(this.handleError)
-      );
+    return this.apiDownload(
+      endpoint(localUserId, emptyParam),
+      selectedTimezone
+    );
   }
 }
 

@@ -61,6 +61,17 @@ export class RegionsService extends StandardApi<Region, [IdOr<Project>]> {
   ): Observable<Region | void> {
     return this.apiDestroy(endpoint(project, model, emptyParam));
   }
+
+  public downloadAnnotations(
+    model: IdOr<Region>,
+    project: IdOr<Project>,
+    selectedTimezone: string
+  ): Observable<void> {
+    return this.apiDownload(
+      endpoint(project, model, emptyParam),
+      selectedTimezone
+    );
+  }
 }
 
 /**

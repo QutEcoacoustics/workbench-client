@@ -98,6 +98,17 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   public harvestFile(model: IdOr<Site>, project: IdOr<Project>): string {
     return this.getPath(harvestEndpoint(project, model));
   }
+
+  public downloadAnnotations(
+    model: IdOr<Site>,
+    project: IdOr<Project>,
+    selectedTimezone: string
+  ): Observable<void> {
+    return this.apiDownload(
+      endpoint(project, model, emptyParam),
+      selectedTimezone
+    );
+  }
 }
 
 /**

@@ -52,7 +52,11 @@ import {
 
         <div class="input-group-append">
           <span class="input-group-text">
-            {{ timezone ? timezone.countryName : "(no value)" }}
+            {{
+              timezone
+                ? timezone.countryName || timezone.abbreviation
+                : "(no value)"
+            }}
           </span>
         </div>
       </div>
@@ -77,7 +81,7 @@ export class TimezoneInputComponent extends FieldType implements OnInit {
   public timezones: TimeZone[] = [];
 
   public ngOnInit() {
-    this.timezones = getTimeZones();
+    this.timezones = getTimeZones({ includeUtc: true });
     this.formControl.setValidators(() => this.timezoneValidator());
     this.formControl.updateValueAndValidity();
     this.setDefaultValue();
