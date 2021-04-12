@@ -151,7 +151,9 @@ export abstract class BawResolver<
 export class Resolvers<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiList<Model, Params> & ApiShow<Model, Params, IdOr<Model>>
+  Service extends ApiList<Model, Params> &
+    ApiShow<Model, Params, IdOr<Model>> = ApiList<Model, Params> &
+    ApiShow<Model, Params, IdOr<Model>>
 > {
   public constructor(
     private serviceDeps: Type<Service>[],
@@ -189,7 +191,7 @@ export class Resolvers<
 export class ListResolver<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiList<Model, Params>
+  Service extends ApiList<Model, Params> = ApiList<Model, Params>
 > extends BawResolver<Model[], Model, Params, Service, { list: string }> {
   public constructor(
     deps: Type<Service>[],
@@ -222,7 +224,11 @@ export class ListResolver<
 export class ShowResolver<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiShow<Model, Params, IdOr<Model>>
+  Service extends ApiShow<Model, Params, IdOr<Model>> = ApiShow<
+    Model,
+    Params,
+    IdOr<Model>
+  >
 > extends BawResolver<Model, Model, Params, Service, { show: string }> {
   public constructor(
     deps: Type<Service>[],

@@ -86,8 +86,7 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
   }
 }
 
-export const audioRecordingResolvers = new Resolvers<
-  AudioRecording,
-  [],
-  AudioRecordingsService
->([AudioRecordingsService], "audioRecordingId").create("AudioRecording");
+export const audioRecordingResolvers = new Resolvers<AudioRecording, []>(
+  [AudioRecordingsService],
+  "audioRecordingId"
+).create("AudioRecording");

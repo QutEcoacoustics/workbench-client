@@ -108,14 +108,13 @@ export class ShallowRegionsService extends StandardApi<Region> {
   }
 }
 
-export const regionResolvers = new Resolvers<
-  Region,
-  [IdOr<Project>],
-  RegionsService
->([RegionsService], "regionId", ["projectId"]).create("Region");
+export const regionResolvers = new Resolvers<Region, [IdOr<Project>]>(
+  [RegionsService],
+  "regionId",
+  ["projectId"]
+).create("Region");
 
-export const shallowRegionResolvers = new Resolvers<
-  Region,
-  [],
-  ShallowRegionsService
->([ShallowRegionsService], "regionId").create("ShallowRegion");
+export const shallowRegionResolvers = new Resolvers<Region, []>(
+  [ShallowRegionsService],
+  "regionId"
+).create("ShallowRegion");

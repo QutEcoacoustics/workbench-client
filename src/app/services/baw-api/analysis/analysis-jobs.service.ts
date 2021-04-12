@@ -47,8 +47,7 @@ export class AnalysisJobsService extends ReadAndUpdateApi<AnalysisJob> {
   }
 }
 
-export const analysisJobResolvers = new Resolvers<
-  AnalysisJob,
-  [],
-  AnalysisJobsService
->([AnalysisJobsService], "analysisJobId").create("AnalysisJob");
+export const analysisJobResolvers = new Resolvers<AnalysisJob, []>(
+  [AnalysisJobsService],
+  "analysisJobId"
+).create("AnalysisJob");

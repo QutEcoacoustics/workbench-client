@@ -89,14 +89,13 @@ export class ShallowQuestionsService extends StandardApi<Question> {
   }
 }
 
-export const questionResolvers = new Resolvers<
-  Question,
-  [IdOr<Study>],
-  QuestionsService
->([QuestionsService], "questionId", ["studyId"]).create("Question");
+export const questionResolvers = new Resolvers<Question, [IdOr<Study>]>(
+  [QuestionsService],
+  "questionId",
+  ["studyId"]
+).create("Question");
 
-export const shallowQuestionResolvers = new Resolvers<
-  Question,
-  [],
-  ShallowQuestionsService
->([ShallowQuestionsService], "questionId").create("ShallowQuestion");
+export const shallowQuestionResolvers = new Resolvers<Question, []>(
+  [ShallowQuestionsService],
+  "questionId"
+).create("ShallowQuestion");

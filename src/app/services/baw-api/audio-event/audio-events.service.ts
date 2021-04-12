@@ -133,8 +133,7 @@ export class ShallowAudioEventsService
 
 export const audioEventResolvers = new Resolvers<
   AudioEvent,
-  [IdOr<AudioRecording>],
-  AudioEventsService
+  [IdOr<AudioRecording>]
 >([AudioEventsService], "audioEventId", ["audioRecordingId"]).create(
   "AudioEvent"
 );

@@ -69,7 +69,7 @@ export class ProjectsService extends StandardApi<Project> {
   }
 }
 
-export const projectResolvers = new Resolvers<Project, [], ProjectsService>(
+export const projectResolvers = new Resolvers<Project, []>(
   [ProjectsService],
   "projectId"
 ).create("Project");
