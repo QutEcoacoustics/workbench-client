@@ -3,14 +3,12 @@ import { ActivatedRoute } from "@angular/router";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { ApiShow } from "@baw-api/api-common";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
-import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
@@ -25,13 +23,13 @@ import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
       <h1>Data Request</h1>
 
       <!-- Display forms if all loading completed -->
-      <ng-container *ngIf="!loadingModel && !loadingProject && !error">
+      <ng-container *ngIf="!loadingModel && !error">
         <h2 class="text-center">Annotations Download</h2>
         <ng-container *ngIf="canRequestAnnotations; else placeholder">
           <baw-request-annotations
-            [model]="model"
-            [project]="project"
-            [modelName]="modelName"
+            [user]="user"
+            [site]="site"
+            [region]="region"
           ></baw-request-annotations>
         </ng-container>
 
@@ -55,7 +53,7 @@ import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
     </ng-container>
 
     <!-- Display spinner if loading -->
-    <ng-container *ngIf="loadingModel || loadingProject">
+    <ng-container *ngIf="loadingModel">
       <baw-loading></baw-loading>
     </ng-container>
   `,
@@ -75,14 +73,12 @@ class DataRequestComponent
   public canRequestAnnotations = false;
   public error: ApiErrorDetails;
   public loadingModel = false;
-  public loadingProject = false;
-  public model: AbstractModel;
-  public modelName: string;
-  public project: Project;
+  public user: User;
+  public site: Site;
+  public region: Region;
 
   public constructor(
     private accountsApi: AccountsService,
-    private projectsApi: ProjectsService,
     private regionsApi: ShallowRegionsService,
     private sitesApi: ShallowSitesService,
     private route: ActivatedRoute
@@ -91,17 +87,11 @@ class DataRequestComponent
   }
 
   public ngOnInit(): void {
-    const {
-      userId,
-      projectId,
-      regionId,
-      siteId,
-    } = this.route.snapshot.queryParams;
+    const { userId, regionId, siteId } = this.route.snapshot.queryParams;
     const hasModel =
       isInstantiated(userId) ||
-      // Project is required to use site or region
-      (isInstantiated(projectId) &&
-        (isInstantiated(siteId) || isInstantiated(regionId)));
+      isInstantiated(siteId) ||
+      isInstantiated(regionId);
 
     if (!hasModel) {
       return;
@@ -112,72 +102,44 @@ class DataRequestComponent
 
     if (isInstantiated(userId)) {
       this.retrieveUser(userId);
+    } else if (isInstantiated(siteId)) {
+      this.retrieveSite(siteId);
     } else {
-      this.loadingProject = true;
-      this.retrieveProject(projectId);
-
-      if (isInstantiated(siteId)) {
-        this.retrieveSite(siteId);
-      } else {
-        this.retrieveRegion(regionId);
-      }
+      this.retrieveRegion(regionId);
     }
   }
 
   private retrieveUser(id: number) {
-    this.retrieveModel<User, AccountsService>(this.accountsApi, id, (model) => {
-      this.model = model;
-      this.modelName = model.userName;
-      this.loadingModel = false;
-    });
-  }
-
-  private retrieveProject(id: number) {
-    this.retrieveModel<Project, ProjectsService>(
-      this.projectsApi,
+    this.retrieveModel<User>(
+      this.accountsApi,
       id,
-      (model) => {
-        this.project = model;
-        this.loadingProject = false;
-      }
+      (model) => (this.user = model)
     );
   }
 
   private retrieveRegion(id: number) {
-    this.retrieveModel<Region, ShallowRegionsService>(
+    this.retrieveModel<Region>(
       this.regionsApi,
       id,
-      (model) => {
-        this.model = model;
-        this.modelName = model.name;
-        this.loadingModel = false;
-      }
+      (model) => (this.region = model)
     );
   }
 
   private retrieveSite(id: number) {
-    this.retrieveModel<Site, ShallowSitesService>(
-      this.sitesApi,
-      id,
-      (model) => {
-        this.model = model;
-        this.modelName = model.name;
-        this.loadingModel = false;
-      }
-    );
+    this.retrieveModel<Site>(this.sitesApi, id, (model) => (this.site = model));
   }
 
-  private retrieveModel<M extends AbstractModel, S extends ApiShow<M>>(
-    api: S,
-    id: number,
-    assignModel: (model: M) => void
-  ) {
+  private retrieveModel<
+    Model extends AbstractModel,
+    Service extends ApiShow<Model> = ApiShow<Model>
+  >(api: Service, id: number, callback: (model: Model) => void) {
     api
       .show(id)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (model) => {
-          assignModel(model);
+          this.loadingModel = false;
+          callback(model);
         },
         (err: ApiErrorDetails) => {
           this.loadingModel = false;
