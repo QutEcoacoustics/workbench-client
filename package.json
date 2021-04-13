@@ -103,7 +103,7 @@
     "eslint-plugin-jsdoc": "32.3.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-rxjs": "latest",
-    "eslint-plugin-rxjs-angular": "^1.0.4",
+    "eslint-plugin-rxjs-angular": "^1.0.6",
     "faker": "^5.4.0",
     "jasmine-core": "^3.7.0",
     "jasmine-reporters": "^2.3.2",
