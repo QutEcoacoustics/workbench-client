@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
@@ -46,7 +45,7 @@ export interface IRegion extends HasAllUsers, HasDescription {
 /**
  * A region model.
  */
-export class Region extends AbstractModel implements IRegion {
+export class Region extends AbstractModel<IRegion> implements IRegion {
   public readonly kind = "Region";
   @bawPersistAttr
   public readonly id?: Id;
@@ -89,10 +88,6 @@ export class Region extends AbstractModel implements IRegion {
   public updater?: User;
   @deleter<Region>()
   public deleter?: User;
-
-  public constructor(region: IRegion, injector?: Injector) {
-    super(region, injector);
-  }
 
   public get viewUrl(): string {
     return regionMenuItem.route.format({

@@ -16,6 +16,7 @@ export const modelData = {
       AccessLevel.writer,
       AccessLevel.owner,
     ]),
+  authToken: () => faker.random.alphaNumeric(20),
   bool: () => faker.random.boolean(),
   description: () => faker.lorem.sentence().replace(specialCharRegex, ""),
   descriptionLong: () =>

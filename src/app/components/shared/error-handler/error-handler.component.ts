@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { apiReturnCodes } from "@baw-api/baw-api.service";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
+import httpCodes from "http-status";
 
 /**
  * Error Handler Wrapper
@@ -12,13 +12,13 @@ import { reportProblemMenuItem } from "@components/report-problem/report-problem
     <ng-container *ngIf="error">
       <div [ngSwitch]="error.status">
         <h1>
-          <ng-container *ngSwitchCase="apiReturnCodes.unauthorized">
+          <ng-container *ngSwitchCase="httpCodes.UNAUTHORIZED">
             Unauthorized Access
           </ng-container>
-          <ng-container *ngSwitchCase="apiReturnCodes.forbidden">
+          <ng-container *ngSwitchCase="httpCodes.FORBIDDEN">
             Access Forbidden
           </ng-container>
-          <ng-container *ngSwitchCase="apiReturnCodes.notFound">
+          <ng-container *ngSwitchCase="httpCodes.NOT_FOUND">
             Not Found
           </ng-container>
           <ng-container *ngSwitchDefault>Unknown Error</ng-container>
@@ -37,5 +37,5 @@ import { reportProblemMenuItem } from "@components/report-problem/report-problem
 export class ErrorHandlerComponent {
   @Input() public error: ApiErrorDetails;
   public reportProblem = reportProblemMenuItem.route;
-  public apiReturnCodes = apiReturnCodes;
+  public httpCodes = httpCodes;
 }

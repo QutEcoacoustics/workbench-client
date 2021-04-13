@@ -11,7 +11,7 @@ import { ResolverHandlerComponent } from "./resolver-handler.component";
 
 const mockErrorHandler = MockComponent(ErrorHandlerComponent);
 
-describe("PageNotFoundComponent", () => {
+describe("ResolverHandlerComponent", () => {
   let spec: SpectatorRouting<ResolverHandlerComponent>;
   const createComponent = createRoutingFactory({
     component: ResolverHandlerComponent,

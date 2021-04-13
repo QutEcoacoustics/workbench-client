@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { DateTimeTimezone, HasCreator, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { creator } from "./AssociationDecorators";
@@ -11,7 +10,9 @@ export interface IProgressEvent extends HasCreator {
   activity?: string;
 }
 
-export class ProgressEvent extends AbstractModel implements IProgressEvent {
+export class ProgressEvent
+  extends AbstractModel<IProgressEvent>
+  implements IProgressEvent {
   public readonly kind = "ProgressEvent";
   @bawPersistAttr
   public readonly id?: Id;
@@ -27,10 +28,6 @@ export class ProgressEvent extends AbstractModel implements IProgressEvent {
   @creator<ProgressEvent>()
   public creator?: User;
   // TODO Add association to DatasetItem
-
-  public constructor(progressEvent: IProgressEvent, injector?: Injector) {
-    super(progressEvent, injector);
-  }
 
   public get viewUrl(): string {
     throw new Error("ProgressEvent viewUrl not implemented.");

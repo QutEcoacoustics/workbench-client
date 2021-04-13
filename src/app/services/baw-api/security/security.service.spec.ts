@@ -1,31 +1,22 @@
 import { ok } from "assert";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
-import { TestRequest } from "@angular/common/http/testing";
 import {
   ApiErrorDetails,
   BawApiInterceptor,
 } from "@baw-api/api.interceptor.service";
+import { unknownErrorCode } from "@baw-api/baw-api.service";
 import { MockShowApiService } from "@baw-api/mock/apiMocks.service";
 import { SessionUser, User } from "@models/User";
-import {
-  createHttpFactory,
-  HttpMethod,
-  SpectatorHttp,
-} from "@ngneat/spectator";
-import { ConfigService } from "@services/config/config.service";
+import { createHttpFactory, SpectatorHttp } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
-import {
-  generateApiErrorDetails,
-  generateApiErrorResponse,
-} from "@test/fakes/ApiErrorDetails";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateLoginDetails } from "@test/fakes/LoginDetails";
 import { generateRegisterDetails } from "@test/fakes/RegisterDetails";
 import { generateSessionUser, generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
-import { nStepObservable } from "@test/helpers/general";
+import { getCallArgs, nStepObservable } from "@test/helpers/general";
 import { BehaviorSubject, noop, Subject } from "rxjs";
 import {
-  apiErrorDetails,
   shouldNotComplete,
   shouldNotFail,
   shouldNotSucceed,
@@ -38,7 +29,6 @@ import {
 } from "./security.service";
 
 describe("SecurityService", () => {
-  let apiRoot: string;
   let defaultUser: User;
   let defaultSessionUser: SessionUser;
   let defaultRegisterDetails: RegisterDetails;
@@ -66,35 +56,11 @@ describe("SecurityService", () => {
     return nStepObservable(subject, () => response ?? error, !!error);
   }
 
-  function interceptHtmlRequest(page: any, error?: ApiErrorDetails) {
-    const spy = jasmine.createSpy("formHtmlRequest");
-    spec.service["formHtmlRequest"] = spy;
-    return intercept(spy, page, error);
-  }
-
-  function interceptDataRequest(error?: ApiErrorDetails) {
-    const spy = jasmine.createSpy("formDataRequest");
-    spec.service["formDataRequest"] = spy;
-    return intercept(spy, !error ? "<html></html>" : undefined, error);
-  }
-
-  function interceptSessionUser(model: SessionUser, error?: ApiErrorDetails) {
-    const spy = jasmine.createSpy("apiShow");
-    spec.service["apiShow"] = spy;
-    return intercept(spy, model, error);
-  }
-
-  function interceptUser(model: User, error?: ApiErrorDetails) {
-    const spy = spyOn(userApi, "show");
-    return intercept(spy, model, error);
-  }
-
   beforeEach(() => {
     localStorage.clear();
 
     spec = createService();
     userApi = spec.inject(UserService);
-    apiRoot = spec.inject(ConfigService).environment.apiRoot;
 
     defaultAuthToken = modelData.random.alphaNumeric(20);
     defaultError = generateApiErrorDetails();
@@ -133,79 +99,44 @@ describe("SecurityService", () => {
   });
 
   describe("signUpSeed", () => {
-    it("should call formHtmlRequest", () => {
-      interceptHtmlRequest("<html></html>");
+    it("should call getRecaptchaSeed", () => {
+      spec.service["getRecaptchaSeed"] = jasmine
+        .createSpy("getRecaptchaSeed")
+        .and.callFake(() => new Subject());
+
       spec.service.signUpSeed().subscribe(noop, noop);
-      expect(spec.service["formHtmlRequest"]).toHaveBeenCalledWith(
+      expect(spec.service["getRecaptchaSeed"]).toHaveBeenCalledWith(
         "/my_account/sign_up/"
       );
-    });
-
-    it("should return recaptcha seed", (done) => {
-      const seed = modelData.random.alphaNumeric(50);
-      interceptHtmlRequest(
-        `<input id="g-recaptcha-response-data-register" data-sitekey="${seed}"></input>`
-      );
-      spec.service.signUpSeed().subscribe((_seed: string) => {
-        expect(_seed).toBe(seed);
-        done();
-      }, shouldNotFail);
-    });
-
-    it("should throw error if page is invalid", (done) => {
-      interceptHtmlRequest(123456789);
-      spec.service
-        .signUpSeed()
-        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
-          expect(err.message).toBe("Failed to retrieve auth form");
-          done();
-        });
-    });
-
-    it("should throw error if no recaptcha seed", (done) => {
-      interceptHtmlRequest("<html></html>");
-      spec.service
-        .signUpSeed()
-        .subscribe(shouldNotSucceed, (err: ApiErrorDetails) => {
-          expect(err.message).toBe(
-            "Unable to retrieve recaptcha seed for registration request"
-          );
-          done();
-        });
     });
   });
 
   describe("authentication methods", () => {
-    function interceptAuth() {
-      spec.service["handleAuth"] = jasmine.createSpy("handleAuth").and.stub();
+    let handleAuthSpy: jasmine.Spy;
+
+    function getFormData(token: string): string {
+      return getCallArgs(handleAuthSpy)[2](token).toString();
     }
 
-    function getCallArgs() {
-      return (spec.service["handleAuth"] as jasmine.Spy).calls.mostRecent()
-        .args;
-    }
-
-    function getFormDataArgs(): (page: string) => URLSearchParams {
-      return getCallArgs()[2];
-    }
+    beforeEach(() => {
+      handleAuthSpy = jasmine.createSpy("handleAuth");
+      spec.service["handleAuth"] = handleAuthSpy.and.stub();
+    });
 
     describe("signIn", () => {
       it("should call handleAuth", () => {
-        interceptAuth();
         spec.service.signIn(defaultLoginDetails);
-        expect(spec.service["handleAuth"]).toHaveBeenCalled();
+        expect(handleAuthSpy).toHaveBeenCalled();
       });
 
       it("should call handleAuth with correct form endpoint", () => {
-        interceptAuth();
         spec.service.signIn(defaultLoginDetails);
-        expect(getCallArgs()[0]).toBe("/my_account/sign_in/");
+        expect(getCallArgs(handleAuthSpy)[0]).toBe("/my_account/sign_in/");
       });
 
       it("should call handleAuth with correct auth endpoint", () => {
-        interceptAuth();
         spec.service.signIn(defaultLoginDetails);
-        expect(getCallArgs()[1]).toBe("/my_account/sign_in/");
+        expect(getCallArgs(handleAuthSpy)[1]).toBe("/my_account/sign_in/");
       });
 
       it("should set request body", () => {
@@ -213,7 +144,6 @@ describe("SecurityService", () => {
           login: "sign_in details",
           password: "sign_in password",
         });
-        const page = `<input name="authenticity_token" value="${defaultAuthToken}"></input>`;
         const expectation =
           "user%5Blogin%5D=sign_in+details&" +
           "user%5Bpassword%5D=sign_in+password&" +
@@ -221,37 +151,25 @@ describe("SecurityService", () => {
           "commit=Log%2Bin&" +
           `authenticity_token=${defaultAuthToken}`;
 
-        interceptAuth();
         spec.service.signIn(loginDetails);
-        expect(getFormDataArgs()(page).toString()).toBe(expectation);
-      });
-
-      it("should throw error if no authenticity token", () => {
-        interceptAuth();
-        spec.service.signIn(defaultLoginDetails);
-        expect(function () {
-          getFormDataArgs()("");
-        }).toThrowError();
+        expect(getFormData(defaultAuthToken)).toBe(expectation);
       });
     });
 
     describe("signUp", () => {
       it("should call handleAuth", () => {
-        interceptAuth();
         spec.service.signUp(defaultRegisterDetails);
-        expect(spec.service["handleAuth"]).toHaveBeenCalled();
+        expect(handleAuthSpy).toHaveBeenCalled();
       });
 
       it("should call handleAuth with correct form endpoint", () => {
-        interceptAuth();
         spec.service.signUp(defaultRegisterDetails);
-        expect(getCallArgs()[0]).toBe("/my_account/sign_up/");
+        expect(getCallArgs(handleAuthSpy)[0]).toBe("/my_account/sign_up/");
       });
 
       it("should call handleAuth with correct auth endpoint", () => {
-        interceptAuth();
         spec.service.signUp(defaultRegisterDetails);
-        expect(getCallArgs()[1]).toBe("/my_account/");
+        expect(getCallArgs(handleAuthSpy)[1]).toBe("/my_account/");
       });
 
       it("should set request body", () => {
@@ -262,7 +180,6 @@ describe("SecurityService", () => {
           passwordConfirmation: "sign_up password",
           recaptchaToken: "xxxxxxxxxx",
         });
-        const page = `<input name="authenticity_token" value="${defaultAuthToken}"></input>`;
         const expectation =
           "user%5Buser_name%5D=sign_up+details&" +
           "user%5Bemail%5D=sign_up%40email.com&" +
@@ -273,17 +190,30 @@ describe("SecurityService", () => {
           "g-recaptcha-response-data%5Bregister%5D=xxxxxxxxxx&" +
           "g-recaptcha-response=";
 
-        interceptAuth();
         spec.service.signUp(registerDetails);
-        expect(getFormDataArgs()(page).toString()).toBe(expectation);
+        expect(getFormData(defaultAuthToken)).toBe(expectation);
       });
 
-      it("should throw error if no authenticity token", () => {
-        interceptAuth();
+      it("should throw error if username is not unique", () => {
+        const response =
+          '<input id="user_user_name" />' +
+          '<span class="help-block">has already been taken</span>';
+
         spec.service.signUp(defaultRegisterDetails);
         expect(function () {
-          getFormDataArgs()("");
-        }).toThrowError();
+          getCallArgs(handleAuthSpy)[3](response);
+        }).toThrowError("Username has already been taken.");
+      });
+
+      it("should throw error if email is not unique", () => {
+        const response =
+          '<input id="user_email" />' +
+          '<span class="help-block">has already been taken</span>';
+
+        spec.service.signUp(defaultRegisterDetails);
+        expect(function () {
+          getCallArgs(handleAuthSpy)[3](response);
+        }).toThrowError("Email address has already been taken.");
       });
 
       it("should throw error if no recaptcha token", () => {
@@ -293,219 +223,177 @@ describe("SecurityService", () => {
         });
         const page = `<input name="authenticity_token" value="${defaultAuthToken}"></input>`;
 
-        interceptAuth();
         spec.service.signUp(registerDetails);
         expect(function () {
-          getFormDataArgs()(page);
+          getFormData(page);
         }).toThrowError();
       });
     });
   });
 
   describe("handleAuth", () => {
+    let makeFormRequestSpy: jasmine.Spy;
+    let sessionUserSpy: jasmine.Spy;
+    let userSpy: jasmine.Spy;
+
     function handleAuth(inputs?: {
       formEndpoint?: string;
       authEndpoint?: string;
       getFormData?: (page: string) => URLSearchParams;
-      next?: (value: string) => void;
-      error?: (error: any) => void;
-      complete?: () => void;
+      pageValidation?: (page: string) => void;
     }) {
-      spec.service["handleAuth"](
+      return spec.service["handleAuth"](
         inputs?.formEndpoint ?? "/broken_link",
         inputs?.authEndpoint ?? "/broken_link",
-        inputs?.getFormData ?? (() => new URLSearchParams())
-      ).subscribe(
-        inputs?.next ?? noop,
-        inputs?.error ?? noop,
-        inputs?.complete
+        inputs?.getFormData ?? (() => new URLSearchParams()),
+        inputs?.pageValidation ?? (() => {})
       );
     }
 
-    describe("1st Request: formHtmlRequest", () => {
-      beforeEach(() => {
-        interceptDataRequest();
-        interceptSessionUser(defaultSessionUser);
-        interceptUser(defaultUser);
+    function interceptSessionUser(model: SessionUser, error?: ApiErrorDetails) {
+      sessionUserSpy = jasmine.createSpy("apiShow");
+      spec.service["apiShow"] = sessionUserSpy;
+      return intercept(sessionUserSpy, model, error);
+    }
+
+    function interceptUser(model: User, error?: ApiErrorDetails) {
+      userSpy = spyOn(userApi, "show");
+      return intercept(userSpy, model, error);
+    }
+
+    function interceptMakeFormRequest(error?: ApiErrorDetails) {
+      makeFormRequestSpy = jasmine.createSpy("makeFormRequest");
+      spec.service["makeFormRequest"] = makeFormRequestSpy;
+      return intercept(
+        makeFormRequestSpy,
+        !error ? "<html></html>" : undefined,
+        error
+      );
+    }
+
+    describe("1st Request: makeFormRequest", () => {
+      it("should call makeFormRequest", () => {
+        interceptMakeFormRequest();
+        handleAuth().subscribe(noop, noop);
+        expect(makeFormRequestSpy).toHaveBeenCalled();
       });
 
-      it("should call formHtmlRequest", async () => {
-        interceptHtmlRequest("<html></html>");
-        handleAuth({ formEndpoint: "/form_html_link" });
-        expect(spec.service["formHtmlRequest"]).toHaveBeenCalled();
+      it("should call makeFormRequest with formEndpoint", () => {
+        interceptMakeFormRequest();
+        handleAuth({ formEndpoint: "/form_html_link" }).subscribe(noop, noop);
+        expect(getCallArgs(makeFormRequestSpy)[0]).toBe("/form_html_link");
       });
 
-      it("should call formHtmlRequest with path", async () => {
-        interceptHtmlRequest("<html></html>");
-        handleAuth({ formEndpoint: "/form_html_link" });
-        expect(spec.service["formHtmlRequest"]).toHaveBeenCalledWith(
-          "/form_html_link"
-        );
+      it("should call makeFormRequest with authEndpoint", () => {
+        interceptMakeFormRequest();
+        handleAuth({ authEndpoint: "/auth_html_link" }).subscribe(noop, noop);
+        expect(getCallArgs(makeFormRequestSpy)[1]).toBe("/auth_html_link");
       });
 
-      it("should handle invalid formHtmlRequest response", (done) => {
-        interceptHtmlRequest(123456789);
+      it("should call makeFormRequest with getFormData", () => {
+        const formData = () => new URLSearchParams();
+        interceptMakeFormRequest();
+        handleAuth({ getFormData: formData }).subscribe(noop, noop);
+        expect(getCallArgs(makeFormRequestSpy)[2]).toBe(formData);
+      });
+
+      it("should perform additional page validation", (done) => {
+        interceptMakeFormRequest();
         handleAuth({
-          error: (err: ApiErrorDetails) => {
-            expect(err.message).toEqual("Failed to retrieve auth form");
-            done();
+          pageValidation: () => {
+            throw Error("custom error");
           },
+        }).subscribe(shouldNotSucceed, (err) => {
+          expect(err).toEqual({
+            status: unknownErrorCode,
+            message: "custom error",
+          } as ApiErrorDetails);
+          done();
         });
       });
 
-      it("should handle formHtmlRequest failure", (done) => {
-        interceptHtmlRequest(undefined, defaultError);
-        handleAuth({
-          error: (err) => {
-            expect(err).toEqual(defaultError);
-            done();
-          },
+      it("should handle makeFormRequest failure", (done) => {
+        interceptMakeFormRequest(defaultError);
+        handleAuth().subscribe(shouldNotSucceed, (err) => {
+          expect(err).toEqual(defaultError);
+          done();
         });
       });
     });
 
-    describe("2nd Request: formDataRequest", () => {
-      let initialRequests: Promise<any>;
+    describe("2nd Request: Get session user", () => {
+      let initialSteps: Promise<any>;
 
       beforeEach(() => {
-        initialRequests = interceptHtmlRequest("<html></html>");
-        interceptSessionUser(defaultSessionUser);
-        interceptUser(defaultUser);
-      });
-
-      it("should call formDataRequest", async () => {
-        const formData = new URLSearchParams({ test: "example" });
-        interceptDataRequest();
-        handleAuth({
-          authEndpoint: "/form_data_link",
-          getFormData: () => formData,
-        });
-        await initialRequests;
-        expect(spec.service["formDataRequest"]).toHaveBeenCalled();
-      });
-
-      it("should call formDataRequest with path and formData", async () => {
-        const formData = new URLSearchParams({ test: "example" });
-        interceptDataRequest();
-        handleAuth({
-          authEndpoint: "/form_data_link",
-          getFormData: () => formData,
-        });
-        await initialRequests;
-        expect(spec.service["formDataRequest"]).toHaveBeenCalledWith(
-          "/form_data_link",
-          formData
-        );
-      });
-
-      it("should handle getFormData throwing error", (done) => {
-        interceptDataRequest();
-        handleAuth({
-          getFormData: () => {
-            throw new Error("custom error message");
-          },
-          error: (err: ApiErrorDetails) => {
-            expect(err.message).toBe("custom error message");
-            done();
-          },
-        });
-      });
-
-      it("should handle formDataRequest failure", (done) => {
-        interceptDataRequest(defaultError);
-        handleAuth({
-          error: (err: ApiErrorDetails) => {
-            expect(err).toEqual(defaultError);
-            done();
-          },
-        });
-      });
-    });
-
-    describe("3rd Request: Get session user", () => {
-      let initialRequests: Promise<any>;
-
-      beforeEach(() => {
-        initialRequests = Promise.all([
-          interceptHtmlRequest("<html></html>"),
-          interceptDataRequest(),
-        ]);
-        interceptUser(defaultUser);
+        initialSteps = interceptMakeFormRequest();
       });
 
       it("should request session user details", async () => {
         interceptSessionUser(defaultSessionUser);
-        handleAuth();
-        await initialRequests;
-        expect(spec.service["apiShow"]).toHaveBeenCalled();
+        handleAuth().subscribe(noop, noop);
+        await initialSteps;
+        expect(sessionUserSpy).toHaveBeenCalled();
       });
 
       it("should request session user details with anti cache timestamp", async () => {
         interceptSessionUser(defaultSessionUser);
-        handleAuth();
-        await initialRequests;
+        handleAuth().subscribe(noop, noop);
+        await initialSteps;
 
         // Validate timestamp within 1000 ms
         const timestamp = Math.floor(Date.now() / 1000);
-        const argument = (spec.service[
-          "apiShow"
-        ] as jasmine.Spy).calls.mostRecent().args[0];
-        expect(argument).toContain("/security/user?antiCache=" + timestamp);
+        expect(getCallArgs(sessionUserSpy)[0]).toContain(
+          "/security/user?antiCache=" + timestamp
+        );
       });
 
       it("should handle session user details failure", (done) => {
         interceptSessionUser(undefined, defaultError);
-        handleAuth({
-          error: (err: ApiErrorDetails) => {
-            expect(err).toEqual(defaultError);
-            done();
-          },
+        handleAuth().subscribe(shouldNotSucceed, (err) => {
+          expect(err).toEqual(defaultError);
+          done();
         });
       });
     });
 
-    describe("4th Request: Get user", () => {
-      let initialRequests: Promise<any>;
+    describe("3rd Request: Get user", () => {
+      let initialSteps: Promise<any>;
 
       beforeEach(() => {
-        initialRequests = Promise.all([
-          interceptHtmlRequest("<html></html>"),
-          interceptDataRequest(),
+        initialSteps = Promise.all([
+          interceptMakeFormRequest(),
           interceptSessionUser(defaultSessionUser),
         ]);
       });
 
       it("should request user details", async () => {
         interceptUser(defaultUser);
-        handleAuth();
-        await initialRequests;
-        expect(userApi.show).toHaveBeenCalled();
+        handleAuth().subscribe(noop, noop);
+        await initialSteps;
+        expect(userSpy).toHaveBeenCalled();
       });
 
       it("should handle user details failure", (done) => {
         interceptUser(undefined, defaultError);
-        handleAuth({
-          error: (err: ApiErrorDetails) => {
-            expect(err).toEqual(defaultError);
-            done();
-          },
+        handleAuth().subscribe(shouldNotSucceed, (err) => {
+          expect(err).toEqual(defaultError);
+          done();
         });
       });
     });
 
     describe("success", () => {
-      async function interceptRequests() {
+      async function initialSteps() {
         return Promise.all([
-          interceptHtmlRequest("<html></html>"),
-          interceptDataRequest(),
+          interceptMakeFormRequest(),
           interceptSessionUser(defaultSessionUser),
           interceptUser(defaultUser),
         ]);
       }
 
       it("should store session user in local storage", async () => {
-        const promise = interceptRequests();
-        handleAuth();
+        const promise = initialSteps();
+        handleAuth().subscribe(noop, noop);
         await promise;
         expect(spec.service.getLocalUser()).toEqual(
           new SessionUser({
@@ -520,31 +408,25 @@ describe("SecurityService", () => {
         trigger.subscribe(noop, noop, shouldNotComplete);
         spyOn(trigger, "next").and.callThrough();
         expect(trigger.next).toHaveBeenCalledTimes(0);
-        const promise = interceptRequests();
-        handleAuth();
+        const promise = initialSteps();
+        handleAuth().subscribe(noop, noop);
         await promise;
         expect(trigger.next).toHaveBeenCalledTimes(1);
       });
 
       it("should call next", (done) => {
-        interceptRequests();
-        handleAuth({
-          next: () => {
-            expect(true).toBeTrue();
-            done();
-          },
-          error: shouldNotFail,
-        });
+        initialSteps();
+        handleAuth().subscribe(() => {
+          expect(true).toBeTrue();
+          done();
+        }, shouldNotFail);
       });
 
       it("should complete observable", (done) => {
-        interceptRequests();
-        handleAuth({
-          error: shouldNotFail,
-          complete: () => {
-            expect(true).toBeTrue();
-            done();
-          },
+        initialSteps();
+        handleAuth().subscribe(noop, shouldNotFail, () => {
+          expect(true).toBeTrue();
+          done();
         });
       });
     });
@@ -553,134 +435,11 @@ describe("SecurityService", () => {
       it("should call clearData", async () => {
         spec.service["clearData"] = jasmine.createSpy("clearData").and.stub();
         spec.service["storeLocalUser"](defaultSessionUser);
-        const promise = interceptHtmlRequest(undefined, defaultError);
-        handleAuth();
+        const promise = interceptMakeFormRequest(defaultError);
+        handleAuth().subscribe(noop, noop);
         await promise;
         expect(spec.service["clearData"]).toHaveBeenCalled();
       });
-    });
-  });
-
-  describe("formHtmlRequest", () => {
-    function interceptRequest(path: string) {
-      return spec.expectOne(apiRoot + path, HttpMethod.GET);
-    }
-
-    function formHtmlRequest(
-      path: string,
-      next: (value: string) => void = noop,
-      error: (error: any) => void = noop
-    ) {
-      spec.service["formHtmlRequest"](path).subscribe(next, error);
-    }
-
-    it("should create get request", () => {
-      formHtmlRequest("/broken_link");
-      expect(interceptRequest("/broken_link")).toBeInstanceOf(TestRequest);
-    });
-
-    it("should set responseType to text", () => {
-      formHtmlRequest("/broken_link");
-      const responseType = interceptRequest("/broken_link").request
-        .responseType;
-      expect(responseType).toBe("text");
-    });
-
-    it("should set accept header to text/html", () => {
-      formHtmlRequest("/broken_link");
-      const headers = interceptRequest("/broken_link").request.headers;
-      expect(headers.get("Accept")).toBe("text/html");
-    });
-
-    it("should not set content type headers", () => {
-      formHtmlRequest("/broken_link");
-      const headers = interceptRequest("/broken_link").request.headers;
-      expect(headers.get("Content-Type")).not.toBeTruthy();
-    });
-
-    it("should return page contents", (done) => {
-      const response = "<html></html>";
-      formHtmlRequest("/broken_link", (page) => {
-        expect(page).toBe(response);
-        done();
-      });
-      interceptRequest("/broken_link").flush(response);
-    });
-
-    it("should handle api error", (done) => {
-      formHtmlRequest("/broken_link", shouldNotSucceed, (err) => {
-        expect(err?.status).toBe(500);
-        done();
-      });
-      interceptRequest("/broken_link").flush(
-        generateApiErrorResponse("Internal Server Error"),
-        { status: 500, statusText: "Internal Server Error" }
-      );
-    });
-  });
-
-  describe("formDataRequest", () => {
-    function interceptRequest(path: string) {
-      return spec.expectOne(apiRoot + path, HttpMethod.POST);
-    }
-
-    function formDataRequest(
-      path: string,
-      formData: URLSearchParams = new URLSearchParams(),
-      next: (value: string) => void = noop,
-      error: (error: any) => void = noop
-    ) {
-      spec.service["formDataRequest"](path, formData).subscribe(next, error);
-    }
-
-    it("should create post request", () => {
-      formDataRequest("/broken_link");
-      expect(interceptRequest("/broken_link")).toBeInstanceOf(TestRequest);
-    });
-
-    it("should set responseType to text", () => {
-      formDataRequest("/broken_link");
-      const responseType = interceptRequest("/broken_link").request
-        .responseType;
-      expect(responseType).toBe("text");
-    });
-
-    it("should set accept header to text/html", () => {
-      formDataRequest("/broken_link");
-      const headers = interceptRequest("/broken_link").request.headers;
-      expect(headers.get("Accept")).toBe("text/html");
-    });
-
-    it("should set content type header to form-urlencoded", () => {
-      formDataRequest("/broken_link");
-      const headers = interceptRequest("/broken_link").request.headers;
-      expect(headers.get("Content-Type")).toBe(
-        "application/x-www-form-urlencoded"
-      );
-    });
-
-    it("should insert form data", () => {
-      const formData = new URLSearchParams({
-        "user[login]": "example username",
-        "user[password]": "Ex@mp1e_P@55w0rd+=",
-      });
-      formDataRequest("/broken_link", formData);
-      const body = interceptRequest("/broken_link").request.body;
-      expect(body).toBe(
-        "user%5Blogin%5D=example+username&" +
-          "user%5Bpassword%5D=Ex%40mp1e_P%4055w0rd%2B%3D"
-      );
-    });
-
-    it("should handle api error", (done) => {
-      formDataRequest("/broken_link", undefined, shouldNotSucceed, (err) => {
-        expect(err?.status).toBe(500);
-        done();
-      });
-      interceptRequest("/broken_link").flush(
-        generateApiErrorResponse("Internal Server Error"),
-        { status: 500, statusText: "Internal Server Error" }
-      );
     });
   });
 
@@ -766,22 +525,23 @@ describe("SecurityService", () => {
     });
 
     it("should handle error", () => {
-      createError("/security/", apiErrorDetails);
+      const error = generateApiErrorDetails();
+      createError("/security/", error);
       spec.service.signOut().subscribe(shouldNotSucceed, (err) => {
-        expect(err).toEqual(apiErrorDetails);
+        expect(err).toEqual(error);
       });
     });
 
     it("should clear cookies", () => {
       spyOn(spec.service["cookies"], "deleteAll").and.stub();
-      createError("/security/", apiErrorDetails);
+      createError("/security/", generateApiErrorDetails());
       spec.service.signOut().subscribe(noop, noop);
       expect(spec.service["cookies"].deleteAll).toHaveBeenCalledTimes(1);
     });
 
     it("should trigger authTrigger on error", () => {
       const spy = jasmine.createSpy();
-      createError("/security/", apiErrorDetails);
+      createError("/security/", generateApiErrorDetails());
 
       spec.service
         .getAuthTrigger()

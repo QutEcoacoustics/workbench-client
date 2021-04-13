@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import {
@@ -26,7 +25,7 @@ export interface IBookmark extends HasCreatorAndUpdater, HasDescription {
   category?: string;
 }
 
-export class Bookmark extends AbstractModel implements IBookmark {
+export class Bookmark extends AbstractModel<IBookmark> implements IBookmark {
   public readonly kind = "Bookmark";
   @bawPersistAttr
   public readonly id?: Id;
@@ -56,10 +55,6 @@ export class Bookmark extends AbstractModel implements IBookmark {
   public updater?: User;
   @hasOne<Bookmark, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
-
-  public constructor(bookmark: IBookmark, injector?: Injector) {
-    super(bookmark, injector);
-  }
 
   public get viewUrl(): string {
     return listenRecordingMenuItem.route.format(

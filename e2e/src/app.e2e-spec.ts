@@ -1,13 +1,10 @@
 import { AppPage } from "./app.po";
-import { LoginPage } from "./login.po";
 
 describe("workbench-client", () => {
   let page: AppPage;
-  let loginPage: LoginPage;
 
   beforeEach(() => {
     page = new AppPage();
-    loginPage = new LoginPage();
     page.navigateTo();
   });
 

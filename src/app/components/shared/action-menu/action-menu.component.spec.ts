@@ -1,4 +1,3 @@
-import { Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { defaultMenu } from "@helpers/page/defaultMenus";
 import { IPageInfo } from "@helpers/page/pageInfo";

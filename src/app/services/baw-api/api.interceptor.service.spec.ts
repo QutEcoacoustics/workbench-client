@@ -11,21 +11,15 @@ import {
   HttpMethod,
   SpectatorHttp,
 } from "@ngneat/spectator";
-import { ConfigService } from "@services/config/config.service";
 import { generateApiErrorResponse } from "@test/fakes/ApiErrorDetails";
 import { generateSessionUser } from "@test/fakes/User";
 import { noop } from "rxjs";
 import { ApiResponse } from "./baw-api.service";
-import {
-  apiErrorInfoDetails,
-  shouldNotFail,
-  shouldNotSucceed,
-} from "./baw-api.service.spec";
+import { shouldNotFail, shouldNotSucceed } from "./baw-api.service.spec";
 
 describe("BawApiInterceptor", () => {
   let apiRoot: string;
   let http: HttpClient;
-  let config: ConfigService;
   let spec: SpectatorHttp<SecurityService>;
   const createService = createHttpFactory({
     service: SecurityService,
@@ -48,7 +42,6 @@ describe("BawApiInterceptor", () => {
   beforeEach(() => {
     spec = createService();
     http = spec.inject(HttpClient);
-    config = spec.inject(ConfigService);
     apiRoot = spec.inject(API_ROOT);
   });
 
@@ -82,7 +75,7 @@ describe("BawApiInterceptor", () => {
 
     it("should handle api error response with info", () => {
       const error = generateApiErrorResponse("Unprocessable Entity", {
-        info: apiErrorInfoDetails.info,
+        info: { name: ["has already been taken"] },
       });
 
       http

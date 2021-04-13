@@ -35,7 +35,7 @@ export function generateUser(id?: Id, isAdmin?: boolean): Required<IUser> {
 
 export function generateSessionUser(): ISessionUser {
   return {
-    authToken: modelData.random.alphaNumeric(20),
+    authToken: modelData.authToken(),
     userName: modelData.internet.userName(),
   };
 }

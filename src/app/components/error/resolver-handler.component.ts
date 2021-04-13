@@ -1,10 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { apiReturnCodes } from "@baw-api/baw-api.service";
+import { unknownErrorCode } from "@baw-api/baw-api.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
+import httpCodes from "http-status";
 
 @Component({
   template: `
@@ -27,7 +28,7 @@ export class ResolverHandlerComponent
       (err) => {
         console.error("ErrorHandlerComponent: ", err);
         this.error = {
-          status: apiReturnCodes.unknown,
+          status: unknownErrorCode,
           message: "Unable to load data from Server.",
         };
       }
@@ -52,7 +53,7 @@ export class ResolverHandlerComponent
 
       this.error = data[key].error;
       // If unauthorized response, no point downgrading to "Not Found"
-      if (this.error.status === apiReturnCodes.unauthorized) {
+      if (this.error.status === httpCodes.UNAUTHORIZED) {
         return;
       }
     }

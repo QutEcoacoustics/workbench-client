@@ -1,6 +1,5 @@
-import { HttpTestingController } from "@angular/common/http/testing";
 import { DebugElement } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -317,14 +316,14 @@ describe("FormComponent", () => {
     });
   });
 
-  // TODO Implement
+  // TODO Add tests for recaptcha
   describe("Recaptcha", () => {
     it("should disable submit button while loading recaptcha seed", () => {});
-
     it("should re-enable submit button when recaptcha seed loaded", () => {});
     it("should display error notification if recaptcha fails to load", () => {});
     it("should insert recaptcha token into model on submit", () => {});
   });
 
   // TODO Add tests for spinner
+  // TODO Add test for subTitle html input
 });

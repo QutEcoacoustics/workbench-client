@@ -3,7 +3,6 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnDestroy,
   Output,
   ViewEncapsulation,
 } from "@angular/core";
@@ -12,7 +11,7 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { NgRecaptcha3Service } from "ng-recaptcha3";
+import { ReCaptchaV3Service } from "ngx-captcha";
 import { ToastrService } from "ngx-toastr";
 
 /**
@@ -25,9 +24,7 @@ import { ToastrService } from "ngx-toastr";
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
 })
-export class FormComponent
-  extends withUnsubscribe()
-  implements OnChanges, OnDestroy {
+export class FormComponent extends withUnsubscribe() implements OnChanges {
   @Input() public btnColor: BootstrapColorTypes = "primary";
   @Input() public fields: FormlyFieldConfig[] = [];
   @Input() public model: Record<string, any> = {};
@@ -41,7 +38,6 @@ export class FormComponent
    * seed is loaded
    */
   @Input() public recaptchaSeed?: RecaptchaState;
-  private loadingSeed: boolean;
 
   // Rename is required to stop formly from hijacking the variable
   // eslint-disable-next-line @angular-eslint/no-output-rename
@@ -51,35 +47,18 @@ export class FormComponent
 
   public constructor(
     private notifications: ToastrService,
-    private recaptcha: NgRecaptcha3Service
+    private recaptcha: ReCaptchaV3Service
   ) {
     super();
   }
 
-  public async ngOnChanges() {
-    if (!isInstantiated(this.recaptchaSeed) || this.loadingSeed) {
+  public ngOnChanges() {
+    if (!isInstantiated(this.recaptchaSeed)) {
       return;
     }
 
-    if (this.recaptchaSeed.state === "loading") {
-      this.submitLoading = true;
-    } else if (this.recaptchaSeed.state === "loaded") {
-      this.loadingSeed = true;
-      const status = (await this.recaptcha.init(
-        this.recaptchaSeed.seed
-      )) as RecaptchaStatus;
-
-      if (status === "error") {
-        this.notifications.error("Failed to load recaptcha");
-        return;
-      }
-
-      this.submitLoading = false;
-    }
-  }
-
-  public ngOnDestroy() {
-    this.recaptcha.destroy();
+    // Submit button should be inactive while retrieving recaptcha seed
+    this.submitLoading = this.recaptchaSeed.state === "loading";
   }
 
   /**
@@ -88,14 +67,24 @@ export class FormComponent
    * @param model Form response
    */
   public async onSubmit(model: any) {
-    if (this.form.status === "VALID") {
-      return this.submit.emit(
-        this.recaptchaSeed
-          ? { ...model, recaptchaToken: await this.recaptcha.getToken() }
-          : model
-      );
-    } else {
+    if (this.form.status !== "VALID") {
       this.notifications.error("Please fill all required fields.");
+      return;
+    }
+
+    if (!this.recaptchaSeed) {
+      return this.submit.emit(model);
+    }
+
+    try {
+      const { seed, action } = this.recaptchaSeed as RecaptchaLoadedState;
+      const token = await this.recaptcha.executeAsPromise(seed, action);
+      return this.submit.emit({ ...model, recaptchaToken: token });
+    } catch (err) {
+      console.error(err);
+      this.notifications.error(
+        "Recaptcha failed, please try refreshing the website."
+      );
     }
   }
 }
@@ -106,6 +95,7 @@ interface RecaptchaLoadingState {
 interface RecaptchaLoadedState {
   state: "loaded";
   seed: string;
+  action: string;
 }
 export type RecaptchaState = RecaptchaLoadedState | RecaptchaLoadingState;
 export type RecaptchaStatus = "success" | "error";

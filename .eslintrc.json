@@ -1,45 +1,45 @@
 {
-  "root": true,
   "ignorePatterns": ["projects/**/*"],
   "overrides": [
     {
-      "files": ["*.ts"],
-      "parserOptions": {
-        "project": ["tsconfig.json", "tsconfig.e2e.json"],
-        "createDefaultProgram": true
-      },
       "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
         "plugin:@angular-eslint/ng-cli-compat",
         "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
-        "plugin:@angular-eslint/template/process-inline-templates"
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "plugin:import/errors",
+        "plugin:import/warnings",
+        "plugin:import/typescript"
       ],
-      "plugins": ["eslint-plugin-rxjs", "rxjs-angular"],
+      "files": ["*.ts"],
+      "parserOptions": {
+        "createDefaultProgram": true,
+        "project": ["tsconfig.json", "tsconfig.e2e.json"]
+      },
+      "plugins": [
+        "eslint-plugin-rxjs",
+        "rxjs-angular",
+        "@typescript-eslint",
+        "import"
+      ],
       "rules": {
-        "no-implicit-globals": "error",
-        "no-underscore-dangle": "off",
-        "@typescript-eslint/member-ordering": "off",
-        "no-shadow": "off",
-        "@typescript-eslint/no-shadow": ["error"],
-        "quotes": ["error", "double", { "avoidEscape": true }],
-        "@typescript-eslint/quotes": [
-          "error",
-          "double",
-          { "avoidEscape": true }
-        ],
+        "import/no-unresolved": "off",
+        "import/no-deprecated": "error",
         "@angular-eslint/component-selector": [
           "error",
           {
-            "type": "element",
             "prefix": ["baw"],
-            "style": "kebab-case"
+            "style": "kebab-case",
+            "type": "element"
           }
         ],
         "@angular-eslint/directive-selector": [
           "error",
           {
-            "type": "attribute",
             "prefix": ["baw"],
-            "style": "camelCase"
+            "style": "camelCase",
+            "type": "attribute"
           }
         ],
         "@angular-eslint/use-component-view-encapsulation": "error",
@@ -52,6 +52,7 @@
             "accessibility": "explicit"
           }
         ],
+        "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/member-delimiter-style": [
           "off",
           {
@@ -65,26 +66,57 @@
             }
           }
         ],
+        "@typescript-eslint/member-ordering": "off",
+        "@typescript-eslint/no-shadow": ["error"],
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_"
+          }
+        ],
+        "@typescript-eslint/quotes": [
+          "error",
+          "double",
+          {
+            "avoidEscape": true
+          }
+        ],
         "@typescript-eslint/semi": ["off", null],
         "arrow-parens": ["off", "always"],
         "brace-style": ["error", "1tbs"],
         "eqeqeq": ["error", "always"],
         "guard-for-in": "off",
         "import/order": "error",
+        "no-implicit-globals": "error",
         "no-multiple-empty-lines": "error",
+        "no-shadow": "off",
+        "no-underscore-dangle": "off",
         "prefer-arrow/prefer-arrow-functions": "off",
+        "quotes": [
+          "error",
+          "double",
+          {
+            "avoidEscape": true
+          }
+        ],
+        "rxjs-angular/prefer-takeuntil": [
+          "error",
+          {
+            "checkDestroy": false
+          }
+        ],
         "rxjs/no-create": "error",
         "rxjs/no-internal": "error",
         "rxjs/no-nested-subscribe": "error",
         "rxjs/no-unsafe-takeuntil": "error",
-        "rxjs-angular/prefer-takeuntil": ["error", { "checkDestroy": false }],
         "space-before-function-paren": "off"
       }
     },
     {
-      "files": ["*.html"],
       "extends": ["plugin:@angular-eslint/template/recommended"],
+      "files": ["*.html"],
       "rules": {}
     }
-  ]
+  ],
+  "root": true
 }

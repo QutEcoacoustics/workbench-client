@@ -1,4 +1,3 @@
-import { componentFactoryName } from "@angular/compiler";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";

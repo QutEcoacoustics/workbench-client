@@ -27,7 +27,7 @@
       }
     },
     {
-      "key": "steps",
+      "key": "description",
       "type": "textarea",
       "templateOptions": {
         "label": "Steps to reproduce issue",
@@ -36,7 +36,7 @@
       }
     },
     {
-      "key": "expect",
+      "key": "content",
       "type": "textarea",
       "templateOptions": {
         "label": "What do you expect to happen? What actually happens?",

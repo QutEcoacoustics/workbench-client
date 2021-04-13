@@ -4,6 +4,7 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IUser, User } from "@models/User";
+import httpCodes from "http-status";
 import { Observable, of, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import {
@@ -15,7 +16,7 @@ import {
   option,
   StandardApi,
 } from "../api-common";
-import { apiReturnCodes, Filters } from "../baw-api.service";
+import { Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
 const userId: IdParamOptional<User> = id;
@@ -46,10 +47,10 @@ export class AccountsService extends StandardApi<User> {
       // Return unknown or deleted user depending on error code
       catchError((err: ApiErrorDetails) => {
         switch (err.status) {
-          case apiReturnCodes.unauthorized:
+          case httpCodes.UNAUTHORIZED:
             // Return unknown user, this only occurs when user is anonymous to the logged in/guest user
             return of(User.unknownUser);
-          case apiReturnCodes.notFound:
+          case httpCodes.NOT_FOUND:
             // Return deleted user, this only occurs when a user is soft-deleted
             return of(User.deletedUser);
           default:

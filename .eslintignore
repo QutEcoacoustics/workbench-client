@@ -1,7 +1,7 @@
 node_modules/
 coverage/
 dist/
-src/assets/old-client/
+src/assets/
 baw-client/
 decorate-angular-cli.js
 e2e/protractor.conf.js

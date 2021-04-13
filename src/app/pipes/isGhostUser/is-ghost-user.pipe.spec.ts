@@ -23,17 +23,17 @@ describe("IsGhostUserPipe", () => {
 
   [
     {
-      type: "unknown" as "unknown",
+      type: "unknown" as const,
       unknown: true,
       deleted: false,
     },
     {
-      type: "deleted" as "deleted",
+      type: "deleted" as const,
       unknown: false,
       deleted: true,
     },
     {
-      type: "all" as "all",
+      type: "all" as const,
       unknown: true,
       deleted: true,
     },

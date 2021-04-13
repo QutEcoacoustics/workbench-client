@@ -12,7 +12,6 @@ import { AdminAnalysisJobsComponent } from "./list.component";
 
 describe("AdminAnalysisJobsComponent", () => {
   let api: AnalysisJobsService;
-  let defaultModel: AnalysisJob;
   let defaultModels: AnalysisJob[];
   let fixture: ComponentFixture<AdminAnalysisJobsComponent>;
 
@@ -30,7 +29,6 @@ describe("AdminAnalysisJobsComponent", () => {
     fixture = TestBed.createComponent(AdminAnalysisJobsComponent);
     api = TestBed.inject(AnalysisJobsService);
 
-    defaultModel = new AnalysisJob(generateAnalysisJob());
     defaultModels = [];
     for (let i = 0; i < defaultApiPageSize; i++) {
       defaultModels.push(new AnalysisJob(generateAnalysisJob()));

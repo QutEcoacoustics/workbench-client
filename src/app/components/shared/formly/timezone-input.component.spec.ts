@@ -27,10 +27,6 @@ describe("FormlyTimezoneInput", () => {
     ],
   });
 
-  function getInput() {
-    return spectator.query("input");
-  }
-
   function setup(options: FormlyTemplateOptions = {}) {
     formGroup = new FormGroup({ timezone: new FormControl("") });
     model = {};
