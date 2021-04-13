@@ -111,6 +111,7 @@ export abstract class SimpleFormTemplate<Model>
    *
    * @param model API response
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected onSuccess(model: Model | void): void {}
 
   /**
