@@ -67,7 +67,7 @@
     "ngx-captcha": "^9.0.1",
     "ngx-cookie-service": "^11.0.2",
     "ngx-device-detector": "^2.0.6",
-    "ngx-line-truncation": "^1.6.8",
+    "ngx-line-truncation": "^1.6.9",
     "ngx-toastr": "^13.2.1",
     "rxjs": "^6.6.6",
     "snazzy-info-window": "^1.1.1",
