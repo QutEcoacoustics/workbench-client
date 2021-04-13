@@ -4,7 +4,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 
 export const visualizeRoute = StrongRoute.newRoot().add(
   "visualize",
-  ({ siteIds, siteId, regionId, projectId, extent0, extent1, lane }) => {
+  ({ siteIds, siteId, projectId, extent0, extent1, lane }) => {
     const qsp = {
       extent0,
       extent1,

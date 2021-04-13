@@ -12,7 +12,6 @@ import { AdminAudioRecordingsComponent } from "./list.component";
 
 describe("AdminAudioRecordingsComponent", () => {
   let api: AudioRecordingsService;
-  let defaultModel: AudioRecording;
   let defaultModels: AudioRecording[];
   let fixture: ComponentFixture<AdminAudioRecordingsComponent>;
 
@@ -30,7 +29,6 @@ describe("AdminAudioRecordingsComponent", () => {
     fixture = TestBed.createComponent(AdminAudioRecordingsComponent);
     api = TestBed.inject(AudioRecordingsService);
 
-    defaultModel = new AudioRecording(generateAudioRecording());
     defaultModels = [];
     for (let i = 0; i < defaultApiPageSize; i++) {
       defaultModels.push(new AudioRecording(generateAudioRecording()));

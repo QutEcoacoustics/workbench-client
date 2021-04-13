@@ -13,7 +13,6 @@ import { CMS, CmsService } from "./cms.service";
 export const cmsRoot = testApiConfig.environment.apiRoot + "/cms/";
 
 describe("CmsService", () => {
-  let api: SecurityService;
   let spectator: SpectatorHttp<CmsService>;
   const createService = createHttpFactory({
     service: CmsService,
@@ -24,7 +23,6 @@ describe("CmsService", () => {
 
   beforeEach(() => {
     spectator = createService();
-    api = spectator.inject(SecurityService);
   });
 
   afterEach(() => spectator.controller.verify());

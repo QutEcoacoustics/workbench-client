@@ -12,7 +12,6 @@ import { AdminTagGroupsComponent } from "./list.component";
 
 describe("AdminTagGroupsComponent", () => {
   let api: TagGroupsService;
-  let defaultModel: TagGroup;
   let defaultModels: TagGroup[];
   let fixture: ComponentFixture<AdminTagGroupsComponent>;
 
@@ -30,7 +29,6 @@ describe("AdminTagGroupsComponent", () => {
     fixture = TestBed.createComponent(AdminTagGroupsComponent);
     api = TestBed.inject(TagGroupsService);
 
-    defaultModel = new TagGroup(generateTagGroup());
     defaultModels = [];
     for (let i = 0; i < defaultApiPageSize; i++) {
       defaultModels.push(new TagGroup(generateTagGroup()));

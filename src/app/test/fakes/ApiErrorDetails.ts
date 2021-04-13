@@ -1,6 +1,8 @@
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { ApiResponse, apiReturnCodes } from "@baw-api/baw-api.service";
+import { ApiResponse, unknownErrorCode } from "@baw-api/baw-api.service";
+import httpCodes from "http-status";
 
+// TODO Replace this with http-status numbers instead of string typing
 type HTTPStatus =
   | "Unauthorized"
   | "Not Found"
@@ -25,29 +27,29 @@ export function generateApiErrorDetails(
 
   switch (type) {
     case "Unauthorized":
-      status = apiReturnCodes.unauthorized;
+      status = httpCodes.UNAUTHORIZED;
       message = type;
       break;
     case "Not Found":
-      status = apiReturnCodes.notFound;
+      status = httpCodes.NOT_FOUND;
       message = type;
       break;
     case "Bad Request":
-      status = apiReturnCodes.badRequest;
+      status = httpCodes.BAD_REQUEST;
       message = type;
       break;
     case "Unprocessable Entity":
-      status = apiReturnCodes.unprocessableEntity;
+      status = httpCodes.UNPROCESSABLE_ENTITY;
       message = "Record could not be saved";
       break;
     case "Internal Server Error":
-      status = apiReturnCodes.internalServerFailure;
+      status = httpCodes.INTERNAL_SERVER_ERROR;
       message = "Internal Server Failure";
       break;
   }
 
   return {
-    status: custom?.status ?? status ?? apiReturnCodes.unknown,
+    status: custom?.status ?? status ?? unknownErrorCode,
     message: custom?.message ?? message ?? "Unknown",
     info: custom?.info ?? undefined,
   };

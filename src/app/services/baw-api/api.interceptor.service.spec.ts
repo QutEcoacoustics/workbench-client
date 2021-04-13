@@ -11,7 +11,6 @@ import {
   HttpMethod,
   SpectatorHttp,
 } from "@ngneat/spectator";
-import { ConfigService } from "@services/config/config.service";
 import { generateApiErrorResponse } from "@test/fakes/ApiErrorDetails";
 import { generateSessionUser } from "@test/fakes/User";
 import { noop } from "rxjs";
@@ -21,7 +20,6 @@ import { shouldNotFail, shouldNotSucceed } from "./baw-api.service.spec";
 describe("BawApiInterceptor", () => {
   let apiRoot: string;
   let http: HttpClient;
-  let config: ConfigService;
   let spec: SpectatorHttp<SecurityService>;
   const createService = createHttpFactory({
     service: SecurityService,
@@ -44,7 +42,6 @@ describe("BawApiInterceptor", () => {
   beforeEach(() => {
     spec = createService();
     http = spec.inject(HttpClient);
-    config = spec.inject(ConfigService);
     apiRoot = spec.inject(API_ROOT);
   });
 

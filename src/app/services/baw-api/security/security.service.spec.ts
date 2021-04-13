@@ -8,7 +8,6 @@ import { unknownErrorCode } from "@baw-api/baw-api.service";
 import { MockShowApiService } from "@baw-api/mock/apiMocks.service";
 import { SessionUser, User } from "@models/User";
 import { createHttpFactory, SpectatorHttp } from "@ngneat/spectator";
-import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateLoginDetails } from "@test/fakes/LoginDetails";
@@ -30,7 +29,6 @@ import {
 } from "./security.service";
 
 describe("SecurityService", () => {
-  let apiRoot: string;
   let defaultUser: User;
   let defaultSessionUser: SessionUser;
   let defaultRegisterDetails: RegisterDetails;
@@ -58,24 +56,11 @@ describe("SecurityService", () => {
     return nStepObservable(subject, () => response ?? error, !!error);
   }
 
-  function interceptHtmlRequest(page: any, error?: ApiErrorDetails) {
-    const spy = jasmine.createSpy("formHtmlRequest");
-    spec.service["formHtmlRequest"] = spy;
-    return intercept(spy, page, error);
-  }
-
-  function interceptDataRequest(error?: ApiErrorDetails) {
-    const spy = jasmine.createSpy("formDataRequest");
-    spec.service["formDataRequest"] = spy;
-    return intercept(spy, !error ? "<html></html>" : undefined, error);
-  }
-
   beforeEach(() => {
     localStorage.clear();
 
     spec = createService();
     userApi = spec.inject(UserService);
-    apiRoot = spec.inject(ConfigService).environment.apiRoot;
 
     defaultAuthToken = modelData.random.alphaNumeric(20);
     defaultError = generateApiErrorDetails();

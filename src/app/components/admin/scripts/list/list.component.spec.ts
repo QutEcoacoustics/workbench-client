@@ -12,7 +12,6 @@ import { AdminScriptsComponent } from "./list.component";
 
 describe("AdminScriptsComponent", () => {
   let api: ScriptsService;
-  let defaultModel: Script;
   let defaultModels: Script[];
   let fixture: ComponentFixture<AdminScriptsComponent>;
 
@@ -30,7 +29,6 @@ describe("AdminScriptsComponent", () => {
     fixture = TestBed.createComponent(AdminScriptsComponent);
     api = TestBed.inject(ScriptsService);
 
-    defaultModel = new Script(generateScript());
     defaultModels = [];
     for (let i = 0; i < defaultApiPageSize; i++) {
       defaultModels.push(new Script(generateScript(i)));

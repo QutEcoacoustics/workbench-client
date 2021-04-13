@@ -1,11 +1,9 @@
-import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { AbstractModel } from "@models/AbstractModel";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { Spectator } from "@ngneat/spectator";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { createScanner } from "typescript";
 
 export function assertPaginationTemplate<
   M extends AbstractModel,

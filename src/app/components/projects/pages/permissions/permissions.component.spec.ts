@@ -3,10 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import {
-  projectResolvers,
-  ProjectsService,
-} from "@baw-api/project/projects.service";
+import { projectResolvers } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
 import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
@@ -15,7 +12,6 @@ import { appLibraryImports } from "src/app/app.module";
 import { PermissionsComponent } from "./permissions.component";
 
 describe("PermissionsComponent", () => {
-  let api: ProjectsService;
   let component: PermissionsComponent;
   let defaultProject: Project;
   let fixture: ComponentFixture<PermissionsComponent>;
@@ -42,7 +38,6 @@ describe("PermissionsComponent", () => {
 
     fixture = TestBed.createComponent(PermissionsComponent);
     component = fixture.componentInstance;
-    api = TestBed.inject(ProjectsService);
 
     fixture.detectChanges();
   }

@@ -52,6 +52,7 @@ export abstract class AbstractModel<Model = Record<string, any>> {
    *
    * @param args Url arguments
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public getViewUrl(...args: any[]): string {
     return this.viewUrl;
   }

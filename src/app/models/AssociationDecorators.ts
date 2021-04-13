@@ -168,7 +168,7 @@ function createModelDecorator<
   ): AbstractModel | AbstractModel[] | Readonly<AbstractModel[]> {
     // Check for any backing models
     const backingFieldKey = "_" + identifierKey;
-    if (parent.hasOwnProperty(backingFieldKey)) {
+    if (Object.prototype.hasOwnProperty.call(parent, backingFieldKey)) {
       return parent[backingFieldKey];
     }
 
