@@ -1,0 +1,33 @@
+### This workflow is not part of the main workflow so that dependabot
+### is able to access repo secrets
+
+name: "Dependabot Automerge"
+
+on:
+  workflow_run:
+    workflows: ["Build, Test, and Publish"]
+    types:
+      - completed
+  
+jobs:
+  merge:
+    name: "auto-merge"
+    runs-on: "ubuntu-latest"
+
+    if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request' && github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: "Merge pull request"
+        uses: "actions/github-script@v2"
+        with:
+          github-token: "${{ secrets.AUTO_MERGE_TOKEN }}"
+          script: |
+            const pullRequest = context.payload.pull_request
+            const repository = context.repo
+
+            await github.pulls.merge({
+              merge_method: "squash",
+              owner: repository.owner,
+              pull_number: pullRequest.number,
+              repo: repository.repo,
+            })
