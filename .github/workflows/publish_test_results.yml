@@ -9,7 +9,6 @@ on:
 jobs:
   publish:
     name: "Publish Unit Tests Results"
-    needs: test
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
 
