@@ -20,11 +20,8 @@ jobs:
 
     steps:
       - name: "Determine pull request number" 
-        uses: 8BitJonny/gh-get-current-pr@v1
+        uses: jwalton/gh-find-current-pr@v1
         id: PR
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          filterOutClosed: true
       - name: "Merge pull request"
         uses: "actions/github-script@v2"
         if: success() && steps.PR.outputs.number
