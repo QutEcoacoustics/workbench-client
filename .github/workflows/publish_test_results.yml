@@ -9,6 +9,7 @@ on:
     types:
       - completed
 
+steps:
   publish:
     name: "Publish Unit Tests Results"
     runs-on: ubuntu-latest
