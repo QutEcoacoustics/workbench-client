@@ -19,17 +19,23 @@ jobs:
       github.event.workflow_run.conclusion == 'success'
 
     steps:
+      - name: "Determine pull request number" 
+        uses: 8BitJonny/gh-get-current-pr@v1
+        id: PR
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          filterOutClosed: true
       - name: "Merge pull request"
         uses: "actions/github-script@v2"
+        if: success() && steps.PR.outputs.number
         with:
           github-token: "${{ secrets.AUTO_MERGE_TOKEN }}"
           script: |
-            const pullRequest = context.payload.pull_request
             const repository = context.repo
 
             await github.pulls.merge({
               merge_method: "squash",
               owner: repository.owner,
-              pull_number: pullRequest.number,
+              pull_number: steps.PR.outputs.number,
               repo: repository.repo,
             })
