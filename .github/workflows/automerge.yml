@@ -21,10 +21,14 @@ jobs:
     steps:
       - name: "Determine pull request number" 
         uses: jwalton/gh-find-current-pr@v1
-        id: PR
+        id: PULL_REQUEST
+      - run: echo "Your PR is ${PR}"
+        env:
+          PR_DETAILS: ${{ toJSON(steps.PULL_REQUEST.outputs) }}
+        run: echo "$PR_DETAILS"
       - name: "Merge pull request"
         uses: "actions/github-script@v2"
-        if: success() && steps.PR.outputs.number
+        if: success() && steps.PULL_REQUEST.outputs.number
         with:
           github-token: "${{ secrets.AUTO_MERGE_TOKEN }}"
           script: |
@@ -33,6 +37,6 @@ jobs:
             await github.pulls.merge({
               merge_method: "squash",
               owner: repository.owner,
-              pull_number: steps.PR.outputs.number,
+              pull_number: steps.PULL_REQUEST.outputs.pr,
               repo: repository.repo,
             })
