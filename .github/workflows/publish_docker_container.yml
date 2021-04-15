@@ -10,7 +10,6 @@ jobs:
   publish:
     name: "Publish Docker Container"
     runs-on: "ubuntu-latest"
-    needs: ["test", "build"]
     # only on tag or commit to master
     if: >
       github.event.workflow_run.conclusion == 'success' &&
