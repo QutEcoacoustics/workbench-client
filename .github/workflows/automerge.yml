@@ -22,7 +22,7 @@ jobs:
       - name: "Determine pull request number" 
         uses: jwalton/gh-find-current-pr@v1
         id: PULL_REQUEST
-      - run: echo "Your PR is ${PR}"
+      - name: "Show PR Details"
         env:
           PR_DETAILS: ${{ toJSON(steps.PULL_REQUEST.outputs) }}
         run: echo "$PR_DETAILS"
