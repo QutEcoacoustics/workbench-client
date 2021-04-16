@@ -20,14 +20,15 @@ jobs:
 
     steps:
       - name: "Determine pull request number" 
-        uses: 8BitJonny/gh-get-current-pr@v1
-        id: PR
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          filterOutClosed: true
+        uses: jwalton/gh-find-current-pr@v1
+        id: PULL_REQUEST
+      - name: "Show PR Details"
+        env:
+          PR_DETAILS: ${{ toJSON(steps.PULL_REQUEST.outputs) }}
+        run: echo "$PR_DETAILS"
       - name: "Merge pull request"
         uses: "actions/github-script@v2"
-        if: success() && steps.PR.outputs.number
+        if: success() && steps.PULL_REQUEST.outputs.number
         with:
           github-token: "${{ secrets.AUTO_MERGE_TOKEN }}"
           script: |
@@ -36,6 +37,6 @@ jobs:
             await github.pulls.merge({
               merge_method: "squash",
               owner: repository.owner,
-              pull_number: steps.PR.outputs.number,
+              pull_number: steps.PULL_REQUEST.outputs.pr,
               repo: repository.repo,
             })
