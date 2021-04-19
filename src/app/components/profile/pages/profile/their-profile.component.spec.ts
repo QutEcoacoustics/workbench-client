@@ -268,7 +268,7 @@ describe("TheirProfileComponent", () => {
         }
 
         beforeEach(() => {
-          numModels = modelData.random.number();
+          numModels = modelData.datatype.number();
           apiResponse = test.response();
           apiResponse.addMetadata({ paging: { total: numModels } });
         });

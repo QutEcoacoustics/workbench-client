@@ -5,8 +5,8 @@ import { AbstractModel } from "./AbstractModel";
 function persistAttr(model: AbstractModel, key: string, opts: boolean | BawPersistAttributeOptions) {
     model[AbstractModel.createAttributesKey] ??= [];
     model[AbstractModel.updateAttributesKey] ??= [];
-  
-    if (typeof opts === 'boolean') {
+
+    if (typeof opts === "boolean") {
       if (!opts) {
         return;
       }

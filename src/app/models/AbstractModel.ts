@@ -68,12 +68,15 @@ export abstract class AbstractModel<Model = Record<string, any>> {
    * Convert model to JSON
    */
   public toJSON(opts?: ToJsonOptions): Partial<this> {
-    if (!opts) {
-      return this;
-    }
-
     const output: Partial<Writeable<this>> = {};
-    const keys = this[opts.create ? AbstractModel.createAttributesKey : AbstractModel.updateAttributesKey];
+    let keys: string[];
+    if (!opts) {
+      keys = Object.keys(this);
+    } else if (opts.create) {
+      keys = this[AbstractModel.createAttributesKey];
+    } else {
+      keys = this[AbstractModel.updateAttributesKey];
+    }
 
     keys.forEach((attribute: keyof AbstractModel) => {
       const value = this[attribute];

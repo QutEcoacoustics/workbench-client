@@ -5,13 +5,12 @@ import {
   Injectable,
   InjectionToken,
   Injector,
-  PLATFORM_ID,
+  PLATFORM_ID
 } from "@angular/core";
-import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
+import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
-import { fromJS, Map } from "immutable";
 import { Observable, throwError } from "rxjs";
 import { map } from "rxjs/operators";
 import { ApiErrorDetails } from "./api.interceptor.service";

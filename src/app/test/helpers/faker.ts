@@ -17,7 +17,7 @@ export const modelData = {
       AccessLevel.owner,
     ]),
   authToken: () => faker.random.alphaNumeric(20),
-  bool: () => faker.random.boolean(),
+  bool: () => faker.datatype.boolean(),
   description: () => faker.lorem.sentence().replace(specialCharRegex, ""),
   descriptionLong: () =>
     [0, 1, 2, 3, 4]
@@ -46,8 +46,8 @@ export const modelData = {
   },
   hash: () => "SHA256::" + modelData.hexaDecimal(256 / 4).substr(2),
   html: () => "hello <b>world</b>",
-  id: (id?: Id) => (id ? id : faker.random.number(25)),
-  ids: () => randomArray(1, 5, () => faker.random.number(100)),
+  id: (id?: Id) => (id ? id : faker.datatype.number(25)),
+  ids: () => randomArray(1, 5, () => faker.datatype.number(100)),
   imageUrl: () => faker.image.imageUrl(),
   imageUrls,
   latitude: () => parseFloat(faker.address.latitude()),
@@ -55,19 +55,19 @@ export const modelData = {
   notes: () => randomObject(1, 5),
   offset: () =>
     faker.random.arrayElement(["+", "-"]) +
-    faker.random.number(11) +
+    faker.datatype.number(11) +
     ":" +
     faker.random.arrayElement(["00", "30"]),
   param: () => faker.name.title().replace(specialCharRegex, ""),
-  seconds: () => faker.random.number(86400 - 30) + 30,
+  seconds: () => faker.datatype.number(86400 - 30) + 30,
   startEndSeconds: () => {
-    const min = faker.random.number(86400 - 30) + 30;
-    const max = faker.random.number(86400 - min) + min;
+    const min = faker.datatype.number(86400 - 30) + 30;
+    const max = faker.datatype.number(86400 - min) + min;
     return [min, max];
   },
   startEndArray: (arr: any[]) => {
-    const min = faker.random.number(arr.length - 1);
-    const inc = faker.random.number(arr.length - 1 - min);
+    const min = faker.datatype.number(arr.length - 1);
+    const inc = faker.datatype.number(arr.length - 1 - min);
     return [arr[min], arr[min + inc]];
   },
   timestamp: () => faker.date.past().toISOString(),
@@ -77,7 +77,7 @@ export const modelData = {
       "Australia/Brisbane",
       "Asia/Makassar",
     ]),
-  uuid: () => faker.random.uuid(),
+  uuid: () => faker.datatype.uuid(),
   hexaDecimal,
   randomArray,
   randomObject,
@@ -235,7 +235,7 @@ function randomArray<T>(
   max: number,
   callback: (index: number) => T
 ): T[] {
-  const len = faker.random.number({ min, max });
+  const len = faker.datatype.number({ min, max });
   const array = [];
 
   for (let i = 0; i < len; ++i) {
@@ -252,7 +252,7 @@ function randomArray<T>(
  * @param max Maximum number of keys
  */
 function randomObject(min: number, max: number): Record<string, string> {
-  const len = faker.random.number({ min, max });
+  const len = faker.datatype.number({ min, max });
   const obj = {};
 
   for (let i = 0; i < len; ++i) {

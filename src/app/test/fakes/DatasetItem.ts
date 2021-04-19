@@ -11,7 +11,7 @@ export function generateDatasetItem(id?: Id): Required<IDatasetItem> {
     audioRecordingId: modelData.id(),
     startTimeSeconds,
     endTimeSeconds,
-    order: modelData.random.number(100),
+    order: modelData.datatype.number(100),
     ...modelData.model.generateCreator(),
   };
 }

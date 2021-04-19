@@ -152,7 +152,7 @@ export class SessionUser
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;
   public readonly imageUrls?: ImageUrl[];
-  @bawImage<ISessionUser>("/assets/images/user/user_span4.png", {
+  @bawImage<ISessionUser>(`${assetRoot}/images/user/user_span4.png`, {
     key: "imageUrls",
   })
   public readonly image: ImageUrl[];
