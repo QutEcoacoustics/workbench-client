@@ -46,13 +46,13 @@ export interface IContactUs {
 
 export class ContactUs extends AbstractForm<IContactUs> implements IContactUs {
   public readonly kind = "ContactUs";
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly name: Param = "";
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly email: Param = "";
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly content: Description;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly recaptchaToken: string;
 
   public getBody(token: string): URLSearchParams {

@@ -6,7 +6,7 @@ export abstract class AbstractForm<
   Model = Record<string, any>
 > extends AbstractModel<Model> {
   public abstract getBody(token: string): URLSearchParams;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly recaptchaToken: string;
 
   public get viewUrl(): string {

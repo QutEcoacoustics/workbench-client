@@ -6,6 +6,7 @@ export function generateRegion(id?: Id): Required<IRegion> {
   return {
     id: modelData.id(id),
     name: modelData.param(),
+    imageUrl: modelData.imageUrl(),
     projectId: modelData.id(),
     siteIds: modelData.ids(),
     notes: modelData.notes(),

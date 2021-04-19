@@ -45,15 +45,14 @@ export interface IAnalysisJob extends HasAllUsers, HasDescription {
 
 export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly kind = "AnalysisJob";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly name?: Param;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly annotationName?: Param;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly customSettings?: Hash;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;

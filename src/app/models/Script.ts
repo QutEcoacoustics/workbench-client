@@ -32,31 +32,30 @@ export interface IScript extends HasCreator, HasDescription {
 
 export class Script extends AbstractModel<IScript> implements IScript {
   public readonly kind = "Script";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly name?: Param;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly analysisIdentifier?: string;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly version?: number;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly verified?: boolean;
   public readonly groupId?: Id;
   public readonly creatorId?: Id;
   @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly executableCommand?: string;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly executableSettings?: string;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly executableSettingsMediaType?: string;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly analysisActionParams?: Hash;
 
   // Associations

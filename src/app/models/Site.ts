@@ -56,17 +56,16 @@ export interface ISite extends HasAllUsers, HasDescription {
  */
 export class Site extends AbstractModel<ISite> implements ISite {
   public readonly kind = "Site";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly name?: Param;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly imageUrl?: string;
-  @bawImage<Site>(`${assetRoot}/images/site/site_span4.png`, {
+  @bawImage<ISite>(`${assetRoot}/images/site/site_span4.png`, {
     key: "imageUrl",
   })
   public readonly image?: ImageUrl[];
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
@@ -82,18 +81,18 @@ export class Site extends AbstractModel<ISite> implements ISite {
   public readonly deletedAt?: DateTimeTimezone;
   @bawCollection({ persist: true })
   public readonly projectIds?: Ids;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly regionId?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly latitude?: number;
   public readonly customLatitude?: number;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly longitude?: number;
   public readonly customLongitude?: number;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly tzinfoTz?: string;
   public readonly timezoneInformation?: TimezoneInformation;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly notes?: Hash;
 
   // Associations

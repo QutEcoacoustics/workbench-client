@@ -51,16 +51,15 @@ export interface IProject extends HasAllUsers, HasDescription {
  */
 export class Project extends AbstractModel<IProject> implements IProject {
   public readonly kind = "Project";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly name?: Param;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
   public readonly imageUrl?: string;
-  @bawImage<Project>(`${assetRoot}/images/project/project_span4.png`, {
+  @bawImage<IProject>(`${assetRoot}/images/project/project_span4.png`, {
     key: "imageUrl",
   })
   public readonly image: ImageUrl[];
@@ -79,7 +78,7 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public readonly siteIds?: Ids;
   @bawCollection({ persist: true })
   public readonly regionIds?: Ids;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly notes?: Hash;
 
   // Associations

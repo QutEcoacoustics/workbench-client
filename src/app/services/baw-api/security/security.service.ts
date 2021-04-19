@@ -181,9 +181,9 @@ export class LoginDetails
   extends AbstractForm<ILoginDetails>
   implements ILoginDetails {
   public readonly kind = "LoginDetails";
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly login: Param;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly password: Param;
 
   public getBody(token: string): URLSearchParams {
@@ -209,15 +209,15 @@ export class RegisterDetails
   extends AbstractForm<IRegisterDetails>
   implements IRegisterDetails {
   public readonly kind = "RegisterDetails";
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly userName: UserName;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly email: Param;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly password: Param;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly passwordConfirmation: Param;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly recaptchaToken: string;
 
   public getBody(token: string): URLSearchParams {

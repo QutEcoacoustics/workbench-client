@@ -22,20 +22,19 @@ export class DatasetItem
   extends AbstractModel<IDatasetItem>
   implements IDatasetItem {
   public readonly kind = "DatasetItem";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly datasetId?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly audioRecordingId?: Id;
   public readonly creatorId?: Id;
   @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly startTimeSeconds?: number;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly endTimeSeconds?: number;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly order?: number;
 
   // Associations

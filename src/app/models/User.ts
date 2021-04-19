@@ -74,28 +74,26 @@ export class User extends AbstractModel<IUser> implements IUser {
   }
 
   public readonly kind = "User";
-  @bawPersistAttr
   public readonly id?: Id;
   public readonly email?: string;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly userName?: UserName;
   public readonly signInCount?: number;
   public readonly failedAttempts?: number;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly imageUrls?: ImageUrl[];
-  @bawImage<User>(`${assetRoot}/images/user/user_span4.png`, {
+  @bawImage<IUser>(`${assetRoot}/images/user/user_span4.png`, {
     key: "imageUrls",
   })
   public readonly image: ImageUrl[];
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly preferences?: any;
   public readonly isConfirmed?: boolean;
-  @bawPersistAttr
   public readonly rolesMask?: number;
   public readonly rolesMaskNames?: string[];
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly tzinfoTz?: string;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly timezoneInformation?: TimezoneInformation;
   @bawDateTime()
   public readonly resetPasswordSentAt?: DateTimeTimezone;
@@ -149,27 +147,18 @@ export interface ISessionUser extends IUser {
 export class SessionUser
   extends AbstractModel<ISessionUser>
   implements ISessionUser {
-  // ! All fields are persisted because model is saved to, and read from, localstorage
   public readonly kind = "SessionUser";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
   public readonly authToken?: AuthToken;
-  @bawPersistAttr
   public readonly userName?: UserName;
-  @bawPersistAttr
   public readonly imageUrls?: ImageUrl[];
-  @bawImage<SessionUser>("/assets/images/user/user_span4.png", {
+  @bawImage<ISessionUser>("/assets/images/user/user_span4.png", {
     key: "imageUrls",
   })
   public readonly image: ImageUrl[];
-  @bawPersistAttr
   public readonly preferences?: any;
-  @bawPersistAttr
   public readonly rolesMask?: number;
-  @bawPersistAttr
   public readonly tzinfoTz?: string;
-  @bawPersistAttr
   public readonly timezoneInformation?: TimezoneInformation;
 
   public constructor(user: ISessionUser & Partial<IUser>, injector?: Injector) {

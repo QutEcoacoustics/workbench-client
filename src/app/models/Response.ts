@@ -19,15 +19,14 @@ export interface IResponse {
 
 export class Response extends AbstractModel<IResponse> implements IResponse {
   public readonly kind = "Answer";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly data?: Blob;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly datasetItemId?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly questionId?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly studyId?: Id;
   public readonly creatorId?: Id;
   @bawDateTime()

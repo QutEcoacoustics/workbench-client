@@ -20,13 +20,12 @@ export interface IStudy extends HasCreatorAndUpdater {
 
 export class Study extends AbstractModel<IStudy> implements IStudy {
   public readonly kind = "Studies";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly name?: Param;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly datasetId?: Id;
   @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;

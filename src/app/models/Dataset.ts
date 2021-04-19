@@ -18,13 +18,12 @@ export interface IDataset extends HasCreatorAndUpdater, HasDescription {
 
 export class Dataset extends AbstractModel<IDataset> implements IDataset {
   public readonly kind = "Dataset";
-  @bawPersistAttr
   public readonly id?: Id;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly name?: Param;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
