@@ -10,8 +10,8 @@ export class MockModel extends AbstractModel {
     super({ id: 1, ...raw }, injector);
   }
 
-  public toJSON() {
-    return { id: this.id };
+  public toJSON(_?: any) {
+    return { id: this.id } as any;
   }
 
   public get viewUrl(): string {
