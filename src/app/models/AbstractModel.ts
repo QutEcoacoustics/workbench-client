@@ -71,7 +71,7 @@ export abstract class AbstractModel<Model = Record<string, any>> {
     const output: Partial<Writeable<this>> = {};
     let keys: string[];
     if (!opts) {
-      keys = Object.keys(this);
+      keys = Object.keys(this).filter((key) => key !== "injector");
     } else if (opts.create) {
       keys = this[AbstractModel.createAttributesKey];
     } else {
@@ -83,7 +83,7 @@ export abstract class AbstractModel<Model = Record<string, any>> {
       if (value instanceof Set) {
         output[attribute] = Array.from(value) as any;
       } else if (value instanceof DateTime) {
-        output[attribute] = value.toISO()  as any;
+        output[attribute] = value.toISO() as any;
       } else if (value instanceof Duration) {
         output[attribute] = value.as("seconds") as any;
       } else {
@@ -155,4 +155,4 @@ export function getUnknownViewUrl(errorMsg: string) {
   return unknownViewUrl;
 }
 
-export type ToJsonOptions = XOR<{create: boolean}, {update: boolean}>;
+export type ToJsonOptions = XOR<{ create: boolean }, { update: boolean }>;
