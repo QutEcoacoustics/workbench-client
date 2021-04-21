@@ -19,8 +19,63 @@ class BaseModel extends AbstractModel {
 }
 
 describe("Attribute Decorators", () => {
-  // TODO Update
-  /* describe("BawPersistAttr", () => {
+  describe("BawPersistAttr", () => {
+    function assertCreateAttributes(model: AbstractModel, keys: string[]) {
+      expect(model[AbstractModel.createAttributesKey]).toEqual(keys);
+    }
+
+    function assertUpdateAttributes(model: AbstractModel, keys: string[]) {
+      expect(model[AbstractModel.updateAttributesKey]).toEqual(keys);
+    }
+
+    it("should append key to model create attributes", () => {
+      class MockModel extends BaseModel {
+        @bawPersistAttr({ create: true })
+        public readonly name: string;
+      }
+
+      const model = new MockModel({});
+      assertCreateAttributes(model, ["name"]);
+      assertUpdateAttributes(model, []);
+    });
+
+    it("should append key to model update attributes", () => {
+      class MockModel extends BaseModel {
+        @bawPersistAttr({ update: true })
+        public readonly name: string;
+      }
+
+      const model = new MockModel({});
+      assertCreateAttributes(model, []);
+      assertUpdateAttributes(model, ["name"]);
+    });
+
+    it("should append multiple keys to model create attributes", () => {
+      class MockModel extends BaseModel {
+        @bawPersistAttr({ create: true })
+        public readonly name: string;
+        @bawPersistAttr({ create: true })
+        public readonly value: number;
+      }
+
+      const model = new MockModel({});
+      assertCreateAttributes(model, ["name", "value"]);
+      assertUpdateAttributes(model, []);
+    });
+
+    it("should append multiple keys to model update attributes", () => {
+      class MockModel extends BaseModel {
+        @bawPersistAttr({ update: true })
+        public readonly name: string;
+        @bawPersistAttr({ update: true })
+        public readonly value: number;
+      }
+
+      const model = new MockModel({});
+      assertCreateAttributes(model, []);
+      assertUpdateAttributes(model, ["name", "value"]);
+    });
+
     it("should append key to model attributes", () => {
       class MockModel extends BaseModel {
         @bawPersistAttr()
@@ -28,7 +83,8 @@ describe("Attribute Decorators", () => {
       }
 
       const model = new MockModel({});
-      expect(model[AbstractModel.attributeKey]).toEqual(["name"]);
+      assertCreateAttributes(model, ["name"]);
+      assertUpdateAttributes(model, ["name"]);
     });
 
     it("should append multiple keys to model attributes", () => {
@@ -40,21 +96,10 @@ describe("Attribute Decorators", () => {
       }
 
       const model = new MockModel({});
-      expect(model[AbstractModel.attributeKey]).toEqual(["name", "value"]);
+      assertCreateAttributes(model, ["name", "value"]);
+      assertUpdateAttributes(model, ["name", "value"]);
     });
-
-    it("should output keys in model toJSON", () => {
-      class MockModel extends BaseModel {
-        @bawPersistAttr()
-        public readonly name: string;
-        @bawPersistAttr()
-        public readonly value: number;
-      }
-
-      const model = new MockModel({ name: "test", value: 1 });
-      expect(model.toJSON()).toEqual({ name: "test", value: 1 });
-    });
-  }); */
+  });
 
   describe("BawImage", () => {
     let defaultImageUrls: ImageUrl[];
@@ -88,13 +133,19 @@ describe("Attribute Decorators", () => {
     });
 
     it("should handle persist on create option", () => {
-      const model = createModel({ image: defaultImageUrls }, { persist: {create: true} });
+      const model = createModel(
+        { image: defaultImageUrls },
+        { persist: { create: true } }
+      );
       expect(model[AbstractModel.createAttributesKey]).toEqual(["image"]);
       expect(model[AbstractModel.updateAttributesKey]).not.toEqual(["image"]);
     });
 
     it("should handle persist on update option", () => {
-      const model = createModel({ image: defaultImageUrls }, { persist: {update: true} });
+      const model = createModel(
+        { image: defaultImageUrls },
+        { persist: { update: true } }
+      );
       expect(model[AbstractModel.createAttributesKey]).not.toEqual(["image"]);
       expect(model[AbstractModel.updateAttributesKey]).toEqual(["image"]);
     });
@@ -177,13 +228,19 @@ describe("Attribute Decorators", () => {
     });
 
     it("should handle persist on create option", () => {
-      const model = createModel({ ids: [1, 2, 3] },  { persist: {create: true} });
+      const model = createModel(
+        { ids: [1, 2, 3] },
+        { persist: { create: true } }
+      );
       expect(model[AbstractModel.createAttributesKey]).toEqual(["ids"]);
       expect(model[AbstractModel.updateAttributesKey]).not.toEqual(["ids"]);
     });
 
     it("should handle persist on update option", () => {
-      const model = createModel({ ids: [1, 2, 3] },  { persist: {update: true} });
+      const model = createModel(
+        { ids: [1, 2, 3] },
+        { persist: { update: true } }
+      );
       expect(model[AbstractModel.createAttributesKey]).not.toEqual(["ids"]);
       expect(model[AbstractModel.updateAttributesKey]).toEqual(["ids"]);
     });
@@ -256,14 +313,18 @@ describe("Attribute Decorators", () => {
 
     it("should handle persist on create option", () => {
       const model = createModel(
-        { date: defaultDate.toISO() },  { persist: {create: true} });
+        { date: defaultDate.toISO() },
+        { persist: { create: true } }
+      );
       expect(model[AbstractModel.createAttributesKey]).toEqual(["date"]);
       expect(model[AbstractModel.updateAttributesKey]).not.toEqual(["date"]);
     });
 
     it("should handle persist on update option", () => {
       const model = createModel(
-        { date: defaultDate.toISO() },  { persist: {update: true} });
+        { date: defaultDate.toISO() },
+        { persist: { update: true } }
+      );
       expect(model[AbstractModel.createAttributesKey]).not.toEqual(["date"]);
       expect(model[AbstractModel.updateAttributesKey]).toEqual(["date"]);
     });
@@ -322,7 +383,8 @@ describe("Attribute Decorators", () => {
     });
 
     it("should handle persist option", () => {
-      const model = createModel({ duration: defaultSeconds },
+      const model = createModel(
+        { duration: defaultSeconds },
         { persist: true }
       );
       expect(model[AbstractModel.createAttributesKey]).toEqual(["duration"]);
@@ -330,14 +392,24 @@ describe("Attribute Decorators", () => {
     });
 
     it("should handle persist on create option", () => {
-      const model = createModel({ duration: defaultSeconds },  { persist: {create: true} });
+      const model = createModel(
+        { duration: defaultSeconds },
+        { persist: { create: true } }
+      );
       expect(model[AbstractModel.createAttributesKey]).toEqual(["duration"]);
-      expect(model[AbstractModel.updateAttributesKey]).not.toEqual(["duration"]);
+      expect(model[AbstractModel.updateAttributesKey]).not.toEqual([
+        "duration",
+      ]);
     });
 
     it("should handle persist on update option", () => {
-      const model = createModel({ duration: defaultSeconds },  { persist: {update: true} });
-      expect(model[AbstractModel.createAttributesKey]).not.toEqual(["duration"]);
+      const model = createModel(
+        { duration: defaultSeconds },
+        { persist: { update: true } }
+      );
+      expect(model[AbstractModel.createAttributesKey]).not.toEqual([
+        "duration",
+      ]);
       expect(model[AbstractModel.updateAttributesKey]).toEqual(["duration"]);
     });
 
