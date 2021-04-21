@@ -19,15 +19,15 @@ class BaseModel extends AbstractModel {
 }
 
 describe("Attribute Decorators", () => {
+  function assertCreateAttributes(model: AbstractModel, keys: string[]) {
+    expect(model[AbstractModel.createAttributesKey]).toEqual(keys);
+  }
+
+  function assertUpdateAttributes(model: AbstractModel, keys: string[]) {
+    expect(model[AbstractModel.updateAttributesKey]).toEqual(keys);
+  }
+
   describe("BawPersistAttr", () => {
-    function assertCreateAttributes(model: AbstractModel, keys: string[]) {
-      expect(model[AbstractModel.createAttributesKey]).toEqual(keys);
-    }
-
-    function assertUpdateAttributes(model: AbstractModel, keys: string[]) {
-      expect(model[AbstractModel.updateAttributesKey]).toEqual(keys);
-    }
-
     it("should append key to model create attributes", () => {
       class MockModel extends BaseModel {
         @bawPersistAttr({ create: true })
@@ -128,8 +128,8 @@ describe("Attribute Decorators", () => {
 
     it("should handle persist option", () => {
       const model = createModel({ image: defaultImageUrls }, { persist: true });
-      expect(model[AbstractModel.createAttributesKey]).toEqual(["image"]);
-      expect(model[AbstractModel.updateAttributesKey]).toEqual(["image"]);
+      assertCreateAttributes(model, ["image"]);
+      assertUpdateAttributes(model, ["image"]);
     });
 
     it("should handle persist on create option", () => {
@@ -137,8 +137,8 @@ describe("Attribute Decorators", () => {
         { image: defaultImageUrls },
         { persist: { create: true } }
       );
-      expect(model[AbstractModel.createAttributesKey]).toEqual(["image"]);
-      expect(model[AbstractModel.updateAttributesKey]).not.toEqual(["image"]);
+      assertCreateAttributes(model, ["image"]);
+      assertUpdateAttributes(model, []);
     });
 
     it("should handle persist on update option", () => {
@@ -146,8 +146,8 @@ describe("Attribute Decorators", () => {
         { image: defaultImageUrls },
         { persist: { update: true } }
       );
-      expect(model[AbstractModel.createAttributesKey]).not.toEqual(["image"]);
-      expect(model[AbstractModel.updateAttributesKey]).toEqual(["image"]);
+      assertCreateAttributes(model, []);
+      assertUpdateAttributes(model, ["image"]);
     });
 
     it("should handle override key option", () => {
@@ -223,8 +223,8 @@ describe("Attribute Decorators", () => {
 
     it("should handle persist option", () => {
       const model = createModel({ ids: [1, 2, 3] }, { persist: true });
-      expect(model[AbstractModel.createAttributesKey]).toEqual(["ids"]);
-      expect(model[AbstractModel.updateAttributesKey]).toEqual(["ids"]);
+      assertCreateAttributes(model, ["ids"]);
+      assertUpdateAttributes(model, ["ids"]);
     });
 
     it("should handle persist on create option", () => {
@@ -232,8 +232,8 @@ describe("Attribute Decorators", () => {
         { ids: [1, 2, 3] },
         { persist: { create: true } }
       );
-      expect(model[AbstractModel.createAttributesKey]).toEqual(["ids"]);
-      expect(model[AbstractModel.updateAttributesKey]).not.toEqual(["ids"]);
+      assertCreateAttributes(model, ["ids"]);
+      assertUpdateAttributes(model, []);
     });
 
     it("should handle persist on update option", () => {
@@ -241,8 +241,8 @@ describe("Attribute Decorators", () => {
         { ids: [1, 2, 3] },
         { persist: { update: true } }
       );
-      expect(model[AbstractModel.createAttributesKey]).not.toEqual(["ids"]);
-      expect(model[AbstractModel.updateAttributesKey]).toEqual(["ids"]);
+      assertCreateAttributes(model, []);
+      assertUpdateAttributes(model, ["ids"]);
     });
 
     it("should handle override key option", () => {
@@ -307,8 +307,8 @@ describe("Attribute Decorators", () => {
         { date: defaultDate.toISO() },
         { persist: true }
       );
-      expect(model[AbstractModel.createAttributesKey]).toEqual(["date"]);
-      expect(model[AbstractModel.updateAttributesKey]).toEqual(["date"]);
+      assertCreateAttributes(model, ["date"]);
+      assertUpdateAttributes(model, ["date"]);
     });
 
     it("should handle persist on create option", () => {
@@ -316,8 +316,8 @@ describe("Attribute Decorators", () => {
         { date: defaultDate.toISO() },
         { persist: { create: true } }
       );
-      expect(model[AbstractModel.createAttributesKey]).toEqual(["date"]);
-      expect(model[AbstractModel.updateAttributesKey]).not.toEqual(["date"]);
+      assertCreateAttributes(model, ["date"]);
+      assertUpdateAttributes(model, []);
     });
 
     it("should handle persist on update option", () => {
@@ -325,8 +325,8 @@ describe("Attribute Decorators", () => {
         { date: defaultDate.toISO() },
         { persist: { update: true } }
       );
-      expect(model[AbstractModel.createAttributesKey]).not.toEqual(["date"]);
-      expect(model[AbstractModel.updateAttributesKey]).toEqual(["date"]);
+      assertCreateAttributes(model, []);
+      assertUpdateAttributes(model, ["date"]);
     });
 
     it("should handle override key option", () => {
@@ -387,8 +387,8 @@ describe("Attribute Decorators", () => {
         { duration: defaultSeconds },
         { persist: true }
       );
-      expect(model[AbstractModel.createAttributesKey]).toEqual(["duration"]);
-      expect(model[AbstractModel.createAttributesKey]).toEqual(["duration"]);
+      assertCreateAttributes(model, ["duration"]);
+      assertUpdateAttributes(model, ["duration"]);
     });
 
     it("should handle persist on create option", () => {
@@ -396,10 +396,8 @@ describe("Attribute Decorators", () => {
         { duration: defaultSeconds },
         { persist: { create: true } }
       );
-      expect(model[AbstractModel.createAttributesKey]).toEqual(["duration"]);
-      expect(model[AbstractModel.updateAttributesKey]).not.toEqual([
-        "duration",
-      ]);
+      assertCreateAttributes(model, ["duration"]);
+      assertUpdateAttributes(model, []);
     });
 
     it("should handle persist on update option", () => {
@@ -407,10 +405,8 @@ describe("Attribute Decorators", () => {
         { duration: defaultSeconds },
         { persist: { update: true } }
       );
-      expect(model[AbstractModel.createAttributesKey]).not.toEqual([
-        "duration",
-      ]);
-      expect(model[AbstractModel.updateAttributesKey]).toEqual(["duration"]);
+      assertCreateAttributes(model, []);
+      assertUpdateAttributes(model, ["duration"]);
     });
 
     it("should handle override key option", () => {
