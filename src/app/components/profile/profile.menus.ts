@@ -41,6 +41,7 @@ export const myEditMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: myAccountMenuItem.route.add("edit"),
   tooltip: () => "Change the details for your profile",
+  disabled: "BETA: Will be available soon.",
 });
 
 export const myPasswordMenuItem = menuRoute({
@@ -50,6 +51,7 @@ export const myPasswordMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: myEditMenuItem.route.add("password"),
   tooltip: () => "Change the password for your profile",
+  disabled: "BETA: Will be available soon.",
 });
 
 export const myDeleteMenuItem = menuRoute({
@@ -59,6 +61,7 @@ export const myDeleteMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: myAccountMenuItem.route.add("delete"),
   tooltip: () => "Remove your account from this website",
+  disabled: "BETA: Will be available soon.",
 });
 
 export const myProjectsMenuItem = menuRoute({
@@ -126,6 +129,7 @@ export const theirEditMenuItem = menuRoute({
   predicate: isAdminPredicate,
   route: theirProfileMenuItem.route.add("edit"),
   tooltip: () => "Change the details for this profile",
+  disabled: "BETA: Will be available soon.",
 });
 
 export const theirProjectsMenuItem = menuRoute({
