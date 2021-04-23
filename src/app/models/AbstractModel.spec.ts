@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 
@@ -5,11 +6,11 @@ describe("AbstractModel", () => {
   describe("toJSON", () => {
     function createModel(
       data: any,
-      opts?: { create?: string[]; update?: string[] }
+      opts?: { create?: string[]; update?: string[]; injector?: any }
     ) {
       class MockModel extends AbstractModel {
-        public constructor(modelData: any) {
-          super(modelData);
+        public constructor(modelData: any, _injector: any) {
+          super(modelData, _injector);
           this[AbstractModel.createAttributesKey] = opts?.create ?? [];
           this[AbstractModel.updateAttributesKey] = opts?.update ?? [];
         }
@@ -19,7 +20,7 @@ describe("AbstractModel", () => {
         }
       }
 
-      return new MockModel(data);
+      return new MockModel(data, opts?.injector);
     }
 
     [
@@ -60,13 +61,25 @@ describe("AbstractModel", () => {
       });
     });
 
-    let defaultModel: any;
+    let defaultData: any;
     beforeEach(() => {
-      defaultModel = { id: 1, name: "name", set: new Set([1, 2, 3]) };
+      defaultData = { id: 1, name: "name", set: new Set([1, 2, 3]) };
+    });
+
+    it("should filter out injector on basic toJSON() request", () => {
+      class MockInjector extends Injector {
+        public get(_token: any): any {
+          return undefined;
+        }
+      }
+      const mockInjector: Injector = new MockInjector();
+      const model = createModel(defaultData, { injector: mockInjector });
+      expect(model["injector"]).toEqual(mockInjector);
+      expect<any>(Object.keys(model.toJSON())).not.toContain("injector");
     });
 
     it("should handle multiple on basic toJSON() request", () => {
-      const model = createModel(defaultModel);
+      const model = createModel(defaultData);
       expect<any>(model.toJSON()).toEqual({
         id: 1,
         name: "name",
@@ -75,7 +88,7 @@ describe("AbstractModel", () => {
     });
 
     it("should handle multiple on toJSON({create: true}) request", () => {
-      const model = createModel(defaultModel, { create: ["name", "set"] });
+      const model = createModel(defaultData, { create: ["name", "set"] });
       expect<any>(model.toJSON({ create: true })).toEqual({
         name: "name",
         set: [1, 2, 3],
@@ -83,7 +96,7 @@ describe("AbstractModel", () => {
     });
 
     it("should handle multiple on toJSON({update: true}) request", () => {
-      const model = createModel(defaultModel, { update: ["name", "set"] });
+      const model = createModel(defaultData, { update: ["name", "set"] });
       expect<any>(model.toJSON({ update: true })).toEqual({
         name: "name",
         set: [1, 2, 3],

@@ -67,7 +67,7 @@ export abstract class AbstractModel<Model = Record<string, any>> {
   /**
    * Convert model to JSON
    */
-  public toJSON(opts?: ToJsonOptions): Partial<this> {
+  public toJSON(opts?: ModelSerializationOptions): Partial<this> {
     const output: Partial<Writeable<this>> = {};
     let keys: string[];
     if (!opts) {
@@ -155,4 +155,7 @@ export function getUnknownViewUrl(errorMsg: string) {
   return unknownViewUrl;
 }
 
-export type ToJsonOptions = XOR<{ create: boolean }, { update: boolean }>;
+export type ModelSerializationOptions = XOR<
+  { create: boolean },
+  { update: boolean }
+>;
