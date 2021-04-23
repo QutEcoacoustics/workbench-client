@@ -3,7 +3,7 @@ import { AnalysisJobStatus, IAnalysisJob } from "@models/AnalysisJob";
 import { modelData } from "@test/helpers/faker";
 
 export function generateAnalysisJob(id?: Id): Required<IAnalysisJob> {
-  const overallDurationSeconds = modelData.random.number(3.154e7); // 1 year
+  const overallDurationSeconds = modelData.datatype.number(3.154e7); // 1 year
   const overallDataLengthBytes = overallDurationSeconds * 22050 * 2; // duration seconds * sample rate * two bytes per sample
   const statuses: AnalysisJobStatus[] = [
     "before_save",
@@ -31,7 +31,7 @@ export function generateAnalysisJob(id?: Id): Required<IAnalysisJob> {
       total: 1,
     },
     overallProgressModifiedAt: modelData.timestamp(),
-    overallCount: modelData.random.number(1000),
+    overallCount: modelData.datatype.number(1000),
     overallDurationSeconds,
     overallDataLengthBytes,
     customSettings: modelData.randomObject(0, 5),

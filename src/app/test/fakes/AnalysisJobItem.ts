@@ -21,7 +21,7 @@ export function generateAnalysisJobItem(id?: Id): Required<IAnalysisJobItem> {
     id: modelData.id(id),
     analysisJobId: modelData.id(),
     audioRecordingId: modelData.id(),
-    queueId: modelData.random.uuid(),
+    queueId: modelData.datatype.uuid(),
     status: modelData.random.arrayElement(statuses),
     createdAt: modelData.timestamp(),
     queuedAt: modelData.timestamp(),

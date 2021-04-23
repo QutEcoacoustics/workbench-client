@@ -27,13 +27,12 @@ export interface IBookmark extends HasCreatorAndUpdater, HasDescription {
 
 export class Bookmark extends AbstractModel<IBookmark> implements IBookmark {
   public readonly kind = "Bookmark";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly audioRecordingId?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly offsetSeconds?: number;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly name?: Param;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
@@ -41,11 +40,11 @@ export class Bookmark extends AbstractModel<IBookmark> implements IBookmark {
   public readonly createdAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly category?: string;
 
   // Associations

@@ -16,11 +16,10 @@ export interface IQuestion {
 
 export class Question extends AbstractModel<IQuestion> implements IQuestion {
   public readonly kind = "Question";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly text?: string;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly data?: Blob;
   public creatorId?: Id;
   public updaterId?: Id;

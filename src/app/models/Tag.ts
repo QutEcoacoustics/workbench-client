@@ -28,17 +28,16 @@ export interface ITag extends HasCreatorAndUpdater {
  */
 export class Tag extends AbstractModel<ITag> implements ITag {
   public readonly kind = "Tag";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly text?: string;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly isTaxonomic?: boolean;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly typeOfTag?: string;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly retired?: boolean;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly notes?: Hash;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;

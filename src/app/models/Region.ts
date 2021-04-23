@@ -37,6 +37,7 @@ import { User } from "./User";
 export interface IRegion extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
+  imageUrl?: string
   projectId?: Id;
   siteIds?: Id[] | Ids;
   notes?: Hash;
@@ -47,17 +48,16 @@ export interface IRegion extends HasAllUsers, HasDescription {
  */
 export class Region extends AbstractModel<IRegion> implements IRegion {
   public readonly kind = "Region";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly name?: Param;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly imageUrl?: string;
-  @bawImage<Region>(`${assetRoot}/images/site/site_span4.png`, {
+  @bawImage<IRegion>(`${assetRoot}/images/site/site_span4.png`, {
     key: "imageUrl",
   })
   public readonly image?: ImageUrl[];
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
@@ -70,11 +70,11 @@ export class Region extends AbstractModel<IRegion> implements IRegion {
   public readonly updatedAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly projectId?: Id;
   @bawCollection({ persist: true })
   public readonly siteIds?: Ids;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly notes?: Hash;
 
   // Associations

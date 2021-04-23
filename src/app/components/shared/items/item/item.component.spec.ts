@@ -40,7 +40,7 @@ describe("ItemComponent", () => {
   });
 
   it("should display number value", () => {
-    const value = modelData.random.number();
+    const value = modelData.datatype.number();
     setup(["fas", "home"], "Test", value);
     spec.detectChanges();
     expect(spec.query("#value")).toContainText(value.toString());

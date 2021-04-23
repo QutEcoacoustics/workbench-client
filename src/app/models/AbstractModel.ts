@@ -1,4 +1,5 @@
 import { Injector } from "@angular/core";
+import { Writeable, XOR } from "@helpers/advancedTypes";
 import { DateTime, Duration } from "luxon";
 import { Id } from "../interfaces/apiInterfaces";
 import { Meta } from "../services/baw-api/baw-api.service";
@@ -29,9 +30,15 @@ export abstract class AbstractModel<Model = Record<string, any>> {
   /**
    * Hidden attributes symbol.
    * This stores the list of model attributes which are used to
-   * generate the toJSON() output.
+   * generate the toJSON({create: true}) output.
    */
-  public static attributeKey = Symbol("attributes");
+  public static createAttributesKey = Symbol("create-attributes");
+  /**
+   * Hidden attributes symbol.
+   * This stores the list of model attributes which are used to
+   * generate the toJSON({update: true}) output.
+   */
+  public static updateAttributesKey = Symbol("update-attributes");
 
   /**
    * Model ID
@@ -60,18 +67,27 @@ export abstract class AbstractModel<Model = Record<string, any>> {
   /**
    * Convert model to JSON
    */
-  public toJSON() {
-    const output = {};
-    this[AbstractModel.attributeKey].forEach((attribute) => {
+  public toJSON(opts?: ModelSerializationOptions): Partial<this> {
+    const output: Partial<Writeable<this>> = {};
+    let keys: string[];
+    if (!opts) {
+      keys = Object.keys(this).filter((key) => key !== "injector");
+    } else if (opts.create) {
+      keys = this[AbstractModel.createAttributesKey];
+    } else {
+      keys = this[AbstractModel.updateAttributesKey];
+    }
+
+    keys.forEach((attribute: keyof AbstractModel) => {
       const value = this[attribute];
       if (value instanceof Set) {
-        output[attribute] = Array.from(value);
+        output[attribute] = Array.from(value) as any;
       } else if (value instanceof DateTime) {
-        output[attribute] = value.toISO();
+        output[attribute] = value.toISO() as any;
       } else if (value instanceof Duration) {
-        output[attribute] = value.as("seconds");
+        output[attribute] = value.as("seconds") as any;
       } else {
-        output[attribute] = this[attribute];
+        output[attribute] = this[attribute] as any;
       }
     });
     return output;
@@ -138,3 +154,8 @@ export function getUnknownViewUrl(errorMsg: string) {
   console.warn(errorMsg);
   return unknownViewUrl;
 }
+
+export type ModelSerializationOptions = XOR<
+  { create: boolean },
+  { update: boolean }
+>;

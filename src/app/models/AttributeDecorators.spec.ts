@@ -19,39 +19,85 @@ class BaseModel extends AbstractModel {
 }
 
 describe("Attribute Decorators", () => {
+  function assertCreateAttributes(model: AbstractModel, keys: string[]) {
+    expect(model[AbstractModel.createAttributesKey]).toEqual(keys);
+  }
+
+  function assertUpdateAttributes(model: AbstractModel, keys: string[]) {
+    expect(model[AbstractModel.updateAttributesKey]).toEqual(keys);
+  }
+
   describe("BawPersistAttr", () => {
-    it("should append key to model attributes", () => {
+    it("should append key to model create attributes", () => {
       class MockModel extends BaseModel {
-        @bawPersistAttr
+        @bawPersistAttr({ create: true })
         public readonly name: string;
       }
 
       const model = new MockModel({});
-      expect(model[AbstractModel.attributeKey]).toEqual(["name"]);
+      assertCreateAttributes(model, ["name"]);
+      assertUpdateAttributes(model, []);
+    });
+
+    it("should append key to model update attributes", () => {
+      class MockModel extends BaseModel {
+        @bawPersistAttr({ update: true })
+        public readonly name: string;
+      }
+
+      const model = new MockModel({});
+      assertCreateAttributes(model, []);
+      assertUpdateAttributes(model, ["name"]);
+    });
+
+    it("should append multiple keys to model create attributes", () => {
+      class MockModel extends BaseModel {
+        @bawPersistAttr({ create: true })
+        public readonly name: string;
+        @bawPersistAttr({ create: true })
+        public readonly value: number;
+      }
+
+      const model = new MockModel({});
+      assertCreateAttributes(model, ["name", "value"]);
+      assertUpdateAttributes(model, []);
+    });
+
+    it("should append multiple keys to model update attributes", () => {
+      class MockModel extends BaseModel {
+        @bawPersistAttr({ update: true })
+        public readonly name: string;
+        @bawPersistAttr({ update: true })
+        public readonly value: number;
+      }
+
+      const model = new MockModel({});
+      assertCreateAttributes(model, []);
+      assertUpdateAttributes(model, ["name", "value"]);
+    });
+
+    it("should append key to model attributes", () => {
+      class MockModel extends BaseModel {
+        @bawPersistAttr()
+        public readonly name: string;
+      }
+
+      const model = new MockModel({});
+      assertCreateAttributes(model, ["name"]);
+      assertUpdateAttributes(model, ["name"]);
     });
 
     it("should append multiple keys to model attributes", () => {
       class MockModel extends BaseModel {
-        @bawPersistAttr
+        @bawPersistAttr()
         public readonly name: string;
-        @bawPersistAttr
+        @bawPersistAttr()
         public readonly value: number;
       }
 
       const model = new MockModel({});
-      expect(model[AbstractModel.attributeKey]).toEqual(["name", "value"]);
-    });
-
-    it("should output keys in model toJSON", () => {
-      class MockModel extends BaseModel {
-        @bawPersistAttr
-        public readonly name: string;
-        @bawPersistAttr
-        public readonly value: number;
-      }
-
-      const model = new MockModel({ name: "test", value: 1 });
-      expect(model.toJSON()).toEqual({ name: "test", value: 1 });
+      assertCreateAttributes(model, ["name", "value"]);
+      assertUpdateAttributes(model, ["name", "value"]);
     });
   });
 
@@ -82,7 +128,26 @@ describe("Attribute Decorators", () => {
 
     it("should handle persist option", () => {
       const model = createModel({ image: defaultImageUrls }, { persist: true });
-      expect(model[AbstractModel.attributeKey]).toEqual(["image"]);
+      assertCreateAttributes(model, ["image"]);
+      assertUpdateAttributes(model, ["image"]);
+    });
+
+    it("should handle persist on create option", () => {
+      const model = createModel(
+        { image: defaultImageUrls },
+        { persist: { create: true } }
+      );
+      assertCreateAttributes(model, ["image"]);
+      assertUpdateAttributes(model, []);
+    });
+
+    it("should handle persist on update option", () => {
+      const model = createModel(
+        { image: defaultImageUrls },
+        { persist: { update: true } }
+      );
+      assertCreateAttributes(model, []);
+      assertUpdateAttributes(model, ["image"]);
     });
 
     it("should handle override key option", () => {
@@ -158,7 +223,26 @@ describe("Attribute Decorators", () => {
 
     it("should handle persist option", () => {
       const model = createModel({ ids: [1, 2, 3] }, { persist: true });
-      expect(model[AbstractModel.attributeKey]).toEqual(["ids"]);
+      assertCreateAttributes(model, ["ids"]);
+      assertUpdateAttributes(model, ["ids"]);
+    });
+
+    it("should handle persist on create option", () => {
+      const model = createModel(
+        { ids: [1, 2, 3] },
+        { persist: { create: true } }
+      );
+      assertCreateAttributes(model, ["ids"]);
+      assertUpdateAttributes(model, []);
+    });
+
+    it("should handle persist on update option", () => {
+      const model = createModel(
+        { ids: [1, 2, 3] },
+        { persist: { update: true } }
+      );
+      assertCreateAttributes(model, []);
+      assertUpdateAttributes(model, ["ids"]);
     });
 
     it("should handle override key option", () => {
@@ -223,7 +307,26 @@ describe("Attribute Decorators", () => {
         { date: defaultDate.toISO() },
         { persist: true }
       );
-      expect(model[AbstractModel.attributeKey]).toEqual(["date"]);
+      assertCreateAttributes(model, ["date"]);
+      assertUpdateAttributes(model, ["date"]);
+    });
+
+    it("should handle persist on create option", () => {
+      const model = createModel(
+        { date: defaultDate.toISO() },
+        { persist: { create: true } }
+      );
+      assertCreateAttributes(model, ["date"]);
+      assertUpdateAttributes(model, []);
+    });
+
+    it("should handle persist on update option", () => {
+      const model = createModel(
+        { date: defaultDate.toISO() },
+        { persist: { update: true } }
+      );
+      assertCreateAttributes(model, []);
+      assertUpdateAttributes(model, ["date"]);
     });
 
     it("should handle override key option", () => {
@@ -284,7 +387,26 @@ describe("Attribute Decorators", () => {
         { duration: defaultSeconds },
         { persist: true }
       );
-      expect(model[AbstractModel.attributeKey]).toEqual(["duration"]);
+      assertCreateAttributes(model, ["duration"]);
+      assertUpdateAttributes(model, ["duration"]);
+    });
+
+    it("should handle persist on create option", () => {
+      const model = createModel(
+        { duration: defaultSeconds },
+        { persist: { create: true } }
+      );
+      assertCreateAttributes(model, ["duration"]);
+      assertUpdateAttributes(model, []);
+    });
+
+    it("should handle persist on update option", () => {
+      const model = createModel(
+        { duration: defaultSeconds },
+        { persist: { update: true } }
+      );
+      assertCreateAttributes(model, []);
+      assertUpdateAttributes(model, ["duration"]);
     });
 
     it("should handle override key option", () => {

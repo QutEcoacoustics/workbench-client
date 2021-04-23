@@ -1,13 +1,18 @@
+import { Injector } from "@angular/core";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 
 describe("AbstractModel", () => {
   describe("toJSON", () => {
-    function createModel(attributes: string[], data: any) {
+    function createModel(
+      data: any,
+      opts?: { create?: string[]; update?: string[]; injector?: any }
+    ) {
       class MockModel extends AbstractModel {
-        public constructor(modelData: any) {
-          super(modelData);
-          this[AbstractModel.attributeKey] = attributes;
+        public constructor(modelData: any, _injector: any) {
+          super(modelData, _injector);
+          this[AbstractModel.createAttributesKey] = opts?.create ?? [];
+          this[AbstractModel.updateAttributesKey] = opts?.update ?? [];
         }
 
         public get viewUrl(): string {
@@ -15,73 +20,85 @@ describe("AbstractModel", () => {
         }
       }
 
-      return new MockModel(data);
+      return new MockModel(data, opts?.injector);
     }
 
-    it("should handle undefined", () => {
-      const model = createModel(["name"], { id: 1 });
-      expect(model.toJSON()).toEqual({ name: undefined });
-    });
-
-    it("should handle null", () => {
-      const model = createModel(["name"], { id: 1, name: null });
-      expect(model.toJSON()).toEqual({ name: null });
-    });
-
-    it("should handle string", () => {
-      const model = createModel(["name"], { id: 1, name: "name" });
-      expect(model.toJSON()).toEqual({ name: "name" });
-    });
-
-    it("should handle empty string", () => {
-      const model = createModel(["name"], { id: 1, name: "" });
-      expect(model.toJSON()).toEqual({ name: "" });
-    });
-
-    it("should handle number", () => {
-      const model = createModel(["id"], { id: 1, name: "name" });
-      expect(model.toJSON()).toEqual({ id: 1 });
-    });
-
-    it("should handle zero", () => {
-      const model = createModel(["id"], { id: 0, name: "name" });
-      expect(model.toJSON()).toEqual({ id: 0 });
-    });
-
-    it("should handle Set", () => {
-      const model = createModel(["set"], { id: 1, set: new Set([1, 2, 3]) });
-      expect(model.toJSON()).toEqual({ set: [1, 2, 3] });
-    });
-
-    it("should handle DateTime", () => {
-      const date = DateTime.fromISO("2019-01-01T00:00:00");
-      const model = createModel(["date"], {
-        id: 1,
-        date,
+    [
+      { type: "undefined", value: undefined, output: undefined },
+      { type: "null", value: null, output: null },
+      { type: "string", value: "example", output: "example" },
+      { type: "empty string", value: "", output: "" },
+      { type: "number", value: 42, output: 42 },
+      { type: "zero", value: 0, output: 0 },
+      { type: "Set", value: new Set([1, 2, 3]), output: [1, 2, 3] },
+      // Duration should output in seconds
+      { type: "Duration", value: Duration.fromMillis(100000), output: 100 },
+      {
+        type: "DateTime",
+        value: DateTime.fromISO("2019-01-01T00:00:00"),
+        output: DateTime.fromISO("2019-01-01T00:00:00").toISO(),
+      },
+    ].forEach(({ type, value, output }) => {
+      it(`should handle ${type} on basic toJSON() request`, () => {
+        const model = createModel({ id: 1, test: value });
+        expect<any>(model.toJSON()).toEqual({ id: 1, test: output });
+        expect<any>(model.toJSON({ create: true })).toEqual({});
+        expect<any>(model.toJSON({ update: true })).toEqual({});
       });
-      expect(model.toJSON()).toEqual({ date: date.toISO() });
-    });
 
-    it("should handle Duration", () => {
-      const seconds = 100;
-      const duration = Duration.fromMillis(seconds * 1000);
-      const model = createModel(["duration"], {
-        id: 1,
-        duration,
+      it(`should handle ${type} on toJSON({create: true}) request`, () => {
+        const model = createModel({ id: 1, test: value }, { create: ["test"] });
+        expect<any>(model.toJSON()).toEqual({ id: 1, test: output });
+        expect<any>(model.toJSON({ create: true })).toEqual({ test: output });
+        expect<any>(model.toJSON({ update: true })).toEqual({});
       });
-      expect(model.toJSON()).toEqual({ duration: seconds });
+
+      it(`should handle ${type} on toJSON({update: true}) request`, () => {
+        const model = createModel({ id: 1, test: value }, { update: ["test"] });
+        expect<any>(model.toJSON()).toEqual({ id: 1, test: output });
+        expect<any>(model.toJSON({ create: true })).toEqual({});
+        expect<any>(model.toJSON({ update: true })).toEqual({ test: output });
+      });
     });
 
-    it("should handle multiple", () => {
-      const model = createModel(["name", "value", "set"], {
+    let defaultData: any;
+    beforeEach(() => {
+      defaultData = { id: 1, name: "name", set: new Set([1, 2, 3]) };
+    });
+
+    it("should filter out injector on basic toJSON() request", () => {
+      class MockInjector extends Injector {
+        public get(_token: any): any {
+          return undefined;
+        }
+      }
+      const mockInjector: Injector = new MockInjector();
+      const model = createModel(defaultData, { injector: mockInjector });
+      expect(model["injector"]).toEqual(mockInjector);
+      expect<any>(Object.keys(model.toJSON())).not.toContain("injector");
+    });
+
+    it("should handle multiple on basic toJSON() request", () => {
+      const model = createModel(defaultData);
+      expect<any>(model.toJSON()).toEqual({
         id: 1,
         name: "name",
-        value: 5,
-        set: new Set([1, 2, 3]),
+        set: [1, 2, 3],
       });
-      expect(model.toJSON()).toEqual({
+    });
+
+    it("should handle multiple on toJSON({create: true}) request", () => {
+      const model = createModel(defaultData, { create: ["name", "set"] });
+      expect<any>(model.toJSON({ create: true })).toEqual({
         name: "name",
-        value: 5,
+        set: [1, 2, 3],
+      });
+    });
+
+    it("should handle multiple on toJSON({update: true}) request", () => {
+      const model = createModel(defaultData, { update: ["name", "set"] });
+      expect<any>(model.toJSON({ update: true })).toEqual({
+        name: "name",
         set: [1, 2, 3],
       });
     });

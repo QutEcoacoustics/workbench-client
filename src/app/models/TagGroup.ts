@@ -21,11 +21,10 @@ export interface ITagGroup extends HasCreator {
  */
 export class TagGroup extends AbstractModel<ITagGroup> implements ITagGroup {
   public readonly kind = "TagGroup";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly groupIdentifier?: string;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly tagId?: Id;
   public readonly creatorId?: Id;
   @bawDateTime()

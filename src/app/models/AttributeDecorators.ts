@@ -2,23 +2,42 @@ import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 
+function persistAttr(model: AbstractModel, key: string, opts: boolean | BawPersistAttributeOptions) {
+    model[AbstractModel.createAttributesKey] ??= [];
+    model[AbstractModel.updateAttributesKey] ??= [];
+
+    if (typeof opts === "boolean") {
+      if (!opts) {
+        return;
+      }
+      model[AbstractModel.createAttributesKey].push(key);
+      model[AbstractModel.updateAttributesKey].push(key);
+      return
+    }
+
+    if (opts.create) {
+      model[AbstractModel.createAttributesKey].push(key);
+    }
+    if (opts.update) {
+      model[AbstractModel.updateAttributesKey].push(key);
+    }
+}
+
 /**
  * Add key to the models attributes
  */
-export function bawPersistAttr(model: AbstractModel, key: string) {
-  if (!model[AbstractModel.attributeKey]) {
-    model[AbstractModel.attributeKey] = [];
+export function bawPersistAttr(opts: BawPersistAttributeOptions = {create: true, update: true}) {
+  return function(model: AbstractModel, key: string) {
+    persistAttr(model, key, opts);
   }
-
-  model[AbstractModel.attributeKey].push(key);
 }
 
 /**
  * Convert image url/s into an array of image urls
  */
-export function bawImage<T extends AbstractModel>(
+export function bawImage<Model>(
   defaultUrl: string,
-  opts?: BawDecoratorOptions<T>
+  opts?: BawDecoratorOptions<Model>
 ) {
   // Retrieve default image and prepend site url if required
   const defaultImage: ImageUrl = { size: ImageSizes.default, url: defaultUrl };
@@ -40,7 +59,7 @@ export function bawImage<T extends AbstractModel>(
     return !images.find((image) => image.size === ImageSizes.default);
   }
 
-  return createDecorator<T>(
+  return createDecorator<Model>(
     opts,
     (model, key, imageUrls: string | ImageUrl[]) => {
       // Convert string to ImageURL[] and append default image
@@ -70,10 +89,10 @@ export function bawImage<T extends AbstractModel>(
 /**
  * Convert a collection of ids into a set
  */
-export function bawCollection<T extends AbstractModel>(
-  opts?: BawDecoratorOptions<T>
+export function bawCollection<Model>(
+  opts?: BawDecoratorOptions<Model>
 ) {
-  return createDecorator<T>(opts, (model, key, ids: Id[] | Ids) => {
+  return createDecorator<Model>(opts, (model, key, ids: Id[] | Ids) => {
     if (ids instanceof Set) {
       return;
     }
@@ -85,10 +104,10 @@ export function bawCollection<T extends AbstractModel>(
 /**
  * Convert timestamp string into DateTimeTimezone
  */
-export function bawDateTime<T extends AbstractModel>(
-  opts?: BawDecoratorOptions<T>
+export function bawDateTime<Model>(
+  opts?: BawDecoratorOptions<Model>
 ) {
-  return createDecorator<T>(
+  return createDecorator<Model>(
     opts,
     (model, key, timestamp: string | DateTime) => {
       if (timestamp instanceof DateTime) {
@@ -105,10 +124,10 @@ export function bawDateTime<T extends AbstractModel>(
 /**
  * Convert duration string into Duration
  */
-export function bawDuration<T extends AbstractModel>(
-  opts?: BawDecoratorOptions<T>
+export function bawDuration<Model>(
+  opts?: BawDecoratorOptions<Model>
 ) {
-  return createDecorator<T>(opts, (model, key, seconds: number | Duration) => {
+  return createDecorator<Model>(opts, (model, key, seconds: number | Duration) => {
     if (seconds instanceof Duration) {
       return;
     }
@@ -137,8 +156,8 @@ export function bawDuration<T extends AbstractModel>(
  * @param opts Options to apply
  * @param setValue Set the value of the models decorated key
  */
-function createDecorator<T extends AbstractModel>(
-  opts: BawDecoratorOptions<T> = {},
+function createDecorator<Model>(
+  opts: BawDecoratorOptions<Model> = {},
   setValue: (model: AbstractModel, key: symbol, ...args: any[]) => void
 ) {
   return function (model: AbstractModel, key: string) {
@@ -185,7 +204,7 @@ function createDecorator<T extends AbstractModel>(
 
     if (opts.persist) {
       // Add key to toJSON method
-      bawPersistAttr(model, key);
+      persistAttr(model, key, opts.persist);
     }
   };
 }
@@ -194,9 +213,16 @@ export interface BawDecoratorOptions<T> {
   /**
    * Persist key in models toJSON() method
    */
-  persist?: boolean;
+  persist?: boolean | BawPersistAttributeOptions;
   /**
    * Override key to read field data from another field
    */
   key?: keyof T;
+}
+
+interface BawPersistAttributeOptions {
+  /** Include attribute in create requests for the model */
+  create?: boolean;
+  /** Include attribute in update requests for the model */
+  update?: boolean;
 }

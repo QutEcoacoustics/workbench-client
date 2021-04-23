@@ -45,7 +45,7 @@ class IMockModel {
   };
 }
 
-class MockModel extends AbstractModel {
+class MockModel extends AbstractModel implements IMockModel {
   public readonly id?: number;
   public readonly name?: string;
   public readonly caseConversion?: {
@@ -56,12 +56,12 @@ class MockModel extends AbstractModel {
     super(data, modelInjector);
   }
 
-  public toJSON() {
+  public toJSON(_: any) {
     return {
       id: this.id,
       name: this.name,
       caseConversion: this.caseConversion,
-    };
+    } as any;
   }
 
   public get viewUrl(): string {

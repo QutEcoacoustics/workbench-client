@@ -14,12 +14,11 @@ export class ProgressEvent
   extends AbstractModel<IProgressEvent>
   implements IProgressEvent {
   public readonly kind = "ProgressEvent";
-  @bawPersistAttr
   public readonly id?: Id;
   public readonly creatorId?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly datasetItemId?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly activity?: string;
   @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;

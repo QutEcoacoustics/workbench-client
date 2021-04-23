@@ -18,11 +18,10 @@ export interface ITagging extends HasCreatorAndUpdater {
 
 export class Tagging extends AbstractModel<ITagging> implements ITagging {
   public readonly kind = "Tagging";
-  @bawPersistAttr
   public readonly id?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly audioEventId?: Id;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly tagId?: Id;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;

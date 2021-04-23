@@ -34,3 +34,9 @@ export type KeysOfType<T, TProp> = {
 
 /** Sets type to either be T or null */
 export type Option<T> = T | null;
+
+/**
+ * Shallowly removes typescript readonly flag from keys in type. This
+ * does not remove javascript readonly enforcement
+ */
+export type Writeable<T> = { -readonly [P in keyof T]: T[P] };

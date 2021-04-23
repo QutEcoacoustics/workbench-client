@@ -61,17 +61,17 @@ export class ReportProblem
   extends AbstractForm<IReportProblem>
   implements IReportProblem {
   public readonly kind = "ReportProblem";
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly name: Param;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly email: Param;
   @bawDateTime({ persist: true })
   public readonly date: DateTime;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly description: Description;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly content: Description;
-  @bawPersistAttr
+  @bawPersistAttr()
   public readonly recaptchaToken: string;
 
   public getBody(token: string): URLSearchParams {

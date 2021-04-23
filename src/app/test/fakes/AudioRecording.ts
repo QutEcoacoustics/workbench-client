@@ -41,7 +41,7 @@ export function generateAudioRecording(id?: Id): Required<IAudioRecording> {
     fileHash: modelData.hash(),
     status: modelData.random.arrayElement(statuses),
     notes: modelData.notes(),
-    originalFileName: modelData.system.fileName(".mpg", "audio"),
+    originalFileName: modelData.system.commonFileName(".mpg"),
     recordedUtcOffset: modelData.offset(),
     ...modelData.model.generateAllUsers(),
   };

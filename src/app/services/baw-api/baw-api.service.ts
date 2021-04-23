@@ -5,7 +5,7 @@ import {
   Injectable,
   InjectionToken,
   Injector,
-  PLATFORM_ID,
+  PLATFORM_ID
 } from "@angular/core";
 import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
@@ -206,20 +206,19 @@ export class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected apiCreate(path: string, body: AbstractModel): Observable<Model> {
-    return this.httpPost(path, body.toJSON?.() ?? body).pipe(
+    return this.httpPost(path, body.toJSON?.({create: true}) ?? body).pipe(
       map(this.handleSingleResponse)
     );
   }
 
   /**
    * Get response from update route
-   * TODO Add option to switch between Put and Patch requests
    *
    * @param path API path
    * @param body Request body
    */
   protected apiUpdate(path: string, body: AbstractModel): Observable<Model> {
-    return this.httpPatch(path, body.toJSON?.() ?? body).pipe(
+    return this.httpPatch(path, body.toJSON?.({update: true}) ?? body).pipe(
       map(this.handleSingleResponse)
     );
   }
@@ -268,6 +267,23 @@ export class BawApiService<Model extends AbstractModel> {
    */
   protected httpPost(path: string, body?: any): Observable<ApiResponse<Model>> {
     return this.http.post<ApiResponse<Model>>(this.getPath(path), body, {
+      // Set responseType for interceptor
+      responseType: "json",
+    });
+  }
+
+  /**
+   * Constructs a `PUT` request
+   * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   *
+   * @param path API path
+   * @param body Request body
+   */
+  protected httpPut(
+    path: string,
+    body?: any
+  ): Observable<ApiResponse<Model>> {
+    return this.http.put<ApiResponse<Model>>(this.getPath(path), body, {
       // Set responseType for interceptor
       responseType: "json",
     });
