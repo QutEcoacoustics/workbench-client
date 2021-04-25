@@ -103,9 +103,10 @@ export interface MenuItem extends LabelAndIcon {
   active?: boolean;
   /**
    * Tracks whether this link should be disabled, this will prevent the link from being
-   * clicked on, and highlight it as disabled.
+   * clicked on, and highlight it as disabled. If a string value is given, it will display
+   * the message in addition to whatever the links tooltip is.
    */
-  disabled?: boolean;
+  disabled?: boolean | string;
 }
 
 /**

@@ -23,8 +23,8 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
   template: `
     <span
       [placement]="placement"
-      [ngbTooltip]="tooltip"
-      [class.disabled]="link.disabled"
+      [ngbTooltip]="tooltipContent"
+      [class.disabled]="isDisabled"
     >
       <ng-container *ngIf="isInternalLink; else external">
         <!-- Internal Link -->
@@ -32,14 +32,14 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
           class="nav-link"
           [strongRoute]="internalLink.route"
           [class.active]="active"
-          [class.disabled]="link.disabled"
+          [class.disabled]="isDisabled"
         >
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
         </a>
       </ng-container>
       <ng-template #external>
         <!-- External Link -->
-        <a class="nav-link" [href]="href" [class.disabled]="link.disabled">
+        <a class="nav-link" [href]="href" [class.disabled]="isDisabled">
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
         </a>
       </ng-template>
@@ -49,6 +49,13 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
     <ng-template #linkDetails>
       <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
       <span id="label">{{ link.label }}</span>
+    </ng-template>
+
+    <ng-template #tooltipContent>
+      <ng-container *ngIf="disabledReason">
+        {{ disabledReason }}<br />
+      </ng-container>
+      {{ tooltip }}
     </ng-template>
   `,
   styleUrls: ["./link.component.scss"],
@@ -60,7 +67,9 @@ export class MenuLinkComponent implements OnChanges {
   @Input() public placement: Placement;
   @Input() public tooltip: string;
   public active: boolean;
+  public disabledReason: string;
   public href: string;
+  public isDisabled: boolean;
 
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
@@ -70,6 +79,13 @@ export class MenuLinkComponent implements OnChanges {
 
   public ngOnChanges() {
     const params = this.activatedRoute.snapshot.params;
+
+    if (typeof this.link.disabled === "boolean") {
+      this.isDisabled = this.link.disabled;
+    } else if (typeof this.link.disabled === "string") {
+      this.isDisabled = true;
+      this.disabledReason = this.link.disabled;
+    }
 
     if (this.isInternalLink) {
       this.handleInternalLink(params);

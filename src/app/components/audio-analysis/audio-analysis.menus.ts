@@ -48,7 +48,7 @@ export const retryFailedItemsMenuItem = menuAction({
   icon: ["fas", "redo"],
   label: "Retry failed items",
   tooltip: () => "Retry any failed analysis job items",
-  disabled: true,
+  disabled: "BETA: Feature is still being developed.",
   action: () => {},
 });
 
@@ -56,7 +56,7 @@ export const pauseProcessingMenuItem = menuAction({
   icon: ["fas", "pause-circle"],
   label: "Pause processing",
   tooltip: () => "Pause all analysis job processing",
-  disabled: true,
+  disabled: "BETA: Feature is still being developed.",
   action: () => {},
 });
 
@@ -64,7 +64,7 @@ export const deleteAudioAnalysisMenuItem = menuAction({
   icon: defaultDeleteIcon,
   label: "Delete this job",
   tooltip: () => "Delete this analysis job",
-  disabled: true,
+  disabled: "BETA: Feature is still being developed.",
   action: () => {},
 });
 
@@ -72,6 +72,6 @@ export const downloadAudioAnalysisResultsMenuItem = menuAction({
   icon: ["fas", "file-archive"],
   label: "Download analysis results",
   tooltip: () => "Download a folder containing the analysis results",
-  disabled: true,
+  disabled: "BETA: Feature is still being developed.",
   action: () => {},
 });
