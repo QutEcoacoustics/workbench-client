@@ -41,14 +41,11 @@ class NewComponent extends FormTemplate<Project> {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(
-      notifications,
-      route,
-      router,
-      undefined,
-      (model) => defaultSuccessMsg("created", model.name),
-      projectErrorMsg
-    );
+    super(notifications, route, router, {
+      successMsg: (model) => defaultSuccessMsg("created", model.name),
+      failureMsg: (error) => projectErrorMsg(error),
+      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+    });
   }
 
   protected apiAction(model: Partial<Project>) {

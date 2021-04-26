@@ -10,10 +10,7 @@ import {
   registerMenuItem,
   securityCategory,
 } from "@components/security/security.menus";
-import {
-  defaultErrorMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
@@ -46,15 +43,12 @@ class RegisterComponent
     route: ActivatedRoute,
     router: Router
   ) {
-    super(
-      notifications,
-      route,
-      router,
-      undefined,
-      () => "Successfully registered new account",
-      defaultErrorMsg,
-      false
-    );
+    super(notifications, route, router, {
+      hasFormCheck: false,
+      successMsg: () => "Successfully registered new account",
+      redirectUser: () =>
+        this.router.navigateByUrl(homeMenuItem.route.toRouterLink()),
+    });
   }
 
   public ngOnInit() {
@@ -82,10 +76,6 @@ class RegisterComponent
 
   protected apiAction(model: IRegisterDetails) {
     return this.api.signUp(new RegisterDetails(model));
-  }
-
-  protected redirectionPath(): string {
-    return homeMenuItem.route.toRouterLink();
   }
 }
 

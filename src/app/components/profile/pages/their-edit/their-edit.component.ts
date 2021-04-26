@@ -55,9 +55,11 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, accountKey, (model) =>
-      defaultSuccessMsg("updated", model.userName)
-    );
+    super(notifications, route, router, {
+      getModel: (models) => models[accountKey] as User,
+      successMsg: (model) => defaultSuccessMsg("updated", model.userName),
+      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+    });
   }
 
   public ngOnInit() {
@@ -65,7 +67,7 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
 
     if (!this.failure) {
       this.title = `Editing profile for ${this.model.userName}`;
-      this.originalModel = Object.assign({}, this.model);
+      this.originalModel = Object.assign({}, this.model as User);
     }
   }
 

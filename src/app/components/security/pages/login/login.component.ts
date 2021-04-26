@@ -1,4 +1,4 @@
-import { DOCUMENT, Location } from "@angular/common";
+import { Location } from "@angular/common";
 import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
@@ -15,10 +15,7 @@ import {
   unlockAccountMenuItem,
 } from "@components/security/security.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import {
-  defaultErrorMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -45,22 +42,27 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
 
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
-    @Inject(DOCUMENT) private document: Document,
     private api: SecurityService,
     private location: Location,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router
   ) {
-    super(
-      notifications,
-      route,
-      router,
-      undefined,
-      () => "Successfully signed in",
-      defaultErrorMsg,
-      false
-    );
+    super(notifications, route, router, {
+      hasFormCheck: false,
+      successMsg: () => "Successfully signed in",
+      redirectUser: () => {
+        if (this.redirectBack) {
+          this.location.back();
+        } else if (this.redirectUrl instanceof StrongRoute) {
+          this.router.navigateByUrl(this.redirectUrl.toRouterLink());
+        } else if (this.redirectUrl.startsWith("/")) {
+          this.router.navigateByUrl(this.redirectUrl);
+        } else {
+          this.notifications.error("Unable to redirect back to previous page");
+        }
+      },
+    });
   }
 
   public ngOnInit() {
@@ -103,31 +105,8 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
     }
   }
 
-  protected redirectUser() {
-    if (this.redirectBack) {
-      this.location.back();
-    } else if (this.redirectUrl instanceof StrongRoute) {
-      this.router.navigateByUrl(this.redirectUrl.toRouterLink());
-    } else if (this.redirectUrl.startsWith("/")) {
-      this.router.navigateByUrl(this.redirectUrl);
-    } else {
-      this.externalRedirect(this.redirectUrl);
-    }
-  }
-
   protected apiAction(model: ILoginDetails) {
     return this.api.signIn(new LoginDetails(model));
-  }
-
-  /**
-   * Redirect to an external website.
-   * ! Do not change, this is inside a function to stop unit tests from redirecting
-   * TODO Remove this once website is entirely moved to workbench-client
-   *
-   * @param redirect Redirect url
-   */
-  public externalRedirect(redirect: string) {
-    this.document.location.href = redirect;
   }
 }
 

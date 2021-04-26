@@ -35,9 +35,11 @@ class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, siteKey, (model) =>
-      defaultSuccessMsg("destroyed", model.name)
-    );
+    super(notifications, route, router, {
+      getModel: (models) => models[siteKey] as Site,
+      successMsg: (model) => defaultSuccessMsg("destroyed", model.name),
+      redirectUser: () => this.router.navigateByUrl(this.project.viewUrl),
+    });
   }
 
   public ngOnInit() {
@@ -50,10 +52,6 @@ class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
 
   public get project(): Project {
     return this.models[projectKey] as Project;
-  }
-
-  protected redirectionPath() {
-    return this.project.viewUrl;
   }
 
   protected apiAction(model: Partial<Site>) {

@@ -50,9 +50,12 @@ class DeleteComponent extends FormTemplate<Project> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, projectKey, (model) =>
-      defaultSuccessMsg("destroyed", model.name)
-    );
+    super(notifications, route, router, {
+      getModel: (models) => models[projectKey] as Project,
+      successMsg: (model) => defaultSuccessMsg("destroyed", model.name),
+      redirectUser: () =>
+        this.router.navigateByUrl(projectsMenuItem.route.toRouterLink()),
+    });
   }
 
   public ngOnInit() {
@@ -61,10 +64,6 @@ class DeleteComponent extends FormTemplate<Project> implements OnInit {
     if (!this.failure) {
       this.title = `Are you certain you wish to delete ${this.model.name}?`;
     }
-  }
-
-  protected redirectionPath() {
-    return projectsMenuItem.route.toRouterLink();
   }
 
   protected apiAction(model: Partial<Project>) {

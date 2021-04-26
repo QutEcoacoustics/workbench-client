@@ -42,9 +42,12 @@ class AdminTagsDeleteComponent extends FormTemplate<Tag> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, tagKey, (model) =>
-      defaultSuccessMsg("destroyed", model.text)
-    );
+    super(notifications, route, router, {
+      getModel: (models) => models[tagKey] as Tag,
+      successMsg: (model) => defaultSuccessMsg("destroyed", model.text),
+      redirectUser: () =>
+        this.router.navigateByUrl(adminTagsMenuItem.route.toRouterLink()),
+    });
   }
 
   public ngOnInit(): void {
@@ -53,10 +56,6 @@ class AdminTagsDeleteComponent extends FormTemplate<Tag> implements OnInit {
     if (!this.failure) {
       this.title = `Are you certain you wish to delete ${this.model.text}?`;
     }
-  }
-
-  protected redirectionPath() {
-    return adminTagsMenuItem.route.toRouterLink();
   }
 
   protected apiAction(model: Partial<Tag>) {

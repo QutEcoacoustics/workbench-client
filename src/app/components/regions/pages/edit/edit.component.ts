@@ -53,9 +53,11 @@ class EditComponent extends FormTemplate<Region> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, regionKey, (model) =>
-      defaultSuccessMsg("updated", model.name)
-    );
+    super(notifications, route, router, {
+      getModel: (models) => models[regionKey] as Region,
+      successMsg: (model) => defaultSuccessMsg("updated", model.name),
+      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+    });
   }
 
   public ngOnInit() {

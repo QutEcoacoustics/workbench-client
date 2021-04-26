@@ -50,14 +50,12 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(
-      notifications,
-      route,
-      router,
-      projectKey,
-      (model) => defaultSuccessMsg("updated", model.name),
-      projectErrorMsg
-    );
+    super(notifications, route, router, {
+      getModel: (models) => models[projectKey] as Project,
+      successMsg: (model) => defaultSuccessMsg("updated", model.name),
+      failureMsg: (error) => projectErrorMsg(error),
+      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+    });
   }
 
   public ngOnInit() {

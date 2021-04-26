@@ -46,9 +46,13 @@ class AdminTagGroupsDeleteComponent
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, tagGroupKey, (model) =>
-      defaultSuccessMsg("destroyed", model.groupIdentifier)
-    );
+    super(notifications, route, router, {
+      getModel: (models) => models[tagGroupKey] as TagGroup,
+      successMsg: (model) =>
+        defaultSuccessMsg("destroyed", model.groupIdentifier),
+      redirectUser: () =>
+        this.router.navigateByUrl(adminTagGroupsMenuItem.route.toRouterLink()),
+    });
   }
 
   public ngOnInit() {
@@ -57,9 +61,6 @@ class AdminTagGroupsDeleteComponent
     if (!this.failure) {
       this.title = `Are you certain you wish to delete ${this.model.groupIdentifier}?`;
     }
-  }
-  protected redirectionPath() {
-    return adminTagGroupsMenuItem.route.toRouterLink();
   }
 
   protected apiAction(model: Partial<TagGroup>) {
