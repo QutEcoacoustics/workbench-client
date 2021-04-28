@@ -43,9 +43,10 @@ class AdminScriptsNewComponent extends FormTemplate<Script> {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, undefined, (model) =>
-      defaultSuccessMsg("created", model.name)
-    );
+    super(notifications, route, router, {
+      successMsg: (model) => defaultSuccessMsg("created", model.name),
+      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+    });
   }
 
   protected apiAction(model: Partial<Script>) {

@@ -1,17 +1,15 @@
 import { Component } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpectatorRoutingOverrides,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
-import {
-  mockActivatedRoute,
-  MockData,
-  MockResolvers,
-} from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
@@ -20,6 +18,7 @@ import {
   defaultSuccessMsg,
   extendedErrorMsg,
   FormTemplate,
+  FormTemplateOptions as TemplateOptions,
 } from "./formTemplate";
 
 class MockModel extends AbstractModel {
@@ -43,7 +42,7 @@ class MockComponent extends FormTemplate<MockModel> {
     protected route: ActivatedRoute,
     protected router: Router
   ) {
-    super(notifications, route, router, undefined);
+    super(notifications, route, router, formTemplateOptions);
   }
 
   protected apiAction(model: Partial<MockModel>) {
@@ -51,39 +50,33 @@ class MockComponent extends FormTemplate<MockModel> {
   }
 }
 
+const formTemplateOptions: Partial<TemplateOptions<MockModel>> = {};
+
 describe("formTemplate", () => {
-  let component: MockComponent;
-  let fixture: ComponentFixture<MockComponent>;
   let defaultError: ApiErrorDetails;
   let defaultModel: MockModel;
   let notifications: ToastrService;
-  let router: Router;
+  let spec: SpectatorRouting<MockComponent>;
   let successResponse: (model: Partial<MockModel>) => Observable<MockModel>;
   let errorResponse: (model: Partial<MockModel>) => Observable<MockModel>;
+  const createComponent = createRoutingFactory({
+    component: MockComponent,
+    imports: [SharedModule, ...appLibraryImports],
+    mocks: [ToastrService],
+  });
 
-  function configureTestingModule(
-    resolvers?: MockResolvers,
-    data: MockData = {}
+  function setup(
+    componentOptions?: SpectatorRoutingOverrides<MockComponent>,
+    templateOptions?: Partial<TemplateOptions<MockModel>>
   ) {
-    TestBed.configureTestingModule({
-      declarations: [MockComponent],
-      imports: [SharedModule, RouterTestingModule, ...appLibraryImports],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useClass: mockActivatedRoute(resolvers, data),
-        },
-      ],
-    }).compileComponents();
+    // Set new formTemplateOptions without losing reference
+    for (const key of Object.keys(formTemplateOptions)) {
+      delete formTemplateOptions[key];
+    }
+    Object.assign(formTemplateOptions, templateOptions);
+    spec = createComponent(componentOptions);
 
-    fixture = TestBed.createComponent(MockComponent);
-    notifications = TestBed.inject(ToastrService);
-    router = TestBed.inject(Router);
-    component = fixture.componentInstance;
-
-    spyOn(notifications, "success").and.stub();
-    spyOn(notifications, "error").and.stub();
-    spyOn(router, "navigateByUrl").and.stub();
+    notifications = spec.inject(ToastrService);
   }
 
   function makeResolvedModel(
@@ -91,6 +84,27 @@ describe("formTemplate", () => {
     error?: ApiErrorDetails
   ): ResolvedModel {
     return model ? { model } : { error };
+  }
+
+  function createResolvers(resolvers: string[], models: ResolvedModel[]) {
+    const routeData = { data: { resolvers: {} } };
+    resolvers.forEach((resolver, index) => {
+      routeData.data.resolvers[resolver] = `${resolver}Resolver`;
+      routeData.data[resolver] = models[index];
+    });
+    return routeData;
+  }
+
+  function stubFormResets() {
+    spyOn(spec.component, "resetForms").and.stub();
+  }
+
+  function submitForm(data: any) {
+    spec.component.submit(data);
+  }
+
+  function interceptApiAction(fakeFunc: jasmine.Func) {
+    spec.component["apiAction"] = jasmine.createSpy().and.callFake(fakeFunc);
   }
 
   beforeEach(() => {
@@ -106,332 +120,326 @@ describe("formTemplate", () => {
   });
 
   describe("resolvers", () => {
-    it("should handle no resolvers", () => {
-      configureTestingModule();
-      fixture.detectChanges();
-
-      expect(component.failure).toBeFalsy();
+    it("should not set failure flag if no resolvers", () => {
+      setup();
+      spec.detectChanges();
+      expect(spec.component.failure).toBeFalsy();
     });
 
-    it("should handle empty resolvers", () => {
-      configureTestingModule({});
-      fixture.detectChanges();
-
-      expect(component.failure).toBeFalsy();
+    it("should not set failure flag if empty list of resolvers", () => {
+      setup(createResolvers([], []));
+      spec.detectChanges();
+      expect(spec.component.failure).toBeFalsy();
     });
 
-    it("should handle single resolver", () => {
-      configureTestingModule(
-        { mockModel: "MockModelResolver" },
-        { mockModel: makeResolvedModel(defaultModel) }
+    it("should not set failure flag if single successful resolver", () => {
+      setup(createResolvers(["mockModel"], [makeResolvedModel(defaultModel)]));
+      spec.detectChanges();
+      expect(spec.component.failure).toBeFalsy();
+    });
+
+    it("should not set failure flag if multiple successful", () => {
+      setup(
+        createResolvers(
+          ["mockModel", "mockModels"],
+          [makeResolvedModel(defaultModel), makeResolvedModel([defaultModel])]
+        )
       );
-      fixture.detectChanges();
-
-      expect(component.failure).toBeFalsy();
+      spec.detectChanges();
+      expect(spec.component.failure).toBeFalsy();
     });
 
-    it("should handle multiple resolvers", () => {
-      configureTestingModule(
-        { mockModel: "MockModelResolver", mockModels: "MockModelsResolver" },
-        {
-          mockModel: makeResolvedModel(defaultModel),
-          mockModels: makeResolvedModel([defaultModel]),
-        }
+    it("should set failure flag if single resolver fails", () => {
+      setup(
+        createResolvers(
+          ["mockModel"],
+          [makeResolvedModel(undefined, defaultError)]
+        )
       );
-      fixture.detectChanges();
-
-      expect(component.failure).toBeFalsy();
+      spec.detectChanges();
+      expect(spec.component.failure).toBeTruthy();
     });
 
-    it("should handle single resolver failure", () => {
-      configureTestingModule(
-        { mockModel: "MockModelResolver" },
-        { mockModel: makeResolvedModel(undefined, defaultError) }
+    it("should set failure flag if resolver fails in list", () => {
+      setup(
+        createResolvers(
+          ["mockModel", "mockModels"],
+          [
+            makeResolvedModel(defaultModel),
+            makeResolvedModel(undefined, defaultError),
+          ]
+        )
       );
-      fixture.detectChanges();
-
-      expect(component.failure).toBeTruthy();
-    });
-
-    it("should handle any resolver failure", () => {
-      configureTestingModule(
-        { mockModel: "MockModelResolver", mockModels: "MockModelsResolver" },
-        {
-          mockModel: makeResolvedModel(defaultModel),
-          mockModels: makeResolvedModel(undefined, defaultError),
-        }
-      );
-      fixture.detectChanges();
-
-      expect(component.failure).toBeTruthy();
+      spec.detectChanges();
+      expect(spec.component.failure).toBeTruthy();
     });
   });
 
-  describe("modelKey", () => {
-    it("should handle undefined modelKey", () => {
-      configureTestingModule();
-      component["modelKey"] = undefined;
-      fixture.detectChanges();
-
-      expect(component.failure).toBeFalsy();
-      expect(component.model).toEqual({} as MockModel);
+  describe("getModel", () => {
+    it("should handle no getModel function", () => {
+      setup();
+      spec.detectChanges();
+      expect(spec.component.failure).toBeFalsy();
+      expect(spec.component.model).toEqual({} as MockModel);
     });
 
-    it("should find model with single resolver", () => {
-      configureTestingModule(
-        { mockModel: "MockModelResolver" },
-        { mockModel: makeResolvedModel(defaultModel) }
+    it("should use getModel function to retrieve model from single resolved model", () => {
+      setup(createResolvers(["mockModel"], [makeResolvedModel(defaultModel)]), {
+        getModel: (models) => models["mockModel"] as MockModel,
+      });
+      spec.detectChanges();
+      expect(spec.component.failure).toBeFalsy();
+      expect(spec.component.model).toBe(defaultModel);
+    });
+
+    it("should use getModel function to retrieve model from multiple resolved models", () => {
+      setup(
+        createResolvers(
+          ["mockModels", "mockModel"],
+          [makeResolvedModel([defaultModel]), makeResolvedModel(defaultModel)]
+        ),
+        { getModel: (models) => models["mockModel"] as MockModel }
       );
-      component["modelKey"] = "mockModel";
-      fixture.detectChanges();
-
-      expect(component.failure).toBeFalsy();
-      expect(component.model).toBe(defaultModel);
+      spec.detectChanges();
+      expect(spec.component.failure).toBeFalsy();
+      expect(spec.component.model).toBe(defaultModel);
     });
 
-    it("should find model with multiple resolvers", () => {
-      configureTestingModule(
-        { mockModels: "MockModelsResolver", mockModel: "MockModelResolver" },
-        {
-          mockModels: makeResolvedModel([defaultModel]),
-          mockModel: makeResolvedModel(defaultModel),
-        }
+    it("should set failure flag if failure to find model", () => {
+      setup(
+        createResolvers(["mockModels"], [makeResolvedModel(defaultModel)]),
+        { getModel: (models) => models["unknownModel"] as MockModel }
       );
-      component["modelKey"] = "mockModel";
-      fixture.detectChanges();
-
-      expect(component.failure).toBeFalsy();
-      expect(component.model).toBe(defaultModel);
-    });
-
-    it("should handle failure to find model", () => {
-      configureTestingModule(
-        { mockModels: "MockModelsResolver" },
-        { mockModels: makeResolvedModel([defaultModel]) }
-      );
-      component["modelKey"] = "mockModel";
-      fixture.detectChanges();
-
-      expect(component.failure).toBeTruthy();
-    });
-
-    it("should handle failure to find resolver", () => {
-      configureTestingModule({ mockModel: "MockModelsResolver" });
-      component["modelKey"] = "mockModel";
-      fixture.detectChanges();
-
-      expect(component.failure).toBeTruthy();
+      spec.detectChanges();
+      expect(spec.component.failure).toBeTruthy();
     });
   });
 
   describe("hasFormCheck", () => {
-    beforeEach(() => {
-      configureTestingModule();
-    });
+    function modifyForm() {
+      spec.component.appForms.first.form.markAsDirty();
+    }
+
+    function isFormTouched(isTouched: boolean) {
+      expect(spec.component.isFormTouched()).toBe(isTouched);
+    }
 
     it("should extend WithFormCheck", () => {
-      fixture.detectChanges();
+      setup();
+      spec.detectChanges();
+      expect(spec.component.isFormTouched).toBeTruthy();
+      expect(spec.component.resetForms).toBeTruthy();
+    });
 
-      expect(component.isFormTouched).toBeTruthy();
-      expect(component.resetForms).toBeTruthy();
+    it("should default to having form checks enabled", () => {
+      setup();
+      expect(spec.component["opts"].hasFormCheck).toBeTrue();
     });
 
     it("should have isFormTouched when hasFormCheck is true", () => {
-      component["hasFormCheck"] = true;
-      fixture.detectChanges();
-      component.appForms.first.form.markAsDirty();
-      fixture.detectChanges();
-
-      expect(component.isFormTouched()).toBeTruthy();
+      setup();
+      spec.detectChanges();
+      modifyForm();
+      spec.detectChanges();
+      isFormTouched(true);
     });
 
     it("should disable isFormTouched when hasFormCheck is false", () => {
-      component["hasFormCheck"] = false;
-      fixture.detectChanges();
-      component.appForms.first.form.markAsDirty();
-      fixture.detectChanges();
-
-      expect(component.isFormTouched()).toBeFalsy();
+      setup(undefined, { hasFormCheck: false });
+      spec.detectChanges();
+      modifyForm();
+      spec.detectChanges();
+      isFormTouched(false);
     });
 
     it("should have resetForms when hasFormCheck is true", () => {
-      component["hasFormCheck"] = true;
-      fixture.detectChanges();
-      const spy = spyOn(component.appForms.first.form, "markAsPristine");
-      fixture.detectChanges();
-
-      component.resetForms();
+      setup();
+      spec.detectChanges();
+      const form = spec.component.appForms.first.form;
+      const spy = spyOn(form, "markAsPristine");
+      spec.detectChanges();
+      spec.component.resetForms();
       expect(spy).toHaveBeenCalled();
     });
 
     it("should disable resetForms when hasFormCheck is false", () => {
-      component["hasFormCheck"] = false;
-      fixture.detectChanges();
-      const spy = spyOn(component.appForms.first.form, "markAsPristine");
-      fixture.detectChanges();
-
-      component.resetForms();
+      setup(undefined, { hasFormCheck: false });
+      spec.detectChanges();
+      const form = spec.component.appForms.first.form;
+      const spy = spyOn(form, "markAsPristine");
+      spec.detectChanges();
+      spec.component.resetForms();
       expect(spy).not.toHaveBeenCalled();
     });
   });
 
   describe("submit", () => {
-    let spy: jasmine.Spy;
-
-    beforeEach(() => {
-      spy = jasmine.createSpy();
-      configureTestingModule();
-      spyOn(component, "resetForms").and.stub();
-    });
-
     it("should call apiAction on submit", () => {
-      component["apiAction"] = spy.and.callFake(successResponse);
-      fixture.detectChanges();
-
-      component.submit({ id: 1 });
-      expect(spy).toHaveBeenCalled();
+      setup();
+      stubFormResets();
+      interceptApiAction(successResponse);
+      spec.detectChanges();
+      submitForm({ id: 1 });
+      expect(spec.component["apiAction"]).toHaveBeenCalled();
     });
 
     it("should reset form on successful submission", () => {
-      fixture.detectChanges();
-
-      component.submit({ id: 1 });
-      expect(component.resetForms).toHaveBeenCalled();
+      setup();
+      stubFormResets();
+      spec.detectChanges();
+      submitForm({ id: 1 });
+      expect(spec.component.resetForms).toHaveBeenCalled();
     });
 
     it("should not reset form on failed submission", () => {
-      component["apiAction"] = spy.and.callFake(errorResponse);
-      fixture.detectChanges();
-
-      component.submit({ id: 1 });
-      expect(component.resetForms).not.toHaveBeenCalled();
+      setup();
+      stubFormResets();
+      interceptApiAction(errorResponse);
+      spec.detectChanges();
+      submitForm({ id: 1 });
+      expect(spec.component.resetForms).not.toHaveBeenCalled();
     });
 
-    it("should redirect user on successful submission", () => {
-      fixture.detectChanges();
+    it("should call onSuccess on successful submission", (done) => {
+      const modelData = { id: 1 };
+      setup(undefined, {
+        onSuccess: (model) => {
+          expect(model).toEqual(new MockModel(modelData));
+          done();
+        },
+      });
+      stubFormResets();
+      spec.detectChanges();
+      submitForm(modelData);
+    });
 
-      component.submit({ id: 1 });
-      expect(router.navigateByUrl).toHaveBeenCalled();
+    it("should call redirectUser on successful submission", (done) => {
+      const modelData = { id: 1 };
+      setup(undefined, {
+        redirectUser: (model) => {
+          expect(model).toEqual(new MockModel(modelData));
+          done();
+        },
+      });
+      stubFormResets();
+      spec.detectChanges();
+      submitForm(modelData);
     });
   });
 
   describe("successMessage", () => {
+    function assertSuccessMessage(msg: string) {
+      expect(spec.component["successMessage"]).toBe(msg);
+    }
+
     it("should handle update form success message", () => {
-      configureTestingModule(
-        { mockModel: "MockModelResolver" },
-        { mockModel: makeResolvedModel(defaultModel) }
-      );
-      spyOn(component, "resetForms").and.stub();
-      component["modelKey"] = "mockModel";
-      component["successMsg"] = (model) =>
-        "custom success message with id: " + model.id;
-      fixture.detectChanges();
+      setup(createResolvers(["mockModel"], [makeResolvedModel(defaultModel)]), {
+        getModel: (models) => models["mockModel"] as MockModel,
+        successMsg: (model) => "custom success message with id: " + model.id,
+      });
+      stubFormResets();
+      spec.detectChanges();
 
       // ID should not match the output because the success
       // message is calculated with the original model
-      component.submit({ id: 5 });
-      expect(component["successMessage"]).toBe(
-        "custom success message with id: 1"
-      );
+      submitForm({ id: 5 });
+      assertSuccessMessage("custom success message with id: 1");
     });
 
     it("should handle new form success message", () => {
-      configureTestingModule();
-      spyOn(component, "resetForms").and.stub();
-      component["successMsg"] = (model) =>
-        "custom success message with id: " + model.id;
-      fixture.detectChanges();
+      setup(undefined, {
+        successMsg: (model) => "custom success message with id: " + model.id,
+      });
+      stubFormResets();
+      spec.detectChanges();
 
-      component.submit({ id: 1 });
-      expect(component["successMessage"]).toBe(
-        "custom success message with id: 1"
-      );
+      submitForm({ id: 1 });
+      assertSuccessMessage("custom success message with id: 1");
     });
   });
 
   describe("notifications", () => {
-    let spy: jasmine.Spy;
+    function assertNotification(type: keyof ToastrService, msg: string) {
+      expect(notifications[type]).toHaveBeenCalledWith(msg);
+    }
 
-    beforeEach(() => {
-      spy = jasmine.createSpy();
-      configureTestingModule();
-      spyOn(component, "resetForms").and.stub();
+    it("should display default success notification on successful submission", () => {
+      setup();
+      stubFormResets();
+      spec.detectChanges();
+      submitForm({ id: 1 });
+      assertNotification("success", defaultSuccessMsg("updated", "model"));
     });
 
     it("should display success notification on successful submission", () => {
-      fixture.detectChanges();
-
-      component.submit({ id: 1 });
-      expect(notifications.success).toHaveBeenCalled();
-    });
-
-    it("should display success message on successful submission", () => {
-      component["successMsg"] = (model) =>
+      const modelData = { id: 1 };
+      const successMsg = (model: MockModel) =>
         "custom success message with id: " + model.id;
-      fixture.detectChanges();
-
-      component.submit({ id: 1 });
-      expect(notifications.success).toHaveBeenCalledWith(
-        "custom success message with id: 1"
-      );
+      setup(undefined, { successMsg });
+      stubFormResets();
+      spec.detectChanges();
+      submitForm(modelData);
+      assertNotification("success", successMsg(new MockModel(modelData)));
     });
 
-    it("should display error notification on failed submission", () => {
-      component["apiAction"] = spy.and.callFake(errorResponse);
-      fixture.detectChanges();
+    it("should display default failure notification on failed submission", () => {
+      setup();
+      stubFormResets();
+      interceptApiAction(errorResponse);
+      spec.detectChanges();
 
-      component.submit({ id: 1 });
-      expect(notifications.error).toHaveBeenCalled();
+      submitForm({ id: 1 });
+      assertNotification("error", defaultErrorMsg(defaultError));
     });
 
-    it("should display error message on failed submission", () => {
-      component["apiAction"] = spy.and.callFake(errorResponse);
-      component["errorMsg"] = (err) => "custom error message: " + err.message;
-      fixture.detectChanges();
+    it("should display failure notification on failed submission", () => {
+      const failureMsg = (err: ApiErrorDetails) =>
+        "custom failure message with message: " + err.message;
+      setup(undefined, { failureMsg });
+      stubFormResets();
+      interceptApiAction(errorResponse);
+      spec.detectChanges();
 
-      component.submit({ id: 1 });
-      expect(notifications.error).toHaveBeenCalledWith(
-        "custom error message: " + defaultError.message
-      );
+      submitForm({ id: 1 });
+      assertNotification("error", failureMsg(defaultError));
     });
   });
 
   describe("loading", () => {
-    let spy: jasmine.Spy;
+    beforeEach(() => setup());
 
-    beforeEach(() => {
-      spy = jasmine.createSpy();
-      configureTestingModule();
-    });
+    function assertLoading(loading: boolean = true) {
+      if (loading) {
+        expect(spec.component.loading).toBeTruthy();
+      } else {
+        expect(spec.component.loading).toBeFalsy();
+      }
+    }
 
     it("should be false initially", () => {
-      fixture.detectChanges();
-
-      expect(component.loading).toBeFalsy();
+      spec.detectChanges();
+      assertLoading(false);
     });
 
     it("should be set true on submit", () => {
-      component["apiAction"] = spy.and.callFake(() => new Subject<MockModel>());
-      fixture.detectChanges();
-
-      component.submit({ id: 1 });
-      expect(component.loading).toBeTruthy();
+      interceptApiAction(() => new Subject<MockModel>());
+      spec.detectChanges();
+      submitForm({ id: 1 });
+      assertLoading();
     });
 
     it("should be set false on successful submission", () => {
-      component["apiAction"] = spy.and.callFake(successResponse);
-      fixture.detectChanges();
-
-      component.submit({ id: 1 });
-      expect(component.loading).toBeFalsy();
+      interceptApiAction(successResponse);
+      spec.detectChanges();
+      submitForm({ id: 1 });
+      assertLoading(false);
     });
 
     it("should be set false on failed submit", () => {
-      component["apiAction"] = spy.and.callFake(errorResponse);
-      fixture.detectChanges();
-
-      component.submit({ id: 1 });
-      expect(component.loading).toBeFalsy();
+      interceptApiAction(errorResponse);
+      spec.detectChanges();
+      submitForm({ id: 1 });
+      assertLoading(false);
     });
   });
 });

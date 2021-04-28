@@ -39,9 +39,11 @@ class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, undefined, (model) =>
-      defaultSuccessMsg("created", model.groupIdentifier)
-    );
+    super(notifications, route, router, {
+      successMsg: (model) =>
+        defaultSuccessMsg("created", model.groupIdentifier),
+      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+    });
   }
 
   protected apiAction(model: Partial<TagGroup>) {

@@ -45,9 +45,11 @@ class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, scriptKey, (model) =>
-      defaultSuccessMsg("updated", model.name)
-    );
+    super(notifications, route, router, {
+      getModel: (models) => models[scriptKey] as Script,
+      successMsg: (model) => defaultSuccessMsg("updated", model.name),
+      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+    });
   }
 
   public ngOnInit() {

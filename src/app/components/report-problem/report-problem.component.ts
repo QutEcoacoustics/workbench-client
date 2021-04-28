@@ -4,10 +4,7 @@ import {
   ReportProblem,
   ReportProblemService,
 } from "@baw-api/report/report-problem.service";
-import {
-  defaultErrorMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { ConfigService } from "@services/config/config.service";
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
@@ -52,16 +49,11 @@ class ReportProblemComponent
     route: ActivatedRoute,
     router: Router
   ) {
-    super(
-      notifications,
-      route,
-      router,
-      undefined,
-      () =>
+    super(notifications, route, router, {
+      successMsg: () =>
         "Thank you, your report was successfully submitted." +
         "If you entered an email address, we will let you know if the problems you describe are resolved.",
-      defaultErrorMsg
-    );
+    });
   }
 
   public ngOnInit() {
@@ -83,10 +75,6 @@ class ReportProblemComponent
 
   protected apiAction(model: ReportProblem) {
     return this.api.reportProblem(new ReportProblem(model));
-  }
-
-  protected redirectUser() {
-    // Do nothing
   }
 }
 

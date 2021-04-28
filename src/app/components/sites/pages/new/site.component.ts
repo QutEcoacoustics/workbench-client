@@ -28,22 +28,16 @@ export class SiteNewComponent extends FormTemplate<Site> {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(
-      notifications,
-      route,
-      router,
-      undefined,
-      (model) => defaultSuccessMsg("created", model.name),
-      siteErrorMsg
-    );
+    super(notifications, route, router, {
+      successMsg: (model) => defaultSuccessMsg("created", model.name),
+      failureMsg: (error) => siteErrorMsg(error),
+      redirectUser: (model) =>
+        this.router.navigateByUrl(model.getViewUrl(this.project)),
+    });
   }
 
   public get project(): Project {
     return this.models[projectKey] as Project;
-  }
-
-  protected redirectionPath(model: Site) {
-    return model.getViewUrl(this.project);
   }
 
   protected apiAction(model: Partial<Site>) {

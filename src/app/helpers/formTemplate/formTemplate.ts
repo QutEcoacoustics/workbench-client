@@ -13,39 +13,42 @@ import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "../page/pageComponent";
 import { PageInfo } from "../page/pageInfo";
 
+export interface FormTemplateOptions<Model> {
+  successMsg: (model: Partial<Model>) => string;
+  failureMsg: (err: ApiErrorDetails) => string;
+  onSuccess?: (model: Model | void) => void;
+  redirectUser?: (model: Model) => void;
+  getModel: (models: ResolvedModelList) => Partial<Model>;
+  hasFormCheck?: boolean;
+}
+const defaultOptions: FormTemplateOptions<any> = {
+  successMsg: () => defaultSuccessMsg("updated", "model"),
+  failureMsg: defaultErrorMsg,
+  getModel: () => ({}),
+  hasFormCheck: true,
+};
+
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
-export abstract class FormTemplate<M extends AbstractModel>
+export abstract class FormTemplate<Model extends AbstractModel>
   extends withFormCheck(PageComponent)
   implements OnInit {
-  /**
-   * Form Submission Function Loading
-   */
+  /** Form submission processing */
   public loading: boolean;
-  /**
-   * Initial setup failed
-   */
+  /** Initial setup failed */
   public failure: boolean;
-  /**
-   * Model to edit using form
-   */
-  public model: M;
-  /**
-   * Extra models stored in data
-   */
+  /** Model to edit using form */
+  public model: Partial<Model>;
+  /** Extra models stored in data */
   public models: ResolvedModelList = {};
-  /**
-   * Formly fields
-   */
+  /** Formly fields */
   public fields: FormlyFieldConfig[] = [];
-  /**
-   * Recaptcha state tracker, undefined if not used
-   */
+  /** Recaptcha state tracker, undefined if not used */
   public recaptchaSeed: RecaptchaState;
-  /**
-   * Success Message
-   */
+  /** Success message */
   private successMessage: string;
+  /** Form template options */
+  private opts: FormTemplateOptions<Model>;
 
   /**
    * Customize form template
@@ -53,35 +56,29 @@ export abstract class FormTemplate<M extends AbstractModel>
    * @param notifications Notifications service
    * @param route Activated route service
    * @param router Router service
-   * @param modelKey Primary model resolver key
-   * @param successMsg Success message
-   * @param errorMsg Error message
+   * @param opts Form template options
    */
   public constructor(
     protected notifications: ToastrService,
     protected route: ActivatedRoute,
     protected router: Router,
-    private modelKey: string,
-    private successMsg: (model: M) => string = (model) =>
-      defaultSuccessMsg("updated", model.id.toString()),
-    private errorMsg: (err: ApiErrorDetails) => string = defaultErrorMsg,
-    private hasFormCheck = true
+    opts: Partial<FormTemplateOptions<Model>>
   ) {
     super();
+    this.opts = { ...defaultOptions, ...opts };
   }
 
   public ngOnInit() {
     // Override form checking
-    if (!this.hasFormCheck) {
+    if (!this.opts.hasFormCheck) {
       this.isFormTouched = () => false;
-
       this.resetForms = () => {};
     }
 
     // Retrieve models from router
     const data = this.route.snapshot.data as PageInfo;
 
-    // Retrieve models
+    // Retrieve models and handle potential failure
     const models = retrieveResolvers(data);
     if (!models) {
       this.failure = true;
@@ -89,24 +86,20 @@ export abstract class FormTemplate<M extends AbstractModel>
     }
     this.models = models;
 
-    // Find primary model
-    this.model = this.models[this.modelKey] as M;
-
-    if (!this.modelKey) {
-      this.model = {} as M;
-    } else if (!this.model) {
-      // Model wasn't found, return failure
+    // Retrieve model and handle potential failure
+    this.model = this.opts.getModel(this.models);
+    if (!isInstantiated(this.model)) {
       this.failure = true;
       return;
     }
 
     /*
-    First pass attempt a generating success message. This is required
-    for forms which will modify the model later without changing the
-    success message (ie. update/delete form).
-    */
-    if (this.model.kind) {
-      this.successMessage = this.successMsg(this.model);
+     * First pass attempt a generating success message. This is required
+     * for forms which will modify the model later without changing the
+     * success message (ie. update/delete form).
+     */
+    if (this.model?.kind) {
+      this.successMessage = this.opts.successMsg(this.model);
     }
   }
 
@@ -115,61 +108,45 @@ export abstract class FormTemplate<M extends AbstractModel>
    *
    * @param event Form submission
    */
-  public submit(event: Partial<M>) {
+  public submit(event: Partial<Model>) {
     this.loading = true;
 
     this.apiAction(event)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (model: M) => {
+        (model: Model) => {
           /*
-          First pass attempt a generating success message. This is required
-          for forms which do not initially have a model (ie. new model form).
-          */
-          if (!this.successMessage) {
-            this.successMessage = this.successMsg(model);
-          }
-
+           * First pass attempt a generating success message. This is required
+           * for forms which do not initially have a model (ie. new model form).
+           */
+          this.successMessage ??= this.opts.successMsg(model);
           this.resetForms();
           this.loading = false;
           this.notifications.success(this.successMessage);
-          this.redirectUser(model);
+          this.opts.onSuccess?.(model);
+          this.opts.redirectUser?.(model);
         },
         (err: ApiErrorDetails) => {
           this.loading = false;
-          this.notifications.error(this.errorMsg(err));
+          this.notifications.error(this.opts.failureMsg(err));
         }
       );
   }
 
   /**
-   * Redirect user after successful submission
+   * Function called after successful form request
    *
-   * @param model Model
+   * @param model API response
    */
-  protected redirectUser(model: M): void {
-    // TODO This is a potential point of failure as the model.viewUrl
-    // path is not completely compatible with router.navigateByUrl
-    this.router.navigateByUrl(this.redirectionPath(model));
-  }
-
-  /**
-   * Redirection path after successful submission. If you are using
-   * a models viewUrl method, ensure that it does not require query
-   * parameters to function properly
-   *
-   * @param model Model
-   */
-  protected redirectionPath(model: M): string {
-    return model.viewUrl;
-  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected onSuccess(model: Model | void): void {}
 
   /**
    * API Action to perform
    *
    * @param model Form model submission (JSON only, convert to model)
    */
-  protected abstract apiAction(model: Partial<M>): Observable<M | void>;
+  protected abstract apiAction(model: Partial<Model>): Observable<Model | void>;
 }
 
 /**

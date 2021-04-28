@@ -41,23 +41,26 @@ class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, undefined, (model) =>
-      defaultSuccessMsg("created", model.text)
-    );
+    super(notifications, route, router, {
+      successMsg: (model) => defaultSuccessMsg("created", model.text),
+      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+    });
   }
 
   public ngOnInit() {
     super.ngOnInit();
     const typeOfTagIndex = 1;
 
-    if (!this.failure) {
-      this.fields[typeOfTagIndex].templateOptions.options = this.typeOfTags.map(
-        (tagType) => ({
-          label: tagType.name,
-          value: tagType.name,
-        })
-      );
+    if (this.failure) {
+      return;
     }
+
+    this.fields[typeOfTagIndex].templateOptions.options = this.typeOfTags.map(
+      ({ name }) => ({
+        label: name,
+        value: name,
+      })
+    );
   }
 
   public get typeOfTags(): TagType[] {

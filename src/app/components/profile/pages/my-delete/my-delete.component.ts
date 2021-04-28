@@ -43,9 +43,11 @@ class MyDeleteComponent extends FormTemplate<User> {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, userKey, (model) =>
-      defaultSuccessMsg("destroyed", model.userName)
-    );
+    super(notifications, route, router, {
+      getModel: (models) => models[userKey] as User,
+      successMsg: (model) => defaultSuccessMsg("destroyed", model.userName),
+      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+    });
   }
 
   protected apiAction(model: Partial<User>) {

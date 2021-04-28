@@ -49,9 +49,12 @@ class AdminTagGroupsEditComponent
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, tagGroupKey, (model) =>
-      defaultSuccessMsg("updated", model.groupIdentifier)
-    );
+    super(notifications, route, router, {
+      getModel: (models) => models[tagGroupKey] as TagGroup,
+      successMsg: (model) =>
+        defaultSuccessMsg("updated", model.groupIdentifier),
+      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+    });
   }
 
   public ngOnInit() {

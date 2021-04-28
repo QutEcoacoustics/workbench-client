@@ -21,30 +21,26 @@ describe("LoginComponent", () => {
   let api: SecurityService;
   let router: Router;
   let location: Location;
-  let spectator: SpectatorRouting<LoginComponent>;
+  let notifications: ToastrService;
+  let spec: SpectatorRouting<LoginComponent>;
   const createComponent = createRoutingFactory({
     component: LoginComponent,
     imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent],
     mocks: [ToastrService],
-    stubsEnabled: true,
   });
 
   function setup(redirect?: string | boolean, navigationId?: number) {
-    spectator = createComponent({
-      detectChanges: false,
-      queryParams: { redirect },
-    });
-
-    router = spectator.router;
-    api = spectator.inject(SecurityService);
-    location = spectator.inject(Location);
+    spec = createComponent({ detectChanges: false, queryParams: { redirect } });
+    router = spec.router;
+    api = spec.inject(SecurityService);
+    location = spec.inject(Location);
+    notifications = spec.inject(ToastrService);
     spyOn(location, "getState").and.callFake(() => ({
       // Default to no history (navigationId = 1)
       navigationId: navigationId ?? 1,
     }));
     spyOn(location, "back").and.stub();
-    spyOn(spectator.component, "externalRedirect").and.stub();
   }
 
   function setLoginError() {
@@ -87,16 +83,16 @@ describe("LoginComponent", () => {
   describe("component", () => {
     it("should create", () => {
       setup();
-      spectator.detectChanges();
-      expect(spectator.component).toBeTruthy();
+      spec.detectChanges();
+      expect(spec.component).toBeTruthy();
     });
 
     it("should call api", () => {
       setup();
       spyOn(api, "signIn").and.callThrough();
-      spectator.detectChanges();
+      spec.detectChanges();
 
-      spectator.component.submit({ login: "username", password: "password" });
+      spec.component.submit({ login: "username", password: "password" });
       expect(api.signIn).toHaveBeenCalledWith(
         new LoginDetails({ login: "username", password: "password" })
       );
@@ -104,11 +100,15 @@ describe("LoginComponent", () => {
   });
 
   describe("redirection", () => {
+    function redirectUser() {
+      spec.component["opts"].redirectUser(undefined);
+    }
+
     it("should redirect user to previous page on login", async () => {
       setup(undefined, 2);
       const promise = setLoginError();
-      spectator.detectChanges();
-      spectator.component["redirectUser"]();
+      spec.detectChanges();
+      redirectUser();
 
       await promise;
 
@@ -119,12 +119,11 @@ describe("LoginComponent", () => {
     it("should redirect user to home page on redirect=false", async () => {
       setup(false);
       const promise = setLoginError();
-      spectator.detectChanges();
-      spectator.component["redirectUser"]();
+      spec.detectChanges();
+      redirectUser();
 
       await promise;
 
-      expect(router.navigateByUrl).toHaveBeenCalled();
       expect(router.navigateByUrl).toHaveBeenCalledWith("/");
       expect(location.back).not.toHaveBeenCalled();
     });
@@ -132,12 +131,11 @@ describe("LoginComponent", () => {
     it("should redirect user to home page when no previous location remembered", async () => {
       setup();
       const promise = setLoginError();
-      spectator.detectChanges();
-      spectator.component["redirectUser"]();
+      spec.detectChanges();
+      redirectUser();
 
       await promise;
 
-      expect(router.navigateByUrl).toHaveBeenCalled();
       expect(router.navigateByUrl).toHaveBeenCalledWith("/");
       expect(location.back).not.toHaveBeenCalled();
     });
@@ -145,39 +143,36 @@ describe("LoginComponent", () => {
     it("should handle redirect url", async () => {
       setup("/broken_link");
       const promise = setLoginError();
-      spectator.detectChanges();
-      spectator.component["redirectUser"]();
+      spec.detectChanges();
+      redirectUser();
 
       await promise;
 
-      expect(router.navigateByUrl).toHaveBeenCalled();
       expect(router.navigateByUrl).toHaveBeenCalledWith("/broken_link");
     });
 
-    it("should handle ecosounds redirect url", async () => {
+    it("should give error notification if external redirect", async () => {
       setup(testApiConfig.environment.apiRoot + "/broken_link");
       const promise = setLoginError();
-      spectator.detectChanges();
-      spectator.component["redirectUser"]();
+      spec.detectChanges();
+      redirectUser();
 
       await promise;
 
       expect(router.navigateByUrl).not.toHaveBeenCalled();
-      expect(spectator.component.externalRedirect).toHaveBeenCalled();
-      expect(spectator.component.externalRedirect).toHaveBeenCalledWith(
-        testApiConfig.environment.apiRoot + "/broken_link"
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Unable to redirect back to previous page"
       );
     });
 
     it("should ignore non-ecosounds redirect url", async () => {
       setup("http://broken_link");
       const promise = setLoginError();
-      spectator.detectChanges();
-      spectator.component["redirectUser"]();
+      spec.detectChanges();
+      redirectUser();
 
       await promise;
 
-      expect(router.navigateByUrl).toHaveBeenCalled();
       expect(router.navigateByUrl).toHaveBeenCalledWith("/");
     });
   });

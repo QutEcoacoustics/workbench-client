@@ -44,9 +44,11 @@ class MyEditComponent extends FormTemplate<User> {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, userKey, (model) =>
-      defaultSuccessMsg("updated", model.userName)
-    );
+    super(notifications, route, router, {
+      getModel: (models) => models[userKey] as User,
+      successMsg: (model) => defaultSuccessMsg("updated", model.userName),
+      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+    });
   }
 
   protected apiAction(model: Partial<User>) {

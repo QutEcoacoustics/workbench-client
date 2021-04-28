@@ -47,9 +47,10 @@ class NewComponent extends FormTemplate<Region> {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, undefined, (model) =>
-      defaultSuccessMsg("created", model.name)
-    );
+    super(notifications, route, router, {
+      successMsg: (model) => defaultSuccessMsg("created", model.name),
+      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+    });
   }
 
   public get project(): Project {

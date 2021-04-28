@@ -38,14 +38,13 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(
-      notifications,
-      route,
-      router,
-      siteKey,
-      (model) => defaultSuccessMsg("updated", model.name),
-      siteErrorMsg
-    );
+    super(notifications, route, router, {
+      getModel: (models) => models[siteKey] as Site,
+      successMsg: (model) => defaultSuccessMsg("updated", model.name),
+      failureMsg: (error) => siteErrorMsg(error),
+      redirectUser: (model) =>
+        this.router.navigateByUrl(model.getViewUrl(this.project)),
+    });
   }
 
   public ngOnInit() {
@@ -58,10 +57,6 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
 
   public get project(): Project {
     return this.models.project as Project;
-  }
-
-  protected redirectionPath(model: Site) {
-    return model.getViewUrl(this.project);
   }
 
   protected apiAction(model: Partial<Site>) {

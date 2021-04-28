@@ -52,9 +52,11 @@ class DeleteComponent extends FormTemplate<Region> implements OnInit {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, regionKey, (model) =>
-      defaultSuccessMsg("destroyed", model.name)
-    );
+    super(notifications, route, router, {
+      getModel: (models) => models[regionKey] as Region,
+      successMsg: (model) => defaultSuccessMsg("destroyed", model.name),
+      redirectUser: () => this.router.navigateByUrl(this.project.viewUrl),
+    });
   }
 
   public ngOnInit() {
@@ -67,10 +69,6 @@ class DeleteComponent extends FormTemplate<Region> implements OnInit {
 
   public get project(): Project {
     return this.models[projectKey] as Project;
-  }
-
-  protected redirectionPath() {
-    return this.project.viewUrl;
   }
 
   protected apiAction(model: Partial<Region>) {
