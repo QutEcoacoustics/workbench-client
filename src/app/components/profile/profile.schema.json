@@ -52,7 +52,6 @@
       "key": "emailConfirmation",
       "type": "checkbox",
       "hide": true,
-      "wrappers": ["form-field-horizontal"],
       "templateOptions": {
         "label": "Email Confirmation",
         "disabled": true
@@ -62,7 +61,6 @@
       "key": "isConfirmed",
       "type": "checkbox",
       "hide": true,
-      "wrappers": ["form-field-horizontal"],
       "templateOptions": {
         "label": "Account Confirmation",
         "disabled": true

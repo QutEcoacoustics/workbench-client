@@ -1,11 +1,7 @@
 import { Location } from "@angular/common";
 import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  ILoginDetails,
-  LoginDetails,
-  SecurityService,
-} from "@baw-api/security/security.service";
+import { SecurityService } from "@baw-api/security/security.service";
 import { homeMenuItem } from "@components/home/home.menus";
 import {
   confirmAccountMenuItem,
@@ -17,6 +13,7 @@ import {
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { ILoginDetails, LoginDetails } from "@models/data/LoginDetails";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { fields } from "./login.schema.json";

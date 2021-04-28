@@ -7,8 +7,8 @@ import {
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule, FormlyTemplateOptions } from "@ngx-formly/core";
-import { formlyRoot } from "src/app/app.helper";
 import { CheckboxInputComponent } from "./checkbox-input.component";
+import { formlyConfig } from "./custom-inputs.module";
 
 describe("FormlyCheckboxInput", () => {
   let model: any;
@@ -19,7 +19,7 @@ describe("FormlyCheckboxInput", () => {
     imports: [
       FormsModule,
       ReactiveFormsModule,
-      FormlyModule.forRoot(formlyRoot),
+      FormlyModule.forRoot(formlyConfig),
       FormlyBootstrapModule,
     ],
   });

@@ -30,7 +30,6 @@
     {
       "key": "retired",
       "type": "checkbox",
-      "wrappers": ["form-field-horizontal"],
       "templateOptions": {
         "label": "Retired",
         "required": false
@@ -39,7 +38,6 @@
     {
       "key": "isTaxonomic",
       "type": "checkbox",
-      "wrappers": ["form-field-horizontal"],
       "templateOptions": {
         "label": "Is Taxonomic",
         "required": false

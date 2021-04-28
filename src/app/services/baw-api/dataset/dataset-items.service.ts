@@ -64,7 +64,7 @@ export class DatasetItemsService extends ImmutableApi<
   }
 }
 
-export const datasetItemResolvers = new Resolvers<
-  DatasetItem,
-  DatasetItemsService
->([DatasetItemsService], "datasetItemId").create("DatasetItem");
+export const datasetItemResolvers = new Resolvers<DatasetItem, [IdOr<Dataset>]>(
+  [DatasetItemsService],
+  "datasetItemId"
+).create("DatasetItem");

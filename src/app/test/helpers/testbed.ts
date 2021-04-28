@@ -10,11 +10,12 @@ import { ResolvedModel } from "@baw-api/resolver-common";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
+import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { NgxCaptchaModule } from "ngx-captcha";
 import { ToastrModule } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
-import { formlyRoot, toastrRoot } from "src/app/app.helper";
+import { toastrRoot } from "src/app/app.helper";
 
 export const testFormImports = [
   CommonModule,
@@ -22,7 +23,7 @@ export const testFormImports = [
   BrowserAnimationsModule,
   NgbModule,
   ReactiveFormsModule,
-  FormlyModule.forRoot(formlyRoot),
+  FormlyModule.forRoot(formlyConfig),
   FormlyBootstrapModule,
   ToastrModule.forRoot(toastrRoot),
   HttpClientTestingModule,

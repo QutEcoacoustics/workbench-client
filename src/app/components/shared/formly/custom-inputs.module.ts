@@ -4,11 +4,8 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
-import {
-  TypeOption,
-  ValidationMessageOption,
-  WrapperOption,
-} from "@ngx-formly/core/lib/services/formly.config";
+import { ConfigOption } from "@ngx-formly/core/lib/services/formly.config";
+import { IconsModule } from "@shared/icons/icons.module";
 import { MapModule } from "@shared/map/map.module";
 import { CheckboxInputComponent } from "./checkbox-input.component";
 import { FileValueAccessorDirective } from "./file-input.directive";
@@ -18,44 +15,48 @@ import { LocationInputComponent } from "./location-input.component";
 import { PasswordConfirmationInputComponent } from "./password-confirmation-input.component";
 import { TimezoneInputComponent } from "./timezone-input.component";
 
-export const formlyInputTypes: TypeOption[] = [
-  { name: "checkbox", component: CheckboxInputComponent },
-  { name: "image", component: ImageInputComponent },
-  { name: "timezone", component: TimezoneInputComponent },
-  { name: "location", component: LocationInputComponent },
-  {
-    name: "passwordConfirmation",
-    component: PasswordConfirmationInputComponent,
-  },
-];
-
-export const formlyWrappers: WrapperOption[] = [
-  { name: "form-field-horizontal", component: HorizontalWrapperComponent },
-];
-
-export const formlyValidationMessages: ValidationMessageOption[] = [
-  { name: "required", message: "This field is required" },
-  {
-    name: "minlength",
-    message: (_, field) =>
-      `Input should have at least ${field.templateOptions.minLength} characters`,
-  },
-  {
-    name: "maxlength",
-    message: (_, field) =>
-      `This value should be less than ${field.templateOptions.maxLength} characters`,
-  },
-  {
-    name: "min",
-    message: (_, field) =>
-      `This value should be more than ${field.templateOptions.min}`,
-  },
-  {
-    name: "max",
-    message: (_, field) =>
-      `This value should be less than ${field.templateOptions.max}`,
-  },
-];
+export const formlyConfig: ConfigOption = {
+  types: [
+    {
+      name: "checkbox",
+      component: CheckboxInputComponent,
+      wrappers: ["form-field-horizontal"],
+    },
+    { name: "image", component: ImageInputComponent },
+    { name: "timezone", component: TimezoneInputComponent },
+    { name: "location", component: LocationInputComponent },
+    {
+      name: "passwordConfirmation",
+      component: PasswordConfirmationInputComponent,
+    },
+  ],
+  wrappers: [
+    { name: "form-field-horizontal", component: HorizontalWrapperComponent },
+  ],
+  validationMessages: [
+    { name: "required", message: "This field is required" },
+    {
+      name: "minlength",
+      message: (_, field) =>
+        `Input should have at least ${field.templateOptions.minLength} characters`,
+    },
+    {
+      name: "maxlength",
+      message: (_, field) =>
+        `This value should be less than ${field.templateOptions.maxLength} characters`,
+    },
+    {
+      name: "min",
+      message: (_, field) =>
+        `This value should be more than ${field.templateOptions.min}`,
+    },
+    {
+      name: "max",
+      message: (_, field) =>
+        `This value should be less than ${field.templateOptions.max}`,
+    },
+  ],
+};
 
 const components = [
   FileValueAccessorDirective,
@@ -77,6 +78,7 @@ const components = [
     FormlyModule,
     FormlyBootstrapModule,
     MapModule,
+    IconsModule,
   ],
   exports: components,
 })

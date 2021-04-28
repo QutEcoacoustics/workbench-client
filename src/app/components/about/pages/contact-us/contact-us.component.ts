@@ -1,10 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  ContactUs,
-  ContactUsService,
-  IContactUs,
-} from "@baw-api/report/contact-us.service";
+import { ContactUsService } from "@baw-api/report/contact-us.service";
 import {
   aboutCategory,
   contactUsMenuItem,
@@ -12,6 +8,7 @@ import {
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
+import { ContactUs, IContactUs } from "@models/data/ContactUs";
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
