@@ -43,7 +43,7 @@ export class ProgressEventsService extends ReadAndCreateApi<ProgressEvent> {
   }
 }
 
-export const progressEventResolvers = new Resolvers<
-  ProgressEvent,
-  ProgressEventsService
->([ProgressEventsService], "progressEventId").create("ProgressEvent");
+export const progressEventResolvers = new Resolvers<ProgressEvent, []>(
+  [ProgressEventsService],
+  "progressEventId"
+).create("ProgressEvent");

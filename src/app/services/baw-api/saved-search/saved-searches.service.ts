@@ -46,7 +46,7 @@ export class SavedSearchesService extends ImmutableApi<SavedSearch> {
   }
 }
 
-export const savedSearchResolvers = new Resolvers<
-  SavedSearch,
-  SavedSearchesService
->([SavedSearchesService], "savedSearchId").create("SavedSearch");
+export const savedSearchResolvers = new Resolvers<SavedSearch, []>(
+  [SavedSearchesService],
+  "savedSearchId"
+).create("SavedSearch");
