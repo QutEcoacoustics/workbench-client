@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { SecurityService } from "@baw-api/security/security.service";
 import {
   confirmAccountMenuItem,
   loginMenuItem,
@@ -7,57 +9,51 @@ import {
   unlockAccountMenuItem,
 } from "@components/security/security.menus";
 import { withFormCheck } from "@guards/form/form.guard";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { IUnlockAccount, UnlockAccount } from "@models/data/UnlockAccount";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { loginMenuItemActions } from "../login/login.component";
 import { fields } from "./unlock-account.schema.json";
 
 @Component({
   selector: "baw-confirm-account",
   template: `
-    <baw-wip>
-      <baw-form
-        title="Resend unlock instructions"
-        [model]="model"
-        [fields]="fields"
-        submitLabel="Resend unlock instructions"
-        [submitLoading]="loading"
-        (onSubmit)="submit($event)"
-      ></baw-form>
-    </baw-wip>
+    <baw-form
+      title="Resend unlock instructions"
+      [model]="model"
+      [fields]="fields"
+      submitLabel="Resend unlock instructions"
+      [submitLoading]="loading"
+      (onSubmit)="submit($event)"
+    ></baw-form>
   `,
 })
-class UnlockAccountComponent
-  extends withFormCheck(PageComponent)
-  implements OnInit {
-  public model = {};
+class UnlockAccountComponent extends FormTemplate<UnlockAccount> {
   public fields = fields;
-  public loading: boolean;
 
-  public constructor() {
-    super();
+  public constructor(
+    private api: SecurityService,
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
+  ) {
+    super(notifications, route, router, {
+      successMsg: () =>
+        "If your login exists on our database, " +
+        "you will receive an email with instructions about how to unlock it in a few minutes.",
+    });
   }
 
-  public ngOnInit() {
-    this.loading = false;
-  }
-
-  public submit(model) {
-    this.loading = true;
-    console.log(model);
-    this.loading = false;
+  protected apiAction(model: IUnlockAccount) {
+    return this.api.unlockAccount(new UnlockAccount(model));
   }
 }
 
 UnlockAccountComponent.linkComponentToPageInfo({
   category: securityCategory,
-  menus: {
-    actions: List([
-      loginMenuItem,
-      confirmAccountMenuItem,
-      resetPasswordMenuItem,
-      unlockAccountMenuItem,
-    ]),
-  },
+  menus: { actions: List([loginMenuItem, ...loginMenuItemActions]) },
 }).andMenuRoute(unlockAccountMenuItem);
 
 export { UnlockAccountComponent };

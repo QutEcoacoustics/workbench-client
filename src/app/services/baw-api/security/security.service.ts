@@ -6,7 +6,9 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ConfirmPassword } from "@models/data/ConfirmPassword";
 import { LoginDetails } from "@models/data/LoginDetails";
+import { UnlockAccount } from "@models/data/UnlockAccount";
 import { RegisterDetails } from "@models/data/RegisterDetails";
+import { ResetPassword } from "@models/data/ResetPassword";
 import { SessionUser, User } from "@models/User";
 import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -16,7 +18,9 @@ import { UserService } from "../user/user.service";
 
 const confirmPasswordEndpoint = stringTemplate`/my_account/confirmation`;
 const confirmPasswordSeed = stringTemplate`/my_account/confirmation/new`;
+const resetPasswordEndpoint = stringTemplate`	/my_account/password`;
 const resetPasswordSeed = stringTemplate`	/my_account/password/new`;
+const unlockAccountEndpoint = stringTemplate`/my_account/unlock`;
 const unlockAccountSeed = stringTemplate`/my_account/unlock/new`;
 const signUpSeed = stringTemplate`/my_account/sign_up/`;
 const signUpEndpoint = stringTemplate`/my_account/`;
@@ -124,6 +128,28 @@ export class SecurityService extends BawFormApiService<SessionUser> {
     return this.makeFormRequest(
       confirmPasswordSeed(),
       confirmPasswordEndpoint(),
+      (token) => details.getBody(token)
+    ).pipe(
+      // Void output
+      map(() => undefined)
+    );
+  }
+
+  public resetPassword(details: ResetPassword): Observable<void> {
+    return this.makeFormRequest(
+      resetPasswordSeed(),
+      resetPasswordEndpoint(),
+      (token) => details.getBody(token)
+    ).pipe(
+      // Void output
+      map(() => undefined)
+    );
+  }
+
+  public unlockAccount(details: UnlockAccount): Observable<void> {
+    return this.makeFormRequest(
+      unlockAccountSeed(),
+      unlockAccountEndpoint(),
       (token) => details.getBody(token)
     ).pipe(
       // Void output
