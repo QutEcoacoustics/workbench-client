@@ -83,7 +83,7 @@
     "@angular-eslint/template-parser": "4.2.0",
     "@angular/cli": "^11.2.10",
     "@angular/compiler-cli": "^11.2.9",
-    "@angular/language-service": "^11.2.11",
+    "@angular/language-service": "^11.2.12",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.1.0",
     "@ngneat/spectator": "^7.1.0",
     "@nguniversal/builders": "^11.2.1",
