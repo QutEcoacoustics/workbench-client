@@ -7,7 +7,7 @@ import {
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule, FormlyTemplateOptions } from "@ngx-formly/core";
-import { formlyRoot } from "src/app/app.helper";
+import { formlyConfig } from "./custom-inputs.module";
 import { PasswordConfirmationInputComponent } from "./password-confirmation-input.component";
 
 describe("FormlyPasswordConfirmationInput", () => {
@@ -19,7 +19,7 @@ describe("FormlyPasswordConfirmationInput", () => {
     imports: [
       FormsModule,
       ReactiveFormsModule,
-      FormlyModule.forRoot(formlyRoot),
+      FormlyModule.forRoot(formlyConfig),
       FormlyBootstrapModule,
     ],
   });

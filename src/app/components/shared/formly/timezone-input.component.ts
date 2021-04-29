@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { Option } from "@helpers/advancedTypes";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { faBan } from "@fortawesome/free-solid-svg-icons";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
 import { FieldType } from "@ngx-formly/core";
@@ -52,17 +53,18 @@ import {
 
         <div class="input-group-append">
           <span class="input-group-text">
-            {{
-              timezone
-                ? timezone.countryName || timezone.abbreviation
-                : "(no value)"
-            }}
+            <ng-container *ngIf="timezone; else invalidTimezone">
+              {{ timezone.countryName || timezone.abbreviation }}
+            </ng-container>
+            <ng-template #invalidTimezone>
+              <fa-icon [icon]="invalidIcon" [style.color]="'red'"></fa-icon>
+            </ng-template>
           </span>
         </div>
       </div>
 
-      <div *ngIf="error" class="invalid-feedback" style="display: block;">
-        {{ getError() }}
+      <div class="invalid-feedback" style="display: block;">
+        {{ error }}
       </div>
 
       <input type="hidden" [id]="field.id" [formControl]="formControl" />
@@ -74,21 +76,24 @@ export class TimezoneInputComponent extends FieldType implements OnInit {
   public formControl: FormControl;
   public click$ = new Subject<string>();
   public focus$ = new Subject<string>();
-  public defaultTime = "(no match)";
-  public error: boolean;
-  public offset: string = this.defaultTime;
+  public invalidIcon: IconProp = faBan;
   public timezone: TimeZone;
   public timezones: TimeZone[] = [];
 
   public ngOnInit() {
     this.timezones = getTimeZones({ includeUtc: true });
-    this.formControl.setValidators(() => this.timezoneValidator());
-    this.formControl.updateValueAndValidity();
     this.setDefaultValue();
   }
 
-  public getError(): string {
-    return this.formControl.getError(this.field.key.toString());
+  public get error(): string {
+    const err = this.formControl.getError(this.field.key.toString());
+    if (err) {
+      return;
+    }
+
+    if (this.to.required && !this.timezone && this.formControl.dirty) {
+      return "Timezone must be selected from dropdown menu";
+    }
   }
 
   /**
@@ -126,31 +131,11 @@ export class TimezoneInputComponent extends FieldType implements OnInit {
   };
 
   /**
-   * Validate a timezone input
-   *
-   * @returns Object containing key and error message if validation fails, else null
-   */
-  private timezoneValidator(): Option<Record<string, string>> {
-    if (!isInstantiated(this.timezone)) {
-      if (this.to.required && this.formControl.dirty) {
-        return { [this.field.key.toString()]: "You must select a timezone" };
-      } else {
-        return null;
-      }
-    }
-
-    this.error = !this.timezones.find((timezone) => timezone === this.timezone);
-    return this.error
-      ? { [this.field.key.toString()]: "Invalid timezone selected" }
-      : null;
-  }
-
-  /**
    * Set the default timezone value
    */
   private setDefaultValue() {
     const key = this.field.key as string;
-    const defaultValue = this.model[key] ?? this.field.defaultValue;
+    const defaultValue = this.model[key];
 
     if (isInstantiated(defaultValue)) {
       // Find all matching timezones, and select the first match
