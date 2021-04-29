@@ -6,9 +6,9 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ConfirmPassword } from "@models/data/ConfirmPassword";
 import { LoginDetails } from "@models/data/LoginDetails";
-import { UnlockAccount } from "@models/data/UnlockAccount";
 import { RegisterDetails } from "@models/data/RegisterDetails";
 import { ResetPassword } from "@models/data/ResetPassword";
+import { UnlockAccount } from "@models/data/UnlockAccount";
 import { SessionUser, User } from "@models/User";
 import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -125,35 +125,26 @@ export class SecurityService extends BawFormApiService<SessionUser> {
   }
 
   public confirmPassword(details: ConfirmPassword): Observable<void> {
-    return this.makeFormRequest(
+    return this.makeFormRequestWithoutOutput(
       confirmPasswordSeed(),
       confirmPasswordEndpoint(),
       (token) => details.getBody(token)
-    ).pipe(
-      // Void output
-      map(() => undefined)
     );
   }
 
   public resetPassword(details: ResetPassword): Observable<void> {
-    return this.makeFormRequest(
+    return this.makeFormRequestWithoutOutput(
       resetPasswordSeed(),
       resetPasswordEndpoint(),
       (token) => details.getBody(token)
-    ).pipe(
-      // Void output
-      map(() => undefined)
     );
   }
 
   public unlockAccount(details: UnlockAccount): Observable<void> {
-    return this.makeFormRequest(
+    return this.makeFormRequestWithoutOutput(
       unlockAccountSeed(),
       unlockAccountEndpoint(),
       (token) => details.getBody(token)
-    ).pipe(
-      // Void output
-      map(() => undefined)
     );
   }
 
