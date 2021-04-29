@@ -1,16 +1,16 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  IRegisterDetails,
-  RegisterDetails,
-  SecurityService,
-} from "@baw-api/security/security.service";
+import { SecurityService } from "@baw-api/security/security.service";
 import { homeMenuItem } from "@components/home/home.menus";
 import {
   registerMenuItem,
   securityCategory,
 } from "@components/security/security.menus";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
+import {
+  RegisterDetails,
+  IRegisterDetails,
+} from "@models/data/RegisterDetails";
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
