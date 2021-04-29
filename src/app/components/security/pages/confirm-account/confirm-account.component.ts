@@ -1,63 +1,58 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { SecurityService } from "@baw-api/security/security.service";
 import {
   confirmAccountMenuItem,
   loginMenuItem,
-  resetPasswordMenuItem,
   securityCategory,
-  unlockAccountMenuItem,
 } from "@components/security/security.menus";
-import { withFormCheck } from "@guards/form/form.guard";
-import { PageComponent } from "@helpers/page/pageComponent";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
+import {
+  ConfirmPassword,
+  IConfirmPassword,
+} from "@models/data/ConfirmPassword";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { loginMenuItemActions } from "../login/login.component";
 import { fields } from "./confirm-account.schema.json";
 
 @Component({
   selector: "baw-confirm-account",
   template: `
-    <baw-wip>
-      <baw-form
-        title="Resend confirmation instructions?"
-        [model]="model"
-        [fields]="fields"
-        submitLabel="Resend confirmation instructions"
-        [submitLoading]="loading"
-        (onSubmit)="submit($event)"
-      ></baw-form>
-    </baw-wip>
+    <baw-form
+      title="Resend confirmation instructions?"
+      [model]="model"
+      [fields]="fields"
+      submitLabel="Resend confirmation instructions"
+      [submitLoading]="loading"
+      (onSubmit)="submit($event)"
+    ></baw-form>
   `,
 })
-class ConfirmPasswordComponent
-  extends withFormCheck(PageComponent)
-  implements OnInit {
-  public model = {};
+class ConfirmPasswordComponent extends FormTemplate<ConfirmPassword> {
   public fields = fields;
-  public loading: boolean;
 
-  public constructor() {
-    super();
+  public constructor(
+    private api: SecurityService,
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
+  ) {
+    super(notifications, route, router, {
+      successMsg: () =>
+        "If your login exists on our database, " +
+        "you will receive an email with instructions about how to confirm your account in a few minutes.",
+    });
   }
 
-  public ngOnInit() {
-    this.loading = false;
-  }
-
-  public submit($event: any) {
-    this.loading = true;
-    console.log($event);
-    this.loading = false;
+  protected apiAction(model: IConfirmPassword) {
+    return this.api.confirmPassword(new ConfirmPassword(model));
   }
 }
 
 ConfirmPasswordComponent.linkComponentToPageInfo({
   category: securityCategory,
-  menus: {
-    actions: List([
-      loginMenuItem,
-      confirmAccountMenuItem,
-      resetPasswordMenuItem,
-      unlockAccountMenuItem,
-    ]),
-  },
+  menus: { actions: List([loginMenuItem, ...loginMenuItemActions]) },
 }).andMenuRoute(confirmAccountMenuItem);
 
 export { ConfirmPasswordComponent };
