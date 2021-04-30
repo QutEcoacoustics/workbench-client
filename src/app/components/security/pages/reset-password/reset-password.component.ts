@@ -37,7 +37,7 @@ class ResetPasswordComponent extends FormTemplate<ResetPassword> {
   ) {
     super(notifications, route, router, {
       successMsg: () =>
-        "If your login exists on our database, " +
+        "If your user account exists in our database, " +
         "a password recovery link will be sent to your email address.",
     });
   }

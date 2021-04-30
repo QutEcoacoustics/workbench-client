@@ -40,7 +40,7 @@ class ConfirmPasswordComponent extends FormTemplate<ConfirmPassword> {
   ) {
     super(notifications, route, router, {
       successMsg: () =>
-        "If your login exists on our database, " +
+        "If your user account exists in our database, " +
         "you will receive an email with instructions about how to confirm your account in a few minutes.",
     });
   }
