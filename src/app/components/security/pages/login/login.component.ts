@@ -18,6 +18,12 @@ import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { fields } from "./login.schema.json";
 
+export const loginMenuItemActions = [
+  confirmAccountMenuItem,
+  resetPasswordMenuItem,
+  unlockAccountMenuItem,
+];
+
 @Component({
   selector: "baw-authentication-login",
   template: `
@@ -28,6 +34,7 @@ import { fields } from "./login.schema.json";
       [fields]="fields"
       submitLabel="Log in"
       [submitLoading]="loading"
+      [recaptchaSeed]="recaptchaSeed"
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
@@ -109,13 +116,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
 
 LoginComponent.linkComponentToPageInfo({
   category: securityCategory,
-  menus: {
-    actions: List([
-      confirmAccountMenuItem,
-      resetPasswordMenuItem,
-      unlockAccountMenuItem,
-    ]),
-  },
+  menus: { actions: List(loginMenuItemActions) },
 }).andMenuRoute(loginMenuItem);
 
 export { LoginComponent };

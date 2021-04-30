@@ -5,7 +5,6 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ContactUs } from "@models/data/ContactUs";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
 
 const contactUsEndpoint = stringTemplate`/contact_us`;
 
@@ -20,13 +19,10 @@ export class ContactUsService extends BawFormApiService<ContactUs> {
   }
 
   public contactUs(details: ContactUs): Observable<void> {
-    return this.makeFormRequest(
+    return this.makeFormRequestWithoutOutput(
       contactUsEndpoint(),
       contactUsEndpoint(),
       (token) => details.getBody(token)
-    ).pipe(
-      // Void output
-      map(() => undefined)
     );
   }
 
