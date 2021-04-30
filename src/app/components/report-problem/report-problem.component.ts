@@ -1,10 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  ReportProblem,
-  ReportProblemService,
-} from "@baw-api/report/report-problem.service";
+import { ReportProblemService } from "@baw-api/report/report-problem.service";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
+import { ReportProblem } from "@models/data/ReportProblem";
 import { ConfigService } from "@services/config/config.service";
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
@@ -39,7 +37,6 @@ class ReportProblemComponent
   implements OnInit {
   public fields = fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
-  public subTitle: string;
   public sourceRepoLink: string;
 
   public constructor(

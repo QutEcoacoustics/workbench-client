@@ -1,4 +1,4 @@
-import { IRegisterDetails } from "@baw-api/security/security.service";
+import { IRegisterDetails } from "@models/data/RegisterDetails";
 import { modelData } from "@test/helpers/faker";
 
 export function generateRegisterDetails(): Required<IRegisterDetails> {

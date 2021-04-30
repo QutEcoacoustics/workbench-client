@@ -5,7 +5,10 @@
       "type": "timezone",
       "templateOptions": {
         "label": "Select timezone",
-        "required": true
+        "required": true,
+        "validationMessages": [
+          { "name": "required", "message": "Invalid or no timezone selected" }
+        ]
       }
     }
   ]

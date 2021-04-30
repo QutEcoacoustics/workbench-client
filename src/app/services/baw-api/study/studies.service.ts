@@ -49,7 +49,7 @@ export class StudiesService extends StandardApi<Study> {
   }
 }
 
-export const studyResolvers = new Resolvers<Study, StudiesService>(
+export const studyResolvers = new Resolvers<Study, []>(
   [StudiesService],
   "studyId"
 ).create("Study");

@@ -9,7 +9,7 @@ export type Id = number;
 /**
  * BAW API IDs
  */
-export type Ids = Set<number>;
+export type Ids = Set<Id>;
 
 /**
  * BAW API UUID

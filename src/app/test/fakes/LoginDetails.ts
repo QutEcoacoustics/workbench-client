@@ -1,4 +1,4 @@
-import { ILoginDetails } from "@baw-api/security/security.service";
+import { ILoginDetails } from "@models/data/LoginDetails";
 import { modelData } from "@test/helpers/faker";
 
 export function generateLoginDetails(): Required<ILoginDetails> {

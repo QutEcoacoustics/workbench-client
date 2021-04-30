@@ -15,10 +15,11 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { AppConfigModule } from "@services/config/config.module";
+import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { ToastrModule } from "ngx-toastr";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { formlyRoot, toastrRoot } from "./app.helper";
+import { toastrRoot } from "./app.helper";
 import { AboutModule } from "./components/about/about.module";
 import { AdminModule } from "./components/admin/admin.module";
 import { DataRequestModule } from "./components/data-request/data-request.module";
@@ -43,7 +44,7 @@ export const appLibraryImports = [
   BrowserAnimationsModule,
   NgbModule,
   ReactiveFormsModule,
-  FormlyModule.forRoot(formlyRoot),
+  FormlyModule.forRoot(formlyConfig),
   FormlyBootstrapModule,
   ToastrModule.forRoot(toastrRoot),
 ];

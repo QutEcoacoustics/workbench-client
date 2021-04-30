@@ -93,8 +93,9 @@ export class TaggingsService extends StandardApi<
   }
 }
 
-export const taggingResolvers = new Resolvers<Tagging, TaggingsService>(
-  [TaggingsService],
-  "taggingId",
-  ["analysisJobId", "audioEventId"]
-).create("Tagging");
+export const taggingResolvers = new Resolvers<
+  Tagging,
+  [IdOr<AnalysisJob>, IdOr<AudioEvent>]
+>([TaggingsService], "taggingId", ["analysisJobId", "audioEventId"]).create(
+  "Tagging"
+);

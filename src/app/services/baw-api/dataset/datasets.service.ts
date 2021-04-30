@@ -49,7 +49,7 @@ export class DatasetsService extends StandardApi<Dataset> {
   }
 }
 
-export const datasetResolvers = new Resolvers<Dataset, DatasetsService>(
+export const datasetResolvers = new Resolvers<Dataset, []>(
   [DatasetsService],
   "datasetId"
 ).create("Dataset");

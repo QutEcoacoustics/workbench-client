@@ -1,11 +1,7 @@
 import { Location } from "@angular/common";
 import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  ILoginDetails,
-  LoginDetails,
-  SecurityService,
-} from "@baw-api/security/security.service";
+import { SecurityService } from "@baw-api/security/security.service";
 import { homeMenuItem } from "@components/home/home.menus";
 import {
   confirmAccountMenuItem,
@@ -17,9 +13,16 @@ import {
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { ILoginDetails, LoginDetails } from "@models/data/LoginDetails";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { fields } from "./login.schema.json";
+
+export const loginMenuItemActions = [
+  confirmAccountMenuItem,
+  resetPasswordMenuItem,
+  unlockAccountMenuItem,
+];
 
 @Component({
   selector: "baw-authentication-login",
@@ -31,6 +34,7 @@ import { fields } from "./login.schema.json";
       [fields]="fields"
       submitLabel="Log in"
       [submitLoading]="loading"
+      [recaptchaSeed]="recaptchaSeed"
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
@@ -112,13 +116,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
 
 LoginComponent.linkComponentToPageInfo({
   category: securityCategory,
-  menus: {
-    actions: List([
-      confirmAccountMenuItem,
-      resetPasswordMenuItem,
-      unlockAccountMenuItem,
-    ]),
-  },
+  menus: { actions: List(loginMenuItemActions) },
 }).andMenuRoute(loginMenuItem);
 
 export { LoginComponent };

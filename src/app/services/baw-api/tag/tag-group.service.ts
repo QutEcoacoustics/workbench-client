@@ -54,7 +54,7 @@ export class TagGroupsService extends StandardApi<TagGroup> {
   }
 }
 
-export const tagGroupResolvers = new Resolvers<TagGroup, TagGroupsService>(
+export const tagGroupResolvers = new Resolvers<TagGroup, []>(
   [TagGroupsService],
   "tagGroupId"
 ).create("TagGroup");

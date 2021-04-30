@@ -16,17 +16,15 @@ import { generateSessionUser, generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { getCallArgs, nStepObservable } from "@test/helpers/general";
 import { BehaviorSubject, noop, Subject } from "rxjs";
+import { LoginDetails } from "@models/data/LoginDetails";
+import { RegisterDetails } from "@models/data/RegisterDetails";
 import {
   shouldNotComplete,
   shouldNotFail,
   shouldNotSucceed,
 } from "../baw-api.service.spec";
 import { UserService } from "../user/user.service";
-import {
-  LoginDetails,
-  RegisterDetails,
-  SecurityService,
-} from "./security.service";
+import { SecurityService } from "./security.service";
 
 describe("SecurityService", () => {
   let defaultUser: User;

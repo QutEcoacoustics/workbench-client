@@ -84,7 +84,6 @@
     {
       "key": "verified",
       "type": "checkbox",
-      "wrappers": ["form-field-horizontal"],
       "templateOptions": {
         "label": "Verified"
       }
