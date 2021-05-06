@@ -1,9 +1,13 @@
-import { Component } from "@angular/core";
-import { withFormCheck } from "@guards/form/form.guard";
-import { PageComponent } from "@helpers/page/pageComponent";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { DataRequestService } from "@baw-api/data-request/data-request.service";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
+import { DataRequest, IDataRequest } from "@models/data/DataRequest";
+import { ToastrService } from "ngx-toastr";
+import { Observable } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
-import { fields as requestFields } from "./data-request.schema.json";
-import { fields as annotationFields } from "./download-annotations.schema.json";
+import { fields } from "./data-request.schema.json";
 
 @Component({
   selector: "baw-data-request",
@@ -15,65 +19,67 @@ import { fields as annotationFields } from "./download-annotations.schema.json";
     <p>To download a standard CSV of annotations</p>
 
     <ol>
-      <li>Navigate to the project you're interested in</li>
-      <li>Then, choose the site you want to download annotations for</li>
-      <li>Finally, click the <i>Download annotations</i> link</li>
+      <li>Open the site or point page you're interested in</li>
+      <li>
+        Use the <i>Download Annotations</i> button to download annotations
+      </li>
     </ol>
 
-    <baw-wip>
-      <baw-form
-        title="Annotations Download"
-        subTitle="Please select the timezone for the CSV file containing annotations for ..."
-        submitLabel="Download Annotations"
-        [model]="annotationModel"
-        [fields]="annotationFields"
-        [submitLoading]="annotationLoading"
-        (onSubmit)="submitDownloadAnnotation($event)"
-      ></baw-form>
-      <baw-form
-        title="Custom Data Request"
-        subTitle="
-          Use this form to request a customized annotations list or other data related to the
-          audio recordings on this website. You <strong>do not need</strong> to use this form
-          if you need the standard <strong>annotations CSV</strong> download.
-        "
-        submitLabel="Submit"
-        [model]="requestModel"
-        [fields]="requestFields"
-        [submitLoading]="requestLoading"
-        (onSubmit)="submitDataRequest($event)"
-      ></baw-form>
-    </baw-wip>
+    <baw-form
+      title="Custom Data Request"
+      submitLabel="Submit"
+      [model]="model"
+      [fields]="fields"
+      [submitLoading]="loading"
+      [recaptchaSeed]="recaptchaSeed"
+      (onSubmit)="submit($event)"
+    >
+      <span id="subTitle">
+        <p>
+          Use this form to request a customized annotations list or other data
+          related to the audio recordings on this website.
+        </p>
+        <p>
+          You <strong>do not need</strong> to use this form if you need the
+          standard <strong>annotations CSV</strong> download.
+        </p>
+      </span>
+    </baw-form>
   `,
 })
-class DataRequestComponent extends withFormCheck(PageComponent) {
-  public annotationLoading: boolean;
-  public annotationModel = {};
-  public annotationFields = annotationFields;
-  public requestLoading: boolean;
-  public requestModel = {};
-  public requestFields = requestFields;
+class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
+  public fields = fields;
 
-  /**
-   * Form submission
-   *
-   * @param $event Form response
-   */
-  public submitDownloadAnnotation($event: any) {
-    this.annotationLoading = true;
-    console.log($event);
-    this.annotationLoading = false;
+  public constructor(
+    private api: DataRequestService,
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
+  ) {
+    super(notifications, route, router, {
+      successMsg: () =>
+        "Your request was successfully submitted. We will be in contact shortly.",
+    });
   }
 
-  /**
-   * Form submission
-   *
-   * @param $event Form response
-   */
-  public submitDataRequest($event: any) {
-    this.requestLoading = true;
-    console.log($event);
-    this.requestLoading = false;
+  public ngOnInit() {
+    super.ngOnInit();
+
+    this.api
+      .seed()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        ({ seed, action }) =>
+          (this.recaptchaSeed = { state: "loaded", seed, action }),
+        (err) => {
+          console.error(err);
+          this.notifications.error("Failed to load form");
+        }
+      );
+  }
+
+  protected apiAction(model: IDataRequest): Observable<void> {
+    return this.api.dataRequest(new DataRequest(model));
   }
 }
 

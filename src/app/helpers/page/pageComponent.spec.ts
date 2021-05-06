@@ -216,15 +216,13 @@ describe("PageComponents", () => {
     it("should insert page component self links in secondary menu", async () => {
       await navigate(menuCompRoute.toRouterLink());
       spec.detectChanges();
-      expect(getSecondaryMenu().contextLinks).toContain(menuCompMenuItem);
+      expect(getSecondaryMenu().links).toContain(menuCompMenuItem);
     });
 
     it("should insert page component custom links in secondary menu", async () => {
       await navigate(menuCompRoute.toRouterLink());
       spec.detectChanges();
-      const menuLabels = getSecondaryMenu().contextLinks.map(
-        (link) => link.label
-      );
+      const menuLabels = getSecondaryMenu().links.map((link) => link.label);
       customSecondaryLinks.forEach((link) =>
         expect(menuLabels).toContain(link.label)
       );
@@ -233,7 +231,7 @@ describe("PageComponents", () => {
     it("should insert page component custom actions in action menu", async () => {
       await navigate(menuCompRoute.toRouterLink());
       spec.detectChanges();
-      const menuLabels = getActionMenu().actionLinks.map((link) => link.label);
+      const menuLabels = getActionMenu().links.map((link) => link.label);
       customActionLinks.forEach((link) =>
         expect(menuLabels).toContain(link.label)
       );

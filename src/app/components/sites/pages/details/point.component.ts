@@ -4,6 +4,7 @@ import { regionResolvers } from "@baw-api/region/regions.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { regionMenuItem } from "@components/regions/regions.menus";
+import { pointAnnotationsModal } from "@components/sites/points.modals";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
@@ -15,7 +16,6 @@ import { List } from "immutable";
 import {
   deletePointMenuItem,
   editPointMenuItem,
-  pointAnnotationsMenuItem,
   pointHarvestMenuItem,
   pointMenuItem,
   pointsCategory,
@@ -24,7 +24,7 @@ import { SiteDetailsComponent } from "./site.component";
 
 export const pointMenuItemActions = [
   visualizeMenuItem,
-  pointAnnotationsMenuItem,
+  pointAnnotationsModal,
   editPointMenuItem,
   pointHarvestMenuItem,
   deletePointMenuItem,
@@ -65,7 +65,7 @@ PointDetailsComponent.linkComponentToPageInfo({
   category: pointsCategory,
   menus: {
     actions: List([regionMenuItem, ...pointMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

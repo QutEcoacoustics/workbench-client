@@ -75,7 +75,7 @@ DeleteComponent.linkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
   },
   resolvers: { [projectKey]: projectResolvers.show },
 }).andMenuRoute(deleteProjectMenuItem);

@@ -34,7 +34,8 @@ const projectKey = "project";
 })
 class AssignComponent
   extends PagedTableTemplate<TableRow, Site>
-  implements OnInit {
+  implements OnInit
+{
   public columns = [
     { name: "Site Id" },
     { name: "Name" },
@@ -156,7 +157,7 @@ AssignComponent.linkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
   },
   resolvers: { [projectKey]: projectResolvers.show },
 }).andMenuRoute(assignSiteMenuItem);

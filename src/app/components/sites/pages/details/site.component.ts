@@ -4,6 +4,7 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { projectMenuItem } from "@components/projects/projects.menus";
+import { siteAnnotationsModal } from "@components/sites/sites.modals";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
@@ -15,7 +16,6 @@ import { List } from "immutable";
 import {
   deleteSiteMenuItem,
   editSiteMenuItem,
-  siteAnnotationsMenuItem,
   siteHarvestMenuItem,
   siteMenuItem,
   sitesCategory,
@@ -23,7 +23,7 @@ import {
 
 export const siteMenuItemActions = [
   visualizeMenuItem,
-  siteAnnotationsMenuItem,
+  siteAnnotationsModal,
   editSiteMenuItem,
   siteHarvestMenuItem,
   deleteSiteMenuItem,
@@ -69,7 +69,7 @@ SiteDetailsComponent.linkComponentToPageInfo({
   category: sitesCategory,
   menus: {
     actions: List([projectMenuItem, ...siteMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

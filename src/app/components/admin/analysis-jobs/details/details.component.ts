@@ -32,7 +32,8 @@ const analysisJobKey = "analysisJob";
 })
 class AdminAnalysisJobComponent
   extends withUnsubscribe(PageComponent)
-  implements OnInit {
+  implements OnInit
+{
   public analysisJob: AnalysisJob;
   public failure: boolean;
   public fields = fields;
@@ -58,7 +59,7 @@ AdminAnalysisJobComponent.linkComponentToPageInfo({
   category: adminAnalysisJobsCategory,
   menus: {
     actions: List([adminAnalysisJobsMenuItem, adminAnalysisJobMenuItem]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
   },
   resolvers: { [analysisJobKey]: analysisJobResolvers.show },
 }).andMenuRoute(adminAnalysisJobMenuItem);

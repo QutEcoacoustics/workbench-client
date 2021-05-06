@@ -20,6 +20,7 @@ import {
   bookmarkResolvers,
   BookmarksService,
 } from "./bookmark/bookmarks.service";
+import { DataRequestService } from "./data-request/data-request.service";
 import {
   datasetItemResolvers,
   DatasetItemsService,
@@ -117,6 +118,10 @@ const serviceList = [
     serviceToken: Tokens.DATASET_ITEM,
     service: DatasetItemsService,
     resolvers: datasetItemResolvers,
+  },
+  {
+    serviceToken: Tokens.DATA_REQUEST,
+    service: DataRequestService,
   },
   {
     serviceToken: Tokens.PROGRESS_EVENT,
