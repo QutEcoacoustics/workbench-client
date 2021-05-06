@@ -6,6 +6,7 @@ import { PageInfo } from "@helpers/page/pageInfo";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractData } from "@models/AbstractData";
 import { AbstractModel } from "@models/AbstractModel";
+import httpStatus from "http-status";
 import { Observable, of } from "rxjs";
 import { catchError, first, map } from "rxjs/operators";
 import {
@@ -51,7 +52,10 @@ export abstract class BawResolver<
     protected params?: Tuple<string, ServiceParams["length"]>
   ) {}
 
-  public create(name: string): ResolverName & { providers: BawProvider[] } {
+  public create(
+    name: string,
+    required: boolean = false
+  ): ResolverName & { providers: BawProvider[] } {
     // Store reference to 'this' values before 'this' is changed inside class
     const { uniqueId, params: serviceArgs, resolverFn } = this;
 
@@ -72,9 +76,19 @@ export abstract class BawResolver<
         return resolverFn(route, this.api, modelId, additionalArgs).pipe(
           map((model) => ({ model })), // Modify output to match ResolvedModel interface
           first(), // Only take first response
-          catchError(
-            (error: ApiErrorDetails) => of({ error }) // Modify output to match ResolvedModel interface
-          )
+          catchError((error: ApiErrorDetails) => {
+            console.log({
+              required,
+              errStatus: error.status,
+              code: httpStatus.NOT_FOUND,
+            });
+            if (!required && error.status === httpStatus.NOT_FOUND) {
+              // Return undefined model if not required
+              return of({ model: undefined });
+            }
+            // Modify output to match ResolvedModel interface
+            return of({ error });
+          })
         );
       }
 
@@ -168,18 +182,31 @@ export class Resolvers<
    */
   public create(name: string) {
     const { serviceDeps, uniqueId, params } = this;
-    const listProvider = new ListResolver<Model, Params, Service>(
+    const listResolver = new ListResolver<Model, Params, Service>(
       serviceDeps,
       params
     ).create(name);
-    const showProvider = new ShowResolver<Model, Params, Service>(
+    const showResolver = new ShowResolver<Model, Params, Service>(
       serviceDeps,
       uniqueId,
       params
     ).create(name);
-    const providers = [...listProvider.providers, ...showProvider.providers];
+    const showOptionalResolver = new ShowOptionalResolver<
+      Model,
+      Params,
+      Service
+    >(serviceDeps, uniqueId, params).create(name);
 
-    return { ...listProvider, ...showProvider, providers };
+    return {
+      ...listResolver,
+      ...showResolver,
+      ...showOptionalResolver,
+      providers: [
+        ...listResolver.providers,
+        ...showResolver.providers,
+        ...showOptionalResolver.providers,
+      ],
+    };
   }
 }
 
@@ -247,6 +274,55 @@ export class ShowResolver<
       show: name + "ShowResolver",
       providers: [{ provide: name + "ShowResolver", useClass: resolver, deps }],
     };
+  }
+
+  public create(name: string, required: true = true) {
+    return super.create(name, required);
+  }
+
+  public resolverFn(_: any, api: Service, id: Id, ids: Params) {
+    return api.show(id, ...ids);
+  }
+}
+
+/**
+ * Show Optional Resolver Class.
+ * This handles generating the resolver required for generating a single model using
+ * the id's stored in the URL. If no model is found, or there is an error, this will
+ * return undefined.
+ */
+export class ShowOptionalResolver<
+  Model extends AbstractModel,
+  Params extends any[],
+  Service extends ApiShow<Model, Params, IdOr<Model>> = ApiShow<
+    Model,
+    Params,
+    IdOr<Model>
+  >
+> extends BawResolver<Model, Model, Params, Service, { showOptional: string }> {
+  public constructor(
+    deps: Type<Service>[],
+    uniqueId?: string,
+    params?: Tuple<string, Params["length"]>
+  ) {
+    super(deps, uniqueId, params);
+  }
+
+  public createProviders(
+    name: string,
+    resolver: Type<Resolve<ResolvedModel<Model>>>,
+    deps: Type<Service>[]
+  ) {
+    return {
+      showOptional: name + "OptionalShowResolver",
+      providers: [
+        { provide: name + "OptionalShowResolver", useClass: resolver, deps },
+      ],
+    };
+  }
+
+  public create(name: string, required: false = false) {
+    return super.create(name, required);
   }
 
   public resolverFn(_: any, api: Service, id: Id, ids: Params) {
