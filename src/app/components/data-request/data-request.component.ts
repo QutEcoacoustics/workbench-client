@@ -1,11 +1,13 @@
-import { Component } from "@angular/core";
-import { withFormCheck } from "@guards/form/form.guard";
-import { PageComponent } from "@helpers/page/pageComponent";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { DataRequestService } from "@baw-api/data-request/data-request.service";
+import { FormTemplate } from "@helpers/formTemplate/formTemplate";
+import { DataRequest, IDataRequest } from "@models/data/DataRequest";
+import { ToastrService } from "ngx-toastr";
+import { Observable } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
-import {
-  fields as requestFields,
-  fields as annotationFields,
-} from "./data-request.schema.json";
+import { fields } from "./data-request.schema.json";
 
 @Component({
   selector: "baw-data-request",
@@ -23,30 +25,61 @@ import {
     </ol>
 
     <baw-form
-      title="Annotations Download"
-      subTitle="Please select the timezone for the CSV file containing annotations for ..."
-      submitLabel="Download Annotations"
-      [model]="annotationModel"
-      [fields]="annotationFields"
-    ></baw-form>
-    <baw-form
       title="Custom Data Request"
-      subTitle="
-          Use this form to request a customized annotations list or other data related to the
-          audio recordings on this website. You <strong>do not need</strong> to use this form
-          if you need the standard <strong>annotations CSV</strong> download.
-        "
       submitLabel="Submit"
-      [model]="requestModel"
-      [fields]="requestFields"
-    ></baw-form>
+      [model]="model"
+      [fields]="fields"
+      [submitLoading]="loading"
+      [recaptchaSeed]="recaptchaSeed"
+      (onSubmit)="submit($event)"
+    >
+      <span id="subTitle">
+        <p>
+          Use this form to request a customized annotations list or other data
+          related to the audio recordings on this website.
+        </p>
+        <p>
+          You <strong>do not need</strong> to use this form if you need the
+          standard <strong>annotations CSV</strong> download.
+        </p>
+      </span>
+    </baw-form>
   `,
 })
-class DataRequestComponent extends withFormCheck(PageComponent) {
-  public annotationModel = {};
-  public annotationFields = annotationFields;
-  public requestModel = {};
-  public requestFields = requestFields;
+class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
+  public fields = fields;
+
+  public constructor(
+    private api: DataRequestService,
+    notifications: ToastrService,
+    route: ActivatedRoute,
+    router: Router
+  ) {
+    super(notifications, route, router, {
+      successMsg: () =>
+        "Your request was successfully submitted. We will be in contact shortly.",
+    });
+  }
+
+  public ngOnInit() {
+    super.ngOnInit();
+
+    this.api
+      .seed()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        ({ seed, action }) =>
+          (this.recaptchaSeed = { state: "loaded", seed, action }),
+        (err) => {
+          console.error(err);
+          this.notifications.error("Failed to load form");
+        }
+      );
+  }
+
+  protected apiAction(model: IDataRequest): Observable<void> {
+    return this.api.dataRequest(new DataRequest(model));
+  }
 }
 
 DataRequestComponent.linkComponentToPageInfo({
