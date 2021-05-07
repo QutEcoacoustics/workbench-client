@@ -29,49 +29,16 @@ const siteKey = "site";
 
 @Component({
   selector: "baw-site-annotations",
-  template: `
-    <baw-form
-      title="Annotations Download"
-      [submitLabel]="null"
-      [model]="model"
-      [fields]="fields"
-    >
-      <span id="subTitle">
-        <p>
-          The annotations in the CSV will have all their dates and times set to
-          a time zone of your choice. The default time zone is the local time
-          for the site where the audio was recorded.
-        </p>
-        <p>
-          For example, annotations created for audio from Brisbane will have
-          dates and times set to AEST (+10).
-        </p>
-        <p>
-          However, if you have recordings from Brisbane and Perth, which time
-          zone do we choose for all downloaded events?
-        </p>
-        <p>AEST (+10) or AWST (+8) or UTC (+0)?</p>
-        <p>
-          It depends on how you want to work with your data, so the choice is
-          yours. Please select the time zone you wish to use:
-        </p>
-      </span>
-    </baw-form>
-
-    <div class="clearfix">
-      <a class="btn btn-primary float-right" [href]="getAnnotationsPath()">
-        Download Annotations
-      </a>
-    </div>
-  `,
+  templateUrl: "annotations.component.html",
 })
 class SiteAnnotationsComponent extends PageComponent implements OnInit {
   public model: TimezoneModel = { timezone: "UTC" };
   public fields: FormlyFieldConfig[] = fields;
   public form = new FormGroup({});
   public failure: boolean;
-  public project: Project;
-  public site: Site;
+  public isSite = true;
+  protected project: Project;
+  protected site: Site;
 
   public constructor(
     private siteApi: SitesService,

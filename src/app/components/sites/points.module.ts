@@ -3,6 +3,7 @@ import { RouterModule } from "@angular/router";
 import { SitesModule } from "@components/sites/sites.module";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
+import { PointAnnotationsComponent } from "./pages/annotations/point.component";
 import { PointDeleteComponent } from "./pages/delete/point.component";
 import { PointDetailsComponent } from "./pages/details/point.component";
 import { PointEditComponent } from "./pages/edit/point.component";
@@ -11,6 +12,7 @@ import { PointNewComponent } from "./pages/new/point.component";
 import { pointsRoute } from "./points.menus";
 
 const components = [
+  PointAnnotationsComponent,
   PointDeleteComponent,
   PointDetailsComponent,
   PointEditComponent,

@@ -77,11 +77,6 @@ export abstract class BawResolver<
           map((model) => ({ model })), // Modify output to match ResolvedModel interface
           first(), // Only take first response
           catchError((error: ApiErrorDetails) => {
-            console.log({
-              required,
-              errStatus: error.status,
-              code: httpStatus.NOT_FOUND,
-            });
             if (!required && error.status === httpStatus.NOT_FOUND) {
               // Return undefined model if not required
               return of({ model: undefined });

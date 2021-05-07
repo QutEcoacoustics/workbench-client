@@ -1,10 +1,10 @@
-import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import {
   deleteSiteMenuItem,
   editSiteMenuItem,
   newSiteMenuItem,
+  siteAnnotationsMenuItem,
   siteHarvestMenuItem,
   siteMenuItem,
   sitesCategory,
@@ -35,8 +35,9 @@ export const newPointMenuItem = menuRoute({
 });
 
 export const pointAnnotationsMenuItem = menuRoute({
-  ...dataRequestMenuItem,
-  label: "Download Annotations",
+  ...siteAnnotationsMenuItem,
+  parent: pointMenuItem,
+  route: pointMenuItem.route.add("annotations_download"),
   tooltip: () => "Download annotations for this point",
 });
 
