@@ -122,22 +122,52 @@ describe("SecurityService", () => {
     });
 
     describe("signIn", () => {
-      it("should call handleAuth", () => {
+      function interceptSignOut(success?: boolean) {
+        const subject = new Subject();
+        spec.service.signOut = jasmine.createSpy().and.callFake(() => subject);
+        return nStepObservable(
+          subject,
+          () => (success ? null : generateApiErrorDetails()),
+          !success
+        );
+      }
+
+      it("should call signOut", async () => {
+        const promise = interceptSignOut(true);
         spec.service.signIn(defaultLoginDetails);
+        await promise;
+        expect(spec.service.signOut).toHaveBeenCalled();
+      });
+
+      it("should handle signOut failure", async () => {
+        const promise = interceptSignOut(false);
+        spec.service.signIn(defaultLoginDetails);
+        await promise;
+        expect(spec.service.signOut).toHaveBeenCalled();
+      });
+
+      it("should call handleAuth", async () => {
+        const promise = interceptSignOut(true);
+        spec.service.signIn(defaultLoginDetails);
+        await promise;
         expect(handleAuthSpy).toHaveBeenCalled();
       });
 
-      it("should call handleAuth with correct form endpoint", () => {
+      it("should call handleAuth with correct form endpoint", async () => {
+        const promise = interceptSignOut(true);
         spec.service.signIn(defaultLoginDetails);
+        await promise;
         expect(getCallArgs(handleAuthSpy)[0]).toBe("/my_account/sign_in/");
       });
 
-      it("should call handleAuth with correct auth endpoint", () => {
+      it("should call handleAuth with correct auth endpoint", async () => {
+        const promise = interceptSignOut(true);
         spec.service.signIn(defaultLoginDetails);
+        await promise;
         expect(getCallArgs(handleAuthSpy)[1]).toBe("/my_account/sign_in/");
       });
 
-      it("should set request body", () => {
+      it("should set request body", async () => {
         const loginDetails = new LoginDetails({
           login: "sign_in details",
           password: "sign_in password",
@@ -149,7 +179,9 @@ describe("SecurityService", () => {
           "commit=Log%2Bin&" +
           `authenticity_token=${defaultAuthToken}`;
 
+        const promise = interceptSignOut(true);
         spec.service.signIn(loginDetails);
+        await promise;
         expect(getFormData(defaultAuthToken)).toBe(expectation);
       });
     });
