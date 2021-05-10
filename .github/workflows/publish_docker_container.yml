@@ -26,6 +26,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Build and push Docker image
+        shell: pwsh
         run: ./build/build_docker.ps1
 
       # - name: Set version (calver)
