@@ -1,9 +1,8 @@
 import { Configuration } from "@helpers/app-initializer/app-initializer";
-import { version } from "../../package.json";
 
-export const environment: Configuration = {
+export const environment = ({
   production: false,
-  version,
-} as any;
+  version: "dev",
+} as Partial<Configuration>) as Configuration;
 
 import "zone.js/dist/zone-error"; // Included with Angular CLI.
