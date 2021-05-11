@@ -1,0 +1,45 @@
+{
+  "$schema": "https://zenodo.org/schemas/records/record-v1.0.0.json",
+  "license": {
+    "description": "Apache-2.0",
+    "title": "Apache-2.0",
+    "id": "Apache-2.0"
+  },
+  "creators": [
+    {
+      "name": "Charles Alleman",
+      "affiliation": "QUT",
+      "familyname": "Alleman",
+      "givennames": "Charles",
+      "orcid": "0000-0003-2903-3992"
+    },
+    {
+      "name": "Anthony Truskinger",
+      "affiliation": "QUT",
+      "familyname": "Truskinger",
+      "givennames": "Anthony",
+      "orcid": "0000-0003-1110-1483"
+    },
+    {
+      "name": "Mark Cottman-Fields",
+      "familyname": "Cottman-Fields",
+      "givennames": "Mark",
+      "orcid": "0000-0001-5155-0342"
+    },
+    {
+      "name": "Philip Eichinski",
+      "affiliation": "QUT",
+      "familyname": "Eichinski",
+      "givennames": "Phillip",
+      "orcid": "0000-0001-5758-5060"
+    },
+    {
+      "name": "Paul Roe",
+      "affiliation": "QUT",
+      "familyname": "Roe",
+      "givennames": "Paul",
+      "orcid": "0000-0002-4892-1509"
+    }
+  ],
+  "keywords": ["ecoacoustics", "bioacoustics", "software", "management"]
+}
