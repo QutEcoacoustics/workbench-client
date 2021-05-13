@@ -23,3 +23,4 @@ docker build `
 docker push --all-tags qutecoacoustics/workbench-client
 
 git tag -a $SHORT_VERSION -m "Build $SHORT_VERSION"
+git push origin $SHORT_VERSION
