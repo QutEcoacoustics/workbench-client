@@ -12,7 +12,6 @@ $LONG_VERSION = docker run --rm relizaio/versioning -s YYYY.0M.0D.Calvermodifier
 
 docker build `
   -t qutecoacoustics/workbench-client:beta `
-  -t qutecoacoustics/workbench-client:latest `
   -t qutecoacoustics/workbench-client:$GIT_SHORT_COMMIT `
   -t qutecoacoustics/workbench-client:$SHORT_VERSION `
   . `
