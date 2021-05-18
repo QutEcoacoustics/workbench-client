@@ -107,10 +107,17 @@ export class SecurityService extends BawFormApiService<SessionUser> {
    * @param details Details provided by login form
    */
   public signIn(details: LoginDetails): Observable<void> {
-    return this.handleAuth(
+    const handleAuth = this.handleAuth(
       signInEndpoint(),
       signInEndpoint(),
       (token: string) => details.getBody(token)
+    );
+
+    // Logout first to ensure token and cookie are synchronized
+    return this.signOut().pipe(
+      mergeMap(() => handleAuth),
+      // Ignore any sign out errors, and continue with authentication
+      catchError(() => handleAuth)
     );
   }
 
