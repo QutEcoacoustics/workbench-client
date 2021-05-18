@@ -61,7 +61,7 @@ describe("MenuComponent", () => {
       .filter((menuItem) => isInternalRoute(menuItem.link));
   }
 
-  function setLoggedInState(user: SessionUser = defaultUser) {
+  function setLoggedInState(user: SessionUser) {
     spyOn(api, "getLocalUser").and.callFake(() => user);
   }
 
@@ -245,7 +245,7 @@ describe("MenuComponent", () => {
           tooltip: (user: SessionUser) => `Custom tooltip for ${user.userName}`,
         });
         setup({ menuType: "action", links: List([link]) });
-        setLoggedInState();
+        setLoggedInState(defaultUser);
         spec.detectChanges();
         expect(test.getLink()[0].tooltip).toBe(
           `Custom tooltip for ${defaultUser.userName}`
@@ -288,6 +288,7 @@ describe("MenuComponent", () => {
             },
           });
           setup({ menuType: "action", links: List([link]) });
+          setLoggedInState(undefined);
           spec.detectChanges();
         });
 

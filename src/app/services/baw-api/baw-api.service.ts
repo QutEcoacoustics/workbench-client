@@ -5,7 +5,7 @@ import {
   Injectable,
   InjectionToken,
   Injector,
-  PLATFORM_ID
+  PLATFORM_ID,
 } from "@angular/core";
 import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
@@ -132,6 +132,7 @@ export class BawApiService<Model extends AbstractModel> {
       }
     }
 
+    // TODO Change this to a variable which can be referenced (ie. const noUser = undefined)
     return undefined;
   }
 
@@ -206,7 +207,7 @@ export class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected apiCreate(path: string, body: AbstractModel): Observable<Model> {
-    return this.httpPost(path, body.toJSON?.({create: true}) ?? body).pipe(
+    return this.httpPost(path, body.toJSON?.({ create: true }) ?? body).pipe(
       map(this.handleSingleResponse)
     );
   }
@@ -218,7 +219,7 @@ export class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected apiUpdate(path: string, body: AbstractModel): Observable<Model> {
-    return this.httpPatch(path, body.toJSON?.({update: true}) ?? body).pipe(
+    return this.httpPatch(path, body.toJSON?.({ update: true }) ?? body).pipe(
       map(this.handleSingleResponse)
     );
   }
@@ -279,10 +280,7 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected httpPut(
-    path: string,
-    body?: any
-  ): Observable<ApiResponse<Model>> {
+  protected httpPut(path: string, body?: any): Observable<ApiResponse<Model>> {
     return this.http.put<ApiResponse<Model>>(this.getPath(path), body, {
       // Set responseType for interceptor
       responseType: "json",
