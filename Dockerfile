@@ -4,15 +4,14 @@ ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION="latest"
 
 LABEL maintainer="Charles Alleman <alleman@qut.edu.au>" \
-      description="Production environment for workbench client server" \
-      version="3.0" \
-      org.ecosounds.name="Workbench Client" \
-      org.ecosounds.version=${WORKBENCH_CLIENT_VERSION} \
-      org.ecosounds.vendor="QUT Ecoacoustics" \
-      org.ecosounds.url="https://github.com/QutEcoacoustics/workbench-client" \
-      org.ecosounds.vcs-url="https://github.com/QutEcoacoustics/workbench-client" \
-      org.ecosounds.vcs-ref=${GIT_COMMIT} \
-      org.ecosounds.schema-version="1.0"
+  description="Production environment for workbench client server" \
+  version=${WORKBENCH_CLIENT_VERSION} \
+  name="Workbench Client" \
+  vendor="QUT Ecoacoustics" \
+  url="https://github.com/QutEcoacoustics/workbench-client" \
+  vsc-url="https://github.com/QutEcoacoustics/workbench-client" \
+  ref=${GIT_COMMIT} \
+  schema-version="1.0"
 
 # drop privileges
 USER node
@@ -37,7 +36,7 @@ RUN npm install \
 COPY --chown=node ./ ./
 
 # change environment version
-RUN sed -i "s|version: \"\"|version: \"${WORKBENCH_CLIENT_VERSION}\"|" ./src/environments/environment.prod.ts
+RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./src/environments/environment.prod.ts
 
 RUN npm run build:ssr
 #   pre-rendering doesn't appear to work at the moment due to our config setup

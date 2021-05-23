@@ -30,6 +30,11 @@ describe("BawApiInterceptor", () => {
     return apiRoot + path;
   }
 
+  function setLoggedOut() {
+    spyOn(spec.service, "isLoggedIn").and.callFake(() => false);
+    spyOn(spec.service, "getLocalUser").and.callFake(() => undefined);
+  }
+
   function setLoggedIn(authToken?: string) {
     spyOn(spec.service, "isLoggedIn").and.callFake(() => true);
     spyOn(spec.service, "getLocalUser").and.callFake(() =>
@@ -55,6 +60,8 @@ describe("BawApiInterceptor", () => {
         info: response.meta.error.info,
       };
     }
+
+    beforeEach(() => setLoggedOut());
 
     it("should handle api error response", () => {
       const error = generateApiErrorResponse("Unauthorized", {
@@ -114,11 +121,13 @@ describe("BawApiInterceptor", () => {
       }
 
       it("should not set accept header", () => {
+        setLoggedOut();
         const req = makeRequest();
         expect(req.request.headers.has("Accept")).toBeFalsy();
       });
 
       it("should not set Authorization header when not logged in", () => {
+        setLoggedOut();
         const req = makeRequest();
         expect(req.request.headers.has("Authorization")).toBeFalsy();
       });
@@ -130,11 +139,13 @@ describe("BawApiInterceptor", () => {
       });
 
       it("should not set content-type header", () => {
+        setLoggedOut();
         const req = makeRequest();
         expect(req.request.headers.has("Content-Type")).toBeFalsy();
       });
 
       it("should not convert into snake case for GET requests", () => {
+        setLoggedOut();
         http
           .get("https://brokenlink/brokenapiroute", {
             params: new HttpParams().set("shouldNotConvert", "true"),
@@ -149,6 +160,7 @@ describe("BawApiInterceptor", () => {
       });
 
       it("should not convert into snake case for POST requests", () => {
+        setLoggedOut();
         http
           .post("https://brokenlink/brokenapiroute", {
             shouldNotConvert: true,
@@ -164,6 +176,8 @@ describe("BawApiInterceptor", () => {
     });
 
     describe("incoming data", () => {
+      beforeEach(() => setLoggedOut());
+
       it("should not convert into camel case for GET requests", () => {
         http
           .get("https://brokenlink/brokenapiroute")
@@ -193,12 +207,14 @@ describe("BawApiInterceptor", () => {
   describe("baw api traffic", () => {
     describe("outgoing data", () => {
       it("should set accept header", () => {
+        setLoggedOut();
         http.get(getPath("/brokenapiroute")).subscribe(noop, noop);
         const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
         expect(req.request.headers.get("Accept")).toBe("application/json");
       });
 
       it("should not set accept header on non json requests", () => {
+        setLoggedOut();
         http
           .get(getPath("/brokenapiroute"), { responseType: "text" })
           .subscribe(noop, noop);
@@ -207,6 +223,7 @@ describe("BawApiInterceptor", () => {
       });
 
       it("should set content-type header", () => {
+        setLoggedOut();
         http.get(getPath("/brokenapiroute")).subscribe(noop, noop);
         const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
         expect(req.request.headers.get("Content-Type")).toBe(
@@ -215,6 +232,7 @@ describe("BawApiInterceptor", () => {
       });
 
       it("should not set content-type header on non json requests", () => {
+        setLoggedOut();
         http
           .get(getPath("/brokenapiroute"), { responseType: "text" })
           .subscribe(noop, noop);
@@ -225,12 +243,14 @@ describe("BawApiInterceptor", () => {
       });
 
       it("should set cookies", () => {
+        setLoggedOut();
         http.get(getPath("/brokenapiroute")).subscribe(noop, noop);
         const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
         expect(req.request.withCredentials).toBeTrue();
       });
 
       it("should convert into snake case for GET requests", () => {
+        setLoggedOut();
         http
           .get(getPath("/brokenapiroute"), {
             params: new HttpParams().set("shouldConvert", "true"),
@@ -246,6 +266,7 @@ describe("BawApiInterceptor", () => {
       });
 
       it("should convert into snake case for POST requests", () => {
+        setLoggedOut();
         http
           .post(getPath("/brokenapiroute"), { shouldConvert: true })
           .subscribe(noop, noop);
@@ -254,6 +275,7 @@ describe("BawApiInterceptor", () => {
       });
 
       it("should not attach Authorization when unauthenticated", () => {
+        setLoggedOut();
         http.get(getPath("/brokenapiroute")).subscribe(noop, noop);
         const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
         expect(req.request.headers.has("Authorization")).toBeFalsy();
@@ -270,6 +292,8 @@ describe("BawApiInterceptor", () => {
     });
 
     describe("incoming data", () => {
+      beforeEach(() => setLoggedOut());
+
       it("should convert into camel case for GET requests", () => {
         http
           .get(getPath("/brokenapiroute"))
