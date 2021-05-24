@@ -210,4 +210,4 @@ jobs:
 
       - name: Build and push Docker image
         shell: pwsh
-        run: ./build/build_docker.ps1
+        run: ./build/build_docker.ps1 -github_actor '${{ github.actor }}'
