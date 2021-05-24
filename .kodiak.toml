@@ -9,4 +9,4 @@ version = 1
 merge.automerge_dependencies.versions = ["minor", "patch"]
 
 # https://kodiakhq.com/docs/config-reference#mergemethod
-merge.method = ["rebase", "squash", "merge"]
+merge.method = "rebase"
