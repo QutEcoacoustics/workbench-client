@@ -1,7 +1,7 @@
 FROM node:current-alpine
 
 ARG GIT_COMMIT
-ARG WORKBENCH_CLIENT_VERSION="latest"
+ARG WORKBENCH_CLIENT_VERSION
 
 LABEL maintainer="Charles Alleman <alleman@qut.edu.au>" \
   description="Production environment for workbench client server" \
