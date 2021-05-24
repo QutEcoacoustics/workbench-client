@@ -5,56 +5,17 @@
         <p class="nav-link disabled m-0">&#169; QUT {{ year }}</p>
       </li>
       <li class="nav-item">
-        <p class="nav-link disabled m-0">Production v{{ version }}</p>
+        <p class="nav-link disabled m-0">{{ version }}</p>
       </li>
-      <li class="nav-item">
+
+      <li *ngFor="let link of links" class="nav-item">
         <!-- Using routerLink so that routerLinkActive will work-->
         <a
           class="nav-link"
-          [routerLink]="routes.statistics.route.toRouterLink()"
+          [routerLink]="link.route.toRouterLink()"
           routerLinkActive="active"
         >
-          {{ routes.statistics.label }}
-        </a>
-      </li>
-      <li class="nav-item">
-        <!-- Using routerLink so that routerLinkActive will work-->
-        <a
-          class="nav-link"
-          [routerLink]="routes.disclaimers.route.toRouterLink()"
-          routerLinkActive="active"
-        >
-          {{ routes.disclaimers.label }}
-        </a>
-      </li>
-      <li class="nav-item">
-        <!-- Using routerLink so that routerLinkActive will work-->
-        <a
-          class="nav-link"
-          [routerLink]="routes.credits.route.toRouterLink()"
-          routerLinkActive="active"
-        >
-          {{ routes.credits.label }}
-        </a>
-      </li>
-      <li class="nav-item">
-        <!-- Using routerLink so that routerLinkActive will work-->
-        <a
-          class="nav-link"
-          [routerLink]="routes.ethics.route.toRouterLink()"
-          routerLinkActive="active"
-        >
-          {{ routes.ethics.label }}
-        </a>
-      </li>
-      <li class="nav-item">
-        <!-- Using routerLink so that routerLinkActive will work-->
-        <a
-          class="nav-link"
-          [routerLink]="routes.contactUs.route.toRouterLink()"
-          routerLinkActive="active"
-        >
-          {{ routes.contactUs.label }}
+          {{ link.label }}
         </a>
       </li>
     </ul>
