@@ -1,0 +1,12 @@
+# .kodiak.toml
+# Minimal config. version is the only required field.
+
+# This is for automerging dependabot PRs
+
+version = 1
+
+# https://kodiakhq.com/docs/config-reference#mergeautomerge_dependenciesversions
+merge.automerge_dependencies.versions = ["minor", "patch"]
+
+# https://kodiakhq.com/docs/config-reference#mergemethod
+merge.method = "rebase"

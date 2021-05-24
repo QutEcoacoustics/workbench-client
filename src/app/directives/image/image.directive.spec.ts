@@ -182,7 +182,7 @@ describe("ImageDirective", () => {
     }
 
     function setLoggedIn(user: SessionUser) {
-      spyOn(api, "isLoggedIn").and.callFake(() => true);
+      spyOn(api, "isLoggedIn").and.callFake(() => !!user);
       spyOn(api, "getLocalUser").and.callFake(() => user);
     }
 
@@ -237,6 +237,7 @@ describe("ImageDirective", () => {
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = getApiRoot() + "/image.png";
       spectator = createApiDirective(imageUrls);
+      setLoggedIn(undefined);
       spectator.detectChanges();
 
       assertImage(getImage(), `${getApiRoot()}/image.png`, "alt");

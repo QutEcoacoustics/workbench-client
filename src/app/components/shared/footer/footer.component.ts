@@ -20,18 +20,17 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
 export class FooterComponent implements OnInit {
   public version: string;
   public year: number = new Date().getFullYear();
+  public links = [
+    statisticsMenuItem,
+    disclaimersMenuItem,
+    creditsMenuItem,
+    ethicsMenuItem,
+    contactUsMenuItem,
+  ];
 
-  public routes = {
-    contactUs: contactUsMenuItem,
-    ethics: ethicsMenuItem,
-    credits: creditsMenuItem,
-    disclaimers: disclaimersMenuItem,
-    statistics: statisticsMenuItem,
-  };
-
-  public constructor(private config: ConfigService) {}
+  public constructor(private configService: ConfigService) {}
 
   public ngOnInit() {
-    this.version = this.config.config.version;
+    this.version = this.configService.config.version;
   }
 }

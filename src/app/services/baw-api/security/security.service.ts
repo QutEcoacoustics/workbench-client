@@ -4,9 +4,11 @@ import { param } from "@baw-api/api-common";
 import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Param, UserName } from "@interfaces/apiInterfaces";
-import { AbstractForm } from "@models/AbstractForm";
-import { bawPersistAttr } from "@models/AttributeDecorators";
+import { ConfirmPassword } from "@models/data/ConfirmPassword";
+import { LoginDetails } from "@models/data/LoginDetails";
+import { RegisterDetails } from "@models/data/RegisterDetails";
+import { ResetPassword } from "@models/data/ResetPassword";
+import { UnlockAccount } from "@models/data/UnlockAccount";
 import { SessionUser, User } from "@models/User";
 import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -14,6 +16,12 @@ import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
 import { ApiErrorDetails } from "../api.interceptor.service";
 import { UserService } from "../user/user.service";
 
+const confirmPasswordEndpoint = stringTemplate`/my_account/confirmation`;
+const confirmPasswordSeed = stringTemplate`/my_account/confirmation/new`;
+const resetPasswordEndpoint = stringTemplate`	/my_account/password`;
+const resetPasswordSeed = stringTemplate`	/my_account/password/new`;
+const unlockAccountEndpoint = stringTemplate`/my_account/unlock`;
+const unlockAccountSeed = stringTemplate`/my_account/unlock/new`;
 const signUpSeed = stringTemplate`/my_account/sign_up/`;
 const signUpEndpoint = stringTemplate`/my_account/`;
 const signInEndpoint = stringTemplate`/my_account/sign_in/`;
@@ -99,10 +107,17 @@ export class SecurityService extends BawFormApiService<SessionUser> {
    * @param details Details provided by login form
    */
   public signIn(details: LoginDetails): Observable<void> {
-    return this.handleAuth(
+    const handleAuth = this.handleAuth(
       signInEndpoint(),
       signInEndpoint(),
       (token: string) => details.getBody(token)
+    );
+
+    // Logout first to ensure token and cookie are synchronized
+    return this.signOut().pipe(
+      mergeMap(() => handleAuth),
+      // Ignore any sign out errors, and continue with authentication
+      catchError(() => handleAuth)
     );
   }
 
@@ -114,6 +129,30 @@ export class SecurityService extends BawFormApiService<SessionUser> {
       tap(() => this.clearData()),
       catchError(this.handleError)
     ) as Observable<void>;
+  }
+
+  public confirmPassword(details: ConfirmPassword): Observable<void> {
+    return this.makeFormRequestWithoutOutput(
+      confirmPasswordSeed(),
+      confirmPasswordEndpoint(),
+      (token) => details.getBody(token)
+    );
+  }
+
+  public resetPassword(details: ResetPassword): Observable<void> {
+    return this.makeFormRequestWithoutOutput(
+      resetPasswordSeed(),
+      resetPasswordEndpoint(),
+      (token) => details.getBody(token)
+    );
+  }
+
+  public unlockAccount(details: UnlockAccount): Observable<void> {
+    return this.makeFormRequestWithoutOutput(
+      unlockAccountSeed(),
+      unlockAccountEndpoint(),
+      (token) => details.getBody(token)
+    );
   }
 
   /**
@@ -169,68 +208,5 @@ export class SecurityService extends BawFormApiService<SessionUser> {
     this.clearSessionUser();
     this.cookies.deleteAll();
     this.authTrigger.next(null);
-  }
-}
-
-export interface ILoginDetails {
-  login?: Param;
-  password?: Param;
-}
-
-export class LoginDetails
-  extends AbstractForm<ILoginDetails>
-  implements ILoginDetails {
-  public readonly kind = "LoginDetails";
-  @bawPersistAttr()
-  public readonly login: Param;
-  @bawPersistAttr()
-  public readonly password: Param;
-
-  public getBody(token: string): URLSearchParams {
-    const body = new URLSearchParams();
-    body.set("user[login]", this.login);
-    body.set("user[password]", this.password);
-    body.set("user[remember_me]", "0");
-    body.set("commit", "Log+in");
-    body.set("authenticity_token", token);
-    return body;
-  }
-}
-
-export interface IRegisterDetails {
-  userName: UserName;
-  email: Param;
-  password: Param;
-  passwordConfirmation: Param;
-  recaptchaToken: string;
-}
-
-export class RegisterDetails
-  extends AbstractForm<IRegisterDetails>
-  implements IRegisterDetails {
-  public readonly kind = "RegisterDetails";
-  @bawPersistAttr()
-  public readonly userName: UserName;
-  @bawPersistAttr()
-  public readonly email: Param;
-  @bawPersistAttr()
-  public readonly password: Param;
-  @bawPersistAttr()
-  public readonly passwordConfirmation: Param;
-  @bawPersistAttr()
-  public readonly recaptchaToken: string;
-
-  public getBody(token: string): URLSearchParams {
-    this.validateRecaptchaToken();
-    const body = new URLSearchParams();
-    body.set("user[user_name]", this.userName);
-    body.set("user[email]", this.email);
-    body.set("user[password]", this.password);
-    body.set("user[password_confirmation]", this.passwordConfirmation);
-    body.set("commit", "Register");
-    body.set("authenticity_token", token);
-    body.set("g-recaptcha-response-data[register]", this.recaptchaToken);
-    body.set("g-recaptcha-response", "");
-    return body;
   }
 }

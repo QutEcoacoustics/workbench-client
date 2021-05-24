@@ -61,7 +61,8 @@ describe("MenuComponent", () => {
       .filter((menuItem) => isInternalRoute(menuItem.link));
   }
 
-  function setLoggedInState(user: SessionUser = defaultUser) {
+  function setLoggedInState(user: SessionUser) {
+    spyOn(api, "isLoggedIn").and.callFake(() => !!user);
     spyOn(api, "getLocalUser").and.callFake(() => user);
   }
 
@@ -116,6 +117,7 @@ describe("MenuComponent", () => {
 
     it("should create default title when none provided", () => {
       setup({ links: List([]) });
+      setLoggedInState(undefined);
       spec.detectChanges();
       assertTitle("MENU");
     });
@@ -125,6 +127,7 @@ describe("MenuComponent", () => {
         links: List([]),
         title: { label: "SECONDARY", icon: ["fas", "home"] },
       });
+      setLoggedInState(undefined);
       spec.detectChanges();
       assertTitle("SECONDARY");
     });
@@ -134,6 +137,7 @@ describe("MenuComponent", () => {
         links: List([]),
         title: { label: "SECONDARY", icon: ["fas", "home"] },
       });
+      setLoggedInState(undefined);
       spec.detectChanges();
       assertIcon(getTitle(), "fas,home");
     });
@@ -143,6 +147,7 @@ describe("MenuComponent", () => {
         links: List([]),
         title: { label: "secondary", icon: ["fas", "home"] },
       });
+      setLoggedInState(undefined);
       spec.detectChanges();
       assertTitle("SECONDARY");
     });
@@ -150,6 +155,7 @@ describe("MenuComponent", () => {
     menuTypes.forEach((menuType) => {
       it(`should create no links on ${menuType} menu`, () => {
         setup({ menuType, links: List([]) });
+        setLoggedInState(undefined);
         spec.detectChanges();
         expect(getMenuActions().length).toBe(0);
         expect(getMenuLinks().length).toBe(0);
@@ -161,6 +167,7 @@ describe("MenuComponent", () => {
           menuType,
           links: List([defaultMenuAction, defaultMenuLink, defaultMenuRoute]),
         });
+        setLoggedInState(undefined);
         spec.detectChanges();
         expect(getMenuActions().length).toBe(1);
         expect(getMenuLinks().length).toBe(1);
@@ -170,6 +177,7 @@ describe("MenuComponent", () => {
 
     it("should not create widget when none provided", () => {
       setup({ links: List([]) });
+      setLoggedInState(undefined);
       spec.detectChanges();
       expect(getWidget().childElementCount).toBe(0);
     });
@@ -214,18 +222,21 @@ describe("MenuComponent", () => {
       menuTypes.forEach((menuType) => {
         it(`should create single link for ${menuType} menu`, () => {
           setup({ menuType, links: List([createLink()]) });
+          setLoggedInState(undefined);
           spec.detectChanges();
           assertLinks(1);
         });
 
         it(`should create multiple links for ${menuType} menu`, () => {
           setup({ menuType, links: List([createLink(), createLink()]) });
+          setLoggedInState(undefined);
           spec.detectChanges();
           assertLinks(2);
         });
 
         it(`should set link placement for ${menuType} menu`, () => {
           setup({ menuType, links: List([createLink()]) });
+          setLoggedInState(undefined);
           spec.detectChanges();
           expect(test.getLink()[0].placement).toBe(
             menuType === "action" ? "left" : "right"
@@ -236,6 +247,7 @@ describe("MenuComponent", () => {
       it("should set link tooltip", () => {
         const link = createLink();
         setup({ menuType: "action", links: List([link]) });
+        setLoggedInState(undefined);
         spec.detectChanges();
         expect(test.getLink()[0].tooltip).toBe(link.tooltip());
       });
@@ -245,7 +257,7 @@ describe("MenuComponent", () => {
           tooltip: (user: SessionUser) => `Custom tooltip for ${user.userName}`,
         });
         setup({ menuType: "action", links: List([link]) });
-        setLoggedInState();
+        setLoggedInState(defaultUser);
         spec.detectChanges();
         expect(test.getLink()[0].tooltip).toBe(
           `Custom tooltip for ${defaultUser.userName}`
@@ -255,6 +267,7 @@ describe("MenuComponent", () => {
       it("should set link link", () => {
         const link = createLink();
         setup({ menuType: "action", links: List([link]) });
+        setLoggedInState(undefined);
         spec.detectChanges();
         expect(test.getLink()[0].link).toEqual(link);
       });
@@ -269,6 +282,7 @@ describe("MenuComponent", () => {
               createLink({ predicate: () => true }),
             ]),
           });
+          setLoggedInState(undefined);
           spec.detectChanges();
           assertLinks(2);
         });
@@ -276,6 +290,7 @@ describe("MenuComponent", () => {
         it("should filter duplicate links (by object identity)", () => {
           const link = createLink();
           setup({ menuType: "action", links: List([link, link, link]) });
+          setLoggedInState(undefined);
           spec.detectChanges();
           assertLinks(1);
         });
@@ -288,6 +303,7 @@ describe("MenuComponent", () => {
             },
           });
           setup({ menuType: "action", links: List([link]) });
+          setLoggedInState(undefined);
           spec.detectChanges();
         });
 
@@ -313,6 +329,7 @@ describe("MenuComponent", () => {
             },
           });
           setup({ menuType: "action", links: List([link]) }, data);
+          setLoggedInState(undefined);
           spec.detectChanges();
         });
       });
@@ -322,12 +339,14 @@ describe("MenuComponent", () => {
   describe("Links", () => {
     it("should set menu link", () => {
       setup({ menuType: "action", links: List([defaultMenuLink]) });
+      setLoggedInState(undefined);
       spec.detectChanges();
       expect(getMenuLinks()[0].link).toEqual(defaultMenuLink);
     });
 
     it("should set menu route", () => {
       setup({ menuType: "action", links: List([defaultMenuRoute]) });
+      setLoggedInState(undefined);
       spec.detectChanges();
       expect(getMenuRoutes()[0].link).toBe(defaultMenuRoute);
     });
@@ -354,6 +373,7 @@ describe("MenuComponent", () => {
       describe(menuType, () => {
         it("should order links", () => {
           setup({ menuType, links: arrange(3, 2, 1) });
+          setLoggedInState(undefined);
           spec.detectChanges();
           assertLinks([linkC, linkB, linkA]);
         });
@@ -361,11 +381,13 @@ describe("MenuComponent", () => {
         it("ensures order is stable if not specified", () => {
           setup({ menuType, links: arrange(undefined, undefined, undefined) });
           spec.detectChanges();
+          setLoggedInState(undefined);
           assertLinks([linkA, linkB, linkC]);
         });
 
         it("should sort lexicographically only if order is equal", () => {
           setup({ menuType, links: arrange(3, 3, 3) });
+          setLoggedInState(undefined);
           spec.detectChanges();
           assertLinks([linkB, linkA, linkC]);
         });
@@ -373,6 +395,7 @@ describe("MenuComponent", () => {
         it("should order links with order link first", () => {
           const menuLinks = arrange(undefined, undefined, -3);
           setup({ menuType, links: menuLinks });
+          setLoggedInState(undefined);
           spec.detectChanges();
           assertLinks([linkC, linkA, linkB]);
         });
@@ -381,6 +404,7 @@ describe("MenuComponent", () => {
           const parent = menuRoute({ ...defaultMenuRoute, order: 1 });
           const child = menuRoute({ ...defaultMenuRoute, parent, order: 1 });
           setup({ menuType, links: List([child, parent]) });
+          setLoggedInState(undefined);
           spec.detectChanges();
           assertLinks([parent, child]);
         });
@@ -401,6 +425,7 @@ describe("MenuComponent", () => {
           });
 
           setup({ menuType, links: List([child2, child1, parent]) });
+          setLoggedInState(undefined);
           spec.detectChanges();
           assertLinks([parent, child2, child1]);
         });

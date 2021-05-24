@@ -1,10 +1,8 @@
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import {
-  LoginDetails,
-  SecurityService,
-} from "@baw-api/security/security.service";
+import { SecurityService } from "@baw-api/security/security.service";
+import { LoginDetails } from "@models/data/LoginDetails";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { testApiConfig } from "@services/config/configMock.service";
 import { FormComponent } from "@shared/form/form.component";

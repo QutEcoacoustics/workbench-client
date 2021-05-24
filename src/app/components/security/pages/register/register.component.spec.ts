@@ -1,9 +1,7 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { RecaptchaSettings } from "@baw-api/baw-form-api.service";
-import {
-  RegisterDetails,
-  SecurityService,
-} from "@baw-api/security/security.service";
+import { SecurityService } from "@baw-api/security/security.service";
+import { RegisterDetails } from "@models/data/RegisterDetails";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";

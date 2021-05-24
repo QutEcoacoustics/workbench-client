@@ -40,3 +40,9 @@ export type Option<T> = T | null;
  * does not remove javascript readonly enforcement
  */
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+
+/** Create a tuple (extends Array type and sets fixed length) */
+export interface Tuple<T extends any, L extends number> extends Array<T> {
+  0: T;
+  length: L;
+}

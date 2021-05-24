@@ -31,6 +31,6 @@ export class UserService
   }
 }
 
-export const userResolvers = new ShowResolver<User, UserService>([
-  UserService,
-]).create("User");
+export const userResolvers = new ShowResolver<User, []>([UserService]).create(
+  "User"
+);

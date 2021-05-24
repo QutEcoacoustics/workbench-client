@@ -89,7 +89,7 @@ export class TagsService extends StandardApi<Tag> {
 
 class TagResolvers {
   public create(name: string) {
-    const additionalProvider = new Resolvers<Tag, TagsService>(
+    const additionalProvider = new Resolvers<Tag, []>(
       [TagsService],
       "tagId"
     ).create(name);
@@ -110,6 +110,7 @@ class TagResolvers {
 class TagTypeResolvers extends BawResolver<
   TagType[],
   Tag,
+  [],
   TagsService,
   { tagTypes: string }
 > {

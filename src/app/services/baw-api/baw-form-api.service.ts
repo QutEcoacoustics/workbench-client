@@ -84,6 +84,16 @@ export class BawFormApiService<
     );
   }
 
+  protected makeFormRequestWithoutOutput(
+    formEndpoint: string,
+    submissionEndpoint: string,
+    body: (authToken: string) => URLSearchParams
+  ): Observable<void> {
+    return this.makeFormRequest(formEndpoint, submissionEndpoint, body).pipe(
+      map(() => undefined)
+    );
+  }
+
   /**
    * Retrieve a recatpcha seed for a form
    *

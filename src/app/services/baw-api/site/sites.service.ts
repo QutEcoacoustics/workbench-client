@@ -180,13 +180,13 @@ export class ShallowSitesService extends StandardApi<Site> {
   }
 }
 
-export const siteResolvers = new Resolvers<Site, SitesService>(
+export const siteResolvers = new Resolvers<Site, [IdOr<Project>]>(
   [SitesService],
   "siteId",
   ["projectId"]
 ).create("Site");
 
-export const shallowSiteResolvers = new Resolvers<Site, ShallowSitesService>(
+export const shallowSiteResolvers = new Resolvers<Site, []>(
   [ShallowSitesService],
   "siteId"
 ).create("ShallowSite");
