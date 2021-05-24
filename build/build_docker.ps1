@@ -1,5 +1,12 @@
 #!/usr/bin/pwsh
 
+param(
+  # user name
+  [Parameter(Mandatory = $true)]
+  [string]
+  $github_actor 
+)
+
 # builds and pushes a docker file to docker hub
 # currently only builds the 'beta' tag, which is applied to whatever version
 # is supplied to this script.
@@ -16,7 +23,6 @@ $LONG_VERSION = docker run --rm relizaio/versioning -s "YYYY.0M.0D.Calvermodifie
 
 # tag version on github
 git tag -a $SHORT_VERSION -m "Build $SHORT_VERSION"
-git push origin $SHORT_VERSION
 
 # docker containing and push to docker hub
 docker build `
@@ -28,3 +34,9 @@ docker build `
   --build-arg WORKBENCH_CLIENT_VERSION=$LONG_VERSION
 
 docker push --all-tags qutecoacoustics/workbench-client
+
+# push docker tag to github
+
+git config --global user.name "$($github_actor)"
+git config --global user.email "$($github_actor)@users.noreply.github.com"
+git push origin $SHORT_VERSION
