@@ -9,6 +9,6 @@ updates:
     allow:
       - dependency-type: direct
     labels:
-      - "dependency"
       - "automerge"
+      - "dependencies"
     open-pull-requests-limit: 10

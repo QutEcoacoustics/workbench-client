@@ -22,6 +22,8 @@ $SHORT_VERSION = docker run --rm relizaio/versioning -s "YYYY.0M.0D.Calvermodifi
 $LONG_VERSION = docker run --rm relizaio/versioning -s "YYYY.0M.0D.Calvermodifier+Metadata" -i beta -m $GIT_SHORT_COMMIT
 
 # tag version on github
+git config --global user.name "$($github_actor)"
+git config --global user.email "$($github_actor)@users.noreply.github.com"
 git tag -a $SHORT_VERSION -m "Build $SHORT_VERSION"
 
 # docker containing and push to docker hub
@@ -37,6 +39,4 @@ docker push --all-tags qutecoacoustics/workbench-client
 
 # push docker tag to github
 
-git config --global user.name "$($github_actor)"
-git config --global user.email "$($github_actor)@users.noreply.github.com"
-git push origin $SHORT_VERSION
+git push origin --tags

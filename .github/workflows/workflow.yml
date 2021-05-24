@@ -197,6 +197,7 @@ jobs:
     # only on tag or commit to master and not created by dependabot
     if: >
       github.actor != 'dependabot[bot]' &&
+      github.actor != 'kodiakhq[bot]' &&
       (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tag'))
 
     steps:
