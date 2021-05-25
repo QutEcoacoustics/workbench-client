@@ -1,13 +1,13 @@
 import {
-  QueryList,
-  ViewChildren,
+  AfterViewInit,
   Component,
   ComponentFactoryResolver,
   Input,
   OnInit,
+  QueryList,
   ViewChild,
-  ElementRef,
-  ChangeDetectorRef,
+  ViewChildren,
+  ViewContainerRef,
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -36,17 +36,19 @@ import { WidgetMenuItem } from "./widget/widgetItem";
   templateUrl: "./menu.component.html",
   styleUrls: ["./menu.component.scss"],
 })
-export class MenuComponent extends withUnsubscribe() implements OnInit {
+export class MenuComponent
+  extends withUnsubscribe()
+  implements OnInit, AfterViewInit {
   @Input() public title?: LabelAndIcon;
   @Input() public links: List<AnyMenuItem>;
   @Input() public menuType: "action" | "secondary";
   @Input() public widget?: WidgetMenuItem;
-  @Input() public widgets?: WidgetMenuItem[] = [null];
-  @ViewChild(WidgetDirective, { static: true })
-  public menuWidget: WidgetDirective;
+  @Input() public widgets?: WidgetMenuItem[] = [];
+  @ViewChild(WidgetDirective, { static: true, read: ViewContainerRef })
+  public menuWidget: ViewContainerRef;
 
-  @ViewChildren("widgetItem")
-  private widgetComponents: QueryList<WidgetDirective>;
+  @ViewChildren("widgetItem", { read: ViewContainerRef })
+  private widgetComponents: QueryList<ViewContainerRef>;
 
   public filteredLinks: Set<AnyMenuItem>;
   public placement: Placement;
@@ -60,8 +62,7 @@ export class MenuComponent extends withUnsubscribe() implements OnInit {
   public constructor(
     private api: SecurityService,
     private route: ActivatedRoute,
-    private factoryResolver: ComponentFactoryResolver,
-    private ref: ChangeDetectorRef
+    private factoryResolver: ComponentFactoryResolver
   ) {
     super();
   }
@@ -91,9 +92,11 @@ export class MenuComponent extends withUnsubscribe() implements OnInit {
 
     // Retrieve router parameters to override link attributes
     this.params = snapshot.params;
+  }
 
+  public ngAfterViewInit(): void {
     // Load widget
-    this.loadComponent();
+    this.loadModals();
   }
 
   /**
@@ -117,43 +120,40 @@ export class MenuComponent extends withUnsubscribe() implements OnInit {
     return link.indentation;
   }
 
-  protected loadWidgets() {
-    if (!this.widgets) {
-      return;
-    }
-
-    this.widgets.forEach((widget, index) => this.loadWidget(widget, index));
-  }
-
-  private loadWidget(widget: WidgetMenuItem, index: number) {
-    console.log(this.widgetComponents.get(index));
-    const factory = this.factoryResolver.resolveComponentFactory(
-      widget.component
+  /**
+   * Load modal components
+   */
+  protected loadModals() {
+    this.widgets.forEach((widget, index) =>
+      this.insertComponent(widget, this.widgetComponents.get(index))
     );
-    const containerRef = this.widgetComponents.get(index).viewContainerRef;
-    const componentRef = containerRef.createComponent(factory);
-    (componentRef.instance as WidgetComponent).pageData = widget.pageData;
   }
 
   /**
-   * Load widget component
+   * Load widget components
    */
-  public loadComponent() {
+  public loadWidgets() {
     if (!this.widget) {
       return;
     }
+    this.insertComponent(this.widget, this.menuWidget);
+  }
 
-    this.loadWidget(this.widget, 0);
-
-    /* const componentFactory = this.factoryResolver.resolveComponentFactory(
-      this.widget.component
+  /**
+   * Insert component into menu
+   *
+   * @param component Widget Component
+   * @param containerRef Container reference to ng-template
+   */
+  private insertComponent(
+    component: WidgetMenuItem,
+    containerRef: ViewContainerRef
+  ) {
+    const factory = this.factoryResolver.resolveComponentFactory(
+      component.component
     );
-
-    const viewContainerRef = this.menuWidget.viewContainerRef;
-    viewContainerRef.clear();
-
-    const componentRef = viewContainerRef.createComponent(componentFactory);
-    (componentRef.instance as WidgetComponent).pageData = this.widget.pageData; */
+    const componentRef = containerRef.createComponent<WidgetComponent>(factory);
+    componentRef.instance.pageData = component.pageData;
   }
 
   /**

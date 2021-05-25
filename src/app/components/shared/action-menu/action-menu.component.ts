@@ -18,10 +18,10 @@ import { takeUntil } from "rxjs/operators";
   selector: "baw-action-menu",
   template: `
     <baw-menu
+      menuType="action"
       [title]="actionTitle"
       [links]="actionLinks"
-      [widget]="actionWidget"
-      [menuType]="'action'"
+      [widgets]="[actionWidget]"
     ></baw-menu>
   `,
 })

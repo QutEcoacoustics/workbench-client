@@ -19,9 +19,9 @@ import { takeUntil } from "rxjs/operators";
   selector: "baw-secondary-menu",
   template: `
     <baw-menu
+      menuType="secondary"
       [links]="contextLinks"
       [widget]="linksWidget"
-      [menuType]="'secondary'"
     ></baw-menu>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

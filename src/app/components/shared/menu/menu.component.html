@@ -33,7 +33,9 @@
         </ng-container>
       </li>
 
-      <hr class="w-100" *ngIf="widget" />
+      <!-- Insert buttons here which toggle existance of ng-template widgets -->
+
+      <hr class="w-100" *ngIf="widget || widgets" />
     </ng-container>
 
     <div id="widget">
