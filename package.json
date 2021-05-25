@@ -60,7 +60,7 @@
     "http-status": "^1.5.0",
     "humanize-duration": "^3.26.0",
     "immutable": "^4.0.0-rc.12",
-    "include-media": "^1.4.9",
+    "include-media": "^1.4.10",
     "just-camel-case": "^4.0.2",
     "just-snake-case": "^1.2.1",
     "luxon": "^1.26.0",
