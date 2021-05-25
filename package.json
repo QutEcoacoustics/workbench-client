@@ -66,7 +66,7 @@
     "luxon": "^1.26.0",
     "ngx-captcha": "^9.0.1",
     "ngx-cookie-service": "^11.0.2",
-    "ngx-device-detector": "^2.0.7",
+    "ngx-device-detector": "^2.0.10",
     "ngx-line-truncation": "^1.6.9",
     "ngx-toastr": "^13.2.1",
     "rxjs": "^6.6.7",
