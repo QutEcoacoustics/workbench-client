@@ -1,9 +1,13 @@
 import {
+  QueryList,
+  ViewChildren,
   Component,
   ComponentFactoryResolver,
   Input,
   OnInit,
   ViewChild,
+  ElementRef,
+  ChangeDetectorRef,
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -37,8 +41,12 @@ export class MenuComponent extends withUnsubscribe() implements OnInit {
   @Input() public links: List<AnyMenuItem>;
   @Input() public menuType: "action" | "secondary";
   @Input() public widget?: WidgetMenuItem;
+  @Input() public widgets?: WidgetMenuItem[] = [null];
   @ViewChild(WidgetDirective, { static: true })
   public menuWidget: WidgetDirective;
+
+  @ViewChildren("widgetItem")
+  private widgetComponents: QueryList<WidgetDirective>;
 
   public filteredLinks: Set<AnyMenuItem>;
   public placement: Placement;
@@ -52,7 +60,8 @@ export class MenuComponent extends withUnsubscribe() implements OnInit {
   public constructor(
     private api: SecurityService,
     private route: ActivatedRoute,
-    private componentFactoryResolver: ComponentFactoryResolver
+    private factoryResolver: ComponentFactoryResolver,
+    private ref: ChangeDetectorRef
   ) {
     super();
   }
@@ -108,6 +117,24 @@ export class MenuComponent extends withUnsubscribe() implements OnInit {
     return link.indentation;
   }
 
+  protected loadWidgets() {
+    if (!this.widgets) {
+      return;
+    }
+
+    this.widgets.forEach((widget, index) => this.loadWidget(widget, index));
+  }
+
+  private loadWidget(widget: WidgetMenuItem, index: number) {
+    console.log(this.widgetComponents.get(index));
+    const factory = this.factoryResolver.resolveComponentFactory(
+      widget.component
+    );
+    const containerRef = this.widgetComponents.get(index).viewContainerRef;
+    const componentRef = containerRef.createComponent(factory);
+    (componentRef.instance as WidgetComponent).pageData = widget.pageData;
+  }
+
   /**
    * Load widget component
    */
@@ -116,7 +143,9 @@ export class MenuComponent extends withUnsubscribe() implements OnInit {
       return;
     }
 
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
+    this.loadWidget(this.widget, 0);
+
+    /* const componentFactory = this.factoryResolver.resolveComponentFactory(
       this.widget.component
     );
 
@@ -124,7 +153,7 @@ export class MenuComponent extends withUnsubscribe() implements OnInit {
     viewContainerRef.clear();
 
     const componentRef = viewContainerRef.createComponent(componentFactory);
-    (componentRef.instance as WidgetComponent).pageData = this.widget.pageData;
+    (componentRef.instance as WidgetComponent).pageData = this.widget.pageData; */
   }
 
   /**

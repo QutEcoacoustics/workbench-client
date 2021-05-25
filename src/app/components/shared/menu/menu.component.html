@@ -38,6 +38,10 @@
 
     <div id="widget">
       <ng-template bawMenuWidget></ng-template>
+
+      <ng-container *ngFor="let item of widgets">
+        <ng-template #widgetItem></ng-template>
+      </ng-container>
     </div>
   </ul>
 </nav>
