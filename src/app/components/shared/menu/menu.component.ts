@@ -19,6 +19,7 @@ import {
   isExternalLink,
   isInternalRoute,
   LabelAndIcon,
+  MenuItem,
 } from "@interfaces/menusInterfaces";
 import { SessionUser } from "@models/User";
 import { Placement } from "@ng-bootstrap/ng-bootstrap";
@@ -26,6 +27,11 @@ import { List } from "immutable";
 import { WidgetComponent } from "./widget/widget.component";
 import { WidgetDirective } from "./widget/widget.directive";
 import { WidgetMenuItem } from "./widget/widgetItem";
+
+interface ModalWidget {
+  link: MenuItem;
+  component: WidgetMenuItem;
+}
 
 /**
  * Menu Component.
@@ -43,7 +49,7 @@ export class MenuComponent
   @Input() public links: List<AnyMenuItem>;
   @Input() public menuType: "action" | "secondary";
   @Input() public widget?: WidgetMenuItem;
-  @Input() public widgets?: WidgetMenuItem[] = [];
+  @Input() public modals?: ModalWidget[] = [];
   @ViewChild(WidgetDirective, { static: true, read: ViewContainerRef })
   public menuWidget: ViewContainerRef;
 

@@ -12,10 +12,11 @@
 
     <ng-container *ngIf="linksExist()">
       <hr *ngIf="menuType === 'action'" class="w-100" />
+
       <li
         *ngFor="let link of filteredLinks; let i = index"
         class="nav-item"
-        [ngStyle]="{ 'padding-left': calculateIndentation(link) + 'em' }"
+        [style.padding-left]="calculateIndentation(link) + 'em'"
       >
         <ng-container *ngIf="isAction(link)">
           <baw-menu-button
@@ -33,7 +34,18 @@
         </ng-container>
       </li>
 
-      <!-- Insert buttons here which toggle existance of ng-template widgets -->
+      <li
+        *ngFor="let modal of modals"
+        class="nav-item"
+        [style.padding-left]="calculateIndentation(link) + 'em'"
+      >
+        <!-- Modify modal link with action to open/close modal using index value from each list -->
+        <baw-menu-button
+          [link]="modal.link"
+          [placement]="placement"
+          [tooltip]="link.tooltip(user)"
+        ></baw-menu-button>
+      </li>
 
       <hr class="w-100" *ngIf="widget || widgets" />
     </ng-container>
