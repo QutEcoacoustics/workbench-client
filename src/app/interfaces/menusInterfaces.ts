@@ -58,7 +58,11 @@ export interface Category extends LabelAndIcon {
  * Literal string choice type (like an enum) used for the `kind`
  * property in things derived from MenuItems.
  */
-export type MenuItemKinds = "MenuAction" | "MenuLink" | "MenuRoute";
+export type MenuItemKinds =
+  | "MenuItem"
+  | "MenuAction"
+  | "MenuLink"
+  | "MenuRoute";
 
 /**
  * User callback function
@@ -107,6 +111,10 @@ export interface MenuItem extends LabelAndIcon {
    * the message in addition to whatever the links tooltip is.
    */
   disabled?: boolean | string;
+}
+
+export function menuItem<T extends Omit<MenuItem, "kind">>(item: T): MenuItem {
+  return Object.assign(item, { kind: "MenuItem" as const });
 }
 
 /**

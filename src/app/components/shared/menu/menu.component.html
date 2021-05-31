@@ -10,9 +10,10 @@
       </h6>
     </li>
 
-    <ng-container *ngIf="linksExist()">
+    <ng-container *ngIf="hasLinks()">
       <hr *ngIf="menuType === 'action'" class="w-100" />
 
+      <!-- Normal links -->
       <li
         *ngFor="let link of filteredLinks; let i = index"
         class="nav-item"
@@ -34,28 +35,22 @@
         </ng-container>
       </li>
 
-      <li
-        *ngFor="let modal of modals"
-        class="nav-item"
-        [style.padding-left]="calculateIndentation(link) + 'em'"
-      >
+      <!-- Modal links -->
+      <li *ngFor="let modal of modals; let modalIndex = index" class="nav-item">
         <!-- Modify modal link with action to open/close modal using index value from each list -->
         <baw-menu-button
-          [link]="modal.link"
+          [link]="modalAction(modal.link, modalIndex)"
           [placement]="placement"
-          [tooltip]="link.tooltip(user)"
+          [tooltip]="modal.link.tooltip(user)"
         ></baw-menu-button>
       </li>
 
-      <hr class="w-100" *ngIf="widget || widgets" />
+      <hr class="w-100" *ngIf="widget" />
     </ng-container>
 
+    <!-- Modals -->
     <div id="widget">
-      <ng-template bawMenuWidget></ng-template>
-
-      <ng-container *ngFor="let item of widgets">
-        <ng-template #widgetItem></ng-template>
-      </ng-container>
+      <ng-container id="widgetContainer" bawMenuWidget></ng-container>
     </div>
   </ul>
 </nav>

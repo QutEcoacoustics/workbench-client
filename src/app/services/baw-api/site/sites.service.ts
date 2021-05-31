@@ -95,6 +95,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   /**
    * Retrieve path to generated a CSV file containing all of the annotations for a site.
    * Insert into the `[href]` of an anchor HTML element.
+   * TODO Append authToken so that requests are authenticated
    */
   public downloadAnnotations(
     model: IdOr<Site>,

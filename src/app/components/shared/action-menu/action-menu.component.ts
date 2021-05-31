@@ -21,7 +21,7 @@ import { takeUntil } from "rxjs/operators";
       menuType="action"
       [title]="actionTitle"
       [links]="actionLinks"
-      [widgets]="[actionWidget]"
+      [widget]="actionWidget"
     ></baw-menu>
   `,
 })

@@ -1,8 +1,8 @@
 {
   "environment": {
     "environment": "development",
-    "apiRoot": "https://staging.ecosounds.org",
-    "siteRoot": "http://development.ecosounds.org:4200",
+    "apiRoot": "https://api.staging.ecosounds.org",
+    "siteRoot": "http://development.ecosounds.org:4200/",
     "siteDir": "/",
     "keys": {
       "googleMaps": "",
