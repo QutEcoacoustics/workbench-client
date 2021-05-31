@@ -63,7 +63,7 @@
     "include-media": "^1.4.10",
     "just-camel-case": "^4.0.2",
     "just-snake-case": "^1.2.1",
-    "luxon": "^1.26.0",
+    "luxon": "^1.27.0",
     "ngx-captcha": "^9.0.1",
     "ngx-cookie-service": "^11.0.2",
     "ngx-device-detector": "^2.1.1",
