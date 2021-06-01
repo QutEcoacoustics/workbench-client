@@ -42,11 +42,11 @@ describe("ToRelativePipe", () => {
 
   it("should display datetime", () => {
     setup(DateTime.utc());
-    assertPipe("in 0 seconds");
+    assertPipe("0 seconds ago");
   });
 
   it("should display datetime with custom options", () => {
     setup(DateTime.utc(), { style: "short" });
-    assertPipe("in 0 sec");
+    assertPipe("0 sec. ago");
   });
 });
