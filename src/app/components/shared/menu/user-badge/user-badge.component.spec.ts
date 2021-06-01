@@ -156,9 +156,10 @@ describe("UserBadgeComponent", () => {
     });
 
     it("should display length of time calculated from timestamp", () => {
-      setup({ timestamp: DateTime.utc() });
+      const date = DateTime.utc();
+      setup({ timestamp: date });
       spec.detectChanges();
-      expect(getTimespan().innerText.trim()).toBe("in 0 seconds");
+      expect(getTimespan().innerText.trim()).toBe(date.toRelative());
     });
   });
 
