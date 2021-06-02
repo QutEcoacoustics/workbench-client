@@ -28,6 +28,10 @@ describe("LoginComponent", () => {
     mocks: [ToastrService],
   });
 
+  function isSignedIn(signedIn: boolean = true) {
+    spyOn(api, "isLoggedIn").and.callFake(() => signedIn);
+  }
+
   function setup(redirect?: string | boolean, navigationId?: number) {
     spec = createComponent({ detectChanges: false, queryParams: { redirect } });
     router = spec.router;
@@ -81,12 +85,14 @@ describe("LoginComponent", () => {
   describe("component", () => {
     it("should create", () => {
       setup();
+      isSignedIn(false);
       spec.detectChanges();
       expect(spec.component).toBeTruthy();
     });
 
     it("should call api", () => {
       setup();
+      isSignedIn(false);
       spyOn(api, "signIn").and.callThrough();
       spec.detectChanges();
 
@@ -104,6 +110,7 @@ describe("LoginComponent", () => {
 
     it("should redirect user to previous page on login", async () => {
       setup(undefined, 2);
+      isSignedIn(false);
       const promise = setLoginError();
       spec.detectChanges();
       redirectUser();
@@ -116,6 +123,7 @@ describe("LoginComponent", () => {
 
     it("should redirect user to home page on redirect=false", async () => {
       setup(false);
+      isSignedIn(false);
       const promise = setLoginError();
       spec.detectChanges();
       redirectUser();
@@ -128,6 +136,7 @@ describe("LoginComponent", () => {
 
     it("should redirect user to home page when no previous location remembered", async () => {
       setup();
+      isSignedIn(false);
       const promise = setLoginError();
       spec.detectChanges();
       redirectUser();
@@ -140,6 +149,7 @@ describe("LoginComponent", () => {
 
     it("should handle redirect url", async () => {
       setup("/broken_link");
+      isSignedIn(false);
       const promise = setLoginError();
       spec.detectChanges();
       redirectUser();
@@ -151,6 +161,7 @@ describe("LoginComponent", () => {
 
     it("should give error notification if external redirect", async () => {
       setup(testApiConfig.environment.apiRoot + "/broken_link");
+      isSignedIn(false);
       const promise = setLoginError();
       spec.detectChanges();
       redirectUser();
@@ -165,6 +176,7 @@ describe("LoginComponent", () => {
 
     it("should ignore non-ecosounds redirect url", async () => {
       setup("http://broken_link");
+      isSignedIn(false);
       const promise = setLoginError();
       spec.detectChanges();
       redirectUser();
@@ -172,6 +184,17 @@ describe("LoginComponent", () => {
       await promise;
 
       expect(router.navigateByUrl).toHaveBeenCalledWith("/");
+    });
+  });
+
+  describe("authenticated user", () => {
+    it("should show error for authenticated user", () => {
+      setup();
+      isSignedIn(true);
+      spec.detectChanges();
+      expect(notifications.error).toHaveBeenCalledWith(
+        "You are already logged in."
+      );
     });
   });
 });

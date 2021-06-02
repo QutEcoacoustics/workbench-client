@@ -77,6 +77,7 @@ describe("RegisterComponent", () => {
 
     it("should call api", () => {
       spyOn(api, "signUp").and.callThrough();
+      isSignedIn(false);
       spec.detectChanges();
 
       const registerDetails = generateRegisterDetails();
@@ -87,6 +88,8 @@ describe("RegisterComponent", () => {
     });
 
     describe("recaptcha", () => {
+      beforeEach(() => isSignedIn(false));
+
       it("should request recaptcha seed", () => {
         spyOn(api, "signUpSeed").and.callThrough();
         spec.detectChanges();
