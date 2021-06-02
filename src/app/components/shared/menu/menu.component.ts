@@ -29,11 +29,11 @@ import { AnnotationDownloadComponent } from "@shared/annotation-download/annotat
 import { List } from "immutable";
 import { ModalComponent, WidgetComponent } from "./widget/widget.component";
 import { WidgetDirective } from "./widget/widget.directive";
-import { WidgetMenuItem } from "./widget/widgetItem";
+import { ModalMenuItem, WidgetMenuItem } from "./widget/widgetItem";
 
 interface ModalWidget {
   link: MenuItem;
-  widget: WidgetMenuItem;
+  menuItem: ModalMenuItem;
 }
 
 /**
@@ -50,9 +50,9 @@ export class MenuComponent
   implements OnInit, AfterViewInit
 {
   @Input() public title?: LabelAndIcon;
-  @Input() public links: List<AnyMenuItem>;
-  @Input() public menuType: "action" | "secondary";
-  @Input() public widget?: WidgetMenuItem;
+  @Input() public links!: List<AnyMenuItem>;
+  @Input() public menuType!: "action" | "secondary";
+  @Input() public widgets?: WidgetMenuItem[];
   @Input() public modals?: ModalWidget[] = [
     {
       link: menuItem({
@@ -60,11 +60,11 @@ export class MenuComponent
         label: "Test Modal",
         tooltip: () => "Experimental modal testing",
       }),
-      widget: new WidgetMenuItem(AnnotationDownloadComponent, {}),
+      menuItem: new ModalMenuItem(AnnotationDownloadComponent, {}),
     },
   ];
   @ViewChild(WidgetDirective, { read: ViewContainerRef })
-  private menuWidget: ViewContainerRef;
+  private menuWidget!: ViewContainerRef;
 
   public filteredLinks: Set<AnyMenuItem>;
   public placement: Placement;
@@ -114,9 +114,9 @@ export class MenuComponent
 
   public ngAfterViewInit(): void {
     // Load widgets
-    if (this.widget) {
-      this.insertComponent(this.widget, this.menuWidget);
-    }
+    (this.widgets ?? []).forEach((widget) =>
+      this.insertComponent(widget, this.menuWidget)
+    );
   }
 
   /**
@@ -140,23 +140,29 @@ export class MenuComponent
     return link.indentation;
   }
 
+  /**
+   * Generates a menuAction for the modal menu item which allows it to
+   * create a modal on click
+   *
+   * @param link Modal menu item
+   * @param index Index of menu item
+   * @returns Menu Action
+   */
   public modalAction(link: MenuItem, index: number): MenuAction {
     return menuAction({
       ...link,
       action: () => {
-        const widget = this.modals[index].widget;
-        const modalRef = this.modalService.open(widget.component, {
-          size: widget.pageData.size ?? "lg",
-          centered: widget.pageData.centered ?? true,
-          scrollable: widget.pageData.scrollable ?? true,
-        });
+        const widget = this.modals[index].menuItem;
+        const modalRef = this.modalService.open(
+          widget.component,
+          widget.modalOpts
+        );
         const component: ModalComponent = modalRef.componentInstance;
-        Object.assign(component, {
-          pageData: widget.pageData,
-          routeData: this.route.snapshot.data as PageInfo,
-          dismissModal: (reason: any) => modalRef.dismiss(reason),
-          closeModal: (result: any) => modalRef.close(result),
-        } as ModalComponent);
+        widget.assignComponentData(
+          component,
+          this.route.snapshot.data as PageInfo,
+          modalRef
+        );
       },
     });
   }

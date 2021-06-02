@@ -81,7 +81,7 @@ EditComponent.linkComponentToPageInfo({
   category: regionsCategory,
   menus: {
     actions: List([regionMenuItem, ...regionMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent, {})],
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

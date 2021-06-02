@@ -206,28 +206,28 @@ export type NavigableMenuItem = MenuLink | MenuRoute;
 /**
  * Determines if a menu item is a button (MenuAction)
  *
- * @param menuItem Menu item
+ * @param item Menu item
  */
-export function isButton(menuItem: AnyMenuItem): menuItem is MenuAction {
-  return menuItem.kind === "MenuAction";
+export function isButton(item: AnyMenuItem): item is MenuAction {
+  return item.kind === "MenuAction";
 }
 
 /**
  * Determines if a menu item is part of the MenuItem interface
  *
- * @param menuItem Menu item
+ * @param item Menu item
  */
-export function isInternalRoute(menuItem: AnyMenuItem): menuItem is MenuRoute {
-  return menuItem.kind === "MenuRoute";
+export function isInternalRoute(item: AnyMenuItem): item is MenuRoute {
+  return item.kind === "MenuRoute";
 }
 
 /**
  * Determines if a menu item is part of the MenuLink interface
  *
- * @param menuItem Menu item
+ * @param item Menu item
  */
-export function isExternalLink(menuItem: AnyMenuItem): menuItem is MenuLink {
-  return menuItem.kind === "MenuLink";
+export function isExternalLink(item: AnyMenuItem): item is MenuLink {
+  return item.kind === "MenuLink";
 }
 
 /**
@@ -244,12 +244,10 @@ export function getRoute(link: NavigableMenuItem, params?: Params): string {
 /**
  * Determines if an object is part of the Navigable interface
  *
- * @param menuItem Menu item
+ * @param item Menu item
  */
-export function isNavigableMenuItem(
-  menuItem: any
-): menuItem is NavigableMenuItem {
-  return isInternalRoute(menuItem) || isExternalLink(menuItem);
+export function isNavigableMenuItem(item: any): item is NavigableMenuItem {
+  return isInternalRoute(item) || isExternalLink(item);
 }
 
 /**
@@ -261,7 +259,7 @@ export function isNavigableMenuItem(
  */
 export interface Menus {
   actions?: List<AnyMenuItem>;
-  actionsWidget?: WidgetMenuItem;
+  actionWidgets?: WidgetMenuItem[];
   links?: List<NavigableMenuItem>;
-  linksWidget?: WidgetMenuItem;
+  linkWidgets?: WidgetMenuItem[];
 }

@@ -24,7 +24,8 @@ const siteKey = "site";
 })
 class PointAnnotationsComponent
   extends SiteAnnotationsComponent
-  implements OnInit {
+  implements OnInit
+{
   public ngOnInit(): void {
     super.ngOnInit();
 
@@ -48,7 +49,7 @@ PointAnnotationsComponent.linkComponentToPageInfo({
   category: pointsCategory,
   menus: {
     actions: List([pointMenuItem, ...pointMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent, {})],
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

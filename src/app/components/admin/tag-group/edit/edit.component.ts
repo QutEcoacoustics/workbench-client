@@ -39,7 +39,8 @@ const tagGroupKey = "tagGroup";
 })
 class AdminTagGroupsEditComponent
   extends FormTemplate<TagGroup>
-  implements OnInit {
+  implements OnInit
+{
   public fields = fields;
   public title: string;
 
@@ -74,7 +75,7 @@ AdminTagGroupsEditComponent.linkComponentToPageInfo({
   category: adminTagGroupsCategory,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent, {})],
   },
   resolvers: { [tagGroupKey]: tagGroupResolvers.show },
 }).andMenuRoute(adminEditTagGroupMenuItem);

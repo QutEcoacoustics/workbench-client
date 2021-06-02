@@ -32,7 +32,8 @@ const audioRecordingKey = "audioRecording";
 })
 class AdminAudioRecordingComponent
   extends withUnsubscribe(PageComponent)
-  implements OnInit {
+  implements OnInit
+{
   public audioRecording: AudioRecording;
   public failure: boolean;
   public fields = fields;
@@ -57,7 +58,7 @@ AdminAudioRecordingComponent.linkComponentToPageInfo({
   category: adminAudioRecordingsCategory,
   menus: {
     actions: List([adminAudioRecordingsMenuItem, adminAudioRecordingMenuItem]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent, {})],
   },
   resolvers: { [audioRecordingKey]: audioRecordingResolvers.show },
 }).andMenuRoute(adminAudioRecordingMenuItem);

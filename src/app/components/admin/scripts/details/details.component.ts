@@ -32,7 +32,8 @@ const scriptKey = "script";
 })
 class AdminScriptComponent
   extends withUnsubscribe(PageComponent)
-  implements OnInit {
+  implements OnInit
+{
   public script: Script;
   public failure: boolean;
   public fields = [...baseFields, ...extendedFields];
@@ -57,7 +58,7 @@ AdminScriptComponent.linkComponentToPageInfo({
   category: adminScriptsCategory,
   menus: {
     actions: List([adminScriptsMenuItem, ...adminScriptActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent, {})],
   },
   resolvers: { [scriptKey]: scriptResolvers.show },
 }).andMenuRoute(adminScriptMenuItem);

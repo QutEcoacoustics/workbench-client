@@ -21,14 +21,14 @@ import { takeUntil } from "rxjs/operators";
       menuType="action"
       [title]="actionTitle"
       [links]="actionLinks"
-      [widget]="actionWidget"
+      [widgets]="actionWidgets"
     ></baw-menu>
   `,
 })
 export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   public actionTitle: LabelAndIcon;
   public actionLinks: List<AnyMenuItem>;
-  public actionWidget: WidgetMenuItem;
+  public actionWidgets: WidgetMenuItem[];
   private defaultCategory = defaultMenu.defaultCategory;
 
   public constructor(private route: ActivatedRoute) {
@@ -40,7 +40,7 @@ export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
       (page: PageInfo) => {
         this.actionTitle = page.category ?? this.defaultCategory;
         this.actionLinks = page.menus?.actions ?? List();
-        this.actionWidget = page.menus?.actionsWidget ?? null;
+        this.actionWidgets = page.menus?.actionWidgets ?? null;
       },
       (err: ApiErrorDetails) => console.error("ActionMenuComponent", err)
     );

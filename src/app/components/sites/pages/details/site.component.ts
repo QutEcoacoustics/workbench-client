@@ -69,7 +69,7 @@ SiteDetailsComponent.linkComponentToPageInfo({
   category: sitesCategory,
   menus: {
     actions: List([projectMenuItem, ...siteMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent, {})],
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

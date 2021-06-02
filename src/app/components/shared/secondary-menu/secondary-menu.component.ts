@@ -21,16 +21,17 @@ import { takeUntil } from "rxjs/operators";
     <baw-menu
       menuType="secondary"
       [links]="contextLinks"
-      [widget]="linksWidget"
+      [widgets]="linksWidgets"
     ></baw-menu>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SecondaryMenuComponent
   extends withUnsubscribe()
-  implements OnInit {
+  implements OnInit
+{
   public contextLinks: List<NavigableMenuItem>;
-  public linksWidget: WidgetMenuItem;
+  public linksWidgets: WidgetMenuItem[];
   private defaultLinks = defaultMenu.contextLinks;
 
   public constructor(private route: ActivatedRoute) {
@@ -54,7 +55,7 @@ export class SecondaryMenuComponent
         }
 
         // and add it all together
-        this.linksWidget = page.menus?.linksWidget ?? null;
+        this.linksWidgets = page.menus?.linkWidgets ?? null;
         this.contextLinks = this.defaultLinks.concat(
           page.menus?.links ?? List(),
           List(parentMenuRoutes).reverse(), // List lineage correctly

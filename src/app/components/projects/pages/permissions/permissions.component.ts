@@ -71,9 +71,8 @@ class PermissionsComponent extends TableTemplate<TableRow> implements OnInit {
       { label: "Owner", value: "owner" },
     ];
 
-    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[
-      projectKey
-    ];
+    const projectModel: ResolvedModel<Project> =
+      this.route.snapshot.data[projectKey];
 
     if (projectModel.error) {
       return;
@@ -118,7 +117,7 @@ PermissionsComponent.linkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent, {})],
   },
   resolvers: { [projectKey]: projectResolvers.show },
 }).andMenuRoute(editProjectPermissionsMenuItem);

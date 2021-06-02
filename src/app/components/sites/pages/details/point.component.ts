@@ -65,7 +65,7 @@ PointDetailsComponent.linkComponentToPageInfo({
   category: pointsCategory,
   menus: {
     actions: List([regionMenuItem, ...pointMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent, {})],
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
