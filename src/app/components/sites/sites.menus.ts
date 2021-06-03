@@ -1,6 +1,4 @@
 import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
-import { ModalMenuItem } from "@menu/widgetItem";
-import { AnnotationDownloadComponent } from "@shared/annotation-download/annotation-download.component";
 import {
   defaultAnnotationDownloadIcon,
   defaultAudioIcon,
@@ -36,15 +34,12 @@ export const newSiteMenuItem = menuRoute({
   tooltip: () => "Create a new site",
 });
 
-export const siteAnnotationsMenuItem = new ModalMenuItem(
-  menuItem({
-    icon: defaultAnnotationDownloadIcon,
-    label: "Download Annotations",
-    parent: siteMenuItem,
-    tooltip: () => "Download annotations for this site",
-  }),
-  AnnotationDownloadComponent
-);
+export const siteAnnotationsMenuItem = menuItem({
+  icon: defaultAnnotationDownloadIcon,
+  label: "Download Annotations",
+  parent: siteMenuItem,
+  tooltip: () => "Download annotations for this site",
+});
 
 export const editSiteMenuItem = menuRoute({
   icon: defaultEditIcon,

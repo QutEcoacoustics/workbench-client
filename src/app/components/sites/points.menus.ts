@@ -1,7 +1,5 @@
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
-import { ModalMenuItem } from "@menu/widgetItem";
-import { AnnotationDownloadComponent } from "@shared/annotation-download/annotation-download.component";
 import { defaultAnnotationDownloadIcon } from "src/app/app.menus";
 import {
   deleteSiteMenuItem,
@@ -36,15 +34,13 @@ export const newPointMenuItem = menuRoute({
   tooltip: () => "Create a new point",
 });
 
-export const pointAnnotationsMenuItem = new ModalMenuItem(
-  menuItem({
-    icon: defaultAnnotationDownloadIcon,
-    label: "Download Annotations",
-    parent: pointMenuItem,
-    tooltip: () => "Download annotations for this point",
-  }),
-  AnnotationDownloadComponent
-);
+export const pointAnnotationsMenuItem = menuItem({
+  icon: defaultAnnotationDownloadIcon,
+  label: "Download Annotations",
+  parent: pointMenuItem,
+  tooltip: () => "Download annotations for this point",
+});
+
 export const editPointMenuItem = menuRoute({
   ...editSiteMenuItem,
   label: "Edit this point",

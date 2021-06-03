@@ -7,6 +7,7 @@ import { ModalComponent, WidgetComponent } from "./widget.component";
 
 /**
  * Generic widget menu item
+ * TODO Rename to GenericWidget
  */
 export class WidgetMenuItem {
   public constructor(
@@ -26,6 +27,7 @@ export class WidgetMenuItem {
 
 /**
  * Modal widget menu item
+ * TODO Rename to ModalWidget
  */
 export class ModalMenuItem {
   public link: MenuItem | MenuAction;
@@ -57,12 +59,13 @@ export class ModalMenuItem {
     routeData: PageInfo,
     modalRef: NgbModalRef
   ): void {
-    Object.assign(component, {
+    const defaultOpts: ModalComponent = {
       routeData,
       pageData: this.pageData,
       dismissModal: (reason: any) => modalRef.dismiss(reason),
       closeModal: (result: any) => modalRef.close(result),
-    } as ModalComponent);
+    };
+    Object.assign(component, defaultOpts);
   }
 }
 
