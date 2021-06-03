@@ -15,34 +15,38 @@
 
       <!-- Normal links -->
       <li
-        *ngFor="let link of filteredLinks; let i = index"
+        *ngFor="let menuItem of filteredLinks; let i = index"
         class="nav-item"
-        [style.padding-left]="calculateIndentation(link) + 'em'"
+        [style.padding-left]="calculateIndentation(menuItem) + 'em'"
       >
-        <ng-container *ngIf="isAction(link)">
+        <!-- Modal widget button -->
+        <ng-container *ngIf="isModal(menuItem) && isAction(menuItem.link)">
           <baw-menu-button
-            [link]="link"
+            [link]="menuItem.link"
             [placement]="placement"
-            [tooltip]="link.tooltip(user)"
+            [tooltip]="menuItem.link.tooltip(user)"
           ></baw-menu-button>
         </ng-container>
-        <ng-container *ngIf="!isAction(link)">
-          <baw-menu-link
-            [link]="link"
+
+        <!-- Action menu button-->
+        <ng-container *ngIf="isAction(menuItem)">
+          <baw-menu-button
+            [link]="menuItem"
             [placement]="placement"
-            [tooltip]="link.tooltip(user)"
+            [tooltip]="menuItem.tooltip(user)"
+          ></baw-menu-button>
+        </ng-container>
+
+        <!-- Internal/External menu buttons -->
+        <ng-container
+          *ngIf="isInternalLink(menuItem) || isExternalLink(menuItem)"
+        >
+          <baw-menu-link
+            [link]="menuItem"
+            [placement]="placement"
+            [tooltip]="menuItem.tooltip(user)"
           ></baw-menu-link>
         </ng-container>
-      </li>
-
-      <!-- Modal links -->
-      <li *ngFor="let modal of modals; let modalIndex = index" class="nav-item">
-        <!-- Modify modal link with action to open/close modal using index value from each list -->
-        <baw-menu-button
-          [link]="modalAction(modal.link, modalIndex)"
-          [placement]="placement"
-          [tooltip]="modal.link.tooltip(user)"
-        ></baw-menu-button>
       </li>
 
       <hr class="w-100" *ngIf="widget" />

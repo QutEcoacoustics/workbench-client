@@ -1,6 +1,6 @@
 import { Params } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { ModalMenuItem, WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { SessionUser } from "../models/User";
 import { StrongRoute } from "./strongRoute";
@@ -195,7 +195,7 @@ export function menuAction<T extends Omit<MenuAction, "kind">>(
  * Any Menu Item discriminated union. This is used to store any of the
  *  menu item types together in a collection.
  */
-export type AnyMenuItem = MenuAction | MenuLink | MenuRoute;
+export type AnyMenuItem = MenuAction | MenuLink | MenuRoute | MenuItem;
 
 /**
  * Any Menu Item  discriminated union. This is used to store any menu item,
@@ -208,7 +208,7 @@ export type NavigableMenuItem = MenuLink | MenuRoute;
  *
  * @param item Menu item
  */
-export function isButton(item: AnyMenuItem): item is MenuAction {
+export function isButton(item: any): item is MenuAction {
   return item.kind === "MenuAction";
 }
 
@@ -217,7 +217,7 @@ export function isButton(item: AnyMenuItem): item is MenuAction {
  *
  * @param item Menu item
  */
-export function isInternalRoute(item: AnyMenuItem): item is MenuRoute {
+export function isInternalRoute(item: any): item is MenuRoute {
   return item.kind === "MenuRoute";
 }
 
@@ -226,7 +226,7 @@ export function isInternalRoute(item: AnyMenuItem): item is MenuRoute {
  *
  * @param item Menu item
  */
-export function isExternalLink(item: AnyMenuItem): item is MenuLink {
+export function isExternalLink(item: any): item is MenuLink {
   return item.kind === "MenuLink";
 }
 
@@ -258,8 +258,8 @@ export function isNavigableMenuItem(item: any): item is NavigableMenuItem {
  * @param links List of secondary links
  */
 export interface Menus {
-  actions?: List<AnyMenuItem>;
+  actions?: List<AnyMenuItem | ModalMenuItem>;
   actionWidgets?: WidgetMenuItem[];
-  links?: List<NavigableMenuItem>;
+  links?: List<NavigableMenuItem | ModalMenuItem>;
   linkWidgets?: WidgetMenuItem[];
 }

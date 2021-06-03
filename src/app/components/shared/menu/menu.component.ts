@@ -20,21 +20,17 @@ import {
   LabelAndIcon,
   menuAction,
   MenuAction,
-  menuItem,
-  MenuItem,
 } from "@interfaces/menusInterfaces";
 import { SessionUser } from "@models/User";
 import { NgbModal, Placement } from "@ng-bootstrap/ng-bootstrap";
-import { AnnotationDownloadComponent } from "@shared/annotation-download/annotation-download.component";
-import { List } from "immutable";
+import { List, Set } from "immutable";
 import { ModalComponent, WidgetComponent } from "./widget/widget.component";
 import { WidgetDirective } from "./widget/widget.directive";
-import { ModalMenuItem, WidgetMenuItem } from "./widget/widgetItem";
-
-interface ModalWidget {
-  link: MenuItem;
-  menuItem: ModalMenuItem;
-}
+import {
+  isModalMenuItem,
+  ModalMenuItem,
+  WidgetMenuItem,
+} from "./widget/widgetItem";
 
 /**
  * Menu Component.
@@ -50,31 +46,22 @@ export class MenuComponent
   implements OnInit, AfterViewInit
 {
   @Input() public title?: LabelAndIcon;
-  @Input() public links!: List<AnyMenuItem>;
+  @Input() public links!: List<AnyMenuItem | ModalMenuItem>;
   @Input() public menuType!: "action" | "secondary";
   @Input() public widgets?: WidgetMenuItem[];
-  @Input() public modals?: ModalWidget[] = [
-    {
-      link: menuItem({
-        icon: ["fas", "vial"],
-        label: "Test Modal",
-        tooltip: () => "Experimental modal testing",
-      }),
-      menuItem: new ModalMenuItem(AnnotationDownloadComponent, {}),
-    },
-  ];
   @ViewChild(WidgetDirective, { read: ViewContainerRef })
   private menuWidget!: ViewContainerRef;
 
-  public filteredLinks: Set<AnyMenuItem>;
+  public filteredLinks: Set<AnyMenuItem | ModalMenuItem> = Set();
   public placement: Placement;
   public params: Params;
   public user: SessionUser;
-  public loadedModal: ModalWidget;
+  public loadedModal: ModalMenuItem;
 
   public isInternalLink = isInternalRoute;
   public isExternalLink = isExternalLink;
   public isAction = isButton;
+  public isModal = isModalMenuItem;
 
   public constructor(
     private api: SecurityService,
@@ -85,6 +72,10 @@ export class MenuComponent
     super();
   }
 
+  private getMenuItem(menuItem: AnyMenuItem | ModalMenuItem): AnyMenuItem {
+    return isModalMenuItem(menuItem) ? menuItem.link : menuItem;
+  }
+
   public ngOnInit(): void {
     // Get user details
     this.user = this.api.getLocalUser();
@@ -93,20 +84,36 @@ export class MenuComponent
     const pageData = snapshot.data;
 
     // Filter links
-    this.filteredLinks = new Set(
-      this.links
-        ?.filter((link) => {
-          if (!link.predicate || link.active) {
-            // Clear any modifications to link by secondary menu
-            link.active = false;
-            return true;
-          }
+    this.filteredLinks = this.links
+      ?.filter((_link) => {
+        const link = this.getMenuItem(_link);
+        if (!link.predicate || link.active) {
+          // Clear any modifications to link by secondary menu
+          link.active = false;
+          return true;
+        }
 
-          // If link has predicate function, test if returns true
-          return link.predicate(this.user, pageData);
-        })
-        ?.sort(this.compare)
-    );
+        // If link has predicate function, test if returns true
+        return link.predicate(this.user, pageData);
+      })
+      ?.sort((a, b) => this.compare(this.getMenuItem(a), this.getMenuItem(b)))
+      ?.toSet()
+      /*
+       * Change modal menu item links into menu actions. We do this after
+       * converting to a set so that if the same modal widget is appended
+       * multiple times, it will be filtered out
+       */
+      ?.map((link) => {
+        if (isModalMenuItem(link)) {
+          return new ModalMenuItem(
+            this.modalAction(link),
+            link.component,
+            link.pageData,
+            link.modalOpts
+          );
+        }
+        return link;
+      });
 
     // Retrieve router parameters to override link attributes
     this.params = snapshot.params;
@@ -114,7 +121,7 @@ export class MenuComponent
 
   public ngAfterViewInit(): void {
     // Load widgets
-    (this.widgets ?? []).forEach((widget) =>
+    this.widgets?.forEach((widget) =>
       this.insertComponent(widget, this.menuWidget)
     );
   }
@@ -123,42 +130,39 @@ export class MenuComponent
    * Determine whether to show links
    */
   public hasLinks(): boolean {
-    return this.filteredLinks.size > 0 || this.modals.length > 0;
+    return this.filteredLinks.size > 0;
   }
 
   /**
    * Calculate the indentation of a secondary link item
    *
-   * @param link Link to calculate padding for
+   * @param _link Link to calculate padding for
    */
-  public calculateIndentation(link: AnyMenuItem): number {
+  public calculateIndentation(_link: AnyMenuItem | ModalMenuItem): number {
+    const link = this.getMenuItem(_link);
     // Only the secondary menu implements this option
-    if (this.menuType !== "secondary" || !link.indentation) {
-      return 0;
-    }
-
-    return link.indentation;
+    return this.menuType === "secondary" && link.indentation
+      ? link.indentation
+      : 0;
   }
 
   /**
    * Generates a menuAction for the modal menu item which allows it to
    * create a modal on click
    *
-   * @param link Modal menu item
-   * @param index Index of menu item
+   * @param modal Modal menu item
    * @returns Menu Action
    */
-  public modalAction(link: MenuItem, index: number): MenuAction {
+  private modalAction(modal: ModalMenuItem): MenuAction {
     return menuAction({
-      ...link,
+      ...modal.link,
       action: () => {
-        const widget = this.modals[index].menuItem;
         const modalRef = this.modalService.open(
-          widget.component,
-          widget.modalOpts
+          modal.component,
+          modal.modalOpts
         );
         const component: ModalComponent = modalRef.componentInstance;
-        widget.assignComponentData(
+        modal.assignComponentData(
           component,
           this.route.snapshot.data as PageInfo,
           modalRef
