@@ -19,9 +19,10 @@ import { fields } from "./data-request.schema.json";
     <p>To download a standard CSV of annotations</p>
 
     <ol>
-      <li>Navigate to the project you're interested in</li>
-      <li>Then, choose the site you want to download annotations for</li>
-      <li>Finally, click the <i>Download annotations</i> link</li>
+      <li>Open the site or point page you're interested in</li>
+      <li>
+        Use the <i>Download Annotations</i> button to download annotations
+      </li>
     </ol>
 
     <baw-form

@@ -157,7 +157,7 @@ AssignComponent.linkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
-    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent, {})],
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
   },
   resolvers: { [projectKey]: projectResolvers.show },
 }).andMenuRoute(assignSiteMenuItem);

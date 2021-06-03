@@ -33,7 +33,7 @@ AudioAnalysisComponent.linkComponentToPageInfo({
       pauseProcessingMenuItem,
       deleteAudioAnalysisMenuItem,
     ]),
-    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent, {})],
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
   },
   resolvers: { [audioAnalysisKey]: analysisJobResolvers.show },
 }).andMenuRoute(audioAnalysisMenuItem);

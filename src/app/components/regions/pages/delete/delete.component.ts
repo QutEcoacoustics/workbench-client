@@ -80,7 +80,7 @@ DeleteComponent.linkComponentToPageInfo({
   category: regionsCategory,
   menus: {
     actions: List([regionMenuItem, ...regionMenuItemActions]),
-    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent, {})],
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

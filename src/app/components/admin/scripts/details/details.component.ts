@@ -58,7 +58,7 @@ AdminScriptComponent.linkComponentToPageInfo({
   category: adminScriptsCategory,
   menus: {
     actions: List([adminScriptsMenuItem, ...adminScriptActions]),
-    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent, {})],
+    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
   },
   resolvers: { [scriptKey]: scriptResolvers.show },
 }).andMenuRoute(adminScriptMenuItem);
