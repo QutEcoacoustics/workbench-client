@@ -4,7 +4,6 @@ import { RegionsModule } from "@components/regions/regions.module";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { MapModule } from "@shared/map/map.module";
 import { SharedModule } from "@shared/shared.module";
-import { SiteAnnotationsComponent } from "./pages/annotations/site.component";
 import { SiteDeleteComponent } from "./pages/delete/site.component";
 import { SiteDetailsComponent } from "./pages/details/site.component";
 import { SiteEditComponent } from "./pages/edit/site.component";
@@ -15,7 +14,6 @@ import { SiteComponent } from "./site/site.component";
 import { sitesRoute } from "./sites.menus";
 
 const components = [
-  SiteAnnotationsComponent,
   SiteComponent,
   SiteDeleteComponent,
   SiteDetailsComponent,

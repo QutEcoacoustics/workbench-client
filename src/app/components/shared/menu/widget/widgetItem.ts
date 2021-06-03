@@ -1,5 +1,7 @@
 import { Type } from "@angular/core";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageInfo } from "@helpers/page/pageInfo";
+import { MenuAction, MenuItem } from "@interfaces/menusInterfaces";
 import { NgbModalOptions, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ModalComponent, WidgetComponent } from "./widget.component";
 
@@ -9,7 +11,7 @@ import { ModalComponent, WidgetComponent } from "./widget.component";
 export class WidgetMenuItem {
   public constructor(
     public component: Type<WidgetComponent>,
-    public pageData: any
+    public pageData: any = {}
   ) {}
 
   /**
@@ -26,11 +28,15 @@ export class WidgetMenuItem {
  * Modal widget menu item
  */
 export class ModalMenuItem {
+  public link: MenuItem | MenuAction;
+
   public constructor(
+    link: MenuItem,
     public component: Type<ModalComponent>,
-    public pageData: any,
+    public pageData: any = {},
     public modalOpts: NgbModalOptions = {}
   ) {
+    this.link = link;
     this.modalOpts = {
       size: "lg",
       centered: true,
@@ -58,4 +64,8 @@ export class ModalMenuItem {
       closeModal: (result: any) => modalRef.close(result),
     } as ModalComponent);
   }
+}
+
+export function isModalMenuItem(item: any): item is ModalMenuItem {
+  return isInstantiated((item as ModalMenuItem).modalOpts);
 }
