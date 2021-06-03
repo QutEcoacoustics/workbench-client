@@ -91,8 +91,8 @@ export class MenuComponent
         // If link has predicate function, test if returns true
         return link.predicate(this.user, pageData);
       })
-      ?.sort(this.compare)
       ?.toSet()
+      ?.sort(this.compare)
       /*
        * Change modal menu item links into menu actions. We do this after
        * converting to a set so that if the same modal widget is appended
@@ -102,7 +102,7 @@ export class MenuComponent
         if (isMenuModal(link)) {
           return menuModal({
             ...link,
-            action: this.modalAction(link),
+            action: this.createModalAction(link),
           }) as MenuModal;
         }
         return link;
@@ -145,15 +145,12 @@ export class MenuComponent
    * @param modal Modal menu item
    * @returns Menu Action
    */
-  private modalAction(link: MenuModalWithoutAction): () => void {
+  private createModalAction(link: MenuModalWithoutAction): () => void {
     return () => {
       const modalRef = this.modalService.open(link.component, link.modalOpts);
       const component: ModalComponent = modalRef.componentInstance;
-      link.assignComponentData(
-        component,
-        this.route.snapshot.data as PageInfo,
-        modalRef
-      );
+      const routeData = this.route.snapshot.data as PageInfo;
+      link.assignComponentData(component, routeData, modalRef);
     };
   }
 
@@ -171,7 +168,7 @@ export class MenuComponent
       component.component
     );
     const componentRef = containerRef.createComponent<WidgetComponent>(factory);
-    componentRef.instance.pageData = component.pageData;
+    component.assignComponentData(componentRef.instance);
   }
 
   /**
