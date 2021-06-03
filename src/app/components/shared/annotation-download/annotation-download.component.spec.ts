@@ -1,16 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AnnotationDownloadComponent } from "./annotation-download.component";
 
-import { AnnotationDownloadComponent } from './annotation-download.component';
-
-describe('AnnotationDownloadComponent', () => {
+describe("AnnotationDownloadComponent", () => {
   let component: AnnotationDownloadComponent;
   let fixture: ComponentFixture<AnnotationDownloadComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AnnotationDownloadComponent ]
-    })
-    .compileComponents();
+      declarations: [AnnotationDownloadComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +17,7 @@ describe('AnnotationDownloadComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

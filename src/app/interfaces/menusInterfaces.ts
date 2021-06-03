@@ -1,6 +1,6 @@
 import { Params } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { ModalMenuItem, WidgetMenuItem } from "@menu/widgetItem";
+import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { SessionUser } from "../models/User";
 import { StrongRoute } from "./strongRoute";
@@ -258,8 +258,8 @@ export function isNavigableMenuItem(item: any): item is NavigableMenuItem {
  * @param links List of secondary links
  */
 export interface Menus {
-  actions?: List<AnyMenuItem | ModalMenuItem>;
+  actions?: List<AnyMenuItem | MenuModalWithoutAction>;
   actionWidgets?: WidgetMenuItem[];
-  links?: List<NavigableMenuItem | ModalMenuItem>;
+  links?: List<NavigableMenuItem | MenuModalWithoutAction>;
   linkWidgets?: WidgetMenuItem[];
 }

@@ -18,8 +18,6 @@ import {
   isExternalLink,
   isInternalRoute,
   LabelAndIcon,
-  menuAction,
-  MenuAction,
 } from "@interfaces/menusInterfaces";
 import { SessionUser } from "@models/User";
 import { NgbModal, Placement } from "@ng-bootstrap/ng-bootstrap";
@@ -27,8 +25,10 @@ import { List, Set } from "immutable";
 import { ModalComponent, WidgetComponent } from "./widget/widget.component";
 import { WidgetDirective } from "./widget/widget.directive";
 import {
-  isModalMenuItem,
-  ModalMenuItem,
+  isMenuModal,
+  menuModal,
+  MenuModal,
+  MenuModalWithoutAction,
   WidgetMenuItem,
 } from "./widget/widgetItem";
 
@@ -46,22 +46,22 @@ export class MenuComponent
   implements OnInit, AfterViewInit
 {
   @Input() public title?: LabelAndIcon;
-  @Input() public links!: List<AnyMenuItem | ModalMenuItem>;
+  @Input() public links!: List<AnyMenuItem | MenuModalWithoutAction>;
   @Input() public menuType!: "action" | "secondary";
   @Input() public widgets?: WidgetMenuItem[];
   @ViewChild(WidgetDirective, { read: ViewContainerRef })
   private menuWidget!: ViewContainerRef;
 
-  public filteredLinks: Set<AnyMenuItem | ModalMenuItem> = Set();
+  public filteredLinks: Set<AnyMenuItem | MenuModal> = Set();
   public placement: Placement;
   public params: Params;
   public user: SessionUser;
-  public loadedModal: ModalMenuItem;
+  public loadedModal: MenuModal;
 
   public isInternalLink = isInternalRoute;
   public isExternalLink = isExternalLink;
   public isAction = isButton;
-  public isModal = isModalMenuItem;
+  public isModal = isMenuModal;
 
   public constructor(
     private api: SecurityService,
@@ -70,10 +70,6 @@ export class MenuComponent
     private modalService: NgbModal
   ) {
     super();
-  }
-
-  private getMenuItem(menuItem: AnyMenuItem | ModalMenuItem): AnyMenuItem {
-    return isModalMenuItem(menuItem) ? menuItem.link : menuItem;
   }
 
   public ngOnInit(): void {
@@ -85,8 +81,7 @@ export class MenuComponent
 
     // Filter links
     this.filteredLinks = this.links
-      ?.filter((_link) => {
-        const link = this.getMenuItem(_link);
+      ?.filter((link) => {
         if (!link.predicate || link.active) {
           // Clear any modifications to link by secondary menu
           link.active = false;
@@ -96,7 +91,7 @@ export class MenuComponent
         // If link has predicate function, test if returns true
         return link.predicate(this.user, pageData);
       })
-      ?.sort((a, b) => this.compare(this.getMenuItem(a), this.getMenuItem(b)))
+      ?.sort(this.compare)
       ?.toSet()
       /*
        * Change modal menu item links into menu actions. We do this after
@@ -104,13 +99,11 @@ export class MenuComponent
        * multiple times, it will be filtered out
        */
       ?.map((link) => {
-        if (isModalMenuItem(link)) {
-          return new ModalMenuItem(
-            this.modalAction(link),
-            link.component,
-            link.pageData,
-            link.modalOpts
-          );
+        if (isMenuModal(link)) {
+          return menuModal({
+            ...link,
+            action: this.modalAction(link),
+          }) as MenuModal;
         }
         return link;
       });
@@ -136,10 +129,9 @@ export class MenuComponent
   /**
    * Calculate the indentation of a secondary link item
    *
-   * @param _link Link to calculate padding for
+   * @param link Link to calculate padding for
    */
-  public calculateIndentation(_link: AnyMenuItem | ModalMenuItem): number {
-    const link = this.getMenuItem(_link);
+  public calculateIndentation(link: AnyMenuItem | MenuModal): number {
     // Only the secondary menu implements this option
     return this.menuType === "secondary" && link.indentation
       ? link.indentation
@@ -153,22 +145,16 @@ export class MenuComponent
    * @param modal Modal menu item
    * @returns Menu Action
    */
-  private modalAction(modal: ModalMenuItem): MenuAction {
-    return menuAction({
-      ...modal.link,
-      action: () => {
-        const modalRef = this.modalService.open(
-          modal.component,
-          modal.modalOpts
-        );
-        const component: ModalComponent = modalRef.componentInstance;
-        modal.assignComponentData(
-          component,
-          this.route.snapshot.data as PageInfo,
-          modalRef
-        );
-      },
-    });
+  private modalAction(link: MenuModalWithoutAction): () => void {
+    return () => {
+      const modalRef = this.modalService.open(link.component, link.modalOpts);
+      const component: ModalComponent = modalRef.componentInstance;
+      link.assignComponentData(
+        component,
+        this.route.snapshot.data as PageInfo,
+        modalRef
+      );
+    };
   }
 
   /**

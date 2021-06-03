@@ -15,36 +15,34 @@
 
       <!-- Normal links -->
       <li
-        *ngFor="let menuItem of filteredLinks; let i = index"
+        *ngFor="let link of filteredLinks; let i = index"
         class="nav-item"
-        [style.padding-left]="calculateIndentation(menuItem) + 'em'"
+        [style.padding-left]="calculateIndentation(link) + 'em'"
       >
         <!-- Modal widget button -->
-        <ng-container *ngIf="isModal(menuItem) && isAction(menuItem.link)">
+        <ng-container *ngIf="isModal(link)">
           <baw-menu-button
-            [link]="menuItem.link"
+            [link]="link"
             [placement]="placement"
-            [tooltip]="menuItem.link.tooltip(user)"
+            [tooltip]="link.tooltip(user)"
           ></baw-menu-button>
         </ng-container>
 
         <!-- Action menu button-->
-        <ng-container *ngIf="isAction(menuItem)">
+        <ng-container *ngIf="isAction(link)">
           <baw-menu-button
-            [link]="menuItem"
+            [link]="link"
             [placement]="placement"
-            [tooltip]="menuItem.tooltip(user)"
+            [tooltip]="link.tooltip(user)"
           ></baw-menu-button>
         </ng-container>
 
         <!-- Internal/External menu buttons -->
-        <ng-container
-          *ngIf="isInternalLink(menuItem) || isExternalLink(menuItem)"
-        >
+        <ng-container *ngIf="isInternalLink(link) || isExternalLink(link)">
           <baw-menu-link
-            [link]="menuItem"
+            [link]="link"
             [placement]="placement"
-            [tooltip]="menuItem.tooltip(user)"
+            [tooltip]="link.tooltip(user)"
           ></baw-menu-link>
         </ng-container>
       </li>

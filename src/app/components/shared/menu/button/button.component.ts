@@ -5,6 +5,7 @@ import {
   OnInit,
 } from "@angular/core";
 import { MenuAction } from "@interfaces/menusInterfaces";
+import { MenuModal } from "@menu/widgetItem";
 import { Placement } from "@ng-bootstrap/ng-bootstrap";
 
 /**
@@ -37,7 +38,7 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuButtonComponent implements OnInit {
-  @Input() public link: MenuAction;
+  @Input() public link: MenuAction | MenuModal;
   @Input() public placement: Placement;
   @Input() public tooltip: string;
   public isDisabled: boolean;

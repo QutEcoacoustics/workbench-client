@@ -1,8 +1,12 @@
-import { ModalMenuItem } from "@menu/widgetItem";
+import { menuModal } from "@menu/widgetItem";
 import { AnnotationDownloadComponent } from "@shared/annotation-download/annotation-download.component";
-import { pointAnnotationsMenuItem } from "./points.menus";
+import { defaultAnnotationDownloadIcon } from "src/app/app.menus";
 
-export const pointAnnotationsModal = new ModalMenuItem(
-  pointAnnotationsMenuItem,
-  AnnotationDownloadComponent
-);
+export const pointAnnotationsModal = menuModal({
+  icon: defaultAnnotationDownloadIcon,
+  label: "Download Annotations",
+  tooltip: () => "Download annotations for this point",
+  component: AnnotationDownloadComponent,
+  pageData: {},
+  modalOpts: {},
+});

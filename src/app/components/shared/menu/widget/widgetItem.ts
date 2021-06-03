@@ -1,7 +1,6 @@
 import { Type } from "@angular/core";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageInfo } from "@helpers/page/pageInfo";
-import { MenuAction, MenuItem } from "@interfaces/menusInterfaces";
+import { MenuAction } from "@interfaces/menusInterfaces";
 import { NgbModalOptions, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ModalComponent, WidgetComponent } from "./widget.component";
 
@@ -25,50 +24,56 @@ export class WidgetMenuItem {
   }
 }
 
-/**
- * Modal widget menu item
- * TODO Rename to ModalWidget
- */
-export class ModalMenuItem {
-  public link: MenuItem | MenuAction;
-
-  public constructor(
-    link: MenuItem,
-    public component: Type<ModalComponent>,
-    public pageData: any = {},
-    public modalOpts: NgbModalOptions = {}
-  ) {
-    this.link = link;
-    this.modalOpts = {
-      size: "lg",
-      centered: true,
-      scrollable: true,
-      ...this.modalOpts,
-    };
-  }
-
-  /**
-   * Assign data to the component
-   *
-   * @param component Component to assign data to
-   * @param routeData Route data to pass to modal
-   * @param modalRef Reference to modal so we can interact with it
-   */
-  public assignComponentData(
+/** Modal widget menu item */
+export interface MenuModal extends Omit<MenuAction, "kind"> {
+  kind: "MenuModal";
+  component: Type<ModalComponent>;
+  pageData: any;
+  modalOpts: NgbModalOptions;
+  assignComponentData(
     component: ModalComponent,
     routeData: PageInfo,
     modalRef: NgbModalRef
-  ): void {
-    const defaultOpts: ModalComponent = {
-      routeData,
-      pageData: this.pageData,
-      dismissModal: (reason: any) => modalRef.dismiss(reason),
-      closeModal: (result: any) => modalRef.close(result),
-    };
-    Object.assign(component, defaultOpts);
-  }
+  ): void;
 }
 
-export function isModalMenuItem(item: any): item is ModalMenuItem {
-  return isInstantiated((item as ModalMenuItem).modalOpts);
+/** Modal widget menu item without action function set */
+export type MenuModalWithoutAction = Omit<MenuModal, "action">;
+
+export function menuModal<
+  T extends Omit<MenuModal, "kind" | "action" | "assignComponentData">
+>(item: T): MenuModal | MenuModalWithoutAction {
+  return Object.assign(item, {
+    kind: "MenuModal" as const,
+    modalOpts: {
+      size: "lg",
+      centered: true,
+      scrollable: true,
+      ...item.modalOpts,
+    },
+    assignComponentData(
+      component: ModalComponent,
+      routeData: PageInfo,
+      modalRef: NgbModalRef
+    ) {
+      const defaultOpts: ModalComponent = {
+        routeData,
+        pageData: item.pageData,
+        dismissModal: (reason: any) => modalRef.dismiss(reason),
+        closeModal: (result: any) => modalRef.close(result),
+      };
+      Object.assign(component, defaultOpts);
+    },
+  });
+}
+
+/**
+ * Determines if a menu item is a modal
+ *
+ * @param item Menu item
+ */
+export function isMenuModal(
+  item: any
+): item is MenuModal | MenuModalWithoutAction {
+  return (item as MenuModal).kind === "MenuModal";
 }
