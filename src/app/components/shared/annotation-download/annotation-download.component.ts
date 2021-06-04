@@ -22,8 +22,50 @@ const siteKey = "site";
 
 @Component({
   selector: "baw-annotation-download",
-  templateUrl: "./annotation-download.component.html",
-  styleUrls: ["./annotation-download.component.scss"],
+  template: `
+    <div class="modal-header">
+      <h4 class="modal-title">Annotations Download</h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="dismissModal('Exit')"
+      >
+        <fa-icon [icon]="['fas', 'times']"></fa-icon>
+      </button>
+    </div>
+    <div class="model-body mt-3">
+      <baw-form [submitLabel]="null" [model]="model" [fields]="fields">
+        <span id="subTitle">
+          <p>
+            The annotations in the CSV will have all their dates and times set
+            to a time zone of your choice. The default time zone is the local
+            time for the
+            {{ region ? "point" : "site" }} where the audio was recorded.
+          </p>
+          <p>
+            For example, annotations created for audio from Brisbane will have
+            dates and times set to AEST (+10).
+          </p>
+          <p>
+            However, if you have recordings from Brisbane and Perth, which time
+            zone do we choose for all downloaded events?
+          </p>
+          <p>AEST (+10) or AWST (+8) or UTC (+0)?</p>
+          <p>
+            It depends on how you want to work with your data, so the choice is
+            yours. Please select the time zone you wish to use:
+          </p>
+        </span>
+      </baw-form>
+    </div>
+
+    <div class="modal-footer">
+      <a class="btn btn-primary" [href]="getAnnotationsPath()">
+        Download Annotations
+      </a>
+    </div>
+  `,
 })
 export class AnnotationDownloadComponent implements OnInit, ModalComponent {
   public closeModal!: (result: any) => void;
