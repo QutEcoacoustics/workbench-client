@@ -8,6 +8,7 @@ import { ISite, Site } from "@models/Site";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
+  authorization,
   Empty,
   emptyParam,
   Filter,
@@ -17,8 +18,8 @@ import {
   IdParam,
   IdParamOptional,
   option,
-  param,
   StandardApi,
+  timezone,
 } from "../api-common";
 import { Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
@@ -33,7 +34,9 @@ const endpoint = stringTemplate`/projects/${projectId}/sites/${siteId}${option}`
 const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
 const endpointOrphan = stringTemplate`/sites/orphans/${orphanOption}`;
 const harvestEndpoint = stringTemplate`/projects/${projectId}/sites/${siteId}/harvest.yml`;
-const annotationsEndpoint = stringTemplate`/projects/${projectId}/sites/${siteId}/audio_events/download?selected_timezone_name=${param}`;
+const annotationsEndpoint = stringTemplate`/projects/${projectId}/sites/${siteId}/audio_events/download${timezone(
+  "?"
+)}${authorization("&")}`;
 
 /**
  * Sites Service.
@@ -95,14 +98,20 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   /**
    * Retrieve path to generated a CSV file containing all of the annotations for a site.
    * Insert into the `[href]` of an anchor HTML element.
-   * TODO Append authToken so that requests are authenticated
    */
   public downloadAnnotations(
     model: IdOr<Site>,
     project: IdOr<Project>,
     selectedTimezone: string
   ): string {
-    return this.getPath(annotationsEndpoint(project, model, selectedTimezone));
+    return this.getPath(
+      annotationsEndpoint(
+        project,
+        model,
+        selectedTimezone,
+        this.getLocalUser()?.authToken
+      )
+    );
   }
 
   /**
