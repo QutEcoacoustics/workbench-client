@@ -19,6 +19,7 @@ import { ActionMenuComponent } from "./action-menu.component";
 
 const mockMenu = MockComponent(MenuComponent);
 
+//TODO Validate widgets are sent to menu component
 describe("ActionMenuComponent", () => {
   let defaultRoute: StrongRoute;
   let defaultCategory: Category;
@@ -196,7 +197,4 @@ describe("ActionMenuComponent", () => {
       expect(getMenu().links.toArray()).toEqual(actions);
     });
   });
-
-  xit("should handle no widget", () => {});
-  xit("should handle widget", () => {});
 });
