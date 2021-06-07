@@ -28,7 +28,6 @@ import { ActionMenuComponent } from "./action-menu.component";
 
 const mockMenu = MockComponent(MenuComponent);
 
-//TODO Validate widgets are sent to menu component
 describe("ActionMenuComponent", () => {
   let defaultRoute: StrongRoute;
   let defaultCategory: Category;

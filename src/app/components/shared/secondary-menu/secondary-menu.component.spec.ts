@@ -19,7 +19,6 @@ import { SecondaryMenuComponent } from "./secondary-menu.component";
 
 const mockMenu = MockComponent(MenuComponent);
 
-//TODO Validate widgets are sent to menu component
 describe("SecondaryMenuComponent", () => {
   let defaultRoute: StrongRoute;
   let defaultPageRoute: MenuRoute;
