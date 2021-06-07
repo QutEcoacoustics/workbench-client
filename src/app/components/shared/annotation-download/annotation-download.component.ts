@@ -14,12 +14,12 @@ interface TimezoneModel {
   timezone?: string;
 }
 
+// TODO This needs to be standardized, otherwise it may not work
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
 // TODO This will be expanded to download user annotations as well
-
 @Component({
   selector: "baw-annotation-download",
   template: `
@@ -34,7 +34,8 @@ const siteKey = "site";
         <fa-icon [icon]="['fas', 'times']"></fa-icon>
       </button>
     </div>
-    <div class="model-body mt-3">
+
+    <div class="modal-body">
       <baw-form [submitLabel]="null" [model]="model" [fields]="fields">
         <span id="subTitle">
           <p>
@@ -70,7 +71,6 @@ const siteKey = "site";
 export class AnnotationDownloadComponent implements OnInit, ModalComponent {
   public closeModal!: (result: any) => void;
   public dismissModal!: (reason: any) => void;
-  public failure: boolean;
   public fields: FormlyFieldConfig[] = fields;
   public form = new FormGroup({});
   public model: TimezoneModel = { timezone: "UTC" };
@@ -84,8 +84,10 @@ export class AnnotationDownloadComponent implements OnInit, ModalComponent {
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.routeData);
+
+    // Close modal if an error has occurred
     if (!models) {
-      this.failure = true;
+      this.dismissModal("Failure to resolve models");
       return;
     }
 
