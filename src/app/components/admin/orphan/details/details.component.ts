@@ -56,7 +56,7 @@ AdminOrphanComponent.linkComponentToPageInfo({
   category: adminOrphansCategory,
   menus: {
     actions: List([adminOrphansMenuItem, adminOrphanMenuItem]),
-    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [siteKey]: shallowSiteResolvers.show },
 }).andMenuRoute(adminOrphanMenuItem);

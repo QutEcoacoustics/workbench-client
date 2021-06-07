@@ -71,7 +71,7 @@ PointDeleteComponent.linkComponentToPageInfo({
   category: pointsCategory,
   menus: {
     actions: List([pointMenuItem, ...pointMenuItemActions]),
-    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

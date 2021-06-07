@@ -49,7 +49,7 @@ const mock = {
   selector: "baw-test-widget",
   template: "<div>Widget working</div>",
 })
-class MockWidgetComponent implements WidgetComponent {
+export class MockWidgetComponent implements WidgetComponent {
   public pageData!: any;
 }
 
@@ -57,7 +57,7 @@ class MockWidgetComponent implements WidgetComponent {
   selector: "baw-test-modal",
   template: '<div class="modal-body">Modal working</div>',
 })
-class MockModalComponent implements ModalComponent {
+export class MockModalComponent implements ModalComponent {
   public pageData!: any;
   public routeData!: PageInfo;
   public closeModal!: (result: any) => void;
@@ -248,7 +248,7 @@ describe("MenuComponent", () => {
       it("should create widget when provided", () => {
         setup({
           links: List([]),
-          widgets: [defaultWidget],
+          widgets: List([defaultWidget]),
         });
         spec.detectChanges();
         validateNumWidgets(1);
@@ -258,11 +258,11 @@ describe("MenuComponent", () => {
       it("should create multiple widgets when provided", () => {
         setup({
           links: List([]),
-          widgets: [
+          widgets: List([
             new WidgetMenuItem(MockWidgetComponent),
             new WidgetMenuItem(MockWidgetComponent),
             new WidgetMenuItem(MockWidgetComponent),
-          ],
+          ]),
         });
         spec.detectChanges();
         validateNumWidgets(3);

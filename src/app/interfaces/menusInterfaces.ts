@@ -268,7 +268,7 @@ export function isNavigableMenuItem(item: any): item is NavigableMenuItem {
  */
 export interface Menus {
   actions?: List<AnyMenuItem | MenuModalWithoutAction>;
-  actionWidgets?: WidgetMenuItem[];
+  actionWidgets?: List<WidgetMenuItem>;
   links?: List<NavigableMenuItem | MenuModalWithoutAction>;
-  linkWidgets?: WidgetMenuItem[];
+  linkWidgets?: List<WidgetMenuItem>;
 }

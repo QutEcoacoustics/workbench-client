@@ -31,7 +31,7 @@ export class SecondaryMenuComponent
   implements OnInit
 {
   public links: List<NavigableMenuItem | MenuModal>;
-  public widgets: WidgetMenuItem[];
+  public widgets: List<WidgetMenuItem>;
   private defaultLinks = defaultMenu.contextLinks;
 
   public constructor(private route: ActivatedRoute) {

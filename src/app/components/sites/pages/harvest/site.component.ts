@@ -62,7 +62,7 @@ SiteHarvestComponent.linkComponentToPageInfo({
   category: sitesCategory,
   menus: {
     actions: List([siteMenuItem, ...siteMenuItemActions]),
-    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

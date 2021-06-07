@@ -28,7 +28,7 @@ import { takeUntil } from "rxjs/operators";
 export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   public title: LabelAndIcon;
   public links: List<AnyMenuItem | MenuModal>;
-  public widgets: WidgetMenuItem[];
+  public widgets: List<WidgetMenuItem>;
   private defaultCategory = defaultMenu.defaultCategory;
 
   public constructor(private route: ActivatedRoute) {

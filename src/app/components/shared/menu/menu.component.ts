@@ -51,7 +51,7 @@ export class MenuComponent
   @Input() public title?: LabelAndIcon;
   @Input() public links!: List<AnyMenuItem | MenuModalWithoutAction>;
   @Input() public menuType!: "action" | "secondary";
-  @Input() public widgets?: WidgetMenuItem[];
+  @Input() public widgets?: List<WidgetMenuItem>;
   @ViewChild(WidgetDirective, { read: ViewContainerRef })
   private menuWidget!: ViewContainerRef;
 

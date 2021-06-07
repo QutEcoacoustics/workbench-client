@@ -10,6 +10,8 @@ import {
 } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { MenuComponent } from "@menu/menu.component";
+import { MockWidgetComponent } from "@menu/menu.component.spec";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { List } from "immutable";
 import { MockComponent } from "ng-mocks";
@@ -21,6 +23,7 @@ const mockMenu = MockComponent(MenuComponent);
 describe("SecondaryMenuComponent", () => {
   let defaultRoute: StrongRoute;
   let defaultPageRoute: MenuRoute;
+  let defaultWidget: WidgetMenuItem;
   let defaultMenuRoute: MenuRoute;
   let defaultMenuLink: MenuLink;
   let spec: SpectatorRouting<SecondaryMenuComponent>;
@@ -45,6 +48,7 @@ describe("SecondaryMenuComponent", () => {
 
   beforeEach(() => {
     defaultRoute = StrongRoute.newRoot().add("");
+    defaultWidget = new WidgetMenuItem(MockWidgetComponent);
     defaultMenuRoute = menuRoute({
       label: "Menu Route",
       icon: ["fas", "ad"],
@@ -235,6 +239,30 @@ describe("SecondaryMenuComponent", () => {
       setup({ pageRoute: defaultPageRoute, menus: { links: List(links) } });
       spec.detectChanges();
       expect(getMenu().links.toArray()).toEqual([...links, defaultPageRoute]);
+    });
+  });
+
+  describe("widgets", () => {
+    it("should handle single widget", () => {
+      setup({
+        pageRoute: defaultPageRoute,
+        menus: { links: List(), linkWidgets: List([defaultWidget]) },
+      });
+      spec.detectChanges();
+      expect(getMenu().widgets.toArray()).toEqual([defaultWidget]);
+    });
+
+    it("should handle multiple widgets", () => {
+      const widgets = [
+        new WidgetMenuItem(MockWidgetComponent),
+        new WidgetMenuItem(MockWidgetComponent),
+      ];
+      setup({
+        pageRoute: defaultPageRoute,
+        menus: { links: List(), linkWidgets: List(widgets) },
+      });
+      spec.detectChanges();
+      expect(getMenu().widgets.toArray()).toEqual(widgets);
     });
   });
 });
