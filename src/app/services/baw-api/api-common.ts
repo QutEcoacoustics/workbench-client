@@ -1,4 +1,4 @@
-import { PartialWith } from "@helpers/advancedTypes";
+import { Option, PartialWith } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AuthToken, Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
@@ -49,23 +49,25 @@ export function param(x: Param) {
 }
 
 /**
- * Create selected timezone query string parameter (used by stringTemplate)
+ * Set selected timezone query parameter in URL object
  *
- * @param delimiter QSP Delimiter
+ * @param url URL object
+ * @param timezoneName Selected timezone name
  */
-export function timezone(delimiter: QspDelimiter) {
-  return (timezoneName: string) =>
-    `${delimiter}selected_timezone_name=${timezoneName ?? "UTC"}`;
+export function setTimezoneQSP(url: URL, timezoneName: Option<string>): void {
+  url.searchParams.set("selected_timezone_name", timezoneName ?? "UTC");
 }
 
 /**
- * Create authorization query string parameter (used by stringTemplate)
+ * Set authorization query parameter in URL object
  *
- * @param delimiter QSP Delimiter
+ * @param url URL object
+ * @param token Local user authentication token
  */
-export function authorization(delimiter: QspDelimiter) {
-  return (token?: AuthToken) =>
-    token ? `${delimiter}user_token=${token}` : "";
+export function setAuthorizationQSP(url: URL, token: Option<string>): void {
+  if (token) {
+    url.searchParams.set("user_token", token);
+  }
 }
 
 /**
@@ -92,6 +94,8 @@ export type Filter = "filter";
 export const emptyParam: Empty = "";
 export const newParam: New = "new";
 export const filterParam: Filter = "filter";
+export const timezoneQueryParam = "selected_timezone_name" as const;
+export const authorizationQueryParam = "user_token" as const;
 
 /**
  * API List functionality

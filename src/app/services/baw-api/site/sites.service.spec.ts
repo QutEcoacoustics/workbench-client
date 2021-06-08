@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { IdOr } from "@baw-api/api-common";
+import { IdOr, setAuthorizationQSP, setTimezoneQSP } from "@baw-api/api-common";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -28,7 +28,8 @@ type Service = SitesService;
 
 describe("SitesService", function () {
   const createModel = () => new Site(generateSite(10));
-  const baseUrl = "/projects/5/sites/";
+  const listUrl = "/projects/5/sites/";
+  const showUrl = "/projects/5/sites/10";
   let service: SitesService;
   let apiRoot: string;
 
@@ -43,20 +44,15 @@ describe("SitesService", function () {
     this.service = service;
   });
 
-  validateApiList<Model, Params, Service>(baseUrl, 5);
-  validateApiFilter<Model, Params, Service>(baseUrl + "filter", 5);
-  validateApiShow<Model, Params, Service>(baseUrl + "10", 10, createModel, 5);
-  validateApiCreate<Model, Params, Service>(baseUrl, createModel, 5);
-  validateApiUpdate<Model, Params, Service>(baseUrl + "10", createModel, 5);
-  validateApiDestroy<Model, Params, Service>(
-    baseUrl + "10",
-    10,
-    createModel,
-    5
-  );
+  validateApiList<Model, Params, Service>(listUrl, 5);
+  validateApiFilter<Model, Params, Service>(listUrl + "filter", 5);
+  validateApiShow<Model, Params, Service>(showUrl, 10, createModel, 5);
+  validateApiCreate<Model, Params, Service>(listUrl, createModel, 5);
+  validateApiUpdate<Model, Params, Service>(showUrl, createModel, 5);
+  validateApiDestroy<Model, Params, Service>(showUrl, 10, createModel, 5);
 
   validateCustomApiFilter<Model, [...Params, IdOr<Region>], Service>(
-    baseUrl + "filter",
+    listUrl + "filter",
     "filterByRegion",
     { filter: { regionId: { eq: 10 } } },
     undefined,
@@ -77,8 +73,10 @@ describe("SitesService", function () {
     }
 
     function getUrl(timezone: string = defaultTimezone, token?: string) {
-      const tokenQsp = token ? `&user_token=${token}` : "";
-      return `${apiRoot}${baseUrl}10/audio_events/download?selected_timezone_name=${timezone}${tokenQsp}`;
+      const url = new URL(`${apiRoot}${showUrl}/audio_events/download`);
+      setTimezoneQSP(url, timezone);
+      setAuthorizationQSP(url, token);
+      return url.toString();
     }
 
     it("should return url using model ids", () => {
