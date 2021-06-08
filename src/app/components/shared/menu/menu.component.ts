@@ -18,6 +18,9 @@ import {
   isExternalLink,
   isInternalRoute,
   LabelAndIcon,
+  MenuAction,
+  MenuLink,
+  MenuRoute,
 } from "@interfaces/menusInterfaces";
 import { SessionUser } from "@models/User";
 import { NgbModal, Placement } from "@ng-bootstrap/ng-bootstrap";
@@ -48,11 +51,12 @@ export class MenuComponent
   @Input() public title?: LabelAndIcon;
   @Input() public links!: List<AnyMenuItem | MenuModalWithoutAction>;
   @Input() public menuType!: "action" | "secondary";
-  @Input() public widgets?: WidgetMenuItem[];
+  @Input() public widgets?: List<WidgetMenuItem>;
   @ViewChild(WidgetDirective, { read: ViewContainerRef })
   private menuWidget!: ViewContainerRef;
 
-  public filteredLinks: Set<AnyMenuItem | MenuModal> = Set();
+  public filteredLinks: Set<MenuRoute | MenuLink | MenuAction | MenuModal> =
+    Set();
   public placement: Placement;
   public params: Params;
   public user: SessionUser;
@@ -91,14 +95,13 @@ export class MenuComponent
         // If link has predicate function, test if returns true
         return link.predicate(this.user, pageData);
       })
-      ?.toSet()
-      ?.sort(this.compare)
+      .toSet()
       /*
        * Change modal menu item links into menu actions. We do this after
        * converting to a set so that if the same modal widget is appended
        * multiple times, it will be filtered out
        */
-      ?.map((link) => {
+      .map((link) => {
         if (isMenuModal(link)) {
           return menuModal({
             ...link,
@@ -106,7 +109,8 @@ export class MenuComponent
           }) as MenuModal;
         }
         return link;
-      });
+      })
+      .sort(this.compare);
 
     // Retrieve router parameters to override link attributes
     this.params = snapshot.params;

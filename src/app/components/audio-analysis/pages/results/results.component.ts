@@ -27,7 +27,7 @@ AudioAnalysisResultsComponent.linkComponentToPageInfo({
       audioAnalysisMenuItem,
       downloadAudioAnalysisResultsMenuItem,
     ]),
-    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [audioAnalysisKey]: analysisJobResolvers.show },
 }).andMenuRoute(audioAnalysisResultsMenuItem);

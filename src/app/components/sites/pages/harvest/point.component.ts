@@ -6,10 +6,13 @@ import { retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
   pointHarvestMenuItem,
+  pointMenuItem,
   pointsCategory,
 } from "@components/sites/points.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { PageInfo } from "@helpers/page/pageInfo";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -56,7 +59,10 @@ class PointHarvestComponent extends SiteHarvestComponent implements OnInit {
 
 PointHarvestComponent.linkComponentToPageInfo({
   category: pointsCategory,
-  menus: { actions: List(pointMenuItemActions) },
+  menus: {
+    actions: List([pointMenuItem, ...pointMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+  },
   resolvers: {
     [projectKey]: projectResolvers.show,
     [regionKey]: regionResolvers.show,

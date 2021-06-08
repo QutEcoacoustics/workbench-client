@@ -59,7 +59,7 @@ AdminAnalysisJobComponent.linkComponentToPageInfo({
   category: adminAnalysisJobsCategory,
   menus: {
     actions: List([adminAnalysisJobsMenuItem, adminAnalysisJobMenuItem]),
-    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [analysisJobKey]: analysisJobResolvers.show },
 }).andMenuRoute(adminAnalysisJobMenuItem);

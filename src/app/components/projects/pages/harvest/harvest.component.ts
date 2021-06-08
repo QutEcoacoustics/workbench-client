@@ -150,7 +150,7 @@ HarvestComponent.linkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
-    actionWidgets: [new WidgetMenuItem(PermissionsShieldComponent)],
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
 }).andMenuRoute(harvestProjectMenuItem);

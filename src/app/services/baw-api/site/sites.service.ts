@@ -8,9 +8,7 @@ import { ISite, Site } from "@models/Site";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
-  Empty,
   emptyParam,
-  Filter,
   filterParam,
   id,
   IdOr,
@@ -18,22 +16,20 @@ import {
   IdParamOptional,
   option,
   param,
+  setAuthorizationQSP,
+  setTimezoneQSP,
   StandardApi,
 } from "../api-common";
 import { Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
-function orphanOption(x?: Filter | Empty) {
-  return option(x);
-}
-
 const projectId: IdParam<Project> = id;
 const siteId: IdParamOptional<Site> = id;
 const endpoint = stringTemplate`/projects/${projectId}/sites/${siteId}${option}`;
 const endpointShallow = stringTemplate`/sites/${siteId}${option}`;
-const endpointOrphan = stringTemplate`/sites/orphans/${orphanOption}`;
+const endpointOrphan = stringTemplate`/sites/orphans/${option}`;
 const harvestEndpoint = stringTemplate`/projects/${projectId}/sites/${siteId}/harvest.yml`;
-const annotationsEndpoint = stringTemplate`/projects/${projectId}/sites/${siteId}/audio_events/download?selected_timezone_name=${param}`;
+const annotationsEndpoint = stringTemplate`/projects/${projectId}/sites/${siteId}/audio_events/download?${param}`;
 
 /**
  * Sites Service.
@@ -95,14 +91,18 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   /**
    * Retrieve path to generated a CSV file containing all of the annotations for a site.
    * Insert into the `[href]` of an anchor HTML element.
-   * TODO Append authToken so that requests are authenticated
    */
   public downloadAnnotations(
     model: IdOr<Site>,
     project: IdOr<Project>,
     selectedTimezone: string
   ): string {
-    return this.getPath(annotationsEndpoint(project, model, selectedTimezone));
+    const url = new URL(
+      this.getPath(annotationsEndpoint(project, model, emptyParam))
+    );
+    setTimezoneQSP(url, selectedTimezone);
+    setAuthorizationQSP(url, this.getLocalUser()?.authToken);
+    return url.toString();
   }
 
   /**

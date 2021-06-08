@@ -45,6 +45,7 @@ export function menuModal<
 >(item: T): MenuModal | MenuModalWithoutAction {
   return Object.assign(item, {
     kind: "MenuModal" as const,
+    indentation: 0,
     modalOpts: {
       size: "lg",
       centered: true,

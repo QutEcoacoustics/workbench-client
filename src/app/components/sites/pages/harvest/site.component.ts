@@ -6,12 +6,18 @@ import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { SessionUser } from "@models/User";
 import { List } from "immutable";
-import { siteHarvestMenuItem, sitesCategory } from "../../sites.menus";
+import {
+  siteHarvestMenuItem,
+  siteMenuItem,
+  sitesCategory,
+} from "../../sites.menus";
 import { siteMenuItemActions } from "../details/site.component";
 
 const projectKey = "project";
@@ -54,7 +60,10 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
 
 SiteHarvestComponent.linkComponentToPageInfo({
   category: sitesCategory,
-  menus: { actions: List(siteMenuItemActions) },
+  menus: {
+    actions: List([siteMenuItem, ...siteMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+  },
   resolvers: {
     [projectKey]: projectResolvers.show,
     [siteKey]: siteResolvers.show,

@@ -1,6 +1,10 @@
 import { Params } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
+import {
+  MenuModal,
+  MenuModalWithoutAction,
+  WidgetMenuItem,
+} from "@menu/widgetItem";
 import { List } from "immutable";
 import { SessionUser } from "../models/User";
 import { StrongRoute } from "./strongRoute";
@@ -195,7 +199,12 @@ export function menuAction<T extends Omit<MenuAction, "kind">>(
  * Any Menu Item discriminated union. This is used to store any of the
  *  menu item types together in a collection.
  */
-export type AnyMenuItem = MenuAction | MenuLink | MenuRoute | MenuItem;
+export type AnyMenuItem =
+  | MenuAction
+  | MenuLink
+  | MenuRoute
+  | MenuModalWithoutAction
+  | MenuModal;
 
 /**
  * Any Menu Item  discriminated union. This is used to store any menu item,
@@ -259,7 +268,7 @@ export function isNavigableMenuItem(item: any): item is NavigableMenuItem {
  */
 export interface Menus {
   actions?: List<AnyMenuItem | MenuModalWithoutAction>;
-  actionWidgets?: WidgetMenuItem[];
+  actionWidgets?: List<WidgetMenuItem>;
   links?: List<NavigableMenuItem | MenuModalWithoutAction>;
-  linkWidgets?: WidgetMenuItem[];
+  linkWidgets?: List<WidgetMenuItem>;
 }
