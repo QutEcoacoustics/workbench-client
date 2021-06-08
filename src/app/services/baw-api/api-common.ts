@@ -5,8 +5,6 @@ import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
 import { BawApiService, Filters } from "./baw-api.service";
 
-type QspDelimiter = "?" | "&";
-
 /**
  * Variable is an id or AbstractModel
  */
@@ -64,7 +62,7 @@ export function setTimezoneQSP(url: URL, timezoneName: Option<string>): void {
  * @param url URL object
  * @param token Local user authentication token
  */
-export function setAuthorizationQSP(url: URL, token: Option<string>): void {
+export function setAuthorizationQSP(url: URL, token: Option<AuthToken>): void {
   if (token) {
     url.searchParams.set("user_token", token);
   }
