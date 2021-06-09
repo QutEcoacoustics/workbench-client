@@ -1,6 +1,6 @@
-import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
-import { Category, menuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
 import {
+  defaultAnnotationDownloadIcon,
   defaultAudioIcon,
   defaultDeleteIcon,
   defaultEditIcon,
@@ -34,9 +34,10 @@ export const newSiteMenuItem = menuRoute({
   tooltip: () => "Create a new site",
 });
 
-export const siteAnnotationsMenuItem = menuRoute({
-  ...dataRequestMenuItem,
+export const siteAnnotationsMenuItem = menuItem({
+  icon: defaultAnnotationDownloadIcon,
   label: "Download Annotations",
+  parent: siteMenuItem,
   tooltip: () => "Download annotations for this site",
 });
 

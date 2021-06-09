@@ -10,21 +10,37 @@
       </h6>
     </li>
 
-    <ng-container *ngIf="linksExist()">
+    <ng-container *ngIf="hasLinks()">
       <hr *ngIf="menuType === 'action'" class="w-100" />
+
+      <!-- Normal links -->
       <li
         *ngFor="let link of filteredLinks; let i = index"
         class="nav-item"
-        [ngStyle]="{ 'padding-left': calculateIndentation(link) + 'em' }"
+        [style.padding-left]="calculateIndentation(link) + 'em'"
       >
-        <ng-container *ngIf="isAction(link)">
+        <!-- Modal widget button -->
+        <ng-container *ngIf="isModal(link)">
           <baw-menu-button
+            class="modal"
             [link]="link"
             [placement]="placement"
             [tooltip]="link.tooltip(user)"
           ></baw-menu-button>
         </ng-container>
-        <ng-container *ngIf="!isAction(link)">
+
+        <!-- Action menu button-->
+        <ng-container *ngIf="isAction(link)">
+          <baw-menu-button
+            class="action"
+            [link]="link"
+            [placement]="placement"
+            [tooltip]="link.tooltip(user)"
+          ></baw-menu-button>
+        </ng-container>
+
+        <!-- Internal/External menu buttons -->
+        <ng-container *ngIf="isInternalLink(link) || isExternalLink(link)">
           <baw-menu-link
             [link]="link"
             [placement]="placement"
@@ -36,8 +52,9 @@
       <hr class="w-100" *ngIf="widget" />
     </ng-container>
 
+    <!-- Widgets -->
     <div id="widget">
-      <ng-template bawMenuWidget></ng-template>
+      <ng-container id="widgetContainer" bawMenuWidget></ng-container>
     </div>
   </ul>
 </nav>

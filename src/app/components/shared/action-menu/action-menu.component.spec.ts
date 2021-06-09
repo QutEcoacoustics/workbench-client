@@ -12,6 +12,15 @@ import {
 } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { MenuComponent } from "@menu/menu.component";
+import {
+  MockModalComponent,
+  MockWidgetComponent,
+} from "@menu/menu.component.spec";
+import {
+  menuModal,
+  MenuModalWithoutAction,
+  WidgetMenuItem,
+} from "@menu/widgetItem";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { List } from "immutable";
 import { MockComponent } from "ng-mocks";
@@ -23,6 +32,8 @@ describe("ActionMenuComponent", () => {
   let defaultRoute: StrongRoute;
   let defaultCategory: Category;
   let defaultPageRoute: MenuRoute;
+  let defaultMenuModal: MenuModalWithoutAction;
+  let defaultWidget: WidgetMenuItem;
   let defaultMenuRoute: MenuRoute;
   let defaultMenuLink: MenuLink;
   let defaultMenuAction: MenuAction;
@@ -48,6 +59,15 @@ describe("ActionMenuComponent", () => {
       icon: ["fas", "home"],
       route: defaultRoute,
     };
+    defaultWidget = new WidgetMenuItem(MockWidgetComponent);
+    defaultMenuModal = menuModal({
+      icon: ["fas", "home"],
+      label: "label",
+      tooltip: () => "tooltip",
+      component: MockModalComponent,
+      pageData: {},
+      modalOpts: {},
+    });
     defaultMenuRoute = menuRoute({
       label: "Menu Route",
       icon: ["fas", "ad"],
@@ -119,18 +139,16 @@ describe("ActionMenuComponent", () => {
     });
 
     it("should handle mixed links", () => {
-      setup({
-        pageRoute: defaultPageRoute,
-        menus: {
-          actions: List([defaultMenuRoute, defaultMenuLink, defaultMenuAction]),
-        },
-      });
-      spec.detectChanges();
-      expect(getMenu().links.toArray()).toEqual([
+      const actions = [
         defaultMenuRoute,
         defaultMenuLink,
         defaultMenuAction,
-      ]);
+        defaultMenuModal,
+      ];
+
+      setup({ pageRoute: defaultPageRoute, menus: { actions: List(actions) } });
+      spec.detectChanges();
+      expect(getMenu().links.toArray()).toEqual(actions);
     });
   });
 
@@ -197,6 +215,48 @@ describe("ActionMenuComponent", () => {
     });
   });
 
-  xit("should handle no widget", () => {});
-  xit("should handle widget", () => {});
+  describe("modals", () => {
+    it("should handle single modal", () => {
+      setup({
+        pageRoute: defaultPageRoute,
+        menus: { actions: List([defaultMenuModal]) },
+      });
+      spec.detectChanges();
+      expect(getMenu().links.toArray()).toEqual([defaultMenuModal]);
+    });
+
+    it("should handle multiple modals", () => {
+      const actions = [
+        menuModal({ ...defaultMenuModal, label: "Custom Link 1" }),
+        menuModal({ ...defaultMenuModal, label: "Custom Link 2" }),
+      ];
+      setup({ pageRoute: defaultPageRoute, menus: { actions: List(actions) } });
+      spec.detectChanges();
+      expect(getMenu().links.toArray()).toEqual(actions);
+    });
+  });
+
+  describe("widgets", () => {
+    it("should handle single widget", () => {
+      setup({
+        pageRoute: defaultPageRoute,
+        menus: { actions: List(), actionWidgets: List([defaultWidget]) },
+      });
+      spec.detectChanges();
+      expect(getMenu().widgets.toArray()).toEqual([defaultWidget]);
+    });
+
+    it("should handle multiple widgets", () => {
+      const widgets = [
+        new WidgetMenuItem(MockWidgetComponent),
+        new WidgetMenuItem(MockWidgetComponent),
+      ];
+      setup({
+        pageRoute: defaultPageRoute,
+        menus: { actions: List(), actionWidgets: List(widgets) },
+      });
+      spec.detectChanges();
+      expect(getMenu().widgets.toArray()).toEqual(widgets);
+    });
+  });
 });

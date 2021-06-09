@@ -30,7 +30,8 @@ const siteKey = "site";
 })
 class AdminOrphanComponent
   extends withUnsubscribe(PageComponent)
-  implements OnInit {
+  implements OnInit
+{
   public site: Site;
   public failure: boolean;
   public fields = [...baseFields, ...extendedFields];
@@ -55,7 +56,7 @@ AdminOrphanComponent.linkComponentToPageInfo({
   category: adminOrphansCategory,
   menus: {
     actions: List([adminOrphansMenuItem, adminOrphanMenuItem]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [siteKey]: shallowSiteResolvers.show },
 }).andMenuRoute(adminOrphanMenuItem);

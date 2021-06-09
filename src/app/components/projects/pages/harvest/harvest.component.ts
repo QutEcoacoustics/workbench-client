@@ -103,9 +103,8 @@ class HarvestComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    const resolvedProject: ResolvedModel<Project> = this.route.snapshot.data[
-      projectKey
-    ];
+    const resolvedProject: ResolvedModel<Project> =
+      this.route.snapshot.data[projectKey];
 
     if (resolvedProject.error) {
       this.failure = true;
@@ -151,7 +150,7 @@ HarvestComponent.linkComponentToPageInfo({
   category: projectCategory,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
 }).andMenuRoute(harvestProjectMenuItem);

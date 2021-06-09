@@ -13,6 +13,7 @@ import type { AudioEvent } from "@models/AudioEvent";
 import type { AudioRecording } from "@models/AudioRecording";
 import type { Bookmark } from "@models/Bookmark";
 import type { ContactUs } from "@models/data/ContactUs";
+import { DataRequest } from "@models/data/DataRequest";
 import type { ReportProblem } from "@models/data/ReportProblem";
 import type { Dataset } from "@models/Dataset";
 import type { DatasetItem } from "@models/DatasetItem";
@@ -38,6 +39,7 @@ import type {
 } from "./audio-event/audio-events.service";
 import type { AudioRecordingsService } from "./audio-recording/audio-recordings.service";
 import type { BookmarksService } from "./bookmark/bookmarks.service";
+import { DataRequestService } from "./data-request/data-request.service";
 import type { DatasetItemsService } from "./dataset/dataset-items.service";
 import type { DatasetsService } from "./dataset/datasets.service";
 import type { ProgressEventsService } from "./progress-event/progress-events.service";
@@ -113,6 +115,9 @@ export const BOOKMARK = new ServiceToken<BookmarksService, Bookmark>(
 export const DATASET = new ServiceToken<DatasetsService, Dataset>("DATASET");
 export const DATASET_ITEM = new ServiceToken<DatasetItemsService, DatasetItem>(
   "D_ITEM"
+);
+export const DATA_REQUEST = new ServiceToken<DataRequestService, DataRequest>(
+  "DATA_REQUEST"
 );
 export const PROGRESS_EVENT = new ServiceToken<
   ProgressEventsService,

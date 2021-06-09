@@ -129,7 +129,7 @@ DetailsComponent.linkComponentToPageInfo({
   category: regionsCategory,
   menus: {
     actions: List([projectMenuItem, ...regionMenuItemActions]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

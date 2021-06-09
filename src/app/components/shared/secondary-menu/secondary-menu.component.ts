@@ -5,7 +5,7 @@ import { defaultMenu } from "@helpers/page/defaultMenus";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { MenuRoute, NavigableMenuItem } from "@interfaces/menusInterfaces";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { MenuModal, WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 
@@ -19,18 +19,19 @@ import { takeUntil } from "rxjs/operators";
   selector: "baw-secondary-menu",
   template: `
     <baw-menu
-      [links]="contextLinks"
-      [widget]="linksWidget"
-      [menuType]="'secondary'"
+      menuType="secondary"
+      [links]="links"
+      [widgets]="widgets"
     ></baw-menu>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SecondaryMenuComponent
   extends withUnsubscribe()
-  implements OnInit {
-  public contextLinks: List<NavigableMenuItem>;
-  public linksWidget: WidgetMenuItem;
+  implements OnInit
+{
+  public links: List<NavigableMenuItem | MenuModal>;
+  public widgets: List<WidgetMenuItem>;
   private defaultLinks = defaultMenu.contextLinks;
 
   public constructor(private route: ActivatedRoute) {
@@ -54,8 +55,8 @@ export class SecondaryMenuComponent
         }
 
         // and add it all together
-        this.linksWidget = page.menus?.linksWidget ?? null;
-        this.contextLinks = this.defaultLinks.concat(
+        this.widgets = page.menus?.linkWidgets ?? null;
+        this.links = this.defaultLinks.concat(
           page.menus?.links ?? List(),
           List(parentMenuRoutes).reverse(), // List lineage correctly
           current

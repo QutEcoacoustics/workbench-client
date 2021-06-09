@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { PipesModule } from "@pipes/pipes.module";
 import { IconsModule } from "@shared/icons/icons.module";
 import { LoadingModule } from "../loading/loading.module";
@@ -29,7 +29,8 @@ import { WidgetDirective } from "./widget/widget.directive";
   imports: [
     CommonModule,
     RouterModule,
-    NgbModule,
+    NgbModalModule,
+    NgbTooltipModule,
     IconsModule,
     AuthenticatedImageModule,
     LoadingModule,

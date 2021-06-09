@@ -1,7 +1,9 @@
+import { Component } from "@angular/core";
 import { Data, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
+import { PageInfo } from "@helpers/page/pageInfo";
 import {
   AnyMenuItem,
   isExternalLink,
@@ -14,14 +16,26 @@ import {
   menuRoute,
 } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { ModalComponent, WidgetComponent } from "@menu/widget.component";
 import { WidgetDirective } from "@menu/widget.directive";
+import {
+  MenuModal,
+  menuModal,
+  MenuModalWithoutAction,
+  WidgetMenuItem,
+} from "@menu/widgetItem";
 import { SessionUser } from "@models/User";
+import {
+  NgbModal,
+  NgbModalModule,
+  NgbTooltipModule,
+} from "@ng-bootstrap/ng-bootstrap";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { IconsModule } from "@shared/icons/icons.module";
 import { generateSessionUser } from "@test/fakes/User";
 import { assertIcon } from "@test/helpers/html";
 import { List } from "immutable";
-import { MockComponent } from "ng-mocks";
+import { MockComponent, MockedComponent } from "ng-mocks";
 import { MenuButtonComponent } from "./button/button.component";
 import { MenuLinkComponent } from "./link/link.component";
 import { MenuComponent } from "./menu.component";
@@ -31,34 +45,70 @@ const mock = {
   link: MockComponent(MenuLinkComponent),
 };
 
+@Component({
+  selector: "baw-test-widget",
+  template: "<div>Widget working</div>",
+})
+export class MockWidgetComponent implements WidgetComponent {
+  public pageData!: any;
+}
+
+@Component({
+  selector: "baw-test-modal",
+  template: '<div class="modal-body">Modal working</div>',
+})
+export class MockModalComponent implements ModalComponent {
+  public pageData!: any;
+  public routeData!: PageInfo;
+  public closeModal!: (result: any) => void;
+  public dismissModal!: (reason: any) => void;
+}
+
 describe("MenuComponent", () => {
   let api: SecurityService;
+  let modal: NgbModal;
   let defaultUser: SessionUser;
+  let defaultMenuModal: MenuModalWithoutAction;
+  let defaultWidget: WidgetMenuItem;
   let defaultMenuAction: MenuAction;
   let defaultMenuLink: MenuLink;
   let defaultMenuRoute: MenuRoute;
   let spec: SpectatorRouting<MenuComponent>;
   const createComponent = createRoutingFactory({
     component: MenuComponent,
-    declarations: [mock.action, mock.link, WidgetDirective],
-    imports: [IconsModule, RouterTestingModule, MockBawApiModule],
+    declarations: [
+      mock.action,
+      mock.link,
+      WidgetDirective,
+      MockWidgetComponent,
+      MockModalComponent,
+    ],
+    imports: [
+      IconsModule,
+      RouterTestingModule,
+      MockBawApiModule,
+      NgbModalModule,
+      NgbTooltipModule,
+    ],
   });
   const menuTypes: ("action" | "secondary")[] = ["action", "secondary"];
 
-  function getMenuActions() {
-    return spec.queryAll(mock.action);
+  function getMenuActions(): MockedComponent<MenuButtonComponent>[] {
+    return spec.queryAll(".action", { read: mock.action });
   }
 
-  function getMenuLinks() {
-    return spec
-      .queryAll(mock.link)
-      .filter((menuItem) => isExternalLink(menuItem.link));
+  function getMenuModals(): MockedComponent<MenuButtonComponent>[] {
+    return spec.queryAll(".modal", { read: mock.action });
   }
 
-  function getMenuRoutes() {
+  function getMenuLinks(): MockedComponent<MenuLinkComponent>[] {
+    return spec.queryAll(mock.link).filter((item) => isExternalLink(item.link));
+  }
+
+  function getMenuRoutes(): MockedComponent<MenuLinkComponent>[] {
     return spec
       .queryAll(mock.link)
-      .filter((menuItem) => isInternalRoute(menuItem.link));
+      .filter((item) => isInternalRoute(item.link));
   }
 
   function setLoggedInState(user: SessionUser) {
@@ -78,10 +128,20 @@ describe("MenuComponent", () => {
       data,
     });
     api = spec.inject(SecurityService);
+    modal = spec.inject(NgbModal);
   }
 
   beforeEach(() => {
     defaultUser = new SessionUser(generateSessionUser());
+    defaultWidget = new WidgetMenuItem(MockWidgetComponent);
+    defaultMenuModal = menuModal({
+      icon: ["fas", "home"],
+      label: "label",
+      tooltip: () => "tooltip",
+      component: MockModalComponent,
+      pageData: {},
+      modalOpts: {},
+    });
     defaultMenuAction = menuAction({
       label: "label",
       icon: ["fas", "home"],
@@ -165,24 +225,147 @@ describe("MenuComponent", () => {
       it(`should create mixed links on ${menuType} menu`, () => {
         setup({
           menuType,
-          links: List([defaultMenuAction, defaultMenuLink, defaultMenuRoute]),
+          links: List([
+            defaultMenuAction,
+            defaultMenuLink,
+            defaultMenuRoute,
+            defaultMenuModal,
+          ]),
         });
         setLoggedInState(undefined);
         spec.detectChanges();
         expect(getMenuActions().length).toBe(1);
         expect(getMenuLinks().length).toBe(1);
         expect(getMenuRoutes().length).toBe(1);
+        expect(getMenuModals().length).toBe(1);
       });
     });
 
-    it("should not create widget when none provided", () => {
-      setup({ links: List([]) });
-      setLoggedInState(undefined);
-      spec.detectChanges();
-      expect(getWidget().childElementCount).toBe(0);
+    describe("widgets", () => {
+      function validateNumWidgets(numWidgets: number) {
+        expect(getWidget().childElementCount).toBe(numWidgets);
+      }
+
+      it("should not create widget when none provided", () => {
+        setup({ links: List([]) });
+        setLoggedInState(undefined);
+        spec.detectChanges();
+        validateNumWidgets(0);
+      });
+
+      it("should create widget when provided", () => {
+        setup({
+          links: List([]),
+          widgets: List([defaultWidget]),
+        });
+        setLoggedInState(undefined);
+        spec.detectChanges();
+        validateNumWidgets(1);
+        expect(spec.query(MockWidgetComponent)).toBeTruthy();
+      });
+
+      it("should create multiple widgets when provided", () => {
+        setup({
+          links: List([]),
+          widgets: List([
+            new WidgetMenuItem(MockWidgetComponent),
+            new WidgetMenuItem(MockWidgetComponent),
+            new WidgetMenuItem(MockWidgetComponent),
+          ]),
+        });
+        setLoggedInState(undefined);
+        spec.detectChanges();
+        validateNumWidgets(3);
+      });
     });
 
-    xit("should create widget when provided", () => {});
+    describe("modals", () => {
+      let dismissSpy: jasmine.Spy;
+      let closeSpy: jasmine.Spy;
+      let mockComponentInstance: ModalComponent;
+
+      function spyOnModal() {
+        spyOn(modal, "open").and.callFake(
+          () =>
+            ({
+              componentInstance: mockComponentInstance,
+              dismiss: dismissSpy,
+              close: closeSpy,
+            } as any)
+        );
+      }
+
+      function assertModalOpen(menuItem: MenuModal) {
+        expect(modal.open).toHaveBeenCalledWith(
+          menuItem.component,
+          menuItem.modalOpts
+        );
+      }
+
+      beforeEach(() => {
+        mockComponentInstance = {} as any;
+        dismissSpy = jasmine.createSpy("dismiss modal");
+        closeSpy = jasmine.createSpy("close modal");
+      });
+
+      it("should open modal on click", () => {
+        setup({ links: List([defaultMenuModal]) });
+        setLoggedInState(undefined);
+        spyOnModal();
+        spec.detectChanges();
+        getMenuModals()[0].link.action();
+        assertModalOpen(spec.component.filteredLinks.first() as MenuModal);
+      });
+
+      it("should assign route data to modal component", () => {
+        const routeData = { example: "values" };
+        setup({ links: List([defaultMenuModal]) }, routeData);
+        setLoggedInState(undefined);
+        spyOnModal();
+        spec.detectChanges();
+        const link = getMenuModals()[0].link as MenuModal;
+        link.action();
+        expect<any>(mockComponentInstance.routeData).toEqual(routeData);
+      });
+
+      it("should assign page data to modal component", () => {
+        const modalItem = menuModal({
+          ...defaultMenuModal,
+          pageData: { example: "values" },
+        });
+        setup({ links: List([modalItem]) });
+        setLoggedInState(undefined);
+        spyOnModal();
+        spec.detectChanges();
+        const link = getMenuModals()[0].link as MenuModal;
+        link.action();
+        expect(mockComponentInstance.pageData).toEqual(modalItem.pageData);
+      });
+
+      it("should assign dismissModal function to modal component", () => {
+        setup({ links: List([defaultMenuModal]) });
+        setLoggedInState(undefined);
+        spyOnModal();
+        spec.detectChanges();
+        const link = getMenuModals()[0].link as MenuModal;
+        link.action();
+
+        mockComponentInstance.dismissModal("test dismissal");
+        expect(dismissSpy).toHaveBeenCalledWith("test dismissal");
+      });
+
+      it("should assign closeModal function to modal component", () => {
+        setup({ links: List([defaultMenuModal]) });
+        setLoggedInState(undefined);
+        spyOnModal();
+        spec.detectChanges();
+        const link = getMenuModals()[0].link as MenuModal;
+        link.action();
+
+        mockComponentInstance.closeModal("test close");
+        expect(closeSpy).toHaveBeenCalledWith("test close");
+      });
+    });
   });
 
   [
@@ -207,12 +390,20 @@ describe("MenuComponent", () => {
       getLink: () => getMenuRoutes(),
       route: true,
     },
+    {
+      title: "Menu Modal",
+      baseLink: () => defaultMenuModal,
+      create: (data) => menuModal(data),
+      getLink: () => getMenuModals(),
+      modal: true,
+    },
   ].forEach((test) => {
     function createLink(args: any = {}) {
       return test.create({ ...test.baseLink(), ...args });
     }
 
     function assertLinks(length: number) {
+      expect(getMenuModals().length).toBe(test.modal ? length : 0);
       expect(getMenuActions().length).toBe(test.action ? length : 0);
       expect(getMenuLinks().length).toBe(test.link ? length : 0);
       expect(getMenuRoutes().length).toBe(test.route ? length : 0);
@@ -264,12 +455,22 @@ describe("MenuComponent", () => {
         );
       });
 
-      it("should set link link", () => {
+      it("should set link menu item", () => {
         const link = createLink();
         setup({ menuType: "action", links: List([link]) });
         setLoggedInState(undefined);
         spec.detectChanges();
-        expect(test.getLink()[0].link).toEqual(link);
+
+        const testLink = test.getLink()[0].link;
+        if (test.modal) {
+          // Modal links are modified by the menu component and direct
+          // comparison cannot be made
+          expect(testLink).toHaveProperty("kind", link.kind);
+          expect(testLink).toHaveProperty("label", link.label);
+          expect(testLink).toHaveProperty("action");
+        } else {
+          expect(testLink).toEqual(link as MenuAction | MenuLink | MenuRoute);
+        }
       });
 
       describe("predicate", () => {
@@ -356,48 +557,58 @@ describe("MenuComponent", () => {
     let linkA: MenuRoute;
     let linkB: MenuLink;
     let linkC: MenuAction;
+    let linkD: MenuModalWithoutAction;
 
-    function arrange(a: number, b: number, c: number) {
+    function arrange(a: number, b: number, c: number, d: number) {
       // Labels are set so that lexicographical order can be determined
       linkA = menuRoute({ ...defaultMenuRoute, label: "b", order: a });
       linkB = menuLink({ ...defaultMenuLink, label: "a", order: b });
       linkC = menuAction({ ...defaultMenuAction, label: "z", order: c });
-      return List([linkA, linkB, linkC]);
+      linkD = menuModal({ ...defaultMenuModal, label: "y", order: d });
+      return List([linkA, linkB, linkC, linkD]);
     }
 
     function assertLinks(menuLinks: AnyMenuItem[]) {
-      expect(Array.from(spec.component.filteredLinks)).toEqual(menuLinks);
+      const filteredLinks = Array.from(spec.component.filteredLinks);
+      expect(filteredLinks.map((link) => link.label)).toEqual(
+        menuLinks.map((link) => link.label)
+      );
     }
 
     menuTypes.forEach((menuType) => {
       describe(menuType, () => {
+        const noOrder = undefined;
+
         it("should order links", () => {
-          setup({ menuType, links: arrange(3, 2, 1) });
+          setup({ menuType, links: arrange(4, 3, 2, 1) });
           setLoggedInState(undefined);
           spec.detectChanges();
-          assertLinks([linkC, linkB, linkA]);
+          assertLinks([linkD, linkC, linkB, linkA]);
         });
 
         it("ensures order is stable if not specified", () => {
-          setup({ menuType, links: arrange(undefined, undefined, undefined) });
-          spec.detectChanges();
+          setup({
+            menuType,
+            links: arrange(noOrder, noOrder, noOrder, noOrder),
+          });
           setLoggedInState(undefined);
-          assertLinks([linkA, linkB, linkC]);
+          spec.detectChanges();
+          assertLinks([linkA, linkB, linkC, linkD]);
         });
 
         it("should sort lexicographically only if order is equal", () => {
-          setup({ menuType, links: arrange(3, 3, 3) });
+          setup({ menuType, links: arrange(3, 3, 3, 3) });
           setLoggedInState(undefined);
           spec.detectChanges();
-          assertLinks([linkB, linkA, linkC]);
+          assertLinks([linkB, linkA, linkD, linkC]);
         });
 
         it("should order links with order link first", () => {
-          const menuLinks = arrange(undefined, undefined, -3);
+          const menuLinks = arrange(noOrder, noOrder, noOrder, -3);
           setup({ menuType, links: menuLinks });
           setLoggedInState(undefined);
           spec.detectChanges();
-          assertLinks([linkC, linkA, linkB]);
+          assertLinks([linkD, linkA, linkB, linkC]);
         });
 
         it("should order sub-links", () => {
