@@ -1,40 +1,51 @@
 import { projectMenuItem } from "@components/projects/projects.menus";
-import {
-  deleteSiteMenuItem,
-  editSiteMenuItem,
-  newSiteMenuItem,
-  siteMenuItem,
-  sitesCategory,
-} from "@components/sites/sites.menus";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
+import {
+  defaultDeleteIcon,
+  defaultEditIcon,
+  defaultNewIcon,
+  isProjectOwnerPredicate,
+} from "src/app/app.menus";
 
 export const regionsRoute = projectMenuItem.route.addFeatureModule("regions");
 
 export const regionsCategory: Category = {
-  ...sitesCategory,
   icon: ["fas", "map-signs"],
+  label: "Sites",
   route: regionsRoute.add(":regionId"),
 };
 
 export const regionMenuItem = menuRoute({
-  ...siteMenuItem,
   icon: ["fas", "map-signs"],
+  label: "Site",
+  parent: projectMenuItem,
   route: regionsCategory.route,
+  tooltip: () => "The current region",
 });
 
 export const newRegionMenuItem = menuRoute({
-  ...newSiteMenuItem,
+  icon: defaultNewIcon,
+  label: "New site",
+  parent: projectMenuItem,
+  predicate: isProjectOwnerPredicate,
   route: regionsRoute.add("new"),
+  tooltip: () => "Create a new site",
 });
 
 export const editRegionMenuItem = menuRoute({
-  ...editSiteMenuItem,
+  icon: defaultEditIcon,
+  label: "Edit this site",
   parent: regionMenuItem,
+  predicate: isProjectOwnerPredicate,
   route: regionMenuItem.route.add("edit"),
+  tooltip: () => "Change the details for this site",
 });
 
 export const deleteRegionMenuItem = menuRoute({
-  ...deleteSiteMenuItem,
+  icon: defaultDeleteIcon,
+  label: "Delete site",
   parent: regionMenuItem,
+  predicate: isProjectOwnerPredicate,
   route: regionMenuItem.route.add("delete"),
+  tooltip: () => "Delete this site",
 });

@@ -5,7 +5,7 @@ import { defaultMenu } from "@helpers/page/defaultMenus";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AnyMenuItem, LabelAndIcon } from "@interfaces/menusInterfaces";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { MenuModal, WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 
@@ -18,17 +18,17 @@ import { takeUntil } from "rxjs/operators";
   selector: "baw-action-menu",
   template: `
     <baw-menu
-      [title]="actionTitle"
-      [links]="actionLinks"
-      [widget]="actionWidget"
-      [menuType]="'action'"
+      menuType="action"
+      [title]="title"
+      [links]="links"
+      [widgets]="widgets"
     ></baw-menu>
   `,
 })
 export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
-  public actionTitle: LabelAndIcon;
-  public actionLinks: List<AnyMenuItem>;
-  public actionWidget: WidgetMenuItem;
+  public title: LabelAndIcon;
+  public links: List<AnyMenuItem | MenuModal>;
+  public widgets: List<WidgetMenuItem>;
   private defaultCategory = defaultMenu.defaultCategory;
 
   public constructor(private route: ActivatedRoute) {
@@ -38,9 +38,9 @@ export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   public ngOnInit() {
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (page: PageInfo) => {
-        this.actionTitle = page.category ?? this.defaultCategory;
-        this.actionLinks = page.menus?.actions ?? List();
-        this.actionWidget = page.menus?.actionsWidget ?? null;
+        this.title = page.category ?? this.defaultCategory;
+        this.links = page.menus?.actions ?? List();
+        this.widgets = page.menus?.actionWidgets ?? null;
       },
       (err: ApiErrorDetails) => console.error("ActionMenuComponent", err)
     );

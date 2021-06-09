@@ -9,6 +9,7 @@ export const defaultEditIcon: IconProp = ["fas", "edit"];
 export const defaultNewIcon: IconProp = ["fas", "plus"];
 export const defaultPermissionsIcon: IconProp = ["fas", "key"];
 export const defaultUserIcon: IconProp = ["fas", "user"];
+export const defaultAnnotationDownloadIcon: IconProp = ["fas", "file-download"];
 
 /**
  * Returns true only if user is a guest

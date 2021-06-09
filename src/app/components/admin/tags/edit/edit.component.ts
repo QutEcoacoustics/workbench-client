@@ -89,7 +89,7 @@ AdminTagsEditComponent.linkComponentToPageInfo({
       adminEditTagMenuItem,
       adminDeleteTagMenuItem,
     ]),
-    actionsWidget: new WidgetMenuItem(PermissionsShieldComponent, {}),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {
     [tagKey]: tagResolvers.show,

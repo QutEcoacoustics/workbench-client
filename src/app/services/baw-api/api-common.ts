@@ -1,6 +1,6 @@
-import { PartialWith } from "@helpers/advancedTypes";
+import { Option, PartialWith } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { Param } from "@interfaces/apiInterfaces";
+import { AuthToken, Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
 import { BawApiService, Filters } from "./baw-api.service";
@@ -47,6 +47,28 @@ export function param(x: Param) {
 }
 
 /**
+ * Set selected timezone query parameter in URL object
+ *
+ * @param url URL object
+ * @param timezoneName Selected timezone name
+ */
+export function setTimezoneQSP(url: URL, timezoneName: Option<string>): void {
+  url.searchParams.set("selected_timezone_name", timezoneName ?? "UTC");
+}
+
+/**
+ * Set authorization query parameter in URL object
+ *
+ * @param url URL object
+ * @param token Local user authentication token
+ */
+export function setAuthorizationQSP(url: URL, token: Option<AuthToken>): void {
+  if (token) {
+    url.searchParams.set("user_token", token);
+  }
+}
+
+/**
  * Create option (used by stringTemplate)
  *
  * @param x Api option
@@ -70,6 +92,8 @@ export type Filter = "filter";
 export const emptyParam: Empty = "";
 export const newParam: New = "new";
 export const filterParam: Filter = "filter";
+export const timezoneQueryParam = "selected_timezone_name" as const;
+export const authorizationQueryParam = "user_token" as const;
 
 /**
  * API List functionality
@@ -161,7 +185,8 @@ export abstract class StandardApi<M extends AbstractModel, P extends any[] = []>
     ApiShow<M, P>,
     ApiCreate<M, P>,
     ApiUpdate<M, P>,
-    ApiDestroy<M, P> {
+    ApiDestroy<M, P>
+{
   public abstract list(...urlParameters: P): Observable<M[]>;
   public abstract filter(
     filters: Filters<M>,
@@ -192,7 +217,8 @@ export abstract class ImmutableApi<
     ApiFilter<M, P>,
     ApiShow<M, P>,
     ApiCreate<M, P>,
-    ApiDestroy<M, P> {
+    ApiDestroy<M, P>
+{
   public abstract list(...urlParameters: P): Observable<M[]>;
   public abstract filter(
     filters: Filters<M>,
@@ -211,7 +237,8 @@ export abstract class ImmutableApi<
  */
 export abstract class ReadonlyApi<M extends AbstractModel, P extends any[] = []>
   extends BawApiService<M>
-  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P> {
+  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>
+{
   public abstract list(...urlParameters: P): Observable<M[]>;
   public abstract filter(
     filters: Filters<M>,
@@ -228,7 +255,8 @@ export abstract class ReadAndCreateApi<
     P extends any[] = []
   >
   extends BawApiService<M>
-  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiCreate<M, P> {
+  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiCreate<M, P>
+{
   public abstract list(...urlParameters: P): Observable<M[]>;
   public abstract filter(
     filters: Filters<M>,
@@ -246,7 +274,8 @@ export abstract class ReadAndUpdateApi<
     P extends any[] = []
   >
   extends BawApiService<M>
-  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiUpdate<M, P> {
+  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiUpdate<M, P>
+{
   public abstract list(...urlParameters: P): Observable<M[]>;
   public abstract filter(
     filters: Filters<M>,
@@ -272,7 +301,8 @@ export abstract class NonDestructibleApi<
     ApiFilter<M, P>,
     ApiShow<M, P>,
     ApiCreate<M, P>,
-    ApiUpdate<M, P> {
+    ApiUpdate<M, P>
+{
   public abstract list(...urlParameters: P): Observable<M[]>;
   public abstract filter(
     filters: Filters<M>,

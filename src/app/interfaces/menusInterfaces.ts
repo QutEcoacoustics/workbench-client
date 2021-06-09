@@ -1,6 +1,10 @@
 import { Params } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import {
+  MenuModal,
+  MenuModalWithoutAction,
+  WidgetMenuItem,
+} from "@menu/widgetItem";
 import { List } from "immutable";
 import { SessionUser } from "../models/User";
 import { StrongRoute } from "./strongRoute";
@@ -58,7 +62,11 @@ export interface Category extends LabelAndIcon {
  * Literal string choice type (like an enum) used for the `kind`
  * property in things derived from MenuItems.
  */
-export type MenuItemKinds = "MenuAction" | "MenuLink" | "MenuRoute";
+export type MenuItemKinds =
+  | "MenuItem"
+  | "MenuAction"
+  | "MenuLink"
+  | "MenuRoute";
 
 /**
  * User callback function
@@ -107,6 +115,10 @@ export interface MenuItem extends LabelAndIcon {
    * the message in addition to whatever the links tooltip is.
    */
   disabled?: boolean | string;
+}
+
+export function menuItem<T extends Omit<MenuItem, "kind">>(item: T): MenuItem {
+  return Object.assign(item, { kind: "MenuItem" as const });
 }
 
 /**
@@ -187,7 +199,12 @@ export function menuAction<T extends Omit<MenuAction, "kind">>(
  * Any Menu Item discriminated union. This is used to store any of the
  *  menu item types together in a collection.
  */
-export type AnyMenuItem = MenuAction | MenuLink | MenuRoute;
+export type AnyMenuItem =
+  | MenuAction
+  | MenuLink
+  | MenuRoute
+  | MenuModalWithoutAction
+  | MenuModal;
 
 /**
  * Any Menu Item  discriminated union. This is used to store any menu item,
@@ -198,28 +215,28 @@ export type NavigableMenuItem = MenuLink | MenuRoute;
 /**
  * Determines if a menu item is a button (MenuAction)
  *
- * @param menuItem Menu item
+ * @param item Menu item
  */
-export function isButton(menuItem: AnyMenuItem): menuItem is MenuAction {
-  return menuItem.kind === "MenuAction";
+export function isButton(item: any): item is MenuAction {
+  return item.kind === "MenuAction";
 }
 
 /**
  * Determines if a menu item is part of the MenuItem interface
  *
- * @param menuItem Menu item
+ * @param item Menu item
  */
-export function isInternalRoute(menuItem: AnyMenuItem): menuItem is MenuRoute {
-  return menuItem.kind === "MenuRoute";
+export function isInternalRoute(item: any): item is MenuRoute {
+  return item.kind === "MenuRoute";
 }
 
 /**
  * Determines if a menu item is part of the MenuLink interface
  *
- * @param menuItem Menu item
+ * @param item Menu item
  */
-export function isExternalLink(menuItem: AnyMenuItem): menuItem is MenuLink {
-  return menuItem.kind === "MenuLink";
+export function isExternalLink(item: any): item is MenuLink {
+  return item.kind === "MenuLink";
 }
 
 /**
@@ -236,12 +253,10 @@ export function getRoute(link: NavigableMenuItem, params?: Params): string {
 /**
  * Determines if an object is part of the Navigable interface
  *
- * @param menuItem Menu item
+ * @param item Menu item
  */
-export function isNavigableMenuItem(
-  menuItem: any
-): menuItem is NavigableMenuItem {
-  return isInternalRoute(menuItem) || isExternalLink(menuItem);
+export function isNavigableMenuItem(item: any): item is NavigableMenuItem {
+  return isInternalRoute(item) || isExternalLink(item);
 }
 
 /**
@@ -252,8 +267,8 @@ export function isNavigableMenuItem(
  * @param links List of secondary links
  */
 export interface Menus {
-  actions?: List<AnyMenuItem>;
-  actionsWidget?: WidgetMenuItem;
-  links?: List<NavigableMenuItem>;
-  linksWidget?: WidgetMenuItem;
+  actions?: List<AnyMenuItem | MenuModalWithoutAction>;
+  actionWidgets?: List<WidgetMenuItem>;
+  links?: List<NavigableMenuItem | MenuModalWithoutAction>;
+  linkWidgets?: List<WidgetMenuItem>;
 }

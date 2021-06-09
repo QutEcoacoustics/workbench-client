@@ -14,6 +14,7 @@ import { LineTruncationLibModule } from "ngx-line-truncation";
 import { ToastrModule } from "ngx-toastr";
 import { DirectivesModule } from "src/app/directives/directives.module";
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
+import { AnnotationDownloadComponent } from "./annotation-download/annotation-download.component";
 import { BawClientModule } from "./baw-client/baw-client.module";
 import { CardsModule } from "./cards/cards.module";
 import { CheckboxComponent } from "./checkbox/checkbox.component";
@@ -36,6 +37,7 @@ import { WIPComponent } from "./wip/wip.component";
 
 export const sharedComponents = [
   ActionMenuComponent,
+  AnnotationDownloadComponent,
   CheckboxComponent,
   CmsComponent,
   DebounceInputComponent,

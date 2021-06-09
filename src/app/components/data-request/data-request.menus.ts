@@ -1,17 +1,8 @@
-import { Params } from "@angular/router";
 import { homeCategory } from "@components/home/home.menus";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 
-export const dataRequestRoute = StrongRoute.newRoot().add(
-  "data_request",
-  (params: Params) => ({
-    userId: params?.userId,
-    projectId: params?.projectId,
-    regionId: params?.regionId,
-    siteId: params?.siteId,
-  })
-);
+export const dataRequestRoute = StrongRoute.newRoot().add("data_request");
 
 export const dataRequestCategory: Category = homeCategory;
 

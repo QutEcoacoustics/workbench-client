@@ -1,6 +1,6 @@
-import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
-import { Category, menuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
+import { defaultAnnotationDownloadIcon } from "src/app/app.menus";
 import {
   deleteSiteMenuItem,
   editSiteMenuItem,
@@ -34,9 +34,10 @@ export const newPointMenuItem = menuRoute({
   tooltip: () => "Create a new point",
 });
 
-export const pointAnnotationsMenuItem = menuRoute({
-  ...dataRequestMenuItem,
+export const pointAnnotationsMenuItem = menuItem({
+  icon: defaultAnnotationDownloadIcon,
   label: "Download Annotations",
+  parent: pointMenuItem,
   tooltip: () => "Download annotations for this point",
 });
 

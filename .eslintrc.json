@@ -83,7 +83,7 @@
         ],
         "@typescript-eslint/semi": ["off", null],
         "arrow-parens": ["off", "always"],
-        "brace-style": ["error", "1tbs"],
+        "brace-style": ["off"],
         "eqeqeq": ["error", "always"],
         "guard-for-in": "off",
         "import/order": "error",
