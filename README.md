@@ -27,11 +27,21 @@ $ npm install
 
 ## To develop:
 
+Normal development
+
 ```bash
 $ npm start
 ```
 
 Then open a web browser to `http://localhost:4200`.
+
+Server side rendering
+
+```bash
+$ npm run serve:ssr
+```
+
+Then open a web browser to `http://localhost:4000`.
 
 ### Environment
 
@@ -115,6 +125,12 @@ To build the application:
 
 ```bash
 $ npm run build
+```
+
+To build the Server Side Renderer:
+
+```bash
+$ npm run build:ssr
 ```
 
 Move the generated files from the `/dist` directory to the required location.
