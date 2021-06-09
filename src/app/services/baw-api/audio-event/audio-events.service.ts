@@ -83,8 +83,7 @@ export class AudioEventsService extends StandardApi<
 @Injectable()
 export class ShallowAudioEventsService
   extends BawApiService<AudioEvent>
-  implements ApiFilter<AudioEvent>
-{
+  implements ApiFilter<AudioEvent> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,

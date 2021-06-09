@@ -17,8 +17,7 @@ const endpoint = stringTemplate`/my_account/`;
 @Injectable()
 export class UserService
   extends BawApiService<User>
-  implements ApiShow<User, [], IdOr<User>>
-{
+  implements ApiShow<User, [], IdOr<User>> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
