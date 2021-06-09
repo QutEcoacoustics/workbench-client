@@ -1,7 +1,9 @@
+import { DOCUMENT } from "@angular/common";
 import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Inject,
   Input,
   OnInit,
   Renderer2,
@@ -9,6 +11,7 @@ import {
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { ConfigService } from "@services/config/config.service";
 import { takeUntil } from "rxjs/operators";
 
 /**
@@ -31,8 +34,10 @@ export class CmsComponent extends withUnsubscribe() implements OnInit {
 
   public constructor(
     private cms: CmsService,
+    private config: ConfigService,
     private renderer: Renderer2,
     private elRef: ElementRef,
+    @Inject(DOCUMENT) private document: Document,
     private ref: ChangeDetectorRef
   ) {
     super();
@@ -40,6 +45,11 @@ export class CmsComponent extends withUnsubscribe() implements OnInit {
 
   public ngOnInit() {
     this.loading = true;
+
+    // Don't attempt to load CMS data if currently we are in SSR
+    if (this.config.isSsr) {
+      return;
+    }
 
     this.cms
       .get(this.page)
@@ -53,7 +63,7 @@ export class CmsComponent extends withUnsubscribe() implements OnInit {
           // NOTE: It might be useful to consider using ShadowDom to isolate these CMS HTML fragments from
           //       the rest of the site. This would prevent, for example, a careless CSS global style in the CMS fragment
           //       from affecting the rest of the angular site.
-          const range = document.createRange();
+          const range = this.document.createRange();
           const fragment = range.createContextualFragment(blob);
           this.renderer.appendChild(this.elRef.nativeElement, fragment);
           this.loading = false;

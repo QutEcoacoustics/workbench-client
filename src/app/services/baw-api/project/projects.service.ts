@@ -4,6 +4,7 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IProject, Project } from "@models/Project";
 import type { User } from "@models/User";
+import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -29,9 +30,10 @@ export class ProjectsService extends StandardApi<Project> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    config: ConfigService
   ) {
-    super(http, apiRoot, Project, injector);
+    super(http, apiRoot, Project, injector, config);
   }
 
   public list(): Observable<Project[]> {

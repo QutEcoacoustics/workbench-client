@@ -5,6 +5,7 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ITag, Tag, TagType } from "@models/Tag";
 import { User } from "@models/User";
+import { ConfigService } from "@services/config/config.service";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import {
@@ -32,9 +33,10 @@ export class TagsService extends StandardApi<Tag> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    config: ConfigService
   ) {
-    super(http, apiRoot, Tag, injector);
+    super(http, apiRoot, Tag, injector, config);
   }
 
   public list(): Observable<Tag[]> {

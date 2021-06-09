@@ -1,10 +1,16 @@
+@import "../../styles/media-mixin";
+
 #website-title {
   color: white;
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
   font-family: "Arial";
-  font-size: 10rem;
+  font-size: 12vw;
   font-weight: bold;
   padding-bottom: 15rem;
+
+  @include media(">extra-large") {
+    font-size: 10rem
+  }
 }
 
 section {
@@ -27,4 +33,5 @@ section {
 
 #hero-image {
   background-image: url("/assets/images/landing/IMG_1318.JPG");
+  background-color: lightgray;
 }

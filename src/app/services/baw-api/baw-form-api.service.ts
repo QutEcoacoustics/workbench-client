@@ -3,6 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
+import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
 import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
@@ -11,7 +12,8 @@ import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
  * Reads through a HTML document for recaptcha setup code to extract the
  * seed and action.
  */
-const extractRecaptchaValues = /grecaptcha\.execute\('(.+?)', {action: '(.+?)'}\)/;
+const extractRecaptchaValues =
+  /grecaptcha\.execute\('(.+?)', {action: '(.+?)'}\)/;
 
 /*
  * Looks for a hidden input in HTML document, name of input is
@@ -34,9 +36,10 @@ export class BawFormApiService<
     @Inject(API_ROOT) apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
     classBuilder: new (_: Record<string, any>, _injector?: Injector) => Model,
-    injector: Injector
+    injector: Injector,
+    config: ConfigService
   ) {
-    super(http, apiRoot, classBuilder, injector);
+    super(http, apiRoot, classBuilder, injector, config);
   }
 
   /**

@@ -4,6 +4,7 @@ import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ReportProblem } from "@models/data/ReportProblem";
+import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import { catchError, first, map } from "rxjs/operators";
 
@@ -14,9 +15,10 @@ export class ReportProblemService extends BawFormApiService<ReportProblem> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    config: ConfigService
   ) {
-    super(http, apiRoot, ReportProblem, injector);
+    super(http, apiRoot, ReportProblem, injector, config);
   }
 
   public reportProblem(details: ReportProblem): Observable<void> {

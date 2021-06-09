@@ -11,13 +11,20 @@ import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
-import { Observable, throwError } from "rxjs";
-import { map } from "rxjs/operators";
+import { ConfigService } from "@services/config/config.service";
+import { MonoTypeOperatorFunction, Observable, throwError } from "rxjs";
+import { catchError, map, timeout } from "rxjs/operators";
 import { ApiErrorDetails } from "./api.interceptor.service";
 
 export const defaultApiPageSize = 25;
 export const unknownErrorCode = -1;
 export const STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
+
+/**
+ * Default headers for API requests, this sets responseTypes so that the interceptor
+ * can change its behavior based on the type of request.
+ */
+const defaultHeaders = { responseType: "json" as const };
 
 /**
  * Interface with BAW Server Rest API
@@ -67,7 +74,8 @@ export class BawApiService<Model extends AbstractModel> {
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
     classBuilder: new (_: Record<string, any>, _injector?: Injector) => Model,
-    protected injector: Injector
+    protected injector: Injector,
+    private config: ConfigService
   ) {
     this.platform = injector.get(PLATFORM_ID);
 
@@ -240,10 +248,9 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected httpGet(path: string): Observable<ApiResponse<Model | Model[]>> {
-    return this.http.get<ApiResponse<Model>>(this.getPath(path), {
-      // Set responseType for interceptor
-      responseType: "json",
-    });
+    return this.http
+      .get<ApiResponse<Model>>(this.getPath(path), defaultHeaders)
+      .pipe(this.requestTimeout(), catchError(this.handleError));
   }
 
   /**
@@ -253,10 +260,9 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected httpDelete(path: string): Observable<ApiResponse<Model | void>> {
-    return this.http.delete<ApiResponse<null>>(this.getPath(path), {
-      // Set responseType for interceptor
-      responseType: "json",
-    });
+    return this.http
+      .delete<ApiResponse<null>>(this.getPath(path), defaultHeaders)
+      .pipe(this.requestTimeout(), catchError(this.handleError));
   }
 
   /**
@@ -267,10 +273,9 @@ export class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected httpPost(path: string, body?: any): Observable<ApiResponse<Model>> {
-    return this.http.post<ApiResponse<Model>>(this.getPath(path), body, {
-      // Set responseType for interceptor
-      responseType: "json",
-    });
+    return this.http
+      .post<ApiResponse<Model>>(this.getPath(path), body, defaultHeaders)
+      .pipe(this.requestTimeout(), catchError(this.handleError));
   }
 
   /**
@@ -281,10 +286,9 @@ export class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected httpPut(path: string, body?: any): Observable<ApiResponse<Model>> {
-    return this.http.put<ApiResponse<Model>>(this.getPath(path), body, {
-      // Set responseType for interceptor
-      responseType: "json",
-    });
+    return this.http
+      .put<ApiResponse<Model>>(this.getPath(path), body, defaultHeaders)
+      .pipe(this.requestTimeout(), catchError(this.handleError));
   }
 
   /**
@@ -298,10 +302,9 @@ export class BawApiService<Model extends AbstractModel> {
     path: string,
     body?: any
   ): Observable<ApiResponse<Model>> {
-    return this.http.patch<ApiResponse<Model>>(this.getPath(path), body, {
-      // Set responseType for interceptor
-      responseType: "json",
-    });
+    return this.http
+      .patch<ApiResponse<Model>>(this.getPath(path), body, defaultHeaders)
+      .pipe(this.requestTimeout(), catchError(this.handleError));
   }
 
   /**
@@ -345,6 +348,17 @@ export class BawApiService<Model extends AbstractModel> {
    */
   protected getPath(path: string): string {
     return this.apiRoot + path;
+  }
+
+  /**
+   * Set a request timeout for http requests
+   *
+   * @returns RXJS Pipe
+   */
+  private requestTimeout<T>(): MonoTypeOperatorFunction<T> {
+    const defaultTimeoutMs = 60 * 1000;
+    const ssrTimeoutMs = 1 * 1000;
+    return timeout<T>(this.config.isSsr ? ssrTimeoutMs : defaultTimeoutMs);
   }
 
   /**

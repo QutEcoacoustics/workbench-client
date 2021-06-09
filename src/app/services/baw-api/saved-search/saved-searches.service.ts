@@ -3,6 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ISavedSearch, SavedSearch } from "@models/SavedSearch";
+import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -24,9 +25,10 @@ export class SavedSearchesService extends ImmutableApi<SavedSearch> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    config: ConfigService
   ) {
-    super(http, apiRoot, SavedSearch, injector);
+    super(http, apiRoot, SavedSearch, injector, config);
   }
 
   public list(): Observable<SavedSearch[]> {

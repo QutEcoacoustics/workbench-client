@@ -3,6 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IScript, Script } from "@models/Script";
+import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -28,9 +29,10 @@ export class ScriptsService extends NonDestructibleApi<Script> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    config: ConfigService
   ) {
-    super(http, apiRoot, Script, injector);
+    super(http, apiRoot, Script, injector, config);
   }
 
   public list(): Observable<Script[]> {

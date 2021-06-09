@@ -5,6 +5,7 @@ import {
   Input,
   OnChanges,
 } from "@angular/core";
+import { ConfigService } from "@services/config/config.service";
 import { Card } from "../cards.component";
 
 /**
@@ -39,25 +40,33 @@ import { Card } from "../cards.component";
         <!-- Title -->
         <h4 class="card-title">
           <ng-container *ngIf="card.link || card.route; else noLinkTitle">
+            <!-- External header link wrapper -->
             <ng-container *ngIf="card.link; else route">
               <a [href]="card.link">{{ card.title }}</a>
             </ng-container>
 
+            <!-- Internal header link wrapper -->
             <ng-template #route>
               <a [bawUrl]="card.route">{{ card.title }}</a>
             </ng-template>
           </ng-container>
 
+          <!-- Header -->
           <ng-template #noLinkTitle>{{ card.title }}</ng-template>
         </h4>
 
         <!-- Card Description -->
+        <!-- Line truncation fails in SSR https://github.com/DiZhou92/ngx-line-truncation/issues/49 -->
         <p
+          *ngIf="!isSsr; else noTruncation"
           class="card-text"
           [ngClass]="{ 'font-italic': !card.description }"
           [line-truncation]="4"
           [innerHTML]="description"
         ></p>
+        <ng-template #noTruncation>
+          <p>Loading</p>
+        </ng-template>
       </div>
     </div>
   `,
@@ -66,13 +75,16 @@ import { Card } from "../cards.component";
 export class CardImageComponent implements OnChanges {
   @Input() public card: Card;
   public description: string;
+  public isSsr: boolean;
 
-  public constructor(private ref: ChangeDetectorRef) {}
+  public constructor(
+    private config: ConfigService,
+    private ref: ChangeDetectorRef
+  ) {}
 
   public ngOnChanges() {
-    this.description = this.card.description
-      ? this.card.description
-      : "No description given";
+    this.description = this.card.description ?? "No description given";
+    this.isSsr = this.config.isSsr;
     this.ref.detectChanges();
   }
 }

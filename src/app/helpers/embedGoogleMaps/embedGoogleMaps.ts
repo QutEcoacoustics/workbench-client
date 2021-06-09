@@ -11,10 +11,14 @@ let node: HTMLScriptElement;
  *
  * @param key Google maps API key
  */
-export async function embedGoogleMaps(key?: string) {
+export async function embedGoogleMaps(key?: string): Promise<void> {
   let googleMapsUrl = googleMapsBaseUrl;
   if (key) {
     googleMapsUrl += "?key=" + key;
+  }
+
+  if (!document) {
+    return;
   }
 
   node = document.createElement("script");

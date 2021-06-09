@@ -152,26 +152,27 @@ the browser while the rest of the application bundle downloads. To make this wor
 you need to run our docker container which contains the web server.
 
 1. Template your `environment.json` file
+
+   - Template `environment.json` can be found at `./src/assets/environment.json`
+
 2. Run the following command (substituting in the path to your templated config file):
 
-```
-docker run -p 4000:4000 \
-  -v "$(pwd)/environment.json:/environment.json" \
-  qutecoacoustics/workbench-client
+```bash
+$ docker run -p 4000:4000 -v "$(pwd)/environment.json:/environment.json" qutecoacoustics/workbench-client
 ```
 
 Done!
 
 To build the container locally for testing:
 
-```
-docker build -t qutecoacoustics/workbench-client .
+```bash
+$ docker build -t qutecoacoustics/workbench-client .
 ```
 
 And for debugging the express server:
 
-```
- docker run -p 4000:4000 -v $(pwd)/environment.json:/environment.json -e DEBUG=express:* qutecoacoustics/workbench-client
+```bash
+$ docker run -p 4000:4000 -v "$(pwd)/environment.json:/environment.json" -e DEBUG=express:* qutecoacoustics/workbench-client
 ```
 
 ## Licence

@@ -3,6 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob, IAnalysisJob } from "@models/AnalysisJob";
+import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -28,9 +29,10 @@ export class AnalysisJobsService extends ReadAndUpdateApi<AnalysisJob> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    config: ConfigService
   ) {
-    super(http, apiRoot, AnalysisJob, injector);
+    super(http, apiRoot, AnalysisJob, injector, config);
   }
 
   public list(): Observable<AnalysisJob[]> {

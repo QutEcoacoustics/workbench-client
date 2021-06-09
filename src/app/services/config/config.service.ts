@@ -37,6 +37,10 @@ export class ConfigService {
     this._config = new Proxy(environment, {});
   }
 
+  public get isSsr(): boolean {
+    return typeof window === "undefined" && typeof document === "undefined";
+  }
+
   /**
    * Get config data
    */
