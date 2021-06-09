@@ -4,7 +4,6 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { AnalysisJobItem, IAnalysisJobItem } from "@models/AnalysisJobItem";
-import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -31,10 +30,9 @@ export class AnalysisJobItemsService extends ReadonlyApi<
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, AnalysisJobItem, injector, config);
+    super(http, apiRoot, AnalysisJobItem, injector);
   }
 
   public list(analysisJob: IdOr<AnalysisJob>): Observable<AnalysisJobItem[]> {

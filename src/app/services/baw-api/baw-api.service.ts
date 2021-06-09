@@ -11,9 +11,9 @@ import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
-import { ConfigService } from "@services/config/config.service";
 import { MonoTypeOperatorFunction, Observable, throwError } from "rxjs";
 import { catchError, map, timeout } from "rxjs/operators";
+import { isSsr } from "src/app/app.helper";
 import { ApiErrorDetails } from "./api.interceptor.service";
 
 export const defaultApiPageSize = 25;
@@ -74,8 +74,7 @@ export class BawApiService<Model extends AbstractModel> {
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
     classBuilder: new (_: Record<string, any>, _injector?: Injector) => Model,
-    protected injector: Injector,
-    private config: ConfigService
+    protected injector: Injector
   ) {
     this.platform = injector.get(PLATFORM_ID);
 
@@ -358,7 +357,7 @@ export class BawApiService<Model extends AbstractModel> {
   private requestTimeout<T>(): MonoTypeOperatorFunction<T> {
     const defaultTimeoutMs = 60 * 1000;
     const ssrTimeoutMs = 1 * 1000;
-    return timeout<T>(this.config.isSsr ? ssrTimeoutMs : defaultTimeoutMs);
+    return timeout<T>(isSsr() ? ssrTimeoutMs : defaultTimeoutMs);
   }
 
   /**

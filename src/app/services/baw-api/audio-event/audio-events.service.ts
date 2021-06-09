@@ -6,7 +6,6 @@ import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
-import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   ApiFilter,
@@ -35,10 +34,9 @@ export class AudioEventsService extends StandardApi<
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, AudioEvent, injector, config);
+    super(http, apiRoot, AudioEvent, injector);
   }
 
   public list(audioRecording: IdOr<AudioRecording>): Observable<AudioEvent[]> {
@@ -90,10 +88,9 @@ export class ShallowAudioEventsService
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, AudioEvent, injector, config);
+    super(http, apiRoot, AudioEvent, injector);
   }
 
   public filter(filters: Filters<AudioEvent>): Observable<AudioEvent[]> {

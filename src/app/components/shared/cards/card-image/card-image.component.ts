@@ -5,7 +5,7 @@ import {
   Input,
   OnChanges,
 } from "@angular/core";
-import { ConfigService } from "@services/config/config.service";
+import { isSsr } from "src/app/app.helper";
 import { Card } from "../cards.component";
 
 /**
@@ -77,14 +77,11 @@ export class CardImageComponent implements OnChanges {
   public description: string;
   public isSsr: boolean;
 
-  public constructor(
-    private config: ConfigService,
-    private ref: ChangeDetectorRef
-  ) {}
+  public constructor(private ref: ChangeDetectorRef) {}
 
   public ngOnChanges() {
     this.description = this.card.description ?? "No description given";
-    this.isSsr = this.config.isSsr;
+    this.isSsr = isSsr();
     this.ref.detectChanges();
   }
 }

@@ -3,7 +3,6 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
-import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
 import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
@@ -36,10 +35,9 @@ export class BawFormApiService<
     @Inject(API_ROOT) apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
     classBuilder: new (_: Record<string, any>, _injector?: Injector) => Model,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, classBuilder, injector, config);
+    super(http, apiRoot, classBuilder, injector);
   }
 
   /**

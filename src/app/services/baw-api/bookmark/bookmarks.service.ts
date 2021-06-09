@@ -4,7 +4,6 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Bookmark, IBookmark } from "@models/Bookmark";
 import type { User } from "@models/User";
-import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -26,10 +25,9 @@ export class BookmarksService extends StandardApi<Bookmark> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, Bookmark, injector, config);
+    super(http, apiRoot, Bookmark, injector);
   }
 
   public list(): Observable<Bookmark[]> {

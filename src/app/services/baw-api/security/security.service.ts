@@ -10,7 +10,6 @@ import { RegisterDetails } from "@models/data/RegisterDetails";
 import { ResetPassword } from "@models/data/ResetPassword";
 import { UnlockAccount } from "@models/data/UnlockAccount";
 import { SessionUser, User } from "@models/User";
-import { ConfigService } from "@services/config/config.service";
 import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
@@ -42,10 +41,9 @@ export class SecurityService extends BawFormApiService<SessionUser> {
     @Inject(API_ROOT) apiRoot: string,
     private userService: UserService,
     private cookies: CookieService,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, SessionUser, injector, config);
+    super(http, apiRoot, SessionUser, injector);
 
     // After constructor so that we can access super
     this.handleError = (err: ApiErrorDetails | Error): Observable<never> => {

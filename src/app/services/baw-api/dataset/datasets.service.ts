@@ -3,7 +3,6 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Dataset, IDataset } from "@models/Dataset";
-import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -25,10 +24,9 @@ export class DatasetsService extends StandardApi<Dataset> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, Dataset, injector, config);
+    super(http, apiRoot, Dataset, injector);
   }
 
   public list(): Observable<Dataset[]> {

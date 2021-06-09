@@ -4,7 +4,6 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IResponse, Response } from "@models/Response";
 import { Study } from "@models/Study";
-import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -29,10 +28,9 @@ export class ResponsesService extends StandardApi<Response, [IdOr<Study>]> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, Response, injector, config);
+    super(http, apiRoot, Response, injector);
   }
 
   public list(study: IdOr<Study>): Observable<Response[]> {
@@ -66,10 +64,9 @@ export class ShallowResponsesService extends StandardApi<Response> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, Response, injector, config);
+    super(http, apiRoot, Response, injector);
   }
 
   public list(): Observable<Response[]> {

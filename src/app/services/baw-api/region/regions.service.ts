@@ -4,7 +4,6 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Project } from "@models/Project";
 import { IRegion, Region } from "@models/Region";
-import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -33,10 +32,9 @@ export class RegionsService extends StandardApi<Region, [IdOr<Project>]> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, Region, injector, config);
+    super(http, apiRoot, Region, injector);
   }
 
   public list(project: IdOr<Project>): Observable<Region[]> {
@@ -74,10 +72,9 @@ export class ShallowRegionsService extends StandardApi<Region> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, Region, injector, config);
+    super(http, apiRoot, Region, injector);
   }
 
   public list(): Observable<Region[]> {

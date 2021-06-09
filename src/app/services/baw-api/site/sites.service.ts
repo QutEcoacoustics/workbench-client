@@ -6,7 +6,6 @@ import type { Project } from "@models/Project";
 import type { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
 import type { User } from "@models/User";
-import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -41,10 +40,9 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, Site, injector, config);
+    super(http, apiRoot, Site, injector);
   }
 
   public list(project: IdOr<Project>): Observable<Site[]> {
@@ -126,10 +124,9 @@ export class ShallowSitesService extends StandardApi<Site> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, Site, injector, config);
+    super(http, apiRoot, Site, injector);
   }
 
   public list(): Observable<Site[]> {

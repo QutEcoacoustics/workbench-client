@@ -11,8 +11,8 @@ import {
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { ConfigService } from "@services/config/config.service";
 import { takeUntil } from "rxjs/operators";
+import { isSsr } from "src/app/app.helper";
 
 /**
  * CMS Wrapper
@@ -34,7 +34,6 @@ export class CmsComponent extends withUnsubscribe() implements OnInit {
 
   public constructor(
     private cms: CmsService,
-    private config: ConfigService,
     private renderer: Renderer2,
     private elRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
@@ -47,7 +46,7 @@ export class CmsComponent extends withUnsubscribe() implements OnInit {
     this.loading = true;
 
     // Don't attempt to load CMS data if currently we are in SSR
-    if (this.config.isSsr) {
+    if (isSsr()) {
       return;
     }
 

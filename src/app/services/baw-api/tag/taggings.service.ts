@@ -5,7 +5,6 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { AudioEvent } from "@models/AudioEvent";
 import { ITagging, Tagging } from "@models/Tagging";
-import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -33,10 +32,9 @@ export class TaggingsService extends StandardApi<
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, Tagging, injector, config);
+    super(http, apiRoot, Tagging, injector);
   }
 
   public list(

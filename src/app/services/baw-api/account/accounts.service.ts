@@ -4,7 +4,6 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IUser, User } from "@models/User";
-import { ConfigService } from "@services/config/config.service";
 import httpCodes from "http-status";
 import { Observable, of, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
@@ -32,10 +31,9 @@ export class AccountsService extends StandardApi<User> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, User, injector, config);
+    super(http, apiRoot, User, injector);
   }
 
   public list(): Observable<User[]> {

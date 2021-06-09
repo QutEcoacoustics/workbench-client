@@ -3,7 +3,6 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { User } from "@models/User";
-import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import { ApiShow, IdOr } from "../api-common";
 import { BawApiService } from "../baw-api.service";
@@ -23,10 +22,9 @@ export class UserService
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, User, injector, config);
+    super(http, apiRoot, User, injector);
   }
 
   public show(): Observable<User> {

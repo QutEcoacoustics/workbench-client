@@ -4,7 +4,6 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Dataset } from "@models/Dataset";
 import { DatasetItem, IDatasetItem } from "@models/DatasetItem";
-import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -31,10 +30,9 @@ export class DatasetItemsService extends ImmutableApi<
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, DatasetItem, injector, config);
+    super(http, apiRoot, DatasetItem, injector);
   }
 
   public list(dataset: IdOr<Dataset>): Observable<DatasetItem[]> {

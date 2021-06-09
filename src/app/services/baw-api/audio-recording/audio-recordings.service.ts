@@ -5,7 +5,6 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import type { Region } from "@models/Region";
 import type { Site } from "@models/Site";
-import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -28,10 +27,9 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    config: ConfigService
+    injector: Injector
   ) {
-    super(http, apiRoot, AudioRecording, injector, config);
+    super(http, apiRoot, AudioRecording, injector);
   }
 
   public list(): Observable<AudioRecording[]> {
