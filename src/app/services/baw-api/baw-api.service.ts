@@ -1,4 +1,3 @@
-import { isPlatformBrowser } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import {
   Inject,
@@ -31,8 +30,6 @@ const defaultHeaders = { responseType: "json" as const };
  */
 @Injectable()
 export class BawApiService<Model extends AbstractModel> {
-  private platform: any;
-
   /*
   Paths:
     list -> GET
@@ -76,8 +73,6 @@ export class BawApiService<Model extends AbstractModel> {
     classBuilder: new (_: Record<string, any>, _injector?: Injector) => Model,
     protected injector: Injector
   ) {
-    this.platform = injector.get(PLATFORM_ID);
-
     // Create pure functions to prevent rebinding of 'this'
     this.handleCollectionResponse = (response: ApiResponse<Model>): Model[] => {
       if (response.data instanceof Array) {
@@ -121,7 +116,7 @@ export class BawApiService<Model extends AbstractModel> {
    */
   public getLocalUser(): SessionUser | undefined {
     // local storage does not exist on server
-    if (!isPlatformBrowser(this.platform)) {
+    if (isSsr()) {
       return undefined;
     }
 
@@ -356,7 +351,7 @@ export class BawApiService<Model extends AbstractModel> {
    */
   private requestTimeout<T>(): MonoTypeOperatorFunction<T> {
     const defaultTimeoutMs = 60 * 1000;
-    const ssrTimeoutMs = 1 * 1000;
+    const ssrTimeoutMs = 50;
     return timeout<T>(isSsr() ? ssrTimeoutMs : defaultTimeoutMs);
   }
 

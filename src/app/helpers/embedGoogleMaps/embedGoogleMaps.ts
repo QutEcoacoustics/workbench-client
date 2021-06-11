@@ -1,4 +1,4 @@
-import { defaultDebounceTime } from "src/app/app.helper";
+import { defaultDebounceTime, isSsr } from "src/app/app.helper";
 
 declare let google: any;
 
@@ -17,7 +17,7 @@ export async function embedGoogleMaps(key?: string): Promise<void> {
     googleMapsUrl += "?key=" + key;
   }
 
-  if (!document) {
+  if (isSsr()) {
     return;
   }
 
