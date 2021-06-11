@@ -11,7 +11,6 @@ import { RegionsModule } from "@components/regions/regions.module";
 import { VisualizeModule } from "@components/visualize/visualize.module";
 import { GuardModule } from "@guards/guards.module";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { AppConfigModule } from "@services/config/config.module";
@@ -42,7 +41,6 @@ import { StatisticsModule } from "./components/statistics/statistics.module";
 export const appLibraryImports = [
   BrowserModule,
   BrowserAnimationsModule,
-  NgbModule,
   ReactiveFormsModule,
   FormlyModule.forRoot(formlyConfig),
   FormlyBootstrapModule,

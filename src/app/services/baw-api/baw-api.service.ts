@@ -1,11 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import {
-  Inject,
-  Injectable,
-  InjectionToken,
-  Injector,
-  PLATFORM_ID,
-} from "@angular/core";
+import { Inject, Injectable, InjectionToken, Injector } from "@angular/core";
 import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel } from "@models/AbstractModel";
