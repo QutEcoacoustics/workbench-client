@@ -26,7 +26,7 @@
             "assets": ["src/favicon.ico", "src/assets", "src/manifest.json"],
             "styles": [
               "src/styles.scss",
-              "node_modules/snazzy-info-window/dist/snazzy-info-window.css"
+              "node_modules/@fortawesome/fontawesome-svg-core/styles.css"
             ],
             "scripts": [],
             "sourceMap": true,
@@ -84,10 +84,7 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": ["src/assets", "src/manifest.json"],
-            "styles": [
-              "src/styles.scss",
-              "node_modules/snazzy-info-window/dist/snazzy-info-window.css"
-            ],
+            "styles": ["src/styles.scss"],
             "scripts": []
           }
         },

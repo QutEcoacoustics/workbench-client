@@ -4,8 +4,8 @@ import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
-import { MonoTypeOperatorFunction, Observable, throwError } from "rxjs";
-import { catchError, map, timeout } from "rxjs/operators";
+import { Observable, throwError } from "rxjs";
+import { map } from "rxjs/operators";
 import { isSsr } from "src/app/app.helper";
 import { ApiErrorDetails } from "./api.interceptor.service";
 

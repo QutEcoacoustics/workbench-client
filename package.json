@@ -72,7 +72,6 @@
     "ngx-line-truncation": "^1.7.1",
     "ngx-toastr": "^13.2.1",
     "rxjs": "^6.6.7",
-    "snazzy-info-window": "^1.1.1",
     "tslib": "^2.3.0",
     "zone.js": "^0.11.4"
   },
