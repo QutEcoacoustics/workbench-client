@@ -13,6 +13,7 @@ import { GuardModule } from "@guards/guards.module";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
+import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
 import { AppConfigModule } from "@services/config/config.module";
 import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { ToastrModule } from "ngx-toastr";
@@ -83,6 +84,9 @@ export const appImports = [
     GuardModule,
     ...appLibraryImports,
     ...appImports,
+  ],
+  providers: [
+    { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 3000 } },
   ],
   entryComponents: [AppComponent, PermissionsShieldComponent],
   exports: [],

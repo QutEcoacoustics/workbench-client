@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { PageInfo } from "@helpers/page/pageInfo";
-import { LoadingBarService } from "@ngx-loading-bar/core";
 import { Observable } from "rxjs";
-import { delay, map, withLatestFrom } from "rxjs/operators";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "./services/config/config.service";
 
@@ -26,24 +24,13 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
   public fullscreen: boolean;
   public delayedProgress$: Observable<number>;
 
-  public constructor(
-    private config: ConfigService,
-    private title: Title,
-    private loader: LoadingBarService
-  ) {
+  public constructor(private config: ConfigService, private title: Title) {
     super();
   }
 
   public ngOnInit() {
     this.title.setTitle(this.config.values.brand.name);
     this.fullscreen = true;
-
-    // Delay showing loading bar
-    this.delayedProgress$ = this.loader.value$.pipe(
-      delay(3000),
-      withLatestFrom(this.loader.value$),
-      map((v) => v[1])
-    );
   }
 
   /**
