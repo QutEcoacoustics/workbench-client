@@ -17,6 +17,8 @@ import { ngExpressEngine } from "@nguniversal/express-engine";
 import { assetRoot } from "@services/config/config.service";
 import express from "express";
 import { environment } from "src/environments/environment";
+import { LRUCache } from "@ngx-ssr/cache";
+import { withCache } from "@ngx-ssr/cache/express";
 import { AppServerModule } from "./src/main.server";
 
 // The Express app is exported so that it can be used by serverless Functions.
@@ -42,11 +44,15 @@ export function app(path: string): express.Express {
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
   server.engine(
     "html",
-    ngExpressEngine({
-      bootstrap: AppServerModule,
-      // a similar provider exists in main.ts
-      providers: [apiConfig],
-    })
+    // Cache results as they should not change often for unauthenticated users
+    withCache(
+      new LRUCache({ maxAge: 10 * 60_000, maxSize: 100 }),
+      ngExpressEngine({
+        bootstrap: AppServerModule,
+        // a similar provider exists in main.ts
+        providers: [apiConfig],
+      })
+    )
   );
 
   server.set("view engine", "html");
@@ -86,7 +92,7 @@ function run(configPath: string): void {
   // Start up the Node server
   const server = app(configPath);
   server.listen(port, "0.0.0.0", () => {
-    console.log(`Node Express server listening on http://0.0.0.0:${port}`);
+    console.log(`Node Express server listening on http://localhost:${port}`);
   });
 }
 

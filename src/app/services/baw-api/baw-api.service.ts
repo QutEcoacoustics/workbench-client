@@ -236,9 +236,10 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected httpGet(path: string): Observable<ApiResponse<Model | Model[]>> {
-    return this.http
-      .get<ApiResponse<Model>>(this.getPath(path), defaultHeaders)
-      .pipe(this.requestTimeout(), catchError(this.handleError));
+    return this.http.get<ApiResponse<Model>>(
+      this.getPath(path),
+      defaultHeaders
+    );
   }
 
   /**
@@ -248,9 +249,10 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected httpDelete(path: string): Observable<ApiResponse<Model | void>> {
-    return this.http
-      .delete<ApiResponse<null>>(this.getPath(path), defaultHeaders)
-      .pipe(this.requestTimeout(), catchError(this.handleError));
+    return this.http.delete<ApiResponse<null>>(
+      this.getPath(path),
+      defaultHeaders
+    );
   }
 
   /**
@@ -261,9 +263,11 @@ export class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected httpPost(path: string, body?: any): Observable<ApiResponse<Model>> {
-    return this.http
-      .post<ApiResponse<Model>>(this.getPath(path), body, defaultHeaders)
-      .pipe(this.requestTimeout(), catchError(this.handleError));
+    return this.http.post<ApiResponse<Model>>(
+      this.getPath(path),
+      body,
+      defaultHeaders
+    );
   }
 
   /**
@@ -274,9 +278,11 @@ export class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected httpPut(path: string, body?: any): Observable<ApiResponse<Model>> {
-    return this.http
-      .put<ApiResponse<Model>>(this.getPath(path), body, defaultHeaders)
-      .pipe(this.requestTimeout(), catchError(this.handleError));
+    return this.http.put<ApiResponse<Model>>(
+      this.getPath(path),
+      body,
+      defaultHeaders
+    );
   }
 
   /**
@@ -290,9 +296,11 @@ export class BawApiService<Model extends AbstractModel> {
     path: string,
     body?: any
   ): Observable<ApiResponse<Model>> {
-    return this.http
-      .patch<ApiResponse<Model>>(this.getPath(path), body, defaultHeaders)
-      .pipe(this.requestTimeout(), catchError(this.handleError));
+    return this.http.patch<ApiResponse<Model>>(
+      this.getPath(path),
+      body,
+      defaultHeaders
+    );
   }
 
   /**
@@ -336,17 +344,6 @@ export class BawApiService<Model extends AbstractModel> {
    */
   protected getPath(path: string): string {
     return this.apiRoot + path;
-  }
-
-  /**
-   * Set a request timeout for http requests
-   *
-   * @returns RXJS Pipe
-   */
-  private requestTimeout<T>(): MonoTypeOperatorFunction<T> {
-    const defaultTimeoutMs = 60 * 1000;
-    const ssrTimeoutMs = 50;
-    return timeout<T>(isSsr() ? ssrTimeoutMs : defaultTimeoutMs);
   }
 
   /**

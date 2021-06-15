@@ -51,6 +51,8 @@
     "@ngx-formly/core": "^5.10.18",
     "@ngx-loading-bar/core": "^5.1.2",
     "@ngx-loading-bar/http-client": "^5.1.2",
+    "@ngx-ssr/cache": "^1.1.1",
+    "@ngx-ssr/timeout": "^1.0.2",
     "@swimlane/ngx-datatable": "^19.0.0",
     "@vvo/tzdb": "^6.7.0",
     "bootstrap": "^4.6.0",

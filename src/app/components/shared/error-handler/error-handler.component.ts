@@ -21,6 +21,9 @@ import httpCodes from "http-status";
           <ng-container *ngSwitchCase="httpCodes.NOT_FOUND">
             Not Found
           </ng-container>
+          <ng-container *ngSwitchCase="httpCodes.REQUEST_TIMEOUT">
+            Request Timed Out
+          </ng-container>
           <ng-container *ngSwitchDefault>Unknown Error</ng-container>
         </h1>
       </div>

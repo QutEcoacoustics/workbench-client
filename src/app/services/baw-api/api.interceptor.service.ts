@@ -13,6 +13,7 @@ import {
   toCamelCase,
   toSnakeCase,
 } from "@helpers/case-converter/case-converter";
+import httpStatus from "http-status";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { ApiResponse } from "./baw-api.service";
@@ -126,6 +127,15 @@ export class BawApiInterceptor implements HttpInterceptor {
         status: response.status,
         message: response.error.meta.error.details,
         info: response.error.meta.error?.info,
+      };
+    } else if (response.status === 0) {
+      // Timeout library sets status to 0 if timed out
+      // https://github.com/IKatsuba/ngx-ssr/issues/397
+      error = {
+        status: httpStatus.REQUEST_TIMEOUT,
+        message:
+          "Resource request took too long to complete. " +
+          "This may be an issue with your connection to us, or a temporary issue with our services.",
       };
     } else {
       error = { status: response.status, message: response.message };
