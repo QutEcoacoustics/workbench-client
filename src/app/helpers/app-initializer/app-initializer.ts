@@ -1,7 +1,7 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { XOR } from "@helpers/advancedTypes";
 import { NavigableMenuItem } from "@interfaces/menusInterfaces";
-import { isSsr } from "src/app/app.helper";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
 
 export const API_CONFIG = new InjectionToken<Promise<Configuration>>(
@@ -28,9 +28,9 @@ export class AppInitializer {
     };
   }
 
-  public static apiRootFactory() {
-    return isConfiguration(environment)
-      ? environment?.environment?.apiRoot
+  public static apiRootFactory(@Inject(IS_SERVER_PLATFORM) isServer: boolean) {
+    return isConfiguration(environment, isServer)
+      ? environment.environment.apiRoot
       : "";
   }
 }
@@ -99,7 +99,8 @@ export class Configuration implements Configuration {
  * @param config Variable to evaluate
  */
 export function isConfiguration(
-  config: Configuration
+  config: Configuration,
+  isServer: boolean
 ): config is Configuration {
   function returnError(msg: string) {
     console.error(msg);
@@ -130,7 +131,7 @@ export function isConfiguration(
   }
 
   const siteUrl = config.environment.siteRoot + config.environment.siteDir;
-  if (!isSsr() && !window.location.toString().includes(siteUrl)) {
+  if (!isServer && !window.location.toString().includes(siteUrl)) {
     console.warn(
       "Configuration siteRoot and siteDir do not match the current deployment location. Validate this is intentional"
     );

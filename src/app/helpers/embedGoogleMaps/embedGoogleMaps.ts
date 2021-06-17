@@ -1,4 +1,4 @@
-import { defaultDebounceTime, isSsr } from "src/app/app.helper";
+import { defaultDebounceTime } from "src/app/app.helper";
 
 declare let google: any;
 
@@ -7,7 +7,8 @@ let node: HTMLScriptElement;
 
 /**
  * Embed google maps script into the document. This should only be
- * access by `main.ts` or unit tests.
+ * access by `main.ts` or unit tests as it makes reference to the
+ * `document` global
  *
  * @param key Google maps API key
  */
@@ -15,10 +16,6 @@ export async function embedGoogleMaps(key?: string): Promise<void> {
   let googleMapsUrl = googleMapsBaseUrl;
   if (key) {
     googleMapsUrl += "?key=" + key;
-  }
-
-  if (isSsr()) {
-    return;
   }
 
   node = document.createElement("script");

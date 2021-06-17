@@ -1,3 +1,5 @@
+import { isPlatformServer } from "@angular/common";
+import { inject, InjectionToken, PLATFORM_ID } from "@angular/core";
 import { GlobalConfig } from "ngx-toastr";
 
 /**
@@ -14,7 +16,9 @@ export const toastrRoot: Partial<GlobalConfig> = {
  */
 export const defaultDebounceTime = 500;
 
-/** Determines if the current instance is inside a server side rendering environment */
-export function isSsr(): boolean {
-  return typeof window === "undefined" && typeof document === "undefined";
-}
+/** Returns a boolean value of whether the application is running in SSR mode */
+export const IS_SERVER_PLATFORM = new InjectionToken<boolean>("Is server?", {
+  factory() {
+    return isPlatformServer(inject(PLATFORM_ID));
+  },
+});

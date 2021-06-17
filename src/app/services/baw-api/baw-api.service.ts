@@ -6,7 +6,7 @@ import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { Observable, throwError } from "rxjs";
 import { map } from "rxjs/operators";
-import { isSsr } from "src/app/app.helper";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { ApiErrorDetails } from "./api.interceptor.service";
 
 export const defaultApiPageSize = 25;
@@ -39,6 +39,9 @@ export class BawApiService<Model extends AbstractModel> {
    */
   protected userLocalStorageKey = "baw.client.user";
 
+  /** Is website running on server environment */
+  protected isServer: boolean;
+
   /**
    * Handle API collection response
    *
@@ -67,6 +70,8 @@ export class BawApiService<Model extends AbstractModel> {
     classBuilder: new (_: Record<string, any>, _injector?: Injector) => Model,
     protected injector: Injector
   ) {
+    this.isServer = this.injector.get(IS_SERVER_PLATFORM);
+
     // Create pure functions to prevent rebinding of 'this'
     this.handleCollectionResponse = (response: ApiResponse<Model>): Model[] => {
       if (response.data instanceof Array) {
@@ -110,7 +115,7 @@ export class BawApiService<Model extends AbstractModel> {
    */
   public getLocalUser(): SessionUser | undefined {
     // local storage does not exist on server
-    if (isSsr()) {
+    if (this.isServer) {
       return undefined;
     }
 

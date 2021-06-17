@@ -12,7 +12,7 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
-import { isSsr } from "src/app/app.helper";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 /**
  * CMS Wrapper
@@ -37,6 +37,7 @@ export class CmsComponent extends withUnsubscribe() implements OnInit {
     private renderer: Renderer2,
     private elRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
+    @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
     private ref: ChangeDetectorRef
   ) {
     super();
@@ -46,7 +47,7 @@ export class CmsComponent extends withUnsubscribe() implements OnInit {
     this.loading = true;
 
     // Don't attempt to load CMS data if currently we are in SSR
-    if (isSsr()) {
+    if (this.isServer) {
       return;
     }
 

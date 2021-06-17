@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import {
   Configuration,
   Environment,
@@ -6,6 +6,7 @@ import {
   Values,
 } from "@helpers/app-initializer/app-initializer";
 import { ToastrService } from "ngx-toastr";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
 
 export const assetRoot = "/assets";
@@ -18,8 +19,11 @@ export const assetRoot = "/assets";
 export class ConfigService {
   private _config: Configuration;
 
-  public constructor(private notification: ToastrService) {
-    if (!isConfiguration(environment)) {
+  public constructor(
+    private notification: ToastrService,
+    @Inject(IS_SERVER_PLATFORM) private isServer: boolean
+  ) {
+    if (!isConfiguration(environment, this.isServer)) {
       console.error("Detected invalid environment.");
       this.notification.error(
         "The website is not configured correctly. Try coming back at another time.",
