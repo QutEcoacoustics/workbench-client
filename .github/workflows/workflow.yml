@@ -107,10 +107,6 @@ jobs:
       - name: Run test suite on firefox
         run: npm run test:pipeline -- --browsers FirefoxHeadless
 
-      - name: Run test suite on edge
-        run: npm run test:pipeline -- --browsers EdgeHeadless
-        if: matrix.os == 'windows-latest'
-
       - name: Upload Unit Test Results
         if: always()
         uses: actions/upload-artifact@v2
@@ -151,6 +147,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      - name: Checkout LFS objects
+        run: git lfs checkout
 
       - name: Build container
         run: docker build -t qutecoacoustics/workbench-client .
@@ -167,11 +168,22 @@ jobs:
       - name: Validate routing
         run: cat index.html | grep -o "<\/router-outlet><baw-home.*<\/baw-home>"
 
+      - name: Retrieve LFS file
+        run: wget localhost:4000/assets/images/project/project_span4.png
+
+      - name: Validate LFS is downloaded
+        run: cat project_span4.png | grep -o "git-lfs" && throw # if match found, run a command which doesn't exist
+
   build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      - name: Checkout LFS objects
+        run: git lfs checkout
 
       - name: Install Node.js
         uses: actions/setup-node@v1
@@ -202,6 +214,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      - name: Checkout LFS objects
+        run: git lfs checkout
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
