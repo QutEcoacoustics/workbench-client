@@ -215,7 +215,8 @@ jobs:
     if: >
       always() &&
       github.actor != 'dependabot[bot]' &&
-      github.actor != 'kodiakhq[bot]'
+      github.actor != 'kodiakhq[bot]' &&
+      github.event_name == 'pull_request'
 
     steps:
       - name: Download Artifacts
