@@ -21,10 +21,9 @@ jobs:
         with:
           path: artifacts
       - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1.5
+        uses: EnricoMi/publish-unit-test-result-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          commit: ${{ github.event.workflow_run.head_sha }}
           files: artifacts/**/TESTS-*.xml
-          report_individual_runs: true
+          test_changes_limit: 0
           deduplicate_classes_by_file_name: true
