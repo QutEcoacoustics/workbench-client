@@ -1,29 +1,29 @@
 ### This workflow is not part of the main workflow so that dependabot
 ### is able to access repo secrets
 
-name: "Publish Unit Tests Results"
+# name: "Publish Unit Tests Results"
 
-on:
-  workflow_run:
-    workflows: ["Build, Test, and Publish"]
-    types:
-      - completed
+# on:
+#   workflow_run:
+#     workflows: ["Build, Test, and Publish"]
+#     types:
+#       - completed
 
-jobs:
-  publish:
-    name: "Publish Unit Tests Results"
-    runs-on: ubuntu-latest
-    if: github.event.workflow_run.conclusion != 'skipped'
+# jobs:
+#   publish:
+#     name: "Publish Unit Tests Results"
+#     runs-on: ubuntu-latest
+#     if: github.event.workflow_run.conclusion != 'skipped'
 
-    steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          path: artifacts
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          files: artifacts/**/TESTS-*.xml
-          test_changes_limit: 0
-          deduplicate_classes_by_file_name: true
+#     steps:
+#       - name: Download Artifacts
+#         uses: actions/download-artifact@v2
+#         with:
+#           path: artifacts
+#       - name: Publish Unit Test Results
+#         uses: EnricoMi/publish-unit-test-result-action@v1
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           files: artifacts/**/TESTS-*.xml
+#           test_changes_limit: 0
+#           deduplicate_classes_by_file_name: true
