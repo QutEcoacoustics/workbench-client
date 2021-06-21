@@ -4,7 +4,16 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { unknownErrorCode } from "@baw-api/baw-api.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import {
+  generateApiErrorDetails,
+  generateApiErrorDetailsV2,
+} from "@test/fakes/ApiErrorDetails";
+import {
+  FORBIDDEN,
+  NOT_FOUND,
+  REQUEST_TIMEOUT,
+  UNAUTHORIZED,
+} from "http-status";
 import { SharedModule } from "../shared.module";
 import { ErrorHandlerComponent } from "./error-handler.component";
 
@@ -84,62 +93,62 @@ describe("ErrorHandlerComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should handle unauthorized code", () => {
-    component.error = generateApiErrorDetails("Unauthorized", {
-      message: "You need to log in or register before continuing.",
+  [
+    {
+      title: "Unauthorized Access",
+      error: generateApiErrorDetailsV2(UNAUTHORIZED, {
+        message: "You need to log in or register before continuing.",
+      }),
+    },
+    {
+      title: "Access Forbidden",
+      error: generateApiErrorDetailsV2(FORBIDDEN, {
+        message: "You do not have access to this resource.",
+      }),
+    },
+    {
+      title: "Request Timed Out",
+      error: generateApiErrorDetailsV2(REQUEST_TIMEOUT, {
+        message: "Resource request took too long to complete.",
+      }),
+    },
+    {
+      title: "Not Found",
+      error: generateApiErrorDetailsV2(NOT_FOUND, {
+        message: "Could not find the requested item.",
+      }),
+    },
+    {
+      title: "Unknown Error",
+      error: generateApiErrorDetailsV2(0, {
+        message: "Unknown error has occurred.",
+      }),
+    },
+    {
+      title: "Unknown Error",
+      error: generateApiErrorDetailsV2(unknownErrorCode, {
+        message: "Unknown error has occurred.",
+      }),
+    },
+  ].forEach(({ error, title }) => {
+    it(`should handle ${error.status} status code`, () => {
+      component.error = error;
+      fixture.detectChanges();
+      assertTitle(title);
+      assertDescription(error.message);
     });
-    fixture.detectChanges();
-
-    assertTitle("Unauthorized Access");
-    assertDescription("You need to log in or register before continuing.");
   });
 
-  it("should handle not found code", () => {
-    component.error = generateApiErrorDetails("Not Found", {
-      message: "Could not find the requested item.",
+  [
+    { test: "null", value: null },
+    { test: "undefined", value: undefined },
+  ].forEach(({ test, value }) => {
+    it(`should handle ${test} status code`, () => {
+      component.error = value;
+      fixture.detectChanges();
+      assertTitle(undefined);
+      assertDescription(undefined);
     });
-    fixture.detectChanges();
-
-    assertTitle("Not Found");
-    assertDescription("Could not find the requested item.");
-  });
-
-  it("should handle zero code", () => {
-    component.error = generateApiErrorDetails("Custom", {
-      status: 0,
-      message: "Unknown error has occurred.",
-    });
-    fixture.detectChanges();
-
-    assertTitle("Unknown Error");
-    assertDescription("Unknown error has occurred.");
-  });
-
-  it("should handle unknown code", () => {
-    component.error = generateApiErrorDetails("Custom", {
-      status: unknownErrorCode,
-      message: "Unknown error has occurred.",
-    });
-    fixture.detectChanges();
-
-    assertTitle("Unknown Error");
-    assertDescription("Unknown error has occurred.");
-  });
-
-  it("should handle undefined code", () => {
-    component.error = undefined;
-    fixture.detectChanges();
-
-    assertTitle(undefined);
-    assertDescription(undefined);
-  });
-
-  it("should handle null code", () => {
-    component.error = null;
-    fixture.detectChanges();
-
-    assertTitle(undefined);
-    assertDescription(undefined);
   });
 
   it("should detect changes", () => {

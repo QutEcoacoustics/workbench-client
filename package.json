@@ -23,7 +23,7 @@
     "test:pipeline": "nx test -- --watch=false --code-coverage",
     "dev:ssr": "nx run workbench-client:serve-ssr",
     "serve:ssr": "node dist/workbench-client/server/main.js",
-    "build:ssr": "nx build --prod && ng run workbench-client:server:production",
+    "build:ssr": "nx build --prod && nx run workbench-client:server:production",
     "prerender": "nx run workbench-client:prerender",
     "postinstall": "node --max_old_space_size=4096 ./decorate-angular-cli.js",
     "webdriver": "node ./node_modules/protractor/node_modules/webdriver-manager/bin/webdriver-manager"
@@ -51,6 +51,8 @@
     "@ngx-formly/core": "^5.10.18",
     "@ngx-loading-bar/core": "^5.1.2",
     "@ngx-loading-bar/http-client": "^5.1.2",
+    "@ngx-ssr/cache": "^1.1.1",
+    "@ngx-ssr/timeout": "^1.0.2",
     "@swimlane/ngx-datatable": "^19.0.0",
     "@vvo/tzdb": "^6.7.0",
     "bootstrap": "^4.6.0",
@@ -70,7 +72,6 @@
     "ngx-line-truncation": "^1.7.1",
     "ngx-toastr": "^13.2.1",
     "rxjs": "^6.6.7",
-    "snazzy-info-window": "^1.1.1",
     "tslib": "^2.3.0",
     "zone.js": "^0.11.4"
   },

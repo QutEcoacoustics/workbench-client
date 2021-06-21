@@ -11,7 +11,8 @@ import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
  * Reads through a HTML document for recaptcha setup code to extract the
  * seed and action.
  */
-const extractRecaptchaValues = /grecaptcha\.execute\('(.+?)', {action: '(.+?)'}\)/;
+const extractRecaptchaValues =
+  /grecaptcha\.execute\('(.+?)', {action: '(.+?)'}\)/;
 
 /*
  * Looks for a hidden input in HTML document, name of input is

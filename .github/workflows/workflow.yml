@@ -107,10 +107,6 @@ jobs:
       - name: Run test suite on firefox
         run: npm run test:pipeline -- --browsers FirefoxHeadless
 
-      - name: Run test suite on edge
-        run: npm run test:pipeline -- --browsers EdgeHeadless
-        if: matrix.os == 'windows-latest'
-
       - name: Upload Unit Test Results
         if: always()
         uses: actions/upload-artifact@v2
@@ -151,6 +147,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      - name: Checkout LFS objects
+        run: git lfs checkout
+
+      - name: Install dependencies
+        run: sudo apt install pngcheck
 
       - name: Build container
         run: docker build -t qutecoacoustics/workbench-client .
@@ -162,16 +166,30 @@ jobs:
         run: wget localhost:4000
 
       - name: Validate title
-        run: cat index.html | grep -o "<title>&lt;&lt; brandName &gt;&gt;</title>"
+        run: grep -o "<title>&lt;&lt; brandName &gt;&gt;</title>" index.html
 
       - name: Validate routing
-        run: cat index.html | grep -o "<\/router-outlet><baw-home.*<\/baw-home>"
+        run: grep -o "<\/router-outlet><baw-home.*<\/baw-home>" index.html
+
+      - name: Retrieve LFS file from assets
+        run: wget localhost:4000/assets/images/project/project_span4.png
+
+      - name: Validate LFS asset is instantiated
+        run: grep -o -v "git-lfs" project_span4.png
+
+      - name: Validate PNG asset is uncorrupted
+        run: pngcheck project_span4.png
 
   build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      - name: Checkout LFS objects
+        run: git lfs checkout
 
       - name: Install Node.js
         uses: actions/setup-node@v1
@@ -202,6 +220,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      - name: Checkout LFS objects
+        run: git lfs checkout
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1

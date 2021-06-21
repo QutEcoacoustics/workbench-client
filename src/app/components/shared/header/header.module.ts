@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDropdownModule } from "@ng-bootstrap/ng-bootstrap";
 import { IconsModule } from "@shared/icons/icons.module";
 import { HeaderDropdownComponent } from "./header-dropdown/header-dropdown.component";
 import { HeaderItemComponent } from "./header-item/header-item.component";
@@ -17,7 +17,7 @@ import { HeaderComponent } from "./header.component";
   imports: [
     CommonModule,
     RouterModule,
-    NgbModule,
+    NgbDropdownModule,
     AuthenticatedImageModule,
     DirectivesModule,
     IconsModule,

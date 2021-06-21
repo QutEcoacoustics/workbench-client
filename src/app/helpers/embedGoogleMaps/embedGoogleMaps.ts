@@ -7,11 +7,12 @@ let node: HTMLScriptElement;
 
 /**
  * Embed google maps script into the document. This should only be
- * access by `main.ts` or unit tests.
+ * access by `main.ts` or unit tests as it makes reference to the
+ * `document` global
  *
  * @param key Google maps API key
  */
-export async function embedGoogleMaps(key?: string) {
+export async function embedGoogleMaps(key?: string): Promise<void> {
   let googleMapsUrl = googleMapsBaseUrl;
   if (key) {
     googleMapsUrl += "?key=" + key;

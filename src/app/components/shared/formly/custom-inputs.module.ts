@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbTypeaheadModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { ConfigOption } from "@ngx-formly/core/lib/services/formly.config";
@@ -72,7 +72,7 @@ const components = [
   declarations: components,
   imports: [
     CommonModule,
-    NgbModule,
+    NgbTypeaheadModule,
     FormsModule,
     ReactiveFormsModule,
     FormlyModule,

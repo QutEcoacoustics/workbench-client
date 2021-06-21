@@ -5,6 +5,7 @@ import {
   AppInitializer,
 } from "@helpers/app-initializer/app-initializer";
 import { ToastrModule } from "ngx-toastr";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { ConfigService } from "./config.service";
 
 @NgModule({
@@ -19,6 +20,7 @@ import { ConfigService } from "./config.service";
     {
       provide: API_ROOT,
       useFactory: AppInitializer.apiRootFactory,
+      deps: [IS_SERVER_PLATFORM],
     },
     ConfigService,
   ],

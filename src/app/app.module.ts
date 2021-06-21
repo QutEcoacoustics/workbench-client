@@ -11,9 +11,10 @@ import { RegionsModule } from "@components/regions/regions.module";
 import { VisualizeModule } from "@components/visualize/visualize.module";
 import { GuardModule } from "@guards/guards.module";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
+import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
+import { NgxSsrTimeoutModule } from "@ngx-ssr/timeout";
 import { AppConfigModule } from "@services/config/config.module";
 import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { ToastrModule } from "ngx-toastr";
@@ -42,7 +43,6 @@ import { StatisticsModule } from "./components/statistics/statistics.module";
 export const appLibraryImports = [
   BrowserModule,
   BrowserAnimationsModule,
-  NgbModule,
   ReactiveFormsModule,
   FormlyModule.forRoot(formlyConfig),
   FormlyBootstrapModule,
@@ -78,6 +78,8 @@ export const appImports = [
   declarations: [AppComponent],
   imports: [
     BrowserModule.withServerTransition({ appId: "workbench-client" }),
+    // Http request maximum timeout with 10 second limit
+    NgxSsrTimeoutModule.forRoot({ timeout: 10_000 }),
     AppRoutingModule,
     HttpClientModule,
     AppConfigModule,
@@ -85,6 +87,10 @@ export const appImports = [
     GuardModule,
     ...appLibraryImports,
     ...appImports,
+  ],
+  providers: [
+    // Show loading animation after 3 seconds
+    { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 3_000 } },
   ],
   entryComponents: [AppComponent, PermissionsShieldComponent],
   exports: [],

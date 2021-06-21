@@ -1,6 +1,7 @@
 import {
   ChangeDetectorRef,
   Component,
+  Inject,
   Input,
   OnChanges,
   QueryList,
@@ -8,6 +9,7 @@ import {
   ViewChildren,
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
@@ -19,7 +21,14 @@ import { takeUntil } from "rxjs/operators";
 @Component({
   selector: "baw-map",
   template: `
-    <ng-container *ngIf="hasMarkers; else placeholderMap">
+    <ng-container *ngIf="!isServer; else loadingMap">
+      <ng-container *ngIf="hasMarkers; else placeholderMap">
+        <ng-container *ngTemplateOutlet="loadedMap"></ng-container>
+      </ng-container>
+    </ng-container>
+
+    <!-- Display map -->
+    <ng-template #loadedMap>
       <google-map height="100%" width="100%" [options]="mapOptions">
         <map-marker
           *ngFor="let marker of filteredMarkers"
@@ -29,7 +38,14 @@ import { takeUntil } from "rxjs/operators";
         </map-marker>
         <map-info-window>{{ infoContent }}</map-info-window>
       </google-map>
-    </ng-container>
+    </ng-template>
+
+    <!-- Map is loading -->
+    <ng-template #loadingMap>
+      <div class="map-placeholder"><p>Map loading</p></div>
+    </ng-template>
+
+    <!-- No map markers to display -->
     <ng-template #placeholderMap>
       <div class="map-placeholder"><p>No locations specified</p></div>
     </ng-template>
@@ -50,7 +66,10 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public mapOptions: google.maps.MapOptions = { mapTypeId: "satellite" };
   public markerOptions: google.maps.MarkerOptions = {};
 
-  public constructor(private ref: ChangeDetectorRef) {
+  public constructor(
+    @Inject(IS_SERVER_PLATFORM) public isServer: boolean,
+    private ref: ChangeDetectorRef
+  ) {
     super();
   }
 
@@ -67,7 +86,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
       }
     });
 
-    if (!this.hasMarkers) {
+    if (!this.hasMarkers || this.isServer) {
       return;
     }
 

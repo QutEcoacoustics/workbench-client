@@ -1,6 +1,7 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { XOR } from "@helpers/advancedTypes";
 import { NavigableMenuItem } from "@interfaces/menusInterfaces";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
 
 export const API_CONFIG = new InjectionToken<Promise<Configuration>>(
@@ -27,9 +28,9 @@ export class AppInitializer {
     };
   }
 
-  public static apiRootFactory() {
-    return isConfiguration(environment)
-      ? environment?.environment?.apiRoot
+  public static apiRootFactory(@Inject(IS_SERVER_PLATFORM) isServer: boolean) {
+    return isConfiguration(environment, isServer)
+      ? environment.environment.apiRoot
       : "";
   }
 }
@@ -98,14 +99,68 @@ export class Configuration implements Configuration {
  * @param config Variable to evaluate
  */
 export function isConfiguration(
-  config: Configuration
+  config: Configuration,
+  isServer: boolean
 ): config is Configuration {
-  const hasKind = config?.kind === "Configuration";
-  const hasEnvironment = !!config?.environment;
-  const hasValues = !!config?.values;
-  const hasApiRoot = !!config?.environment?.apiRoot;
+  function returnError(msg: string) {
+    console.error(msg);
+    return false;
+  }
 
-  return hasKind && hasEnvironment && hasValues && hasApiRoot;
+  function returnParamError(param: string) {
+    return returnError(`Invalid configuration ${param} param`);
+  }
+
+  if (!config) {
+    return returnError("No configuration set");
+  }
+  if (!config.environment) {
+    return returnError("No confirmation environment set");
+  }
+  if (!config.values) {
+    return returnError("No confirmation values set");
+  }
+  if (config.kind !== "Configuration") {
+    return returnParamError("kind");
+  }
+  if (!validateServerRoot(config.environment.apiRoot, "apiRoot")) {
+    return returnParamError("apiRoot");
+  }
+  if (!validateServerRoot(config.environment.siteRoot, "siteRoot")) {
+    return returnParamError("siteRoot");
+  }
+
+  const siteUrl = config.environment.siteRoot + config.environment.siteDir;
+  if (!isServer && !window.location.toString().includes(siteUrl)) {
+    console.warn(
+      "Configuration siteRoot and siteDir do not match the current deployment location. Validate this is intentional"
+    );
+  }
+
+  return true;
+}
+
+/**
+ * Validate if a server root value is valid for the configuration file
+ */
+function validateServerRoot(root: string, key: string) {
+  if (!root || root.endsWith("/")) {
+    return false;
+  }
+
+  try {
+    const url = new URL(root);
+    if (url.protocol === "https:") {
+      return true;
+    } else if (url.protocol === "http:") {
+      console.warn(`Configuration param ${key} is not using https protocol`);
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    return false;
+  }
 }
 
 type Links = XOR<HeaderLink, HeaderDropDownLink>;

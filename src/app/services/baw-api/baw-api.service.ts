@@ -1,18 +1,12 @@
-import { isPlatformBrowser } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
-import {
-  Inject,
-  Injectable,
-  InjectionToken,
-  Injector,
-  PLATFORM_ID,
-} from "@angular/core";
+import { Inject, Injectable, InjectionToken, Injector } from "@angular/core";
 import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { Observable, throwError } from "rxjs";
 import { map } from "rxjs/operators";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { ApiErrorDetails } from "./api.interceptor.service";
 
 export const defaultApiPageSize = 25;
@@ -20,12 +14,16 @@ export const unknownErrorCode = -1;
 export const STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
 
 /**
+ * Default headers for API requests, this sets responseTypes so that the interceptor
+ * can change its behavior based on the type of request.
+ */
+const defaultHeaders = { responseType: "json" as const };
+
+/**
  * Interface with BAW Server Rest API
  */
 @Injectable()
 export class BawApiService<Model extends AbstractModel> {
-  private platform: any;
-
   /*
   Paths:
     list -> GET
@@ -40,6 +38,9 @@ export class BawApiService<Model extends AbstractModel> {
    * User local storage location
    */
   protected userLocalStorageKey = "baw.client.user";
+
+  /** Is website running on server environment */
+  protected isServer: boolean;
 
   /**
    * Handle API collection response
@@ -69,7 +70,7 @@ export class BawApiService<Model extends AbstractModel> {
     classBuilder: new (_: Record<string, any>, _injector?: Injector) => Model,
     protected injector: Injector
   ) {
-    this.platform = injector.get(PLATFORM_ID);
+    this.isServer = this.injector.get(IS_SERVER_PLATFORM);
 
     // Create pure functions to prevent rebinding of 'this'
     this.handleCollectionResponse = (response: ApiResponse<Model>): Model[] => {
@@ -114,7 +115,7 @@ export class BawApiService<Model extends AbstractModel> {
    */
   public getLocalUser(): SessionUser | undefined {
     // local storage does not exist on server
-    if (!isPlatformBrowser(this.platform)) {
+    if (this.isServer) {
       return undefined;
     }
 
@@ -240,10 +241,10 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected httpGet(path: string): Observable<ApiResponse<Model | Model[]>> {
-    return this.http.get<ApiResponse<Model>>(this.getPath(path), {
-      // Set responseType for interceptor
-      responseType: "json",
-    });
+    return this.http.get<ApiResponse<Model>>(
+      this.getPath(path),
+      defaultHeaders
+    );
   }
 
   /**
@@ -253,10 +254,10 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected httpDelete(path: string): Observable<ApiResponse<Model | void>> {
-    return this.http.delete<ApiResponse<null>>(this.getPath(path), {
-      // Set responseType for interceptor
-      responseType: "json",
-    });
+    return this.http.delete<ApiResponse<null>>(
+      this.getPath(path),
+      defaultHeaders
+    );
   }
 
   /**
@@ -267,10 +268,11 @@ export class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected httpPost(path: string, body?: any): Observable<ApiResponse<Model>> {
-    return this.http.post<ApiResponse<Model>>(this.getPath(path), body, {
-      // Set responseType for interceptor
-      responseType: "json",
-    });
+    return this.http.post<ApiResponse<Model>>(
+      this.getPath(path),
+      body,
+      defaultHeaders
+    );
   }
 
   /**
@@ -281,10 +283,11 @@ export class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected httpPut(path: string, body?: any): Observable<ApiResponse<Model>> {
-    return this.http.put<ApiResponse<Model>>(this.getPath(path), body, {
-      // Set responseType for interceptor
-      responseType: "json",
-    });
+    return this.http.put<ApiResponse<Model>>(
+      this.getPath(path),
+      body,
+      defaultHeaders
+    );
   }
 
   /**
@@ -298,10 +301,11 @@ export class BawApiService<Model extends AbstractModel> {
     path: string,
     body?: any
   ): Observable<ApiResponse<Model>> {
-    return this.http.patch<ApiResponse<Model>>(this.getPath(path), body, {
-      // Set responseType for interceptor
-      responseType: "json",
-    });
+    return this.http.patch<ApiResponse<Model>>(
+      this.getPath(path),
+      body,
+      defaultHeaders
+    );
   }
 
   /**
