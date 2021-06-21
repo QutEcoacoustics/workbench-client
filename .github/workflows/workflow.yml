@@ -147,11 +147,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        with:
-          lfs: true
-
-      - name: Checkout LFS objects
-        run: git lfs checkout
 
       - name: Install dependencies
         run: sudo apt install pngcheck
@@ -175,6 +170,9 @@ jobs:
         run: wget localhost:4000/assets/images/project/project_span4.png
 
       - name: Validate LFS asset is instantiated
+        run: grep -o -v "git-lfs" project_span4.png
+
+      - name: Validate PNG asset is uncorrupted
         run: pngcheck project_span4.png
 
   build:
