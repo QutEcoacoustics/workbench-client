@@ -9,9 +9,9 @@ import { AppModule } from "./app.module";
   imports: [
     AppModule,
     ServerModule,
-    // Http request maximum timeout
+    // Http request maximum timeout with 100ms limit
     NgxSsrTimeoutModule.forRoot({ timeout: 100 }),
-    // Cache http requests
+    // Cache http requests up to an hour, or 50 requests
     NgxSsrCacheModule.configLruCache({ maxAge: 10 * 60_000, maxSize: 50 }),
   ],
   bootstrap: [AppComponent],

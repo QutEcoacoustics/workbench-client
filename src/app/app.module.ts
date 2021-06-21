@@ -78,7 +78,7 @@ export const appImports = [
   declarations: [AppComponent],
   imports: [
     BrowserModule.withServerTransition({ appId: "workbench-client" }),
-    // Http request maximum timeout
+    // Http request maximum timeout with 10 second limit
     NgxSsrTimeoutModule.forRoot({ timeout: 10_000 }),
     AppRoutingModule,
     HttpClientModule,

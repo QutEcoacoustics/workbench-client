@@ -45,6 +45,7 @@ export function app(path: string): express.Express {
   server.engine(
     "html",
     // Cache results as they should not change often for unauthenticated users
+    // Cache the last hour of results, or 100 most resent requests
     withCache(
       new LRUCache({ maxAge: 10 * 60_000, maxSize: 100 }),
       ngExpressEngine({
@@ -92,7 +93,7 @@ function run(configPath: string): void {
   // Start up the Node server
   const server = app(configPath);
   server.listen(port, "0.0.0.0", () => {
-    console.log(`Node Express server listening on http://localhost:${port}`);
+    console.log(`Node Express server listening on http://0.0.0.0:${port}`);
   });
 }
 
