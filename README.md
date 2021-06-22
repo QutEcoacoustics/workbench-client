@@ -2,9 +2,9 @@
 
 The Angular client for an acoustic workbench application.
 
-![Build, Test, and Publish](https://github.com/QutEcoacoustics/workbench-client/workflows/Build,%20Test,%20and%20Publish/badge.svg)
+[![Build, Test, and Publish](https://github.com/QutEcoacoustics/workbench-client/workflows/Build,%20Test,%20and%20Publish/badge.svg)](https://github.com/QutEcoacoustics/workbench-client/actions)
 [![DOI](https://zenodo.org/badge/195738695.svg)](https://zenodo.org/badge/latestdoi/195738695)
-![Docker Image Version (latest semver)](https://img.shields.io/docker/v/qutecoacoustics/workbench-client?label=docker%20image%20version&sort=semver&style=plastic)
+[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/qutecoacoustics/workbench-client?label=docker%20image%20version&sort=semver&style=plastic)](https://hub.docker.com/repository/docker/qutecoacoustics/workbench-client)
 
 ## Install instructions
 
