@@ -4,6 +4,7 @@ import { List } from "immutable";
 import {
   adminAnalysisJobsMenuItem,
   adminCategory,
+  adminCmsMenuItem,
   adminDashboardMenuItem,
   adminJobStatusMenuItem,
   adminUserListMenuItem,
@@ -23,6 +24,7 @@ export const adminMenuItemActions = [
   adminAudioRecordingsMenuItem,
   adminAnalysisJobsMenuItem,
   adminJobStatusMenuItem,
+  adminCmsMenuItem,
 ];
 
 @Component({
