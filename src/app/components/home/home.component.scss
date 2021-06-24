@@ -1,37 +1,99 @@
 @import "../../styles/media-mixin";
 
-#website-title {
+#hero {
+  background-color: var(--theme-default-background-dark);
+  background-image: url("../../../assets/images/landing/IMG_sunset.JPG");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+
+  div {
+    flex-grow: 1;
+    margin-bottom: 13rem;
+    margin-top: 9rem;
+  }
+
+  svg {
+    background-color: white;
+    margin: 0 10%;
+    mix-blend-mode: screen;
+    font-weight: bolder;
+  }
+
+  caption {
+    background-color: lightgrey;
+    color: black;
+    margin-left: auto;
+    padding: 0.5rem 0.75rem;
+    width: fit-content;
+    max-width: 50%;
+  }
+}
+
+h2 {
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 3rem;
+}
+
+p {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: large;
+  text-align: center;
+}
+
+#about_us {
+  background-color: #f5fcf5; // Very light green
+  overflow: auto;
+  padding-bottom: 5rem;
+  padding-top: 5rem;
+  background-color: var(--theme-highlight);
   color: white;
-  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
-  font-family: "Arial";
-  font-size: 12vw;
-  font-weight: bold;
-  padding-bottom: 15rem;
 
-  @include media(">extra-large") {
-    font-size: 10rem
+  p {
+    font-size: 1.25rem;
   }
 }
 
-section {
-  background-color: #fff;
-  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
-  padding: 15px 1rem;
-  width: 100%;
+#our_process {
+  background-color: black;
+  color: white;
+  padding-bottom: 5rem;
+  padding-top: 5rem;
 
-  h1,
-  h2 {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 500;
-    line-height: 1.1;
-  }
+  .card {
+    background: none;
 
-  h2 {
-    font-weight: 400;
+    h3 {
+      text-align: center;
+    }
+
+    fa-icon {
+      font-size: 64px;
+      margin: 1rem auto;
+    }
   }
 }
 
-#hero-image {
-  background-image: url("/assets/images/landing/IMG_1318.JPG");
-  background-color: lightgray;
+#projects {
+  background-color: whitesmoke;
+  padding-bottom: 5rem;
+  padding-top: 5rem;
+
+  p {
+    margin-bottom: 5rem;
+  }
+
+  a.btn {
+    color: var(--theme-highlight);
+    border-color: var(--theme-highlight);
+
+    &:hover {
+      color: white;
+      background-color: var(--theme-highlight);
+      border-color: var(--theme-highlight);
+    }
+  }
 }

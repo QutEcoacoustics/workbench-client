@@ -7,6 +7,8 @@
 :root {
   /* Navigation bar background colour */
   --baw-theme-header: #222;
+  --theme-default-background-light: lightgrey;
+  --theme-default-background-dark: darkgrey;
 
   /* Theme highlight colour, this is used to create an accent for objects following the 60/30/10 rule */
   @include create-variable("highlight", #304f3b, 60%, 70%, 5%, 10%);
