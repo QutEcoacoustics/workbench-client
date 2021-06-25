@@ -1,12 +1,41 @@
-.card-title {
-  font-size: 1.25rem;
+.card {
+  --lh: 1.4rem;
+  --max-lines: 4;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+  }
+
+  .card-text {
+    font-size: 0.9rem;
+  }
 }
 
-.card-text {
-  font-size: 0.9rem;
-}
+.truncate {
+  position: relative;
+  line-height: var(--lh);
+  height: calc(var(--lh) * var(--max-lines));
+  overflow: hidden;
 
-img {
-  width: 100%;
-  height: 100%;
+  &:after {
+    content: "";
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 70%;
+    height: var(--lh);
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 1) 50%
+    );
+  }
 }
