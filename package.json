@@ -88,7 +88,7 @@
     "@chiragrupani/karma-chromium-edge-launcher": "^2.1.1",
     "@ngneat/spectator": "^7.2.0",
     "@nguniversal/builders": "^11.2.1",
-    "@nrwl/nx-cloud": "12.2.2",
+    "@nrwl/nx-cloud": "12.2.7",
     "@nrwl/workspace": "12.4.0",
     "@types/express": "^4.17.12",
     "@types/faker": "^5.5.6",
