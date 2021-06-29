@@ -10,7 +10,7 @@ import { AppConfigMockService, testApiConfig } from "./configMock.service";
   providers: [
     {
       provide: API_ROOT,
-      useValue: testApiConfig.environment.apiRoot,
+      useValue: testApiConfig.endpoints.apiRoot,
     },
     {
       provide: API_CONFIG,

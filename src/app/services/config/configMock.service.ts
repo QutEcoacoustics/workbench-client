@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
 import {
   Configuration,
-  Environment,
+  Endpoints,
+  Keys,
   Settings,
 } from "@helpers/app-initializer/app-initializer";
 import { version } from "package.json";
@@ -12,8 +13,12 @@ export class AppConfigMockService {
     return new Proxy(testApiConfig, {});
   }
 
-  public get environment(): Environment {
-    return new Proxy(testApiConfig.environment, {});
+  public get endpoints(): Endpoints {
+    return new Proxy(testApiConfig.endpoints, {});
+  }
+
+  public get keys(): Keys {
+    return new Proxy(testApiConfig.keys, {});
   }
 
   public get settings(): Settings {
@@ -24,17 +29,17 @@ export class AppConfigMockService {
 export const testApiConfig = new Configuration({
   production: false,
   version,
-  environment: {
-    build: "testing",
+  endpoints: {
+    environment: "testing",
     apiRoot: "https://www.testing.com/api",
     clientOrigin: "https://www.testing.com/site",
     clientDir: "/website",
-    keys: {
-      googleMaps: "<< googleMaps >>",
-      googleAnalytics: {
-        domain: "<< domain >>",
-        trackingId: "<< googleAnalytics >>",
-      },
+  },
+  keys: {
+    googleMaps: "<< googleMaps >>",
+    googleAnalytics: {
+      domain: "<< domain >>",
+      trackingId: "<< googleAnalytics >>",
     },
   },
   settings: {

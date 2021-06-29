@@ -20,7 +20,7 @@ const apiConfigPromise = fetchRetry<Partial<Configuration>>(
   5
 )
   .then(async (data) => {
-    await embedGoogleMaps(data?.environment?.keys?.googleMaps);
+    await embedGoogleMaps(data?.keys?.googleMaps);
     return new Configuration(data);
   })
   .catch((err: any) => {

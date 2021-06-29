@@ -300,7 +300,7 @@ describe("MenuLinkComponent", () => {
       setup({ link: menuLink({ ...defaultLink, uri: () => "/brokenlink/" }) });
       spec.detectChanges();
       expect(getLink()).toHaveAttribute({
-        href: config.environment.apiRoot + "/brokenlink/",
+        href: config.endpoints.apiRoot + "/brokenlink/",
       });
     });
 

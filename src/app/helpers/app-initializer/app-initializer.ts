@@ -29,7 +29,7 @@ export class AppInitializer {
 
   public static apiRootFactory(@Inject(IS_SERVER_PLATFORM) isServer: boolean) {
     return isConfiguration(environment, isServer)
-      ? environment.environment.apiRoot
+      ? environment.endpoints.apiRoot
       : "";
   }
 }
@@ -51,17 +51,18 @@ export interface Settings {
 /**
  * App environment
  */
-export interface Environment {
-  build: string;
+export interface Endpoints {
+  environment: string;
   apiRoot: string;
   clientOrigin: string;
   clientDir: string;
-  keys: {
-    googleMaps: string;
-    googleAnalytics: {
-      domain: string;
-      trackingId: string;
-    };
+}
+
+export interface Keys {
+  googleMaps: string;
+  googleAnalytics: {
+    domain: string;
+    trackingId: string;
   };
 }
 
@@ -72,7 +73,8 @@ export interface Configuration {
   kind: "Configuration";
   production: boolean;
   version: string;
-  environment: Environment;
+  endpoints: Endpoints;
+  keys: Keys;
   settings: Settings;
 }
 
@@ -84,7 +86,7 @@ export class Configuration implements Configuration {
   public kind: "Configuration" = "Configuration";
   public production: boolean;
   public version: string;
-  public environment: Environment;
+  public endpoints: Endpoints;
   public settings: Settings;
 
   public constructor(configuration: Partial<Configuration>) {
@@ -104,7 +106,7 @@ export function isConfiguration(
   if (!config) {
     return returnError("No configuration set");
   }
-  if (!config.environment) {
+  if (!config.endpoints) {
     return returnError("No confirmation environment set");
   }
   if (!config.settings) {
@@ -113,15 +115,14 @@ export function isConfiguration(
   if (config.kind !== "Configuration") {
     return returnParamError("kind");
   }
-  if (!validateServerRoot(config.environment.apiRoot, "apiRoot")) {
+  if (!validateServerRoot(config.endpoints.apiRoot, "apiRoot")) {
     return false;
   }
-  if (!validateServerOrigin(config.environment.clientOrigin, "clientOrigin")) {
+  if (!validateServerOrigin(config.endpoints.clientOrigin, "clientOrigin")) {
     return false;
   }
 
-  const siteUrl =
-    config.environment.clientOrigin + config.environment.clientDir;
+  const siteUrl = config.endpoints.clientOrigin + config.endpoints.clientDir;
   if (!isServer && !window.location.toString().includes(siteUrl)) {
     console.warn(
       "Configuration siteRoot and siteDir do not match the current deployment location. Validate this is intentional"

@@ -1,15 +1,15 @@
 {
-  "environment": {
-    "build": "development",
+  "endpoints": {
+    "environment": "development",
     "apiRoot": "https://api.staging.ecosounds.org",
     "clientOrigin": "http://development.ecosounds.org:4200",
-    "clientDir": "/",
-    "keys": {
-      "googleMaps": "",
-      "googleAnalytics": {
-        "domain": "",
-        "trackingId": ""
-      }
+    "clientDir": "/"
+  },
+  "keys": {
+    "googleMaps": "",
+    "googleAnalytics": {
+      "domain": "",
+      "trackingId": ""
     }
   },
   "settings": {

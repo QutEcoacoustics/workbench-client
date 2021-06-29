@@ -189,7 +189,7 @@ describe("ImageDirective", () => {
     function getApiRoot() {
       // Use test config instead of spectator.inject because this is used
       // before DI is initialized
-      return testApiConfig.environment.apiRoot;
+      return testApiConfig.endpoints.apiRoot;
     }
 
     it("should append authToken to url", () => {

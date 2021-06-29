@@ -160,7 +160,7 @@ describe("LoginComponent", () => {
     });
 
     it("should give error notification if external redirect", async () => {
-      setup(testApiConfig.environment.apiRoot + "/broken_link");
+      setup(testApiConfig.endpoints.apiRoot + "/broken_link");
       isSignedIn(false);
       const promise = setLoginError();
       spec.detectChanges();

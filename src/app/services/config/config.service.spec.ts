@@ -44,7 +44,7 @@ describe("AppConfigService", () => {
   });
 
   function configureTestingModule(
-    apiRoot: string = testApiConfig.environment.apiRoot,
+    apiRoot: string = testApiConfig.endpoints.apiRoot,
     apiConfig: Partial<Configuration> = testApiConfig
   ) {
     TestBed.configureTestingModule({
@@ -81,12 +81,17 @@ describe("AppConfigService", () => {
     expect(service.config).toEqual(Object.assign(environment, testApiConfig));
   });
 
-  it("should get environment", () => {
+  it("should get endpoints", () => {
     configureTestingModule();
-    expect(service.environment).toEqual(testApiConfig.environment);
+    expect(service.endpoints).toEqual(testApiConfig.endpoints);
   });
 
-  it("should get values", () => {
+  it("should get keys", () => {
+    configureTestingModule();
+    expect(service.keys).toEqual(testApiConfig.keys);
+  });
+
+  it("should get settings", () => {
     configureTestingModule();
     expect(service.settings).toEqual(testApiConfig.settings);
   });
