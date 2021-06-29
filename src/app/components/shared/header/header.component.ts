@@ -5,7 +5,8 @@ import { SecurityService } from "@baw-api/security/security.service";
 import { libraryMenuItem } from "@components/library/library.menus";
 import { listenMenuItem } from "@components/listen/listen.menus";
 import {
-  HeaderDropDownConvertedLink,
+  HeaderGroupConverted,
+  HeaderLink,
   isHeaderLink,
 } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -40,7 +41,7 @@ import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
 export class HeaderComponent extends withUnsubscribe() implements OnInit {
   public activeLink: string;
   public collapsed: boolean;
-  public headers: List<NavigableMenuItem | HeaderDropDownConvertedLink>;
+  public headers: List<NavigableMenuItem | HeaderGroupConverted>;
   public title: string;
   public user: SessionUser;
   public routes = {
@@ -65,7 +66,7 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
   public ngOnInit() {
     this.collapsed = true;
     this.activeLink = "projects";
-    this.title = this.config.values.brand.name;
+    this.title = this.config.settings.brand.short;
 
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
     this.headers = List([
@@ -140,15 +141,15 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
    * Retrieve header links from app config
    */
   private retrieveHeaderLinks() {
-    return this.config.values.content.map((header) => {
-      if (!isHeaderLink(header)) {
-        return {
-          headerTitle: header.headerTitle,
-          items: header.items.map((item) => this.generateLink(item)),
-        } as HeaderDropDownConvertedLink;
-      } else {
+    return this.config.settings.customMenu.map((header) => {
+      if (isHeaderLink(header)) {
         return this.generateLink(header);
       }
+
+      return {
+        ...header,
+        items: header.items.map((item) => this.generateLink(item)),
+      } as HeaderGroupConverted;
     });
   }
 
@@ -157,7 +158,7 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
    *
    * @param item Item to convert
    */
-  private generateLink(item: any): MenuLink {
+  private generateLink(item: HeaderLink): MenuLink {
     return menuLink({
       label: item.title,
       icon: ["fas", "home"],

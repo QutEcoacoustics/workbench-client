@@ -3,7 +3,7 @@ import {
   Configuration,
   Environment,
   isConfiguration,
-  Values,
+  Settings,
 } from "@helpers/app-initializer/app-initializer";
 import { ToastrService } from "ngx-toastr";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
@@ -58,7 +58,7 @@ export class ConfigService {
   /**
    * Get config values
    */
-  public get values(): Values {
-    return this._config.values;
+  public get settings(): Settings {
+    return this._config.settings;
   }
 }

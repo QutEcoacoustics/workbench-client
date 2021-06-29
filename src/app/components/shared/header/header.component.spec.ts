@@ -110,7 +110,7 @@ describe("HeaderComponent", () => {
 
           const brand = spec.query<HTMLElement>("a.navbar-brand");
           assertRoute(brand, homeMenuItem.route.toRouterLink());
-          expect(brand.innerText).toContain(config.values.brand.name);
+          expect(brand.innerText).toContain(config.settings.brand.short);
         });
 
         [

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import {
   Configuration,
   Environment,
-  Values,
+  Settings,
 } from "@helpers/app-initializer/app-initializer";
 import { version } from "package.json";
 
@@ -16,8 +16,8 @@ export class AppConfigMockService {
     return new Proxy(testApiConfig.environment, {});
   }
 
-  public get values(): Values {
-    return new Proxy(testApiConfig.values, {});
+  public get settings(): Settings {
+    return new Proxy(testApiConfig.settings, {});
   }
 }
 
@@ -25,10 +25,10 @@ export const testApiConfig = new Configuration({
   production: false,
   version,
   environment: {
-    environment: "testing",
+    build: "testing",
     apiRoot: "https://www.testing.com/api",
-    siteRoot: "https://www.testing.com/site",
-    siteDir: "/website",
+    clientOrigin: "https://www.testing.com/site",
+    clientDir: "/website",
     keys: {
       googleMaps: "<< googleMaps >>",
       googleAnalytics: {
@@ -37,21 +37,21 @@ export const testApiConfig = new Configuration({
       },
     },
   },
-  values: {
+  settings: {
     brand: {
-      name: "<< brandName >>",
-      title: "<< brandTitle >>",
+      short: "<< brandName >>",
+      long: "<< brandTitle >>",
     },
     links: {
       sourceRepository: "http://broken_link",
     },
-    content: [
+    customMenu: [
       {
         title: "<< content1 >>",
         url: "<< contentUrl1 >>",
       },
       {
-        headerTitle: "<< content2 >>",
+        title: "<< content2 >>",
         items: [
           {
             title: "<< content3 >>",

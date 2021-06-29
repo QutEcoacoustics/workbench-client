@@ -88,7 +88,7 @@ describe("AppConfigService", () => {
 
   it("should get values", () => {
     configureTestingModule();
-    expect(service.values).toEqual(testApiConfig.values);
+    expect(service.settings).toEqual(testApiConfig.settings);
   });
 
   it("should create warning message on failed config", () => {

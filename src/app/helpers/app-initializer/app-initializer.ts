@@ -1,5 +1,4 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
-import { XOR } from "@helpers/advancedTypes";
 import { NavigableMenuItem } from "@interfaces/menusInterfaces";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
@@ -38,25 +37,25 @@ export class AppInitializer {
 /**
  * App values
  */
-export interface Values {
+export interface Settings {
   brand: {
-    name: string;
-    title: string;
+    short: string;
+    long: string;
   };
   links: {
     sourceRepository: string;
   };
-  content: Links[];
+  customMenu: (HeaderLink | HeaderGroup)[];
 }
 
 /**
  * App environment
  */
 export interface Environment {
-  environment: string;
+  build: string;
   apiRoot: string;
-  siteRoot: string;
-  siteDir: string;
+  clientOrigin: string;
+  clientDir: string;
   keys: {
     googleMaps: string;
     googleAnalytics: {
@@ -74,7 +73,7 @@ export interface Configuration {
   production: boolean;
   version: string;
   environment: Environment;
-  values: Values;
+  settings: Settings;
 }
 
 /**
@@ -86,7 +85,7 @@ export class Configuration implements Configuration {
   public production: boolean;
   public version: string;
   public environment: Environment;
-  public values: Values;
+  public settings: Settings;
 
   public constructor(configuration: Partial<Configuration>) {
     Object.assign(this, configuration);
@@ -102,35 +101,27 @@ export function isConfiguration(
   config: Configuration,
   isServer: boolean
 ): config is Configuration {
-  function returnError(msg: string) {
-    console.error(msg);
-    return false;
-  }
-
-  function returnParamError(param: string) {
-    return returnError(`Invalid configuration ${param} param`);
-  }
-
   if (!config) {
     return returnError("No configuration set");
   }
   if (!config.environment) {
     return returnError("No confirmation environment set");
   }
-  if (!config.values) {
+  if (!config.settings) {
     return returnError("No confirmation values set");
   }
   if (config.kind !== "Configuration") {
     return returnParamError("kind");
   }
   if (!validateServerRoot(config.environment.apiRoot, "apiRoot")) {
-    return returnParamError("apiRoot");
+    return false;
   }
-  if (!validateServerRoot(config.environment.siteRoot, "siteRoot")) {
-    return returnParamError("siteRoot");
+  if (!validateServerOrigin(config.environment.clientOrigin, "clientOrigin")) {
+    return false;
   }
 
-  const siteUrl = config.environment.siteRoot + config.environment.siteDir;
+  const siteUrl =
+    config.environment.clientOrigin + config.environment.clientDir;
   if (!isServer && !window.location.toString().includes(siteUrl)) {
     console.warn(
       "Configuration siteRoot and siteDir do not match the current deployment location. Validate this is intentional"
@@ -141,11 +132,21 @@ export function isConfiguration(
 }
 
 /**
+ * Validate if a server origin is valid for the configuration file
+ */
+function validateServerOrigin(origin: string, key: string) {
+  if (origin?.endsWith("/")) {
+    return returnParamError(key, "should not end with a '/'");
+  }
+  return validateServerRoot(origin, key);
+}
+
+/**
  * Validate if a server root value is valid for the configuration file
  */
 function validateServerRoot(root: string, key: string) {
-  if (!root || root.endsWith("/")) {
-    return false;
+  if (!root) {
+    return returnParamError(key, "not defined");
   }
 
   try {
@@ -156,22 +157,34 @@ function validateServerRoot(root: string, key: string) {
       console.warn(`Configuration param ${key} is not using https protocol`);
       return true;
     } else {
-      return false;
+      return returnParamError(key, "url protocol is neither http or https");
     }
   } catch (e) {
-    return false;
+    console.error(e);
+    return returnParamError(key, "url is not valid");
   }
 }
 
-type Links = XOR<HeaderLink, HeaderDropDownLink>;
+function returnParamError(param: string, msg?: string) {
+  return returnError(
+    `Invalid configuration ${param} param${msg ? `: ${msg}` : ""}`
+  );
+}
+
+function returnError(msg: string) {
+  console.error(msg);
+  return false;
+}
 
 /**
  * Determine if a variable is of the HeaderLink type
  *
  * @param link Variable to evaluate
  */
-export function isHeaderLink(link: Links): link is HeaderLink {
-  return "title" in link;
+export function isHeaderLink(
+  link: HeaderLink | HeaderGroup | HeaderGroupConverted
+): link is HeaderLink {
+  return "url" in (link as HeaderLink);
 }
 
 /**
@@ -179,21 +192,36 @@ export function isHeaderLink(link: Links): link is HeaderLink {
  */
 export interface HeaderLink {
   title: string;
+  /**
+   * Override of title, allows insertion of images/icons
+   * TODO Implement when required
+   */
+  html?: string;
   url: string;
 }
 
 /**
  * Dropdown list of links for header
  */
-export interface HeaderDropDownLink {
-  headerTitle: string;
+export interface HeaderGroup {
+  title: string;
+  /**
+   * Override of title, allows insertion of images/icons
+   * TODO Implement when required
+   */
+  html?: string;
   items: HeaderLink[];
 }
 
 /**
  * Dropdown list of navigable menu items
  */
-export interface HeaderDropDownConvertedLink {
-  headerTitle: string;
+export interface HeaderGroupConverted {
+  title: string;
+  /**
+   * Override of title, allows insertion of images/icons
+   * TODO Implement when required
+   */
+  html?: string;
   items: NavigableMenuItem[];
 }
