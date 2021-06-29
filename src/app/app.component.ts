@@ -29,7 +29,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
   }
 
   public ngOnInit() {
-    this.title.setTitle(this.config.values.brand.name);
+    this.title.setTitle(this.config.settings.brand.short);
     this.fullscreen = true;
   }
 

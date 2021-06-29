@@ -1,9 +1,10 @@
 import { Inject, Injectable } from "@angular/core";
 import {
   Configuration,
-  Environment,
+  Endpoints,
   isConfiguration,
-  Values,
+  Keys,
+  Settings,
 } from "@helpers/app-initializer/app-initializer";
 import { ToastrService } from "ngx-toastr";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
@@ -41,24 +42,23 @@ export class ConfigService {
     this._config = new Proxy(environment, {});
   }
 
-  /**
-   * Get config data
-   */
+  /** Get config data */
   public get config(): Configuration {
     return this._config;
   }
 
-  /**
-   * Get environment values
-   */
-  public get environment(): Environment {
-    return this._config.environment;
+  /** Get endpoint values */
+  public get endpoints(): Endpoints {
+    return this._config.endpoints;
   }
 
-  /**
-   * Get config values
-   */
-  public get values(): Values {
-    return this._config.values;
+  /** Get key values */
+  public get keys(): Keys {
+    return this._config.keys;
+  }
+
+  /** Get setting values */
+  public get settings(): Settings {
+    return this._config.settings;
   }
 }

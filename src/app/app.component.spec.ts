@@ -55,7 +55,7 @@ describe("AppComponent", () => {
     const title = spec.inject(Title);
     const config = spec.inject(ConfigService);
     spec.detectChanges();
-    expect(title.getTitle()).toBe(config.values.brand.name);
+    expect(title.getTitle()).toBe(config.settings.brand.short);
   });
 
   describe("updatePageLayout", () => {

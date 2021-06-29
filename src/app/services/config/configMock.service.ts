@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
 import {
   Configuration,
-  Environment,
-  Values,
+  Endpoints,
+  Keys,
+  Settings,
 } from "@helpers/app-initializer/app-initializer";
 import { version } from "package.json";
 
@@ -12,46 +13,50 @@ export class AppConfigMockService {
     return new Proxy(testApiConfig, {});
   }
 
-  public get environment(): Environment {
-    return new Proxy(testApiConfig.environment, {});
+  public get endpoints(): Endpoints {
+    return new Proxy(testApiConfig.endpoints, {});
   }
 
-  public get values(): Values {
-    return new Proxy(testApiConfig.values, {});
+  public get keys(): Keys {
+    return new Proxy(testApiConfig.keys, {});
+  }
+
+  public get settings(): Settings {
+    return new Proxy(testApiConfig.settings, {});
   }
 }
 
 export const testApiConfig = new Configuration({
   production: false,
   version,
-  environment: {
+  endpoints: {
     environment: "testing",
     apiRoot: "https://www.testing.com/api",
-    siteRoot: "https://www.testing.com/site",
-    siteDir: "/website",
-    keys: {
-      googleMaps: "<< googleMaps >>",
-      googleAnalytics: {
-        domain: "<< domain >>",
-        trackingId: "<< googleAnalytics >>",
-      },
+    clientOrigin: "https://www.testing.com/site",
+    clientDir: "/website",
+  },
+  keys: {
+    googleMaps: "<< googleMaps >>",
+    googleAnalytics: {
+      domain: "<< domain >>",
+      trackingId: "<< googleAnalytics >>",
     },
   },
-  values: {
+  settings: {
     brand: {
-      name: "<< brandName >>",
-      title: "<< brandTitle >>",
+      short: "<< brandName >>",
+      long: "<< brandTitle >>",
     },
     links: {
       sourceRepository: "http://broken_link",
     },
-    content: [
+    customMenu: [
       {
         title: "<< content1 >>",
         url: "<< contentUrl1 >>",
       },
       {
-        headerTitle: "<< content2 >>",
+        title: "<< content2 >>",
         items: [
           {
             title: "<< content3 >>",

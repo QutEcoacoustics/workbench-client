@@ -5,7 +5,7 @@ import {
   OnInit,
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
-import { HeaderDropDownConvertedLink } from "@helpers/app-initializer/app-initializer";
+import { HeaderGroupConverted } from "@helpers/app-initializer/app-initializer";
 import {
   getRoute,
   isExternalLink,
@@ -24,10 +24,9 @@ import {
         ngbDropdownToggle
         id="dropdownBasic"
         class="btn btn-link nav-link dropdown-toggle"
-        [ngClass]="{ active: active }"
-      >
-        {{ links.headerTitle }}
-      </button>
+        [class.active]="active"
+        [innerText]="links.title"
+      ></button>
       <div ngbDropdownMenu aria-labelledby="dropdownBasic">
         <ng-container *ngFor="let link of links.items">
           <ng-container *ngIf="isInternalRoute(link)">
@@ -35,14 +34,15 @@ import {
               ngbDropdownItem
               routerLinkActive="active"
               [routerLink]="getRoute(link, params)"
-            >
-              {{ link.label }}
-            </a>
+              [innerText]="link.label"
+            ></a>
           </ng-container>
           <ng-container *ngIf="isExternalLink(link)">
-            <a ngbDropdownItem [href]="getRoute(link, params)">
-              {{ link.label }}
-            </a>
+            <a
+              ngbDropdownItem
+              [href]="getRoute(link, params)"
+              [innerText]="link.label"
+            ></a>
           </ng-container>
         </ng-container>
       </div>
@@ -52,7 +52,7 @@ import {
 })
 export class HeaderDropdownComponent implements OnInit {
   @Input() public active: boolean;
-  @Input() public links: HeaderDropDownConvertedLink;
+  @Input() public links: HeaderGroupConverted;
   public params: Params;
 
   public isInternalRoute = isInternalRoute;

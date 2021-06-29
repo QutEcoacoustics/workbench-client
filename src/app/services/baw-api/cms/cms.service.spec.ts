@@ -10,7 +10,7 @@ import { testApiConfig } from "@services/config/configMock.service";
 import { noop } from "rxjs";
 import { CMS, CmsService } from "./cms.service";
 
-export const cmsRoot = testApiConfig.environment.apiRoot + "/cms/";
+export const cmsRoot = testApiConfig.endpoints.apiRoot + "/cms/";
 
 describe("CmsService", () => {
   let spectator: SpectatorHttp<CmsService>;

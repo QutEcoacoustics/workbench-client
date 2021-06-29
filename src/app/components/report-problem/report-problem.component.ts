@@ -34,7 +34,8 @@ import { fields } from "./report-problem.schema.json";
 })
 class ReportProblemComponent
   extends FormTemplate<ReportProblem>
-  implements OnInit {
+  implements OnInit
+{
   public fields = fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
   public sourceRepoLink: string;
@@ -56,7 +57,7 @@ class ReportProblemComponent
   public ngOnInit() {
     super.ngOnInit();
 
-    this.sourceRepoLink = this.config.values.links.sourceRepository;
+    this.sourceRepoLink = this.config.settings.links.sourceRepository;
     this.api
       .seed()
       .pipe(takeUntil(this.unsubscribe))

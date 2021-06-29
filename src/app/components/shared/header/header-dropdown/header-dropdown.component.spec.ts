@@ -20,7 +20,7 @@ describe("HeaderDropdownComponent", () => {
 
   it("should create", () => {
     component.links = {
-      headerTitle: "test",
+      title: "test",
       items: [
         menuLink({
           label: "label",
@@ -36,7 +36,7 @@ describe("HeaderDropdownComponent", () => {
 
   it("should create header title", () => {
     component.links = {
-      headerTitle: "Custom Title",
+      title: "Custom Title",
       items: [
         menuLink({
           label: "label",
@@ -55,7 +55,7 @@ describe("HeaderDropdownComponent", () => {
 
   it("should default as inactive state", () => {
     component.links = {
-      headerTitle: "test",
+      title: "test",
       items: [
         menuLink({
           label: "label",
@@ -77,7 +77,7 @@ describe("HeaderDropdownComponent", () => {
 
   it("should handle active state", () => {
     component.links = {
-      headerTitle: "test",
+      title: "test",
       items: [
         menuLink({
           label: "label",
@@ -104,7 +104,7 @@ describe("HeaderDropdownComponent", () => {
 
   it("should handle single internal link dropdown", () => {
     component.links = {
-      headerTitle: "test",
+      title: "test",
       items: [
         menuRoute({
           label: "Custom Label",
@@ -129,7 +129,7 @@ describe("HeaderDropdownComponent", () => {
 
   it("should handle multiple internal link dropdown", () => {
     component.links = {
-      headerTitle: "test",
+      title: "test",
       items: [
         menuRoute({
           label: "Custom Label 1",
@@ -167,7 +167,7 @@ describe("HeaderDropdownComponent", () => {
 
   it("should handle single external link dropdown", () => {
     component.links = {
-      headerTitle: "test",
+      title: "test",
       items: [
         menuLink({
           label: "Custom Label",
@@ -187,7 +187,7 @@ describe("HeaderDropdownComponent", () => {
 
   it("should handle multiple external link dropdown", () => {
     component.links = {
-      headerTitle: "test",
+      title: "test",
       items: [
         menuLink({
           label: "Custom Label 1",
@@ -215,7 +215,7 @@ describe("HeaderDropdownComponent", () => {
 
   it("should handle mixed link dropdown", () => {
     component.links = {
-      headerTitle: "test",
+      title: "test",
       items: [
         menuLink({
           label: "Custom Label 1",
