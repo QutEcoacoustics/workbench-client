@@ -46,11 +46,18 @@ Then open a web browser to `http://localhost:4000`.
 
 ### Environment
 
-There are a couple settings you may wish to modify in the `./src/assets/environment.json` file as the website may not work otherwise.
+This website can be customised through the environment file located at `./src/assets/environment.json` (note: look at the docker section for deploying environment files). Here is a list of settings and some example values:
 
-- `apiRoot`: Modifying this value will change which api the website will interact with. Currently this defaults to the staging version of the ecosounds api
-- `siteRoot`: Modifying this value will change what the website thinks its current domain is. Currently this is just a redirect to `localhost:4200`
-- `siteDir`: Modifying this value will change what the website thinks its current directory inside the current domain is
+Parameter | Description | Example Value
+----------|-------------|--------------
+`build` | Tracks what type of build is being run | `development`<br>`staging`<br>`production`
+`apiRoot` | Any API requests made from the app will use this value for its base and append routes to it | `https://ecosounds.org`<br>`https://ecosounds.org:3000`<br>`https://ecosounds.org/api`
+`clientOrigin` | This is the [origin](https://html.spec.whatwg.org/multipage/origin.html#concept-origin) of where the website will be hosted | `https://ecosounds.org`<br>`https://ecosounds.org:3000`
+`clientDir` | This is the directory on the `clientOrigin` which the website is hosted | `/website`<br>`/web/angular`
+`keys` | This contains the various keys required for third party libraries to run. Check the website for each individual key to understand setup | `googleMaps`: Google maps API key<br>`googleAnalytics`: Google analytics domain and tracking ID
+`brand` | This changes the branding of the website | `short: "Ecosounds",`<br>`long: "Ecosounds - Acoustic Workbench"`
+`links` | This is a list of external links used throughout the website. Check the template for the list of modifiable links |
+`customMenu` | This is a list of custom menu items which changes the contents of the header with instance specific links. Check the template for examples |
 
 ### Access the ng tool
 
@@ -152,41 +159,40 @@ Check our Wiki pages for help with common problems and using systems custom to o
 
 ## Production deploy
 
-Deploying to production can be as simple as copying the release assets to a
-statically served directory, setting up your routing, and adding an `environment.json` file.
+Deploying to production can be as simple as copying the release assets to a statically served directory, setting up your routing, and adding an `environment.json` file.
 
 1. Copy and extract a release to a statically served directory like `public`
 2. Template your `environment.json` and place it in the `public/workbench-client/assets` directory
 3. Ensure whatever routing solution you have can route requests for SPA with a wildcard route, excepting the `assets` folder
 
-Note: this configuration is a fully static SPA and may suffer from slow loading
-times and poor SEO.
+Note: this configuration is a fully static SPA and may suffer from slow loading times and poor SEO.
 
 ### Docker
 
-Server side rendering allows a server to render the first page and send it to
-the browser while the rest of the application bundle downloads. To make this work
-you need to run our docker container which contains the web server.
+Server side rendering allows a server to render the first page and send it to the browser while the rest of the application bundle downloads. To make this work you need to run our docker container which contains the web server. The docker repository for this website can be found here: https://hub.docker.com/repository/docker/qutecoacoustics/workbench-client
 
-1. Template your `environment.json` file
+#### Using a pre-built container
 
-   - Template `environment.json` can be found at `./src/assets/environment.json`
-
+1. Template your `environment.json` file, and example can be found at `./src/assets/environment.json`
 2. Run the following command (substituting in the path to your templated config file):
 
-```bash
-$ docker run -p 4000:4000 -v "$(pwd)/environment.json:/environment.json" qutecoacoustics/workbench-client
-```
+   ```bash
+   $ docker pull qutecoacoustics/workbench-client:latest
+   $ docker run -p 4000:4000 -v "$(pwd)/environment.json:/environment.json" qutecoacoustics/workbench-client:latest
+   ```
 
-Done!
+3. Done!
+
+#### Build container locally
 
 To build the container locally for testing:
 
 ```bash
 $ docker build -t qutecoacoustics/workbench-client .
+$ docker run -p 4000:4000 -v "$(pwd)/environment.json:/environment.json" qutecoacoustics/workbench-client
 ```
 
-And for debugging the express server:
+#### Debugging the container
 
 ```bash
 $ docker run -p 4000:4000 -v "$(pwd)/environment.json:/environment.json" -e DEBUG=express:* qutecoacoustics/workbench-client
