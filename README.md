@@ -50,7 +50,7 @@ This website can be customised through the environment file located at `./src/as
 
 Parameter | Description | Example Value
 ----------|-------------|--------------
-`endpoints.environment` | Tracks what type of build is being run | `development`<br>`staging`<br>`production`
+`endpoints.environment` | The environment for this instance. Currently used only for informational purposes. | `development`<br>`staging`<br>`production`
 `endpoints.apiRoot` | Any API requests made from the app will use this value for its base and append routes to it | `https://ecosounds.org`<br>`https://ecosounds.org:3000`<br>`https://ecosounds.org/api`
 `endpoints.clientOrigin` | This is the [origin](https://html.spec.whatwg.org/multipage/origin.html#concept-origin) of where the website will be hosted | `https://ecosounds.org`<br>`https://ecosounds.org:3000`
 `endpoints.clientDir` | This is the directory on the `clientOrigin` which the website is hosted | `/website`<br>`/web/angular`
