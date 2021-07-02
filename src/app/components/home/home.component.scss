@@ -17,25 +17,25 @@
 
   svg {
     background-color: white;
+    font-weight: bolder;
     margin: 0 10%;
     mix-blend-mode: screen;
-    font-weight: bolder;
   }
 
   caption {
     background-color: lightgrey;
     color: black;
     margin-left: auto;
+    max-width: 50%;
     padding: 0.5rem 0.75rem;
     width: fit-content;
-    max-width: 50%;
   }
 }
 
 h2 {
-  text-align: center;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 3rem;
+  text-align: center;
 }
 
 p {
@@ -46,18 +46,19 @@ p {
 
 #about_us {
   background-color: #f5fcf5; // Very light green
+  background-color: var(--theme-highlight);
+  color: white;
   overflow: auto;
   padding-bottom: 5rem;
   padding-top: 5rem;
-  background-color: var(--theme-highlight);
-  color: white;
 
   p {
     font-size: 1.25rem;
   }
 }
 
-#our_process {
+#what_we_do {
+  --card-width: 250px;
   background-color: black;
   color: white;
   padding-bottom: 5rem;
@@ -65,6 +66,10 @@ p {
 
   .card {
     background: none;
+    margin: auto;
+    max-width: var(--card-width);
+    min-width: var(--card-width);
+    width: var(--card-width);
 
     h3 {
       text-align: center;

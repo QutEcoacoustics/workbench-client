@@ -11,6 +11,9 @@ import { List } from "immutable";
 
 /**
  * Cards Component
+ *
+ * TODO This is only used for project cards. Simplify inputs to accept project, and add diamond icon
+ * to signify when the user is the owner/editor of the project
  */
 @Component({
   selector: "baw-cards",

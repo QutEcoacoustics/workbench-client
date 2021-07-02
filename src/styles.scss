@@ -7,6 +7,9 @@
 :root {
   /* Navigation bar background colour */
   --baw-theme-header: #222;
+
+  // TODO Change this away from white
+  --theme-default-background: white;
   --theme-default-background-light: lightgrey;
   --theme-default-background-dark: darkgrey;
 
@@ -19,7 +22,7 @@
 /* You can add global styles to this file, and also import other style files */
 html,
 body {
-  background-color: $white;
+  background-color: var(--theme-default-background);
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0px;
   min-height: 100vh;

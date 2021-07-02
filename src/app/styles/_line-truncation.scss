@@ -1,5 +1,4 @@
-@use "sass:color";
-
+// Styles extracted from here: https://css-tricks.com/line-clampin/
 @mixin line-truncation($line-height, $max-lines, $background-color: white) {
   position: relative;
   line-height: $line-height;

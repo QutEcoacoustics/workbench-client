@@ -27,6 +27,13 @@ class HomeComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit() {
+    /**
+     * TODO Sort projects using the following format:
+     * sorted by:
+     *  permission level high to low
+     *  recent use / modification date (recent, to less recent)
+     *  image or no image
+     */
     this.securityApi
       .getAuthTrigger()
       .pipe(
