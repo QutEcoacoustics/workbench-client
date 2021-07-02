@@ -15,34 +15,27 @@ import { List } from "immutable";
 @Component({
   selector: "baw-cards",
   template: `
-    <div class="row justify-content-center">
+    <div class="row">
       <ng-container *ngIf="imageCards; else defaultCards">
         <baw-card-image
           *ngFor="let item of cards"
-          class="col-lg-4 col-sm-6 portfolio-item mb-4"
+          class="col-xl-4 col-lg-6"
           [card]="item"
         ></baw-card-image>
       </ng-container>
       <ng-template #defaultCards>
         <baw-card
           *ngFor="let item of cards"
-          class="col-lg-4 col-sm-6 mb-4"
+          class="col-xl-4 col-lg-6"
           [card]="item"
         ></baw-card>
       </ng-template>
-      <div id="content" class="col-lg-4 col-sm-6 mb-4 d-flex center">
+      <div id="content" class="col-xl-4 col-lg-6">
         <ng-content></ng-content>
       </div>
     </div>
   `,
-  styles: [
-    `
-      /* Remove content div if no content is inserted */
-      #content:empty {
-        display: none !important;
-      }
-    `,
-  ],
+  styleUrls: ["./cards.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardsComponent implements OnChanges {

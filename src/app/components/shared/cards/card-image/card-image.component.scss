@@ -1,41 +1,48 @@
-.card {
-  --lh: 1.4rem;
-  --max-lines: 4;
-  overflow: hidden;
+@import "../../../../styles/line-truncation";
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+a:hover {
+  text-decoration: none;
+  h4 {
+    text-decoration: underline;
+  }
+}
+
+.card {
+  --line-height: 1.4rem;
+  --max-lines: 4;
+  --image-bg-color: white;
+  --card-bg-color: white;
+  --card-border: 1px solid rgba(0, 0, 0, 0.125);
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: var(--card-border);
+
+  .card-image {
+    background-color: var(--image-bg-color);
+    border-bottom: var(--card-border);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 
   .card-title {
     font-size: 1.25rem;
+    color: var(--theme-highlight);
   }
 
-  .card-text {
-    font-size: 0.9rem;
+  .card-body {
+    padding: 1.25rem 0.75rem;
+    background-color: var(--card-bg-color);
   }
 }
 
 .truncate {
-  position: relative;
-  line-height: var(--lh);
-  height: calc(var(--lh) * var(--max-lines));
-  overflow: hidden;
-
-  &:after {
-    content: "";
-    text-align: right;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 70%;
-    height: var(--lh);
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0),
-      rgba(255, 255, 255, 1) 50%
-    );
-  }
+  @include line-truncation(
+    var(--line-height),
+    var(--max-lines),
+    var(--card-bg-color)
+  );
 }

@@ -16,34 +16,24 @@ import { Card } from "../cards.component";
   selector: "baw-card-image",
   styleUrls: ["./card-image.component.scss"],
   template: `
-    <div class="card h-100">
-      <!-- Card Image -->
-      <a [bawUrl]="card.route">
-        <img [alt]="card.title + ' image'" [src]="card.model.image" />
-      </a>
+    <a class="text-reset" [bawUrl]="card.route">
+      <div class="card h-100">
+        <!-- Image -->
+        <div class="card-image">
+          <img [alt]="card.title + ' image'" [src]="card.model.image" />
+        </div>
 
-      <!-- Card Body -->
-      <div class="card-body">
-        <!-- Title -->
-        <h4 class="card-title">
-          <a [bawUrl]="card.route">{{ card.title }}</a>
-        </h4>
+        <div class="card-body">
+          <!-- Title -->
+          <h4 class="card-title" [innerText]="card.title"></h4>
 
-        <!-- Card Description -->
-        <div class="card-text">
-          <ng-container *ngTemplateOutlet="descriptionTemplate"></ng-container>
+          <!-- Description -->
+          <div class="card-text truncate">
+            <p [innerHtml]="description"></p>
+          </div>
         </div>
       </div>
-    </div>
-
-    <ng-template #descriptionTemplate>
-      <div class="truncate">
-        <p *ngIf="!isServer; else noTruncation" [innerHtml]="description"></p>
-      </div>
-      <ng-template #noTruncation>
-        <p>Loading</p>
-      </ng-template>
-    </ng-template>
+    </a>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -58,13 +48,9 @@ export class CardImageComponent implements OnChanges {
 
   public ngOnChanges() {
     const description = this.card.description ?? "<i>No description given</i>";
-
-    // No need for detection update if nothing changes
-    if (this.description === description) {
-      return;
+    if (this.description !== description) {
+      this.description = description;
+      this.ref.detectChanges();
     }
-
-    this.description = description;
-    this.ref.detectChanges();
   }
 }

@@ -1,0 +1,23 @@
+@use "sass:color";
+
+@mixin line-truncation($line-height, $max-lines, $background-color: white) {
+  position: relative;
+  line-height: $line-height;
+  height: calc(#{$line-height} * #{$max-lines});
+  overflow: hidden;
+
+  &:after {
+    content: "";
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 70%;
+    height: $line-height;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0),
+      $background-color 50%
+    );
+  }
+}
