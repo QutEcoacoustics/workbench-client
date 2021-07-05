@@ -1,6 +1,6 @@
 <div
   *ngIf="fields"
-  class="login-form pl-2 pr-2 pb-3"
+  class="login-form ps-2 pe-2 pb-3"
   [ngClass]="{ small: size === 'small' }"
 >
   <h2 *ngIf="title" class="text-center" [innerHTML]="title"></h2>
@@ -29,7 +29,7 @@
         <button
           *ngIf="submitLabel"
           type="submit"
-          class="btn float-right"
+          class="btn float-end"
           [ngClass]="'btn-' + btnColor"
           [disabled]="!fields || submitLoading"
         >

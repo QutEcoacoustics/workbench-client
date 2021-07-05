@@ -12,7 +12,7 @@ import {
   template: `
     <div class="d-flex justify-content-center m-0 p-0">
       <div id="spinner" role="status" [ngClass]="spinnerClass">
-        <span class="sr-only">Loading...</span>
+        <span class="visually-hidden">Loading...</span>
       </div>
     </div>
   `,

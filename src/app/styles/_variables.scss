@@ -7,7 +7,6 @@ $info: #17a2b8;
 $light: #f8f9fa;
 $dark: #343a40;
 $white: #fff;
-$enable-responsive-font-sizes: true;
 
 $ngx-datatable-selected-active-background: lightgrey;
 $ngx-datatable-selected-active-background-hover: rgba(lightgrey, 0.5);
@@ -17,13 +16,15 @@ $grid-sm: 576px;
 $grid-md: 768px;
 $grid-lg: 992px;
 $grid-xl: 1200px;
+$grid-xxl: 1400px;
 
 $grid-breakpoints: (
   xs: $grid-xs,
   sm: $grid-sm,
   md: $grid-md,
   lg: $grid-lg,
-  xl: $grid-xl
+  xl: $grid-xl,
+  xxl: $grid-xxl,
 );
 
 $container-sm: 540px;
@@ -35,5 +36,5 @@ $container-max-widths: (
   sm: $container-sm,
   md: $container-md,
   lg: $container-lg,
-  xl: $container-xl
+  xl: $container-xl,
 );
