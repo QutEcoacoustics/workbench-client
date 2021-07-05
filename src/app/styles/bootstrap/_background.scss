@@ -1,0 +1,5 @@
+@import "~bootstrap/scss/variables";
+
+.bg-primary {
+  background-color: var(--baw-primary, $primary, blue);
+}

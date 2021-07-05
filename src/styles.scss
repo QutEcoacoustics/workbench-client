@@ -1,5 +1,6 @@
 @import "./app/styles/variables";
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
+@import "./app/styles/bootstrap/index";
 @import "~ngx-toastr/toastr";
 @import "~@swimlane/ngx-datatable/index.css";
 @import "~@swimlane/ngx-datatable/themes/bootstrap.scss";
@@ -49,7 +50,8 @@ body {
   cursor: not-allowed;
   opacity: 0.75;
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background-color: unset !important;
   }
 }
