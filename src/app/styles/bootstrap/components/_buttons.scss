@@ -1,0 +1,36 @@
+@import "~bootstrap/scss/variables";
+
+@mixin button($property) {
+  color: var(--baw-#{$property}-contrast);
+  background-color: var(--baw-#{$property});
+  border-color: var(--baw-#{$property});
+
+  &:hover {
+    color: var(--baw-#{$property}-darker-contrast);
+    background-color: var(--baw-#{$property}-darker);
+    border-color: var(--baw-#{$property}-darker);
+  }
+
+  &.disabled,
+  &:disabled {
+    color: var(--baw-#{$property}-lighter-contrast);
+    background-color: var(--baw-#{$property}-lighter);
+    border-color: var(--baw-#{$property}-lighter);
+  }
+}
+
+@mixin button-outline($property) {
+  @include button($property);
+  background-color: unset;
+  color: var(--baw-#{$property});
+}
+
+@each $theme, $default in $theme-colors {
+  .btn-#{$theme} {
+    @include button($theme);
+  }
+
+  .btn-outline-#{$theme} {
+    @include button-outline($theme);
+  }
+}

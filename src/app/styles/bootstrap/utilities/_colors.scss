@@ -1,0 +1,11 @@
+@import "~bootstrap/scss/variables";
+
+@mixin text-color($property, $fallback) {
+  color: var(--baw-#{$property}, #{$fallback}) !important;
+}
+
+@each $theme, $default in $theme-colors {
+  .text-#{$theme} {
+    @include text-color($theme, $default);
+  }
+}

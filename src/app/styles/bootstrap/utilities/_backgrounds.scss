@@ -1,0 +1,11 @@
+@import "~bootstrap/scss/variables";
+
+@mixin background($property, $fallback) {
+  background-color: var(--baw-#{$property}, #{$fallback}) !important;
+}
+
+@each $theme, $default in $theme-colors {
+  .bg-#{$theme} {
+    @include background($theme, $default);
+  }
+}
