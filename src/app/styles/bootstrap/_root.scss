@@ -68,8 +68,7 @@
 :root {
   --baw-contrast-threshold: 50%;
 
-  //@include create-variable("primary", 216, 98%, 52%);
-  @include create-variable("primary", 354, 70%, 54%);
+  @include create-variable("primary", 216, 98%, 52%);
   @include create-variable("secondary", 208, 7%, 46%);
   @include create-variable("success", 152, 69%, 31%);
   @include create-variable("info", 190, 90%, 50%);
