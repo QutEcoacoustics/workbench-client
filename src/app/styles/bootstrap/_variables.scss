@@ -1,5 +1,13 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
 $ngx-datatable-selected-active-background: lightgrey;
 $ngx-datatable-selected-active-background-hover: rgba(lightgrey, 0.5);
+
+$link-color: var(--baw-primary);
+$link-hover-color: var(--baw-primary-darker);
+
+$pagination-color: $link-color;
 
 $grid-xs: 0;
 $grid-sm: 576px;
@@ -15,16 +23,4 @@ $grid-breakpoints: (
   lg: $grid-lg,
   xl: $grid-xl,
   xxl: $grid-xxl,
-);
-
-$container-sm: 540px;
-$container-md: 720px;
-$container-lg: 960px;
-$container-xl: 1140px;
-
-$container-max-widths: (
-  sm: $container-sm,
-  md: $container-md,
-  lg: $container-lg,
-  xl: $container-xl,
 );

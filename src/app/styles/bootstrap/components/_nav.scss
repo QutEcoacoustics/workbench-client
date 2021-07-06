@@ -1,0 +1,8 @@
+.nav-link {
+  color: var(--baw-primary);
+
+  &:hover,
+  &:focus {
+    color: var(--baw-primary-darker);
+  }
+}

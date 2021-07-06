@@ -1,5 +1,3 @@
-@import "~bootstrap/scss/variables";
-
 @mixin background($property, $fallback) {
   background-color: var(--baw-#{$property}, #{$fallback}) !important;
 }

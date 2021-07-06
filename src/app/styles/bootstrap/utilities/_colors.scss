@@ -1,5 +1,3 @@
-@import "~bootstrap/scss/variables";
-
 @mixin text-color($property, $fallback) {
   color: var(--baw-#{$property}, #{$fallback}) !important;
 }

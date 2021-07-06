@@ -1,5 +1,3 @@
-@import "~bootstrap/scss/variables";
-
 @mixin button($property) {
   color: var(--baw-#{$property}-contrast);
   background-color: var(--baw-#{$property});
