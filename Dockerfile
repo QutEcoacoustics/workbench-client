@@ -39,6 +39,9 @@ COPY --chown=node ./ ./
 RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./src/environments/environment.prod.ts
 
 RUN npm run build:ssr
+
+RUN rm -r node_modules
+
 #   pre-rendering doesn't appear to work at the moment due to our config setup
 #   && npm run prerender
 CMD [ "npm", "run", "serve:ssr"]
