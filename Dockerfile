@@ -1,7 +1,38 @@
-FROM node:current-alpine
+FROM node:current-alpine as BUILD_IMAGE
 
 ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION
+
+# drop privileges
+USER node
+
+RUN mkdir -p  /home/node/workbench-client
+WORKDIR /home/node/workbench-client
+
+# copy deps specification first
+COPY --chown=node package*.json decorate-angular-cli.js nx.json ./
+
+# install deps
+RUN npm ci \
+  # run the ng compatibility compiler to speed up (and cache) subsequent compilation steps
+  && npx ngcc
+
+# copy rest of app.
+# Doing it like this prevents the container from rebuilding when just the app
+# contents change - only when depenencies change are the lower layers invalidated.
+# Great for dev work.
+COPY --chown=node ./ ./
+
+# change environment version
+RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./src/environments/environment.prod.ts
+
+RUN npm run build:ssr
+
+
+
+FROM node:current-alpine
+
+WORKDIR /home/node/workbench-client
 
 LABEL maintainer="Charles Alleman <alleman@qut.edu.au>" \
   description="Production environment for workbench client server" \
@@ -16,29 +47,14 @@ LABEL maintainer="Charles Alleman <alleman@qut.edu.au>" \
 # drop privileges
 USER node
 
-EXPOSE 4000
-
 RUN mkdir -p  /home/node/workbench-client
 WORKDIR /home/node/workbench-client
 
-# copy deps specification first
-COPY --chown=node package*.json decorate-angular-cli.js nx.json ./
+COPY --from=BUILD_IMAGE /home/node/workbench-client/dist ./dist
+COPY --from=BUILD_IMAGE /home/node/workbench-client/package.json ./package.json
 
-# install deps
-RUN npm install \
-  # run the ng compatibility compiler to speed up (and cache) subsequent compilation steps
-  && npx ngcc
+EXPOSE 4000
 
-# copy rest of app.
-# Doing it like this prevents the container from rebuilding when just the app
-# contents change - only when depenencies change are the lower layers invalidated.
-# Great for dev work.
-COPY --chown=node ./ ./
-
-# change environment version
-RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./src/environments/environment.prod.ts
-
-RUN npm run build:ssr
 #   pre-rendering doesn't appear to work at the moment due to our config setup
 #   && npm run prerender
 CMD [ "npm", "run", "serve:ssr"]
