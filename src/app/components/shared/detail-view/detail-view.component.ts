@@ -6,7 +6,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
   selector: "baw-detail-view",
   template: `
     <div *ngFor="let field of fields" class="row">
-      <dt class="col-sm-3 text-start text-sm-right fw-bold">
+      <dt class="col-sm-3 text-start text-sm-end fw-bold">
         {{ field.templateOptions.label }}
       </dt>
       <baw-render-field

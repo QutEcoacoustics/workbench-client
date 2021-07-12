@@ -43,15 +43,15 @@ module.exports = function (config) {
       // Ensure you modify the viewports object (@test/helpers/general.ts) to match
       // the values declared here.
       breakpoints: [
-        // Bootstrap xs = 0 -> 575
-        { name: "extra-small", size: { width: 575, height: 480 } },
-        // Bootstrap s = 576 -> 767
-        { name: "small", size: { width: 767, height: 720 } },
-        // Bootstrap m = 768 -> 991
-        { name: "medium", size: { width: 991, height: 1024 } },
-        // Bootstrap l = 992 -> 1199
-        { name: "large", size: { width: 1199, height: 1300 } },
-        // Bootstrap xl = 1200 -> inf
+        // Bootstrap xs = 0 -> 539
+        { name: "extra-small", size: { width: 500, height: 480 } },
+        // Bootstrap s = 540 -> 719
+        { name: "small", size: { width: 700, height: 720 } },
+        // Bootstrap m = 750 -> 959
+        { name: "medium", size: { width: 900, height: 1024 } },
+        // Bootstrap l = 960 -> 1139
+        { name: "large", size: { width: 1100, height: 1300 } },
+        // Bootstrap xl = 1140 -> inf
         { name: "extra-large", size: { width: 1200, height: 1500 } },
       ],
     },
