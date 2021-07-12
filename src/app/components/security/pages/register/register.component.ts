@@ -14,7 +14,7 @@ import {
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
-import { fields } from "./register.schema.json";
+import schema from "./register.schema.json";
 
 @Component({
   selector: "baw-authentication-register",
@@ -33,8 +33,9 @@ import { fields } from "./register.schema.json";
 })
 class RegisterComponent
   extends FormTemplate<RegisterDetails>
-  implements OnInit {
-  public fields = fields;
+  implements OnInit
+{
+  public fields = schema.fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
 
   public constructor(

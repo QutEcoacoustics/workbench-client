@@ -8,7 +8,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { fields } from "./annotations-download.schema.json";
+import schema from "./annotations-download.schema.json";
 
 interface TimezoneModel {
   timezone?: string;
@@ -71,7 +71,7 @@ const siteKey = "site";
 export class AnnotationDownloadComponent implements OnInit, ModalComponent {
   public closeModal!: (result: any) => void;
   public dismissModal!: (reason: any) => void;
-  public fields: FormlyFieldConfig[] = fields;
+  public fields: FormlyFieldConfig[] = schema.fields;
   public form = new FormGroup({});
   public model: TimezoneModel = { timezone: "UTC" };
   public pageData!: any;

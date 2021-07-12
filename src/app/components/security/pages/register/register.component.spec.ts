@@ -13,12 +13,13 @@ import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { RegisterComponent } from "./register.component";
-import { fields } from "./register.schema.json";
+import schema from "./register.schema.json";
 
 describe("RegisterComponent", () => {
   let api: SecurityService;
   let toastr: ToastrService;
   let spec: Spectator<RegisterComponent>;
+  const { fields } = schema;
   const createComponent = createComponentFactory({
     component: RegisterComponent,
     imports: [...testFormImports, MockBawApiModule],

@@ -18,7 +18,7 @@ import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { fields } from "../../project.schema.json";
+import schema from "../../project.schema.json";
 import { projectMenuItemActions } from "../details/details.component";
 import { projectErrorMsg } from "../new/new.component";
 
@@ -41,7 +41,7 @@ const projectKey = "project";
   `,
 })
 class EditComponent extends FormTemplate<Project> implements OnInit {
-  public fields = fields;
+  public fields = schema.fields;
   public title: string;
 
   public constructor(

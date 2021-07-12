@@ -5,7 +5,7 @@ import { defaultMenu } from "@helpers/page/defaultMenus";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { MenuRoute, NavigableMenuItem } from "@interfaces/menusInterfaces";
-import { MenuModal, WidgetMenuItem } from "@menu/widgetItem";
+import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 
@@ -30,7 +30,7 @@ export class SecondaryMenuComponent
   extends withUnsubscribe()
   implements OnInit
 {
-  public links: List<NavigableMenuItem | MenuModal>;
+  public links: List<NavigableMenuItem | MenuModalWithoutAction>;
   public widgets: List<WidgetMenuItem>;
   private defaultLinks = defaultMenu.contextLinks;
 

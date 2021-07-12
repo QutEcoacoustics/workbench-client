@@ -25,11 +25,12 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
-import { fields } from "../../point.base.json";
+import schema from "../../point.base.json";
 import { PointNewComponent } from "./point.component";
 
 describe("PointNewComponent", () => {
   let spectator: SpectatorRouting<PointNewComponent>;
+  const { fields } = schema;
   const createComponent = createRoutingFactory({
     component: PointNewComponent,
     imports: [...testFormImports, MockBawApiModule],

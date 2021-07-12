@@ -9,6 +9,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+
       # https://github.com/preactjs/compressed-size-action
       - uses: preactjs/compressed-size-action@v2
         with:

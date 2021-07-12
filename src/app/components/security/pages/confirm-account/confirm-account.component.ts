@@ -14,7 +14,7 @@ import {
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { loginMenuItemActions } from "../login/login.component";
-import { fields } from "./confirm-account.schema.json";
+import schema from "./confirm-account.schema.json";
 
 @Component({
   selector: "baw-confirm-account",
@@ -30,7 +30,7 @@ import { fields } from "./confirm-account.schema.json";
   `,
 })
 class ConfirmPasswordComponent extends FormTemplate<ConfirmPassword> {
-  public fields = fields;
+  public fields = schema.fields;
 
   public constructor(
     private api: SecurityService,

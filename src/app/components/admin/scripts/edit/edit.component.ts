@@ -12,7 +12,7 @@ import { Script } from "@models/Script";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { adminScriptActions } from "../details/details.component";
-import { fields } from "../script.base.schema.json";
+import schema from "../script.base.schema.json";
 import {
   adminEditScriptMenuItem,
   adminScriptMenuItem,
@@ -36,7 +36,7 @@ const scriptKey = "script";
   `,
 })
 class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
-  public fields = fields;
+  public fields = schema.fields;
   public title: string;
 
   public constructor(

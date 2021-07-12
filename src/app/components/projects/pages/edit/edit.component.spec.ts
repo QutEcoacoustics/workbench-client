@@ -15,7 +15,7 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
-import { fields } from "../../project.schema.json";
+import schema from "../../project.schema.json";
 import { EditComponent } from "./edit.component";
 
 describe("ProjectsEditComponent", () => {
@@ -25,6 +25,7 @@ describe("ProjectsEditComponent", () => {
   let fixture: ComponentFixture<EditComponent>;
   let notifications: ToastrService;
   let router: Router;
+  const { fields } = schema;
 
   function configureTestingModule(model: Project, error?: ApiErrorDetails) {
     TestBed.configureTestingModule({

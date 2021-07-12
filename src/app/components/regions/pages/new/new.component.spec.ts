@@ -22,11 +22,12 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
-import { fields } from "../../region.base.json";
+import schema from "../../region.base.json";
 import { NewComponent } from "./new.component";
 
 describe("RegionsNewComponent", () => {
   let spectator: SpectatorRouting<NewComponent>;
+  const { fields } = schema;
   const createComponent = createRoutingFactory({
     component: NewComponent,
     imports: [...testFormImports, MockBawApiModule],

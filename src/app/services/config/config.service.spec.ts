@@ -19,7 +19,7 @@ describe("AppConfigService", () => {
 
   // Save environment to variable
   beforeAll(() => {
-    tempEnvironment = fromJS(environment).toJS();
+    tempEnvironment = (fromJS(environment) as any).toJS();
   });
 
   // Clear environment before each test
@@ -27,7 +27,7 @@ describe("AppConfigService", () => {
     for (const key of Object.keys(environment)) {
       delete environment[key];
     }
-    Object.assign(environment, fromJS(tempEnvironment).toJS());
+    Object.assign(environment, (fromJS(tempEnvironment) as any).toJS());
   });
 
   // Clear toastr notifications
@@ -40,7 +40,7 @@ describe("AppConfigService", () => {
     for (const key of Object.keys(environment)) {
       delete environment[key];
     }
-    Object.assign(environment, fromJS(tempEnvironment).toJS());
+    Object.assign(environment, (fromJS(tempEnvironment) as any).toJS());
   });
 
   function configureTestingModule(

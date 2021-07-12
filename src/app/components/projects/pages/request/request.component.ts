@@ -12,7 +12,7 @@ import { Project } from "@models/Project";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { projectsMenuItemActions } from "../list/list.component";
-import { fields } from "./request.schema.json";
+import schema from "./request.schema.json";
 
 @Component({
   selector: "baw-projects-request",
@@ -33,7 +33,7 @@ import { fields } from "./request.schema.json";
 })
 class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
   public error: ApiErrorDetails;
-  public fields = fields;
+  public fields = schema.fields;
   public loading: boolean;
   public model = {};
   public projects: Project[];
