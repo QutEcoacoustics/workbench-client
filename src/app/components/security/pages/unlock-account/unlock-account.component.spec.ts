@@ -5,12 +5,13 @@ import { testFormlyFields } from "@test/helpers/formly";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { UnlockAccountComponent } from "./unlock-account.component";
-import { fields } from "./unlock-account.schema.json";
+import schema from "./unlock-account.schema.json";
 
 describe("UnlockAccountComponent", () => {
   let component: UnlockAccountComponent;
   let fixture: ComponentFixture<UnlockAccountComponent>;
   let notifications: ToastrService;
+  const { fields } = schema;
 
   describe("form", () => {
     testFormlyFields([

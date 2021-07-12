@@ -9,7 +9,7 @@ import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
 import { List } from "immutable";
-import { fields } from "../audio-recording.schema.json";
+import schema from "../audio-recording.schema.json";
 import {
   adminAudioRecordingMenuItem,
   adminAudioRecordingsCategory,
@@ -36,7 +36,7 @@ class AdminAudioRecordingComponent
 {
   public audioRecording: AudioRecording;
   public failure: boolean;
-  public fields = fields;
+  public fields = schema.fields;
 
   public constructor(private route: ActivatedRoute) {
     super();

@@ -16,7 +16,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { ILoginDetails, LoginDetails } from "@models/data/LoginDetails";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { fields } from "./login.schema.json";
+import schema from "./login.schema.json";
 
 export const loginMenuItemActions = [
   confirmAccountMenuItem,
@@ -40,7 +40,7 @@ export const loginMenuItemActions = [
   `,
 })
 class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
-  public fields = fields;
+  public fields = schema.fields;
   private redirectBack: boolean;
   private redirectUrl: string | StrongRoute;
 

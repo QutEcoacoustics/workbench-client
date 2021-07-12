@@ -2,8 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { shallowSiteResolvers } from "@baw-api/site/sites.service";
-import { fields as baseFields } from "@components/sites/site.base.json";
-import { fields as extendedFields } from "@components/sites/site.extended.json";
+import baseSchema from "@components/sites/site.base.json";
+import extendedSchema from "@components/sites/site.extended.json";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -34,7 +34,7 @@ class AdminOrphanComponent
 {
   public site: Site;
   public failure: boolean;
-  public fields = [...baseFields, ...extendedFields];
+  public fields = [...baseSchema.fields, ...extendedSchema.fields];
 
   public constructor(private route: ActivatedRoute) {
     super();

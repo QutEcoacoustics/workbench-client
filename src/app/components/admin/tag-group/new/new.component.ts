@@ -14,7 +14,7 @@ import {
   adminTagGroupsCategory,
   adminTagGroupsMenuItem,
 } from "../tag-group.menus";
-import { fields } from "../tag-group.schema.json";
+import schema from "../tag-group.schema.json";
 
 @Component({
   selector: "baw-admin-tag-groups-new",
@@ -31,7 +31,7 @@ import { fields } from "../tag-group.schema.json";
   `,
 })
 class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
-  public fields = fields;
+  public fields = schema.fields;
 
   public constructor(
     private api: TagGroupsService,

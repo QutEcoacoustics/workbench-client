@@ -5,7 +5,6 @@ import {
   Keys,
   Settings,
 } from "@helpers/app-initializer/app-initializer";
-import { version } from "package.json";
 
 @Injectable()
 export class AppConfigMockService {
@@ -28,7 +27,7 @@ export class AppConfigMockService {
 
 export const testApiConfig = new Configuration({
   production: false,
-  version,
+  version: "3.0.0",
   endpoints: {
     environment: "testing",
     apiRoot: "https://www.testing.com/api",

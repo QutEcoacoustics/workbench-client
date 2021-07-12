@@ -2,7 +2,7 @@ import camelCase from "just-camel-case";
 import snakeCase from "just-snake-case";
 
 // List of whitelist keys which should have their values converted
-import * as whitelist from "./whitelist.json";
+import whitelist from "./whitelist.json";
 
 /**
  * Deeply converts keys of an object from one case to another.

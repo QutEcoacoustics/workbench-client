@@ -15,7 +15,7 @@ import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { myAccountActions } from "../profile/my-profile.component";
-import { fields } from "./my-password.schema.json";
+import schema from "./my-password.schema.json";
 
 const userKey = "user";
 
@@ -35,7 +35,7 @@ const userKey = "user";
   `,
 })
 class MyPasswordComponent extends FormTemplate<User> {
-  public fields = fields;
+  public fields = schema.fields;
   public title: string;
 
   public constructor(

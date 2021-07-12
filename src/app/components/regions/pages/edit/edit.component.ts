@@ -20,7 +20,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { fields } from "../../region.base.json";
+import schema from "../../region.base.json";
 import { regionMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
@@ -44,7 +44,7 @@ const regionKey = "region";
   `,
 })
 class EditComponent extends FormTemplate<Region> implements OnInit {
-  public fields = fields;
+  public fields = schema.fields;
   public title: string;
 
   public constructor(

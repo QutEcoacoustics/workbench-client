@@ -10,7 +10,7 @@ import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { List } from "immutable";
-import { fields } from "../analysis-job.schema.json";
+import schema from "../analysis-job.schema.json";
 import {
   adminAnalysisJobMenuItem,
   adminAnalysisJobsCategory,
@@ -36,7 +36,7 @@ class AdminAnalysisJobComponent
 {
   public analysisJob: AnalysisJob;
   public failure: boolean;
-  public fields = fields;
+  public fields = schema.fields;
 
   public constructor(private route: ActivatedRoute) {
     super();

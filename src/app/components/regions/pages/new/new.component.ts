@@ -16,7 +16,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { fields } from "../../region.base.json";
+import schema from "../../region.base.json";
 
 const projectKey = "project";
 
@@ -39,7 +39,7 @@ const projectKey = "project";
 })
 class NewComponent extends FormTemplate<Region> {
   @Input() public hideTitle: boolean;
-  public fields = fields;
+  public fields = schema.fields;
 
   public constructor(
     private api: RegionsService,

@@ -15,7 +15,7 @@ import {
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { fields } from "../../project.schema.json";
+import schema from "../../project.schema.json";
 import { projectsMenuItemActions } from "../list/list.component";
 
 @Component({
@@ -33,7 +33,7 @@ import { projectsMenuItemActions } from "../list/list.component";
   `,
 })
 class NewComponent extends FormTemplate<Project> {
-  public fields = fields;
+  public fields = schema.fields;
 
   public constructor(
     private api: ProjectsService,

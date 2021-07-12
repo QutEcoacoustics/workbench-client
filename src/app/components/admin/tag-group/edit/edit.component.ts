@@ -19,7 +19,7 @@ import {
   adminTagGroupsCategory,
   adminTagGroupsMenuItem,
 } from "../tag-group.menus";
-import { fields } from "../tag-group.schema.json";
+import schema from "../tag-group.schema.json";
 
 const tagGroupKey = "tagGroup";
 
@@ -41,7 +41,7 @@ class AdminTagGroupsEditComponent
   extends FormTemplate<TagGroup>
   implements OnInit
 {
-  public fields = fields;
+  public fields = schema.fields;
   public title: string;
 
   public constructor(

@@ -27,7 +27,8 @@ export class UrlDirective extends withUnsubscribe(RouterLinkWithHref) {
     }
 
     const tree = new DefaultUrlSerializer().parse(this.bawUrl);
-    tree.fragment = this.fragment;
+    tree.fragment = this.fragment ?? null;
+
     /*
      * Assign to queryParams before a request to queryParamMap occurs
      * otherwise this change will never affect queryParamMap.

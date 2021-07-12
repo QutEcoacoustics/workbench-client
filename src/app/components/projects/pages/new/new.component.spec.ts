@@ -10,7 +10,7 @@ import { testFormlyFields } from "@test/helpers/formly";
 import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
-import { fields } from "../../project.schema.json";
+import schema from "../../project.schema.json";
 import { NewComponent } from "./new.component";
 
 describe("ProjectsNewComponent", () => {
@@ -19,6 +19,7 @@ describe("ProjectsNewComponent", () => {
   let fixture: ComponentFixture<NewComponent>;
   let notifications: ToastrService;
   let router: Router;
+  const { fields } = schema;
 
   describe("form", () => {
     testFormlyFields([

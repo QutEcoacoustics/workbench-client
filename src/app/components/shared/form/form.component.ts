@@ -40,7 +40,7 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
   @Input() public recaptchaSeed?: RecaptchaState;
 
   // Rename is required to stop formly from hijacking the variable
-  // eslint-disable-next-line @angular-eslint/no-output-rename
+  // eslint-disable-next-line @angular-eslint/no-output-rename, @angular-eslint/no-output-on-prefix, @angular-eslint/no-output-native
   @Output("onSubmit") public submit = new EventEmitter<any>();
 
   public form = new FormGroup({});

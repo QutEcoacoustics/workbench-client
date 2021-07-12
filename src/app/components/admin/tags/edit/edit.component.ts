@@ -11,7 +11,7 @@ import { Tag, TagType } from "@models/Tag";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { adminTagsMenuItemActions } from "../list/list.component";
-import { fields } from "../tag.schema.json";
+import schema from "../tag.schema.json";
 import {
   adminDeleteTagMenuItem,
   adminEditTagMenuItem,
@@ -37,7 +37,7 @@ const tagTypesKey = "tagTypes";
   `,
 })
 class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
-  public fields = fields;
+  public fields = schema.fields;
   public title: string;
 
   public constructor(

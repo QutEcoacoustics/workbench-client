@@ -5,12 +5,13 @@ import { testFormlyFields } from "@test/helpers/formly";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { ResetPasswordComponent } from "./reset-password.component";
-import { fields } from "./reset-password.schema.json";
+import schema from "./reset-password.schema.json";
 
 describe("ResetPasswordComponent", () => {
   let component: ResetPasswordComponent;
   let fixture: ComponentFixture<ResetPasswordComponent>;
   let notifications: ToastrService;
+  const { fields } = schema;
 
   describe("form", () => {
     testFormlyFields([

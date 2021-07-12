@@ -9,7 +9,7 @@ import { Tag, TagType } from "@models/Tag";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { adminTagsMenuItemActions } from "../list/list.component";
-import { fields } from "../tag.schema.json";
+import schema from "../tag.schema.json";
 import {
   adminNewTagMenuItem,
   adminTagsCategory,
@@ -33,7 +33,7 @@ const typeOfTagsKey = "typeOfTags";
   `,
 })
 class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
-  public fields = fields;
+  public fields = schema.fields;
 
   public constructor(
     private api: TagsService,
@@ -64,7 +64,7 @@ class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
   }
 
   public get typeOfTags(): TagType[] {
-    return (this.models[typeOfTagsKey] as unknown) as TagType[];
+    return this.models[typeOfTagsKey] as unknown as TagType[];
   }
 
   protected apiAction(model: Partial<Tag>) {

@@ -9,8 +9,8 @@ import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { Script } from "@models/Script";
 import { List } from "immutable";
-import { fields as baseFields } from "../script.base.schema.json";
-import { fields as extendedFields } from "../script.extended.schema.json";
+import baseSchema from "../script.base.schema.json";
+import extendedSchema from "../script.extended.schema.json";
 import {
   adminEditScriptMenuItem,
   adminScriptMenuItem,
@@ -36,7 +36,7 @@ class AdminScriptComponent
 {
   public script: Script;
   public failure: boolean;
-  public fields = [...baseFields, ...extendedFields];
+  public fields = [...baseSchema.fields, ...extendedSchema.fields];
 
   public constructor(private route: ActivatedRoute) {
     super();

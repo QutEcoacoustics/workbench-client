@@ -12,7 +12,7 @@ import { ContactUs, IContactUs } from "@models/data/ContactUs";
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
-import { fields } from "./contact-us.schema.json";
+import schema from "./contact-us.schema.json";
 
 @Component({
   selector: "baw-about-contact-us",
@@ -35,7 +35,7 @@ import { fields } from "./contact-us.schema.json";
   `,
 })
 class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
-  public fields = fields;
+  public fields = schema.fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
   public dataRequestRoute = dataRequestMenuItem.route;
   public reportProblemRoute = reportProblemMenuItem.route;

@@ -5,7 +5,7 @@ import { defaultMenu } from "@helpers/page/defaultMenus";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AnyMenuItem, LabelAndIcon } from "@interfaces/menusInterfaces";
-import { MenuModal, WidgetMenuItem } from "@menu/widgetItem";
+import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 
@@ -27,7 +27,7 @@ import { takeUntil } from "rxjs/operators";
 })
 export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   public title: LabelAndIcon;
-  public links: List<AnyMenuItem | MenuModal>;
+  public links: List<AnyMenuItem | MenuModalWithoutAction>;
   public widgets: List<WidgetMenuItem>;
   private defaultCategory = defaultMenu.defaultCategory;
 

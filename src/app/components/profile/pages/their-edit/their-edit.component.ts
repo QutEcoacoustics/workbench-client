@@ -16,7 +16,7 @@ import {
 import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { fields } from "../../profile.schema.json";
+import schema from "../../profile.schema.json";
 import { theirProfileActions } from "../profile/their-profile.component";
 
 const accountKey = "account";
@@ -45,7 +45,7 @@ const accountKey = "account";
   `,
 })
 class TheirEditComponent extends FormTemplate<User> implements OnInit {
-  public fields = fields;
+  public fields = schema.fields;
   public title: string;
   public originalModel: User;
 

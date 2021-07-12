@@ -13,7 +13,7 @@ import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { LoginComponent } from "./login.component";
-import { fields } from "./login.schema.json";
+import schema from "./login.schema.json";
 
 describe("LoginComponent", () => {
   let api: SecurityService;
@@ -21,6 +21,7 @@ describe("LoginComponent", () => {
   let location: Location;
   let notifications: ToastrService;
   let spec: SpectatorRouting<LoginComponent>;
+  const { fields } = schema;
   const createComponent = createRoutingFactory({
     component: LoginComponent,
     imports: [...testFormImports, MockBawApiModule],
