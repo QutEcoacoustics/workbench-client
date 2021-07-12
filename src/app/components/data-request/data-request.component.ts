@@ -7,7 +7,7 @@ import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
-import { fields } from "./data-request.schema.json";
+import schema from "./data-request.schema.json";
 
 @Component({
   selector: "baw-data-request",
@@ -48,7 +48,7 @@ import { fields } from "./data-request.schema.json";
   `,
 })
 class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
-  public fields = fields;
+  public fields = schema.fields;
 
   public constructor(
     private api: DataRequestService,

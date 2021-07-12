@@ -10,7 +10,7 @@ import {
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { ToastrService } from "ngx-toastr";
-import { fields } from "../../site.base.json";
+import schema from "../../site.base.json";
 
 const projectKey = "project";
 
@@ -19,7 +19,7 @@ const projectKey = "project";
   templateUrl: "./new.component.html",
 })
 export class SiteNewComponent extends FormTemplate<Site> {
-  public fields = fields;
+  public fields = schema.fields;
   public title = "";
 
   public constructor(

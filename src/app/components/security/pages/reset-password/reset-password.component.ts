@@ -11,7 +11,7 @@ import { IResetPassword, ResetPassword } from "@models/data/ResetPassword";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { loginMenuItemActions } from "../login/login.component";
-import { fields } from "./reset-password.schema.json";
+import schema from "./reset-password.schema.json";
 
 @Component({
   selector: "baw-reset-password",
@@ -27,7 +27,7 @@ import { fields } from "./reset-password.schema.json";
   `,
 })
 class ResetPasswordComponent extends FormTemplate<ResetPassword> {
-  public fields = fields;
+  public fields = schema.fields;
 
   public constructor(
     private api: SecurityService,

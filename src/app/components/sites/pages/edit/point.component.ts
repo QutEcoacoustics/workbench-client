@@ -12,7 +12,7 @@ import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { fields } from "../../point.base.json";
+import schema from "../../point.base.json";
 import { pointMenuItemActions } from "../details/point.component";
 import { SiteEditComponent } from "./site.component";
 
@@ -25,7 +25,7 @@ const siteKey = "site";
   templateUrl: "./edit.component.html",
 })
 class PointEditComponent extends SiteEditComponent {
-  public fields = fields;
+  public fields = schema.fields;
 
   public constructor(
     api: SitesService,

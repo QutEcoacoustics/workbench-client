@@ -11,7 +11,7 @@ import { IUnlockAccount, UnlockAccount } from "@models/data/UnlockAccount";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { loginMenuItemActions } from "../login/login.component";
-import { fields } from "./unlock-account.schema.json";
+import schema from "./unlock-account.schema.json";
 
 @Component({
   selector: "baw-confirm-account",
@@ -27,7 +27,7 @@ import { fields } from "./unlock-account.schema.json";
   `,
 })
 class UnlockAccountComponent extends FormTemplate<UnlockAccount> {
-  public fields = fields;
+  public fields = schema.fields;
 
   public constructor(
     private api: SecurityService,

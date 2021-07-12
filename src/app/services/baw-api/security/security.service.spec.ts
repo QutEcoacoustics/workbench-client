@@ -1,4 +1,3 @@
-import { ok } from "assert";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
   ApiErrorDetails,
@@ -14,7 +13,7 @@ import { generateLoginDetails } from "@test/fakes/LoginDetails";
 import { generateRegisterDetails } from "@test/fakes/RegisterDetails";
 import { generateSessionUser, generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
-import { getCallArgs, nStepObservable } from "@test/helpers/general";
+import { assertOk, getCallArgs, nStepObservable } from "@test/helpers/general";
 import { BehaviorSubject, noop, Subject } from "rxjs";
 import { LoginDetails } from "@models/data/LoginDetails";
 import { RegisterDetails } from "@models/data/RegisterDetails";
@@ -530,7 +529,7 @@ describe("SecurityService", () => {
     it("should handle response", (done) => {
       createSuccess("/security/");
       spec.service.signOut().subscribe(() => {
-        ok(true);
+        assertOk();
         done();
       }, shouldNotFail);
     });

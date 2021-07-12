@@ -11,7 +11,7 @@ import {
   reportProblemMenuItem,
   reportProblemsCategory,
 } from "./report-problem.menus";
-import { fields } from "./report-problem.schema.json";
+import schema from "./report-problem.schema.json";
 
 @Component({
   selector: "baw-report-problem",
@@ -36,7 +36,7 @@ class ReportProblemComponent
   extends FormTemplate<ReportProblem>
   implements OnInit
 {
-  public fields = fields;
+  public fields = schema.fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
   public sourceRepoLink: string;
 

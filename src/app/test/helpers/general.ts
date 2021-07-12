@@ -104,3 +104,7 @@ export type FilterExpectations<T> = (
 export function getCallArgs(spy: jasmine.Spy) {
   return spy.calls.mostRecent().args;
 }
+
+export function assertOk(): void {
+  expect(true).toBeTrue();
+}

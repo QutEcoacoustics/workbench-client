@@ -5,12 +5,13 @@ import { testFormlyFields } from "@test/helpers/formly";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { ConfirmPasswordComponent } from "./confirm-account.component";
-import { fields } from "./confirm-account.schema.json";
+import schema from "./confirm-account.schema.json";
 
 describe("ConfirmPasswordComponent", () => {
   let component: ConfirmPasswordComponent;
   let fixture: ComponentFixture<ConfirmPasswordComponent>;
   let notifications: ToastrService;
+  const { fields } = schema;
 
   describe("form", () => {
     testFormlyFields([

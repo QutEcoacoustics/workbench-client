@@ -9,7 +9,7 @@ import { Script } from "@models/Script";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { adminScriptsMenuItemActions } from "../list/list.component";
-import { fields } from "../script.base.schema.json";
+import schema from "../script.base.schema.json";
 import {
   adminNewScriptsMenuItem,
   adminScriptsCategory,
@@ -35,7 +35,7 @@ import {
   `,
 })
 class AdminScriptsNewComponent extends FormTemplate<Script> {
-  public fields = fields;
+  public fields = schema.fields;
 
   public constructor(
     private api: ScriptsService,

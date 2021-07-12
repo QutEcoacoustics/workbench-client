@@ -12,7 +12,7 @@ import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { fields } from "../../site.base.json";
+import schema from "../../site.base.json";
 import {
   editSiteMenuItem,
   siteMenuItem,
@@ -29,7 +29,7 @@ const siteKey = "site";
   templateUrl: "./edit.component.html",
 })
 class SiteEditComponent extends FormTemplate<Site> implements OnInit {
-  public fields = fields;
+  public fields = schema.fields;
   public title: string;
 
   public constructor(
