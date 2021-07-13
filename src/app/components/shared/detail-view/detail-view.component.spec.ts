@@ -238,48 +238,24 @@ describe("DetailViewComponent", () => {
     });
 
     it("should inline field and value on small screen", () => {
-      viewport.set(viewports.small);
-
       const parentEl = getWrapper();
-      const parent = window.getComputedStyle(parentEl);
-      const leftColumn = window.getComputedStyle(parentEl.firstElementChild);
-      const rightColumn = window.getComputedStyle(parentEl.lastElementChild);
+      const leftCol = parentEl.firstElementChild;
+      const rightCol = parentEl.lastElementChild;
 
-      expect(parent.display).toBe("flex");
-      expect(parent.flexDirection).toBe("row");
-      expect(leftColumn.flexBasis).toBe("25%");
-      expect(rightColumn.flexBasis).toBe("75%");
-    });
-
-    it("should expand field and value on smallest screen", () => {
-      viewport.set(viewports.extraSmall);
-
-      const parentEl = getWrapper();
-      const parent = window.getComputedStyle(parentEl);
-      const leftColumn = window.getComputedStyle(parentEl.firstElementChild);
-      const rightColumn = window.getComputedStyle(parentEl.lastElementChild);
-
-      expect(parent.display).toBe("flex");
-      expect(parent.flexDirection).toBe("row");
-      expect(leftColumn.flexBasis).toBe("auto");
-      expect(rightColumn.flexBasis).toBe("auto");
+      expect(parentEl).toHaveClass("row");
+      expect(leftCol).toHaveClass("col-sm-3");
+      expect(rightCol).toHaveClass("col-sm-9");
     });
 
     it("should right align field on small screen", () => {
       viewport.set(viewports.small);
-
-      const field = getFields()[0];
-      const fieldStyle = window.getComputedStyle(field);
-
+      const fieldStyle = window.getComputedStyle(getFields()[0]);
       expect(fieldStyle.textAlign).toBe("right");
     });
 
     it("should left align field on smallest screen", () => {
       viewport.set(viewports.extraSmall);
-
-      const field = getFields()[0];
-      const fieldStyle = window.getComputedStyle(field);
-
+      const fieldStyle = window.getComputedStyle(getFields()[0]);
       expect(fieldStyle.textAlign).toBe("left");
     });
   });
