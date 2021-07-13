@@ -1,6 +1,7 @@
 @use "sass:color";
 
-/// Calculate a contrasting color for a specific lightness value
+/// Templates creating a contrasting color for a specific lightness value by
+/// using pure css so that css variables continue to function
 ///
 /// @param {percentage} $lightness - Lightness value of the colour
 /// @param {percentage} $threshold - Threshold value of white/grey/black. The
@@ -10,7 +11,8 @@
   @return hsl(0, 0%, calc((#{$lightness} - #{$threshold}) * -100));
 }
 
-/// Calculate a lighter lightness value for a hsl variable
+/// Templates calculations of a lighter value for a hsl variable so that css
+/// variables continue to function
 ///
 /// @param {percentage} $lightness - Lightness value of the colour
 /// @param {percentage} $offset - Amount to increase lightness by
@@ -18,7 +20,8 @@
   @return calc(#{$lightness} + #{$offset});
 }
 
-/// Calculate a darker lightness value for a hsl variable
+/// Templates calculations of a darker value for a hsl variable so that css
+/// variables continue to function
 ///
 /// @param {percentage} $lightness - Lightness value of the colour
 /// @param {percentage} $offset - Amount to decrease lightness by
@@ -26,7 +29,9 @@
   @return calc(#{$lightness} - #{$offset});
 }
 
-/// Create variant values for a specific property
+/// Create variant values for a specific property. This will use the css
+/// variables for the property (hue, saturation, and lightness), so that the
+/// variants will update if the base variables change
 ///
 /// @param {string} $property - Name of the variable, this will have the `--baw-` prefix added
 /// @param {string} $variant - Variant name of the variable. This will be prepended to the property
