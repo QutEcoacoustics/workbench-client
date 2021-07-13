@@ -1,5 +1,3 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
@@ -12,8 +10,7 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { CardImageComponent } from "@shared/cards/card-image/card-image.component";
-import { SharedModule } from "@shared/shared.module";
+import { CardsComponent } from "@shared/cards/cards.component";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { assertCms } from "@test/helpers/api-common";
@@ -24,15 +21,11 @@ import { HomeComponent } from "./home.component";
 describe("HomeComponent", () => {
   let projectApi: SpyObject<ProjectsService>;
   let cmsService: SpyObject<CmsService>;
-  let spectator: Spectator<HomeComponent>;
+  let spec: Spectator<HomeComponent>;
   const createComponent = createComponentFactory({
     component: HomeComponent,
-    imports: [
-      SharedModule,
-      RouterTestingModule,
-      HttpClientTestingModule,
-      MockBawApiModule,
-    ],
+    mocks: [CardsComponent],
+    imports: [MockBawApiModule],
   });
 
   async function interceptProjects(
@@ -46,32 +39,32 @@ describe("HomeComponent", () => {
       !projects
     );
     projectApi.filter.and.callFake(() => subject);
-    spectator.detectChanges();
+    spec.detectChanges();
     await promise;
-    spectator.detectChanges();
+    spec.detectChanges();
   }
 
-  function getCardImages() {
-    return spectator.queryAll(CardImageComponent);
+  function getCards(): CardsComponent {
+    return spec.query(CardsComponent);
   }
 
-  function getButton() {
-    return spectator.query<HTMLButtonElement>("a.btn");
+  function getButton(): HTMLButtonElement {
+    return spec.query("a.btn");
   }
 
   function handleCms() {
-    cmsService = spectator.inject(CmsService);
+    cmsService = spec.inject(CmsService);
     cmsService.get.and.callFake(() => new BehaviorSubject("cms content"));
   }
 
   beforeEach(() => {
-    spectator = createComponent({ detectChanges: false });
-    projectApi = spectator.inject(ProjectsService);
+    spec = createComponent({ detectChanges: false });
+    projectApi = spec.inject(ProjectsService);
   });
 
   assertCms<HomeComponent>(async () => {
     projectApi.filter.and.callFake(() => new Subject());
-    return spectator;
+    return spec;
   }, CMS.home);
 
   describe("api", () => {
@@ -87,7 +80,7 @@ describe("HomeComponent", () => {
 
     it("should handle filter error", async () => {
       await interceptProjects(undefined, generateApiErrorDetails());
-      expect(getCardImages().length).toBe(0);
+      expect(getCards().cards.count).toBe(0);
       expect(getButton()).toBeTruthy();
     });
   });
@@ -97,76 +90,38 @@ describe("HomeComponent", () => {
 
     it("should create", async () => {
       await interceptProjects();
-      expect(spectator.component).toBeTruthy();
+      expect(spec.component).toBeTruthy();
     });
 
     it("should display no projects", async () => {
       await interceptProjects([]);
-      expect(getCardImages().length).toBe(0);
+      expect(getCards().cards.count).toBe(0);
       expect(getButton()).toBeTruthy();
     });
 
     it("should display single project", async () => {
-      await interceptProjects([new Project(generateProject())]);
-      expect(getCardImages().length).toBe(1);
+      const project = new Project(generateProject());
+      await interceptProjects([project]);
+      expect(getCards().cards.count).toBe(1);
+      expect(getCards().cards.first).toEqual(project.getCard());
       expect(getButton()).toBeTruthy();
-    });
-
-    it("should display project name", async () => {
-      await interceptProjects([
-        new Project({ ...generateProject(), name: "Project" }),
-      ]);
-
-      const cards = getCardImages();
-      expect(cards[0].card.title).toBe("Project");
-    });
-
-    it("should display description", async () => {
-      await interceptProjects([
-        new Project({
-          ...generateProject(),
-          descriptionHtmlTagline: "Description",
-        }),
-      ]);
-
-      const cards = getCardImages();
-      expect(cards[0].card.description).toBe("Description");
-    });
-
-    it("should display missing description", async () => {
-      await interceptProjects([
-        new Project({
-          ...generateProject(),
-          descriptionHtmlTagline: undefined,
-        }),
-      ]);
-
-      const cards = getCardImages();
-      expect(cards[0].card.description).toBe(undefined);
     });
 
     it("should display multiple projects", async () => {
-      const ids = [1, 2, 3];
-      const names = ids.map((id) => `Project ${id}`);
-      const descriptions = ids.map((id) => `Description ${id}`);
-      await interceptProjects(
-        ids.map(
-          (id, index) =>
-            new Project({
-              ...generateProject(id),
-              name: names[index],
-              descriptionHtmlTagline: descriptions[index],
-            })
-        )
-      );
+      const projects = [
+        new Project(generateProject()),
+        new Project(generateProject()),
+        new Project(generateProject()),
+      ];
 
-      const cards = getCardImages();
-      expect(cards.length).toBe(ids.length);
+      await interceptProjects(projects);
+
+      const cards = getCards().cards;
+      expect(getCards().cards.count).toBe(3);
+      projects.forEach((project, index) =>
+        expect(cards.get(index)).toEqual(project.getCard())
+      );
       expect(getButton()).toBeTruthy();
-      ids.forEach((_, index) => {
-        expect(cards[index].card.title).toBe(names[index]);
-        expect(cards[index].card.description).toBe(descriptions[index]);
-      });
     });
 
     it("should link to project details page", async () => {
@@ -175,7 +130,7 @@ describe("HomeComponent", () => {
       const button = getButton();
       expect(button).toBeTruthy();
       expect(button).toHaveText("More Projects");
-      expect(spectator.queryLast(StrongRouteDirective).strongRoute).toEqual(
+      expect(spec.queryLast(StrongRouteDirective).strongRoute).toEqual(
         projectsMenuItem.route
       );
     });
