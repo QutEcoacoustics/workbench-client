@@ -4,11 +4,11 @@
 
   &:hover,
   &:focus {
-    background-color: var(--theme-highlight-light);
+    background-color: var(--baw-highlight-lighter);
   }
 
   &.active {
-    background-color: var(--theme-highlight);
+    background-color: var(--baw-highlight);
   }
 
   .icon {

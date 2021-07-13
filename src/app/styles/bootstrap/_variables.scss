@@ -1,14 +1,14 @@
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 
-$ngx-datatable-selected-active-background: lightgrey;
-$ngx-datatable-selected-active-background-hover: rgba(lightgrey, 0.5);
-
+// Override link colours
 $link-color: var(--baw-primary);
 $link-hover-color: var(--baw-primary-darker);
 
+// Override pagination button colours
 $pagination-color: $link-color;
 
+// Define these grid sizes for media-mixin
 $grid-xs: 0;
 $grid-sm: 576px;
 $grid-md: 768px;
@@ -16,6 +16,7 @@ $grid-lg: 992px;
 $grid-xl: 1200px;
 $grid-xxl: 1400px;
 
+// Ensure there is no disconnect between grid sizes, and bootstrap values
 $grid-breakpoints: (
   xs: $grid-xs,
   sm: $grid-sm,

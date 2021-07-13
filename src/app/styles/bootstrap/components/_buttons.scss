@@ -1,4 +1,11 @@
-@mixin button($property) {
+/*
+ * Baw button mixin. Changes the text, border, and background colours of the
+ * bootstrap buttons to use css variables defined in _root.scss. You can view
+ * which properties to modify in the bootstrap documentation:
+ * https://getbootstrap.com/docs/5.0/components/buttons/ and
+ * https://github.com/twbs/bootstrap/blob/v5.0.2/scss/_buttons.scss
+ */
+@mixin baw-button($property) {
   color: var(--baw-#{$property}-contrast);
   background-color: var(--baw-#{$property});
   border-color: var(--baw-#{$property});
@@ -17,18 +24,25 @@
   }
 }
 
-@mixin button-outline($property) {
-  @include button($property);
+/*
+ * Baw outline mixin. Changes the text, border, and background colours of the
+ * outlined bootstrap buttons to use css variables defined in _root.scss You can
+ * view which properties to modify in the bootstrap documentation:
+ * https://getbootstrap.com/docs/5.0/components/buttons/ and
+ * https://github.com/twbs/bootstrap/blob/v5.0.2/scss/_buttons.scss
+ */
+@mixin baw-button-outline($property) {
+  @include baw-button($property);
   background-color: unset;
   color: var(--baw-#{$property});
 }
 
 @each $theme, $default in $theme-colors {
   .btn-#{$theme} {
-    @include button($theme);
+    @include baw-button($theme);
   }
 
   .btn-outline-#{$theme} {
-    @include button-outline($theme);
+    @include baw-button-outline($theme);
   }
 }

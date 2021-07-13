@@ -1,79 +1,18 @@
-@use "sass:color";
-
-@function contrast($lightness, $threshold) {
-  @return hsl(0, 0%, calc((#{$lightness} - #{$threshold}) * -100));
-}
-
-@function lighten($lightness, $offset) {
-  @return calc(#{$lightness} + #{$offset});
-}
-
-@function darken($lightness, $offset) {
-  @return calc(#{$lightness} - #{$offset});
-}
-
-@mixin create-variant($property, $variant, $lightness) {
-  --baw-#{$property}#{$variant}: hsl(
-    var(--baw-#{$property}-hue),
-    var(--baw-#{$property}-saturation),
-    #{$lightness}
-  );
-  --baw-#{$property}#{$variant}-contrast: #{contrast(
-      #{$lightness},
-      var(--baw-contrast-threshold)
-    )};
-}
-
-@mixin create-variable(
-  $property,
-  $hue,
-  $saturation,
-  $lightness: 50%,
-  $lighter-offset: 10%,
-  $lightest-offset: 25%,
-  $darker-offset: 10%,
-  $darkest-offset: 25%
-) {
-  --baw-#{$property}-hue: #{$hue};
-  --baw-#{$property}-saturation: #{$saturation};
-  --baw-#{$property}-lightness: #{$lightness};
-
-  @include create-variant($property, "", var(--baw-#{$property}-lightness));
-
-  @include create-variant(
-    $property,
-    "-lighter",
-    lighten(var(--baw-#{$property}-lightness), #{$lighter-offset})
-  );
-
-  @include create-variant(
-    $property,
-    "-lightest",
-    lighten(var(--baw-#{$property}-lightness), #{$lightest-offset})
-  );
-
-  @include create-variant(
-    $property,
-    "-darker",
-    darken(var(--baw-#{$property}-lightness), #{$darker-offset})
-  );
-
-  @include create-variant(
-    $property,
-    "-darkest",
-    darken(var(--baw-#{$property}-lightness), #{$darkest-offset})
-  );
-}
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "../functions";
 
 :root {
-  --baw-contrast-threshold: 50%;
+  // Contrast threshold, if modifying, validate contrast is acceptable using developer tools
+  --baw-contrast-threshold: 49.8%;
 
-  @include create-variable("primary", 216, 98%, 52%);
-  @include create-variable("secondary", 208, 7%, 46%);
-  @include create-variable("success", 152, 69%, 31%);
-  @include create-variable("info", 190, 90%, 50%);
-  @include create-variable("warning", 45, 100%, 51%);
-  @include create-variable("danger", 354, 70%, 54%);
-  @include create-variable("light", 210, 17%, 98%);
-  @include create-variable("dark", 210, 11%, 15%);
+  // Create css variable alternatives for bootstrap colors
+  @include create-variable("primary", $primary);
+  @include create-variable("secondary", $secondary);
+  @include create-variable("success", $success);
+  @include create-variable("info", $info);
+  @include create-variable("warning", $warning);
+  @include create-variable("danger", $danger);
+  @include create-variable("light", $light);
+  @include create-variable("dark", $dark);
 }

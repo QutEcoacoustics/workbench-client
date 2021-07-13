@@ -1,6 +1,7 @@
 @import "~include-media/dist/include-media";
 @import "./bootstrap/variables";
 
+// These breakpoints must exist for include-media to function
 $breakpoints: (
   extra-small: $grid-xs,
   small: $grid-sm,

@@ -1,3 +1,10 @@
+/*
+ * Override of bootstraps nav-link styling. This changes the color from
+ * bootstraps $primary variable, to our primary css variables defined in
+ * _root.scss. You can view which properties to modify in the bootstrap
+ * documentation here:
+ * https://github.com/twbs/bootstrap/blob/v5.0.2/scss/_nav.scss
+ */
 .nav-link {
   color: var(--baw-primary);
 

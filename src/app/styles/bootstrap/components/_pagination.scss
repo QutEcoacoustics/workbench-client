@@ -1,0 +1,20 @@
+/*
+ * Overriding of bootstraps page-link styling. This changes the colour from
+ * bootstraps $primary variable, to our highlight css variable defined in 
+ * styles.scss. You can view which properties to modify in the bootstrap
+ * documentation here: 
+ * https://github.com/twbs/bootstrap/blob/v5.0.2/scss/_pagination.scss
+ */
+.pagination {
+  .page-item {
+    .page-link {
+      color: var(--baw-highlight);
+    }
+
+    &.active .page-link {
+      color: white;
+      background-color: var(--baw-highlight);
+      border-color: var(--baw-highlight);
+    }
+  }
+}

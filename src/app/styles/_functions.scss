@@ -1,0 +1,92 @@
+@use "sass:color";
+
+/// Calculate a contrasting color for a specific lightness value
+///
+/// @param {percentage} $lightness - Lightness value of the colour
+/// @param {percentage} $threshold - Threshold value of white/grey/black. The
+///   higher the value, the more colours which will output as white. If threshold
+///   matches the lightness value, it will return grey
+@function contrast($lightness, $threshold) {
+  @return hsl(0, 0%, calc((#{$lightness} - #{$threshold}) * -100));
+}
+
+/// Calculate a lighter lightness value for a hsl variable
+///
+/// @param {percentage} $lightness - Lightness value of the colour
+/// @param {percentage} $offset - Amount to increase lightness by
+@function lighten($lightness, $offset) {
+  @return calc(#{$lightness} + #{$offset});
+}
+
+/// Calculate a darker lightness value for a hsl variable
+///
+/// @param {percentage} $lightness - Lightness value of the colour
+/// @param {percentage} $offset - Amount to decrease lightness by
+@function darken($lightness, $offset) {
+  @return calc(#{$lightness} - #{$offset});
+}
+
+/// Create variant values for a specific property
+///
+/// @param {string} $property - Name of the variable, this will have the `--baw-` prefix added
+/// @param {string} $variant - Variant name of the variable. This will be prepended to the property
+///   name and begin with a `-`
+/// @param {percentage} $lightness - Lightness value of the colour
+@mixin create-variant($property, $variant, $lightness) {
+  --baw-#{$property}#{$variant}: hsl(
+    var(--baw-#{$property}-hue),
+    var(--baw-#{$property}-saturation),
+    #{$lightness}
+  );
+  --baw-#{$property}#{$variant}-contrast: #{contrast(
+      #{$lightness},
+      var(--baw-contrast-threshold)
+    )};
+}
+
+/// Create a mix of color options for a specific property
+///
+/// @param {string} $property - Name of the variable, this will have the `--baw-` prefix added
+/// @param {rgb hex} $color - Base color which will be used, and variants created
+/// @param {percentage} $lighter-offset - Percentage offset of the lighter colour variant (default 10%)
+/// @param {percentage} $lightest-offset - Percentage offset of the lightest colour variant (default 25%)
+/// @param {percentage} $darker-offset - Percentage offset of the darker colour variant (default 10%)
+/// @param {percentage} $darkest-offset - Percentage offset of the darkest colour variant (default 25%)
+@mixin create-variable(
+  $property,
+  $color,
+  $lighter-offset: 10%,
+  $lightest-offset: 25%,
+  $darker-offset: 10%,
+  $darkest-offset: 25%
+) {
+  --baw-#{$property}-hue: #{color.hue($color)};
+  --baw-#{$property}-saturation: #{color.saturation($color)};
+  --baw-#{$property}-lightness: #{color.lightness($color)};
+
+  @include create-variant($property, "", var(--baw-#{$property}-lightness));
+
+  @include create-variant(
+    $property,
+    "-lighter",
+    lighten(var(--baw-#{$property}-lightness), #{$lighter-offset})
+  );
+
+  @include create-variant(
+    $property,
+    "-lightest",
+    lighten(var(--baw-#{$property}-lightness), #{$lightest-offset})
+  );
+
+  @include create-variant(
+    $property,
+    "-darker",
+    darken(var(--baw-#{$property}-lightness), #{$darker-offset})
+  );
+
+  @include create-variant(
+    $property,
+    "-darkest",
+    darken(var(--baw-#{$property}-lightness), #{$darkest-offset})
+  );
+}
