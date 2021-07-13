@@ -9,3 +9,42 @@ Currently the folder structure attempts to follow the folder structure of bootst
 ## Further Details
 
 Issue which caused this change: https://github.com/QutEcoacoustics/workbench-client/issues/1184
+
+## Interesting Notes
+
+Our custom styles do not clear the bootstrap styles from the generated styles.css file. This means we rely on css specificity to make our styles take precedence, and the order at which imports withing the sass file are made is important. This results in the bootstrap file having the following definitions for example:
+
+```css
+// bootstrap styles
+.btn-primary {
+  color: #fff;
+}
+.btn-check:focus + .btn-primary,
+.btn-primary:focus,
+.btn-primary:hover {
+  color: #fff;
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+// ... more styles
+
+// our overrides 
+.btn-primary {
+  color: hsl(0, 0%, calc((52.1568627451% - 49.8%) * -100));
+  color: var(--baw-primary-contrast);
+  background-color: #0d6efd;
+  background-color: var(--baw-primary);
+  border-color: #0d6efd;
+  border-color: var(--baw-primary);
+}
+.btn-primary:hover {
+  color: hsl(0, 0%, calc((calc(52.1568627451% - 10%) - 49.8%) * -100));
+  color: var(--baw-primary-darker-contrast);
+  background-color: hsl(215.75deg, 98.3606557377%, calc(52.1568627451% - 10%));
+  background-color: var(--baw-primary-darker);
+  border-color: hsl(215.75deg, 98.3606557377%, calc(52.1568627451% - 10%));
+  border-color: var(--baw-primary-darker);
+}
+```
+
+Also note that the initial values for the css variables are compiled into the styles output. This appears to be a feature of scss.
