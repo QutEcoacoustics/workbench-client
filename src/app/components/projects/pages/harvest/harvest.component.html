@@ -222,7 +222,7 @@
       </p>
 
       <div class="clearfix">
-        <button class="btn btn-primary float-right">Download Report</button>
+        <button class="btn btn-primary float-end">Download Report</button>
       </div>
 
       <baw-project-harvest-complete [project]="project">
@@ -233,7 +233,7 @@
     <div class="clearfix">
       <button
         *ngIf="stages[stage].previous.text"
-        class="btn btn-danger float-left"
+        class="btn btn-danger float-start"
         [disabled]="stages[stage].previous.disabled"
         (click)="previousStage()"
       >
@@ -241,7 +241,7 @@
       </button>
       <button
         *ngIf="stages[stage].next.text"
-        class="btn btn-success float-right"
+        class="btn btn-success float-end"
         [disabled]="stages[stage].next.disabled"
         (click)="nextStage()"
       >

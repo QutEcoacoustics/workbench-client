@@ -41,7 +41,7 @@ const projectKey = "project";
         </button>
         <button
           type="button"
-          class="btn btn-outline-dark mr-3"
+          class="btn btn-outline-dark me-3"
           [ngClass]="{ active: isCreating.site }"
           (click)="submit(false)"
         >

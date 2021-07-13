@@ -16,7 +16,6 @@ import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { assertIcon } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
 import { AnnotationDownloadComponent } from "./annotation-download.component";
 
@@ -94,7 +93,7 @@ describe("AnnotationDownloadComponent", () => {
     it("should display a close icon", () => {
       setup([projectKey, siteKey], [defaultProject, defaultSite]);
       spec.detectChanges();
-      assertIcon(getCloseButton(), "fas,times");
+      expect(getCloseButton()).toHaveClass("btn-close");
     });
 
     it("should dismiss component", () => {

@@ -1,0 +1,15 @@
+/*
+ * Baw background mixin. Changes the background color of bootstrap backgrounds
+ * to use css variables defined in _root.scss. You can view which properties
+ * to modify in the bootstrap documentation:
+ * https://getbootstrap.com/docs/5.0/utilities/background/
+ */
+@mixin baw-background($property, $fallback) {
+  background-color: var(--baw-#{$property}, #{$fallback}) !important;
+}
+
+@each $theme, $default in $theme-colors {
+  .bg-#{$theme} {
+    @include baw-background($theme, $default);
+  }
+}

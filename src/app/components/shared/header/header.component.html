@@ -1,25 +1,28 @@
-<nav class="container-fluid navbar navbar-expand-lg navbar-dark fixed-top">
+<!--
+  Note: Using [routerLink] instead of [strongRoute] so that routerLinkActive will function.
+  Otherwise uses will not have a visual clue for which page they are on. Issue: #1216
+-->
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
   <div class="container">
     <!-- Brand Logo -->
-    <!-- Using routerLink so that routerLinkActive will work-->
     <a
       class="navbar-brand"
       [routerLink]="routes.home.route.toRouterLink()"
       routerLinkActive="active"
-    >
-      {{ title }}
-    </a>
+      [innerText]="title"
+    ></a>
 
     <!-- Toggle button for collapsible content -->
     <button class="navbar-toggler" type="button" (click)="toggleCollapse()">
-      <span class="sr-only">Toggle Navigation</span>
+      <span class="visually-hidden">Toggle Navigation</span>
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <!-- Collapsible content -->
-    <div class="navbar-collapse" [ngClass]="{ collapse: collapsed }">
+    <div class="navbar-collapse" [class.collapse]="collapsed">
       <!-- Left aligned navigation links -->
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav me-auto">
         <!-- Projects Link -->
         <ng-container *ngFor="let header of headers">
           <ng-container *ngIf="!isNavigableMenuItem(header)">
@@ -35,70 +38,11 @@
         </ng-container>
       </ul>
 
-      <!-- Right aligned unauthenticated links -->
-      <ul class="navbar-nav" *ngIf="!user">
-        <li class="nav-item">
-          <!-- Using routerLink so that routerLinkActive will work-->
-          <a
-            id="register-header-link"
-            class="nav-link"
-            [routerLink]="routes.register.route.toRouterLink()"
-            routerLinkActive="active"
-          >
-            {{ routes.register.label }}
-          </a>
-        </li>
-        <li class="nav-item">
-          <!-- Using routerLink so that routerLinkActive will work-->
-          <a
-            id="login-header-link"
-            class="nav-link"
-            [routerLink]="routes.login.route.toRouterLink()"
-            routerLinkActive="active"
-          >
-            {{ routes.login.label }}
-          </a>
-        </li>
-      </ul>
-
-      <!-- Right aligned authenticated links -->
-      <ul class="navbar-nav" *ngIf="user">
-        <li *ngIf="user.isAdmin" class="nav-item">
-          <!-- Using routerLink so that routerLinkActive will work-->
-          <a
-            id="admin-settings"
-            class="nav-link"
-            [routerLink]="routes.admin.route.toRouterLink()"
-            routerLinkActive="active"
-          >
-            <fa-icon [icon]="routes.admin.icon"></fa-icon>
-          </a>
-        </li>
-        <li class="nav-item">
-          <!-- Using routerLink so that routerLinkActive will work-->
-          <a
-            id="login-widget"
-            class="nav-link"
-            [routerLink]="user.viewUrl"
-            routerLinkActive="active"
-          >
-            <span>{{ user.userName }}</span>
-            <img
-              alt="Profile Icon"
-              [src]="user.image"
-              [thumbnail]="thumbnail"
-            />
-          </a>
-        </li>
-        <li class="nav-item">
-          <button
-            id="logout-header-link"
-            class="nav-link btn btn-link"
-            (click)="logout()"
-          >
-            Logout
-          </button>
-        </li>
+      <!-- Right aligned links -->
+      <ul class="navbar-nav">
+        <ng-container
+          *ngTemplateOutlet="user ? userTemplate : guestTemplate"
+        ></ng-container>
       </ul>
     </div>
   </div>
@@ -106,3 +50,62 @@
 
 <!-- Displace header section of webpage -->
 <div style="height: 3.5rem"></div>
+
+<ng-template #guestTemplate>
+  <!-- Register Link -->
+  <li class="nav-item">
+    <a
+      id="register-header-link"
+      class="nav-link"
+      [routerLink]="routes.register.route.toRouterLink()"
+      routerLinkActive="active"
+      [innerText]="routes.register.label"
+    ></a>
+  </li>
+  <!-- Login link-->
+  <li class="nav-item">
+    <a
+      id="login-header-link"
+      class="nav-link"
+      [routerLink]="routes.login.route.toRouterLink()"
+      routerLinkActive="active"
+      [innerText]="routes.login.label"
+    ></a>
+  </li>
+</ng-template>
+
+<ng-template #userTemplate>
+  <!-- Admin dashboard link -->
+  <li *ngIf="user.isAdmin" class="nav-item">
+    <a
+      id="admin-settings"
+      class="nav-link"
+      [routerLink]="routes.admin.route.toRouterLink()"
+      routerLinkActive="active"
+    >
+      <fa-icon [icon]="routes.admin.icon"></fa-icon>
+    </a>
+  </li>
+  <!-- Profile photo -->
+  <li class="nav-item">
+    <a
+      id="login-widget"
+      class="nav-link"
+      [routerLink]="user.viewUrl"
+      routerLinkActive="active"
+    >
+      <span [innerText]="user.userName"></span>
+      <img alt="Profile Icon" [src]="user.image" [thumbnail]="thumbnail" />
+    </a>
+  </li>
+  <!-- Logout button -->
+  <li class="nav-item">
+    <button
+      id="logout-header-link"
+      class="nav-link btn btn-link"
+      (click)="logout()"
+    >
+      Logout
+    </button>
+  </li>
+</ng-template>

@@ -17,7 +17,7 @@ import { WidgetComponent } from "../widget/widget.component";
 @Component({
   selector: "baw-permissions-shield",
   template: `
-    <section *ngIf="model" class="pr-3 pl-3 pb-3">
+    <section *ngIf="model" class="pe-3 ps-3 pb-3">
       <baw-user-badge
         *ngFor="let badge of badges"
         [label]="badge.label"

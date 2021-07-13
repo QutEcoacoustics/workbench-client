@@ -26,9 +26,7 @@ import { takeUntil } from "rxjs/operators";
 
         <ul class="nav nav-pills">
           <li *ngIf="region" class="nav-item" id="points">
-            <span class="badge badge-pill badge-dark">
-              {{ numPoints() }} Points
-            </span>
+            <span class="badge rounded-pill"> {{ numPoints() }} Points </span>
           </li>
           <li class="nav-item">
             <a

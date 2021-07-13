@@ -41,7 +41,7 @@
       <ngx-datatable-column name="Tags" [sortable]="false">
         <ng-template let-value="value" ngx-datatable-cell-template>
           <ng-container *ngFor="let tag of value.tags">
-            <span class="badge badge-primary mr-1">
+            <span class="badge badge-primary me-1">
               {{ tag.text }}
             </span>
           </ng-container>
@@ -60,7 +60,7 @@
         <ng-template let-column="column" ngx-datatable-header-template>
         </ng-template>
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <a class="btn btn-sm btn-primary mr-1" [bawUrl]="value.listenViewUrl">
+          <a class="btn btn-sm btn-primary me-1" [bawUrl]="value.listenViewUrl">
             Play
           </a>
           <a class="btn btn-sm btn-secondary" [bawUrl]="value.viewUrl">

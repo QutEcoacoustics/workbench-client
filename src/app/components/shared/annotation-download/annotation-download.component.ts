@@ -27,12 +27,10 @@ const siteKey = "site";
       <h4 class="modal-title">Annotations Download</h4>
       <button
         type="button"
-        class="close"
+        class="btn-close"
         aria-label="Close"
         (click)="dismissModal('Exit')"
-      >
-        <fa-icon [icon]="['fas', 'times']"></fa-icon>
-      </button>
+      ></button>
     </div>
 
     <div class="modal-body">

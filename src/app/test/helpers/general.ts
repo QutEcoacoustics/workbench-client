@@ -9,18 +9,18 @@ import { Subject } from "rxjs";
  * `viewport.set()` to change the size of the browser during unit tests
  */
 export const viewports = {
-  /** Bootstrap xs (w:575, h:480) */
+  /** Bootstrap xs (w:500, h:480) */
   extraSmall: "extra-small",
-  extraSmallDimensions: { width: 575, height: 480 },
-  /** Bootstrap s (w:767, h:720) */
+  extraSmallDimensions: { width: 500, height: 480 },
+  /** Bootstrap s (w:700, h:720) */
   small: "small",
-  smallDimensions: { width: 767, height: 720 },
-  /** Bootstrap m (w:991, h:1024) */
+  smallDimensions: { width: 700, height: 720 },
+  /** Bootstrap m (w:900, h:1024) */
   medium: "medium",
-  mediumDimensions: { width: 991, height: 1024 },
-  /** Bootstrap l (w:1199, h:1300) */
+  mediumDimensions: { width: 900, height: 1024 },
+  /** Bootstrap l (w:1100, h:1300) */
   large: "large",
-  largeDimensions: { width: 1199, height: 1300 },
+  largeDimensions: { width: 1100, height: 1300 },
   /** Bootstrap xl (w:1200, h:1500) */
   extraLarge: "extra-large",
   extraLargeDimensions: { width: 1200, height: 1500 },

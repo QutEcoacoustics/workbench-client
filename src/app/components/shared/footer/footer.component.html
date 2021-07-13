@@ -1,6 +1,6 @@
 <footer class="container-fluid bg-light">
   <nav class="container navbar navbar-expand-lg navbar-light bg-light">
-    <ul class="nav nav-pills mr-auto align-items-center m-auto">
+    <ul class="nav nav-pills me-auto align-items-center m-auto">
       <li class="nav-item">
         <p class="nav-link disabled m-0">&#169; QUT {{ year }}</p>
       </li>
@@ -9,7 +9,9 @@
       </li>
 
       <li *ngFor="let link of links" class="nav-item">
-        <!-- Using routerLink so that routerLinkActive will work-->
+        <!-- 
+          Using routerLink so that routerLinkActive will work, issue: #1216
+        -->
         <a
           class="nav-link"
           [routerLink]="link.route.toRouterLink()"

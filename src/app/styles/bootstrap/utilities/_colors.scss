@@ -1,0 +1,15 @@
+/*
+ * Baw text color mixin. Changes the text color of bootstrap text colors
+ * to use css variables defined in _root.scss. You can view which properties
+ * to modify in the bootstrap documentation:
+ * https://getbootstrap.com/docs/5.0/utilities/colors/
+ */
+@mixin baw-text-color($property, $fallback) {
+  color: var(--baw-#{$property}, #{$fallback}) !important;
+}
+
+@each $theme, $default in $theme-colors {
+  .text-#{$theme} {
+    @include baw-text-color($theme, $default);
+  }
+}

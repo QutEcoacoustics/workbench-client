@@ -1,0 +1,18 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "../functions";
+
+:root {
+  // Contrast threshold, if modifying, validate contrast is acceptable using developer tools
+  --baw-contrast-threshold: 49.8%;
+
+  // Create css variable alternatives for bootstrap colors
+  @include create-variable("primary", $primary);
+  @include create-variable("secondary", $secondary);
+  @include create-variable("success", $success);
+  @include create-variable("info", $info);
+  @include create-variable("warning", $warning);
+  @include create-variable("danger", $danger);
+  @include create-variable("light", $light);
+  @include create-variable("dark", $dark);
+}
