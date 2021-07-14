@@ -1,11 +1,13 @@
 <!-- Hero image -->
 <section id="hero">
   <div>
-    <h1 class="invisible">ECOSOUNDS</h1>
+    <h1 class="invisible">{{ title }}</h1>
     <!-- Scalable title, will resize to any display size -->
-    <svg width="80%" viewBox="-3 1 108 17">
-      <title>ECOSOUNDS</title>
-      <text x="0" y="15">ECOSOUNDS</text>
+    <svg width="80%" [attr.viewBox]="viewBox">
+      <title>{{ title }}</title>
+      <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">
+        {{ title }}
+      </text>
     </svg>
   </div>
 

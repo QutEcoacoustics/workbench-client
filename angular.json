@@ -28,6 +28,9 @@
               "src/styles.scss",
               "node_modules/@fortawesome/fontawesome-svg-core/styles.css"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/app/styles"]
+            },
             "scripts": [],
             "sourceMap": true,
             "allowedCommonJsDependencies": [
@@ -85,6 +88,9 @@
             "karmaConfig": "karma.conf.js",
             "assets": ["src/assets", "src/manifest.json"],
             "styles": ["src/styles.scss"],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/app/styles"]
+            },
             "scripts": []
           }
         },
