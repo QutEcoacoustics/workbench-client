@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  Input,
-} from "@angular/core";
-import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { Card } from "../cards.component";
 
 /**
@@ -16,11 +10,11 @@ import { Card } from "../cards.component";
   template: `
     <div class="card h-100">
       <!-- Image -->
-      <a *ngIf="card.model?.image" [bawUrl]="card.route">
-        <div class="card-image">
+      <div class="card-image">
+        <a [bawUrl]="card.route">
           <img [alt]="card.title + ' image'" [src]="card.model.image" />
-        </div>
-      </a>
+        </a>
+      </div>
 
       <div class="card-body">
         <!-- Title -->
@@ -41,6 +35,4 @@ import { Card } from "../cards.component";
 })
 export class CardImageComponent {
   @Input() public card: Card;
-
-  public constructor(@Inject(IS_SERVER_PLATFORM) public isServer: boolean) {}
 }

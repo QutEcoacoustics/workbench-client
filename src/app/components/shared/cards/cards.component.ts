@@ -37,6 +37,5 @@ export interface Card {
   title: string;
   model: AbstractModel & { image: ImageUrl[] };
   description?: string;
-  link?: string;
-  route?: string;
+  route: string;
 }
