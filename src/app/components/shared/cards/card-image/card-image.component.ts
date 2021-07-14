@@ -1,10 +1,8 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   Inject,
   Input,
-  OnChanges,
 } from "@angular/core";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { Card } from "../cards.component";
@@ -16,41 +14,33 @@ import { Card } from "../cards.component";
   selector: "baw-card-image",
   styleUrls: ["./card-image.component.scss"],
   template: `
-    <a class="text-reset" [bawUrl]="card.route">
-      <div class="card h-100">
-        <!-- Image -->
+    <div class="card h-100">
+      <!-- Image -->
+      <a *ngIf="card.model?.image" [bawUrl]="card.route">
         <div class="card-image">
           <img [alt]="card.title + ' image'" [src]="card.model.image" />
         </div>
+      </a>
 
-        <div class="card-body">
-          <!-- Title -->
-          <h4 class="card-title" [innerText]="card.title"></h4>
+      <div class="card-body">
+        <!-- Title -->
+        <a class="card-title" [bawUrl]="card.route">
+          <h4 [innerText]="card.title"></h4>
+        </a>
 
-          <!-- Description -->
-          <div class="card-text truncate">
-            <p [innerHtml]="description"></p>
-          </div>
+        <!-- Description -->
+        <div class="card-text truncate">
+          <p
+            [innerHtml]="card.description ?? '<i>No description given</i>'"
+          ></p>
         </div>
       </div>
-    </a>
+    </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardImageComponent implements OnChanges {
+export class CardImageComponent {
   @Input() public card: Card;
-  public description: string;
 
-  public constructor(
-    @Inject(IS_SERVER_PLATFORM) public isServer: boolean,
-    private ref: ChangeDetectorRef
-  ) {}
-
-  public ngOnChanges() {
-    const description = this.card.description ?? "<i>No description given</i>";
-    if (this.description !== description) {
-      this.description = description;
-      this.ref.detectChanges();
-    }
-  }
+  public constructor(@Inject(IS_SERVER_PLATFORM) public isServer: boolean) {}
 }

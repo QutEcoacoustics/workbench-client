@@ -1,12 +1,5 @@
 @import "../../../../styles/line-truncation";
 
-a:hover {
-  text-decoration: none;
-  h4 {
-    text-decoration: underline;
-  }
-}
-
 .card {
   --line-height: 1.4rem;
   --max-lines: 4;
@@ -30,7 +23,6 @@ a:hover {
 
   .card-title {
     font-size: 1.25rem;
-    color: var(--theme-highlight);
   }
 
   .card-body {

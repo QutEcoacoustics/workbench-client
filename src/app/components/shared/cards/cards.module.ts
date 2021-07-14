@@ -5,14 +5,13 @@ import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { LineTruncationLibModule } from "ngx-line-truncation";
 import { CardImageComponent } from "./card-image/card-image.component";
-import { CardComponent } from "./card/card.component";
 import { CardsComponent } from "./cards.component";
 
 /**
  * Cards Module
  */
 @NgModule({
-  declarations: [CardsComponent, CardComponent, CardImageComponent],
+  declarations: [CardsComponent, CardImageComponent],
   imports: [
     CommonModule,
     RouterModule,

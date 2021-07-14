@@ -1,7 +1,7 @@
 @import "../../styles/media-mixin";
 
 #hero {
-  background-color: var(--theme-default-background-dark);
+  background-color: var(--baw-default-background-dark);
   background-image: url("../../../assets/images/landing/IMG_sunset.JPG");
   background-position: center;
   background-repeat: no-repeat;
@@ -45,9 +45,8 @@ p {
 }
 
 #about_us {
-  background-color: #f5fcf5; // Very light green
-  background-color: var(--theme-highlight);
-  color: white;
+  background-color: var(--baw-highlight);
+  color: var(--baw-highlight-contrast);
   overflow: auto;
   padding-bottom: 5rem;
   padding-top: 5rem;
@@ -58,7 +57,7 @@ p {
 }
 
 #what_we_do {
-  --card-width: 250px;
+  --card-width: 350px;
   background-color: black;
   color: white;
   padding-bottom: 5rem;
@@ -66,7 +65,7 @@ p {
 
   .card {
     background: none;
-    margin: auto;
+    margin: 0 auto;
     max-width: var(--card-width);
     min-width: var(--card-width);
     width: var(--card-width);
@@ -89,16 +88,5 @@ p {
 
   p {
     margin-bottom: 5rem;
-  }
-
-  a.btn {
-    color: var(--theme-highlight);
-    border-color: var(--theme-highlight);
-
-    &:hover {
-      color: white;
-      background-color: var(--theme-highlight);
-      border-color: var(--theme-highlight);
-    }
   }
 }

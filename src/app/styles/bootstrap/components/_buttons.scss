@@ -46,3 +46,13 @@
     @include baw-button-outline($theme);
   }
 }
+
+/* Custom highlight button */
+
+.btn-highlight {
+  @include baw-button("highlight");
+}
+
+.btn-outline-highlight {
+  @include baw-button-outline("highlight");
+}
