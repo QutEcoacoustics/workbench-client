@@ -34,14 +34,17 @@ export class AppInitializer {
   }
 }
 
+export interface Brand {
+  short: string;
+  long: string;
+  organization: string;
+}
+
 /**
  * App values
  */
 export interface Settings {
-  brand: {
-    short: string;
-    long: string;
-  };
+  brand: Brand;
   links: {
     sourceRepository: string;
   };

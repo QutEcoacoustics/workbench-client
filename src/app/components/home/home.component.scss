@@ -54,6 +54,15 @@ p {
   p {
     font-size: 1.25rem;
   }
+
+  a {
+    color: var(--baw-highlight-contrast);
+
+    &:hover,
+    &:focus {
+      filter: brightness(70%);
+    }
+  }
 }
 
 #what_we_do {

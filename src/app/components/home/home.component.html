@@ -1,12 +1,18 @@
 <!-- Hero image -->
 <section id="hero">
   <div>
-    <h1 class="invisible">{{ title }}</h1>
+    <h1 class="invisible">{{ svg.alt | uppercase }}</h1>
     <!-- Scalable title, will resize to any display size -->
-    <svg width="80%" [attr.viewBox]="viewBox">
-      <title>{{ title }}</title>
-      <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">
-        {{ title }}
+    <svg version="1.2" [attr.width]="svg.width" [attr.viewBox]="svg.viewBox">
+      <title>{{ svg.alt | uppercase }}</title>
+      <text
+        *ngFor="let word of svg.title; let i = index"
+        dominant-baseline="middle"
+        text-anchor="middle"
+        x="50%"
+        [attr.y]="calculateSvgTextYPos(i)"
+      >
+        {{ word | uppercase }}
       </text>
     </svg>
   </div>
@@ -21,14 +27,15 @@
   <div class="container">
     <h2>Who Are We?</h2>
     <p>
-      Welcome! Ecosounds is a repository of environmental audio recordings. This
-      website facilitates the management, access, visualization, and analysis of
-      environmental acoustic data. It uses the Acoustic Workbench software which
-      is is open source and available from GitHub.
+      Welcome! {{ brand.long }} is a repository of environmental audio
+      recordings. This website facilitates the management, access,
+      visualization, and analysis of environmental acoustic data. It uses the
+      Acoustic Workbench software which is is open source and available from
+      <a [href]="sourceRepo">GitHub</a>.
     </p>
     <p>
-      The website is run by the QUT Ecoacoustics Research Group to support
-      bioacoustics and ecoacoustics research.
+      The website is run by {{ brand.organization }} to support bioacoustics and
+      ecoacoustics research.
     </p>
   </div>
 </section>
