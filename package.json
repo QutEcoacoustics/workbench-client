@@ -7,7 +7,7 @@
   "description": "Client-side website for online ecoacoustic analysis.",
   "version": "3.0.0",
   "scripts": {
-    "build": "nx build",
+    "build": "nx build --configuration production",
     "e2e": "nx e2e",
     "e2e:debug": "node --max_old_space_size=4096 --inspect-brk ./node_modules/protractor/bin/protractor e2e/protractor.conf.js",
     "lint": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js .",
