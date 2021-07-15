@@ -57,7 +57,7 @@ class ReportProblemComponent
   public ngOnInit() {
     super.ngOnInit();
 
-    this.sourceRepoLink = this.config.settings.links.sourceRepository;
+    this.sourceRepoLink = this.config.settings.links.sourceRepositoryIssues;
     this.api
       .seed()
       .pipe(takeUntil(this.unsubscribe))

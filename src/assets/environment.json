@@ -19,7 +19,8 @@
       "organization": "<< organisationName >>"
     },
     "links": {
-      "sourceRepository": "https://github.com/QutEcoacoustics/baw-server"
+      "sourceRepository": "https://github.com/QutEcoacoustics/workbench-client",
+      "sourceRepositoryIssues": "https://github.com/QutEcoacoustics/workbench-client/issues"
     },
     "customMenu": [
       {

@@ -47,6 +47,7 @@ export interface Settings {
   brand: Brand;
   links: {
     sourceRepository: string;
+    sourceRepositoryIssues: string;
   };
   customMenu: (HeaderLink | HeaderGroup)[];
 }
