@@ -17,9 +17,10 @@ import { homeCategory, homeMenuItem } from "./home.menus";
 })
 class HomeComponent extends PageComponent implements OnInit {
   public page = CMS.home;
-  public title: string;
-  public projectsLink = projectsMenuItem.route;
   public projectList: List<Card> = List([]);
+  public projectsLink = projectsMenuItem.route;
+  public title: string;
+  public viewBox: string;
 
   public constructor(
     private projectApi: ProjectsService,
@@ -31,6 +32,7 @@ class HomeComponent extends PageComponent implements OnInit {
 
   public ngOnInit() {
     this.title = this.config.settings.brand.short.toLocaleUpperCase();
+    this.viewBox = this.calculateViewBox(this.title);
 
     /**
      * TODO Sort projects using the following format:
@@ -57,9 +59,20 @@ class HomeComponent extends PageComponent implements OnInit {
       );
   }
 
-  public get viewBox(): string {
-    const width = Math.max(70, Math.floor(this.title.length * (157 / 15)));
-    return "0 0 " + width + " 17";
+  private calculateViewBox(title: string) {
+    const xPos = 0;
+    const yPos = 0;
+    const height = 17;
+
+    // 15 characters equal a width of 157, works out to be a decent ratio
+    const charToWidthRatio = 157 / 15;
+    const minWidth = 70;
+    const width = Math.max(
+      minWidth,
+      Math.floor(title.length * charToWidthRatio)
+    );
+
+    return `${xPos} ${yPos} ${width} ${height}`;
   }
 }
 
