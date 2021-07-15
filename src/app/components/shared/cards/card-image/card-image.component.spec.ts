@@ -4,18 +4,13 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { Id, ImageUrl } from "@interfaces/apiInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { AbstractModel } from "@models/AbstractModel";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
 import { modelData } from "@test/helpers/faker";
-import {
-  assertHref,
-  assertImage,
-  assertUrl,
-  assertTruncation,
-} from "@test/helpers/html";
+import { assertImage, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
-import { LineTruncationLibModule } from "ngx-line-truncation";
 import { Card } from "../cards.component";
 import { CardImageComponent } from "./card-image.component";
 
@@ -34,6 +29,7 @@ export class CardImageMockModel extends AbstractModel {
 
 describe("CardImageComponent", () => {
   let defaultCard: Card;
+  let defaultRoute: string;
   let spectator: Spectator<CardImageComponent>;
   const createComponent = createComponentFactory({
     component: CardImageComponent,
@@ -43,14 +39,15 @@ describe("CardImageComponent", () => {
       MockBawApiModule,
       DirectivesModule,
       AuthenticatedImageModule,
-      LineTruncationLibModule,
     ],
   });
 
   beforeEach(() => {
     spectator = createComponent({ detectChanges: false });
+    defaultRoute = StrongRoute.newRoot().add("broken").toRouterLink();
     defaultCard = {
       title: "title",
+      route: defaultRoute,
       model: new CardImageMockModel({ id: 1, image: modelData.imageUrls() }),
     };
   });
@@ -73,6 +70,7 @@ describe("CardImageComponent", () => {
   it("should handle local image", () => {
     const baseUrl = `${assetRoot}/broken_link`;
     spectator.setInput("card", {
+      ...defaultCard,
       title: "custom title",
       model: new CardImageMockModel({ image: modelData.imageUrls(baseUrl) }),
     });
@@ -88,6 +86,7 @@ describe("CardImageComponent", () => {
   it("should display remote image", () => {
     const baseUrl = "https://broken_link/broken_link";
     spectator.setInput("card", {
+      ...defaultCard,
       title: "custom title",
       model: new CardImageMockModel({ image: modelData.imageUrls(baseUrl) }),
     });
@@ -112,50 +111,30 @@ describe("CardImageComponent", () => {
     expect(description.textContent).toContain("description");
   });
 
-  it("should shorten description when description is long", () => {
+  // TODO Assert truncation styling applies
+  xit("should shorten description when description is long", () => {
     spectator.setInput("card", {
       ...defaultCard,
       description: modelData.descriptionLong(),
     });
     spectator.detectChanges();
-
-    const description = spectator.query<HTMLParagraphElement>(".card-text");
-    assertTruncation(description, 4);
-  });
-
-  it("should have image href when link provided", () => {
-    spectator.setInput("card", { ...defaultCard, link: "https://link/" });
-
-    const link = spectator.query("a img").parentElement as HTMLAnchorElement;
-    assertHref(link, "https://link/");
-  });
-
-  it("should have title href when link provided", () => {
-    spectator.setInput("card", {
-      ...defaultCard,
-      title: "title",
-      link: "https://link/",
-    });
-
-    const link = spectator.query<HTMLAnchorElement>("h4 a");
-    assertHref(link, "https://link/");
   });
 
   it("should have image route when route provided", () => {
-    spectator.setInput("card", { ...defaultCard, route: "/broken_link" });
+    spectator.setInput("card", { ...defaultCard, route: defaultRoute });
 
-    const route = spectator.query("a img").parentElement as HTMLAnchorElement;
-    assertUrl(route, "/broken_link");
+    const route = spectator.query<HTMLElement>(".card-image a");
+    assertUrl(route, defaultRoute);
   });
 
   it("should have title route when route provided", () => {
     spectator.setInput("card", {
       ...defaultCard,
       title: "title",
-      route: "/broken_link",
+      route: defaultRoute,
     });
 
-    const link = spectator.query<HTMLAnchorElement>("h4 a");
-    assertUrl(link, "/broken_link");
+    const link = spectator.query<HTMLElement>(".card-title");
+    assertUrl(link, defaultRoute);
   });
 });

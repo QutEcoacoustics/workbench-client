@@ -43,11 +43,13 @@ export const testApiConfig = new Configuration({
   },
   settings: {
     brand: {
-      short: "<< brandName >>",
-      long: "<< brandTitle >>",
+      short: "<< brandShort >>",
+      long: "<< brandLong >>",
+      organization: "<< brandOrganization >>",
     },
     links: {
       sourceRepository: "http://broken_link",
+      sourceRepositoryIssues: "http://broken_link",
     },
     customMenu: [
       {

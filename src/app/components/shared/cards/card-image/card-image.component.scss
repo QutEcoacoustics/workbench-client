@@ -1,12 +1,40 @@
-.card-title {
-  font-size: 1.25rem;
+@import "line-truncation";
+
+.card {
+  --line-height: 1.4rem;
+  --max-lines: 4;
+  --image-bg-color: white;
+  --card-bg-color: white;
+  --card-border: 1px solid rgba(0, 0, 0, 0.125);
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: var(--card-border);
+
+  .card-image {
+    background-color: var(--image-bg-color);
+    border-bottom: var(--card-border);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+  }
+
+  .card-body {
+    padding: 1.25rem 0.75rem;
+    background-color: var(--card-bg-color);
+  }
 }
 
-.card-text {
-  font-size: 0.9rem;
-}
-
-img {
-  width: 100%;
-  height: 100%;
+.truncate {
+  @include line-truncation(
+    var(--line-height),
+    var(--max-lines),
+    var(--card-bg-color)
+  );
 }

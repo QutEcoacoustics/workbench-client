@@ -43,3 +43,12 @@ export const adminJobStatusMenuItem = menuLink({
   parent: adminDashboardMenuItem,
   predicate: isAdminPredicate,
 });
+
+export const adminCmsMenuItem = menuLink({
+  icon: ["fas", "newspaper"],
+  label: "CMS",
+  tooltip: () => "Content management system",
+  uri: () => "/admin/cms",
+  parent: adminDashboardMenuItem,
+  predicate: isAdminPredicate,
+});

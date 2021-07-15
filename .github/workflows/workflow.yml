@@ -168,7 +168,7 @@ jobs:
         run: wget localhost:4000
 
       - name: Validate title
-        run: grep -o "<title>&lt;&lt; brandName &gt;&gt;</title>" index.html
+        run: grep -o "<title>&lt;&lt;brandName&gt;&gt;</title>" index.html
 
       - name: Validate routing
         run: grep -o "<\/router-outlet><baw-home.*<\/baw-home>" index.html

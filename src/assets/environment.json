@@ -14,11 +14,13 @@
   },
   "settings": {
     "brand": {
-      "short": "<< brandName >>",
-      "long": "<< brandName >> | Acoustic Workbench"
+      "short": "<<brandName>>",
+      "long": "<<brandName>>| Acoustic Workbench",
+      "organization": "<< organisationName >>"
     },
     "links": {
-      "sourceRepository": "https://github.com/QutEcoacoustics/baw-server/issues"
+      "sourceRepository": "https://github.com/QutEcoacoustics/workbench-client",
+      "sourceRepositoryIssues": "https://github.com/QutEcoacoustics/workbench-client/issues"
     },
     "customMenu": [
       {

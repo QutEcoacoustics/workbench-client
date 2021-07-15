@@ -1,0 +1,22 @@
+.row {
+  --card-padding: 0.5rem;
+  justify-content: center;
+  margin: 0 calc(var(--card-padding) * -1);
+
+  baw-card-image,
+  baw-card {
+    margin: 0;
+    padding-left: var(--card-padding);
+    padding-right: var(--card-padding);
+    padding-bottom: calc(var(--card-padding) * 2);
+  }
+
+  #content {
+    display: flex;
+
+    /* Remove content div if no content is inserted */
+    &:empty {
+      display: none !important;
+    }
+  }
+}

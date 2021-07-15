@@ -6,7 +6,12 @@
 /* Global css variables */
 :root {
   /* Navigation bar background colour */
-  --baw-theme-header: #222;
+  --baw-header: #222;
+
+  // TODO Change this away from white
+  --baw-default-background: white;
+  --baw-default-background-light: lightgrey;
+  --baw-default-background-dark: darkgrey;
 
   /* Theme highlight colour, this is used to create an accent for objects following the 60/30/10 rule */
   @include create-variable("highlight", #304f3b, 60%, 70%, 5%, 10%);
@@ -17,7 +22,7 @@
 /* You can add global styles to this file, and also import other style files */
 html,
 body {
-  background-color: $white;
+  background-color: var(--baw-default-background);
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0px;
   min-height: 100vh;

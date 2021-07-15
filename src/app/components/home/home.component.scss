@@ -1,37 +1,101 @@
-@import "../../styles/media-mixin";
+@import "media-mixin";
 
-#website-title {
+#hero {
+  background-color: var(--baw-default-background-dark);
+  background-image: url("../../../assets/images/landing/IMG_sunset.JPG");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+
+  div {
+    flex-grow: 1;
+    margin-bottom: 13rem;
+    margin-top: 9rem;
+  }
+
+  svg {
+    background-color: white;
+    font-weight: bolder;
+    margin: 0 10%;
+    mix-blend-mode: screen;
+  }
+
+  caption {
+    background-color: lightgrey;
+    color: black;
+    margin-left: auto;
+    max-width: 50%;
+    padding: 0.5rem 0.75rem;
+    width: fit-content;
+  }
+}
+
+h2 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 3rem;
+  text-align: center;
+}
+
+p {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: large;
+  text-align: center;
+}
+
+#about_us {
+  background-color: var(--baw-highlight);
+  color: var(--baw-highlight-contrast);
+  overflow: auto;
+  padding-bottom: 5rem;
+  padding-top: 5rem;
+
+  p {
+    font-size: 1.25rem;
+  }
+
+  a {
+    color: var(--baw-highlight-contrast);
+
+    &:hover,
+    &:focus {
+      filter: brightness(70%);
+    }
+  }
+}
+
+#what_we_do {
+  --card-width: 350px;
+  background-color: black;
   color: white;
-  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
-  font-family: "Arial";
-  font-size: 12vw;
-  font-weight: bold;
-  padding-bottom: 15rem;
+  padding-bottom: 5rem;
+  padding-top: 5rem;
 
-  @include media(">extra-large") {
-    font-size: 10rem
+  .card {
+    background: none;
+    margin: 0 auto;
+    max-width: var(--card-width);
+    min-width: var(--card-width);
+    width: var(--card-width);
+
+    h3 {
+      text-align: center;
+    }
+
+    fa-icon {
+      font-size: 64px;
+      margin: 1rem auto;
+    }
   }
 }
 
-section {
-  background-color: #fff;
-  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.7));
-  padding: 15px 1rem;
-  width: 100%;
+#projects {
+  background-color: whitesmoke;
+  padding-bottom: 5rem;
+  padding-top: 5rem;
 
-  h1,
-  h2 {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 500;
-    line-height: 1.1;
+  p {
+    margin-bottom: 5rem;
   }
-
-  h2 {
-    font-weight: 400;
-  }
-}
-
-#hero-image {
-  background-image: url("/assets/images/landing/IMG_1318.JPG");
-  background-color: lightgray;
 }

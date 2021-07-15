@@ -28,6 +28,9 @@
               "src/styles.scss",
               "node_modules/@fortawesome/fontawesome-svg-core/styles.css"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/app/styles"]
+            },
             "scripts": [],
             "sourceMap": true,
             "allowedCommonJsDependencies": [
@@ -61,6 +64,15 @@
                   "maximumWarning": "6kb"
                 }
               ]
+            },
+            "development": {
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "namedChunks": true,
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": false
             }
           }
         },
@@ -85,6 +97,9 @@
             "karmaConfig": "karma.conf.js",
             "assets": ["src/assets", "src/manifest.json"],
             "styles": ["src/styles.scss"],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/app/styles"]
+            },
             "scripts": []
           }
         },
@@ -111,7 +126,10 @@
           "options": {
             "outputPath": "dist/workbench-client/server",
             "main": "server.ts",
-            "tsConfig": "tsconfig.server.json"
+            "tsConfig": "tsconfig.server.json",
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/app/styles"]
+            }
           },
           "configurations": {
             "production": {

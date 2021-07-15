@@ -78,7 +78,7 @@ describe("ProjectsListComponent", () => {
   }
 
   function assertCardDescription(card: HTMLElement, description: string) {
-    expect(card.querySelector(".card-text").innerHTML.trim()).toBe(description);
+    expect(card.querySelector(".card-text p").innerHTML).toContain(description);
   }
 
   beforeEach(() => {

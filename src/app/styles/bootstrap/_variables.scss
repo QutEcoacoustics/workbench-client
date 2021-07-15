@@ -2,8 +2,8 @@
 @import "~bootstrap/scss/variables";
 
 // Override link colours
-$link-color: var(--baw-primary);
-$link-hover-color: var(--baw-primary-darker);
+$link-color: var(--baw-highlight);
+$link-hover-color: var(--baw-highlight-darker);
 
 // Override pagination button colours
 $pagination-color: $link-color;

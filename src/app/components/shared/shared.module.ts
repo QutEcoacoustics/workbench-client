@@ -1,5 +1,4 @@
 import { NgModule } from "@angular/core";
-import { LineTruncationDirective } from "ngx-line-truncation";
 import {
   internalComponents,
   internalModules,
@@ -13,6 +12,6 @@ import {
 @NgModule({
   declarations: internalComponents,
   imports: internalModules,
-  exports: [...sharedModules, ...sharedComponents, LineTruncationDirective],
+  exports: [...sharedModules, ...sharedComponents],
 })
 export class SharedModule {}

@@ -2,7 +2,6 @@ import { DebugElement } from "@angular/core";
 import { ComponentFixture, tick } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
-import { LineTruncationDirective } from "ngx-line-truncation";
 
 declare const ng: any;
 
@@ -228,16 +227,4 @@ export function assertSpinner(
   } else {
     expectation.toBeFalsy("Expected Spinner not to Exist");
   }
-}
-
-export function assertTruncation(
-  text: HTMLDivElement | HTMLParagraphElement,
-  lines: number
-) {
-  const directive: LineTruncationDirective = ng
-    .getDirectives(text)
-    .find((_directive) => _directive instanceof LineTruncationDirective);
-
-  expect(directive).toBeTruthy();
-  expect(directive.lines).toBe(lines);
 }

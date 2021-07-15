@@ -34,16 +34,20 @@ export class AppInitializer {
   }
 }
 
+export interface Brand {
+  short: string;
+  long: string;
+  organization: string;
+}
+
 /**
  * App values
  */
 export interface Settings {
-  brand: {
-    short: string;
-    long: string;
-  };
+  brand: Brand;
   links: {
     sourceRepository: string;
+    sourceRepositoryIssues: string;
   };
   customMenu: (HeaderLink | HeaderGroup)[];
 }
@@ -94,6 +98,21 @@ export class Configuration implements Configuration {
   }
 }
 
+function failure(msg: string): false {
+  console.error(msg);
+  return false;
+}
+
+function paramFailure(param: string, msg?: string): false {
+  return failure(
+    `Invalid configuration ${param} param${msg ? `: ${msg}` : ""}`
+  );
+}
+
+function success(): true {
+  return true;
+}
+
 /**
  * Determine if a variable is of the Configuration type
  *
@@ -104,22 +123,25 @@ export function isConfiguration(
   isServer: boolean
 ): config is Configuration {
   if (!config) {
-    return returnError("No configuration set");
+    return failure("No configuration set");
   }
   if (!config.endpoints) {
-    return returnError("No confirmation environment set");
+    return paramFailure("endpoints", "no value set");
+  }
+  if (!config.keys) {
+    return paramFailure("keys", "no value set");
   }
   if (!config.settings) {
-    return returnError("No confirmation values set");
+    return paramFailure("settings", "no value set");
   }
   if (config.kind !== "Configuration") {
-    return returnParamError("kind");
+    return paramFailure("kind");
   }
   if (!validateServerRoot(config.endpoints.apiRoot, "apiRoot")) {
-    return false;
+    return paramFailure("apiRoot");
   }
   if (!validateServerOrigin(config.endpoints.clientOrigin, "clientOrigin")) {
-    return false;
+    return paramFailure("clientOrigin");
   }
 
   const siteUrl = config.endpoints.clientOrigin + config.endpoints.clientDir;
@@ -129,7 +151,7 @@ export function isConfiguration(
     );
   }
 
-  return true;
+  return success();
 }
 
 /**
@@ -137,7 +159,7 @@ export function isConfiguration(
  */
 function validateServerOrigin(origin: string, key: string) {
   if (origin?.endsWith("/")) {
-    return returnParamError(key, "should not end with a '/'");
+    return paramFailure(key, "should not end with a '/'");
   }
   return validateServerRoot(origin, key);
 }
@@ -147,34 +169,23 @@ function validateServerOrigin(origin: string, key: string) {
  */
 function validateServerRoot(root: string, key: string) {
   if (!root) {
-    return returnParamError(key, "not defined");
+    return paramFailure(key, "not defined");
   }
 
   try {
     const url = new URL(root);
     if (url.protocol === "https:") {
-      return true;
+      return success();
     } else if (url.protocol === "http:") {
       console.warn(`Configuration param ${key} is not using https protocol`);
-      return true;
+      return success();
     } else {
-      return returnParamError(key, "url protocol is neither http or https");
+      return paramFailure(key, "url protocol is neither http or https");
     }
   } catch (e) {
     console.error(e);
-    return returnParamError(key, "url is not valid");
+    return paramFailure(key, "url is not valid");
   }
-}
-
-function returnParamError(param: string, msg?: string) {
-  return returnError(
-    `Invalid configuration ${param} param${msg ? `: ${msg}` : ""}`
-  );
-}
-
-function returnError(msg: string) {
-  console.error(msg);
-  return false;
 }
 
 /**
