@@ -1,9 +1,8 @@
 import { ElementRef } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { assetRoot } from "@services/config/config.service";
+import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { assertSpinner } from "@test/helpers/html";
@@ -16,7 +15,7 @@ import { BawClientComponent } from "./baw-client.component";
 describe("BawClientComponent", () => {
   let isFirefox: boolean;
   let events: BehaviorSubject<NavigationEnd>;
-  let apiRoot: string;
+  let config: ConfigService;
   let spec: Spectator<BawClientComponent>;
   const createComponent = createComponentFactory({
     component: BawClientComponent,
@@ -24,7 +23,8 @@ describe("BawClientComponent", () => {
   });
 
   function bawClientSource(route: string) {
-    return `${websiteHttpUrl}${assetRoot}/old-client/#${route}`;
+    const { oldClientOrigin, oldClientDir } = config.endpoints;
+    return `${oldClientOrigin}${oldClientDir}${route}`;
   }
 
   function getIframe(): HTMLIFrameElement {
@@ -55,7 +55,7 @@ describe("BawClientComponent", () => {
     events = undefined;
     spec = createComponent({ detectChanges: false });
     isFirefox = spec.inject(DeviceDetectorService).browser === "Firefox";
-    apiRoot = spec.inject(API_ROOT);
+    config = spec.inject(ConfigService);
   });
 
   afterEach(() => {

@@ -44,11 +44,6 @@ export class ConfigService {
     this._config = new Proxy(environment, {});
   }
 
-  public getBawClientUrl(route: string): string {
-    // Transform the url into the format required by AngularJS using hash bang
-    return `${this.apiRoot}/listen_to/index.html#${route}`;
-  }
-
   /** Get config data */
   public get config(): Configuration {
     return this._config;

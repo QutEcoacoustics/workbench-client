@@ -6,7 +6,6 @@ import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { BawClientComponent } from "@shared/baw-client/baw-client.component";
 import { SharedModule } from "@shared/shared.module";
-import { websiteHttpUrl } from "./url";
 
 //TODO: OLD-CLIENT REMOVE
 export function validateBawClientPage<Component extends Type<any>>(
@@ -28,7 +27,8 @@ export function validateBawClientPage<Component extends Type<any>>(
   });
 
   function bawClientSource() {
-    return websiteHttpUrl + config.getBawClientUrl(route);
+    const { oldClientOrigin, oldClientDir } = config.endpoints;
+    return oldClientOrigin + oldClientDir + route;
   }
 
   function getBawClient() {

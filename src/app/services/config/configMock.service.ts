@@ -5,14 +5,11 @@ import {
   Keys,
   Settings,
 } from "@helpers/app-initializer/app-initializer";
+import { websiteHttpUrl } from "@test/helpers/url";
 import { assetRoot } from "./config.service";
 
 @Injectable()
 export class AppConfigMockService {
-  public getBawClientUrl(route: string): string {
-    return `${assetRoot}/old-client/#${route}`;
-  }
-
   public get config(): Configuration {
     return new Proxy(testApiConfig, {});
   }
@@ -38,6 +35,8 @@ export const testApiConfig = new Configuration({
     apiRoot: "https://www.testing.com/api",
     clientOrigin: "https://www.testing.com/site",
     clientDir: "/website",
+    oldClientOrigin: websiteHttpUrl,
+    oldClientDir: `${assetRoot}/old-client/#`,
   },
   keys: {
     googleMaps: "<< googleMaps >>",
