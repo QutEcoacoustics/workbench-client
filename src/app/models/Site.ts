@@ -6,6 +6,7 @@ import { pointMenuItem } from "@components/sites/points.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { assetRoot } from "@services/config/config.service";
+import { Card } from "@shared/cards/cards.component";
 import { MapMarkerOption } from "@shared/map/map.component";
 import { siteMenuItem } from "../components/sites/sites.menus";
 import {
@@ -64,7 +65,7 @@ export class Site extends AbstractModel<ISite> implements ISite {
   @bawImage<ISite>(`${assetRoot}/images/site/site_span4.png`, {
     key: "imageUrl",
   })
-  public readonly image?: ImageUrl[];
+  public readonly image: ImageUrl[];
   @bawPersistAttr()
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
@@ -205,5 +206,17 @@ export class Site extends AbstractModel<ISite> implements ISite {
           label: this.name,
         }
       : null;
+  }
+
+  /**
+   * Generate card-item details
+   */
+  public getCard(): Card {
+    return {
+      title: this.name,
+      description: this.descriptionHtmlTagline,
+      model: this,
+      route: this.viewUrl,
+    };
   }
 }

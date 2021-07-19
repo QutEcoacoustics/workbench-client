@@ -113,21 +113,21 @@
 <!-- View some projects -->
 <section id="projects">
   <div class="container">
-    <h2>View Some Projects</h2>
+    <h2>View Some {{ viewMore.modelName | titlecase }}s</h2>
     <p>
-      You can browse some public projects and audio recordings without logging
-      in. To participate in the analysis work you will need to log in with an
-      existing account or register for a new account. Don't worry its free and
-      easy!
+      You can browse some public {{ viewMore.modelName }}s and audio recordings
+      without logging in. To participate in the analysis work you will need to
+      log in with an existing account or register for a new account. Don't worry
+      its free and easy!
     </p>
 
-    <baw-cards *ngIf="projectList" [cards]="projectList">
+    <baw-cards [cards]="viewMore.list">
       <ng-container>
         <a
           class="m-auto btn btn-outline-highlight btn-lg"
-          [strongRoute]="projectsLink"
+          [strongRoute]="viewMore.link"
         >
-          More Projects
+          More {{ viewMore.modelName | titlecase }}
         </a>
       </ng-container>
     </baw-cards>

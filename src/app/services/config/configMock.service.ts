@@ -55,6 +55,7 @@ export const testApiConfig = new Configuration({
       sourceRepository: "http://broken_link",
       sourceRepositoryIssues: "http://broken_link",
     },
+    hideProjects: false,
     customMenu: [
       {
         title: "<< content1 >>",
