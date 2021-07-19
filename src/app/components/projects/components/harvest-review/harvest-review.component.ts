@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import { Status } from "../../shared/indicator/indicator.component";
+import { Status } from "@shared/indicator/indicator.component";
 
 @Component({
   selector: "baw-project-harvest-review",
