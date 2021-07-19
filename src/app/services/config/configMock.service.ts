@@ -5,9 +5,14 @@ import {
   Keys,
   Settings,
 } from "@helpers/app-initializer/app-initializer";
+import { assetRoot } from "./config.service";
 
 @Injectable()
 export class AppConfigMockService {
+  public getBawClientUrl(route: string): string {
+    return `${assetRoot}/old-client/#${route}`;
+  }
+
   public get config(): Configuration {
     return new Proxy(testApiConfig, {});
   }

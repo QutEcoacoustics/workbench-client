@@ -3,7 +3,7 @@ import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { NavigationEnd, Router } from "@angular/router";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { assetRoot } from "@services/config/config.service";
+import { ConfigService } from "@services/config/config.service";
 import { interval } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
 
@@ -43,8 +43,13 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
   public loading = true;
   /** Used to track the height of the iframe */
   private previousHeight = 0;
+  private iframeUpdateIntervalMs = 250;
 
-  public constructor(private router: Router, private sanitizer: DomSanitizer) {
+  public constructor(
+    private config: ConfigService,
+    private router: Router,
+    private sanitizer: DomSanitizer
+  ) {
     super();
   }
 
@@ -66,13 +71,15 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
     }
 
     // Update iframe size every 250 milliseconds
-    interval(250)
+    interval(this.iframeUpdateIntervalMs)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(() => this.updateIframeSize());
   }
 
   public updateIframeSize() {
     const iframe = this.iframeRef?.nativeElement;
+    // * Note: This will not work during development because we cannot access the scrollHeight
+    // *    of iframes which exist on another domain
     const currentHeight = iframe?.contentDocument?.body?.scrollHeight;
 
     // If iframe has not been built, current height is not available, or no change in size
@@ -87,10 +94,10 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
     iframe.style.height = currentHeight + padding + "px";
   }
 
-  private updateUrl(url: string) {
-    // Transform the url into the format required by AngularJS using hash bang
-    const requestedUrl = assetRoot + "/old-client/#" + url;
+  protected updateUrl(url: string) {
     // Bypass angular default security
-    this.url = this.sanitizer.bypassSecurityTrustResourceUrl(requestedUrl);
+    this.url = this.sanitizer.bypassSecurityTrustResourceUrl(
+      this.config.getBawClientUrl(url)
+    );
   }
 }
