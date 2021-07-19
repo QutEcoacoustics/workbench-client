@@ -317,7 +317,7 @@ describe("FormComponent", () => {
   });
 
   // TODO Add tests for recaptcha
-  describe("Recaptcha", () => {
+  xdescribe("Recaptcha", () => {
     it("should disable submit button while loading recaptcha seed", () => {});
     it("should re-enable submit button when recaptcha seed loaded", () => {});
     it("should display error notification if recaptcha fails to load", () => {});

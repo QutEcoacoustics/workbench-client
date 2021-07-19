@@ -60,6 +60,8 @@ export interface Endpoints {
   apiRoot: string;
   clientOrigin: string;
   clientDir: string;
+  oldClientOrigin: string;
+  oldClientDir: string;
 }
 
 export interface Keys {

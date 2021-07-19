@@ -1,5 +1,6 @@
 import { Inject, Injectable } from "@angular/core";
 import {
+  API_ROOT,
   Configuration,
   Endpoints,
   isConfiguration,
@@ -22,6 +23,7 @@ export class ConfigService {
 
   public constructor(
     private notification: ToastrService,
+    @Inject(API_ROOT) private apiRoot: string,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean
   ) {
     if (!isConfiguration(environment, this.isServer)) {
