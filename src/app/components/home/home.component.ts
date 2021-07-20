@@ -1,14 +1,15 @@
 import { Component, OnInit } from "@angular/core";
 import { CMS } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { SecurityService } from "@baw-api/security/security.service";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
+import { regionsMenuItem } from "@components/regions/regions.menus";
 import { Brand } from "@helpers/app-initializer/app-initializer";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { Project } from "@models/Project";
-import { Site } from "@models/Site";
+import { Region } from "@models/Region";
 import { ConfigService } from "@services/config/config.service";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
@@ -34,7 +35,7 @@ class HomeComponent extends PageComponent implements OnInit {
   public sourceRepo: string;
 
   public constructor(
-    private siteApi: ShallowSitesService,
+    private regionApi: ShallowRegionsService,
     private projectApi: ProjectsService,
     private securityApi: SecurityService,
     public config: ConfigService
@@ -51,7 +52,7 @@ class HomeComponent extends PageComponent implements OnInit {
       modelName: settings.hideProjects ? "site" : "project",
       // TODO Need to create a sitesMenuItem which details all sites
       link: settings.hideProjects
-        ? projectsMenuItem.route
+        ? regionsMenuItem.route
         : projectsMenuItem.route,
     };
     this.svg = {
@@ -73,13 +74,13 @@ class HomeComponent extends PageComponent implements OnInit {
       .getAuthTrigger()
       .pipe(
         mergeMap(() =>
-          (settings.hideProjects ? this.siteApi : this.projectApi).filter({
+          (settings.hideProjects ? this.regionApi : this.projectApi).filter({
             paging: { items: 3 },
             sorting: { orderBy: "updatedAt", direction: "desc" },
           })
         ),
         map((models) =>
-          List(models.map((model: Site | Project) => model.getCard()))
+          List(models.map((model: Region | Project) => model.getCard()))
         ),
         takeUntil(this.unsubscribe)
       )

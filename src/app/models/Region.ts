@@ -13,6 +13,7 @@ import {
   Param,
 } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
+import { Card } from "@shared/cards/cards.component";
 import { AbstractModel } from "./AbstractModel";
 import {
   creator,
@@ -37,7 +38,7 @@ import { User } from "./User";
 export interface IRegion extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
-  imageUrl?: string
+  imageUrl?: string;
   projectId?: Id;
   siteIds?: Id[] | Ids;
   notes?: Hash;
@@ -56,7 +57,7 @@ export class Region extends AbstractModel<IRegion> implements IRegion {
   @bawImage<IRegion>(`${assetRoot}/images/site/site_span4.png`, {
     key: "imageUrl",
   })
-  public readonly image?: ImageUrl[];
+  public readonly image: ImageUrl[];
   @bawPersistAttr()
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
@@ -98,5 +99,17 @@ export class Region extends AbstractModel<IRegion> implements IRegion {
 
   public get visualizeUrl(): string {
     return visualizeMenuItem.route.format(undefined, { siteIds: this.siteIds });
+  }
+
+  /**
+   * Generate card-item details
+   */
+  public getCard(): Card {
+    return {
+      title: this.name,
+      description: this.descriptionHtmlTagline,
+      model: this,
+      route: this.viewUrl,
+    };
   }
 }

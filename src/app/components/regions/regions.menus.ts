@@ -12,21 +12,34 @@ export const regionsRoute = projectMenuItem.route.addFeatureModule("regions");
 export const regionsCategory: Category = {
   icon: ["fas", "map-signs"],
   label: "Sites",
-  route: regionsRoute.add(":regionId"),
+  route: regionsRoute,
 };
 
-export const regionMenuItem = menuRoute({
+export const projectRegionsCategory: Category = {
+  ...regionsCategory,
+  route: regionsRoute,
+};
+
+export const regionsMenuItem = menuRoute({
   icon: ["fas", "map-signs"],
-  label: "Site",
+  label: "Sites",
   parent: projectMenuItem,
-  route: regionsCategory.route,
-  tooltip: () => "The current region",
+  route: regionsRoute,
+  tooltip: () => "View sites I have access to",
+});
+
+export const regionMenuItem = menuRoute({
+  icon: ["fas", "map-marked-alt"],
+  label: "Site",
+  parent: regionsMenuItem,
+  route: regionsMenuItem.route.add(":regionId"),
+  tooltip: () => "The current site",
 });
 
 export const newRegionMenuItem = menuRoute({
   icon: defaultNewIcon,
   label: "New site",
-  parent: projectMenuItem,
+  parent: regionsMenuItem,
   predicate: isProjectEditorPredicate,
   route: regionsRoute.add("new"),
   tooltip: () => "Create a new site",

@@ -25,7 +25,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
-import { merge } from "rxjs";
+import { merge, Observable } from "rxjs";
 
 export const projectMenuItemActions = [
   visualizeMenuItem,
@@ -106,7 +106,10 @@ const projectKey = "project";
   `,
   styleUrls: ["./details.component.scss"],
 })
-class DetailsComponent extends PaginationTemplate<any> implements OnInit {
+class DetailsComponent
+  extends PaginationTemplate<Site | Region>
+  implements OnInit
+{
   public collectionSize = 0;
   public collectionSizes = { sites: 0, regions: 0 };
   public defaultDescription = "<i>No description found</i>";
@@ -134,7 +137,7 @@ class DetailsComponent extends PaginationTemplate<any> implements OnInit {
       undefined,
       "name",
       () => [this.project.id],
-      (models) => {
+      (models: Region[] | Site[]) => {
         this.apiReturnCount++;
         this.loading = this.apiReturnCount !== 2;
 
@@ -145,11 +148,11 @@ class DetailsComponent extends PaginationTemplate<any> implements OnInit {
         const collectionSize = models[0].getMetadata().paging.total || 0;
 
         if (models[0] instanceof Site) {
-          this.sites = List(models);
+          this.sites = List(models as Site[]);
           this.collectionSizes.sites = collectionSize;
           this.hasSites = true;
         } else {
-          this.regions = List(models);
+          this.regions = List(models as Region[]);
           this.collectionSizes.regions = collectionSize;
           this.hasRegions = true;
         }
@@ -171,7 +174,7 @@ class DetailsComponent extends PaginationTemplate<any> implements OnInit {
     super.ngOnInit();
   }
 
-  protected getModels(): any {
+  protected getModels(): Observable<Site[] | Region[]> {
     this.sites = List([]);
     this.regions = List([]);
     this.hasRegions = false;

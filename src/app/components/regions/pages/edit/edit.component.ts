@@ -8,7 +8,7 @@ import {
 import {
   editRegionMenuItem,
   regionMenuItem,
-  regionsCategory,
+  projectRegionsCategory,
 } from "@components/regions/regions.menus";
 import {
   defaultSuccessMsg,
@@ -78,7 +78,7 @@ class EditComponent extends FormTemplate<Region> implements OnInit {
 }
 
 EditComponent.linkComponentToPageInfo({
-  category: regionsCategory,
+  category: projectRegionsCategory,
   menus: {
     actions: List([regionMenuItem, ...regionMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

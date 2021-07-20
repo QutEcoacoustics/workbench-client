@@ -8,7 +8,7 @@ import {
 import {
   deleteRegionMenuItem,
   regionMenuItem,
-  regionsCategory,
+  projectRegionsCategory,
 } from "@components/regions/regions.menus";
 import {
   defaultSuccessMsg,
@@ -77,7 +77,7 @@ class DeleteComponent extends FormTemplate<Region> implements OnInit {
 }
 
 DeleteComponent.linkComponentToPageInfo({
-  category: regionsCategory,
+  category: projectRegionsCategory,
   menus: {
     actions: List([regionMenuItem, ...regionMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

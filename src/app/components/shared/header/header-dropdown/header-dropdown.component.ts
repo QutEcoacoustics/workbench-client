@@ -24,7 +24,6 @@ import {
         ngbDropdownToggle
         id="dropdownBasic"
         class="btn btn-link nav-link dropdown-toggle"
-        [class.active]="active"
         [innerText]="links.title"
       ></button>
       <div ngbDropdownMenu aria-labelledby="dropdownBasic">
@@ -51,7 +50,6 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderDropdownComponent implements OnInit {
-  @Input() public active: boolean;
   @Input() public links: HeaderGroupConverted;
   public params: Params;
 

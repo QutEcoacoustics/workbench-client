@@ -126,8 +126,9 @@
         <a
           class="m-auto btn btn-outline-highlight btn-lg"
           [strongRoute]="viewMore.link"
+          [routeParams]="{ projectId: 1 }"
         >
-          More {{ viewMore.modelName | titlecase }}
+          More {{ viewMore.modelName | titlecase }}s
         </a>
       </ng-container>
     </baw-cards>

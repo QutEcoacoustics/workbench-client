@@ -26,10 +26,7 @@
         <!-- Projects Link -->
         <ng-container *ngFor="let header of headers">
           <ng-container *ngIf="!isNavigableMenuItem(header)">
-            <baw-header-dropdown
-              [active]="isActive(header.title)"
-              [links]="header"
-            ></baw-header-dropdown>
+            <baw-header-dropdown [links]="header"></baw-header-dropdown>
           </ng-container>
 
           <ng-container *ngIf="isNavigableMenuItem(header)">

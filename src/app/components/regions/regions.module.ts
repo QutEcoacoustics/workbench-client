@@ -6,6 +6,7 @@ import { SharedModule } from "@shared/shared.module";
 import { DeleteComponent } from "./pages/delete/delete.component";
 import { DetailsComponent } from "./pages/details/details.component";
 import { EditComponent } from "./pages/edit/edit.component";
+import { ListComponent } from "./pages/list/list.component";
 import { NewComponent } from "./pages/new/new.component";
 import { regionsRoute } from "./regions.menus";
 
@@ -13,6 +14,7 @@ const components = [
   DeleteComponent,
   DetailsComponent,
   EditComponent,
+  ListComponent,
   NewComponent,
 ];
 

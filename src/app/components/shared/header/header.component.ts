@@ -65,7 +65,6 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
 
   public ngOnInit() {
     this.collapsed = true;
-    this.activeLink = "projects";
     this.title = this.config.settings.brand.short;
 
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
@@ -97,22 +96,12 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
   }
 
   /**
-   * Check if navbar link is active
-   *
-   * @param link Navbar link
-   * @returns True if navbar is active
-   */
-  public isActive(link: string) {
-    return this.activeLink.toLowerCase() === link.toLowerCase();
-  }
-
-  /**
    * Toggle the collapse of the navbar
    *
    * @param setState Set the state of the navbar
    */
   public toggleCollapse(setState?: boolean) {
-    this.collapsed = setState ? setState : !this.collapsed;
+    this.collapsed = setState ?? !this.collapsed;
   }
 
   /**
