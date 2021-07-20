@@ -8,7 +8,7 @@ import {
   defaultPermissionsIcon,
   isAdminPredicate,
   isLoggedInPredicate,
-  isProjectOwnerPredicate,
+  isProjectEditorPredicate,
 } from "src/app/app.menus";
 
 /*
@@ -69,7 +69,7 @@ export const editProjectMenuItem = menuRoute({
   icon: defaultEditIcon,
   label: "Edit this project",
   parent: projectMenuItem,
-  predicate: isProjectOwnerPredicate,
+  predicate: isProjectEditorPredicate,
   route: projectMenuItem.route.add("edit"),
   tooltip: () => "Change the details for this project",
 });
@@ -78,7 +78,7 @@ export const editProjectPermissionsMenuItem = menuRoute({
   icon: defaultPermissionsIcon,
   label: "Edit permissions",
   parent: projectMenuItem,
-  predicate: isProjectOwnerPredicate,
+  predicate: isProjectEditorPredicate,
   route: projectMenuItem.route.add("permissions"),
   tooltip: () => "Edit this projects permissions",
 });
@@ -97,7 +97,7 @@ export const deleteProjectMenuItem = menuRoute({
   icon: defaultDeleteIcon,
   label: "Delete Project",
   parent: projectMenuItem,
-  predicate: isProjectOwnerPredicate,
+  predicate: isProjectEditorPredicate,
   route: projectMenuItem.route.add("delete"),
   tooltip: () => "Delete this project",
 });
@@ -106,7 +106,7 @@ export const harvestProjectMenuItem = menuRoute({
   icon: defaultAudioIcon,
   label: "Harvest Data",
   parent: projectMenuItem,
-  predicate: isProjectOwnerPredicate,
+  predicate: isProjectEditorPredicate,
   route: projectMenuItem.route.add("harvest"),
   tooltip: () => "Upload new audio to this project",
 });

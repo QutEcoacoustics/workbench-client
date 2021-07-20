@@ -14,18 +14,23 @@ import { PermissionsShieldComponent } from "./permissions-shield/permissions-shi
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
 import { WidgetDirective } from "./widget/widget.directive";
 
+const privateComponents = [
+  MenuButtonComponent,
+  MenuLinkComponent,
+  UserBadgeComponent,
+];
+
+const publicComponents = [
+  MenuComponent,
+  PermissionsShieldComponent,
+  WidgetDirective,
+];
+
 /**
  * Menus Module
  */
 @NgModule({
-  declarations: [
-    MenuButtonComponent,
-    MenuLinkComponent,
-    MenuComponent,
-    PermissionsShieldComponent,
-    UserBadgeComponent,
-    WidgetDirective,
-  ],
+  declarations: [...privateComponents, ...publicComponents],
   imports: [
     CommonModule,
     RouterModule,
@@ -37,6 +42,6 @@ import { WidgetDirective } from "./widget/widget.directive";
     PipesModule,
     DirectivesModule,
   ],
-  exports: [MenuComponent, PermissionsShieldComponent, WidgetDirective],
+  exports: publicComponents,
 })
 export class MenuModule {}

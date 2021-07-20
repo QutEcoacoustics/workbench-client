@@ -18,12 +18,14 @@ import { WidgetComponent } from "../widget/widget.component";
   selector: "baw-permissions-shield",
   template: `
     <section *ngIf="model" class="pe-3 ps-3 pb-3">
-      <baw-user-badge
-        *ngFor="let badge of badges"
-        [label]="badge.label"
-        [user]="model[badge.userKey]"
-        [timestamp]="badge.timestamp"
-      ></baw-user-badge>
+      <div *ngFor="let badge of badges">
+        <h5 id="label">{{ badge.label }}</h5>
+
+        <baw-user-badge
+          [users]="model[badge.userKey]"
+          [timestamp]="badge.timestamp"
+        ></baw-user-badge>
+      </div>
 
       <ng-container *ngIf="accessLevel">
         <h5 id="access-level-label">Your access level</h5>
@@ -98,9 +100,9 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
         timestampKey: "updatedAt",
       },
       {
-        id: "ownerId",
+        id: "ownerIds",
         label: "Owned By",
-        userKey: "owner",
+        userKey: "owners",
       },
     ].forEach((badge) => {
       if (isInstantiated(model[badge.id])) {

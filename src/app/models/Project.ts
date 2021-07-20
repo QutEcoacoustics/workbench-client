@@ -15,13 +15,7 @@ import {
 import { assetRoot } from "@services/config/config.service";
 import { Card } from "@shared/cards/cards.component";
 import { AbstractModel } from "./AbstractModel";
-import {
-  creator,
-  deleter,
-  hasMany,
-  hasOne,
-  updater,
-} from "./AssociationDecorators";
+import { creator, deleter, hasMany, updater } from "./AssociationDecorators";
 import {
   bawCollection,
   bawDateTime,
@@ -40,7 +34,7 @@ export interface IProject extends HasAllUsers, HasDescription {
   name?: Param;
   imageUrl?: string;
   accessLevel?: AccessLevel;
-  ownerId?: Id;
+  ownerIds?: Ids | Id[];
   siteIds?: Ids | Id[];
   regionIds?: Ids | Id[];
   notes?: Hash;
@@ -73,7 +67,7 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public readonly updatedAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
-  public readonly ownerId?: Id;
+  public readonly ownerIds?: Ids;
   @bawCollection({ persist: true })
   public readonly siteIds?: Ids;
   @bawCollection({ persist: true })
@@ -86,8 +80,8 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public sites?: Site[];
   @hasMany<Project, Region>(SHALLOW_REGION, "regionIds")
   public regions?: Region[];
-  @hasOne<Project, User>(ACCOUNT, "ownerId")
-  public owner?: User;
+  @hasMany<Project, User>(ACCOUNT, "ownerIds")
+  public owners?: User[];
   @creator<Project>()
   public creator?: User;
   @updater<Project>()
@@ -105,6 +99,13 @@ export class Project extends AbstractModel<IProject> implements IProject {
       model: this,
       route: this.viewUrl,
     };
+  }
+
+  /**
+   * Returns true if user has the permissions to edit this model
+   */
+  public get canEdit(): boolean {
+    return [AccessLevel.owner, AccessLevel.writer].includes(this.accessLevel);
   }
 
   public get viewUrl(): string {
