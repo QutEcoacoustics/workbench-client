@@ -1,13 +1,13 @@
+import { AccessLevel } from "@interfaces/apiInterfaces";
 import {
   isAdminPredicate,
   isGuestPredicate,
   isLoggedInPredicate,
-  isProjectOwnerPredicate,
+  isProjectEditorPredicate,
 } from "./app.menus";
 import { Project } from "./models/Project";
 import { SessionUser } from "./models/User";
 import { ApiErrorDetails } from "./services/baw-api/api.interceptor.service";
-import { ResolvedModel } from "./services/baw-api/resolver-common";
 
 describe("Predicates", () => {
   let defaultUser: SessionUser;
@@ -50,55 +50,49 @@ describe("Predicates", () => {
     });
   });
 
-  describe("isProjectOwnerPredicate", () => {
-    let data: {
-      project: ResolvedModel<Project>;
-    };
-
-    beforeEach(() => {
-      data = {
+  describe("isProjectEditorPredicate", () => {
+    function createData(accessLevel: AccessLevel = AccessLevel.owner) {
+      return {
         project: {
           model: new Project({
             id: 1,
             name: "Project",
-            ownerId: 5,
+            ownerIds: [5],
+            accessLevel,
           }),
         },
       };
-    });
+    }
 
     it("should be true when logged in as admin", () => {
-      expect(isProjectOwnerPredicate(adminUser, data)).toBeTrue();
+      expect(isProjectEditorPredicate(adminUser, createData())).toBeTrue();
     });
 
-    it("should be true when logged in as owner", () => {
-      const user = new SessionUser({
-        ...defaultUser,
-        id: 5,
+    [
+      { accessLevel: AccessLevel.owner, hasPermission: true },
+      { accessLevel: AccessLevel.reader, hasPermission: false },
+      { accessLevel: AccessLevel.unknown, hasPermission: false },
+      { accessLevel: AccessLevel.unresolved, hasPermission: false },
+      { accessLevel: AccessLevel.writer, hasPermission: true },
+    ].forEach(({ accessLevel, hasPermission }) => {
+      it(`should return ${hasPermission} when access level is ${accessLevel}`, () => {
+        expect(
+          isProjectEditorPredicate(defaultUser, createData(accessLevel))
+        ).toBe(hasPermission);
       });
-
-      expect(isProjectOwnerPredicate(user, data)).toBeTrue();
-    });
-
-    it("should be false when logged in as regular user", () => {
-      expect(isProjectOwnerPredicate(defaultUser, data)).toBeFalse();
-    });
-
-    it("should be false when logged out", () => {
-      expect(isProjectOwnerPredicate(guestUser, data)).toBeFalse();
     });
 
     it("should handle missing data", () => {
-      expect(isProjectOwnerPredicate(defaultUser, undefined)).toBeFalse();
+      expect(isProjectEditorPredicate(defaultUser, undefined)).toBeFalse();
     });
 
     it("should handle missing project", () => {
-      expect(isProjectOwnerPredicate(defaultUser, {})).toBeFalse();
+      expect(isProjectEditorPredicate(defaultUser, {})).toBeFalse();
     });
 
     it("should handle error project", () => {
       expect(
-        isProjectOwnerPredicate(defaultUser, {
+        isProjectEditorPredicate(defaultUser, {
           project: { status: 401, message: "Unauthorized" } as ApiErrorDetails,
         })
       ).toBeFalse();
