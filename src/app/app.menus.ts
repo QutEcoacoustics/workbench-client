@@ -36,7 +36,7 @@ export const isProjectEditorPredicate = (
   data: any
 ): boolean => {
   const project = (data?.project as ResolvedModel<Project>)?.model;
-  return isAdminPredicate(user) || project?.canEdit;
+  return isAdminPredicate(user) || !!project?.canEdit;
 };
 
 /**

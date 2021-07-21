@@ -15,6 +15,7 @@ import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime } from "luxon";
 import { UserBadgeComponent } from "./user-badge.component";
 
+// TODO Update to validate multiple user badges
 describe("UserBadgeComponent", () => {
   let spec: Spectator<UserBadgeComponent>;
   const createComponent = createComponentFactory({
@@ -29,8 +30,6 @@ describe("UserBadgeComponent", () => {
     ],
   });
 
-  const getLabel = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).query<HTMLHeadingElement>("#label");
   const getGhostUsername = (_spec?: Spectator<any>) =>
     (spec ?? _spec).query<HTMLAnchorElement>("#ghost-username");
   const getUsername = (_spec?: Spectator<any>) =>
@@ -46,7 +45,7 @@ describe("UserBadgeComponent", () => {
     spec = createComponent({
       props: {
         label: "label",
-        user: new User(generateUser()),
+        users: [new User(generateUser())],
         timestamp: DateTime.utc(),
         ...props,
       },
@@ -59,21 +58,15 @@ describe("UserBadgeComponent", () => {
     expect(spec.component).toBeTruthy();
   });
 
-  it("should display label", () => {
-    setup({ label: "custom label" });
-    spec.detectChanges();
-    expect(getLabel().innerText.trim()).toBe("custom label");
-  });
-
   describe("loading", () => {
     it("should display spinner when user is unresolved", () => {
-      setup({ user: UnresolvedModel.one as any });
+      setup({ users: [UnresolvedModel.one as any] });
       spec.detectChanges();
       assertSpinner(spec.fixture, true);
     });
 
     it("should not display spinner when user is resolved", () => {
-      setup({ user: new User(generateUser()) });
+      setup({ users: [new User(generateUser())] });
       spec.detectChanges();
       assertSpinner(spec.fixture, false);
     });
@@ -82,14 +75,14 @@ describe("UserBadgeComponent", () => {
   describe("ghost users", () => {
     it("should display username", () => {
       const user = User.deletedUser;
-      setup({ user });
+      setup({ users: [user] });
       spec.detectChanges();
       expect(getGhostUsername().innerHTML.trim()).toBe(user.userName);
     });
 
     it("should display image", () => {
       const user = User.deletedUser;
-      setup({ user });
+      setup({ users: [user] });
       spec.detectChanges();
       assertImage(
         getImage(),
@@ -102,14 +95,14 @@ describe("UserBadgeComponent", () => {
   describe("single user", () => {
     it("should display username", () => {
       const user = new User(generateUser());
-      setup({ user });
+      setup({ users: [user] });
       spec.detectChanges();
       expect(getUsername().innerHTML.trim()).toBe(user.userName);
     });
 
     it("username should route to user page", () => {
       const user = new User(generateUser());
-      setup({ user });
+      setup({ users: [user] });
       spec.detectChanges();
       assertUrl(getUsername(), user.viewUrl);
     });
@@ -120,7 +113,7 @@ describe("UserBadgeComponent", () => {
         userName: "custom username",
         imageUrls: undefined,
       });
-      setup({ user });
+      setup({ users: [user] });
       spec.detectChanges();
       assertImage(
         getImage(),
@@ -133,7 +126,7 @@ describe("UserBadgeComponent", () => {
       const imageIndex = 1;
       const user = new User({ ...generateUser(), userName: "custom username" });
       user.image[imageIndex].size = ImageSizes.small;
-      setup({ user });
+      setup({ users: [user] });
       spec.detectChanges();
       assertImage(
         getImage(),
@@ -144,7 +137,7 @@ describe("UserBadgeComponent", () => {
 
     it("image should route to user page", () => {
       const user = new User(generateUser());
-      setup({ user });
+      setup({ users: [user] });
       spec.detectChanges();
       assertUrl(getImageWrapper(), user.viewUrl);
     });
@@ -165,9 +158,9 @@ describe("UserBadgeComponent", () => {
 
   it("should detect changes to user", () => {
     const user = new User(generateUser());
-    setup({ user: UnresolvedModel.one as any });
+    setup({ users: [UnresolvedModel.one as any] });
     spec.detectChanges();
-    spec.setInput("user", user);
+    spec.setInput("users", [user]);
     spec.detectChanges();
 
     const username = getUsername(spec);
