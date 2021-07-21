@@ -31,15 +31,12 @@ export const isLoggedInPredicate = (user: SessionUser): boolean => !!user;
  * @param user Session User Data
  * @param data Page Data
  */
-export const isProjectOwnerPredicate = (
+export const isProjectEditorPredicate = (
   user: SessionUser,
   data: any
 ): boolean => {
-  const project: ResolvedModel<Project> = data?.project;
-  return (
-    isLoggedInPredicate(user) &&
-    (isAdminPredicate(user) || user.id === project?.model?.ownerId)
-  );
+  const project = (data?.project as ResolvedModel<Project>)?.model;
+  return isAdminPredicate(user) || !!project?.canEdit;
 };
 
 /**
