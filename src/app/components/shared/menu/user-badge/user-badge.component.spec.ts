@@ -8,16 +8,18 @@ import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
+import { LoadingComponent } from "@shared/loading/loading.component";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { generateUser } from "@test/fakes/User";
-import { assertImage, assertUrl, assertSpinner } from "@test/helpers/html";
+import { assertImage, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime } from "luxon";
 import { UserBadgeComponent } from "./user-badge.component";
 
-// TODO Update to validate multiple user badges
 describe("UserBadgeComponent", () => {
   let spec: Spectator<UserBadgeComponent>;
+  let defaultUser: User;
+  let unresolvedUser: User;
   const createComponent = createComponentFactory({
     component: UserBadgeComponent,
     imports: [
@@ -31,26 +33,31 @@ describe("UserBadgeComponent", () => {
   });
 
   const getGhostUsername = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).query<HTMLAnchorElement>("#ghost-username");
+    (spec ?? _spec).queryAll<HTMLAnchorElement>("#ghost-username");
   const getUsername = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).query<HTMLAnchorElement>("#username");
+    (spec ?? _spec).queryAll<HTMLAnchorElement>("#username");
   const getImageWrapper = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).query<HTMLAnchorElement>("#imageLink");
+    (spec ?? _spec).queryAll<HTMLAnchorElement>("#imageLink");
   const getImage = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).query<HTMLImageElement>("img");
+    (spec ?? _spec).queryAll<HTMLImageElement>("img");
   const getTimespan = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).query<HTMLParagraphElement>("#lengthOfTime small");
+    (spec ?? _spec).queryAll<HTMLParagraphElement>("#lengthOfTime small");
 
   function setup(props?: Partial<UserBadgeComponent>) {
     spec = createComponent({
       props: {
         label: "label",
-        users: [new User(generateUser())],
+        users: [defaultUser],
         timestamp: DateTime.utc(),
         ...props,
       },
     });
   }
+
+  beforeEach(() => {
+    defaultUser = new User(generateUser());
+    unresolvedUser = UnresolvedModel.one as any;
+  });
 
   it("should create", () => {
     setup();
@@ -59,16 +66,32 @@ describe("UserBadgeComponent", () => {
   });
 
   describe("loading", () => {
+    function getSpinner() {
+      return spec.queryAll(LoadingComponent);
+    }
+
     it("should display spinner when user is unresolved", () => {
-      setup({ users: [UnresolvedModel.one as any] });
+      setup({ users: [unresolvedUser] });
       spec.detectChanges();
-      assertSpinner(spec.fixture, true);
+      expect(getSpinner().length).toBe(1);
     });
 
     it("should not display spinner when user is resolved", () => {
-      setup({ users: [new User(generateUser())] });
+      setup({ users: [defaultUser] });
       spec.detectChanges();
-      assertSpinner(spec.fixture, false);
+      expect(getSpinner().length).toBe(0);
+    });
+
+    it("should display spinners for each user", () => {
+      setup({ users: [unresolvedUser, unresolvedUser] });
+      spec.detectChanges();
+      expect(getSpinner().length).toBe(2);
+    });
+
+    it("should only display spinners for each unresolved user", () => {
+      setup({ users: [defaultUser, unresolvedUser, unresolvedUser] });
+      spec.detectChanges();
+      expect(getSpinner().length).toBe(2);
     });
   });
 
@@ -77,7 +100,7 @@ describe("UserBadgeComponent", () => {
       const user = User.deletedUser;
       setup({ users: [user] });
       spec.detectChanges();
-      expect(getGhostUsername().innerHTML.trim()).toBe(user.userName);
+      expect(getGhostUsername()[0]).toHaveText(user.userName);
     });
 
     it("should display image", () => {
@@ -85,7 +108,7 @@ describe("UserBadgeComponent", () => {
       setup({ users: [user] });
       spec.detectChanges();
       assertImage(
-        getImage(),
+        getImage()[0],
         `${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`,
         user.userName + " profile picture"
       );
@@ -94,17 +117,15 @@ describe("UserBadgeComponent", () => {
 
   describe("single user", () => {
     it("should display username", () => {
-      const user = new User(generateUser());
-      setup({ users: [user] });
+      setup({ users: [defaultUser] });
       spec.detectChanges();
-      expect(getUsername().innerHTML.trim()).toBe(user.userName);
+      expect(getUsername()[0]).toHaveText(defaultUser.userName);
     });
 
     it("username should route to user page", () => {
-      const user = new User(generateUser());
-      setup({ users: [user] });
+      setup({ users: [defaultUser] });
       spec.detectChanges();
-      assertUrl(getUsername(), user.viewUrl);
+      assertUrl(getUsername()[0], defaultUser.viewUrl);
     });
 
     it("should display default image", () => {
@@ -116,7 +137,7 @@ describe("UserBadgeComponent", () => {
       setup({ users: [user] });
       spec.detectChanges();
       assertImage(
-        getImage(),
+        getImage()[0],
         `${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`,
         "custom username profile picture"
       );
@@ -129,42 +150,51 @@ describe("UserBadgeComponent", () => {
       setup({ users: [user] });
       spec.detectChanges();
       assertImage(
-        getImage(),
+        getImage()[0],
         user.image[imageIndex].url,
         "custom username profile picture"
       );
     });
 
     it("image should route to user page", () => {
-      const user = new User(generateUser());
-      setup({ users: [user] });
+      setup({ users: [defaultUser] });
       spec.detectChanges();
-      assertUrl(getImageWrapper(), user.viewUrl);
+      assertUrl(getImageWrapper()[0], defaultUser.viewUrl);
     });
 
     it("should not display undefined timestamp", () => {
       setup({ timestamp: undefined });
       spec.detectChanges();
-      expect(getTimespan()).toBeFalsy();
+      expect(getTimespan()[0]).toBeFalsy();
     });
 
     it("should display length of time calculated from timestamp", () => {
       const date = DateTime.utc();
       setup({ timestamp: date });
       spec.detectChanges();
-      expect(getTimespan().innerText.trim()).toBe(date.toRelative());
+      expect(getTimespan()[0]).toHaveText(date.toRelative());
+    });
+  });
+
+  describe("multiple users", () => {
+    it("should display username of each user", () => {
+      const userA = new User(generateUser());
+      const userB = new User(generateUser());
+      setup({ users: [userA, userB] });
+      spec.detectChanges();
+      expect(getUsername()[0]).toHaveText(userA.userName);
+      expect(getUsername()[1]).toHaveText(userB.userName);
     });
   });
 
   it("should detect changes to user", () => {
     const user = new User(generateUser());
-    setup({ users: [UnresolvedModel.one as any] });
+    setup({ users: [unresolvedUser] });
     spec.detectChanges();
     spec.setInput("users", [user]);
     spec.detectChanges();
 
-    const username = getUsername(spec);
-    expect(username).toBeTruthy();
-    expect(username.innerHTML.trim()).toBe(user.userName);
+    const username = getUsername(spec)[0];
+    expect(username).toHaveText(user.userName);
   });
 });
