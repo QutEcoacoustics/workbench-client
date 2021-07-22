@@ -8,7 +8,7 @@ export function generateProject(id?: Id): Required<IProject> {
     name: modelData.param(),
     imageUrl: modelData.imageUrl(),
     accessLevel: modelData.accessLevel(),
-    ownerId: modelData.id(),
+    ownerIds: modelData.ids(),
     siteIds: modelData.ids(),
     regionIds: modelData.ids(),
     notes: modelData.notes(),

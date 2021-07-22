@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 import { ImageSizes } from "@interfaces/apiInterfaces";
 import { User } from "@models/User";
 import { DateTime } from "luxon";
@@ -10,29 +10,25 @@ import { DateTime } from "luxon";
 @Component({
   selector: "baw-user-badge",
   template: `
-    <!-- Heading -->
-    <h5 id="label">{{ label }}</h5>
+    <div *ngFor="let user of models">
+      <!-- Spinner -->
+      <baw-loading *ngIf="user | isUnresolved"></baw-loading>
 
-    <!-- Spinner -->
-    <baw-loading *ngIf="user | isUnresolved"></baw-loading>
-
-    <!-- User Resolved -->
-    <ng-container *ngIf="!(user | isUnresolved)">
-      <div id="users" class="d-flex mb-1">
+      <!-- User Resolved -->
+      <div *ngIf="!(user | isUnresolved)" id="users" class="d-flex mb-1">
         <!-- User image -->
         <div class="image">
-          <!-- Normal User -->
-          <a
-            *ngIf="!(user | isGhostUser); else userImage"
-            id="imageLink"
-            [bawUrl]="user.viewUrl"
-          >
-            <ng-container *ngTemplateOutlet="userImage"></ng-container>
-          </a>
+          <!-- Add link to non-ghost users -->
+          <ng-container *ngIf="!(user | isGhostUser); else userImage">
+            <a id="imageLink" [bawUrl]="user.viewUrl">
+              <ng-container *ngTemplateOutlet="userImage"></ng-container>
+            </a>
+          </ng-container>
 
-          <!-- Ghost User -->
+          <!-- User Image -->
           <ng-template #userImage>
             <img
+              class="rounded"
               [src]="user.image"
               [alt]="user.userName + ' profile picture'"
               [thumbnail]="thumbnail"
@@ -43,8 +39,8 @@ import { DateTime } from "luxon";
         <!-- User details -->
         <div class="body">
           <!-- Ghost User -->
-          <ng-container *ngIf="user | isGhostUser; else isUser" class="heading">
-            <span id="ghost-username">{{ user.userName }}</span>
+          <ng-container *ngIf="user | isGhostUser; else isUser">
+            <span id="ghost-username" class="heading">{{ user.userName }}</span>
           </ng-container>
 
           <!-- Normal User -->
@@ -65,13 +61,24 @@ import { DateTime } from "luxon";
           </span>
         </div>
       </div>
-    </ng-container>
+    </div>
   `,
   styleUrls: ["./user-badge.component.scss"],
 })
-export class UserBadgeComponent {
+export class UserBadgeComponent implements OnChanges {
   @Input() public label: string;
-  @Input() public user: User;
+  @Input() public users: User | User[];
   @Input() public timestamp?: DateTime;
   public thumbnail = ImageSizes.small;
+  public models: User[];
+
+  public ngOnChanges(): void {
+    if (!this.users) {
+      this.models = [];
+    } else if (this.users instanceof Array) {
+      this.models = this.users;
+    } else {
+      this.models = [this.users];
+    }
+  }
 }
