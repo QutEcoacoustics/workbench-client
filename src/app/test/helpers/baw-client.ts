@@ -27,8 +27,8 @@ export function validateBawClientPage<Component extends Type<any>>(
   });
 
   function bawClientSource() {
-    const { oldClientOrigin, oldClientDir } = config.endpoints;
-    return oldClientOrigin + oldClientDir + route;
+    const { oldClientOrigin, oldClientBase } = config.endpoints;
+    return oldClientOrigin + oldClientBase + "#" + route;
   }
 
   function getBawClient() {

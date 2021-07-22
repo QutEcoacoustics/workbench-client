@@ -95,11 +95,11 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
   }
 
   protected updateUrl(url: string) {
-    const { oldClientOrigin, oldClientDir } = this.config.endpoints;
+    const { oldClientOrigin, oldClientBase } = this.config.endpoints;
 
     // Bypass angular default security
     this.url = this.sanitizer.bypassSecurityTrustResourceUrl(
-      oldClientOrigin + oldClientDir + url
+      oldClientOrigin + oldClientBase + "#" + url
     );
   }
 }

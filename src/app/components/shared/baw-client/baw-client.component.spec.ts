@@ -6,7 +6,6 @@ import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { assertSpinner } from "@test/helpers/html";
-import { websiteHttpUrl } from "@test/helpers/url";
 import { DeviceDetectorService } from "ngx-device-detector";
 import { BehaviorSubject } from "rxjs";
 import { BawClientComponent } from "./baw-client.component";
@@ -23,8 +22,8 @@ describe("BawClientComponent", () => {
   });
 
   function bawClientSource(route: string) {
-    const { oldClientOrigin, oldClientDir } = config.endpoints;
-    return `${oldClientOrigin}${oldClientDir}${route}`;
+    const { oldClientOrigin, oldClientBase } = config.endpoints;
+    return `${oldClientOrigin}${oldClientBase}#${route}`;
   }
 
   function getIframe(): HTMLIFrameElement {

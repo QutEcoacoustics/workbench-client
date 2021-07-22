@@ -5,7 +5,7 @@
     "clientOrigin": "http://development.ecosounds.org:4200",
     "clientDir": "/",
     "oldClientOrigin": "https://api.staging.ecosounds.org",
-    "oldClientDir": "/listen_to/index.html#"
+    "oldClientBase": "/listen_to/index.html"
   },
   "keys": {
     "googleMaps": "",

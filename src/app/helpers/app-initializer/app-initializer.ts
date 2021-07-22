@@ -61,7 +61,7 @@ export interface Endpoints {
   clientOrigin: string;
   clientDir: string;
   oldClientOrigin: string;
-  oldClientDir: string;
+  oldClientBase: string;
 }
 
 export interface Keys {

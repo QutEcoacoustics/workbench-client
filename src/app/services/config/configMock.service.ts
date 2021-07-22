@@ -36,7 +36,7 @@ export const testApiConfig = new Configuration({
     clientOrigin: "https://www.testing.com/site",
     clientDir: "/website",
     oldClientOrigin: websiteHttpUrl,
-    oldClientDir: `${assetRoot}/old-client/#`,
+    oldClientBase: `${assetRoot}/old-client/index.html`,
   },
   keys: {
     googleMaps: "<< googleMaps >>",
