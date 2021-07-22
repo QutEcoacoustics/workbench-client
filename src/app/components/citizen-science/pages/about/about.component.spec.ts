@@ -9,7 +9,7 @@ describe("CitSciAboutComponent", () => {
     CitSciAboutComponent,
     [CitizenScienceModule],
     "/citsci/example-question",
-    (text: string[]) =>
+    (text: string) =>
       !!text.includes("Get Started") || !!text.includes("get started!")
   );
 });

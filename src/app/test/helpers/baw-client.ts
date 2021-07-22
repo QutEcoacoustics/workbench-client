@@ -13,7 +13,7 @@ export function validateBawClientPage<Component extends Type<any>>(
   component: Component,
   modules: any[],
   route: string,
-  validatePageLoaded: string | string[] | ((text: string[]) => boolean),
+  validatePageLoaded: string | string[] | ((text: string) => boolean),
   interceptApiRequests?: (spec: SpectatorRouting<Component>) => void
 ) {
   let spec: SpectatorRouting<Component>;
