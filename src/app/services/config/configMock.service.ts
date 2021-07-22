@@ -5,6 +5,8 @@ import {
   Keys,
   Settings,
 } from "@helpers/app-initializer/app-initializer";
+import { websiteHttpUrl } from "@test/helpers/url";
+import { assetRoot } from "./config.service";
 
 @Injectable()
 export class AppConfigMockService {
@@ -33,6 +35,8 @@ export const testApiConfig = new Configuration({
     apiRoot: "https://www.testing.com/api",
     clientOrigin: "https://www.testing.com/site",
     clientDir: "/website",
+    oldClientOrigin: websiteHttpUrl,
+    oldClientBase: `${assetRoot}/old-client/index.html`,
   },
   keys: {
     googleMaps: "<< googleMaps >>",

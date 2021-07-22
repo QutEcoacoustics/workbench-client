@@ -2,9 +2,10 @@ import { ElementRef } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { ConfigService } from "@services/config/config.service";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { assertSpinner } from "@test/helpers/html";
-import { websiteHttpUrl } from "@test/helpers/url";
 import { DeviceDetectorService } from "ngx-device-detector";
 import { BehaviorSubject } from "rxjs";
 import { BawClientComponent } from "./baw-client.component";
@@ -13,11 +14,17 @@ import { BawClientComponent } from "./baw-client.component";
 describe("BawClientComponent", () => {
   let isFirefox: boolean;
   let events: BehaviorSubject<NavigationEnd>;
+  let config: ConfigService;
   let spec: Spectator<BawClientComponent>;
   const createComponent = createComponentFactory({
     component: BawClientComponent,
-    imports: [LoadingModule, RouterTestingModule],
+    imports: [LoadingModule, RouterTestingModule, MockAppConfigModule],
   });
+
+  function bawClientSource(route: string) {
+    const { oldClientOrigin, oldClientBase } = config.endpoints;
+    return `${oldClientOrigin}${oldClientBase}#${route}`;
+  }
 
   function getIframe(): HTMLIFrameElement {
     return spec.query("iframe");
@@ -36,7 +43,7 @@ describe("BawClientComponent", () => {
 
     if (!events) {
       events = new BehaviorSubject(event);
-      spec.component["router"] = ({ url, events } as Partial<Router>) as Router;
+      spec.component["router"] = { url, events } as Partial<Router> as Router;
     } else {
       events.next(event);
     }
@@ -47,6 +54,7 @@ describe("BawClientComponent", () => {
     events = undefined;
     spec = createComponent({ detectChanges: false });
     isFirefox = spec.inject(DeviceDetectorService).browser === "Firefox";
+    config = spec.inject(ConfigService);
   });
 
   afterEach(() => {
@@ -81,24 +89,24 @@ describe("BawClientComponent", () => {
     });
 
     it("should update iframe height on height calculation", () => {
-      const dummyIFrame: ElementRef<HTMLIFrameElement> = ({
+      const dummyIFrame: ElementRef<HTMLIFrameElement> = {
         nativeElement: {
           style: { height: undefined },
           contentDocument: { body: { scrollHeight: 10000 } },
         },
-      } as Partial<ElementRef<HTMLIFrameElement>>) as any;
+      } as Partial<ElementRef<HTMLIFrameElement>> as any;
       spec.component["iframeRef"] = dummyIFrame;
       spec.component.updateIframeSize();
       expect(dummyIFrame.nativeElement.style.height).toBe("10050px");
     });
 
     it("should not infinitely update iframe height on height calculation", () => {
-      const dummyIFrame: ElementRef<HTMLIFrameElement> = ({
+      const dummyIFrame: ElementRef<HTMLIFrameElement> = {
         nativeElement: {
           style: { height: undefined },
           contentDocument: { body: { scrollHeight: 10000 } },
         },
-      } as Partial<ElementRef<HTMLIFrameElement>>) as any;
+      } as Partial<ElementRef<HTMLIFrameElement>> as any;
       spec.component["iframeRef"] = dummyIFrame;
       spec.component.updateIframeSize();
       spec.component.updateIframeSize();
@@ -145,10 +153,7 @@ describe("BawClientComponent", () => {
     it("should pass url to old client in iframe", () => {
       navigate("/home");
       spec.detectChanges();
-
-      expect(getIframe().src).toBe(
-        websiteHttpUrl + "/assets/old-client/#/home"
-      );
+      expect(getIframe().src).toBe(bawClientSource("/home"));
     });
 
     it("should pass updated url parameters to old client on change", () => {
@@ -156,10 +161,7 @@ describe("BawClientComponent", () => {
       spec.detectChanges();
       navigate("/house");
       spec.detectChanges();
-
-      expect(getIframe().src).toBe(
-        websiteHttpUrl + "/assets/old-client/#/house"
-      );
+      expect(getIframe().src).toBe(bawClientSource("/house"));
     });
   });
 });

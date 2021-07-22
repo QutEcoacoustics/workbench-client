@@ -3,7 +3,9 @@
     "environment": "development",
     "apiRoot": "https://api.staging.ecosounds.org",
     "clientOrigin": "http://development.ecosounds.org:4200",
-    "clientDir": "/"
+    "clientDir": "/",
+    "oldClientOrigin": "https://api.staging.ecosounds.org",
+    "oldClientBase": "/listen_to/index.html"
   },
   "keys": {
     "googleMaps": "",
