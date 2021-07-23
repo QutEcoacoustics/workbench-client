@@ -20,8 +20,8 @@ $GIT_SHORT_COMMIT = git rev-parse --short HEAD
 
 # generate calender version for build following the format specified here:
 # https://github.com/relizaio/versioning#25-known-version-elements
-$SHORT_VERSION = docker run --rm relizaio/versioning -s "YYYY.0M.0D.Calvermodifier" -i $release_tag
-$LONG_VERSION = docker run --rm relizaio/versioning -s "YYYY.0M.0D.Calvermodifier+Metadata" -i $release_tag -m $GIT_SHORT_COMMIT
+$SHORT_VERSION = docker run --rm relizaio/versioning -s "YYYY.0M.0D.CALVERMODIFIER_CIBUILD" -i $release_tag
+$LONG_VERSION = docker run --rm relizaio/versioning -s "YYYY.0M.0D.CALVERMODIFIER_CIBUILD+METADATA" -i $release_tag -m $GIT_SHORT_COMMIT
 
 # tag version on github
 git config --global user.name "$($github_actor)"

@@ -234,6 +234,28 @@ jobs:
           test_changes_limit: 0
           deduplicate_classes_by_file_name: true
 
+  test-publish:
+    name: "Publish Docker Container"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      - name: Checkout LFS objects
+        run: git lfs checkout
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push Docker image
+        shell: pwsh
+        run: ./build/build_docker.ps1 -github_actor '${{ github.actor }}' -release_tag 'test'
+
   publish:
     name: "Publish Docker Container"
     runs-on: "ubuntu-latest"
