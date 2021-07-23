@@ -254,7 +254,7 @@ jobs:
 
       - name: Build and push Docker image
         shell: pwsh
-        run: ./build/build_docker.ps1 -github_actor '${{ github.actor }}' -release_tag 'test'
+        run: ./script/build_docker.ps1 -github_actor '${{ github.actor }}' -release_tag 'test'
 
   publish:
     name: "Publish Docker Container"
@@ -292,4 +292,4 @@ jobs:
 
       - name: Build and push Docker image
         shell: pwsh
-        run: ./build/build_docker.ps1 -github_actor '${{ github.actor }}' -release_tag 'beta'
+        run: ./scripts/build_docker.ps1 -github_actor '${{ github.actor }}' -release_tag 'beta'
