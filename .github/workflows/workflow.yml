@@ -260,6 +260,10 @@ jobs:
     name: "Publish Docker Container"
     runs-on: "ubuntu-latest"
     needs: [test, ssr, build]
+    # cancel any other CI attempting to publish to docker
+    concurrency: 
+      group: publish-container
+      cancel-in-progress: true
     # only on tag or commit to master and not created by dependabot
     if: >
       github.actor != 'dependabot[bot]' &&
