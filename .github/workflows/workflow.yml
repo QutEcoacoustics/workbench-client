@@ -234,30 +234,6 @@ jobs:
           test_changes_limit: 0
           deduplicate_classes_by_file_name: true
 
-  test-publish:
-    name: "Publish Docker Container"
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          lfs: true
-          fetch-depth: 50
-      
-      # fetch more tag info so git_version.ps1 works properly
-      - name: Ensure tags are fetched
-        # Retrieve annotated tags.
-        run: git fetch --tags --force
-      - name: Checkout LFS objects
-        run: git lfs checkout
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build and push Docker image
-        shell: pwsh
-        run: ./scripts/build_docker.ps1 -github_actor '${{ github.actor }}' -release_tag 'test'
-
   publish:
     name: "Publish Docker Container"
     runs-on: "ubuntu-latest"
