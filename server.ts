@@ -4,7 +4,7 @@
  * the application bundle downloads.
  */
 
-import "zone.js/dist/zone-node";
+import "zone.js/node";
 
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";

@@ -6,4 +6,4 @@ export const environment = {
   version: "<<VERSION_REPLACED_WHEN_BUILT>>",
 } as Partial<Configuration> as Configuration;
 
-import "zone.js/dist/zone-error"; // Included with Angular CLI.
+import "zone.js/plugins/zone-error"; // Included with Angular CLI.
