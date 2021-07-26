@@ -32,7 +32,7 @@ if ((git tag -l $version) -and ($height -gt 0)) {
 # build must be metadata only, can't alter version meaning
 $tag = "$release_tag."
 $build = "${tag}${unique_hash}"
-return @{
+return [PSCustomObject]@{
     # Unique build, compatible with any other Version
     Build           = $build
     # Git commit long hash

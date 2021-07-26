@@ -34,14 +34,15 @@ exec { git tag -a $version.Version -m "Build (${version.DescribeVersion})" }
 # docker containing and push to docker hub
 exec {
   docker build `
-    -t qutecoacoustics/workbench-client:$release_tag `
-    -t qutecoacoustics/workbench-client:$version.DockerTag `
+    -t "qutecoacoustics/workbench-client:$release_tag" `
+    -t "qutecoacoustics/workbench-client:$($version.DockerTag)" `
     . `
     --build-arg GIT_COMMIT=$version.LongHash `
     --build-arg WORKBENCH_CLIENT_VERSION=$version.DescribeVersion
 }
 
-docker push --all-tags qutecoacoustics/workbench-client
+docker push "qutecoacoustics/workbench-client:$release_tag"
+docker push "qutecoacoustics/workbench-client:$($version.DockerTag)"
 
 # push tag to github
-git push origin --tags
+git push origin --follow-tags "$($version.Version)"
