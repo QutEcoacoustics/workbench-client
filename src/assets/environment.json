@@ -46,6 +46,10 @@
           }
         ]
       }
-    ]
+    ],
+    "theme": {
+      "highlight": "#304f3b",
+      "primary": "#2c6fbb"
+    }
   }
 }

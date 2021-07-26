@@ -10,6 +10,7 @@ import { OrphanSitesModule } from "./orphan/orphans.module";
 import { ScriptsModule } from "./scripts/scripts.module";
 import { TagGroupsModule } from "./tag-group/tag-groups.module";
 import { TagsModule } from "./tags/tags.module";
+import { AdminThemeTemplateComponent } from "./theme-template/theme-template.component";
 import { AdminUserListComponent } from "./users/list/list.component";
 
 const modules = [
@@ -20,7 +21,11 @@ const modules = [
   TagGroupsModule,
   TagsModule,
 ];
-const components = [AdminDashboardComponent, AdminUserListComponent];
+const components = [
+  AdminDashboardComponent,
+  AdminThemeTemplateComponent,
+  AdminUserListComponent,
+];
 const routes = adminRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({

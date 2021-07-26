@@ -52,3 +52,11 @@ export const adminCmsMenuItem = menuLink({
   parent: adminDashboardMenuItem,
   predicate: isAdminPredicate,
 });
+
+export const adminThemeMenuItem = menuRoute({
+  icon: ["fas", "spray-can"],
+  label: "Theme",
+  route: adminRoute.add("theme"),
+  tooltip: () => "View and experiment with website theme",
+  parent: adminDashboardMenuItem,
+});

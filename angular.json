@@ -16,6 +16,7 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
+          "defaultConfiguration": "development",
           "options": {
             "outputPath": "dist/workbench-client/browser",
             "index": "src/index.html",
