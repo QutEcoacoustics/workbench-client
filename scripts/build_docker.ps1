@@ -45,10 +45,3 @@ docker push --all-tags qutecoacoustics/workbench-client
 
 # push tag to github
 git push origin --tags
-
-
-$abc = "hello"
-$def = "world"
-"banana$abc_$def"
-"banana${abc}_${def}"
-"banana$($abc)_$($def)"
