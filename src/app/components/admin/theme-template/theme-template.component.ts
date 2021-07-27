@@ -7,7 +7,12 @@ import {
   ViewChildren,
 } from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { CssTheme, ThemeService } from "@services/theme/theme.service";
+import {
+  bawThemes,
+  BawTheme,
+  ThemeService,
+  bawThemeVariants,
+} from "@services/theme/theme.service";
 import { List } from "immutable";
 import { adminCategory, adminThemeMenuItem } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
@@ -23,22 +28,10 @@ class AdminThemeTemplateComponent
 {
   @ViewChildren("themeBox") private themeBoxes!: QueryList<ElementRef>;
 
-  public defaultPallette: string[] = [];
   public currentPallette: string[] = [];
-
-  public themes: CssTheme[] = [
-    "highlight",
-    "primary",
-    "secondary",
-    "success",
-    "info",
-    "warning",
-    "danger",
-    "light",
-    "dark",
-  ];
-  public variants = ["", "-lighter", "-lightest", "-darker", "-darkest"];
-  public selected: { theme: CssTheme; color: string } = {
+  public themes = bawThemes;
+  public variants = bawThemeVariants;
+  public selected: { theme: BawTheme; color: string } = {
     theme: "highlight",
     color: "#000",
   };
@@ -51,14 +44,13 @@ class AdminThemeTemplateComponent
   }
 
   public onThemeChange(e: Event) {
-    const theme: CssTheme = (e.target as HTMLSelectElement).value as CssTheme;
+    const theme: BawTheme = (e.target as HTMLSelectElement).value as BawTheme;
     this.selected = { theme, color: this.getThemeColor(theme) };
     console.log("theme change", e, theme);
   }
 
-  public onColorChange(e?) {
+  public onColorChange(e: Event) {
     const color = (e.target as HTMLInputElement).value;
-    console.log("color change", color);
     this.theme.setTheme(this.selected.theme, color);
     this.selected.color = color;
     this.updateColorDescriptions();
@@ -70,6 +62,7 @@ class AdminThemeTemplateComponent
       theme: "highlight",
       color: this.getThemeColor("highlight"),
     };
+    // Prevents angular from complaining about variables changing
     this.ref.detectChanges();
   }
 
@@ -103,7 +96,7 @@ class AdminThemeTemplateComponent
     };
   }
 
-  private getThemeColor(theme: CssTheme): string {
+  private getThemeColor(theme: BawTheme): string {
     let index = this.themes.findIndex((value) => value === theme);
     index *= this.variants.length;
     return this.currentPallette[index];

@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col input-group">
       <div class="input-group-prepend">
-        <label class="input-group-text">Colour Adjustments</label>
+        <label class="input-group-text">Theme</label>
       </div>
       <select class="form-control" (change)="onThemeChange($event)">
         <option
@@ -30,6 +30,8 @@
   </div>
 </form>
 
+<h2>Colours</h2>
+
 <div class="theme-row" *ngFor="let theme of themes">
   <ng-container *ngFor="let variant of variants">
     <div
@@ -44,4 +46,36 @@
     </div>
   </ng-container>
   <br />
+</div>
+
+<h2>Buttons</h2>
+
+<ng-container *ngFor="let theme of themes">
+  <button class="btn me-2 mb-2" [ngClass]="'btn-' + theme">
+    {{ theme }}
+  </button>
+  <button class="btn me-2 mb-2" [ngClass]="'btn-outline-' + theme">
+    {{ theme }}
+  </button>
+</ng-container>
+
+<h2>Text</h2>
+
+<p
+  *ngFor="let theme of themes"
+  [ngClass]="'text-' + theme"
+  [style.backgroundColor]="'var(--baw-' + theme + '-contrast)'"
+>
+  {{ theme }}
+</p>
+
+<h2>Spinners</h2>
+
+<div
+  *ngFor="let theme of themes"
+  class="spinner-border"
+  [ngClass]="'text-' + theme"
+  role="status"
+>
+  <span class="visually-hidden">Loading...</span>
 </div>

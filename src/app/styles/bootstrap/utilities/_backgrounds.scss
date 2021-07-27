@@ -13,3 +13,9 @@
     @include baw-background($theme, $default);
   }
 }
+
+/* Custom highlight background */
+
+.bg-highlight {
+  @include baw-background("highlight", $primary);
+}

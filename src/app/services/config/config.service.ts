@@ -6,7 +6,7 @@ import {
   Keys,
   Settings,
 } from "@helpers/app-initializer/app-initializer";
-import { CssTheme, ThemeService } from "@services/theme/theme.service";
+import { BawTheme, ThemeService } from "@services/theme/theme.service";
 import { ToastrService } from "ngx-toastr";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
@@ -47,7 +47,7 @@ export class ConfigService {
     if (this.settings.theme) {
       for (const pallette of Object.keys(this.settings.theme)) {
         this.theme.setTheme(
-          pallette as CssTheme,
+          pallette as BawTheme,
           this.settings.theme[pallette]
         );
       }

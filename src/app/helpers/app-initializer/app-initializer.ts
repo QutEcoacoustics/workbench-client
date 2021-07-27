@@ -1,6 +1,6 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { NavigableMenuItem } from "@interfaces/menusInterfaces";
-import { CssTheme } from "@services/theme/theme.service";
+import { BawTheme } from "@services/theme/theme.service";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
 
@@ -51,7 +51,7 @@ export interface Settings {
     sourceRepositoryIssues: string;
   };
   customMenu: (HeaderLink | HeaderGroup)[];
-  theme?: Record<CssTheme, string>;
+  theme?: Record<BawTheme, string>;
 }
 
 /**
