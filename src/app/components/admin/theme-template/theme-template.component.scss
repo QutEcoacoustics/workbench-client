@@ -1,0 +1,19 @@
+input[type="color"] {
+  height: 38px;
+}
+
+.theme-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.theme-box {
+  flex: 1;
+  display: inline-block;
+  height: 150px;
+
+  p {
+    font-weight: 600;
+    text-align: center;
+  }
+}

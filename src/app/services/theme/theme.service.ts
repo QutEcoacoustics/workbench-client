@@ -2,13 +2,6 @@ import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
-interface Offsets {
-  lighterOffset?: number;
-  lightestOffset?: number;
-  darkerOffset?: number;
-  darkestOffset?: number;
-}
-
 export type CssTheme =
   | "highlight"
   | "primary"
@@ -20,13 +13,13 @@ export type CssTheme =
   | "light"
   | "dark";
 
-interface RGB {
+export interface RGB {
   red: number;
   green: number;
   blue: number;
 }
 
-interface HSL {
+export interface HSL {
   hue: number;
   saturation: number;
   lightness: number;
@@ -36,19 +29,14 @@ interface HSL {
   providedIn: "root",
 })
 export class ThemeService {
-  private defaultOffsets: Offsets = {
-    lighterOffset: 0.1,
-    lightestOffset: 0.25,
-    darkerOffset: 0.1,
-    darkestOffset: 0.25,
-  };
-
   public constructor(
     @Inject(DOCUMENT) private document: Document,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean
   ) {}
 
-  public setTheme(theme: CssTheme, color: string) {
+  public setTheme(theme: CssTheme, color: string): void {
+    console.log({ theme, color });
+
     if (!this.validateHexRgb(color)) {
       console.warn(`Invalid theme color given for ${theme} detected: ${color}`);
       return;
@@ -67,8 +55,18 @@ export class ThemeService {
     );
   }
 
-  private updateTheme(theme: CssTheme, styles: string) {
-    const id = `baw-override-${theme}`;
+  public resetTheme(theme: CssTheme): void {
+    console.log("Reset Theme: ", theme);
+    const style = this.document.getElementById(this.getThemeId(theme));
+    if (style) {
+      console.log("Was found");
+
+      this.document.head.removeChild(style);
+    }
+  }
+
+  private updateTheme(theme: CssTheme, styles: string): void {
+    const id = this.getThemeId(theme);
 
     // Get style element
     let style = this.document.getElementById(id) as HTMLStyleElement;
@@ -81,7 +79,7 @@ export class ThemeService {
     style = this.document.createElement("style");
     style.id = id;
     style.innerHTML = styles;
-    this.document.getElementsByTagName("head")[0].appendChild(style);
+    this.document.head.appendChild(style);
   }
 
   private rgb2hsl(color: string): HSL {
@@ -101,11 +99,9 @@ export class ThemeService {
 
     if (maxColor !== minColor) {
       //Calculate saturation:
-      if (lightness < 0.5) {
-        saturation = deltaColor / (maxColor + minColor);
-      } else {
-        saturation = deltaColor / (2.0 - deltaColor);
-      }
+      saturation =
+        deltaColor === 0 ? 0 : deltaColor / (1 - Math.abs(2 * lightness - 1));
+
       //Calculate hue:
       if (red === maxColor) {
         hue = (green - blue) / deltaColor; // between yellow & magenta
@@ -123,6 +119,8 @@ export class ThemeService {
     if (hue < 0) {
       hue += 360;
     }
+
+    console.log({ hue, saturation, lightness });
     return { hue, saturation, lightness };
   }
 
@@ -148,6 +146,10 @@ export class ThemeService {
     }
 
     return color;
+  }
+
+  private getThemeId(theme: CssTheme): string {
+    return `baw-override-${theme}`;
   }
 
   /**

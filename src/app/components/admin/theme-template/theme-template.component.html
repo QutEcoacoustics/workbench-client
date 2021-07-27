@@ -1,0 +1,47 @@
+<form class="mb-3">
+  <div class="row">
+    <div class="col input-group">
+      <div class="input-group-prepend">
+        <label class="input-group-text">Colour Adjustments</label>
+      </div>
+      <select class="form-control" (change)="onThemeChange($event)">
+        <option
+          *ngFor="let theme of themes"
+          [selected]="theme === selected.theme"
+          [value]="theme"
+        >
+          {{ theme }}
+        </option>
+      </select>
+    </div>
+    <div class="col input-group">
+      <input
+        type="color"
+        class="form-control"
+        [value]="selected.color"
+        (change)="onColorChange($event)"
+      />
+      <div class="input-group-append">
+        <button type="button" class="btn btn-primary" (click)="resetColors()">
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="theme-row" *ngFor="let theme of themes">
+  <ng-container *ngFor="let variant of variants">
+    <div
+      #themeBox
+      class="theme-box"
+      [style.backgroundColor]="'var(--baw-' + theme + variant + ')'"
+      [style.color]="'var(--baw-' + theme + variant + '-contrast)'"
+    >
+      <p>{{ theme }}{{ variant }}</p>
+      <p>Sample Text</p>
+      <p id="color">#000</p>
+    </div>
+  </ng-container>
+  <br />
+</div>

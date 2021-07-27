@@ -1,4 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  QueryList,
+  ViewChildren,
+} from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { CssTheme, ThemeService } from "@services/theme/theme.service";
 import { List } from "immutable";
@@ -7,68 +14,18 @@ import { adminMenuItemActions } from "../dashboard/dashboard.component";
 
 @Component({
   selector: "baw-admin-theme-template",
-  template: `
-    <form class="mb-3">
-      <div class="row">
-        <div class="col">
-          <label class="me-2 mt-1">Colour Adjustments</label>
-        </div>
-        <div class="col">
-          <select class="form-control" (change)="onThemeChange($event)">
-            <option
-              *ngFor="let theme of themes"
-              [selected]="theme === selectedTheme"
-              [value]="theme"
-            >
-              {{ theme }}
-            </option>
-          </select>
-        </div>
-        <div class="col">
-          <input
-            type="color"
-            class="form-control"
-            (change)="onColorChange($event)"
-          />
-        </div>
-      </div>
-    </form>
-
-    <div class="theme-row" *ngFor="let theme of themes">
-      <ng-container *ngFor="let variant of variants">
-        <div
-          class="theme-box"
-          [style.backgroundColor]="'var(--baw-' + theme + variant + ')'"
-          [style.color]="'var(--baw-' + theme + variant + '-contrast)'"
-        >
-          <p>{{ theme }}{{ variant }}</p>
-          <p>Sample Text</p>
-        </div>
-      </ng-container>
-      <br />
-    </div>
-  `,
-  styles: [
-    `
-      input[type="color"] {
-        height: 38px;
-      }
-
-      .theme-row {
-        display: flex;
-        flex-direction: row;
-      }
-
-      .theme-box {
-        flex: 1;
-        display: inline-block;
-        height: 150px;
-        text-align: center;
-      }
-    `,
-  ],
+  templateUrl: "theme-template.component.html",
+  styleUrls: ["theme-template.component.scss"],
 })
-class AdminThemeTemplateComponent extends PageComponent implements OnInit {
+class AdminThemeTemplateComponent
+  extends PageComponent
+  implements AfterViewInit
+{
+  @ViewChildren("themeBox") private themeBoxes!: QueryList<ElementRef>;
+
+  public defaultPallette: string[] = [];
+  public currentPallette: string[] = [];
+
   public themes: CssTheme[] = [
     "highlight",
     "primary",
@@ -81,23 +38,76 @@ class AdminThemeTemplateComponent extends PageComponent implements OnInit {
     "dark",
   ];
   public variants = ["", "-lighter", "-lightest", "-darker", "-darkest"];
-  public selectedTheme: CssTheme = "highlight";
+  public selected: { theme: CssTheme; color: string } = {
+    theme: "highlight",
+    color: "#000",
+  };
 
-  public constructor(private theme: ThemeService) {
+  public constructor(
+    private theme: ThemeService,
+    private ref: ChangeDetectorRef
+  ) {
     super();
   }
 
   public onThemeChange(e: Event) {
     const theme: CssTheme = (e.target as HTMLSelectElement).value as CssTheme;
+    this.selected = { theme, color: this.getThemeColor(theme) };
     console.log("theme change", e, theme);
   }
 
-  public onColorChange(e) {
+  public onColorChange(e?) {
     const color = (e.target as HTMLInputElement).value;
     console.log("color change", color);
+    this.theme.setTheme(this.selected.theme, color);
+    this.selected.color = color;
+    this.updateColorDescriptions();
   }
 
-  public ngOnInit(): void {}
+  public ngAfterViewInit(): void {
+    this.updateColorDescriptions();
+    this.selected = {
+      theme: "highlight",
+      color: this.getThemeColor("highlight"),
+    };
+    this.ref.detectChanges();
+  }
+
+  public updateColorDescriptions(): void {
+    const zeroPad = (num: string, places: number): string =>
+      String(num).padStart(places, "0");
+    const convertToHexadecimal = (value: string): string =>
+      zeroPad(parseInt(value, 10).toString(16), 2);
+    const convertToRgbHex = (color: string): string =>
+      "#" +
+      color
+        .substring(4, color.length - 1)
+        .split(",")
+        .map((value) => convertToHexadecimal(value))
+        .join("");
+
+    this.themeBoxes.forEach((themeBox, index) => {
+      let color = getComputedStyle(themeBox.nativeElement).backgroundColor;
+      color = convertToRgbHex(color);
+      themeBox.nativeElement.querySelector("#color").innerText = color;
+      this.currentPallette[index] = color;
+    });
+  }
+
+  public resetColors(): void {
+    this.themes.forEach((theme) => this.theme.resetTheme(theme));
+    this.updateColorDescriptions();
+    this.selected = {
+      theme: "highlight",
+      color: this.getThemeColor("highlight"),
+    };
+  }
+
+  private getThemeColor(theme: CssTheme): string {
+    let index = this.themes.findIndex((value) => value === theme);
+    index *= this.variants.length;
+    return this.currentPallette[index];
+  }
 }
 
 AdminThemeTemplateComponent.linkComponentToPageInfo({
