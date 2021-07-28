@@ -2,6 +2,7 @@ import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
 import * as Color from "color";
 
+/** List of palette options for website theming */
 export enum BawPalettes {
   highlight = "highlight",
   primary = "primary",
@@ -14,6 +15,7 @@ export enum BawPalettes {
   dark = "dark",
 }
 
+/** List of variants which exist for each palette */
 enum BawVariants {
   base = "",
   lighter = "-lighter",
@@ -22,6 +24,7 @@ enum BawVariants {
   darkest = "-darkest",
 }
 
+/** List of css variables associated with a variant of a palette */
 interface BawThemeVariant {
   color: {
     base: string;
@@ -37,18 +40,24 @@ interface BawThemeVariant {
   };
 }
 
+/** List of palette options for website theming */
 export type BawPaletteType = keyof typeof BawPalettes;
+/** List of variants which exist for each palette */
 export type BawVariantType = keyof typeof BawVariants;
 type BawThemePalettes = { [Variant in BawVariantType]: BawThemeVariant };
 type BawThemeVariables = { [Palette in BawPaletteType]: BawThemePalettes };
+/** Configuration theme settings */
 export type BawTheme = { [Palette in BawPaletteType]?: string };
 
 @Injectable({
   providedIn: "root",
 })
 export class ThemeService {
+  /** Tracks config changes to theme */
   private theme: BawTheme;
+  /** Tracks all theme variables */
   private _themeVariables: BawThemeVariables;
+  /** Track modified palettes to allow us to handle resetting styles */
   private modifiedPalettes: Set<BawPalettes> = new Set();
 
   public constructor(@Inject(DOCUMENT) private document: Document) {}

@@ -85,26 +85,16 @@ class AdminThemeTemplateComponent
     this.ref.detectChanges();
   }
 
-  public onPaletteChange(e: Event) {
+  public onPaletteChange(e: Event): void {
     const palette = (e.target as HTMLSelectElement).value as BawPalettes;
     this.selected = { palette, color: this.getPaletteBaseColor(palette) };
   }
 
-  public onColorChange(e: Event) {
+  public onColorChange(e: Event): void {
     const color = (e.target as HTMLInputElement).value;
     this.theme.setPalette(this.selected.palette, color);
     this.selected.color = color;
     this.updateColorDescriptions();
-  }
-
-  public updateColorDescriptions(): void {
-    this.colorBoxes.forEach((colorBox, index) => {
-      const color = rgb(
-        getComputedStyle(colorBox.nativeElement).backgroundColor
-      ).hex();
-      colorBox.nativeElement.querySelector("#color").innerText = color;
-      this.currentPallette[index] = color;
-    });
   }
 
   public resetColors(): void {
@@ -115,7 +105,17 @@ class AdminThemeTemplateComponent
     this.resetSelection();
   }
 
-  public resetSelection(): void {
+  private updateColorDescriptions(): void {
+    this.colorBoxes.forEach((colorBox, index) => {
+      const color = rgb(
+        getComputedStyle(colorBox.nativeElement).backgroundColor
+      ).hex();
+      colorBox.nativeElement.querySelector("#color").innerText = color;
+      this.currentPallette[index] = color;
+    });
+  }
+
+  private resetSelection(): void {
     const palette = BawPalettes.highlight;
     const color = this.getPaletteBaseColor(palette);
     this.selected = { palette, color };
