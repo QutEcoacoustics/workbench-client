@@ -6,7 +6,7 @@ import {
   Keys,
   Settings,
 } from "@helpers/app-initializer/app-initializer";
-import { BawTheme, ThemeService } from "@services/theme/theme.service";
+import { ThemeService } from "@services/theme/theme.service";
 import { ToastrService } from "ngx-toastr";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
@@ -42,16 +42,7 @@ export class ConfigService {
     }
 
     this._config = new Proxy(environment, {});
-
-    // Set website theme
-    if (this.settings.theme) {
-      for (const pallette of Object.keys(this.settings.theme)) {
-        this.theme.setTheme(
-          pallette as BawTheme,
-          this.settings.theme[pallette]
-        );
-      }
-    }
+    this.theme.setTheme(this.settings.theme ?? {});
   }
 
   /** Get config data */

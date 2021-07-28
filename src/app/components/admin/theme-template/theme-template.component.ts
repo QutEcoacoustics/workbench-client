@@ -3,16 +3,18 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  OnInit,
   QueryList,
   ViewChildren,
 } from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
 import {
-  bawThemes,
-  BawTheme,
+  BawPalettes,
+  BawPaletteType,
+  BawVariantType,
   ThemeService,
-  bawThemeVariants,
 } from "@services/theme/theme.service";
+import { rgb } from "color";
 import { List } from "immutable";
 import { adminCategory, adminThemeMenuItem } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
@@ -24,17 +26,26 @@ import { adminMenuItemActions } from "../dashboard/dashboard.component";
 })
 class AdminThemeTemplateComponent
   extends PageComponent
-  implements AfterViewInit
+  implements AfterViewInit, OnInit
 {
-  @ViewChildren("themeBox") private themeBoxes!: QueryList<ElementRef>;
+  @ViewChildren("colorBox") private colorBoxes!: QueryList<ElementRef>;
 
   public currentPallette: string[] = [];
-  public themes = bawThemes;
-  public variants = bawThemeVariants;
-  public selected: { theme: BawTheme; color: string } = {
-    theme: "highlight",
+  public selected: { palette: BawPalettes; color: string } = {
+    palette: BawPalettes.highlight,
     color: "#000",
   };
+
+  public palettes: BawPaletteType[];
+  public colors: {
+    palette: BawPaletteType;
+    variant: BawVariantType;
+    color: string;
+    contrast: string;
+  }[] = [];
+  public buttons: string[] = [];
+  public texts: string[] = [];
+  public spinners: string[] = [];
 
   public constructor(
     private theme: ThemeService,
@@ -43,62 +54,77 @@ class AdminThemeTemplateComponent
     super();
   }
 
-  public onThemeChange(e: Event) {
-    const theme: BawTheme = (e.target as HTMLSelectElement).value as BawTheme;
-    this.selected = { theme, color: this.getThemeColor(theme) };
-    console.log("theme change", e, theme);
-  }
+  public ngOnInit(): void {
+    const variables = this.theme.themeVariables;
 
-  public onColorChange(e: Event) {
-    const color = (e.target as HTMLInputElement).value;
-    this.theme.setTheme(this.selected.theme, color);
-    this.selected.color = color;
-    this.updateColorDescriptions();
+    // Create list of theme palettes
+    this.palettes = Object.keys(BawPalettes) as BawPaletteType[];
+    for (const palette of this.palettes) {
+      this.texts.push(`text-${palette}`);
+      this.spinners.push(`text-${palette}`);
+      this.buttons.push(`btn-${palette}`, `btn-outline-${palette}`);
+
+      const variants = Object.keys(variables[palette]) as BawVariantType[];
+      for (const variant of variants) {
+        const { color, contrast } = variables[palette][variant];
+
+        this.colors.push({
+          palette,
+          variant,
+          color: color.base,
+          contrast: contrast.base,
+        });
+      }
+    }
   }
 
   public ngAfterViewInit(): void {
     this.updateColorDescriptions();
-    this.selected = {
-      theme: "highlight",
-      color: this.getThemeColor("highlight"),
-    };
+    this.resetSelection();
     // Prevents angular from complaining about variables changing
     this.ref.detectChanges();
   }
 
-  public updateColorDescriptions(): void {
-    const zeroPad = (num: string, places: number): string =>
-      String(num).padStart(places, "0");
-    const convertToHexadecimal = (value: string): string =>
-      zeroPad(parseInt(value, 10).toString(16), 2);
-    const convertToRgbHex = (color: string): string =>
-      "#" +
-      color
-        .substring(4, color.length - 1)
-        .split(",")
-        .map((value) => convertToHexadecimal(value))
-        .join("");
+  public onPaletteChange(e: Event) {
+    const palette = (e.target as HTMLSelectElement).value as BawPalettes;
+    this.selected = { palette, color: this.getPaletteBaseColor(palette) };
+  }
 
-    this.themeBoxes.forEach((themeBox, index) => {
-      let color = getComputedStyle(themeBox.nativeElement).backgroundColor;
-      color = convertToRgbHex(color);
-      themeBox.nativeElement.querySelector("#color").innerText = color;
+  public onColorChange(e: Event) {
+    const color = (e.target as HTMLInputElement).value;
+    this.theme.setPalette(this.selected.palette, color);
+    this.selected.color = color;
+    this.updateColorDescriptions();
+  }
+
+  public updateColorDescriptions(): void {
+    this.colorBoxes.forEach((colorBox, index) => {
+      const color = rgb(
+        getComputedStyle(colorBox.nativeElement).backgroundColor
+      ).hex();
+      colorBox.nativeElement.querySelector("#color").innerText = color;
       this.currentPallette[index] = color;
     });
   }
 
   public resetColors(): void {
-    this.themes.forEach((theme) => this.theme.resetTheme(theme));
+    for (const paletteKey in BawPalettes) {
+      this.theme.resetPalette(BawPalettes[paletteKey]);
+    }
     this.updateColorDescriptions();
-    this.selected = {
-      theme: "highlight",
-      color: this.getThemeColor("highlight"),
-    };
+    this.resetSelection();
   }
 
-  private getThemeColor(theme: BawTheme): string {
-    let index = this.themes.findIndex((value) => value === theme);
-    index *= this.variants.length;
+  public resetSelection(): void {
+    const palette = BawPalettes.highlight;
+    const color = this.getPaletteBaseColor(palette);
+    this.selected = { palette, color };
+  }
+
+  private getPaletteBaseColor(theme: BawPalettes): string {
+    const index = this.colors.findIndex(
+      (value) => value.palette === theme && value.variant === "base"
+    );
     return this.currentPallette[index];
   }
 }

@@ -51,7 +51,7 @@ export interface Settings {
     sourceRepositoryIssues: string;
   };
   customMenu: (HeaderLink | HeaderGroup)[];
-  theme?: Record<BawTheme, string>;
+  theme?: BawTheme;
 }
 
 /**

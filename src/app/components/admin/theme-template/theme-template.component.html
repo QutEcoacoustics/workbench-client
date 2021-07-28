@@ -2,15 +2,15 @@
   <div class="row">
     <div class="col input-group">
       <div class="input-group-prepend">
-        <label class="input-group-text">Theme</label>
+        <label class="input-group-text">Palette</label>
       </div>
-      <select class="form-control" (change)="onThemeChange($event)">
+      <select class="form-control" (change)="onPaletteChange($event)">
         <option
-          *ngFor="let theme of themes"
-          [selected]="theme === selected.theme"
-          [value]="theme"
+          *ngFor="let palette of palettes"
+          [selected]="palette === selected.palette"
+          [value]="palette"
         >
-          {{ theme }}
+          {{ palette }}
         </option>
       </select>
     </div>
@@ -32,50 +32,40 @@
 
 <h2>Colours</h2>
 
-<div class="theme-row" *ngFor="let theme of themes">
-  <ng-container *ngFor="let variant of variants">
-    <div
-      #themeBox
-      class="theme-box"
-      [style.backgroundColor]="'var(--baw-' + theme + variant + ')'"
-      [style.color]="'var(--baw-' + theme + variant + '-contrast)'"
-    >
-      <p>{{ theme }}{{ variant }}</p>
-      <p>Sample Text</p>
-      <p id="color">#000</p>
-    </div>
-  </ng-container>
-  <br />
+<div class="palette-row">
+  <div
+    #colorBox
+    *ngFor="let color of colors"
+    class="color-box"
+    [style.backgroundColor]="'var(' + color.color + ')'"
+    [style.color]="'var(' + color.contrast + ')'"
+  >
+    <p class="mt-3">
+      {{ color.palette | titlecase }}:{{ color.variant | titlecase }}
+    </p>
+    <p>Sample Text</p>
+    <p id="color">#000</p>
+  </div>
 </div>
 
 <h2>Buttons</h2>
 
-<ng-container *ngFor="let theme of themes">
-  <button class="btn me-2 mb-2" [ngClass]="'btn-' + theme">
-    {{ theme }}
-  </button>
-  <button class="btn me-2 mb-2" [ngClass]="'btn-outline-' + theme">
-    {{ theme }}
-  </button>
-</ng-container>
+<button *ngFor="let button of buttons" class="btn me-2 mb-2" [ngClass]="button">
+  {{ button }}
+</button>
 
 <h2>Text</h2>
 
-<p
-  *ngFor="let theme of themes"
-  [ngClass]="'text-' + theme"
-  [style.backgroundColor]="'var(--baw-' + theme + '-contrast)'"
->
-  {{ theme }}
+<p *ngFor="let text of texts" [ngClass]="text">
+  {{ text }}
 </p>
 
 <h2>Spinners</h2>
 
 <div
-  *ngFor="let theme of themes"
-  class="spinner-border"
-  [ngClass]="'text-' + theme"
-  role="status"
+  *ngFor="let spinner of spinners"
+  class="spinner-border me-2 mb-2"
+  [ngClass]="spinner"
 >
   <span class="visually-hidden">Loading...</span>
 </div>
