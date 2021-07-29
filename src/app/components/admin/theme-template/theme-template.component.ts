@@ -9,7 +9,7 @@ import {
 } from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
 import {
-  BawPalettes,
+  BawThemeColors,
   BawPaletteType,
   BawVariantType,
   ThemeService,
@@ -28,11 +28,13 @@ class AdminThemeTemplateComponent
   extends PageComponent
   implements AfterViewInit, OnInit
 {
-  @ViewChildren("colorBox") private colorBoxes!: QueryList<ElementRef>;
+  @ViewChildren("colorBox") private colorBoxes!: QueryList<
+    ElementRef<HTMLElement>
+  >;
 
   public currentPallette: string[] = [];
-  public selected: { palette: BawPalettes; color: string } = {
-    palette: BawPalettes.highlight,
+  public selected: { palette: BawThemeColors; color: string } = {
+    palette: BawThemeColors.highlight,
     color: "#000",
   };
 
@@ -42,10 +44,8 @@ class AdminThemeTemplateComponent
     variant: BawVariantType;
     color: string;
     contrast: string;
+    colorLabel?: string;
   }[] = [];
-  public buttons: string[] = [];
-  public texts: string[] = [];
-  public spinners: string[] = [];
 
   public constructor(
     private theme: ThemeService,
@@ -58,22 +58,12 @@ class AdminThemeTemplateComponent
     const variables = this.theme.themeVariables;
 
     // Create list of theme palettes
-    this.palettes = Object.keys(BawPalettes) as BawPaletteType[];
+    this.palettes = Object.keys(BawThemeColors) as BawPaletteType[];
     for (const palette of this.palettes) {
-      this.texts.push(`text-${palette}`);
-      this.spinners.push(`text-${palette}`);
-      this.buttons.push(`btn-${palette}`, `btn-outline-${palette}`);
-
       const variants = Object.keys(variables[palette]) as BawVariantType[];
       for (const variant of variants) {
         const { color, contrast } = variables[palette][variant];
-
-        this.colors.push({
-          palette,
-          variant,
-          color: color.base,
-          contrast: contrast.base,
-        });
+        this.colors.push({ palette, variant, color, contrast });
       }
     }
   }
@@ -86,7 +76,7 @@ class AdminThemeTemplateComponent
   }
 
   public onPaletteChange(e: Event): void {
-    const palette = (e.target as HTMLSelectElement).value as BawPalettes;
+    const palette = (e.target as HTMLSelectElement).value as BawThemeColors;
     this.selected = { palette, color: this.getPaletteBaseColor(palette) };
   }
 
@@ -98,8 +88,8 @@ class AdminThemeTemplateComponent
   }
 
   public resetColors(): void {
-    for (const paletteKey in BawPalettes) {
-      this.theme.resetPalette(BawPalettes[paletteKey]);
+    for (const paletteKey in BawThemeColors) {
+      this.theme.resetPalette(BawThemeColors[paletteKey]);
     }
     this.updateColorDescriptions();
     this.resetSelection();
@@ -107,21 +97,20 @@ class AdminThemeTemplateComponent
 
   private updateColorDescriptions(): void {
     this.colorBoxes.forEach((colorBox, index) => {
-      const color = rgb(
-        getComputedStyle(colorBox.nativeElement).backgroundColor
-      ).hex();
-      colorBox.nativeElement.querySelector("#color").innerText = color;
+      const boxStyles = getComputedStyle(colorBox.nativeElement);
+      const color = rgb(boxStyles.backgroundColor).hex();
+      this.colors[index].colorLabel = color;
       this.currentPallette[index] = color;
     });
   }
 
   private resetSelection(): void {
-    const palette = BawPalettes.highlight;
+    const palette = BawThemeColors.highlight;
     const color = this.getPaletteBaseColor(palette);
     this.selected = { palette, color };
   }
 
-  private getPaletteBaseColor(theme: BawPalettes): string {
+  private getPaletteBaseColor(theme: BawThemeColors): string {
     const index = this.colors.findIndex(
       (value) => value.palette === theme && value.variant === "base"
     );

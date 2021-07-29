@@ -44,28 +44,33 @@
       {{ color.palette | titlecase }}:{{ color.variant | titlecase }}
     </p>
     <p>Sample Text</p>
-    <p id="color">#000</p>
+    <p class="color">{{ color.colorLabel }}</p>
   </div>
 </div>
 
 <h2>Buttons</h2>
 
-<button *ngFor="let button of buttons" class="btn me-2 mb-2" [ngClass]="button">
-  {{ button }}
-</button>
+<ng-container *ngFor="let palette of palettes">
+  <button class="btn me-2 mb-2" [ngClass]="'btn-' + palette">
+    {{ "btn-" + palette }}
+  </button>
+  <button class="btn me-2 mb-2" [ngClass]="'btn-outline-' + palette">
+    {{ "btn-outline-" + palette }}
+  </button>
+</ng-container>
 
 <h2>Text</h2>
 
-<p *ngFor="let text of texts" [ngClass]="text">
-  {{ text }}
+<p *ngFor="let palette of palettes" [ngClass]="'text-' + palette">
+  {{ "text-" + palette }}
 </p>
 
 <h2>Spinners</h2>
 
 <div
-  *ngFor="let spinner of spinners"
+  *ngFor="let palette of palettes"
   class="spinner-border me-2 mb-2"
-  [ngClass]="spinner"
+  [ngClass]="'text-' + palette"
 >
   <span class="visually-hidden">Loading...</span>
 </div>
