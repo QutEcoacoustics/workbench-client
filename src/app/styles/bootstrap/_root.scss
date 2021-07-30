@@ -8,7 +8,7 @@
 
   // Create css variable alternatives for bootstrap colors
   @include create-variable("primary", $primary);
-  @include create-variable("secondary", $secondary);
+  @include create-variable("secondary", #2c6fbb);
   @include create-variable("success", $success);
   @include create-variable("info", $info);
   @include create-variable("warning", $warning);

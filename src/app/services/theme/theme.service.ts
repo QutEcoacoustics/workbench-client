@@ -1,6 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
-import * as Color from "color";
+import { hsl, HSLColor } from "d3-color";
 
 const themeColors = [
   "highlight",
@@ -53,12 +53,18 @@ export class ThemeService {
    * @param value New base value for colour (accepts most colour standards)
    */
   public setColor(color: ThemeColor, value: string): void {
-    try {
-      this.setCssColorProperty(color, Color.default(value));
-    } catch (e) {
+    const hslValue = hsl(value);
+    if (
+      !hslValue ||
+      isNaN(hslValue.h) ||
+      isNaN(hslValue.s) ||
+      isNaN(hslValue.l)
+    ) {
+      console.log(hslValue);
       console.warn(`Invalid theme color given for ${color} detected: ${value}`);
       return;
     }
+    this.setCssColorProperty(color, hslValue);
   }
 
   /**
@@ -107,16 +113,17 @@ export class ThemeService {
    * @param color Color to modify
    * @param value Base color value
    */
-  private setCssColorProperty(color: ThemeColor, value?: Color): void {
+  private setCssColorProperty(color: ThemeColor, value?: HSLColor): void {
     const prefix = `--baw-${color}`;
     const hue = `${prefix}-hue`;
     const saturation = `${prefix}-saturation`;
     const lightness = `${prefix}-lightness`;
+    const toPercentage = (fraction: number) => fraction * 100;
 
     if (value) {
-      this.style.setProperty(hue, `${value.hue()}deg`);
-      this.style.setProperty(saturation, `${value.saturationl()}%`);
-      this.style.setProperty(lightness, `${value.lightness()}%`);
+      this.style.setProperty(hue, `${value.h}deg`);
+      this.style.setProperty(saturation, `${toPercentage(value.s)}%`);
+      this.style.setProperty(lightness, `${toPercentage(value.l)}%`);
     } else {
       this.style.removeProperty(hue);
       this.style.removeProperty(saturation);

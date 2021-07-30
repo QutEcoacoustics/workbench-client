@@ -13,8 +13,8 @@ import {
   ThemeService,
   ThemeVariant,
 } from "@services/theme/theme.service";
-import { rgb } from "color";
 import { List } from "immutable";
+import { rgb } from "d3-color";
 import { adminCategory, adminThemeMenuItem } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
 
@@ -76,7 +76,7 @@ class AdminThemeTemplateComponent
     const styles = getComputedStyle(
       this.colorBoxes.get(boxIndex).nativeElement
     );
-    return rgb(styles.backgroundColor).hex();
+    return rgb(styles.backgroundColor).formatHex();
   }
 
   public resetColors(): void {
