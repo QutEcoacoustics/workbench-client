@@ -2,97 +2,63 @@ import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
 import * as Color from "color";
 
-/** List of palette options for website theming */
-export enum BawThemeColors {
-  highlight = "highlight",
-  primary = "primary",
-  secondary = "secondary",
-  success = "success",
-  info = "info",
-  warning = "warning",
-  danger = "danger",
-  light = "light",
-  dark = "dark",
-}
+const themeColors = [
+  "highlight",
+  "primary",
+  "secondary",
+  "success",
+  "info",
+  "warning",
+  "danger",
+  "light",
+  "dark",
+] as const;
+export type ThemeColor = typeof themeColors[number];
 
-/** List of variants which exist for each palette */
-enum BawColorVariants {
-  base = "",
-  lighter = "-lighter",
-  lightest = "-lightest",
-  darker = "-darker",
-  darkest = "-darkest",
-}
+const themeVariants = [
+  "",
+  "-lighter",
+  "-lightest",
+  "-darker",
+  "-darkest",
+] as const;
+export type ThemeVariant = typeof themeVariants[number];
 
-/** List of css variables associated with a variant of a palette */
-interface BawThemeVariant {
-  color: string;
-  contrast: string;
-}
-
-/** List of palette options for website theming */
-export type BawPaletteType = keyof typeof BawThemeColors;
-/** List of variants which exist for each palette */
-export type BawVariantType = keyof typeof BawColorVariants;
-type BawThemePalettes = { [Variant in BawVariantType]: BawThemeVariant };
-type BawThemeVariables = { [Palette in BawPaletteType]: BawThemePalettes };
 /** Configuration theme settings */
-export type BawTheme = { [Palette in BawPaletteType]?: string };
+export type BawTheme = { [color in ThemeColor]?: string };
 
 @Injectable({
   providedIn: "root",
 })
 export class ThemeService {
-  /** Tracks all theme variables */
-  public themeVariables: BawThemeVariables;
+  /** List of colour options in theme */
+  public themeColors = themeColors;
+  /** List of variants for each colour option in theme */
+  public themeVariants = themeVariants;
+
   /** Tracks config changes to theme */
   private theme: BawTheme;
-  /** Track modified palettes to allow us to handle resetting styles */
-  private modifiedPalettes: Set<BawThemeColors> = new Set();
   /** Stored styles of the website */
   private style: CSSStyleDeclaration;
 
   public constructor(@Inject(DOCUMENT) private document: Document) {
     // Read the root style of the website
     this.style = this.document.documentElement.style;
-
-    // Generate list of theme variables
-    const theme: Partial<BawThemeVariables> = {};
-    // Iterate through palettes
-    for (const paletteKey in BawThemeColors) {
-      const palette: Partial<BawThemePalettes> = {};
-      // Iterate through variants
-      for (const variantKey in BawColorVariants) {
-        const color = `--baw-${BawThemeColors[paletteKey]}${BawColorVariants[variantKey]}`;
-        palette[variantKey] = { color, contrast: `${color}-contrast` };
-      }
-      // Save palette to theme
-      theme[paletteKey] = palette as BawThemePalettes;
-    }
-    // Save theme for later use
-    this.themeVariables = theme as BawThemeVariables;
   }
 
   /**
-   * Set the base colour for a palette
+   * Set the base colour for a colour
    *
-   * @param palette Palette to modify
-   * @param colorString New base colour for palette (accepts most standards)
+   * @param color Colour to modify
+   * @param value New base value for colour (accepts most colour standards)
    */
-  public setPalette(palette: BawThemeColors, colorString: string): void {
-    let color: Color;
-
+  public setColor(color: ThemeColor, value: string): void {
     try {
-      color = Color.default(colorString);
+      this.setCssColorProperty(color, Color.default(value));
     } catch (e) {
-      console.warn(
-        `Invalid theme color given for ${palette} detected: ${colorString}`
-      );
+      console.warn(`Invalid theme color given for ${color} detected: ${value}`);
       return;
     }
-
-    this.setCssColorProperty(palette, color);
-    this.modifiedPalettes.add(palette);
   }
 
   /**
@@ -106,23 +72,17 @@ export class ThemeService {
   }
 
   /**
-   * Reset any modifications to a palette
+   * Reset any modifications to a colour
    *
-   * @param palette Palette to reset
-   * @param hardReset Reset instance theme palette settings as well
+   * @param color Color to reset
+   * @param hardReset Reset instance theme colour settings as well
    */
-  public resetPalette(palette: BawThemeColors, hardReset?: boolean): void {
-    // If this palette was never modified, don't do anything
-    if (!this.modifiedPalettes.has(palette)) {
-      return;
-    }
-
-    this.setCssColorProperty(palette, null);
-    this.modifiedPalettes.delete(palette);
+  public resetColor(color: ThemeColor, hardReset?: boolean): void {
+    this.setCssColorProperty(color, null);
 
     if (!hardReset) {
-      // Re-add instance changes to palette
-      this.customizeInstance(palette);
+      // Re-add instance changes to color
+      this.customizeInstance(color);
     }
   }
 
@@ -132,11 +92,8 @@ export class ThemeService {
    * @param hardReset Reset instance theme as well
    */
   public resetTheme(hardReset?: boolean): void {
-    // Reset all palettes
-    this.modifiedPalettes.forEach((palette) =>
-      this.resetPalette(palette, true)
-    );
-    this.modifiedPalettes = new Set();
+    // Reset all colours
+    this.themeColors.forEach((color) => this.setCssColorProperty(color, null));
 
     if (!hardReset) {
       // Re-add instance changes to theme
@@ -144,17 +101,25 @@ export class ThemeService {
     }
   }
 
-  private setCssColorProperty(palette: string, color?: Color): void {
-    const prefix = `--baw-${palette}`;
+  /**
+   * Update the css colour property for the theme colour provided
+   *
+   * @param color Color to modify
+   * @param value Base color value
+   */
+  private setCssColorProperty(color: ThemeColor, value?: Color): void {
+    const prefix = `--baw-${color}`;
     const hue = `${prefix}-hue`;
     const saturation = `${prefix}-saturation`;
     const lightness = `${prefix}-lightness`;
 
-    if (color) {
-      this.style.setProperty(hue, `${color.hue()}deg`);
-      this.style.setProperty(saturation, `${color.saturationl()}%`);
-      this.style.setProperty(lightness, `${color.lightness()}%`);
+    if (value) {
+      console.log("Set " + color);
+      this.style.setProperty(hue, `${value.hue()}deg`);
+      this.style.setProperty(saturation, `${value.saturationl()}%`);
+      this.style.setProperty(lightness, `${value.lightness()}%`);
     } else {
+      console.log("Reset " + color);
       this.style.removeProperty(hue);
       this.style.removeProperty(saturation);
       this.style.removeProperty(lightness);
@@ -164,16 +129,16 @@ export class ThemeService {
   /**
    * Apply the global theme of the website
    *
-   * @param palette Only apply the global theme to this palette
+   * @param color Only apply the global theme to this palette
    */
-  private customizeInstance(palette?: BawThemeColors): void {
-    if (palette) {
-      this.setPalette(palette, this.theme[palette]);
+  private customizeInstance(color?: ThemeColor): void {
+    if (color) {
+      this.setColor(color, this.theme[color]);
       return;
     }
 
-    for (const themePalette of Object.keys(this.theme)) {
-      this.setPalette(themePalette as BawThemeColors, this.theme[themePalette]);
+    for (const themeColor of Object.keys(this.theme)) {
+      this.setColor(themeColor as ThemeColor, this.theme[themeColor]);
     }
   }
 }

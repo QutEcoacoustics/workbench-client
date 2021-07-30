@@ -9,10 +9,9 @@ import {
 } from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
 import {
-  BawThemeColors,
-  BawPaletteType,
-  BawVariantType,
+  ThemeColor,
   ThemeService,
+  ThemeVariant,
 } from "@services/theme/theme.service";
 import { rgb } from "color";
 import { List } from "immutable";
@@ -32,20 +31,12 @@ class AdminThemeTemplateComponent
     ElementRef<HTMLElement>
   >;
 
-  public currentPallette: string[] = [];
-  public selected: { palette: BawThemeColors; color: string } = {
-    palette: BawThemeColors.highlight,
-    color: "#000",
-  };
-
-  public palettes: BawPaletteType[];
-  public colors: {
-    palette: BawPaletteType;
-    variant: BawVariantType;
-    color: string;
-    contrast: string;
-    colorLabel?: string;
-  }[] = [];
+  public currentColor: string[] = [];
+  public selected: { index: number; value: string };
+  public themeColors: readonly ThemeColor[];
+  public themeVariants: readonly ThemeVariant[];
+  public colorValues: string[];
+  public darkBackground = false;
 
   public constructor(
     private theme: ThemeService,
@@ -55,66 +46,48 @@ class AdminThemeTemplateComponent
   }
 
   public ngOnInit(): void {
-    const variables = this.theme.themeVariables;
-
-    // Create list of theme palettes
-    this.palettes = Object.keys(BawThemeColors) as BawPaletteType[];
-    for (const palette of this.palettes) {
-      const variants = Object.keys(variables[palette]) as BawVariantType[];
-      for (const variant of variants) {
-        const { color, contrast } = variables[palette][variant];
-        this.colors.push({ palette, variant, color, contrast });
-      }
-    }
+    this.themeColors = this.theme.themeColors;
+    this.themeVariants = this.theme.themeVariants;
+    this.selected = { index: 0, value: this.getBoxColor(0, 0) };
   }
 
   public ngAfterViewInit(): void {
-    this.updateColorDescriptions();
     this.resetSelection();
     // Prevents angular from complaining about variables changing
     this.ref.detectChanges();
   }
 
-  public onPaletteChange(e: Event): void {
-    const palette = (e.target as HTMLSelectElement).value as BawThemeColors;
-    this.selected = { palette, color: this.getPaletteBaseColor(palette) };
+  public onColorChange(e: Event): void {
+    const index = parseInt((e.target as HTMLSelectElement).value, 10);
+    const value = this.getBoxColor(index, 0);
+    this.selected = { index, value };
   }
 
-  public onColorChange(e: Event): void {
+  public onColorValueChange(e: Event): void {
     const color = (e.target as HTMLInputElement).value;
-    this.theme.setPalette(this.selected.palette, color);
-    this.selected.color = color;
-    this.updateColorDescriptions();
+    this.theme.setColor(this.themeColors[this.selected.index], color);
+    this.selected.value = color;
+  }
+
+  public getBoxColor(colorIndex: number, variantIndex: number) {
+    if (!this.colorBoxes) {
+      return "#000";
+    }
+
+    const boxIndex = colorIndex * this.themeVariants.length + variantIndex;
+    const styles = getComputedStyle(
+      this.colorBoxes.get(boxIndex).nativeElement
+    );
+    return rgb(styles.backgroundColor).hex();
   }
 
   public resetColors(): void {
-    for (const paletteKey in BawThemeColors) {
-      this.theme.resetPalette(BawThemeColors[paletteKey]);
-    }
-    this.updateColorDescriptions();
+    this.theme.resetTheme();
     this.resetSelection();
   }
 
-  private updateColorDescriptions(): void {
-    this.colorBoxes.forEach((colorBox, index) => {
-      const boxStyles = getComputedStyle(colorBox.nativeElement);
-      const color = rgb(boxStyles.backgroundColor).hex();
-      this.colors[index].colorLabel = color;
-      this.currentPallette[index] = color;
-    });
-  }
-
   private resetSelection(): void {
-    const palette = BawThemeColors.highlight;
-    const color = this.getPaletteBaseColor(palette);
-    this.selected = { palette, color };
-  }
-
-  private getPaletteBaseColor(theme: BawThemeColors): string {
-    const index = this.colors.findIndex(
-      (value) => value.palette === theme && value.variant === "base"
-    );
-    return this.currentPallette[index];
+    this.selected = { index: 0, value: this.getBoxColor(0, 0) };
   }
 }
 

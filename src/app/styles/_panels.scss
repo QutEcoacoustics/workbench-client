@@ -1,0 +1,22 @@
+$theme-colors: (
+  "highlight",
+  "primary",
+  "secondary",
+  "success",
+  "info",
+  "warning",
+  "danger",
+  "light",
+  "dark"
+);
+
+$theme-color-variants: ("", "-lighter", "-lightest", "-darker", "-darkest");
+
+@each $color in $theme-colors {
+  @each $variant in $theme-color-variants {
+    .panel-#{$color}#{$variant} {
+      color: var(--baw-#{$color}#{$variant}-contrast);
+      background-color: var(--baw-#{$color}#{$variant});
+    }
+  }
+}
