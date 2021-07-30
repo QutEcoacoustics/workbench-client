@@ -8,7 +8,7 @@
       <select class="form-control" (change)="onColorChange($event)">
         <option
           *ngFor="let color of themeColors; let i = index"
-          [selected]="i === selected.index"
+          [selected]="i === selectedColorIndex"
           [value]="i"
         >
           {{ color | titlecase }}
@@ -23,7 +23,7 @@
       <input
         type="color"
         class="form-control"
-        [value]="selected.value"
+        [value]="getBoxColor(selectedColorIndex)"
         (change)="onColorValueChange($event)"
       />
     </div>
@@ -56,7 +56,7 @@
 
 <h2>Colours</h2>
 
-<div class="palette-row">
+<div class="color-row">
   <ng-container *ngFor="let color of themeColors; let colorIndex = index">
     <ng-container
       *ngFor="let variant of themeVariants; let variantIndex = index"

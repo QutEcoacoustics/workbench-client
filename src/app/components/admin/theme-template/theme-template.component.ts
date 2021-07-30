@@ -25,18 +25,17 @@ import { adminMenuItemActions } from "../dashboard/dashboard.component";
 })
 class AdminThemeTemplateComponent
   extends PageComponent
-  implements AfterViewInit, OnInit
+  implements OnInit, AfterViewInit
 {
   @ViewChildren("colorBox") private colorBoxes!: QueryList<
     ElementRef<HTMLElement>
   >;
 
-  public currentColor: string[] = [];
-  public selected: { index: number; value: string };
-  public themeColors: readonly ThemeColor[];
-  public themeVariants: readonly ThemeVariant[];
   public colorValues: string[];
   public darkBackground = false;
+  public selectedColorIndex: number;
+  public themeColors: readonly ThemeColor[];
+  public themeVariants: readonly ThemeVariant[];
 
   public constructor(
     private theme: ThemeService,
@@ -48,28 +47,27 @@ class AdminThemeTemplateComponent
   public ngOnInit(): void {
     this.themeColors = this.theme.themeColors;
     this.themeVariants = this.theme.themeVariants;
-    this.selected = { index: 0, value: this.getBoxColor(0, 0) };
+    this.resetSelection();
   }
 
   public ngAfterViewInit(): void {
-    this.resetSelection();
-    // Prevents angular from complaining about variables changing
+    // Output of getBoxColor changes afterViewInit. This ref update causes
+    // angular to properly detect the change
     this.ref.detectChanges();
   }
 
   public onColorChange(e: Event): void {
-    const index = parseInt((e.target as HTMLSelectElement).value, 10);
-    const value = this.getBoxColor(index, 0);
-    this.selected = { index, value };
+    const inputColorIndex = (e.target as HTMLSelectElement).value;
+    this.selectedColorIndex = parseInt(inputColorIndex, 10);
   }
 
   public onColorValueChange(e: Event): void {
-    const color = (e.target as HTMLInputElement).value;
-    this.theme.setColor(this.themeColors[this.selected.index], color);
-    this.selected.value = color;
+    const color = this.themeColors[this.selectedColorIndex];
+    const value = (e.target as HTMLInputElement).value;
+    this.theme.setColor(color, value);
   }
 
-  public getBoxColor(colorIndex: number, variantIndex: number) {
+  public getBoxColor(colorIndex: number, variantIndex: number = 0) {
     if (!this.colorBoxes) {
       return "#000";
     }
@@ -87,7 +85,7 @@ class AdminThemeTemplateComponent
   }
 
   private resetSelection(): void {
-    this.selected = { index: 0, value: this.getBoxColor(0, 0) };
+    this.selectedColorIndex = 0;
   }
 }
 

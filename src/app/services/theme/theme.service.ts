@@ -114,12 +114,10 @@ export class ThemeService {
     const lightness = `${prefix}-lightness`;
 
     if (value) {
-      console.log("Set " + color);
       this.style.setProperty(hue, `${value.hue()}deg`);
       this.style.setProperty(saturation, `${value.saturationl()}%`);
       this.style.setProperty(lightness, `${value.lightness()}%`);
     } else {
-      console.log("Reset " + color);
       this.style.removeProperty(hue);
       this.style.removeProperty(saturation);
       this.style.removeProperty(lightness);
@@ -129,7 +127,7 @@ export class ThemeService {
   /**
    * Apply the global theme of the website
    *
-   * @param color Only apply the global theme to this palette
+   * @param color Only apply the global theme to this colour
    */
   private customizeInstance(color?: ThemeColor): void {
     if (color) {
