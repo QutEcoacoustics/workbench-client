@@ -31,8 +31,6 @@ class AdminThemeTemplateComponent
     ElementRef<HTMLElement>
   >;
 
-  public colorValues: string[];
-  public darkBackground = false;
   public selectedColorIndex: number;
   public themeColors: readonly ThemeColor[];
   public themeVariants: readonly ThemeVariant[];

@@ -7,8 +7,8 @@
   --baw-contrast-threshold: 49.8%;
 
   // Create css variable alternatives for bootstrap colors
-  @include create-variable("primary", $primary);
-  @include create-variable("secondary", #2c6fbb);
+  @include create-variable("primary", #2c6fbb);
+  @include create-variable("secondary", $secondary);
   @include create-variable("success", $success);
   @include create-variable("info", $info);
   @include create-variable("warning", $warning);
