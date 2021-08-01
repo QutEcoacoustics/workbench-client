@@ -48,6 +48,8 @@ export interface IRegion extends HasAllUsers, HasDescription {
  * A region model.
  */
 export class Region extends AbstractModel<IRegion> implements IRegion {
+  public static defaultProjectId = 1;
+
   public readonly kind = "Region";
   public readonly id?: Id;
   @bawPersistAttr()

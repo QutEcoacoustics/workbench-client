@@ -9,7 +9,7 @@ import {
   deleteRegionMenuItem,
   editRegionMenuItem,
   regionMenuItem,
-  projectRegionsCategory,
+  regionsCategory,
 } from "@components/regions/regions.menus";
 import { newPointMenuItem } from "@components/sites/points.menus";
 import { PageInfo } from "@helpers/page/pageInfo";
@@ -126,7 +126,7 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
 }
 
 DetailsComponent.linkComponentToPageInfo({
-  category: projectRegionsCategory,
+  category: regionsCategory,
   menus: {
     actions: List([projectMenuItem, ...regionMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

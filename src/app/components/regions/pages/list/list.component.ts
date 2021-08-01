@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import {
   newRegionMenuItem,
-  projectRegionsCategory,
+  regionsCategory,
   regionsMenuItem,
 } from "@components/regions/regions.menus";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
@@ -75,7 +75,7 @@ class ListComponent extends PaginationTemplate<Region> implements OnInit {
 }
 
 ListComponent.linkComponentToPageInfo({
-  category: projectRegionsCategory,
+  category: regionsCategory,
   menus: { actions: List(regionsMenuItemActions) },
 }).andMenuRoute(regionsMenuItem);
 

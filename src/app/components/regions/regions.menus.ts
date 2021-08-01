@@ -15,11 +15,6 @@ export const regionsCategory: Category = {
   route: regionsRoute,
 };
 
-export const projectRegionsCategory: Category = {
-  ...regionsCategory,
-  route: regionsRoute,
-};
-
 export const regionsMenuItem = menuRoute({
   icon: ["fas", "map-signs"],
   label: "Sites",
