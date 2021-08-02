@@ -49,22 +49,23 @@ export class ThemeService {
   /**
    * Set the base colour for a colour
    *
-   * @param color Colour to modify
-   * @param value New base value for colour (accepts most colour standards)
+   * @param colorName Colour to modify
+   * @param color New base value for colour (accepts most colour standards)
    */
-  public setColor(color: ThemeColor, value: string): void {
-    const hslValue = hsl(value);
+  public setColor(colorName: ThemeColor, color: string): void {
+    const hslValue = hsl(color);
     if (
       !hslValue ||
       isNaN(hslValue.h) ||
       isNaN(hslValue.s) ||
       isNaN(hslValue.l)
     ) {
-      console.log(hslValue);
-      console.warn(`Invalid theme color given for ${color} detected: ${value}`);
+      console.warn(
+        `Invalid theme color given for ${colorName} detected: ${color}`
+      );
       return;
     }
-    this.setCssColorProperty(color, hslValue);
+    this.setCssColorProperty(colorName, hslValue);
   }
 
   /**
@@ -74,37 +75,31 @@ export class ThemeService {
    */
   public setTheme(theme: BawTheme): void {
     this.theme = theme;
-    this.customizeInstance();
+
+    // Re-add instance changes to theme
+    for (const themeColor of Object.keys(this.theme)) {
+      this.setColor(themeColor as ThemeColor, this.theme[themeColor]);
+    }
   }
 
   /**
    * Reset any modifications to a colour
    *
-   * @param color Color to reset
-   * @param hardReset Reset instance theme colour settings as well
+   * @param colorName Color to reset
    */
-  public resetColor(color: ThemeColor, hardReset?: boolean): void {
-    this.setCssColorProperty(color, null);
+  public resetColor(colorName: ThemeColor): void {
+    this.setCssColorProperty(colorName, null);
 
-    if (!hardReset) {
-      // Re-add instance changes to color
-      this.customizeInstance(color);
-    }
+    // Re-add instance changes to color
+    this.setColor(colorName, this.theme[colorName]);
   }
 
   /**
    * Reset any modifications to the global theme
-   *
-   * @param hardReset Reset instance theme as well
    */
-  public resetTheme(hardReset?: boolean): void {
-    // Reset all colours
+  public resetTheme(): void {
     this.themeColors.forEach((color) => this.setCssColorProperty(color, null));
-
-    if (!hardReset) {
-      // Re-add instance changes to theme
-      this.customizeInstance();
-    }
+    this.setTheme(this.theme);
   }
 
   /**
@@ -128,22 +123,6 @@ export class ThemeService {
       this.style.removeProperty(hue);
       this.style.removeProperty(saturation);
       this.style.removeProperty(lightness);
-    }
-  }
-
-  /**
-   * Apply the global theme of the website
-   *
-   * @param color Only apply the global theme to this colour
-   */
-  private customizeInstance(color?: ThemeColor): void {
-    if (color) {
-      this.setColor(color, this.theme[color]);
-      return;
-    }
-
-    for (const themeColor of Object.keys(this.theme)) {
-      this.setColor(themeColor as ThemeColor, this.theme[themeColor]);
     }
   }
 }

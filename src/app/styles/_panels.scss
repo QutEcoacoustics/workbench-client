@@ -12,6 +12,12 @@ $theme-colors: (
 
 $theme-color-variants: ("", "-lighter", "-lightest", "-darker", "-darkest");
 
+/*
+ * These panel classes are for the theme-template component and shouldn't be
+ * used. This is an alternative for bootstraps background colours:
+ * https://getbootstrap.com/docs/5.0/utilities/background/, and is used to
+ * showcase all colours in the theme palette
+ */
 @each $color in $theme-colors {
   @each $variant in $theme-color-variants {
     .panel-#{$color}#{$variant} {
