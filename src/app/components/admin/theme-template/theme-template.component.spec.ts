@@ -1,25 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AdminThemeTemplateComponent } from "./theme-template.component";
 
-import { ThemeTemplateComponent } from './theme-template.component';
-
-describe('ThemeTemplateComponent', () => {
-  let component: ThemeTemplateComponent;
-  let fixture: ComponentFixture<ThemeTemplateComponent>;
+describe("AdminThemeTemplateComponent", () => {
+  let component: AdminThemeTemplateComponent;
+  let fixture: ComponentFixture<AdminThemeTemplateComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ThemeTemplateComponent ]
-    })
-    .compileComponents();
+      declarations: [AdminThemeTemplateComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ThemeTemplateComponent);
+    fixture = TestBed.createComponent(AdminThemeTemplateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

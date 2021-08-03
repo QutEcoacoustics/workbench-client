@@ -54,17 +54,14 @@ export class ThemeService {
    */
   public setColor(colorName: ThemeColor, color: string): void {
     const hslValue = hsl(color);
-    if (
-      !hslValue ||
-      isNaN(hslValue.h) ||
-      isNaN(hslValue.s) ||
-      isNaN(hslValue.l)
-    ) {
+
+    if (isNaN(hslValue.opacity)) {
       console.warn(
         `Invalid theme color given for ${colorName} detected: ${color}`
       );
       return;
     }
+
     this.setCssColorProperty(colorName, hslValue);
   }
 
@@ -73,7 +70,7 @@ export class ThemeService {
    *
    * @param theme Theme of website
    */
-  public setTheme(theme: BawTheme): void {
+  public setTheme(theme: BawTheme = {}): void {
     this.theme = theme;
 
     // Re-add instance changes to theme
@@ -105,20 +102,29 @@ export class ThemeService {
   /**
    * Update the css colour property for the theme colour provided
    *
-   * @param color Color to modify
-   * @param value Base color value
+   * @param colorName Color to modify
+   * @param color Base color value
    */
-  private setCssColorProperty(color: ThemeColor, value?: HSLColor): void {
-    const prefix = `--baw-${color}`;
+  private setCssColorProperty(
+    colorName: ThemeColor,
+    color?: HSLColor
+  ): void {
+    // Hsl conversion will return NaN instead of 0 for some valid values
+    // because of https://github.com/d3/d3-color/issues/82
+    function readHslValue(value: number) {
+      return isNaN(value) ? 0 : value;
+    }
+
+    const prefix = `--baw-${colorName}`;
     const hue = `${prefix}-hue`;
     const saturation = `${prefix}-saturation`;
     const lightness = `${prefix}-lightness`;
     const toPercentage = (fraction: number) => fraction * 100;
 
-    if (value) {
-      this.style.setProperty(hue, `${value.h}deg`);
-      this.style.setProperty(saturation, `${toPercentage(value.s)}%`);
-      this.style.setProperty(lightness, `${toPercentage(value.l)}%`);
+    if (color) {
+      this.style.setProperty(hue, `${readHslValue(color.h)}deg`);
+      this.style.setProperty(saturation, `${toPercentage(readHslValue(color.s))}%`);
+      this.style.setProperty(lightness, `${toPercentage(readHslValue(color.l))}%`);
     } else {
       this.style.removeProperty(hue);
       this.style.removeProperty(saturation);
