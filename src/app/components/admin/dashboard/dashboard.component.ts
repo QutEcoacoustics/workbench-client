@@ -7,6 +7,7 @@ import {
   adminCmsMenuItem,
   adminDashboardMenuItem,
   adminJobStatusMenuItem,
+  adminThemeMenuItem,
   adminUserListMenuItem,
 } from "../admin.menus";
 import { adminAudioRecordingsMenuItem } from "../audio-recordings/audio-recordings.menus";
@@ -25,6 +26,7 @@ export const adminMenuItemActions = [
   adminAnalysisJobsMenuItem,
   adminJobStatusMenuItem,
   adminCmsMenuItem,
+  adminThemeMenuItem,
 ];
 
 @Component({

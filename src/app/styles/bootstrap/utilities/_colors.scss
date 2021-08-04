@@ -13,3 +13,9 @@
     @include baw-text-color($theme, $default);
   }
 }
+
+/* Custom highlight text color */
+
+.text-highlight {
+  @include baw-text-color("highlight", $primary);
+}

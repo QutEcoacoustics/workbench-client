@@ -6,6 +6,7 @@ import {
   Keys,
   Settings,
 } from "@helpers/app-initializer/app-initializer";
+import { ThemeService } from "@services/theme/theme.service";
 import { ToastrService } from "ngx-toastr";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
@@ -22,6 +23,7 @@ export class ConfigService {
 
   public constructor(
     private notification: ToastrService,
+    private theme: ThemeService,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean
   ) {
     if (!isConfiguration(environment, this.isServer)) {
@@ -40,6 +42,7 @@ export class ConfigService {
     }
 
     this._config = new Proxy(environment, {});
+    this.theme.setTheme(this.settings.theme ?? {});
   }
 
   /** Get config data */

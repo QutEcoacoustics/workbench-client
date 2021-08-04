@@ -1,0 +1,23 @@
+@import "panels";
+
+input[type="color"] {
+  height: 100%;
+}
+
+.color-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.color-box {
+  flex: 1;
+  display: inline-block;
+  height: 150px;
+  min-width: 150px;
+
+  p {
+    font-weight: 600;
+    text-align: center;
+  }
+}

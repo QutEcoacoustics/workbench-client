@@ -14,7 +14,7 @@
   --baw-default-background-dark: darkgrey;
 
   /* Theme highlight colour, this is used to create an accent for objects following the 60/30/10 rule */
-  @include create-variable("highlight", #304f3b, 60%, 70%, 5%, 10%);
+  @include create-variable("highlight", #304f3b);
 }
 
 /* Overwrite bootstrap maximum window size */
