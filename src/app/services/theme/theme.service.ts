@@ -51,25 +51,6 @@ export class ThemeService {
   }
 
   /**
-   * Set the base colour for a colour
-   *
-   * @param colorName Colour to modify
-   * @param color New base value for colour (accepts most colour standards)
-   */
-  public setColor(colorName: ThemeColor, color: string): void {
-    const hslValue = hsl(color);
-
-    if (isNaN(hslValue.opacity)) {
-      console.warn(
-        `Invalid theme color given for ${colorName} detected: ${color}`
-      );
-      return;
-    }
-
-    this.setCssColorProperty(colorName, hslValue);
-  }
-
-  /**
    * Set the global theme of the website
    *
    * @param theme Theme of website
@@ -89,7 +70,7 @@ export class ThemeService {
    * @param colorName Color to reset
    */
   public resetColor(colorName: ThemeColor): void {
-    this.setCssColorProperty(colorName, null);
+    this.setColor(colorName, null);
 
     // Re-add instance changes to color
     this.setColor(colorName, this.theme[colorName]);
@@ -99,7 +80,7 @@ export class ThemeService {
    * Reset any modifications to the global theme
    */
   public resetTheme(): void {
-    this.themeColors.forEach((color) => this.setCssColorProperty(color, null));
+    this.themeColors.forEach((color) => this.setColor(color, null));
     this.setTheme(this.theme);
   }
 
@@ -109,7 +90,7 @@ export class ThemeService {
    * @param colorName Color to modify
    * @param color Base color value
    */
-  private setCssColorProperty(colorName: ThemeColor, color?: HSLColor): void {
+  public setColor(colorName: ThemeColor, color?: HSLColor | string): void {
     // Hsl conversion will return NaN instead of 0 for some valid values
     // because of https://github.com/d3/d3-color/issues/82
     function readHslValue(value: number, isPercentage?: boolean): string {
@@ -132,9 +113,18 @@ export class ThemeService {
     }
 
     if (color) {
-      this.style.setProperty(hue, `${readHslValue(color.h)}deg`);
-      this.style.setProperty(saturation, `${readHslValue(color.s, true)}%`);
-      this.style.setProperty(lightness, `${readHslValue(color.l, true)}%`);
+      const hslColor = typeof color === "string" ? hsl(color) : color;
+
+      if (isNaN(hslColor.opacity)) {
+        console.warn(
+          `Invalid theme color given for ${colorName} detected: ${color}`
+        );
+        return;
+      }
+
+      this.style.setProperty(hue, `${readHslValue(hslColor.h)}deg`);
+      this.style.setProperty(saturation, `${readHslValue(hslColor.s, true)}%`);
+      this.style.setProperty(lightness, `${readHslValue(hslColor.l, true)}%`);
     } else {
       this.style.removeProperty(hue);
       this.style.removeProperty(saturation);

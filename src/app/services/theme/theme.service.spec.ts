@@ -1,4 +1,5 @@
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import { hsl } from "d3-color";
 import { DeviceDetectorService } from "ngx-device-detector";
 import { ThemeColor, ThemeService } from "./theme.service";
 
@@ -44,12 +45,14 @@ describe("ThemeService", () => {
     const lightness = `${prefix}-lightness`;
 
     function readHslValue(value: number) {
-      return isFirefox ?  value.toFixed(2) : value;
+      return isFirefox ? value.toFixed(2) : value;
     }
 
     const style = document.documentElement.style;
     expect(style.getPropertyValue(hue)).toBe(`${readHslValue(color.h)}deg`);
-    expect(style.getPropertyValue(saturation)).toBe(`${readHslValue(color.s)}%`);
+    expect(style.getPropertyValue(saturation)).toBe(
+      `${readHslValue(color.s)}%`
+    );
     expect(style.getPropertyValue(lightness)).toBe(`${readHslValue(color.l)}%`);
   }
 
@@ -60,6 +63,8 @@ describe("ThemeService", () => {
     spec.service.resetTheme();
     isFirefox = spec.inject(DeviceDetectorService).browser === "Firefox";
   });
+
+  afterAll(() => spec.service.resetTheme());
 
   it("should be created", () => {
     expect(spec.service).toBeTruthy();
@@ -79,6 +84,11 @@ describe("ThemeService", () => {
 
       it(`should set ${colorName} css color when given hsl value`, () => {
         spec.service.setColor(colorName, "hsl(50.1176, 100%, 50%)");
+        assertCssColor(colorName, defaultHsl);
+      });
+
+      it(`should set ${colorName} css color when given hsl object`, () => {
+        spec.service.setColor(colorName, hsl(defaultRgb));
         assertCssColor(colorName, defaultHsl);
       });
     });
