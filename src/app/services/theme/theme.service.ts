@@ -1,6 +1,7 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
 import { hsl, HSLColor } from "d3-color";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 const themeColors = [
   "highlight",
@@ -41,7 +42,10 @@ export class ThemeService {
   /** Stored styles of the website */
   private style: CSSStyleDeclaration;
 
-  public constructor(@Inject(DOCUMENT) private document: Document) {
+  public constructor(
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(IS_SERVER_PLATFORM) private isServer: boolean
+  ) {
     // Read the root style of the website
     this.style = this.document.documentElement.style;
   }
@@ -105,10 +109,7 @@ export class ThemeService {
    * @param colorName Color to modify
    * @param color Base color value
    */
-  private setCssColorProperty(
-    colorName: ThemeColor,
-    color?: HSLColor
-  ): void {
+  private setCssColorProperty(colorName: ThemeColor, color?: HSLColor): void {
     // Hsl conversion will return NaN instead of 0 for some valid values
     // because of https://github.com/d3/d3-color/issues/82
     function readHslValue(value: number, isPercentage?: boolean): string {
@@ -125,6 +126,10 @@ export class ThemeService {
     const hue = `${prefix}-hue`;
     const saturation = `${prefix}-saturation`;
     const lightness = `${prefix}-lightness`;
+
+    if (this.isServer) {
+      return;
+    }
 
     if (color) {
       this.style.setProperty(hue, `${readHslValue(color.h)}deg`);

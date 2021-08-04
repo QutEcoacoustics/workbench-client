@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Inject,
   OnInit,
   QueryList,
   ViewChildren,
@@ -15,6 +16,7 @@ import {
 } from "@services/theme/theme.service";
 import { List } from "immutable";
 import { rgb } from "d3-color";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { adminCategory, adminThemeMenuItem } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
 
@@ -36,6 +38,7 @@ class AdminThemeTemplateComponent
   public themeVariants: readonly ThemeVariant[];
 
   public constructor(
+    @Inject(IS_SERVER_PLATFORM) public isServer: boolean,
     private theme: ThemeService,
     private ref: ChangeDetectorRef
   ) {
@@ -66,7 +69,7 @@ class AdminThemeTemplateComponent
   }
 
   public getBoxColor(colorIndex: number, variantIndex: number = 0) {
-    if (!this.colorBoxes) {
+    if (!this.colorBoxes || this.isServer) {
       return "#000";
     }
 

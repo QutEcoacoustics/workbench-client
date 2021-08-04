@@ -19,7 +19,7 @@ import { homeCategory, homeMenuItem } from "./home.menus";
 class HomeComponent extends PageComponent implements OnInit {
   public brand: Brand;
   public page = CMS.home;
-  public projectList: List<Card> = List([]);
+  public projectList: List<Card>;
   public projectsLink = projectsMenuItem.route;
   public viewBox: string;
   public svg: {
