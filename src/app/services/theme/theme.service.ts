@@ -111,20 +111,25 @@ export class ThemeService {
   ): void {
     // Hsl conversion will return NaN instead of 0 for some valid values
     // because of https://github.com/d3/d3-color/issues/82
-    function readHslValue(value: number) {
-      return isNaN(value) ? 0 : value;
+    function readHslValue(value: number, isPercentage?: boolean): string {
+      if (isNaN(value)) {
+        return "0.00";
+      } else if (isPercentage) {
+        return (value * 100).toFixed(2);
+      } else {
+        return value.toFixed(2);
+      }
     }
 
     const prefix = `--baw-${colorName}`;
     const hue = `${prefix}-hue`;
     const saturation = `${prefix}-saturation`;
     const lightness = `${prefix}-lightness`;
-    const toPercentage = (fraction: number) => fraction * 100;
 
     if (color) {
       this.style.setProperty(hue, `${readHslValue(color.h)}deg`);
-      this.style.setProperty(saturation, `${toPercentage(readHslValue(color.s))}%`);
-      this.style.setProperty(lightness, `${toPercentage(readHslValue(color.l))}%`);
+      this.style.setProperty(saturation, `${readHslValue(color.s, true)}%`);
+      this.style.setProperty(lightness, `${readHslValue(color.l, true)}%`);
     } else {
       this.style.removeProperty(hue);
       this.style.removeProperty(saturation);

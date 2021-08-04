@@ -1,4 +1,5 @@
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import { DeviceDetectorService } from "ngx-device-detector";
 import { ThemeColor, ThemeService } from "./theme.service";
 
 const themeColors: ThemeColor[] = [
@@ -14,11 +15,12 @@ const themeColors: ThemeColor[] = [
 ];
 
 describe("ThemeService", () => {
+  let isFirefox: boolean;
   let spec: SpectatorService<ThemeService>;
   const createService = createServiceFactory(ThemeService);
   const defaultColorName: ThemeColor = "highlight";
   const defaultRgb = "#FFD500";
-  const defaultHsl = { h: 50.1176, s: 100, l: 50 };
+  const defaultHsl = { h: 50.12, s: 100, l: 50 };
 
   function assertCssColorUnset(colorName: ThemeColor) {
     const prefix = `--baw-${colorName}`;
@@ -41,10 +43,14 @@ describe("ThemeService", () => {
     const saturation = `${prefix}-saturation`;
     const lightness = `${prefix}-lightness`;
 
+    function readHslValue(value: number) {
+      return isFirefox ?  value.toFixed(2) : value;
+    }
+
     const style = document.documentElement.style;
-    expect(style.getPropertyValue(hue)).toBe(`${color.h}deg`);
-    expect(style.getPropertyValue(saturation)).toBe(`${color.s}%`);
-    expect(style.getPropertyValue(lightness)).toBe(`${color.l}%`);
+    expect(style.getPropertyValue(hue)).toBe(`${readHslValue(color.h)}deg`);
+    expect(style.getPropertyValue(saturation)).toBe(`${readHslValue(color.s)}%`);
+    expect(style.getPropertyValue(lightness)).toBe(`${readHslValue(color.l)}%`);
   }
 
   beforeEach(() => {
@@ -52,6 +58,7 @@ describe("ThemeService", () => {
 
     // Styles are not reset between tests, so we reset here
     spec.service.resetTheme();
+    isFirefox = spec.inject(DeviceDetectorService).browser === "Firefox";
   });
 
   it("should be created", () => {
@@ -62,7 +69,7 @@ describe("ThemeService", () => {
     themeColors.forEach((colorName: ThemeColor) => {
       it(`should set ${colorName} css color when given text value`, () => {
         spec.service.setColor(colorName, "steelblue");
-        assertCssColor(colorName, { h: 207.273, s: 44, l: 49.0196 });
+        assertCssColor(colorName, { h: 207.27, s: 44, l: 49.02 });
       });
 
       it(`should set ${colorName} css color when given rgb value`, () => {
@@ -91,7 +98,7 @@ describe("ThemeService", () => {
     it("should set css color if hsl has NaN values", () => {
       // #fafafa converts to a hsl value with a hue of NaN
       spec.service.setColor(defaultColorName, "#fafafa");
-      assertCssColor(defaultColorName, { h: 0, l: 98.0392, s: 0 });
+      assertCssColor(defaultColorName, { h: 0, l: 98.04, s: 0 });
     });
   });
 
