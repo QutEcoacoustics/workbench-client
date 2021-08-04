@@ -136,7 +136,7 @@ export function bawDuration<Model>(
     Extra object fields required, do not remove. Duration calculates itself
     based on the time spans provided, if years is removed for example,
     the output will just keep incrementing months (i.e 24 months, instead of 2 years).
-  */
+    */
     model[key] = seconds
       ? Duration.fromObject({
           years: 0,

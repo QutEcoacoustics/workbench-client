@@ -13,7 +13,7 @@ import type { AudioEvent } from "@models/AudioEvent";
 import type { AudioRecording } from "@models/AudioRecording";
 import type { Bookmark } from "@models/Bookmark";
 import type { ContactUs } from "@models/data/ContactUs";
-import { DataRequest } from "@models/data/DataRequest";
+import type { DataRequest } from "@models/data/DataRequest";
 import type { ReportProblem } from "@models/data/ReportProblem";
 import type { Dataset } from "@models/Dataset";
 import type { DatasetItem } from "@models/DatasetItem";
@@ -25,6 +25,7 @@ import type { Response } from "@models/Response";
 import type { SavedSearch } from "@models/SavedSearch";
 import type { Script } from "@models/Script";
 import type { Site } from "@models/Site";
+import type { Statistics } from "@models/Statistics";
 import type { Study } from "@models/Study";
 import type { Tag } from "@models/Tag";
 import type { Tagging } from "@models/Tagging";
@@ -53,6 +54,7 @@ import type { ReportProblemService } from "./report/report-problem.service";
 import type { SavedSearchesService } from "./saved-search/saved-searches.service";
 import type { ScriptsService } from "./script/scripts.service";
 import type { ShallowSitesService, SitesService } from "./site/sites.service";
+import type { StatisticsService } from "./statistics/statistics.service";
 import type {
   QuestionsService,
   ShallowQuestionsService,
@@ -82,7 +84,7 @@ export class ServiceToken<
   public token: InjectionToken<Service>;
 
   public constructor(_desc: string) {
-    this.kind = (_desc as unknown) as Service;
+    this.kind = _desc as unknown as Service;
     this.token = new InjectionToken<Service>(_desc);
   }
 }
@@ -154,6 +156,9 @@ export const SHALLOW_SITE = new ServiceToken<ShallowSitesService, Site>(
   "S_SITE"
 );
 export const SITE = new ServiceToken<SitesService, Site>("SITE");
+export const STATISTICS = new ServiceToken<StatisticsService, Statistics>(
+  "STATISTICS"
+);
 export const STUDY = new ServiceToken<StudiesService, Study>("STUDY");
 export const TAG = new ServiceToken<TagsService, Tag>("TAG");
 export const TAG_GROUP = new ServiceToken<TagGroupsService, TagGroup>(

@@ -52,6 +52,7 @@ import {
   siteResolvers,
   SitesService,
 } from "./site/sites.service";
+import { StatisticsService } from "./statistics/statistics.service";
 import {
   questionResolvers,
   QuestionsService,
@@ -186,6 +187,10 @@ const serviceList = [
     serviceToken: Tokens.SHALLOW_SITE,
     service: ShallowSitesService,
     resolvers: shallowSiteResolvers,
+  },
+  {
+    serviceToken: Tokens.STATISTICS,
+    service: StatisticsService,
   },
   {
     serviceToken: Tokens.STUDY,

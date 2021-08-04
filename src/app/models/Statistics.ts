@@ -16,10 +16,10 @@ export interface IStatisticsSummary {
   annotationsTotal: number;
   annotationsTotalDuration: Duration | number;
   annotationsRecent: number;
-  audioRecordingTotal: number;
-  audioRecordingRecent: number;
-  audioRecordingTotalDuration: number;
-  audioRecordingTotalSize: number;
+  audioRecordingsTotal: number;
+  audioRecordingsRecent: number;
+  audioRecordingsTotalDuration: Duration | number;
+  audioRecordingsTotalSize: number;
   tagsTotal: number;
   tagsAppliedTotal: number;
 }
@@ -34,10 +34,11 @@ export class StatisticsSummary extends AbstractModel {
   @bawDuration()
   public readonly annotationsTotalDuration: Duration;
   public readonly annotationsRecent: number;
-  public readonly audioRecordingTotal: number;
-  public readonly audioRecordingRecent: number;
-  public readonly audioRecordingTotalDuration: number;
-  public readonly audioRecordingTotalSize: number;
+  public readonly audioRecordingsTotal: number;
+  public readonly audioRecordingsRecent: number;
+  @bawDuration()
+  public readonly audioRecordingsTotalDuration: Duration;
+  public readonly audioRecordingsTotalSize: number;
   public readonly tagsTotal: number;
   public readonly tagsAppliedTotal: number;
 
@@ -47,18 +48,21 @@ export class StatisticsSummary extends AbstractModel {
 }
 
 export interface IStatisticsRecent {
-  audioRecordings: Ids | Id[];
-  audioEvents: Ids | Id[];
+  audioRecordingIds: Ids | Id[];
+  audioEventIds: Ids | Id[];
 }
 
 export class StatisticsRecent extends AbstractModel {
   public readonly kind = "StatisticsRecent";
-  public readonly audioRecordings: Ids | Id[];
-  public readonly audioEvents: Ids | Id[];
-  @hasMany<StatisticsRecent, AudioRecording>(AUDIO_RECORDING, "audioRecordings")
-  public audioRecordingModels: AudioRecording[];
-  @hasMany<StatisticsRecent, AudioEvent>(SHALLOW_AUDIO_EVENT, "audioEvents")
-  public audioEventModels: AudioEvent[];
+  public readonly audioRecordingIds: Ids;
+  public readonly audioEventIds: Ids;
+  @hasMany<StatisticsRecent, AudioRecording>(
+    AUDIO_RECORDING,
+    "audioRecordingIds"
+  )
+  public audioRecordings: AudioRecording[];
+  @hasMany<StatisticsRecent, AudioEvent>(SHALLOW_AUDIO_EVENT, "audioEventIds")
+  public audioEvents: AudioEvent[];
 
   public get viewUrl(): string {
     throw Error();
