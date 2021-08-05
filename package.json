@@ -55,7 +55,7 @@
     "@ngx-ssr/timeout": "^1.0.2",
     "@swimlane/ngx-datatable": "^19.0.0",
     "@vvo/tzdb": "^6.9.0",
-    "bootstrap": "^5.0.2",
+    "bootstrap": "^5.1.0",
     "d3-color": "^3.0.1",
     "express": "^4.17.1",
     "filesize": "^7.0.0",
@@ -76,7 +76,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^12.1.4",
+    "@angular-devkit/build-angular": "^12.2.0",
     "@angular-eslint/builder": "12.3.1",
     "@angular-eslint/eslint-plugin": "12.3.1",
     "@angular-eslint/eslint-plugin-template": "^12.3.1",
