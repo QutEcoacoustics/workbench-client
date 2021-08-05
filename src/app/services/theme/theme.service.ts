@@ -40,14 +40,14 @@ export class ThemeService {
   /** Tracks config changes to theme */
   private theme: BawTheme;
   /** Stored styles of the website */
-  private style: CSSStyleDeclaration;
+  private root: HTMLElement;
 
   public constructor(
     @Inject(DOCUMENT) private document: Document,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean
   ) {
     // Read the root style of the website
-    this.style = this.document.documentElement.style;
+    this.root = this.document.documentElement;
   }
 
   /**
@@ -122,13 +122,19 @@ export class ThemeService {
         return;
       }
 
-      this.style.setProperty(hue, `${readHslValue(hslColor.h)}deg`);
-      this.style.setProperty(saturation, `${readHslValue(hslColor.s, true)}%`);
-      this.style.setProperty(lightness, `${readHslValue(hslColor.l, true)}%`);
+      this.root.style.setProperty(hue, `${readHslValue(hslColor.h)}deg`);
+      this.root.style.setProperty(
+        saturation,
+        `${readHslValue(hslColor.s, true)}%`
+      );
+      this.root.style.setProperty(
+        lightness,
+        `${readHslValue(hslColor.l, true)}%`
+      );
     } else {
-      this.style.removeProperty(hue);
-      this.style.removeProperty(saturation);
-      this.style.removeProperty(lightness);
+      this.root.style.removeProperty(hue);
+      this.root.style.removeProperty(saturation);
+      this.root.style.removeProperty(lightness);
     }
   }
 }

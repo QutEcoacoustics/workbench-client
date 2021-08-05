@@ -4,7 +4,11 @@ import { statisticsMenuItem } from "@components/statistics/statistics.menus";
 import { DateTimeTimezone, Id, Ids } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { hasMany } from "@models/AssociationDecorators";
-import { bawDateTime, bawDuration } from "@models/AttributeDecorators";
+import {
+  bawCollection,
+  bawDateTime,
+  bawDuration,
+} from "@models/AttributeDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Duration } from "luxon";
@@ -54,7 +58,9 @@ export interface IStatisticsRecent {
 
 export class StatisticsRecent extends AbstractModel {
   public readonly kind = "StatisticsRecent";
+  @bawCollection()
   public readonly audioRecordingIds: Ids;
+  @bawCollection()
   public readonly audioEventIds: Ids;
   @hasMany<StatisticsRecent, AudioRecording>(
     AUDIO_RECORDING,

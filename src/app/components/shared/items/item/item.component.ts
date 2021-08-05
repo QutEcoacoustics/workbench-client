@@ -16,7 +16,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
       <!-- Item value -->
       <span id="value" class="badge rounded-pill bg-secondary float-end">
-        {{ value }}
+        {{ value ?? "Unknown" }}
       </span>
     </div>
   `,
@@ -29,8 +29,8 @@ export class ItemComponent {
   @Input() public value: string | number;
 }
 
-export interface ItemInterface {
+export interface IItem {
   icon: IconProp;
   name: string;
-  value: string | number;
+  value?: string | number;
 }

@@ -1,10 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { StatisticsService } from "@baw-api/statistics/statistics.service";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { Site } from "@models/Site";
-import { User } from "@models/User";
+import { toRelative } from "@interfaces/apiInterfaces";
+import { AudioEvent } from "@models/AudioEvent";
+import { AudioRecording } from "@models/AudioRecording";
+import { ConfigService } from "@services/config/config.service";
+import { IItem } from "@shared/items/item/item.component";
+import { TableColumn } from "@swimlane/ngx-datatable";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { defaultAudioIcon, defaultUserIcon } from "src/app/app.menus";
@@ -22,134 +25,83 @@ class StatisticsComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit
 {
-  public groupOne: List<{
-    icon: IconProp;
-    name: string;
-    value: string | number;
-  }>;
-  public groupTwo: List<{
-    icon: IconProp;
-    name: string;
-    value: string | number;
-  }>;
-  public recentAnnotations: Annotation[] | AnnotationExpanded[];
-  public recentRecordings: Recording[] | RecordingExpanded[];
+  public columns: TableColumn[];
 
-  public constructor(private stats: StatisticsService) {
+  public groupOne = List<IItem>([
+    { icon: ["fas", "home"], name: "Projects" },
+    { icon: ["fas", "bullseye"], name: "Annotations" },
+    { icon: ["fas", "tags"], name: "Available tags" },
+    { icon: ["fas", "map-marker-alt"], name: "Sites" },
+    { icon: defaultAudioIcon, name: "Audio recordings" },
+    { icon: defaultUserIcon, name: "Users" },
+  ]);
+  public groupTwo = List<IItem>([
+    { icon: ["fas", "tags"], name: "Unique tags attached to annotations" },
+    { icon: ["fas", "tags"], name: "Tags attached to annotations" },
+    { icon: ["fas", "bullseye"], name: "New annotations in the last month" },
+    { icon: ["fas", "clock"], name: "Overall annotation duration" },
+    { icon: defaultUserIcon, name: "Users Online" },
+    { icon: defaultAudioIcon, name: "Overall audio recording file size" },
+    { icon: defaultAudioIcon, name: "New audio recordings in last month" },
+    { icon: ["fas", "clock"], name: "Overall audio duration" },
+  ]);
+  public recentAnnotations: AudioEvent[];
+  public recentRecordings: AudioRecording[];
+  public isLoggedIn: boolean;
+
+  public constructor(
+    private stats: StatisticsService,
+    private config: ConfigService
+  ) {
     super();
   }
 
   public ngOnInit() {
-    this.groupOne = List([
-      {
-        icon: ["fas", "home"],
-        name: "Projects",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "bullseye"],
-        name: "Annotations",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "tags"],
-        name: "Available tags",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "map-marker-alt"],
-        name: "Sites",
-        value: "Unknown",
-      },
-      {
-        icon: defaultAudioIcon,
-        name: "Audio recordings",
-        value: "Unknown",
-      },
-      {
-        icon: defaultUserIcon,
-        name: "Users",
-        value: "Unknown",
-      },
-    ]);
+    this.isLoggedIn = this.stats.isLoggedIn();
 
-    this.groupTwo = List([
-      {
-        icon: ["fas", "tags"],
-        name: "Unique tags attached to annotations",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "tags"],
-        name: "Tags attached to annotations",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "bullseye"],
-        name: "New annotations in the last month",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "clock"],
-        name: "Overall annotation duration",
-        value: "Unknown",
-      },
-      {
-        icon: defaultUserIcon,
-        name: "Users Online",
-        value: "Unknown",
-      },
-      {
-        icon: defaultAudioIcon,
-        name: "Overall audio recording file size",
-        value: "Unknown",
-      },
-      {
-        icon: defaultAudioIcon,
-        name: "New audio recordings in last month",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "clock"],
-        name: "Overall audio duration",
-        value: "Unknown",
-      },
-    ]);
+    this.columns = [{ name: "Tags" }, { name: "Updated" }];
 
-    this.recentAnnotations = [{ updated: "Unknown" }];
-    this.recentRecordings = [{ duration: "Unknown", uploaded: "Unknown" }];
+    if (this.isLoggedIn) {
+      this.columns = [{ name: "Site" }, { name: "User" }, ...this.columns];
+    }
+
+    const updateValue = (
+      group: "groupOne" | "groupTwo",
+      index: number,
+      value: string | number
+    ) => {
+      const list: List<IItem> = this[group];
+      this[group] = list.set(index, { ...list.get(index), value });
+    };
 
     this.stats
       .show()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((results) => {
-        console.log(results);
+        updateValue("groupOne", 1, results.summary.annotationsTotal);
+        updateValue("groupOne", 2, results.summary.tagsTotal);
+        updateValue("groupOne", 4, results.summary.audioRecordingsTotal);
+        updateValue("groupOne", 5, results.summary.usersTotal);
 
-        this.groupOne.get(1).value = results.summary.annotationsTotal;
-        this.groupOne.get(2).value = results.summary.tagsTotal;
-        this.groupOne.get(4).value = results.summary.audioRecordingsTotal;
-        this.groupOne.get(5).value = results.summary.usersTotal;
+        updateValue("groupTwo", 0, results.summary.tagsAppliedTotal);
+        updateValue("groupTwo", 2, results.recent.audioEventIds.size);
+        updateValue(
+          "groupTwo",
+          3,
+          toRelative(results.summary.annotationsTotalDuration)
+        );
+        updateValue("groupTwo", 4, results.summary.usersOnline);
+        updateValue("groupTwo", 5, results.summary.audioRecordingsTotalSize);
+        updateValue("groupTwo", 6, results.recent.audioRecordingIds.size);
+        updateValue(
+          "groupTwo",
+          7,
+          toRelative(results.summary.audioRecordingsTotalDuration)
+        );
 
-        this.groupTwo.get(0).value = results.summary.tagsAppliedTotal;
-        this.groupTwo.get(2).value = results.recent.audioEventIds.size;
-        this.groupTwo.get(3).value =
-          results.summary.annotationsTotalDuration.toISO();
-        this.groupTwo.get(4).value = results.summary.usersOnline;
-        this.groupTwo.get(5).value = results.summary.audioRecordingsTotalSize;
-        this.groupTwo.get(6).value = results.recent.audioRecordingIds.size;
-        this.groupTwo.get(7).value =
-          results.summary.audioRecordingsTotalDuration.toISO();
+        this.recentAnnotations = results.recent.audioEvents;
+        this.recentRecordings = results.recent.audioRecordings;
       });
-  }
-
-  public isExpanded(
-    group:
-      | Annotation[]
-      | AnnotationExpanded[]
-      | Recording[]
-      | RecordingExpanded[]
-  ): group is AnnotationExpanded[] | RecordingExpanded[] {
-    return Object.values(group[0]).indexOf("site") > -1;
   }
 }
 
@@ -158,25 +110,3 @@ StatisticsComponent.linkComponentToPageInfo({
 }).andMenuRoute(statisticsMenuItem);
 
 export { StatisticsComponent };
-
-interface Annotation {
-  tag?: string;
-  updated: string;
-}
-interface AnnotationExpanded {
-  site: Site;
-  user: User;
-  updated: string;
-  tag: string;
-}
-
-interface Recording {
-  duration: string;
-  uploaded: string;
-}
-
-interface RecordingExpanded {
-  site: Site;
-  duration: string;
-  uploaded: string;
-}

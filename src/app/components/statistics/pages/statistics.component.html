@@ -1,106 +1,11 @@
-<baw-wip>
-  <h1>Statistics</h1>
+<h1>Statistics</h1>
 
-  <baw-items [items]="groupOne"></baw-items>
-  <baw-items [items]="groupTwo"></baw-items>
+<baw-items [items]="groupOne"></baw-items>
+<baw-items [items]="groupTwo"></baw-items>
 
-  <h2>Recent Annotations</h2>
-
-  <table
-    class="table table-sm table-hover"
-    *ngIf="isExpanded(recentAnnotations)"
-  >
-    <thead>
-      <tr>
-        <th scope="col">
-          <fa-icon [icon]="['fas', 'map-marker-alt']"></fa-icon>Site
-        </th>
-        <th scope="col"><fa-icon [icon]="['fas', 'user']"></fa-icon>User</th>
-        <th scope="col"><fa-icon [icon]="['fas', 'tags']"></fa-icon>Tags</th>
-        <th scope="col">
-          <fa-icon [icon]="['fas', 'calendar-alt']"></fa-icon>Updated
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let tag of recentAnnotations">
-        <td>{{ tag.site.name }}</td>
-        <td>{{ tag.user.viewUrl }}</td>
-        <td>{{ tag.tag || "(none)" }}</td>
-        <td>{{ tag.updated }}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <table
-    class="table table-sm table-hover"
-    *ngIf="!isExpanded(recentAnnotations)"
-  >
-    <thead>
-      <tr>
-        <th scope="col" class="w-50">
-          <fa-icon [icon]="['fas', 'tags']"></fa-icon>Tags
-        </th>
-        <th scope="col" class="w-50">
-          <fa-icon [icon]="['fas', 'calendar-alt']"></fa-icon>Updated
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let tag of recentAnnotations">
-        <td>{{ tag.tag || "(none)" }}</td>
-        <td>{{ tag.updated }}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h2>Recent Audio Recordings</h2>
-
-  <table
-    class="table table-sm table-hover"
-    *ngIf="isExpanded(recentRecordings)"
-  >
-    <thead>
-      <tr>
-        <th scope="col">
-          <fa-icon [icon]="['fas', 'map-marker-alt']"></fa-icon>Site
-        </th>
-        <th scope="col">
-          <fa-icon [icon]="['fas', 'clock']"></fa-icon>Duration
-        </th>
-        <th scope="col">
-          <fa-icon [icon]="['fas', 'calendar-alt']"></fa-icon>Uploaded
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let audio of recentRecordings">
-        <td>{{ audio.site.name }}</td>
-        <td>{{ audio.duration }}</td>
-        <td>{{ audio.uploaded }}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <table
-    class="table table-sm table-hover"
-    *ngIf="!isExpanded(recentRecordings)"
-  >
-    <thead>
-      <tr>
-        <th scope="col" class="w-50">
-          <fa-icon [icon]="['fas', 'clock']"></fa-icon>Duration
-        </th>
-        <th scope="col" class="w-50">
-          <fa-icon [icon]="['fas', 'calendar-alt']"></fa-icon>Uploaded
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let audio of recentRecordings">
-        <td>{{ audio.duration }}</td>
-        <td>{{ audio.uploaded }}</td>
-      </tr>
-    </tbody>
-  </table>
-</baw-wip>
+<baw-recent-annotations
+  [annotations]="recentAnnotations"
+></baw-recent-annotations>
+<baw-recent-audio-recordings
+  [audioRecordings]="recentRecordings"
+></baw-recent-audio-recordings>
