@@ -5,6 +5,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { toRelative } from "@interfaces/apiInterfaces";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
+import { StatisticsRecent } from "@models/Statistics";
 import { ConfigService } from "@services/config/config.service";
 import { IItem } from "@shared/items/item/item.component";
 import { TableColumn } from "@swimlane/ngx-datatable";
@@ -45,6 +46,7 @@ class StatisticsComponent
     { icon: defaultAudioIcon, name: "New audio recordings in last month" },
     { icon: ["fas", "clock"], name: "Overall audio duration" },
   ]);
+  public recent: StatisticsRecent;
   public recentAnnotations: AudioEvent[];
   public recentRecordings: AudioRecording[];
   public isLoggedIn: boolean;
@@ -99,8 +101,10 @@ class StatisticsComponent
           toRelative(results.summary.audioRecordingsTotalDuration)
         );
 
+        this.recent = results.recent;
         this.recentAnnotations = results.recent.audioEvents;
         this.recentRecordings = results.recent.audioRecordings;
+        console.log(results.recent);
       });
   }
 }

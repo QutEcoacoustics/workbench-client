@@ -4,8 +4,11 @@
 <baw-items [items]="groupTwo"></baw-items>
 
 <baw-recent-annotations
-  [annotations]="recentAnnotations"
+  [annotations]="recent?.audioEvents"
 ></baw-recent-annotations>
+
+<br />
+
 <baw-recent-audio-recordings
-  [audioRecordings]="recentRecordings"
+  [audioRecordings]="recent?.audioRecordings"
 ></baw-recent-audio-recordings>
