@@ -12,12 +12,13 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
       bawDatatableDefaults
       [externalPaging]="false"
       [externalSorting]="false"
+      [footerHeight]="0"
       [columnMode]="columnMode.force"
       [rows]="rows"
       [columns]="columns"
     >
-      <!-- Site name (logged in only) -->
-      <ngx-datatable-column *ngIf="isLoggedIn" name="Site" [sortable]="false">
+      <!-- Site name -->
+      <ngx-datatable-column name="Site" [sortable]="false">
         <ng-template let-column="column" ngx-datatable-header-template>
           <fa-icon class="me-2" [icon]="['fas', 'map-marker-alt']"></fa-icon>
           Site
@@ -57,9 +58,8 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
         </ng-template>
       </ngx-datatable-column>
 
-      <!-- Actions (logged in only) -->
+      <!-- Actions -->
       <ngx-datatable-column
-        *ngIf="isLoggedIn"
         name="Model"
         [width]="70"
         [maxWidth]="70"

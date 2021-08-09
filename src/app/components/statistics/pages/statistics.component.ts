@@ -8,7 +8,6 @@ import { AudioRecording } from "@models/AudioRecording";
 import { StatisticsRecent } from "@models/Statistics";
 import { ConfigService } from "@services/config/config.service";
 import { IItem } from "@shared/items/item/item.component";
-import { TableColumn } from "@swimlane/ngx-datatable";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { defaultAudioIcon, defaultUserIcon } from "src/app/app.menus";
@@ -16,6 +15,8 @@ import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
 
 /**
  * Statistics Component
+ *
+ * TODO Change statistics based on if config hideProjects property is set
  */
 @Component({
   selector: "baw-statistics",
@@ -26,8 +27,6 @@ class StatisticsComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit
 {
-  public columns: TableColumn[];
-
   public groupOne = List<IItem>([
     { icon: ["fas", "home"], name: "Projects" },
     { icon: ["fas", "bullseye"], name: "Annotations" },
@@ -59,14 +58,6 @@ class StatisticsComponent
   }
 
   public ngOnInit() {
-    this.isLoggedIn = this.stats.isLoggedIn();
-
-    this.columns = [{ name: "Tags" }, { name: "Updated" }];
-
-    if (this.isLoggedIn) {
-      this.columns = [{ name: "Site" }, { name: "User" }, ...this.columns];
-    }
-
     const updateValue = (
       group: "groupOne" | "groupTwo",
       index: number,
@@ -80,12 +71,15 @@ class StatisticsComponent
       .show()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((results) => {
+        updateValue("groupOne", 0, results.summary.projectsTotal);
         updateValue("groupOne", 1, results.summary.annotationsTotal);
         updateValue("groupOne", 2, results.summary.tagsTotal);
+        updateValue("groupOne", 3, results.summary.sitesTotal);
         updateValue("groupOne", 4, results.summary.audioRecordingsTotal);
         updateValue("groupOne", 5, results.summary.usersTotal);
 
-        updateValue("groupTwo", 0, results.summary.tagsAppliedTotal);
+        updateValue("groupTwo", 0, results.summary.tagsAppliedUniqueTotal);
+        updateValue("groupTwo", 1, results.summary.tagsAppliedTotal);
         updateValue("groupTwo", 2, results.recent.audioEventIds.size);
         updateValue(
           "groupTwo",

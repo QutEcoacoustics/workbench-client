@@ -12,6 +12,7 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
       bawDatatableDefaults
       [externalPaging]="false"
       [externalSorting]="false"
+      [footerHeight]="0"
       [columnMode]="columnMode.force"
       [rows]="rows"
       [columns]="columns"

@@ -17,6 +17,9 @@ export interface IStatisticsSummary {
   usersOnline: number;
   usersTotal: number;
   onlineWindowStart: DateTimeTimezone | string;
+  projectsTotal: number;
+  regionsTotal: number;
+  sitesTotal: number;
   annotationsTotal: number;
   annotationsTotalDuration: Duration | number;
   annotationsRecent: number;
@@ -26,6 +29,7 @@ export interface IStatisticsSummary {
   audioRecordingsTotalSize: number;
   tagsTotal: number;
   tagsAppliedTotal: number;
+  tagsAppliedUniqueTotal: number;
 }
 
 export class StatisticsSummary extends AbstractModel {
@@ -34,6 +38,9 @@ export class StatisticsSummary extends AbstractModel {
   public readonly usersTotal: number;
   @bawDateTime()
   public readonly onlineWindowStart: DateTimeTimezone;
+  public readonly projectsTotal: number;
+  public readonly regionsTotal: number;
+  public readonly sitesTotal: number;
   public readonly annotationsTotal: number;
   @bawDuration()
   public readonly annotationsTotalDuration: Duration;
@@ -45,6 +52,7 @@ export class StatisticsSummary extends AbstractModel {
   public readonly audioRecordingsTotalSize: number;
   public readonly tagsTotal: number;
   public readonly tagsAppliedTotal: number;
+  public readonly tagsAppliedUniqueTotal: number;
 
   public get viewUrl(): string {
     throw Error();
