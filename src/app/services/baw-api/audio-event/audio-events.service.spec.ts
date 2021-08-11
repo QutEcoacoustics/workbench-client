@@ -1,8 +1,8 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
 import { IdOr } from "@baw-api/api-common";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
+import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import {
@@ -20,16 +20,15 @@ type Params = [IdOr<AudioRecording>];
 type Service = AudioEventsService;
 
 describe("AudioEventsService", function () {
-  const createModel = () => new AudioEvent(generateAudioEvent(10));
+  const createModel = () => new AudioEvent(generateAudioEvent({ id: 10 }));
   const baseUrl = "/audio_recordings/5/audio_events/";
+  const createService = createServiceFactory({
+    service: AudioEventsService,
+    imports: [HttpClientTestingModule, MockAppConfigModule],
+  });
 
   beforeEach(function () {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MockAppConfigModule],
-      providers: [AudioEventsService],
-    });
-
-    this.service = TestBed.inject(AudioEventsService);
+    this.service = createService().service;
   });
 
   validateApiList<Model, Params, Service>(baseUrl, 5);

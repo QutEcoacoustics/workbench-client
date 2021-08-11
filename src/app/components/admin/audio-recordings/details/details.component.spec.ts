@@ -1,17 +1,14 @@
 import { Injector } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { AccountsService } from "@baw-api/account/accounts.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
-import { SpyObject } from "@ngneat/spectator";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
@@ -19,23 +16,19 @@ import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { AdminAudioRecordingComponent } from "./details.component";
 
 describe("AdminAudioRecordingComponent", () => {
-  let component: AdminAudioRecordingComponent;
-  let fixture: ComponentFixture<AdminAudioRecordingComponent>;
   let injector: Injector;
+  let spec: Spectator<AdminAudioRecordingComponent>;
+  const createComponent = createComponentFactory({
+    component: AdminAudioRecordingComponent,
+    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+  });
 
   function setup(model: AudioRecording, error?: ApiErrorDetails) {
-    TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [AdminAudioRecordingComponent],
+    spec = createComponent({
+      detectChanges: false,
       providers: [
         {
           provide: ActivatedRoute,
@@ -45,17 +38,11 @@ describe("AdminAudioRecordingComponent", () => {
           ),
         },
       ],
-    }).compileComponents();
+    });
 
-    fixture = TestBed.createComponent(AdminAudioRecordingComponent);
-    injector = TestBed.inject(Injector);
-    const accountsApi = TestBed.inject(
-      ACCOUNT.token
-    ) as SpyObject<AccountsService>;
-    const sitesApi = TestBed.inject(
-      SHALLOW_SITE.token
-    ) as SpyObject<ShallowSitesService>;
-    component = fixture.componentInstance;
+    injector = spec.inject(Injector);
+    const accountsApi = spec.inject(ACCOUNT.token);
+    const sitesApi = spec.inject(SHALLOW_SITE.token);
 
     const accountsSubject = new Subject<User>();
     const siteSubject = new Subject<Site>();
@@ -84,14 +71,14 @@ describe("AdminAudioRecordingComponent", () => {
 
   it("should create", () => {
     setup(new AudioRecording(generateAudioRecording()));
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+    spec.detectChanges();
+    expect(spec.component).toBeTruthy();
   });
 
   it("should handle error", () => {
     setup(undefined, generateApiErrorDetails());
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+    spec.detectChanges();
+    expect(spec.component).toBeTruthy();
   });
 
   describe("details", () => {
@@ -99,10 +86,10 @@ describe("AdminAudioRecordingComponent", () => {
 
     beforeEach(async function () {
       const promise = setup(model);
-      fixture.detectChanges();
+      spec.detectChanges();
       await promise;
-      fixture.detectChanges();
-      this.fixture = fixture;
+      spec.detectChanges();
+      this.fixture = spec.fixture;
     });
 
     const details: Detail[] = [
