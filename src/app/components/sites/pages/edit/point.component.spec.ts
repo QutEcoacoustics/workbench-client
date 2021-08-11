@@ -29,7 +29,7 @@ import schema from "../../point.base.json";
 import { PointEditComponent } from "./point.component";
 
 describe("PointEditComponent", () => {
-  let spectator: SpectatorRouting<PointEditComponent>;
+  let spec: SpectatorRouting<PointEditComponent>;
   const { fields } = schema;
   const createComponent = createRoutingFactory({
     component: PointEditComponent,
@@ -73,7 +73,7 @@ describe("PointEditComponent", () => {
     ]);
   });
 
-  xdescribe("component", () => {
+  describe("component", () => {
     let api: SpyObject<SitesService>;
     let defaultProject: Project;
     let defaultRegion: Region;
@@ -84,7 +84,7 @@ describe("PointEditComponent", () => {
       regionError?: ApiErrorDetails,
       siteError?: ApiErrorDetails
     ) {
-      spectator = createComponent({
+      spec = createComponent({
         detectChanges: false,
         params: {
           projectId: defaultProject?.id,
@@ -103,8 +103,8 @@ describe("PointEditComponent", () => {
         },
       });
 
-      api = spectator.inject(SitesService);
-      spectator.detectChanges();
+      api = spec.inject(SitesService);
+      spec.detectChanges();
     }
 
     beforeAll(async () => await embedGoogleMaps());
@@ -112,34 +112,34 @@ describe("PointEditComponent", () => {
     beforeEach(() => {
       defaultProject = new Project(generateProject());
       defaultRegion = new Region(generateRegion());
-      defaultSite = new Site(generateSite(undefined, true));
+      defaultSite = new Site(generateSite({}, true));
     });
 
     it("should create", () => {
       setup();
-      expect(spectator.component).toBeTruthy();
+      expect(spec.component).toBeTruthy();
     });
 
     it("should handle project error", () => {
       setup(generateApiErrorDetails());
-      assertErrorHandler(spectator.fixture);
+      assertErrorHandler(spec.fixture);
     });
 
     it("should handle region error", () => {
       setup(undefined, generateApiErrorDetails());
-      assertErrorHandler(spectator.fixture);
+      assertErrorHandler(spec.fixture);
     });
 
     it("should handle site error", () => {
       setup(undefined, undefined, generateApiErrorDetails());
-      assertErrorHandler(spectator.fixture);
+      assertErrorHandler(spec.fixture);
     });
 
     it("should call api", () => {
       setup();
       api.update.and.callFake(() => new Subject());
 
-      spectator.component.submit({ ...defaultSite });
+      spec.component.submit({ ...defaultSite });
       expect(api.update).toHaveBeenCalledWith(
         new Site(defaultSite),
         defaultProject
@@ -150,8 +150,8 @@ describe("PointEditComponent", () => {
       setup();
       api.update.and.callFake(() => new BehaviorSubject<Site>(defaultSite));
 
-      spectator.component.submit({});
-      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
+      spec.component.submit({});
+      expect(spec.router.navigateByUrl).toHaveBeenCalledWith(
         defaultSite.getViewUrl(defaultProject)
       );
     });

@@ -1,8 +1,10 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import { regionResolvers } from "@baw-api/region/regions.service";
-import { siteResolvers } from "@baw-api/site/sites.service";
+import {
+  ApiErrorDetails,
+  isApiErrorDetails,
+} from "@baw-api/api.interceptor.service";
+import { ResolvedModel } from "@baw-api/resolver-common";
 import { SiteComponent } from "@components/sites/site/site.component";
+import { Errorable } from "@helpers/advancedTypes";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -18,34 +20,36 @@ import { PointDetailsComponent } from "./point.component";
 const mockSiteComponent = MockComponent(SiteComponent);
 
 describe("PointDetailsComponent", () => {
+  let defaultError: ApiErrorDetails;
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
-  let spectator: SpectatorRouting<PointDetailsComponent>;
+  let spec: SpectatorRouting<PointDetailsComponent>;
   const createComponent = createRoutingFactory({
     declarations: [mockSiteComponent],
     component: PointDetailsComponent,
   });
 
   function setup(
-    project: Project,
-    region: Region,
-    site: Site,
-    projectError?: ApiErrorDetails,
-    regionError?: ApiErrorDetails,
-    siteError?: ApiErrorDetails
+    project: Errorable<Project>,
+    region: Errorable<Region>,
+    site: Errorable<Site>
   ) {
-    spectator = createComponent({
+    function getResolvedModel<T>(model: Errorable<T>): ResolvedModel<T> {
+      return isApiErrorDetails(model) ? { error: model } : { model };
+    }
+
+    spec = createComponent({
       detectChanges: false,
       data: {
         resolvers: {
-          project: projectResolvers.show,
-          region: regionResolvers.show,
-          site: siteResolvers.show,
+          project: "resolver",
+          region: "resolver",
+          site: "resolver",
         },
-        project: { model: project, error: projectError },
-        region: { model: region, error: regionError },
-        site: { model: site, error: siteError },
+        project: getResolvedModel(project),
+        region: getResolvedModel(region),
+        site: getResolvedModel(site),
       },
     });
   }
@@ -54,52 +58,39 @@ describe("PointDetailsComponent", () => {
     defaultProject = new Project(generateProject());
     defaultRegion = new Region(generateRegion());
     defaultSite = new Site(generateSite());
+    defaultError = generateApiErrorDetails();
   });
 
   it("should create", () => {
     setup(defaultProject, defaultRegion, defaultSite);
-    spectator.detectChanges();
-    expect(spectator.component).toBeTruthy();
+    spec.detectChanges();
+    expect(spec.component).toBeTruthy();
   });
 
   it("should handle failure to retrieve project", () => {
-    setup(undefined, defaultRegion, defaultSite, generateApiErrorDetails());
-    spectator.detectChanges();
-    assertErrorHandler(spectator.fixture);
+    setup(defaultError, defaultRegion, defaultSite);
+    spec.detectChanges();
+    assertErrorHandler(spec.fixture);
   });
 
   it("should handle failure to retrieve region", () => {
-    setup(
-      defaultProject,
-      undefined,
-      defaultSite,
-      undefined,
-      generateApiErrorDetails()
-    );
-    spectator.detectChanges();
-    assertErrorHandler(spectator.fixture);
+    setup(defaultProject, defaultError, defaultSite);
+    spec.detectChanges();
+    assertErrorHandler(spec.fixture);
   });
 
   it("should handle failure to retrieve site", () => {
-    setup(
-      defaultProject,
-      defaultRegion,
-      undefined,
-      undefined,
-      undefined,
-      generateApiErrorDetails()
-    );
-    spectator.detectChanges();
-    assertErrorHandler(spectator.fixture);
+    setup(defaultProject, defaultRegion, defaultError);
+    spec.detectChanges();
+    assertErrorHandler(spec.fixture);
   });
 
   it("should create site details component", () => {
     setup(defaultProject, defaultRegion, defaultSite);
-    spectator.detectChanges();
-    const siteDetails = spectator.query(mockSiteComponent);
-    expect(siteDetails).toBeTruthy();
-    expect(siteDetails.project).toEqual(defaultProject);
-    expect(siteDetails.region).toEqual(defaultRegion);
-    expect(siteDetails.site).toEqual(defaultSite);
+    spec.detectChanges();
+    const { project, region, site } = spec.query(mockSiteComponent);
+    expect(project).toEqual(defaultProject);
+    expect(region).toEqual(defaultRegion);
+    expect(site).toEqual(defaultSite);
   });
 });

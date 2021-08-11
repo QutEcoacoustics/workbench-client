@@ -97,11 +97,9 @@ describe("AdminOrphanComponent", () => {
   });
 
   describe("details", () => {
-    const model = new Site({
-      ...generateSite(),
-      locationObfuscated: true,
-      projectIds: [1, 2, 3],
-    });
+    const model = new Site(
+      generateSite({ locationObfuscated: true, projectIds: [1, 2, 3] })
+    );
 
     beforeEach(async function () {
       const promise = configureTestingModule(model);

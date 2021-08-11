@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
 import { SavedSearch } from "@models/SavedSearch";
+import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateSavedSearch } from "@test/fakes/SavedSearch";
 import {
@@ -17,16 +17,15 @@ type Params = [];
 type Service = SavedSearchesService;
 
 describe("SavedSearchesService", function () {
-  const createModel = () => new SavedSearch(generateSavedSearch(5));
+  const createModel = () => new SavedSearch(generateSavedSearch({ id: 5 }));
   const baseUrl = "/saved_searches/";
+  const createService = createServiceFactory({
+    service: SavedSearchesService,
+    imports: [HttpClientTestingModule, MockAppConfigModule],
+  });
 
   beforeEach(function () {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MockAppConfigModule],
-      providers: [SavedSearchesService],
-    });
-
-    this.service = TestBed.inject(SavedSearchesService);
+    this.service = createService().service;
   });
 
   validateApiList<Model, Params, Service>(baseUrl);

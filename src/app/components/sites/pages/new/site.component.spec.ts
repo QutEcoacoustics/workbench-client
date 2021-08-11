@@ -26,7 +26,7 @@ import schema from "../../site.base.json";
 import { SiteNewComponent } from "./site.component";
 
 describe("SiteNewComponent", () => {
-  let spectator: SpectatorRouting<SiteNewComponent>;
+  let spec: SpectatorRouting<SiteNewComponent>;
   const { fields } = schema;
   const createComponent = createRoutingFactory({
     component: SiteNewComponent,
@@ -75,7 +75,7 @@ describe("SiteNewComponent", () => {
     let defaultProject: Project;
 
     function setup(error?: ApiErrorDetails) {
-      spectator = createComponent({
+      spec = createComponent({
         detectChanges: false,
         params: { projectId: defaultProject?.id },
         data: {
@@ -84,8 +84,8 @@ describe("SiteNewComponent", () => {
         },
       });
 
-      api = spectator.inject(SitesService);
-      spectator.detectChanges();
+      api = spec.inject(SitesService);
+      spec.detectChanges();
     }
 
     beforeAll(async () => await embedGoogleMaps());
@@ -96,12 +96,12 @@ describe("SiteNewComponent", () => {
 
     it("should create", () => {
       setup();
-      expect(spectator.component).toBeTruthy();
+      expect(spec.component).toBeTruthy();
     });
 
     it("should handle project error", () => {
       setup(generateApiErrorDetails());
-      assertErrorHandler(spectator.fixture);
+      assertErrorHandler(spec.fixture);
     });
 
     it("should call api", () => {
@@ -109,7 +109,7 @@ describe("SiteNewComponent", () => {
       const site = new Site(generateSite());
       api.create.and.callFake(() => new Subject());
 
-      spectator.component.submit({ ...site });
+      spec.component.submit({ ...site });
       expect(api.create).toHaveBeenCalledWith(
         new Site({ ...site }),
         defaultProject
@@ -121,8 +121,8 @@ describe("SiteNewComponent", () => {
       const site = new Site(generateSite());
       api.create.and.callFake(() => new BehaviorSubject<Site>(site));
 
-      spectator.component.submit({});
-      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
+      spec.component.submit({});
+      expect(spec.router.navigateByUrl).toHaveBeenCalledWith(
         site.getViewUrl(defaultProject)
       );
     });

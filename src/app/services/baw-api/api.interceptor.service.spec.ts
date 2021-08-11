@@ -39,7 +39,7 @@ describe("BawApiInterceptor", () => {
     spyOn(spec.service, "isLoggedIn").and.callFake(() => true);
     spyOn(spec.service, "getLocalUser").and.callFake(() =>
       authToken
-        ? new SessionUser({ ...generateSessionUser(), authToken })
+        ? new SessionUser(generateSessionUser({ authToken }))
         : new SessionUser(generateSessionUser())
     );
   }

@@ -54,19 +54,18 @@ describe("AdminAnalysisJobComponent", () => {
     const promise = Promise.all([
       nStepObservable(
         accountsSubject,
-        () => new User({ ...generateUser(1), userName: "custom username" })
+        () => new User(generateUser({ id: 1, userName: "custom username" }))
       ),
       nStepObservable(
         scriptsSubject,
-        () => new Script({ ...generateScript(1), name: "custom script" })
+        () => new Script(generateScript({ id: 1, name: "custom script" }))
       ),
       nStepObservable(
         savedSearchesSubject,
         () =>
-          new SavedSearch({
-            ...generateSavedSearch(1),
-            name: "custom saved search",
-          })
+          new SavedSearch(
+            generateSavedSearch({ id: 1, name: "custom saved search" })
+          )
       ),
     ]);
 

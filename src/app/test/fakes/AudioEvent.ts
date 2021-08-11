@@ -17,7 +17,7 @@ export function generateAudioEvent(
     endTimeSeconds,
     lowFrequencyHertz,
     highFrequencyHertz,
-    taggings: modelData.randomArray(0, 5, (i) => generateTagging(i)),
+    taggings: modelData.randomArray(0, 5, (id) => generateTagging({ id })),
     isReference: modelData.bool(),
     ...modelData.model.generateAllUsers(),
     ...data,

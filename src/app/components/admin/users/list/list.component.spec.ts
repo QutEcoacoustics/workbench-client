@@ -31,19 +31,15 @@ describe("AdminUserListComponent", () => {
     spec = createComponent({ detectChanges: false });
     api = spec.inject(AccountsService);
 
-    defaultUser = new User({
-      ...generateUser(1),
-      userName: "username",
-      isConfirmed: false,
-    });
+    defaultUser = new User(
+      generateUser({ id: 1, userName: "username", isConfirmed: false })
+    );
     defaultUsers = [];
-    for (let i = 0; i < defaultApiPageSize; i++) {
+    for (let id = 0; id < defaultApiPageSize; id++) {
       defaultUsers.push(
-        new User({
-          ...generateUser(i),
-          userName: "user " + i,
-          isConfirmed: false,
-        })
+        new User(
+          generateUser({ id, userName: "user " + id, isConfirmed: false })
+        )
       );
     }
 
@@ -81,7 +77,7 @@ describe("AdminUserListComponent", () => {
     });
 
     it("should handle missing last login data", () => {
-      const user = new User({ ...generateUser(), lastSeenAt: undefined });
+      const user = new User(generateUser({ lastSeenAt: undefined }));
       datatableApiResponse<User>(api, [user]);
       spec.detectChanges();
 
@@ -91,10 +87,9 @@ describe("AdminUserListComponent", () => {
     });
 
     it("should call toRelative for lastLogin", () => {
-      const user = new User({
-        ...generateUser(),
-        lastSeenAt: "2020-03-09T22:00:50.072+10:00",
-      });
+      const user = new User(
+        generateUser({ lastSeenAt: "2020-03-09T22:00:50.072+10:00" })
+      );
       datatableApiResponse<User>(api, [user]);
       spyOn(user.lastSeenAt, "toRelative").and.callThrough();
       spec.detectChanges();
@@ -103,10 +98,9 @@ describe("AdminUserListComponent", () => {
     });
 
     it("should display last login", () => {
-      const user = new User({
-        ...generateUser(),
-        lastSeenAt: "2020-03-09T22:00:50.072+10:00",
-      });
+      const user = new User(
+        generateUser({ lastSeenAt: "2020-03-09T22:00:50.072+10:00" })
+      );
       datatableApiResponse<User>(api, [user]);
       spyOn(user.lastSeenAt, "toRelative").and.callFake(() => "testing");
       spec.detectChanges();

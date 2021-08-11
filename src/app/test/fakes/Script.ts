@@ -1,10 +1,9 @@
-import { Id } from "@interfaces/apiInterfaces";
 import { IScript } from "@models/Script";
 import { modelData } from "@test/helpers/faker";
 
-export function generateScript(id?: Id): Required<IScript> {
+export function generateScript(data?: Partial<IScript>): Required<IScript> {
   return {
-    id: modelData.id(id),
+    id: modelData.id(),
     name: modelData.param(),
     analysisIdentifier: "script machine identifier", // TODO Implement with random values
     version: parseFloat(modelData.system.semver()),
@@ -21,5 +20,6 @@ export function generateScript(id?: Id): Required<IScript> {
     }, // TODO Implement with random values
     ...modelData.model.generateDescription(),
     ...modelData.model.generateCreator(),
+    ...data,
   };
 }

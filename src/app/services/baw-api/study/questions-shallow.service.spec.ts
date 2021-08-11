@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
 import { Question } from "@models/Question";
+import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateQuestion } from "@test/fakes/Question";
 import {
@@ -18,16 +18,15 @@ type Params = [];
 type Service = ShallowQuestionsService;
 
 describe("ShallowQuestionsService", function () {
-  const createModel = () => new Question(generateQuestion(5));
+  const createModel = () => new Question(generateQuestion({ id: 5 }));
   const baseUrl = "/questions/";
+  const createService = createServiceFactory({
+    service: ShallowQuestionsService,
+    imports: [HttpClientTestingModule, MockAppConfigModule],
+  });
 
   beforeEach(function () {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MockAppConfigModule],
-      providers: [ShallowQuestionsService],
-    });
-
-    this.service = TestBed.inject(ShallowQuestionsService);
+    this.service = createService().service;
   });
 
   validateApiList<Model, Params, Service>(baseUrl);

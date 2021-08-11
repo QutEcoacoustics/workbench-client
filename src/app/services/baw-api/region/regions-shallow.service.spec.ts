@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
 import { Region } from "@models/Region";
+import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateRegion } from "@test/fakes/Region";
 import {
@@ -18,16 +18,15 @@ type Params = [];
 type Service = ShallowRegionsService;
 
 describe("ShallowRegionsService", function () {
-  const createModel = () => new Region(generateRegion(5));
+  const createModel = () => new Region(generateRegion({ id: 5 }));
   const baseUrl = "/regions/";
+  const createService = createServiceFactory({
+    service: ShallowRegionsService,
+    imports: [HttpClientTestingModule, MockAppConfigModule],
+  });
 
   beforeEach(function () {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MockAppConfigModule],
-      providers: [ShallowRegionsService],
-    });
-
-    this.service = TestBed.inject(ShallowRegionsService);
+    this.service = createService().service;
   });
 
   validateApiList<Model, Params, Service>(baseUrl);

@@ -96,10 +96,8 @@ describe("HeaderComponent", () => {
           } else {
             isLoggedIn = true;
             defaultUser = new SessionUser({
-              ...generateUser(),
+              ...generateUser({}, userType.type === "admin"),
               ...generateSessionUser(),
-              rolesMask: userType.type === "admin" ? 1 : 2,
-              rolesMaskNames: userType.type === "user" ? ["user"] : ["admin"],
             });
           }
         });
