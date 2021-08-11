@@ -1,19 +1,14 @@
 import { Injector } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { AccountsService } from "@baw-api/account/accounts.service";
-import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SavedSearchesService } from "@baw-api/saved-search/saved-searches.service";
-import { ScriptsService } from "@baw-api/script/scripts.service";
 import { ACCOUNT, SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { SavedSearch } from "@models/SavedSearch";
 import { Script } from "@models/Script";
 import { User } from "@models/User";
-import { SpyObject } from "@ngneat/spectator";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
@@ -24,46 +19,34 @@ import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { AdminAnalysisJobComponent } from "./details.component";
 
 describe("AdminAnalysisJobComponent", () => {
-  let component: AdminAnalysisJobComponent;
-  let fixture: ComponentFixture<AdminAnalysisJobComponent>;
   let injector: Injector;
+  let spec: Spectator<AdminAnalysisJobComponent>;
+  const createComponent = createComponentFactory({
+    component: AdminAnalysisJobComponent,
+    imports: [SharedModule, MockBawApiModule, RouterTestingModule],
+  });
 
   function setup(model: AnalysisJob, error?: ApiErrorDetails) {
-    TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [AdminAnalysisJobComponent],
+    spec = createComponent({
+      detectChanges: false,
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
-            { analysisJob: analysisJobResolvers.show },
+          useValue: mockActivatedRoute(
+            { analysisJob: "resolver" },
             { analysisJob: { model, error } }
           ),
         },
       ],
-    }).compileComponents();
+    });
 
-    fixture = TestBed.createComponent(AdminAnalysisJobComponent);
-    injector = TestBed.inject(Injector);
-    const accountsApi = TestBed.inject(
-      ACCOUNT.token
-    ) as SpyObject<AccountsService>;
-    const scriptsApi = TestBed.inject(
-      SCRIPT.token
-    ) as SpyObject<ScriptsService>;
-    const savedSearchesApi = TestBed.inject(
-      SAVED_SEARCH.token
-    ) as SpyObject<SavedSearchesService>;
-    component = fixture.componentInstance;
+    injector = spec.inject(Injector);
+    const accountsApi = spec.inject(ACCOUNT.token);
+    const scriptsApi = spec.inject(SCRIPT.token);
+    const savedSearchesApi = spec.inject(SAVED_SEARCH.token);
 
     const accountsSubject = new Subject<User>();
     const scriptsSubject = new Subject<Script>();
@@ -102,14 +85,14 @@ describe("AdminAnalysisJobComponent", () => {
 
   it("should create", () => {
     setup(new AnalysisJob(generateAnalysisJob()));
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+    spec.detectChanges();
+    expect(spec.component).toBeTruthy();
   });
 
   it("should handle error", () => {
     setup(undefined, generateApiErrorDetails());
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+    spec.detectChanges();
+    expect(spec.component).toBeTruthy();
   });
 
   describe("details", () => {
@@ -117,10 +100,10 @@ describe("AdminAnalysisJobComponent", () => {
 
     beforeEach(async function () {
       const promise = setup(model);
-      fixture.detectChanges();
+      spec.detectChanges();
       await promise;
-      fixture.detectChanges();
-      this.fixture = fixture;
+      spec.detectChanges();
+      this.fixture = spec.fixture;
     });
 
     const details: Detail[] = [

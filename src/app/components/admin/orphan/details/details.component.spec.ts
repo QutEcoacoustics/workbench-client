@@ -40,7 +40,7 @@ describe("AdminOrphanComponent", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
+          useValue: mockActivatedRoute(
             { site: shallowSiteResolvers.show },
             { site: { model, error } }
           ),

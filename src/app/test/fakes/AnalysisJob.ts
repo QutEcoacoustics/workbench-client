@@ -1,8 +1,9 @@
-import { Id } from "@interfaces/apiInterfaces";
 import { AnalysisJobStatus, IAnalysisJob } from "@models/AnalysisJob";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAnalysisJob(id?: Id): Required<IAnalysisJob> {
+export function generateAnalysisJob(
+  data?: Partial<IAnalysisJob>
+): Required<IAnalysisJob> {
   const overallDurationSeconds = modelData.datatype.number(3.154e7); // 1 year
   const overallDataLengthBytes = overallDurationSeconds * 22050 * 2; // duration seconds * sample rate * two bytes per sample
   const statuses: AnalysisJobStatus[] = [
@@ -15,7 +16,7 @@ export function generateAnalysisJob(id?: Id): Required<IAnalysisJob> {
   ];
 
   return {
-    id: modelData.id(id),
+    id: modelData.id(),
     name: modelData.param(),
     annotationName: modelData.param(),
     scriptId: modelData.id(),
@@ -37,5 +38,6 @@ export function generateAnalysisJob(id?: Id): Required<IAnalysisJob> {
     customSettings: modelData.randomObject(0, 5),
     ...modelData.model.generateDescription(),
     ...modelData.model.generateAllUsers(),
+    ...data,
   };
 }

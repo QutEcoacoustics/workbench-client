@@ -33,7 +33,7 @@ describe("AdminTagGroupsNewComponent", () => {
         providers: [
           {
             provide: ActivatedRoute,
-            useClass: mockActivatedRoute(),
+            useValue: mockActivatedRoute(),
           },
         ],
       }).compileComponents();

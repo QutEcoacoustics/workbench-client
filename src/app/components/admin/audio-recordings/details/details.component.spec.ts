@@ -39,7 +39,7 @@ describe("AdminAudioRecordingComponent", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
+          useValue: mockActivatedRoute(
             { audioRecording: audioRecordingResolvers.show },
             { audioRecording: { model, error } }
           ),

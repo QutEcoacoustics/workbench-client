@@ -57,7 +57,7 @@ describe("ProjectsNewComponent", () => {
         providers: [
           {
             provide: ActivatedRoute,
-            useClass: mockActivatedRoute(),
+            useValue: mockActivatedRoute(),
           },
         ],
       }).compileComponents();

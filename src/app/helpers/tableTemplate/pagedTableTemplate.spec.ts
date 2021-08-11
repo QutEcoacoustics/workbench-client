@@ -61,7 +61,7 @@ describe("PagedTableTemplate", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(resolvers, data),
+          useValue: mockActivatedRoute(resolvers, data),
         },
       ],
     }).compileComponents();
@@ -258,9 +258,7 @@ describe("PagedTableTemplate", () => {
     it("should handle first page", () => {
       const project = new Project(generateProject());
       project.addMetadata(generateMetaData(1, 25));
-      api.filter.and.callFake(
-        () => new BehaviorSubject<Project[]>([project])
-      );
+      api.filter.and.callFake(() => new BehaviorSubject<Project[]>([project]));
       component.setPage({
         offset: 0,
         count: 1,
@@ -275,9 +273,7 @@ describe("PagedTableTemplate", () => {
     it("should handle random page", () => {
       const project = new Project(generateProject());
       project.addMetadata(generateMetaData(3, 25));
-      api.filter.and.callFake(
-        () => new BehaviorSubject<Project[]>([project])
-      );
+      api.filter.and.callFake(() => new BehaviorSubject<Project[]>([project]));
       component.setPage({
         offset: 2,
         count: 51,
@@ -484,9 +480,7 @@ describe("PagedTableTemplate", () => {
       const project = new Project(generateProject());
       project.addMetadata(generateMetaData(1, 1));
 
-      api.filter.and.callFake(
-        () => new BehaviorSubject<Project[]>([project])
-      );
+      api.filter.and.callFake(() => new BehaviorSubject<Project[]>([project]));
       fixture.detectChanges();
 
       expect(component.totalModels).toBe(1);
@@ -496,9 +490,7 @@ describe("PagedTableTemplate", () => {
       const project = new Project(generateProject());
       project.addMetadata(generateMetaData(1, 100));
 
-      api.filter.and.callFake(
-        () => new BehaviorSubject<Project[]>([project])
-      );
+      api.filter.and.callFake(() => new BehaviorSubject<Project[]>([project]));
       fixture.detectChanges();
 
       expect(component.totalModels).toBe(100);
