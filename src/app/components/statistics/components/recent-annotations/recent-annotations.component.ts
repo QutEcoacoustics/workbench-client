@@ -141,8 +141,7 @@ export class RecentAnnotationsComponent implements OnChanges {
         { name: "Updated" },
         { name: "Model" },
       ];
-      this.isLoggedIn = true;
-      //this.isLoggedIn = this.api.isLoggedIn();
+      this.isLoggedIn = this.api.isLoggedIn();
     }
 
     this.rows = (this.annotations ?? []).map((recording) => ({
@@ -152,7 +151,5 @@ export class RecentAnnotationsComponent implements OnChanges {
       updated: recording.updatedAt,
       model: recording,
     }));
-
-    console.log(this.rows);
   }
 }

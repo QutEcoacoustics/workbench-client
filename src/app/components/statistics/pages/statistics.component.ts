@@ -3,11 +3,10 @@ import { StatisticsService } from "@baw-api/statistics/statistics.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { toRelative } from "@interfaces/apiInterfaces";
-import { AudioEvent } from "@models/AudioEvent";
-import { AudioRecording } from "@models/AudioRecording";
 import { StatisticsRecent } from "@models/Statistics";
 import { ConfigService } from "@services/config/config.service";
 import { IItem } from "@shared/items/item/item.component";
+import fileSize from "filesize";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { defaultAudioIcon, defaultUserIcon } from "src/app/app.menus";
@@ -20,8 +19,22 @@ import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
  */
 @Component({
   selector: "baw-statistics",
-  templateUrl: "./statistics.component.html",
-  styleUrls: ["./statistics.component.scss"],
+  template: `
+    <h1>Statistics</h1>
+
+    <baw-items [items]="groupOne"></baw-items>
+    <baw-items [items]="groupTwo"></baw-items>
+
+    <baw-recent-annotations
+      [annotations]="recent?.audioEvents"
+    ></baw-recent-annotations>
+
+    <br />
+
+    <baw-recent-audio-recordings
+      [audioRecordings]="recent?.audioRecordings"
+    ></baw-recent-audio-recordings>
+  `,
 })
 class StatisticsComponent
   extends withUnsubscribe(PageComponent)
@@ -46,9 +59,6 @@ class StatisticsComponent
     { icon: ["fas", "clock"], name: "Overall audio duration" },
   ]);
   public recent: StatisticsRecent;
-  public recentAnnotations: AudioEvent[];
-  public recentRecordings: AudioRecording[];
-  public isLoggedIn: boolean;
 
   public constructor(
     private stats: StatisticsService,
@@ -58,47 +68,55 @@ class StatisticsComponent
   }
 
   public ngOnInit() {
-    const updateValue = (
+    const updateValues = (
       group: "groupOne" | "groupTwo",
-      index: number,
-      value: string | number
+      ...values: { index: number; value: string | number }[]
     ) => {
-      const list: List<IItem> = this[group];
-      this[group] = list.set(index, { ...list.get(index), value });
+      let list: List<IItem> = this[group];
+      values.forEach(({ value, index }) => {
+        list = list.set(index, { ...list.get(index), value });
+      });
+      this[group] = list;
     };
 
     this.stats
       .show()
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe((results) => {
-        updateValue("groupOne", 0, results.summary.projectsTotal);
-        updateValue("groupOne", 1, results.summary.annotationsTotal);
-        updateValue("groupOne", 2, results.summary.tagsTotal);
-        updateValue("groupOne", 3, results.summary.sitesTotal);
-        updateValue("groupOne", 4, results.summary.audioRecordingsTotal);
-        updateValue("groupOne", 5, results.summary.usersTotal);
-
-        updateValue("groupTwo", 0, results.summary.tagsAppliedUniqueTotal);
-        updateValue("groupTwo", 1, results.summary.tagsAppliedTotal);
-        updateValue("groupTwo", 2, results.recent.audioEventIds.size);
-        updateValue(
-          "groupTwo",
-          3,
-          toRelative(results.summary.annotationsTotalDuration)
-        );
-        updateValue("groupTwo", 4, results.summary.usersOnline);
-        updateValue("groupTwo", 5, results.summary.audioRecordingsTotalSize);
-        updateValue("groupTwo", 6, results.recent.audioRecordingIds.size);
-        updateValue(
-          "groupTwo",
-          7,
-          toRelative(results.summary.audioRecordingsTotalDuration)
+      .subscribe(({ summary, recent }) => {
+        updateValues(
+          "groupOne",
+          { index: 0, value: summary.projectsTotal },
+          { index: 1, value: summary.annotationsTotal },
+          { index: 2, value: summary.tagsTotal },
+          { index: 3, value: summary.sitesTotal },
+          { index: 4, value: summary.audioRecordingsTotal },
+          { index: 5, value: summary.usersTotal }
         );
 
-        this.recent = results.recent;
-        this.recentAnnotations = results.recent.audioEvents;
-        this.recentRecordings = results.recent.audioRecordings;
-        console.log(results.recent);
+        updateValues(
+          "groupTwo",
+          { index: 0, value: summary.tagsAppliedUniqueTotal },
+          { index: 1, value: summary.tagsAppliedTotal },
+          { index: 2, value: recent.audioEventIds.size },
+          {
+            index: 3,
+            value: toRelative(summary.annotationsTotalDuration, { largest: 2 }),
+          },
+          { index: 4, value: summary.usersOnline },
+          {
+            index: 5,
+            value: fileSize(summary.audioRecordingsTotalSize, { round: 2 }),
+          },
+          { index: 6, value: summary.audioRecordingsRecent },
+          {
+            index: 7,
+            value: toRelative(summary.audioRecordingsTotalDuration, {
+              largest: 2,
+            }),
+          }
+        );
+
+        this.recent = recent;
       });
   }
 }

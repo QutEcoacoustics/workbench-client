@@ -181,7 +181,7 @@ export function isApiErrorDetails(
  * @param errorResponse Error response
  */
 function isErrorResponse(
-  errorResponse: ApiErrorResponse | ApiErrorDetails | HttpErrorResponse
+  errorResponse: any
 ): errorResponse is ApiErrorResponse {
-  return !!(errorResponse as ApiErrorResponse).error?.meta?.error?.details;
+  return !!(errorResponse as ApiErrorResponse)?.error?.meta?.error?.details;
 }

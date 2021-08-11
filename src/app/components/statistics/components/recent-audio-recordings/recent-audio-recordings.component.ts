@@ -92,8 +92,7 @@ export class RecentAudioRecordingsComponent implements OnChanges {
         { name: "Uploaded" },
         { name: "Model" },
       ];
-      this.isLoggedIn = true;
-      //this.isLoggedIn = this.api.isLoggedIn();
+      this.isLoggedIn = this.api.isLoggedIn();
     }
 
     this.rows = (this.audioRecordings ?? []).map((recording) => ({
