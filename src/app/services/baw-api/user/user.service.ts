@@ -4,7 +4,7 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { User } from "@models/User";
 import { Observable } from "rxjs";
-import { ApiShow, IdOr } from "../api-common";
+import { ApiShow } from "../api-common";
 import { BawApiService } from "../baw-api.service";
 import { ShowResolver } from "../resolver-common";
 
@@ -15,9 +15,7 @@ const endpoint = stringTemplate`/my_account/`;
  * Handles API routes pertaining to session user.
  */
 @Injectable()
-export class UserService
-  extends BawApiService<User>
-  implements ApiShow<User, [], IdOr<User>> {
+export class UserService extends BawApiService<User> implements ApiShow<User> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
