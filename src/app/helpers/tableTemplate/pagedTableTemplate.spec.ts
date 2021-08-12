@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { fakeAsync, tick } from "@angular/core/testing";
+import { fakeAsync } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import {
@@ -316,7 +316,7 @@ describe("PagedTableTemplate", () => {
       const mockInput = createInput();
       createFilterEvent("testing", "", mockInput);
 
-      tick(defaultDebounceTime);
+      spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({ filter: undefined });
     }));
 
@@ -324,7 +324,7 @@ describe("PagedTableTemplate", () => {
       const mockInput = createInput();
       createFilterEvent("custom", "a", mockInput);
 
-      tick(defaultDebounceTime);
+      spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
         filter: { ["custom" as any]: { contains: "a" } },
       });
@@ -334,7 +334,7 @@ describe("PagedTableTemplate", () => {
       const mockInput = createInput();
       createFilterEvent("testing", "a", mockInput);
 
-      tick(defaultDebounceTime);
+      spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
         filter: { ["testing" as any]: { contains: "a" } },
       });
@@ -344,7 +344,7 @@ describe("PagedTableTemplate", () => {
       const mockInput = createInput();
       createFilterEvent("testing", "testing", mockInput);
 
-      tick(defaultDebounceTime);
+      spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
         filter: { ["testing" as any]: { contains: "testing" } },
       });
@@ -359,7 +359,7 @@ describe("PagedTableTemplate", () => {
         createFilterEvent("testing", subSet, mockInput);
       }
 
-      tick(defaultDebounceTime);
+      spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledTimes(2); // Initial filter request on ngOnInit
     }));
 
@@ -372,7 +372,7 @@ describe("PagedTableTemplate", () => {
         createFilterEvent("testing", subSet, mockInput);
       }
 
-      tick(defaultDebounceTime);
+      spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
         filter: { ["testing" as any]: { contains: "testing" } },
       });
@@ -406,7 +406,7 @@ describe("PagedTableTemplate", () => {
       createSortEvent({ testing: "customKey" }, undefined, "testing");
       spec.detectChanges();
 
-      tick(defaultDebounceTime);
+      spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({ sorting: undefined });
     }));
 
@@ -414,7 +414,7 @@ describe("PagedTableTemplate", () => {
       createSortEvent({ testing: "customKey" }, "asc", "testing");
       spec.detectChanges();
 
-      tick(defaultDebounceTime);
+      spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
         sorting: { orderBy: "customKey", direction: "asc" },
       });
@@ -424,7 +424,7 @@ describe("PagedTableTemplate", () => {
       createSortEvent({ testing: "customKey" }, "desc", "testing");
       spec.detectChanges();
 
-      tick(defaultDebounceTime);
+      spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
         sorting: { orderBy: "customKey", direction: "desc" },
       });
@@ -434,7 +434,7 @@ describe("PagedTableTemplate", () => {
       createSortEvent({ testing: "customKey" }, "asc", "testing");
       spec.detectChanges();
 
-      tick(defaultDebounceTime);
+      spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
         sorting: { orderBy: "customKey", direction: "asc" },
       });
@@ -448,7 +448,7 @@ describe("PagedTableTemplate", () => {
       );
       spec.detectChanges();
 
-      tick(defaultDebounceTime);
+      spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
         sorting: { orderBy: "customKey", direction: "asc" },
       });

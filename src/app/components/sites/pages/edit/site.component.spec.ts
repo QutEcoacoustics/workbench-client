@@ -70,7 +70,8 @@ describe("SiteEditComponent", () => {
     ]);
   });
 
-  describe("component", () => {
+  // TODO Disabled because of #1338
+  xdescribe("component", () => {
     let api: SpyObject<SitesService>;
     let defaultProject: Project;
     let defaultSite: Site;
