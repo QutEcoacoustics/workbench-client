@@ -68,7 +68,7 @@
     "just-snake-case": "^1.2.1",
     "luxon": "^2.0.2",
     "ngx-captcha": "^10.0.0",
-    "ngx-cookie-service": "^12.0.2",
+    "ngx-cookie-service": "^12.0.3",
     "ngx-device-detector": "^2.1.1",
     "ngx-toastr": "^14.1.0",
     "rxjs": "^6.6.7",
