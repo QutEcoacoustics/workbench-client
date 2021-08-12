@@ -111,7 +111,7 @@ describe("AdminUserListComponent", () => {
     });
 
     it("should display confirmed user", () => {
-      const user = new User({ ...defaultUser, isConfirmed: true });
+      const user = new User(generateUser({ isConfirmed: true }));
       datatableApiResponse<User>(api, [user]);
       spec.detectChanges();
 
@@ -126,7 +126,7 @@ describe("AdminUserListComponent", () => {
     });
 
     it("should display not confirmed user", () => {
-      const user = new User({ ...defaultUser, isConfirmed: false });
+      const user = new User(generateUser({ isConfirmed: false }));
       datatableApiResponse<User>(api, [user]);
       spec.detectChanges();
 

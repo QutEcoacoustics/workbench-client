@@ -51,6 +51,10 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
     return this.models[userKey] as User;
   }
 
+  public hasViewUrl(site: Site): boolean {
+    return site.projectIds.size > 0;
+  }
+
   public resolveHighestAccessLevel(projects: Project[]): string {
     if ((projects ?? []).length === 0) {
       return "Unknown";

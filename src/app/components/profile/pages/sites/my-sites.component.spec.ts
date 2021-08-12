@@ -31,7 +31,6 @@ describe("MySitesComponent", () => {
   let injector: Injector;
   let defaultUser: User;
   let defaultSite: Site;
-  let defaultProject: Project;
   let sitesApi: SpyObject<ShallowSitesService>;
   let projectsApi: SpyObject<ProjectsService>;
   let spec: SpectatorRouting<MySitesComponent>;
@@ -82,7 +81,6 @@ describe("MySitesComponent", () => {
   beforeEach(() => {
     defaultUser = new User(generateUser());
     defaultSite = new Site(generateSite());
-    defaultProject = new Project(generateProject());
   });
 
   it("should create", async () => {
@@ -130,6 +128,17 @@ describe("MySitesComponent", () => {
         const link = getCells()[0].querySelector("a");
         assertUrl(link, defaultSite.viewUrl);
       });
+
+      it("should not display site name link when no projects found", () => {
+        const site = new Site(generateSite({ projectIds: [] }));
+        setup(defaultUser);
+        interceptSiteRequest([site]);
+        interceptProjectRequest([]);
+        spec.detectChanges();
+
+        const link = getCells()[0].querySelector("a");
+        expect(link).toBeFalsy();
+      });
     });
 
     it("should display last modified time", async () => {
@@ -145,8 +154,8 @@ describe("MySitesComponent", () => {
       [AccessLevel.reader, AccessLevel.writer, AccessLevel.owner].forEach(
         (accessLevel) => {
           it(`should display ${accessLevel} permissions`, async () => {
-            const site = new Site({ ...defaultSite, projectIds: [1] });
-            const project = new Project({ ...generateProject(), accessLevel });
+            const site = new Site(generateSite({ projectIds: [1] }));
+            const project = new Project(generateProject({ accessLevel }));
 
             setup(defaultUser);
             interceptSiteRequest([site]);
@@ -161,7 +170,7 @@ describe("MySitesComponent", () => {
       );
 
       it("should display unknown permissions when no projects found", async () => {
-        const site = new Site({ ...defaultSite, projectIds: [] });
+        const site = new Site(generateSite({ projectIds: [] }));
 
         setup(defaultUser);
         interceptSiteRequest([site]);
@@ -174,14 +183,14 @@ describe("MySitesComponent", () => {
       });
 
       it("should prioritize owner level permission if multiple projects", async () => {
-        const site = new Site({ ...defaultSite, projectIds: [1] });
+        const site = new Site(generateSite({ projectIds: [1] }));
 
         setup(defaultUser);
         interceptSiteRequest([site]);
         const projectPromise = interceptProjectRequest([
-          new Project({ ...defaultProject, accessLevel: AccessLevel.reader }),
-          new Project({ ...defaultProject, accessLevel: AccessLevel.owner }),
-          new Project({ ...defaultProject, accessLevel: AccessLevel.writer }),
+          new Project(generateProject({ accessLevel: AccessLevel.reader })),
+          new Project(generateProject({ accessLevel: AccessLevel.owner })),
+          new Project(generateProject({ accessLevel: AccessLevel.writer })),
         ]);
         spec.detectChanges();
         await projectPromise;
@@ -191,14 +200,14 @@ describe("MySitesComponent", () => {
       });
 
       it("should prioritize writer level permission if multiple projects and no owner", async () => {
-        const site = new Site({ ...defaultSite, projectIds: [1] });
+        const site = new Site(generateSite({ projectIds: [1] }));
 
         setup(defaultUser);
         interceptSiteRequest([site]);
         const projectPromise = interceptProjectRequest([
-          new Project({ ...defaultProject, accessLevel: AccessLevel.reader }),
-          new Project({ ...defaultProject, accessLevel: AccessLevel.writer }),
-          new Project({ ...defaultProject, accessLevel: AccessLevel.reader }),
+          new Project(generateProject({ accessLevel: AccessLevel.reader })),
+          new Project(generateProject({ accessLevel: AccessLevel.writer })),
+          new Project(generateProject({ accessLevel: AccessLevel.reader })),
         ]);
         spec.detectChanges();
         await projectPromise;

@@ -200,10 +200,9 @@ describe("HeaderComponent", () => {
 
         if (userType.links.profile) {
           it("should display default profile icon", () => {
-            const user = new SessionUser({
-              ...defaultUser.toJSON(),
-              imageUrls: undefined,
-            });
+            const user = new SessionUser(
+              generateUser({ imageUrls: undefined })
+            );
             setUser(isLoggedIn, user);
             spec.detectChanges();
 
@@ -220,7 +219,7 @@ describe("HeaderComponent", () => {
             const url = modelData.image.imageUrl(60, 60);
             const imageUrls = modelData.imageUrls();
             imageUrls[3].url = url;
-            const customUser = new SessionUser({ ...defaultUser, imageUrls });
+            const customUser = new SessionUser(generateUser({ imageUrls }));
             setUser(isLoggedIn, customUser);
             spec.detectChanges();
 
