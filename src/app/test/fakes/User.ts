@@ -27,21 +27,19 @@ export function generateUser(
     createdAt: modelData.timestamp(),
     updatedAt: modelData.timestamp(),
     lastSeenAt: modelData.timestamp(),
-    ...modelData.random.arrayElement([
-      { rolesMask: 1, rolesMaskNames: ["Admin"] },
-      { rolesMask: 2, rolesMaskNames: ["User"] },
-    ]),
     tzinfoTz: modelData.tzInfoTz(),
     ...data,
   };
 }
 
 export function generateSessionUser(
-  data?: Partial<ISessionUser>
+  data?: Partial<ISessionUser>,
+  userData?: Partial<IUser>
 ): ISessionUser {
   return {
     authToken: modelData.authToken(),
     userName: modelData.internet.userName(),
+    ...userData,
     ...data,
   };
 }

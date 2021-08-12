@@ -57,7 +57,7 @@ describe("RegionsNewComponent", () => {
     ]);
   });
 
-  xdescribe("component", () => {
+  describe("component", () => {
     let api: SpyObject<RegionsService>;
     let defaultProject: Project;
 

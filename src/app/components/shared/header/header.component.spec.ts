@@ -75,14 +75,18 @@ describe("HeaderComponent", () => {
 
   describe("links", () => {
     const userRoles = [
-      { type: "guest", links: { register: true, login: true } },
-      { type: "logged in", links: { profile: true, logout: true } },
-      { type: "admin", links: { profile: true, logout: true, admin: true } },
+      { type: "guest" as const, links: { register: true, login: true } },
+      { type: "logged in" as const, links: { profile: true, logout: true } },
+      {
+        type: "admin" as const,
+        links: { profile: true, logout: true, admin: true },
+      },
     ];
 
-    userRoles.forEach((userType) => {
-      describe(userType.type + " user", () => {
+    userRoles.forEach(({ type, links }) => {
+      describe(type + " user", () => {
         let isLoggedIn: boolean;
+        let isAdmin: boolean;
         let defaultUser: SessionUser;
 
         function getNavLinks() {
@@ -90,14 +94,14 @@ describe("HeaderComponent", () => {
         }
 
         beforeEach(() => {
-          if (userType.type === "guest") {
+          if (type === "guest") {
             isLoggedIn = false;
             defaultUser = undefined;
           } else {
             isLoggedIn = true;
+            isAdmin = type === "admin";
             defaultUser = new SessionUser({
-              ...generateUser({}, userType.type === "admin"),
-              ...generateSessionUser(),
+              ...generateSessionUser({}, generateUser({}, isAdmin)),
             });
           }
         });
@@ -151,14 +155,14 @@ describe("HeaderComponent", () => {
         });
 
         it(`should ${
-          !userType.links.register ? "not " : ""
+          !links.register ? "not " : ""
         }display register link`, () => {
           setUser(isLoggedIn, defaultUser);
           spec.detectChanges();
 
           const link = spec.query<HTMLElement>("#register-header-link");
 
-          if (userType.links.register) {
+          if (links.register) {
             assertRoute(link, registerMenuItem.route.toRouterLink());
             expect(link.innerText).toContain(registerMenuItem.label);
           } else {
@@ -166,15 +170,13 @@ describe("HeaderComponent", () => {
           }
         });
 
-        it(`should ${
-          !userType.links.login ? "not " : ""
-        }display login link`, () => {
+        it(`should ${!links.login ? "not " : ""}display login link`, () => {
           setUser(isLoggedIn, defaultUser);
           spec.detectChanges();
 
           const link = spec.query<HTMLElement>("#login-header-link");
 
-          if (userType.links.login) {
+          if (links.login) {
             assertRoute(link, loginMenuItem.route.toRouterLink());
             expect(link.innerText).toContain(loginMenuItem.label);
           } else {
@@ -182,15 +184,13 @@ describe("HeaderComponent", () => {
           }
         });
 
-        it(`should ${
-          !userType.links.profile ? "not " : ""
-        }display profile link`, () => {
+        it(`should ${!links.profile ? "not " : ""}display profile link`, () => {
           setUser(isLoggedIn, defaultUser);
           spec.detectChanges();
 
           const profile = spec.query<HTMLElement>("#login-widget");
 
-          if (userType.links.profile) {
+          if (links.profile) {
             assertRoute(profile, myAccountMenuItem.route.toRouterLink());
             expect(profile.innerText.trim()).toBe(defaultUser.userName);
           } else {
@@ -198,10 +198,13 @@ describe("HeaderComponent", () => {
           }
         });
 
-        if (userType.links.profile) {
+        if (links.profile) {
           it("should display default profile icon", () => {
             const user = new SessionUser(
-              generateUser({ imageUrls: undefined })
+              generateSessionUser(
+                {},
+                generateUser({ imageUrls: undefined }, isAdmin)
+              )
             );
             setUser(isLoggedIn, user);
             spec.detectChanges();
@@ -229,15 +232,13 @@ describe("HeaderComponent", () => {
           });
         }
 
-        it(`should ${
-          !userType.links.logout ? "not " : ""
-        }display logout`, () => {
+        it(`should ${!links.logout ? "not " : ""}display logout`, () => {
           setUser(isLoggedIn, defaultUser);
           spec.detectChanges();
 
           const logout = spec.queryAll<HTMLElement>("button.nav-link")[1];
 
-          if (userType.links.logout) {
+          if (links.logout) {
             expect(logout).toBeTruthy();
             expect(logout.innerText.trim()).toBe("Logout");
           } else {
@@ -246,14 +247,14 @@ describe("HeaderComponent", () => {
         });
 
         it(`should ${
-          !userType.links.admin ? "not " : ""
+          !links.admin ? "not " : ""
         } display admin settings`, () => {
           setUser(isLoggedIn, defaultUser);
           spec.detectChanges();
 
           const settings = spec.query<HTMLElement>("#admin-settings");
 
-          if (userType.links.admin) {
+          if (links.admin) {
             expect(settings).toBeTruthy();
             assertRoute(settings, adminDashboardMenuItem.route.toRouterLink());
           } else {
