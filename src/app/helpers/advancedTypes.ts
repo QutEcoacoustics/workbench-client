@@ -1,3 +1,5 @@
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+
 /**
  * Like Partial<T> but require certain properties.
  */
@@ -46,3 +48,5 @@ export interface Tuple<T extends any, L extends number> extends Array<T> {
   0: T;
   length: L;
 }
+
+export type Errorable<T> = T | ApiErrorDetails;

@@ -192,8 +192,7 @@ describe("MyProfileComponent", () => {
     });
 
     it("should handle if user has no last seen at date", () => {
-      const user = new User({ ...generateUser(), lastSeenAt: null });
-
+      const user = new User(generateUser({ lastSeenAt: null }));
       setup(user);
       interceptApiRequests({});
       spec.detectChanges();
@@ -214,8 +213,7 @@ describe("MyProfileComponent", () => {
     });
 
     it("should handle if user has no membership length", () => {
-      const user = new User({ ...generateUser(), createdAt: undefined });
-
+      const user = new User(generateUser({ createdAt: undefined }));
       setup(user);
       interceptApiRequests({});
       spec.detectChanges();

@@ -39,7 +39,7 @@ describe("AdminScriptsEditComponent", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
+          useValue: mockActivatedRoute(
             { script: scriptResolvers.show },
             { script: { model, error } }
           ),

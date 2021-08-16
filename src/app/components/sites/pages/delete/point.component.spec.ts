@@ -65,7 +65,7 @@ describe("PointDeleteComponent", () => {
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultRegion = new Region(generateRegion());
-    defaultSite = new Site(generateSite(undefined, true));
+    defaultSite = new Site(generateSite({}, true));
   });
 
   describe("form", () => {

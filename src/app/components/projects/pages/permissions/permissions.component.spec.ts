@@ -28,7 +28,7 @@ describe("PermissionsComponent", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
+          useValue: mockActivatedRoute(
             { project: projectResolvers.show },
             { project: { model, error } }
           ),

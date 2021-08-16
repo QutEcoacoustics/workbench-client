@@ -75,14 +75,14 @@ describe("ProjectDetailsComponent", () => {
 
   function createSitesWithMeta(numSites: number) {
     return createModelWithMeta<Site>(
-      (id) => new Site(generateSite(id)),
+      (id) => new Site(generateSite({ id })),
       numSites
     );
   }
 
   function createRegionsWithMeta(numRegions: number) {
     return createModelWithMeta<Region>(
-      (id) => new Region(generateRegion(id)),
+      (id) => new Region(generateRegion({ id })),
       numRegions
     );
   }

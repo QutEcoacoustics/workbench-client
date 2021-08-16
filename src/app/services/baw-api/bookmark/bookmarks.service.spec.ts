@@ -1,8 +1,8 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
 import { IdOr } from "@baw-api/api-common";
 import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
+import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateBookmark } from "@test/fakes/Bookmark";
 import {
@@ -21,16 +21,15 @@ type Params = [];
 type Service = BookmarksService;
 
 describe("BookmarksService", function () {
-  const createModel = () => new Bookmark(generateBookmark(5));
+  const createModel = () => new Bookmark(generateBookmark({ id: 5 }));
   const baseUrl = "/bookmarks/";
+  const createService = createServiceFactory({
+    service: BookmarksService,
+    imports: [HttpClientTestingModule, MockAppConfigModule],
+  });
 
   beforeEach(function () {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MockAppConfigModule],
-      providers: [BookmarksService],
-    });
-
-    this.service = TestBed.inject(BookmarksService);
+    this.service = createService().service;
   });
 
   validateApiList<Model, Params, Service>(baseUrl);

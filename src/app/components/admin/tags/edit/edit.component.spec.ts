@@ -42,7 +42,7 @@ describe("AdminTagsEditComponent", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
+          useValue: mockActivatedRoute(
             {
               tag: tagResolvers.show,
               typeOfTags: tagResolvers.tagTypes,

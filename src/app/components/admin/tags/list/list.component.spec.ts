@@ -30,8 +30,8 @@ describe("AdminTagsComponent", () => {
     api = TestBed.inject(TagsService);
 
     defaultModels = [];
-    for (let i = 0; i < defaultApiPageSize; i++) {
-      defaultModels.push(new Tag(generateTag(i)));
+    for (let id = 0; id < defaultApiPageSize; id++) {
+      defaultModels.push(new Tag(generateTag({ id })));
     }
 
     this.defaultModels = defaultModels;

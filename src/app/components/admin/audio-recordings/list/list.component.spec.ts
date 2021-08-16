@@ -1,33 +1,26 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AudioRecording } from "@models/AudioRecording";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
-import { appLibraryImports } from "src/app/app.module";
 import { AdminAudioRecordingsComponent } from "./list.component";
 
 describe("AdminAudioRecordingsComponent", () => {
   let api: AudioRecordingsService;
   let defaultModels: AudioRecording[];
-  let fixture: ComponentFixture<AdminAudioRecordingsComponent>;
+  let spec: Spectator<AdminAudioRecordingsComponent>;
+  const createComponent = createComponentFactory({
+    component: AdminAudioRecordingsComponent,
+    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+  });
 
   beforeEach(function () {
-    TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [AdminAudioRecordingsComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(AdminAudioRecordingsComponent);
-    api = TestBed.inject(AudioRecordingsService);
+    spec = createComponent({ detectChanges: false });
+    api = spec.inject(AudioRecordingsService);
 
     defaultModels = [];
     for (let i = 0; i < defaultApiPageSize; i++) {
@@ -35,7 +28,7 @@ describe("AdminAudioRecordingsComponent", () => {
     }
 
     this.defaultModels = defaultModels;
-    this.fixture = fixture;
+    this.fixture = spec.fixture;
     this.api = api;
   });
 

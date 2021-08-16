@@ -58,7 +58,7 @@ describe("SiteMapComponent", () => {
     }
 
     for (let id = 1; id <= numSites; id++) {
-      const site = new Site({ ...generateSite(id), ...overrides });
+      const site = new Site(generateSite({ id, ...overrides }));
       const page = calculatePage(id);
       site.addMetadata({ paging: { total: numSites, page, maxPage } });
       sites[page - 1].push(site);

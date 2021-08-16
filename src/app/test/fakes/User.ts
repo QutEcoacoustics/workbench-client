@@ -1,10 +1,12 @@
-import { Id } from "@interfaces/apiInterfaces";
 import { ISessionUser, IUser } from "@models/User";
 import { modelData } from "@test/helpers/faker";
 
-export function generateUser(id?: Id, isAdmin?: boolean): Required<IUser> {
+export function generateUser(
+  data?: Partial<IUser>,
+  isAdmin?: boolean
+): Required<IUser> {
   return {
-    id: modelData.id(id),
+    id: modelData.id(),
     email: modelData.internet.email(),
     userName: modelData.internet.userName(),
     signInCount: modelData.datatype.number(100),
@@ -25,17 +27,19 @@ export function generateUser(id?: Id, isAdmin?: boolean): Required<IUser> {
     createdAt: modelData.timestamp(),
     updatedAt: modelData.timestamp(),
     lastSeenAt: modelData.timestamp(),
-    ...modelData.random.arrayElement([
-      { rolesMask: 1, rolesMaskNames: ["Admin"] },
-      { rolesMask: 2, rolesMaskNames: ["User"] },
-    ]),
     tzinfoTz: modelData.tzInfoTz(),
+    ...data,
   };
 }
 
-export function generateSessionUser(): ISessionUser {
+export function generateSessionUser(
+  data?: Partial<ISessionUser>,
+  userData?: Partial<IUser>
+): ISessionUser {
   return {
     authToken: modelData.authToken(),
     userName: modelData.internet.userName(),
+    ...userData,
+    ...data,
   };
 }

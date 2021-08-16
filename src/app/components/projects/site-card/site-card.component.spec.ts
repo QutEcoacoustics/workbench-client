@@ -97,7 +97,7 @@ describe("SiteCardComponent", () => {
     }
 
     it("should display site image", () => {
-      const site = new Site({ ...generateSite(), imageUrl: undefined });
+      const site = new Site(generateSite({ imageUrl: undefined }));
       setup(true, site);
       spec.detectChanges();
 

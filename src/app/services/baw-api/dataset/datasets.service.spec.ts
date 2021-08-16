@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
 import { Dataset } from "@models/Dataset";
+import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateDataset } from "@test/fakes/Dataset";
 import {
@@ -18,16 +18,15 @@ type Params = [];
 type Service = DatasetsService;
 
 describe("DatasetsService", function () {
-  const createModel = () => new Dataset(generateDataset(5));
+  const createModel = () => new Dataset(generateDataset({ id: 5 }));
   const baseUrl = "/datasets/";
+  const createService = createServiceFactory({
+    service: DatasetsService,
+    imports: [HttpClientTestingModule, MockAppConfigModule],
+  });
 
   beforeEach(function () {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MockAppConfigModule],
-      providers: [DatasetsService],
-    });
-
-    this.service = TestBed.inject(DatasetsService);
+    this.service = createService().service;
   });
 
   validateApiList<Model, Params, Service>(baseUrl);

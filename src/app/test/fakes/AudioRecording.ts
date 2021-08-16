@@ -1,18 +1,14 @@
-import { Id } from "@interfaces/apiInterfaces";
 import { AudioRecordingStatus, IAudioRecording } from "@models/AudioRecording";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAudioRecording(id?: Id): Required<IAudioRecording> {
+export function generateAudioRecording(
+  data?: Partial<IAudioRecording>
+): Required<IAudioRecording> {
   const bitRateBps = modelData.random.arrayElement(
     modelData.defaults.bitRateBps
   );
   const durationSeconds = modelData.random.arrayElement([
-    30,
-    60,
-    1800,
-    3600,
-    7200,
-    21600,
+    30, 60, 1800, 3600, 7200, 21600,
   ]);
   const mediaTypes = ["audio/mpeg", "audio/flac", "audio/wave"];
   const statuses: AudioRecordingStatus[] = [
@@ -25,7 +21,7 @@ export function generateAudioRecording(id?: Id): Required<IAudioRecording> {
   ];
 
   return {
-    id: modelData.id(id),
+    id: modelData.id(),
     uuid: modelData.uuid(),
     uploaderId: modelData.id(),
     recordedDate: modelData.timestamp(),
@@ -44,5 +40,6 @@ export function generateAudioRecording(id?: Id): Required<IAudioRecording> {
     originalFileName: modelData.system.commonFileName(".mpg"),
     recordedUtcOffset: modelData.offset(),
     ...modelData.model.generateAllUsers(),
+    ...data,
   };
 }

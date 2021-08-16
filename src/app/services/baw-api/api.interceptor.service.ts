@@ -120,7 +120,7 @@ export class BawApiInterceptor implements HttpInterceptor {
     response = toCamelCase(response);
     let error: ApiErrorDetails;
 
-    if (isErrorDetails(response)) {
+    if (isApiErrorDetails(response)) {
       error = response;
     } else if (isErrorResponse(response)) {
       error = {
@@ -166,8 +166,8 @@ interface ApiErrorResponse extends HttpErrorResponse {
  *
  * @param errorResponse Error response
  */
-function isErrorDetails(
-  errorResponse: ApiErrorResponse | ApiErrorDetails | HttpErrorResponse
+export function isApiErrorDetails(
+  errorResponse: any
 ): errorResponse is ApiErrorDetails {
   const keys = Object.keys(errorResponse);
   return (

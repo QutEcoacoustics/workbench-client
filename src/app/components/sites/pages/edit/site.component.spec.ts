@@ -26,7 +26,7 @@ import schema from "../../site.base.json";
 import { SiteEditComponent } from "./site.component";
 
 describe("SiteEditComponent", () => {
-  let spectator: SpectatorRouting<SiteEditComponent>;
+  let spec: SpectatorRouting<SiteEditComponent>;
   const { fields } = schema;
   const createComponent = createRoutingFactory({
     component: SiteEditComponent,
@@ -70,6 +70,7 @@ describe("SiteEditComponent", () => {
     ]);
   });
 
+  // TODO Disabled because of #1338
   xdescribe("component", () => {
     let api: SpyObject<SitesService>;
     let defaultProject: Project;
@@ -79,7 +80,7 @@ describe("SiteEditComponent", () => {
       projectError?: ApiErrorDetails,
       siteError?: ApiErrorDetails
     ) {
-      spectator = createComponent({
+      spec = createComponent({
         detectChanges: false,
         params: { projectId: defaultProject?.id, siteId: defaultSite?.id },
         data: {
@@ -92,8 +93,8 @@ describe("SiteEditComponent", () => {
         },
       });
 
-      api = spectator.inject(SitesService);
-      spectator.detectChanges();
+      api = spec.inject(SitesService);
+      spec.detectChanges();
     }
 
     beforeAll(async () => await embedGoogleMaps());
@@ -105,24 +106,24 @@ describe("SiteEditComponent", () => {
 
     it("should create", () => {
       setup();
-      expect(spectator.component).toBeTruthy();
+      expect(spec.component).toBeTruthy();
     });
 
     it("should handle site error", () => {
       setup(undefined, generateApiErrorDetails());
-      assertErrorHandler(spectator.fixture);
+      assertErrorHandler(spec.fixture);
     });
 
     it("should handle project error", () => {
       setup(generateApiErrorDetails());
-      assertErrorHandler(spectator.fixture);
+      assertErrorHandler(spec.fixture);
     });
 
     it("should call api", () => {
       setup();
       api.update.and.callFake(() => new Subject());
 
-      spectator.component.submit({ ...defaultSite });
+      spec.component.submit({ ...defaultSite });
       expect(api.update).toHaveBeenCalledWith(
         new Site({ ...defaultSite }),
         defaultProject
@@ -134,8 +135,8 @@ describe("SiteEditComponent", () => {
       const site = new Site(generateSite());
       api.update.and.callFake(() => new BehaviorSubject<Site>(site));
 
-      spectator.component.submit({});
-      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
+      spec.component.submit({});
+      expect(spec.router.navigateByUrl).toHaveBeenCalledWith(
         site.getViewUrl(defaultProject)
       );
     });
