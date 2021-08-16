@@ -4,7 +4,7 @@ import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recording
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AudioEvent } from "@models/AudioEvent";
-import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
+import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -112,7 +112,7 @@ class SiteComponent extends PageComponent implements OnInit {
 
   private filterByDates(
     direction: Direction,
-    filters: Filters<IAudioRecording> = {}
+    filters: Filters<AudioRecording> = {}
   ) {
     return this.audioRecordingsApi.filterBySite(
       { sorting: { orderBy: "recordedDate", direction }, ...filters },

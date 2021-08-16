@@ -18,7 +18,7 @@ import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { interceptApiRequests } from "@test/helpers/general";
+import { interceptRepeatApiRequests } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPaginationTemplate } from "@test/helpers/paginationTemplate";
 import { MockComponent } from "ng-mocks";
@@ -62,7 +62,9 @@ describe("RegionDetailsComponent", () => {
   }
 
   function interceptApiRequest(responses: Site[] | ApiErrorDetails) {
-    return interceptApiRequests<ISite, Site[]>(api.filter, [responses])[0];
+    return interceptRepeatApiRequests<ISite, Site[]>(api.filter, [
+      responses,
+    ])[0];
   }
 
   beforeEach(() => {

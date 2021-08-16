@@ -42,7 +42,7 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
       </ngx-datatable-column>
 
       <!-- User name (logged in only) -->
-      <ngx-datatable-column name="Site" *ngIf="isLoggedIn" [sortable]="false">
+      <ngx-datatable-column name="User" *ngIf="isLoggedIn" [sortable]="false">
         <ng-template let-column="column" ngx-datatable-header-template>
           <fa-icon class="me-2" [icon]="['fas', 'user']"></fa-icon>User
         </ng-template>
@@ -69,7 +69,7 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           <span *ngFor="let tag of value.tags" class="badge bg-highlight me-1">
-            {{ tag.text ?? "(unknown)" }}
+            {{ tag.text }}
           </span>
 
           <baw-loading
@@ -97,10 +97,9 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
         </ng-template>
       </ngx-datatable-column>
 
-      <!-- Actions (logged in only) -->
+      <!-- Actions -->
       <ngx-datatable-column
         name="Model"
-        *ngIf="isLoggedIn"
         [width]="175"
         [maxWidth]="175"
         [sortable]="false"
@@ -108,10 +107,15 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
         <ng-template let-column="column" ngx-datatable-header-template>
         </ng-template>
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <a class="btn btn-sm btn-primary me-2" [bawUrl]="value.listenViewUrl">
+          <a
+            id="playBtn"
+            class="btn btn-sm btn-primary me-2"
+            [bawUrl]="value.listenViewUrl"
+          >
             Play
           </a>
           <a
+            id="annotationBtn"
             class="btn btn-sm btn-secondary"
             [bawUrl]="value.annotationViewUrl"
           >

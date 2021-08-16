@@ -22,7 +22,7 @@ import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import {
   FilterExpectations,
-  interceptApiRequests,
+  interceptRepeatApiRequests,
 } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPaginationTemplate } from "@test/helpers/paginationTemplate";
@@ -107,12 +107,12 @@ describe("ProjectDetailsComponent", () => {
     siteExpectations?: FilterExpectations<ISite>[],
     regionExpectations?: FilterExpectations<IRegion>[]
   ) {
-    const sitePromises = interceptApiRequests<ISite, Site[]>(
+    const sitePromises = interceptRepeatApiRequests<ISite, Site[]>(
       siteApi.filterByRegion,
       siteResponses,
       siteExpectations
     );
-    const regionPromises = interceptApiRequests<IRegion, Region[]>(
+    const regionPromises = interceptRepeatApiRequests<IRegion, Region[]>(
       regionApi.filter,
       regionResponses,
       regionExpectations

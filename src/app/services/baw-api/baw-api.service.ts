@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, InjectionToken, Injector } from "@angular/core";
 import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { Observable, throwError } from "rxjs";
 import { map } from "rxjs/operators";
@@ -67,7 +67,7 @@ export class BawApiService<Model extends AbstractModel> {
     protected http: HttpClient,
     @Inject(API_ROOT) private apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
-    classBuilder: new (_: Record<string, any>, _injector?: Injector) => Model,
+    classBuilder: AbstractModelConstructor<Model>,
     protected injector: Injector
   ) {
     this.isServer = this.injector.get(IS_SERVER_PLATFORM);

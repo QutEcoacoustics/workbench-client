@@ -4,6 +4,11 @@ import { DateTime, Duration } from "luxon";
 import { Id } from "../interfaces/apiInterfaces";
 import { Meta } from "../services/baw-api/baw-api.service";
 
+export type AbstractModelConstructor<Model> = new (
+  _: Record<string, any>,
+  _injector?: Injector
+) => Model;
+
 /**
  * BAW Server Abstract Model
  */

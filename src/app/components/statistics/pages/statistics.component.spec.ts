@@ -1,13 +1,12 @@
 import { Injector } from "@angular/core";
-import { isErrorDetails } from "@baw-api/api.interceptor.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AUDIO_RECORDING, SHALLOW_AUDIO_EVENT } from "@baw-api/ServiceTokens";
 import { StatisticsService } from "@baw-api/statistics/statistics.service";
 import { Errorable } from "@helpers/advancedTypes";
-import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
-import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
+import { AudioEvent } from "@models/AudioEvent";
+import { AudioRecording } from "@models/AudioRecording";
 import {
   IStatistics,
   IStatisticsRecent,
@@ -22,14 +21,12 @@ import {
 import { ItemsComponent } from "@shared/items/items/items.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
+import { generateStatistics } from "@test/fakes/Statistics";
 import {
-  generateStatistics,
-  generateStatisticsRecent,
-  generateStatisticsSummary,
-} from "@test/fakes/Statistics";
-import { nStepObservable } from "@test/helpers/general";
+  interceptFilterApiRequest,
+  interceptShowApiRequest,
+} from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
-import { Subject } from "rxjs";
 import { RecentAnnotationsComponent } from "../components/recent-annotations/recent-annotations.component";
 import { RecentAudioRecordingsComponent } from "../components/recent-audio-recordings/recent-audio-recordings.component";
 import { StatisticsComponent } from "./statistics.component";
@@ -54,70 +51,32 @@ describe("StatisticsComponent", () => {
     ],
   });
 
-  function sanitizeModel<T>(
-    classBuilder: (data: Partial<T>) => T,
-    modelData: Errorable<Partial<T>>
-  ): { model: Errorable<T>; isError: boolean } {
-    if (isErrorDetails(modelData)) {
-      return { model: modelData, isError: true };
-    }
-    const model = classBuilder(modelData);
-    return { model, isError: false };
-  }
-
-  function sanitizeModels<T>(
-    classBuilder: (data: Partial<T>[]) => T[],
-    modelData: Errorable<Partial<T>[]>
-  ): { models: Errorable<T[]>; isError: boolean } {
-    if (isErrorDetails(modelData)) {
-      return { models: modelData, isError: true };
-    }
-    const models = classBuilder(modelData);
-    console.log({ models });
-    return { models, isError: false };
-  }
-
   function interceptStatisticsRequest(
     data: Errorable<IStatistics>
   ): Promise<any> {
-    const { model, isError } = sanitizeModel(
-      (_data) => new Statistics(_data as IStatistics, injector),
-      data
-    );
-    const subject = new Subject<Statistics>();
-    statsApi.show.andCallFake(() => subject);
-    return nStepObservable(subject, () => model, isError);
+    return interceptShowApiRequest(statsApi, injector, data, Statistics);
   }
 
   function interceptAudioEventsRequest(
     data: Errorable<AudioEvent[]>
   ): Promise<any> {
-    const { models, isError } = sanitizeModels<AudioEvent>(
-      (_data) =>
-        _data.map(
-          (modelData) => new AudioEvent(modelData as IAudioEvent, injector)
-        ),
-      data
+    return interceptFilterApiRequest(
+      audioEventsApi,
+      injector,
+      data,
+      AudioEvent
     );
-    const subject = new Subject<AudioEvent[]>();
-    audioEventsApi.filter.andCallFake(() => subject);
-    return nStepObservable(subject, () => models, isError);
   }
 
   function interceptAudioRecordingsRequest(
     data: Errorable<AudioRecording[]>
   ): Promise<any> {
-    const { models, isError } = sanitizeModels<AudioRecording>(
-      (_data) =>
-        _data.map(
-          (modelData) =>
-            new AudioRecording(modelData as IAudioRecording, injector)
-        ),
-      data
+    return interceptFilterApiRequest(
+      audioRecordingsApi,
+      injector,
+      data,
+      AudioRecording
     );
-    const subject = new Subject<AudioRecording[]>();
-    audioRecordingsApi.filter.andCallFake(() => subject);
-    return nStepObservable(subject, () => models, isError);
   }
 
   function setup(
@@ -307,9 +266,9 @@ describe("StatisticsComponent", () => {
 
     it("should display recent annotations", async () => {
       const audioEvents = [
-        new AudioEvent(generateAudioEvent(1)),
-        new AudioEvent(generateAudioEvent(2)),
-        new AudioEvent(generateAudioEvent(3)),
+        new AudioEvent(generateAudioEvent({ id: 1 })),
+        new AudioEvent(generateAudioEvent({ id: 2 })),
+        new AudioEvent(generateAudioEvent({ id: 3 })),
       ];
 
       const promise = setup(
