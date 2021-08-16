@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
 import { ProgressEvent } from "@models/ProgressEvent";
+import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateProgressEvent } from "@test/fakes/ProgressEvent";
 import {
@@ -16,16 +16,15 @@ type Params = [];
 type Service = ProgressEventsService;
 
 describe("ProgressEventsService", function () {
-  const createModel = () => new ProgressEvent(generateProgressEvent(5));
+  const createModel = () => new ProgressEvent(generateProgressEvent({ id: 5 }));
   const baseUrl = "/progress_events/";
+  const createService = createServiceFactory({
+    service: ProgressEventsService,
+    imports: [HttpClientTestingModule, MockAppConfigModule],
+  });
 
   beforeEach(function () {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MockAppConfigModule],
-      providers: [ProgressEventsService],
-    });
-
-    this.service = TestBed.inject(ProgressEventsService);
+    this.service = createService().service;
   });
 
   validateApiList<Model, Params, Service>(baseUrl);

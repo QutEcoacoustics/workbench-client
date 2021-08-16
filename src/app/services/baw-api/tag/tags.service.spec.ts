@@ -1,8 +1,8 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
 import { IdOr } from "@baw-api/api-common";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
+import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateTag } from "@test/fakes/Tag";
 import {
@@ -21,15 +21,15 @@ type Params = [];
 type Service = TagsService;
 
 describe("TagsService", function () {
-  const createModel = () => new Tag(generateTag(5));
+  const createModel = () => new Tag(generateTag({ id: 5 }));
   const baseUrl = "/tags/";
+  const createService = createServiceFactory({
+    service: TagsService,
+    imports: [HttpClientTestingModule, MockAppConfigModule],
+  });
 
   beforeEach(function () {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MockAppConfigModule],
-      providers: [TagsService],
-    });
-    this.service = TestBed.inject(TagsService);
+    this.service = createService().service;
   });
 
   validateApiList<Model, Params, Service>(baseUrl);

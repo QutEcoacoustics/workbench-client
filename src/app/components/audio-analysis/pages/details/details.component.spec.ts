@@ -17,8 +17,8 @@ describe("AudioAnalysisComponent", () => {
     (spec) => {
       const analysisJobApi = spec.inject(AnalysisJobsService);
       analysisJobApi.show.andCallFake(
-        (modelId) =>
-          new BehaviorSubject(new AnalysisJob(generateAnalysisJob(modelId)))
+        (id: number) =>
+          new BehaviorSubject(new AnalysisJob(generateAnalysisJob({ id })))
       );
     }
   );

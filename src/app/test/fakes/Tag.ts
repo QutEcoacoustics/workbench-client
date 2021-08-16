@@ -1,8 +1,7 @@
-import { Id } from "@interfaces/apiInterfaces";
 import { ITag } from "@models/Tag";
 import { modelData } from "@test/helpers/faker";
 
-export function generateTag(id?: Id): Required<ITag> {
+export function generateTag(data?: Partial<ITag>): Required<ITag> {
   const tagTypes = [
     "general",
     "common_name",
@@ -12,12 +11,13 @@ export function generateTag(id?: Id): Required<ITag> {
   ];
 
   return {
-    id: modelData.id(id),
+    id: modelData.id(),
     text: modelData.param(),
     isTaxonomic: modelData.bool(),
     typeOfTag: modelData.random.arrayElement(tagTypes),
     retired: modelData.bool(),
     notes: modelData.notes(),
     ...modelData.model.generateCreatorAndUpdater(),
+    ...data,
   };
 }

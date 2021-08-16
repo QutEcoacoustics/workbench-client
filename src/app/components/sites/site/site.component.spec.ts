@@ -162,7 +162,7 @@ describe("SiteComponent", () => {
     });
 
     it("should display default site image", () => {
-      const site = new Site({ ...generateSite(), imageUrl: undefined });
+      const site = new Site(generateSite({ imageUrl: undefined }));
       setup(defaultProject, site);
       interceptEventsRequest();
       interceptRecordingsRequest();
@@ -187,7 +187,7 @@ describe("SiteComponent", () => {
     });
 
     it("should display default description if model has none", () => {
-      const site = new Site({ ...generateSite(), descriptionHtml: undefined });
+      const site = new Site(generateSite({ descriptionHtml: undefined }));
       setup(defaultProject, site);
       interceptEventsRequest();
       interceptRecordingsRequest();

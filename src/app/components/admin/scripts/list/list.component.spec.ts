@@ -30,8 +30,8 @@ describe("AdminScriptsComponent", () => {
     api = TestBed.inject(ScriptsService);
 
     defaultModels = [];
-    for (let i = 0; i < defaultApiPageSize; i++) {
-      defaultModels.push(new Script(generateScript(i)));
+    for (let id = 0; id < defaultApiPageSize; id++) {
+      defaultModels.push(new Script(generateScript({ id })));
     }
 
     this.defaultModels = defaultModels;

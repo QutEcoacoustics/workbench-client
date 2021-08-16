@@ -27,7 +27,7 @@ describe("TheirProfileEditComponent", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
+          useValue: mockActivatedRoute(
             { account: accountResolvers.show },
             { account: { model, error } }
           ),

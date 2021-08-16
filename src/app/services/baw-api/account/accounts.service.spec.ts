@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { User } from "@models/User";
+import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateUser } from "@test/fakes/User";
 import {
@@ -18,16 +18,15 @@ type Params = [];
 type Service = AccountsService;
 
 describe("AccountsService", () => {
-  const createModel = () => new User(generateUser(5));
+  const createModel = () => new User(generateUser({ id: 5 }));
   const baseUrl = "/user_accounts/";
+  const createService = createServiceFactory({
+    service: AccountsService,
+    imports: [HttpClientTestingModule, MockAppConfigModule],
+  });
 
   beforeEach(function () {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MockAppConfigModule],
-      providers: [AccountsService],
-    });
-
-    this.service = TestBed.inject(AccountsService);
+    this.service = createService().service;
   });
 
   validateApiList<Model, Params, Service>(baseUrl);

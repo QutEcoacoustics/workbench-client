@@ -33,7 +33,7 @@ describe("AssignComponent", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
+          useValue: mockActivatedRoute(
             { project: projectResolvers.show },
             { project: { model, error } }
           ),

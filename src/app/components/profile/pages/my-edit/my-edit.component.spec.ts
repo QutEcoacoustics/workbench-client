@@ -28,7 +28,7 @@ describe("MyProfileEditComponent", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
+          useValue: mockActivatedRoute(
             { user: userResolvers.show },
             { user: { model, error } }
           ),
@@ -44,7 +44,7 @@ describe("MyProfileEditComponent", () => {
 
   beforeEach(() => {
     // TODO Handle image urls
-    defaultUser = new User({ ...generateUser(), imageUrls: undefined });
+    defaultUser = new User(generateUser({ imageUrls: undefined }));
   });
 
   it("should create", () => {

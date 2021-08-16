@@ -35,7 +35,7 @@ describe("AdminTagsNewComponent", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
+          useValue: mockActivatedRoute(
             { typeOfTags: tagResolvers.tagTypes },
             { tagTypes: { model, error } }
           ),

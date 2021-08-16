@@ -1,11 +1,12 @@
-import { Id } from "@interfaces/apiInterfaces";
 import {
   AnalysisJobItemStatus,
   IAnalysisJobItem,
 } from "@models/AnalysisJobItem";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAnalysisJobItem(id?: Id): Required<IAnalysisJobItem> {
+export function generateAnalysisJobItem(
+  data?: Partial<IAnalysisJobItem>
+): Required<IAnalysisJobItem> {
   const statuses: AnalysisJobItemStatus[] = [
     "successful",
     "new",
@@ -18,7 +19,7 @@ export function generateAnalysisJobItem(id?: Id): Required<IAnalysisJobItem> {
   ];
 
   return {
-    id: modelData.id(id),
+    id: modelData.id(),
     analysisJobId: modelData.id(),
     audioRecordingId: modelData.id(),
     queueId: modelData.datatype.uuid(),
@@ -28,5 +29,6 @@ export function generateAnalysisJobItem(id?: Id): Required<IAnalysisJobItem> {
     workStartedAt: modelData.timestamp(),
     completedAt: modelData.timestamp(),
     cancelStartedAt: modelData.timestamp(),
+    ...data,
   };
 }

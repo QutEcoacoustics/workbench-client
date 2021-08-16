@@ -37,7 +37,7 @@ describe("AdminTagsDeleteComponent", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
+          useValue: mockActivatedRoute(
             { tag: tagResolvers.show },
             { tag: { model, error } }
           ),

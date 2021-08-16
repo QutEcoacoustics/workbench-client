@@ -135,11 +135,9 @@ describe("AnnotationDownloadComponent", () => {
 
     beforeEach(
       () =>
-        (siteWithoutTimezone = new Site({
-          ...generateSite(),
-          timezoneInformation: undefined,
-          tzinfoTz: undefined,
-        }))
+        (siteWithoutTimezone = new Site(
+          generateSite({ timezoneInformation: undefined, tzinfoTz: undefined })
+        ))
     );
 
     it("should have timezone input", () => {

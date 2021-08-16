@@ -1,9 +1,9 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
 import { IdOr } from "@baw-api/api-common";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
+import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateSite } from "@test/fakes/Site";
 import {
@@ -23,16 +23,15 @@ type Params = [];
 type Service = ShallowSitesService;
 
 describe("ShallowSitesService", function () {
-  const createModel = () => new Site(generateSite(5));
+  const createModel = () => new Site(generateSite({ id: 5 }));
   const baseUrl = "/sites/";
+  const createService = createServiceFactory({
+    service: ShallowSitesService,
+    imports: [HttpClientTestingModule, MockAppConfigModule],
+  });
 
   beforeEach(function () {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MockAppConfigModule],
-      providers: [ShallowSitesService],
-    });
-
-    this.service = TestBed.inject(ShallowSitesService);
+    this.service = createService().service;
   });
 
   validateApiList<Model, Params, Service>(baseUrl);

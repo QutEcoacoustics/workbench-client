@@ -40,7 +40,7 @@ describe("AdminOrphanComponent", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useClass: mockActivatedRoute(
+          useValue: mockActivatedRoute(
             { site: shallowSiteResolvers.show },
             { site: { model, error } }
           ),
@@ -97,11 +97,9 @@ describe("AdminOrphanComponent", () => {
   });
 
   describe("details", () => {
-    const model = new Site({
-      ...generateSite(),
-      locationObfuscated: true,
-      projectIds: [1, 2, 3],
-    });
+    const model = new Site(
+      generateSite({ locationObfuscated: true, projectIds: [1, 2, 3] })
+    );
 
     beforeEach(async function () {
       const promise = configureTestingModule(model);

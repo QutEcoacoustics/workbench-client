@@ -18,9 +18,9 @@ describe("ListenRecordingComponent", () => {
       const recordingApi = spec.inject(AudioRecordingsService);
 
       recordingApi.show.andCallFake(
-        (modelId) =>
+        (id: number) =>
           new BehaviorSubject(
-            new AudioRecording(generateAudioRecording(modelId))
+            new AudioRecording(generateAudioRecording({ id }))
           )
       );
     }

@@ -59,11 +59,12 @@ describe("SecurityService", () => {
     spec = createService();
     userApi = spec.inject(UserService);
 
+    const userData = generateUser();
     defaultAuthToken = modelData.random.alphaNumeric(20);
     defaultError = generateApiErrorDetails();
-    defaultUser = new User(generateUser());
+    defaultUser = new User(userData);
     defaultSessionUser = new SessionUser({
-      ...defaultUser,
+      ...userData,
       ...generateSessionUser(),
     });
     defaultRegisterDetails = new RegisterDetails(generateRegisterDetails());
@@ -246,10 +247,9 @@ describe("SecurityService", () => {
       });
 
       it("should throw error if no recaptcha token", () => {
-        const registerDetails = new RegisterDetails({
-          ...defaultRegisterDetails,
-          recaptchaToken: null,
-        });
+        const registerDetails = new RegisterDetails(
+          generateRegisterDetails({ recaptchaToken: null })
+        );
         const page = `<input name="authenticity_token" value="${defaultAuthToken}"></input>`;
 
         spec.service.signUp(registerDetails);

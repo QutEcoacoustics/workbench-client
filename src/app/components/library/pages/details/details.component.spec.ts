@@ -22,14 +22,14 @@ describe("AnnotationComponent", () => {
       const eventsApi = spec.inject(AudioEventsService);
 
       recordingApi.show.andCallFake(
-        (modelId) =>
+        (id: number) =>
           new BehaviorSubject(
-            new AudioRecording(generateAudioRecording(modelId))
+            new AudioRecording(generateAudioRecording({ id }))
           )
       );
       eventsApi.show.andCallFake(
-        (modelId) =>
-          new BehaviorSubject(new AudioEvent(generateAudioEvent(modelId)))
+        (id: number) =>
+          new BehaviorSubject(new AudioEvent(generateAudioEvent({ id })))
       );
     }
   );

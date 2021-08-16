@@ -29,7 +29,7 @@ import schema from "../../point.base.json";
 import { PointNewComponent } from "./point.component";
 
 describe("PointNewComponent", () => {
-  let spectator: SpectatorRouting<PointNewComponent>;
+  let spec: SpectatorRouting<PointNewComponent>;
   const { fields } = schema;
   const createComponent = createRoutingFactory({
     component: PointNewComponent,
@@ -73,6 +73,7 @@ describe("PointNewComponent", () => {
     ]);
   });
 
+  // TODO Disabled because of #1338
   xdescribe("component", () => {
     let api: SpyObject<SitesService>;
     let defaultProject: Project;
@@ -82,7 +83,7 @@ describe("PointNewComponent", () => {
       projectError?: ApiErrorDetails,
       regionError?: ApiErrorDetails
     ) {
-      spectator = createComponent({
+      spec = createComponent({
         detectChanges: false,
         params: { projectId: defaultProject?.id, regionId: defaultRegion?.id },
         data: {
@@ -95,8 +96,8 @@ describe("PointNewComponent", () => {
         },
       });
 
-      api = spectator.inject(SitesService);
-      spectator.detectChanges();
+      api = spec.inject(SitesService);
+      spec.detectChanges();
     }
 
     beforeAll(async () => await embedGoogleMaps());
@@ -108,17 +109,17 @@ describe("PointNewComponent", () => {
 
     it("should create", () => {
       setup();
-      expect(spectator.component).toBeTruthy();
+      expect(spec.component).toBeTruthy();
     });
 
     it("should handle project error", () => {
       setup(generateApiErrorDetails());
-      assertErrorHandler(spectator.fixture);
+      assertErrorHandler(spec.fixture);
     });
 
     it("should handle region error", () => {
       setup(undefined, generateApiErrorDetails());
-      assertErrorHandler(spectator.fixture);
+      assertErrorHandler(spec.fixture);
     });
 
     it("should call api", () => {
@@ -126,7 +127,7 @@ describe("PointNewComponent", () => {
       const site = new Site(generateSite());
       api.create.and.callFake(() => new Subject());
 
-      spectator.component.submit({ ...site });
+      spec.component.submit({ ...site });
       expect(api.create).toHaveBeenCalledWith(
         new Site({ ...site, regionId: defaultRegion.id }),
         defaultProject
@@ -138,8 +139,8 @@ describe("PointNewComponent", () => {
       const site = new Site(generateSite());
       api.create.and.callFake(() => new BehaviorSubject<Site>(site));
 
-      spectator.component.submit({});
-      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
+      spec.component.submit({});
+      expect(spec.router.navigateByUrl).toHaveBeenCalledWith(
         site.getViewUrl(defaultProject)
       );
     });

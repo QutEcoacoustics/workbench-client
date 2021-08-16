@@ -1,10 +1,9 @@
-import { Id } from "@interfaces/apiInterfaces";
 import { IProject } from "@models/Project";
 import { modelData } from "@test/helpers/faker";
 
-export function generateProject(id?: Id): Required<IProject> {
+export function generateProject(data?: Partial<IProject>): Required<IProject> {
   return {
-    id: modelData.id(id),
+    id: modelData.id(),
     name: modelData.param(),
     imageUrl: modelData.imageUrl(),
     accessLevel: modelData.accessLevel(),
@@ -14,5 +13,6 @@ export function generateProject(id?: Id): Required<IProject> {
     notes: modelData.notes(),
     ...modelData.model.generateDescription(),
     ...modelData.model.generateAllUsers(),
+    ...data,
   };
 }

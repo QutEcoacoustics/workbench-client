@@ -1,11 +1,11 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
 import { IdOr, setAuthorizationQSP, setTimezoneQSP } from "@baw-api/api-common";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { SessionUser } from "@models/User";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
@@ -27,21 +27,22 @@ type Params = [IdOr<Project>];
 type Service = SitesService;
 
 describe("SitesService", function () {
-  const createModel = () => new Site(generateSite(10));
+  const createModel = () => new Site(generateSite({ id: 10 }));
   const listUrl = "/projects/5/sites/";
   const showUrl = "/projects/5/sites/10";
   let service: SitesService;
   let apiRoot: string;
+  let spec: SpectatorService<SitesService>;
+  const createService = createServiceFactory({
+    service: SitesService,
+    imports: [HttpClientTestingModule, MockAppConfigModule],
+  });
 
   beforeEach(function () {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MockAppConfigModule],
-      providers: [SitesService],
-    });
-
-    service = TestBed.inject(SitesService);
-    apiRoot = TestBed.inject(API_ROOT);
-    this.service = service;
+    spec = createService();
+    this.service = spec.service;
+    service = spec.inject(SitesService);
+    apiRoot = spec.inject(API_ROOT);
   });
 
   validateApiList<Model, Params, Service>(listUrl, 5);
@@ -67,7 +68,7 @@ describe("SitesService", function () {
       if (!authToken) {
         spyOn(service, "getLocalUser").and.callFake(() => null);
       } else {
-        const user = new SessionUser({ ...generateSessionUser(), authToken });
+        const user = new SessionUser(generateSessionUser({ authToken }));
         spyOn(service, "getLocalUser").and.callFake(() => user);
       }
     }
@@ -90,8 +91,8 @@ describe("SitesService", function () {
       setLoggedIn(null);
       expect(
         service.downloadAnnotations(
-          new Site(generateSite(10)),
-          new Project(generateProject(5)),
+          new Site(generateSite({ id: 10 })),
+          new Project(generateProject({ id: 5 })),
           defaultTimezone
         )
       ).toBe(getUrl());

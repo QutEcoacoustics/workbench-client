@@ -4,7 +4,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ActivatedRouteSnapshot, Data, Params } from "@angular/router";
+import { Data, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -46,15 +46,15 @@ export function mockActivatedRoute(
   params: MockParams = {},
   queryParams: Params = {}
 ) {
-  return class MockActivatedRoute {
-    public snapshot: Partial<ActivatedRouteSnapshot> = {
+  return {
+    snapshot: {
       data: resolvers ? { resolvers, ...data } : data,
       params,
       queryParams,
-    };
-    public data = new BehaviorSubject<Data>({ resolvers, ...data });
-    public params = new BehaviorSubject<Params>(params);
-    public queryParams = new BehaviorSubject<Params>(queryParams);
+    },
+    data: new BehaviorSubject<Data>({ resolvers, ...data }),
+    params: new BehaviorSubject<Params>(params),
+    queryParams: new BehaviorSubject<Params>(queryParams),
   };
 }
 

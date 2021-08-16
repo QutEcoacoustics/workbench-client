@@ -60,6 +60,7 @@ describe("RegionsEditComponent", () => {
     ]);
   });
 
+  // TODO Disabled because of #1338
   xdescribe("component", () => {
     let api: SpyObject<RegionsService>;
     let defaultProject: Project;

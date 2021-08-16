@@ -129,11 +129,9 @@ describe("UserBadgeComponent", () => {
     });
 
     it("should display default image", () => {
-      const user = new User({
-        ...generateUser(),
-        userName: "custom username",
-        imageUrls: undefined,
-      });
+      const user = new User(
+        generateUser({ userName: "custom username", imageUrls: undefined })
+      );
       setup({ users: [user] });
       spec.detectChanges();
       assertImage(
@@ -145,7 +143,7 @@ describe("UserBadgeComponent", () => {
 
     it("should display custom image", () => {
       const imageIndex = 1;
-      const user = new User({ ...generateUser(), userName: "custom username" });
+      const user = new User(generateUser({ userName: "custom username" }));
       user.image[imageIndex].size = ImageSizes.small;
       setup({ users: [user] });
       spec.detectChanges();
