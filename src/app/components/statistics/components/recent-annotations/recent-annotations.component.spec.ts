@@ -144,8 +144,8 @@ describe("RecentAnnotationsComponent", () => {
     spec.component.isLoggedIn = isLoggedIn;
   }
 
-  function setAnnotations(annotation: AudioEvent[]) {
-    spec.setInput("annotations", annotation);
+  function setAnnotations(annotations: AudioEvent[]) {
+    spec.setInput("annotations", annotations);
   }
 
   beforeEach(() => {
@@ -408,18 +408,12 @@ describe("RecentAnnotationsComponent", () => {
       }
 
       it("should display time since updated when logged in", async () => {
-        await setup({
-          annotations: [defaultAnnotation],
-          isLoggedIn: true,
-        });
+        await setup({ annotations: [defaultAnnotation], isLoggedIn: true });
         assertTimestamp(getUpdatedCellElement(true), defaultAnnotation);
       });
 
       it("should display time since updated when not logged in", async () => {
-        await setup({
-          annotations: [defaultAnnotation],
-          isLoggedIn: false,
-        });
+        await setup({ annotations: [defaultAnnotation], isLoggedIn: false });
         assertTimestamp(getUpdatedCellElement(false), defaultAnnotation);
       });
     });

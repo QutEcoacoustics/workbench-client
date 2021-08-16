@@ -49,8 +49,8 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
       <!-- Uploaded -->
       <ngx-datatable-column name="Uploaded" [sortable]="false">
         <ng-template let-column="column" ngx-datatable-header-template>
-          <fa-icon class="me-2" [icon]="['fas', 'calendar-alt']"></fa-icon
-          >Uploaded
+          <fa-icon class="me-2" [icon]="['fas', 'calendar-alt']"></fa-icon>
+          Uploaded
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
@@ -68,7 +68,13 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
         <ng-template let-column="column" ngx-datatable-header-template>
         </ng-template>
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <a class="btn btn-sm btn-primary" [bawUrl]="value.viewUrl">Play</a>
+          <a
+            id="playBtn"
+            class="btn btn-sm btn-primary"
+            [bawUrl]="value.viewUrl"
+          >
+            Play
+          </a>
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
