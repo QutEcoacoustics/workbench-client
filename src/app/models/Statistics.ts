@@ -93,7 +93,7 @@ export class Statistics extends AbstractModel {
   public readonly summary: StatisticsSummary;
   public readonly recent: StatisticsRecent;
 
-  public constructor(model: IStatistics, protected injector?: Injector) {
+  public constructor(model: IStatistics, injector?: Injector) {
     super(model, injector);
     this.summary = new StatisticsSummary(model.summary, injector);
     this.recent = new StatisticsRecent(model.recent, injector);

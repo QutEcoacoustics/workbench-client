@@ -21,6 +21,7 @@ import {
 import { ItemsComponent } from "@shared/items/items/items.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateStatistics } from "@test/fakes/Statistics";
 import {
   interceptFilterApiRequest,
@@ -83,18 +84,20 @@ describe("StatisticsComponent", () => {
     statisticsData: Errorable<IStatistics> = generateStatistics(),
     audioEventsData: Errorable<AudioEvent[]> = [],
     audioRecordingsData: Errorable<AudioRecording[]> = []
-  ): Promise<any> {
+  ): { initial: Promise<any>; final: Promise<any> } {
     spec = createComponent({ detectChanges: false });
     statsApi = spec.inject(StatisticsService);
     audioEventsApi = spec.inject(SHALLOW_AUDIO_EVENT.token);
     audioRecordingsApi = spec.inject(AUDIO_RECORDING.token);
     injector = spec.inject(Injector);
 
-    return Promise.all([
-      interceptStatisticsRequest(statisticsData),
-      interceptAudioEventsRequest(audioEventsData),
-      interceptAudioRecordingsRequest(audioRecordingsData),
-    ]);
+    return {
+      initial: interceptStatisticsRequest(statisticsData),
+      final: Promise.all([
+        interceptAudioEventsRequest(audioEventsData),
+        interceptAudioRecordingsRequest(audioRecordingsData),
+      ]),
+    };
   }
 
   function getFirstItemsGroup() {
@@ -119,7 +122,7 @@ describe("StatisticsComponent", () => {
     return partial as Partial<IStatistics>;
   }
 
-  xdescribe("group one", () => {
+  describe("group one", () => {
     function assertItem(index: number, value: string | number) {
       expect(getFirstItemsGroup().items.get(index).value).toBe(value);
     }
@@ -173,7 +176,7 @@ describe("StatisticsComponent", () => {
       it(`should display ${test}`, async () => {
         const promise = setup(generateStatistics(data.recent, data.summary));
         spec.detectChanges();
-        await promise;
+        await promise.initial;
         spec.detectChanges();
 
         assertItem(index, expectedOutput);
@@ -181,7 +184,7 @@ describe("StatisticsComponent", () => {
     });
   });
 
-  xdescribe("group two", () => {
+  describe("group two", () => {
     function assertItem(index: number, value: string | number) {
       expect(getSecondItemsGroup().items.get(index).value).toBe(value);
     }
@@ -247,7 +250,7 @@ describe("StatisticsComponent", () => {
       it(`should display ${test}`, async () => {
         const promise = setup(generateStatistics(data.recent, data.summary));
         spec.detectChanges();
-        await promise;
+        await promise.initial;
         spec.detectChanges();
 
         assertItem(index, expectedOutput);
@@ -265,26 +268,40 @@ describe("StatisticsComponent", () => {
     }
 
     it("should display recent annotations", async () => {
-      const audioEvents = [
-        new AudioEvent(generateAudioEvent({ id: 1 })),
-        new AudioEvent(generateAudioEvent({ id: 2 })),
-        new AudioEvent(generateAudioEvent({ id: 3 })),
-      ];
-
+      const audioEvents = [1, 2, 3].map(
+        (id) => new AudioEvent(generateAudioEvent({ id }))
+      );
       const promise = setup(
         generateStatistics({ audioEventIds: [1, 2, 3] }),
         audioEvents
       );
-      spec.detectChanges();
-      await promise;
-      spec.detectChanges();
 
-      console.log(getRecentAnnotations());
-      console.log(spec.component.recent.audioEvents);
-
+      spec.detectChanges();
+      await promise.initial;
+      spec.detectChanges();
+      await promise.final;
+      spec.detectChanges();
       expect(getRecentAnnotations().annotations).toEqual(audioEvents);
     });
 
-    it("should display recent audio recordings", () => {});
+    it("should display recent audio recordings", async () => {
+      const audioRecordings = [1, 2, 3].map(
+        (id) => new AudioRecording(generateAudioRecording({ id }))
+      );
+      const promise = setup(
+        generateStatistics({ audioRecordingIds: [1, 2, 3] }),
+        [],
+        audioRecordings
+      );
+
+      spec.detectChanges();
+      await promise.initial;
+      spec.detectChanges();
+      await promise.final;
+      spec.detectChanges();
+      expect(getRecentAudioRecordings().audioRecordings).toEqual(
+        audioRecordings
+      );
+    });
   });
 });
