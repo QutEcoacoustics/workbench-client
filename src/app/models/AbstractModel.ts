@@ -12,7 +12,7 @@ export type AbstractModelConstructor<Model> = new (
 /**
  * BAW Server Abstract Model
  */
-export abstract class AbstractModel<Model = Record<string, any>> {
+export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   public constructor(raw: Model, protected injector?: Injector) {
     return Object.assign(this, raw);
   }
@@ -45,14 +45,7 @@ export abstract class AbstractModel<Model = Record<string, any>> {
    */
   public static updateAttributesKey = Symbol("update-attributes");
 
-  /**
-   * Model ID
-   */
-  public readonly id?: Id;
-
-  /**
-   * Model Identifier
-   */
+  /** Model Identifier */
   public readonly kind: string;
 
   /**
@@ -103,12 +96,8 @@ export abstract class AbstractModel<Model = Record<string, any>> {
    *
    * @param value Display custom value
    */
-  public toString(value?: string): string {
-    if (!value && this["name"]) {
-      value = this["name"];
-    }
-    const identifier = value ? `${value} (${this.id})` : this.id.toString();
-    return `${this.kind}: ${identifier}`;
+  public toString(value: string): string {
+    return `${this.kind}: ${value}`;
   }
 
   /**
@@ -120,11 +109,29 @@ export abstract class AbstractModel<Model = Record<string, any>> {
     this[AbstractModel.metaKey] = meta;
   }
 
-  /**
-   * Get hidden model metadata
-   */
+  /** Get hidden model metadata */
   public getMetadata(): Meta {
     return this[AbstractModel.metaKey];
+  }
+}
+
+export abstract class AbstractModel<
+  Model = Record<string, any>
+> extends AbstractModelWithoutId<Model> {
+  /** Model ID */
+  public readonly id?: Id;
+
+  /**
+   * Convert model to string.
+   *
+   * @param value Display custom value
+   */
+  public override toString(value?: string): string {
+    if (!value && this["name"]) {
+      value = this["name"];
+    }
+    const identifier = value ? `${value} (${this.id})` : this.id.toString();
+    return super.toString(identifier);
   }
 }
 

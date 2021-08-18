@@ -2,7 +2,7 @@ import { Injector } from "@angular/core";
 import { AUDIO_RECORDING, SHALLOW_AUDIO_EVENT } from "@baw-api/ServiceTokens";
 import { statisticsMenuItem } from "@components/statistics/statistics.menus";
 import { DateTimeTimezone, Id, Ids } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractModelWithoutId } from "@models/AbstractModel";
 import { hasMany } from "@models/AssociationDecorators";
 import {
   bawCollection,
@@ -32,7 +32,7 @@ export interface IStatisticsSummary {
   tagsAppliedUniqueTotal: number;
 }
 
-export class StatisticsSummary extends AbstractModel {
+export class StatisticsSummary extends AbstractModelWithoutId {
   public readonly kind = "StatisticsSummary";
   public readonly usersOnline: number;
   public readonly usersTotal: number;
@@ -57,6 +57,10 @@ export class StatisticsSummary extends AbstractModel {
   public get viewUrl(): string {
     throw Error();
   }
+
+  public override toString(): string {
+    return super.toString("No unique information");
+  }
 }
 
 export interface IStatisticsRecent {
@@ -64,7 +68,7 @@ export interface IStatisticsRecent {
   audioEventIds: Ids | Id[];
 }
 
-export class StatisticsRecent extends AbstractModel {
+export class StatisticsRecent extends AbstractModelWithoutId {
   public readonly kind = "StatisticsRecent";
   @bawCollection()
   public readonly audioRecordingIds: Ids;
@@ -81,6 +85,10 @@ export class StatisticsRecent extends AbstractModel {
   public get viewUrl(): string {
     throw Error();
   }
+
+  public override toString(): string {
+    return super.toString("No unique information");
+  }
 }
 
 export interface IStatistics {
@@ -88,7 +96,7 @@ export interface IStatistics {
   recent: StatisticsRecent | IStatisticsRecent;
 }
 
-export class Statistics extends AbstractModel {
+export class Statistics extends AbstractModelWithoutId {
   public readonly kind = "Statistics";
   public readonly summary: StatisticsSummary;
   public readonly recent: StatisticsRecent;
@@ -101,5 +109,9 @@ export class Statistics extends AbstractModel {
 
   public get viewUrl(): string {
     return statisticsMenuItem.route.toRouterLink();
+  }
+
+  public override toString(): string {
+    return super.toString("No unique information");
   }
 }

@@ -10,7 +10,7 @@ type Model = Statistics;
 type Params = [];
 type Service = StatisticsService;
 
-describe("UserService", function () {
+describe("StatisticsService", function () {
   const createModel = () => new Statistics(generateStatistics());
   const baseUrl = "/stats";
   const createService = createServiceFactory({
