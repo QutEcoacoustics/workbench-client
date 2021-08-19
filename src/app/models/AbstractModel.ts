@@ -45,7 +45,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    */
   public static updateAttributesKey = Symbol("update-attributes");
 
-  /** Model Identifier */
+  /** Model type name */
   public readonly kind: string;
 
   /**
