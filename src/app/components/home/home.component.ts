@@ -32,6 +32,7 @@ class HomeComponent extends PageComponent implements OnInit {
     alt: string;
   };
   public viewMore: {
+    loading: boolean;
     modelName: string;
     list: List<Card>;
     link: StrongRoute;
@@ -53,6 +54,7 @@ class HomeComponent extends PageComponent implements OnInit {
     this.brand = settings.brand;
     this.sourceRepo = settings.links.sourceRepository;
     this.viewMore = {
+      loading: true,
       list: List([]),
       modelName: settings.hideProjects ? "site" : "project",
       // TODO Insert default project id, remove this once regions no longer relies on projects
@@ -92,8 +94,13 @@ class HomeComponent extends PageComponent implements OnInit {
         takeUntil(this.unsubscribe)
       )
       .subscribe(
-        (cards) => (this.viewMore.list = cards),
-        () => (this.viewMore.list = List([]))
+        (cards) => {
+          this.viewMore.list = cards;
+          this.viewMore.loading = false;
+        },
+        () => {
+          this.viewMore.loading = false;
+        }
       );
   }
 

@@ -121,8 +121,13 @@
       its free and easy!
     </p>
 
-    <baw-cards [cards]="viewMore.list">
-      <ng-container>
+    <baw-loading *ngIf="viewMore.loading" [size]="lg"></baw-loading>
+
+    <baw-cards *ngIf="!viewMore.loading" [cards]="viewMore.list">
+      <ng-container *ngIf="viewMore.list.size === 0; else hasSites">
+        <p class="m-auto">No sites to display</p>
+      </ng-container>
+      <ng-template #hasSites>
         <a
           class="m-auto btn btn-outline-highlight btn-lg"
           [strongRoute]="viewMore.link"
@@ -130,8 +135,7 @@
         >
           More {{ viewMore.modelName | titlecase }}s
         </a>
-      </ng-container>
+      </ng-template>
     </baw-cards>
-    <baw-loading *ngIf="!projectList" [size]="lg"></baw-loading>
   </div>
 </section>
