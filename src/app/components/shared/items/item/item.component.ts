@@ -9,14 +9,14 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
   template: `
     <div class="clearfix" style="font-size: 0.925rem;">
       <!-- Item icon -->
-      <fa-icon id="icon" [icon]="icon"></fa-icon>
+      <fa-icon id="icon" class="me-2" [icon]="icon"></fa-icon>
 
       <!-- Item name -->
       <span id="name">{{ name }}</span>
 
       <!-- Item value -->
       <span id="value" class="badge rounded-pill bg-secondary float-end">
-        {{ value }}
+        {{ value ?? "Unknown" }}
       </span>
     </div>
   `,
@@ -29,8 +29,8 @@ export class ItemComponent {
   @Input() public value: string | number;
 }
 
-export interface ItemInterface {
+export interface IItem {
   icon: IconProp;
   name: string;
-  value: string | number;
+  value?: string | number;
 }

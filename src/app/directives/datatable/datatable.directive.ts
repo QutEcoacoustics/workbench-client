@@ -5,6 +5,10 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 /**
  * Datatable default directives.
  * Assigns defaults to ngx-datatable element.
+ *
+ * ! This directive assumes that external paging and sorting is wanted. If they
+ * are not required, set them to false, otherwise ngx-datatable will not
+ * display your data
  */
 @Directive({
   selector: "[bawDatatableDefaults]",

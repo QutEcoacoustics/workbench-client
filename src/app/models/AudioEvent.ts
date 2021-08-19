@@ -35,7 +35,8 @@ export interface IAudioEvent extends HasAllUsers {
 
 export class AudioEvent
   extends AbstractModel<IAudioEvent>
-  implements IAudioEvent {
+  implements IAudioEvent
+{
   public readonly kind = "AudioEvent";
   public readonly id?: Id;
   @bawPersistAttr()

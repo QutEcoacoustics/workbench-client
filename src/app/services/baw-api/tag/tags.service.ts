@@ -40,7 +40,7 @@ export class TagsService extends StandardApi<Tag> {
   public list(): Observable<Tag[]> {
     return this.apiList(endpoint(emptyParam, emptyParam));
   }
-  public filter(filters: Filters<ITag>): Observable<Tag[]> {
+  public filter(filters: Filters<Tag>): Observable<Tag[]> {
     return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<Tag>): Observable<Tag> {

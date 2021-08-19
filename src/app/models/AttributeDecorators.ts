@@ -1,35 +1,42 @@
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 
-function persistAttr(model: AbstractModel, key: string, opts: boolean | BawPersistAttributeOptions) {
-    model[AbstractModel.createAttributesKey] ??= [];
-    model[AbstractModel.updateAttributesKey] ??= [];
+function persistAttr(
+  model: AbstractModel,
+  key: string,
+  opts: boolean | BawPersistAttributeOptions
+) {
+  model[AbstractModel.createAttributesKey] ??= [];
+  model[AbstractModel.updateAttributesKey] ??= [];
 
-    if (typeof opts === "boolean") {
-      if (!opts) {
-        return;
-      }
-      model[AbstractModel.createAttributesKey].push(key);
-      model[AbstractModel.updateAttributesKey].push(key);
-      return
+  if (typeof opts === "boolean") {
+    if (!opts) {
+      return;
     }
+    model[AbstractModel.createAttributesKey].push(key);
+    model[AbstractModel.updateAttributesKey].push(key);
+    return;
+  }
 
-    if (opts.create) {
-      model[AbstractModel.createAttributesKey].push(key);
-    }
-    if (opts.update) {
-      model[AbstractModel.updateAttributesKey].push(key);
-    }
+  if (opts.create) {
+    model[AbstractModel.createAttributesKey].push(key);
+  }
+  if (opts.update) {
+    model[AbstractModel.updateAttributesKey].push(key);
+  }
 }
 
 /**
  * Add key to the models attributes
  */
-export function bawPersistAttr(opts: BawPersistAttributeOptions = {create: true, update: true}) {
-  return function(model: AbstractModel, key: string) {
+export function bawPersistAttr(
+  opts: BawPersistAttributeOptions = { create: true, update: true }
+) {
+  return function (model: AbstractModel, key: string) {
     persistAttr(model, key, opts);
-  }
+  };
 }
 
 /**
@@ -89,9 +96,7 @@ export function bawImage<Model>(
 /**
  * Convert a collection of ids into a set
  */
-export function bawCollection<Model>(
-  opts?: BawDecoratorOptions<Model>
-) {
+export function bawCollection<Model>(opts?: BawDecoratorOptions<Model>) {
   return createDecorator<Model>(opts, (model, key, ids: Id[] | Ids) => {
     if (ids instanceof Set) {
       return;
@@ -104,9 +109,7 @@ export function bawCollection<Model>(
 /**
  * Convert timestamp string into DateTimeTimezone
  */
-export function bawDateTime<Model>(
-  opts?: BawDecoratorOptions<Model>
-) {
+export function bawDateTime<Model>(opts?: BawDecoratorOptions<Model>) {
   return createDecorator<Model>(
     opts,
     (model, key, timestamp: string | DateTime) => {
@@ -124,30 +127,31 @@ export function bawDateTime<Model>(
 /**
  * Convert duration string into Duration
  */
-export function bawDuration<Model>(
-  opts?: BawDecoratorOptions<Model>
-) {
-  return createDecorator<Model>(opts, (model, key, seconds: number | Duration) => {
-    if (seconds instanceof Duration) {
-      return;
-    }
+export function bawDuration<Model>(opts?: BawDecoratorOptions<Model>) {
+  return createDecorator<Model>(
+    opts,
+    (model, key, seconds: number | Duration) => {
+      if (seconds instanceof Duration) {
+        return;
+      }
 
-    /*
-    Extra object fields required, do not remove. Duration calculates itself
-    based on the time spans provided, if years is removed for example,
-    the output will just keep incrementing months (i.e 24 months, instead of 2 years).
-  */
-    model[key] = seconds
-      ? Duration.fromObject({
-          years: 0,
-          months: 0,
-          days: 0,
-          hours: 0,
-          minutes: 0,
-          seconds,
-        }).normalize() // Normalize seconds into other keys (i.e 200 seconds => 3 minutes, 20 seconds)
-      : null;
-  });
+      /*
+      Extra object fields required, do not remove. Duration calculates itself
+      based on the time spans provided, if years is removed for example,
+      the output will just keep incrementing months (i.e 24 months, instead of 2 years).
+      */
+      model[key] = isInstantiated(seconds)
+        ? Duration.fromObject({
+            years: 0,
+            months: 0,
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds,
+          }).normalize() // Normalize seconds into other keys (i.e 200 seconds => 3 minutes, 20 seconds)
+        : null;
+    }
+  );
 }
 
 /**

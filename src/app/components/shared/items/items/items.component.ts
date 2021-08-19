@@ -6,7 +6,7 @@ import {
   OnInit,
 } from "@angular/core";
 import { List } from "immutable";
-import { ItemInterface } from "../item/item.component";
+import { IItem } from "../item/item.component";
 
 /**
  * Items Component.
@@ -44,10 +44,10 @@ import { ItemInterface } from "../item/item.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemsComponent implements OnInit, OnChanges {
-  @Input() public items: List<ItemInterface>;
+  @Input() public items: List<IItem>;
 
-  public groupOne: List<ItemInterface>;
-  public groupTwo: List<ItemInterface>;
+  public groupOne: List<IItem>;
+  public groupTwo: List<IItem>;
 
   public constructor() {}
 

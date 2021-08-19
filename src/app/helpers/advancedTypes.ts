@@ -49,4 +49,5 @@ export interface Tuple<T extends any, L extends number> extends Array<T> {
   length: L;
 }
 
-export type Errorable<T> = T | ApiErrorDetails;
+/** Indicates an object can either be that object, or an error response */
+export type Errorable<T extends any> = T | ApiErrorDetails;

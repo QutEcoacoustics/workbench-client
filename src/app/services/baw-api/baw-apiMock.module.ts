@@ -30,6 +30,7 @@ import { ScriptsService } from "./script/scripts.service";
 import { SecurityService } from "./security/security.service";
 import { serviceResolvers, services, serviceTokens } from "./ServiceProviders";
 import { ShallowSitesService, SitesService } from "./site/sites.service";
+import { StatisticsService } from "./statistics/statistics.service";
 import {
   QuestionsService,
   ShallowQuestionsService,
@@ -68,6 +69,7 @@ const mockProviders: Provider[] = [
   mockProvider(ScriptsService),
   mockProvider(SitesService),
   mockProvider(ShallowSitesService),
+  mockProvider(StatisticsService),
   mockProvider(StudiesService),
   mockProvider(TagsService),
   mockProvider(TagGroupsService),

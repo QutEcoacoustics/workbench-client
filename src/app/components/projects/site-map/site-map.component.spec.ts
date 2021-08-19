@@ -16,7 +16,7 @@ import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { interceptApiRequests } from "@test/helpers/general";
+import { interceptRepeatApiRequests } from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
 import { SiteMapComponent } from "./site-map.component";
 
@@ -83,7 +83,7 @@ describe("SiteMapComponent", () => {
     expectations?: ((filter: Filters<ISite>, project: Project) => void)[],
     hasRegion?: boolean
   ): Promise<void>[] {
-    return interceptApiRequests<ISite, Site[]>(
+    return interceptRepeatApiRequests<ISite, Site[]>(
       hasRegion ? api.filterByRegion : api.filter,
       responses,
       expectations

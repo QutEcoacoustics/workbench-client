@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
+import { AudioRecording } from "@models/AudioRecording";
 import type { Region } from "@models/Region";
 import type { Site } from "@models/Site";
 import { Observable } from "rxjs";
@@ -36,7 +36,7 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
     return this.apiList(endpoint(emptyParam, emptyParam));
   }
   public filter(
-    filters: Filters<IAudioRecording>
+    filters: Filters<AudioRecording>
   ): Observable<AudioRecording[]> {
     return this.apiFilter(endpoint(emptyParam, filterParam), filters);
   }
@@ -50,7 +50,7 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
    * @param filters Audio recording filters
    * @param site Site to filter by
    */
-  public filterBySite(filters: Filters<IAudioRecording>, site: IdOr<Site>) {
+  public filterBySite(filters: Filters<AudioRecording>, site: IdOr<Site>) {
     return this.filter(
       this.filterThroughAssociation(filters, "siteId", site) as Filters
     );
@@ -64,7 +64,7 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
    * @param region Region to filter by
    */
   public filterByRegion(
-    filters: Filters<IAudioRecording>,
+    filters: Filters<AudioRecording>,
     region: IdOr<Region>
   ) {
     if (isId(region)) {

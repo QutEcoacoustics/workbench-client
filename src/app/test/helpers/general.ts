@@ -1,6 +1,13 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { Injector } from "@angular/core";
+import { ApiFilter, ApiShow } from "@baw-api/api-common";
+import {
+  ApiErrorDetails,
+  isApiErrorDetails,
+} from "@baw-api/api.interceptor.service";
 import { Filters } from "@baw-api/baw-api.service";
-import { AbstractModel } from "@models/AbstractModel";
+import { Errorable } from "@helpers/advancedTypes";
+import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
+import { SpyObject } from "@ngneat/spectator";
 import { Subject } from "rxjs";
 
 /**
@@ -41,7 +48,7 @@ export const testStepInterval = 0;
  */
 export function nStepObservable<T>(
   subject: Subject<T>,
-  callback: () => T | ApiErrorDetails,
+  callback: () => Errorable<T>,
   isError: boolean = false,
   stepsRemaining: number = 0
 ): Promise<void> {
@@ -67,19 +74,108 @@ export function nStepObservable<T>(
   });
 }
 
-export function interceptApiRequests<
-  T,
-  M extends AbstractModel | AbstractModel[]
+/**
+ * Handler for intercepting special api requests
+ *
+ * @param service Service to intercept
+ * @param method Service method to intercept
+ * @param injector Injector for model
+ * @param models Model data
+ * @param callback Model constructor
+ */
+export function interceptCustomApiRequest<
+  Service extends any,
+  Data extends any,
+  Model extends AbstractModel
+>(
+  service: Service,
+  method: keyof Service,
+  injector: Injector,
+  model: Errorable<Data> | Errorable<Data[]>,
+  callback: AbstractModelConstructor<Model>
+) {
+  const subject = new Subject();
+  const isError = isApiErrorDetails(model);
+
+  let response: any;
+  if (isError) {
+    response = model;
+  } else if (model instanceof Array) {
+    response = model.map((modelData) => new callback(modelData, injector));
+  } else {
+    response = new callback(model, injector);
+  }
+
+  (service[method] as unknown as jasmine.Spy).and.callFake(() => subject);
+  return nStepObservable(subject, () => response, isError);
+}
+
+/**
+ * Handler for intercepting show api requests
+ *
+ * @param service Service to intercept
+ * @param injector Injector for model
+ * @param models Model data
+ * @param callback Model constructor
+ */
+export function interceptShowApiRequest<
+  Data extends any,
+  Model extends AbstractModel
+>(
+  service: SpyObject<ApiShow<Model>>,
+  injector: Injector,
+  model: Errorable<Data>,
+  callback: AbstractModelConstructor<Model>
+): Promise<any> {
+  return interceptCustomApiRequest(service, "show", injector, model, callback);
+}
+
+/**
+ * Handler for intercepting filter api requests
+ *
+ * @param service Service to intercept
+ * @param injector Injector for models
+ * @param models Model data
+ * @param callback Model constructor
+ */
+export function interceptFilterApiRequest<
+  Data extends any,
+  Model extends AbstractModel
+>(
+  service: SpyObject<ApiFilter<Model>>,
+  injector: Injector,
+  models: Errorable<Data[]>,
+  callback: AbstractModelConstructor<Model>
+): Promise<any> {
+  return interceptCustomApiRequest(
+    service,
+    "filter",
+    injector,
+    models,
+    callback
+  );
+}
+
+/**
+ * Handler for intercepting repeated api requests, where each result may be different
+ *
+ * @param apiRequestType Api Request type to intercept
+ * @param responses Api responses for each recurring request
+ * @param expectations Expected filter parameters for request
+ */
+export function interceptRepeatApiRequests<
+  ModelData,
+  Models extends AbstractModel | AbstractModel[]
 >(
   apiRequestType: any,
-  responses: (M | ApiErrorDetails)[],
-  expectations?: FilterExpectations<T>[]
+  responses: (Models | ApiErrorDetails)[],
+  expectations?: FilterExpectations<ModelData>[]
 ): Promise<void>[] {
-  const subjects: Subject<M>[] = [];
+  const subjects: Subject<Models>[] = [];
   const promises: Promise<void>[] = [];
 
   responses.forEach((response) => {
-    const subject = new Subject<M>();
+    const subject = new Subject<Models>();
     subjects.push(subject);
     promises.push(
       nStepObservable(subject, () => response, !(response instanceof Array))
@@ -87,11 +183,13 @@ export function interceptApiRequests<
   });
 
   let count = -1;
-  apiRequestType.andCallFake((filters: Filters<T>, ...params: any[]) => {
-    count++;
-    expectations?.[count]?.(filters, ...params);
-    return subjects[count];
-  });
+  apiRequestType.andCallFake(
+    (filters: Filters<ModelData>, ...params: any[]) => {
+      count++;
+      expectations?.[count]?.(filters, ...params);
+      return subjects[count];
+    }
+  );
 
   return promises;
 }

@@ -29,7 +29,7 @@ import { AbstractModel } from "@models/AbstractModel";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
-import { ItemInterface } from "@shared/items/item/item.component";
+import { IItem } from "@shared/items/item/item.component";
 import { List } from "immutable";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -53,14 +53,15 @@ const userKey = "user";
 })
 class MyProfileComponent
   extends withUnsubscribe(PageComponent)
-  implements OnInit {
+  implements OnInit
+{
   public dataRequest = dataRequestMenuItem.route;
   public lastSeenAt: string;
   public membershipLength: string;
   public tags: Tag[];
   public thirdPerson = false;
   public user: User;
-  public userStatistics: List<ItemInterface> = List([
+  public userStatistics: List<IItem> = List([
     { icon: projectsMenuItem.icon, name: "Projects", value: "..." },
     // TODO Update icon
     { icon: adminTagsMenuItem.icon, name: "Tags", value: "..." },
@@ -146,7 +147,7 @@ class MyProfileComponent
     callback?: (models: M[]) => void
   ) {
     function getPageTotal(model: M) {
-      return ((model as unknown) as AbstractModel).getMetadata().paging.total;
+      return (model as unknown as AbstractModel).getMetadata().paging.total;
     }
 
     api

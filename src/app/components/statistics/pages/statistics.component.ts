@@ -1,128 +1,162 @@
 import { Component, OnInit } from "@angular/core";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { StatisticsService } from "@baw-api/statistics/statistics.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Site } from "@models/Site";
-import { User } from "@models/User";
-import { List } from "immutable";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { toRelative } from "@interfaces/apiInterfaces";
+import { StatisticsRecent } from "@models/Statistics";
+import { ConfigService } from "@services/config/config.service";
+import { IItem } from "@shared/items/item/item.component";
+import fileSize from "filesize";
+import { List, Map } from "immutable";
+import { takeUntil } from "rxjs/operators";
 import { defaultAudioIcon, defaultUserIcon } from "src/app/app.menus";
 import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
 
+function item(data: IItem): Map<keyof IItem, any> {
+  return Map<keyof IItem, any>(data);
+}
+
 /**
  * Statistics Component
+ *
+ * TODO Change statistics based on if config hideProjects property is set
  */
 @Component({
   selector: "baw-statistics",
-  templateUrl: "./statistics.component.html",
-  styleUrls: ["./statistics.component.scss"],
-})
-class StatisticsComponent extends PageComponent implements OnInit {
-  public groupOne: List<{
-    icon: IconProp;
-    name: string;
-    value: string | number;
-  }>;
-  public groupTwo: List<{
-    icon: IconProp;
-    name: string;
-    value: string | number;
-  }>;
-  public recentAnnotations: Annotation[] | AnnotationExpanded[];
-  public recentRecordings: Recording[] | RecordingExpanded[];
+  template: `
+    <h1>Statistics</h1>
 
-  public constructor() {
+    <baw-items [items]="getGroupOne()"></baw-items>
+    <baw-items [items]="getGroupTwo()"></baw-items>
+
+    <baw-recent-annotations
+      [annotations]="recent?.audioEvents"
+    ></baw-recent-annotations>
+
+    <br />
+
+    <baw-recent-audio-recordings
+      [audioRecordings]="recent?.audioRecordings"
+    ></baw-recent-audio-recordings>
+  `,
+})
+class StatisticsComponent
+  extends withUnsubscribe(PageComponent)
+  implements OnInit
+{
+  private groupOne = {
+    projects: item({ name: "Projects", icon: ["fas", "home"] }),
+    annotations: item({ name: "Annotations", icon: ["fas", "bullseye"] }),
+    tags: item({ name: "Available tags", icon: ["fas", "tags"] }),
+    sites: item({ name: "Sites", icon: ["fas", "map-marker-alt"] }),
+    recordings: item({ name: "Audio recordings", icon: defaultAudioIcon }),
+    users: item({ name: "Users", icon: defaultUserIcon }),
+  };
+
+  private groupTwo = {
+    uniqueTags: item({
+      icon: ["fas", "tags"],
+      name: "Unique tags attached to annotations",
+    }),
+    tagsApplied: item({
+      icon: ["fas", "tags"],
+      name: "Tags attached to annotations",
+    }),
+    newAnnotations: item({
+      icon: ["fas", "bullseye"],
+      name: "New annotations in the last month",
+    }),
+    annotationDuration: item({
+      icon: ["fas", "clock"],
+      name: "Overall annotation duration",
+    }),
+    users: item({ icon: defaultUserIcon, name: "Users Online" }),
+    storedData: item({
+      icon: defaultAudioIcon,
+      name: "Overall audio recording file size",
+    }),
+    newRecordings: item({
+      icon: defaultAudioIcon,
+      name: "New audio recordings in last month",
+    }),
+    audioDuration: item({
+      icon: ["fas", "clock"],
+      name: "Overall audio duration",
+    }),
+  };
+
+  public recent: StatisticsRecent;
+
+  public constructor(
+    private stats: StatisticsService,
+    private config: ConfigService
+  ) {
     super();
   }
 
   public ngOnInit() {
-    this.groupOne = List([
-      {
-        icon: ["fas", "home"],
-        name: "Projects",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "bullseye"],
-        name: "Annotations",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "tags"],
-        name: "Available tags",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "map-marker-alt"],
-        name: "Sites",
-        value: "Unknown",
-      },
-      {
-        icon: defaultAudioIcon,
-        name: "Audio recordings",
-        value: "Unknown",
-      },
-      {
-        icon: defaultUserIcon,
-        name: "Users",
-        value: "Unknown",
-      },
-    ]);
+    this.stats
+      .show()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(({ summary, recent }) => {
+        const groupOne = this.groupOne;
+        const groupTwo = this.groupTwo;
 
-    this.groupTwo = List([
-      {
-        icon: ["fas", "tags"],
-        name: "Unique tags attached to annotations",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "tags"],
-        name: "Tags attached to annotations",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "bullseye"],
-        name: "New annotations in the last month",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "clock"],
-        name: "Overall annotation duration",
-        value: "Unknown",
-      },
-      {
-        icon: defaultUserIcon,
-        name: "Users Online",
-        value: "Unknown",
-      },
-      {
-        icon: defaultAudioIcon,
-        name: "Overall audio recording file size",
-        value: "Unknown",
-      },
-      {
-        icon: defaultAudioIcon,
-        name: "New audio recordings in last month",
-        value: "Unknown",
-      },
-      {
-        icon: ["fas", "clock"],
-        name: "Overall audio duration",
-        value: "Unknown",
-      },
-    ]);
+        function setGroupOneValue(
+          key: keyof typeof groupOne,
+          value: string | number
+        ) {
+          groupOne[key] = groupOne[key].set("value", value);
+        }
 
-    this.recentAnnotations = [{ updated: "Unknown" }];
+        function setGroupTwoValue(
+          key: keyof typeof groupTwo,
+          value: string | number
+        ) {
+          groupTwo[key] = groupTwo[key].set("value", value);
+        }
 
-    this.recentRecordings = [{ duration: "Unknown", uploaded: "Unknown" }];
+        setGroupOneValue("projects", summary.projectsTotal);
+        setGroupOneValue("annotations", summary.annotationsTotal);
+        setGroupOneValue("tags", summary.tagsTotal);
+        setGroupOneValue("sites", summary.sitesTotal);
+        setGroupOneValue("recordings", summary.audioRecordingsTotal);
+        setGroupOneValue("users", summary.usersTotal);
+
+        setGroupTwoValue("uniqueTags", summary.tagsAppliedUniqueTotal);
+        setGroupTwoValue("tagsApplied", summary.tagsAppliedTotal);
+        setGroupTwoValue("newAnnotations", recent.audioEventIds.size);
+        setGroupTwoValue(
+          "annotationDuration",
+          toRelative(summary.annotationsTotalDuration, { largest: 2 })
+        );
+        setGroupTwoValue("users", summary.usersOnline);
+        setGroupTwoValue(
+          "storedData",
+          fileSize(summary.audioRecordingsTotalSize, { round: 2 })
+        );
+        setGroupTwoValue("newRecordings", summary.audioRecordingsRecent);
+        setGroupTwoValue(
+          "audioDuration",
+          toRelative(summary.audioRecordingsTotalDuration, {
+            largest: 2,
+          })
+        );
+
+        this.recent = recent;
+      });
   }
 
-  public isExpanded(
-    group:
-      | Annotation[]
-      | AnnotationExpanded[]
-      | Recording[]
-      | RecordingExpanded[]
-  ): group is AnnotationExpanded[] | RecordingExpanded[] {
-    return Object.values(group[0]).indexOf("site") > -1;
+  public getGroupOne(): List<IItem> {
+    return List<IItem>(
+      Object.keys(this.groupOne).map((key) => this.groupOne[key].toObject())
+    );
+  }
+
+  public getGroupTwo(): List<IItem> {
+    return List<IItem>(
+      Object.keys(this.groupTwo).map((key) => this.groupTwo[key].toObject())
+    );
   }
 }
 
@@ -131,25 +165,3 @@ StatisticsComponent.linkComponentToPageInfo({
 }).andMenuRoute(statisticsMenuItem);
 
 export { StatisticsComponent };
-
-interface Annotation {
-  tag?: string;
-  updated: string;
-}
-interface AnnotationExpanded {
-  site: Site;
-  user: User;
-  updated: string;
-  tag: string;
-}
-
-interface Recording {
-  duration: string;
-  uploaded: string;
-}
-
-interface RecordingExpanded {
-  site: Site;
-  duration: string;
-  uploaded: string;
-}
