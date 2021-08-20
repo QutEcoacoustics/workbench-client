@@ -7,7 +7,7 @@ import { projectsMenuItem } from "@components/projects/projects.menus";
 import { regionsMenuItem } from "@components/regions/regions.menus";
 import { Brand } from "@helpers/app-initializer/app-initializer";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ConfigService } from "@services/config/config.service";
@@ -36,7 +36,6 @@ class HomeComponent extends PageComponent implements OnInit {
     modelName: string;
     list: List<Card>;
     link: StrongRoute;
-    routeParams: RouteParams;
   };
   public sourceRepo: string;
 
@@ -57,9 +56,6 @@ class HomeComponent extends PageComponent implements OnInit {
       loading: true,
       list: List([]),
       modelName: settings.hideProjects ? "site" : "project",
-      // TODO Insert default project id, remove this once regions no longer relies on projects
-      routeParams: { projectId: Region.defaultProjectId },
-      // TODO Need to create a sitesMenuItem which details all sites
       link: settings.hideProjects
         ? regionsMenuItem.route
         : projectsMenuItem.route,

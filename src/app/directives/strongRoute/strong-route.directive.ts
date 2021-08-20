@@ -9,6 +9,8 @@ import {
 } from "@angular/router";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
+import { Region } from "@models/Region";
+import { ConfigService } from "@services/config/config.service";
 import { takeUntil } from "rxjs/operators";
 
 @Directive({
@@ -17,7 +19,8 @@ import { takeUntil } from "rxjs/operators";
 })
 export class StrongRouteDirective
   extends withUnsubscribe(RouterLinkWithHref)
-  implements OnChanges {
+  implements OnChanges
+{
   @Input() public strongRoute: StrongRoute;
   /**
    * Additional route parameters to apply to the StrongRoute. By
@@ -36,6 +39,7 @@ export class StrongRouteDirective
   public constructor(
     private _router: Router,
     private _route: ActivatedRoute,
+    private config: ConfigService,
     _locationStrategy: LocationStrategy
   ) {
     super(_router, _route, _locationStrategy);
@@ -48,10 +52,19 @@ export class StrongRouteDirective
         .subscribe((params) => (this.angularRouteParams = params));
     }
 
-    this.routerLink = this.strongRoute?.toRouterLink({
-      ...this.angularRouteParams,
-      ...this.routeParams,
-    });
+    if (this.config.settings.hideProjects) {
+      this.routerLink = this.strongRoute?.toRouterLink({
+        projectId: Region.defaultProjectId,
+        ...this.angularRouteParams,
+        ...this.routeParams,
+      });
+    } else {
+      this.routerLink = this.strongRoute?.toRouterLink({
+        ...this.angularRouteParams,
+        ...this.routeParams,
+      });
+    }
+
     super.ngOnChanges(changes);
   }
 

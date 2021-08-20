@@ -31,8 +31,8 @@ import {
           <ng-container *ngIf="isInternalRoute(link)">
             <a
               ngbDropdownItem
-              routerLinkActive="active"
-              [routerLink]="getRoute(link, params)"
+              strongRouteActive="active"
+              [strongRoute]="link.route"
               [innerText]="link.label"
             ></a>
           </ng-container>

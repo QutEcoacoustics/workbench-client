@@ -17,8 +17,8 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
     <button
       class="btn text-start"
       (click)="link.action()"
-      [disabled]="isDisabled"
-      [class.disabled]="isDisabled"
+      [disabled]="link.disabled"
+      [class.disabled]="link.disabled"
       [ngbTooltip]="tooltipContent"
       [placement]="placement"
     >
@@ -41,14 +41,10 @@ export class MenuButtonComponent implements OnInit {
   @Input() public link: MenuAction | MenuModal;
   @Input() public placement: Placement;
   @Input() public tooltip: string;
-  public isDisabled: boolean;
   public disabledReason: string;
 
   public ngOnInit() {
-    if (typeof this.link.disabled === "boolean") {
-      this.isDisabled = this.link.disabled;
-    } else if (typeof this.link.disabled === "string") {
-      this.isDisabled = true;
+    if (typeof this.link.disabled === "string") {
       this.disabledReason = this.link.disabled;
     }
   }

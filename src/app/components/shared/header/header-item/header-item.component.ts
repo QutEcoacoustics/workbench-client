@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import {
   getRoute,
@@ -23,8 +18,8 @@ import {
       <ng-container *ngIf="isInternalRoute(link)">
         <a
           class="nav-link"
-          routerLinkActive="active"
-          [routerLink]="getRoute(link, params)"
+          strongRouteActive="active"
+          [strongRoute]="link.route"
         >
           {{ link.label }}
         </a>
@@ -38,7 +33,7 @@ import {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderItemComponent implements OnInit {
+export class HeaderItemComponent {
   @Input() public link: NavigableMenuItem;
   public params: Params;
 
@@ -49,6 +44,4 @@ export class HeaderItemComponent implements OnInit {
   public constructor(private route: ActivatedRoute) {
     this.params = this.route.snapshot.params;
   }
-
-  public ngOnInit() {}
 }

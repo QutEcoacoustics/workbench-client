@@ -1,15 +1,10 @@
-<!--
-  Note: Using [routerLink] instead of [strongRoute] so that routerLinkActive will function.
-  Otherwise uses will not have a visual clue for which page they are on. Issue: #1216
--->
-
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
   <div class="container">
     <!-- Brand Logo -->
     <a
       class="navbar-brand"
-      [routerLink]="routes.home.route.toRouterLink()"
-      routerLinkActive="active"
+      strongRouteActive="active"
+      [strongRoute]="routes.home.route"
       [innerText]="title"
     ></a>
 
@@ -23,7 +18,6 @@
     <div class="navbar-collapse" [class.collapse]="collapsed">
       <!-- Left aligned navigation links -->
       <ul class="navbar-nav me-auto">
-        <!-- Projects Link -->
         <ng-container *ngFor="let header of headers">
           <ng-container *ngIf="!isNavigableMenuItem(header)">
             <baw-header-dropdown [links]="header"></baw-header-dropdown>
@@ -54,8 +48,8 @@
     <a
       id="register-header-link"
       class="nav-link"
-      [routerLink]="routes.register.route.toRouterLink()"
-      routerLinkActive="active"
+      strongRouteActive="active"
+      [strongRoute]="routes.register.route"
       [innerText]="routes.register.label"
     ></a>
   </li>
@@ -64,8 +58,8 @@
     <a
       id="login-header-link"
       class="nav-link"
-      [routerLink]="routes.login.route.toRouterLink()"
-      routerLinkActive="active"
+      strongRouteActive="active"
+      [strongRoute]="routes.login.route"
       [innerText]="routes.login.label"
     ></a>
   </li>
@@ -77,8 +71,8 @@
     <a
       id="admin-settings"
       class="nav-link"
-      [routerLink]="routes.admin.route.toRouterLink()"
-      routerLinkActive="active"
+      strongRouteActive="active"
+      [strongRoute]="routes.admin.route"
     >
       <fa-icon [icon]="routes.admin.icon"></fa-icon>
     </a>
@@ -88,8 +82,8 @@
     <a
       id="login-widget"
       class="nav-link"
-      [routerLink]="user.viewUrl"
-      routerLinkActive="active"
+      bawUrlActive="active"
+      [bawUrl]="user.viewUrl"
     >
       <span [innerText]="user.userName"></span>
       <img alt="Profile Icon" [src]="user.image" [thumbnail]="thumbnail" />
