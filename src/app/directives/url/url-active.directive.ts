@@ -33,7 +33,7 @@ export class UrlActiveDirective extends RouterLinkActive {
   public set bawUrlActiveOptions(
     data: { exact: boolean } | IsActiveMatchOptions
   ) {
-    super.routerLinkActiveOptions = data;
+    super.routerLinkActiveOptions = data ?? { exact: false };
   }
 
   public constructor(

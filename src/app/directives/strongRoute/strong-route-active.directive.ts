@@ -33,7 +33,7 @@ export class StrongRouteActiveDirective extends RouterLinkActive {
   public set strongRouteActiveOptions(
     data: { exact: boolean } | IsActiveMatchOptions
   ) {
-    super.routerLinkActiveOptions = data;
+    super.routerLinkActiveOptions = data ?? { exact: false };
   }
 
   public constructor(
