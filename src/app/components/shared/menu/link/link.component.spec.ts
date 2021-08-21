@@ -1,4 +1,3 @@
-import { Location } from "@angular/common";
 import { TemplateRef } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -18,7 +17,7 @@ import {
 } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
-import { assertIcon } from "@test/helpers/html";
+import { assertIcon, assertStrongRouteActive } from "@test/helpers/html";
 import { SharedModule } from "../../shared.module";
 import { MenuLinkComponent } from "./link.component";
 
@@ -50,11 +49,6 @@ describe("MenuLinkComponent", () => {
     const routeStub = new ActivatedRouteStub({ params });
     activatedRoute.snapshot.params = routeStub.snapshot.params;
     activatedRoute.params = routeStub.params;
-  }
-
-  function setLocationPath(path: string) {
-    const location: Location = spec.inject(Location);
-    spyOn(location, "path").and.callFake(() => path);
   }
 
   function setup(inputs: Partial<MenuLinkComponent> = {}) {
@@ -207,11 +201,7 @@ describe("MenuLinkComponent", () => {
 
         // TODO Figure out how to implement
         xit("should display disabled message in tooltip", () => {
-          setup({
-            link: link({
-              disabled: "custom disabled message",
-            }),
-          });
+          setup({ link: link({ disabled: "custom disabled message" }) });
           spec.detectChanges();
           const tooltip = getTooltip();
           tooltip.open();
@@ -240,44 +230,11 @@ describe("MenuLinkComponent", () => {
       expect(spec.query(StrongRouteDirective).strongRoute).toEqual(route);
     });
 
-    it("should not be highlighted by default", () => {
+    it("should set strong route active property", () => {
       const route = StrongRoute.newRoot().add("brokenlink");
       setup({ link: menuRoute({ ...defaultRoute, route }) });
-      setLocationPath("/customRoute");
       spec.detectChanges();
-      assertActive(false);
-    });
-
-    it("should highlight link when location path matches route", () => {
-      const route = StrongRoute.newRoot().add("customRoute");
-      setup({ link: menuRoute({ ...defaultRoute, route }) });
-      setLocationPath("/customRoute");
-      spec.detectChanges();
-      assertActive(true);
-    });
-
-    it("should highlight link when location path matches route with route parameters", () => {
-      const route = StrongRoute.newRoot().add("customRoute").add(":id");
-      setup({ link: menuRoute({ ...defaultRoute, route }) });
-      setRouteParams({ id: 10 });
-      setLocationPath("/customRoute/10");
-      spec.detectChanges();
-      assertActive(true);
-    });
-
-    it("should highlight link when location path matches route with query parameters", () => {
-      const route = StrongRoute.newRoot().add("customRoute");
-      setup({ link: menuRoute({ ...defaultRoute, route }) });
-      setLocationPath("/customRoute?page=2");
-      spec.detectChanges();
-      assertActive(true);
-    });
-
-    it("should highlight link when active property set", () => {
-      defaultRoute.active = true;
-      setup({ link: defaultRoute });
-      spec.detectChanges();
-      assertActive(true);
+      assertStrongRouteActive(getLink());
     });
 
     it("should highlight link when highlight property set", () => {

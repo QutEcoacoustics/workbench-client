@@ -4,8 +4,8 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
-import { SiteCardComponent } from "@components/projects/site-card/site-card.component";
-import { SiteMapComponent } from "@components/projects/site-map/site-map.component";
+import { SiteCardComponent } from "@components/projects/components/site-card/site-card.component";
+import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { IRegion, Region } from "@models/Region";
@@ -186,7 +186,7 @@ describe("ProjectDetailsComponent", () => {
     });
   });
 
-  assertPaginationTemplate<any, DetailsComponent>(() => {
+  assertPaginationTemplate<Site | Region, DetailsComponent>(() => {
     setup(defaultProject);
     interceptApiRequest(emptyResponse, emptyResponse);
     spectator.detectChanges();

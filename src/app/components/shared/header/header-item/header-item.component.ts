@@ -15,20 +15,21 @@ import {
   selector: "baw-header-item",
   template: `
     <li class="nav-item" *ngIf="link">
-      <ng-container *ngIf="isInternalRoute(link)">
-        <a
-          class="nav-link"
-          strongRouteActive="active"
-          [strongRoute]="link.route"
-        >
-          {{ link.label }}
-        </a>
-      </ng-container>
-      <ng-container *ngIf="isExternalLink(link)">
-        <a class="nav-link" [href]="getRoute(link, params)">
-          {{ link.label }}
-        </a>
-      </ng-container>
+      <a
+        *ngIf="isInternalRoute(link)"
+        class="nav-link"
+        strongRouteActive="active"
+        [strongRoute]="link.route"
+      >
+        {{ link.label }}
+      </a>
+      <a
+        *ngIf="isExternalLink(link)"
+        class="nav-link"
+        [href]="getRoute(link, params)"
+      >
+        {{ link.label }}
+      </a>
     </li>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

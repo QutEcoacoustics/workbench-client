@@ -73,19 +73,9 @@ export function assertTooltip(target: HTMLElement, tooltip: string) {
   // TODO Add accessability expectations (id, visible on highlight, etc.)
 }
 
-export function assertHref(
-  target: HTMLAnchorElement,
-  href: string,
-  isRoute?: boolean
-) {
+export function assertHref(target: HTMLAnchorElement, href: string) {
   expect(target).toBeTruthy("No link detected");
-  expect(target).toHaveAttribute("href", href);
-
-  if (isRoute) {
-    expect(target).toHaveAttribute("ng-reflect-router-link");
-  } else {
-    expect(target).not.toHaveAttribute("ng-reflect-router-link");
-  }
+  expect(target).toHaveAttribute("href", encodeURI(href));
 }
 
 /**
@@ -98,6 +88,27 @@ export function assertRoute(target: HTMLElement, route: string) {
   expect(target).toBeTruthy("No route detected");
   expect(target).toHaveAttribute("ng-reflect-router-link");
   expect(target).toHaveAttribute("href", encodeURI(route));
+}
+
+/**
+ * Assert strong route link
+ *
+ * @param target Target element
+ * @param route Route text
+ */
+export function assertStrongRouteLink(target: HTMLElement, route: string) {
+  expect(target).toBeTruthy("No route detected");
+  expect(target).toHaveAttribute("ng-reflect-strong-route");
+  expect(target).toHaveAttribute("href", encodeURI(route));
+}
+
+/**
+ * Assert strong route link active is set
+ *
+ * @param target Target element
+ */
+export function assertStrongRouteActive(target: HTMLElement) {
+  assertAttribute(target, "strong-route-active", "active");
 }
 
 /**

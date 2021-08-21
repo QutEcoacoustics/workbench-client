@@ -4,6 +4,7 @@ import { MockAppConfigModule } from "@services/config/configMock.module";
 import { appLibraryImports } from "src/app/app.module";
 import { FooterComponent } from "./footer.component";
 
+//TODO Test links in footer highlight depending on page
 describe("FooterComponent", () => {
   let component: FooterComponent;
   let fixture: ComponentFixture<FooterComponent>;

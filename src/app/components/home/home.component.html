@@ -124,11 +124,14 @@
     <baw-loading *ngIf="viewMore.loading" [size]="lg"></baw-loading>
 
     <baw-cards *ngIf="!viewMore.loading" [cards]="viewMore.list">
-      <ng-container *ngIf="viewMore.list.size === 0; else hasSites">
-        <p class="m-auto">No sites to display</p>
+      <ng-container *ngIf="viewMore.list.size === 0; else hasModels">
+        <p id="placeholder" class="m-auto">
+          No {{ viewMore.modelName }}s to display
+        </p>
       </ng-container>
-      <ng-template #hasSites>
+      <ng-template #hasModels>
         <a
+          id="viewMore"
           class="m-auto btn btn-outline-highlight btn-lg"
           [strongRoute]="viewMore.link"
         >

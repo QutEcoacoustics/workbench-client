@@ -7,6 +7,7 @@ import {
 import { RouterTestingModule } from "@angular/router/testing";
 import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { StrongRouteDirective } from "./strong-route.directive";
 
 // TODO Some tests work by bypassing the angular router. This can be solved by navigating
@@ -19,7 +20,7 @@ describe("StrongRouteDirective", () => {
   let spec: SpectatorDirective<StrongRouteDirective>;
   const createDirective = createDirectiveFactory({
     directive: StrongRouteDirective,
-    imports: [RouterTestingModule],
+    imports: [RouterTestingModule, MockAppConfigModule],
   });
 
   const createRouterLink = createDirectiveFactory({
