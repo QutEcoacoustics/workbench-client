@@ -232,7 +232,7 @@ describe("StatisticsComponent", () => {
         test: "overall audio recording file size",
         index: 5,
         data: partialStatistic({ audioRecordingsTotalSize: 123456789 }),
-        expectedOutput: "117.74 MB",
+        expectedOutput: "123.46 MB",
       },
       {
         test: "number of new audio recordings",
