@@ -4,7 +4,7 @@ import { CmsService } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
-import { regionsMenuItem } from "@components/regions/regions.menus";
+import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { DirectivesModule } from "@directives/directives.module";
 import { Errorable } from "@helpers/advancedTypes";
 import { Settings } from "@helpers/app-initializer/app-initializer";
@@ -141,9 +141,7 @@ describe("HomeComponent", () => {
       hideProjects: true,
       awaitModel: awaitRegions,
       generateModel: () => new Region(generateRegion()),
-      link: regionsMenuItem.route.toRouterLink({
-        projectId: Region.defaultProjectId,
-      }),
+      link: shallowRegionsMenuItem.route.toRouterLink(),
     },
   ].forEach((test) => {
     describe(`${test.test} api`, () => {

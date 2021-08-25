@@ -5,7 +5,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { libraryMenuItem } from "@components/library/library.menus";
 import { listenMenuItem } from "@components/listen/listen.menus";
-import { regionsMenuItem } from "@components/regions/regions.menus";
+import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { Settings } from "@helpers/app-initializer/app-initializer";
@@ -136,7 +136,7 @@ describe("HeaderComponent", () => {
           {
             link: "sites",
             index: 0,
-            menuItem: regionsMenuItem,
+            menuItem: shallowRegionsMenuItem,
             hideProject: true,
           },
           { link: "projects", index: 0, menuItem: projectsMenuItem },

@@ -4,7 +4,7 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
-import { regionsMenuItem } from "@components/regions/regions.menus";
+import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { Brand } from "@helpers/app-initializer/app-initializer";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -57,7 +57,7 @@ class HomeComponent extends PageComponent implements OnInit {
       list: List([]),
       modelName: settings.hideProjects ? "site" : "project",
       link: settings.hideProjects
-        ? regionsMenuItem.route
+        ? shallowRegionsMenuItem.route
         : projectsMenuItem.route,
     };
     this.svg = {
@@ -94,9 +94,7 @@ class HomeComponent extends PageComponent implements OnInit {
           this.viewMore.list = cards;
           this.viewMore.loading = false;
         },
-        () => {
-          this.viewMore.loading = false;
-        }
+        () => (this.viewMore.loading = false)
       );
   }
 

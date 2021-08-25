@@ -4,7 +4,7 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { libraryMenuItem } from "@components/library/library.menus";
 import { listenMenuItem } from "@components/listen/listen.menus";
-import { regionsMenuItem } from "@components/regions/regions.menus";
+import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import {
   HeaderGroupConverted,
   HeaderLink,
@@ -70,7 +70,9 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
 
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
     this.headers = List([
-      this.config.settings.hideProjects ? regionsMenuItem : projectsMenuItem,
+      this.config.settings.hideProjects
+        ? shallowRegionsMenuItem
+        : projectsMenuItem,
       listenMenuItem,
       libraryMenuItem,
       ...this.retrieveHeaderLinks(),

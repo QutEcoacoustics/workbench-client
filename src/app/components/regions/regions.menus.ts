@@ -1,5 +1,9 @@
-import { projectMenuItem } from "@components/projects/projects.menus";
+import {
+  projectMenuItem,
+  projectsMenuItem,
+} from "@components/projects/projects.menus";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import {
   defaultDeleteIcon,
   defaultEditIcon,
@@ -7,20 +11,32 @@ import {
   isProjectEditorPredicate,
 } from "src/app/app.menus";
 
+export const shallowRegionsRoute = StrongRoute.newRoot().add("regions");
 export const regionsRoute = projectMenuItem.route.addFeatureModule("regions");
 
-export const regionsCategory: Category = {
+export const shallowRegionsCategory: Category = {
   icon: ["fas", "map-signs"],
   label: "Sites",
+  route: shallowRegionsRoute,
+};
+
+export const shallowRegionsMenuItem = menuRoute({
+  icon: ["fas", "map-signs"],
+  label: "Sites",
+  route: shallowRegionsRoute,
+  tooltip: () => "View sites I have access to",
+  order: projectsMenuItem.order,
+});
+
+export const regionsCategory: Category = {
+  ...shallowRegionsCategory,
   route: regionsRoute,
 };
 
 export const regionsMenuItem = menuRoute({
-  icon: ["fas", "map-signs"],
-  label: "Sites",
+  ...shallowRegionsMenuItem,
   parent: projectMenuItem,
   route: regionsRoute,
-  tooltip: () => "View sites I have access to",
 });
 
 export const regionMenuItem = menuRoute({
