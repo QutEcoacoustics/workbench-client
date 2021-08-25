@@ -4,6 +4,7 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { libraryMenuItem } from "@components/library/library.menus";
 import { listenMenuItem } from "@components/listen/listen.menus";
+import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import {
   HeaderGroupConverted,
   HeaderLink,
@@ -65,12 +66,13 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
 
   public ngOnInit() {
     this.collapsed = true;
-    this.activeLink = "projects";
     this.title = this.config.settings.brand.short;
 
     // Convert MultiLink.items from SingleLink interface to NavigableMenuItem interface
     this.headers = List([
-      projectsMenuItem,
+      this.config.settings.hideProjects
+        ? shallowRegionsMenuItem
+        : projectsMenuItem,
       listenMenuItem,
       libraryMenuItem,
       ...this.retrieveHeaderLinks(),
@@ -97,22 +99,12 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
   }
 
   /**
-   * Check if navbar link is active
-   *
-   * @param link Navbar link
-   * @returns True if navbar is active
-   */
-  public isActive(link: string) {
-    return this.activeLink.toLowerCase() === link.toLowerCase();
-  }
-
-  /**
    * Toggle the collapse of the navbar
    *
    * @param setState Set the state of the navbar
    */
   public toggleCollapse(setState?: boolean) {
-    this.collapsed = setState ? setState : !this.collapsed;
+    this.collapsed = setState ?? !this.collapsed;
   }
 
   /**

@@ -113,24 +113,31 @@
 <!-- View some projects -->
 <section id="projects">
   <div class="container">
-    <h2>View Some Projects</h2>
+    <h2>View Some {{ viewMore.modelName | titlecase }}s</h2>
     <p>
-      You can browse some public projects and audio recordings without logging
-      in. To participate in the analysis work you will need to log in with an
-      existing account or register for a new account. Don't worry its free and
-      easy!
+      You can browse some public {{ viewMore.modelName }}s and audio recordings
+      without logging in. To participate in the analysis work you will need to
+      log in with an existing account or register for a new account. Don't worry
+      its free and easy!
     </p>
 
-    <baw-cards *ngIf="projectList" [cards]="projectList">
-      <ng-container>
-        <a
-          class="m-auto btn btn-outline-highlight btn-lg"
-          [strongRoute]="projectsLink"
-        >
-          More Projects
-        </a>
+    <baw-loading *ngIf="viewMore.loading" [size]="lg"></baw-loading>
+
+    <baw-cards *ngIf="!viewMore.loading" [cards]="viewMore.list">
+      <ng-container *ngIf="viewMore.list.size === 0; else hasModels">
+        <p id="placeholder" class="m-auto">
+          No {{ viewMore.modelName }}s to display
+        </p>
       </ng-container>
+      <ng-template #hasModels>
+        <a
+          id="viewMore"
+          class="m-auto btn btn-outline-highlight btn-lg"
+          [strongRoute]="viewMore.link"
+        >
+          More {{ viewMore.modelName | titlecase }}s
+        </a>
+      </ng-template>
     </baw-cards>
-    <baw-loading *ngIf="!projectList" [size]="lg"></baw-loading>
   </div>
 </section>

@@ -5,16 +5,24 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { libraryMenuItem } from "@components/library/library.menus";
 import { listenMenuItem } from "@components/listen/listen.menus";
+import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
+import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
+import { Settings } from "@helpers/app-initializer/app-initializer";
 import { SessionUser } from "@models/User";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { ConfigService, assetRoot } from "@services/config/config.service";
+import { assetRoot, ConfigService } from "@services/config/config.service";
+import { testApiConfig } from "@services/config/configMock.service";
 import { IconsModule } from "@shared/icons/icons.module";
 import { generateSessionUser, generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { viewports } from "@test/helpers/general";
-import { assertImage, assertRoute } from "@test/helpers/html";
+import {
+  assertImage,
+  assertStrongRouteLink,
+  assertUrl,
+} from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { MockProvider } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
@@ -48,11 +56,19 @@ describe("HeaderComponent", () => {
       NgbModule,
       AuthenticatedImageModule,
       IconsModule,
+      DirectivesModule,
     ],
   });
 
   function setUser(isLoggedIn: boolean, user?: SessionUser) {
     spyOn(api, "getLocalUser").and.callFake(() => (isLoggedIn ? user : null));
+  }
+
+  function setConfigHideProjects(hidden: boolean) {
+    spyOnProperty(config, "settings").and.callFake(
+      () => ({ ...testApiConfig.settings, hideProjects: !!hidden } as Settings)
+    );
+    config.settings.hideProjects = hidden;
   }
 
   beforeEach(() => {
@@ -111,23 +127,30 @@ describe("HeaderComponent", () => {
           spec.detectChanges();
 
           const brand = spec.query<HTMLElement>("a.navbar-brand");
-          assertRoute(brand, homeMenuItem.route.toRouterLink());
-          expect(brand.innerText).toContain(config.settings.brand.short);
+          expect(brand).toContainText(config.settings.brand.short);
+          assertStrongRouteLink(brand, homeMenuItem.route.toRouterLink());
         });
 
         [
+          {
+            link: "sites",
+            index: 0,
+            menuItem: shallowRegionsMenuItem,
+            hideProject: true,
+          },
           { link: "projects", index: 0, menuItem: projectsMenuItem },
           { link: "listen", index: 1, menuItem: listenMenuItem },
           { link: "library", index: 2, menuItem: libraryMenuItem },
           { link: "contact us", index: 4, menuItem: contactUsMenuItem },
-        ].forEach(({ link, index, menuItem }) => {
+        ].forEach(({ link, index, menuItem, hideProject }) => {
           it(`should create ${link} link`, () => {
+            setConfigHideProjects(!!hideProject);
             setUser(isLoggedIn, defaultUser);
             spec.detectChanges();
 
             const item = getNavLinks()[index];
-            assertRoute(item, menuItem.route.toRouterLink());
-            expect(item.innerText).toContain(menuItem.label);
+            expect(item).toContainText(menuItem.label);
+            assertStrongRouteLink(item, menuItem.route.toRouterLink());
           });
         });
 
@@ -136,21 +159,18 @@ describe("HeaderComponent", () => {
           spec.detectChanges();
 
           const link = getNavLinks()[3];
-          expect(link).toBeTruthy();
-          expect(link.innerText).toContain("<< content1 >>");
+          expect(link).toContainText("<< content1 >>");
         });
 
         it("should create header dropdown links from external config", () => {
           setUser(isLoggedIn, defaultUser);
           spec.detectChanges();
 
-          const dropdown = spec.query<HTMLElement>("baw-header-dropdown");
+          const dropdown = spec.query("baw-header-dropdown");
           expect(dropdown).toBeTruthy();
-          expect(
-            dropdown
-              .querySelector<HTMLElement>("button#dropdownBasic")
-              .innerText.trim()
-          ).toBe("<< content2 >>");
+          expect(dropdown.querySelector("button#dropdownBasic")).toContainText(
+            "<< content2 >>"
+          );
           expect(dropdown.querySelectorAll(".dropdown-item").length).toBe(2);
         });
 
@@ -163,8 +183,8 @@ describe("HeaderComponent", () => {
           const link = spec.query<HTMLElement>("#register-header-link");
 
           if (links.register) {
-            assertRoute(link, registerMenuItem.route.toRouterLink());
-            expect(link.innerText).toContain(registerMenuItem.label);
+            assertStrongRouteLink(link, registerMenuItem.route.toRouterLink());
+            expect(link).toContainText(registerMenuItem.label);
           } else {
             expect(link).toBeFalsy();
           }
@@ -177,8 +197,8 @@ describe("HeaderComponent", () => {
           const link = spec.query<HTMLElement>("#login-header-link");
 
           if (links.login) {
-            assertRoute(link, loginMenuItem.route.toRouterLink());
-            expect(link.innerText).toContain(loginMenuItem.label);
+            assertStrongRouteLink(link, loginMenuItem.route.toRouterLink());
+            expect(link).toContainText(loginMenuItem.label);
           } else {
             expect(link).toBeFalsy();
           }
@@ -191,8 +211,8 @@ describe("HeaderComponent", () => {
           const profile = spec.query<HTMLElement>("#login-widget");
 
           if (links.profile) {
-            assertRoute(profile, myAccountMenuItem.route.toRouterLink());
-            expect(profile.innerText.trim()).toBe(defaultUser.userName);
+            assertUrl(profile, myAccountMenuItem.route.toRouterLink());
+            expect(profile).toContainText(defaultUser.userName);
           } else {
             expect(profile).toBeFalsy();
           }
@@ -239,8 +259,7 @@ describe("HeaderComponent", () => {
           const logout = spec.queryAll<HTMLElement>("button.nav-link")[1];
 
           if (links.logout) {
-            expect(logout).toBeTruthy();
-            expect(logout.innerText.trim()).toBe("Logout");
+            expect(logout).toContainText("Logout");
           } else {
             expect(logout).toBeFalsy();
           }
@@ -256,7 +275,10 @@ describe("HeaderComponent", () => {
 
           if (links.admin) {
             expect(settings).toBeTruthy();
-            assertRoute(settings, adminDashboardMenuItem.route.toRouterLink());
+            assertStrongRouteLink(
+              settings,
+              adminDashboardMenuItem.route.toRouterLink()
+            );
           } else {
             expect(settings).toBeFalsy();
           }
@@ -341,9 +363,8 @@ describe("HeaderComponent", () => {
       spec.detectChanges();
 
       const link = spec.queryAll<HTMLElement>("a.nav-link")[5];
-      expect(link).toBeTruthy();
-      expect(link.innerText).toContain(registerMenuItem.label);
-      assertRoute(link, registerMenuItem.route.toRouterLink());
+      expect(link).toContainText(registerMenuItem.label);
+      assertStrongRouteLink(link, registerMenuItem.route.toRouterLink());
     });
 
     // TODO Move to E2E Tests
@@ -367,9 +388,8 @@ describe("HeaderComponent", () => {
       spec.detectChanges();
 
       const link = spec.queryAll<HTMLElement>("a.nav-link")[6];
-      expect(link).toBeTruthy();
-      expect(link.innerText).toContain(loginMenuItem.label);
-      assertRoute(link, loginMenuItem.route.toRouterLink());
+      expect(link).toContainText(loginMenuItem.label);
+      assertStrongRouteLink(link, loginMenuItem.route.toRouterLink());
     }));
   });
 

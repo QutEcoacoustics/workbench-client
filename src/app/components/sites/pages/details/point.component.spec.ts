@@ -3,7 +3,7 @@ import {
   isApiErrorDetails,
 } from "@baw-api/api.interceptor.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
-import { SiteComponent } from "@components/sites/site/site.component";
+import { SiteComponent } from "@components/sites/components/site/site.component";
 import { Errorable } from "@helpers/advancedTypes";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";

@@ -19,7 +19,7 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
 })
 export class FooterComponent implements OnInit {
   public version: string;
-  public year: number = new Date().getFullYear();
+  public year = new Date().getFullYear();
   public links = [
     statisticsMenuItem,
     disclaimersMenuItem,

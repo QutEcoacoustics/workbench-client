@@ -1,10 +1,15 @@
 import { Component, OnInit } from "@angular/core";
 import { CMS } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
+import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { Brand } from "@helpers/app-initializer/app-initializer";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { StrongRoute } from "@interfaces/strongRoute";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { ConfigService } from "@services/config/config.service";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
@@ -19,9 +24,6 @@ import { homeCategory, homeMenuItem } from "./home.menus";
 class HomeComponent extends PageComponent implements OnInit {
   public brand: Brand;
   public page = CMS.home;
-  public projectList: List<Card>;
-  public projectsLink = projectsMenuItem.route;
-  public viewBox: string;
   public svg: {
     width: string;
     height: string;
@@ -29,9 +31,16 @@ class HomeComponent extends PageComponent implements OnInit {
     title: string[];
     alt: string;
   };
+  public viewMore: {
+    loading: boolean;
+    modelName: string;
+    list: List<Card>;
+    link: StrongRoute;
+  };
   public sourceRepo: string;
 
   public constructor(
+    private regionApi: ShallowRegionsService,
     private projectApi: ProjectsService,
     private securityApi: SecurityService,
     public config: ConfigService
@@ -40,9 +49,17 @@ class HomeComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.brand = this.config.settings.brand;
-    this.sourceRepo = this.config.settings.links.sourceRepository;
-
+    const settings = this.config.settings;
+    this.brand = settings.brand;
+    this.sourceRepo = settings.links.sourceRepository;
+    this.viewMore = {
+      loading: true,
+      list: List([]),
+      modelName: settings.hideProjects ? "site" : "project",
+      link: settings.hideProjects
+        ? shallowRegionsMenuItem.route
+        : projectsMenuItem.route,
+    };
     this.svg = {
       width: "80%",
       height: this.calculateTitleHeight(this.brand.long),
@@ -52,7 +69,7 @@ class HomeComponent extends PageComponent implements OnInit {
     };
 
     /**
-     * TODO Sort projects using the following format:
+     * TODO Sort models using the following format:
      * sorted by:
      *  permission level high to low
      *  recent use / modification date (recent, to less recent)
@@ -62,17 +79,22 @@ class HomeComponent extends PageComponent implements OnInit {
       .getAuthTrigger()
       .pipe(
         mergeMap(() =>
-          this.projectApi.filter({
+          (settings.hideProjects ? this.regionApi : this.projectApi).filter({
             paging: { items: 3 },
             sorting: { orderBy: "updatedAt", direction: "desc" },
           })
         ),
-        map((data) => List(data.map((project) => project.getCard()))),
+        map((models) =>
+          List(models.map((model: Region | Project) => model.getCard()))
+        ),
         takeUntil(this.unsubscribe)
       )
       .subscribe(
-        (cards) => (this.projectList = cards),
-        () => (this.projectList = List([]))
+        (cards) => {
+          this.viewMore.list = cards;
+          this.viewMore.loading = false;
+        },
+        () => (this.viewMore.loading = false)
       );
   }
 

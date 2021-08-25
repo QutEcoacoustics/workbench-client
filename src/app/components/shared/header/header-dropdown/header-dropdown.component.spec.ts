@@ -1,248 +1,143 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
-import { menuLink, menuRoute } from "@interfaces/menusInterfaces";
+import { UrlSegment } from "@angular/router";
+import { DirectivesModule } from "@directives/directives.module";
+import { HeaderGroupConverted } from "@helpers/app-initializer/app-initializer";
+import {
+  MenuLink,
+  menuLink,
+  MenuRoute,
+  menuRoute,
+} from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import { MockAppConfigModule } from "@services/config/configMock.module";
+import { modelData } from "@test/helpers/faker";
+import {
+  assertHref,
+  assertStrongRouteLink,
+  assertStrongRouteActive,
+} from "@test/helpers/html";
 import { HeaderDropdownComponent } from "./header-dropdown.component";
 
 describe("HeaderDropdownComponent", () => {
-  let component: HeaderDropdownComponent;
-  let fixture: ComponentFixture<HeaderDropdownComponent>;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [HeaderDropdownComponent],
-      imports: [RouterTestingModule],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(HeaderDropdownComponent);
-    component = fixture.componentInstance;
+  let defaultUri: string;
+  let defaultLink: MenuLink;
+  let defaultRoute: MenuRoute;
+  let spec: SpectatorRouting<HeaderDropdownComponent>;
+  const createComponent = createRoutingFactory({
+    component: HeaderDropdownComponent,
+    imports: [DirectivesModule, MockAppConfigModule],
+    stubsEnabled: false,
   });
 
-  it("should create", () => {
-    component.links = {
-      title: "test",
-      items: [
-        menuLink({
-          label: "label",
-          uri: () => "uri",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-        }),
-      ],
-    };
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+  function setup(links: HeaderGroupConverted, url: string = "") {
+    spec = createComponent({
+      detectChanges: false,
+      props: { links },
+      url: [new UrlSegment(url, {})],
+    });
+  }
+
+  function getLinks() {
+    return spec.queryAll<HTMLAnchorElement>("a");
+  }
+
+  function assertInternalLink(index: number, menu: MenuRoute) {
+    const link = getLinks()[index];
+    expect(link).toContainText(menu.label);
+    assertStrongRouteLink(link, menu.route.toRouterLink());
+  }
+
+  function assertExternalLink(index: number, label: string, href: string) {
+    const link = getLinks()[index];
+    expect(link).toContainText(label);
+    assertHref(link, href);
+  }
+
+  beforeEach(() => {
+    defaultUri = modelData.internet.url();
+    defaultLink = menuLink({
+      label: modelData.param(),
+      uri: () => defaultUri,
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+    });
+    defaultRoute = menuRoute({
+      label: modelData.param(),
+      icon: ["fas", "home"],
+      tooltip: () => "tooltip",
+      route: StrongRoute.newRoot().add("home"),
+    });
   });
 
   it("should create header title", () => {
-    component.links = {
-      title: "Custom Title",
-      items: [
-        menuLink({
-          label: "label",
-          uri: () => "uri",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-        }),
-      ],
-    };
-    fixture.detectChanges();
-
-    const title = fixture.nativeElement.querySelector("button");
-    expect(title).toBeTruthy();
-    expect(title.innerText.trim()).toBe("Custom Title");
+    setup({ title: "Custom Title", items: [defaultLink] });
+    spec.detectChanges();
+    expect(spec.query("button")).toContainText("Custom Title");
   });
 
-  it("should default as inactive state", () => {
-    component.links = {
-      title: "test",
-      items: [
-        menuLink({
-          label: "label",
-          uri: () => "uri",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-        }),
-      ],
-    };
-    fixture.detectChanges();
+  it("should handle single internal link", () => {
+    setup({ title: "title", items: [defaultRoute] });
+    spec.detectChanges();
+    assertInternalLink(0, defaultRoute);
+  });
 
-    const title = fixture.nativeElement.querySelector("button");
-    expect(title).toBeTruthy();
+  it("should set strong route link active property on internal link", () => {
+    setup({ title: "title", items: [defaultRoute] });
+    spec.detectChanges();
+    assertStrongRouteActive(getLinks()[0]);
+  });
 
-    title.classList.forEach((cssClass: string) => {
-      expect(cssClass).not.toBe("active");
+  it("should handle multiple internal links", () => {
+    const items = [
+      defaultRoute,
+      menuRoute({
+        label: modelData.param(),
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        route: StrongRoute.newRoot().add("house"),
+      }),
+    ];
+    setup({ title: "title", items });
+    spec.detectChanges();
+
+    expect(getLinks().length).toBe(2);
+    items.forEach((item, index) => {
+      assertInternalLink(index, item);
     });
   });
 
-  it("should handle active state", () => {
-    component.links = {
-      title: "test",
-      items: [
-        menuLink({
-          label: "label",
-          uri: () => "uri",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-        }),
-      ],
-    };
-    component.active = true;
-    fixture.detectChanges();
+  it("should handle single external link", () => {
+    setup({ title: "title", items: [defaultLink] });
+    spec.detectChanges();
+    assertExternalLink(0, defaultLink.label, defaultUri);
+  });
 
-    const title = fixture.nativeElement.querySelector("button");
-    expect(title).toBeTruthy();
+  it("should handle multiple external links", () => {
+    const uriList = [defaultUri, modelData.internet.url()];
+    const items = [
+      defaultLink,
+      menuLink({
+        label: modelData.param(),
+        icon: ["fas", "home"],
+        tooltip: () => "tooltip",
+        uri: () => uriList[1],
+      }),
+    ];
+    setup({ title: "title", items });
+    spec.detectChanges();
 
-    let isActive = false;
-    title.classList.forEach((cssClass: string) => {
-      if (cssClass === "active") {
-        isActive = true;
-      }
+    expect(getLinks().length).toBe(2);
+    items.forEach((item, index) => {
+      assertExternalLink(index, item.label, uriList[index]);
     });
-    expect(isActive).toBeTrue();
   });
 
-  it("should handle single internal link dropdown", () => {
-    component.links = {
-      title: "test",
-      items: [
-        menuRoute({
-          label: "Custom Label",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          route: StrongRoute.newRoot().add("home"),
-        }),
-      ],
-    };
-    fixture.detectChanges();
+  it("should handle mixed links", () => {
+    setup({ title: "title", items: [defaultLink, defaultRoute] });
+    spec.detectChanges();
 
-    const links = fixture.nativeElement.querySelectorAll("a");
-    expect(links.length).toBe(1);
-    expect(links[0].innerText.trim()).toBe("Custom Label");
-    expect(
-      links[0].attributes.getNamedItem("ng-reflect-router-link")
-    ).toBeTruthy();
-    expect(
-      links[0].attributes.getNamedItem("ng-reflect-router-link").value
-    ).toBe("/home");
-  });
-
-  it("should handle multiple internal link dropdown", () => {
-    component.links = {
-      title: "test",
-      items: [
-        menuRoute({
-          label: "Custom Label 1",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          route: StrongRoute.newRoot().add("home"),
-        }),
-        menuRoute({
-          label: "Custom Label 2",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          route: StrongRoute.newRoot().add("house"),
-        }),
-      ],
-    };
-    fixture.detectChanges();
-
-    const links = fixture.nativeElement.querySelectorAll("a");
-    expect(links.length).toBe(2);
-    expect(links[0].innerText.trim()).toBe("Custom Label 1");
-    expect(
-      links[0].attributes.getNamedItem("ng-reflect-router-link")
-    ).toBeTruthy();
-    expect(
-      links[0].attributes.getNamedItem("ng-reflect-router-link").value
-    ).toBe("/home");
-    expect(links[1].innerText.trim()).toBe("Custom Label 2");
-    expect(
-      links[1].attributes.getNamedItem("ng-reflect-router-link")
-    ).toBeTruthy();
-    expect(
-      links[1].attributes.getNamedItem("ng-reflect-router-link").value
-    ).toBe("/house");
-  });
-
-  it("should handle single external link dropdown", () => {
-    component.links = {
-      title: "test",
-      items: [
-        menuLink({
-          label: "Custom Label",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          uri: () => "http://brokenlink/",
-        }),
-      ],
-    };
-    fixture.detectChanges();
-
-    const links = fixture.nativeElement.querySelectorAll("a");
-    expect(links.length).toBe(1);
-    expect(links[0].href).toBe("http://brokenlink/");
-    expect(links[0].innerText.trim()).toBe("Custom Label");
-  });
-
-  it("should handle multiple external link dropdown", () => {
-    component.links = {
-      title: "test",
-      items: [
-        menuLink({
-          label: "Custom Label 1",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          uri: () => "http://brokenlink/1",
-        }),
-        menuLink({
-          label: "Custom Label 2",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          uri: () => "http://brokenlink/2",
-        }),
-      ],
-    };
-    fixture.detectChanges();
-
-    const links = fixture.nativeElement.querySelectorAll("a");
-    expect(links.length).toBe(2);
-    expect(links[0].href).toBe("http://brokenlink/1");
-    expect(links[0].innerText.trim()).toBe("Custom Label 1");
-    expect(links[1].href).toBe("http://brokenlink/2");
-    expect(links[1].innerText.trim()).toBe("Custom Label 2");
-  });
-
-  it("should handle mixed link dropdown", () => {
-    component.links = {
-      title: "test",
-      items: [
-        menuLink({
-          label: "Custom Label 1",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          uri: () => "http://brokenlink/1",
-        }),
-        menuRoute({
-          label: "Custom Label 2",
-          icon: ["fas", "home"],
-          tooltip: () => "tooltip",
-          route: StrongRoute.newRoot().add("house"),
-        }),
-      ],
-    };
-    fixture.detectChanges();
-
-    const links = fixture.nativeElement.querySelectorAll("a");
-    expect(links.length).toBe(2);
-    expect(links[0].href).toBe("http://brokenlink/1");
-    expect(links[0].innerText.trim()).toBe("Custom Label 1");
-    expect(links[1].innerText.trim()).toBe("Custom Label 2");
-    expect(
-      links[1].attributes.getNamedItem("ng-reflect-router-link")
-    ).toBeTruthy();
-    expect(
-      links[1].attributes.getNamedItem("ng-reflect-router-link").value
-    ).toBe("/house");
+    expect(getLinks().length).toBe(2);
+    assertExternalLink(0, defaultLink.label, defaultUri);
+    assertInternalLink(1, defaultRoute);
   });
 });

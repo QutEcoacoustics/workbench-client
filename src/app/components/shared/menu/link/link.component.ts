@@ -1,4 +1,3 @@
-import { Location } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -24,22 +23,24 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
     <span
       [placement]="placement"
       [ngbTooltip]="tooltipContent"
-      [class.disabled]="isDisabled"
+      [class.disabled]="link.disabled"
     >
       <ng-container *ngIf="isInternalLink; else external">
         <!-- Internal Link -->
         <a
           class="nav-link"
+          strongRouteActive="active"
           [strongRoute]="internalLink.route"
-          [class.active]="active"
-          [class.disabled]="isDisabled"
+          [strongRouteActiveOptions]="{ exact: true }"
+          [class.active]="link.highlight"
+          [class.disabled]="link.disabled"
         >
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
         </a>
       </ng-container>
       <ng-template #external>
         <!-- External Link -->
-        <a class="nav-link" [href]="href" [class.disabled]="isDisabled">
+        <a class="nav-link" [href]="href" [class.disabled]="link.disabled">
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
         </a>
       </ng-template>
@@ -66,30 +67,22 @@ export class MenuLinkComponent implements OnChanges {
   @Input() public link: MenuRoute | MenuLink;
   @Input() public placement: Placement;
   @Input() public tooltip: string;
-  public active: boolean;
   public disabledReason: string;
   public href: string;
-  public isDisabled: boolean;
 
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
-    private activatedRoute: ActivatedRoute,
-    private location: Location
+    private activatedRoute: ActivatedRoute
   ) {}
 
   public ngOnChanges() {
     const params = this.activatedRoute.snapshot.params;
 
-    if (typeof this.link.disabled === "boolean") {
-      this.isDisabled = this.link.disabled;
-    } else if (typeof this.link.disabled === "string") {
-      this.isDisabled = true;
+    if (typeof this.link.disabled === "string") {
       this.disabledReason = this.link.disabled;
     }
 
-    if (this.isInternalLink) {
-      this.handleInternalLink(params);
-    } else {
+    if (!this.isInternalLink) {
       this.handleExternalLink(params);
     }
   }
@@ -104,16 +97,6 @@ export class MenuLinkComponent implements OnChanges {
 
   public get externalLink(): MenuLink {
     return this.link as MenuLink;
-  }
-
-  private handleInternalLink(params: Params) {
-    const currentRoute = this.internalLink.route.toRouterLink(params);
-
-    // Determine if link is active
-    this.active =
-      this.link.active ||
-      this.link.highlight ||
-      currentRoute === this.location.path().split("?")[0];
   }
 
   private handleExternalLink(params: Params) {

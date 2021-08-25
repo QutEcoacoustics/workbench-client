@@ -17,7 +17,8 @@ import { takeUntil } from "rxjs/operators";
 })
 export class StrongRouteDirective
   extends withUnsubscribe(RouterLinkWithHref)
-  implements OnChanges {
+  implements OnChanges
+{
   @Input() public strongRoute: StrongRoute;
   /**
    * Additional route parameters to apply to the StrongRoute. By
@@ -52,6 +53,7 @@ export class StrongRouteDirective
       ...this.angularRouteParams,
       ...this.routeParams,
     });
+
     super.ngOnChanges(changes);
   }
 

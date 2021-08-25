@@ -1,5 +1,9 @@
-import { projectMenuItem } from "@components/projects/projects.menus";
+import {
+  projectMenuItem,
+  projectsMenuItem,
+} from "@components/projects/projects.menus";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import {
   defaultDeleteIcon,
   defaultEditIcon,
@@ -7,26 +11,46 @@ import {
   isProjectEditorPredicate,
 } from "src/app/app.menus";
 
+export const shallowRegionsRoute = StrongRoute.newRoot().add("regions");
 export const regionsRoute = projectMenuItem.route.addFeatureModule("regions");
 
-export const regionsCategory: Category = {
+export const shallowRegionsCategory: Category = {
   icon: ["fas", "map-signs"],
   label: "Sites",
-  route: regionsRoute.add(":regionId"),
+  route: shallowRegionsRoute,
 };
 
-export const regionMenuItem = menuRoute({
+export const shallowRegionsMenuItem = menuRoute({
   icon: ["fas", "map-signs"],
-  label: "Site",
+  label: "Sites",
+  route: shallowRegionsRoute,
+  tooltip: () => "View sites I have access to",
+  order: projectsMenuItem.order,
+});
+
+export const regionsCategory: Category = {
+  ...shallowRegionsCategory,
+  route: regionsRoute,
+};
+
+export const regionsMenuItem = menuRoute({
+  ...shallowRegionsMenuItem,
   parent: projectMenuItem,
-  route: regionsCategory.route,
-  tooltip: () => "The current region",
+  route: regionsRoute,
+});
+
+export const regionMenuItem = menuRoute({
+  icon: ["fas", "map-marked-alt"],
+  label: "Site",
+  parent: regionsMenuItem,
+  route: regionsMenuItem.route.add(":regionId"),
+  tooltip: () => "The current site",
 });
 
 export const newRegionMenuItem = menuRoute({
   icon: defaultNewIcon,
   label: "New site",
-  parent: projectMenuItem,
+  parent: regionsMenuItem,
   predicate: isProjectEditorPredicate,
   route: regionsRoute.add("new"),
   tooltip: () => "Create a new site",

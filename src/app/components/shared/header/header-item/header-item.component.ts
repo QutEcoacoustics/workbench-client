@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import {
   getRoute,
@@ -20,25 +15,26 @@ import {
   selector: "baw-header-item",
   template: `
     <li class="nav-item" *ngIf="link">
-      <ng-container *ngIf="isInternalRoute(link)">
-        <a
-          class="nav-link"
-          routerLinkActive="active"
-          [routerLink]="getRoute(link, params)"
-        >
-          {{ link.label }}
-        </a>
-      </ng-container>
-      <ng-container *ngIf="isExternalLink(link)">
-        <a class="nav-link" [href]="getRoute(link, params)">
-          {{ link.label }}
-        </a>
-      </ng-container>
+      <a
+        *ngIf="isInternalRoute(link)"
+        class="nav-link"
+        strongRouteActive="active"
+        [strongRoute]="link.route"
+      >
+        {{ link.label }}
+      </a>
+      <a
+        *ngIf="isExternalLink(link)"
+        class="nav-link"
+        [href]="getRoute(link, params)"
+      >
+        {{ link.label }}
+      </a>
     </li>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderItemComponent implements OnInit {
+export class HeaderItemComponent {
   @Input() public link: NavigableMenuItem;
   public params: Params;
 
@@ -49,6 +45,4 @@ export class HeaderItemComponent implements OnInit {
   public constructor(private route: ActivatedRoute) {
     this.params = this.route.snapshot.params;
   }
-
-  public ngOnInit() {}
 }
