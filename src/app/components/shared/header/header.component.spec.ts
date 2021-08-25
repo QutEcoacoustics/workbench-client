@@ -9,7 +9,6 @@ import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { Settings } from "@helpers/app-initializer/app-initializer";
-import { Region } from "@models/Region";
 import { SessionUser } from "@models/User";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
@@ -151,12 +150,7 @@ describe("HeaderComponent", () => {
 
             const item = getNavLinks()[index];
             expect(item).toContainText(menuItem.label);
-            assertStrongRouteLink(
-              item,
-              menuItem.route.toRouterLink({
-                projectId: Region.defaultProjectId,
-              })
-            );
+            assertStrongRouteLink(item, menuItem.route.toRouterLink());
           });
         });
 
