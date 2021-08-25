@@ -2,10 +2,12 @@
   <nav class="container navbar navbar-expand-lg navbar-light bg-light">
     <ul class="nav nav-pills me-auto align-items-center m-auto">
       <li class="nav-item">
-        <p class="nav-link disabled m-0">&#169; QUT {{ year }}</p>
+        <p id="copyright" class="nav-link disabled m-0">
+          &#169; QUT {{ year }}
+        </p>
       </li>
       <li class="nav-item">
-        <p class="nav-link disabled m-0">{{ version }}</p>
+        <p id="version" class="nav-link disabled m-0">{{ version }}</p>
       </li>
 
       <li *ngFor="let link of links" class="nav-item">
