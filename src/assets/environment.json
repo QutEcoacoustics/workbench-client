@@ -24,7 +24,7 @@
       "sourceRepository": "https://github.com/QutEcoacoustics/workbench-client",
       "sourceRepositoryIssues": "https://github.com/QutEcoacoustics/workbench-client/issues"
     },
-    "hideProjects": true,
+    "hideProjects": false,
     "customMenu": [
       {
         "title": "Research",
