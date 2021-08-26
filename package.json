@@ -37,7 +37,7 @@
     "@angular/core": "^12.2.2",
     "@angular/forms": "^12.2.2",
     "@angular/google-maps": "^12.2.3",
-    "@angular/localize": "^12.2.2",
+    "@angular/localize": "^12.2.3",
     "@angular/platform-browser": "^12.2.3",
     "@angular/platform-browser-dynamic": "^12.2.2",
     "@angular/platform-server": "^12.2.3",
