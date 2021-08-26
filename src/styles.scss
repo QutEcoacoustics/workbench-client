@@ -1,6 +1,7 @@
 @import "./app/styles/bootstrap/index";
 @import "./app/styles/ngx-datatable";
 @import "./app/styles/functions";
+@import "~@fortawesome/fontawesome-svg-core/styles.css";
 @import "~ngx-toastr/toastr";
 
 /* Global css variables */
@@ -16,8 +17,6 @@
   /* Theme highlight colour, this is used to create an accent for objects following the 60/30/10 rule */
   @include create-variable("highlight", #304f3b);
 }
-
-/* Overwrite bootstrap maximum window size */
 
 /* You can add global styles to this file, and also import other style files */
 html,

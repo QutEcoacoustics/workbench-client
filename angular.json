@@ -25,10 +25,7 @@
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": ["src/favicon.ico", "src/assets", "src/manifest.json"],
-            "styles": [
-              "src/styles.scss",
-              "node_modules/@fortawesome/fontawesome-svg-core/styles.css"
-            ],
+            "styles": ["src/styles.scss"],
             "stylePreprocessorOptions": {
               "includePaths": ["src/app/styles"]
             },
@@ -57,7 +54,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
+                  "maximumWarning": "2.5mb",
                   "maximumError": "5mb"
                 },
                 {
