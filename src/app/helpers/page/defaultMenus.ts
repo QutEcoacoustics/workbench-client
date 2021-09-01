@@ -7,6 +7,7 @@ import {
   myAnnotationsMenuItem,
 } from "@components/profile/profile.menus";
 import { projectsMenuItem } from "@components/projects/projects.menus";
+import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import {
   loginMenuItem,
@@ -28,6 +29,7 @@ export const defaultMenu = {
     myAccountMenuItem,
     myAnnotationsMenuItem,
     projectsMenuItem,
+    shallowRegionsMenuItem,
     audioAnalysesMenuItem,
     libraryMenuItem,
     dataRequestMenuItem,
