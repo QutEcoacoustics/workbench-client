@@ -1,7 +1,4 @@
-import {
-  projectMenuItem,
-  projectsMenuItem,
-} from "@components/projects/projects.menus";
+import { projectMenuItem } from "@components/projects/projects.menus";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import {
@@ -25,7 +22,7 @@ export const shallowRegionsMenuItem = menuRoute({
   label: "Sites",
   route: shallowRegionsRoute,
   tooltip: () => "View sites I have access to",
-  order: projectsMenuItem.order,
+  order: 3,
 });
 
 export const regionsCategory: Category = {
@@ -33,24 +30,18 @@ export const regionsCategory: Category = {
   route: regionsRoute,
 };
 
-export const regionsMenuItem = menuRoute({
-  ...shallowRegionsMenuItem,
-  parent: projectMenuItem,
-  route: regionsRoute,
-});
-
 export const regionMenuItem = menuRoute({
   icon: ["fas", "map-marked-alt"],
   label: "Site",
-  parent: regionsMenuItem,
-  route: regionsMenuItem.route.add(":regionId"),
+  parent: projectMenuItem,
+  route: regionsCategory.route.add(":regionId"),
   tooltip: () => "The current site",
 });
 
 export const newRegionMenuItem = menuRoute({
   icon: defaultNewIcon,
   label: "New site",
-  parent: regionsMenuItem,
+  parent: projectMenuItem,
   predicate: isProjectEditorPredicate,
   route: regionsRoute.add("new"),
   tooltip: () => "Create a new site",

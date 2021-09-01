@@ -1,3 +1,4 @@
+import { Settings } from "http2";
 import { RouterTestingModule } from "@angular/router/testing";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import {
@@ -13,8 +14,13 @@ import { MenuComponent } from "@menu/menu.component";
 import { MockWidgetComponent } from "@menu/menu.component.spec";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
-import { List } from "immutable";
+import { ConfigService } from "@services/config/config.service";
+import { MockAppConfigModule } from "@services/config/configMock.module";
+import { testApiConfig } from "@services/config/configMock.service";
+import { List, Set } from "immutable";
 import { MockComponent } from "ng-mocks";
+import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
+import { projectsMenuItem } from "@components/projects/projects.menus";
 import { SecondaryMenuComponent } from "./secondary-menu.component";
 
 const mockMenu = MockComponent(MenuComponent);
@@ -25,24 +31,38 @@ describe("SecondaryMenuComponent", () => {
   let defaultWidget: WidgetMenuItem;
   let defaultMenuRoute: MenuRoute;
   let defaultMenuLink: MenuLink;
+  let config: ConfigService;
   let spec: SpectatorRouting<SecondaryMenuComponent>;
   const createComponent = createRoutingFactory({
     component: SecondaryMenuComponent,
-    imports: [RouterTestingModule],
+    imports: [RouterTestingModule, MockAppConfigModule],
     declarations: [mockMenu],
   });
 
-  function setup(data: IPageInfo) {
+  function setup(data: IPageInfo, hideProjects?: boolean) {
     spec = createComponent({ data, detectChanges: false });
-    setDefaultLinks(List());
+    config = spec.inject(ConfigService);
+    setDefaultLinks(Set());
+    setConfigHideProjects(hideProjects);
   }
 
-  function setDefaultLinks(links: List<NavigableMenuItem>) {
+  function setDefaultLinks(links: Set<NavigableMenuItem>) {
     spec.component["defaultLinks"] = links;
+  }
+
+  function setConfigHideProjects(hidden: boolean) {
+    spyOnProperty(config, "settings").and.callFake(
+      () => ({ ...testApiConfig.settings, hideProjects: !!hidden } as Settings)
+    );
+    config.settings.hideProjects = hidden;
   }
 
   function getMenu() {
     return spec.query(mockMenu);
+  }
+
+  function assertLinks(links: List<NavigableMenuItem>) {
+    expect(getMenu().links.toArray()).toEqual(links.toArray());
   }
 
   beforeEach(() => {
@@ -98,7 +118,7 @@ describe("SecondaryMenuComponent", () => {
     it("should handle undefined links", () => {
       setup({ pageRoute: defaultPageRoute, menus: { links: undefined } });
       spec.detectChanges();
-      expect(getMenu().links.toArray()).toEqual([defaultPageRoute]);
+      assertLinks(List([projectsMenuItem, defaultPageRoute]));
     });
 
     it("should handle mixed links", () => {
@@ -109,33 +129,44 @@ describe("SecondaryMenuComponent", () => {
         },
       });
       spec.detectChanges();
-      expect(getMenu().links.toArray()).toEqual([
-        defaultMenuRoute,
-        defaultMenuLink,
-        defaultPageRoute,
-      ]);
+      assertLinks(
+        List([
+          projectsMenuItem,
+          defaultMenuRoute,
+          defaultMenuLink,
+          defaultPageRoute,
+        ])
+      );
     });
 
     it("should create self link", () => {
       setup({ pageRoute: defaultPageRoute, menus: { links: List([]) } });
       spec.detectChanges();
-      expect(getMenu().links.toArray()).toEqual([defaultPageRoute]);
+      assertLinks(List([projectsMenuItem, defaultPageRoute]));
     });
 
-    it("should create default links", () => {
-      const defaultLinks = [
-        menuRoute({ ...defaultMenuRoute, label: "Custom Label A" }),
-        menuRoute({ ...defaultMenuRoute, label: "Custom Label B" }),
-        menuRoute({ ...defaultMenuRoute, label: "Custom Label C" }),
-      ];
+    [true, false].forEach((hideProject) => {
+      it(`should create default links when hideProject is ${hideProject}`, () => {
+        const defaultLinks = [
+          menuRoute({ ...defaultMenuRoute, label: "Custom Label A" }),
+          menuRoute({ ...defaultMenuRoute, label: "Custom Label B" }),
+          menuRoute({ ...defaultMenuRoute, label: "Custom Label C" }),
+        ];
 
-      setup({ pageRoute: defaultPageRoute, menus: { links: List([]) } });
-      setDefaultLinks(List(defaultLinks));
-      spec.detectChanges();
-      expect(getMenu().links.toArray()).toEqual([
-        ...defaultLinks,
-        defaultPageRoute,
-      ]);
+        setup(
+          { pageRoute: defaultPageRoute, menus: { links: List([]) } },
+          hideProject
+        );
+        setDefaultLinks(Set(defaultLinks));
+        spec.detectChanges();
+        assertLinks(
+          List([
+            ...defaultLinks,
+            hideProject ? shallowRegionsMenuItem : projectsMenuItem,
+            defaultPageRoute,
+          ])
+        );
+      });
     });
 
     describe("self link", () => {
@@ -170,17 +201,20 @@ describe("SecondaryMenuComponent", () => {
       it("should append full lineage of self link to menu", () => {
         setup({ pageRoute: childMenuItem });
         spec.detectChanges();
-        expect(getMenu().links.toArray()).toEqual([
-          grandParentMenuItem,
-          parentMenuItem,
-          childMenuItem,
-        ]);
+        assertLinks(
+          List([
+            projectsMenuItem,
+            grandParentMenuItem,
+            parentMenuItem,
+            childMenuItem,
+          ])
+        );
       });
 
       it("should set self link menu item to active", () => {
         setup({ pageRoute: defaultPageRoute });
         spec.detectChanges();
-        expect(getMenu().links.toArray()[0].active).toBeTrue();
+        expect(getMenu().links.toArray()[1].active).toBeTrue();
       });
 
       it("should set all parent menu items to active", () => {
@@ -188,6 +222,8 @@ describe("SecondaryMenuComponent", () => {
         spec.detectChanges();
         getMenu()
           .links.toArray()
+          // Skip projectMenuItem link
+          .splice(1)
           .forEach((link) => expect(link.active).toBeTrue());
       });
     });
@@ -200,10 +236,7 @@ describe("SecondaryMenuComponent", () => {
         menus: { links: List([defaultMenuRoute]) },
       });
       spec.detectChanges();
-      expect(getMenu().links.toArray()).toEqual([
-        defaultMenuRoute,
-        defaultPageRoute,
-      ]);
+      assertLinks(List([projectsMenuItem, defaultMenuRoute, defaultPageRoute]));
     });
 
     it("should handle multiple links", () => {
@@ -213,7 +246,7 @@ describe("SecondaryMenuComponent", () => {
       ];
       setup({ pageRoute: defaultPageRoute, menus: { links: List(links) } });
       spec.detectChanges();
-      expect(getMenu().links.toArray()).toEqual([...links, defaultPageRoute]);
+      assertLinks(List([projectsMenuItem, ...links, defaultPageRoute]));
     });
   });
 
@@ -224,10 +257,7 @@ describe("SecondaryMenuComponent", () => {
         menus: { links: List([defaultMenuLink]) },
       });
       spec.detectChanges();
-      expect(getMenu().links.toArray()).toEqual([
-        defaultMenuLink,
-        defaultPageRoute,
-      ]);
+      assertLinks(List([projectsMenuItem, defaultMenuLink, defaultPageRoute]));
     });
 
     it("should handle multiple links", () => {
@@ -237,7 +267,7 @@ describe("SecondaryMenuComponent", () => {
       ];
       setup({ pageRoute: defaultPageRoute, menus: { links: List(links) } });
       spec.detectChanges();
-      expect(getMenu().links.toArray()).toEqual([...links, defaultPageRoute]);
+      assertLinks(List([projectsMenuItem, ...links, defaultPageRoute]));
     });
   });
 

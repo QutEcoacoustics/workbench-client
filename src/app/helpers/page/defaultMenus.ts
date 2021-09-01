@@ -6,7 +6,6 @@ import {
   myAccountMenuItem,
   myAnnotationsMenuItem,
 } from "@components/profile/profile.menus";
-import { projectsMenuItem } from "@components/projects/projects.menus";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import {
   loginMenuItem,
@@ -15,19 +14,18 @@ import {
 import { sendAudioMenuItem } from "@components/send-audio/send-audio.menus";
 import { statisticsMenuItem } from "@components/statistics/statistics.menus";
 import { NavigableMenuItem } from "@interfaces/menusInterfaces";
-import { List } from "immutable";
+import { Set } from "immutable";
 
 /**
  * Default secondary menu items
  */
 export const defaultMenu = {
-  contextLinks: List<NavigableMenuItem>([
+  contextLinks: Set<NavigableMenuItem>([
     homeMenuItem,
     loginMenuItem,
     registerMenuItem,
     myAccountMenuItem,
     myAnnotationsMenuItem,
-    projectsMenuItem,
     audioAnalysesMenuItem,
     libraryMenuItem,
     dataRequestMenuItem,
