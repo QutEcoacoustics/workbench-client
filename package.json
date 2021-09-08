@@ -97,7 +97,7 @@
     "@types/jasminewd2": "^2.0.10",
     "@types/luxon": "^2.0.3",
     "@types/node": "^16.7.13",
-    "@typescript-eslint/eslint-plugin": "^4.30.0",
+    "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
     "codelyzer": "^6.0.2",
     "eslint": "^7.32.0",
