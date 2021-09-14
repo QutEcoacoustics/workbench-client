@@ -17,9 +17,14 @@ li.list-group-item {
   }
 }
 
-img {
-  max-width: 60px;
-  height: auto;
+.image-wrapper {
+  min-height: 60px;
+  min-width: 60px;
+
+  img {
+    max-width: 60px;
+    max-height: 60px;
+  }
 }
 
 .nav > li > a:hover {

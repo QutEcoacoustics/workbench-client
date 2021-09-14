@@ -38,7 +38,7 @@ import { User } from "./User";
 export interface IRegion extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
-  imageUrl?: string;
+  imageUrls?: ImageUrl[];
   projectId?: Id;
   siteIds?: Id[] | Ids;
   notes?: Hash;
@@ -53,9 +53,9 @@ export class Region extends AbstractModel<IRegion> implements IRegion {
   @bawPersistAttr()
   public readonly name?: Param;
   @bawPersistAttr()
-  public readonly imageUrl?: string;
+  public readonly imageUrls?: ImageUrl[];
   @bawImage<IRegion>(`${assetRoot}/images/site/site_span4.png`, {
-    key: "imageUrl",
+    key: "imageUrls",
   })
   public readonly image: ImageUrl[];
   @bawPersistAttr()

@@ -1,3 +1,4 @@
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
@@ -49,7 +50,7 @@ export function bawImage<Model>(
   // Retrieve default image and prepend site url if required
   const defaultImage: ImageUrl = { size: ImageSizes.default, url: defaultUrl };
 
-  function sortImageUrls(a: ImageUrl, b: ImageUrl): number {
+  const sortImageUrls = (a: ImageUrl, b: ImageUrl): -1 | 0 | 1 => {
     // Default image should always be last in array
     if (a.size === ImageSizes.default) {
       return 1;
@@ -60,7 +61,7 @@ export function bawImage<Model>(
     const imageASize = a.height * a.width;
     const imageBSize = b.height * b.width;
     return imageASize === imageBSize ? 0 : imageASize > imageBSize ? -1 : 1;
-  }
+  };
 
   function missingDefault(images: ImageUrl[]): boolean {
     return !images.find((image) => image.size === ImageSizes.default);
@@ -76,9 +77,25 @@ export function bawImage<Model>(
           defaultImage,
         ];
       } else if (imageUrls instanceof Array && imageUrls.length > 0) {
-        // Sort image urls
-        const output = imageUrls.slice();
-        output.sort((a, b) => sortImageUrls(a, b));
+        // Get API root
+        const apiRoot = model["injector"]?.get(API_ROOT);
+        if (!apiRoot) {
+          throw new Error(
+            `${model} does not have injector service. Tried to access ${key.toString()}`
+          );
+        }
+
+        // Copy and sort image urls
+        const output = imageUrls
+          .map((imageUrl) => {
+            const meta = { ...imageUrl };
+            // Prepend api root to url if it begins with '/'
+            if (meta.url.startsWith("/")) {
+              meta.url = apiRoot + meta.url;
+            }
+            return meta;
+          })
+          .sort(sortImageUrls);
 
         // Append default image
         if (missingDefault(output)) {

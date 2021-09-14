@@ -12,6 +12,12 @@ import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
 import { OrderedSet } from "immutable";
 
+export const notFoundImage: ImageUrl = {
+  url: `${assetRoot}/images/404.png`,
+  height: 221,
+  width: 220,
+  size: ImageSizes.fallback,
+};
 export const image404RelativeSrc = `${assetRoot}/images/404.png`;
 
 @Directive({
@@ -34,11 +40,11 @@ export class AuthenticatedImageDirective implements OnChanges {
   /**
    * Tracks potential url options to be used for src
    */
-  private urls = OrderedSet<string>();
+  private images = OrderedSet<ImageUrl>();
   /**
    * Tracks used url options
    */
-  private usedUrls = OrderedSet<string>();
+  private usedImages = OrderedSet<ImageUrl>();
   /**
    * Tracks whether to display src matching thumbnail size
    */
@@ -46,7 +52,7 @@ export class AuthenticatedImageDirective implements OnChanges {
   /**
    * Contains url for default image
    */
-  private defaultImage: string;
+  private defaultImage: ImageUrl;
 
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
@@ -63,6 +69,7 @@ export class AuthenticatedImageDirective implements OnChanges {
 
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
+      this.imageRef.nativeElement.style.backgroundColor = "lightgrey";
       this.imageRef.nativeElement.onerror = () => {
         // Prevent overriding of 'this'
         this.errorHandler();
@@ -70,21 +77,19 @@ export class AuthenticatedImageDirective implements OnChanges {
     }
 
     // Re-enable use of current src
-    if (this.usedUrls.count() > 0) {
-      this.usedUrls = this.usedUrls.delete(this.usedUrls.last());
+    if (this.usedImages.count() > 0) {
+      this.usedImages = this.usedImages.delete(this.usedImages.last());
     }
 
     // Prepend new urls (except default urls) to urls set
-    this.urls = OrderedSet<string>(
-      this._src
-        ?.filter((imageUrl) => imageUrl.size !== ImageSizes.default)
-        .map((imageUrl) => imageUrl.url) ?? []
-    ).concat(this.urls);
+    this.images = OrderedSet(
+      this._src?.filter((image) => image.size !== ImageSizes.default) ?? []
+    ).concat(this.images);
 
     // Retrieve default image if exists
     this.defaultImage =
-      this._src?.find((imageUrl) => imageUrl.size === ImageSizes.default)
-        ?.url ?? this.defaultImage;
+      this._src?.find((image) => image.size === ImageSizes.default) ??
+      this.defaultImage;
 
     this.displayThumbnail = !!this.thumbnail;
     this.setImageSrc();
@@ -94,34 +99,35 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Set src for image element
    */
   private setImageSrc(): void {
-    let url: string;
+    const image = this.getNextImage();
+    this.usedImages = this.usedImages.add(image);
+    this.imageRef.nativeElement.style.width = image.width + "px";
+    this.imageRef.nativeElement.style.height = image.height + "px";
+    this.imageRef.nativeElement.src = this.appendAuthToken(image);
+  }
 
+  private getNextImage(): ImageUrl {
+    // Return final fallback (404 if none exists, default if exists)
     if (this.use404Image()) {
-      url = image404RelativeSrc;
-    }
-
-    if (this.useDefaultImage(url)) {
-      url = this.defaultImage;
+      return this.useDefaultImage() ? this.defaultImage : notFoundImage;
     }
 
     // Find thumbnail if exists
-    if (!url && this.displayThumbnail) {
-      url = this._src.find((imageUrl) => imageUrl.size === this.thumbnail)?.url;
+    if (this.displayThumbnail) {
+      const image = this._src.find((meta) => meta.size === this.thumbnail);
+      if (image) {
+        return image;
+      }
     }
 
     // Retrieve first url from set
-    if (!url) {
-      url = this.urls.subtract(this.usedUrls).first();
+    const firstUrl = this.images.subtract(this.usedImages).first();
+    if (firstUrl) {
+      return firstUrl;
     }
 
-    // Catch any final edge cases
-    if (!url) {
-      url = image404RelativeSrc;
-    }
-
-    this.usedUrls = this.usedUrls.add(url);
-    url = this.appendAuthToken(url);
-    this.imageRef.nativeElement.src = url;
+    // Final fallback
+    return notFoundImage;
   }
 
   /**
@@ -136,18 +142,20 @@ export class AuthenticatedImageDirective implements OnChanges {
     }
 
     // Continue searching, unless backup image404 has already been tried and failed
-    if (!this.usedUrls.contains(image404RelativeSrc)) {
+    if (!this.usedImages.contains(notFoundImage)) {
       this.setImageSrc();
     }
   }
 
   /**
-   * Append authentication token to url if logged in
-   * and disableAuthentication is not set.
+   * Append authentication token to url if logged in and disableAuthentication
+   * is not set.
    *
-   * @param url Url to append to, must be fully formed (not a relative path)
+   * @param image Image with full formed url (not a relative path) to return with auth token
    */
-  private appendAuthToken(url: string): string {
+  private appendAuthToken(image: ImageUrl): string {
+    const url = image.url;
+
     if (this.ignoreAuthToken || !url.startsWith(this.apiRoot)) {
       return url;
     }
@@ -166,8 +174,8 @@ export class AuthenticatedImageDirective implements OnChanges {
    */
   private use404Image(): boolean {
     const hasDefaultImageAvailable = this.defaultImage
-      ? this.urls.count() + 1 === this.usedUrls.count()
-      : this.urls.count() === this.usedUrls.count();
+      ? this.images.count() + 1 === this.usedImages.count()
+      : this.images.count() === this.usedImages.count();
 
     return !this._src || hasDefaultImageAvailable;
   }
@@ -177,9 +185,11 @@ export class AuthenticatedImageDirective implements OnChanges {
    *
    * @param url Url
    */
-  private useDefaultImage(url: string): boolean {
+  private useDefaultImage(url?: string): boolean {
     return (
-      !url && this.defaultImage && this.urls.count() === this.usedUrls.count()
+      !url &&
+      this.defaultImage &&
+      this.images.count() === this.usedImages.count()
     );
   }
 }
