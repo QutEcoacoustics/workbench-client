@@ -115,12 +115,17 @@ export class AuthenticatedImageDirective implements OnChanges {
   private setImageSrc(): void {
     const image = this.getNextImage();
     this.usedImages = this.usedImages.add(image);
-    // Assume size of image so we can show a loading background
-    this.imageEl.style.width = this.width ?? image.width + "px";
-    // Assume height to be either inputted height, matching the width, or image height
-    this.imageEl.style.height =
-      this.height ?? this.width ?? image.height + "px";
     this.imageEl.src = this.appendAuthToken(image);
+
+    // Assume size of image so we can show a loading background
+    this.imageEl.style.width = this.width ?? this.width + "px";
+
+    /*
+     * Assume height to be either height, width, or match image width (this
+     * will be changed later when image is loaded)
+     */
+    const baseWidth = getComputedStyle(this.imageEl).width;
+    this.imageEl.style.height = this.height ?? this.width ?? baseWidth;
   }
 
   /** Get next image to use */
