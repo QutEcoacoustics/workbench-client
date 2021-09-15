@@ -83,6 +83,7 @@ export class AuthenticatedImageDirective implements OnChanges {
       // Clear background color when loaded
       this.imageEl.onload = () => {
         // Prevent overriding of 'this'
+        // Make background transparent, use a wrapper to set a different background
         this.imageEl.style.backgroundColor = "unset";
         // Change height to automatic sizing once it is loaded
         this.imageEl.style.height = this.height ?? "auto";
@@ -94,6 +95,7 @@ export class AuthenticatedImageDirective implements OnChanges {
       this.usedImages = this.usedImages.delete(this.usedImages.last());
     }
 
+    // Retrieve list of new images
     let newImages = OrderedSet<ImageUrl>();
     for (const image of this._src ?? []) {
       if (image.size === ImageSizes.default) {
@@ -128,7 +130,9 @@ export class AuthenticatedImageDirective implements OnChanges {
     this.imageEl.style.height = this.height ?? this.width ?? baseWidth;
   }
 
-  /** Get next image to use */
+  /**
+   * Get next image to use
+   */
   private getNextImage(): ImageUrl {
     if (this.useDefaultImage()) {
       return this.defaultImage;
@@ -196,7 +200,7 @@ export class AuthenticatedImageDirective implements OnChanges {
   }
 
   /**
-   * Returns true is there are no image options available
+   * Returns true if all other image options are exhausted
    */
   private use404Image(): boolean {
     const hasDefaultImageAvailable = this.defaultImage
@@ -208,9 +212,7 @@ export class AuthenticatedImageDirective implements OnChanges {
   }
 
   /**
-   * Returns true if the default image is the only option available
-   *
-   * @param url Url
+   * Returns true if the default image is the only option left available
    */
   private useDefaultImage(): boolean {
     return this.defaultImage && this.images.count() === this.usedImages.count();
