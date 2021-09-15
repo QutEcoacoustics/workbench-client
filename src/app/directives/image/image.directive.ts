@@ -35,6 +35,10 @@ export class AuthenticatedImageDirective implements OnChanges {
   @Input() public ignoreAuthToken: boolean;
   /** Disable authenticated image directive on image */
   @Input() public disableAuth: boolean;
+  /** Image width */
+  @Input() public width?: string;
+  /** Image height */
+  @Input() public height?: string;
 
   private _src: ImageUrl[];
   /**
@@ -69,10 +73,19 @@ export class AuthenticatedImageDirective implements OnChanges {
 
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
-      this.imageRef.nativeElement.style.backgroundColor = "lightgrey";
-      this.imageRef.nativeElement.onerror = () => {
+      this.imageEl.onerror = () => {
         // Prevent overriding of 'this'
         this.errorHandler();
+      };
+
+      this.imageEl.style.backgroundColor = "lightgrey";
+
+      // Clear background color when loaded
+      this.imageEl.onload = () => {
+        // Prevent overriding of 'this'
+        this.imageEl.style.backgroundColor = "unset";
+        // Change height to automatic sizing once it is loaded
+        this.imageEl.style.height = this.height ?? "auto";
       };
     }
 
@@ -81,16 +94,17 @@ export class AuthenticatedImageDirective implements OnChanges {
       this.usedImages = this.usedImages.delete(this.usedImages.last());
     }
 
+    let newImages = OrderedSet<ImageUrl>();
+    for (const image of this._src ?? []) {
+      if (image.size === ImageSizes.default) {
+        this.defaultImage = image;
+      } else {
+        newImages = newImages.add(image);
+      }
+    }
+
     // Prepend new urls (except default urls) to urls set
-    this.images = OrderedSet(
-      this._src?.filter((image) => image.size !== ImageSizes.default) ?? []
-    ).concat(this.images);
-
-    // Retrieve default image if exists
-    this.defaultImage =
-      this._src?.find((image) => image.size === ImageSizes.default) ??
-      this.defaultImage;
-
+    this.images = newImages.concat(this.images);
     this.displayThumbnail = !!this.thumbnail;
     this.setImageSrc();
   }
@@ -101,15 +115,22 @@ export class AuthenticatedImageDirective implements OnChanges {
   private setImageSrc(): void {
     const image = this.getNextImage();
     this.usedImages = this.usedImages.add(image);
-    this.imageRef.nativeElement.style.width = image.width + "px";
-    this.imageRef.nativeElement.style.height = image.height + "px";
-    this.imageRef.nativeElement.src = this.appendAuthToken(image);
+    // Assume size of image so we can show a loading background
+    this.imageEl.style.width = this.width ?? image.width + "px";
+    // Assume height to be either inputted height, matching the width, or image height
+    this.imageEl.style.height =
+      this.height ?? this.width ?? image.height + "px";
+    this.imageEl.src = this.appendAuthToken(image);
   }
 
+  /** Get next image to use */
   private getNextImage(): ImageUrl {
-    // Return final fallback (404 if none exists, default if exists)
+    if (this.useDefaultImage()) {
+      return this.defaultImage;
+    }
+
     if (this.use404Image()) {
-      return this.useDefaultImage() ? this.defaultImage : notFoundImage;
+      return notFoundImage;
     }
 
     // Find thumbnail if exists
@@ -134,7 +155,7 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Handle image error event
    */
   private errorHandler() {
-    console.warn("Failed to load image: ", this.imageRef.nativeElement.src);
+    console.warn("Failed to load image: ", this.imageEl.src);
 
     // No longer attempt to use thumbnail
     if (this.displayThumbnail) {
@@ -174,7 +195,8 @@ export class AuthenticatedImageDirective implements OnChanges {
    */
   private use404Image(): boolean {
     const hasDefaultImageAvailable = this.defaultImage
-      ? this.images.count() + 1 === this.usedImages.count()
+      ? // Checks if defaultImage has been used
+        this.images.count() + 1 === this.usedImages.count()
       : this.images.count() === this.usedImages.count();
 
     return !this._src || hasDefaultImageAvailable;
@@ -185,11 +207,12 @@ export class AuthenticatedImageDirective implements OnChanges {
    *
    * @param url Url
    */
-  private useDefaultImage(url?: string): boolean {
-    return (
-      !url &&
-      this.defaultImage &&
-      this.images.count() === this.usedImages.count()
-    );
+  private useDefaultImage(): boolean {
+    return this.defaultImage && this.images.count() === this.usedImages.count();
+  }
+
+  /** Get image reference native element */
+  private get imageEl(): HTMLImageElement {
+    return this.imageRef.nativeElement;
   }
 }
