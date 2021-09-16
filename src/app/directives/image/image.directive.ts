@@ -35,10 +35,6 @@ export class AuthenticatedImageDirective implements OnChanges {
   @Input() public ignoreAuthToken: boolean;
   /** Disable authenticated image directive on image */
   @Input() public disableAuth: boolean;
-  /** Image width */
-  @Input() public width?: string;
-  /** Image height */
-  @Input() public height?: string;
 
   private _src: ImageUrl[];
   /**
@@ -73,20 +69,17 @@ export class AuthenticatedImageDirective implements OnChanges {
 
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
+      this.imageEl.classList.add("loading-image");
+
       this.imageEl.onerror = () => {
         // Prevent overriding of 'this'
         this.errorHandler();
       };
 
-      this.imageEl.style.backgroundColor = "lightgrey";
-
-      // Clear background color when loaded
       this.imageEl.onload = () => {
         // Prevent overriding of 'this'
-        // Make background transparent, use a wrapper to set a different background
-        this.imageEl.style.backgroundColor = "unset";
-        // Change height to automatic sizing once it is loaded
-        this.imageEl.style.height = this.height ?? "auto";
+        this.imageEl.classList.remove("loading-image");
+        this.imageEl.classList.add("loaded-image");
       };
     }
 
@@ -118,16 +111,6 @@ export class AuthenticatedImageDirective implements OnChanges {
     const image = this.getNextImage();
     this.usedImages = this.usedImages.add(image);
     this.imageEl.src = this.appendAuthToken(image);
-
-    // Assume size of image so we can show a loading background
-    this.imageEl.style.width = this.width ?? this.width + "px";
-
-    /*
-     * Assume height to be either height, width, or match image width (this
-     * will be changed later when image is loaded)
-     */
-    const baseWidth = getComputedStyle(this.imageEl).width;
-    this.imageEl.style.height = this.height ?? this.width ?? baseWidth;
   }
 
   /**
