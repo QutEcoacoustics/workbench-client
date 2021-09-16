@@ -17,6 +17,11 @@ li.list-group-item {
   }
 }
 
+img {
+  width: 60px;
+  height: auto;
+}
+
 .nav > li > a:hover {
   text-decoration: none;
   background-color: #eee;
@@ -33,9 +38,4 @@ li.list-group-item {
   span {
     background-color: var(--baw-highlight);
   }
-}
-
-#image {
-  width: 60px;
-  height: auto;
 }

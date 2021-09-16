@@ -127,10 +127,6 @@ describe("Attribute Decorators", () => {
         public readonly image: ImageUrl[];
         public readonly imageUrls: ImageUrl[];
 
-        public constructor(_data: any, _injector: Injector) {
-          super(_data, _injector);
-        }
-
         public override toString() {
           return "MockModel";
         }
