@@ -151,12 +151,6 @@
           "options": {
             "browserTarget": "workbench-client:build",
             "serverTarget": "workbench-client:server"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "workbench-client:build:production",
-              "serverTarget": "workbench-client:server:production"
-            }
           }
         },
         "prerender": {

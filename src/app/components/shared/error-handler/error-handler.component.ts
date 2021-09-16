@@ -10,23 +10,7 @@ import httpCodes from "http-status";
   selector: "baw-error-handler",
   template: `
     <ng-container *ngIf="error">
-      <div [ngSwitch]="error.status">
-        <h1>
-          <ng-container *ngSwitchCase="httpCodes.UNAUTHORIZED">
-            Unauthorized Access
-          </ng-container>
-          <ng-container *ngSwitchCase="httpCodes.FORBIDDEN">
-            Access Forbidden
-          </ng-container>
-          <ng-container *ngSwitchCase="httpCodes.NOT_FOUND">
-            Not Found
-          </ng-container>
-          <ng-container *ngSwitchCase="httpCodes.REQUEST_TIMEOUT">
-            Request Timed Out
-          </ng-container>
-          <ng-container *ngSwitchDefault>Unknown Error</ng-container>
-        </h1>
-      </div>
+      <h1>{{ getTitle() }}</h1>
 
       <p>{{ error.message }}</p>
       <p>
@@ -40,5 +24,16 @@ import httpCodes from "http-status";
 export class ErrorHandlerComponent {
   @Input() public error: ApiErrorDetails;
   public reportProblem = reportProblemMenuItem.route;
-  public httpCodes = httpCodes;
+  public titles = {
+    [httpCodes.UNAUTHORIZED]: "Unauthorized Access",
+    [httpCodes.FORBIDDEN]: "Access Forbidden",
+    [httpCodes.NOT_FOUND]: "Not Found",
+    [httpCodes.REQUEST_TIMEOUT]: "Request Timed Out",
+    [httpCodes.BAD_GATEWAY]: "Connection Failure",
+  };
+
+  public getTitle() {
+    const message = this.titles[this.error.status];
+    return !message ? "Unknown Error" : message;
+  }
 }
