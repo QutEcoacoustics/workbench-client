@@ -67,34 +67,38 @@ export function bawImage<Model>(
     return !images.find((image) => image.size === ImageSizes.default);
   }
 
+  function sanitizeUrl(apiRoot: string, url: string): string {
+    // Prepend api root to url if it begins with '/'
+    if (url.startsWith("/")) {
+      return apiRoot + url;
+    }
+    return url;
+  }
+
   return createDecorator<Model>(
     opts,
     (model, key, imageUrls: string | ImageUrl[]) => {
+      // Get API root if injector exists
+      const apiRoot = model["injector"]?.get(API_ROOT) ?? "";
+      if (!apiRoot) {
+        console.warn(
+          `${model} does not have injector service. Tried to access ${key.toString()}`
+        );
+      }
+
       // Convert string to ImageURL[] and append default image
       if (typeof imageUrls === "string") {
         model[key] = [
-          { size: ImageSizes.unknown, url: imageUrls },
+          { size: ImageSizes.unknown, url: sanitizeUrl(apiRoot, imageUrls) },
           defaultImage,
         ];
       } else if (imageUrls instanceof Array && imageUrls.length > 0) {
-        // Get API root
-        const apiRoot = model["injector"]?.get(API_ROOT);
-        if (!apiRoot) {
-          throw new Error(
-            `${model} does not have injector service. Tried to access ${key.toString()}`
-          );
-        }
-
         // Copy and sort image urls
         const output = imageUrls
-          .map((imageUrl) => {
-            const meta = { ...imageUrl };
-            // Prepend api root to url if it begins with '/'
-            if (meta.url.startsWith("/")) {
-              meta.url = apiRoot + meta.url;
-            }
-            return meta;
-          })
+          .map((imageUrl) => ({
+            ...imageUrl,
+            url: sanitizeUrl(apiRoot, imageUrl.url),
+          }))
           .sort(sortImageUrls);
 
         // Append default image
