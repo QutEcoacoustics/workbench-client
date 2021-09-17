@@ -10,8 +10,8 @@ import { OrphanSitesModule } from "./orphan/orphans.module";
 import { ScriptsModule } from "./scripts/scripts.module";
 import { TagGroupsModule } from "./tag-group/tag-groups.module";
 import { TagsModule } from "./tags/tags.module";
-import { ThemeTemplateModule } from "./theme-template/theme-template.module";
-import { AdminUserListComponent } from "./users/list/list.component";
+import { AdminThemeTemplateComponent } from "./theme-template/theme-template.component";
+import { AdminUserListComponent } from "./users/user.component";
 
 const modules = [
   AnalysisJobsModule,
@@ -20,9 +20,12 @@ const modules = [
   ScriptsModule,
   TagGroupsModule,
   TagsModule,
-  ThemeTemplateModule,
 ];
-const components = [AdminDashboardComponent, AdminUserListComponent];
+const components = [
+  AdminDashboardComponent,
+  AdminUserListComponent,
+  AdminThemeTemplateComponent,
+];
 const routes = adminRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({

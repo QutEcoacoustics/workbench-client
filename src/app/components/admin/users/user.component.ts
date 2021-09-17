@@ -16,7 +16,7 @@ import { List } from "immutable";
 
 @Component({
   selector: "baw-admin-users",
-  templateUrl: "./list.component.html",
+  templateUrl: "./user.component.html",
 })
 class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   public userIcon = theirProfileMenuItem.icon;
