@@ -67,7 +67,7 @@ export function bawImage<Model>(
     return !images.find((image) => image.size === ImageSizes.default);
   }
 
-  function sanitizeUrl(apiRoot: string, url: string): string {
+  function normalizeUrl(apiRoot: string, url: string): string {
     // Prepend api root to url if it begins with '/'
     if (url.startsWith("/")) {
       return apiRoot + url;
@@ -89,7 +89,7 @@ export function bawImage<Model>(
       // Convert string to ImageURL[] and append default image
       if (typeof imageUrls === "string") {
         model[key] = [
-          { size: ImageSizes.unknown, url: sanitizeUrl(apiRoot, imageUrls) },
+          { size: ImageSizes.unknown, url: normalizeUrl(apiRoot, imageUrls) },
           defaultImage,
         ];
       } else if (imageUrls instanceof Array && imageUrls.length > 0) {
@@ -97,7 +97,7 @@ export function bawImage<Model>(
         const output = imageUrls
           .map((imageUrl) => ({
             ...imageUrl,
-            url: sanitizeUrl(apiRoot, imageUrl.url),
+            url: normalizeUrl(apiRoot, imageUrl.url),
           }))
           .sort(sortImageUrls);
 

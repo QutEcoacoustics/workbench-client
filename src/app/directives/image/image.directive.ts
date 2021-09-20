@@ -14,8 +14,6 @@ import { OrderedSet } from "immutable";
 
 export const notFoundImage: ImageUrl = {
   url: `${assetRoot}/images/404.png`,
-  height: 221,
-  width: 220,
   size: ImageSizes.fallback,
 };
 export const image404RelativeSrc = `${assetRoot}/images/404.png`;
