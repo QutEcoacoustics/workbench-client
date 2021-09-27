@@ -47,12 +47,6 @@ describe("ImageDirective", () => {
     );
   }
 
-  function createThumbnailDirective(src: ImageUrl[], thumbnail: ImageSizes) {
-    return createDirective(
-      '<img alt="alt" [src]="src" [thumbnail]="thumbnail" />',
-      { hostProps: { src, thumbnail } }
-    );
-  }
   function createImgErrorEvent(image: HTMLImageElement) {
     image.onerror?.("unit test");
     spectator.detectChanges();
@@ -125,31 +119,6 @@ describe("ImageDirective", () => {
       [1, 2, 3, 4].forEach(() => createImgErrorEvent(image));
       // Image url should have only been set once
       expect(spy).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe("thumbnail", () => {
-    it("given a valid thumbnail, it displays the thumbnail url", () => {
-      const imageUrls = modelData.imageUrls();
-      imageUrls[1].size = ImageSizes.medium;
-      spectator = createThumbnailDirective(imageUrls, ImageSizes.medium);
-      assertImage(getImage(), imageUrls[1].url, "alt");
-    });
-
-    it("given a missing thumbnail, it loads the next available url", () => {
-      const imageUrls = modelData.imageUrls();
-      // DEFAULT image size is not set by modelData.imageUrls
-      spectator = createThumbnailDirective(imageUrls, ImageSizes.default);
-      assertImage(getImage(), imageUrls[0].url, "alt");
-    });
-
-    it("given an invalid thumbnail, it loads the next available url", () => {
-      const imageUrls = modelData.imageUrls();
-      imageUrls[1].size = ImageSizes.medium;
-      spectator = createThumbnailDirective(imageUrls, ImageSizes.medium);
-      const image = getImage();
-      createImgErrorEvent(image);
-      assertImage(image, imageUrls[0].url, "alt");
     });
   });
 
@@ -273,33 +242,6 @@ describe("ImageDirective", () => {
       spectator.setInput("src", imageUrls);
       spectator.directive.ngOnChanges({ src: change });
     }
-
-    function assertImageUrls(image: HTMLImageElement, imageUrls: ImageUrl[]) {
-      imageUrls.forEach((imageUrl) => {
-        assertImage(image, imageUrl.url, "alt");
-        createImgErrorEvent(image);
-      });
-    }
-
-    it("should handle update appending new urls", () => {
-      const imageUrls = modelData.imageUrls();
-      spectator = createDefaultDirective(undefined);
-
-      imageUrls.forEach((imageUrl) => updateDirective([imageUrl]));
-      // Images in reverse order because each new image is prepended to ordered set
-      assertImageUrls(getImage(), imageUrls.reverse());
-    });
-
-    it("should handle update appending new urls with duplicates", () => {
-      const imageUrls = modelData.imageUrls();
-      spectator = createDefaultDirective(undefined);
-
-      imageUrls.forEach((_, index) =>
-        updateDirective(imageUrls.slice(0, index + 1))
-      );
-      // Images not in reverse order because ordering from the input is kept
-      assertImageUrls(getImage(), imageUrls);
-    });
 
     it("should display 404 image after all urls attempted", () => {
       const imageUrls = modelData.imageUrls();

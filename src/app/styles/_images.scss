@@ -1,10 +1,12 @@
 .loading-image {
-  background-color: rgb(237, 237, 237);
   aspect-ratio: 1/1;
+  background-color: rgb(237, 237, 237);
   color: rgb(237, 237, 237);
+  font-size: 0px;
+  text-decoration: none;
 }
 
 .loaded-image {
-  background-color: unset;
   aspect-ratio: 1/1;
+  background-color: unset;
 }

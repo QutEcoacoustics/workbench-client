@@ -12,7 +12,6 @@ import {
 } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { ImageSizes } from "@interfaces/apiInterfaces";
 import {
   isNavigableMenuItem,
   MenuLink,
@@ -52,7 +51,6 @@ export class HeaderComponent extends withUnsubscribe() implements OnInit {
     profile: myAccountMenuItem,
     register: registerMenuItem,
   };
-  public thumbnail = ImageSizes.small;
   public isNavigableMenuItem = isNavigableMenuItem;
 
   public constructor(

@@ -27,8 +27,6 @@ export const image404RelativeSrc = `${assetRoot}/images/404.png`;
 export class AuthenticatedImageDirective implements OnChanges {
   /** Image src, only accessible if using [src] */
   @Input() public src: ImageUrl[] | string;
-  /** Image thumbnail size to display if exists */
-  @Input() public thumbnail: ImageSizes;
   /** Do not append auth token to image url */
   @Input() public ignoreAuthToken: boolean;
   /** Disable authenticated image directive on image */
@@ -40,13 +38,9 @@ export class AuthenticatedImageDirective implements OnChanges {
    */
   private images = OrderedSet<ImageUrl>();
   /**
-   * Tracks used url options
+   * Tracks the current image
    */
-  private usedImages = OrderedSet<ImageUrl>();
-  /**
-   * Tracks whether to display src matching thumbnail size
-   */
-  private displayThumbnail = false;
+  private currentImage: ImageUrl;
   /**
    * Contains url for default image
    */
@@ -81,24 +75,30 @@ export class AuthenticatedImageDirective implements OnChanges {
       };
     }
 
-    // Re-enable use of current src
-    if (this.usedImages.count() > 0) {
-      this.usedImages = this.usedImages.delete(this.usedImages.last());
-    }
-
-    // Retrieve list of new images
-    let newImages = OrderedSet<ImageUrl>();
-    for (const image of this._src ?? []) {
-      if (image.size === ImageSizes.default) {
-        this.defaultImage = image;
-      } else {
-        newImages = newImages.add(image);
+    // Update images if src changes
+    if (changes.src.currentValue !== changes.src.previousValue) {
+      // Retrieve list of new images
+      let newImages = OrderedSet<ImageUrl>();
+      for (const image of this._src ?? []) {
+        if (image.size === ImageSizes.default) {
+          this.defaultImage = image;
+        } else {
+          newImages = newImages.add(image);
+        }
       }
+
+      // Prepend new urls (except default urls) to urls set, and sort by image size
+      this.images = newImages.sort((a, b) => {
+        const aPixels = a.height ?? 0 * a.width ?? 0;
+        const bPixels = b.height ?? 0 * b.width ?? 0;
+
+        if (aPixels === bPixels) {
+          return 0;
+        }
+        return aPixels > bPixels ? 1 : -1;
+      });
     }
 
-    // Prepend new urls (except default urls) to urls set
-    this.images = newImages.concat(this.images);
-    this.displayThumbnail = !!this.thumbnail;
     this.setImageSrc();
   }
 
@@ -107,7 +107,7 @@ export class AuthenticatedImageDirective implements OnChanges {
    */
   private setImageSrc(): void {
     const image = this.getNextImage();
-    this.usedImages = this.usedImages.add(image);
+    this.currentImage = image;
     this.imageEl.src = this.appendAuthToken(image);
   }
 
@@ -123,18 +123,11 @@ export class AuthenticatedImageDirective implements OnChanges {
       return notFoundImage;
     }
 
-    // Find thumbnail if exists
-    if (this.displayThumbnail) {
-      const image = this._src.find((meta) => meta.size === this.thumbnail);
-      if (image) {
-        return image;
-      }
-    }
-
     // Retrieve first url from set
-    const firstUrl = this.images.subtract(this.usedImages).first();
-    if (firstUrl) {
-      return firstUrl;
+    const image = this.images.first();
+    if (image) {
+      this.images = this.images.remove(image);
+      return image;
     }
 
     // Final fallback
@@ -147,13 +140,8 @@ export class AuthenticatedImageDirective implements OnChanges {
   private errorHandler() {
     console.warn("Failed to load image: ", this.imageEl.src);
 
-    // No longer attempt to use thumbnail
-    if (this.displayThumbnail) {
-      this.displayThumbnail = false;
-    }
-
     // Continue searching, unless backup image404 has already been tried and failed
-    if (!this.usedImages.contains(notFoundImage)) {
+    if (this.currentImage !== notFoundImage) {
       this.setImageSrc();
     }
   }
@@ -184,19 +172,14 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Returns true if all other image options are exhausted
    */
   private use404Image(): boolean {
-    const hasDefaultImageAvailable = this.defaultImage
-      ? // Checks if defaultImage has been used
-        this.images.count() + 1 === this.usedImages.count()
-      : this.images.count() === this.usedImages.count();
-
-    return !this._src || hasDefaultImageAvailable;
+    return this.images.count() === 0 && this.currentImage === this.defaultImage;
   }
 
   /**
    * Returns true if the default image is the only option left available
    */
   private useDefaultImage(): boolean {
-    return this.defaultImage && this.images.count() === this.usedImages.count();
+    return this.images.count() === 0 && this.currentImage !== this.defaultImage;
   }
 
   /** Get image reference native element */
