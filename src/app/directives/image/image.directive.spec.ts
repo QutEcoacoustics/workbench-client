@@ -10,16 +10,13 @@ import { generateSessionUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertImage } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
-import {
-  AuthenticatedImageDirective,
-  image404RelativeSrc,
-} from "./image.directive";
+import { AuthenticatedImageDirective, notFoundImage } from "./image.directive";
 
 declare const ng: any;
 
 describe("ImageDirective", () => {
   let spectator: SpectatorDirective<AuthenticatedImageDirective>;
-  const image404Src = `${websiteHttpUrl}${image404RelativeSrc}`;
+  const image404Src = `${websiteHttpUrl}${notFoundImage.url}`;
   const createDirective = createDirectiveFactory({
     directive: AuthenticatedImageDirective,
     imports: [HttpClientTestingModule, MockBawApiModule],
@@ -85,6 +82,19 @@ describe("ImageDirective", () => {
       const image = getImage();
       [1, 2, 3].forEach(() => createImgErrorEvent(image));
       assertImage(image, imageUrls[3].url, "alt");
+    });
+
+    it("given multiple bad urls, it loads default image last", () => {
+      const imageUrls = modelData.imageUrls();
+      imageUrls[0].size = ImageSizes.default;
+      console.log("Image Urls Length: ", imageUrls.length);
+      spectator = createDefaultDirective(imageUrls);
+
+      const image = getImage();
+      imageUrls
+        .slice(0, imageUrls.length - 1)
+        .forEach(() => createImgErrorEvent(image));
+      assertImage(image, imageUrls[0].url, "alt");
     });
 
     it("given all bad urls, it loads 404 image", () => {
@@ -243,6 +253,15 @@ describe("ImageDirective", () => {
       spectator.directive.ngOnChanges({ src: change });
     }
 
+    it("should update with new images", () => {
+      const imageUrls = modelData.imageUrls();
+      spectator = createDefaultDirective(undefined);
+
+      const image = getImage();
+      updateDirective(imageUrls);
+      assertImage(image, imageUrls[0].url, "alt");
+    });
+
     it("should display 404 image after all urls attempted", () => {
       const imageUrls = modelData.imageUrls();
       spectator = createDefaultDirective(undefined);
@@ -251,19 +270,6 @@ describe("ImageDirective", () => {
       imageUrls.forEach((imageUrl) => updateDirective([imageUrl]));
       imageUrls.forEach(() => createImgErrorEvent(image));
       assertImage(image, image404Src, "alt");
-    });
-
-    it("should display default image last", () => {
-      const imageUrls = modelData.imageUrls();
-      imageUrls[0].size = ImageSizes.default;
-      spectator = createDefaultDirective(undefined);
-      const image = getImage();
-
-      imageUrls.forEach((imageUrl) => updateDirective([imageUrl]));
-      imageUrls
-        .slice(0, imageUrls.length - 1)
-        .forEach(() => createImgErrorEvent(image));
-      assertImage(image, imageUrls[0].url, "alt");
     });
   });
 });

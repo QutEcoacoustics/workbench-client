@@ -142,14 +142,12 @@ describe("UserBadgeComponent", () => {
     });
 
     it("should display custom image", () => {
-      const imageIndex = 1;
       const user = new User(generateUser({ userName: "custom username" }));
-      user.image[imageIndex].size = ImageSizes.small;
       setup({ users: [user] });
       spec.detectChanges();
       assertImage(
         getImage()[0],
-        user.image[imageIndex].url,
+        user.image[0].url,
         "custom username profile picture"
       );
     });

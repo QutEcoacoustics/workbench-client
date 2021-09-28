@@ -16,7 +16,6 @@ export const notFoundImage: ImageUrl = {
   url: `${assetRoot}/images/404.png`,
   size: ImageSizes.fallback,
 };
-export const image404RelativeSrc = `${assetRoot}/images/404.png`;
 
 @Directive({
   // Directive applies directly to all image tags instead of being
@@ -95,7 +94,7 @@ export class AuthenticatedImageDirective implements OnChanges {
         if (aPixels === bPixels) {
           return 0;
         }
-        return aPixels > bPixels ? 1 : -1;
+        return aPixels > bPixels ? -1 : 1;
       });
     }
 
@@ -115,6 +114,8 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Get next image to use
    */
   private getNextImage(): ImageUrl {
+    console.log("Using Default Image: ", this.useDefaultImage());
+
     if (this.useDefaultImage()) {
       return this.defaultImage;
     }
@@ -124,14 +125,9 @@ export class AuthenticatedImageDirective implements OnChanges {
     }
 
     // Retrieve first url from set
-    const image = this.images.first();
-    if (image) {
-      this.images = this.images.remove(image);
-      return image;
-    }
-
-    // Final fallback
-    return notFoundImage;
+    const image = this.images.first(notFoundImage);
+    this.images = this.images.remove(image);
+    return image;
   }
 
   /**
@@ -179,7 +175,12 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Returns true if the default image is the only option left available
    */
   private useDefaultImage(): boolean {
-    return this.images.count() === 0 && this.currentImage !== this.defaultImage;
+    console.log("Images Count: ", this.images.count());
+    return (
+      this.images.count() === 0 &&
+      this.currentImage !== this.defaultImage &&
+      !!this.defaultImage
+    );
   }
 
   /** Get image reference native element */
