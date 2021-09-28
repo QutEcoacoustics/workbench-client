@@ -2,7 +2,6 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
-import { ImageSizes } from "@interfaces/apiInterfaces";
 import { UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
