@@ -54,7 +54,7 @@
     "@ngx-ssr/cache": "^1.1.1",
     "@ngx-ssr/timeout": "^1.0.2",
     "@swimlane/ngx-datatable": "^20.0.0",
-    "@vvo/tzdb": "^6.19.0",
+    "@vvo/tzdb": "^6.21.0",
     "bootstrap": "^5.1.1",
     "d3-color": "^3.0.1",
     "express": "^4.17.1",
