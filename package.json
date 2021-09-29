@@ -86,7 +86,7 @@
     "@angular/compiler-cli": "^12.2.7",
     "@angular/language-service": "^12.2.7",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.1.1",
-    "@ngneat/spectator": "^8.0.4",
+    "@ngneat/spectator": "^8.1.0",
     "@nguniversal/builders": "^12.1.0",
     "@nrwl/nx-cloud": "12.3.13",
     "@nrwl/workspace": "12.9.0",
