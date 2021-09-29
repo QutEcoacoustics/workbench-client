@@ -90,6 +90,7 @@ export enum ImageSizes {
   small = "small",
   tiny = "tiny",
   default = "default",
+  fallback = "fallback",
   unknown = "unknown",
 }
 

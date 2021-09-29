@@ -86,7 +86,9 @@
       [bawUrl]="user.viewUrl"
     >
       <span [innerText]="user.userName"></span>
-      <img alt="Profile Icon" [src]="user.image" [thumbnail]="thumbnail" />
+      <div class="image-wrapper d-inline-block bg-light ms-2">
+        <img alt="Profile Icon" [src]="user.image" />
+      </div>
     </a>
   </li>
   <!-- Logout button -->

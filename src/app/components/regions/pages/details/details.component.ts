@@ -46,10 +46,19 @@ const regionKey = "region";
         {{ region.name }}
       </h1>
 
-      <p
-        id="region_description"
-        [innerHtml]="region.descriptionHtml || defaultDescription"
-      ></p>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="thumbnail">
+            <img [src]="region.image" [alt]="region.name + ' image'" />
+          </div>
+        </div>
+        <div class="col-sm-8">
+          <p
+            id="region_description"
+            [innerHtml]="region.descriptionHtml || defaultDescription"
+          ></p>
+        </div>
+      </div>
 
       <baw-debounce-input
         label="Filter"

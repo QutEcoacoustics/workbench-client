@@ -11,8 +11,8 @@ import { takeUntil } from "rxjs/operators";
 @Component({
   selector: "baw-site-card",
   template: `
-    <li class="list-group-item">
-      <div class="image">
+    <li class="list-group-item p-2">
+      <div class="me-2">
         <a id="imageLink" [bawUrl]="model.getViewUrl(project)">
           <img id="image" [src]="model.image" [alt]="model.name + ' alt'" />
         </a>

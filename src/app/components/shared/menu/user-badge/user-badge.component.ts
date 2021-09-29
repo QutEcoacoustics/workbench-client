@@ -1,5 +1,4 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { ImageSizes } from "@interfaces/apiInterfaces";
 import { User } from "@models/User";
 import { DateTime } from "luxon";
 
@@ -17,7 +16,7 @@ import { DateTime } from "luxon";
       <!-- User Resolved -->
       <div *ngIf="!(user | isUnresolved)" id="users" class="d-flex mb-1">
         <!-- User image -->
-        <div class="image">
+        <div class="image me-2 mt-auto mb-auto">
           <!-- Add link to non-ghost users -->
           <ng-container *ngIf="!(user | isGhostUser); else userImage">
             <a id="imageLink" [bawUrl]="user.viewUrl">
@@ -31,7 +30,6 @@ import { DateTime } from "luxon";
               class="rounded"
               [src]="user.image"
               [alt]="user.userName + ' profile picture'"
-              [thumbnail]="thumbnail"
             />
           </ng-template>
         </div>
@@ -69,7 +67,6 @@ export class UserBadgeComponent implements OnChanges {
   @Input() public label: string;
   @Input() public users: User | User[];
   @Input() public timestamp?: DateTime;
-  public thumbnail = ImageSizes.small;
   public models: User[];
 
   public ngOnChanges(): void {

@@ -2,7 +2,6 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
-import { ImageSizes } from "@interfaces/apiInterfaces";
 import { UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
@@ -142,14 +141,12 @@ describe("UserBadgeComponent", () => {
     });
 
     it("should display custom image", () => {
-      const imageIndex = 1;
       const user = new User(generateUser({ userName: "custom username" }));
-      user.image[imageIndex].size = ImageSizes.small;
       setup({ users: [user] });
       spec.detectChanges();
       assertImage(
         getImage()[0],
-        user.image[imageIndex].url,
+        user.image[0].url,
         "custom username profile picture"
       );
     });

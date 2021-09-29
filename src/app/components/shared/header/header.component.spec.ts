@@ -238,17 +238,15 @@ describe("HeaderComponent", () => {
             );
           });
 
-          it("should display small profile custom icon", () => {
-            const url = modelData.image.imageUrl(60, 60);
+          it("should display profile custom icon", () => {
             const imageUrls = modelData.imageUrls();
-            imageUrls[3].url = url;
             const customUser = new SessionUser(generateUser({ imageUrls }));
             setUser(isLoggedIn, customUser);
             spec.detectChanges();
 
             const profile = spec.query<HTMLElement>("#login-widget");
             const image = profile.querySelector("img");
-            assertImage(image, url, "Profile Icon");
+            assertImage(image, imageUrls[0].url, "Profile Icon");
           });
         }
 

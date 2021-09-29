@@ -1,5 +1,9 @@
+import { Injector } from "@angular/core";
+import { TestBed } from "@angular/core/testing";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
@@ -115,15 +119,20 @@ describe("Attribute Decorators", () => {
 
     function createModel(
       data?: { image?: ImageUrl[] | string; imageUrls?: ImageUrl[] },
-      opts?: BawDecoratorOptions<any>
+      opts?: BawDecoratorOptions<any>,
+      injector?: Injector
     ) {
       class MockModel extends BaseModel {
         @bawImage(defaultImageUrl.url, opts)
         public readonly image: ImageUrl[];
         public readonly imageUrls: ImageUrl[];
+
+        public override toString() {
+          return "MockModel";
+        }
       }
 
-      return new MockModel(data);
+      return new MockModel(data, injector);
     }
 
     it("should handle persist option", () => {
@@ -204,6 +213,38 @@ describe("Attribute Decorators", () => {
       const imageUrls = modelData.shuffleArray(defaultImageUrls.slice());
       const model = createModel({ image: imageUrls });
       expect(model.image).toEqual([...defaultImageUrls, defaultImageUrl]);
+    });
+
+    describe("prepend api root", () => {
+      let injector: Injector;
+      let apiRoot: string;
+
+      beforeEach(() => {
+        TestBed.configureTestingModule({
+          imports: [MockAppConfigModule],
+        }).compileComponents();
+        injector = TestBed.inject(Injector);
+        apiRoot = TestBed.inject(API_ROOT);
+      });
+
+      it("should prepend api root to url if it starts with /", () => {
+        const url = "/relative_path/image.jpg";
+        const model = createModel({ image: url }, {}, injector);
+        expect(model.image).toEqual([
+          { url: apiRoot + url, size: ImageSizes.unknown },
+          defaultImageUrl,
+        ]);
+      });
+
+      it("should prepend api root to urls if they starts with /", () => {
+        const url = "/relative_path/image.jpg";
+        const imageUrl: ImageUrl = { url, size: ImageSizes.unknown };
+        const model = createModel({ image: [imageUrl] }, {}, injector);
+        expect(model.image).toEqual([
+          { url: apiRoot + url, size: ImageSizes.unknown },
+          defaultImageUrl,
+        ]);
+      });
     });
   });
 
