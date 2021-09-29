@@ -91,50 +91,95 @@ export class ThemeService {
    * @param color Base color value
    */
   public setColor(colorName: ThemeColor, color?: HSLColor | string): void {
-    // Hsl conversion will return NaN instead of 0 for some valid values
-    // because of https://github.com/d3/d3-color/issues/82
-    function readHslValue(value: number, isPercentage?: boolean): string {
-      if (isNaN(value)) {
-        return "0.00";
-      } else if (isPercentage) {
-        return (value * 100).toFixed(2);
-      } else {
-        return value.toFixed(2);
-      }
-    }
-
-    const prefix = `--baw-${colorName}`;
-    const hue = `${prefix}-hue`;
-    const saturation = `${prefix}-saturation`;
-    const lightness = `${prefix}-lightness`;
-
-    if (this.isServer) {
+    if (!this.isServer) {
+      this.setColorInBrowser(colorName, color);
       return;
     }
 
+    // Can only set color on SSR if it exists
     if (color) {
-      const hslColor = typeof color === "string" ? hsl(color) : color;
+      this.setColorInSsr(colorName, color);
+    }
+  }
 
-      if (isNaN(hslColor.opacity)) {
-        console.warn(
-          `Invalid theme color given for ${colorName} detected: ${color}`
-        );
-        return;
-      }
+  private setColorInBrowser(
+    colorName: ThemeColor,
+    color?: HSLColor | string
+  ): void {
+    const { hue, saturation, lightness } = this.getCssVariables(colorName);
 
-      this.root.style.setProperty(hue, `${readHslValue(hslColor.h)}deg`);
-      this.root.style.setProperty(
-        saturation,
-        `${readHslValue(hslColor.s, true)}%`
-      );
-      this.root.style.setProperty(
-        lightness,
-        `${readHslValue(hslColor.l, true)}%`
-      );
-    } else {
+    if (!color) {
       this.root.style.removeProperty(hue);
       this.root.style.removeProperty(saturation);
       this.root.style.removeProperty(lightness);
+      return;
+    }
+
+    const hslColor = typeof color === "string" ? hsl(color) : color;
+    if (isNaN(hslColor.opacity)) {
+      console.warn(
+        `Invalid theme color given for ${colorName} detected: ${color}`
+      );
+      return;
+    }
+
+    this.root.style.setProperty(hue, `${this.readHslValue(hslColor.h)}deg`);
+    this.root.style.setProperty(
+      saturation,
+      `${this.readHslValue(hslColor.s, true)}%`
+    );
+    this.root.style.setProperty(
+      lightness,
+      `${this.readHslValue(hslColor.l, true)}%`
+    );
+  }
+
+  private setColorInSsr(colorName: ThemeColor, color: HSLColor | string): void {
+    const { hue, saturation, lightness } = this.getCssVariables(colorName);
+    const hslColor = typeof color === "string" ? hsl(color) : color;
+    if (isNaN(hslColor.opacity)) {
+      console.warn(
+        `Invalid theme color given for ${colorName} detected: ${color}`
+      );
+      return;
+    }
+
+    const style = this.document.createElement("style");
+    style.innerHTML = `
+      :root {
+        ${hue}: ${this.readHslValue(hslColor.h)}deg;
+        ${saturation}: ${this.readHslValue(hslColor.s, true)}%;
+        ${lightness}: ${this.readHslValue(hslColor.l, true)}%
+      }
+    `;
+    this.document.head.appendChild(style);
+  }
+
+  private getCssVariables(colorName: ThemeColor) {
+    const prefix = `--baw-${colorName}`;
+    return {
+      prefix,
+      hue: `${prefix}-hue`,
+      saturation: `${prefix}-saturation`,
+      lightness: `${prefix}-lightness`,
+    };
+  }
+
+  /**
+   * Hsl conversion will return NaN instead of 0 for some valid values
+   * because of https://github.com/d3/d3-color/issues/82
+   *
+   * @param value HSL hue, saturation, or light value
+   * @param isPercentage True if value is a percentage
+   * @returns Sanitized HSL value
+   */
+  private readHslValue(value: number, isPercentage?: boolean): string {
+    if (isNaN(value)) {
+      return "0.00";
+    } else if (isPercentage) {
+      return (value * 100).toFixed(2);
+    } else {
+      return value.toFixed(2);
     }
   }
 }

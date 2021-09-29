@@ -87,7 +87,6 @@ describe("ImageDirective", () => {
     it("given multiple bad urls, it loads default image last", () => {
       const imageUrls = modelData.imageUrls();
       imageUrls[0].size = ImageSizes.default;
-      console.log("Image Urls Length: ", imageUrls.length);
       spectator = createDefaultDirective(imageUrls);
 
       const image = getImage();

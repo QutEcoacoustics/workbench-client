@@ -27,7 +27,8 @@ import { PageComponent } from "../page/pageComponent";
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   extends PageComponent
-  implements OnInit {
+  implements OnInit
+{
   @ViewChild(DatatableComponent) public table: DatatableComponent;
 
   // Table variables
@@ -153,7 +154,6 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
         },
         (err: ApiErrorDetails) => {
           this.error = err;
-          this.rows = undefined;
           this.loadingData = false;
         }
       );

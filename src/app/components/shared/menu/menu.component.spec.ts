@@ -98,7 +98,7 @@ describe("MenuComponent", () => {
   }
 
   function getMenuModals(): MockedComponent<MenuButtonComponent>[] {
-    return spec.queryAll(".modal", { read: mock.action });
+    return spec.queryAll(".button", { read: mock.action });
   }
 
   function getMenuLinks(): MockedComponent<MenuLinkComponent>[] {

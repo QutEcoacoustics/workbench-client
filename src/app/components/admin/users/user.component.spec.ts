@@ -15,7 +15,7 @@ import {
   getDatatableCells,
   getDatatableRows,
 } from "@test/helpers/pagedTableTemplate";
-import { AdminUserListComponent } from "./list.component";
+import { AdminUserListComponent } from "./user.component";
 
 describe("AdminUserListComponent", () => {
   let api: AccountsService;
