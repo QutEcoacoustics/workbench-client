@@ -114,8 +114,6 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Get next image to use
    */
   private getNextImage(): ImageUrl {
-    console.log("Using Default Image: ", this.useDefaultImage());
-
     if (this.useDefaultImage()) {
       return this.defaultImage;
     }
@@ -175,7 +173,6 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Returns true if the default image is the only option left available
    */
   private useDefaultImage(): boolean {
-    console.log("Images Count: ", this.images.count());
     return (
       this.images.count() === 0 &&
       this.currentImage !== this.defaultImage &&
