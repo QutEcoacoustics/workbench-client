@@ -24,6 +24,13 @@
       "name": "Edge Debugging",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Debug SSR Server",
+      "port": 9229,
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }
