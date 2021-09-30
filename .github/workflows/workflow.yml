@@ -173,6 +173,12 @@ jobs:
       - name: Validate routing
         run: grep -o "<\/router-outlet><baw-home.*<\/baw-home>" index.html
 
+      - name: Retrieve not found page
+        run: wget localhost:4000/broken
+
+      - name: Validate not found page
+        run: grep -o "<h1>Not Found</h1>" index.html.1
+
       - name: Retrieve LFS file from assets
         run: wget localhost:4000/assets/images/project/project_span4.png
 
