@@ -1,9 +1,14 @@
 <!-- Hero image -->
-<section id="hero">
+<section id="hero" class="d-flex flex-column">
   <div>
     <h1 class="invisible">{{ svg.alt | uppercase }}</h1>
     <!-- Scalable title, will resize to any display size -->
-    <svg version="1.2" [attr.width]="svg.width" [attr.viewBox]="svg.viewBox">
+    <svg
+      version="1.2"
+      class="bg-white fw-bolder"
+      [attr.width]="svg.width"
+      [attr.viewBox]="svg.viewBox"
+    >
       <title>{{ svg.alt | uppercase }}</title>
       <text
         *ngFor="let word of svg.title; let i = index"
@@ -17,13 +22,13 @@
     </svg>
   </div>
 
-  <caption>
+  <caption class="bg-light text-dark ms-auto p-3 pt-2 pb-2">
     Photo: QUT Ecoacoustics Staff
   </caption>
 </section>
 
 <!-- Who are we? -->
-<section id="about_us">
+<section id="about_us" class="overflow-auto pb-5 pt-5">
   <div class="container">
     <h2>Who Are We?</h2>
     <p>
@@ -41,7 +46,7 @@
 </section>
 
 <!-- What we do -->
-<section id="what_we_do">
+<section id="what_we_do" class="bg-black text-white pb-5 pt-5 m-auto">
   <div class="container">
     <h2>What We Do</h2>
 
@@ -51,7 +56,7 @@
           [icon]="['fas', 'cloud-upload-alt']"
           [style]="{ color: 'gold' }"
         ></fa-icon>
-        <h3>Our Goal</h3>
+        <h3 class="text-center">Our Goal</h3>
         <p>
           We host, manage, explore, and visualize ecoacoustic data. Providing
           the results and tools we develope free of charge to anyone who is
@@ -64,7 +69,7 @@
           [icon]="['fas', 'leaf']"
           [style]="{ color: 'lightgreen' }"
         ></fa-icon>
-        <h3>Environment</h3>
+        <h3 class="text-center">Environment</h3>
         <p>
           We locate various environments which may have interesting or important
           faunal vocalisations and other human-audible environmental sounds
@@ -76,7 +81,7 @@
           [icon]="['fas', 'microphone']"
           [style]="{ color: 'lightgrey' }"
         ></fa-icon>
-        <h3>Acoustics Sensors</h3>
+        <h3 class="text-center">Acoustics Sensors</h3>
         <p>
           We, and our partners, place acoustic sensors in a wide range of
           environments allowing us to study the local fauna
@@ -88,7 +93,7 @@
           [icon]="['fas', 'vector-square']"
           [style]="{ color: 'violet' }"
         ></fa-icon>
-        <h3>Annotated Spectrogram</h3>
+        <h3 class="text-center">Annotated Spectrogram</h3>
         <p>
           Practical identification of animal sounds by people and automated
           detectors. Ecologists use these to answer environmental questions.
@@ -100,7 +105,7 @@
           [icon]="['fas', 'users']"
           [style]="{ color: 'darksalmon' }"
         ></fa-icon>
-        <h3>Collaboration</h3>
+        <h3 class="text-center">Collaboration</h3>
         <p>
           Finally, we make the results of our research, and the tools we have
           developed, available to the public
@@ -111,10 +116,10 @@
 </section>
 
 <!-- View some projects -->
-<section id="projects">
+<section id="projects" class="pb-5 pt-5 bg-light">
   <div class="container">
     <h2>View Some {{ viewMore.modelName | titlecase }}s</h2>
-    <p>
+    <p class="mb-5">
       You can browse some public {{ viewMore.modelName }}s and audio recordings
       without logging in. To participate in the analysis work you will need to
       log in with an existing account or register for a new account. Don't worry
