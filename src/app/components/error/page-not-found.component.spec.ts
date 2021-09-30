@@ -11,7 +11,11 @@ describe("PageNotFoundComponent", () => {
     expect(spec.element).toBeTruthy();
   });
 
+  it("should have title", () => {
+    expect(spec.element).toHaveText("Not Found");
+  });
+
   it("should have message", () => {
-    expect(spec.element).toHaveText("Not Found! TODO: make me better!");
+    expect(spec.element).toHaveText("This page doesn't seem to exist");
   });
 });
