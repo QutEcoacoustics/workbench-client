@@ -5,6 +5,7 @@
  */
 
 import "zone.js/node";
+import "reflect-metadata";
 
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
