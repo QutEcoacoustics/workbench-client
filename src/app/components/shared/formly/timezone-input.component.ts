@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { FormControl } from "@angular/forms";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faBan } from "@fortawesome/free-solid-svg-icons";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -13,6 +12,7 @@ import {
   filter,
   map,
 } from "rxjs/operators";
+import { asFormControl } from "./helper";
 
 /**
  * Timezone Input
@@ -67,13 +67,18 @@ import {
         {{ error }}
       </div>
 
-      <input type="hidden" [id]="field.id" [formControl]="formControl" />
+      <input
+        type="hidden"
+        [id]="field.id"
+        [formControl]="asFormControl(formControl)"
+      />
     </div>
   `,
 })
 export class TimezoneInputComponent extends FieldType implements OnInit {
   @ViewChild("instance", { static: true }) public instance: NgbTypeahead;
-  public formControl: FormControl;
+
+  public asFormControl = asFormControl;
   public click$ = new Subject<string>();
   public focus$ = new Subject<string>();
   public invalidIcon: IconProp = faBan;

@@ -14,8 +14,8 @@ import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
-import { NgxSsrTimeoutModule } from "@ngx-ssr/timeout";
 import { AppConfigModule } from "@services/config/config.module";
+import { TimeoutModule } from "@services/timeout/timeout.module";
 import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { ToastrModule } from "ngx-toastr";
 import { AppRoutingModule } from "./app-routing.module";
@@ -79,7 +79,7 @@ export const appImports = [
   imports: [
     BrowserModule.withServerTransition({ appId: "workbench-client" }),
     // Http request maximum timeout with 10 second limit
-    NgxSsrTimeoutModule.forRoot({ timeout: 10_000 }),
+    TimeoutModule.forRoot({ timeout: 10_000 }),
     AppRoutingModule,
     HttpClientModule,
     AppConfigModule,

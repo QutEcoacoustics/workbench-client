@@ -1,0 +1,1 @@
+A large amount of this code is migrated from https://github.com/IKatsuba/ngx-ssr. Some modifications have been made to make things more appropriate for this repo, however the main driving factor is the slow updates to support new Angular versions.

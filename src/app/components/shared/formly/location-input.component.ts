@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { FieldType } from "@ngx-formly/core";
 import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
+import { asFormControl } from "./helper";
 
 /**
  * Location Input
@@ -53,7 +53,11 @@ import { List } from "immutable";
         {{ getError() }}
       </div>
 
-      <input type="hidden" [id]="field.id" [formControl]="formControl" />
+      <input
+        type="hidden"
+        [id]="field.id"
+        [formControl]="asFormControl(formControl)"
+      />
     </div>
 
     <div class="mb-3" style="height: 400px">
@@ -62,7 +66,7 @@ import { List } from "immutable";
   `,
 })
 export class LocationInputComponent extends FieldType implements OnInit {
-  public formControl: FormControl;
+  public asFormControl = asFormControl;
   public latitude: number;
   public latitudeError: boolean;
   public longitude: number;

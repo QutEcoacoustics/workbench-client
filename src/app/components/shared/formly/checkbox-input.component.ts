@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
-import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
-
+import { asFormControl } from "./helper";
 /**
  * Checkbox input using bootstrap to style the component
  * ! Warning, test manually after changes
@@ -17,7 +16,7 @@ import { FieldType } from "@ngx-formly/core";
         type="checkbox"
         class="custom-control-input"
         [id]="id + '-checkbox'"
-        [formControl]="formControl"
+        [formControl]="asFormControl(formControl)"
         [formlyAttributes]="field"
       />
       <label class="custom-control-label" [for]="id + '-checkbox'"></label>
@@ -25,5 +24,5 @@ import { FieldType } from "@ngx-formly/core";
   `,
 })
 export class CheckboxInputComponent extends FieldType {
-  public formControl: FormControl;
+  public asFormControl = asFormControl;
 }
