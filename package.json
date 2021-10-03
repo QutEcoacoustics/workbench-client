@@ -30,7 +30,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^12.2.7",
+    "@angular/animations": "^12.2.8",
     "@angular/cdk": "^12.2.8",
     "@angular/common": "^12.2.7",
     "@angular/compiler": "^12.2.7",
@@ -46,7 +46,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@ng-bootstrap/ng-bootstrap": "^10.0.0",
-    "@nguniversal/express-engine": "^12.1.0",
+    "@nguniversal/express-engine": "^12.1.1",
     "@ngx-formly/bootstrap": "^5.10.23",
     "@ngx-formly/core": "^5.10.23",
     "@ngx-loading-bar/core": "^5.1.2",
