@@ -1,12 +1,13 @@
-import { Inject, Injectable, InjectionToken } from "@angular/core";
 import {
-  HttpErrorResponse,
   HttpEvent,
   HttpEventType,
   HttpHandler,
   HttpInterceptor,
   HttpRequest,
 } from "@angular/common/http";
+import { Inject, Injectable, InjectionToken } from "@angular/core";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import httpStatus from "http-status";
 import { NEVER, Observable, of, throwError } from "rxjs";
 import { catchError, startWith, switchMap, timeout } from "rxjs/operators";
 
@@ -51,10 +52,13 @@ export class TimeoutInterceptor implements HttpInterceptor {
         return of(event);
       }),
       catchError((error) => {
-        if (error && error.name === "TimeoutError") {
-          return throwError(
-            new HttpErrorResponse({ error, url: request.urlWithParams })
-          );
+        if (error?.name === "TimeoutError") {
+          return throwError({
+            status: httpStatus.REQUEST_TIMEOUT,
+            message:
+              "Resource request took too long to complete. " +
+              "This may be an issue with your connection to us, or a temporary issue with our services.",
+          } as ApiErrorDetails);
         }
 
         return throwError(error);

@@ -1,15 +1,14 @@
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HTTP_INTERCEPTORS,
-} from "@angular/common/http";
+import { HttpClient, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import {
   createHttpFactory,
   HttpMethod,
   SpectatorHttp,
 } from "@ngneat/spectator";
-import { Observable, TimeoutError, timer } from "rxjs";
+import { modelData } from "@test/helpers/faker";
+import httpStatus from "http-status";
+import { Observable, timer } from "rxjs";
 import {
   TimeoutInterceptor,
   TIMEOUT_OPTIONS,
@@ -35,11 +34,6 @@ describe("TimeoutInterceptor", () => {
   const createService = createHttpFactory({
     service: MockService,
     providers: [
-      MockService,
-      {
-        provide: TIMEOUT_OPTIONS,
-        useValue: { timeout: 1_000 },
-      },
       {
         provide: HTTP_INTERCEPTORS,
         useClass: TimeoutInterceptor,
@@ -48,9 +42,11 @@ describe("TimeoutInterceptor", () => {
     ],
   });
 
-  beforeEach(() => {
-    spec = createService();
-  });
+  function setup(timeout: number) {
+    spec = createService({
+      providers: [{ provide: TIMEOUT_OPTIONS, useValue: { timeout } }],
+    });
+  }
 
   afterEach(() => {
     spec.controller.verify();
@@ -60,30 +56,39 @@ describe("TimeoutInterceptor", () => {
     { method: "get", type: HttpMethod.GET },
     { method: "post", type: HttpMethod.POST },
   ].forEach((test) => {
+    let timeoutInterval: number;
+
     function callService(): Observable<any> {
       return spec.service[test.method]();
     }
 
-    it("it should timeout a request after the timeout period", async () => {
-      const response = callService()
-        .toPromise()
-        .catch((res) => res);
-      spec.expectOne("/api/v1/getResources", test.type);
+    describe(`Intercept ${test.method} requests`, () => {
+      beforeEach(() => {
+        timeoutInterval = modelData.datatype.number({ min: 250, max: 500 });
+        setup(timeoutInterval);
+      });
 
-      await timer(2_000).toPromise();
-      expect(await response).toEqual(
-        new HttpErrorResponse({
-          error: jasmine.any(TimeoutError),
-          url: "/api/v1/getResources",
-        })
-      );
-    });
+      it("it should timeout a request after the timeout period", async () => {
+        const response = callService()
+          .toPromise()
+          .catch((res) => res);
+        spec.expectOne("/api/v1/getResources", test.type);
 
-    it("it should not timeout a request if it returns before the timeout period", async () => {
-      callService().subscribe();
-      const req = spec.expectOne("/api/v1/getResources", test.type);
-      await timer(100).toPromise();
-      req.flush(123);
+        await timer(timeoutInterval * 1.5).toPromise();
+        expect(await response).toEqual({
+          status: httpStatus.REQUEST_TIMEOUT,
+          message:
+            "Resource request took too long to complete. " +
+            "This may be an issue with your connection to us, or a temporary issue with our services.",
+        } as ApiErrorDetails);
+      });
+
+      it("it should not timeout a request if it returns before the timeout period", async () => {
+        callService().subscribe();
+        const req = spec.expectOne("/api/v1/getResources", test.type);
+        await timer(timeoutInterval / 2).toPromise();
+        req.flush(123);
+      });
     });
   });
 });
