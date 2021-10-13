@@ -36,7 +36,7 @@
     "@angular/compiler": "^12.2.7",
     "@angular/core": "^12.2.8",
     "@angular/forms": "^12.2.8",
-    "@angular/google-maps": "^12.2.8",
+    "@angular/google-maps": "^12.2.9",
     "@angular/localize": "^12.2.7",
     "@angular/platform-browser": "^12.2.8",
     "@angular/platform-browser-dynamic": "^12.2.7",
@@ -82,7 +82,7 @@
     "@angular-eslint/eslint-plugin-template": "^12.5.0",
     "@angular-eslint/schematics": "12.5.0",
     "@angular-eslint/template-parser": "12.5.0",
-    "@angular/cli": "^12.2.7",
+    "@angular/cli": "^12.2.9",
     "@angular/compiler-cli": "^12.2.8",
     "@angular/language-service": "^12.2.9",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.1.1",
@@ -124,6 +124,6 @@
     "protractor": "^7.0.0",
     "ts-node": "^10.2.1",
     "typescript": "4.4",
-    "webpack-bundle-analyzer": "^4.4.2"
+    "webpack-bundle-analyzer": "^4.5.0"
   }
 }
