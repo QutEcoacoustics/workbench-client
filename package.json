@@ -124,6 +124,6 @@
     "protractor": "^7.0.0",
     "ts-node": "^10.2.1",
     "typescript": "4.4",
-    "webpack-bundle-analyzer": "^4.4.2"
+    "webpack-bundle-analyzer": "^4.5.0"
   }
 }
