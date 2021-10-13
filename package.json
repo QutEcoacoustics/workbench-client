@@ -41,7 +41,7 @@
     "@angular/platform-browser": "^12.2.8",
     "@angular/platform-browser-dynamic": "^12.2.7",
     "@angular/platform-server": "^12.2.8",
-    "@angular/router": "^12.2.7",
+    "@angular/router": "^12.2.10",
     "@fortawesome/angular-fontawesome": "^0.9.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
@@ -62,7 +62,7 @@
     "full-icu": "^1.4.0",
     "http-status": "^1.5.0",
     "humanize-duration": "^3.27.0",
-    "immutable": "^4.0.0-rc.15",
+    "immutable": "^4.0.0",
     "include-media": "^1.4.10",
     "just-camel-case": "^4.0.2",
     "just-snake-case": "^1.2.1",
@@ -124,6 +124,6 @@
     "protractor": "^7.0.0",
     "ts-node": "^10.2.1",
     "typescript": "4.4",
-    "webpack-bundle-analyzer": "^4.4.2"
+    "webpack-bundle-analyzer": "^4.5.0"
   }
 }
