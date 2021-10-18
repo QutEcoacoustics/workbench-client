@@ -1,20 +1,21 @@
-import { ElementRef } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
 import { NavigationEnd, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { LoadingModule } from "@shared/loading/loading.module";
+import { modelData } from "@test/helpers/faker";
+import { viewports } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
-import { DeviceDetectorService } from "ngx-device-detector";
 import { BehaviorSubject } from "rxjs";
 import { BawClientComponent } from "./baw-client.component";
 
 // TODO Add tests for page input when used
 describe("BawClientComponent", () => {
-  let isFirefox: boolean;
   let events: BehaviorSubject<NavigationEnd>;
   let config: ConfigService;
+  let sanitizer: DomSanitizer;
   let spec: Spectator<BawClientComponent>;
   const createComponent = createComponentFactory({
     component: BawClientComponent,
@@ -31,10 +32,36 @@ describe("BawClientComponent", () => {
   }
 
   function waitForLoad() {
-    return new Promise<void>((resolve) =>
-      spec.component["iframeRef"].nativeElement.addEventListener("load", () =>
-        resolve()
-      )
+    // Wait for component to finish loading
+    return new Promise<void>((resolve) => {
+      setInterval(() => {
+        if (!spec.component.loading) {
+          resolve();
+        }
+      }, 10);
+    });
+  }
+
+  function preventLoadingBawClient() {
+    spyOn(spec.component, "updateUrl").and.callFake(() => {
+      spec.component.url = sanitizer.bypassSecurityTrustResourceUrl(
+        "https://broken_link"
+      );
+    });
+  }
+
+  function assertIframeHeight(height: number) {
+    // BawClientComponent adds 50 pixels of padding
+    const heightWithPadding = height + 50;
+    expect(getComputedStyle(getIframe()).height).toBe(heightWithPadding + "px");
+  }
+
+  function postMessage(data: any, origin: string) {
+    spec.component["onBawClientMessage"](
+      new MessageEvent("window:message", {
+        origin: origin ?? config.endpoints.oldClientOrigin,
+        data,
+      })
     );
   }
 
@@ -50,67 +77,49 @@ describe("BawClientComponent", () => {
   }
 
   beforeEach(() => {
-    jasmine.clock().install();
     events = undefined;
     spec = createComponent({ detectChanges: false });
-    isFirefox = spec.inject(DeviceDetectorService).browser === "Firefox";
     config = spec.inject(ConfigService);
+    sanitizer = spec.inject(DomSanitizer);
   });
 
-  afterEach(() => {
-    jasmine.clock().uninstall();
+  describe("error handling", () => {
+    afterEach(() => viewport.reset());
+
+    it("should validate origin of message matches baw client", () => {
+      viewport.set(viewports.small);
+      preventLoadingBawClient();
+      spec.detectChanges();
+      postMessage(JSON.stringify({ height: 1000 }), "https://no_match");
+      spec.detectChanges();
+      // 100 is the default size on a small viewport
+      assertIframeHeight(100);
+    });
   });
 
   describe("sizing", () => {
-    it("should calculate iframe height on load", async () => {
-      spyOn(spec.component, "updateIframeSize").and.stub();
+    it("should calculate iframe height when iframe posts a message", () => {
+      preventLoadingBawClient();
+      const height = modelData.datatype.number();
+
       spec.detectChanges();
-      await waitForLoad();
+      postMessage(JSON.stringify({ height }));
       spec.detectChanges();
-      // It appears that on chromium browsers the interval subject will
-      // run once, however this behaviour does not happen on firefox
-      expect(spec.component.updateIframeSize).toHaveBeenCalledTimes(
-        isFirefox ? 1 : 2
-      );
+      assertIframeHeight(height);
     });
 
-    it("should continuously recalculate height every 250ms", async () => {
-      spyOn(spec.component, "updateIframeSize").and.stub();
+    it("should recalculate iframe height whenever iframe posts a message", () => {
+      preventLoadingBawClient();
+      let height = 0;
       spec.detectChanges();
-      await waitForLoad();
-      spec.detectChanges();
-      jasmine.clock().tick(251);
-      spec.detectChanges();
-      // It appears that on chromium browsers the interval subject will
-      // run once, however this behaviour does not happen on firefox
-      expect(spec.component.updateIframeSize).toHaveBeenCalledTimes(
-        isFirefox ? 2 : 3
-      );
-    });
 
-    it("should update iframe height on height calculation", () => {
-      const dummyIFrame: ElementRef<HTMLIFrameElement> = {
-        nativeElement: {
-          style: { height: undefined },
-          contentDocument: { body: { scrollHeight: 10000 } },
-        },
-      } as Partial<ElementRef<HTMLIFrameElement>> as any;
-      spec.component["iframeRef"] = dummyIFrame;
-      spec.component.updateIframeSize();
-      expect(dummyIFrame.nativeElement.style.height).toBe("10050px");
-    });
+      for (let i = 0; i < 3; i++) {
+        height = modelData.datatype.number();
+        postMessage(JSON.stringify({ height }));
+        spec.detectChanges();
+      }
 
-    it("should not infinitely update iframe height on height calculation", () => {
-      const dummyIFrame: ElementRef<HTMLIFrameElement> = {
-        nativeElement: {
-          style: { height: undefined },
-          contentDocument: { body: { scrollHeight: 10000 } },
-        },
-      } as Partial<ElementRef<HTMLIFrameElement>> as any;
-      spec.component["iframeRef"] = dummyIFrame;
-      spec.component.updateIframeSize();
-      spec.component.updateIframeSize();
-      expect(dummyIFrame.nativeElement.style.height).toBe("10050px");
+      assertIframeHeight(height);
     });
   });
 

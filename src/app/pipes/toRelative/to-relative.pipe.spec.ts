@@ -1,6 +1,7 @@
 import { HumanizeDurationOptions } from "@interfaces/apiInterfaces";
 import { createPipeFactory, SpectatorPipe } from "@ngneat/spectator";
 import { DateTime, Duration, ToRelativeOptions } from "luxon";
+import { DeviceDetectorService } from "ngx-device-detector";
 import { ToRelativePipe } from "./to-relative.pipe";
 
 describe("ToRelativePipe", () => {
@@ -47,6 +48,7 @@ describe("ToRelativePipe", () => {
 
   it("should display datetime with custom options", () => {
     setup(DateTime.utc(), { style: "short" });
-    assertPipe("0 sec. ago");
+    const isFirefox = spec.inject(DeviceDetectorService).browser === "Firefox";
+    assertPipe(isFirefox ? "0 secs ago" : "0 sec. ago");
   });
 });

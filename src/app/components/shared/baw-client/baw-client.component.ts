@@ -51,6 +51,11 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
 
   @HostListener("window:message", ["$event"])
   private onBawClientMessage(event: MessageEvent): void {
+    // Ignore events which are not from the old client
+    if (event.origin !== this.config.endpoints.oldClientOrigin) {
+      return;
+    }
+
     try {
       const meta: { height: number } = JSON.parse(event.data);
 
