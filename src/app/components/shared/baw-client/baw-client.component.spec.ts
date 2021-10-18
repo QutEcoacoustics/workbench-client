@@ -56,7 +56,7 @@ describe("BawClientComponent", () => {
     expect(getComputedStyle(getIframe()).height).toBe(heightWithPadding + "px");
   }
 
-  function postMessage(data: any, origin: string) {
+  function postMessage(data: any, origin?: string) {
     spec.component["onBawClientMessage"](
       new MessageEvent("window:message", {
         origin: origin ?? config.endpoints.oldClientOrigin,
