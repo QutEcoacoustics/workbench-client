@@ -25,7 +25,10 @@
   <!-- Details in left column -->
   <div class="col-sm-6">
     <!-- Loading animation -->
-    <baw-loading *ngIf="!recordings" id="recordings-loader"></baw-loading>
+    <baw-loading
+      *ngIf="recordings === undefined"
+      id="recordings-loader"
+    ></baw-loading>
 
     <!-- Handle recordings error -->
     <p *ngIf="recordings === null" id="recordings-error-description">

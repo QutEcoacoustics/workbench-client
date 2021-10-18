@@ -1,10 +1,16 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { NavigationEnd, Router } from "@angular/router";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "@services/config/config.service";
-import { interval } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
 
 //TODO: OLD-CLIENT REMOVE
@@ -13,7 +19,7 @@ import { filter, takeUntil } from "rxjs/operators";
   template: `
     <baw-loading *ngIf="loading"></baw-loading>
 
-    <iframe *ngIf="url" #content [src]="url" (load)="updateIframeSize()">
+    <iframe *ngIf="url" #content [src]="url">
       <!-- This warning only shows on browsers which don't support iframes -->
       <p>
         Unfortunately your browser does not support iframes. Please ensure you
@@ -39,11 +45,23 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
    * beginning with a `/`
    */
   @Input() public page: string;
+
   public url: SafeResourceUrl;
   public loading = true;
-  /** Used to track the height of the iframe */
-  private previousHeight = 0;
-  private iframeUpdateIntervalMs = 250;
+
+  @HostListener("window:message", ["$event"])
+  private onBawClientMessage(event: MessageEvent): void {
+    try {
+      const meta: { height: number } = JSON.parse(event.data);
+
+      if (meta.height > 0) {
+        this.loading = false;
+        this.updateIframeSize(meta.height);
+      }
+    } catch (e: any) {
+      // Ignore message
+    }
+  }
 
   public constructor(
     private config: ConfigService,
@@ -53,7 +71,7 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
     super();
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     if (isInstantiated(this.page)) {
       // Use page provided
       this.updateUrl(this.page);
@@ -69,32 +87,16 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
         )
         .subscribe((event: NavigationEnd) => this.updateUrl(event.url));
     }
-
-    // Update iframe size every 250 milliseconds
-    interval(this.iframeUpdateIntervalMs)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(() => this.updateIframeSize());
   }
 
-  public updateIframeSize() {
+  private updateIframeSize(height: number): void {
     const iframe = this.iframeRef?.nativeElement;
-    // * Note: This will not work during development because we cannot access the scrollHeight
-    // *    of iframes which exist on another domain
-    const currentHeight = iframe?.contentDocument?.body?.scrollHeight;
-
-    // If iframe has not been built, current height is not available, or no change in size
-    if (!iframe || !currentHeight || currentHeight === this.previousHeight) {
-      return;
-    }
-
     // Add 50px of padding to account for margin/padding/scrollbar
-    this.loading = false;
     const padding = 50;
-    this.previousHeight = currentHeight;
-    iframe.style.height = currentHeight + padding + "px";
+    iframe.style.height = height + padding + "px";
   }
 
-  protected updateUrl(url: string) {
+  private updateUrl(url: string): void {
     const { oldClientOrigin, oldClientBase } = this.config.endpoints;
 
     // Bypass angular default security
