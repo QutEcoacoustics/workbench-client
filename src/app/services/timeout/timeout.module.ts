@@ -10,12 +10,12 @@ import {
 @NgModule({
   imports: [CommonModule],
 })
-export class TimeoutModule {
+export class BawTimeoutModule {
   public static forRoot(
     options?: TimeoutOptions
-  ): ModuleWithProviders<TimeoutModule> {
+  ): ModuleWithProviders<BawTimeoutModule> {
     return {
-      ngModule: TimeoutModule,
+      ngModule: BawTimeoutModule,
       providers: [
         {
           provide: HTTP_INTERCEPTORS,
