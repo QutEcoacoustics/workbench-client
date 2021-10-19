@@ -56,15 +56,16 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
       return;
     }
 
+    let meta: { height: number };
     try {
-      const meta: { height: number } = JSON.parse(event.data);
-
-      if (meta.height > 0) {
-        this.loading = false;
-        this.updateIframeSize(meta.height);
-      }
+      meta = JSON.parse(event.data);
     } catch (e: any) {
       // Ignore message
+    }
+
+    if (meta.height > 0) {
+      this.loading = false;
+      this.updateIframeSize(meta.height);
     }
   }
 
