@@ -127,23 +127,12 @@ export class BawApiInterceptor implements HttpInterceptor {
         info: toCamelCase(response.error.meta.error?.info),
       };
     } else if (response.status === 0) {
-      // Timeout library sets status to 0 if timed out
-      // https://github.com/IKatsuba/ngx-ssr/issues/397
-      if (response.error.name === "TimeoutError") {
-        error = {
-          status: httpStatus.REQUEST_TIMEOUT,
-          message:
-            "Resource request took too long to complete. " +
-            "This may be an issue with your connection to us, or a temporary issue with our services.",
-        };
-      } else {
-        error = {
-          status: httpStatus.BAD_GATEWAY,
-          message:
-            "Unable to reach our servers right now." +
-            "This may be an issue with your connection to us, or a temporary issue with our services.",
-        };
-      }
+      error = {
+        status: httpStatus.BAD_GATEWAY,
+        message:
+          "Unable to reach our servers right now." +
+          "This may be an issue with your connection to us, or a temporary issue with our services.",
+      };
     } else {
       error = { status: response.status, message: response.message };
     }

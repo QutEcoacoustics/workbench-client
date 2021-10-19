@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
+import { asFormControl } from "./helper";
 
 /**
  * Location Input
@@ -54,13 +54,18 @@ import { FieldType } from "@ngx-formly/core";
       </div>
     </div>
 
-    <input type="hidden" [id]="field.id" [formControl]="formControl" />
+    <input
+      type="hidden"
+      [id]="field.id"
+      [formControl]="asFormControl(formControl)"
+    />
   `,
 })
 export class PasswordConfirmationInputComponent
   extends FieldType
-  implements OnInit {
-  public formControl: FormControl;
+  implements OnInit
+{
+  public asFormControl = asFormControl;
   public password = "";
   public passwordError: boolean;
   public confirmation = "";

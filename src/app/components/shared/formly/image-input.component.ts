@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
-import { FormControl } from "@angular/forms";
 import { FieldType } from "@ngx-formly/core";
+import { asFormControl } from "./helper";
 
 /**
  * Image Input
@@ -22,7 +22,7 @@ import { FieldType } from "@ngx-formly/core";
           type="file"
           accept="image/*"
           class="form-control"
-          [formControl]="formControl"
+          [formControl]="asFormControl(formControl)"
           [formlyAttributes]="field"
         />
       </div>
@@ -30,5 +30,5 @@ import { FieldType } from "@ngx-formly/core";
   `,
 })
 export class ImageInputComponent extends FieldType {
-  public formControl: FormControl;
+  public asFormControl = asFormControl;
 }
