@@ -8,6 +8,7 @@ import { LoadingModule } from "@shared/loading/loading.module";
 import { modelData } from "@test/helpers/faker";
 import { viewports } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
+import { DeviceDetectorService } from "ngx-device-detector";
 import { BehaviorSubject } from "rxjs";
 import { BawClientComponent } from "./baw-client.component";
 
@@ -92,16 +93,38 @@ describe("BawClientComponent", () => {
   });
 
   describe("error handling", () => {
-    afterEach(() => viewport.reset());
-
-    it("should validate origin of message matches baw client", () => {
+    beforeEach(() => {
       viewport.set(viewports.small);
       preventLoadingBawClient();
       spec.detectChanges();
+    });
+
+    afterEach(() => viewport.reset());
+
+    function assertIframeUnchanged() {
+      const isFirefox =
+        spec.inject(DeviceDetectorService).browser === "Firefox";
+
+      // 100 is the default size on a small viewport, chrome is special fish
+      assertIframeHeight(isFirefox ? 100 : 99.714);
+    }
+
+    it("should validate origin of message matches baw client", () => {
       postMessage(JSON.stringify({ height: 1000 }), "https://no_match");
       spec.detectChanges();
-      // 100 is the default size on a small viewport
-      assertIframeHeight(100);
+      assertIframeUnchanged();
+    });
+
+    it("should handle post messages containing wrong JSON data", () => {
+      postMessage(JSON.stringify({ random: "data" }));
+      spec.detectChanges();
+      assertIframeUnchanged();
+    });
+
+    it("should handle post messages with non JSON values", () => {
+      postMessage("this should be ignored");
+      spec.detectChanges();
+      assertIframeUnchanged();
     });
   });
 

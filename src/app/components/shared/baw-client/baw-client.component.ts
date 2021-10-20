@@ -63,7 +63,7 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
       // Ignore message
     }
 
-    if (meta.height > 0) {
+    if (meta?.height > 0) {
       this.loading = false;
       this.updateIframeSize(meta.height);
     }
