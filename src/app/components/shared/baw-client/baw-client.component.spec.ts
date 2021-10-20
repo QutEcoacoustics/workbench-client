@@ -102,11 +102,8 @@ describe("BawClientComponent", () => {
     afterEach(() => viewport.reset());
 
     function assertIframeUnchanged() {
-      const isFirefox =
-        spec.inject(DeviceDetectorService).browser === "Firefox";
-
-      // 100 is the default size on a small viewport, chrome is special fish
-      assertIframeHeight(isFirefox ? 100 : 99.714);
+      // 100 is the default size on a small viewport
+      assertIframeHeight(100);
     }
 
     it("should validate origin of message matches baw client", () => {
