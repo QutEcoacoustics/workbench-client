@@ -240,7 +240,7 @@ jobs:
           test_changes_limit: 0
           deduplicate_classes_by_file_name: true
 
-  publish:
+  test-publish:
     name: "Test Publish Docker Container"
     runs-on: "ubuntu-latest"
     # cancel any other CI attempting to publish to docker
