@@ -1,4 +1,4 @@
-FROM node:current-alpine as BUILD_IMAGE
+FROM node:14-alpine as BUILD_IMAGE
 
 ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION
@@ -10,7 +10,7 @@ RUN mkdir -p  /home/node/workbench-client
 WORKDIR /home/node/workbench-client
 
 # copy deps specification first
-COPY --chown=node package*.json decorate-angular-cli.js nx.json ./
+COPY --chown=node package*.json ./
 
 # install deps
 RUN npm ci \
@@ -23,14 +23,20 @@ RUN npm ci \
 # Great for dev work.
 COPY --chown=node ./ ./
 
+RUN cat ./src/environments/environment.prod.ts
+
 # change environment version
-RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./src/environments/environment.prod.ts
+RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./src/environments/environment*.ts
+
+RUN cat ./src/environments/environment.prod.ts
 
 RUN npm run build:ssr
 
+RUN cat dist/workbench-client/browser/main-*.js | grep -o  version:.....................
 
 
-FROM node:current-alpine
+
+FROM node:14-alpine
 
 WORKDIR /home/node/workbench-client
 
@@ -54,6 +60,8 @@ COPY --from=BUILD_IMAGE /home/node/workbench-client/dist ./dist
 COPY --from=BUILD_IMAGE /home/node/workbench-client/package.json ./package.json
 
 EXPOSE 4000
+
+RUN cat dist/workbench-client/browser/main-*.js | grep -o  version:.....................
 
 #   pre-rendering doesn't appear to work at the moment due to our config setup
 #   && npm run prerender

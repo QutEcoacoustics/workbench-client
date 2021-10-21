@@ -31,7 +31,7 @@ if (Test-CI) {
 }
 $git_tag_name = $version.Version
 $git_tag_message = [string]::Format("Build {0}", $version.DescribeVersion);
-exec { git tag -a "$git_tag_name" -m "$git_tag_message" }
+# exec { git tag -a "$git_tag_name" -m "$git_tag_message" }
 
 # docker containing and push to docker hub
 Write-Output "Build docker container"
@@ -39,8 +39,12 @@ $docker_name = "qutecoacoustics/workbench-client";
 $docker_release_tag = [string]::Format("{0}:{1}", $docker_name, $release_tag);
 $docker_version_tag = [string]::Format("{0}:{1}", $docker_name, $version.DockerTag);
 
+Write-Output $($version.DescribeVersion)
+
 exec {
   docker build `
+    --no-cache `
+    --progress plain `
     -t "$docker_release_tag" `
     -t "$docker_version_tag" `
     . `
@@ -48,10 +52,11 @@ exec {
     --build-arg WORKBENCH_CLIENT_VERSION="$($version.DescribeVersion)"
 }
 
+
 Write-Output "Push docker image"
 exec { docker push "$docker_release_tag" }
 exec { docker push "$docker_version_tag" }
 
 # push tag to github
-Write-Output "Push git tag"
-git push origin --follow-tags "$git_tag_name"
+# Write-Output "Push git tag"
+# git push origin --follow-tags "$git_tag_name"
