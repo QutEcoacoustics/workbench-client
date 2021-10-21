@@ -6,7 +6,8 @@
     "tsconfig.base.json": "*",
     ".eslintrc.json": "*",
     ".eslintignore.json": "*",
-    "nx.json": "*"
+    "nx.json": "*",
+    "src/environments/environment.ts": "*"
   },
   "projects": {
     "workbench-client": {

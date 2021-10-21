@@ -39,8 +39,6 @@ $docker_name = "qutecoacoustics/workbench-client";
 $docker_release_tag = [string]::Format("{0}:{1}", $docker_name, $release_tag);
 $docker_version_tag = [string]::Format("{0}:{1}", $docker_name, $version.DockerTag);
 
-Write-Output $($version.DescribeVersion)
-
 exec {
   docker build `
     --no-cache `
@@ -52,11 +50,10 @@ exec {
     --build-arg WORKBENCH_CLIENT_VERSION="$($version.DescribeVersion)"
 }
 
-
 Write-Output "Push docker image"
 exec { docker push "$docker_release_tag" }
 exec { docker push "$docker_version_tag" }
 
-# push tag to github
+# # push tag to github
 # Write-Output "Push git tag"
 # git push origin --follow-tags "$git_tag_name"

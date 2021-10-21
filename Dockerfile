@@ -10,7 +10,7 @@ RUN mkdir -p  /home/node/workbench-client
 WORKDIR /home/node/workbench-client
 
 # copy deps specification first
-COPY --chown=node package*.json ./
+COPY --chown=node package*.json decorate-angular-cli.js nx.json ./
 
 # install deps
 RUN npm ci \
