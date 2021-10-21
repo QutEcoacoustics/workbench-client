@@ -23,16 +23,10 @@ RUN npm ci \
 # Great for dev work.
 COPY --chown=node ./ ./
 
-RUN cat ./src/environments/environment.prod.ts
-
 # change environment version
 RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./src/environments/environment*.ts
 
-RUN cat ./src/environments/environment.prod.ts
-
 RUN npm run build:ssr
-
-RUN cat dist/workbench-client/browser/main-*.js | grep -o  version:.....................
 
 
 
