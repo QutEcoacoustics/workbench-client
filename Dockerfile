@@ -1,4 +1,4 @@
-FROM node:current-alpine as BUILD_IMAGE
+FROM node:14-alpine as BUILD_IMAGE
 
 ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION
@@ -6,11 +6,11 @@ ARG WORKBENCH_CLIENT_VERSION
 # drop privileges
 USER node
 
-RUN mkdir -p  /home/node/workbench-client
+RUN mkdir -p /home/node/workbench-client
 WORKDIR /home/node/workbench-client
 
 # copy deps specification first
-COPY --chown=node package*.json decorate-angular-cli.js nx.json ./
+COPY --chown=node package*.json ./
 
 # install deps
 RUN npm ci \
@@ -24,13 +24,13 @@ RUN npm ci \
 COPY --chown=node ./ ./
 
 # change environment version
-RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./src/environments/environment.prod.ts
+RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./src/environments/environment*.ts
 
 RUN npm run build:ssr
 
 
 
-FROM node:current-alpine
+FROM node:14-alpine
 
 WORKDIR /home/node/workbench-client
 
