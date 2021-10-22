@@ -55,8 +55,6 @@ COPY --from=BUILD_IMAGE /home/node/workbench-client/package.json ./package.json
 
 EXPOSE 4000
 
-RUN cat dist/workbench-client/browser/main-*.js | grep -o  version:.....................
-
 #   pre-rendering doesn't appear to work at the moment due to our config setup
 #   && npm run prerender
 CMD [ "npm", "run", "serve:ssr"]

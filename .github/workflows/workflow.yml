@@ -155,38 +155,14 @@ jobs:
       - name: Checkout LFS objects
         run: git lfs checkout
 
-      - name: Install dependencies
-        run: sudo apt install pngcheck
-
       - name: Build container
         run: docker build -t qutecoacoustics/workbench-client .
 
       - name: Run docker container
         run: docker run -d -p 4000:4000 -v "$(pwd)/src/assets/environment.json:/environment.json" qutecoacoustics/workbench-client
 
-      - name: Retrieve home page
-        run: wget localhost:4000
-
-      - name: Validate title
-        run: grep -o "<title>&lt;&lt;brandName&gt;&gt;</title>" index.html
-
-      - name: Validate routing
-        run: grep -o "<\/router-outlet><baw-home.*<\/baw-home>" index.html
-
-      - name: Retrieve not found page
-        run: wget localhost:4000/broken.html
-
-      - name: Validate not found page
-        run: grep -o "<h1>Not Found</h1>" broken.html
-
-      - name: Retrieve LFS file from assets
-        run: wget localhost:4000/assets/images/project/project_span4.png
-
-      - name: Validate LFS asset is instantiated
-        run: grep -o -v "git-lfs" project_span4.png
-
-      - name: Validate PNG asset is uncorrupted
-        run: pngcheck project_span4.png
+      - name: Run SSR tests
+        run: ./scripts/ssr-tests.sh
 
   build:
     runs-on: ubuntu-latest
@@ -239,39 +215,6 @@ jobs:
           files: artifacts/**/TESTS-*.xml
           test_changes_limit: 0
           deduplicate_classes_by_file_name: true
-
-  test-publish:
-    name: "Test Publish Docker Container"
-    runs-on: "ubuntu-latest"
-    # cancel any other CI attempting to publish to docker
-    concurrency:
-      group: publish-container
-      cancel-in-progress: true
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          lfs: true
-          fetch-depth: 50
-
-      # fetch more tag info so git_version.ps1 works properly
-      - name: Ensure tags are fetched
-        # Retrieve annotated tags.
-        run: git fetch --tags --force
-
-      - name: Checkout LFS objects
-        run: git lfs checkout
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-
-      - name: Build and push Docker image
-        shell: pwsh
-        run: ./scripts/build_docker.ps1 -github_actor '${{ github.actor }}' -release_tag 'test'
-
 
   publish:
     name: "Publish Docker Container"

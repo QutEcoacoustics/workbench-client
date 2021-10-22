@@ -31,7 +31,7 @@ if (Test-CI) {
 }
 $git_tag_name = $version.Version
 $git_tag_message = [string]::Format("Build {0}", $version.DescribeVersion);
-# exec { git tag -a "$git_tag_name" -m "$git_tag_message" }
+exec { git tag -a "$git_tag_name" -m "$git_tag_message" }
 
 # docker containing and push to docker hub
 Write-Output "Build docker container"
@@ -41,8 +41,6 @@ $docker_version_tag = [string]::Format("{0}:{1}", $docker_name, $version.DockerT
 
 exec {
   docker build `
-    --no-cache `
-    --progress plain `
     -t "$docker_release_tag" `
     -t "$docker_version_tag" `
     . `
@@ -54,6 +52,6 @@ Write-Output "Push docker image"
 exec { docker push "$docker_release_tag" }
 exec { docker push "$docker_version_tag" }
 
-# # push tag to github
-# Write-Output "Push git tag"
-# git push origin --follow-tags "$git_tag_name"
+# push tag to github
+Write-Output "Push git tag"
+git push origin --follow-tags "$git_tag_name"
