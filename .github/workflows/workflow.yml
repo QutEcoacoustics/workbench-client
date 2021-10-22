@@ -162,7 +162,7 @@ jobs:
         run: docker run -d -p 4000:4000 -v "$(pwd)/src/assets/environment.json:/environment.json" qutecoacoustics/workbench-client
 
       - name: Run SSR tests
-        run: ./scripts/ssr-tests.sh
+        run: chmod ugo+x ./script/ssr-tests.sh && ./scripts/ssr-tests.sh
 
   build:
     runs-on: ubuntu-latest
