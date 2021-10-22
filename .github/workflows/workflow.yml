@@ -163,6 +163,7 @@ jobs:
         run: docker run -d -p 4000:4000 -v "$(pwd)/src/assets/environment.json:/environment.json" qutecoacoustics/workbench-client
 
       - name: Run SSR tests
+        shell: pwsh
         run: ./scripts/ssr-tests.ps1
 
   build:
