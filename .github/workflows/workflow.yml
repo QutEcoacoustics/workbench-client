@@ -148,7 +148,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Workbench Client
+        uses: actions/checkout@v2
         with:
           lfs: true
 
@@ -162,13 +163,14 @@ jobs:
         run: docker run -d -p 4000:4000 -v "$(pwd)/src/assets/environment.json:/environment.json" qutecoacoustics/workbench-client
 
       - name: Run SSR tests
-        run: chmod ugo+x ./script/ssr-tests.sh && ./scripts/ssr-tests.sh
+        run: chmod ugo+x ./scripts/ssr-tests.sh && ./scripts/ssr-tests.sh
 
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Workbench Client
+        uses: actions/checkout@v2
         with:
           lfs: true
 
@@ -231,7 +233,8 @@ jobs:
       (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tag'))
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Workbench Client
+        uses: actions/checkout@v2
         with:
           lfs: true
           fetch-depth: 50
