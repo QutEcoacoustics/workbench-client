@@ -157,13 +157,17 @@ jobs:
         run: git lfs checkout
 
       - name: Build container
-        run: docker build -t qutecoacoustics/workbench-client .
+        run: docker build \
+          -t qutecoacoustics/workbench-client \
+          . \
+          --build-arg GIT_COMMIT="a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0" \
+          --build-arg WORKBENCH_CLIENT_VERSION="70.1.1+test.a0a0a0a0"
 
       - name: Run docker container
         run: docker run -d -p 4000:4000 -v "$(pwd)/src/assets/environment.json:/environment.json" qutecoacoustics/workbench-client
 
       - name: Run SSR tests
-        run: chmod ugo+x ./scripts/ssr-tests.sh && ./scripts/ssr-tests.sh
+        run: ./scripts/ssr-tests.ps1
 
   build:
     runs-on: ubuntu-latest
