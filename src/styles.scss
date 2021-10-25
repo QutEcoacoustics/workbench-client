@@ -49,13 +49,6 @@ body {
   color: #333;
 }
 
-// Creates blue pill shaped anchor links. Used heavily by the navigation system. Should be
-// replaced by the button class eventually.
-.nav-pills > li > a {
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
 // Creates formatting for code examples
 pre {
   background-color: #f5f5f5;

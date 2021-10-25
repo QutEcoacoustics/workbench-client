@@ -1,7 +1,8 @@
 button {
+  border: 0px;
+  color: black;
   font-size: 0.85rem;
   width: 100%;
-  border: 0px;
 
   span {
     color: black;
@@ -10,6 +11,11 @@ button {
   &:hover,
   &:focus {
     background-color: var(--baw-highlight-lighter);
+    color: var(--baw-highlight-lighter-contrast);
+
+    span {
+      color: var(--baw-highlight-lighter-contrast);
+    }
   }
 }
 
