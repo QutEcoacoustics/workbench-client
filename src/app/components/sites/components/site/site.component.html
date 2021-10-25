@@ -3,11 +3,13 @@
 <h3 *ngIf="region" class="text-muted">Site: {{ region.name }}</h3>
 <h1>{{ site.name }}</h1>
 
-<div class="row">
+<div class="row mb-3">
   <div class="col-sm-4">
-    <div class="thumbnail">
-      <img [src]="site.image" [alt]="site.name + ' image'" />
-    </div>
+    <img
+      class="img-thumbnail mx-auto d-block"
+      [src]="site.image"
+      [alt]="site.name + ' image'"
+    />
   </div>
   <div class="col-sm-8">
     <p
