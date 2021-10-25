@@ -22,15 +22,6 @@ img {
   height: auto;
 }
 
-.nav > li > a:hover {
-  text-decoration: none;
-  background-color: #eee;
-  &.active {
-    text-decoration: none;
-    background-color: #007bff;
-  }
-}
-
 #points {
   padding-top: 5px;
   padding-bottom: 8px;

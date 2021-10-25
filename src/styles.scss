@@ -29,17 +29,32 @@ body {
   padding: 0px;
 }
 
-.disabled {
-  cursor: not-allowed;
-  opacity: 0.75;
+/* BACKWARDS COMPATIBILITY WITH BAW-CLIENT */
+
+.rounded-link-default {
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
 
   &:hover,
   &:focus {
-    background-color: unset !important;
+    background-color: #eee;
+  }
+
+  &.active {
+    color: var(--baw-highlight-contrast);
+    background-color: var(--baw-highlight);
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+
+    &:hover,
+    &:focus {
+      background-color: unset !important;
+    }
   }
 }
-
-/* BACKWARDS COMPATIBILITY */
 
 // Create a grey coloured bootstrap button. This is used by the selectable-items component
 // to create standard looking buttons.

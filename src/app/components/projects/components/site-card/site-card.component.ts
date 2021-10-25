@@ -33,7 +33,7 @@ import { takeUntil } from "rxjs/operators";
           <li class="nav-item">
             <a
               id="details"
-              class="nav-link rounded"
+              class="nav-link rounded-link-default"
               [bawUrl]="model.getViewUrl(project)"
             >
               <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
@@ -45,7 +45,7 @@ import { takeUntil } from "rxjs/operators";
             <a
               *ngIf="recording"
               id="play"
-              class="nav-link rounded"
+              class="nav-link rounded-link-default"
               [bawUrl]="recording?.viewUrl"
             >
               <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
@@ -55,7 +55,7 @@ import { takeUntil } from "rxjs/operators";
             <a
               *ngIf="recording === null"
               id="no-audio"
-              class="nav-link rounded disabled"
+              class="nav-link disabled rounded-link-default"
             >
               <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
               No Audio
@@ -69,7 +69,7 @@ import { takeUntil } from "rxjs/operators";
           <li class="nav-item">
             <a
               id="visualize"
-              class="nav-link rounded"
+              class="nav-link rounded-link-default"
               [bawUrl]="model.visualizeUrl"
             >
               <fa-icon [icon]="['fas', 'eye']"></fa-icon>
