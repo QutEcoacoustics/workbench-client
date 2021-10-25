@@ -15,7 +15,7 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
   selector: "baw-menu-button",
   template: `
     <button
-      class="btn text-start"
+      class="btn ps-3 py-2 rounded text-start"
       (click)="link.action()"
       [disabled]="link.disabled"
       [class.disabled]="link.disabled"
