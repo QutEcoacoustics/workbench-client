@@ -46,11 +46,13 @@ const regionKey = "region";
         {{ region.name }}
       </h1>
 
-      <div class="row">
+      <div class="row mb-3">
         <div class="col-sm-4">
-          <div class="thumbnail">
-            <img [src]="region.image" [alt]="region.name + ' image'" />
-          </div>
+          <img
+            class="img-thumbnail mx-auto d-block "
+            [src]="region.image"
+            [alt]="region.name + ' image'"
+          />
         </div>
         <div class="col-sm-8">
           <p

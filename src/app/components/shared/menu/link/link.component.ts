@@ -28,7 +28,7 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
       <ng-container *ngIf="isInternalLink; else external">
         <!-- Internal Link -->
         <a
-          class="nav-link"
+          class="nav-link ps-3 py-2 rounded"
           strongRouteActive="active"
           [strongRoute]="internalLink.route"
           [strongRouteActiveOptions]="{ exact: true }"
@@ -40,7 +40,11 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
       </ng-container>
       <ng-template #external>
         <!-- External Link -->
-        <a class="nav-link" [href]="href" [class.disabled]="link.disabled">
+        <a
+          class="nav-link ps-3 py-2 rounded"
+          [href]="href"
+          [class.disabled]="link.disabled"
+        >
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
         </a>
       </ng-template>

@@ -2,12 +2,18 @@
   <!-- Username -->
   <h1>{{ user.userName }}</h1>
 
-  <div class="row">
+  <div class="row mb-3">
     <!-- Left aligned content -->
     <div class="col-sm-4">
       <!-- User profile picture and details -->
-      <div class="thumbnail">
-        <img [alt]="user.userName + ' profile image'" [src]="user.image" />
+      <img
+        class="img-thumbnail mx-auto d-block"
+        [alt]="user.userName + ' profile image'"
+        [src]="user.image"
+      />
+
+      <div class="card mt-3">
+        <div class="card-header">Statistics</div>
         <div class="caption">
           <!-- Last time user was seen -->
           <p id="last-seen-at">
@@ -23,7 +29,7 @@
       </div>
 
       <!-- Download annotations (Disabled in third person) -->
-      <div id="annotations-link" class="row" *ngIf="!thirdPerson">
+      <div id="annotations-link" class="row mt-3" *ngIf="!thirdPerson">
         <div class="col-sm-12 pb-3">
           <div class="card">
             <!-- Header -->

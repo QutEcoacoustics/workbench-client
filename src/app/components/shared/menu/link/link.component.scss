@@ -1,14 +1,16 @@
 .nav-link {
   color: black;
-  padding: 0.5rem 0.25rem 0.5rem 0.75rem;
+  font-size: 0.85rem;
 
   &:hover,
   &:focus {
     background-color: var(--baw-highlight-lighter);
+    color: var(--baw-highlight-lighter-contrast);
   }
 
   &.active {
     background-color: var(--baw-highlight);
+    color: var(--baw-highlight-contrast);
   }
 
   .icon {

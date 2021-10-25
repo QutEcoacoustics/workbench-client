@@ -43,11 +43,13 @@ const projectKey = "project";
   template: `
     <ng-container *ngIf="project">
       <h1>{{ project.name }}</h1>
-      <div class="row">
+      <div class="row mb-3">
         <div class="col-sm-4">
-          <div class="thumbnail">
-            <img [src]="project.image" [alt]="project.name + ' image'" />
-          </div>
+          <img
+            class="img-thumbnail mx-auto d-block"
+            [src]="project.image"
+            [alt]="project.name + ' image'"
+          />
         </div>
         <div class="col-sm-8">
           <p
