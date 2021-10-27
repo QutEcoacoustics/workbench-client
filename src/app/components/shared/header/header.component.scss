@@ -2,34 +2,10 @@ nav {
   background-color: var(--baw-header);
 }
 
-.nav-item {
-  cursor: pointer;
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
-}
-
-fa-icon {
-  margin-right: 0.5rem;
-}
-
-.icon-wrapper {
-  display: inline-flex;
-  width: 1.25rem;
-  justify-content: center;
-}
-
 #login-widget {
   img {
     padding: -10px 5px;
     width: 26px;
     height: 26px;
   }
-}
-
-.btn-link {
-  border: 0px;
 }

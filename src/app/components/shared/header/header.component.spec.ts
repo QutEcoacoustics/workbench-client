@@ -194,7 +194,7 @@ describe("HeaderComponent", () => {
           setUser(isLoggedIn, defaultUser);
           spec.detectChanges();
 
-          const link = spec.query<HTMLElement>("#login-header-link");
+          const link = spec.query<HTMLElement>("#logIn-header-link");
 
           if (links.login) {
             assertStrongRouteLink(link, loginMenuItem.route.toRouterLink());
@@ -269,7 +269,7 @@ describe("HeaderComponent", () => {
           setUser(isLoggedIn, defaultUser);
           spec.detectChanges();
 
-          const settings = spec.query<HTMLElement>("#admin-settings");
+          const settings = spec.query<HTMLElement>("#adminHome-header-link");
 
           if (links.admin) {
             expect(settings).toBeTruthy();
