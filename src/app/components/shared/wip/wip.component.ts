@@ -12,24 +12,30 @@ import { ConfigService } from "@services/config/config.service";
 @Component({
   selector: "baw-wip",
   template: `
-    <p class="h1 text-warning text-center">Work In Progress</p>
-    <div class="wrapper" [ngbTooltip]="tooltip">
-      <ng-content></ng-content>
-    </div>
+    <ng-container *ngIf="!production">
+      <p class="h1 text-warning text-center">Work In Progress</p>
+      <div class="wip-wrapper">
+        <ng-content></ng-content>
+      </div>
+    </ng-container>
   `,
-  styleUrls: ["./wip.component.scss"],
+  styles: [
+    `
+      .wip-wrapper {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+    `,
+  ],
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WIPComponent implements OnInit {
-  public tooltip: string;
+  public production: boolean;
 
   public constructor(private config: ConfigService) {}
 
   public ngOnInit() {
-    this.tooltip = this.config.config.production
-      ? "This feature is currently not functional."
-      : null;
+    this.production = this.config.config.production;
   }
 }

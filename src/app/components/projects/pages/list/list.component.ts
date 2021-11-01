@@ -29,8 +29,6 @@ export const projectsMenuItemActions = [
         (filter)="onFilter($event)"
       ></baw-debounce-input>
 
-      <baw-loading *ngIf="loading"></baw-loading>
-
       <ng-container *ngIf="!loading">
         <!-- Projects Exist -->
         <ng-container *ngIf="cardList.size > 0; else empty">

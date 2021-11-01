@@ -1,6 +1,10 @@
 import { NgModule } from "@angular/core";
-import { ServerModule } from "@angular/platform-server";
+import {
+  ServerModule,
+  ServerTransferStateModule,
+} from "@angular/platform-server";
 import { BawTimeoutModule } from "@services/timeout/timeout.module";
+import { environment } from "src/environments/environment";
 import { AppComponent } from "./app.component";
 import { AppModule } from "./app.module";
 
@@ -8,8 +12,9 @@ import { AppModule } from "./app.module";
   imports: [
     AppModule,
     ServerModule,
-    // Http request maximum timeout with 100ms limit
-    BawTimeoutModule.forRoot({ timeout: 100 }),
+    ServerTransferStateModule,
+    // Timeout API requests after set period
+    BawTimeoutModule.forRoot({ timeout: environment.ssrTimeout }),
   ],
   bootstrap: [AppComponent],
 })

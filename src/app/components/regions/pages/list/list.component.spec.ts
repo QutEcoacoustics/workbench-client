@@ -17,7 +17,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateRegion } from "@test/fakes/Region";
 import { nStepObservable } from "@test/helpers/general";
-import { assertErrorHandler, assertSpinner } from "@test/helpers/html";
+import { assertErrorHandler } from "@test/helpers/html";
 import { Subject } from "rxjs";
 import { ListComponent } from "./list.component";
 
@@ -86,16 +86,6 @@ describe("RegionsListComponent", () => {
   it("should handle failed regions model", async () => {
     await handleApiRequest(generateApiErrorDetails());
     assertErrorHandler(spec.fixture, true);
-  });
-
-  it("should display loading animation during request", async () => {
-    handleApiRequest([]);
-    assertSpinner(spec.fixture, true);
-  });
-
-  it("should clear loading animation on response", async () => {
-    await handleApiRequest([]);
-    assertSpinner(spec.fixture, false);
   });
 
   describe("regions", () => {
