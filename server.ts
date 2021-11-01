@@ -4,8 +4,8 @@
  * the application bundle downloads.
  */
 
-import "zone.js/node";
 import "reflect-metadata";
+import "zone.js/node";
 
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
@@ -18,7 +18,6 @@ import { ngExpressEngine } from "@nguniversal/express-engine";
 import { assetRoot } from "@services/config/config.service";
 import express from "express";
 import { environment } from "src/environments/environment";
-import * as compressionModule from "compression";
 import { AppServerModule } from "./src/main.server";
 
 // The Express app is exported so that it can be used by serverless Functions.
@@ -50,9 +49,6 @@ export function app(path: string): express.Express {
       providers: [apiConfig],
     })
   );
-
-  // Gzip static assets
-  server.use(compressionModule());
 
   server.set("view engine", "html");
   server.set("views", distFolder);
