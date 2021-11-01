@@ -11,6 +11,7 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
 import { OrderedSet } from "immutable";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 export const notFoundImage: ImageUrl = {
   url: `${assetRoot}/images/404.png`,
@@ -47,6 +48,7 @@ export class AuthenticatedImageDirective implements OnChanges {
 
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
+    @Inject(IS_SERVER_PLATFORM) private isSsr: boolean,
     private securityApi: SecurityService,
     private imageRef: ElementRef<HTMLImageElement>
   ) {}
@@ -60,17 +62,21 @@ export class AuthenticatedImageDirective implements OnChanges {
 
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
-      this.imageEl.classList.add("loading-image");
-
       this.imageEl.onerror = () => {
         // Prevent overriding of 'this'
         this.errorHandler();
       };
 
+      if (this.isSsr) {
+        return;
+      }
+
+      const classes = { loading: "loading-image", loaded: "loaded-image" };
+      this.imageEl.classList.add(classes.loading);
       this.imageEl.onload = () => {
         // Prevent overriding of 'this'
-        this.imageEl.classList.remove("loading-image");
-        this.imageEl.classList.add("loaded-image");
+        this.imageEl.classList.remove(classes.loading);
+        this.imageEl.classList.add(classes.loaded);
       };
     }
 
