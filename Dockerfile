@@ -44,6 +44,10 @@ LABEL maintainer="Charles Alleman <alleman@qut.edu.au>" \
   ref=${GIT_COMMIT} \
   schema-version="1.0"
 
+# Add ability to make https wget requests
+RUN apk upgrade libssl1.0 --update-cache && \
+    apk add wget ca-certificates
+
 # drop privileges
 USER node
 

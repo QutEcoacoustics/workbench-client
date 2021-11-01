@@ -160,19 +160,6 @@ describe("BawClientComponent", () => {
           "is running the most up to date version."
       );
     });
-
-    it("should initially display loading animation", () => {
-      spec.detectChanges();
-      assertSpinner(spec.fixture, true);
-    });
-
-    it("should clear loading animation when content loads", async () => {
-      preventLoadingBawClient();
-      spec.detectChanges();
-      postMessage(JSON.stringify({ height: modelData.datatype.number() }));
-      spec.detectChanges();
-      assertSpinner(spec.fixture, false);
-    });
   });
 
   describe("old-client", () => {

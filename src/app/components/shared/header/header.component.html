@@ -19,13 +19,14 @@
       <!-- Left aligned navigation links -->
       <ul class="navbar-nav me-auto">
         <ng-container *ngFor="let header of headers">
-          <ng-container *ngIf="!isNavigableMenuItem(header)">
-            <baw-header-dropdown [links]="header"></baw-header-dropdown>
-          </ng-container>
-
-          <ng-container *ngIf="isNavigableMenuItem(header)">
-            <baw-header-item [link]="header"></baw-header-item>
-          </ng-container>
+          <baw-header-dropdown
+            *ngIf="!isNavigableMenuItem(header)"
+            [links]="header"
+          ></baw-header-dropdown>
+          <baw-header-item
+            *ngIf="isNavigableMenuItem(header)"
+            [link]="header"
+          ></baw-header-item>
         </ng-container>
       </ul>
 
@@ -43,40 +44,24 @@
 <div style="height: 3.5rem"></div>
 
 <ng-template #guestTemplate>
-  <!-- Register Link -->
-  <li class="nav-item">
-    <a
-      id="register-header-link"
-      class="nav-link"
-      strongRouteActive="active"
-      [strongRoute]="routes.register.route"
-      [innerText]="routes.register.label"
-    ></a>
-  </li>
-  <!-- Login link-->
-  <li class="nav-item">
-    <a
-      id="login-header-link"
-      class="nav-link"
-      strongRouteActive="active"
-      [strongRoute]="routes.login.route"
-      [innerText]="routes.login.label"
-    ></a>
-  </li>
+  <baw-header-item
+    *ngFor="let menuItem of [routes.register, routes.login]"
+    [link]="menuItem"
+  ></baw-header-item>
 </ng-template>
 
 <ng-template #userTemplate>
-  <!-- Admin dashboard link -->
-  <li *ngIf="user.isAdmin" class="nav-item">
-    <a
-      id="admin-settings"
-      class="nav-link"
-      strongRouteActive="active"
-      [strongRoute]="routes.admin.route"
-    >
-      <fa-icon [icon]="routes.admin.icon"></fa-icon>
-    </a>
-  </li>
+  <!-- Admin toolbox -->
+  <a
+    *ngIf="user.isAdmin"
+    id="admin-header-link"
+    class="nav-link"
+    strongRouteActive="active"
+    [strongRoute]="routes.admin.route"
+  >
+    <fa-icon [icon]="routes.admin.icon"></fa-icon>
+  </a>
+
   <!-- Profile photo -->
   <li class="nav-item">
     <a
@@ -86,7 +71,7 @@
       [bawUrl]="user.viewUrl"
     >
       <span [innerText]="user.userName"></span>
-      <div class="image-wrapper d-inline-block bg-light ms-2">
+      <div class="d-inline-block bg-light ms-1">
         <img alt="Profile Icon" [src]="user.image" />
       </div>
     </a>
@@ -95,7 +80,7 @@
   <li class="nav-item">
     <button
       id="logout-header-link"
-      class="nav-link btn btn-link"
+      class="nav-link btn btn-link border-0"
       (click)="logout()"
     >
       Logout

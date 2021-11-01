@@ -27,17 +27,16 @@ const projectKey = "project";
 @Component({
   selector: "baw-project-edit",
   template: `
-    <!-- Move ngIf to baw-form when baw-wip removed -->
-    <baw-wip *ngIf="!failure">
-      <baw-form
-        [title]="title"
-        [model]="model"
-        [fields]="fields"
-        [submitLoading]="loading"
-        submitLabel="Submit"
-        (onSubmit)="submit($event)"
-      ></baw-form>
-    </baw-wip>
+    <!-- TODO Image input #608 -->
+    <baw-form
+      *ngIf="!failure"
+      [title]="title"
+      [model]="model"
+      [fields]="fields"
+      [submitLoading]="loading"
+      submitLabel="Submit"
+      (onSubmit)="submit($event)"
+    ></baw-form>
   `,
 })
 class EditComponent extends FormTemplate<Project> implements OnInit {

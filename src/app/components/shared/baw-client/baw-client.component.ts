@@ -17,8 +17,6 @@ import { filter, takeUntil } from "rxjs/operators";
 @Component({
   selector: "baw-client",
   template: `
-    <baw-loading *ngIf="loading"></baw-loading>
-
     <iframe *ngIf="url" #content [src]="url">
       <!-- This warning only shows on browsers which don't support iframes -->
       <p>

@@ -18,6 +18,7 @@ import {
 } from "@test/helpers/html";
 import { HeaderItemComponent } from "./header-item.component";
 
+// TODO Add tests to validate ng-content is respected
 describe("HeaderItemComponent", () => {
   let defaultUri: string;
   let defaultLink: MenuLink;
@@ -52,33 +53,37 @@ describe("HeaderItemComponent", () => {
     });
   });
 
-  it("should handle internal link", () => {
-    setup(defaultRoute);
-    spec.detectChanges();
-    expect(getLink()).toContainText(defaultRoute.label);
+  describe("internal routes", () => {
+    beforeEach(() => {
+      setup(defaultRoute);
+      spec.detectChanges();
+    });
+
+    it("should render with label", () => {
+      expect(getLink()).toContainText(defaultRoute.label);
+    });
+
+    it("should have router link", () => {
+      assertStrongRouteLink(getLink(), defaultRoute.route.toRouterLink());
+    });
+
+    it("should have router link active attribute", () => {
+      assertStrongRouteActive(getLink());
+    });
   });
 
-  it("internal link should have router link", () => {
-    setup(defaultRoute);
-    spec.detectChanges();
-    assertStrongRouteLink(getLink(), defaultRoute.route.toRouterLink());
-  });
+  describe("external links", () => {
+    beforeEach(() => {
+      setup(defaultLink);
+      spec.detectChanges();
+    });
 
-  it("internal link should have router link active attribute", () => {
-    setup(defaultRoute);
-    spec.detectChanges();
-    assertStrongRouteActive(getLink());
-  });
+    it("should render external link with label", () => {
+      expect(getLink()).toContainText(defaultLink.label);
+    });
 
-  it("should handle external link", () => {
-    setup(defaultLink);
-    spec.detectChanges();
-    expect(getLink()).toContainText(defaultLink.label);
-  });
-
-  it("external link should have href", () => {
-    setup(defaultLink);
-    spec.detectChanges();
-    assertHref(getLink(), defaultLink.uri());
+    it("external link should have href", () => {
+      assertHref(getLink(), defaultLink.uri());
+    });
   });
 });
