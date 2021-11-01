@@ -33,7 +33,6 @@ export class ErrorHandlerComponent {
   };
 
   public getTitle() {
-    const message = this.titles[this.error.status];
-    return !message ? "Unknown Error" : message;
+    return this.titles[this.error.status] ?? "Unknown Error";
   }
 }

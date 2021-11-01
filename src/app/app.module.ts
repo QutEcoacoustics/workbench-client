@@ -15,9 +15,11 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
 import { AppConfigModule } from "@services/config/config.module";
+import { RehydrationModule } from "@services/rehydration/rehydration.module";
 import { BawTimeoutModule } from "@services/timeout/timeout.module";
 import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { ToastrModule } from "ngx-toastr";
+import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { toastrRoot } from "./app.helper";
@@ -78,19 +80,22 @@ export const appImports = [
   declarations: [AppComponent],
   imports: [
     BrowserModule.withServerTransition({ appId: "workbench-client" }),
-    // Http request maximum timeout with 10 second limit
-    BawTimeoutModule.forRoot({ timeout: 10_000 }),
+    // Timeout API requests after set period
+    BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
     AppRoutingModule,
     HttpClientModule,
     AppConfigModule,
     BawApiModule,
+    // Rehydrate data from SSR. This must be set after BawApiModule so that the
+    // interceptor runs after the API interceptor
+    RehydrationModule,
     GuardModule,
     ...appLibraryImports,
     ...appImports,
   ],
   providers: [
     // Show loading animation after 3 seconds
-    { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 3_000 } },
+    { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
   ],
   entryComponents: [AppComponent, PermissionsShieldComponent],
   exports: [],

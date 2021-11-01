@@ -31,6 +31,8 @@ jobs:
                   "apiRoot": "https://staging.ecosounds.org",
                   "siteRoot": "http://development.ecosounds.org:4200",
                   "siteDir": "/assets/old-client/",
+                  "parentRoot": "http://development.ecosounds.org:4200",
+                  "parentDir": "/",
                   "ga": { "trackingId": "" }
                 }
               },

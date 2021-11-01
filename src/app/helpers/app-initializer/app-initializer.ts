@@ -80,7 +80,16 @@ export interface Keys {
  */
 export interface Configuration {
   kind: "Configuration";
+  /** Is the current environment running in production mode */
   production: boolean;
+  /** Timeout for web requests in server side renderer */
+  ssrTimeout: number;
+  /** Timeout for web requests in browser */
+  browserTimeout: number;
+  /**
+   * Current build version of this code. This is set by the docker container
+   * and should not be modified without care
+   */
   version: string;
   endpoints: Endpoints;
   keys: Keys;

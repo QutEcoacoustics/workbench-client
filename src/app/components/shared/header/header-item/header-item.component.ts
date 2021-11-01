@@ -1,11 +1,18 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import { ActivatedRoute, Params } from "@angular/router";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import {
   getRoute,
-  isExternalLink,
   isInternalRoute,
+  MenuRoute,
   NavigableMenuItem,
 } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
+import camelCase from "just-camel-case";
 
 /**
  * Header Item Component.
@@ -14,35 +21,54 @@ import {
 @Component({
   selector: "baw-header-item",
   template: `
-    <li class="nav-item" *ngIf="link">
+    <ng-template #linkContents>
+      <ng-container>{{ link.label }}</ng-container>
+    </ng-template>
+
+    <ng-template #internalRoute>
       <a
-        *ngIf="isInternalRoute(link)"
         class="nav-link"
         strongRouteActive="active"
-        [strongRoute]="link.route"
+        [id]="label + '-header-link'"
+        [strongRoute]="strongRoute"
       >
-        {{ link.label }}
+        <ng-container *ngTemplateOutlet="linkContents"></ng-container>
       </a>
-      <a
-        *ngIf="isExternalLink(link)"
-        class="nav-link"
-        [href]="getRoute(link, params)"
-      >
-        {{ link.label }}
+    </ng-template>
+
+    <ng-template #externalLink>
+      <a class="nav-link" [id]="label + '-header-link'" [href]="href">
+        <ng-container *ngTemplateOutlet="linkContents"></ng-container>
       </a>
+    </ng-template>
+
+    <li class="nav-item">
+      <ng-container
+        *ngIf="hasStrongRoute; else externalLink"
+        [ngTemplateOutlet]="internalRoute"
+      ></ng-container>
     </li>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderItemComponent {
+export class HeaderItemComponent implements OnInit {
   @Input() public link: NavigableMenuItem;
-  public params: Params;
 
-  public isInternalRoute = isInternalRoute;
-  public isExternalLink = isExternalLink;
-  public getRoute = getRoute;
+  public hasStrongRoute: boolean;
+  public label: string;
 
-  public constructor(private route: ActivatedRoute) {
-    this.params = this.route.snapshot.params;
+  public constructor(private route: ActivatedRoute) {}
+
+  public ngOnInit(): void {
+    this.label = camelCase(this.link.label);
+    this.hasStrongRoute = isInternalRoute(this.link);
+  }
+
+  public get strongRoute(): StrongRoute {
+    return (this.link as MenuRoute).route;
+  }
+
+  public get href(): string {
+    return getRoute(this.link, this.route.snapshot.params);
   }
 }

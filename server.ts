@@ -4,8 +4,8 @@
  * the application bundle downloads.
  */
 
-import "zone.js/node";
 import "reflect-metadata";
+import "zone.js/node";
 
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
@@ -52,6 +52,15 @@ export function app(path: string): express.Express {
 
   server.set("view engine", "html");
   server.set("views", distFolder);
+
+  /*
+   * This allows us to reduce the chances of click-jacking by ensuring that the
+   * site cannot be embedded into another site
+   */
+  server.get("*", (_, res, next) => {
+    res.setHeader("X-Frame-Options", "SAMEORIGIN");
+    next();
+  });
 
   // special case rendering our settings file - we already have it loaded
   server.get(`${assetRoot}/environment.json`, (request, response) => {
