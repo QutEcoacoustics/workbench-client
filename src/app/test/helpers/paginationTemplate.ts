@@ -3,7 +3,6 @@ import { AbstractModel } from "@models/AbstractModel";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { Spectator } from "@ngneat/spectator";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
-import { LoadingComponent } from "@shared/loading/loading.component";
 
 export function assertPaginationTemplate<
   M extends AbstractModel,
@@ -37,24 +36,6 @@ export function assertPaginationTemplate<
         filter.filter.next("Custom Filter");
         spectator.detectChanges();
         expect(spy).toHaveBeenCalled();
-      });
-    });
-
-    describe("loading spinner", () => {
-      function getSpinner() {
-        return spectator.query(LoadingComponent);
-      }
-
-      it("should display when page is loading", () => {
-        spectator.component.loading = true;
-        spectator.detectChanges();
-        expect(getSpinner()).toBeTruthy();
-      });
-
-      it("should not display when page has loaded", () => {
-        spectator.component.loading = false;
-        spectator.detectChanges();
-        expect(getSpinner()).toBeFalsy();
       });
     });
 
