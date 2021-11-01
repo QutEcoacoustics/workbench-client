@@ -15,6 +15,7 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
 import { AppConfigModule } from "@services/config/config.module";
+import { RehydrationModule } from "@services/rehydration/rehydration.module";
 import { BawTimeoutModule } from "@services/timeout/timeout.module";
 import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { ToastrModule } from "ngx-toastr";
@@ -80,6 +81,8 @@ export const appImports = [
   imports: [
     // Rehydrate client with data from SSR
     BrowserModule.withServerTransition({ appId: "workbench-client" }),
+    // Rehydrate data from SSR
+    RehydrationModule,
     // Timeout API requests after set period
     BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
     AppRoutingModule,

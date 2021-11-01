@@ -18,6 +18,7 @@ import { ngExpressEngine } from "@nguniversal/express-engine";
 import { assetRoot } from "@services/config/config.service";
 import express from "express";
 import { environment } from "src/environments/environment";
+import * as compressionModule from "compression";
 import { AppServerModule } from "./src/main.server";
 
 // The Express app is exported so that it can be used by serverless Functions.
@@ -50,8 +51,20 @@ export function app(path: string): express.Express {
     })
   );
 
+  // Gzip static assets
+  server.use(compressionModule());
+
   server.set("view engine", "html");
   server.set("views", distFolder);
+
+  /*
+   * This allows us to reduce the chances of click-jacking by ensuring that the
+   * site cannot be embedded into another site
+   */
+  server.get("*", (_, res, next) => {
+    res.setHeader("X-Frame-Options", "SAMEORIGIN");
+    next();
+  });
 
   // special case rendering our settings file - we already have it loaded
   server.get(`${assetRoot}/environment.json`, (request, response) => {
