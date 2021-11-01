@@ -67,10 +67,6 @@ export class AuthenticatedImageDirective implements OnChanges {
         this.errorHandler();
       };
 
-      if (this.isSsr) {
-        return;
-      }
-
       const classes = { loading: "loading-image", loaded: "loaded-image" };
       this.imageEl.classList.add(classes.loading);
       this.imageEl.onload = () => {

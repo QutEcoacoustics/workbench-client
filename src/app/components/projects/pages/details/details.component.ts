@@ -74,8 +74,6 @@ const projectKey = "project";
         (filter)="onFilter($event)"
       ></baw-debounce-input>
 
-      <baw-loading *ngIf="loading"></baw-loading>
-
       <p *ngIf="!hasSites && !hasRegions && !loading" class="lead">
         No additional data to display here, try adding sites to the project
       </p>

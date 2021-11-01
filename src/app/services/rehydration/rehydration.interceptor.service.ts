@@ -63,7 +63,8 @@ export class RehydrationInterceptorService implements HttpInterceptor {
     // Try reusing transferred response from server
     const cachedResponse = this.transferState.get(key, null);
 
-    if (!cachedResponse) {
+    // If no cached value, or the user is authed, let the original request go through
+    if (!cachedResponse || req.headers.has("Authorization")) {
       return next.handle(req);
     }
 

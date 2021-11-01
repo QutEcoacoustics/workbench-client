@@ -81,21 +81,21 @@ export const appImports = [
   imports: [
     // Rehydrate client with data from SSR
     BrowserModule.withServerTransition({ appId: "workbench-client" }),
-    // Rehydrate data from SSR
-    RehydrationModule,
     // Timeout API requests after set period
     BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
     AppRoutingModule,
     HttpClientModule,
     AppConfigModule,
     BawApiModule,
+    // Rehydrate data from SSR. This must be set after BawApiModule
+    RehydrationModule,
     GuardModule,
     ...appLibraryImports,
     ...appImports,
   ],
   providers: [
     // Show loading animation after 3 seconds
-    { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 3_000 } },
+    { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 500 } },
   ],
   entryComponents: [AppComponent, PermissionsShieldComponent],
   exports: [],
