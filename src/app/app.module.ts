@@ -79,7 +79,6 @@ export const appImports = [
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    // Rehydrate client with data from SSR
     BrowserModule.withServerTransition({ appId: "workbench-client" }),
     // Timeout API requests after set period
     BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
