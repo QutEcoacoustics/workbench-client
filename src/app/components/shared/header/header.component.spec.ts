@@ -269,7 +269,7 @@ describe("HeaderComponent", () => {
           setUser(isLoggedIn, defaultUser);
           spec.detectChanges();
 
-          const settings = spec.query<HTMLElement>("#adminHome-header-link");
+          const settings = spec.query<HTMLElement>("#admin-header-link");
 
           if (links.admin) {
             expect(settings).toBeTruthy();

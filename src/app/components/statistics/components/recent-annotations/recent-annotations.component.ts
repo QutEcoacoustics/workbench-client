@@ -78,9 +78,9 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
           ></baw-loading>
 
           <ng-template #noTags>
-            <span *ngIf="value.tags.length === 0" class="badge bg-highlight">
+            <ng-container *ngIf="value.tags.length === 0">
               (none)
-            </span>
+            </ng-container>
           </ng-template>
         </ng-template>
       </ngx-datatable-column>

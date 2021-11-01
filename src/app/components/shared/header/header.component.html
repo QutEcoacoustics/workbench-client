@@ -51,9 +51,16 @@
 </ng-template>
 
 <ng-template #userTemplate>
-  <baw-header-item *ngIf="user.isAdmin" [link]="routes.admin">
+  <!-- Admin toolbox -->
+  <a
+    *ngIf="user.isAdmin"
+    id="admin-header-link"
+    class="nav-link"
+    strongRouteActive="active"
+    [strongRoute]="routes.admin.route"
+  >
     <fa-icon [icon]="routes.admin.icon"></fa-icon>
-  </baw-header-item>
+  </a>
 
   <!-- Profile photo -->
   <li class="nav-item">
