@@ -18,6 +18,7 @@ import { AppConfigModule } from "@services/config/config.module";
 import { BawTimeoutModule } from "@services/timeout/timeout.module";
 import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { ToastrModule } from "ngx-toastr";
+import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { toastrRoot } from "./app.helper";
@@ -77,9 +78,10 @@ export const appImports = [
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    // Rehydrate client with data from SSR
     BrowserModule.withServerTransition({ appId: "workbench-client" }),
-    // Http request maximum timeout with 10 second limit
-    BawTimeoutModule.forRoot({ timeout: 10_000 }),
+    // Timeout API requests after set period
+    BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
     AppRoutingModule,
     HttpClientModule,
     AppConfigModule,
