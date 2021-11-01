@@ -68,12 +68,14 @@ export class AuthenticatedImageDirective implements OnChanges {
       };
 
       const classes = { loading: "loading-image", loaded: "loaded-image" };
-      this.imageEl.classList.add(classes.loading);
       this.imageEl.onload = () => {
         // Prevent overriding of 'this'
         this.imageEl.classList.remove(classes.loading);
         this.imageEl.classList.add(classes.loaded);
       };
+
+      // Treat image as loaded for ssr
+      this.imageEl.classList.add(this.isSsr ? classes.loaded : classes.loading);
     }
 
     // Update images if src changes

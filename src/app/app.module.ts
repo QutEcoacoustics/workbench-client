@@ -87,7 +87,8 @@ export const appImports = [
     HttpClientModule,
     AppConfigModule,
     BawApiModule,
-    // Rehydrate data from SSR. This must be set after BawApiModule
+    // Rehydrate data from SSR. This must be set after BawApiModule so that the
+    // interceptor runs after the API interceptor
     RehydrationModule,
     GuardModule,
     ...appLibraryImports,
@@ -95,7 +96,7 @@ export const appImports = [
   ],
   providers: [
     // Show loading animation after 3 seconds
-    { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 500 } },
+    { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
   ],
   entryComponents: [AppComponent, PermissionsShieldComponent],
   exports: [],
