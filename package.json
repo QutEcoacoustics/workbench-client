@@ -37,7 +37,7 @@
     "@angular/google-maps": "^12.2.11",
     "@angular/localize": "^12.2.10",
     "@angular/platform-browser": "^12.2.12",
-    "@angular/platform-browser-dynamic": "^12.2.11",
+    "@angular/platform-browser-dynamic": "^12.2.12",
     "@angular/platform-server": "^12.2.10",
     "@angular/router": "^12.2.11",
     "@fortawesome/angular-fontawesome": "^0.9.0",
