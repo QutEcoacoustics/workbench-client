@@ -5,7 +5,7 @@ export function generateProject(data?: Partial<IProject>): Required<IProject> {
   return {
     id: modelData.id(),
     name: modelData.param(),
-    imageUrl: modelData.imageUrl(),
+    imageUrls: modelData.imageUrl(),
     accessLevel: modelData.accessLevel(),
     ownerIds: modelData.ids(),
     siteIds: modelData.ids(),

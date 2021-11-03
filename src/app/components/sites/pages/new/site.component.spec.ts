@@ -63,7 +63,7 @@ describe("SiteNewComponent", () => {
       {
         testGroup: "Site Image Input",
         field: fields[9],
-        key: "imageUrl",
+        key: "imageUrls",
         type: "image",
         label: "Image",
       },
