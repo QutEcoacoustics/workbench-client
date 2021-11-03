@@ -38,7 +38,7 @@ import type { User } from "./User";
 export interface ISite extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
-  imageUrl?: string;
+  imageUrls?: string;
   locationObfuscated?: boolean;
   projectIds?: Ids | Id[];
   regionId?: Id;
@@ -60,9 +60,9 @@ export class Site extends AbstractModel<ISite> implements ISite {
   @bawPersistAttr()
   public readonly name?: Param;
   @bawPersistAttr()
-  public readonly imageUrl?: string;
+  public readonly imageUrls?: string;
   @bawImage<ISite>(`${assetRoot}/images/site/site_span4.png`, {
-    key: "imageUrl",
+    key: "imageUrls",
   })
   public readonly image: ImageUrl[];
   @bawPersistAttr()

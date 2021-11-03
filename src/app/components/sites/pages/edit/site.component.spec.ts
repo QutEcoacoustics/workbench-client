@@ -63,7 +63,7 @@ describe("SiteEditComponent", () => {
       {
         testGroup: "Site Image Input",
         field: fields[9],
-        key: "imageUrl",
+        key: "imageUrls",
         type: "image",
         label: "Image",
       },

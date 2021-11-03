@@ -162,7 +162,7 @@ describe("SiteComponent", () => {
     });
 
     it("should display default site image", () => {
-      const site = new Site(generateSite({ imageUrl: undefined }));
+      const site = new Site(generateSite({ imageUrls: undefined }));
       setup(defaultProject, site);
       interceptEventsRequest();
       interceptRecordingsRequest();
@@ -183,7 +183,7 @@ describe("SiteComponent", () => {
       spec.detectChanges();
 
       const image = spec.query<HTMLImageElement>("img");
-      assertImage(image, defaultSite.imageUrl, `${defaultSite.name} image`);
+      assertImage(image, defaultSite.imageUrls, `${defaultSite.name} image`);
     });
 
     it("should display default description if model has none", () => {

@@ -75,7 +75,7 @@
       }
     },
     {
-      "key": "imageUrl",
+      "key": "imageUrls",
       "type": "image",
       "templateOptions": {
         "label": "Image",

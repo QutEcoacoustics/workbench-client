@@ -97,7 +97,7 @@ describe("SiteCardComponent", () => {
     }
 
     it("should display site image", () => {
-      const site = new Site(generateSite({ imageUrl: undefined }));
+      const site = new Site(generateSite({ imageUrls: undefined }));
       setup(true, site);
       spec.detectChanges();
 
@@ -111,7 +111,7 @@ describe("SiteCardComponent", () => {
     it("should display custom site image", () => {
       setup(true);
       spec.detectChanges();
-      assertImage(getImage(), defaultSite.imageUrl, `${defaultSite.name} alt`);
+      assertImage(getImage(), defaultSite.imageUrls, `${defaultSite.name} alt`);
     });
 
     it("should navigate user to site when clicking site image", () => {
