@@ -5,7 +5,9 @@ import {
   isApiErrorDetails,
 } from "@baw-api/api.interceptor.service";
 import { Filters } from "@baw-api/baw-api.service";
+import { ResolvedModel } from "@baw-api/resolver-common";
 import { Errorable } from "@helpers/advancedTypes";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { SpyObject } from "@ngneat/spectator";
 import { Subject } from "rxjs";
@@ -205,4 +207,18 @@ export function getCallArgs(spy: jasmine.Spy) {
 
 export function assertOk(): void {
   expect(true).toBeTrue();
+}
+
+export function generatePageInfo(
+  ...models: ResolvedModel[]
+): Partial<IPageInfo> {
+  const data: Partial<IPageInfo> = { resolvers: {} };
+
+  models.forEach((model, index) => {
+    const key = "model" + index;
+    data.resolvers[key] = "resolver";
+    data[key] = model;
+  });
+
+  return data;
 }

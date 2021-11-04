@@ -1,12 +1,7 @@
-.loading-image {
+.square-image {
   aspect-ratio: 1/1;
-  background-color: rgb(237, 237, 237);
-  color: rgb(237, 237, 237);
+  display: inline-block;
+  // Hide alt text
   font-size: 0px;
   text-decoration: none;
-}
-
-.loaded-image {
-  aspect-ratio: 1/1;
-  background-color: unset;
 }

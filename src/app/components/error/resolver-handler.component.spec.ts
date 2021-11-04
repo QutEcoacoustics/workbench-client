@@ -1,11 +1,11 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
-import { ResolvedModel } from "@baw-api/resolver-common";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generatePageInfo } from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
 import { ResolverHandlerComponent } from "./resolver-handler.component";
 
@@ -33,18 +33,6 @@ describe("ResolverHandlerComponent", () => {
     }
   }
 
-  function generateData(...models: ResolvedModel[]): Partial<IPageInfo> {
-    const data: Partial<IPageInfo> = { resolvers: {} };
-
-    models.forEach((model, index) => {
-      const key = "model" + index;
-      data.resolvers[key] = "resolver";
-      data[key] = model;
-    });
-
-    return data;
-  }
-
   describe("handleResolvers", () => {
     it("should handle undefined resolvers", () => {
       setup({ resolvers: undefined });
@@ -53,14 +41,14 @@ describe("ResolverHandlerComponent", () => {
     });
 
     it("should not display if single passing resolver", () => {
-      setup(generateData({ model: new MockModel({}) }));
+      setup(generatePageInfo({ model: new MockModel({}) }));
       spec.detectChanges();
       assertErrorHandler();
     });
 
     it("should not display if multiple passing resolvers", () => {
       setup(
-        generateData(
+        generatePageInfo(
           { model: new MockModel({}) },
           { model: new MockModel({}) },
           { model: new MockModel({}) }
@@ -72,14 +60,14 @@ describe("ResolverHandlerComponent", () => {
 
     it("should display error if single failing resolver", () => {
       const error = generateApiErrorDetails();
-      setup(generateData({ error }));
+      setup(generatePageInfo({ error }));
       spec.detectChanges();
       assertErrorHandler(error);
     });
 
     it("should display error if multiple failing resolvers", () => {
       const error = generateApiErrorDetails();
-      setup(generateData({ error }, { error }, { error }));
+      setup(generatePageInfo({ error }, { error }, { error }));
       spec.detectChanges();
       assertErrorHandler(error);
     });
@@ -88,7 +76,7 @@ describe("ResolverHandlerComponent", () => {
       const unauthorized = generateApiErrorDetails("Unauthorized");
       const notFound = generateApiErrorDetails("Not Found");
       setup(
-        generateData(
+        generatePageInfo(
           { error: notFound },
           { error: unauthorized },
           { error: notFound }
@@ -101,7 +89,7 @@ describe("ResolverHandlerComponent", () => {
     it("should display error if mixed passing and failing resolvers", () => {
       const error = generateApiErrorDetails();
       setup(
-        generateData(
+        generatePageInfo(
           { model: new MockModel({}) },
           { error },
           { model: new MockModel({}) }
@@ -114,10 +102,10 @@ describe("ResolverHandlerComponent", () => {
 
   describe("route data", () => {
     it("should clear error if new route data does not contain resolver failure", () => {
-      setup(generateData({ error: generateApiErrorDetails() }));
+      setup(generatePageInfo({ error: generateApiErrorDetails() }));
       spec.detectChanges();
       spec.triggerNavigation({
-        data: generateData({ model: new MockModel({}) }),
+        data: generatePageInfo({ model: new MockModel({}) }),
       });
       spec.detectChanges();
       assertErrorHandler();
@@ -125,9 +113,9 @@ describe("ResolverHandlerComponent", () => {
 
     it("should display error if new route data contains resolver failure", () => {
       const error = generateApiErrorDetails();
-      setup(generateData({ model: new MockModel({}) }));
+      setup(generatePageInfo({ model: new MockModel({}) }));
       spec.detectChanges();
-      spec.triggerNavigation({ data: generateData({ error }) });
+      spec.triggerNavigation({ data: generatePageInfo({ error }) });
       spec.detectChanges();
       assertErrorHandler(error);
     });

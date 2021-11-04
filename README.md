@@ -48,18 +48,18 @@ Then open a web browser to `http://localhost:4000`.
 
 This website can be customised through the environment file located at `./src/assets/environment.json` (note: look at the docker section for deploying environment files). Here is a list of settings and some example values:
 
-Parameter | Description | Example Value
-----------|-------------|--------------
-`endpoints.environment` | The environment for this instance. Currently used only for informational purposes. | `development`<br>`staging`<br>`production`
-`endpoints.apiRoot` | Any API requests made from the app will use this value for its base and append routes to it | `https://ecosounds.org`<br>`https://ecosounds.org:3000`<br>`https://ecosounds.org/api`
-`endpoints.clientOrigin` | This is the [origin](https://html.spec.whatwg.org/multipage/origin.html#concept-origin) of where the website will be hosted | `https://ecosounds.org`<br>`https://ecosounds.org:3000`
-`endpoints.clientDir` | This is the directory on the `clientOrigin` which the website is hosted | `/website`<br>`/web/angular`
-`keys.googleMaps` | Google maps API key | Check googles official setup guide
-`keys.googleAnalytics` | Google analytics domain and tracking ID | Check googles official setup guide
-`settings.brand.short` | This changes the logo branding of the website | `Ecosounds`
-`settings.brand.long` | This changes the full length name of the website | `Ecosounds - Acoustic Workbench`
-`settings.links` | This is a list of external links used throughout the website. Check the template for the list of modifiable links |
-`settings.customMenu` | This is a list of custom menu items which changes the contents of the header with instance specific links. Check the template for examples |
+| Parameter                | Description                                                                                                                                | Example Value                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| `endpoints.environment`  | The environment for this instance. Currently used only for informational purposes.                                                         | `development`<br>`staging`<br>`production`                                             |
+| `endpoints.apiRoot`      | Any API requests made from the app will use this value for its base and append routes to it                                                | `https://ecosounds.org`<br>`https://ecosounds.org:3000`<br>`https://ecosounds.org/api` |
+| `endpoints.clientOrigin` | This is the [origin](https://html.spec.whatwg.org/multipage/origin.html#concept-origin) of where the website will be hosted                | `https://ecosounds.org`<br>`https://ecosounds.org:3000`                                |
+| `endpoints.clientDir`    | This is the directory on the `clientOrigin` which the website is hosted                                                                    | `/website`<br>`/web/angular`                                                           |
+| `keys.googleMaps`        | Google maps API key                                                                                                                        | Check googles official setup guide                                                     |
+| `keys.googleAnalytics`   | Google analytics domain and tracking ID                                                                                                    | Check googles official setup guide                                                     |
+| `settings.brand.short`   | This changes the logo branding of the website                                                                                              | `Ecosounds`                                                                            |
+| `settings.brand.long`    | This changes the full length name of the website                                                                                           | `Ecosounds - Acoustic Workbench`                                                       |
+| `settings.links`         | This is a list of external links used throughout the website. Check the template for the list of modifiable links                          |
+| `settings.customMenu`    | This is a list of custom menu items which changes the contents of the header with instance specific links. Check the template for examples |
 
 ### Access the ng tool
 
