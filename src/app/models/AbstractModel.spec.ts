@@ -11,8 +11,8 @@ describe("AbstractModel", () => {
       class MockModel extends AbstractModel {
         public constructor(modelData: any, _injector: any) {
           super(modelData, _injector);
-          this[AbstractModel.createAttributesKey] = opts?.create ?? [];
-          this[AbstractModel.updateAttributesKey] = opts?.update ?? [];
+          this[AbstractModel.keys.create.jsonAttributes] = opts?.create ?? [];
+          this[AbstractModel.keys.update.jsonAttributes] = opts?.update ?? [];
         }
 
         public get viewUrl(): string {

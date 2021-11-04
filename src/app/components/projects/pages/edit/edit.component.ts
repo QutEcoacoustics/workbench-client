@@ -66,6 +66,9 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
   }
 
   protected apiAction(model: Partial<Project>) {
+    console.log(model);
+    console.log(new Project(model));
+
     return this.api.update(new Project(model));
   }
 }

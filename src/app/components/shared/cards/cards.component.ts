@@ -35,7 +35,7 @@ export class CardsComponent {
  */
 export interface Card {
   title: string;
-  model: AbstractModel & { image: ImageUrl[] };
+  model: AbstractModel & { images: ImageUrl[] };
   description?: string;
   route: string;
 }

@@ -28,7 +28,7 @@ import { DateTime } from "luxon";
           <ng-template #userImage>
             <img
               class="rounded"
-              [src]="user.image"
+              [src]="user.images"
               [alt]="user.userName + ' profile picture'"
             />
           </ng-template>

@@ -24,6 +24,7 @@ import { asFormControl } from "./helper";
           class="form-control"
           [formControl]="asFormControl(formControl)"
           [formlyAttributes]="field"
+          (ngModelChange)="readFile()"
         />
       </div>
     </div>
@@ -31,4 +32,12 @@ import { asFormControl } from "./helper";
 })
 export class ImageInputComponent extends FieldType {
   public asFormControl = asFormControl;
+  public readFile(): void {
+    // File input returns a list of files, grab the first file and set it as
+    // the value of this field
+    const imageFiles = this.formControl.value;
+    if (imageFiles instanceof FileList && imageFiles.length > 0) {
+      this.formControl.setValue(imageFiles.item(0));
+    }
+  }
 }

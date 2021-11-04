@@ -7,6 +7,7 @@ import type { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
+import { mergeMap } from "rxjs/operators";
 import {
   emptyParam,
   filterParam,
@@ -58,10 +59,21 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
     return this.apiShow(endpoint(project, model, emptyParam));
   }
   public create(model: Site, project: IdOr<Project>): Observable<Site> {
-    return this.apiCreate(endpoint(project, emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(project, emptyParam, emptyParam),
+      model
+    ).pipe(
+      mergeMap((site) =>
+        this.apiUpdateMultipart(endpoint(project, site, emptyParam), model)
+      )
+    );
   }
   public update(model: Site, project: IdOr<Project>): Observable<Site> {
-    return this.apiUpdate(endpoint(project, model, emptyParam), model);
+    return this.apiUpdate(endpoint(project, model, emptyParam), model).pipe(
+      mergeMap(() =>
+        this.apiUpdateMultipart(endpoint(project, model, emptyParam), model)
+      )
+    );
   }
   public destroy(
     model: IdOr<Site>,
@@ -139,10 +151,18 @@ export class ShallowSitesService extends StandardApi<Site> {
     return this.apiShow(endpointShallow(model, emptyParam));
   }
   public create(model: Site): Observable<Site> {
-    return this.apiCreate(endpointShallow(emptyParam, emptyParam), model);
+    return this.apiCreate(endpointShallow(emptyParam, emptyParam), model).pipe(
+      mergeMap((site) =>
+        this.apiUpdateMultipart(endpointShallow(site, emptyParam), model)
+      )
+    );
   }
   public update(model: Site): Observable<Site> {
-    return this.apiUpdate(endpointShallow(model, emptyParam), model);
+    return this.apiUpdate(endpointShallow(model, emptyParam), model).pipe(
+      mergeMap(() =>
+        this.apiUpdateMultipart(endpointShallow(model, emptyParam), model)
+      )
+    );
   }
   public destroy(model: IdOr<Site>): Observable<Site | void> {
     return this.apiDestroy(endpointShallow(model, emptyParam));

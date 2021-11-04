@@ -24,17 +24,17 @@ class BaseModel extends AbstractModel {
 
 describe("Attribute Decorators", () => {
   function assertCreateAttributes(model: AbstractModel, keys: string[]) {
-    expect(model[AbstractModel.createAttributesKey]).toEqual(keys);
+    expect(model[AbstractModel.keys.create.jsonAttributes]).toEqual(keys);
   }
 
   function assertUpdateAttributes(model: AbstractModel, keys: string[]) {
-    expect(model[AbstractModel.updateAttributesKey]).toEqual(keys);
+    expect(model[AbstractModel.keys.update.jsonAttributes]).toEqual(keys);
   }
 
   describe("BawPersistAttr", () => {
     it("should append key to model create attributes", () => {
       class MockModel extends BaseModel {
-        @bawPersistAttr({ create: true })
+        @bawPersistAttr({ create: { json: true } })
         public readonly name: string;
       }
 
@@ -45,7 +45,7 @@ describe("Attribute Decorators", () => {
 
     it("should append key to model update attributes", () => {
       class MockModel extends BaseModel {
-        @bawPersistAttr({ update: true })
+        @bawPersistAttr({ update: { json: true } })
         public readonly name: string;
       }
 
@@ -56,9 +56,9 @@ describe("Attribute Decorators", () => {
 
     it("should append multiple keys to model create attributes", () => {
       class MockModel extends BaseModel {
-        @bawPersistAttr({ create: true })
+        @bawPersistAttr({ create: { json: true } })
         public readonly name: string;
-        @bawPersistAttr({ create: true })
+        @bawPersistAttr({ create: { json: true } })
         public readonly value: number;
       }
 
@@ -69,9 +69,9 @@ describe("Attribute Decorators", () => {
 
     it("should append multiple keys to model update attributes", () => {
       class MockModel extends BaseModel {
-        @bawPersistAttr({ update: true })
+        @bawPersistAttr({ update: { json: true } })
         public readonly name: string;
-        @bawPersistAttr({ update: true })
+        @bawPersistAttr({ update: { json: true } })
         public readonly value: number;
       }
 
@@ -118,13 +118,13 @@ describe("Attribute Decorators", () => {
     });
 
     function createModel(
-      data?: { image?: ImageUrl[] | string; imageUrls?: ImageUrl[] },
+      data?: { images?: ImageUrl[] | string; imageUrls?: ImageUrl[] },
       opts?: BawDecoratorOptions<any>,
       injector?: Injector
     ) {
       class MockModel extends BaseModel {
         @bawImage(defaultImageUrl.url, opts)
-        public readonly image: ImageUrl[];
+        public readonly images: ImageUrl[];
         public readonly imageUrls: ImageUrl[];
 
         public override toString() {
@@ -136,15 +136,18 @@ describe("Attribute Decorators", () => {
     }
 
     it("should handle persist option", () => {
-      const model = createModel({ image: defaultImageUrls }, { persist: true });
+      const model = createModel(
+        { images: defaultImageUrls },
+        { persist: true }
+      );
       assertCreateAttributes(model, ["image"]);
       assertUpdateAttributes(model, ["image"]);
     });
 
     it("should handle persist on create option", () => {
       const model = createModel(
-        { image: defaultImageUrls },
-        { persist: { create: true } }
+        { images: defaultImageUrls },
+        { persist: { create: { json: true } } }
       );
       assertCreateAttributes(model, ["image"]);
       assertUpdateAttributes(model, []);
@@ -152,8 +155,8 @@ describe("Attribute Decorators", () => {
 
     it("should handle persist on update option", () => {
       const model = createModel(
-        { image: defaultImageUrls },
-        { persist: { update: true } }
+        { images: defaultImageUrls },
+        { persist: { update: { json: true } } }
       );
       assertCreateAttributes(model, []);
       assertUpdateAttributes(model, ["image"]);
@@ -164,18 +167,18 @@ describe("Attribute Decorators", () => {
         { imageUrls: defaultImageUrls },
         { key: "imageUrls" }
       );
-      expect(model.image).toEqual([...defaultImageUrls, defaultImageUrl]);
+      expect(model.images).toEqual([...defaultImageUrls, defaultImageUrl]);
       expect(model.imageUrls).toEqual(defaultImageUrls);
     });
 
     it("should convert undefined", () => {
-      const model = createModel({ image: undefined });
-      expect(model.image).toEqual([defaultImageUrl]);
+      const model = createModel({ images: undefined });
+      expect(model.images).toEqual([defaultImageUrl]);
     });
 
     it("should convert null", () => {
-      const model = createModel({ image: null });
-      expect(model.image).toEqual([defaultImageUrl]);
+      const model = createModel({ images: null });
+      expect(model.images).toEqual([defaultImageUrl]);
     });
 
     it("should convert single url string", () => {
@@ -183,36 +186,36 @@ describe("Attribute Decorators", () => {
         url: modelData.imageUrl(),
         size: ImageSizes.unknown,
       };
-      const model = createModel({ image: imageUrl.url });
-      expect(model.image).toEqual([imageUrl, defaultImageUrl]);
+      const model = createModel({ images: imageUrl.url });
+      expect(model.images).toEqual([imageUrl, defaultImageUrl]);
     });
 
     it("should convert empty array", () => {
-      const model = createModel({ image: [] });
-      expect(model.image).toEqual([defaultImageUrl]);
+      const model = createModel({ images: [] });
+      expect(model.images).toEqual([defaultImageUrl]);
     });
 
     it("should convert single item array", () => {
       const imageUrls = defaultImageUrls.slice(0, 1);
-      const model = createModel({ image: imageUrls });
-      expect(model.image).toEqual([...imageUrls, defaultImageUrl]);
+      const model = createModel({ images: imageUrls });
+      expect(model.images).toEqual([...imageUrls, defaultImageUrl]);
     });
 
     it("should convert multiple items array", () => {
-      const model = createModel({ image: defaultImageUrls });
-      expect(model.image).toEqual([...defaultImageUrls, defaultImageUrl]);
+      const model = createModel({ images: defaultImageUrls });
+      expect(model.images).toEqual([...defaultImageUrls, defaultImageUrl]);
     });
 
     it("should not double append default image", () => {
       const imageUrls = [...defaultImageUrls, defaultImageUrl];
-      const model = createModel({ image: imageUrls });
-      expect(model.image).toEqual(imageUrls);
+      const model = createModel({ images: imageUrls });
+      expect(model.images).toEqual(imageUrls);
     });
 
     it("should sort array", () => {
       const imageUrls = modelData.shuffleArray(defaultImageUrls.slice());
-      const model = createModel({ image: imageUrls });
-      expect(model.image).toEqual([...defaultImageUrls, defaultImageUrl]);
+      const model = createModel({ images: imageUrls });
+      expect(model.images).toEqual([...defaultImageUrls, defaultImageUrl]);
     });
 
     describe("prepend api root", () => {
@@ -229,8 +232,8 @@ describe("Attribute Decorators", () => {
 
       it("should prepend api root to url if it starts with /", () => {
         const url = "/relative_path/image.jpg";
-        const model = createModel({ image: url }, {}, injector);
-        expect(model.image).toEqual([
+        const model = createModel({ images: url }, {}, injector);
+        expect(model.images).toEqual([
           { url: apiRoot + url, size: ImageSizes.unknown },
           defaultImageUrl,
         ]);
@@ -239,8 +242,8 @@ describe("Attribute Decorators", () => {
       it("should prepend api root to urls if they starts with /", () => {
         const url = "/relative_path/image.jpg";
         const imageUrl: ImageUrl = { url, size: ImageSizes.unknown };
-        const model = createModel({ image: [imageUrl] }, {}, injector);
-        expect(model.image).toEqual([
+        const model = createModel({ images: [imageUrl] }, {}, injector);
+        expect(model.images).toEqual([
           { url: apiRoot + url, size: ImageSizes.unknown },
           defaultImageUrl,
         ]);
@@ -271,7 +274,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on create option", () => {
       const model = createModel(
         { ids: [1, 2, 3] },
-        { persist: { create: true } }
+        { persist: { create: { json: true } } }
       );
       assertCreateAttributes(model, ["ids"]);
       assertUpdateAttributes(model, []);
@@ -280,7 +283,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on update option", () => {
       const model = createModel(
         { ids: [1, 2, 3] },
-        { persist: { update: true } }
+        { persist: { update: { json: true } } }
       );
       assertCreateAttributes(model, []);
       assertUpdateAttributes(model, ["ids"]);
@@ -355,7 +358,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on create option", () => {
       const model = createModel(
         { date: defaultDate.toISO() },
-        { persist: { create: true } }
+        { persist: { create: { json: true } } }
       );
       assertCreateAttributes(model, ["date"]);
       assertUpdateAttributes(model, []);
@@ -364,7 +367,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on update option", () => {
       const model = createModel(
         { date: defaultDate.toISO() },
-        { persist: { update: true } }
+        { persist: { update: { json: true } } }
       );
       assertCreateAttributes(model, []);
       assertUpdateAttributes(model, ["date"]);
@@ -435,7 +438,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on create option", () => {
       const model = createModel(
         { duration: defaultSeconds },
-        { persist: { create: true } }
+        { persist: { create: { json: true } } }
       );
       assertCreateAttributes(model, ["duration"]);
       assertUpdateAttributes(model, []);
@@ -444,7 +447,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on update option", () => {
       const model = createModel(
         { duration: defaultSeconds },
-        { persist: { update: true } }
+        { persist: { update: { json: true } } }
       );
       assertCreateAttributes(model, []);
       assertUpdateAttributes(model, ["duration"]);

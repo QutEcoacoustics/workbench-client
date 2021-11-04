@@ -55,7 +55,7 @@ const regionKey = "region";
         <div class="col-sm-4">
           <img
             class="img-thumbnail mx-auto d-block "
-            [src]="region.image"
+            [src]="region.images"
             [alt]="region.name + ' image'"
           />
         </div>

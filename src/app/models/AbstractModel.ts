@@ -26,26 +26,36 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    */
   public abstract get viewUrl(): string;
 
-  /**
-   * Hidden meta symbol
-   * This stores the metadata associated with the model
-   */
-  private static metaKey = Symbol("meta");
+  /** Keys for accessing hidden data associated with a model */
+  public static keys = {
+    /** This stores the metadata associated with the model */
+    meta: Symbol("meta"),
+    /**
+     * This stores the list of model attributes which are used to generate
+     * bodies for create api requests
+     */
+    create: {
+      /** Used to generate the toJSON({create: true}) output */
+      jsonAttributes: Symbol("create-json-attributes"),
+      /** Used to generate the toFormData(..., {create: true}) output */
+      multiPartAttributes: Symbol("create-multi-part-attributes"),
+    },
+    /**
+     * This stores the list of model attributes which are used to generate
+     * bodies for update api requests
+     */
+    update: {
+      /** Used to generate the toJSON({update: true}) output */
+      jsonAttributes: Symbol("update-json-attributes"),
+      /** Used to generate the toFormData(..., {update: true}) output */
+      multiPartAttributes: Symbol("update-multi-part-attributes"),
+    },
+  };
 
   /**
-   * Hidden attributes symbol.
-   * This stores the list of model attributes which are used to
-   * generate the toJSON({create: true}) output.
+   * Model type name. This should match the name set in baw-server as it may
+   * be used in multi-part requests
    */
-  public static createAttributesKey = Symbol("create-attributes");
-  /**
-   * Hidden attributes symbol.
-   * This stores the list of model attributes which are used to
-   * generate the toJSON({update: true}) output.
-   */
-  public static updateAttributesKey = Symbol("update-attributes");
-
-  /** Model type name */
   public readonly kind: string;
 
   /**
@@ -66,28 +76,34 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * Convert model to JSON
    */
   public toJSON(opts?: ModelSerializationOptions): Partial<this> {
-    const output: Partial<Writeable<this>> = {};
     let keys: string[];
     if (!opts) {
-      keys = Object.keys(this).filter((key) => key !== "injector");
+      keys = this.getModelAttributes();
     } else if (opts.create) {
-      keys = this[AbstractModel.createAttributesKey];
+      keys = this[AbstractModel.keys.create.jsonAttributes];
     } else {
-      keys = this[AbstractModel.updateAttributesKey];
+      keys = this[AbstractModel.keys.update.jsonAttributes];
+    }
+    return this.toObject(keys);
+  }
+
+  /** Convert model to FormData */
+  public toFormData(opts?: ModelSerializationOptions): FormData {
+    const output = new FormData();
+    let keys: string[];
+    if (!opts) {
+      keys = this.getModelAttributes();
+    } else if (opts.create) {
+      keys = this[AbstractModel.keys.create.multiPartAttributes];
+    } else {
+      keys = this[AbstractModel.keys.update.multiPartAttributes];
     }
 
-    keys.forEach((attribute: keyof AbstractModel) => {
-      const value = this[attribute];
-      if (value instanceof Set) {
-        output[attribute] = Array.from(value) as any;
-      } else if (value instanceof DateTime) {
-        output[attribute] = value.toISO() as any;
-      } else if (value instanceof Duration) {
-        output[attribute] = value.as("seconds") as any;
-      } else {
-        output[attribute] = this[attribute] as any;
-      }
-    });
+    const data = this.toObject(keys);
+    for (const attribute of Object.keys(data)) {
+      // Do not surround attribute name in quotes, it is not a valid input
+      output.append(`${this.kind}[${attribute}]`, data[attribute]);
+    }
     return output;
   }
 
@@ -106,12 +122,43 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * @param meta Metadata
    */
   public addMetadata(meta: Meta): void {
-    this[AbstractModel.metaKey] = meta;
+    this[AbstractModel.keys.meta] = meta;
   }
 
   /** Get hidden model metadata */
   public getMetadata(): Meta {
-    return this[AbstractModel.metaKey];
+    return this[AbstractModel.keys.meta];
+  }
+
+  /**
+   * Converts the model and a list of keys, into an object containing each key
+   * value pair
+   *
+   * @param keys List of attributes to retrieve
+   */
+  private toObject(keys: string[]): Partial<this> {
+    const output: Partial<Writeable<this>> = {};
+    keys.forEach((attribute: keyof AbstractModel) => {
+      const value = this[attribute];
+      if (value instanceof Set) {
+        output[attribute] = JSON.stringify(Array.from(value));
+      } else if (value instanceof DateTime) {
+        output[attribute] = value.toISO();
+      } else if (value instanceof Duration) {
+        output[attribute] = value.as("seconds").toLocaleString();
+      } else {
+        output[attribute] = this[attribute] as any;
+      }
+    });
+    return output;
+  }
+
+  /**
+   * Retrieves a list of all attributes associated with the model which are
+   * not the injector
+   */
+  private getModelAttributes(): string[] {
+    return Object.keys(this).filter((key) => key !== "injector");
   }
 }
 

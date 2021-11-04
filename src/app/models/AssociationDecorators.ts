@@ -132,7 +132,7 @@ function createModelDecorator<
     parent: Parent,
     params: Params
   ) => Observable<Child | Child[]>,
-  unresolvedValue: UnresolvedModel | Readonly<UnresolvedModel[]>,
+  unresolvedValue: Readonly<UnresolvedModel> | Readonly<UnresolvedModel[]>,
   failureValue: any
 ) {
   /**
@@ -149,6 +149,7 @@ function createModelDecorator<
       | Child
       | Child[]
       | UnresolvedModel
+      | Readonly<UnresolvedModel>
       | Readonly<UnresolvedModel[]>
       | Subscription
   ) {
@@ -165,7 +166,11 @@ function createModelDecorator<
    */
   function getAssociatedModel(
     parent: Parent
-  ): AbstractModel | AbstractModel[] | Readonly<AbstractModel[]> {
+  ):
+    | AbstractModel
+    | Readonly<AbstractModel>
+    | AbstractModel[]
+    | Readonly<AbstractModel[]> {
     // Check for any backing models
     const backingFieldKey = "_" + identifierKey;
     if (Object.prototype.hasOwnProperty.call(parent, backingFieldKey)) {

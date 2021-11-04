@@ -5,6 +5,7 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Project } from "@models/Project";
 import { IRegion, Region } from "@models/Region";
 import { Observable } from "rxjs";
+import { mergeMap } from "rxjs/operators";
 import {
   emptyParam,
   filterParam,
@@ -50,10 +51,21 @@ export class RegionsService extends StandardApi<Region, [IdOr<Project>]> {
     return this.apiShow(endpoint(project, model, emptyParam));
   }
   public create(model: Region, project: IdOr<Project>): Observable<Region> {
-    return this.apiCreate(endpoint(project, emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(project, emptyParam, emptyParam),
+      model
+    ).pipe(
+      mergeMap((region) =>
+        this.apiUpdateMultipart(endpoint(project, region, emptyParam), model)
+      )
+    );
   }
   public update(model: Region, project: IdOr<Project>): Observable<Region> {
-    return this.apiUpdate(endpoint(project, model, emptyParam), model);
+    return this.apiUpdate(endpoint(project, model, emptyParam), model).pipe(
+      mergeMap(() =>
+        this.apiUpdateMultipart(endpoint(project, model, emptyParam), model)
+      )
+    );
   }
   public destroy(
     model: IdOr<Region>,
@@ -87,10 +99,18 @@ export class ShallowRegionsService extends StandardApi<Region> {
     return this.apiShow(endpointShallow(model, emptyParam));
   }
   public create(model: Region): Observable<Region> {
-    return this.apiCreate(endpointShallow(emptyParam, emptyParam), model);
+    return this.apiCreate(endpointShallow(emptyParam, emptyParam), model).pipe(
+      mergeMap((region) =>
+        this.apiUpdateMultipart(endpointShallow(region, emptyParam), model)
+      )
+    );
   }
   public update(model: Region): Observable<Region> {
-    return this.apiUpdate(endpointShallow(model, emptyParam), model);
+    return this.apiUpdate(endpointShallow(model, emptyParam), model).pipe(
+      mergeMap(() =>
+        this.apiUpdateMultipart(endpointShallow(model, emptyParam), model)
+      )
+    );
   }
   public destroy(model: IdOr<Region>): Observable<Region | void> {
     return this.apiDestroy(endpointShallow(model, emptyParam));

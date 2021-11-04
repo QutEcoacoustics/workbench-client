@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, InjectionToken, Injector } from "@angular/core";
 import { KeysOfType, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
@@ -17,7 +17,14 @@ export const STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
  * Default headers for API requests, this sets responseTypes so that the interceptor
  * can change its behavior based on the type of request.
  */
-const defaultHeaders = { responseType: "json" as const };
+const defaultHeaders = {
+  responseType: "json" as const,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  headers: new HttpHeaders({
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  }),
+};
 
 /**
  * Interface with BAW Server Rest API
@@ -208,7 +215,8 @@ export class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected apiCreate(path: string, body: AbstractModel): Observable<Model> {
-    return this.httpPost(path, body.toJSON?.({ create: true }) ?? body).pipe(
+    const jsonData = body.toJSON?.({ create: true });
+    return this.httpPost(path, jsonData ?? body).pipe(
       map(this.handleSingleResponse)
     );
   }
@@ -220,9 +228,25 @@ export class BawApiService<Model extends AbstractModel> {
    * @param body Request body
    */
   protected apiUpdate(path: string, body: AbstractModel): Observable<Model> {
-    return this.httpPatch(path, body.toJSON?.({ update: true }) ?? body).pipe(
+    const jsonData = body.toJSON?.({ update: true });
+    return this.httpPatch(path, jsonData ?? body).pipe(
       map(this.handleSingleResponse)
     );
+  }
+
+  protected apiUpdateMultipart(
+    path: string,
+    body: AbstractModel
+  ): Observable<Model> {
+    const formData = body.toFormData?.({ update: true });
+    return this.http
+      .put<ApiResponse<Model>>(this.getPath(path), formData, {
+        // Do not set Content-Type for this request, otherwise web browsers wont calculate boundaries automatically
+        // https://muffinman.io/blog/uploading-files-using-fetch-multipart-form-data/
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        headers: new HttpHeaders({ Accept: "application/json" }),
+      })
+      .pipe(map(this.handleSingleResponse));
   }
 
   /**
@@ -503,8 +527,7 @@ export interface Subsets {
  */
 export type InnerFilter<T = unknown> = Combinations<T> &
   Comparisons &
-  Subsets &
-  { [P in keyof T]?: Combinations<T> & Comparisons & Subsets };
+  Subsets & { [P in keyof T]?: Combinations<T> & Comparisons & Subsets };
 
 /**
  * Filter metadata from api response

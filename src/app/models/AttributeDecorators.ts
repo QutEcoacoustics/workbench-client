@@ -1,3 +1,4 @@
+import { XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
@@ -7,34 +8,42 @@ import { AbstractModel } from "./AbstractModel";
 function persistAttr(
   model: AbstractModel,
   key: string,
-  opts: boolean | BawPersistAttributeOptions
+  opts: BawPersistAttributeOptions
 ) {
-  model[AbstractModel.createAttributesKey] ??= [];
-  model[AbstractModel.updateAttributesKey] ??= [];
+  model[AbstractModel.keys.create.jsonAttributes] ??= [];
+  model[AbstractModel.keys.update.jsonAttributes] ??= [];
+  model[AbstractModel.keys.create.multiPartAttributes] ??= [];
+  model[AbstractModel.keys.update.multiPartAttributes] ??= [];
 
   if (typeof opts === "boolean") {
     if (!opts) {
       return;
     }
-    model[AbstractModel.createAttributesKey].push(key);
-    model[AbstractModel.updateAttributesKey].push(key);
+    model[AbstractModel.keys.create.jsonAttributes].push(key);
+    model[AbstractModel.keys.update.jsonAttributes].push(key);
     return;
   }
 
   if (opts.create) {
-    model[AbstractModel.createAttributesKey].push(key);
+    if (opts.create.json) {
+      model[AbstractModel.keys.create.jsonAttributes].push(key);
+    } else if (opts.create.multiPart) {
+      model[AbstractModel.keys.create.multiPartAttributes].push(key);
+    }
   }
   if (opts.update) {
-    model[AbstractModel.updateAttributesKey].push(key);
+    if (opts.update.json) {
+      model[AbstractModel.keys.update.jsonAttributes].push(key);
+    } else if (opts.update.multiPart) {
+      model[AbstractModel.keys.update.multiPartAttributes].push(key);
+    }
   }
 }
 
 /**
  * Add key to the models attributes
  */
-export function bawPersistAttr(
-  opts: BawPersistAttributeOptions = { create: true, update: true }
-) {
+export function bawPersistAttr(opts: BawPersistAttributeOptions = true) {
   return function (model: AbstractModel, key: string) {
     persistAttr(model, key, opts);
   };
@@ -238,16 +247,22 @@ export interface BawDecoratorOptions<T> {
   /**
    * Persist key in models toJSON() method
    */
-  persist?: boolean | BawPersistAttributeOptions;
+  persist?: BawPersistAttributeOptions;
   /**
    * Override key to read field data from another field
    */
   key?: keyof T;
 }
 
-interface BawPersistAttributeOptions {
-  /** Include attribute in create requests for the model */
-  create?: boolean;
-  /** Include attribute in update requests for the model */
-  update?: boolean;
-}
+/**
+ * Persistent attribute options for abstract models. If set to true, default
+ * will be create and update set to {json: true}
+ */
+type BawPersistAttributeOptions =
+  | boolean
+  | {
+      /** Include attribute in create requests for the model */
+      create?: XOR<{ json: boolean }, { multiPart: boolean }>;
+      /** Include attribute in update requests for the model */
+      update?: XOR<{ json: boolean }, { multiPart: boolean }>;
+    };

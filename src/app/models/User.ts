@@ -85,7 +85,7 @@ export class User extends AbstractModel<IUser> implements IUser {
   @bawImage<IUser>(`${assetRoot}/images/user/user_span4.png`, {
     key: "imageUrls",
   })
-  public readonly image: ImageUrl[];
+  public readonly images: ImageUrl[];
   @bawPersistAttr()
   public readonly preferences?: any;
   public readonly isConfirmed?: boolean;
@@ -146,7 +146,8 @@ export interface ISessionUser extends IUser {
  */
 export class SessionUser
   extends AbstractModel<ISessionUser>
-  implements ISessionUser {
+  implements ISessionUser
+{
   public readonly kind = "SessionUser";
   public readonly id?: Id;
   public readonly authToken?: AuthToken;
@@ -155,7 +156,7 @@ export class SessionUser
   @bawImage<ISessionUser>(`${assetRoot}/images/user/user_span4.png`, {
     key: "imageUrls",
   })
-  public readonly image: ImageUrl[];
+  public readonly images: ImageUrl[];
   public readonly preferences?: any;
   public readonly rolesMask?: number;
   public readonly tzinfoTz?: string;

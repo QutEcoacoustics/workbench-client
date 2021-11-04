@@ -12,7 +12,7 @@ import { Card } from "../cards.component";
       <!-- Image -->
       <div class="card-image">
         <a [bawUrl]="card.route">
-          <img [alt]="card.title + ' image'" [src]="card.model.image" />
+          <img [alt]="card.title + ' image'" [src]="card.model.images" />
         </a>
       </div>
 

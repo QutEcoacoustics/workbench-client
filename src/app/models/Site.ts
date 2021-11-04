@@ -39,6 +39,7 @@ export interface ISite extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
   imageUrls?: string;
+  image?: File;
   locationObfuscated?: boolean;
   projectIds?: Ids | Id[];
   regionId?: Id;
@@ -55,16 +56,17 @@ export interface ISite extends HasAllUsers, HasDescription {
  * A site model.
  */
 export class Site extends AbstractModel<ISite> implements ISite {
-  public readonly kind = "Site";
+  public readonly kind = "site";
   public readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;
-  @bawPersistAttr()
   public readonly imageUrls?: string;
   @bawImage<ISite>(`${assetRoot}/images/site/site_span4.png`, {
     key: "imageUrls",
   })
-  public readonly image: ImageUrl[];
+  public readonly images: ImageUrl[];
+  @bawPersistAttr({ create: { multiPart: true }, update: { multiPart: true } })
+  public readonly image?: File;
   @bawPersistAttr()
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;

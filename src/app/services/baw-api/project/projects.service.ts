@@ -5,6 +5,7 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IProject, Project } from "@models/Project";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
+import { mergeMap } from "rxjs/operators";
 import {
   emptyParam,
   filterParam,
@@ -44,10 +45,18 @@ export class ProjectsService extends StandardApi<Project> {
     return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: Project): Observable<Project> {
-    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
+    return this.apiCreate(endpoint(emptyParam, emptyParam), model).pipe(
+      mergeMap((project) =>
+        this.apiUpdateMultipart(endpoint(project, emptyParam), model)
+      )
+    );
   }
   public update(model: Project): Observable<Project> {
-    return this.apiUpdate(endpoint(model, emptyParam), model);
+    return this.apiUpdate(endpoint(model, emptyParam), model).pipe(
+      mergeMap(() =>
+        this.apiUpdateMultipart(endpoint(model, emptyParam), model)
+      )
+    );
   }
   public destroy(model: IdOr<Project>): Observable<Project | void> {
     return this.apiDestroy(endpoint(model, emptyParam));

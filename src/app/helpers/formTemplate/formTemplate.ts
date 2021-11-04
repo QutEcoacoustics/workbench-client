@@ -132,6 +132,7 @@ export abstract class FormTemplate<Model extends AbstractModel>
           this.opts.redirectUser?.(model);
         },
         (err: ApiErrorDetails) => {
+          console.error(err);
           this.loading = false;
           this.notifications.error(this.opts.failureMsg(err));
         }

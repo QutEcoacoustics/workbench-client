@@ -16,9 +16,9 @@ import { CardImageComponent } from "./card-image.component";
 
 export class CardImageMockModel extends AbstractModel {
   public readonly id: Id = 1;
-  public readonly image: ImageUrl[];
+  public readonly images: ImageUrl[];
 
-  public constructor(data: { id?: Id; image: ImageUrl[] }) {
+  public constructor(data: { id?: Id; images: ImageUrl[] }) {
     super(data);
   }
 
@@ -48,7 +48,7 @@ describe("CardImageComponent", () => {
     defaultCard = {
       title: "title",
       route: defaultRoute,
-      model: new CardImageMockModel({ id: 1, image: modelData.imageUrls() }),
+      model: new CardImageMockModel({ id: 1, images: modelData.imageUrls() }),
     };
   });
 
@@ -72,7 +72,7 @@ describe("CardImageComponent", () => {
     spectator.setInput("card", {
       ...defaultCard,
       title: "custom title",
-      model: new CardImageMockModel({ image: modelData.imageUrls(baseUrl) }),
+      model: new CardImageMockModel({ images: modelData.imageUrls(baseUrl) }),
     });
 
     const image = spectator.query<HTMLImageElement>("img");
@@ -88,7 +88,7 @@ describe("CardImageComponent", () => {
     spectator.setInput("card", {
       ...defaultCard,
       title: "custom title",
-      model: new CardImageMockModel({ image: modelData.imageUrls(baseUrl) }),
+      model: new CardImageMockModel({ images: modelData.imageUrls(baseUrl) }),
     });
 
     const image = spectator.query<HTMLImageElement>("img");

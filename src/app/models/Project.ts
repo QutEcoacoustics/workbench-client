@@ -33,6 +33,7 @@ export interface IProject extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
   imageUrls?: string;
+  image?: File;
   accessLevel?: AccessLevel;
   ownerIds?: Ids | Id[];
   siteIds?: Ids | Id[];
@@ -44,7 +45,7 @@ export interface IProject extends HasAllUsers, HasDescription {
  * A project model.
  */
 export class Project extends AbstractModel<IProject> implements IProject {
-  public readonly kind = "Project";
+  public readonly kind = "project";
   public readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;
@@ -56,7 +57,9 @@ export class Project extends AbstractModel<IProject> implements IProject {
   @bawImage<IProject>(`${assetRoot}/images/project/project_span4.png`, {
     key: "imageUrls",
   })
-  public readonly image: ImageUrl[];
+  public readonly images: ImageUrl[];
+  @bawPersistAttr({ create: { multiPart: true }, update: { multiPart: true } })
+  public readonly image?: File;
   public readonly accessLevel?: AccessLevel;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
