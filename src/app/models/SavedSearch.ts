@@ -21,8 +21,9 @@ export interface ISavedSearch extends HasCreatorAndDeleter, HasDescription {
 
 export class SavedSearch
   extends AbstractModel<ISavedSearch>
-  implements ISavedSearch {
-  public readonly kind = "Saved Search";
+  implements ISavedSearch
+{
+  public readonly kind = "saved_search";
   public readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;

@@ -73,7 +73,7 @@ export class User extends AbstractModel<IUser> implements IUser {
     });
   }
 
-  public readonly kind = "User";
+  public readonly kind = "user";
   public readonly id?: Id;
   public readonly email?: string;
   @bawPersistAttr()
@@ -148,7 +148,7 @@ export class SessionUser
   extends AbstractModel<ISessionUser>
   implements ISessionUser
 {
-  public readonly kind = "SessionUser";
+  public readonly kind = "session_user";
   public readonly id?: Id;
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;
