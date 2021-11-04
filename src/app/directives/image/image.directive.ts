@@ -60,19 +60,9 @@ export class AuthenticatedImageDirective implements OnChanges {
 
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
-      this.imageEl.onerror = () => {
-        // Prevent overriding of 'this'
-        this.errorHandler();
-      };
-
-      const classes = { loading: "loading-image", loaded: "loaded-image" };
-      this.imageEl.onload = () => {
-        // Prevent overriding of 'this'
-        this.imageEl.classList.remove(classes.loading);
-        this.imageEl.classList.add(classes.loaded);
-      };
-
-      this.imageEl.classList.add(classes.loading);
+      this.imageEl.classList.add("square-image");
+      // Prevent overriding of 'this'
+      this.imageEl.onerror = () => this.errorHandler();
     }
 
     // Update images if src changes
