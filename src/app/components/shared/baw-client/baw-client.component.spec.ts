@@ -93,14 +93,23 @@ describe("BawClientComponent", () => {
     }
   });
 
+  describe("ssr", () => {
+    it("should hide iframe if running on ssr", () => {
+      setup();
+      spec.component.isSsr = true;
+      spec.detectChanges();
+      expect(getIframe()).toBeFalsy();
+    });
+  });
+
   describe("resolver handling", () => {
-    it("should disable iframe if resolver errors occurred", () => {
+    it("should hide iframe if resolver errors occurred", () => {
       setup(generatePageInfo({ error: generateApiErrorDetailsV2() }));
       spec.detectChanges();
       expect(getIframe()).toBeFalsy();
     });
 
-    it("should not disabled iframe if resolver successfully resolves models", () => {
+    it("should not hide iframe if resolver successfully resolves models", () => {
       setup(generatePageInfo({ model: new MockModel({ id: 1 }) }));
       spec.detectChanges();
       expect(getIframe()).toBeTruthy();

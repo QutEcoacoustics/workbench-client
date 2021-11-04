@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  Inject,
   Input,
   OnInit,
   ViewChild,
@@ -14,12 +15,13 @@ import { PageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "@services/config/config.service";
 import { filter, takeUntil } from "rxjs/operators";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 //TODO: OLD-CLIENT REMOVE
 @Component({
   selector: "baw-client",
   template: `
-    <iframe *ngIf="url && !error" #content [src]="url">
+    <iframe #content *ngIf="url" [src]="url">
       <!-- This warning only shows on browsers which don't support iframes -->
       <p>
         Unfortunately your browser does not support iframes. Please ensure you
@@ -69,6 +71,7 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
   }
 
   public constructor(
+    @Inject(IS_SERVER_PLATFORM) public isSsr: boolean,
     private config: ConfigService,
     private router: Router,
     private route: ActivatedRoute,
@@ -81,8 +84,9 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
     const data = this.route.snapshot.data;
     const models = retrieveResolvers(data as PageInfo);
 
-    if (!models) {
-      this.error = true;
+    // Don't load client on SSR or if error occurs
+    if (!models || this.isSsr) {
+      this.url = undefined;
       return;
     }
 
