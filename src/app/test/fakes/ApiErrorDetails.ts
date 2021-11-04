@@ -12,7 +12,7 @@ import httpCodes, {
 
 // TODO Make this is the default method for error generation
 export function generateApiErrorDetailsV2(
-  status: number,
+  status: number = UNAUTHORIZED,
   custom?: Partial<ApiErrorDetails>
 ): ApiErrorDetails {
   let message: string;

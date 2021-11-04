@@ -1,14 +1,15 @@
 import { DomSanitizer } from "@angular/platform-browser";
 import { NavigationEnd, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { MockModel } from "@baw-api/mock/baseApiMock.service";
+import { IPageInfo } from "@helpers/page/pageInfo";
+import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { LoadingModule } from "@shared/loading/loading.module";
+import { generateApiErrorDetailsV2 } from "@test/fakes/ApiErrorDetails";
 import { modelData } from "@test/helpers/faker";
-import { viewports } from "@test/helpers/general";
-import { assertSpinner } from "@test/helpers/html";
-import { DeviceDetectorService } from "ngx-device-detector";
+import { generatePageInfo, viewports } from "@test/helpers/general";
 import { BehaviorSubject } from "rxjs";
 import { BawClientComponent } from "./baw-client.component";
 
@@ -18,8 +19,8 @@ describe("BawClientComponent", () => {
   let events: BehaviorSubject<NavigationEnd>;
   let config: ConfigService;
   let sanitizer: DomSanitizer;
-  let spec: Spectator<BawClientComponent>;
-  const createComponent = createComponentFactory({
+  let spec: SpectatorRouting<BawClientComponent>;
+  const createComponent = createRoutingFactory({
     component: BawClientComponent,
     imports: [LoadingModule, RouterTestingModule, MockAppConfigModule],
   });
@@ -79,12 +80,12 @@ describe("BawClientComponent", () => {
     }
   }
 
-  beforeEach(() => {
+  function setup(data?: Partial<IPageInfo>) {
     events = undefined;
-    spec = createComponent({ detectChanges: false });
+    spec = createComponent({ detectChanges: false, data });
     config = spec.inject(ConfigService);
     sanitizer = spec.inject(DomSanitizer);
-  });
+  }
 
   afterEach(() => {
     if (loadClientTimer) {
@@ -92,8 +93,23 @@ describe("BawClientComponent", () => {
     }
   });
 
-  describe("error handling", () => {
+  describe("resolver handling", () => {
+    it("should disable iframe if resolver errors occurred", () => {
+      setup(generatePageInfo({ error: generateApiErrorDetailsV2() }));
+      spec.detectChanges();
+      expect(getIframe()).toBeFalsy();
+    });
+
+    it("should not disabled iframe if resolver successfully resolves models", () => {
+      setup(generatePageInfo({ model: new MockModel({ id: 1 }) }));
+      spec.detectChanges();
+      expect(getIframe()).toBeTruthy();
+    });
+  });
+
+  describe("bundle error handling", () => {
     beforeEach(() => {
+      setup();
       viewport.set(viewports.small);
       preventLoadingBawClient();
       spec.detectChanges();
@@ -126,6 +142,8 @@ describe("BawClientComponent", () => {
   });
 
   describe("sizing", () => {
+    beforeEach(() => setup());
+
     it("should calculate iframe height when iframe posts a message", () => {
       preventLoadingBawClient();
       const height = modelData.datatype.number();
@@ -152,6 +170,8 @@ describe("BawClientComponent", () => {
   });
 
   describe("loading", () => {
+    beforeEach(() => setup());
+
     it("should handle a browser which does not support iframes", () => {
       spec.detectChanges();
       expect(getIframe()).toContainText(
@@ -163,6 +183,8 @@ describe("BawClientComponent", () => {
   });
 
   describe("old-client", () => {
+    beforeEach(() => setup());
+
     // TODO This works locally, but times out on CI
     xit("should load old client in iframe", async () => {
       navigate("/");
