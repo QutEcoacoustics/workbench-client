@@ -5,7 +5,7 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
 import { Observable, throwError } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, mergeMap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { ApiErrorDetails } from "./api.interceptor.service";
 
@@ -13,18 +13,20 @@ export const defaultApiPageSize = 25;
 export const unknownErrorCode = -1;
 export const STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
 
-/**
- * Default headers for API requests, this sets responseTypes so that the interceptor
- * can change its behavior based on the type of request.
- */
-const defaultHeaders = {
-  responseType: "json" as const,
+/** Default headers for API requests */
+const defaultHeaders = new HttpHeaders({
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  headers: new HttpHeaders({
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  }),
-};
+  Accept: "application/json",
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  "Content-Type": "application/json",
+});
+/** Headers for MultiPart API requests */
+const multiPartHeaders = new HttpHeaders({
+  // Do not set Content-Type for this request, otherwise web browsers wont calculate boundaries automatically
+  // https://muffinman.io/blog/uploading-files-using-fetch-multipart-form-data/
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Accept: "application/json",
+});
 
 /**
  * Interface with BAW Server Rest API
@@ -222,31 +224,49 @@ export class BawApiService<Model extends AbstractModel> {
   }
 
   /**
-   * Get response from update route
+   * Get response from create route with an additional multipart body update
+   * request
+   *
+   * @param createPath API create path
+   * @param updatePath API update path
+   * @param body Request body
+   */
+  protected apiCreateMultipart(
+    createPath: string,
+    updatePath: (model: Model) => string,
+    body: AbstractModel
+  ) {
+    const formData = body.toFormData({ create: true });
+    return this.apiCreate(createPath, body).pipe(
+      mergeMap((model) =>
+        this.httpPut(updatePath(model), formData, multiPartHeaders)
+      ),
+      map(this.handleSingleResponse)
+    );
+  }
+
+  /**
+   * Get response from update route. If the model has form data, this will make
+   * an additional multipart update request.
    *
    * @param path API path
    * @param body Request body
    */
   protected apiUpdate(path: string, body: AbstractModel): Observable<Model> {
     const jsonData = body.toJSON?.({ update: true });
-    return this.httpPatch(path, jsonData ?? body).pipe(
-      map(this.handleSingleResponse)
-    );
-  }
 
-  protected apiUpdateMultipart(
-    path: string,
-    body: AbstractModel
-  ): Observable<Model> {
-    const formData = body.toFormData?.({ update: true });
-    return this.http
-      .put<ApiResponse<Model>>(this.getPath(path), formData, {
-        // Do not set Content-Type for this request, otherwise web browsers wont calculate boundaries automatically
-        // https://muffinman.io/blog/uploading-files-using-fetch-multipart-form-data/
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        headers: new HttpHeaders({ Accept: "application/json" }),
-      })
-      .pipe(map(this.handleSingleResponse));
+    if (body.hasFormData({ update: true })) {
+      const formData = body.toFormData?.({ update: true });
+      return this.httpPatch(path, jsonData ?? body).pipe(
+        map(this.handleSingleResponse),
+        mergeMap(() => this.httpPut(path, formData, multiPartHeaders)),
+        map(this.handleSingleResponse)
+      );
+    } else {
+      return this.httpPatch(path, jsonData ?? body).pipe(
+        map(this.handleSingleResponse)
+      );
+    }
   }
 
   /**
@@ -264,11 +284,14 @@ export class BawApiService<Model extends AbstractModel> {
    *
    * @param path API path
    */
-  protected httpGet(path: string): Observable<ApiResponse<Model | Model[]>> {
-    return this.http.get<ApiResponse<Model>>(
-      this.getPath(path),
-      defaultHeaders
-    );
+  protected httpGet(
+    path: string,
+    options: any = defaultHeaders
+  ): Observable<ApiResponse<Model | Model[]>> {
+    return this.http.get<ApiResponse<Model>>(this.getPath(path), {
+      responseType: "json",
+      headers: options,
+    });
   }
 
   /**
@@ -277,11 +300,14 @@ export class BawApiService<Model extends AbstractModel> {
    *
    * @param path API path
    */
-  protected httpDelete(path: string): Observable<ApiResponse<Model | void>> {
-    return this.http.delete<ApiResponse<null>>(
-      this.getPath(path),
-      defaultHeaders
-    );
+  protected httpDelete(
+    path: string,
+    options: any = defaultHeaders
+  ): Observable<ApiResponse<Model | void>> {
+    return this.http.delete<ApiResponse<null>>(this.getPath(path), {
+      responseType: "json",
+      headers: options,
+    });
   }
 
   /**
@@ -291,12 +317,15 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected httpPost(path: string, body?: any): Observable<ApiResponse<Model>> {
-    return this.http.post<ApiResponse<Model>>(
-      this.getPath(path),
-      body,
-      defaultHeaders
-    );
+  protected httpPost(
+    path: string,
+    body?: any,
+    options: any = defaultHeaders
+  ): Observable<ApiResponse<Model>> {
+    return this.http.post<ApiResponse<Model>>(this.getPath(path), body, {
+      responseType: "json",
+      headers: options,
+    });
   }
 
   /**
@@ -306,12 +335,15 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected httpPut(path: string, body?: any): Observable<ApiResponse<Model>> {
-    return this.http.put<ApiResponse<Model>>(
-      this.getPath(path),
-      body,
-      defaultHeaders
-    );
+  protected httpPut(
+    path: string,
+    body?: any,
+    options: any = defaultHeaders
+  ): Observable<ApiResponse<Model>> {
+    return this.http.put<ApiResponse<Model>>(this.getPath(path), body, {
+      responseType: "json",
+      headers: options,
+    });
   }
 
   /**
@@ -323,13 +355,13 @@ export class BawApiService<Model extends AbstractModel> {
    */
   protected httpPatch(
     path: string,
-    body?: any
+    body?: any,
+    options: any = defaultHeaders
   ): Observable<ApiResponse<Model>> {
-    return this.http.patch<ApiResponse<Model>>(
-      this.getPath(path),
-      body,
-      defaultHeaders
-    );
+    return this.http.patch<ApiResponse<Model>>(this.getPath(path), body, {
+      responseType: "json",
+      headers: options,
+    });
   }
 
   /**

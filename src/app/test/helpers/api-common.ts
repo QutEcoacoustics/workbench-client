@@ -119,6 +119,34 @@ export function validateApiCreate<
   });
 }
 
+export function validateApiCreateMultipart<
+  Model extends AbstractModel,
+  Params extends any[],
+  Service extends ServiceType<Model, ApiCreate<Model, Params>>
+>(createEndpoint: string, model: () => Model, ...parameters: Params) {
+  describe("Api Create", function () {
+    let testModel: Model;
+
+    beforeEach(function () {
+      testModel = model();
+    });
+
+    it("should handle create endpoint", function () {
+      const api: Service = this.service;
+      api["apiCreateMultipart"] = jasmine
+        .createSpy()
+        .and.callFake(() => new BehaviorSubject<Model>(testModel));
+      api.create(testModel, ...parameters).subscribe();
+
+      expect(api["apiCreateMultipart"]).toHaveBeenCalledWith(
+        createEndpoint,
+        jasmine.any(Function),
+        testModel
+      );
+    });
+  });
+}
+
 export function validateApiUpdate<
   Model extends AbstractModel,
   Params extends any[],

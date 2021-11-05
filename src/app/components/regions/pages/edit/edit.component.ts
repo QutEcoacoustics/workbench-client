@@ -32,7 +32,6 @@ const regionKey = "region";
 @Component({
   selector: "baw-regions-edit",
   template: `
-    <!-- TODO Image input #608 -->
     <baw-form
       *ngIf="!failure"
       [title]="title"
@@ -74,10 +73,6 @@ class EditComponent extends FormTemplate<Region> implements OnInit {
   }
 
   protected apiAction(model: Partial<Region>) {
-    console.log(model);
-    console.log(new Region(model));
-    console.log(new Region(model).toFormData());
-
     return this.api.update(new Region(model), this.project);
   }
 }

@@ -4,7 +4,7 @@ import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateRegion } from "@test/fakes/Region";
 import {
-  validateApiCreate,
+  validateApiCreateMultipart,
   validateApiDestroy,
   validateApiFilter,
   validateApiList,
@@ -32,7 +32,7 @@ describe("ShallowRegionsService", function () {
   validateApiList<Model, Params, Service>(baseUrl);
   validateApiFilter<Model, Params, Service>(baseUrl + "filter");
   validateApiShow<Model, Params, Service>(baseUrl + "5", 5, createModel);
-  validateApiCreate<Model, Params, Service>(baseUrl, createModel);
+  validateApiCreateMultipart<Model, Params, Service>(baseUrl, createModel);
   validateApiUpdate<Model, Params, Service>(baseUrl + "5", createModel);
   validateApiDestroy<Model, Params, Service>(baseUrl + "5", 5, createModel);
 });

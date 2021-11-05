@@ -75,30 +75,20 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
 
   /** Convert model to JSON object */
   public toJSON(opts?: ModelSerializationOptions): Partial<this> {
-    let keys: string[];
-    if (opts?.create) {
-      keys = this[AbstractModel.keys.create.jsonAttributes] ?? [];
-    } else if (opts?.update) {
-      keys = this[AbstractModel.keys.update.jsonAttributes] ?? [];
-    } else {
-      keys = this.getModelAttributes();
-    }
-    return this.toObject(keys);
+    return this.toObject(this.getModelAttributes(opts));
+  }
+
+  /** Determine if model will return FormData */
+  public hasFormData(opts?: ModelSerializationOptions): boolean {
+    return this.getModelAttributes({ ...opts, formData: true }).length > 0;
   }
 
   /** Convert model to FormData */
   public toFormData(opts?: ModelSerializationOptions): FormData {
     const output = new FormData();
-    let keys: string[];
-    if (opts?.create) {
-      keys = this[AbstractModel.keys.create.formDataAttributes] ?? [];
-    } else if (opts?.update) {
-      keys = this[AbstractModel.keys.update.formDataAttributes] ?? [];
-    } else {
-      keys = this.getModelAttributes();
-    }
-
+    const keys = this.getModelAttributes({ ...opts, formData: true });
     const data = this.toObject(keys);
+
     for (const attr of Object.keys(data)) {
       /*
        * Do not surround attribute name in quotes, it is not a valid input and
@@ -161,8 +151,24 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * Retrieves a list of all attributes associated with the model which are
    * not the injector
    */
-  private getModelAttributes(): string[] {
-    return Object.keys(this).filter((key) => key !== "injector");
+  private getModelAttributes(opts?: {
+    create?: boolean;
+    update?: boolean;
+    formData?: boolean;
+  }): string[] {
+    if (opts?.create) {
+      const attribute: keyof typeof AbstractModel.keys.create = opts.formData
+        ? "formDataAttributes"
+        : "jsonAttributes";
+      return this[AbstractModel.keys.create[attribute]] ?? [];
+    } else if (opts?.update) {
+      const attribute: keyof typeof AbstractModel.keys.create = opts.formData
+        ? "formDataAttributes"
+        : "jsonAttributes";
+      return this[AbstractModel.keys.update[attribute]] ?? [];
+    } else {
+      return Object.keys(this).filter((key) => key !== "injector");
+    }
   }
 }
 

@@ -11,7 +11,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { generateSessionUser } from "@test/fakes/User";
 import {
-  validateApiCreate,
+  validateApiCreateMultipart,
   validateApiDestroy,
   validateApiFilter,
   validateApiList,
@@ -48,7 +48,7 @@ describe("SitesService", function () {
   validateApiList<Model, Params, Service>(listUrl, 5);
   validateApiFilter<Model, Params, Service>(listUrl + "filter", 5);
   validateApiShow<Model, Params, Service>(showUrl, 10, createModel, 5);
-  validateApiCreate<Model, Params, Service>(listUrl, createModel, 5);
+  validateApiCreateMultipart<Model, Params, Service>(listUrl, createModel, 5);
   validateApiUpdate<Model, Params, Service>(showUrl, createModel, 5);
   validateApiDestroy<Model, Params, Service>(showUrl, 10, createModel, 5);
 
