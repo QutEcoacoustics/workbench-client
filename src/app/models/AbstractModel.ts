@@ -1,5 +1,6 @@
 import { Injector } from "@angular/core";
 import { Writeable, XOR } from "@helpers/advancedTypes";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import snakeCase from "just-snake-case";
 import { DateTime, Duration } from "luxon";
 import { Id } from "../interfaces/apiInterfaces";
@@ -80,7 +81,12 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
 
   /** Determine if model will return FormData */
   public hasFormData(opts?: ModelSerializationOptions): boolean {
-    return this.getModelAttributes({ ...opts, formData: true }).length > 0;
+    for (const attr of this.getModelAttributes({ ...opts, formData: true })) {
+      if (isInstantiated(this[attr])) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /** Convert model to FormData */
