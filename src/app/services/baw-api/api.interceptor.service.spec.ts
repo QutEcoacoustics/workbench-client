@@ -120,12 +120,6 @@ describe("BawApiInterceptor", () => {
         return spec.expectOne("https://brokenlink", HttpMethod.GET);
       }
 
-      it("should not set accept header", () => {
-        setLoggedOut();
-        const req = makeRequest();
-        expect(req.request.headers.has("Accept")).toBeFalsy();
-      });
-
       it("should not set Authorization header when not logged in", () => {
         setLoggedOut();
         const req = makeRequest();
@@ -136,12 +130,6 @@ describe("BawApiInterceptor", () => {
         setLoggedIn();
         const req = makeRequest();
         expect(req.request.headers.has("Authorization")).toBeFalsy();
-      });
-
-      it("should not set content-type header", () => {
-        setLoggedOut();
-        const req = makeRequest();
-        expect(req.request.headers.has("Content-Type")).toBeFalsy();
       });
 
       it("should not convert into snake case for GET requests", () => {
@@ -206,42 +194,6 @@ describe("BawApiInterceptor", () => {
 
   describe("baw api traffic", () => {
     describe("outgoing data", () => {
-      it("should set accept header", () => {
-        setLoggedOut();
-        http.get(getPath("/brokenapiroute")).subscribe(noop, noop);
-        const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
-        expect(req.request.headers.get("Accept")).toBe("application/json");
-      });
-
-      it("should not set accept header on non json requests", () => {
-        setLoggedOut();
-        http
-          .get(getPath("/brokenapiroute"), { responseType: "text" })
-          .subscribe(noop, noop);
-        const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
-        expect(req.request.headers.get("Accept")).not.toBe("application/json");
-      });
-
-      it("should set content-type header", () => {
-        setLoggedOut();
-        http.get(getPath("/brokenapiroute")).subscribe(noop, noop);
-        const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
-        expect(req.request.headers.get("Content-Type")).toBe(
-          "application/json"
-        );
-      });
-
-      it("should not set content-type header on non json requests", () => {
-        setLoggedOut();
-        http
-          .get(getPath("/brokenapiroute"), { responseType: "text" })
-          .subscribe(noop, noop);
-        const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
-        expect(req.request.headers.get("Content-Type")).not.toBe(
-          "application/json"
-        );
-      });
-
       it("should set cookies", () => {
         setLoggedOut();
         http.get(getPath("/brokenapiroute")).subscribe(noop, noop);

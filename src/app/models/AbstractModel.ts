@@ -76,10 +76,10 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   /** Convert model to JSON object */
   public toJSON(opts?: ModelSerializationOptions): Partial<this> {
     let keys: string[];
-    if (opts.create) {
-      keys = this[AbstractModel.keys.create.jsonAttributes];
-    } else if (opts.update) {
-      keys = this[AbstractModel.keys.update.jsonAttributes];
+    if (opts?.create) {
+      keys = this[AbstractModel.keys.create.jsonAttributes] ?? [];
+    } else if (opts?.update) {
+      keys = this[AbstractModel.keys.update.jsonAttributes] ?? [];
     } else {
       keys = this.getModelAttributes();
     }
@@ -90,10 +90,10 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   public toFormData(opts?: ModelSerializationOptions): FormData {
     const output = new FormData();
     let keys: string[];
-    if (opts.create) {
-      keys = this[AbstractModel.keys.create.formDataAttributes];
-    } else if (opts.update) {
-      keys = this[AbstractModel.keys.update.formDataAttributes];
+    if (opts?.create) {
+      keys = this[AbstractModel.keys.create.formDataAttributes] ?? [];
+    } else if (opts?.update) {
+      keys = this[AbstractModel.keys.update.formDataAttributes] ?? [];
     } else {
       keys = this.getModelAttributes();
     }
@@ -145,11 +145,11 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     keys.forEach((attribute: keyof AbstractModel) => {
       const value = this[attribute];
       if (value instanceof Set) {
-        output[attribute] = JSON.stringify(Array.from(value));
+        output[attribute] = Array.from(value);
       } else if (value instanceof DateTime) {
         output[attribute] = value.toISO();
       } else if (value instanceof Duration) {
-        output[attribute] = value.as("seconds").toLocaleString();
+        output[attribute] = value.as("seconds");
       } else {
         output[attribute] = this[attribute] as any;
       }

@@ -65,10 +65,10 @@ describe("PointNewComponent", () => {
       },
       {
         testGroup: "Point Image Input",
-        field: fields[9],
-        key: "imageUrls",
+        field: fields[10],
+        key: "image",
         type: "image",
-        label: "Image",
+        label: "Image Upload",
       },
     ]);
   });

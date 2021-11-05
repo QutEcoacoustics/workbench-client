@@ -75,18 +75,18 @@
       }
     },
     {
-      "key": "imageUrls",
+      "key": "images",
       "hide": true,
       "templateOptions": {
-        "label": "Image",
-        "required": false
+        "label": "Images",
+        "disabled": true
       }
     },
     {
       "key": "image",
       "type": "image",
       "templateOptions": {
-        "label": "Image",
+        "label": "Image Upload",
         "required": false
       }
     },

@@ -14,6 +14,7 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
+import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
 import { assertImage, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
@@ -34,7 +35,9 @@ describe("SiteCardComponent", () => {
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultRegion = new Region(generateRegion());
-    defaultSite = new Site(generateSite());
+    defaultSite = new Site(
+      generateSite({ imageUrls: [modelData.imageUrls()[0]] })
+    );
     defaultRecording = new AudioRecording(generateAudioRecording());
   });
 
@@ -111,7 +114,11 @@ describe("SiteCardComponent", () => {
     it("should display custom site image", () => {
       setup(true);
       spec.detectChanges();
-      assertImage(getImage(), defaultSite.imageUrls, `${defaultSite.name} alt`);
+      assertImage(
+        getImage(),
+        defaultSite.imageUrls.at(0).url,
+        `${defaultSite.name} alt`
+      );
     });
 
     it("should navigate user to site when clicking site image", () => {

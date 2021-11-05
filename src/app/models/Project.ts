@@ -32,7 +32,7 @@ import type { User } from "./User";
 export interface IProject extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
-  imageUrls?: string;
+  imageUrls?: ImageUrl[];
   image?: File;
   accessLevel?: AccessLevel;
   ownerIds?: Ids | Id[];
@@ -53,7 +53,7 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
-  public readonly imageUrls?: string;
+  public readonly imageUrls?: ImageUrl[];
   @bawImage<IProject>(`${assetRoot}/images/project/project_span4.png`, {
     key: "imageUrls",
   })

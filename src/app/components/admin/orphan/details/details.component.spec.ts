@@ -130,23 +130,22 @@ describe("AdminOrphanComponent", () => {
         key: "customLongitude",
         plain: model.customLongitude,
       },
-      { label: "Image", key: "imageUrls", image: model.imageUrls },
-      { label: "Image", key: "image", image: model.images },
+      { label: "Images", key: "images", image: model.images },
       { label: "Time Zone Identifier", key: "tzInfoTz", plain: model.tzinfoTz },
       {
         label: "Time Zone Information",
         key: "timezoneInformation",
         code: model.timezoneInformation,
       },
-      { label: "Creator", key: "creator", model: "User: custom username (1)" },
-      { label: "Updater", key: "updater", model: "User: custom username (1)" },
+      { label: "Creator", key: "creator", model: "user: custom username (1)" },
+      { label: "Updater", key: "updater", model: "user: custom username (1)" },
       { label: "Created At", key: "createdAt", plain: model.createdAt },
       { label: "Updated At", key: "updatedAt", plain: model.updatedAt },
       {
         label: "Projects",
         key: "projects",
         children: [1, 2, 3].map((id) => ({
-          model: `Project: custom project (${id})`,
+          model: `project: custom project (${id})`,
         })),
       },
     ];
