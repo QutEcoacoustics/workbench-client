@@ -1,5 +1,6 @@
 import { Injector } from "@angular/core";
 import { Writeable, XOR } from "@helpers/advancedTypes";
+import snakeCase from "just-snake-case";
 import { DateTime, Duration } from "luxon";
 import { Id } from "../interfaces/apiInterfaces";
 import { Meta } from "../services/baw-api/baw-api.service";
@@ -37,8 +38,8 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     create: {
       /** Used to generate the toJSON({create: true}) output */
       jsonAttributes: Symbol("create-json-attributes"),
-      /** Used to generate the toFormData(..., {create: true}) output */
-      multiPartAttributes: Symbol("create-multi-part-attributes"),
+      /** Used to generate the toFormData({create: true}) output */
+      formDataAttributes: Symbol("create-form-data-attributes"),
     },
     /**
      * This stores the list of model attributes which are used to generate
@@ -47,8 +48,8 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     update: {
       /** Used to generate the toJSON({update: true}) output */
       jsonAttributes: Symbol("update-json-attributes"),
-      /** Used to generate the toFormData(..., {update: true}) output */
-      multiPartAttributes: Symbol("update-multi-part-attributes"),
+      /** Used to generate the toFormData({update: true}) output */
+      formDataAttributes: Symbol("update-form-data-attributes"),
     },
   };
 
@@ -72,17 +73,15 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     return this.viewUrl;
   }
 
-  /**
-   * Convert model to JSON
-   */
+  /** Convert model to JSON object */
   public toJSON(opts?: ModelSerializationOptions): Partial<this> {
     let keys: string[];
-    if (!opts) {
-      keys = this.getModelAttributes();
-    } else if (opts.create) {
+    if (opts.create) {
       keys = this[AbstractModel.keys.create.jsonAttributes];
-    } else {
+    } else if (opts.update) {
       keys = this[AbstractModel.keys.update.jsonAttributes];
+    } else {
+      keys = this.getModelAttributes();
     }
     return this.toObject(keys);
   }
@@ -91,18 +90,23 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   public toFormData(opts?: ModelSerializationOptions): FormData {
     const output = new FormData();
     let keys: string[];
-    if (!opts) {
-      keys = this.getModelAttributes();
-    } else if (opts.create) {
-      keys = this[AbstractModel.keys.create.multiPartAttributes];
+    if (opts.create) {
+      keys = this[AbstractModel.keys.create.formDataAttributes];
+    } else if (opts.update) {
+      keys = this[AbstractModel.keys.update.formDataAttributes];
     } else {
-      keys = this[AbstractModel.keys.update.multiPartAttributes];
+      keys = this.getModelAttributes();
     }
 
     const data = this.toObject(keys);
-    for (const attribute of Object.keys(data)) {
-      // Do not surround attribute name in quotes, it is not a valid input
-      output.append(`${this.kind}[${attribute}]`, data[attribute]);
+    for (const attr of Object.keys(data)) {
+      /*
+       * Do not surround attribute name in quotes, it is not a valid input and
+       * baw-server will return a 500 response. Attributes are in the form of
+       * model_name[attribute_name]
+       */
+      const snakeCaseAttr = snakeCase(attr);
+      output.append(`${this.kind}[${snakeCaseAttr}]`, data[attr]);
     }
     return output;
   }

@@ -58,7 +58,7 @@ export class Region extends AbstractModel<IRegion> implements IRegion {
     key: "imageUrls",
   })
   public readonly images: ImageUrl[];
-  @bawPersistAttr({ create: { multiPart: true }, update: { multiPart: true } })
+  @bawPersistAttr({ create: true, update: true, formData: true })
   public readonly image?: File;
   @bawPersistAttr()
   public readonly description?: Description;

@@ -1,47 +1,56 @@
-import { XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 
+/**
+ * Persist an attribute of an abstract model so that the attribute will be sent
+ * during a specific type of API request determined by opts set
+ */
 function persistAttr(
   model: AbstractModel,
   key: string,
   opts: BawPersistAttributeOptions
 ) {
-  model[AbstractModel.keys.create.jsonAttributes] ??= [];
-  model[AbstractModel.keys.update.jsonAttributes] ??= [];
-  model[AbstractModel.keys.create.multiPartAttributes] ??= [];
-  model[AbstractModel.keys.update.multiPartAttributes] ??= [];
+  const createKeys = AbstractModel.keys.create;
+  const updateKeys = AbstractModel.keys.update;
 
-  if (typeof opts === "boolean") {
-    if (!opts) {
-      return;
-    }
-    model[AbstractModel.keys.create.jsonAttributes].push(key);
-    model[AbstractModel.keys.update.jsonAttributes].push(key);
+  // Ensure all storage types have an empty array
+  model[createKeys.jsonAttributes] ??= [];
+  model[updateKeys.jsonAttributes] ??= [];
+  model[createKeys.formDataAttributes] ??= [];
+  model[updateKeys.formDataAttributes] ??= [];
+
+  // Do nothing if opts is false or does not exist
+  if (!opts) {
     return;
   }
 
+  // Set default options if opts is a true boolean
+  if (typeof opts === "boolean") {
+    opts = { create: true, update: true };
+  }
+
+  // Append key to relevant arrays
   if (opts.create) {
-    if (opts.create.json) {
-      model[AbstractModel.keys.create.jsonAttributes].push(key);
-    } else if (opts.create.multiPart) {
-      model[AbstractModel.keys.create.multiPartAttributes].push(key);
+    if (opts.formData) {
+      model[createKeys.formDataAttributes].push(key);
+    } else {
+      model[createKeys.jsonAttributes].push(key);
     }
   }
   if (opts.update) {
-    if (opts.update.json) {
-      model[AbstractModel.keys.update.jsonAttributes].push(key);
-    } else if (opts.update.multiPart) {
-      model[AbstractModel.keys.update.multiPartAttributes].push(key);
+    if (opts.formData) {
+      model[updateKeys.formDataAttributes].push(key);
+    } else {
+      model[updateKeys.jsonAttributes].push(key);
     }
   }
 }
 
 /**
- * Add key to the models attributes
+ * Decorator wrapper for persistAttr function
  */
 export function bawPersistAttr(opts: BawPersistAttributeOptions = true) {
   return function (model: AbstractModel, key: string) {
@@ -245,7 +254,7 @@ function createDecorator<Model>(
 
 export interface BawDecoratorOptions<T> {
   /**
-   * Persist key in models toJSON() method
+   * Call persistAttr with these options
    */
   persist?: BawPersistAttributeOptions;
   /**
@@ -255,14 +264,17 @@ export interface BawDecoratorOptions<T> {
 }
 
 /**
- * Persistent attribute options for abstract models. If set to true, default
- * will be create and update set to {json: true}
+ * Persistent attribute options for abstract models. This is used when
+ * determining which properties `toJson()` and `toFormData()` will return. True
+ * is shorthand for `{create: true, update: true}`
  */
 type BawPersistAttributeOptions =
   | boolean
   | {
       /** Include attribute in create requests for the model */
-      create?: XOR<{ json: boolean }, { multiPart: boolean }>;
+      create?: boolean;
       /** Include attribute in update requests for the model */
-      update?: XOR<{ json: boolean }, { multiPart: boolean }>;
+      update?: boolean;
+      /** Serve this value in a form data request, instead of the usual json */
+      formData?: boolean;
     };

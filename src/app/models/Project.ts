@@ -58,7 +58,7 @@ export class Project extends AbstractModel<IProject> implements IProject {
     key: "imageUrls",
   })
   public readonly images: ImageUrl[];
-  @bawPersistAttr({ create: { multiPart: true }, update: { multiPart: true } })
+  @bawPersistAttr({ create: true, update: true, formData: true })
   public readonly image?: File;
   public readonly accessLevel?: AccessLevel;
   public readonly creatorId?: Id;
