@@ -71,6 +71,7 @@ class MockModel extends AbstractModel implements IMockModel {
   }
 }
 
+// TODO Add tests for multipart requests
 describe("BawApiService", () => {
   let meta: {
     /** Single model response */
