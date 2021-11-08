@@ -53,11 +53,8 @@ export class Region extends AbstractModel<IRegion> implements IRegion {
   public readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;
-  public readonly imageUrls?: ImageUrl[];
-  @bawImage<IRegion>(`${assetRoot}/images/site/site_span4.png`, {
-    key: "imageUrls",
-  })
-  public readonly images: ImageUrl[];
+  @bawImage<IRegion>(`${assetRoot}/images/site/site_span4.png`)
+  public readonly imageUrls!: ImageUrl[];
   @bawPersistAttr({ create: true, update: true, formData: true })
   public readonly image?: File;
   @bawPersistAttr()

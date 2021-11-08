@@ -60,11 +60,8 @@ export class Site extends AbstractModel<ISite> implements ISite {
   public readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;
-  public readonly imageUrls?: ImageUrl[];
-  @bawImage<ISite>(`${assetRoot}/images/site/site_span4.png`, {
-    key: "imageUrls",
-  })
-  public readonly images: ImageUrl[];
+  @bawImage<ISite>(`${assetRoot}/images/site/site_span4.png`)
+  public readonly imageUrls!: ImageUrl[];
   @bawPersistAttr({ create: true, update: true, formData: true })
   public readonly image?: File;
   @bawPersistAttr()

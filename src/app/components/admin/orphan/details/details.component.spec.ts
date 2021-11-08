@@ -130,7 +130,7 @@ describe("AdminOrphanComponent", () => {
         key: "customLongitude",
         plain: model.customLongitude,
       },
-      { label: "Images", key: "images", image: model.images },
+      { label: "Images", key: "images", image: model.imageUrls },
       { label: "Time Zone Identifier", key: "tzInfoTz", plain: model.tzinfoTz },
       {
         label: "Time Zone Information",

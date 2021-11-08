@@ -80,12 +80,8 @@ export class User extends AbstractModel<IUser> implements IUser {
   public readonly userName?: UserName;
   public readonly signInCount?: number;
   public readonly failedAttempts?: number;
-  @bawPersistAttr()
+  @bawImage<IUser>(`${assetRoot}/images/user/user_span4.png`)
   public readonly imageUrls?: ImageUrl[];
-  @bawImage<IUser>(`${assetRoot}/images/user/user_span4.png`, {
-    key: "imageUrls",
-  })
-  public readonly images: ImageUrl[];
   @bawPersistAttr()
   public readonly preferences?: any;
   public readonly isConfirmed?: boolean;
@@ -152,11 +148,8 @@ export class SessionUser
   public readonly id?: Id;
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;
+  @bawImage<ISessionUser>(`${assetRoot}/images/user/user_span4.png`)
   public readonly imageUrls?: ImageUrl[];
-  @bawImage<ISessionUser>(`${assetRoot}/images/user/user_span4.png`, {
-    key: "imageUrls",
-  })
-  public readonly images: ImageUrl[];
   public readonly preferences?: any;
   public readonly rolesMask?: number;
   public readonly tzinfoTz?: string;
