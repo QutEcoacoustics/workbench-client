@@ -358,9 +358,14 @@ function convertToId(id: string): Id {
  * resolved models using the resolver key as the object key.
  *
  * @param data Page Data
+ * @param saveErrorDetails Set model value to ApiErrorDetails instead of
+ * returning false early
  */
-export function retrieveResolvers(data: PageInfo): ResolvedModelList | false {
-  const models = {};
+export function retrieveResolvers(
+  data: PageInfo,
+  saveErrorDetails?: boolean
+): ResolvedModelList | false {
+  const models: ResolvedModelList = {};
   const keys = Object.keys(data?.resolvers || {});
 
   if (keys.length === 0) {
@@ -373,11 +378,16 @@ export function retrieveResolvers(data: PageInfo): ResolvedModelList | false {
     const resolvedModel: ResolvedModel = data[key];
 
     // If error detected, return
-    if (!resolvedModel || resolvedModel.error) {
+    if (!resolvedModel) {
       return false;
+    } else if (resolvedModel.error) {
+      if (!saveErrorDetails) {
+        return false;
+      }
+      models[key] = resolvedModel.error;
+    } else {
+      models[key] = resolvedModel.model;
     }
-
-    models[key] = resolvedModel.model;
   }
 
   return models;
@@ -388,5 +398,6 @@ export interface ResolvedModelList {
     | AbstractModel
     | AbstractModel[]
     | AbstractData
-    | AbstractData[];
+    | AbstractData[]
+    | ApiErrorDetails;
 }

@@ -5,6 +5,7 @@ import {
   RouterLinkWithHref,
 } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
@@ -188,6 +189,14 @@ describe("StrongRouteDirective", () => {
       spec.directive["angularRouteParams"] = { example: 5 };
       assertUrlTree("/home", { testing: "value", testing2: 5 });
     });
+  });
+
+  // TODO
+  describe("resolvedModels", () => {
+    it("should pass empty list of resolved models to queryParams", () => {});
+    it("should pass single resolved model to queryParams", () => {});
+    it("should pass multiple resolved models to queryParams", () => {});
+    it("should pass failed model to queryParams", () => {});
   });
 
   describe("urlTree", () => {

@@ -7,6 +7,8 @@ import {
   RouterLinkWithHref,
   UrlTree,
 } from "@angular/router";
+import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import { PageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
 import { takeUntil } from "rxjs/operators";
@@ -21,18 +23,19 @@ export class StrongRouteDirective
 {
   @Input() public strongRoute: StrongRoute;
   /**
-   * Additional route parameters to apply to the StrongRoute. By
-   * default, all of the angular route parameters are already given
-   * to the StrongRoute.
+   * Additional route parameters to apply to the StrongRoute. By default, all
+   * of the angular route parameters are already given to the StrongRoute.
    */
   @Input() public routeParams: RouteParams;
   /**
-   * Additional query parameters to apply to the StrongRoute. By
-   * default, all of the angular route parameters are already given
-   * to the StrongRoute.
+   * Additional query parameters to apply to the StrongRoute. By default, all
+   * of the angular route parameters are already given to the StrongRoute.
    */
   @Input() public queryParams: Params;
-  private angularRouteParams: Params;
+  private data: {
+    resolvedModels?: ResolvedModelList;
+    routeParams?: Params;
+  } = {};
 
   public constructor(
     private _router: Router,
@@ -44,13 +47,23 @@ export class StrongRouteDirective
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes.strongRoute.isFirstChange) {
+      // Track changes to route parameters
       this._route.params
         .pipe(takeUntil(this.unsubscribe))
-        .subscribe((params) => (this.angularRouteParams = params));
+        .subscribe((params) => (this.data.routeParams = params));
+      // Track changes to resolved models
+      this._route.data.pipe(takeUntil(this.unsubscribe)).subscribe((data) => {
+        // We are passing through resolved models even when some fail, this is
+        // so that some links unrelated to the broken model do not break
+        const resolvedModels = retrieveResolvers(new PageInfo(data), true);
+        if (resolvedModels) {
+          this.data.resolvedModels = resolvedModels;
+        }
+      });
     }
 
     this.routerLink = this.strongRoute?.toRouterLink({
-      ...this.angularRouteParams,
+      ...this.data.routeParams,
       ...this.routeParams,
     });
 
@@ -58,11 +71,24 @@ export class StrongRouteDirective
   }
 
   public get urlTree(): UrlTree {
-    const queryParams = { ...this.queryParams, ...this.angularRouteParams };
+    const queryParams = this.strongRoute?.queryParams(
+      { ...this.queryParams, ...this.data.routeParams },
+      this.data.resolvedModels
+    );
+
+    // Sanitize query parameters
+    for (const key of Object.keys(queryParams)) {
+      if (queryParams[key] instanceof Set) {
+        queryParams[key] = Array.from(queryParams[key]);
+      }
+      if (queryParams[key] instanceof Array) {
+        queryParams[key] = queryParams[key].join(",");
+      }
+    }
 
     return this._router.createUrlTree(this["commands"], {
       relativeTo: this._route,
-      queryParams: this.strongRoute?.queryParams(queryParams) ?? undefined,
+      queryParams: queryParams ?? undefined,
       fragment: this.fragment,
       queryParamsHandling: this.queryParamsHandling,
       preserveFragment: attrBoolValue(this.preserveFragment),

@@ -8,21 +8,21 @@
       "type": "chrome",
       "request": "launch",
       "name": "Chrome Debugging",
-      "url": "http://localhost:4200",
+      "url": "http://development.ecosounds.org:4200",
       "webRoot": "${workspaceFolder}"
     },
     {
       "type": "firefox",
       "request": "launch",
       "name": "Firefox Debugging",
-      "url": "http://localhost:4200",
+      "url": "http://development.ecosounds.org:4200",
       "webRoot": "${workspaceFolder}"
     },
     {
       "type": "edge",
       "request": "launch",
       "name": "Edge Debugging",
-      "url": "http://localhost:4200",
+      "url": "http://development.ecosounds.org:4200",
       "webRoot": "${workspaceFolder}"
     },
     {

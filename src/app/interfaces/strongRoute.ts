@@ -1,5 +1,6 @@
 import { Type } from "@angular/core";
 import { Params, Route, Routes } from "@angular/router";
+import { ResolvedModelList } from "@baw-api/resolver-common";
 import { Option } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -11,7 +12,7 @@ export type RouteConfigCallback = (
 
 export type RouteParams = Record<string, string | number>;
 
-type QSPCallback = (params: Params) => Params;
+type QSPCallback = (params?: Params, models?: ResolvedModelList) => Params;
 
 /**
  * Strong Route class. This provides a workaround for issues related to the
@@ -253,9 +254,10 @@ export class StrongRoute {
    */
   public format(
     routeParams: RouteParams = {},
-    queryParams: Params = {}
+    queryParams: Params = {},
+    resolvedModels: ResolvedModelList = {}
   ): string {
-    const qsp = this.queryParams(queryParams);
+    const qsp = this.queryParams(queryParams, resolvedModels);
     const keys = Object.keys(qsp);
     const basePath = this.toRouterLink(routeParams);
 
