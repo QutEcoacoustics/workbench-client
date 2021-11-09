@@ -55,7 +55,7 @@ export class StrongRouteDirective
       this._route.data.pipe(takeUntil(this.unsubscribe)).subscribe((data) => {
         // We are passing through resolved models even when some fail, this is
         // so that some links unrelated to the broken model do not break
-        const resolvedModels = retrieveResolvers(new PageInfo(data), true);
+        const resolvedModels = retrieveResolvers(new PageInfo(data));
         if (resolvedModels) {
           this.data.resolvedModels = resolvedModels;
         }

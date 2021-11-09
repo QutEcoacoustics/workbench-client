@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -45,7 +48,7 @@ class AdminAudioRecordingComponent
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
 
-    if (!models) {
+    if (!hasResolvedSuccessfully(models)) {
       this.failure = true;
       return;
     }

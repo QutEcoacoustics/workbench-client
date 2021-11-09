@@ -18,8 +18,8 @@ import {
   ApiUpdate,
   IdOr,
 } from "./api-common";
-import { ApiErrorDetails } from "./api.interceptor.service";
-import { BawApiService } from "./baw-api.service";
+import { ApiErrorDetails, isApiErrorDetails } from "./api.interceptor.service";
+import { BawApiService, unknownErrorCode } from "./baw-api.service";
 
 /**
  * Baw Resolver Wrapper Class
@@ -354,17 +354,30 @@ function convertToId(id: string): Id {
 }
 
 /**
- * Verify all resolvers resolve without errors. Returns object containing all
- * resolved models using the resolver key as the object key.
+ * Verify all resolved models have no errors
+ *
+ * @param resolvedModelList List of models to validate
+ */
+export function hasResolvedSuccessfully(
+  resolvedModelList: ResolvedModelList
+): boolean {
+  for (const key of Object.keys(resolvedModelList)) {
+    const model = resolvedModelList[key];
+    if (!isInstantiated(model) || isApiErrorDetails(model)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * Returns object containing all resolved data using the resolver key as the
+ * object key. Use `hasResolvedSuccessfully` to validate if the list only
+ * contains valid models
  *
  * @param data Page Data
- * @param saveErrorDetails Set model value to ApiErrorDetails instead of
- * returning false early
  */
-export function retrieveResolvers(
-  data: PageInfo,
-  saveErrorDetails?: boolean
-): ResolvedModelList | false {
+export function retrieveResolvers(data: PageInfo): ResolvedModelList {
   const models: ResolvedModelList = {};
   const keys = Object.keys(data?.resolvers || {});
 
@@ -379,11 +392,11 @@ export function retrieveResolvers(
 
     // If error detected, return
     if (!resolvedModel) {
-      return false;
+      models[key] = {
+        status: unknownErrorCode,
+        message: "Model could not be resolved",
+      } as ApiErrorDetails;
     } else if (resolvedModel.error) {
-      if (!saveErrorDetails) {
-        return false;
-      }
       models[key] = resolvedModel.error;
     } else {
       models[key] = resolvedModel.model;

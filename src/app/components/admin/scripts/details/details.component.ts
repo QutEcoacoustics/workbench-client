@@ -1,6 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { scriptResolvers } from "@baw-api/script/scripts.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
@@ -45,7 +48,7 @@ class AdminScriptComponent
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
 
-    if (!models) {
+    if (!hasResolvedSuccessfully(models)) {
       this.failure = true;
       return;
     }

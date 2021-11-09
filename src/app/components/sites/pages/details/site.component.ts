@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { siteAnnotationsModal } from "@components/sites/sites.modals";
@@ -56,7 +59,7 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
   public ngOnInit() {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
 
-    if (!models) {
+    if (!hasResolvedSuccessfully(models)) {
       return;
     }
 

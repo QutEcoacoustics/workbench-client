@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { adminAnalysisJobsMenuItem } from "@components/admin/admin.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
@@ -46,7 +49,7 @@ class AdminAnalysisJobComponent
     const data = this.route.snapshot.data;
     const models = retrieveResolvers(data as PageInfo);
 
-    if (!models) {
+    if (!hasResolvedSuccessfully(models)) {
       this.failure = true;
       return;
     }

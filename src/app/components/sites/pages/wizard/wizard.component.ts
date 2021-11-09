@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import {
   projectCategory,
@@ -68,7 +71,7 @@ class WizardComponent extends PageComponent implements OnInit {
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
-    if (!models) {
+    if (!hasResolvedSuccessfully(models)) {
       this.error = true;
       return;
     }

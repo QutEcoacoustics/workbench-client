@@ -1,6 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { ModalComponent } from "@menu/widget.component";
@@ -84,7 +87,7 @@ export class AnnotationDownloadComponent implements OnInit, ModalComponent {
     const models = retrieveResolvers(this.routeData);
 
     // Close modal if an error has occurred
-    if (!models) {
+    if (!hasResolvedSuccessfully(models)) {
       this.dismissModal("Failure to resolve models");
       return;
     }
