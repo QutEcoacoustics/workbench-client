@@ -76,7 +76,8 @@ export class StrongRouteDirective
       this.data.resolvedModels
     );
 
-    // Sanitize query parameters
+    // Normalize query parameters into string values which can be handled by
+    // the browser
     for (const key of Object.keys(queryParams)) {
       if (queryParams[key] instanceof Set) {
         queryParams[key] = Array.from(queryParams[key]);
