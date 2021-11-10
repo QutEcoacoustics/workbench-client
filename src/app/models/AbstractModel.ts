@@ -5,6 +5,7 @@ import snakeCase from "just-snake-case";
 import { DateTime, Duration } from "luxon";
 import { Id } from "../interfaces/apiInterfaces";
 import { Meta } from "../services/baw-api/baw-api.service";
+import { BawAttributeMeta } from "./AttributeDecorators";
 
 export type AbstractModelConstructor<Model> = new (
   _: Record<string, any>,
@@ -19,6 +20,17 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     return Object.assign(this, raw);
   }
 
+  /** Keys for accessing hidden data associated with a model */
+  private static keys = {
+    /** This stores the metadata associated with the model */
+    meta: Symbol("meta"),
+    /**
+     * This stores the list of model attribute metadata which are used to
+     * generate bodies for create api requests
+     */
+    attributes: Symbol("attributes"),
+  };
+
   /**
    * Redirect path to view model on website. This is a string which can be used
    * by the UrlDirective (`[bawUrl]`) to navigate. For example using the project
@@ -27,32 +39,6 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * `Router.navigateByUrl()`.
    */
   public abstract get viewUrl(): string;
-
-  /** Keys for accessing hidden data associated with a model */
-  public static keys = {
-    /** This stores the metadata associated with the model */
-    meta: Symbol("meta"),
-    /**
-     * This stores the list of model attributes which are used to generate
-     * bodies for create api requests
-     */
-    create: {
-      /** Used to generate the toJSON({create: true}) output */
-      jsonAttributes: Symbol("create-json-attributes"),
-      /** Used to generate the toFormData({create: true}) output */
-      formDataAttributes: Symbol("create-form-data-attributes"),
-    },
-    /**
-     * This stores the list of model attributes which are used to generate
-     * bodies for update api requests
-     */
-    update: {
-      /** Used to generate the toJSON({update: true}) output */
-      jsonAttributes: Symbol("update-json-attributes"),
-      /** Used to generate the toFormData({update: true}) output */
-      formDataAttributes: Symbol("update-form-data-attributes"),
-    },
-  };
 
   /**
    * Model type name. This should match the name set in baw-server as it may
@@ -130,6 +116,15 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     return this[AbstractModel.keys.meta];
   }
 
+  public addPersistentAttribute(meta: BawAttributeMeta) {
+    return this.getPersistentAttributes().push(meta);
+  }
+
+  public getPersistentAttributes(): Array<BawAttributeMeta> {
+    // TODO Store this statically in the model
+    return (this[AbstractModel.keys.attributes] ??= []);
+  }
+
   /**
    * Converts the model and a list of keys, into an object containing each key
    * value pair
@@ -162,16 +157,13 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     update?: boolean;
     formData?: boolean;
   }): string[] {
-    if (opts?.create) {
-      const attribute: keyof typeof AbstractModel.keys.create = opts.formData
-        ? "formDataAttributes"
-        : "jsonAttributes";
-      return this[AbstractModel.keys.create[attribute]] ?? [];
-    } else if (opts?.update) {
-      const attribute: keyof typeof AbstractModel.keys.create = opts.formData
-        ? "formDataAttributes"
-        : "jsonAttributes";
-      return this[AbstractModel.keys.update[attribute]] ?? [];
+    if (opts?.create || opts?.update) {
+      return this.getPersistentAttributes()
+        .filter((meta) => (opts.create ? meta.create : meta.update))
+        .filter((meta) =>
+          meta.supportedFormats.includes(opts.formData ? "formData" : "json")
+        )
+        .map((meta) => meta.key);
     } else {
       return Object.keys(this).filter((key) => key !== "injector");
     }

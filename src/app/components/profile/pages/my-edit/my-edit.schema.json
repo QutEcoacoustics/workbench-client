@@ -26,13 +26,11 @@
       }
     },
     {
-      "key": "imageUrls",
-      "type": "input",
+      "key": "image",
+      "type": "image",
       "templateOptions": {
-        "label": "Image",
-        "type": "file",
-        "required": false,
-        "disabled": true
+        "label": "Image Upload",
+        "required": false
       }
     },
     {

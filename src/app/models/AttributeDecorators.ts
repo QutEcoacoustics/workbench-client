@@ -4,6 +4,16 @@ import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 
+export interface BawAttributeOptions {
+  create: boolean;
+  update: boolean;
+  supportedFormats: Array<"json" | "formData">;
+}
+
+export interface BawAttributeMeta extends BawAttributeOptions {
+  key: string;
+}
+
 /**
  * Persist an attribute of an abstract model so that the attribute will be sent
  * during a specific type of API request determined by opts set
@@ -11,49 +21,41 @@ import { AbstractModel } from "./AbstractModel";
 function persistAttr(
   model: AbstractModel,
   key: string,
-  opts: BawPersistAttributeOptions
-) {
-  const createKeys = AbstractModel.keys.create;
-  const updateKeys = AbstractModel.keys.update;
-
-  // Ensure all storage types have an empty array
-  model[createKeys.jsonAttributes] ??= [];
-  model[updateKeys.jsonAttributes] ??= [];
-  model[createKeys.formDataAttributes] ??= [];
-  model[updateKeys.formDataAttributes] ??= [];
-
-  // Do nothing if opts is false or does not exist
-  if (!opts) {
+  opts: boolean | Partial<BawAttributeOptions>
+): void {
+  // If opts is false, cancel early
+  if (opts === false) {
     return;
   }
 
-  // Set default options if opts is a true boolean
-  if (typeof opts === "boolean") {
-    opts = { create: true, update: true };
-  }
+  // Get static attributes array
+  const attributes = model.getPersistentAttributes();
 
-  // Append key to relevant arrays
-  if (opts.create) {
-    if (opts.formData) {
-      model[createKeys.formDataAttributes].push(key);
+  // If attribute does not exist, add it to array
+  if (!attributes.find((attr) => attr.key === key)) {
+    console.log("New Attribute Found: ", model, key);
+
+    const defaultOpts: BawAttributeOptions = {
+      create: true,
+      update: true,
+      supportedFormats: ["json"],
+    };
+
+    if (opts === true) {
+      attributes.push({ key, ...defaultOpts });
     } else {
-      model[createKeys.jsonAttributes].push(key);
+      attributes.push({ key, ...defaultOpts, ...opts });
     }
-  }
-  if (opts.update) {
-    if (opts.formData) {
-      model[updateKeys.formDataAttributes].push(key);
-    } else {
-      model[updateKeys.jsonAttributes].push(key);
-    }
+  } else {
+    console.log("Cache Hit: ", key);
   }
 }
 
 /**
  * Decorator wrapper for persistAttr function
  */
-export function bawPersistAttr(opts: BawPersistAttributeOptions = true) {
-  return function (model: AbstractModel, key: string) {
+export function bawPersistAttr(opts?: Partial<BawAttributeOptions>) {
+  return function (model: AbstractModel, key: string): void {
     persistAttr(model, key, opts);
   };
 }
@@ -201,9 +203,9 @@ export function bawDuration<Model>(opts?: BawDecoratorOptions<Model>) {
  */
 function createDecorator<Model>(
   opts: BawDecoratorOptions<Model> = {},
-  setValue: (model: AbstractModel, key: symbol, ...args: any[]) => void
+  setValue: (model: any, key: symbol, ...args: any[]) => void
 ) {
-  return function (model: AbstractModel, key: string) {
+  return function (model: AbstractModel, key: string): void {
     // Store decorated keys value
     const decoratedKey = Symbol("_" + key);
     let keySetter: (args: any) => void;
@@ -215,10 +217,10 @@ function createDecorator<Model>(
 
       // Update override key access
       Object.defineProperty(model, opts.key, {
-        get() {
+        get(): any {
           return this[overrideKey];
         },
-        set(args: any) {
+        set(args: any): void {
           // Update override key and set decorated key
           this[overrideKey] = args;
           setValue(this, decoratedKey, args);
@@ -227,14 +229,14 @@ function createDecorator<Model>(
       });
     } else {
       // Whenever someone tries to set attribute, update decorated value instead
-      keySetter = function (args: any) {
+      keySetter = function (args: any): void {
         setValue(this, decoratedKey, args);
       };
     }
 
     // Update attribute access
     Object.defineProperty(model, key, {
-      get() {
+      get(): any {
         // If model was never set, it must be undefined
         if (this[decoratedKey] === undefined) {
           setValue(this, decoratedKey, undefined);
@@ -256,25 +258,9 @@ export interface BawDecoratorOptions<T> {
   /**
    * Call persistAttr with these options
    */
-  persist?: BawPersistAttributeOptions;
+  persist?: boolean | Partial<BawAttributeOptions>;
   /**
    * Override key to read field data from another field
    */
   key?: keyof T;
 }
-
-/**
- * Persistent attribute options for abstract models. This is used when
- * determining which properties `toJson()` and `toFormData()` will return. True
- * is shorthand for `{create: true, update: true}`
- */
-type BawPersistAttributeOptions =
-  | boolean
-  | {
-      /** Include attribute in create requests for the model */
-      create?: boolean;
-      /** Include attribute in update requests for the model */
-      update?: boolean;
-      /** Serve this value in a form data request, instead of the usual json */
-      formData?: boolean;
-    };

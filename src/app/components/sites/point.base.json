@@ -75,7 +75,7 @@
       }
     },
     {
-      "key": "images",
+      "key": "imageUrls",
       "hide": true,
       "templateOptions": {
         "label": "Images",

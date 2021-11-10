@@ -8,6 +8,7 @@ import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 import {
+  BawAttributeMeta,
   bawCollection,
   bawDateTime,
   BawDecoratorOptions,
@@ -23,19 +24,49 @@ class BaseModel extends AbstractModel {
 }
 
 describe("Attribute Decorators", () => {
+  function getModelKeys(
+    model: AbstractModel,
+    supportedFormat: "json" | "formData",
+    callback: (attr: BawAttributeMeta) => boolean
+  ): string[] {
+    return model
+      .getPersistentAttributes()
+      .filter((attr) => attr.supportedFormats.includes(supportedFormat))
+      .filter(callback)
+      .map((attr) => attr.key);
+  }
+
   function assertCreateJsonAttributes(model: AbstractModel, keys: string[]) {
-    expect(model[AbstractModel.keys.create.jsonAttributes]).toEqual(keys);
+    expect(getModelKeys(model, "json", (attr) => attr.create)).toEqual(keys);
   }
 
   function assertUpdateJsonAttributes(model: AbstractModel, keys: string[]) {
-    expect(model[AbstractModel.keys.update.jsonAttributes]).toEqual(keys);
+    expect(getModelKeys(model, "json", (attr) => attr.update)).toEqual(keys);
+  }
+
+  function assertCreateFormDataAttributes(
+    model: AbstractModel,
+    keys: string[]
+  ) {
+    expect(getModelKeys(model, "formData", (attr) => attr.create)).toEqual(
+      keys
+    );
+  }
+
+  function assertUpdateFormDataAttributes(
+    model: AbstractModel,
+    keys: string[]
+  ) {
+    expect(getModelKeys(model, "formData", (attr) => attr.update)).toEqual(
+      keys
+    );
   }
 
   describe("BawPersistAttr", () => {
     describe("json", () => {
       it("should append key to model create attributes", () => {
         class MockModel extends BaseModel {
-          @bawPersistAttr({ create: true })
+          @bawPersistAttr({ create: true, update: false })
           public readonly name: string;
         }
         const model = new MockModel({});
@@ -45,7 +76,7 @@ describe("Attribute Decorators", () => {
 
       it("should append key to model update attributes", () => {
         class MockModel extends BaseModel {
-          @bawPersistAttr({ update: true })
+          @bawPersistAttr({ create: false, update: true })
           public readonly name: string;
         }
         const model = new MockModel({});
@@ -55,9 +86,9 @@ describe("Attribute Decorators", () => {
 
       it("should append multiple keys to model create attributes", () => {
         class MockModel extends BaseModel {
-          @bawPersistAttr({ create: true })
+          @bawPersistAttr({ create: true, update: false })
           public readonly name: string;
-          @bawPersistAttr({ create: true })
+          @bawPersistAttr({ create: true, update: false })
           public readonly value: number;
         }
         const model = new MockModel({});
@@ -67,9 +98,9 @@ describe("Attribute Decorators", () => {
 
       it("should append multiple keys to model update attributes", () => {
         class MockModel extends BaseModel {
-          @bawPersistAttr({ update: true })
+          @bawPersistAttr({ create: false, update: true })
           public readonly name: string;
-          @bawPersistAttr({ update: true })
+          @bawPersistAttr({ create: false, update: true })
           public readonly value: number;
         }
         const model = new MockModel({});
@@ -101,25 +132,13 @@ describe("Attribute Decorators", () => {
     });
 
     describe("formData", () => {
-      function assertCreateFormDataAttributes(
-        model: AbstractModel,
-        keys: string[]
-      ) {
-        const key = AbstractModel.keys.create.formDataAttributes;
-        expect(model[key]).toEqual(keys);
-      }
-
-      function assertUpdateFormDataAttributes(
-        model: AbstractModel,
-        keys: string[]
-      ) {
-        const key = AbstractModel.keys.update.formDataAttributes;
-        expect(model[key]).toEqual(keys);
-      }
-
       it("should append key to model create attributes", () => {
         class MockModel extends BaseModel {
-          @bawPersistAttr({ create: true, formData: true })
+          @bawPersistAttr({
+            create: true,
+            update: false,
+            supportedFormats: ["formData"],
+          })
           public readonly name: string;
         }
         const model = new MockModel({});
@@ -129,7 +148,11 @@ describe("Attribute Decorators", () => {
 
       it("should append key to model update attributes", () => {
         class MockModel extends BaseModel {
-          @bawPersistAttr({ update: true, formData: true })
+          @bawPersistAttr({
+            create: false,
+            update: true,
+            supportedFormats: ["formData"],
+          })
           public readonly name: string;
         }
         const model = new MockModel({});
@@ -139,9 +162,17 @@ describe("Attribute Decorators", () => {
 
       it("should append multiple keys to model create attributes", () => {
         class MockModel extends BaseModel {
-          @bawPersistAttr({ create: true, formData: true })
+          @bawPersistAttr({
+            create: true,
+            update: false,
+            supportedFormats: ["formData"],
+          })
           public readonly name: string;
-          @bawPersistAttr({ create: true, formData: true })
+          @bawPersistAttr({
+            create: true,
+            update: false,
+            supportedFormats: ["formData"],
+          })
           public readonly value: number;
         }
         const model = new MockModel({});
@@ -151,9 +182,17 @@ describe("Attribute Decorators", () => {
 
       it("should append multiple keys to model update attributes", () => {
         class MockModel extends BaseModel {
-          @bawPersistAttr({ update: true, formData: true })
+          @bawPersistAttr({
+            create: false,
+            update: true,
+            supportedFormats: ["formData"],
+          })
           public readonly name: string;
-          @bawPersistAttr({ update: true, formData: true })
+          @bawPersistAttr({
+            create: false,
+            update: true,
+            supportedFormats: ["formData"],
+          })
           public readonly value: number;
         }
         const model = new MockModel({});
@@ -163,7 +202,7 @@ describe("Attribute Decorators", () => {
 
       it("should append key to model attributes", () => {
         class MockModel extends BaseModel {
-          @bawPersistAttr({ create: true, update: true, formData: true })
+          @bawPersistAttr({ supportedFormats: ["formData"] })
           public readonly name: string;
         }
         const model = new MockModel({});
@@ -173,9 +212,9 @@ describe("Attribute Decorators", () => {
 
       it("should append multiple keys to model attributes", () => {
         class MockModel extends BaseModel {
-          @bawPersistAttr({ create: true, update: true, formData: true })
+          @bawPersistAttr({ supportedFormats: ["formData"] })
           public readonly name: string;
-          @bawPersistAttr({ create: true, update: true, formData: true })
+          @bawPersistAttr({ supportedFormats: ["formData"] })
           public readonly value: number;
         }
         const model = new MockModel({});
@@ -227,7 +266,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on create option", () => {
       const model = createModel(
         { images: defaultImageUrls },
-        { persist: { create: true } }
+        { persist: { create: true, update: false } }
       );
       assertCreateJsonAttributes(model, ["images"]);
       assertUpdateJsonAttributes(model, []);
@@ -236,7 +275,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on update option", () => {
       const model = createModel(
         { images: defaultImageUrls },
-        { persist: { update: true } }
+        { persist: { create: false, update: true } }
       );
       assertCreateJsonAttributes(model, []);
       assertUpdateJsonAttributes(model, ["images"]);
@@ -354,7 +393,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on create option", () => {
       const model = createModel(
         { ids: [1, 2, 3] },
-        { persist: { create: true } }
+        { persist: { create: true, update: false } }
       );
       assertCreateJsonAttributes(model, ["ids"]);
       assertUpdateJsonAttributes(model, []);
@@ -363,7 +402,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on update option", () => {
       const model = createModel(
         { ids: [1, 2, 3] },
-        { persist: { update: true } }
+        { persist: { create: false, update: true } }
       );
       assertCreateJsonAttributes(model, []);
       assertUpdateJsonAttributes(model, ["ids"]);
@@ -438,7 +477,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on create option", () => {
       const model = createModel(
         { date: defaultDate.toISO() },
-        { persist: { create: true } }
+        { persist: { create: true, update: false } }
       );
       assertCreateJsonAttributes(model, ["date"]);
       assertUpdateJsonAttributes(model, []);
@@ -447,7 +486,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on update option", () => {
       const model = createModel(
         { date: defaultDate.toISO() },
-        { persist: { update: true } }
+        { persist: { create: false, update: true } }
       );
       assertCreateJsonAttributes(model, []);
       assertUpdateJsonAttributes(model, ["date"]);
@@ -518,7 +557,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on create option", () => {
       const model = createModel(
         { duration: defaultSeconds },
-        { persist: { create: true } }
+        { persist: { create: true, update: false } }
       );
       assertCreateJsonAttributes(model, ["duration"]);
       assertUpdateJsonAttributes(model, []);
@@ -527,7 +566,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on update option", () => {
       const model = createModel(
         { duration: defaultSeconds },
-        { persist: { update: true } }
+        { persist: { create: false, update: true } }
       );
       assertCreateJsonAttributes(model, []);
       assertUpdateJsonAttributes(model, ["duration"]);

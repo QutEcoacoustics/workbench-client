@@ -51,7 +51,11 @@ describe("AbstractModel", () => {
 
       it(`should handle ${type} on toJSON({create: true}) request`, () => {
         class Model extends MockModel {
-          @bawPersistAttr({ create: true })
+          @bawPersistAttr({
+            create: true,
+            update: false,
+            supportedFormats: ["json"],
+          })
           public test: any;
         }
         const model = new Model({ id: 1, test: value });
@@ -62,7 +66,11 @@ describe("AbstractModel", () => {
 
       it(`should handle ${type} on toJSON({update: true}) request`, () => {
         class Model extends MockModel {
-          @bawPersistAttr({ update: true })
+          @bawPersistAttr({
+            create: false,
+            update: true,
+            supportedFormats: ["json"],
+          })
           public test: any;
         }
         const model = new Model({ id: 1, test: value });
@@ -96,9 +104,9 @@ describe("AbstractModel", () => {
 
     it("should handle multiple on toJSON({create: true}) request", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ create: true })
+        @bawPersistAttr({ create: true, supportedFormats: ["json"] })
         public name: string;
-        @bawPersistAttr({ create: true })
+        @bawPersistAttr({ create: true, supportedFormats: ["json"] })
         public set: Set<number>;
       }
       const model = new Model(defaultData);
@@ -107,9 +115,9 @@ describe("AbstractModel", () => {
 
     it("should handle multiple on toJSON({update: true}) request", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ update: true })
+        @bawPersistAttr({ update: true, supportedFormats: ["json"] })
         public name: string;
-        @bawPersistAttr({ update: true })
+        @bawPersistAttr({ update: true, supportedFormats: ["json"] })
         public set: Set<number>;
       }
       const model = new Model(defaultData);
@@ -169,7 +177,11 @@ describe("AbstractModel", () => {
 
       it(`should handle ${type} on toFormData({create: true}) request`, () => {
         class Model extends MockModel {
-          @bawPersistAttr({ create: true, formData: true })
+          @bawPersistAttr({
+            create: true,
+            update: false,
+            supportedFormats: ["formData"],
+          })
           public test: any;
         }
         const model = new Model({ id: 1, test: value });
@@ -180,7 +192,11 @@ describe("AbstractModel", () => {
 
       it(`should handle ${type} on toFormData({update: true}) request`, () => {
         class Model extends MockModel {
-          @bawPersistAttr({ update: true, formData: true })
+          @bawPersistAttr({
+            create: false,
+            update: true,
+            supportedFormats: ["formData"],
+          })
           public test: any;
         }
         const model = new Model({ id: 1, test: value });
@@ -214,9 +230,9 @@ describe("AbstractModel", () => {
 
     it("should handle multiple on toFormData({create: true}) request", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ create: true })
+        @bawPersistAttr({ create: true, supportedFormats: ["formData"] })
         public name: string;
-        @bawPersistAttr({ create: true })
+        @bawPersistAttr({ create: true, supportedFormats: ["formData"] })
         public set: Set<number>;
       }
       const model = new Model(defaultData);
@@ -225,9 +241,9 @@ describe("AbstractModel", () => {
 
     it("should handle multiple on toFormData({update: true}) request", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ update: true })
+        @bawPersistAttr({ update: true, supportedFormats: ["formData"] })
         public name: string;
-        @bawPersistAttr({ update: true })
+        @bawPersistAttr({ update: true, supportedFormats: ["formData"] })
         public set: Set<number>;
       }
       const model = new Model(defaultData);

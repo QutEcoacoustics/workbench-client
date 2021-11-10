@@ -55,7 +55,7 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public readonly descriptionHtmlTagline?: Description;
   @bawImage<IProject>(`${assetRoot}/images/project/project_span4.png`)
   public readonly imageUrls!: ImageUrl[];
-  @bawPersistAttr({ create: true, update: true, formData: true })
+  @bawPersistAttr({ supportedFormats: ["formData"] })
   public readonly image?: File;
   public readonly accessLevel?: AccessLevel;
   public readonly creatorId?: Id;
