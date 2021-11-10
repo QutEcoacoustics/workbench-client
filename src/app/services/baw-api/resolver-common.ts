@@ -361,13 +361,9 @@ function convertToId(id: string): Id {
 export function hasResolvedSuccessfully(
   resolvedModelList: ResolvedModelList
 ): boolean {
-  for (const key of Object.keys(resolvedModelList)) {
-    const model = resolvedModelList[key];
-    if (!isInstantiated(model) || isApiErrorDetails(model)) {
-      return false;
-    }
-  }
-  return true;
+  return Object.values(resolvedModelList).every(
+    (model) => isInstantiated(model) && !isApiErrorDetails(model)
+  );
 }
 
 /**
