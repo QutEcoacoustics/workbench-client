@@ -14,8 +14,8 @@ merge.method = "rebase"
 # https://kodiakhq.com/docs/config-reference#mergeoptimistic_updates
 merge.optimistic_updates = false
 
-https://kodiakhq.com/docs/config-reference#mergenotify_on_conflict
+# https://kodiakhq.com/docs/config-reference#mergenotify_on_conflict
 merge.notify_on_conflict = false
 
-https://kodiakhq.com/docs/config-reference#mergeprioritize_ready_to_merge
+# https://kodiakhq.com/docs/config-reference#mergeprioritize_ready_to_merge
 merge.prioritize_ready_to_merge = true
