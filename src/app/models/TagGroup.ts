@@ -20,7 +20,7 @@ export interface ITagGroup extends HasCreator {
  * A tag group model
  */
 export class TagGroup extends AbstractModel<ITagGroup> implements ITagGroup {
-  public readonly kind = "tag_group";
+  public readonly kind = "Tag Group";
   public readonly id?: Id;
   @bawPersistAttr()
   public readonly groupIdentifier?: string;

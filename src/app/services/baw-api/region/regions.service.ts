@@ -50,7 +50,7 @@ export class RegionsService extends StandardApi<Region, [IdOr<Project>]> {
     return this.apiShow(endpoint(project, model, emptyParam));
   }
   public create(model: Region, project: IdOr<Project>): Observable<Region> {
-    return this.apiCreateMultipart(
+    return this.apiCreate(
       endpoint(project, emptyParam, emptyParam),
       (region) => endpoint(project, region, emptyParam),
       model
@@ -91,7 +91,7 @@ export class ShallowRegionsService extends StandardApi<Region> {
     return this.apiShow(endpointShallow(model, emptyParam));
   }
   public create(model: Region): Observable<Region> {
-    return this.apiCreateMultipart(
+    return this.apiCreate(
       endpointShallow(emptyParam, emptyParam),
       (region) => endpointShallow(region, emptyParam),
       model

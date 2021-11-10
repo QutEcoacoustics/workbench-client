@@ -33,8 +33,6 @@ function persistAttr(
 
   // If attribute does not exist, add it to array
   if (!attributes.find((attr) => attr.key === key)) {
-    console.log("New Attribute Found: ", model, key);
-
     const defaultOpts: BawAttributeOptions = {
       create: true,
       update: true,
@@ -46,8 +44,6 @@ function persistAttr(
     } else {
       attributes.push({ key, ...defaultOpts, ...opts });
     }
-  } else {
-    console.log("Cache Hit: ", key);
   }
 }
 

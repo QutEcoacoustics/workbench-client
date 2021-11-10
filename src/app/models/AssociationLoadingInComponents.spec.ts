@@ -27,7 +27,7 @@ class MockModel extends AbstractModel {
   public get viewUrl(): string {
     throw new Error("Method not implemented.");
   }
-  public toJSON(_: any): any {
+  public getJsonAttributes(_: any): any {
     throw new Error("Method not implemented.");
   }
 }

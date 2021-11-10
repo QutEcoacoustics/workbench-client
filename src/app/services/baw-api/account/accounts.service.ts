@@ -60,7 +60,11 @@ export class AccountsService extends StandardApi<User> {
     );
   }
   public create(model: User): Observable<User> {
-    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(emptyParam, emptyParam),
+      (user) => endpoint(user, emptyParam),
+      model
+    );
   }
   public update(model: User): Observable<User> {
     return this.apiUpdate(endpoint(model, emptyParam), model);

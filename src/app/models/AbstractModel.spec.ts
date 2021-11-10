@@ -16,15 +16,15 @@ export class MockModel extends AbstractModel {
 describe("AbstractModel", () => {
   describe("toJSON", () => {
     const assertToJson = (model: AbstractModel, result: Record<string, any>) =>
-      expect(model.toJSON()).toEqual(result);
+      expect(model.getJsonAttributes()).toEqual(result);
     const assertToJsonWithCreate = (
       model: AbstractModel,
       result: Record<string, any>
-    ) => expect(model.toJSON({ create: true })).toEqual(result);
+    ) => expect(model.getJsonAttributes({ create: true })).toEqual(result);
     const assertToJsonWithUpdate = (
       model: AbstractModel,
       result: Record<string, any>
-    ) => expect(model.toJSON({ update: true })).toEqual(result);
+    ) => expect(model.getJsonAttributes({ update: true })).toEqual(result);
 
     [
       { type: "undefined", value: undefined, output: undefined },
@@ -94,7 +94,9 @@ describe("AbstractModel", () => {
       const mockInjector: Injector = new MockInjector();
       const model = new MockModel(defaultData, mockInjector);
       expect(model["injector"]).toEqual(mockInjector);
-      expect<any>(Object.keys(model.toJSON())).not.toContain("injector");
+      expect<any>(Object.keys(model.getJsonAttributes())).not.toContain(
+        "injector"
+      );
     });
 
     it("should handle multiple on basic toJSON() request", () => {
@@ -132,7 +134,7 @@ describe("AbstractModel", () => {
         public value0: any;
       }
       const model = new Model({ value0: "value" });
-      expect(model.hasFormData()).toBeTrue();
+      expect(model.hasFormDataOnlyAttributes()).toBeTrue();
     });
 
     it("should handle detecting falsy values", () => {
@@ -141,7 +143,7 @@ describe("AbstractModel", () => {
         public value0: any;
       }
       const model = new Model({ value0: 0 });
-      expect(model.hasFormData()).toBeTrue();
+      expect(model.hasFormDataOnlyAttributes()).toBeTrue();
     });
 
     it("should return true if only one attribute is instantiated", () => {
@@ -152,7 +154,7 @@ describe("AbstractModel", () => {
         public value1: any;
       }
       const model = new Model({ value0: "value" });
-      expect(model.hasFormData()).toBeTrue();
+      expect(model.hasFormDataOnlyAttributes()).toBeTrue();
     });
     it("should return false is no attributes are instantiated", () => {
       class Model extends MockModel {
@@ -162,13 +164,13 @@ describe("AbstractModel", () => {
         public value1: any;
       }
       const model = new Model({});
-      expect(model.hasFormData()).toBeFalse();
+      expect(model.hasFormDataOnlyAttributes()).toBeFalse();
     });
 
     it("should return false if no attributes exist", () => {
       class Model extends MockModel {}
       const model = new Model({});
-      expect(model.hasFormData()).toBeFalse();
+      expect(model.hasFormDataOnlyAttributes()).toBeFalse();
     });
   });
 
@@ -176,19 +178,20 @@ describe("AbstractModel", () => {
     const assertToFormData = (
       model: AbstractModel,
       result: Record<string, any>
-    ) => expect(model.toFormData()).toEqual(createFormData(result));
+    ) =>
+      expect(model.getFormDataOnlyAttributes()).toEqual(createFormData(result));
     const assertToFormDataWithCreate = (
       model: AbstractModel,
       result: Record<string, any>
     ) =>
-      expect(model.toFormData({ create: true })).toEqual(
+      expect(model.getFormDataOnlyAttributes({ create: true })).toEqual(
         createFormData(result)
       );
     const assertToFormDataWithUpdate = (
       model: AbstractModel,
       result: Record<string, any>
     ) =>
-      expect(model.toFormData({ update: true })).toEqual(
+      expect(model.getFormDataOnlyAttributes({ update: true })).toEqual(
         createFormData(result)
       );
     const createFormData = (obj: Record<string, any>) => {
@@ -267,7 +270,9 @@ describe("AbstractModel", () => {
       const mockInjector: Injector = new MockInjector();
       const model = new MockModel(defaultData, mockInjector);
       expect(model["injector"]).toEqual(mockInjector);
-      expect<any>(Object.keys(model.toFormData())).not.toContain("injector");
+      expect<any>(Object.keys(model.getFormDataOnlyAttributes())).not.toContain(
+        "injector"
+      );
     });
 
     it("should handle multiple on basic toFormData() request", () => {

@@ -33,7 +33,7 @@ export interface IStatisticsSummary {
 }
 
 export class StatisticsSummary extends AbstractModelWithoutId {
-  public readonly kind = "statistics_summary";
+  public readonly kind = "Statistics Summary";
   public readonly usersOnline: number;
   public readonly usersTotal: number;
   @bawDateTime()
@@ -69,7 +69,7 @@ export interface IStatisticsRecent {
 }
 
 export class StatisticsRecent extends AbstractModelWithoutId {
-  public readonly kind = "statistics_recent";
+  public readonly kind = "Statistics Recent";
   @bawCollection()
   public readonly audioRecordingIds: Ids;
   @bawCollection()
@@ -97,7 +97,7 @@ export interface IStatistics {
 }
 
 export class Statistics extends AbstractModelWithoutId {
-  public readonly kind = "statistics";
+  public readonly kind = "Statistics";
   public readonly summary: StatisticsSummary;
   public readonly recent: StatisticsRecent;
 

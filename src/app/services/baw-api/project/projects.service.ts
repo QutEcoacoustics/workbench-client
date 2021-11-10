@@ -44,7 +44,7 @@ export class ProjectsService extends StandardApi<Project> {
     return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: Project): Observable<Project> {
-    return this.apiCreateMultipart(
+    return this.apiCreate(
       endpoint(emptyParam, emptyParam),
       (project) => endpoint(project, emptyParam),
       model

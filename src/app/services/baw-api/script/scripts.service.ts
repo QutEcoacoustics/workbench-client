@@ -44,7 +44,11 @@ export class ScriptsService extends NonDestructibleApi<Script> {
   }
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
   public create(model: Script): Observable<Script> {
-    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(emptyParam, emptyParam),
+      (script) => endpoint(script, emptyParam),
+      model
+    );
   }
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
   public update(model: Script): Observable<Script> {

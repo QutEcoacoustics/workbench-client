@@ -40,10 +40,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    */
   public abstract get viewUrl(): string;
 
-  /**
-   * Model type name. This should match the name set in baw-server as it may
-   * be used in multi-part requests
-   */
+  /** Model type name */
   public readonly kind: string;
 
   /**
@@ -60,32 +57,55 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     return this.viewUrl;
   }
 
-  /** Convert model to JSON object */
-  public toJSON(opts?: ModelSerializationOptions): Partial<this> {
+  public toJSON(): Partial<this> {
+    return this.toObject(this.getModelAttributes());
+  }
+
+  /**
+   * Convert model to JSON compatible object containing attributes which should
+   * be sent in a JSON API request
+   */
+  public getJsonAttributes(opts?: ModelSerializationOptions): Partial<this> {
     return this.toObject(this.getModelAttributes(opts));
   }
 
-  /** Determine if model will return FormData */
-  public hasFormData(opts?: ModelSerializationOptions): boolean {
+  /**
+   * Determine if the current model has any attributes set which should be sent
+   * in a multipart form API request
+   */
+  public hasFormDataOnlyAttributes(opts?: ModelSerializationOptions): boolean {
     return this.getModelAttributes({ ...opts, formData: true }).some((attr) =>
       isInstantiated(this[attr])
     );
   }
 
-  /** Convert model to FormData */
-  public toFormData(opts?: ModelSerializationOptions): FormData {
+  /**
+   * Convert model to FormData containing attributes which should be sent in a
+   * multipart form API request. Call `hasFormDataOnlyAttributes` before using
+   * this value.
+   */
+  public getFormDataOnlyAttributes(opts?: ModelSerializationOptions): FormData {
     const output = new FormData();
     const keys = this.getModelAttributes({ ...opts, formData: true });
     const data = this.toObject(keys);
 
     for (const attr of Object.keys(data)) {
+      // Do not include undefined/null data
+      if (!isInstantiated(data[attr])) {
+        continue;
+      }
+
       /*
        * Do not surround attribute name in quotes, it is not a valid input and
        * baw-server will return a 500 response. Attributes are in the form of
        * model_name[attribute_name]
+       *
+       * NOTE: For JSON data, our interceptor converts keys and values to
+       * snakeCase, this case is more one-off and so an interceptor has not been built
        */
+      const modelName = snakeCase(this.constructor.name);
       const snakeCaseAttr = snakeCase(attr);
-      output.append(`${this.kind}[${snakeCaseAttr}]`, data[attr]);
+      output.append(`${modelName}[${snakeCaseAttr}]`, data[attr]);
     }
     return output;
   }

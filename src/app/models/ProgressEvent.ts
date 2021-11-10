@@ -14,7 +14,7 @@ export class ProgressEvent
   extends AbstractModel<IProgressEvent>
   implements IProgressEvent
 {
-  public readonly kind = "progress_event";
+  public readonly kind = "Progress Event";
   public readonly id?: Id;
   public readonly creatorId?: Id;
   @bawPersistAttr()

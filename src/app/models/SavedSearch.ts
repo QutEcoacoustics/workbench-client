@@ -23,7 +23,7 @@ export class SavedSearch
   extends AbstractModel<ISavedSearch>
   implements ISavedSearch
 {
-  public readonly kind = "saved_search";
+  public readonly kind = "Saved Search";
   public readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;

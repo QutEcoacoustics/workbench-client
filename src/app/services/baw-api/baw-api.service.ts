@@ -211,55 +211,51 @@ export class BawApiService<Model extends AbstractModel> {
   }
 
   /**
-   * Get response from create route
-   *
-   * @param path API path
-   * @param body Request body
-   */
-  protected apiCreate(path: string, body: AbstractModel): Observable<Model> {
-    const jsonData = body.toJSON?.({ create: true });
-    return this.httpPost(path, jsonData ?? body).pipe(
-      map(this.handleSingleResponse)
-    );
-  }
-
-  /**
-   * Get response from create route with an additional multipart body update
-   * request
+   * Get response from create route. If the model has form data only attributes,
+   * this will make an additional update request.
    *
    * @param createPath API create path
    * @param updatePath API update path
    * @param body Request body
    */
-  protected apiCreateMultipart(
+  protected apiCreate(
     createPath: string,
     updatePath: (model: Model) => string,
     body: AbstractModel
   ): Observable<Model> {
-    const formData = body.toFormData({ create: true });
-    return this.apiCreate(createPath, body).pipe(
-      mergeMap((model) =>
-        this.httpPut(updatePath(model), formData, multiPartHeaders)
-      ),
+    const jsonData = body?.getJsonAttributes?.({ create: true });
+    const request = this.httpPost(createPath, jsonData ?? body).pipe(
       map(this.handleSingleResponse)
     );
+
+    if (body?.hasFormDataOnlyAttributes({ create: true })) {
+      const formData = body.getFormDataOnlyAttributes({ create: true });
+      return request.pipe(
+        mergeMap((model) =>
+          this.httpPut(updatePath(model), formData, multiPartHeaders)
+        ),
+        map(this.handleSingleResponse)
+      );
+    }
+
+    return request;
   }
 
   /**
-   * Get response from update route. If the model has form data, this will make
-   * an additional multipart update request.
+   * Get response from update route. If the model has form data only attributes,
+   * this will make an additional multipart update request.
    *
    * @param path API path
    * @param body Request body
    */
   protected apiUpdate(path: string, body: AbstractModel): Observable<Model> {
-    const jsonData = body.toJSON?.({ update: true });
+    const jsonData = body.getJsonAttributes?.({ update: true });
     const request = this.httpPatch(path, jsonData ?? body).pipe(
       map(this.handleSingleResponse)
     );
 
-    if (body?.hasFormData({ update: true })) {
-      const formData = body.toFormData({ update: true });
+    if (body?.hasFormDataOnlyAttributes({ update: true })) {
+      const formData = body.getFormDataOnlyAttributes({ update: true });
       return request.pipe(
         mergeMap(() => this.httpPut(path, formData, multiPartHeaders)),
         map(this.handleSingleResponse)

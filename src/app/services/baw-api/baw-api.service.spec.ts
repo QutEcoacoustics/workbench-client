@@ -58,7 +58,7 @@ class MockModel extends AbstractModel implements IMockModel {
     super(data, modelInjector);
   }
 
-  public toJSON(_: any) {
+  public getJsonAttributes(_: any) {
     return {
       id: this.id,
       name: this.name,

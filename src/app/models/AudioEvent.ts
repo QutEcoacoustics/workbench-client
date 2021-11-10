@@ -37,7 +37,7 @@ export class AudioEvent
   extends AbstractModel<IAudioEvent>
   implements IAudioEvent
 {
-  public readonly kind = "audio_event";
+  public readonly kind = "Audio Event";
   public readonly id?: Id;
   @bawPersistAttr()
   public readonly audioRecordingId?: Id;

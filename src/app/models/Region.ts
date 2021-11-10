@@ -49,7 +49,7 @@ export interface IRegion extends HasAllUsers, HasDescription {
  * A region model.
  */
 export class Region extends AbstractModel<IRegion> implements IRegion {
-  public readonly kind = "region";
+  public readonly kind = "Region";
   public readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;
