@@ -18,6 +18,7 @@ import { asFormControl } from "./helper";
         class="input-group"
         style="border: 1px solid #ced4da; border-radius: 0.25rem;"
       >
+        <!-- Ensure only one file can be selected in input -->
         <input
           type="file"
           accept="image/*"
@@ -43,8 +44,9 @@ export class ImageInputComponent extends FieldType {
     // This should not be possible because only one file can be selected
     if (images.length !== 1) {
       // TODO Display error to user
-      console.error("File input returned multiple files");
-      return;
+      throw new Error(
+        "File input returned multiple files. This should only return one value"
+      );
     }
 
     this.formControl.setValue(images.item(0));
