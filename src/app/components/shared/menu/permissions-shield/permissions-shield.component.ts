@@ -50,18 +50,22 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
 
   public ngOnInit() {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+    this.model = this.retrieveModel(models);
 
-    if (!hasResolvedSuccessfully(models) || Object.keys(models).length === 0) {
+    if (!this.model) {
       return;
     }
 
-    this.model = this.retrieveModel(models);
     this.badges = this.createBadges(this.model);
     this.accessLevel = this.getAccessLevel(models as ResolvedModelList);
   }
 
   private retrieveModel(models: ResolvedModelList): AbstractModel {
     const modelKeys = Object.keys(models);
+
+    if (!hasResolvedSuccessfully(models) || modelKeys.length === 0) {
+      return undefined;
+    }
 
     // Grab model in order of priority, site, then region, then project
     const priority = [Site, Region, Project];
@@ -79,6 +83,8 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
         return models[model] as AbstractModel;
       }
     }
+
+    return undefined;
   }
 
   private createBadges(model: AbstractModel) {

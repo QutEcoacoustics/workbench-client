@@ -1,6 +1,8 @@
+import { PageInfo } from "@helpers/page/pageInfo";
 import { generateApiErrorDetailsV2 } from "@test/fakes/ApiErrorDetails";
+import { generatePageInfo } from "@test/helpers/general";
 import { MockModel } from "./mock/baseApiMock.service";
-import { retrieveResolvers } from "./resolver-common";
+import { hasResolvedSuccessfully, retrieveResolvers } from "./resolver-common";
 
 // TODO Write unit tests
 xdescribe("API Resolvers", () => {
@@ -10,82 +12,86 @@ xdescribe("API Resolvers", () => {
   describe("ShowResolver", () => {});
 });
 
+describe("hasResolvedSuccessfully", () => {
+  it("should return true if empty object", () => {
+    expect(hasResolvedSuccessfully({})).toBeTrue();
+  });
+
+  it("should return true if single model", () => {
+    const resolvedList = { model0: new MockModel({ id: 1 }) };
+    expect(hasResolvedSuccessfully(resolvedList)).toBeTrue();
+  });
+
+  it("should return true if multiple models", () => {
+    const resolvedList = {
+      model0: new MockModel({ id: 1 }),
+      model1: new MockModel({ id: 2 }),
+    };
+    expect(hasResolvedSuccessfully(resolvedList)).toBeTrue();
+  });
+
+  it("should return false if any model fails", () => {
+    const resolvedList = {
+      model0: new MockModel({ id: 1 }),
+      model1: generateApiErrorDetailsV2(),
+    };
+    expect(hasResolvedSuccessfully(resolvedList)).toBeFalse();
+  });
+
+  it("should return false if undefined model", () => {
+    expect(hasResolvedSuccessfully({ model0: undefined })).toBeFalse();
+  });
+});
+
 describe("retrieveResolvers", () => {
   it("should handle single resolver", () => {
-    const data: any = {
-      resolvers: { resolvedModel: "customResolver" },
-      resolvedModel: { model: new MockModel({ id: 1 }) },
-    };
-
-    expect(retrieveResolvers(data)).toEqual({
-      resolvedModel: new MockModel({ id: 1 }),
-    });
+    const model = new MockModel({ id: 1 });
+    const data = generatePageInfo({ model });
+    expect(retrieveResolvers(new PageInfo(data))).toEqual({ model0: model });
   });
 
   it("should handle array resolver", () => {
-    const data: any = {
-      resolvers: { resolvedModel: "customResolver" },
-      resolvedModel: { model: [new MockModel({ id: 1 })] },
-    };
-
-    expect(retrieveResolvers(data)).toEqual({
-      resolvedModel: [new MockModel({ id: 1 })],
-    });
+    const models = [new MockModel({ id: 1 })];
+    const data = generatePageInfo({ model: models });
+    expect(retrieveResolvers(new PageInfo(data))).toEqual({ model0: models });
   });
 
   it("should handle multiple resolvers", () => {
-    const data: any = {
-      resolvers: {
-        resolvedModel1: "customResolver1",
-        resolvedModel2: "customResolver2",
-      },
-      resolvedModel1: { model: new MockModel({ id: 1 }) },
-      resolvedModel2: { model: [new MockModel({ id: 2 })] },
-    };
-
-    expect(retrieveResolvers(data)).toEqual({
-      resolvedModel1: new MockModel({ id: 1 }),
-      resolvedModel2: [new MockModel({ id: 2 })],
-    });
+    const model0 = new MockModel({ id: 1 });
+    const model1 = [new MockModel({ id: 2 })];
+    const data = generatePageInfo({ model: model0 }, { model: model1 });
+    expect(retrieveResolvers(new PageInfo(data))).toEqual({ model0, model1 });
   });
 
   it("should handle single errored resolver", () => {
-    const error = generateApiErrorDetailsV2();
-    const data: any = {
-      resolvers: {
-        resolvedModel1: "customResolver1",
-        resolvedModel2: "customResolver2",
-        resolvedModel3: "customResolver3",
-      },
-      resolvedModel1: { model: [new MockModel({ id: 1 })] },
-      resolvedModel2: { error },
-      resolvedModel3: { model: [new MockModel({ id: 2 })] },
-    };
-
-    expect(retrieveResolvers(data)).toEqual({
-      resolvedModel1: new MockModel({ id: 1 }),
-      resolvedModel2: error,
-      resolvedModel3: [new MockModel({ id: 2 })],
+    const model0 = new MockModel({ id: 1 });
+    const model1 = generateApiErrorDetailsV2();
+    const model2 = [new MockModel({ id: 2 })];
+    const data = generatePageInfo(
+      { model: model0 },
+      { error: model1 },
+      { model: model2 }
+    );
+    expect(retrieveResolvers(new PageInfo(data))).toEqual({
+      model0,
+      model1,
+      model2,
     });
   });
 
   it("should handle multiple errored resolver", () => {
-    const error = generateApiErrorDetailsV2();
-    const data: any = {
-      resolvers: {
-        resolvedModel1: "customResolver1",
-        resolvedModel2: "customResolver2",
-        resolvedModel3: "customResolver2",
-      },
-      resolvedModel1: { error },
-      resolvedModel2: { error },
-      resolvedModel3: { error },
-    };
-
-    expect(retrieveResolvers(data)).toEqual({
-      resolvedModel1: error,
-      resolvedModel2: error,
-      resolvedModel3: error,
+    const model0 = generateApiErrorDetailsV2();
+    const model1 = generateApiErrorDetailsV2();
+    const model2 = generateApiErrorDetailsV2();
+    const data = generatePageInfo(
+      { error: model0 },
+      { error: model1 },
+      { error: model2 }
+    );
+    expect(retrieveResolvers(new PageInfo(data))).toEqual({
+      model0,
+      model1,
+      model2,
     });
   });
 });
