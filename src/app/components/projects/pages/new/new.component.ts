@@ -21,7 +21,6 @@ import { projectsMenuItemActions } from "../list/list.component";
 @Component({
   selector: "baw-projects-new",
   template: `
-    <!-- TODO Image input #608 -->
     <baw-form
       *ngIf="!failure"
       title="New Project"

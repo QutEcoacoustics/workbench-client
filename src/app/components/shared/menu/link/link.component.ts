@@ -5,7 +5,7 @@ import {
   Input,
   OnChanges,
 } from "@angular/core";
-import { ActivatedRoute, Params } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import {
   isInternalRoute,
@@ -79,19 +79,17 @@ export class MenuLinkComponent implements OnChanges {
     private activatedRoute: ActivatedRoute
   ) {}
 
-  public ngOnChanges() {
-    const params = this.activatedRoute.snapshot.params;
-
+  public ngOnChanges(): void {
     if (typeof this.link.disabled === "string") {
       this.disabledReason = this.link.disabled;
     }
 
     if (!this.isInternalLink) {
-      this.handleExternalLink(params);
+      this.handleExternalLink();
     }
   }
 
-  public get isInternalLink() {
+  public get isInternalLink(): boolean {
     return isInternalRoute(this.link);
   }
 
@@ -103,8 +101,8 @@ export class MenuLinkComponent implements OnChanges {
     return this.link as MenuLink;
   }
 
-  private handleExternalLink(params: Params) {
-    const uri = this.externalLink.uri(params);
+  private handleExternalLink(): void {
+    const uri = this.externalLink.uri(this.activatedRoute.snapshot.params);
 
     /*
      * TODO This is a potential future point of failure if the website and the api

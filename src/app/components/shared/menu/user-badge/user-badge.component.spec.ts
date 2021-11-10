@@ -146,7 +146,7 @@ describe("UserBadgeComponent", () => {
       spec.detectChanges();
       assertImage(
         getImage()[0],
-        user.image[0].url,
+        user.imageUrls[0].url,
         "custom username profile picture"
       );
     });

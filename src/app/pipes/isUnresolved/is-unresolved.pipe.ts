@@ -10,11 +10,7 @@ import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 })
 export class IsUnresolvedPipe implements PipeTransform {
   public transform(
-    value:
-      | AbstractModel
-      | AbstractModel[]
-      | Readonly<AbstractModel[]>
-      | AccessLevel
+    value: Readonly<AbstractModel | AbstractModel[]> | AccessLevel
   ): boolean {
     const isUnresolvedAccessLevel = value === AccessLevel.unresolved;
     const isSingle = value === UnresolvedModel.one;

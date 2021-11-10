@@ -60,7 +60,7 @@ function assertValue(
   } else if (isInstantiated(detail.model)) {
     assertModel(views[index], detail.model);
   } else if (isInstantiated(detail.image)) {
-    assertImageUrl(views[index], detail.image);
+    assertImages(views[index], detail.image);
   } else if (isInstantiated(detail.children)) {
     assertChildren(index, views, detail.children);
   } else {
@@ -101,7 +101,7 @@ function assertModel(view: HTMLDListElement, value: string) {
   expect(model.innerHTML.trim()).toBe(value);
 }
 
-function assertImageUrl(view: HTMLDListElement, value: string | ImageUrl[]) {
+function assertImages(view: HTMLDListElement, value: string | ImageUrl[]) {
   const image: HTMLImageElement = view.querySelector("#image");
   assertImage(
     image,

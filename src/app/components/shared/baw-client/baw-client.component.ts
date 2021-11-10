@@ -9,7 +9,10 @@ import {
 } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -85,7 +88,7 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
     const models = retrieveResolvers(data as PageInfo);
 
     // Don't load client on SSR or if error occurs
-    if (!models || this.isSsr) {
+    if (!hasResolvedSuccessfully(models) || this.isSsr) {
       this.url = undefined;
       return;
     }

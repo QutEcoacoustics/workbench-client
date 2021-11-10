@@ -4,38 +4,54 @@ import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 
+export interface BawAttributeOptions {
+  create: boolean;
+  update: boolean;
+  supportedFormats: Array<"json" | "formData">;
+}
+
+export interface BawAttributeMeta extends BawAttributeOptions {
+  key: string;
+}
+
+/**
+ * Persist an attribute of an abstract model so that the attribute will be sent
+ * during a specific type of API request determined by opts set
+ */
 function persistAttr(
   model: AbstractModel,
   key: string,
-  opts: boolean | BawPersistAttributeOptions
-) {
-  model[AbstractModel.createAttributesKey] ??= [];
-  model[AbstractModel.updateAttributesKey] ??= [];
-
-  if (typeof opts === "boolean") {
-    if (!opts) {
-      return;
-    }
-    model[AbstractModel.createAttributesKey].push(key);
-    model[AbstractModel.updateAttributesKey].push(key);
+  opts: boolean | Partial<BawAttributeOptions>
+): void {
+  // If opts is false, cancel early
+  if (opts === false) {
     return;
   }
 
-  if (opts.create) {
-    model[AbstractModel.createAttributesKey].push(key);
-  }
-  if (opts.update) {
-    model[AbstractModel.updateAttributesKey].push(key);
+  // Get static attributes array
+  const attributes = model.getPersistentAttributes();
+
+  // If attribute does not exist, add it to array
+  if (!attributes.find((attr) => attr.key === key)) {
+    const defaultOpts: BawAttributeOptions = {
+      create: true,
+      update: true,
+      supportedFormats: ["json"],
+    };
+
+    if (opts === true) {
+      attributes.push({ key, ...defaultOpts });
+    } else {
+      attributes.push({ key, ...defaultOpts, ...opts });
+    }
   }
 }
 
 /**
- * Add key to the models attributes
+ * Decorator wrapper for persistAttr function
  */
-export function bawPersistAttr(
-  opts: BawPersistAttributeOptions = { create: true, update: true }
-) {
-  return function (model: AbstractModel, key: string) {
+export function bawPersistAttr(opts?: Partial<BawAttributeOptions>) {
+  return function (model: AbstractModel, key: string): void {
     persistAttr(model, key, opts);
   };
 }
@@ -183,9 +199,9 @@ export function bawDuration<Model>(opts?: BawDecoratorOptions<Model>) {
  */
 function createDecorator<Model>(
   opts: BawDecoratorOptions<Model> = {},
-  setValue: (model: AbstractModel, key: symbol, ...args: any[]) => void
+  setValue: (model: any, key: symbol, ...args: any[]) => void
 ) {
-  return function (model: AbstractModel, key: string) {
+  return function (model: AbstractModel, key: string): void {
     // Store decorated keys value
     const decoratedKey = Symbol("_" + key);
     let keySetter: (args: any) => void;
@@ -197,10 +213,10 @@ function createDecorator<Model>(
 
       // Update override key access
       Object.defineProperty(model, opts.key, {
-        get() {
+        get(): any {
           return this[overrideKey];
         },
-        set(args: any) {
+        set(args: any): void {
           // Update override key and set decorated key
           this[overrideKey] = args;
           setValue(this, decoratedKey, args);
@@ -209,14 +225,14 @@ function createDecorator<Model>(
       });
     } else {
       // Whenever someone tries to set attribute, update decorated value instead
-      keySetter = function (args: any) {
+      keySetter = function (args: any): void {
         setValue(this, decoratedKey, args);
       };
     }
 
     // Update attribute access
     Object.defineProperty(model, key, {
-      get() {
+      get(): any {
         // If model was never set, it must be undefined
         if (this[decoratedKey] === undefined) {
           setValue(this, decoratedKey, undefined);
@@ -236,18 +252,11 @@ function createDecorator<Model>(
 
 export interface BawDecoratorOptions<T> {
   /**
-   * Persist key in models toJSON() method
+   * Call persistAttr with these options
    */
-  persist?: boolean | BawPersistAttributeOptions;
+  persist?: boolean | Partial<BawAttributeOptions>;
   /**
    * Override key to read field data from another field
    */
   key?: keyof T;
-}
-
-interface BawPersistAttributeOptions {
-  /** Include attribute in create requests for the model */
-  create?: boolean;
-  /** Include attribute in update requests for the model */
-  update?: boolean;
 }

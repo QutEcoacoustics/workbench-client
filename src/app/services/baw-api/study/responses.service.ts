@@ -46,7 +46,11 @@ export class ResponsesService extends StandardApi<Response, [IdOr<Study>]> {
     return this.apiShow(endpoint(study, model, emptyParam));
   }
   public create(model: Response, study: IdOr<Study>): Observable<Response> {
-    return this.apiCreate(endpoint(study, emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(study, emptyParam, emptyParam),
+      (response) => endpoint(study, response, emptyParam),
+      model
+    );
   }
   public update(model: Response, study: IdOr<Study>): Observable<Response> {
     return this.apiUpdate(endpoint(study, model, emptyParam), model);
@@ -79,7 +83,11 @@ export class ShallowResponsesService extends StandardApi<Response> {
     return this.apiShow(endpointShallow(model, emptyParam));
   }
   public create(model: Response): Observable<Response> {
-    return this.apiCreate(endpointShallow(emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpointShallow(emptyParam, emptyParam),
+      (response) => endpointShallow(response, emptyParam),
+      model
+    );
   }
   public update(model: Response): Observable<Response> {
     return this.apiUpdate(endpointShallow(model, emptyParam), model);

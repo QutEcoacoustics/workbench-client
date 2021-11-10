@@ -63,6 +63,7 @@ export class AudioEventsService extends StandardApi<
   ): Observable<AudioEvent> {
     return this.apiCreate(
       endpoint(audioRecording, emptyParam, emptyParam),
+      (audioEvent) => endpoint(audioRecording, audioEvent, emptyParam),
       model
     );
   }
@@ -83,7 +84,8 @@ export class AudioEventsService extends StandardApi<
 @Injectable()
 export class ShallowAudioEventsService
   extends BawApiService<AudioEvent>
-  implements ApiFilter<AudioEvent> {
+  implements ApiFilter<AudioEvent>
+{
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,

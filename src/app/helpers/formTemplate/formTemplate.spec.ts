@@ -27,7 +27,7 @@ class MockModel extends AbstractModel {
   public get viewUrl(): string {
     return getUnknownViewUrl("MockModel does not have a viewUrl");
   }
-  public toJSON(): any {
+  public getJsonAttributes(): any {
     return this;
   }
 }

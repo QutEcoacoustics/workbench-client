@@ -40,7 +40,11 @@ export class BookmarksService extends StandardApi<Bookmark> {
     return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: Bookmark): Observable<Bookmark> {
-    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(emptyParam, emptyParam),
+      (bookmark) => endpoint(bookmark, emptyParam),
+      model
+    );
   }
   public update(model: Bookmark): Observable<Bookmark> {
     return this.apiUpdate(endpoint(model, emptyParam), model);

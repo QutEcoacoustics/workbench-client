@@ -27,7 +27,6 @@ const projectKey = "project";
 @Component({
   selector: "baw-project-edit",
   template: `
-    <!-- TODO Image input #608 -->
     <baw-form
       *ngIf="!failure"
       [title]="title"

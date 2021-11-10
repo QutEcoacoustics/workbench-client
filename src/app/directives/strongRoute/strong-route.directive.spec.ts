@@ -5,14 +5,16 @@ import {
   RouterLinkWithHref,
 } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { MockModel } from "@baw-api/mock/baseApiMock.service";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
+import { generateApiErrorDetailsV2 } from "@test/fakes/ApiErrorDetails";
+import { generatePageInfo, nStepObservable } from "@test/helpers/general";
+import { Subject } from "rxjs";
 import { StrongRouteDirective } from "./strong-route.directive";
-
-// TODO Some tests work by bypassing the angular router. This can be solved by navigating
-// to a page with parameters set in the url. This will allow simulating the route changes
-// within the constraints of the testing framework
 
 describe("StrongRouteDirective", () => {
   let router: Router;
@@ -28,6 +30,31 @@ describe("StrongRouteDirective", () => {
     declarations: [StrongRouteDirective],
     imports: [RouterTestingModule],
   });
+
+  function interceptRouteParams(params: Params) {
+    const subject = new Subject();
+    spec.directive["_route"].params = subject;
+    return nStepObservable(subject, () => params);
+  }
+  async function setRouteParams(params: Params) {
+    const promise = interceptRouteParams(params);
+    spec.detectChanges();
+    await promise;
+    spec.detectChanges();
+  }
+
+  function interceptRouteData(data: IPageInfo) {
+    const subject = new Subject();
+    spec.directive["_route"].data = subject;
+    return nStepObservable(subject, () => data);
+  }
+
+  async function setRouteData(data: IPageInfo) {
+    const promise = interceptRouteData(data);
+    spec.detectChanges();
+    await promise;
+    spec.detectChanges();
+  }
 
   function assertUrlTree(url: string, queryParams: Params) {
     expect(spec.directive.urlTree).toEqual(
@@ -60,20 +87,23 @@ describe("StrongRouteDirective", () => {
           [queryParams]="queryParams"
         ></a>
       `,
-      { hostProps: { strongRoute, routeParams, queryParams } }
+      {
+        hostProps: { strongRoute, routeParams, queryParams },
+        detectChanges: false,
+      }
     );
     router = spec.inject(Router);
     route = spec.inject(ActivatedRoute);
   }
 
   it("should not interfere with routerLink if no [strongRoute]", () => {
-    const spectator = createRouterLink(
+    const routerLinkSpec = createRouterLink(
       '<a [routerLink]="link" [queryParams]="params"></a>',
       { hostProps: { link: "/home", params: { test: "value" } } }
     );
-    spectator.detectChanges();
+    routerLinkSpec.detectChanges();
 
-    const routerLink = spectator.query(RouterLinkWithHref);
+    const routerLink = routerLinkSpec.query(RouterLinkWithHref);
     expect(routerLink).toBeInstanceOf(RouterLinkWithHref);
     expect(routerLink.href).toContain("/home?test=value");
   });
@@ -148,19 +178,16 @@ describe("StrongRouteDirective", () => {
       assertRoute("/home?test=value&example=5");
     });
 
-    // TODO Update this to work through the router instead of bypassing it
-    it("should handle strongRoute with router query parameter", () => {
+    it("should handle strongRoute with router query parameter", async () => {
       const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
         testing: test,
       }));
       setup(childRoute);
-      spec.detectChanges();
-      spec.directive["angularRouteParams"] = { test: "value" };
+      await setRouteParams({ test: "value" });
       assertUrlTree("/home", { testing: "value" });
     });
 
-    // TODO Update this to work through the router instead of bypassing it
-    it("should handle strongRoute with multiple router query parameter", () => {
+    it("should handle strongRoute with multiple router query parameter", async () => {
       const childRoute = StrongRoute.newRoot().add(
         "home",
         ({ test, example }) => ({
@@ -169,13 +196,11 @@ describe("StrongRouteDirective", () => {
         })
       );
       setup(childRoute);
-      spec.detectChanges();
-      spec.directive["angularRouteParams"] = { example: 5, test: "value" };
+      await setRouteParams({ example: 5, test: "value" });
       assertUrlTree("/home", { testing: "value", testing2: 5 });
     });
 
-    // TODO Update this to work through the router instead of bypassing it
-    it("should combine route query parameters and queryParams", () => {
+    it("should combine route query parameters and queryParams", async () => {
       const childRoute = StrongRoute.newRoot().add(
         "home",
         ({ test, example }) => ({
@@ -184,9 +209,73 @@ describe("StrongRouteDirective", () => {
         })
       );
       setup(childRoute, undefined, { test: "value" });
-      spec.detectChanges();
-      spec.directive["angularRouteParams"] = { example: 5 };
+      await setRouteParams({ example: 5 });
       assertUrlTree("/home", { testing: "value", testing2: 5 });
+    });
+  });
+
+  describe("resolvedModels", () => {
+    it("should initially pass empty object to queryParams", async () => {
+      const childRoute = StrongRoute.newRoot().add("home", (_, models) => ({
+        testing: models,
+      }));
+      setup(childRoute);
+      // Do not return resolver, this is testing the default value before subject returns
+      interceptRouteData(generatePageInfo());
+      spec.detectChanges();
+      assertUrlTree("/home", { testing: {} });
+    });
+
+    it("should pass empty list of resolved models to queryParams", async () => {
+      const childRoute = StrongRoute.newRoot().add("home", (_, models) => ({
+        testing: models,
+      }));
+      setup(childRoute);
+      await setRouteData(generatePageInfo());
+      assertUrlTree("/home", { testing: {} });
+    });
+
+    it("should pass single resolved model to queryParams", async () => {
+      const childRoute = StrongRoute.newRoot().add("home", (_, { model0 }) => ({
+        testing: (model0 as MockModel)?.id,
+      }));
+      setup(childRoute);
+      await setRouteData(generatePageInfo({ model: new MockModel({ id: 1 }) }));
+      assertUrlTree("/home", { testing: 1 });
+    });
+
+    it("should pass multiple resolved models to queryParams", async () => {
+      const childRoute = StrongRoute.newRoot().add(
+        "home",
+        (_, { model0, model1 }) => ({
+          testing: (model0 as MockModel)?.id,
+          example: (model1 as MockModel)?.id,
+        })
+      );
+      setup(childRoute);
+      await setRouteData(
+        generatePageInfo(
+          { model: new MockModel({ id: 1 }) },
+          { model: new MockModel({ id: 5 }) }
+        )
+      );
+      assertUrlTree("/home", { testing: 1, example: 5 });
+    });
+
+    it("should pass failed model to queryParams", async () => {
+      const error = generateApiErrorDetailsV2();
+      const childRoute = StrongRoute.newRoot().add(
+        "home",
+        (_, { model0, model1 }) => ({
+          testing: (model0 as MockModel)?.id,
+          example: (model1 as ApiErrorDetails)?.status,
+        })
+      );
+      setup(childRoute);
+      await setRouteData(
+        generatePageInfo({ model: new MockModel({ id: 1 }) }, { error })
+      );
+      assertUrlTree("/home", { testing: 1, example: error.status });
     });
   });
 
@@ -205,14 +294,12 @@ describe("StrongRouteDirective", () => {
       assertUrlTree("/home", {});
     });
 
-    // TODO Update this to work through the router instead of bypassing it
-    it("should create url tree with query parameters from router", () => {
+    it("should create url tree with query parameters from router", async () => {
       const childRoute = StrongRoute.newRoot().add("home", ({ example }) => ({
         testing: example,
       }));
       setup(childRoute);
-      spec.detectChanges();
-      spec.directive["angularRouteParams"] = { example: 5 };
+      await setRouteParams({ example: 5 });
       assertUrlTree("/home", { testing: 5 });
     });
 
@@ -225,8 +312,7 @@ describe("StrongRouteDirective", () => {
       assertUrlTree("/home", { testing: "value" });
     });
 
-    // TODO Update this to work through the router instead of bypassing it
-    it("should create url tree with with custom and router query parameters", () => {
+    it("should create url tree with with custom and router query parameters", async () => {
       const childRoute = StrongRoute.newRoot().add(
         "home",
         ({ test, example }) => ({
@@ -235,8 +321,7 @@ describe("StrongRouteDirective", () => {
         })
       );
       setup(childRoute, undefined, { test: "value" });
-      spec.detectChanges();
-      spec.directive["angularRouteParams"] = { example: 5 };
+      await setRouteParams({ example: 5 });
       assertUrlTree("/home", { testing: "value", testing2: 5 });
     });
   });

@@ -8,6 +8,7 @@ import {
 import {
   ApiResponse,
   BawApiService,
+  Filters,
   Meta,
   STUB_MODEL_BUILDER,
 } from "@baw-api/baw-api.service";
@@ -16,6 +17,7 @@ import { SecurityService } from "@baw-api/security/security.service";
 import { UserService } from "@baw-api/user/user.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
+import { bawPersistAttr } from "@models/AttributeDecorators";
 import { SessionUser } from "@models/User";
 import {
   createHttpFactory,
@@ -46,29 +48,26 @@ class IMockModel {
 }
 
 class MockModel extends AbstractModel implements IMockModel {
+  public kind = "MockModel";
+  @bawPersistAttr()
   public readonly id?: number;
+  @bawPersistAttr()
   public readonly name?: string;
+  @bawPersistAttr()
   public readonly caseConversion?: {
     testConvert?: string;
   };
 
-  public constructor(data: IMockModel, modelInjector: Injector) {
+  public constructor(data: IMockModel, modelInjector?: Injector) {
     super(data, modelInjector);
   }
 
-  public toJSON(_: any) {
-    return {
-      id: this.id,
-      name: this.name,
-      caseConversion: this.caseConversion,
-    } as any;
-  }
-
-  public get viewUrl(): string {
+  public override get viewUrl(): string {
     return getUnknownViewUrl("MockModel does not have a viewUrl");
   }
 }
 
+// TODO Add tests for multipart requests
 describe("BawApiService", () => {
   let meta: {
     /** Single model response */
@@ -262,10 +261,12 @@ describe("BawApiService", () => {
           error: (err: any) => void = noop,
           complete: () => void = noop
         ): void {
-          (service[httpMethod.functionName](
-            "/broken_link",
-            ...opts
-          ) as Observable<ApiResponse<unknown>>).subscribe({
+          (
+            service[httpMethod.functionName](
+              "/broken_link",
+              ...opts
+            ) as Observable<ApiResponse<unknown>>
+          ).subscribe({
             next,
             error,
             complete,
@@ -393,169 +394,184 @@ describe("BawApiService", () => {
     const tests: {
       method: string;
       http: HttpFunctionCall;
-      hasBody: boolean;
-      singleResult: boolean;
-      multiResult: boolean;
+      hasBody?: boolean;
+      hasFilter?: boolean;
+      singleResult?: boolean;
+      multiResult?: boolean;
     }[] = [
       {
         method: "apiList",
         http: "httpGet",
-        hasBody: false,
-        singleResult: false,
         multiResult: true,
       },
       {
         method: "apiFilter",
         http: "httpPost",
-        hasBody: true,
-        singleResult: false,
+        hasFilter: true,
         multiResult: true,
       },
       {
         method: "apiShow",
         http: "httpGet",
-        hasBody: false,
         singleResult: true,
-        multiResult: false,
       },
       {
         method: "apiCreate",
         http: "httpPost",
         hasBody: true,
         singleResult: true,
-        multiResult: false,
       },
       {
         method: "apiUpdate",
         http: "httpPatch",
         hasBody: true,
         singleResult: true,
-        multiResult: false,
       },
       {
         method: "apiDestroy",
         http: "httpDelete",
-        hasBody: false,
         singleResult: true,
-        multiResult: false,
       },
     ];
-    tests.forEach(({ method, http, hasBody, singleResult, multiResult }) => {
-      function errorRequest(error: ApiErrorDetails): jasmine.Spy {
-        const spy = jasmine.createSpy(http).and.callFake(() => {
-          const subject = new Subject();
-          subject.error(error);
-          return subject;
-        });
-        service[http] = spy;
-        return spy;
-      }
+    tests.forEach(
+      ({ method, http, hasFilter, hasBody, singleResult, multiResult }) => {
+        describe(method, () => {
+          let defaultBody: IMockModel;
+          let defaultFilter: Filters<IMockModel>;
 
-      function successRequest(response: ApiResponse<unknown>): jasmine.Spy {
-        const spy = jasmine.createSpy(http).and.callFake(() => {
-          const subject = new BehaviorSubject<ApiResponse<unknown>>(response);
-          setTimeout(() => subject.complete(), 0);
-          return subject;
-        });
-        service[http] = spy;
-        return spy;
-      }
+          beforeEach(() => {
+            defaultBody = { id: 1, name: "test", caseConversion: {} };
+            defaultFilter = { paging: { page: 1 } };
+          });
 
-      function functionCall() {
-        if (hasBody) {
-          return service[method]("/broken_link", { example: "body" });
-        } else {
-          return service[method]("/broken_link");
-        }
-      }
-
-      describe(method, () => {
-        it(`should call ${http}`, () => {
-          const response = singleResult
-            ? { meta: meta.single, data: responses.single }
-            : { meta: meta.multi, data: [] };
-          const spy = successRequest(response);
-          functionCall().subscribe();
-
-          if (hasBody) {
-            expect(spy).toHaveBeenCalledWith("/broken_link", {
-              example: "body",
+          function errorRequest(error: ApiErrorDetails): jasmine.Spy {
+            const spy = jasmine.createSpy(http).and.callFake(() => {
+              const subject = new Subject();
+              subject.error(error);
+              return subject;
             });
-          } else {
-            expect(spy).toHaveBeenCalledWith("/broken_link");
+            service[http] = spy;
+            return spy;
           }
-        });
 
-        if (singleResult) {
-          it("should handle response", (done) => {
-            const response = { meta: meta.single, data: responses.single };
-            successRequest(response);
-            functionCall().subscribe((data) => {
-              // Destroy returns void
-              if (method === "apiDestroy") {
-                expect(data).toBe(null);
-              } else {
-                expect(data).toEqual(
-                  new MockModel(response.data, service["injector"])
-                );
-              }
-              done();
-            }, shouldNotFail);
-          });
-        }
-
-        if (multiResult) {
-          it("should handle empty response", (done) => {
-            successRequest({ meta: meta.multi, data: [] });
-            functionCall().subscribe((data) => {
-              expect(data).toEqual([]);
-              done();
-            }, shouldNotFail);
-          });
-
-          it("should handle response", (done) => {
-            const response = { meta: meta.multi, data: responses.multi };
-            successRequest(response);
-            functionCall().subscribe((data) => {
-              expect(data).toEqual(
-                response.data.map(
-                  (model) => new MockModel(model, service["injector"])
-                )
+          function successRequest(response: ApiResponse<unknown>): jasmine.Spy {
+            const spy = jasmine.createSpy(http).and.callFake(() => {
+              const subject = new BehaviorSubject<ApiResponse<unknown>>(
+                response
               );
-              done();
-            }, shouldNotFail);
-          });
-        }
-
-        it("should handle error response", (done) => {
-          errorRequest(responses.error);
-          functionCall().subscribe(shouldNotSucceed, (err) => {
-            expect(err).toEqual(responses.error);
-            done();
-          });
-        });
-
-        it("should handle error info response", (done) => {
-          errorRequest(responses.errorInfo);
-          functionCall().subscribe(shouldNotSucceed, (err) => {
-            expect(err).toEqual(responses.errorInfo);
-            done();
-          });
-        });
-
-        it("should complete on success", (done) => {
-          if (singleResult) {
-            successRequest({ meta: meta.single, data: responses.single });
-          } else {
-            successRequest({ meta: meta.multi, data: responses.multi });
+              setTimeout(() => subject.complete(), 0);
+              return subject;
+            });
+            service[http] = spy;
+            return spy;
           }
 
-          functionCall().subscribe(noop, shouldNotFail, () => {
-            expect(true).toBeTruthy();
-            done();
+          function functionCall() {
+            if (method === "apiCreate") {
+              return service[method](
+                "/broken_link",
+                (model) => "/broken_link/" + model.id,
+                new MockModel(defaultBody, service["injector"])
+              );
+            } else if (hasBody) {
+              return service[method](
+                "/broken_link",
+                new MockModel(defaultBody, service["injector"])
+              );
+            } else if (hasFilter) {
+              return service[method]("/broken_link", defaultFilter);
+            } else {
+              return service[method]("/broken_link");
+            }
+          }
+
+          it(`should call ${http}`, () => {
+            const response = singleResult
+              ? { meta: meta.single, data: responses.single }
+              : { meta: meta.multi, data: [] };
+            const spy = successRequest(response);
+            functionCall().subscribe();
+
+            if (hasBody) {
+              expect(spy).toHaveBeenCalledWith("/broken_link", defaultBody);
+            } else if (hasFilter) {
+              expect(spy).toHaveBeenCalledWith("/broken_link", defaultFilter);
+            } else {
+              expect(spy).toHaveBeenCalledWith("/broken_link");
+            }
+          });
+
+          if (singleResult) {
+            it("should handle response", (done) => {
+              const response = { meta: meta.single, data: responses.single };
+              successRequest(response);
+              functionCall().subscribe((data) => {
+                // Destroy returns void
+                if (method === "apiDestroy") {
+                  expect(data).toBe(null);
+                } else {
+                  expect(data).toEqual(
+                    new MockModel(response.data, service["injector"])
+                  );
+                }
+                done();
+              }, shouldNotFail);
+            });
+          }
+
+          if (multiResult) {
+            it("should handle empty response", (done) => {
+              successRequest({ meta: meta.multi, data: [] });
+              functionCall().subscribe((data) => {
+                expect(data).toEqual([]);
+                done();
+              }, shouldNotFail);
+            });
+
+            it("should handle response", (done) => {
+              const response = { meta: meta.multi, data: responses.multi };
+              successRequest(response);
+              functionCall().subscribe((data) => {
+                expect(data).toEqual(
+                  response.data.map(
+                    (model) => new MockModel(model, service["injector"])
+                  )
+                );
+                done();
+              }, shouldNotFail);
+            });
+          }
+
+          it("should handle error response", (done) => {
+            errorRequest(responses.error);
+            functionCall().subscribe(shouldNotSucceed, (err) => {
+              expect(err).toEqual(responses.error);
+              done();
+            });
+          });
+
+          it("should handle error info response", (done) => {
+            errorRequest(responses.errorInfo);
+            functionCall().subscribe(shouldNotSucceed, (err) => {
+              expect(err).toEqual(responses.errorInfo);
+              done();
+            });
+          });
+
+          it("should complete on success", (done) => {
+            if (singleResult) {
+              successRequest({ meta: meta.single, data: responses.single });
+            } else {
+              successRequest({ meta: meta.multi, data: responses.multi });
+            }
+
+            functionCall().subscribe(noop, shouldNotFail, () => {
+              expect(true).toBeTruthy();
+              done();
+            });
           });
         });
-      });
-    });
+      }
+    );
   });
 });

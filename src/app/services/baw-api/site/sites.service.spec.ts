@@ -48,7 +48,7 @@ describe("SitesService", function () {
   validateApiList<Model, Params, Service>(listUrl, 5);
   validateApiFilter<Model, Params, Service>(listUrl + "filter", 5);
   validateApiShow<Model, Params, Service>(showUrl, 10, createModel, 5);
-  validateApiCreate<Model, Params, Service>(listUrl, createModel, 5);
+  validateApiCreate<Model, Params, Service>(listUrl, showUrl, createModel, 5);
   validateApiUpdate<Model, Params, Service>(showUrl, createModel, 5);
   validateApiDestroy<Model, Params, Service>(showUrl, 10, createModel, 5);
 

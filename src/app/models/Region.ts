@@ -39,6 +39,7 @@ export interface IRegion extends HasAllUsers, HasDescription {
   id?: Id;
   name?: Param;
   imageUrls?: ImageUrl[];
+  image?: File;
   projectId?: Id;
   siteIds?: Id[] | Ids;
   notes?: Hash;
@@ -52,12 +53,10 @@ export class Region extends AbstractModel<IRegion> implements IRegion {
   public readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;
-  @bawPersistAttr()
-  public readonly imageUrls?: ImageUrl[];
-  @bawImage<IRegion>(`${assetRoot}/images/site/site_span4.png`, {
-    key: "imageUrls",
-  })
-  public readonly image: ImageUrl[];
+  @bawImage<IRegion>(`${assetRoot}/images/site/site_span4.png`)
+  public readonly imageUrls!: ImageUrl[];
+  @bawPersistAttr({ supportedFormats: ["formData"] })
+  public readonly image?: File;
   @bawPersistAttr()
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;

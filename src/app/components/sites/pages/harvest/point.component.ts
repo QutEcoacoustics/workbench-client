@@ -2,7 +2,10 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
   pointHarvestMenuItem,
@@ -48,7 +51,7 @@ class PointHarvestComponent extends SiteHarvestComponent implements OnInit {
 
   public ngOnInit() {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
-    if (models) {
+    if (hasResolvedSuccessfully(models)) {
       this.project = models[projectKey] as Project;
       this.region = models[regionKey] as Region;
       this.site = models[siteKey] as Site;

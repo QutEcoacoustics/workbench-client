@@ -17,11 +17,7 @@ describe("IsUnresolvedPipe", () => {
   }
 
   function setup(
-    value:
-      | AbstractModel
-      | AbstractModel[]
-      | Readonly<AbstractModel[]>
-      | AccessLevel
+    value: Readonly<AbstractModel> | Readonly<AbstractModel[]> | AccessLevel
   ) {
     spec = createPipe("<p>{{ value | isUnresolved }}</p>", {
       hostProps: { value },

@@ -1,8 +1,11 @@
 import { Injector } from "@angular/core";
 import { Writeable, XOR } from "@helpers/advancedTypes";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import snakeCase from "just-snake-case";
 import { DateTime, Duration } from "luxon";
 import { Id } from "../interfaces/apiInterfaces";
 import { Meta } from "../services/baw-api/baw-api.service";
+import { BawAttributeMeta } from "./AttributeDecorators";
 
 export type AbstractModelConstructor<Model> = new (
   _: Record<string, any>,
@@ -17,6 +20,17 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     return Object.assign(this, raw);
   }
 
+  /** Keys for accessing hidden data associated with a model */
+  private static keys = {
+    /** This stores the metadata associated with the model */
+    meta: Symbol("meta"),
+    /**
+     * This stores the list of model attribute metadata which are used to
+     * generate bodies for create api requests
+     */
+    attributes: Symbol("attributes"),
+  };
+
   /**
    * Redirect path to view model on website. This is a string which can be used
    * by the UrlDirective (`[bawUrl]`) to navigate. For example using the project
@@ -25,25 +39,6 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * `Router.navigateByUrl()`.
    */
   public abstract get viewUrl(): string;
-
-  /**
-   * Hidden meta symbol
-   * This stores the metadata associated with the model
-   */
-  private static metaKey = Symbol("meta");
-
-  /**
-   * Hidden attributes symbol.
-   * This stores the list of model attributes which are used to
-   * generate the toJSON({create: true}) output.
-   */
-  public static createAttributesKey = Symbol("create-attributes");
-  /**
-   * Hidden attributes symbol.
-   * This stores the list of model attributes which are used to
-   * generate the toJSON({update: true}) output.
-   */
-  public static updateAttributesKey = Symbol("update-attributes");
 
   /** Model type name */
   public readonly kind: string;
@@ -62,32 +57,56 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     return this.viewUrl;
   }
 
-  /**
-   * Convert model to JSON
-   */
-  public toJSON(opts?: ModelSerializationOptions): Partial<this> {
-    const output: Partial<Writeable<this>> = {};
-    let keys: string[];
-    if (!opts) {
-      keys = Object.keys(this).filter((key) => key !== "injector");
-    } else if (opts.create) {
-      keys = this[AbstractModel.createAttributesKey];
-    } else {
-      keys = this[AbstractModel.updateAttributesKey];
-    }
+  public toJSON(): Partial<this> {
+    return this.toObject(this.getModelAttributes());
+  }
 
-    keys.forEach((attribute: keyof AbstractModel) => {
-      const value = this[attribute];
-      if (value instanceof Set) {
-        output[attribute] = Array.from(value) as any;
-      } else if (value instanceof DateTime) {
-        output[attribute] = value.toISO() as any;
-      } else if (value instanceof Duration) {
-        output[attribute] = value.as("seconds") as any;
-      } else {
-        output[attribute] = this[attribute] as any;
+  /**
+   * Convert model to JSON compatible object containing attributes which should
+   * be sent in a JSON API request
+   */
+  public getJsonAttributes(opts?: ModelSerializationOptions): Partial<this> {
+    return this.toObject(this.getModelAttributes(opts));
+  }
+
+  /**
+   * Determine if the current model has any attributes set which should be sent
+   * in a multipart form API request
+   */
+  public hasFormDataOnlyAttributes(opts?: ModelSerializationOptions): boolean {
+    return this.getModelAttributes({ ...opts, formData: true }).some((attr) =>
+      isInstantiated(this[attr])
+    );
+  }
+
+  /**
+   * Convert model to FormData containing attributes which should be sent in a
+   * multipart form API request. Call `hasFormDataOnlyAttributes` before using
+   * this value.
+   */
+  public getFormDataOnlyAttributes(opts?: ModelSerializationOptions): FormData {
+    const output = new FormData();
+    const keys = this.getModelAttributes({ ...opts, formData: true });
+    const data = this.toObject(keys);
+
+    for (const attr of Object.keys(data)) {
+      // Do not include undefined/null data
+      if (!isInstantiated(data[attr])) {
+        continue;
       }
-    });
+
+      /*
+       * Do not surround attribute name in quotes, it is not a valid input and
+       * baw-server will return a 500 response. Attributes are in the form of
+       * model_name[attribute_name]
+       *
+       * NOTE: For JSON data, our interceptor converts keys and values to
+       * snakeCase, this case is more one-off and so an interceptor has not been built
+       */
+      const modelName = snakeCase(this.constructor.name);
+      const snakeCaseAttr = snakeCase(attr);
+      output.append(`${modelName}[${snakeCaseAttr}]`, data[attr]);
+    }
     return output;
   }
 
@@ -106,12 +125,66 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * @param meta Metadata
    */
   public addMetadata(meta: Meta): void {
-    this[AbstractModel.metaKey] = meta;
+    this[AbstractModel.keys.meta] = meta;
   }
 
   /** Get hidden model metadata */
   public getMetadata(): Meta {
-    return this[AbstractModel.metaKey];
+    return this[AbstractModel.keys.meta];
+  }
+
+  public addPersistentAttribute(meta: BawAttributeMeta) {
+    return this.getPersistentAttributes().push(meta);
+  }
+
+  public getPersistentAttributes(): Array<BawAttributeMeta> {
+    // TODO #1005 Store this statically in the model
+    return (this[AbstractModel.keys.attributes] ??= []);
+  }
+
+  /**
+   * Converts the model and its values into a simpler object representation
+   * which is suitable for serialization. Only the `keys` specified are
+   * included in the result.
+   *
+   * @param keys List of attributes to extract
+   */
+  private toObject(keys: string[]): Partial<this> {
+    const output: Partial<Writeable<this>> = {};
+    keys.forEach((attribute: keyof AbstractModel) => {
+      const value = this[attribute];
+      if (value instanceof Set) {
+        output[attribute] = Array.from(value);
+      } else if (value instanceof DateTime) {
+        output[attribute] = value.toISO();
+      } else if (value instanceof Duration) {
+        output[attribute] = value.as("seconds");
+      } else {
+        output[attribute] = this[attribute] as any;
+      }
+    });
+    return output;
+  }
+
+  /**
+   * Retrieves a list of all attributes associated with the model which are
+   * not the injector
+   */
+  private getModelAttributes(opts?: {
+    create?: boolean;
+    update?: boolean;
+    formData?: boolean;
+  }): string[] {
+    if (opts?.create || opts?.update) {
+      return this.getPersistentAttributes()
+        .filter((meta) => (opts.create ? meta.create : meta.update))
+        .filter((meta) =>
+          meta.supportedFormats.includes(opts.formData ? "formData" : "json")
+        )
+        .map((meta) => meta.key);
+    } else {
+      return Object.keys(this).filter((key) => key !== "injector");
+    }
   }
 }
 

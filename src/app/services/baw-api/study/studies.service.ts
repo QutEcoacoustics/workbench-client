@@ -39,7 +39,11 @@ export class StudiesService extends StandardApi<Study> {
     return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: Study): Observable<Study> {
-    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(emptyParam, emptyParam),
+      (study) => endpoint(study, emptyParam),
+      model
+    );
   }
   public update(model: Study): Observable<Study> {
     return this.apiUpdate(endpoint(model, emptyParam), model);

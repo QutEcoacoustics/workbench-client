@@ -14,7 +14,7 @@ import { takeUntil } from "rxjs/operators";
     <li class="list-group-item p-2">
       <div class="me-2">
         <a id="imageLink" [bawUrl]="model.getViewUrl(project)">
-          <img id="image" [src]="model.image" [alt]="model.name + ' alt'" />
+          <img id="image" [src]="model.imageUrls" [alt]="model.name + ' alt'" />
         </a>
       </div>
       <div class="body">

@@ -21,7 +21,7 @@ export interface IAnalysisJobItem {
 }
 
 export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
-  public readonly kind = "AnalysisJobItem";
+  public readonly kind = "Analysis Job Item";
   public readonly id?: Id;
   public readonly analysisJobId?: Id;
   public readonly audioRecordingId?: Id;

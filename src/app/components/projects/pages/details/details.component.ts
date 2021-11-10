@@ -3,7 +3,10 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Filters } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import {
   assignSiteMenuItem,
@@ -47,7 +50,7 @@ const projectKey = "project";
         <div class="col-sm-4">
           <img
             class="img-thumbnail mx-auto d-block"
-            [src]="project.image"
+            [src]="project.imageUrls"
             [alt]="project.name + ' image'"
           />
         </div>
@@ -167,7 +170,7 @@ class DetailsComponent
 
   public ngOnInit() {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
-    if (!models) {
+    if (!hasResolvedSuccessfully(models)) {
       return;
     }
     this.project = models[projectKey] as Project;

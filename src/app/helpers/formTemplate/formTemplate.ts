@@ -1,7 +1,11 @@
 import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  ResolvedModelList,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { withFormCheck } from "@guards/form/form.guard";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
@@ -32,7 +36,8 @@ const defaultOptions: FormTemplateOptions<any> = {
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class FormTemplate<Model extends AbstractModel>
   extends withFormCheck(PageComponent)
-  implements OnInit {
+  implements OnInit
+{
   /** Form submission processing */
   public loading: boolean;
   /** Initial setup failed */
@@ -80,7 +85,7 @@ export abstract class FormTemplate<Model extends AbstractModel>
 
     // Retrieve models and handle potential failure
     const models = retrieveResolvers(data);
-    if (!models) {
+    if (!hasResolvedSuccessfully(models)) {
       this.failure = true;
       return;
     }
@@ -127,6 +132,7 @@ export abstract class FormTemplate<Model extends AbstractModel>
           this.opts.redirectUser?.(model);
         },
         (err: ApiErrorDetails) => {
+          console.error(err);
           this.loading = false;
           this.notifications.error(this.opts.failureMsg(err));
         }

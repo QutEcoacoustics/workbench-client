@@ -8,7 +8,8 @@ export function generateSite(
   return {
     id: modelData.id(),
     name: modelData.param(),
-    imageUrls: modelData.imageUrl(),
+    imageUrls: modelData.imageUrls(),
+    image: undefined,
     locationObfuscated: modelData.bool(),
     projectIds: modelData.ids(),
     // This is purposefully disabled by default as it changes the behavior of the model

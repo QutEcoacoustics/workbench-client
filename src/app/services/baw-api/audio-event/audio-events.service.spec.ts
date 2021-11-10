@@ -22,6 +22,7 @@ type Service = AudioEventsService;
 describe("AudioEventsService", function () {
   const createModel = () => new AudioEvent(generateAudioEvent({ id: 10 }));
   const baseUrl = "/audio_recordings/5/audio_events/";
+  const updateUrl = baseUrl + "10";
   const createService = createServiceFactory({
     service: AudioEventsService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
@@ -33,13 +34,8 @@ describe("AudioEventsService", function () {
 
   validateApiList<Model, Params, Service>(baseUrl, 5);
   validateApiFilter<Model, Params, Service>(baseUrl + "filter", 5);
-  validateApiShow<Model, Params, Service>(baseUrl + "10", 10, createModel, 5);
-  validateApiCreate<Model, Params, Service>(baseUrl, createModel, 5);
-  validateApiUpdate<Model, Params, Service>(baseUrl + "10", createModel, 5);
-  validateApiDestroy<Model, Params, Service>(
-    baseUrl + "10",
-    10,
-    createModel,
-    5
-  );
+  validateApiShow<Model, Params, Service>(updateUrl, 10, createModel, 5);
+  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel, 5);
+  validateApiUpdate<Model, Params, Service>(updateUrl, createModel, 5);
+  validateApiDestroy<Model, Params, Service>(updateUrl, 10, createModel, 5);
 });

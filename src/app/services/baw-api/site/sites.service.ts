@@ -58,7 +58,11 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
     return this.apiShow(endpoint(project, model, emptyParam));
   }
   public create(model: Site, project: IdOr<Project>): Observable<Site> {
-    return this.apiCreate(endpoint(project, emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(project, emptyParam, emptyParam),
+      (site) => endpoint(project, site, emptyParam),
+      model
+    );
   }
   public update(model: Site, project: IdOr<Project>): Observable<Site> {
     return this.apiUpdate(endpoint(project, model, emptyParam), model);
@@ -139,7 +143,11 @@ export class ShallowSitesService extends StandardApi<Site> {
     return this.apiShow(endpointShallow(model, emptyParam));
   }
   public create(model: Site): Observable<Site> {
-    return this.apiCreate(endpointShallow(emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpointShallow(emptyParam, emptyParam),
+      (site) => endpointShallow(site, emptyParam),
+      model
+    );
   }
   public update(model: Site): Observable<Site> {
     return this.apiUpdate(endpointShallow(model, emptyParam), model);

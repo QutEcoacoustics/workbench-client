@@ -1,6 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  ResolvedModelList,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { AccessLevel } from "@interfaces/apiInterfaces";
@@ -56,10 +60,10 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
     this.accessLevel = this.getAccessLevel(models as ResolvedModelList);
   }
 
-  private retrieveModel(models: false | ResolvedModelList): AbstractModel {
-    const modelKeys = models ? Object.keys(models) : [];
+  private retrieveModel(models: ResolvedModelList): AbstractModel {
+    const modelKeys = Object.keys(models);
 
-    if (!models || modelKeys.length === 0) {
+    if (!hasResolvedSuccessfully(models) || modelKeys.length === 0) {
       return undefined;
     }
 

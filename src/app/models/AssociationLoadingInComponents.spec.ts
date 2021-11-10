@@ -27,7 +27,7 @@ class MockModel extends AbstractModel {
   public get viewUrl(): string {
     throw new Error("Method not implemented.");
   }
-  public toJSON(_: any): any {
+  public getJsonAttributes(_: any): any {
     throw new Error("Method not implemented.");
   }
 }
@@ -107,7 +107,9 @@ describe("Association Decorators Loading In Components", () => {
     return promise;
   }
 
-  function assertOutput(model?: AbstractModel | Readonly<AbstractModel[]>) {
+  function assertOutput(
+    model?: Readonly<AbstractModel> | Readonly<AbstractModel[]>
+  ) {
     if (model instanceof Array) {
       const listItems = fixture.nativeElement.querySelectorAll("li");
 

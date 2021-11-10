@@ -44,7 +44,11 @@ export class TagGroupsService extends StandardApi<TagGroup> {
     return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: TagGroup): Observable<TagGroup> {
-    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(emptyParam, emptyParam),
+      (tagGroup) => endpoint(tagGroup, emptyParam),
+      model
+    );
   }
   public update(model: TagGroup): Observable<TagGroup> {
     return this.apiUpdate(endpoint(model, emptyParam), model);

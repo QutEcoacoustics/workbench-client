@@ -32,7 +32,6 @@ const regionKey = "region";
 @Component({
   selector: "baw-regions-edit",
   template: `
-    <!-- TODO Image input #608 -->
     <baw-form
       *ngIf="!failure"
       [title]="title"
