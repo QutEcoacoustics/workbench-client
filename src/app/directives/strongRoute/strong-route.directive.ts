@@ -32,10 +32,10 @@ export class StrongRouteDirective
    * of the angular route parameters are already given to the StrongRoute.
    */
   @Input() public queryParams: Params;
-  private data: {
-    resolvedModels?: ResolvedModelList;
-    routeParams?: Params;
-  } = {};
+  private data = {
+    resolvedModels: {} as ResolvedModelList,
+    routeParams: {} as Params,
+  };
 
   public constructor(
     private _router: Router,
@@ -71,10 +71,11 @@ export class StrongRouteDirective
   }
 
   public get urlTree(): UrlTree {
-    const queryParams = this.strongRoute?.queryParams(
-      { ...this.queryParams, ...this.data.routeParams },
-      this.data.resolvedModels
-    );
+    const queryParams =
+      this.strongRoute?.queryParams(
+        { ...this.queryParams, ...this.data.routeParams },
+        this.data.resolvedModels
+      ) ?? {};
 
     // Normalize query parameters into string values which can be handled by
     // the browser
