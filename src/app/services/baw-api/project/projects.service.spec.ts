@@ -7,7 +7,7 @@ import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateProject } from "@test/fakes/Project";
 import {
-  validateApiCreateMultipart,
+  validateApiCreate,
   validateApiDestroy,
   validateApiFilter,
   validateApiList,
@@ -23,6 +23,7 @@ type Service = ProjectsService;
 describe("ProjectsService", function () {
   const createModel = () => new Project(generateProject({ id: 5 }));
   const baseUrl = "/projects/";
+  const updateUrl = baseUrl + "5";
   const createService = createServiceFactory({
     service: ProjectsService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
@@ -34,10 +35,10 @@ describe("ProjectsService", function () {
 
   validateApiList<Model, Params, Service>(baseUrl);
   validateApiFilter<Model, Params, Service>(baseUrl + "filter");
-  validateApiShow<Model, Params, Service>(baseUrl + "5", 5, createModel);
-  validateApiCreateMultipart<Model, Params, Service>(baseUrl, createModel);
-  validateApiUpdate<Model, Params, Service>(baseUrl + "5", createModel);
-  validateApiDestroy<Model, Params, Service>(baseUrl + "5", 5, createModel);
+  validateApiShow<Model, Params, Service>(updateUrl, 5, createModel);
+  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel);
+  validateApiUpdate<Model, Params, Service>(updateUrl, createModel);
+  validateApiDestroy<Model, Params, Service>(updateUrl, 5, createModel);
 
   validateCustomApiFilter<Model, [...Params, IdOr<User>], Service>(
     baseUrl + "filter",

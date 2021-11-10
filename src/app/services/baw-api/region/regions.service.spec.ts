@@ -6,7 +6,7 @@ import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateRegion } from "@test/fakes/Region";
 import {
-  validateApiCreateMultipart,
+  validateApiCreate,
   validateApiDestroy,
   validateApiFilter,
   validateApiList,
@@ -22,6 +22,7 @@ type Service = RegionsService;
 describe("RegionsService", function () {
   const createModel = () => new Region(generateRegion({ id: 10 }));
   const baseUrl = "/projects/5/regions/";
+  const updateUrl = baseUrl + "10";
   const createService = createServiceFactory({
     service: RegionsService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
@@ -33,13 +34,8 @@ describe("RegionsService", function () {
 
   validateApiList<Model, Params, Service>(baseUrl, 5);
   validateApiFilter<Model, Params, Service>(baseUrl + "filter", 5);
-  validateApiShow<Model, Params, Service>(baseUrl + "10", 10, createModel, 5);
-  validateApiCreateMultipart<Model, Params, Service>(baseUrl, createModel, 5);
-  validateApiUpdate<Model, Params, Service>(baseUrl + "10", createModel, 5);
-  validateApiDestroy<Model, Params, Service>(
-    baseUrl + "10",
-    10,
-    createModel,
-    5
-  );
+  validateApiShow<Model, Params, Service>(updateUrl, 10, createModel, 5);
+  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel, 5);
+  validateApiUpdate<Model, Params, Service>(updateUrl, createModel, 5);
+  validateApiDestroy<Model, Params, Service>(updateUrl, 10, createModel, 5);
 });

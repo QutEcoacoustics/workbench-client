@@ -118,11 +118,11 @@ describe("AdminAnalysisJobComponent", () => {
         key: "customSettings",
         code: model.customSettings,
       },
-      { label: "Script", key: "script", model: "script: custom script (1)" },
+      { label: "Script", key: "script", model: "Script: custom script (1)" },
       {
         label: "Saved Search",
         key: "savedSearch",
-        model: "saved_search: custom saved search (1)",
+        model: "Saved Search: custom saved search (1)",
       },
       { label: "Started At", key: "startedAt", plain: model.startedAt },
       {

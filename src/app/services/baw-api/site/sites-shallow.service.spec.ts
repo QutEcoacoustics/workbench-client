@@ -7,7 +7,7 @@ import { createServiceFactory } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateSite } from "@test/fakes/Site";
 import {
-  validateApiCreateMultipart,
+  validateApiCreate,
   validateApiDestroy,
   validateApiFilter,
   validateApiList,
@@ -25,6 +25,7 @@ type Service = ShallowSitesService;
 describe("ShallowSitesService", function () {
   const createModel = () => new Site(generateSite({ id: 5 }));
   const baseUrl = "/sites/";
+  const updateUrl = baseUrl + "5";
   const createService = createServiceFactory({
     service: ShallowSitesService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
@@ -36,10 +37,10 @@ describe("ShallowSitesService", function () {
 
   validateApiList<Model, Params, Service>(baseUrl);
   validateApiFilter<Model, Params, Service>(baseUrl + "filter");
-  validateApiShow<Model, Params, Service>(baseUrl + "5", 5, createModel);
-  validateApiCreateMultipart<Model, Params, Service>(baseUrl, createModel);
-  validateApiUpdate<Model, Params, Service>(baseUrl + "5", createModel);
-  validateApiDestroy<Model, Params, Service>(baseUrl + "5", 5, createModel);
+  validateApiShow<Model, Params, Service>(updateUrl, 5, createModel);
+  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel);
+  validateApiUpdate<Model, Params, Service>(updateUrl, createModel);
+  validateApiDestroy<Model, Params, Service>(updateUrl, 5, createModel);
 
   validateCustomApiList<Model, Params, Service>(
     baseUrl + "orphans/",

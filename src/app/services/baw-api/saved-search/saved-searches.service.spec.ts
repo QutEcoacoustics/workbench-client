@@ -19,6 +19,7 @@ type Service = SavedSearchesService;
 describe("SavedSearchesService", function () {
   const createModel = () => new SavedSearch(generateSavedSearch({ id: 5 }));
   const baseUrl = "/saved_searches/";
+  const updateUrl = baseUrl + "5";
   const createService = createServiceFactory({
     service: SavedSearchesService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
@@ -30,7 +31,7 @@ describe("SavedSearchesService", function () {
 
   validateApiList<Model, Params, Service>(baseUrl);
   validateApiFilter<Model, Params, Service>(baseUrl + "filter");
-  validateApiShow<Model, Params, Service>(baseUrl + "5", 5, createModel);
-  validateApiCreate<Model, Params, Service>(baseUrl, createModel);
-  validateApiDestroy<Model, Params, Service>(baseUrl + "5", 5, createModel);
+  validateApiShow<Model, Params, Service>(updateUrl, 5, createModel);
+  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel);
+  validateApiDestroy<Model, Params, Service>(updateUrl, 5, createModel);
 });

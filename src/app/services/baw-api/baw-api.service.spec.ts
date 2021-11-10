@@ -17,6 +17,7 @@ import { SecurityService } from "@baw-api/security/security.service";
 import { UserService } from "@baw-api/user/user.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
+import { bawPersistAttr } from "@models/AttributeDecorators";
 import { SessionUser } from "@models/User";
 import {
   createHttpFactory,
@@ -48,8 +49,11 @@ class IMockModel {
 
 class MockModel extends AbstractModel implements IMockModel {
   public kind = "MockModel";
+  @bawPersistAttr()
   public readonly id?: number;
+  @bawPersistAttr()
   public readonly name?: string;
+  @bawPersistAttr()
   public readonly caseConversion?: {
     testConvert?: string;
   };
@@ -58,15 +62,7 @@ class MockModel extends AbstractModel implements IMockModel {
     super(data, modelInjector);
   }
 
-  public getJsonAttributes(_: any) {
-    return {
-      id: this.id,
-      name: this.name,
-      caseConversion: this.caseConversion,
-    } as Partial<this>;
-  }
-
-  public get viewUrl(): string {
+  public override get viewUrl(): string {
     return getUnknownViewUrl("MockModel does not have a viewUrl");
   }
 }
@@ -471,7 +467,13 @@ describe("BawApiService", () => {
           }
 
           function functionCall() {
-            if (hasBody) {
+            if (method === "apiCreate") {
+              return service[method](
+                "/broken_link",
+                (model) => "/broken_link/" + model.id,
+                new MockModel(defaultBody, service["injector"])
+              );
+            } else if (hasBody) {
               return service[method](
                 "/broken_link",
                 new MockModel(defaultBody, service["injector"])

@@ -20,6 +20,7 @@ type Service = DatasetsService;
 describe("DatasetsService", function () {
   const createModel = () => new Dataset(generateDataset({ id: 5 }));
   const baseUrl = "/datasets/";
+  const updateUrl = baseUrl + "5";
   const createService = createServiceFactory({
     service: DatasetsService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
@@ -31,8 +32,8 @@ describe("DatasetsService", function () {
 
   validateApiList<Model, Params, Service>(baseUrl);
   validateApiFilter<Model, Params, Service>(baseUrl + "filter");
-  validateApiShow<Model, Params, Service>(baseUrl + "5", 5, createModel);
-  validateApiCreate<Model, Params, Service>(baseUrl, createModel);
-  validateApiUpdate<Model, Params, Service>(baseUrl + "5", createModel);
-  validateApiDestroy<Model, Params, Service>(baseUrl + "5", 5, createModel);
+  validateApiShow<Model, Params, Service>(updateUrl, 5, createModel);
+  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel);
+  validateApiUpdate<Model, Params, Service>(updateUrl, createModel);
+  validateApiDestroy<Model, Params, Service>(updateUrl, 5, createModel);
 });

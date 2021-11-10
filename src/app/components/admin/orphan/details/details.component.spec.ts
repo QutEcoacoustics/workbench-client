@@ -137,15 +137,15 @@ describe("AdminOrphanComponent", () => {
         key: "timezoneInformation",
         code: model.timezoneInformation,
       },
-      { label: "Creator", key: "creator", model: "user: custom username (1)" },
-      { label: "Updater", key: "updater", model: "user: custom username (1)" },
+      { label: "Creator", key: "creator", model: "User: custom username (1)" },
+      { label: "Updater", key: "updater", model: "User: custom username (1)" },
       { label: "Created At", key: "createdAt", plain: model.createdAt },
       { label: "Updated At", key: "updatedAt", plain: model.updatedAt },
       {
         label: "Projects",
         key: "projects",
         children: [1, 2, 3].map((id) => ({
-          model: `project: custom project (${id})`,
+          model: `Project: custom project (${id})`,
         })),
       },
     ];
