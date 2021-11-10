@@ -125,6 +125,53 @@ describe("AbstractModel", () => {
     });
   });
 
+  describe("hasFormData", () => {
+    it("should return true if form data exists", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ supportedFormats: ["formData"] })
+        public value0: any;
+      }
+      const model = new Model({ value0: "value" });
+      expect(model.hasFormData()).toBeTrue();
+    });
+
+    it("should handle detecting falsy values", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ supportedFormats: ["formData"] })
+        public value0: any;
+      }
+      const model = new Model({ value0: 0 });
+      expect(model.hasFormData()).toBeTrue();
+    });
+
+    it("should return true if only one attribute is instantiated", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ supportedFormats: ["formData"] })
+        public value0: any;
+        @bawPersistAttr({ supportedFormats: ["formData"] })
+        public value1: any;
+      }
+      const model = new Model({ value0: "value" });
+      expect(model.hasFormData()).toBeTrue();
+    });
+    it("should return false is no attributes are instantiated", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ supportedFormats: ["formData"] })
+        public value0: any;
+        @bawPersistAttr({ supportedFormats: ["formData"] })
+        public value1: any;
+      }
+      const model = new Model({});
+      expect(model.hasFormData()).toBeFalse();
+    });
+
+    it("should return false if no attributes exist", () => {
+      class Model extends MockModel {}
+      const model = new Model({});
+      expect(model.hasFormData()).toBeFalse();
+    });
+  });
+
   describe("toFormData", () => {
     const assertToFormData = (
       model: AbstractModel,

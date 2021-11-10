@@ -235,7 +235,7 @@ export class BawApiService<Model extends AbstractModel> {
     createPath: string,
     updatePath: (model: Model) => string,
     body: AbstractModel
-  ) {
+  ): Observable<Model> {
     const formData = body.toFormData({ create: true });
     return this.apiCreate(createPath, body).pipe(
       mergeMap((model) =>
@@ -254,19 +254,18 @@ export class BawApiService<Model extends AbstractModel> {
    */
   protected apiUpdate(path: string, body: AbstractModel): Observable<Model> {
     const jsonData = body.toJSON?.({ update: true });
+    const request = this.httpPatch(path, jsonData ?? body).pipe(
+      map(this.handleSingleResponse)
+    );
 
-    if (body.hasFormData({ update: true })) {
-      const formData = body.toFormData?.({ update: true });
-      return this.httpPatch(path, jsonData ?? body).pipe(
-        map(this.handleSingleResponse),
+    if (body?.hasFormData({ update: true })) {
+      const formData = body.toFormData({ update: true });
+      return request.pipe(
         mergeMap(() => this.httpPut(path, formData, multiPartHeaders)),
         map(this.handleSingleResponse)
       );
-    } else {
-      return this.httpPatch(path, jsonData ?? body).pipe(
-        map(this.handleSingleResponse)
-      );
     }
+    return request;
   }
 
   /**

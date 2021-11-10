@@ -35,9 +35,18 @@ export class ImageInputComponent extends FieldType {
   public readFile(): void {
     // File input returns a list of files, grab the first file and set it as
     // the value of this field
-    const imageFiles = this.formControl.value;
-    if (imageFiles instanceof FileList && imageFiles.length > 0) {
-      this.formControl.setValue(imageFiles.item(0));
+    const images = this.formControl.value;
+    if (!(images instanceof FileList) || images.length === 0) {
+      return;
     }
+
+    // This should not be possible because only one file can be selected
+    if (images.length !== 1) {
+      // TODO Display error to user
+      console.error("File input returned multiple files");
+      return;
+    }
+
+    this.formControl.setValue(images.item(0));
   }
 }

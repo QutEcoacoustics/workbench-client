@@ -67,12 +67,9 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
 
   /** Determine if model will return FormData */
   public hasFormData(opts?: ModelSerializationOptions): boolean {
-    for (const attr of this.getModelAttributes({ ...opts, formData: true })) {
-      if (isInstantiated(this[attr])) {
-        return true;
-      }
-    }
-    return false;
+    return this.getModelAttributes({ ...opts, formData: true }).some((attr) =>
+      isInstantiated(this[attr])
+    );
   }
 
   /** Convert model to FormData */
@@ -121,15 +118,16 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   }
 
   public getPersistentAttributes(): Array<BawAttributeMeta> {
-    // TODO Store this statically in the model
+    // TODO #1005 Store this statically in the model
     return (this[AbstractModel.keys.attributes] ??= []);
   }
 
   /**
-   * Converts the model and a list of keys, into an object containing each key
-   * value pair
+   * Converts the model and its values into a simpler object representation
+   * which is suitable for serialization. Only the `keys` specified are
+   * included in the result.
    *
-   * @param keys List of attributes to retrieve
+   * @param keys List of attributes to extract
    */
   private toObject(keys: string[]): Partial<this> {
     const output: Partial<Writeable<this>> = {};
