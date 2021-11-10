@@ -26,7 +26,6 @@ const projectKey = "project";
 @Component({
   selector: "baw-regions-new",
   template: `
-    <!-- TODO Image input #608 -->
     <baw-form
       *ngIf="!failure"
       [title]="hideTitle ? '' : 'New Region'"

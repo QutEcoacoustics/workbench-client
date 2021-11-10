@@ -1,8 +1,8 @@
 import camelCase from "just-camel-case";
 import snakeCase from "just-snake-case";
 
-// List of whitelist keys which should have their values converted
-import whitelist from "./whitelist.json";
+// List of allowed keys which should have their values converted
+import allowList from "./allow-list.json";
 
 /**
  * Deeply converts keys of an object from one case to another.
@@ -48,11 +48,11 @@ const convertCase = (
     // Change object keys
     Object.keys(oldObject).forEach((oldKey) => {
       const newKey = converterFn(oldKey);
-      const whitelisted =
+      const allowedKeys =
         convertValue ||
-        whitelist.keys.some((key) => key === newKey || key === oldKey);
+        allowList.keys.some((key) => key === newKey || key === oldKey);
 
-      newObject[newKey] = convertCase(oldObject[oldKey], callback, whitelisted);
+      newObject[newKey] = convertCase(oldObject[oldKey], callback, allowedKeys);
     });
   }
 

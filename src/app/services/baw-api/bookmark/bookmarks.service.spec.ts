@@ -23,6 +23,7 @@ type Service = BookmarksService;
 describe("BookmarksService", function () {
   const createModel = () => new Bookmark(generateBookmark({ id: 5 }));
   const baseUrl = "/bookmarks/";
+  const updateUrl = baseUrl + "5";
   const createService = createServiceFactory({
     service: BookmarksService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
@@ -34,10 +35,10 @@ describe("BookmarksService", function () {
 
   validateApiList<Model, Params, Service>(baseUrl);
   validateApiFilter<Model, Params, Service>(baseUrl + "filter");
-  validateApiShow<Model, Params, Service>(baseUrl + "5", 5, createModel);
-  validateApiCreate<Model, Params, Service>(baseUrl, createModel);
-  validateApiUpdate<Model, Params, Service>(baseUrl + "5", createModel);
-  validateApiDestroy<Model, Params, Service>(baseUrl + "5", 5, createModel);
+  validateApiShow<Model, Params, Service>(updateUrl, 5, createModel);
+  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel);
+  validateApiUpdate<Model, Params, Service>(updateUrl, createModel);
+  validateApiDestroy<Model, Params, Service>(updateUrl, 5, createModel);
 
   validateCustomApiFilter<Model, [...Params, IdOr<User>], Service>(
     baseUrl + "filter",

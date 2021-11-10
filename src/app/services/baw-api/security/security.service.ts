@@ -185,7 +185,10 @@ export class SecurityService extends BawFormApiService<SessionUser> {
       // Update session user with user details and save to local storage
       tap((user: User) =>
         this.storeLocalUser(
-          new SessionUser({ ...this.getLocalUser(), ...user.toJSON() })
+          new SessionUser({
+            ...this.getLocalUser(),
+            ...user.getJsonAttributes(),
+          })
         )
       ),
       // Trigger auth observable

@@ -39,7 +39,11 @@ export class SavedSearchesService extends ImmutableApi<SavedSearch> {
     return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: SavedSearch): Observable<SavedSearch> {
-    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(emptyParam, emptyParam),
+      (savedSearch) => endpoint(savedSearch, emptyParam),
+      model
+    );
   }
   public destroy(model: IdOr<SavedSearch>): Observable<SavedSearch | void> {
     return this.apiDestroy(endpoint(model, emptyParam));

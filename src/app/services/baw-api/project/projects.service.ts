@@ -44,7 +44,11 @@ export class ProjectsService extends StandardApi<Project> {
     return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: Project): Observable<Project> {
-    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(emptyParam, emptyParam),
+      (project) => endpoint(project, emptyParam),
+      model
+    );
   }
   public update(model: Project): Observable<Project> {
     return this.apiUpdate(endpoint(model, emptyParam), model);

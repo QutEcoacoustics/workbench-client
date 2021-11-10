@@ -29,19 +29,18 @@
     },
     {
       "key": "imageUrls",
-      "type": "image",
-      "templateOptions": {
-        "label": "Image",
-        "disabled": true,
-        "required": false
-      }
-    },
-    {
-      "key": "image",
       "hide": true,
       "templateOptions": {
         "label": "Image",
         "disabled": true
+      }
+    },
+    {
+      "key": "image",
+      "type": "image",
+      "templateOptions": {
+        "label": "Image",
+        "required": false
       }
     }
   ]

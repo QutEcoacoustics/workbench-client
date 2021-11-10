@@ -18,6 +18,7 @@ type Service = ProgressEventsService;
 describe("ProgressEventsService", function () {
   const createModel = () => new ProgressEvent(generateProgressEvent({ id: 5 }));
   const baseUrl = "/progress_events/";
+  const updateUrl = baseUrl + "5";
   const createService = createServiceFactory({
     service: ProgressEventsService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
@@ -29,6 +30,6 @@ describe("ProgressEventsService", function () {
 
   validateApiList<Model, Params, Service>(baseUrl);
   validateApiFilter<Model, Params, Service>(baseUrl + "filter");
-  validateApiShow<Model, Params, Service>(baseUrl + "5", 5, createModel);
-  validateApiCreate<Model, Params, Service>(baseUrl, createModel);
+  validateApiShow<Model, Params, Service>(updateUrl, 5, createModel);
+  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel);
 });

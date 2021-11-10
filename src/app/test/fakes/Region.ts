@@ -6,6 +6,7 @@ export function generateRegion(data?: Partial<IRegion>): Required<IRegion> {
     id: modelData.id(),
     name: modelData.param(),
     imageUrls: modelData.imageUrls(),
+    image: undefined,
     projectId: modelData.id(),
     siteIds: modelData.ids(),
     notes: modelData.notes(),

@@ -14,6 +14,7 @@ import {
   ApiUpdate,
 } from "../../services/baw-api/api-common";
 import { BawApiService, Filters } from "../../services/baw-api/baw-api.service";
+import { getCallArgs } from "./general";
 
 type CustomList<Model extends AbstractModel, Params extends any[]> = (
   ...urlParameters: Params
@@ -99,7 +100,12 @@ export function validateApiCreate<
   Model extends AbstractModel,
   Params extends any[],
   Service extends ServiceType<Model, ApiCreate<Model, Params>>
->(endpoint: string, model: () => Model, ...parameters: Params) {
+>(
+  createEndpoint: string,
+  updateEndpoint: string,
+  model: () => Model,
+  ...parameters: Params
+) {
   describe("Api Create", function () {
     let testModel: Model;
 
@@ -114,7 +120,10 @@ export function validateApiCreate<
         .and.callFake(() => new BehaviorSubject<Model>(testModel));
       api.create(testModel, ...parameters).subscribe();
 
-      expect(api["apiCreate"]).toHaveBeenCalledWith(endpoint, testModel);
+      const args = getCallArgs(api["apiCreate"] as jasmine.Spy);
+      expect(args[0]).toBe(createEndpoint);
+      expect(args[1](testModel)).toBe(updateEndpoint);
+      expect(args[2]).toBe(testModel);
     });
   });
 }

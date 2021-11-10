@@ -41,8 +41,9 @@ export interface IAudioRecording extends HasAllUsers {
  */
 export class AudioRecording
   extends AbstractModel<IAudioRecording>
-  implements IAudioRecording {
-  public readonly kind = "AudioRecording";
+  implements IAudioRecording
+{
+  public readonly kind = "Audio Recording";
   public readonly id?: Id;
   public readonly uuid?: Uuid;
   public readonly uploaderId?: Id;

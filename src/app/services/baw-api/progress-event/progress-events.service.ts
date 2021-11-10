@@ -39,7 +39,11 @@ export class ProgressEventsService extends ReadAndCreateApi<ProgressEvent> {
     return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: ProgressEvent): Observable<ProgressEvent> {
-    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(emptyParam, emptyParam),
+      (progressEvent) => endpoint(progressEvent, emptyParam),
+      model
+    );
   }
 }
 

@@ -8,6 +8,7 @@ import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 import {
+  BawAttributeMeta,
   bawCollection,
   bawDateTime,
   BawDecoratorOptions,
@@ -23,85 +24,203 @@ class BaseModel extends AbstractModel {
 }
 
 describe("Attribute Decorators", () => {
-  function assertCreateAttributes(model: AbstractModel, keys: string[]) {
-    expect(model[AbstractModel.createAttributesKey]).toEqual(keys);
+  function getModelKeys(
+    model: AbstractModel,
+    supportedFormat: "json" | "formData",
+    callback: (attr: BawAttributeMeta) => boolean
+  ): string[] {
+    return model
+      .getPersistentAttributes()
+      .filter((attr) => attr.supportedFormats.includes(supportedFormat))
+      .filter(callback)
+      .map((attr) => attr.key);
   }
 
-  function assertUpdateAttributes(model: AbstractModel, keys: string[]) {
-    expect(model[AbstractModel.updateAttributesKey]).toEqual(keys);
+  function assertCreateJsonAttributes(model: AbstractModel, keys: string[]) {
+    expect(getModelKeys(model, "json", (attr) => attr.create)).toEqual(keys);
+  }
+
+  function assertUpdateJsonAttributes(model: AbstractModel, keys: string[]) {
+    expect(getModelKeys(model, "json", (attr) => attr.update)).toEqual(keys);
+  }
+
+  function assertCreateFormDataAttributes(
+    model: AbstractModel,
+    keys: string[]
+  ) {
+    expect(getModelKeys(model, "formData", (attr) => attr.create)).toEqual(
+      keys
+    );
+  }
+
+  function assertUpdateFormDataAttributes(
+    model: AbstractModel,
+    keys: string[]
+  ) {
+    expect(getModelKeys(model, "formData", (attr) => attr.update)).toEqual(
+      keys
+    );
   }
 
   describe("BawPersistAttr", () => {
-    it("should append key to model create attributes", () => {
-      class MockModel extends BaseModel {
-        @bawPersistAttr({ create: true })
-        public readonly name: string;
-      }
+    describe("json", () => {
+      it("should append key to model create attributes", () => {
+        class MockModel extends BaseModel {
+          @bawPersistAttr({ create: true, update: false })
+          public readonly name: string;
+        }
+        const model = new MockModel({});
+        assertCreateJsonAttributes(model, ["name"]);
+        assertUpdateJsonAttributes(model, []);
+      });
 
-      const model = new MockModel({});
-      assertCreateAttributes(model, ["name"]);
-      assertUpdateAttributes(model, []);
+      it("should append key to model update attributes", () => {
+        class MockModel extends BaseModel {
+          @bawPersistAttr({ create: false, update: true })
+          public readonly name: string;
+        }
+        const model = new MockModel({});
+        assertCreateJsonAttributes(model, []);
+        assertUpdateJsonAttributes(model, ["name"]);
+      });
+
+      it("should append multiple keys to model create attributes", () => {
+        class MockModel extends BaseModel {
+          @bawPersistAttr({ create: true, update: false })
+          public readonly name: string;
+          @bawPersistAttr({ create: true, update: false })
+          public readonly value: number;
+        }
+        const model = new MockModel({});
+        assertCreateJsonAttributes(model, ["name", "value"]);
+        assertUpdateJsonAttributes(model, []);
+      });
+
+      it("should append multiple keys to model update attributes", () => {
+        class MockModel extends BaseModel {
+          @bawPersistAttr({ create: false, update: true })
+          public readonly name: string;
+          @bawPersistAttr({ create: false, update: true })
+          public readonly value: number;
+        }
+        const model = new MockModel({});
+        assertCreateJsonAttributes(model, []);
+        assertUpdateJsonAttributes(model, ["name", "value"]);
+      });
+
+      it("should append key to model attributes", () => {
+        class MockModel extends BaseModel {
+          @bawPersistAttr()
+          public readonly name: string;
+        }
+        const model = new MockModel({});
+        assertCreateJsonAttributes(model, ["name"]);
+        assertUpdateJsonAttributes(model, ["name"]);
+      });
+
+      it("should append multiple keys to model attributes", () => {
+        class MockModel extends BaseModel {
+          @bawPersistAttr()
+          public readonly name: string;
+          @bawPersistAttr()
+          public readonly value: number;
+        }
+        const model = new MockModel({});
+        assertCreateJsonAttributes(model, ["name", "value"]);
+        assertUpdateJsonAttributes(model, ["name", "value"]);
+      });
     });
 
-    it("should append key to model update attributes", () => {
-      class MockModel extends BaseModel {
-        @bawPersistAttr({ update: true })
-        public readonly name: string;
-      }
+    describe("formData", () => {
+      it("should append key to model create attributes", () => {
+        class MockModel extends BaseModel {
+          @bawPersistAttr({
+            create: true,
+            update: false,
+            supportedFormats: ["formData"],
+          })
+          public readonly name: string;
+        }
+        const model = new MockModel({});
+        assertCreateFormDataAttributes(model, ["name"]);
+        assertUpdateFormDataAttributes(model, []);
+      });
 
-      const model = new MockModel({});
-      assertCreateAttributes(model, []);
-      assertUpdateAttributes(model, ["name"]);
-    });
+      it("should append key to model update attributes", () => {
+        class MockModel extends BaseModel {
+          @bawPersistAttr({
+            create: false,
+            update: true,
+            supportedFormats: ["formData"],
+          })
+          public readonly name: string;
+        }
+        const model = new MockModel({});
+        assertCreateFormDataAttributes(model, []);
+        assertUpdateFormDataAttributes(model, ["name"]);
+      });
 
-    it("should append multiple keys to model create attributes", () => {
-      class MockModel extends BaseModel {
-        @bawPersistAttr({ create: true })
-        public readonly name: string;
-        @bawPersistAttr({ create: true })
-        public readonly value: number;
-      }
+      it("should append multiple keys to model create attributes", () => {
+        class MockModel extends BaseModel {
+          @bawPersistAttr({
+            create: true,
+            update: false,
+            supportedFormats: ["formData"],
+          })
+          public readonly name: string;
+          @bawPersistAttr({
+            create: true,
+            update: false,
+            supportedFormats: ["formData"],
+          })
+          public readonly value: number;
+        }
+        const model = new MockModel({});
+        assertCreateFormDataAttributes(model, ["name", "value"]);
+        assertUpdateFormDataAttributes(model, []);
+      });
 
-      const model = new MockModel({});
-      assertCreateAttributes(model, ["name", "value"]);
-      assertUpdateAttributes(model, []);
-    });
+      it("should append multiple keys to model update attributes", () => {
+        class MockModel extends BaseModel {
+          @bawPersistAttr({
+            create: false,
+            update: true,
+            supportedFormats: ["formData"],
+          })
+          public readonly name: string;
+          @bawPersistAttr({
+            create: false,
+            update: true,
+            supportedFormats: ["formData"],
+          })
+          public readonly value: number;
+        }
+        const model = new MockModel({});
+        assertCreateFormDataAttributes(model, []);
+        assertUpdateFormDataAttributes(model, ["name", "value"]);
+      });
 
-    it("should append multiple keys to model update attributes", () => {
-      class MockModel extends BaseModel {
-        @bawPersistAttr({ update: true })
-        public readonly name: string;
-        @bawPersistAttr({ update: true })
-        public readonly value: number;
-      }
+      it("should append key to model attributes", () => {
+        class MockModel extends BaseModel {
+          @bawPersistAttr({ supportedFormats: ["formData"] })
+          public readonly name: string;
+        }
+        const model = new MockModel({});
+        assertCreateFormDataAttributes(model, ["name"]);
+        assertUpdateFormDataAttributes(model, ["name"]);
+      });
 
-      const model = new MockModel({});
-      assertCreateAttributes(model, []);
-      assertUpdateAttributes(model, ["name", "value"]);
-    });
-
-    it("should append key to model attributes", () => {
-      class MockModel extends BaseModel {
-        @bawPersistAttr()
-        public readonly name: string;
-      }
-
-      const model = new MockModel({});
-      assertCreateAttributes(model, ["name"]);
-      assertUpdateAttributes(model, ["name"]);
-    });
-
-    it("should append multiple keys to model attributes", () => {
-      class MockModel extends BaseModel {
-        @bawPersistAttr()
-        public readonly name: string;
-        @bawPersistAttr()
-        public readonly value: number;
-      }
-
-      const model = new MockModel({});
-      assertCreateAttributes(model, ["name", "value"]);
-      assertUpdateAttributes(model, ["name", "value"]);
+      it("should append multiple keys to model attributes", () => {
+        class MockModel extends BaseModel {
+          @bawPersistAttr({ supportedFormats: ["formData"] })
+          public readonly name: string;
+          @bawPersistAttr({ supportedFormats: ["formData"] })
+          public readonly value: number;
+        }
+        const model = new MockModel({});
+        assertCreateFormDataAttributes(model, ["name", "value"]);
+        assertUpdateFormDataAttributes(model, ["name", "value"]);
+      });
     });
   });
 
@@ -118,13 +237,13 @@ describe("Attribute Decorators", () => {
     });
 
     function createModel(
-      data?: { image?: ImageUrl[] | string; imageUrls?: ImageUrl[] },
+      data?: { images?: ImageUrl[] | string; imageUrls?: ImageUrl[] },
       opts?: BawDecoratorOptions<any>,
       injector?: Injector
     ) {
       class MockModel extends BaseModel {
         @bawImage(defaultImageUrl.url, opts)
-        public readonly image: ImageUrl[];
+        public readonly images: ImageUrl[];
         public readonly imageUrls: ImageUrl[];
 
         public override toString() {
@@ -136,27 +255,30 @@ describe("Attribute Decorators", () => {
     }
 
     it("should handle persist option", () => {
-      const model = createModel({ image: defaultImageUrls }, { persist: true });
-      assertCreateAttributes(model, ["image"]);
-      assertUpdateAttributes(model, ["image"]);
+      const model = createModel(
+        { images: defaultImageUrls },
+        { persist: true }
+      );
+      assertCreateJsonAttributes(model, ["images"]);
+      assertUpdateJsonAttributes(model, ["images"]);
     });
 
     it("should handle persist on create option", () => {
       const model = createModel(
-        { image: defaultImageUrls },
-        { persist: { create: true } }
+        { images: defaultImageUrls },
+        { persist: { create: true, update: false } }
       );
-      assertCreateAttributes(model, ["image"]);
-      assertUpdateAttributes(model, []);
+      assertCreateJsonAttributes(model, ["images"]);
+      assertUpdateJsonAttributes(model, []);
     });
 
     it("should handle persist on update option", () => {
       const model = createModel(
-        { image: defaultImageUrls },
-        { persist: { update: true } }
+        { images: defaultImageUrls },
+        { persist: { create: false, update: true } }
       );
-      assertCreateAttributes(model, []);
-      assertUpdateAttributes(model, ["image"]);
+      assertCreateJsonAttributes(model, []);
+      assertUpdateJsonAttributes(model, ["images"]);
     });
 
     it("should handle override key option", () => {
@@ -164,18 +286,18 @@ describe("Attribute Decorators", () => {
         { imageUrls: defaultImageUrls },
         { key: "imageUrls" }
       );
-      expect(model.image).toEqual([...defaultImageUrls, defaultImageUrl]);
+      expect(model.images).toEqual([...defaultImageUrls, defaultImageUrl]);
       expect(model.imageUrls).toEqual(defaultImageUrls);
     });
 
     it("should convert undefined", () => {
-      const model = createModel({ image: undefined });
-      expect(model.image).toEqual([defaultImageUrl]);
+      const model = createModel({ images: undefined });
+      expect(model.images).toEqual([defaultImageUrl]);
     });
 
     it("should convert null", () => {
-      const model = createModel({ image: null });
-      expect(model.image).toEqual([defaultImageUrl]);
+      const model = createModel({ images: null });
+      expect(model.images).toEqual([defaultImageUrl]);
     });
 
     it("should convert single url string", () => {
@@ -183,36 +305,36 @@ describe("Attribute Decorators", () => {
         url: modelData.imageUrl(),
         size: ImageSizes.unknown,
       };
-      const model = createModel({ image: imageUrl.url });
-      expect(model.image).toEqual([imageUrl, defaultImageUrl]);
+      const model = createModel({ images: imageUrl.url });
+      expect(model.images).toEqual([imageUrl, defaultImageUrl]);
     });
 
     it("should convert empty array", () => {
-      const model = createModel({ image: [] });
-      expect(model.image).toEqual([defaultImageUrl]);
+      const model = createModel({ images: [] });
+      expect(model.images).toEqual([defaultImageUrl]);
     });
 
     it("should convert single item array", () => {
       const imageUrls = defaultImageUrls.slice(0, 1);
-      const model = createModel({ image: imageUrls });
-      expect(model.image).toEqual([...imageUrls, defaultImageUrl]);
+      const model = createModel({ images: imageUrls });
+      expect(model.images).toEqual([...imageUrls, defaultImageUrl]);
     });
 
     it("should convert multiple items array", () => {
-      const model = createModel({ image: defaultImageUrls });
-      expect(model.image).toEqual([...defaultImageUrls, defaultImageUrl]);
+      const model = createModel({ images: defaultImageUrls });
+      expect(model.images).toEqual([...defaultImageUrls, defaultImageUrl]);
     });
 
     it("should not double append default image", () => {
       const imageUrls = [...defaultImageUrls, defaultImageUrl];
-      const model = createModel({ image: imageUrls });
-      expect(model.image).toEqual(imageUrls);
+      const model = createModel({ images: imageUrls });
+      expect(model.images).toEqual(imageUrls);
     });
 
     it("should sort array", () => {
       const imageUrls = modelData.shuffleArray(defaultImageUrls.slice());
-      const model = createModel({ image: imageUrls });
-      expect(model.image).toEqual([...defaultImageUrls, defaultImageUrl]);
+      const model = createModel({ images: imageUrls });
+      expect(model.images).toEqual([...defaultImageUrls, defaultImageUrl]);
     });
 
     describe("prepend api root", () => {
@@ -229,8 +351,8 @@ describe("Attribute Decorators", () => {
 
       it("should prepend api root to url if it starts with /", () => {
         const url = "/relative_path/image.jpg";
-        const model = createModel({ image: url }, {}, injector);
-        expect(model.image).toEqual([
+        const model = createModel({ images: url }, {}, injector);
+        expect(model.images).toEqual([
           { url: apiRoot + url, size: ImageSizes.unknown },
           defaultImageUrl,
         ]);
@@ -239,8 +361,8 @@ describe("Attribute Decorators", () => {
       it("should prepend api root to urls if they starts with /", () => {
         const url = "/relative_path/image.jpg";
         const imageUrl: ImageUrl = { url, size: ImageSizes.unknown };
-        const model = createModel({ image: [imageUrl] }, {}, injector);
-        expect(model.image).toEqual([
+        const model = createModel({ images: [imageUrl] }, {}, injector);
+        expect(model.images).toEqual([
           { url: apiRoot + url, size: ImageSizes.unknown },
           defaultImageUrl,
         ]);
@@ -264,26 +386,26 @@ describe("Attribute Decorators", () => {
 
     it("should handle persist option", () => {
       const model = createModel({ ids: [1, 2, 3] }, { persist: true });
-      assertCreateAttributes(model, ["ids"]);
-      assertUpdateAttributes(model, ["ids"]);
+      assertCreateJsonAttributes(model, ["ids"]);
+      assertUpdateJsonAttributes(model, ["ids"]);
     });
 
     it("should handle persist on create option", () => {
       const model = createModel(
         { ids: [1, 2, 3] },
-        { persist: { create: true } }
+        { persist: { create: true, update: false } }
       );
-      assertCreateAttributes(model, ["ids"]);
-      assertUpdateAttributes(model, []);
+      assertCreateJsonAttributes(model, ["ids"]);
+      assertUpdateJsonAttributes(model, []);
     });
 
     it("should handle persist on update option", () => {
       const model = createModel(
         { ids: [1, 2, 3] },
-        { persist: { update: true } }
+        { persist: { create: false, update: true } }
       );
-      assertCreateAttributes(model, []);
-      assertUpdateAttributes(model, ["ids"]);
+      assertCreateJsonAttributes(model, []);
+      assertUpdateJsonAttributes(model, ["ids"]);
     });
 
     it("should handle override key option", () => {
@@ -348,26 +470,26 @@ describe("Attribute Decorators", () => {
         { date: defaultDate.toISO() },
         { persist: true }
       );
-      assertCreateAttributes(model, ["date"]);
-      assertUpdateAttributes(model, ["date"]);
+      assertCreateJsonAttributes(model, ["date"]);
+      assertUpdateJsonAttributes(model, ["date"]);
     });
 
     it("should handle persist on create option", () => {
       const model = createModel(
         { date: defaultDate.toISO() },
-        { persist: { create: true } }
+        { persist: { create: true, update: false } }
       );
-      assertCreateAttributes(model, ["date"]);
-      assertUpdateAttributes(model, []);
+      assertCreateJsonAttributes(model, ["date"]);
+      assertUpdateJsonAttributes(model, []);
     });
 
     it("should handle persist on update option", () => {
       const model = createModel(
         { date: defaultDate.toISO() },
-        { persist: { update: true } }
+        { persist: { create: false, update: true } }
       );
-      assertCreateAttributes(model, []);
-      assertUpdateAttributes(model, ["date"]);
+      assertCreateJsonAttributes(model, []);
+      assertUpdateJsonAttributes(model, ["date"]);
     });
 
     it("should handle override key option", () => {
@@ -428,26 +550,26 @@ describe("Attribute Decorators", () => {
         { duration: defaultSeconds },
         { persist: true }
       );
-      assertCreateAttributes(model, ["duration"]);
-      assertUpdateAttributes(model, ["duration"]);
+      assertCreateJsonAttributes(model, ["duration"]);
+      assertUpdateJsonAttributes(model, ["duration"]);
     });
 
     it("should handle persist on create option", () => {
       const model = createModel(
         { duration: defaultSeconds },
-        { persist: { create: true } }
+        { persist: { create: true, update: false } }
       );
-      assertCreateAttributes(model, ["duration"]);
-      assertUpdateAttributes(model, []);
+      assertCreateJsonAttributes(model, ["duration"]);
+      assertUpdateJsonAttributes(model, []);
     });
 
     it("should handle persist on update option", () => {
       const model = createModel(
         { duration: defaultSeconds },
-        { persist: { update: true } }
+        { persist: { create: false, update: true } }
       );
-      assertCreateAttributes(model, []);
-      assertUpdateAttributes(model, ["duration"]);
+      assertCreateJsonAttributes(model, []);
+      assertUpdateJsonAttributes(model, ["duration"]);
     });
 
     it("should handle override key option", () => {

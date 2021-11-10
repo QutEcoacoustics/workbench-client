@@ -426,8 +426,8 @@ describe("SecurityService", () => {
         await promise;
         expect(spec.service.getLocalUser()).toEqual(
           new SessionUser({
-            ...defaultSessionUser.toJSON(),
-            ...defaultUser.toJSON(),
+            ...defaultSessionUser.getJsonAttributes(),
+            ...defaultUser.getJsonAttributes(),
           })
         );
       });

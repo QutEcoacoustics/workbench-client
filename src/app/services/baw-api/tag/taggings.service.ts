@@ -69,6 +69,7 @@ export class TaggingsService extends StandardApi<
   ): Observable<Tagging> {
     return this.apiCreate(
       endpoint(analysisJob, audioEvent, emptyParam, emptyParam),
+      (tagging) => endpoint(analysisJob, audioEvent, tagging, emptyParam),
       model
     );
   }

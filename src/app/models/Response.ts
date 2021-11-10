@@ -18,7 +18,7 @@ export interface IResponse {
 }
 
 export class Response extends AbstractModel<IResponse> implements IResponse {
-  public readonly kind = "Answer";
+  public readonly kind = "Response";
   public readonly id?: Id;
   @bawPersistAttr()
   public readonly data?: Blob;

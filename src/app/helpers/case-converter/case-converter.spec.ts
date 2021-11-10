@@ -7,24 +7,24 @@ const conversionCallbacks = [
     callback: toCamelCase,
     fieldOne: "fieldOne",
     fieldTwo: "fieldTwo",
-    whitelistKey: "whitelistKey",
-    whitelistValue: "contentOne",
+    allowListKey: "allowListKey",
+    allowListValue: "contentOne",
   },
   {
     name: "to snake_case",
     callback: toSnakeCase,
     fieldOne: "field_one",
     fieldTwo: "field_two",
-    whitelistKey: "whitelist_key",
-    whitelistValue: "content_one",
+    allowListKey: "allow_list_key",
+    allowListValue: "content_one",
   },
 ];
 
 conversionCallbacks.forEach((test) => {
   const fieldOne = test.fieldOne;
   const fieldTwo = test.fieldTwo;
-  const whitelistKey = test.whitelistKey;
-  const whitelistValue = test.whitelistValue;
+  const allowedKey = test.allowListKey;
+  const allowedValues = test.allowListValue;
 
   describe(test.name, () => {
     it("simple objects", () => {
@@ -144,25 +144,25 @@ conversionCallbacks.forEach((test) => {
       expect(expected).toEqual(result);
     });
 
-    // TODO Add checking for whitelisted key after conversion
-    describe("whitelist", () => {
-      it("should convert whitelisted value", () => {
-        const before = { ["whitelist-key"]: "content one" };
-        const expected = { [whitelistKey]: whitelistValue };
+    // TODO Add checking for allowed key after conversion
+    describe("allowlist", () => {
+      it("should convert allowed value", () => {
+        const before = { ["allow-list-key"]: "content one" };
+        const expected = { [allowedKey]: allowedValues };
         const result = test.callback(before);
         expect(expected).toEqual(result);
       });
 
-      it("should convert whitelisted value object", () => {
-        const before = { ["whitelist-key"]: { field_one: "content one" } };
-        const expected = { [whitelistKey]: { [fieldOne]: whitelistValue } };
+      it("should convert allow-listed value object", () => {
+        const before = { ["allow-list-key"]: { field_one: "content one" } };
+        const expected = { [allowedKey]: { [fieldOne]: allowedValues } };
         const result = test.callback(before);
         expect(expected).toEqual(result);
       });
 
-      it("should convert whitelisted value array", () => {
-        const before = { ["whitelist-key"]: ["content one"] };
-        const expected = { [whitelistKey]: [whitelistValue] };
+      it("should convert allowed value array", () => {
+        const before = { ["allow-list-key"]: ["content one"] };
+        const expected = { [allowedKey]: [allowedValues] };
         const result = test.callback(before);
         expect(expected).toEqual(result);
       });

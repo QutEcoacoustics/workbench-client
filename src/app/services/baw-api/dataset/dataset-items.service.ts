@@ -54,7 +54,11 @@ export class DatasetItemsService extends ImmutableApi<
     model: DatasetItem,
     dataset: IdOr<Dataset>
   ): Observable<DatasetItem> {
-    return this.apiCreate(endpoint(dataset, emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(dataset, emptyParam, emptyParam),
+      (datasetItem) => endpoint(dataset, datasetItem, emptyParam),
+      model
+    );
   }
   public destroy(
     model: IdOr<DatasetItem>,

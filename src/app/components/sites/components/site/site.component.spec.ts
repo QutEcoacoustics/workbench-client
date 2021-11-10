@@ -22,6 +22,7 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
+import { modelData } from "@test/helpers/faker";
 import { FilterExpectations, nStepObservable } from "@test/helpers/general";
 import { assertImage } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
@@ -101,7 +102,9 @@ describe("SiteComponent", () => {
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultRegion = new Region(generateRegion());
-    defaultSite = new Site(generateSite());
+    defaultSite = new Site(
+      generateSite({ imageUrls: [modelData.imageUrls()[0]] })
+    );
     defaultRecording = new AudioRecording(generateAudioRecording());
   });
 
@@ -183,7 +186,11 @@ describe("SiteComponent", () => {
       spec.detectChanges();
 
       const image = spec.query<HTMLImageElement>("img");
-      assertImage(image, defaultSite.imageUrls, `${defaultSite.name} image`);
+      assertImage(
+        image,
+        defaultSite.imageUrls.at(0).url,
+        `${defaultSite.name} image`
+      );
     });
 
     it("should display default description if model has none", () => {

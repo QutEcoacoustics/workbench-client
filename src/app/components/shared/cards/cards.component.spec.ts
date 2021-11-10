@@ -42,7 +42,7 @@ describe("CardsComponent", () => {
   beforeEach(() => {
     defaultModel = new CardImageMockModel({
       id: 1,
-      image: modelData.imageUrls(),
+      imageUrls: modelData.imageUrls(),
     });
   });
 

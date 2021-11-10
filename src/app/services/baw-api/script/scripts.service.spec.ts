@@ -18,6 +18,7 @@ type Service = ScriptsService;
 describe("ScriptsService", function () {
   const createModel = () => new Script(generateScript({ id: 5 }));
   const baseUrl = "/scripts/";
+  const updateUrl = baseUrl + "5";
   const createService = createServiceFactory({
     service: ScriptsService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
@@ -29,6 +30,6 @@ describe("ScriptsService", function () {
 
   validateApiList<Model, Params, Service>(baseUrl);
   validateApiFilter<Model, Params, Service>(baseUrl + "filter");
-  validateApiShow<Model, Params, Service>(baseUrl + "5", 5, createModel);
-  validateApiCreate<Model, Params, Service>(baseUrl, createModel);
+  validateApiShow<Model, Params, Service>(updateUrl, 5, createModel);
+  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel);
 });

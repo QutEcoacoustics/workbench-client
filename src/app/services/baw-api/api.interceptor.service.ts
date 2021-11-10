@@ -47,18 +47,6 @@ export class BawApiInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    // Only set these headers if this is a json request
-    if (request.responseType === "json") {
-      request = request.clone({
-        setHeaders: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          Accept: "application/json",
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          "Content-Type": "application/json",
-        },
-      });
-    }
-
     // If logged in, add authorization token
     if (this.api.isLoggedIn()) {
       request = request.clone({

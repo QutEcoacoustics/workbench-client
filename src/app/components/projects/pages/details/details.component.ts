@@ -50,7 +50,7 @@ const projectKey = "project";
         <div class="col-sm-4">
           <img
             class="img-thumbnail mx-auto d-block"
-            [src]="project.image"
+            [src]="project.imageUrls"
             [alt]="project.name + ' image'"
           />
         </div>

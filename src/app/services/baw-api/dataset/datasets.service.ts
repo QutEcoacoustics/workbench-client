@@ -39,7 +39,11 @@ export class DatasetsService extends StandardApi<Dataset> {
     return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: Dataset): Observable<Dataset> {
-    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(emptyParam, emptyParam),
+      (dataset) => endpoint(dataset, emptyParam),
+      model
+    );
   }
   public update(model: Dataset): Observable<Dataset> {
     return this.apiUpdate(endpoint(model, emptyParam), model);

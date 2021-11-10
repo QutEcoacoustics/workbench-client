@@ -47,7 +47,11 @@ export class TagsService extends StandardApi<Tag> {
     return this.apiShow(endpoint(model, emptyParam));
   }
   public create(model: Tag): Observable<Tag> {
-    return this.apiCreate(endpoint(emptyParam, emptyParam), model);
+    return this.apiCreate(
+      endpoint(emptyParam, emptyParam),
+      (tag) => endpoint(tag, emptyParam),
+      model
+    );
   }
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/449
   public update(model: Tag): Observable<Tag> {

@@ -142,7 +142,7 @@ describe("MyProfileComponent", () => {
 
     assertImage(
       spec.query("img"),
-      defaultUser.image[0].url,
+      defaultUser.imageUrls[0].url,
       `${defaultUser.userName} profile image`
     );
     expect(spec.query("h1")).toHaveText(defaultUser.userName);
