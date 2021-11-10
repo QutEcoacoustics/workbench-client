@@ -7,7 +7,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core";
-import { ActivatedRoute, Params } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { SecurityService } from "@baw-api/security/security.service";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageInfo } from "@helpers/page/pageInfo";
@@ -58,9 +58,7 @@ export class MenuComponent
   public filteredLinks: Set<MenuRoute | MenuLink | MenuAction | MenuModal> =
     Set();
   public placement: Placement;
-  public params: Params;
   public user: SessionUser;
-  public loadedModal: MenuModal;
 
   public isInternalLink = isInternalRoute;
   public isExternalLink = isExternalLink;
@@ -111,9 +109,6 @@ export class MenuComponent
         return link;
       })
       .sort(this.compare);
-
-    // Retrieve router parameters to override link attributes
-    this.params = snapshot.params;
   }
 
   public ngAfterViewInit(): void {

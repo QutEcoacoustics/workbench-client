@@ -18,8 +18,8 @@ import {
   ApiUpdate,
   IdOr,
 } from "./api-common";
-import { ApiErrorDetails } from "./api.interceptor.service";
-import { BawApiService } from "./baw-api.service";
+import { ApiErrorDetails, isApiErrorDetails } from "./api.interceptor.service";
+import { BawApiService, unknownErrorCode } from "./baw-api.service";
 
 /**
  * Baw Resolver Wrapper Class
@@ -354,13 +354,27 @@ function convertToId(id: string): Id {
 }
 
 /**
- * Verify all resolvers resolve without errors. Returns object containing all
- * resolved models using the resolver key as the object key.
+ * Verify all resolved models have no errors
+ *
+ * @param resolvedModelList List of models to validate
+ */
+export function hasResolvedSuccessfully(
+  resolvedModelList: ResolvedModelList
+): boolean {
+  return Object.values(resolvedModelList).every(
+    (model) => isInstantiated(model) && !isApiErrorDetails(model)
+  );
+}
+
+/**
+ * Returns object containing all resolved data using the resolver key as the
+ * object key. Use `hasResolvedSuccessfully` to validate if the list only
+ * contains valid models
  *
  * @param data Page Data
  */
-export function retrieveResolvers(data: PageInfo): ResolvedModelList | false {
-  const models = {};
+export function retrieveResolvers(data: PageInfo): ResolvedModelList {
+  const models: ResolvedModelList = {};
   const keys = Object.keys(data?.resolvers || {});
 
   if (keys.length === 0) {
@@ -373,11 +387,16 @@ export function retrieveResolvers(data: PageInfo): ResolvedModelList | false {
     const resolvedModel: ResolvedModel = data[key];
 
     // If error detected, return
-    if (!resolvedModel || resolvedModel.error) {
-      return false;
+    if (!resolvedModel) {
+      models[key] = {
+        status: unknownErrorCode,
+        message: "Model could not be resolved",
+      } as ApiErrorDetails;
+    } else if (resolvedModel.error) {
+      models[key] = resolvedModel.error;
+    } else {
+      models[key] = resolvedModel.model;
     }
-
-    models[key] = resolvedModel.model;
   }
 
   return models;
@@ -388,5 +407,6 @@ export interface ResolvedModelList {
     | AbstractModel
     | AbstractModel[]
     | AbstractData
-    | AbstractData[];
+    | AbstractData[]
+    | ApiErrorDetails;
 }

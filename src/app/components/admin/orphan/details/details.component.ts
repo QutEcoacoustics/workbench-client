@@ -1,6 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { shallowSiteResolvers } from "@baw-api/site/sites.service";
 import baseSchema from "@components/sites/site.base.json";
 import extendedSchema from "@components/sites/site.extended.json";
@@ -43,7 +46,7 @@ class AdminOrphanComponent
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
 
-    if (!models) {
+    if (!hasResolvedSuccessfully(models)) {
       this.failure = true;
       return;
     }

@@ -1,7 +1,10 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -46,7 +49,7 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
 
   public ngOnInit() {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
-    if (models) {
+    if (hasResolvedSuccessfully(models)) {
       this.project = models[projectKey] as Project;
       this.site = models[siteKey] as Site;
       this.user = this.api.getLocalUser();

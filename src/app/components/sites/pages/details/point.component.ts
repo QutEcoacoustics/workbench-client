@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { pointAnnotationsModal } from "@components/sites/points.modals";
@@ -51,7 +54,7 @@ class PointDetailsComponent extends SiteDetailsComponent implements OnInit {
   public ngOnInit() {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
 
-    if (!models) {
+    if (!hasResolvedSuccessfully(models)) {
       return;
     }
 

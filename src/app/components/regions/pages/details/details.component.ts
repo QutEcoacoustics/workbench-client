@@ -2,7 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import {
@@ -12,6 +15,7 @@ import {
   regionsCategory,
 } from "@components/regions/regions.menus";
 import { newPointMenuItem } from "@components/sites/points.menus";
+import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
@@ -24,6 +28,7 @@ import { List } from "immutable";
 
 export const regionMenuItemActions = [
   newPointMenuItem,
+  visualizeMenuItem,
   editRegionMenuItem,
   deleteRegionMenuItem,
 ];
@@ -121,7 +126,7 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
-    if (!models) {
+    if (!hasResolvedSuccessfully(models)) {
       return;
     }
     this.project = models[projectKey] as Project;

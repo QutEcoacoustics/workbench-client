@@ -3,7 +3,11 @@ import { ActivatedRoute } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { Direction, Filters } from "@baw-api/baw-api.service";
-import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  ResolvedModelList,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel } from "@models/AbstractModel";
 import {
@@ -87,7 +91,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   public ngOnInit() {
     if (this.route) {
       const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
-      if (!models) {
+      if (!hasResolvedSuccessfully(models)) {
         this.failure = true;
         return;
       }
