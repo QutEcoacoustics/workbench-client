@@ -67,9 +67,7 @@ describe("RenderFieldComponent", () => {
 
   describe("string input", () => {
     function spyOnIsImage() {
-      spec.component[
-        "isImage"
-      ] = jasmine
+      spec.component["isImage"] = jasmine
         .createSpy()
         .and.callFake((_, __, onerror: () => void) => onerror());
     }
@@ -335,7 +333,7 @@ describe("RenderFieldComponent", () => {
       toString?: (model) => string
     ) {
       class MockModel extends AbstractModel {
-        public kind = "MockModel";
+        public kind = "Mock Model";
         public get viewUrl() {
           return link();
         }
@@ -369,7 +367,7 @@ describe("RenderFieldComponent", () => {
       setup(createModel({ id: 1 }));
       spec.detectChanges();
       const value = getElement.model()[0];
-      expect(value.innerText.trim()).toBe("MockModel: 1");
+      expect(value.innerText.trim()).toBe("Mock Model: 1");
     });
 
     it("should display custom model toString()", () => {

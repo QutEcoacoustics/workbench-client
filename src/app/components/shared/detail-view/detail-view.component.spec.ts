@@ -188,7 +188,7 @@ describe("DetailViewComponent", () => {
         fixture.detectChanges();
 
         const value = getValues()[0];
-        expect(value.innerText.trim()).toBe("MockModel: 1");
+        expect(value.innerText.trim()).toBe("Mock Model: 1");
       });
 
       it("should handle hasMany unresolved model", () => {
@@ -217,8 +217,8 @@ describe("DetailViewComponent", () => {
 
         const values = getValues();
         expect(values.length).toBe(2);
-        expect(values[0].innerText.trim()).toBe("MockModel: 1");
-        expect(values[1].innerText.trim()).toBe("MockModel: 2");
+        expect(values[0].innerText.trim()).toBe("Mock Model: 1");
+        expect(values[1].innerText.trim()).toBe("Mock Model: 2");
       });
     });
   });

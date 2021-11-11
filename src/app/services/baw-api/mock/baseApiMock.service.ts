@@ -3,7 +3,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
 
 export class MockModel extends AbstractModel {
-  public kind = "MockModel";
+  public kind = "Mock Model";
   public readonly id: Id;
 
   public constructor(raw: Record<string, any>, protected injector?: Injector) {
@@ -15,7 +15,7 @@ export class MockModel extends AbstractModel {
   }
 
   public get viewUrl(): string {
-    return getUnknownViewUrl("MockModel does not have a viewUrl");
+    return getUnknownViewUrl("Mock Model does not have a viewUrl");
   }
 }
 

@@ -9,8 +9,9 @@ export interface IUnlockAccount {
 
 export class UnlockAccount
   extends AbstractForm<IUnlockAccount>
-  implements IUnlockAccount {
-  public readonly kind = "UnlockAccount";
+  implements IUnlockAccount
+{
+  public readonly kind = "Unlock Account";
   @bawPersistAttr()
   public readonly login: Param;
   @bawPersistAttr()

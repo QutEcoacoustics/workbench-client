@@ -14,8 +14,9 @@ export interface IReportProblem {
 
 export class ReportProblem
   extends AbstractForm<IReportProblem>
-  implements IReportProblem {
-  public readonly kind = "ReportProblem";
+  implements IReportProblem
+{
+  public readonly kind = "Report Problem";
   @bawPersistAttr()
   public readonly name: Param;
   @bawPersistAttr()

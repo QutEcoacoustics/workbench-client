@@ -74,7 +74,7 @@ describe("Association Decorators", () => {
         }
 
         public toString(): string {
-          return "MockModel ";
+          return "Mock Model ";
         }
       }
 
@@ -244,7 +244,7 @@ describe("Association Decorators", () => {
         }
 
         public toString(): string {
-          return "MockModel ";
+          return "Mock Model ";
         }
       }
 

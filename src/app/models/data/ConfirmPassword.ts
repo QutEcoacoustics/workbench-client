@@ -9,8 +9,9 @@ export interface IConfirmPassword {
 
 export class ConfirmPassword
   extends AbstractForm<IConfirmPassword>
-  implements IConfirmPassword {
-  public readonly kind = "ConfirmPassword";
+  implements IConfirmPassword
+{
+  public readonly kind = "Confirm Password";
   @bawPersistAttr()
   public readonly login: Param;
   @bawPersistAttr()

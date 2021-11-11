@@ -12,8 +12,9 @@ export interface IRegisterDetails {
 
 export class RegisterDetails
   extends AbstractForm<IRegisterDetails>
-  implements IRegisterDetails {
-  public readonly kind = "RegisterDetails";
+  implements IRegisterDetails
+{
+  public readonly kind = "Register Details";
   @bawPersistAttr()
   public readonly userName: UserName;
   @bawPersistAttr()
