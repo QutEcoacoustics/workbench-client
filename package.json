@@ -60,7 +60,7 @@
     "humanize-duration": "^3.27.0",
     "immutable": "^4.0.0",
     "include-media": "^1.4.10",
-    "just-camel-case": "^6.0.0",
+    "just-camel-case": "^6.0.1",
     "just-snake-case": "^3.0.1",
     "luxon": "^2.1.1",
     "ngx-captcha": "^10.0.0",
