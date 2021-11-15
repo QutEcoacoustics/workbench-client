@@ -247,7 +247,7 @@ describe("Attribute Decorators", () => {
         public readonly imageUrls: ImageUrl[];
 
         public override toString() {
-          return "MockModel";
+          return "Mock Model";
         }
       }
 

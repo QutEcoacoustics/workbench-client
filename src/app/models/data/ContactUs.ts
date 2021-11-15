@@ -10,7 +10,7 @@ export interface IContactUs {
 }
 
 export class ContactUs extends AbstractForm<IContactUs> implements IContactUs {
-  public readonly kind = "ContactUs";
+  public readonly kind = "Contact Us";
   @bawPersistAttr()
   public readonly name: Param = "";
   @bawPersistAttr()

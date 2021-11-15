@@ -4,19 +4,24 @@ import { AbstractModel, getUnknownViewUrl } from "./AbstractModel";
 import { bawPersistAttr } from "./AttributeDecorators";
 
 export class MockModel extends AbstractModel {
+  public kind = "Mock Model";
+
   public constructor(raw: Record<string, any>, protected injector?: Injector) {
     super(raw, injector);
   }
 
   public get viewUrl(): string {
-    return getUnknownViewUrl("MockModel does not have a viewUrl");
+    return getUnknownViewUrl("Mock Model does not have a viewUrl");
   }
 }
 
 describe("AbstractModel", () => {
   describe("toJSON", () => {
     const assertToJson = (model: AbstractModel, result: Record<string, any>) =>
-      expect(model.getJsonAttributes()).toEqual(result);
+      expect(model.getJsonAttributes()).toEqual({
+        ...result,
+        kind: "Mock Model",
+      });
     const assertToJsonWithCreate = (
       model: AbstractModel,
       result: Record<string, any>
@@ -128,49 +133,62 @@ describe("AbstractModel", () => {
   });
 
   describe("hasFormData", () => {
-    it("should return true if form data exists", () => {
-      class Model extends MockModel {
-        @bawPersistAttr({ supportedFormats: ["formData"] })
-        public value0: any;
-      }
-      const model = new Model({ value0: "value" });
-      expect(model.hasFormDataOnlyAttributes()).toBeTrue();
-    });
+    [
+      { label: "create: true", create: true },
+      { label: "update: true", update: true },
+    ].forEach((test) => {
+      describe(test.label, () => {
+        function hasFormDataOnlyAttributes(model: AbstractModel) {
+          return model.hasFormDataOnlyAttributes(
+            test.create ? { create: true } : { update: true }
+          );
+        }
 
-    it("should handle detecting falsy values", () => {
-      class Model extends MockModel {
-        @bawPersistAttr({ supportedFormats: ["formData"] })
-        public value0: any;
-      }
-      const model = new Model({ value0: 0 });
-      expect(model.hasFormDataOnlyAttributes()).toBeTrue();
-    });
+        it("should return true if form data exists", () => {
+          class Model extends MockModel {
+            @bawPersistAttr({ supportedFormats: ["formData"] })
+            public value0: any;
+          }
+          const model = new Model({ value0: "value" });
+          expect(hasFormDataOnlyAttributes(model)).toBeTrue();
+        });
 
-    it("should return true if only one attribute is instantiated", () => {
-      class Model extends MockModel {
-        @bawPersistAttr({ supportedFormats: ["formData"] })
-        public value0: any;
-        @bawPersistAttr({ supportedFormats: ["formData"] })
-        public value1: any;
-      }
-      const model = new Model({ value0: "value" });
-      expect(model.hasFormDataOnlyAttributes()).toBeTrue();
-    });
-    it("should return false is no attributes are instantiated", () => {
-      class Model extends MockModel {
-        @bawPersistAttr({ supportedFormats: ["formData"] })
-        public value0: any;
-        @bawPersistAttr({ supportedFormats: ["formData"] })
-        public value1: any;
-      }
-      const model = new Model({});
-      expect(model.hasFormDataOnlyAttributes()).toBeFalse();
-    });
+        it("should handle detecting falsy values", () => {
+          class Model extends MockModel {
+            @bawPersistAttr({ supportedFormats: ["formData"] })
+            public value0: any;
+          }
+          const model = new Model({ value0: 0 });
+          expect(hasFormDataOnlyAttributes(model)).toBeTrue();
+        });
 
-    it("should return false if no attributes exist", () => {
-      class Model extends MockModel {}
-      const model = new Model({});
-      expect(model.hasFormDataOnlyAttributes()).toBeFalse();
+        it("should return true if only one attribute is instantiated", () => {
+          class Model extends MockModel {
+            @bawPersistAttr({ supportedFormats: ["formData"] })
+            public value0: any;
+            @bawPersistAttr({ supportedFormats: ["formData"] })
+            public value1: any;
+          }
+          const model = new Model({ value0: "value" });
+          expect(hasFormDataOnlyAttributes(model)).toBeTrue();
+        });
+        it("should return false is no attributes are instantiated", () => {
+          class Model extends MockModel {
+            @bawPersistAttr({ supportedFormats: ["formData"] })
+            public value0: any;
+            @bawPersistAttr({ supportedFormats: ["formData"] })
+            public value1: any;
+          }
+          const model = new Model({});
+          expect(hasFormDataOnlyAttributes(model)).toBeFalse();
+        });
+
+        it("should return false if no attributes exist", () => {
+          class Model extends MockModel {}
+          const model = new Model({});
+          expect(hasFormDataOnlyAttributes(model)).toBeFalse();
+        });
+      });
     });
   });
 
@@ -197,7 +215,7 @@ describe("AbstractModel", () => {
     const createFormData = (obj: Record<string, any>) => {
       const data = new FormData();
       for (const key of Object.keys(obj)) {
-        data.append(key, obj[key]);
+        data.append(`MockModel[${key}]`, obj[key]);
       }
       return data;
     };

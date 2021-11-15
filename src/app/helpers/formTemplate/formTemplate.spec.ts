@@ -22,10 +22,10 @@ import {
 } from "./formTemplate";
 
 class MockModel extends AbstractModel {
-  public kind: "MockModel" = "MockModel";
+  public kind = "Mock Model" as const;
 
   public get viewUrl(): string {
-    return getUnknownViewUrl("MockModel does not have a viewUrl");
+    return getUnknownViewUrl("Mock Model does not have a viewUrl");
   }
   public getJsonAttributes(): any {
     return this;

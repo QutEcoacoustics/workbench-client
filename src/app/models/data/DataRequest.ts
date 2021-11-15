@@ -24,8 +24,9 @@ export interface IDataRequest {
 
 export class DataRequest
   extends AbstractForm<IDataRequest>
-  implements IDataRequest {
-  public readonly kind = "DataRequest";
+  implements IDataRequest
+{
+  public readonly kind = "Data Request";
   @bawPersistAttr()
   public readonly name: string = "";
   @bawPersistAttr()

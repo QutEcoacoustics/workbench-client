@@ -40,7 +40,11 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    */
   public abstract get viewUrl(): string;
 
-  /** Model type name */
+  /**
+   * Model type name. This value is used when making API requests and must
+   * match up with what the baw-server names the model. It will be converted to
+   * snake case.
+   */
   public readonly kind: string;
 
   /**
@@ -89,6 +93,11 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     const keys = this.getModelAttributes({ ...opts, formData: true });
     const data = this.toObject(keys);
 
+    if (!this.kind) {
+      console.error("Model does not have a kind attribute", this);
+      throw Error("Model does not have a kind attribute");
+    }
+
     for (const attr of Object.keys(data)) {
       // Do not include undefined/null data
       if (!isInstantiated(data[attr])) {
@@ -103,7 +112,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
        * NOTE: For JSON data, our interceptor converts keys and values to
        * snakeCase, this case is more one-off and so an interceptor has not been built
        */
-      const modelName = snakeCase(this.constructor.name);
+      const modelName = snakeCase(this.kind);
       const snakeCaseAttr = snakeCase(attr);
       output.append(`${modelName}[${snakeCaseAttr}]`, data[attr]);
     }
@@ -211,7 +220,7 @@ export abstract class AbstractModel<
 export class UnresolvedModel extends AbstractModel {
   private static readonly model = Object.freeze(new UnresolvedModel());
   private static readonly models = Object.freeze([]);
-  public readonly kind = "UnresolvedModel";
+  public readonly kind = "Unresolved Model";
 
   public static get one(): Readonly<UnresolvedModel> {
     return this.model;

@@ -48,7 +48,7 @@ class IMockModel {
 }
 
 class MockModel extends AbstractModel implements IMockModel {
-  public kind = "MockModel";
+  public kind = "Mock Model";
   @bawPersistAttr()
   public readonly id?: number;
   @bawPersistAttr()
@@ -63,7 +63,7 @@ class MockModel extends AbstractModel implements IMockModel {
   }
 
   public override get viewUrl(): string {
-    return getUnknownViewUrl("MockModel does not have a viewUrl");
+    return getUnknownViewUrl("Mock Model does not have a viewUrl");
   }
 }
 
