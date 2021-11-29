@@ -15,7 +15,6 @@ import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { DateTime } from "luxon";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -50,10 +49,10 @@ class ListComponent
         recordings.map(
           (recording): TableRow => ({
             uploader: recording,
+            timezone: recording,
             site: recording,
-            recorded: recording.recordedDate.toLocaleString(
-              DateTime.DATETIME_SHORT
-            ),
+            // yyyy-mm-dd hh:mm
+            recorded: recording.recordedDate.toFormat("yyyy-LL-dd HH:mm"),
             duration: toRelative(recording.duration, { largest: 1 }),
             model: recording,
           })
@@ -97,7 +96,6 @@ class ListComponent
   }
 }
 
-// TODO Link to multiple menu routes
 ListComponent.linkComponentToPageInfo({
   category: audioRecordingsCategory,
   resolvers: {
@@ -111,6 +109,7 @@ export { ListComponent };
 
 interface TableRow {
   recorded: string;
+  timezone: AudioRecording;
   duration: string;
   uploader: AudioRecording;
   site: AudioRecording;

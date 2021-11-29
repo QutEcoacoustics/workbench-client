@@ -12,7 +12,7 @@
     "e2e:debug": "node --max_old_space_size=4096 --inspect-brk ./node_modules/protractor/bin/protractor e2e/protractor.conf.js",
     "lint": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js .",
     "ng": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng",
-    "start": "ng serve --host 0.0.0.0 --disableHostCheck",
+    "start": "ng serve --host 0.0.0.0 --disable-host-check",
     "stats": "ng build --configuration development --stats-json && webpack-bundle-analyzer dist/workbench-client/browser/stats.json",
     "test": "npm run test:chrome",
     "test:chrome": "ng test -- --code-coverage --browsers Chrome",

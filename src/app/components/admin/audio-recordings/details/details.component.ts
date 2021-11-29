@@ -12,7 +12,7 @@ import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
 import { List } from "immutable";
-import schema from "../audio-recording.schema.json";
+import schema from "@components/audio-recordings/pages/details/audio-recording.schema";
 import {
   adminAudioRecordingMenuItem,
   adminAudioRecordingsCategory,

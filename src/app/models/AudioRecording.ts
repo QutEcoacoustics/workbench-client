@@ -1,5 +1,6 @@
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { adminAudioRecordingMenuItem } from "@components/admin/audio-recordings/audio-recordings.menus";
+import { audioRecordingMenuItem } from "@components/audio-recordings/audio-recording.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { Duration } from "luxon";
 import {
@@ -86,7 +87,19 @@ export class AudioRecording
   public site?: Site;
 
   public get viewUrl(): string {
+    return this.playUrl;
+  }
+
+  public get detailsUrl(): string {
+    return audioRecordingMenuItem.route.format({ audioRecordingId: this.id });
+  }
+
+  public get playUrl(): string {
     return listenRecordingMenuItem.route.format({ audioRecordingId: this.id });
+  }
+
+  public get downloadUrl(): string {
+    return "not_implemented";
   }
 
   public get adminViewUrl(): string {

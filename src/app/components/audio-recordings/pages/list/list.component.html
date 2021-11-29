@@ -17,31 +17,73 @@
     (page)="setPage($event)"
     (sort)="onSort($event)"
   >
-    <ngx-datatable-column name="Recorded"> </ngx-datatable-column>
+    <ngx-datatable-column name="Recorded">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <span [ngbTooltip]="site.tzinfoTz" placement="right">{{ value }}</span>
+      </ng-template>
+    </ngx-datatable-column>
     <ngx-datatable-column name="Duration"> </ngx-datatable-column>
     <ngx-datatable-column name="Uploader">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <!-- TODO Link to user -->
-        {{ value.uploader?.userName }}
+        <baw-loading
+          *ngIf="value.uploader | isUnresolved; else showUploader"
+          size="sm"
+        ></baw-loading>
+
+        <ng-template #showUploader>
+          <a [bawUrl]="value.uploader.viewUrl">
+            {{ value.uploader.userName }}
+          </a>
+        </ng-template>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Site">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <!-- TODO Link to site -->
-        {{ value.site?.name }}
+        <ng-container *ngIf="project; else noProject">
+          <a [bawUrl]="site.getViewUrl(project)">
+            {{ site.name }}
+          </a>
+        </ng-container>
+        <ng-template #noProject>
+          <a [bawUrl]="site.viewUrl">
+            {{ site.name }}
+          </a>
+        </ng-template>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column
       name="Model"
-      [width]="70"
-      [maxWidth]="70"
+      [width]="127"
+      [maxWidth]="127"
       [sortable]="false"
     >
       <ng-template let-column="column" ngx-datatable-header-template>
       </ng-template>
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <!-- TODO Link to play, download, and details -->
-        <a class="btn btn-sm btn-default" [bawUrl]="value.viewUrl">View</a>
+        <a
+          class="btn btn-sm btn-primary"
+          ngbTooltip="Play the audio recording"
+          placement="left"
+          [bawUrl]="value.playUrl"
+        >
+          <fa-icon [icon]="['fas', 'play']"></fa-icon>
+        </a>
+        <a
+          class="btn btn-sm btn-secondary mx-1"
+          ngbTooltip="Download the audio recording"
+          placement="left"
+          [bawUrl]="value.downloadUrl"
+        >
+          <fa-icon [icon]="['fas', 'download']"></fa-icon>
+        </a>
+        <a
+          class="btn btn-sm btn-default"
+          ngbTooltip="View details about the audio recording"
+          placement="left"
+          [bawUrl]="value.detailsUrl"
+        >
+          <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
+        </a>
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>

@@ -19,6 +19,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
+import schema from "./audio-recording.schema.json";
 
 const audioRecordingKey = "audioRecording";
 const projectKey = "project";
@@ -32,6 +33,7 @@ const siteKey = "site";
 class DetailsComponent extends PageComponent implements OnInit {
   public failure: boolean;
   private models: ResolvedModelList;
+  public fields = schema.fields;
 
   public constructor(private route: ActivatedRoute) {
     super();
