@@ -1,0 +1,50 @@
+<ng-container *ngIf="rows && !error">
+  <h1>Audio Recordings</h1>
+
+  <p>
+    Displaying <strong>{{ pageSize }}</strong> of
+    <strong>all {{ totalModels }}</strong> audio recordings.
+  </p>
+
+  <ngx-datatable
+    #table
+    bawDatatableDefaults
+    [columnMode]="ColumnMode.force"
+    [columns]="columns"
+    [rows]="rows"
+    [count]="totalModels"
+    [offset]="pageNumber"
+    (page)="setPage($event)"
+    (sort)="onSort($event)"
+  >
+    <ngx-datatable-column name="Recorded"> </ngx-datatable-column>
+    <ngx-datatable-column name="Duration"> </ngx-datatable-column>
+    <ngx-datatable-column name="Uploader">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <!-- TODO Link to user -->
+        {{ value.uploader?.userName }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Site">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <!-- TODO Link to site -->
+        {{ value.site?.name }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Model"
+      [width]="70"
+      [maxWidth]="70"
+      [sortable]="false"
+    >
+      <ng-template let-column="column" ngx-datatable-header-template>
+      </ng-template>
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <!-- TODO Link to play, download, and details -->
+        <a class="btn btn-sm btn-default" [bawUrl]="value.viewUrl">View</a>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</ng-container>
+
+<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>

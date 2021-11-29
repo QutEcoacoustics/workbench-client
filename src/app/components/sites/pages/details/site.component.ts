@@ -6,6 +6,7 @@ import {
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
+import { audioRecordingsMenuItem } from "@components/audio-recordings/audio-recording.menus";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { siteAnnotationsModal } from "@components/sites/sites.modals";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
@@ -30,6 +31,7 @@ export const siteMenuItemActions = [
   editSiteMenuItem,
   siteHarvestMenuItem,
   deleteSiteMenuItem,
+  audioRecordingsMenuItem,
 ];
 
 const projectKey = "project";

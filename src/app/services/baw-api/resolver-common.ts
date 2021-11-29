@@ -362,7 +362,7 @@ export function hasResolvedSuccessfully(
   resolvedModelList: ResolvedModelList
 ): boolean {
   return Object.values(resolvedModelList).every(
-    (model) => isInstantiated(model) && !isApiErrorDetails(model)
+    (model) => !isApiErrorDetails(model)
   );
 }
 
