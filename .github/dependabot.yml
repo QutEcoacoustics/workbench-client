@@ -11,4 +11,8 @@ updates:
     labels:
       - "automerge"
       - "dependencies"
-    open-pull-requests-limit: 10
+    ignore:
+      # Ignore all patch updates
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+    open-pull-requests-limit: 3
