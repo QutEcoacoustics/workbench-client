@@ -1,4 +1,4 @@
-import { Category, menuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuLink, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 
 export const audioRecordingsRoute = StrongRoute.newRoot().add(
@@ -28,4 +28,12 @@ export const audioRecordingMenuItem = menuRoute({
     ({ siteId, regionId, projectId }) => ({ siteId, regionId, projectId })
   ),
   parent: audioRecordingsMenuItem,
+});
+
+export const downloadAudioRecordingMenuItem = menuLink({
+  disabled: true,
+  icon: ["fas", "download"],
+  label: "Download",
+  tooltip: () => "(UNDER CONSTRUCTION) Download audio recording",
+  uri: () => "not_implemented",
 });

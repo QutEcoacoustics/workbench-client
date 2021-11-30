@@ -17,6 +17,7 @@ import { WidgetComponent } from "../widget/widget.component";
 /**
  * Permissions Shield Component.
  * Displays the user badges and access levels for the model.
+ * TODO Let page decide which model to display permissions for
  */
 @Component({
   selector: "baw-permissions-shield",

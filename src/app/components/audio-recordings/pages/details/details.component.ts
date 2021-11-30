@@ -12,13 +12,18 @@ import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   audioRecordingMenuItem,
   audioRecordingsCategory,
+  downloadAudioRecordingMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
+import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
+import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
+import { List } from "immutable";
 import schema from "./audio-recording.schema.json";
 
 const audioRecordingKey = "audioRecording";
@@ -67,6 +72,10 @@ class DetailsComponent extends PageComponent implements OnInit {
 
 DetailsComponent.linkComponentToPageInfo({
   category: audioRecordingsCategory,
+  menus: {
+    actions: List([listenRecordingMenuItem, downloadAudioRecordingMenuItem]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+  },
   resolvers: {
     [audioRecordingKey]: audioRecordingResolvers.show,
     [projectKey]: projectResolvers.showOptional,

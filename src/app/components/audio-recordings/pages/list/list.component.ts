@@ -8,6 +8,7 @@ import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   audioRecordingsCategory,
   audioRecordingsMenuItem,
+  downloadAudioRecordingMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, Ids, toRelative } from "@interfaces/apiInterfaces";
@@ -15,6 +16,7 @@ import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
+import { List } from "immutable";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -102,6 +104,7 @@ class ListComponent
 
 ListComponent.linkComponentToPageInfo({
   category: audioRecordingsCategory,
+  menus: { actions: List([downloadAudioRecordingMenuItem]) },
   resolvers: {
     [projectKey]: projectResolvers.showOptional,
     [regionKey]: regionResolvers.showOptional,
