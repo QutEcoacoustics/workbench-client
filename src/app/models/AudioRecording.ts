@@ -1,7 +1,10 @@
 import { id, IdOr } from "@baw-api/api-common";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { adminAudioRecordingMenuItem } from "@components/admin/audio-recordings/audio-recordings.menus";
-import { audioRecordingMenuItem } from "@components/audio-recordings/audio-recording.menus";
+import {
+  audioRecordingMenuItem,
+  downloadAudioRecordingMenuItem,
+} from "@components/audio-recordings/audio-recording.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { Duration } from "luxon";
 import {
@@ -113,7 +116,11 @@ export class AudioRecording
   }
 
   public get downloadUrl(): string {
-    // TODO Add download url when download page built
+    return downloadAudioRecordingMenuItem.uri({ audioRecordingId: this.id });
+  }
+
+  public get batchDownloadUrl(): string {
+    // TODO Add download url when batch download page built
     throw new Error("not implemented");
   }
 

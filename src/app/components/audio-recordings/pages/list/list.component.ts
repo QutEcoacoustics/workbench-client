@@ -8,8 +8,11 @@ import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   audioRecordingsCategory,
   audioRecordingsMenuItem,
-  downloadAudioRecordingMenuItem,
+  batchDownloadAudioRecordingMenuItem,
+  pointAudioRecordingsMenuItem,
+  siteAudioRecordingsMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, Ids, toRelative } from "@interfaces/apiInterfaces";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
@@ -102,18 +105,6 @@ class ListComponent
   }
 }
 
-ListComponent.linkComponentToPageInfo({
-  category: audioRecordingsCategory,
-  menus: { actions: List([downloadAudioRecordingMenuItem]) },
-  resolvers: {
-    [projectKey]: projectResolvers.showOptional,
-    [regionKey]: regionResolvers.showOptional,
-    [siteKey]: siteResolvers.showOptional,
-  },
-}).andMenuRoute(audioRecordingsMenuItem);
-
-export { ListComponent };
-
 interface TableRow {
   recorded: string;
   timezone: AudioRecording;
@@ -122,3 +113,37 @@ interface TableRow {
   site: AudioRecording;
   model: AudioRecording;
 }
+
+@Component({
+  selector: "baw-audio-recordings-site",
+  templateUrl: "./list.component.html",
+})
+class SiteListComponent extends ListComponent {}
+
+@Component({
+  selector: "baw-audio-recordings-point",
+  templateUrl: "./list.component.html",
+})
+class PointListComponent extends ListComponent {}
+
+const pageInfo: IPageInfo = {
+  category: audioRecordingsCategory,
+  menus: { actions: List([batchDownloadAudioRecordingMenuItem]) },
+  resolvers: {
+    [projectKey]: projectResolvers.showOptional,
+    [regionKey]: regionResolvers.showOptional,
+    [siteKey]: siteResolvers.showOptional,
+  },
+};
+
+ListComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
+  audioRecordingsMenuItem
+);
+SiteListComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
+  siteAudioRecordingsMenuItem
+);
+PointListComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
+  pointAudioRecordingsMenuItem
+);
+
+export { ListComponent, SiteListComponent, PointListComponent };

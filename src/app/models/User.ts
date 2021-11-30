@@ -185,8 +185,10 @@ function isModelAdmin(model: User | SessionUser): boolean {
  *
  * @param model User to evaluate
  */
-export function isDeletedUser(model: User): boolean {
-  return model.id === deletedUserId;
+export function isDeletedUser(model: AbstractModel): boolean {
+  return (
+    ["User", "Session User"].includes(model.kind) && model.id === deletedUserId
+  );
 }
 
 /**
@@ -194,6 +196,8 @@ export function isDeletedUser(model: User): boolean {
  *
  * @param model User to evaluate
  */
-export function isUnknownUser(model: User): boolean {
-  return model.id === unknownUserId;
+export function isUnknownUser(model: AbstractModel): boolean {
+  return (
+    ["User", "Session User"].includes(model.kind) && model.id === unknownUserId
+  );
 }

@@ -3,10 +3,10 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import {
   hasResolvedSuccessfully,
-  retrieveResolvers
+  retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
-import { audioRecordingsMenuItem } from "@components/audio-recordings/audio-recording.menus";
+import { pointAudioRecordingsMenuItem } from "@components/audio-recordings/audio-recording.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { pointAnnotationsModal } from "@components/sites/points.modals";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
@@ -22,7 +22,7 @@ import {
   editPointMenuItem,
   pointHarvestMenuItem,
   pointMenuItem,
-  pointsCategory
+  pointsCategory,
 } from "../../points.menus";
 import { SiteDetailsComponent } from "./site.component";
 
@@ -32,7 +32,7 @@ export const pointMenuItemActions = [
   editPointMenuItem,
   pointHarvestMenuItem,
   deletePointMenuItem,
-  audioRecordingsMenuItem,
+  pointAudioRecordingsMenuItem,
 ];
 
 const projectKey = "project";
@@ -80,4 +80,3 @@ PointDetailsComponent.linkComponentToPageInfo({
 }).andMenuRoute(pointMenuItem);
 
 export { PointDetailsComponent };
-

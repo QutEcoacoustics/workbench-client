@@ -19,26 +19,12 @@
   >
     <ngx-datatable-column name="Recorded">
       <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        <!-- Use resolver site -->
         <span
-          *ngIf="site"
-          [ngbTooltip]="site.tzinfoTz ?? 'Unknown timezone'"
-          placement="right"
-        >
-          {{ value }}
-        </span>
-        <!-- Show loading text for unresolved model -->
-        <span
-          *ngIf="!site && (row.model.site | isUnresolved)"
-          ngbTooltip="loading, hover over text again to refresh"
-          placement="right"
-        >
-          {{ value }}
-        </span>
-        <!-- Show timezone for resolved model -->
-        <span
-          *ngIf="!site && !(row.model.site | isUnresolved)"
-          [ngbTooltip]="row.model.site.tzinfoTz ?? 'Unknown timezone'"
+          [ngbTooltip]="
+            site ?? row.model.site
+              | timezone
+                : { loading: 'loading, hover over text again to refresh' }
+          "
           placement="right"
         >
           {{ value }}
@@ -56,9 +42,20 @@
 
         <!-- Create link to user -->
         <ng-template #showUploader>
-          <a [bawUrl]="value.uploader.viewUrl">
+          <!-- Don't wrap ghost users in a link -->
+          <a
+            *ngIf="!(value.uploader | isGhostUser); else ghostUser"
+            [bawUrl]="value.uploader.viewUrl"
+          >
             {{ value.uploader.userName }}
           </a>
+
+          <ng-template #ghostUser>
+            <baw-ghost-user
+              tooltipPlacement="right"
+              [user]="value.uploader"
+            ></baw-ghost-user>
+          </ng-template>
         </ng-template>
       </ng-template>
     </ngx-datatable-column>
@@ -105,7 +102,7 @@
       </ng-template>
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a
-          class="btn btn-sm btn-primary"
+          class="btn btn-sm btn-highlight"
           ngbTooltip="Play the audio recording"
           placement="left"
           [bawUrl]="value.playUrl"
@@ -113,7 +110,7 @@
           <fa-icon [icon]="['fas', 'play']"></fa-icon>
         </a>
         <a
-          class="btn btn-sm btn-secondary mx-1"
+          class="btn btn-sm btn-primary mx-1"
           ngbTooltip="(UNDER CONSTRUCTION) Download the audio recording"
           placement="left"
         >

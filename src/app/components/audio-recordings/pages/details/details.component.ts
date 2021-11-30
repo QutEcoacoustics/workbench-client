@@ -13,10 +13,12 @@ import {
   audioRecordingMenuItem,
   audioRecordingsCategory,
   downloadAudioRecordingMenuItem,
+  pointAudioRecordingMenuItem,
+  siteAudioRecordingMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
@@ -70,7 +72,19 @@ class DetailsComponent extends PageComponent implements OnInit {
   }
 }
 
-DetailsComponent.linkComponentToPageInfo({
+@Component({
+  selector: "baw-audio-recording-site",
+  templateUrl: "./details.component.html",
+})
+class SiteDetailsComponent extends DetailsComponent {}
+
+@Component({
+  selector: "baw-audio-recording-point",
+  templateUrl: "./details.component.html",
+})
+class PointDetailsComponent extends DetailsComponent {}
+
+const pageInfo: IPageInfo = {
   category: audioRecordingsCategory,
   menus: {
     actions: List([listenRecordingMenuItem, downloadAudioRecordingMenuItem]),
@@ -82,6 +96,16 @@ DetailsComponent.linkComponentToPageInfo({
     [regionKey]: regionResolvers.showOptional,
     [siteKey]: siteResolvers.showOptional,
   },
-}).andMenuRoute(audioRecordingMenuItem);
+};
 
-export { DetailsComponent };
+DetailsComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
+  audioRecordingMenuItem
+);
+SiteDetailsComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
+  siteAudioRecordingMenuItem
+);
+PointDetailsComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
+  pointAudioRecordingMenuItem
+);
+
+export { DetailsComponent, SiteDetailsComponent, PointDetailsComponent };
