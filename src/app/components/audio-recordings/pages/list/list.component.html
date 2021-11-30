@@ -34,29 +34,12 @@
     <ngx-datatable-column name="Duration"> </ngx-datatable-column>
     <ngx-datatable-column name="Uploader">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <!-- Show loading animation while user is unresolved -->
-        <baw-loading
-          *ngIf="value.uploader | isUnresolved; else showUploader"
-          size="sm"
-        ></baw-loading>
-
         <!-- Create link to user -->
-        <ng-template #showUploader>
-          <!-- Don't wrap ghost users in a link -->
-          <a
-            *ngIf="!(value.uploader | isGhostUser); else ghostUser"
-            [bawUrl]="value.uploader.viewUrl"
-          >
-            {{ value.uploader.userName }}
-          </a>
-
-          <ng-template #ghostUser>
-            <baw-ghost-user
-              tooltipPlacement="right"
-              [user]="value.uploader"
-            ></baw-ghost-user>
-          </ng-template>
-        </ng-template>
+        <baw-user-link [user]="value.uploader">
+          <span id="user">{{ value.uploader.userName }}</span>
+          <span id="ghost">Unknown User</span>
+          <span id="unresolved"><baw-loading size="sm"></baw-loading></span>
+        </baw-user-link>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Site">

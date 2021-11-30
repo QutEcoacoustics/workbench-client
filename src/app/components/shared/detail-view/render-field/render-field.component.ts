@@ -45,17 +45,12 @@ import { takeUntil } from "rxjs/operators";
     <!-- Display AbstractModel -->
     <dl *ngIf="styling === fieldStyling.model">
       <ng-container *ngIf="isUser(model); else normalModel">
-        <baw-ghost-user
-          *ngIf="model | isGhostUser; else normalUser"
-          id="model"
-          [user]="model"
-        ></baw-ghost-user>
-
-        <ng-template #normalUser>
-          <a #normalUser id="model" [bawUrl]="model.viewUrl">
-            {{ model }}
-          </a>
-        </ng-template>
+        <!-- Create link to user -->
+        <baw-user-link [user]="model">
+          <span id="user">{{ model }}</span>
+          <span id="ghost"> Unknown User </span>
+          <span id="unresolved"><baw-loading size="sm"></baw-loading></span>
+        </baw-user-link>
       </ng-container>
 
       <ng-template #normalModel>

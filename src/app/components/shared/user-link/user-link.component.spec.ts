@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { GhostUserComponent } from "./ghost-user.component";
+import { UserLinkComponent } from "./user-link.component";
 
-describe("GhostUserComponent", () => {
-  let component: GhostUserComponent;
-  let fixture: ComponentFixture<GhostUserComponent>;
+describe("UserLinkComponent", () => {
+  let component: UserLinkComponent;
+  let fixture: ComponentFixture<UserLinkComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GhostUserComponent],
+      declarations: [UserLinkComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GhostUserComponent);
+    fixture = TestBed.createComponent(UserLinkComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
