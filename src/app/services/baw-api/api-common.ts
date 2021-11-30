@@ -28,7 +28,7 @@ export type IdParamOptional<T extends AbstractModel> = (
  * @param x Api Id
  */
 export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
-  if (x === emptyParam) {
+  if (x === emptyParam || !isInstantiated(x)) {
     return x;
   } else if (isInstantiated(x?.["id"])) {
     return x?.["id"].toString();

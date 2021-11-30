@@ -48,11 +48,13 @@
     <ngx-datatable-column name="Duration"> </ngx-datatable-column>
     <ngx-datatable-column name="Uploader">
       <ng-template let-value="value" ngx-datatable-cell-template>
+        <!-- Show loading animation while user is unresolved -->
         <baw-loading
           *ngIf="value.uploader | isUnresolved; else showUploader"
           size="sm"
         ></baw-loading>
 
+        <!-- Create link to user -->
         <ng-template #showUploader>
           <a [bawUrl]="value.uploader.viewUrl">
             {{ value.uploader.userName }}
@@ -112,9 +114,8 @@
         </a>
         <a
           class="btn btn-sm btn-secondary mx-1"
-          ngbTooltip="Download the audio recording"
+          ngbTooltip="(UNDER CONSTRUCTION) Download the audio recording"
           placement="left"
-          [bawUrl]="value.downloadUrl"
         >
           <fa-icon [icon]="['fas', 'download']"></fa-icon>
         </a>
@@ -122,7 +123,7 @@
           class="btn btn-sm btn-default"
           ngbTooltip="View details about the audio recording"
           placement="left"
-          [bawUrl]="value.detailsUrl"
+          [bawUrl]="value.getDetailsUrl(project, region, site)"
         >
           <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
         </a>

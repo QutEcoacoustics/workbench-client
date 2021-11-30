@@ -1,3 +1,4 @@
+import { id, IdOr } from "@baw-api/api-common";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { adminAudioRecordingMenuItem } from "@components/admin/audio-recordings/audio-recordings.menus";
 import { audioRecordingMenuItem } from "@components/audio-recordings/audio-recording.menus";
@@ -12,6 +13,8 @@ import {
 import { AbstractModel } from "./AbstractModel";
 import { creator, deleter, hasOne, updater } from "./AssociationDecorators";
 import { bawDateTime, bawDuration } from "./AttributeDecorators";
+import { Project } from "./Project";
+import { Region } from "./Region";
 import type { Site } from "./Site";
 import type { User } from "./User";
 
@@ -91,7 +94,18 @@ export class AudioRecording
   }
 
   public get detailsUrl(): string {
-    return audioRecordingMenuItem.route.format({ audioRecordingId: this.id });
+    return this.getDetailsUrl();
+  }
+
+  public getDetailsUrl(
+    project?: IdOr<Project>,
+    region?: IdOr<Region>,
+    site?: IdOr<Site>
+  ): string {
+    return audioRecordingMenuItem.route.format(
+      { audioRecordingId: this.id },
+      { projectId: id(project), regionId: id(region), siteId: id(site) }
+    );
   }
 
   public get playUrl(): string {
@@ -99,7 +113,8 @@ export class AudioRecording
   }
 
   public get downloadUrl(): string {
-    return "not_implemented";
+    // TODO Add download url when download page built
+    throw new Error("not implemented");
   }
 
   public get adminViewUrl(): string {

@@ -23,6 +23,9 @@ export const audioRecordingMenuItem = menuRoute({
   icon: ["fas", "file-audio"],
   label: "Audio Recording",
   tooltip: () => "View audio recording details",
-  route: audioRecordingsMenuItem.route.add(":audioRecordingId"),
+  route: audioRecordingsMenuItem.route.add(
+    ":audioRecordingId",
+    ({ siteId, regionId, projectId }) => ({ siteId, regionId, projectId })
+  ),
   parent: audioRecordingsMenuItem,
 });
