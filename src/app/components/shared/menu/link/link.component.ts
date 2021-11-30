@@ -110,7 +110,7 @@ export class MenuLinkComponent implements OnChanges {
   private handleExternalLink(): void {
     const uri = this.externalLink.uri(this.activatedRoute.snapshot.params);
     // Redirect relative routes to api
-    // ! This seems unintuitive and likely needs to be changed in the future
+    // ! This seems unintuitive and likely needs to be changed in the future #1712
     this.href = uri.startsWith("/") ? this.apiRoot + uri : uri;
   }
 }

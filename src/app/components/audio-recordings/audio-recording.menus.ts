@@ -88,7 +88,6 @@ export const batchDownloadAudioRecordingMenuItem = menuLink({
   disabled: true,
   icon: ["fas", "download"],
   label: "Batch Download",
-  tooltip: () =>
-    "(UNDER CONSTRUCTION) Download groups of audio recordings in a single batch",
+  tooltip: () => "(UNDER CONSTRUCTION) Download multiple audio recordings",
   uri: () => "not_implemented",
 });

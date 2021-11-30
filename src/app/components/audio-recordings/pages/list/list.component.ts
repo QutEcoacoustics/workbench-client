@@ -136,6 +136,7 @@ const pageInfo: IPageInfo = {
   },
 };
 
+// TODO Multiple components required as a hacky bypass to #1711
 ListComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
   audioRecordingsMenuItem
 );

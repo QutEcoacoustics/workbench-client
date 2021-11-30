@@ -132,8 +132,6 @@ export interface MenuLink extends MenuItem {
   kind: "MenuLink";
   /**
    * The URL or fragment this link points to
-   * TODO Add input for different root urls so that Href can choose where to
-   * route
    */
   uri: Href;
 }
