@@ -31,7 +31,13 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
           class="nav-link ps-3 py-2 rounded"
           strongRouteActive="active"
           [strongRoute]="internalLink.route"
-          [strongRouteActiveOptions]="{ exact: true }"
+          [strongRouteActiveOptions]="{
+            exact: true,
+            matrixParams: 'ignored',
+            queryParams: 'ignored',
+            paths: 'exact',
+            fragment: 'ignored'
+          }"
           [class.active]="link.highlight"
           [class.disabled]="link.disabled"
         >

@@ -12,7 +12,7 @@ import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
 import { List } from "immutable";
-import schema from "@components/audio-recordings/pages/details/audio-recording.schema";
+import schema from "@components/audio-recordings/pages/details/audio-recording.schema.json";
 import {
   adminAudioRecordingMenuItem,
   adminAudioRecordingsCategory,
@@ -21,6 +21,7 @@ import {
 
 const audioRecordingKey = "audioRecording";
 
+// TODO This page is now redundant
 @Component({
   selector: "baw-admin-audio-recording",
   template: `

@@ -24,4 +24,5 @@ export const audioRecordingMenuItem = menuRoute({
   label: "Audio Recording",
   tooltip: () => "View audio recording details",
   route: audioRecordingsMenuItem.route.add(":audioRecordingId"),
+  parent: audioRecordingsMenuItem,
 });

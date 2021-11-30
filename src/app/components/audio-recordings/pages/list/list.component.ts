@@ -61,6 +61,10 @@ class ListComponent
     );
   }
 
+  public get projectId(): number | undefined {
+    return this.project?.id ?? this.region?.projectId;
+  }
+
   public get project(): Project | undefined {
     return this.models[projectKey] as Project;
   }
@@ -74,7 +78,7 @@ class ListComponent
   }
 
   protected apiAction(filters: Filters<IAudioRecording>) {
-    function filterSites(sites: Ids | Id) {
+    function updateFilterWithSite(sites: Ids | Id) {
       const siteFilter = (((filters ??= {}).filter ??= {}).siteId ??= {});
       if (sites instanceof Set) {
         siteFilter.in = Array.from(sites);
@@ -85,11 +89,11 @@ class ListComponent
 
     // Order matters
     if (this.site) {
-      filterSites(this.site.id);
+      updateFilterWithSite(this.site.id);
     } else if (this.region) {
-      filterSites(this.region.siteIds);
+      updateFilterWithSite(this.region.siteIds);
     } else if (this.project) {
-      filterSites(this.project.siteIds);
+      updateFilterWithSite(this.project.siteIds);
     }
 
     return this.api.filter(filters);

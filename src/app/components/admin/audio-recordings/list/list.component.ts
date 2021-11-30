@@ -11,13 +11,15 @@ import {
   adminAudioRecordingsMenuItem,
 } from "../audio-recordings.menus";
 
+// TODO This page is now redundant
 @Component({
   selector: "baw-admin-audio-recordings",
   templateUrl: "./list.component.html",
 })
 class AdminAudioRecordingsComponent
   extends PagedTableTemplate<TableRow, AudioRecording>
-  implements OnInit {
+  implements OnInit
+{
   public columns = [
     { name: "Id" },
     { name: "Site" },

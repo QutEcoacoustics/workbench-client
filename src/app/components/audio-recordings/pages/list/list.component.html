@@ -18,8 +18,17 @@
     (sort)="onSort($event)"
   >
     <ngx-datatable-column name="Recorded">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <span [ngbTooltip]="site.tzinfoTz" placement="right">{{ value }}</span>
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <span
+          [ngbTooltip]="
+            site?.tzinfoTz ??
+            row.model.site?.tzinfoTz ??
+            'loading, hover over text again to refresh'
+          "
+          placement="right"
+        >
+          {{ value }}
+        </span>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Duration"> </ngx-datatable-column>
@@ -39,15 +48,34 @@
     </ngx-datatable-column>
     <ngx-datatable-column name="Site">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <ng-container *ngIf="project; else noProject">
-          <a [bawUrl]="site.getViewUrl(project)">
-            {{ site.name }}
-          </a>
-        </ng-container>
-        <ng-template #noProject>
-          <a [bawUrl]="site.viewUrl">
-            {{ site.name }}
-          </a>
+        <!-- Show loading animation while site is unresolved -->
+        <baw-loading
+          *ngIf="site ?? value.site | isUnresolved; else showSite"
+          size="sm"
+        ></baw-loading>
+
+        <!-- Create site link when site is loaded-->
+        <ng-template #showSite>
+          <ng-container
+            *ngTemplateOutlet="siteLink; context: { model: site ?? value.site }"
+          ></ng-container>
+        </ng-template>
+
+        <!-- Template for showing site link -->
+        <ng-template #siteLink let-model="model">
+          <!-- Use project in link if exists -->
+          <ng-container *ngIf="projectId; else modelWithoutProject">
+            <a [bawUrl]="model.getViewUrl(projectId)">
+              {{ model.name }}
+            </a>
+          </ng-container>
+
+          <!-- Let site handle link if no definitive project-->
+          <ng-template #modelWithoutProject>
+            <a [bawUrl]="model.viewUrl">
+              {{ model.name }}
+            </a>
+          </ng-template>
         </ng-template>
       </ng-template>
     </ngx-datatable-column>
