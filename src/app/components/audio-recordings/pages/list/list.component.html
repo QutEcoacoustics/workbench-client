@@ -19,12 +19,26 @@
   >
     <ngx-datatable-column name="Recorded">
       <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <!-- Use resolver site -->
         <span
-          [ngbTooltip]="
-            site?.tzinfoTz ??
-            row.model.site?.tzinfoTz ??
-            'loading, hover over text again to refresh'
-          "
+          *ngIf="site"
+          [ngbTooltip]="site.tzinfoTz ?? 'Unknown timezone'"
+          placement="right"
+        >
+          {{ value }}
+        </span>
+        <!-- Show loading text for unresolved model -->
+        <span
+          *ngIf="!site && (row.model.site | isUnresolved)"
+          ngbTooltip="loading, hover over text again to refresh"
+          placement="right"
+        >
+          {{ value }}
+        </span>
+        <!-- Show timezone for resolved model -->
+        <span
+          *ngIf="!site && !(row.model.site | isUnresolved)"
+          [ngbTooltip]="row.model.site.tzinfoTz ?? 'Unknown timezone'"
           placement="right"
         >
           {{ value }}
