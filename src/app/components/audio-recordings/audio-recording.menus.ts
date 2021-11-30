@@ -1,3 +1,4 @@
+import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { siteMenuItem } from "@components/sites/sites.menus";
 import { Category, menuLink, menuRoute } from "@interfaces/menusInterfaces";
@@ -81,7 +82,7 @@ export const downloadAudioRecordingMenuItem = menuLink({
   tooltip: () => "Download audio recording",
   // Relative routes go to api
   uri: ({ audioRecordingId }) =>
-    `/audio_recordings/${audioRecordingId}/original`,
+    audioRecordingOriginalEndpoint(audioRecordingId),
 });
 
 export const batchDownloadAudioRecordingMenuItem = menuLink({

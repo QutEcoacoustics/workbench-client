@@ -47,9 +47,11 @@ import { takeUntil } from "rxjs/operators";
       <ng-container *ngIf="isUser(model); else normalModel">
         <!-- Create link to user -->
         <baw-user-link [user]="model">
-          <span id="user">{{ model }}</span>
-          <span id="ghost"> Unknown User </span>
-          <span id="unresolved"><baw-loading size="sm"></baw-loading></span>
+          <span id="user model">{{ model.userName }}</span>
+          <span id="ghost model"> Unknown User </span>
+          <span id="unresolved model">
+            <baw-loading size="sm"></baw-loading>
+          </span>
         </baw-user-link>
       </ng-container>
 

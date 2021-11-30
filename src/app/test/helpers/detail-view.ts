@@ -36,7 +36,6 @@ export function assertDetail(detail: Detail) {
       const element: HTMLElement = this.fixture.nativeElement;
       const index = findDetailIndex(element, detail.label);
       const views = element.querySelectorAll("dl");
-
       assertValue(detail, index, views);
     });
   });

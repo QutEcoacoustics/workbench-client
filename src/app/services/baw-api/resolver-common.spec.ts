@@ -38,8 +38,8 @@ describe("hasResolvedSuccessfully", () => {
     expect(hasResolvedSuccessfully(resolvedList)).toBeFalse();
   });
 
-  it("should return false if undefined model", () => {
-    expect(hasResolvedSuccessfully({ model0: undefined })).toBeFalse();
+  it("should return true if undefined model (assumes model is optional)", () => {
+    expect(hasResolvedSuccessfully({ model0: undefined })).toBeTrue();
   });
 });
 
