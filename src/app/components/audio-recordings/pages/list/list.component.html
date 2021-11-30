@@ -1,0 +1,115 @@
+<ng-container *ngIf="rows && !error">
+  <h1>Audio Recordings</h1>
+
+  <p>
+    Displaying <strong>{{ pageSize }}</strong> of
+    <strong>all {{ totalModels }}</strong> audio recordings.
+  </p>
+
+  <ngx-datatable
+    #table
+    bawDatatableDefaults
+    [columnMode]="ColumnMode.force"
+    [columns]="columns"
+    [rows]="rows"
+    [count]="totalModels"
+    [offset]="pageNumber"
+    (page)="setPage($event)"
+    (sort)="onSort($event)"
+  >
+    <ngx-datatable-column name="Recorded">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <span
+          [ngbTooltip]="
+            site ?? row.model.site
+              | timezone
+                : { loading: 'loading, hover over text again to refresh' }
+          "
+          placement="right"
+        >
+          {{ value }}
+        </span>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Duration"> </ngx-datatable-column>
+    <ngx-datatable-column name="Uploader">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <!-- Create link to user -->
+        <baw-user-link [user]="value.uploader">
+          <span id="user">{{ value.uploader.userName }}</span>
+          <span id="ghost">Unknown User</span>
+          <span id="unresolved"><baw-loading size="sm"></baw-loading></span>
+        </baw-user-link>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Site">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <!-- Show loading animation while site is unresolved -->
+        <baw-loading
+          *ngIf="site ?? value.site | isUnresolved; else showSite"
+          size="sm"
+        ></baw-loading>
+
+        <!-- Create site link when site is loaded-->
+        <ng-template #showSite>
+          <ng-container
+            *ngTemplateOutlet="siteLink; context: { model: site ?? value.site }"
+          ></ng-container>
+        </ng-template>
+
+        <!-- Template for showing site link -->
+        <ng-template #siteLink let-model="model">
+          <!-- Use project in link if exists -->
+          <ng-container *ngIf="projectId; else modelWithoutProject">
+            <a [bawUrl]="model.getViewUrl(projectId)">
+              {{ model.name }}
+            </a>
+          </ng-container>
+
+          <!-- Let site handle link if no definitive project-->
+          <ng-template #modelWithoutProject>
+            <a [bawUrl]="model.viewUrl">
+              {{ model.name }}
+            </a>
+          </ng-template>
+        </ng-template>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Model"
+      [width]="127"
+      [maxWidth]="127"
+      [sortable]="false"
+    >
+      <ng-template let-column="column" ngx-datatable-header-template>
+      </ng-template>
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <a
+          class="btn btn-sm btn-highlight"
+          ngbTooltip="Play the audio recording"
+          placement="left"
+          [bawUrl]="value.playUrl"
+        >
+          <fa-icon [icon]="['fas', 'play']"></fa-icon>
+        </a>
+        <a
+          class="btn btn-sm btn-primary mx-1"
+          ngbTooltip="(UNDER CONSTRUCTION) Download the audio recording"
+          placement="left"
+        >
+          <fa-icon [icon]="['fas', 'download']"></fa-icon>
+        </a>
+        <a
+          class="btn btn-sm btn-default"
+          ngbTooltip="View details about the audio recording"
+          placement="left"
+          [bawUrl]="value.getDetailsUrl(project, region, site)"
+        >
+          <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</ng-container>
+
+<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>

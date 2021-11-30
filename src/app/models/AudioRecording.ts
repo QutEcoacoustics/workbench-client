@@ -1,5 +1,8 @@
+import { id, IdOr } from "@baw-api/api-common";
+import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { adminAudioRecordingMenuItem } from "@components/admin/audio-recordings/audio-recordings.menus";
+import { audioRecordingMenuItem } from "@components/audio-recordings/audio-recording.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { Duration } from "luxon";
 import {
@@ -11,6 +14,8 @@ import {
 import { AbstractModel } from "./AbstractModel";
 import { creator, deleter, hasOne, updater } from "./AssociationDecorators";
 import { bawDateTime, bawDuration } from "./AttributeDecorators";
+import { Project } from "./Project";
+import { Region } from "./Region";
 import type { Site } from "./Site";
 import type { User } from "./User";
 
@@ -86,7 +91,35 @@ export class AudioRecording
   public site?: Site;
 
   public get viewUrl(): string {
+    return this.playUrl;
+  }
+
+  public get detailsUrl(): string {
+    return this.getDetailsUrl();
+  }
+
+  public getDetailsUrl(
+    project?: IdOr<Project>,
+    region?: IdOr<Region>,
+    site?: IdOr<Site>
+  ): string {
+    return audioRecordingMenuItem.route.format(
+      { audioRecordingId: this.id },
+      { projectId: id(project), regionId: id(region), siteId: id(site) }
+    );
+  }
+
+  public get playUrl(): string {
     return listenRecordingMenuItem.route.format({ audioRecordingId: this.id });
+  }
+
+  public get downloadUrl(): string {
+    return audioRecordingOriginalEndpoint(this.id);
+  }
+
+  public get batchDownloadUrl(): string {
+    // TODO Add download url when batch download page built
+    throw new Error("not implemented");
   }
 
   public get adminViewUrl(): string {

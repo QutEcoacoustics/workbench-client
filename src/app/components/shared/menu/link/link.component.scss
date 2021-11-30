@@ -1,6 +1,9 @@
 .nav-link {
-  color: black;
   font-size: 0.85rem;
+
+  &:not(.disabled) {
+    color: black;
+  }
 
   &:hover,
   &:focus {

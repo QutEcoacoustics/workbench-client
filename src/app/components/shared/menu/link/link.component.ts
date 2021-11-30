@@ -31,7 +31,13 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
           class="nav-link ps-3 py-2 rounded"
           strongRouteActive="active"
           [strongRoute]="internalLink.route"
-          [strongRouteActiveOptions]="{ exact: true }"
+          [strongRouteActiveOptions]="{
+            exact: true,
+            matrixParams: 'ignored',
+            queryParams: 'ignored',
+            paths: 'exact',
+            fragment: 'ignored'
+          }"
           [class.active]="link.highlight"
           [class.disabled]="link.disabled"
         >
@@ -103,13 +109,8 @@ export class MenuLinkComponent implements OnChanges {
 
   private handleExternalLink(): void {
     const uri = this.externalLink.uri(this.activatedRoute.snapshot.params);
-
-    /*
-     * TODO This is a potential future point of failure if the website and the api
-     * do not exist on the same domain
-     *
-     * Prepend apiRoot to relative links
-     */
+    // Redirect relative routes to api
+    // ! This seems unintuitive and likely needs to be changed in the future #1712
     this.href = uri.startsWith("/") ? this.apiRoot + uri : uri;
   }
 }

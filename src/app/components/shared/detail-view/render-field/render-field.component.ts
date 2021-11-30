@@ -12,10 +12,12 @@ import {
   unknownViewUrl,
   UnresolvedModel,
 } from "@models/AbstractModel";
+import { User } from "@models/User";
 import { DateTime, Duration } from "luxon";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
+// TODO Simplify this component by splitting into sub components
 @Component({
   selector: "baw-render-field",
   template: `
@@ -42,15 +44,28 @@ import { takeUntil } from "rxjs/operators";
 
     <!-- Display AbstractModel -->
     <dl *ngIf="styling === fieldStyling.model">
-      <a
-        *ngIf="hasViewUrl(); else noViewUrl"
-        id="model"
-        [bawUrl]="model.viewUrl"
-      >
-        {{ model }}
-      </a>
-      <ng-template #noViewUrl>
-        <span id="model">{{ model }}</span>
+      <ng-container *ngIf="isUser(model); else normalModel">
+        <!-- Create link to user -->
+        <baw-user-link [user]="model">
+          <span id="user model">{{ model.userName }}</span>
+          <span id="ghost model"> Unknown User </span>
+          <span id="unresolved model">
+            <baw-loading size="sm"></baw-loading>
+          </span>
+        </baw-user-link>
+      </ng-container>
+
+      <ng-template #normalModel>
+        <a
+          *ngIf="hasViewUrl(); else noViewUrl"
+          id="model"
+          [bawUrl]="model.viewUrl"
+        >
+          {{ model }}
+        </a>
+        <ng-template #noViewUrl>
+          <span id="model">{{ model }}</span>
+        </ng-template>
       </ng-template>
     </dl>
 
@@ -82,7 +97,8 @@ import { takeUntil } from "rxjs/operators";
 })
 export class RenderFieldComponent
   extends withUnsubscribe()
-  implements OnChanges {
+  implements OnChanges
+{
   @Input() public value: ModelView;
   public children: ModelView[];
   public display: string | number | boolean | ImageUrl[];
@@ -145,6 +161,10 @@ export class RenderFieldComponent
     } else {
       this.display = value.toString();
     }
+  }
+
+  public isUser(model: AbstractModel): model is User {
+    return (model as User).kind === "User";
   }
 
   /**
@@ -282,8 +302,9 @@ export class RenderFieldComponent
     invalidCallback: () => void
   ) {
     // Url from https://urlregex.com/
-    // eslint-disable-next-line max-len, no-useless-escape
-    const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
+    const urlRegex =
+      // eslint-disable-next-line max-len, no-useless-escape
+      /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
     if (!urlRegex.test(src)) {
       invalidCallback();
       return;

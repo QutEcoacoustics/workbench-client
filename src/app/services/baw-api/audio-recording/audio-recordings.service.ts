@@ -21,6 +21,7 @@ import { Resolvers } from "../resolver-common";
 
 const audioRecordingId: IdParamOptional<AudioRecording> = id;
 const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}${option}`;
+export const audioRecordingOriginalEndpoint = stringTemplate`/audio_recordings/${audioRecordingId}/original`;
 
 @Injectable()
 export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {

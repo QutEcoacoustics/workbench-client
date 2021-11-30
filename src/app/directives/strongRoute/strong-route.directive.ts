@@ -35,6 +35,7 @@ export class StrongRouteDirective
   private data = {
     resolvedModels: {} as ResolvedModelList,
     routeParams: {} as Params,
+    queryParams: {} as Params,
   };
 
   public constructor(
@@ -47,10 +48,19 @@ export class StrongRouteDirective
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes.strongRoute.isFirstChange) {
+      // TODO It should be possible to combine all of these instead of having
+      // three separate observers
+
       // Track changes to route parameters
       this._route.params
         .pipe(takeUntil(this.unsubscribe))
-        .subscribe((params) => (this.data.routeParams = params));
+        .subscribe((params) => {
+          this.data.routeParams = params;
+        });
+      // Track changes to query parameters
+      this._route.queryParams
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe((qsp) => (this.data.queryParams = qsp));
       // Track changes to resolved models
       this._route.data.pipe(takeUntil(this.unsubscribe)).subscribe((data) => {
         // We are passing through resolved models even when some fail, this is
@@ -73,7 +83,11 @@ export class StrongRouteDirective
   public get urlTree(): UrlTree {
     const queryParams =
       this.strongRoute?.queryParams(
-        { ...this.queryParams, ...this.data.routeParams },
+        {
+          ...this.queryParams,
+          ...this.data.queryParams,
+          ...this.data.routeParams,
+        },
         this.data.resolvedModels
       ) ?? {};
 

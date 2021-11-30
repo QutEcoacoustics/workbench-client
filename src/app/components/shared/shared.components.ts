@@ -29,6 +29,7 @@ import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
 import { CustomInputsModule } from "./formly/custom-inputs.module";
+import { UserLinkModule } from "./user-link/user-link.module";
 import { HeaderModule } from "./header/header.module";
 import { IconsModule } from "./icons/icons.module";
 import { IndicatorModule } from "./indicator/indicator.module";
@@ -81,6 +82,7 @@ export const sharedModules = [
   MenuModule,
   LoadingModule,
   IndicatorModule,
+  UserLinkModule,
 ];
 
 export const internalModules = [...sharedModules, NgxCaptchaModule];

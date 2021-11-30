@@ -3,6 +3,7 @@ import { Directive, Input } from "@angular/core";
 import {
   ActivatedRoute,
   DefaultUrlSerializer,
+  Params,
   Router,
   RouterLinkWithHref,
   UrlTree,
@@ -12,6 +13,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 @Directive({ selector: "a[bawUrl]" })
 export class UrlDirective extends withUnsubscribe(RouterLinkWithHref) {
   @Input() public bawUrl: string;
+  @Input() public queryParams: Params;
 
   public constructor(
     router: Router,

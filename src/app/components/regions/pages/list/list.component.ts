@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
+import { audioRecordingsMenuItem } from "@components/audio-recordings/audio-recording.menus";
 import {
   newRegionMenuItem,
   shallowRegionsCategory,
@@ -12,7 +13,10 @@ import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
 
-export const regionsMenuItemActions = [newRegionMenuItem];
+export const regionsMenuItemActions = [
+  newRegionMenuItem,
+  audioRecordingsMenuItem,
+];
 
 @Component({
   selector: "baw-regions",
