@@ -63,40 +63,44 @@ function makeDetailsMenuItem(
   });
 }
 
+const listMenuItems = {
+  base: makeListMenuItem(audioRecordingsRoutes.base),
+  site: makeListMenuItem(audioRecordingsRoutes.site, siteMenuItem),
+  point: makeListMenuItem(audioRecordingsRoutes.point, pointMenuItem),
+  region: makeListMenuItem(audioRecordingsRoutes.region, regionMenuItem),
+  regions: makeListMenuItem(
+    audioRecordingsRoutes.regions,
+    shallowRegionsMenuItem
+  ),
+  project: makeListMenuItem(audioRecordingsRoutes.project, projectMenuItem),
+  projects: makeListMenuItem(audioRecordingsRoutes.projects, projectsMenuItem),
+};
+
+const detailsMenuItems = {
+  base: makeDetailsMenuItem(audioRecordingsRoutes.base, listMenuItems.base),
+  site: makeDetailsMenuItem(audioRecordingsRoutes.site, listMenuItems.site),
+  point: makeDetailsMenuItem(audioRecordingsRoutes.point, listMenuItems.point),
+  region: makeDetailsMenuItem(
+    audioRecordingsRoutes.region,
+    listMenuItems.region
+  ),
+  regions: makeDetailsMenuItem(
+    audioRecordingsRoutes.regions,
+    listMenuItems.regions
+  ),
+  project: makeDetailsMenuItem(
+    audioRecordingsRoutes.project,
+    listMenuItems.project
+  ),
+  projects: makeDetailsMenuItem(
+    audioRecordingsRoutes.projects,
+    listMenuItems.projects
+  ),
+};
+
 export const audioRecordingMenuItems = {
-  list: {
-    base: makeListMenuItem(audioRecordingsRoutes.base),
-    site: makeListMenuItem(audioRecordingsRoutes.site, siteMenuItem),
-    point: makeListMenuItem(audioRecordingsRoutes.point, pointMenuItem),
-    region: makeListMenuItem(audioRecordingsRoutes.region, regionMenuItem),
-    regions: makeListMenuItem(
-      audioRecordingsRoutes.regions,
-      shallowRegionsMenuItem
-    ),
-    project: makeListMenuItem(audioRecordingsRoutes.project, projectMenuItem),
-    projects: makeListMenuItem(
-      audioRecordingsRoutes.projects,
-      projectsMenuItem
-    ),
-  },
-  details: {
-    base: makeDetailsMenuItem(audioRecordingsRoutes.base),
-    site: makeDetailsMenuItem(audioRecordingsRoutes.site, siteMenuItem),
-    point: makeDetailsMenuItem(audioRecordingsRoutes.point, pointMenuItem),
-    region: makeDetailsMenuItem(audioRecordingsRoutes.region, regionMenuItem),
-    regions: makeDetailsMenuItem(
-      audioRecordingsRoutes.regions,
-      shallowRegionsMenuItem
-    ),
-    project: makeDetailsMenuItem(
-      audioRecordingsRoutes.project,
-      projectMenuItem
-    ),
-    projects: makeDetailsMenuItem(
-      audioRecordingsRoutes.projects,
-      projectsMenuItem
-    ),
-  },
+  list: listMenuItems,
+  details: detailsMenuItems,
 };
 
 export const downloadAudioRecordingMenuItem = menuLink({

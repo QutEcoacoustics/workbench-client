@@ -67,7 +67,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   public constructor(
     protected api: ApiFilter<any, any>,
     private rowsCallback: (models: M[]) => TableRow[],
-    private route?: ActivatedRoute,
+    protected route?: ActivatedRoute,
     private getUrlParameters: (component: any) => AbstractModel[] = () => [],
     private preselectRows: (rows: TableRow[]) => void = () => {}
   ) {

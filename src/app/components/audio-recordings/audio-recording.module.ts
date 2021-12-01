@@ -44,8 +44,6 @@ const routes = Object.values(audioRecordingsRoutes)
   .map((route) => route.compileRoutes(getRouteConfigForPage))
   .flat();
 
-console.log(routes);
-
 @NgModule({
   declarations: components,
   imports: [SharedModule, RouterModule.forChild(routes)],

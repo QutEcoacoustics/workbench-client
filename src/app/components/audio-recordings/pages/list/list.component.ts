@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -6,14 +6,18 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
-  audioRecordingsCategory,
   audioRecordingMenuItems,
+  audioRecordingsCategory,
   batchDownloadAudioRecordingMenuItem,
+  downloadAudioRecordingMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
+import { listenRecordingMenuItem } from "@components/listen/listen.menus";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { PageInfo } from "@helpers/page/pageInfo";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, Ids, toRelative } from "@interfaces/apiInterfaces";
-import { MenuItem } from "@interfaces/menusInterfaces";
+import { MenuItem, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -44,9 +48,14 @@ class ListComponent
     duration: "durationSeconds",
     site: "siteId",
   };
+  public actions!: { play: MenuRoute; download: MenuLink; details: MenuRoute };
   protected api: AudioRecordingsService;
 
-  public constructor(api: AudioRecordingsService, route: ActivatedRoute) {
+  public constructor(
+    @Inject(API_ROOT) public apiRoot: string,
+    api: AudioRecordingsService,
+    route: ActivatedRoute
+  ) {
     super(
       api,
       (recordings): TableRow[] =>
@@ -63,6 +72,21 @@ class ListComponent
         ),
       route
     );
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+
+    const pageData = new PageInfo(this.route.snapshot.data);
+    const menuRouteKey = Object.entries(audioRecordingMenuItems.list).find(
+      (value) => pageData.route === value[1].route
+    )[0];
+
+    this.actions = {
+      play: listenRecordingMenuItem,
+      details: audioRecordingMenuItems.details[menuRouteKey],
+      download: downloadAudioRecordingMenuItem,
+    };
   }
 
   public get projectId(): number | undefined {

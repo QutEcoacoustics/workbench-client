@@ -35,11 +35,11 @@
     <ngx-datatable-column name="Uploader">
       <ng-template let-value="value" ngx-datatable-cell-template>
         <!-- Create link to user -->
-        <baw-user-link [user]="value.uploader">
-          <span id="user">{{ value.uploader.userName }}</span>
+        <baw-model-link [model]="value.uploader">
+          <span id="model">{{ value.uploader.userName }}</span>
           <span id="ghost">Unknown User</span>
           <span id="unresolved"><baw-loading size="sm"></baw-loading></span>
-        </baw-user-link>
+        </baw-model-link>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Site">
@@ -86,27 +86,32 @@
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a
           class="btn btn-sm btn-highlight"
-          ngbTooltip="Play the audio recording"
           placement="left"
-          [bawUrl]="value.playUrl"
+          [ngbTooltip]="actions.play.tooltip()"
+          [strongRoute]="actions.play.route"
+          [routeParams]="{ audioRecordingId: value.id }"
         >
-          <fa-icon [icon]="['fas', 'play']"></fa-icon>
+          <fa-icon [icon]="actions.play.icon"></fa-icon>
         </a>
         <a
           class="btn btn-sm btn-default mx-1"
-          ngbTooltip="Download the audio recording"
           placement="left"
-          [bawUrl]="value.downloadUrl"
+          [ngbTooltip]="actions.download.tooltip()"
+          [href]="
+            apiRoot + actions.download.uri({ audioRecordingId: value.id })
+          "
         >
-          <fa-icon [icon]="['fas', 'download']"></fa-icon>
+          <fa-icon [icon]="actions.download.icon"></fa-icon>
         </a>
         <!-- Change this link dynamically -->
         <a
           class="btn btn-sm btn-default"
-          ngbTooltip="(UNDER CONSTRUCTION) View details about the audio recording"
           placement="left"
+          [ngbTooltip]="actions.details.tooltip()"
+          [strongRoute]="actions.details.route"
+          [routeParams]="{ audioRecordingId: value.id }"
         >
-          <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
+          <fa-icon [icon]="actions.details.icon"></fa-icon>
         </a>
       </ng-template>
     </ngx-datatable-column>

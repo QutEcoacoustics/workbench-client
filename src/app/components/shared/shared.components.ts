@@ -20,16 +20,14 @@ import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { AnnotationDownloadComponent } from "./annotation-download/annotation-download.component";
 import { BawClientModule } from "./baw-client/baw-client.module";
 import { CardsModule } from "./cards/cards.module";
-import { CheckboxComponent } from "./checkbox/checkbox.component";
+import { CheckboxModule } from "./checkbox/checkbox.module";
 import { CmsComponent } from "./cms/cms.component";
 import { DebounceInputComponent } from "./debounce-input/debounce-input.component";
-import { DetailViewComponent } from "./detail-view/detail-view.component";
-import { RenderFieldComponent } from "./detail-view/render-field/render-field.component";
+import { DetailViewModule } from "./detail-view/detail-view.module";
 import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
 import { CustomInputsModule } from "./formly/custom-inputs.module";
-import { UserLinkModule } from "./user-link/user-link.module";
 import { HeaderModule } from "./header/header.module";
 import { IconsModule } from "./icons/icons.module";
 import { IndicatorModule } from "./indicator/indicator.module";
@@ -37,15 +35,14 @@ import { ItemsModule } from "./items/items.module";
 import { LoadingModule } from "./loading/loading.module";
 import { MenuModule } from "./menu/menu.module";
 import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
+import { ModelLinkModule } from "./model-link/model-link.module";
 import { WIPComponent } from "./wip/wip.component";
 
 export const sharedComponents = [
   ActionMenuComponent,
   AnnotationDownloadComponent,
-  CheckboxComponent,
   CmsComponent,
   DebounceInputComponent,
-  DetailViewComponent,
   ErrorHandlerComponent,
   FooterComponent,
   FormComponent,
@@ -53,7 +50,7 @@ export const sharedComponents = [
   WIPComponent,
 ];
 
-export const internalComponents = [...sharedComponents, RenderFieldComponent];
+export const internalComponents = [];
 
 export const sharedModules = [
   CommonModule,
@@ -82,7 +79,9 @@ export const sharedModules = [
   MenuModule,
   LoadingModule,
   IndicatorModule,
-  UserLinkModule,
+  ModelLinkModule,
+  CheckboxModule,
+  DetailViewModule,
 ];
 
 export const internalModules = [...sharedModules, NgxCaptchaModule];

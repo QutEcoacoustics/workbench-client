@@ -4,10 +4,10 @@ import { DirectivesModule } from "@directives/directives.module";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { PipesModule } from "@pipes/pipes.module";
 import { IconsModule } from "@shared/icons/icons.module";
-import { UserLinkComponent } from "./user-link.component";
+import { ModelLinkComponent } from "./model-link.component";
 
 @NgModule({
-  declarations: [UserLinkComponent],
+  declarations: [ModelLinkComponent],
   imports: [
     CommonModule,
     IconsModule,
@@ -15,6 +15,6 @@ import { UserLinkComponent } from "./user-link.component";
     PipesModule,
     DirectivesModule,
   ],
-  exports: [UserLinkComponent],
+  exports: [ModelLinkComponent],
 })
-export class UserLinkModule {}
+export class ModelLinkModule {}
