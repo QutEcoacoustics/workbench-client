@@ -10,15 +10,14 @@ import {
 } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
-  audioRecordingMenuItem,
   audioRecordingsCategory,
+  audioRecordingMenuItems,
   downloadAudioRecordingMenuItem,
-  pointAudioRecordingMenuItem,
-  siteAudioRecordingMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
+import { PageInfo } from "@helpers/page/pageInfo";
+import { MenuItem } from "@interfaces/menusInterfaces";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
@@ -33,10 +32,10 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
-@Component({
-  selector: "baw-audio-recording",
-  templateUrl: "./details.component.html",
-})
+const selectorBase = "baw-audio-recording" as const;
+const templateUrl = "./details.component.html" as const;
+
+@Component({ selector: selectorBase, templateUrl })
 class DetailsComponent extends PageComponent implements OnInit {
   public failure: boolean;
   private models: ResolvedModelList;
@@ -72,41 +71,56 @@ class DetailsComponent extends PageComponent implements OnInit {
   }
 }
 
-@Component({
-  selector: "baw-audio-recording-site",
-  templateUrl: "./details.component.html",
-})
-class SiteDetailsComponent extends DetailsComponent {}
-
-@Component({
-  selector: "baw-audio-recording-point",
-  templateUrl: "./details.component.html",
-})
-class PointDetailsComponent extends DetailsComponent {}
-
-const pageInfo: IPageInfo = {
-  category: audioRecordingsCategory,
-  menus: {
-    actions: List([listenRecordingMenuItem, downloadAudioRecordingMenuItem]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-  },
-  resolvers: {
-    [audioRecordingKey]: audioRecordingResolvers.show,
-    [projectKey]: projectResolvers.showOptional,
-    [regionKey]: regionResolvers.showOptional,
-    [siteKey]: siteResolvers.showOptional,
-  },
-};
-
 // TODO Multiple components required as a hacky bypass to #1711
-DetailsComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
-  audioRecordingMenuItem
-);
-SiteDetailsComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
-  siteAudioRecordingMenuItem
-);
-PointDetailsComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
-  pointAudioRecordingMenuItem
-);
+@Component({ selector: selectorBase + "-site", templateUrl })
+class SiteDetailsComponent extends DetailsComponent {}
+@Component({ selector: selectorBase + "-point", templateUrl })
+class PointDetailsComponent extends DetailsComponent {}
+@Component({ selector: selectorBase + "-region", templateUrl })
+class RegionDetailsComponent extends DetailsComponent {}
+@Component({ selector: selectorBase + "-regions", templateUrl })
+class RegionsDetailsComponent extends DetailsComponent {}
+@Component({ selector: selectorBase + "-project", templateUrl })
+class ProjectDetailsComponent extends DetailsComponent {}
+@Component({ selector: selectorBase + "-projects", templateUrl })
+class ProjectsDetailsComponent extends DetailsComponent {}
 
-export { DetailsComponent, SiteDetailsComponent, PointDetailsComponent };
+function linkData(component: PageComponent, menuItem: MenuItem): void {
+  component
+    .linkComponentToPageInfo({
+      category: audioRecordingsCategory,
+      menus: {
+        actions: List([
+          listenRecordingMenuItem,
+          downloadAudioRecordingMenuItem,
+        ]),
+        actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+      },
+      resolvers: {
+        [audioRecordingKey]: audioRecordingResolvers.show,
+        [projectKey]: projectResolvers.showOptional,
+        [regionKey]: regionResolvers.showOptional,
+        [siteKey]: siteResolvers.showOptional,
+      },
+    })
+    .andMenuRoute(menuItem);
+}
+
+const menuItems = audioRecordingMenuItems.details;
+linkData(DetailsComponent, menuItems.base);
+linkData(SiteDetailsComponent, menuItems.site);
+linkData(PointDetailsComponent, menuItems.point);
+linkData(RegionDetailsComponent, menuItems.region);
+linkData(RegionsDetailsComponent, menuItems.regions);
+linkData(ProjectDetailsComponent, menuItems.project);
+linkData(ProjectsDetailsComponent, menuItems.projects);
+
+export {
+  DetailsComponent,
+  SiteDetailsComponent,
+  PointDetailsComponent,
+  RegionDetailsComponent,
+  RegionsDetailsComponent,
+  ProjectDetailsComponent,
+  ProjectsDetailsComponent,
+};

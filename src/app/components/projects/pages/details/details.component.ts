@@ -8,7 +8,7 @@ import {
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
-import { audioRecordingsMenuItem } from "@components/audio-recordings/audio-recording.menus";
+import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import {
   assignSiteMenuItem,
   deleteProjectMenuItem,
@@ -38,7 +38,7 @@ export const projectMenuItemActions = [
   newSiteMenuItem,
   assignSiteMenuItem,
   deleteProjectMenuItem,
-  audioRecordingsMenuItem,
+  audioRecordingMenuItems.list.project,
 ];
 
 const projectKey = "project";

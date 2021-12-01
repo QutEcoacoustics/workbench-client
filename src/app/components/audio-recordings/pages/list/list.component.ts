@@ -7,14 +7,13 @@ import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   audioRecordingsCategory,
-  audioRecordingsMenuItem,
+  audioRecordingMenuItems,
   batchDownloadAudioRecordingMenuItem,
-  pointAudioRecordingsMenuItem,
-  siteAudioRecordingsMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
-import { IPageInfo } from "@helpers/page/pageInfo";
+import { PageComponent } from "@helpers/page/pageComponent";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, Ids, toRelative } from "@interfaces/apiInterfaces";
+import { MenuItem } from "@interfaces/menusInterfaces";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -25,10 +24,10 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
-@Component({
-  selector: "baw-audio-recordings",
-  templateUrl: "./list.component.html",
-})
+const selectorBase = "baw-audio-recordings" as const;
+const templateUrl = "./list.component.html" as const;
+
+@Component({ selector: selectorBase, templateUrl })
 class ListComponent
   extends PagedTableTemplate<TableRow, AudioRecording>
   implements OnInit
@@ -114,37 +113,49 @@ interface TableRow {
   model: AudioRecording;
 }
 
-@Component({
-  selector: "baw-audio-recordings-site",
-  templateUrl: "./list.component.html",
-})
-class SiteListComponent extends ListComponent {}
-
-@Component({
-  selector: "baw-audio-recordings-point",
-  templateUrl: "./list.component.html",
-})
-class PointListComponent extends ListComponent {}
-
-const pageInfo: IPageInfo = {
-  category: audioRecordingsCategory,
-  menus: { actions: List([batchDownloadAudioRecordingMenuItem]) },
-  resolvers: {
-    [projectKey]: projectResolvers.showOptional,
-    [regionKey]: regionResolvers.showOptional,
-    [siteKey]: siteResolvers.showOptional,
-  },
-};
-
 // TODO Multiple components required as a hacky bypass to #1711
-ListComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
-  audioRecordingsMenuItem
-);
-SiteListComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
-  siteAudioRecordingsMenuItem
-);
-PointListComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
-  pointAudioRecordingsMenuItem
-);
+@Component({ selector: selectorBase + "-site", templateUrl })
+class SiteListComponent extends ListComponent {}
+@Component({ selector: selectorBase + "-point", templateUrl })
+class PointListComponent extends ListComponent {}
+@Component({ selector: selectorBase + "-region", templateUrl })
+class RegionListComponent extends ListComponent {}
+@Component({ selector: selectorBase + "-regions", templateUrl })
+class RegionsListComponent extends ListComponent {}
+@Component({ selector: selectorBase + "-project", templateUrl })
+class ProjectListComponent extends ListComponent {}
+@Component({ selector: selectorBase + "-projects", templateUrl })
+class ProjectsListComponent extends ListComponent {}
 
-export { ListComponent, SiteListComponent, PointListComponent };
+function linkData(component: PageComponent, menuItem: MenuItem): void {
+  component
+    .linkComponentToPageInfo({
+      category: audioRecordingsCategory,
+      menus: { actions: List([batchDownloadAudioRecordingMenuItem]) },
+      resolvers: {
+        [projectKey]: projectResolvers.showOptional,
+        [regionKey]: regionResolvers.showOptional,
+        [siteKey]: siteResolvers.showOptional,
+      },
+    })
+    .andMenuRoute(menuItem);
+}
+
+const menuItems = audioRecordingMenuItems.list;
+linkData(ListComponent, menuItems.base);
+linkData(SiteListComponent, menuItems.site);
+linkData(PointListComponent, menuItems.point);
+linkData(RegionListComponent, menuItems.region);
+linkData(RegionsListComponent, menuItems.regions);
+linkData(ProjectListComponent, menuItems.project);
+linkData(ProjectsListComponent, menuItems.projects);
+
+export {
+  ListComponent,
+  SiteListComponent,
+  PointListComponent,
+  RegionListComponent,
+  RegionsListComponent,
+  ProjectListComponent,
+  ProjectsListComponent,
+};

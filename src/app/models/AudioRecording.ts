@@ -2,7 +2,7 @@ import { id, IdOr } from "@baw-api/api-common";
 import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { adminAudioRecordingMenuItem } from "@components/admin/audio-recordings/audio-recordings.menus";
-import { audioRecordingMenuItem } from "@components/audio-recordings/audio-recording.menus";
+import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { Duration } from "luxon";
 import {
@@ -92,21 +92,6 @@ export class AudioRecording
 
   public get viewUrl(): string {
     return this.playUrl;
-  }
-
-  public get detailsUrl(): string {
-    return this.getDetailsUrl();
-  }
-
-  public getDetailsUrl(
-    project?: IdOr<Project>,
-    region?: IdOr<Region>,
-    site?: IdOr<Site>
-  ): string {
-    return audioRecordingMenuItem.route.format(
-      { audioRecordingId: this.id },
-      { projectId: id(project), regionId: id(region), siteId: id(site) }
-    );
   }
 
   public get playUrl(): string {

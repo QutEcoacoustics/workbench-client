@@ -93,17 +93,18 @@
           <fa-icon [icon]="['fas', 'play']"></fa-icon>
         </a>
         <a
-          class="btn btn-sm btn-primary mx-1"
-          ngbTooltip="(UNDER CONSTRUCTION) Download the audio recording"
+          class="btn btn-sm btn-default mx-1"
+          ngbTooltip="Download the audio recording"
           placement="left"
+          [bawUrl]="value.downloadUrl"
         >
           <fa-icon [icon]="['fas', 'download']"></fa-icon>
         </a>
+        <!-- Change this link dynamically -->
         <a
           class="btn btn-sm btn-default"
-          ngbTooltip="View details about the audio recording"
+          ngbTooltip="(UNDER CONSTRUCTION) View details about the audio recording"
           placement="left"
-          [bawUrl]="value.getDetailsUrl(project, region, site)"
         >
           <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
         </a>
