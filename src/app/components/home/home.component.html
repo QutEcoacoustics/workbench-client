@@ -118,6 +118,16 @@
 <!-- View some projects -->
 <section id="projects" class="pb-5 pt-5 bg-light">
   <div class="container">
+    <audio
+      controls
+      id="audio_element"
+      src="https://cdn.pixabay.com/download/audio/2021/11/25/audio_91b32e02f9.mp3?filename=jazzy-abstract-beat-11254.mp3"
+    ></audio>
+
+    <oe-element></oe-element>
+
+    <oe-media-controls for="audio_element"></oe-media-controls>
+
     <h2>View Some {{ viewMore.modelName | titlecase }}s</h2>
     <p class="mb-5">
       You can browse some public {{ viewMore.modelName }}s and audio recordings

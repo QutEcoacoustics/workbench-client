@@ -8,6 +8,7 @@ import {
 } from "./app/helpers/app-initializer/app-initializer";
 import { fetchRetry } from "./app/helpers/fetch-retry/fetchRetry";
 import { environment } from "./environments/environment";
+import "node_modules/web-components/build/dist/oe-components.all.js";
 
 if (environment.production) {
   enableProdMode();
