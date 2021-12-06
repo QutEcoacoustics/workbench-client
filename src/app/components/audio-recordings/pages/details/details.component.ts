@@ -32,10 +32,10 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
-const selectorBase = "baw-audio-recording" as const;
-const templateUrl = "./details.component.html" as const;
-
-@Component({ selector: selectorBase, templateUrl })
+@Component({
+  selector: "baw-audio-recording",
+  templateUrl: "./details.component.html",
+})
 class DetailsComponent extends PageComponent implements OnInit {
   public failure: boolean;
   private models: ResolvedModelList;
@@ -72,17 +72,35 @@ class DetailsComponent extends PageComponent implements OnInit {
 }
 
 // TODO Multiple components required as a hacky bypass to #1711
-@Component({ selector: selectorBase + "-site", templateUrl })
+@Component({
+  selector: "baw-audio-recording-site",
+  templateUrl: "./details.component.html",
+})
 class SiteDetailsComponent extends DetailsComponent {}
-@Component({ selector: selectorBase + "-point", templateUrl })
+@Component({
+  selector: "baw-audio-recording-point",
+  templateUrl: "./details.component.html",
+})
 class PointDetailsComponent extends DetailsComponent {}
-@Component({ selector: selectorBase + "-region", templateUrl })
+@Component({
+  selector: "baw-audio-recording-region",
+  templateUrl: "./details.component.html",
+})
 class RegionDetailsComponent extends DetailsComponent {}
-@Component({ selector: selectorBase + "-regions", templateUrl })
+@Component({
+  selector: "baw-audio-recording-regions",
+  templateUrl: "./details.component.html",
+})
 class RegionsDetailsComponent extends DetailsComponent {}
-@Component({ selector: selectorBase + "-project", templateUrl })
+@Component({
+  selector: "baw-audio-recording-project",
+  templateUrl: "./details.component.html",
+})
 class ProjectDetailsComponent extends DetailsComponent {}
-@Component({ selector: selectorBase + "-projects", templateUrl })
+@Component({
+  selector: "baw-audio-recording-projects",
+  templateUrl: "./details.component.html",
+})
 class ProjectsDetailsComponent extends DetailsComponent {}
 
 function linkData(component: PageComponent, menuItem: MenuItem): void {

@@ -5,7 +5,7 @@ import {
   OnChanges,
 } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { AbstractModel, unknownViewUrl } from "@models/AbstractModel";
+import { AbstractModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 
 // TODO Pass model to content through context
@@ -20,18 +20,22 @@ import { User } from "@models/User";
     <ng-template #resolved>
       <!-- Normal model with view url -->
       <a *ngIf="!isGhostUser && hasViewUrl" [bawUrl]="model.viewUrl">
-        <ng-content select="#model"></ng-content>
+        <ng-container *ngTemplateOutlet="modelTemplate"></ng-container>
       </a>
 
       <!-- Abstract Model without view url -->
       <ng-container *ngIf="!isGhostUser && !hasViewUrl">
-        <ng-content select="#model"></ng-content>
+        <ng-container *ngTemplateOutlet="modelTemplate"></ng-container>
       </ng-container>
 
       <!-- Ghost user model -->
       <ng-container *ngIf="isGhostUser">
         <ng-content select="#ghost"></ng-content>
       </ng-container>
+    </ng-template>
+
+    <ng-template #modelTemplate>
+      <ng-content select="#model"></ng-content>
     </ng-template>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,11 +55,10 @@ export class ModelLinkComponent implements OnChanges {
   private safelyDetermineViewUrl() {
     // Some viewUrl methods return errors
     try {
-      return (
-        isInstantiated(this.model.viewUrl) &&
-        this.model.viewUrl !== unknownViewUrl
-      );
+      return isInstantiated(this.model.viewUrl);
     } catch (err) {
+      console.log("No viewURL");
+
       return false;
     }
   }

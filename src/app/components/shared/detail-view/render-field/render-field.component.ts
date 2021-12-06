@@ -22,12 +22,12 @@ import { takeUntil } from "rxjs/operators";
   template: `
     <!-- Display plain text -->
     <dl *ngIf="styling === fieldStyling.plain">
-      <p id="plain" class="m-0">{{ display }}</p>
+      <p id="plain" class="m-0" [innerText]="display"></p>
     </dl>
 
     <!-- Display code/objects -->
     <dl *ngIf="styling === fieldStyling.code">
-      <pre id="code" class="m-0">{{ display }}</pre>
+      <pre id="code" class="m-0" [innerText]="display"></pre>
     </dl>
 
     <!-- Display checkbox -->
@@ -44,8 +44,8 @@ import { takeUntil } from "rxjs/operators";
     <!-- Display AbstractModel -->
     <dl *ngIf="styling === fieldStyling.model">
       <baw-model-link [model]="model">
-        <span id="model">{{ model }}</span>
-        <span id="ghost">{{ model }}</span>
+        <span id="model" [innerText]="model.toString()"></span>
+        <span id="ghost" [innerText]="model.toString()"></span>
       </baw-model-link>
     </dl>
 

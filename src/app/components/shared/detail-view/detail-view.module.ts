@@ -11,12 +11,12 @@ import { RenderFieldComponent } from "./render-field/render-field.component";
 @NgModule({
   declarations: [RenderFieldComponent, DetailViewComponent],
   imports: [
-    CommonModule,
-    CheckboxModule,
-    ModelLinkModule,
-    LoadingModule,
     AuthenticatedImageModule,
+    CheckboxModule,
+    CommonModule,
     DirectivesModule,
+    LoadingModule,
+    ModelLinkModule,
   ],
   exports: [RenderFieldComponent, DetailViewComponent],
 })

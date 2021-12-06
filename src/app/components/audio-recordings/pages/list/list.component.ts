@@ -28,10 +28,10 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
-const selectorBase = "baw-audio-recordings" as const;
-const templateUrl = "./list.component.html" as const;
-
-@Component({ selector: selectorBase, templateUrl })
+@Component({
+  selector: "baw-audio-recordings",
+  templateUrl: "./list.component.html",
+})
 class ListComponent
   extends PagedTableTemplate<TableRow, AudioRecording>
   implements OnInit
@@ -138,17 +138,35 @@ interface TableRow {
 }
 
 // TODO Multiple components required as a hacky bypass to #1711
-@Component({ selector: selectorBase + "-site", templateUrl })
+@Component({
+  selector: "baw-audio-recordings-site",
+  templateUrl: "./list.component.html",
+})
 class SiteListComponent extends ListComponent {}
-@Component({ selector: selectorBase + "-point", templateUrl })
+@Component({
+  selector: "baw-audio-recordings-point",
+  templateUrl: "./list.component.html",
+})
 class PointListComponent extends ListComponent {}
-@Component({ selector: selectorBase + "-region", templateUrl })
+@Component({
+  selector: "baw-audio-recordings-region",
+  templateUrl: "./list.component.html",
+})
 class RegionListComponent extends ListComponent {}
-@Component({ selector: selectorBase + "-regions", templateUrl })
+@Component({
+  selector: "baw-audio-recordings-regions",
+  templateUrl: "./list.component.html",
+})
 class RegionsListComponent extends ListComponent {}
-@Component({ selector: selectorBase + "-project", templateUrl })
+@Component({
+  selector: "baw-audio-recordings-project",
+  templateUrl: "./list.component.html",
+})
 class ProjectListComponent extends ListComponent {}
-@Component({ selector: selectorBase + "-projects", templateUrl })
+@Component({
+  selector: "baw-audio-recordings-projects",
+  templateUrl: "./list.component.html",
+})
 class ProjectsListComponent extends ListComponent {}
 
 function linkData(component: PageComponent, menuItem: MenuItem): void {

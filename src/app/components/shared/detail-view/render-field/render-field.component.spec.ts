@@ -23,13 +23,13 @@ describe("RenderFieldComponent", () => {
     component: RenderFieldComponent,
     declarations: [CheckboxComponent],
     imports: [
-      RouterTestingModule,
-      CheckboxModule,
-      ModelLinkModule,
-      LoadingModule,
-      DirectivesModule,
       AuthenticatedImageModule,
+      CheckboxModule,
+      DirectivesModule,
+      LoadingModule,
       MockBawApiModule,
+      ModelLinkModule,
+      RouterTestingModule,
     ],
   });
 
