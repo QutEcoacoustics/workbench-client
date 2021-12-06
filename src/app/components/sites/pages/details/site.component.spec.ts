@@ -1,7 +1,5 @@
-import {
-  ApiErrorDetails,
-  isApiErrorDetails,
-} from "@baw-api/api.interceptor.service";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SiteComponent } from "@components/sites/components/site/site.component";
 import { Errorable } from "@helpers/advancedTypes";

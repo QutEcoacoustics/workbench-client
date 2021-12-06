@@ -1,5 +1,5 @@
 import { RouterTestingModule } from "@angular/router/testing";
-import { isApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";

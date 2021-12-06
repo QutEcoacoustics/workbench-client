@@ -2,10 +2,8 @@ import { Component } from "@angular/core";
 import { fakeAsync } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import {
-  ApiErrorDetails,
-  isApiErrorDetails,
-} from "@baw-api/api.interceptor.service";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";

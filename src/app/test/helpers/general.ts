@@ -1,9 +1,7 @@
 import { Injector } from "@angular/core";
 import { ApiFilter, ApiShow } from "@baw-api/api-common";
-import {
-  ApiErrorDetails,
-  isApiErrorDetails,
-} from "@baw-api/api.interceptor.service";
+import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { Filters } from "@baw-api/baw-api.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { Errorable } from "@helpers/advancedTypes";

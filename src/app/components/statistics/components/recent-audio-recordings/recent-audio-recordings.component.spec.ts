@@ -1,6 +1,6 @@
 import { Injector } from "@angular/core";
 import { RouterTestingModule } from "@angular/router/testing";
-import { isApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";

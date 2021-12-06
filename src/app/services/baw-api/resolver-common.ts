@@ -1,14 +1,17 @@
-import { Type } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
-import { Tuple, Option } from "@helpers/advancedTypes";
+// !Be careful with imports, resolvers are string-ly typed and can easily create
+// circular dependencies which are not detected by typescript
+import type { Type } from "@angular/core";
+import type { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import type { Tuple, Option } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { Id } from "@interfaces/apiInterfaces";
-import { AbstractData } from "@models/AbstractData";
-import { AbstractModel } from "@models/AbstractModel";
+import type { AbstractData } from "@models/AbstractData";
+import type { AbstractModel } from "@models/AbstractModel";
 import httpStatus from "http-status";
 import { Observable, of } from "rxjs";
 import { catchError, first, map } from "rxjs/operators";
+import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import {
   ApiCreate,
   ApiDestroy,
@@ -18,7 +21,7 @@ import {
   ApiUpdate,
   IdOr,
 } from "./api-common";
-import { ApiErrorDetails, isApiErrorDetails } from "./api.interceptor.service";
+import type { ApiErrorDetails } from "./api.interceptor.service";
 import { BawApiService, unknownErrorCode } from "./baw-api.service";
 
 /**
