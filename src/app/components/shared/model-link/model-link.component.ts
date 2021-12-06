@@ -6,7 +6,7 @@ import {
 } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel, unknownViewUrl } from "@models/AbstractModel";
-import { isDeletedUser, isUnknownUser } from "@models/User";
+import { User } from "@models/User";
 
 // TODO Pass model to content through context
 @Component({
@@ -43,7 +43,8 @@ export class ModelLinkComponent implements OnChanges {
   public hasViewUrl: boolean;
 
   public ngOnChanges(): void {
-    this.isGhostUser = isDeletedUser(this.model) || isUnknownUser(this.model);
+    this.isGhostUser =
+      (this.model as User).isUnknown || (this.model as User).isDeleted;
     this.hasViewUrl = this.safelyDetermineViewUrl();
   }
 

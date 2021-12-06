@@ -118,7 +118,15 @@ export class User extends AbstractModel<IUser> implements IUser {
   }
 
   public get isAdmin(): boolean {
-    return isModelAdmin(this);
+    return isAdminUser(this);
+  }
+
+  public get isUnknown(): boolean {
+    return this.id === unknownUserId;
+  }
+
+  public get isDeleted(): boolean {
+    return this.id === deletedUserId;
   }
 
   public get viewUrl(): string {
@@ -126,6 +134,11 @@ export class User extends AbstractModel<IUser> implements IUser {
   }
 
   public toString(): string {
+    if (this.id === unknownUserId) {
+      return `${this.kind}: Unknown User`;
+    } else if (this.id === deletedUserId) {
+      return `${this.kind}: Deleted User`;
+    }
     return super.toString(this.userName);
   }
 }
@@ -161,7 +174,7 @@ export class SessionUser
   }
 
   public get isAdmin(): boolean {
-    return isModelAdmin(this);
+    return isAdminUser(this);
   }
 
   public get viewUrl(): string {
@@ -175,29 +188,7 @@ export class SessionUser
  * The admin role is 1, therefore a role mask of 1 (0001) or
  * 3 (0011) indicate an admin account.
  */
-function isModelAdmin(model: User | SessionUser): boolean {
+function isAdminUser(model: User | SessionUser): boolean {
   // eslint-disable-next-line no-bitwise
   return !!(model.rolesMask & 1);
-}
-
-/**
- * Determines if user is a deleted user
- *
- * @param model User to evaluate
- */
-export function isDeletedUser(model: AbstractModel): boolean {
-  return (
-    ["User", "Session User"].includes(model.kind) && model.id === deletedUserId
-  );
-}
-
-/**
- * Determines if user is an unknown user
- *
- * @param model User to evaluate
- */
-export function isUnknownUser(model: AbstractModel): boolean {
-  return (
-    ["User", "Session User"].includes(model.kind) && model.id === unknownUserId
-  );
 }

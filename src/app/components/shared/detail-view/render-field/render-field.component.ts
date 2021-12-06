@@ -44,8 +44,8 @@ import { takeUntil } from "rxjs/operators";
     <!-- Display AbstractModel -->
     <dl *ngIf="styling === fieldStyling.model">
       <baw-model-link [model]="model">
-        <span id="model abstract-model">{{ model }}</span>
-        <span id="ghost abstract-model">Unknown User</span>
+        <span id="model">{{ model }}</span>
+        <span id="ghost">{{ model }}</span>
       </baw-model-link>
     </dl>
 
@@ -192,8 +192,8 @@ export class RenderFieldComponent
     this.setLoading();
 
     try {
-      this.styling = FieldStyling.code;
       this.display = JSON.stringify(value);
+      this.styling = FieldStyling.code;
     } catch (err) {
       this.setError();
     }
@@ -208,8 +208,8 @@ export class RenderFieldComponent
     this.setLoading();
 
     try {
-      this.styling = FieldStyling.code;
       this.display = await value.text();
+      this.styling = FieldStyling.code;
     } catch (err) {
       this.setError();
     }
@@ -231,7 +231,7 @@ export class RenderFieldComponent
         this.ref.detectChanges();
       },
       () => {
-        this.setNoValue();
+        this.setError();
       }
     );
   }

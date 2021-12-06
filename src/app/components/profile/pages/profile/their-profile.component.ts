@@ -16,7 +16,7 @@ import {
   theirProjectsMenuItem,
   theirSitesMenuItem,
 } from "@components/profile/profile.menus";
-import { isDeletedUser, isUnknownUser, User } from "@models/User";
+import { User } from "@models/User";
 import { List } from "immutable";
 import { MyProfileComponent } from "./my-profile.component";
 
@@ -50,9 +50,8 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
   }
 
   public ngOnInit() {
-    const accountModel: ResolvedModel<User> = this.route.snapshot.data[
-      accountKey
-    ];
+    const accountModel: ResolvedModel<User> =
+      this.route.snapshot.data[accountKey];
 
     if (accountModel.error) {
       return;
@@ -61,7 +60,7 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
     this.user = accountModel.model;
     this.updateUserProfile(this.user);
 
-    if (isDeletedUser(this.user) || isUnknownUser(this.user)) {
+    if (this.user.isDeleted || this.user.isUnknown) {
       // Set statistics to unknown
       this.tags = [];
       this.userStatistics.forEach((_, index) => this.handleError(index));
