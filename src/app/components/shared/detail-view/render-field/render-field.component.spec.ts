@@ -10,6 +10,9 @@ import {
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
+import { CheckboxModule } from "@shared/checkbox/checkbox.module";
+import { LoadingModule } from "@shared/loading/loading.module";
+import { ModelLinkModule } from "@shared/model-link/model-link.module";
 import { modelData } from "@test/helpers/faker";
 import { assertImage, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
@@ -24,6 +27,9 @@ describe("RenderFieldComponent", () => {
     declarations: [CheckboxComponent],
     imports: [
       RouterTestingModule,
+      CheckboxModule,
+      ModelLinkModule,
+      LoadingModule,
       DirectivesModule,
       AuthenticatedImageModule,
       MockBawApiModule,
@@ -35,7 +41,7 @@ describe("RenderFieldComponent", () => {
     code: () => spec.queryAll<HTMLPreElement>("dl #code"),
     normal: () => spec.queryAll<HTMLParagraphElement>("dl #plain"),
     model: () =>
-      spec.queryAll<HTMLAnchorElement | HTMLSpanElement>("dl #model"),
+      spec.queryAll<HTMLAnchorElement | HTMLSpanElement>("dl #abstract-model"),
     image: () => spec.queryAll<HTMLImageElement>("dl #image"),
     checkbox: () => spec.queryAll<HTMLElement>("dl #checkbox"),
     values: () =>
@@ -266,56 +272,49 @@ describe("RenderFieldComponent", () => {
   });
 
   describe("Blob input", () => {
-    let spy: jasmine.SpyObj<FileReader>;
+    function setBlob(text: string, error?: string) {
+      const blob = new Blob([text], { type: "text/plain" });
 
-    function setBlob(shouldReturn: boolean, text?: string) {
-      spy = jasmine.createSpyObj("FileReader", [
-        "readAsText",
-        "addEventListener",
-        "abort",
-        "onerror",
-      ]);
-      spy.readAsText.and.stub();
-
-      if (shouldReturn) {
-        spy.addEventListener.and.callFake(
-          (_, listener: (...args: any[]) => void) =>
-            listener({ target: { result: text } })
+      if (text) {
+        spyOn(blob, "text").and.callFake(async () => text);
+      } else if (error) {
+        spyOn(blob, "text").and.callFake(
+          () => new Promise<string>((resolve, reject) => reject(error))
         );
+      } else {
+        spyOn(blob, "text").and.stub();
       }
 
-      spyOn(window, "FileReader").and.returnValue(spy);
-      setup(new Blob([text], { type: "text/plain" }));
+      setup(blob);
       spec.detectChanges();
     }
 
     it("should display loading while blob incomplete", () => {
-      setBlob(false);
+      setBlob(undefined);
       const value = getElement.loading()[0];
       expect(value.innerText.trim()).toBe("(loading)");
     });
 
     it("should hide loading when blob complete", () => {
-      setBlob(true, "testing");
+      setBlob("testing");
       const value = getElement.loading()[0];
       expect(value).toBeFalsy();
     });
 
     it("should handle Blob value", () => {
-      setBlob(true, "testing");
+      setBlob("testing");
       expect(getElement.values().length).toBe(1);
       expect(getElement.code().length).toBe(1);
     });
 
     it("should display text output", () => {
-      setBlob(true, "testing");
+      setBlob("testing");
       const value = getElement.code()[0];
       expect(value.innerText.trim()).toBe("testing");
     });
 
     it("should handle error output", () => {
-      setBlob(true, "testing");
-      spy.onerror(undefined);
+      setBlob(undefined, "failure");
       spec.detectChanges();
       const value = getElement.code()[0];
       expect(value.innerText.trim()).toBe("(error)");

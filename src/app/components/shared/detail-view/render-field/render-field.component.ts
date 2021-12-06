@@ -44,8 +44,8 @@ import { takeUntil } from "rxjs/operators";
     <!-- Display AbstractModel -->
     <dl *ngIf="styling === fieldStyling.model">
       <baw-model-link [model]="model">
-        <span id="model">{{ model }}</span>
-        <span id="ghost">Unknown User</span>
+        <span id="model abstract-model">{{ model }}</span>
+        <span id="ghost abstract-model">Unknown User</span>
       </baw-model-link>
     </dl>
 
@@ -224,6 +224,7 @@ export class RenderFieldComponent
     value: Observable<AbstractModel | AbstractModel[]>
   ) {
     this.setLoading();
+
     value.pipe(takeUntil(this.unsubscribe)).subscribe(
       (models) => {
         this.humanize(models);
@@ -231,7 +232,6 @@ export class RenderFieldComponent
       },
       () => {
         this.setNoValue();
-        this.ref.detectChanges();
       }
     );
   }
@@ -262,16 +262,19 @@ export class RenderFieldComponent
   private setLoading() {
     this.styling = FieldStyling.plain;
     this.display = "(loading)";
+    this.ref.detectChanges();
   }
 
   private setNoValue() {
     this.styling = FieldStyling.plain;
     this.display = "(no value)";
+    this.ref.detectChanges();
   }
 
   private setError() {
     this.styling = FieldStyling.plain;
     this.display = "(error)";
+    this.ref.detectChanges();
   }
 
   /**
