@@ -16,6 +16,7 @@ import {
 import httpStatus from "http-status";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
+import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { ApiResponse } from "./baw-api.service";
 import { SecurityService } from "./security/security.service";
 
@@ -143,24 +144,6 @@ export interface ApiErrorDetails {
  */
 interface ApiErrorResponse extends HttpErrorResponse {
   error: ApiResponse<null>;
-}
-
-/**
- * Determine if error response has already been processed
- *
- * @param errorResponse Error response
- */
-export function isApiErrorDetails(
-  errorResponse: any
-): errorResponse is ApiErrorDetails {
-  if (!errorResponse) {
-    return false;
-  }
-
-  const keys = Object.keys(errorResponse);
-  return (
-    keys.length <= 3 && keys.includes("status") && keys.includes("message")
-  );
 }
 
 /**
