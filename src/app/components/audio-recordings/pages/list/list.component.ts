@@ -29,7 +29,7 @@ const siteKey = "site";
   selector: "baw-audio-recordings",
   templateUrl: "./list.component.html",
 })
-class ListComponent
+class AudioRecordingsListComponent
   extends PagedTableTemplate<TableRow, AudioRecording>
   implements OnInit, AfterViewInit
 {
@@ -142,7 +142,7 @@ interface TableRow {
   selector: "baw-audio-recordings-site",
   templateUrl: "./list.component.html",
 })
-class SiteListComponent extends ListComponent {}
+class AudioRecordingsListFilteredBySiteComponent extends AudioRecordingsListComponent {}
 
 /**
  * PointListComponent, this handles the list page for audio recordings when
@@ -152,7 +152,7 @@ class SiteListComponent extends ListComponent {}
   selector: "baw-audio-recordings-point",
   templateUrl: "./list.component.html",
 })
-class PointListComponent extends ListComponent {}
+class AudioRecordingsListFilteredBySiteAndRegionComponent extends AudioRecordingsListComponent {}
 
 /**
  * RegionListComponent, this handles the list page for audio recordings when
@@ -162,7 +162,7 @@ class PointListComponent extends ListComponent {}
   selector: "baw-audio-recordings-region",
   templateUrl: "./list.component.html",
 })
-class RegionListComponent extends ListComponent {}
+class AudioRecordingsListFilteredByRegionComponent extends AudioRecordingsListComponent {}
 
 /**
  * ProjectListComponent, this handles the list page for audio recordings when
@@ -172,7 +172,7 @@ class RegionListComponent extends ListComponent {}
   selector: "baw-audio-recordings-project",
   templateUrl: "./list.component.html",
 })
-class ProjectListComponent extends ListComponent {}
+class AudioRecordingsListFilteredByProjectComponent extends AudioRecordingsListComponent {}
 
 /** Link components with their menu item, and assign page info which is shared between all */
 function linkData(component: PageComponent, menuItem: MenuItem): void {
@@ -190,16 +190,16 @@ function linkData(component: PageComponent, menuItem: MenuItem): void {
 }
 
 const menuItems = audioRecordingMenuItems.list;
-linkData(ListComponent, menuItems.base);
-linkData(SiteListComponent, menuItems.site);
-linkData(PointListComponent, menuItems.point);
-linkData(RegionListComponent, menuItems.region);
-linkData(ProjectListComponent, menuItems.project);
+linkData(AudioRecordingsListComponent, menuItems.base);
+linkData(AudioRecordingsListFilteredBySiteComponent, menuItems.site);
+linkData(AudioRecordingsListFilteredBySiteAndRegionComponent, menuItems.point);
+linkData(AudioRecordingsListFilteredByRegionComponent, menuItems.region);
+linkData(AudioRecordingsListFilteredByProjectComponent, menuItems.project);
 
 export {
-  ListComponent,
-  SiteListComponent,
-  PointListComponent,
-  RegionListComponent,
-  ProjectListComponent,
+  AudioRecordingsListComponent,
+  AudioRecordingsListFilteredBySiteComponent,
+  AudioRecordingsListFilteredBySiteAndRegionComponent,
+  AudioRecordingsListFilteredByRegionComponent,
+  AudioRecordingsListFilteredByProjectComponent,
 };

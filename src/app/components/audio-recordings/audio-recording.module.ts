@@ -4,32 +4,33 @@ import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { audioRecordingsRoutes } from "./audio-recording.menus";
 import {
-  DetailsComponent,
-  PointDetailsComponent,
-  ProjectDetailsComponent,
-  RegionDetailsComponent,
-  SiteDetailsComponent,
+  AudioRecordingsDetailsComponent,
+  AudioRecordingsDetailsFilteredBySiteComponent,
+  AudioRecordingsDetailsFilteredBySiteAndRegionComponent,
+  AudioRecordingsDetailsFilteredByRegionComponent,
+  AudioRecordingsDetailsFilteredByProjectComponent,
 } from "./pages/details/details.component";
 import {
-  ListComponent,
-  PointListComponent,
-  ProjectListComponent,
-  RegionListComponent,
-  SiteListComponent,
+  AudioRecordingsListComponent,
+  AudioRecordingsListFilteredBySiteComponent,
+  AudioRecordingsListFilteredBySiteAndRegionComponent,
+  AudioRecordingsListFilteredByRegionComponent,
+  AudioRecordingsListFilteredByProjectComponent,
 } from "./pages/list/list.component";
 
 const components = [
-  ListComponent,
-  SiteListComponent,
-  PointListComponent,
-  RegionListComponent,
-  ProjectListComponent,
+  AudioRecordingsListComponent,
+  AudioRecordingsListFilteredBySiteComponent,
+  AudioRecordingsListFilteredBySiteAndRegionComponent,
+  AudioRecordingsListFilteredByRegionComponent,
+  AudioRecordingsListFilteredByProjectComponent,
 
-  DetailsComponent,
-  SiteDetailsComponent,
-  PointDetailsComponent,
-  RegionDetailsComponent,
-  ProjectDetailsComponent,
+  AudioRecordingsDetailsComponent,
+  AudioRecordingsDetailsFilteredBySiteComponent,
+  AudioRecordingsDetailsFilteredBySiteComponent,
+  AudioRecordingsDetailsFilteredBySiteAndRegionComponent,
+  AudioRecordingsDetailsFilteredByRegionComponent,
+  AudioRecordingsDetailsFilteredByProjectComponent,
 ];
 
 const routes = Object.values(audioRecordingsRoutes)

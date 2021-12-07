@@ -36,7 +36,7 @@ const siteKey = "site";
   selector: "baw-audio-recording",
   templateUrl: "./details.component.html",
 })
-class DetailsComponent extends PageComponent implements OnInit {
+class AudioRecordingsDetailsComponent extends PageComponent implements OnInit {
   public failure: boolean;
   private models: ResolvedModelList;
   public fields = schema.fields;
@@ -81,7 +81,7 @@ class DetailsComponent extends PageComponent implements OnInit {
   selector: "baw-audio-recording-site",
   templateUrl: "./details.component.html",
 })
-class SiteDetailsComponent extends DetailsComponent {}
+class AudioRecordingsDetailsFilteredBySiteComponent extends AudioRecordingsDetailsComponent {}
 
 /**
  * PointDetailsComponent, this handles the details page for audio recordings when
@@ -91,7 +91,7 @@ class SiteDetailsComponent extends DetailsComponent {}
   selector: "baw-audio-recording-point",
   templateUrl: "./details.component.html",
 })
-class PointDetailsComponent extends DetailsComponent {}
+class AudioRecordingsDetailsFilteredBySiteAndRegionComponent extends AudioRecordingsDetailsComponent {}
 
 /**
  * RegionDetailsComponent, this handles the details page for audio recordings when
@@ -101,7 +101,7 @@ class PointDetailsComponent extends DetailsComponent {}
   selector: "baw-audio-recording-region",
   templateUrl: "./details.component.html",
 })
-class RegionDetailsComponent extends DetailsComponent {}
+class AudioRecordingsDetailsFilteredByRegionComponent extends AudioRecordingsDetailsComponent {}
 
 /**
  * ProjectDetailsComponent, this handles the details page for audio recordings when
@@ -111,7 +111,7 @@ class RegionDetailsComponent extends DetailsComponent {}
   selector: "baw-audio-recording-project",
   templateUrl: "./details.component.html",
 })
-class ProjectDetailsComponent extends DetailsComponent {}
+class AudioRecordingsDetailsFilteredByProjectComponent extends AudioRecordingsDetailsComponent {}
 
 /** Link components with their menu item, and assign page info which is shared between all */
 function linkData(component: PageComponent, menuItem: MenuItem): void {
@@ -136,16 +136,19 @@ function linkData(component: PageComponent, menuItem: MenuItem): void {
 }
 
 const menuItems = audioRecordingMenuItems.details;
-linkData(DetailsComponent, menuItems.base);
-linkData(SiteDetailsComponent, menuItems.site);
-linkData(PointDetailsComponent, menuItems.point);
-linkData(RegionDetailsComponent, menuItems.region);
-linkData(ProjectDetailsComponent, menuItems.project);
+linkData(AudioRecordingsDetailsComponent, menuItems.base);
+linkData(AudioRecordingsDetailsFilteredBySiteComponent, menuItems.site);
+linkData(
+  AudioRecordingsDetailsFilteredBySiteAndRegionComponent,
+  menuItems.point
+);
+linkData(AudioRecordingsDetailsFilteredByRegionComponent, menuItems.region);
+linkData(AudioRecordingsDetailsFilteredByProjectComponent, menuItems.project);
 
 export {
-  DetailsComponent,
-  SiteDetailsComponent,
-  PointDetailsComponent,
-  RegionDetailsComponent,
-  ProjectDetailsComponent,
+  AudioRecordingsDetailsComponent,
+  AudioRecordingsDetailsFilteredBySiteComponent,
+  AudioRecordingsDetailsFilteredBySiteAndRegionComponent,
+  AudioRecordingsDetailsFilteredByRegionComponent,
+  AudioRecordingsDetailsFilteredByProjectComponent,
 };
