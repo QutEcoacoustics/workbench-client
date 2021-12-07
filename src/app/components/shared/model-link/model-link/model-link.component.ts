@@ -47,8 +47,7 @@ export class ModelLinkComponent implements OnChanges {
   public hasViewUrl: boolean;
 
   public ngOnChanges(): void {
-    this.isGhostUser =
-      (this.model as User).isUnknown || (this.model as User).isDeleted;
+    this.isGhostUser = (this.model as User).isGhost;
     this.hasViewUrl = this.safelyDetermineViewUrl();
   }
 

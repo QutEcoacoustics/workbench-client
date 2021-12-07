@@ -4,17 +4,27 @@ import { DirectivesModule } from "@directives/directives.module";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { PipesModule } from "@pipes/pipes.module";
 import { IconsModule } from "@shared/icons/icons.module";
-import { ModelLinkComponent } from "./model-link.component";
+import { LoadingModule } from "@shared/loading/loading.module";
+import { GhostUserHintComponent } from "./ghost-user-hint/ghost-user-hint.component";
+import { ModelLinkComponent } from "./model-link/model-link.component";
+import { UserLinkComponent } from "./user-link/user-link.component";
+
+const components = [
+  ModelLinkComponent,
+  UserLinkComponent,
+  GhostUserHintComponent,
+];
 
 @NgModule({
-  declarations: [ModelLinkComponent],
+  declarations: components,
   imports: [
     CommonModule,
     IconsModule,
     NgbTooltipModule,
     PipesModule,
     DirectivesModule,
+    LoadingModule,
   ],
-  exports: [ModelLinkComponent],
+  exports: components,
 })
 export class ModelLinkModule {}

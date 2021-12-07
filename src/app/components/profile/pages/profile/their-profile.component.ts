@@ -60,7 +60,7 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
     this.user = accountModel.model;
     this.updateUserProfile(this.user);
 
-    if (this.user.isDeleted || this.user.isUnknown) {
+    if (this.user.isGhost) {
       // Set statistics to unknown
       this.tags = [];
       this.userStatistics.forEach((_, index) => this.handleError(index));

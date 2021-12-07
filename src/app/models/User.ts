@@ -129,6 +129,10 @@ export class User extends AbstractModel<IUser> implements IUser {
     return this.id === deletedUserId;
   }
 
+  public get isGhost(): boolean {
+    return this.isUnknown || this.isDeleted;
+  }
+
   public get viewUrl(): string {
     return theirProfileMenuItem.route.format({ accountId: this.id });
   }

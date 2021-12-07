@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { AudioRecordingsListComponent } from "./list.component";
+import { GhostUserHintComponent } from "./ghost-user-hint.component";
 
 // TODO
-xdescribe("AudioRecordingsListComponent", () => {
-  let component: AudioRecordingsListComponent;
-  let fixture: ComponentFixture<AudioRecordingsListComponent>;
+describe("GhostUserHintComponent", () => {
+  let component: GhostUserHintComponent;
+  let fixture: ComponentFixture<GhostUserHintComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AudioRecordingsListComponent],
+      declarations: [GhostUserHintComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AudioRecordingsListComponent);
+    fixture = TestBed.createComponent(GhostUserHintComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -9,6 +9,7 @@ import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { LoadingModule } from "@shared/loading/loading.module";
+import { ModelLinkModule } from "@shared/model-link/model-link.module";
 import { generateUser } from "@test/fakes/User";
 import { assertImage, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
@@ -28,13 +29,14 @@ describe("UserBadgeComponent", () => {
       MockBawApiModule,
       LoadingModule,
       PipesModule,
+      ModelLinkModule,
     ],
   });
 
   const getGhostUsername = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).queryAll<HTMLAnchorElement>("#ghost-username");
+    (spec ?? _spec).queryAll<HTMLAnchorElement>(".heading span");
   const getUsername = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).queryAll<HTMLAnchorElement>("#username");
+    (spec ?? _spec).queryAll<HTMLAnchorElement>(".heading a");
   const getImageWrapper = (_spec?: Spectator<any>) =>
     (spec ?? _spec).queryAll<HTMLAnchorElement>("#imageLink");
   const getImage = (_spec?: Spectator<any>) =>

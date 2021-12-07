@@ -20,20 +20,17 @@ export class IsGhostUserPipe implements PipeTransform {
     value: AbstractModel,
     type: "unknown" | "deleted" | "all" = "all"
   ): boolean {
-    if (!value) {
+    if (!value || !(value instanceof User)) {
       return true;
     }
 
-    const isDeleted = (value as User).isDeleted;
-    const isUnknown = (value as User).isUnknown;
-
     switch (type) {
       case "all":
-        return isDeleted || isUnknown;
+        return value.isGhost;
       case "unknown":
-        return isUnknown;
+        return value.isUnknown;
       case "deleted":
-        return isDeleted;
+        return value.isDeleted;
     }
   }
 }

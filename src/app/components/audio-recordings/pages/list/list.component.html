@@ -34,12 +34,8 @@
     <ngx-datatable-column name="Duration"> </ngx-datatable-column>
     <ngx-datatable-column name="Uploader">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <!-- Create link to user -->
-        <baw-model-link [model]="value.uploader">
-          <span id="model">{{ value.uploader.userName }}</span>
-          <span id="ghost">Unknown User</span>
-          <span id="unresolved"><baw-loading size="sm"></baw-loading></span>
-        </baw-model-link>
+        <baw-user-link [user]="value.uploader"></baw-user-link>
+        <baw-ghost-user-hint [user]="value.uploader"></baw-ghost-user-hint>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Site">

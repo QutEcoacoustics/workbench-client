@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { DetailsComponent } from "./details.component";
+import { AudioRecordingsDetailsComponent } from "./details.component";
 
 // TODO
-xdescribe("DetailsComponent", () => {
-  let component: DetailsComponent;
-  let fixture: ComponentFixture<DetailsComponent>;
+xdescribe("AudioRecordingsDetailsComponent", () => {
+  let component: AudioRecordingsDetailsComponent;
+  let fixture: ComponentFixture<AudioRecordingsDetailsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DetailsComponent],
+      declarations: [AudioRecordingsDetailsComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DetailsComponent);
+    fixture = TestBed.createComponent(AudioRecordingsDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
