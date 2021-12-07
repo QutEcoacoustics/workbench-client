@@ -6,7 +6,7 @@ import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { NgbModalModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { PipesModule } from "@pipes/pipes.module";
 import { IconsModule } from "@shared/icons/icons.module";
-import { ModelLinkModule } from "@shared/model-link/model-link.module";
+import { UserLinkModule } from "@shared/user-link/user-link.module";
 import { LoadingModule } from "../loading/loading.module";
 import { MenuButtonComponent } from "./button/button.component";
 import { MenuLinkComponent } from "./link/link.component";
@@ -42,7 +42,7 @@ const publicComponents = [
     LoadingModule,
     PipesModule,
     DirectivesModule,
-    ModelLinkModule,
+    UserLinkModule,
   ],
   exports: publicComponents,
 })

@@ -7,12 +7,13 @@ import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { MockModelWithDecorators as MockModel } from "@models/AssociationLoadingInComponents.spec";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { PipesModule } from "@pipes/pipes.module";
 import { CheckboxModule } from "@shared/checkbox/checkbox.module";
 import { LoadingModule } from "@shared/loading/loading.module";
-import { ModelLinkModule } from "@shared/model-link/model-link.module";
 import { nStepObservable, viewports } from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { DetailViewComponent } from "./detail-view.component";
+import { ModelLinkComponent } from "./model-link/model-link.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
 
 describe("DetailViewComponent", () => {
@@ -21,7 +22,7 @@ describe("DetailViewComponent", () => {
   let spec: Spectator<DetailViewComponent>;
   const createComponent = createComponentFactory({
     component: DetailViewComponent,
-    declarations: [RenderFieldComponent],
+    declarations: [RenderFieldComponent, ModelLinkComponent],
     imports: [
       AuthenticatedImageModule,
       CheckboxModule,
@@ -29,8 +30,8 @@ describe("DetailViewComponent", () => {
       LoadingModule,
       MockBawApiModule,
       MockBawApiModule,
-      ModelLinkModule,
       RouterTestingModule,
+      PipesModule,
     ],
     providers: [
       MockStandardApiService,

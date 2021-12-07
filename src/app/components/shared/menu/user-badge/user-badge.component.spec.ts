@@ -9,7 +9,7 @@ import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { LoadingModule } from "@shared/loading/loading.module";
-import { ModelLinkModule } from "@shared/model-link/model-link.module";
+import { UserLinkModule } from "@shared/user-link/user-link.module";
 import { generateUser } from "@test/fakes/User";
 import { assertImage, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
@@ -29,7 +29,7 @@ describe("UserBadgeComponent", () => {
       MockBawApiModule,
       LoadingModule,
       PipesModule,
-      ModelLinkModule,
+      UserLinkModule,
     ],
   });
 

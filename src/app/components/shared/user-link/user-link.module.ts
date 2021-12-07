@@ -6,14 +6,9 @@ import { PipesModule } from "@pipes/pipes.module";
 import { IconsModule } from "@shared/icons/icons.module";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { GhostUserHintComponent } from "./ghost-user-hint/ghost-user-hint.component";
-import { ModelLinkComponent } from "./model-link/model-link.component";
 import { UserLinkComponent } from "./user-link/user-link.component";
 
-const components = [
-  ModelLinkComponent,
-  UserLinkComponent,
-  GhostUserHintComponent,
-];
+const components = [UserLinkComponent, GhostUserHintComponent];
 
 @NgModule({
   declarations: components,
@@ -27,4 +22,4 @@ const components = [
   ],
   exports: components,
 })
-export class ModelLinkModule {}
+export class UserLinkModule {}

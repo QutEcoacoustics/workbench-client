@@ -5,31 +5,32 @@ import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
+import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { CheckboxModule } from "@shared/checkbox/checkbox.module";
 import { LoadingModule } from "@shared/loading/loading.module";
-import { ModelLinkModule } from "@shared/model-link/model-link.module";
 import { modelData } from "@test/helpers/faker";
 import { assertImage } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Subject } from "rxjs";
+import { ModelLinkComponent } from "../model-link/model-link.component";
 import { ModelView, RenderFieldComponent } from "./render-field.component";
 
 describe("RenderFieldComponent", () => {
   let spec: SpectatorHost<RenderFieldComponent>;
   const createComponent = createHostFactory({
     component: RenderFieldComponent,
-    declarations: [CheckboxComponent],
+    declarations: [CheckboxComponent, ModelLinkComponent],
     imports: [
       AuthenticatedImageModule,
       CheckboxModule,
       DirectivesModule,
       LoadingModule,
       MockBawApiModule,
-      ModelLinkModule,
       RouterTestingModule,
+      PipesModule,
     ],
   });
 

@@ -34,8 +34,8 @@ import { IndicatorModule } from "./indicator/indicator.module";
 import { ItemsModule } from "./items/items.module";
 import { LoadingModule } from "./loading/loading.module";
 import { MenuModule } from "./menu/menu.module";
-import { ModelLinkModule } from "./model-link/model-link.module";
 import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
+import { UserLinkModule } from "./user-link/user-link.module";
 import { WIPComponent } from "./wip/wip.component";
 
 export const sharedComponents = [
@@ -79,7 +79,7 @@ export const sharedModules = [
   MenuModule,
   LoadingModule,
   IndicatorModule,
-  ModelLinkModule,
+  UserLinkModule,
   CheckboxModule,
   DetailViewModule,
 ];
