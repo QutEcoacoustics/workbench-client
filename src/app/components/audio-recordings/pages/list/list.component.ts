@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -9,15 +9,12 @@ import {
   audioRecordingMenuItems,
   audioRecordingsCategory,
   batchDownloadAudioRecordingMenuItem,
-  downloadAudioRecordingMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
-import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { PageInfo } from "@helpers/page/pageInfo";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, Ids, toRelative } from "@interfaces/apiInterfaces";
-import { MenuItem, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
+import { MenuItem } from "@interfaces/menusInterfaces";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -34,7 +31,7 @@ const siteKey = "site";
 })
 class ListComponent
   extends PagedTableTemplate<TableRow, AudioRecording>
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
   public columns = [
     { name: "Recorded" },
@@ -48,7 +45,6 @@ class ListComponent
     duration: "durationSeconds",
     site: "siteId",
   };
-  public actions!: { play: MenuRoute; download: MenuLink; details: MenuRoute };
   protected api: AudioRecordingsService;
 
   public constructor(
@@ -72,21 +68,20 @@ class ListComponent
         ),
       route
     );
+
+    // Set default filter
+    this.filters.sorting = { orderBy: "recordedDate", direction: "asc" };
   }
 
-  public override ngOnInit(): void {
-    super.ngOnInit();
+  public ngAfterViewInit(): void {
+    super.ngAfterViewInit?.();
 
-    const pageData = new PageInfo(this.route.snapshot.data);
-    const menuRouteKey = Object.entries(audioRecordingMenuItems.list).find(
-      (value) => pageData.route === value[1].route
-    )[0];
+    if (this.failure || !this.table) {
+      return;
+    }
 
-    this.actions = {
-      play: listenRecordingMenuItem,
-      details: audioRecordingMenuItems.details[menuRouteKey],
-      download: downloadAudioRecordingMenuItem,
-    };
+    // Update table to show default sort
+    this.table.sorts = [{ prop: "recorded", dir: "asc" }];
   }
 
   public get projectId(): number | undefined {
@@ -138,37 +133,48 @@ interface TableRow {
 }
 
 // TODO Multiple components required as a hacky bypass to #1711
+
+/**
+ * SiteListComponent, this handles the list page for audio recording when
+ * accessed from a site page
+ */
 @Component({
   selector: "baw-audio-recordings-site",
   templateUrl: "./list.component.html",
 })
 class SiteListComponent extends ListComponent {}
+
+/**
+ * PointListComponent, this handles the list page for audio recordings when
+ * accessed from a point
+ */
 @Component({
   selector: "baw-audio-recordings-point",
   templateUrl: "./list.component.html",
 })
 class PointListComponent extends ListComponent {}
+
+/**
+ * RegionListComponent, this handles the list page for audio recordings when
+ * access from a region page
+ */
 @Component({
   selector: "baw-audio-recordings-region",
   templateUrl: "./list.component.html",
 })
 class RegionListComponent extends ListComponent {}
-@Component({
-  selector: "baw-audio-recordings-regions",
-  templateUrl: "./list.component.html",
-})
-class RegionsListComponent extends ListComponent {}
+
+/**
+ * ProjectListComponent, this handles the list page for audio recordings when
+ * access from a project page
+ */
 @Component({
   selector: "baw-audio-recordings-project",
   templateUrl: "./list.component.html",
 })
 class ProjectListComponent extends ListComponent {}
-@Component({
-  selector: "baw-audio-recordings-projects",
-  templateUrl: "./list.component.html",
-})
-class ProjectsListComponent extends ListComponent {}
 
+/** Link components with their menu item, and assign page info which is shared between all */
 function linkData(component: PageComponent, menuItem: MenuItem): void {
   component
     .linkComponentToPageInfo({
@@ -188,16 +194,12 @@ linkData(ListComponent, menuItems.base);
 linkData(SiteListComponent, menuItems.site);
 linkData(PointListComponent, menuItems.point);
 linkData(RegionListComponent, menuItems.region);
-linkData(RegionsListComponent, menuItems.regions);
 linkData(ProjectListComponent, menuItems.project);
-linkData(ProjectsListComponent, menuItems.projects);
 
 export {
   ListComponent,
   SiteListComponent,
   PointListComponent,
   RegionListComponent,
-  RegionsListComponent,
   ProjectListComponent,
-  ProjectsListComponent,
 };

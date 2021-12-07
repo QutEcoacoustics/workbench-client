@@ -1,12 +1,6 @@
 import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
-import {
-  projectMenuItem,
-  projectsMenuItem,
-} from "@components/projects/projects.menus";
-import {
-  regionMenuItem,
-  shallowRegionsMenuItem,
-} from "@components/regions/regions.menus";
+import { projectMenuItem } from "@components/projects/projects.menus";
+import { regionMenuItem } from "@components/regions/regions.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { siteMenuItem } from "@components/sites/sites.menus";
 import {
@@ -24,14 +18,18 @@ function makeRoute(menuItem: MenuRoute): StrongRoute {
   return menuItem.route.addFeatureModule(baseRoutePath);
 }
 
+// Create audio recording base route, and sub routes
 export const audioRecordingsRoutes = {
+  /** /audio_recordings */
   base: StrongRoute.newRoot().add(baseRoutePath),
+  /** /project/:projectId/site/:siteId/audio_recordings */
   site: makeRoute(siteMenuItem),
+  /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings */
   point: makeRoute(pointMenuItem),
+  /** /project/:projectId/region/:regionId/audio_recordings */
   region: makeRoute(regionMenuItem),
-  regions: makeRoute(shallowRegionsMenuItem),
+  /** /project/:projectId/audio_recordings */
   project: makeRoute(projectMenuItem),
-  projects: makeRoute(projectsMenuItem),
 };
 
 export const audioRecordingsCategory: Category = {
@@ -64,37 +62,34 @@ function makeDetailsMenuItem(
 }
 
 const listMenuItems = {
+  /** /audio_recordings */
   base: makeListMenuItem(audioRecordingsRoutes.base),
+  /** /project/:projectId/site/:siteId/audio_recordings */
   site: makeListMenuItem(audioRecordingsRoutes.site, siteMenuItem),
+  /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings */
   point: makeListMenuItem(audioRecordingsRoutes.point, pointMenuItem),
+  /** /project/:projectId/region/:regionId/audio_recordings */
   region: makeListMenuItem(audioRecordingsRoutes.region, regionMenuItem),
-  regions: makeListMenuItem(
-    audioRecordingsRoutes.regions,
-    shallowRegionsMenuItem
-  ),
+  /** /project/:projectId/audio_recordings */
   project: makeListMenuItem(audioRecordingsRoutes.project, projectMenuItem),
-  projects: makeListMenuItem(audioRecordingsRoutes.projects, projectsMenuItem),
 };
 
 const detailsMenuItems = {
+  /** /audio_recordings */
   base: makeDetailsMenuItem(audioRecordingsRoutes.base, listMenuItems.base),
+  /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId */
   site: makeDetailsMenuItem(audioRecordingsRoutes.site, listMenuItems.site),
+  /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings/:audioRecordingId */
   point: makeDetailsMenuItem(audioRecordingsRoutes.point, listMenuItems.point),
+  /** /project/:projectId/region/:regionId/audio_recordings/:audioRecordingId */
   region: makeDetailsMenuItem(
     audioRecordingsRoutes.region,
     listMenuItems.region
   ),
-  regions: makeDetailsMenuItem(
-    audioRecordingsRoutes.regions,
-    listMenuItems.regions
-  ),
+  /** /project/:projectId/audio_recordings/:audioRecordingId */
   project: makeDetailsMenuItem(
     audioRecordingsRoutes.project,
     listMenuItems.project
-  ),
-  projects: makeDetailsMenuItem(
-    audioRecordingsRoutes.projects,
-    listMenuItems.projects
   ),
 };
 

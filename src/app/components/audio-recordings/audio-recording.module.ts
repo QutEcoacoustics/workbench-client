@@ -7,18 +7,14 @@ import {
   DetailsComponent,
   PointDetailsComponent,
   ProjectDetailsComponent,
-  ProjectsDetailsComponent,
   RegionDetailsComponent,
-  RegionsDetailsComponent,
   SiteDetailsComponent,
 } from "./pages/details/details.component";
 import {
   ListComponent,
   PointListComponent,
   ProjectListComponent,
-  ProjectsListComponent,
   RegionListComponent,
-  RegionsListComponent,
   SiteListComponent,
 } from "./pages/list/list.component";
 
@@ -27,17 +23,13 @@ const components = [
   SiteListComponent,
   PointListComponent,
   RegionListComponent,
-  RegionsListComponent,
   ProjectListComponent,
-  ProjectsListComponent,
 
   DetailsComponent,
   SiteDetailsComponent,
   PointDetailsComponent,
   RegionDetailsComponent,
-  RegionsDetailsComponent,
   ProjectDetailsComponent,
-  ProjectsDetailsComponent,
 ];
 
 const routes = Object.values(audioRecordingsRoutes)

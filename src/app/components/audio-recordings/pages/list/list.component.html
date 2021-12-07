@@ -87,31 +87,27 @@
         <a
           class="btn btn-sm btn-highlight"
           placement="left"
-          [ngbTooltip]="actions.play.tooltip()"
-          [strongRoute]="actions.play.route"
-          [routeParams]="{ audioRecordingId: value.id }"
+          [ngbTooltip]="'Listen to this audio recording'"
+          [bawUrl]="value.playUrl"
         >
-          <fa-icon [icon]="actions.play.icon"></fa-icon>
+          <fa-icon [icon]="['fas', 'play']"></fa-icon>
         </a>
         <a
           class="btn btn-sm btn-default mx-1"
           placement="left"
-          [ngbTooltip]="actions.download.tooltip()"
-          [href]="
-            apiRoot + actions.download.uri({ audioRecordingId: value.id })
-          "
+          [ngbTooltip]="'Download audio recording'"
+          [href]="value.getDownloadUrl(apiRoot)"
         >
-          <fa-icon [icon]="actions.download.icon"></fa-icon>
+          <fa-icon [icon]="['fas', 'download']"></fa-icon>
         </a>
         <!-- Change this link dynamically -->
         <a
           class="btn btn-sm btn-default"
           placement="left"
-          [ngbTooltip]="actions.details.tooltip()"
-          [strongRoute]="actions.details.route"
-          [routeParams]="{ audioRecordingId: value.id }"
+          [ngbTooltip]="'View audio recording details'"
+          [bawUrl]="value.getDetailsUrl(projectId, region, site)"
         >
-          <fa-icon [icon]="actions.details.icon"></fa-icon>
+          <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
         </a>
       </ng-template>
     </ngx-datatable-column>

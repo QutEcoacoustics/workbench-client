@@ -57,8 +57,6 @@ export class ModelLinkComponent implements OnChanges {
     try {
       return isInstantiated(this.model.viewUrl);
     } catch (err) {
-      console.log("No viewURL");
-
       return false;
     }
   }

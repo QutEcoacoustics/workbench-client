@@ -72,37 +72,48 @@ class DetailsComponent extends PageComponent implements OnInit {
 }
 
 // TODO Multiple components required as a hacky bypass to #1711
+
+/**
+ * SiteDetailsComponent, this handles the details page for audio recording when
+ * accessed from a site page
+ */
 @Component({
   selector: "baw-audio-recording-site",
   templateUrl: "./details.component.html",
 })
 class SiteDetailsComponent extends DetailsComponent {}
+
+/**
+ * PointDetailsComponent, this handles the details page for audio recordings when
+ * accessed from a point
+ */
 @Component({
   selector: "baw-audio-recording-point",
   templateUrl: "./details.component.html",
 })
 class PointDetailsComponent extends DetailsComponent {}
+
+/**
+ * RegionDetailsComponent, this handles the details page for audio recordings when
+ * access from a region page
+ */
 @Component({
   selector: "baw-audio-recording-region",
   templateUrl: "./details.component.html",
 })
 class RegionDetailsComponent extends DetailsComponent {}
-@Component({
-  selector: "baw-audio-recording-regions",
-  templateUrl: "./details.component.html",
-})
-class RegionsDetailsComponent extends DetailsComponent {}
+
+/**
+ * ProjectDetailsComponent, this handles the details page for audio recordings when
+ * access from a project page
+ */
 @Component({
   selector: "baw-audio-recording-project",
   templateUrl: "./details.component.html",
 })
 class ProjectDetailsComponent extends DetailsComponent {}
-@Component({
-  selector: "baw-audio-recording-projects",
-  templateUrl: "./details.component.html",
-})
-class ProjectsDetailsComponent extends DetailsComponent {}
 
+/** Link components with their menu item, and assign page info which is shared between all */
 function linkData(component: PageComponent, menuItem: MenuItem): void {
   component
     .linkComponentToPageInfo({
@@ -129,16 +140,12 @@ linkData(DetailsComponent, menuItems.base);
 linkData(SiteDetailsComponent, menuItems.site);
 linkData(PointDetailsComponent, menuItems.point);
 linkData(RegionDetailsComponent, menuItems.region);
-linkData(RegionsDetailsComponent, menuItems.regions);
 linkData(ProjectDetailsComponent, menuItems.project);
-linkData(ProjectsDetailsComponent, menuItems.projects);
 
 export {
   DetailsComponent,
   SiteDetailsComponent,
   PointDetailsComponent,
   RegionDetailsComponent,
-  RegionsDetailsComponent,
   ProjectDetailsComponent,
-  ProjectsDetailsComponent,
 };

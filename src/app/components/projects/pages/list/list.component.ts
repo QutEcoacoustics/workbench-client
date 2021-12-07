@@ -17,7 +17,7 @@ import { List } from "immutable";
 export const projectsMenuItemActions = [
   newProjectMenuItem,
   requestProjectMenuItem,
-  audioRecordingMenuItems.list.projects,
+  audioRecordingMenuItems.list.base,
 ];
 
 @Component({

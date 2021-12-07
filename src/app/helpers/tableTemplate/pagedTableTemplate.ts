@@ -62,7 +62,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   public models: ResolvedModelList = {};
   public pageNumber: number;
   public filterEvent$ = new Subject<string>();
-  private filters: Filters<M>;
+  protected filters: Filters<M>;
 
   public constructor(
     protected api: ApiFilter<any, any>,

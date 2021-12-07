@@ -23,5 +23,5 @@ export const listenRecordingMenuItem = menuRoute({
     start,
     end,
   })),
-  tooltip: () => "Listen to recent audio recordings",
+  tooltip: () => "Listen to an audio recording",
 });
