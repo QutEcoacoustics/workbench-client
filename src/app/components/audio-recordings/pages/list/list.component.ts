@@ -25,6 +25,11 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
+/**
+ * List of all audio recordings, filtered by site, region, and project if
+ * exists in route parameters. This component can be accessed from:
+ * /audio_recordings
+ */
 @Component({
   selector: "baw-audio-recordings",
   templateUrl: "./list.component.html",
@@ -136,7 +141,8 @@ interface TableRow {
 
 /**
  * SiteListComponent, this handles the list page for audio recording when
- * accessed from a site page
+ * accessed from a site page. This component can be accessed from:
+ * /project/:projectId/site/:siteId/audio_recordings
  */
 @Component({
   selector: "baw-audio-recordings-site",
@@ -146,7 +152,8 @@ class AudioRecordingsListFilteredBySiteComponent extends AudioRecordingsListComp
 
 /**
  * PointListComponent, this handles the list page for audio recordings when
- * accessed from a point
+ * accessed from a point. This component can be accessed from:
+ * /project/:projectId/region/:regionId/site/:siteId/audio_recordings
  */
 @Component({
   selector: "baw-audio-recordings-point",
@@ -156,7 +163,8 @@ class AudioRecordingsListFilteredBySiteAndRegionComponent extends AudioRecording
 
 /**
  * RegionListComponent, this handles the list page for audio recordings when
- * access from a region page
+ * access from a region page. This component can be accessed from:
+ * /project/:projectId/region/:regionId/audio_recordings
  */
 @Component({
   selector: "baw-audio-recordings-region",
@@ -166,7 +174,8 @@ class AudioRecordingsListFilteredByRegionComponent extends AudioRecordingsListCo
 
 /**
  * ProjectListComponent, this handles the list page for audio recordings when
- * access from a project page
+ * access from a project page. This component can be accessed from:
+ * /project/:projectId/audio_recordings
  */
 @Component({
   selector: "baw-audio-recordings-project",
@@ -192,7 +201,10 @@ function linkData(component: PageComponent, menuItem: MenuItem): void {
 const menuItems = audioRecordingMenuItems.list;
 linkData(AudioRecordingsListComponent, menuItems.base);
 linkData(AudioRecordingsListFilteredBySiteComponent, menuItems.site);
-linkData(AudioRecordingsListFilteredBySiteAndRegionComponent, menuItems.point);
+linkData(
+  AudioRecordingsListFilteredBySiteAndRegionComponent,
+  menuItems.siteAndRegion
+);
 linkData(AudioRecordingsListFilteredByRegionComponent, menuItems.region);
 linkData(AudioRecordingsListFilteredByProjectComponent, menuItems.project);
 

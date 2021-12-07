@@ -132,7 +132,7 @@ export class AudioRecording
 
     if (site) {
       if (region) {
-        return routes.point.route.format(routeParams);
+        return routes.siteAndRegion.route.format(routeParams);
       } else {
         return routes.site.route.format(routeParams);
       }

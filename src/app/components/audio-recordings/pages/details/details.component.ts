@@ -32,6 +32,10 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
+/**
+ * Details of a special audio recording. This component can be accessed from:
+ * /audio_recordings/:audioRecordingId
+ */
 @Component({
   selector: "baw-audio-recording",
   templateUrl: "./details.component.html",
@@ -75,7 +79,8 @@ class AudioRecordingsDetailsComponent extends PageComponent implements OnInit {
 
 /**
  * SiteDetailsComponent, this handles the details page for audio recording when
- * accessed from a site page
+ * accessed from a site page. This component can be accessed from:
+ * /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId
  */
 @Component({
   selector: "baw-audio-recording-site",
@@ -85,7 +90,8 @@ class AudioRecordingsDetailsFilteredBySiteComponent extends AudioRecordingsDetai
 
 /**
  * PointDetailsComponent, this handles the details page for audio recordings when
- * accessed from a point
+ * accessed from a point. This component can be accessed from:
+ * /project/:projectId/region/:regionId/site/:siteId/audio_recordings/:audioRecordingId
  */
 @Component({
   selector: "baw-audio-recording-point",
@@ -95,7 +101,8 @@ class AudioRecordingsDetailsFilteredBySiteAndRegionComponent extends AudioRecord
 
 /**
  * RegionDetailsComponent, this handles the details page for audio recordings when
- * access from a region page
+ * access from a region page. This component can be accessed from:
+ * /project/:projectId/region/:regionId/audio_recordings/:audioRecordingId
  */
 @Component({
   selector: "baw-audio-recording-region",
@@ -105,7 +112,8 @@ class AudioRecordingsDetailsFilteredByRegionComponent extends AudioRecordingsDet
 
 /**
  * ProjectDetailsComponent, this handles the details page for audio recordings when
- * access from a project page
+ * access from a project page. This component can be accessed from:
+ * /project/:projectId/audio_recordings/:audioRecordingId
  */
 @Component({
   selector: "baw-audio-recording-project",
@@ -140,7 +148,7 @@ linkData(AudioRecordingsDetailsComponent, menuItems.base);
 linkData(AudioRecordingsDetailsFilteredBySiteComponent, menuItems.site);
 linkData(
   AudioRecordingsDetailsFilteredBySiteAndRegionComponent,
-  menuItems.point
+  menuItems.siteAndRegion
 );
 linkData(AudioRecordingsDetailsFilteredByRegionComponent, menuItems.region);
 linkData(AudioRecordingsDetailsFilteredByProjectComponent, menuItems.project);

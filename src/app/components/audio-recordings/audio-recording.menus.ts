@@ -25,7 +25,7 @@ export const audioRecordingsRoutes = {
   /** /project/:projectId/site/:siteId/audio_recordings */
   site: makeRoute(siteMenuItem),
   /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings */
-  point: makeRoute(pointMenuItem),
+  siteAndRegion: makeRoute(pointMenuItem),
   /** /project/:projectId/region/:regionId/audio_recordings */
   region: makeRoute(regionMenuItem),
   /** /project/:projectId/audio_recordings */
@@ -67,7 +67,10 @@ const listMenuItems = {
   /** /project/:projectId/site/:siteId/audio_recordings */
   site: makeListMenuItem(audioRecordingsRoutes.site, siteMenuItem),
   /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings */
-  point: makeListMenuItem(audioRecordingsRoutes.point, pointMenuItem),
+  siteAndRegion: makeListMenuItem(
+    audioRecordingsRoutes.siteAndRegion,
+    pointMenuItem
+  ),
   /** /project/:projectId/region/:regionId/audio_recordings */
   region: makeListMenuItem(audioRecordingsRoutes.region, regionMenuItem),
   /** /project/:projectId/audio_recordings */
@@ -80,7 +83,10 @@ const detailsMenuItems = {
   /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId */
   site: makeDetailsMenuItem(audioRecordingsRoutes.site, listMenuItems.site),
   /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings/:audioRecordingId */
-  point: makeDetailsMenuItem(audioRecordingsRoutes.point, listMenuItems.point),
+  siteAndRegion: makeDetailsMenuItem(
+    audioRecordingsRoutes.siteAndRegion,
+    listMenuItems.siteAndRegion
+  ),
   /** /project/:projectId/region/:regionId/audio_recordings/:audioRecordingId */
   region: makeDetailsMenuItem(
     audioRecordingsRoutes.region,

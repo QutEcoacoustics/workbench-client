@@ -27,7 +27,6 @@ const components = [
 
   AudioRecordingsDetailsComponent,
   AudioRecordingsDetailsFilteredBySiteComponent,
-  AudioRecordingsDetailsFilteredBySiteComponent,
   AudioRecordingsDetailsFilteredBySiteAndRegionComponent,
   AudioRecordingsDetailsFilteredByRegionComponent,
   AudioRecordingsDetailsFilteredByProjectComponent,

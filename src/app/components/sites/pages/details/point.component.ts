@@ -32,7 +32,7 @@ export const pointMenuItemActions = [
   editPointMenuItem,
   pointHarvestMenuItem,
   deletePointMenuItem,
-  audioRecordingMenuItems.list.point,
+  audioRecordingMenuItems.list.siteAndRegion,
 ];
 
 const projectKey = "project";
