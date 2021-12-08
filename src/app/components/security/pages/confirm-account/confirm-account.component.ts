@@ -50,9 +50,12 @@ class ConfirmPasswordComponent extends FormTemplate<ConfirmPassword> {
   }
 }
 
-ConfirmPasswordComponent.linkComponentToPageInfo({
-  category: securityCategory,
-  menus: { actions: List([loginMenuItem, ...loginMenuItemActions]) },
-}).andMenuRoute(confirmAccountMenuItem);
+ConfirmPasswordComponent.linkToRouterWith(
+  {
+    category: securityCategory,
+    menus: { actions: List([loginMenuItem, ...loginMenuItemActions]) },
+  },
+  confirmAccountMenuItem
+);
 
 export { ConfirmPasswordComponent };

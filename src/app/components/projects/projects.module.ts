@@ -38,6 +38,8 @@ const components = [
 
 const routes = projectsRoute.compileRoutes(getRouteConfigForPage);
 
+console.log(routes);
+
 @NgModule({
   declarations: components,
   imports: [MapModule, SharedModule, RouterModule.forChild(routes)],

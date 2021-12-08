@@ -11,9 +11,9 @@ import { PageComponent } from "@helpers/page/pageComponent";
 })
 class CitSciListenItemComponent extends PageComponent {}
 
-CitSciListenItemComponent.linkComponentToPageInfo({
-  category: citSciCategory,
-  fullscreen: true,
-}).andMenuRoute(citSciListenItemMenuItem);
+CitSciListenItemComponent.linkToRouterWith(
+  { category: citSciCategory, fullscreen: true },
+  citSciListenItemMenuItem
+);
 
 export { CitSciListenItemComponent };

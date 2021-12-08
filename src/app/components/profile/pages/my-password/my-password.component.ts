@@ -56,10 +56,13 @@ class MyPasswordComponent extends FormTemplate<User> {
   }
 }
 
-MyPasswordComponent.linkComponentToPageInfo({
-  category: myAccountCategory,
-  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
-  resolvers: { [userKey]: userResolvers.show },
-}).andMenuRoute(myPasswordMenuItem);
+MyPasswordComponent.linkToRouterWith(
+  {
+    category: myAccountCategory,
+    menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+    resolvers: { [userKey]: userResolvers.show },
+  },
+  myPasswordMenuItem
+);
 
 export { MyPasswordComponent };

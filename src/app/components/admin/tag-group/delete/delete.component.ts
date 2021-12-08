@@ -37,7 +37,8 @@ const tagGroupKey = "tagGroup";
 })
 class AdminTagGroupsDeleteComponent
   extends FormTemplate<TagGroup>
-  implements OnInit {
+  implements OnInit
+{
   public title: string;
 
   public constructor(
@@ -68,12 +69,15 @@ class AdminTagGroupsDeleteComponent
   }
 }
 
-AdminTagGroupsDeleteComponent.linkComponentToPageInfo({
-  category: adminTagGroupsCategory,
-  menus: {
-    actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
+AdminTagGroupsDeleteComponent.linkToRouterWith(
+  {
+    category: adminTagGroupsCategory,
+    menus: {
+      actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
+    },
+    resolvers: { [tagGroupKey]: tagGroupResolvers.show },
   },
-  resolvers: { [tagGroupKey]: tagGroupResolvers.show },
-}).andMenuRoute(adminDeleteTagGroupMenuItem);
+  adminDeleteTagGroupMenuItem
+);
 
 export { AdminTagGroupsDeleteComponent };

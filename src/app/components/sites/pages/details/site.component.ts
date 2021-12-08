@@ -70,16 +70,19 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
   }
 }
 
-SiteDetailsComponent.linkComponentToPageInfo({
-  category: sitesCategory,
-  menus: {
-    actions: List([projectMenuItem, ...siteMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+SiteDetailsComponent.linkToRouterWith(
+  {
+    category: sitesCategory,
+    menus: {
+      actions: List([projectMenuItem, ...siteMenuItemActions]),
+      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    },
+    resolvers: {
+      [projectKey]: projectResolvers.show,
+      [siteKey]: siteResolvers.show,
+    },
   },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-    [siteKey]: siteResolvers.show,
-  },
-}).andMenuRoute(siteMenuItem);
+  siteMenuItem
+);
 
 export { SiteDetailsComponent };

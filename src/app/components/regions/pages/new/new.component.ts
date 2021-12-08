@@ -62,10 +62,13 @@ class NewComponent extends FormTemplate<Region> {
   }
 }
 
-NewComponent.linkComponentToPageInfo({
-  category: projectCategory,
-  menus: { actions: List([projectMenuItem, ...projectMenuItemActions]) },
-  resolvers: { [projectKey]: projectResolvers.show },
-}).andMenuRoute(newRegionMenuItem);
+NewComponent.linkToRouterWith(
+  {
+    category: projectCategory,
+    menus: { actions: List([projectMenuItem, ...projectMenuItemActions]) },
+    resolvers: { [projectKey]: projectResolvers.show },
+  },
+  newRegionMenuItem
+);
 
 export { NewComponent };

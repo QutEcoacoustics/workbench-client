@@ -185,8 +185,8 @@ class AudioRecordingsListFilteredByProjectComponent extends AudioRecordingsListC
 
 /** Link components with their menu item, and assign page info which is shared between all */
 function linkData(component: PageComponent, menuItem: MenuItem): void {
-  component
-    .linkComponentToPageInfo({
+  component.linkToRouterWith(
+    {
       category: audioRecordingsCategory,
       menus: { actions: List([batchDownloadAudioRecordingMenuItem]) },
       resolvers: {
@@ -194,8 +194,9 @@ function linkData(component: PageComponent, menuItem: MenuItem): void {
         [regionKey]: regionResolvers.showOptional,
         [siteKey]: siteResolvers.showOptional,
       },
-    })
-    .andMenuRoute(menuItem);
+    },
+    menuItem
+  );
 }
 
 const menuItems = audioRecordingMenuItems.list;

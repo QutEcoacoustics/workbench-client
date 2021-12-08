@@ -90,9 +90,9 @@ class AdminThemeTemplateComponent
   }
 }
 
-AdminThemeTemplateComponent.linkComponentToPageInfo({
-  category: adminCategory,
-  menus: { actions: List(adminMenuItemActions) },
-}).andMenuRoute(adminThemeMenuItem);
+AdminThemeTemplateComponent.linkToRouterWith(
+  { category: adminCategory, menus: { actions: List(adminMenuItemActions) } },
+  adminThemeMenuItem
+);
 
 export { AdminThemeTemplateComponent };

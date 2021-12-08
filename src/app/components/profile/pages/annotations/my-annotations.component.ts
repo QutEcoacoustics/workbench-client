@@ -48,11 +48,14 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   }
 }
 
-MyAnnotationsComponent.linkComponentToPageInfo({
-  category: myAccountCategory,
-  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
-  resolvers: { [userKey]: userResolvers.show },
-}).andMenuRoute(myAnnotationsMenuItem);
+MyAnnotationsComponent.linkToRouterWith(
+  {
+    category: myAccountCategory,
+    menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+    resolvers: { [userKey]: userResolvers.show },
+  },
+  myAnnotationsMenuItem
+);
 
 export { MyAnnotationsComponent };
 

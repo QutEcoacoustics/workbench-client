@@ -48,13 +48,16 @@ class PointNewComponent extends SiteNewComponent {
   }
 }
 
-PointNewComponent.linkComponentToPageInfo({
-  category: pointsCategory,
-  menus: { actions: List([regionMenuItem, ...regionMenuItemActions]) },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-    [regionKey]: regionResolvers.show,
+PointNewComponent.linkToRouterWith(
+  {
+    category: pointsCategory,
+    menus: { actions: List([regionMenuItem, ...regionMenuItemActions]) },
+    resolvers: {
+      [projectKey]: projectResolvers.show,
+      [regionKey]: regionResolvers.show,
+    },
   },
-}).andMenuRoute(newPointMenuItem);
+  newPointMenuItem
+);
 
 export { PointNewComponent };

@@ -45,11 +45,14 @@ class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
   }
 }
 
-MyBookmarksComponent.linkComponentToPageInfo({
-  category: myAccountCategory,
-  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
-  resolvers: { [userKey]: userResolvers.show },
-}).andMenuRoute(myBookmarksMenuItem);
+MyBookmarksComponent.linkToRouterWith(
+  {
+    category: myAccountCategory,
+    menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+    resolvers: { [userKey]: userResolvers.show },
+  },
+  myBookmarksMenuItem
+);
 
 export { MyBookmarksComponent };
 

@@ -13,10 +13,13 @@ import { PageComponent } from "@helpers/page/pageComponent";
 })
 class ListenRecordingComponent extends PageComponent {}
 
-ListenRecordingComponent.linkComponentToPageInfo({
-  category: listenCategory,
-  fullscreen: true,
-  resolvers: { audioRecording: audioRecordingResolvers.show },
-}).andMenuRoute(listenRecordingMenuItem);
+ListenRecordingComponent.linkToRouterWith(
+  {
+    category: listenCategory,
+    fullscreen: true,
+    resolvers: { audioRecording: audioRecordingResolvers.show },
+  },
+  listenRecordingMenuItem
+);
 
 export { ListenRecordingComponent };

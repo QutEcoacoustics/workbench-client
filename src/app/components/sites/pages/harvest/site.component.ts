@@ -61,16 +61,19 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
   }
 }
 
-SiteHarvestComponent.linkComponentToPageInfo({
-  category: sitesCategory,
-  menus: {
-    actions: List([siteMenuItem, ...siteMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+SiteHarvestComponent.linkToRouterWith(
+  {
+    category: sitesCategory,
+    menus: {
+      actions: List([siteMenuItem, ...siteMenuItemActions]),
+      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    },
+    resolvers: {
+      [projectKey]: projectResolvers.show,
+      [siteKey]: siteResolvers.show,
+    },
   },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-    [siteKey]: siteResolvers.show,
-  },
-}).andMenuRoute(siteHarvestMenuItem);
+  siteHarvestMenuItem
+);
 
 export { SiteHarvestComponent };

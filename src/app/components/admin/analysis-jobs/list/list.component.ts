@@ -17,7 +17,8 @@ import { adminAnalysisJobsCategory } from "../analysis-jobs.menus";
 })
 class AdminAnalysisJobsComponent
   extends PagedTableTemplate<TableRow, AnalysisJob>
-  implements OnInit {
+  implements OnInit
+{
   public columns = [
     { name: "Id" },
     { name: "Name" },
@@ -52,10 +53,13 @@ class AdminAnalysisJobsComponent
   }
 }
 
-AdminAnalysisJobsComponent.linkComponentToPageInfo({
-  category: adminAnalysisJobsCategory,
-  menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
-}).andMenuRoute(adminAnalysisJobsMenuItem);
+AdminAnalysisJobsComponent.linkToRouterWith(
+  {
+    category: adminAnalysisJobsCategory,
+    menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
+  },
+  adminAnalysisJobsMenuItem
+);
 
 export { AdminAnalysisJobsComponent };
 

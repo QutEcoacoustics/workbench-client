@@ -77,16 +77,19 @@ class EditComponent extends FormTemplate<Region> implements OnInit {
   }
 }
 
-EditComponent.linkComponentToPageInfo({
-  category: regionsCategory,
-  menus: {
-    actions: List([regionMenuItem, ...regionMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+EditComponent.linkToRouterWith(
+  {
+    category: regionsCategory,
+    menus: {
+      actions: List([regionMenuItem, ...regionMenuItemActions]),
+      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    },
+    resolvers: {
+      [projectKey]: projectResolvers.show,
+      [regionKey]: regionResolvers.show,
+    },
   },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-    [regionKey]: regionResolvers.show,
-  },
-}).andMenuRoute(editRegionMenuItem);
+  editRegionMenuItem
+);
 
 export { EditComponent };

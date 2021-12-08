@@ -12,9 +12,9 @@ import { PageComponent } from "@helpers/page/pageComponent";
 })
 class VisualizeComponent extends PageComponent {}
 
-VisualizeComponent.linkComponentToPageInfo({
-  category: visualizeCategory,
-  fullscreen: true,
-}).andMenuRoute(visualizeMenuItem);
+VisualizeComponent.linkToRouterWith(
+  { category: visualizeCategory, fullscreen: true },
+  visualizeMenuItem
+);
 
 export { VisualizeComponent };

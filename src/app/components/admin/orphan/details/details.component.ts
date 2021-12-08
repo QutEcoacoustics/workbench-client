@@ -55,13 +55,16 @@ class AdminOrphanComponent
   }
 }
 
-AdminOrphanComponent.linkComponentToPageInfo({
-  category: adminOrphansCategory,
-  menus: {
-    actions: List([adminOrphansMenuItem, adminOrphanMenuItem]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+AdminOrphanComponent.linkToRouterWith(
+  {
+    category: adminOrphansCategory,
+    menus: {
+      actions: List([adminOrphansMenuItem, adminOrphanMenuItem]),
+      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    },
+    resolvers: { [siteKey]: shallowSiteResolvers.show },
   },
-  resolvers: { [siteKey]: shallowSiteResolvers.show },
-}).andMenuRoute(adminOrphanMenuItem);
+  adminOrphanMenuItem
+);
 
 export { AdminOrphanComponent };

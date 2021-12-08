@@ -37,17 +37,20 @@ class PointEditComponent extends SiteEditComponent {
   }
 }
 
-PointEditComponent.linkComponentToPageInfo({
-  category: pointsCategory,
-  menus: {
-    actions: List([pointMenuItem, ...pointMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+PointEditComponent.linkToRouterWith(
+  {
+    category: pointsCategory,
+    menus: {
+      actions: List([pointMenuItem, ...pointMenuItemActions]),
+      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    },
+    resolvers: {
+      [projectKey]: projectResolvers.show,
+      [regionKey]: regionResolvers.show,
+      [siteKey]: siteResolvers.show,
+    },
   },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-    [regionKey]: regionResolvers.show,
-    [siteKey]: siteResolvers.show,
-  },
-}).andMenuRoute(editPointMenuItem);
+  editPointMenuItem
+);
 
 export { PointEditComponent };

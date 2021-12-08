@@ -12,8 +12,9 @@ class SendAudioComponent extends PageComponent {
   public page = CMS.dataUpload;
 }
 
-SendAudioComponent.linkComponentToPageInfo({
-  category: sendAudioCategory,
-}).andMenuRoute(sendAudioMenuItem);
+SendAudioComponent.linkToRouterWith(
+  { category: sendAudioCategory },
+  sendAudioMenuItem
+);
 
 export { SendAudioComponent };

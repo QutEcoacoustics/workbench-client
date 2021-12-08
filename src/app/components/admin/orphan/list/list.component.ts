@@ -16,7 +16,8 @@ import { adminOrphansCategory, adminOrphansMenuItem } from "../orphans.menus";
 })
 class AdminOrphansComponent
   extends PagedTableTemplate<TableRow, Site>
-  implements OnInit {
+  implements OnInit
+{
   public assignSitesLabel = assignSiteMenuItem.label;
 
   public constructor(api: ShallowSitesService) {
@@ -42,12 +43,15 @@ class AdminOrphansComponent
   }
 }
 
-AdminOrphansComponent.linkComponentToPageInfo({
-  category: adminOrphansCategory,
-  menus: {
-    actions: List([adminDashboardMenuItem, ...adminMenuItemActions]),
+AdminOrphansComponent.linkToRouterWith(
+  {
+    category: adminOrphansCategory,
+    menus: {
+      actions: List([adminDashboardMenuItem, ...adminMenuItemActions]),
+    },
   },
-}).andMenuRoute(adminOrphansMenuItem);
+  adminOrphansMenuItem
+);
 
 export { AdminOrphansComponent };
 

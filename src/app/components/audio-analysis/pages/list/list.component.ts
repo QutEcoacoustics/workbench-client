@@ -14,9 +14,12 @@ import { List } from "immutable";
 })
 class AudioAnalysesComponent extends PageComponent {}
 
-AudioAnalysesComponent.linkComponentToPageInfo({
-  category: audioAnalysisCategory,
-  menus: { actions: List([newAudioAnalysisMenuItem]) },
-}).andMenuRoute(audioAnalysesMenuItem);
+AudioAnalysesComponent.linkToRouterWith(
+  {
+    category: audioAnalysisCategory,
+    menus: { actions: List([newAudioAnalysisMenuItem]) },
+  },
+  audioAnalysesMenuItem
+);
 
 export { AudioAnalysesComponent };

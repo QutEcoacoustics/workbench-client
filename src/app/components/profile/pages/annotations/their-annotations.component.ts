@@ -28,10 +28,13 @@ class TheirAnnotationsComponent extends MyAnnotationsComponent {
   }
 }
 
-TheirAnnotationsComponent.linkComponentToPageInfo({
-  category: theirProfileCategory,
-  menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
-  resolvers: { [accountKey]: accountResolvers.show },
-}).andMenuRoute(theirAnnotationsMenuItem);
+TheirAnnotationsComponent.linkToRouterWith(
+  {
+    category: theirProfileCategory,
+    menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
+    resolvers: { [accountKey]: accountResolvers.show },
+  },
+  theirAnnotationsMenuItem
+);
 
 export { TheirAnnotationsComponent };

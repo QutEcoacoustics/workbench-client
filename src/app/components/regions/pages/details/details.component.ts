@@ -141,16 +141,19 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
   }
 }
 
-DetailsComponent.linkComponentToPageInfo({
-  category: regionsCategory,
-  menus: {
-    actions: List([projectMenuItem, ...regionMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+DetailsComponent.linkToRouterWith(
+  {
+    category: regionsCategory,
+    menus: {
+      actions: List([projectMenuItem, ...regionMenuItemActions]),
+      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    },
+    resolvers: {
+      [projectKey]: projectResolvers.show,
+      [regionKey]: regionResolvers.show,
+    },
   },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-    [regionKey]: regionResolvers.show,
-  },
-}).andMenuRoute(regionMenuItem);
+  regionMenuItem
+);
 
 export { DetailsComponent };

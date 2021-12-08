@@ -19,7 +19,8 @@ class PageNotFoundComponent extends PageComponent {
   public reportProblem = reportProblemMenuItem.route;
 }
 
-PageNotFoundComponent.linkComponentToPageInfo({
-  category: homeCategory,
-}).andMenuRoute(pageNotFoundMenuItem);
+PageNotFoundComponent.linkToRouterWith(
+  { category: homeCategory },
+  pageNotFoundMenuItem
+);
 export { PageNotFoundComponent };

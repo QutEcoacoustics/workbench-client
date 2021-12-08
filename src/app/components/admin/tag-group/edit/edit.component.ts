@@ -71,13 +71,16 @@ class AdminTagGroupsEditComponent
   }
 }
 
-AdminTagGroupsEditComponent.linkComponentToPageInfo({
-  category: adminTagGroupsCategory,
-  menus: {
-    actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+AdminTagGroupsEditComponent.linkToRouterWith(
+  {
+    category: adminTagGroupsCategory,
+    menus: {
+      actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
+      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    },
+    resolvers: { [tagGroupKey]: tagGroupResolvers.show },
   },
-  resolvers: { [tagGroupKey]: tagGroupResolvers.show },
-}).andMenuRoute(adminEditTagGroupMenuItem);
+  adminEditTagGroupMenuItem
+);
 
 export { AdminTagGroupsEditComponent };

@@ -12,8 +12,9 @@ import { PageComponent } from "@helpers/page/pageComponent";
 })
 class NewAudioAnalysisComponent extends PageComponent {}
 
-NewAudioAnalysisComponent.linkComponentToPageInfo({
-  category: audioAnalysisCategory,
-}).andMenuRoute(newAudioAnalysisMenuItem);
+NewAudioAnalysisComponent.linkToRouterWith(
+  { category: audioAnalysisCategory },
+  newAudioAnalysisMenuItem
+);
 
 export { NewAudioAnalysisComponent };

@@ -78,9 +78,12 @@ class ListComponent extends PaginationTemplate<Project> {
   }
 }
 
-ListComponent.linkComponentToPageInfo({
-  category: projectsCategory,
-  menus: { actions: List(projectsMenuItemActions) },
-}).andMenuRoute(projectsMenuItem);
+ListComponent.linkToRouterWith(
+  {
+    category: projectsCategory,
+    menus: { actions: List(projectsMenuItemActions) },
+  },
+  projectsMenuItem
+);
 
 export { ListComponent };

@@ -46,11 +46,14 @@ class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   }
 }
 
-MyProjectsComponent.linkComponentToPageInfo({
-  category: myAccountCategory,
-  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
-  resolvers: { [userKey]: userResolvers.show },
-}).andMenuRoute(myProjectsMenuItem);
+MyProjectsComponent.linkToRouterWith(
+  {
+    category: myAccountCategory,
+    menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+    resolvers: { [userKey]: userResolvers.show },
+  },
+  myProjectsMenuItem
+);
 
 export { MyProjectsComponent };
 

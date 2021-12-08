@@ -66,17 +66,20 @@ class PointDetailsComponent extends SiteDetailsComponent implements OnInit {
   }
 }
 
-PointDetailsComponent.linkComponentToPageInfo({
-  category: pointsCategory,
-  menus: {
-    actions: List([regionMenuItem, ...pointMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+PointDetailsComponent.linkToRouterWith(
+  {
+    category: pointsCategory,
+    menus: {
+      actions: List([regionMenuItem, ...pointMenuItemActions]),
+      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    },
+    resolvers: {
+      [projectKey]: projectResolvers.show,
+      [regionKey]: regionResolvers.show,
+      [siteKey]: siteResolvers.show,
+    },
   },
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-    [regionKey]: regionResolvers.show,
-    [siteKey]: siteResolvers.show,
-  },
-}).andMenuRoute(pointMenuItem);
+  pointMenuItem
+);
 
 export { PointDetailsComponent };

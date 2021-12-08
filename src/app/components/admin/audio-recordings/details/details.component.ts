@@ -58,13 +58,19 @@ class AdminAudioRecordingComponent
   }
 }
 
-AdminAudioRecordingComponent.linkComponentToPageInfo({
-  category: adminAudioRecordingsCategory,
-  menus: {
-    actions: List([adminAudioRecordingsMenuItem, adminAudioRecordingMenuItem]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+AdminAudioRecordingComponent.linkToRouterWith(
+  {
+    category: adminAudioRecordingsCategory,
+    menus: {
+      actions: List([
+        adminAudioRecordingsMenuItem,
+        adminAudioRecordingMenuItem,
+      ]),
+      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    },
+    resolvers: { [audioRecordingKey]: audioRecordingResolvers.show },
   },
-  resolvers: { [audioRecordingKey]: audioRecordingResolvers.show },
-}).andMenuRoute(adminAudioRecordingMenuItem);
+  adminAudioRecordingMenuItem
+);
 
 export { AdminAudioRecordingComponent };

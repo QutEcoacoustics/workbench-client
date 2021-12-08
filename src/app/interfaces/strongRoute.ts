@@ -5,10 +5,7 @@ import { Option } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 
-export type RouteConfigCallback = (
-  component: Option<Type<PageComponent>>,
-  config: Partial<Route>
-) => Route;
+export type RouteConfigCallback = (strongRoute: StrongRoute) => Route;
 
 export type RouteParams = Record<string, string | number>;
 
@@ -319,7 +316,7 @@ export class StrongRoute {
     };
 
     const recursiveAdd = (current: StrongRoute): void => {
-      const route = callback(current.pageComponent, current.angularRouteConfig);
+      const route = callback(current);
       current.children.forEach(recursiveAdd);
 
       // Ignore root route with no component

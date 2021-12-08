@@ -198,13 +198,16 @@ class DetailsComponent
   }
 }
 
-DetailsComponent.linkComponentToPageInfo({
-  category: projectCategory,
-  menus: {
-    actions: List([projectsMenuItem, ...projectMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+DetailsComponent.linkToRouterWith(
+  {
+    category: projectCategory,
+    menus: {
+      actions: List([projectsMenuItem, ...projectMenuItemActions]),
+      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    },
+    resolvers: { [projectKey]: projectResolvers.show },
   },
-  resolvers: { [projectKey]: projectResolvers.show },
-}).andMenuRoute(projectMenuItem);
+  projectMenuItem
+);
 
 export { DetailsComponent };

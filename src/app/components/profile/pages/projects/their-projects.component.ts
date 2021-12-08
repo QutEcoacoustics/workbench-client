@@ -37,10 +37,13 @@ class TheirProjectsComponent extends MyProjectsComponent {
   }
 }
 
-TheirProjectsComponent.linkComponentToPageInfo({
-  category: theirProfileCategory,
-  menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
-  resolvers: { [accountKey]: accountResolvers.show },
-}).andMenuRoute(theirProjectsMenuItem);
+TheirProjectsComponent.linkToRouterWith(
+  {
+    category: theirProfileCategory,
+    menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
+    resolvers: { [accountKey]: accountResolvers.show },
+  },
+  theirProjectsMenuItem
+);
 
 export { TheirProjectsComponent };
