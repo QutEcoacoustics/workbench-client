@@ -5,10 +5,9 @@ import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { PipesModule } from "@pipes/pipes.module";
 import { IconsModule } from "@shared/icons/icons.module";
 import { LoadingModule } from "@shared/loading/loading.module";
-import { GhostUserHintComponent } from "./ghost-user-hint/ghost-user-hint.component";
 import { UserLinkComponent } from "./user-link/user-link.component";
 
-const components = [UserLinkComponent, GhostUserHintComponent];
+const components = [UserLinkComponent];
 
 @NgModule({
   declarations: components,
