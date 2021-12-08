@@ -36,17 +36,7 @@ import { DateTime } from "luxon";
 
         <!-- User details -->
         <div class="body">
-          <!-- Ghost User -->
-          <ng-container *ngIf="user | isGhostUser; else isUser">
-            <span id="ghost-username" class="heading">{{ user.userName }}</span>
-          </ng-container>
-
-          <!-- Normal User -->
-          <ng-template #isUser>
-            <a id="username" class="heading" [bawUrl]="user.viewUrl">
-              {{ user.userName }}
-            </a>
-          </ng-template>
+          <baw-user-link class="heading" [user]="user"></baw-user-link>
 
           <!-- Timestamp -->
           <br />

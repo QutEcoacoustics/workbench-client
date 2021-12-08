@@ -34,12 +34,7 @@
     <ngx-datatable-column name="Duration"> </ngx-datatable-column>
     <ngx-datatable-column name="Uploader">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <!-- Create link to user -->
-        <baw-user-link [user]="value.uploader">
-          <span id="user">{{ value.uploader.userName }}</span>
-          <span id="ghost">Unknown User</span>
-          <span id="unresolved"><baw-loading size="sm"></baw-loading></span>
-        </baw-user-link>
+        <baw-user-link [user]="value.uploader"></baw-user-link>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Site">
@@ -86,24 +81,26 @@
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a
           class="btn btn-sm btn-highlight"
-          ngbTooltip="Play the audio recording"
           placement="left"
+          [ngbTooltip]="'Listen to this audio recording'"
           [bawUrl]="value.playUrl"
         >
           <fa-icon [icon]="['fas', 'play']"></fa-icon>
         </a>
         <a
-          class="btn btn-sm btn-primary mx-1"
-          ngbTooltip="(UNDER CONSTRUCTION) Download the audio recording"
+          class="btn btn-sm btn-default mx-1"
           placement="left"
+          [ngbTooltip]="'Download audio recording'"
+          [href]="value.getDownloadUrl(apiRoot)"
         >
           <fa-icon [icon]="['fas', 'download']"></fa-icon>
         </a>
+        <!-- Change this link dynamically -->
         <a
           class="btn btn-sm btn-default"
-          ngbTooltip="View details about the audio recording"
           placement="left"
-          [bawUrl]="value.getDetailsUrl(project, region, site)"
+          [ngbTooltip]="'View audio recording details'"
+          [bawUrl]="value.getDetailsUrl(projectId, region, site)"
         >
           <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
         </a>

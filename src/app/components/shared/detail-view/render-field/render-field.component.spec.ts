@@ -2,40 +2,43 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
-import {
-  AbstractModel,
-  unknownViewUrl,
-  UnresolvedModel,
-} from "@models/AbstractModel";
+import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
+import { User } from "@models/User";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
+import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
+import { CheckboxModule } from "@shared/checkbox/checkbox.module";
+import { LoadingModule } from "@shared/loading/loading.module";
 import { modelData } from "@test/helpers/faker";
-import { assertImage, assertUrl } from "@test/helpers/html";
+import { assertImage } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Subject } from "rxjs";
+import { ModelLinkComponent } from "../model-link/model-link.component";
 import { ModelView, RenderFieldComponent } from "./render-field.component";
 
 describe("RenderFieldComponent", () => {
   let spec: SpectatorHost<RenderFieldComponent>;
   const createComponent = createHostFactory({
     component: RenderFieldComponent,
-    declarations: [CheckboxComponent],
+    declarations: [CheckboxComponent, ModelLinkComponent],
     imports: [
-      RouterTestingModule,
-      DirectivesModule,
       AuthenticatedImageModule,
+      CheckboxModule,
+      DirectivesModule,
+      LoadingModule,
       MockBawApiModule,
+      RouterTestingModule,
+      PipesModule,
     ],
   });
 
   const getElement = {
-    loading: () => getElement.normal(),
     code: () => spec.queryAll<HTMLPreElement>("dl #code"),
     normal: () => spec.queryAll<HTMLParagraphElement>("dl #plain"),
-    model: () =>
-      spec.queryAll<HTMLAnchorElement | HTMLSpanElement>("dl #model"),
+    model: () => spec.queryAll<HTMLSpanElement>("#model"),
+    ghost: () => spec.queryAll<HTMLSpanElement>("#ghost"),
     image: () => spec.queryAll<HTMLImageElement>("dl #image"),
     checkbox: () => spec.queryAll<HTMLElement>("dl #checkbox"),
     values: () =>
@@ -49,6 +52,28 @@ describe("RenderFieldComponent", () => {
     );
   }
 
+  function assertNotLoading(value?: HTMLElement) {
+    value ??= getElement.normal()[0];
+
+    if (!value) {
+      expect(value).toBeFalsy();
+    } else {
+      expect(value).not.toContainText("(loading)");
+    }
+  }
+
+  function assertLoading(value?: HTMLElement) {
+    expect(value ?? getElement.normal()[0]).toHaveExactText("(loading)");
+  }
+
+  function assertNoValue(value?: HTMLElement) {
+    expect(value ?? getElement.normal()[0]).toHaveExactText("(no value)");
+  }
+
+  function assertError(value?: HTMLElement) {
+    expect(value ?? getElement.normal()[0]).toHaveExactText("(error)");
+  }
+
   describe("undefined input", () => {
     it("should handle undefined value", () => {
       setup(undefined);
@@ -60,8 +85,7 @@ describe("RenderFieldComponent", () => {
     it("should display undefined value", () => {
       setup(undefined);
       spec.detectChanges();
-      const value = getElement.normal()[0];
-      expect(value.innerText.trim()).toBe("(no value)");
+      assertNoValue();
     });
   });
 
@@ -85,7 +109,7 @@ describe("RenderFieldComponent", () => {
       spyOnIsImage();
       spec.detectChanges();
       const value = getElement.normal()[0];
-      expect(value.innerText.trim()).toBe("");
+      expect(value).toHaveExactText("");
     });
 
     it("should display string value", () => {
@@ -93,7 +117,7 @@ describe("RenderFieldComponent", () => {
       spyOnIsImage();
       spec.detectChanges();
       const value = getElement.normal()[0];
-      expect(value.innerText.trim()).toBe("testing");
+      expect(value).toHaveExactText("testing");
     });
   });
 
@@ -109,14 +133,14 @@ describe("RenderFieldComponent", () => {
       setup(0);
       spec.detectChanges();
       const value = getElement.normal()[0];
-      expect(value.innerText.trim()).toBe("0");
+      expect(value).toHaveExactText("0");
     });
 
     it("should display number value", () => {
       setup(1);
       spec.detectChanges();
       const value = getElement.normal()[0];
-      expect(value.innerText.trim()).toBe("1");
+      expect(value).toHaveExactText("1");
     });
   });
 
@@ -164,25 +188,24 @@ describe("RenderFieldComponent", () => {
       setup({});
       spec.detectChanges();
       const value = getElement.code()[0];
-      expect(value.innerText.trim()).toBe("{}");
+      expect(value).toHaveExactText("{}");
     });
 
     it("should display object value", () => {
       setup({ value1: 42, value2: "test" });
       spec.detectChanges();
       const value = getElement.code()[0];
-      expect(value.innerText.trim()).toBe('{"value1":42,"value2":"test"}');
+      expect(value).toHaveExactText('{"value1":42,"value2":"test"}');
     });
 
-    it("should display object error", () => {
+    it("should display object error when JSON stringy fails", () => {
       // Create cyclic object should fail JSON.stringify
       const cyclicObject = { a: [] };
       cyclicObject.a.push(cyclicObject);
 
       setup(cyclicObject);
       spec.detectChanges();
-      const value = getElement.code()[0];
-      expect(value.innerText.trim()).toBe("(error)");
+      assertError();
     });
   });
 
@@ -212,7 +235,7 @@ describe("RenderFieldComponent", () => {
 
     it("should display DateTime value", () => {
       const value = getElement.normal()[0];
-      expect(value.innerText.trim()).toBe("toISO (toRelative)");
+      expect(value).toHaveExactText("toISO (toRelative)");
     });
   });
 
@@ -232,7 +255,7 @@ describe("RenderFieldComponent", () => {
 
     it("should display Duration value", () => {
       const value = getElement.normal()[0];
-      expect(value.innerText.trim()).toBe(
+      expect(value).toHaveExactText(
         "PT1H10M50S (1 hour, 10 minutes, 50 seconds)"
       );
     });
@@ -252,81 +275,81 @@ describe("RenderFieldComponent", () => {
       spec.detectChanges();
       const values = getElement.values();
       expect(getElement.values().length).toBe(1);
-      expect(values[0].innerText.trim()).toBe("(no value)");
+      expect(values[0]).toHaveExactText("(no value)");
     });
 
     it("should display array values", () => {
       setup(["test 1", 2, { testing: "value" }]);
       spec.detectChanges();
       const values = getElement.values();
-      expect(values[0].innerText.trim()).toBe("test 1");
-      expect(values[1].innerText.trim()).toBe("2");
-      expect(values[2].innerText.trim()).toBe('{"testing":"value"}');
+      expect(values[0]).toHaveExactText("test 1");
+      expect(values[1]).toHaveExactText("2");
+      expect(values[2]).toHaveExactText('{"testing":"value"}');
     });
   });
 
   describe("Blob input", () => {
-    let spy: jasmine.SpyObj<FileReader>;
+    function setBlob(text: string, error?: string) {
+      let resolve: () => void;
+      const promise = new Promise<void>((_resolve) => {
+        resolve = _resolve;
+      });
 
-    function setBlob(shouldReturn: boolean, text?: string) {
-      spy = jasmine.createSpyObj("FileReader", [
-        "readAsText",
-        "addEventListener",
-        "abort",
-        "onerror",
-      ]);
-      spy.readAsText.and.stub();
+      const blob = new Blob([text], { type: "text/plain" });
+      spyOn(blob, "text").and.callFake(
+        () =>
+          new Promise<string>((_resolve, _reject) => {
+            resolve();
 
-      if (shouldReturn) {
-        spy.addEventListener.and.callFake(
-          (_, listener: (...args: any[]) => void) =>
-            listener({ target: { result: text } })
-        );
-      }
+            if (text) {
+              _resolve(text);
+            } else {
+              _reject(error);
+            }
+          })
+      );
 
-      spyOn(window, "FileReader").and.returnValue(spy);
-      setup(new Blob([text], { type: "text/plain" }));
+      setup(blob);
       spec.detectChanges();
+      return promise;
     }
 
-    it("should display loading while blob incomplete", () => {
-      setBlob(false);
-      const value = getElement.loading()[0];
-      expect(value.innerText.trim()).toBe("(loading)");
+    it("should display loading while blob incomplete", async () => {
+      const blob = new Blob([]);
+      spyOn(blob, "text").and.stub();
+      setup(blob);
+      spec.detectChanges();
+      assertLoading();
     });
 
-    it("should hide loading when blob complete", () => {
-      setBlob(true, "testing");
-      const value = getElement.loading()[0];
-      expect(value).toBeFalsy();
+    it("should hide loading when blob complete", async () => {
+      await setBlob("testing");
+      spec.detectChanges();
+      assertNotLoading();
     });
 
-    it("should handle Blob value", () => {
-      setBlob(true, "testing");
+    it("should handle Blob value", async () => {
+      await setBlob("testing");
+      spec.detectChanges();
       expect(getElement.values().length).toBe(1);
       expect(getElement.code().length).toBe(1);
     });
 
-    it("should display text output", () => {
-      setBlob(true, "testing");
-      const value = getElement.code()[0];
-      expect(value.innerText.trim()).toBe("testing");
-    });
-
-    it("should handle error output", () => {
-      setBlob(true, "testing");
-      spy.onerror(undefined);
+    it("should display text output", async () => {
+      await setBlob("testing");
       spec.detectChanges();
       const value = getElement.code()[0];
-      expect(value.innerText.trim()).toBe("(error)");
+      expect(value).toHaveExactText("testing");
+    });
+
+    it("should handle error output", async () => {
+      await setBlob(undefined, "failure");
+      spec.detectChanges();
+      assertError();
     });
   });
 
   describe("AbstractModel input", () => {
-    const throwError = () => {
-      throw new Error();
-    };
-
     function createModel(
       data: any,
       link: () => string = () => "",
@@ -342,80 +365,30 @@ describe("RenderFieldComponent", () => {
       return new MockModel(data);
     }
 
-    it("should handle unresolved model", () => {
+    it("should display loading for an unresolved model", () => {
       setup(UnresolvedModel.one);
+      spec.detectChanges();
+      assertLoading();
+    });
+
+    it("should create a model link", () => {
+      setup(createModel({ id: 1 }));
+      spec.detectChanges();
+      expect(spec.query("baw-model-link")).toBeTruthy();
+    });
+
+    it("should display ghost user", () => {
+      setup(User.unknownUser);
       spec.detectChanges();
       expect(getElement.values().length).toBe(1);
-      expect(getElement.normal().length).toBe(1);
+      expect(getElement.ghost().length).toBe(1);
     });
 
-    it("should display unresolved model", () => {
-      setup(UnresolvedModel.one);
-      spec.detectChanges();
-      const value = getElement.normal()[0];
-      expect(value.innerText.trim()).toBe("(loading)");
-    });
-
-    it("should handle abstract model", () => {
+    it("should display abstract model", () => {
       setup(createModel({ id: 1 }));
       spec.detectChanges();
       expect(getElement.values().length).toBe(1);
       expect(getElement.model().length).toBe(1);
-    });
-
-    it("should display default model toString()", () => {
-      setup(createModel({ id: 1 }));
-      spec.detectChanges();
-      const value = getElement.model()[0];
-      expect(value.innerText.trim()).toBe("Mock Model: 1");
-    });
-
-    it("should display custom model toString()", () => {
-      setup(
-        createModel(
-          { id: 1, name: "custom model" },
-          undefined,
-          (model) => model.name
-        )
-      );
-      spec.detectChanges();
-      const value = getElement.model()[0];
-      expect(value.innerText.trim()).toBe("custom model");
-    });
-
-    it("should display model if viewUrl throws error", () => {
-      setup(
-        createModel(
-          { id: 1, name: "custom model" },
-          throwError,
-          (model) => model.name
-        )
-      );
-      spec.detectChanges();
-      const value = getElement.model()[0];
-      expect(value.innerText.trim()).toBe("custom model");
-    });
-
-    it("should create model link if viewUrl is valid", () => {
-      setup(createModel({ id: 1 }, () => "/broken_link"));
-      spec.detectChanges();
-      const value = getElement.model()[0];
-      expect(value).toBeInstanceOf(HTMLAnchorElement);
-      assertUrl(value, "/broken_link");
-    });
-
-    it("should not create model link if viewUrl returns unknownViewUrl", () => {
-      setup(createModel({ id: 1 }, () => unknownViewUrl));
-      spec.detectChanges();
-      const value = getElement.model()[0];
-      expect(value).toBeInstanceOf(HTMLSpanElement);
-    });
-
-    it("should not create model link if viewUrl throws error", () => {
-      setup(createModel({ id: 1 }, throwError));
-      spec.detectChanges();
-      const value = getElement.model()[0];
-      expect(value).toBeInstanceOf(HTMLSpanElement);
     });
   });
 
@@ -439,22 +412,19 @@ describe("RenderFieldComponent", () => {
     it("should display loading", () => {
       setup(createObservable(false));
       spec.detectChanges();
-      const value = getElement.loading()[0];
-      expect(value.innerText.trim()).toBe("(loading)");
+      assertLoading();
     });
 
     it("should hide loading when observable returns", () => {
       setup(createObservable(true, "value"));
       spec.detectChanges();
-      const value = getElement.loading()[0];
-      expect(value.innerText.trim()).not.toBe("(loading)");
+      assertNotLoading();
     });
 
     it("should hide loading when observable errors", () => {
       setup(createObservable(true, undefined, { error: true }));
       spec.detectChanges();
-      const value = getElement.loading()[0];
-      expect(value.innerText.trim()).not.toBe("(loading)");
+      assertNotLoading();
     });
 
     it("should handle single model value", () => {
@@ -462,8 +432,7 @@ describe("RenderFieldComponent", () => {
       spec.detectChanges();
       const values = getElement.normal();
       expect(values.length).toBe(1);
-      const value = values[0];
-      expect(value.innerText.trim()).toBe("value");
+      expect(values[0]).toHaveExactText("value");
     });
 
     it("should handle multiple model values", () => {
@@ -471,16 +440,15 @@ describe("RenderFieldComponent", () => {
       spec.detectChanges();
 
       const values = getElement.values();
-      expect(values[0].innerText.trim()).toBe("test 1");
-      expect(values[1].innerText.trim()).toBe("2");
-      expect(values[2].innerText.trim()).toBe('{"testing":"value"}');
+      expect(values[0]).toHaveExactText("test 1");
+      expect(values[1]).toHaveExactText("2");
+      expect(values[2]).toHaveExactText('{"testing":"value"}');
     });
 
     it("should display error output", () => {
       setup(createObservable(true, undefined, { error: true }));
       spec.detectChanges();
-      const value = getElement.loading()[0];
-      expect(value.innerText.trim()).toBe("(error)");
+      assertError();
     });
   });
 

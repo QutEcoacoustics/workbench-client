@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ProjectsService } from "@baw-api/project/projects.service";
-import { audioRecordingsMenuItem } from "@components/audio-recordings/audio-recording.menus";
+import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import {
   newProjectMenuItem,
   projectsCategory,
@@ -17,7 +17,7 @@ import { List } from "immutable";
 export const projectsMenuItemActions = [
   newProjectMenuItem,
   requestProjectMenuItem,
-  audioRecordingsMenuItem,
+  audioRecordingMenuItems.list.base,
 ];
 
 @Component({

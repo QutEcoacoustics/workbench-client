@@ -10,15 +10,14 @@ import {
 } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
-  audioRecordingMenuItem,
   audioRecordingsCategory,
+  audioRecordingMenuItems,
   downloadAudioRecordingMenuItem,
-  pointAudioRecordingMenuItem,
-  siteAudioRecordingMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
+import { PageInfo } from "@helpers/page/pageInfo";
+import { MenuItem } from "@interfaces/menusInterfaces";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
@@ -33,11 +32,15 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
+/**
+ * Details of a special audio recording. This component can be accessed from:
+ * /audio_recordings/:audioRecordingId
+ */
 @Component({
   selector: "baw-audio-recording",
   templateUrl: "./details.component.html",
 })
-class DetailsComponent extends PageComponent implements OnInit {
+class AudioRecordingsDetailsComponent extends PageComponent implements OnInit {
   public failure: boolean;
   private models: ResolvedModelList;
   public fields = schema.fields;
@@ -72,41 +75,88 @@ class DetailsComponent extends PageComponent implements OnInit {
   }
 }
 
+// TODO Multiple components required as a hacky bypass to #1711
+
+/**
+ * SiteDetailsComponent, this handles the details page for audio recording when
+ * accessed from a site page. This component can be accessed from:
+ * /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId
+ */
 @Component({
   selector: "baw-audio-recording-site",
   templateUrl: "./details.component.html",
 })
-class SiteDetailsComponent extends DetailsComponent {}
+class AudioRecordingsDetailsFilteredBySiteComponent extends AudioRecordingsDetailsComponent {}
 
+/**
+ * PointDetailsComponent, this handles the details page for audio recordings when
+ * accessed from a point. This component can be accessed from:
+ * /project/:projectId/region/:regionId/site/:siteId/audio_recordings/:audioRecordingId
+ */
 @Component({
   selector: "baw-audio-recording-point",
   templateUrl: "./details.component.html",
 })
-class PointDetailsComponent extends DetailsComponent {}
+class AudioRecordingsDetailsFilteredBySiteAndRegionComponent extends AudioRecordingsDetailsComponent {}
 
-const pageInfo: IPageInfo = {
-  category: audioRecordingsCategory,
-  menus: {
-    actions: List([listenRecordingMenuItem, downloadAudioRecordingMenuItem]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-  },
-  resolvers: {
-    [audioRecordingKey]: audioRecordingResolvers.show,
-    [projectKey]: projectResolvers.showOptional,
-    [regionKey]: regionResolvers.showOptional,
-    [siteKey]: siteResolvers.showOptional,
-  },
+/**
+ * RegionDetailsComponent, this handles the details page for audio recordings when
+ * access from a region page. This component can be accessed from:
+ * /project/:projectId/region/:regionId/audio_recordings/:audioRecordingId
+ */
+@Component({
+  selector: "baw-audio-recording-region",
+  templateUrl: "./details.component.html",
+})
+class AudioRecordingsDetailsFilteredByRegionComponent extends AudioRecordingsDetailsComponent {}
+
+/**
+ * ProjectDetailsComponent, this handles the details page for audio recordings when
+ * access from a project page. This component can be accessed from:
+ * /project/:projectId/audio_recordings/:audioRecordingId
+ */
+@Component({
+  selector: "baw-audio-recording-project",
+  templateUrl: "./details.component.html",
+})
+class AudioRecordingsDetailsFilteredByProjectComponent extends AudioRecordingsDetailsComponent {}
+
+/** Link components with their menu item, and assign page info which is shared between all */
+function linkData(component: PageComponent, menuItem: MenuItem): void {
+  component
+    .linkComponentToPageInfo({
+      category: audioRecordingsCategory,
+      menus: {
+        actions: List([
+          listenRecordingMenuItem,
+          downloadAudioRecordingMenuItem,
+        ]),
+        actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+      },
+      resolvers: {
+        [audioRecordingKey]: audioRecordingResolvers.show,
+        [projectKey]: projectResolvers.showOptional,
+        [regionKey]: regionResolvers.showOptional,
+        [siteKey]: siteResolvers.showOptional,
+      },
+    })
+    .andMenuRoute(menuItem);
+}
+
+const menuItems = audioRecordingMenuItems.details;
+linkData(AudioRecordingsDetailsComponent, menuItems.base);
+linkData(AudioRecordingsDetailsFilteredBySiteComponent, menuItems.site);
+linkData(
+  AudioRecordingsDetailsFilteredBySiteAndRegionComponent,
+  menuItems.siteAndRegion
+);
+linkData(AudioRecordingsDetailsFilteredByRegionComponent, menuItems.region);
+linkData(AudioRecordingsDetailsFilteredByProjectComponent, menuItems.project);
+
+export {
+  AudioRecordingsDetailsComponent,
+  AudioRecordingsDetailsFilteredBySiteComponent,
+  AudioRecordingsDetailsFilteredBySiteAndRegionComponent,
+  AudioRecordingsDetailsFilteredByRegionComponent,
+  AudioRecordingsDetailsFilteredByProjectComponent,
 };
-
-// TODO Multiple components required as a hacky bypass to #1711
-DetailsComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
-  audioRecordingMenuItem
-);
-SiteDetailsComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
-  siteAudioRecordingMenuItem
-);
-PointDetailsComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
-  pointAudioRecordingMenuItem
-);
-
-export { DetailsComponent, SiteDetailsComponent, PointDetailsComponent };

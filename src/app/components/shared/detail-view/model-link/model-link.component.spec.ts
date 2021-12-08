@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { UserLinkComponent } from "./user-link.component";
+import { ModelLinkComponent } from "./model-link.component";
 
 // TODO
-xdescribe("UserLinkComponent", () => {
-  let component: UserLinkComponent;
-  let fixture: ComponentFixture<UserLinkComponent>;
+xdescribe("ModelLinkComponent", () => {
+  let component: ModelLinkComponent;
+  let fixture: ComponentFixture<ModelLinkComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [UserLinkComponent],
+      declarations: [ModelLinkComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UserLinkComponent);
+    fixture = TestBed.createComponent(ModelLinkComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

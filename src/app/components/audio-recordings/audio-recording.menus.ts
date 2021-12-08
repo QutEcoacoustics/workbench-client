@@ -1,80 +1,108 @@
 import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
+import { projectMenuItem } from "@components/projects/projects.menus";
+import { regionMenuItem } from "@components/regions/regions.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { siteMenuItem } from "@components/sites/sites.menus";
-import { Category, menuLink, menuRoute } from "@interfaces/menusInterfaces";
+import {
+  Category,
+  menuLink,
+  MenuRoute,
+  menuRoute,
+} from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 
 const baseRoutePath = "audio_recordings";
-const queryParameters = ({ siteId, regionId, projectId }) => ({
-  siteId,
-  regionId,
-  projectId,
-});
+const childRoutePath = ":audioRecordingId";
 
-export const audioRecordingsRoute = StrongRoute.newRoot().add(
-  baseRoutePath,
-  queryParameters
-);
+function makeRoute(menuItem: MenuRoute): StrongRoute {
+  return menuItem.route.addFeatureModule(baseRoutePath);
+}
 
-export const siteAudioRecordingsRoute = siteMenuItem.route.addFeatureModule(
-  baseRoutePath,
-  queryParameters
-);
-
-export const pointAudioRecordingsRoute = pointMenuItem.route.addFeatureModule(
-  baseRoutePath,
-  queryParameters
-);
+// Create audio recording base route, and sub routes
+export const audioRecordingsRoutes = {
+  /** /audio_recordings */
+  base: StrongRoute.newRoot().add(baseRoutePath),
+  /** /project/:projectId/site/:siteId/audio_recordings */
+  site: makeRoute(siteMenuItem),
+  /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings */
+  siteAndRegion: makeRoute(pointMenuItem),
+  /** /project/:projectId/region/:regionId/audio_recordings */
+  region: makeRoute(regionMenuItem),
+  /** /project/:projectId/audio_recordings */
+  project: makeRoute(projectMenuItem),
+};
 
 export const audioRecordingsCategory: Category = {
   icon: ["fas", "file-archive"],
   label: "Audio Recordings",
-  route: audioRecordingsRoute,
+  route: audioRecordingsRoutes.base,
 };
 
-export const audioRecordingsMenuItem = menuRoute({
-  icon: ["fas", "file-archive"],
-  label: "Audio Recordings",
-  tooltip: () => "View associated audio recordings",
-  route: audioRecordingsRoute,
-});
+function makeListMenuItem(route: StrongRoute, parent?: MenuRoute): MenuRoute {
+  return menuRoute({
+    icon: ["fas", "file-archive"],
+    label: "Audio Recordings",
+    tooltip: () => "View associated audio recordings",
+    route,
+    parent,
+  });
+}
 
-export const siteAudioRecordingsMenuItem = menuRoute({
-  ...audioRecordingsMenuItem,
-  route: siteAudioRecordingsRoute,
-  parent: siteMenuItem,
-});
+function makeDetailsMenuItem(
+  route: StrongRoute,
+  parent?: MenuRoute
+): MenuRoute {
+  return menuRoute({
+    icon: ["fas", "file-audio"],
+    label: "Audio Recording",
+    tooltip: () => "View audio recording details",
+    route: route.add(childRoutePath),
+    parent,
+  });
+}
 
-export const pointAudioRecordingsMenuItem = menuRoute({
-  ...audioRecordingsMenuItem,
-  route: pointAudioRecordingsRoute,
-  parent: pointMenuItem,
-});
-
-const childRoutePath = ":audioRecordingId";
-
-export const audioRecordingMenuItem = menuRoute({
-  icon: ["fas", "file-audio"],
-  label: "Audio Recording",
-  tooltip: () => "View audio recording details",
-  route: audioRecordingsMenuItem.route.add(childRoutePath, queryParameters),
-  parent: audioRecordingsMenuItem,
-});
-
-export const siteAudioRecordingMenuItem = menuRoute({
-  ...audioRecordingMenuItem,
-  route: siteAudioRecordingsMenuItem.route.add(childRoutePath, queryParameters),
-  parent: siteAudioRecordingsMenuItem,
-});
-
-export const pointAudioRecordingMenuItem = menuRoute({
-  ...audioRecordingMenuItem,
-  route: pointAudioRecordingsMenuItem.route.add(
-    childRoutePath,
-    queryParameters
+const listMenuItems = {
+  /** /audio_recordings */
+  base: makeListMenuItem(audioRecordingsRoutes.base),
+  /** /project/:projectId/site/:siteId/audio_recordings */
+  site: makeListMenuItem(audioRecordingsRoutes.site, siteMenuItem),
+  /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings */
+  siteAndRegion: makeListMenuItem(
+    audioRecordingsRoutes.siteAndRegion,
+    pointMenuItem
   ),
-  parent: pointAudioRecordingsMenuItem,
-});
+  /** /project/:projectId/region/:regionId/audio_recordings */
+  region: makeListMenuItem(audioRecordingsRoutes.region, regionMenuItem),
+  /** /project/:projectId/audio_recordings */
+  project: makeListMenuItem(audioRecordingsRoutes.project, projectMenuItem),
+};
+
+const detailsMenuItems = {
+  /** /audio_recordings */
+  base: makeDetailsMenuItem(audioRecordingsRoutes.base, listMenuItems.base),
+  /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId */
+  site: makeDetailsMenuItem(audioRecordingsRoutes.site, listMenuItems.site),
+  /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings/:audioRecordingId */
+  siteAndRegion: makeDetailsMenuItem(
+    audioRecordingsRoutes.siteAndRegion,
+    listMenuItems.siteAndRegion
+  ),
+  /** /project/:projectId/region/:regionId/audio_recordings/:audioRecordingId */
+  region: makeDetailsMenuItem(
+    audioRecordingsRoutes.region,
+    listMenuItems.region
+  ),
+  /** /project/:projectId/audio_recordings/:audioRecordingId */
+  project: makeDetailsMenuItem(
+    audioRecordingsRoutes.project,
+    listMenuItems.project
+  ),
+};
+
+export const audioRecordingMenuItems = {
+  list: listMenuItems,
+  details: detailsMenuItems,
+};
 
 export const downloadAudioRecordingMenuItem = menuLink({
   icon: ["fas", "download"],

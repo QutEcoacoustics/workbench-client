@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -6,15 +6,15 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
+  audioRecordingMenuItems,
   audioRecordingsCategory,
-  audioRecordingsMenuItem,
   batchDownloadAudioRecordingMenuItem,
-  pointAudioRecordingsMenuItem,
-  siteAudioRecordingsMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
-import { IPageInfo } from "@helpers/page/pageInfo";
+import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { PageComponent } from "@helpers/page/pageComponent";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, Ids, toRelative } from "@interfaces/apiInterfaces";
+import { MenuItem } from "@interfaces/menusInterfaces";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -25,13 +25,18 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
+/**
+ * List of all audio recordings, filtered by site, region, and project if
+ * exists in route parameters. This component can be accessed from:
+ * /audio_recordings
+ */
 @Component({
   selector: "baw-audio-recordings",
   templateUrl: "./list.component.html",
 })
-class ListComponent
+class AudioRecordingsListComponent
   extends PagedTableTemplate<TableRow, AudioRecording>
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
   public columns = [
     { name: "Recorded" },
@@ -47,7 +52,11 @@ class ListComponent
   };
   protected api: AudioRecordingsService;
 
-  public constructor(api: AudioRecordingsService, route: ActivatedRoute) {
+  public constructor(
+    @Inject(API_ROOT) public apiRoot: string,
+    api: AudioRecordingsService,
+    route: ActivatedRoute
+  ) {
     super(
       api,
       (recordings): TableRow[] =>
@@ -64,6 +73,20 @@ class ListComponent
         ),
       route
     );
+
+    // Set default filter
+    this.filters.sorting = { orderBy: "recordedDate", direction: "asc" };
+  }
+
+  public ngAfterViewInit(): void {
+    super.ngAfterViewInit?.();
+
+    if (this.failure || !this.table) {
+      return;
+    }
+
+    // Update table to show default sort
+    this.table.sorts = [{ prop: "recorded", dir: "asc" }];
   }
 
   public get projectId(): number | undefined {
@@ -114,37 +137,81 @@ interface TableRow {
   model: AudioRecording;
 }
 
+// TODO Multiple components required as a hacky bypass to #1711
+
+/**
+ * SiteListComponent, this handles the list page for audio recording when
+ * accessed from a site page. This component can be accessed from:
+ * /project/:projectId/site/:siteId/audio_recordings
+ */
 @Component({
   selector: "baw-audio-recordings-site",
   templateUrl: "./list.component.html",
 })
-class SiteListComponent extends ListComponent {}
+class AudioRecordingsListFilteredBySiteComponent extends AudioRecordingsListComponent {}
 
+/**
+ * PointListComponent, this handles the list page for audio recordings when
+ * accessed from a point. This component can be accessed from:
+ * /project/:projectId/region/:regionId/site/:siteId/audio_recordings
+ */
 @Component({
   selector: "baw-audio-recordings-point",
   templateUrl: "./list.component.html",
 })
-class PointListComponent extends ListComponent {}
+class AudioRecordingsListFilteredBySiteAndRegionComponent extends AudioRecordingsListComponent {}
 
-const pageInfo: IPageInfo = {
-  category: audioRecordingsCategory,
-  menus: { actions: List([batchDownloadAudioRecordingMenuItem]) },
-  resolvers: {
-    [projectKey]: projectResolvers.showOptional,
-    [regionKey]: regionResolvers.showOptional,
-    [siteKey]: siteResolvers.showOptional,
-  },
+/**
+ * RegionListComponent, this handles the list page for audio recordings when
+ * access from a region page. This component can be accessed from:
+ * /project/:projectId/region/:regionId/audio_recordings
+ */
+@Component({
+  selector: "baw-audio-recordings-region",
+  templateUrl: "./list.component.html",
+})
+class AudioRecordingsListFilteredByRegionComponent extends AudioRecordingsListComponent {}
+
+/**
+ * ProjectListComponent, this handles the list page for audio recordings when
+ * access from a project page. This component can be accessed from:
+ * /project/:projectId/audio_recordings
+ */
+@Component({
+  selector: "baw-audio-recordings-project",
+  templateUrl: "./list.component.html",
+})
+class AudioRecordingsListFilteredByProjectComponent extends AudioRecordingsListComponent {}
+
+/** Link components with their menu item, and assign page info which is shared between all */
+function linkData(component: PageComponent, menuItem: MenuItem): void {
+  component
+    .linkComponentToPageInfo({
+      category: audioRecordingsCategory,
+      menus: { actions: List([batchDownloadAudioRecordingMenuItem]) },
+      resolvers: {
+        [projectKey]: projectResolvers.showOptional,
+        [regionKey]: regionResolvers.showOptional,
+        [siteKey]: siteResolvers.showOptional,
+      },
+    })
+    .andMenuRoute(menuItem);
+}
+
+const menuItems = audioRecordingMenuItems.list;
+linkData(AudioRecordingsListComponent, menuItems.base);
+linkData(AudioRecordingsListFilteredBySiteComponent, menuItems.site);
+linkData(
+  AudioRecordingsListFilteredBySiteAndRegionComponent,
+  menuItems.siteAndRegion
+);
+linkData(AudioRecordingsListFilteredByRegionComponent, menuItems.region);
+linkData(AudioRecordingsListFilteredByProjectComponent, menuItems.project);
+
+export {
+  AudioRecordingsListComponent,
+  AudioRecordingsListFilteredBySiteComponent,
+  AudioRecordingsListFilteredBySiteAndRegionComponent,
+  AudioRecordingsListFilteredByRegionComponent,
+  AudioRecordingsListFilteredByProjectComponent,
 };
-
-// TODO Multiple components required as a hacky bypass to #1711
-ListComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
-  audioRecordingsMenuItem
-);
-SiteListComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
-  siteAudioRecordingsMenuItem
-);
-PointListComponent.linkComponentToPageInfo(pageInfo).andMenuRoute(
-  pointAudioRecordingsMenuItem
-);
-
-export { ListComponent, SiteListComponent, PointListComponent };

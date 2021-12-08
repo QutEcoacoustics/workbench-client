@@ -2,45 +2,43 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
+import { audioRecordingsRoutes } from "./audio-recording.menus";
 import {
-  audioRecordingsRoute,
-  pointAudioRecordingsRoute,
-  siteAudioRecordingsRoute,
-} from "./audio-recording.menus";
-import {
-  DetailsComponent,
-  PointDetailsComponent,
-  SiteDetailsComponent,
+  AudioRecordingsDetailsComponent,
+  AudioRecordingsDetailsFilteredBySiteComponent,
+  AudioRecordingsDetailsFilteredBySiteAndRegionComponent,
+  AudioRecordingsDetailsFilteredByRegionComponent,
+  AudioRecordingsDetailsFilteredByProjectComponent,
 } from "./pages/details/details.component";
 import {
-  ListComponent,
-  PointListComponent,
-  SiteListComponent,
+  AudioRecordingsListComponent,
+  AudioRecordingsListFilteredBySiteComponent,
+  AudioRecordingsListFilteredBySiteAndRegionComponent,
+  AudioRecordingsListFilteredByRegionComponent,
+  AudioRecordingsListFilteredByProjectComponent,
 } from "./pages/list/list.component";
 
 const components = [
-  ListComponent,
-  SiteListComponent,
-  PointListComponent,
-  DetailsComponent,
-  SiteDetailsComponent,
-  PointDetailsComponent,
+  AudioRecordingsListComponent,
+  AudioRecordingsListFilteredBySiteComponent,
+  AudioRecordingsListFilteredBySiteAndRegionComponent,
+  AudioRecordingsListFilteredByRegionComponent,
+  AudioRecordingsListFilteredByProjectComponent,
+
+  AudioRecordingsDetailsComponent,
+  AudioRecordingsDetailsFilteredBySiteComponent,
+  AudioRecordingsDetailsFilteredBySiteAndRegionComponent,
+  AudioRecordingsDetailsFilteredByRegionComponent,
+  AudioRecordingsDetailsFilteredByProjectComponent,
 ];
 
-const baseRoutes = audioRecordingsRoute.compileRoutes(getRouteConfigForPage);
-const siteRoutes = siteAudioRecordingsRoute.compileRoutes(
-  getRouteConfigForPage
-);
-const pointRoutes = pointAudioRecordingsRoute.compileRoutes(
-  getRouteConfigForPage
-);
+const routes = Object.values(audioRecordingsRoutes)
+  .map((route) => route.compileRoutes(getRouteConfigForPage))
+  .flat();
 
 @NgModule({
   declarations: components,
-  imports: [
-    SharedModule,
-    RouterModule.forChild([...baseRoutes, ...siteRoutes, ...pointRoutes]),
-  ],
+  imports: [SharedModule, RouterModule.forChild(routes)],
   exports: [RouterModule, ...components],
 })
 export class AudioRecordingModule {}

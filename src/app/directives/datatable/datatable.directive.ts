@@ -1,6 +1,6 @@
 import { Directive, ElementRef, Host, Input, OnInit } from "@angular/core";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { DatatableComponent } from "@swimlane/ngx-datatable";
+import { DatatableComponent, SortType } from "@swimlane/ngx-datatable";
 
 /**
  * Datatable default directives.
@@ -22,6 +22,7 @@ export class DatatableDirective implements OnInit {
   @Input() public reorderable = false;
   @Input() public rowHeight: ((row: any) => number) | number | "auto" = "auto";
   @Input() public scrollbarH = true;
+  @Input() public sortType = SortType.single;
 
   public constructor(
     @Host() private datatable: DatatableComponent,
@@ -41,5 +42,6 @@ export class DatatableDirective implements OnInit {
     this.datatable.reorderable = this.reorderable;
     this.datatable.rowHeight = this.rowHeight;
     this.datatable.scrollbarH = this.scrollbarH;
+    this.datatable.sortType = this.sortType;
   }
 }

@@ -21,6 +21,11 @@ import { Resolvers } from "../resolver-common";
 
 const audioRecordingId: IdParamOptional<AudioRecording> = id;
 const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}${option}`;
+/**
+ * Path to download original audio recording. This currently requires the
+ * apiRoot to be prepended to the endpoint
+ * TODO This should be an absolute path
+ */
 export const audioRecordingOriginalEndpoint = stringTemplate`/audio_recordings/${audioRecordingId}/original`;
 
 @Injectable()

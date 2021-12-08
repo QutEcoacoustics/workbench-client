@@ -1,8 +1,8 @@
-import { id, IdOr } from "@baw-api/api-common";
+import { IdOr, id } from "@baw-api/api-common";
 import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { adminAudioRecordingMenuItem } from "@components/admin/audio-recordings/audio-recordings.menus";
-import { audioRecordingMenuItem } from "@components/audio-recordings/audio-recording.menus";
+import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { Duration } from "luxon";
 import {
@@ -90,36 +90,59 @@ export class AudioRecording
   @hasOne<AudioRecording, Site>(SHALLOW_SITE, "siteId")
   public site?: Site;
 
+  /** Routes to the play url */
   public get viewUrl(): string {
     return this.playUrl;
   }
 
+  /** Routes to the recording listen page */
+  public get playUrl(): string {
+    return listenRecordingMenuItem.route.format({ audioRecordingId: this.id });
+  }
+
+  /** Routes to the download link for the api */
+  public getDownloadUrl(apiRoot: string): string {
+    return apiRoot + audioRecordingOriginalEndpoint(this.id);
+  }
+
+  /** Routes to the batch download page */
+  public get batchDownloadUrl(): string {
+    // TODO Add download url when batch download page built
+    throw new Error("not implemented");
+  }
+
+  /** Routes to the base details page */
   public get detailsUrl(): string {
     return this.getDetailsUrl();
   }
 
+  /** Routes to the details page relative to the parent models */
   public getDetailsUrl(
     project?: IdOr<Project>,
     region?: IdOr<Region>,
     site?: IdOr<Site>
   ): string {
-    return audioRecordingMenuItem.route.format(
-      { audioRecordingId: this.id },
-      { projectId: id(project), regionId: id(region), siteId: id(site) }
-    );
-  }
+    const routeParams = {
+      audioRecordingId: this.id,
+      projectId: id(project),
+      regionId: id(region),
+      siteId: id(site),
+    };
+    const routes = audioRecordingMenuItems.details;
 
-  public get playUrl(): string {
-    return listenRecordingMenuItem.route.format({ audioRecordingId: this.id });
-  }
-
-  public get downloadUrl(): string {
-    return audioRecordingOriginalEndpoint(this.id);
-  }
-
-  public get batchDownloadUrl(): string {
-    // TODO Add download url when batch download page built
-    throw new Error("not implemented");
+    if (site) {
+      if (region) {
+        return routes.siteAndRegion.route.format(routeParams);
+      } else {
+        return routes.site.route.format(routeParams);
+      }
+    } else if (region) {
+      return routes.region.route.format(routeParams);
+    } else if (project) {
+      return routes.project.route.format(routeParams);
+    } else {
+      return routes.base.route.format(routeParams);
+    }
   }
 
   public get adminViewUrl(): string {

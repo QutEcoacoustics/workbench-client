@@ -6,7 +6,7 @@ import {
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
-import { pointAudioRecordingsMenuItem } from "@components/audio-recordings/audio-recording.menus";
+import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { pointAnnotationsModal } from "@components/sites/points.modals";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
@@ -32,7 +32,7 @@ export const pointMenuItemActions = [
   editPointMenuItem,
   pointHarvestMenuItem,
   deletePointMenuItem,
-  pointAudioRecordingsMenuItem,
+  audioRecordingMenuItems.list.siteAndRegion,
 ];
 
 const projectKey = "project";

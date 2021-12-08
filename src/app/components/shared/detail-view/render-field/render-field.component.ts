@@ -17,18 +17,17 @@ import { DateTime, Duration } from "luxon";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
-// TODO Simplify this component by splitting into sub components
 @Component({
   selector: "baw-render-field",
   template: `
     <!-- Display plain text -->
     <dl *ngIf="styling === fieldStyling.plain">
-      <p id="plain" class="m-0">{{ display }}</p>
+      <p id="plain" class="m-0" [innerText]="display"></p>
     </dl>
 
     <!-- Display code/objects -->
     <dl *ngIf="styling === fieldStyling.code">
-      <pre id="code" class="m-0">{{ display }}</pre>
+      <pre id="code" class="m-0" [innerText]="display"></pre>
     </dl>
 
     <!-- Display checkbox -->
@@ -44,29 +43,10 @@ import { takeUntil } from "rxjs/operators";
 
     <!-- Display AbstractModel -->
     <dl *ngIf="styling === fieldStyling.model">
-      <ng-container *ngIf="isUser(model); else normalModel">
-        <!-- Create link to user -->
-        <baw-user-link [user]="model">
-          <span id="user model">{{ model.userName }}</span>
-          <span id="ghost model"> Unknown User </span>
-          <span id="unresolved model">
-            <baw-loading size="sm"></baw-loading>
-          </span>
-        </baw-user-link>
-      </ng-container>
-
-      <ng-template #normalModel>
-        <a
-          *ngIf="hasViewUrl(); else noViewUrl"
-          id="model"
-          [bawUrl]="model.viewUrl"
-        >
-          {{ model }}
-        </a>
-        <ng-template #noViewUrl>
-          <span id="model">{{ model }}</span>
-        </ng-template>
-      </ng-template>
+      <baw-model-link [model]="model">
+        <span id="model" [innerText]="model.toString()"></span>
+        <span id="ghost" [innerText]="model.toString()"></span>
+      </baw-model-link>
     </dl>
 
     <!-- Display Image -->
@@ -105,13 +85,11 @@ export class RenderFieldComponent
   public fieldStyling = FieldStyling;
   public model: AbstractModel;
   public styling: FieldStyling = FieldStyling.plain;
-  private errorText = "(error)";
-  private loadingText = "(loading)";
-  private noValueText = "(no value)";
 
   public constructor(private ref: ChangeDetectorRef) {
     super();
   }
+
   public ngOnChanges(): void {
     this.humanize(this.value);
   }
@@ -137,7 +115,7 @@ export class RenderFieldComponent
 
   private humanize(value: ModelView) {
     if (!isInstantiated(value)) {
-      this.display = this.noValueText;
+      this.setNoValue();
     } else if (value instanceof DateTime) {
       this.display = humanizeDateTime(value);
     } else if (value instanceof Duration) {
@@ -175,11 +153,11 @@ export class RenderFieldComponent
   private humanizeAbstractModel(value: AbstractModel) {
     if (value instanceof UnresolvedModel) {
       this.setLoading();
-    } else {
-      this.styling = FieldStyling.model;
-      this.display = "";
-      this.model = value;
+      return;
     }
+    this.styling = FieldStyling.model;
+    this.display = "";
+    this.model = value;
   }
 
   /**
@@ -189,7 +167,7 @@ export class RenderFieldComponent
    * @param value Display input
    */
   private humanizeString(value: string) {
-    this.display = value;
+    this.setLoading();
 
     this.isImage(
       value,
@@ -199,7 +177,9 @@ export class RenderFieldComponent
         this.display = [{ url: value, size: ImageSizes.unknown }];
         this.ref.detectChanges();
       },
-      () => {}
+      () => {
+        this.display = value;
+      }
     );
   }
 
@@ -212,10 +192,10 @@ export class RenderFieldComponent
     this.setLoading();
 
     try {
-      this.styling = FieldStyling.code;
       this.display = JSON.stringify(value);
+      this.styling = FieldStyling.code;
     } catch (err) {
-      this.display = this.errorText;
+      this.setError();
     }
   }
 
@@ -224,19 +204,15 @@ export class RenderFieldComponent
    *
    * @param value Display input
    */
-  private humanizeBlob(value: Blob) {
+  private async humanizeBlob(value: Blob) {
     this.setLoading();
-    // TODO Implement new method (https://developer.mozilla.org/en-US/docs/Web/API/Blob/text)
-    const reader = new FileReader();
-    reader.addEventListener("loadend", (e) => {
+
+    try {
+      this.display = await value.text();
       this.styling = FieldStyling.code;
-      this.display = e.target.result.toString();
-    });
-    reader.onerror = () => {
-      this.display = this.errorText;
-      reader.abort();
-    };
-    reader.readAsText(value);
+    } catch (err) {
+      this.setError();
+    }
   }
 
   /**
@@ -248,14 +224,14 @@ export class RenderFieldComponent
     value: Observable<AbstractModel | AbstractModel[]>
   ) {
     this.setLoading();
+
     value.pipe(takeUntil(this.unsubscribe)).subscribe(
       (models) => {
         this.humanize(models);
         this.ref.detectChanges();
       },
       () => {
-        this.display = this.errorText;
-        this.ref.detectChanges();
+        this.setError();
       }
     );
   }
@@ -276,7 +252,7 @@ export class RenderFieldComponent
         this.children = value;
       }
     } else {
-      this.display = this.noValueText;
+      this.setNoValue();
     }
   }
 
@@ -285,7 +261,20 @@ export class RenderFieldComponent
    */
   private setLoading() {
     this.styling = FieldStyling.plain;
-    this.display = this.loadingText;
+    this.display = "(loading)";
+    this.ref.detectChanges();
+  }
+
+  private setNoValue() {
+    this.styling = FieldStyling.plain;
+    this.display = "(no value)";
+    this.ref.detectChanges();
+  }
+
+  private setError() {
+    this.styling = FieldStyling.plain;
+    this.display = "(error)";
+    this.ref.detectChanges();
   }
 
   /**

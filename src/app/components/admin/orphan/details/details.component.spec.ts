@@ -137,9 +137,8 @@ describe("AdminOrphanComponent", () => {
         key: "timezoneInformation",
         code: model.timezoneInformation,
       },
-      // TODO Re-enable
-      //{ label: "Creator", key: "creator", model: "User: custom username (1)" },
-      //{ label: "Updater", key: "updater", model: "User: custom username (1)" },
+      { label: "Creator", key: "creator", model: "User: custom username (1)" },
+      { label: "Updater", key: "updater", model: "User: custom username (1)" },
       { label: "Created At", key: "createdAt", plain: model.createdAt },
       { label: "Updated At", key: "updatedAt", plain: model.updatedAt },
       {

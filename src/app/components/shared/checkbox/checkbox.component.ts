@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 
 @Component({
   selector: "baw-checkbox",
@@ -23,13 +18,9 @@ import {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CheckboxComponent implements OnInit {
+export class CheckboxComponent {
   @Input() public id: string;
   @Input() public checked: boolean;
   @Input() public disabled: boolean;
   @Input() public isCentered = true;
-
-  public constructor() {}
-
-  public ngOnInit(): void {}
 }

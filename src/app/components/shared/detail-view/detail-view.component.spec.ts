@@ -1,82 +1,85 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
+import { DirectivesModule } from "@directives/directives.module";
+import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { MockModelWithDecorators as MockModel } from "@models/AssociationLoadingInComponents.spec";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { PipesModule } from "@pipes/pipes.module";
+import { CheckboxModule } from "@shared/checkbox/checkbox.module";
+import { LoadingModule } from "@shared/loading/loading.module";
 import { nStepObservable, viewports } from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { DetailViewComponent } from "./detail-view.component";
+import { ModelLinkComponent } from "./model-link/model-link.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
 
 describe("DetailViewComponent", () => {
-  let api: MockStandardApiService;
-  let component: DetailViewComponent;
-  let fixture: ComponentFixture<DetailViewComponent>;
   let injector: Injector;
+  let api: MockStandardApiService;
+  let spec: Spectator<DetailViewComponent>;
+  const createComponent = createComponentFactory({
+    component: DetailViewComponent,
+    declarations: [RenderFieldComponent, ModelLinkComponent],
+    imports: [
+      AuthenticatedImageModule,
+      CheckboxModule,
+      DirectivesModule,
+      LoadingModule,
+      MockBawApiModule,
+      MockBawApiModule,
+      RouterTestingModule,
+      PipesModule,
+    ],
+    providers: [
+      MockStandardApiService,
+      { provide: MOCK.token, useExisting: MockStandardApiService },
+    ],
+  });
 
   function getWrapper() {
-    return (fixture.nativeElement as HTMLElement).querySelector("div");
+    return spec.query<HTMLDivElement>("div");
   }
 
   function getFields() {
-    return (fixture.nativeElement as HTMLElement).querySelectorAll("dt");
+    return spec.queryAll<HTMLDataElement>("dt");
   }
 
   function getValues() {
-    return (fixture.nativeElement as HTMLElement).querySelectorAll("dl");
+    return spec.queryAll<HTMLDListElement>("dl");
   }
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [DetailViewComponent, RenderFieldComponent],
-      imports: [HttpClientTestingModule, MockBawApiModule],
-      providers: [
-        MockStandardApiService,
-        { provide: MOCK.token, useExisting: MockStandardApiService },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(DetailViewComponent);
-    api = TestBed.inject(MockStandardApiService);
-    injector = TestBed.inject(Injector);
-    component = fixture.componentInstance;
+    spec = createComponent();
+    api = spec.inject(MockStandardApiService);
+    injector = spec.inject(Injector);
   });
 
   afterAll(() => {
     viewport.reset();
   });
 
-  it("should create", () => {
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
-  });
-
   describe("fields", () => {
     it("should handle missing fields", () => {
-      fixture.detectChanges();
+      spec.detectChanges();
       expect(getFields().length).toBe(0);
     });
 
     it("should handle empty fields", () => {
-      component.fields = [];
-      fixture.detectChanges();
+      spec.setInput({ fields: [] });
+      spec.detectChanges();
       expect(getFields().length).toBe(0);
     });
 
     describe("single field", () => {
       beforeEach(() => {
-        component.fields = [
-          {
-            key: "id",
-            templateOptions: {
-              label: "custom label",
-            },
-          },
-        ];
-        component.model = new MockModel({ id: 0 });
-        fixture.detectChanges();
+        spec.setInput({
+          fields: [{ key: "id", templateOptions: { label: "custom label" } }],
+          model: new MockModel({ id: 0 }),
+        });
+        spec.detectChanges();
       });
 
       it("should handle single field", () => {
@@ -88,44 +91,38 @@ describe("DetailViewComponent", () => {
       });
 
       it("should create field", () => {
-        const fields = getFields();
-        expect(fields[0].innerText.trim()).toBe("custom label");
+        expect(getFields()[0]).toHaveExactText("custom label");
       });
 
       it("should create value", () => {
-        const values = getValues();
-        expect(values[0].innerText.trim()).toBe("0");
+        expect(getValues()[0]).toHaveExactText("0");
       });
     });
 
     describe("multiple fields", () => {
       beforeEach(() => {
-        component.fields = [
-          {
-            key: "id",
-            templateOptions: {
-              label: "custom label 0",
+        spec.setInput({
+          fields: [
+            {
+              key: "id",
+              templateOptions: { label: "custom label 0" },
             },
-          },
-          {
-            key: "text",
-            templateOptions: {
-              label: "custom label 1",
+            {
+              key: "text",
+              templateOptions: { label: "custom label 1" },
             },
-          },
-          {
-            key: "object",
-            templateOptions: {
-              label: "custom label 2",
+            {
+              key: "object",
+              templateOptions: { label: "custom label 2" },
             },
-          },
-        ];
-        component.model = new MockModel({
-          id: 5,
-          text: "10",
-          object: { test: "value" },
+          ],
+          model: new MockModel({
+            id: 5,
+            text: "10",
+            object: { test: "value" },
+          }),
         });
-        fixture.detectChanges();
+        spec.detectChanges();
       });
 
       it("should handle multiple fields", () => {
@@ -138,29 +135,26 @@ describe("DetailViewComponent", () => {
 
       it("should create fields", () => {
         const fields = getFields();
-        expect(fields[0].innerText.trim()).toBe("custom label 0");
-        expect(fields[1].innerText.trim()).toBe("custom label 1");
-        expect(fields[2].innerText.trim()).toBe("custom label 2");
+        expect(fields[0]).toHaveExactText("custom label 0");
+        expect(fields[1]).toHaveExactText("custom label 1");
+        expect(fields[2]).toHaveExactText("custom label 2");
       });
 
       it("should create values", () => {
         const values = getValues();
-        expect(values[0].innerText.trim()).toBe("5");
-        expect(values[1].innerText.trim()).toBe("10");
-        expect(values[2].innerText.trim()).toBe('{"test":"value"}');
+        expect(values[0]).toHaveExactText("5");
+        expect(values[1]).toHaveExactText("10");
+        expect(values[2]).toHaveExactText('{"test":"value"}');
       });
     });
 
     describe("abstract models", () => {
       function setupComponent(key: string) {
-        component.fields = [
-          {
-            key,
-            templateOptions: { label: "custom label" },
-          },
-        ];
-        component.model = new MockModel({ id: 0, ids: 0 }, injector);
-        fixture.detectChanges();
+        spec.setInput({
+          fields: [{ key, templateOptions: { label: "custom label" } }],
+          model: new MockModel({ id: 0, ids: 0 }, injector),
+        });
+        spec.detectChanges();
       }
 
       it("should handle hasOne unresolved model", () => {
@@ -171,8 +165,7 @@ describe("DetailViewComponent", () => {
 
       it("should display hasOne unresolved model", () => {
         setupComponent("childModel");
-        const value = getValues()[0];
-        expect(value.innerText.trim()).toBe("(loading)");
+        expect(getValues()[0]).toHaveExactText("(loading)");
       });
 
       it("should handle hasOne associated model", async () => {
@@ -185,10 +178,9 @@ describe("DetailViewComponent", () => {
 
         setupComponent("childModel");
         await promise;
-        fixture.detectChanges();
+        spec.detectChanges();
 
-        const value = getValues()[0];
-        expect(value.innerText.trim()).toBe("Mock Model: 1");
+        expect(getValues()[0]).toHaveExactText("Mock Model: 1");
       });
 
       it("should handle hasMany unresolved model", () => {
@@ -199,8 +191,7 @@ describe("DetailViewComponent", () => {
 
       it("should display hasMany unresolved model", () => {
         setupComponent("childModels");
-        const value = getValues()[0];
-        expect(value.innerText.trim()).toBe("(no value)");
+        expect(getValues()[0]).toHaveExactText("(no value)");
       });
 
       it("should handle hasMany associated model", async () => {
@@ -213,28 +204,23 @@ describe("DetailViewComponent", () => {
 
         setupComponent("childModels");
         await promise;
-        fixture.detectChanges();
+        spec.detectChanges();
 
         const values = getValues();
         expect(values.length).toBe(2);
-        expect(values[0].innerText.trim()).toBe("Mock Model: 1");
-        expect(values[1].innerText.trim()).toBe("Mock Model: 2");
+        expect(values[0]).toHaveExactText("Mock Model: 1");
+        expect(values[1]).toHaveExactText("Mock Model: 2");
       });
     });
   });
 
   describe("screen size", () => {
     beforeEach(() => {
-      component.fields = [
-        {
-          key: "id",
-          templateOptions: {
-            label: "custom label",
-          },
-        },
-      ];
-      component.model = new MockModel({ id: 0 });
-      fixture.detectChanges();
+      spec.setInput({
+        fields: [{ key: "id", templateOptions: { label: "custom label" } }],
+        model: new MockModel({ id: 0 }),
+      });
+      spec.detectChanges();
     });
 
     it("should inline field and value on small screen", () => {
