@@ -1,6 +1,5 @@
 import { Type } from "@angular/core";
 import { Option } from "@helpers/advancedTypes";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { MenuRoute } from "@interfaces/menusInterfaces";
 import { withUnsubscribe } from "../unsubscribe/unsubscribe";
 import { IPageInfo, PageInfo } from "./pageInfo";
@@ -47,13 +46,5 @@ export function getPageInfos(
   component: Option<Type<IPageComponent>>
 ): Option<PageInfo[]> {
   const pageComponent = component as IPageComponentStatic;
-
-  if (
-    !(component?.prototype instanceof PageComponent) ||
-    !isInstantiated(pageComponent.pageInfos)
-  ) {
-    return null;
-  }
-
-  return pageComponent.pageInfos;
+  return pageComponent?.pageInfos ?? null;
 }
