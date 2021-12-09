@@ -1,33 +1,37 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
+import { ResolvedModel } from "@baw-api/resolver-common";
+import { SitesService } from "@baw-api/site/sites.service";
+import { Errorable } from "@helpers/advancedTypes";
+import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import {
   destroyGoogleMaps,
   embedGoogleMaps,
 } from "@helpers/embedGoogleMaps/embedGoogleMaps";
 import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import {
   createRoutingFactory,
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormComponent } from "@shared/form/form.component";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
+import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertErrorHandler } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
-import schema from "../../site.base.json";
+import pointSchema from "../../point.base.json";
+import siteSchema from "../../site.base.json";
 import { SiteEditComponent } from "./site.component";
 
 describe("SiteEditComponent", () => {
   let spec: SpectatorRouting<SiteEditComponent>;
-  const { fields } = schema;
   const createComponent = createRoutingFactory({
     component: SiteEditComponent,
     imports: [...testFormImports, MockBawApiModule],
@@ -37,60 +41,78 @@ describe("SiteEditComponent", () => {
   });
 
   describe("form", () => {
-    testFormlyFields([
-      {
-        testGroup: "Site Name Input",
-        field: fields[1],
-        key: "name",
-        type: "input",
-        required: true,
-        label: "Site Name",
-        inputType: "text",
-      },
-      {
-        testGroup: "Site Description Input",
-        field: fields[2],
-        key: "description",
-        type: "textarea",
-        label: "Description",
-      },
-      {
-        testGroup: "Site Location Input",
-        field: fields[4],
-        key: "location",
-        label: "Location",
-      },
-      {
-        testGroup: "Site Image Input",
-        field: fields[10],
-        key: "image",
-        type: "image",
-        label: "Image Upload",
-      },
-    ]);
+    [true, false].forEach((withRegion) => {
+      describe(withRegion ? "withRegion" : "withoutRegion", () => {
+        const fields: FormlyFieldConfig[] = withRegion
+          ? pointSchema.fields
+          : siteSchema.fields;
+        const modelName = withRegion ? "Point" : "Site";
+
+        testFormlyFields([
+          {
+            testGroup: `${modelName} Name Input`,
+            field: fields[1],
+            key: "name",
+            type: "input",
+            required: true,
+            label: `${modelName} Name`,
+            inputType: "text",
+          },
+          {
+            testGroup: `${modelName} Description Input`,
+            field: fields[2],
+            key: "description",
+            type: "textarea",
+            label: "Description",
+          },
+          {
+            testGroup: `${modelName} Location Input`,
+            field: fields[4],
+            key: "location",
+            label: "Location",
+          },
+          {
+            testGroup: `${modelName} Image Input`,
+            field: fields[10],
+            key: "image",
+            type: "image",
+            label: "Image Upload",
+          },
+        ]);
+      });
+    });
   });
 
   // TODO Disabled because of #1338
   xdescribe("component", () => {
     let api: SpyObject<SitesService>;
     let defaultProject: Project;
+    let defaultRegion: Region;
     let defaultSite: Site;
 
     function setup(
-      projectError?: ApiErrorDetails,
-      siteError?: ApiErrorDetails
+      project: Errorable<Project>,
+      site: Errorable<Site>,
+      region?: Errorable<Region>
     ) {
+      function getResolvedModel<T>(model: Errorable<T>): ResolvedModel<T> {
+        return isApiErrorDetails(model) ? { error: model } : { model };
+      }
+
+      const resolvers = { project: "resolver", site: "resolver" };
+      const models = {
+        project: getResolvedModel(project),
+        site: getResolvedModel(site),
+      };
+
+      if (region) {
+        resolvers["region"] = "resolver";
+        models["region"] = getResolvedModel(region);
+      }
+
       spec = createComponent({
         detectChanges: false,
-        params: { projectId: defaultProject?.id, siteId: defaultSite?.id },
-        data: {
-          resolvers: {
-            project: projectResolvers.show,
-            site: siteResolvers.show,
-          },
-          project: { model: defaultProject, error: projectError },
-          site: { model: defaultSite, error: siteError },
-        },
+        data: { resolvers, ...models },
       });
 
       api = spec.inject(SitesService);
@@ -99,46 +121,62 @@ describe("SiteEditComponent", () => {
 
     beforeAll(async () => await embedGoogleMaps());
     afterAll(() => destroyGoogleMaps());
-    beforeEach(() => {
-      defaultProject = new Project(generateProject());
-      defaultSite = new Site(generateSite());
-    });
 
-    it("should create", () => {
-      setup();
-      expect(spec.component).toBeTruthy();
-    });
+    [true, false].forEach((withRegion) => {
+      describe(withRegion ? "withRegion" : "withoutRegion", () => {
+        beforeEach(() => {
+          defaultProject = new Project(generateProject());
+          defaultRegion = withRegion ? new Region(generateRegion()) : undefined;
+          defaultSite = new Site(
+            generateSite(withRegion ? { regionId: defaultRegion.id } : {})
+          );
+        });
 
-    it("should handle site error", () => {
-      setup(undefined, generateApiErrorDetails());
-      assertErrorHandler(spec.fixture);
-    });
+        it("should create", () => {
+          setup(defaultProject, defaultSite, defaultRegion);
+          expect(spec.component).toBeTruthy();
+        });
 
-    it("should handle project error", () => {
-      setup(generateApiErrorDetails());
-      assertErrorHandler(spec.fixture);
-    });
+        it("should handle site error", () => {
+          setup(defaultProject, generateApiErrorDetails(), defaultRegion);
+          assertErrorHandler(spec.fixture);
+        });
 
-    it("should call api", () => {
-      setup();
-      api.update.and.callFake(() => new Subject());
+        if (withRegion) {
+          it("should handle region error", () => {
+            setup(defaultProject, defaultSite, generateApiErrorDetails());
+            assertErrorHandler(spec.fixture);
+          });
+        }
 
-      spec.component.submit({ ...defaultSite });
-      expect(api.update).toHaveBeenCalledWith(
-        new Site({ ...defaultSite }),
-        defaultProject
-      );
-    });
+        it("should handle project error", () => {
+          setup(generateApiErrorDetails(), defaultSite, defaultRegion);
+          assertErrorHandler(spec.fixture);
+        });
 
-    it("should redirect to site", () => {
-      setup();
-      const site = new Site(generateSite());
-      api.update.and.callFake(() => new BehaviorSubject<Site>(site));
+        // TODO Validate region id is set in api call
+        it("should call api", () => {
+          setup(defaultProject, defaultSite, defaultRegion);
+          api.update.and.callFake(() => new Subject());
 
-      spec.component.submit({});
-      expect(spec.router.navigateByUrl).toHaveBeenCalledWith(
-        site.getViewUrl(defaultProject)
-      );
+          spec.component.submit({ ...defaultSite });
+          expect(api.update).toHaveBeenCalledWith(
+            new Site({ ...defaultSite }),
+            defaultProject
+          );
+        });
+
+        it("should redirect to site", () => {
+          setup(defaultProject, defaultSite, defaultRegion);
+          const site = new Site(generateSite());
+          api.update.and.callFake(() => new BehaviorSubject<Site>(site));
+
+          spec.component.submit({});
+          expect(spec.router.navigateByUrl).toHaveBeenCalledWith(
+            site.getViewUrl(defaultProject)
+          );
+        });
+      });
     });
   });
 });

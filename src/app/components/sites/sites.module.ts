@@ -11,6 +11,7 @@ import { SiteEditComponent } from "./pages/edit/site.component";
 import { SiteHarvestComponent } from "./pages/harvest/site.component";
 import { SiteNewComponent } from "./pages/new/site.component";
 import { WizardComponent } from "./pages/wizard/wizard.component";
+import { pointsRoute } from "./points.menus";
 import { sitesRoute } from "./sites.menus";
 
 const components = [
@@ -23,7 +24,8 @@ const components = [
   WizardComponent,
 ];
 
-const routes = sitesRoute.compileRoutes(getRouteConfigForPage);
+const siteRoutes = sitesRoute.compileRoutes(getRouteConfigForPage);
+const pointRoutes = pointsRoute.compileRoutes(getRouteConfigForPage);
 
 /**
  * Sites Module
@@ -34,7 +36,7 @@ const routes = sitesRoute.compileRoutes(getRouteConfigForPage);
     MapModule,
     RegionsModule,
     SharedModule,
-    RouterModule.forChild(routes),
+    RouterModule.forChild([...siteRoutes, ...pointRoutes]),
   ],
   exports: [RouterModule, ...components],
 })

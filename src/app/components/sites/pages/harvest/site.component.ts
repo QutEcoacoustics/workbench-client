@@ -1,11 +1,17 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { regionResolvers } from "@baw-api/region/regions.service";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
+import {
+  pointsCategory,
+  pointMenuItem,
+  pointHarvestMenuItem,
+} from "@components/sites/points.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
@@ -21,9 +27,13 @@ import {
   siteMenuItem,
   sitesCategory,
 } from "../../sites.menus";
-import { siteMenuItemActions } from "../details/site.component";
+import {
+  pointMenuItemActions,
+  siteMenuItemActions,
+} from "../details/site.component";
 
 const projectKey = "project";
+const regionKey = "region";
 const siteKey = "site";
 
 /**
@@ -51,6 +61,7 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
     if (hasResolvedSuccessfully(models)) {
       this.project = models[projectKey] as Project;
+      this.region = models[regionKey] as Region;
       this.site = models[siteKey] as Site;
       this.user = this.api.getLocalUser();
     }
@@ -74,6 +85,20 @@ SiteHarvestComponent.linkToRouterWith(
     },
   },
   siteHarvestMenuItem
+).linkToRouterWith(
+  {
+    category: pointsCategory,
+    menus: {
+      actions: List([pointMenuItem, ...pointMenuItemActions]),
+      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    },
+    resolvers: {
+      [projectKey]: projectResolvers.show,
+      [regionKey]: regionResolvers.show,
+      [siteKey]: siteResolvers.show,
+    },
+  },
+  pointHarvestMenuItem
 );
 
 export { SiteHarvestComponent };

@@ -149,25 +149,39 @@ describe("PageComponents", () => {
 
     it("should write page info to component", () => {
       const iPageInfo: IPageInfo = { category: homeCategory };
-      const pageInfo: PageInfo = new PageInfo(iPageInfo);
 
       class DummyComponent extends PageComponent {}
       DummyComponent.linkToRouterWith(iPageInfo, defaultMenuItem);
+
+      const pageInfo: PageInfo = new PageInfo(iPageInfo);
+      pageInfo.setMenuRoute(DummyComponent, defaultMenuItem);
+
       expect(DummyComponent.pageInfos[0]).toEqual(pageInfo);
     });
 
     it("should write multiple page info values to component", () => {
-      const iPageInfo: IPageInfo = { category: homeCategory };
-      const pageInfo: PageInfo = new PageInfo(iPageInfo);
+      const pages = [
+        {
+          iPageInfo: { category: homeCategory, fullscreen: false } as IPageInfo,
+          menuItem: menuRoute({ ...defaultMenuItem, label: "Page One" }),
+        },
+        {
+          iPageInfo: { category: homeCategory, fullscreen: true } as IPageInfo,
+          menuItem: menuRoute({ ...defaultMenuItem, label: "Page One" }),
+        },
+      ];
 
       class DummyComponent extends PageComponent {}
       DummyComponent.linkToRouterWith(
-        iPageInfo,
-        defaultMenuItem
-      ).linkToRouterWith(iPageInfo, defaultMenuItem);
-      expect(DummyComponent.pageInfos[0]).toEqual(pageInfo);
-      expect(DummyComponent.pageInfos[1]).toEqual(pageInfo);
-      expect(false).toBeTruthy();
+        pages[0].iPageInfo,
+        pages[0].menuItem
+      ).linkToRouterWith(pages[1].iPageInfo, pages[1].menuItem);
+
+      pages.forEach((page, index) => {
+        const pageInfo = new PageInfo(page.iPageInfo);
+        pageInfo.setMenuRoute(DummyComponent, page.menuItem);
+        expect(DummyComponent.pageInfos[index]).toEqual(pageInfo);
+      });
     });
 
     it("should return DummyComponent", () => {
@@ -184,9 +198,9 @@ describe("PageComponents", () => {
     it("should write menu route to page info", () => {
       const iPageInfo: IPageInfo = { category: homeCategory };
       class DummyComponent extends PageComponent {}
-      DummyComponent.linkToRouterWith(iPageInfo).andMenuRoute(defaultMenuItem);
+      DummyComponent.linkToRouterWith(iPageInfo, defaultMenuItem);
 
-      const pageInfo = DummyComponent.pageInfo;
+      const pageInfo = DummyComponent.pageInfos[0];
       expect(pageInfo.pageRoute).toEqual(defaultMenuItem);
       expect(pageInfo.route).toEqual(defaultRoute);
     });
@@ -194,24 +208,20 @@ describe("PageComponents", () => {
     it("should write component to page info", () => {
       const iPageInfo: IPageInfo = { category: homeCategory };
       class DummyComponent extends PageComponent {}
-      DummyComponent.linkToRouterWith(iPageInfo).andMenuRoute(defaultMenuItem);
+      DummyComponent.linkToRouterWith(iPageInfo, defaultMenuItem);
 
-      const pageInfo = DummyComponent.pageInfo;
+      const pageInfo = DummyComponent.pageInfos[0];
       expect(pageInfo.component).toEqual(DummyComponent);
       expect(pageInfo.route.pageComponent).toEqual(DummyComponent);
-    });
-
-    it("should throw error if menu route given before page info", () => {
-      class DummyComponent extends PageComponent {}
-      expect(() => DummyComponent.andMenuRoute(defaultMenuItem)).toThrowError();
     });
 
     it("should return DummyComponent", () => {
       class DummyComponent extends PageComponent {}
       expect(
-        DummyComponent.linkToRouterWith({
-          category: homeCategory,
-        }).andMenuRoute(defaultMenuItem)
+        DummyComponent.linkToRouterWith(
+          { category: homeCategory },
+          defaultMenuItem
+        )
       ).toEqual(DummyComponent);
     });
   });

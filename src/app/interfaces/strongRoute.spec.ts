@@ -1,5 +1,5 @@
 import { Location } from "@angular/common";
-import { Component, Input, NgZone, Type } from "@angular/core";
+import { Component, Input, NgZone } from "@angular/core";
 import { Params, Route, Routes } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -493,8 +493,11 @@ describe("StrongRoute", () => {
 
     class MockComponent extends PageComponent {}
 
-    function callback(component: Type<any>, config: Partial<Route>) {
-      return { ...config, children: [{ path: "", component }] } as Route;
+    function callback(route: StrongRoute) {
+      return {
+        ...route.angularRouteConfig,
+        children: [{ path: "", component: route.pageComponent }],
+      } as Route;
     }
 
     parents.forEach((parent) => {

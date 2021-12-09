@@ -1,8 +1,10 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
+import { ResolvedModel } from "@baw-api/resolver-common";
+import { SitesService } from "@baw-api/site/sites.service";
+import { Errorable } from "@helpers/advancedTypes";
+import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import {
   createRoutingFactory,
@@ -12,6 +14,7 @@ import {
 import { FormComponent } from "@shared/form/form.component";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
+import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { assertErrorHandler } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
@@ -22,8 +25,9 @@ import { SiteDeleteComponent } from "./site.component";
 describe("SiteDeleteComponent", () => {
   let api: SpyObject<SitesService>;
   let defaultProject: Project;
+  let defaultRegion: Region;
   let defaultSite: Site;
-  let spectator: SpectatorRouting<SiteDeleteComponent>;
+  let spec: SpectatorRouting<SiteDeleteComponent>;
   const createComponent = createRoutingFactory({
     imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent],
@@ -33,25 +37,36 @@ describe("SiteDeleteComponent", () => {
   });
 
   function setup(
-    project: Project,
-    site: Site,
-    projectError?: ApiErrorDetails,
-    siteError?: ApiErrorDetails
+    project: Errorable<Project>,
+    site: Errorable<Site>,
+    region?: Errorable<Region>
   ) {
-    spectator = createComponent({
+    function getResolvedModel<T>(model: Errorable<T>): ResolvedModel<T> {
+      return isApiErrorDetails(model) ? { error: model } : { model };
+    }
+
+    const resolvedModels = {
+      project: getResolvedModel(project),
+      site: getResolvedModel(site),
+    };
+
+    const resolvers = {
+      project: "resolver",
+      site: "resolver",
+    };
+
+    if (region) {
+      resolvedModels["region"] = getResolvedModel(region);
+      resolvers["region"] = "resolver";
+    }
+
+    spec = createComponent({
       detectChanges: false,
-      data: {
-        resolvers: {
-          project: projectResolvers.show,
-          site: siteResolvers.show,
-        },
-        project: { model: project, error: projectError },
-        site: { model: site, error: siteError },
-      },
+      data: { resolvers, ...resolvedModels },
     });
 
-    api = spectator.inject(SitesService);
-    spectator.detectChanges();
+    api = spec.inject(SitesService);
+    spec.detectChanges();
   }
 
   beforeEach(() => {
@@ -62,43 +77,61 @@ describe("SiteDeleteComponent", () => {
   describe("form", () => {
     it("should have no fields", () => {
       setup(defaultProject, defaultSite);
-      expect(spectator.component.fields).toEqual([]);
+      expect(spec.component.fields).toEqual([]);
     });
   });
 
   describe("component", () => {
-    it("should create", () => {
-      setup(defaultProject, defaultSite);
-      expect(spectator.component).toBeTruthy();
-    });
+    [false, true].forEach((withRegion) => {
+      describe(withRegion ? "withRegion" : "withoutRegion", () => {
+        beforeEach(() => {
+          defaultRegion = withRegion ? new Region(generateRegion()) : undefined;
+        });
 
-    it("should handle project error", () => {
-      setup(undefined, defaultSite, generateApiErrorDetails());
-      assertErrorHandler(spectator.fixture);
-    });
+        it("should create", () => {
+          setup(defaultProject, defaultSite, defaultRegion);
+          expect(spec.component).toBeTruthy();
+        });
 
-    it("should handle site error", () => {
-      setup(defaultProject, undefined, undefined, generateApiErrorDetails());
-      assertErrorHandler(spectator.fixture);
-    });
+        it("should handle project error", () => {
+          setup(generateApiErrorDetails(), defaultSite, defaultRegion);
+          assertErrorHandler(spec.fixture);
+        });
 
-    it("should call api", () => {
-      setup(defaultProject, defaultSite);
-      api.destroy.and.callFake(() => new Subject());
-      spectator.component.submit({ ...defaultSite });
-      expect(api.destroy).toHaveBeenCalledWith(
-        new Site(defaultSite),
-        defaultProject
-      );
-    });
+        if (withRegion) {
+          it("should handle region error", () => {
+            setup(defaultProject, defaultSite, generateApiErrorDetails());
+            assertErrorHandler(spec.fixture);
+          });
+        }
 
-    it("should redirect to projects", () => {
-      const spy = spyOnProperty(defaultProject, "viewUrl");
-      setup(defaultProject, defaultSite);
-      api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
+        it("should handle site error", () => {
+          setup(defaultProject, generateApiErrorDetails(), defaultRegion);
+          assertErrorHandler(spec.fixture);
+        });
 
-      spectator.component.submit({});
-      expect(spy).toHaveBeenCalled();
+        it("should call api", () => {
+          setup(defaultProject, defaultSite, defaultRegion);
+          api.destroy.and.callFake(() => new Subject());
+          spec.component.submit({ ...defaultSite });
+          expect(api.destroy).toHaveBeenCalledWith(
+            new Site(defaultSite),
+            defaultProject
+          );
+        });
+
+        it(`should redirect to ${withRegion ? "region" : "project"}`, () => {
+          const spy = spyOnProperty(
+            withRegion ? defaultRegion : defaultProject,
+            "viewUrl"
+          );
+          setup(defaultProject, defaultSite, defaultRegion);
+          api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
+
+          spec.component.submit({});
+          expect(spy).toHaveBeenCalled();
+        });
+      });
     });
   });
 });

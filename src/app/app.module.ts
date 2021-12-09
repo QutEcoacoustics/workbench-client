@@ -39,7 +39,6 @@ import { ReportProblemsModule } from "./components/report-problem/report-problem
 import { SecurityModule } from "./components/security/security.module";
 import { SendAudioModule } from "./components/send-audio/send-audio.module";
 import { SharedModule } from "./components/shared/shared.module";
-import { PointsModule } from "./components/sites/points.module";
 import { SitesModule } from "./components/sites/sites.module";
 import { StatisticsModule } from "./components/statistics/statistics.module";
 
@@ -63,7 +62,6 @@ export const appImports = [
   LibraryModule,
   ListenModule,
   MyAccountModule,
-  PointsModule,
   ProfileModule,
   ProjectsModule,
   RegionsModule,
