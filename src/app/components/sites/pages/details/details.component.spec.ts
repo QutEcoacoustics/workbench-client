@@ -13,7 +13,7 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
 import { Region } from "@models/Region";
 import { generateRegion } from "@test/fakes/Region";
-import { SiteDetailsComponent } from "./site.component";
+import { SiteDetailsComponent } from "./details.component";
 
 const mockSiteComponent = MockComponent(SiteComponent);
 

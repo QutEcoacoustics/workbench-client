@@ -30,7 +30,7 @@ import {
 import {
   pointMenuItemActions,
   siteMenuItemActions,
-} from "../details/site.component";
+} from "../details/details.component";
 
 const projectKey = "project";
 const regionKey = "region";

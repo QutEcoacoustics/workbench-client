@@ -9,7 +9,7 @@ import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { assertErrorHandler } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
-import { SiteNewComponent } from "../new/site.component";
+import { SiteNewComponent } from "../new/new.component";
 import { WizardComponent } from "./wizard.component";
 
 const mock = {

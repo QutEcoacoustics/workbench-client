@@ -4,10 +4,11 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
-  deleteSiteMenuItem,
-  siteMenuItem,
-  sitesCategory,
-} from "@components/sites/sites.menus";
+  editPointMenuItem,
+  pointMenuItem,
+  pointsCategory,
+} from "@components/sites/points.menus";
+import { Option } from "@helpers/advancedTypes";
 import {
   defaultSuccessMsg,
   FormTemplate,
@@ -19,26 +20,28 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { Option } from "@helpers/advancedTypes";
+import pointSchema from "../../point.base.json";
+import siteSchema from "../../site.base.json";
 import {
-  pointsCategory,
-  pointMenuItem,
-  deletePointMenuItem,
-} from "@components/sites/points.menus";
+  editSiteMenuItem,
+  siteMenuItem,
+  sitesCategory,
+} from "../../sites.menus";
 import {
   pointMenuItemActions,
   siteMenuItemActions,
-} from "../details/site.component";
+} from "../details/details.component";
+import { siteErrorMsg } from "../new/new.component";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
 @Component({
-  selector: "baw-sites-delete",
-  templateUrl: "./delete.component.html",
+  selector: "baw-sites-edit",
+  templateUrl: "./edit.component.html",
 })
-class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
+class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   public title: string;
 
   public constructor(
@@ -49,17 +52,19 @@ class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[siteKey] as Site,
-      successMsg: (model) => defaultSuccessMsg("destroyed", model.name),
-      redirectUser: () =>
-        this.router.navigateByUrl((this.region ?? this.project).viewUrl),
+      successMsg: (model) => defaultSuccessMsg("updated", model.name),
+      failureMsg: (error) => siteErrorMsg(error),
+      redirectUser: (model) =>
+        this.router.navigateByUrl(model.getViewUrl(this.project)),
     });
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     super.ngOnInit();
 
     if (!this.failure) {
-      this.title = `Are you certain you wish to delete ${this.model.name}?`;
+      this.title = `Edit ${this.model.name}`;
+      this.fields = this.region ? pointSchema.fields : siteSchema.fields;
     }
   }
 
@@ -68,15 +73,15 @@ class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
   }
 
   public get project(): Project {
-    return this.models[projectKey] as Project;
+    return this.models.project as Project;
   }
 
   protected apiAction(model: Partial<Site>) {
-    return this.api.destroy(new Site(model), this.project);
+    return this.api.update(new Site(model), this.project);
   }
 }
 
-SiteDeleteComponent.linkToRouterWith(
+SiteEditComponent.linkToRouterWith(
   {
     category: sitesCategory,
     menus: {
@@ -88,7 +93,7 @@ SiteDeleteComponent.linkToRouterWith(
       [siteKey]: siteResolvers.show,
     },
   },
-  deleteSiteMenuItem
+  editSiteMenuItem
 ).linkToRouterWith(
   {
     category: pointsCategory,
@@ -102,7 +107,7 @@ SiteDeleteComponent.linkToRouterWith(
       [siteKey]: siteResolvers.show,
     },
   },
-  deletePointMenuItem
+  editPointMenuItem
 );
 
-export { SiteDeleteComponent };
+export { SiteEditComponent };

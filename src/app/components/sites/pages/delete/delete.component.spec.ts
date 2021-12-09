@@ -20,7 +20,7 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
-import { SiteDeleteComponent } from "./site.component";
+import { SiteDeleteComponent } from "./delete.component";
 
 describe("SiteDeleteComponent", () => {
   let api: SpyObject<SitesService>;

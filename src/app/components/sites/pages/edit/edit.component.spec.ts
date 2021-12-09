@@ -28,12 +28,12 @@ import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
 import pointSchema from "../../point.base.json";
 import siteSchema from "../../site.base.json";
-import { SiteNewComponent } from "./site.component";
+import { SiteEditComponent } from "./edit.component";
 
-describe("SiteNewComponent", () => {
-  let spec: SpectatorRouting<SiteNewComponent>;
+describe("SiteEditComponent", () => {
+  let spec: SpectatorRouting<SiteEditComponent>;
   const createComponent = createRoutingFactory({
-    component: SiteNewComponent,
+    component: SiteEditComponent,
     imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent],
     mocks: [ToastrService],
@@ -88,8 +88,13 @@ describe("SiteNewComponent", () => {
     let api: SpyObject<SitesService>;
     let defaultProject: Project;
     let defaultRegion: Region;
+    let defaultSite: Site;
 
-    function setup(project: Errorable<Project>, region?: Errorable<Region>) {
+    function setup(
+      project: Errorable<Project>,
+      site: Errorable<Site>,
+      region?: Errorable<Region>
+    ) {
       function getResolvedModel<T>(model: Errorable<T>): ResolvedModel<T> {
         return isApiErrorDetails(model) ? { error: model } : { model };
       }
@@ -97,6 +102,7 @@ describe("SiteNewComponent", () => {
       const resolvers = { project: "resolver", site: "resolver" };
       const models = {
         project: getResolvedModel(project),
+        site: getResolvedModel(site),
       };
 
       if (region) {
@@ -117,49 +123,52 @@ describe("SiteNewComponent", () => {
     afterAll(() => destroyGoogleMaps());
 
     [true, false].forEach((withRegion) => {
-      xdescribe(withRegion ? "withRegion" : "withoutRegion", () => {
+      describe(withRegion ? "withRegion" : "withoutRegion", () => {
         beforeEach(() => {
           defaultProject = new Project(generateProject());
           defaultRegion = withRegion ? new Region(generateRegion()) : undefined;
+          defaultSite = new Site(
+            generateSite(withRegion ? { regionId: defaultRegion.id } : {})
+          );
         });
 
         it("should create", () => {
-          setup(defaultProject, defaultRegion);
+          setup(defaultProject, defaultSite, defaultRegion);
           expect(spec.component).toBeTruthy();
+        });
+
+        it("should handle site error", () => {
+          setup(defaultProject, generateApiErrorDetails(), defaultRegion);
+          assertErrorHandler(spec.fixture);
         });
 
         if (withRegion) {
           it("should handle region error", () => {
-            setup(defaultProject, generateApiErrorDetails());
+            setup(defaultProject, defaultSite, generateApiErrorDetails());
             assertErrorHandler(spec.fixture);
           });
         }
 
         it("should handle project error", () => {
-          setup(generateApiErrorDetails(), defaultRegion);
+          setup(generateApiErrorDetails(), defaultSite, defaultRegion);
           assertErrorHandler(spec.fixture);
         });
 
         // TODO Validate region id is set in api call
         it("should call api", () => {
-          setup(defaultProject, defaultRegion);
+          setup(defaultProject, defaultSite, defaultRegion);
           api.update.and.callFake(() => new Subject());
-          const site = new Site(
-            generateSite(withRegion ? { regionId: defaultRegion.id } : {})
-          );
 
-          spec.component.submit({ ...site });
-          expect(api.create).toHaveBeenCalledWith(
-            new Site({ ...site }),
+          spec.component.submit({ ...defaultSite });
+          expect(api.update).toHaveBeenCalledWith(
+            new Site({ ...defaultSite }),
             defaultProject
           );
         });
 
         it("should redirect to site", () => {
-          setup(defaultProject, defaultRegion);
-          const site = new Site(
-            generateSite(withRegion ? { regionId: defaultRegion.id } : {})
-          );
+          setup(defaultProject, defaultSite, defaultRegion);
+          const site = new Site(generateSite());
           api.update.and.callFake(() => new BehaviorSubject<Site>(site));
 
           spec.component.submit({});
