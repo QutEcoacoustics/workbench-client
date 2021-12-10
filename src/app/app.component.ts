@@ -46,6 +46,10 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
    */
   public updatePageLayout(component: any) {
     const pageComponent = component?.constructor as IPageComponentStatic;
-    this.fullscreen = !!getPageInfos(pageComponent)?.[0]?.fullscreen;
+    // This is a faulty assumption about fullscreen, however should be fixed by
+    // https://github.com/QutEcoacoustics/workbench-client/issues/458
+    this.fullscreen = !!getPageInfos(pageComponent)?.some(
+      (page) => page.fullscreen
+    );
   }
 }
