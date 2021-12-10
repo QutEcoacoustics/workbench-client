@@ -92,7 +92,7 @@ class AdminThemeTemplateComponent
 
 AdminThemeTemplateComponent.linkToRoute({
   category: adminCategory,
-  menuRoute: adminThemeMenuItem,
+  pageRoute: adminThemeMenuItem,
   menus: { actions: List(adminMenuItemActions) },
 });
 

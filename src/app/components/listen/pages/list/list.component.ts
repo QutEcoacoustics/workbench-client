@@ -14,7 +14,7 @@ class ListenComponent extends PageComponent {}
 
 ListenComponent.linkToRoute({
   category: listenCategory,
-  menuRoute: listenMenuItem,
+  pageRoute: listenMenuItem,
 });
 
 export { ListenComponent };

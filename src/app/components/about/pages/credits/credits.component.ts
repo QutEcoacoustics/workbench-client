@@ -14,7 +14,7 @@ class CreditsComponent extends PageComponent {
 
 CreditsComponent.linkToRoute({
   category: aboutCategory,
-  menuRoute: creditsMenuItem,
+  pageRoute: creditsMenuItem,
 });
 
 export { CreditsComponent };

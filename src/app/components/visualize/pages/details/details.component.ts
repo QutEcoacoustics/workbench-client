@@ -14,7 +14,7 @@ class VisualizeComponent extends PageComponent {}
 
 VisualizeComponent.linkToRoute({
   category: visualizeCategory,
-  menuRoute: visualizeMenuItem,
+  pageRoute: visualizeMenuItem,
   fullscreen: true,
 });
 

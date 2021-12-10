@@ -14,7 +14,7 @@ class LibraryComponent extends PageComponent {}
 
 LibraryComponent.linkToRoute({
   category: libraryCategory,
-  menuRoute: libraryMenuItem,
+  pageRoute: libraryMenuItem,
   fullscreen: true,
 });
 

@@ -39,7 +39,7 @@ class TheirBookmarksComponent extends MyBookmarksComponent {
 
 TheirBookmarksComponent.linkToRoute({
   category: theirProfileCategory,
-  menuRoute: theirBookmarksMenuItem,
+  pageRoute: theirBookmarksMenuItem,
   menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
   resolvers: { [accountKey]: accountResolvers.show },
 });

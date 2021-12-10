@@ -82,7 +82,7 @@ class RegisterComponent
 
 RegisterComponent.linkToRoute({
   category: securityCategory,
-  menuRoute: registerMenuItem,
+  pageRoute: registerMenuItem,
 });
 
 export { RegisterComponent };

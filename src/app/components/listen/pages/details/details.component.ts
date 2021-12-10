@@ -15,7 +15,7 @@ class ListenRecordingComponent extends PageComponent {}
 
 ListenRecordingComponent.linkToRoute({
   category: listenCategory,
-  menuRoute: listenRecordingMenuItem,
+  pageRoute: listenRecordingMenuItem,
   fullscreen: true,
   resolvers: { audioRecording: audioRecordingResolvers.show },
 });

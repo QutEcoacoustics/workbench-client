@@ -78,7 +78,7 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
 
 TheirEditComponent.linkToRoute({
   category: theirProfileCategory,
-  menuRoute: theirEditMenuItem,
+  pageRoute: theirEditMenuItem,
   menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
   resolvers: { [accountKey]: accountResolvers.show },
 });

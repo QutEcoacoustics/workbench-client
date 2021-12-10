@@ -78,7 +78,7 @@ class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
 
 SiteDeleteComponent.linkToRoute({
   category: sitesCategory,
-  menuRoute: deleteSiteMenuItem,
+  pageRoute: deleteSiteMenuItem,
   menus: {
     actions: List([siteMenuItem, ...siteMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
@@ -89,7 +89,7 @@ SiteDeleteComponent.linkToRoute({
   },
 }).linkToRoute({
   category: pointsCategory,
-  menuRoute: deletePointMenuItem,
+  pageRoute: deletePointMenuItem,
   menus: {
     actions: List([pointMenuItem, ...pointMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

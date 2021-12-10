@@ -143,7 +143,7 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
 
 DetailsComponent.linkToRoute({
   category: regionsCategory,
-  menuRoute: regionMenuItem,
+  pageRoute: regionMenuItem,
   menus: {
     actions: List([projectMenuItem, ...regionMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

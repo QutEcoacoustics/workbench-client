@@ -14,7 +14,7 @@ class SendAudioComponent extends PageComponent {
 
 SendAudioComponent.linkToRoute({
   category: sendAudioCategory,
-  menuRoute: sendAudioMenuItem,
+  pageRoute: sendAudioMenuItem,
 });
 
 export { SendAudioComponent };

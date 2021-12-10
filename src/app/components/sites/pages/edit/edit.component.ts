@@ -83,7 +83,7 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
 
 SiteEditComponent.linkToRoute({
   category: sitesCategory,
-  menuRoute: editSiteMenuItem,
+  pageRoute: editSiteMenuItem,
   menus: {
     actions: List([siteMenuItem, ...siteMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
@@ -94,7 +94,7 @@ SiteEditComponent.linkToRoute({
   },
 }).linkToRoute({
   category: pointsCategory,
-  menuRoute: editPointMenuItem,
+  pageRoute: editPointMenuItem,
   menus: {
     actions: List([pointMenuItem, ...pointMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

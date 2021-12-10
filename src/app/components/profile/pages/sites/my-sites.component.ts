@@ -76,7 +76,7 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
 
 MySitesComponent.linkToRoute({
   category: myAccountCategory,
-  menuRoute: mySitesMenuItem,
+  pageRoute: mySitesMenuItem,
   menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
 });

@@ -60,7 +60,7 @@ class AdminAudioRecordingComponent
 
 AdminAudioRecordingComponent.linkToRoute({
   category: adminAudioRecordingsCategory,
-  menuRoute: adminAudioRecordingMenuItem,
+  pageRoute: adminAudioRecordingMenuItem,
   menus: {
     actions: List([adminAudioRecordingsMenuItem, adminAudioRecordingMenuItem]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

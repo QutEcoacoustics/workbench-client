@@ -22,7 +22,7 @@ class AudioAnalysisResultsComponent extends PageComponent {}
 
 AudioAnalysisResultsComponent.linkToRoute({
   category: audioAnalysisCategory,
-  menuRoute: audioAnalysisResultsMenuItem,
+  pageRoute: audioAnalysisResultsMenuItem,
   menus: {
     actions: List([
       audioAnalysisMenuItem,

@@ -24,6 +24,7 @@
         "import"
       ],
       "rules": {
+        "no-console": ["error", { "allow": ["warn", "error"] }],
         "import/no-unresolved": "off",
         "import/no-deprecated": "error",
         "@angular-eslint/component-selector": [

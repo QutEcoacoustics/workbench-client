@@ -82,7 +82,7 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
 
 AdminTagsEditComponent.linkToRoute({
   category: adminTagsCategory,
-  menuRoute: adminEditTagMenuItem,
+  pageRoute: adminEditTagMenuItem,
   menus: {
     actions: List([
       adminTagsMenuItem,

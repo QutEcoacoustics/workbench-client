@@ -21,6 +21,6 @@ class PageNotFoundComponent extends PageComponent {
 
 PageNotFoundComponent.linkToRoute({
   category: homeCategory,
-  menuRoute: pageNotFoundMenuItem,
+  pageRoute: pageNotFoundMenuItem,
 });
 export { PageNotFoundComponent };

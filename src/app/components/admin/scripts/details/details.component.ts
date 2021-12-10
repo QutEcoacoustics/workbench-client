@@ -59,7 +59,7 @@ class AdminScriptComponent
 
 AdminScriptComponent.linkToRoute({
   category: adminScriptsCategory,
-  menuRoute: adminScriptMenuItem,
+  pageRoute: adminScriptMenuItem,
   menus: {
     actions: List([adminScriptsMenuItem, ...adminScriptActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

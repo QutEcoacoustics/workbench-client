@@ -73,7 +73,7 @@ class DeleteComponent extends FormTemplate<Project> implements OnInit {
 
 DeleteComponent.linkToRoute({
   category: projectCategory,
-  menuRoute: deleteProjectMenuItem,
+  pageRoute: deleteProjectMenuItem,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

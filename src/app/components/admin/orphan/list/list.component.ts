@@ -45,7 +45,7 @@ class AdminOrphansComponent
 
 AdminOrphansComponent.linkToRoute({
   category: adminOrphansCategory,
-  menuRoute: adminOrphansMenuItem,
+  pageRoute: adminOrphansMenuItem,
   menus: {
     actions: List([adminDashboardMenuItem, ...adminMenuItemActions]),
   },

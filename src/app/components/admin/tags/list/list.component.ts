@@ -52,7 +52,7 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
 
 AdminTagsComponent.linkToRoute({
   category: adminTagsCategory,
-  menuRoute: adminTagsMenuItem,
+  pageRoute: adminTagsMenuItem,
   menus: {
     actions: List([adminDashboardMenuItem, ...adminTagsMenuItemActions]),
   },

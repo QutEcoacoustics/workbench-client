@@ -86,7 +86,7 @@ class WizardComponent extends PageComponent implements OnInit {
 
 WizardComponent.linkToRoute({
   category: projectCategory,
-  menuRoute: newSiteMenuItem,
+  pageRoute: newSiteMenuItem,
   menus: { actions: List([projectMenuItem, ...projectMenuItemActions]) },
   resolvers: { [projectKey]: projectResolvers.show },
 });

@@ -49,7 +49,7 @@ class UnlockAccountComponent extends FormTemplate<UnlockAccount> {
 
 UnlockAccountComponent.linkToRoute({
   category: securityCategory,
-  menuRoute: unlockAccountMenuItem,
+  pageRoute: unlockAccountMenuItem,
   menus: { actions: List([loginMenuItem, ...loginMenuItemActions]) },
 });
 

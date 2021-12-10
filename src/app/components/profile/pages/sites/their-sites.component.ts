@@ -32,7 +32,7 @@ class TheirSitesComponent extends MySitesComponent {
 
 TheirSitesComponent.linkToRoute({
   category: theirProfileCategory,
-  menuRoute: theirSitesMenuItem,
+  pageRoute: theirSitesMenuItem,
   menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
   resolvers: { [accountKey]: accountResolvers.show },
 });

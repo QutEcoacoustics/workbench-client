@@ -49,7 +49,7 @@ class ResetPasswordComponent extends FormTemplate<ResetPassword> {
 
 ResetPasswordComponent.linkToRoute({
   category: securityCategory,
-  menuRoute: resetPasswordMenuItem,
+  pageRoute: resetPasswordMenuItem,
   menus: { actions: List([loginMenuItem, ...loginMenuItemActions]) },
 });
 

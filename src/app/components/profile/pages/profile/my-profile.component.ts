@@ -177,7 +177,7 @@ class MyProfileComponent
 
 MyProfileComponent.linkToRoute({
   category: myAccountCategory,
-  menuRoute: myAccountMenuItem,
+  pageRoute: myAccountMenuItem,
   menus: { actions: List(myAccountActions) },
   resolvers: { [userKey]: userResolvers.show },
 });

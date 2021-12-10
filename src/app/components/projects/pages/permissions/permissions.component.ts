@@ -83,6 +83,7 @@ class PermissionsComponent extends TableTemplate<TableRow> implements OnInit {
   }
 
   public submit($event: any) {
+    // eslint-disable-next-line no-console
     console.log($event);
   }
 
@@ -115,7 +116,7 @@ class PermissionsComponent extends TableTemplate<TableRow> implements OnInit {
 
 PermissionsComponent.linkToRoute({
   category: projectCategory,
-  menuRoute: editProjectPermissionsMenuItem,
+  pageRoute: editProjectPermissionsMenuItem,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

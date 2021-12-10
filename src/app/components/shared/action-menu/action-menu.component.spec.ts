@@ -90,20 +90,20 @@ describe("ActionMenuComponent", () => {
   });
 
   it("should create menu component", () => {
-    setup({ menuRoute: defaultPageRoute });
+    setup({ pageRoute: defaultPageRoute });
     spec.detectChanges();
     expect(getMenu()).toBeInstanceOf(MenuComponent);
   });
 
   it("should set menu to action menu", () => {
-    setup({ menuRoute: defaultPageRoute });
+    setup({ pageRoute: defaultPageRoute });
     spec.detectChanges();
     expect(getMenu().menuType).toBe("action");
   });
 
   describe("category", () => {
     it("should display default category", () => {
-      setup({ menuRoute: defaultPageRoute });
+      setup({ pageRoute: defaultPageRoute });
       spec.detectChanges();
       expect(getMenu().title).toEqual(defaultMenu.defaultCategory);
     });
@@ -113,7 +113,7 @@ describe("ActionMenuComponent", () => {
         ...defaultCategory,
         label: "Custom Category",
       };
-      setup({ menuRoute: defaultPageRoute, category });
+      setup({ pageRoute: defaultPageRoute, category });
       spec.detectChanges();
       expect(getMenu().title).toEqual(category);
     });
@@ -122,7 +122,7 @@ describe("ActionMenuComponent", () => {
   describe("links", () => {
     it("should handle undefined links", () => {
       setup({
-        menuRoute: defaultPageRoute,
+        pageRoute: defaultPageRoute,
         menus: { actions: undefined },
       });
       spec.detectChanges();
@@ -131,7 +131,7 @@ describe("ActionMenuComponent", () => {
 
     it("should handle no links", () => {
       setup({
-        menuRoute: defaultPageRoute,
+        pageRoute: defaultPageRoute,
         menus: { actions: List([]) },
       });
       spec.detectChanges();
@@ -146,7 +146,7 @@ describe("ActionMenuComponent", () => {
         defaultMenuModal,
       ];
 
-      setup({ menuRoute: defaultPageRoute, menus: { actions: List(actions) } });
+      setup({ pageRoute: defaultPageRoute, menus: { actions: List(actions) } });
       spec.detectChanges();
       expect(getMenu().links.toArray()).toEqual(actions);
     });
@@ -155,7 +155,7 @@ describe("ActionMenuComponent", () => {
   describe("internal links", () => {
     it("should handle single link", () => {
       setup({
-        menuRoute: defaultPageRoute,
+        pageRoute: defaultPageRoute,
         menus: { actions: List([defaultMenuRoute]) },
       });
       spec.detectChanges();
@@ -167,7 +167,7 @@ describe("ActionMenuComponent", () => {
         menuRoute({ ...defaultMenuRoute, label: "Custom Link 1" }),
         menuRoute({ ...defaultMenuRoute, label: "Custom Link 2" }),
       ];
-      setup({ menuRoute: defaultPageRoute, menus: { actions: List(actions) } });
+      setup({ pageRoute: defaultPageRoute, menus: { actions: List(actions) } });
       spec.detectChanges();
       expect(getMenu().links.toArray()).toEqual(actions);
     });
@@ -176,7 +176,7 @@ describe("ActionMenuComponent", () => {
   describe("external links", () => {
     it("should handle single link", () => {
       setup({
-        menuRoute: defaultPageRoute,
+        pageRoute: defaultPageRoute,
         menus: { actions: List([defaultMenuLink]) },
       });
       spec.detectChanges();
@@ -188,7 +188,7 @@ describe("ActionMenuComponent", () => {
         menuLink({ ...defaultMenuLink, label: "Custom Link 1" }),
         menuLink({ ...defaultMenuLink, label: "Custom Link 2" }),
       ];
-      setup({ menuRoute: defaultPageRoute, menus: { actions: List(actions) } });
+      setup({ pageRoute: defaultPageRoute, menus: { actions: List(actions) } });
       spec.detectChanges();
       expect(getMenu().links.toArray()).toEqual(actions);
     });
@@ -197,7 +197,7 @@ describe("ActionMenuComponent", () => {
   describe("action buttons", () => {
     it("should handle single link", () => {
       setup({
-        menuRoute: defaultPageRoute,
+        pageRoute: defaultPageRoute,
         menus: { actions: List([defaultMenuAction]) },
       });
       spec.detectChanges();
@@ -209,7 +209,7 @@ describe("ActionMenuComponent", () => {
         menuAction({ ...defaultMenuAction, label: "Custom Link 1" }),
         menuAction({ ...defaultMenuAction, label: "Custom Link 2" }),
       ];
-      setup({ menuRoute: defaultPageRoute, menus: { actions: List(actions) } });
+      setup({ pageRoute: defaultPageRoute, menus: { actions: List(actions) } });
       spec.detectChanges();
       expect(getMenu().links.toArray()).toEqual(actions);
     });
@@ -218,7 +218,7 @@ describe("ActionMenuComponent", () => {
   describe("modals", () => {
     it("should handle single modal", () => {
       setup({
-        menuRoute: defaultPageRoute,
+        pageRoute: defaultPageRoute,
         menus: { actions: List([defaultMenuModal]) },
       });
       spec.detectChanges();
@@ -230,7 +230,7 @@ describe("ActionMenuComponent", () => {
         menuModal({ ...defaultMenuModal, label: "Custom Link 1" }),
         menuModal({ ...defaultMenuModal, label: "Custom Link 2" }),
       ];
-      setup({ menuRoute: defaultPageRoute, menus: { actions: List(actions) } });
+      setup({ pageRoute: defaultPageRoute, menus: { actions: List(actions) } });
       spec.detectChanges();
       expect(getMenu().links.toArray()).toEqual(actions);
     });
@@ -239,7 +239,7 @@ describe("ActionMenuComponent", () => {
   describe("widgets", () => {
     it("should handle single widget", () => {
       setup({
-        menuRoute: defaultPageRoute,
+        pageRoute: defaultPageRoute,
         menus: { actions: List(), actionWidgets: List([defaultWidget]) },
       });
       spec.detectChanges();
@@ -252,7 +252,7 @@ describe("ActionMenuComponent", () => {
         new WidgetMenuItem(MockWidgetComponent),
       ];
       setup({
-        menuRoute: defaultPageRoute,
+        pageRoute: defaultPageRoute,
         menus: { actions: List(), actionWidgets: List(widgets) },
       });
       spec.detectChanges();

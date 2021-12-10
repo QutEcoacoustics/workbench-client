@@ -57,7 +57,7 @@ class AdminOrphanComponent
 
 AdminOrphanComponent.linkToRoute({
   category: adminOrphansCategory,
-  menuRoute: adminOrphanMenuItem,
+  pageRoute: adminOrphanMenuItem,
   menus: {
     actions: List([adminOrphansMenuItem, adminOrphanMenuItem]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

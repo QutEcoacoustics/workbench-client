@@ -13,7 +13,7 @@ class CitSciResponsesComponent extends PageComponent {}
 
 CitSciResponsesComponent.linkToRoute({
   category: citSciCategory,
-  menuRoute: citSciResponsesMenuItem,
+  pageRoute: citSciResponsesMenuItem,
   fullscreen: true,
 });
 

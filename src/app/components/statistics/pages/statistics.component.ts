@@ -162,7 +162,7 @@ class StatisticsComponent
 
 StatisticsComponent.linkToRoute({
   category: statisticsCategory,
-  menuRoute: statisticsMenuItem,
+  pageRoute: statisticsMenuItem,
 });
 
 export { StatisticsComponent };

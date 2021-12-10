@@ -77,7 +77,7 @@ class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
 
 ContactUsComponent.linkToRoute({
   category: aboutCategory,
-  menuRoute: contactUsMenuItem,
+  pageRoute: contactUsMenuItem,
 });
 
 export { ContactUsComponent };

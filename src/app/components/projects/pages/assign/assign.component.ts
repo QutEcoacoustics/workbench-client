@@ -155,7 +155,7 @@ class AssignComponent
 
 AssignComponent.linkToRoute({
   category: projectCategory,
-  menuRoute: assignSiteMenuItem,
+  pageRoute: assignSiteMenuItem,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

@@ -98,7 +98,7 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
 
 SiteDetailsComponent.linkToRoute({
   category: sitesCategory,
-  menuRoute: siteMenuItem,
+  pageRoute: siteMenuItem,
   menus: {
     actions: List([projectMenuItem, ...siteMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
@@ -109,7 +109,7 @@ SiteDetailsComponent.linkToRoute({
   },
 }).linkToRoute({
   category: pointsCategory,
-  menuRoute: pointMenuItem,
+  pageRoute: pointMenuItem,
   menus: {
     actions: List([regionMenuItem, ...pointMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

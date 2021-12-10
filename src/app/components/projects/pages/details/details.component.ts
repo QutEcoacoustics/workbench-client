@@ -200,7 +200,7 @@ class DetailsComponent
 
 DetailsComponent.linkToRoute({
   category: projectCategory,
-  menuRoute: projectMenuItem,
+  pageRoute: projectMenuItem,
   menus: {
     actions: List([projectsMenuItem, ...projectMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

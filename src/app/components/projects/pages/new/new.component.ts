@@ -55,7 +55,7 @@ class NewComponent extends FormTemplate<Project> {
 
 NewComponent.linkToRoute({
   category: projectsCategory,
-  menuRoute: newProjectMenuItem,
+  pageRoute: newProjectMenuItem,
   menus: { actions: List([projectsMenuItem, ...projectsMenuItemActions]) },
 });
 

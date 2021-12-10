@@ -148,7 +148,7 @@ class HarvestComponent extends PageComponent implements OnInit {
 
 HarvestComponent.linkToRoute({
   category: projectCategory,
-  menuRoute: harvestProjectMenuItem,
+  pageRoute: harvestProjectMenuItem,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

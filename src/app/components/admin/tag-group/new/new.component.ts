@@ -53,7 +53,7 @@ class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
 
 AdminTagGroupsNewComponent.linkToRoute({
   category: adminTagGroupsCategory,
-  menuRoute: adminNewTagGroupMenuItem,
+  pageRoute: adminNewTagGroupMenuItem,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupsMenuItemActions]),
   },

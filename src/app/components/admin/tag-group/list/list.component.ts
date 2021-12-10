@@ -45,7 +45,7 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
 
 AdminTagGroupsComponent.linkToRoute({
   category: adminTagGroupsCategory,
-  menuRoute: adminTagGroupsMenuItem,
+  pageRoute: adminTagGroupsMenuItem,
   menus: {
     actions: List([adminDashboardMenuItem, ...adminTagGroupsMenuItemActions]),
   },

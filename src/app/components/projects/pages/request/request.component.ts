@@ -70,6 +70,7 @@ class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
    */
   public submit($event: any) {
     this.loading = true;
+    // eslint-disable-next-line no-console
     console.log($event);
     this.loading = false;
   }
@@ -77,7 +78,7 @@ class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
 
 RequestComponent.linkToRoute({
   category: projectsCategory,
-  menuRoute: requestProjectMenuItem,
+  pageRoute: requestProjectMenuItem,
   menus: { actions: List([projectsMenuItem, ...projectsMenuItemActions]) },
 });
 

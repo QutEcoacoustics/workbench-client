@@ -56,7 +56,7 @@ class AdminScriptsNewComponent extends FormTemplate<Script> {
 
 AdminScriptsNewComponent.linkToRoute({
   category: adminScriptsCategory,
-  menuRoute: adminNewScriptsMenuItem,
+  pageRoute: adminNewScriptsMenuItem,
   menus: {
     actions: List([adminScriptsMenuItem, ...adminScriptsMenuItemActions]),
   },

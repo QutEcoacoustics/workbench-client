@@ -52,7 +52,7 @@ class ConfirmPasswordComponent extends FormTemplate<ConfirmPassword> {
 
 ConfirmPasswordComponent.linkToRoute({
   category: securityCategory,
-  menuRoute: confirmAccountMenuItem,
+  pageRoute: confirmAccountMenuItem,
   menus: { actions: List([loginMenuItem, ...loginMenuItemActions]) },
 });
 

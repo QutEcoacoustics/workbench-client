@@ -81,7 +81,7 @@ class SiteComponent extends PageComponent implements OnInit {
             }
           }
         },
-        (err) => console.log({ err })
+        (err) => console.error({ err })
       );
   }
 

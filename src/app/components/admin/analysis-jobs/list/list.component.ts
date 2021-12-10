@@ -55,7 +55,7 @@ class AdminAnalysisJobsComponent
 
 AdminAnalysisJobsComponent.linkToRoute({
   category: adminAnalysisJobsCategory,
-  menuRoute: adminAnalysisJobsMenuItem,
+  pageRoute: adminAnalysisJobsMenuItem,
   menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
 });
 

@@ -82,7 +82,7 @@ export function siteErrorMsg(err: ApiErrorDetails) {
 // wizard
 SiteNewComponent.linkToRoute({
   category: pointsCategory,
-  menuRoute: newPointMenuItem,
+  pageRoute: newPointMenuItem,
   menus: { actions: List([regionMenuItem, ...regionMenuItemActions]) },
   resolvers: {
     [projectKey]: projectResolvers.show,

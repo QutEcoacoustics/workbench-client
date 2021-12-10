@@ -14,7 +14,7 @@ class NewAudioAnalysisComponent extends PageComponent {}
 
 NewAudioAnalysisComponent.linkToRoute({
   category: audioAnalysisCategory,
-  menuRoute: newAudioAnalysisMenuItem,
+  pageRoute: newAudioAnalysisMenuItem,
 });
 
 export { NewAudioAnalysisComponent };

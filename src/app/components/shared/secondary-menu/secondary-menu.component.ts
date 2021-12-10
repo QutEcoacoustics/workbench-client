@@ -54,7 +54,7 @@ export class SecondaryMenuComponent
     this.route.data.pipe(takeUntil(this.unsubscribe)).subscribe(
       (page: PageInfo) => {
         // get current page
-        const current = page.menuRoute;
+        const current = page.pageRoute;
         current.active = true; // Ignore predicate
 
         // and parent pages

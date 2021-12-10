@@ -149,11 +149,11 @@ const pageInfo: IPageInfo = {
 
 AudioRecordingsListComponent.linkToRoute({
   ...pageInfo,
-  menuRoute: menuItems.base,
+  pageRoute: menuItems.base,
 })
-  .linkToRoute({ ...pageInfo, menuRoute: menuItems.site })
-  .linkToRoute({ ...pageInfo, menuRoute: menuItems.siteAndRegion })
-  .linkToRoute({ ...pageInfo, menuRoute: menuItems.region })
-  .linkToRoute({ ...pageInfo, menuRoute: menuItems.project });
+  .linkToRoute({ ...pageInfo, pageRoute: menuItems.site })
+  .linkToRoute({ ...pageInfo, pageRoute: menuItems.siteAndRegion })
+  .linkToRoute({ ...pageInfo, pageRoute: menuItems.region })
+  .linkToRoute({ ...pageInfo, pageRoute: menuItems.project });
 
 export { AudioRecordingsListComponent };

@@ -51,7 +51,7 @@ const customActionLinks = List([createMenuItem(3), createMenuItem(4)]);
 class MenuComponent extends PageComponent {}
 MenuComponent.linkToRoute({
   category: homeCategory,
-  menuRoute: menuCompMenuItem,
+  pageRoute: menuCompMenuItem,
   fullscreen: false,
   menus: { links: customSecondaryLinks, actions: customActionLinks },
 });
@@ -69,7 +69,7 @@ const fullscreenCompMenuItem = menuRoute({
 class FullscreenComponent extends PageComponent {}
 FullscreenComponent.linkToRoute({
   category: homeCategory,
-  menuRoute: fullscreenCompMenuItem,
+  pageRoute: fullscreenCompMenuItem,
   fullscreen: true,
 });
 
@@ -149,7 +149,7 @@ describe("PageComponents", () => {
     it("should write page info to component", () => {
       const iPageInfo: IPageInfo = {
         category: homeCategory,
-        menuRoute: defaultMenuItem,
+        pageRoute: defaultMenuItem,
       };
 
       class DummyComponent extends PageComponent {}
@@ -165,12 +165,12 @@ describe("PageComponents", () => {
       const pages: IPageInfo[] = [
         {
           category: homeCategory,
-          menuRoute: menuRoute({ ...defaultMenuItem, label: "Page One" }),
+          pageRoute: menuRoute({ ...defaultMenuItem, label: "Page One" }),
           fullscreen: false,
         },
         {
           category: homeCategory,
-          menuRoute: menuRoute({ ...defaultMenuItem, label: "Page One" }),
+          pageRoute: menuRoute({ ...defaultMenuItem, label: "Page One" }),
           fullscreen: true,
         },
       ];
@@ -190,8 +190,8 @@ describe("PageComponents", () => {
       class DummyComponentB extends PageComponent {}
       const menuItemA = menuRoute({ ...defaultMenuItem, label: "Page One" });
       const menuItemB = menuRoute({ ...defaultMenuItem, label: "Page Two" });
-      const iPageInfoA = { category: homeCategory, menuRoute: menuItemA };
-      const iPageInfoB = { category: homeCategory, menuRoute: menuItemB };
+      const iPageInfoA = { category: homeCategory, pageRoute: menuItemA };
+      const iPageInfoB = { category: homeCategory, pageRoute: menuItemB };
 
       DummyComponentA.linkToRoute(iPageInfoA);
       DummyComponentB.linkToRoute(iPageInfoB);
@@ -211,7 +211,7 @@ describe("PageComponents", () => {
       expect(
         DummyComponent.linkToRoute({
           category: homeCategory,
-          menuRoute: defaultMenuItem,
+          pageRoute: defaultMenuItem,
         })
       ).toEqual(DummyComponent);
     });
@@ -220,11 +220,11 @@ describe("PageComponents", () => {
       class DummyComponent extends PageComponent {}
       DummyComponent.linkToRoute({
         category: homeCategory,
-        menuRoute: defaultMenuItem,
+        pageRoute: defaultMenuItem,
       });
 
       const pageInfo = DummyComponent.pageInfos[0];
-      expect(pageInfo.menuRoute).toEqual(defaultMenuItem);
+      expect(pageInfo.pageRoute).toEqual(defaultMenuItem);
       expect(pageInfo.route).toEqual(defaultRoute);
     });
 
@@ -232,7 +232,7 @@ describe("PageComponents", () => {
       class DummyComponent extends PageComponent {}
       DummyComponent.linkToRoute({
         category: homeCategory,
-        menuRoute: defaultMenuItem,
+        pageRoute: defaultMenuItem,
       });
 
       const pageInfo = DummyComponent.pageInfos[0];
@@ -245,7 +245,7 @@ describe("PageComponents", () => {
       expect(
         DummyComponent.linkToRoute({
           category: homeCategory,
-          menuRoute: defaultMenuItem,
+          pageRoute: defaultMenuItem,
         })
       ).toEqual(DummyComponent);
     });

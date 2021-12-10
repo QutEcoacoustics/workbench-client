@@ -60,7 +60,7 @@ class AdminAnalysisJobComponent
 
 AdminAnalysisJobComponent.linkToRoute({
   category: adminAnalysisJobsCategory,
-  menuRoute: adminAnalysisJobMenuItem,
+  pageRoute: adminAnalysisJobMenuItem,
   menus: {
     actions: List([adminAnalysisJobsMenuItem, adminAnalysisJobMenuItem]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

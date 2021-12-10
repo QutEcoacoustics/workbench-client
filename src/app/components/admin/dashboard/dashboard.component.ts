@@ -41,7 +41,7 @@ class AdminDashboardComponent extends PageComponent {}
 
 AdminDashboardComponent.linkToRoute({
   category: adminCategory,
-  menuRoute: adminDashboardMenuItem,
+  pageRoute: adminDashboardMenuItem,
   menus: { actions: List(adminMenuItemActions) },
 });
 

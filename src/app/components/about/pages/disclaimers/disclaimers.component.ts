@@ -17,7 +17,7 @@ class DisclaimersComponent extends PageComponent {
 
 DisclaimersComponent.linkToRoute({
   category: aboutCategory,
-  menuRoute: disclaimersMenuItem,
+  pageRoute: disclaimersMenuItem,
 });
 
 export { DisclaimersComponent };

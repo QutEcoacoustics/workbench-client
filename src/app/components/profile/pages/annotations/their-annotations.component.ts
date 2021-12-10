@@ -30,7 +30,7 @@ class TheirAnnotationsComponent extends MyAnnotationsComponent {
 
 TheirAnnotationsComponent.linkToRoute({
   category: theirProfileCategory,
-  menuRoute: theirAnnotationsMenuItem,
+  pageRoute: theirAnnotationsMenuItem,
   menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
   resolvers: { [accountKey]: accountResolvers.show },
 });

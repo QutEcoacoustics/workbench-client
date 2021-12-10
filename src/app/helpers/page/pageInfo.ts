@@ -9,6 +9,10 @@ import {
 import { StrongRoute } from "@interfaces/strongRoute";
 import { PageComponent } from "./pageComponent";
 
+export function isIPageInfo(data: Data): data is IPageInfo {
+  return data.category && data.pageRoute;
+}
+
 /**
  * Page info interface.
  * This stores information required to generate the various menus of the page.
@@ -19,8 +23,8 @@ import { PageComponent } from "./pageComponent";
  */
 export interface IPageInfo extends Data {
   category?: Category;
-  /** Stores modified menuroute */
-  menuRoute?: MenuRoute;
+  /** Stores modified menuRoute */
+  pageRoute?: MenuRoute;
   fullscreen?: boolean;
   resolvers?: ResolverList;
   menus?: Menus;
@@ -30,7 +34,7 @@ export interface IPageInfo extends Data {
  * Page info class
  */
 export class PageInfo implements IPageInfo {
-  public menuRoute: MenuRoute;
+  public pageRoute: MenuRoute;
   public component: Type<PageComponent>;
   public category: Category;
   public menus: Menus;
@@ -38,6 +42,11 @@ export class PageInfo implements IPageInfo {
   public resolvers: ResolverList;
 
   public constructor(args: IPageInfo) {
+    if (!args.pageRoute) {
+      console.warn("PageInfo must have a menuRoute", args);
+      throw Error("PageInfo must have a menuRoute");
+    }
+
     Object.assign(this, args);
     this.resolvers = args.resolvers ?? {};
   }
@@ -47,7 +56,7 @@ export class PageInfo implements IPageInfo {
     this.route.pageComponent = target;
   }
 
-  public get route(): StrongRoute {
-    return this.menuRoute.route;
+  public get route(): StrongRoute & { pageComponent: Type<PageComponent> } {
+    return this.pageRoute.route;
   }
 }

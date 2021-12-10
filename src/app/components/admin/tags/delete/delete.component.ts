@@ -65,7 +65,7 @@ class AdminTagsDeleteComponent extends FormTemplate<Tag> implements OnInit {
 
 AdminTagsDeleteComponent.linkToRoute({
   category: adminTagsCategory,
-  menuRoute: adminDeleteTagMenuItem,
+  pageRoute: adminDeleteTagMenuItem,
   menus: {
     actions: List([
       adminTagsMenuItem,

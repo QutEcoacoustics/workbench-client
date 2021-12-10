@@ -71,7 +71,7 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
 
 EditComponent.linkToRoute({
   category: projectCategory,
-  menuRoute: editProjectMenuItem,
+  pageRoute: editProjectMenuItem,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

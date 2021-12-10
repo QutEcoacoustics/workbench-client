@@ -78,7 +78,7 @@ class ReportProblemComponent
 
 ReportProblemComponent.linkToRoute({
   category: reportProblemsCategory,
-  menuRoute: reportProblemMenuItem,
+  pageRoute: reportProblemMenuItem,
 });
 
 export { ReportProblemComponent };

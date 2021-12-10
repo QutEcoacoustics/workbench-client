@@ -35,6 +35,8 @@ export function app(path: string): express.Express {
     // development settings
     join(distFolder, "assets", "environment.json"),
   ].find((x) => existsSync(x));
+
+  // eslint-disable-next-line no-console
   console.log("Using config file ", configPath);
   const rawConfig = readFileSync(configPath, "utf-8");
   const config = new Configuration(JSON.parse(rawConfig));
@@ -92,10 +94,12 @@ export function app(path: string): express.Express {
 function run(configPath: string): void {
   const port = Number(process.env.PORT) || 4000;
 
+  // eslint-disable-next-line no-console
   console.log("Is production?", environment.production);
   // Start up the Node server
   const server = app(configPath);
   server.listen(port, "0.0.0.0", () => {
+    // eslint-disable-next-line no-console
     console.log(`Node Express server listening on http://0.0.0.0:${port}`);
   });
 }

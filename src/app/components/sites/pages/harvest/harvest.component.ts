@@ -74,7 +74,7 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
 
 SiteHarvestComponent.linkToRoute({
   category: sitesCategory,
-  menuRoute: siteHarvestMenuItem,
+  pageRoute: siteHarvestMenuItem,
   menus: {
     actions: List([siteMenuItem, ...siteMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
@@ -85,7 +85,7 @@ SiteHarvestComponent.linkToRoute({
   },
 }).linkToRoute({
   category: pointsCategory,
-  menuRoute: pointHarvestMenuItem,
+  pageRoute: pointHarvestMenuItem,
   menus: {
     actions: List([pointMenuItem, ...pointMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

@@ -73,7 +73,7 @@ class AdminTagGroupsEditComponent
 
 AdminTagGroupsEditComponent.linkToRoute({
   category: adminTagGroupsCategory,
-  menuRoute: adminEditTagGroupMenuItem,
+  pageRoute: adminEditTagGroupMenuItem,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),

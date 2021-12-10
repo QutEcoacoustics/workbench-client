@@ -56,7 +56,7 @@ class AdminAudioRecordingsComponent
 
 AdminAudioRecordingsComponent.linkToRoute({
   category: adminAudioRecordingsCategory,
-  menuRoute: adminAudioRecordingsMenuItem,
+  pageRoute: adminAudioRecordingsMenuItem,
   menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
 });
 

@@ -80,7 +80,7 @@ class ListComponent extends PaginationTemplate<Project> {
 
 ListComponent.linkToRoute({
   category: projectsCategory,
-  menuRoute: projectsMenuItem,
+  pageRoute: projectsMenuItem,
   menus: { actions: List(projectsMenuItemActions) },
 });
 

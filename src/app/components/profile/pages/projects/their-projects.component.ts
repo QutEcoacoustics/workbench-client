@@ -39,7 +39,7 @@ class TheirProjectsComponent extends MyProjectsComponent {
 
 TheirProjectsComponent.linkToRoute({
   category: theirProfileCategory,
-  menuRoute: theirProjectsMenuItem,
+  pageRoute: theirProjectsMenuItem,
   menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
   resolvers: { [accountKey]: accountResolvers.show },
 });

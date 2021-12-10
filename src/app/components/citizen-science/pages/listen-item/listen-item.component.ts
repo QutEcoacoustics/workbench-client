@@ -13,7 +13,7 @@ class CitSciListenItemComponent extends PageComponent {}
 
 CitSciListenItemComponent.linkToRoute({
   category: citSciCategory,
-  menuRoute: citSciListenItemMenuItem,
+  pageRoute: citSciListenItemMenuItem,
   fullscreen: true,
 });
 

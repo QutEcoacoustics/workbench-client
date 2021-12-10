@@ -16,7 +16,7 @@ class AnnotationComponent extends PageComponent {}
 
 AnnotationComponent.linkToRoute({
   category: annotationsCategory,
-  menuRoute: annotationMenuItem,
+  pageRoute: annotationMenuItem,
   resolvers: {
     audioRecording: audioRecordingResolvers.show,
     audioEvent: audioEventResolvers.show,
