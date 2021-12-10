@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
@@ -12,5 +12,6 @@ const routes = homeRoute.compileRoutes(getRouteConfigForPage);
   declarations: components,
   imports: [SharedModule, RouterModule.forChild(routes)],
   exports: [RouterModule, ...components],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class HomeModule {}
