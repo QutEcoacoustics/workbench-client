@@ -56,10 +56,11 @@ class MyEditComponent extends FormTemplate<User> {
   }
 }
 
-MyEditComponent.linkComponentToPageInfo({
+MyEditComponent.linkToRoute({
   category: myAccountCategory,
+  pageRoute: myEditMenuItem,
   menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
-}).andMenuRoute(myEditMenuItem);
+});
 
 export { MyEditComponent };

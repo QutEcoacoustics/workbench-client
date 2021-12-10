@@ -58,13 +58,14 @@ class AdminAudioRecordingComponent
   }
 }
 
-AdminAudioRecordingComponent.linkComponentToPageInfo({
+AdminAudioRecordingComponent.linkToRoute({
   category: adminAudioRecordingsCategory,
+  pageRoute: adminAudioRecordingMenuItem,
   menus: {
     actions: List([adminAudioRecordingsMenuItem, adminAudioRecordingMenuItem]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [audioRecordingKey]: audioRecordingResolvers.show },
-}).andMenuRoute(adminAudioRecordingMenuItem);
+});
 
 export { AdminAudioRecordingComponent };

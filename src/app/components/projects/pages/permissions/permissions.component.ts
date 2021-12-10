@@ -83,6 +83,7 @@ class PermissionsComponent extends TableTemplate<TableRow> implements OnInit {
   }
 
   public submit($event: any) {
+    // eslint-disable-next-line no-console
     console.log($event);
   }
 
@@ -113,14 +114,15 @@ class PermissionsComponent extends TableTemplate<TableRow> implements OnInit {
   }
 }
 
-PermissionsComponent.linkComponentToPageInfo({
+PermissionsComponent.linkToRoute({
   category: projectCategory,
+  pageRoute: editProjectPermissionsMenuItem,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
-}).andMenuRoute(editProjectPermissionsMenuItem);
+});
 
 export { PermissionsComponent };
 

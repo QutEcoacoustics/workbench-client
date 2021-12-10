@@ -198,13 +198,14 @@ class DetailsComponent
   }
 }
 
-DetailsComponent.linkComponentToPageInfo({
+DetailsComponent.linkToRoute({
   category: projectCategory,
+  pageRoute: projectMenuItem,
   menus: {
     actions: List([projectsMenuItem, ...projectMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
-}).andMenuRoute(projectMenuItem);
+});
 
 export { DetailsComponent };

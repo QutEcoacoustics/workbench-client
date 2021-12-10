@@ -58,13 +58,14 @@ class AdminAnalysisJobComponent
   }
 }
 
-AdminAnalysisJobComponent.linkComponentToPageInfo({
+AdminAnalysisJobComponent.linkToRoute({
   category: adminAnalysisJobsCategory,
+  pageRoute: adminAnalysisJobMenuItem,
   menus: {
     actions: List([adminAnalysisJobsMenuItem, adminAnalysisJobMenuItem]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [analysisJobKey]: analysisJobResolvers.show },
-}).andMenuRoute(adminAnalysisJobMenuItem);
+});
 
 export { AdminAnalysisJobComponent };

@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import {
@@ -7,9 +8,19 @@ import {
 } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
+import { projectMenuItem } from "@components/projects/projects.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
+import {
+  pointsCategory,
+  pointMenuItem,
+  deletePointMenuItem,
+  editPointMenuItem,
+  pointHarvestMenuItem,
+} from "@components/sites/points.menus";
 import { pointAnnotationsModal } from "@components/sites/points.modals";
+import { siteAnnotationsModal } from "@components/sites/sites.modals";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
+import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
@@ -18,13 +29,21 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import {
-  deletePointMenuItem,
-  editPointMenuItem,
-  pointHarvestMenuItem,
-  pointMenuItem,
-  pointsCategory,
-} from "../../points.menus";
-import { SiteDetailsComponent } from "./site.component";
+  deleteSiteMenuItem,
+  editSiteMenuItem,
+  siteHarvestMenuItem,
+  siteMenuItem,
+  sitesCategory,
+} from "../../sites.menus";
+
+export const siteMenuItemActions = [
+  visualizeMenuItem,
+  siteAnnotationsModal,
+  editSiteMenuItem,
+  siteHarvestMenuItem,
+  deleteSiteMenuItem,
+  audioRecordingMenuItems.list.site,
+];
 
 export const pointMenuItemActions = [
   visualizeMenuItem,
@@ -39,24 +58,35 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
+/**
+ * Site Details Component
+ */
 @Component({
-  selector: "baw-point-details",
+  selector: "baw-site-details",
   template: `
     <baw-site
-      *ngIf="project && region && site"
+      *ngIf="!failure"
       [project]="project"
       [region]="region"
       [site]="site"
     ></baw-site>
   `,
 })
-class PointDetailsComponent extends SiteDetailsComponent implements OnInit {
-  public region: Region;
+class SiteDetailsComponent extends PageComponent implements OnInit {
+  public project: Project;
+  public region?: Region;
+  public site: Site;
+  public failure: boolean;
 
-  public ngOnInit() {
+  public constructor(protected route: ActivatedRoute) {
+    super();
+  }
+
+  public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
 
     if (!hasResolvedSuccessfully(models)) {
+      this.failure = true;
       return;
     }
 
@@ -66,8 +96,20 @@ class PointDetailsComponent extends SiteDetailsComponent implements OnInit {
   }
 }
 
-PointDetailsComponent.linkComponentToPageInfo({
+SiteDetailsComponent.linkToRoute({
+  category: sitesCategory,
+  pageRoute: siteMenuItem,
+  menus: {
+    actions: List([projectMenuItem, ...siteMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [siteKey]: siteResolvers.show,
+  },
+}).linkToRoute({
   category: pointsCategory,
+  pageRoute: pointMenuItem,
   menus: {
     actions: List([regionMenuItem, ...pointMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
@@ -77,6 +119,6 @@ PointDetailsComponent.linkComponentToPageInfo({
     [regionKey]: regionResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-}).andMenuRoute(pointMenuItem);
+});
 
-export { PointDetailsComponent };
+export { SiteDetailsComponent };

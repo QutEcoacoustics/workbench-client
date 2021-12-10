@@ -6,7 +6,12 @@ import {
   Menus,
   ResolverList,
 } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { PageComponent } from "./pageComponent";
+
+export function isIPageInfo(data: Data): data is IPageInfo {
+  return data.pageRoute;
+}
 
 /**
  * Page info interface.
@@ -18,8 +23,8 @@ import { PageComponent } from "./pageComponent";
  */
 export interface IPageInfo extends Data {
   category?: Category;
-  /** Stores modified menuroute */
-  pageRoute?: MenuRoute & { pageComponent?: Type<PageComponent> };
+  /** Stores modified menuRoute */
+  pageRoute?: MenuRoute;
   fullscreen?: boolean;
   resolvers?: ResolverList;
   menus?: Menus;
@@ -29,7 +34,7 @@ export interface IPageInfo extends Data {
  * Page info class
  */
 export class PageInfo implements IPageInfo {
-  public pageRoute: MenuRoute & { pageComponent?: Type<PageComponent> };
+  public pageRoute: MenuRoute;
   public component: Type<PageComponent>;
   public category: Category;
   public menus: Menus;
@@ -37,21 +42,21 @@ export class PageInfo implements IPageInfo {
   public resolvers: ResolverList;
 
   public constructor(args: IPageInfo) {
+    if (!args.pageRoute) {
+      console.warn("PageInfo must have a menuRoute", args);
+      throw Error("PageInfo must have a menuRoute");
+    }
+
     Object.assign(this, args);
     this.resolvers = args.resolvers ?? {};
   }
 
-  /**
-   * Set Menu Route for PageInfo. This also modifies the menu route to include
-   * the associated target component.
-   */
-  public setMenuRoute(target: Type<PageComponent>, menu: MenuRoute) {
-    this.pageRoute = menu;
+  public setComponent(target: Type<PageComponent>): void {
     this.component = target;
     this.route.pageComponent = target;
   }
 
-  public get route() {
+  public get route(): StrongRoute & { pageComponent: Type<PageComponent> } {
     return this.pageRoute.route;
   }
 }

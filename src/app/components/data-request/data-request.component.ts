@@ -83,8 +83,9 @@ class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
   }
 }
 
-DataRequestComponent.linkComponentToPageInfo({
+DataRequestComponent.linkToRoute({
   category: dataRequestCategory,
-}).andMenuRoute(dataRequestMenuItem);
+  pageRoute: dataRequestMenuItem,
+});
 
 export { DataRequestComponent };

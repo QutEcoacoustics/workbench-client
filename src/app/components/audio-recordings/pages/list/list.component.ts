@@ -11,10 +11,9 @@ import {
   batchDownloadAudioRecordingMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { PageComponent } from "@helpers/page/pageComponent";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, Ids, toRelative } from "@interfaces/apiInterfaces";
-import { MenuItem } from "@interfaces/menusInterfaces";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -137,81 +136,24 @@ interface TableRow {
   model: AudioRecording;
 }
 
-// TODO Multiple components required as a hacky bypass to #1711
-
-/**
- * SiteListComponent, this handles the list page for audio recording when
- * accessed from a site page. This component can be accessed from:
- * /project/:projectId/site/:siteId/audio_recordings
- */
-@Component({
-  selector: "baw-audio-recordings-site",
-  templateUrl: "./list.component.html",
-})
-class AudioRecordingsListFilteredBySiteComponent extends AudioRecordingsListComponent {}
-
-/**
- * PointListComponent, this handles the list page for audio recordings when
- * accessed from a point. This component can be accessed from:
- * /project/:projectId/region/:regionId/site/:siteId/audio_recordings
- */
-@Component({
-  selector: "baw-audio-recordings-point",
-  templateUrl: "./list.component.html",
-})
-class AudioRecordingsListFilteredBySiteAndRegionComponent extends AudioRecordingsListComponent {}
-
-/**
- * RegionListComponent, this handles the list page for audio recordings when
- * access from a region page. This component can be accessed from:
- * /project/:projectId/region/:regionId/audio_recordings
- */
-@Component({
-  selector: "baw-audio-recordings-region",
-  templateUrl: "./list.component.html",
-})
-class AudioRecordingsListFilteredByRegionComponent extends AudioRecordingsListComponent {}
-
-/**
- * ProjectListComponent, this handles the list page for audio recordings when
- * access from a project page. This component can be accessed from:
- * /project/:projectId/audio_recordings
- */
-@Component({
-  selector: "baw-audio-recordings-project",
-  templateUrl: "./list.component.html",
-})
-class AudioRecordingsListFilteredByProjectComponent extends AudioRecordingsListComponent {}
-
-/** Link components with their menu item, and assign page info which is shared between all */
-function linkData(component: PageComponent, menuItem: MenuItem): void {
-  component
-    .linkComponentToPageInfo({
-      category: audioRecordingsCategory,
-      menus: { actions: List([batchDownloadAudioRecordingMenuItem]) },
-      resolvers: {
-        [projectKey]: projectResolvers.showOptional,
-        [regionKey]: regionResolvers.showOptional,
-        [siteKey]: siteResolvers.showOptional,
-      },
-    })
-    .andMenuRoute(menuItem);
-}
-
 const menuItems = audioRecordingMenuItems.list;
-linkData(AudioRecordingsListComponent, menuItems.base);
-linkData(AudioRecordingsListFilteredBySiteComponent, menuItems.site);
-linkData(
-  AudioRecordingsListFilteredBySiteAndRegionComponent,
-  menuItems.siteAndRegion
-);
-linkData(AudioRecordingsListFilteredByRegionComponent, menuItems.region);
-linkData(AudioRecordingsListFilteredByProjectComponent, menuItems.project);
-
-export {
-  AudioRecordingsListComponent,
-  AudioRecordingsListFilteredBySiteComponent,
-  AudioRecordingsListFilteredBySiteAndRegionComponent,
-  AudioRecordingsListFilteredByRegionComponent,
-  AudioRecordingsListFilteredByProjectComponent,
+const pageInfo: IPageInfo = {
+  category: audioRecordingsCategory,
+  menus: { actions: List([batchDownloadAudioRecordingMenuItem]) },
+  resolvers: {
+    [projectKey]: projectResolvers.showOptional,
+    [regionKey]: regionResolvers.showOptional,
+    [siteKey]: siteResolvers.showOptional,
+  },
 };
+
+AudioRecordingsListComponent.linkToRoute({
+  ...pageInfo,
+  pageRoute: menuItems.base,
+})
+  .linkToRoute({ ...pageInfo, pageRoute: menuItems.site })
+  .linkToRoute({ ...pageInfo, pageRoute: menuItems.siteAndRegion })
+  .linkToRoute({ ...pageInfo, pageRoute: menuItems.region })
+  .linkToRoute({ ...pageInfo, pageRoute: menuItems.project });
+
+export { AudioRecordingsListComponent };

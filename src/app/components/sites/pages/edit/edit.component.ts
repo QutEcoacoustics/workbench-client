@@ -1,7 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
+import {
+  editPointMenuItem,
+  pointMenuItem,
+  pointsCategory,
+} from "@components/sites/points.menus";
+import { Option } from "@helpers/advancedTypes";
 import {
   defaultSuccessMsg,
   FormTemplate,
@@ -9,19 +16,25 @@ import {
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import schema from "../../site.base.json";
+import pointSchema from "../../point.base.json";
+import siteSchema from "../../site.base.json";
 import {
   editSiteMenuItem,
   siteMenuItem,
   sitesCategory,
 } from "../../sites.menus";
-import { siteMenuItemActions } from "../details/site.component";
-import { siteErrorMsg } from "../new/site.component";
+import {
+  pointMenuItemActions,
+  siteMenuItemActions,
+} from "../details/details.component";
+import { siteErrorMsg } from "../new/new.component";
 
 const projectKey = "project";
+const regionKey = "region";
 const siteKey = "site";
 
 @Component({
@@ -29,7 +42,6 @@ const siteKey = "site";
   templateUrl: "./edit.component.html",
 })
 class SiteEditComponent extends FormTemplate<Site> implements OnInit {
-  public fields = schema.fields;
   public title: string;
 
   public constructor(
@@ -47,12 +59,17 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
     });
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     super.ngOnInit();
 
     if (!this.failure) {
       this.title = `Edit ${this.model.name}`;
+      this.fields = this.region ? pointSchema.fields : siteSchema.fields;
     }
+  }
+
+  public get region(): Option<Region> {
+    return this.models[regionKey] as Region;
   }
 
   public get project(): Project {
@@ -64,8 +81,9 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   }
 }
 
-SiteEditComponent.linkComponentToPageInfo({
+SiteEditComponent.linkToRoute({
   category: sitesCategory,
+  pageRoute: editSiteMenuItem,
   menus: {
     actions: List([siteMenuItem, ...siteMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
@@ -74,6 +92,18 @@ SiteEditComponent.linkComponentToPageInfo({
     [projectKey]: projectResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-}).andMenuRoute(editSiteMenuItem);
+}).linkToRoute({
+  category: pointsCategory,
+  pageRoute: editPointMenuItem,
+  menus: {
+    actions: List([pointMenuItem, ...pointMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [regionKey]: regionResolvers.show,
+    [siteKey]: siteResolvers.show,
+  },
+});
 
 export { SiteEditComponent };

@@ -74,11 +74,12 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   }
 }
 
-MySitesComponent.linkComponentToPageInfo({
+MySitesComponent.linkToRoute({
   category: myAccountCategory,
+  pageRoute: mySitesMenuItem,
   menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
   resolvers: { [userKey]: userResolvers.show },
-}).andMenuRoute(mySitesMenuItem);
+});
 
 export { MySitesComponent };
 

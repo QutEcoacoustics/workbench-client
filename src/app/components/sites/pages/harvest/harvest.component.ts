@@ -8,11 +8,12 @@ import {
 } from "@baw-api/resolver-common";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
-  pointHarvestMenuItem,
-  pointMenuItem,
   pointsCategory,
+  pointMenuItem,
+  pointHarvestMenuItem,
 } from "@components/sites/points.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { PageComponent } from "@helpers/page/pageComponent";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
@@ -21,8 +22,15 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { SessionUser } from "@models/User";
 import { List } from "immutable";
-import { pointMenuItemActions } from "../details/point.component";
-import { SiteHarvestComponent } from "./site.component";
+import {
+  siteHarvestMenuItem,
+  siteMenuItem,
+  sitesCategory,
+} from "../../sites.menus";
+import {
+  pointMenuItemActions,
+  siteMenuItemActions,
+} from "../details/details.component";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -32,21 +40,21 @@ const siteKey = "site";
  * Site Harvest Component
  */
 @Component({
-  selector: "baw-points-harvest",
+  selector: "baw-sites-harvest",
   templateUrl: "./harvest.component.html",
 })
-class PointHarvestComponent extends SiteHarvestComponent implements OnInit {
+class SiteHarvestComponent extends PageComponent implements OnInit {
   public project: Project;
   public region: Region;
   public site: Site;
   public user: SessionUser;
 
   public constructor(
-    @Inject(API_ROOT) apiRoot: string,
-    route: ActivatedRoute,
-    api: SitesService
+    @Inject(API_ROOT) public apiRoot: string,
+    protected route: ActivatedRoute,
+    protected api: SitesService
   ) {
-    super(apiRoot, route, api);
+    super();
   }
 
   public ngOnInit() {
@@ -58,10 +66,26 @@ class PointHarvestComponent extends SiteHarvestComponent implements OnInit {
       this.user = this.api.getLocalUser();
     }
   }
+
+  public getHarvestFileRoute() {
+    return this.api.harvestFile(this.site, this.project);
+  }
 }
 
-PointHarvestComponent.linkComponentToPageInfo({
+SiteHarvestComponent.linkToRoute({
+  category: sitesCategory,
+  pageRoute: siteHarvestMenuItem,
+  menus: {
+    actions: List([siteMenuItem, ...siteMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [siteKey]: siteResolvers.show,
+  },
+}).linkToRoute({
   category: pointsCategory,
+  pageRoute: pointHarvestMenuItem,
   menus: {
     actions: List([pointMenuItem, ...pointMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
@@ -71,6 +95,6 @@ PointHarvestComponent.linkComponentToPageInfo({
     [regionKey]: regionResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-}).andMenuRoute(pointHarvestMenuItem);
+});
 
-export { PointHarvestComponent };
+export { SiteHarvestComponent };

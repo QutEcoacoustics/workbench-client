@@ -14,12 +14,13 @@ import { PageComponent } from "@helpers/page/pageComponent";
 })
 class AnnotationComponent extends PageComponent {}
 
-AnnotationComponent.linkComponentToPageInfo({
+AnnotationComponent.linkToRoute({
   category: annotationsCategory,
+  pageRoute: annotationMenuItem,
   resolvers: {
     audioRecording: audioRecordingResolvers.show,
     audioEvent: audioEventResolvers.show,
   },
-}).andMenuRoute(annotationMenuItem);
+});
 
 export { AnnotationComponent };

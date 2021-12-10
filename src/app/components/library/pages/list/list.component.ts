@@ -12,9 +12,10 @@ import { PageComponent } from "@helpers/page/pageComponent";
 })
 class LibraryComponent extends PageComponent {}
 
-LibraryComponent.linkComponentToPageInfo({
+LibraryComponent.linkToRoute({
   category: libraryCategory,
+  pageRoute: libraryMenuItem,
   fullscreen: true,
-}).andMenuRoute(libraryMenuItem);
+});
 
 export { LibraryComponent };

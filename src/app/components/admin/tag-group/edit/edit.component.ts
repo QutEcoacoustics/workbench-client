@@ -71,13 +71,14 @@ class AdminTagGroupsEditComponent
   }
 }
 
-AdminTagGroupsEditComponent.linkComponentToPageInfo({
+AdminTagGroupsEditComponent.linkToRoute({
   category: adminTagGroupsCategory,
+  pageRoute: adminEditTagGroupMenuItem,
   menus: {
     actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [tagGroupKey]: tagGroupResolvers.show },
-}).andMenuRoute(adminEditTagGroupMenuItem);
+});
 
 export { AdminTagGroupsEditComponent };

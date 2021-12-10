@@ -160,8 +160,9 @@ class StatisticsComponent
   }
 }
 
-StatisticsComponent.linkComponentToPageInfo({
+StatisticsComponent.linkToRoute({
   category: statisticsCategory,
-}).andMenuRoute(statisticsMenuItem);
+  pageRoute: statisticsMenuItem,
+});
 
 export { StatisticsComponent };

@@ -3,11 +3,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
-import { PointHarvestComponent } from "./point.component";
+import { SiteHarvestComponent } from "./harvest.component";
 
-describe("PointHarvestComponent", () => {
-  let component: PointHarvestComponent;
-  let fixture: ComponentFixture<PointHarvestComponent>;
+describe("SiteHarvestComponent", () => {
+  let component: SiteHarvestComponent;
+  let fixture: ComponentFixture<SiteHarvestComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -17,10 +17,10 @@ describe("PointHarvestComponent", () => {
         HttpClientTestingModule,
         MockBawApiModule,
       ],
-      declarations: [PointHarvestComponent],
+      declarations: [SiteHarvestComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PointHarvestComponent);
+    fixture = TestBed.createComponent(SiteHarvestComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

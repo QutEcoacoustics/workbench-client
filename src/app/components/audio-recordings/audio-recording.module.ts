@@ -3,33 +3,12 @@ import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { audioRecordingsRoutes } from "./audio-recording.menus";
-import {
-  AudioRecordingsDetailsComponent,
-  AudioRecordingsDetailsFilteredBySiteComponent,
-  AudioRecordingsDetailsFilteredBySiteAndRegionComponent,
-  AudioRecordingsDetailsFilteredByRegionComponent,
-  AudioRecordingsDetailsFilteredByProjectComponent,
-} from "./pages/details/details.component";
-import {
-  AudioRecordingsListComponent,
-  AudioRecordingsListFilteredBySiteComponent,
-  AudioRecordingsListFilteredBySiteAndRegionComponent,
-  AudioRecordingsListFilteredByRegionComponent,
-  AudioRecordingsListFilteredByProjectComponent,
-} from "./pages/list/list.component";
+import { AudioRecordingsDetailsComponent } from "./pages/details/details.component";
+import { AudioRecordingsListComponent } from "./pages/list/list.component";
 
 const components = [
   AudioRecordingsListComponent,
-  AudioRecordingsListFilteredBySiteComponent,
-  AudioRecordingsListFilteredBySiteAndRegionComponent,
-  AudioRecordingsListFilteredByRegionComponent,
-  AudioRecordingsListFilteredByProjectComponent,
-
   AudioRecordingsDetailsComponent,
-  AudioRecordingsDetailsFilteredBySiteComponent,
-  AudioRecordingsDetailsFilteredBySiteAndRegionComponent,
-  AudioRecordingsDetailsFilteredByRegionComponent,
-  AudioRecordingsDetailsFilteredByProjectComponent,
 ];
 
 const routes = Object.values(audioRecordingsRoutes)

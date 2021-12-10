@@ -1,6 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { Title } from "@angular/platform-browser";
-import { PageInfo } from "@helpers/page/pageInfo";
+import {
+  getPageInfos,
+  IPageComponentStatic,
+} from "@helpers/page/pageComponent";
 import { Observable } from "rxjs";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "./services/config/config.service";
@@ -42,7 +45,11 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
    * component rendered inside the router-outlet changes.
    */
   public updatePageLayout(component: any) {
-    this.fullscreen = !!(component?.constructor?.pageInfo as PageInfo)
-      ?.fullscreen;
+    const pageComponent = component?.constructor as IPageComponentStatic;
+    // This is a faulty assumption about fullscreen, however should be fixed by
+    // https://github.com/QutEcoacoustics/workbench-client/issues/458
+    this.fullscreen = !!getPageInfos(pageComponent)?.some(
+      (page) => page.fullscreen
+    );
   }
 }

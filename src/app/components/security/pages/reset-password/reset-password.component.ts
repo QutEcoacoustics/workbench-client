@@ -47,9 +47,10 @@ class ResetPasswordComponent extends FormTemplate<ResetPassword> {
   }
 }
 
-ResetPasswordComponent.linkComponentToPageInfo({
+ResetPasswordComponent.linkToRoute({
   category: securityCategory,
+  pageRoute: resetPasswordMenuItem,
   menus: { actions: List([loginMenuItem, ...loginMenuItemActions]) },
-}).andMenuRoute(resetPasswordMenuItem);
+});
 
 export { ResetPasswordComponent };

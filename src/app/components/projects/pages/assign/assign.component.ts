@@ -153,14 +153,15 @@ class AssignComponent
   }
 }
 
-AssignComponent.linkComponentToPageInfo({
+AssignComponent.linkToRoute({
   category: projectCategory,
+  pageRoute: assignSiteMenuItem,
   menus: {
     actions: List([projectMenuItem, ...projectMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
-}).andMenuRoute(assignSiteMenuItem);
+});
 
 export { AssignComponent };
 

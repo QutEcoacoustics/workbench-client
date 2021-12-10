@@ -80,8 +80,9 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
   }
 }
 
-AdminTagsEditComponent.linkComponentToPageInfo({
+AdminTagsEditComponent.linkToRoute({
   category: adminTagsCategory,
+  pageRoute: adminEditTagMenuItem,
   menus: {
     actions: List([
       adminTagsMenuItem,
@@ -95,6 +96,6 @@ AdminTagsEditComponent.linkComponentToPageInfo({
     [tagKey]: tagResolvers.show,
     [tagTypesKey]: tagResolvers.tagTypes,
   },
-}).andMenuRoute(adminEditTagMenuItem);
+});
 
 export { AdminTagsEditComponent };

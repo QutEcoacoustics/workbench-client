@@ -70,7 +70,7 @@ describe("AppComponent", () => {
       }
 
       spec.component["updatePageLayout"]({
-        constructor: { pageInfo: { fullscreen } },
+        constructor: { pageInfos: [{ fullscreen }] },
       });
       spec.detectChanges();
     }

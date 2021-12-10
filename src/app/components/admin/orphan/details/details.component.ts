@@ -55,13 +55,14 @@ class AdminOrphanComponent
   }
 }
 
-AdminOrphanComponent.linkComponentToPageInfo({
+AdminOrphanComponent.linkToRoute({
   category: adminOrphansCategory,
+  pageRoute: adminOrphanMenuItem,
   menus: {
     actions: List([adminOrphansMenuItem, adminOrphanMenuItem]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [siteKey]: shallowSiteResolvers.show },
-}).andMenuRoute(adminOrphanMenuItem);
+});
 
 export { AdminOrphanComponent };

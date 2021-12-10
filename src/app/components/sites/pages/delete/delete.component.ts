@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
   deleteSiteMenuItem,
@@ -14,12 +15,23 @@ import {
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { siteMenuItemActions } from "../details/site.component";
+import { Option } from "@helpers/advancedTypes";
+import {
+  pointsCategory,
+  pointMenuItem,
+  deletePointMenuItem,
+} from "@components/sites/points.menus";
+import {
+  pointMenuItemActions,
+  siteMenuItemActions,
+} from "../details/details.component";
 
 const projectKey = "project";
+const regionKey = "region";
 const siteKey = "site";
 
 @Component({
@@ -38,7 +50,8 @@ class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
     super(notifications, route, router, {
       getModel: (models) => models[siteKey] as Site,
       successMsg: (model) => defaultSuccessMsg("destroyed", model.name),
-      redirectUser: () => this.router.navigateByUrl(this.project.viewUrl),
+      redirectUser: () =>
+        this.router.navigateByUrl((this.region ?? this.project).viewUrl),
     });
   }
 
@@ -50,6 +63,10 @@ class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
     }
   }
 
+  public get region(): Option<Region> {
+    return this.models[regionKey] as Region;
+  }
+
   public get project(): Project {
     return this.models[projectKey] as Project;
   }
@@ -59,8 +76,9 @@ class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
   }
 }
 
-SiteDeleteComponent.linkComponentToPageInfo({
+SiteDeleteComponent.linkToRoute({
   category: sitesCategory,
+  pageRoute: deleteSiteMenuItem,
   menus: {
     actions: List([siteMenuItem, ...siteMenuItemActions]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
@@ -69,6 +87,18 @@ SiteDeleteComponent.linkComponentToPageInfo({
     [projectKey]: projectResolvers.show,
     [siteKey]: siteResolvers.show,
   },
-}).andMenuRoute(deleteSiteMenuItem);
+}).linkToRoute({
+  category: pointsCategory,
+  pageRoute: deletePointMenuItem,
+  menus: {
+    actions: List([pointMenuItem, ...pointMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [regionKey]: regionResolvers.show,
+    [siteKey]: siteResolvers.show,
+  },
+});
 
 export { SiteDeleteComponent };

@@ -50,12 +50,13 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
   }
 }
 
-AdminTagsComponent.linkComponentToPageInfo({
+AdminTagsComponent.linkToRoute({
   category: adminTagsCategory,
+  pageRoute: adminTagsMenuItem,
   menus: {
     actions: List([adminDashboardMenuItem, ...adminTagsMenuItemActions]),
   },
-}).andMenuRoute(adminTagsMenuItem);
+});
 
 export { AdminTagsComponent };
 

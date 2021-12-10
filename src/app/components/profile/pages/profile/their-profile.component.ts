@@ -71,10 +71,11 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
   }
 }
 
-TheirProfileComponent.linkComponentToPageInfo({
+TheirProfileComponent.linkToRoute({
   category: theirProfileCategory,
+  pageRoute: theirProfileMenuItem,
   menus: { actions: List(theirProfileActions) },
   resolvers: { [accountKey]: accountResolvers.show },
-}).andMenuRoute(theirProfileMenuItem);
+});
 
 export { TheirProfileComponent };

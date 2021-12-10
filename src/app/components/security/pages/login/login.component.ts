@@ -114,9 +114,10 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   }
 }
 
-LoginComponent.linkComponentToPageInfo({
+LoginComponent.linkToRoute({
   category: securityCategory,
+  pageRoute: loginMenuItem,
   menus: { actions: List(loginMenuItemActions) },
-}).andMenuRoute(loginMenuItem);
+});
 
 export { LoginComponent };

@@ -8,7 +8,7 @@ import {
   UrlTree,
 } from "@angular/router";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { isIPageInfo, PageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
 import { takeUntil } from "rxjs/operators";
@@ -63,11 +63,20 @@ export class StrongRouteDirective
         .subscribe((qsp) => (this.data.queryParams = qsp));
       // Track changes to resolved models
       this._route.data.pipe(takeUntil(this.unsubscribe)).subscribe((data) => {
-        // We are passing through resolved models even when some fail, this is
-        // so that some links unrelated to the broken model do not break
-        const resolvedModels = retrieveResolvers(new PageInfo(data));
-        if (resolvedModels) {
-          this.data.resolvedModels = resolvedModels;
+        if (!data || !isIPageInfo(data)) {
+          return;
+        }
+
+        // Try convert data into page info
+        try {
+          // We are passing through resolved models even when some fail, this is
+          // so that some links unrelated to the broken model do not break
+          const resolvedModels = retrieveResolvers(new PageInfo(data));
+          if (resolvedModels) {
+            this.data.resolvedModels = resolvedModels;
+          }
+        } catch (err) {
+          // Something invalid in data, not useful
         }
       });
     }

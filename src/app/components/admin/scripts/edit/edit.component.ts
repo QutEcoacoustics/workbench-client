@@ -65,10 +65,11 @@ class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
   }
 }
 
-AdminScriptsEditComponent.linkComponentToPageInfo({
+AdminScriptsEditComponent.linkToRoute({
   category: adminScriptsCategory,
+  pageRoute: adminEditScriptMenuItem,
   menus: { actions: List([adminScriptMenuItem, ...adminScriptActions]) },
   resolvers: { [scriptKey]: scriptResolvers.show },
-}).andMenuRoute(adminEditScriptMenuItem);
+});
 
 export { AdminScriptsEditComponent };

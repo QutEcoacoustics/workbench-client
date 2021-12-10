@@ -80,8 +80,9 @@ class RegisterComponent
   }
 }
 
-RegisterComponent.linkComponentToPageInfo({
+RegisterComponent.linkToRoute({
   category: securityCategory,
-}).andMenuRoute(registerMenuItem);
+  pageRoute: registerMenuItem,
+});
 
 export { RegisterComponent };

@@ -76,9 +76,10 @@ class ListComponent extends PaginationTemplate<Region> implements OnInit {
   }
 }
 
-ListComponent.linkComponentToPageInfo({
+ListComponent.linkToRoute({
   category: shallowRegionsCategory,
+  pageRoute: shallowRegionsMenuItem,
   menus: { actions: List(regionsMenuItemActions) },
-}).andMenuRoute(shallowRegionsMenuItem);
+});
 
 export { ListComponent };

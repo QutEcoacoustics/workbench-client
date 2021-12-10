@@ -175,10 +175,11 @@ class MyProfileComponent
   }
 }
 
-MyProfileComponent.linkComponentToPageInfo({
+MyProfileComponent.linkToRoute({
   category: myAccountCategory,
+  pageRoute: myAccountMenuItem,
   menus: { actions: List(myAccountActions) },
   resolvers: { [userKey]: userResolvers.show },
-}).andMenuRoute(myAccountMenuItem);
+});
 
 export { MyProfileComponent };
