@@ -43,15 +43,13 @@ class AdminOrphansComponent
   }
 }
 
-AdminOrphansComponent.linkToRouterWith(
-  {
-    category: adminOrphansCategory,
-    menus: {
-      actions: List([adminDashboardMenuItem, ...adminMenuItemActions]),
-    },
+AdminOrphansComponent.linkToRoute({
+  category: adminOrphansCategory,
+  menuRoute: adminOrphansMenuItem,
+  menus: {
+    actions: List([adminDashboardMenuItem, ...adminMenuItemActions]),
   },
-  adminOrphansMenuItem
-);
+});
 
 export { AdminOrphansComponent };
 

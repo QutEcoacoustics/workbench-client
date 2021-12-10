@@ -57,16 +57,14 @@ class AdminScriptComponent
   }
 }
 
-AdminScriptComponent.linkToRouterWith(
-  {
-    category: adminScriptsCategory,
-    menus: {
-      actions: List([adminScriptsMenuItem, ...adminScriptActions]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: { [scriptKey]: scriptResolvers.show },
+AdminScriptComponent.linkToRoute({
+  category: adminScriptsCategory,
+  menuRoute: adminScriptMenuItem,
+  menus: {
+    actions: List([adminScriptsMenuItem, ...adminScriptActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
-  adminScriptMenuItem
-);
+  resolvers: { [scriptKey]: scriptResolvers.show },
+});
 
 export { AdminScriptComponent };

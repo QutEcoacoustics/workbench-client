@@ -23,22 +23,20 @@ const audioAnalysisKey = "audioAnalysis";
 })
 class AudioAnalysisComponent extends PageComponent {}
 
-AudioAnalysisComponent.linkToRouterWith(
-  {
-    category: audioAnalysisCategory,
-    menus: {
-      actions: List([
-        audioAnalysesMenuItem,
-        audioAnalysisResultsMenuItem,
-        retryFailedItemsMenuItem,
-        pauseProcessingMenuItem,
-        deleteAudioAnalysisMenuItem,
-      ]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: { [audioAnalysisKey]: analysisJobResolvers.show },
+AudioAnalysisComponent.linkToRoute({
+  category: audioAnalysisCategory,
+  menuRoute: audioAnalysisMenuItem,
+  menus: {
+    actions: List([
+      audioAnalysesMenuItem,
+      audioAnalysisResultsMenuItem,
+      retryFailedItemsMenuItem,
+      pauseProcessingMenuItem,
+      deleteAudioAnalysisMenuItem,
+    ]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
-  audioAnalysisMenuItem
-);
+  resolvers: { [audioAnalysisKey]: analysisJobResolvers.show },
+});
 
 export { AudioAnalysisComponent };

@@ -55,13 +55,11 @@ class MyDeleteComponent extends FormTemplate<User> {
   }
 }
 
-MyDeleteComponent.linkToRouterWith(
-  {
-    category: myAccountCategory,
-    menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
-    resolvers: { [userKey]: userResolvers.show },
-  },
-  myDeleteMenuItem
-);
+MyDeleteComponent.linkToRoute({
+  category: myAccountCategory,
+  menuRoute: myDeleteMenuItem,
+  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+  resolvers: { [userKey]: userResolvers.show },
+});
 
 export { MyDeleteComponent };

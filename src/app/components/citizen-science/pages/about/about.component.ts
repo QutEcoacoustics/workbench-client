@@ -11,9 +11,10 @@ import { PageComponent } from "@helpers/page/pageComponent";
 })
 class CitSciAboutComponent extends PageComponent {}
 
-CitSciAboutComponent.linkToRouterWith(
-  { category: citSciCategory, fullscreen: true },
-  citSciAboutMenuItem
-);
+CitSciAboutComponent.linkToRoute({
+  category: citSciCategory,
+  menuRoute: citSciAboutMenuItem,
+  fullscreen: true,
+});
 
 export { CitSciAboutComponent };

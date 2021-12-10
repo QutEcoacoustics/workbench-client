@@ -12,6 +12,9 @@ import { PageComponent } from "@helpers/page/pageComponent";
 })
 class ListenComponent extends PageComponent {}
 
-ListenComponent.linkToRouterWith({ category: listenCategory }, listenMenuItem);
+ListenComponent.linkToRoute({
+  category: listenCategory,
+  menuRoute: listenMenuItem,
+});
 
 export { ListenComponent };

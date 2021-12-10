@@ -96,33 +96,29 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
   }
 }
 
-SiteDetailsComponent.linkToRouterWith(
-  {
-    category: sitesCategory,
-    menus: {
-      actions: List([projectMenuItem, ...siteMenuItemActions]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: {
-      [projectKey]: projectResolvers.show,
-      [siteKey]: siteResolvers.show,
-    },
+SiteDetailsComponent.linkToRoute({
+  category: sitesCategory,
+  menuRoute: siteMenuItem,
+  menus: {
+    actions: List([projectMenuItem, ...siteMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
-  siteMenuItem
-).linkToRouterWith(
-  {
-    category: pointsCategory,
-    menus: {
-      actions: List([regionMenuItem, ...pointMenuItemActions]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: {
-      [projectKey]: projectResolvers.show,
-      [regionKey]: regionResolvers.show,
-      [siteKey]: siteResolvers.show,
-    },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [siteKey]: siteResolvers.show,
   },
-  pointMenuItem
-);
+}).linkToRoute({
+  category: pointsCategory,
+  menuRoute: pointMenuItem,
+  menus: {
+    actions: List([regionMenuItem, ...pointMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [regionKey]: regionResolvers.show,
+    [siteKey]: siteResolvers.show,
+  },
+});
 
 export { SiteDetailsComponent };

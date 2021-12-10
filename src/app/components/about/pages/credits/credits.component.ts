@@ -12,6 +12,9 @@ class CreditsComponent extends PageComponent {
   public page = CMS.credits;
 }
 
-CreditsComponent.linkToRouterWith({ category: aboutCategory }, creditsMenuItem);
+CreditsComponent.linkToRoute({
+  category: aboutCategory,
+  menuRoute: creditsMenuItem,
+});
 
 export { CreditsComponent };

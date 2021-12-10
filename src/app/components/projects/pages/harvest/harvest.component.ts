@@ -146,16 +146,14 @@ class HarvestComponent extends PageComponent implements OnInit {
   }
 }
 
-HarvestComponent.linkToRouterWith(
-  {
-    category: projectCategory,
-    menus: {
-      actions: List([projectMenuItem, ...projectMenuItemActions]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: { [projectKey]: projectResolvers.show },
+HarvestComponent.linkToRoute({
+  category: projectCategory,
+  menuRoute: harvestProjectMenuItem,
+  menus: {
+    actions: List([projectMenuItem, ...projectMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
-  harvestProjectMenuItem
-);
+  resolvers: { [projectKey]: projectResolvers.show },
+});
 
 export { HarvestComponent };

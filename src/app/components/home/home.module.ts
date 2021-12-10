@@ -8,6 +8,8 @@ import { homeRoute } from "./home.menus";
 const components = [HomeComponent];
 const routes = homeRoute.compileRoutes(getRouteConfigForPage);
 
+console.log(routes);
+
 @NgModule({
   declarations: components,
   imports: [SharedModule, RouterModule.forChild(routes)],

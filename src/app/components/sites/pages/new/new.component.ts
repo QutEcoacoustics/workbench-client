@@ -80,16 +80,14 @@ export function siteErrorMsg(err: ApiErrorDetails) {
 
 // Only sites with regions have their own page, normal sites are part of a
 // wizard
-SiteNewComponent.linkToRouterWith(
-  {
-    category: pointsCategory,
-    menus: { actions: List([regionMenuItem, ...regionMenuItemActions]) },
-    resolvers: {
-      [projectKey]: projectResolvers.show,
-      [regionKey]: regionResolvers.show,
-    },
+SiteNewComponent.linkToRoute({
+  category: pointsCategory,
+  menuRoute: newPointMenuItem,
+  menus: { actions: List([regionMenuItem, ...regionMenuItemActions]) },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [regionKey]: regionResolvers.show,
   },
-  newPointMenuItem
-);
+});
 
 export { SiteNewComponent };

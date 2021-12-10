@@ -69,16 +69,14 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
   }
 }
 
-EditComponent.linkToRouterWith(
-  {
-    category: projectCategory,
-    menus: {
-      actions: List([projectMenuItem, ...projectMenuItemActions]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: { [projectKey]: projectResolvers.show },
+EditComponent.linkToRoute({
+  category: projectCategory,
+  menuRoute: editProjectMenuItem,
+  menus: {
+    actions: List([projectMenuItem, ...projectMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
-  editProjectMenuItem
-);
+  resolvers: { [projectKey]: projectResolvers.show },
+});
 
 export { EditComponent };

@@ -134,9 +134,10 @@ class HomeComponent extends PageComponent implements OnInit {
   }
 }
 
-HomeComponent.linkToRouterWith(
-  { category: homeCategory, fullscreen: true },
-  homeMenuItem
-);
+HomeComponent.linkToRoute({
+  category: homeCategory,
+  menuRoute: homeMenuItem,
+  fullscreen: true,
+});
 
 export { HomeComponent };

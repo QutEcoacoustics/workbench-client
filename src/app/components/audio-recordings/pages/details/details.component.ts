@@ -89,10 +89,13 @@ const pageInfo: IPageInfo = {
   },
 };
 
-AudioRecordingsDetailsComponent.linkToRouterWith(pageInfo, menuItems.base)
-  .linkToRouterWith(pageInfo, menuItems.site)
-  .linkToRouterWith(pageInfo, menuItems.siteAndRegion)
-  .linkToRouterWith(pageInfo, menuItems.region)
-  .linkToRouterWith(pageInfo, menuItems.project);
+AudioRecordingsDetailsComponent.linkToRoute({
+  ...pageInfo,
+  menuRoute: menuItems.base,
+})
+  .linkToRoute({ ...pageInfo, menuRoute: menuItems.site })
+  .linkToRoute({ ...pageInfo, menuRoute: menuItems.siteAndRegion })
+  .linkToRoute({ ...pageInfo, menuRoute: menuItems.region })
+  .linkToRoute({ ...pageInfo, menuRoute: menuItems.project });
 
 export { AudioRecordingsDetailsComponent };

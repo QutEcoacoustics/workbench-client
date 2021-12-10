@@ -1,6 +1,5 @@
 import { Type } from "@angular/core";
 import { Option } from "@helpers/advancedTypes";
-import { MenuRoute } from "@interfaces/menusInterfaces";
 import { withUnsubscribe } from "../unsubscribe/unsubscribe";
 import { IPageInfo, PageInfo } from "./pageInfo";
 
@@ -23,15 +22,10 @@ export class PageComponent extends withUnsubscribe() implements IPageComponent {
     return PageComponent.pageInfos;
   }
 
-  /**
-   * Creates and links the page info for the page component
-   */
-  public static linkToRouterWith(
-    info: IPageInfo,
-    menu: MenuRoute
-  ): typeof PageComponent {
+  /** Links the page info to the page component */
+  public static linkToRoute(info: IPageInfo): typeof PageComponent {
     const pageInfo = new PageInfo(info);
-    pageInfo.setMenuRoute(this, menu);
+    pageInfo.setComponent(this);
     (this._pageInfos ??= []).push(pageInfo);
     return this;
   }

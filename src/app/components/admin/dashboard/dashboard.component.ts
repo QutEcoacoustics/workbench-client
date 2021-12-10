@@ -39,9 +39,10 @@ export const adminMenuItemActions = [
 })
 class AdminDashboardComponent extends PageComponent {}
 
-AdminDashboardComponent.linkToRouterWith(
-  { category: adminCategory, menus: { actions: List(adminMenuItemActions) } },
-  adminDashboardMenuItem
-);
+AdminDashboardComponent.linkToRoute({
+  category: adminCategory,
+  menuRoute: adminDashboardMenuItem,
+  menus: { actions: List(adminMenuItemActions) },
+});
 
 export { AdminDashboardComponent };

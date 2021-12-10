@@ -80,24 +80,22 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
   }
 }
 
-AdminTagsEditComponent.linkToRouterWith(
-  {
-    category: adminTagsCategory,
-    menus: {
-      actions: List([
-        adminTagsMenuItem,
-        ...adminTagsMenuItemActions,
-        adminEditTagMenuItem,
-        adminDeleteTagMenuItem,
-      ]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: {
-      [tagKey]: tagResolvers.show,
-      [tagTypesKey]: tagResolvers.tagTypes,
-    },
+AdminTagsEditComponent.linkToRoute({
+  category: adminTagsCategory,
+  menuRoute: adminEditTagMenuItem,
+  menus: {
+    actions: List([
+      adminTagsMenuItem,
+      ...adminTagsMenuItemActions,
+      adminEditTagMenuItem,
+      adminDeleteTagMenuItem,
+    ]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
-  adminEditTagMenuItem
-);
+  resolvers: {
+    [tagKey]: tagResolvers.show,
+    [tagTypesKey]: tagResolvers.tagTypes,
+  },
+});
 
 export { AdminTagsEditComponent };

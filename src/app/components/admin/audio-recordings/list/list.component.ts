@@ -54,13 +54,11 @@ class AdminAudioRecordingsComponent
   }
 }
 
-AdminAudioRecordingsComponent.linkToRouterWith(
-  {
-    category: adminAudioRecordingsCategory,
-    menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
-  },
-  adminAudioRecordingsMenuItem
-);
+AdminAudioRecordingsComponent.linkToRoute({
+  category: adminAudioRecordingsCategory,
+  menuRoute: adminAudioRecordingsMenuItem,
+  menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
+});
 
 export { AdminAudioRecordingsComponent };
 

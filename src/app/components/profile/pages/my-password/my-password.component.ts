@@ -56,13 +56,11 @@ class MyPasswordComponent extends FormTemplate<User> {
   }
 }
 
-MyPasswordComponent.linkToRouterWith(
-  {
-    category: myAccountCategory,
-    menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
-    resolvers: { [userKey]: userResolvers.show },
-  },
-  myPasswordMenuItem
-);
+MyPasswordComponent.linkToRoute({
+  category: myAccountCategory,
+  menuRoute: myPasswordMenuItem,
+  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+  resolvers: { [userKey]: userResolvers.show },
+});
 
 export { MyPasswordComponent };

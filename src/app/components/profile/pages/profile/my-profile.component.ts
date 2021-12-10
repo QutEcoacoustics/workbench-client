@@ -175,13 +175,11 @@ class MyProfileComponent
   }
 }
 
-MyProfileComponent.linkToRouterWith(
-  {
-    category: myAccountCategory,
-    menus: { actions: List(myAccountActions) },
-    resolvers: { [userKey]: userResolvers.show },
-  },
-  myAccountMenuItem
-);
+MyProfileComponent.linkToRoute({
+  category: myAccountCategory,
+  menuRoute: myAccountMenuItem,
+  menus: { actions: List(myAccountActions) },
+  resolvers: { [userKey]: userResolvers.show },
+});
 
 export { MyProfileComponent };

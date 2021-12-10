@@ -153,17 +153,15 @@ class AssignComponent
   }
 }
 
-AssignComponent.linkToRouterWith(
-  {
-    category: projectCategory,
-    menus: {
-      actions: List([projectMenuItem, ...projectMenuItemActions]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: { [projectKey]: projectResolvers.show },
+AssignComponent.linkToRoute({
+  category: projectCategory,
+  menuRoute: assignSiteMenuItem,
+  menus: {
+    actions: List([projectMenuItem, ...projectMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
-  assignSiteMenuItem
-);
+  resolvers: { [projectKey]: projectResolvers.show },
+});
 
 export { AssignComponent };
 

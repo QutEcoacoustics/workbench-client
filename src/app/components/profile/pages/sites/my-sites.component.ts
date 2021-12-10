@@ -74,14 +74,12 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   }
 }
 
-MySitesComponent.linkToRouterWith(
-  {
-    category: myAccountCategory,
-    menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
-    resolvers: { [userKey]: userResolvers.show },
-  },
-  mySitesMenuItem
-);
+MySitesComponent.linkToRoute({
+  category: myAccountCategory,
+  menuRoute: mySitesMenuItem,
+  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+  resolvers: { [userKey]: userResolvers.show },
+});
 
 export { MySitesComponent };
 

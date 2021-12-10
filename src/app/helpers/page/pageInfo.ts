@@ -6,6 +6,7 @@ import {
   Menus,
   ResolverList,
 } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { PageComponent } from "./pageComponent";
 
 /**
@@ -19,7 +20,7 @@ import { PageComponent } from "./pageComponent";
 export interface IPageInfo extends Data {
   category?: Category;
   /** Stores modified menuroute */
-  pageRoute?: MenuRoute & { pageComponent?: Type<PageComponent> };
+  menuRoute?: MenuRoute;
   fullscreen?: boolean;
   resolvers?: ResolverList;
   menus?: Menus;
@@ -29,7 +30,7 @@ export interface IPageInfo extends Data {
  * Page info class
  */
 export class PageInfo implements IPageInfo {
-  public pageRoute: MenuRoute & { pageComponent?: Type<PageComponent> };
+  public menuRoute: MenuRoute;
   public component: Type<PageComponent>;
   public category: Category;
   public menus: Menus;
@@ -41,17 +42,12 @@ export class PageInfo implements IPageInfo {
     this.resolvers = args.resolvers ?? {};
   }
 
-  /**
-   * Set Menu Route for PageInfo. This also modifies the menu route to include
-   * the associated target component.
-   */
-  public setMenuRoute(target: Type<PageComponent>, menu: MenuRoute) {
-    this.pageRoute = menu;
+  public setComponent(target: Type<PageComponent>): void {
     this.component = target;
     this.route.pageComponent = target;
   }
 
-  public get route() {
-    return this.pageRoute.route;
+  public get route(): StrongRoute {
+    return this.menuRoute.route;
   }
 }

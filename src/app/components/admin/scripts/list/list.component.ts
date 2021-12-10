@@ -48,15 +48,13 @@ class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script> {
   }
 }
 
-AdminScriptsComponent.linkToRouterWith(
-  {
-    category: adminScriptsCategory,
-    menus: {
-      actions: List([adminDashboardMenuItem, ...adminScriptsMenuItemActions]),
-    },
+AdminScriptsComponent.linkToRoute({
+  category: adminScriptsCategory,
+  menuRoute: adminScriptsMenuItem,
+  menus: {
+    actions: List([adminDashboardMenuItem, ...adminScriptsMenuItemActions]),
   },
-  adminScriptsMenuItem
-);
+});
 
 export { AdminScriptsComponent };
 

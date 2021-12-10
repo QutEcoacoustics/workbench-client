@@ -53,13 +53,11 @@ class AdminAnalysisJobsComponent
   }
 }
 
-AdminAnalysisJobsComponent.linkToRouterWith(
-  {
-    category: adminAnalysisJobsCategory,
-    menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
-  },
-  adminAnalysisJobsMenuItem
-);
+AdminAnalysisJobsComponent.linkToRoute({
+  category: adminAnalysisJobsCategory,
+  menuRoute: adminAnalysisJobsMenuItem,
+  menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
+});
 
 export { AdminAnalysisJobsComponent };
 

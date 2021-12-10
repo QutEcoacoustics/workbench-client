@@ -30,13 +30,11 @@ class TheirSitesComponent extends MySitesComponent {
   }
 }
 
-TheirSitesComponent.linkToRouterWith(
-  {
-    category: theirProfileCategory,
-    menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
-    resolvers: { [accountKey]: accountResolvers.show },
-  },
-  theirSitesMenuItem
-);
+TheirSitesComponent.linkToRoute({
+  category: theirProfileCategory,
+  menuRoute: theirSitesMenuItem,
+  menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
+  resolvers: { [accountKey]: accountResolvers.show },
+});
 
 export { TheirSitesComponent };

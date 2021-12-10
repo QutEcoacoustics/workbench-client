@@ -81,33 +81,29 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   }
 }
 
-SiteEditComponent.linkToRouterWith(
-  {
-    category: sitesCategory,
-    menus: {
-      actions: List([siteMenuItem, ...siteMenuItemActions]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: {
-      [projectKey]: projectResolvers.show,
-      [siteKey]: siteResolvers.show,
-    },
+SiteEditComponent.linkToRoute({
+  category: sitesCategory,
+  menuRoute: editSiteMenuItem,
+  menus: {
+    actions: List([siteMenuItem, ...siteMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
-  editSiteMenuItem
-).linkToRouterWith(
-  {
-    category: pointsCategory,
-    menus: {
-      actions: List([pointMenuItem, ...pointMenuItemActions]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: {
-      [projectKey]: projectResolvers.show,
-      [regionKey]: regionResolvers.show,
-      [siteKey]: siteResolvers.show,
-    },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [siteKey]: siteResolvers.show,
   },
-  editPointMenuItem
-);
+}).linkToRoute({
+  category: pointsCategory,
+  menuRoute: editPointMenuItem,
+  menus: {
+    actions: List([pointMenuItem, ...pointMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [regionKey]: regionResolvers.show,
+    [siteKey]: siteResolvers.show,
+  },
+});
 
 export { SiteEditComponent };

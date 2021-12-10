@@ -80,9 +80,9 @@ class RegisterComponent
   }
 }
 
-RegisterComponent.linkToRouterWith(
-  { category: securityCategory },
-  registerMenuItem
-);
+RegisterComponent.linkToRoute({
+  category: securityCategory,
+  menuRoute: registerMenuItem,
+});
 
 export { RegisterComponent };

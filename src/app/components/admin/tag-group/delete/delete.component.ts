@@ -69,15 +69,13 @@ class AdminTagGroupsDeleteComponent
   }
 }
 
-AdminTagGroupsDeleteComponent.linkToRouterWith(
-  {
-    category: adminTagGroupsCategory,
-    menus: {
-      actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
-    },
-    resolvers: { [tagGroupKey]: tagGroupResolvers.show },
+AdminTagGroupsDeleteComponent.linkToRoute({
+  category: adminTagGroupsCategory,
+  menuRoute: adminDeleteTagGroupMenuItem,
+  menus: {
+    actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
   },
-  adminDeleteTagGroupMenuItem
-);
+  resolvers: { [tagGroupKey]: tagGroupResolvers.show },
+});
 
 export { AdminTagGroupsDeleteComponent };

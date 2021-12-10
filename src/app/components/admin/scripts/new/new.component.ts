@@ -54,14 +54,12 @@ class AdminScriptsNewComponent extends FormTemplate<Script> {
   }
 }
 
-AdminScriptsNewComponent.linkToRouterWith(
-  {
-    category: adminScriptsCategory,
-    menus: {
-      actions: List([adminScriptsMenuItem, ...adminScriptsMenuItemActions]),
-    },
+AdminScriptsNewComponent.linkToRoute({
+  category: adminScriptsCategory,
+  menuRoute: adminNewScriptsMenuItem,
+  menus: {
+    actions: List([adminScriptsMenuItem, ...adminScriptsMenuItemActions]),
   },
-  adminNewScriptsMenuItem
-);
+});
 
 export { AdminScriptsNewComponent };

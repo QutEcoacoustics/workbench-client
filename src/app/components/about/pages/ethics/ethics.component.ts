@@ -12,6 +12,9 @@ class EthicsComponent extends PageComponent {
   public page = CMS.ethics;
 }
 
-EthicsComponent.linkToRouterWith({ category: aboutCategory }, ethicsMenuItem);
+EthicsComponent.linkToRoute({
+  category: aboutCategory,
+  menuRoute: ethicsMenuItem,
+});
 
 export { EthicsComponent };

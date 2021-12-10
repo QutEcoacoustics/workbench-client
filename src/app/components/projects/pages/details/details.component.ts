@@ -198,16 +198,14 @@ class DetailsComponent
   }
 }
 
-DetailsComponent.linkToRouterWith(
-  {
-    category: projectCategory,
-    menus: {
-      actions: List([projectsMenuItem, ...projectMenuItemActions]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: { [projectKey]: projectResolvers.show },
+DetailsComponent.linkToRoute({
+  category: projectCategory,
+  menuRoute: projectMenuItem,
+  menus: {
+    actions: List([projectsMenuItem, ...projectMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
-  projectMenuItem
-);
+  resolvers: { [projectKey]: projectResolvers.show },
+});
 
 export { DetailsComponent };

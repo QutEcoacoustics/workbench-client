@@ -84,20 +84,20 @@ describe("SecondaryMenuComponent", () => {
   });
 
   it("should create menu component", () => {
-    setup({ pageRoute: defaultPageRoute });
+    setup({ menuRoute: defaultPageRoute });
     spec.detectChanges();
     expect(getMenu()).toBeInstanceOf(MenuComponent);
   });
 
   it("should set menu to secondary menu", () => {
-    setup({ pageRoute: defaultPageRoute });
+    setup({ menuRoute: defaultPageRoute });
     spec.detectChanges();
     expect(getMenu().menuType).toBe("secondary");
   });
 
   describe("category", () => {
     it("should display secondary title", () => {
-      setup({ pageRoute: defaultPageRoute });
+      setup({ menuRoute: defaultPageRoute });
       spec.detectChanges();
       expect(getMenu().title).toBe(undefined);
     });
@@ -108,7 +108,7 @@ describe("SecondaryMenuComponent", () => {
         icon: ["fas", "home"],
         route: defaultRoute,
       };
-      setup({ pageRoute: defaultPageRoute, category });
+      setup({ menuRoute: defaultPageRoute, category });
       spec.detectChanges();
       expect(getMenu().title).toBe(undefined);
     });
@@ -116,14 +116,14 @@ describe("SecondaryMenuComponent", () => {
 
   describe("links", () => {
     it("should handle undefined links", () => {
-      setup({ pageRoute: defaultPageRoute, menus: { links: undefined } });
+      setup({ menuRoute: defaultPageRoute, menus: { links: undefined } });
       spec.detectChanges();
       assertLinks(List([projectsMenuItem, defaultPageRoute]));
     });
 
     it("should handle mixed links", () => {
       setup({
-        pageRoute: defaultPageRoute,
+        menuRoute: defaultPageRoute,
         menus: {
           links: List([defaultMenuRoute, defaultMenuLink]),
         },
@@ -140,7 +140,7 @@ describe("SecondaryMenuComponent", () => {
     });
 
     it("should create self link", () => {
-      setup({ pageRoute: defaultPageRoute, menus: { links: List([]) } });
+      setup({ menuRoute: defaultPageRoute, menus: { links: List([]) } });
       spec.detectChanges();
       assertLinks(List([projectsMenuItem, defaultPageRoute]));
     });
@@ -154,7 +154,7 @@ describe("SecondaryMenuComponent", () => {
         ];
 
         setup(
-          { pageRoute: defaultPageRoute, menus: { links: List([]) } },
+          { menuRoute: defaultPageRoute, menus: { links: List([]) } },
           hideProject
         );
         setDefaultLinks(Set(defaultLinks));
@@ -199,7 +199,7 @@ describe("SecondaryMenuComponent", () => {
       });
 
       it("should append full lineage of self link to menu", () => {
-        setup({ pageRoute: childMenuItem });
+        setup({ menuRoute: childMenuItem });
         spec.detectChanges();
         assertLinks(
           List([
@@ -212,13 +212,13 @@ describe("SecondaryMenuComponent", () => {
       });
 
       it("should set self link menu item to active", () => {
-        setup({ pageRoute: defaultPageRoute });
+        setup({ menuRoute: defaultPageRoute });
         spec.detectChanges();
         expect(getMenu().links.toArray()[1].active).toBeTrue();
       });
 
       it("should set all parent menu items to active", () => {
-        setup({ pageRoute: childMenuItem });
+        setup({ menuRoute: childMenuItem });
         spec.detectChanges();
         getMenu()
           .links.toArray()
@@ -232,7 +232,7 @@ describe("SecondaryMenuComponent", () => {
   describe("internal links", () => {
     it("should handle single link", () => {
       setup({
-        pageRoute: defaultPageRoute,
+        menuRoute: defaultPageRoute,
         menus: { links: List([defaultMenuRoute]) },
       });
       spec.detectChanges();
@@ -244,7 +244,7 @@ describe("SecondaryMenuComponent", () => {
         menuRoute({ ...defaultMenuRoute, label: "Custom Link 1" }),
         menuRoute({ ...defaultMenuRoute, label: "Custom Link 2" }),
       ];
-      setup({ pageRoute: defaultPageRoute, menus: { links: List(links) } });
+      setup({ menuRoute: defaultPageRoute, menus: { links: List(links) } });
       spec.detectChanges();
       assertLinks(List([projectsMenuItem, ...links, defaultPageRoute]));
     });
@@ -253,7 +253,7 @@ describe("SecondaryMenuComponent", () => {
   describe("external links", () => {
     it("should handle single link", () => {
       setup({
-        pageRoute: defaultPageRoute,
+        menuRoute: defaultPageRoute,
         menus: { links: List([defaultMenuLink]) },
       });
       spec.detectChanges();
@@ -265,7 +265,7 @@ describe("SecondaryMenuComponent", () => {
         menuLink({ ...defaultMenuLink, label: "Custom Link 1" }),
         menuLink({ ...defaultMenuLink, label: "Custom Link 2" }),
       ];
-      setup({ pageRoute: defaultPageRoute, menus: { links: List(links) } });
+      setup({ menuRoute: defaultPageRoute, menus: { links: List(links) } });
       spec.detectChanges();
       assertLinks(List([projectsMenuItem, ...links, defaultPageRoute]));
     });
@@ -274,7 +274,7 @@ describe("SecondaryMenuComponent", () => {
   describe("widgets", () => {
     it("should handle single widget", () => {
       setup({
-        pageRoute: defaultPageRoute,
+        menuRoute: defaultPageRoute,
         menus: { links: List(), linkWidgets: List([defaultWidget]) },
       });
       spec.detectChanges();
@@ -287,7 +287,7 @@ describe("SecondaryMenuComponent", () => {
         new WidgetMenuItem(MockWidgetComponent),
       ];
       setup({
-        pageRoute: defaultPageRoute,
+        menuRoute: defaultPageRoute,
         menus: { links: List(), linkWidgets: List(widgets) },
       });
       spec.detectChanges();

@@ -76,33 +76,29 @@ class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
   }
 }
 
-SiteDeleteComponent.linkToRouterWith(
-  {
-    category: sitesCategory,
-    menus: {
-      actions: List([siteMenuItem, ...siteMenuItemActions]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: {
-      [projectKey]: projectResolvers.show,
-      [siteKey]: siteResolvers.show,
-    },
+SiteDeleteComponent.linkToRoute({
+  category: sitesCategory,
+  menuRoute: deleteSiteMenuItem,
+  menus: {
+    actions: List([siteMenuItem, ...siteMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
-  deleteSiteMenuItem
-).linkToRouterWith(
-  {
-    category: pointsCategory,
-    menus: {
-      actions: List([pointMenuItem, ...pointMenuItemActions]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: {
-      [projectKey]: projectResolvers.show,
-      [regionKey]: regionResolvers.show,
-      [siteKey]: siteResolvers.show,
-    },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [siteKey]: siteResolvers.show,
   },
-  deletePointMenuItem
-);
+}).linkToRoute({
+  category: pointsCategory,
+  menuRoute: deletePointMenuItem,
+  menus: {
+    actions: List([pointMenuItem, ...pointMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
+    [regionKey]: regionResolvers.show,
+    [siteKey]: siteResolvers.show,
+  },
+});
 
 export { SiteDeleteComponent };

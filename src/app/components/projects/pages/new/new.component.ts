@@ -53,13 +53,11 @@ class NewComponent extends FormTemplate<Project> {
   }
 }
 
-NewComponent.linkToRouterWith(
-  {
-    category: projectsCategory,
-    menus: { actions: List([projectsMenuItem, ...projectsMenuItemActions]) },
-  },
-  newProjectMenuItem
-);
+NewComponent.linkToRoute({
+  category: projectsCategory,
+  menuRoute: newProjectMenuItem,
+  menus: { actions: List([projectsMenuItem, ...projectsMenuItemActions]) },
+});
 
 export { NewComponent };
 

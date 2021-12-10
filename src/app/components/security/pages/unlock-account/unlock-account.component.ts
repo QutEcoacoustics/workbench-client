@@ -47,12 +47,10 @@ class UnlockAccountComponent extends FormTemplate<UnlockAccount> {
   }
 }
 
-UnlockAccountComponent.linkToRouterWith(
-  {
-    category: securityCategory,
-    menus: { actions: List([loginMenuItem, ...loginMenuItemActions]) },
-  },
-  unlockAccountMenuItem
-);
+UnlockAccountComponent.linkToRoute({
+  category: securityCategory,
+  menuRoute: unlockAccountMenuItem,
+  menus: { actions: List([loginMenuItem, ...loginMenuItemActions]) },
+});
 
 export { UnlockAccountComponent };

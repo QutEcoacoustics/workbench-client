@@ -58,16 +58,14 @@ class AdminAnalysisJobComponent
   }
 }
 
-AdminAnalysisJobComponent.linkToRouterWith(
-  {
-    category: adminAnalysisJobsCategory,
-    menus: {
-      actions: List([adminAnalysisJobsMenuItem, adminAnalysisJobMenuItem]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: { [analysisJobKey]: analysisJobResolvers.show },
+AdminAnalysisJobComponent.linkToRoute({
+  category: adminAnalysisJobsCategory,
+  menuRoute: adminAnalysisJobMenuItem,
+  menus: {
+    actions: List([adminAnalysisJobsMenuItem, adminAnalysisJobMenuItem]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
-  adminAnalysisJobMenuItem
-);
+  resolvers: { [analysisJobKey]: analysisJobResolvers.show },
+});
 
 export { AdminAnalysisJobComponent };

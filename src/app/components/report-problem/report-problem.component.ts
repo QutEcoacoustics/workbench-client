@@ -76,9 +76,9 @@ class ReportProblemComponent
   }
 }
 
-ReportProblemComponent.linkToRouterWith(
-  { category: reportProblemsCategory },
-  reportProblemMenuItem
-);
+ReportProblemComponent.linkToRoute({
+  category: reportProblemsCategory,
+  menuRoute: reportProblemMenuItem,
+});
 
 export { ReportProblemComponent };

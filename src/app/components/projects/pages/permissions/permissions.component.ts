@@ -113,17 +113,15 @@ class PermissionsComponent extends TableTemplate<TableRow> implements OnInit {
   }
 }
 
-PermissionsComponent.linkToRouterWith(
-  {
-    category: projectCategory,
-    menus: {
-      actions: List([projectMenuItem, ...projectMenuItemActions]),
-      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-    },
-    resolvers: { [projectKey]: projectResolvers.show },
+PermissionsComponent.linkToRoute({
+  category: projectCategory,
+  menuRoute: editProjectPermissionsMenuItem,
+  menus: {
+    actions: List([projectMenuItem, ...projectMenuItemActions]),
+    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
-  editProjectPermissionsMenuItem
-);
+  resolvers: { [projectKey]: projectResolvers.show },
+});
 
 export { PermissionsComponent };
 
