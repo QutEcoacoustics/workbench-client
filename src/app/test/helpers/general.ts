@@ -9,6 +9,7 @@ import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { SpyObject } from "@ngneat/spectator";
 import { Subject } from "rxjs";
+import { homeMenuItem } from "@components/home/home.menus";
 
 /**
  * An object which keeps track of the various breakpoints set for the
@@ -210,7 +211,7 @@ export function assertOk(): void {
 export function generatePageInfo(
   ...models: ResolvedModel[]
 ): Partial<IPageInfo> {
-  const data: Partial<IPageInfo> = { resolvers: {} };
+  const data: Partial<IPageInfo> = { resolvers: {}, pageRoute: homeMenuItem };
 
   models.forEach((model, index) => {
     const key = "model" + index;
