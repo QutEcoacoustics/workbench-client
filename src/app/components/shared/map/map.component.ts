@@ -142,4 +142,4 @@ export function sanitizeMapMarkers(
   return List(output);
 }
 
-export type MapMarkerOption = google.maps.ReadonlyMarkerOptions;
+export type MapMarkerOption = google.maps.MarkerOptions;

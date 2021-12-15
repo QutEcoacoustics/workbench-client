@@ -14,9 +14,7 @@ declare const require: any;
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting(), {
-    teardown: { destroyAfterEach: false }
-}
+  platformBrowserDynamicTesting()
 );
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
