@@ -5,6 +5,64 @@ import { PageComponent } from "./pageComponent";
 import { IPageInfo, PageInfo } from "./pageInfo";
 
 describe("PageComponents", () => {
+  let ngZone: NgZone;
+  let spec: SpectatorRouting<AppComponent>;
+  let createComponent: SpectatorRoutingFactory<AppComponent>;
+
+  function createHostComponent(component: any, menuItem: MenuRoute) {
+    const routes = menuItem.route.compileRoutes(getRouteConfigForPage);
+
+    const overrideComponent = (_comp: any): MetadataOverride<any> => {
+      const mock = MockComponent(_comp);
+      return {
+        remove: { declarations: [_comp], exports: [_comp] },
+        add: { declarations: [mock], exports: [mock] },
+      };
+    };
+
+    return createRoutingFactory({
+      component: AppComponent,
+      declarations: [component],
+      imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule.withRoutes(routes),
+        MockBawApiModule,
+      ],
+      overrideModules: [
+        [HeaderModule, overrideComponent(HeaderComponent)],
+        [SharedModule, overrideComponent(FooterComponent)],
+      ],
+      stubsEnabled: false,
+    });
+  }
+
+  function assertMenusAreVisible(isVisible: boolean = true) {
+    const secondaryMenu = spec.query("#secondary");
+    const actionMenu = spec.query("#action");
+
+    if (isVisible) {
+      expect(getComputedStyle(secondaryMenu).display).not.toBe("none");
+      expect(getComputedStyle(actionMenu).display).not.toBe("none");
+    } else {
+      expect(getComputedStyle(secondaryMenu).display).toBe("none");
+      expect(getComputedStyle(actionMenu).display).toBe("none");
+    }
+  }
+
+  function getActionMenu() {
+    return spec.query(ActionMenuComponent);
+  }
+
+  function getSecondaryMenu() {
+    return spec.query(SecondaryMenuComponent);
+  }
+
+  async function navigate(url: string) {
+    ngZone = spec.inject(NgZone);
+    await ngZone.run(async () => await spec.router.navigateByUrl(url));
+  }
+
   describe("linkToRouterWith", () => {
     let defaultMenuItem: MenuRoute;
 

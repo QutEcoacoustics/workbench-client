@@ -160,9 +160,11 @@ describe("AppComponent", () => {
 
       const actionMenu = spec.query("#container baw-action-menu");
       if (isFullscreen) {
-        expect(actionMenu).toBeFalsy("Action menu should not exist");
+        expect(getComputedStyle(secondaryMenu).display).toBe("none");
+        expect(getComputedStyle(actionMenu).display).toBe("none");
       } else {
-        expect(actionMenu).toBeTruthy("Action menu should exist");
+        expect(getComputedStyle(secondaryMenu).display).not.toBe("none");
+        expect(getComputedStyle(actionMenu).display).not.toBe("none");
       }
     }
 
