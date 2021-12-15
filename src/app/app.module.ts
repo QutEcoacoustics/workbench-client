@@ -97,7 +97,6 @@ export const appImports = [
     // Show loading animation after 3 seconds
     { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
   ],
-  entryComponents: [AppComponent, PermissionsShieldComponent],
   exports: [],
 })
 export class AppModule implements DoBootstrap {
