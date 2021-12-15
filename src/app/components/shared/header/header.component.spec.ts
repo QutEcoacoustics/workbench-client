@@ -419,14 +419,14 @@ describe("HeaderComponent", () => {
       viewport.set(viewports.large);
       setUser(false);
       spec.detectChanges();
-      expect(getToggleButton()).toHaveStyle({ display: "none" });
+      expect(getComputedStyle(getToggleButton()).display).toBe("none");
     });
 
     it("should display toggle button at medium screen size", () => {
       viewport.set(viewports.medium);
       setUser(false);
       spec.detectChanges();
-      expect(getToggleButton()).not.toHaveStyle({ display: "none" });
+      expect(getComputedStyle(getToggleButton()).display).not.toBe("none");
     });
 
     it("navbar should initially be collapsed", () => {

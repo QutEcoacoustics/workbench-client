@@ -113,7 +113,7 @@ describe("CmsComponent", () => {
 
   it("should display cms response containing style tag", async () => {
     const promise = interceptApiRequest(`
-      <style>p { color: #420; }</style>
+      <style>p { color: rgb(68, 34, 0); }</style>
       <p>Example HTML response from API</p>
     `);
     spectator.setInput("page", CMS.home);
@@ -123,13 +123,13 @@ describe("CmsComponent", () => {
 
     const body = spectator.debugElement.nativeElement.querySelector("p");
     expect(body.innerText.trim()).toBe("Example HTML response from API");
-    expect(body).toHaveStyle({ color: "#420" });
+    expect(getComputedStyle(body).color).toBe("rgb(68, 34, 0)");
   });
 
   it("should display cms response containing script tag", async () => {
     const promise = interceptApiRequest(`
       <p id='test'>Example HTML response from API</p>
-      <script>document.getElementById('test').style.color = '#420';</script>
+      <script>document.getElementById('test').style.color = 'rgb(68, 34, 0)';</script>
     `);
     spectator.setInput("page", CMS.home);
     spectator.detectChanges();
@@ -138,7 +138,7 @@ describe("CmsComponent", () => {
 
     const body = spectator.debugElement.nativeElement.querySelector("p");
     expect(body.innerText.trim()).toBe("Example HTML response from API");
-    expect(body).toHaveStyle({ color: "#420" });
+    expect(getComputedStyle(body).color).toBe("rgb(68, 34, 0)");
   });
 
   it("should display error message on failure", async () => {

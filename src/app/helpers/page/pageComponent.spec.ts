@@ -111,11 +111,11 @@ describe("PageComponents", () => {
     const actionMenu = spec.query("#action");
 
     if (isVisible) {
-      expect(secondaryMenu).not.toHaveStyle({ display: "none" });
-      expect(actionMenu).not.toHaveStyle({ display: "none" });
+      expect(getComputedStyle(secondaryMenu).display).not.toBe("none");
+      expect(getComputedStyle(actionMenu).display).not.toBe("none");
     } else {
-      expect(secondaryMenu).toHaveStyle({ display: "none" });
-      expect(actionMenu).toHaveStyle({ display: "none" });
+      expect(getComputedStyle(secondaryMenu).display).toBe("none");
+      expect(getComputedStyle(actionMenu).display).toBe("none");
     }
   }
 
