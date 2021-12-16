@@ -29,22 +29,11 @@ export const modelData = {
   defaults: {
     sampleRateHertz: [8000, 22050, 44100, 48000],
     bitRateBps: [
-      64000,
-      82000,
-      123000,
-      124000,
-      125000,
-      128000,
-      256000,
-      352800,
-      353000,
-      512000,
-      705600,
-      768000,
-      1411200,
+      64000, 82000, 123000, 124000, 125000, 128000, 256000, 352800, 353000,
+      512000, 705600, 768000, 1411200,
     ],
   },
-  hash: () => "SHA256::" + modelData.hexaDecimal(256 / 4).substr(2),
+  hash: () => "SHA256::" + modelData.hexaDecimal(256 / 4).substring(2),
   html: () => "hello <b>world</b>",
   id: (id?: Id) => (id ? id : faker.datatype.number(25)),
   ids: () => randomArray(1, 5, () => faker.datatype.number(100)),
@@ -256,9 +245,9 @@ function randomObject(min: number, max: number): Record<string, string> {
   const obj = {};
 
   for (let i = 0; i < len; ++i) {
-    obj[
-      faker.random.word().replace(specialCharRegex, "")
-    ] = faker.random.words().replace(specialCharRegex, "");
+    obj[faker.random.word().replace(specialCharRegex, "")] = faker.random
+      .words()
+      .replace(specialCharRegex, "");
   }
 
   return obj;

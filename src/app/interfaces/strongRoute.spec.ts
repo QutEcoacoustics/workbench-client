@@ -510,7 +510,7 @@ describe("StrongRoute", () => {
 
           const path =
             parent.baseRef.length > 0
-              ? parent.baseRef.substr(0, parent.baseRef.length - 1)
+              ? parent.baseRef.substring(0, parent.baseRef.length - 1)
               : "";
           rootRoute = createRoute(path);
         });
