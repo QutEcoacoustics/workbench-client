@@ -235,14 +235,12 @@ describe("DetailViewComponent", () => {
 
     it("should right align field on small screen", () => {
       viewport.set(viewports.small);
-      const fieldStyle = window.getComputedStyle(getFields()[0]);
-      expect(fieldStyle.textAlign).toBe("right");
+      expect(getFields()[0]).toHaveComputedStyle({ textAlign: "right" });
     });
 
     it("should left align field on smallest screen", () => {
       viewport.set(viewports.extraSmall);
-      const fieldStyle = window.getComputedStyle(getFields()[0]);
-      expect(fieldStyle.textAlign).toBe("left");
+      expect(getFields()[0]).toHaveComputedStyle({ textAlign: "left" });
     });
   });
 });

@@ -31,9 +31,9 @@ describe("CheckboxComponent", () => {
     fixture.detectChanges();
 
     const checkbox: HTMLDivElement = fixture.nativeElement.querySelector("div");
-    const computedStyles = window.getComputedStyle(checkbox);
-    const marginLeft = parseInt(computedStyles.marginLeft.substr(0, 3), 10);
-    const marginRight = parseInt(computedStyles.marginRight.substr(0, 3), 10);
+    const styles = getComputedStyle(checkbox);
+    const marginLeft = parseInt(styles.marginLeft.substring(0, 3), 10);
+    const marginRight = parseInt(styles.marginRight.substring(0, 3), 10);
 
     expect(marginLeft).toBeGreaterThan(500);
     expect(marginRight).toBeGreaterThan(500);
@@ -47,44 +47,41 @@ describe("CheckboxComponent", () => {
     fixture.detectChanges();
 
     const checkbox: HTMLDivElement = fixture.nativeElement.querySelector("div");
-    const computedStyles = window.getComputedStyle(checkbox);
-    expect(computedStyles.marginLeft).toBe("0px");
-    expect(computedStyles.marginRight).toBe("0px");
+    expect(checkbox).toHaveComputedStyle({
+      marginLeft: "0px",
+      marginRight: "0px",
+    });
   });
 
   it("should be checked", () => {
     component.checked = true;
     fixture.detectChanges();
-    const checkbox: HTMLInputElement = fixture.nativeElement.querySelector(
-      "input"
-    );
+    const checkbox: HTMLInputElement =
+      fixture.nativeElement.querySelector("input");
     expect(checkbox.checked).toBeTruthy();
   });
 
   it("should not be checked", () => {
     component.checked = false;
     fixture.detectChanges();
-    const checkbox: HTMLInputElement = fixture.nativeElement.querySelector(
-      "input"
-    );
+    const checkbox: HTMLInputElement =
+      fixture.nativeElement.querySelector("input");
     expect(checkbox.checked).toBeFalsy();
   });
 
   it("should be disabled", () => {
     component.disabled = true;
     fixture.detectChanges();
-    const checkbox: HTMLInputElement = fixture.nativeElement.querySelector(
-      "input"
-    );
+    const checkbox: HTMLInputElement =
+      fixture.nativeElement.querySelector("input");
     expect(checkbox.disabled).toBeTruthy();
   });
 
   it("should not be disabled", () => {
     component.disabled = false;
     fixture.detectChanges();
-    const checkbox: HTMLInputElement = fixture.nativeElement.querySelector(
-      "input"
-    );
+    const checkbox: HTMLInputElement =
+      fixture.nativeElement.querySelector("input");
     expect(checkbox.disabled).toBeFalsy();
   });
 });
