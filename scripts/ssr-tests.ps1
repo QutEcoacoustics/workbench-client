@@ -1,4 +1,4 @@
-#!/usr/bin/pwsh
+#!/bin/pwsh
 #Requires -Version 7
 
 function Format-Output {
@@ -63,13 +63,13 @@ function Assert-NotContains {
 
 function Assert-Image {
   param([Parameter()][string]$file)
-  
+
   if (pngcheck $imageFile) {
     Format-Success("`tTest passed")
   } else {
     Format-Error("`tTest failed")
-    Exit 1 
-  }  
+    Exit 1
+  }
 }
 
 # TODO Replace this dependency with cross-platform solution
@@ -97,7 +97,7 @@ Assert-Contains "<h1>Not Found<\/h1>" $brokenFile
 # Tests for angular production build
 Format-Info "Retrieve angular bundle"
 $bundleFile = "main.js"
-Get-Page $((Select-String -Pattern "main-es2015\..+?\.js" -Path $indexFile).Matches.Value) $bundleFile
+Get-Page $((Select-String -Pattern "main\..+?\.js" -Path $indexFile).Matches.Value) $bundleFile
 Format-Info "Validate footer contains version"
 Assert-Contains "version:`"\d{2}\.\d{1,2}\.\d{1,2}.+?`"" $bundleFile
 
