@@ -32,6 +32,14 @@ beforeEach(function () {
   }
 });
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
+// Load matchers into jasmine
+// https://stackoverflow.com/questions/11942085/is-there-a-way-to-add-a-jasmine-matcher-to-the-whole-environment
+beforeEach(function () {
+  jasmine.addMatchers(computedStyleMatchers);
+});
+
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
