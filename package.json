@@ -49,6 +49,7 @@
     "@ngx-formly/core": "^6.0.0-next.6",
     "@ngx-loading-bar/core": "^5.1.2",
     "@ngx-loading-bar/http-client": "^5.1.2",
+    "@popperjs/core": "^2.11.0",
     "@swimlane/ngx-datatable": "^20.0.0",
     "@vvo/tzdb": "^6.39.0",
     "bootstrap": "^5.1.3",
