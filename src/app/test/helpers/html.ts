@@ -1,4 +1,165 @@
 import { ComponentFixture } from "@angular/core/testing";
+import { DebugElement } from "@angular/core";
+import { ComponentFixture, tick } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+
+declare const ng: any;
+
+/**
+ * Assert icon
+ *
+ * @param target Target element
+ * @param prop Icon
+ */
+export function assertIcon(target: HTMLElement, prop: string) {
+  const icon: HTMLElement = target.querySelector("fa-icon");
+  expect(icon).toBeTruthy("No icon detected");
+  expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
+  expect(icon.attributes.getNamedItem("ng-reflect-icon").value.trim()).toBe(
+    prop
+  );
+}
+
+/**
+ * Assert image
+ *
+ * @param target Target element
+ * @param src Image src
+ * @param alt Image alt
+ */
+export function assertImage(
+  target: HTMLImageElement,
+  src: string,
+  alt: string,
+  isUnauthenticated?: boolean
+) {
+  expect(target).toBeTruthy("Image should exist");
+  expect(target.src).toBe(src);
+  expect(target.alt).toBe(alt);
+
+  const imageDirective: AuthenticatedImageDirective = ng
+    .getDirectives(target)
+    .find((directive) => directive instanceof AuthenticatedImageDirective);
+
+  if (isUnauthenticated) {
+    if (imageDirective) {
+      expect(imageDirective);
+    } else {
+      expect(imageDirective.disableAuth).toBeTrue();
+    }
+  } else {
+    expect(imageDirective).toBeTruthy();
+  }
+}
+
+/**
+ * Assert html element tooltip
+ *
+ * @param target Target element
+ * @param tooltip Tooltip text
+ */
+export function assertTooltip(target: HTMLElement, tooltip: string) {
+  expect(target).toBeTruthy("No tooltip detected");
+
+  let attr = target.attributes.getNamedItem("ng-reflect-ngb-tooltip");
+
+  if (!attr) {
+    attr = target.attributes.getNamedItem("ng-reflect-tooltip");
+  }
+
+  expect(attr).toBeTruthy();
+  expect(attr.value).toHaveText(tooltip);
+
+  // TODO Add accessability expectations (id, visible on highlight, etc.)
+}
+
+export function assertHref(target: HTMLAnchorElement, href: string) {
+  expect(target).toBeTruthy("No link detected");
+  expect(target).toHaveAttribute("href", encodeURI(href));
+}
+
+/**
+ * Assert router link
+ *
+ * @param target Target element
+ * @param route Route text
+ */
+export function assertRoute(target: HTMLElement, route: string) {
+  expect(target).toBeTruthy("No route detected");
+  expect(target).toHaveAttribute("ng-reflect-router-link");
+  expect(target).toHaveAttribute("href", encodeURI(route));
+}
+
+/**
+ * Assert strong route link
+ *
+ * @param target Target element
+ * @param route Route text
+ */
+export function assertStrongRouteLink(target: HTMLElement, route: string) {
+  expect(target).toBeTruthy("No route detected");
+  expect(target).toHaveAttribute("ng-reflect-strong-route");
+  expect(target).toHaveAttribute("href", encodeURI(route));
+}
+
+/**
+ * Assert strong route link active is set
+ *
+ * @param target Target element
+ */
+export function assertStrongRouteActive(target: HTMLElement) {
+  assertAttribute(target, "strong-route-active", "active");
+}
+
+/**
+ * Assert url link
+ *
+ * @param target Target element
+ * @param route Route text
+ */
+export function assertUrl(target: HTMLElement, route: string) {
+  expect(target).toBeTruthy("No route detected");
+  expect(target).toHaveAttribute("ng-reflect-baw-url");
+  expect(target).toHaveAttribute("href", encodeURI(route));
+}
+
+/**
+ * Assert html angular attribute
+ *
+ * @param target Target element
+ * @param key Attribute key (minus ng-reflect-)
+ * @param value Expected value of attribute
+ */
+export function assertAttribute(target: HTMLElement, key: string, value: any) {
+  const attribute = target.attributes.getNamedItem("ng-reflect-" + key);
+  expect(attribute).toBeTruthy(`HTML element should have ${key} attribute`);
+  expect(attribute.value.trim()).toBe(
+    value,
+    `HTML element ${key} attribute should be ${value}`
+  );
+}
+
+/**
+ * Get trimmed text content from an element
+ *
+ * @param target Target element
+ * @param selector HTML selector
+ */
+export function getText(target: DebugElement, selector: string) {
+  return target
+    .queryAll(By.css(selector))
+    .map((x) => x.nativeElement.textContent.trim());
+}
+
+/**
+ * Get formly field inputs from the component
+ *
+ * @param fixture Component Fixture
+ */
+export function getInputs(fixture: ComponentFixture<any>) {
+  return fixture.nativeElement.querySelectorAll("formly-field");
+}
 
 /**
  * TODO Replace with spectator method

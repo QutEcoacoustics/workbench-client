@@ -144,8 +144,16 @@ describe("AdminOrphanComponent", () => {
       },
       { label: "Creator", key: "creator", model: "User: custom username (1)" },
       { label: "Updater", key: "updater", model: "User: custom username (1)" },
-      { label: "Created At", key: "createdAt", plain: model.createdAt },
-      { label: "Updated At", key: "updatedAt", plain: model.updatedAt },
+      {
+        label: "Created At",
+        key: "createdAt",
+        date: { dateTime: model.createdAt, model },
+      },
+      {
+        label: "Updated At",
+        key: "updatedAt",
+        date: { dateTime: model.updatedAt, model },
+      },
       {
         label: "Projects",
         key: "projects",

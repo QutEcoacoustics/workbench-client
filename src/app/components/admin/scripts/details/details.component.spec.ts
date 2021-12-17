@@ -144,7 +144,11 @@ describe("ScriptComponent", () => {
       { label: "Group Id", key: "groupId", plain: model.groupId },
       { label: "Group", key: "group", model: "Script: custom script (1)" },
       { label: "Creator", key: "creator", model: "User: custom username (1)" },
-      { label: "Created At", key: "createdAt", plain: model.createdAt },
+      {
+        label: "Created At",
+        key: "createdAt",
+        date: { dateTime: model.createdAt, model },
+      },
     ];
 
     details.forEach((detail) => assertDetail(detail));

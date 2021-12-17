@@ -135,7 +135,11 @@ describe("AdminAnalysisJobComponent", () => {
         key: "savedSearch",
         model: "Saved Search: custom saved search (1)",
       },
-      { label: "Started At", key: "startedAt", plain: model.startedAt },
+      {
+        label: "Started At",
+        key: "startedAt",
+        date: { dateTime: model.startedAt, model },
+      },
       {
         label: "Overall Status",
         key: "overallStatus",
@@ -144,7 +148,7 @@ describe("AdminAnalysisJobComponent", () => {
       {
         label: "Overall Status Modified At",
         key: "overallStatusModifiedAt",
-        plain: model.overallStatusModifiedAt,
+        date: { dateTime: model.overallStatusModifiedAt, model },
       },
       {
         label: "Overall Count",

@@ -1,7 +1,10 @@
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { ImageUrl, toRelative } from "@interfaces/apiInterfaces";
-import { humanizeDateTime } from "@shared/detail-view/render-field/render-field.component";
+import { AbstractModel } from "@models/AbstractModel";
+import { Site } from "@models/Site";
+import { AbstractModelWithSite } from "@shared/timezone/timezone.component";
 import { DateTime, Duration } from "luxon";
+import { assertImage, assertTooltip } from "./html";
 
 /**
  * Find a label from a list of detail view items
@@ -61,6 +64,8 @@ function assertValue(
     assertImages(views[index], detail.image);
   } else if (isInstantiated(detail.children)) {
     assertChildren(index, views, detail.children);
+  } else if (isInstantiated(detail.date)) {
+    assertDateTime(views[index], detail.date);
   } else {
     fail("Detail value not set");
   }
@@ -73,25 +78,36 @@ function assertCheckbox(view: HTMLDListElement, value: boolean) {
 
 function assertCode(view: HTMLDListElement, value: Record<string, any>) {
   const code: HTMLElement = view.querySelector("#code");
-  expect(code.innerText).toContain(JSON.stringify(value, null, 4));
+  expect(code).toHaveText(JSON.stringify(value, null, 2));
 }
 
 function assertPlainText(
   view: HTMLDListElement,
-  value: string | number | DateTime | Duration
+  value: string | number | Duration
 ) {
   const plainText: HTMLElement = view.querySelector("#plain");
   let result: string;
 
-  if (value instanceof DateTime) {
-    result = humanizeDateTime(value);
-  } else if (value instanceof Duration) {
+  if (value instanceof Duration) {
     result = `${value.toISO()} (${toRelative(value)})`;
   } else {
     result = value.toString();
   }
 
   expect(plainText.innerText).toContain(result);
+}
+
+function assertDateTime(
+  view: HTMLDListElement,
+  value: { model?: AbstractModelWithSite; dateTime: DateTime }
+) {
+  const timezone: HTMLElement = view.querySelector("baw-timezone");
+  expect(timezone).toHaveText(value.dateTime.toFormat("yyyy-LL-dd HH:mm"));
+
+  // Validate model was passed through
+  if (value.model?.site) {
+    assertTooltip(timezone, value.model.site?.tzinfoTz);
+  }
 }
 
 function assertModel(view: HTMLDListElement, value: string) {
@@ -124,7 +140,8 @@ export interface Detail extends View {
 interface View {
   checkbox?: boolean;
   code?: Record<string, any>;
-  plain?: string | number | DateTime | Duration;
+  date?: { model?: AbstractModelWithSite; dateTime: DateTime };
+  plain?: string | number | Duration;
   model?: string;
   image?: string | ImageUrl[];
   children?: View[];

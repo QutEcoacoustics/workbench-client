@@ -10,6 +10,7 @@ import {
 } from "@interfaces/apiInterfaces";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { Site } from "@models/Site";
+import { AbstractModelWithSite } from "@shared/timezone/timezone.component";
 import { DateTime, Duration } from "luxon";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -69,7 +70,7 @@ type FieldTypes =
     <!-- Display date -->
     <dl *ngIf="isDateField(field)">
       <baw-timezone
-        id="code"
+        id="timezone"
         [dateTime]="field.date"
         [site]="model.site"
       ></baw-timezone>
@@ -134,7 +135,7 @@ export class RenderFieldComponent
   implements OnChanges
 {
   @Input() public value: ModelView;
-  @Input() public model: AbstractModel & { site?: Site };
+  @Input() public model: AbstractModelWithSite;
 
   public field: FieldTypes;
 

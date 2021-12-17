@@ -1,6 +1,10 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { DateTimeTimezone } from "@interfaces/apiInterfaces";
-import { isUnresolvedModel, UnresolvedModel } from "@models/AbstractModel";
+import {
+  AbstractModel,
+  isUnresolvedModel,
+  UnresolvedModel,
+} from "@models/AbstractModel";
 import { Site } from "@models/Site";
 
 @Component({
@@ -50,3 +54,5 @@ export class TimezoneComponent implements OnChanges {
     }
   }
 }
+
+export type AbstractModelWithSite = AbstractModel & { site?: Site };
