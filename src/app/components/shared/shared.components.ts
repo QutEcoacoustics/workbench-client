@@ -45,6 +45,8 @@ import { ModelCardsModule } from "./model-cards/model-cards.module";
 import { ModelSelectorComponent } from "./model-selector/model-selector.component";
 import { ProgressModule } from "./progress/progress.module";
 import { StepperModule } from "./stepper/stepper.module";
+import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
+import { TimezoneModule } from "./timezone/timezone.module";
 import { UserLinkModule } from "./user-link/user-link.module";
 import { WIPComponent } from "./wip/wip.component";
 import { DateTimeFilterComponent } from "./date-time-filter/date-time-filter.component";
@@ -112,6 +114,7 @@ export const sharedModules = [
   ProgressModule,
   StepperModule,
   UserLinkModule,
+  TimezoneModule,
 ];
 
 export const internalModules = [...sharedModules, NgxCaptchaModule];

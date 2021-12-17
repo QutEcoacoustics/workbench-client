@@ -13,6 +13,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
       <baw-render-field
         class="col-sm-9"
         [value]="getValue(field)"
+        [model]="model"
       ></baw-render-field>
     </div>
   `,

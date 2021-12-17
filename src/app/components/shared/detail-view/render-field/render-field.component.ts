@@ -2,62 +2,112 @@ import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
+  DateTimeTimezone,
   ImageSizes,
   ImageUrl,
   isImageUrl,
   toRelative,
 } from "@interfaces/apiInterfaces";
-import {
-  AbstractModel,
-  unknownViewUrl,
-  UnresolvedModel,
-} from "@models/AbstractModel";
-import { User } from "@models/User";
+import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
+import { Site } from "@models/Site";
 import { DateTime, Duration } from "luxon";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+
+interface PlainField {
+  isPlainField: true;
+  text: string;
+}
+
+interface DateField {
+  isDateField: true;
+  date: DateTimeTimezone;
+}
+
+interface CodeField {
+  isCodeField: true;
+  text: string;
+}
+
+interface CheckboxField {
+  isCheckboxField: true;
+  checked: boolean;
+}
+
+interface ModelField {
+  isModelField: true;
+  model: AbstractModel;
+}
+
+interface ImageField {
+  isImageField: true;
+  imageUrls: ImageUrl[];
+}
+
+interface NestedField {
+  isNestedField: true;
+  children: ModelView[];
+}
+
+type FieldTypes =
+  | PlainField
+  | DateField
+  | CodeField
+  | CheckboxField
+  | ModelField
+  | ImageField
+  | NestedField;
 
 @Component({
   selector: "baw-render-field",
   template: `
     <!-- Display plain text -->
-    <dl *ngIf="styling === fieldStyling.plain">
-      <p id="plain" class="m-0" [innerText]="display"></p>
+    <dl *ngIf="isPlainField(field)">
+      <p id="plain" class="m-0" [innerText]="field.text"></p>
+    </dl>
+
+    <!-- Display date -->
+    <dl *ngIf="isDateField(field)">
+      <baw-timezone
+        id="code"
+        [dateTime]="field.date"
+        [site]="model.site"
+      ></baw-timezone>
     </dl>
 
     <!-- Display code/objects -->
-    <dl *ngIf="styling === fieldStyling.code">
-      <pre id="code" class="m-0" [innerText]="display"></pre>
+    <dl *ngIf="isCodeField(field)">
+      <pre id="code" class="m-0" [innerText]="field.text"></pre>
     </dl>
 
     <!-- Display checkbox -->
-    <dl *ngIf="styling === fieldStyling.checkbox">
+    <dl *ngIf="isCheckboxField(field)">
       <baw-checkbox
         id="checkbox"
         class="m-0"
-        [checked]="isChecked()"
+        [checked]="field.checked"
         [disabled]="true"
         [isCentered]="false"
       ></baw-checkbox>
     </dl>
 
     <!-- Display AbstractModel -->
-    <dl *ngIf="styling === fieldStyling.model">
-      <baw-model-link [model]="model">
-        <span id="model" [innerText]="model.toString()"></span>
-        <span id="ghost" [innerText]="model.toString()"></span>
+    <dl *ngIf="isModelField(field)">
+      <baw-model-link [model]="field.model">
+        <span id="model" [innerText]="field.model.toString()"></span>
+        <span id="ghost" [innerText]="field.model.toString()"></span>
       </baw-model-link>
     </dl>
 
     <!-- Display Image -->
-    <dl *ngIf="styling === fieldStyling.image">
-      <img id="image" alt="model image alt" [src]="getSource()" />
+    <dl *ngIf="isImageField(field)">
+      <img id="image" alt="model image alt" [src]="field.imageUrls" />
     </dl>
 
     <!-- Display nested fields -->
-    <ng-container *ngIf="styling === fieldStyling.children">
+    <ng-container *ngIf="isNestedField(field)">
       <baw-render-field
-        *ngFor="let child of children"
+        *ngFor="let child of field.children"
         id="children"
         [value]="child"
       ></baw-render-field>
@@ -84,11 +134,9 @@ export class RenderFieldComponent
   implements OnChanges
 {
   @Input() public value: ModelView;
-  public children: ModelView[];
-  public display: string | number | boolean | ImageUrl[];
-  public fieldStyling = FieldStyling;
-  public model: AbstractModel;
-  public styling: FieldStyling = FieldStyling.plain;
+  @Input() public model: AbstractModel & { site?: Site };
+
+  public field: FieldTypes;
 
   public constructor(private ref: ChangeDetectorRef) {
     super();
@@ -98,32 +146,28 @@ export class RenderFieldComponent
     this.humanize(this.value);
   }
 
-  public isChecked(): boolean {
-    return this.display as boolean;
-  }
+  public isPlainField = (field: FieldTypes): field is PlainField =>
+    (field as PlainField)?.isPlainField;
+  public isDateField = (field: FieldTypes): field is DateField =>
+    (field as DateField)?.isDateField;
+  public isCodeField = (field: FieldTypes): field is CodeField =>
+    (field as CodeField)?.isCodeField;
+  public isCheckboxField = (field: FieldTypes): field is CheckboxField =>
+    (field as CheckboxField)?.isCheckboxField;
+  public isModelField = (field: FieldTypes): field is ModelField =>
+    (field as ModelField)?.isModelField;
+  public isImageField = (field: FieldTypes): field is ImageField =>
+    (field as ImageField)?.isImageField;
+  public isNestedField = (field: FieldTypes): field is NestedField =>
+    (field as NestedField)?.isNestedField;
 
-  public getSource(): ImageUrl[] {
-    return this.display as ImageUrl[];
-  }
-
-  public hasViewUrl() {
-    try {
-      return (
-        isInstantiated(this.model.viewUrl) &&
-        this.model.viewUrl !== unknownViewUrl
-      );
-    } catch (err) {
-      return false;
-    }
-  }
-
-  private humanize(value: ModelView) {
+  private humanize(value: ModelView): void {
     if (!isInstantiated(value)) {
       this.setNoValue();
     } else if (value instanceof DateTime) {
-      this.display = humanizeDateTime(value);
+      this.humanizeDateTime(value);
     } else if (value instanceof Duration) {
-      this.display = `${value.toISO()} (${toRelative(value)})`;
+      this.humanizeDuration(value);
     } else if (value instanceof Array) {
       this.humanizeArray(value);
     } else if (value instanceof Blob) {
@@ -136,53 +180,56 @@ export class RenderFieldComponent
       // TODO Implement optional treeview
       this.humanizeObject(value);
     } else if (typeof value === "boolean") {
-      this.styling = FieldStyling.checkbox;
-      this.display = value;
+      this.field = { isCheckboxField: true, checked: value };
     } else if (typeof value === "string") {
       this.humanizeString(value);
     } else {
-      this.display = value.toString();
+      this.field = { isPlainField: true, text: value.toString() };
     }
   }
 
-  public isUser(model: AbstractModel): model is User {
-    return (model as User).kind === "User";
+  /**
+   * Convert a duration to human readable output
+   *
+   * @param value Duration input
+   */
+  private humanizeDuration(value: Duration): void {
+    const formattedDuration = `${value.toISO()} (${toRelative(value)})`;
+    this.field = { isPlainField: true, text: formattedDuration };
   }
 
   /**
    * Convert abstract model to human readable output
    *
-   * @param value Display input
+   * @param value Abstract model input
    */
-  private humanizeAbstractModel(value: AbstractModel) {
+  private humanizeAbstractModel(value: AbstractModel): void {
     if (value instanceof UnresolvedModel) {
-      this.setLoading();
-      return;
+      return this.setLoading();
     }
-    this.styling = FieldStyling.model;
-    this.display = "";
-    this.model = value;
+    this.field = { isModelField: true, model: value };
   }
 
   /**
    * Convert string to human readable output. Currently this only checks if the
    * string is an image url.
    *
-   * @param value Display input
+   * @param value String input
    */
-  private humanizeString(value: string) {
+  private humanizeString(value: string): void {
     this.setLoading();
 
     this.isImage(
       value,
-      () => {
+      (): void => {
         // String is image URL, display image
-        this.styling = FieldStyling.image;
-        this.display = [{ url: value, size: ImageSizes.unknown }];
+        const imageUrl: ImageUrl = { url: value, size: ImageSizes.unknown };
+        this.field = { isImageField: true, imageUrls: [imageUrl] };
         this.ref.detectChanges();
       },
-      () => {
-        this.display = value;
+      (): void => {
+        this.field = { isPlainField: true, text: value };
+        this.ref.detectChanges();
       }
     );
   }
@@ -190,9 +237,9 @@ export class RenderFieldComponent
   /**
    * Convert object to human readable output
    *
-   * @param value Display input
+   * @param value Object input
    */
-  private humanizeObject(value: Record<string, any>) {
+  private humanizeObject(value: Record<string, any>): void {
     this.setLoading();
 
     try {
@@ -206,14 +253,13 @@ export class RenderFieldComponent
   /**
    * Convert blob to human readable output
    *
-   * @param value Display input
+   * @param value Blob input
    */
-  private async humanizeBlob(value: Blob) {
+  private async humanizeBlob(value: Blob): Promise<void> {
     this.setLoading();
 
     try {
-      this.display = await value.text();
-      this.styling = FieldStyling.code;
+      this.field = { isCodeField: true, text: await value.text() };
     } catch (err) {
       this.setError();
     }
@@ -222,11 +268,11 @@ export class RenderFieldComponent
   /**
    * Convert observable to human readable output
    *
-   * @param value Display input
+   * @param value Abstract model/s input
    */
   private humanizeObservable(
     value: Observable<AbstractModel | AbstractModel[]>
-  ) {
+  ): void {
     this.setLoading();
 
     value.pipe(takeUntil(this.unsubscribe)).subscribe({
@@ -242,45 +288,54 @@ export class RenderFieldComponent
    * Convert array to human readable output. This also handles
    * an array of image urls.
    *
-   * @param value Display input
+   * @param value Array input
    */
-  private humanizeArray(value: ModelView[] | ImageUrl[]) {
-    if (value.length > 0) {
-      if (isImageUrl(value[0])) {
-        this.styling = FieldStyling.image;
-        this.display = value as ImageUrl[];
-      } else {
-        this.styling = FieldStyling.children;
-        this.children = value;
-      }
-    } else {
-      this.setNoValue();
+  private humanizeArray(value: ModelView[] | ImageUrl[]): void {
+    if (value.length === 0) {
+      return this.setNoValue();
     }
+
+    // Check if image urls, or nested fields
+    this.field = isImageUrl(value[0])
+      ? { isImageField: true, imageUrls: value as ImageUrl[] }
+      : { isNestedField: true, children: value };
+  }
+
+  /**
+   * Create a human readable datetime string
+   *
+   * @param value DateTime value
+   */
+  private humanizeDateTime(value: DateTime): void {
+    this.field = { isDateField: true, date: value };
   }
 
   /**
    * Indicate view is still loading
    */
-  private setLoading() {
-    this.styling = FieldStyling.plain;
-    this.display = "(loading)";
-    this.ref.detectChanges();
-  }
-
-  private setNoValue() {
-    this.styling = FieldStyling.plain;
-    this.display = "(no value)";
-    this.ref.detectChanges();
-  }
-
-  private setError() {
-    this.styling = FieldStyling.plain;
-    this.display = "(error)";
+  private setLoading(): void {
+    this.field = { isPlainField: true, text: "(loading)" };
     this.ref.detectChanges();
   }
 
   /**
-   * Determine if image is valid
+   * Indicate value is not set
+   */
+  private setNoValue(): void {
+    this.field = { isPlainField: true, text: "(no value)" };
+    this.ref.detectChanges();
+  }
+
+  /**
+   * Indicate value failed to be retrieved
+   */
+  private setError(): void {
+    this.field = { isPlainField: true, text: "(error)" };
+    this.ref.detectChanges();
+  }
+
+  /**
+   * Determine if image is a valid url
    * ! This function is untested, edit carefully
    *
    * @param src Source URL
@@ -291,7 +346,7 @@ export class RenderFieldComponent
     src: string,
     validCallback: () => void,
     invalidCallback: () => void
-  ) {
+  ): void {
     // Url from https://urlregex.com/
     const urlRegex =
       // eslint-disable-next-line max-len, no-useless-escape
@@ -308,15 +363,6 @@ export class RenderFieldComponent
   }
 }
 
-/**
- * Create a human readable datetime string
- *
- * @param value DateTime value
- */
-export function humanizeDateTime(value: DateTime): string {
-  return `${value.toISO()} (${value.toRelative()})`;
-}
-
 export type ModelView =
   | undefined
   | string
@@ -329,13 +375,3 @@ export type ModelView =
   | Record<string, any>
   | ImageUrl[]
   | ModelView[];
-
-enum FieldStyling {
-  checkbox,
-  code,
-  plain,
-  route,
-  model,
-  image,
-  children,
-}

@@ -281,7 +281,13 @@ export function getUnknownViewUrl(errorMsg: string) {
   console.warn(errorMsg);
   return unknownViewUrl;
 }
-
+export function isUnresolvedModel(
+  value: Readonly<AbstractModel | AbstractModel[]>
+): value is Readonly<UnresolvedModel | UnresolvedModel[]> {
+  const isSingle = value === UnresolvedModel.one;
+  const isMultiple = value === UnresolvedModel.many;
+  return isSingle || isMultiple;
+}
 export type ModelSerializationOptions = XOR<
   { create: boolean },
   { update: boolean }
