@@ -11,7 +11,6 @@ import { LibraryModule } from "@components/library/library.module";
 import { RegionsModule } from "@components/regions/regions.module";
 import { VisualizeModule } from "@components/visualize/visualize.module";
 import { GuardModule } from "@guards/guards.module";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
@@ -97,7 +96,6 @@ export const appImports = [
     // Show loading animation after 3 seconds
     { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
   ],
-  entryComponents: [AppComponent, PermissionsShieldComponent],
   exports: [],
 })
 export class AppModule implements DoBootstrap {

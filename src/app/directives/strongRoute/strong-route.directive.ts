@@ -90,6 +90,10 @@ export class StrongRouteDirective
   }
 
   public get urlTree(): UrlTree {
+    if (!this["commands"]) {
+      return null;
+    }
+
     const queryParams =
       this.strongRoute?.queryParams(
         {

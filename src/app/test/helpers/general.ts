@@ -85,8 +85,8 @@ export function nStepObservable<T>(
  * @param callback Model constructor
  */
 export function interceptCustomApiRequest<
-  Service extends any,
-  Data extends any,
+  Service,
+  Data,
   Model extends AbstractModel
 >(
   service: Service,
@@ -119,10 +119,7 @@ export function interceptCustomApiRequest<
  * @param models Model data
  * @param callback Model constructor
  */
-export function interceptShowApiRequest<
-  Data extends any,
-  Model extends AbstractModel
->(
+export function interceptShowApiRequest<Data, Model extends AbstractModel>(
   service: SpyObject<ApiShow<Model>>,
   injector: Injector,
   model: Errorable<Data>,
@@ -139,10 +136,7 @@ export function interceptShowApiRequest<
  * @param models Model data
  * @param callback Model constructor
  */
-export function interceptFilterApiRequest<
-  Data extends any,
-  Model extends AbstractModel
->(
+export function interceptFilterApiRequest<Data, Model extends AbstractModel>(
   service: SpyObject<ApiFilter<Model>>,
   injector: Injector,
   models: Errorable<Data[]>,

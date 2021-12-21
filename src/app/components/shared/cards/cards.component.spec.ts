@@ -133,14 +133,14 @@ describe("CardsComponent", () => {
       );
       const content = hostSpectator.query<HTMLDivElement>("#content");
       const header = hostSpectator.query<HTMLHeadingElement>("h1");
-      expect(content).not.toHaveStyle({ display: "none" });
+      expect(getComputedStyle(content).display).not.toBe("none");
       expect(header.textContent).toBe("Internal Content");
     });
 
     it("should handle no content", () => {
       hostSpectator = createHost("<baw-cards></baw-cards>");
       const content = hostSpectator.query<HTMLDivElement>("#content");
-      expect(content).toHaveStyle({ display: "none" });
+      expect(getComputedStyle(content).display).toBe("none");
     });
   });
 });

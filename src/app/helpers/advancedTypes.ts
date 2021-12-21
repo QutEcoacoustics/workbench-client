@@ -6,10 +6,9 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 export type PartialWith<T, Keys extends keyof T = keyof T> = Pick<
   Partial<T>,
   Exclude<keyof T, Keys>
-> &
-  {
-    [K in Keys]: T[K];
-  };
+> & {
+  [K in Keys]: T[K];
+};
 
 /**
  * Remove type options from another type
@@ -44,10 +43,10 @@ export type Option<T> = T | null;
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
 /** Create a tuple (extends Array type and sets fixed length) */
-export interface Tuple<T extends any, L extends number> extends Array<T> {
+export interface Tuple<T, L extends number> extends Array<T> {
   0: T;
   length: L;
 }
 
 /** Indicates an object can either be that object, or an error response */
-export type Errorable<T extends any> = T | ApiErrorDetails;
+export type Errorable<T> = T | ApiErrorDetails;

@@ -67,7 +67,7 @@ describe("SiteMapComponent", () => {
   }
 
   function generateMarkers(allSites: Site[][]) {
-    const markers: google.maps.ReadonlyMarkerOptions[] = [];
+    const markers: google.maps.MarkerOptions[] = [];
     allSites.forEach((sites) =>
       markers.push(...sites.map((site) => site.getMapMarker()))
     );

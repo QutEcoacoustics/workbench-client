@@ -12,12 +12,12 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
-          cache: 'npm'
+          node-version: "16"
+          cache: "npm"
 
       # https://github.com/preactjs/compressed-size-action
       - uses: preactjs/compressed-size-action@v2
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          strip-hash: "\\.(\\w{20})\\."
+          strip-hash: "\\.(\\w*?)\\."
           pattern: "dist/**/*.{css,js,json,html}"
