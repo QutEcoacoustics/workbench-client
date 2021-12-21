@@ -12,6 +12,14 @@ import CustomMatcherResult = jasmine.CustomMatcherResult;
 
 type StyleValue = string | number;
 
+function success(): CustomMatcherResult {
+  return { pass: true };
+}
+
+function failure(message: string): CustomMatcherResult {
+  return { pass: false, message };
+}
+
 function validateStyles(
   actual: HTMLElement,
   expected: Partial<CSSStyleDeclaration>,
@@ -21,21 +29,39 @@ function validateStyles(
     expectedStyle: StyleValue
   ) => CustomMatcherResult
 ): CustomMatcherResult {
+  if (!actual) {
+    return failure("HTML input does not exist");
+  } else if (!(actual instanceof HTMLElement)) {
+    return failure(
+      `Input must be of type HTMLElement, got ${
+        (actual as any).constructor.name
+      } instead`
+    );
+  } else if (!document.body.contains(actual)) {
+    return failure("HTMLElement does not exist in the DOM");
+  }
+
   const computedStyle = getComputedStyle(actual);
 
   /*
    * For each expected value, compare to computed value, and return if
    * miss match detected
    */
-  Object.entries(expected).forEach(([key, value]) => {
+  const failures = [];
+  for (const [key, value] of Object.entries(expected)) {
     const computedValue = computedStyle[key];
     const result = callback(key, computedValue, value as StyleValue);
     if (!result.pass) {
-      return result;
+      failures.push(result.message);
     }
-  });
+  }
 
-  return { pass: true };
+  // Return aggregation of failure messages
+  if (failures.length > 0) {
+    return failure(failures.join("\n"));
+  }
+
+  return success();
 }
 
 export const computedStyleMatchers: CustomMatcherFactories = {
@@ -53,11 +79,8 @@ export const computedStyleMatchers: CustomMatcherFactories = {
       ): CustomMatcherResult =>
         validateStyles(actual, expected, (key, actualStyle, expectedStyle) =>
           actualStyle !== expectedStyle
-            ? { pass: true }
-            : {
-                pass: false,
-                message: `Expected ${key} to be not be equal to ${expectedStyle}`,
-              }
+            ? success()
+            : failure(`Expected ${key} to be not be equal to ${expectedStyle}`)
         ),
       compare: (
         actual: HTMLElement,
@@ -65,11 +88,10 @@ export const computedStyleMatchers: CustomMatcherFactories = {
       ): CustomMatcherResult =>
         validateStyles(actual, expected, (key, actualStyle, expectedStyle) =>
           actualStyle === expectedStyle
-            ? { pass: true }
-            : {
-                pass: false,
-                message: `Expected ${key} to be equal to ${expectedStyle}, got ${actualStyle} instead`,
-              }
+            ? success()
+            : failure(
+                `Expected ${key} to be equal to ${expectedStyle}, got ${actualStyle} instead`
+              )
         ),
     };
   },
