@@ -133,7 +133,7 @@ describe("CardsComponent", () => {
       );
       const content = hostSpectator.query<HTMLDivElement>("#content");
       const header = hostSpectator.query<HTMLHeadingElement>("h1");
-      expect(content).toHaveComputedStyle({ display: "none" });
+      expect(content).not.toHaveComputedStyle({ display: "none" });
       expect(header.textContent).toBe("Internal Content");
     });
 
