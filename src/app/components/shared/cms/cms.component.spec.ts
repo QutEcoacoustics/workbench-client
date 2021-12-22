@@ -122,8 +122,8 @@ describe("CmsComponent", () => {
     spectator.detectChanges();
 
     const body = spectator.debugElement.nativeElement.querySelector("p");
-    expect(body.innerText.trim()).toBe("Example HTML response from API");
-    expect(getComputedStyle(body).color).toBe("rgb(68, 34, 0)");
+    expect(body).toHaveText("Example HTML response from API");
+    expect(body).toHaveComputedStyle({ color: "rgb(68, 34, 0)" });
   });
 
   it("should display cms response containing script tag", async () => {
@@ -137,8 +137,8 @@ describe("CmsComponent", () => {
     spectator.detectChanges();
 
     const body = spectator.debugElement.nativeElement.querySelector("p");
-    expect(body.innerText.trim()).toBe("Example HTML response from API");
-    expect(getComputedStyle(body).color).toBe("rgb(68, 34, 0)");
+    expect(body).toHaveText("Example HTML response from API");
+    expect(body).toHaveComputedStyle({ color: "rgb(68, 34, 0)" });
   });
 
   it("should display error message on failure", async () => {

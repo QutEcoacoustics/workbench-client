@@ -83,11 +83,11 @@ describe("AppComponent", () => {
       expect(routerOutlets.length).toBe(4, "Wrong number of router-outlets");
 
       if (isFullscreen) {
-        expect(getComputedStyle(secondaryMenu).display).toBe("none");
-        expect(getComputedStyle(actionMenu).display).toBe("none");
+        expect(secondaryMenu).toHaveComputedStyle({ display: "none" });
+        expect(actionMenu).toHaveComputedStyle({ display: "none" });
       } else {
-        expect(getComputedStyle(secondaryMenu).display).not.toBe("none");
-        expect(getComputedStyle(actionMenu).display).not.toBe("none");
+        expect(secondaryMenu).not.toHaveComputedStyle({ display: "none" });
+        expect(actionMenu).not.toHaveComputedStyle({ display: "none" });
       }
     }
 
