@@ -210,7 +210,7 @@ export class StrongRoute {
 
     const prepareParam = (x: StrongRoute): string | number => {
       if (x.isParameter) {
-        const key = x.pathFragment.substr(1, x.pathFragment.length - 1);
+        const key = x.pathFragment.substring(1);
 
         if (Object.prototype.hasOwnProperty.call(params, key)) {
           return params[key];

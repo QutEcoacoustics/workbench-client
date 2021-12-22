@@ -57,7 +57,9 @@ describe("BawClientComponent", () => {
   function assertIframeHeight(height: number) {
     // BawClientComponent adds 50 pixels of padding
     const heightWithPadding = height + 50;
-    expect(getComputedStyle(getIframe()).height).toBe(heightWithPadding + "px");
+    expect(getIframe()).toHaveComputedStyle({
+      height: heightWithPadding + "px",
+    });
   }
 
   function postMessage(data: any, origin?: string) {
