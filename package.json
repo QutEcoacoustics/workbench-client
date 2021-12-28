@@ -68,7 +68,7 @@
     "ngx-cookie-service": "^13.1.2",
     "ngx-device-detector": "^3.0.0",
     "ngx-toastr": "^14.2.1",
-    "rxjs": "^7.4.0",
+    "rxjs": "^7.5.1",
     "tslib": "^2.3.1",
     "zone.js": "~0.11.4"
   },
