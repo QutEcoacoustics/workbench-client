@@ -101,7 +101,7 @@
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-rxjs": "^4.0.3",
     "eslint-plugin-rxjs-angular": "^2.0.0",
-    "faker": "^5.5.3",
+    "faker": "^6.6.6",
     "jasmine-core": "^4.0.0",
     "jasmine-reporters": "^2.5.0",
     "jasmine-spec-reporter": "^7.0.0",
