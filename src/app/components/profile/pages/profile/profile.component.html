@@ -4,7 +4,7 @@
 
   <div class="row mb-3">
     <!-- Left aligned content -->
-    <div class="col-sm-4">
+    <div class="col-md-4">
       <!-- User profile picture and details -->
       <img
         class="img-thumbnail mx-auto d-block"
@@ -13,16 +13,22 @@
       />
 
       <div class="card mt-3">
-        <div class="card-header">Statistics</div>
+        <div class="card-header">Summary</div>
         <div class="caption">
           <!-- Last time user was seen -->
           <p id="last-seen-at">
-            <fa-icon [icon]="['fas', 'clock']"></fa-icon>
+            <fa-icon
+              ngbTooltip="Last time {{ user.userName }} was seen"
+              [icon]="['fas', 'clock']"
+            ></fa-icon>
             {{ lastSeenAt }}
           </p>
           <!-- Amount of time user has been a member -->
           <p id="membership-length">
-            <fa-icon [icon]="['fas', 'user']"></fa-icon>
+            <fa-icon
+              ngbTooltip="Length of {{ user.userName }}'s membership"
+              [icon]="['fas', 'user']"
+            ></fa-icon>
             {{ membershipLength }}
           </p>
         </div>
@@ -30,7 +36,7 @@
 
       <!-- Download annotations (Disabled in third person) -->
       <div id="annotations-link" class="row mt-3" *ngIf="!thirdPerson">
-        <div class="col-sm-12 pb-3">
+        <div class="col-md-12 pb-3">
           <div class="card">
             <!-- Header -->
             <div class="card-header">Download</div>
@@ -50,15 +56,47 @@
           </div>
         </div>
       </div>
+
+      <!-- Auth token (Disabled in third person) -->
+      <div id="annotations-link" class="row mt-3" *ngIf="!thirdPerson">
+        <div class="col-md-12 pb-3">
+          <div class="card">
+            <!-- Header -->
+            <div class="card-header">Authentication Token</div>
+
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item p-1">
+                <p class="px-1">{{ authTokenTooltip }}</p>
+                <!-- User auth token -->
+                <div id="auth-token" class="clipboard-container text-center">
+                  <pre (click)="showAuthToken()">{{
+                    isShowingAuthToken ? authToken : "Click to show"
+                  }}</pre>
+                  <button
+                    type="button"
+                    ngxClipboard
+                    class="btn btn-link"
+                    ngbTooltip="Copied!"
+                    triggers="click"
+                    [cbContent]="authToken"
+                  >
+                    <fa-icon [icon]="['fas', 'copy']"></fa-icon>
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Right aligned content -->
-    <div class="col-sm-8">
+    <div class="col-md-8">
       <baw-items [items]="userStatistics"></baw-items>
 
       <!-- Users most popular tags -->
       <div id="tags" class="row">
-        <div class="col-sm-12">
+        <div class="col-md-12">
           <div class="card">
             <!-- Header -->
             <div class="card-header">Most Popular Tags</div>

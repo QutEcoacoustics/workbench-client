@@ -14,6 +14,7 @@ import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { PipesModule } from "@pipes/pipes.module";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { NgxCaptchaModule } from "ngx-captcha";
+import { ClipboardModule } from "ngx-clipboard";
 import { ToastrModule } from "ngx-toastr";
 import { DirectivesModule } from "src/app/directives/directives.module";
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
@@ -67,6 +68,7 @@ export const sharedModules = [
   FormlyBootstrapModule,
   NgxDatatableModule,
   ToastrModule,
+  ClipboardModule,
 
   IconsModule,
   DirectivesModule,

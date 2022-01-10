@@ -17,6 +17,7 @@ import {
   theirSitesMenuItem,
 } from "@components/profile/profile.menus";
 import { User } from "@models/User";
+import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { MyProfileComponent } from "./my-profile.component";
 
@@ -39,6 +40,7 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
   public thirdPerson = true;
 
   public constructor(
+    config: ConfigService,
     route: ActivatedRoute,
     audioEventsApi: ShallowAudioEventsService,
     bookmarksApi: BookmarksService,
@@ -46,7 +48,15 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
     sitesApi: ShallowSitesService,
     tagsApi: TagsService
   ) {
-    super(route, audioEventsApi, bookmarksApi, projectsApi, sitesApi, tagsApi);
+    super(
+      config,
+      route,
+      audioEventsApi,
+      bookmarksApi,
+      projectsApi,
+      sitesApi,
+      tagsApi
+    );
   }
 
   public ngOnInit() {

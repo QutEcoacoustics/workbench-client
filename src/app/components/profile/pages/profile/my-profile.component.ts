@@ -29,6 +29,7 @@ import { AbstractModel } from "@models/AbstractModel";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
+import { ConfigService } from "@services/config/config.service";
 import { IItem } from "@shared/items/item/item.component";
 import { List } from "immutable";
 import { Observable } from "rxjs";
@@ -61,6 +62,7 @@ class MyProfileComponent
   public tags: Tag[];
   public thirdPerson = false;
   public user: User;
+  public isShowingAuthToken = false;
   public userStatistics: List<IItem> = List([
     { icon: projectsMenuItem.icon, name: "Projects", value: "..." },
     // TODO Update icon
@@ -72,6 +74,7 @@ class MyProfileComponent
   ]);
 
   public constructor(
+    public config: ConfigService,
     protected route: ActivatedRoute,
     protected audioEventsApi: ShallowAudioEventsService,
     protected bookmarksApi: BookmarksService,
@@ -92,6 +95,22 @@ class MyProfileComponent
     this.user = userModel.model;
     this.updateUserProfile(this.user);
     this.updateStatistics(this.user);
+  }
+
+  public showAuthToken(): void {
+    this.isShowingAuthToken = true;
+  }
+
+  public get authToken(): string {
+    return this.sitesApi.getLocalUser()?.authToken;
+  }
+
+  public get authTokenTooltip(): string {
+    return (
+      `Use this code to interact with ${this.config.settings.brand.long}. ` +
+      "Tools will ask you for auth token when they need one, copy the text below and paste it where needed. " +
+      "Treat this code like your password, don't share it with anyone!"
+    );
   }
 
   /** Update user details */
@@ -134,19 +153,14 @@ class MyProfileComponent
   }
 
   /** Update an individual statistic */
-  protected updateStatistic<
-    M,
-    S extends {
-      filterByCreator: (filters: Filters<M>, user: User) => Observable<M[]>;
-    }
-  >(
+  protected updateStatistic<Model, S extends Service<Model>>(
     api: S,
     index: number,
     user: User,
-    additionalFilters: Filters<M> = {},
-    callback?: (models: M[]) => void
-  ) {
-    function getPageTotal(model: M) {
+    additionalFilters: Filters<Model> = {},
+    callback?: (models: Model[]) => void
+  ): void {
+    function getPageTotal(model: Model) {
       return (model as unknown as AbstractModel).getMetadata().paging.total;
     }
 
@@ -173,6 +187,10 @@ class MyProfileComponent
       value: "Unknown",
     }));
   }
+}
+
+interface Service<Model> {
+  filterByCreator: (filters: Filters<Model>, user: User) => Observable<Model[]>;
 }
 
 MyProfileComponent.linkToRoute({
