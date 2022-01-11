@@ -4,7 +4,6 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { toRelative } from "@interfaces/apiInterfaces";
 import { StatisticsRecent } from "@models/Statistics";
-import { ConfigService } from "@services/config/config.service";
 import { IItem } from "@shared/items/item/item.component";
 import fileSize from "filesize";
 import { List, Map } from "immutable";
@@ -45,12 +44,30 @@ class StatisticsComponent
   implements OnInit
 {
   private groupOne = {
-    projects: item({ name: "Projects", icon: ["fas", "home"] }),
-    annotations: item({ name: "Annotations", icon: ["fas", "bullseye"] }),
-    tags: item({ name: "Available tags", icon: ["fas", "tags"] }),
-    sites: item({ name: "Sites", icon: ["fas", "map-marker-alt"] }),
-    recordings: item({ name: "Audio recordings", icon: defaultAudioIcon }),
-    users: item({ name: "Users", icon: defaultUserIcon }),
+    projects: item({
+      name: "Projects",
+      icon: ["fas", "home"],
+    }),
+    annotations: item({
+      name: "Annotations",
+      icon: ["fas", "bullseye"],
+    }),
+    tags: item({
+      name: "Available tags",
+      icon: ["fas", "tags"],
+    }),
+    sites: item({
+      name: "Sites",
+      icon: ["fas", "map-marker-alt"],
+    }),
+    recordings: item({
+      name: "Audio recordings",
+      icon: defaultAudioIcon,
+    }),
+    users: item({
+      name: "Users",
+      icon: defaultUserIcon,
+    }),
   };
 
   private groupTwo = {
@@ -70,7 +87,10 @@ class StatisticsComponent
       icon: ["fas", "clock"],
       name: "Overall annotation duration",
     }),
-    users: item({ icon: defaultUserIcon, name: "Users Online" }),
+    users: item({
+      icon: defaultUserIcon,
+      name: "Users Online",
+    }),
     storedData: item({
       icon: defaultAudioIcon,
       name: "Overall audio recording file size",
@@ -87,10 +107,7 @@ class StatisticsComponent
 
   public recent: StatisticsRecent;
 
-  public constructor(
-    private stats: StatisticsService,
-    private config: ConfigService
-  ) {
+  public constructor(private stats: StatisticsService) {
     super();
   }
 

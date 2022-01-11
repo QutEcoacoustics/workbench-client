@@ -4,7 +4,7 @@
 
   <div class="row mb-3">
     <!-- Left aligned content -->
-    <div class="col-md-4">
+    <div class="col-12 col-md-4 col-lg-12 col-xl-4">
       <!-- User profile picture and details -->
       <img
         class="img-thumbnail mx-auto d-block"
@@ -18,18 +18,20 @@
           <!-- Last time user was seen -->
           <p id="last-seen-at">
             <fa-icon
+              class="pe-2"
               ngbTooltip="Last time {{ user.userName }} was seen"
               [icon]="['fas', 'clock']"
             ></fa-icon>
-            {{ lastSeenAt }}
+            <small [innerText]="lastSeenAt"></small>
           </p>
           <!-- Amount of time user has been a member -->
           <p id="membership-length">
             <fa-icon
+              class="pe-2"
               ngbTooltip="Length of {{ user.userName }}'s membership"
               [icon]="['fas', 'user']"
             ></fa-icon>
-            {{ membershipLength }}
+            <small [innerText]="membershipLength"></small>
           </p>
         </div>
       </div>
@@ -66,21 +68,36 @@
 
             <ul class="list-group list-group-flush">
               <li class="list-group-item p-1">
-                <p class="px-1">{{ authTokenTooltip }}</p>
+                <small>
+                  <p class="px-1" [innerText]="authTokenDescription"></p>
+                </small>
                 <!-- User auth token -->
-                <div id="auth-token" class="clipboard-container text-center">
-                  <pre (click)="showAuthToken()">{{
-                    isShowingAuthToken ? authToken : "Click to show"
-                  }}</pre>
+                <div id="auth-token" class="input-group">
                   <button
                     type="button"
-                    ngxClipboard
-                    class="btn btn-link"
+                    class="btn btn-outline-secondary"
+                    ngbTooltip="Show/Hide authentication token"
+                    container="body"
+                    [class.active]="isShowingAuthToken"
+                    (click)="toggleAuthTokenVisibility()"
+                  >
+                    <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+                  </button>
+
+                  <pre
+                    class="text-center form-control"
+                  ><small>{{isShowingAuthToken ? authToken: '...'}}</small></pre>
+
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
                     ngbTooltip="Copied!"
                     triggers="click"
-                    [cbContent]="authToken"
+                    container="body"
                   >
-                    <fa-icon [icon]="['fas', 'copy']"></fa-icon>
+                    <span ngxClipboard [cbContent]="authToken">
+                      <fa-icon [icon]="['fas', 'copy']"></fa-icon>
+                    </span>
                   </button>
                 </div>
               </li>
@@ -91,7 +108,7 @@
     </div>
 
     <!-- Right aligned content -->
-    <div class="col-md-8">
+    <div class="col-12 col-md-8 col-lg-12 col-xl-8">
       <baw-items [items]="userStatistics"></baw-items>
 
       <!-- Users most popular tags -->

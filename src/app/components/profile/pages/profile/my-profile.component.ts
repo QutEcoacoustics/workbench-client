@@ -64,13 +64,43 @@ class MyProfileComponent
   public user: User;
   public isShowingAuthToken = false;
   public userStatistics: List<IItem> = List([
-    { icon: projectsMenuItem.icon, name: "Projects", value: "..." },
+    {
+      icon: projectsMenuItem.icon,
+      name: "Projects",
+      tooltip: () => `Number of projects ${this.user.userName} has created`,
+      value: "...",
+    },
     // TODO Update icon
-    { icon: adminTagsMenuItem.icon, name: "Tags", value: "..." },
-    { icon: myBookmarksMenuItem.icon, name: "Bookmarks", value: "..." },
-    { icon: mySitesMenuItem.icon, name: "Sites", value: "..." },
-    { icon: pointMenuItem.icon, name: "Points", value: "..." },
-    { icon: myAnnotationsMenuItem.icon, name: "Annotations", value: "..." },
+    {
+      icon: adminTagsMenuItem.icon,
+      name: "Tags",
+      tooltip: () => `Number of tags ${this.user.userName} has created`,
+      value: "...",
+    },
+    {
+      icon: myBookmarksMenuItem.icon,
+      name: "Bookmarks",
+      tooltip: () => `Number of bookmarks ${this.user.userName} has created`,
+      value: "...",
+    },
+    {
+      icon: mySitesMenuItem.icon,
+      name: "Sites",
+      tooltip: () => `Number of sites ${this.user.userName} has created`,
+      value: "...",
+    },
+    {
+      icon: pointMenuItem.icon,
+      name: "Points",
+      tooltip: () => `Number of points ${this.user.userName} has created`,
+      value: "...",
+    },
+    {
+      icon: myAnnotationsMenuItem.icon,
+      name: "Annotations",
+      tooltip: () => `Number of annotations ${this.user.userName} has created`,
+      value: "...",
+    },
   ]);
 
   public constructor(
@@ -97,15 +127,15 @@ class MyProfileComponent
     this.updateStatistics(this.user);
   }
 
-  public showAuthToken(): void {
-    this.isShowingAuthToken = true;
+  public toggleAuthTokenVisibility(): void {
+    this.isShowingAuthToken = !this.isShowingAuthToken;
   }
 
   public get authToken(): string {
     return this.sitesApi.getLocalUser()?.authToken;
   }
 
-  public get authTokenTooltip(): string {
+  public get authTokenDescription(): string {
     return (
       `Use this code to interact with ${this.config.settings.brand.long}. ` +
       "Tools will ask you for auth token when they need one, copy the text below and paste it where needed. " +

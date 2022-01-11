@@ -6,16 +6,6 @@
 #auth-token {
   pre {
     margin: 0;
-    cursor: pointer;
-  }
-}
-
-.clipboard-container {
-  position: relative;
-
-  button {
-    right: 0;
-    top: 0;
-    position: absolute;
+    white-space: pre-wrap;
   }
 }

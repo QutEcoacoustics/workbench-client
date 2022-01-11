@@ -22,6 +22,7 @@ import { IItem } from "../item/item.component";
             <baw-items-item
               [icon]="stat.icon"
               [name]="stat.name"
+              [tooltip]="stat.tooltip"
               [value]="stat.value"
             ></baw-items-item>
           </li>
@@ -33,6 +34,7 @@ import { IItem } from "../item/item.component";
             <baw-items-item
               [icon]="stat.icon"
               [name]="stat.name"
+              [tooltip]="stat.tooltip"
               [value]="stat.value"
             ></baw-items-item>
           </li>
