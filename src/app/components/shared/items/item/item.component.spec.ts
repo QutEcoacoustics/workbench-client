@@ -1,22 +1,29 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { IconsModule } from "@shared/icons/icons.module";
 import { modelData } from "@test/helpers/faker";
+import { assertTooltip } from "@test/helpers/html";
 import { ItemComponent } from "./item.component";
 
 describe("ItemComponent", () => {
   let spec: SpectatorRouting<ItemComponent>;
   const createComponent = createRoutingFactory({
     component: ItemComponent,
-    imports: [RouterTestingModule, IconsModule],
+    imports: [RouterTestingModule, IconsModule, NgbTooltipModule],
   });
 
-  function setup(icon: IconProp, name: string, value: string | number) {
+  function setup(
+    icon: IconProp,
+    name: string,
+    value: string | number,
+    tooltip?: () => string
+  ) {
     spec = createComponent({
       detectChanges: false,
-      props: { icon, name, value },
+      props: { icon, name, value, tooltip },
     });
   }
 
@@ -51,5 +58,12 @@ describe("ItemComponent", () => {
     setup(["fas", "home"], "Test", value);
     spec.detectChanges();
     expect(spec.query("#value")).toContainText(value.toString());
+  });
+
+  it("should display tooltip if given", () => {
+    const value = modelData.company.companyName();
+    setup(["fas", "home"], "Test", value, () => "custom tooltip");
+    spec.detectChanges();
+    assertTooltip(spec.query("#icon"), "custom tooltip");
   });
 });
