@@ -24,4 +24,8 @@ export class MockSecurityService extends BawApiService<SessionUser> {
   public getAuthTrigger() {
     return new BehaviorSubject(null);
   }
+
+  public sessionDetails() {
+    return new Observable();
+  }
 }

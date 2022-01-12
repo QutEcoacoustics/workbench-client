@@ -271,11 +271,11 @@ describe("TheirProfileComponent", () => {
           apiResponse.addMetadata({ paging: { total: numModels } });
         });
 
-        it("should initially display ...", () => {
+        it("should initially display …", () => {
           setup(defaultUser);
           interceptApiRequests({ [test.model]: [apiResponse] });
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("...");
+          expect(getStatistics().items.get(position).value).toBe("…");
         });
 
         it(`should update with number of ${test.suite}`, async () => {

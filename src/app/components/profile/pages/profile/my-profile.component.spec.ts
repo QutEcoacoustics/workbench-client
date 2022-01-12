@@ -227,7 +227,7 @@ describe("MyProfileComponent", () => {
     it("should show loading animation while auth token loads", () => {});
     it("should disable copy button while auth token loads", () => {});
     it("should disable view token button while auth token loads", () => {});
-    it("should show ... instead of auth token by default", () => {});
+    it("should show … instead of auth token by default", () => {});
     it("should show auth token when requested", () => {});
   });
 
@@ -278,11 +278,11 @@ describe("MyProfileComponent", () => {
           apiResponse.addMetadata({ paging: { total: numModels } });
         });
 
-        it("should initially display ...", () => {
+        it("should initially display …", () => {
           setup(defaultUser);
           interceptApiRequests({ [test.model]: [apiResponse] });
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("...");
+          expect(getStatistics().items.get(position).value).toBe("…");
         });
 
         it(`should update with number of ${test.suite}`, async () => {
