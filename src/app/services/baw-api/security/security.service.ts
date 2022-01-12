@@ -31,6 +31,8 @@ const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
 /**
  * Security Service.
  * Handles API routes pertaining to security.
+ *
+ * TODO Extract some functionality to user service?
  */
 @Injectable()
 export class SecurityService extends BawFormApiService<SessionUser> {
@@ -155,6 +157,10 @@ export class SecurityService extends BawFormApiService<SessionUser> {
     );
   }
 
+  public sessionDetails(): Observable<SessionUser> {
+    return this.apiShow(sessionUserEndpoint(Date.now().toString()));
+  }
+
   /**
    * Handle authentication request
    *
@@ -177,7 +183,7 @@ export class SecurityService extends BawFormApiService<SessionUser> {
     return this.makeFormRequest(formEndpoint, authEndpoint, getFormData).pipe(
       tap((page) => pageValidation(page)),
       // Trade the cookie for an API auth token (mimicking old baw-client)
-      mergeMap(() => this.apiShow(sessionUserEndpoint(Date.now().toString()))),
+      mergeMap(() => this.sessionDetails()),
       // Save to local storage
       tap((user: SessionUser) => this.storeLocalUser(user)),
       // Get user details

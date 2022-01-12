@@ -5,6 +5,7 @@ import { Filters } from "@baw-api/baw-api.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
+import { SecurityService } from "@baw-api/security/security.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { userResolvers } from "@baw-api/user/user.service";
@@ -63,43 +64,44 @@ class MyProfileComponent
   public thirdPerson = false;
   public user: User;
   public isShowingAuthToken = false;
+  public authToken: string;
   public userStatistics: List<IItem> = List([
     {
       icon: projectsMenuItem.icon,
       name: "Projects",
       tooltip: () => `Number of projects ${this.user.userName} has created`,
-      value: "...",
+      value: "…",
     },
     // TODO Update icon
     {
       icon: adminTagsMenuItem.icon,
       name: "Tags",
       tooltip: () => `Number of tags ${this.user.userName} has created`,
-      value: "...",
+      value: "…",
     },
     {
       icon: myBookmarksMenuItem.icon,
       name: "Bookmarks",
       tooltip: () => `Number of bookmarks ${this.user.userName} has created`,
-      value: "...",
+      value: "…",
     },
     {
       icon: mySitesMenuItem.icon,
       name: "Sites",
       tooltip: () => `Number of sites ${this.user.userName} has created`,
-      value: "...",
+      value: "…",
     },
     {
       icon: pointMenuItem.icon,
       name: "Points",
       tooltip: () => `Number of points ${this.user.userName} has created`,
-      value: "...",
+      value: "…",
     },
     {
       icon: myAnnotationsMenuItem.icon,
       name: "Annotations",
       tooltip: () => `Number of annotations ${this.user.userName} has created`,
-      value: "...",
+      value: "…",
     },
   ]);
 
@@ -110,7 +112,8 @@ class MyProfileComponent
     protected bookmarksApi: BookmarksService,
     protected projectsApi: ProjectsService,
     protected sitesApi: ShallowSitesService,
-    protected tagsApi: TagsService
+    protected tagsApi: TagsService,
+    protected securityApi?: SecurityService
   ) {
     super();
   }
@@ -125,14 +128,15 @@ class MyProfileComponent
     this.user = userModel.model;
     this.updateUserProfile(this.user);
     this.updateStatistics(this.user);
+
+    this.securityApi
+      ?.sessionDetails()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((session) => (this.authToken = session.authToken));
   }
 
   public toggleAuthTokenVisibility(): void {
     this.isShowingAuthToken = !this.isShowingAuthToken;
-  }
-
-  public get authToken(): string {
-    return this.sitesApi.getLocalUser()?.authToken;
   }
 
   public get authTokenDescription(): string {

@@ -12,6 +12,7 @@
         [src]="user.imageUrls"
       />
 
+      <!-- TODO Extract to sub component -->
       <div class="card mt-3">
         <div class="card-header">Summary</div>
         <div class="caption">
@@ -22,7 +23,7 @@
               ngbTooltip="Last time {{ user.userName }} was seen"
               [icon]="['fas', 'clock']"
             ></fa-icon>
-            <small [innerText]="lastSeenAt"></small>
+            <small>{{ lastSeenAt }}</small>
           </p>
           <!-- Amount of time user has been a member -->
           <p id="membership-length">
@@ -31,11 +32,12 @@
               ngbTooltip="Length of {{ user.userName }}'s membership"
               [icon]="['fas', 'user']"
             ></fa-icon>
-            <small [innerText]="membershipLength"></small>
+            <small>{{ membershipLength }}</small>
           </p>
         </div>
       </div>
 
+      <!-- TODO Extract to sub component -->
       <!-- Download annotations (Disabled in third person) -->
       <div id="annotations-link" class="row mt-3" *ngIf="!thirdPerson">
         <div class="col-md-12 pb-3">
@@ -59,6 +61,7 @@
         </div>
       </div>
 
+      <!-- TODO Extract to sub component -->
       <!-- Auth token (Disabled in third person) -->
       <div id="annotations-link" class="row mt-3" *ngIf="!thirdPerson">
         <div class="col-md-12 pb-3">
@@ -69,7 +72,7 @@
             <ul class="list-group list-group-flush">
               <li class="list-group-item p-1">
                 <small>
-                  <p class="px-1" [innerText]="authTokenDescription"></p>
+                  <p class="px-1">{{ authTokenDescription }}</p>
                 </small>
                 <!-- User auth token -->
                 <div id="auth-token" class="input-group">
@@ -78,6 +81,7 @@
                     class="btn btn-outline-secondary"
                     ngbTooltip="Show/Hide authentication token"
                     container="body"
+                    [disabled]="!authToken"
                     [class.active]="isShowingAuthToken"
                     (click)="toggleAuthTokenVisibility()"
                   >
@@ -86,7 +90,7 @@
 
                   <pre
                     class="text-center form-control"
-                  ><small>{{isShowingAuthToken ? authToken: '...'}}</small></pre>
+                  ><baw-loading *ngIf="!authToken"></baw-loading><small *ngIf="authToken">{{isShowingAuthToken ? authToken: '…'}}</small></pre>
 
                   <button
                     type="button"
@@ -94,6 +98,7 @@
                     ngbTooltip="Copied!"
                     triggers="click"
                     container="body"
+                    [disabled]="!authToken"
                   >
                     <span ngxClipboard [cbContent]="authToken">
                       <fa-icon [icon]="['fas', 'copy']"></fa-icon>
@@ -109,8 +114,10 @@
 
     <!-- Right aligned content -->
     <div class="col-12 col-md-8 col-lg-12 col-xl-8">
+      <!-- TODO Extract to sub component -->
       <baw-items [items]="userStatistics"></baw-items>
 
+      <!-- TODO Extract to sub component -->
       <!-- Users most popular tags -->
       <div id="tags" class="row">
         <div class="col-md-12">

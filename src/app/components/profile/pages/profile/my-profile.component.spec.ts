@@ -221,6 +221,16 @@ describe("MyProfileComponent", () => {
     });
   });
 
+  describe("authentication token", () => {
+    // TODO
+    it("should request auth token on load", () => {});
+    it("should show loading animation while auth token loads", () => {});
+    it("should disable copy button while auth token loads", () => {});
+    it("should disable view token button while auth token loads", () => {});
+    it("should show ... instead of auth token by default", () => {});
+    it("should show auth token when requested", () => {});
+  });
+
   describe("statistics", () => {
     [
       {
