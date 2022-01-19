@@ -2,3 +2,10 @@
   padding: 9px;
   color: #333;
 }
+
+#auth-token {
+  pre {
+    margin: 0;
+    white-space: pre-wrap;
+  }
+}

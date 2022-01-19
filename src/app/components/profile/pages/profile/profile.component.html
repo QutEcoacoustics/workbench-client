@@ -4,7 +4,7 @@
 
   <div class="row mb-3">
     <!-- Left aligned content -->
-    <div class="col-sm-4">
+    <div class="col-12 col-md-4 col-lg-12 col-xl-4">
       <!-- User profile picture and details -->
       <img
         class="img-thumbnail mx-auto d-block"
@@ -12,25 +12,35 @@
         [src]="user.imageUrls"
       />
 
+      <!-- TODO Extract to sub component -->
       <div class="card mt-3">
-        <div class="card-header">Statistics</div>
+        <div class="card-header">Summary</div>
         <div class="caption">
           <!-- Last time user was seen -->
           <p id="last-seen-at">
-            <fa-icon [icon]="['fas', 'clock']"></fa-icon>
-            {{ lastSeenAt }}
+            <fa-icon
+              class="pe-2"
+              ngbTooltip="Last time {{ user.userName }} was seen"
+              [icon]="['fas', 'clock']"
+            ></fa-icon>
+            <small>{{ lastSeenAt }}</small>
           </p>
           <!-- Amount of time user has been a member -->
           <p id="membership-length">
-            <fa-icon [icon]="['fas', 'user']"></fa-icon>
-            {{ membershipLength }}
+            <fa-icon
+              class="pe-2"
+              ngbTooltip="Length of {{ user.userName }}'s membership"
+              [icon]="['fas', 'user']"
+            ></fa-icon>
+            <small>{{ membershipLength }}</small>
           </p>
         </div>
       </div>
 
+      <!-- TODO Extract to sub component -->
       <!-- Download annotations (Disabled in third person) -->
       <div id="annotations-link" class="row mt-3" *ngIf="!thirdPerson">
-        <div class="col-sm-12 pb-3">
+        <div class="col-md-12 pb-3">
           <div class="card">
             <!-- Header -->
             <div class="card-header">Download</div>
@@ -50,15 +60,67 @@
           </div>
         </div>
       </div>
+
+      <!-- TODO Extract to sub component -->
+      <!-- Auth token (Disabled in third person) -->
+      <div id="annotations-link" class="row mt-3" *ngIf="!thirdPerson">
+        <div class="col-md-12 pb-3">
+          <div class="card">
+            <!-- Header -->
+            <div class="card-header">Authentication Token</div>
+
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item p-1">
+                <small>
+                  <p class="px-1">{{ authTokenDescription }}</p>
+                </small>
+                <!-- User auth token -->
+                <div id="auth-token" class="input-group">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    ngbTooltip="Show/Hide authentication token"
+                    container="body"
+                    [disabled]="!authToken"
+                    [class.active]="isShowingAuthToken"
+                    (click)="toggleAuthTokenVisibility()"
+                  >
+                    <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+                  </button>
+
+                  <pre
+                    class="text-center form-control"
+                  ><baw-loading *ngIf="!authToken"></baw-loading><small *ngIf="authToken">{{isShowingAuthToken ? authToken: '…'}}</small></pre>
+
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    ngbTooltip="Copied!"
+                    triggers="click"
+                    container="body"
+                    [disabled]="!authToken"
+                  >
+                    <span ngxClipboard [cbContent]="authToken">
+                      <fa-icon [icon]="['fas', 'copy']"></fa-icon>
+                    </span>
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Right aligned content -->
-    <div class="col-sm-8">
+    <div class="col-12 col-md-8 col-lg-12 col-xl-8">
+      <!-- TODO Extract to sub component -->
       <baw-items [items]="userStatistics"></baw-items>
 
+      <!-- TODO Extract to sub component -->
       <!-- Users most popular tags -->
       <div id="tags" class="row">
-        <div class="col-sm-12">
+        <div class="col-md-12">
           <div class="card">
             <!-- Header -->
             <div class="card-header">Most Popular Tags</div>

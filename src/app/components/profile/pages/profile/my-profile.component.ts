@@ -5,6 +5,7 @@ import { Filters } from "@baw-api/baw-api.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
+import { SecurityService } from "@baw-api/security/security.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { userResolvers } from "@baw-api/user/user.service";
@@ -29,6 +30,7 @@ import { AbstractModel } from "@models/AbstractModel";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
+import { ConfigService } from "@services/config/config.service";
 import { IItem } from "@shared/items/item/item.component";
 import { List } from "immutable";
 import { Observable } from "rxjs";
@@ -61,23 +63,57 @@ class MyProfileComponent
   public tags: Tag[];
   public thirdPerson = false;
   public user: User;
+  public isShowingAuthToken = false;
+  public authToken: string;
   public userStatistics: List<IItem> = List([
-    { icon: projectsMenuItem.icon, name: "Projects", value: "..." },
+    {
+      icon: projectsMenuItem.icon,
+      name: "Projects",
+      tooltip: () => `Number of projects ${this.user.userName} has created`,
+      value: "…",
+    },
     // TODO Update icon
-    { icon: adminTagsMenuItem.icon, name: "Tags", value: "..." },
-    { icon: myBookmarksMenuItem.icon, name: "Bookmarks", value: "..." },
-    { icon: mySitesMenuItem.icon, name: "Sites", value: "..." },
-    { icon: pointMenuItem.icon, name: "Points", value: "..." },
-    { icon: myAnnotationsMenuItem.icon, name: "Annotations", value: "..." },
+    {
+      icon: adminTagsMenuItem.icon,
+      name: "Tags",
+      tooltip: () => `Number of tags ${this.user.userName} has created`,
+      value: "…",
+    },
+    {
+      icon: myBookmarksMenuItem.icon,
+      name: "Bookmarks",
+      tooltip: () => `Number of bookmarks ${this.user.userName} has created`,
+      value: "…",
+    },
+    {
+      icon: mySitesMenuItem.icon,
+      name: "Sites",
+      tooltip: () => `Number of sites ${this.user.userName} has created`,
+      value: "…",
+    },
+    {
+      icon: pointMenuItem.icon,
+      name: "Points",
+      tooltip: () => `Number of points ${this.user.userName} has created`,
+      value: "…",
+    },
+    {
+      icon: myAnnotationsMenuItem.icon,
+      name: "Annotations",
+      tooltip: () => `Number of annotations ${this.user.userName} has created`,
+      value: "…",
+    },
   ]);
 
   public constructor(
+    public config: ConfigService,
     protected route: ActivatedRoute,
     protected audioEventsApi: ShallowAudioEventsService,
     protected bookmarksApi: BookmarksService,
     protected projectsApi: ProjectsService,
     protected sitesApi: ShallowSitesService,
-    protected tagsApi: TagsService
+    protected tagsApi: TagsService,
+    protected securityApi?: SecurityService
   ) {
     super();
   }
@@ -92,6 +128,23 @@ class MyProfileComponent
     this.user = userModel.model;
     this.updateUserProfile(this.user);
     this.updateStatistics(this.user);
+
+    this.securityApi
+      ?.sessionDetails()
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((session) => (this.authToken = session.authToken));
+  }
+
+  public toggleAuthTokenVisibility(): void {
+    this.isShowingAuthToken = !this.isShowingAuthToken;
+  }
+
+  public get authTokenDescription(): string {
+    return (
+      `Use this code to interact with ${this.config.settings.brand.long}. ` +
+      "Tools will ask you for auth token when they need one, copy the text below and paste it where needed. " +
+      "Treat this code like your password, don't share it with anyone!"
+    );
   }
 
   /** Update user details */
@@ -134,19 +187,14 @@ class MyProfileComponent
   }
 
   /** Update an individual statistic */
-  protected updateStatistic<
-    M,
-    S extends {
-      filterByCreator: (filters: Filters<M>, user: User) => Observable<M[]>;
-    }
-  >(
+  protected updateStatistic<Model, S extends Service<Model>>(
     api: S,
     index: number,
     user: User,
-    additionalFilters: Filters<M> = {},
-    callback?: (models: M[]) => void
-  ) {
-    function getPageTotal(model: M) {
+    additionalFilters: Filters<Model> = {},
+    callback?: (models: Model[]) => void
+  ): void {
+    function getPageTotal(model: Model) {
       return (model as unknown as AbstractModel).getMetadata().paging.total;
     }
 
@@ -173,6 +221,10 @@ class MyProfileComponent
       value: "Unknown",
     }));
   }
+}
+
+interface Service<Model> {
+  filterByCreator: (filters: Filters<Model>, user: User) => Observable<Model[]>;
 }
 
 MyProfileComponent.linkToRoute({
