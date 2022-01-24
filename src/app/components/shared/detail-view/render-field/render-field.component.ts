@@ -65,6 +65,10 @@ import { takeUntil } from "rxjs/operators";
   `,
   styles: [
     `
+      p {
+        word-wrap: break-word;
+      }
+
       img {
         display: block;
         max-width: 400px;
@@ -192,7 +196,7 @@ export class RenderFieldComponent
     this.setLoading();
 
     try {
-      this.display = JSON.stringify(value);
+      this.display = JSON.stringify(value, null, 4);
       this.styling = FieldStyling.code;
     } catch (err) {
       this.setError();

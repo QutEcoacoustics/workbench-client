@@ -16,6 +16,7 @@
         [form]="form"
         [fields]="fields"
         [model]="model"
+        (modelChange)="onModelChange($event)"
       ></formly-form>
 
       <!-- Right aligned submit button -->

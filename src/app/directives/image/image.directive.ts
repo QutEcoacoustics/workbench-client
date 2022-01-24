@@ -135,6 +135,8 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Append authentication token to url if logged in and disableAuthentication
    * is not set.
    *
+   * TODO This should be in a more general location to reduce code duplication
+   *
    * @param image Image with full formed url (not a relative path) to return with auth token
    */
   private appendAuthToken(image: ImageUrl): string {

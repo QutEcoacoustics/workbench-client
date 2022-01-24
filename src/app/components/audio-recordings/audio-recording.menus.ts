@@ -11,25 +11,24 @@ import {
 } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 
-const baseRoutePath = "audio_recordings";
-const childRoutePath = ":audioRecordingId";
+const listRoutePath = "audio_recordings";
+const showRoutePath = ":audioRecordingId";
+const batchDownloadRoutePath = "download";
 
-function makeRoute(menuItem: MenuRoute): StrongRoute {
-  return menuItem.route.addFeatureModule(baseRoutePath);
-}
+type RecordingRoutes = "base" | "site" | "siteAndRegion" | "region" | "project";
 
 // Create audio recording base route, and sub routes
-export const audioRecordingsRoutes = {
+export const audioRecordingsRoutes: Record<RecordingRoutes, StrongRoute> = {
   /** /audio_recordings */
-  base: StrongRoute.newRoot().add(baseRoutePath),
+  base: StrongRoute.newRoot().add(listRoutePath),
   /** /project/:projectId/site/:siteId/audio_recordings */
-  site: makeRoute(siteMenuItem),
+  site: siteMenuItem.route.addFeatureModule(listRoutePath),
   /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings */
-  siteAndRegion: makeRoute(pointMenuItem),
+  siteAndRegion: pointMenuItem.route.addFeatureModule(listRoutePath),
   /** /project/:projectId/region/:regionId/audio_recordings */
-  region: makeRoute(regionMenuItem),
+  region: regionMenuItem.route.addFeatureModule(listRoutePath),
   /** /project/:projectId/audio_recordings */
-  project: makeRoute(projectMenuItem),
+  project: projectMenuItem.route.addFeatureModule(listRoutePath),
 };
 
 export const audioRecordingsCategory: Category = {
@@ -38,70 +37,84 @@ export const audioRecordingsCategory: Category = {
   route: audioRecordingsRoutes.base,
 };
 
-function makeListMenuItem(route: StrongRoute, parent?: MenuRoute): MenuRoute {
+function makeListMenuItem(
+  subRoute: RecordingRoutes,
+  parent?: MenuRoute
+): MenuRoute {
   return menuRoute({
     icon: ["fas", "file-archive"],
     label: "Audio Recordings",
     tooltip: () => "View associated audio recordings",
-    route,
+    route: audioRecordingsRoutes[subRoute],
     parent,
   });
 }
 
-function makeDetailsMenuItem(
-  route: StrongRoute,
-  parent?: MenuRoute
-): MenuRoute {
+function makeDetailsMenuItem(subRoute: RecordingRoutes): MenuRoute {
   return menuRoute({
     icon: ["fas", "file-audio"],
     label: "Audio Recording",
     tooltip: () => "View audio recording details",
-    route: route.add(childRoutePath),
-    parent,
+    route: audioRecordingsRoutes[subRoute].add(showRoutePath),
+    parent: listMenuItems[subRoute],
   });
 }
 
-const listMenuItems = {
+function makeBatchMenuItem(subRoute: RecordingRoutes): MenuRoute {
+  return menuRoute({
+    icon: ["fas", "file-download"],
+    label: "Batch Download Audio Recordings",
+    tooltip: () => "Download multiple audio recordings",
+    // TODO Create base route in future
+    disabled: subRoute === "base",
+    route: audioRecordingsRoutes[subRoute].add(batchDownloadRoutePath),
+    parent: listMenuItems[subRoute],
+  });
+}
+
+const listMenuItems: Record<RecordingRoutes, MenuRoute> = {
   /** /audio_recordings */
-  base: makeListMenuItem(audioRecordingsRoutes.base),
+  base: makeListMenuItem("base"),
   /** /project/:projectId/site/:siteId/audio_recordings */
-  site: makeListMenuItem(audioRecordingsRoutes.site, siteMenuItem),
+  site: makeListMenuItem("site", siteMenuItem),
   /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings */
-  siteAndRegion: makeListMenuItem(
-    audioRecordingsRoutes.siteAndRegion,
-    pointMenuItem
-  ),
+  siteAndRegion: makeListMenuItem("siteAndRegion", pointMenuItem),
   /** /project/:projectId/region/:regionId/audio_recordings */
-  region: makeListMenuItem(audioRecordingsRoutes.region, regionMenuItem),
+  region: makeListMenuItem("region", regionMenuItem),
   /** /project/:projectId/audio_recordings */
-  project: makeListMenuItem(audioRecordingsRoutes.project, projectMenuItem),
+  project: makeListMenuItem("project", projectMenuItem),
 };
 
-const detailsMenuItems = {
+const detailsMenuItems: Record<RecordingRoutes, MenuRoute> = {
   /** /audio_recordings */
-  base: makeDetailsMenuItem(audioRecordingsRoutes.base, listMenuItems.base),
+  base: makeDetailsMenuItem("base"),
   /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId */
-  site: makeDetailsMenuItem(audioRecordingsRoutes.site, listMenuItems.site),
+  site: makeDetailsMenuItem("site"),
   /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings/:audioRecordingId */
-  siteAndRegion: makeDetailsMenuItem(
-    audioRecordingsRoutes.siteAndRegion,
-    listMenuItems.siteAndRegion
-  ),
+  siteAndRegion: makeDetailsMenuItem("siteAndRegion"),
   /** /project/:projectId/region/:regionId/audio_recordings/:audioRecordingId */
-  region: makeDetailsMenuItem(
-    audioRecordingsRoutes.region,
-    listMenuItems.region
-  ),
+  region: makeDetailsMenuItem("region"),
   /** /project/:projectId/audio_recordings/:audioRecordingId */
-  project: makeDetailsMenuItem(
-    audioRecordingsRoutes.project,
-    listMenuItems.project
-  ),
+  project: makeDetailsMenuItem("project"),
+};
+
+const batchMenuItems: Record<RecordingRoutes, MenuRoute> = {
+  /** /audio_recordings/download */
+  base: makeBatchMenuItem("base"),
+  /** /project/:projectId/site/:siteId/audio_recordings/download */
+  site: makeBatchMenuItem("site"),
+  /** /project/:projectId/region/:regionId/point/:pointId/audio_recordings/download */
+  siteAndRegion: makeBatchMenuItem("siteAndRegion"),
+  /** /region/:regionId/audio_recordings/download */
+  region: makeBatchMenuItem("region"),
+  /** /project/:projectId/audio_recordings/download */
+  project: makeBatchMenuItem("project"),
 };
 
 export const audioRecordingMenuItems = {
   list: listMenuItems,
   details: detailsMenuItems,
+  batch: batchMenuItems,
 };
 
 export const downloadAudioRecordingMenuItem = menuLink({
@@ -111,12 +124,4 @@ export const downloadAudioRecordingMenuItem = menuLink({
   // Relative routes go to api
   uri: ({ audioRecordingId }) =>
     audioRecordingOriginalEndpoint(audioRecordingId),
-});
-
-export const batchDownloadAudioRecordingMenuItem = menuLink({
-  disabled: true,
-  icon: ["fas", "download"],
-  label: "Batch Download",
-  tooltip: () => "(UNDER CONSTRUCTION) Download multiple audio recordings",
-  uri: () => "not_implemented",
 });

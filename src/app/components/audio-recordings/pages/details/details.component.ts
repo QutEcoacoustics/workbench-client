@@ -74,28 +74,29 @@ class AudioRecordingsDetailsComponent extends PageComponent implements OnInit {
   }
 }
 
-const menuItems = audioRecordingMenuItems.details;
-const pageInfo: IPageInfo = {
-  category: audioRecordingsCategory,
-  menus: {
-    actions: List([listenRecordingMenuItem, downloadAudioRecordingMenuItem]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
-  },
-  resolvers: {
-    [audioRecordingKey]: audioRecordingResolvers.show,
-    [projectKey]: projectResolvers.showOptional,
-    [regionKey]: regionResolvers.showOptional,
-    [siteKey]: siteResolvers.showOptional,
-  },
-};
+function getPageInfo(
+  subRoute: keyof typeof audioRecordingMenuItems.details
+): IPageInfo {
+  return {
+    pageRoute: audioRecordingMenuItems.details[subRoute],
+    category: audioRecordingsCategory,
+    menus: {
+      actions: List([listenRecordingMenuItem, downloadAudioRecordingMenuItem]),
+      actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    },
+    resolvers: {
+      [audioRecordingKey]: audioRecordingResolvers.show,
+      [projectKey]: projectResolvers.showOptional,
+      [regionKey]: regionResolvers.showOptional,
+      [siteKey]: siteResolvers.showOptional,
+    },
+  };
+}
 
-AudioRecordingsDetailsComponent.linkToRoute({
-  ...pageInfo,
-  pageRoute: menuItems.base,
-})
-  .linkToRoute({ ...pageInfo, pageRoute: menuItems.site })
-  .linkToRoute({ ...pageInfo, pageRoute: menuItems.siteAndRegion })
-  .linkToRoute({ ...pageInfo, pageRoute: menuItems.region })
-  .linkToRoute({ ...pageInfo, pageRoute: menuItems.project });
+AudioRecordingsDetailsComponent.linkToRoute(getPageInfo("base"))
+  .linkToRoute(getPageInfo("site"))
+  .linkToRoute(getPageInfo("siteAndRegion"))
+  .linkToRoute(getPageInfo("region"))
+  .linkToRoute(getPageInfo("project"));
 
 export { AudioRecordingsDetailsComponent };

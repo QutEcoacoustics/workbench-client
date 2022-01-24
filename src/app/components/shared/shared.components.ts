@@ -13,6 +13,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 import { PipesModule } from "@pipes/pipes.module";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { NgxCaptchaModule } from "ngx-captcha";
 import { ClipboardModule } from "ngx-clipboard";
 import { ToastrModule } from "ngx-toastr";
@@ -64,6 +65,7 @@ export const sharedModules = [
   NgxDatatableModule,
   ToastrModule,
   ClipboardModule,
+  DateValueAccessorModule,
 
   IconsModule,
   DirectivesModule,

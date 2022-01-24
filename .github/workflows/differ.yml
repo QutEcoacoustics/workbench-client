@@ -18,6 +18,7 @@ jobs:
       # https://github.com/preactjs/compressed-size-action
       - uses: preactjs/compressed-size-action@v2
         with:
+          build-script: "build:ssr"
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           strip-hash: "\\.(\\w*?)\\."
           pattern: "dist/**/*.{css,js,json,html}"
