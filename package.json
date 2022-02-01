@@ -28,11 +28,11 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "13.0.1",
+    "@angular/animations": "13.2.0",
     "@angular/cdk": "13.2.0",
     "@angular/common": "13.0.1",
     "@angular/compiler": "13.0.1",
-    "@angular/core": "13.0.1",
+    "@angular/core": "13.2.0",
     "@angular/forms": "13.0.1",
     "@angular/google-maps": "13.2.0",
     "@angular/localize": "13.0.1",
