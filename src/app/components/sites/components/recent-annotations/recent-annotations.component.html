@@ -5,7 +5,9 @@
   <baw-loading *ngIf="!recentAudioEvents" id="annotation-loader"></baw-loading>
 
   <!-- Handle no annotations -->
-  <p *ngIf="recentAudioEvents?.length === 0">No recent annotations found</p>
+  <p *ngIf="recentAudioEvents?.length === 0" id="no-annotations">
+    No recent annotations found
+  </p>
 
   <!-- For each annotation and tagging -->
   <ng-container *ngFor="let event of recentAudioEvents">

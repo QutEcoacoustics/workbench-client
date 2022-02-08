@@ -1,4 +1,6 @@
+import { id, IdOr } from "@baw-api/api-common";
 import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import {
@@ -98,6 +100,13 @@ export class Region extends AbstractModel<IRegion> implements IRegion {
 
   public get visualizeUrl(): string {
     return visualizeMenuItem.route.format(undefined, { siteIds: this.siteIds });
+  }
+
+  public getAudioRecordingsUrl(): string {
+    return audioRecordingMenuItems.list.region.route.format({
+      projectId: this.projectId,
+      regionId: this.id,
+    });
   }
 
   /**

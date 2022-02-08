@@ -54,6 +54,7 @@ export class RecentAnnotationsComponent
             }
           }
         },
+        // TODO This should be a standardized handler for all BAW API errors
         error: (err: ApiErrorDetails) => this.notifications.error(err.message),
       });
   }

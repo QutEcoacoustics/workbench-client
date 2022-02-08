@@ -76,6 +76,15 @@ import { takeUntil } from "rxjs/operators";
               Visualise
             </a>
           </li>
+          <li class="nav-item">
+            <a
+              class="nav-link rounded-link-default"
+              [bawUrl]="model.getAudioRecordingsUrl(project)"
+            >
+              <fa-icon [icon]="['fas', 'file-audio']"></fa-icon>
+              Audio Recordings
+            </a>
+          </li>
         </ul>
       </div>
     </li>

@@ -203,7 +203,9 @@ export class StrongRoute {
     const [full, parameters] = this.rootToHere();
     const numArgs = Object.keys(params).length;
     if (numArgs < parameters.length) {
-      const msg = `Got ${numArgs} route arguments but expected ${parameters.length}`;
+      const msg = `${this.toString()}: Got ${numArgs} route arguments but expected ${
+        parameters.length
+      }`;
       console.error(msg);
       throw new Error(msg);
     }
@@ -215,7 +217,9 @@ export class StrongRoute {
         if (Object.prototype.hasOwnProperty.call(params, key)) {
           return params[key];
         } else {
-          const msg = `Parameter named ${x.pathFragment} was not supplied a value and a default value was not given`;
+          const msg = `${this.toString()}: Parameter named ${
+            x.pathFragment
+          } was not supplied a value and a default value was not given`;
           console.error(msg);
           throw new Error(msg);
         }
