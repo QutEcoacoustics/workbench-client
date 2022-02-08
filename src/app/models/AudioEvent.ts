@@ -93,9 +93,13 @@ export class AudioEvent
   }
 
   public get listenViewUrl(): string {
+    const paddingSeconds = 10;
     return listenRecordingMenuItem.route.format(
       { audioRecordingId: this.audioRecordingId },
-      { start: this.startTimeSeconds, end: this.endTimeSeconds }
+      {
+        start: Math.max(0, this.startTimeSeconds - paddingSeconds),
+        end: this.endTimeSeconds + paddingSeconds,
+      }
     );
   }
 

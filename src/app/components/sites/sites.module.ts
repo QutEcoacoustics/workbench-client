@@ -4,6 +4,7 @@ import { RegionsModule } from "@components/regions/regions.module";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { MapModule } from "@shared/map/map.module";
 import { SharedModule } from "@shared/shared.module";
+import { RecentAnnotationsComponent } from "./components/recent-annotations/recent-annotations.component";
 import { SiteComponent } from "./components/site/site.component";
 import { SiteDeleteComponent } from "./pages/delete/delete.component";
 import { SiteDetailsComponent } from "./pages/details/details.component";
@@ -22,6 +23,7 @@ const components = [
   SiteHarvestComponent,
   SiteNewComponent,
   WizardComponent,
+  RecentAnnotationsComponent,
 ];
 
 const siteRoutes = sitesRoute.compileRoutes(getRouteConfigForPage);
