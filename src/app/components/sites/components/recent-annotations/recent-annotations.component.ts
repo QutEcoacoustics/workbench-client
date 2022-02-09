@@ -2,6 +2,11 @@ import { Component, Input, OnInit } from "@angular/core";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import {
+  AbstractModel,
+  isUnresolvedModel,
+  UnresolvedModel,
+} from "@models/AbstractModel";
 import { AudioEvent } from "@models/AudioEvent";
 import { Site } from "@models/Site";
 import { ToastrService } from "ngx-toastr";
@@ -28,6 +33,12 @@ export class RecentAnnotationsComponent
 
   public ngOnInit(): void {
     this.getAnnotations();
+  }
+
+  public modelsUnresolved(
+    ...models: (AbstractModel | UnresolvedModel)[]
+  ): boolean {
+    return models.some((model): boolean => isUnresolvedModel(model));
   }
 
   private getAnnotations(): void {

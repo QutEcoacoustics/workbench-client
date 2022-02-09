@@ -47,12 +47,11 @@
 <ng-template #tagged let-event="event" let-tagging="tagging">
   <!-- Annotation link -->
   <a class="nav-link rounded-link-default" [bawUrl]="event.listenViewUrl">
-    <!-- Loading when unresolved -->
+    <!--
+      Loading when unresolved
+    -->
     <ng-container
-      *ngIf="
-        (tagging.tag | isUnresolved) || (event.creator | isUnresolved);
-        else loaded
-      "
+      *ngIf="modelsUnresolved(event.creator, tagging.tag); else loaded"
     >
       <baw-loading id="tag-loader" size="sm"></baw-loading>
     </ng-container>

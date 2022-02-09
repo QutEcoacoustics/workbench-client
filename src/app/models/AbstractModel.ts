@@ -243,6 +243,12 @@ export class UnresolvedModel extends AbstractModel {
   }
 }
 
+export function isUnresolvedModel<T extends AbstractModel>(
+  model: Readonly<T | T[] | UnresolvedModel>
+): model is UnresolvedModel {
+  return model === UnresolvedModel.one || model === UnresolvedModel.many;
+}
+
 export const unknownViewUrl = "/not_implemented";
 export function getUnknownViewUrl(errorMsg: string) {
   console.warn(errorMsg);
