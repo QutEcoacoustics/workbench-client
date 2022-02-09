@@ -84,7 +84,7 @@ import { takeUntil } from "rxjs/operators";
           </li>
 
           <!-- Audio Recordings link (if recordings exist) -->
-          <li *ngIf="recording" class="nav-item">
+          <li class="nav-item">
             <a
               id="audio-recordings"
               class="nav-link rounded-link-default"

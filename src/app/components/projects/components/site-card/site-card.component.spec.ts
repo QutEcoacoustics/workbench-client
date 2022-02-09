@@ -211,21 +211,6 @@ describe("SiteCardComponent", () => {
           spec.detectChanges();
           assertUrl(getLinks().play, spec.component.recording.viewUrl);
         });
-
-        it("should display audio recordings link if recordings exist", async () => {
-          initializeComponent();
-          await recordingPromise;
-          spec.detectChanges();
-          assertLink(getLinks().audioRecordings, "Audio Recordings");
-        });
-
-        it("should not display audio recordings link if no recordings exist", async () => {
-          recordingPromise = inputType.setup(null);
-          spec.detectChanges();
-          await recordingPromise;
-          spec.detectChanges();
-          expect(getLinks().audioRecordings).toBeFalsy();
-        });
       } else {
         it("should not display play link", () => {
           initializeComponent();
@@ -241,6 +226,19 @@ describe("SiteCardComponent", () => {
       it("should navigate user to visualizer page when clicking visualize link", () => {
         initializeComponent();
         assertUrl(getLinks().visualize, spec.component.model.visualizeUrl);
+      });
+
+      it("should display audio recordings link", async () => {
+        initializeComponent();
+        assertLink(getLinks().audioRecordings, "Audio Recordings");
+      });
+
+      it("should navigate user to audio recordings page when clicking audio recordings link", async () => {
+        initializeComponent();
+        assertUrl(
+          getLinks().audioRecordings,
+          spec.component.model.getAudioRecordingsUrl(spec.component.project)
+        );
       });
     });
   });
