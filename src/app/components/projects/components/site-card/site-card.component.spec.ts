@@ -148,6 +148,7 @@ describe("SiteCardComponent", () => {
         play: spec.query<HTMLAnchorElement>("#play"),
         noAudio: spec.query<HTMLAnchorElement>("#no-audio"),
         visualize: spec.query<HTMLAnchorElement>("#visualize"),
+        audioRecordings: spec.query<HTMLAnchorElement>("#audio-recordings"),
       };
     }
 
@@ -222,7 +223,23 @@ describe("SiteCardComponent", () => {
         assertLink(getLinks().visualize, "Visualise");
       });
 
-      xit("should navigate user to visualizer page when clicking play link", () => {});
+      it("should navigate user to visualizer page when clicking visualize link", () => {
+        initializeComponent();
+        assertUrl(getLinks().visualize, spec.component.model.visualizeUrl);
+      });
+
+      it("should display audio recordings link", async () => {
+        initializeComponent();
+        assertLink(getLinks().audioRecordings, "Audio Recordings");
+      });
+
+      it("should navigate user to audio recordings page when clicking audio recordings link", async () => {
+        initializeComponent();
+        assertUrl(
+          getLinks().audioRecordings,
+          spec.component.model.getAudioRecordingsUrl(spec.component.project)
+        );
+      });
     });
   });
 

@@ -2,6 +2,7 @@ import { Injector } from "@angular/core";
 import { id, IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
 import { adminOrphanMenuItem } from "@components/admin/orphan/orphans.menus";
+import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -130,6 +131,21 @@ export class Site extends AbstractModel<ISite> implements ISite {
 
   public get visualizeUrl(): string {
     return visualizeMenuItem.route.format(undefined, { siteId: this.id });
+  }
+
+  public getAudioRecordingsUrl(projectId: IdOr<Project>): string {
+    if (isInstantiated(this.regionId)) {
+      return audioRecordingMenuItems.list.siteAndRegion.route.format({
+        projectId: id(projectId),
+        regionId: this.regionId,
+        siteId: this.id,
+      });
+    } else {
+      return audioRecordingMenuItems.list.site.route.format({
+        projectId: id(projectId),
+        siteId: this.id,
+      });
+    }
   }
 
   public getViewUrl(project: IdOr<Project>): string {

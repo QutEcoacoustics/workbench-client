@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -11,6 +10,7 @@ import { Site } from "@models/Site";
 import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
 import { DateTime } from "luxon";
+import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
 /**
@@ -25,6 +25,7 @@ class SiteComponent extends PageComponent implements OnInit {
   @Input() public project: Project;
   @Input() public region: Region;
   @Input() public site: Site;
+
   public defaultDescription = "<i>No description found</i>";
   public recordings: AudioRecording[];
   public oldestRecording: AudioRecording;
@@ -32,22 +33,18 @@ class SiteComponent extends PageComponent implements OnInit {
   public marker: List<MapMarkerOption>;
   public recentAudioEvents: AudioEvent[];
 
-  public constructor(
-    private audioEventsApi: ShallowAudioEventsService,
-    private audioRecordingsApi: AudioRecordingsService
-  ) {
+  public constructor(private audioRecordingsApi: AudioRecordingsService) {
     super();
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.marker = sanitizeMapMarkers(this.site.getMapMarker());
 
-    this.getAnnotations();
     this.getNewestDates();
     this.getOldestDates();
   }
 
-  public humanizeDate(audioRecording: AudioRecording) {
+  public humanizeDate(audioRecording: AudioRecording): string {
     if (audioRecording) {
       return audioRecording.recordedDate.toLocaleString(DateTime.DATETIME_FULL);
     } else if (audioRecording === null) {
@@ -57,50 +54,22 @@ class SiteComponent extends PageComponent implements OnInit {
     }
   }
 
-  private getAnnotations() {
-    this.audioEventsApi
-      .filterBySite(
-        { sorting: { orderBy: "updatedAt", direction: "desc" } },
-        this.site
-      )
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (events) => {
-          // Limit the selection of audio events by tagging count
-          const maxTags = 10;
-          let numTags = 0;
-          this.recentAudioEvents = [];
-
-          for (const event of events) {
-            this.recentAudioEvents.push(event);
-            // An event with no taggings will still show a (not tagged) tag
-            numTags += Math.max(event.taggings.length, 1);
-
-            if (numTags > maxTags) {
-              return;
-            }
-          }
-        },
-        (err) => console.error({ err })
-      );
-  }
-
   private getNewestDates() {
     this.filterByDates("desc")
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (recordings) => {
+      .subscribe({
+        next: (recordings) => {
           this.newestRecording = recordings[0];
           this.recordings = recordings;
         },
-        () => {
+        error: () => {
           this.newestRecording = null;
           this.recordings = null;
-        }
-      );
+        },
+      });
   }
 
-  private getOldestDates() {
+  private getOldestDates(): void {
     this.filterByDates("asc", { paging: { items: 1 } })
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
@@ -113,7 +82,7 @@ class SiteComponent extends PageComponent implements OnInit {
   private filterByDates(
     direction: Direction,
     filters: Filters<AudioRecording> = {}
-  ) {
+  ): Observable<AudioRecording[]> {
     return this.audioRecordingsApi.filterBySite(
       { sorting: { orderBy: "recordedDate", direction }, ...filters },
       this.site

@@ -374,6 +374,11 @@ describe("SiteComponent", () => {
       it("should route to correct location", () => {});
     });
 
+    xdescribe("audio recordings", () => {
+      it("should create audio recordings link", () => {});
+      it("should route to correct location", () => {});
+    });
+
     describe("filterByDates", () => {
       it("should request list of newest audio recordings", (done) => {
         setup(defaultProject, defaultSite);

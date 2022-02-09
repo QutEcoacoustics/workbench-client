@@ -30,6 +30,8 @@ import { takeUntil } from "rxjs/operators";
               {{ numPoints() }} Points
             </span>
           </li>
+
+          <!-- Model details link -->
           <li class="nav-item">
             <a
               id="details"
@@ -40,6 +42,8 @@ import { takeUntil } from "rxjs/operators";
               Details
             </a>
           </li>
+
+          <!-- Play audio link (if recording exists) -->
           <li *ngIf="site" class="nav-item">
             <!-- Play link if recording exists -->
             <a
@@ -66,6 +70,8 @@ import { takeUntil } from "rxjs/operators";
               size="sm"
             ></baw-loading>
           </li>
+
+          <!-- Visualize link -->
           <li class="nav-item">
             <a
               id="visualize"
@@ -74,6 +80,18 @@ import { takeUntil } from "rxjs/operators";
             >
               <fa-icon [icon]="['fas', 'eye']"></fa-icon>
               Visualise
+            </a>
+          </li>
+
+          <!-- Audio Recordings link (if recordings exist) -->
+          <li class="nav-item">
+            <a
+              id="audio-recordings"
+              class="nav-link rounded-link-default"
+              [bawUrl]="model.getAudioRecordingsUrl(project)"
+            >
+              <fa-icon [icon]="['fas', 'file-audio']"></fa-icon>
+              Audio Recordings
             </a>
           </li>
         </ul>
