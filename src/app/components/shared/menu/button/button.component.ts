@@ -6,7 +6,6 @@ import {
 } from "@angular/core";
 import { MenuAction } from "@interfaces/menusInterfaces";
 import { MenuModal } from "@menu/widgetItem";
-import { Placement } from "@ng-bootstrap/ng-bootstrap";
 
 /**
  * Menu Button Component
@@ -16,11 +15,11 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
   template: `
     <button
       class="btn ps-3 py-2 rounded text-start"
+      placement="auto"
       (click)="link.action()"
       [disabled]="link.disabled"
       [class.disabled]="link.disabled"
       [ngbTooltip]="tooltipContent"
-      [placement]="placement"
     >
       <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
       <span id="label">{{ link.label }}</span>
@@ -39,7 +38,6 @@ import { Placement } from "@ng-bootstrap/ng-bootstrap";
 })
 export class MenuButtonComponent implements OnInit {
   @Input() public link: MenuAction | MenuModal;
-  @Input() public placement: Placement;
   @Input() public tooltip: string;
   public disabledReason: string;
 

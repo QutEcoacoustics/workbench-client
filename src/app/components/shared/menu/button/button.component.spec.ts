@@ -103,18 +103,6 @@ describe("MenuButtonComponent", () => {
       spec.detectChanges();
       assertTooltip(retrieveButton(), "custom tooltip");
     });
-
-    it("should handle left placement of tooltip", () => {
-      setup({ placement: "left" });
-      spec.detectChanges();
-      expect(getTooltip().placement).toBe("left");
-    });
-
-    it("should handle right placement of tooltip", () => {
-      setup({ placement: "right" });
-      spec.detectChanges();
-      expect(getTooltip().placement).toBe("right");
-    });
   });
 
   describe("action", () => {

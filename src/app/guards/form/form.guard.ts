@@ -26,7 +26,8 @@ export function withFormCheck<T extends Type<any>>(base: T = class {} as any) {
   @Directive()
   class FormCheckingPageDirective
     extends base
-    implements FormCheckingComponent {
+    implements FormCheckingComponent
+  {
     @ViewChildren(FormComponent) public appForms: QueryList<FormComponent>;
 
     /**
@@ -57,6 +58,11 @@ export class FormTouchedGuard implements CanDeactivate<FormCheckingComponent> {
   @ViewChildren(FormComponent) public appForms: QueryList<FormComponent>;
 
   public canDeactivate(component: FormCheckingComponent): boolean {
+    // canDeactivate guards can be called with null components: https://github.com/angular/angular/issues/40545
+    if (!component) {
+      return true;
+    }
+
     // If component doesn't have a form, ignore it
     if (typeof component.isFormTouched !== "function") {
       return true;

@@ -15,7 +15,7 @@ import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "../page/pageComponent";
-import { PageInfo } from "../page/pageInfo";
+import { IPageInfo } from "../page/pageInfo";
 
 export interface FormTemplateOptions<Model> {
   successMsg: (model: Partial<Model>) => string;
@@ -81,7 +81,7 @@ export abstract class FormTemplate<Model extends AbstractModel>
     }
 
     // Retrieve models from router
-    const data = this.route.snapshot.data as PageInfo;
+    const data = this.route.snapshot.data as IPageInfo;
 
     // Retrieve models and handle potential failure
     const models = retrieveResolvers(data);

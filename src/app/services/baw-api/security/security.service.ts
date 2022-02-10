@@ -56,8 +56,9 @@ export class SecurityService extends BawFormApiService<SessionUser> {
 
   /**
    * Returns a subject which tracks the change in loggedIn status
+   * TODO Return local user
    */
-  public getAuthTrigger(): BehaviorSubject<void> {
+  public getAuthTrigger(): Observable<void> {
     return this.authTrigger;
   }
 

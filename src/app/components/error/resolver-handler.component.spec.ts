@@ -5,7 +5,7 @@ import { IPageInfo } from "@helpers/page/pageInfo";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
-import { generatePageInfo } from "@test/helpers/general";
+import { generatePageInfoResolvers } from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
 import { ResolverHandlerComponent } from "./resolver-handler.component";
 
@@ -41,14 +41,14 @@ describe("ResolverHandlerComponent", () => {
     });
 
     it("should not display if single passing resolver", () => {
-      setup(generatePageInfo({ model: new MockModel({}) }));
+      setup(generatePageInfoResolvers({ model: new MockModel({}) }));
       spec.detectChanges();
       assertErrorHandler();
     });
 
     it("should not display if multiple passing resolvers", () => {
       setup(
-        generatePageInfo(
+        generatePageInfoResolvers(
           { model: new MockModel({}) },
           { model: new MockModel({}) },
           { model: new MockModel({}) }
@@ -60,14 +60,14 @@ describe("ResolverHandlerComponent", () => {
 
     it("should display error if single failing resolver", () => {
       const error = generateApiErrorDetails();
-      setup(generatePageInfo({ error }));
+      setup(generatePageInfoResolvers({ error }));
       spec.detectChanges();
       assertErrorHandler(error);
     });
 
     it("should display error if multiple failing resolvers", () => {
       const error = generateApiErrorDetails();
-      setup(generatePageInfo({ error }, { error }, { error }));
+      setup(generatePageInfoResolvers({ error }, { error }, { error }));
       spec.detectChanges();
       assertErrorHandler(error);
     });
@@ -76,7 +76,7 @@ describe("ResolverHandlerComponent", () => {
       const unauthorized = generateApiErrorDetails("Unauthorized");
       const notFound = generateApiErrorDetails("Not Found");
       setup(
-        generatePageInfo(
+        generatePageInfoResolvers(
           { error: notFound },
           { error: unauthorized },
           { error: notFound }
@@ -89,7 +89,7 @@ describe("ResolverHandlerComponent", () => {
     it("should display error if mixed passing and failing resolvers", () => {
       const error = generateApiErrorDetails();
       setup(
-        generatePageInfo(
+        generatePageInfoResolvers(
           { model: new MockModel({}) },
           { error },
           { model: new MockModel({}) }
@@ -102,10 +102,10 @@ describe("ResolverHandlerComponent", () => {
 
   describe("route data", () => {
     it("should clear error if new route data does not contain resolver failure", () => {
-      setup(generatePageInfo({ error: generateApiErrorDetails() }));
+      setup(generatePageInfoResolvers({ error: generateApiErrorDetails() }));
       spec.detectChanges();
       spec.triggerNavigation({
-        data: generatePageInfo({ model: new MockModel({}) }),
+        data: generatePageInfoResolvers({ model: new MockModel({}) }),
       });
       spec.detectChanges();
       assertErrorHandler();
@@ -113,9 +113,9 @@ describe("ResolverHandlerComponent", () => {
 
     it("should display error if new route data contains resolver failure", () => {
       const error = generateApiErrorDetails();
-      setup(generatePageInfo({ model: new MockModel({}) }));
+      setup(generatePageInfoResolvers({ model: new MockModel({}) }));
       spec.detectChanges();
-      spec.triggerNavigation({ data: generatePageInfo({ error }) });
+      spec.triggerNavigation({ data: generatePageInfoResolvers({ error }) });
       spec.detectChanges();
       assertErrorHandler(error);
     });

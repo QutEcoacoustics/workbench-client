@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import {
-  getPageInfos,
-  IPageComponentStatic,
-} from "@helpers/page/pageComponent";
-import { Observable } from "rxjs";
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
+import { MenuService } from "@services/menu/menu.service";
+import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
+import { Observable, takeUntil } from "rxjs";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "./services/config/config.service";
 
@@ -26,30 +28,28 @@ import { ConfigService } from "./services/config/config.service";
 export class AppComponent extends withUnsubscribe() implements OnInit {
   public fullscreen: boolean;
   public delayedProgress$: Observable<number>;
+  public resolvedSuccessfully: boolean;
 
-  public constructor(private config: ConfigService, private title: Title) {
+  public constructor(
+    public menu: MenuService,
+    private sharedRoute: SharedActivatedRouteService,
+    private config: ConfigService,
+    private title: Title
+  ) {
     super();
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.title.setTitle(this.config.settings.brand.short);
     this.fullscreen = true;
-  }
 
-  /**
-   * Determine whether the currently shown component uses the menu layout or fullscreen.
-   * Router-outlets emit an activate event `(activate)` when a new component is
-   * instantiated, this event contains a reference to the enclosed component. This
-   * allows us to hook into the default router-outlet's component (which is the page
-   * component) and read the pageInfo from the component. This will run whenever the
-   * component rendered inside the router-outlet changes.
-   */
-  public updatePageLayout(component: any) {
-    const pageComponent = component?.constructor as IPageComponentStatic;
-    // This is a faulty assumption about fullscreen, however should be fixed by
-    // https://github.com/QutEcoacoustics/workbench-client/issues/458
-    this.fullscreen = !!getPageInfos(pageComponent)?.some(
-      (page) => page.fullscreen
-    );
+    this.sharedRoute.pageInfo
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((pageInfo): void => {
+        this.fullscreen = pageInfo.fullscreen;
+        this.resolvedSuccessfully = hasResolvedSuccessfully(
+          retrieveResolvers(pageInfo)
+        );
+      });
   }
 }

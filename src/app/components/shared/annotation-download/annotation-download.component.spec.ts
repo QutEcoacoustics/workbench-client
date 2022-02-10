@@ -2,7 +2,7 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -62,7 +62,7 @@ describe("AnnotationDownloadComponent", () => {
           ? ({ model: models[index] } as ResolvedModel)
           : ({ error: models[index] } as ResolvedModel);
     });
-    spec.component.routeData = { resolvers, ...resolvedModels } as PageInfo;
+    spec.component.routeData = { resolvers, ...resolvedModels } as IPageInfo;
     spec.component.dismissModal = jasmine.createSpy("dismissModal").and.stub();
     spec.component.closeModal = jasmine.createSpy("closeModal").and.stub();
   }

@@ -2,16 +2,16 @@
 // circular dependencies which are not detected by typescript
 import type { Type } from "@angular/core";
 import type { ActivatedRouteSnapshot, Resolve } from "@angular/router";
-import type { Tuple, Option } from "@helpers/advancedTypes";
+import type { Option, Tuple } from "@helpers/advancedTypes";
+import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { Id } from "@interfaces/apiInterfaces";
 import type { AbstractData } from "@models/AbstractData";
 import type { AbstractModel } from "@models/AbstractModel";
 import httpStatus from "http-status";
 import { Observable, of } from "rxjs";
 import { catchError, first, map } from "rxjs/operators";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import {
   ApiCreate,
   ApiDestroy,
@@ -376,7 +376,7 @@ export function hasResolvedSuccessfully(
  *
  * @param data Page Data
  */
-export function retrieveResolvers(data: PageInfo): ResolvedModelList {
+export function retrieveResolvers(data: IPageInfo): ResolvedModelList {
   const models: ResolvedModelList = {};
   const keys = Object.keys(data?.resolvers || {});
 

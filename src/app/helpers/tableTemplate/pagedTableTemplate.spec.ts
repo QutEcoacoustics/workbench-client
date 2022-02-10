@@ -3,12 +3,12 @@ import { fakeAsync } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Errorable } from "@helpers/advancedTypes";
+import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { Id } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import {

@@ -8,7 +8,7 @@ import {
   ResolvedModelList,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel } from "@models/AbstractModel";
 import {
   ColumnMode,
@@ -90,11 +90,13 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
 
   public ngOnInit() {
     if (this.route) {
-      const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+      const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+
       if (!hasResolvedSuccessfully(models)) {
         this.failure = true;
         return;
       }
+
       this.models = models;
     }
 

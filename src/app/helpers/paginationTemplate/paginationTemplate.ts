@@ -20,7 +20,8 @@ const pageKey = "page";
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class PaginationTemplate<M extends AbstractModel>
   extends PageComponent
-  implements OnInit {
+  implements OnInit
+{
   /**
    * Observable to wrap api request behavior
    */

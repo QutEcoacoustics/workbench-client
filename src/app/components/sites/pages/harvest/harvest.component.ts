@@ -8,13 +8,13 @@ import {
 } from "@baw-api/resolver-common";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
-  pointsCategory,
-  pointMenuItem,
   pointHarvestMenuItem,
+  pointMenuItem,
+  pointsCategory,
 } from "@components/sites/points.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";
@@ -51,14 +51,14 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
 
   public constructor(
     @Inject(API_ROOT) public apiRoot: string,
-    protected route: ActivatedRoute,
-    protected api: SitesService
+    protected api: SitesService,
+    private route: ActivatedRoute
   ) {
     super();
   }
 
   public ngOnInit() {
-    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     if (hasResolvedSuccessfully(models)) {
       this.project = models[projectKey] as Project;
       this.region = models[regionKey] as Region;

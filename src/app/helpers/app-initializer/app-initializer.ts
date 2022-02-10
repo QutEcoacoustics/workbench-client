@@ -1,5 +1,4 @@
 import { Inject, Injectable, InjectionToken } from "@angular/core";
-import { NavigableMenuItem } from "@interfaces/menusInterfaces";
 import { BawTheme } from "@services/theme/theme.service";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
@@ -51,7 +50,7 @@ export interface Settings {
     sourceRepositoryIssues: string;
   };
   hideProjects: boolean;
-  customMenu: (HeaderLink | HeaderGroup)[];
+  customMenu: CustomMenuItem[];
   theme?: BawTheme;
 }
 
@@ -202,52 +201,8 @@ function validateServerRoot(root: string, key: string) {
   }
 }
 
-/**
- * Determine if a variable is of the HeaderLink type
- *
- * @param link Variable to evaluate
- */
-export function isHeaderLink(
-  link: HeaderLink | HeaderGroup | HeaderGroupConverted
-): link is HeaderLink {
-  return "url" in (link as HeaderLink);
-}
-
-/**
- * Single link for header
- */
-export interface HeaderLink {
+export interface CustomMenuItem {
   title: string;
-  /**
-   * Override of title, allows insertion of images/icons
-   * TODO Implement when required
-   */
-  html?: string;
-  url: string;
-}
-
-/**
- * Dropdown list of links for header
- */
-export interface HeaderGroup {
-  title: string;
-  /**
-   * Override of title, allows insertion of images/icons
-   * TODO Implement when required
-   */
-  html?: string;
-  items: HeaderLink[];
-}
-
-/**
- * Dropdown list of navigable menu items
- */
-export interface HeaderGroupConverted {
-  title: string;
-  /**
-   * Override of title, allows insertion of images/icons
-   * TODO Implement when required
-   */
-  html?: string;
-  items: NavigableMenuItem[];
+  url?: string;
+  items?: CustomMenuItem[];
 }

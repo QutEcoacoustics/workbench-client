@@ -1,7 +1,8 @@
 import { Injector } from "@angular/core";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
-import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { ResolvedModel } from "@baw-api/resolver-common";
+import { ACCOUNT, PROJECT } from "@baw-api/ServiceTokens";
 import { AccessLevel } from "@interfaces/apiInterfaces";
 import { UserBadgeComponent } from "@menu/user-badge/user-badge.component";
 import { UnresolvedModel } from "@models/AbstractModel";
@@ -9,17 +10,20 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
-import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
-import { nStepObservable } from "@test/helpers/general";
-import { MockData } from "@test/helpers/testbed";
-import { MockComponent } from "ng-mocks";
-import { Subject } from "rxjs";
+import {
+  generatePageInfoResolvers,
+  nStepObservable,
+} from "@test/helpers/general";
+import { MockComponent, MockProvider } from "ng-mocks";
+import { of, Subject } from "rxjs";
 import { PermissionsShieldComponent } from "./permissions-shield.component";
 
 const mockUserBadge = MockComponent(UserBadgeComponent);
@@ -31,8 +35,8 @@ describe("PermissionsShieldComponent", () => {
   let defaultModel: MockModel;
   let defaultUser: User;
   let injector: Injector;
-  let spec: SpectatorRouting<PermissionsShieldComponent>;
-  const createComponent = createRoutingFactory({
+  let spec: Spectator<PermissionsShieldComponent>;
+  const createComponent = createComponentFactory({
     component: PermissionsShieldComponent,
     declarations: [mockUserBadge],
     imports: [MockBawApiModule],
@@ -42,13 +46,19 @@ describe("PermissionsShieldComponent", () => {
     return spec.queryAll(mockUserBadge);
   }
 
-  function setup(resolvers: string[], data: MockData): Promise<any> {
-    const resolverList = {};
-    resolvers.forEach((resolver) => (resolverList[resolver] = "resolver"));
-    const routeData = { resolvers: resolverList, ...data };
-    spec = createComponent({ detectChanges: false, data: routeData });
+  function setup(models: ResolvedModel[]): Promise<any> {
+    const resolveData = generatePageInfoResolvers(...models);
+    spec = createComponent({
+      detectChanges: false,
+      providers: [
+        MockProvider(SharedActivatedRouteService, {
+          pageInfo: of(resolveData),
+        }),
+      ],
+    });
     injector = spec.inject(Injector);
-    const api = spec.inject(ACCOUNT.token);
+    const userApi = spec.inject(ACCOUNT.token);
+    const projectApi = spec.inject(PROJECT.token);
 
     // Insert injectors into models
     defaultProject["injector"] = injector;
@@ -58,12 +68,15 @@ describe("PermissionsShieldComponent", () => {
 
     const userSubject = new Subject<User>();
     const usersSubject = new Subject<User[]>();
-    api.show.andCallFake(() => userSubject);
-    api.filter.andCallFake(() => usersSubject);
+    const projectsSubject = new Subject<Project[]>();
+    userApi.show.andCallFake(() => userSubject);
+    userApi.filter.andCallFake(() => usersSubject);
+    projectApi.filter.andCallFake(() => projectsSubject);
 
     return Promise.all([
       nStepObservable(userSubject, () => defaultUser),
       nStepObservable(usersSubject, () => [defaultUser]),
+      nStepObservable(projectsSubject, () => [defaultProject]),
     ]);
   }
 
@@ -77,60 +90,57 @@ describe("PermissionsShieldComponent", () => {
 
   describe("model prioritization", () => {
     it("should retrieve model from resolvers", () => {
-      setup(["model"], { model: { model: defaultModel } });
+      setup([{ model: defaultModel }]);
       spec.detectChanges();
       expect(spec.component.model).toEqual(defaultModel);
     });
 
     it("should prioritize site", () => {
-      setup(["model", "project", "site", "region"], {
-        model: { model: defaultModel },
-        project: { model: defaultProject },
-        site: { model: defaultSite },
-        region: { model: defaultRegion },
-      });
+      setup([
+        { model: defaultModel },
+        { model: defaultProject },
+        { model: defaultSite },
+        { model: defaultRegion },
+      ]);
       spec.detectChanges();
       expect(spec.component.model).toEqual(defaultSite);
     });
 
     it("should prioritize region if no site", () => {
-      setup(["model", "project", "region"], {
-        model: { model: defaultModel },
-        region: { model: defaultRegion },
-        project: { model: defaultProject },
-      });
+      setup([
+        { model: defaultModel },
+        { model: defaultRegion },
+        { model: defaultProject },
+      ]);
       spec.detectChanges();
       expect(spec.component.model).toEqual(defaultRegion);
     });
 
     it("should prioritize project if no region or site", () => {
-      setup(["model", "project"], {
-        model: { model: defaultModel },
-        project: { model: defaultProject },
-      });
+      setup([{ model: defaultModel }, { model: defaultProject }]);
       spec.detectChanges();
       expect(spec.component.model).toEqual(defaultProject);
     });
 
     it("should handle model error", () => {
-      setup(["model", "project", "site", "region"], {
-        model: { model: defaultModel },
-        project: { model: defaultProject },
-        site: { error: generateApiErrorDetails() },
-        region: { model: defaultRegion },
-      });
+      setup([
+        { model: defaultModel },
+        { model: defaultProject },
+        { error: generateApiErrorDetails() },
+        { model: defaultRegion },
+      ]);
       spec.detectChanges();
       expect(spec.element.childElementCount).toBe(0);
     });
 
     it("should not display if no resolvers found", () => {
-      setup([], {});
+      setup([]);
       spec.detectChanges();
       expect(spec.component.model).toEqual(undefined);
     });
 
     it("should not display if no single abstract model found", () => {
-      setup(["model"], { model: { model: [defaultModel] } });
+      setup([{ model: [defaultModel] }]);
       spec.detectChanges();
       expect(spec.component.model).toEqual(undefined);
     });
@@ -150,22 +160,27 @@ describe("PermissionsShieldComponent", () => {
     it("should display access level", () => {
       const accessLevel = modelData.accessLevel();
       const model = new MockModel({ accessLevel });
-      setup(["model"], { model: { model } });
+      setup([{ model }]);
       spec.detectChanges();
       assertAccessLevel(accessLevel);
     });
 
     it("should display access level if project model exists", () => {
-      setup(["project", "site"], {
-        project: { model: defaultProject },
-        site: { model: defaultSite },
-      });
+      setup([{ model: defaultProject }, { model: defaultSite }]);
       spec.detectChanges();
       assertAccessLevel(defaultProject.accessLevel);
     });
 
+    it("should display access level of model if known", () => {
+      const accessLevel = modelData.accessLevel();
+      setup([{ model: defaultSite }]);
+      spyOnProperty(defaultSite, "accessLevel").and.returnValue(accessLevel);
+      spec.detectChanges();
+      assertAccessLevel(accessLevel);
+    });
+
     it("should not display access level if none exists", () => {
-      setup(["model"], { model: { model: defaultModel } });
+      setup([{ model: defaultModel }]);
       spec.detectChanges();
       assertAccessLevel();
     });
@@ -207,9 +222,7 @@ describe("PermissionsShieldComponent", () => {
         }
 
         it("should create badge label", async () => {
-          const promise = setup(["project"], {
-            project: { model: defaultProject },
-          });
+          const promise = setup([{ model: defaultProject }]);
           spec.detectChanges();
           await promise;
           spec.detectChanges();
@@ -218,22 +231,20 @@ describe("PermissionsShieldComponent", () => {
 
         it("should not create badge if id is not found", () => {
           defaultProject[id] = undefined;
-          setup(["project"], { project: { model: defaultProject } });
+          setup([{ model: defaultProject }]);
           spec.detectChanges();
           expect(spec.component.badges[index]?.label).not.toBe(label);
         });
 
         it("should not create label if id is not found", () => {
           defaultProject[id] = undefined;
-          setup(["project"], { project: { model: defaultProject } });
+          setup([{ model: defaultProject }]);
           spec.detectChanges();
           expect(getLabel()).not.toHaveText(label);
         });
 
         it("should set badge user", async () => {
-          const promise = setup(["project"], {
-            project: { model: defaultProject },
-          });
+          const promise = setup([{ model: defaultProject }]);
           spec.detectChanges();
           await promise;
           spec.detectChanges();
@@ -241,7 +252,7 @@ describe("PermissionsShieldComponent", () => {
         });
 
         it("should set badge unresolved model", async () => {
-          setup(["project"], { project: { model: defaultProject } });
+          setup([{ model: defaultProject }]);
           spec.detectChanges();
           if (multipleUsers) {
             assertUsers();
@@ -251,9 +262,7 @@ describe("PermissionsShieldComponent", () => {
         });
 
         it("should resolve badge user", async () => {
-          const promise = setup(["project"], {
-            project: { model: defaultProject },
-          });
+          const promise = setup([{ model: defaultProject }]);
           spec.detectChanges();
           await promise;
           spec.detectChanges();
@@ -261,7 +270,7 @@ describe("PermissionsShieldComponent", () => {
         });
 
         it(`should ${timestampKey ? "" : "not "}set badge timestamp`, () => {
-          setup(["project"], { project: { model: defaultProject } });
+          setup([{ model: defaultProject }]);
           spec.detectChanges();
 
           if (timestampKey) {
@@ -276,9 +285,7 @@ describe("PermissionsShieldComponent", () => {
     });
 
     it("should set multiple badges", async () => {
-      const promise = setup(["project"], {
-        project: { model: defaultProject },
-      });
+      const promise = setup([{ model: defaultProject }]);
       spec.detectChanges();
       await promise;
       spec.detectChanges();

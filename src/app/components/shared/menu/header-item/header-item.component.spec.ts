@@ -18,7 +18,6 @@ import {
 } from "@test/helpers/html";
 import { HeaderItemComponent } from "./header-item.component";
 
-// TODO Add tests to validate ng-content is respected
 describe("HeaderItemComponent", () => {
   let defaultUri: string;
   let defaultLink: MenuLink;

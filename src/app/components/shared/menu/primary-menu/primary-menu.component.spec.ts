@@ -3,17 +3,28 @@ import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
+import { contactUsMenuItem } from "@components/about/about.menus";
+import { adminDashboardMenuItem } from "@components/admin/admin.menus";
+import { homeMenuItem } from "@components/home/home.menus";
 import { libraryMenuItem } from "@components/library/library.menus";
 import { listenMenuItem } from "@components/listen/listen.menus";
+import { myAccountMenuItem } from "@components/profile/profile.menus";
+import { projectsMenuItem } from "@components/projects/projects.menus";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
+import {
+  loginMenuItem,
+  registerMenuItem,
+} from "@components/security/security.menus";
 import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
-import { Settings } from "@helpers/app-initializer/app-initializer";
+import {
+  CustomMenuItem,
+  Settings,
+} from "@helpers/app-initializer/app-initializer";
 import { SessionUser } from "@models/User";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { assetRoot, ConfigService } from "@services/config/config.service";
-import { testApiConfig } from "@services/config/configMock.service";
+import { MenuService } from "@services/menu/menu.service";
 import { IconsModule } from "@shared/icons/icons.module";
 import { generateSessionUser, generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
@@ -27,66 +38,65 @@ import { websiteHttpUrl } from "@test/helpers/url";
 import { MockProvider } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
-import { contactUsMenuItem } from "../../about/about.menus";
-import { adminDashboardMenuItem } from "../../admin/admin.menus";
-import { homeMenuItem } from "../../home/home.menus";
-import { myAccountMenuItem } from "../../profile/profile.menus";
-import { projectsMenuItem } from "../../projects/projects.menus";
-import { loginMenuItem, registerMenuItem } from "../../security/security.menus";
-import { HeaderDropdownComponent } from "./header-dropdown/header-dropdown.component";
-import { HeaderItemComponent } from "./header-item/header-item.component";
-import { HeaderComponent } from "./header.component";
+import { HeaderDropdownComponent } from "../header-dropdown/header-dropdown.component";
+import { HeaderItemComponent } from "../header-item/header-item.component";
+import { PrimaryMenuComponent } from "./primary-menu.component";
 
-describe("HeaderComponent", () => {
+describe("PrimaryMenuComponent", () => {
   let api: SecurityService;
-  let config: ConfigService;
   let router: Router;
-  let spec: Spectator<HeaderComponent>;
+  let spec: Spectator<PrimaryMenuComponent>;
   const createComponent = createComponentFactory({
-    component: HeaderComponent,
+    component: PrimaryMenuComponent,
     providers: [MockProvider(ToastrService)],
-    declarations: [
-      HeaderComponent,
-      HeaderItemComponent,
-      HeaderDropdownComponent,
-    ],
+    declarations: [HeaderItemComponent, HeaderDropdownComponent],
     imports: [
       RouterTestingModule,
       MockBawApiModule,
-      NgbModule,
       AuthenticatedImageModule,
       IconsModule,
       DirectivesModule,
     ],
   });
 
-  function setUser(isLoggedIn: boolean, user?: SessionUser) {
-    spyOn(api, "getLocalUser").and.callFake(() => (isLoggedIn ? user : null));
-  }
-
-  function setConfigHideProjects(hidden: boolean) {
-    spyOnProperty(config, "settings").and.callFake(
-      () => ({ ...testApiConfig.settings, hideProjects: !!hidden } as Settings)
-    );
-    config.settings.hideProjects = hidden;
-  }
-
-  beforeEach(() => {
-    spec = createComponent({ detectChanges: false });
+  /**
+   * @param props.user If null or set, will intercept getLocalUser and return
+   * value. Will do nothing if undefined
+   */
+  function setup(props: {
+    hideProjects?: boolean;
+    customMenu?: CustomMenuItem[];
+    isFullscreen?: boolean;
+    isSideNav?: boolean;
+    user?: SessionUser;
+  }) {
+    spec = createComponent({
+      detectChanges: false,
+      providers: [
+        MockProvider(ConfigService, {
+          settings: {
+            hideProjects: props?.hideProjects ?? false,
+            customMenu: props.customMenu ?? [],
+          } as Settings,
+        }),
+        MockProvider(MenuService, {
+          isFullscreen: props?.isFullscreen ?? false,
+        }),
+      ],
+      props: { isSideNav: props?.isSideNav ?? false },
+    });
     spec.component["reloadPage"] = jasmine.createSpy().and.stub();
 
     api = spec.inject(SecurityService);
-    config = spec.inject(ConfigService);
     router = spec.inject(Router);
-    viewport.set(viewports.extraLarge);
-  });
 
-  afterAll(() => viewport.reset());
+    if (props?.user !== undefined) {
+      spyOn(api, "getLocalUser").and.callFake(() => props?.user ?? null);
+    }
+  }
 
-  it("should create", () => {
-    setUser(false);
-    spec.detectChanges();
-    expect(spec.component).toBeTruthy();
+  afterEach(() => {
+    viewport.reset();
   });
 
   describe("links", () => {
@@ -101,9 +111,8 @@ describe("HeaderComponent", () => {
 
     userRoles.forEach(({ type, links }) => {
       describe(type + " user", () => {
-        let isLoggedIn: boolean;
         let isAdmin: boolean;
-        let defaultUser: SessionUser;
+        let defaultUser: SessionUser | null;
 
         function getNavLinks() {
           return spec.queryAll<HTMLElement>("a.nav-link");
@@ -111,10 +120,8 @@ describe("HeaderComponent", () => {
 
         beforeEach(() => {
           if (type === "guest") {
-            isLoggedIn = false;
-            defaultUser = undefined;
+            defaultUser = null;
           } else {
-            isLoggedIn = true;
             isAdmin = type === "admin";
             defaultUser = new SessionUser({
               ...generateSessionUser({}, generateUser({}, isAdmin)),
@@ -122,30 +129,20 @@ describe("HeaderComponent", () => {
           }
         });
 
-        it("should create brand name link", () => {
-          setUser(isLoggedIn, defaultUser);
-          spec.detectChanges();
-
-          const brand = spec.query<HTMLElement>("a.navbar-brand");
-          expect(brand).toContainText(config.settings.brand.short);
-          assertStrongRouteLink(brand, homeMenuItem.route.toRouterLink());
-        });
-
         [
           {
             link: "sites",
             index: 0,
             menuItem: shallowRegionsMenuItem,
-            hideProject: true,
+            hideProjects: true,
           },
           { link: "projects", index: 0, menuItem: projectsMenuItem },
           { link: "listen", index: 1, menuItem: listenMenuItem },
           { link: "library", index: 2, menuItem: libraryMenuItem },
-          { link: "contact us", index: 4, menuItem: contactUsMenuItem },
-        ].forEach(({ link, index, menuItem, hideProject }) => {
+          { link: "contact us", index: 3, menuItem: contactUsMenuItem },
+        ].forEach(({ link, index, menuItem, hideProjects }) => {
           it(`should create ${link} link`, () => {
-            setConfigHideProjects(!!hideProject);
-            setUser(isLoggedIn, defaultUser);
+            setup({ hideProjects, user: defaultUser });
             spec.detectChanges();
 
             const item = getNavLinks()[index];
@@ -155,7 +152,15 @@ describe("HeaderComponent", () => {
         });
 
         it("should create header links from external config", () => {
-          setUser(isLoggedIn, defaultUser);
+          setup({
+            user: defaultUser,
+            customMenu: [
+              {
+                title: "<< content1 >>",
+                url: "<< contentUrl1 >>",
+              },
+            ],
+          });
           spec.detectChanges();
 
           const link = getNavLinks()[3];
@@ -163,21 +168,38 @@ describe("HeaderComponent", () => {
         });
 
         it("should create header dropdown links from external config", () => {
-          setUser(isLoggedIn, defaultUser);
+          setup({
+            user: defaultUser,
+            customMenu: [
+              {
+                title: "<< content2 >>",
+                items: [
+                  {
+                    title: "<< content3 >>",
+                    url: "<< contentUrl3 >>",
+                  },
+                  {
+                    title: "<< content4 >>",
+                    url: "<< contentUrl4 >>",
+                  },
+                ],
+              },
+            ],
+          });
           spec.detectChanges();
 
           const dropdown = spec.query("baw-header-dropdown");
           expect(dropdown).toBeTruthy();
-          expect(dropdown.querySelector("button#dropdownBasic")).toContainText(
+          expect(dropdown.querySelector("button")).toContainText(
             "<< content2 >>"
           );
-          expect(dropdown.querySelectorAll(".dropdown-item").length).toBe(2);
+          expect(dropdown.querySelectorAll("a").length).toBe(2);
         });
 
         it(`should ${
           !links.register ? "not " : ""
         }display register link`, () => {
-          setUser(isLoggedIn, defaultUser);
+          setup({ user: defaultUser });
           spec.detectChanges();
 
           const link = spec.query<HTMLElement>("#register-header-link");
@@ -191,7 +213,7 @@ describe("HeaderComponent", () => {
         });
 
         it(`should ${!links.login ? "not " : ""}display login link`, () => {
-          setUser(isLoggedIn, defaultUser);
+          setup({ user: defaultUser });
           spec.detectChanges();
 
           const link = spec.query<HTMLElement>("#logIn-header-link");
@@ -205,7 +227,7 @@ describe("HeaderComponent", () => {
         });
 
         it(`should ${!links.profile ? "not " : ""}display profile link`, () => {
-          setUser(isLoggedIn, defaultUser);
+          setup({ user: defaultUser });
           spec.detectChanges();
 
           const profile = spec.query<HTMLElement>("#login-widget");
@@ -226,7 +248,7 @@ describe("HeaderComponent", () => {
                 generateUser({ imageUrls: undefined }, isAdmin)
               )
             );
-            setUser(isLoggedIn, user);
+            setup({ user });
             spec.detectChanges();
 
             const profile = spec.query<HTMLElement>("#login-widget");
@@ -241,7 +263,7 @@ describe("HeaderComponent", () => {
           it("should display profile custom icon", () => {
             const imageUrls = modelData.imageUrls();
             const customUser = new SessionUser(generateUser({ imageUrls }));
-            setUser(isLoggedIn, customUser);
+            setup({ user: customUser });
             spec.detectChanges();
 
             const profile = spec.query<HTMLElement>("#login-widget");
@@ -251,10 +273,10 @@ describe("HeaderComponent", () => {
         }
 
         it(`should ${!links.logout ? "not " : ""}display logout`, () => {
-          setUser(isLoggedIn, defaultUser);
+          setup({ user: defaultUser });
           spec.detectChanges();
 
-          const logout = spec.queryAll<HTMLElement>("button.nav-link")[1];
+          const logout = spec.query<HTMLElement>("#logout-header-link");
 
           if (links.logout) {
             expect(logout).toContainText("Logout");
@@ -266,7 +288,7 @@ describe("HeaderComponent", () => {
         it(`should ${
           !links.admin ? "not " : ""
         } display admin settings`, () => {
-          setUser(isLoggedIn, defaultUser);
+          setup({ user: defaultUser });
           spec.detectChanges();
 
           const settings = spec.query<HTMLElement>("#admin-header-link");
@@ -289,7 +311,7 @@ describe("HeaderComponent", () => {
     let defaultUser: SessionUser;
 
     function getLogoutButton() {
-      return spec.queryAll<HTMLButtonElement>("button.nav-link")[1];
+      return spec.query<HTMLButtonElement>("#logout-header-link");
     }
 
     function handleLogout() {
@@ -308,7 +330,7 @@ describe("HeaderComponent", () => {
     });
 
     it("should call signOut when logout button pressed", () => {
-      setUser(true, defaultUser);
+      setup({ user: defaultUser });
       spyOn(api, "signOut").and.callFake(() => new BehaviorSubject<void>(null));
       spec.detectChanges();
 
@@ -317,7 +339,7 @@ describe("HeaderComponent", () => {
     });
 
     it("should reload page when logging out", () => {
-      setUser(true, defaultUser);
+      setup({ user: defaultUser });
       handleLogout();
       spec.detectChanges();
 
@@ -326,7 +348,7 @@ describe("HeaderComponent", () => {
     });
 
     it("should redirect to home page when logging out if location is undefined", () => {
-      setUser(true, defaultUser);
+      setup({ user: defaultUser });
       handleLogout();
       spyOn(router, "navigateByUrl").and.stub();
       spec.component["hasLocationGlobal"] = jasmine
@@ -340,12 +362,14 @@ describe("HeaderComponent", () => {
       );
     });
 
-    // TODO Move to E2E Tests
-    it("should display register after logout", () => {
-      let count = 0;
+    function getLoggedInTrigger() {
       const loggedInTrigger = new BehaviorSubject(null);
-      handleLogout();
       spyOn(api, "getAuthTrigger").and.callFake(() => loggedInTrigger);
+      return loggedInTrigger;
+    }
+
+    function onFirstLoadSetGuestUserOnSecondLoadSetLoggedIn() {
+      let count = 0;
       spyOn(api, "getLocalUser").and.callFake(() => {
         if (count !== 0) {
           return null;
@@ -353,6 +377,32 @@ describe("HeaderComponent", () => {
         count++;
         return defaultUser;
       });
+    }
+
+    // TODO Move to E2E Tests
+    it("should display register after logout", () => {
+      setup({ user: undefined });
+      handleLogout();
+      const loggedInTrigger = getLoggedInTrigger();
+      onFirstLoadSetGuestUserOnSecondLoadSetLoggedIn();
+      spec.detectChanges();
+
+      // Wait for sign out, and trigger logged in status update
+      getLogoutButton().click();
+      loggedInTrigger.next(null);
+      spec.detectChanges();
+
+      const link = spec.queryAll<HTMLElement>("a.nav-link")[4];
+      expect(link).toContainText(registerMenuItem.label);
+      assertStrongRouteLink(link, registerMenuItem.route.toRouterLink());
+    });
+
+    // TODO Move to E2E Tests
+    it("should display login after logout", fakeAsync(() => {
+      setup({ user: undefined });
+      handleLogout();
+      const loggedInTrigger = getLoggedInTrigger();
+      onFirstLoadSetGuestUserOnSecondLoadSetLoggedIn();
       spec.detectChanges();
 
       // Wait for sign out, and trigger logged in status update
@@ -361,108 +411,107 @@ describe("HeaderComponent", () => {
       spec.detectChanges();
 
       const link = spec.queryAll<HTMLElement>("a.nav-link")[5];
-      expect(link).toContainText(registerMenuItem.label);
-      assertStrongRouteLink(link, registerMenuItem.route.toRouterLink());
-    });
-
-    // TODO Move to E2E Tests
-    it("should display login after logout", fakeAsync(() => {
-      let count = 0;
-      const loggedInTrigger = new BehaviorSubject(null);
-      handleLogout();
-      spyOn(api, "getAuthTrigger").and.callFake(() => loggedInTrigger);
-      spyOn(api, "getLocalUser").and.callFake(() => {
-        if (count !== 0) {
-          return null;
-        }
-        count++;
-        return defaultUser;
-      });
-      spec.detectChanges();
-
-      // Wait for sign out, and trigger logged in status update
-      getLogoutButton().click();
-      loggedInTrigger.next(null);
-      spec.detectChanges();
-
-      const link = spec.queryAll<HTMLElement>("a.nav-link")[6];
       expect(link).toContainText(loginMenuItem.label);
       assertStrongRouteLink(link, loginMenuItem.route.toRouterLink());
     }));
   });
 
-  describe("navbar collapse logic", () => {
-    function getToggleButton() {
-      return spec.query<HTMLButtonElement>("button.navbar-toggler");
-    }
+  describe("display logic", () => {
+    [
+      {
+        fullscreen: true,
+        sideNav: true,
+        width: viewports.large,
+        style: { display: "none" },
+      },
+      {
+        fullscreen: true,
+        sideNav: true,
+        width: viewports.medium,
+        style: { display: "block" },
+      },
+      {
+        fullscreen: true,
+        sideNav: false,
+        width: viewports.large,
+        style: { display: "flex" },
+      },
+      {
+        fullscreen: true,
+        sideNav: false,
+        width: viewports.medium,
+        style: { display: "flex" },
+      },
+      {
+        fullscreen: false,
+        sideNav: true,
+        width: viewports.large,
+        style: {
+          display: "block",
+        },
+      },
+      {
+        fullscreen: false,
+        sideNav: true,
+        width: viewports.medium,
+        style: {
+          display: "block",
+          // 100% height is 160px for viewport
+          height: "240px",
+        },
+      },
+      {
+        fullscreen: false,
+        sideNav: false,
+        width: viewports.large,
+        style: {
+          display: "flex",
+        },
+      },
+      {
+        fullscreen: false,
+        sideNav: false,
+        width: viewports.medium,
+        style: {
+          display: "none",
+        },
+      },
+    ].forEach(({ fullscreen, sideNav, width, style }) => {
+      const layout = fullscreen ? "fullscreen" : "menu layout";
+      const position = sideNav ? "side nav" : "header";
+      const viewportSize = width === viewports.large ? "large" : "medium";
 
-    function assertCollapsed(isCollapsed: boolean) {
-      const nav = spec.query<HTMLElement>(".navbar-collapse");
+      let location: string;
 
-      if (isCollapsed) {
-        expect(nav).toHaveClass("collapse");
-      } else {
-        expect(nav).not.toHaveClass("collapse");
+      switch (style.display) {
+        case "none":
+          location = "not appear";
+          break;
+        case "flex":
+          location = "appear in header";
+          break;
+        case "block":
+          location = "appear in side nav";
+          break;
       }
-    }
 
-    it("should set navbar to use large bootstrap navbar class", () => {
-      setUser(false);
-      spec.detectChanges();
+      describe(layout, () => {
+        describe(position, () => {
+          describe(viewportSize, () => {
+            it(`should ${location}`, () => {
+              viewport.set(width);
+              setup({
+                user: null,
+                isFullscreen: fullscreen,
+                isSideNav: sideNav,
+              });
+              spec.detectChanges();
 
-      const nav = spec.query<HTMLElement>("nav");
-      expect(nav).toHaveClass("navbar");
-      expect(nav).toHaveClass("navbar-expand-lg");
+              expect(spec.query("nav")).toHaveComputedStyle(style);
+            });
+          });
+        });
+      });
     });
-
-    it("should hide toggle button at large screen size", () => {
-      viewport.set(viewports.large);
-      setUser(false);
-      spec.detectChanges();
-      expect(getToggleButton()).toHaveComputedStyle({ display: "none" });
-    });
-
-    it("should display toggle button at medium screen size", () => {
-      viewport.set(viewports.medium);
-      setUser(false);
-      spec.detectChanges();
-      expect(getToggleButton()).not.toHaveComputedStyle({ display: "none" });
-    });
-
-    it("navbar should initially be collapsed", () => {
-      viewport.set(viewports.medium);
-      setUser(false);
-      spec.detectChanges();
-      assertCollapsed(true);
-    });
-
-    it("navbar should open on toggle button press", () => {
-      viewport.set(viewports.medium);
-      setUser(false);
-      spec.detectChanges();
-
-      // Open navbar
-      getToggleButton().click();
-      spec.detectChanges();
-
-      assertCollapsed(false);
-    });
-
-    it("navbar should close on toggle button press", () => {
-      viewport.set(viewports.medium);
-      setUser(false);
-      spec.detectChanges();
-
-      // Open and close navbar
-      const button = getToggleButton();
-      button.click();
-      spec.detectChanges();
-      button.click();
-      spec.detectChanges();
-
-      assertCollapsed(true);
-    });
-
-    xit("navbar should close on navigation", () => {});
   });
 });

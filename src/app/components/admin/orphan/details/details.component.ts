@@ -8,7 +8,7 @@ import { shallowSiteResolvers } from "@baw-api/site/sites.service";
 import baseSchema from "@components/sites/site.base.json";
 import extendedSchema from "@components/sites/site.extended.json";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
@@ -44,7 +44,7 @@ class AdminOrphanComponent
   }
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
 
     if (!hasResolvedSuccessfully(models)) {
       this.failure = true;

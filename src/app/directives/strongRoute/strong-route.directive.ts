@@ -47,7 +47,7 @@ export class StrongRouteDirective
   }
 
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes.strongRoute.isFirstChange) {
+    if (changes.strongRoute?.isFirstChange) {
       // TODO It should be possible to combine all of these instead of having
       // three separate observers
 

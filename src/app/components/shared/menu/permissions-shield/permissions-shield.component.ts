@@ -1,17 +1,18 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
 import {
   hasResolvedSuccessfully,
   ResolvedModelList,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AccessLevel } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
+import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
+import { map, takeUntil } from "rxjs";
 import { WidgetComponent } from "../widget/widget.component";
 
 /**
@@ -41,24 +42,34 @@ import { WidgetComponent } from "../widget/widget.component";
     </section>
   `,
 })
-export class PermissionsShieldComponent implements OnInit, WidgetComponent {
+export class PermissionsShieldComponent
+  extends withUnsubscribe()
+  implements OnInit, WidgetComponent
+{
   public accessLevel: string;
   public badges = [];
   public model: AbstractModel;
   public pageData: any;
+  private project: Project;
 
-  public constructor(private route: ActivatedRoute) {}
+  public constructor(private sharedRoute: SharedActivatedRouteService) {
+    super();
+  }
 
-  public ngOnInit() {
-    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
-    this.model = this.retrieveModel(models);
-
-    if (!this.model) {
-      return;
-    }
-
-    this.badges = this.createBadges(this.model);
-    this.accessLevel = this.getAccessLevel(models as ResolvedModelList);
+  public ngOnInit(): void {
+    this.sharedRoute.pageInfo
+      .pipe(
+        map((page): ResolvedModelList => retrieveResolvers(page)),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe((models): void => {
+        this.model = this.retrieveModel(models);
+        if (!this.model) {
+          return;
+        }
+        this.badges = this.createBadges(this.model);
+        this.accessLevel = this.getAccessLevel();
+      });
   }
 
   private retrieveModel(models: ResolvedModelList): AbstractModel {
@@ -69,23 +80,45 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
     }
 
     // Grab model in order of priority, site, then region, then project
-    const priority = [Site, Region, Project];
-    for (const modelType of priority) {
-      for (const modelKey of modelKeys) {
-        if (models[modelKey] instanceof modelType) {
-          return models[modelKey] as AbstractModel;
-        }
+    const priorityLevels = {
+      site: 0,
+      region: 1,
+      project: 2,
+      anyModel: 3,
+    };
+
+    let outputModel: AbstractModel;
+    let priority: number;
+    for (const modelKey of modelKeys) {
+      const model = models[modelKey];
+
+      const assignModel = <Model extends AbstractModel>(
+        _model: Model,
+        level: number
+      ): void => {
+        outputModel = _model;
+        priority = level;
+      };
+
+      if (model instanceof Project) {
+        this.project = model;
+      }
+
+      if (model instanceof Site) {
+        assignModel(model, priorityLevels.site);
+      } else if (priority > priorityLevels.region && model instanceof Region) {
+        assignModel(model, priorityLevels.region);
+      } else if (
+        priority > priorityLevels.project &&
+        model instanceof Project
+      ) {
+        assignModel(model, priorityLevels.project);
+      } else if (!outputModel && model instanceof AbstractModel) {
+        assignModel(model, priorityLevels.anyModel);
       }
     }
 
-    // If model not found, grab any abstract model
-    for (const model of modelKeys) {
-      if (models[model] instanceof AbstractModel) {
-        return models[model] as AbstractModel;
-      }
-    }
-
-    return undefined;
+    return outputModel;
   }
 
   private createBadges(model: AbstractModel) {
@@ -122,9 +155,9 @@ export class PermissionsShieldComponent implements OnInit, WidgetComponent {
     return badges;
   }
 
-  private getAccessLevel(resolvedModels: ResolvedModelList): AccessLevel {
-    if (resolvedModels.project) {
-      return resolvedModels.project["accessLevel"];
+  private getAccessLevel(): AccessLevel {
+    if (this.project) {
+      return this.project.accessLevel;
     }
 
     return this.model["accessLevel"] ?? null;

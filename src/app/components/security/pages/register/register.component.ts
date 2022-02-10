@@ -8,8 +8,8 @@ import {
 } from "@components/security/security.menus";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import {
-  RegisterDetails,
   IRegisterDetails,
+  RegisterDetails,
 } from "@models/data/RegisterDetails";
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastrService } from "ngx-toastr";

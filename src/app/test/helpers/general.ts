@@ -202,7 +202,7 @@ export function assertOk(): void {
   expect(true).toBeTrue();
 }
 
-export function generatePageInfo(
+export function generatePageInfoResolvers(
   ...models: ResolvedModel[]
 ): Partial<IPageInfo> {
   const data: Partial<IPageInfo> = { resolvers: {}, pageRoute: homeMenuItem };

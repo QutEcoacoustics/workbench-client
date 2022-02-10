@@ -16,7 +16,7 @@ import {
 } from "@components/audio-recordings/audio-recording.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
@@ -49,7 +49,7 @@ class AudioRecordingsDetailsComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     if (!hasResolvedSuccessfully(models)) {
       this.failure = true;
       return;

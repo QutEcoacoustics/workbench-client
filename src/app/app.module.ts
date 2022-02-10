@@ -1,4 +1,3 @@
-import { HttpClientModule } from "@angular/common/http";
 import { DoBootstrap, NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -82,7 +81,6 @@ export const appImports = [
     // Timeout API requests after set period
     BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
     AppRoutingModule,
-    HttpClientModule,
     AppConfigModule,
     BawApiModule,
     // Rehydrate data from SSR. This must be set after BawApiModule so that the
