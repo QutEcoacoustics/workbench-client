@@ -1,3 +1,4 @@
+import { IconName, IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
   AccessLevel,
   Id,
@@ -39,6 +40,18 @@ export const modelData = {
   ids: () => randomArray(1, 5, () => faker.datatype.number(100)),
   imageUrl: () => faker.image.imageUrl(),
   imageUrls,
+  icon: (): IconProp => [
+    "fas",
+    faker.random.arrayElement<IconName>([
+      "accessible-icon",
+      "accusoft",
+      "acquisitions-incorporated",
+      "adn",
+      "adversal",
+      "affiliatetheme",
+      "airbnb",
+    ]),
+  ],
   latitude: () => parseFloat(faker.address.latitude()),
   longitude: () => parseFloat(faker.address.longitude()),
   notes: () => randomObject(1, 5),

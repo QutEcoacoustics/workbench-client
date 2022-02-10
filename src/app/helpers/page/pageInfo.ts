@@ -10,7 +10,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { PageComponent } from "./pageComponent";
 
 export function isIPageInfo(data: Data): data is IPageInfo {
-  return data.pageRoute;
+  return !!data.pageRoute;
 }
 
 /**

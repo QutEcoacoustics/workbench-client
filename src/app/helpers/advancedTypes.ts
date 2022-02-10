@@ -50,3 +50,12 @@ export interface Tuple<T, L extends number> extends Array<T> {
 
 /** Indicates an object can either be that object, or an error response */
 export type Errorable<T> = T | ApiErrorDetails;
+
+/** Like Partial, but recursively looks down the entire object */
+export type RecursivePartial<T> = {
+  [P in keyof T]?: T[P] extends (infer U)[]
+    ? RecursivePartial<U>[]
+    : T[P] extends object
+    ? RecursivePartial<T[P]>
+    : T[P];
+};

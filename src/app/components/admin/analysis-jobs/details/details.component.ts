@@ -7,7 +7,7 @@ import {
 } from "@baw-api/resolver-common";
 import { adminAnalysisJobsMenuItem } from "@components/admin/admin.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
@@ -47,7 +47,7 @@ class AdminAnalysisJobComponent
 
   public ngOnInit(): void {
     const data = this.route.snapshot.data;
-    const models = retrieveResolvers(data as PageInfo);
+    const models = retrieveResolvers(data as IPageInfo);
 
     if (!hasResolvedSuccessfully(models)) {
       this.failure = true;

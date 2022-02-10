@@ -1,5 +1,5 @@
 import { Type } from "@angular/core";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
 import { MenuAction } from "@interfaces/menusInterfaces";
 import { NgbModalOptions, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ModalComponent, WidgetComponent } from "./widget.component";
@@ -32,7 +32,7 @@ export interface MenuModal extends Omit<MenuAction, "kind"> {
   modalOpts: NgbModalOptions;
   assignComponentData(
     component: ModalComponent,
-    routeData: PageInfo,
+    routeData: IPageInfo,
     modalRef: NgbModalRef
   ): void;
 }

@@ -1,8 +1,14 @@
 import { Component, Inject, Input, OnInit } from "@angular/core";
 import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
-import httpCodes from "http-status";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import {
+  UNAUTHORIZED,
+  FORBIDDEN,
+  NOT_FOUND,
+  REQUEST_TIMEOUT,
+  BAD_GATEWAY,
+} from "http-status";
 
 /**
  * Error Handler Wrapper
@@ -27,24 +33,24 @@ export class ErrorHandlerComponent implements OnInit {
   public reportProblem = reportProblemMenuItem.route;
   public hideErrorDetails: boolean;
   public titles = {
-    [httpCodes.UNAUTHORIZED]: "Unauthorized Access",
-    [httpCodes.FORBIDDEN]: "Access Forbidden",
-    [httpCodes.NOT_FOUND]: "Not Found",
-    [httpCodes.REQUEST_TIMEOUT]: "Request Timed Out",
-    [httpCodes.BAD_GATEWAY]: "Connection Failure",
+    [UNAUTHORIZED]: "Unauthorized Access",
+    [FORBIDDEN]: "Access Forbidden",
+    [NOT_FOUND]: "Not Found",
+    [REQUEST_TIMEOUT]: "Request Timed Out",
+    [BAD_GATEWAY]: "Connection Failure",
   };
 
   public constructor(@Inject(IS_SERVER_PLATFORM) private isSsr: boolean) {}
 
   public ngOnInit(): void {
+    if (!this.error) {
+      return;
+    }
+
     // If this is SSR, ignore auth or disconnect issues
     if (
       this.isSsr &&
-      [
-        httpCodes.UNAUTHORIZED,
-        httpCodes.REQUEST_TIMEOUT,
-        httpCodes.BAD_GATEWAY,
-      ].includes(this.error.status)
+      [UNAUTHORIZED, REQUEST_TIMEOUT, BAD_GATEWAY].includes(this.error.status)
     ) {
       this.hideErrorDetails = true;
     }

@@ -1,0 +1,47 @@
+@import "media-mixin";
+
+// TODO: Write out each state the primary menu can be in, and explain how it should be displayed
+
+nav {
+  background-color: var(--baw-header);
+
+  /* On desktop layouts */
+  @include media(">=lg-grid") {
+    /* Display primary menu in header */
+    &.side-nav.fullscreen {
+      display: none;
+    }
+  }
+
+  /* On mobile layouts */
+  @include media("<lg-grid") {
+    /* Display primary menu as only menu in side nav */
+    &.side-nav:not(.fullscreen) {
+      height: 100%;
+    }
+
+    /* Hide header primary menu */
+    &:not(.side-nav):not(.fullscreen) {
+      display: none;
+    }
+  }
+
+  /* Header primary menu aligns content horizontally */
+  &:not(.side-nav) {
+    display: flex;
+  }
+
+  /* Prevents some elements overflowing and changing the height of the header */
+  li {
+    min-height: 40px;
+  }
+}
+
+#login-widget {
+  height: 24px;
+
+  img {
+    height: 24px;
+    width: 24px;
+  }
+}

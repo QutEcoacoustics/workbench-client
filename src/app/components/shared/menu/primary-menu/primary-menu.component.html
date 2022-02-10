@@ -1,0 +1,72 @@
+<nav
+  class="container navbar-dark"
+  [class.side-nav]="isSideNav"
+  [class.fullscreen]="menu.isFullscreen"
+>
+  <!-- Left aligned navigation links -->
+  <ul class="navbar-nav me-auto">
+    <ng-container *ngFor="let link of links">
+      <baw-header-item
+        *ngIf="isHeaderItem(link)"
+        [link]="link"
+      ></baw-header-item>
+      <baw-header-dropdown
+        *ngIf="isHeaderDropdown(link)"
+        [label]="link.label"
+        [links]="link.items"
+      ></baw-header-dropdown>
+    </ng-container>
+  </ul>
+
+  <!-- Right aligned links -->
+  <ul class="navbar-nav">
+    <ng-container
+      *ngTemplateOutlet="user ? userTemplate : guestTemplate"
+    ></ng-container>
+  </ul>
+</nav>
+
+<ng-template #guestTemplate>
+  <baw-header-item
+    *ngFor="let menuItem of [routes.register, routes.login]"
+    [link]="menuItem"
+  ></baw-header-item>
+</ng-template>
+
+<ng-template #userTemplate>
+  <!-- Admin toolbox -->
+  <a
+    *ngIf="user.isAdmin"
+    id="admin-header-link"
+    class="nav-link"
+    strongRouteActive="active"
+    [strongRoute]="routes.admin.route"
+  >
+    <fa-icon [icon]="routes.admin.icon"></fa-icon>
+  </a>
+
+  <!-- Profile photo -->
+  <li class="nav-item">
+    <a
+      id="login-widget"
+      class="nav-link"
+      bawUrlActive="active"
+      [bawUrl]="user.viewUrl"
+    >
+      <span [innerText]="user.userName"></span>
+      <div class="d-inline-block bg-light ms-1">
+        <img alt="Profile Icon" [src]="user.imageUrls" />
+      </div>
+    </a>
+  </li>
+  <!-- Logout button -->
+  <li class="nav-item">
+    <button
+      id="logout-header-link"
+      class="nav-link btn btn-link border-0"
+      (click)="logout()"
+    >
+      Logout
+    </button>
+  </li>
+</ng-template>

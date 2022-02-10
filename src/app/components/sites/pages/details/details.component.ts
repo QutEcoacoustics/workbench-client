@@ -11,17 +11,17 @@ import { audioRecordingMenuItems } from "@components/audio-recordings/audio-reco
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import {
-  pointsCategory,
-  pointMenuItem,
   deletePointMenuItem,
   editPointMenuItem,
   pointHarvestMenuItem,
+  pointMenuItem,
+  pointsCategory,
 } from "@components/sites/points.menus";
 import { pointAnnotationsModal } from "@components/sites/points.modals";
 import { siteAnnotationsModal } from "@components/sites/sites.modals";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";
@@ -83,7 +83,7 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
 
     if (!hasResolvedSuccessfully(models)) {
       this.failure = true;

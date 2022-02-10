@@ -4,10 +4,16 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
+  deletePointMenuItem,
+  pointMenuItem,
+  pointsCategory,
+} from "@components/sites/points.menus";
+import {
   deleteSiteMenuItem,
   siteMenuItem,
   sitesCategory,
 } from "@components/sites/sites.menus";
+import { Option } from "@helpers/advancedTypes";
 import {
   defaultSuccessMsg,
   FormTemplate,
@@ -19,12 +25,6 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { Option } from "@helpers/advancedTypes";
-import {
-  pointsCategory,
-  pointMenuItem,
-  deletePointMenuItem,
-} from "@components/sites/points.menus";
 import {
   pointMenuItemActions,
   siteMenuItemActions,

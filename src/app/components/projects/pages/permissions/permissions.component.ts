@@ -1,9 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import {
-  projectResolvers,
-  ProjectsService,
-} from "@baw-api/project/projects.service";
+import { projectResolvers } from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { theirProfileMenuItem } from "@components/profile/profile.menus";
 import {
@@ -37,10 +34,7 @@ class PermissionsComponent extends TableTemplate<TableRow> implements OnInit {
   public userOptions: ISelectableItem[];
   public visitorOptions: ISelectableItem[];
 
-  public constructor(
-    private route: ActivatedRoute,
-    private api: ProjectsService
-  ) {
+  public constructor(private route: ActivatedRoute) {
     super((val, row) => this.checkMatch(val, row.user));
   }
 

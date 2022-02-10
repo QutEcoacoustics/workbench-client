@@ -9,7 +9,7 @@ import { MockAppConfigModule } from "@services/config/configMock.module";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { generateApiErrorDetailsV2 } from "@test/fakes/ApiErrorDetails";
 import { modelData } from "@test/helpers/faker";
-import { generatePageInfo, viewports } from "@test/helpers/general";
+import { generatePageInfoResolvers, viewports } from "@test/helpers/general";
 import { BehaviorSubject } from "rxjs";
 import { BawClientComponent } from "./baw-client.component";
 
@@ -106,13 +106,13 @@ describe("BawClientComponent", () => {
 
   describe("resolver handling", () => {
     it("should hide iframe if resolver errors occurred", () => {
-      setup(generatePageInfo({ error: generateApiErrorDetailsV2() }));
+      setup(generatePageInfoResolvers({ error: generateApiErrorDetailsV2() }));
       spec.detectChanges();
       expect(getIframe()).toBeFalsy();
     });
 
     it("should not hide iframe if resolver successfully resolves models", () => {
-      setup(generatePageInfo({ model: new MockModel({ id: 1 }) }));
+      setup(generatePageInfoResolvers({ model: new MockModel({ id: 1 }) }));
       spec.detectChanges();
       expect(getIframe()).toBeTruthy();
     });

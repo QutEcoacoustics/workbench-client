@@ -1,4 +1,4 @@
-import { PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 
 /** Generic widget component */
 export interface WidgetComponent {
@@ -10,7 +10,7 @@ export interface ModalComponent extends WidgetComponent {
   pageData: any;
   // We pass route data to the component because it exists outside
   // the router-outlet and thus cannot access the route data
-  routeData: PageInfo;
+  routeData: IPageInfo;
   closeModal: (result: any) => void;
   dismissModal: (reason: any) => void;
 }

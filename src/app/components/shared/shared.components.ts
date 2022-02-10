@@ -17,7 +17,6 @@ import { NgxCaptchaModule } from "ngx-captcha";
 import { ClipboardModule } from "ngx-clipboard";
 import { ToastrModule } from "ngx-toastr";
 import { DirectivesModule } from "src/app/directives/directives.module";
-import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { AnnotationDownloadComponent } from "./annotation-download/annotation-download.component";
 import { BawClientModule } from "./baw-client/baw-client.module";
 import { CardsModule } from "./cards/cards.module";
@@ -29,25 +28,21 @@ import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
 import { CustomInputsModule } from "./formly/custom-inputs.module";
-import { HeaderModule } from "./header/header.module";
 import { IconsModule } from "./icons/icons.module";
 import { IndicatorModule } from "./indicator/indicator.module";
 import { ItemsModule } from "./items/items.module";
 import { LoadingModule } from "./loading/loading.module";
 import { MenuModule } from "./menu/menu.module";
-import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
 import { UserLinkModule } from "./user-link/user-link.module";
 import { WIPComponent } from "./wip/wip.component";
 
 export const sharedComponents = [
-  ActionMenuComponent,
   AnnotationDownloadComponent,
   CmsComponent,
   DebounceInputComponent,
   ErrorHandlerComponent,
   FooterComponent,
   FormComponent,
-  SecondaryMenuComponent,
   WIPComponent,
 ];
 
@@ -76,7 +71,6 @@ export const sharedModules = [
   BawClientModule,
   CustomInputsModule,
   CardsModule,
-  HeaderModule,
   ItemsModule,
   MenuModule,
   LoadingModule,

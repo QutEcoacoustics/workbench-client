@@ -12,7 +12,8 @@ import { Site } from "@models/Site";
 })
 export class HarvestCompleteComponent
   extends PagedTableTemplate<TableRow, Site>
-  implements OnInit {
+  implements OnInit
+{
   @Input() public project: Project;
   public sites: Site[];
   public error: ApiErrorDetails;

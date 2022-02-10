@@ -12,6 +12,7 @@ import {
   NavigableMenuItem,
 } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
 import camelCase from "just-camel-case";
 
 /**
@@ -21,10 +22,7 @@ import camelCase from "just-camel-case";
 @Component({
   selector: "baw-header-item",
   template: `
-    <ng-template #linkContents>
-      <ng-container>{{ link.label }}</ng-container>
-    </ng-template>
-
+    <!-- Internal link template -->
     <ng-template #internalRoute>
       <a
         class="nav-link"
@@ -32,16 +30,18 @@ import camelCase from "just-camel-case";
         [id]="label + '-header-link'"
         [strongRoute]="strongRoute"
       >
-        <ng-container *ngTemplateOutlet="linkContents"></ng-container>
+        {{ link.label }}
       </a>
     </ng-template>
 
+    <!-- External link template -->
     <ng-template #externalLink>
       <a class="nav-link" [id]="label + '-header-link'" [href]="href">
-        <ng-container *ngTemplateOutlet="linkContents"></ng-container>
+        {{ link.label }}
       </a>
     </ng-template>
 
+    <!-- Create LI with either internal or external link template -->
     <li class="nav-item">
       <ng-container
         *ngIf="hasStrongRoute; else externalLink"
@@ -52,7 +52,7 @@ import camelCase from "just-camel-case";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderItemComponent implements OnInit {
-  @Input() public link: NavigableMenuItem;
+  @Input() public link: NavigableMenuItem | HeaderItem;
 
   public hasStrongRoute: boolean;
   public label: string;
@@ -69,6 +69,6 @@ export class HeaderItemComponent implements OnInit {
   }
 
   public get href(): string {
-    return getRoute(this.link, this.route.snapshot.params);
+    return getRoute(this.link as NavigableMenuItem, this.route.snapshot.params);
   }
 }

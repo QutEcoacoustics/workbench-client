@@ -15,10 +15,9 @@ import { List } from "immutable";
     <div class="row">
       <baw-card-image
         *ngFor="let item of cards ?? []"
-        class="col-xl-4 col-lg-6"
         [card]="item"
       ></baw-card-image>
-      <div id="content" class="col-xl-4 col-lg-6">
+      <div id="content">
         <ng-content></ng-content>
       </div>
     </div>

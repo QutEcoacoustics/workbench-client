@@ -1,6 +1,6 @@
-import { TemplateRef } from "@angular/core";
-import { ActivatedRoute, Params } from "@angular/router";
+import { ActivatedRouteSnapshot, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { DirectivesModule } from "@directives/directives.module";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import {
   menuLink,
@@ -9,16 +9,15 @@ import {
   menuRoute,
 } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
-import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import {
-  ActivatedRouteStub,
-  createHostFactory,
-  SpectatorHost,
-} from "@ngneat/spectator";
+import { NgbTooltip, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
+import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
+import { IconsModule } from "@shared/icons/icons.module";
 import { assertIcon, assertStrongRouteActive } from "@test/helpers/html";
-import { SharedModule } from "../../shared.module";
+import { MockProvider } from "ng-mocks";
+import { of } from "rxjs";
 import { MenuLinkComponent } from "./link.component";
 
 describe("MenuLinkComponent", () => {
@@ -29,7 +28,14 @@ describe("MenuLinkComponent", () => {
   let component: MenuLinkComponent;
   const createHost = createHostFactory({
     component: MenuLinkComponent,
-    imports: [MockAppConfigModule, SharedModule, RouterTestingModule],
+    imports: [
+      MockAppConfigModule,
+      RouterTestingModule,
+      RouterTestingModule,
+      DirectivesModule,
+      NgbTooltipModule,
+      IconsModule,
+    ],
   });
 
   function getWrapper(): HTMLSpanElement {
@@ -44,32 +50,42 @@ describe("MenuLinkComponent", () => {
     return spec.query(NgbTooltip);
   }
 
-  function setRouteParams(params: Params) {
-    const activatedRoute = spec.inject(ActivatedRoute);
-    const routeStub = new ActivatedRouteStub({ params });
-    activatedRoute.snapshot.params = routeStub.snapshot.params;
-    activatedRoute.params = routeStub.params;
+  function assertTooltip(text: string) {
+    const tooltip = getTooltip();
+    tooltip.open();
+    spec.detectChanges();
+    expect(spec.query(".tooltip-inner")).toHaveText(text);
   }
 
-  function setup(inputs: Partial<MenuLinkComponent> = {}) {
+  function setup(
+    inputs: Partial<MenuLinkComponent> = {},
+    routeParams: Params = {},
+    queryParams: Params = {}
+  ) {
     spec = createHost(
       `
       <baw-menu-link
-        [id]="id"
         [link]="link"
-        [placement]="placement"
         [tooltip]="tooltip"
       ></baw-menu-link>
     `,
       {
-        detectChanges: false,
+        detectChanges: true,
         hostProps: {
-          id: "id",
           link: defaultRoute,
-          placement: "left",
           tooltip: "tooltip",
           ...inputs,
         },
+        providers: [
+          MockProvider(SharedActivatedRouteService, {
+            snapshot: of({
+              queryParams,
+              params: routeParams,
+            } as Partial<ActivatedRouteSnapshot> as ActivatedRouteSnapshot),
+            queryParams: of(queryParams),
+            params: of(routeParams),
+          }),
+        ],
       }
     );
     component = spec.component;
@@ -123,46 +139,22 @@ describe("MenuLinkComponent", () => {
       });
 
       describe("tooltip", () => {
-        // TODO Figure out how to implement
-        xit("should have tooltip", () => {
+        it("should have tooltip", () => {
           setup({
             tooltip: "custom tooltip",
             link: link({ tooltip: () => "custom tooltip" }),
           });
           spec.detectChanges();
-          const tooltip = getTooltip();
-          tooltip.open();
-          spec.detectChanges();
-          const tooltipEl = (tooltip.ngbTooltip as TemplateRef<any>).elementRef
-            .nativeElement;
-          expect(tooltipEl).toContainText("custom tooltip");
+          assertTooltip("custom tooltip");
         });
 
-        // TODO Figure out how to implement
-        xit("should not use link tooltip", () => {
+        it("should not use link tooltip", () => {
           setup({
             tooltip: "custom tooltip",
             link: link({ tooltip: () => "wrong tooltip" }),
           });
           spec.detectChanges();
-          const tooltip = getTooltip();
-          tooltip.open();
-          spec.detectChanges();
-          const tooltipEl = (tooltip.ngbTooltip as TemplateRef<any>).elementRef
-            .nativeElement;
-          expect(tooltipEl).toContainText("custom tooltip");
-        });
-
-        it("should handle left placement of tooltip", () => {
-          setup({ placement: "left" });
-          spec.detectChanges();
-          expect(getTooltip().placement).toBe("left");
-        });
-
-        it("should handle right placement of tooltip", () => {
-          setup({ placement: "right" });
-          spec.detectChanges();
-          expect(getTooltip().placement).toBe("right");
+          assertTooltip("custom tooltip");
         });
       });
 
@@ -199,16 +191,13 @@ describe("MenuLinkComponent", () => {
           assertDisabled(true);
         });
 
-        // TODO Figure out how to implement
-        xit("should display disabled message in tooltip", () => {
-          setup({ link: link({ disabled: "custom disabled message" }) });
+        it("should display disabled message in tooltip", () => {
+          setup({
+            tooltip: "custom tooltip",
+            link: link({ disabled: "custom disabled message" }),
+          });
           spec.detectChanges();
-          const tooltip = getTooltip();
-          tooltip.open();
-          spec.detectChanges();
-          const tooltipEl = (tooltip.ngbTooltip as TemplateRef<any>).elementRef
-            .nativeElement;
-          expect(tooltipEl).toContainText("custom disabled message");
+          assertTooltip("custom disabled message");
         });
       });
     });
@@ -262,13 +251,15 @@ describe("MenuLinkComponent", () => {
     });
 
     it("should provide route parameters to uri", () => {
-      setup({
-        link: menuLink({
-          ...defaultLink,
-          uri: ({ id }) => `https://broken_link/${id}`,
-        }),
-      });
-      setRouteParams({ id: 10 });
+      setup(
+        {
+          link: menuLink({
+            ...defaultLink,
+            uri: (params) => `https://broken_link/${params?.id}`,
+          }),
+        },
+        { id: 10 }
+      );
       spec.detectChanges();
       expect(getLink()).toHaveAttribute({ href: "https://broken_link/10" });
     });

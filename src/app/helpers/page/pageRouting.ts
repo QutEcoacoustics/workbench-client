@@ -4,8 +4,6 @@ import { FormTouchedGuard } from "@guards/form/form.guard";
 import { Option } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { StrongRoute } from "@interfaces/strongRoute";
-import { ActionMenuComponent } from "@shared/action-menu/action-menu.component";
-import { SecondaryMenuComponent } from "@shared/secondary-menu/secondary-menu.component";
 import { getPageInfos } from "./pageComponent";
 
 /**
@@ -35,18 +33,6 @@ export function getRouteConfigForPage(strongRoute: StrongRoute): Option<Route> {
         pathMatch: "full",
         component: pageInfo.component,
         canDeactivate: [FormTouchedGuard],
-      },
-      {
-        path: "",
-        pathMatch: "full",
-        outlet: "secondary",
-        component: SecondaryMenuComponent,
-      },
-      {
-        path: "",
-        pathMatch: "full",
-        outlet: "action",
-        component: ActionMenuComponent,
       },
       {
         path: "",

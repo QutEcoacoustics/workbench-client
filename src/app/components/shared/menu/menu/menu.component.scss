@@ -1,4 +1,14 @@
+@import "media-mixin";
+
 nav {
+  min-width: 250px;
+  margin-left: 1rem;
+  margin-right: 1rem;
+
+  &.side-nav {
+    margin: 0;
+  }
+
   h6 {
     color: rgb(119, 119, 119);
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;

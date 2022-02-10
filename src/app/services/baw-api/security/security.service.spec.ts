@@ -433,7 +433,7 @@ describe("SecurityService", () => {
       });
 
       it("should trigger authTrigger", async () => {
-        const trigger = spec.service.getAuthTrigger();
+        const trigger = spec.service.getAuthTrigger() as Subject<void>;
         trigger.subscribe(noop, noop, shouldNotComplete);
         spyOn(trigger, "next").and.callThrough();
         expect(trigger.next).toHaveBeenCalledTimes(0);
@@ -480,7 +480,9 @@ describe("SecurityService", () => {
       spec.service["cookies"].deleteAll = jasmine
         .createSpy("deleteAll")
         .and.stub();
-      spec.service.getAuthTrigger().next = jasmine.createSpy("next").and.stub();
+      (spec.service.getAuthTrigger() as Subject<void>).next = jasmine
+        .createSpy("next")
+        .and.stub();
     });
 
     it("should clear session user", () => {
@@ -495,7 +497,9 @@ describe("SecurityService", () => {
 
     it("should trigger authTrigger", () => {
       spec.service["clearData"]();
-      expect(spec.service.getAuthTrigger().next).toHaveBeenCalledTimes(1);
+      expect(
+        (spec.service.getAuthTrigger() as Subject<void>).next
+      ).toHaveBeenCalledTimes(1);
     });
   });
 

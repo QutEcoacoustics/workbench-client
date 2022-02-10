@@ -1,14 +1,41 @@
+@import "media-mixin";
+
 .row {
   --card-padding: 0.5rem;
+
+  @include media("<sm-container") {
+    --card-width: max(16rem, 50%);
+  }
+
+  @include media("<md-container", ">=sm-container") {
+    --card-width: 50%;
+  }
+
+  @include media("<lg-container", ">=md-container") {
+    --card-width: 33%;
+  }
+
+  @include media("<xl-container", ">=lg-container") {
+    --card-width: 25%;
+  }
+
+  @include media("<xxl-container", ">=xl-container") {
+    --card-width: 50%;
+  }
+
+  @include media(">=xxl-container") {
+    --card-width: 33%;
+  }
+
   justify-content: center;
   margin: 0 calc(var(--card-padding) * -1);
 
-  baw-card-image,
-  baw-card {
+  > * {
     margin: 0;
+    padding-bottom: calc(var(--card-padding) * 2);
     padding-left: var(--card-padding);
     padding-right: var(--card-padding);
-    padding-bottom: calc(var(--card-padding) * 2);
+    width: var(--card-width);
   }
 
   #content {

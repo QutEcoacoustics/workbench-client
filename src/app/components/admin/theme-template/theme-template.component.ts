@@ -14,8 +14,8 @@ import {
   ThemeService,
   ThemeVariant,
 } from "@services/theme/theme.service";
-import { List } from "immutable";
 import { rgb } from "d3-color";
+import { List } from "immutable";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { adminCategory, adminThemeMenuItem } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";

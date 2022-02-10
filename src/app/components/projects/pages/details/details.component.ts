@@ -20,7 +20,7 @@ import {
 } from "@components/projects/projects.menus";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
@@ -171,7 +171,7 @@ class DetailsComponent
   }
 
   public ngOnInit() {
-    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     if (!hasResolvedSuccessfully(models)) {
       return;
     }

@@ -1,10 +1,6 @@
 import { Params } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import {
-  MenuModal,
-  MenuModalWithoutAction,
-  WidgetMenuItem,
-} from "@menu/widgetItem";
+import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { SessionUser } from "../models/User";
 import { StrongRoute } from "./strongRoute";
@@ -66,7 +62,8 @@ export type MenuItemKinds =
   | "MenuItem"
   | "MenuAction"
   | "MenuLink"
-  | "MenuRoute";
+  | "MenuRoute"
+  | "MenuModal";
 
 /**
  * User callback function
@@ -199,12 +196,7 @@ export function menuAction<T extends Omit<MenuAction, "kind">>(
  * Any Menu Item discriminated union. This is used to store any of the
  *  menu item types together in a collection.
  */
-export type AnyMenuItem =
-  | MenuAction
-  | MenuLink
-  | MenuRoute
-  | MenuModalWithoutAction
-  | MenuModal;
+export type AnyMenuItem = MenuAction | MenuLink | MenuRoute;
 
 /**
  * Any Menu Item  discriminated union. This is used to store any menu item,

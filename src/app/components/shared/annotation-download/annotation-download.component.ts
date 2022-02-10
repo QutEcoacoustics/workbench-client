@@ -2,10 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import {
   hasResolvedSuccessfully,
-  retrieveResolvers,
+  retrieveResolvers
 } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { ModalComponent } from "@menu/widget.component";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -76,7 +76,7 @@ export class AnnotationDownloadComponent implements OnInit, ModalComponent {
   public form = new FormGroup({});
   public model: TimezoneModel = { timezone: "UTC" };
   public pageData!: any;
-  public routeData!: PageInfo;
+  public routeData!: IPageInfo;
   public project?: Project;
   public region?: Region;
   public site?: Site;

@@ -1,6 +1,6 @@
 import { PageInfo } from "@helpers/page/pageInfo";
 import { generateApiErrorDetailsV2 } from "@test/fakes/ApiErrorDetails";
-import { generatePageInfo } from "@test/helpers/general";
+import { generatePageInfoResolvers } from "@test/helpers/general";
 import { MockModel } from "./mock/baseApiMock.service";
 import { hasResolvedSuccessfully, retrieveResolvers } from "./resolver-common";
 
@@ -46,20 +46,23 @@ describe("hasResolvedSuccessfully", () => {
 describe("retrieveResolvers", () => {
   it("should handle single resolver", () => {
     const model = new MockModel({ id: 1 });
-    const data = generatePageInfo({ model });
+    const data = generatePageInfoResolvers({ model });
     expect(retrieveResolvers(new PageInfo(data))).toEqual({ model0: model });
   });
 
   it("should handle array resolver", () => {
     const models = [new MockModel({ id: 1 })];
-    const data = generatePageInfo({ model: models });
+    const data = generatePageInfoResolvers({ model: models });
     expect(retrieveResolvers(new PageInfo(data))).toEqual({ model0: models });
   });
 
   it("should handle multiple resolvers", () => {
     const model0 = new MockModel({ id: 1 });
     const model1 = [new MockModel({ id: 2 })];
-    const data = generatePageInfo({ model: model0 }, { model: model1 });
+    const data = generatePageInfoResolvers(
+      { model: model0 },
+      { model: model1 }
+    );
     expect(retrieveResolvers(new PageInfo(data))).toEqual({ model0, model1 });
   });
 
@@ -67,7 +70,7 @@ describe("retrieveResolvers", () => {
     const model0 = new MockModel({ id: 1 });
     const model1 = generateApiErrorDetailsV2();
     const model2 = [new MockModel({ id: 2 })];
-    const data = generatePageInfo(
+    const data = generatePageInfoResolvers(
       { model: model0 },
       { error: model1 },
       { model: model2 }
@@ -83,7 +86,7 @@ describe("retrieveResolvers", () => {
     const model0 = generateApiErrorDetailsV2();
     const model1 = generateApiErrorDetailsV2();
     const model2 = generateApiErrorDetailsV2();
-    const data = generatePageInfo(
+    const data = generatePageInfoResolvers(
       { error: model0 },
       { error: model1 },
       { error: model2 }

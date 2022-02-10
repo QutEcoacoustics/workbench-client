@@ -39,8 +39,8 @@ class MockModel extends AbstractModel {
 class MockComponent extends FormTemplate<MockModel> {
   public constructor(
     protected notifications: ToastrService,
-    protected route: ActivatedRoute,
-    protected router: Router
+    route: ActivatedRoute,
+    router: Router
   ) {
     super(notifications, route, router, formTemplateOptions);
   }

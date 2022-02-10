@@ -6,7 +6,7 @@ import {
 } from "@baw-api/resolver-common";
 import { scriptResolvers } from "@baw-api/script/scripts.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
@@ -46,7 +46,7 @@ class AdminScriptComponent
   }
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(this.route.snapshot.data as PageInfo);
+    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
 
     if (!hasResolvedSuccessfully(models)) {
       this.failure = true;

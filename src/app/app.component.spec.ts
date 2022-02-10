@@ -1,5 +1,14 @@
 import { Title } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { DEFAULT_MENU } from "@helpers/page/defaultMenus";
+import { mockDefaultMenu } from "@helpers/page/defaultMenus.spec";
+import { IPageInfo } from "@helpers/page/pageInfo";
+import { ActionMenuComponent } from "@menu/action-menu/action-menu.component";
+import { PrimaryMenuComponent } from "@menu/primary-menu/primary-menu.component";
+import { SecondaryMenuComponent } from "@menu/secondary-menu/secondary-menu.component";
+import { SideNavComponent } from "@menu/side-nav/side-nav.component";
+import { MockModel } from "@models/AbstractModel.spec";
 import {
   createRoutingFactory,
   mockProvider,
@@ -7,14 +16,19 @@ import {
 } from "@ngneat/spectator";
 import { LoadingBarComponent, LoadingBarService } from "@ngx-loading-bar/core";
 import { ConfigService } from "@services/config/config.service";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { MenuService } from "@services/menu/menu.service";
+import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { FooterComponent } from "@shared/footer/footer.component";
-import { HeaderComponent } from "@shared/header/header.component";
+import { HeaderComponent } from "@shared/menu/header/header.component";
+import { generateApiErrorDetailsV2 } from "@test/fakes/ApiErrorDetails";
+import { generatePageInfo } from "@test/fakes/PageInfo";
+import { generatePageInfoResolvers } from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { AppComponent } from "./app.component";
 
 describe("AppComponent", () => {
+  const eventSubject = new Subject();
   let spec: SpectatorRouting<AppComponent>;
   const createComponent = createRoutingFactory({
     component: AppComponent,
@@ -22,13 +36,31 @@ describe("AppComponent", () => {
       MockComponent(HeaderComponent),
       MockComponent(FooterComponent),
       MockComponent(LoadingBarComponent),
+      MockComponent(SideNavComponent),
+      MockComponent(PrimaryMenuComponent),
+      MockComponent(SecondaryMenuComponent),
+      MockComponent(ActionMenuComponent),
     ],
-    providers: [mockProvider(LoadingBarService, { value$: new Subject() })],
-    imports: [RouterTestingModule, MockAppConfigModule],
+    providers: [
+      { provide: DEFAULT_MENU, useValue: mockDefaultMenu },
+      MenuService,
+      mockProvider(LoadingBarService, { value$: new Subject() }),
+    ],
+    imports: [RouterTestingModule, MockBawApiModule],
   });
 
+  function setPageInfo(pageInfo: IPageInfo) {
+    eventSubject.next(pageInfo);
+    spec.detectChanges();
+  }
+
   beforeEach(() => {
-    spec = createComponent({ detectChanges: true });
+    spec = createComponent({
+      detectChanges: true,
+      providers: [
+        mockProvider(SharedActivatedRouteService, { pageInfo: eventSubject }),
+      ],
+    });
   });
 
   it("should create the app", () => {
@@ -58,58 +90,127 @@ describe("AppComponent", () => {
     expect(title.getTitle()).toBe(config.settings.brand.short);
   });
 
-  describe("updatePageLayout", () => {
-    function updatePageLayout(
-      fullscreen: boolean,
-      initialFullscreenValue?: boolean
-    ) {
-      if (initialFullscreenValue) {
-        // Set the fullscreen value to a value other than the expected
-        // to ensure it is overridden properly
-        spec.component.fullscreen = initialFullscreenValue;
-      }
+  describe("side nav", () => {
+    [true, false].forEach((isFullscreen) => {
+      describe(`${isFullscreen ? "fullscreen" : "menu layout"}`, () => {
+        function assertIsSideNav(el: Element) {
+          expect(el).toHaveAttribute("ng-reflect-is-side-nav");
+        }
 
-      spec.component["updatePageLayout"]({
-        constructor: { pageInfos: [{ fullscreen }] },
+        beforeEach(() => {
+          setPageInfo(generatePageInfo({ fullscreen: isFullscreen }));
+        });
+
+        it("should have side nav", () => {
+          expect(spec.query("baw-side-nav")).toBeTruthy();
+        });
+
+        it("should include primary menu", () => {
+          const primaryMenu = spec.query("baw-side-nav baw-primary-menu");
+          expect(primaryMenu).toBeTruthy();
+          assertIsSideNav(primaryMenu);
+        });
+
+        it(`should ${
+          isFullscreen ? "include" : "not include"
+        } secondary menu`, () => {
+          const secondaryMenu = spec.query("baw-side-nav baw-secondary-menu");
+
+          if (isFullscreen) {
+            expect(secondaryMenu).toBeTruthy();
+            assertIsSideNav(secondaryMenu);
+          } else {
+            expect(secondaryMenu).toBeFalsy();
+          }
+        });
+
+        it(`should ${
+          isFullscreen ? "include" : "not include"
+        } action menu`, () => {
+          const actionMenu = spec.query("baw-side-nav baw-action-menu");
+
+          if (isFullscreen) {
+            expect(actionMenu).toBeTruthy();
+            assertIsSideNav(actionMenu);
+          } else {
+            expect(actionMenu).toBeFalsy();
+          }
+        });
       });
-      spec.detectChanges();
+    });
+  });
+
+  describe("monitoring page info updates", () => {
+    function assertPageComponent(exists: boolean) {
+      const errorOutlet = spec.query("#page #error");
+      const pageOutlet = spec.query("#page #primary");
+
+      if (exists) {
+        expect(errorOutlet).toBeFalsy("Error outlet should not exist");
+        expect(pageOutlet).toBeTruthy("Page outlet should exist");
+      } else {
+        expect(errorOutlet).toBeTruthy("Error outlet should exist");
+        expect(pageOutlet).toBeFalsy("Page outlet should not exist");
+      }
     }
 
     function assertLayout(isFullscreen: boolean) {
-      const routerOutlets = spec.queryAll("router-outlet");
-      const secondaryMenu = routerOutlets[0].parentElement;
-      const actionMenu = routerOutlets[3].parentElement;
+      const container = spec.query("#container");
+      expect(container).toHaveClass(
+        isFullscreen ? "fullscreen" : "menu-layout"
+      );
 
-      expect(routerOutlets.length).toBe(4, "Wrong number of router-outlets");
-
+      const secondaryMenu = spec.query("#container baw-secondary-menu");
+      const actionMenu = spec.query("#container baw-action-menu");
       if (isFullscreen) {
-        expect(secondaryMenu).toHaveComputedStyle({ display: "none" });
-        expect(actionMenu).toHaveComputedStyle({ display: "none" });
+        expect(secondaryMenu).toBeFalsy("Secondary menu should not exist");
+        expect(actionMenu).toBeFalsy("Action menu should not exist");
       } else {
-        expect(secondaryMenu).not.toHaveComputedStyle({ display: "none" });
-        expect(actionMenu).not.toHaveComputedStyle({ display: "none" });
+        expect(secondaryMenu).toBeTruthy("Secondary menu should exist");
+        expect(actionMenu).toBeTruthy("Action menu should exist");
       }
     }
 
-    it("should default to fullscreen", () => {
-      spec.detectChanges();
-      assertLayout(true);
-    });
-
     it("should set menu layout if fullscreen is undefined", () => {
-      updatePageLayout(undefined);
-      spec.detectChanges();
+      setPageInfo(generatePageInfo({ fullscreen: undefined }));
       assertLayout(false);
     });
 
     it("should detect fullscreen component", () => {
-      updatePageLayout(true, false);
+      setPageInfo(generatePageInfo({ fullscreen: true }));
       assertLayout(true);
     });
 
     it("should detect menu layout component", () => {
-      updatePageLayout(false, true);
+      setPageInfo(generatePageInfo({ fullscreen: false }));
       assertLayout(false);
+    });
+
+    it("should set page component when resolvers are undefined", () => {
+      setPageInfo(generatePageInfo({ resolvers: undefined }));
+      assertPageComponent(true);
+    });
+
+    it("should set primary outlet when resolvers are successful", () => {
+      setPageInfo(
+        generatePageInfo(
+          generatePageInfoResolvers({
+            model: new MockModel({ id: 1 }),
+          })
+        )
+      );
+      assertPageComponent(true);
+    });
+
+    it("should set error outlet when resolvers are unsuccessful", () => {
+      setPageInfo(
+        generatePageInfo({
+          resolvers: generatePageInfoResolvers({
+            error: generateApiErrorDetailsV2(),
+          }),
+        })
+      );
+      assertPageComponent(false);
     });
   });
 
