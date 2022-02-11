@@ -1,0 +1,174 @@
+<h1>Batch Download Audio Recordings</h1>
+
+<form #form>
+  <!-- Project -->
+  <div *ngIf="project" class="mb-3">
+    <label for="project" class="form-label">Project</label>
+    <input
+      readonly
+      id="project"
+      name="project"
+      class="form-control-plaintext"
+      [ngModel]="model.projects[0].name"
+    />
+  </div>
+
+  <!-- Region -->
+  <div *ngIf="region" class="mb-3">
+    <label for="region" class="form-label">Site</label>
+    <input
+      readonly
+      id="region"
+      name="region"
+      class="form-control-plaintext"
+      [ngModel]="model.regions[0].name"
+    />
+  </div>
+
+  <!-- Site -->
+  <div *ngIf="site" class="mb-3">
+    <label for="site" class="form-label">{{ region ? "Site" : "Point" }}</label>
+    <input
+      readonly
+      id="site"
+      name="site"
+      class="form-control-plaintext"
+      [ngModel]="model.sites[0].name"
+    />
+  </div>
+
+  <!-- Start Date -->
+  <div class="mb-3">
+    <label for="startDate" class="form-label">
+      Date recording started after
+    </label>
+    <!-- TODO Replace with dates using yyyy-mm-dd format -->
+    <input
+      id="recordingStartedAfter"
+      name="recordingStartedAfter"
+      type="date"
+      class="form-control"
+      [(ngModel)]="model.recordingStartedAfter"
+      useValueAsDate
+    />
+
+    <small class="form-text text-muted">
+      The UTC (+00:00) time zone is used for all date filtering. If you're
+      unsure if your data will be included in a filter, expand your date range
+      by one-day in either direction.
+    </small>
+  </div>
+
+  <!-- End Date -->
+  <div class="mb-3">
+    <label for="endDate" class="form-label">
+      Date recording ended before
+    </label>
+    <!-- TODO Replace with dates using yyyy-mm-dd format -->
+    <input
+      id="recordingFinishedBefore"
+      name="recordingFinishedBefore"
+      type="date"
+      class="form-control"
+      [(ngModel)]="model.recordingFinishedBefore"
+      useValueAsDate
+    />
+
+    <small class="form-text text-muted">
+      The UTC (+00:00) time zone is used for all date filtering. If you're
+      unsure if your data will be included in a filter, expand your date range
+      by one-day in either direction.
+    </small>
+
+    <!-- TODO Warning message if end date is before start date -->
+  </div>
+</form>
+
+<div class="clearfix">
+  <a class="btn btn-primary float-end mt-3" [href]="href"> Download Script </a>
+</div>
+
+<!-- TODO Preview audio recordings which will be downloaded by this request -->
+
+<hr />
+
+<!-- TODO Extract to CMS? -->
+<section>
+  <h2>Instructions</h2>
+
+  <p>
+    The above form will guide you to downloading a PowerShell script which can
+    be used to download the audio files in batches. If you need more help please
+    <a [strongRoute]="contactUs.route">{{ contactUs.label }}.</a>
+  </p>
+
+  <h3>1. Install PowerShell</h3>
+
+  <p>
+    If you do not already have PowerShell 7 or newer installed on your machine,
+    read through
+    <a
+      href="https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2"
+    >
+      this guide.
+    </a>
+  </p>
+
+  <!-- TODO Show users how with asciicast -->
+
+  <h3>2. Move the downloader script</h3>
+
+  <p>
+    Find the file you have downloaded (likely from the downloads folder) and
+    move it to the location where you want audio files to be downloaded.
+  </p>
+
+  <p>
+    For example, if you wanted to download files to your external hard drive,
+    move the script to your external hard drive.
+  </p>
+
+  <h3>3. Open a terminal</h3>
+
+  <p>
+    Next open PowerShell in the same folder as your script. In most operating
+    systems the file manager has the option to open the current folder in a
+    terminal. If that is not possible, you will need to copy the folder path,
+    and use <code>cd "FOLDER_LOCATION_HERE"</code> to change to the correct
+    directory.
+  </p>
+
+  <p>
+    You can open a PowerShell shell by running <code>pwsh</code> inside a normal
+    shell (like <code>cmd</code>/<code>bash</code>/<code>zsh</code>).
+  </p>
+
+  <h3>4. Get an authentication token</h3>
+
+  <p>
+    Each time you want to run this script, you will need to supply an
+    authentication token (auth token).
+    <strong class="text-danger"> Treat this code like your password.</strong>
+    You can find the auth token in your
+    <a [strongRoute]="profile.route">{{ profile.label }}</a> page, under the
+    "Authentication Token" section. Copy the auth token, and keep it for the
+    next step.
+  </p>
+
+  <!-- TODO Show users how with asciicast -->
+
+  <h3>5. Run the script</h3>
+
+  <p>
+    Copy and paste the following command into your PowerShell session. Ensure
+    you replace INSERT_AUTH_TOKEN_HERE with your auth token.
+  </p>
+
+  <p>
+    <code>
+      ./download_audio_files.ps1 -auth_token="INSERT_AUTH_TOKEN_HERE
+    </code>
+  </p>
+
+  <p>Press <kbd>enter</kbd> to run the script.</p>
+</section>

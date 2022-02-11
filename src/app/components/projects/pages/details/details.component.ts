@@ -39,6 +39,7 @@ export const projectMenuItemActions = [
   assignSiteMenuItem,
   deleteProjectMenuItem,
   audioRecordingMenuItems.list.project,
+  audioRecordingMenuItems.batch.project,
 ];
 
 const projectKey = "project";

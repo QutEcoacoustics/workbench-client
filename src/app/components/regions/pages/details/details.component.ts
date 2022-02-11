@@ -33,6 +33,7 @@ export const regionMenuItemActions = [
   editRegionMenuItem,
   deleteRegionMenuItem,
   audioRecordingMenuItems.list.region,
+  audioRecordingMenuItems.batch.region,
 ];
 
 const projectKey = "project";

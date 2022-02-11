@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, InjectionToken, Injector } from "@angular/core";
-import { KeysOfType, XOR } from "@helpers/advancedTypes";
+import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { SessionUser } from "@models/User";
@@ -74,7 +74,7 @@ export class BawApiService<Model extends AbstractModel> {
 
   public constructor(
     protected http: HttpClient,
-    @Inject(API_ROOT) private apiRoot: string,
+    @Inject(API_ROOT) protected apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
     classBuilder: AbstractModelConstructor<Model>,
     protected injector: Injector
@@ -480,22 +480,22 @@ export interface Comparisons {
   equal?: string | number;
   notEq?: string | number;
   notEqual?: string | number;
-  lt?: number;
-  lessThan?: number;
-  notLt?: number;
-  notLessThan?: number;
-  gt?: number;
-  greaterThan?: number;
-  notGt?: number;
-  notGreaterThan?: number;
-  lteq?: number;
-  lessThanOrEqual?: number;
-  notLteq?: number;
-  notLessThanOrEqual?: number;
-  gteq?: number;
-  greaterThanOrEqual?: number;
-  notGteq?: number;
-  notGreaterThanOrEqual?: number;
+  lt?: string | number;
+  lessThan?: string | number;
+  notLt?: string | number;
+  notLessThan?: string | number;
+  gt?: string | number;
+  greaterThan?: string | number;
+  notGt?: string | number;
+  notGreaterThan?: string | number;
+  lteq?: string | number;
+  lessThanOrEqual?: string | number;
+  notLteq?: string | number;
+  notLessThanOrEqual?: string | number;
+  gteq?: string | number;
+  greaterThanOrEqual?: string | number;
+  notGteq?: string | number;
+  notGreaterThanOrEqual?: string | number;
 }
 
 /**
@@ -552,17 +552,21 @@ export interface Subsets {
 /**
  * Api response inner filter
  */
-export type InnerFilter<T = unknown> = Combinations<T> &
+export type InnerFilter<Model = unknown> = Combinations<Writeable<Model>> &
   Comparisons &
-  Subsets & { [P in keyof T]?: Combinations<T> & Comparisons & Subsets };
+  Subsets & {
+    [P in keyof Writeable<Model>]?: Combinations<Writeable<Model>> &
+      Comparisons &
+      Subsets;
+  };
 
 /**
  * Filter metadata from api response
  * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
  */
-export interface Filters<T = unknown, K extends keyof T = keyof T> {
+export interface Filters<Model = unknown, K extends keyof Model = keyof Model> {
   /** Filter settings */
-  filter?: InnerFilter<T>;
+  filter?: InnerFilter<Writeable<Model>>;
   /** Include or exclude keys from response */
   projection?: {
     /** Include keys in response */
@@ -579,7 +583,7 @@ export interface Filters<T = unknown, K extends keyof T = keyof T> {
 /**
  * Metadata from api response
  */
-export interface Meta<T = unknown> extends Filters<T> {
+export interface Meta<Model = unknown> extends Filters<Model> {
   /** Response status */
   status?: number;
   /** Human readable response status */

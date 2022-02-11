@@ -18,6 +18,7 @@ export const projectsMenuItemActions = [
   newProjectMenuItem,
   requestProjectMenuItem,
   audioRecordingMenuItems.list.base,
+  audioRecordingMenuItems.batch.base,
 ];
 
 @Component({

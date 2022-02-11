@@ -74,7 +74,7 @@ function assertCheckbox(view: HTMLDListElement, value: boolean) {
 
 function assertCode(view: HTMLDListElement, value: Record<string, any>) {
   const code: HTMLElement = view.querySelector("#code");
-  expect(code.innerHTML.trim()).toBe(JSON.stringify(value));
+  expect(code.innerText).toContain(JSON.stringify(value, null, 4));
 }
 
 function assertPlainText(
@@ -92,12 +92,12 @@ function assertPlainText(
     result = value.toString();
   }
 
-  expect(plainText.innerHTML.trim()).toBe(result);
+  expect(plainText.innerText).toContain(result);
 }
 
 function assertModel(view: HTMLDListElement, value: string) {
   const model: HTMLElement = view.querySelector("#model");
-  expect(model.innerHTML.trim()).toBe(value);
+  expect(model.innerText).toContain(value);
 }
 
 function assertImages(view: HTMLDListElement, value: string | ImageUrl[]) {

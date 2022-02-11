@@ -6,6 +6,8 @@ import { AudioRecording } from "@models/AudioRecording";
 import type { Region } from "@models/Region";
 import type { Site } from "@models/Site";
 import { Observable } from "rxjs";
+import { toBase64Url } from "@helpers/encoding/encoding";
+import { toSnakeCase } from "@helpers/case-converter/case-converter";
 import {
   emptyParam,
   filterParam,
@@ -21,6 +23,7 @@ import { Resolvers } from "../resolver-common";
 
 const audioRecordingId: IdParamOptional<AudioRecording> = id;
 const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}${option}`;
+const downloadEndpoint = stringTemplate`/audio_recordings/downloader`;
 /**
  * Path to download original audio recording. This currently requires the
  * apiRoot to be prepended to the endpoint
@@ -56,7 +59,10 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
    * @param filters Audio recording filters
    * @param site Site to filter by
    */
-  public filterBySite(filters: Filters<AudioRecording>, site: IdOr<Site>) {
+  public filterBySite(
+    filters: Filters<AudioRecording>,
+    site: IdOr<Site>
+  ): Observable<AudioRecording[]> {
     return this.filter(
       this.filterThroughAssociation(filters, "siteId", site) as Filters
     );
@@ -72,12 +78,10 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
   public filterByRegion(
     filters: Filters<AudioRecording>,
     region: IdOr<Region>
-  ) {
+  ): Observable<AudioRecording[]> {
     if (isId(region)) {
-      return this.filterThroughAssociation(
-        filters,
-        "sites.regionId" as any,
-        region
+      return this.filter(
+        this.filterThroughAssociation(filters, "sites.regionId" as any, region)
       );
     }
 
@@ -89,6 +93,32 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
         Array.from(region.siteIds)
       ) as Filters
     );
+  }
+
+  public downloadUrl(audioRecording: IdOr<AudioRecording>) {
+    return this.getPath(audioRecordingOriginalEndpoint(audioRecording));
+  }
+
+  /**
+   * Returns a link to the API which will download a templated script for downloading original audio files
+   *
+   * @param filter Audio recording filters
+   */
+  public batchDownloadUrl(filter: Filters<AudioRecording>): string {
+    // TODO Extract this logic with URLSearchParams to some core functionality
+    let body = {
+      // Base64 RFC 4648 §5 encoding
+      filterEncoded: toBase64Url(JSON.stringify(toSnakeCase(filter))),
+    };
+
+    if (this.getLocalUser()) {
+      body["authToken"] = this.getLocalUser().authToken;
+    }
+
+    body = toSnakeCase(body);
+
+    const qsp = new URLSearchParams(body);
+    return this.getPath(downloadEndpoint()) + "?" + qsp.toString();
   }
 }
 

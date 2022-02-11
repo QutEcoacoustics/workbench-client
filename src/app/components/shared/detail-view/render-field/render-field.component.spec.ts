@@ -62,6 +62,10 @@ describe("RenderFieldComponent", () => {
     }
   }
 
+  function objectToString(value: any): string {
+    return JSON.stringify(value, null, 4);
+  }
+
   function assertLoading(value?: HTMLElement) {
     expect(value ?? getElement.normal()[0]).toHaveExactText("(loading)");
   }
@@ -188,14 +192,16 @@ describe("RenderFieldComponent", () => {
       setup({});
       spec.detectChanges();
       const value = getElement.code()[0];
-      expect(value).toHaveExactText("{}");
+      expect(value.innerText).toContain(objectToString({}));
     });
 
     it("should display object value", () => {
       setup({ value1: 42, value2: "test" });
       spec.detectChanges();
       const value = getElement.code()[0];
-      expect(value).toHaveExactText('{"value1":42,"value2":"test"}');
+      expect(value.innerText).toContain(
+        objectToString({ value1: 42, value2: "test" })
+      );
     });
 
     it("should display object error when JSON stringy fails", () => {
@@ -284,7 +290,9 @@ describe("RenderFieldComponent", () => {
       const values = getElement.values();
       expect(values[0]).toHaveExactText("test 1");
       expect(values[1]).toHaveExactText("2");
-      expect(values[2]).toHaveExactText('{"testing":"value"}');
+      expect(values[2].innerText).toContain(
+        objectToString({ testing: "value" })
+      );
     });
   });
 
@@ -442,7 +450,9 @@ describe("RenderFieldComponent", () => {
       const values = getElement.values();
       expect(values[0]).toHaveExactText("test 1");
       expect(values[1]).toHaveExactText("2");
-      expect(values[2]).toHaveExactText('{"testing":"value"}');
+      expect(values[2].innerText).toContain(
+        objectToString({ testing: "value" })
+      );
     });
 
     it("should display error output", () => {

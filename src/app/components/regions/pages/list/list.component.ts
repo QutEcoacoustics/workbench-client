@@ -16,6 +16,7 @@ import { List } from "immutable";
 export const regionsMenuItemActions = [
   newRegionMenuItem,
   audioRecordingMenuItems.list.base,
+  audioRecordingMenuItems.batch.base,
 ];
 
 @Component({

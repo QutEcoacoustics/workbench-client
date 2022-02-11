@@ -144,7 +144,9 @@ describe("DetailViewComponent", () => {
         const values = getValues();
         expect(values[0]).toHaveExactText("5");
         expect(values[1]).toHaveExactText("10");
-        expect(values[2]).toHaveExactText('{"test":"value"}');
+        expect(values[2].innerText).toContain(
+          JSON.stringify({ test: "value" }, null, 4)
+        );
       });
     });
 

@@ -8,7 +8,6 @@ import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   audioRecordingMenuItems,
   audioRecordingsCategory,
-  batchDownloadAudioRecordingMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -137,23 +136,25 @@ interface TableRow {
 }
 
 const menuItems = audioRecordingMenuItems.list;
-const pageInfo: IPageInfo = {
-  category: audioRecordingsCategory,
-  menus: { actions: List([batchDownloadAudioRecordingMenuItem]) },
-  resolvers: {
-    [projectKey]: projectResolvers.showOptional,
-    [regionKey]: regionResolvers.showOptional,
-    [siteKey]: siteResolvers.showOptional,
-  },
-};
+const downloadMenuItems = audioRecordingMenuItems.batch;
 
-AudioRecordingsListComponent.linkToRoute({
-  ...pageInfo,
-  pageRoute: menuItems.base,
-})
-  .linkToRoute({ ...pageInfo, pageRoute: menuItems.site })
-  .linkToRoute({ ...pageInfo, pageRoute: menuItems.siteAndRegion })
-  .linkToRoute({ ...pageInfo, pageRoute: menuItems.region })
-  .linkToRoute({ ...pageInfo, pageRoute: menuItems.project });
+function getPageInfo(subRoute: keyof typeof menuItems): IPageInfo {
+  return {
+    category: audioRecordingsCategory,
+    pageRoute: menuItems[subRoute],
+    menus: { actions: List([downloadMenuItems[subRoute]]) },
+    resolvers: {
+      [projectKey]: projectResolvers.showOptional,
+      [regionKey]: regionResolvers.showOptional,
+      [siteKey]: siteResolvers.showOptional,
+    },
+  };
+}
+
+AudioRecordingsListComponent.linkToRoute(getPageInfo("base"))
+  .linkToRoute(getPageInfo("site"))
+  .linkToRoute(getPageInfo("siteAndRegion"))
+  .linkToRoute(getPageInfo("region"))
+  .linkToRoute(getPageInfo("project"));
 
 export { AudioRecordingsListComponent };

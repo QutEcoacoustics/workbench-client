@@ -43,6 +43,7 @@ export const siteMenuItemActions = [
   siteHarvestMenuItem,
   deleteSiteMenuItem,
   audioRecordingMenuItems.list.site,
+  audioRecordingMenuItems.batch.site,
 ];
 
 export const pointMenuItemActions = [
@@ -52,6 +53,7 @@ export const pointMenuItemActions = [
   pointHarvestMenuItem,
   deletePointMenuItem,
   audioRecordingMenuItems.list.siteAndRegion,
+  audioRecordingMenuItems.batch.siteAndRegion,
 ];
 
 const projectKey = "project";
