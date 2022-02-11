@@ -93,11 +93,11 @@ class DownloadAudioRecordingsComponent
     if (this.model.sites.length > 0) {
       filter["sites.id"] = { in: this.model.sites.map((site) => site.id) };
     } else if (this.model.regions.length > 0) {
-      filter["sites.regions.id"] = {
+      filter["regions.id"] = {
         in: this.model.regions.map((region) => region.id),
       };
     } else if (this.model.projects.length > 0) {
-      filter["sites.regions.project.id"] = {
+      filter["projects.id"] = {
         in: this.model.projects.map((project) => project.id),
       };
     }
