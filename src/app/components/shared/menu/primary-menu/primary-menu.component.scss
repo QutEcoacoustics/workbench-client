@@ -5,6 +5,11 @@
 nav {
   background-color: var(--baw-header);
 
+  /* Header primary menu aligns content horizontally */
+  &:not(.side-nav) {
+    display: flex;
+  }
+
   /* On desktop layouts */
   @include media(">=lg-grid") {
     /* Display primary menu in header */
@@ -21,14 +26,9 @@ nav {
     }
 
     /* Hide header primary menu */
-    &:not(.side-nav):not(.fullscreen) {
+    &:not(.side-nav) {
       display: none;
     }
-  }
-
-  /* Header primary menu aligns content horizontally */
-  &:not(.side-nav) {
-    display: flex;
   }
 
   /* Prevents some elements overflowing and changing the height of the header */

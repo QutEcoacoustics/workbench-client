@@ -440,7 +440,7 @@ describe("PrimaryMenuComponent", () => {
         fullscreen: true,
         sideNav: false,
         width: viewports.medium,
-        style: { display: "flex" },
+        style: { display: "none" },
       },
       {
         fullscreen: false,
@@ -456,7 +456,7 @@ describe("PrimaryMenuComponent", () => {
         width: viewports.medium,
         style: {
           display: "block",
-          // 100% height is 160px for viewport
+          // 100% height is 240px for viewport
           height: "240px",
         },
       },

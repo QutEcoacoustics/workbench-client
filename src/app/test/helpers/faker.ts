@@ -6,7 +6,7 @@ import {
   ImageUrl,
   TimezoneInformation,
 } from "@interfaces/apiInterfaces";
-import faker from "faker";
+import { faker } from "@faker-js/faker";
 
 const specialCharRegex = /[^\w\s]/gi;
 
@@ -45,7 +45,6 @@ export const modelData = {
     faker.random.arrayElement<IconName>([
       "accessible-icon",
       "accusoft",
-      "acquisitions-incorporated",
       "adn",
       "adversal",
       "affiliatetheme",
