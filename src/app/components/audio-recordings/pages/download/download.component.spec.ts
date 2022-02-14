@@ -40,23 +40,51 @@ describe("DownloadAudioRecordingsComponent", () => {
     return spec.query<HTMLLabelElement>("#site-label");
   }
 
+  function filterByProject(filter: Filters<AudioRecording>, project: Project) {
+    expect(filter.filter["projects.id"]).toEqual({ eq: project.id });
+    expect(filter.filter["regions.id"]).toBeUndefined();
+    expect(filter.filter["sites.id"]).toBeUndefined();
+  }
+
+  function filterByRegion(filter: Filters<AudioRecording>, region: Region) {
+    expect(filter.filter["projects.id"]).toBeUndefined();
+    expect(filter.filter["regions.id"]).toEqual({ eq: region.id });
+    expect(filter.filter["sites.id"]).toBeUndefined();
+  }
+
+  function filterBySite(filter: Filters<AudioRecording>, site: Site) {
+    expect(filter.filter["projects.id"]).toBeUndefined();
+    expect(filter.filter["regions.id"]).toBeUndefined();
+    expect(filter.filter["sites.id"]).toEqual({ eq: site.id });
+  }
+
+  function filterByStartDate(filter: Filters<AudioRecording>, date: Date) {
+    expect(filter.filter["recordedDate"]).toEqual({
+      greaterThan: date.toISOString(),
+    });
+  }
+
+  function filterByEndDate(filter: Filters<AudioRecording>, date: Date) {
+    expect(filter.filter["recordedEndDate"]).toEqual({
+      lessThan: date.toISOString(),
+    });
+  }
+
   function interceptDownloadUrl(
     url: string = "/batch_download",
-    initialFilter: (filter: Filters<AudioRecording>) => void = () => {},
-    updatedFilter: (filter: Filters<AudioRecording>) => void = () => {}
+    ...expectations: ((filter: Filters<AudioRecording>) => void)[]
   ) {
     let count = 0;
     const initialExpectation = 3;
-    const updatedExpectation = 4;
 
     const recordingsApi = spec.inject(AudioRecordingsService);
     recordingsApi.batchDownloadUrl.and.callFake(
       (filter: Filters<AudioRecording>) => {
         count++;
-        if (count === initialExpectation) {
-          initialFilter(filter);
-        } else if (count === updatedExpectation) {
-          updatedFilter(filter);
+
+        const index = count - initialExpectation;
+        if (index >= 0 && expectations.length > index) {
+          expectations[index](filter);
         }
 
         return url;
@@ -94,27 +122,6 @@ describe("DownloadAudioRecordingsComponent", () => {
   });
 
   describe("models", () => {
-    function filterByProject(
-      filter: Filters<AudioRecording>,
-      project: Project
-    ) {
-      expect(filter.filter["projects.id"]).toEqual({ eq: project.id });
-      expect(filter.filter["regions.id"]).toBeUndefined();
-      expect(filter.filter["sites.id"]).toBeUndefined();
-    }
-
-    function filterByRegion(filter: Filters<AudioRecording>, region: Region) {
-      expect(filter.filter["projects.id"]).toBeUndefined();
-      expect(filter.filter["regions.id"]).toEqual({ eq: region.id });
-      expect(filter.filter["sites.id"]).toBeUndefined();
-    }
-
-    function filterBySite(filter: Filters<AudioRecording>, site: Site) {
-      expect(filter.filter["projects.id"]).toBeUndefined();
-      expect(filter.filter["regions.id"]).toBeUndefined();
-      expect(filter.filter["sites.id"]).toEqual({ eq: site.id });
-    }
-
     describe("project", () => {
       it("should show project if exists", fakeAsync(() => {
         setup(defaultProject);
@@ -243,9 +250,7 @@ describe("DownloadAudioRecordingsComponent", () => {
           spec.detectChanges();
         },
         (filter) => {
-          expect(filter.filter["recordedDate"]).toEqual({
-            greaterThan: date.toISOString(),
-          });
+          filterByStartDate(filter, date);
           done();
         }
       );
@@ -274,12 +279,40 @@ describe("DownloadAudioRecordingsComponent", () => {
           spec.detectChanges();
         },
         (filter) => {
-          expect(filter.filter["recordedEndDate"]).toEqual({
-            lessThan: date.toISOString(),
-          });
+          filterByEndDate(filter, date);
           done();
         }
       );
+      spec.detectChanges();
+    });
+  });
+
+  describe("multiple inputs", () => {
+    it("should include filters for both date fields", (done) => {
+      const startDate = new Date("2019-01-01");
+      const endDate = new Date("2020-01-01");
+      setup(defaultProject);
+
+      interceptDownloadUrl(
+        "/bulk_download",
+        () => {
+          // Update input after the form has been set
+          inputValue(spec.element, "#recording-started-after", "2019-01-01");
+          spec.detectChanges();
+        },
+        () => {
+          // Update input after the form has been set
+          inputValue(spec.element, "#recording-finished-before", "2020-01-01");
+          spec.detectChanges();
+        },
+        (filter) => {
+          filterByProject(filter, defaultProject);
+          filterByStartDate(filter, startDate);
+          filterByEndDate(filter, endDate);
+          done();
+        }
+      );
+
       spec.detectChanges();
     });
   });
