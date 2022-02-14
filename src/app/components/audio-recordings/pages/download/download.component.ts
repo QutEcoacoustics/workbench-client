@@ -14,7 +14,7 @@ import {
 } from "@components/audio-recordings/audio-recording.menus";
 import { myAccountMenuItem } from "@components/profile/profile.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -57,15 +57,16 @@ class DownloadAudioRecordingsComponent
   }
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(new PageInfo(this.route.snapshot.data));
-    this.models = models;
+    this.models = retrieveResolvers(this.route.snapshot.data);
     this.updateHref(this.model);
   }
 
   public ngAfterViewInit(): void {
     this.form.valueChanges
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe((model: Model): void => this.updateHref(model));
+      .subscribe((model: Model): void => {
+        this.updateHref(model);
+      });
   }
 
   public get project(): Project {

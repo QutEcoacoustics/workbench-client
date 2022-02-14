@@ -3,7 +3,7 @@
 <form #form>
   <!-- Project -->
   <div *ngIf="project" class="mb-3">
-    <label for="project" class="form-label">Project</label>
+    <label id="project-label" for="project" class="form-label">Project</label>
     <input
       readonly
       id="project"
@@ -15,7 +15,7 @@
 
   <!-- Region -->
   <div *ngIf="region" class="mb-3">
-    <label for="region" class="form-label">Site</label>
+    <label id="region-label" for="region" class="form-label">Site</label>
     <input
       readonly
       id="region"
@@ -27,7 +27,9 @@
 
   <!-- Site -->
   <div *ngIf="site" class="mb-3">
-    <label for="site" class="form-label">{{ region ? "Site" : "Point" }}</label>
+    <label id="site-label" for="site" class="form-label">{{
+      region ? "Point" : "Site"
+    }}</label>
     <input
       readonly
       id="site"
@@ -44,7 +46,7 @@
     </label>
     <!-- TODO Replace with dates using yyyy-mm-dd format -->
     <input
-      id="recordingStartedAfter"
+      id="recording-started-after"
       name="recordingStartedAfter"
       type="date"
       class="form-control"
@@ -66,7 +68,7 @@
     </label>
     <!-- TODO Replace with dates using yyyy-mm-dd format -->
     <input
-      id="recordingFinishedBefore"
+      id="recording-finished-before"
       name="recordingFinishedBefore"
       type="date"
       class="form-control"
@@ -85,7 +87,7 @@
 </form>
 
 <div class="clearfix">
-  <a class="btn btn-primary float-end mt-3" [href]="href"> Download Script </a>
+  <a class="btn btn-primary float-end mt-3" [href]="href">Download Script</a>
 </div>
 
 <!-- TODO Preview audio recordings which will be downloaded by this request -->
