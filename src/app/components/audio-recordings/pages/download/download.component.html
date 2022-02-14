@@ -3,37 +3,39 @@
 <form #form>
   <!-- Project -->
   <div *ngIf="project" class="mb-3">
-    <label for="project" class="form-label">Project</label>
+    <label id="project-label" for="project" class="form-label">Project</label>
     <input
       readonly
       id="project"
       name="project"
       class="form-control-plaintext"
-      [ngModel]="model.projects[0].name"
+      [ngModel]="project.name"
     />
   </div>
 
   <!-- Region -->
   <div *ngIf="region" class="mb-3">
-    <label for="region" class="form-label">Site</label>
+    <label id="region-label" for="region" class="form-label">Site</label>
     <input
       readonly
       id="region"
       name="region"
       class="form-control-plaintext"
-      [ngModel]="model.regions[0].name"
+      [ngModel]="region.name"
     />
   </div>
 
   <!-- Site -->
   <div *ngIf="site" class="mb-3">
-    <label for="site" class="form-label">{{ region ? "Site" : "Point" }}</label>
+    <label id="site-label" for="site" class="form-label">{{
+      region ? "Point" : "Site"
+    }}</label>
     <input
       readonly
       id="site"
       name="site"
       class="form-control-plaintext"
-      [ngModel]="model.sites[0].name"
+      [ngModel]="site.name"
     />
   </div>
 
@@ -44,7 +46,7 @@
     </label>
     <!-- TODO Replace with dates using yyyy-mm-dd format -->
     <input
-      id="recordingStartedAfter"
+      id="recording-started-after"
       name="recordingStartedAfter"
       type="date"
       class="form-control"
@@ -66,7 +68,7 @@
     </label>
     <!-- TODO Replace with dates using yyyy-mm-dd format -->
     <input
-      id="recordingFinishedBefore"
+      id="recording-finished-before"
       name="recordingFinishedBefore"
       type="date"
       class="form-control"
@@ -85,7 +87,7 @@
 </form>
 
 <div class="clearfix">
-  <a class="btn btn-primary float-end mt-3" [href]="href"> Download Script </a>
+  <a class="btn btn-primary float-end mt-3" [href]="href">Download Script</a>
 </div>
 
 <!-- TODO Preview audio recordings which will be downloaded by this request -->

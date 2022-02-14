@@ -14,7 +14,7 @@ import {
 } from "@components/audio-recordings/audio-recording.menus";
 import { myAccountMenuItem } from "@components/profile/profile.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -57,18 +57,16 @@ class DownloadAudioRecordingsComponent
   }
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(new PageInfo(this.route.snapshot.data));
-    this.models = models;
-    this.model.projects = this.project ? [this.project] : [];
-    this.model.regions = this.region ? [this.region] : [];
-    this.model.sites = this.site ? [this.site] : [];
-    this.updateHref();
+    this.models = retrieveResolvers(this.route.snapshot.data);
+    this.updateHref(this.model);
   }
 
   public ngAfterViewInit(): void {
-    this.form.valueChanges.pipe(takeUntil(this.unsubscribe)).subscribe(() => {
-      this.updateHref();
-    });
+    this.form.valueChanges
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((model: Model): void => {
+        this.updateHref(model);
+      });
   }
 
   public get project(): Project {
@@ -83,33 +81,29 @@ class DownloadAudioRecordingsComponent
     return this.models[siteKey] as Site;
   }
 
-  public updateHref(): void {
-    this.href = this.recordingsApi.batchDownloadUrl(this.generateFilter());
+  public updateHref(model: Model): void {
+    this.href = this.recordingsApi.batchDownloadUrl(this.generateFilter(model));
   }
 
-  private generateFilter(): Filters<AudioRecording> {
+  private generateFilter(model: Model): Filters<AudioRecording> {
     const filter: InnerFilter<AudioRecording> = {};
 
-    if (this.model.sites.length > 0) {
-      filter["sites.id"] = { in: this.model.sites.map((site) => site.id) };
-    } else if (this.model.regions.length > 0) {
-      filter["regions.id"] = {
-        in: this.model.regions.map((region) => region.id),
-      };
-    } else if (this.model.projects.length > 0) {
-      filter["projects.id"] = {
-        in: this.model.projects.map((project) => project.id),
-      };
+    if (this.site) {
+      filter["sites.id"] = { eq: this.site.id };
+    } else if (this.region) {
+      filter["regions.id"] = { eq: this.region.id };
+    } else if (this.project) {
+      filter["projects.id"] = { eq: this.project.id };
     }
 
-    if (this.model.recordingStartedAfter) {
-      filter.recordedDate = {
-        greaterThan: this.model.recordingStartedAfter.toISOString(),
+    if (model.recordingStartedAfter) {
+      filter["recordedDate"] = {
+        greaterThan: model.recordingStartedAfter.toISOString(),
       };
     }
-    if (this.model.recordingFinishedBefore) {
+    if (model.recordingFinishedBefore) {
       filter["recordedEndDate"] = {
-        lessThan: this.model.recordingFinishedBefore.toISOString(),
+        lessThan: model.recordingFinishedBefore.toISOString(),
       };
     }
 
