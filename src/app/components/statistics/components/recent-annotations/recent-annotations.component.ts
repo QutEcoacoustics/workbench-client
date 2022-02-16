@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { SecurityService } from "@baw-api/security/security.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
 
@@ -18,7 +18,11 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
       [columns]="columns"
     >
       <!-- Site name (logged in only) -->
-      <ngx-datatable-column name="Site" *ngIf="isLoggedIn" [sortable]="false">
+      <ngx-datatable-column
+        *ngIf="session.isLoggedIn"
+        name="Site"
+        [sortable]="false"
+      >
         <ng-template let-column="column" ngx-datatable-header-template>
           <fa-icon class="me-2" [icon]="['fas', 'map-marker-alt']"></fa-icon>
           Site
@@ -42,7 +46,11 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
       </ngx-datatable-column>
 
       <!-- User name (logged in only) -->
-      <ngx-datatable-column name="User" *ngIf="isLoggedIn" [sortable]="false">
+      <ngx-datatable-column
+        *ngIf="session.isLoggedIn"
+        name="User"
+        [sortable]="false"
+      >
         <ng-template let-column="column" ngx-datatable-header-template>
           <fa-icon class="me-2" [icon]="['fas', 'user']"></fa-icon>User
         </ng-template>
@@ -132,9 +140,8 @@ export class RecentAnnotationsComponent implements OnChanges {
   public columnMode = ColumnMode;
   public columns: TableColumn[];
   public rows = [];
-  public isLoggedIn: boolean;
 
-  public constructor(private api: SecurityService) {}
+  public constructor(public session: BawSessionService) {}
 
   public ngOnChanges(): void {
     if (!this.columns) {
@@ -145,7 +152,6 @@ export class RecentAnnotationsComponent implements OnChanges {
         { name: "Updated" },
         { name: "Model" },
       ];
-      this.isLoggedIn = this.api.isLoggedIn();
     }
 
     this.rows = (this.annotations ?? []).map((recording) => ({

@@ -1,46 +1,51 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
-import { createServiceFactory } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateBookmark } from "@test/fakes/Bookmark";
 import {
-  validateApiCreate,
-  validateApiDestroy,
-  validateApiFilter,
-  validateApiList,
-  validateApiShow,
-  validateApiUpdate,
   validateCustomApiFilter,
+  validateStandardApi,
 } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { BookmarksService } from "./bookmarks.service";
 
-type Model = Bookmark;
-type Params = [];
-type Service = BookmarksService;
-
-describe("BookmarksService", function () {
+describe("BookmarksService", (): void => {
   const createModel = () => new Bookmark(generateBookmark({ id: 5 }));
   const baseUrl = "/bookmarks/";
   const updateUrl = baseUrl + "5";
+  let spec: SpectatorService<BookmarksService>;
   const createService = createServiceFactory({
     service: BookmarksService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
-  beforeEach(function () {
-    this.service = createService().service;
+  beforeEach((): void => {
+    spec = createService();
   });
 
-  validateApiList<Model, Params, Service>(baseUrl);
-  validateApiFilter<Model, Params, Service>(baseUrl + "filter");
-  validateApiShow<Model, Params, Service>(updateUrl, 5, createModel);
-  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel);
-  validateApiUpdate<Model, Params, Service>(updateUrl, createModel);
-  validateApiDestroy<Model, Params, Service>(updateUrl, 5, createModel);
+  validateStandardApi(
+    () => spec,
+    Bookmark,
+    baseUrl,
+    baseUrl + "filter",
+    updateUrl,
+    createModel,
+    5
+  );
 
-  validateCustomApiFilter<Model, [...Params, IdOr<User>], Service>(
+  validateCustomApiFilter<Bookmark, [IdOr<User>], BookmarksService>(
+    () => spec,
+    Bookmark,
     baseUrl + "filter",
     "filterByCreator",
     { filter: { creatorId: { eq: 5 } } },

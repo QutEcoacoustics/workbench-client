@@ -1,35 +1,40 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { ProgressEvent } from "@models/ProgressEvent";
-import { createServiceFactory } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateProgressEvent } from "@test/fakes/ProgressEvent";
-import {
-  validateApiCreate,
-  validateApiFilter,
-  validateApiList,
-  validateApiShow,
-} from "@test/helpers/api-common";
+import { validateReadAndCreateApi } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { ProgressEventsService } from "./progress-events.service";
 
-type Model = ProgressEvent;
-type Params = [];
-type Service = ProgressEventsService;
-
-describe("ProgressEventsService", function () {
+describe("ProgressEventsService", (): void => {
   const createModel = () => new ProgressEvent(generateProgressEvent({ id: 5 }));
   const baseUrl = "/progress_events/";
   const updateUrl = baseUrl + "5";
+  let spec: SpectatorService<ProgressEventsService>;
   const createService = createServiceFactory({
     service: ProgressEventsService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
-  beforeEach(function () {
-    this.service = createService().service;
+  beforeEach((): void => {
+    spec = createService();
   });
 
-  validateApiList<Model, Params, Service>(baseUrl);
-  validateApiFilter<Model, Params, Service>(baseUrl + "filter");
-  validateApiShow<Model, Params, Service>(updateUrl, 5, createModel);
-  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel);
+  validateReadAndCreateApi(
+    () => spec,
+    ProgressEvent,
+    baseUrl,
+    baseUrl + "filter",
+    updateUrl,
+    createModel,
+    5
+  );
 });

@@ -1,13 +1,13 @@
 import { Directive, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import {
   hasResolvedSuccessfully,
   ResolvedModelList,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel } from "@models/AbstractModel";
 import {
@@ -53,7 +53,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   /**
    * API Error Response for Table Data
    */
-  public error: ApiErrorDetails;
+  public error: BawApiError;
   /**
    * API Error Response from Resolvers
    */
@@ -144,8 +144,8 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
 
     this.apiAction(this.filters, this.getUrlParameters(this))
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (models: M[]) => {
+      .subscribe({
+        next: (models: M[]) => {
           this.rows = this.rowsCallback(models);
           this.preselectRows(this.rows);
           this.loadingData = false;
@@ -158,11 +158,11 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
             this.totalModels = 0;
           }
         },
-        (err: ApiErrorDetails) => {
+        error: (err: BawApiError) => {
           this.error = err;
           this.loadingData = false;
-        }
-      );
+        },
+      });
   }
 
   protected apiAction(filters: Filters<M>, args: AbstractModel[] = []) {

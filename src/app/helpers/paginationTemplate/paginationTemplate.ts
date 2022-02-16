@@ -1,16 +1,16 @@
 import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import {
   defaultApiPageSize,
   Filters,
   InnerFilter,
 } from "@baw-api/baw-api.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AbstractModel } from "@models/AbstractModel";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import { noop, Observable, Subject } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { switchMap, takeUntil, tap } from "rxjs/operators";
 
 const queryKey = "query";
@@ -37,7 +37,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   /**
    * Tracks whether an error has occurred
    */
-  public error: ApiErrorDetails;
+  public error: BawApiError;
   /**
    * Tracks whether an api request is in process
    */
@@ -103,23 +103,22 @@ export abstract class PaginationTemplate<M extends AbstractModel>
         switchMap(() => this.getModels()),
         takeUntil(this.unsubscribe)
       )
-      .subscribe(
-        (models: M[]) => {
+      .subscribe({
+        next: (models: M[]) => {
           this.loading = false;
           this.collectionSize = models?.[0]?.getMetadata()?.paging?.total || 0;
           this.displayPagination = this.collectionSize > defaultApiPageSize;
           this.apiUpdate(models);
         },
-        (error: ApiErrorDetails) => {
-          console.error("Scroll Template Failure: ", error);
+        error: (error: BawApiError) => {
           this.error = error;
           this.loading = false;
-        }
-      );
+        },
+      });
 
     this.route.queryParams
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(() => this.updateFromUrl(), noop);
+      .subscribe(() => this.updateFromUrl());
   }
 
   /**

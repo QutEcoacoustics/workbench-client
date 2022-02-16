@@ -1,5 +1,4 @@
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
@@ -8,6 +7,8 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { Errorable } from "@helpers/advancedTypes";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { AudioEvent } from "@models/AudioEvent";
@@ -23,8 +24,8 @@ import {
 } from "@ngneat/spectator";
 import { ItemsComponent } from "@shared/items/items/items.component";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateBookmark } from "@test/fakes/Bookmark";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
@@ -51,7 +52,7 @@ describe("MyProfileComponent", () => {
     stubsEnabled: false,
   });
 
-  function setup(model: User, error?: ApiErrorDetails) {
+  function setup(model: User, error?: BawApiError) {
     spec = createComponent({
       detectChanges: false,
       data: {
@@ -67,7 +68,7 @@ describe("MyProfileComponent", () => {
     tagsApi = spec.inject(TagsService);
   }
 
-  type Intercept<Model extends AbstractModel> = Model[] | ApiErrorDetails;
+  type Intercept<Model extends AbstractModel> = Errorable<Model[]>;
 
   function interceptApiRequest<Model extends AbstractModel, Service>(
     api: SpyObject<Service>,
@@ -121,7 +122,7 @@ describe("MyProfileComponent", () => {
   });
 
   it("should handle user error", () => {
-    setup(undefined, generateApiErrorDetails());
+    setup(undefined, generateBawApiError());
     interceptApiRequests({});
     spec.detectChanges();
     assertErrorHandler(spec.fixture);
@@ -221,7 +222,7 @@ describe("MyProfileComponent", () => {
     });
   });
 
-  describe("authentication token", () => {
+  xdescribe("authentication token", () => {
     // TODO
     it("should request auth token on load", () => {});
     it("should show loading animation while auth token loads", () => {});
@@ -297,7 +298,7 @@ describe("MyProfileComponent", () => {
         it("should update with Unknown on error", async () => {
           setup(defaultUser);
           const promise = interceptApiRequests({
-            [test.model]: generateApiErrorDetails(),
+            [test.model]: generateBawApiError(),
           });
           spec.detectChanges();
           await promise;

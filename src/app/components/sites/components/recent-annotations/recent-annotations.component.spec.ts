@@ -5,7 +5,7 @@ import { Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ACCOUNT, TAG } from "@baw-api/ServiceTokens";
 import { Errorable } from "@helpers/advancedTypes";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
+import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AudioEvent } from "@models/AudioEvent";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
@@ -13,7 +13,6 @@ import { Tagging } from "@models/Tagging";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetailsV2 } from "@test/fakes/ApiErrorDetails";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateSite } from "@test/fakes/Site";
 import { generateTag } from "@test/fakes/Tag";
@@ -46,7 +45,7 @@ describe("RecentAnnotationsComponent", () => {
     return spec.queryAll(".nav-link");
   }
 
-  function assertNavLink(navLink: Element, text) {
+  function assertNavLink(navLink: Element, text: string) {
     expect(navLink).toHaveText(text);
   }
 
@@ -83,7 +82,7 @@ describe("RecentAnnotationsComponent", () => {
       const promise = nStepObservable(
         subjects.audioEvents,
         () => audioEvents,
-        isApiErrorDetails(audioEvents),
+        isBawApiError(audioEvents),
         Object.keys(promises).length
       );
       promises.events = promise;
@@ -92,7 +91,7 @@ describe("RecentAnnotationsComponent", () => {
       const promise = nStepObservable(
         subjects.creator,
         () => creator,
-        isApiErrorDetails(creator),
+        isBawApiError(creator),
         Object.keys(promises).length
       );
       promises.creator = promise;
@@ -101,7 +100,7 @@ describe("RecentAnnotationsComponent", () => {
       const promise = nStepObservable(
         subjects.tag,
         () => tag,
-        isApiErrorDetails(tag),
+        isBawApiError(tag),
         Object.keys(promises).length
       );
       promises.tag = promise;
@@ -138,14 +137,6 @@ describe("RecentAnnotationsComponent", () => {
       await promises.events;
       spec.detectChanges();
       expect(spec.query("#no-annotations")).toHaveText("No recent annotations");
-    });
-
-    it("should send error notification if audio event failure", async () => {
-      const promises = setAudioEvents(generateApiErrorDetailsV2(), null, null);
-      spec.detectChanges();
-      await promises.events;
-      spec.detectChanges();
-      expect(spec.inject(ToastrService).error).toHaveBeenCalled();
     });
   });
 

@@ -1,7 +1,7 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import {
   destroyGoogleMaps,
   embedGoogleMaps,
@@ -14,7 +14,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { testFormlyFields } from "@test/helpers/formly";
@@ -62,7 +62,7 @@ describe("RegionsNewComponent", () => {
     let api: SpyObject<RegionsService>;
     let defaultProject: Project;
 
-    function setup(error?: ApiErrorDetails) {
+    function setup(error?: BawApiError) {
       spectator = createComponent({
         detectChanges: false,
         params: { projectId: defaultProject?.id },
@@ -88,7 +88,7 @@ describe("RegionsNewComponent", () => {
     });
 
     it("should handle project error", () => {
-      setup(generateApiErrorDetails());
+      setup(generateBawApiError());
       assertErrorHandler(spectator.fixture);
     });
 

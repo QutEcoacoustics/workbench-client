@@ -2,6 +2,12 @@ import { fakeAsync } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import {
+  AuthTriggerData,
+  BawSessionService,
+  GuestUser,
+  guestUser,
+} from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { adminDashboardMenuItem } from "@components/admin/admin.menus";
@@ -21,19 +27,15 @@ import {
   CustomMenuItem,
   Settings,
 } from "@helpers/app-initializer/app-initializer";
-import { SessionUser } from "@models/User";
+import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { assetRoot, ConfigService } from "@services/config/config.service";
 import { MenuService } from "@services/menu/menu.service";
 import { IconsModule } from "@shared/icons/icons.module";
-import { generateSessionUser, generateUser } from "@test/fakes/User";
+import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { viewports } from "@test/helpers/general";
-import {
-  assertImage,
-  assertStrongRouteLink,
-  assertUrl,
-} from "@test/helpers/html";
+import { assertImage, assertStrongRouteLink } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { MockProvider } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
@@ -44,6 +46,7 @@ import { PrimaryMenuComponent } from "./primary-menu.component";
 
 describe("PrimaryMenuComponent", () => {
   let api: SecurityService;
+  let session: BawSessionService;
   let router: Router;
   let spec: Spectator<PrimaryMenuComponent>;
   const createComponent = createComponentFactory({
@@ -68,7 +71,7 @@ describe("PrimaryMenuComponent", () => {
     customMenu?: CustomMenuItem[];
     isFullscreen?: boolean;
     isSideNav?: boolean;
-    user?: SessionUser;
+    user?: User;
   }) {
     spec = createComponent({
       detectChanges: false,
@@ -85,13 +88,15 @@ describe("PrimaryMenuComponent", () => {
       ],
       props: { isSideNav: props?.isSideNav ?? false },
     });
-    spec.component["reloadPage"] = jasmine.createSpy().and.stub();
 
     api = spec.inject(SecurityService);
+    session = spec.inject(BawSessionService);
     router = spec.inject(Router);
 
     if (props?.user !== undefined) {
-      spyOn(api, "getLocalUser").and.callFake(() => props?.user ?? null);
+      spyOnProperty(session, "authTrigger").and.returnValue(
+        new BehaviorSubject({ user: props?.user ?? guestUser })
+      );
     }
   }
 
@@ -112,7 +117,7 @@ describe("PrimaryMenuComponent", () => {
     userRoles.forEach(({ type, links }) => {
       describe(type + " user", () => {
         let isAdmin: boolean;
-        let defaultUser: SessionUser | null;
+        let defaultUser: User | GuestUser;
 
         function getNavLinks() {
           return spec.queryAll<HTMLElement>("a.nav-link");
@@ -120,12 +125,10 @@ describe("PrimaryMenuComponent", () => {
 
         beforeEach(() => {
           if (type === "guest") {
-            defaultUser = null;
+            defaultUser = guestUser;
           } else {
             isAdmin = type === "admin";
-            defaultUser = new SessionUser({
-              ...generateSessionUser({}, generateUser({}, isAdmin)),
-            });
+            defaultUser = new User(generateUser({}, isAdmin));
           }
         });
 
@@ -233,7 +236,10 @@ describe("PrimaryMenuComponent", () => {
           const profile = spec.query<HTMLElement>("#login-widget");
 
           if (links.profile) {
-            assertUrl(profile, myAccountMenuItem.route.toRouterLink());
+            assertStrongRouteLink(
+              profile,
+              myAccountMenuItem.route.toRouterLink()
+            );
             expect(profile).toContainText(defaultUser.userName);
           } else {
             expect(profile).toBeFalsy();
@@ -242,11 +248,8 @@ describe("PrimaryMenuComponent", () => {
 
         if (links.profile) {
           it("should display default profile icon", () => {
-            const user = new SessionUser(
-              generateSessionUser(
-                {},
-                generateUser({ imageUrls: undefined }, isAdmin)
-              )
+            const user = new User(
+              generateUser({ imageUrls: undefined }, isAdmin)
             );
             setup({ user });
             spec.detectChanges();
@@ -262,7 +265,7 @@ describe("PrimaryMenuComponent", () => {
 
           it("should display profile custom icon", () => {
             const imageUrls = modelData.imageUrls();
-            const customUser = new SessionUser(generateUser({ imageUrls }));
+            const customUser = new User(generateUser({ imageUrls }));
             setup({ user: customUser });
             spec.detectChanges();
 
@@ -308,7 +311,7 @@ describe("PrimaryMenuComponent", () => {
   });
 
   describe("logout", () => {
-    let defaultUser: SessionUser;
+    let defaultUser: User;
 
     function getLogoutButton() {
       return spec.query<HTMLButtonElement>("#logout-header-link");
@@ -323,10 +326,7 @@ describe("PrimaryMenuComponent", () => {
     }
 
     beforeEach(() => {
-      defaultUser = new SessionUser({
-        ...generateUser(),
-        ...generateSessionUser(),
-      });
+      defaultUser = new User(generateUser());
     });
 
     it("should call signOut when logout button pressed", () => {
@@ -336,15 +336,6 @@ describe("PrimaryMenuComponent", () => {
 
       getLogoutButton().click();
       expect(api.signOut).toHaveBeenCalled();
-    });
-
-    it("should reload page when logging out", () => {
-      setup({ user: defaultUser });
-      handleLogout();
-      spec.detectChanges();
-
-      getLogoutButton().click();
-      expect(spec.component["reloadPage"]).toHaveBeenCalled();
     });
 
     it("should redirect to home page when logging out if location is undefined", () => {
@@ -363,33 +354,24 @@ describe("PrimaryMenuComponent", () => {
     });
 
     function getLoggedInTrigger() {
-      const loggedInTrigger = new BehaviorSubject(null);
-      spyOn(api, "getAuthTrigger").and.callFake(() => loggedInTrigger);
-      return loggedInTrigger;
-    }
-
-    function onFirstLoadSetGuestUserOnSecondLoadSetLoggedIn() {
-      let count = 0;
-      spyOn(api, "getLocalUser").and.callFake(() => {
-        if (count !== 0) {
-          return null;
-        }
-        count++;
-        return defaultUser;
+      const loggedInTrigger = new BehaviorSubject<AuthTriggerData>({
+        user: guestUser,
       });
+      spyOnProperty(session, "authTrigger").and.callFake(() => loggedInTrigger);
+      return loggedInTrigger;
     }
 
     // TODO Move to E2E Tests
     it("should display register after logout", () => {
       setup({ user: undefined });
-      handleLogout();
       const loggedInTrigger = getLoggedInTrigger();
-      onFirstLoadSetGuestUserOnSecondLoadSetLoggedIn();
+      loggedInTrigger.next({ user: defaultUser });
+      handleLogout();
       spec.detectChanges();
 
       // Wait for sign out, and trigger logged in status update
       getLogoutButton().click();
-      loggedInTrigger.next(null);
+      loggedInTrigger.next({ user: guestUser });
       spec.detectChanges();
 
       const link = spec.queryAll<HTMLElement>("a.nav-link")[4];
@@ -400,14 +382,14 @@ describe("PrimaryMenuComponent", () => {
     // TODO Move to E2E Tests
     it("should display login after logout", fakeAsync(() => {
       setup({ user: undefined });
-      handleLogout();
       const loggedInTrigger = getLoggedInTrigger();
-      onFirstLoadSetGuestUserOnSecondLoadSetLoggedIn();
+      loggedInTrigger.next({ user: defaultUser });
+      handleLogout();
       spec.detectChanges();
 
       // Wait for sign out, and trigger logged in status update
       getLogoutButton().click();
-      loggedInTrigger.next(null);
+      loggedInTrigger.next({ user: guestUser });
       spec.detectChanges();
 
       const link = spec.queryAll<HTMLElement>("a.nav-link")[5];

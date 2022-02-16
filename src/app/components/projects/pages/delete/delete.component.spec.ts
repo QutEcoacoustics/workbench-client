@@ -1,10 +1,10 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   projectResolvers,
   ProjectsService,
 } from "@baw-api/project/projects.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import {
   createRoutingFactory,
@@ -12,7 +12,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { assertErrorHandler } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
@@ -32,7 +32,7 @@ describe("ProjectsDeleteComponent", () => {
     stubsEnabled: true,
   });
 
-  function setup(model: Project, error?: ApiErrorDetails) {
+  function setup(model: Project, error?: BawApiError) {
     spectator = createComponent({
       detectChanges: false,
       data: {
@@ -63,7 +63,7 @@ describe("ProjectsDeleteComponent", () => {
     });
 
     it("should handle project error", () => {
-      setup(undefined, generateApiErrorDetails());
+      setup(undefined, generateBawApiError());
       assertErrorHandler(spectator.fixture);
     });
 

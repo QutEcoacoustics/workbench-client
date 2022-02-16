@@ -1,9 +1,9 @@
 import { RouterTestingModule } from "@angular/router/testing";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Errorable } from "@helpers/advancedTypes";
+import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IProject, Project } from "@models/Project";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import {
@@ -14,7 +14,7 @@ import {
 import { CardsComponent } from "@shared/cards/cards.component";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
@@ -54,7 +54,7 @@ describe("ProjectsListComponent", () => {
     const promise = nStepObservable(
       subject,
       () => models,
-      isApiErrorDetails(models)
+      isBawApiError(models)
     );
     api.filter.and.callFake((filters) => {
       assertFilter(filters);
@@ -84,7 +84,7 @@ describe("ProjectsListComponent", () => {
   });
 
   it("should handle failed projects model", async () => {
-    await handleApiRequest(generateApiErrorDetails());
+    await handleApiRequest(generateBawApiError());
     assertErrorHandler(spec.fixture, true);
   });
 

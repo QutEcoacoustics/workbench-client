@@ -1,47 +1,60 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { toBase64Url } from "@helpers/encoding/encoding";
+import { AuthToken } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
-import { SessionUser } from "@models/User";
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
-import { ConfigService } from "@services/config/config.service";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+  SpyObject,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { generateSessionUser } from "@test/fakes/User";
 import {
-  validateApiFilter,
-  validateApiList,
-  validateApiShow,
   validateCustomApiFilter,
+  validateReadonlyApi,
 } from "@test/helpers/api-common";
 import { modelData } from "@test/helpers/faker";
+import { ToastrService } from "ngx-toastr";
 import { AudioRecordingsService } from "./audio-recordings.service";
 
 type Model = AudioRecording;
-type Params = [];
 type Service = AudioRecordingsService;
 
 describe("AudioRecordingsService", function () {
   const createModel = () =>
     new AudioRecording(generateAudioRecording({ id: 5 }));
   const baseUrl = "/audio_recordings/";
+  let session: SpyObject<BawSessionService>;
   let spec: SpectatorService<AudioRecordingsService>;
   const createService = createServiceFactory({
     service: AudioRecordingsService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
   beforeEach(function () {
     spec = createService();
-    this.service = spec.service;
+    session = spec.inject(BawSessionService);
   });
 
-  validateApiList<Model, Params, Service>(baseUrl);
-  validateApiFilter<Model, Params, Service>(baseUrl + "filter");
-  validateApiShow<Model, Params, Service>(baseUrl + "5", 5, createModel);
+  validateReadonlyApi(
+    () => spec,
+    AudioRecording,
+    baseUrl,
+    baseUrl + "filter",
+    baseUrl + "5",
+    createModel,
+    5
+  );
 
-  validateCustomApiFilter<Model, [...Params, IdOr<Site>], Service>(
+  validateCustomApiFilter<Model, [IdOr<Site>], Service>(
+    () => spec,
+    AudioRecording,
     baseUrl + "filter",
     "filterBySite",
     { filter: { siteId: { eq: 5 } } },
@@ -49,9 +62,16 @@ describe("AudioRecordingsService", function () {
     5
   );
 
+  const apiRoot = "https://api/";
+  function setApiRoot(_apiRoot: string) {
+    const api: BawApiService<AudioRecording> =
+      spec.inject<BawApiService<AudioRecording>>(BawApiService);
+    spyOn(api, "getPath").and.callFake((url: string) => _apiRoot + url);
+  }
+
   describe("downloadUrl", () => {
     it("should return downloadUrl", () => {
-      const apiRoot = spec.inject(ConfigService).endpoints.apiRoot;
+      setApiRoot(apiRoot);
       const id = modelData.id();
       expect(spec.service.downloadUrl(id)).toBe(
         `${apiRoot}/audio_recordings/${id}/original`
@@ -64,9 +84,14 @@ describe("AudioRecordingsService", function () {
     const filterQsp = "filter_encoded=";
     const authTokenQsp = "auth_token=";
 
+    function setAuthToken(authToken: AuthToken) {
+      spyOnProperty(session, "isLoggedIn").and.returnValue(!!authToken);
+      spyOnProperty(session, "authToken").and.returnValue(authToken);
+    }
+
     beforeEach(() => {
-      const config = spec.inject(ConfigService);
-      downloadUrl = config.endpoints.apiRoot + baseUrl + "downloader?";
+      setApiRoot(apiRoot);
+      downloadUrl = apiRoot + baseUrl + "downloader?";
     });
 
     it("should snake case filter", () => {
@@ -74,27 +99,27 @@ describe("AudioRecordingsService", function () {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       const snakeCaseFilter = { filter: { duration_seconds: { eq: 10 } } };
 
-      spyOn(spec.service, "getLocalUser").and.returnValue(undefined);
+      setAuthToken(undefined);
       const expectation =
         downloadUrl + filterQsp + toBase64Url(JSON.stringify(snakeCaseFilter));
       expect(spec.service.batchDownloadUrl(filter)).toBe(expectation);
     });
 
     it("should set auth token if logged in", () => {
-      const user = new SessionUser(generateSessionUser());
-      spyOn(spec.service, "getLocalUser").and.returnValue(user);
+      const authToken = modelData.authToken();
+      setAuthToken(authToken);
       const expectation =
         downloadUrl +
         filterQsp +
         toBase64Url(JSON.stringify({})) +
         "&" +
         authTokenQsp +
-        user.authToken;
+        authToken;
       expect(spec.service.batchDownloadUrl({})).toBe(expectation);
     });
 
     it("should not set auth token if not logged in", () => {
-      spyOn(spec.service, "getLocalUser").and.returnValue(undefined);
+      setAuthToken(undefined);
       const expectation =
         downloadUrl + filterQsp + toBase64Url(JSON.stringify({}));
       expect(spec.service.batchDownloadUrl({})).toBe(expectation);

@@ -1,6 +1,7 @@
 import { Location } from "@angular/common";
 import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { homeMenuItem } from "@components/home/home.menus";
 import {
@@ -46,7 +47,8 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
 
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
-    private api: SecurityService,
+    private securityApi: SecurityService,
+    private session: BawSessionService,
     private location: Location,
     notifications: ToastrService,
     route: ActivatedRoute,
@@ -72,7 +74,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   public ngOnInit() {
     super.ngOnInit();
 
-    if (this.api.isLoggedIn()) {
+    if (this.session.isLoggedIn) {
       this.notifications.error("You are already logged in.");
     }
 
@@ -110,7 +112,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   }
 
   protected apiAction(model: ILoginDetails) {
-    return this.api.signIn(new LoginDetails(model));
+    return this.securityApi.signIn(new LoginDetails(model));
   }
 }
 

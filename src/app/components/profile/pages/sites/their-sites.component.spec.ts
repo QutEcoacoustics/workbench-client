@@ -1,6 +1,5 @@
 import { Injector } from "@angular/core";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -8,6 +7,7 @@ import { PROJECT } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AccessLevel } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
@@ -18,7 +18,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
@@ -40,7 +40,7 @@ describe("TheirSitesComponent", () => {
     stubsEnabled: false,
   });
 
-  function setup(model: User, error?: ApiErrorDetails) {
+  function setup(model: User, error?: BawApiError) {
     spec = createComponent({
       detectChanges: false,
       data: {
@@ -69,10 +69,7 @@ describe("TheirSitesComponent", () => {
     sitesApi.filterByCreator.and.callFake(() => new BehaviorSubject(sites));
   }
 
-  function interceptProjectRequest(
-    projects: Project[],
-    error?: ApiErrorDetails
-  ) {
+  function interceptProjectRequest(projects: Project[], error?: BawApiError) {
     const subject = new Subject();
     projectsApi.filter.and.callFake(() => subject);
     return nStepObservable(subject, () => projects || error, !projects);
@@ -98,7 +95,7 @@ describe("TheirSitesComponent", () => {
   });
 
   it("should handle user error", async () => {
-    setup(undefined, generateApiErrorDetails());
+    setup(undefined, generateBawApiError());
     interceptSiteRequest([]);
     spec.detectChanges();
     assertErrorHandler(spec.fixture);

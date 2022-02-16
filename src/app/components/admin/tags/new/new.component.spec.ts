@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { TagType } from "@models/Tag";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
@@ -23,7 +23,7 @@ describe("AdminTagsNewComponent", () => {
   let notifications: ToastrService;
   let router: Router;
 
-  function configureTestingModule(model: TagType[], error?: ApiErrorDetails) {
+  function configureTestingModule(model: TagType[], error?: BawApiError) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -73,7 +73,7 @@ describe("AdminTagsNewComponent", () => {
     });
 
     it("should handle tag types error", () => {
-      configureTestingModule(undefined, generateApiErrorDetails());
+      configureTestingModule(undefined, generateBawApiError());
       assertErrorHandler(fixture);
     });
 

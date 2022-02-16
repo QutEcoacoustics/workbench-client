@@ -1,5 +1,4 @@
 import { Component, Inject, Input, OnInit } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import {
@@ -9,6 +8,10 @@ import {
   REQUEST_TIMEOUT,
   BAD_GATEWAY,
 } from "http-status";
+import {
+  ApiErrorDetails,
+  BawApiError,
+} from "@helpers/custom-errors/baw-api-error";
 
 /**
  * Error Handler Wrapper
@@ -29,7 +32,7 @@ import {
   `,
 })
 export class ErrorHandlerComponent implements OnInit {
-  @Input() public error: ApiErrorDetails;
+  @Input() public error: ApiErrorDetails | BawApiError;
   public reportProblem = reportProblemMenuItem.route;
   public hideErrorDetails: boolean;
   public titles = {

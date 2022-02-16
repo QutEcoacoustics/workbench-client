@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
 import {
   createRoutingFactory,
@@ -9,14 +9,12 @@ import {
   SpectatorRoutingOverrides,
 } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import {
-  defaultErrorMsg,
   defaultSuccessMsg,
-  extendedErrorMsg,
   FormTemplate,
   FormTemplateOptions as TemplateOptions,
 } from "./formTemplate";
@@ -53,7 +51,7 @@ class MockComponent extends FormTemplate<MockModel> {
 const formTemplateOptions: Partial<TemplateOptions<MockModel>> = {};
 
 describe("formTemplate", () => {
-  let defaultError: ApiErrorDetails;
+  let defaultError: BawApiError;
   let defaultModel: MockModel;
   let notifications: ToastrService;
   let spec: SpectatorRouting<MockComponent>;
@@ -81,7 +79,7 @@ describe("formTemplate", () => {
 
   function makeResolvedModel(
     model?: AbstractModel | AbstractModel[],
-    error?: ApiErrorDetails
+    error?: BawApiError
   ): ResolvedModel {
     return model ? { model } : { error };
   }
@@ -108,7 +106,7 @@ describe("formTemplate", () => {
   }
 
   beforeEach(() => {
-    defaultError = generateApiErrorDetails();
+    defaultError = generateBawApiError();
     defaultModel = new MockModel({ id: 1 });
     successResponse = (model) =>
       new BehaviorSubject<MockModel>(new MockModel(model));
@@ -382,18 +380,8 @@ describe("formTemplate", () => {
       assertNotification("success", successMsg(new MockModel(modelData)));
     });
 
-    it("should display default failure notification on failed submission", () => {
-      setup();
-      stubFormResets();
-      interceptApiAction(errorResponse);
-      spec.detectChanges();
-
-      submitForm({ id: 1 });
-      assertNotification("error", defaultErrorMsg(defaultError));
-    });
-
     it("should display failure notification on failed submission", () => {
-      const failureMsg = (err: ApiErrorDetails) =>
+      const failureMsg = (err: BawApiError) =>
         "custom failure message with message: " + err.message;
       setup(undefined, { failureMsg });
       stubFormResets();
@@ -467,52 +455,5 @@ describe("defaultSuccessMsg", () => {
     expect(defaultSuccessMsg("destroyed", "name")).toBe(
       "Successfully destroyed name"
     );
-  });
-});
-
-describe("defaultErrorMsg", () => {
-  it("should return error message", () => {
-    const apiError = generateApiErrorDetails("Bad Request", {
-      message: "Custom Message",
-    });
-
-    expect(defaultErrorMsg(apiError)).toBe("Custom Message");
-  });
-});
-
-describe("extendedErrorMsg", () => {
-  it("should return error message", () => {
-    const apiError = generateApiErrorDetails("Bad Request", {
-      message: "Custom Message",
-    });
-
-    expect(extendedErrorMsg(apiError, {})).toBe("Custom Message");
-  });
-
-  it("should return error message with single info field", () => {
-    const apiError = generateApiErrorDetails("Bad Request", {
-      message: "Custom Message",
-      info: { name: "this name already exists" },
-    });
-
-    expect(
-      extendedErrorMsg(apiError, {
-        name: (value) => "custom message: " + value,
-      })
-    ).toBe("Custom Message<br />custom message: this name already exists");
-  });
-
-  it("should return error message with multiple info fields", () => {
-    const apiError = generateApiErrorDetails("Bad Request", {
-      message: "Custom Message",
-      info: { name: "this name already exists", foo: "bar" },
-    });
-
-    expect(
-      extendedErrorMsg(apiError, {
-        name: () => "custom message",
-        foo: (value) => value,
-      })
-    ).toBe("Custom Message<br />custom message<br />bar");
   });
 });

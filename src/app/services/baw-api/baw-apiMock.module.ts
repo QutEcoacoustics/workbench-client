@@ -12,12 +12,13 @@ import {
   ShallowAudioEventsService,
 } from "./audio-event/audio-events.service";
 import { AudioRecordingsService } from "./audio-recording/audio-recordings.service";
-import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
+import { BawApiService } from "./baw-api.service";
+import { BawFormApiService } from "./baw-form-api.service";
+import { BawSessionService } from "./baw-session.service";
 import { BookmarksService } from "./bookmark/bookmarks.service";
 import { CmsService } from "./cms/cms.service";
 import { DatasetItemsService } from "./dataset/dataset-items.service";
 import { DatasetsService } from "./dataset/datasets.service";
-import { MockBawApiService, MockModel } from "./mock/baseApiMock.service";
 import { MockSecurityService } from "./mock/securityMock.service";
 import { ProgressEventsService } from "./progress-event/progress-events.service";
 import { ProjectsService } from "./project/projects.service";
@@ -47,6 +48,8 @@ import { UserService } from "./user/user.service";
 
 const mockProviders: Provider[] = [
   { provide: SecurityService, useClass: MockSecurityService },
+  mockProvider(BawApiService),
+  mockProvider(BawFormApiService),
   mockProvider(CmsService),
   mockProvider(AccountsService),
   mockProvider(AnalysisJobsService),
@@ -85,8 +88,7 @@ const mockProviders: Provider[] = [
       useClass: BawApiInterceptor,
       multi: true,
     },
-    { provide: STUB_MODEL_BUILDER, useValue: MockModel },
-    { provide: BawApiService, useClass: MockBawApiService },
+    BawSessionService,
     ...services,
     ...serviceTokens,
     ...serviceResolvers,

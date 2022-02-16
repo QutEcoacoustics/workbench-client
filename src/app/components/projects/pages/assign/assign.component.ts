@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import {
@@ -8,7 +7,7 @@ import {
   projectCategory,
   projectMenuItem,
 } from "@components/projects/projects.menus";
-import { defaultErrorMsg } from "@helpers/formTemplate/formTemplate";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
@@ -42,6 +41,7 @@ class AssignComponent
     { name: "Description" },
   ];
   public sortKeys = { siteId: "id", name: "name" };
+  public error: BawApiError;
   protected api: ShallowSitesService;
   private oldSiteIds: Id[];
 
@@ -76,10 +76,7 @@ class AssignComponent
 
   public ngOnInit() {
     super.ngOnInit();
-
-    if (!this.failure) {
-      this.oldSiteIds = Array.from(this.project.siteIds);
-    }
+    this.oldSiteIds = Array.from(this.project.siteIds);
   }
 
   public get project(): Project {
@@ -128,11 +125,14 @@ class AssignComponent
       ),
     ])
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        () =>
-          this.notifications.success("Successfully update projects site list"),
-        (err: ApiErrorDetails) => this.notifications.error(defaultErrorMsg(err))
-      );
+      .subscribe({
+        next: () => {
+          this.notifications.success("Successfully update projects site list");
+        },
+        error: (err: BawApiError) => {
+          this.error = err;
+        },
+      });
   }
 
   public getPageData() {

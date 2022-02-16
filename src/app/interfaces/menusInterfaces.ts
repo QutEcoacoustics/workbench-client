@@ -2,7 +2,7 @@ import { Params } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
-import { SessionUser } from "../models/User";
+import { User } from "../models/User";
 import { StrongRoute } from "./strongRoute";
 
 /**
@@ -68,7 +68,7 @@ export type MenuItemKinds =
 /**
  * User callback function
  */
-export type UserCallback<T> = null | ((user?: SessionUser, data?: any) => T);
+export type UserCallback<T> = null | ((user?: User, data?: any) => T);
 
 /**
  * An item designed to be in a menu.

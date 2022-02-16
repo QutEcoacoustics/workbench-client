@@ -12,7 +12,7 @@ import {
   TimezoneInformation,
   UserName,
 } from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+import { AbstractModel, AbstractModelWithoutId } from "./AbstractModel";
 import { bawDateTime, bawImage, bawPersistAttr } from "./AttributeDecorators";
 
 const deletedUserId = -1;
@@ -117,8 +117,15 @@ export class User extends AbstractModel<IUser> implements IUser {
     this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
   }
 
+  /**
+   * Determines if user is admin. Role mask stores user roles
+   * as a power of 2 integer so that roles can be combined.
+   * The admin role is 1, therefore a role mask of 1 (0001) or
+   * 3 (0011) indicate an admin account.
+   */
   public get isAdmin(): boolean {
-    return isAdminUser(this);
+    // eslint-disable-next-line no-bitwise
+    return !!(this.rolesMask & 1);
   }
 
   public get isUnknown(): boolean {
@@ -149,7 +156,7 @@ export class User extends AbstractModel<IUser> implements IUser {
 /**
  * A user model for the website user
  */
-export interface ISessionUser extends IUser {
+export interface ISession {
   userName?: UserName;
   authToken?: AuthToken;
 }
@@ -157,42 +164,15 @@ export interface ISessionUser extends IUser {
 /**
  * A user model for the website user
  */
-export class SessionUser
-  extends AbstractModel<ISessionUser>
-  implements ISessionUser
+export class Session
+  extends AbstractModelWithoutId<ISession>
+  implements ISession
 {
   public readonly kind = "Session User";
-  public readonly id?: Id;
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;
-  @bawImage<ISessionUser>(`${assetRoot}/images/user/user_span4.png`)
-  public readonly imageUrls?: ImageUrl[];
-  public readonly preferences?: any;
-  public readonly rolesMask?: number;
-  public readonly tzinfoTz?: string;
-  public readonly timezoneInformation?: TimezoneInformation;
-
-  public constructor(user: ISessionUser & Partial<IUser>, injector?: Injector) {
-    super(user, injector);
-    this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
-  }
-
-  public get isAdmin(): boolean {
-    return isAdminUser(this);
-  }
 
   public get viewUrl(): string {
     return myAccountMenuItem.route.format();
   }
-}
-
-/**
- * Determines if user is admin. Role mask stores user roles
- * as a power of 2 integer so that roles can be combined.
- * The admin role is 1, therefore a role mask of 1 (0001) or
- * 3 (0011) indicate an admin account.
- */
-function isAdminUser(model: User | SessionUser): boolean {
-  // eslint-disable-next-line no-bitwise
-  return !!(model.rolesMask & 1);
 }

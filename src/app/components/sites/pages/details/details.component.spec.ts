@@ -1,24 +1,26 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SiteComponent } from "@components/sites/components/site/site.component";
 import { Errorable } from "@helpers/advancedTypes";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { assertErrorHandler } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
 import { Region } from "@models/Region";
 import { generateRegion } from "@test/fakes/Region";
+import {
+  BawApiError,
+  isBawApiError,
+} from "@helpers/custom-errors/baw-api-error";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { SiteDetailsComponent } from "./details.component";
 
 const mockSiteComponent = MockComponent(SiteComponent);
 
 describe("SiteDetailsComponent", () => {
-  let defaultError: ApiErrorDetails;
+  let defaultError: BawApiError;
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
@@ -34,7 +36,7 @@ describe("SiteDetailsComponent", () => {
     region?: Errorable<Region>
   ) {
     function getResolvedModel<T>(model: Errorable<T>): ResolvedModel<T> {
-      return isApiErrorDetails(model) ? { error: model } : { model };
+      return isBawApiError(model) ? { error: model } : { model };
     }
 
     const models = {
@@ -57,7 +59,7 @@ describe("SiteDetailsComponent", () => {
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultSite = new Site(generateSite());
-    defaultError = generateApiErrorDetails();
+    defaultError = generateBawApiError();
   });
 
   [true, false].forEach((withRegion) => {

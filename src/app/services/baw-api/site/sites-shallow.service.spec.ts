@@ -1,58 +1,65 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
-import { createServiceFactory } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateSite } from "@test/fakes/Site";
 import {
-  validateApiCreate,
-  validateApiDestroy,
-  validateApiFilter,
-  validateApiList,
-  validateApiShow,
-  validateApiUpdate,
   validateCustomApiFilter,
   validateCustomApiList,
+  validateStandardApi,
 } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { ShallowSitesService } from "./sites.service";
 
 type Model = Site;
-type Params = [];
 type Service = ShallowSitesService;
 
-describe("ShallowSitesService", function () {
+describe("ShallowSitesService", (): void => {
   const createModel = () => new Site(generateSite({ id: 5 }));
   const baseUrl = "/sites/";
   const updateUrl = baseUrl + "5";
+  let spec: SpectatorService<ShallowSitesService>;
   const createService = createServiceFactory({
     service: ShallowSitesService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
-  beforeEach(function () {
-    this.service = createService().service;
+  beforeEach((): void => {
+    spec = createService();
   });
 
-  validateApiList<Model, Params, Service>(baseUrl);
-  validateApiFilter<Model, Params, Service>(baseUrl + "filter");
-  validateApiShow<Model, Params, Service>(updateUrl, 5, createModel);
-  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel);
-  validateApiUpdate<Model, Params, Service>(updateUrl, createModel);
-  validateApiDestroy<Model, Params, Service>(updateUrl, 5, createModel);
-
-  validateCustomApiList<Model, Params, Service>(
-    baseUrl + "orphans/",
-    "orphanList"
+  validateStandardApi(
+    () => spec,
+    Site,
+    baseUrl,
+    baseUrl + "filter",
+    updateUrl,
+    createModel,
+    5
   );
 
-  validateCustomApiFilter<Model, Params, Service>(
+  validateCustomApiList(() => spec, Site, baseUrl + "orphans/", "orphanList");
+
+  validateCustomApiFilter(
+    () => spec,
+    Site,
     baseUrl + "orphans/filter",
     "orphanFilter"
   );
 
-  validateCustomApiFilter<Model, [...Params, IdOr<User>], Service>(
+  validateCustomApiFilter<Model, [IdOr<User>], Service>(
+    () => spec,
+    Site,
     baseUrl + "filter",
     "filterByCreator",
     { filter: { creatorId: { eq: 5 } } },
@@ -60,7 +67,9 @@ describe("ShallowSitesService", function () {
     5
   );
 
-  validateCustomApiFilter<Model, [...Params, IdOr<Region>], Service>(
+  validateCustomApiFilter<Model, [IdOr<Region>], Service>(
+    () => spec,
+    Site,
     baseUrl + "filter",
     "filterByRegion",
     { filter: { regionId: { eq: 5 } } },

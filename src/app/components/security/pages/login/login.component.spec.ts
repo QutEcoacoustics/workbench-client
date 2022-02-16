@@ -1,15 +1,17 @@
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { LoginDetails } from "@models/data/LoginDetails";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { testApiConfig } from "@services/config/configMock.service";
 import { FormComponent } from "@shared/form/form.component";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { testFormlyFields } from "@test/helpers/formly";
 import { nStepObservable } from "@test/helpers/general";
 import { testFormImports } from "@test/helpers/testbed";
+import { UNAUTHORIZED } from "http-status";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { LoginComponent } from "./login.component";
@@ -17,6 +19,7 @@ import schema from "./login.schema.json";
 
 describe("LoginComponent", () => {
   let api: SecurityService;
+  let session: BawSessionService;
   let router: Router;
   let location: Location;
   let notifications: ToastrService;
@@ -30,13 +33,14 @@ describe("LoginComponent", () => {
   });
 
   function isSignedIn(signedIn: boolean = true) {
-    spyOn(api, "isLoggedIn").and.callFake(() => signedIn);
+    spyOnProperty(session, "isLoggedIn").and.callFake(() => signedIn);
   }
 
   function setup(redirect?: string | boolean, navigationId?: number) {
     spec = createComponent({ detectChanges: false, queryParams: { redirect } });
     router = spec.router;
     api = spec.inject(SecurityService);
+    session = spec.inject(BawSessionService);
     location = spec.inject(Location);
     notifications = spec.inject(ToastrService);
     spyOn(location, "getState").and.callFake(() => ({
@@ -51,9 +55,10 @@ describe("LoginComponent", () => {
     const promise = nStepObservable(
       subject,
       () =>
-        generateApiErrorDetails("Unauthorized", {
-          message: "Incorrect user name, email, or password.",
-        }),
+        generateBawApiError(
+          UNAUTHORIZED,
+          "Incorrect user name, email, or password."
+        ),
       true
     );
     spyOn(api, "signIn").and.callFake(() => subject);

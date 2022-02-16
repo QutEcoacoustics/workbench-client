@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import {
@@ -20,7 +21,7 @@ import { WidgetMenuItem } from "@menu/widgetItem";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { SessionUser } from "@models/User";
+import { User } from "@models/User";
 import { List } from "immutable";
 import {
   siteHarvestMenuItem,
@@ -47,11 +48,12 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
   public project: Project;
   public region: Region;
   public site: Site;
-  public user: SessionUser;
+  public user: User;
 
   public constructor(
     @Inject(API_ROOT) public apiRoot: string,
     protected api: SitesService,
+    private session: BawSessionService,
     private route: ActivatedRoute
   ) {
     super();
@@ -63,7 +65,7 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
       this.project = models[projectKey] as Project;
       this.region = models[regionKey] as Region;
       this.site = models[siteKey] as Site;
-      this.user = this.api.getLocalUser();
+      this.user = this.session.loggedInUser;
     }
   }
 

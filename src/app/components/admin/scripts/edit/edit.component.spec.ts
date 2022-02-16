@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   scriptResolvers,
   ScriptsService,
 } from "@baw-api/script/scripts.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Script } from "@models/Script";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateScript } from "@test/fakes/Script";
 import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
@@ -27,7 +27,7 @@ describe("AdminScriptsEditComponent", () => {
   let notifications: ToastrService;
   let router: Router;
 
-  function configureTestingModule(model: Script, error?: ApiErrorDetails) {
+  function configureTestingModule(model: Script, error?: BawApiError) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -73,7 +73,7 @@ describe("AdminScriptsEditComponent", () => {
     });
 
     it("should handle script error", () => {
-      configureTestingModule(undefined, generateApiErrorDetails());
+      configureTestingModule(undefined, generateBawApiError());
       assertErrorHandler(fixture);
     });
 

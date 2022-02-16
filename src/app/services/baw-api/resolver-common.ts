@@ -3,7 +3,7 @@
 import type { Type } from "@angular/core";
 import type { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import type { Option, Tuple } from "@helpers/advancedTypes";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { Id } from "@interfaces/apiInterfaces";
@@ -21,7 +21,6 @@ import {
   ApiUpdate,
   IdOr,
 } from "./api-common";
-import type { ApiErrorDetails } from "./api.interceptor.service";
 import { BawApiService, unknownErrorCode } from "./baw-api.service";
 
 /**
@@ -79,7 +78,7 @@ export abstract class BawResolver<
         return resolverFn(route, this.api, modelId, additionalArgs).pipe(
           map((model) => ({ model })), // Modify output to match ResolvedModel interface
           first(), // Only take first response
-          catchError((error: ApiErrorDetails) => {
+          catchError((error: BawApiError) => {
             if (!required && error.status === httpStatus.NOT_FOUND) {
               // Return undefined model if not required
               return of({ model: undefined });
@@ -344,7 +343,7 @@ export interface ResolvedModel<
   T = AbstractModel | AbstractModel[] | AbstractData | AbstractData[]
 > {
   model?: T;
-  error?: ApiErrorDetails;
+  error?: BawApiError;
 }
 
 /**
@@ -365,7 +364,7 @@ export function hasResolvedSuccessfully(
   resolvedModelList: ResolvedModelList
 ): boolean {
   return Object.values(resolvedModelList).every(
-    (model) => !isApiErrorDetails(model)
+    (model) => !(model instanceof Error)
   );
 }
 
@@ -391,10 +390,10 @@ export function retrieveResolvers(data: IPageInfo): ResolvedModelList {
 
     // If error detected, return
     if (!resolvedModel) {
-      models[key] = {
-        status: unknownErrorCode,
-        message: "Model could not be resolved",
-      } as ApiErrorDetails;
+      models[key] = new BawApiError(
+        unknownErrorCode,
+        "Model could not be resolved"
+      );
     } else if (resolvedModel.error) {
       models[key] = resolvedModel.error;
     } else {
@@ -411,5 +410,5 @@ export interface ResolvedModelList {
     | AbstractModel[]
     | AbstractData
     | AbstractData[]
-    | ApiErrorDetails;
+    | BawApiError;
 }

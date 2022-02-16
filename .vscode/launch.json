@@ -8,21 +8,23 @@
       "type": "chrome",
       "request": "launch",
       "name": "Chrome Debugging",
-      "url": "http://development.ecosounds.org:4200",
-      "webRoot": "${workspaceFolder}"
+      "url": "https://development.ecosounds.org:4200",
+      "webRoot": "${workspaceFolder}",
+      // https://stackoverflow.com/questions/51725854/run-vscode-chrome-debugger-with-its-extensions
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-userdatadir"
     },
     {
       "type": "firefox",
       "request": "launch",
       "name": "Firefox Debugging",
-      "url": "http://development.ecosounds.org:4200",
+      "url": "https://development.ecosounds.org:4200",
       "webRoot": "${workspaceFolder}"
     },
     {
       "type": "edge",
       "request": "launch",
       "name": "Edge Debugging",
-      "url": "http://development.ecosounds.org:4200",
+      "url": "https://development.ecosounds.org:4200",
       "webRoot": "${workspaceFolder}"
     },
     {

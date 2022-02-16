@@ -1,16 +1,16 @@
 import { Injector } from "@angular/core";
 import { RouterTestingModule } from "@angular/router/testing";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SecurityService } from "@baw-api/security/security.service";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
+import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { toRelative } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { ISite, Site } from "@models/Site";
 import {
   createComponentFactory,
+  mockProvider,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
@@ -19,37 +19,30 @@ import {
   DataTableBodyCellComponent,
   DatatableComponent,
 } from "@swimlane/ngx-datatable";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { interceptShowApiRequest } from "@test/helpers/general";
 import { assertUrl } from "@test/helpers/html";
+import { ToastrService } from "ngx-toastr";
 import { RecentAudioRecordingsComponent } from "./recent-audio-recordings.component";
 
 describe("RecentAudioRecordingsComponent", () => {
-  let api: {
-    sites: SpyObject<ShallowSitesService>;
-    security: SecurityService;
-  };
-
+  let api: SpyObject<ShallowSitesService>;
   let defaultRecording: AudioRecording;
   let injector: Injector;
   let spec: Spectator<RecentAudioRecordingsComponent>;
   const createComponent = createComponentFactory({
     component: RecentAudioRecordingsComponent,
     imports: [SharedModule, MockBawApiModule, RouterTestingModule],
+    providers: [mockProvider(ToastrService)],
   });
 
   function interceptSiteRequest(
     data?: Errorable<Partial<ISite>>
   ): Promise<any> {
-    const response = isApiErrorDetails(data) ? data : generateSite(data);
-    return interceptShowApiRequest(api.sites, injector, response, Site);
-  }
-
-  function setLoggedInState(isLoggedIn: boolean) {
-    spyOn(api.security, "isLoggedIn").and.callFake(() => isLoggedIn);
-    spec.component.isLoggedIn = isLoggedIn;
+    const response = isBawApiError(data) ? data : generateSite(data);
+    return interceptShowApiRequest(api, injector, response, Site);
   }
 
   function setRecordings(recordings: AudioRecording[]) {
@@ -59,11 +52,9 @@ describe("RecentAudioRecordingsComponent", () => {
   async function setup(data?: {
     recordings?: AudioRecording[];
     awaitRequests?: boolean;
-    isLoggedIn?: boolean;
     site?: Errorable<Partial<ISite>>;
   }) {
     const promise = interceptSiteRequest(data?.site);
-    setLoggedInState(data?.isLoggedIn);
     setRecordings(data?.recordings ?? []);
     spec.detectChanges();
 
@@ -76,10 +67,7 @@ describe("RecentAudioRecordingsComponent", () => {
   beforeEach(() => {
     spec = createComponent({ detectChanges: false });
     injector = spec.inject(Injector);
-    api = {
-      sites: spec.inject(SHALLOW_SITE.token),
-      security: spec.inject(SecurityService),
-    };
+    api = spec.inject(SHALLOW_SITE.token);
     defaultRecording = new AudioRecording(generateAudioRecording(), injector);
   });
 
@@ -127,19 +115,9 @@ describe("RecentAudioRecordingsComponent", () => {
     describe("site", () => {
       const getSiteCell = () => getCells()[0];
       const getSiteCellElement = () => getCellElements()[0];
-      it("should display column if not logged in", async () => {
+      it("should display column", async () => {
         await setup({
           recordings: [defaultRecording],
-          isLoggedIn: false,
-          awaitRequests: true,
-        });
-        expect(getSiteCell().column.name).toBe("Site");
-      });
-
-      it("should display column if logged in", async () => {
-        await setup({
-          recordings: [defaultRecording],
-          isLoggedIn: true,
           awaitRequests: true,
         });
         expect(getSiteCell().column.name).toBe("Site");
@@ -148,7 +126,6 @@ describe("RecentAudioRecordingsComponent", () => {
       it("should display loading spinner while site unresolved", async () => {
         await setup({
           recordings: [defaultRecording],
-          isLoggedIn: true,
         });
         assertCellLoading(getSiteCellElement(), true);
       });
@@ -156,7 +133,6 @@ describe("RecentAudioRecordingsComponent", () => {
       it("should not display loading spinner when site resolved", async () => {
         await setup({
           recordings: [defaultRecording],
-          isLoggedIn: true,
           awaitRequests: true,
         });
         assertCellLoading(getSiteCellElement(), false);
@@ -165,7 +141,6 @@ describe("RecentAudioRecordingsComponent", () => {
       it("should display site name when resolved", async () => {
         await setup({
           recordings: [defaultRecording],
-          isLoggedIn: true,
           awaitRequests: true,
           site: { name: "Example Site" },
         });
@@ -175,9 +150,8 @@ describe("RecentAudioRecordingsComponent", () => {
       it("should display unknown site if unauthorized", async () => {
         await setup({
           recordings: [defaultRecording],
-          isLoggedIn: true,
           awaitRequests: true,
-          site: generateApiErrorDetails(),
+          site: generateBawApiError(),
         });
         expect(getSiteCellElement()).toContainText("Unknown Site");
       });
@@ -190,13 +164,8 @@ describe("RecentAudioRecordingsComponent", () => {
         expect(cell).toContainText(toRelative(recording.duration));
       }
 
-      it("should display time since updated when logged in", async () => {
-        await setup({ recordings: [defaultRecording], isLoggedIn: true });
-        assertTimestamp(getUpdatedCellElement(), defaultRecording);
-      });
-
-      it("should display time since updated when not logged in", async () => {
-        await setup({ recordings: [defaultRecording], isLoggedIn: false });
+      it("should display time since updated", async () => {
+        await setup({ recordings: [defaultRecording] });
         assertTimestamp(getUpdatedCellElement(), defaultRecording);
       });
     });
@@ -208,13 +177,8 @@ describe("RecentAudioRecordingsComponent", () => {
         expect(cell).toContainText(recording.recordedDate.toRelative());
       }
 
-      it("should display time since updated when logged in", async () => {
-        await setup({ recordings: [defaultRecording], isLoggedIn: true });
-        assertTimestamp(getUpdatedCellElement(), defaultRecording);
-      });
-
-      it("should display time since updated when not logged in", async () => {
-        await setup({ recordings: [defaultRecording], isLoggedIn: false });
+      it("should display time since updated", async () => {
+        await setup({ recordings: [defaultRecording] });
         assertTimestamp(getUpdatedCellElement(), defaultRecording);
       });
     });
@@ -224,13 +188,8 @@ describe("RecentAudioRecordingsComponent", () => {
       const getPlayButton = () =>
         getActionCellElement().querySelector<HTMLElement>("#playBtn");
 
-      it("should link to listen page when not logged in", async () => {
-        await setup({ recordings: [defaultRecording], isLoggedIn: false });
-        assertUrl(getPlayButton(), defaultRecording.viewUrl);
-      });
-
-      it("should link to listen page when logged in", async () => {
-        await setup({ recordings: [defaultRecording], isLoggedIn: true });
+      it("should link to listen page", async () => {
+        await setup({ recordings: [defaultRecording] });
         assertUrl(getPlayButton(), defaultRecording.viewUrl);
       });
     });

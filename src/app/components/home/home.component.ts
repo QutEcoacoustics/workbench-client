@@ -1,8 +1,9 @@
 import { Component, OnInit } from "@angular/core";
+import { Filters } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { CMS } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
-import { SecurityService } from "@baw-api/security/security.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { Brand } from "@helpers/app-initializer/app-initializer";
@@ -13,7 +14,8 @@ import { Region } from "@models/Region";
 import { ConfigService } from "@services/config/config.service";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
-import { map, mergeMap, takeUntil } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { map, takeUntil } from "rxjs/operators";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
 @Component({
@@ -42,7 +44,7 @@ class HomeComponent extends PageComponent implements OnInit {
   public constructor(
     private regionApi: ShallowRegionsService,
     private projectApi: ProjectsService,
-    private securityApi: SecurityService,
+    private session: BawSessionService,
     public config: ConfigService
   ) {
     super();
@@ -75,27 +77,30 @@ class HomeComponent extends PageComponent implements OnInit {
      *  recent use / modification date (recent, to less recent)
      *  image or no image
      */
-    this.securityApi
-      .getAuthTrigger()
+
+    const filter: Filters<Region | Project> = {
+      paging: { items: 3 },
+      sorting: { orderBy: "updatedAt", direction: "desc" },
+    };
+
+    const models$: Observable<Region[] | Project[]> = settings.hideProjects
+      ? this.regionApi.filter(filter)
+      : this.projectApi.filter(filter);
+
+    models$
       .pipe(
-        mergeMap(() =>
-          (settings.hideProjects ? this.regionApi : this.projectApi).filter({
-            paging: { items: 3 },
-            sorting: { orderBy: "updatedAt", direction: "desc" },
-          })
-        ),
         map((models) =>
           List(models.map((model: Region | Project) => model.getCard()))
         ),
         takeUntil(this.unsubscribe)
       )
-      .subscribe(
-        (cards) => {
+      .subscribe({
+        next: (cards) => {
           this.viewMore.list = cards;
           this.viewMore.loading = false;
         },
-        () => (this.viewMore.loading = false)
-      );
+        error: () => (this.viewMore.loading = false),
+      });
   }
 
   public calculateSvgTextYPos(index: number) {

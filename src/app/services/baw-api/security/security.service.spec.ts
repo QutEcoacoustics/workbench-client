@@ -1,22 +1,41 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
+import { BawApiService, unknownErrorCode } from "@baw-api/baw-api.service";
 import {
-  ApiErrorDetails,
-  BawApiInterceptor,
-} from "@baw-api/api.interceptor.service";
-import { unknownErrorCode } from "@baw-api/baw-api.service";
-import { MockShowApiService } from "@baw-api/mock/apiMocks.service";
-import { SessionUser, User } from "@models/User";
-import { createHttpFactory, SpectatorHttp } from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
-import { generateLoginDetails } from "@test/fakes/LoginDetails";
-import { generateRegisterDetails } from "@test/fakes/RegisterDetails";
-import { generateSessionUser, generateUser } from "@test/fakes/User";
-import { modelData } from "@test/helpers/faker";
-import { assertOk, getCallArgs, nStepObservable } from "@test/helpers/general";
-import { BehaviorSubject, noop, Subject } from "rxjs";
+  BawFormApiService,
+  RecaptchaSettings,
+} from "@baw-api/baw-form-api.service";
+import {
+  AuthTriggerData,
+  BawSessionService,
+} from "@baw-api/baw-session.service";
+import { Errorable } from "@helpers/advancedTypes";
+import {
+  BawApiError,
+  isBawApiError,
+} from "@helpers/custom-errors/baw-api-error";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { AuthToken } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
 import { LoginDetails } from "@models/data/LoginDetails";
 import { RegisterDetails } from "@models/data/RegisterDetails";
+import { Session, User } from "@models/User";
+import {
+  createHttpFactory,
+  mockProvider,
+  SpectatorHttp,
+} from "@ngneat/spectator";
+import { MockAppConfigModule } from "@services/config/configMock.module";
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
+import { generateLoginDetails } from "@test/fakes/LoginDetails";
+import { generateRegisterDetails } from "@test/fakes/RegisterDetails";
+import { generateSession, generateUser } from "@test/fakes/User";
+import { modelData } from "@test/helpers/faker";
+import { assertOk, getCallArgs, nStepObservable } from "@test/helpers/general";
+import { CookieService } from "ngx-cookie-service";
+import { ToastrService } from "ngx-toastr";
+import { noop, Subject, throwError } from "rxjs";
 import {
   shouldNotComplete,
   shouldNotFail,
@@ -26,85 +45,136 @@ import { UserService } from "../user/user.service";
 import { SecurityService } from "./security.service";
 
 describe("SecurityService", () => {
-  let defaultUser: User;
-  let defaultSessionUser: SessionUser;
-  let defaultRegisterDetails: RegisterDetails;
-  let defaultLoginDetails: LoginDetails;
-  let defaultError: ApiErrorDetails;
-  let defaultAuthToken: string;
+  let defaults: {
+    user: User;
+    session: Session;
+    authToken: AuthToken;
+    registerDetails: RegisterDetails;
+    loginDetails: LoginDetails;
+    error: BawApiError;
+  };
+  let subjects: {
+    apiShow: Subject<AbstractModel>;
+    apiDestroy: Subject<null>;
+    getRecaptchaSeed: Subject<RecaptchaSettings>;
+    makeFormRequest: Subject<string>;
+    userShow: Subject<User>;
+  };
+  let session: BawSessionService;
   let userApi: UserService;
+  let formApi: BawFormApiService<Session>;
+  let cookies: CookieService;
+  let api: BawApiService<Session>;
   let spec: SpectatorHttp<SecurityService>;
   const createService = createHttpFactory({
     service: SecurityService,
     imports: [MockAppConfigModule],
     providers: [
+      BawSessionService,
+      CookieService,
+      mockProvider(ToastrService),
       {
         provide: HTTP_INTERCEPTORS,
         useClass: BawApiInterceptor,
         multi: true,
       },
-      { provide: UserService, useClass: MockShowApiService },
     ],
   });
 
-  function intercept(spy: any, response: any, error: ApiErrorDetails) {
-    const subject = new Subject<string>();
-    spy.and.callFake(() => subject);
-    return nStepObservable(subject, () => response ?? error, !!error);
+  function triggerApiShow(model: Errorable<AbstractModel>) {
+    return nStepObservable(subjects.apiShow, () => model, isBawApiError(model));
+  }
+
+  function triggerApiDestroy(error?: BawApiError) {
+    return nStepObservable(
+      subjects.apiDestroy,
+      () => error ?? null,
+      isInstantiated(error)
+    );
+  }
+
+  function triggerMakeFormRequest(page: Errorable<string>) {
+    return nStepObservable(
+      subjects.makeFormRequest,
+      () => page,
+      isBawApiError(page)
+    );
+  }
+
+  function triggerUserShow(model: Errorable<User>) {
+    return nStepObservable(
+      subjects.userShow,
+      () => model,
+      isBawApiError(model)
+    );
+  }
+
+  async function handleAuthTokenRetrievalDuringInitialization() {
+    await triggerApiShow(defaults.session);
+    await triggerUserShow(defaults.user);
+    session.clearLoggedInUser();
   }
 
   beforeEach(() => {
-    localStorage.clear();
+    subjects = {
+      apiShow: new Subject(),
+      apiDestroy: new Subject(),
+      getRecaptchaSeed: new Subject(),
+      makeFormRequest: new Subject(),
+      userShow: new Subject(),
+    };
 
-    spec = createService();
+    spec = createService({
+      providers: [
+        mockProvider(BawApiService, {
+          show: jasmine.createSpy("show").and.callFake(() => subjects.apiShow),
+          destroy: jasmine
+            .createSpy("destroy")
+            .and.callFake(() => subjects.apiDestroy),
+        }),
+        mockProvider(BawFormApiService, {
+          getRecaptchaSeed: jasmine
+            .createSpy("getRecaptchaSeed")
+            .and.callFake(() => subjects.getRecaptchaSeed),
+          makeFormRequest: jasmine
+            .createSpy("makeFormRequest")
+            .and.callFake(() => subjects.makeFormRequest),
+          // TODO Would prefer this to actually use the real service
+          handleError: jasmine.createSpy("handleError").and.callFake((err) => {
+            const error = isBawApiError(err)
+              ? err
+              : new BawApiError(unknownErrorCode, err.message);
+            return throwError(() => error);
+          }),
+        }),
+        mockProvider(UserService, {
+          show: jasmine.createSpy("show").and.callFake(() => subjects.userShow),
+        }),
+      ],
+    });
+    api = spec.inject<BawApiService<Session>>(BawApiService);
+    formApi = spec.inject<BawFormApiService<Session>>(BawFormApiService);
+    session = spec.inject(BawSessionService);
     userApi = spec.inject(UserService);
+    cookies = spec.inject(CookieService);
 
-    const userData = generateUser();
-    defaultAuthToken = modelData.random.alphaNumeric(20);
-    defaultError = generateApiErrorDetails();
-    defaultUser = new User(userData);
-    defaultSessionUser = new SessionUser({
-      ...userData,
-      ...generateSessionUser(),
-    });
-    defaultRegisterDetails = new RegisterDetails(generateRegisterDetails());
-    defaultLoginDetails = new LoginDetails(generateLoginDetails());
-  });
-
-  afterEach(() => {
-    localStorage.clear();
-  });
-
-  describe("initial state", () => {
-    it("isLoggedIn should return false", () => {
-      expect(spec.service.isLoggedIn()).toBeFalse();
-    });
-
-    it("getSessionUser should return null", () => {
-      expect(spec.service.getLocalUser()).toBeFalsy();
-    });
-
-    it("authTrigger should return null", (done) => {
-      spec.service.getAuthTrigger().subscribe(
-        (val) => {
-          expect(val).toBeNull();
-          done();
-        },
-        shouldNotFail,
-        shouldNotComplete
-      );
-    });
+    const authToken = modelData.authToken();
+    defaults = {
+      authToken,
+      user: new User(generateUser()),
+      session: new Session(generateSession({ authToken })),
+      loginDetails: new LoginDetails(generateLoginDetails()),
+      registerDetails: new RegisterDetails(generateRegisterDetails()),
+      error: generateBawApiError(),
+    };
   });
 
   describe("signUpSeed", () => {
-    it("should call getRecaptchaSeed", () => {
-      spec.service["getRecaptchaSeed"] = jasmine
-        .createSpy("getRecaptchaSeed")
-        .and.callFake(() => new Subject());
-
-      spec.service.signUpSeed().subscribe(noop, noop);
-      expect(spec.service["getRecaptchaSeed"]).toHaveBeenCalledWith(
-        "/my_account/sign_up/"
+    it("should call getRecaptchaSeed", async () => {
+      await handleAuthTokenRetrievalDuringInitialization();
+      spec.service.signUpSeed().subscribe({ next: noop, error: noop });
+      expect(formApi.getRecaptchaSeed).toHaveBeenCalledWith(
+        "/my_account/sign_up"
       );
     });
   });
@@ -116,7 +186,8 @@ describe("SecurityService", () => {
       return getCallArgs(handleAuthSpy)[2](token).toString();
     }
 
-    beforeEach(() => {
+    beforeEach(async () => {
+      await handleAuthTokenRetrievalDuringInitialization();
       handleAuthSpy = jasmine.createSpy("handleAuth");
       spec.service["handleAuth"] = handleAuthSpy.and.stub();
     });
@@ -134,37 +205,37 @@ describe("SecurityService", () => {
 
       it("should call signOut", async () => {
         const promise = interceptSignOut(true);
-        spec.service.signIn(defaultLoginDetails);
+        spec.service.signIn(defaults.loginDetails);
         await promise;
         expect(spec.service.signOut).toHaveBeenCalled();
       });
 
       it("should handle signOut failure", async () => {
         const promise = interceptSignOut(false);
-        spec.service.signIn(defaultLoginDetails);
+        spec.service.signIn(defaults.loginDetails);
         await promise;
         expect(spec.service.signOut).toHaveBeenCalled();
       });
 
       it("should call handleAuth", async () => {
         const promise = interceptSignOut(true);
-        spec.service.signIn(defaultLoginDetails);
+        spec.service.signIn(defaults.loginDetails);
         await promise;
         expect(handleAuthSpy).toHaveBeenCalled();
       });
 
       it("should call handleAuth with correct form endpoint", async () => {
         const promise = interceptSignOut(true);
-        spec.service.signIn(defaultLoginDetails);
+        spec.service.signIn(defaults.loginDetails);
         await promise;
-        expect(getCallArgs(handleAuthSpy)[0]).toBe("/my_account/sign_in/");
+        expect(getCallArgs(handleAuthSpy)[0]).toBe("/my_account/sign_in");
       });
 
       it("should call handleAuth with correct auth endpoint", async () => {
         const promise = interceptSignOut(true);
-        spec.service.signIn(defaultLoginDetails);
+        spec.service.signIn(defaults.loginDetails);
         await promise;
-        expect(getCallArgs(handleAuthSpy)[1]).toBe("/my_account/sign_in/");
+        expect(getCallArgs(handleAuthSpy)[1]).toBe("/my_account/sign_in");
       });
 
       it("should set request body", async () => {
@@ -177,28 +248,28 @@ describe("SecurityService", () => {
           "user%5Bpassword%5D=sign_in+password&" +
           "user%5Bremember_me%5D=0&" +
           "commit=Log%2Bin&" +
-          `authenticity_token=${defaultAuthToken}`;
+          `authenticity_token=${defaults.authToken}`;
 
         const promise = interceptSignOut(true);
         spec.service.signIn(loginDetails);
         await promise;
-        expect(getFormData(defaultAuthToken)).toBe(expectation);
+        expect(getFormData(defaults.authToken)).toBe(expectation);
       });
     });
 
     describe("signUp", () => {
       it("should call handleAuth", () => {
-        spec.service.signUp(defaultRegisterDetails);
+        spec.service.signUp(defaults.registerDetails);
         expect(handleAuthSpy).toHaveBeenCalled();
       });
 
       it("should call handleAuth with correct form endpoint", () => {
-        spec.service.signUp(defaultRegisterDetails);
-        expect(getCallArgs(handleAuthSpy)[0]).toBe("/my_account/sign_up/");
+        spec.service.signUp(defaults.registerDetails);
+        expect(getCallArgs(handleAuthSpy)[0]).toBe("/my_account/sign_up");
       });
 
       it("should call handleAuth with correct auth endpoint", () => {
-        spec.service.signUp(defaultRegisterDetails);
+        spec.service.signUp(defaults.registerDetails);
         expect(getCallArgs(handleAuthSpy)[1]).toBe("/my_account/");
       });
 
@@ -216,12 +287,12 @@ describe("SecurityService", () => {
           "user%5Bpassword%5D=sign_up+password&" +
           "user%5Bpassword_confirmation%5D=sign_up+password&" +
           "commit=Register&" +
-          `authenticity_token=${defaultAuthToken}&` +
+          `authenticity_token=${defaults.authToken}&` +
           "g-recaptcha-response-data%5Bregister%5D=xxxxxxxxxx&" +
           "g-recaptcha-response=";
 
         spec.service.signUp(registerDetails);
-        expect(getFormData(defaultAuthToken)).toBe(expectation);
+        expect(getFormData(defaults.authToken)).toBe(expectation);
       });
 
       it("should throw error if username is not unique", () => {
@@ -229,7 +300,7 @@ describe("SecurityService", () => {
           '<input id="user_user_name" />' +
           '<span class="help-block">has already been taken</span>';
 
-        spec.service.signUp(defaultRegisterDetails);
+        spec.service.signUp(defaults.registerDetails);
         expect(function () {
           getCallArgs(handleAuthSpy)[3](response);
         }).toThrowError("Username has already been taken.");
@@ -240,7 +311,7 @@ describe("SecurityService", () => {
           '<input id="user_email" />' +
           '<span class="help-block">has already been taken</span>';
 
-        spec.service.signUp(defaultRegisterDetails);
+        spec.service.signUp(defaults.registerDetails);
         expect(function () {
           getCallArgs(handleAuthSpy)[3](response);
         }).toThrowError("Email address has already been taken.");
@@ -250,7 +321,7 @@ describe("SecurityService", () => {
         const registerDetails = new RegisterDetails(
           generateRegisterDetails({ recaptchaToken: null })
         );
-        const page = `<input name="authenticity_token" value="${defaultAuthToken}"></input>`;
+        const page = `<input name="authenticity_token" value="${defaults.authToken}"></input>`;
 
         spec.service.signUp(registerDetails);
         expect(function () {
@@ -261,10 +332,6 @@ describe("SecurityService", () => {
   });
 
   describe("handleAuth", () => {
-    let makeFormRequestSpy: jasmine.Spy;
-    let sessionUserSpy: jasmine.Spy;
-    let userSpy: jasmine.Spy;
-
     function handleAuth(inputs?: {
       formEndpoint?: string;
       authEndpoint?: string;
@@ -279,51 +346,61 @@ describe("SecurityService", () => {
       );
     }
 
-    function interceptSessionUser(model: SessionUser, error?: ApiErrorDetails) {
-      sessionUserSpy = jasmine.createSpy("apiShow");
-      spec.service["apiShow"] = sessionUserSpy;
-      return intercept(sessionUserSpy, model, error);
+    function interceptSession(model: Errorable<Session>) {
+      return triggerApiShow(model);
     }
 
-    function interceptUser(model: User, error?: ApiErrorDetails) {
-      userSpy = spyOn(userApi, "show");
-      return intercept(userSpy, model, error);
+    function interceptUser(model: Errorable<User>) {
+      return triggerUserShow(model);
     }
 
-    function interceptMakeFormRequest(error?: ApiErrorDetails) {
-      makeFormRequestSpy = jasmine.createSpy("makeFormRequest");
-      spec.service["makeFormRequest"] = makeFormRequestSpy;
-      return intercept(
-        makeFormRequestSpy,
-        !error ? "<html></html>" : undefined,
-        error
-      );
+    function interceptMakeFormRequest(
+      page: Errorable<string> = "<html></html>"
+    ) {
+      return triggerMakeFormRequest(page);
     }
+
+    function getMakeFormRequestCallArgs() {
+      return getCallArgs(formApi.makeFormRequest as jasmine.Spy);
+    }
+
+    beforeEach(async () => {
+      await handleAuthTokenRetrievalDuringInitialization();
+    });
 
     describe("1st Request: makeFormRequest", () => {
       it("should call makeFormRequest", () => {
         interceptMakeFormRequest();
-        handleAuth().subscribe(noop, noop);
-        expect(makeFormRequestSpy).toHaveBeenCalled();
+        handleAuth().subscribe({ next: noop, error: noop });
+        expect(formApi.makeFormRequest).toHaveBeenCalled();
       });
 
       it("should call makeFormRequest with formEndpoint", () => {
         interceptMakeFormRequest();
-        handleAuth({ formEndpoint: "/form_html_link" }).subscribe(noop, noop);
-        expect(getCallArgs(makeFormRequestSpy)[0]).toBe("/form_html_link");
+        handleAuth({ formEndpoint: "/form_html_link" }).subscribe({
+          next: noop,
+          error: noop,
+        });
+        expect(getMakeFormRequestCallArgs()[0]).toBe("/form_html_link");
       });
 
       it("should call makeFormRequest with authEndpoint", () => {
         interceptMakeFormRequest();
-        handleAuth({ authEndpoint: "/auth_html_link" }).subscribe(noop, noop);
-        expect(getCallArgs(makeFormRequestSpy)[1]).toBe("/auth_html_link");
+        handleAuth({ authEndpoint: "/auth_html_link" }).subscribe({
+          next: noop,
+          error: noop,
+        });
+        expect(getMakeFormRequestCallArgs()[1]).toBe("/auth_html_link");
       });
 
       it("should call makeFormRequest with getFormData", () => {
         const formData = () => new URLSearchParams();
         interceptMakeFormRequest();
-        handleAuth({ getFormData: formData }).subscribe(noop, noop);
-        expect(getCallArgs(makeFormRequestSpy)[2]).toBe(formData);
+        handleAuth({ getFormData: formData }).subscribe({
+          next: noop,
+          error: noop,
+        });
+        expect(getMakeFormRequestCallArgs()[2]).toBe(formData);
       });
 
       it("should perform additional page validation", (done) => {
@@ -332,20 +409,25 @@ describe("SecurityService", () => {
           pageValidation: () => {
             throw Error("custom error");
           },
-        }).subscribe(shouldNotSucceed, (err) => {
-          expect(err).toEqual({
-            status: unknownErrorCode,
-            message: "custom error",
-          } as ApiErrorDetails);
-          done();
+        }).subscribe({
+          next: shouldNotSucceed,
+          error: (err) => {
+            expect(err).toEqual(
+              new BawApiError(unknownErrorCode, "custom error")
+            );
+            done();
+          },
         });
       });
 
       it("should handle makeFormRequest failure", (done) => {
-        interceptMakeFormRequest(defaultError);
-        handleAuth().subscribe(shouldNotSucceed, (err) => {
-          expect(err).toEqual(defaultError);
-          done();
+        interceptMakeFormRequest(defaults.error);
+        handleAuth().subscribe({
+          next: shouldNotSucceed,
+          error: (err) => {
+            expect(err).toEqual(defaults.error);
+            done();
+          },
         });
       });
     });
@@ -353,34 +435,41 @@ describe("SecurityService", () => {
     describe("2nd Request: Get session user", () => {
       let initialSteps: Promise<any>;
 
+      function getSessionDetailsArgs() {
+        return getCallArgs(api.show as jasmine.Spy);
+      }
+
       beforeEach(() => {
         initialSteps = interceptMakeFormRequest();
       });
 
       it("should request session user details", async () => {
-        interceptSessionUser(defaultSessionUser);
-        handleAuth().subscribe(noop, noop);
+        interceptSession(defaults.session);
+        handleAuth().subscribe({ next: noop, error: noop });
         await initialSteps;
-        expect(sessionUserSpy).toHaveBeenCalled();
+        expect(api.show).toHaveBeenCalled();
       });
 
       it("should request session user details with anti cache timestamp", async () => {
-        interceptSessionUser(defaultSessionUser);
-        handleAuth().subscribe(noop, noop);
+        interceptSession(defaults.session);
+        handleAuth().subscribe({ next: noop, error: noop });
         await initialSteps;
 
         // Validate timestamp within 1000 ms
         const timestamp = Math.floor(Date.now() / 1000);
-        expect(getCallArgs(sessionUserSpy)[0]).toContain(
-          "/security/user?antiCache=" + timestamp
-        );
+        const args = getSessionDetailsArgs();
+        expect(args[0]).toEqual(Session);
+        expect(args[1]).toContain("/security/user?antiCache=" + timestamp);
       });
 
       it("should handle session user details failure", (done) => {
-        interceptSessionUser(undefined, defaultError);
-        handleAuth().subscribe(shouldNotSucceed, (err) => {
-          expect(err).toEqual(defaultError);
-          done();
+        interceptSession(defaults.error);
+        handleAuth().subscribe({
+          next: shouldNotSucceed,
+          error: (err) => {
+            expect(err).toEqual(defaults.error);
+            done();
+          },
         });
       });
     });
@@ -391,22 +480,25 @@ describe("SecurityService", () => {
       beforeEach(() => {
         initialSteps = Promise.all([
           interceptMakeFormRequest(),
-          interceptSessionUser(defaultSessionUser),
+          interceptSession(defaults.session),
         ]);
       });
 
       it("should request user details", async () => {
-        interceptUser(defaultUser);
-        handleAuth().subscribe(noop, noop);
+        interceptUser(defaults.user);
+        handleAuth().subscribe({ next: noop, error: noop });
         await initialSteps;
-        expect(userSpy).toHaveBeenCalled();
+        expect(userApi.show).toHaveBeenCalled();
       });
 
       it("should handle user details failure", (done) => {
-        interceptUser(undefined, defaultError);
-        handleAuth().subscribe(shouldNotSucceed, (err) => {
-          expect(err).toEqual(defaultError);
-          done();
+        interceptUser(defaults.error);
+        handleAuth().subscribe({
+          next: shouldNotSucceed,
+          error: (err) => {
+            expect(err).toEqual(defaults.error);
+            done();
+          },
         });
       });
     });
@@ -415,47 +507,52 @@ describe("SecurityService", () => {
       async function initialSteps() {
         return Promise.all([
           interceptMakeFormRequest(),
-          interceptSessionUser(defaultSessionUser),
-          interceptUser(defaultUser),
+          interceptSession(defaults.session),
+          interceptUser(defaults.user),
         ]);
       }
 
-      it("should store session user in local storage", async () => {
-        const promise = initialSteps();
-        handleAuth().subscribe(noop, noop);
-        await promise;
-        expect(spec.service.getLocalUser()).toEqual(
-          new SessionUser({
-            ...defaultSessionUser.getJsonAttributes(),
-            ...defaultUser.getJsonAttributes(),
-          })
-        );
+      it("should store session user", (done) => {
+        initialSteps();
+        handleAuth().subscribe({
+          error: shouldNotFail,
+          complete: () => {
+            expect(session.loggedInUser).toEqual(defaults.user);
+            done();
+          },
+        });
       });
 
       it("should trigger authTrigger", async () => {
-        const trigger = spec.service.getAuthTrigger() as Subject<void>;
-        trigger.subscribe(noop, noop, shouldNotComplete);
+        const trigger = session.authTrigger as Subject<AuthTriggerData>;
+        trigger.subscribe({ complete: shouldNotComplete });
         spyOn(trigger, "next").and.callThrough();
         expect(trigger.next).toHaveBeenCalledTimes(0);
         const promise = initialSteps();
-        handleAuth().subscribe(noop, noop);
+        handleAuth().subscribe({ next: noop, error: noop });
         await promise;
         expect(trigger.next).toHaveBeenCalledTimes(1);
       });
 
       it("should call next", (done) => {
         initialSteps();
-        handleAuth().subscribe(() => {
-          expect(true).toBeTrue();
-          done();
-        }, shouldNotFail);
+        handleAuth().subscribe({
+          next: () => {
+            assertOk();
+            done();
+          },
+          error: shouldNotFail,
+        });
       });
 
       it("should complete observable", (done) => {
         initialSteps();
-        handleAuth().subscribe(noop, shouldNotFail, () => {
-          expect(true).toBeTrue();
-          done();
+        handleAuth().subscribe({
+          error: shouldNotFail,
+          complete: () => {
+            assertOk();
+            done();
+          },
         });
       });
     });
@@ -463,9 +560,9 @@ describe("SecurityService", () => {
     describe("error", () => {
       it("should call clearData", async () => {
         spec.service["clearData"] = jasmine.createSpy("clearData").and.stub();
-        spec.service["storeLocalUser"](defaultSessionUser);
-        const promise = interceptMakeFormRequest(defaultError);
-        handleAuth().subscribe(noop, noop);
+        session.setLoggedInUser(defaults.user, defaults.authToken);
+        const promise = interceptMakeFormRequest(defaults.error);
+        handleAuth().subscribe({ next: noop, error: noop });
         await promise;
         expect(spec.service["clearData"]).toHaveBeenCalled();
       });
@@ -473,116 +570,74 @@ describe("SecurityService", () => {
   });
 
   describe("clearData", () => {
-    beforeEach(() => {
-      spec.service["clearSessionUser"] = jasmine
-        .createSpy("clearSessionUser")
-        .and.stub();
-      spec.service["cookies"].deleteAll = jasmine
-        .createSpy("deleteAll")
-        .and.stub();
-      (spec.service.getAuthTrigger() as Subject<void>).next = jasmine
-        .createSpy("next")
-        .and.stub();
+    beforeEach(async () => {
+      await handleAuthTokenRetrievalDuringInitialization();
+      spyOn(session, "clearLoggedInUser").and.callThrough();
+      spyOn(session.authTrigger as Subject<AuthTriggerData>, "next").and.stub();
     });
 
     it("should clear session user", () => {
       spec.service["clearData"]();
-      expect(spec.service["clearSessionUser"]).toHaveBeenCalled();
-    });
-
-    it("should clear cookies", () => {
-      spec.service["clearData"]();
-      expect(spec.service["cookies"].deleteAll).toHaveBeenCalled();
+      expect(session.clearLoggedInUser).toHaveBeenCalled();
     });
 
     it("should trigger authTrigger", () => {
       spec.service["clearData"]();
       expect(
-        (spec.service.getAuthTrigger() as Subject<void>).next
+        (session.authTrigger as Subject<AuthTriggerData>).next
       ).toHaveBeenCalledTimes(1);
     });
   });
 
   describe("signOut", () => {
-    function createSuccess(path: string): void {
-      spyOn(spec.service, "apiDestroy" as any).and.callFake(
-        (destroyPath: string) => {
-          expect(destroyPath).toBe(path);
-          return new BehaviorSubject<void>(null);
-        }
-      );
-    }
+    beforeEach(async () => {
+      await handleAuthTokenRetrievalDuringInitialization();
+    });
 
-    function createError(url: string, error: ApiErrorDetails): void {
-      spec.service["apiDestroy"] = jasmine
-        .createSpy()
-        .and.callFake((path: string) => {
-          expect(path).toBe(url);
-          const subject = new Subject();
-          subject.error(error);
-          return subject;
-        });
-    }
-
-    it("should call apiDestroy", () => {
-      createSuccess("/security/");
-      spec.service.signOut().subscribe(noop, noop);
-      expect(spec.service["apiDestroy"]).toHaveBeenCalledWith("/security/");
+    it("should call destroy", async () => {
+      spec.service.signOut().subscribe({ next: noop, error: noop });
+      await triggerApiDestroy();
+      expect(api.destroy).toHaveBeenCalledWith("/security/");
     });
 
     it("should handle response", (done) => {
-      createSuccess("/security/");
-      spec.service.signOut().subscribe(() => {
-        assertOk();
-        done();
-      }, shouldNotFail);
-    });
-
-    it("should clear session user", () => {
-      createSuccess("/security/");
-      spec.service.signOut().subscribe(noop, shouldNotFail);
-      expect(spec.service.getLocalUser()).toBeFalsy();
-    });
-
-    it("should trigger authTrigger", () => {
-      const spy = jasmine.createSpy();
-      createSuccess("/security/");
-
-      spec.service
-        .getAuthTrigger()
-        .subscribe(spy, shouldNotFail, shouldNotComplete);
-      spec.service.signOut().subscribe();
-
-      // Should call auth trigger twice, first time is when the subscription is created
-      expect(spy).toHaveBeenCalledTimes(2);
-    });
-
-    it("should handle error", () => {
-      const error = generateApiErrorDetails();
-      createError("/security/", error);
-      spec.service.signOut().subscribe(shouldNotSucceed, (err) => {
-        expect(err).toEqual(error);
+      spec.service.signOut().subscribe({
+        next: () => {
+          assertOk();
+          done();
+        },
+        error: shouldNotFail,
       });
+      triggerApiDestroy();
     });
 
-    it("should clear cookies", () => {
-      spyOn(spec.service["cookies"], "deleteAll").and.stub();
-      createError("/security/", generateApiErrorDetails());
-      spec.service.signOut().subscribe(noop, noop);
-      expect(spec.service["cookies"].deleteAll).toHaveBeenCalledTimes(1);
+    it("should clear session user on success", async () => {
+      spec.service.signOut().subscribe({
+        error: shouldNotFail,
+      });
+      await triggerApiDestroy();
+      subjects.apiDestroy.complete();
+      expect(session.loggedInUser).toBeFalsy();
     });
 
-    it("should trigger authTrigger on error", () => {
-      const spy = jasmine.createSpy();
-      createError("/security/", generateApiErrorDetails());
+    it("should handle error", (done) => {
+      const error = generateBawApiError();
+      spec.service.signOut().subscribe({
+        next: shouldNotSucceed,
+        error: (err) => {
+          expect(err).toEqual(error);
+          done();
+        },
+      });
+      triggerApiDestroy(error);
+    });
 
-      spec.service
-        .getAuthTrigger()
-        .subscribe(spy, shouldNotFail, shouldNotComplete);
-      spec.service.signOut().subscribe(noop, noop);
-
-      // Should call auth trigger twice, first time is when the subscription is created
-      expect(spy).toHaveBeenCalledTimes(2);
+    it("should clear cookies on error", async () => {
+      spyOn(cookies, "deleteAll").and.stub();
+      expect(cookies.deleteAll).toHaveBeenCalledTimes(0);
+      spec.service.signOut().subscribe({ error: noop });
+      await triggerApiDestroy(defaults.error);
+      expect(cookies.deleteAll).toHaveBeenCalledTimes(1);
     });
   });
 });

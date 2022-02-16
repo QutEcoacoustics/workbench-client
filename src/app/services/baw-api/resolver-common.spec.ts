@@ -1,5 +1,5 @@
 import { PageInfo } from "@helpers/page/pageInfo";
-import { generateApiErrorDetailsV2 } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generatePageInfoResolvers } from "@test/helpers/general";
 import { MockModel } from "./mock/baseApiMock.service";
 import { hasResolvedSuccessfully, retrieveResolvers } from "./resolver-common";
@@ -33,7 +33,7 @@ describe("hasResolvedSuccessfully", () => {
   it("should return false if any model fails", () => {
     const resolvedList = {
       model0: new MockModel({ id: 1 }),
-      model1: generateApiErrorDetailsV2(),
+      model1: generateBawApiError(),
     };
     expect(hasResolvedSuccessfully(resolvedList)).toBeFalse();
   });
@@ -68,7 +68,7 @@ describe("retrieveResolvers", () => {
 
   it("should handle single errored resolver", () => {
     const model0 = new MockModel({ id: 1 });
-    const model1 = generateApiErrorDetailsV2();
+    const model1 = generateBawApiError();
     const model2 = [new MockModel({ id: 2 })];
     const data = generatePageInfoResolvers(
       { model: model0 },
@@ -83,9 +83,9 @@ describe("retrieveResolvers", () => {
   });
 
   it("should handle multiple errored resolver", () => {
-    const model0 = generateApiErrorDetailsV2();
-    const model1 = generateApiErrorDetailsV2();
-    const model2 = generateApiErrorDetailsV2();
+    const model0 = generateBawApiError();
+    const model1 = generateBawApiError();
+    const model2 = generateBawApiError();
     const data = generatePageInfoResolvers(
       { error: model0 },
       { error: model1 },

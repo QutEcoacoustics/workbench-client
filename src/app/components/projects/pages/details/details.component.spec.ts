@@ -1,4 +1,3 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -6,6 +5,8 @@ import { RegionsService } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { SiteCardComponent } from "@components/projects/components/site-card/site-card.component";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
+import { Errorable } from "@helpers/advancedTypes";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { IRegion, Region } from "@models/Region";
@@ -16,7 +17,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -87,7 +88,7 @@ describe("ProjectDetailsComponent", () => {
     );
   }
 
-  function setup(model: Project, error?: ApiErrorDetails) {
+  function setup(model: Project, error?: BawApiError) {
     spectator = createComponent({
       detectChanges: false,
       data: {
@@ -102,8 +103,8 @@ describe("ProjectDetailsComponent", () => {
   }
 
   function interceptApiRequest(
-    siteResponses: (Site[] | ApiErrorDetails)[],
-    regionResponses: (Region[] | ApiErrorDetails)[],
+    siteResponses: Errorable<Site[]>[],
+    regionResponses: Errorable<Region[]>[],
     siteExpectations?: FilterExpectations<ISite>[],
     regionExpectations?: FilterExpectations<IRegion>[]
   ) {
@@ -179,7 +180,7 @@ describe("ProjectDetailsComponent", () => {
 
   describe("error handling", () => {
     it("should handle failure to retrieve project", () => {
-      setup(undefined, generateApiErrorDetails());
+      setup(undefined, generateBawApiError());
       interceptApiRequest(emptyResponse, emptyResponse);
       spectator.detectChanges();
       assertErrorHandler(spectator.fixture);

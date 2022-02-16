@@ -7,7 +7,7 @@ import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { LoadingModule } from "@shared/loading/loading.module";
-import { generateApiErrorDetailsV2 } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { modelData } from "@test/helpers/faker";
 import { generatePageInfoResolvers, viewports } from "@test/helpers/general";
 import { BehaviorSubject } from "rxjs";
@@ -106,7 +106,7 @@ describe("BawClientComponent", () => {
 
   describe("resolver handling", () => {
     it("should hide iframe if resolver errors occurred", () => {
-      setup(generatePageInfoResolvers({ error: generateApiErrorDetailsV2() }));
+      setup(generatePageInfoResolvers({ error: generateBawApiError() }));
       spec.detectChanges();
       expect(getIframe()).toBeFalsy();
     });

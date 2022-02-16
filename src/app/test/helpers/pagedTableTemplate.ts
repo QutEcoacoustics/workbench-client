@@ -1,8 +1,8 @@
 import { ComponentFixture } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { ApiFilter } from "@baw-api/api-common";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { defaultApiPageSize, Filters, Paging } from "@baw-api/baw-api.service";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { AbstractModel } from "@models/AbstractModel";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { BehaviorSubject, Subject } from "rxjs";

@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { homeMenuItem } from "@components/home/home.menus";
 import {
@@ -39,7 +40,8 @@ class RegisterComponent
   public recaptchaSeed: RecaptchaState = { state: "loading" };
 
   public constructor(
-    private api: SecurityService,
+    private securityApi: SecurityService,
+    private session: BawSessionService,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router
@@ -55,28 +57,28 @@ class RegisterComponent
   public ngOnInit() {
     super.ngOnInit();
 
-    if (this.api.isLoggedIn()) {
+    if (this.session.isLoggedIn) {
       // Disable submit button
       this.loading = true;
       this.notifications.error("You are already logged in.");
       return;
     }
 
-    this.api
+    this.securityApi
       .signUpSeed()
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        ({ seed, action }) =>
+      .subscribe({
+        next: ({ seed, action }) =>
           (this.recaptchaSeed = { state: "loaded", seed, action }),
-        (err) => {
+        error: (err) => {
           console.error(err);
           this.notifications.error("Failed to load form");
-        }
-      );
+        },
+      });
   }
 
   protected apiAction(model: IRegisterDetails) {
-    return this.api.signUp(new RegisterDetails(model));
+    return this.securityApi.signUp(new RegisterDetails(model));
   }
 }
 

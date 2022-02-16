@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { SecurityService } from "@baw-api/security/security.service";
+import { UserService } from "@baw-api/user/user.service";
 import {
   loginMenuItem,
   resetPasswordMenuItem,
@@ -30,7 +30,7 @@ class ResetPasswordComponent extends FormTemplate<ResetPassword> {
   public fields = schema.fields;
 
   public constructor(
-    private api: SecurityService,
+    private api: UserService,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router

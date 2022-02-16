@@ -1,40 +1,42 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { User } from "@models/User";
-import { createServiceFactory } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateUser } from "@test/fakes/User";
-import {
-  validateApiCreate,
-  validateApiDestroy,
-  validateApiFilter,
-  validateApiList,
-  validateApiShow,
-  validateApiUpdate,
-} from "@test/helpers/api-common";
+import { validateStandardApi } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 
-type Model = User;
-type Params = [];
-type Service = AccountsService;
-
-describe("AccountsService", () => {
+describe("AccountsService", (): void => {
   const createModel = () => new User(generateUser({ id: 5 }));
   const baseUrl = "/user_accounts/";
   const updateUrl = baseUrl + "5";
+  let spec: SpectatorService<AccountsService>;
   const createService = createServiceFactory({
     service: AccountsService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
-  beforeEach(function () {
-    this.service = createService().service;
+  beforeEach((): void => {
+    spec = createService();
   });
 
-  validateApiList<Model, Params, Service>(baseUrl);
-  validateApiFilter<Model, Params, Service>(baseUrl + "filter");
+  validateStandardApi(
+    () => spec,
+    User,
+    baseUrl,
+    baseUrl + "filter",
+    updateUrl,
+    createModel,
+    5
+  );
+
   // TODO Implement additional show unit tests
-  validateApiShow<Model, Params, Service>(updateUrl, 5, createModel);
-  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel);
-  validateApiUpdate<Model, Params, Service>(updateUrl, createModel);
-  validateApiDestroy<Model, Params, Service>(updateUrl, 5, createModel);
 });

@@ -1,6 +1,4 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IProject, Project } from "@models/Project";
 import type { User } from "@models/User";
@@ -14,7 +12,7 @@ import {
   option,
   StandardApi,
 } from "../api-common";
-import { Filters } from "../baw-api.service";
+import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
 const projectId: IdParamOptional<Project> = id;
@@ -25,36 +23,31 @@ const endpoint = stringTemplate`/projects/${projectId}${option}`;
  * Handles API routes pertaining to projects.
  */
 @Injectable()
-export class ProjectsService extends StandardApi<Project> {
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
-  ) {
-    super(http, apiRoot, Project, injector);
-  }
+export class ProjectsService implements StandardApi<Project> {
+  public constructor(private api: BawApiService<Project>) {}
 
   public list(): Observable<Project[]> {
-    return this.apiList(endpoint(emptyParam, emptyParam));
+    return this.api.list(Project, endpoint(emptyParam, emptyParam));
   }
-  public filter(filters: Filters<IProject>): Observable<Project[]> {
-    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
+  public filter(filters: Filters<Project>): Observable<Project[]> {
+    return this.api.filter(Project, endpoint(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<Project>): Observable<Project> {
-    return this.apiShow(endpoint(model, emptyParam));
+    return this.api.show(Project, endpoint(model, emptyParam));
   }
   public create(model: Project): Observable<Project> {
-    return this.apiCreate(
+    return this.api.create(
+      Project,
       endpoint(emptyParam, emptyParam),
       (project) => endpoint(project, emptyParam),
       model
     );
   }
   public update(model: Project): Observable<Project> {
-    return this.apiUpdate(endpoint(model, emptyParam), model);
+    return this.api.update(Project, endpoint(model, emptyParam), model);
   }
   public destroy(model: IdOr<Project>): Observable<Project | void> {
-    return this.apiDestroy(endpoint(model, emptyParam));
+    return this.api.destroy(endpoint(model, emptyParam));
   }
 
   /**
@@ -68,7 +61,7 @@ export class ProjectsService extends StandardApi<Project> {
     user: IdOr<User>
   ): Observable<Project[]> {
     return this.filter(
-      this.filterThroughAssociation(filters, "creatorId", user) as Filters
+      this.api.filterThroughAssociation(filters, "creatorId", user)
     );
   }
 }

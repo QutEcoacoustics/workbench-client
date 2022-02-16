@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Tag, TagType } from "@models/Tag";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateTag } from "@test/fakes/Tag";
 import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
@@ -27,9 +27,9 @@ describe("AdminTagsEditComponent", () => {
 
   function configureTestingModule(
     tag: Tag,
-    tagError: ApiErrorDetails,
+    tagError: BawApiError,
     tagTypes: TagType[],
-    tagTypesError: ApiErrorDetails
+    tagTypesError: BawApiError
   ) {
     TestBed.configureTestingModule({
       imports: [
@@ -89,7 +89,7 @@ describe("AdminTagsEditComponent", () => {
     it("should handle tag error", () => {
       configureTestingModule(
         undefined,
-        generateApiErrorDetails(),
+        generateBawApiError(),
         defaultTagTypes,
         undefined
       );
@@ -101,7 +101,7 @@ describe("AdminTagsEditComponent", () => {
         defaultTag,
         undefined,
         undefined,
-        generateApiErrorDetails()
+        generateBawApiError()
       );
       assertErrorHandler(fixture);
     });

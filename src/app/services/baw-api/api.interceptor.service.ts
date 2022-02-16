@@ -13,12 +13,15 @@ import {
   toCamelCase,
   toSnakeCase,
 } from "@helpers/case-converter/case-converter";
-import httpStatus from "http-status";
+import {
+  BawApiError,
+  isBawApiError,
+} from "@helpers/custom-errors/baw-api-error";
+import { BAD_GATEWAY, NOT_FOUND } from "http-status";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
+import { BawSessionService } from "./baw-session.service";
 import { ApiResponse } from "./baw-api.service";
-import { SecurityService } from "./security/security.service";
 
 /**
  * BAW API Interceptor.
@@ -29,7 +32,7 @@ import { SecurityService } from "./security/security.service";
 export class BawApiInterceptor implements HttpInterceptor {
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
-    public api: SecurityService
+    public session: BawSessionService
   ) {}
 
   /**
@@ -49,11 +52,11 @@ export class BawApiInterceptor implements HttpInterceptor {
     }
 
     // If logged in, add authorization token
-    if (this.api.isLoggedIn()) {
+    if (this.session.isLoggedIn) {
       request = request.clone({
         setHeaders: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          Authorization: `Token token="${this.api.getLocalUser().authToken}"`,
+          Authorization: `Token token="${this.session.authToken}"`,
         },
       });
     }
@@ -92,7 +95,7 @@ export class BawApiInterceptor implements HttpInterceptor {
           ? response.clone({ body: toCamelCase(response.body) })
           : response
       ),
-      catchError(this.handleError)
+      catchError((response) => this.handleError(response))
     );
   }
 
@@ -103,40 +106,48 @@ export class BawApiInterceptor implements HttpInterceptor {
    * @throws Observable<never>
    */
   private handleError(
-    response: HttpErrorResponse | ApiErrorResponse | ApiErrorDetails
+    response: HttpErrorResponse | ApiErrorResponse | BawApiError
   ): Observable<never> {
-    let error: ApiErrorDetails;
-
-    if (isApiErrorDetails(response)) {
-      error = response;
-    } else if (isErrorResponse(response)) {
-      error = {
-        status: response.status,
-        message: response.error.meta.error.details,
-        info: toCamelCase(response.error.meta.error?.info),
-      };
-    } else if (response.status === 0) {
-      error = {
-        status: httpStatus.BAD_GATEWAY,
-        message:
-          "Unable to reach our servers right now." +
-          "This may be an issue with your connection to us, or a temporary issue with our services.",
-      };
-    } else {
-      error = { status: response.status, message: response.message };
+    // Interceptor has already handled this error
+    if (isBawApiError(response)) {
+      return throwError(() => response);
     }
 
-    return throwError(error);
-  }
-}
+    // Standard API error response, extract relevant data
+    if (isErrorResponse(response)) {
+      const error = new BawApiError(
+        response.status,
+        response.error.meta.error.details,
+        toCamelCase(response.error.meta.error?.info)
+      );
+      return throwError(() => error);
+    }
 
-/**
- * API Service error response
- */
-export interface ApiErrorDetails {
-  status: number;
-  message: string;
-  info?: any;
+    // Response timed out
+    if (response.status === 0) {
+      const error = new BawApiError(
+        BAD_GATEWAY,
+        "Unable to reach our servers right now." +
+          "This may be an issue with your connection to us, " +
+          "or a temporary issue with our services."
+      );
+      return throwError(() => error);
+    }
+
+    // Response returned 404 without hitting API route
+    if (response.status === NOT_FOUND) {
+      const error = new BawApiError(
+        NOT_FOUND,
+        "The following action does not exist, " +
+          "if you believe this is an error please report a problem."
+      );
+      return throwError(() => error);
+    }
+
+    // Unknown error occurred, throw generic error
+    console.error("Unknown error occurred: ", response);
+    return throwError(() => new BawApiError(response.status, response.message));
+  }
 }
 
 /**

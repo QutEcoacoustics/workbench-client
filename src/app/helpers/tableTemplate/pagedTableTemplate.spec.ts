@@ -2,13 +2,15 @@ import { Component } from "@angular/core";
 import { fakeAsync } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Errorable } from "@helpers/advancedTypes";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
+import {
+  BawApiError,
+  isBawApiError,
+} from "@helpers/custom-errors/baw-api-error";
 import { Id } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import {
@@ -17,7 +19,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
 import { mockActivatedRoute, MockData } from "@test/helpers/testbed";
@@ -48,7 +50,7 @@ class MockComponent extends PagedTableTemplate<
 
 describe("PagedTableTemplate", () => {
   let defaultProject: Project;
-  let defaultError: ApiErrorDetails;
+  let defaultError: BawApiError;
   let api: SpyObject<ProjectsService>;
   let component: MockComponent;
   let spec: Spectator<MockComponent>;
@@ -77,12 +79,12 @@ describe("PagedTableTemplate", () => {
 
     component = spec.component;
     defaultProject = new Project(generateProject());
-    defaultError = generateApiErrorDetails();
+    defaultError = generateBawApiError();
   }
 
   async function setProjects(projects: Errorable<Project[]>): Promise<any> {
     const subject = new Subject<Project[]>();
-    const isError = isApiErrorDetails(projects);
+    const isError = isBawApiError(projects);
     api.filter.and.callFake(() => subject);
     const promise = nStepObservable(subject, () => projects, isError);
 
@@ -157,7 +159,7 @@ describe("PagedTableTemplate", () => {
     });
 
     it("should handle resolver error", async () => {
-      setup(["model"], { model: { error: generateApiErrorDetails() } });
+      setup(["model"], { model: { error: generateBawApiError() } });
       await setProjects([]);
       assertFailure(true);
     });
@@ -165,7 +167,7 @@ describe("PagedTableTemplate", () => {
     it("should handle any resolver error", async () => {
       setup(["model1", "model2"], {
         model1: { model: new MockModel({ id: 1 }) },
-        model2: { error: generateApiErrorDetails() },
+        model2: { error: generateBawApiError() },
       });
       await setProjects([]);
       assertFailure(true);

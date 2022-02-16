@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { adminDashboardMenuItem } from "@components/admin/admin.menus";
@@ -19,11 +19,10 @@ import { CustomMenuItem } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { MenuLink, NavigableMenuItem } from "@interfaces/menusInterfaces";
-import { SessionUser } from "@models/User";
+import { User } from "@models/User";
 import { ConfigService } from "@services/config/config.service";
 import { MenuService } from "@services/menu/menu.service";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
 
 export type HeaderItem = PartialWith<MenuLink, "label" | "uri">;
@@ -45,7 +44,7 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   @Input() public isSideNav: boolean;
 
   public links: List<HeaderItem | HeaderDropdown | NavigableMenuItem>;
-  public user: SessionUser;
+  public user: User;
   public routes = {
     admin: adminDashboardMenuItem,
     home: homeMenuItem,
@@ -57,8 +56,8 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   public constructor(
     public menu: MenuService,
     private api: SecurityService,
+    private session: BawSessionService,
     private config: ConfigService,
-    private notifications: ToastrService,
     private router: Router
   ) {
     super();
@@ -89,13 +88,8 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
       .signOut()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
-        error: (err: ApiErrorDetails) => this.notifications.error(err.message),
         complete: () => {
-          if (this.hasLocationGlobal()) {
-            // If the location global class exists, use it to reload the page
-            // Location may be undefined during SSR
-            this.reloadPage();
-          } else {
+          if (!this.hasLocationGlobal()) {
             // Else just redirect back to home
             this.router.navigateByUrl(homeMenuItem.route.toRouterLink());
           }
@@ -116,13 +110,9 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   }
 
   private trackLoggedInState() {
-    this.api
-      .getAuthTrigger()
+    this.session.authTrigger
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe({
-        next: () => (this.user = this.api.getLocalUser()),
-        error: (err: ApiErrorDetails) => this.notifications.error(err.message),
-      });
+      .subscribe(({ user }) => (this.user = user));
   }
 
   /**
@@ -157,13 +147,5 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
    */
   private hasLocationGlobal(): boolean {
     return isInstantiated(location);
-  }
-
-  /**
-   * Reload page.
-   * ! This is extracted to a separate function so that tests can be performed.
-   */
-  private reloadPage(): void {
-    location.reload();
   }
 }
