@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SecurityService } from "@baw-api/security/security.service";
+import { UserService } from "@baw-api/user/user.service";
 import { homeMenuItem } from "@components/home/home.menus";
 import {
   registerMenuItem,
@@ -39,7 +40,8 @@ class RegisterComponent
   public recaptchaSeed: RecaptchaState = { state: "loading" };
 
   public constructor(
-    private api: SecurityService,
+    private securityApi: SecurityService,
+    private userApi: UserService,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router
@@ -55,14 +57,14 @@ class RegisterComponent
   public ngOnInit() {
     super.ngOnInit();
 
-    if (this.api.isLoggedIn()) {
+    if (this.userApi.isLoggedIn()) {
       // Disable submit button
       this.loading = true;
       this.notifications.error("You are already logged in.");
       return;
     }
 
-    this.api
+    this.securityApi
       .signUpSeed()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
@@ -76,7 +78,7 @@ class RegisterComponent
   }
 
   protected apiAction(model: IRegisterDetails) {
-    return this.api.signUp(new RegisterDetails(model));
+    return this.securityApi.signUp(new RegisterDetails(model));
   }
 }
 

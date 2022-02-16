@@ -16,7 +16,7 @@ import {
   isInternalRoute,
   LabelAndIcon,
 } from "@interfaces/menusInterfaces";
-import { SessionUser } from "@models/User";
+import { User } from "@models/User";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MenuService } from "@services/menu/menu.service";
 import { Set } from "immutable";
@@ -49,7 +49,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   private menuWidget!: ViewContainerRef;
 
   public formattedLinks: Set<AnyMenuItem | MenuModal> = Set();
-  public user: SessionUser;
+  public user: User;
 
   public isInternalLink = isInternalRoute;
   public isExternalLink = isExternalLink;
@@ -67,7 +67,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     this.widgets ??= Set();
 
     // Get user details
-    this.user = this.api.getLocalUser();
+    this.user = this.api.loggedInUser;
     // Filter links
     this.formattedLinks = this.setModalActions();
   }

@@ -2,16 +2,25 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, InjectionToken, Injector } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import {
+  BawApiError,
+  isBawApiError,
+} from "@helpers/custom-errors/baw-api-error";
+import { AuthToken } from "@interfaces/apiInterfaces";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
-import { SessionUser } from "@models/User";
-import { Observable, throwError } from "rxjs";
-import { map, mergeMap } from "rxjs/operators";
+import { User } from "@models/User";
+import { BehaviorSubject, Observable, throwError } from "rxjs";
+import { map, mergeMap, switchMap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import { ApiErrorDetails } from "./api.interceptor.service";
 
 export const defaultApiPageSize = 25;
 export const unknownErrorCode = -1;
 export const STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
+export const guestUser = undefined;
+export interface AuthTriggerData {
+  user: User | undefined;
+  authToken?: AuthToken;
+}
 
 /** Default headers for API requests */
 const defaultHeaders = new HttpHeaders({
@@ -42,11 +51,6 @@ export class BawApiService<Model extends AbstractModel> {
     destroy -> DELETE with ID
     filter -> POST with filter body
   */
-
-  /**
-   * User local storage location
-   */
-  protected userLocalStorageKey = "baw.client.user";
 
   /** Is website running on server environment */
   protected isServer: boolean;
@@ -109,57 +113,38 @@ export class BawApiService<Model extends AbstractModel> {
     };
   }
 
-  /**
-   * Determine if the user is currently logged in
-   */
+  private static _authTrigger = new BehaviorSubject<AuthTriggerData>({
+    user: guestUser,
+  });
+  private static _loggedInUser: User | undefined;
+  private static _authToken: AuthToken | undefined;
+  /** Get logged in user */
+  public get loggedInUser(): User | undefined {
+    return BawApiService._loggedInUser;
+  }
+  /** Get user auth token */
+  public get authToken(): AuthToken | undefined {
+    return BawApiService._authToken;
+  }
+  /** Set user details */
+  protected setLoggedInUser(user: User, authToken: string) {
+    BawApiService._loggedInUser = user;
+    BawApiService._authToken = authToken;
+    BawApiService._authTrigger.next({ user, authToken });
+  }
+  /** Clear user details */
+  protected clearLoggedInUser(): void {
+    BawApiService._loggedInUser = guestUser;
+    BawApiService._authToken = undefined;
+    BawApiService._authTrigger.next({ user: guestUser });
+  }
+  /** Is user logged in */
   public isLoggedIn(): boolean {
-    const user = this.getLocalUser();
-    return user ? !!user.authToken : false;
+    return !!this.authToken;
   }
-
-  /**
-   * Retrieve user details from session cookie. Returns undefined if
-   * no user so that it will properly interact with the
-   * filterByForeignKey function.
-   */
-  public getLocalUser(): SessionUser | undefined {
-    // local storage does not exist on server
-    if (this.isServer) {
-      return undefined;
-    }
-
-    // Will return null if no item exists
-    // TODO: resolve via injectable - accessing a global like this is not compatible with SSR
-    const userData = localStorage.getItem(this.userLocalStorageKey);
-
-    if (userData) {
-      // Try create session user
-      try {
-        return new SessionUser(JSON.parse(userData));
-      } catch (err) {
-        console.error("Failed to create session user: ", err);
-        this.clearSessionUser();
-      }
-    }
-
-    // TODO Change this to a variable which can be referenced (ie. const noUser = undefined)
-    return undefined;
-  }
-
-  /**
-   * Add user session data to the local storage
-   *
-   * @param user User details
-   */
-  protected storeLocalUser(user: SessionUser): void {
-    localStorage.setItem(this.userLocalStorageKey, JSON.stringify(user));
-  }
-
-  /**
-   * Clear session storage
-   */
-  protected clearSessionUser(): void {
-    localStorage.removeItem(this.userLocalStorageKey);
+  /** Returns a subject which tracks the change in loggedIn status */
+  public get authTrigger(): Observable<AuthTriggerData> {
+    return BawApiService._authTrigger;
   }
 
   /**
@@ -167,14 +152,12 @@ export class BawApiService<Model extends AbstractModel> {
    *
    * @param err Error
    */
-  protected handleError(err: ApiErrorDetails | Error): Observable<never> {
-    if (err instanceof Error) {
-      return throwError({
-        status: unknownErrorCode,
-        message: err.message,
-      } as ApiErrorDetails);
-    }
-    return throwError(err);
+  protected handleError(err: BawApiError | Error): Observable<never> {
+    return throwError(() =>
+      isBawApiError(err)
+        ? new BawApiError(err)
+        : new BawApiError(unknownErrorCode, err.message)
+    );
   }
 
   /**
@@ -183,7 +166,11 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected apiList(path: string): Observable<Model[]> {
-    return this.httpGet(path).pipe(map(this.handleCollectionResponse));
+    return this.authTrigger.pipe(
+      switchMap(() =>
+        this.httpGet(path).pipe(map(this.handleCollectionResponse))
+      )
+    );
   }
 
   /**
@@ -196,8 +183,10 @@ export class BawApiService<Model extends AbstractModel> {
     path: string,
     filters: Filters<Model>
   ): Observable<Model[]> {
-    return this.httpPost(path, filters).pipe(
-      map(this.handleCollectionResponse)
+    return this.authTrigger.pipe(
+      switchMap(() =>
+        this.httpPost(path, filters).pipe(map(this.handleCollectionResponse))
+      )
     );
   }
 
@@ -207,7 +196,9 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected apiShow(path: string): Observable<Model> {
-    return this.httpGet(path).pipe(map(this.handleSingleResponse));
+    return this.authTrigger.pipe(
+      switchMap(() => this.httpGet(path).pipe(map(this.handleSingleResponse)))
+    );
   }
 
   /**
@@ -274,8 +265,9 @@ export class BawApiService<Model extends AbstractModel> {
   }
 
   /**
-   * Constructs a `GET` request
-   * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   * Constructs a `GET` request. Conversion of data types and error handling
+   * are performed by the baw-api interceptor class. This will retrigger
+   * whenever the users authenticated state changes.
    *
    * @param path API path
    */
@@ -283,15 +275,20 @@ export class BawApiService<Model extends AbstractModel> {
     path: string,
     options: any = defaultHeaders
   ): Observable<ApiResponse<Model | Model[]>> {
-    return this.http.get<ApiResponse<Model>>(this.getPath(path), {
-      responseType: "json",
-      headers: options,
-    });
+    return this.authTrigger.pipe(
+      switchMap(() =>
+        this.http.get<ApiResponse<Model>>(this.getPath(path), {
+          responseType: "json",
+          headers: options,
+        })
+      )
+    );
   }
 
   /**
-   * Constructs a `DELETE` request
-   * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   * Constructs a `DELETE` request. Conversion of data types and error handling
+   * are performed by the baw-api interceptor class. This will retrigger
+   * whenever the users authenticated state changes.
    *
    * @param path API path
    */
@@ -306,8 +303,9 @@ export class BawApiService<Model extends AbstractModel> {
   }
 
   /**
-   * Constructs a `POST` request
-   * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   * Constructs a `POST` request. Conversion of data types and error handling
+   * are performed by the baw-api interceptor class. This will retrigger
+   * whenever the users authenticated state changes.
    *
    * @param path API path
    * @param body Request body
@@ -324,8 +322,9 @@ export class BawApiService<Model extends AbstractModel> {
   }
 
   /**
-   * Constructs a `PUT` request
-   * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   * Constructs a `PUT` request. Conversion of data types and error handling
+   * are performed by the baw-api interceptor class. This will retrigger
+   * whenever the users authenticated state changes.
    *
    * @param path API path
    * @param body Request body
@@ -342,8 +341,9 @@ export class BawApiService<Model extends AbstractModel> {
   }
 
   /**
-   * Constructs a `PATCH` request
-   * Conversion of data types and error handling are performed by the baw-api interceptor class.
+   * Constructs a `PATCH` request. Conversion of data types and error handling
+   * are performed by the baw-api interceptor class. This will retrigger
+   * whenever the users authenticated state changes.
    *
    * @param path API path
    * @param body Request body

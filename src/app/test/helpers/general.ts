@@ -1,7 +1,5 @@
 import { Injector } from "@angular/core";
 import { ApiFilter, ApiShow } from "@baw-api/api-common";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { Filters } from "@baw-api/baw-api.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { Errorable } from "@helpers/advancedTypes";
@@ -10,6 +8,10 @@ import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { SpyObject } from "@ngneat/spectator";
 import { Subject } from "rxjs";
 import { homeMenuItem } from "@components/home/home.menus";
+import {
+  ApiErrorDetails,
+  isApiErrorDetails,
+} from "@helpers/custom-errors/baw-api-error";
 
 /**
  * An object which keeps track of the various breakpoints set for the

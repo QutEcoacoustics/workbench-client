@@ -146,10 +146,9 @@ export class AuthenticatedImageDirective implements OnChanges {
       return url;
     }
 
-    const user = this.securityApi.getLocalUser();
-    if (user?.authToken) {
+    if (this.securityApi.isLoggedIn()) {
       const tokenUrl = new URL(url);
-      tokenUrl.searchParams.set("authToken", user.authToken);
+      tokenUrl.searchParams.set("authToken", this.securityApi.authToken);
       return tokenUrl.toString();
     }
     return url;

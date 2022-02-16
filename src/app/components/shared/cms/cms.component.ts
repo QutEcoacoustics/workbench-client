@@ -8,8 +8,8 @@ import {
   OnInit,
   Renderer2,
 } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";

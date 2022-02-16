@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import {
@@ -8,6 +7,7 @@ import {
   projectCategory,
   projectMenuItem,
 } from "@components/projects/projects.menus";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { defaultErrorMsg } from "@helpers/formTemplate/formTemplate";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";

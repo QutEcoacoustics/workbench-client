@@ -75,8 +75,7 @@ class HomeComponent extends PageComponent implements OnInit {
      *  recent use / modification date (recent, to less recent)
      *  image or no image
      */
-    this.securityApi
-      .getAuthTrigger()
+    this.securityApi.authTrigger
       .pipe(
         mergeMap(() =>
           (settings.hideProjects ? this.regionApi : this.projectApi).filter({
@@ -89,13 +88,13 @@ class HomeComponent extends PageComponent implements OnInit {
         ),
         takeUntil(this.unsubscribe)
       )
-      .subscribe(
-        (cards) => {
+      .subscribe({
+        next: (cards) => {
           this.viewMore.list = cards;
           this.viewMore.loading = false;
         },
-        () => (this.viewMore.loading = false)
-      );
+        error: () => (this.viewMore.loading = false),
+      });
   }
 
   public calculateSvgTextYPos(index: number) {

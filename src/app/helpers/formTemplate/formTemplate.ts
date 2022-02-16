@@ -1,12 +1,12 @@
 import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import {
   hasResolvedSuccessfully,
   ResolvedModelList,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { withFormCheck } from "@guards/form/form.guard";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { FormlyFieldConfig } from "@ngx-formly/core";

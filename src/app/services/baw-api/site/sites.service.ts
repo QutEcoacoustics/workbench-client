@@ -105,7 +105,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
       this.getPath(annotationsEndpoint(project, model, emptyParam))
     );
     setTimezoneQSP(url, selectedTimezone);
-    setAuthorizationQSP(url, this.getLocalUser()?.authToken);
+    setAuthorizationQSP(url, this.authToken);
     return url.toString();
   }
 

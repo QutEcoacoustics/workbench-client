@@ -1,12 +1,12 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   newProjectMenuItem,
   projectsCategory,
   projectsMenuItem,
 } from "@components/projects/projects.menus";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import {
   defaultSuccessMsg,
   extendedErrorMsg,

@@ -1,6 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import {
+  ApiErrorDetails,
+  BawApiError,
+} from "@helpers/custom-errors/baw-api-error";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IUser, User } from "@models/User";
@@ -54,7 +57,7 @@ export class AccountsService extends StandardApi<User> {
             // Return deleted user, this only occurs when a user is soft-deleted
             return of(User.deletedUser);
           default:
-            return throwError(err);
+            return throwError(() => new BawApiError(err));
         }
       })
     );

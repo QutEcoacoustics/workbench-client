@@ -117,8 +117,15 @@ export class User extends AbstractModel<IUser> implements IUser {
     this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
   }
 
+  /**
+   * Determines if user is admin. Role mask stores user roles
+   * as a power of 2 integer so that roles can be combined.
+   * The admin role is 1, therefore a role mask of 1 (0001) or
+   * 3 (0011) indicate an admin account.
+   */
   public get isAdmin(): boolean {
-    return isAdminUser(this);
+    // eslint-disable-next-line no-bitwise
+    return !!(this.rolesMask & 1);
   }
 
   public get isUnknown(): boolean {
@@ -172,27 +179,12 @@ export class SessionUser
   public readonly tzinfoTz?: string;
   public readonly timezoneInformation?: TimezoneInformation;
 
-  public constructor(user: ISessionUser & Partial<IUser>, injector?: Injector) {
+  public constructor(user: ISessionUser, injector?: Injector) {
     super(user, injector);
     this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
-  }
-
-  public get isAdmin(): boolean {
-    return isAdminUser(this);
   }
 
   public get viewUrl(): string {
     return myAccountMenuItem.route.format();
   }
-}
-
-/**
- * Determines if user is admin. Role mask stores user roles
- * as a power of 2 integer so that roles can be combined.
- * The admin role is 1, therefore a role mask of 1 (0001) or
- * 3 (0011) indicate an admin account.
- */
-function isAdminUser(model: User | SessionUser): boolean {
-  // eslint-disable-next-line no-bitwise
-  return !!(model.rolesMask & 1);
 }

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
   AbstractModel,

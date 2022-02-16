@@ -1,27 +1,22 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { param } from "@baw-api/api-common";
-import { BawFormApiService } from "@baw-api/baw-form-api.service";
+import {
+  BawFormApiService,
+  RecaptchaSettings,
+} from "@baw-api/baw-form-api.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { ConfirmPassword } from "@models/data/ConfirmPassword";
+import { AuthToken } from "@interfaces/apiInterfaces";
 import { LoginDetails } from "@models/data/LoginDetails";
 import { RegisterDetails } from "@models/data/RegisterDetails";
-import { ResetPassword } from "@models/data/ResetPassword";
-import { UnlockAccount } from "@models/data/UnlockAccount";
 import { SessionUser, User } from "@models/User";
 import { CookieService } from "ngx-cookie-service";
-import { BehaviorSubject, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
-import { ApiErrorDetails } from "../api.interceptor.service";
 import { UserService } from "../user/user.service";
 
-const confirmPasswordEndpoint = stringTemplate`/my_account/confirmation`;
-const confirmPasswordSeed = stringTemplate`/my_account/confirmation/new`;
-const resetPasswordEndpoint = stringTemplate`	/my_account/password`;
-const resetPasswordSeed = stringTemplate`	/my_account/password/new`;
-const unlockAccountEndpoint = stringTemplate`/my_account/unlock`;
-const unlockAccountSeed = stringTemplate`/my_account/unlock/new`;
 const signUpSeed = stringTemplate`/my_account/sign_up/`;
 const signUpEndpoint = stringTemplate`/my_account/`;
 const signInEndpoint = stringTemplate`/my_account/sign_in/`;
@@ -31,13 +26,9 @@ const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
 /**
  * Security Service.
  * Handles API routes pertaining to security.
- *
- * TODO Extract some functionality to user service?
  */
 @Injectable()
 export class SecurityService extends BawFormApiService<SessionUser> {
-  private authTrigger = new BehaviorSubject<void>(null);
-
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
@@ -48,24 +39,35 @@ export class SecurityService extends BawFormApiService<SessionUser> {
     super(http, apiRoot, SessionUser, injector);
 
     // After constructor so that we can access super
-    this.handleError = (err: ApiErrorDetails | Error): Observable<never> => {
+    this.handleError = (err: BawApiError | Error): Observable<never> => {
       this.clearData();
       return super.handleError(err);
     };
-  }
 
-  /**
-   * Returns a subject which tracks the change in loggedIn status
-   * TODO Return local user
-   */
-  public getAuthTrigger(): Observable<void> {
-    return this.authTrigger;
+    // Update authToken using cookie if exists
+    let authToken: AuthToken;
+    this.sessionDetails()
+      .pipe(
+        tap((user) => (authToken = user.authToken)),
+        mergeMap(() => this.userService.show()),
+        first()
+      )
+      .subscribe({
+        next: (user) => {
+          console.log("Session Details: ", user);
+          this.setLoggedInUser(user, authToken);
+        },
+        error: (err) => {
+          console.log("Session Details: ", err);
+          this.clearData();
+        },
+      });
   }
 
   /**
    * Returns the recaptcha seed for the registration form
    */
-  public signUpSeed() {
+  public signUpSeed(): Observable<RecaptchaSettings> {
     return this.getRecaptchaSeed(signUpSeed());
   }
 
@@ -110,10 +112,20 @@ export class SecurityService extends BawFormApiService<SessionUser> {
    * @param details Details provided by login form
    */
   public signIn(details: LoginDetails): Observable<void> {
+    const validateLoggedIn = (page: string) => {
+      const successMsg = "Logged in successfully";
+      if (!page.includes(successMsg)) {
+        throw Error("Username or password was incorrect.");
+      }
+    };
+
     const handleAuth = this.handleAuth(
       signInEndpoint(),
       signInEndpoint(),
-      (token: string) => details.getBody(token)
+      (token: string) => details.getBody(token),
+      (page) => {
+        validateLoggedIn(page);
+      }
     );
 
     // Logout first to ensure token and cookie are synchronized
@@ -134,30 +146,6 @@ export class SecurityService extends BawFormApiService<SessionUser> {
     ) as Observable<void>;
   }
 
-  public confirmPassword(details: ConfirmPassword): Observable<void> {
-    return this.makeFormRequestWithoutOutput(
-      confirmPasswordSeed(),
-      confirmPasswordEndpoint(),
-      (token) => details.getBody(token)
-    );
-  }
-
-  public resetPassword(details: ResetPassword): Observable<void> {
-    return this.makeFormRequestWithoutOutput(
-      resetPasswordSeed(),
-      resetPasswordEndpoint(),
-      (token) => details.getBody(token)
-    );
-  }
-
-  public unlockAccount(details: UnlockAccount): Observable<void> {
-    return this.makeFormRequestWithoutOutput(
-      unlockAccountSeed(),
-      unlockAccountEndpoint(),
-      (token) => details.getBody(token)
-    );
-  }
-
   public sessionDetails(): Observable<SessionUser> {
     return this.apiShow(sessionUserEndpoint(Date.now().toString()));
   }
@@ -175,6 +163,8 @@ export class SecurityService extends BawFormApiService<SessionUser> {
     getFormData: (authToken: string) => URLSearchParams,
     pageValidation: (page: string) => void = () => {}
   ): Observable<void> {
+    let authToken: AuthToken;
+
     /*
      * Mimic a traditional form-based sign in/sign up to get a well-formed auth cookie
      * Needed because of:
@@ -186,20 +176,11 @@ export class SecurityService extends BawFormApiService<SessionUser> {
       // Trade the cookie for an API auth token (mimicking old baw-client)
       mergeMap(() => this.sessionDetails()),
       // Save to local storage
-      tap((user: SessionUser) => this.storeLocalUser(user)),
+      tap((user: SessionUser) => (authToken = user.authToken)),
       // Get user details
       mergeMap(() => this.userService.show()),
       // Update session user with user details and save to local storage
-      tap((user: User) =>
-        this.storeLocalUser(
-          new SessionUser({
-            ...this.getLocalUser(),
-            ...user.getJsonAttributes(),
-          })
-        )
-      ),
-      // Trigger auth observable
-      tap(() => this.authTrigger.next(null)),
+      tap((user: User) => this.setLoggedInUser(user, authToken)),
       // Void output
       map(() => undefined),
       // Complete observable
@@ -215,8 +196,7 @@ export class SecurityService extends BawFormApiService<SessionUser> {
    * Clear session and cookie data, then trigger authTrigger
    */
   private clearData() {
-    this.clearSessionUser();
+    this.clearLoggedInUser();
     this.cookies.deleteAll();
-    this.authTrigger.next(null);
   }
 }

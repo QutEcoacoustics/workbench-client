@@ -1,13 +1,13 @@
 import { Directive, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import {
   hasResolvedSuccessfully,
   ResolvedModelList,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel } from "@models/AbstractModel";
 import {

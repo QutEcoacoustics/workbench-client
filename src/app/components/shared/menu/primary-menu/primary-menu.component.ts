@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { adminDashboardMenuItem } from "@components/admin/admin.menus";
@@ -16,10 +15,11 @@ import {
 } from "@components/security/security.menus";
 import { PartialWith } from "@helpers/advancedTypes";
 import { CustomMenuItem } from "@helpers/app-initializer/app-initializer";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { MenuLink, NavigableMenuItem } from "@interfaces/menusInterfaces";
-import { SessionUser } from "@models/User";
+import { User } from "@models/User";
 import { ConfigService } from "@services/config/config.service";
 import { MenuService } from "@services/menu/menu.service";
 import { List } from "immutable";
@@ -45,7 +45,7 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   @Input() public isSideNav: boolean;
 
   public links: List<HeaderItem | HeaderDropdown | NavigableMenuItem>;
-  public user: SessionUser;
+  public user: User;
   public routes = {
     admin: adminDashboardMenuItem,
     home: homeMenuItem,
@@ -91,11 +91,7 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
       .subscribe({
         error: (err: ApiErrorDetails) => this.notifications.error(err.message),
         complete: () => {
-          if (this.hasLocationGlobal()) {
-            // If the location global class exists, use it to reload the page
-            // Location may be undefined during SSR
-            this.reloadPage();
-          } else {
+          if (!this.hasLocationGlobal()) {
             // Else just redirect back to home
             this.router.navigateByUrl(homeMenuItem.route.toRouterLink());
           }
@@ -116,13 +112,10 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   }
 
   private trackLoggedInState() {
-    this.api
-      .getAuthTrigger()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe({
-        next: () => (this.user = this.api.getLocalUser()),
-        error: (err: ApiErrorDetails) => this.notifications.error(err.message),
-      });
+    this.api.authTrigger.pipe(takeUntil(this.unsubscribe)).subscribe({
+      next: ({ user }) => (this.user = user),
+      error: (err: ApiErrorDetails) => this.notifications.error(err.message),
+    });
   }
 
   /**

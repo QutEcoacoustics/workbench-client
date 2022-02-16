@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   projectsCategory,
@@ -7,6 +6,7 @@ import {
   requestProjectMenuItem,
 } from "@components/projects/projects.menus";
 import { withFormCheck } from "@guards/form/form.guard";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Project } from "@models/Project";
 import { List } from "immutable";

@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
@@ -10,6 +9,7 @@ import {
   newPointMenuItem,
   pointsCategory,
 } from "@components/sites/points.menus";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import {
   defaultSuccessMsg,
   extendedErrorMsg,

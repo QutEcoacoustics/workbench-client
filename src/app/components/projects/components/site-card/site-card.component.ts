@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";

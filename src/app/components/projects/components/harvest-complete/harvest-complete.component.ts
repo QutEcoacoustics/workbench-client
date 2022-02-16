@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { SitesService } from "@baw-api/site/sites.service";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { getUnknownViewUrl } from "@models/AbstractModel";
 import { Project } from "@models/Project";

@@ -1,5 +1,5 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ApiResponse, unknownErrorCode } from "@baw-api/baw-api.service";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import httpCodes, {
   BAD_REQUEST,
   FORBIDDEN,

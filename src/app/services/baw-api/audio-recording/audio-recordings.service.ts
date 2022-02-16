@@ -111,8 +111,8 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
       filterEncoded: toBase64Url(JSON.stringify(toSnakeCase(filter))),
     };
 
-    if (this.getLocalUser()) {
-      body["authToken"] = this.getLocalUser().authToken;
+    if (this.isLoggedIn) {
+      body["authToken"] = this.authToken;
     }
 
     body = toSnakeCase(body);

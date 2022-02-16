@@ -13,13 +13,16 @@ import {
   toCamelCase,
   toSnakeCase,
 } from "@helpers/case-converter/case-converter";
-import httpStatus from "http-status";
+import {
+  ApiErrorDetails,
+  BawApiError,
+  isApiErrorDetails,
+} from "@helpers/custom-errors/baw-api-error";
+import { BAD_GATEWAY } from "http-status";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { ApiResponse } from "./baw-api.service";
-import { SecurityService } from "./security/security.service";
-
+import { UserService } from "./user/user.service";
 /**
  * BAW API Interceptor.
  * This handles intercepting http requests to the BAW API server and manages
@@ -29,7 +32,7 @@ import { SecurityService } from "./security/security.service";
 export class BawApiInterceptor implements HttpInterceptor {
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
-    public api: SecurityService
+    public api: UserService
   ) {}
 
   /**
@@ -53,7 +56,7 @@ export class BawApiInterceptor implements HttpInterceptor {
       request = request.clone({
         setHeaders: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          Authorization: `Token token="${this.api.getLocalUser().authToken}"`,
+          Authorization: `Token token="${this.api.authToken}"`,
         },
       });
     }
@@ -117,7 +120,7 @@ export class BawApiInterceptor implements HttpInterceptor {
       };
     } else if (response.status === 0) {
       error = {
-        status: httpStatus.BAD_GATEWAY,
+        status: BAD_GATEWAY,
         message:
           "Unable to reach our servers right now." +
           "This may be an issue with your connection to us, or a temporary issue with our services.",
@@ -126,17 +129,8 @@ export class BawApiInterceptor implements HttpInterceptor {
       error = { status: response.status, message: response.message };
     }
 
-    return throwError(error);
+    return throwError(() => new BawApiError(error));
   }
-}
-
-/**
- * API Service error response
- */
-export interface ApiErrorDetails {
-  status: number;
-  message: string;
-  info?: any;
 }
 
 /**

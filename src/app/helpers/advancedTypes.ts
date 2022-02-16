@@ -1,4 +1,4 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 
 /**
  * Like Partial<T> but require certain properties.
