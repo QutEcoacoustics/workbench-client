@@ -9,7 +9,7 @@
       [isSideNav]="true"
     ></baw-secondary-menu>
     <baw-action-menu
-      *ngIf="menu.isFullscreen"
+      *ngIf="menu.isFullscreen && resolvedSuccessfully"
       [isSideNav]="true"
     ></baw-action-menu>
   </baw-side-nav>
@@ -34,7 +34,7 @@
 
     <!-- Action Menu -->
     <div *ngIf="!fullscreen" id="action">
-      <baw-action-menu></baw-action-menu>
+      <baw-action-menu *ngIf="resolvedSuccessfully"></baw-action-menu>
     </div>
   </div>
 
