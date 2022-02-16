@@ -35,15 +35,16 @@
 
 <ng-template #userTemplate>
   <!-- Admin toolbox -->
-  <a
-    *ngIf="user.isAdmin"
-    id="admin-header-link"
-    class="nav-link"
-    strongRouteActive="active"
-    [strongRoute]="routes.admin.route"
-  >
-    <fa-icon [icon]="routes.admin.icon"></fa-icon>
-  </a>
+  <li *ngIf="user.isAdmin" class="nav-item">
+    <a
+      id="admin-header-link"
+      class="nav-link"
+      strongRouteActive="active"
+      [strongRoute]="routes.admin.route"
+    >
+      <fa-icon [icon]="routes.admin.icon"></fa-icon>
+    </a>
+  </li>
 
   <!-- Profile photo -->
   <li class="nav-item">
