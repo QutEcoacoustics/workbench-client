@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob } from "@models/AnalysisJob";
@@ -30,9 +31,10 @@ export class AnalysisJobItemsService extends ReadonlyApi<
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, AnalysisJobItem, injector);
+    super(http, apiRoot, AnalysisJobItem, injector, state);
   }
 
   public list(analysisJob: IdOr<AnalysisJob>): Observable<AnalysisJobItem[]> {

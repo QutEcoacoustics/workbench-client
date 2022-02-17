@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import type { Project } from "@models/Project";
@@ -40,9 +41,10 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, Site, injector);
+    super(http, apiRoot, Site, injector, state);
   }
 
   public list(project: IdOr<Project>): Observable<Site[]> {
@@ -105,7 +107,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
       this.getPath(annotationsEndpoint(project, model, emptyParam))
     );
     setTimezoneQSP(url, selectedTimezone);
-    setAuthorizationQSP(url, this.authToken);
+    setAuthorizationQSP(url, this.state.authToken);
     return url.toString();
   }
 
@@ -128,9 +130,10 @@ export class ShallowSitesService extends StandardApi<Site> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, Site, injector);
+    super(http, apiRoot, Site, injector, state);
   }
 
   public list(): Observable<Site[]> {

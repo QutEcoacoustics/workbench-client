@@ -6,21 +6,15 @@ import {
   BawApiError,
   isBawApiError,
 } from "@helpers/custom-errors/baw-api-error";
-import { AuthToken } from "@interfaces/apiInterfaces";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
-import { User } from "@models/User";
-import { BehaviorSubject, Observable, throwError } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { map, mergeMap, switchMap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { BawApiStateService } from "./baw-api-state.service";
 
 export const defaultApiPageSize = 25;
 export const unknownErrorCode = -1;
 export const STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
-export const guestUser = undefined;
-export interface AuthTriggerData {
-  user: User | undefined;
-  authToken?: AuthToken;
-}
 
 /** Default headers for API requests */
 const defaultHeaders = new HttpHeaders({
@@ -81,7 +75,8 @@ export class BawApiService<Model extends AbstractModel> {
     @Inject(API_ROOT) protected apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
     classBuilder: AbstractModelConstructor<Model>,
-    protected injector: Injector
+    protected injector: Injector,
+    protected state: BawApiStateService
   ) {
     this.isServer = this.injector.get(IS_SERVER_PLATFORM);
 
@@ -113,40 +108,6 @@ export class BawApiService<Model extends AbstractModel> {
     };
   }
 
-  private static _authTrigger = new BehaviorSubject<AuthTriggerData>({
-    user: guestUser,
-  });
-  private static _loggedInUser: User | undefined;
-  private static _authToken: AuthToken | undefined;
-  /** Get logged in user */
-  public get loggedInUser(): User | undefined {
-    return BawApiService._loggedInUser;
-  }
-  /** Get user auth token */
-  public get authToken(): AuthToken | undefined {
-    return BawApiService._authToken;
-  }
-  /** Set user details */
-  protected setLoggedInUser(user: User, authToken: string) {
-    BawApiService._loggedInUser = user;
-    BawApiService._authToken = authToken;
-    BawApiService._authTrigger.next({ user, authToken });
-  }
-  /** Clear user details */
-  protected clearLoggedInUser(): void {
-    BawApiService._loggedInUser = guestUser;
-    BawApiService._authToken = undefined;
-    BawApiService._authTrigger.next({ user: guestUser });
-  }
-  /** Is user logged in */
-  public isLoggedIn(): boolean {
-    return !!this.authToken;
-  }
-  /** Returns a subject which tracks the change in loggedIn status */
-  public get authTrigger(): Observable<AuthTriggerData> {
-    return BawApiService._authTrigger;
-  }
-
   /**
    * Handle custom Errors thrown in API services
    *
@@ -166,7 +127,7 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected apiList(path: string): Observable<Model[]> {
-    return this.authTrigger.pipe(
+    return this.state.authTrigger.pipe(
       switchMap(() =>
         this.httpGet(path).pipe(map(this.handleCollectionResponse))
       )
@@ -183,7 +144,7 @@ export class BawApiService<Model extends AbstractModel> {
     path: string,
     filters: Filters<Model>
   ): Observable<Model[]> {
-    return this.authTrigger.pipe(
+    return this.state.authTrigger.pipe(
       switchMap(() =>
         this.httpPost(path, filters).pipe(map(this.handleCollectionResponse))
       )
@@ -196,7 +157,7 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    */
   protected apiShow(path: string): Observable<Model> {
-    return this.authTrigger.pipe(
+    return this.state.authTrigger.pipe(
       switchMap(() => this.httpGet(path).pipe(map(this.handleSingleResponse)))
     );
   }
@@ -275,14 +236,10 @@ export class BawApiService<Model extends AbstractModel> {
     path: string,
     options: any = defaultHeaders
   ): Observable<ApiResponse<Model | Model[]>> {
-    return this.authTrigger.pipe(
-      switchMap(() =>
-        this.http.get<ApiResponse<Model>>(this.getPath(path), {
-          responseType: "json",
-          headers: options,
-        })
-      )
-    );
+    return this.http.get<ApiResponse<Model>>(this.getPath(path), {
+      responseType: "json",
+      headers: options,
+    });
   }
 
   /**

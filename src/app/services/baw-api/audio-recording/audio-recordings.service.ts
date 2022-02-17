@@ -8,6 +8,7 @@ import type { Site } from "@models/Site";
 import { Observable } from "rxjs";
 import { toBase64Url } from "@helpers/encoding/encoding";
 import { toSnakeCase } from "@helpers/case-converter/case-converter";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import {
   emptyParam,
   filterParam,
@@ -36,9 +37,10 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, AudioRecording, injector);
+    super(http, apiRoot, AudioRecording, injector, state);
   }
 
   public list(): Observable<AudioRecording[]> {
@@ -111,8 +113,8 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
       filterEncoded: toBase64Url(JSON.stringify(toSnakeCase(filter))),
     };
 
-    if (this.isLoggedIn) {
-      body["authToken"] = this.authToken;
+    if (this.state.isLoggedIn) {
+      body["authToken"] = this.state.authToken;
     }
 
     body = toSnakeCase(body);

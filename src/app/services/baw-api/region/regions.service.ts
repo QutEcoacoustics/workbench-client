@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Project } from "@models/Project";
@@ -32,9 +33,10 @@ export class RegionsService extends StandardApi<Region, [IdOr<Project>]> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, Region, injector);
+    super(http, apiRoot, Region, injector, state);
   }
 
   public list(project: IdOr<Project>): Observable<Region[]> {
@@ -76,9 +78,10 @@ export class ShallowRegionsService extends StandardApi<Region> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, Region, injector);
+    super(http, apiRoot, Region, injector, state);
   }
 
   public list(): Observable<Region[]> {

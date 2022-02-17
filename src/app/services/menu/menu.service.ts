@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@angular/core";
-import { SecurityService } from "@baw-api/security/security.service";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { DEFAULT_MENU, IDefaultMenu } from "@helpers/page/defaultMenus";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -48,7 +48,7 @@ export class MenuService extends withUnsubscribe() {
   private _pageInfo: IPageInfo;
 
   public constructor(
-    private api: SecurityService,
+    private state: BawApiStateService,
     private sharedRoute: SharedActivatedRouteService,
     @Inject(DEFAULT_MENU) private defaultMenu: IDefaultMenu
   ) {
@@ -82,7 +82,7 @@ export class MenuService extends withUnsubscribe() {
     this._menuUpdate = new BehaviorSubject(this.getData());
 
     /** Track the local user */
-    this.api.authTrigger
+    this.state.authTrigger
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(({ user }): void => {
         this._user = user;

@@ -21,8 +21,9 @@ import {
 import { BAD_GATEWAY } from "http-status";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
+import { BawApiStateService } from "./baw-api-state.service";
 import { ApiResponse } from "./baw-api.service";
-import { UserService } from "./user/user.service";
+
 /**
  * BAW API Interceptor.
  * This handles intercepting http requests to the BAW API server and manages
@@ -32,7 +33,7 @@ import { UserService } from "./user/user.service";
 export class BawApiInterceptor implements HttpInterceptor {
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
-    public api: UserService
+    public state: BawApiStateService
   ) {}
 
   /**
@@ -52,11 +53,11 @@ export class BawApiInterceptor implements HttpInterceptor {
     }
 
     // If logged in, add authorization token
-    if (this.api.isLoggedIn()) {
+    if (this.state.isLoggedIn) {
       request = request.clone({
         setHeaders: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          Authorization: `Token token="${this.api.authToken}"`,
+          Authorization: `Token token="${this.state.authToken}"`,
         },
       });
     }

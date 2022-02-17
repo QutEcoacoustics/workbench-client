@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ITag, Tag, TagType } from "@models/Tag";
@@ -32,9 +33,10 @@ export class TagsService extends StandardApi<Tag> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, Tag, injector);
+    super(http, apiRoot, Tag, injector, state);
   }
 
   public list(): Observable<Tag[]> {

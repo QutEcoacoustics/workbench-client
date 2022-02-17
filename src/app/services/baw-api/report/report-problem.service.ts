@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
@@ -14,9 +15,10 @@ export class ReportProblemService extends BawFormApiService<ReportProblem> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, ReportProblem, injector);
+    super(http, apiRoot, ReportProblem, injector, state);
   }
 
   public reportProblem(details: ReportProblem): Observable<void> {

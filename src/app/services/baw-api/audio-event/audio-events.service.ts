@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEvent } from "@models/AudioEvent";
@@ -34,9 +35,10 @@ export class AudioEventsService extends StandardApi<
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, AudioEvent, injector);
+    super(http, apiRoot, AudioEvent, injector, state);
   }
 
   public list(audioRecording: IdOr<AudioRecording>): Observable<AudioEvent[]> {
@@ -89,9 +91,10 @@ export class ShallowAudioEventsService
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, AudioEvent, injector);
+    super(http, apiRoot, AudioEvent, injector, state);
   }
 
   public filter(filters: Filters<AudioEvent>): Observable<AudioEvent[]> {

@@ -156,7 +156,7 @@ export class User extends AbstractModel<IUser> implements IUser {
 /**
  * A user model for the website user
  */
-export interface ISessionUser extends IUser {
+export interface ISessionUser {
   userName?: UserName;
   authToken?: AuthToken;
 }
@@ -169,19 +169,11 @@ export class SessionUser
   implements ISessionUser
 {
   public readonly kind = "Session User";
-  public readonly id?: Id;
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;
-  @bawImage<ISessionUser>(`${assetRoot}/images/user/user_span4.png`)
-  public readonly imageUrls?: ImageUrl[];
-  public readonly preferences?: any;
-  public readonly rolesMask?: number;
-  public readonly tzinfoTz?: string;
-  public readonly timezoneInformation?: TimezoneInformation;
 
   public constructor(user: ISessionUser, injector?: Injector) {
     super(user, injector);
-    this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
   }
 
   public get viewUrl(): string {

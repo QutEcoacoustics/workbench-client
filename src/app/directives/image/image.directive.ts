@@ -6,7 +6,7 @@ import {
   OnChanges,
   SimpleChanges,
 } from "@angular/core";
-import { SecurityService } from "@baw-api/security/security.service";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
@@ -47,7 +47,7 @@ export class AuthenticatedImageDirective implements OnChanges {
 
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
-    private securityApi: SecurityService,
+    private state: BawApiStateService,
     private imageRef: ElementRef<HTMLImageElement>
   ) {}
 
@@ -146,9 +146,9 @@ export class AuthenticatedImageDirective implements OnChanges {
       return url;
     }
 
-    if (this.securityApi.isLoggedIn()) {
+    if (this.state.isLoggedIn) {
       const tokenUrl = new URL(url);
-      tokenUrl.searchParams.set("authToken", this.securityApi.authToken);
+      tokenUrl.searchParams.set("authToken", this.state.authToken);
       return tokenUrl.toString();
     }
     return url;

@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import {
@@ -25,7 +26,11 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   public sortKeys = { updated: "updatedAt" };
   protected api: ShallowAudioEventsService;
 
-  public constructor(api: ShallowAudioEventsService, route: ActivatedRoute) {
+  public constructor(
+    api: ShallowAudioEventsService,
+    route: ActivatedRoute,
+    private state: BawApiStateService
+  ) {
     super(
       api,
       (audioEvents) =>
@@ -44,7 +49,7 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   }
 
   protected apiAction(filters: Filters<IAudioEvent>) {
-    return this.api.filterByCreator(filters, this.api.loggedInUser?.id);
+    return this.api.filterByCreator(filters, this.state.loggedInUser?.id);
   }
 }
 

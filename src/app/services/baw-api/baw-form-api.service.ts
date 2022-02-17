@@ -5,6 +5,7 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
+import { BawApiStateService } from "./baw-api-state.service";
 import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
 
 /*
@@ -35,9 +36,10 @@ export class BawFormApiService<
     @Inject(API_ROOT) apiRoot: string,
     @Inject(STUB_MODEL_BUILDER)
     classBuilder: new (_: Record<string, any>, _injector?: Injector) => Model,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, classBuilder, injector);
+    super(http, apiRoot, classBuilder, injector, state);
   }
 
   /**

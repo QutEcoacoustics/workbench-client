@@ -6,7 +6,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core";
-import { SecurityService } from "@baw-api/security/security.service";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { MenuType } from "@helpers/generalTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
@@ -58,7 +58,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
 
   public constructor(
     public menuService: MenuService,
-    private api: SecurityService,
+    private state: BawApiStateService,
     private modalService: NgbModal
   ) {}
 
@@ -67,7 +67,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     this.widgets ??= Set();
 
     // Get user details
-    this.user = this.api.loggedInUser;
+    this.user = this.state.loggedInUser;
     // Filter links
     this.formattedLinks = this.setModalActions();
   }

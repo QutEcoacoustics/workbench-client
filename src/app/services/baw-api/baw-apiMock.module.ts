@@ -12,6 +12,7 @@ import {
   ShallowAudioEventsService,
 } from "./audio-event/audio-events.service";
 import { AudioRecordingsService } from "./audio-recording/audio-recordings.service";
+import { BawApiStateService } from "./baw-api-state.service";
 import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
 import { BookmarksService } from "./bookmark/bookmarks.service";
 import { CmsService } from "./cms/cms.service";
@@ -85,6 +86,7 @@ const mockProviders: Provider[] = [
       useClass: BawApiInterceptor,
       multi: true,
     },
+    BawApiStateService,
     { provide: STUB_MODEL_BUILDER, useValue: MockModel },
     { provide: BawApiService, useClass: MockBawApiService },
     ...services,

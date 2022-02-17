@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { param } from "@baw-api/api-common";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import {
   BawFormApiService,
   RecaptchaSettings,
@@ -34,9 +35,10 @@ export class SecurityService extends BawFormApiService<SessionUser> {
     @Inject(API_ROOT) apiRoot: string,
     private userService: UserService,
     private cookies: CookieService,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, SessionUser, injector);
+    super(http, apiRoot, SessionUser, injector, state);
 
     // After constructor so that we can access super
     this.handleError = (err: BawApiError | Error): Observable<never> => {
@@ -54,11 +56,9 @@ export class SecurityService extends BawFormApiService<SessionUser> {
       )
       .subscribe({
         next: (user) => {
-          console.log("Session Details: ", user);
-          this.setLoggedInUser(user, authToken);
+          this.state.setLoggedInUser(user, authToken);
         },
-        error: (err) => {
-          console.log("Session Details: ", err);
+        error: () => {
           this.clearData();
         },
       });
@@ -180,7 +180,7 @@ export class SecurityService extends BawFormApiService<SessionUser> {
       // Get user details
       mergeMap(() => this.userService.show()),
       // Update session user with user details and save to local storage
-      tap((user: User) => this.setLoggedInUser(user, authToken)),
+      tap((user: User) => this.state.setLoggedInUser(user, authToken)),
       // Void output
       map(() => undefined),
       // Complete observable
@@ -196,7 +196,7 @@ export class SecurityService extends BawFormApiService<SessionUser> {
    * Clear session and cookie data, then trigger authTrigger
    */
   private clearData() {
-    this.clearLoggedInUser();
+    this.state.clearLoggedInUser();
     this.cookies.deleteAll();
   }
 }

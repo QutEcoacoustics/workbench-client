@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IProgressEvent, ProgressEvent } from "@models/ProgressEvent";
@@ -24,9 +25,10 @@ export class ProgressEventsService extends ReadAndCreateApi<ProgressEvent> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, ProgressEvent, injector);
+    super(http, apiRoot, ProgressEvent, injector, state);
   }
 
   public list(): Observable<ProgressEvent[]> {

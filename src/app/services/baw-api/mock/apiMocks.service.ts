@@ -11,6 +11,7 @@ import {
   ReadonlyApi,
   StandardApi,
 } from "@baw-api/api-common";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { BawApiService } from "@baw-api/baw-api.service";
 import { ServiceToken } from "@baw-api/ServiceTokens";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
@@ -35,9 +36,10 @@ export class MockStandardApiService extends StandardApi<MockModel> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, MockModel, injector);
+    super(http, apiRoot, MockModel, injector, state);
   }
 
   public list = multipleModels;
@@ -53,9 +55,10 @@ export class MockImmutableApiService extends ImmutableApi<MockModel> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, MockModel, injector);
+    super(http, apiRoot, MockModel, injector, state);
   }
 
   public list = multipleModels;
@@ -70,9 +73,10 @@ export class MockNonDestructibleApiService extends NonDestructibleApi<MockModel>
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, MockModel, injector);
+    super(http, apiRoot, MockModel, injector, state);
   }
 
   public list = multipleModels;
@@ -87,9 +91,10 @@ export class MockReadAndCreateApiService extends ReadAndCreateApi<MockModel> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, MockModel, injector);
+    super(http, apiRoot, MockModel, injector, state);
   }
 
   public list = multipleModels;
@@ -103,9 +108,10 @@ export class MockReadAndUpdateApiService extends ReadAndUpdateApi<MockModel> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, MockModel, injector);
+    super(http, apiRoot, MockModel, injector, state);
   }
 
   public list = multipleModels;
@@ -119,9 +125,10 @@ export class MockReadonlyApiService extends ReadonlyApi<MockModel> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, MockModel, injector);
+    super(http, apiRoot, MockModel, injector, state);
   }
 
   public list = multipleModels;
@@ -132,13 +139,15 @@ export class MockReadonlyApiService extends ReadonlyApi<MockModel> {
 @Injectable()
 export class MockShowApiService
   extends BawApiService<MockModel>
-  implements ApiShow<MockModel, [], IdOr<MockModel>> {
+  implements ApiShow<MockModel, [], IdOr<MockModel>>
+{
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, MockModel, injector);
+    super(http, apiRoot, MockModel, injector, state);
   }
 
   public show = singleModel;
@@ -147,13 +156,15 @@ export class MockShowApiService
 @Injectable()
 export class MockFilterApiService
   extends BawApiService<MockModel>
-  implements ApiFilter<MockModel> {
+  implements ApiFilter<MockModel>
+{
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, MockModel, injector);
+    super(http, apiRoot, MockModel, injector, state);
   }
 
   public filter = multipleModels;

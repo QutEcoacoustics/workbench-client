@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { ApiShow } from "@baw-api/api-common";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { BawApiService } from "@baw-api/baw-api.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
@@ -17,9 +18,10 @@ export class StatisticsService
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, Statistics, injector);
+    super(http, apiRoot, Statistics, injector, state);
   }
 
   public show(): Observable<Statistics> {

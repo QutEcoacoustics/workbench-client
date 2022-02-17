@@ -1,5 +1,4 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { SecurityService } from "@baw-api/security/security.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
 
@@ -86,9 +85,6 @@ export class RecentAudioRecordingsComponent implements OnChanges {
   public columnMode = ColumnMode;
   public columns: TableColumn[];
   public rows = [];
-  public isLoggedIn: boolean;
-
-  public constructor(private api: SecurityService) {}
 
   public ngOnChanges(): void {
     if (!this.columns) {
@@ -98,7 +94,6 @@ export class RecentAudioRecordingsComponent implements OnChanges {
         { name: "Uploaded" },
         { name: "Model" },
       ];
-      this.isLoggedIn = this.api.isLoggedIn();
     }
 
     this.rows = (this.audioRecordings ?? []).map((recording) => ({

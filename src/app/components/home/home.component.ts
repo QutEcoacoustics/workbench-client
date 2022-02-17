@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { CMS } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
-import { SecurityService } from "@baw-api/security/security.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { Brand } from "@helpers/app-initializer/app-initializer";
@@ -42,7 +42,7 @@ class HomeComponent extends PageComponent implements OnInit {
   public constructor(
     private regionApi: ShallowRegionsService,
     private projectApi: ProjectsService,
-    private securityApi: SecurityService,
+    private state: BawApiStateService,
     public config: ConfigService
   ) {
     super();
@@ -75,7 +75,7 @@ class HomeComponent extends PageComponent implements OnInit {
      *  recent use / modification date (recent, to less recent)
      *  image or no image
      */
-    this.securityApi.authTrigger
+    this.state.authTrigger
       .pipe(
         mergeMap(() =>
           (settings.hideProjects ? this.regionApi : this.projectApi).filter({

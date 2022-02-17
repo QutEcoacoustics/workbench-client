@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ISavedSearch, SavedSearch } from "@models/SavedSearch";
@@ -24,9 +25,10 @@ export class SavedSearchesService extends ImmutableApi<SavedSearch> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, SavedSearch, injector);
+    super(http, apiRoot, SavedSearch, injector, state);
   }
 
   public list(): Observable<SavedSearch[]> {

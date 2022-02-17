@@ -10,6 +10,7 @@ import { IUser, User } from "@models/User";
 import httpCodes from "http-status";
 import { Observable, of, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import {
   emptyParam,
   filterParam,
@@ -34,9 +35,10 @@ export class AccountsService extends StandardApi<User> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, User, injector);
+    super(http, apiRoot, User, injector, state);
   }
 
   public list(): Observable<User[]> {

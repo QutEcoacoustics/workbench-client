@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
+import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IResponse, Response } from "@models/Response";
@@ -28,9 +29,10 @@ export class ResponsesService extends StandardApi<Response, [IdOr<Study>]> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, Response, injector);
+    super(http, apiRoot, Response, injector, state);
   }
 
   public list(study: IdOr<Study>): Observable<Response[]> {
@@ -68,9 +70,10 @@ export class ShallowResponsesService extends StandardApi<Response> {
   public constructor(
     http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
+    injector: Injector,
+    state: BawApiStateService
   ) {
-    super(http, apiRoot, Response, injector);
+    super(http, apiRoot, Response, injector, state);
   }
 
   public list(): Observable<Response[]> {
