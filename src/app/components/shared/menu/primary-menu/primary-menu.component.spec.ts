@@ -21,7 +21,7 @@ import {
   CustomMenuItem,
   Settings,
 } from "@helpers/app-initializer/app-initializer";
-import { SessionUser } from "@models/User";
+import { Session } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { assetRoot, ConfigService } from "@services/config/config.service";
 import { MenuService } from "@services/menu/menu.service";
@@ -68,7 +68,7 @@ describe("PrimaryMenuComponent", () => {
     customMenu?: CustomMenuItem[];
     isFullscreen?: boolean;
     isSideNav?: boolean;
-    user?: SessionUser;
+    user?: Session;
   }) {
     spec = createComponent({
       detectChanges: false,
@@ -112,7 +112,7 @@ describe("PrimaryMenuComponent", () => {
     userRoles.forEach(({ type, links }) => {
       describe(type + " user", () => {
         let isAdmin: boolean;
-        let defaultUser: SessionUser | null;
+        let defaultUser: Session | null;
 
         function getNavLinks() {
           return spec.queryAll<HTMLElement>("a.nav-link");
@@ -123,7 +123,7 @@ describe("PrimaryMenuComponent", () => {
             defaultUser = null;
           } else {
             isAdmin = type === "admin";
-            defaultUser = new SessionUser({
+            defaultUser = new Session({
               ...generateSessionUser({}, generateUser({}, isAdmin)),
             });
           }
@@ -242,7 +242,7 @@ describe("PrimaryMenuComponent", () => {
 
         if (links.profile) {
           it("should display default profile icon", () => {
-            const user = new SessionUser(
+            const user = new Session(
               generateSessionUser(
                 {},
                 generateUser({ imageUrls: undefined }, isAdmin)
@@ -262,7 +262,7 @@ describe("PrimaryMenuComponent", () => {
 
           it("should display profile custom icon", () => {
             const imageUrls = modelData.imageUrls();
-            const customUser = new SessionUser(generateUser({ imageUrls }));
+            const customUser = new Session(generateUser({ imageUrls }));
             setup({ user: customUser });
             spec.detectChanges();
 
@@ -308,7 +308,7 @@ describe("PrimaryMenuComponent", () => {
   });
 
   describe("logout", () => {
-    let defaultUser: SessionUser;
+    let defaultUser: Session;
 
     function getLogoutButton() {
       return spec.query<HTMLButtonElement>("#logout-header-link");
@@ -323,7 +323,7 @@ describe("PrimaryMenuComponent", () => {
     }
 
     beforeEach(() => {
-      defaultUser = new SessionUser({
+      defaultUser = new Session({
         ...generateUser(),
         ...generateSessionUser(),
       });

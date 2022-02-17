@@ -1,4 +1,4 @@
-import { ISessionUser, IUser } from "@models/User";
+import { ISession, IUser } from "@models/User";
 import { modelData } from "@test/helpers/faker";
 
 export function generateUser(
@@ -33,9 +33,9 @@ export function generateUser(
 }
 
 export function generateSessionUser(
-  data?: Partial<ISessionUser>,
+  data?: Partial<ISession>,
   userData?: Partial<IUser>
-): ISessionUser {
+): ISession {
   return {
     authToken: modelData.authToken(),
     userName: modelData.internet.userName(),

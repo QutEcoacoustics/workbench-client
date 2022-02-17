@@ -1,11 +1,9 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { BawApiStateService } from "@baw-api/baw-api-state.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import type { Project } from "@models/Project";
 import type { Region } from "@models/Region";
-import { ISite, Site } from "@models/Site";
+import { Site } from "@models/Site";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
 import {
@@ -21,7 +19,7 @@ import {
   setTimezoneQSP,
   StandardApi,
 } from "../api-common";
-import { Filters } from "../baw-api.service";
+import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
 const projectId: IdParam<Project> = id;
@@ -37,43 +35,44 @@ const annotationsEndpoint = stringTemplate`/projects/${projectId}/sites/${siteId
  * Handles API routes pertaining to project sites.
  */
 @Injectable()
-export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
+export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
   public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    state: BawApiStateService
-  ) {
-    super(http, apiRoot, Site, injector, state);
-  }
+    private api: BawApiService<Site>,
+    private state: BawApiStateService
+  ) {}
 
   public list(project: IdOr<Project>): Observable<Site[]> {
-    return this.apiList(endpoint(project, emptyParam, emptyParam));
+    return this.api.list(Site, endpoint(project, emptyParam, emptyParam));
   }
   public filter(
-    filters: Filters<ISite>,
+    filters: Filters<Site>,
     project: IdOr<Project>
   ): Observable<Site[]> {
-    return this.apiFilter(endpoint(project, emptyParam, filterParam), filters);
+    return this.api.filter(
+      Site,
+      endpoint(project, emptyParam, filterParam),
+      filters
+    );
   }
   public show(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
-    return this.apiShow(endpoint(project, model, emptyParam));
+    return this.api.show(Site, endpoint(project, model, emptyParam));
   }
   public create(model: Site, project: IdOr<Project>): Observable<Site> {
-    return this.apiCreate(
+    return this.api.create(
+      Site,
       endpoint(project, emptyParam, emptyParam),
       (site) => endpoint(project, site, emptyParam),
       model
     );
   }
   public update(model: Site, project: IdOr<Project>): Observable<Site> {
-    return this.apiUpdate(endpoint(project, model, emptyParam), model);
+    return this.api.update(Site, endpoint(project, model, emptyParam), model);
   }
   public destroy(
     model: IdOr<Site>,
     project: IdOr<Project>
   ): Observable<Site | void> {
-    return this.apiDestroy(endpoint(project, model, emptyParam));
+    return this.api.destroy(endpoint(project, model, emptyParam));
   }
 
   /**
@@ -84,12 +83,12 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
    * @param region Region to filter by (null if you want sites which are not part of a region)
    */
   public filterByRegion(
-    filters: Filters<ISite>,
+    filters: Filters<Site>,
     project: IdOr<Project>,
     region: IdOr<Region>
   ): Observable<Site[]> {
     return this.filter(
-      this.filterThroughAssociation(filters, "regionId", region) as Filters,
+      this.api.filterThroughAssociation(filters, "regionId", region),
       project
     );
   }
@@ -104,7 +103,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
     selectedTimezone: string
   ): string {
     const url = new URL(
-      this.getPath(annotationsEndpoint(project, model, emptyParam))
+      this.api.getPath(annotationsEndpoint(project, model, emptyParam))
     );
     setTimezoneQSP(url, selectedTimezone);
     setAuthorizationQSP(url, this.state.authToken);
@@ -117,7 +116,7 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
    * request.
    */
   public harvestFile(model: IdOr<Site>, project: IdOr<Project>): string {
-    return this.getPath(harvestEndpoint(project, model));
+    return this.api.getPath(harvestEndpoint(project, model));
   }
 }
 
@@ -126,37 +125,35 @@ export class SitesService extends StandardApi<Site, [IdOr<Project>]> {
  * Handles API routes pertaining to sites.
  */
 @Injectable()
-export class ShallowSitesService extends StandardApi<Site> {
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    state: BawApiStateService
-  ) {
-    super(http, apiRoot, Site, injector, state);
-  }
+export class ShallowSitesService implements StandardApi<Site> {
+  public constructor(private api: BawApiService<Site>) {}
 
   public list(): Observable<Site[]> {
-    return this.apiList(endpointShallow(emptyParam, emptyParam));
+    return this.api.list(Site, endpointShallow(emptyParam, emptyParam));
   }
-  public filter(filters: Filters<ISite>): Observable<Site[]> {
-    return this.apiFilter(endpointShallow(emptyParam, filterParam), filters);
+  public filter(filters: Filters<Site>): Observable<Site[]> {
+    return this.api.filter(
+      Site,
+      endpointShallow(emptyParam, filterParam),
+      filters
+    );
   }
   public show(model: IdOr<Site>): Observable<Site> {
-    return this.apiShow(endpointShallow(model, emptyParam));
+    return this.api.show(Site, endpointShallow(model, emptyParam));
   }
   public create(model: Site): Observable<Site> {
-    return this.apiCreate(
+    return this.api.create(
+      Site,
       endpointShallow(emptyParam, emptyParam),
       (site) => endpointShallow(site, emptyParam),
       model
     );
   }
   public update(model: Site): Observable<Site> {
-    return this.apiUpdate(endpointShallow(model, emptyParam), model);
+    return this.api.update(Site, endpointShallow(model, emptyParam), model);
   }
   public destroy(model: IdOr<Site>): Observable<Site | void> {
-    return this.apiDestroy(endpointShallow(model, emptyParam));
+    return this.api.destroy(endpointShallow(model, emptyParam));
   }
 
   /**
@@ -166,11 +163,11 @@ export class ShallowSitesService extends StandardApi<Site> {
    * @param user user to filter by
    */
   public filterByCreator(
-    filters: Filters<ISite>,
+    filters: Filters<Site>,
     user: IdOr<User>
   ): Observable<Site[]> {
     return this.filter(
-      this.filterThroughAssociation(filters, "creatorId", user) as Filters
+      this.api.filterThroughAssociation(filters, "creatorId", user)
     );
   }
 
@@ -181,11 +178,11 @@ export class ShallowSitesService extends StandardApi<Site> {
    * @param region Region to filter by (null if you want sites which are not part of a region)
    */
   public filterByRegion(
-    filters: Filters<ISite>,
+    filters: Filters<Site>,
     region: IdOr<Region>
   ): Observable<Site[]> {
     return this.filter(
-      this.filterThroughAssociation(filters, "regionId", region) as Filters
+      this.api.filterThroughAssociation(filters, "regionId", region)
     );
   }
 
@@ -193,7 +190,7 @@ export class ShallowSitesService extends StandardApi<Site> {
    * Retrieve orphaned sites (sites which have no parent projects)
    */
   public orphanList(): Observable<Site[]> {
-    return this.apiList(endpointOrphan(emptyParam));
+    return this.api.list(Site, endpointOrphan(emptyParam));
   }
 
   /**
@@ -201,8 +198,8 @@ export class ShallowSitesService extends StandardApi<Site> {
    *
    * @param filters Filters to apply
    */
-  public orphanFilter(filters: Filters<ISite>): Observable<Site[]> {
-    return this.apiFilter(endpointOrphan(filterParam), filters);
+  public orphanFilter(filters: Filters<Site>): Observable<Site[]> {
+    return this.api.filter(Site, endpointOrphan(filterParam), filters);
   }
 }
 

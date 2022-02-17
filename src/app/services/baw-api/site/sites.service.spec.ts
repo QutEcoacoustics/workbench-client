@@ -4,7 +4,7 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { SessionUser } from "@models/User";
+import { Session } from "@models/User";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateProject } from "@test/fakes/Project";
@@ -68,7 +68,7 @@ describe("SitesService", function () {
       if (!authToken) {
         spyOn(service, "getLocalUser").and.callFake(() => null);
       } else {
-        const user = new SessionUser(generateSessionUser({ authToken }));
+        const user = new Session(generateSessionUser({ authToken }));
         spyOn(service, "getLocalUser").and.callFake(() => user);
       }
     }

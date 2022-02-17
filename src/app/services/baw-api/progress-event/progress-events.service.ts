@@ -1,9 +1,6 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { IProgressEvent, ProgressEvent } from "@models/ProgressEvent";
+import { ProgressEvent } from "@models/ProgressEvent";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -14,34 +11,32 @@ import {
   option,
   ReadAndCreateApi,
 } from "../api-common";
-import { Filters } from "../baw-api.service";
+import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
 const progressEventId: IdParamOptional<ProgressEvent> = id;
 const endpoint = stringTemplate`/progress_events/${progressEventId}${option}`;
 
 @Injectable()
-export class ProgressEventsService extends ReadAndCreateApi<ProgressEvent> {
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    state: BawApiStateService
-  ) {
-    super(http, apiRoot, ProgressEvent, injector, state);
-  }
+export class ProgressEventsService implements ReadAndCreateApi<ProgressEvent> {
+  public constructor(private api: BawApiService<ProgressEvent>) {}
 
   public list(): Observable<ProgressEvent[]> {
-    return this.apiList(endpoint(emptyParam, emptyParam));
+    return this.api.list(ProgressEvent, endpoint(emptyParam, emptyParam));
   }
-  public filter(filters: Filters<IProgressEvent>): Observable<ProgressEvent[]> {
-    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
+  public filter(filters: Filters<ProgressEvent>): Observable<ProgressEvent[]> {
+    return this.api.filter(
+      ProgressEvent,
+      endpoint(emptyParam, filterParam),
+      filters
+    );
   }
   public show(model: IdOr<ProgressEvent>): Observable<ProgressEvent> {
-    return this.apiShow(endpoint(model, emptyParam));
+    return this.api.show(ProgressEvent, endpoint(model, emptyParam));
   }
   public create(model: ProgressEvent): Observable<ProgressEvent> {
-    return this.apiCreate(
+    return this.api.create(
+      ProgressEvent,
       endpoint(emptyParam, emptyParam),
       (progressEvent) => endpoint(progressEvent, emptyParam),
       model

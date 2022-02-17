@@ -1,10 +1,7 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { AnalysisJobItem, IAnalysisJobItem } from "@models/AnalysisJobItem";
+import { AnalysisJobItem } from "@models/AnalysisJobItem";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -16,7 +13,7 @@ import {
   option,
   ReadonlyApi,
 } from "../api-common";
-import { Filters } from "../baw-api.service";
+import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
 const analysisJobId: IdParam<AnalysisJob> = id;
@@ -24,27 +21,23 @@ const analysisJobItemId: IdParamOptional<AnalysisJobItem> = id;
 const endpoint = stringTemplate`/analysis_jobs/${analysisJobId}/audio_recordings/${analysisJobItemId}${option}`;
 
 @Injectable()
-export class AnalysisJobItemsService extends ReadonlyApi<
-  AnalysisJobItem,
-  [IdOr<AnalysisJob>]
-> {
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    state: BawApiStateService
-  ) {
-    super(http, apiRoot, AnalysisJobItem, injector, state);
-  }
+export class AnalysisJobItemsService
+  implements ReadonlyApi<AnalysisJobItem, [IdOr<AnalysisJob>]>
+{
+  public constructor(private api: BawApiService<AnalysisJobItem>) {}
 
   public list(analysisJob: IdOr<AnalysisJob>): Observable<AnalysisJobItem[]> {
-    return this.apiList(endpoint(analysisJob, emptyParam, emptyParam));
+    return this.api.list(
+      AnalysisJobItem,
+      endpoint(analysisJob, emptyParam, emptyParam)
+    );
   }
   public filter(
-    filters: Filters<IAnalysisJobItem>,
+    filters: Filters<AnalysisJobItem>,
     analysisJob: IdOr<AnalysisJob>
   ): Observable<AnalysisJobItem[]> {
-    return this.apiFilter(
+    return this.api.filter(
+      AnalysisJobItem,
       endpoint(analysisJob, emptyParam, filterParam),
       filters
     );
@@ -53,7 +46,10 @@ export class AnalysisJobItemsService extends ReadonlyApi<
     model: IdOr<AnalysisJobItem>,
     analysisJob: IdOr<AnalysisJob>
   ): Observable<AnalysisJobItem> {
-    return this.apiShow(endpoint(analysisJob, model, emptyParam));
+    return this.api.show(
+      AnalysisJobItem,
+      endpoint(analysisJob, model, emptyParam)
+    );
   }
 }
 

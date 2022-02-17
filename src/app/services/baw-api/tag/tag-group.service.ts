@@ -1,9 +1,6 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { ITagGroup, TagGroup } from "@models/TagGroup";
+import { TagGroup } from "@models/TagGroup";
 import { Observable } from "rxjs";
 import {
   emptyParam,
@@ -14,7 +11,7 @@ import {
   option,
   StandardApi,
 } from "../api-common";
-import { Filters } from "../baw-api.service";
+import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
 const tagGroupId: IdParamOptional<TagGroup> = id;
@@ -26,37 +23,35 @@ const endpoint = stringTemplate`/tag_groups/${tagGroupId}${option}`;
  * TODO https://github.com/QutEcoacoustics/baw-server/issues/442
  */
 @Injectable()
-export class TagGroupsService extends StandardApi<TagGroup> {
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    state: BawApiStateService
-  ) {
-    super(http, apiRoot, TagGroup, injector, state);
-  }
+export class TagGroupsService implements StandardApi<TagGroup> {
+  public constructor(private api: BawApiService<TagGroup>) {}
 
   public list(): Observable<TagGroup[]> {
-    return this.apiList(endpoint(emptyParam, emptyParam));
+    return this.api.list(TagGroup, endpoint(emptyParam, emptyParam));
   }
-  public filter(filters: Filters<ITagGroup>): Observable<TagGroup[]> {
-    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
+  public filter(filters: Filters<TagGroup>): Observable<TagGroup[]> {
+    return this.api.filter(
+      TagGroup,
+      endpoint(emptyParam, filterParam),
+      filters
+    );
   }
   public show(model: IdOr<TagGroup>): Observable<TagGroup> {
-    return this.apiShow(endpoint(model, emptyParam));
+    return this.api.show(TagGroup, endpoint(model, emptyParam));
   }
   public create(model: TagGroup): Observable<TagGroup> {
-    return this.apiCreate(
+    return this.api.create(
+      TagGroup,
       endpoint(emptyParam, emptyParam),
       (tagGroup) => endpoint(tagGroup, emptyParam),
       model
     );
   }
   public update(model: TagGroup): Observable<TagGroup> {
-    return this.apiUpdate(endpoint(model, emptyParam), model);
+    return this.api.update(TagGroup, endpoint(model, emptyParam), model);
   }
   public destroy(model: IdOr<TagGroup>): Observable<TagGroup | void> {
-    return this.apiDestroy(endpoint(model, emptyParam));
+    return this.api.destroy(endpoint(model, emptyParam));
   }
 }
 

@@ -3,7 +3,7 @@ import { IdOr } from "@baw-api/api-common";
 import { toBase64Url } from "@helpers/encoding/encoding";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
-import { SessionUser } from "@models/User";
+import { Session } from "@models/User";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
@@ -81,7 +81,7 @@ describe("AudioRecordingsService", function () {
     });
 
     it("should set auth token if logged in", () => {
-      const user = new SessionUser(generateSessionUser());
+      const user = new Session(generateSessionUser());
       spyOn(spec.service, "getLocalUser").and.returnValue(user);
       const expectation =
         downloadUrl +

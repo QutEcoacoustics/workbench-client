@@ -79,19 +79,19 @@ export function validateApiShow<
     beforeEach(function () {
       testModel = model();
       api = this.service;
-      api["apiShow"] = jasmine
+      api["show"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<Model>(testModel));
     });
 
     it("should handle show endpoint using model", function () {
       api.show(testModel, ...parameters).subscribe();
-      expect(api["apiShow"]).toHaveBeenCalledWith(endpoint);
+      expect(api["show"]).toHaveBeenCalledWith(endpoint);
     });
 
     it("should handle show endpoint using id", function () {
       api.show(id, ...parameters).subscribe();
-      expect(api["apiShow"]).toHaveBeenCalledWith(endpoint);
+      expect(api["show"]).toHaveBeenCalledWith(endpoint);
     });
   });
 }
@@ -115,12 +115,12 @@ export function validateApiCreate<
 
     it("should handle create endpoint", function () {
       const api: Service = this.service;
-      api["apiCreate"] = jasmine
+      api["create"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<Model>(testModel));
       api.create(testModel, ...parameters).subscribe();
 
-      const args = getCallArgs(api["apiCreate"] as jasmine.Spy);
+      const args = getCallArgs(api["create"] as jasmine.Spy);
       expect(args[0]).toBe(createEndpoint);
       expect(args[1](testModel)).toBe(updateEndpoint);
       expect(args[2]).toBe(testModel);
@@ -142,12 +142,12 @@ export function validateApiUpdate<
 
     it("should handle update endpoint", function () {
       const api: Service = this.service;
-      api["apiUpdate"] = jasmine
+      api["update"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<Model>(testModel));
       api.update(testModel, ...parameters).subscribe();
 
-      expect(api["apiUpdate"]).toHaveBeenCalledWith(endpoint, testModel);
+      expect(api["update"]).toHaveBeenCalledWith(endpoint, testModel);
     });
   });
 }
@@ -164,19 +164,19 @@ export function validateApiDestroy<
     beforeEach(function () {
       testModel = model();
       api = this.service;
-      api["apiDestroy"] = jasmine
+      api["destroy"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<Model>(null));
     });
 
     it("should handle destroy endpoint using model", function () {
       api.destroy(testModel, ...parameters).subscribe();
-      expect(api["apiDestroy"]).toHaveBeenCalledWith(endpoint);
+      expect(api["destroy"]).toHaveBeenCalledWith(endpoint);
     });
 
     it("should handle destroy endpoint using id", function () {
       api.destroy(id, ...parameters).subscribe();
-      expect(api["apiDestroy"]).toHaveBeenCalledWith(endpoint);
+      expect(api["destroy"]).toHaveBeenCalledWith(endpoint);
     });
   });
 }
@@ -223,13 +223,13 @@ export function validateCustomApiList<
     it("should handle list endpoint", function () {
       const api: Service = this.service;
 
-      api["apiList"] = jasmine
+      api["list"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<Model[]>([]));
       (api[list as any] as CustomList<Model, Params>)(
         ...parameters
       ).subscribe();
-      expect(api["apiList"]).toHaveBeenCalledWith(endpoint);
+      expect(api["list"]).toHaveBeenCalledWith(endpoint);
     });
   });
 }
@@ -256,7 +256,7 @@ export function validateCustomApiFilter<
       const api: Service = this.service;
       const expectedFilters: Filters<Model> = { ...defaultFilters, ...filters };
 
-      api["apiFilter"] = jasmine
+      api["filter"] = jasmine
         .createSpy()
         .and.callFake(() => new BehaviorSubject<Model[]>(testModels));
       (api[filter as any] as CustomFilter<Model, Params>)(
@@ -264,7 +264,7 @@ export function validateCustomApiFilter<
         ...parameters
       ).subscribe();
 
-      expect(api["apiFilter"]).toHaveBeenCalledWith(endpoint, expectedFilters);
+      expect(api["filter"]).toHaveBeenCalledWith(endpoint, expectedFilters);
     });
   });
 }

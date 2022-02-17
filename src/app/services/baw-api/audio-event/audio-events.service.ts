@@ -1,7 +1,4 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
@@ -28,27 +25,23 @@ const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}/audio_even
 const shallowEndpoint = stringTemplate`/audio_events/${audioEventId}${option}`;
 
 @Injectable()
-export class AudioEventsService extends StandardApi<
-  AudioEvent,
-  [IdOr<AudioRecording>]
-> {
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    state: BawApiStateService
-  ) {
-    super(http, apiRoot, AudioEvent, injector, state);
-  }
+export class AudioEventsService
+  implements StandardApi<AudioEvent, [IdOr<AudioRecording>]>
+{
+  public constructor(private api: BawApiService<AudioEvent>) {}
 
   public list(audioRecording: IdOr<AudioRecording>): Observable<AudioEvent[]> {
-    return this.apiList(endpoint(audioRecording, emptyParam, emptyParam));
+    return this.api.list(
+      AudioEvent,
+      endpoint(audioRecording, emptyParam, emptyParam)
+    );
   }
   public filter(
     filters: Filters<AudioEvent>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent[]> {
-    return this.apiFilter(
+    return this.api.filter(
+      AudioEvent,
       endpoint(audioRecording, emptyParam, filterParam),
       filters
     );
@@ -57,13 +50,17 @@ export class AudioEventsService extends StandardApi<
     model: IdOr<AudioEvent>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent> {
-    return this.apiShow(endpoint(audioRecording, model, emptyParam));
+    return this.api.show(
+      AudioEvent,
+      endpoint(audioRecording, model, emptyParam)
+    );
   }
   public create(
     model: AudioEvent,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent> {
-    return this.apiCreate(
+    return this.api.create(
+      AudioEvent,
       endpoint(audioRecording, emptyParam, emptyParam),
       (audioEvent) => endpoint(audioRecording, audioEvent, emptyParam),
       model
@@ -73,32 +70,30 @@ export class AudioEventsService extends StandardApi<
     model: AudioEvent,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent> {
-    return this.apiUpdate(endpoint(audioRecording, model, emptyParam), model);
+    return this.api.update(
+      AudioEvent,
+      endpoint(audioRecording, model, emptyParam),
+      model
+    );
   }
   public destroy(
     model: IdOr<AudioEvent>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent | void> {
-    return this.apiDestroy(endpoint(audioRecording, model, emptyParam));
+    return this.api.destroy(endpoint(audioRecording, model, emptyParam));
   }
 }
 
 @Injectable()
-export class ShallowAudioEventsService
-  extends BawApiService<AudioEvent>
-  implements ApiFilter<AudioEvent>
-{
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    state: BawApiStateService
-  ) {
-    super(http, apiRoot, AudioEvent, injector, state);
-  }
+export class ShallowAudioEventsService implements ApiFilter<AudioEvent> {
+  public constructor(private api: BawApiService<AudioEvent>) {}
 
   public filter(filters: Filters<AudioEvent>): Observable<AudioEvent[]> {
-    return this.apiFilter(shallowEndpoint(emptyParam, filterParam), filters);
+    return this.api.filter(
+      AudioEvent,
+      shallowEndpoint(emptyParam, filterParam),
+      filters
+    );
   }
 
   /**
@@ -112,7 +107,7 @@ export class ShallowAudioEventsService
     user: IdOr<User>
   ): Observable<AudioEvent[]> {
     return this.filter(
-      this.filterThroughAssociation(filters, "creatorId", user)
+      this.api.filterThroughAssociation(filters, "creatorId", user)
     );
   }
 
@@ -127,9 +122,9 @@ export class ShallowAudioEventsService
     site: IdOr<Site>
   ): Observable<AudioEvent[]> {
     return this.filter(
-      this.filterThroughAssociation(
+      this.api.filterThroughAssociation(
         filters,
-        "audio_recordings.site_id" as any,
+        "audioRecordings.siteId" as any,
         site
       )
     );

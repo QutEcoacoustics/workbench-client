@@ -5,7 +5,7 @@ import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { SessionUser } from "@models/User";
+import { Session } from "@models/User";
 import {
   createHttpFactory,
   HttpMethod,
@@ -39,8 +39,8 @@ describe("BawApiInterceptor", () => {
     spyOn(spec.service, "isLoggedIn").and.callFake(() => true);
     spyOn(spec.service, "getLocalUser").and.callFake(() =>
       authToken
-        ? new SessionUser(generateSessionUser({ authToken }))
-        : new SessionUser(generateSessionUser())
+        ? new Session(generateSessionUser({ authToken }))
+        : new Session(generateSessionUser())
     );
   }
 

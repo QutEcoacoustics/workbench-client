@@ -156,7 +156,7 @@ export class User extends AbstractModel<IUser> implements IUser {
 /**
  * A user model for the website user
  */
-export interface ISessionUser {
+export interface ISession {
   userName?: UserName;
   authToken?: AuthToken;
 }
@@ -164,15 +164,12 @@ export interface ISessionUser {
 /**
  * A user model for the website user
  */
-export class SessionUser
-  extends AbstractModel<ISessionUser>
-  implements ISessionUser
-{
+export class Session extends AbstractModel<ISession> implements ISession {
   public readonly kind = "Session User";
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;
 
-  public constructor(user: ISessionUser, injector?: Injector) {
+  public constructor(user: ISession, injector?: Injector) {
     super(user, injector);
   }
 

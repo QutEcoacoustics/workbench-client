@@ -18,7 +18,7 @@ import { UserService } from "@baw-api/user/user.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
 import { bawPersistAttr } from "@models/AttributeDecorators";
-import { SessionUser } from "@models/User";
+import { Session } from "@models/User";
 import {
   createHttpFactory,
   HttpMethod,
@@ -91,7 +91,7 @@ describe("BawApiService", () => {
     errorInfo: ApiErrorDetails;
   };
 
-  let sessionUser: SessionUser;
+  let sessionUser: Session;
   let apiRoot: string;
   let service: BawApiService<MockModel>;
   let spec: SpectatorHttp<BawApiService<MockModel>>;
@@ -111,7 +111,7 @@ describe("BawApiService", () => {
     ],
   });
 
-  function signIn(_sessionUser: SessionUser) {
+  function signIn(_sessionUser: Session) {
     localStorage.setItem("baw.client.user", JSON.stringify(_sessionUser));
   }
 
@@ -155,7 +155,7 @@ describe("BawApiService", () => {
     spec = createService();
     service = spec.service;
     apiRoot = spec.inject(API_ROOT);
-    sessionUser = new SessionUser(generateSessionUser());
+    sessionUser = new Session(generateSessionUser());
 
     const successMeta = { status: 200, message: "OK" };
     meta = {

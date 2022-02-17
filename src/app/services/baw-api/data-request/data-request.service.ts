@@ -1,25 +1,15 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
+import { Injectable } from "@angular/core";
 import { BawFormApiService } from "@baw-api/baw-form-api.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { DataRequest } from "@models/data/DataRequest";
 import { Observable } from "rxjs";
-import { map, first, catchError } from "rxjs/operators";
+import { catchError, first, map } from "rxjs/operators";
 
 const dataRequestEndpoint = stringTemplate`/data_request`;
 
 @Injectable()
-export class DataRequestService extends BawFormApiService<DataRequest> {
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    state: BawApiStateService
-  ) {
-    super(http, apiRoot, DataRequest, injector, state);
-  }
+export class DataRequestService {
+  public constructor(private api: BawFormApiService<DataRequest>) {}
 
   public dataRequest(details: DataRequest): Observable<void> {
     const validateEmail = (page: string): void => {
@@ -46,23 +36,23 @@ export class DataRequestService extends BawFormApiService<DataRequest> {
       }
     };
 
-    return this.makeFormRequest(
-      dataRequestEndpoint(),
-      dataRequestEndpoint(),
-      (token) => details.getBody(token)
-    ).pipe(
-      map((page) => {
-        validateEmail(page);
-        validateOrganization(page);
-        validateOrganizationType(page);
-      }),
-      // Complete observable
-      first(),
-      catchError(this.handleError)
-    );
+    return this.api
+      .makeFormRequest(dataRequestEndpoint(), dataRequestEndpoint(), (token) =>
+        details.getBody(token)
+      )
+      .pipe(
+        map((page) => {
+          validateEmail(page);
+          validateOrganization(page);
+          validateOrganizationType(page);
+        }),
+        // Complete observable
+        first(),
+        catchError(this.api.handleError)
+      );
   }
 
   public seed() {
-    return this.getRecaptchaSeed(dataRequestEndpoint());
+    return this.api.getRecaptchaSeed(dataRequestEndpoint());
   }
 }

@@ -21,7 +21,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { MockWidgetComponent } from "@menu/menu/menu.component.spec";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
-import { SessionUser } from "@models/User";
+import { Session } from "@models/User";
 import {
   createServiceFactory,
   mockProvider,
@@ -42,7 +42,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { MenuService, MenuServiceData } from "./menu.service";
 
 describe("MenuService", () => {
-  let localUser: SessionUser;
+  let localUser: Session;
   let authTrigger: Subject<void>;
   let pageInfo: BehaviorSubject<IPageInfo>;
   let spec: SpectatorService<MenuService>;
@@ -89,7 +89,7 @@ describe("MenuService", () => {
     });
   }
 
-  function setLocalUser(user: SessionUser) {
+  function setLocalUser(user: Session) {
     localUser = user;
     authTrigger.next();
   }
@@ -712,7 +712,7 @@ describe("MenuService", () => {
 
         it("should pass user data to predicate", (done) => {
           let isInitialLoad = true;
-          const user = new SessionUser(generateSessionUser());
+          const user = new Session(generateSessionUser());
           const link = createLink({
             predicate: jasmine.createSpy().and.callFake((_user) => {
               if (isInitialLoad) {

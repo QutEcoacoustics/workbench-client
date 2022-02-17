@@ -6,23 +6,23 @@ import {
   isProjectEditorPredicate,
 } from "./app.menus";
 import { Project } from "./models/Project";
-import { SessionUser } from "./models/User";
+import { Session } from "./models/User";
 import { ApiErrorDetails } from "./services/baw-api/api.interceptor.service";
 
 describe("Predicates", () => {
-  let defaultUser: SessionUser;
-  let adminUser: SessionUser;
-  let guestUser: SessionUser;
+  let defaultUser: Session;
+  let adminUser: Session;
+  let guestUser: Session;
 
   beforeEach(() => {
-    defaultUser = new SessionUser({
+    defaultUser = new Session({
       id: 1,
       userName: "username",
       authToken: "xxxxxxxxxxxxxxx",
       rolesMask: 2,
       rolesMaskNames: ["user"],
     });
-    adminUser = new SessionUser({
+    adminUser = new Session({
       id: 1,
       userName: "username",
       authToken: "xxxxxxxxxxxxxxx",

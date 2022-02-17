@@ -6,7 +6,11 @@ import {
   BawApiError,
   isBawApiError,
 } from "@helpers/custom-errors/baw-api-error";
-import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
+import {
+  AbstractModel,
+  AbstractModelConstructor,
+  AbstractModelWithoutId,
+} from "@models/AbstractModel";
 import { Observable, throwError } from "rxjs";
 import { map, mergeMap, switchMap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
@@ -35,7 +39,10 @@ const multiPartHeaders = new HttpHeaders({
  * Interface with BAW Server Rest API
  */
 @Injectable()
-export class BawApiService<Model extends AbstractModel> {
+export class BawApiService<
+  Model extends AbstractModelWithoutId,
+  ClassBuilder extends AbstractModelConstructor<Model> = AbstractModelConstructor<Model>
+> {
   /*
   Paths:
     list -> GET
@@ -46,22 +53,47 @@ export class BawApiService<Model extends AbstractModel> {
     filter -> POST with filter body
   */
 
-  /** Is website running on server environment */
-  protected isServer: boolean;
-
   /**
    * Handle API collection response
    *
    * @param response Api Response
    */
-  private handleCollectionResponse: (response: ApiResponse<Model>) => Model[];
+  private handleCollectionResponse(
+    classBuilder: ClassBuilder,
+    response: ApiResponse<Model[]>
+  ): Model[] {
+    if (response.data instanceof Array) {
+      return response.data.map((data) => {
+        const model = new classBuilder(data, this.injector);
+        model.addMetadata(response.meta);
+        return model;
+      });
+    } else {
+      const model = new classBuilder(response.data, this.injector);
+      model.addMetadata(response.meta);
+      return [model];
+    }
+  }
 
   /**
    * Handle API single model response
    *
    * @param response Api Response
    */
-  private handleSingleResponse: (response: ApiResponse<Model>) => Model;
+  private handleSingleResponse(
+    classBuilder: ClassBuilder,
+    response: ApiResponse<Model>
+  ): Model {
+    if (response.data instanceof Array) {
+      throw new Error(
+        "Received an array of API results when only a single result was expected"
+      );
+    }
+
+    const model = new classBuilder(response.data, this.injector);
+    model.addMetadata(response.meta);
+    return model;
+  }
 
   /**
    * Handle API empty response
@@ -71,49 +103,19 @@ export class BawApiService<Model extends AbstractModel> {
   }
 
   public constructor(
-    protected http: HttpClient,
     @Inject(API_ROOT) protected apiRoot: string,
-    @Inject(STUB_MODEL_BUILDER)
-    classBuilder: AbstractModelConstructor<Model>,
+    @Inject(IS_SERVER_PLATFORM) protected isServer: boolean,
+    protected http: HttpClient,
     protected injector: Injector,
     protected state: BawApiStateService
-  ) {
-    this.isServer = this.injector.get(IS_SERVER_PLATFORM);
-
-    // Create pure functions to prevent rebinding of 'this'
-    this.handleCollectionResponse = (response: ApiResponse<Model>): Model[] => {
-      if (response.data instanceof Array) {
-        return response.data.map((data) => {
-          const model = new classBuilder(data, this.injector);
-          model.addMetadata(response.meta);
-          return model;
-        });
-      } else {
-        const model = new classBuilder(response.data, this.injector);
-        model.addMetadata(response.meta);
-        return [model];
-      }
-    };
-
-    this.handleSingleResponse = (response: ApiResponse<Model>) => {
-      if (response.data instanceof Array) {
-        throw new Error(
-          "Received an array of API results when only a single result was expected"
-        );
-      }
-
-      const model = new classBuilder(response.data, this.injector);
-      model.addMetadata(response.meta);
-      return model;
-    };
-  }
+  ) {}
 
   /**
    * Handle custom Errors thrown in API services
    *
    * @param err Error
    */
-  protected handleError(err: BawApiError | Error): Observable<never> {
+  public handleError(err: BawApiError | Error): Observable<never> {
     return throwError(() =>
       isBawApiError(err)
         ? new BawApiError(err)
@@ -124,12 +126,14 @@ export class BawApiService<Model extends AbstractModel> {
   /**
    * Get response from list route
    *
+   * @param classBuilder Model to create
    * @param path API path
    */
-  protected apiList(path: string): Observable<Model[]> {
+  public list(classBuilder: ClassBuilder, path: string): Observable<Model[]> {
     return this.state.authTrigger.pipe(
-      switchMap(() =>
-        this.httpGet(path).pipe(map(this.handleCollectionResponse))
+      switchMap(() => this.httpGet(path)),
+      map((models: ApiResponse<Model[]>) =>
+        this.handleCollectionResponse(classBuilder, models)
       )
     );
   }
@@ -137,16 +141,19 @@ export class BawApiService<Model extends AbstractModel> {
   /**
    * Get response from filter route
    *
+   * @param classBuilder Model to create
    * @param path API path
    * @param filters API filters
    */
-  protected apiFilter(
+  public filter(
+    classBuilder: ClassBuilder,
     path: string,
     filters: Filters<Model>
   ): Observable<Model[]> {
     return this.state.authTrigger.pipe(
-      switchMap(() =>
-        this.httpPost(path, filters).pipe(map(this.handleCollectionResponse))
+      switchMap(() => this.httpPost(path, filters)),
+      map((models: ApiResponse<Model[]>) =>
+        this.handleCollectionResponse(classBuilder, models)
       )
     );
   }
@@ -154,11 +161,15 @@ export class BawApiService<Model extends AbstractModel> {
   /**
    * Get response from show route
    *
+   * @param classBuilder Model to create
    * @param path API path
    */
-  protected apiShow(path: string): Observable<Model> {
+  public show(classBuilder: ClassBuilder, path: string): Observable<Model> {
     return this.state.authTrigger.pipe(
-      switchMap(() => this.httpGet(path).pipe(map(this.handleSingleResponse)))
+      switchMap(() => this.httpGet(path)),
+      map((model: ApiResponse<Model>) =>
+        this.handleSingleResponse(classBuilder, model)
+      )
     );
   }
 
@@ -166,18 +177,22 @@ export class BawApiService<Model extends AbstractModel> {
    * Get response from create route. If the model has form data only attributes,
    * this will make an additional update request.
    *
+   * @param classBuilder Model to create
    * @param createPath API create path
    * @param updatePath API update path
    * @param body Request body
    */
-  protected apiCreate(
+  public create(
+    classBuilder: ClassBuilder,
     createPath: string,
     updatePath: (model: Model) => string,
     body: AbstractModel
   ): Observable<Model> {
     const jsonData = body?.getJsonAttributes?.({ create: true });
     const request = this.httpPost(createPath, jsonData ?? body).pipe(
-      map(this.handleSingleResponse)
+      map((model: ApiResponse<Model>) =>
+        this.handleSingleResponse(classBuilder, model)
+      )
     );
 
     if (body?.hasFormDataOnlyAttributes({ create: true })) {
@@ -186,7 +201,9 @@ export class BawApiService<Model extends AbstractModel> {
         mergeMap((model) =>
           this.httpPut(updatePath(model), formData, multiPartHeaders)
         ),
-        map(this.handleSingleResponse)
+        map((model: ApiResponse<Model>) =>
+          this.handleSingleResponse(classBuilder, model)
+        )
       );
     }
 
@@ -197,20 +214,29 @@ export class BawApiService<Model extends AbstractModel> {
    * Get response from update route. If the model has form data only attributes,
    * this will make an additional multipart update request.
    *
+   * @param classBuilder Model to create
    * @param path API path
    * @param body Request body
    */
-  protected apiUpdate(path: string, body: AbstractModel): Observable<Model> {
+  public update(
+    classBuilder: ClassBuilder,
+    path: string,
+    body: AbstractModel
+  ): Observable<Model> {
     const jsonData = body.getJsonAttributes?.({ update: true });
     const request = this.httpPatch(path, jsonData ?? body).pipe(
-      map(this.handleSingleResponse)
+      map((model: ApiResponse<Model>) =>
+        this.handleSingleResponse(classBuilder, model)
+      )
     );
 
     if (body?.hasFormDataOnlyAttributes({ update: true })) {
       const formData = body.getFormDataOnlyAttributes({ update: true });
       return request.pipe(
         mergeMap(() => this.httpPut(path, formData, multiPartHeaders)),
-        map(this.handleSingleResponse)
+        map((model: ApiResponse<Model>) =>
+          this.handleSingleResponse(classBuilder, model)
+        )
       );
     }
     return request;
@@ -221,7 +247,7 @@ export class BawApiService<Model extends AbstractModel> {
    *
    * @param path API path
    */
-  protected apiDestroy(path: string): Observable<Model | void> {
+  public destroy(path: string): Observable<null> {
     return this.httpDelete(path).pipe(map(this.handleEmptyResponse));
   }
 
@@ -232,7 +258,7 @@ export class BawApiService<Model extends AbstractModel> {
    *
    * @param path API path
    */
-  protected httpGet(
+  public httpGet(
     path: string,
     options: any = defaultHeaders
   ): Observable<ApiResponse<Model | Model[]>> {
@@ -249,7 +275,7 @@ export class BawApiService<Model extends AbstractModel> {
    *
    * @param path API path
    */
-  protected httpDelete(
+  public httpDelete(
     path: string,
     options: any = defaultHeaders
   ): Observable<ApiResponse<Model | void>> {
@@ -267,15 +293,19 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected httpPost(
+  public httpPost(
     path: string,
     body?: any,
     options: any = defaultHeaders
-  ): Observable<ApiResponse<Model>> {
-    return this.http.post<ApiResponse<Model>>(this.getPath(path), body, {
-      responseType: "json",
-      headers: options,
-    });
+  ): Observable<ApiResponse<Model | Model[]>> {
+    return this.http.post<ApiResponse<Model | Model[]>>(
+      this.getPath(path),
+      body,
+      {
+        responseType: "json",
+        headers: options,
+      }
+    );
   }
 
   /**
@@ -286,7 +316,7 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected httpPut(
+  public httpPut(
     path: string,
     body?: any,
     options: any = defaultHeaders
@@ -305,7 +335,7 @@ export class BawApiService<Model extends AbstractModel> {
    * @param path API path
    * @param body Request body
    */
-  protected httpPatch(
+  public httpPatch(
     path: string,
     body?: any,
     options: any = defaultHeaders
@@ -324,7 +354,7 @@ export class BawApiService<Model extends AbstractModel> {
    * @param model Foreign key value (if undefined, returns base filters)
    * @param comparison Comparison to be performed
    */
-  protected filterThroughAssociation(
+  public filterThroughAssociation(
     filters: Filters<Model>,
     key: AssociationKeys<Model>,
     model: AbstractModel | string | number,
@@ -341,7 +371,7 @@ export class BawApiService<Model extends AbstractModel> {
    * @param models Foreign key values (if undefined, returns base filters)
    * @param comparison Comparison to be performed
    */
-  protected filterThroughAssociations(
+  public filterThroughAssociations(
     filters: Filters<Model>,
     key: AssociationKeys<Model>,
     models: string[] | number[],
@@ -355,7 +385,7 @@ export class BawApiService<Model extends AbstractModel> {
    *
    * @param path Path fragment beginning with a `/`
    */
-  protected getPath(path: string): string {
+  public getPath(path: string): string {
     return this.apiRoot + path;
   }
 

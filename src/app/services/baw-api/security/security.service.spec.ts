@@ -5,7 +5,7 @@ import {
 } from "@baw-api/api.interceptor.service";
 import { unknownErrorCode } from "@baw-api/baw-api.service";
 import { MockShowApiService } from "@baw-api/mock/apiMocks.service";
-import { SessionUser, User } from "@models/User";
+import { Session, User } from "@models/User";
 import { createHttpFactory, SpectatorHttp } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
@@ -27,7 +27,7 @@ import { SecurityService } from "./security.service";
 
 describe("SecurityService", () => {
   let defaultUser: User;
-  let defaultSessionUser: SessionUser;
+  let defaultSessionUser: Session;
   let defaultRegisterDetails: RegisterDetails;
   let defaultLoginDetails: LoginDetails;
   let defaultError: ApiErrorDetails;
@@ -63,7 +63,7 @@ describe("SecurityService", () => {
     defaultAuthToken = modelData.random.alphaNumeric(20);
     defaultError = generateApiErrorDetails();
     defaultUser = new User(userData);
-    defaultSessionUser = new SessionUser({
+    defaultSessionUser = new Session({
       ...userData,
       ...generateSessionUser(),
     });
@@ -279,9 +279,9 @@ describe("SecurityService", () => {
       );
     }
 
-    function interceptSessionUser(model: SessionUser, error?: ApiErrorDetails) {
+    function interceptSessionUser(model: Session, error?: ApiErrorDetails) {
       sessionUserSpy = jasmine.createSpy("apiShow");
-      spec.service["apiShow"] = sessionUserSpy;
+      spec.service["show"] = sessionUserSpy;
       return intercept(sessionUserSpy, model, error);
     }
 
@@ -425,7 +425,7 @@ describe("SecurityService", () => {
         handleAuth().subscribe(noop, noop);
         await promise;
         expect(spec.service.getLocalUser()).toEqual(
-          new SessionUser({
+          new Session({
             ...defaultSessionUser.getJsonAttributes(),
             ...defaultUser.getJsonAttributes(),
           })
@@ -514,7 +514,7 @@ describe("SecurityService", () => {
     }
 
     function createError(url: string, error: ApiErrorDetails): void {
-      spec.service["apiDestroy"] = jasmine
+      spec.service["destroy"] = jasmine
         .createSpy()
         .and.callFake((path: string) => {
           expect(path).toBe(url);
@@ -527,7 +527,7 @@ describe("SecurityService", () => {
     it("should call apiDestroy", () => {
       createSuccess("/security/");
       spec.service.signOut().subscribe(noop, noop);
-      expect(spec.service["apiDestroy"]).toHaveBeenCalledWith("/security/");
+      expect(spec.service["destroy"]).toHaveBeenCalledWith("/security/");
     });
 
     it("should handle response", (done) => {

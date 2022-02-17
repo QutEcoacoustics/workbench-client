@@ -23,7 +23,7 @@ import {
   MenuModalWithoutAction,
   WidgetMenuItem,
 } from "@menu/widgetItem";
-import { SessionUser } from "@models/User";
+import { Session } from "@models/User";
 import {
   NgbModal,
   NgbModalModule,
@@ -72,7 +72,7 @@ export class MockModalComponent implements ModalComponent {
 
 describe("MenuComponent", () => {
   let modal: NgbModal;
-  let defaultUser: SessionUser;
+  let defaultUser: Session;
   let defaultMenuModal: MenuModalWithoutAction;
   let defaultWidget: WidgetMenuItem;
   let defaultMenuAction: MenuAction;
@@ -120,7 +120,7 @@ describe("MenuComponent", () => {
     props?: Partial<MenuComponent>,
     data: Data = {},
     params: Params = {},
-    opts?: { isFullscreen?: boolean; localUser?: SessionUser }
+    opts?: { isFullscreen?: boolean; localUser?: Session }
   ) {
     spec = createComponent({
       detectChanges: false,
@@ -141,7 +141,7 @@ describe("MenuComponent", () => {
   }
 
   beforeEach(() => {
-    defaultUser = new SessionUser(generateSessionUser());
+    defaultUser = new Session(generateSessionUser());
     defaultWidget = new WidgetMenuItem(MockWidgetComponent);
     defaultMenuModal = generateMenuModalWithoutAction();
     defaultMenuAction = generateMenuAction();
@@ -393,8 +393,7 @@ describe("MenuComponent", () => {
 
       it("should set link tooltip with username", () => {
         const link = createLink({
-          tooltip: (user: SessionUser) =>
-            `Custom tooltip for ${user?.userName}`,
+          tooltip: (user: Session) => `Custom tooltip for ${user?.userName}`,
         });
         setup(
           { menuType: "action", links: OrderedSet([link]) },

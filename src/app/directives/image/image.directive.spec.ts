@@ -3,7 +3,7 @@ import { SimpleChange } from "@angular/core";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
-import { SessionUser } from "@models/User";
+import { Session } from "@models/User";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import { testApiConfig } from "@services/config/configMock.service";
 import { generateSessionUser } from "@test/fakes/User";
@@ -159,7 +159,7 @@ describe("ImageDirective", () => {
       return spec;
     }
 
-    function setLoggedIn(user: SessionUser) {
+    function setLoggedIn(user: Session) {
       spyOn(api, "isLoggedIn").and.callFake(() => !!user);
       spyOn(api, "getLocalUser").and.callFake(() => user);
     }
@@ -171,7 +171,7 @@ describe("ImageDirective", () => {
     }
 
     it("should append authToken to url", () => {
-      const user = new SessionUser(generateSessionUser());
+      const user = new Session(generateSessionUser());
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = getApiRoot() + "/image.png";
       spectator = createApiDirective(imageUrls);
@@ -186,7 +186,7 @@ describe("ImageDirective", () => {
     });
 
     it("should not double append authToken to url", () => {
-      const user = new SessionUser(generateSessionUser());
+      const user = new Session(generateSessionUser());
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url =
         getApiRoot() + "/image.png?authToken=" + user.authToken;
@@ -205,7 +205,7 @@ describe("ImageDirective", () => {
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = getApiRoot() + "/image.png";
       spectator = createApiDirective(imageUrls, true);
-      setLoggedIn(new SessionUser(generateSessionUser()));
+      setLoggedIn(new Session(generateSessionUser()));
       spectator.detectChanges();
 
       assertImage(getImage(), `${getApiRoot()}/image.png`, "alt");
@@ -222,7 +222,7 @@ describe("ImageDirective", () => {
     });
 
     it("should handle additional parameters in url", () => {
-      const user = new SessionUser(generateSessionUser());
+      const user = new Session(generateSessionUser());
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = getApiRoot() + "/image.png?testing=value";
       spectator = createApiDirective(imageUrls);

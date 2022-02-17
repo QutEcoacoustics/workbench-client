@@ -1,8 +1,5 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
+import { Injectable } from "@angular/core";
 import { BawFormApiService } from "@baw-api/baw-form-api.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ConfirmPassword } from "@models/data/ConfirmPassword";
 import { ResetPassword } from "@models/data/ResetPassword";
@@ -23,25 +20,15 @@ const endpoint = stringTemplate`/my_account/${param}${option}`;
  * Handles API routes pertaining to session user.
  */
 @Injectable()
-export class UserService
-  extends BawFormApiService<User>
-  implements ApiShow<User>
-{
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    state: BawApiStateService
-  ) {
-    super(http, apiRoot, User, injector, state);
-  }
+export class UserService implements ApiShow<User> {
+  public constructor(private api: BawFormApiService<User>) {}
 
   public show(): Observable<User> {
-    return this.apiShow(endpoint(emptyParam, emptyParam));
+    return this.api.show(User, endpoint(emptyParam, emptyParam));
   }
 
   public confirmPassword(details: ConfirmPassword): Observable<void> {
-    return this.makeFormRequestWithoutOutput(
+    return this.api.makeFormRequestWithoutOutput(
       endpoint(confirmationParam, newParam),
       endpoint(confirmationParam, emptyParam),
       (token) => details.getBody(token)
@@ -49,7 +36,7 @@ export class UserService
   }
 
   public resetPassword(details: ResetPassword): Observable<void> {
-    return this.makeFormRequestWithoutOutput(
+    return this.api.makeFormRequestWithoutOutput(
       endpoint(passwordParam, newParam),
       endpoint(passwordParam, emptyParam),
       (token) => details.getBody(token)
@@ -57,7 +44,7 @@ export class UserService
   }
 
   public unlockAccount(details: UnlockAccount): Observable<void> {
-    return this.makeFormRequestWithoutOutput(
+    return this.api.makeFormRequestWithoutOutput(
       endpoint(unlockParam, newParam),
       endpoint(unlockParam, emptyParam),
       (token) => details.getBody(token)

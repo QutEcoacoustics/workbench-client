@@ -2,11 +2,12 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractModelWithoutId } from "@models/AbstractModel";
 import { Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { BawApiStateService } from "./baw-api-state.service";
-import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
+import { BawApiService } from "./baw-api.service";
 
 /*
  * Reads through a HTML document for recaptcha setup code to extract the
@@ -29,17 +30,16 @@ const authTokenRegex = /name="authenticity_token" value="(.+?)"/;
  */
 @Injectable()
 export class BawFormApiService<
-  Model extends AbstractModel
+  Model extends AbstractModelWithoutId
 > extends BawApiService<Model> {
   public constructor(
-    http: HttpClient,
     @Inject(API_ROOT) apiRoot: string,
-    @Inject(STUB_MODEL_BUILDER)
-    classBuilder: new (_: Record<string, any>, _injector?: Injector) => Model,
+    @Inject(IS_SERVER_PLATFORM) isServer: boolean,
+    http: HttpClient,
     injector: Injector,
     state: BawApiStateService
   ) {
-    super(http, apiRoot, classBuilder, injector, state);
+    super(apiRoot, isServer, http, injector, state);
   }
 
   /**
@@ -52,7 +52,7 @@ export class BawFormApiService<
    * @returns HTML page for request. Response may be a success, however the
    * html contains error messages which need to be extracted
    */
-  protected makeFormRequest(
+  public makeFormRequest(
     formEndpoint: string,
     submissionEndpoint: string,
     body: (authToken: string) => URLSearchParams
@@ -87,7 +87,7 @@ export class BawFormApiService<
     );
   }
 
-  protected makeFormRequestWithoutOutput(
+  public makeFormRequestWithoutOutput(
     formEndpoint: string,
     submissionEndpoint: string,
     body: (authToken: string) => URLSearchParams
@@ -103,7 +103,7 @@ export class BawFormApiService<
    * @param path Path to retrieve recatpcha seed from
    * @param extractSeed Regex to extract recaptcha seed from HTML response
    */
-  protected getRecaptchaSeed(path: string): Observable<RecaptchaSettings> {
+  public getRecaptchaSeed(path: string): Observable<RecaptchaSettings> {
     // Mock a HTML request to the server
     return this.apiHtmlRequest(path).pipe(
       map((page: string) => {
@@ -130,7 +130,7 @@ export class BawFormApiService<
    *
    * @param path API path
    */
-  protected apiHtmlRequest(path: string): Observable<string> {
+  public apiHtmlRequest(path: string): Observable<string> {
     return this.http.get(this.getPath(path), {
       responseType: "text",
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -146,7 +146,7 @@ export class BawFormApiService<
    * @param path API path
    * @param formData Request body
    */
-  protected apiFormRequest(
+  public apiFormRequest(
     path: string,
     formData: URLSearchParams
   ): Observable<string> {

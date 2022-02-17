@@ -1,18 +1,16 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { param } from "@baw-api/api-common";
 import { BawApiStateService } from "@baw-api/baw-api-state.service";
 import {
   BawFormApiService,
   RecaptchaSettings,
 } from "@baw-api/baw-form-api.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { LoginDetails } from "@models/data/LoginDetails";
 import { RegisterDetails } from "@models/data/RegisterDetails";
-import { SessionUser, User } from "@models/User";
+import { Session, User } from "@models/User";
 import { CookieService } from "ngx-cookie-service";
 import { Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
@@ -29,23 +27,13 @@ const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
  * Handles API routes pertaining to security.
  */
 @Injectable()
-export class SecurityService extends BawFormApiService<SessionUser> {
+export class SecurityService {
   public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
+    private api: BawFormApiService<Session>,
     private userService: UserService,
     private cookies: CookieService,
-    injector: Injector,
-    state: BawApiStateService
+    private state: BawApiStateService
   ) {
-    super(http, apiRoot, SessionUser, injector, state);
-
-    // After constructor so that we can access super
-    this.handleError = (err: BawApiError | Error): Observable<never> => {
-      this.clearData();
-      return super.handleError(err);
-    };
-
     // Update authToken using cookie if exists
     let authToken: AuthToken;
     this.sessionDetails()
@@ -64,11 +52,16 @@ export class SecurityService extends BawFormApiService<SessionUser> {
       });
   }
 
+  public handleError(err: BawApiError | Error): Observable<never> {
+    this.clearData();
+    return this.api.handleError(err);
+  }
+
   /**
    * Returns the recaptcha seed for the registration form
    */
   public signUpSeed(): Observable<RecaptchaSettings> {
-    return this.getRecaptchaSeed(signUpSeed());
+    return this.api.getRecaptchaSeed(signUpSeed());
   }
 
   /**
@@ -140,14 +133,15 @@ export class SecurityService extends BawFormApiService<SessionUser> {
    * Logout user and clear session storage values
    */
   public signOut(): Observable<void> {
-    return this.apiDestroy(signOutEndpoint()).pipe(
+    return this.api.destroy(signOutEndpoint()).pipe(
       tap(() => this.clearData()),
       catchError(this.handleError)
     ) as Observable<void>;
   }
 
-  public sessionDetails(): Observable<SessionUser> {
-    return this.apiShow(sessionUserEndpoint(Date.now().toString()));
+  /** Get details of currently logged in user */
+  public sessionDetails(): Observable<Session> {
+    return this.api.show(Session, sessionUserEndpoint(Date.now().toString()));
   }
 
   /**
@@ -171,25 +165,27 @@ export class SecurityService extends BawFormApiService<SessionUser> {
      * - https://github.com/QutEcoacoustics/baw-server/issues/509
      * - https://github.com/QutEcoacoustics/baw-server/issues/424
      */
-    return this.makeFormRequest(formEndpoint, authEndpoint, getFormData).pipe(
-      tap((page) => pageValidation(page)),
-      // Trade the cookie for an API auth token (mimicking old baw-client)
-      mergeMap(() => this.sessionDetails()),
-      // Save to local storage
-      tap((user: SessionUser) => (authToken = user.authToken)),
-      // Get user details
-      mergeMap(() => this.userService.show()),
-      // Update session user with user details and save to local storage
-      tap((user: User) => this.state.setLoggedInUser(user, authToken)),
-      // Void output
-      map(() => undefined),
-      // Complete observable
-      first(),
-      catchError((err) => {
-        this.clearData();
-        return this.handleError(err);
-      })
-    );
+    return this.api
+      .makeFormRequest(formEndpoint, authEndpoint, getFormData)
+      .pipe(
+        tap((page) => pageValidation(page)),
+        // Trade the cookie for an API auth token (mimicking old baw-client)
+        mergeMap(() => this.sessionDetails()),
+        // Save to local storage
+        tap((user: Session) => (authToken = user.authToken)),
+        // Get user details
+        mergeMap(() => this.userService.show()),
+        // Update session user with user details and save to local storage
+        tap((user: User) => this.state.setLoggedInUser(user, authToken)),
+        // Void output
+        map(() => undefined),
+        // Complete observable
+        first(),
+        catchError((err) => {
+          this.clearData();
+          return this.handleError(err);
+        })
+      );
   }
 
   /**

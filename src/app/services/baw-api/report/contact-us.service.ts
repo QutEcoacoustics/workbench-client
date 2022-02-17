@@ -1,8 +1,5 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
+import { Injectable } from "@angular/core";
 import { BawFormApiService } from "@baw-api/baw-form-api.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ContactUs } from "@models/data/ContactUs";
 import { Observable } from "rxjs";
@@ -10,18 +7,11 @@ import { Observable } from "rxjs";
 const contactUsEndpoint = stringTemplate`/contact_us`;
 
 @Injectable()
-export class ContactUsService extends BawFormApiService<ContactUs> {
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector,
-    state: BawApiStateService
-  ) {
-    super(http, apiRoot, ContactUs, injector, state);
-  }
+export class ContactUsService {
+  public constructor(private api: BawFormApiService<ContactUs>) {}
 
   public contactUs(details: ContactUs): Observable<void> {
-    return this.makeFormRequestWithoutOutput(
+    return this.api.makeFormRequestWithoutOutput(
       contactUsEndpoint(),
       contactUsEndpoint(),
       (token) => details.getBody(token)
@@ -29,6 +19,6 @@ export class ContactUsService extends BawFormApiService<ContactUs> {
   }
 
   public seed() {
-    return this.getRecaptchaSeed(contactUsEndpoint());
+    return this.api.getRecaptchaSeed(contactUsEndpoint());
   }
 }
