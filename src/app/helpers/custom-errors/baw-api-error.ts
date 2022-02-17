@@ -1,22 +1,14 @@
 export class BawApiError extends Error {
   public name = "BawApiError";
-  public status: number;
   public info: Record<string, string>;
-  private _message: string;
 
-  public constructor(error: ApiErrorDetails);
   public constructor(
-    status: number,
-    message: string,
+    public status: number,
+    public _message: string,
     info?: Record<string, string>
-  );
-
-  public constructor(...args: any[]) {
-    super(args.length === 1 ? args[0].message : args[1]);
-
-    this.status = args.length === 1 ? args[0].status : args[0];
-    this._message = args.length === 1 ? args[0].message : args[1];
-    this.info = args.length === 1 ? args[0].info : args[2] ?? {};
+  ) {
+    super(_message);
+    this.info = info || {};
   }
 
   public get message(): string {
@@ -24,20 +16,27 @@ export class BawApiError extends Error {
   }
 
   public formattedMessage(newline?: string): string {
-    console.log(this.status, this._message, this.info);
-
-    if (Object.keys(this.info).length > 0) {
-      return (
-        this._message +
-        (newline ?? "[") +
-        Object.entries(this.info)
-          .map(([key, value]) => `${key}: ${value}`)
-          .join(newline ?? " ") +
-        (newline ? "" : "]")
-      );
-    } else {
+    if (Object.keys(this.info).length === 0) {
       return this._message;
     }
+
+    let output = this._message + (newline || "[");
+
+    Object.entries(this.info).forEach(([key, value]) => {
+      switch (key) {
+        case "tzinfoTz":
+          output += `timezone identifier: ${value[0]}`;
+          break;
+        default:
+          output += `${key}: ${value}`;
+          break;
+      }
+
+      output += newline;
+    });
+
+    output += newline ? "" : "]";
+    return output;
   }
 }
 
@@ -62,17 +61,16 @@ export interface ApiErrorDetails {
 /**
  * Determine if error response has already been processed
  *
- * @param errorResponse Error response
+ * @param error Error response
  */
-export function isApiErrorDetails(
-  errorResponse: any
-): errorResponse is ApiErrorDetails {
-  if (!errorResponse) {
+export function isApiErrorDetails(error: any): error is ApiErrorDetails {
+  if (!error || !(error instanceof Object)) {
     return false;
   }
 
-  const keys = Object.keys(errorResponse);
+  const keys = Object.keys(error);
+  keys.sort();
   return (
-    keys.length <= 3 && keys.includes("status") && keys.includes("message")
+    keys === ["message", "status"] || keys === ["info", "message", "status"]
   );
 }

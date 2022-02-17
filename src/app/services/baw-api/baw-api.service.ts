@@ -11,6 +11,7 @@ import {
   AbstractModelConstructor,
   AbstractModelWithoutId,
 } from "@models/AbstractModel";
+import { ToastrService } from "ngx-toastr";
 import { Observable, throwError } from "rxjs";
 import { map, mergeMap, switchMap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
@@ -107,7 +108,8 @@ export class BawApiService<
     @Inject(IS_SERVER_PLATFORM) protected isServer: boolean,
     protected http: HttpClient,
     protected injector: Injector,
-    protected state: BawApiStateService
+    protected state: BawApiStateService,
+    protected notifications: ToastrService
   ) {}
 
   /**
@@ -116,11 +118,12 @@ export class BawApiService<
    * @param err Error
    */
   public handleError(err: BawApiError | Error): Observable<never> {
-    return throwError(() =>
-      isBawApiError(err)
-        ? new BawApiError(err)
-        : new BawApiError(unknownErrorCode, err.message)
-    );
+    const error = isBawApiError(err)
+      ? err
+      : new BawApiError(unknownErrorCode, err.message);
+
+    this.notifications.error(error.formattedMessage("<br />"));
+    return throwError(() => error);
   }
 
   /**

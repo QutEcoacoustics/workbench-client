@@ -6,10 +6,7 @@ import {
   Filters,
   InnerFilter,
 } from "@baw-api/baw-api.service";
-import {
-  ApiErrorDetails,
-  BawApiError,
-} from "@helpers/custom-errors/baw-api-error";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AbstractModel } from "@models/AbstractModel";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
@@ -40,7 +37,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   /**
    * Tracks whether an error has occurred
    */
-  public error: ApiErrorDetails;
+  public error: BawApiError;
   /**
    * Tracks whether an api request is in process
    */

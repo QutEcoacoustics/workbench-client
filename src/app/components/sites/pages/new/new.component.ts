@@ -9,10 +9,8 @@ import {
   newPointMenuItem,
   pointsCategory,
 } from "@components/sites/points.menus";
-import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import {
   defaultSuccessMsg,
-  extendedErrorMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
 import { Project } from "@models/Project";
@@ -41,7 +39,6 @@ class SiteNewComponent extends FormTemplate<Site> implements OnInit {
   ) {
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
-      failureMsg: (error) => siteErrorMsg(error),
       redirectUser: (model) =>
         this.router.navigateByUrl(model.getViewUrl(this.project)),
       getModel: () => (this.region ? { regionId: this.region.id } : {}),
@@ -70,12 +67,6 @@ class SiteNewComponent extends FormTemplate<Site> implements OnInit {
   protected apiAction(model: Partial<Site>) {
     return this.api.create(new Site(model), this.project);
   }
-}
-
-export function siteErrorMsg(err: ApiErrorDetails) {
-  return extendedErrorMsg(err, {
-    tzinfoTz: (value) => `timezone identifier ${value[0]}`,
-  });
 }
 
 // Only sites with regions have their own page, normal sites are part of a

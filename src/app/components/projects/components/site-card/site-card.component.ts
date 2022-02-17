@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
@@ -133,13 +132,13 @@ export class SiteCardComponent extends withUnsubscribe() implements OnInit {
         this.site
       )
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (recordings) =>
-          (this.recording = recordings.length > 0 ? recordings[0] : null),
-        (err: ApiErrorDetails) => {
-          console.error(err);
+      .subscribe({
+        next: (recordings) => {
+          this.recording = recordings.length > 0 ? recordings[0] : null;
+        },
+        error: () => {
           this.recording = null;
-        }
-      );
+        },
+      });
   }
 }

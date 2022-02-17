@@ -31,7 +31,6 @@ import {
   pointMenuItemActions,
   siteMenuItemActions,
 } from "../details/details.component";
-import { siteErrorMsg } from "../new/new.component";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -53,7 +52,6 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
     super(notifications, route, router, {
       getModel: (models) => models[siteKey] as Site,
       successMsg: (model) => defaultSuccessMsg("updated", model.name),
-      failureMsg: (error) => siteErrorMsg(error),
       redirectUser: (model) =>
         this.router.navigateByUrl(model.getViewUrl(this.project)),
     });

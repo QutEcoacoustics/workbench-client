@@ -9,7 +9,7 @@ import {
   Renderer2,
 } from "@angular/core";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
-import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
@@ -29,7 +29,7 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 })
 export class CmsComponent extends withUnsubscribe() implements OnInit {
   @Input() public page: CMS;
-  public error: ApiErrorDetails;
+  public error: BawApiError;
   public loading: boolean;
 
   public constructor(
@@ -54,8 +54,8 @@ export class CmsComponent extends withUnsubscribe() implements OnInit {
     this.cms
       .get(this.page)
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (blob) => {
+      .subscribe({
+        next: (blob) => {
           // Using html fragments instead of innerHTML.
           // In the HTML5 spec, script tags that are inserted via InnerHTML will not be executed.
           // Using a document fragment allows us to insert any tag.
@@ -69,11 +69,11 @@ export class CmsComponent extends withUnsubscribe() implements OnInit {
           this.loading = false;
           this.ref.detectChanges();
         },
-        (err: ApiErrorDetails) => {
+        error: (err: BawApiError) => {
           this.error = err;
           this.loading = false;
           this.ref.detectChanges();
-        }
-      );
+        },
+      });
   }
 }

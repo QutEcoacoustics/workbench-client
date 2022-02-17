@@ -3,6 +3,7 @@ import { Inject, Injectable, Injector } from "@angular/core";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
+import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
@@ -37,9 +38,10 @@ export class BawFormApiService<
     @Inject(IS_SERVER_PLATFORM) isServer: boolean,
     http: HttpClient,
     injector: Injector,
-    state: BawApiStateService
+    state: BawApiStateService,
+    notifications: ToastrService
   ) {
-    super(apiRoot, isServer, http, injector, state);
+    super(apiRoot, isServer, http, injector, state, notifications);
   }
 
   /**

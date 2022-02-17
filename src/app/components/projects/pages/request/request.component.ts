@@ -6,7 +6,7 @@ import {
   requestProjectMenuItem,
 } from "@components/projects/projects.menus";
 import { withFormCheck } from "@guards/form/form.guard";
-import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Project } from "@models/Project";
 import { List } from "immutable";
@@ -32,7 +32,7 @@ import schema from "./request.schema.json";
   `,
 })
 class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
-  public error: ApiErrorDetails;
+  public error: BawApiError;
   public fields = schema.fields;
   public loading: boolean;
   public model = {};
@@ -49,18 +49,18 @@ class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
     this.api
       .list()
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (projects) => {
+      .subscribe({
+        next: (projects) => {
           this.projects = projects;
           this.fields[0].templateOptions.options = projects.map((project) => ({
             value: project.id,
             label: project.name,
           }));
         },
-        (err: ApiErrorDetails) => {
+        error: (err: BawApiError) => {
           this.error = err;
-        }
-      );
+        },
+      });
   }
 
   /**

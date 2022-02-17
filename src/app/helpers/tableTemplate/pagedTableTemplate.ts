@@ -7,7 +7,10 @@ import {
   ResolvedModelList,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
-import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
+import {
+  ApiErrorDetails,
+  BawApiError,
+} from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel } from "@models/AbstractModel";
 import {
@@ -144,8 +147,8 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
 
     this.apiAction(this.filters, this.getUrlParameters(this))
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (models: M[]) => {
+      .subscribe({
+        next: (models: M[]) => {
           this.rows = this.rowsCallback(models);
           this.preselectRows(this.rows);
           this.loadingData = false;
@@ -158,11 +161,11 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
             this.totalModels = 0;
           }
         },
-        (err: ApiErrorDetails) => {
+        error: (err: BawApiError) => {
           this.error = err;
           this.loadingData = false;
-        }
-      );
+        },
+      });
   }
 
   protected apiAction(filters: Filters<M>, args: AbstractModel[] = []) {

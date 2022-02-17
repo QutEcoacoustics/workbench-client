@@ -14,9 +14,8 @@ import {
   toSnakeCase,
 } from "@helpers/case-converter/case-converter";
 import {
-  ApiErrorDetails,
   BawApiError,
-  isApiErrorDetails,
+  isBawApiError,
 } from "@helpers/custom-errors/baw-api-error";
 import { BAD_GATEWAY } from "http-status";
 import { Observable, throwError } from "rxjs";
@@ -107,30 +106,29 @@ export class BawApiInterceptor implements HttpInterceptor {
    * @throws Observable<never>
    */
   private handleError(
-    response: HttpErrorResponse | ApiErrorResponse | ApiErrorDetails
+    response: HttpErrorResponse | ApiErrorResponse | BawApiError
   ): Observable<never> {
-    let error: ApiErrorDetails;
+    let error: BawApiError;
 
-    if (isApiErrorDetails(response)) {
+    if (isBawApiError(response)) {
       error = response;
     } else if (isErrorResponse(response)) {
-      error = {
-        status: response.status,
-        message: response.error.meta.error.details,
-        info: toCamelCase(response.error.meta.error?.info),
-      };
+      error = new BawApiError(
+        response.status,
+        response.error.meta.error.details,
+        toCamelCase(response.error.meta.error?.info)
+      );
     } else if (response.status === 0) {
-      error = {
-        status: BAD_GATEWAY,
-        message:
-          "Unable to reach our servers right now." +
-          "This may be an issue with your connection to us, or a temporary issue with our services.",
-      };
+      error = new BawApiError(
+        BAD_GATEWAY,
+        "Unable to reach our servers right now." +
+          "This may be an issue with your connection to us, or a temporary issue with our services."
+      );
     } else {
-      error = { status: response.status, message: response.message };
+      error = new BawApiError(response.status, response.message);
     }
 
-    return throwError(() => new BawApiError(error));
+    return throwError(() => error);
   }
 }
 

@@ -1,8 +1,5 @@
 import { Injectable } from "@angular/core";
-import {
-  ApiErrorDetails,
-  BawApiError,
-} from "@helpers/custom-errors/baw-api-error";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { User } from "@models/User";
 import httpCodes from "http-status";
@@ -40,7 +37,7 @@ export class AccountsService implements StandardApi<User> {
   public show(model: IdOr<User>): Observable<User> {
     return this.api.show(User, endpoint(model, emptyParam)).pipe(
       // Return unknown or deleted user depending on error code
-      catchError((err: ApiErrorDetails) => {
+      catchError((err: BawApiError) => {
         switch (err.status) {
           case httpCodes.UNAUTHORIZED:
             // Return unknown user, this only occurs when user is anonymous to the logged in/guest user
@@ -49,7 +46,7 @@ export class AccountsService implements StandardApi<User> {
             // Return deleted user, this only occurs when a user is soft-deleted
             return of(User.deletedUser);
           default:
-            return throwError(() => new BawApiError(err));
+            return throwError(() => err);
         }
       })
     );

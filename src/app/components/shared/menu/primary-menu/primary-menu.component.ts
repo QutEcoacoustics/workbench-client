@@ -16,7 +16,6 @@ import {
 } from "@components/security/security.menus";
 import { PartialWith } from "@helpers/advancedTypes";
 import { CustomMenuItem } from "@helpers/app-initializer/app-initializer";
-import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { MenuLink, NavigableMenuItem } from "@interfaces/menusInterfaces";
@@ -24,7 +23,6 @@ import { User } from "@models/User";
 import { ConfigService } from "@services/config/config.service";
 import { MenuService } from "@services/menu/menu.service";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
 
 export type HeaderItem = PartialWith<MenuLink, "label" | "uri">;
@@ -60,7 +58,6 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
     private api: SecurityService,
     private state: BawApiStateService,
     private config: ConfigService,
-    private notifications: ToastrService,
     private router: Router
   ) {
     super();
@@ -91,7 +88,6 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
       .signOut()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
-        error: (err: ApiErrorDetails) => this.notifications.error(err.message),
         complete: () => {
           if (!this.hasLocationGlobal()) {
             // Else just redirect back to home
@@ -114,10 +110,9 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   }
 
   private trackLoggedInState() {
-    this.state.authTrigger.pipe(takeUntil(this.unsubscribe)).subscribe({
-      next: ({ user }) => (this.user = user),
-      error: (err: ApiErrorDetails) => this.notifications.error(err.message),
-    });
+    this.state.authTrigger
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(({ user }) => (this.user = user));
   }
 
   /**
