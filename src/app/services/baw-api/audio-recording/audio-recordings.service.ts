@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { toSnakeCase } from "@helpers/case-converter/case-converter";
 import { toBase64Url } from "@helpers/encoding/encoding";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
@@ -34,7 +34,7 @@ export const audioRecordingOriginalEndpoint = stringTemplate`/audio_recordings/$
 export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
   public constructor(
     private api: BawApiService<AudioRecording>,
-    private state: BawApiStateService
+    private session: BawSessionService
   ) {}
 
   public list(): Observable<AudioRecording[]> {
@@ -116,8 +116,8 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
       filterEncoded: toBase64Url(JSON.stringify(toSnakeCase(filter))),
     };
 
-    if (this.state.isLoggedIn) {
-      body["authToken"] = this.state.authToken;
+    if (this.session.isLoggedIn) {
+      body["authToken"] = this.session.authToken;
     }
 
     body = toSnakeCase(body);

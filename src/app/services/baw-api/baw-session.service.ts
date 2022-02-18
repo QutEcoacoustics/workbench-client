@@ -14,7 +14,7 @@ export interface AuthTriggerData {
 }
 
 @Injectable()
-export class BawApiStateService {
+export class BawSessionService {
   private _authTrigger = new BehaviorSubject<AuthTriggerData>({
     user: guestUser,
   });

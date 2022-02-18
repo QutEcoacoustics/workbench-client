@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import {
@@ -53,7 +53,7 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
   public constructor(
     @Inject(API_ROOT) public apiRoot: string,
     protected api: SitesService,
-    private state: BawApiStateService,
+    private session: BawSessionService,
     private route: ActivatedRoute
   ) {
     super();
@@ -65,7 +65,7 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
       this.project = models[projectKey] as Project;
       this.region = models[regionKey] as Region;
       this.site = models[siteKey] as Site;
-      this.user = this.state.loggedInUser;
+      this.user = this.session.loggedInUser;
     }
   }
 

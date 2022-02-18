@@ -2,7 +2,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { AppConfigModule } from "../config/config.module";
 import { BawApiInterceptor } from "./api.interceptor.service";
-import { BawApiStateService } from "./baw-api-state.service";
+import { BawSessionService } from "./baw-session.service";
 import { BawApiService } from "./baw-api.service";
 import { BawFormApiService } from "./baw-form-api.service";
 import { CmsService } from "./cms/cms.service";
@@ -19,7 +19,7 @@ import { serviceResolvers, services, serviceTokens } from "./ServiceProviders";
     },
     BawApiService,
     BawFormApiService,
-    BawApiStateService,
+    BawSessionService,
     SecurityService,
     CmsService,
     ...services,

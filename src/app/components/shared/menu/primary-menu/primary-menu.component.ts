@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { adminDashboardMenuItem } from "@components/admin/admin.menus";
@@ -56,7 +56,7 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   public constructor(
     public menu: MenuService,
     private api: SecurityService,
-    private state: BawApiStateService,
+    private session: BawSessionService,
     private config: ConfigService,
     private router: Router
   ) {
@@ -110,7 +110,7 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   }
 
   private trackLoggedInState() {
-    this.state.authTrigger
+    this.session.authTrigger
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(({ user }) => (this.user = user));
   }

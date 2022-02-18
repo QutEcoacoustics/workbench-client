@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import type { Project } from "@models/Project";
 import type { Region } from "@models/Region";
@@ -38,7 +38,7 @@ const annotationsEndpoint = stringTemplate`/projects/${projectId}/sites/${siteId
 export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
   public constructor(
     private api: BawApiService<Site>,
-    private state: BawApiStateService
+    private session: BawSessionService
   ) {}
 
   public list(project: IdOr<Project>): Observable<Site[]> {
@@ -106,7 +106,7 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
       this.api.getPath(annotationsEndpoint(project, model, emptyParam))
     );
     setTimezoneQSP(url, selectedTimezone);
-    setAuthorizationQSP(url, this.state.authToken);
+    setAuthorizationQSP(url, this.session.authToken);
     return url.toString();
   }
 

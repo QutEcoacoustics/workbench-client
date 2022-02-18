@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { param } from "@baw-api/api-common";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import {
   BawFormApiService,
   RecaptchaSettings,
@@ -32,7 +32,7 @@ export class SecurityService {
     private api: BawFormApiService<Session>,
     private userService: UserService,
     private cookies: CookieService,
-    private state: BawApiStateService
+    private session: BawSessionService
   ) {
     // Update authToken using cookie if exists
     let authToken: AuthToken;
@@ -44,7 +44,7 @@ export class SecurityService {
       )
       .subscribe({
         next: (user) => {
-          this.state.setLoggedInUser(user, authToken);
+          this.session.setLoggedInUser(user, authToken);
         },
         error: () => {
           this.clearData();
@@ -176,7 +176,7 @@ export class SecurityService {
         // Get user details
         mergeMap(() => this.userService.show()),
         // Update session user with user details and save to local storage
-        tap((user: User) => this.state.setLoggedInUser(user, authToken)),
+        tap((user: User) => this.session.setLoggedInUser(user, authToken)),
         // Void output
         map(() => undefined),
         // Complete observable
@@ -192,7 +192,7 @@ export class SecurityService {
    * Clear session and cookie data, then trigger authTrigger
    */
   private clearData() {
-    this.state.clearLoggedInUser();
+    this.session.clearLoggedInUser();
     this.cookies.deleteAll();
   }
 }

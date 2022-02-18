@@ -1,8 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
-import { UserService } from "@baw-api/user/user.service";
 import { homeMenuItem } from "@components/home/home.menus";
 import {
   registerMenuItem,
@@ -42,8 +41,7 @@ class RegisterComponent
 
   public constructor(
     private securityApi: SecurityService,
-    private userApi: UserService,
-    private state: BawApiStateService,
+    private session: BawSessionService,
     notifications: ToastrService,
     route: ActivatedRoute,
     router: Router
@@ -59,7 +57,7 @@ class RegisterComponent
   public ngOnInit() {
     super.ngOnInit();
 
-    if (this.state.isLoggedIn) {
+    if (this.session.isLoggedIn) {
       // Disable submit button
       this.loading = true;
       this.notifications.error("You are already logged in.");

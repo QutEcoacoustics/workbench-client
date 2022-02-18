@@ -7,7 +7,7 @@ import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import { BawApiStateService } from "./baw-api-state.service";
+import { BawSessionService } from "./baw-session.service";
 import { BawApiService } from "./baw-api.service";
 
 /*
@@ -38,10 +38,10 @@ export class BawFormApiService<
     @Inject(IS_SERVER_PLATFORM) isServer: boolean,
     http: HttpClient,
     injector: Injector,
-    state: BawApiStateService,
+    session: BawSessionService,
     notifications: ToastrService
   ) {
-    super(apiRoot, isServer, http, injector, state, notifications);
+    super(apiRoot, isServer, http, injector, session, notifications);
   }
 
   /**

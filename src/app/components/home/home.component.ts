@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { CMS } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
@@ -42,7 +42,7 @@ class HomeComponent extends PageComponent implements OnInit {
   public constructor(
     private regionApi: ShallowRegionsService,
     private projectApi: ProjectsService,
-    private state: BawApiStateService,
+    private session: BawSessionService,
     public config: ConfigService
   ) {
     super();
@@ -75,7 +75,7 @@ class HomeComponent extends PageComponent implements OnInit {
      *  recent use / modification date (recent, to less recent)
      *  image or no image
      */
-    this.state.authTrigger
+    this.session.authTrigger
       .pipe(
         mergeMap(() =>
           (settings.hideProjects ? this.regionApi : this.projectApi).filter({

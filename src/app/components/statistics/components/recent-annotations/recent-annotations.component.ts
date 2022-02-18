@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { BawApiStateService } from "@baw-api/baw-api-state.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
 
@@ -19,7 +19,7 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
     >
       <!-- Site name (logged in only) -->
       <ngx-datatable-column
-        *ngIf="state.isLoggedIn"
+        *ngIf="session.isLoggedIn"
         name="Site"
         [sortable]="false"
       >
@@ -47,7 +47,7 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
 
       <!-- User name (logged in only) -->
       <ngx-datatable-column
-        *ngIf="state.isLoggedIn"
+        *ngIf="session.isLoggedIn"
         name="User"
         [sortable]="false"
       >
@@ -141,7 +141,7 @@ export class RecentAnnotationsComponent implements OnChanges {
   public columns: TableColumn[];
   public rows = [];
 
-  public constructor(public state: BawApiStateService) {}
+  public constructor(public session: BawSessionService) {}
 
   public ngOnChanges(): void {
     if (!this.columns) {

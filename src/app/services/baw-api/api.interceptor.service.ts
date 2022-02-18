@@ -20,7 +20,7 @@ import {
 import { BAD_GATEWAY } from "http-status";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
-import { BawApiStateService } from "./baw-api-state.service";
+import { BawSessionService } from "./baw-session.service";
 import { ApiResponse } from "./baw-api.service";
 
 /**
@@ -32,7 +32,7 @@ import { ApiResponse } from "./baw-api.service";
 export class BawApiInterceptor implements HttpInterceptor {
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
-    public state: BawApiStateService
+    public session: BawSessionService
   ) {}
 
   /**
@@ -52,11 +52,11 @@ export class BawApiInterceptor implements HttpInterceptor {
     }
 
     // If logged in, add authorization token
-    if (this.state.isLoggedIn) {
+    if (this.session.isLoggedIn) {
       request = request.clone({
         setHeaders: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          Authorization: `Token token="${this.state.authToken}"`,
+          Authorization: `Token token="${this.session.authToken}"`,
         },
       });
     }

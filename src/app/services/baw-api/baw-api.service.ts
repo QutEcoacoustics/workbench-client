@@ -15,7 +15,7 @@ import { ToastrService } from "ngx-toastr";
 import { Observable, throwError } from "rxjs";
 import { map, mergeMap, switchMap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import { BawApiStateService } from "./baw-api-state.service";
+import { BawSessionService } from "./baw-session.service";
 
 export const defaultApiPageSize = 25;
 export const unknownErrorCode = -1;
@@ -108,7 +108,7 @@ export class BawApiService<
     @Inject(IS_SERVER_PLATFORM) protected isServer: boolean,
     protected http: HttpClient,
     protected injector: Injector,
-    protected state: BawApiStateService,
+    protected session: BawSessionService,
     protected notifications: ToastrService
   ) {}
 
@@ -133,7 +133,7 @@ export class BawApiService<
    * @param path API path
    */
   public list(classBuilder: ClassBuilder, path: string): Observable<Model[]> {
-    return this.state.authTrigger.pipe(
+    return this.session.authTrigger.pipe(
       switchMap(() => this.httpGet(path)),
       map((models: ApiResponse<Model[]>) =>
         this.handleCollectionResponse(classBuilder, models)
@@ -153,7 +153,7 @@ export class BawApiService<
     path: string,
     filters: Filters<Model>
   ): Observable<Model[]> {
-    return this.state.authTrigger.pipe(
+    return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters)),
       map((models: ApiResponse<Model[]>) =>
         this.handleCollectionResponse(classBuilder, models)
@@ -168,7 +168,7 @@ export class BawApiService<
    * @param path API path
    */
   public show(classBuilder: ClassBuilder, path: string): Observable<Model> {
-    return this.state.authTrigger.pipe(
+    return this.session.authTrigger.pipe(
       switchMap(() => this.httpGet(path)),
       map((model: ApiResponse<Model>) =>
         this.handleSingleResponse(classBuilder, model)
