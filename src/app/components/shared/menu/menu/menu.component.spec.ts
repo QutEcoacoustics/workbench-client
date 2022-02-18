@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, SimpleChange } from "@angular/core";
 import { Data, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -252,6 +252,27 @@ describe("MenuComponent", () => {
         spec.detectChanges();
         validateNumWidgets(1);
         expect(spec.query(MockWidgetComponent)).toBeTruthy();
+      });
+
+      it("should clear widget after update", () => {
+        setup({
+          links: OrderedSet([defaultMenuRoute]),
+          widgets: OrderedSet([defaultWidget]),
+        });
+        spec.detectChanges();
+        validateNumWidgets(1);
+        spec.setInput("widgets", undefined);
+        // TODO We should instead wrap the component in a host instead of
+        // manually calling ngOnChanges
+        spec.component.ngOnChanges({
+          widgets: new SimpleChange(
+            OrderedSet([defaultWidget]),
+            undefined,
+            false
+          ),
+        });
+        spec.detectChanges();
+        validateNumWidgets(0);
       });
     });
 

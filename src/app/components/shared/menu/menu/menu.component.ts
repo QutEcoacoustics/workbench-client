@@ -3,6 +3,7 @@ import {
   Component,
   Input,
   OnChanges,
+  SimpleChanges,
   ViewChild,
   ViewContainerRef,
 } from "@angular/core";
@@ -62,17 +63,21 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     private modalService: NgbModal
   ) {}
 
-  public ngOnChanges(): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     this.links ??= Set();
     this.widgets ??= Set();
 
     this.user = this.api.getLocalUser();
     this.formattedLinks = this.setModalActions();
-    this.loadWidgets();
+
+    if (changes.widgets?.previousValue !== changes.widgets?.currentValue) {
+      this.clearWidgets();
+      this.insertWidgets();
+    }
   }
 
   public ngAfterViewInit(): void {
-    this.loadWidgets();
+    this.insertWidgets();
   }
 
   /** Determine whether to show widgets */
@@ -85,6 +90,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     return this.formattedLinks.size > 0;
   }
 
+  /** Is the a secondary menu */
   public isSecondaryMenu(): boolean {
     return this.menuType === "secondary";
   }
@@ -97,16 +103,6 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   public calculateIndentation(link: AnyMenuItem | MenuModal): number {
     // Only the secondary menu implements this option
     return this.isSecondaryMenu() && link.indentation ? link.indentation : 0;
-  }
-
-  private loadWidgets(): void {
-    if (!this.menuWidget) {
-      return;
-    }
-
-    this.widgets?.forEach((widget) =>
-      this.insertComponent(widget, this.menuWidget)
-    );
   }
 
   /** Update modal menu items to include an action which will open/close the modal */
@@ -138,17 +134,26 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     return menuModal({ ...link, action }) as MenuModal;
   }
 
+  /** Clear widgets */
+  private clearWidgets() {
+    this.menuWidget?.clear();
+  }
+
+  /** Insert widgets into menu */
+  private insertWidgets(): void {
+    if (!this.menuWidget) {
+      return;
+    }
+    this.widgets?.forEach((widget) => this.insertWidget(widget));
+  }
+
   /**
-   * Insert component into menu
+   * Insert widget into menu
    *
-   * @param component Widget Component
-   * @param containerRef Container reference to ng-template
+   * @param widget Widget Component
    */
-  private insertComponent(
-    component: WidgetMenuItem,
-    containerRef: ViewContainerRef
-  ): void {
-    const componentRef = containerRef.createComponent(component.component);
-    component.assignComponentData(componentRef.instance);
+  private insertWidget(widget: WidgetMenuItem): void {
+    const componentRef = this.menuWidget.createComponent(widget.component);
+    widget.assignComponentData(componentRef.instance);
   }
 }
