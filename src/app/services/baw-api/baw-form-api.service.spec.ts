@@ -75,13 +75,13 @@ describe("bawFormApiService", () => {
 
     function interceptHtmlRequest(response: string, error?: ApiErrorDetails) {
       apiHtmlRequestSpy = jasmine.createSpy("apiHtmlRequest");
-      spec.service["apiHtmlRequest"] = apiHtmlRequestSpy;
+      spec.service["htmlRequest"] = apiHtmlRequestSpy;
       return intercept(apiHtmlRequestSpy, response, error);
     }
 
     function interceptFormRequest(response: string, error?: ApiErrorDetails) {
       apiFormRequestSpy = jasmine.createSpy("apiFormRequest");
-      spec.service["apiFormRequest"] = apiFormRequestSpy;
+      spec.service["formRequest"] = apiFormRequestSpy;
       return intercept(apiFormRequestSpy, response, error);
     }
 
@@ -201,7 +201,7 @@ describe("bawFormApiService", () => {
 
     function interceptHtmlRequest(page: string, error?: ApiErrorDetails) {
       apiHtmlRequestSpy = jasmine.createSpy("apiHtmlRequest");
-      spec.service["apiHtmlRequest"] = apiHtmlRequestSpy;
+      spec.service["htmlRequest"] = apiHtmlRequestSpy;
       return intercept(apiHtmlRequestSpy, page, error);
     }
 
@@ -269,7 +269,7 @@ describe("bawFormApiService", () => {
     }
 
     function apiHtmlRequest(path: string) {
-      return spec.service["apiHtmlRequest"](path);
+      return spec.service["htmlRequest"](path);
     }
 
     it("should create get request", () => {
@@ -334,7 +334,7 @@ describe("bawFormApiService", () => {
       path: string,
       formData: URLSearchParams = new URLSearchParams()
     ) {
-      return spec.service["apiFormRequest"](path, formData);
+      return spec.service["formRequest"](path, formData);
     }
 
     it("should create post request", () => {

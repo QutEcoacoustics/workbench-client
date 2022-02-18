@@ -1,3 +1,4 @@
+/** Error thrown by API services whenever the API returns a non 2xx response */
 export class BawApiError extends Error {
   public name = "BawApiError";
   public info: Record<string, string>;
@@ -11,10 +12,17 @@ export class BawApiError extends Error {
     this.info = info || {};
   }
 
+  /** Error message */
   public get message(): string {
     return this.formattedMessage();
   }
 
+  /**
+   * Format the error message. This is more useful for errors which contain
+   * additional information
+   *
+   * @param newline Newline character, defaults to `", "`
+   */
   public formattedMessage(newline?: string): string {
     if (Object.keys(this.info).length === 0) {
       return this._message;
@@ -32,7 +40,7 @@ export class BawApiError extends Error {
           break;
       }
 
-      output += newline;
+      output += newline ?? ", ";
     });
 
     output += newline ? "" : "]";

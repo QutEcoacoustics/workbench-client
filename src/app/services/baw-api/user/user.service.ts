@@ -13,7 +13,7 @@ const confirmationParam = "confirmation" as const;
 const passwordParam = "password" as const;
 const unlockParam = "unlock" as const;
 
-const endpoint = stringTemplate`/my_account/${param}${option}`;
+const endpoint = stringTemplate`/my_account/${param}/${option}`;
 
 /**
  * User Service.

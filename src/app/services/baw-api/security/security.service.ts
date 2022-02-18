@@ -1,24 +1,24 @@
 import { Injectable } from "@angular/core";
-import { param } from "@baw-api/api-common";
-import { BawSessionService } from "@baw-api/baw-session.service";
+import { emptyParam, param } from "@baw-api/api-common";
 import {
   BawFormApiService,
   RecaptchaSettings,
 } from "@baw-api/baw-form-api.service";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { LoginDetails } from "@models/data/LoginDetails";
 import { RegisterDetails } from "@models/data/RegisterDetails";
 import { Session, User } from "@models/User";
 import { CookieService } from "ngx-cookie-service";
-import { Observable } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
 import { UserService } from "../user/user.service";
 
-const signUpSeed = stringTemplate`/my_account/sign_up/`;
-const signUpEndpoint = stringTemplate`/my_account/`;
-const signInEndpoint = stringTemplate`/my_account/sign_in/`;
+const signUpParam = "sign_up" as const;
+const signInParam = "sign_in" as const;
+
+const accountEndpoint = stringTemplate`/my_account/${param}`;
 const signOutEndpoint = stringTemplate`/security/`;
 const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
 
@@ -52,16 +52,11 @@ export class SecurityService {
       });
   }
 
-  public handleError(err: BawApiError | Error): Observable<never> {
-    this.clearData();
-    return this.api.handleError(err);
-  }
-
   /**
    * Returns the recaptcha seed for the registration form
    */
   public signUpSeed(): Observable<RecaptchaSettings> {
-    return this.api.getRecaptchaSeed(signUpSeed());
+    return this.api.getRecaptchaSeed(accountEndpoint(signUpParam));
   }
 
   /**
@@ -89,8 +84,8 @@ export class SecurityService {
     };
 
     return this.handleAuth(
-      signUpSeed(),
-      signUpEndpoint(),
+      accountEndpoint(signUpParam),
+      accountEndpoint(emptyParam),
       (token: string) => details.getBody(token),
       (page) => {
         validateUniqueUsername(page);
@@ -113,8 +108,8 @@ export class SecurityService {
     };
 
     const handleAuth = this.handleAuth(
-      signInEndpoint(),
-      signInEndpoint(),
+      accountEndpoint(signInParam),
+      accountEndpoint(signInParam),
       (token: string) => details.getBody(token),
       (page) => {
         validateLoggedIn(page);
@@ -135,7 +130,12 @@ export class SecurityService {
   public signOut(): Observable<void> {
     return this.api.destroy(signOutEndpoint()).pipe(
       tap(() => this.clearData()),
-      catchError(this.handleError)
+      catchError((err) => {
+        this.clearData();
+        // Don't use handleError function from api service, as it will throw
+        // out a notification
+        return throwError(() => err);
+      })
     ) as Observable<void>;
   }
 
@@ -183,7 +183,7 @@ export class SecurityService {
         first(),
         catchError((err) => {
           this.clearData();
-          return this.handleError(err);
+          return this.api.handleError(err);
         })
       );
   }

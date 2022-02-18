@@ -17,7 +17,7 @@ import {
   BawApiError,
   isBawApiError,
 } from "@helpers/custom-errors/baw-api-error";
-import { BAD_GATEWAY } from "http-status";
+import { BAD_GATEWAY, NOT_FOUND } from "http-status";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { BawSessionService } from "./baw-session.service";
@@ -95,7 +95,7 @@ export class BawApiInterceptor implements HttpInterceptor {
           ? response.clone({ body: toCamelCase(response.body) })
           : response
       ),
-      catchError(this.handleError)
+      catchError((response) => this.handleError(response))
     );
   }
 
@@ -108,27 +108,45 @@ export class BawApiInterceptor implements HttpInterceptor {
   private handleError(
     response: HttpErrorResponse | ApiErrorResponse | BawApiError
   ): Observable<never> {
-    let error: BawApiError;
-
+    // Interceptor has already handled this error
     if (isBawApiError(response)) {
-      error = response;
-    } else if (isErrorResponse(response)) {
-      error = new BawApiError(
+      return throwError(() => response);
+    }
+
+    // Standard API error response, extract relevant data
+    if (isErrorResponse(response)) {
+      const error = new BawApiError(
         response.status,
         response.error.meta.error.details,
         toCamelCase(response.error.meta.error?.info)
       );
-    } else if (response.status === 0) {
-      error = new BawApiError(
-        BAD_GATEWAY,
-        "Unable to reach our servers right now." +
-          "This may be an issue with your connection to us, or a temporary issue with our services."
-      );
-    } else {
-      error = new BawApiError(response.status, response.message);
+      return throwError(() => error);
     }
 
-    return throwError(() => error);
+    // Response timed out
+    if (response.status === 0) {
+      const error = new BawApiError(
+        BAD_GATEWAY,
+        "Unable to reach our servers right now." +
+          "This may be an issue with your connection to us, " +
+          "or a temporary issue with our services."
+      );
+      return throwError(() => error);
+    }
+
+    // Response returned 404 without hitting API route
+    if (response.status === NOT_FOUND) {
+      const error = new BawApiError(
+        NOT_FOUND,
+        "The following action does not exist, " +
+          "if you believe this is an error please report a problem."
+      );
+      return throwError(() => error);
+    }
+
+    // Unknown error occurred, throw generic error
+    console.error("Unknown error occurred: ", response);
+    return throwError(() => new BawApiError(response.status, response.message));
   }
 }
 

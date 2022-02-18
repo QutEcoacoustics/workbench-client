@@ -7,6 +7,8 @@ import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { BAD_REQUEST } from "http-status";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { BawSessionService } from "./baw-session.service";
 import { BawApiService } from "./baw-api.service";
 
@@ -60,12 +62,13 @@ export class BawFormApiService<
     body: (authToken: string) => URLSearchParams
   ): Observable<string> {
     // Request HTML document to retrieve form containing auth token
-    return this.apiHtmlRequest(formEndpoint).pipe(
+    return this.htmlRequest(formEndpoint).pipe(
       map((page: string) => {
         // Extract auth token if exists
         const token = authTokenRegex.exec(page)?.[1];
         if (!isInstantiated(token)) {
-          throw new Error(
+          throw new BawApiError(
+            BAD_REQUEST,
             "Unable to retrieve authenticity token for form request."
           );
         }
@@ -73,19 +76,19 @@ export class BawFormApiService<
       }),
       // Mimic a traditional form-based request
       mergeMap((token: string) =>
-        this.apiFormRequest(submissionEndpoint, body(token))
+        this.formRequest(submissionEndpoint, body(token))
       ),
       tap((response: string) => {
         // Check for recaptcha error message in page body
         const errorMsg = "Captcha response was not correct.";
         if (response.includes(errorMsg)) {
-          throw Error(errorMsg);
+          throw new BawApiError(BAD_REQUEST, errorMsg);
         }
       }),
       // Complete observable
       first(),
       // Handle custom errors
-      catchError(this.handleError)
+      catchError((err: BawApiError) => this.handleError(err))
     );
   }
 
@@ -107,7 +110,7 @@ export class BawFormApiService<
    */
   public getRecaptchaSeed(path: string): Observable<RecaptchaSettings> {
     // Mock a HTML request to the server
-    return this.apiHtmlRequest(path).pipe(
+    return this.htmlRequest(path).pipe(
       map((page: string) => {
         // Extract seed and action from page
         const values = extractRecaptchaValues.exec(page);
@@ -122,7 +125,7 @@ export class BawFormApiService<
       // Complete observable
       first(),
       // Handle custom errors
-      catchError(this.handleError)
+      catchError((err: BawApiError) => this.handleError(err))
     );
   }
 
@@ -132,7 +135,7 @@ export class BawFormApiService<
    *
    * @param path API path
    */
-  public apiHtmlRequest(path: string): Observable<string> {
+  public htmlRequest(path: string): Observable<string> {
     return this.http.get(this.getPath(path), {
       responseType: "text",
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -148,7 +151,7 @@ export class BawFormApiService<
    * @param path API path
    * @param formData Request body
    */
-  public apiFormRequest(
+  public formRequest(
     path: string,
     formData: URLSearchParams
   ): Observable<string> {

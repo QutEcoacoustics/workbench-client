@@ -12,7 +12,7 @@ import {
   TimezoneInformation,
   UserName,
 } from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+import { AbstractModel, AbstractModelWithoutId } from "./AbstractModel";
 import { bawDateTime, bawImage, bawPersistAttr } from "./AttributeDecorators";
 
 const deletedUserId = -1;
@@ -164,14 +164,13 @@ export interface ISession {
 /**
  * A user model for the website user
  */
-export class Session extends AbstractModel<ISession> implements ISession {
+export class Session
+  extends AbstractModelWithoutId<ISession>
+  implements ISession
+{
   public readonly kind = "Session User";
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;
-
-  public constructor(user: ISession, injector?: Injector) {
-    super(user, injector);
-  }
 
   public get viewUrl(): string {
     return myAccountMenuItem.route.format();
