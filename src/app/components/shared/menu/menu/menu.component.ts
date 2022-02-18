@@ -66,17 +66,13 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     this.links ??= Set();
     this.widgets ??= Set();
 
-    // Get user details
     this.user = this.api.getLocalUser();
-    // Filter links
     this.formattedLinks = this.setModalActions();
+    this.loadWidgets();
   }
 
   public ngAfterViewInit(): void {
-    // Load widgets
-    this.widgets?.forEach((widget) =>
-      this.insertComponent(widget, this.menuWidget)
-    );
+    this.loadWidgets();
   }
 
   /** Determine whether to show widgets */
@@ -103,6 +99,17 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     return this.isSecondaryMenu() && link.indentation ? link.indentation : 0;
   }
 
+  private loadWidgets(): void {
+    if (!this.menuWidget) {
+      return;
+    }
+
+    this.widgets?.forEach((widget) =>
+      this.insertComponent(widget, this.menuWidget)
+    );
+  }
+
+  /** Update modal menu items to include an action which will open/close the modal */
   private setModalActions(): Set<AnyMenuItem | MenuModal> {
     return (
       this.links

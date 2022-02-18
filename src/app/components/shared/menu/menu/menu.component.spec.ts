@@ -243,6 +243,16 @@ describe("MenuComponent", () => {
         spec.detectChanges();
         validateNumWidgets(3);
       });
+
+      it("should create widget after update", () => {
+        setup({ links: OrderedSet([defaultMenuRoute]) });
+        spec.detectChanges();
+        validateNumWidgets(0);
+        spec.setInput("widgets", OrderedSet([defaultWidget]));
+        spec.detectChanges();
+        validateNumWidgets(1);
+        expect(spec.query(MockWidgetComponent)).toBeTruthy();
+      });
     });
 
     describe("modals", () => {
@@ -428,7 +438,7 @@ describe("MenuComponent", () => {
     });
   });
 
-  describe("Links", () => {
+  describe("links", () => {
     it("should set menu link", () => {
       setup({ menuType: "action", links: OrderedSet([defaultMenuLink]) });
       spec.detectChanges();
