@@ -1,5 +1,11 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable, Inject, Injector } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import {
+  projectMenuItem,
+  projectsMenuItem,
+} from "@components/projects/projects.menus";
+import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { DEFAULT_MENU, IDefaultMenu } from "@helpers/page/defaultMenus";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -10,8 +16,10 @@ import {
   MenuRoute,
   NavigableMenuItem,
 } from "@interfaces/menusInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
 import { User } from "@models/User";
+import { ConfigService } from "@services/config/config.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { OrderedSet } from "immutable";
 import { BehaviorSubject, Observable, takeUntil } from "rxjs";
@@ -20,6 +28,7 @@ export interface MenuServiceData {
   hasActions: boolean;
   isFullscreen: boolean;
   isMenuOpen: boolean;
+  breadcrumbs: BreadcrumbsData;
   secondaryMenu: SecondaryMenuData;
   actionMenu: ActionMenuData;
   pageInfo: IPageInfo;
@@ -36,21 +45,32 @@ export interface SecondaryMenuData {
   widgets: OrderedSet<WidgetMenuItem>;
 }
 
+export interface Breadcrumb {
+  label: string;
+  icon: IconProp;
+  route: StrongRoute;
+}
+export type BreadcrumbsData = OrderedSet<Breadcrumb>;
+
+// TODO Make outputs observables, and expose a snapshot of the current state. Similar to activated route
 @Injectable()
 export class MenuService extends withUnsubscribe() {
   private _actionMenu: ActionMenuData;
+  private _breadcrumbs: BreadcrumbsData;
   private _hasActions: boolean;
   private _isFullscreen: boolean;
   private _isMenuOpen: boolean;
   private _menuUpdate: BehaviorSubject<MenuServiceData>;
+  private _pageInfo: IPageInfo;
   private _secondaryMenu: SecondaryMenuData;
   private _user: User;
-  private _pageInfo: IPageInfo;
 
   public constructor(
     private session: BawSessionService,
     private sharedRoute: SharedActivatedRouteService,
-    @Inject(DEFAULT_MENU) private defaultMenu: IDefaultMenu
+    @Inject(DEFAULT_MENU) private defaultMenu: IDefaultMenu,
+    private injector: Injector,
+    private config: ConfigService
   ) {
     super();
 
@@ -62,6 +82,7 @@ export class MenuService extends withUnsubscribe() {
       const numActions = this.pageInfo.menus?.actions?.count() ?? 0;
       const numWidgets = this.pageInfo.menus?.actionWidgets?.count() ?? 0;
       this._hasActions = numActions + numWidgets > 0;
+      this._breadcrumbs = this.getBreadcrumbsData(this.pageInfo);
       this._actionMenu = this.getActionMenuData(this.pageInfo);
       this._secondaryMenu = this.getSecondaryMenuData(this.pageInfo);
       this._isFullscreen = !!this.pageInfo.fullscreen;
@@ -112,6 +133,11 @@ export class MenuService extends withUnsubscribe() {
   /** Returns true if current page has any actions */
   public get hasActions(): boolean {
     return this._hasActions;
+  }
+
+  /** Returns current breadcrumb data */
+  public get breadcrumbs(): BreadcrumbsData {
+    return this._breadcrumbs;
   }
 
   /** Returns current action menu data */
@@ -165,10 +191,22 @@ export class MenuService extends withUnsubscribe() {
     this._menuUpdate.next(this.getData());
   }
 
+  private getBreadcrumbsData(page: IPageInfo): BreadcrumbsData {
+    return this.rootToMenuRoute(page.pageRoute).map(
+      (breadcrumb): Breadcrumb => ({
+        label:
+          breadcrumb.breadcrumbResolve?.(this.pageInfo, this.injector) ??
+          breadcrumb.label,
+        icon: breadcrumb.icon,
+        route: breadcrumb.route,
+      })
+    );
+  }
+
   private getActionMenuData(page: IPageInfo): ActionMenuData {
     const links =
       page.menus?.actions
-        ?.filter((link) => this.filterByPredicate(link, page))
+        ?.filter((link): boolean => this.filterByPredicate(link, page))
         ?.sort(this.sortByOrderAndIndentation)
         ?.toOrderedSet() ?? OrderedSet();
     const widgets = page.menus?.actionWidgets?.toOrderedSet() ?? OrderedSet();
@@ -181,32 +219,48 @@ export class MenuService extends withUnsubscribe() {
   }
 
   private getSecondaryMenuData(page: IPageInfo): SecondaryMenuData {
-    // get current page
-    const current = page.pageRoute;
-    current.active = true; // Ignore predicate
+    // Get current page and all parents
+    const parentMenuRoutes = this.rootToMenuRoute(page.pageRoute).map(
+      (menuRoute) => menuRoute
+    );
 
-    // and parent pages
-    const parentMenuRoutes: MenuRoute[] = [];
-    let menuRoute: MenuRoute = current;
-    while (menuRoute.parent) {
-      menuRoute = menuRoute.parent;
-      menuRoute.active = true; // Ignore predicate
-      parentMenuRoutes.push(menuRoute);
-    }
-
-    // and add it all together
     const widgets = page.menus?.linkWidgets?.toOrderedSet() ?? OrderedSet();
+
+    // Combine current route ancestry with default menu
     const links = this.defaultMenu.contextLinks
-      .concat<NavigableMenuItem | MenuModalWithoutAction>(
-        page.menus?.links ?? OrderedSet(),
-        OrderedSet(parentMenuRoutes).reverse(), // List lineage correctly
-        OrderedSet([current])
-      )
-      .filter((link) => this.filterByPredicate(link, page))
+      .concat(page.menus?.links ?? OrderedSet<NavigableMenuItem>())
+      .filter((link): boolean => this.filterByPredicate(link, page))
+      // Add parent menu routes after predicate so they are not filtered out
+      .concat(parentMenuRoutes)
       .sort(this.sortByOrderAndIndentation);
 
-    // Save to state
     return { links, widgets };
+  }
+
+  private rootToMenuRoute(menuRoute: MenuRoute): OrderedSet<MenuRoute> {
+    const hideProjects = this.config.settings.hideProjects;
+    let menuRoutes = OrderedSet<MenuRoute>([menuRoute]);
+    let current: MenuRoute = menuRoute;
+
+    while (current.parent) {
+      current = current.parent;
+
+      /*
+       * Substitute project menu items, if the hideProjects setting is enabled,
+       * to the shallow regions route. This also happens to have no parent
+       * route and will stop the route traversal
+       */
+      if (
+        hideProjects &&
+        [projectMenuItem, projectsMenuItem].includes(current)
+      ) {
+        current = shallowRegionsMenuItem;
+      }
+
+      menuRoutes = menuRoutes.add(current);
+    }
+
+    return menuRoutes.reverse();
   }
 
   private filterByPredicate<T extends AnyMenuItem | MenuModalWithoutAction>(
@@ -216,13 +270,7 @@ export class MenuService extends withUnsubscribe() {
     if (!link) {
       return false;
     }
-
-    if (!link.predicate || link.active) {
-      // Clear any modifications to link by secondary menu. See getSecondaryMenuData
-      link.active = false;
-      return true;
-    }
-    return link.predicate(this._user, page);
+    return link.predicate?.(this._user, page) ?? true;
   }
 
   /**
@@ -263,6 +311,7 @@ export class MenuService extends withUnsubscribe() {
       hasActions: this.hasActions,
       isFullscreen: this.isFullscreen,
       isMenuOpen: this.isMenuOpen,
+      breadcrumbs: this.breadcrumbs,
       secondaryMenu: this.secondaryMenu,
       actionMenu: this.actionMenu,
       pageInfo: this.pageInfo,

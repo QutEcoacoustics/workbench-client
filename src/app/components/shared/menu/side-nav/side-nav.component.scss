@@ -27,23 +27,8 @@
     border-right: 0;
   }
 
-  /*
-   * Show side nav in all possible states except menu layout, desktop width
-   * viewports. This allows for a smooth transition from small layouts to
-   * large layouts, without leaving the side-nav hanging.
-   */
-  &.fullscreen {
-    &.show {
-      visibility: visible;
-      transform: none !important;
-    }
-  }
-  &:not(.fullscreen) {
-    @include media("<lg-grid") {
-      &.show {
-        visibility: visible;
-        transform: none !important;
-      }
-    }
+  &.show {
+    visibility: visible;
+    transform: none !important;
   }
 }

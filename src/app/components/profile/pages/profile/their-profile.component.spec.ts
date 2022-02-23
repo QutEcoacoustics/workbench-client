@@ -168,14 +168,14 @@ describe("TheirProfileComponent", () => {
     });
 
     it("should handle if user is deleted", () => {
-      setup(User.deletedUser);
+      setup(User.getDeletedUser(undefined));
       interceptApiRequests({});
       spec.detectChanges();
       expect(getLabel()).toHaveText("Unknown time since last logged in");
     });
 
     it("should handle if user is unknown", () => {
-      setup(User.unknownUser);
+      setup(User.getUnknownUser(undefined));
       interceptApiRequests({});
       spec.detectChanges();
       expect(getLabel()).toHaveText("Unknown time since last logged in");
@@ -203,14 +203,14 @@ describe("TheirProfileComponent", () => {
     });
 
     it("should handle if user is deleted", () => {
-      setup(User.deletedUser);
+      setup(User.getDeletedUser(undefined));
       interceptApiRequests({});
       spec.detectChanges();
       expect(getLabel()).toHaveText("Unknown membership length");
     });
 
     it("should handle if user is unknown", () => {
-      setup(User.unknownUser);
+      setup(User.getUnknownUser(undefined));
       interceptApiRequests({});
       spec.detectChanges();
       expect(getLabel()).toHaveText("Unknown membership length");
@@ -289,13 +289,13 @@ describe("TheirProfileComponent", () => {
         });
 
         it("should update with Unknown when showing deleted user", async () => {
-          setup(User.deletedUser);
+          setup(User.getDeletedUser(undefined));
           spec.detectChanges();
           expect(getStatistics().items.get(position).value).toBe("Unknown");
         });
 
         it("should update with Unknown when showing unknown user", async () => {
-          setup(User.unknownUser);
+          setup(User.getUnknownUser(undefined));
           spec.detectChanges();
           expect(getStatistics().items.get(position).value).toBe("Unknown");
         });

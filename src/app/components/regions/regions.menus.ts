@@ -1,6 +1,8 @@
+import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { Region } from "@models/Region";
 import {
   defaultDeleteIcon,
   defaultEditIcon,
@@ -36,6 +38,8 @@ export const regionMenuItem = menuRoute({
   parent: projectMenuItem,
   route: regionsCategory.route.add(":regionId"),
   tooltip: () => "The current site",
+  breadcrumbResolve: (pageInfo) =>
+    retrieveResolvedModel(pageInfo, Region)?.name,
 });
 
 export const newRegionMenuItem = menuRoute({

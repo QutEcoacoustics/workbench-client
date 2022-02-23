@@ -9,7 +9,7 @@ import { takeUntil } from "rxjs";
 /**
  * Secondary Menu Component.
  * A menu located close to the subject of the page, displaying easy access
- * links. It also acts as a breadcrump showing the user their current location.
+ * links. It also acts as a breadcrumb showing the user their current location.
  */
 @Component({
   selector: "baw-secondary-menu",

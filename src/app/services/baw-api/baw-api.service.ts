@@ -377,8 +377,8 @@ export class BawApiService<
     filters: Filters<Model>,
     key: AssociationKeys<Model>,
     models: string[] | number[],
-    comparison: keyof Subsets = "contain"
-  ): Filters<Model> {
+    comparison: keyof Subsets = "in"
+  ) {
     return this.associationFilter(filters, key, models, comparison);
   }
 

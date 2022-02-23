@@ -1,5 +1,7 @@
+import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
+import { Site } from "@models/Site";
 import { defaultAnnotationDownloadIcon } from "src/app/app.menus";
 import {
   deleteSiteMenuItem,
@@ -24,6 +26,7 @@ export const pointMenuItem = menuRoute({
   parent: regionMenuItem,
   route: pointsCategory.route,
   tooltip: () => "The current point",
+  breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, Site)?.name,
 });
 
 export const newPointMenuItem = menuRoute({

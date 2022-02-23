@@ -1,4 +1,5 @@
 import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
+import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
@@ -10,6 +11,7 @@ import {
   menuRoute,
 } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { AudioRecording } from "@models/AudioRecording";
 
 const listRoutePath = "audio_recordings";
 const showRoutePath = ":audioRecordingId";
@@ -57,6 +59,9 @@ function makeDetailsMenuItem(subRoute: RecordingRoutes): MenuRoute {
     tooltip: () => "View audio recording details",
     route: audioRecordingsRoutes[subRoute].add(showRoutePath),
     parent: listMenuItems[subRoute],
+    // TODO #346 Show local date time of recording date using timezone where sensor was. Should show timezone on highlight?
+    breadcrumbResolve: (pageInfo) =>
+      retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),
   });
 }
 

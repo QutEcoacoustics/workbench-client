@@ -1,5 +1,7 @@
+import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { Project } from "@models/Project";
 import {
   defaultAudioIcon,
   defaultDeleteIcon,
@@ -63,6 +65,8 @@ export const projectMenuItem = menuRoute({
   parent: projectsMenuItem,
   route: projectCategory.route,
   tooltip: () => "The current project",
+  breadcrumbResolve: (pageInfo) =>
+    retrieveResolvedModel(pageInfo, Project)?.name,
 });
 
 export const editProjectMenuItem = menuRoute({

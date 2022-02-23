@@ -98,14 +98,14 @@ describe("UserBadgeComponent", () => {
 
   describe("ghost users", () => {
     it("should display username", () => {
-      const user = User.deletedUser;
+      const user = User.getDeletedUser(undefined);
       setup({ users: [user] });
       spec.detectChanges();
       expect(getGhostUsername()[0]).toHaveText(user.userName);
     });
 
     it("should display image", () => {
-      const user = User.deletedUser;
+      const user = User.getDeletedUser(undefined);
       setup({ users: [user] });
       spec.detectChanges();
       assertImage(

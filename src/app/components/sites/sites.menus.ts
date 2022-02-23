@@ -1,4 +1,6 @@
+import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
+import { Site } from "@models/Site";
 import {
   defaultAnnotationDownloadIcon,
   defaultAudioIcon,
@@ -23,6 +25,7 @@ export const siteMenuItem = menuRoute({
   parent: projectMenuItem,
   route: sitesCategory.route,
   tooltip: () => "The current site",
+  breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, Site)?.name,
 });
 
 export const newSiteMenuItem = menuRoute({

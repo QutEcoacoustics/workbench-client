@@ -5,24 +5,21 @@
 nav {
   background-color: var(--baw-header);
 
+  /* Display primary menu in header */
+  &.side-nav {
+    display: none;
+  }
   /* Header primary menu aligns content horizontally */
   &:not(.side-nav) {
     display: flex;
   }
 
-  /* On desktop layouts */
-  @include media(">=lg-grid") {
-    /* Display primary menu in header */
-    &.side-nav.fullscreen {
-      display: none;
-    }
-  }
-
   /* On mobile layouts */
   @include media("<lg-grid") {
     /* Display primary menu as only menu in side nav */
-    &.side-nav:not(.fullscreen) {
+    &.side-nav {
       height: 100%;
+      display: block;
     }
 
     /* Hide header primary menu */
