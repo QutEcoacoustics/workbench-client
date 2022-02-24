@@ -10,7 +10,6 @@ import {
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { Region } from "@models/Region";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
 
 export const regionsMenuItemActions = [
@@ -32,8 +31,8 @@ export const regionsMenuItemActions = [
 
       <ng-container *ngIf="!loading">
         <!-- Regions Exist -->
-        <ng-container *ngIf="cardList.size > 0; else empty">
-          <baw-cards [cards]="cardList"></baw-cards>
+        <ng-container *ngIf="models.size > 0; else empty">
+          <baw-model-cards [models]="models"></baw-model-cards>
         </ng-container>
 
         <!-- Regions Don't Exist -->
@@ -54,7 +53,7 @@ export const regionsMenuItemActions = [
   `,
 })
 class ListComponent extends PaginationTemplate<Region> implements OnInit {
-  public cardList: List<Card> = List([]);
+  public models: List<Region> = List([]);
 
   public constructor(
     router: Router,
@@ -70,8 +69,7 @@ class ListComponent extends PaginationTemplate<Region> implements OnInit {
       "name",
       () => [],
       (regions) => {
-        const cards = regions.map((region) => region.getCard());
-        this.cardList = List(cards);
+        this.models = List(regions);
       }
     );
   }

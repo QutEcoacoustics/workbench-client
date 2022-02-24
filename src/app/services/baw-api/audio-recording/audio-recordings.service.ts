@@ -4,6 +4,7 @@ import { toSnakeCase } from "@helpers/case-converter/case-converter";
 import { toBase64Url } from "@helpers/encoding/encoding";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioRecording } from "@models/AudioRecording";
+import type { Project } from "@models/Project";
 import type { Region } from "@models/Region";
 import type { Site } from "@models/Site";
 import { Observable } from "rxjs";
@@ -68,8 +69,7 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
   }
 
   /**
-   * Filter audio recordings by region id. For better performance
-   * provide the region model instead of id
+   * Filter audio recordings by region id
    *
    * @param filters Audio recording filters
    * @param region Region to filter by
@@ -79,11 +79,22 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
     region: IdOr<Region>
   ): Observable<AudioRecording[]> {
     return this.filter(
-      this.api.filterThroughAssociation(
-        filters,
-        "sites.regionId" as any,
-        region
-      )
+      this.api.filterThroughAssociation(filters, "regions.id" as any, region)
+    );
+  }
+
+  /**
+   * Filter audio recordings by project id
+   *
+   * @param filters Audio recording filters
+   * @param project Project to filter by
+   */
+  public filterByProject(
+    filters: Filters<AudioRecording>,
+    project: IdOr<Project>
+  ): Observable<AudioRecording[]> {
+    return this.filter(
+      this.api.filterThroughAssociation(filters, "projects.id" as any, project)
     );
   }
 

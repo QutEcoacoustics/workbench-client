@@ -3,28 +3,28 @@
 .row {
   --card-padding: 0.5rem;
 
-  @include media("<sm-container") {
+  @include media("<sm-grid") {
     --card-width: max(16rem, 50%);
   }
 
-  @include media("<md-container", ">=sm-container") {
+  @include media("<md-grid", ">=sm-grid") {
     --card-width: 50%;
   }
 
-  @include media("<lg-container", ">=md-container") {
+  @include media("<lg-grid", ">=md-grid") {
     --card-width: 33%;
   }
 
-  @include media("<xl-container", ">=lg-container") {
+  @include media("<xl-grid", ">=lg-grid") {
     --card-width: 25%;
   }
 
-  @include media("<xxl-container", ">=xl-container") {
-    --card-width: 50%;
+  @include media("<xxl-grid", ">=xl-grid") {
+    --card-width: 33%;
   }
 
-  @include media(">=xxl-container") {
-    --card-width: 33%;
+  @include media(">=xxl-grid") {
+    --card-width: 25%;
   }
 
   justify-content: center;

@@ -1,144 +1,87 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { takeUntil } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: "baw-site-card",
   template: `
     <li class="list-group-item p-2">
-      <div class="me-2">
-        <a id="imageLink" [bawUrl]="model.getViewUrl(project)">
-          <img id="image" [src]="model.imageUrls" [alt]="model.name + ' alt'" />
-        </a>
-      </div>
       <div class="body">
-        <div class="heading">
+        <div class="heading m-0 mb-1">
           <a id="nameLink" [bawUrl]="model.getViewUrl(project)">
+            <img
+              id="image"
+              class="me-2"
+              [src]="model.imageUrls"
+              [alt]="model.name + ' alt'"
+            />
             <h5 id="name">{{ model.name }}</h5>
           </a>
         </div>
 
-        <ul class="nav">
+        <ul class="nav mb-0">
           <li *ngIf="region" class="nav-item" id="points">
-            <span class="badge rounded-pill me-1">
+            <span class="badge rounded-pill bg-highlight my-1">
               {{ numPoints() }} Points
             </span>
           </li>
 
-          <!-- Model details link -->
-          <li class="nav-item">
-            <a
-              id="details"
-              class="nav-link rounded-link-default"
-              [bawUrl]="model.getViewUrl(project)"
-            >
-              <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
-              Details
-            </a>
-          </li>
-
-          <!-- Play audio link (if recording exists) -->
-          <li *ngIf="site" class="nav-item">
-            <!-- Play link if recording exists -->
-            <a
-              *ngIf="recording"
-              id="play"
-              class="nav-link rounded-link-default"
-              [bawUrl]="recording?.viewUrl"
-            >
-              <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
-              Play
-            </a>
-            <!-- No audio -->
-            <a
-              *ngIf="recording === null"
-              id="no-audio"
-              class="nav-link disabled rounded-link-default"
-            >
-              <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
-              No Audio
-            </a>
-            <!-- Loading while retrieving recording -->
-            <baw-loading
-              *ngIf="recording === undefined"
-              size="sm"
-            ></baw-loading>
-          </li>
-
-          <!-- Visualize link -->
-          <li class="nav-item">
-            <a
-              id="visualize"
-              class="nav-link rounded-link-default"
-              [bawUrl]="model.visualizeUrl"
-            >
-              <fa-icon [icon]="['fas', 'eye']"></fa-icon>
-              Visualise
-            </a>
-          </li>
-
-          <!-- Audio Recordings link (if recordings exist) -->
-          <li class="nav-item">
-            <a
-              id="audio-recordings"
-              class="nav-link rounded-link-default"
-              [bawUrl]="model.getAudioRecordingsUrl(project)"
-            >
-              <fa-icon [icon]="['fas', 'file-audio']"></fa-icon>
-              Audio Recordings
-            </a>
-          </li>
+          <ng-container [ngTemplateOutlet]="noAudioTemplate"></ng-container>
         </ul>
       </div>
     </li>
+
+    <ng-template #noAudioTemplate>
+      <ng-container *ngIf="hasNoAudio$ | withLoading | async as hasNoAudio">
+        <li>
+          <span
+            *ngIf="hasNoAudio.value !== false"
+            class="badge rounded-pill bg-secondary my-1"
+          >
+            <baw-loading
+              *ngIf="hasNoAudio.loading"
+              size="sm"
+              color="light"
+            ></baw-loading>
+            <span *ngIf="hasNoAudio.value">No audio yet</span>
+          </span>
+        </li>
+      </ng-container>
+    </ng-template>
   `,
   styleUrls: ["./site-card.component.scss"],
 })
-export class SiteCardComponent extends withUnsubscribe() implements OnInit {
+export class SiteCardComponent implements OnInit {
   @Input() public project: Project;
   @Input() public region: Region;
   @Input() public site: Site;
   public model: Site | Region;
-  public recording: AudioRecording;
+  public hasNoAudio$: Observable<boolean>;
 
-  public constructor(private recordingApi: AudioRecordingsService) {
-    super();
-  }
+  public constructor(private recordingApi: AudioRecordingsService) {}
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.model = this.region || this.site;
-
-    if (this.site) {
-      this.getRecording();
-    }
+    this.hasNoAudio$ = this.getRecording().pipe(
+      map((recordings): boolean => recordings.length === 0)
+    );
   }
 
-  public numPoints() {
+  public numPoints(): number {
     return this.region?.siteIds?.size || 0;
   }
 
-  private getRecording() {
-    this.recordingApi
-      .filterBySite(
-        {
-          sorting: { orderBy: "recordedDate", direction: "asc" },
-          paging: { items: 1 },
-        },
-        this.site
-      )
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe({
-        next: (recordings) => {
-          this.recording = recordings.length > 0 ? recordings[0] : null;
-        },
-        error: () => {
-          this.recording = null;
-        },
-      });
+  private getRecording(): Observable<AudioRecording[]> {
+    const filter = { paging: { items: 1 } };
+    if (this.region) {
+      return this.recordingApi.filterByRegion(filter, this.region);
+    } else {
+      return this.recordingApi.filterBySite(filter, this.site);
+    }
   }
 }

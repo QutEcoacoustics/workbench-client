@@ -12,10 +12,9 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ConfigService } from "@services/config/config.service";
-import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
 import { Observable } from "rxjs";
-import { map, takeUntil } from "rxjs/operators";
+import { mergeMap, takeUntil } from "rxjs/operators";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
 @Component({
@@ -36,7 +35,7 @@ class HomeComponent extends PageComponent implements OnInit {
   public viewMore: {
     loading: boolean;
     modelName: string;
-    list: List<Card>;
+    list: List<Region | Project>;
     link: StrongRoute;
   };
   public sourceRepo: string;
@@ -89,14 +88,17 @@ class HomeComponent extends PageComponent implements OnInit {
 
     models$
       .pipe(
-        map((models) =>
-          List(models.map((model: Region | Project) => model.getCard()))
+        mergeMap(() =>
+          (settings.hideProjects ? this.regionApi : this.projectApi).filter({
+            paging: { items: 3 },
+            sorting: { orderBy: "updatedAt", direction: "desc" },
+          })
         ),
         takeUntil(this.unsubscribe)
       )
       .subscribe({
-        next: (cards) => {
-          this.viewMore.list = cards;
+        next: (models) => {
+          this.viewMore.list = List<Project | Region>(models);
           this.viewMore.loading = false;
         },
         error: () => (this.viewMore.loading = false),

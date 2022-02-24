@@ -11,7 +11,6 @@ import {
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { Project } from "@models/Project";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
 
 export const projectsMenuItemActions = [
@@ -34,8 +33,8 @@ export const projectsMenuItemActions = [
 
       <ng-container *ngIf="!loading">
         <!-- Projects Exist -->
-        <ng-container *ngIf="cardList.size > 0; else empty">
-          <baw-cards [cards]="cardList"></baw-cards>
+        <ng-container *ngIf="models.size > 0; else empty">
+          <baw-model-cards [models]="models"></baw-model-cards>
         </ng-container>
 
         <!-- Projects Don't Exist -->
@@ -56,7 +55,7 @@ export const projectsMenuItemActions = [
   `,
 })
 class ListComponent extends PaginationTemplate<Project> {
-  public cardList: List<Card> = List([]);
+  public models: List<Project> = List([]);
 
   public constructor(
     router: Router,
@@ -72,8 +71,7 @@ class ListComponent extends PaginationTemplate<Project> {
       "name",
       () => [],
       (projects) => {
-        const cards = projects.map((project) => project.getCard());
-        this.cardList = List(cards);
+        this.models = List(projects);
       }
     );
   }

@@ -129,7 +129,7 @@ describe("CardsComponent", () => {
 
     it("should handle content", () => {
       hostSpectator = createHost(
-        "<baw-cards><h1>Internal Content</h1></baw-cards>"
+        "<baw-model-cards><h1>Internal Content</h1></baw-model-cards>"
       );
       const content = hostSpectator.query<HTMLDivElement>("#content");
       const header = hostSpectator.query<HTMLHeadingElement>("h1");
@@ -138,7 +138,7 @@ describe("CardsComponent", () => {
     });
 
     it("should handle no content", () => {
-      hostSpectator = createHost("<baw-cards></baw-cards>");
+      hostSpectator = createHost("<baw-model-cards></baw-model-cards>");
       const content = hostSpectator.query<HTMLDivElement>("#content");
       expect(content).toHaveComputedStyle({ display: "none" });
     });

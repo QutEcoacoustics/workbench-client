@@ -28,7 +28,7 @@ export const visualizeCategory: Category = {
 
 export const visualizeMenuItem = menuRoute({
   icon: visualizeCategory.icon,
-  label: "Explore Audio",
+  label: "Visualize Audio",
   route: visualizeRoute,
-  tooltip: () => "Explore and audio recording through visualization",
+  tooltip: () => "Explore an audio recording through visualization",
 });

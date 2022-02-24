@@ -11,8 +11,8 @@ import { assetRoot } from "@services/config/config.service";
 import { modelData } from "@test/helpers/faker";
 import { assertImage, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
-import { Card } from "../cards.component";
-import { CardImageComponent } from "./card-image.component";
+import { Card } from "../cards/cards.component";
+import { CardComponent } from "./card.component";
 
 export class CardImageMockModel extends AbstractModel {
   public readonly id: Id = 1;
@@ -30,9 +30,9 @@ export class CardImageMockModel extends AbstractModel {
 describe("CardImageComponent", () => {
   let defaultCard: Card;
   let defaultRoute: string;
-  let spectator: Spectator<CardImageComponent>;
+  let spectator: Spectator<CardComponent>;
   const createComponent = createComponentFactory({
-    component: CardImageComponent,
+    component: CardComponent,
     imports: [
       HttpClientTestingModule,
       RouterTestingModule,

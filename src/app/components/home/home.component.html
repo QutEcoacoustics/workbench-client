@@ -128,7 +128,7 @@
 
     <baw-loading *ngIf="viewMore.loading" [size]="lg"></baw-loading>
 
-    <baw-cards *ngIf="!viewMore.loading" [cards]="viewMore.list">
+    <baw-model-cards *ngIf="!viewMore.loading" [models]="viewMore.list">
       <ng-container *ngIf="viewMore.list.size === 0; else hasModels">
         <p id="placeholder" class="m-auto">
           No {{ viewMore.modelName }}s to display
@@ -143,6 +143,6 @@
           More {{ viewMore.modelName | titlecase }}s
         </a>
       </ng-template>
-    </baw-cards>
+    </baw-model-cards>
   </div>
 </section>
