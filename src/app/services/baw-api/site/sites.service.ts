@@ -15,7 +15,6 @@ import {
   IdParamOptional,
   option,
   param,
-  setAuthorizationQSP,
   setTimezoneQSP,
   StandardApi,
 } from "../api-common";
@@ -106,7 +105,6 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
       this.api.getPath(annotationsEndpoint(project, model, emptyParam))
     );
     setTimezoneQSP(url, selectedTimezone);
-    setAuthorizationQSP(url, this.session.authToken);
     return url.toString();
   }
 
