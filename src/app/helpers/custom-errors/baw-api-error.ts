@@ -67,7 +67,7 @@ export interface ApiErrorDetails {
 }
 
 /**
- * Determine if error response has already been processed
+ * Determine if this is an api error detail object
  *
  * @param error Error response
  */
@@ -75,10 +75,7 @@ export function isApiErrorDetails(error: any): error is ApiErrorDetails {
   if (!error || !(error instanceof Object)) {
     return false;
   }
-
-  const keys = Object.keys(error);
-  keys.sort();
-  return (
-    keys === ["message", "status"] || keys === ["info", "message", "status"]
-  );
+  const inputHasKey = (key: string): boolean =>
+    Object.prototype.hasOwnProperty.call(error, key);
+  return ["status", "message"].every((key) => inputHasKey(key));
 }
