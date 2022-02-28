@@ -1,13 +1,14 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Id, Ids } from "@interfaces/apiInterfaces";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { nStepObservable } from "@test/helpers/general";
+import { UNAUTHORIZED } from "http-status";
 import { Subject } from "rxjs";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { hasMany, hasOne } from "./AssociationDecorators";
@@ -81,10 +82,7 @@ describe("Association Decorators", () => {
       return new MockModel(data, modelInjector);
     }
 
-    function interceptApiRequest(
-      models?: ChildModel[],
-      error?: ApiErrorDetails
-    ) {
+    function interceptApiRequest(models?: ChildModel[], error?: BawApiError) {
       const subject = new Subject<ChildModel[]>();
       const promise = nStepObservable(
         subject,
@@ -173,7 +171,7 @@ describe("Association Decorators", () => {
         it("should handle error", async () => {
           const promise = interceptApiRequest(
             undefined,
-            generateApiErrorDetails("Unauthorized")
+            generateBawApiError(UNAUTHORIZED)
           );
           const model = createModel({ ids: idsType.empty }, injector);
           await assertModel(promise, model, "childModels", []);
@@ -251,7 +249,7 @@ describe("Association Decorators", () => {
       return new MockModel(data, modelInjector);
     }
 
-    function interceptApiRequest(model?: ChildModel, error?: ApiErrorDetails) {
+    function interceptApiRequest(model?: ChildModel, error?: BawApiError) {
       const subject = new Subject<ChildModel>();
       const promise = nStepObservable(
         subject,
@@ -313,7 +311,7 @@ describe("Association Decorators", () => {
     it("should handle error", async () => {
       const promise = interceptApiRequest(
         undefined,
-        generateApiErrorDetails("Unauthorized")
+        generateBawApiError(UNAUTHORIZED)
       );
       const model = createModel({ id: 1 }, injector);
       await assertModel(promise, model, "childModel", null);
@@ -338,7 +336,7 @@ describe("Association Decorators", () => {
     it("should return failure value", async () => {
       const promise = interceptApiRequest(
         undefined,
-        generateApiErrorDetails("Unauthorized")
+        generateBawApiError(UNAUTHORIZED)
       );
       const model = createModel({ id: 1 }, injector, [], true);
       await assertModel(promise, model, "childModel", true as any);

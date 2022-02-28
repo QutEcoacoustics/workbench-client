@@ -165,7 +165,7 @@ export function interceptRepeatApiRequests<
   Models extends AbstractModel | AbstractModel[]
 >(
   apiRequestType: any,
-  responses: (Models | ApiErrorDetails)[],
+  responses: Errorable<Models>[],
   expectations?: FilterExpectations<ModelData>[]
 ): Promise<void>[] {
   const subjects: Subject<Models>[] = [];

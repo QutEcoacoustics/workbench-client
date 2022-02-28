@@ -1,10 +1,10 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
   regionResolvers,
   RegionsService,
 } from "@baw-api/region/regions.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import {
@@ -13,7 +13,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { assertErrorHandler } from "@test/helpers/html";
@@ -38,8 +38,8 @@ describe("RegionsDeleteComponent", () => {
   function setup(
     project: Project,
     region: Region,
-    projectError?: ApiErrorDetails,
-    regionError?: ApiErrorDetails
+    projectError?: BawApiError,
+    regionError?: BawApiError
   ) {
     spectator = createComponent({
       detectChanges: false,
@@ -76,12 +76,12 @@ describe("RegionsDeleteComponent", () => {
     });
 
     it("should handle project error", () => {
-      setup(undefined, defaultRegion, generateApiErrorDetails());
+      setup(undefined, defaultRegion, generateBawApiError());
       assertErrorHandler(spectator.fixture);
     });
 
     it("should handle region error", () => {
-      setup(defaultProject, undefined, undefined, generateApiErrorDetails());
+      setup(defaultProject, undefined, undefined, generateBawApiError());
       assertErrorHandler(spectator.fixture);
     });
 

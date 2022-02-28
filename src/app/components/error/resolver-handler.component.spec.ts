@@ -1,11 +1,12 @@
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generatePageInfoResolvers } from "@test/helpers/general";
+import { NOT_FOUND, UNAUTHORIZED } from "http-status";
 import { MockComponent } from "ng-mocks";
 import { ResolverHandlerComponent } from "./resolver-handler.component";
 
@@ -23,7 +24,7 @@ describe("ResolverHandlerComponent", () => {
     spec = createComponent({ detectChanges: false, data });
   }
 
-  function assertErrorHandler(error?: ApiErrorDetails) {
+  function assertErrorHandler(error?: BawApiError) {
     const handler = spec.query(mockErrorHandler);
 
     if (!error) {
@@ -59,22 +60,22 @@ describe("ResolverHandlerComponent", () => {
     });
 
     it("should display error if single failing resolver", () => {
-      const error = generateApiErrorDetails();
+      const error = generateBawApiError();
       setup(generatePageInfoResolvers({ error }));
       spec.detectChanges();
       assertErrorHandler(error);
     });
 
     it("should display error if multiple failing resolvers", () => {
-      const error = generateApiErrorDetails();
+      const error = generateBawApiError();
       setup(generatePageInfoResolvers({ error }, { error }, { error }));
       spec.detectChanges();
       assertErrorHandler(error);
     });
 
     it("should prioritize unauthorized error if multiple failing resolvers", () => {
-      const unauthorized = generateApiErrorDetails("Unauthorized");
-      const notFound = generateApiErrorDetails("Not Found");
+      const unauthorized = generateBawApiError(UNAUTHORIZED);
+      const notFound = generateBawApiError(NOT_FOUND);
       setup(
         generatePageInfoResolvers(
           { error: notFound },
@@ -87,7 +88,7 @@ describe("ResolverHandlerComponent", () => {
     });
 
     it("should display error if mixed passing and failing resolvers", () => {
-      const error = generateApiErrorDetails();
+      const error = generateBawApiError();
       setup(
         generatePageInfoResolvers(
           { model: new MockModel({}) },
@@ -102,7 +103,7 @@ describe("ResolverHandlerComponent", () => {
 
   describe("route data", () => {
     it("should clear error if new route data does not contain resolver failure", () => {
-      setup(generatePageInfoResolvers({ error: generateApiErrorDetails() }));
+      setup(generatePageInfoResolvers({ error: generateBawApiError() }));
       spec.detectChanges();
       spec.triggerNavigation({
         data: generatePageInfoResolvers({ model: new MockModel({}) }),
@@ -112,7 +113,7 @@ describe("ResolverHandlerComponent", () => {
     });
 
     it("should display error if new route data contains resolver failure", () => {
-      const error = generateApiErrorDetails();
+      const error = generateBawApiError();
       setup(generatePageInfoResolvers({ model: new MockModel({}) }));
       spec.detectChanges();
       spec.triggerNavigation({ data: generatePageInfoResolvers({ error }) });

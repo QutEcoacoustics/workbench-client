@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { Data, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SecurityService } from "@baw-api/security/security.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { MenuType } from "@helpers/generalTypes";
 import { PageInfo } from "@helpers/page/pageInfo";
 import {
@@ -23,7 +23,7 @@ import {
   MenuModalWithoutAction,
   WidgetMenuItem,
 } from "@menu/widgetItem";
-import { Session } from "@models/User";
+import { Session, User } from "@models/User";
 import {
   NgbModal,
   NgbModalModule,
@@ -38,7 +38,7 @@ import {
   generateMenuModalWithoutAction,
   generateMenuRoute,
 } from "@test/fakes/MenuItem";
-import { generateSessionUser } from "@test/fakes/User";
+import { generateUser } from "@test/fakes/User";
 import { assertIcon } from "@test/helpers/html";
 import { OrderedSet } from "immutable";
 import { MockComponent, MockedComponent, MockProvider } from "ng-mocks";
@@ -72,7 +72,7 @@ export class MockModalComponent implements ModalComponent {
 
 describe("MenuComponent", () => {
   let modal: NgbModal;
-  let defaultUser: Session;
+  let defaultUser: User;
   let defaultMenuModal: MenuModalWithoutAction;
   let defaultWidget: WidgetMenuItem;
   let defaultMenuAction: MenuAction;
@@ -120,7 +120,7 @@ describe("MenuComponent", () => {
     props?: Partial<MenuComponent>,
     data: Data = {},
     params: Params = {},
-    opts?: { isFullscreen?: boolean; localUser?: Session }
+    opts?: { isFullscreen?: boolean; localUser?: User }
   ) {
     spec = createComponent({
       detectChanges: false,
@@ -132,8 +132,8 @@ describe("MenuComponent", () => {
           pageInfo: data,
           isFullscreen: opts?.isFullscreen ?? false,
         }),
-        MockProvider(SecurityService, {
-          getLocalUser: () => opts?.localUser ?? null,
+        MockProvider(BawSessionService, {
+          loggedInUser: opts?.localUser ?? null,
         }),
       ],
     });
@@ -141,7 +141,7 @@ describe("MenuComponent", () => {
   }
 
   beforeEach(() => {
-    defaultUser = new Session(generateSessionUser());
+    defaultUser = new User(generateUser());
     defaultWidget = new WidgetMenuItem(MockWidgetComponent);
     defaultMenuModal = generateMenuModalWithoutAction();
     defaultMenuAction = generateMenuAction();

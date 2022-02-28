@@ -1,4 +1,4 @@
-import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 
 /**
  * Like Partial<T> but require certain properties.
@@ -49,7 +49,7 @@ export interface Tuple<T, L extends number> extends Array<T> {
 }
 
 /** Indicates an object can either be that object, or an error response */
-export type Errorable<T> = T | ApiErrorDetails;
+export type Errorable<T> = T | BawApiError;
 
 /** Like Partial, but recursively looks down the entire object */
 export type RecursivePartial<T> = {

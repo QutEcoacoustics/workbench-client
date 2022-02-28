@@ -1,9 +1,9 @@
 import { Injector } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ACCOUNT, SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { SavedSearch } from "@models/SavedSearch";
 import { Script } from "@models/Script";
@@ -11,7 +11,7 @@ import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSavedSearch } from "@test/fakes/SavedSearch";
 import { generateScript } from "@test/fakes/Script";
 import { generateUser } from "@test/fakes/User";
@@ -29,7 +29,7 @@ describe("AdminAnalysisJobComponent", () => {
     imports: [SharedModule, MockBawApiModule, RouterTestingModule],
   });
 
-  function setup(model: AnalysisJob, error?: ApiErrorDetails) {
+  function setup(model: AnalysisJob, error?: BawApiError) {
     spec = createComponent({
       detectChanges: false,
       providers: [
@@ -89,7 +89,7 @@ describe("AdminAnalysisJobComponent", () => {
   });
 
   it("should handle error", () => {
-    setup(undefined, generateApiErrorDetails());
+    setup(undefined, generateBawApiError());
     spec.detectChanges();
     expect(spec.component).toBeTruthy();
   });

@@ -1,4 +1,4 @@
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
+/* import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TestRequest } from "@angular/common/http/testing";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
@@ -424,3 +424,4 @@ describe("bawFormApiService", () => {
     });
   });
 });
+ */

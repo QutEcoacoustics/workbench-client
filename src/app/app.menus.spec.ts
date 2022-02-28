@@ -1,4 +1,7 @@
 import { AccessLevel } from "@interfaces/apiInterfaces";
+import { generateBawApiError } from "@test/fakes/BawApiError";
+import { generateUser } from "@test/fakes/User";
+import { UNAUTHORIZED } from "http-status";
 import {
   isAdminPredicate,
   isGuestPredicate,
@@ -6,29 +9,16 @@ import {
   isProjectEditorPredicate,
 } from "./app.menus";
 import { Project } from "./models/Project";
-import { Session } from "./models/User";
-import { ApiErrorDetails } from "./services/baw-api/api.interceptor.service";
+import { User } from "./models/User";
 
 describe("Predicates", () => {
-  let defaultUser: Session;
-  let adminUser: Session;
-  let guestUser: Session;
+  let defaultUser: User;
+  let adminUser: User;
+  let guestUser: User;
 
   beforeEach(() => {
-    defaultUser = new Session({
-      id: 1,
-      userName: "username",
-      authToken: "xxxxxxxxxxxxxxx",
-      rolesMask: 2,
-      rolesMaskNames: ["user"],
-    });
-    adminUser = new Session({
-      id: 1,
-      userName: "username",
-      authToken: "xxxxxxxxxxxxxxx",
-      rolesMask: 3,
-      rolesMaskNames: ["admin"],
-    });
+    defaultUser = new User(generateUser({}, false));
+    adminUser = new User(generateUser({}, true));
     guestUser = undefined;
   });
 
@@ -93,7 +83,7 @@ describe("Predicates", () => {
     it("should handle error project", () => {
       expect(
         isProjectEditorPredicate(defaultUser, {
-          project: { status: 401, message: "Unauthorized" } as ApiErrorDetails,
+          project: generateBawApiError(UNAUTHORIZED),
         })
       ).toBeFalse();
     });

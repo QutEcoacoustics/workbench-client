@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   projectResolvers,
   ProjectsService,
 } from "@baw-api/project/projects.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { SpyObject } from "@ngneat/spectator";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
+import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import schema from "../../project.schema.json";
@@ -27,7 +28,7 @@ describe("ProjectsEditComponent", () => {
   let router: Router;
   const { fields } = schema;
 
-  function configureTestingModule(model: Project, error?: ApiErrorDetails) {
+  function configureTestingModule(model: Project, error?: BawApiError) {
     TestBed.configureTestingModule({
       imports: [...testFormImports, MockBawApiModule],
       declarations: [EditComponent],
@@ -94,7 +95,7 @@ describe("ProjectsEditComponent", () => {
     });
 
     it("should handle project error", () => {
-      configureTestingModule(undefined, generateApiErrorDetails());
+      configureTestingModule(undefined, generateBawApiError());
       assertErrorHandler(fixture);
     });
 
@@ -110,9 +111,7 @@ describe("ProjectsEditComponent", () => {
       api.update.and.callFake(() => {
         const subject = new Subject<Project>();
         subject.error(
-          generateApiErrorDetails("Unauthorized", {
-            message: "Sign in to access this feature.",
-          })
+          generateBawApiError(UNAUTHORIZED, "Sign in to access this feature.")
         );
         return subject;
       });
@@ -128,11 +127,10 @@ describe("ProjectsEditComponent", () => {
       api.update.and.callFake(() => {
         const subject = new Subject<Project>();
         subject.error(
-          generateApiErrorDetails("Unprocessable Entity", {
-            info: { name: ["has already been taken"] },
+          generateBawApiError(UNPROCESSABLE_ENTITY, undefined, {
+            name: ["has already been taken"],
           })
         );
-
         return subject;
       });
 

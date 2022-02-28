@@ -1,9 +1,9 @@
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@components/shared/shared.module";
+import { Errorable } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
@@ -17,8 +17,8 @@ import {
 } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
 import { MapComponent } from "@shared/map/map.component";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -60,7 +60,7 @@ describe("SiteComponent", () => {
   }
 
   function interceptEventsRequest(
-    audioEvents: AudioEvent[] | ApiErrorDetails = [],
+    audioEvents: Errorable<AudioEvent[]> = [],
     expectation: FilterExpectations<AudioEvent> = () => {}
   ) {
     const subject = new Subject<AudioEvent[]>();
@@ -76,7 +76,7 @@ describe("SiteComponent", () => {
   }
 
   function interceptRecordingsRequest(
-    recordings: AudioRecording[] | ApiErrorDetails = [],
+    recordings: Errorable<AudioRecording[]> = [],
     newExpectation: FilterExpectations<AudioRecording> = () => {},
     oldExpectation: FilterExpectations<AudioRecording> = () => {}
   ) {
@@ -282,9 +282,7 @@ describe("SiteComponent", () => {
         return spec.query("#recording-dates");
       }
 
-      async function setupRecordings(
-        recordings: AudioRecording[] | ApiErrorDetails
-      ) {
+      async function setupRecordings(recordings: Errorable<AudioRecording[]>) {
         setup(defaultProject, defaultSite);
         interceptEventsRequest();
         const promise = interceptRecordingsRequest(recordings);
@@ -303,7 +301,7 @@ describe("SiteComponent", () => {
         },
         {
           label: "audio recordings error",
-          recordings: () => generateApiErrorDetails(),
+          recordings: () => generateBawApiError(),
           placeholder: false,
           error: true,
           dates: false,

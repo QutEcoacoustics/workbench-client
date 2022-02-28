@@ -1,13 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { unknownErrorCode } from "@baw-api/baw-api.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { MockAppConfigModule } from "@services/config/configMock.module";
-import {
-  generateApiErrorDetails,
-  generateApiErrorDetailsV2,
-} from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import {
   FORBIDDEN,
   NOT_FOUND,
@@ -21,19 +18,19 @@ import { ErrorHandlerComponent } from "./error-handler.component";
   template: "<baw-error-handler [error]='error'></baw-error-handler>",
 })
 class MockComponent implements OnInit {
-  public error: ApiErrorDetails;
+  public error: BawApiError;
 
   public constructor(private ref: ChangeDetectorRef) {}
 
   public ngOnInit() {
-    this.error = {
-      status: 401,
-      message: "You need to log in or register before continuing.",
-    } as ApiErrorDetails;
+    this.error = new BawApiError(
+      UNAUTHORIZED,
+      "You need to log in or register before continuing."
+    );
     this.ref.detectChanges();
   }
 
-  public setError(error: ApiErrorDetails) {
+  public setError(error: BawApiError) {
     this.error = error;
     this.ref.detectChanges();
   }
@@ -96,39 +93,42 @@ describe("ErrorHandlerComponent", () => {
   [
     {
       title: "Unauthorized Access",
-      error: generateApiErrorDetailsV2(UNAUTHORIZED, {
-        message: "You need to log in or register before continuing.",
-      }),
+      error: generateBawApiError(
+        UNAUTHORIZED,
+        "You need to log in or register before continuing."
+      ),
     },
     {
       title: "Access Forbidden",
-      error: generateApiErrorDetailsV2(FORBIDDEN, {
-        message: "You do not have access to this resource.",
-      }),
+      error: generateBawApiError(
+        FORBIDDEN,
+        "You do not have access to this resource."
+      ),
     },
     {
       title: "Request Timed Out",
-      error: generateApiErrorDetailsV2(REQUEST_TIMEOUT, {
-        message: "Resource request took too long to complete.",
-      }),
+      error: generateBawApiError(
+        REQUEST_TIMEOUT,
+        "Resource request took too long to complete."
+      ),
     },
     {
       title: "Not Found",
-      error: generateApiErrorDetailsV2(NOT_FOUND, {
-        message: "Could not find the requested item.",
-      }),
+      error: generateBawApiError(
+        NOT_FOUND,
+        "Could not find the requested item."
+      ),
     },
     {
       title: "Unknown Error",
-      error: generateApiErrorDetailsV2(0, {
-        message: "Unknown error has occurred.",
-      }),
+      error: generateBawApiError(0, "Unknown error has occurred."),
     },
     {
       title: "Unknown Error",
-      error: generateApiErrorDetailsV2(unknownErrorCode, {
-        message: "Unknown error has occurred.",
-      }),
+      error: generateBawApiError(
+        unknownErrorCode,
+        "Unknown error has occurred."
+      ),
     },
   ].forEach(({ error, title }) => {
     it(`should handle ${error.status} status code`, () => {
@@ -162,9 +162,7 @@ describe("ErrorHandlerComponent", () => {
     );
 
     mockComponent.setError(
-      generateApiErrorDetails("Not Found", {
-        message: "Could not find the requested item.",
-      })
+      generateBawApiError(NOT_FOUND, "Could not find the requested item.")
     );
     mockFixture.detectChanges();
 

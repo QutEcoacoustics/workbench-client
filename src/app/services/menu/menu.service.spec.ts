@@ -1,8 +1,8 @@
 import {
-  shouldNotComplete,
   shouldNotFail,
+  shouldNotComplete,
 } from "@baw-api/baw-api.service.spec";
-import { SecurityService } from "@baw-api/security/security.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { homeCategory, homeMenuItem } from "@components/home/home.menus";
 import { DEFAULT_MENU, IDefaultMenu } from "@helpers/page/defaultMenus";
 import { mockDefaultMenu } from "@helpers/page/defaultMenus.spec";
@@ -76,9 +76,9 @@ describe("MenuService", () => {
         mockProvider(ConfigService, {
           settings: { hideProjects: inputs.hideProjects ?? false },
         }),
-        mockProvider(SecurityService, {
-          getAuthTrigger: () => authTrigger,
-          getLocalUser: () => localUser,
+        mockProvider(BawSessionService, {
+          authTrigger: () => authTrigger,
+          loggedInUser: () => localUser,
         }),
         mockProvider(SharedActivatedRouteService, { pageInfo }),
         {

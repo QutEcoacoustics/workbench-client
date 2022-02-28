@@ -1,14 +1,14 @@
 import { HttpClient, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import {
   createHttpFactory,
   HttpMethod,
   SpectatorHttp,
 } from "@ngneat/spectator";
 import { modelData } from "@test/helpers/faker";
-import httpStatus from "http-status";
-import { Observable, timer } from "rxjs";
+import { REQUEST_TIMEOUT } from "http-status";
+import { first, firstValueFrom, Observable, timer } from "rxjs";
 import {
   TimeoutInterceptor,
   TIMEOUT_OPTIONS,
@@ -69,24 +69,24 @@ describe("TimeoutInterceptor", () => {
       });
 
       it("it should timeout a request after the timeout period", async () => {
-        const response = callService()
-          .toPromise()
-          .catch((res) => res);
-        spec.expectOne("/api/v1/getResources", test.type);
+        const expectation = new BawApiError(
+          REQUEST_TIMEOUT,
+          "Resource request took too long to complete. " +
+            "This may be an issue with your connection to us, or a temporary issue with our services."
+        );
 
-        await timer(timeoutInterval * 1.5).toPromise();
-        expect(await response).toEqual({
-          status: httpStatus.REQUEST_TIMEOUT,
-          message:
-            "Resource request took too long to complete. " +
-            "This may be an issue with your connection to us, or a temporary issue with our services.",
-        } as ApiErrorDetails);
+        const response = firstValueFrom<Promise<BawApiError>>(
+          callService().pipe(first())
+        ).catch((res) => res);
+        spec.expectOne("/api/v1/getResources", test.type);
+        await firstValueFrom(timer(timeoutInterval * 1.5));
+        expect(await response).toEqual(expectation);
       });
 
       it("it should not timeout a request if it returns before the timeout period", async () => {
         callService().subscribe();
         const req = spec.expectOne("/api/v1/getResources", test.type);
-        await timer(timeoutInterval / 2).toPromise();
+        await firstValueFrom(timer(timeoutInterval / 2));
         req.flush(123);
       });
     });

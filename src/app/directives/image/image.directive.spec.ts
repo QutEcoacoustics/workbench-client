@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SimpleChange } from "@angular/core";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SecurityService } from "@baw-api/security/security.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { Session } from "@models/User";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
@@ -142,7 +142,7 @@ describe("ImageDirective", () => {
   });
 
   describe("api links", () => {
-    let api: SecurityService;
+    let session: BawSessionService;
 
     function createApiDirective(
       src: ImageUrl[],
@@ -155,13 +155,13 @@ describe("ImageDirective", () => {
           detectChanges: false,
         }
       );
-      api = spec.inject(SecurityService);
+      session = spec.inject(BawSessionService);
       return spec;
     }
 
     function setLoggedIn(user: Session) {
-      spyOn(api, "isLoggedIn").and.callFake(() => !!user);
-      spyOn(api, "getLocalUser").and.callFake(() => user);
+      spyOnProperty(session, "isLoggedIn").and.callFake(() => !!user);
+      spyOnProperty(session, "loggedInUser").and.callFake(() => user);
     }
 
     function getApiRoot() {

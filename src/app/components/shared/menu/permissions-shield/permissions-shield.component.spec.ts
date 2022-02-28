@@ -12,7 +12,7 @@ import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -126,7 +126,7 @@ describe("PermissionsShieldComponent", () => {
       setup([
         { model: defaultModel },
         { model: defaultProject },
-        { error: generateApiErrorDetails() },
+        { error: generateBawApiError() },
         { model: defaultRegion },
       ]);
       spec.detectChanges();

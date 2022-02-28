@@ -20,7 +20,7 @@ import { MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { FooterComponent } from "@shared/footer/footer.component";
 import { HeaderComponent } from "@shared/menu/header/header.component";
-import { generateApiErrorDetailsV2 } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generatePageInfo } from "@test/fakes/PageInfo";
 import { generatePageInfoResolvers } from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
@@ -206,7 +206,7 @@ describe("AppComponent", () => {
       setPageInfo(
         generatePageInfo({
           resolvers: generatePageInfoResolvers({
-            error: generateApiErrorDetailsV2(),
+            error: generateBawApiError(),
           }),
         })
       );

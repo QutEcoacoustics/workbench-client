@@ -3,18 +3,18 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ACCOUNT, PROJECT } from "@baw-api/ServiceTokens";
 import { shallowSiteResolvers } from "@baw-api/site/sites.service";
 import { AdminAudioRecordingComponent } from "@components/admin/audio-recordings/details/details.component";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
@@ -28,7 +28,7 @@ describe("AdminOrphanComponent", () => {
   let fixture: ComponentFixture<AdminOrphanComponent>;
   let injector: Injector;
 
-  function configureTestingModule(model: Site, error?: ApiErrorDetails) {
+  function configureTestingModule(model: Site, error?: BawApiError) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -91,7 +91,7 @@ describe("AdminOrphanComponent", () => {
   });
 
   it("should handle error", () => {
-    configureTestingModule(undefined, generateApiErrorDetails());
+    configureTestingModule(undefined, generateBawApiError());
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });

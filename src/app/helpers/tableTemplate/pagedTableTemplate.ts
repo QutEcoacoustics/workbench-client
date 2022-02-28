@@ -7,10 +7,7 @@ import {
   ResolvedModelList,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
-import {
-  ApiErrorDetails,
-  BawApiError,
-} from "@helpers/custom-errors/baw-api-error";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel } from "@models/AbstractModel";
 import {
@@ -56,7 +53,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   /**
    * API Error Response for Table Data
    */
-  public error: ApiErrorDetails;
+  public error: BawApiError;
   /**
    * API Error Response from Resolvers
    */

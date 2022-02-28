@@ -1,5 +1,4 @@
 import { RouterTestingModule } from "@angular/router/testing";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
@@ -14,11 +13,12 @@ import {
 import { CardsComponent } from "@shared/cards/cards.component";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateRegion } from "@test/fakes/Region";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { Subject } from "rxjs";
+import { generateBawApiError } from "@test/fakes/BawApiError";
+import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { ListComponent } from "./list.component";
 
 describe("RegionsListComponent", () => {
@@ -54,7 +54,7 @@ describe("RegionsListComponent", () => {
     const promise = nStepObservable(
       subject,
       () => models,
-      isApiErrorDetails(models)
+      isBawApiError(models)
     );
     api.filter.and.callFake((filters) => {
       assertFilter(filters);
@@ -84,7 +84,7 @@ describe("RegionsListComponent", () => {
   });
 
   it("should handle failed regions model", async () => {
-    await handleApiRequest(generateApiErrorDetails());
+    await handleApiRequest(generateBawApiError());
     assertErrorHandler(spec.fixture, true);
   });
 

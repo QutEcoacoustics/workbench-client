@@ -1,11 +1,11 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { NewComponent } from "@components/regions/pages/new/new.component";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { assertErrorHandler } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
@@ -26,7 +26,7 @@ describe("WizardComponent", () => {
     component: WizardComponent,
   });
 
-  function setup(project: Project, error?: ApiErrorDetails) {
+  function setup(project: Project, error?: BawApiError) {
     spectator = createComponent({
       detectChanges: false,
       data: {
@@ -59,7 +59,7 @@ describe("WizardComponent", () => {
   });
 
   it("should handle project error", () => {
-    setup(undefined, generateApiErrorDetails());
+    setup(undefined, generateBawApiError());
     spectator.detectChanges();
     assertErrorHandler(spectator.fixture);
   });

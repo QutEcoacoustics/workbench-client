@@ -2,6 +2,7 @@ import { fakeAsync } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { adminDashboardMenuItem } from "@components/admin/admin.menus";
@@ -44,6 +45,7 @@ import { PrimaryMenuComponent } from "./primary-menu.component";
 
 describe("PrimaryMenuComponent", () => {
   let api: SecurityService;
+  let session: BawSessionService;
   let router: Router;
   let spec: Spectator<PrimaryMenuComponent>;
   const createComponent = createComponentFactory({
@@ -88,10 +90,13 @@ describe("PrimaryMenuComponent", () => {
     spec.component["reloadPage"] = jasmine.createSpy().and.stub();
 
     api = spec.inject(SecurityService);
+    session = spec.inject(BawSessionService);
     router = spec.inject(Router);
 
     if (props?.user !== undefined) {
-      spyOn(api, "getLocalUser").and.callFake(() => props?.user ?? null);
+      spyOnProperty(session, "loggedInUser").and.callFake(
+        () => props?.user ?? null
+      );
     }
   }
 
@@ -364,13 +369,13 @@ describe("PrimaryMenuComponent", () => {
 
     function getLoggedInTrigger() {
       const loggedInTrigger = new BehaviorSubject(null);
-      spyOn(api, "getAuthTrigger").and.callFake(() => loggedInTrigger);
+      spyOnProperty(session, "authTrigger").and.callFake(() => loggedInTrigger);
       return loggedInTrigger;
     }
 
     function onFirstLoadSetGuestUserOnSecondLoadSetLoggedIn() {
       let count = 0;
-      spyOn(api, "getLocalUser").and.callFake(() => {
+      spyOnProperty(session, "loggedInUser").and.callFake(() => {
         if (count !== 0) {
           return null;
         }

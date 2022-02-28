@@ -3,18 +3,18 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   scriptResolvers,
   ScriptsService,
 } from "@baw-api/script/scripts.service";
 import { ACCOUNT, SCRIPT } from "@baw-api/ServiceTokens";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Script } from "@models/Script";
 import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateScript } from "@test/fakes/Script";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
@@ -28,7 +28,7 @@ describe("ScriptComponent", () => {
   let fixture: ComponentFixture<AdminScriptComponent>;
   let injector: Injector;
 
-  function configureTestingModule(model: Script, error?: ApiErrorDetails) {
+  function configureTestingModule(model: Script, error?: BawApiError) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -87,7 +87,7 @@ describe("ScriptComponent", () => {
   });
 
   it("should handle error", () => {
-    configureTestingModule(undefined, generateApiErrorDetails());
+    configureTestingModule(undefined, generateBawApiError());
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });

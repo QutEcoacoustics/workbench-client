@@ -1,10 +1,11 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { RecaptchaSettings } from "@baw-api/baw-form-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { RegisterDetails } from "@models/data/RegisterDetails";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateRegisterDetails } from "@test/fakes/RegisterDetails";
 import { modelData } from "@test/helpers/faker";
 import { testFormlyFields } from "@test/helpers/formly";
@@ -17,6 +18,7 @@ import schema from "./register.schema.json";
 
 describe("RegisterComponent", () => {
   let api: SecurityService;
+  let session: BawSessionService;
   let toastr: ToastrService;
   let spec: Spectator<RegisterComponent>;
   const { fields } = schema;
@@ -27,7 +29,7 @@ describe("RegisterComponent", () => {
   });
 
   function isSignedIn(signedIn: boolean = true) {
-    spyOn(api, "isLoggedIn").and.callFake(() => signedIn);
+    spyOnProperty(session, "isLoggedIn").and.callFake(() => signedIn);
   }
 
   describe("form", () => {
@@ -65,6 +67,7 @@ describe("RegisterComponent", () => {
       spec = createComponent({ detectChanges: false });
       api = spec.inject(SecurityService);
       toastr = spec.inject(ToastrService);
+      session = spec.inject(BawSessionService);
 
       spyOn(toastr, "success").and.stub();
       spyOn(toastr, "error").and.stub();
@@ -117,7 +120,7 @@ describe("RegisterComponent", () => {
         const subject = new Subject<RecaptchaSettings>();
         const promise = nStepObservable(
           subject,
-          () => generateApiErrorDetails(),
+          () => generateBawApiError(),
           true
         );
         spyOn(api, "signUpSeed").and.callFake(() => subject);

@@ -1,13 +1,14 @@
 import { Component, Injector, Input } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Id, Ids } from "@interfaces/apiInterfaces";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { nStepObservable } from "@test/helpers/general";
+import { NOT_FOUND } from "http-status";
 import { Subject } from "rxjs";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { hasMany, hasOne } from "./AssociationDecorators";
@@ -81,7 +82,7 @@ describe("Association Decorators Loading In Components", () => {
 
   function interceptSingleModel(
     model: AssociatedModel,
-    error?: ApiErrorDetails
+    error?: BawApiError
   ): Promise<void> {
     const subject = new Subject<AssociatedModel>();
     const promise = nStepObservable(
@@ -94,7 +95,7 @@ describe("Association Decorators Loading In Components", () => {
   }
 
   function interceptMultipleModels(
-    error: ApiErrorDetails,
+    error: BawApiError,
     ...models: Array<Array<AssociatedModel>>
   ): Promise<any> {
     const subject = new Subject<AssociatedModel[]>();
@@ -151,7 +152,7 @@ describe("Association Decorators Loading In Components", () => {
   it("should display hasOne error", async () => {
     const promise = interceptSingleModel(
       undefined,
-      generateApiErrorDetails("Not Found")
+      generateBawApiError(NOT_FOUND)
     );
     component.model = new MockModel({ id: 0 }, injector);
     fixture.detectChanges(); // Load childModel
@@ -206,9 +207,7 @@ describe("Association Decorators Loading In Components", () => {
   });
 
   it("should display hasMany error", async () => {
-    const promise = interceptMultipleModels(
-      generateApiErrorDetails("Not Found")
-    );
+    const promise = interceptMultipleModels(generateBawApiError(NOT_FOUND));
     component.model = new MockModel({ id: 0, ids: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel

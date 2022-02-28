@@ -1,13 +1,14 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { SpyObject } from "@ngneat/spectator";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { testFormlyFields } from "@test/helpers/formly";
 import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
+import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import schema from "../../project.schema.json";
@@ -88,12 +89,9 @@ describe("ProjectsNewComponent", () => {
     it("should handle general error", () => {
       api.create.and.callFake(() => {
         const subject = new Subject<Project>();
-
-        subject.error({
-          message: "Sign in to access this feature.",
-          info: 401,
-        } as ApiErrorDetails);
-
+        subject.error(
+          new BawApiError(UNAUTHORIZED, "Sign in to access this feature.")
+        );
         return subject;
       });
 
@@ -108,9 +106,11 @@ describe("ProjectsNewComponent", () => {
       api.create.and.callFake(() => {
         const subject = new Subject<Project>();
         subject.error(
-          generateApiErrorDetails("Unprocessable Entity", {
-            info: { name: ["has already been taken"] },
-          })
+          generateBawApiError(
+            UNPROCESSABLE_ENTITY,
+            "Record could not be saved",
+            { name: ["has already been taken"] }
+          )
         );
         return subject;
       });

@@ -1,12 +1,12 @@
 /** Error thrown by API services whenever the API returns a non 2xx response */
 export class BawApiError extends Error {
   public name = "BawApiError";
-  public info: Record<string, string>;
+  public info: Record<string, string | string[]>;
 
   public constructor(
     public status: number,
     public _message: string,
-    info?: Record<string, string>
+    info?: Record<string, string | string[]>
   ) {
     super(_message);
     this.info = info || {};
@@ -36,7 +36,11 @@ export class BawApiError extends Error {
           output += `timezone identifier: ${value[0]}`;
           break;
         default:
-          output += `${key}: ${value}`;
+          if (value instanceof Array && value.length === 1) {
+            output += `${key}: ${value[0]}`;
+          } else {
+            output += `${key}: ${JSON.stringify(value)}`;
+          }
           break;
       }
 
@@ -53,7 +57,7 @@ export class BawApiError extends Error {
  *
  * @param error Error to check
  */
-export function isBawApiError(error: Error): error is BawApiError {
+export function isBawApiError(error: any): error is BawApiError {
   return error instanceof BawApiError;
 }
 

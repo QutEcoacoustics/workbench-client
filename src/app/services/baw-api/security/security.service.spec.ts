@@ -1,6 +1,5 @@
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
+/* import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
-  ApiErrorDetails,
   BawApiInterceptor,
 } from "@baw-api/api.interceptor.service";
 import { unknownErrorCode } from "@baw-api/baw-api.service";
@@ -586,3 +585,4 @@ describe("SecurityService", () => {
     });
   });
 });
+ */
