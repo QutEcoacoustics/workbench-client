@@ -2,38 +2,38 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
 import { Dataset } from "@models/Dataset";
 import { DatasetItem } from "@models/DatasetItem";
-import { createServiceFactory } from "@ngneat/spectator";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateDatasetItem } from "@test/fakes/DatasetItem";
-import {
-  validateApiCreate,
-  validateApiDestroy,
-  validateApiFilter,
-  validateApiList,
-  validateApiShow,
-} from "@test/helpers/api-common";
+import { validateImmutableApi } from "@test/helpers/api-common";
 import { DatasetItemsService } from "./dataset-items.service";
 
 type Model = DatasetItem;
 type Params = [IdOr<Dataset>];
 type Service = DatasetItemsService;
 
-describe("DatasetItemsService", function () {
+describe("DatasetItemsService", (): void => {
   const createModel = () => new DatasetItem(generateDatasetItem({ id: 10 }));
   const baseUrl = "/datasets/5/items/";
   const updateUrl = baseUrl + "10";
+  let spec: SpectatorService<DatasetItemsService>;
   const createService = createServiceFactory({
     service: DatasetItemsService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
   });
 
-  beforeEach(function () {
-    this.service = createService().service;
+  beforeEach((): void => {
+    spec = createService();
   });
 
-  validateApiList<Model, Params, Service>(baseUrl, 5);
-  validateApiFilter<Model, Params, Service>(baseUrl + "filter", 5);
-  validateApiShow<Model, Params, Service>(updateUrl, 10, createModel, 5);
-  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel, 5);
-  validateApiDestroy<Model, Params, Service>(updateUrl, 10, createModel, 5);
+  validateImmutableApi<Model, Params, Service>(
+    spec,
+    DatasetItem,
+    baseUrl,
+    baseUrl + "filter",
+    updateUrl,
+    createModel,
+    10,
+    5
+  );
 });

@@ -1,23 +1,17 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr, setAuthorizationQSP, setTimezoneQSP } from "@baw-api/api-common";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { Session } from "@models/User";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
-import { generateSessionUser } from "@test/fakes/User";
 import {
-  validateApiCreate,
-  validateApiDestroy,
-  validateApiFilter,
-  validateApiList,
-  validateApiShow,
-  validateApiUpdate,
   validateCustomApiFilter,
+  validateStandardApi,
 } from "@test/helpers/api-common";
 import { modelData } from "@test/helpers/faker";
 import { SitesService } from "./sites.service";
@@ -26,33 +20,40 @@ type Model = Site;
 type Params = [IdOr<Project>];
 type Service = SitesService;
 
-describe("SitesService", function () {
+describe("SitesService", (): void => {
   const createModel = () => new Site(generateSite({ id: 10 }));
   const listUrl = "/projects/5/sites/";
   const showUrl = "/projects/5/sites/10";
   let service: SitesService;
   let apiRoot: string;
+  let sessionState: BawSessionService;
   let spec: SpectatorService<SitesService>;
   const createService = createServiceFactory({
     service: SitesService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
   });
 
-  beforeEach(function () {
+  beforeEach((): void => {
     spec = createService();
-    this.service = spec.service;
     service = spec.inject(SitesService);
     apiRoot = spec.inject(API_ROOT);
+    sessionState = spec.inject(BawSessionService);
   });
 
-  validateApiList<Model, Params, Service>(listUrl, 5);
-  validateApiFilter<Model, Params, Service>(listUrl + "filter", 5);
-  validateApiShow<Model, Params, Service>(showUrl, 10, createModel, 5);
-  validateApiCreate<Model, Params, Service>(listUrl, showUrl, createModel, 5);
-  validateApiUpdate<Model, Params, Service>(showUrl, createModel, 5);
-  validateApiDestroy<Model, Params, Service>(showUrl, 10, createModel, 5);
+  validateStandardApi<Model, Params, Service>(
+    spec,
+    Site,
+    listUrl,
+    listUrl + "filter",
+    showUrl,
+    createModel,
+    5,
+    10
+  );
 
   validateCustomApiFilter<Model, [...Params, IdOr<Region>], Service>(
+    spec,
+    Site,
     listUrl + "filter",
     "filterByRegion",
     { filter: { regionId: { eq: 10 } } },
@@ -65,12 +66,10 @@ describe("SitesService", function () {
     const defaultTimezone = "UTC";
 
     function setLoggedIn(authToken: string) {
-      if (!authToken) {
-        spyOn(service, "getLocalUser").and.callFake(() => null);
-      } else {
-        const user = new Session(generateSessionUser({ authToken }));
-        spyOn(service, "getLocalUser").and.callFake(() => user);
-      }
+      spyOnProperty(sessionState, "isLoggedIn").and.returnValue(!!authToken);
+      spyOnProperty(sessionState, "loggedInUser").and.callFake(
+        () => authToken ?? undefined
+      );
     }
 
     function getUrl(timezone: string = defaultTimezone, token?: string) {

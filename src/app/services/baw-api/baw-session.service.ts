@@ -3,10 +3,10 @@ import { AuthToken } from "@interfaces/apiInterfaces";
 import { User } from "@models/User";
 import { BehaviorSubject, Observable } from "rxjs";
 
-export const guestUser = undefined;
-export const guestAuthToken = undefined;
-type GuestUser = typeof guestUser;
-type GuestAuthToken = typeof guestAuthToken;
+type GuestUser = undefined;
+type GuestAuthToken = undefined;
+export const guestUser: GuestUser = undefined;
+export const guestAuthToken: GuestAuthToken = undefined;
 
 export interface AuthTriggerData {
   user: User | GuestUser;

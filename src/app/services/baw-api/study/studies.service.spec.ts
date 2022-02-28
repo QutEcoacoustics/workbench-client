@@ -1,39 +1,32 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Study } from "@models/Study";
-import { createServiceFactory } from "@ngneat/spectator";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateStudy } from "@test/fakes/Study";
-import {
-  validateApiCreate,
-  validateApiDestroy,
-  validateApiFilter,
-  validateApiList,
-  validateApiShow,
-  validateApiUpdate,
-} from "@test/helpers/api-common";
+import { validateStandardApi } from "@test/helpers/api-common";
 import { StudiesService } from "./studies.service";
 
-type Model = Study;
-type Params = [];
-type Service = StudiesService;
-
-describe("StudiesService", function () {
+describe("StudiesService", (): void => {
   const createModel = () => new Study(generateStudy({ id: 5 }));
   const baseUrl = "/studies/";
   const updateUrl = baseUrl + "5";
+  let spec: SpectatorService<StudiesService>;
   const createService = createServiceFactory({
     service: StudiesService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
   });
 
-  beforeEach(function () {
-    this.service = createService().service;
+  beforeEach((): void => {
+    spec = createService();
   });
 
-  validateApiList<Model, Params, Service>(baseUrl);
-  validateApiFilter<Model, Params, Service>(baseUrl + "filter");
-  validateApiShow<Model, Params, Service>(updateUrl, 5, createModel);
-  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel);
-  validateApiUpdate<Model, Params, Service>(updateUrl, createModel);
-  validateApiDestroy<Model, Params, Service>(updateUrl, 5, createModel);
+  validateStandardApi(
+    spec,
+    Study,
+    baseUrl,
+    baseUrl + "filter",
+    updateUrl,
+    createModel,
+    5
+  );
 });

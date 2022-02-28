@@ -63,7 +63,7 @@ export function isBawApiError(error: Error): error is BawApiError {
 export interface ApiErrorDetails {
   status: number;
   message: string;
-  info?: Record<string, string>;
+  info?: Record<string, string[]>;
 }
 
 /**

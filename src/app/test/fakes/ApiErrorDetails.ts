@@ -51,6 +51,7 @@ type HTTPStatus =
  * Used to generate a well constructed error object after the interceptor
  * has intercepted and converted the API response
  *
+ * @deprecated Use generateApiErrorDetailsV2 instead
  * @param type Http status type
  * @param custom Custom error details
  */

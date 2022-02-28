@@ -1,35 +1,32 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { Script } from "@models/Script";
-import { createServiceFactory } from "@ngneat/spectator";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateScript } from "@test/fakes/Script";
-import {
-  validateApiCreate,
-  validateApiFilter,
-  validateApiList,
-  validateApiShow,
-} from "@test/helpers/api-common";
-
-type Model = Script;
-type Params = [];
-type Service = ScriptsService;
+import { validateNonDestructableApi } from "@test/helpers/api-common";
 
 describe("ScriptsService", function () {
   const createModel = () => new Script(generateScript({ id: 5 }));
   const baseUrl = "/scripts/";
   const updateUrl = baseUrl + "5";
+  let spec: SpectatorService<ScriptsService>;
   const createService = createServiceFactory({
     service: ScriptsService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
   });
 
-  beforeEach(function () {
-    this.service = createService().service;
+  beforeEach((): void => {
+    spec = createService();
   });
 
-  validateApiList<Model, Params, Service>(baseUrl);
-  validateApiFilter<Model, Params, Service>(baseUrl + "filter");
-  validateApiShow<Model, Params, Service>(updateUrl, 5, createModel);
-  validateApiCreate<Model, Params, Service>(baseUrl, updateUrl, createModel);
+  validateNonDestructableApi(
+    spec,
+    Script,
+    baseUrl,
+    baseUrl + "filter",
+    updateUrl,
+    createModel,
+    5
+  );
 });

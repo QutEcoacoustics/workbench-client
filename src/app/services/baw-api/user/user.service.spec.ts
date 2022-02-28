@@ -1,26 +1,23 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { User } from "@models/User";
-import { createServiceFactory } from "@ngneat/spectator";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateUser } from "@test/fakes/User";
 import { validateApiShow } from "@test/helpers/api-common";
 import { UserService } from "./user.service";
 
-type Model = User;
-type Params = [];
-type Service = UserService;
-
-describe("UserService", function () {
+describe("UserService", (): void => {
   const createModel = () => new User(generateUser({ id: 5 }));
   const baseUrl = "/my_account/";
+  let spec: SpectatorService<UserService>;
   const createService = createServiceFactory({
     service: UserService,
     imports: [HttpClientTestingModule, MockAppConfigModule],
   });
 
-  beforeEach(function () {
-    this.service = createService().service;
+  beforeEach((): void => {
+    spec = createService();
   });
 
-  validateApiShow<Model, Params, Service>(baseUrl, 5, createModel);
+  validateApiShow(spec, User, baseUrl, 5, createModel);
 });

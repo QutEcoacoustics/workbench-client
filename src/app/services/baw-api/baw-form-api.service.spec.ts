@@ -1,6 +1,7 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TestRequest } from "@angular/common/http/testing";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import {
   createHttpFactory,
   HttpMethod,
@@ -11,7 +12,7 @@ import { generateApiErrorResponse } from "@test/fakes/ApiErrorDetails";
 import { modelData } from "@test/helpers/faker";
 import { getCallArgs, nStepObservable } from "@test/helpers/general";
 import { noop, Subject } from "rxjs";
-import { ApiErrorDetails, BawApiInterceptor } from "./api.interceptor.service";
+import { BawApiInterceptor } from "./api.interceptor.service";
 import { STUB_MODEL_BUILDER, unknownErrorCode } from "./baw-api.service";
 import { shouldNotFail, shouldNotSucceed } from "./baw-api.service.spec";
 import { BawFormApiService } from "./baw-form-api.service";
@@ -96,7 +97,7 @@ describe("bawFormApiService", () => {
         "/broken_html_link",
         "/broken_link",
         () => defaultBody
-      ).subscribe(noop, noop);
+      ).subscribe(noop);
       expect(apiHtmlRequestSpy).toHaveBeenCalledWith("/broken_html_link");
     });
 
@@ -106,12 +107,15 @@ describe("bawFormApiService", () => {
         "/broken_link",
         "/broken_link",
         () => defaultBody
-      ).subscribe(shouldNotSucceed, (err) => {
-        expect(err).toEqual({
-          status: unknownErrorCode,
-          message: "Unable to retrieve authenticity token for form request.",
-        } as ApiErrorDetails);
-        done();
+      ).subscribe({
+        next: shouldNotSucceed,
+        error: (err) => {
+          expect(err).toEqual({
+            status: unknownErrorCode,
+            message: "Unable to retrieve authenticity token for form request.",
+          } as ApiErrorDetails);
+          done();
+        },
       });
     });
 
@@ -122,7 +126,7 @@ describe("bawFormApiService", () => {
         "/broken_link",
         "/broken_form_link",
         () => defaultBody
-      ).subscribe(noop, noop);
+      ).subscribe(noop);
       await promise;
       expect(getCallArgs(apiFormRequestSpy)[0]).toBe("/broken_form_link");
     });
@@ -140,7 +144,7 @@ describe("bawFormApiService", () => {
       interceptFormRequest("<html></html>");
       makeFormRequest("/broken_link", "/broken_form_link", (_authToken) =>
         body(_authToken)
-      ).subscribe(noop, noop);
+      ).subscribe(noop);
       await promise;
       expect(getCallArgs(apiFormRequestSpy)[1].toString()).toBe(
         "user%5Bexample%5D=example+value&authToken=" + authToken
@@ -158,12 +162,15 @@ describe("bawFormApiService", () => {
         "/broken_link",
         "/broken_form_link",
         () => defaultBody
-      ).subscribe(shouldNotSucceed, (err) => {
-        expect(err).toEqual({
-          status: unknownErrorCode,
-          message: "Captcha response was not correct.",
-        } as ApiErrorDetails);
-        done();
+      ).subscribe({
+        next: shouldNotSucceed,
+        error: (err) => {
+          expect(err).toEqual({
+            status: unknownErrorCode,
+            message: "Captcha response was not correct.",
+          } as ApiErrorDetails);
+          done();
+        },
       });
     });
 
@@ -174,10 +181,13 @@ describe("bawFormApiService", () => {
         "/broken_link",
         "/broken_form_link",
         () => defaultBody
-      ).subscribe((page: string) => {
-        expect(page).toBe("<html></html>");
-        done();
-      }, shouldNotFail);
+      ).subscribe({
+        next: (page: string) => {
+          expect(page).toBe("<html></html>");
+          done();
+        },
+        error: shouldNotFail,
+      });
     });
 
     it("should complete on success", (done) => {
@@ -211,7 +221,7 @@ describe("bawFormApiService", () => {
 
     it("should call apiHtmlRequest", () => {
       interceptHtmlRequest("<html></html>");
-      getRecaptchaSeed("/broken_link").subscribe(noop, noop);
+      getRecaptchaSeed("/broken_link").subscribe(noop);
       expect(apiHtmlRequestSpy).toHaveBeenCalledWith("/broken_link");
     });
 
@@ -221,10 +231,13 @@ describe("bawFormApiService", () => {
       interceptHtmlRequest(
         `grecaptcha.execute('${seed}', {action: '${action}'})`
       );
-      getRecaptchaSeed("/broken_link").subscribe((settings) => {
-        expect(settings.seed).toBe(seed);
-        done();
-      }, shouldNotFail);
+      getRecaptchaSeed("/broken_link").subscribe({
+        next: (settings) => {
+          expect(settings.seed).toBe(seed);
+          done();
+        },
+        error: shouldNotFail,
+      });
     });
 
     it("should extract action from page", (done) => {
@@ -233,20 +246,26 @@ describe("bawFormApiService", () => {
       interceptHtmlRequest(
         `grecaptcha.execute('${seed}', {action: '${action}'})`
       );
-      getRecaptchaSeed("/broken_link").subscribe((settings) => {
-        expect(settings.action).toBe(action);
-        done();
-      }, shouldNotFail);
+      getRecaptchaSeed("/broken_link").subscribe({
+        next: (settings) => {
+          expect(settings.action).toBe(action);
+          done();
+        },
+        error: shouldNotFail,
+      });
     });
 
     it("should throw error if failed to extract seed from page", (done) => {
       interceptHtmlRequest("<html></html>");
-      getRecaptchaSeed("/broken_link").subscribe(shouldNotSucceed, (err) => {
-        expect(err).toEqual({
-          status: unknownErrorCode,
-          message: "Unable to setup recaptcha.",
-        } as ApiErrorDetails);
-        done();
+      getRecaptchaSeed("/broken_link").subscribe({
+        next: shouldNotSucceed,
+        error: (err) => {
+          expect(err).toEqual({
+            status: unknownErrorCode,
+            message: "Unable to setup recaptcha.",
+          } as ApiErrorDetails);
+          done();
+        },
       });
     });
 
@@ -256,9 +275,11 @@ describe("bawFormApiService", () => {
       interceptHtmlRequest(
         `grecaptcha.execute('${seed}', {action: '${action}'})`
       );
-      getRecaptchaSeed("/broken_link").subscribe(noop, noop, () => {
-        expect(true).toBeTrue();
-        done();
+      getRecaptchaSeed("/broken_link").subscribe({
+        complete: () => {
+          expect(true).toBeTrue();
+          done();
+        },
       });
     });
   });
@@ -273,25 +294,25 @@ describe("bawFormApiService", () => {
     }
 
     it("should create get request", () => {
-      apiHtmlRequest("/broken_link").subscribe(noop, noop);
+      apiHtmlRequest("/broken_link").subscribe(noop);
       expect(interceptRequest("/broken_link")).toBeInstanceOf(TestRequest);
     });
 
     it("should set responseType to text", () => {
-      apiHtmlRequest("/broken_link").subscribe(noop, noop);
-      const responseType = interceptRequest("/broken_link").request
-        .responseType;
+      apiHtmlRequest("/broken_link").subscribe(noop);
+      const responseType =
+        interceptRequest("/broken_link").request.responseType;
       expect(responseType).toBe("text");
     });
 
     it("should set accept header to text/html", () => {
-      apiHtmlRequest("/broken_link").subscribe(noop, noop);
+      apiHtmlRequest("/broken_link").subscribe(noop);
       const headers = interceptRequest("/broken_link").request.headers;
       expect(headers.get("Accept")).toBe("text/html");
     });
 
     it("should not set content type headers", () => {
-      apiHtmlRequest("/broken_link").subscribe(noop, noop);
+      apiHtmlRequest("/broken_link").subscribe(noop);
       const headers = interceptRequest("/broken_link").request.headers;
       expect(headers.get("Content-Type")).not.toBeTruthy();
     });
@@ -317,9 +338,11 @@ describe("bawFormApiService", () => {
     });
 
     it("should complete on success", (done) => {
-      apiHtmlRequest("/broken_link").subscribe(noop, noop, () => {
-        expect(true).toBeTruthy();
-        done();
+      apiHtmlRequest("/broken_link").subscribe({
+        complete: () => {
+          expect(true).toBeTruthy();
+          done();
+        },
       });
       interceptRequest("/broken_link").flush("<html></html>");
     });
@@ -338,25 +361,25 @@ describe("bawFormApiService", () => {
     }
 
     it("should create post request", () => {
-      apiFormRequest("/broken_link").subscribe(noop, noop);
+      apiFormRequest("/broken_link").subscribe(noop);
       expect(interceptRequest("/broken_link")).toBeInstanceOf(TestRequest);
     });
 
     it("should set responseType to text", () => {
-      apiFormRequest("/broken_link").subscribe(noop, noop);
-      const responseType = interceptRequest("/broken_link").request
-        .responseType;
+      apiFormRequest("/broken_link").subscribe(noop);
+      const responseType =
+        interceptRequest("/broken_link").request.responseType;
       expect(responseType).toBe("text");
     });
 
     it("should set accept header to text/html", () => {
-      apiFormRequest("/broken_link").subscribe(noop, noop);
+      apiFormRequest("/broken_link").subscribe(noop);
       const headers = interceptRequest("/broken_link").request.headers;
       expect(headers.get("Accept")).toBe("text/html");
     });
 
     it("should set content type header to form-urlencoded", () => {
-      apiFormRequest("/broken_link").subscribe(noop, noop);
+      apiFormRequest("/broken_link").subscribe(noop);
       const headers = interceptRequest("/broken_link").request.headers;
       expect(headers.get("Content-Type")).toBe(
         "application/x-www-form-urlencoded"
@@ -368,7 +391,7 @@ describe("bawFormApiService", () => {
         "user[login]": "example username",
         "user[password]": "Ex@mp1e_P@55w0rd+=",
       });
-      apiFormRequest("/broken_link", formData).subscribe(noop, noop);
+      apiFormRequest("/broken_link", formData).subscribe(noop);
       const body = interceptRequest("/broken_link").request.body;
       expect(body).toBe(
         "user%5Blogin%5D=example+username&" +
@@ -377,9 +400,12 @@ describe("bawFormApiService", () => {
     });
 
     it("should handle api error", (done) => {
-      apiFormRequest("/broken_link").subscribe(shouldNotSucceed, (err) => {
-        expect(err?.status).toBe(500);
-        done();
+      apiFormRequest("/broken_link").subscribe({
+        next: shouldNotSucceed,
+        error: (err) => {
+          expect(err?.status).toBe(500);
+          done();
+        },
       });
       interceptRequest("/broken_link").flush(
         generateApiErrorResponse("Internal Server Error"),
@@ -388,9 +414,11 @@ describe("bawFormApiService", () => {
     });
 
     it("should complete on success", (done) => {
-      apiFormRequest("/broken_link").subscribe(noop, noop, () => {
-        expect(true).toBeTruthy();
-        done();
+      apiFormRequest("/broken_link").subscribe({
+        complete: () => {
+          expect(true).toBeTruthy();
+          done();
+        },
       });
       interceptRequest("/broken_link").flush("<html></html>");
     });
