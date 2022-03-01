@@ -1,9 +1,16 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { Region } from "@models/Region";
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateRegion } from "@test/fakes/Region";
 import { validateStandardApi } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { ShallowRegionsService } from "./regions.service";
 
 describe("ShallowRegionsService", function () {
@@ -13,7 +20,8 @@ describe("ShallowRegionsService", function () {
   let spec: SpectatorService<ShallowRegionsService>;
   const createService = createServiceFactory({
     service: ShallowRegionsService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
   beforeEach((): void => {
@@ -21,7 +29,7 @@ describe("ShallowRegionsService", function () {
   });
 
   validateStandardApi(
-    spec,
+    () => spec,
     Region,
     baseUrl,
     baseUrl + "filter",

@@ -1,15 +1,11 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { Injectable } from "@angular/core";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
-import { ToastrService } from "ngx-toastr";
+import { BAD_REQUEST } from "http-status";
 import { Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
-import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import { BAD_REQUEST } from "http-status";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { BawSessionService } from "./baw-session.service";
 import { BawApiService } from "./baw-api.service";
 
 /*
@@ -32,19 +28,11 @@ const authTokenRegex = /name="authenticity_token" value="(.+?)"/;
  * treated as a temporary measure while the baw-server lags behind development.
  */
 @Injectable()
-export class BawFormApiService<
-  Model extends AbstractModelWithoutId
-> extends BawApiService<Model> {
+export class BawFormApiService<Model extends AbstractModelWithoutId> {
   public constructor(
-    @Inject(API_ROOT) apiRoot: string,
-    @Inject(IS_SERVER_PLATFORM) isServer: boolean,
-    http: HttpClient,
-    injector: Injector,
-    session: BawSessionService,
-    notifications: ToastrService
-  ) {
-    super(apiRoot, isServer, http, injector, session, notifications);
-  }
+    private api: BawApiService<Model>,
+    private http: HttpClient
+  ) {}
 
   /**
    * Make a form request on non-JSON api endpoints with recaptcha
@@ -88,7 +76,7 @@ export class BawFormApiService<
       // Complete observable
       first(),
       // Handle custom errors
-      catchError((err: BawApiError) => this.handleError(err))
+      catchError((err: BawApiError) => this.api.handleError(err))
     );
   }
 
@@ -125,7 +113,7 @@ export class BawFormApiService<
       // Complete observable
       first(),
       // Handle custom errors
-      catchError((err: BawApiError) => this.handleError(err))
+      catchError((err: BawApiError) => this.api.handleError(err))
     );
   }
 
@@ -136,7 +124,7 @@ export class BawFormApiService<
    * @param path API path
    */
   public htmlRequest(path: string): Observable<string> {
-    return this.http.get(this.getPath(path), {
+    return this.http.get(this.api.getPath(path), {
       responseType: "text",
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: new HttpHeaders({ Accept: "text/html" }),
@@ -155,7 +143,7 @@ export class BawFormApiService<
     path: string,
     formData: URLSearchParams
   ): Observable<string> {
-    return this.http.post(this.getPath(path), formData.toString(), {
+    return this.http.post(this.api.getPath(path), formData.toString(), {
       responseType: "text",
       headers: new HttpHeaders({
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -164,6 +152,10 @@ export class BawFormApiService<
         "Content-Type": "application/x-www-form-urlencoded",
       }),
     });
+  }
+
+  public handleError(err: BawApiError): Observable<never> {
+    return this.api.handleError(err);
   }
 }
 

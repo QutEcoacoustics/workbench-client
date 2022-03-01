@@ -1,9 +1,16 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { Dataset } from "@models/Dataset";
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateDataset } from "@test/fakes/Dataset";
 import { validateStandardApi } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { DatasetsService } from "./datasets.service";
 
 describe("DatasetsService", (): void => {
@@ -13,7 +20,8 @@ describe("DatasetsService", (): void => {
   let spec: SpectatorService<DatasetsService>;
   const createService = createServiceFactory({
     service: DatasetsService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
   beforeEach((): void => {
@@ -21,7 +29,7 @@ describe("DatasetsService", (): void => {
   });
 
   validateStandardApi(
-    spec,
+    () => spec,
     Dataset,
     baseUrl,
     baseUrl + "filter",

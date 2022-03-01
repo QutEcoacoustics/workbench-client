@@ -1,9 +1,15 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateSite } from "@test/fakes/Site";
 import {
@@ -11,6 +17,7 @@ import {
   validateCustomApiList,
   validateStandardApi,
 } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { ShallowSitesService } from "./sites.service";
 
 type Model = Site;
@@ -23,7 +30,8 @@ describe("ShallowSitesService", (): void => {
   let spec: SpectatorService<ShallowSitesService>;
   const createService = createServiceFactory({
     service: ShallowSitesService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
   beforeEach((): void => {
@@ -31,7 +39,7 @@ describe("ShallowSitesService", (): void => {
   });
 
   validateStandardApi(
-    spec,
+    () => spec,
     Site,
     baseUrl,
     baseUrl + "filter",
@@ -40,17 +48,17 @@ describe("ShallowSitesService", (): void => {
     5
   );
 
-  validateCustomApiList(spec, Site, baseUrl + "orphans/", "orphanList");
+  validateCustomApiList(() => spec, Site, baseUrl + "orphans/", "orphanList");
 
   validateCustomApiFilter(
-    spec,
+    () => spec,
     Site,
     baseUrl + "orphans/filter",
     "orphanFilter"
   );
 
   validateCustomApiFilter<Model, [IdOr<User>], Service>(
-    spec,
+    () => spec,
     Site,
     baseUrl + "filter",
     "filterByCreator",
@@ -60,7 +68,7 @@ describe("ShallowSitesService", (): void => {
   );
 
   validateCustomApiFilter<Model, [IdOr<Region>], Service>(
-    spec,
+    () => spec,
     Site,
     baseUrl + "filter",
     "filterByRegion",

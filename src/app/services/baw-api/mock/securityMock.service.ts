@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Session } from "@models/User";
-import { BehaviorSubject, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { BawApiService } from "../baw-api.service";
 
 @Injectable()
@@ -18,14 +18,6 @@ export class MockSecurityService extends BawApiService<Session> {
   }
 
   public signOut() {
-    return new Observable();
-  }
-
-  public getAuthTrigger() {
-    return new BehaviorSubject(null);
-  }
-
-  public sessionDetails() {
     return new Observable();
   }
 }

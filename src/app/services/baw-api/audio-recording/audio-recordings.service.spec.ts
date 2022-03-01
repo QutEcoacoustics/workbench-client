@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
+import { BawApiService } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { toBase64Url } from "@helpers/encoding/encoding";
 import { AuthToken } from "@interfaces/apiInterfaces";
@@ -7,10 +8,10 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
 import {
   createServiceFactory,
+  mockProvider,
   SpectatorService,
   SpyObject,
 } from "@ngneat/spectator";
-import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import {
@@ -18,6 +19,7 @@ import {
   validateReadonlyApi,
 } from "@test/helpers/api-common";
 import { modelData } from "@test/helpers/faker";
+import { ToastrService } from "ngx-toastr";
 import { AudioRecordingsService } from "./audio-recordings.service";
 
 type Model = AudioRecording;
@@ -27,20 +29,21 @@ describe("AudioRecordingsService", function () {
   const createModel = () =>
     new AudioRecording(generateAudioRecording({ id: 5 }));
   const baseUrl = "/audio_recordings/";
-  let sessionState: SpyObject<BawSessionService>;
+  let session: SpyObject<BawSessionService>;
   let spec: SpectatorService<AudioRecordingsService>;
   const createService = createServiceFactory({
     service: AudioRecordingsService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
   beforeEach(function () {
     spec = createService();
-    sessionState = spec.inject(BawSessionService);
+    session = spec.inject(BawSessionService);
   });
 
   validateReadonlyApi(
-    spec,
+    () => spec,
     AudioRecording,
     baseUrl,
     baseUrl + "filter",
@@ -50,7 +53,7 @@ describe("AudioRecordingsService", function () {
   );
 
   validateCustomApiFilter<Model, [IdOr<Site>], Service>(
-    spec,
+    () => spec,
     AudioRecording,
     baseUrl + "filter",
     "filterBySite",
@@ -59,9 +62,16 @@ describe("AudioRecordingsService", function () {
     5
   );
 
+  const apiRoot = "https://api/";
+  function setApiRoot(_apiRoot: string) {
+    const api: BawApiService<AudioRecording> =
+      spec.inject<BawApiService<AudioRecording>>(BawApiService);
+    spyOn(api, "getPath").and.callFake((url: string) => _apiRoot + url);
+  }
+
   describe("downloadUrl", () => {
     it("should return downloadUrl", () => {
-      const apiRoot = spec.inject(ConfigService).endpoints.apiRoot;
+      setApiRoot(apiRoot);
       const id = modelData.id();
       expect(spec.service.downloadUrl(id)).toBe(
         `${apiRoot}/audio_recordings/${id}/original`
@@ -75,13 +85,13 @@ describe("AudioRecordingsService", function () {
     const authTokenQsp = "auth_token=";
 
     function setAuthToken(authToken: AuthToken) {
-      spyOnProperty(sessionState, "isLoggedIn").and.returnValue(!!authToken);
-      spyOnProperty(sessionState, "authToken").and.returnValue(authToken);
+      spyOnProperty(session, "isLoggedIn").and.returnValue(!!authToken);
+      spyOnProperty(session, "authToken").and.returnValue(authToken);
     }
 
     beforeEach(() => {
-      const config = spec.inject(ConfigService);
-      downloadUrl = config.endpoints.apiRoot + baseUrl + "downloader?";
+      setApiRoot(apiRoot);
+      downloadUrl = apiRoot + baseUrl + "downloader?";
     });
 
     it("should snake case filter", () => {

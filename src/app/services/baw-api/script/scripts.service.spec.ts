@@ -1,10 +1,17 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { Script } from "@models/Script";
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateScript } from "@test/fakes/Script";
 import { validateNonDestructableApi } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 
 describe("ScriptsService", function () {
   const createModel = () => new Script(generateScript({ id: 5 }));
@@ -13,7 +20,8 @@ describe("ScriptsService", function () {
   let spec: SpectatorService<ScriptsService>;
   const createService = createServiceFactory({
     service: ScriptsService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
   beforeEach((): void => {
@@ -21,7 +29,7 @@ describe("ScriptsService", function () {
   });
 
   validateNonDestructableApi(
-    spec,
+    () => spec,
     Script,
     baseUrl,
     baseUrl + "filter",

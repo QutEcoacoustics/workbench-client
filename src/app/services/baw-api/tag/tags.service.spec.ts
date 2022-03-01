@@ -1,14 +1,21 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateTag } from "@test/fakes/Tag";
 import {
   validateCustomApiFilter,
   validateStandardApi,
 } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { TagsService } from "./tags.service";
 
 describe("TagsService", (): void => {
@@ -18,7 +25,8 @@ describe("TagsService", (): void => {
   let spec: SpectatorService<TagsService>;
   const createService = createServiceFactory({
     service: TagsService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
   beforeEach((): void => {
@@ -26,7 +34,7 @@ describe("TagsService", (): void => {
   });
 
   validateStandardApi(
-    spec,
+    () => spec,
     Tag,
     baseUrl,
     baseUrl + "filter",
@@ -36,7 +44,7 @@ describe("TagsService", (): void => {
   );
 
   validateCustomApiFilter<Tag, [IdOr<User>], TagsService>(
-    spec,
+    () => spec,
     Tag,
     baseUrl + "filter",
     "filterByCreator",

@@ -1,9 +1,16 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
 import { validateReadAndUpdateApi } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { AnalysisJobsService } from "./analysis-jobs.service";
 
 describe("AnalysisJobsService", (): void => {
@@ -12,7 +19,8 @@ describe("AnalysisJobsService", (): void => {
   let spec: SpectatorService<AnalysisJobsService>;
   const createService = createServiceFactory({
     service: AnalysisJobsService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
   beforeEach((): void => {
@@ -20,7 +28,7 @@ describe("AnalysisJobsService", (): void => {
   });
 
   validateReadAndUpdateApi(
-    spec,
+    () => spec,
     AnalysisJob,
     baseUrl,
     baseUrl + "filter",

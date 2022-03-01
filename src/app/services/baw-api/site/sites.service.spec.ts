@@ -1,11 +1,16 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr, setAuthorizationQSP, setTimezoneQSP } from "@baw-api/api-common";
+import { BawApiService } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
@@ -14,6 +19,7 @@ import {
   validateStandardApi,
 } from "@test/helpers/api-common";
 import { modelData } from "@test/helpers/faker";
+import { ToastrService } from "ngx-toastr";
 import { SitesService } from "./sites.service";
 
 type Model = Site;
@@ -26,50 +32,48 @@ describe("SitesService", (): void => {
   const showUrl = "/projects/5/sites/10";
   let service: SitesService;
   let apiRoot: string;
-  let sessionState: BawSessionService;
+  let session: BawSessionService;
   let spec: SpectatorService<SitesService>;
   const createService = createServiceFactory({
     service: SitesService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
   beforeEach((): void => {
     spec = createService();
     service = spec.inject(SitesService);
     apiRoot = spec.inject(API_ROOT);
-    sessionState = spec.inject(BawSessionService);
+    session = spec.inject(BawSessionService);
   });
 
   validateStandardApi<Model, Params, Service>(
-    spec,
+    () => spec,
     Site,
     listUrl,
     listUrl + "filter",
     showUrl,
     createModel,
-    5,
-    10
+    10, // site
+    5 // project
   );
 
   validateCustomApiFilter<Model, [...Params, IdOr<Region>], Service>(
-    spec,
+    () => spec,
     Site,
     listUrl + "filter",
     "filterByRegion",
     { filter: { regionId: { eq: 10 } } },
     undefined,
-    5,
-    10
+    5, // project
+    10 // region
   );
 
   describe("downloadAnnotations", () => {
     const defaultTimezone = "UTC";
 
     function setLoggedIn(authToken: string) {
-      spyOnProperty(sessionState, "isLoggedIn").and.returnValue(!!authToken);
-      spyOnProperty(sessionState, "loggedInUser").and.callFake(
-        () => authToken ?? undefined
-      );
+      spyOnProperty(session, "authToken").and.returnValue(authToken);
     }
 
     function getUrl(timezone: string = defaultTimezone, token?: string) {

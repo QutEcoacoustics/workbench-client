@@ -1,11 +1,18 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { Response } from "@models/Response";
 import { Study } from "@models/Study";
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateResponse } from "@test/fakes/Response";
 import { validateStandardApi } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { ResponsesService } from "./responses.service";
 
 type Model = Response;
@@ -19,7 +26,8 @@ describe("ResponsesService", (): void => {
   let spec: SpectatorService<ResponsesService>;
   const createService = createServiceFactory({
     service: ResponsesService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
   beforeEach((): void => {
@@ -27,7 +35,7 @@ describe("ResponsesService", (): void => {
   });
 
   validateStandardApi<Model, Params, Service>(
-    spec,
+    () => spec,
     Response,
     baseUrl,
     baseUrl + "filter",

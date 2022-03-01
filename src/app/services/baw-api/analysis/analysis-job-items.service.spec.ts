@@ -1,11 +1,18 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { AnalysisJobItem } from "@models/AnalysisJobItem";
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateAnalysisJobItem } from "@test/fakes/AnalysisJobItem";
 import { validateReadonlyApi } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { AnalysisJobItemsService } from "./analysis-job-items.service";
 
 type Model = AnalysisJobItem;
@@ -19,7 +26,8 @@ describe("AnalysisJobItemsService", (): void => {
   let spec: SpectatorService<AnalysisJobItemsService>;
   const createService = createServiceFactory({
     service: AnalysisJobItemsService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
   beforeEach((): void => {
@@ -27,7 +35,7 @@ describe("AnalysisJobItemsService", (): void => {
   });
 
   validateReadonlyApi<Model, Params, Service>(
-    spec,
+    () => spec,
     AnalysisJobItem,
     baseUrl,
     baseUrl + "filter",

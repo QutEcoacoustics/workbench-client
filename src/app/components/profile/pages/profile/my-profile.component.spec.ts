@@ -222,7 +222,7 @@ describe("MyProfileComponent", () => {
     });
   });
 
-  describe("authentication token", () => {
+  xdescribe("authentication token", () => {
     // TODO
     it("should request auth token on load", () => {});
     it("should show loading animation while auth token loads", () => {});

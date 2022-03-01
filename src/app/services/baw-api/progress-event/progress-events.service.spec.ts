@@ -1,9 +1,16 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { ProgressEvent } from "@models/ProgressEvent";
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateProgressEvent } from "@test/fakes/ProgressEvent";
 import { validateReadAndCreateApi } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { ProgressEventsService } from "./progress-events.service";
 
 describe("ProgressEventsService", (): void => {
@@ -13,7 +20,8 @@ describe("ProgressEventsService", (): void => {
   let spec: SpectatorService<ProgressEventsService>;
   const createService = createServiceFactory({
     service: ProgressEventsService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
   beforeEach((): void => {
@@ -21,7 +29,7 @@ describe("ProgressEventsService", (): void => {
   });
 
   validateReadAndCreateApi(
-    spec,
+    () => spec,
     ProgressEvent,
     baseUrl,
     baseUrl + "filter",

@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { BawApiService } from "@baw-api/baw-api.service";
 import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ConfirmPassword } from "@models/data/ConfirmPassword";
@@ -9,11 +10,11 @@ import { Observable } from "rxjs";
 import { ApiShow, emptyParam, newParam, option, param } from "../api-common";
 import { ShowResolver } from "../resolver-common";
 
-const confirmationParam = "confirmation" as const;
-const passwordParam = "password" as const;
-const unlockParam = "unlock" as const;
+const confirmationParam = "confirmation/" as const;
+const passwordParam = "password/" as const;
+const unlockParam = "unlock/" as const;
 
-const endpoint = stringTemplate`/my_account/${param}/${option}`;
+const endpoint = stringTemplate`/my_account/${param}${option}`;
 
 /**
  * User Service.
@@ -21,14 +22,17 @@ const endpoint = stringTemplate`/my_account/${param}/${option}`;
  */
 @Injectable()
 export class UserService implements ApiShow<User> {
-  public constructor(private api: BawFormApiService<User>) {}
+  public constructor(
+    private api: BawApiService<User>,
+    private formApi: BawFormApiService<User>
+  ) {}
 
   public show(): Observable<User> {
     return this.api.show(User, endpoint(emptyParam, emptyParam));
   }
 
   public confirmPassword(details: ConfirmPassword): Observable<void> {
-    return this.api.makeFormRequestWithoutOutput(
+    return this.formApi.makeFormRequestWithoutOutput(
       endpoint(confirmationParam, newParam),
       endpoint(confirmationParam, emptyParam),
       (token) => details.getBody(token)
@@ -36,7 +40,7 @@ export class UserService implements ApiShow<User> {
   }
 
   public resetPassword(details: ResetPassword): Observable<void> {
-    return this.api.makeFormRequestWithoutOutput(
+    return this.formApi.makeFormRequestWithoutOutput(
       endpoint(passwordParam, newParam),
       endpoint(passwordParam, emptyParam),
       (token) => details.getBody(token)
@@ -44,7 +48,7 @@ export class UserService implements ApiShow<User> {
   }
 
   public unlockAccount(details: UnlockAccount): Observable<void> {
-    return this.api.makeFormRequestWithoutOutput(
+    return this.formApi.makeFormRequestWithoutOutput(
       endpoint(unlockParam, newParam),
       endpoint(unlockParam, emptyParam),
       (token) => details.getBody(token)

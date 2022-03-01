@@ -1,11 +1,18 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { Dataset } from "@models/Dataset";
 import { DatasetItem } from "@models/DatasetItem";
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateDatasetItem } from "@test/fakes/DatasetItem";
 import { validateImmutableApi } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { DatasetItemsService } from "./dataset-items.service";
 
 type Model = DatasetItem;
@@ -19,7 +26,8 @@ describe("DatasetItemsService", (): void => {
   let spec: SpectatorService<DatasetItemsService>;
   const createService = createServiceFactory({
     service: DatasetItemsService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
   beforeEach((): void => {
@@ -27,7 +35,7 @@ describe("DatasetItemsService", (): void => {
   });
 
   validateImmutableApi<Model, Params, Service>(
-    spec,
+    () => spec,
     DatasetItem,
     baseUrl,
     baseUrl + "filter",

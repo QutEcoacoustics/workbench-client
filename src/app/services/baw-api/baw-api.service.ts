@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Inject, Injectable, InjectionToken, Injector } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import {
@@ -19,7 +19,6 @@ import { BawSessionService } from "./baw-session.service";
 
 export const defaultApiPageSize = 25;
 export const unknownErrorCode = -1;
-export const STUB_MODEL_BUILDER = new InjectionToken("test.model.builder");
 
 /** Default headers for API requests */
 const defaultHeaders = new HttpHeaders({

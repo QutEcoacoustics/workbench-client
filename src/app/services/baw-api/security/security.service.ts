@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { emptyParam, param } from "@baw-api/api-common";
+import { BawApiService } from "@baw-api/baw-api.service";
 import {
   BawFormApiService,
   RecaptchaSettings,
@@ -29,7 +30,8 @@ const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
 @Injectable()
 export class SecurityService {
   public constructor(
-    private api: BawFormApiService<Session>,
+    private api: BawApiService<Session>,
+    private formApi: BawFormApiService<Session>,
     private userService: UserService,
     private cookies: CookieService,
     private session: BawSessionService
@@ -56,7 +58,7 @@ export class SecurityService {
    * Returns the recaptcha seed for the registration form
    */
   public signUpSeed(): Observable<RecaptchaSettings> {
-    return this.api.getRecaptchaSeed(accountEndpoint(signUpParam));
+    return this.formApi.getRecaptchaSeed(accountEndpoint(signUpParam));
   }
 
   /**
@@ -165,7 +167,7 @@ export class SecurityService {
      * - https://github.com/QutEcoacoustics/baw-server/issues/509
      * - https://github.com/QutEcoacoustics/baw-server/issues/424
      */
-    return this.api
+    return this.formApi
       .makeFormRequest(formEndpoint, authEndpoint, getFormData)
       .pipe(
         tap((page) => pageValidation(page)),
@@ -183,7 +185,7 @@ export class SecurityService {
         first(),
         catchError((err) => {
           this.clearData();
-          return this.api.handleError(err);
+          return this.formApi.handleError(err);
         })
       );
   }

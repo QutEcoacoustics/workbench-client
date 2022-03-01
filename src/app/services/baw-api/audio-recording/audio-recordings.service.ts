@@ -13,7 +13,6 @@ import {
   id,
   IdOr,
   IdParamOptional,
-  isId,
   option,
   ReadonlyApi,
 } from "../api-common";
@@ -79,23 +78,12 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
     filters: Filters<AudioRecording>,
     region: IdOr<Region>
   ): Observable<AudioRecording[]> {
-    if (isId(region)) {
-      return this.filter(
-        this.api.filterThroughAssociation(
-          filters,
-          "sites.regionId" as any,
-          region
-        )
-      );
-    }
-
-    // If we know the site ids, no need to make unnecessary db request
     return this.filter(
-      this.api.filterThroughAssociations(
+      this.api.filterThroughAssociation(
         filters,
-        "siteId",
-        Array.from(region.siteIds)
-      ) as Filters
+        "sites.regionId" as any,
+        region
+      )
     );
   }
 
