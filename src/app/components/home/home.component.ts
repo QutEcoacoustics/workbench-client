@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { CMS } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -13,7 +14,8 @@ import { Region } from "@models/Region";
 import { ConfigService } from "@services/config/config.service";
 import { Card } from "@shared/cards/cards.component";
 import { List } from "immutable";
-import { map, mergeMap, takeUntil } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { map, takeUntil } from "rxjs/operators";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
 @Component({
@@ -75,14 +77,18 @@ class HomeComponent extends PageComponent implements OnInit {
      *  recent use / modification date (recent, to less recent)
      *  image or no image
      */
-    this.session.authTrigger
+
+    const filter: Filters<Region | Project> = {
+      paging: { items: 3 },
+      sorting: { orderBy: "updatedAt", direction: "desc" },
+    };
+
+    const models$: Observable<Region[] | Project[]> = settings.hideProjects
+      ? this.regionApi.filter(filter)
+      : this.projectApi.filter(filter);
+
+    models$
       .pipe(
-        mergeMap(() =>
-          (settings.hideProjects ? this.regionApi : this.projectApi).filter({
-            paging: { items: 3 },
-            sorting: { orderBy: "updatedAt", direction: "desc" },
-          })
-        ),
         map((models) =>
           List(models.map((model: Region | Project) => model.getCard()))
         ),

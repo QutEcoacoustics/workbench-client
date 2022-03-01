@@ -14,7 +14,6 @@ import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { generateTag } from "@test/fakes/Tag";
 import { generateTagging } from "@test/fakes/Tagging";
@@ -46,7 +45,7 @@ describe("RecentAnnotationsComponent", () => {
     return spec.queryAll(".nav-link");
   }
 
-  function assertNavLink(navLink: Element, text) {
+  function assertNavLink(navLink: Element, text: string) {
     expect(navLink).toHaveText(text);
   }
 
@@ -138,14 +137,6 @@ describe("RecentAnnotationsComponent", () => {
       await promises.events;
       spec.detectChanges();
       expect(spec.query("#no-annotations")).toHaveText("No recent annotations");
-    });
-
-    it("should send error notification if audio event failure", async () => {
-      const promises = setAudioEvents(generateBawApiError(), null, null);
-      spec.detectChanges();
-      await promises.events;
-      spec.detectChanges();
-      expect(spec.inject(ToastrService).error).toHaveBeenCalled();
     });
   });
 

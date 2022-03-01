@@ -2,13 +2,9 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { Project } from "@models/Project";
 import { SpyObject } from "@ngneat/spectator";
-import { generateBawApiError } from "@test/fakes/BawApiError";
 import { testFormlyFields } from "@test/helpers/formly";
 import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
-import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import schema from "../../project.schema.json";
@@ -84,42 +80,6 @@ describe("ProjectsNewComponent", () => {
       api.create.and.callFake(() => new Subject());
       component.submit({});
       expect(api.create).toHaveBeenCalled();
-    });
-
-    it("should handle general error", () => {
-      api.create.and.callFake(() => {
-        const subject = new Subject<Project>();
-        subject.error(
-          new BawApiError(UNAUTHORIZED, "Sign in to access this feature.")
-        );
-        return subject;
-      });
-
-      component.submit({});
-
-      expect(notifications.error).toHaveBeenCalledWith(
-        "Sign in to access this feature."
-      );
-    });
-
-    it("should handle duplicate project name", () => {
-      api.create.and.callFake(() => {
-        const subject = new Subject<Project>();
-        subject.error(
-          generateBawApiError(
-            UNPROCESSABLE_ENTITY,
-            "Record could not be saved",
-            { name: ["has already been taken"] }
-          )
-        );
-        return subject;
-      });
-
-      component.submit({});
-
-      expect(notifications.error).toHaveBeenCalledWith(
-        "Record could not be saved<br />name has already been taken"
-      );
     });
   });
 });

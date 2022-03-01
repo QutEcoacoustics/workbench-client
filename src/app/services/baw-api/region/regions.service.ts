@@ -75,7 +75,7 @@ export class ShallowRegionsService implements StandardApi<Region> {
   public list(): Observable<Region[]> {
     return this.api.list(Region, endpointShallow(emptyParam, emptyParam));
   }
-  public filter(filters: Filters<IRegion>): Observable<Region[]> {
+  public filter(filters: Filters<Region>): Observable<Region[]> {
     return this.api.filter(
       Region,
       endpointShallow(emptyParam, filterParam),

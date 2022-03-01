@@ -148,12 +148,4 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   private hasLocationGlobal(): boolean {
     return isInstantiated(location);
   }
-
-  /**
-   * Reload page.
-   * ! This is extracted to a separate function so that tests can be performed.
-   */
-  private reloadPage(): void {
-    location.reload();
-  }
 }

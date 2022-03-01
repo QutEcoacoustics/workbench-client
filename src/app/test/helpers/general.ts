@@ -2,16 +2,16 @@ import { Injector } from "@angular/core";
 import { ApiFilter, ApiShow } from "@baw-api/api-common";
 import { Filters } from "@baw-api/baw-api.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
+import { homeMenuItem } from "@components/home/home.menus";
 import { Errorable } from "@helpers/advancedTypes";
+import {
+  ApiErrorDetails,
+  isBawApiError,
+} from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { SpyObject } from "@ngneat/spectator";
 import { Subject } from "rxjs";
-import { homeMenuItem } from "@components/home/home.menus";
-import {
-  ApiErrorDetails,
-  isApiErrorDetails,
-} from "@helpers/custom-errors/baw-api-error";
 
 /**
  * An object which keeps track of the various breakpoints set for the
@@ -98,7 +98,7 @@ export function interceptCustomApiRequest<
   callback: AbstractModelConstructor<Model>
 ) {
   const subject = new Subject();
-  const isError = isApiErrorDetails(model);
+  const isError = isBawApiError(model);
 
   let response: any;
   if (isError) {

@@ -2,11 +2,9 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SimpleChange } from "@angular/core";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
-import { Session } from "@models/User";
+import { AuthToken, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import { testApiConfig } from "@services/config/configMock.service";
-import { generateSessionUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertImage } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
@@ -159,9 +157,9 @@ describe("ImageDirective", () => {
       return spec;
     }
 
-    function setLoggedIn(user: Session) {
-      spyOnProperty(session, "isLoggedIn").and.callFake(() => !!user);
-      spyOnProperty(session, "loggedInUser").and.callFake(() => user);
+    function setLoggedIn(authToken: AuthToken) {
+      spyOnProperty(session, "isLoggedIn").and.callFake(() => !!authToken);
+      spyOnProperty(session, "authToken").and.callFake(() => authToken);
     }
 
     function getApiRoot() {
@@ -171,32 +169,31 @@ describe("ImageDirective", () => {
     }
 
     it("should append authToken to url", () => {
-      const user = new Session(generateSessionUser());
+      const authToken = modelData.authToken();
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = getApiRoot() + "/image.png";
       spectator = createApiDirective(imageUrls);
-      setLoggedIn(user);
+      setLoggedIn(authToken);
       spectator.detectChanges();
 
       assertImage(
         getImage(),
-        `${getApiRoot()}/image.png?authToken=${user.authToken}`,
+        `${getApiRoot()}/image.png?authToken=${authToken}`,
         "alt"
       );
     });
 
     it("should not double append authToken to url", () => {
-      const user = new Session(generateSessionUser());
+      const authToken = modelData.authToken();
       const imageUrls = modelData.imageUrls().slice(0, 1);
-      imageUrls[0].url =
-        getApiRoot() + "/image.png?authToken=" + user.authToken;
+      imageUrls[0].url = getApiRoot() + "/image.png?authToken=" + authToken;
       spectator = createApiDirective(imageUrls);
-      setLoggedIn(user);
+      setLoggedIn(authToken);
       spectator.detectChanges();
 
       assertImage(
         getImage(),
-        `${getApiRoot()}/image.png?authToken=${user.authToken}`,
+        `${getApiRoot()}/image.png?authToken=${authToken}`,
         "alt"
       );
     });
@@ -205,7 +202,7 @@ describe("ImageDirective", () => {
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = getApiRoot() + "/image.png";
       spectator = createApiDirective(imageUrls, true);
-      setLoggedIn(new Session(generateSessionUser()));
+      setLoggedIn(modelData.authToken());
       spectator.detectChanges();
 
       assertImage(getImage(), `${getApiRoot()}/image.png`, "alt");
@@ -222,16 +219,16 @@ describe("ImageDirective", () => {
     });
 
     it("should handle additional parameters in url", () => {
-      const user = new Session(generateSessionUser());
+      const authToken = modelData.authToken();
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = getApiRoot() + "/image.png?testing=value";
       spectator = createApiDirective(imageUrls);
-      setLoggedIn(user);
+      setLoggedIn(authToken);
       spectator.detectChanges();
 
       assertImage(
         getImage(),
-        `${getApiRoot()}/image.png?testing=value&authToken=${user.authToken}`,
+        `${getApiRoot()}/image.png?testing=value&authToken=${authToken}`,
         "alt"
       );
     });

@@ -13,7 +13,6 @@ import { generateProject } from "@test/fakes/Project";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
-import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import schema from "../../project.schema.json";
@@ -104,41 +103,6 @@ describe("ProjectsEditComponent", () => {
       api.update.and.callFake(() => new Subject());
       component.submit({});
       expect(api.update).toHaveBeenCalled();
-    });
-
-    it("should handle general error", () => {
-      configureTestingModule(defaultProject);
-      api.update.and.callFake(() => {
-        const subject = new Subject<Project>();
-        subject.error(
-          generateBawApiError(UNAUTHORIZED, "Sign in to access this feature.")
-        );
-        return subject;
-      });
-
-      component.submit(defaultProject);
-      expect(notifications.error).toHaveBeenCalledWith(
-        "Sign in to access this feature."
-      );
-    });
-
-    it("should handle duplicate project name", () => {
-      configureTestingModule(defaultProject, undefined);
-      api.update.and.callFake(() => {
-        const subject = new Subject<Project>();
-        subject.error(
-          generateBawApiError(UNPROCESSABLE_ENTITY, undefined, {
-            name: ["has already been taken"],
-          })
-        );
-        return subject;
-      });
-
-      component.submit(defaultProject);
-
-      expect(notifications.error).toHaveBeenCalledWith(
-        "Record could not be saved<br />name has already been taken"
-      );
     });
   });
 });

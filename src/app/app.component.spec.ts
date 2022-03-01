@@ -1,6 +1,7 @@
 import { Title } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { Writeable } from "@helpers/advancedTypes";
 import { DEFAULT_MENU } from "@helpers/page/defaultMenus";
 import { mockDefaultMenu } from "@helpers/page/defaultMenus.spec";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -28,7 +29,7 @@ import { Subject } from "rxjs";
 import { AppComponent } from "./app.component";
 
 describe("AppComponent", () => {
-  const eventSubject = new Subject();
+  const eventSubject = new Subject<IPageInfo>();
   let spec: SpectatorRouting<AppComponent>;
   const createComponent = createRoutingFactory({
     component: AppComponent,
@@ -43,13 +44,14 @@ describe("AppComponent", () => {
     ],
     providers: [
       { provide: DEFAULT_MENU, useValue: mockDefaultMenu },
-      MenuService,
       mockProvider(LoadingBarService, { value$: new Subject() }),
     ],
     imports: [RouterTestingModule, MockBawApiModule],
   });
 
   function setPageInfo(pageInfo: IPageInfo) {
+    const menuService = spec.inject(MenuService);
+    (menuService as Writeable<MenuService>).isFullscreen = pageInfo.fullscreen;
     eventSubject.next(pageInfo);
     spec.detectChanges();
   }
@@ -58,6 +60,7 @@ describe("AppComponent", () => {
     spec = createComponent({
       detectChanges: true,
       providers: [
+        mockProvider(MenuService, { isFullscreen: true }),
         mockProvider(SharedActivatedRouteService, { pageInfo: eventSubject }),
       ],
     });

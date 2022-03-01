@@ -7,7 +7,7 @@ import { ContactUsComponent } from "./contact-us.component";
 
 // TODO Implement tests
 
-describe("ContactUsComponent", () => {
+xdescribe("ContactUsComponent", () => {
   let component: ContactUsComponent;
   let fixture: ComponentFixture<ContactUsComponent>;
 

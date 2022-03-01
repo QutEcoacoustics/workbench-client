@@ -29,7 +29,7 @@ describe("RegisterComponent", () => {
   });
 
   function isSignedIn(signedIn: boolean = true) {
-    spyOnProperty(session, "isLoggedIn").and.callFake(() => signedIn);
+    spyOnProperty(session, "isLoggedIn").and.returnValue(signedIn);
   }
 
   describe("form", () => {

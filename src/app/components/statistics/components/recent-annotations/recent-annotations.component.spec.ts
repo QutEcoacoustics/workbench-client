@@ -156,6 +156,7 @@ describe("RecentAnnotationsComponent", () => {
       tags: spec.inject(TAG.token),
       security: spec.inject(SecurityService),
     };
+    session = spec.inject(BawSessionService);
     defaultAnnotation = new AudioEvent(generateAudioEvent(), injector);
   });
 

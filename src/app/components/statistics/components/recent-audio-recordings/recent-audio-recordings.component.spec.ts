@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SecurityService } from "@baw-api/security/security.service";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
@@ -11,6 +10,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { ISite, Site } from "@models/Site";
 import {
   createComponentFactory,
+  mockProvider,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
@@ -24,26 +24,25 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { interceptShowApiRequest } from "@test/helpers/general";
 import { assertUrl } from "@test/helpers/html";
+import { ToastrService } from "ngx-toastr";
 import { RecentAudioRecordingsComponent } from "./recent-audio-recordings.component";
 
 describe("RecentAudioRecordingsComponent", () => {
-  let api: {
-    sites: SpyObject<ShallowSitesService>;
-    security: SecurityService;
-  };
+  let api: SpyObject<ShallowSitesService>;
   let defaultRecording: AudioRecording;
   let injector: Injector;
   let spec: Spectator<RecentAudioRecordingsComponent>;
   const createComponent = createComponentFactory({
     component: RecentAudioRecordingsComponent,
     imports: [SharedModule, MockBawApiModule, RouterTestingModule],
+    providers: [mockProvider(ToastrService)],
   });
 
   function interceptSiteRequest(
     data?: Errorable<Partial<ISite>>
   ): Promise<any> {
     const response = isBawApiError(data) ? data : generateSite(data);
-    return interceptShowApiRequest(api.sites, injector, response, Site);
+    return interceptShowApiRequest(api, injector, response, Site);
   }
 
   function setRecordings(recordings: AudioRecording[]) {
@@ -68,10 +67,7 @@ describe("RecentAudioRecordingsComponent", () => {
   beforeEach(() => {
     spec = createComponent({ detectChanges: false });
     injector = spec.inject(Injector);
-    api = {
-      sites: spec.inject(SHALLOW_SITE.token),
-      security: spec.inject(SecurityService),
-    };
+    api = spec.inject(SHALLOW_SITE.token);
     defaultRecording = new AudioRecording(generateAudioRecording(), injector);
   });
 

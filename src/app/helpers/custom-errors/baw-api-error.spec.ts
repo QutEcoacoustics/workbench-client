@@ -38,4 +38,24 @@ describe("extendedErrorMsg", () => {
     ).toBe("Custom Message<br />custom message<br />bar");
   });
 });
+
+it("should handle duplicate project name", () => {
+      api.create.and.callFake(() => {
+        const subject = new Subject<Project>();
+        subject.error(
+          generateBawApiError(
+            UNPROCESSABLE_ENTITY,
+            "Record could not be saved",
+            { name: ["has already been taken"] }
+          )
+        );
+        return subject;
+      });
+
+      component.submit({});
+
+      expect(notifications.error).toHaveBeenCalledWith(
+        "Record could not be saved<br />name has already been taken"
+      );
+    });
 */

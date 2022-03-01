@@ -52,7 +52,7 @@
       id="login-widget"
       class="nav-link"
       bawUrlActive="active"
-      [bawUrl]="user.viewUrl"
+      [strongRoute]="routes.profile.route"
     >
       <span [innerText]="user.userName"></span>
       <div class="d-inline-block bg-light ms-1">

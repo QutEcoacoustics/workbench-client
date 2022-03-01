@@ -12,8 +12,9 @@ import {
   ShallowAudioEventsService,
 } from "./audio-event/audio-events.service";
 import { AudioRecordingsService } from "./audio-recording/audio-recordings.service";
-import { BawSessionService, guestUser } from "./baw-session.service";
 import { BawApiService } from "./baw-api.service";
+import { BawFormApiService } from "./baw-form-api.service";
+import { BawSessionService } from "./baw-session.service";
 import { BookmarksService } from "./bookmark/bookmarks.service";
 import { CmsService } from "./cms/cms.service";
 import { DatasetItemsService } from "./dataset/dataset-items.service";
@@ -48,6 +49,7 @@ import { UserService } from "./user/user.service";
 const mockProviders: Provider[] = [
   { provide: SecurityService, useClass: MockSecurityService },
   mockProvider(BawApiService),
+  mockProvider(BawFormApiService),
   mockProvider(CmsService),
   mockProvider(AccountsService),
   mockProvider(AnalysisJobsService),
@@ -86,10 +88,7 @@ const mockProviders: Provider[] = [
       useClass: BawApiInterceptor,
       multi: true,
     },
-    mockProvider(BawSessionService, {
-      isLoggedIn: false,
-      loggedInUser: guestUser,
-    }),
+    BawSessionService,
     ...services,
     ...serviceTokens,
     ...serviceResolvers,
