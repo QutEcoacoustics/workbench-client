@@ -7,7 +7,7 @@ import httpCodes, {
 } from "http-status";
 
 // TODO Make this is the default method for error generation
-export function generateApiErrorDetailsV2(
+export function generateApiErrorDetails(
   status: number = UNAUTHORIZED,
   custom?: Partial<ApiErrorDetails>
 ): ApiErrorDetails {

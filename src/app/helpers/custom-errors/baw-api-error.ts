@@ -28,27 +28,23 @@ export class BawApiError extends Error {
       return this._message;
     }
 
-    let output = this._message + (newline || "[");
-
+    const formattedInfo: string[] = [];
     Object.entries(this.info).forEach(([key, value]) => {
-      switch (key) {
-        case "tzinfoTz":
-          output += `timezone identifier: ${value[0]}`;
-          break;
-        default:
-          if (value instanceof Array && value.length === 1) {
-            output += `${key}: ${value[0]}`;
-          } else {
-            output += `${key}: ${JSON.stringify(value)}`;
-          }
-          break;
+      if (key === "tzinfoTz") {
+        formattedInfo.push(`timezone identifier: ${value[0]}`);
+      } else if (value instanceof Array && value.length === 1) {
+        formattedInfo.push(`${key}: ${value[0]}`);
+      } else {
+        formattedInfo.push(`${key}: ${JSON.stringify(value)}`);
       }
-
-      output += newline ?? ", ";
     });
 
-    output += newline ? "" : "]";
-    return output;
+    return (
+      this._message +
+      (newline ?? ": [") +
+      formattedInfo.join(newline ?? ", ") +
+      (newline ? "" : "]")
+    );
   }
 }
 

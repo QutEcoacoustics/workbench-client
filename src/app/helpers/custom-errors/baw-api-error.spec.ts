@@ -1,61 +1,147 @@
-/*
-describe("defaultErrorMsg", () => {
-  it("should return error message", () => {
-    const apiError = generateBawApiError(BAD_REQUEST, "Custom Message");
-    expect(defaultErrorMsg(apiError)).toBe("Custom Message");
-  });
-});
+import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
+import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
+import {
+  ApiErrorDetails,
+  BawApiError,
+  isApiErrorDetails,
+  isBawApiError,
+} from "./baw-api-error";
 
-describe("extendedErrorMsg", () => {
-  it("should return error message", () => {
-    const apiError = generateBawApiError(BAD_REQUEST, "Custom Message");
-    expect(extendedErrorMsg(apiError, {})).toBe("Custom Message");
+describe("BawApiError", () => {
+  it("should be called BawApiError", () => {
+    const error = generateBawApiError();
+    expect(error.name).toBe("BawApiError");
   });
 
-  it("should return error message with single info field", () => {
-    const apiError = generateBawApiError(BAD_REQUEST, "Custom Message", {
-      name: "this name already exists",
+  it("should return info", () => {
+    const info = { name: ["Duplicate name for entity"] };
+    const error = new BawApiError(
+      UNPROCESSABLE_ENTITY,
+      "Unprocessable Entity",
+      info
+    );
+    expect(error.info).toEqual(info);
+  });
+
+  describe("message", () => {
+    it("should return message", () => {
+      const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access");
+      expect(error.message).toEqual("Unauthorized Access");
     });
 
-    expect(
-      extendedErrorMsg(apiError, {
-        name: (value) => "custom message: " + value,
-      })
-    ).toBe("Custom Message<br />custom message: this name already exists");
-  });
-
-  it("should return error message with multiple info fields", () => {
-    const apiError = generateBawApiError(BAD_REQUEST, "Custom Message", {
-      name: "this name already exists",
-      foo: "bar",
-    });
-
-    expect(
-      extendedErrorMsg(apiError, {
-        name: () => "custom message",
-        foo: (value) => value,
-      })
-    ).toBe("Custom Message<br />custom message<br />bar");
-  });
-});
-
-it("should handle duplicate project name", () => {
-      api.create.and.callFake(() => {
-        const subject = new Subject<Project>();
-        subject.error(
-          generateBawApiError(
-            UNPROCESSABLE_ENTITY,
-            "Record could not be saved",
-            { name: ["has already been taken"] }
-          )
-        );
-        return subject;
-      });
-
-      component.submit({});
-
-      expect(notifications.error).toHaveBeenCalledWith(
-        "Record could not be saved<br />name has already been taken"
+    it("should return message with info with one value", () => {
+      const info = { name: ["Duplicate name for entity"] };
+      const error = new BawApiError(
+        UNPROCESSABLE_ENTITY,
+        "Unprocessable Entity",
+        info
+      );
+      expect(error.message).toEqual(
+        "Unprocessable Entity: [name: Duplicate name for entity]"
       );
     });
-*/
+
+    it("should return message with info with multiple values", () => {
+      const info = {
+        name: ["Duplicate name for entity", "Invalid name value"],
+      };
+      const error = new BawApiError(
+        UNPROCESSABLE_ENTITY,
+        "Unprocessable Entity",
+        info
+      );
+      expect(error.message).toEqual(
+        'Unprocessable Entity: [name: ["Duplicate name for entity","Invalid name value"]]'
+      );
+    });
+  });
+
+  describe("formattedMessage", () => {
+    it("should return error message", () => {
+      const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access");
+      expect(error.formattedMessage("___")).toBe("Unauthorized Access");
+    });
+
+    it("should return message with info with one value", () => {
+      const info = { name: ["Duplicate name for entity"] };
+      const error = new BawApiError(
+        UNPROCESSABLE_ENTITY,
+        "Unprocessable Entity",
+        info
+      );
+      expect(error.formattedMessage("___")).toEqual(
+        "Unprocessable Entity___name: Duplicate name for entity"
+      );
+    });
+
+    it("should return message with info with multiple values", () => {
+      const info = {
+        name: ["Duplicate name for entity", "Invalid name value"],
+      };
+      const error = new BawApiError(
+        UNPROCESSABLE_ENTITY,
+        "Unprocessable Entity",
+        info
+      );
+      expect(error.formattedMessage("___")).toEqual(
+        'Unprocessable Entity___name: ["Duplicate name for entity","Invalid name value"]'
+      );
+    });
+  });
+});
+
+describe("isBawApiError", () => {
+  it("should return true for bawApiError", () => {
+    const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access");
+    expect(isBawApiError(error)).toBeTrue();
+  });
+
+  it("should return true for bawApiError with info", () => {
+    const error = new BawApiError(
+      UNPROCESSABLE_ENTITY,
+      "Unprocessable Entity",
+      { name: ["Duplicate name for entity"] }
+    );
+    expect(isBawApiError(error)).toBeTrue();
+  });
+
+  it("should return false for Error", () => {
+    const error = new Error("Unauthorized Access");
+    expect(isBawApiError(error)).toBeFalse();
+  });
+
+  it("should return false for ApiErrorDetails", () => {
+    const error = generateApiErrorDetails();
+    expect(isBawApiError(error)).toBeFalse();
+  });
+
+  it("should return false for random object", () => {
+    const error = { random: "value" };
+    expect(isBawApiError(error)).toBeFalse();
+  });
+});
+
+describe("isApiErrorDetails", () => {
+  it("should return true for ApiErrorDetails", () => {
+    const error: ApiErrorDetails = {
+      status: UNAUTHORIZED,
+      message: "Unauthorized Access",
+    };
+    expect(isApiErrorDetails(error)).toBeTrue();
+  });
+
+  it("should return true for ApiErrorDetails with info", () => {
+    const error: ApiErrorDetails = {
+      status: UNPROCESSABLE_ENTITY,
+      message: "Unprocessable Entity",
+      info: { name: ["Duplicate name for entity"] },
+    };
+    expect(isApiErrorDetails(error)).toBeTrue();
+  });
+
+  it("should return false for random object", () => {
+    const error = { random: "value" };
+    expect(isApiErrorDetails(error)).toBeFalse();
+  });
+});
