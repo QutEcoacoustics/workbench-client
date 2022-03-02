@@ -378,7 +378,7 @@ export class BawApiService<
     key: AssociationKeys<Model>,
     models: string[] | number[],
     comparison: keyof Subsets = "contain"
-  ) {
+  ): Filters<Model> {
     return this.associationFilter(filters, key, models, comparison);
   }
 
@@ -404,7 +404,7 @@ export class BawApiService<
     key: AssociationKeys<Model>,
     models: AbstractModel | string | number | string[] | number[],
     comparison: keyof (Comparisons & Subsets)
-  ) {
+  ): Filters<Model> {
     const { filter, ...meta } = filters;
 
     // Only return if model is undefined, not null (which is a valid input)

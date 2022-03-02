@@ -6,7 +6,7 @@ import { AbstractModelWithoutId } from "@models/AbstractModel";
 import { BAD_REQUEST } from "http-status";
 import { Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
-import { BawApiService } from "./baw-api.service";
+import { BawApiService, unknownErrorCode } from "./baw-api.service";
 
 /*
  * Reads through a HTML document for recaptcha setup code to extract the
@@ -70,13 +70,16 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
         // Check for recaptcha error message in page body
         const errorMsg = "Captcha response was not correct.";
         if (response.includes(errorMsg)) {
-          throw new BawApiError(BAD_REQUEST, errorMsg);
+          throw new BawApiError(
+            BAD_REQUEST,
+            "Captcha response was not correct."
+          );
         }
       }),
       // Complete observable
       first(),
       // Handle custom errors
-      catchError((err: BawApiError) => this.api.handleError(err))
+      catchError((err: BawApiError) => this.handleError(err))
     );
   }
 
@@ -106,14 +109,14 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
         const action = values?.[2];
 
         if (!seed || !action) {
-          throw new Error("Unable to setup recaptcha.");
+          throw new BawApiError(unknownErrorCode, "Unable to setup recaptcha.");
         }
         return { seed, action };
       }),
       // Complete observable
       first(),
       // Handle custom errors
-      catchError((err: BawApiError) => this.api.handleError(err))
+      catchError((err: BawApiError) => this.handleError(err))
     );
   }
 
@@ -124,7 +127,7 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
    * @param path API path
    */
   public htmlRequest(path: string): Observable<string> {
-    return this.http.get(this.api.getPath(path), {
+    return this.http.get(this.getPath(path), {
       responseType: "text",
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: new HttpHeaders({ Accept: "text/html" }),
@@ -143,7 +146,7 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
     path: string,
     formData: URLSearchParams
   ): Observable<string> {
-    return this.http.post(this.api.getPath(path), formData.toString(), {
+    return this.http.post(this.getPath(path), formData.toString(), {
       responseType: "text",
       headers: new HttpHeaders({
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -154,8 +157,18 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
     });
   }
 
+  /**
+   * @see BawApiService.handleError for more information
+   */
   public handleError(err: BawApiError): Observable<never> {
     return this.api.handleError(err);
+  }
+
+  /**
+   * @see BawApiService.getPath for more information
+   */
+  public getPath(path: string): string {
+    return this.api.getPath(path);
   }
 }
 

@@ -32,7 +32,7 @@ export function generateUser(
   };
 }
 
-export function generateSessionUser(
+export function generateSession(
   data?: Partial<ISession>,
   userData?: Partial<IUser>
 ): ISession {

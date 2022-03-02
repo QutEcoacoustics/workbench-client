@@ -1,89 +1,83 @@
-/* import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TestRequest } from "@angular/common/http/testing";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
-import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
+import { Errorable } from "@helpers/advancedTypes";
+import {
+  BawApiError,
+  isBawApiError,
+} from "@helpers/custom-errors/baw-api-error";
 import {
   createHttpFactory,
   HttpMethod,
+  mockProvider,
   SpectatorHttp,
 } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
-import { generateApiErrorResponse } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { modelData } from "@test/helpers/faker";
 import { getCallArgs, nStepObservable } from "@test/helpers/general";
+import { INTERNAL_SERVER_ERROR } from "http-status";
+import { ToastrService } from "ngx-toastr";
 import { noop, Subject } from "rxjs";
 import { BawApiInterceptor } from "./api.interceptor.service";
-import { STUB_MODEL_BUILDER, unknownErrorCode } from "./baw-api.service";
+import { BawApiService, unknownErrorCode } from "./baw-api.service";
 import { shouldNotFail, shouldNotSucceed } from "./baw-api.service.spec";
 import { BawFormApiService } from "./baw-form-api.service";
-import { MockShowApiService } from "./mock/apiMocks.service";
+import { BawSessionService } from "./baw-session.service";
 import { MockForm } from "./mock/bawFormApiMock.service";
-import { MockSecurityService } from "./mock/securityMock.service";
-import { SecurityService } from "./security/security.service";
-import { UserService } from "./user/user.service";
 
-describe("bawFormApiService", () => {
-  let apiRoot: string;
+describe("BawFormApiService", () => {
+  let api: BawApiService<MockForm>;
   let spec: SpectatorHttp<BawFormApiService<MockForm>>;
   const createService = createHttpFactory<BawFormApiService<MockForm>>({
     service: BawFormApiService,
     imports: [MockAppConfigModule],
     providers: [
-      { provide: SecurityService, useClass: MockSecurityService },
-      { provide: UserService, useClass: MockShowApiService },
+      BawSessionService,
+      BawApiService,
+      mockProvider(ToastrService),
       {
         provide: HTTP_INTERCEPTORS,
         useClass: BawApiInterceptor,
         multi: true,
       },
-      { provide: STUB_MODEL_BUILDER, useValue: MockForm },
     ],
   });
 
-  function intercept(spy: any, response: any, error: ApiErrorDetails) {
-    const subject = new Subject();
-    spy.and.callFake(() => subject);
-    return nStepObservable(subject, () => response ?? error, !!error);
+  function interceptHtmlRequest(page: Errorable<string>) {
+    const subject = new Subject<string>();
+    spyOn(spec.service, "htmlRequest").and.callFake(() => subject);
+    return nStepObservable(subject, () => page, isBawApiError(page));
+  }
+
+  function interceptFormRequest(response: Errorable<string>) {
+    const subject = new Subject<string>();
+    spyOn(spec.service, "formRequest").and.callFake(() => subject);
+    return nStepObservable(subject, () => response, isBawApiError(response));
   }
 
   beforeEach(() => {
-    localStorage.clear();
     spec = createService();
-    apiRoot = spec.inject(API_ROOT);
-  });
-
-  afterEach(() => {
-    localStorage.clear();
+    api = spec.inject<BawApiService<MockForm>>(BawApiService);
   });
 
   describe("makeFormRequest", () => {
     let defaultBody: URLSearchParams;
     let successHtmlRequestPage: string;
-    let apiHtmlRequestSpy: jasmine.Spy;
-    let apiFormRequestSpy: jasmine.Spy;
 
     function makeFormRequest(
       formEndpoint: string,
       submissionEndpoint: string,
       body: (authToken: string) => URLSearchParams
     ) {
-      return spec.service["makeFormRequest"](
+      return spec.service.makeFormRequest(
         formEndpoint,
         submissionEndpoint,
         body
       );
     }
 
-    function interceptHtmlRequest(response: string, error?: ApiErrorDetails) {
-      apiHtmlRequestSpy = jasmine.createSpy("apiHtmlRequest");
-      spec.service["htmlRequest"] = apiHtmlRequestSpy;
-      return intercept(apiHtmlRequestSpy, response, error);
-    }
-
-    function interceptFormRequest(response: string, error?: ApiErrorDetails) {
-      apiFormRequestSpy = jasmine.createSpy("apiFormRequest");
-      spec.service["formRequest"] = apiFormRequestSpy;
-      return intercept(apiFormRequestSpy, response, error);
+    function formRequestCalls() {
+      return getCallArgs(spec.service.formRequest as jasmine.Spy);
     }
 
     beforeEach(() => {
@@ -91,14 +85,16 @@ describe("bawFormApiService", () => {
       successHtmlRequestPage = `<html><input name="authenticity_token" value="${modelData.authToken()}" /></html>`;
     });
 
-    it("should call apiHtmlRequest", () => {
+    it("should call htmlRequest", () => {
       interceptHtmlRequest("<html></html>");
       makeFormRequest(
         "/broken_html_link",
         "/broken_link",
         () => defaultBody
-      ).subscribe(noop);
-      expect(apiHtmlRequestSpy).toHaveBeenCalledWith("/broken_html_link");
+      ).subscribe({ next: noop, error: noop });
+      expect(spec.service.htmlRequest).toHaveBeenCalledWith(
+        "/broken_html_link"
+      );
     });
 
     it("should throw error if token is not found", (done) => {
@@ -110,16 +106,18 @@ describe("bawFormApiService", () => {
       ).subscribe({
         next: shouldNotSucceed,
         error: (err) => {
-          expect(err).toEqual({
-            status: unknownErrorCode,
-            message: "Unable to retrieve authenticity token for form request.",
-          } as ApiErrorDetails);
+          expect(err).toEqual(
+            new BawApiError(
+              unknownErrorCode,
+              "Unable to retrieve authenticity token for form request."
+            )
+          );
           done();
         },
       });
     });
 
-    it("should call apiFormRequest with submission endpoint", async () => {
+    it("should call formRequest with submission endpoint", async () => {
       const promise = interceptHtmlRequest(successHtmlRequestPage);
       interceptFormRequest("<html></html>");
       makeFormRequest(
@@ -128,10 +126,10 @@ describe("bawFormApiService", () => {
         () => defaultBody
       ).subscribe(noop);
       await promise;
-      expect(getCallArgs(apiFormRequestSpy)[0]).toBe("/broken_form_link");
+      expect(formRequestCalls()[0]).toBe("/broken_form_link");
     });
 
-    it("should call apiFormRequest with body", async () => {
+    it("should call formRequest with body", async () => {
       const body = (_authToken: string): URLSearchParams => {
         defaultBody.set("user[example]", "example value");
         defaultBody.set("authToken", _authToken);
@@ -146,7 +144,7 @@ describe("bawFormApiService", () => {
         body(_authToken)
       ).subscribe(noop);
       await promise;
-      expect(getCallArgs(apiFormRequestSpy)[1].toString()).toBe(
+      expect(formRequestCalls()[1].toString()).toBe(
         "user%5Bexample%5D=example+value&authToken=" + authToken
       );
     });
@@ -165,10 +163,12 @@ describe("bawFormApiService", () => {
       ).subscribe({
         next: shouldNotSucceed,
         error: (err) => {
-          expect(err).toEqual({
-            status: unknownErrorCode,
-            message: "Captcha response was not correct.",
-          } as ApiErrorDetails);
+          expect(err).toEqual(
+            new BawApiError(
+              unknownErrorCode,
+              "Captcha response was not correct."
+            )
+          );
           done();
         },
       });
@@ -207,22 +207,14 @@ describe("bawFormApiService", () => {
   });
 
   describe("getRecaptchaSeed", () => {
-    let apiHtmlRequestSpy: jasmine.Spy;
-
-    function interceptHtmlRequest(page: string, error?: ApiErrorDetails) {
-      apiHtmlRequestSpy = jasmine.createSpy("apiHtmlRequest");
-      spec.service["htmlRequest"] = apiHtmlRequestSpy;
-      return intercept(apiHtmlRequestSpy, page, error);
-    }
-
     function getRecaptchaSeed(page: string) {
-      return spec.service["getRecaptchaSeed"](page);
+      return spec.service.getRecaptchaSeed(page);
     }
 
-    it("should call apiHtmlRequest", () => {
+    it("should call htmlRequest", () => {
       interceptHtmlRequest("<html></html>");
-      getRecaptchaSeed("/broken_link").subscribe(noop);
-      expect(apiHtmlRequestSpy).toHaveBeenCalledWith("/broken_link");
+      getRecaptchaSeed("/broken_link").subscribe({ next: noop, error: noop });
+      expect(spec.service.htmlRequest).toHaveBeenCalledWith("/broken_link");
     });
 
     it("should extract seed from page", (done) => {
@@ -260,10 +252,9 @@ describe("bawFormApiService", () => {
       getRecaptchaSeed("/broken_link").subscribe({
         next: shouldNotSucceed,
         error: (err) => {
-          expect(err).toEqual({
-            status: unknownErrorCode,
-            message: "Unable to setup recaptcha.",
-          } as ApiErrorDetails);
+          expect(err).toEqual(
+            new BawApiError(unknownErrorCode, "Unable to setup recaptcha.")
+          );
           done();
         },
       });
@@ -284,13 +275,13 @@ describe("bawFormApiService", () => {
     });
   });
 
-  describe("apiHtmlRequest", () => {
+  describe("htmlRequest", () => {
     function interceptRequest(path: string) {
-      return spec.expectOne(apiRoot + path, HttpMethod.GET);
+      return spec.expectOne(api.getPath(path), HttpMethod.GET);
     }
 
     function apiHtmlRequest(path: string) {
-      return spec.service["htmlRequest"](path);
+      return spec.service.htmlRequest(path);
     }
 
     it("should create get request", () => {
@@ -327,13 +318,16 @@ describe("bawFormApiService", () => {
     });
 
     it("should handle api error", (done) => {
-      apiHtmlRequest("/broken_link").subscribe(shouldNotSucceed, (err) => {
-        expect(err?.status).toBe(500);
-        done();
+      apiHtmlRequest("/broken_link").subscribe({
+        next: shouldNotSucceed,
+        error: (err) => {
+          expect(err?.status).toBe(INTERNAL_SERVER_ERROR);
+          done();
+        },
       });
       interceptRequest("/broken_link").flush(
-        generateApiErrorResponse("Internal Server Error"),
-        { status: 500, statusText: "Internal Server Error" }
+        generateBawApiError(INTERNAL_SERVER_ERROR),
+        { status: INTERNAL_SERVER_ERROR, statusText: "Internal Server Error" }
       );
     });
 
@@ -348,16 +342,16 @@ describe("bawFormApiService", () => {
     });
   });
 
-  describe("apiFormRequest", () => {
+  describe("formRequest", () => {
     function interceptRequest(path: string) {
-      return spec.expectOne(apiRoot + path, HttpMethod.POST);
+      return spec.expectOne(api.getPath(path), HttpMethod.POST);
     }
 
     function apiFormRequest(
       path: string,
       formData: URLSearchParams = new URLSearchParams()
     ) {
-      return spec.service["formRequest"](path, formData);
+      return spec.service.formRequest(path, formData);
     }
 
     it("should create post request", () => {
@@ -403,13 +397,13 @@ describe("bawFormApiService", () => {
       apiFormRequest("/broken_link").subscribe({
         next: shouldNotSucceed,
         error: (err) => {
-          expect(err?.status).toBe(500);
+          expect(err?.status).toBe(INTERNAL_SERVER_ERROR);
           done();
         },
       });
       interceptRequest("/broken_link").flush(
-        generateApiErrorResponse("Internal Server Error"),
-        { status: 500, statusText: "Internal Server Error" }
+        generateBawApiError(INTERNAL_SERVER_ERROR),
+        { status: INTERNAL_SERVER_ERROR, statusText: "Internal Server Error" }
       );
     });
 
@@ -424,4 +418,3 @@ describe("bawFormApiService", () => {
     });
   });
 });
- */
