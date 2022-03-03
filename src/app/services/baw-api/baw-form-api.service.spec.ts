@@ -14,7 +14,7 @@ import {
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { modelData } from "@test/helpers/faker";
-import { getCallArgs, nStepObservable } from "@test/helpers/general";
+import { assertOk, getCallArgs, nStepObservable } from "@test/helpers/general";
 import { INTERNAL_SERVER_ERROR } from "http-status";
 import { ToastrService } from "ngx-toastr";
 import { noop, Subject } from "rxjs";
@@ -199,7 +199,7 @@ describe("BawFormApiService", () => {
         () => defaultBody
       ).subscribe({
         complete: () => {
-          expect(true).toBeTrue();
+          assertOk();
           done();
         },
       });
@@ -268,7 +268,7 @@ describe("BawFormApiService", () => {
       );
       getRecaptchaSeed("/broken_link").subscribe({
         complete: () => {
-          expect(true).toBeTrue();
+          assertOk();
           done();
         },
       });
@@ -334,7 +334,7 @@ describe("BawFormApiService", () => {
     it("should complete on success", (done) => {
       apiHtmlRequest("/broken_link").subscribe({
         complete: () => {
-          expect(true).toBeTruthy();
+          assertOk();
           done();
         },
       });
@@ -410,7 +410,7 @@ describe("BawFormApiService", () => {
     it("should complete on success", (done) => {
       apiFormRequest("/broken_link").subscribe({
         complete: () => {
-          expect(true).toBeTruthy();
+          assertOk();
           done();
         },
       });

@@ -7,6 +7,7 @@ import {
 } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { testApiConfig } from "@services/config/configMock.service";
+import { assertOk } from "@test/helpers/general";
 import { noop } from "rxjs";
 import { CMS, CmsService } from "./cms.service";
 
@@ -68,7 +69,7 @@ describe("CmsService", () => {
     const response = "Testing";
     spectator.service.get(defaultUrl).subscribe({
       complete: () => {
-        expect(true).toBeTruthy();
+        assertOk();
         done();
       },
     });

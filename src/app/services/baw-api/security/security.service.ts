@@ -36,22 +36,7 @@ export class SecurityService {
     private cookies: CookieService,
     private session: BawSessionService
   ) {
-    // Update authToken using cookie if exists
-    let authToken: AuthToken;
-    this.sessionDetails()
-      .pipe(
-        tap((user) => (authToken = user.authToken)),
-        mergeMap(() => this.userService.show()),
-        first()
-      )
-      .subscribe({
-        next: (user) => {
-          this.session.setLoggedInUser(user, authToken);
-        },
-        error: () => {
-          this.clearData();
-        },
-      });
+    this.updateAuthToken();
   }
 
   /**
@@ -188,6 +173,25 @@ export class SecurityService {
           return this.formApi.handleError(err);
         })
       );
+  }
+
+  private updateAuthToken(): void {
+    // Update authToken using cookie if exists
+    let authToken: AuthToken;
+    this.sessionDetails()
+      .pipe(
+        tap((user) => (authToken = user.authToken)),
+        mergeMap(() => this.userService.show()),
+        first()
+      )
+      .subscribe({
+        next: (user) => {
+          this.session.setLoggedInUser(user, authToken);
+        },
+        error: () => {
+          this.clearData();
+        },
+      });
   }
 
   /**

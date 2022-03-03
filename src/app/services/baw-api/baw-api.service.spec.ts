@@ -26,6 +26,7 @@ import {
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
+import { assertOk } from "@test/helpers/general";
 import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, noop, Observable, Subject } from "rxjs";
@@ -350,7 +351,7 @@ describe("BawApiService", () => {
         it("should complete on success", (done) => {
           const response = { meta: meta.single, data: responses.single };
           functionCall(undefined, noop, noop, () => {
-            expect(true).toBeTruthy();
+            assertOk();
             done();
           });
           flushResponse(catchFunctionCall(), response);
@@ -640,7 +641,7 @@ describe("BawApiService", () => {
               functionCall().subscribe({
                 error: shouldNotFail,
                 complete: () => {
-                  expect(true).toBeTrue();
+                  assertOk();
                   done();
                 },
               });
