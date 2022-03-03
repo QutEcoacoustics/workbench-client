@@ -590,23 +590,13 @@ describe("SecurityService", () => {
   });
 
   describe("signOut", () => {
-    async function createSuccess() {
-      await triggerApiDestroy();
-      subjects.apiDestroy.complete();
-    }
-
-    async function createError(error: BawApiError) {
-      await triggerApiDestroy(error);
-      subjects.apiDestroy.complete();
-    }
-
     beforeEach(async () => {
       await handleAuthTokenRetrievalDuringInitialization();
     });
 
-    it("should call destroy", () => {
+    it("should call destroy", async () => {
       spec.service.signOut().subscribe({ next: noop, error: noop });
-      createSuccess();
+      await triggerApiDestroy();
       expect(api.destroy).toHaveBeenCalledWith("/security/");
     });
 
@@ -618,22 +608,20 @@ describe("SecurityService", () => {
         },
         error: shouldNotFail,
       });
-      createSuccess();
+      triggerApiDestroy();
     });
 
-    it("should clear session user", (done) => {
+    it("should clear session user on success", async () => {
       spec.service.signOut().subscribe({
         error: shouldNotFail,
-        complete: () => {
-          expect(session.loggedInUser).toBeFalsy();
-          done();
-        },
       });
-      createSuccess();
+      await triggerApiDestroy();
+      subjects.apiDestroy.complete();
+      expect(session.loggedInUser).toBeFalsy();
     });
 
     it("should handle error", (done) => {
-      const error = generateBawApiError(unknownErrorCode);
+      const error = generateBawApiError();
       spec.service.signOut().subscribe({
         next: shouldNotSucceed,
         error: (err) => {
@@ -641,18 +629,15 @@ describe("SecurityService", () => {
           done();
         },
       });
-      createError(error);
+      triggerApiDestroy(error);
     });
 
-    it("should clear cookies", (done) => {
+    it("should clear cookies on error", async () => {
       spyOn(cookies, "deleteAll").and.stub();
-      spec.service.signOut().subscribe({
-        error: () => {
-          expect(cookies.deleteAll).toHaveBeenCalledTimes(1);
-          done();
-        },
-      });
-      createError(defaults.error);
+      expect(cookies.deleteAll).toHaveBeenCalledTimes(0);
+      spec.service.signOut().subscribe({ error: noop });
+      await triggerApiDestroy(defaults.error);
+      expect(cookies.deleteAll).toHaveBeenCalledTimes(1);
     });
   });
 });
