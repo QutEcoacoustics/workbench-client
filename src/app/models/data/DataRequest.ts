@@ -28,7 +28,7 @@ export class DataRequest
 {
   public readonly kind = "Data Request";
   @bawPersistAttr()
-  public readonly name: string = "";
+  public readonly name: string;
   @bawPersistAttr()
   public readonly email: string;
   @bawPersistAttr()
@@ -42,7 +42,7 @@ export class DataRequest
 
   public getBody(token: string): URLSearchParams {
     const body = new URLSearchParams();
-    body.set("data_class_data_request[name]", this.name);
+    body.set("data_class_data_request[name]", this.name ?? "");
     body.set("data_class_data_request[email]", this.email);
     body.set("data_class_data_request[group]", this.group);
     body.set("data_class_data_request[group_type]", this.groupType);

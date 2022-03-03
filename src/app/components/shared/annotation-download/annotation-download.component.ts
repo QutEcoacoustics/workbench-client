@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import {
   hasResolvedSuccessfully,
-  retrieveResolvers
+  retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -68,6 +68,14 @@ const siteKey = "site";
       </a>
     </div>
   `,
+  styles: [
+    `
+      /* Otherwise timezone selector cannot be seen on firefox */
+      .modal-body {
+        overflow-y: unset;
+      }
+    `,
+  ],
 })
 export class AnnotationDownloadComponent implements OnInit, ModalComponent {
   public closeModal!: (result: any) => void;
