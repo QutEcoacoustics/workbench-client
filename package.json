@@ -119,7 +119,7 @@
     "karma-viewport": "^1.0.8",
     "ng-mocks": "^13.0.2",
     "protractor": "^7.0.0",
-    "ts-node": "^10.5.0",
+    "ts-node": "^10.6.0",
     "typescript": "4.5",
     "webpack-bundle-analyzer": "^4.5.0"
   }
