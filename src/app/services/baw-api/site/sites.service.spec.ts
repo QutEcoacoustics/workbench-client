@@ -6,14 +6,20 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { SpectatorService, createServiceFactory, mockProvider } from "@ngneat/spectator";
+import {
+  SpectatorService,
+  createServiceFactory,
+  mockProvider,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
-import { validateStandardApi, validateCustomApiFilter } from "@test/helpers/api-common";
+import {
+  validateStandardApi,
+  validateCustomApiFilter,
+} from "@test/helpers/api-common";
 import { ToastrService } from "ngx-toastr";
 import { SitesService } from "./sites.service";
-
 
 type Model = Site;
 type Params = [IdOr<Project>];
@@ -25,7 +31,6 @@ describe("SitesService", (): void => {
   const showUrl = "/projects/5/sites/10";
   let service: SitesService;
   let apiRoot: string;
-  let session: BawSessionService;
   let spec: SpectatorService<SitesService>;
   const createService = createServiceFactory({
     service: SitesService,
@@ -37,7 +42,6 @@ describe("SitesService", (): void => {
     spec = createService();
     service = spec.inject(SitesService);
     apiRoot = spec.inject(API_ROOT);
-    session = spec.inject(BawSessionService);
   });
 
   validateStandardApi<Model, Params, Service>(
