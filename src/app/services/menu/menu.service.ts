@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@angular/core";
-import { SecurityService } from "@baw-api/security/security.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { DEFAULT_MENU, IDefaultMenu } from "@helpers/page/defaultMenus";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -11,7 +11,7 @@ import {
   NavigableMenuItem,
 } from "@interfaces/menusInterfaces";
 import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
-import { SessionUser } from "@models/User";
+import { User } from "@models/User";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { OrderedSet } from "immutable";
 import { BehaviorSubject, Observable, takeUntil } from "rxjs";
@@ -44,11 +44,11 @@ export class MenuService extends withUnsubscribe() {
   private _isMenuOpen: boolean;
   private _menuUpdate: BehaviorSubject<MenuServiceData>;
   private _secondaryMenu: SecondaryMenuData;
-  private _user: SessionUser;
+  private _user: User;
   private _pageInfo: IPageInfo;
 
   public constructor(
-    private api: SecurityService,
+    private session: BawSessionService,
     private sharedRoute: SharedActivatedRouteService,
     @Inject(DEFAULT_MENU) private defaultMenu: IDefaultMenu
   ) {
@@ -82,11 +82,10 @@ export class MenuService extends withUnsubscribe() {
     this._menuUpdate = new BehaviorSubject(this.getData());
 
     /** Track the local user */
-    this.api
-      .getAuthTrigger()
+    this.session.authTrigger
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe((): void => {
-        this._user = this.api.getLocalUser();
+      .subscribe(({ user }): void => {
+        this._user = user;
         updateState();
       });
 

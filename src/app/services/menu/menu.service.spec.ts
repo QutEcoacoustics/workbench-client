@@ -1,8 +1,11 @@
 import {
-  shouldNotComplete,
   shouldNotFail,
+  shouldNotComplete,
 } from "@baw-api/baw-api.service.spec";
-import { SecurityService } from "@baw-api/security/security.service";
+import {
+  AuthTriggerData,
+  BawSessionService,
+} from "@baw-api/baw-session.service";
 import { homeCategory, homeMenuItem } from "@components/home/home.menus";
 import { DEFAULT_MENU, IDefaultMenu } from "@helpers/page/defaultMenus";
 import { mockDefaultMenu } from "@helpers/page/defaultMenus.spec";
@@ -21,7 +24,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { MockWidgetComponent } from "@menu/menu/menu.component.spec";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
-import { SessionUser } from "@models/User";
+import { User } from "@models/User";
 import {
   createServiceFactory,
   mockProvider,
@@ -36,14 +39,13 @@ import {
   generateMenuModalWithoutAction,
   generateMenuRoute,
 } from "@test/fakes/MenuItem";
-import { generateSessionUser } from "@test/fakes/User";
+import { generateUser } from "@test/fakes/User";
 import { List, OrderedSet } from "immutable";
 import { BehaviorSubject, Subject } from "rxjs";
 import { MenuService, MenuServiceData } from "./menu.service";
 
 describe("MenuService", () => {
-  let localUser: SessionUser;
-  let authTrigger: Subject<void>;
+  let authTrigger: Subject<AuthTriggerData>;
   let pageInfo: BehaviorSubject<IPageInfo>;
   let spec: SpectatorService<MenuService>;
   const createService = createServiceFactory(MenuService);
@@ -76,10 +78,7 @@ describe("MenuService", () => {
         mockProvider(ConfigService, {
           settings: { hideProjects: inputs.hideProjects ?? false },
         }),
-        mockProvider(SecurityService, {
-          getAuthTrigger: () => authTrigger,
-          getLocalUser: () => localUser,
-        }),
+        mockProvider(BawSessionService, { authTrigger }),
         mockProvider(SharedActivatedRouteService, { pageInfo }),
         {
           provide: DEFAULT_MENU,
@@ -89,9 +88,8 @@ describe("MenuService", () => {
     });
   }
 
-  function setLocalUser(user: SessionUser) {
-    localUser = user;
-    authTrigger.next();
+  function setUser(user: User) {
+    authTrigger.next({ user });
   }
 
   function setPageInfo(
@@ -712,7 +710,7 @@ describe("MenuService", () => {
 
         it("should pass user data to predicate", (done) => {
           let isInitialLoad = true;
-          const user = new SessionUser(generateSessionUser());
+          const user = new User(generateUser());
           const link = createLink({
             predicate: jasmine.createSpy().and.callFake((_user) => {
               if (isInitialLoad) {
@@ -725,7 +723,7 @@ describe("MenuService", () => {
             }),
           });
           linkSetup(List([link]), false);
-          setLocalUser(user);
+          setUser(user);
         });
 
         it("should pass page date to predicate", (done) => {

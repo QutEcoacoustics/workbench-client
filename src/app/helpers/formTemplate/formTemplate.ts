@@ -1,12 +1,12 @@
 import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import {
   hasResolvedSuccessfully,
   ResolvedModelList,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { withFormCheck } from "@guards/form/form.guard";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -19,7 +19,7 @@ import { IPageInfo } from "../page/pageInfo";
 
 export interface FormTemplateOptions<Model> {
   successMsg: (model: Partial<Model>) => string;
-  failureMsg: (err: ApiErrorDetails) => string;
+  failureMsg?: (err: BawApiError) => string;
   onSuccess?: (model: Model | void) => void;
   redirectUser?: (model: Model) => void;
   getModel: (models: ResolvedModelList) => Partial<Model>;
@@ -27,7 +27,6 @@ export interface FormTemplateOptions<Model> {
 }
 const defaultOptions: FormTemplateOptions<any> = {
   successMsg: () => defaultSuccessMsg("updated", "model"),
-  failureMsg: defaultErrorMsg,
   getModel: () => ({}),
   hasFormCheck: true,
 };
@@ -118,8 +117,8 @@ export abstract class FormTemplate<Model extends AbstractModel>
 
     this.apiAction(event)
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (model: Model) => {
+      .subscribe({
+        next: (model: Model) => {
           /*
            * First pass attempt a generating success message. This is required
            * for forms which do not initially have a model (ie. new model form).
@@ -131,12 +130,15 @@ export abstract class FormTemplate<Model extends AbstractModel>
           this.opts.onSuccess?.(model);
           this.opts.redirectUser?.(model);
         },
-        (err: ApiErrorDetails) => {
+        error: (err: BawApiError) => {
           console.error(err);
           this.loading = false;
-          this.notifications.error(this.opts.failureMsg(err));
-        }
-      );
+
+          if (this.opts.failureMsg) {
+            this.notifications.error(this.opts.failureMsg(err));
+          }
+        },
+      });
   }
 
   /**
@@ -165,38 +167,4 @@ export function defaultSuccessMsg(
   name: string
 ) {
   return `Successfully ${action} ${name}`;
-}
-
-/**
- * Default error message on form submission
- *
- * @param err API error details
- */
-export function defaultErrorMsg(err: ApiErrorDetails): string {
-  return err.message;
-}
-
-/**
- * Error message on form submission with additional information
- *
- * @param err API error details
- * @param info API error info handlers
- */
-export function extendedErrorMsg(
-  err: ApiErrorDetails,
-  info: { [key: string]: (value: any) => string }
-): string {
-  let errMsg = err.message;
-
-  if (!err.info) {
-    return errMsg;
-  }
-
-  // Handle additional error details
-  for (const key of Object.keys(err.info)) {
-    if (isInstantiated(info[key])) {
-      errMsg = errMsg + "<br />" + info[key](err.info[key]);
-    }
-  }
-  return errMsg;
 }

@@ -1,17 +1,17 @@
 import { Injector } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
 import { mockActivatedRoute } from "@test/helpers/testbed";
@@ -26,7 +26,7 @@ describe("AdminAudioRecordingComponent", () => {
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
   });
 
-  function setup(model: AudioRecording, error?: ApiErrorDetails) {
+  function setup(model: AudioRecording, error?: BawApiError) {
     spec = createComponent({
       detectChanges: false,
       providers: [
@@ -76,7 +76,7 @@ describe("AdminAudioRecordingComponent", () => {
   });
 
   it("should handle error", () => {
-    setup(undefined, generateApiErrorDetails());
+    setup(undefined, generateBawApiError());
     spec.detectChanges();
     expect(spec.component).toBeTruthy();
   });

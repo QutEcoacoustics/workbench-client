@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
@@ -16,7 +16,7 @@ export class ResolverHandlerComponent
   extends withUnsubscribe()
   implements OnInit
 {
-  public error: ApiErrorDetails;
+  public error: BawApiError;
 
   public constructor(private sharedRoute: SharedActivatedRouteService) {
     super();

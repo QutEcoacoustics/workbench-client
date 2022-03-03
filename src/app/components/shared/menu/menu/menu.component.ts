@@ -7,7 +7,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core";
-import { SecurityService } from "@baw-api/security/security.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { MenuType } from "@helpers/generalTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
@@ -17,7 +17,7 @@ import {
   isInternalRoute,
   LabelAndIcon,
 } from "@interfaces/menusInterfaces";
-import { SessionUser } from "@models/User";
+import { User } from "@models/User";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MenuService } from "@services/menu/menu.service";
 import { Set } from "immutable";
@@ -50,7 +50,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   private menuWidget!: ViewContainerRef;
 
   public formattedLinks: Set<AnyMenuItem | MenuModal> = Set();
-  public user: SessionUser;
+  public user: User;
 
   public isInternalLink = isInternalRoute;
   public isExternalLink = isExternalLink;
@@ -59,7 +59,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
 
   public constructor(
     public menuService: MenuService,
-    private api: SecurityService,
+    private session: BawSessionService,
     private modalService: NgbModal
   ) {}
 
@@ -67,7 +67,9 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     this.links ??= Set();
     this.widgets ??= Set();
 
-    this.user = this.api.getLocalUser();
+    // Get user details
+    this.user = this.session.loggedInUser;
+    // Filter links
     this.formattedLinks = this.setModalActions();
 
     if (changes.widgets?.previousValue !== changes.widgets?.currentValue) {

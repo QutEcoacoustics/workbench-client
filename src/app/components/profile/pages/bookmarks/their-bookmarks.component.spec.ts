@@ -1,8 +1,8 @@
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
 import {
@@ -11,7 +11,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateBookmark } from "@test/fakes/Bookmark";
 import { generateUser } from "@test/fakes/User";
 import { assertErrorHandler, assertUrl } from "@test/helpers/html";
@@ -29,7 +29,7 @@ describe("TheirBookmarksComponent", () => {
     stubsEnabled: false,
   });
 
-  function setup(model: User, error?: ApiErrorDetails) {
+  function setup(model: User, error?: BawApiError) {
     spec = createComponent({
       detectChanges: false,
       data: {
@@ -75,7 +75,7 @@ describe("TheirBookmarksComponent", () => {
   });
 
   it("should handle user error", () => {
-    setup(undefined, generateApiErrorDetails());
+    setup(undefined, generateBawApiError());
     interceptRequest([]);
     spec.detectChanges();
     assertErrorHandler(spec.fixture);

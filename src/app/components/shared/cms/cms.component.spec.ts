@@ -1,15 +1,15 @@
 import { SafeHtml } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import {
   createComponentFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { Subject } from "rxjs";
@@ -26,7 +26,7 @@ describe("CmsComponent", () => {
 
   async function interceptApiRequest(
     response: string,
-    error?: ApiErrorDetails,
+    error?: BawApiError,
     expectation: (page: string) => void = () => {}
   ) {
     const subject = new Subject<SafeHtml>();
@@ -77,7 +77,7 @@ describe("CmsComponent", () => {
   });
 
   it("should hide loading animation after error response", async () => {
-    const promise = interceptApiRequest(undefined, generateApiErrorDetails());
+    const promise = interceptApiRequest(undefined, generateBawApiError());
     spectator.setInput("page", CMS.home);
     spectator.detectChanges();
     await promise;
@@ -142,7 +142,7 @@ describe("CmsComponent", () => {
   });
 
   it("should display error message on failure", async () => {
-    const error = generateApiErrorDetails();
+    const error = generateBawApiError();
     const promise = interceptApiRequest(undefined, error);
     spectator.setInput("page", CMS.home);
     spectator.detectChanges();

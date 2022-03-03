@@ -1,7 +1,7 @@
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { Errorable } from "@helpers/advancedTypes";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -44,11 +44,11 @@ describe("SiteCardComponent", () => {
   function setup(
     isSite: boolean,
     model?: Site | Region,
-    recording?: AudioRecording | ApiErrorDetails
+    recording?: Errorable<AudioRecording>
   ): Promise<void> {
     const site = isSite ? (model as Site) ?? defaultSite : undefined;
     const region = !isSite ? (model as Region) ?? defaultRegion : undefined;
-    let recordings: AudioRecording[] | ApiErrorDetails = [defaultRecording];
+    let recordings: Errorable<AudioRecording[]> = [defaultRecording];
     if (recording === null) {
       recordings = [null];
     } else if (recording) {

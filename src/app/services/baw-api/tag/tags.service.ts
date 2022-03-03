@@ -1,9 +1,7 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector, Type } from "@angular/core";
+import { Injectable, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { ITag, Tag, TagType } from "@models/Tag";
+import { Tag, TagType } from "@models/Tag";
 import { User } from "@models/User";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
@@ -16,7 +14,7 @@ import {
   option,
   StandardApi,
 } from "../api-common";
-import { Filters } from "../baw-api.service";
+import { BawApiService, Filters } from "../baw-api.service";
 import {
   BawProvider,
   BawResolver,
@@ -28,26 +26,21 @@ const tagId: IdParamOptional<Tag> = id;
 const endpoint = stringTemplate`/tags/${tagId}${option}`;
 
 @Injectable()
-export class TagsService extends StandardApi<Tag> {
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
-  ) {
-    super(http, apiRoot, Tag, injector);
-  }
+export class TagsService implements StandardApi<Tag> {
+  public constructor(private api: BawApiService<Tag>) {}
 
   public list(): Observable<Tag[]> {
-    return this.apiList(endpoint(emptyParam, emptyParam));
+    return this.api.list(Tag, endpoint(emptyParam, emptyParam));
   }
   public filter(filters: Filters<Tag>): Observable<Tag[]> {
-    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
+    return this.api.filter(Tag, endpoint(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<Tag>): Observable<Tag> {
-    return this.apiShow(endpoint(model, emptyParam));
+    return this.api.show(Tag, endpoint(model, emptyParam));
   }
   public create(model: Tag): Observable<Tag> {
-    return this.apiCreate(
+    return this.api.create(
+      Tag,
       endpoint(emptyParam, emptyParam),
       (tag) => endpoint(tag, emptyParam),
       model
@@ -55,10 +48,10 @@ export class TagsService extends StandardApi<Tag> {
   }
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/449
   public update(model: Tag): Observable<Tag> {
-    return this.apiUpdate(endpoint(model, emptyParam), model);
+    return this.api.update(Tag, endpoint(model, emptyParam), model);
   }
   public destroy(model: IdOr<Tag>): Observable<Tag | void> {
-    return this.apiDestroy(endpoint(model, emptyParam));
+    return this.api.destroy(endpoint(model, emptyParam));
   }
 
   /**
@@ -68,11 +61,11 @@ export class TagsService extends StandardApi<Tag> {
    * @param user user to filter by
    */
   public filterByCreator(
-    filters: Filters<ITag>,
+    filters: Filters<Tag>,
     user: IdOr<User>
   ): Observable<Tag[]> {
     return this.filter(
-      this.filterThroughAssociation(filters, "creatorId", user) as Filters
+      this.api.filterThroughAssociation(filters, "creatorId", user)
     );
   }
 

@@ -1,9 +1,7 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { Injectable } from "@angular/core";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { IUser, User } from "@models/User";
+import { User } from "@models/User";
 import httpCodes from "http-status";
 import { Observable, of, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
@@ -16,7 +14,7 @@ import {
   option,
   StandardApi,
 } from "../api-common";
-import { Filters } from "../baw-api.service";
+import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
 const userId: IdParamOptional<User> = id;
@@ -27,25 +25,19 @@ const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
  * Handles API routes pertaining to user accounts.
  */
 @Injectable()
-export class AccountsService extends StandardApi<User> {
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
-  ) {
-    super(http, apiRoot, User, injector);
-  }
+export class AccountsService implements StandardApi<User> {
+  public constructor(private api: BawApiService<User>) {}
 
   public list(): Observable<User[]> {
-    return this.apiList(endpoint(emptyParam, emptyParam));
+    return this.api.list(User, endpoint(emptyParam, emptyParam));
   }
-  public filter(filters: Filters<IUser>): Observable<User[]> {
-    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
+  public filter(filters: Filters<User>): Observable<User[]> {
+    return this.api.filter(User, endpoint(emptyParam, filterParam), filters);
   }
   public show(model: IdOr<User>): Observable<User> {
-    return this.apiShow(endpoint(model, emptyParam)).pipe(
+    return this.api.show(User, endpoint(model, emptyParam)).pipe(
       // Return unknown or deleted user depending on error code
-      catchError((err: ApiErrorDetails) => {
+      catchError((err: BawApiError) => {
         switch (err.status) {
           case httpCodes.UNAUTHORIZED:
             // Return unknown user, this only occurs when user is anonymous to the logged in/guest user
@@ -54,23 +46,24 @@ export class AccountsService extends StandardApi<User> {
             // Return deleted user, this only occurs when a user is soft-deleted
             return of(User.deletedUser);
           default:
-            return throwError(err);
+            return throwError(() => err);
         }
       })
     );
   }
   public create(model: User): Observable<User> {
-    return this.apiCreate(
+    return this.api.create(
+      User,
       endpoint(emptyParam, emptyParam),
       (user) => endpoint(user, emptyParam),
       model
     );
   }
   public update(model: User): Observable<User> {
-    return this.apiUpdate(endpoint(model, emptyParam), model);
+    return this.api.update(User, endpoint(model, emptyParam), model);
   }
   public destroy(model: IdOr<User>): Observable<User | void> {
-    return this.apiDestroy(endpoint(model, emptyParam));
+    return this.api.destroy(endpoint(model, emptyParam));
   }
 }
 

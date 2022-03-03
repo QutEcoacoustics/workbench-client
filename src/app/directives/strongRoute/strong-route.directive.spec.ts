@@ -5,14 +5,17 @@ import {
   RouterLinkWithHref,
 } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
-import { generateApiErrorDetailsV2 } from "@test/fakes/ApiErrorDetails";
-import { generatePageInfoResolvers, nStepObservable } from "@test/helpers/general";
+import { generateBawApiError } from "@test/fakes/BawApiError";
+import {
+  generatePageInfoResolvers,
+  nStepObservable,
+} from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { StrongRouteDirective } from "./strong-route.directive";
 
@@ -240,7 +243,9 @@ describe("StrongRouteDirective", () => {
         testing: (model0 as MockModel)?.id,
       }));
       setup(childRoute);
-      await setRouteData(generatePageInfoResolvers({ model: new MockModel({ id: 1 }) }));
+      await setRouteData(
+        generatePageInfoResolvers({ model: new MockModel({ id: 1 }) })
+      );
       assertUrlTree("/home", { testing: 1 });
     });
 
@@ -263,17 +268,20 @@ describe("StrongRouteDirective", () => {
     });
 
     it("should pass failed model to queryParams", async () => {
-      const error = generateApiErrorDetailsV2();
+      const error = generateBawApiError();
       const childRoute = StrongRoute.newRoot().add(
         "home",
         (_, { model0, model1 }) => ({
           testing: (model0 as MockModel)?.id,
-          example: (model1 as ApiErrorDetails)?.status,
+          example: (model1 as BawApiError)?.status,
         })
       );
       setup(childRoute);
       await setRouteData(
-        generatePageInfoResolvers({ model: new MockModel({ id: 1 }) }, { error })
+        generatePageInfoResolvers(
+          { model: new MockModel({ id: 1 }) },
+          { error }
+        )
       );
       assertUrlTree("/home", { testing: 1, example: error.status });
     });

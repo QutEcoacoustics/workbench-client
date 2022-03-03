@@ -33,7 +33,9 @@ nav {
 
   /* Prevents some elements overflowing and changing the height of the header */
   li {
+    height: 40px;
     min-height: 40px;
+    max-height: 40px;
   }
 }
 

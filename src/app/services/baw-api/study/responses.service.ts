@@ -1,8 +1,6 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { IResponse, Response } from "@models/Response";
+import { Response } from "@models/Response";
 import { Study } from "@models/Study";
 import { Observable } from "rxjs";
 import {
@@ -15,7 +13,7 @@ import {
   option,
   StandardApi,
 } from "../api-common";
-import { Filters } from "../baw-api.service";
+import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
 const studyId: IdParam<Study> = id;
@@ -24,76 +22,74 @@ const endpoint = stringTemplate`/studies/${studyId}/responses/${responseId}${opt
 const endpointShallow = stringTemplate`/responses/${responseId}${option}`;
 
 @Injectable()
-export class ResponsesService extends StandardApi<Response, [IdOr<Study>]> {
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
-  ) {
-    super(http, apiRoot, Response, injector);
-  }
+export class ResponsesService implements StandardApi<Response, [IdOr<Study>]> {
+  public constructor(private api: BawApiService<Response>) {}
 
   public list(study: IdOr<Study>): Observable<Response[]> {
-    return this.apiList(endpoint(study, emptyParam, emptyParam));
+    return this.api.list(Response, endpoint(study, emptyParam, emptyParam));
   }
   public filter(
-    filters: Filters<IResponse>,
+    filters: Filters<Response>,
     study: IdOr<Study>
   ): Observable<Response[]> {
-    return this.apiFilter(endpoint(study, emptyParam, filterParam), filters);
+    return this.api.filter(
+      Response,
+      endpoint(study, emptyParam, filterParam),
+      filters
+    );
   }
   public show(model: IdOr<Response>, study: IdOr<Study>): Observable<Response> {
-    return this.apiShow(endpoint(study, model, emptyParam));
+    return this.api.show(Response, endpoint(study, model, emptyParam));
   }
   public create(model: Response, study: IdOr<Study>): Observable<Response> {
-    return this.apiCreate(
+    return this.api.create(
+      Response,
       endpoint(study, emptyParam, emptyParam),
       (response) => endpoint(study, response, emptyParam),
       model
     );
   }
   public update(model: Response, study: IdOr<Study>): Observable<Response> {
-    return this.apiUpdate(endpoint(study, model, emptyParam), model);
+    return this.api.update(Response, endpoint(study, model, emptyParam), model);
   }
   public destroy(
     model: IdOr<Response>,
     study: IdOr<Study>
   ): Observable<Response | void> {
-    return this.apiDestroy(endpoint(study, model, emptyParam));
+    return this.api.destroy(endpoint(study, model, emptyParam));
   }
 }
 
 @Injectable()
-export class ShallowResponsesService extends StandardApi<Response> {
-  public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
-  ) {
-    super(http, apiRoot, Response, injector);
-  }
+export class ShallowResponsesService implements StandardApi<Response> {
+  public constructor(private api: BawApiService<Response>) {}
 
   public list(): Observable<Response[]> {
-    return this.apiList(endpointShallow(emptyParam, emptyParam));
+    return this.api.list(Response, endpointShallow(emptyParam, emptyParam));
   }
-  public filter(filters: Filters<IResponse>): Observable<Response[]> {
-    return this.apiFilter(endpointShallow(emptyParam, filterParam), filters);
+  public filter(filters: Filters<Response>): Observable<Response[]> {
+    return this.api.filter(
+      Response,
+      endpointShallow(emptyParam, filterParam),
+      filters
+    );
   }
   public show(model: IdOr<Response>): Observable<Response> {
-    return this.apiShow(endpointShallow(model, emptyParam));
+    return this.api.show(Response, endpointShallow(model, emptyParam));
   }
   public create(model: Response): Observable<Response> {
-    return this.apiCreate(
+    return this.api.create(
+      Response,
       endpointShallow(emptyParam, emptyParam),
       (response) => endpointShallow(response, emptyParam),
       model
     );
   }
   public update(model: Response): Observable<Response> {
-    return this.apiUpdate(endpointShallow(model, emptyParam), model);
+    return this.api.update(Response, endpointShallow(model, emptyParam), model);
   }
   public destroy(model: IdOr<Response>): Observable<Response | void> {
-    return this.apiDestroy(endpointShallow(model, emptyParam));
+    return this.api.destroy(endpointShallow(model, emptyParam));
   }
 }
 

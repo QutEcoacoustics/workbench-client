@@ -1,26 +1,31 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { Statistics } from "@models/Statistics";
-import { createServiceFactory } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateStatistics } from "@test/fakes/Statistics";
 import { validateApiShow } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { StatisticsService } from "./statistics.service";
 
-type Model = Statistics;
-type Params = [];
-type Service = StatisticsService;
-
-describe("StatisticsService", function () {
+describe("StatisticsService", (): void => {
   const createModel = () => new Statistics(generateStatistics());
   const baseUrl = "/stats";
+  let spec: SpectatorService<StatisticsService>;
   const createService = createServiceFactory({
     service: StatisticsService,
-    imports: [HttpClientTestingModule, MockAppConfigModule],
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
-  beforeEach(function () {
-    this.service = createService().service;
+  beforeEach((): void => {
+    spec = createService();
   });
 
-  validateApiShow<Model, Params, Service>(baseUrl, 5, createModel);
+  validateApiShow(() => spec, Statistics, baseUrl, 5, createModel);
 });

@@ -1,24 +1,22 @@
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { Injectable } from "@angular/core";
+import { BawSessionService } from "@baw-api/baw-session.service";
+import { toSnakeCase } from "@helpers/case-converter/case-converter";
+import { toBase64Url } from "@helpers/encoding/encoding";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioRecording } from "@models/AudioRecording";
 import type { Region } from "@models/Region";
 import type { Site } from "@models/Site";
 import { Observable } from "rxjs";
-import { toBase64Url } from "@helpers/encoding/encoding";
-import { toSnakeCase } from "@helpers/case-converter/case-converter";
 import {
   emptyParam,
   filterParam,
   id,
   IdOr,
   IdParamOptional,
-  isId,
   option,
   ReadonlyApi,
 } from "../api-common";
-import { Filters } from "../baw-api.service";
+import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
 const audioRecordingId: IdParamOptional<AudioRecording> = id;
@@ -32,25 +30,26 @@ const downloadEndpoint = stringTemplate`/audio_recordings/downloader`;
 export const audioRecordingOriginalEndpoint = stringTemplate`/audio_recordings/${audioRecordingId}/original`;
 
 @Injectable()
-export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
+export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
   public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    injector: Injector
-  ) {
-    super(http, apiRoot, AudioRecording, injector);
-  }
+    private api: BawApiService<AudioRecording>,
+    private session: BawSessionService
+  ) {}
 
   public list(): Observable<AudioRecording[]> {
-    return this.apiList(endpoint(emptyParam, emptyParam));
+    return this.api.list(AudioRecording, endpoint(emptyParam, emptyParam));
   }
   public filter(
     filters: Filters<AudioRecording>
   ): Observable<AudioRecording[]> {
-    return this.apiFilter(endpoint(emptyParam, filterParam), filters);
+    return this.api.filter(
+      AudioRecording,
+      endpoint(emptyParam, filterParam),
+      filters
+    );
   }
   public show(model: IdOr<AudioRecording>): Observable<AudioRecording> {
-    return this.apiShow(endpoint(model, emptyParam));
+    return this.api.show(AudioRecording, endpoint(model, emptyParam));
   }
 
   /**
@@ -64,7 +63,7 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
     site: IdOr<Site>
   ): Observable<AudioRecording[]> {
     return this.filter(
-      this.filterThroughAssociation(filters, "siteId", site) as Filters
+      this.api.filterThroughAssociation(filters, "siteId", site)
     );
   }
 
@@ -79,24 +78,17 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
     filters: Filters<AudioRecording>,
     region: IdOr<Region>
   ): Observable<AudioRecording[]> {
-    if (isId(region)) {
-      return this.filter(
-        this.filterThroughAssociation(filters, "sites.regionId" as any, region)
-      );
-    }
-
-    // If we know the site ids, no need to make unnecessary db request
     return this.filter(
-      this.filterThroughAssociations(
+      this.api.filterThroughAssociation(
         filters,
-        "siteId",
-        Array.from(region.siteIds)
-      ) as Filters
+        "sites.regionId" as any,
+        region
+      )
     );
   }
 
   public downloadUrl(audioRecording: IdOr<AudioRecording>) {
-    return this.getPath(audioRecordingOriginalEndpoint(audioRecording));
+    return this.api.getPath(audioRecordingOriginalEndpoint(audioRecording));
   }
 
   /**
@@ -105,20 +97,21 @@ export class AudioRecordingsService extends ReadonlyApi<AudioRecording> {
    * @param filter Audio recording filters
    */
   public batchDownloadUrl(filter: Filters<AudioRecording>): string {
+    // TODO Implement logic from sites downloadAnnotations function
     // TODO Extract this logic with URLSearchParams to some core functionality
     let body = {
       // Base64 RFC 4648 §5 encoding
       filterEncoded: toBase64Url(JSON.stringify(toSnakeCase(filter))),
     };
 
-    if (this.getLocalUser()) {
-      body["authToken"] = this.getLocalUser().authToken;
+    if (this.session.isLoggedIn) {
+      body["authToken"] = this.session.authToken;
     }
 
     body = toSnakeCase(body);
 
     const qsp = new URLSearchParams(body);
-    return this.getPath(downloadEndpoint()) + "?" + qsp.toString();
+    return this.api.getPath(downloadEndpoint()) + "?" + qsp.toString();
   }
 }
 

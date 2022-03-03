@@ -2,7 +2,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
+import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import {
   destroyGoogleMaps,
   embedGoogleMaps,
@@ -17,7 +17,7 @@ import {
 } from "@ngneat/spectator";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormComponent } from "@shared/form/form.component";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -91,7 +91,7 @@ describe("SiteNewComponent", () => {
 
     function setup(project: Errorable<Project>, region?: Errorable<Region>) {
       function getResolvedModel<T>(model: Errorable<T>): ResolvedModel<T> {
-        return isApiErrorDetails(model) ? { error: model } : { model };
+        return isBawApiError(model) ? { error: model } : { model };
       }
 
       const resolvers = { project: "resolver", site: "resolver" };
@@ -130,13 +130,13 @@ describe("SiteNewComponent", () => {
 
         if (withRegion) {
           it("should handle region error", () => {
-            setup(defaultProject, generateApiErrorDetails());
+            setup(defaultProject, generateBawApiError());
             assertErrorHandler(spec.fixture);
           });
         }
 
         it("should handle project error", () => {
-          setup(generateApiErrorDetails(), defaultRegion);
+          setup(generateBawApiError(), defaultRegion);
           assertErrorHandler(spec.fixture);
         });
 

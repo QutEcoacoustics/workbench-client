@@ -1,7 +1,7 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SitesService } from "@baw-api/site/sites.service";
+import { Errorable } from "@helpers/advancedTypes";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
@@ -12,7 +12,7 @@ import {
 } from "@ngneat/spectator";
 import { MapComponent } from "@shared/map/map.component";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -79,7 +79,7 @@ describe("SiteMapComponent", () => {
   }
 
   function interceptApiRequest(
-    responses: (Site[] | ApiErrorDetails)[],
+    responses: Errorable<Site[]>[],
     expectations?: ((filter: Filters<ISite>, project: Project) => void)[],
     hasRegion?: boolean
   ): Promise<void>[] {
@@ -98,9 +98,7 @@ describe("SiteMapComponent", () => {
   }
 
   it("should handle error", async () => {
-    const promise = Promise.all(
-      interceptApiRequest([generateApiErrorDetails()])
-    );
+    const promise = Promise.all(interceptApiRequest([generateBawApiError()]));
     await assertMapMarkers(promise, []);
   });
 

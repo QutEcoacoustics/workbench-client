@@ -79,4 +79,6 @@ report.*.*.*.*.*.json
 
 # Old Client
 src/assets/old-client/
+
+# Chrome data
 .vscode/chrome-userdatadir/

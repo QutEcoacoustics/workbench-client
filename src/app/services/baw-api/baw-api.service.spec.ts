@@ -1,32 +1,40 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TestRequest } from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
-import {
-  ApiErrorDetails,
-  BawApiInterceptor,
-} from "@baw-api/api.interceptor.service";
+import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
 import {
   ApiResponse,
   BawApiService,
   Filters,
   Meta,
-  STUB_MODEL_BUILDER,
 } from "@baw-api/baw-api.service";
 import { MockSecurityService } from "@baw-api/mock/securityMock.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { UserService } from "@baw-api/user/user.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { AuthToken } from "@interfaces/apiInterfaces";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
 import { bawPersistAttr } from "@models/AttributeDecorators";
-import { SessionUser } from "@models/User";
+import { User } from "@models/User";
 import {
   createHttpFactory,
   HttpMethod,
+  mockProvider,
   SpectatorHttp,
 } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
-import { generateSessionUser } from "@test/fakes/User";
+import { generateUser } from "@test/fakes/User";
+import { modelData } from "@test/helpers/faker";
+import { assertOk } from "@test/helpers/general";
+import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
+import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, noop, Observable, Subject } from "rxjs";
+import {
+  BawSessionService,
+  guestAuthToken,
+  guestUser,
+} from "./baw-session.service";
 import { MockShowApiService } from "./mock/apiMocks.service";
 
 export const shouldNotSucceed = () => {
@@ -86,20 +94,23 @@ describe("BawApiService", () => {
     /** Multiple models */
     multi: IMockModel[];
     /** Basic error */
-    error: ApiErrorDetails;
+    error: BawApiError;
     /** Extended error */
-    errorInfo: ApiErrorDetails;
+    errorInfo: BawApiError;
   };
 
-  let sessionUser: SessionUser;
+  let defaultAuthToken: AuthToken;
+  let defaultUser: User;
   let apiRoot: string;
+  let session: BawSessionService;
   let service: BawApiService<MockModel>;
   let spec: SpectatorHttp<BawApiService<MockModel>>;
   const createService = createHttpFactory<BawApiService<MockModel>>({
     service: BawApiService,
     imports: [MockAppConfigModule],
     providers: [
-      BawApiService,
+      BawSessionService,
+      mockProvider(ToastrService),
       { provide: SecurityService, useClass: MockSecurityService },
       { provide: UserService, useClass: MockShowApiService },
       {
@@ -107,16 +118,15 @@ describe("BawApiService", () => {
         useClass: BawApiInterceptor,
         multi: true,
       },
-      { provide: STUB_MODEL_BUILDER, useValue: MockModel },
     ],
   });
 
-  function signIn(_sessionUser: SessionUser) {
-    localStorage.setItem("baw.client.user", JSON.stringify(_sessionUser));
+  function signIn(user: User, authToken: AuthToken) {
+    session.setLoggedInUser(user, authToken);
   }
 
   function signOut() {
-    localStorage.removeItem("baw.client.user");
+    session.clearLoggedInUser();
   }
 
   function flushResponse<T>(req: TestRequest, response: ApiResponse<T>) {
@@ -151,11 +161,13 @@ describe("BawApiService", () => {
   }
 
   beforeEach(() => {
-    localStorage.clear();
     spec = createService();
     service = spec.service;
     apiRoot = spec.inject(API_ROOT);
-    sessionUser = new SessionUser(generateSessionUser());
+    session = spec.inject(BawSessionService);
+
+    defaultAuthToken = modelData.authToken();
+    defaultUser = new User(generateUser());
 
     const successMeta = { status: 200, message: "OK" };
     meta = {
@@ -180,68 +192,67 @@ describe("BawApiService", () => {
       },
     };
 
-    const modelData = {
+    const model = {
       id: 1,
       name: "name",
       caseConversion: { testConvert: "converted" },
     };
     responses = {
-      single: modelData,
-      multi: [modelData],
-      error: { status: 401, message: "Unauthorized Access", info: undefined },
-      errorInfo: {
-        status: 422,
-        message: "Record could not be saved",
-        info: { name: ["has already been taken"], image: [] },
-      },
+      single: model,
+      multi: [model],
+      error: new BawApiError(UNAUTHORIZED, "Unauthorized Access"),
+      errorInfo: new BawApiError(
+        UNPROCESSABLE_ENTITY,
+        "Record could not be saved",
+        { name: ["has already been taken"], image: [] }
+      ),
     };
   });
 
   afterEach(() => {
-    localStorage.clear();
     spec.controller.verify();
   });
 
   describe("Session Tracking", () => {
-    it("should not change local storage on first load", () => {
-      expect(localStorage.length).toBe(0);
-    });
-
     it("should not be logged in", () => {
-      expect(service.isLoggedIn()).toBe(false);
+      expect(session.isLoggedIn).toBe(false);
     });
 
     it("should not return user", () => {
-      expect(service.getLocalUser()).toBe(undefined);
+      expect(session.loggedInUser).toBe(guestUser);
     });
 
-    it("should be logged in after user saved to local storage", () => {
-      signIn(sessionUser);
-      expect(service.isLoggedIn()).toBeTruthy();
+    it("should be logged in after sign in", () => {
+      signIn(defaultUser, defaultAuthToken);
+      expect(session.isLoggedIn).toBeTruthy();
     });
 
-    it("should return user after user saved to local storage", () => {
-      signIn(sessionUser);
-      expect(service.getLocalUser().authToken).toBe(sessionUser.authToken);
-      expect(service.getLocalUser().userName).toBe(sessionUser.userName);
+    it("should successfully store user", () => {
+      signIn(defaultUser, defaultAuthToken);
+      expect(session.loggedInUser).toBe(defaultUser);
     });
 
-    it("should not be logged in after user removed from local storage", () => {
-      signIn(sessionUser);
+    it("should successfully store auth token", () => {
+      signIn(defaultUser, defaultAuthToken);
+      expect(session.authToken).toBe(defaultAuthToken);
+    });
+
+    it("should not be logged in after sign out", () => {
+      signIn(defaultUser, defaultAuthToken);
       signOut();
-      expect(service.isLoggedIn()).toBe(false);
+      expect(session.isLoggedIn).toBe(false);
     });
 
-    it("should not return user after user removed from local storage", () => {
-      signIn(sessionUser);
+    it("should not return user after sign out", () => {
+      signIn(defaultUser, defaultAuthToken);
       signOut();
-      expect(service.getLocalUser()).toBe(undefined);
+      expect(session.loggedInUser).toBe(guestUser);
     });
 
-    it("should handle corrupted user data", () => {
-      localStorage.setItem("baw.client.user", '{"');
-      expect(service.getLocalUser()).toBe(undefined);
-      expect(service.isLoggedIn()).toBe(false);
+    it("should not return auth token after sign out", () => {
+      signIn(defaultUser, defaultAuthToken);
+      signOut();
+      expect(session.authToken).toBe(guestAuthToken);
     });
   });
 
@@ -288,9 +299,9 @@ describe("BawApiService", () => {
         });
 
         it("should create request with authenticated baw server headers", () => {
-          signIn(sessionUser);
+          signIn(defaultUser, defaultAuthToken);
           functionCall();
-          verifyAuthHeaders(catchFunctionCall(), sessionUser.authToken);
+          verifyAuthHeaders(catchFunctionCall(), defaultAuthToken);
         });
 
         it("should return single response", (done) => {
@@ -340,7 +351,7 @@ describe("BawApiService", () => {
         it("should complete on success", (done) => {
           const response = { meta: meta.single, data: responses.single };
           functionCall(undefined, noop, noop, () => {
-            expect(true).toBeTruthy();
+            assertOk();
             done();
           });
           flushResponse(catchFunctionCall(), response);
@@ -389,52 +400,62 @@ describe("BawApiService", () => {
   });
 
   describe("API Request Methods", () => {
-    type HttpFunctionCall = "httpGet" | "httpDelete" | "httpPost" | "httpPatch";
-
     const tests: {
-      method: string;
-      http: HttpFunctionCall;
+      method: keyof BawApiService<AbstractModel>;
+      http: keyof BawApiService<AbstractModel>;
       hasBody?: boolean;
       hasFilter?: boolean;
       singleResult?: boolean;
       multiResult?: boolean;
+      updateOnAuthTrigger?: boolean;
     }[] = [
       {
-        method: "apiList",
+        method: "list",
         http: "httpGet",
         multiResult: true,
+        updateOnAuthTrigger: true,
       },
       {
-        method: "apiFilter",
+        method: "filter",
         http: "httpPost",
         hasFilter: true,
         multiResult: true,
+        updateOnAuthTrigger: true,
       },
       {
-        method: "apiShow",
+        method: "show",
         http: "httpGet",
         singleResult: true,
+        updateOnAuthTrigger: true,
       },
       {
-        method: "apiCreate",
+        method: "create",
         http: "httpPost",
         hasBody: true,
         singleResult: true,
       },
       {
-        method: "apiUpdate",
+        method: "update",
         http: "httpPatch",
         hasBody: true,
         singleResult: true,
       },
       {
-        method: "apiDestroy",
+        method: "destroy",
         http: "httpDelete",
         singleResult: true,
       },
     ];
     tests.forEach(
-      ({ method, http, hasFilter, hasBody, singleResult, multiResult }) => {
+      ({
+        method,
+        http,
+        hasFilter,
+        hasBody,
+        singleResult,
+        multiResult,
+        updateOnAuthTrigger,
+      }) => {
         describe(method, () => {
           let defaultBody: IMockModel;
           let defaultFilter: Filters<IMockModel>;
@@ -444,7 +465,7 @@ describe("BawApiService", () => {
             defaultFilter = { paging: { page: 1 } };
           });
 
-          function errorRequest(error: ApiErrorDetails): jasmine.Spy {
+          function errorRequest(error: BawApiError): jasmine.Spy {
             const spy = jasmine.createSpy(http).and.callFake(() => {
               const subject = new Subject();
               subject.error(error);
@@ -466,22 +487,33 @@ describe("BawApiService", () => {
             return spy;
           }
 
-          function functionCall() {
-            if (method === "apiCreate") {
-              return service[method](
-                "/broken_link",
-                (model) => "/broken_link/" + model.id,
-                new MockModel(defaultBody, service["injector"])
-              );
-            } else if (hasBody) {
-              return service[method](
-                "/broken_link",
-                new MockModel(defaultBody, service["injector"])
-              );
-            } else if (hasFilter) {
-              return service[method]("/broken_link", defaultFilter);
-            } else {
-              return service[method]("/broken_link");
+          function functionCall(): Observable<MockModel[] | MockModel> {
+            switch (method) {
+              case "list":
+                return service[method](MockModel, "/broken_link");
+              case "filter":
+                return service[method](
+                  MockModel,
+                  "/broken_link",
+                  defaultFilter
+                );
+              case "show":
+                return service[method](MockModel, "/broken_link");
+              case "create":
+                return service[method](
+                  MockModel,
+                  "/broken_link",
+                  (model) => "/broken_link/" + model.id,
+                  new MockModel(defaultBody, service["injector"])
+                );
+              case "update":
+                return service[method](
+                  MockModel,
+                  "/broken_link",
+                  new MockModel(defaultBody, service["injector"])
+                );
+              case "destroy":
+                return service[method]("/broken_link");
             }
           }
 
@@ -505,71 +537,116 @@ describe("BawApiService", () => {
             it("should handle response", (done) => {
               const response = { meta: meta.single, data: responses.single };
               successRequest(response);
-              functionCall().subscribe((data) => {
-                // Destroy returns void
-                if (method === "apiDestroy") {
-                  expect(data).toBe(null);
-                } else {
-                  expect(data).toEqual(
-                    new MockModel(response.data, service["injector"])
-                  );
-                }
-                done();
-              }, shouldNotFail);
+              functionCall().subscribe({
+                next: (data) => {
+                  // Destroy returns void
+                  if (method === "destroy") {
+                    expect(data).toBe(null);
+                  } else {
+                    expect(data).toEqual(
+                      new MockModel(response.data, service["injector"])
+                    );
+                  }
+                  done();
+                },
+                error: shouldNotFail,
+              });
             });
           }
 
           if (multiResult) {
             it("should handle empty response", (done) => {
               successRequest({ meta: meta.multi, data: [] });
-              functionCall().subscribe((data) => {
-                expect(data).toEqual([]);
-                done();
-              }, shouldNotFail);
+              functionCall().subscribe({
+                next: (data) => {
+                  expect(data).toEqual([]);
+                  done();
+                },
+                error: shouldNotFail,
+              });
             });
 
             it("should handle response", (done) => {
               const response = { meta: meta.multi, data: responses.multi };
               successRequest(response);
-              functionCall().subscribe((data) => {
-                expect(data).toEqual(
-                  response.data.map(
-                    (model) => new MockModel(model, service["injector"])
-                  )
-                );
-                done();
-              }, shouldNotFail);
+              functionCall().subscribe({
+                next: (data) => {
+                  expect(data).toEqual(
+                    response.data.map(
+                      (model) => new MockModel(model, service["injector"])
+                    )
+                  );
+                  done();
+                },
+                error: shouldNotFail,
+              });
             });
           }
 
           it("should handle error response", (done) => {
             errorRequest(responses.error);
-            functionCall().subscribe(shouldNotSucceed, (err) => {
-              expect(err).toEqual(responses.error);
-              done();
+            functionCall().subscribe({
+              next: shouldNotSucceed,
+              error: (err) => {
+                expect(err).toEqual(responses.error);
+                done();
+              },
             });
           });
 
           it("should handle error info response", (done) => {
             errorRequest(responses.errorInfo);
-            functionCall().subscribe(shouldNotSucceed, (err) => {
-              expect(err).toEqual(responses.errorInfo);
-              done();
+            functionCall().subscribe({
+              next: shouldNotSucceed,
+              error: (err) => {
+                expect(err).toEqual(responses.errorInfo);
+                done();
+              },
             });
           });
 
-          it("should complete on success", (done) => {
-            if (singleResult) {
-              successRequest({ meta: meta.single, data: responses.single });
-            } else {
-              successRequest({ meta: meta.multi, data: responses.multi });
-            }
-
-            functionCall().subscribe(noop, shouldNotFail, () => {
-              expect(true).toBeTruthy();
-              done();
+          if (updateOnAuthTrigger) {
+            it("should retrigger if auth changes", (done) => {
+              let count = 0;
+              const response = singleResult
+                ? { meta: meta.single, data: responses.single }
+                : { meta: meta.multi, data: responses.multi };
+              successRequest(response);
+              functionCall().subscribe({
+                next: (data): void => {
+                  expect(data).toEqual(
+                    singleResult
+                      ? new MockModel(responses.single, service["injector"])
+                      : responses.multi.map(
+                          (model) => new MockModel(model, service["injector"])
+                        )
+                  );
+                  if (count === 2) {
+                    done();
+                  } else {
+                    count++;
+                  }
+                },
+                error: shouldNotFail,
+              });
+              signIn(defaultUser, defaultAuthToken);
+              signOut();
             });
-          });
+          } else {
+            it("should complete on api response", (done) => {
+              const response = singleResult
+                ? { meta: meta.single, data: responses.single }
+                : { meta: meta.multi, data: responses.multi };
+              successRequest(response);
+              functionCall().subscribe({
+                error: shouldNotFail,
+                complete: () => {
+                  assertOk();
+                  done();
+                },
+              });
+            });
+          }
         });
       }
     );

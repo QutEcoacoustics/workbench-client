@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { getUnknownViewUrl } from "@models/AbstractModel";
@@ -16,7 +15,6 @@ export class HarvestCompleteComponent
 {
   @Input() public project: Project;
   public sites: Site[];
-  public error: ApiErrorDetails;
   public columns = [{ name: "Id" }, { name: "Name" }, { name: "Actions" }];
   public sortKeys = { id: "id", name: "name" };
 

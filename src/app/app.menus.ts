@@ -1,6 +1,6 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { Project } from "./models/Project";
-import { SessionUser } from "./models/User";
+import { User } from "./models/User";
 import { ResolvedModel } from "./services/baw-api/resolver-common";
 
 export const defaultAudioIcon: IconProp = ["fas", "file-audio"];
@@ -16,14 +16,14 @@ export const defaultAnnotationDownloadIcon: IconProp = ["fas", "file-download"];
  *
  * @param user Session User Data
  */
-export const isGuestPredicate = (user: SessionUser): boolean => !user;
+export const isGuestPredicate = (user: User): boolean => !user;
 
 /**
  * Returns true only if user is logged in
  *
  * @param user Session User Data
  */
-export const isLoggedInPredicate = (user: SessionUser): boolean => !!user;
+export const isLoggedInPredicate = (user: User): boolean => !!user;
 
 /**
  * Returns true only if user is an admin or user id matches project owner id
@@ -31,10 +31,7 @@ export const isLoggedInPredicate = (user: SessionUser): boolean => !!user;
  * @param user Session User Data
  * @param data Page Data
  */
-export const isProjectEditorPredicate = (
-  user: SessionUser,
-  data: any
-): boolean => {
+export const isProjectEditorPredicate = (user: User, data: any): boolean => {
   const project = (data?.project as ResolvedModel<Project>)?.model;
   return isAdminPredicate(user) || !!project?.canEdit;
 };
@@ -44,5 +41,5 @@ export const isProjectEditorPredicate = (
  *
  * @param user Session User Data
  */
-export const isAdminPredicate = (user: SessionUser): boolean =>
+export const isAdminPredicate = (user: User): boolean =>
   isLoggedInPredicate(user) && user.isAdmin;

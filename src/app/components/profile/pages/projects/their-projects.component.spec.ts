@@ -1,8 +1,8 @@
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AccessLevel } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
@@ -12,7 +12,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateUser } from "@test/fakes/User";
 import { assertErrorHandler, assertUrl } from "@test/helpers/html";
@@ -30,7 +30,7 @@ describe("TheirProjectsComponent", () => {
     stubsEnabled: false,
   });
 
-  function setup(model: User, error?: ApiErrorDetails) {
+  function setup(model: User, error?: BawApiError) {
     spec = createComponent({
       detectChanges: false,
       data: {
@@ -76,7 +76,7 @@ describe("TheirProjectsComponent", () => {
   });
 
   it("should handle user error", () => {
-    setup(undefined, generateApiErrorDetails());
+    setup(undefined, generateBawApiError());
     interceptRequest([]);
     spec.detectChanges();
     assertErrorHandler(spec.fixture);

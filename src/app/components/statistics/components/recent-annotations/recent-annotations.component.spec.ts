@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
-import { isApiErrorDetails } from "@helpers/baw-api/baw-api";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -29,7 +28,6 @@ import {
   DataTableBodyCellComponent,
   DatatableComponent,
 } from "@swimlane/ngx-datatable";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateSite } from "@test/fakes/Site";
@@ -41,6 +39,9 @@ import {
   interceptShowApiRequest,
 } from "@test/helpers/general";
 import { assertUrl } from "@test/helpers/html";
+import { BawSessionService } from "@baw-api/baw-session.service";
+import { generateBawApiError } from "@test/fakes/BawApiError";
+import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { RecentAnnotationsComponent } from "./recent-annotations.component";
 
 describe("RecentAnnotationsComponent", () => {
@@ -51,7 +52,7 @@ describe("RecentAnnotationsComponent", () => {
     tags: SpyObject<TagsService>;
     security: SecurityService;
   };
-
+  let session: BawSessionService;
   let defaultAnnotation: AudioEvent;
   let injector: Injector;
   let spec: Spectator<RecentAnnotationsComponent>;
@@ -63,23 +64,21 @@ describe("RecentAnnotationsComponent", () => {
   function interceptSiteRequest(
     data?: Errorable<Partial<ISite>>
   ): Promise<any> {
-    const response = isApiErrorDetails(data) ? data : generateSite(data);
+    const response = isBawApiError(data) ? data : generateSite(data);
     return interceptShowApiRequest(api.sites, injector, response, Site);
   }
 
   function interceptUserRequest(
     data?: Errorable<Partial<IUser>>
   ): Promise<any> {
-    const response = isApiErrorDetails(data) ? data : generateUser(data);
+    const response = isBawApiError(data) ? data : generateUser(data);
     return interceptShowApiRequest(api.users, injector, response, User);
   }
 
   function interceptAudioRecordingsRequest(
     data?: Errorable<Partial<IAudioRecording>>
   ): Promise<any> {
-    const response = isApiErrorDetails(data)
-      ? data
-      : generateAudioRecording(data);
+    const response = isBawApiError(data) ? data : generateAudioRecording(data);
     return interceptShowApiRequest(
       api.recordings,
       injector,
@@ -91,7 +90,7 @@ describe("RecentAnnotationsComponent", () => {
   function interceptTagsRequest(
     data?: Errorable<Partial<ITag>[]>
   ): Promise<any> {
-    const response = isApiErrorDetails(data)
+    const response = isBawApiError(data)
       ? data
       : (data ?? []).map((model) => generateTag(model));
     return interceptFilterApiRequest(api.tags, injector, response, Tag);
@@ -140,8 +139,7 @@ describe("RecentAnnotationsComponent", () => {
   }
 
   function setLoggedInState(isLoggedIn: boolean) {
-    spyOn(api.security, "isLoggedIn").and.callFake(() => isLoggedIn);
-    spec.component.isLoggedIn = isLoggedIn;
+    spyOnProperty(session, "isLoggedIn").and.callFake(() => isLoggedIn);
   }
 
   function setAnnotations(annotations: AudioEvent[]) {
@@ -158,6 +156,7 @@ describe("RecentAnnotationsComponent", () => {
       tags: spec.inject(TAG.token),
       security: spec.inject(SecurityService),
     };
+    session = spec.inject(BawSessionService);
     defaultAnnotation = new AudioEvent(generateAudioEvent(), injector);
   });
 
@@ -265,7 +264,7 @@ describe("RecentAnnotationsComponent", () => {
           isLoggedIn: true,
           awaitInitialRequests: true,
           awaitFinalRequests: true,
-          site: generateApiErrorDetails(),
+          site: generateBawApiError(),
         });
         expect(getSiteCellElement()).toContainText("Unknown Site");
       });

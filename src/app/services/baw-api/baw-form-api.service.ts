@@ -1,11 +1,12 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { Injectable } from "@angular/core";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractModelWithoutId } from "@models/AbstractModel";
+import { BAD_REQUEST } from "http-status";
 import { Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
-import { BawApiService, STUB_MODEL_BUILDER } from "./baw-api.service";
+import { BawApiService, unknownErrorCode } from "./baw-api.service";
 
 /*
  * Reads through a HTML document for recaptcha setup code to extract the
@@ -27,18 +28,11 @@ const authTokenRegex = /name="authenticity_token" value="(.+?)"/;
  * treated as a temporary measure while the baw-server lags behind development.
  */
 @Injectable()
-export class BawFormApiService<
-  Model extends AbstractModel
-> extends BawApiService<Model> {
+export class BawFormApiService<Model extends AbstractModelWithoutId> {
   public constructor(
-    http: HttpClient,
-    @Inject(API_ROOT) apiRoot: string,
-    @Inject(STUB_MODEL_BUILDER)
-    classBuilder: new (_: Record<string, any>, _injector?: Injector) => Model,
-    injector: Injector
-  ) {
-    super(http, apiRoot, classBuilder, injector);
-  }
+    private api: BawApiService<Model>,
+    private http: HttpClient
+  ) {}
 
   /**
    * Make a form request on non-JSON api endpoints with recaptcha
@@ -50,18 +44,19 @@ export class BawFormApiService<
    * @returns HTML page for request. Response may be a success, however the
    * html contains error messages which need to be extracted
    */
-  protected makeFormRequest(
+  public makeFormRequest(
     formEndpoint: string,
     submissionEndpoint: string,
     body: (authToken: string) => URLSearchParams
   ): Observable<string> {
     // Request HTML document to retrieve form containing auth token
-    return this.apiHtmlRequest(formEndpoint).pipe(
+    return this.htmlRequest(formEndpoint).pipe(
       map((page: string) => {
         // Extract auth token if exists
         const token = authTokenRegex.exec(page)?.[1];
         if (!isInstantiated(token)) {
-          throw new Error(
+          throw new BawApiError(
+            BAD_REQUEST,
             "Unable to retrieve authenticity token for form request."
           );
         }
@@ -69,23 +64,26 @@ export class BawFormApiService<
       }),
       // Mimic a traditional form-based request
       mergeMap((token: string) =>
-        this.apiFormRequest(submissionEndpoint, body(token))
+        this.formRequest(submissionEndpoint, body(token))
       ),
       tap((response: string) => {
         // Check for recaptcha error message in page body
         const errorMsg = "Captcha response was not correct.";
         if (response.includes(errorMsg)) {
-          throw Error(errorMsg);
+          throw new BawApiError(
+            BAD_REQUEST,
+            "Captcha response was not correct."
+          );
         }
       }),
       // Complete observable
       first(),
       // Handle custom errors
-      catchError(this.handleError)
+      catchError((err: BawApiError) => this.handleError(err))
     );
   }
 
-  protected makeFormRequestWithoutOutput(
+  public makeFormRequestWithoutOutput(
     formEndpoint: string,
     submissionEndpoint: string,
     body: (authToken: string) => URLSearchParams
@@ -101,9 +99,9 @@ export class BawFormApiService<
    * @param path Path to retrieve recatpcha seed from
    * @param extractSeed Regex to extract recaptcha seed from HTML response
    */
-  protected getRecaptchaSeed(path: string): Observable<RecaptchaSettings> {
+  public getRecaptchaSeed(path: string): Observable<RecaptchaSettings> {
     // Mock a HTML request to the server
-    return this.apiHtmlRequest(path).pipe(
+    return this.htmlRequest(path).pipe(
       map((page: string) => {
         // Extract seed and action from page
         const values = extractRecaptchaValues.exec(page);
@@ -111,14 +109,14 @@ export class BawFormApiService<
         const action = values?.[2];
 
         if (!seed || !action) {
-          throw new Error("Unable to setup recaptcha.");
+          throw new BawApiError(unknownErrorCode, "Unable to setup recaptcha.");
         }
         return { seed, action };
       }),
       // Complete observable
       first(),
       // Handle custom errors
-      catchError(this.handleError)
+      catchError((err: BawApiError) => this.handleError(err))
     );
   }
 
@@ -128,7 +126,7 @@ export class BawFormApiService<
    *
    * @param path API path
    */
-  protected apiHtmlRequest(path: string): Observable<string> {
+  public htmlRequest(path: string): Observable<string> {
     return this.http.get(this.getPath(path), {
       responseType: "text",
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -144,7 +142,7 @@ export class BawFormApiService<
    * @param path API path
    * @param formData Request body
    */
-  protected apiFormRequest(
+  public formRequest(
     path: string,
     formData: URLSearchParams
   ): Observable<string> {
@@ -157,6 +155,20 @@ export class BawFormApiService<
         "Content-Type": "application/x-www-form-urlencoded",
       }),
     });
+  }
+
+  /**
+   * @see BawApiService.handleError for more information
+   */
+  public handleError(err: BawApiError): Observable<never> {
+    return this.api.handleError(err);
+  }
+
+  /**
+   * @see BawApiService.getPath for more information
+   */
+  public getPath(path: string): string {
+    return this.api.getPath(path);
   }
 }
 

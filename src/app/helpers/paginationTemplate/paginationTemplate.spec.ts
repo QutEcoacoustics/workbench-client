@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import {
@@ -12,7 +12,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
 import { Subject } from "rxjs";
@@ -61,7 +61,7 @@ describe("PaginationTemplate", () => {
 
   function interceptFilter(
     models: Project[] = [],
-    error?: ApiErrorDetails,
+    error?: BawApiError,
     expectations?: (filters: Filters, ...args: any[]) => void
   ) {
     const subject = new Subject<Project[]>();
@@ -273,7 +273,7 @@ describe("PaginationTemplate", () => {
 
     describe("failure", () => {
       it("should set error to api response", async () => {
-        const error = generateApiErrorDetails();
+        const error = generateBawApiError();
         setup();
         const promise = interceptFilter(undefined, error);
         spectator.detectChanges();
@@ -284,7 +284,7 @@ describe("PaginationTemplate", () => {
 
       it("should set loading to false", async () => {
         setup();
-        const promise = interceptFilter(undefined, generateApiErrorDetails());
+        const promise = interceptFilter(undefined, generateBawApiError());
         spectator.detectChanges();
         createApiRequest();
         await promise;

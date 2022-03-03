@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -9,7 +8,6 @@ import {
 } from "@models/AbstractModel";
 import { AudioEvent } from "@models/AudioEvent";
 import { Site } from "@models/Site";
-import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs";
 
 @Component({
@@ -24,10 +22,7 @@ export class RecentAnnotationsComponent
 
   public recentAudioEvents: AudioEvent[];
 
-  public constructor(
-    private audioEventsApi: ShallowAudioEventsService,
-    private notifications: ToastrService
-  ) {
+  public constructor(private audioEventsApi: ShallowAudioEventsService) {
     super();
   }
 
@@ -48,25 +43,21 @@ export class RecentAnnotationsComponent
         this.site
       )
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe({
-        next: (events) => {
-          // Limit the selection of audio events by tagging count
-          const maxTags = 10;
-          let numTags = 0;
-          this.recentAudioEvents = [];
+      .subscribe((events) => {
+        // Limit the selection of audio events by tagging count
+        const maxTags = 10;
+        let numTags = 0;
+        this.recentAudioEvents = [];
 
-          for (const event of events) {
-            this.recentAudioEvents.push(event);
-            // An event with no taggings will still show a (not tagged) tag
-            numTags += Math.max(event.taggings.length, 1);
+        for (const event of events) {
+          this.recentAudioEvents.push(event);
+          // An event with no taggings will still show a (not tagged) tag
+          numTags += Math.max(event.taggings.length, 1);
 
-            if (numTags > maxTags) {
-              return;
-            }
+          if (numTags > maxTags) {
+            return;
           }
-        },
-        // TODO This should be a standardized handler for all BAW API errors
-        error: (err: ApiErrorDetails) => this.notifications.error(err.message),
+        }
       });
   }
 }

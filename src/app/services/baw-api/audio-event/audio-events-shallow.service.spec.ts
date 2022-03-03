@@ -1,35 +1,44 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
 import { IdOr } from "@baw-api/api-common";
+import { BawApiService } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import {
   validateApiFilter,
   validateCustomApiFilter,
 } from "@test/helpers/api-common";
+import { ToastrService } from "ngx-toastr";
 import { ShallowAudioEventsService } from "./audio-events.service";
 
 type Model = AudioEvent;
-type Params = [];
 type Service = ShallowAudioEventsService;
 
-describe("Shallow AudioEventsService", function () {
+describe("Shallow AudioEventsService", (): void => {
   const baseUrl = "/audio_events/";
-
-  beforeEach(function () {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MockAppConfigModule],
-      providers: [ShallowAudioEventsService],
-    });
-
-    this.service = TestBed.inject(ShallowAudioEventsService);
+  let spec: SpectatorService<ShallowAudioEventsService>;
+  const createService = createServiceFactory({
+    service: ShallowAudioEventsService,
+    imports: [MockAppConfigModule, HttpClientTestingModule],
+    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
 
-  validateApiFilter<Model, Params, Service>(baseUrl + "filter");
+  beforeEach((): void => {
+    spec = createService();
+  });
 
-  validateCustomApiFilter<Model, [...Params, IdOr<User>], Service>(
+  validateApiFilter(() => createService(), AudioEvent, baseUrl + "filter");
+
+  validateCustomApiFilter<Model, [IdOr<User>], Service>(
+    () => spec,
+    AudioEvent,
     baseUrl + "filter",
     "filterByCreator",
     { filter: { creatorId: { eq: 5 } } },
@@ -37,10 +46,12 @@ describe("Shallow AudioEventsService", function () {
     5
   );
 
-  validateCustomApiFilter<Model, [...Params, IdOr<Site>], Service>(
+  validateCustomApiFilter<Model, [IdOr<Site>], Service>(
+    () => spec,
+    AudioEvent,
     baseUrl + "filter",
     "filterBySite",
-    { filter: { ["audio_recordings.site_id" as any]: { eq: 5 } } },
+    { filter: { ["audioRecordings.siteId" as any]: { eq: 5 } } },
     undefined,
     5
   );

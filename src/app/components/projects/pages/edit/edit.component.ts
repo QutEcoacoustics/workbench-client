@@ -20,7 +20,6 @@ import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import schema from "../../project.schema.json";
 import { projectMenuItemActions } from "../details/details.component";
-import { projectErrorMsg } from "../new/new.component";
 
 const projectKey = "project";
 
@@ -51,7 +50,6 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
     super(notifications, route, router, {
       getModel: (models) => models[projectKey] as Project,
       successMsg: (model) => defaultSuccessMsg("updated", model.name),
-      failureMsg: (error) => projectErrorMsg(error),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   }

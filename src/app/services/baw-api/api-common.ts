@@ -3,7 +3,7 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AuthToken, Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
-import { BawApiService, Filters } from "./baw-api.service";
+import { Filters } from "./baw-api.service";
 
 /**
  * Variable is an id or AbstractModel
@@ -178,7 +178,6 @@ export interface ApiDestroy<
  * Api Class with all abilities enabled
  */
 export abstract class StandardApi<M extends AbstractModel, P extends any[] = []>
-  extends BawApiService<M>
   implements
     ApiList<M, P>,
     ApiFilter<M, P>,
@@ -208,11 +207,9 @@ export abstract class StandardApi<M extends AbstractModel, P extends any[] = []>
  * Api Class without the ability to update a model
  */
 export abstract class ImmutableApi<
-    M extends AbstractModel,
-    P extends any[] = []
-  >
-  extends BawApiService<M>
-  implements
+  M extends AbstractModel,
+  P extends any[] = []
+> implements
     ApiList<M, P>,
     ApiFilter<M, P>,
     ApiShow<M, P>,
@@ -236,7 +233,6 @@ export abstract class ImmutableApi<
  * Api Class with only readable abilities enabled
  */
 export abstract class ReadonlyApi<M extends AbstractModel, P extends any[] = []>
-  extends BawApiService<M>
   implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>
 {
   public abstract list(...urlParameters: P): Observable<M[]>;
@@ -251,11 +247,9 @@ export abstract class ReadonlyApi<M extends AbstractModel, P extends any[] = []>
  * Api Class with only the ability to Read and Create models
  */
 export abstract class ReadAndCreateApi<
-    M extends AbstractModel,
-    P extends any[] = []
-  >
-  extends BawApiService<M>
-  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiCreate<M, P>
+  M extends AbstractModel,
+  P extends any[] = []
+> implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiCreate<M, P>
 {
   public abstract list(...urlParameters: P): Observable<M[]>;
   public abstract filter(
@@ -270,11 +264,9 @@ export abstract class ReadAndCreateApi<
  * Api Class with only the ability to Read and Update models
  */
 export abstract class ReadAndUpdateApi<
-    M extends AbstractModel,
-    P extends any[] = []
-  >
-  extends BawApiService<M>
-  implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiUpdate<M, P>
+  M extends AbstractModel,
+  P extends any[] = []
+> implements ApiList<M, P>, ApiFilter<M, P>, ApiShow<M, P>, ApiUpdate<M, P>
 {
   public abstract list(...urlParameters: P): Observable<M[]>;
   public abstract filter(
@@ -292,11 +284,9 @@ export abstract class ReadAndUpdateApi<
  * Api Class without the ability to destroy a model
  */
 export abstract class NonDestructibleApi<
-    M extends AbstractModel,
-    P extends any[] = []
-  >
-  extends BawApiService<M>
-  implements
+  M extends AbstractModel,
+  P extends any[] = []
+> implements
     ApiList<M, P>,
     ApiFilter<M, P>,
     ApiShow<M, P>,

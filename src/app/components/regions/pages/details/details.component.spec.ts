@@ -1,10 +1,10 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { SiteCardComponent } from "@components/projects/components/site-card/site-card.component";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
@@ -14,7 +14,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -43,8 +43,8 @@ describe("RegionDetailsComponent", () => {
   function setup(
     project: Project,
     region: Region,
-    projectError?: ApiErrorDetails,
-    regionError?: ApiErrorDetails
+    projectError?: BawApiError,
+    regionError?: BawApiError
   ) {
     spectator = createComponent({
       detectChanges: false,
@@ -61,7 +61,7 @@ describe("RegionDetailsComponent", () => {
     api = spectator.inject(SitesService);
   }
 
-  function interceptApiRequest(responses: Site[] | ApiErrorDetails) {
+  function interceptApiRequest(responses: Site[] | BawApiError) {
     return interceptRepeatApiRequests<ISite, Site[]>(api.filter, [
       responses,
     ])[0];
@@ -119,14 +119,14 @@ describe("RegionDetailsComponent", () => {
 
   describe("error handling", () => {
     it("should handle failure to retrieve project", () => {
-      setup(undefined, defaultRegion, generateApiErrorDetails());
+      setup(undefined, defaultRegion, generateBawApiError());
       interceptApiRequest([]);
       spectator.detectChanges();
       assertErrorHandler(spectator.fixture);
     });
 
     it("should handle failure to retrieve region", () => {
-      setup(defaultProject, undefined, undefined, generateApiErrorDetails());
+      setup(defaultProject, undefined, undefined, generateBawApiError());
       interceptApiRequest([]);
       spectator.detectChanges();
       assertErrorHandler(spectator.fixture);

@@ -1,7 +1,7 @@
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
+import { Errorable } from "@helpers/advancedTypes";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
@@ -46,10 +46,7 @@ describe("AnnotationDownloadComponent", () => {
     return spec.query(".modal-footer");
   }
 
-  function setup(
-    modelList: string[],
-    models: (AbstractModel | ApiErrorDetails)[]
-  ) {
+  function setup(modelList: string[], models: Errorable<AbstractModel>[]) {
     spec = createComponent({ detectChanges: false });
     siteApi = spec.inject(SitesService);
 

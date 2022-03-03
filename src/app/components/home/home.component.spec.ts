@@ -22,7 +22,7 @@ import { CardImageComponent } from "@shared/cards/card-image/card-image.componen
 import { CardsComponent } from "@shared/cards/cards.component";
 import { IconsModule } from "@shared/icons/icons.module";
 import { LoadingModule } from "@shared/loading/loading.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { interceptFilterApiRequest } from "@test/helpers/general";
@@ -159,7 +159,7 @@ describe("HomeComponent", () => {
       });
 
       it("should handle filter error", async () => {
-        await test.awaitModel(generateApiErrorDetails());
+        await test.awaitModel(generateBawApiError());
         assertModelCardsCount(0);
         assertViewMorePlaceholder(true, test.modelName);
       });

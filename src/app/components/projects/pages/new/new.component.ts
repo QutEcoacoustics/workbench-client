@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   newProjectMenuItem,
@@ -9,7 +8,6 @@ import {
 } from "@components/projects/projects.menus";
 import {
   defaultSuccessMsg,
-  extendedErrorMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
 import { Project } from "@models/Project";
@@ -43,7 +41,6 @@ class NewComponent extends FormTemplate<Project> {
   ) {
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
-      failureMsg: (error) => projectErrorMsg(error),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   }
@@ -60,12 +57,3 @@ NewComponent.linkToRoute({
 });
 
 export { NewComponent };
-
-/**
- * Handle project form error messages
- *
- * @param err Api error details
- */
-export function projectErrorMsg(err: ApiErrorDetails) {
-  return extendedErrorMsg(err, { name: (value) => `name ${value[0]}` });
-}

@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   tagGroupResolvers,
   TagGroupsService,
 } from "@baw-api/tag/tag-group.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { TagGroup } from "@models/TagGroup";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateTagGroup } from "@test/fakes/TagGroup";
 import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
@@ -28,7 +28,7 @@ describe("AdminTagGroupsDeleteComponent", () => {
   let notifications: ToastrService;
   let router: Router;
 
-  function configureTestingModule(model: TagGroup, error?: ApiErrorDetails) {
+  function configureTestingModule(model: TagGroup, error?: BawApiError) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -79,7 +79,7 @@ describe("AdminTagGroupsDeleteComponent", () => {
     });
 
     it("should handle tag group error", () => {
-      configureTestingModule(undefined, generateApiErrorDetails());
+      configureTestingModule(undefined, generateBawApiError());
       assertErrorHandler(fixture);
     });
 
