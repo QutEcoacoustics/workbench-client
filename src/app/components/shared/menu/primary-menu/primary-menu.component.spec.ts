@@ -429,7 +429,7 @@ describe("PrimaryMenuComponent", () => {
         sideNav: true,
         width: viewports.large,
         style: {
-          display: "block",
+          display: "none",
         },
       },
       {

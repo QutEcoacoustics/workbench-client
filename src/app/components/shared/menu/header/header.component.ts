@@ -5,7 +5,6 @@ import { MenuService } from "@services/menu/menu.service";
 
 /**
  * Header Component
- * TODO Action and secondary menu toggles do not handle well on small displays
  */
 @Component({
   selector: "baw-header",

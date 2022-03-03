@@ -40,7 +40,7 @@ import { Observable } from "rxjs";
         <!-- External Link -->
         <a
           class="nav-link ps-3 py-2 rounded"
-          [href]="href"
+          [href]="href(routeParams | async)"
           [class.disabled]="link.disabled"
         >
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
@@ -73,7 +73,6 @@ export class MenuLinkComponent
   public queryParams: Observable<Params>;
   public routeParams: Observable<Params>;
   public disabledReason: string;
-  public href: string;
   public activeOptions: { exact: true } & IsActiveMatchOptions = {
     exact: true,
     matrixParams: "ignored",
@@ -103,10 +102,6 @@ export class MenuLinkComponent
     if (typeof this.link.disabled === "string") {
       this.disabledReason = this.link.disabled;
     }
-
-    if (!this.isInternalLink) {
-      this.handleExternalLink();
-    }
   }
 
   public get isInternalLink(): boolean {
@@ -121,10 +116,10 @@ export class MenuLinkComponent
     return this.link as MenuLink;
   }
 
-  private handleExternalLink(): void {
-    const uri = this.externalLink.uri(this.routeParams);
+  public href(routeParams: Params): string {
+    const uri = this.externalLink.uri(routeParams);
     // Redirect relative routes to api
     // ! This seems unintuitive and likely needs to be changed in the future #1712
-    this.href = uri.startsWith("/") ? this.apiRoot + uri : uri;
+    return uri.startsWith("/") ? this.apiRoot + uri : uri;
   }
 }

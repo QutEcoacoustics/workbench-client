@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Injector } from "@angular/core";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { User } from "@models/User";
@@ -26,7 +26,10 @@ const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
  */
 @Injectable()
 export class AccountsService implements StandardApi<User> {
-  public constructor(private api: BawApiService<User>) {}
+  public constructor(
+    private api: BawApiService<User>,
+    private injector: Injector
+  ) {}
 
   public list(): Observable<User[]> {
     return this.api.list(User, endpoint(emptyParam, emptyParam));

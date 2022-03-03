@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { Params } from "@angular/router";
-import { homeMenuItem } from "@components/home/home.menus";
 import { BreadcrumbsData, MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { map, Observable } from "rxjs";
@@ -55,7 +54,6 @@ export class BreadcrumbComponent implements OnInit {
   }
 
   public shouldShowBreadcrumbs(breadcrumbs: BreadcrumbsData): boolean {
-    // Dont show the breadcrumbs on the home page
-    return !breadcrumbs.includes(homeMenuItem);
+    return breadcrumbs.size > 0;
   }
 }
