@@ -18,8 +18,12 @@ import { map, Observable } from "rxjs";
         routeParams: routeParams$ | async
       } as data"
     >
-      <nav *ngIf="shouldShowBreadcrumbs(data)" aria-label="breadcrumb">
-        <ol class="breadcrumb bg-light p-1">
+      <nav
+        *ngIf="shouldShowBreadcrumbs(data)"
+        aria-label="breadcrumb"
+        class="bg-light"
+      >
+        <ol class="breadcrumb p-1">
           <li
             *ngFor="let breadcrumb of data.breadcrumbs"
             class="breadcrumb-item"

@@ -1,3 +1,7 @@
+nav {
+  padding-left: 0.75rem;
+}
+
 ol {
   & > :not(:last-child) {
     color: var(--baw-highlight);
