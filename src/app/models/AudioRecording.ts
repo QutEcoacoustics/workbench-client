@@ -1,8 +1,12 @@
-import { IdOr, id } from "@baw-api/api-common";
+import { id, IdOr } from "@baw-api/api-common";
 import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { adminAudioRecordingMenuItem } from "@components/admin/audio-recordings/audio-recordings.menus";
-import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
+import {
+  audioRecordingBatchRoutes,
+  audioRecordingRoutes,
+  RecordingStrongRoutes,
+} from "@components/audio-recordings/audio-recording.routes";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { Duration } from "luxon";
 import {
@@ -106,9 +110,13 @@ export class AudioRecording
   }
 
   /** Routes to the batch download page */
-  public get batchDownloadUrl(): string {
-    // TODO Add download url when batch download page built
-    throw new Error("not implemented");
+  public getBatchDownloadUrl(
+    project?: IdOr<Project>,
+    region?: IdOr<Region>,
+    site?: IdOr<Site>
+  ): string {
+    const routes = audioRecordingBatchRoutes;
+    return this.selectRoute(routes, project, region, site);
   }
 
   /** Routes to the base details page */
@@ -122,33 +130,42 @@ export class AudioRecording
     region?: IdOr<Region>,
     site?: IdOr<Site>
   ): string {
-    const routeParams = {
-      audioRecordingId: this.id,
-      projectId: id(project),
-      regionId: id(region),
-      siteId: id(site),
-    };
-    const routes = audioRecordingMenuItems.details;
-
-    if (site) {
-      if (region) {
-        return routes.siteAndRegion.route.format(routeParams);
-      } else {
-        return routes.site.route.format(routeParams);
-      }
-    } else if (region) {
-      return routes.region.route.format(routeParams);
-    } else if (project) {
-      return routes.project.route.format(routeParams);
-    } else {
-      return routes.base.route.format(routeParams);
-    }
+    const routes = audioRecordingRoutes;
+    return this.selectRoute(routes, project, region, site);
   }
 
   public get adminViewUrl(): string {
     return adminAudioRecordingMenuItem.route.format({
       audioRecordingId: this.id,
     });
+  }
+
+  private selectRoute(
+    routes: RecordingStrongRoutes,
+    project: IdOr<Project>,
+    region: IdOr<Region>,
+    site: IdOr<Site>
+  ) {
+    const routeParams = {
+      audioRecordingId: this.id,
+      projectId: id(project),
+      regionId: id(region),
+      siteId: id(site),
+    };
+
+    if (site) {
+      if (region) {
+        return routes.siteAndRegion.format(routeParams);
+      } else {
+        return routes.site.format(routeParams);
+      }
+    } else if (region) {
+      return routes.region.format(routeParams);
+    } else if (project) {
+      return routes.project.format(routeParams);
+    } else {
+      return routes.base.format(routeParams);
+    }
   }
 }
 

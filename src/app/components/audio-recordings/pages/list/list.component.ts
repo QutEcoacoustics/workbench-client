@@ -17,6 +17,7 @@ import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
+import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 
 const projectKey = "project";
@@ -53,7 +54,8 @@ class AudioRecordingsListComponent
   public constructor(
     @Inject(API_ROOT) public apiRoot: string,
     api: AudioRecordingsService,
-    route: ActivatedRoute
+    route: ActivatedRoute,
+    private config: ConfigService
   ) {
     super(
       api,
@@ -101,6 +103,16 @@ class AudioRecordingsListComponent
 
   public get site(): Site | undefined {
     return this.models[siteKey] as Site;
+  }
+
+  public get siteColumnName(): string {
+    if (this.site) {
+      return this.site.isPoint ? "Point" : "Site";
+    } else if (this.region) {
+      return "Point";
+    } else {
+      return this.config.settings.hideProjects ? "Point" : "Site";
+    }
   }
 
   protected apiAction(filters: Filters<IAudioRecording>) {
