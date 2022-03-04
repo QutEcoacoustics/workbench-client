@@ -1,4 +1,5 @@
 import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
+import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
@@ -7,29 +8,14 @@ import {
   Category,
   menuLink,
   MenuRoute,
-  menuRoute,
+  menuRoute
 } from "@interfaces/menusInterfaces";
-import { StrongRoute } from "@interfaces/strongRoute";
-
-const listRoutePath = "audio_recordings";
-const showRoutePath = ":audioRecordingId";
-const batchDownloadRoutePath = "download";
+import { AudioRecording } from "@models/AudioRecording";
+import {
+  audioRecordingBatchRoutes, audioRecordingRoutes, audioRecordingsRoutes
+} from "./audio-recording.routes";
 
 type RecordingRoutes = "base" | "site" | "siteAndRegion" | "region" | "project";
-
-// Create audio recording base route, and sub routes
-export const audioRecordingsRoutes: Record<RecordingRoutes, StrongRoute> = {
-  /** /audio_recordings */
-  base: StrongRoute.newRoot().add(listRoutePath),
-  /** /project/:projectId/site/:siteId/audio_recordings */
-  site: siteMenuItem.route.addFeatureModule(listRoutePath),
-  /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings */
-  siteAndRegion: pointMenuItem.route.addFeatureModule(listRoutePath),
-  /** /project/:projectId/region/:regionId/audio_recordings */
-  region: regionMenuItem.route.addFeatureModule(listRoutePath),
-  /** /project/:projectId/audio_recordings */
-  project: projectMenuItem.route.addFeatureModule(listRoutePath),
-};
 
 export const audioRecordingsCategory: Category = {
   icon: ["fas", "file-archive"],
@@ -55,8 +41,11 @@ function makeDetailsMenuItem(subRoute: RecordingRoutes): MenuRoute {
     icon: ["fas", "file-audio"],
     label: "Audio Recording",
     tooltip: () => "View audio recording details",
-    route: audioRecordingsRoutes[subRoute].add(showRoutePath),
+    route: audioRecordingRoutes[subRoute],
     parent: listMenuItems[subRoute],
+    // TODO #346 Show local date time of recording date using timezone where sensor was. Should show timezone on highlight?
+    breadcrumbResolve: (pageInfo) =>
+      retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),
   });
 }
 
@@ -67,7 +56,7 @@ function makeBatchMenuItem(subRoute: RecordingRoutes): MenuRoute {
     tooltip: () => "Download multiple audio recordings",
     // TODO Create base route in future
     disabled: subRoute === "base",
-    route: audioRecordingsRoutes[subRoute].add(batchDownloadRoutePath),
+    route: audioRecordingBatchRoutes[subRoute],
     parent: listMenuItems[subRoute],
   });
 }

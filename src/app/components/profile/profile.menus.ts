@@ -1,7 +1,8 @@
+import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { AbstractModel } from "@models/AbstractModel";
-import type { User } from "@models/User";
+import { User } from "@models/User";
 import {
   defaultDeleteIcon,
   defaultEditIcon,
@@ -32,6 +33,8 @@ export const myAccountMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: myAccountRoute,
   tooltip: () => "View profile",
+  breadcrumbResolve: (pageInfo) =>
+    retrieveResolvedModel(pageInfo, User)?.userName,
 });
 
 export const myEditMenuItem = menuRoute({
@@ -120,6 +123,8 @@ export const theirProfileMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: theirProfileRoute,
   tooltip: () => "View their profile",
+  breadcrumbResolve: (pageInfo) =>
+    retrieveResolvedModel(pageInfo, User)?.userName,
 });
 
 export const theirEditMenuItem = menuRoute({

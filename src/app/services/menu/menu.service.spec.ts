@@ -1,6 +1,6 @@
 import {
-  shouldNotFail,
   shouldNotComplete,
+  shouldNotFail,
 } from "@baw-api/baw-api.service.spec";
 import {
   AuthTriggerData,
@@ -342,6 +342,78 @@ describe("MenuService", () => {
       spec.service.openMenu();
       spec.service.closeMenu();
       spec.service.closeMenu();
+    });
+  });
+
+  describe("breadcrumbs", () => {
+    let grandParentMenuItem: MenuRoute;
+    let parentMenuItem: MenuRoute;
+    let childMenuItem: MenuRoute;
+
+    beforeEach(() => {
+      grandParentMenuItem = generateMenuRoute({});
+      parentMenuItem = generateMenuRoute({
+        parent: grandParentMenuItem,
+      });
+      childMenuItem = generateMenuRoute({
+        parent: parentMenuItem,
+      });
+    });
+
+    it("should not return any breadcrumbs on home menu route", () => {
+      setup({ pageRoute: homeMenuItem });
+      expect(spec.service.breadcrumbs).toEqual(OrderedSet());
+    });
+
+    it("should call breadcrumb resolve function for label", () => {
+      const menuItem = generateMenuRoute({
+        breadcrumbResolve: (page, injector) => {
+          expect(page.pageRoute).toEqual(menuItem);
+          // Unable to instanceof check this because R3Injector is not exposed
+          expect(injector).toBeTruthy();
+          return "Breadcrumb";
+        },
+      });
+      setup({ pageRoute: menuItem });
+      const breadcrumb = spec.service.breadcrumbs.first();
+      expect(breadcrumb.label).toEqual("Breadcrumb");
+    });
+
+    it("should return breadcrumbs for a top level route", () => {
+      const menuItem = generateMenuRoute();
+      setup({ pageRoute: menuItem });
+      expect(spec.service.breadcrumbs).toEqual(
+        OrderedSet([
+          {
+            label: menuItem.label,
+            route: menuItem.route,
+            icon: menuItem.icon,
+          },
+        ])
+      );
+    });
+
+    it("should return breadcrumbs for a nested route", () => {
+      setup({ pageRoute: childMenuItem });
+      expect(spec.service.breadcrumbs).toEqual(
+        OrderedSet([
+          {
+            label: grandParentMenuItem.label,
+            route: grandParentMenuItem.route,
+            icon: grandParentMenuItem.icon,
+          },
+          {
+            label: parentMenuItem.label,
+            route: parentMenuItem.route,
+            icon: parentMenuItem.icon,
+          },
+          {
+            label: childMenuItem.label,
+            route: childMenuItem.route,
+            icon: childMenuItem.icon,
+          },
+        ])
+      );
     });
   });
 

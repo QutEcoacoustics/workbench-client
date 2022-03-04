@@ -4,10 +4,7 @@
 
   <baw-side-nav>
     <baw-primary-menu [isSideNav]="true"></baw-primary-menu>
-    <baw-secondary-menu
-      *ngIf="menu.isFullscreen"
-      [isSideNav]="true"
-    ></baw-secondary-menu>
+    <baw-secondary-menu [isSideNav]="true"></baw-secondary-menu>
     <baw-action-menu
       *ngIf="menu.isFullscreen && resolvedSuccessfully"
       [isSideNav]="true"
@@ -21,14 +18,15 @@
     [class.fullscreen]="fullscreen"
     [class.menu-layout]="!fullscreen"
   >
-    <!-- Secondary Menu -->
-    <div *ngIf="!fullscreen" id="secondary">
-      <baw-secondary-menu></baw-secondary-menu>
-    </div>
-
     <!-- Default and Error Segments -->
     <div id="page">
-      <router-outlet *ngIf="!resolvedSuccessfully" id="error" name="error"></router-outlet>
+      <baw-breadcrumbs></baw-breadcrumbs>
+
+      <router-outlet
+        *ngIf="!resolvedSuccessfully"
+        id="error"
+        name="error"
+      ></router-outlet>
       <router-outlet *ngIf="resolvedSuccessfully" id="primary"></router-outlet>
     </div>
 

@@ -17,7 +17,7 @@ import { ListComponent } from "./pages/list/list.component";
 import { NewComponent } from "./pages/new/new.component";
 import { PermissionsComponent } from "./pages/permissions/permissions.component";
 import { RequestComponent } from "./pages/request/request.component";
-import { projectsRoute } from "./projects.menus";
+import { projectsRoute } from "./projects.routes";
 
 const components = [
   AssignComponent,

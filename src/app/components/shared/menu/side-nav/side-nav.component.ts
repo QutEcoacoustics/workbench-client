@@ -1,15 +1,10 @@
 import { Component } from "@angular/core";
 import { MenuService } from "@services/menu/menu.service";
 
-// TODO Rename component
 @Component({
   selector: "baw-side-nav",
   template: `
-    <div
-      class="menu-container bg-light"
-      [class.fullscreen]="menu.isFullscreen"
-      [class.show]="menu.isMenuOpen"
-    >
+    <div class="menu-container bg-light" [class.show]="menu.isMenuOpen">
       <ng-content></ng-content>
     </div>
   `,

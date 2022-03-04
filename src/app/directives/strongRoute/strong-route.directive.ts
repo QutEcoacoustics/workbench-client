@@ -32,6 +32,9 @@ export class StrongRouteDirective
    * of the angular route parameters are already given to the StrongRoute.
    */
   @Input() public queryParams: Params;
+
+  // TODO Track page data route and query params as well so they dont need to
+  // be specified everywhere?
   private data = {
     resolvedModels: {} as ResolvedModelList,
     routeParams: {} as Params,

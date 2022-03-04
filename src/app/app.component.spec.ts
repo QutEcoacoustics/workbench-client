@@ -114,17 +114,10 @@ describe("AppComponent", () => {
           assertIsSideNav(primaryMenu);
         });
 
-        it(`should ${
-          isFullscreen ? "include" : "not include"
-        } secondary menu`, () => {
+        it("should include secondary menu", () => {
           const secondaryMenu = spec.query("baw-side-nav baw-secondary-menu");
-
-          if (isFullscreen) {
-            expect(secondaryMenu).toBeTruthy();
-            assertIsSideNav(secondaryMenu);
-          } else {
-            expect(secondaryMenu).toBeFalsy();
-          }
+          expect(secondaryMenu).toBeTruthy();
+          assertIsSideNav(secondaryMenu);
         });
 
         it(`should ${
@@ -163,13 +156,10 @@ describe("AppComponent", () => {
         isFullscreen ? "fullscreen" : "menu-layout"
       );
 
-      const secondaryMenu = spec.query("#container baw-secondary-menu");
       const actionMenu = spec.query("#container baw-action-menu");
       if (isFullscreen) {
-        expect(secondaryMenu).toBeFalsy("Secondary menu should not exist");
         expect(actionMenu).toBeFalsy("Action menu should not exist");
       } else {
-        expect(secondaryMenu).toBeTruthy("Secondary menu should exist");
         expect(actionMenu).toBeTruthy("Action menu should exist");
       }
     }

@@ -49,18 +49,11 @@ describe("HeaderComponent", () => {
     }
     it("should show on fullscreen layout", () => {
       setFullscreen();
-      viewport.set(viewports.large);
-      expect(getMenuToggle()).not.toHaveComputedStyle({ display: "none" });
+      expect(getMenuToggle()).toHaveComputedStyle({ display: "block" });
     });
 
-    it("should show on medium viewport menu layout", () => {
-      viewport.set(viewports.medium);
-      expect(getMenuToggle()).not.toHaveComputedStyle({ display: "none" });
-    });
-
-    it("should hide on large viewport menu layout", () => {
-      viewport.set(viewports.large);
-      expect(getMenuToggle()).toHaveComputedStyle({ display: "none" });
+    it("should show on menu layouts", () => {
+      expect(getMenuToggle()).toHaveComputedStyle({ display: "block" });
     });
   });
 

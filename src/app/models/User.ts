@@ -54,23 +54,29 @@ export class User extends AbstractModel<IUser> implements IUser {
    * Deleted User. This is used when a user has been soft deleted
    * from the API.
    */
-  public static get deletedUser(): User {
-    return new User({
-      id: deletedUserId,
-      email: "deleted-user@noreply.com.au",
-      userName: "Deleted User",
-    });
+  public static getDeletedUser(injector: Injector): User {
+    return new User(
+      {
+        id: deletedUserId,
+        email: "deleted-user@noreply.com.au",
+        userName: "Deleted User",
+      },
+      injector
+    );
   }
   /**
    * Unknown User. This is used when the current logged in user/guest
    * does not have the permissions to view a user.
    */
-  public static get unknownUser(): User {
-    return new User({
-      id: unknownUserId,
-      email: "unknown-user@noreply.com.au",
-      userName: "Unknown User",
-    });
+  public static getUnknownUser(injector: Injector): User {
+    return new User(
+      {
+        id: unknownUserId,
+        email: "unknown-user@noreply.com.au",
+        userName: "Unknown User",
+      },
+      injector
+    );
   }
 
   public readonly kind = "User";

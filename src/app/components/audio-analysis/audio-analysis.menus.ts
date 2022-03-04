@@ -1,5 +1,7 @@
+import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuAction, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { AnalysisJob } from "@models/AnalysisJob";
 import { defaultDeleteIcon, defaultNewIcon } from "src/app/app.menus";
 
 export const audioAnalysesRoute = StrongRoute.newRoot().add("audio_analysis");
@@ -34,6 +36,8 @@ export const audioAnalysisMenuItem = menuRoute({
   tooltip: () => "View audio analysis job",
   route: audioAnalysisRoute,
   parent: audioAnalysesMenuItem,
+  breadcrumbResolve: (pageInfo) =>
+    retrieveResolvedModel(pageInfo, AnalysisJob)?.name,
 });
 
 export const audioAnalysisResultsMenuItem = menuRoute({

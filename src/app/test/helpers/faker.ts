@@ -43,12 +43,12 @@ export const modelData = {
   icon: (): IconProp => [
     "fas",
     faker.random.arrayElement<IconName>([
-      "accessible-icon",
-      "accusoft",
-      "adn",
-      "adversal",
-      "affiliatetheme",
-      "airbnb",
+      "anchor",
+      "apple-whole",
+      "atom",
+      "bacon",
+      "ban",
+      "bed",
     ]),
   ],
   latitude: () => parseFloat(faker.address.latitude()),

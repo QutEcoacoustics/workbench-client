@@ -50,12 +50,12 @@ describe("IsGhostUserPipe", () => {
       });
 
       it(`should return ${testCase.unknown} for unknown user`, () => {
-        setup(User.unknownUser, testCase.type);
+        setup(User.getUnknownUser(undefined), testCase.type);
         assertPipe(testCase.unknown);
       });
 
       it(`should return ${testCase.deleted} for deleted user`, () => {
-        setup(User.deletedUser, testCase.type);
+        setup(User.getDeletedUser(undefined), testCase.type);
         assertPipe(testCase.deleted);
       });
 

@@ -5,7 +5,6 @@ import { MenuService } from "@services/menu/menu.service";
 
 /**
  * Header Component
- * TODO Action and secondary menu toggles do not handle well on small displays
  */
 @Component({
   selector: "baw-header",
@@ -15,10 +14,7 @@ import { MenuService } from "@services/menu/menu.service";
         Toggle button for secondary/action menus on large displays. Hide if menu
         layout on desktop viewports
       -->
-      <baw-menu-toggle
-        class="ps-3"
-        [class.d-lg-none]="!menu.isFullscreen"
-      ></baw-menu-toggle>
+      <baw-menu-toggle class="ps-3"></baw-menu-toggle>
 
       <div class="container">
         <!-- Brand Logo -->
@@ -31,9 +27,7 @@ import { MenuService } from "@services/menu/menu.service";
         </a>
 
         <!-- Header Links, only visible on desktop viewports -->
-        <baw-primary-menu
-          class="flex-grow-1"
-        ></baw-primary-menu>
+        <baw-primary-menu class="flex-grow-1"></baw-primary-menu>
       </div>
     </nav>
 

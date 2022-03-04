@@ -20,6 +20,7 @@ import { ToastrModule } from "ngx-toastr";
 import { DirectivesModule } from "src/app/directives/directives.module";
 import { AnnotationDownloadComponent } from "./annotation-download/annotation-download.component";
 import { BawClientModule } from "./baw-client/baw-client.module";
+import { BreadcrumbModule } from "./breadcrumb/breadcrumb.module";
 import { CardsModule } from "./cards/cards.module";
 import { CheckboxModule } from "./checkbox/checkbox.module";
 import { CmsComponent } from "./cms/cms.component";
@@ -80,6 +81,7 @@ export const sharedModules = [
   UserLinkModule,
   CheckboxModule,
   DetailViewModule,
+  BreadcrumbModule,
 ];
 
 export const internalModules = [...sharedModules, NgxCaptchaModule];

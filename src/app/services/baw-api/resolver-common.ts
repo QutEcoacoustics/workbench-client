@@ -8,7 +8,10 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { Id } from "@interfaces/apiInterfaces";
 import type { AbstractData } from "@models/AbstractData";
-import type { AbstractModel } from "@models/AbstractModel";
+import type {
+  AbstractModel,
+  AbstractModelConstructor,
+} from "@models/AbstractModel";
 import httpStatus from "http-status";
 import { Observable, of } from "rxjs";
 import { catchError, first, map } from "rxjs/operators";
@@ -402,6 +405,26 @@ export function retrieveResolvers(data: IPageInfo): ResolvedModelList {
   }
 
   return models;
+}
+
+/**
+ * Retrieve a specific model from the page data. Returns undefined if the model
+ * failed to resolve, or does not exist.
+ *
+ * @param data Page Data
+ * @param model Model to retrieve
+ */
+export function retrieveResolvedModel<T extends AbstractModel>(
+  data: IPageInfo,
+  model: AbstractModelConstructor<T>
+): T | undefined {
+  const resolvedModels = retrieveResolvers(data);
+  for (const value of Object.values(resolvedModels)) {
+    if (value instanceof model) {
+      return value as T;
+    }
+  }
+  return undefined;
 }
 
 export interface ResolvedModelList {

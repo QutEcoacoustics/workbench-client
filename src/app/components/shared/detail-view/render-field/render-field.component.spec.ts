@@ -386,7 +386,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display ghost user", () => {
-      setup(User.unknownUser);
+      setup(User.getUnknownUser(undefined));
       spec.detectChanges();
       expect(getElement.values().length).toBe(1);
       expect(getElement.ghost().length).toBe(1);

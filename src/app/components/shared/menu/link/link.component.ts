@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges } from "@angular/core";
+import { Component, Inject, Input, OnChanges, OnInit } from "@angular/core";
 import { IsActiveMatchOptions, Params } from "@angular/router";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -8,7 +8,7 @@ import {
   MenuRoute,
 } from "@interfaces/menusInterfaces";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
-import { takeUntil } from "rxjs";
+import { Observable } from "rxjs";
 
 /**
  * Menu Link Component
@@ -17,7 +17,6 @@ import { takeUntil } from "rxjs";
   selector: "baw-menu-link",
   template: `
     <span
-      *ngIf="hasRouteData"
       placement="auto"
       [ngbTooltip]="tooltipContent"
       [class.disabled]="link.disabled"
@@ -29,8 +28,8 @@ import { takeUntil } from "rxjs";
           strongRouteActive="active"
           [strongRoute]="internalLink.route"
           [strongRouteActiveOptions]="activeOptions"
-          [queryParams]="queryParams"
-          [routeParams]="routeParams"
+          [queryParams]="queryParams | async"
+          [routeParams]="routeParams | async"
           [class.active]="link.highlight"
           [class.disabled]="link.disabled"
         >
@@ -41,7 +40,7 @@ import { takeUntil } from "rxjs";
         <!-- External Link -->
         <a
           class="nav-link ps-3 py-2 rounded"
-          [href]="href"
+          [href]="href(routeParams | async)"
           [class.disabled]="link.disabled"
         >
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
@@ -64,15 +63,16 @@ import { takeUntil } from "rxjs";
   `,
   styleUrls: ["./link.component.scss"],
 })
-export class MenuLinkComponent extends withUnsubscribe() implements OnChanges {
+export class MenuLinkComponent
+  extends withUnsubscribe()
+  implements OnInit, OnChanges
+{
   @Input() public link: MenuRoute | MenuLink;
   @Input() public tooltip: string;
 
-  public queryParams: Params;
-  public routeParams: Params;
-  public hasRouteData: boolean;
+  public queryParams: Observable<Params>;
+  public routeParams: Observable<Params>;
   public disabledReason: string;
-  public href: string;
   public activeOptions: { exact: true } & IsActiveMatchOptions = {
     exact: true,
     matrixParams: "ignored",
@@ -88,27 +88,20 @@ export class MenuLinkComponent extends withUnsubscribe() implements OnChanges {
     super();
   }
 
-  public ngOnChanges(): void {
-    if (typeof this.link.disabled === "string") {
-      this.disabledReason = this.link.disabled;
-    }
-
+  public ngOnInit(): void {
     /*
      * Components outside of router-outlet are unable to read the query/route
      * params of the page component. So we use this bypass, check the service
      * for more details
      */
-    this.sharedRoute.snapshot
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(({ queryParams, params }) => {
-        this.queryParams = queryParams;
-        this.routeParams = params;
-        this.hasRouteData = true;
+    this.queryParams = this.sharedRoute.queryParams;
+    this.routeParams = this.sharedRoute.params;
+  }
 
-        if (!this.isInternalLink) {
-          this.handleExternalLink();
-        }
-      });
+  public ngOnChanges(): void {
+    if (typeof this.link.disabled === "string") {
+      this.disabledReason = this.link.disabled;
+    }
   }
 
   public get isInternalLink(): boolean {
@@ -123,10 +116,10 @@ export class MenuLinkComponent extends withUnsubscribe() implements OnChanges {
     return this.link as MenuLink;
   }
 
-  private handleExternalLink(): void {
-    const uri = this.externalLink.uri(this.routeParams);
+  public href(routeParams: Params): string {
+    const uri = this.externalLink.uri(routeParams);
     // Redirect relative routes to api
     // ! This seems unintuitive and likely needs to be changed in the future #1712
-    this.href = uri.startsWith("/") ? this.apiRoot + uri : uri;
+    return uri.startsWith("/") ? this.apiRoot + uri : uri;
   }
 }

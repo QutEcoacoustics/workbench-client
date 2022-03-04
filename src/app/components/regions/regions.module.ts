@@ -8,7 +8,7 @@ import { DetailsComponent } from "./pages/details/details.component";
 import { EditComponent } from "./pages/edit/edit.component";
 import { ListComponent } from "./pages/list/list.component";
 import { NewComponent } from "./pages/new/new.component";
-import { regionsRoute, shallowRegionsRoute } from "./regions.menus";
+import { regionsRoute, shallowRegionsRoute } from "./regions.routes";
 
 const components = [
   DeleteComponent,

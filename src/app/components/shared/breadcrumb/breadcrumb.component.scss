@@ -1,0 +1,14 @@
+ol {
+  & > :not(:last-child) {
+    color: var(--baw-highlight);
+  }
+
+  & > :last-child {
+    color: #6c757d;
+
+    a {
+      cursor: default;
+      text-decoration: none;
+    }
+  }
+}

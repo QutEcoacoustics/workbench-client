@@ -1,4 +1,6 @@
+import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
+import { Site } from "@models/Site";
 import {
   defaultAnnotationDownloadIcon,
   defaultAudioIcon,
@@ -8,13 +10,12 @@ import {
   isProjectEditorPredicate,
 } from "src/app/app.menus";
 import { projectMenuItem } from "../projects/projects.menus";
-
-export const sitesRoute = projectMenuItem.route.addFeatureModule("sites");
+import { siteRoute, sitesRoute } from "./sites.routes";
 
 export const sitesCategory: Category = {
   icon: ["fas", "map-marker-alt"],
   label: "Sites",
-  route: sitesRoute.add(":siteId"),
+  route: siteRoute,
 };
 
 export const siteMenuItem = menuRoute({
@@ -23,6 +24,7 @@ export const siteMenuItem = menuRoute({
   parent: projectMenuItem,
   route: sitesCategory.route,
   tooltip: () => "The current site",
+  breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, Site)?.name,
 });
 
 export const newSiteMenuItem = menuRoute({

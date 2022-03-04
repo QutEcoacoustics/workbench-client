@@ -1,5 +1,7 @@
+import { Injector } from "@angular/core";
 import { Params } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
 import { List } from "immutable";
 import { User } from "../models/User";
@@ -149,15 +151,14 @@ export function menuLink<T extends Omit<MenuLink, "kind">>(item: T): MenuLink {
  */
 export interface MenuRoute extends MenuItem {
   kind: "MenuRoute";
-  /**
-   * The internal route this menu item points to
-   */
+  /** The internal route this menu item points to */
   route: StrongRoute;
 
-  /**
-   * Menu parent
-   */
+  /** Menu parent */
   parent?: MenuRoute;
+
+  /** Custom label when shown in the breadcrumb */
+  breadcrumbResolve?: (pageInfo: IPageInfo, injector: Injector) => string;
 }
 
 export function menuRoute<T extends Omit<MenuRoute, "kind">>(
