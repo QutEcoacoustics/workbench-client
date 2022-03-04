@@ -1,10 +1,10 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { ApiErrorDetails } from "@baw-api/api.interceptor.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { catchError, map, Observable, of, startWith } from "rxjs";
 
 export interface LoadingResult<T> {
   loading: boolean;
-  error?: ApiErrorDetails;
+  error?: BawApiError;
   value?: T;
 }
 
@@ -15,7 +15,7 @@ export class WithLoadingPipe implements PipeTransform {
       map((value): LoadingResult<T> => ({ loading: false, value })),
       startWith({ loading: true }),
       catchError(
-        (error: ApiErrorDetails): Observable<LoadingResult<T>> =>
+        (error: BawApiError): Observable<LoadingResult<T>> =>
           of({ loading: false, error })
       )
     );

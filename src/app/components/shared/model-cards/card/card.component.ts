@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -68,11 +69,13 @@ export class CardComponent implements OnInit {
   public hasNoAudio$: Observable<boolean>;
   public isOwner: boolean;
 
-  public constructor(private recordingApi: AudioRecordingsService) {}
+  public constructor(
+    private recordingApi: AudioRecordingsService,
+    private session: BawSessionService
+  ) {}
 
   public ngOnInit(): void {
-    this.isOwner =
-      this.model.creatorId === this.recordingApi.getLocalUser()?.id;
+    this.isOwner = this.model.creatorId === this.session.loggedInUser?.id;
     this.hasNoAudio$ = this.getRecordings().pipe(
       map((recordings): boolean => recordings.length === 0)
     );

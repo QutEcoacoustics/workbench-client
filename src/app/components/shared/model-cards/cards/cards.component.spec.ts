@@ -2,6 +2,8 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import {
   createComponentFactory,
   createHostFactory,
@@ -9,18 +11,20 @@ import {
   SpectatorHost,
   SpectatorOptions,
 } from "@ngneat/spectator";
-import { modelData } from "@test/helpers/faker";
+import { generateProject } from "@test/fakes/Project";
+import { generateRegion } from "@test/fakes/Region";
 import { List } from "immutable";
-import { CardImageComponent } from "./card-image/card-image.component";
-import { CardImageMockModel } from "./card-image/card-image.component.spec";
+import { MockComponent } from "ng-mocks";
+import { CardComponent } from "../card/card.component";
 import { CardsComponent } from "./cards.component";
 
 describe("CardsComponent", () => {
-  let defaultModel: CardImageMockModel;
-  let spectator: Spectator<CardsComponent>;
+  let defaultProject: Project;
+  let defaultRegion: Region;
+  let spec: Spectator<CardsComponent>;
   const options: SpectatorOptions<CardsComponent> = {
     component: CardsComponent,
-    declarations: [CardImageComponent],
+    declarations: [MockComponent(CardComponent)],
     imports: [
       HttpClientTestingModule,
       RouterTestingModule,
@@ -31,95 +35,67 @@ describe("CardsComponent", () => {
   const createComponent = createComponentFactory(options);
   const createHost = createHostFactory(options);
 
-  function getDefaultCards() {
-    return spectator.queryAll("baw-card");
-  }
-
-  function getImageCards() {
-    return spectator.queryAll("baw-card-image");
+  function getCards() {
+    return spec.queryAll(CardComponent);
   }
 
   beforeEach(() => {
-    defaultModel = new CardImageMockModel({
-      id: 1,
-      imageUrls: modelData.imageUrls(),
-    });
+    defaultProject = new Project(generateProject());
+    defaultRegion = new Region(generateRegion());
   });
 
   it("should create", () => {
-    spectator = createComponent({ detectChanges: false });
-    spectator.setInput(
-      "cards",
-      List([{ title: "title", route: "/broken_link", model: defaultModel }])
-    );
-    expect(spectator.component).toBeTruthy();
+    spec = createComponent({ detectChanges: false });
+    spec.setInput("models", List([defaultProject]));
+    expect(spec.component).toBeTruthy();
   });
 
   describe("error handling", () => {
-    beforeEach(() => (spectator = createComponent({ detectChanges: false })));
+    beforeEach(() => {
+      spec = createComponent({ detectChanges: false });
+    });
 
     it("should handle no cards", () => {
-      spectator.detectChanges();
-      expect(getImageCards().length).toBe(0);
-      expect(getDefaultCards().length).toBe(0);
+      spec.detectChanges();
+      expect(getCards()).toHaveLength(0);
     });
 
     it("should handle empty cards list", () => {
-      spectator.setInput("cards", List([]));
-      spectator.detectChanges();
-      expect(getImageCards().length).toBe(0);
-      expect(getDefaultCards().length).toBe(0);
+      spec.setInput("models", List([]));
+      spec.detectChanges();
+      expect(getCards()).toHaveLength(0);
     });
   });
 
   describe("cards", () => {
-    function assertCard(card: Element, title: string) {
-      expect(card.querySelector("h4").textContent).toBe(title);
-    }
-
-    beforeEach(() => (spectator = createComponent({ detectChanges: false })));
-
-    it("should create single card", () => {
-      spectator.setInput(
-        "cards",
-        List([{ title: "title", route: "/broken_link", model: defaultModel }])
-      );
-      spectator.detectChanges();
-      expect(getImageCards().length).toBe(1);
+    beforeEach(() => {
+      spec = createComponent({ detectChanges: false });
     });
 
-    it("should create single card with title", () => {
-      spectator.setInput(
-        "cards",
-        List([
-          { title: "custom title", route: "/broken_link", model: defaultModel },
-        ])
-      );
-      spectator.detectChanges();
-      assertCard(getImageCards()[0], "custom title");
+    it("should create single project card", () => {
+      spec.setInput("models", List([defaultProject]));
+      spec.detectChanges();
+      const cards = getCards();
+      expect(cards.length).toBe(1);
+      expect(cards[0].model).toEqual(defaultProject);
+    });
+
+    it("should create single region card", () => {
+      spec.setInput("models", List([defaultRegion]));
+      spec.detectChanges();
+      const cards = getCards();
+      expect(cards.length).toBe(1);
+      expect(cards[0].model).toEqual(defaultRegion);
     });
 
     it("should create multiple cards", () => {
-      const titles = [1, 2, 3].map((id) => ({
-        title: "title" + id,
-        route: "/broken_link",
-        model: defaultModel,
-      }));
-      spectator.setInput("cards", List(titles));
-      spectator.detectChanges();
-      expect(getImageCards().length).toBe(3);
-    });
-
-    it("should create multiple cards with titles", () => {
-      const titles = [1, 2, 3].map((id) => ({
-        title: "title" + id,
-        route: "/broken_link",
-        model: defaultModel,
-      }));
-      spectator.setInput("cards", List(titles));
-      spectator.detectChanges();
-      getImageCards().forEach((card, index) => {
-        assertCard(card, titles[index].title);
+      const models = [defaultProject, defaultRegion];
+      spec.setInput("models", List(models));
+      spec.detectChanges();
+      const cards = getCards();
+      expect(cards).toHaveLength(2);
+      cards.forEach((card, index) => {
+        expect(card.model).toEqual(models[index]);
       });
     });
   });
@@ -134,7 +110,7 @@ describe("CardsComponent", () => {
       const content = hostSpectator.query<HTMLDivElement>("#content");
       const header = hostSpectator.query<HTMLHeadingElement>("h1");
       expect(content).not.toHaveComputedStyle({ display: "none" });
-      expect(header.textContent).toBe("Internal Content");
+      expect(header).toContainText("Internal Content");
     });
 
     it("should handle no content", () => {
