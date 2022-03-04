@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { CMS } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
@@ -43,7 +42,6 @@ class HomeComponent extends PageComponent implements OnInit {
   public constructor(
     private regionApi: ShallowRegionsService,
     private projectApi: ProjectsService,
-    private session: BawSessionService,
     public config: ConfigService
   ) {
     super();

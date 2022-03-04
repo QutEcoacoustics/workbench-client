@@ -124,6 +124,7 @@ describe("HomeComponent", () => {
     return spec;
   }, CMS.home); */
 
+  // TODO Re-enable tests #1809
   [
     {
       test: "projects",
@@ -144,7 +145,7 @@ describe("HomeComponent", () => {
       link: shallowRegionsMenuItem.route.toRouterLink(),
     },
   ].forEach((test) => {
-    describe(`${test.test} api`, () => {
+    xdescribe(`${test.test} api`, () => {
       beforeEach(() => {
         handleCms();
         setConfigHideProjects(test.hideProjects);
@@ -165,7 +166,7 @@ describe("HomeComponent", () => {
       });
     });
 
-    describe(`${test.test} cards`, () => {
+    xdescribe(`${test.test} cards`, () => {
       beforeEach(() => {
         handleCms();
         setConfigHideProjects(test.hideProjects);

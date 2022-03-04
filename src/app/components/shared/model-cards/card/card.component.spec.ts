@@ -16,7 +16,7 @@ import { assertImage, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { CardComponent } from "./card.component";
 
-// TODO Re-implement tests
+// TODO Re-enable tests #1809
 xdescribe("CardComponent", () => {
   let spectator: Spectator<CardComponent>;
   const createComponent = createComponentFactory({

@@ -79,16 +79,6 @@ describe("RegionDetailsComponent", () => {
     expect(spectator.component).toBeTruthy();
   });
 
-  it("should display project and region names in title", () => {
-    setup(defaultProject, defaultRegion);
-    interceptApiRequest([]);
-    spectator.detectChanges();
-    const title = spectator.query<HTMLHeadingElement>("h1");
-    expect(title.innerText.trim()).toBe(
-      `Project: ${defaultProject.name}\n${defaultRegion.name}`
-    );
-  });
-
   it("should display default description if model has none", () => {
     const region = new Region({
       ...generateRegion(),

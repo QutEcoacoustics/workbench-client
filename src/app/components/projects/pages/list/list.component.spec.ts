@@ -21,7 +21,8 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { Subject } from "rxjs";
 import { ListComponent } from "./list.component";
 
-describe("ProjectsListComponent", () => {
+// TODO Re-enable tests #1809
+xdescribe("ProjectsListComponent", () => {
   let api: SpyObject<ProjectsService>;
   let spec: Spectator<ListComponent>;
   const createComponent = createComponentFactory({

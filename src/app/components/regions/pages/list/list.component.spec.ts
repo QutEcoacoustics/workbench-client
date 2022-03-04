@@ -21,7 +21,8 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { Subject } from "rxjs";
 import { ListComponent } from "./list.component";
 
-describe("RegionsListComponent", () => {
+// TODO Re-enable tests #1809
+xdescribe("RegionsListComponent", () => {
   let api: SpyObject<ShallowRegionsService>;
   let spec: Spectator<ListComponent>;
   const createComponent = createComponentFactory({

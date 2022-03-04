@@ -20,7 +20,6 @@ import { MapComponent } from "@shared/map/map.component";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
-import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
 import { FilterExpectations, nStepObservable } from "@test/helpers/general";
@@ -37,7 +36,6 @@ const mockMapComponent = MockComponent(MapComponent);
 
 describe("SiteComponent", () => {
   let defaultProject: Project;
-  let defaultRegion: Region;
   let defaultSite: Site;
   let defaultRecording: AudioRecording;
   let eventsApi: SpyObject<ShallowAudioEventsService>;
@@ -101,7 +99,6 @@ describe("SiteComponent", () => {
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
-    defaultRegion = new Region(generateRegion());
     defaultSite = new Site(
       generateSite({ imageUrls: [modelData.imageUrls()[0]] })
     );
@@ -114,42 +111,6 @@ describe("SiteComponent", () => {
     interceptRecordingsRequest();
     spec.detectChanges();
     expect(spec.component).toBeTruthy();
-  });
-
-  describe("Project", () => {
-    it("should display project name", () => {
-      setup(defaultProject, defaultSite);
-      interceptEventsRequest();
-      interceptRecordingsRequest();
-      spec.detectChanges();
-
-      const title = spec.query<HTMLHeadingElement>("h2");
-      expect(title).toBeTruthy();
-      expect(title.innerText).toContain(`Project: ${defaultProject.name}`);
-    });
-  });
-
-  describe("Region", () => {
-    it("should not display region name if doesn't exist", () => {
-      setup(defaultProject, defaultSite, undefined);
-      interceptEventsRequest();
-      interceptRecordingsRequest();
-      spec.detectChanges();
-
-      const title = spec.query<HTMLHeadingElement>("h3");
-      expect(title).toBeFalsy();
-    });
-
-    it("should display region name if exists", () => {
-      setup(defaultProject, defaultSite, defaultRegion);
-      interceptEventsRequest();
-      interceptRecordingsRequest();
-      spec.detectChanges();
-
-      const title = spec.query<HTMLHeadingElement>("h3");
-      expect(title).toBeTruthy();
-      expect(title.innerText).toContain(`Site: ${defaultRegion.name}`);
-    });
   });
 
   describe("Site", () => {
