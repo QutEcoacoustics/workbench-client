@@ -8,10 +8,16 @@ const listRoutePath = "audio_recordings";
 const showRoutePath = ":audioRecordingId";
 const batchDownloadRoutePath = "download";
 
-type RecordingRoutes = "base" | "site" | "siteAndRegion" | "region" | "project";
+export type RecordingRoute =
+  | "base"
+  | "site"
+  | "siteAndRegion"
+  | "region"
+  | "project";
+export type RecordingStrongRoutes = Record<RecordingRoute, StrongRoute>;
 
 // Create audio recording base route, and sub routes
-export const audioRecordingsRoutes: Record<RecordingRoutes, StrongRoute> = {
+export const audioRecordingsRoutes: RecordingStrongRoutes = {
   /** /audio_recordings */
   base: StrongRoute.newRoot().add(listRoutePath),
   /** /project/:projectId/site/:siteId/audio_recordings */
@@ -24,7 +30,7 @@ export const audioRecordingsRoutes: Record<RecordingRoutes, StrongRoute> = {
   project: projectRoute.addFeatureModule(listRoutePath),
 };
 
-export const audioRecordingRoutes: Record<RecordingRoutes, StrongRoute> = {
+export const audioRecordingRoutes: RecordingStrongRoutes = {
   /** /audio_recordings/:audioRecordingId */
   base: audioRecordingsRoutes.base.add(showRoutePath),
   /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId */
@@ -37,7 +43,7 @@ export const audioRecordingRoutes: Record<RecordingRoutes, StrongRoute> = {
   project: audioRecordingsRoutes.project.add(showRoutePath),
 };
 
-export const audioRecordingBatchRoutes: Record<RecordingRoutes, StrongRoute> = {
+export const audioRecordingBatchRoutes: RecordingStrongRoutes = {
   /** /audio_recordings/download */
   base: audioRecordingsRoutes.base.add(batchDownloadRoutePath),
   /** /project/:projectId/site/:siteId/audio_recordings/download */

@@ -8,14 +8,17 @@ import {
   Category,
   menuLink,
   MenuRoute,
-  menuRoute
+  menuRoute,
 } from "@interfaces/menusInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import {
-  audioRecordingBatchRoutes, audioRecordingRoutes, audioRecordingsRoutes
+  audioRecordingBatchRoutes,
+  audioRecordingRoutes,
+  audioRecordingsRoutes,
+  RecordingRoute,
 } from "./audio-recording.routes";
 
-type RecordingRoutes = "base" | "site" | "siteAndRegion" | "region" | "project";
+export type RecordingMenuRoutes = Record<RecordingRoute, MenuRoute>;
 
 export const audioRecordingsCategory: Category = {
   icon: ["fas", "file-archive"],
@@ -24,7 +27,7 @@ export const audioRecordingsCategory: Category = {
 };
 
 function makeListMenuItem(
-  subRoute: RecordingRoutes,
+  subRoute: RecordingRoute,
   parent?: MenuRoute
 ): MenuRoute {
   return menuRoute({
@@ -36,7 +39,7 @@ function makeListMenuItem(
   });
 }
 
-function makeDetailsMenuItem(subRoute: RecordingRoutes): MenuRoute {
+function makeDetailsMenuItem(subRoute: RecordingRoute): MenuRoute {
   return menuRoute({
     icon: ["fas", "file-audio"],
     label: "Audio Recording",
@@ -49,7 +52,7 @@ function makeDetailsMenuItem(subRoute: RecordingRoutes): MenuRoute {
   });
 }
 
-function makeBatchMenuItem(subRoute: RecordingRoutes): MenuRoute {
+function makeBatchMenuItem(subRoute: RecordingRoute): MenuRoute {
   return menuRoute({
     icon: ["fas", "file-download"],
     label: "Download Recordings",
@@ -61,7 +64,7 @@ function makeBatchMenuItem(subRoute: RecordingRoutes): MenuRoute {
   });
 }
 
-const listMenuItems: Record<RecordingRoutes, MenuRoute> = {
+const listMenuItems: RecordingMenuRoutes = {
   /** /audio_recordings */
   base: makeListMenuItem("base"),
   /** /project/:projectId/site/:siteId/audio_recordings */
@@ -74,7 +77,7 @@ const listMenuItems: Record<RecordingRoutes, MenuRoute> = {
   project: makeListMenuItem("project", projectMenuItem),
 };
 
-const detailsMenuItems: Record<RecordingRoutes, MenuRoute> = {
+const detailsMenuItems: RecordingMenuRoutes = {
   /** /audio_recordings */
   base: makeDetailsMenuItem("base"),
   /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId */
@@ -87,7 +90,7 @@ const detailsMenuItems: Record<RecordingRoutes, MenuRoute> = {
   project: makeDetailsMenuItem("project"),
 };
 
-const batchMenuItems: Record<RecordingRoutes, MenuRoute> = {
+const batchMenuItems: RecordingMenuRoutes = {
   /** /audio_recordings/download */
   base: makeBatchMenuItem("base"),
   /** /project/:projectId/site/:siteId/audio_recordings/download */

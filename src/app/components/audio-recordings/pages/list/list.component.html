@@ -38,6 +38,9 @@
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Site">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        {{ siteColumnName }}
+      </ng-template>
       <ng-template let-value="value" ngx-datatable-cell-template>
         <!-- Show loading animation while site is unresolved -->
         <baw-loading

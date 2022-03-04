@@ -17,6 +17,7 @@ import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
+import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 
 const projectKey = "project";
@@ -53,7 +54,8 @@ class AudioRecordingsListComponent
   public constructor(
     @Inject(API_ROOT) public apiRoot: string,
     api: AudioRecordingsService,
-    route: ActivatedRoute
+    route: ActivatedRoute,
+    private config: ConfigService
   ) {
     super(
       api,
@@ -101,6 +103,20 @@ class AudioRecordingsListComponent
 
   public get site(): Site | undefined {
     return this.models[siteKey] as Site;
+  }
+
+  public get siteColumnName(): string {
+    const hideProjects = this.config.settings.hideProjects;
+
+    // If we are hiding projects, any sites must be points
+    // If a region exists, this must be a site with a region
+    // If the site is a point...
+    // Otherwise its a site
+    if (hideProjects || this.region || this.site?.isPoint) {
+      return "Point";
+    } else {
+      return "Site";
+    }
   }
 
   protected apiAction(filters: Filters<IAudioRecording>) {
