@@ -2,7 +2,6 @@ import { Injector } from "@angular/core";
 import { id, IdOr } from "@baw-api/api-common";
 import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import { adminAudioRecordingMenuItem } from "@components/admin/audio-recordings/audio-recordings.menus";
 import {
   audioRecordingBatchRoutes,
   audioRecordingRoutes,
@@ -142,12 +141,6 @@ export class AudioRecording
   ): string {
     const routes = audioRecordingRoutes;
     return this.selectRoute(routes, project, region, site);
-  }
-
-  public get adminViewUrl(): string {
-    return adminAudioRecordingMenuItem.route.format({
-      audioRecordingId: this.id,
-    });
   }
 
   private selectRoute(

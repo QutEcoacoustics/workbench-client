@@ -1,5 +1,6 @@
 import { AudioRecordingStatus, IAudioRecording } from "@models/AudioRecording";
 import { modelData } from "@test/helpers/faker";
+import { DateTime } from "luxon";
 
 export function generateAudioRecording(
   data?: Partial<IAudioRecording>
@@ -20,11 +21,15 @@ export function generateAudioRecording(
     "aborted",
   ];
 
+  const recordedDate = DateTime.fromISO(modelData.timestamp(), {
+    setZone: true,
+  });
+
   return {
     id: modelData.id(),
     uuid: modelData.uuid(),
     uploaderId: modelData.id(),
-    recordedDate: modelData.timestamp(),
+    recordedDate: recordedDate.toISO(),
     siteId: modelData.id(),
     durationSeconds,
     sampleRateHertz: modelData.random.arrayElement(
@@ -38,7 +43,7 @@ export function generateAudioRecording(
     status: modelData.random.arrayElement(statuses),
     notes: modelData.notes(),
     originalFileName: modelData.system.commonFileName(".mpg"),
-    recordedDateTimezone: modelData.offset(),
+    recordedDateTimezone: recordedDate.zoneName,
     ...modelData.model.generateAllUsers(),
     ...data,
   };
