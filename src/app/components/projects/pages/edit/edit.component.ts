@@ -7,7 +7,6 @@ import {
 import {
   editProjectMenuItem,
   projectCategory,
-  projectMenuItem,
 } from "@components/projects/projects.menus";
 import {
   defaultSuccessMsg,
@@ -71,7 +70,7 @@ EditComponent.linkToRoute({
   category: projectCategory,
   pageRoute: editProjectMenuItem,
   menus: {
-    actions: List([projectMenuItem, ...projectMenuItemActions]),
+    actions: List(projectMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [projectKey]: projectResolvers.show },

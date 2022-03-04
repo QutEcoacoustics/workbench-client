@@ -2,7 +2,6 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "@baw-api/user/user.service";
 import {
-  loginMenuItem,
   resetPasswordMenuItem,
   securityCategory,
 } from "@components/security/security.menus";
@@ -50,7 +49,7 @@ class ResetPasswordComponent extends FormTemplate<ResetPassword> {
 ResetPasswordComponent.linkToRoute({
   category: securityCategory,
   pageRoute: resetPasswordMenuItem,
-  menus: { actions: List([loginMenuItem, ...loginMenuItemActions]) },
+  menus: { actions: List(loginMenuItemActions) },
 });
 
 export { ResetPasswordComponent };

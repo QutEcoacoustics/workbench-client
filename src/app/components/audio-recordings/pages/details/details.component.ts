@@ -14,7 +14,6 @@ import {
   audioRecordingsCategory,
   downloadAudioRecordingMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
-import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
@@ -81,7 +80,7 @@ function getPageInfo(
     pageRoute: audioRecordingMenuItems.details[subRoute],
     category: audioRecordingsCategory,
     menus: {
-      actions: List([listenRecordingMenuItem, downloadAudioRecordingMenuItem]),
+      actions: List([downloadAudioRecordingMenuItem]),
       actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
     },
     resolvers: {

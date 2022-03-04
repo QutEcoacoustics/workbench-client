@@ -7,7 +7,6 @@ import {
 } from "@baw-api/region/regions.service";
 import {
   editRegionMenuItem,
-  regionMenuItem,
   regionsCategory,
 } from "@components/regions/regions.menus";
 import {
@@ -81,7 +80,7 @@ EditComponent.linkToRoute({
   category: regionsCategory,
   pageRoute: editRegionMenuItem,
   menus: {
-    actions: List([regionMenuItem, ...regionMenuItemActions]),
+    actions: List(regionMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {

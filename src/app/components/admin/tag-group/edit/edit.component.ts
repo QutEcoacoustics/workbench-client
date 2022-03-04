@@ -17,7 +17,6 @@ import { adminTagGroupMenuItemActions } from "../list/list.component";
 import {
   adminEditTagGroupMenuItem,
   adminTagGroupsCategory,
-  adminTagGroupsMenuItem,
 } from "../tag-group.menus";
 import schema from "../tag-group.schema.json";
 
@@ -75,7 +74,7 @@ AdminTagGroupsEditComponent.linkToRoute({
   category: adminTagGroupsCategory,
   pageRoute: adminEditTagGroupMenuItem,
   menus: {
-    actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
+    actions: List(adminTagGroupMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [tagGroupKey]: tagGroupResolvers.show },

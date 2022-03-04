@@ -3,7 +3,6 @@ import { accountResolvers } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
 import {
   theirProfileCategory,
-  theirProfileMenuItem,
   theirSitesMenuItem,
 } from "@components/profile/profile.menus";
 import { User } from "@models/User";
@@ -33,7 +32,7 @@ class TheirSitesComponent extends MySitesComponent {
 TheirSitesComponent.linkToRoute({
   category: theirProfileCategory,
   pageRoute: theirSitesMenuItem,
-  menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
+  menus: { actions: List(theirProfileActions) },
   resolvers: { [accountKey]: accountResolvers.show },
 });
 

@@ -10,7 +10,6 @@ import {
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
   pointHarvestMenuItem,
-  pointMenuItem,
   pointsCategory,
 } from "@components/sites/points.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
@@ -23,11 +22,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { List } from "immutable";
-import {
-  siteHarvestMenuItem,
-  siteMenuItem,
-  sitesCategory,
-} from "../../sites.menus";
+import { siteHarvestMenuItem, sitesCategory } from "../../sites.menus";
 import {
   pointMenuItemActions,
   siteMenuItemActions,
@@ -78,7 +73,7 @@ SiteHarvestComponent.linkToRoute({
   category: sitesCategory,
   pageRoute: siteHarvestMenuItem,
   menus: {
-    actions: List([siteMenuItem, ...siteMenuItemActions]),
+    actions: List(siteMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {
@@ -89,7 +84,7 @@ SiteHarvestComponent.linkToRoute({
   category: pointsCategory,
   pageRoute: pointHarvestMenuItem,
   menus: {
-    actions: List([pointMenuItem, ...pointMenuItemActions]),
+    actions: List(pointMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {

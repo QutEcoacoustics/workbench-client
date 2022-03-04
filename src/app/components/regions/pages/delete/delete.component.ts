@@ -7,7 +7,6 @@ import {
 } from "@baw-api/region/regions.service";
 import {
   deleteRegionMenuItem,
-  regionMenuItem,
   regionsCategory,
 } from "@components/regions/regions.menus";
 import {
@@ -80,7 +79,7 @@ DeleteComponent.linkToRoute({
   category: regionsCategory,
   pageRoute: deleteRegionMenuItem,
   menus: {
-    actions: List([regionMenuItem, ...regionMenuItemActions]),
+    actions: List(regionMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {

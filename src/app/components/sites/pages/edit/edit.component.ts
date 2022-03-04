@@ -5,7 +5,6 @@ import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
   editPointMenuItem,
-  pointMenuItem,
   pointsCategory,
 } from "@components/sites/points.menus";
 import { Option } from "@helpers/advancedTypes";
@@ -22,11 +21,7 @@ import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import pointSchema from "../../point.base.json";
 import siteSchema from "../../site.base.json";
-import {
-  editSiteMenuItem,
-  siteMenuItem,
-  sitesCategory,
-} from "../../sites.menus";
+import { editSiteMenuItem, sitesCategory } from "../../sites.menus";
 import {
   pointMenuItemActions,
   siteMenuItemActions,
@@ -83,7 +78,7 @@ SiteEditComponent.linkToRoute({
   category: sitesCategory,
   pageRoute: editSiteMenuItem,
   menus: {
-    actions: List([siteMenuItem, ...siteMenuItemActions]),
+    actions: List(siteMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {
@@ -94,7 +89,7 @@ SiteEditComponent.linkToRoute({
   category: pointsCategory,
   pageRoute: editPointMenuItem,
   menus: {
-    actions: List([pointMenuItem, ...pointMenuItemActions]),
+    actions: List(pointMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {

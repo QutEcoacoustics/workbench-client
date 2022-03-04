@@ -12,7 +12,6 @@ import { adminTagGroupsMenuItemActions } from "../list/list.component";
 import {
   adminNewTagGroupMenuItem,
   adminTagGroupsCategory,
-  adminTagGroupsMenuItem,
 } from "../tag-group.menus";
 import schema from "../tag-group.schema.json";
 
@@ -54,9 +53,7 @@ class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
 AdminTagGroupsNewComponent.linkToRoute({
   category: adminTagGroupsCategory,
   pageRoute: adminNewTagGroupMenuItem,
-  menus: {
-    actions: List([adminTagGroupsMenuItem, ...adminTagGroupsMenuItemActions]),
-  },
+  menus: { actions: List(adminTagGroupsMenuItemActions) },
 });
 
 export { AdminTagGroupsNewComponent };

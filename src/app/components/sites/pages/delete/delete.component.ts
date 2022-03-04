@@ -5,12 +5,10 @@ import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
   deletePointMenuItem,
-  pointMenuItem,
   pointsCategory,
 } from "@components/sites/points.menus";
 import {
   deleteSiteMenuItem,
-  siteMenuItem,
   sitesCategory,
 } from "@components/sites/sites.menus";
 import { Option } from "@helpers/advancedTypes";
@@ -80,7 +78,7 @@ SiteDeleteComponent.linkToRoute({
   category: sitesCategory,
   pageRoute: deleteSiteMenuItem,
   menus: {
-    actions: List([siteMenuItem, ...siteMenuItemActions]),
+    actions: List(siteMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {
@@ -91,7 +89,7 @@ SiteDeleteComponent.linkToRoute({
   category: pointsCategory,
   pageRoute: deletePointMenuItem,
   menus: {
-    actions: List([pointMenuItem, ...pointMenuItemActions]),
+    actions: List(pointMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {

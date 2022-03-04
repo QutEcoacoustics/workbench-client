@@ -16,7 +16,6 @@ import { List } from "immutable";
 import {
   adminAudioRecordingMenuItem,
   adminAudioRecordingsCategory,
-  adminAudioRecordingsMenuItem,
 } from "../audio-recordings.menus";
 
 const audioRecordingKey = "audioRecording";
@@ -62,7 +61,7 @@ AdminAudioRecordingComponent.linkToRoute({
   category: adminAudioRecordingsCategory,
   pageRoute: adminAudioRecordingMenuItem,
   menus: {
-    actions: List([adminAudioRecordingsMenuItem, adminAudioRecordingMenuItem]),
+    actions: List([adminAudioRecordingMenuItem]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [audioRecordingKey]: audioRecordingResolvers.show },

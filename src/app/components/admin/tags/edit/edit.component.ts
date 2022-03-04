@@ -16,7 +16,6 @@ import {
   adminDeleteTagMenuItem,
   adminEditTagMenuItem,
   adminTagsCategory,
-  adminTagsMenuItem,
 } from "../tags.menus";
 
 const tagKey = "tag";
@@ -85,7 +84,6 @@ AdminTagsEditComponent.linkToRoute({
   pageRoute: adminEditTagMenuItem,
   menus: {
     actions: List([
-      adminTagsMenuItem,
       ...adminTagsMenuItemActions,
       adminEditTagMenuItem,
       adminDeleteTagMenuItem,

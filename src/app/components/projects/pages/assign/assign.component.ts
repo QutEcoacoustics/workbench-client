@@ -5,7 +5,6 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import {
   assignSiteMenuItem,
   projectCategory,
-  projectMenuItem,
 } from "@components/projects/projects.menus";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
@@ -157,7 +156,7 @@ AssignComponent.linkToRoute({
   category: projectCategory,
   pageRoute: assignSiteMenuItem,
   menus: {
-    actions: List([projectMenuItem, ...projectMenuItemActions]),
+    actions: List(projectMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [projectKey]: projectResolvers.show },

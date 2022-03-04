@@ -5,7 +5,6 @@ import {
   hasResolvedSuccessfully,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
-import { adminAnalysisJobsMenuItem } from "@components/admin/admin.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -62,7 +61,7 @@ AdminAnalysisJobComponent.linkToRoute({
   category: adminAnalysisJobsCategory,
   pageRoute: adminAnalysisJobMenuItem,
   menus: {
-    actions: List([adminAnalysisJobsMenuItem, adminAnalysisJobMenuItem]),
+    actions: List([adminAnalysisJobMenuItem]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [analysisJobKey]: analysisJobResolvers.show },

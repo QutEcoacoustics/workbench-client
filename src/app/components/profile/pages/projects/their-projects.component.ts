@@ -5,7 +5,6 @@ import { Filters } from "@baw-api/baw-api.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   theirProfileCategory,
-  theirProfileMenuItem,
   theirProjectsMenuItem,
 } from "@components/profile/profile.menus";
 import { User } from "@models/User";
@@ -40,7 +39,7 @@ class TheirProjectsComponent extends MyProjectsComponent {
 TheirProjectsComponent.linkToRoute({
   category: theirProfileCategory,
   pageRoute: theirProjectsMenuItem,
-  menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
+  menus: { actions: List(theirProfileActions) },
   resolvers: { [accountKey]: accountResolvers.show },
 });
 

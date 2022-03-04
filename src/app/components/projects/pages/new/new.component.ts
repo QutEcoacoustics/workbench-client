@@ -4,7 +4,6 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   newProjectMenuItem,
   projectsCategory,
-  projectsMenuItem,
 } from "@components/projects/projects.menus";
 import {
   defaultSuccessMsg,
@@ -53,7 +52,7 @@ class NewComponent extends FormTemplate<Project> {
 NewComponent.linkToRoute({
   category: projectsCategory,
   pageRoute: newProjectMenuItem,
-  menus: { actions: List([projectsMenuItem, ...projectsMenuItemActions]) },
+  menus: { actions: List(projectsMenuItemActions) },
 });
 
 export { NewComponent };

@@ -16,7 +16,6 @@ import {
   editProjectPermissionsMenuItem,
   projectCategory,
   projectMenuItem,
-  projectsMenuItem,
 } from "@components/projects/projects.menus";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
@@ -203,7 +202,7 @@ DetailsComponent.linkToRoute({
   category: projectCategory,
   pageRoute: projectMenuItem,
   menus: {
-    actions: List([projectsMenuItem, ...projectMenuItemActions]),
+    actions: List(projectMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [projectKey]: projectResolvers.show },

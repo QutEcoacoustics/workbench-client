@@ -2,7 +2,6 @@ import { Component } from "@angular/core";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import {
   adminCategory,
-  adminDashboardMenuItem,
   adminUserListMenuItem,
 } from "@components/admin/admin.menus";
 import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.component";
@@ -46,7 +45,7 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
 AdminUserListComponent.linkToRoute({
   category: adminCategory,
   pageRoute: adminUserListMenuItem,
-  menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
+  menus: { actions: List(adminMenuItemActions) },
 });
 
 export { AdminUserListComponent };

@@ -2,7 +2,6 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "@baw-api/user/user.service";
 import {
-  loginMenuItem,
   securityCategory,
   unlockAccountMenuItem,
 } from "@components/security/security.menus";
@@ -50,7 +49,7 @@ class UnlockAccountComponent extends FormTemplate<UnlockAccount> {
 UnlockAccountComponent.linkToRoute({
   category: securityCategory,
   pageRoute: unlockAccountMenuItem,
-  menus: { actions: List([loginMenuItem, ...loginMenuItemActions]) },
+  menus: { actions: List(loginMenuItemActions) },
 });
 
 export { UnlockAccountComponent };

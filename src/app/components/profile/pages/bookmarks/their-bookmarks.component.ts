@@ -6,7 +6,6 @@ import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import {
   theirBookmarksMenuItem,
   theirProfileCategory,
-  theirProfileMenuItem,
 } from "@components/profile/profile.menus";
 import { IBookmark } from "@models/Bookmark";
 import { User } from "@models/User";
@@ -40,7 +39,7 @@ class TheirBookmarksComponent extends MyBookmarksComponent {
 TheirBookmarksComponent.linkToRoute({
   category: theirProfileCategory,
   pageRoute: theirBookmarksMenuItem,
-  menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
+  menus: { actions: List(theirProfileActions) },
   resolvers: { [accountKey]: accountResolvers.show },
 });
 

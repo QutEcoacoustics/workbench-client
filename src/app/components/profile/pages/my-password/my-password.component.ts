@@ -4,7 +4,6 @@ import { AccountsService } from "@baw-api/account/accounts.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
-  myAccountMenuItem,
   myPasswordMenuItem,
 } from "@components/profile/profile.menus";
 import {
@@ -59,7 +58,7 @@ class MyPasswordComponent extends FormTemplate<User> {
 MyPasswordComponent.linkToRoute({
   category: myAccountCategory,
   pageRoute: myPasswordMenuItem,
-  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+  menus: { actions: List(myAccountActions) },
   resolvers: { [userKey]: userResolvers.show },
 });
 

@@ -2,7 +2,6 @@ import { Component } from "@angular/core";
 import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
 import {
   audioAnalysisCategory,
-  audioAnalysisMenuItem,
   audioAnalysisResultsMenuItem,
   downloadAudioAnalysisResultsMenuItem,
 } from "@components/audio-analysis/audio-analysis.menus";
@@ -24,10 +23,7 @@ AudioAnalysisResultsComponent.linkToRoute({
   category: audioAnalysisCategory,
   pageRoute: audioAnalysisResultsMenuItem,
   menus: {
-    actions: List([
-      audioAnalysisMenuItem,
-      downloadAudioAnalysisResultsMenuItem,
-    ]),
+    actions: List([downloadAudioAnalysisResultsMenuItem]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [audioAnalysisKey]: analysisJobResolvers.show },

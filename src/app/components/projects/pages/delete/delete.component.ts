@@ -7,7 +7,6 @@ import {
 import {
   deleteProjectMenuItem,
   projectCategory,
-  projectMenuItem,
   projectsMenuItem,
 } from "@components/projects/projects.menus";
 import {
@@ -75,7 +74,7 @@ DeleteComponent.linkToRoute({
   category: projectCategory,
   pageRoute: deleteProjectMenuItem,
   menus: {
-    actions: List([projectMenuItem, ...projectMenuItemActions]),
+    actions: List(projectMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [projectKey]: projectResolvers.show },

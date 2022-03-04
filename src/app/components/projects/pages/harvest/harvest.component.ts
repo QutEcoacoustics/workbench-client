@@ -10,11 +10,7 @@ import filesize from "filesize";
 import { List } from "immutable";
 import { Observable, Subscription, timer } from "rxjs";
 import { map, startWith, takeUntil, takeWhile } from "rxjs/operators";
-import {
-  harvestProjectMenuItem,
-  projectCategory,
-  projectMenuItem,
-} from "../../projects.menus";
+import { harvestProjectMenuItem, projectCategory } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
@@ -150,7 +146,7 @@ HarvestComponent.linkToRoute({
   category: projectCategory,
   pageRoute: harvestProjectMenuItem,
   menus: {
-    actions: List([projectMenuItem, ...projectMenuItemActions]),
+    actions: List(projectMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [projectKey]: projectResolvers.show },

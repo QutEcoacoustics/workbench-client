@@ -4,7 +4,6 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { regionMenuItemActions } from "@components/regions/pages/details/details.component";
-import { regionMenuItem } from "@components/regions/regions.menus";
 import {
   newPointMenuItem,
   pointsCategory,
@@ -74,7 +73,7 @@ class SiteNewComponent extends FormTemplate<Site> implements OnInit {
 SiteNewComponent.linkToRoute({
   category: pointsCategory,
   pageRoute: newPointMenuItem,
-  menus: { actions: List([regionMenuItem, ...regionMenuItemActions]) },
+  menus: { actions: List(regionMenuItemActions) },
   resolvers: {
     [projectKey]: projectResolvers.show,
     [regionKey]: regionResolvers.show,

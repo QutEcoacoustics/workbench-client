@@ -10,11 +10,7 @@ import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { adminTagsMenuItemActions } from "../list/list.component";
 import schema from "../tag.schema.json";
-import {
-  adminNewTagMenuItem,
-  adminTagsCategory,
-  adminTagsMenuItem,
-} from "../tags.menus";
+import { adminNewTagMenuItem, adminTagsCategory } from "../tags.menus";
 
 const typeOfTagsKey = "typeOfTags";
 
@@ -75,9 +71,7 @@ class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
 AdminTagsNewComponent.linkToRoute({
   category: adminTagsCategory,
   pageRoute: adminNewTagMenuItem,
-  menus: {
-    actions: List([adminTagsMenuItem, ...adminTagsMenuItemActions]),
-  },
+  menus: { actions: List(adminTagsMenuItemActions) },
   resolvers: { [typeOfTagsKey]: tagResolvers.tagTypes },
 });
 

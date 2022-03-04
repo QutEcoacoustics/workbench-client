@@ -3,10 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
-import {
-  projectCategory,
-  projectMenuItem,
-} from "@components/projects/projects.menus";
+import { projectCategory } from "@components/projects/projects.menus";
 import { newRegionMenuItem } from "@components/regions/regions.menus";
 import {
   defaultSuccessMsg,
@@ -65,7 +62,7 @@ class NewComponent extends FormTemplate<Region> {
 NewComponent.linkToRoute({
   category: projectCategory,
   pageRoute: newRegionMenuItem,
-  menus: { actions: List([projectMenuItem, ...projectMenuItemActions]) },
+  menus: { actions: List(projectMenuItemActions) },
   resolvers: { [projectKey]: projectResolvers.show },
 });
 

@@ -8,8 +8,6 @@ import {
 } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
-import { projectMenuItem } from "@components/projects/projects.menus";
-import { regionMenuItem } from "@components/regions/regions.menus";
 import {
   deletePointMenuItem,
   editPointMenuItem,
@@ -102,7 +100,7 @@ SiteDetailsComponent.linkToRoute({
   category: sitesCategory,
   pageRoute: siteMenuItem,
   menus: {
-    actions: List([projectMenuItem, ...siteMenuItemActions]),
+    actions: List(siteMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {
@@ -113,7 +111,7 @@ SiteDetailsComponent.linkToRoute({
   category: pointsCategory,
   pageRoute: pointMenuItem,
   menus: {
-    actions: List([regionMenuItem, ...pointMenuItemActions]),
+    actions: List(pointMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: {

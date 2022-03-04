@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { adminDashboardMenuItem } from "@components/admin/admin.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Tag } from "@models/Tag";
 import { List } from "immutable";
@@ -53,9 +52,7 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
 AdminTagsComponent.linkToRoute({
   category: adminTagsCategory,
   pageRoute: adminTagsMenuItem,
-  menus: {
-    actions: List([adminDashboardMenuItem, ...adminTagsMenuItemActions]),
-  },
+  menus: { actions: List(adminTagsMenuItemActions) },
 });
 
 export { AdminTagsComponent };

@@ -18,7 +18,6 @@ import {
   adminEditScriptMenuItem,
   adminScriptMenuItem,
   adminScriptsCategory,
-  adminScriptsMenuItem,
 } from "../scripts.menus";
 
 export const adminScriptActions = [adminEditScriptMenuItem];
@@ -61,7 +60,7 @@ AdminScriptComponent.linkToRoute({
   category: adminScriptsCategory,
   pageRoute: adminScriptMenuItem,
   menus: {
-    actions: List([adminScriptsMenuItem, ...adminScriptActions]),
+    actions: List(adminScriptActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [scriptKey]: scriptResolvers.show },

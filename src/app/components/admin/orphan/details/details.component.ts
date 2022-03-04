@@ -14,11 +14,7 @@ import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { Site } from "@models/Site";
 import { List } from "immutable";
-import {
-  adminOrphanMenuItem,
-  adminOrphansCategory,
-  adminOrphansMenuItem,
-} from "../orphans.menus";
+import { adminOrphanMenuItem, adminOrphansCategory } from "../orphans.menus";
 
 const siteKey = "site";
 
@@ -59,7 +55,7 @@ AdminOrphanComponent.linkToRoute({
   category: adminOrphansCategory,
   pageRoute: adminOrphanMenuItem,
   menus: {
-    actions: List([adminOrphansMenuItem, adminOrphanMenuItem]),
+    actions: List([adminOrphanMenuItem]),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [siteKey]: shallowSiteResolvers.show },

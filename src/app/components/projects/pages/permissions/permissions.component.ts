@@ -6,7 +6,6 @@ import { theirProfileMenuItem } from "@components/profile/profile.menus";
 import {
   editProjectPermissionsMenuItem,
   projectCategory,
-  projectMenuItem,
 } from "@components/projects/projects.menus";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { TableTemplate } from "@helpers/tableTemplate/tableTemplate";
@@ -112,7 +111,7 @@ PermissionsComponent.linkToRoute({
   category: projectCategory,
   pageRoute: editProjectPermissionsMenuItem,
   menus: {
-    actions: List([projectMenuItem, ...projectMenuItemActions]),
+    actions: List(projectMenuItemActions),
     actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
