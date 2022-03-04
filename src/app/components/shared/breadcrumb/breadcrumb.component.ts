@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Params } from "@angular/router";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { BreadcrumbsData, MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { map, Observable } from "rxjs";
@@ -10,15 +11,24 @@ import { map, Observable } from "rxjs";
 @Component({
   selector: "baw-breadcrumbs",
   template: `
-    <ng-container *ngIf="breadcrumbs$ | async as breadcrumbs">
-      <nav *ngIf="shouldShowBreadcrumbs(breadcrumbs)" aria-label="breadcrumb">
+    <ng-container
+      *ngIf="{
+        breadcrumbs: breadcrumbs$ | async,
+        queryParams: queryParams$ | async,
+        routeParams: routeParams$ | async
+      } as data"
+    >
+      <nav *ngIf="shouldShowBreadcrumbs(data)" aria-label="breadcrumb">
         <ol class="breadcrumb bg-light p-1">
-          <li *ngFor="let breadcrumb of breadcrumbs" class="breadcrumb-item">
+          <li
+            *ngFor="let breadcrumb of data.breadcrumbs"
+            class="breadcrumb-item"
+          >
             <fa-icon class="pe-1" [icon]="breadcrumb.icon"></fa-icon>
             <a
               [strongRoute]="breadcrumb.route"
-              [routeParams]="routeParams | async"
-              [queryParams]="queryParams | async"
+              [routeParams]="data.routeParams"
+              [queryParams]="data.queryParams"
             >
               {{ breadcrumb.label }}
             </a>
@@ -30,8 +40,8 @@ import { map, Observable } from "rxjs";
   styleUrls: ["breadcrumb.component.scss"],
 })
 export class BreadcrumbComponent implements OnInit {
-  public queryParams: Observable<Params>;
-  public routeParams: Observable<Params>;
+  public queryParams$: Observable<Params>;
+  public routeParams$: Observable<Params>;
   public breadcrumbs$: Observable<BreadcrumbsData>;
 
   public constructor(
@@ -49,11 +59,20 @@ export class BreadcrumbComponent implements OnInit {
      * params of the page component. So we use this bypass, check the service
      * for more details
      */
-    this.queryParams = this.sharedRoute.queryParams;
-    this.routeParams = this.sharedRoute.params;
+    this.queryParams$ = this.sharedRoute.queryParams;
+    this.routeParams$ = this.sharedRoute.params;
   }
 
-  public shouldShowBreadcrumbs(breadcrumbs: BreadcrumbsData): boolean {
-    return breadcrumbs.size > 0;
+  public shouldShowBreadcrumbs(data: {
+    breadcrumbs: BreadcrumbsData;
+    queryParams: Params;
+    routeParams: Params;
+  }): boolean {
+    return (
+      isInstantiated(data.breadcrumbs) &&
+      isInstantiated(data.queryParams) &&
+      isInstantiated(data.routeParams) &&
+      data.breadcrumbs.size > 0
+    );
   }
 }

@@ -2,6 +2,7 @@ import { DebugElement } from "@angular/core";
 import { ComponentFixture, tick } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 declare const ng: any;
 
@@ -11,12 +12,16 @@ declare const ng: any;
  * @param target Target element
  * @param prop Icon
  */
-export function assertIcon(target: HTMLElement, prop: string) {
+export function assertIcon(target: HTMLElement, prop: string | IconProp) {
+  if (prop instanceof Array) {
+    prop = prop.join(",");
+  }
+
   const icon: HTMLElement = target.querySelector("fa-icon");
   expect(icon).toBeTruthy("No icon detected");
   expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
   expect(icon.attributes.getNamedItem("ng-reflect-icon").value.trim()).toBe(
-    prop
+    prop as string
   );
 }
 
