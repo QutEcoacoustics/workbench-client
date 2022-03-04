@@ -1,6 +1,4 @@
 <!-- Site Details -->
-<h2 class="text-muted">Project: {{ project.name }}</h2>
-<h3 *ngIf="region" class="text-muted">Site: {{ region.name }}</h3>
 <h1>{{ site.name }}</h1>
 
 <div class="row mb-3">
@@ -59,45 +57,6 @@
           seconds of that time.
         </p>
       </baw-wip>
-
-      <ul class="nav mb-0">
-        <!-- Play link (if recordings exist) -->
-        <li class="nav-item">
-          <a
-            *ngIf="oldestRecording"
-            class="nav-link rounded-link-default"
-            [bawUrl]="oldestRecording?.viewUrl"
-          >
-            <fa-icon [icon]="['fas', 'play-circle']"></fa-icon>
-            Play
-          </a>
-          <!-- Loading while retrieving recording -->
-          <baw-loading
-            *ngIf="oldestRecording === undefined"
-            id="play-loader"
-            size="sm"
-          ></baw-loading>
-        </li>
-
-        <!-- Visualize link -->
-        <li class="nav-item">
-          <a class="nav-link rounded-link-default" [bawUrl]="site.visualizeUrl">
-            <fa-icon [icon]="['fas', 'eye']"></fa-icon>
-            Visualise
-          </a>
-        </li>
-
-        <!-- Audio recordings link (if recordings exist) -->
-        <li class="nav-item">
-          <a
-            class="nav-link rounded-link-default"
-            [bawUrl]="site.getAudioRecordingsUrl(project)"
-          >
-            <fa-icon [icon]="['fas', 'file-audio']"></fa-icon>
-            Audio Recordings
-          </a>
-        </li>
-      </ul>
 
       <!-- Recent Annotations Summary -->
       <baw-site-recent-annotations [site]="site"></baw-site-recent-annotations>

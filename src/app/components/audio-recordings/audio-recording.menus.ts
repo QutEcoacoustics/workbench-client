@@ -52,7 +52,7 @@ function makeDetailsMenuItem(subRoute: RecordingRoutes): MenuRoute {
 function makeBatchMenuItem(subRoute: RecordingRoutes): MenuRoute {
   return menuRoute({
     icon: ["fas", "file-download"],
-    label: "Batch Download Audio Recordings",
+    label: "Download Recordings",
     tooltip: () => "Download multiple audio recordings",
     // TODO Create base route in future
     disabled: subRoute === "base",

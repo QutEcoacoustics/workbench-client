@@ -14,7 +14,6 @@ import {
   Param,
 } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
-import { Card } from "@shared/cards/cards.component";
 import { AbstractModel } from "./AbstractModel";
 import {
   creator,
@@ -106,17 +105,5 @@ export class Region extends AbstractModel<IRegion> implements IRegion {
       projectId: this.projectId,
       regionId: this.id,
     });
-  }
-
-  /**
-   * Generate card-item details
-   */
-  public getCard(): Card {
-    return {
-      title: this.name,
-      description: this.descriptionHtmlTagline,
-      model: this,
-      route: this.viewUrl,
-    };
   }
 }

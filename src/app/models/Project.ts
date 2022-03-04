@@ -13,7 +13,6 @@ import {
   Param,
 } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
-import { Card } from "@shared/cards/cards.component";
 import { AbstractModel } from "./AbstractModel";
 import { creator, deleter, hasMany, updater } from "./AssociationDecorators";
 import {
@@ -88,18 +87,6 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public updater?: User;
   @deleter<Project>()
   public deleter?: User;
-
-  /**
-   * Generate card-item details
-   */
-  public getCard(): Card {
-    return {
-      title: this.name,
-      description: this.descriptionHtmlTagline,
-      model: this,
-      route: this.viewUrl,
-    };
-  }
 
   /**
    * Returns true if user has the permissions to edit this model

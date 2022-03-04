@@ -48,11 +48,7 @@ const regionKey = "region";
   template: `
     <ng-container *ngIf="region">
       <!-- Region Details -->
-      <h1>
-        <small class="text-muted"> Project: {{ project.name }} </small>
-        <br />
-        {{ region.name }}
-      </h1>
+      <h1>{{ region.name }}</h1>
 
       <div class="row mb-3">
         <div class="col-sm-4">

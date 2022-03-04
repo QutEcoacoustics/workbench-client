@@ -72,11 +72,11 @@ class SiteComponent extends PageComponent implements OnInit {
   private getOldestDates(): void {
     this.filterByDates("asc", { paging: { items: 1 } })
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (recordings) =>
+      .subscribe({
+        next: (recordings) =>
           (this.oldestRecording = recordings.length > 0 ? recordings[0] : null),
-        () => (this.oldestRecording = null)
-      );
+        error: () => (this.oldestRecording = null),
+      });
   }
 
   private filterByDates(

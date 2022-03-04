@@ -5,28 +5,15 @@ li.list-group-item {
 
   .body {
     flex: 1;
+  }
 
-    .heading {
-      margin-top: 0px;
-      margin-bottom: 5px;
-    }
-
-    ul {
-      margin-bottom: 0px;
-    }
+  ul > li:not(:last-child) {
+    margin-right: 0.5rem;
   }
 }
 
 img {
   width: 60px;
   height: auto;
-}
-
-#points {
-  padding-top: 5px;
-  padding-bottom: 8px;
-
-  span {
-    background-color: var(--baw-highlight);
-  }
+  float: left;
 }
