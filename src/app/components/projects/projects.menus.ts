@@ -1,6 +1,5 @@
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
-import { StrongRoute } from "@interfaces/strongRoute";
 import { Project } from "@models/Project";
 import {
   defaultAudioIcon,
@@ -12,11 +11,11 @@ import {
   isLoggedInPredicate,
   isProjectEditorPredicate,
 } from "src/app/app.menus";
+import { projectRoute, projectsRoute } from "./projects.routes";
 
 /*
   Projects Category
 */
-export const projectsRoute = StrongRoute.newRoot().add("projects");
 export const projectsCategory: Category = {
   label: "Projects",
   icon: ["fas", "globe-asia"],
@@ -56,14 +55,14 @@ export const requestProjectMenuItem = menuRoute({
 export const projectCategory: Category = {
   label: "Project",
   icon: projectsCategory.icon,
-  route: projectsRoute.add(":projectId"),
+  route: projectRoute,
 };
 
 export const projectMenuItem = menuRoute({
   icon: ["fas", "folder-open"],
   label: "Project",
   parent: projectsMenuItem,
-  route: projectCategory.route,
+  route: projectRoute,
   tooltip: () => "The current project",
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, Project)?.name,

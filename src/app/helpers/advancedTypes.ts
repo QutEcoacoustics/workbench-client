@@ -59,3 +59,6 @@ export type RecursivePartial<T> = {
     ? RecursivePartial<T[P]>
     : T[P];
 };
+
+/** This value may be asynchronous */
+export type PotentiallyAsync<T> = T | Promise<T>;

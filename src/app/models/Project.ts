@@ -1,5 +1,5 @@
 import { ACCOUNT, SHALLOW_REGION, SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import { projectMenuItem } from "@components/projects/projects.menus";
+import { projectRoute } from "@components/projects/projects.routes";
 import {
   AccessLevel,
   DateTimeTimezone,
@@ -109,6 +109,6 @@ export class Project extends AbstractModel<IProject> implements IProject {
   }
 
   public get viewUrl(): string {
-    return projectMenuItem.route.format({ projectId: this.id });
+    return projectRoute.format({ projectId: this.id });
   }
 }

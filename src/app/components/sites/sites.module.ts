@@ -12,8 +12,8 @@ import { SiteEditComponent } from "./pages/edit/edit.component";
 import { SiteHarvestComponent } from "./pages/harvest/harvest.component";
 import { SiteNewComponent } from "./pages/new/new.component";
 import { WizardComponent } from "./pages/wizard/wizard.component";
-import { pointsRoute } from "./points.menus";
-import { sitesRoute } from "./sites.menus";
+import { pointsRoute } from "./points.routes";
+import { sitesRoute } from "./sites.routes";
 
 const components = [
   SiteComponent,

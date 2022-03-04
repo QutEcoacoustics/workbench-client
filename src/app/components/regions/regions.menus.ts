@@ -1,7 +1,6 @@
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
-import { StrongRoute } from "@interfaces/strongRoute";
 import { Region } from "@models/Region";
 import {
   defaultDeleteIcon,
@@ -9,9 +8,11 @@ import {
   defaultNewIcon,
   isProjectEditorPredicate,
 } from "src/app/app.menus";
-
-export const shallowRegionsRoute = StrongRoute.newRoot().add("regions");
-export const regionsRoute = projectMenuItem.route.addFeatureModule("regions");
+import {
+  regionRoute,
+  regionsRoute,
+  shallowRegionsRoute,
+} from "./regions.routes";
 
 export const shallowRegionsCategory: Category = {
   icon: ["fas", "map-signs"],
@@ -36,7 +37,7 @@ export const regionMenuItem = menuRoute({
   icon: ["fas", "map-marked-alt"],
   label: "Site",
   parent: projectMenuItem,
-  route: regionsCategory.route.add(":regionId"),
+  route: regionRoute,
   tooltip: () => "The current site",
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, Region)?.name,

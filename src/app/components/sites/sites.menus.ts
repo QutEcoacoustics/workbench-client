@@ -10,13 +10,12 @@ import {
   isProjectEditorPredicate,
 } from "src/app/app.menus";
 import { projectMenuItem } from "../projects/projects.menus";
-
-export const sitesRoute = projectMenuItem.route.addFeatureModule("sites");
+import { siteRoute, sitesRoute } from "./sites.routes";
 
 export const sitesCategory: Category = {
   icon: ["fas", "map-marker-alt"],
   label: "Sites",
-  route: sitesRoute.add(":siteId"),
+  route: siteRoute,
 };
 
 export const siteMenuItem = menuRoute({

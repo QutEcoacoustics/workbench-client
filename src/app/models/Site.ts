@@ -2,13 +2,13 @@ import { Injector } from "@angular/core";
 import { id, IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
 import { adminOrphanMenuItem } from "@components/admin/orphan/orphans.menus";
-import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
-import { pointMenuItem } from "@components/sites/points.menus";
+import { audioRecordingsRoutes } from "@components/audio-recordings/audio-recording.routes";
+import { pointRoute } from "@components/sites/points.routes";
+import { siteRoute } from "@components/sites/sites.routes";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { assetRoot } from "@services/config/config.service";
 import { MapMarkerOption } from "@shared/map/map.component";
-import { siteMenuItem } from "../components/sites/sites.menus";
 import {
   AccessLevel,
   DateTimeTimezone,
@@ -135,13 +135,13 @@ export class Site extends AbstractModel<ISite> implements ISite {
 
   public getAudioRecordingsUrl(projectId: IdOr<Project>): string {
     if (isInstantiated(this.regionId)) {
-      return audioRecordingMenuItems.list.siteAndRegion.route.format({
+      return audioRecordingsRoutes.siteAndRegion.format({
         projectId: id(projectId),
         regionId: this.regionId,
         siteId: this.id,
       });
     } else {
-      return audioRecordingMenuItems.list.site.route.format({
+      return audioRecordingsRoutes.site.format({
         projectId: id(projectId),
         siteId: this.id,
       });
@@ -150,13 +150,13 @@ export class Site extends AbstractModel<ISite> implements ISite {
 
   public getViewUrl(project: IdOr<Project>): string {
     if (isInstantiated(this.regionId)) {
-      return pointMenuItem.route.format({
+      return pointRoute.format({
         projectId: id(project),
         regionId: this.regionId,
         siteId: this.id,
       });
     } else {
-      return siteMenuItem.route.format({
+      return siteRoute.format({
         projectId: id(project),
         siteId: this.id,
       });

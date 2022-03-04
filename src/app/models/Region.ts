@@ -1,6 +1,6 @@
 import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
-import { regionMenuItem } from "@components/regions/regions.menus";
+import { audioRecordingsRoutes } from "@components/audio-recordings/audio-recording.routes";
+import { regionRoute } from "@components/regions/regions.routes";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import {
   DateTimeTimezone,
@@ -91,7 +91,7 @@ export class Region extends AbstractModel<IRegion> implements IRegion {
   public deleter?: User;
 
   public get viewUrl(): string {
-    return regionMenuItem.route.format({
+    return regionRoute.format({
       projectId: this.projectId,
       regionId: this.id,
     });
@@ -102,7 +102,7 @@ export class Region extends AbstractModel<IRegion> implements IRegion {
   }
 
   public getAudioRecordingsUrl(): string {
-    return audioRecordingMenuItems.list.region.route.format({
+    return audioRecordingsRoutes.region.format({
       projectId: this.projectId,
       regionId: this.id,
     });
