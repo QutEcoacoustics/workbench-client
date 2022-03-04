@@ -1,5 +1,6 @@
-import { Injectable, Inject, Injector } from "@angular/core";
+import { Inject, Injectable, Injector } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { homeMenuItem } from "@components/home/home.menus";
 import {
   projectMenuItem,
   projectsMenuItem,
@@ -192,6 +193,10 @@ export class MenuService extends withUnsubscribe() {
   }
 
   private getBreadcrumbsData(page: IPageInfo): BreadcrumbsData {
+    if (page.pageRoute === homeMenuItem) {
+      return OrderedSet();
+    }
+
     return this.rootToMenuRoute(page.pageRoute).map(
       (breadcrumb): Breadcrumb => ({
         label:

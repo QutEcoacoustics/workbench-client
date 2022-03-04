@@ -1,7 +1,6 @@
-import { Injector } from "@angular/core";
 import {
-  shouldNotFail,
   shouldNotComplete,
+  shouldNotFail,
 } from "@baw-api/baw-api.service.spec";
 import {
   AuthTriggerData,
@@ -370,7 +369,8 @@ describe("MenuService", () => {
       const menuItem = generateMenuRoute({
         breadcrumbResolve: (page, injector) => {
           expect(page.pageRoute).toEqual(menuItem);
-          expect(injector).toBeInstanceOf(Injector);
+          // Unable to instanceof check this because R3Injector is not exposed
+          expect(injector).toBeTruthy();
           return "Breadcrumb";
         },
       });
