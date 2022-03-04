@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { Filters } from "@baw-api/baw-api.service";
+import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
@@ -13,12 +13,13 @@ import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, Ids, toRelative } from "@interfaces/apiInterfaces";
-import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
+import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
+import { Observable } from "rxjs";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -66,7 +67,7 @@ class AudioRecordingsListComponent
             timezone: recording,
             site: recording,
             // yyyy-mm-dd hh:mm
-            recorded: recording.recordedDate.toFormat("yyyy-LL-dd HH:mm"),
+            recorded: recording,
             duration: toRelative(recording.duration, { largest: 1 }),
             model: recording,
           })
@@ -119,9 +120,18 @@ class AudioRecordingsListComponent
     }
   }
 
-  protected apiAction(filters: Filters<IAudioRecording>) {
+  public getRecordingDate(recording: AudioRecording): string {
+    return recording.recordedDate.toFormat("yyyy-LL-dd HH:mm");
+  }
+
+  protected apiAction(
+    filters: Filters<AudioRecording>
+  ): Observable<AudioRecording[]> {
     function updateFilterWithSite(sites: Ids | Id) {
-      const siteFilter = (((filters ??= {}).filter ??= {}).siteId ??= {});
+      const siteFilters: Filters<AudioRecording> = (filters ??= {});
+      const siteInnerFilter: InnerFilter<AudioRecording> =
+        (siteFilters.filter ??= {});
+      const siteFilter = (siteInnerFilter.siteId ??= {});
       if (sites instanceof Set) {
         siteFilter.in = Array.from(sites);
       } else {
@@ -143,7 +153,7 @@ class AudioRecordingsListComponent
 }
 
 interface TableRow {
-  recorded: string;
+  recorded: AudioRecording;
   timezone: AudioRecording;
   duration: string;
   uploader: AudioRecording;

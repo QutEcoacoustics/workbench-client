@@ -19,15 +19,8 @@
   >
     <ngx-datatable-column name="Recorded">
       <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        <span
-          [ngbTooltip]="
-            site ?? row.model.site
-              | timezone
-                : { loading: 'loading, hover over text again to refresh' }
-          "
-          placement="right"
-        >
-          {{ value }}
+        <span [ngbTooltip]="value.recordedDateOffset" placement="right">
+          {{ getRecordingDate(value) }}
         </span>
       </ng-template>
     </ngx-datatable-column>

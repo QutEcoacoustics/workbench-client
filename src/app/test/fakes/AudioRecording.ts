@@ -38,7 +38,7 @@ export function generateAudioRecording(
     status: modelData.random.arrayElement(statuses),
     notes: modelData.notes(),
     originalFileName: modelData.system.commonFileName(".mpg"),
-    recordedUtcOffset: modelData.offset(),
+    recordedDateTimezone: modelData.offset(),
     ...modelData.model.generateAllUsers(),
     ...data,
   };

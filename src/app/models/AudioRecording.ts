@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { id, IdOr } from "@baw-api/api-common";
 import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
@@ -42,7 +43,7 @@ export interface IAudioRecording extends HasAllUsers {
   status?: AudioRecordingStatus;
   notes?: Blob | any;
   originalFileName?: string;
-  recordedUtcOffset?: string;
+  recordedDateTimezone?: string;
 }
 
 /**
@@ -80,7 +81,7 @@ export class AudioRecording
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
   public readonly originalFileName?: string;
-  public readonly recordedUtcOffset?: string;
+  public readonly recordedDateTimezone?: string;
 
   // Associations
   @creator<AudioRecording>()
@@ -102,6 +103,15 @@ export class AudioRecording
   /** Routes to the recording listen page */
   public get playUrl(): string {
     return listenRecordingMenuItem.route.format({ audioRecordingId: this.id });
+  }
+
+  public constructor(data: IAudioRecording, injector?: Injector) {
+    super(data, injector);
+
+    // Set timezone on recorded date
+    if (this.recordedDateTimezone) {
+      this.recordedDate = this.recordedDate.setZone(this.recordedDateTimezone);
+    }
   }
 
   /** Routes to the download link for the api */

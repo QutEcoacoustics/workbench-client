@@ -150,13 +150,13 @@ export function bawDateTime<Model>(opts?: BawDecoratorOptions<Model>) {
   return createDecorator<Model>(
     opts,
     (model, key, timestamp: string | DateTime) => {
-      if (timestamp instanceof DateTime) {
-        return;
+      if (!timestamp) {
+        model[key] = null;
+      } else if (timestamp instanceof DateTime) {
+        model[key] = timestamp;
+      } else {
+        model[key] = DateTime.fromISO(timestamp, { setZone: true });
       }
-
-      model[key] = timestamp
-        ? DateTime.fromISO(timestamp, { setZone: true })
-        : null;
     }
   );
 }

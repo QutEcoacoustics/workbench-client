@@ -134,9 +134,9 @@ describe("AdminAudioRecordingComponent", () => {
         plain: model.originalFileName,
       },
       {
-        label: "Recorded UTC Offset",
-        key: "recordedUtcOffset",
-        plain: model.recordedUtcOffset,
+        label: "Recorded Date Timezone",
+        key: "recordedDateTimezone",
+        plain: model.recordedDateTimezone,
       },
     ];
 
