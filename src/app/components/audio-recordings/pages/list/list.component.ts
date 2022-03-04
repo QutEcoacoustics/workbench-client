@@ -112,7 +112,7 @@ class AudioRecordingsListComponent
     // If a region exists, this must be a site with a region
     // If the site is a point...
     // Otherwise its a site
-    if (hideProjects || this.region || this.site.isPoint) {
+    if (hideProjects || this.region || this.site?.isPoint) {
       return "Point";
     } else {
       return "Site";
