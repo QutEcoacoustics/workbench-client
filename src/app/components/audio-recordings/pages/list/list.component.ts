@@ -106,12 +106,16 @@ class AudioRecordingsListComponent
   }
 
   public get siteColumnName(): string {
-    if (this.site) {
-      return this.site.isPoint ? "Point" : "Site";
-    } else if (this.region) {
+    const hideProjects = this.config.settings.hideProjects;
+
+    // If we are hiding projects, any sites must be points
+    // If a region exists, this must be a site with a region
+    // If the site is a point...
+    // Otherwise its a site
+    if (hideProjects || this.region || this.site.isPoint) {
       return "Point";
     } else {
-      return this.config.settings.hideProjects ? "Point" : "Site";
+      return "Site";
     }
   }
 
