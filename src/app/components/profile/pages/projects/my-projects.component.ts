@@ -4,7 +4,6 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
-  myAccountMenuItem,
   myProjectsMenuItem,
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
@@ -49,7 +48,7 @@ class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
 MyProjectsComponent.linkToRoute({
   category: myAccountCategory,
   pageRoute: myProjectsMenuItem,
-  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+  menus: { actions: List(myAccountActions) },
   resolvers: { [userKey]: userResolvers.show },
 });
 

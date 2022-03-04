@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "@baw-api/user/user.service";
 import {
   confirmAccountMenuItem,
-  loginMenuItem,
   securityCategory,
 } from "@components/security/security.menus";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
@@ -53,7 +52,7 @@ class ConfirmPasswordComponent extends FormTemplate<ConfirmPassword> {
 ConfirmPasswordComponent.linkToRoute({
   category: securityCategory,
   pageRoute: confirmAccountMenuItem,
-  menus: { actions: List([loginMenuItem, ...loginMenuItemActions]) },
+  menus: { actions: List(loginMenuItemActions) },
 });
 
 export { ConfirmPasswordComponent };

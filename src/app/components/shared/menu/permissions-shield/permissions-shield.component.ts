@@ -7,12 +7,14 @@ import {
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AccessLevel } from "@interfaces/apiInterfaces";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { map, takeUntil } from "rxjs";
+import { isLoggedInPredicate } from "src/app/app.menus";
 import { WidgetComponent } from "../widget/widget.component";
 
 /**
@@ -163,3 +165,8 @@ export class PermissionsShieldComponent
     return this.model["accessLevel"] ?? null;
   }
 }
+
+export const permissionsWidgetMenuItem = new WidgetMenuItem(
+  PermissionsShieldComponent,
+  isLoggedInPredicate
+);

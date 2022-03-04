@@ -15,7 +15,6 @@ import { adminScriptActions } from "../details/details.component";
 import schema from "../script.base.schema.json";
 import {
   adminEditScriptMenuItem,
-  adminScriptMenuItem,
   adminScriptsCategory,
 } from "../scripts.menus";
 
@@ -68,7 +67,7 @@ class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
 AdminScriptsEditComponent.linkToRoute({
   category: adminScriptsCategory,
   pageRoute: adminEditScriptMenuItem,
-  menus: { actions: List([adminScriptMenuItem, ...adminScriptActions]) },
+  menus: { actions: List(adminScriptActions) },
   resolvers: { [scriptKey]: scriptResolvers.show },
 });
 

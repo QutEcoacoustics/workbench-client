@@ -7,14 +7,12 @@ import {
 import {
   editProjectMenuItem,
   projectCategory,
-  projectMenuItem,
 } from "@components/projects/projects.menus";
 import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -71,8 +69,8 @@ EditComponent.linkToRoute({
   category: projectCategory,
   pageRoute: editProjectMenuItem,
   menus: {
-    actions: List([projectMenuItem, ...projectMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(projectMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
 });

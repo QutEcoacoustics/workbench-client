@@ -10,15 +10,10 @@ import extendedSchema from "@components/sites/site.extended.json";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Site } from "@models/Site";
 import { List } from "immutable";
-import {
-  adminOrphanMenuItem,
-  adminOrphansCategory,
-  adminOrphansMenuItem,
-} from "../orphans.menus";
+import { adminOrphanMenuItem, adminOrphansCategory } from "../orphans.menus";
 
 const siteKey = "site";
 
@@ -59,8 +54,8 @@ AdminOrphanComponent.linkToRoute({
   category: adminOrphansCategory,
   pageRoute: adminOrphanMenuItem,
   menus: {
-    actions: List([adminOrphansMenuItem, adminOrphanMenuItem]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List([adminOrphanMenuItem]),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: { [siteKey]: shallowSiteResolvers.show },
 });

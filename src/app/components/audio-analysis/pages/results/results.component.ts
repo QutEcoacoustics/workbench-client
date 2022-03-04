@@ -2,13 +2,11 @@ import { Component } from "@angular/core";
 import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
 import {
   audioAnalysisCategory,
-  audioAnalysisMenuItem,
   audioAnalysisResultsMenuItem,
   downloadAudioAnalysisResultsMenuItem,
 } from "@components/audio-analysis/audio-analysis.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { List } from "immutable";
 
 const audioAnalysisKey = "audioAnalysis";
@@ -24,11 +22,8 @@ AudioAnalysisResultsComponent.linkToRoute({
   category: audioAnalysisCategory,
   pageRoute: audioAnalysisResultsMenuItem,
   menus: {
-    actions: List([
-      audioAnalysisMenuItem,
-      downloadAudioAnalysisResultsMenuItem,
-    ]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List([downloadAudioAnalysisResultsMenuItem]),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: { [audioAnalysisKey]: analysisJobResolvers.show },
 });

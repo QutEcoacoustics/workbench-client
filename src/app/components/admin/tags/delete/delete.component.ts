@@ -68,7 +68,6 @@ AdminTagsDeleteComponent.linkToRoute({
   pageRoute: adminDeleteTagMenuItem,
   menus: {
     actions: List([
-      adminTagsMenuItem,
       ...adminTagsMenuItemActions,
       adminEditTagMenuItem,
       adminDeleteTagMenuItem,

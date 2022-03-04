@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { adminDashboardMenuItem } from "@components/admin/admin.menus";
 import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.component";
 import { assignSiteMenuItem } from "@components/projects/projects.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
@@ -46,9 +45,7 @@ class AdminOrphansComponent
 AdminOrphansComponent.linkToRoute({
   category: adminOrphansCategory,
   pageRoute: adminOrphansMenuItem,
-  menus: {
-    actions: List([adminDashboardMenuItem, ...adminMenuItemActions]),
-  },
+  menus: { actions: List(adminMenuItemActions) },
 });
 
 export { AdminOrphansComponent };

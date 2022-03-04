@@ -4,7 +4,6 @@ import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
-  myAccountMenuItem,
   myBookmarksMenuItem,
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
@@ -48,7 +47,7 @@ class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
 MyBookmarksComponent.linkToRoute({
   category: myAccountCategory,
   pageRoute: myBookmarksMenuItem,
-  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+  menus: { actions: List(myAccountActions) },
   resolvers: { [userKey]: userResolvers.show },
 });
 

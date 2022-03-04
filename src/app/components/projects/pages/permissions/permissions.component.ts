@@ -6,12 +6,10 @@ import { theirProfileMenuItem } from "@components/profile/profile.menus";
 import {
   editProjectPermissionsMenuItem,
   projectCategory,
-  projectMenuItem,
 } from "@components/projects/projects.menus";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { TableTemplate } from "@helpers/tableTemplate/tableTemplate";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
 import { ISelectableItem } from "@shared/items/selectable-items/selectable-items.component";
@@ -112,8 +110,8 @@ PermissionsComponent.linkToRoute({
   category: projectCategory,
   pageRoute: editProjectPermissionsMenuItem,
   menus: {
-    actions: List([projectMenuItem, ...projectMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(projectMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
 });

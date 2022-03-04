@@ -7,15 +7,13 @@ import {
 } from "@baw-api/region/regions.service";
 import {
   deleteRegionMenuItem,
-  regionMenuItem,
   regionsCategory,
 } from "@components/regions/regions.menus";
 import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
@@ -80,8 +78,8 @@ DeleteComponent.linkToRoute({
   category: regionsCategory,
   pageRoute: deleteRegionMenuItem,
   menus: {
-    actions: List([regionMenuItem, ...regionMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(regionMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

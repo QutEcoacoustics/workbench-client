@@ -456,6 +456,15 @@ describe("MenuService", () => {
         (widgets) => setup({ menuData: { actionWidgets: widgets } }),
         () => spec.service.actionMenu.widgets
       );
+
+      validatePredicate(
+        (links, fullscreen) =>
+          setup({ fullscreen, menuData: { actionWidgets: links } }),
+        () => spec.service.actionMenu.widgets,
+        "widget",
+        (data) =>
+          new WidgetMenuItem(PermissionsShieldComponent, data?.predicate)
+      );
     });
 
     describe("item ordering", () => {
@@ -557,6 +566,15 @@ describe("MenuService", () => {
       validateWidgets(
         (widgets) => setup({ menuData: { linkWidgets: widgets } }),
         () => spec.service.secondaryMenu.widgets
+      );
+
+      validatePredicate(
+        (links, fullscreen) =>
+          setup({ fullscreen, menuData: { linkWidgets: links } }),
+        () => spec.service.secondaryMenu.widgets,
+        "widget",
+        (data) =>
+          new WidgetMenuItem(PermissionsShieldComponent, data?.predicate)
       );
     });
 
@@ -736,86 +754,94 @@ describe("MenuService", () => {
     });
 
     linkTypes.forEach(({ type, createLink }) => {
-      it(`should handle ${type}`, () => {
+      validatePredicate<T>(linkSetup, getLinks, type, createLink, defaultLinks);
+    });
+  }
+
+  function validatePredicate<T>(
+    linkSetup: (links: List<T>, fullscreen: boolean) => void,
+    getLinks: () => OrderedSet<T>,
+    type: string,
+    createLink: (data?: Partial<MenuItem>) => T,
+    defaultLinks: T[] = []
+  ) {
+    function assertLinks(links: T[]) {
+      expect(getLinks()).toEqual(OrderedSet([...defaultLinks, ...links]));
+    }
+
+    describe(`${type} predicates`, () => {
+      it("should not filter with no predicate", () => {
         const link = createLink();
         linkSetup(List([link]), false);
         assertLinks([link]);
       });
 
-      describe(`${type} predicates`, () => {
-        it("should not filter with no predicate", () => {
-          const link = createLink();
-          linkSetup(List([link]), false);
-          assertLinks([link]);
-        });
+      it("should not filter with passing predicate", () => {
+        const link = createLink({ predicate: () => true });
+        linkSetup(List([link]), false);
+        assertLinks([link]);
+      });
 
-        it("should not filter with passing predicate", () => {
-          const link = createLink({ predicate: () => true });
-          linkSetup(List([link]), false);
-          assertLinks([link]);
-        });
+      it("should filter with failing predicate", () => {
+        const link = createLink({ predicate: () => false });
+        linkSetup(List([link]), false);
+        assertLinks([]);
+      });
 
-        it("should filter with failing predicate", () => {
-          const link = createLink({ predicate: () => false });
-          linkSetup(List([link]), false);
-          assertLinks([]);
-        });
+      it("should only filter on failing predicates", () => {
+        const linkA = createLink({ predicate: () => true });
+        const linkB = createLink({ predicate: () => false });
+        const linkC = createLink(undefined);
+        linkSetup(List([linkA, linkB, linkC]), false);
+        assertLinks([linkA, linkC]);
+      });
 
-        it("should only filter on failing predicates", () => {
-          const linkA = createLink({ predicate: () => true });
-          const linkB = createLink({ predicate: () => false });
-          const linkC = createLink(undefined);
-          linkSetup(List([linkA, linkB, linkC]), false);
-          assertLinks([linkA, linkC]);
+      it("should pass guest data to predicate", (done) => {
+        const link = createLink({
+          predicate: jasmine.createSpy().and.callFake((user) => {
+            expect(user).toBeUndefined();
+            done();
+            return true;
+          }),
         });
+        linkSetup(List([link]), false);
+      });
 
-        it("should pass guest data to predicate", (done) => {
-          const link = createLink({
-            predicate: jasmine.createSpy().and.callFake((user) => {
-              expect(user).toBeUndefined();
+      it("should pass user data to predicate", (done) => {
+        let isInitialLoad = true;
+        const user = new User(generateUser());
+        const link = createLink({
+          predicate: jasmine.createSpy().and.callFake((_user) => {
+            if (isInitialLoad) {
+              isInitialLoad = false;
+              return true;
+            }
+            expect(_user).toEqual(user);
+            done();
+            return true;
+          }),
+        });
+        linkSetup(List([link]), false);
+        setUser(user);
+      });
+
+      it("should pass page date to predicate", (done) => {
+        let isInitialLoad = true;
+        const link = createLink({
+          predicate: jasmine.createSpy().and.callFake((_, data) => {
+            expect(isIPageInfo(data)).toBeTrue();
+            if (isInitialLoad) {
+              isInitialLoad = false;
+              expect(data.fullscreen).toBe(true);
+            } else {
+              expect(data.fullscreen).toBe(false);
               done();
-              return true;
-            }),
-          });
-          linkSetup(List([link]), false);
+            }
+            return true;
+          }),
         });
-
-        it("should pass user data to predicate", (done) => {
-          let isInitialLoad = true;
-          const user = new User(generateUser());
-          const link = createLink({
-            predicate: jasmine.createSpy().and.callFake((_user) => {
-              if (isInitialLoad) {
-                isInitialLoad = false;
-                return true;
-              }
-              expect(_user).toEqual(user);
-              done();
-              return true;
-            }),
-          });
-          linkSetup(List([link]), false);
-          setUser(user);
-        });
-
-        it("should pass page date to predicate", (done) => {
-          let isInitialLoad = true;
-          const link = createLink({
-            predicate: jasmine.createSpy().and.callFake((_, data) => {
-              expect(isIPageInfo(data)).toBeTrue();
-              if (isInitialLoad) {
-                isInitialLoad = false;
-                expect(data.fullscreen).toBe(true);
-              } else {
-                expect(data.fullscreen).toBe(false);
-                done();
-              }
-              return true;
-            }),
-          });
-          linkSetup(List([link]), true);
-          setPageInfo(false, spec.service.pageInfo.menus);
-        });
+        linkSetup(List([link]), true);
+        setPageInfo(false, spec.service.pageInfo.menus);
       });
     });
   }

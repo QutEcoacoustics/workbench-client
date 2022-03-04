@@ -4,7 +4,6 @@ import { Filters } from "@baw-api/baw-api.service";
 import {
   theirAnnotationsMenuItem,
   theirProfileCategory,
-  theirProfileMenuItem,
 } from "@components/profile/profile.menus";
 import { IAudioEvent } from "@models/AudioEvent";
 import { User } from "@models/User";
@@ -31,7 +30,7 @@ class TheirAnnotationsComponent extends MyAnnotationsComponent {
 TheirAnnotationsComponent.linkToRoute({
   category: theirProfileCategory,
   pageRoute: theirAnnotationsMenuItem,
-  menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
+  menus: { actions: List(theirProfileActions) },
   resolvers: { [accountKey]: accountResolvers.show },
 });
 

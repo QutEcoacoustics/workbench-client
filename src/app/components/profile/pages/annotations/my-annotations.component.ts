@@ -1,12 +1,11 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { Filters } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
-  myAccountMenuItem,
   myAnnotationsMenuItem,
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
@@ -56,7 +55,7 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
 MyAnnotationsComponent.linkToRoute({
   category: myAccountCategory,
   pageRoute: myAnnotationsMenuItem,
-  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+  menus: { actions: List(myAccountActions) },
   resolvers: { [userKey]: userResolvers.show },
 });
 

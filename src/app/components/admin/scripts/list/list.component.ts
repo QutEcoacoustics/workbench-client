@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
 import { ScriptsService } from "@baw-api/script/scripts.service";
-import { adminDashboardMenuItem } from "@components/admin/admin.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { Script } from "@models/Script";
@@ -51,9 +50,7 @@ class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script> {
 AdminScriptsComponent.linkToRoute({
   category: adminScriptsCategory,
   pageRoute: adminScriptsMenuItem,
-  menus: {
-    actions: List([adminDashboardMenuItem, ...adminScriptsMenuItemActions]),
-  },
+  menus: { actions: List(adminScriptsMenuItemActions) },
 });
 
 export { AdminScriptsComponent };

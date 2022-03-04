@@ -4,7 +4,6 @@ import { AccountsService } from "@baw-api/account/accounts.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
-  myAccountMenuItem,
   myDeleteMenuItem,
 } from "@components/profile/profile.menus";
 import {
@@ -58,7 +57,7 @@ class MyDeleteComponent extends FormTemplate<User> {
 MyDeleteComponent.linkToRoute({
   category: myAccountCategory,
   pageRoute: myDeleteMenuItem,
-  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+  menus: { actions: List(myAccountActions) },
   resolvers: { [userKey]: userResolvers.show },
 });
 

@@ -8,8 +8,7 @@ import { scriptResolvers } from "@baw-api/script/scripts.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Script } from "@models/Script";
 import { List } from "immutable";
 import baseSchema from "../script.base.schema.json";
@@ -18,7 +17,6 @@ import {
   adminEditScriptMenuItem,
   adminScriptMenuItem,
   adminScriptsCategory,
-  adminScriptsMenuItem,
 } from "../scripts.menus";
 
 export const adminScriptActions = [adminEditScriptMenuItem];
@@ -61,8 +59,8 @@ AdminScriptComponent.linkToRoute({
   category: adminScriptsCategory,
   pageRoute: adminScriptMenuItem,
   menus: {
-    actions: List([adminScriptsMenuItem, ...adminScriptActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(adminScriptActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: { [scriptKey]: scriptResolvers.show },
 });

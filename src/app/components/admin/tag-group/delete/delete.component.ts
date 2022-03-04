@@ -72,9 +72,7 @@ class AdminTagGroupsDeleteComponent
 AdminTagGroupsDeleteComponent.linkToRoute({
   category: adminTagGroupsCategory,
   pageRoute: adminDeleteTagGroupMenuItem,
-  menus: {
-    actions: List([adminTagGroupsMenuItem, ...adminTagGroupMenuItemActions]),
-  },
+  menus: { actions: List(adminTagGroupMenuItemActions) },
   resolvers: { [tagGroupKey]: tagGroupResolvers.show },
 });
 

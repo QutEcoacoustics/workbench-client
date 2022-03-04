@@ -5,12 +5,10 @@ import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
   deletePointMenuItem,
-  pointMenuItem,
   pointsCategory,
 } from "@components/sites/points.menus";
 import {
   deleteSiteMenuItem,
-  siteMenuItem,
   sitesCategory,
 } from "@components/sites/sites.menus";
 import { Option } from "@helpers/advancedTypes";
@@ -18,8 +16,7 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -80,8 +77,8 @@ SiteDeleteComponent.linkToRoute({
   category: sitesCategory,
   pageRoute: deleteSiteMenuItem,
   menus: {
-    actions: List([siteMenuItem, ...siteMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(siteMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
@@ -91,8 +88,8 @@ SiteDeleteComponent.linkToRoute({
   category: pointsCategory,
   pageRoute: deletePointMenuItem,
   menus: {
-    actions: List([pointMenuItem, ...pointMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(pointMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

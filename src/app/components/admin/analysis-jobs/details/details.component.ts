@@ -5,12 +5,10 @@ import {
   hasResolvedSuccessfully,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
-import { adminAnalysisJobsMenuItem } from "@components/admin/admin.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { List } from "immutable";
 import schema from "../analysis-job.schema.json";
@@ -62,8 +60,8 @@ AdminAnalysisJobComponent.linkToRoute({
   category: adminAnalysisJobsCategory,
   pageRoute: adminAnalysisJobMenuItem,
   menus: {
-    actions: List([adminAnalysisJobsMenuItem, adminAnalysisJobMenuItem]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List([adminAnalysisJobMenuItem]),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: { [analysisJobKey]: analysisJobResolvers.show },
 });

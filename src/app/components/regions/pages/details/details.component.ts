@@ -8,7 +8,6 @@ import {
 } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
-import { projectMenuItem } from "@components/projects/projects.menus";
 import {
   deleteRegionMenuItem,
   editRegionMenuItem,
@@ -19,8 +18,7 @@ import { newPointMenuItem } from "@components/sites/points.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -142,8 +140,8 @@ DetailsComponent.linkToRoute({
   category: regionsCategory,
   pageRoute: regionMenuItem,
   menus: {
-    actions: List([projectMenuItem, ...regionMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(regionMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

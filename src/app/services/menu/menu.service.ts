@@ -83,9 +83,9 @@ export class MenuService extends withUnsubscribe() {
       const numActions = this.pageInfo.menus?.actions?.count() ?? 0;
       const numWidgets = this.pageInfo.menus?.actionWidgets?.count() ?? 0;
       this._hasActions = numActions + numWidgets > 0;
-      this._breadcrumbs = this.getBreadcrumbsData(this.pageInfo);
-      this._actionMenu = this.getActionMenuData(this.pageInfo);
-      this._secondaryMenu = this.getSecondaryMenuData(this.pageInfo);
+      this._breadcrumbs = this.getBreadcrumbsData();
+      this._actionMenu = this.getActionMenuData();
+      this._secondaryMenu = this.getSecondaryMenuData();
       this._isFullscreen = !!this.pageInfo.fullscreen;
       this.triggerUpdate();
     };
@@ -192,12 +192,12 @@ export class MenuService extends withUnsubscribe() {
     this._menuUpdate.next(this.getData());
   }
 
-  private getBreadcrumbsData(page: IPageInfo): BreadcrumbsData {
-    if (page.pageRoute === homeMenuItem) {
+  private getBreadcrumbsData(): BreadcrumbsData {
+    if (this.pageInfo.pageRoute === homeMenuItem) {
       return OrderedSet();
     }
 
-    return this.rootToMenuRoute(page.pageRoute).map(
+    return this.rootToMenuRoute(this.pageInfo.pageRoute).map(
       (breadcrumb): Breadcrumb => ({
         label:
           breadcrumb.breadcrumbResolve?.(this.pageInfo, this.injector) ??
@@ -208,33 +208,39 @@ export class MenuService extends withUnsubscribe() {
     );
   }
 
-  private getActionMenuData(page: IPageInfo): ActionMenuData {
+  private getActionMenuData(): ActionMenuData {
     const links =
-      page.menus?.actions
-        ?.filter((link): boolean => this.filterByPredicate(link, page))
+      this.pageInfo.menus?.actions
+        ?.filter(this.filterByPredicate)
         ?.sort(this.sortByOrderAndIndentation)
         ?.toOrderedSet() ?? OrderedSet();
-    const widgets = page.menus?.actionWidgets?.toOrderedSet() ?? OrderedSet();
+    const widgets =
+      this.pageInfo.menus?.actionWidgets
+        ?.filter(this.filterByPredicate)
+        ?.toOrderedSet() ?? OrderedSet();
 
     return {
-      title: page.category ?? this.defaultMenu.defaultCategory,
+      title: this.pageInfo.category ?? this.defaultMenu.defaultCategory,
       links,
       widgets,
     };
   }
 
-  private getSecondaryMenuData(page: IPageInfo): SecondaryMenuData {
+  private getSecondaryMenuData(): SecondaryMenuData {
     // Get current page and all parents
-    const parentMenuRoutes = this.rootToMenuRoute(page.pageRoute).map(
+    const parentMenuRoutes = this.rootToMenuRoute(this.pageInfo.pageRoute).map(
       (menuRoute) => menuRoute
     );
 
-    const widgets = page.menus?.linkWidgets?.toOrderedSet() ?? OrderedSet();
+    const widgets =
+      this.pageInfo.menus?.linkWidgets
+        ?.filter(this.filterByPredicate)
+        ?.toOrderedSet() ?? OrderedSet();
 
     // Combine current route ancestry with default menu
     const links = this.defaultMenu.contextLinks
-      .concat(page.menus?.links ?? OrderedSet<NavigableMenuItem>())
-      .filter((link): boolean => this.filterByPredicate(link, page))
+      .concat(this.pageInfo.menus?.links ?? OrderedSet<NavigableMenuItem>())
+      .filter(this.filterByPredicate)
       // Add parent menu routes after predicate so they are not filtered out
       .concat(parentMenuRoutes)
       .sort(this.sortByOrderAndIndentation);
@@ -268,15 +274,16 @@ export class MenuService extends withUnsubscribe() {
     return menuRoutes.reverse();
   }
 
-  private filterByPredicate<T extends AnyMenuItem | MenuModalWithoutAction>(
-    link: T,
-    page: IPageInfo
-  ): boolean {
+  private filterByPredicate = <
+    T extends AnyMenuItem | WidgetMenuItem | MenuModalWithoutAction
+  >(
+    link: T
+  ): boolean => {
     if (!link) {
       return false;
     }
-    return link.predicate?.(this._user, page) ?? true;
-  }
+    return link.predicate?.(this._user, this.pageInfo) ?? true;
+  };
 
   /**
    * Sort function for list of menu items

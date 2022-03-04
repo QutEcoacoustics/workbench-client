@@ -8,8 +8,6 @@ import {
 } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
-import { projectMenuItem } from "@components/projects/projects.menus";
-import { regionMenuItem } from "@components/regions/regions.menus";
 import {
   deletePointMenuItem,
   editPointMenuItem,
@@ -22,8 +20,7 @@ import { siteAnnotationsModal } from "@components/sites/sites.modals";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -102,8 +99,8 @@ SiteDetailsComponent.linkToRoute({
   category: sitesCategory,
   pageRoute: siteMenuItem,
   menus: {
-    actions: List([projectMenuItem, ...siteMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(siteMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
@@ -113,8 +110,8 @@ SiteDetailsComponent.linkToRoute({
   category: pointsCategory,
   pageRoute: pointMenuItem,
   menus: {
-    actions: List([regionMenuItem, ...pointMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(pointMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

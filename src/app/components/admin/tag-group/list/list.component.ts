@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
-import { adminDashboardMenuItem } from "@components/admin/admin.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { TagGroup } from "@models/TagGroup";
@@ -46,9 +45,7 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
 AdminTagGroupsComponent.linkToRoute({
   category: adminTagGroupsCategory,
   pageRoute: adminTagGroupsMenuItem,
-  menus: {
-    actions: List([adminDashboardMenuItem, ...adminTagGroupsMenuItemActions]),
-  },
+  menus: { actions: List(adminTagGroupsMenuItemActions) },
 });
 
 export { AdminTagGroupsComponent };

@@ -13,7 +13,6 @@ import schema from "../script.base.schema.json";
 import {
   adminNewScriptsMenuItem,
   adminScriptsCategory,
-  adminScriptsMenuItem,
 } from "../scripts.menus";
 
 /**
@@ -57,9 +56,7 @@ class AdminScriptsNewComponent extends FormTemplate<Script> {
 AdminScriptsNewComponent.linkToRoute({
   category: adminScriptsCategory,
   pageRoute: adminNewScriptsMenuItem,
-  menus: {
-    actions: List([adminScriptsMenuItem, ...adminScriptsMenuItemActions]),
-  },
+  menus: { actions: List(adminScriptsMenuItemActions) },
 });
 
 export { AdminScriptsNewComponent };

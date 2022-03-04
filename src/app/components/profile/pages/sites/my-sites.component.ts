@@ -5,7 +5,6 @@ import { userResolvers } from "@baw-api/user/user.service";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import {
   myAccountCategory,
-  myAccountMenuItem,
   mySitesMenuItem,
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
@@ -77,7 +76,7 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
 MySitesComponent.linkToRoute({
   category: myAccountCategory,
   pageRoute: mySitesMenuItem,
-  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+  menus: { actions: List(myAccountActions) },
   resolvers: { [userKey]: userResolvers.show },
 });
 

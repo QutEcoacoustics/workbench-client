@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   projectsCategory,
-  projectsMenuItem,
   requestProjectMenuItem,
 } from "@components/projects/projects.menus";
 import { withFormCheck } from "@guards/form/form.guard";
@@ -79,7 +78,7 @@ class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
 RequestComponent.linkToRoute({
   category: projectsCategory,
   pageRoute: requestProjectMenuItem,
-  menus: { actions: List([projectsMenuItem, ...projectsMenuItemActions]) },
+  menus: { actions: List(projectsMenuItemActions) },
 });
 
 export { RequestComponent };

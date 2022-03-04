@@ -7,7 +7,6 @@ import {
 import {
   theirEditMenuItem,
   theirProfileCategory,
-  theirProfileMenuItem,
 } from "@components/profile/profile.menus";
 import {
   defaultSuccessMsg,
@@ -79,7 +78,7 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
 TheirEditComponent.linkToRoute({
   category: theirProfileCategory,
   pageRoute: theirEditMenuItem,
-  menus: { actions: List([theirProfileMenuItem, ...theirProfileActions]) },
+  menus: { actions: List(theirProfileActions) },
   resolvers: { [accountKey]: accountResolvers.show },
 });
 

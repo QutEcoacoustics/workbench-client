@@ -1,9 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
-import {
-  adminAnalysisJobsMenuItem,
-  adminDashboardMenuItem,
-} from "@components/admin/admin.menus";
+import { adminAnalysisJobsMenuItem } from "@components/admin/admin.menus";
 import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.component";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, Param } from "@interfaces/apiInterfaces";
@@ -56,7 +53,7 @@ class AdminAnalysisJobsComponent
 AdminAnalysisJobsComponent.linkToRoute({
   category: adminAnalysisJobsCategory,
   pageRoute: adminAnalysisJobsMenuItem,
-  menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
+  menus: { actions: List(adminMenuItemActions) },
 });
 
 export { AdminAnalysisJobsComponent };

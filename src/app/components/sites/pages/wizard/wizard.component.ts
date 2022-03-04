@@ -6,10 +6,7 @@ import {
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
-import {
-  projectCategory,
-  projectMenuItem,
-} from "@components/projects/projects.menus";
+import { projectCategory } from "@components/projects/projects.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { Project } from "@models/Project";
@@ -87,7 +84,7 @@ class WizardComponent extends PageComponent implements OnInit {
 WizardComponent.linkToRoute({
   category: projectCategory,
   pageRoute: newSiteMenuItem,
-  menus: { actions: List([projectMenuItem, ...projectMenuItemActions]) },
+  menus: { actions: List(projectMenuItemActions) },
   resolvers: { [projectKey]: projectResolvers.show },
 });
 

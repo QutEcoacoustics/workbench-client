@@ -10,24 +10,18 @@ import {
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import {
   pointHarvestMenuItem,
-  pointMenuItem,
   pointsCategory,
 } from "@components/sites/points.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { List } from "immutable";
-import {
-  siteHarvestMenuItem,
-  siteMenuItem,
-  sitesCategory,
-} from "../../sites.menus";
+import { siteHarvestMenuItem, sitesCategory } from "../../sites.menus";
 import {
   pointMenuItemActions,
   siteMenuItemActions,
@@ -78,8 +72,8 @@ SiteHarvestComponent.linkToRoute({
   category: sitesCategory,
   pageRoute: siteHarvestMenuItem,
   menus: {
-    actions: List([siteMenuItem, ...siteMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(siteMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
@@ -89,8 +83,8 @@ SiteHarvestComponent.linkToRoute({
   category: pointsCategory,
   pageRoute: pointHarvestMenuItem,
   menus: {
-    actions: List([pointMenuItem, ...pointMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(pointMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

@@ -7,15 +7,13 @@ import {
 } from "@baw-api/region/regions.service";
 import {
   editRegionMenuItem,
-  regionMenuItem,
   regionsCategory,
 } from "@components/regions/regions.menus";
 import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
@@ -81,8 +79,8 @@ EditComponent.linkToRoute({
   category: regionsCategory,
   pageRoute: editRegionMenuItem,
   menus: {
-    actions: List([regionMenuItem, ...regionMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(regionMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

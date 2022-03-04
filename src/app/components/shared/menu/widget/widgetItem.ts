@@ -1,6 +1,6 @@
 import { Type } from "@angular/core";
 import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
-import { MenuAction } from "@interfaces/menusInterfaces";
+import { MenuAction, UserCallback } from "@interfaces/menusInterfaces";
 import { NgbModalOptions, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ModalComponent, WidgetComponent } from "./widget.component";
 
@@ -10,8 +10,12 @@ import { ModalComponent, WidgetComponent } from "./widget.component";
  */
 export class WidgetMenuItem {
   public constructor(
+    /** Component to display */
     public component: Type<WidgetComponent>,
-    public pageData: any = {}
+    /** Whether or not to show this link */
+    public predicate?: UserCallback<boolean>,
+    /** Data to pass to component */
+    public pageData: IPageInfo = {}
   ) {}
 
   /**

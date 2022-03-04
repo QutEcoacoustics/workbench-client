@@ -5,13 +5,11 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import {
   assignSiteMenuItem,
   projectCategory,
-  projectMenuItem,
 } from "@components/projects/projects.menus";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { List } from "immutable";
@@ -157,8 +155,8 @@ AssignComponent.linkToRoute({
   category: projectCategory,
   pageRoute: assignSiteMenuItem,
   menus: {
-    actions: List([projectMenuItem, ...projectMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(projectMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
 });

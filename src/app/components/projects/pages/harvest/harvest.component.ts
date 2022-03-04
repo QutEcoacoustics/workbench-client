@@ -2,19 +2,14 @@ import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { ResolvedModel } from "@services/baw-api/resolver-common";
 import filesize from "filesize";
 import { List } from "immutable";
 import { Observable, Subscription, timer } from "rxjs";
 import { map, startWith, takeUntil, takeWhile } from "rxjs/operators";
-import {
-  harvestProjectMenuItem,
-  projectCategory,
-  projectMenuItem,
-} from "../../projects.menus";
+import { harvestProjectMenuItem, projectCategory } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
@@ -150,8 +145,8 @@ HarvestComponent.linkToRoute({
   category: projectCategory,
   pageRoute: harvestProjectMenuItem,
   menus: {
-    actions: List([projectMenuItem, ...projectMenuItemActions]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List(projectMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
 });

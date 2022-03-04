@@ -4,7 +4,6 @@ import { AccountsService } from "@baw-api/account/accounts.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import {
   myAccountCategory,
-  myAccountMenuItem,
   myEditMenuItem,
 } from "@components/profile/profile.menus";
 import {
@@ -59,7 +58,7 @@ class MyEditComponent extends FormTemplate<User> {
 MyEditComponent.linkToRoute({
   category: myAccountCategory,
   pageRoute: myEditMenuItem,
-  menus: { actions: List([myAccountMenuItem, ...myAccountActions]) },
+  menus: { actions: List(myAccountActions) },
   resolvers: { [userKey]: userResolvers.show },
 });
 

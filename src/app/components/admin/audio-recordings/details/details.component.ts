@@ -9,14 +9,12 @@ import schema from "@components/audio-recordings/pages/details/audio-recording.s
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { AudioRecording } from "@models/AudioRecording";
 import { List } from "immutable";
 import {
   adminAudioRecordingMenuItem,
   adminAudioRecordingsCategory,
-  adminAudioRecordingsMenuItem,
 } from "../audio-recordings.menus";
 
 const audioRecordingKey = "audioRecording";
@@ -62,8 +60,8 @@ AdminAudioRecordingComponent.linkToRoute({
   category: adminAudioRecordingsCategory,
   pageRoute: adminAudioRecordingMenuItem,
   menus: {
-    actions: List([adminAudioRecordingsMenuItem, adminAudioRecordingMenuItem]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actions: List([adminAudioRecordingMenuItem]),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: { [audioRecordingKey]: audioRecordingResolvers.show },
 });

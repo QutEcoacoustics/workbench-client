@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { adminDashboardMenuItem } from "@components/admin/admin.menus";
 import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.component";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id, toRelative } from "@interfaces/apiInterfaces";
@@ -57,7 +56,7 @@ class AdminAudioRecordingsComponent
 AdminAudioRecordingsComponent.linkToRoute({
   category: adminAudioRecordingsCategory,
   pageRoute: adminAudioRecordingsMenuItem,
-  menus: { actions: List([adminDashboardMenuItem, ...adminMenuItemActions]) },
+  menus: { actions: List(adminMenuItemActions) },
 });
 
 export { AdminAudioRecordingsComponent };
