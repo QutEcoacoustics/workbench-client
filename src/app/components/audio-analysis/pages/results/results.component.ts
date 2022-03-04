@@ -6,8 +6,7 @@ import {
   downloadAudioAnalysisResultsMenuItem,
 } from "@components/audio-analysis/audio-analysis.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { List } from "immutable";
 
 const audioAnalysisKey = "audioAnalysis";
@@ -24,7 +23,7 @@ AudioAnalysisResultsComponent.linkToRoute({
   pageRoute: audioAnalysisResultsMenuItem,
   menus: {
     actions: List([downloadAudioAnalysisResultsMenuItem]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: { [audioAnalysisKey]: analysisJobResolvers.show },
 });

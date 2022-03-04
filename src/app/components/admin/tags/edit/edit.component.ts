@@ -5,8 +5,7 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Tag, TagType } from "@models/Tag";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -88,7 +87,7 @@ AdminTagsEditComponent.linkToRoute({
       adminEditTagMenuItem,
       adminDeleteTagMenuItem,
     ]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [tagKey]: tagResolvers.show,

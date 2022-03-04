@@ -18,8 +18,7 @@ import { newPointMenuItem } from "@components/sites/points.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -142,7 +141,7 @@ DetailsComponent.linkToRoute({
   pageRoute: regionMenuItem,
   menus: {
     actions: List(regionMenuItemActions),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

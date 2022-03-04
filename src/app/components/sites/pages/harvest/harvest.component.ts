@@ -15,8 +15,7 @@ import {
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -74,7 +73,7 @@ SiteHarvestComponent.linkToRoute({
   pageRoute: siteHarvestMenuItem,
   menus: {
     actions: List(siteMenuItemActions),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
@@ -85,7 +84,7 @@ SiteHarvestComponent.linkToRoute({
   pageRoute: pointHarvestMenuItem,
   menus: {
     actions: List(pointMenuItemActions),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

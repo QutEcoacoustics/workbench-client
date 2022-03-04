@@ -20,8 +20,7 @@ import { siteAnnotationsModal } from "@components/sites/sites.modals";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -101,7 +100,7 @@ SiteDetailsComponent.linkToRoute({
   pageRoute: siteMenuItem,
   menus: {
     actions: List(siteMenuItemActions),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
@@ -112,7 +111,7 @@ SiteDetailsComponent.linkToRoute({
   pageRoute: pointMenuItem,
   menus: {
     actions: List(pointMenuItemActions),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

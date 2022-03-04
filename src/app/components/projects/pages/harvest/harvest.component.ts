@@ -2,8 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { Project } from "@models/Project";
 import { ResolvedModel } from "@services/baw-api/resolver-common";
 import filesize from "filesize";
@@ -147,7 +146,7 @@ HarvestComponent.linkToRoute({
   pageRoute: harvestProjectMenuItem,
   menus: {
     actions: List(projectMenuItemActions),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
 });

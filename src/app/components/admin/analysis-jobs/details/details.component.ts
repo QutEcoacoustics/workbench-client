@@ -8,8 +8,7 @@ import {
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
-import { WidgetMenuItem } from "@menu/widgetItem";
+import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { List } from "immutable";
 import schema from "../analysis-job.schema.json";
@@ -62,7 +61,7 @@ AdminAnalysisJobComponent.linkToRoute({
   pageRoute: adminAnalysisJobMenuItem,
   menus: {
     actions: List([adminAnalysisJobMenuItem]),
-    actionWidgets: List([new WidgetMenuItem(PermissionsShieldComponent)]),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: { [analysisJobKey]: analysisJobResolvers.show },
 });
