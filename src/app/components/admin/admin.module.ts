@@ -4,7 +4,6 @@ import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { adminRoute } from "./admin.menus";
 import { AnalysisJobsModule } from "./analysis-jobs/analysis-jobs.module";
-import { AudioRecordingsModule } from "./audio-recordings/audio-recordings.module";
 import { AdminDashboardComponent } from "./dashboard/dashboard.component";
 import { OrphanSitesModule } from "./orphan/orphans.module";
 import { ScriptsModule } from "./scripts/scripts.module";
@@ -15,7 +14,6 @@ import { AdminUserListComponent } from "./users/user.component";
 
 const modules = [
   AnalysisJobsModule,
-  AudioRecordingsModule,
   OrphanSitesModule,
   ScriptsModule,
   TagGroupsModule,

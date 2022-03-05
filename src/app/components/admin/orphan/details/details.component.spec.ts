@@ -7,7 +7,6 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ACCOUNT, PROJECT } from "@baw-api/ServiceTokens";
 import { shallowSiteResolvers } from "@baw-api/site/sites.service";
-import { AdminAudioRecordingComponent } from "@components/admin/audio-recordings/details/details.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
@@ -36,7 +35,6 @@ describe("AdminOrphanComponent", () => {
         RouterTestingModule,
         MockBawApiModule,
       ],
-      declarations: [AdminAudioRecordingComponent],
       providers: [
         {
           provide: ActivatedRoute,

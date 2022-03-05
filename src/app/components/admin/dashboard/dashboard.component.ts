@@ -10,7 +10,6 @@ import {
   adminThemeMenuItem,
   adminUserListMenuItem,
 } from "../admin.menus";
-import { adminAudioRecordingsMenuItem } from "../audio-recordings/audio-recordings.menus";
 import { adminOrphansMenuItem } from "../orphan/orphans.menus";
 import { adminScriptsMenuItem } from "../scripts/scripts.menus";
 import { adminTagGroupsMenuItem } from "../tag-group/tag-group.menus";
@@ -22,7 +21,6 @@ export const adminMenuItemActions = [
   adminScriptsMenuItem,
   adminTagsMenuItem,
   adminTagGroupsMenuItem,
-  adminAudioRecordingsMenuItem,
   adminAnalysisJobsMenuItem,
   adminJobStatusMenuItem,
   adminCmsMenuItem,
