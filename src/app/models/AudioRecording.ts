@@ -107,6 +107,7 @@ export class AudioRecording
   public constructor(data: IAudioRecording, injector?: Injector) {
     super(data, injector);
 
+    // TODO Remove this, and replace with solution for #1815
     // Set timezone on recorded date
     if (this.recordedDateTimezone) {
       this.recordedDate = this.recordedDate.setZone(this.recordedDateTimezone);
