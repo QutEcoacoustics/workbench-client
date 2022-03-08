@@ -41,6 +41,7 @@ import { map } from "rxjs/operators";
         <li>
           <span
             *ngIf="hasNoAudio.value !== false"
+            id="no-audio"
             class="badge rounded-pill bg-secondary my-1"
           >
             <baw-loading

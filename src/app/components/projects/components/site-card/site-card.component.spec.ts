@@ -7,23 +7,20 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { assetRoot } from "@services/config/config.service";
 import { SharedModule } from "@shared/shared.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
-import { assertImage, assertUrl } from "@test/helpers/html";
+import { assertImage, assertSpinner, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
 import { SiteCardComponent } from "./site-card.component";
 
-// TODO Re-enable tests #1809
-xdescribe("SiteCardComponent", () => {
+describe("SiteCardComponent", () => {
   let defaultProject: Project;
-  let defaultRegion: Region;
   let defaultSite: Site;
   let defaultRecording: AudioRecording;
   let spec: Spectator<SiteCardComponent>;
@@ -34,171 +31,168 @@ xdescribe("SiteCardComponent", () => {
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
-    defaultRegion = new Region(generateRegion());
-    defaultSite = new Site(
-      generateSite({ imageUrls: [modelData.imageUrls()[0]] })
-    );
+    defaultSite = new Site(generateSite());
     defaultRecording = new AudioRecording(generateAudioRecording());
   });
 
   function setup(
-    isSite: boolean,
     model?: Site | Region,
-    recording?: Errorable<AudioRecording>
+    recordings?: Errorable<AudioRecording[]>
   ): Promise<void> {
-    const site = isSite ? (model as Site) ?? defaultSite : undefined;
-    const region = !isSite ? (model as Region) ?? defaultRegion : undefined;
-    let recordings: Errorable<AudioRecording[]> = [defaultRecording];
-    if (recording === null) {
-      recordings = [null];
-    } else if (recording) {
-      recordings =
-        recording instanceof AudioRecording ? [recording] : recording;
-    }
-
     spec = createComponent({
       detectChanges: false,
-      props: { project: defaultProject, site, region },
+      props: {
+        project: defaultProject,
+        site: model instanceof Site ? model : undefined,
+        region: model instanceof Region ? model : undefined,
+      },
     });
 
     const subject = new Subject<AudioRecording[]>();
     const recordingApi = spec.inject(AudioRecordingsService);
     recordingApi.filterBySite.and.callFake(() => subject);
+    recordingApi.filterByRegion.and.callFake(() => subject);
     return nStepObservable(subject, () => recordings);
   }
 
   it("should create", () => {
-    setup(true);
+    setup(defaultSite);
     spec.detectChanges();
     expect(spec.component).toBeTruthy();
   });
 
-  describe("title", () => {
-    it("should display site name", () => {
-      setup(true);
-      spec.detectChanges();
-      const name = spec.query<HTMLHeadingElement>("h5#name");
-      expect(name).toBeTruthy();
-      expect(name.innerText).toContain(defaultSite.name);
-    });
-
-    it("should navigate user to site when clicking site name", () => {
-      setup(true);
-      spec.detectChanges();
-      const name = spec.query<HTMLAnchorElement>("#nameLink");
-      assertUrl(name, defaultSite.getViewUrl(defaultProject));
-    });
-  });
-
-  describe("image", () => {
-    function getImage() {
-      return spec.query<HTMLImageElement>("img");
-    }
-
-    function getImageLink() {
-      return spec.query<HTMLAnchorElement>("#imageLink");
-    }
-
-    it("should display site image", () => {
-      const site = new Site(generateSite({ imageUrls: undefined }));
-      setup(true, site);
-      spec.detectChanges();
-
-      assertImage(
-        getImage(),
-        `${websiteHttpUrl}${assetRoot}/images/site/site_span4.png`,
-        `${site.name} alt`
-      );
-    });
-
-    it("should display custom site image", () => {
-      setup(true);
-      spec.detectChanges();
-      assertImage(
-        getImage(),
-        defaultSite.imageUrls.at(0).url,
-        `${defaultSite.name} alt`
-      );
-    });
-
-    it("should navigate user to site when clicking site image", () => {
-      setup(true);
-      spec.detectChanges();
-      assertUrl(getImageLink(), defaultSite.getViewUrl(defaultProject));
-    });
-  });
-
-  const inputTypes = [
+  [
     {
       modelType: "site",
-      setup: (recording?: AudioRecording) => setup(true, undefined, recording),
-      play: true,
+      createModel: (data?: any) => new Site(generateSite(data)),
+      modelDetails: (model: Site) => model.getViewUrl(defaultProject),
     },
     {
       modelType: "region",
-      setup: () => setup(false),
-      play: false,
+      createModel: (data?: any) => new Region(generateRegion(data)),
+      modelDetails: (model: Region) => model.getViewUrl(defaultProject),
     },
-  ];
+  ].forEach(({ modelType, createModel }) => {
+    describe(modelType, () => {
+      let defaultModel: Site | Region;
 
-  inputTypes.forEach((inputType) => {
-    function getLinks() {
-      return {
-        details: spec.query<HTMLAnchorElement>("#details"),
-        play: spec.query<HTMLAnchorElement>("#play"),
-        noAudio: spec.query<HTMLAnchorElement>("#no-audio"),
-        visualize: spec.query<HTMLAnchorElement>("#visualize"),
-        audioRecordings: spec.query<HTMLAnchorElement>("#audio-recordings"),
-      };
-    }
-
-    function assertLink(link: HTMLAnchorElement, text: string) {
-      expect(link).toHaveText(text);
-    }
-
-    describe(inputType.modelType + " links", () => {
-      function initializeComponent() {
-        spec.detectChanges();
-      }
-
-      it("should display details link", () => {
-        initializeComponent();
-        assertLink(getLinks().details, "Details");
+      beforeEach(() => {
+        defaultModel = createModel();
       });
 
-      it("should navigate user to site when clicking details link", () => {
-        initializeComponent();
-        assertUrl(
-          getLinks().details,
-          spec.component.model.getViewUrl(defaultProject)
-        );
+      describe("title", () => {
+        it("should display name", () => {
+          setup(defaultModel);
+          spec.detectChanges();
+          const name = spec.query<HTMLHeadingElement>("h5#name");
+          expect(name).toBeTruthy();
+          expect(name).toContainText(defaultModel.name);
+        });
+
+        it("should navigate user to model details page when clicking name", () => {
+          setup(defaultModel);
+          spec.detectChanges();
+          const name = spec.query<HTMLAnchorElement>("#nameLink");
+          assertUrl(name, defaultModel.getViewUrl(defaultProject));
+        });
+      });
+
+      describe("image", () => {
+        function getImage() {
+          return spec.query<HTMLImageElement>("img");
+        }
+
+        it("should display default model image", () => {
+          const model = createModel({ imageUrls: undefined });
+          setup(model);
+          spec.detectChanges();
+
+          assertImage(
+            getImage(),
+            `${websiteHttpUrl}${model.imageUrls[0].url}`,
+            `${model.name} alt`
+          );
+        });
+
+        it("should display custom model image", () => {
+          setup(defaultModel);
+          spec.detectChanges();
+          assertImage(
+            getImage(),
+            defaultModel.imageUrls.at(0).url,
+            `${defaultModel.name} alt`
+          );
+        });
+      });
+
+      describe("no audio badge", () => {
+        function getBadge() {
+          return spec.query<HTMLSpanElement>("#no-audio");
+        }
+
+        function assertLoading(isLoading: boolean) {
+          assertSpinner(spec.query(".nav"), isLoading);
+        }
+
+        it("should display loading spinner while determining if model has audio", () => {
+          setup(defaultModel);
+          spec.detectChanges();
+          assertLoading(true);
+        });
+
+        it("should display badge if model has no audio", async () => {
+          const promise = setup(defaultModel, []);
+          spec.detectChanges();
+          await promise;
+          spec.detectChanges();
+          assertLoading(false);
+          expect(getBadge()).toContainText("No audio yet");
+        });
+
+        it("should not display badge if model has audio", async () => {
+          const promise = setup(defaultModel, [defaultRecording]);
+          spec.detectChanges();
+          await promise;
+          spec.detectChanges();
+          assertLoading(false);
+          expect(getBadge()).toBeFalsy();
+        });
+
+        it("should not display badge if recordings request fails", async () => {
+          const promise = setup(defaultModel, generateBawApiError());
+          spec.detectChanges();
+          await promise;
+          spec.detectChanges();
+          assertLoading(false);
+          expect(getBadge()).toBeFalsy();
+        });
       });
     });
   });
 
   describe("points", () => {
-    function getPoints() {
-      return spec.query<HTMLSpanElement>("span.badge");
+    function getBadge() {
+      return spec.query<HTMLSpanElement>("#points");
     }
 
     it("should not display if site model", () => {
-      setup(true);
+      setup(defaultSite);
       spec.detectChanges();
-      expect(getPoints()).toBeFalsy();
+      expect(getBadge()).toBeFalsy();
     });
 
     it("should display 0 region points", () => {
       const region = new Region({ ...generateRegion(), siteIds: undefined });
-      setup(false, region);
+      setup(region);
       spec.detectChanges();
-      expect(getPoints().innerText.trim()).toBe("0 Points");
+      expect(getBadge()).toContainText("0 Points");
     });
 
     it("should display multiple region points", () => {
       const region = new Region({ ...generateRegion(), siteIds: [1, 2, 3] });
-      setup(false, region);
+      setup(region);
       spec.detectChanges();
-      expect(getPoints().innerText.trim()).toBe("3 Points");
+      expect(getBadge()).toContainText("3 Points");
     });
   });
 });

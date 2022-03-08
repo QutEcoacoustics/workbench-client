@@ -13,20 +13,34 @@ import {
 } from "@ngneat/spectator";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
+import { ModelCardsModule } from "@shared/model-cards/model-cards.module";
 import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
+import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { ListComponent } from "./list.component";
 
-// TODO Re-enable tests #1809
-xdescribe("ProjectsListComponent", () => {
+const mockCardsComponent = MockComponent(CardsComponent);
+
+describe("ProjectsListComponent", () => {
   let api: SpyObject<ProjectsService>;
   let spec: Spectator<ListComponent>;
   const createComponent = createComponentFactory({
     component: ListComponent,
+    overrideModules: [
+      [
+        ModelCardsModule,
+        {
+          set: {
+            declarations: [mockCardsComponent],
+            exports: [mockCardsComponent],
+          },
+        },
+      ],
+    ],
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
   });
 

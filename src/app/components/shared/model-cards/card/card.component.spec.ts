@@ -1,24 +1,35 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
+import { Errorable } from "@helpers/advancedTypes";
+import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { modelData } from "@test/helpers/faker";
-import { assertImage, assertUrl } from "@test/helpers/html";
+import { nStepObservable } from "@test/helpers/general";
+import { assertImage, assertSpinner, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
+import { Subject } from "rxjs";
 import { CardComponent } from "./card.component";
 
-// TODO Re-enable tests #1809
-xdescribe("CardComponent", () => {
-  let spectator: Spectator<CardComponent>;
+describe("CardComponent", () => {
+  let recordingApi: SpyObject<AudioRecordingsService>;
+  let spec: Spectator<CardComponent>;
   const createComponent = createComponentFactory({
     component: CardComponent,
     imports: [
@@ -31,73 +42,91 @@ xdescribe("CardComponent", () => {
     ],
   });
 
-  beforeEach(() => {
-    spectator = createComponent({ detectChanges: false });
-  });
+  function setup(
+    model: Project | Region,
+    recordings: Errorable<AudioRecording[]> = []
+  ) {
+    spec = createComponent({ detectChanges: false, props: { model } });
+
+    const subject = new Subject<AudioRecording[]>();
+    recordingApi = spec.inject(AudioRecordingsService);
+    if (model instanceof Project) {
+      recordingApi.filterByProject.and.callFake(() => subject);
+    } else {
+      recordingApi.filterByRegion.and.callFake(() => subject);
+    }
+    return nStepObservable(
+      subject,
+      () => recordings,
+      isBawApiError(recordings)
+    );
+  }
 
   function validateCard<T extends Project | Region>(
     createModel: (data?: any) => T
   ) {
     it("should create", () => {
-      spectator.setInput("model", createModel());
-      expect(spectator.component).toBeTruthy();
+      setup(createModel());
+      spec.detectChanges();
+      expect(spec.component).toBeTruthy();
     });
 
     it("should have title", () => {
-      spectator.setInput("model", createModel());
-      const title = spectator.query<HTMLHeadingElement>("h4");
-      expect(title.textContent).toContain(createModel().name);
+      const model = createModel();
+      setup(model);
+      spec.detectChanges();
+      const title = spec.query<HTMLHeadingElement>("h4");
+      expect(title).toContainText(model.name);
     });
 
     it("should handle local image", () => {
       const baseUrl = `${assetRoot}/broken_link`;
-      spectator.setInput(
-        "model",
-        createModel({ imageUrls: modelData.imageUrls(baseUrl) })
-      );
+      const model = createModel({ imageUrls: modelData.imageUrls(baseUrl) });
+      setup(model);
+      spec.detectChanges();
 
-      const image = spectator.query<HTMLImageElement>("img");
+      const image = spec.query<HTMLImageElement>("img");
       assertImage(
         image,
         `${websiteHttpUrl}${baseUrl}/300/300`,
-        "custom title image"
+        `${model.name} image`
       );
     });
 
     it("should display remote image", () => {
       const baseUrl = "https://broken_link/broken_link";
-      spectator.setInput(
-        "model",
-        createModel({ imageUrls: modelData.imageUrls(baseUrl) })
-      );
+      const model = createModel({ imageUrls: modelData.imageUrls(baseUrl) });
+      setup(model);
+      spec.detectChanges();
 
-      const image = spectator.query<HTMLImageElement>("img");
-      assertImage(image, baseUrl + "/300/300", "custom title image");
+      const image = spec.query<HTMLImageElement>("img");
+      assertImage(image, baseUrl + "/300/300", `${model.name} image`);
     });
 
     it("should have default description when none provided", () => {
-      spectator.setInput("model", createModel({ description: undefined }));
-      spectator.detectChanges();
+      setup(createModel({ descriptionHtmlTagline: undefined }));
+      spec.detectChanges();
 
-      const description = spectator.query(".card-text");
-      expect(description.textContent).toContain("No description given");
+      const description = spec.query(".card-text");
+      expect(description).toContainText("No description given");
     });
 
-    it("should have description when provided", () => {
-      spectator.setInput("model", createModel({ description: "description" }));
-      spectator.detectChanges();
+    it("should have description with HTML when provided", () => {
+      const model = createModel();
+      setup(model);
+      spec.detectChanges();
 
-      const description = spectator.query(".card-text");
-      expect(description.textContent).toContain("description");
+      const description = spec.query(".card-text");
+      expect(description.innerHTML).toContain(model.descriptionHtmlTagline);
     });
 
     // TODO Assert truncation styling applies
     xit("should shorten description when description is long", () => {
-      spectator.setInput(
-        "model",
-        createModel({ description: modelData.descriptionLong() })
-      );
-      spectator.detectChanges();
+      const model = createModel({
+        descriptionHtmlTagline: modelData.descriptionLong(),
+      });
+      setup(model);
+      spec.detectChanges();
     });
 
     it("should have image route when route provided", () => {
@@ -105,9 +134,10 @@ xdescribe("CardComponent", () => {
         modelData.random.word()
       );
       const model = createModel({ route: strongRoute });
-      spectator.setInput("model", model);
+      setup(model);
+      spec.detectChanges();
 
-      const route = spectator.query<HTMLElement>(".card-image a");
+      const route = spec.query<HTMLElement>(".card-image a");
       assertUrl(route, model.viewUrl);
     });
 
@@ -116,10 +146,47 @@ xdescribe("CardComponent", () => {
         modelData.random.word()
       );
       const model = createModel({ route: strongRoute });
-      spectator.setInput("model", model);
+      setup(model);
+      spec.detectChanges();
 
-      const link = spectator.query<HTMLElement>(".card-title");
+      const link = spec.query<HTMLElement>(".card-title");
       assertUrl(link, model.viewUrl);
+    });
+
+    function getNoAudioBadge() {
+      return spec.query("#no-audio");
+    }
+
+    it("should show loading badge while determining if model has recordings", () => {
+      const model = createModel();
+      setup(model);
+      spec.detectChanges();
+      assertSpinner(getNoAudioBadge(), true);
+    });
+
+    it("should show no audio badge if model has no recordings", async () => {
+      const model = createModel();
+      const promise = setup(model, []);
+      spec.detectChanges();
+      await promise;
+      spec.detectChanges();
+
+      const badge = getNoAudioBadge();
+      assertSpinner(badge, false);
+      expect(badge).toContainText("No audio");
+    });
+
+    it("should not show no audio badge if model has recordings", async () => {
+      const model = createModel();
+      const promise = setup(model, [
+        new AudioRecording(generateAudioRecording()),
+      ]);
+      spec.detectChanges();
+      await promise;
+      spec.detectChanges();
+
+      const badge = getNoAudioBadge();
+      expect(badge).toBeFalsy();
     });
   }
 

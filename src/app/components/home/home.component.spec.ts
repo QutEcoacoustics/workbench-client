@@ -126,7 +126,6 @@ describe("HomeComponent", () => {
     return spec;
   }, CMS.home); */
 
-  // TODO Re-enable tests #1809
   [
     {
       test: "projects",
