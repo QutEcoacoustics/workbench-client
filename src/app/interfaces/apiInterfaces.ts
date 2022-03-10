@@ -35,11 +35,11 @@ export type AuthToken = string;
  * BAW API Access Levels
  */
 export enum AccessLevel {
-  reader = "Reader",
-  writer = "Writer",
-  owner = "Owner",
-  unresolved = "Unresolved",
-  unknown = "Unknown",
+  reader = "reader",
+  writer = "writer",
+  owner = "owner",
+  unresolved = "unresolved",
+  unknown = "unknown",
 }
 
 /**

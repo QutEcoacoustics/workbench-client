@@ -48,7 +48,9 @@
             size="sm"
           ></baw-loading>
 
-          <ng-template #loaded>{{ value.accessLevel }} </ng-template>
+          <ng-template #loaded>
+            {{ value.accessLevel | titlecase }}
+          </ng-template>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column
