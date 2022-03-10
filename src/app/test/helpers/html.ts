@@ -231,12 +231,14 @@ export function assertErrorHandler(
  * @param visible Is spinner visible
  */
 export function assertSpinner(
-  fixture: ComponentFixture<any>,
+  fixture: ComponentFixture<any> | Element,
   visible: boolean
 ) {
-  const expectation = expect(
-    fixture.nativeElement.querySelector("baw-loading")
-  );
+  const spinner = (
+    fixture instanceof ComponentFixture ? fixture.nativeElement : fixture
+  ).querySelector("baw-loading");
+
+  const expectation = expect(spinner);
 
   if (visible) {
     expectation.toBeTruthy("Expected Spinner to Exist");

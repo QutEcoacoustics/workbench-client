@@ -15,6 +15,7 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
+import { PipesModule } from "@pipes/pipes.module";
 import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { testApiConfig } from "@services/config/configMock.service";
@@ -31,8 +32,6 @@ import { MockComponent } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
 import { HomeComponent } from "./home.component";
 
-const mockCardComponent = MockComponent(CardComponent);
-
 describe("HomeComponent", () => {
   let regionApi: SpyObject<ShallowRegionsService>;
   let projectApi: SpyObject<ProjectsService>;
@@ -41,7 +40,7 @@ describe("HomeComponent", () => {
   let spec: Spectator<HomeComponent>;
   const createComponent = createComponentFactory({
     component: HomeComponent,
-    declarations: [CardsComponent, mockCardComponent],
+    declarations: [CardsComponent, MockComponent(CardComponent)],
     imports: [
       MockBawApiModule,
       MockAppConfigModule,
@@ -49,6 +48,7 @@ describe("HomeComponent", () => {
       DirectivesModule,
       RouterTestingModule,
       LoadingModule,
+      PipesModule,
     ],
   });
 
@@ -88,19 +88,21 @@ describe("HomeComponent", () => {
   }
 
   function assertModelCardsCount(count: number) {
-    expect(getModelCards().models.count()).toBe(count);
+    expect(getModelCards()?.models?.count() ?? 0).toBe(count);
   }
 
   function getViewMoreButton(): HTMLButtonElement {
     return spec.query("#viewMore");
   }
 
+  function assertErrorPlaceholder(modelName?: string) {
+    expect(spec.query("#error")).toContainText(`Unable to load ${modelName}`);
+  }
+
   function assertViewMorePlaceholder(exists?: boolean, modelName?: string) {
     const placeholder = spec.query("#placeholder");
     if (exists) {
-      expect(placeholder).toContainText(
-        `No ${modelName.toLowerCase()}s to display`
-      );
+      expect(placeholder).toContainText(`No ${modelName}s to display`);
     } else {
       expect(placeholder).toBeFalsy();
     }
@@ -124,7 +126,6 @@ describe("HomeComponent", () => {
     return spec;
   }, CMS.home); */
 
-  // TODO Re-enable tests #1809
   [
     {
       test: "projects",
@@ -145,7 +146,7 @@ describe("HomeComponent", () => {
       link: shallowRegionsMenuItem.route.toRouterLink(),
     },
   ].forEach((test) => {
-    xdescribe(`${test.test} api`, () => {
+    describe(`${test.test} api`, () => {
       beforeEach(() => {
         handleCms();
         setConfigHideProjects(test.hideProjects);
@@ -162,11 +163,11 @@ describe("HomeComponent", () => {
       it("should handle filter error", async () => {
         await test.awaitModel(generateBawApiError());
         assertModelCardsCount(0);
-        assertViewMorePlaceholder(true, test.modelName);
+        assertErrorPlaceholder(test.modelName);
       });
     });
 
-    xdescribe(`${test.test} cards`, () => {
+    describe(`${test.test} cards`, () => {
       beforeEach(() => {
         handleCms();
         setConfigHideProjects(test.hideProjects);

@@ -13,7 +13,7 @@ import { Region } from "@models/Region";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { Observable } from "rxjs";
-import { mergeMap, takeUntil } from "rxjs/operators";
+import { map, takeUntil } from "rxjs/operators";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
 @Component({
@@ -31,12 +31,8 @@ class HomeComponent extends PageComponent implements OnInit {
     title: string[];
     alt: string;
   };
-  public viewMore: {
-    loading: boolean;
-    modelName: string;
-    list: List<Region | Project>;
-    link: StrongRoute;
-  };
+  public viewMoreLink: { label: string; link: StrongRoute };
+  public models$: Observable<List<Project | Region>>;
   public sourceRepo: string;
 
   public constructor(
@@ -51,10 +47,8 @@ class HomeComponent extends PageComponent implements OnInit {
     const settings = this.config.settings;
     this.brand = settings.brand;
     this.sourceRepo = settings.links.sourceRepository;
-    this.viewMore = {
-      loading: true,
-      list: List([]),
-      modelName: settings.hideProjects ? "site" : "project",
+    this.viewMoreLink = {
+      label: settings.hideProjects ? "site" : "project",
       link: settings.hideProjects
         ? shallowRegionsMenuItem.route
         : projectsMenuItem.route,
@@ -79,28 +73,14 @@ class HomeComponent extends PageComponent implements OnInit {
       paging: { items: 3 },
       sorting: { orderBy: "updatedAt", direction: "desc" },
     };
-
     const models$: Observable<Region[] | Project[]> = settings.hideProjects
       ? this.regionApi.filter(filter)
       : this.projectApi.filter(filter);
 
-    models$
-      .pipe(
-        mergeMap(() =>
-          (settings.hideProjects ? this.regionApi : this.projectApi).filter({
-            paging: { items: 3 },
-            sorting: { orderBy: "updatedAt", direction: "desc" },
-          })
-        ),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe({
-        next: (models) => {
-          this.viewMore.list = List<Project | Region>(models);
-          this.viewMore.loading = false;
-        },
-        error: () => (this.viewMore.loading = false),
-      });
+    this.models$ = models$.pipe(
+      map((models) => List<Project | Region>(models)),
+      takeUntil(this.unsubscribe)
+    );
   }
 
   public calculateSvgTextYPos(index: number) {

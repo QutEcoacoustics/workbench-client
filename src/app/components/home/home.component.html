@@ -118,31 +118,35 @@
 <!-- View some projects -->
 <section id="projects" class="pb-5 pt-5 bg-light">
   <div class="container">
-    <h2>View Some {{ viewMore.modelName | titlecase }}s</h2>
+    <h2>View Some {{ viewMoreLink.label | titlecase }}s</h2>
     <p class="mb-5">
-      You can browse some public {{ viewMore.modelName }}s and audio recordings
+      You can browse some public {{ viewMoreLink.label }}s and audio recordings
       without logging in. To participate in the analysis work you will need to
       log in with an existing account or register for a new account. Don't worry
       its free and easy!
     </p>
 
-    <baw-loading *ngIf="viewMore.loading" [size]="lg"></baw-loading>
+    <ng-container *ngIf="models$ | withLoading | async as models">
+      <baw-loading *ngIf="models.loading" [size]="lg"></baw-loading>
 
-    <baw-model-cards *ngIf="!viewMore.loading" [models]="viewMore.list">
-      <ng-container *ngIf="viewMore.list.size === 0; else hasModels">
-        <p id="placeholder" class="m-auto">
-          No {{ viewMore.modelName }}s to display
+      <p *ngIf="models.error" id="error">
+        Unable to load {{ viewMoreLink.label | titlecase }}
+      </p>
+
+      <baw-model-cards *ngIf="models.value" [models]="models.value">
+        <p *ngIf="models.value.size === 0" id="placeholder" class="m-auto">
+          No {{ viewMoreLink.label | titlecase }}s to display
         </p>
-      </ng-container>
-      <ng-template #hasModels>
+
         <a
+          *ngIf="models.value.size > 0"
           id="viewMore"
           class="m-auto btn btn-outline-highlight btn-lg"
-          [strongRoute]="viewMore.link"
+          [strongRoute]="viewMoreLink.link"
         >
-          More {{ viewMore.modelName | titlecase }}s
+          More {{ viewMoreLink.label | titlecase }}s
         </a>
-      </ng-template>
-    </baw-model-cards>
+      </baw-model-cards>
+    </ng-container>
   </div>
 </section>
