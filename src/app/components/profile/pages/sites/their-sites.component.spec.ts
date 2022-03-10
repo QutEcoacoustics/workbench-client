@@ -161,7 +161,9 @@ describe("TheirSitesComponent", () => {
             await projectPromise;
             spec.detectChanges();
 
-            expect(getCells()[2]).toHaveText(accessLevel);
+            const titleCaseAccessLevel =
+              accessLevel.charAt(0).toUpperCase() + accessLevel.slice(1);
+            expect(getCells()[2]).toHaveText(titleCaseAccessLevel);
           });
         }
       );

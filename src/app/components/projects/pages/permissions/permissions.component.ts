@@ -84,23 +84,23 @@ class PermissionsComponent extends TableTemplate<TableRow> implements OnInit {
       {
         user: "allcharles",
         individual: "testing",
-        visitors: "Reader",
-        users: "Reader",
-        overall: "Reader",
+        visitors: "reader",
+        users: "reader",
+        overall: "reader",
       },
       {
         user: "anthony",
         individual: "testing",
-        visitors: "Reader",
-        users: "Reader",
-        overall: "Reader",
+        visitors: "reader",
+        users: "reader",
+        overall: "reader",
       },
       {
         user: "phil",
         individual: "testing",
-        visitors: "Reader",
-        users: "Reader",
-        overall: "Reader",
+        visitors: "reader",
+        users: "reader",
+        overall: "reader",
       },
     ];
   }
@@ -121,7 +121,7 @@ export { PermissionsComponent };
 interface TableRow {
   user: string;
   individual: string;
-  visitors: "None" | "Reader";
-  users: "None" | "Reader" | "Writer" | "Owner";
-  overall: "None" | "Reader" | "Writer" | "Owner";
+  visitors: "none" | "reader";
+  users: "none" | "reader" | "writer" | "owner";
+  overall: "none" | "reader" | "writer" | "owner";
 }

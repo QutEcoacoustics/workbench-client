@@ -8,7 +8,6 @@ import {
   mySitesMenuItem,
 } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { List } from "immutable";
@@ -52,24 +51,6 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
 
   public hasViewUrl(site: Site): boolean {
     return site.projectIds.size > 0;
-  }
-
-  public resolveHighestAccessLevel(projects: Project[]): string {
-    if ((projects ?? []).length === 0) {
-      return "Unknown";
-    }
-
-    let isWriter = false;
-
-    for (const project of projects) {
-      if (project.accessLevel === "Owner") {
-        return project.accessLevel;
-      } else if (project.accessLevel === "Writer") {
-        isWriter = true;
-      }
-    }
-
-    return isWriter ? "Writer" : "Reader";
   }
 }
 

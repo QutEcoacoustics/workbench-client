@@ -41,7 +41,11 @@
         [width]="100"
         [maxWidth]="100"
         [sortable]="false"
-      ></ngx-datatable-column>
+      >
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value | titlecase }}
+        </ng-template>
+      </ngx-datatable-column>
     </ngx-datatable>
   </ng-container>
 

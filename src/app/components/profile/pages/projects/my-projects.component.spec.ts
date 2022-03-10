@@ -115,7 +115,7 @@ describe("MyProjectsComponent", () => {
     });
 
     describe("access level", () => {
-      (["Reader", "Writer", "Owner"] as AccessLevel[]).forEach(
+      (["reader", "writer", "owner"] as AccessLevel[]).forEach(
         (accessLevel) => {
           it(`should display ${accessLevel} permissions`, async () => {
             const project = new Project({ ...generateProject(), accessLevel });
@@ -124,7 +124,9 @@ describe("MyProjectsComponent", () => {
             interceptRequest([project]);
             spec.detectChanges();
 
-            expect(getCells()[2]).toHaveText(accessLevel);
+            const titleCaseAccessLevel =
+              accessLevel.charAt(0).toUpperCase() + accessLevel.slice(1);
+            expect(getCells()[2]).toHaveText(titleCaseAccessLevel);
           });
         }
       );
