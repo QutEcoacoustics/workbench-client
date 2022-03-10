@@ -19,7 +19,7 @@
   >
     <ngx-datatable-column name="Recorded">
       <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        <span [ngbTooltip]="value.recordedDateOffset" placement="right">
+        <span [ngbTooltip]="value.recordedDateTimezone" placement="right">
           {{ getRecordingDate(value) }}
         </span>
       </ng-template>
@@ -76,7 +76,7 @@
       </ng-template>
       <ng-template let-value="value" ngx-datatable-cell-template>
         <a
-          class="btn btn-sm btn-highlight"
+          class="btn btn-sm btn-highlight me-1"
           placement="left"
           [ngbTooltip]="'Listen to this audio recording'"
           [bawUrl]="value.playUrl"
@@ -85,6 +85,7 @@
         </a>
         <a
           class="btn btn-sm btn-default mx-1"
+          class="btn btn-sm btn-default me-1"
           placement="left"
           [ngbTooltip]="'Download audio recording'"
           [href]="value.getDownloadUrl(apiRoot)"

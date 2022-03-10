@@ -34,6 +34,14 @@
       }
     },
     {
+      "key": "recordedDateTimezone",
+      "hide": true,
+      "templateOptions": {
+        "label": "Recorded Date Timezone",
+        "disabled": true
+      }
+    },
+    {
       "key": "site",
       "hide": true,
       "templateOptions": {
@@ -66,6 +74,15 @@
       "templateOptions": {
         "label": "Channels",
         "type": "text",
+        "disabled": true
+      }
+    },
+    {
+      "key": "bitRateBps",
+      "type": "input",
+      "templateOptions": {
+        "label": "Bit Rate (bps)",
+        "type": "number",
         "disabled": true
       }
     },
@@ -166,14 +183,6 @@
       "hide": true,
       "templateOptions": {
         "label": "Original File Name",
-        "disabled": true
-      }
-    },
-    {
-      "key": "recordedUtcOffset",
-      "hide": true,
-      "templateOptions": {
-        "label": "Recorded UTC Offset",
         "disabled": true
       }
     }
