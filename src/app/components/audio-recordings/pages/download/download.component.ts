@@ -29,8 +29,10 @@ interface Model {
   projects?: Project[];
   regions?: Region[];
   sites?: Site[];
-  recordingStartedAfter?: Date;
-  recordingFinishedBefore?: Date;
+  startedAfterDate?: Date;
+  finishedBeforeDate?: Date;
+  startedAfterTime?: string;
+  finishedBeforeTime?: string;
 }
 
 @Component({
@@ -96,14 +98,14 @@ class DownloadAudioRecordingsComponent
       filter["projects.id"] = { eq: this.project.id };
     }
 
-    if (model.recordingStartedAfter) {
+    if (model.startedAfterDate) {
       filter["recordedDate"] = {
-        greaterThan: model.recordingStartedAfter.toISOString(),
+        greaterThan: model.startedAfterDate.toISOString(),
       };
     }
-    if (model.recordingFinishedBefore) {
+    if (model.finishedBeforeDate) {
       filter["recordedEndDate"] = {
-        lessThan: model.recordingFinishedBefore.toISOString(),
+        lessThan: model.finishedBeforeDate.toISOString(),
       };
     }
 

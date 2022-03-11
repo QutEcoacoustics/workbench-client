@@ -46,11 +46,11 @@
     </label>
     <!-- TODO Replace with dates using yyyy-mm-dd format -->
     <input
-      id="recording-started-after"
-      name="recordingStartedAfter"
+      id="started-after-date"
+      name="startedAfterDate"
       type="date"
       class="form-control"
-      [(ngModel)]="model.recordingStartedAfter"
+      [(ngModel)]="model.startedAfterDate"
       useValueAsDate
     />
 
@@ -68,11 +68,11 @@
     </label>
     <!-- TODO Replace with dates using yyyy-mm-dd format -->
     <input
-      id="recording-finished-before"
-      name="recordingFinishedBefore"
+      id="finished-before-date"
+      name="finishedBeforeDate"
       type="date"
       class="form-control"
-      [(ngModel)]="model.recordingFinishedBefore"
+      [(ngModel)]="model.finishedBeforeDate"
       useValueAsDate
     />
 
@@ -83,6 +83,37 @@
     </small>
 
     <!-- TODO Warning message if end date is before start date -->
+  </div>
+
+  <!-- Time of Day Selector -->
+
+  <div class="mb-3">
+    <label class="form-label">Filter results by time of day</label>
+
+    <div class="input-group">
+      <span class="input-group-text">Start Time</span>
+      <input
+        id="started-after-time"
+        name="startedAfterTime"
+        type="time"
+        class="form-control"
+        [(ngModel)]="startedAfterTime"
+      />
+      <span class="input-group-text">End Time</span>
+      <input
+        id="finished-before-time"
+        name="finishedBeforeTime"
+        type="time"
+        class="form-control"
+        [(ngModel)]="finishedBeforeTime"
+      />
+    </div>
+
+    <small class="form-text text-muted">
+      Filter recordings by the time of day they were recorded. If the filter is
+      set to 09:00-11:00, it will match recordings which go from 08:00-10:00 and
+      10:00-12:00.
+    </small>
   </div>
 </form>
 
