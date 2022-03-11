@@ -32,6 +32,9 @@ RUN npm run build:ssr
 
 FROM node:14-alpine
 
+ARG GIT_COMMIT
+ARG WORKBENCH_CLIENT_VERSION
+
 WORKDIR /home/node/workbench-client
 
 LABEL maintainer="Charles Alleman <alleman@qut.edu.au>" \
