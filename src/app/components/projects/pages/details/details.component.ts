@@ -21,7 +21,7 @@ import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
+import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";

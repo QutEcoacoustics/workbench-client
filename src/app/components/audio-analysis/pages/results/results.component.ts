@@ -6,7 +6,7 @@ import {
   downloadAudioAnalysisResultsMenuItem,
 } from "@components/audio-analysis/audio-analysis.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
+import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { List } from "immutable";
 
 const audioAnalysisKey = "audioAnalysis";
