@@ -1,28 +1,24 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
-import {
-  faSquareCheck,
-  faTimes,
-  IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
 import { titleCase } from "@helpers/case-converter/case-converter";
-import { IPageInfo } from "@helpers/page/pageInfo";
 import { hasRequiredAccessLevelOrHigher } from "@interfaces/apiInterfaces";
 import { WidgetComponent } from "@menu/widget.component";
 import { Project } from "@models/Project";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
-import { map, Observable } from "rxjs";
+import { map, Observable, tap } from "rxjs";
 
 @Component({
   selector: "baw-allows-original-download",
   template: `
-    <section
-      *ngIf="project$ | async as project"
-      class="d-flex justify-content-between pb-3"
-      [ngbTooltip]="getTooltip(project)"
-    >
-      <span>Allows Downloads</span>
-      <fa-icon [icon]="getIcon(project)" [class]="getColor(project)"></fa-icon>
+    <section *ngIf="project$ | async as project" class="pb-3">
+      <p id="label" class="m-0 fs-5">Recording Downloads</p>
+      <small
+        id="has-access"
+        class="m-0"
+        [ngbTooltip]="tooltip"
+        [innerText]="hasAccess ? 'Allowed' : 'Not Allowed'"
+      >
+      </small>
     </section>
   `,
 })
@@ -30,46 +26,40 @@ export class AllowsOriginalDownloadComponent
   implements OnInit, WidgetComponent
 {
   public project$: Observable<Project>;
-  public pageData: IPageInfo;
+  public hasAccess: boolean;
+  public tooltip: string;
 
-  public constructor(
-    private sharedRoute: SharedActivatedRouteService,
-    private ref: ChangeDetectorRef
-  ) {}
+  public constructor(private sharedRoute: SharedActivatedRouteService) {}
 
   public ngOnInit(): void {
     this.project$ = this.sharedRoute.pageInfo.pipe(
-      map((page): Project => retrieveResolvedModel(page, Project))
+      map((page): Project | undefined => retrieveResolvedModel(page, Project)),
+      tap((project: Project | undefined) => {
+        if (!project) {
+          this.tooltip = "";
+          this.hasAccess = false;
+        } else {
+          this.tooltip = this.getTooltip(project);
+          this.hasAccess = this.determineIfUserHasAccess(project);
+        }
+      })
     );
-    this.ref.detectChanges();
   }
 
-  public getIcon(project: Project): IconDefinition {
-    return project.allowOriginalDownload ? faSquareCheck : faTimes;
+  private getTooltip(project: Project): string {
+    const { name, allowOriginalDownload } = project;
+
+    return allowOriginalDownload
+      ? `Owner of ${name} has allowed downloads of the audio recordings for ${titleCase(
+          allowOriginalDownload
+        )}s`
+      : `Owner of ${name} has not set any permissions for allowing the downloads of the audio recordings yet`;
   }
 
-  public getColor(project: Project) {
+  private determineIfUserHasAccess(project: Project): boolean {
     const { allowOriginalDownload, accessLevel } = project;
-
-    if (
-      allowOriginalDownload &&
-      hasRequiredAccessLevelOrHigher(allowOriginalDownload, accessLevel)
-    ) {
-      return "text-success";
-    } else {
-      return "text-danger";
-    }
-  }
-
-  public getTooltip(project: Project): string {
-    const { allowOriginalDownload, name } = project;
-
-    if (!allowOriginalDownload) {
-      return `Owner of ${name} has not set any permissions for allowing the downloads of the audio recordings yet`;
-    }
-
-    return `Owner of ${name} has allowed downloads of the audio recordings for ${titleCase(
-      allowOriginalDownload
-    )}s`;
+    return allowOriginalDownload
+      ? hasRequiredAccessLevelOrHigher(allowOriginalDownload, accessLevel)
+      : false;
   }
 }

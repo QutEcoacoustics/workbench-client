@@ -31,13 +31,13 @@
       "key": "allowOriginalDownload",
       "type": "select",
       "templateOptions": {
-        "label": "Allow Original Audio Recording Downloads",
-        "description": "This allows different types of users to download the original audio recordings for your project.",
+        "label": "Allow whole audio recording downloads",
+        "description": "This allows different types of users to download whole audio recordings for your project based on their access level.",
         "options": [
           { "label": "Owner", "value": "owner" },
           { "label": "Writers", "value": "writer" },
           { "label": "Readers", "value": "reader" },
-          { "label": "Noone", "value": null }
+          { "label": "Disallow All Users", "value": null }
         ]
       }
     }

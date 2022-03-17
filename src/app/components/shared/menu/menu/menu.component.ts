@@ -131,7 +131,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     const action = (): void => {
       const modalRef = this.modalService.open(link.component, link.modalOpts);
       const component: ModalComponent = modalRef.componentInstance;
-      link.assignComponentData(component, this.menuService.pageInfo, modalRef);
+      link.assignComponentData(component, modalRef);
     };
     return menuModal({ ...link, action }) as MenuModal;
   }
@@ -155,7 +155,6 @@ export class MenuComponent implements OnChanges, AfterViewInit {
    * @param widget Widget Component
    */
   private insertWidget(widget: WidgetMenuItem): void {
-    const componentRef = this.menuWidget.createComponent(widget.component);
-    widget.assignComponentData(componentRef.instance);
+    this.menuWidget.createComponent(widget.component);
   }
 }
