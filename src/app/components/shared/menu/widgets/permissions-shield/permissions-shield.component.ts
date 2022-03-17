@@ -5,6 +5,7 @@ import {
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AccessLevel } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
@@ -23,7 +24,7 @@ import { WidgetComponent } from "../widget.component";
 @Component({
   selector: "baw-permissions-shield",
   template: `
-    <section *ngIf="model" class="pe-3 ps-3 pb-3">
+    <section *ngIf="model" class="pb-3">
       <div *ngFor="let badge of badges">
         <h5 id="label">{{ badge.label }}</h5>
 
@@ -36,7 +37,7 @@ import { WidgetComponent } from "../widget.component";
       <ng-container *ngIf="accessLevel">
         <h5 id="access-level-label">Your access level</h5>
         <span id="access-level" style="font-size: 0.9rem">
-          {{ accessLevel }}
+          {{ accessLevel | titlecase }}
         </span>
       </ng-container>
     </section>
@@ -49,7 +50,7 @@ export class PermissionsShieldComponent
   public accessLevel: string;
   public badges = [];
   public model: AbstractModel;
-  public pageData: any;
+  public pageData: IPageInfo;
   private project: Project;
 
   public constructor(private sharedRoute: SharedActivatedRouteService) {

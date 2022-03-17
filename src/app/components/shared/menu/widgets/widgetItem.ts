@@ -1,5 +1,5 @@
 import { Type } from "@angular/core";
-import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { MenuAction, UserCallback } from "@interfaces/menusInterfaces";
 import { NgbModalOptions, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ModalComponent, WidgetComponent } from "./widget.component";
@@ -56,13 +56,8 @@ export function menuModal<
       scrollable: true,
       ...item.modalOpts,
     },
-    assignComponentData(
-      component: ModalComponent,
-      routeData: PageInfo,
-      modalRef: NgbModalRef
-    ) {
+    assignComponentData(component: ModalComponent, modalRef: NgbModalRef) {
       const defaultOpts: ModalComponent = {
-        routeData,
         pageData: item.pageData,
         dismissModal: (reason: any) => modalRef.dismiss(reason),
         closeModal: (result: any) => modalRef.close(result),

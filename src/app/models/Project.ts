@@ -6,6 +6,7 @@ import {
   Description,
   HasAllUsers,
   HasDescription,
+  hasRequiredAccessLevelOrHigher,
   Hash,
   Id,
   Ids,
@@ -95,7 +96,7 @@ export class Project extends AbstractModel<IProject> implements IProject {
    * Returns true if user has the permissions to edit this model
    */
   public get canEdit(): boolean {
-    return [AccessLevel.owner, AccessLevel.writer].includes(this.accessLevel);
+    return hasRequiredAccessLevelOrHigher(AccessLevel.writer, this.accessLevel);
   }
 
   public get viewUrl(): string {

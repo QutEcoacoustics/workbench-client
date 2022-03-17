@@ -21,15 +21,15 @@ import { User } from "@models/User";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MenuService } from "@services/menu/menu.service";
 import { Set } from "immutable";
-import { ModalComponent } from "../widget/widget.component";
-import { WidgetDirective } from "../widget/widget.directive";
+import { ModalComponent } from "../widgets/widget.component";
+import { WidgetDirective } from "../widgets/widget.directive";
 import {
   isMenuModal,
   menuModal,
   MenuModal,
   MenuModalWithoutAction,
   WidgetMenuItem,
-} from "../widget/widgetItem";
+} from "../widgets/widgetItem";
 
 /**
  * Menu Component.

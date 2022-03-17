@@ -43,6 +43,37 @@ export enum AccessLevel {
 }
 
 /**
+ * Determines if the access level supplied passes the required access level
+ *
+ * @param requiredLevel The required access level, the current level must be
+ * equal to or greater than this level
+ * @param currentLevel The current access level
+ */
+export function hasRequiredAccessLevelOrHigher(
+  requiredLevel: AccessLevel,
+  currentLevel: AccessLevel
+): boolean {
+  switch (requiredLevel) {
+    // Only owners have permission
+    case AccessLevel.owner:
+      return currentLevel === AccessLevel.owner;
+    // Writers and owners have permission
+    case AccessLevel.writer:
+      return [AccessLevel.owner, AccessLevel.writer].includes(currentLevel);
+    // Readers, writers, and owners have permission
+    case AccessLevel.reader:
+      return [
+        AccessLevel.owner,
+        AccessLevel.writer,
+        AccessLevel.reader,
+      ].includes(currentLevel);
+    // Unresolved or unknown access should assume the worst
+    default:
+      return false;
+  }
+}
+
+/**
  * BAW API Item Description
  */
 export type Description = string;

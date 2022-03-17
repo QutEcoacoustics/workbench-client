@@ -1,6 +1,5 @@
 import camelCase from "just-camel-case";
 import snakeCase from "just-snake-case";
-
 // List of allowed keys which should have their values converted
 import allowList from "./allow-list.json";
 
@@ -73,4 +72,20 @@ export const toCamelCase = (obj: any) => convertCase(obj, camelCase);
  */
 export const toSnakeCase = (obj: any) => convertCase(obj, snakeCase);
 
-export default { toCamelCase, toSnakeCase };
+export function titleCase(str: string): string {
+  // https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
+  let upper = true;
+  let newStr = "";
+  for (let i = 0, l = str.length; i < l; i++) {
+    if (str[i].match(/\s/)) {
+      upper = true;
+      newStr += str[i];
+      continue;
+    }
+    newStr += upper ? str[i].toUpperCase() : str[i].toLowerCase();
+    upper = false;
+  }
+  return newStr;
+}
+
+export default { toCamelCase, toSnakeCase, titleCase };
