@@ -20,7 +20,6 @@ export class WidgetMenuItem {
 export interface MenuModal extends Omit<MenuAction, "kind"> {
   kind: "MenuModal";
   component: Type<ModalComponent>;
-  pageData: any;
   modalOpts: NgbModalOptions;
   assignComponentData(component: ModalComponent, modalRef: NgbModalRef): void;
 }

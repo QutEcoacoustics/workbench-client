@@ -7,6 +7,5 @@ export const siteAnnotationsModal = menuModal({
   label: "Download Annotations",
   tooltip: () => "Download annotations for this site",
   component: AnnotationDownloadComponent,
-  pageData: {},
   modalOpts: {},
 });
