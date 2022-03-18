@@ -36,7 +36,7 @@ import { DateTime } from "luxon";
 
         <!-- User details -->
         <div class="body">
-          <baw-user-link class="heading" [user]="user"></baw-user-link>
+          <baw-user-link class="fs-5" [user]="user"></baw-user-link>
 
           <!-- Timestamp -->
           <br />

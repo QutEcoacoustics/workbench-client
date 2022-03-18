@@ -26,6 +26,20 @@
         "label": "Image",
         "required": false
       }
+    },
+    {
+      "key": "allowOriginalDownload",
+      "type": "select",
+      "templateOptions": {
+        "label": "Allow whole audio recording downloads",
+        "description": "This allows different types of users to download whole audio recordings for your project based on their access level.",
+        "options": [
+          { "label": "Owner", "value": "owner" },
+          { "label": "Writers", "value": "writer" },
+          { "label": "Readers", "value": "reader" },
+          { "label": "Disallow All Users", "value": null }
+        ]
+      }
     }
   ]
 }

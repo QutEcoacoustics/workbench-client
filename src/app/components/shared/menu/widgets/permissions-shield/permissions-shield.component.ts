@@ -5,17 +5,16 @@ import {
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AccessLevel } from "@interfaces/apiInterfaces";
-import { WidgetMenuItem } from "@menu/widgetItem";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { map, takeUntil } from "rxjs";
-import { isLoggedInPredicate } from "src/app/app.menus";
-import { WidgetComponent } from "../widget/widget.component";
+import { WidgetComponent } from "../widget.component";
 
 /**
  * Permissions Shield Component.
@@ -25,7 +24,7 @@ import { WidgetComponent } from "../widget/widget.component";
 @Component({
   selector: "baw-permissions-shield",
   template: `
-    <section *ngIf="model" class="pe-3 ps-3 pb-3">
+    <section *ngIf="model" class="pb-3">
       <div *ngFor="let badge of badges">
         <h5 id="label">{{ badge.label }}</h5>
 
@@ -38,7 +37,7 @@ import { WidgetComponent } from "../widget/widget.component";
       <ng-container *ngIf="accessLevel">
         <h5 id="access-level-label">Your access level</h5>
         <span id="access-level" style="font-size: 0.9rem">
-          {{ accessLevel }}
+          {{ accessLevel | titlecase }}
         </span>
       </ng-container>
     </section>
@@ -51,7 +50,7 @@ export class PermissionsShieldComponent
   public accessLevel: string;
   public badges = [];
   public model: AbstractModel;
-  public pageData: any;
+  public pageData: IPageInfo;
   private project: Project;
 
   public constructor(private sharedRoute: SharedActivatedRouteService) {
@@ -165,8 +164,3 @@ export class PermissionsShieldComponent
     return this.model["accessLevel"] ?? null;
   }
 }
-
-export const permissionsWidgetMenuItem = new WidgetMenuItem(
-  PermissionsShieldComponent,
-  isLoggedInPredicate
-);

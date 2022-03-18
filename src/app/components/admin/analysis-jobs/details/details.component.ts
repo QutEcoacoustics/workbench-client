@@ -8,7 +8,7 @@ import {
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
+import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { List } from "immutable";
 import schema from "../analysis-job.schema.json";

@@ -2,6 +2,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { titleCase } from "@helpers/case-converter/case-converter";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AccessLevel } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
@@ -124,9 +125,7 @@ describe("TheirProjectsComponent", () => {
             interceptRequest([project]);
             spec.detectChanges();
 
-            const titleCaseAccessLevel =
-              accessLevel.charAt(0).toUpperCase() + accessLevel.slice(1);
-            expect(getCells()[2]).toHaveText(titleCaseAccessLevel);
+            expect(getCells()[2]).toHaveText(titleCase(accessLevel));
           });
         }
       );

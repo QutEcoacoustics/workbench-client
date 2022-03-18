@@ -313,28 +313,6 @@ describe("MenuComponent", () => {
         assertModalOpen(spec.component.formattedLinks.first() as MenuModal);
       });
 
-      it("should assign route data to modal component", () => {
-        const routeData = { example: "values" };
-        setup({ links: OrderedSet([defaultMenuModal]) }, routeData);
-        spyOnModal();
-        spec.detectChanges();
-        const link = getMenuModals()[0].link as MenuModal;
-        link.action();
-        expect<any>(mockComponentInstance.routeData).toEqual(routeData);
-      });
-
-      it("should assign page data to modal component", () => {
-        const modalItem = generateMenuModalWithoutAction({
-          pageData: { example: "values" },
-        });
-        setup({ links: OrderedSet([modalItem]) });
-        spyOnModal();
-        spec.detectChanges();
-        const link = getMenuModals()[0].link as MenuModal;
-        link.action();
-        expect(mockComponentInstance.pageData).toEqual(modalItem.pageData);
-      });
-
       it("should assign dismissModal function to modal component", () => {
         setup({ links: OrderedSet([defaultMenuModal]) });
         spyOnModal();
