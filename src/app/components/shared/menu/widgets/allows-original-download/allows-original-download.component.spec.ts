@@ -2,7 +2,10 @@ import { Errorable } from "@helpers/advancedTypes";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
-import { AccessLevel } from "@interfaces/apiInterfaces";
+import {
+  AccessLevel,
+  hasRequiredAccessLevelOrHigher,
+} from "@interfaces/apiInterfaces";
 import { MockModel } from "@models/AbstractModel.spec";
 import { Project } from "@models/Project";
 import { NgbTooltip, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
@@ -73,100 +76,45 @@ describe("AllowsOriginalDownloadComponent", () => {
   });
 
   describe("access level", () => {
-    [
-      {
-        required: AccessLevel.owner,
-        userAccess: AccessLevel.owner,
-        hasAccess: true,
-      },
-      {
-        required: AccessLevel.owner,
-        userAccess: AccessLevel.writer,
-        hasAccess: false,
-      },
-      {
-        required: AccessLevel.owner,
-        userAccess: AccessLevel.reader,
-        hasAccess: false,
-      },
-      {
-        required: AccessLevel.writer,
-        userAccess: AccessLevel.owner,
-        hasAccess: true,
-      },
-      {
-        required: AccessLevel.writer,
-        userAccess: AccessLevel.writer,
-        hasAccess: true,
-      },
-      {
-        required: AccessLevel.writer,
-        userAccess: AccessLevel.reader,
-        hasAccess: false,
-      },
-      {
-        required: AccessLevel.reader,
-        userAccess: AccessLevel.owner,
-        hasAccess: true,
-      },
-      {
-        required: AccessLevel.reader,
-        userAccess: AccessLevel.writer,
-        hasAccess: true,
-      },
-      {
-        required: AccessLevel.reader,
-        userAccess: AccessLevel.reader,
-        hasAccess: true,
-      },
-      {
-        required: null,
-        userAccess: AccessLevel.owner,
-        hasAccess: false,
-      },
-      {
-        required: null,
-        userAccess: AccessLevel.writer,
-        hasAccess: false,
-      },
-      {
-        required: null,
-        userAccess: AccessLevel.reader,
-        hasAccess: false,
-      },
-    ].forEach(({ required, userAccess, hasAccess }) => {
-      function getTooltip() {
-        return spec.query(NgbTooltip).ngbTooltip;
-      }
+    const levels = [AccessLevel.owner, AccessLevel.writer, AccessLevel.reader];
 
-      let project: Project;
-      beforeEach(() => {
-        project = new Project(
-          generateProject({
-            allowOriginalDownload: required,
-            accessLevel: userAccess,
-          })
-        );
-      });
+    levels.forEach((required) => {
+      levels.forEach((current) => {
+        const hasAccess = hasRequiredAccessLevelOrHigher(required, current);
 
-      describe(`allow original downloads with ${required} access level`, () => {
-        describe(`when user has ${userAccess} access`, () => {
-          it(`should show ${hasAccess ? "" : "not "} allowed`, () => {
-            setProject(project);
-            spec.detectChanges();
-            expect(spec.query("#has-access")).toHaveText(
-              hasAccess ? "Allowed" : "Not Allowed"
-            );
-          });
+        function getTooltip() {
+          return spec.query(NgbTooltip).ngbTooltip;
+        }
 
-          it("should show tooltip", () => {
-            setProject(project);
-            spec.detectChanges();
-            const tooltip = getTooltip();
-            expect(tooltip).toContain(project.name);
-            expect(tooltip).toContain(
-              required ? titleCase(required) : "not set any permissions"
-            );
+        let project: Project;
+        beforeEach(() => {
+          project = new Project(
+            generateProject({
+              allowOriginalDownload: required,
+              accessLevel: current,
+            })
+          );
+        });
+
+        describe(`allow original downloads with ${required} access level`, () => {
+          describe(`when user has ${current} access`, () => {
+            it(`should show ${hasAccess ? "" : "not "} allowed`, () => {
+              setProject(project);
+              spec.detectChanges();
+              expect(spec.query("#has-access")).toHaveText(
+                hasAccess ? "Allowed" : "Not Allowed"
+              );
+            });
+
+            it("should show tooltip", () => {
+              setProject(project);
+              spec.detectChanges();
+              const tooltip = getTooltip();
+              expect(tooltip).toContain(project.name);
+              expect(tooltip).toContain(
+                required ? titleCase(required) : "not set any permissions"
+              );
+            });
           });
         });
       });
