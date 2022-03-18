@@ -21,15 +21,15 @@ import { User } from "@models/User";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MenuService } from "@services/menu/menu.service";
 import { Set } from "immutable";
-import { ModalComponent } from "../widget/widget.component";
-import { WidgetDirective } from "../widget/widget.directive";
+import { ModalComponent } from "../widgets/widget.component";
+import { WidgetDirective } from "../widgets/widget.directive";
 import {
   isMenuModal,
   menuModal,
   MenuModal,
   MenuModalWithoutAction,
   WidgetMenuItem,
-} from "../widget/widgetItem";
+} from "../widgets/widgetItem";
 
 /**
  * Menu Component.
@@ -131,7 +131,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     const action = (): void => {
       const modalRef = this.modalService.open(link.component, link.modalOpts);
       const component: ModalComponent = modalRef.componentInstance;
-      link.assignComponentData(component, this.menuService.pageInfo, modalRef);
+      link.assignComponentData(component, modalRef);
     };
     return menuModal({ ...link, action }) as MenuModal;
   }
@@ -155,7 +155,6 @@ export class MenuComponent implements OnChanges, AfterViewInit {
    * @param widget Widget Component
    */
   private insertWidget(widget: WidgetMenuItem): void {
-    const componentRef = this.menuWidget.createComponent(widget.component);
-    widget.assignComponentData(componentRef.instance);
+    this.menuWidget.createComponent(widget.component);
   }
 }

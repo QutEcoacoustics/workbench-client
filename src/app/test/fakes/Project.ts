@@ -12,6 +12,7 @@ export function generateProject(data?: Partial<IProject>): Required<IProject> {
     siteIds: modelData.ids(),
     regionIds: modelData.ids(),
     notes: modelData.notes(),
+    allowOriginalDownload: modelData.accessLevel(),
     ...modelData.model.generateDescription(),
     ...modelData.model.generateAllUsers(),
     ...data,

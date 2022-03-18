@@ -9,7 +9,7 @@ import { asFormControl } from "./helper";
 @Component({
   selector: "baw-image-input",
   template: `
-    <div class="form-group">
+    <div class="form-group mb-3">
       <label *ngIf="to.label" [for]="field.id">
         {{ to.label + (to.required ? " *" : "") }}
       </label>

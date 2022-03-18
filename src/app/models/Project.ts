@@ -6,6 +6,7 @@ import {
   Description,
   HasAllUsers,
   HasDescription,
+  hasRequiredAccessLevelOrHigher,
   Hash,
   Id,
   Ids,
@@ -38,6 +39,7 @@ export interface IProject extends HasAllUsers, HasDescription {
   siteIds?: Ids | Id[];
   regionIds?: Ids | Id[];
   notes?: Hash;
+  allowOriginalDownload?: AccessLevel;
 }
 
 /**
@@ -73,6 +75,8 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public readonly regionIds?: Ids;
   @bawPersistAttr()
   public readonly notes?: Hash;
+  @bawPersistAttr()
+  public readonly allowOriginalDownload?: AccessLevel;
 
   // Associations
   @hasMany<Project, Site>(SHALLOW_SITE, "siteIds")
@@ -92,7 +96,7 @@ export class Project extends AbstractModel<IProject> implements IProject {
    * Returns true if user has the permissions to edit this model
    */
   public get canEdit(): boolean {
-    return [AccessLevel.owner, AccessLevel.writer].includes(this.accessLevel);
+    return hasRequiredAccessLevelOrHigher(AccessLevel.writer, this.accessLevel);
   }
 
   public get viewUrl(): string {

@@ -22,7 +22,7 @@ import {
 } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { MockWidgetComponent } from "@menu/menu/menu.component.spec";
-import { PermissionsShieldComponent } from "@menu/permissions-shield.component";
+import { PermissionsShieldComponent } from "@menu/permissions-shield/permissions-shield.component";
 import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
 import { User } from "@models/User";
 import {

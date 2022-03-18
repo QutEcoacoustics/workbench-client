@@ -2,25 +2,24 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import {
   hasResolvedSuccessfully,
+  retrieveResolvedModel,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ModalComponent } from "@menu/widget.component";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
+import { takeUntil } from "rxjs";
 import schema from "./annotations-download.schema.json";
 
 interface TimezoneModel {
   timezone?: string;
 }
-
-// TODO This needs to be standardized, otherwise it may not work
-const projectKey = "project";
-const regionKey = "region";
-const siteKey = "site";
 
 // TODO This will be expanded to download user annotations as well
 @Component({
@@ -77,33 +76,43 @@ const siteKey = "site";
     `,
   ],
 })
-export class AnnotationDownloadComponent implements OnInit, ModalComponent {
+export class AnnotationDownloadComponent
+  extends withUnsubscribe()
+  implements OnInit, ModalComponent
+{
   public closeModal!: (result: any) => void;
   public dismissModal!: (reason: any) => void;
   public fields: FormlyFieldConfig[] = schema.fields;
   public form = new FormGroup({});
   public model: TimezoneModel = { timezone: "UTC" };
-  public pageData!: any;
-  public routeData!: IPageInfo;
   public project?: Project;
   public region?: Region;
   public site?: Site;
 
-  public constructor(protected siteApi: SitesService) {}
+  public constructor(
+    private siteApi: SitesService,
+    private sharedRoute: SharedActivatedRouteService
+  ) {
+    super();
+  }
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(this.routeData);
+    this.sharedRoute.pageInfo
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((pageInfo: IPageInfo) => {
+        const models = retrieveResolvers(pageInfo);
 
-    // Close modal if an error has occurred
-    if (!hasResolvedSuccessfully(models)) {
-      this.dismissModal("Failure to resolve models");
-      return;
-    }
+        // Close modal if an error has occurred
+        if (!hasResolvedSuccessfully(models)) {
+          this.dismissModal("Failure to resolve models");
+          return;
+        }
 
-    this.project = models[projectKey] as Project;
-    this.region = models[regionKey] as Region;
-    this.site = models[siteKey] as Site;
-    this.model.timezone = this.site.tzinfoTz ?? this.model.timezone;
+        this.project = retrieveResolvedModel(pageInfo, Project);
+        this.region = retrieveResolvedModel(pageInfo, Region);
+        this.site = retrieveResolvedModel(pageInfo, Site);
+        this.model.timezone = this.site.tzinfoTz ?? this.model.timezone;
+      });
   }
 
   public getAnnotationsPath(): string {
