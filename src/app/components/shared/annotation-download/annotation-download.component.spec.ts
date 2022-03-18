@@ -9,14 +9,17 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import {
   createComponentFactory,
+  mockProvider,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
+import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { testFormImports } from "@test/helpers/testbed";
+import { BehaviorSubject } from "rxjs";
 import { AnnotationDownloadComponent } from "./annotation-download.component";
 
 const projectKey = "project";
@@ -47,9 +50,6 @@ describe("AnnotationDownloadComponent", () => {
   }
 
   function setup(modelList: string[], models: Errorable<AbstractModel>[]) {
-    spec = createComponent({ detectChanges: false });
-    siteApi = spec.inject(SitesService);
-
     const resolvers = {};
     const resolvedModels = {};
     modelList.forEach((resolver, index) => {
@@ -59,7 +59,20 @@ describe("AnnotationDownloadComponent", () => {
           ? ({ model: models[index] } as ResolvedModel)
           : ({ error: models[index] } as ResolvedModel);
     });
-    spec.component.routeData = { resolvers, ...resolvedModels } as IPageInfo;
+
+    spec = createComponent({
+      detectChanges: false,
+      providers: [
+        mockProvider(SharedActivatedRouteService, {
+          pageInfo: new BehaviorSubject({
+            resolvers,
+            ...resolvedModels,
+          } as IPageInfo),
+        }),
+      ],
+    });
+    siteApi = spec.inject(SitesService);
+
     spec.component.dismissModal = jasmine.createSpy("dismissModal").and.stub();
     spec.component.closeModal = jasmine.createSpy("closeModal").and.stub();
   }

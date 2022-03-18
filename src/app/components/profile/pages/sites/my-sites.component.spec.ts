@@ -7,6 +7,7 @@ import { PROJECT } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { titleCase } from "@helpers/case-converter/case-converter";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AccessLevel } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
@@ -161,9 +162,7 @@ describe("MySitesComponent", () => {
             await projectPromise;
             spec.detectChanges();
 
-            const titleCaseAccessLevel =
-              accessLevel.charAt(0).toUpperCase() + accessLevel.slice(1);
-            expect(getCells()[2]).toHaveText(titleCaseAccessLevel);
+            expect(getCells()[2]).toHaveText(titleCase(accessLevel));
           });
         }
       );

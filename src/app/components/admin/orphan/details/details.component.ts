@@ -10,7 +10,7 @@ import extendedSchema from "@components/sites/site.extended.json";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
+import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import { adminOrphanMenuItem, adminOrphansCategory } from "../orphans.menus";

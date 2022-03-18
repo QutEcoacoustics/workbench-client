@@ -35,11 +35,39 @@ export type AuthToken = string;
  * BAW API Access Levels
  */
 export enum AccessLevel {
-  reader = "reader",
-  writer = "writer",
   owner = "owner",
+  writer = "writer",
+  reader = "reader",
   unresolved = "unresolved",
   unknown = "unknown",
+}
+
+/**
+ * Determines if the access level supplied passes the required access level
+ *
+ * @param requiredLevel The required access level, the current level must be
+ * equal to or greater than this level
+ * @param currentLevel The current access level
+ */
+export function hasRequiredAccessLevelOrHigher(
+  requiredLevel: AccessLevel,
+  currentLevel: AccessLevel
+): boolean {
+  const { owner, writer, reader, unresolved, unknown } = AccessLevel;
+
+  if (
+    !unresolved ||
+    !currentLevel ||
+    unresolved === currentLevel ||
+    unknown === currentLevel
+  ) {
+    return false;
+  }
+
+  const priority = [owner, writer, reader];
+  const requiredIndex = priority.indexOf(requiredLevel);
+  const currentIndex = priority.indexOf(currentLevel);
+  return currentIndex <= requiredIndex;
 }
 
 /**

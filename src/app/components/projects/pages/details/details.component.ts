@@ -21,7 +21,10 @@ import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
+import {
+  allowsOriginalDownloadWidgetMenuItem,
+  permissionsWidgetMenuItem,
+} from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -202,7 +205,10 @@ DetailsComponent.linkToRoute({
   pageRoute: projectMenuItem,
   menus: {
     actions: List(projectMenuItemActions),
-    actionWidgets: List([permissionsWidgetMenuItem]),
+    actionWidgets: List([
+      permissionsWidgetMenuItem,
+      allowsOriginalDownloadWidgetMenuItem,
+    ]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
 });

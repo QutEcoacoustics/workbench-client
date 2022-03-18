@@ -25,8 +25,7 @@
     "paths": {
       "@assets/*": ["./src/assets/*"],
       "@menu/*": [
-        "./src/app/components/shared/menu/permissions-shield/*",
-        "./src/app/components/shared/menu/widget/*",
+        "./src/app/components/shared/menu/widgets/*",
         "./src/app/components/shared/menu/*"
       ],
       "@shared/*": ["./src/app/components/shared/*"],

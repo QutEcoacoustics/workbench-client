@@ -12,7 +12,7 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
+import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";

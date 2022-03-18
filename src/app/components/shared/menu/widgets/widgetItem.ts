@@ -1,5 +1,4 @@
 import { Type } from "@angular/core";
-import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
 import { MenuAction, UserCallback } from "@interfaces/menusInterfaces";
 import { NgbModalOptions, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ModalComponent, WidgetComponent } from "./widget.component";
@@ -13,32 +12,16 @@ export class WidgetMenuItem {
     /** Component to display */
     public component: Type<WidgetComponent>,
     /** Whether or not to show this link */
-    public predicate?: UserCallback<boolean>,
-    /** Data to pass to component */
-    public pageData: IPageInfo = {}
+    public predicate?: UserCallback<boolean>
   ) {}
-
-  /**
-   * Assign data to the component
-   *
-   * @param component Component to assign data to
-   */
-  public assignComponentData(component: WidgetComponent): void {
-    component.pageData = this.pageData;
-  }
 }
 
 /** Modal widget menu item */
 export interface MenuModal extends Omit<MenuAction, "kind"> {
   kind: "MenuModal";
   component: Type<ModalComponent>;
-  pageData: any;
   modalOpts: NgbModalOptions;
-  assignComponentData(
-    component: ModalComponent,
-    routeData: IPageInfo,
-    modalRef: NgbModalRef
-  ): void;
+  assignComponentData(component: ModalComponent, modalRef: NgbModalRef): void;
 }
 
 /** Modal widget menu item without action function set */
@@ -56,14 +39,8 @@ export function menuModal<
       scrollable: true,
       ...item.modalOpts,
     },
-    assignComponentData(
-      component: ModalComponent,
-      routeData: PageInfo,
-      modalRef: NgbModalRef
-    ) {
+    assignComponentData(component: ModalComponent, modalRef: NgbModalRef) {
       const defaultOpts: ModalComponent = {
-        routeData,
-        pageData: item.pageData,
         dismissModal: (reason: any) => modalRef.dismiss(reason),
         closeModal: (result: any) => modalRef.close(result),
       };

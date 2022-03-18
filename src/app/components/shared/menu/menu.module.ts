@@ -4,6 +4,9 @@ import { RouterModule } from "@angular/router";
 import { DirectivesModule } from "@directives/directives.module";
 import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { DefaultMenu, DEFAULT_MENU } from "@helpers/page/defaultMenus";
+import { AllowsOriginalDownloadComponent } from "@menu/allows-original-download/allows-original-download.component";
+import { PermissionsShieldComponent } from "@menu/permissions-shield/permissions-shield.component";
+import { WidgetDirective } from "@menu/widget.directive";
 import {
   NgbDropdownModule,
   NgbModalModule,
@@ -23,12 +26,10 @@ import { HeaderComponent } from "./header/header.component";
 import { MenuLinkComponent } from "./link/link.component";
 import { MenuToggleComponent } from "./menu-toggle/menu-toggle.component";
 import { MenuComponent } from "./menu/menu.component";
-import { PermissionsShieldComponent } from "./permissions-shield/permissions-shield.component";
 import { PrimaryMenuComponent } from "./primary-menu/primary-menu.component";
 import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
 import { SideNavComponent } from "./side-nav/side-nav.component";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
-import { WidgetDirective } from "./widget/widget.directive";
 
 const privateComponents = [
   MenuButtonComponent,
@@ -48,6 +49,7 @@ const publicComponents = [
   PrimaryMenuComponent,
   HeaderComponent,
   SideNavComponent,
+  AllowsOriginalDownloadComponent,
 ];
 
 /**

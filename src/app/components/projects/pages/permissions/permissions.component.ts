@@ -9,7 +9,7 @@ import {
 } from "@components/projects/projects.menus";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { TableTemplate } from "@helpers/tableTemplate/tableTemplate";
-import { permissionsWidgetMenuItem } from "@menu/permissions-shield.component";
+import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
 import { ISelectableItem } from "@shared/items/selectable-items/selectable-items.component";

@@ -34,9 +34,9 @@ describe("UserBadgeComponent", () => {
   });
 
   const getGhostUsername = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).queryAll<HTMLAnchorElement>(".heading span");
+    (spec ?? _spec).queryAll<HTMLAnchorElement>(".fs-5 span");
   const getUsername = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).queryAll<HTMLAnchorElement>(".heading a");
+    (spec ?? _spec).queryAll<HTMLAnchorElement>(".fs-5 a");
   const getImageWrapper = (_spec?: Spectator<any>) =>
     (spec ?? _spec).queryAll<HTMLAnchorElement>("#imageLink");
   const getImage = (_spec?: Spectator<any>) =>
