@@ -55,6 +55,7 @@ interface Model {
 @Component({
   selector: "baw-download",
   templateUrl: "download.component.html",
+  styleUrls: ["download.component.scss"],
 })
 class DownloadAudioRecordingsComponent
   extends PageComponent
@@ -70,6 +71,10 @@ class DownloadAudioRecordingsComponent
   public model: Model = { todIgnoreDst: true };
   public models: ResolvedModelList;
   public profile = myAccountMenuItem;
+
+  public errors: {
+    todBoundaryError?: boolean;
+  } = {};
 
   public constructor(
     private route: ActivatedRoute,
@@ -116,7 +121,7 @@ class DownloadAudioRecordingsComponent
     site?: Site,
     regionSites?: Site[],
     projectSites?: Site[]
-  ) {
+  ): Site[] {
     if (site) {
       return site.timezoneInformation ? [] : [site];
     }
@@ -139,9 +144,7 @@ class DownloadAudioRecordingsComponent
   }
 
   public updateHref(model: Model): void {
-    console.log(model);
     const filters = this.generateFilter(model);
-    console.log(filters);
     this.filters$.next(filters);
     this.href = this.recordingsApi.batchDownloadUrl(filters);
   }
@@ -171,6 +174,10 @@ class DownloadAudioRecordingsComponent
     return recordings
       .reduce((a, b) => (a.recordedDate < b.recordedDate ? a : b))
       .recordedDate.toFormat("yyyy-MM-dd hh:mm:ss");
+  }
+
+  public invalidForm(errors: any): boolean {
+    return Object.entries(errors).some((value) => value[1]);
   }
 
   private generateFilter(model: Model): Filters<AudioRecording> {
@@ -211,7 +218,10 @@ class DownloadAudioRecordingsComponent
     filter: InnerFilter<AudioRecording>,
     model: Model
   ): void {
-    if (!model.todEnabled) {
+    if (
+      !model.todEnabled ||
+      model.todFinishedBefore === model.todStartedAfter
+    ) {
       return;
     }
 
@@ -235,8 +245,12 @@ class DownloadAudioRecordingsComponent
       };
     }
 
+    // TODO Add support for timezones which overflow a boundary
     if (model.todFinishedBefore < model.todStartedAfter) {
+      this.errors.todBoundaryError = true;
       console.log("Finish time is before start time");
+    } else {
+      this.errors.todBoundaryError = false;
     }
   }
 }
