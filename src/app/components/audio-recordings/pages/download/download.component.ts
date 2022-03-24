@@ -3,6 +3,7 @@ import { NgForm } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import {
+  Comparisons,
   DateExpressions,
   Filters,
   InnerFilter,
@@ -17,13 +18,14 @@ import {
   audioRecordingsCategory,
 } from "@components/audio-recordings/audio-recording.menus";
 import { myAccountMenuItem } from "@components/profile/profile.menus";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
+import { isUnresolvedModel } from "@models/AbstractModel";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { DateTime } from "luxon";
 import {
   debounceTime,
   distinctUntilChanged,
@@ -46,8 +48,8 @@ interface Model {
   finishedBefore?: Date;
   todEnabled?: boolean;
   todIgnoreDst?: boolean;
-  todStartedAfter?: Date;
-  todFinishedBefore?: Date;
+  todStartedAfter?: string;
+  todFinishedBefore?: string;
 }
 
 @Component({
@@ -110,6 +112,32 @@ class DownloadAudioRecordingsComponent
     return this.models[siteKey] as Site;
   }
 
+  public sitesWithoutTimezones(
+    site?: Site,
+    regionSites?: Site[],
+    projectSites?: Site[]
+  ) {
+    if (site) {
+      return site.timezoneInformation ? [] : [site];
+    }
+
+    if (regionSites) {
+      if (!isInstantiated(regionSites) || isUnresolvedModel(regionSites)) {
+        return [];
+      } else {
+        return regionSites.filter((s) => !s.timezoneInformation);
+      }
+    }
+
+    if (projectSites) {
+      if (!isInstantiated(projectSites) || isUnresolvedModel(projectSites)) {
+        return [];
+      } else {
+        return projectSites.filter((s) => !s.timezoneInformation);
+      }
+    }
+  }
+
   public updateHref(model: Model): void {
     console.log(model);
     const filters = this.generateFilter(model);
@@ -118,13 +146,28 @@ class DownloadAudioRecordingsComponent
     this.href = this.recordingsApi.batchDownloadUrl(filters);
   }
 
-  public getNewestRecording(recordings: AudioRecording[]) {
+  public getNumberOfRecordings(recordings: AudioRecording[]): number {
+    if (recordings.length === 0) {
+      return 0;
+    }
+    return recordings[0].getMetadata().paging.total;
+  }
+
+  public getNewestRecording(recordings: AudioRecording[]): string {
+    if (recordings.length === 0) {
+      return "No recordings";
+    }
+
     return recordings
       .reduce((a, b) => (a.recordedDate > b.recordedDate ? a : b))
       .recordedDate.toFormat("yyyy-MM-dd hh:mm:ss");
   }
 
-  public getOldestRecording(recordings: AudioRecording[]) {
+  public getOldestRecording(recordings: AudioRecording[]): string {
+    if (recordings.length === 0) {
+      return "No recordings";
+    }
+
     return recordings
       .reduce((a, b) => (a.recordedDate < b.recordedDate ? a : b))
       .recordedDate.toFormat("yyyy-MM-dd hh:mm:ss");
@@ -141,69 +184,60 @@ class DownloadAudioRecordingsComponent
       filter["projects.id"] = { eq: this.project.id };
     }
 
-    const todFilter = this.timeOfDayFilter(model);
-    const dateFilter = this.dateFilter(model);
-    const hasTodFilter = Object.keys(todFilter).length > 0;
-    const hasDateFilter = Object.keys(dateFilter).length > 0;
+    this.setDateFilter(filter, model);
+    this.setTimeOfDayFilter(filter, model);
 
-    if (hasTodFilter && hasDateFilter) {
-      return { filter: { and: { ...todFilter, ...dateFilter } } };
-    } else if (hasTodFilter) {
-      return { filter: todFilter };
-    } else if (hasDateFilter) {
-      return { filter: dateFilter };
-    } else {
-      return {};
-    }
+    return { filter };
   }
 
-  private dateFilter(model: Model): InnerFilter<AudioRecording> {
-    const filter: InnerFilter<AudioRecording> = {};
-
+  private setDateFilter(
+    filter: InnerFilter<AudioRecording>,
+    model: Model
+  ): void {
     if (model.startedAfter) {
-      filter["recordedDate"] = {
-        gteq: model.startedAfter.toISOString(),
-      };
+      filter["recordedDate"] ??= {};
+      filter["recordedDate"].greaterThanOrEqual =
+        model.startedAfter.toISOString();
     }
 
     if (model.finishedBefore) {
-      filter["recordedEndDate"] = {
-        lteq: model.finishedBefore.toISOString(),
-      };
+      filter["recordedEndDate"] ??= {};
+      (filter["recordedEndDate"] as Comparisons).lessThanOrEqual =
+        model.finishedBefore.toISOString();
     }
-
-    return filter;
   }
 
-  private timeOfDayFilter(model: Model): InnerFilter<AudioRecording> {
+  private setTimeOfDayFilter(
+    filter: InnerFilter<AudioRecording>,
+    model: Model
+  ): void {
     if (!model.todEnabled) {
-      return {};
+      return;
     }
 
-    const filter: InnerFilter<AudioRecording> = {};
     const expressions: DateExpressions[] = model.todIgnoreDst
       ? ["local_offset", "time_of_day"]
       : ["local_tz", "time_of_day"];
 
     if (model.todStartedAfter) {
-      filter["recordedEndDate"] = {
-        greaterThanOrEqual: {
-          expressions,
-          value: model.todStartedAfter.toTimeString().split(" ")[0],
-        },
+      filter["recordedEndDate"] ??= {};
+      (filter["recordedEndDate"] as Comparisons).greaterThanOrEqual = {
+        expressions,
+        value: model.todStartedAfter,
       };
     }
 
     if (model.todFinishedBefore) {
-      filter["recordedDate"] = {
-        lessThanOrEqual: {
-          expressions,
-          value: model.todFinishedBefore.toTimeString().split(" ")[0],
-        },
+      filter["recordedDate"] ??= {};
+      filter["recordedDate"].lessThanOrEqual = {
+        expressions,
+        value: model.todFinishedBefore,
       };
     }
 
-    return filter;
+    if (model.todFinishedBefore < model.todStartedAfter) {
+      console.log("Finish time is before start time");
+    }
   }
 }
 
