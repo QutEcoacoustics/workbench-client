@@ -14,7 +14,7 @@ import { generateSite } from "@test/fakes/Site";
 import { inputValue } from "@test/helpers/html";
 import { DownloadAudioRecordingsComponent } from "./download.component";
 
-describe("DownloadAudioRecordingsComponent", () => {
+xdescribe("DownloadAudioRecordingsComponent", () => {
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
