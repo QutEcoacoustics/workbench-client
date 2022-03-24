@@ -169,6 +169,7 @@
         name="todStartedAfter"
         type="time"
         class="form-control"
+        [class.is-invalid]="errors.todBoundaryError"
         [disabled]="!model.todEnabled"
         [(ngModel)]="todStartedAfter"
       />
@@ -178,6 +179,7 @@
         name="todFinishedBefore"
         type="time"
         class="form-control"
+        [class.is-invalid]="errors.todBoundaryError"
         [disabled]="!model.todEnabled"
         [(ngModel)]="todFinishedBefore"
       />
@@ -186,15 +188,15 @@
         Filter recordings by the time of day they were recorded. If any part of
         a recording overlaps these limits, then it will be included.
       </div>
+
+      <div *ngIf="errors.todBoundaryError" class="invalid-feedback">
+        Time of day filtering does not currently support filtering past a day
+        boundary. Please adjust your request so that the start time is before
+        the end time.
+      </div>
     </div>
   </div>
 </form>
-
-<div class="clearfix">
-  <a class="btn btn-primary float-end mt-3" [href]="href">Download Script</a>
-</div>
-
-<!-- TODO Preview audio recordings which will be downloaded by this request -->
 
 <ng-container *ngIf="recordings$ | withLoading | async as recordings">
   <baw-loading *ngIf="recordings.loading"></baw-loading>
@@ -202,17 +204,29 @@
   <pre *ngIf="recordings.error">{{ recordings.error | json }}</pre>
 
   <p *ngIf="recordings.value">
-    Number of Recordings: {{ getNumberOfRecordings(recordings.value) }}
+    Number of Recordings Selected: {{ getNumberOfRecordings(recordings.value) }}
   </p>
-  <p *ngIf="recordings.value">
+  <!--
+    <p *ngIf="recordings.value">
     Newest (in current page): {{ getNewestRecording(recordings.value) }}
   </p>
   <p *ngIf="recordings.value">
     Oldest (in current page): {{ getOldestRecording(recordings.value) }}
   </p>
-
   <pre *ngIf="recordings.value">{{ recordings.value | json }}</pre>
+  -->
 </ng-container>
+
+<div class="clearfix">
+  <a
+    class="btn btn-primary float-end mt-3"
+    [class.disabled]="invalidForm(errors)"
+    [href]="href"
+    >Download Script</a
+  >
+</div>
+
+<!-- TODO Preview audio recordings which will be downloaded by this request -->
 
 <hr />
 
