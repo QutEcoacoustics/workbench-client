@@ -246,12 +246,8 @@ class DownloadAudioRecordingsComponent
     }
 
     // TODO Add support for timezones which overflow a boundary
-    if (model.todFinishedBefore < model.todStartedAfter) {
-      this.errors.todBoundaryError = true;
-      console.log("Finish time is before start time");
-    } else {
-      this.errors.todBoundaryError = false;
-    }
+    this.errors.todBoundaryError =
+      model.todFinishedBefore < model.todStartedAfter;
   }
 }
 
