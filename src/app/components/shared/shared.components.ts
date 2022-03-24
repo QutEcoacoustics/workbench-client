@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
+  NgbCollapseModule,
   NgbPaginationModule,
   NgbProgressbarModule,
   NgbTooltipModule,
@@ -21,7 +22,6 @@ import { DirectivesModule } from "src/app/directives/directives.module";
 import { AnnotationDownloadComponent } from "./annotation-download/annotation-download.component";
 import { BawClientModule } from "./baw-client/baw-client.module";
 import { BreadcrumbModule } from "./breadcrumb/breadcrumb.module";
-import { ModelCardsModule } from "./model-cards/model-cards.module";
 import { CheckboxModule } from "./checkbox/checkbox.module";
 import { CmsComponent } from "./cms/cms.component";
 import { DebounceInputComponent } from "./debounce-input/debounce-input.component";
@@ -35,6 +35,7 @@ import { IndicatorModule } from "./indicator/indicator.module";
 import { ItemsModule } from "./items/items.module";
 import { LoadingModule } from "./loading/loading.module";
 import { MenuModule } from "./menu/menu.module";
+import { ModelCardsModule } from "./model-cards/model-cards.module";
 import { UserLinkModule } from "./user-link/user-link.module";
 import { WIPComponent } from "./wip/wip.component";
 
@@ -58,6 +59,7 @@ export const sharedModules = [
   NgbTooltipModule,
   NgbPaginationModule,
   NgbProgressbarModule,
+  NgbCollapseModule,
   FontAwesomeModule,
   FormsModule,
   ReactiveFormsModule,

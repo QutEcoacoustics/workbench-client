@@ -464,27 +464,49 @@ export interface Combinations<T> {
   not?: InnerFilter<T>;
 }
 
+/**
+ * Date filter expressions
+ * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering#supported-expressions
+ *
+ * @param time_of_day Extract the time fraction from a date
+ * @param local_tz Convert a date to local date. Requires a date that can infer
+ * its timezone. Must come before `time_of_day`
+ * @param local_offset Convert a date to local date with a fixed UTC offset.
+ * Requires a date that can infer its timezone. Must come before
+ * `time_of_day`
+ */
+export type DateExpressions = "local_offset" | "local_tz" | "time_of_day";
+
+/**
+ * Filter expressions
+ * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering#expressions-experimental
+ */
+export interface Expression {
+  expressions: (DateExpressions | string)[];
+  value: string;
+}
+
 export interface Comparisons {
   eq?: string | number;
   equal?: string | number;
   notEq?: string | number;
   notEqual?: string | number;
-  lt?: string | number;
-  lessThan?: string | number;
-  notLt?: string | number;
-  notLessThan?: string | number;
-  gt?: string | number;
-  greaterThan?: string | number;
-  notGt?: string | number;
-  notGreaterThan?: string | number;
-  lteq?: string | number;
-  lessThanOrEqual?: string | number;
-  notLteq?: string | number;
-  notLessThanOrEqual?: string | number;
-  gteq?: string | number;
-  greaterThanOrEqual?: string | number;
-  notGteq?: string | number;
-  notGreaterThanOrEqual?: string | number;
+  lt?: string | number | Expression;
+  lessThan?: string | number | Expression;
+  notLt?: string | number | Expression;
+  notLessThan?: string | number | Expression;
+  gt?: string | number | Expression;
+  greaterThan?: string | number | Expression;
+  notGt?: string | number | Expression;
+  notGreaterThan?: string | number | Expression;
+  lteq?: string | number | Expression;
+  lessThanOrEqual?: string | number | Expression;
+  notLteq?: string | number | Expression;
+  notLessThanOrEqual?: string | number | Expression;
+  gteq?: string | number | Expression;
+  greaterThanOrEqual?: string | number | Expression;
+  notGteq?: string | number | Expression;
+  notGreaterThanOrEqual?: string | number | Expression;
 }
 
 /**
