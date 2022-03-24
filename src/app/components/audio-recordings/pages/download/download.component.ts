@@ -2,7 +2,11 @@ import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { NgForm } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import {
+  DateExpressions,
+  Filters,
+  InnerFilter,
+} from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
@@ -19,7 +23,16 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { takeUntil } from "rxjs";
+import { DateTime } from "luxon";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  Observable,
+  Subject,
+  switchMap,
+  takeUntil,
+} from "rxjs";
+import { defaultDebounceTime } from "src/app/app.helper";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -29,10 +42,12 @@ interface Model {
   projects?: Project[];
   regions?: Region[];
   sites?: Site[];
-  startedAfterDate?: Date;
-  finishedBeforeDate?: Date;
-  startedAfterTime?: string;
-  finishedBeforeTime?: string;
+  startedAfter?: Date;
+  finishedBefore?: Date;
+  todEnabled?: boolean;
+  todIgnoreDst?: boolean;
+  todStartedAfter?: Date;
+  todFinishedBefore?: Date;
 }
 
 @Component({
@@ -45,9 +60,12 @@ class DownloadAudioRecordingsComponent
 {
   @ViewChild(NgForm) public form: NgForm;
 
+  public filters$: Subject<Filters<AudioRecording>>;
+  public recordings$: Observable<AudioRecording[]>;
+
   public contactUs = contactUsMenuItem;
   public href = "";
-  public model: Model = {};
+  public model: Model = { todIgnoreDst: true };
   public models: ResolvedModelList;
   public profile = myAccountMenuItem;
 
@@ -59,6 +77,15 @@ class DownloadAudioRecordingsComponent
   }
 
   public ngOnInit(): void {
+    this.filters$ = new Subject();
+    this.recordings$ = this.filters$.pipe(
+      debounceTime(defaultDebounceTime),
+      distinctUntilChanged(),
+      switchMap((filters: Filters<AudioRecording>) =>
+        this.recordingsApi.filter(filters)
+      )
+    );
+
     this.models = retrieveResolvers(this.route.snapshot.data);
     this.updateHref(this.model);
   }
@@ -84,7 +111,23 @@ class DownloadAudioRecordingsComponent
   }
 
   public updateHref(model: Model): void {
-    this.href = this.recordingsApi.batchDownloadUrl(this.generateFilter(model));
+    console.log(model);
+    const filters = this.generateFilter(model);
+    console.log(filters);
+    this.filters$.next(filters);
+    this.href = this.recordingsApi.batchDownloadUrl(filters);
+  }
+
+  public getNewestRecording(recordings: AudioRecording[]) {
+    return recordings
+      .reduce((a, b) => (a.recordedDate > b.recordedDate ? a : b))
+      .recordedDate.toFormat("yyyy-MM-dd hh:mm:ss");
+  }
+
+  public getOldestRecording(recordings: AudioRecording[]) {
+    return recordings
+      .reduce((a, b) => (a.recordedDate < b.recordedDate ? a : b))
+      .recordedDate.toFormat("yyyy-MM-dd hh:mm:ss");
   }
 
   private generateFilter(model: Model): Filters<AudioRecording> {
@@ -98,18 +141,69 @@ class DownloadAudioRecordingsComponent
       filter["projects.id"] = { eq: this.project.id };
     }
 
-    if (model.startedAfterDate) {
-      filter["recordedDate"] = {
-        greaterThan: model.startedAfterDate.toISOString(),
-      };
+    const todFilter = this.timeOfDayFilter(model);
+    const dateFilter = this.dateFilter(model);
+    const hasTodFilter = Object.keys(todFilter).length > 0;
+    const hasDateFilter = Object.keys(dateFilter).length > 0;
+
+    if (hasTodFilter && hasDateFilter) {
+      return { filter: { and: { ...todFilter, ...dateFilter } } };
+    } else if (hasTodFilter) {
+      return { filter: todFilter };
+    } else if (hasDateFilter) {
+      return { filter: dateFilter };
+    } else {
+      return {};
     }
-    if (model.finishedBeforeDate) {
-      filter["recordedEndDate"] = {
-        lessThan: model.finishedBeforeDate.toISOString(),
+  }
+
+  private dateFilter(model: Model): InnerFilter<AudioRecording> {
+    const filter: InnerFilter<AudioRecording> = {};
+
+    if (model.startedAfter) {
+      filter["recordedDate"] = {
+        gteq: model.startedAfter.toISOString(),
       };
     }
 
-    return { filter: filter as InnerFilter<AudioRecording> };
+    if (model.finishedBefore) {
+      filter["recordedEndDate"] = {
+        lteq: model.finishedBefore.toISOString(),
+      };
+    }
+
+    return filter;
+  }
+
+  private timeOfDayFilter(model: Model): InnerFilter<AudioRecording> {
+    if (!model.todEnabled) {
+      return {};
+    }
+
+    const filter: InnerFilter<AudioRecording> = {};
+    const expressions: DateExpressions[] = model.todIgnoreDst
+      ? ["local_offset", "time_of_day"]
+      : ["local_tz", "time_of_day"];
+
+    if (model.todStartedAfter) {
+      filter["recordedEndDate"] = {
+        greaterThanOrEqual: {
+          expressions,
+          value: model.todStartedAfter.toTimeString().split(" ")[0],
+        },
+      };
+    }
+
+    if (model.todFinishedBefore) {
+      filter["recordedDate"] = {
+        lessThanOrEqual: {
+          expressions,
+          value: model.todFinishedBefore.toTimeString().split(" ")[0],
+        },
+      };
+    }
+
+    return filter;
   }
 }
 
