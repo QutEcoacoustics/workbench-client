@@ -247,6 +247,8 @@ class DownloadAudioRecordingsComponent
 
     // TODO Add support for timezones which overflow a boundary
     this.errors.todBoundaryError =
+      model.todFinishedBefore &&
+      model.todStartedAfter &&
       model.todFinishedBefore < model.todStartedAfter;
   }
 }

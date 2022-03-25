@@ -162,34 +162,36 @@
       </div>
     </div>
 
-    <div class="input-group mb-3">
-      <span class="input-group-text">Start Time</span>
-      <input
-        id="tod-started-after"
-        name="todStartedAfter"
-        type="time"
-        class="form-control"
-        [class.is-invalid]="errors.todBoundaryError"
-        [disabled]="!model.todEnabled"
-        [(ngModel)]="todStartedAfter"
-      />
-      <span class="input-group-text">End Time</span>
-      <input
-        id="tod-finished-before"
-        name="todFinishedBefore"
-        type="time"
-        class="form-control"
-        [class.is-invalid]="errors.todBoundaryError"
-        [disabled]="!model.todEnabled"
-        [(ngModel)]="todFinishedBefore"
-      />
+    <div class="mb-3">
+      <div class="input-group">
+        <span class="input-group-text">Start Time</span>
+        <input
+          id="tod-started-after"
+          name="todStartedAfter"
+          type="time"
+          class="form-control"
+          [class.is-invalid]="errors.todBoundaryError"
+          [disabled]="!model.todEnabled"
+          [(ngModel)]="todStartedAfter"
+        />
+        <span class="input-group-text">End Time</span>
+        <input
+          id="tod-finished-before"
+          name="todFinishedBefore"
+          type="time"
+          class="form-control"
+          [class.is-invalid]="errors.todBoundaryError"
+          [disabled]="!model.todEnabled"
+          [(ngModel)]="todFinishedBefore"
+        />
+      </div>
 
       <div class="form-text">
         Filter recordings by the time of day they were recorded. If any part of
         a recording overlaps these limits, then it will be included.
       </div>
 
-      <div *ngIf="errors.todBoundaryError" class="invalid-feedback">
+      <div *ngIf="errors.todBoundaryError" class="form-error">
         Time of day filtering does not currently support filtering past a day
         boundary. Please adjust your request so that the start time is before
         the end time.
@@ -266,7 +268,24 @@
     move the script to your external hard drive.
   </p>
 
-  <h3>3. Open a terminal</h3>
+  <h3>3. Unblock the downloader script</h3>
+
+  <ul>
+    <li>
+      If you are on Windows
+      <a href="https://www.thewindowsclub.com/fix-windows-blocked-access-file"
+        >unblock the file</a
+      >
+    </li>
+    <li>
+      If you are on Linux or MacOS, update the permissions of the file using
+      <code>chmod +x "download_audio_files.ps1"</code>
+    </li>
+  </ul>
+
+  <p>Depending on your personal settings,</p>
+
+  <h3>4. Open a terminal</h3>
 
   <p>
     Next open PowerShell in the same folder as your script. In most operating
@@ -281,7 +300,7 @@
     shell (like <code>cmd</code>/<code>bash</code>/<code>zsh</code>).
   </p>
 
-  <h3>4. Get an authentication token</h3>
+  <h3>5. Get an authentication token</h3>
 
   <p>
     Each time you want to run this script, you will need to supply an
@@ -295,7 +314,7 @@
 
   <!-- TODO Show users how with asciicast -->
 
-  <h3>5. Run the script</h3>
+  <h3>6. Run the script</h3>
 
   <p>
     Copy and paste the following command into your PowerShell session. Ensure
@@ -304,7 +323,7 @@
 
   <p>
     <code>
-      ./download_audio_files.ps1 -auth_token="INSERT_AUTH_TOKEN_HERE
+      ./download_audio_files.ps1 -auth_token "INSERT_AUTH_TOKEN_HERE
     </code>
   </p>
 
