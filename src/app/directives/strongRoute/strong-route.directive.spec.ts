@@ -302,12 +302,22 @@ describe("StrongRouteDirective", () => {
       assertUrlTree("/home", {});
     });
 
-    it("should create url tree with query parameters from router", async () => {
+    it("should create url tree with router query parameters", async () => {
       const childRoute = StrongRoute.newRoot().add("home", ({ example }) => ({
         testing: example,
       }));
       setup(childRoute);
       await setRouteParams({ example: 5 });
+      spec.detectChanges();
+      assertUrlTree("/home", { testing: 5 });
+    });
+
+    it("should create url tree with router route parameters", () => {
+      const childRoute = StrongRoute.newRoot().add("home", ({ example }) => ({
+        testing: example,
+      }));
+      setup(childRoute, { example: 5 });
+      spec.detectChanges();
       assertUrlTree("/home", { testing: 5 });
     });
 
@@ -316,6 +326,15 @@ describe("StrongRouteDirective", () => {
         testing: test,
       }));
       setup(childRoute, undefined, { test: "value" });
+      spec.detectChanges();
+      assertUrlTree("/home", { testing: "value" });
+    });
+
+    it("should create url tree with custom route parameters", () => {
+      const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
+        testing: test,
+      }));
+      setup(childRoute, { test: "value" });
       spec.detectChanges();
       assertUrlTree("/home", { testing: "value" });
     });
@@ -330,6 +349,7 @@ describe("StrongRouteDirective", () => {
       );
       setup(childRoute, undefined, { test: "value" });
       await setRouteParams({ example: 5 });
+      spec.detectChanges();
       assertUrlTree("/home", { testing: "value", testing2: 5 });
     });
   });
