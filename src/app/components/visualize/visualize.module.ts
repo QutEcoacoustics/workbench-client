@@ -3,7 +3,7 @@ import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { VisualizeComponent } from "./pages/details/details.component";
-import { visualizeRoute } from "./visualize.menus";
+import { visualizeRoute } from "./visualize.routes";
 
 const components = [VisualizeComponent];
 

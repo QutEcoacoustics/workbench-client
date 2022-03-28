@@ -101,6 +101,7 @@ export class StrongRouteDirective
       this.strongRoute?.queryParams(
         {
           ...this.queryParams,
+          ...this.routeParams,
           ...this.data.queryParams,
           ...this.data.routeParams,
         },
