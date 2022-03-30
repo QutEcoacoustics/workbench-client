@@ -134,12 +134,21 @@ export class SharedActivatedRouteService extends withUnsubscribe() {
   private observeRouterEvents(router: Router, route: ActivatedRoute): void {
     /** Recursively find all children, and return in order with observable */
     const expandAllChildren = (): Observable<ActivatedRoute> => {
+      // Set a maximum depth to check. The spectator ActivatedRouteStub has
+      // infinite children, which causes errors during tests
+      const maxDepth = 5;
+      let depth = 0;
+
       const expandChildren = async (
         sub: Subscriber<ActivatedRoute>,
         _route: ActivatedRoute
       ): Promise<void> => {
+        depth++;
         sub.next(_route);
-        _route.children.forEach((child) => expandChildren(sub, child));
+
+        if (depth < maxDepth) {
+          _route.children.forEach((child) => expandChildren(sub, child));
+        }
       };
 
       return new Observable((sub) => {
