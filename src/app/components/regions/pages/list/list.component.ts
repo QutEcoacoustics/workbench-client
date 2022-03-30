@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import {
-  newRegionMenuItem,
+  shallowNewRegionMenuItem,
   shallowRegionsCategory,
   shallowRegionsMenuItem,
 } from "@components/regions/regions.menus";
@@ -13,7 +13,7 @@ import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 
 export const regionsMenuItemActions = [
-  newRegionMenuItem,
+  shallowNewRegionMenuItem,
   audioRecordingMenuItems.list.base,
   audioRecordingMenuItems.batch.base,
 ];
