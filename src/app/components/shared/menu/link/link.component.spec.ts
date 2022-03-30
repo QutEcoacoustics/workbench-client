@@ -31,7 +31,6 @@ describe("MenuLinkComponent", () => {
     imports: [
       MockAppConfigModule,
       RouterTestingModule,
-      RouterTestingModule,
       DirectivesModule,
       NgbTooltipModule,
       IconsModule,

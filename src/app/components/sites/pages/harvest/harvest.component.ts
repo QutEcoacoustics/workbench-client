@@ -3,11 +3,9 @@ import { ActivatedRoute } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import {
-  hasResolvedSuccessfully,
-  retrieveResolvers,
-} from "@baw-api/resolver-common";
-import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
+import { retrieveResolvers } from "@baw-api/resolver-common";
+import { siteResolvers } from "@baw-api/site/sites.service";
+import { contactUsMenuItem } from "@components/about/about.menus";
 import {
   pointHarvestMenuItem,
   pointsCategory,
@@ -39,6 +37,7 @@ const siteKey = "site";
   templateUrl: "./harvest.component.html",
 })
 class SiteHarvestComponent extends PageComponent implements OnInit {
+  public contactUs = contactUsMenuItem;
   public project: Project;
   public region: Region;
   public site: Site;
@@ -46,7 +45,6 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
 
   public constructor(
     @Inject(API_ROOT) public apiRoot: string,
-    protected api: SitesService,
     private session: BawSessionService,
     private route: ActivatedRoute
   ) {
@@ -55,16 +53,11 @@ class SiteHarvestComponent extends PageComponent implements OnInit {
 
   public ngOnInit() {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    if (hasResolvedSuccessfully(models)) {
-      this.project = models[projectKey] as Project;
-      this.region = models[regionKey] as Region;
-      this.site = models[siteKey] as Site;
-      this.user = this.session.loggedInUser;
-    }
-  }
-
-  public getHarvestFileRoute() {
-    return this.api.harvestFile(this.site, this.project);
+    this.project = models[projectKey] as Project;
+    this.region = models[regionKey] as Region;
+    this.site = models[siteKey] as Site;
+    // Requires a logged in user to access, so this should always exist
+    this.user = this.session.loggedInUser;
   }
 }
 
