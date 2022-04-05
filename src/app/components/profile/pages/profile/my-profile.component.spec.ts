@@ -360,7 +360,7 @@ describe("MyProfileComponent", () => {
       spec.detectChanges();
 
       const tags = getTags();
-      assertUrl(tags[0].querySelector("a"), defaultTag.viewUrl);
+      assertUrl(tags[0].querySelector("a"), { bawUrl: defaultTag.viewUrl });
     });
 
     it("should display multiple tags", async () => {

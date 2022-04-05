@@ -186,11 +186,11 @@ describe("RecentAudioRecordingsComponent", () => {
     describe("actions", () => {
       const getActionCellElement = () => getCellElements()[3];
       const getPlayButton = () =>
-        getActionCellElement().querySelector<HTMLElement>("#playBtn");
+        getActionCellElement().querySelector<HTMLAnchorElement>("#playBtn");
 
       it("should link to listen page", async () => {
         await setup({ recordings: [defaultRecording] });
-        assertUrl(getPlayButton(), defaultRecording.viewUrl);
+        assertUrl(getPlayButton(), { bawUrl: defaultRecording.viewUrl });
       });
     });
   });

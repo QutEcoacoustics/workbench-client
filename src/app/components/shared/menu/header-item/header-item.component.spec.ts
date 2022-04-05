@@ -1,5 +1,5 @@
 import { RouterTestingModule } from "@angular/router/testing";
-import { DirectivesModule } from "@directives/directives.module";
+import { MockDirectivesModule } from "@directives/directives.mock.module";
 import {
   MenuLink,
   menuLink,
@@ -25,7 +25,7 @@ describe("HeaderItemComponent", () => {
   let spec: Spectator<HeaderItemComponent>;
   const createComponent = createComponentFactory({
     component: HeaderItemComponent,
-    imports: [RouterTestingModule, DirectivesModule, MockAppConfigModule],
+    imports: [RouterTestingModule, MockDirectivesModule, MockAppConfigModule],
   });
 
   function getLink() {
@@ -63,7 +63,7 @@ describe("HeaderItemComponent", () => {
     });
 
     it("should have router link", () => {
-      assertStrongRouteLink(getLink(), defaultRoute.route.toRouterLink());
+      assertStrongRouteLink(getLink(), { strongRoute: defaultRoute.route });
     });
 
     it("should have router link active attribute", () => {

@@ -103,7 +103,7 @@ describe("MyProjectsComponent", () => {
         spec.detectChanges();
 
         const link = getCells()[0].querySelector("a");
-        assertUrl(link, defaultProject.viewUrl);
+        assertUrl(link, { bawUrl: defaultProject.viewUrl });
       });
     });
 

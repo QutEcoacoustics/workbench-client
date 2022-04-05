@@ -1,6 +1,6 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { DirectivesModule } from "@directives/directives.module";
+import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { MenuToggleComponent } from "@menu/menu-toggle/menu-toggle.component";
 import { PrimaryMenuComponent } from "@menu/primary-menu/primary-menu.component";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
@@ -25,7 +25,7 @@ describe("HeaderComponent", () => {
       MockComponent(MenuToggleComponent),
       MockComponent(PrimaryMenuComponent),
     ],
-    imports: [RouterTestingModule, MockBawApiModule, DirectivesModule],
+    imports: [RouterTestingModule, MockBawApiModule, MockDirectivesModule],
   });
 
   beforeEach(() => {

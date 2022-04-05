@@ -1,7 +1,6 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { DirectivesModule } from "@directives/directives.module";
-import { AuthenticatedImageModule } from "@directives/image/image.module";
+import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
@@ -24,9 +23,8 @@ describe("RenderFieldComponent", () => {
     component: RenderFieldComponent,
     declarations: [CheckboxComponent, ModelLinkComponent],
     imports: [
-      AuthenticatedImageModule,
       CheckboxModule,
-      DirectivesModule,
+      MockDirectivesModule,
       LoadingModule,
       MockBawApiModule,
       RouterTestingModule,

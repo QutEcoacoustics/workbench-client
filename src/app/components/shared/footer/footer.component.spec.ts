@@ -6,7 +6,7 @@ import {
   ethicsMenuItem,
 } from "@components/about/about.menus";
 import { statisticsMenuItem } from "@components/statistics/statistics.menus";
-import { DirectivesModule } from "@directives/directives.module";
+import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
@@ -18,7 +18,7 @@ describe("FooterComponent", () => {
   let spec: Spectator<FooterComponent>;
   const createComponent = createComponentFactory({
     component: FooterComponent,
-    imports: [RouterTestingModule, DirectivesModule, MockAppConfigModule],
+    imports: [RouterTestingModule, MockDirectivesModule, MockAppConfigModule],
   });
 
   beforeEach(() => {
@@ -48,8 +48,14 @@ describe("FooterComponent", () => {
       ethicsMenuItem,
       contactUsMenuItem,
     ].forEach((link, index) => {
+      function getId() {
+        // First two links are copyright and website version
+        const offset = 3;
+        return `li:nth-child(${index + offset}) a`;
+      }
+
       function getLink() {
-        return spec.queryAll<HTMLAnchorElement>("a")[index];
+        return spec.query<HTMLAnchorElement>(getId());
       }
 
       describe(link.label, () => {

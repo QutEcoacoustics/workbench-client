@@ -2,7 +2,6 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { DirectivesModule } from "@directives/directives.module";
-import { AuthenticatedImageModule } from "@directives/image/image.module";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { PipesModule } from "@pipes/pipes.module";
 import { IconsModule } from "@shared/icons/icons.module";
@@ -19,7 +18,6 @@ import { CardsComponent } from "./cards/cards.component";
     CommonModule,
     RouterModule,
     DirectivesModule,
-    AuthenticatedImageModule,
     IconsModule,
     NgbTooltipModule,
     PipesModule,

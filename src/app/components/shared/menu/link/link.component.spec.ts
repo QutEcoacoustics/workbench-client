@@ -1,7 +1,8 @@
 import { ActivatedRouteSnapshot, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { DirectivesModule } from "@directives/directives.module";
+import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
   menuLink,
   MenuLink,
@@ -31,7 +32,7 @@ describe("MenuLinkComponent", () => {
     imports: [
       MockAppConfigModule,
       RouterTestingModule,
-      DirectivesModule,
+      MockDirectivesModule,
       NgbTooltipModule,
       IconsModule,
     ],
@@ -125,9 +126,10 @@ describe("MenuLinkComponent", () => {
   ].forEach(({ label, link }) => {
     describe(label, () => {
       it("should have icon", () => {
-        setup({ link: link({ icon: ["fas", "ad"] }) });
+        const icon: IconProp = ["fas", "ad"];
+        setup({ link: link({ icon }) });
         spec.detectChanges();
-        assertIcon(spec.element, "fas,ad");
+        assertIcon(spec.element, { icon });
       });
 
       it("should have label", () => {

@@ -1,7 +1,6 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { DirectivesModule } from "@directives/directives.module";
-import { AuthenticatedImageModule } from "@directives/image/image.module";
+import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
@@ -9,7 +8,7 @@ import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { LoadingModule } from "@shared/loading/loading.module";
-import { UserLinkModule } from "@shared/user-link/user-link.module";
+import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
 import { generateUser } from "@test/fakes/User";
 import { assertImage, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
@@ -22,14 +21,13 @@ describe("UserBadgeComponent", () => {
   let unresolvedUser: User;
   const createComponent = createComponentFactory({
     component: UserBadgeComponent,
+    declarations: [UserLinkComponent],
     imports: [
       RouterTestingModule,
-      AuthenticatedImageModule,
-      DirectivesModule,
+      MockDirectivesModule,
       MockBawApiModule,
       LoadingModule,
       PipesModule,
-      UserLinkModule,
     ],
   });
 
@@ -126,7 +124,7 @@ describe("UserBadgeComponent", () => {
     it("username should route to user page", () => {
       setup({ users: [defaultUser] });
       spec.detectChanges();
-      assertUrl(getUsername()[0], defaultUser.viewUrl);
+      assertUrl(getUsername()[0], { bawUrl: defaultUser.viewUrl });
     });
 
     it("should display default image", () => {
@@ -156,7 +154,7 @@ describe("UserBadgeComponent", () => {
     it("image should route to user page", () => {
       setup({ users: [defaultUser] });
       spec.detectChanges();
-      assertUrl(getImageWrapper()[0], defaultUser.viewUrl);
+      assertUrl(getImageWrapper()[0], { bawUrl: defaultUser.viewUrl });
     });
 
     it("should not display undefined timestamp", () => {

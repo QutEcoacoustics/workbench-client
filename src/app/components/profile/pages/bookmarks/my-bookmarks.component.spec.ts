@@ -101,7 +101,7 @@ describe("MyBookmarksComponent", () => {
         spec.detectChanges();
 
         const link = getCells()[0].querySelector("a");
-        assertUrl(link, defaultBookmark.viewUrl);
+        assertUrl(link, { bawUrl: defaultBookmark.viewUrl });
       });
     });
 

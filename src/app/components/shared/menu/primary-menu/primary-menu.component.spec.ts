@@ -21,12 +21,12 @@ import {
   loginMenuItem,
   registerMenuItem,
 } from "@components/security/security.menus";
-import { DirectivesModule } from "@directives/directives.module";
-import { AuthenticatedImageModule } from "@directives/image/image.module";
+import { MockDirectivesModule } from "@directives/directives.mock.module";
 import {
   CustomMenuItem,
   Settings,
 } from "@helpers/app-initializer/app-initializer";
+import { MenuRoute } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { assetRoot, ConfigService } from "@services/config/config.service";
@@ -37,6 +37,7 @@ import { modelData } from "@test/helpers/faker";
 import { viewports } from "@test/helpers/general";
 import { assertImage, assertStrongRouteLink } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
+import camelCase from "just-camel-case";
 import { MockProvider } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -56,11 +57,14 @@ describe("PrimaryMenuComponent", () => {
     imports: [
       RouterTestingModule,
       MockBawApiModule,
-      AuthenticatedImageModule,
       IconsModule,
-      DirectivesModule,
+      MockDirectivesModule,
     ],
   });
+  const registerLinkSelector = "#register-header-link";
+  const adminLinkSelector = "#admin-header-link";
+  const profileWidgetSelector = "#profile-widget";
+  const logoutLinkSelector = "#logout-header-link";
 
   /**
    * @param props.user If null or set, will intercept getLocalUser and return
@@ -100,6 +104,10 @@ describe("PrimaryMenuComponent", () => {
     }
   }
 
+  function getLinkId(item: MenuRoute) {
+    return `#${camelCase(item.label)}-header-link`;
+  }
+
   afterEach(() => {
     viewport.reset();
   });
@@ -135,22 +143,21 @@ describe("PrimaryMenuComponent", () => {
         [
           {
             link: "sites",
-            index: 0,
             menuItem: shallowRegionsMenuItem,
             hideProjects: true,
           },
-          { link: "projects", index: 0, menuItem: projectsMenuItem },
-          { link: "listen", index: 1, menuItem: listenMenuItem },
-          { link: "library", index: 2, menuItem: libraryMenuItem },
-          { link: "contact us", index: 3, menuItem: contactUsMenuItem },
-        ].forEach(({ link, index, menuItem, hideProjects }) => {
+          { link: "projects", menuItem: projectsMenuItem },
+          { link: "listen", menuItem: listenMenuItem },
+          { link: "library", menuItem: libraryMenuItem },
+          { link: "contact us", menuItem: contactUsMenuItem },
+        ].forEach(({ link, menuItem, hideProjects }) => {
           it(`should create ${link} link`, () => {
             setup({ hideProjects, user: defaultUser });
             spec.detectChanges();
 
-            const item = getNavLinks()[index];
-            expect(item).toContainText(menuItem.label);
-            assertStrongRouteLink(item, menuItem.route.toRouterLink());
+            const element = spec.query<HTMLAnchorElement>(getLinkId(menuItem));
+            expect(element).toContainText(menuItem.label);
+            assertStrongRouteLink(element, { strongRoute: menuItem.route });
           });
         });
 
@@ -205,11 +212,12 @@ describe("PrimaryMenuComponent", () => {
           setup({ user: defaultUser });
           spec.detectChanges();
 
-          const link = spec.query<HTMLElement>("#register-header-link");
-
+          const link = spec.query<HTMLAnchorElement>(registerLinkSelector);
           if (links.register) {
-            assertStrongRouteLink(link, registerMenuItem.route.toRouterLink());
             expect(link).toContainText(registerMenuItem.label);
+            assertStrongRouteLink(link, {
+              strongRoute: registerMenuItem.route,
+            });
           } else {
             expect(link).toBeFalsy();
           }
@@ -219,10 +227,11 @@ describe("PrimaryMenuComponent", () => {
           setup({ user: defaultUser });
           spec.detectChanges();
 
-          const link = spec.query<HTMLElement>("#logIn-header-link");
+          const selector = getLinkId(loginMenuItem);
+          const link = spec.query<HTMLAnchorElement>(selector);
 
           if (links.login) {
-            assertStrongRouteLink(link, loginMenuItem.route.toRouterLink());
+            assertStrongRouteLink(link, { strongRoute: loginMenuItem.route });
             expect(link).toContainText(loginMenuItem.label);
           } else {
             expect(link).toBeFalsy();
@@ -233,13 +242,11 @@ describe("PrimaryMenuComponent", () => {
           setup({ user: defaultUser });
           spec.detectChanges();
 
-          const profile = spec.query<HTMLElement>("#login-widget");
-
+          const profile = spec.query<HTMLAnchorElement>(profileWidgetSelector);
           if (links.profile) {
-            assertStrongRouteLink(
-              profile,
-              myAccountMenuItem.route.toRouterLink()
-            );
+            assertStrongRouteLink(profile, {
+              strongRoute: myAccountMenuItem.route,
+            });
             expect(profile).toContainText(defaultUser.userName);
           } else {
             expect(profile).toBeFalsy();
@@ -254,7 +261,7 @@ describe("PrimaryMenuComponent", () => {
             setup({ user });
             spec.detectChanges();
 
-            const profile = spec.query<HTMLElement>("#login-widget");
+            const profile = spec.query<HTMLElement>(profileWidgetSelector);
             const image = profile.querySelector("img");
             assertImage(
               image,
@@ -269,7 +276,7 @@ describe("PrimaryMenuComponent", () => {
             setup({ user: customUser });
             spec.detectChanges();
 
-            const profile = spec.query<HTMLElement>("#login-widget");
+            const profile = spec.query<HTMLElement>(profileWidgetSelector);
             const image = profile.querySelector("img");
             assertImage(image, imageUrls[0].url, "Profile Icon");
           });
@@ -279,7 +286,7 @@ describe("PrimaryMenuComponent", () => {
           setup({ user: defaultUser });
           spec.detectChanges();
 
-          const logout = spec.query<HTMLElement>("#logout-header-link");
+          const logout = spec.query<HTMLElement>(logoutLinkSelector);
 
           if (links.logout) {
             expect(logout).toContainText("Logout");
@@ -294,14 +301,12 @@ describe("PrimaryMenuComponent", () => {
           setup({ user: defaultUser });
           spec.detectChanges();
 
-          const settings = spec.query<HTMLElement>("#admin-header-link");
-
+          const settings = spec.query<HTMLAnchorElement>(adminLinkSelector);
           if (links.admin) {
             expect(settings).toBeTruthy();
-            assertStrongRouteLink(
-              settings,
-              adminDashboardMenuItem.route.toRouterLink()
-            );
+            assertStrongRouteLink(settings, {
+              strongRoute: adminDashboardMenuItem.route,
+            });
           } else {
             expect(settings).toBeFalsy();
           }
@@ -314,7 +319,7 @@ describe("PrimaryMenuComponent", () => {
     let defaultUser: User;
 
     function getLogoutButton() {
-      return spec.query<HTMLButtonElement>("#logout-header-link");
+      return spec.query<HTMLButtonElement>(logoutLinkSelector);
     }
 
     function handleLogout() {
@@ -374,9 +379,8 @@ describe("PrimaryMenuComponent", () => {
       loggedInTrigger.next({ user: guestUser });
       spec.detectChanges();
 
-      const link = spec.queryAll<HTMLElement>("a.nav-link")[4];
+      const link = spec.query<HTMLElement>(getLinkId(registerMenuItem));
       expect(link).toContainText(registerMenuItem.label);
-      assertStrongRouteLink(link, registerMenuItem.route.toRouterLink());
     });
 
     // TODO Move to E2E Tests
@@ -392,9 +396,8 @@ describe("PrimaryMenuComponent", () => {
       loggedInTrigger.next({ user: guestUser });
       spec.detectChanges();
 
-      const link = spec.queryAll<HTMLElement>("a.nav-link")[5];
+      const link = spec.query<HTMLElement>(getLinkId(loginMenuItem));
       expect(link).toContainText(loginMenuItem.label);
-      assertStrongRouteLink(link, loginMenuItem.route.toRouterLink());
     }));
   });
 

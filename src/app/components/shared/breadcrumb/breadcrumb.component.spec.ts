@@ -1,6 +1,6 @@
 import { Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { DirectivesModule } from "@directives/directives.module";
+import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { StrongRoute } from "@interfaces/strongRoute";
 import {
   createComponentFactory,
@@ -31,7 +31,7 @@ describe("BreadcrumbComponent", () => {
   let spec: Spectator<BreadcrumbComponent>;
   const createComponent = createComponentFactory({
     component: BreadcrumbComponent,
-    imports: [DirectivesModule, IconsModule, RouterTestingModule],
+    imports: [MockDirectivesModule, IconsModule, RouterTestingModule],
   });
 
   function triggerQueryParams(params: Params) {
@@ -120,7 +120,7 @@ describe("BreadcrumbComponent", () => {
     });
 
     it("should show icon", () => {
-      assertIcon(element, crumb.icon);
+      assertIcon(element, { icon: crumb.icon });
     });
   });
 
@@ -134,7 +134,7 @@ describe("BreadcrumbComponent", () => {
       ]);
       spec.detectChanges();
       const element = getBreadcrumbs()[0].querySelector("a");
-      assertStrongRouteLink(element, crumb.route.toRouterLink());
+      assertStrongRouteLink(element, { strongRoute: crumb.route });
     });
 
     it("should pass query parameters to route", async () => {
@@ -152,10 +152,10 @@ describe("BreadcrumbComponent", () => {
       ]);
       spec.detectChanges();
       const element = getBreadcrumbs()[0].querySelector("a");
-      assertStrongRouteLink(
-        element,
-        crumb.route.toRouterLink() + "?projectId=5"
-      );
+      assertStrongRouteLink(element, {
+        strongRoute: crumb.route,
+        queryParams: { projectId: 5 },
+      });
     });
 
     it("should pass route parameters to route", async () => {
@@ -170,10 +170,10 @@ describe("BreadcrumbComponent", () => {
       ]);
       spec.detectChanges();
       const element = getBreadcrumbs()[0].querySelector("a");
-      assertStrongRouteLink(
-        element,
-        crumb.route.toRouterLink({ projectId: 5 })
-      );
+      assertStrongRouteLink(element, {
+        strongRoute: crumb.route,
+        routeParams: { projectId: 5 },
+      });
     });
   });
 

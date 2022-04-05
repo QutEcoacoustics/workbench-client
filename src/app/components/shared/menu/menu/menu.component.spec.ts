@@ -3,6 +3,7 @@ import { Data, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { MenuType } from "@helpers/generalTypes";
 import { PageInfo } from "@helpers/page/pageInfo";
 import {
@@ -178,12 +179,13 @@ describe("MenuComponent", () => {
     });
 
     it("should create title icon when provided", () => {
+      const icon: IconProp = ["fas", "home"];
       setup({
         links: OrderedSet([defaultMenuRoute]),
-        title: { label: "SECONDARY", icon: ["fas", "home"] },
+        title: { label: "SECONDARY", icon },
       });
       spec.detectChanges();
-      assertIcon(getTitle(), "fas,home");
+      assertIcon(getTitle(), { icon });
     });
 
     it("should create capitalized title", () => {

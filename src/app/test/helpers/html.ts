@@ -1,28 +1,43 @@
 import { DebugElement } from "@angular/core";
 import { ComponentFixture, tick } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
+import { RouterLinkWithHref } from "@angular/router";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { UrlDirective } from "@directives/url/url.directive";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { PartialWith } from "@helpers/advancedTypes";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { Ng } from "@test/types/ng";
 
-declare const ng: any;
+declare const ng: Ng;
+
+/**
+ * Extracts a directive from a html element
+ *
+ * @param el HTML Element
+ * @param directive Directive to extract
+ */
+function getDirective<D>(el: HTMLElement, directive: any): D | undefined {
+  return ng.getDirectives(el).find((dir): dir is D => dir instanceof directive);
+}
 
 /**
  * Assert icon
  *
  * @param target Target element
- * @param prop Icon
+ * @param props FaIconComponent properties
  */
-export function assertIcon(target: HTMLElement, prop: string | IconProp) {
-  if (prop instanceof Array) {
-    prop = prop.join(",");
-  }
-
+export function assertIcon(
+  target: HTMLElement,
+  props: PartialWith<FaIconComponent, "icon">
+): void {
   const icon: HTMLElement = target.querySelector("fa-icon");
   expect(icon).toBeTruthy("No icon detected");
-  expect(icon.attributes.getNamedItem("ng-reflect-icon")).toBeTruthy();
-  expect(icon.attributes.getNamedItem("ng-reflect-icon").value.trim()).toBe(
-    prop as string
-  );
+  const component = ng.getComponent<FaIconComponent>(icon);
+  Object.keys(props).forEach((key) => {
+    expect(component[key]).toEqual(props[key]);
+  });
 }
 
 /**
@@ -37,23 +52,22 @@ export function assertImage(
   src: string,
   alt: string,
   isUnauthenticated?: boolean
-) {
+): void {
   expect(target).toBeTruthy("Image should exist");
   expect(target.src).toBe(src);
   expect(target.alt).toBe(alt);
 
-  const imageDirective: AuthenticatedImageDirective = ng
-    .getDirectives(target)
-    .find((directive) => directive instanceof AuthenticatedImageDirective);
+  const imageDirective = getDirective<AuthenticatedImageDirective>(
+    target,
+    AuthenticatedImageDirective
+  );
 
-  if (isUnauthenticated) {
-    if (imageDirective) {
-      expect(imageDirective);
-    } else {
-      expect(imageDirective.disableAuth).toBeTrue();
-    }
-  } else {
+  if (!isUnauthenticated) {
     expect(imageDirective).toBeTruthy();
+  } else if (imageDirective) {
+    expect(imageDirective);
+  } else {
+    expect(imageDirective.disableAuth).toBeTrue();
   }
 }
 
@@ -63,22 +77,14 @@ export function assertImage(
  * @param target Target element
  * @param tooltip Tooltip text
  */
-export function assertTooltip(target: HTMLElement, tooltip: string) {
+export function assertTooltip(target: HTMLElement, tooltip: string): void {
   expect(target).toBeTruthy("No tooltip detected");
-
-  let attr = target.attributes.getNamedItem("ng-reflect-ngb-tooltip");
-
-  if (!attr) {
-    attr = target.attributes.getNamedItem("ng-reflect-tooltip");
-  }
-
-  expect(attr).toBeTruthy();
-  expect(attr.value.trim()).toBe(tooltip);
-
-  // TODO Add accessability expectations (id, visible on highlight, etc.)
+  const directive = getDirective<NgbTooltip>(target, NgbTooltip);
+  expect(directive).toBeTruthy("No tooltip directive detected");
+  expect(directive.ngbTooltip).toContain(tooltip);
 }
 
-export function assertHref(target: HTMLAnchorElement, href: string) {
+export function assertHref(target: HTMLAnchorElement, href: string): void {
   expect(target).toBeTruthy("No link detected");
   expect(target).toHaveAttribute("href", encodeURI(href));
 }
@@ -89,43 +95,67 @@ export function assertHref(target: HTMLAnchorElement, href: string) {
  * @param target Target element
  * @param route Route text
  */
-export function assertRoute(target: HTMLElement, route: string) {
-  expect(target).toBeTruthy("No route detected");
-  expect(target).toHaveAttribute("ng-reflect-router-link");
-  expect(target).toHaveAttribute("href", encodeURI(route));
+export function assertRoute(target: HTMLElement, route: string): void {
+  expect(target).toBeTruthy("No HTML element detected");
+  const directive = getDirective<RouterLinkWithHref>(
+    target,
+    RouterLinkWithHref
+  );
+  expect(directive).toBeTruthy("No route directive detected");
+  expect(directive.routerLink).toBe(route);
 }
 
 /**
- * Assert strong route link
+ * Assert strong route link directive is set
  *
- * @param target Target element
- * @param route Route text
+ * @param target HTML anchor element
+ * @param props StrongRouteDirective properties
  */
-export function assertStrongRouteLink(target: HTMLElement, route: string) {
-  expect(target).toBeTruthy("No route detected");
-  expect(target).toHaveAttribute("ng-reflect-strong-route");
-  expect(target).toHaveAttribute("href", encodeURI(route));
+export function assertStrongRouteLink(
+  target: HTMLAnchorElement,
+  props: PartialWith<StrongRouteDirective, "strongRoute">
+): void {
+  expect(target).toBeTruthy("No HTML element detected");
+  const directive = getDirective<StrongRouteDirective>(
+    target,
+    StrongRouteDirective
+  );
+  expect(directive).toBeTruthy("No strong route directive detected");
+  Object.keys(props).forEach((key) => {
+    expect(directive[key]).toEqual(props[key]);
+  });
 }
 
 /**
- * Assert strong route link active is set
+ * Assert strong route link active directive is set
  *
- * @param target Target element
+ * @param target HTML anchor element
  */
-export function assertStrongRouteActive(target: HTMLElement) {
-  assertAttribute(target, "strong-route-active", "active");
+export function assertStrongRouteActive(target: HTMLAnchorElement): void {
+  expect(target).toBeTruthy("No HTML element detected");
+  const directive = getDirective<StrongRouteDirective>(
+    target,
+    StrongRouteDirective
+  );
+  expect(directive).toBeTruthy("No strong route active directive detected");
 }
 
 /**
  * Assert url link
  *
- * @param target Target element
- * @param route Route text
+ * @param target HTML anchor element
+ * @param props UrlDirective properties
  */
-export function assertUrl(target: HTMLElement, route: string) {
-  expect(target).toBeTruthy("No route detected");
-  expect(target).toHaveAttribute("ng-reflect-baw-url");
-  expect(target).toHaveAttribute("href", encodeURI(route));
+export function assertUrl(
+  target: HTMLAnchorElement,
+  props: PartialWith<UrlDirective, "bawUrl">
+): void {
+  expect(target).toBeTruthy("No HTML element detected");
+  const directive = getDirective<UrlDirective>(target, UrlDirective);
+  expect(directive).toBeTruthy("No url directive detected");
+  Object.keys(props).forEach((key) => {
+    expect(directive[key]).toEqual(props[key]);
+  });
 }
 
 /**
