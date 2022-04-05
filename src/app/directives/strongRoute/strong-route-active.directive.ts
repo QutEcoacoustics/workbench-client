@@ -16,6 +16,8 @@ import {
 } from "@angular/router";
 import { StrongRouteDirective } from "./strong-route.directive";
 
+export type RouterLinkActiveOptions = { exact: boolean } | IsActiveMatchOptions;
+
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "a[strongRouteActive]",
@@ -30,9 +32,7 @@ export class StrongRouteActiveDirective extends RouterLinkActive {
   }
 
   @Input()
-  public set strongRouteActiveOptions(
-    data: { exact: boolean } | IsActiveMatchOptions
-  ) {
+  public set strongRouteActiveOptions(data: RouterLinkActiveOptions) {
     super.routerLinkActiveOptions = data ?? { exact: false };
   }
 

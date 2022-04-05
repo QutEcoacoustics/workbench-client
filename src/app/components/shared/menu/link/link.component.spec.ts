@@ -16,7 +16,6 @@ import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { IconsModule } from "@shared/icons/icons.module";
-import { assertIcon, assertStrongRouteActive } from "@test/helpers/html";
 import { MockProvider } from "ng-mocks";
 import { of } from "rxjs";
 import { MenuLinkComponent } from "./link.component";
@@ -129,7 +128,7 @@ describe("MenuLinkComponent", () => {
         const icon: IconProp = ["fas", "ad"];
         setup({ link: link({ icon }) });
         spec.detectChanges();
-        assertIcon(spec.element, { icon });
+        expect(spec.query("fa-icon")).toHaveIcon(icon);
       });
 
       it("should have label", () => {
@@ -224,7 +223,7 @@ describe("MenuLinkComponent", () => {
       const route = StrongRoute.newRoot().add("brokenlink");
       setup({ link: menuRoute({ ...defaultRoute, route }) });
       spec.detectChanges();
-      assertStrongRouteActive(getLink());
+      expect(getLink()).toHaveStrongRouteActive("active");
     });
 
     it("should highlight link when highlight property set", () => {

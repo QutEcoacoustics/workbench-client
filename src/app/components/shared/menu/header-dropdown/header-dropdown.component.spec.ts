@@ -4,7 +4,6 @@ import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
 import { NgbDropdownModule } from "@ng-bootstrap/ng-bootstrap";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { modelData } from "@test/helpers/faker";
-import { assertHref } from "@test/helpers/html";
 import { HeaderDropdownComponent } from "./header-dropdown.component";
 
 describe("HeaderDropdownComponent", () => {
@@ -30,7 +29,7 @@ describe("HeaderDropdownComponent", () => {
   function assertExternalLink(index: number, label: string, href: string) {
     const link = getLinks()[index];
     expect(link).toContainText(label);
-    assertHref(link, href);
+    expect(link).toHaveHref(href);
   }
 
   beforeEach(() => {

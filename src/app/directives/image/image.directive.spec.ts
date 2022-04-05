@@ -6,7 +6,6 @@ import { AuthToken, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import { testApiConfig } from "@services/config/configMock.service";
 import { modelData } from "@test/helpers/faker";
-import { assertImage } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { AuthenticatedImageDirective, notFoundImage } from "./image.directive";
 
@@ -56,7 +55,7 @@ describe("ImageDirective", () => {
     const src = modelData.imageUrl();
     spectator = createDisabledDirective(src);
     const image = getImage();
-    assertImage(image, src, "alt", true);
+    expect(image).toHaveImage(src, { alt: "alt" }, { disableAuth: true });
     const directive = getDirective(image);
     directive["errorHandler"] = jasmine.createSpy().and.stub();
     createImgErrorEvent(image);
@@ -70,7 +69,7 @@ describe("ImageDirective", () => {
 
       const image = getImage();
       createImgErrorEvent(image);
-      assertImage(image, imageUrls[1].url, "alt");
+      expect(image).toHaveImage(imageUrls[1].url);
     });
 
     it("given multiple bad urls, it ties to load each until one succeeds", () => {
@@ -79,7 +78,7 @@ describe("ImageDirective", () => {
 
       const image = getImage();
       [1, 2, 3].forEach(() => createImgErrorEvent(image));
-      assertImage(image, imageUrls[3].url, "alt");
+      expect(image).toHaveImage(imageUrls[3].url);
     });
 
     it("given multiple bad urls, it loads default image last", () => {
@@ -91,7 +90,7 @@ describe("ImageDirective", () => {
       imageUrls
         .slice(0, imageUrls.length - 1)
         .forEach(() => createImgErrorEvent(image));
-      assertImage(image, imageUrls[0].url, "alt");
+      expect(image).toHaveImage(imageUrls[0].url);
     });
 
     it("given all bad urls, it loads 404 image", () => {
@@ -100,17 +99,17 @@ describe("ImageDirective", () => {
 
       const image = getImage();
       imageUrls.forEach(() => createImgErrorEvent(image));
-      assertImage(image, image404Src, "alt");
+      expect(image).toHaveImage(image404Src);
     });
 
     it("given empty array of urls, it loads 404 image", () => {
       spectator = createDefaultDirective([]);
-      assertImage(getImage(), image404Src, "alt");
+      expect(getImage()).toHaveImage(image404Src);
     });
 
     it("given undefined src, it loads 404 image", () => {
       spectator = createDefaultDirective(undefined);
-      assertImage(getImage(), image404Src, "alt");
+      expect(getImage()).toHaveImage(image404Src);
     });
 
     it("given bad 404 image, it stops attempting to load images", () => {
@@ -134,8 +133,7 @@ describe("ImageDirective", () => {
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = "/image.png";
       spectator = createDefaultDirective(imageUrls);
-
-      assertImage(getImage(), `${websiteHttpUrl}/image.png`, "alt");
+      expect(getImage()).toHaveImage(`${websiteHttpUrl}/image.png`);
     });
   });
 
@@ -176,10 +174,8 @@ describe("ImageDirective", () => {
       setLoggedIn(authToken);
       spectator.detectChanges();
 
-      assertImage(
-        getImage(),
-        `${getApiRoot()}/image.png?authToken=${authToken}`,
-        "alt"
+      expect(getImage()).toHaveImage(
+        `${getApiRoot()}/image.png?authToken=${authToken}`
       );
     });
 
@@ -191,10 +187,8 @@ describe("ImageDirective", () => {
       setLoggedIn(authToken);
       spectator.detectChanges();
 
-      assertImage(
-        getImage(),
-        `${getApiRoot()}/image.png?authToken=${authToken}`,
-        "alt"
+      expect(getImage()).toHaveImage(
+        `${getApiRoot()}/image.png?authToken=${authToken}`
       );
     });
 
@@ -205,7 +199,7 @@ describe("ImageDirective", () => {
       setLoggedIn(modelData.authToken());
       spectator.detectChanges();
 
-      assertImage(getImage(), `${getApiRoot()}/image.png`, "alt");
+      expect(getImage()).toHaveImage(`${getApiRoot()}/image.png`);
     });
 
     it("should not append authToken to url if not logged in", () => {
@@ -215,7 +209,7 @@ describe("ImageDirective", () => {
       setLoggedIn(undefined);
       spectator.detectChanges();
 
-      assertImage(getImage(), `${getApiRoot()}/image.png`, "alt");
+      expect(getImage()).toHaveImage(`${getApiRoot()}/image.png`);
     });
 
     it("should handle additional parameters in url", () => {
@@ -226,10 +220,8 @@ describe("ImageDirective", () => {
       setLoggedIn(authToken);
       spectator.detectChanges();
 
-      assertImage(
-        getImage(),
-        `${getApiRoot()}/image.png?testing=value&authToken=${authToken}`,
-        "alt"
+      expect(getImage()).toHaveImage(
+        `${getApiRoot()}/image.png?testing=value&authToken=${authToken}`
       );
     });
   });
@@ -238,7 +230,7 @@ describe("ImageDirective", () => {
     it("should not modify external link url", () => {
       const imageUrls = modelData.imageUrls().slice(0, 1);
       spectator = createDefaultDirective(imageUrls);
-      assertImage(getImage(), imageUrls[0].url, "alt");
+      expect(getImage()).toHaveImage(imageUrls[0].url);
     });
   });
 
@@ -255,7 +247,7 @@ describe("ImageDirective", () => {
 
       const image = getImage();
       updateDirective(imageUrls);
-      assertImage(image, imageUrls[0].url, "alt");
+      expect(image).toHaveImage(imageUrls[0].url);
     });
 
     it("should display 404 image after all urls attempted", () => {
@@ -265,7 +257,7 @@ describe("ImageDirective", () => {
 
       imageUrls.forEach((imageUrl) => updateDirective([imageUrl]));
       imageUrls.forEach(() => createImgErrorEvent(image));
-      assertImage(image, image404Src, "alt");
+      expect(image).toHaveImage(image404Src);
     });
   });
 });

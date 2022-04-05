@@ -31,7 +31,7 @@ import { generateTag } from "@test/fakes/Tag";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
-import { assertErrorHandler, assertImage, assertUrl } from "@test/helpers/html";
+import { assertErrorHandler } from "@test/helpers/html";
 import { Subject } from "rxjs";
 import { TheirProfileComponent } from "./their-profile.component";
 
@@ -139,11 +139,9 @@ describe("TheirProfileComponent", () => {
     interceptApiRequests({});
     spec.detectChanges();
 
-    assertImage(
-      spec.query("img"),
-      defaultUser.imageUrls[0].url,
-      `${defaultUser.userName} profile image`
-    );
+    expect(spec.query("img")).toHaveImage(defaultUser.imageUrls[0].url, {
+      alt: `${defaultUser.userName} profile image`,
+    });
     expect(spec.query("h1")).toHaveText(defaultUser.userName);
   });
 
@@ -365,7 +363,7 @@ describe("TheirProfileComponent", () => {
       spec.detectChanges();
 
       const tags = getTags();
-      assertUrl(tags[0].querySelector("a"), { bawUrl: defaultTag.viewUrl });
+      expect(tags[0].querySelector("a")).toHaveUrl(defaultTag.viewUrl);
     });
 
     it("should display multiple tags", async () => {

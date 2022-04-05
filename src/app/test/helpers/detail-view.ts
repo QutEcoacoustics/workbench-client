@@ -2,7 +2,6 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { ImageUrl, toRelative } from "@interfaces/apiInterfaces";
 import { humanizeDateTime } from "@shared/detail-view/render-field/render-field.component";
 import { DateTime, Duration } from "luxon";
-import { assertImage } from "./html";
 
 /**
  * Find a label from a list of detail view items
@@ -102,11 +101,9 @@ function assertModel(view: HTMLDListElement, value: string) {
 
 function assertImages(view: HTMLDListElement, value: string | ImageUrl[]) {
   const image: HTMLImageElement = view.querySelector("#image");
-  assertImage(
-    image,
-    value instanceof Array ? value[0].url : value,
-    "model image alt"
-  );
+  expect(image).toHaveImage(value instanceof Array ? value[0].url : value, {
+    alt: "model image alt",
+  });
 }
 
 function assertChildren(

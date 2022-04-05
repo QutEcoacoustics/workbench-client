@@ -35,7 +35,6 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { viewports } from "@test/helpers/general";
-import { assertImage, assertStrongRouteLink } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import camelCase from "just-camel-case";
 import { MockProvider } from "ng-mocks";
@@ -157,7 +156,7 @@ describe("PrimaryMenuComponent", () => {
 
             const element = spec.query<HTMLAnchorElement>(getLinkId(menuItem));
             expect(element).toContainText(menuItem.label);
-            assertStrongRouteLink(element, { strongRoute: menuItem.route });
+            expect(element).toHaveStrongRoute(menuItem.route);
           });
         });
 
@@ -215,9 +214,7 @@ describe("PrimaryMenuComponent", () => {
           const link = spec.query<HTMLAnchorElement>(registerLinkSelector);
           if (links.register) {
             expect(link).toContainText(registerMenuItem.label);
-            assertStrongRouteLink(link, {
-              strongRoute: registerMenuItem.route,
-            });
+            expect(link).toHaveStrongRoute(registerMenuItem.route);
           } else {
             expect(link).toBeFalsy();
           }
@@ -231,7 +228,7 @@ describe("PrimaryMenuComponent", () => {
           const link = spec.query<HTMLAnchorElement>(selector);
 
           if (links.login) {
-            assertStrongRouteLink(link, { strongRoute: loginMenuItem.route });
+            expect(link).toHaveStrongRoute(loginMenuItem.route);
             expect(link).toContainText(loginMenuItem.label);
           } else {
             expect(link).toBeFalsy();
@@ -244,9 +241,7 @@ describe("PrimaryMenuComponent", () => {
 
           const profile = spec.query<HTMLAnchorElement>(profileWidgetSelector);
           if (links.profile) {
-            assertStrongRouteLink(profile, {
-              strongRoute: myAccountMenuItem.route,
-            });
+            expect(profile).toHaveStrongRoute(myAccountMenuItem.route);
             expect(profile).toContainText(defaultUser.userName);
           } else {
             expect(profile).toBeFalsy();
@@ -263,10 +258,9 @@ describe("PrimaryMenuComponent", () => {
 
             const profile = spec.query<HTMLElement>(profileWidgetSelector);
             const image = profile.querySelector("img");
-            assertImage(
-              image,
+            expect(image).toHaveImage(
               `${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`,
-              "Profile Icon"
+              { alt: "Profile Icon" }
             );
           });
 
@@ -278,7 +272,9 @@ describe("PrimaryMenuComponent", () => {
 
             const profile = spec.query<HTMLElement>(profileWidgetSelector);
             const image = profile.querySelector("img");
-            assertImage(image, imageUrls[0].url, "Profile Icon");
+            expect(image).toHaveImage(imageUrls[0].url, {
+              alt: "Profile Icon",
+            });
           });
         }
 
@@ -304,9 +300,7 @@ describe("PrimaryMenuComponent", () => {
           const settings = spec.query<HTMLAnchorElement>(adminLinkSelector);
           if (links.admin) {
             expect(settings).toBeTruthy();
-            assertStrongRouteLink(settings, {
-              strongRoute: adminDashboardMenuItem.route,
-            });
+            expect(settings).toHaveStrongRoute(adminDashboardMenuItem.route);
           } else {
             expect(settings).toBeFalsy();
           }

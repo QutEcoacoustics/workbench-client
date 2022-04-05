@@ -23,7 +23,6 @@ import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
 import { FilterExpectations, nStepObservable } from "@test/helpers/general";
-import { assertImage } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
@@ -133,10 +132,9 @@ describe("SiteComponent", () => {
       spec.detectChanges();
 
       const image = spec.query<HTMLImageElement>("img");
-      assertImage(
-        image,
+      expect(image).toHaveImage(
         `${websiteHttpUrl}${assetRoot}/images/site/site_span4.png`,
-        `${site.name} image`
+        { alt: `${site.name} image` }
       );
     });
 
@@ -147,11 +145,9 @@ describe("SiteComponent", () => {
       spec.detectChanges();
 
       const image = spec.query<HTMLImageElement>("img");
-      assertImage(
-        image,
-        defaultSite.imageUrls.at(0).url,
-        `${defaultSite.name} image`
-      );
+      expect(image).toHaveImage(defaultSite.imageUrls.at(0).url, {
+        alt: `${defaultSite.name} image`,
+      });
     });
 
     it("should display default description if model has none", () => {

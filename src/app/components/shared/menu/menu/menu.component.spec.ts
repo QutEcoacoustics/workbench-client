@@ -40,7 +40,6 @@ import {
   generateMenuRoute,
 } from "@test/fakes/MenuItem";
 import { generateUser } from "@test/fakes/User";
-import { assertIcon } from "@test/helpers/html";
 import { OrderedSet } from "immutable";
 import { MockComponent, MockedComponent, MockProvider } from "ng-mocks";
 import { MenuButtonComponent } from "../button/button.component";
@@ -185,7 +184,7 @@ describe("MenuComponent", () => {
         title: { label: "SECONDARY", icon },
       });
       spec.detectChanges();
-      assertIcon(getTitle(), { icon });
+      expect(getTitle().querySelector("fa-icon")).toHaveIcon(icon);
     });
 
     it("should create capitalized title", () => {

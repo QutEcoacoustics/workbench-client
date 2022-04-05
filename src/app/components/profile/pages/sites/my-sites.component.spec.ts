@@ -24,7 +24,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
 import { nStepObservable } from "@test/helpers/general";
-import { assertErrorHandler, assertUrl } from "@test/helpers/html";
+import { assertErrorHandler } from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
 import { MySitesComponent } from "./my-sites.component";
 
@@ -124,7 +124,7 @@ describe("MySitesComponent", () => {
         spec.detectChanges();
 
         const link = getCells()[0].querySelector("a");
-        assertUrl(link, { bawUrl: defaultSite.viewUrl });
+        expect(link).toHaveUrl(defaultSite.viewUrl);
       });
 
       it("should not display site name link when no projects found", () => {

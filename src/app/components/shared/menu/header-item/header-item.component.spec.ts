@@ -7,19 +7,12 @@ import {
   menuRoute,
   NavigableMenuItem,
 } from "@interfaces/menusInterfaces";
-import { StrongRoute } from "@interfaces/strongRoute";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
-import { modelData } from "@test/helpers/faker";
-import {
-  assertHref,
-  assertStrongRouteActive,
-  assertStrongRouteLink,
-} from "@test/helpers/html";
+import { generateMenuLink, generateMenuRoute } from "@test/fakes/MenuItem";
 import { HeaderItemComponent } from "./header-item.component";
 
 describe("HeaderItemComponent", () => {
-  let defaultUri: string;
   let defaultLink: MenuLink;
   let defaultRoute: MenuRoute;
   let spec: Spectator<HeaderItemComponent>;
@@ -37,19 +30,8 @@ describe("HeaderItemComponent", () => {
   }
 
   beforeEach(() => {
-    defaultUri = modelData.internet.url();
-    defaultLink = menuLink({
-      label: modelData.param(),
-      uri: () => defaultUri,
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
-    });
-    defaultRoute = menuRoute({
-      label: modelData.param(),
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
-      route: StrongRoute.newRoot().add("home"),
-    });
+    defaultLink = menuLink(generateMenuLink());
+    defaultRoute = menuRoute(generateMenuRoute());
   });
 
   describe("internal routes", () => {
@@ -63,11 +45,11 @@ describe("HeaderItemComponent", () => {
     });
 
     it("should have router link", () => {
-      assertStrongRouteLink(getLink(), { strongRoute: defaultRoute.route });
+      expect(getLink()).toHaveStrongRoute(defaultRoute.route);
     });
 
     it("should have router link active attribute", () => {
-      assertStrongRouteActive(getLink());
+      expect(getLink()).toHaveStrongRouteActive("active");
     });
   });
 
@@ -82,7 +64,7 @@ describe("HeaderItemComponent", () => {
     });
 
     it("external link should have href", () => {
-      assertHref(getLink(), defaultLink.uri());
+      expect(getLink()).toHaveHref(defaultLink.uri());
     });
   });
 });

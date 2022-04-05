@@ -3,7 +3,6 @@ import { MenuAction, menuAction } from "@interfaces/menusInterfaces";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { generateMenuAction } from "@test/fakes/MenuItem";
-import { assertIcon, assertTooltip } from "@test/helpers/html";
 import { SharedModule } from "../../shared.module";
 import { MenuButtonComponent } from "./button.component";
 
@@ -61,7 +60,7 @@ describe("MenuButtonComponent", () => {
   it("should have icon", () => {
     setup({ link: defaultLink });
     spec.detectChanges();
-    assertIcon(spec.element, { icon: defaultLink.icon });
+    expect(spec.query("fa-icon")).toHaveIcon(defaultLink.icon);
   });
 
   it("should have label", () => {
@@ -82,7 +81,7 @@ describe("MenuButtonComponent", () => {
         link: menuAction({ ...defaultLink, tooltip: () => "custom tooltip" }),
       });
       spec.detectChanges();
-      assertTooltip(retrieveButton(), "custom tooltip");
+      expect(retrieveButton()).toHaveTooltip("custom tooltip");
     });
 
     // TODO Figure out how to implement
@@ -92,7 +91,7 @@ describe("MenuButtonComponent", () => {
         link: menuAction({ ...defaultLink, tooltip: () => "wrong tooltip" }),
       });
       spec.detectChanges();
-      assertTooltip(retrieveButton(), "custom tooltip");
+      expect(retrieveButton()).toHaveTooltip("custom tooltip");
     });
   });
 

@@ -16,7 +16,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateUser } from "@test/fakes/User";
-import { assertErrorHandler, assertUrl } from "@test/helpers/html";
+import { assertErrorHandler } from "@test/helpers/html";
 import { BehaviorSubject } from "rxjs";
 import { TheirProjectsComponent } from "./their-projects.component";
 
@@ -103,7 +103,7 @@ describe("TheirProjectsComponent", () => {
         spec.detectChanges();
 
         const link = getCells()[0].querySelector("a");
-        assertUrl(link, { bawUrl: defaultProject.viewUrl });
+        expect(link).toHaveUrl(defaultProject.viewUrl);
       });
     });
 

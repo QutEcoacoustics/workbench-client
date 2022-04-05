@@ -14,7 +14,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateBookmark } from "@test/fakes/Bookmark";
 import { generateUser } from "@test/fakes/User";
-import { assertErrorHandler, assertUrl } from "@test/helpers/html";
+import { assertErrorHandler } from "@test/helpers/html";
 import { BehaviorSubject } from "rxjs";
 import { TheirBookmarksComponent } from "./their-bookmarks.component";
 
@@ -101,7 +101,7 @@ describe("TheirBookmarksComponent", () => {
         spec.detectChanges();
 
         const link = getCells()[0].querySelector("a");
-        assertUrl(link, { bawUrl: defaultBookmark.viewUrl });
+        expect(link).toHaveUrl(defaultBookmark.viewUrl);
       });
     });
 

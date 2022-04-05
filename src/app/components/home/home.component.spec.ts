@@ -27,7 +27,6 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { interceptFilterApiRequest } from "@test/helpers/general";
-import { assertStrongRouteLink } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
 import { HomeComponent } from "./home.component";
@@ -213,7 +212,7 @@ describe("HomeComponent", () => {
 
         const button = getViewMoreButton();
         expect(button).toHaveText(`More ${test.modelName}s`);
-        assertStrongRouteLink(button, { strongRoute: test.link });
+        expect(button).toHaveStrongRoute(test.link);
       });
     });
   });

@@ -8,12 +8,8 @@ import {
   QueryList,
   Renderer2,
 } from "@angular/core";
-import {
-  IsActiveMatchOptions,
-  Router,
-  RouterLink,
-  RouterLinkActive,
-} from "@angular/router";
+import { Router, RouterLink, RouterLinkActive } from "@angular/router";
+import { RouterLinkActiveOptions } from "@directives/strongRoute/strong-route-active.directive";
 import { UrlDirective } from "./url.directive";
 
 @Directive({
@@ -30,9 +26,7 @@ export class UrlActiveDirective extends RouterLinkActive {
   }
 
   @Input()
-  public set bawUrlActiveOptions(
-    data: { exact: boolean } | IsActiveMatchOptions
-  ) {
+  public set bawUrlActiveOptions(data: RouterLinkActiveOptions) {
     super.routerLinkActiveOptions = data ?? { exact: false };
   }
 

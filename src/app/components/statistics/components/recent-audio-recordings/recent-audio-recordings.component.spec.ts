@@ -23,7 +23,6 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { interceptShowApiRequest } from "@test/helpers/general";
-import { assertUrl } from "@test/helpers/html";
 import { ToastrService } from "ngx-toastr";
 import { RecentAudioRecordingsComponent } from "./recent-audio-recordings.component";
 
@@ -190,7 +189,7 @@ describe("RecentAudioRecordingsComponent", () => {
 
       it("should link to listen page", async () => {
         await setup({ recordings: [defaultRecording] });
-        assertUrl(getPlayButton(), { bawUrl: defaultRecording.viewUrl });
+        expect(getPlayButton()).toHaveUrl(defaultRecording.viewUrl);
       });
     });
   });

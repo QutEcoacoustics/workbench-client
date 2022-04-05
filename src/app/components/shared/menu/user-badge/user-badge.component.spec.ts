@@ -10,7 +10,6 @@ import { LoadingComponent } from "@shared/loading/loading.component";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
 import { generateUser } from "@test/fakes/User";
-import { assertImage, assertUrl } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime } from "luxon";
 import { UserBadgeComponent } from "./user-badge.component";
@@ -106,10 +105,9 @@ describe("UserBadgeComponent", () => {
       const user = User.getDeletedUser(undefined);
       setup({ users: [user] });
       spec.detectChanges();
-      assertImage(
-        getImage()[0],
+      expect(getImage()[0]).toHaveImage(
         `${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`,
-        user.userName + " profile picture"
+        { alt: user.userName + " profile picture" }
       );
     });
   });
@@ -124,7 +122,7 @@ describe("UserBadgeComponent", () => {
     it("username should route to user page", () => {
       setup({ users: [defaultUser] });
       spec.detectChanges();
-      assertUrl(getUsername()[0], { bawUrl: defaultUser.viewUrl });
+      expect(getUsername()[0]).toHaveUrl(defaultUser.viewUrl);
     });
 
     it("should display default image", () => {
@@ -133,10 +131,9 @@ describe("UserBadgeComponent", () => {
       );
       setup({ users: [user] });
       spec.detectChanges();
-      assertImage(
-        getImage()[0],
+      expect(getImage()[0]).toHaveImage(
         `${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`,
-        "custom username profile picture"
+        { alt: "custom username profile picture" }
       );
     });
 
@@ -144,17 +141,15 @@ describe("UserBadgeComponent", () => {
       const user = new User(generateUser({ userName: "custom username" }));
       setup({ users: [user] });
       spec.detectChanges();
-      assertImage(
-        getImage()[0],
-        user.imageUrls[0].url,
-        "custom username profile picture"
-      );
+      expect(getImage()[0]).toHaveImage(user.imageUrls[0].url, {
+        alt: "custom username profile picture",
+      });
     });
 
     it("image should route to user page", () => {
       setup({ users: [defaultUser] });
       spec.detectChanges();
-      assertUrl(getImageWrapper()[0], { bawUrl: defaultUser.viewUrl });
+      expect(getImageWrapper()[0]).toHaveUrl(defaultUser.viewUrl);
     });
 
     it("should not display undefined timestamp", () => {
