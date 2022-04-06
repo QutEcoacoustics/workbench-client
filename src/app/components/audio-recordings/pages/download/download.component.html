@@ -1,35 +1,11 @@
 <h1>Batch Download Audio Recordings</h1>
 
 <!-- Warn users about limitations of time of day filter -->
-<ng-container
-  *ngIf="
-    sitesWithoutTimezones(
-      site,
-      region?.sites,
-      project?.sites
-    ) as sitesWithoutTimezone
-  "
->
-  <div *ngIf="sitesWithoutTimezone.length > 0" class="alert alert-danger">
-    Warning, this batch download includes site/s which do not have their
-    timezones set. Any time of day filtering will not work on these sites until
-    the site owner or editors update them. The list of sites can be seen below:
-
-    <ul *ngFor="let siteWithoutTimezone of sitesWithoutTimezone" class="mb-0">
-      <li>
-        <a
-          [bawUrl]="
-            project
-              ? siteWithoutTimezone.getViewUrl(project)
-              : siteWithoutTimezone.viewUrl
-          "
-        >
-          {{ siteWithoutTimezone.name }}
-        </a>
-      </li>
-    </ul>
-  </div>
-</ng-container>
+<baw-sites-without-timezones
+  [site]="site"
+  [region]="region"
+  [project]="project"
+></baw-sites-without-timezones>
 
 <form #form>
   <!-- Project -->
@@ -200,24 +176,7 @@
   </div>
 </form>
 
-<ng-container *ngIf="recordings$ | withLoading | async as recordings">
-  <baw-loading *ngIf="recordings.loading"></baw-loading>
-
-  <pre *ngIf="recordings.error">{{ recordings.error | json }}</pre>
-
-  <p *ngIf="recordings.value">
-    Number of Recordings Selected: {{ getNumberOfRecordings(recordings.value) }}
-  </p>
-  <!--
-    <p *ngIf="recordings.value">
-    Newest (in current page): {{ getNewestRecording(recordings.value) }}
-  </p>
-  <p *ngIf="recordings.value">
-    Oldest (in current page): {{ getOldestRecording(recordings.value) }}
-  </p>
-  <pre *ngIf="recordings.value">{{ recordings.value | json }}</pre>
-  -->
-</ng-container>
+<baw-download-table [recordings$]="recordings$"></baw-download-table>
 
 <div class="clearfix">
   <a

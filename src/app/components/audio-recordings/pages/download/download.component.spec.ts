@@ -2,6 +2,8 @@ import { fakeAsync } from "@angular/core/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { DownloadTableComponent } from "@components/audio-recordings/download-table/download-table.component";
+import { SitesWithoutTimezonesComponent } from "@components/audio-recordings/sites-without-timezones/sites-without-timezones.component";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -12,9 +14,10 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { inputValue } from "@test/helpers/html";
+import { MockComponent } from "ng-mocks";
 import { DownloadAudioRecordingsComponent } from "./download.component";
 
-xdescribe("DownloadAudioRecordingsComponent", () => {
+describe("DownloadAudioRecordingsComponent", () => {
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
@@ -22,6 +25,10 @@ xdescribe("DownloadAudioRecordingsComponent", () => {
   const createComponent = createRoutingFactory({
     component: DownloadAudioRecordingsComponent,
     imports: [SharedModule, MockBawApiModule],
+    declarations: [
+      MockComponent(SitesWithoutTimezonesComponent),
+      MockComponent(DownloadTableComponent),
+    ],
   });
 
   function getProjectInput() {
@@ -59,6 +66,8 @@ xdescribe("DownloadAudioRecordingsComponent", () => {
   }
 
   function filterByStartDate(filter: Filters<AudioRecording>, date: Date) {
+    console.log(filter);
+
     expect(filter.filter["recordedDate"]).toEqual({
       greaterThan: date.toISOString(),
     });

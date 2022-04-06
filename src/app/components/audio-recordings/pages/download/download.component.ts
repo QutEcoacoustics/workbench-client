@@ -18,10 +18,8 @@ import {
   audioRecordingsCategory,
 } from "@components/audio-recordings/audio-recording.menus";
 import { myAccountMenuItem } from "@components/profile/profile.menus";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { isUnresolvedModel } from "@models/AbstractModel";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -117,63 +115,10 @@ class DownloadAudioRecordingsComponent
     return this.models[siteKey] as Site;
   }
 
-  public sitesWithoutTimezones(
-    site?: Site,
-    regionSites?: Site[],
-    projectSites?: Site[]
-  ): Site[] {
-    if (site) {
-      return site.timezoneInformation ? [] : [site];
-    }
-
-    if (regionSites) {
-      if (!isInstantiated(regionSites) || isUnresolvedModel(regionSites)) {
-        return [];
-      } else {
-        return regionSites.filter((s) => !s.timezoneInformation);
-      }
-    }
-
-    if (projectSites) {
-      if (!isInstantiated(projectSites) || isUnresolvedModel(projectSites)) {
-        return [];
-      } else {
-        return projectSites.filter((s) => !s.timezoneInformation);
-      }
-    }
-  }
-
   public updateHref(model: Model): void {
     const filters = this.generateFilter(model);
     this.filters$.next(filters);
     this.href = this.recordingsApi.batchDownloadUrl(filters);
-  }
-
-  public getNumberOfRecordings(recordings: AudioRecording[]): number {
-    if (recordings.length === 0) {
-      return 0;
-    }
-    return recordings[0].getMetadata().paging.total;
-  }
-
-  public getNewestRecording(recordings: AudioRecording[]): string {
-    if (recordings.length === 0) {
-      return "No recordings";
-    }
-
-    return recordings
-      .reduce((a, b) => (a.recordedDate > b.recordedDate ? a : b))
-      .recordedDate.toFormat("yyyy-MM-dd hh:mm:ss");
-  }
-
-  public getOldestRecording(recordings: AudioRecording[]): string {
-    if (recordings.length === 0) {
-      return "No recordings";
-    }
-
-    return recordings
-      .reduce((a, b) => (a.recordedDate < b.recordedDate ? a : b))
-      .recordedDate.toFormat("yyyy-MM-dd hh:mm:ss");
   }
 
   public invalidForm(errors: any): boolean {
