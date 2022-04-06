@@ -30,17 +30,26 @@ describe("DownloadAudioRecordingsComponent", () => {
       MockComponent(DownloadTableComponent),
     ],
   });
+  const projectInputSelector = "#project";
+  const regionInputSelector = "#region";
+  const siteInputSelector = "#site";
+  const startedAfterInputSelector = "#started-after";
+  const finishedBeforeInputSelector = "#finished-before";
+  const todEnabledInputSelector = "#tod-filtering";
+  const todIgnoreDstInputSelector = "#tod-ignore-dst";
+  const todStartedAfter = "#tod-started-after";
+  const todFinishedBefore = "#tod-finished-before";
 
   function getProjectInput() {
-    return spec.query<HTMLInputElement>("#project");
+    return spec.query<HTMLInputElement>(projectInputSelector);
   }
 
   function getRegionInput() {
-    return spec.query<HTMLInputElement>("#region");
+    return spec.query<HTMLInputElement>(regionInputSelector);
   }
 
   function getSiteInput() {
-    return spec.query<HTMLInputElement>("#site");
+    return spec.query<HTMLInputElement>(siteInputSelector);
   }
 
   function getSiteLabel() {
@@ -66,16 +75,14 @@ describe("DownloadAudioRecordingsComponent", () => {
   }
 
   function filterByStartDate(filter: Filters<AudioRecording>, date: Date) {
-    console.log(filter);
-
     expect(filter.filter["recordedDate"]).toEqual({
-      greaterThan: date.toISOString(),
+      greaterThanOrEqual: date.toISOString(),
     });
   }
 
   function filterByEndDate(filter: Filters<AudioRecording>, date: Date) {
     expect(filter.filter["recordedEndDate"]).toEqual({
-      lessThan: date.toISOString(),
+      lessThanOrEqual: date.toISOString(),
     });
   }
 
@@ -255,7 +262,7 @@ describe("DownloadAudioRecordingsComponent", () => {
         "/bulk_download",
         () => {
           // Update input after the form has been set
-          inputValue(spec.element, "#recording-started-after", "2020-01-01");
+          inputValue(spec.element, startedAfterInputSelector, "2020-01-01");
           spec.detectChanges();
         },
         (filter) => {
@@ -284,7 +291,7 @@ describe("DownloadAudioRecordingsComponent", () => {
         "/bulk_download",
         () => {
           // Update input after the form has been set
-          inputValue(spec.element, "#recording-finished-before", "2020-01-01");
+          inputValue(spec.element, finishedBeforeInputSelector, "2020-01-01");
           spec.detectChanges();
         },
         (filter) => {
@@ -306,12 +313,12 @@ describe("DownloadAudioRecordingsComponent", () => {
         "/bulk_download",
         () => {
           // Update input after the form has been set
-          inputValue(spec.element, "#recording-started-after", "2019-01-01");
+          inputValue(spec.element, startedAfterInputSelector, "2019-01-01");
           spec.detectChanges();
         },
         () => {
           // Update input after the form has been set
-          inputValue(spec.element, "#recording-finished-before", "2020-01-01");
+          inputValue(spec.element, finishedBeforeInputSelector, "2020-01-01");
           spec.detectChanges();
         },
         (filter) => {
