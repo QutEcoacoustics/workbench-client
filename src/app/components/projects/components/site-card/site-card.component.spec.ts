@@ -93,7 +93,7 @@ describe("SiteCardComponent", () => {
           setup(defaultModel);
           spec.detectChanges();
           const name = spec.query<HTMLAnchorElement>("#nameLink");
-          assertUrl(name, defaultModel.getViewUrl(defaultProject));
+          assertUrl(name, { bawUrl: defaultModel.getViewUrl(defaultProject) });
         });
       });
 

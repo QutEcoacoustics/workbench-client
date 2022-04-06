@@ -421,9 +421,11 @@ describe("RecentAnnotationsComponent", () => {
       const getActionCellElement = (isLoggedIn: boolean) =>
         getCellElements()[isLoggedIn ? 4 : 2];
       const getPlayButton = (isLoggedIn: boolean) =>
-        getActionCellElement(isLoggedIn).querySelector<HTMLElement>("#playBtn");
+        getActionCellElement(isLoggedIn).querySelector<HTMLAnchorElement>(
+          "#playBtn"
+        );
       const getAnnotationButton = (isLoggedIn: boolean) =>
-        getActionCellElement(isLoggedIn).querySelector<HTMLElement>(
+        getActionCellElement(isLoggedIn).querySelector<HTMLAnchorElement>(
           "#annotationBtn"
         );
 
@@ -432,17 +434,18 @@ describe("RecentAnnotationsComponent", () => {
           isLoggedIn ? "" : "not "
         }logged in`, async () => {
           await setup({ annotations: [defaultAnnotation], isLoggedIn });
-          assertUrl(getPlayButton(isLoggedIn), defaultAnnotation.listenViewUrl);
+          assertUrl(getPlayButton(isLoggedIn), {
+            bawUrl: defaultAnnotation.listenViewUrl,
+          });
         });
 
         it(`should link to annotations page when ${
           isLoggedIn ? "" : "not "
         }logged in`, async () => {
           await setup({ annotations: [defaultAnnotation], isLoggedIn });
-          assertUrl(
-            getAnnotationButton(isLoggedIn),
-            defaultAnnotation.annotationViewUrl
-          );
+          assertUrl(getAnnotationButton(isLoggedIn), {
+            bawUrl: defaultAnnotation.annotationViewUrl,
+          });
         });
       });
     });

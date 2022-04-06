@@ -160,7 +160,7 @@ describe("AdminUserListComponent", () => {
       const row = getDatatableRows(spec.fixture)[0];
       const usernameCell = getDatatableCells(row)[0];
       const userLink = usernameCell.querySelector("a");
-      assertUrl(userLink, "/user_accounts/5");
+      assertUrl(userLink, { bawUrl: "/user_accounts/5" });
     });
 
     it("should link to edit user account", () => {

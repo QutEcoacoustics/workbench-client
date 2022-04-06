@@ -9,23 +9,28 @@ import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
-import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
-import { generateBawApiError } from "@test/fakes/BawApiError";
 import {
-  generatePageInfoResolvers,
-  nStepObservable,
-} from "@test/helpers/general";
-import { Subject } from "rxjs";
+  ActivatedRouteStub,
+  createDirectiveFactory,
+  mockProvider,
+  SpectatorDirective,
+} from "@ngneat/spectator";
+import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
+import { generateBawApiError } from "@test/fakes/BawApiError";
+import { generatePageInfoResolvers } from "@test/helpers/general";
+import { BehaviorSubject } from "rxjs";
 import { StrongRouteDirective } from "./strong-route.directive";
 
+// TODO Should simulate a full page with link inside and outside of the main page. Although this is better for a e2e test.
+
 describe("StrongRouteDirective", () => {
+  let activatedRoute$: BehaviorSubject<ActivatedRoute>;
   let router: Router;
-  let route: ActivatedRoute;
+  let currentRoute: ActivatedRoute;
   let spec: SpectatorDirective<StrongRouteDirective>;
   const createDirective = createDirectiveFactory({
     directive: StrongRouteDirective,
-    imports: [RouterTestingModule, MockAppConfigModule],
+    imports: [RouterTestingModule],
   });
 
   const createRouterLink = createDirectiveFactory({
@@ -34,36 +39,24 @@ describe("StrongRouteDirective", () => {
     imports: [RouterTestingModule],
   });
 
-  function interceptRouteParams(params: Params) {
-    const subject = new Subject();
-    spec.directive["_route"].params = subject;
-    return nStepObservable(subject, () => params);
-  }
-  async function setRouteParams(params: Params) {
-    const promise = interceptRouteParams(params);
-    spec.detectChanges();
-    await promise;
-    spec.detectChanges();
-  }
-
-  function interceptRouteData(data: IPageInfo) {
-    const subject = new Subject();
-    spec.directive["_route"].data = subject;
-    return nStepObservable(subject, () => data);
-  }
-
-  async function setRouteData(data: IPageInfo) {
-    const promise = interceptRouteData(data);
-    spec.detectChanges();
-    await promise;
-    spec.detectChanges();
+  function updateSnapshot(opts?: {
+    queryParams?: Params;
+    routeParams?: Params;
+    data?: IPageInfo;
+  }) {
+    currentRoute = new ActivatedRouteStub({
+      params: opts?.routeParams ?? {},
+      queryParams: opts?.queryParams ?? {},
+      data: opts?.data ?? {},
+    });
+    activatedRoute$.next(currentRoute);
   }
 
   function assertUrlTree(url: string, queryParams: Params) {
     expect(spec.directive.urlTree).toEqual(
       router.createUrlTree([url], {
         queryParams,
-        relativeTo: route,
+        relativeTo: currentRoute,
         fragment: spec.directive.fragment,
         queryParamsHandling: spec.directive.queryParamsHandling,
         preserveFragment: spec.directive.preserveFragment,
@@ -81,23 +74,31 @@ describe("StrongRouteDirective", () => {
     strongRoute: StrongRoute,
     routeParams?: RouteParams,
     queryParams?: Params
-  ) {
+  ): void {
     spec = createDirective(
       `
         <a
           [strongRoute]="strongRoute"
           [routeParams]="routeParams"
           [queryParams]="queryParams"
-        ></a>
+        >Strong Route Link</a>
       `,
       {
         hostProps: { strongRoute, routeParams, queryParams },
-        detectChanges: false,
+        providers: [
+          mockProvider(SharedActivatedRouteService, {
+            activatedRoute: activatedRoute$,
+          }),
+        ],
       }
     );
     router = spec.inject(Router);
-    route = spec.inject(ActivatedRoute);
   }
+
+  beforeEach(() => {
+    currentRoute = new ActivatedRouteStub();
+    activatedRoute$ = new BehaviorSubject<ActivatedRoute>(currentRoute);
+  });
 
   it("should not interfere with routerLink if no [strongRoute]", () => {
     const routerLinkSpec = createRouterLink(
@@ -110,9 +111,6 @@ describe("StrongRouteDirective", () => {
     expect(routerLink).toBeInstanceOf(RouterLinkWithHref);
     expect(routerLink.href).toContain("/home?test=value");
   });
-
-  // TODO Current implementation does not work with routerLinkActive
-  xit("should not interfere with routerLinkActive", () => {});
 
   describe("strongRoute", () => {
     it("should handle undefined strongRoute", () => {
@@ -142,7 +140,7 @@ describe("StrongRouteDirective", () => {
     });
   });
 
-  describe("routeParams", () => {
+  describe("routeParams input", () => {
     it("should handle strongRoute with single parameter", () => {
       const paramRoute = StrongRoute.newRoot().add(":id");
       setup(paramRoute, { id: 5 });
@@ -158,7 +156,7 @@ describe("StrongRouteDirective", () => {
     });
   });
 
-  describe("queryParams", () => {
+  describe("queryParams input", () => {
     it("should handle strongRoute with query parameter", () => {
       const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
         test,
@@ -171,49 +169,11 @@ describe("StrongRouteDirective", () => {
     it("should handle strongRoute with multiple query parameter", () => {
       const childRoute = StrongRoute.newRoot().add(
         "home",
-        ({ test, example }) => ({
-          test,
-          example,
-        })
+        ({ test, example }) => ({ test, example })
       );
       setup(childRoute, undefined, { example: 5, test: "value" });
       spec.detectChanges();
       assertRoute("/home?test=value&example=5");
-    });
-
-    it("should handle strongRoute with router query parameter", async () => {
-      const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
-        testing: test,
-      }));
-      setup(childRoute);
-      await setRouteParams({ test: "value" });
-      assertUrlTree("/home", { testing: "value" });
-    });
-
-    it("should handle strongRoute with multiple router query parameter", async () => {
-      const childRoute = StrongRoute.newRoot().add(
-        "home",
-        ({ test, example }) => ({
-          testing: test,
-          testing2: example,
-        })
-      );
-      setup(childRoute);
-      await setRouteParams({ example: 5, test: "value" });
-      assertUrlTree("/home", { testing: "value", testing2: 5 });
-    });
-
-    it("should combine route query parameters and queryParams", async () => {
-      const childRoute = StrongRoute.newRoot().add(
-        "home",
-        ({ test, example }) => ({
-          testing: test,
-          testing2: example,
-        })
-      );
-      setup(childRoute, undefined, { test: "value" });
-      await setRouteParams({ example: 5 });
-      assertUrlTree("/home", { testing: "value", testing2: 5 });
     });
   });
 
@@ -223,8 +183,6 @@ describe("StrongRouteDirective", () => {
         testing: models,
       }));
       setup(childRoute);
-      // Do not return resolver, this is testing the default value before subject returns
-      interceptRouteData(generatePageInfoResolvers());
       spec.detectChanges();
       assertUrlTree("/home", { testing: {} });
     });
@@ -234,7 +192,8 @@ describe("StrongRouteDirective", () => {
         testing: models,
       }));
       setup(childRoute);
-      await setRouteData(generatePageInfoResolvers());
+      updateSnapshot({ data: generatePageInfoResolvers() });
+      spec.detectChanges();
       assertUrlTree("/home", { testing: {} });
     });
 
@@ -243,9 +202,10 @@ describe("StrongRouteDirective", () => {
         testing: (model0 as MockModel)?.id,
       }));
       setup(childRoute);
-      await setRouteData(
-        generatePageInfoResolvers({ model: new MockModel({ id: 1 }) })
-      );
+      updateSnapshot({
+        data: generatePageInfoResolvers({ model: new MockModel({ id: 1 }) }),
+      });
+      spec.detectChanges();
       assertUrlTree("/home", { testing: 1 });
     });
 
@@ -258,12 +218,13 @@ describe("StrongRouteDirective", () => {
         })
       );
       setup(childRoute);
-      await setRouteData(
-        generatePageInfoResolvers(
+      updateSnapshot({
+        data: generatePageInfoResolvers(
           { model: new MockModel({ id: 1 }) },
           { model: new MockModel({ id: 5 }) }
-        )
-      );
+        ),
+      });
+      spec.detectChanges();
       assertUrlTree("/home", { testing: 1, example: 5 });
     });
 
@@ -277,12 +238,13 @@ describe("StrongRouteDirective", () => {
         })
       );
       setup(childRoute);
-      await setRouteData(
-        generatePageInfoResolvers(
+      updateSnapshot({
+        data: generatePageInfoResolvers(
           { model: new MockModel({ id: 1 }) },
           { error }
-        )
-      );
+        ),
+      });
+      spec.detectChanges();
       assertUrlTree("/home", { testing: 1, example: error.status });
     });
   });
@@ -302,25 +264,71 @@ describe("StrongRouteDirective", () => {
       assertUrlTree("/home", {});
     });
 
-    it("should create url tree with query parameters from router", async () => {
-      const childRoute = StrongRoute.newRoot().add("home", ({ example }) => ({
-        testing: example,
-      }));
-      setup(childRoute);
-      await setRouteParams({ example: 5 });
-      assertUrlTree("/home", { testing: 5 });
+    describe("route parameters", () => {
+      it("should create url tree with router query parameters", async () => {
+        const childRoute = StrongRoute.newRoot().add("home", ({ example }) => ({
+          testing: example,
+        }));
+        setup(childRoute);
+        updateSnapshot({ routeParams: { example: 5 } });
+        spec.detectChanges();
+        assertUrlTree("/home", { testing: 5 });
+      });
+
+      it("should create url tree with router route parameters", () => {
+        const childRoute = StrongRoute.newRoot().add("home", ({ example }) => ({
+          testing: example,
+        }));
+        setup(childRoute, { example: 5 });
+        spec.detectChanges();
+        assertUrlTree("/home", { testing: 5 });
+      });
+
+      it("should create url tree with input route parameters", () => {
+        const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
+          testing: test,
+        }));
+        setup(childRoute, { test: "value" });
+        spec.detectChanges();
+        assertUrlTree("/home", { testing: "value" });
+      });
     });
 
-    it("should create url tree with custom query parameters", () => {
-      const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
-        testing: test,
-      }));
-      setup(childRoute, undefined, { test: "value" });
-      spec.detectChanges();
-      assertUrlTree("/home", { testing: "value" });
+    describe("query parameters", () => {
+      it("should create url tree with custom query parameters", () => {
+        const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
+          testing: test,
+        }));
+        setup(childRoute, undefined, { test: "value" });
+        spec.detectChanges();
+        assertUrlTree("/home", { testing: "value" });
+      });
     });
 
-    it("should create url tree with with custom and router query parameters", async () => {
+    describe("strongRoute", () => {
+      it("should handle strongRoute with router query parameter", async () => {
+        const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
+          testing: test,
+        }));
+        setup(childRoute);
+        updateSnapshot({ routeParams: { test: "value" } });
+        spec.detectChanges();
+        assertUrlTree("/home", { testing: "value" });
+      });
+
+      it("should handle strongRoute with multiple router query parameter", async () => {
+        const childRoute = StrongRoute.newRoot().add(
+          "home",
+          ({ test, example }) => ({ testing: test, testing2: example })
+        );
+        setup(childRoute);
+        updateSnapshot({ routeParams: { test: "value", example: 5 } });
+        spec.detectChanges();
+        assertUrlTree("/home", { testing: "value", testing2: 5 });
+      });
+    });
+
+    it("should combine route query parameters and queryParams", async () => {
       const childRoute = StrongRoute.newRoot().add(
         "home",
         ({ test, example }) => ({
@@ -329,8 +337,85 @@ describe("StrongRouteDirective", () => {
         })
       );
       setup(childRoute, undefined, { test: "value" });
-      await setRouteParams({ example: 5 });
+      updateSnapshot({ routeParams: { example: 5 } });
+      spec.detectChanges();
       assertUrlTree("/home", { testing: "value", testing2: 5 });
+    });
+
+    describe("query parameter priority", () => {
+      const inputQueryParam = { test: "inputQueryParam" };
+      const inputRouteParam = { test: "inputRouteParam" };
+      const routerQueryParam = { test: "routerQueryParam" };
+      const routerRouteParam = { test: "routerRouteParam" };
+
+      it("should prioritize input query parameters first", async () => {
+        const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
+          test,
+        }));
+        setup(childRoute, inputRouteParam, inputQueryParam);
+        updateSnapshot({
+          routeParams: routerRouteParam,
+          queryParams: routerQueryParam,
+        });
+        spec.detectChanges();
+        assertUrlTree("/home", inputQueryParam);
+      });
+
+      it("should prioritize input route parameters after input query parameters", () => {
+        const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
+          test,
+        }));
+        setup(childRoute, inputRouteParam);
+        updateSnapshot({
+          routeParams: routerRouteParam,
+          queryParams: routerQueryParam,
+        });
+        spec.detectChanges();
+        assertUrlTree("/home", inputRouteParam);
+      });
+
+      it("should prioritize router query parameters after input route parameters", () => {
+        const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
+          test,
+        }));
+        setup(childRoute);
+        updateSnapshot({
+          routeParams: routerRouteParam,
+          queryParams: routerQueryParam,
+        });
+        spec.detectChanges();
+        assertUrlTree("/home", routerQueryParam);
+      });
+
+      it("should prioritize router route parameters after router query parameters", () => {
+        const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
+          test,
+        }));
+        setup(childRoute);
+        updateSnapshot({ routeParams: routerRouteParam });
+        spec.detectChanges();
+        assertUrlTree("/home", routerRouteParam);
+      });
+    });
+
+    it("should create url tree with all possible qsp inputs", async () => {
+      const childRoute = StrongRoute.newRoot().add("home", (params) => params);
+      setup(
+        childRoute,
+        { inputRouteParams: "value" },
+        { inputQueryParams: "value" }
+      );
+      updateSnapshot({
+        routeParams: { routerRouteParams: "value" },
+        queryParams: { routerQueryParams: "value" },
+      });
+      spec.detectChanges();
+      assertUrlTree("/home", {
+        inputRouteParams: "value",
+        inputQueryParams: "value",
+        routerRouteParams: "value",
+        routerQueryParams: "value",
+      });
     });
   });
 });

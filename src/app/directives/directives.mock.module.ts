@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
-import { RouterModule } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { MockDirectives } from "ng-mocks";
 import { DatatableDirective } from "./datatable/datatable.directive";
 import { AuthenticatedImageDirective } from "./image/image.directive";
 import { StrongRouteActiveDirective } from "./strongRoute/strong-route-active.directive";
@@ -8,21 +9,22 @@ import { UrlActiveDirective } from "./url/url-active.directive";
 import { UrlDirective } from "./url/url.directive";
 
 const directives = [
-  AuthenticatedImageDirective,
   DatatableDirective,
-  StrongRouteActiveDirective,
-  StrongRouteDirective,
-  UrlActiveDirective,
-  UrlDirective,
+  AuthenticatedImageDirective,
+  ...MockDirectives(
+    StrongRouteDirective,
+    StrongRouteActiveDirective,
+    UrlDirective,
+    UrlActiveDirective
+  ),
 ];
 
 /**
- * App Shared Directives.
- * Use MockDirectivesModule for unit tests instead of this
+ * App Shared Directives
  */
 @NgModule({
   declarations: directives,
-  imports: [RouterModule.forChild([])],
+  imports: [RouterTestingModule],
   exports: directives,
 })
-export class DirectivesModule {}
+export class MockDirectivesModule {}

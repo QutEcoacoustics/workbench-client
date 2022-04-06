@@ -28,6 +28,15 @@ export const shallowRegionsMenuItem = menuRoute({
   order: 3,
 });
 
+export const shallowNewRegionMenuItem = menuRoute({
+  icon: defaultNewIcon,
+  label: "New site",
+  parent: projectMenuItem,
+  predicate: isProjectEditorPredicate,
+  route: shallowRegionsRoute.add("new"),
+  tooltip: () => "Create a new site",
+});
+
 export const regionsCategory: Category = {
   ...shallowRegionsCategory,
   route: regionsRoute,
@@ -44,12 +53,8 @@ export const regionMenuItem = menuRoute({
 });
 
 export const newRegionMenuItem = menuRoute({
-  icon: defaultNewIcon,
-  label: "New site",
-  parent: projectMenuItem,
-  predicate: isProjectEditorPredicate,
+  ...shallowNewRegionMenuItem,
   route: regionsRoute.add("new"),
-  tooltip: () => "Create a new site",
 });
 
 export const editRegionMenuItem = menuRoute({

@@ -5,7 +5,7 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
-import { DirectivesModule } from "@directives/directives.module";
+import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { Errorable } from "@helpers/advancedTypes";
 import { Settings } from "@helpers/app-initializer/app-initializer";
 import { IProject, Project } from "@models/Project";
@@ -45,7 +45,7 @@ describe("HomeComponent", () => {
       MockBawApiModule,
       MockAppConfigModule,
       IconsModule,
-      DirectivesModule,
+      MockDirectivesModule,
       RouterTestingModule,
       LoadingModule,
       PipesModule,
@@ -91,7 +91,7 @@ describe("HomeComponent", () => {
     expect(getModelCards()?.models?.count() ?? 0).toBe(count);
   }
 
-  function getViewMoreButton(): HTMLButtonElement {
+  function getViewMoreButton(): HTMLAnchorElement {
     return spec.query("#viewMore");
   }
 
@@ -134,7 +134,7 @@ describe("HomeComponent", () => {
       hideProjects: false,
       awaitModel: awaitProjects,
       generateModel: () => new Project(generateProject()),
-      link: projectsMenuItem.route.toRouterLink(),
+      link: projectsMenuItem.route,
     },
     {
       test: "regions",
@@ -143,7 +143,7 @@ describe("HomeComponent", () => {
       hideProjects: true,
       awaitModel: awaitRegions,
       generateModel: () => new Region(generateRegion()),
-      link: shallowRegionsMenuItem.route.toRouterLink(),
+      link: shallowRegionsMenuItem.route,
     },
   ].forEach((test) => {
     describe(`${test.test} api`, () => {
@@ -213,7 +213,7 @@ describe("HomeComponent", () => {
 
         const button = getViewMoreButton();
         expect(button).toHaveText(`More ${test.modelName}s`);
-        assertStrongRouteLink(button, test.link);
+        assertStrongRouteLink(button, { strongRoute: test.link });
       });
     });
   });

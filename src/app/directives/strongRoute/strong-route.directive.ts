@@ -1,5 +1,5 @@
 import { LocationStrategy } from "@angular/common";
-import { Directive, Input, OnChanges, SimpleChanges } from "@angular/core";
+import { Directive, Input, OnInit } from "@angular/core";
 import {
   ActivatedRoute,
   Params,
@@ -8,10 +8,11 @@ import {
   UrlTree,
 } from "@angular/router";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
-import { isIPageInfo, PageInfo } from "@helpers/page/pageInfo";
+import { isIPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
-import { takeUntil } from "rxjs/operators";
+import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
+import { map, takeUntil, tap } from "rxjs/operators";
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -19,7 +20,7 @@ import { takeUntil } from "rxjs/operators";
 })
 export class StrongRouteDirective
   extends withUnsubscribe(RouterLinkWithHref)
-  implements OnChanges
+  implements OnInit
 {
   @Input() public strongRoute: StrongRoute;
   /**
@@ -33,78 +34,79 @@ export class StrongRouteDirective
    */
   @Input() public queryParams: Params;
 
-  // TODO Track page data route and query params as well so they dont need to
-  // be specified everywhere?
-  private data = {
+  private routeState = {
     resolvedModels: {} as ResolvedModelList,
     routeParams: {} as Params,
     queryParams: {} as Params,
+    activatedRoute: null as ActivatedRoute,
   };
 
   public constructor(
     private _router: Router,
-    private _route: ActivatedRoute,
+    _route: ActivatedRoute,
+    private sharedRoute: SharedActivatedRouteService,
     _locationStrategy: LocationStrategy
   ) {
     super(_router, _route, _locationStrategy);
   }
 
-  public ngOnChanges(changes: SimpleChanges) {
-    if (changes.strongRoute?.isFirstChange) {
-      // TODO It should be possible to combine all of these instead of having
-      // three separate observers
+  public ngOnInit(): void {
+    this.sharedRoute.activatedRoute
+      .pipe(
+        tap((activatedRoute) => {
+          this.routeState.activatedRoute = activatedRoute;
+        }),
+        map(({ snapshot }) => snapshot),
+        tap(({ queryParams, params }) => {
+          this.routeState.routeParams = params;
+          this.routeState.queryParams = queryParams;
+          this.routerLink = this.strongRoute?.toRouterLink({
+            ...this.routeState.routeParams,
+            ...this.routeParams,
+          });
+        }),
+        tap(({ data }): void => {
+          if (!isIPageInfo(data)) {
+            return;
+          }
 
-      // Track changes to route parameters
-      this._route.params
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe((params) => {
-          this.data.routeParams = params;
-        });
-      // Track changes to query parameters
-      this._route.queryParams
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe((qsp) => (this.data.queryParams = qsp));
-      // Track changes to resolved models
-      this._route.data.pipe(takeUntil(this.unsubscribe)).subscribe((data) => {
-        if (!data || !isIPageInfo(data)) {
-          return;
-        }
-
-        // Try convert data into page info
-        try {
           // We are passing through resolved models even when some fail, this is
           // so that some links unrelated to the broken model do not break
-          const resolvedModels = retrieveResolvers(new PageInfo(data));
+          const resolvedModels = retrieveResolvers(data);
           if (resolvedModels) {
-            this.data.resolvedModels = resolvedModels;
+            this.routeState.resolvedModels = resolvedModels;
           }
-        } catch (err) {
-          // Something invalid in data, not useful
-        }
+        }),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe({
+        next: () => {
+          // Call change detection manually because the above observable does not
+          // trigger the change detection. This is calling this function:
+          // eslint-disable-next-line max-len
+          // https://github.com/angular/angular/blob/e1e440d65af928e569533bb1725eefcdf0794ebf/packages/router/src/directives/router_link.ts#L417-L421
+          (this as RouterLinkWithHref)["updateTargetUrlAndHref"]();
+        },
       });
-    }
 
-    this.routerLink = this.strongRoute?.toRouterLink({
-      ...this.data.routeParams,
-      ...this.routeParams,
-    });
-
-    super.ngOnChanges(changes);
+    // Just in case angular updates the RouterLinkWithHref one day
+    super.ngOnInit?.();
   }
 
   public get urlTree(): UrlTree {
     if (!this["commands"]) {
-      return null;
+      return super.urlTree;
     }
 
     const queryParams =
       this.strongRoute?.queryParams(
         {
+          ...this.routeState.routeParams,
+          ...this.routeState.queryParams,
+          ...this.routeParams,
           ...this.queryParams,
-          ...this.data.queryParams,
-          ...this.data.routeParams,
         },
-        this.data.resolvedModels
+        this.routeState.resolvedModels
       ) ?? {};
 
     // Normalize query parameters into string values which can be handled by
@@ -119,7 +121,7 @@ export class StrongRouteDirective
     }
 
     return this._router.createUrlTree(this["commands"], {
-      relativeTo: this._route,
+      relativeTo: this.routeState.activatedRoute,
       queryParams: queryParams ?? undefined,
       fragment: this.fragment,
       queryParamsHandling: this.queryParamsHandling,

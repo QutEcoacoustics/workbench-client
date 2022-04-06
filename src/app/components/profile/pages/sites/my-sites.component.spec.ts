@@ -124,7 +124,7 @@ describe("MySitesComponent", () => {
         spec.detectChanges();
 
         const link = getCells()[0].querySelector("a");
-        assertUrl(link, defaultSite.viewUrl);
+        assertUrl(link, { bawUrl: defaultSite.viewUrl });
       });
 
       it("should not display site name link when no projects found", () => {

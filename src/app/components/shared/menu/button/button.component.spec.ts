@@ -2,6 +2,7 @@ import { TemplateRef } from "@angular/core";
 import { MenuAction, menuAction } from "@interfaces/menusInterfaces";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
+import { generateMenuAction } from "@test/fakes/MenuItem";
 import { assertIcon, assertTooltip } from "@test/helpers/html";
 import { SharedModule } from "../../shared.module";
 import { MenuButtonComponent } from "./button.component";
@@ -48,12 +49,7 @@ describe("MenuButtonComponent", () => {
   }
 
   beforeEach(() => {
-    defaultLink = menuAction({
-      action: () => {},
-      label: "home",
-      icon: ["fas", "home"],
-      tooltip: () => "tooltip",
-    });
+    defaultLink = menuAction(generateMenuAction());
   });
 
   it("should create", () => {
@@ -63,24 +59,19 @@ describe("MenuButtonComponent", () => {
   });
 
   it("should have icon", () => {
-    setup({
-      link: menuAction({
-        ...defaultLink,
-        icon: ["fas", "exclamation-triangle"],
-      }),
-    });
+    setup({ link: defaultLink });
     spec.detectChanges();
-    assertIcon(spec.element, "fas,exclamation-triangle");
+    assertIcon(spec.element, { icon: defaultLink.icon });
   });
 
   it("should have label", () => {
-    setup({ link: menuAction({ ...defaultLink, label: "custom label" }) });
+    setup({ link: defaultLink });
     spec.detectChanges();
 
     // Expects label to be above disabled user tooltip
     const label = spec.query<HTMLElement>("#label");
     expect(label).toBeTruthy("Label element should contain id='label'");
-    expect(label.innerText).toBe("custom label");
+    expect(label.innerText).toBe(defaultLink.label);
   });
 
   describe("tooltip", () => {

@@ -2,8 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { DirectivesModule } from "@directives/directives.module";
-import { AuthenticatedImageModule } from "@directives/image/image.module";
+import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -36,9 +35,8 @@ describe("CardComponent", () => {
       HttpClientTestingModule,
       RouterTestingModule,
       MockBawApiModule,
-      DirectivesModule,
+      MockDirectivesModule,
       PipesModule,
-      AuthenticatedImageModule,
     ],
   });
 
@@ -137,8 +135,8 @@ describe("CardComponent", () => {
       setup(model);
       spec.detectChanges();
 
-      const route = spec.query<HTMLElement>(".card-image a");
-      assertUrl(route, model.viewUrl);
+      const route = spec.query<HTMLAnchorElement>(".card-image a");
+      assertUrl(route, { bawUrl: model.viewUrl });
     });
 
     it("should have title route when route provided", () => {
@@ -149,8 +147,8 @@ describe("CardComponent", () => {
       setup(model);
       spec.detectChanges();
 
-      const link = spec.query<HTMLElement>(".card-title");
-      assertUrl(link, model.viewUrl);
+      const link = spec.query<HTMLAnchorElement>(".card-title");
+      assertUrl(link, { bawUrl: model.viewUrl });
     });
 
     function getNoAudioBadge() {
