@@ -114,7 +114,11 @@
     </label>
   </div>
 
-  <div #collapse="ngbCollapse" [ngbCollapse]="!model.todEnabled">
+  <div
+    id="tod-filters-wrapper"
+    #collapse="ngbCollapse"
+    [ngbCollapse]="!model.todEnabled"
+  >
     <div class="form-check mb-3">
       <input
         id="tod-ignore-dst"
@@ -180,6 +184,7 @@
 
 <div class="clearfix">
   <a
+    id="download-script"
     class="btn btn-primary float-end mt-3"
     [class.disabled]="invalidForm(errors)"
     [href]="href"
