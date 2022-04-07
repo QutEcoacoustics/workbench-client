@@ -7,7 +7,7 @@
   [project]="project"
 ></baw-sites-without-timezones>
 
-<form #form>
+<form #form class="mb-3">
   <!-- Project -->
   <div *ngIf="project" class="mb-3">
     <label id="project-label" for="project" class="form-label">Project</label>
@@ -46,140 +46,170 @@
     />
   </div>
 
-  <!-- Start Date -->
-  <div class="mb-3">
-    <label for="startDate" class="form-label">
-      Date recording started after
-    </label>
-    <!-- TODO Replace with dates using yyyy-mm-dd format -->
+  <!-- Toggle filtering by date -->
+  <div class="form-check">
     <input
-      id="started-after"
-      name="startedAfter"
-      type="date"
-      class="form-control"
-      [(ngModel)]="model.startedAfter"
-      useValueAsDate
-    />
-
-    <div class="form-text">
-      <strong
-        >The UTC (+00:00) time zone is used for all date filtering.</strong
-      >
-      If you're unsure if your data will be included in a filter, expand your
-      date range by one-day in either direction.
-    </div>
-  </div>
-
-  <!-- End Date -->
-  <div class="mb-3">
-    <label for="endDate" class="form-label">
-      Date recording ended before
-    </label>
-    <!-- TODO Replace with dates using yyyy-mm-dd format -->
-    <input
-      id="finished-before"
-      name="finishedBefore"
-      type="date"
-      class="form-control"
-      [(ngModel)]="model.finishedBefore"
-      useValueAsDate
-    />
-
-    <div class="form-text">
-      <strong
-        >The UTC (+00:00) time zone is used for all date filtering.</strong
-      >
-      If you're unsure if your data will be included in a filter, expand your
-      date range by one-day in either direction.
-    </div>
-
-    <!-- TODO Warning message if end date is before start date -->
-  </div>
-
-  <!-- Time of Day Selector -->
-
-  <label for="timeOfDay" class="form-label">Time of Day Filter</label>
-
-  <div class="form-check mb-3">
-    <input
-      id="tod-filtering"
-      name="todEnabled"
+      id="day-filtering"
+      name="dayFiltering"
       type="checkbox"
       class="form-check-input"
-      [(ngModel)]="model.todEnabled"
+      [(ngModel)]="model.dayFiltering"
+    />
+
+    <label class="form-check-label" for="day-filtering">Filter by date</label>
+
+    <div class="form-text">Filter recordings over a date range</div>
+  </div>
+
+  <!-- Date filters -->
+  <div
+    id="day-range-filters-wrapper"
+    #collapse="ngbCollapse"
+    [ngbCollapse]="!model.dayFiltering"
+  >
+    <div class="card">
+      <div class="card-body">
+        <!-- Start date input -->
+        <div class="mb-3">
+          <label for="day-started-after" class="form-label"> Start date </label>
+          <!-- TODO Replace with dates using yyyy-mm-dd format -->
+          <input
+            id="day-started-after"
+            name="dayStartedAfter"
+            type="date"
+            class="form-control"
+            [(ngModel)]="model.dayStartedAfter"
+            useValueAsDate
+          />
+
+          <div class="form-text">
+            <strong
+              >The UTC (+00:00) time zone is used for all date
+              filtering.</strong
+            >
+            If you're unsure if your data will be included in a filter, expand
+            your date range by one-day in either direction.
+          </div>
+        </div>
+
+        <!-- End date input -->
+        <div>
+          <label for="day-finished-before" class="form-label"> End date </label>
+          <!-- TODO Replace with dates using yyyy-mm-dd format -->
+          <input
+            id="day-finished-before"
+            name="dayFinishedBefore"
+            type="date"
+            class="form-control"
+            [(ngModel)]="model.dayFinishedBefore"
+            useValueAsDate
+          />
+
+          <div class="form-text">
+            <strong
+              >The UTC (+00:00) time zone is used for all date
+              filtering.</strong
+            >
+            If you're unsure if your data will be included in a filter, expand
+            your date range by one-day in either direction.
+          </div>
+
+          <!-- TODO Warning message if end date is before start date -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toggle filtering by time of day -->
+  <div class="form-check">
+    <input
+      id="tod-filtering"
+      name="todFiltering"
+      type="checkbox"
+      class="form-check-input"
+      [(ngModel)]="model.todFiltering"
     />
 
     <label class="form-check-label" for="tod-filtering">
-      Enable filtering by time of day
+      Filter by time of day
     </label>
+
+    <div class="form-text">
+      Filter recordings by the time of day they were recorded. If any part of a
+      recording overlaps these limits, then it will be included.
+    </div>
   </div>
 
+  <!-- Time of day filters -->
   <div
     id="tod-filters-wrapper"
     #collapse="ngbCollapse"
-    [ngbCollapse]="!model.todEnabled"
+    [ngbCollapse]="!model.todFiltering"
   >
-    <div class="form-check mb-3">
-      <input
-        id="tod-ignore-dst"
-        name="todIgnoreDst"
-        type="checkbox"
-        class="form-check-input"
-        [disabled]="!model.todEnabled"
-        [(ngModel)]="model.todIgnoreDst"
-      />
+    <div class="card">
+      <div class="card-body">
+        <!-- Ignore daylight savings checkbox -->
+        <div class="form-check mb-3">
+          <input
+            id="tod-ignore-dst"
+            name="todIgnoreDst"
+            type="checkbox"
+            class="form-check-input"
+            [disabled]="!model.todFiltering"
+            [(ngModel)]="model.todIgnoreDst"
+          />
 
-      <label class="form-check-label" for="tod-ignore-dst">
-        Ignore day light savings (DST)
-      </label>
+          <label class="form-check-label" for="tod-ignore-dst">
+            Ignore day light savings (DST)
+          </label>
 
-      <div class="form-text">
-        Real world events, like dawn chorus, or the vocalization of fauna are
-        not affected by daylight savings time. Ignoring DST is advised to ensure
-        audio is filtered consistently. If any recordings occur during a DST
-        period, the base offset, that is the time it would be if DST were not in
-        effect, will be used.
-      </div>
-    </div>
+          <div class="form-text">
+            Real world events, like dawn chorus, or the vocalization of fauna
+            are not affected by daylight savings time. Ignoring DST is advised
+            to ensure audio is filtered consistently. If any recordings occur
+            during a DST period, the base offset, that is the time it would be
+            if DST were not in effect, will be used.
+          </div>
+        </div>
 
-    <div class="mb-3">
-      <div class="input-group">
-        <span class="input-group-text">Start Time</span>
-        <input
-          id="tod-started-after"
-          name="todStartedAfter"
-          type="time"
-          class="form-control"
-          [class.is-invalid]="errors.todBoundaryError"
-          [disabled]="!model.todEnabled"
-          [(ngModel)]="todStartedAfter"
-        />
-        <span class="input-group-text">End Time</span>
-        <input
-          id="tod-finished-before"
-          name="todFinishedBefore"
-          type="time"
-          class="form-control"
-          [class.is-invalid]="errors.todBoundaryError"
-          [disabled]="!model.todEnabled"
-          [(ngModel)]="todFinishedBefore"
-        />
-      </div>
+        <div class="mb-3">
+          <div class="input-group">
+            <!-- Start time input -->
+            <span class="input-group-text">Start Time</span>
+            <input
+              id="tod-started-after"
+              name="todStartedAfter"
+              type="time"
+              class="form-control"
+              [class.is-invalid]="errors.todBoundaryError"
+              [disabled]="!model.todFiltering"
+              [(ngModel)]="todStartedAfter"
+            />
+            <!-- End time input -->
+            <span class="input-group-text">End Time</span>
+            <input
+              id="tod-finished-before"
+              name="todFinishedBefore"
+              type="time"
+              class="form-control"
+              [class.is-invalid]="errors.todBoundaryError"
+              [disabled]="!model.todFiltering"
+              [(ngModel)]="todFinishedBefore"
+            />
+          </div>
 
-      <div class="form-text">
-        Filter recordings by the time of day they were recorded. If any part of
-        a recording overlaps these limits, then it will be included.
-      </div>
-
-      <div *ngIf="errors.todBoundaryError" class="form-error">
-        Time of day filtering does not currently support filtering past a day
-        boundary. Please adjust your request so that the start time is before
-        the end time.
+          <div *ngIf="errors.todBoundaryError" class="form-error">
+            Time of day filtering does not currently support filtering past a
+            day boundary. Please adjust your request so that the start time is
+            before the end time.
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </form>
 
+<!-- TODO Preview audio recordings which will be downloaded by this request -->
 <baw-download-table [recordings$]="recordings$"></baw-download-table>
 
 <div class="clearfix">
@@ -188,13 +218,10 @@
     class="btn btn-primary float-end mt-3"
     [class.disabled]="invalidForm(errors)"
     [href]="href"
-    >Download Script</a
   >
+    Download Script
+  </a>
 </div>
-
-<!-- TODO Preview audio recordings which will be downloaded by this request -->
-
-<hr />
 
 <!-- TODO Extract to CMS? -->
 <section>

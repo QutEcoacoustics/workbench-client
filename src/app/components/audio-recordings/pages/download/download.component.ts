@@ -42,9 +42,10 @@ interface Model {
   projects?: Project[];
   regions?: Region[];
   sites?: Site[];
-  startedAfter?: Date;
-  finishedBefore?: Date;
-  todEnabled?: boolean;
+  dayFiltering?: boolean;
+  dayStartedAfter?: Date;
+  dayFinishedBefore?: Date;
+  todFiltering?: boolean;
   todIgnoreDst?: boolean;
   todStartedAfter?: string;
   todFinishedBefore?: string;
@@ -97,7 +98,11 @@ class DownloadAudioRecordingsComponent
 
   public ngAfterViewInit(): void {
     this.form.valueChanges
-      .pipe(takeUntil(this.unsubscribe))
+      .pipe(
+        debounceTime(defaultDebounceTime),
+        distinctUntilChanged(),
+        takeUntil(this.unsubscribe)
+      )
       .subscribe((model: Model): void => {
         this.updateHref(model);
       });
@@ -146,16 +151,20 @@ class DownloadAudioRecordingsComponent
     filter: InnerFilter<AudioRecording>,
     model: Model
   ): void {
-    if (model.startedAfter) {
-      filter["recordedDate"] ??= {};
-      filter["recordedDate"].greaterThanOrEqual =
-        model.startedAfter.toISOString();
+    if (!model.dayFiltering) {
+      return;
     }
 
-    if (model.finishedBefore) {
+    if (model.dayStartedAfter) {
+      filter["recordedDate"] ??= {};
+      filter["recordedDate"].greaterThanOrEqual =
+        model.dayStartedAfter.toISOString();
+    }
+
+    if (model.dayFinishedBefore) {
       filter["recordedEndDate"] ??= {};
       (filter["recordedEndDate"] as Comparisons).lessThanOrEqual =
-        model.finishedBefore.toISOString();
+        model.dayFinishedBefore.toISOString();
     }
   }
 
@@ -163,10 +172,7 @@ class DownloadAudioRecordingsComponent
     filter: InnerFilter<AudioRecording>,
     model: Model
   ): void {
-    if (
-      !model.todEnabled ||
-      model.todFinishedBefore === model.todStartedAfter
-    ) {
+    if (!model.todFiltering) {
       return;
     }
 
