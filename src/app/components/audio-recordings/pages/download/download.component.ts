@@ -2,7 +2,12 @@ import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { NgForm } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import {
+  Comparisons,
+  DateExpressions,
+  Filters,
+  InnerFilter,
+} from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
@@ -19,7 +24,15 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { takeUntil } from "rxjs";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  Observable,
+  Subject,
+  switchMap,
+  takeUntil,
+} from "rxjs";
+import { defaultDebounceTime } from "src/app/app.helper";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -29,13 +42,18 @@ interface Model {
   projects?: Project[];
   regions?: Region[];
   sites?: Site[];
-  recordingStartedAfter?: Date;
-  recordingFinishedBefore?: Date;
+  startedAfter?: Date;
+  finishedBefore?: Date;
+  todEnabled?: boolean;
+  todIgnoreDst?: boolean;
+  todStartedAfter?: string;
+  todFinishedBefore?: string;
 }
 
 @Component({
   selector: "baw-download",
   templateUrl: "download.component.html",
+  styleUrls: ["download.component.scss"],
 })
 class DownloadAudioRecordingsComponent
   extends PageComponent
@@ -43,11 +61,18 @@ class DownloadAudioRecordingsComponent
 {
   @ViewChild(NgForm) public form: NgForm;
 
+  public filters$: Subject<Filters<AudioRecording>>;
+  public recordings$: Observable<AudioRecording[]>;
+
   public contactUs = contactUsMenuItem;
   public href = "";
-  public model: Model = {};
+  public model: Model = { todIgnoreDst: true };
   public models: ResolvedModelList;
   public profile = myAccountMenuItem;
+
+  public errors: {
+    todBoundaryError?: boolean;
+  } = {};
 
   public constructor(
     private route: ActivatedRoute,
@@ -57,6 +82,15 @@ class DownloadAudioRecordingsComponent
   }
 
   public ngOnInit(): void {
+    this.filters$ = new Subject();
+    this.recordings$ = this.filters$.pipe(
+      debounceTime(defaultDebounceTime),
+      distinctUntilChanged(),
+      switchMap((filters: Filters<AudioRecording>) =>
+        this.recordingsApi.filter(filters)
+      )
+    );
+
     this.models = retrieveResolvers(this.route.snapshot.data);
     this.updateHref(this.model);
   }
@@ -82,7 +116,13 @@ class DownloadAudioRecordingsComponent
   }
 
   public updateHref(model: Model): void {
-    this.href = this.recordingsApi.batchDownloadUrl(this.generateFilter(model));
+    const filters = this.generateFilter(model);
+    this.filters$.next(filters);
+    this.href = this.recordingsApi.batchDownloadUrl(filters);
+  }
+
+  public invalidForm(errors: any): boolean {
+    return Object.entries(errors).some((value) => value[1]);
   }
 
   private generateFilter(model: Model): Filters<AudioRecording> {
@@ -96,18 +136,65 @@ class DownloadAudioRecordingsComponent
       filter["projects.id"] = { eq: this.project.id };
     }
 
-    if (model.recordingStartedAfter) {
-      filter["recordedDate"] = {
-        greaterThan: model.recordingStartedAfter.toISOString(),
-      };
+    this.setDateFilter(filter, model);
+    this.setTimeOfDayFilter(filter, model);
+
+    return { filter };
+  }
+
+  private setDateFilter(
+    filter: InnerFilter<AudioRecording>,
+    model: Model
+  ): void {
+    if (model.startedAfter) {
+      filter["recordedDate"] ??= {};
+      filter["recordedDate"].greaterThanOrEqual =
+        model.startedAfter.toISOString();
     }
-    if (model.recordingFinishedBefore) {
-      filter["recordedEndDate"] = {
-        lessThan: model.recordingFinishedBefore.toISOString(),
+
+    if (model.finishedBefore) {
+      filter["recordedEndDate"] ??= {};
+      (filter["recordedEndDate"] as Comparisons).lessThanOrEqual =
+        model.finishedBefore.toISOString();
+    }
+  }
+
+  private setTimeOfDayFilter(
+    filter: InnerFilter<AudioRecording>,
+    model: Model
+  ): void {
+    if (
+      !model.todEnabled ||
+      model.todFinishedBefore === model.todStartedAfter
+    ) {
+      return;
+    }
+
+    const expressions: DateExpressions[] = model.todIgnoreDst
+      ? ["local_offset", "time_of_day"]
+      : ["local_tz", "time_of_day"];
+
+    if (model.todStartedAfter) {
+      filter["recordedEndDate"] ??= {};
+      (filter["recordedEndDate"] as Comparisons).greaterThanOrEqual = {
+        expressions,
+        value: model.todStartedAfter,
       };
     }
 
-    return { filter: filter as InnerFilter<AudioRecording> };
+    if (model.todFinishedBefore) {
+      filter["recordedDate"] ??= {};
+      filter["recordedDate"].lessThanOrEqual = {
+        expressions,
+        value: model.todFinishedBefore,
+      };
+    }
+
+    // TODO Add support for timezones which overflow a boundary
+    this.errors.todBoundaryError =
+      model.todFinishedBefore &&
+      model.todStartedAfter &&
+      model.todFinishedBefore < model.todStartedAfter;
   }
 }
 

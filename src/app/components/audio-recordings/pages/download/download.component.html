@@ -1,5 +1,12 @@
 <h1>Batch Download Audio Recordings</h1>
 
+<!-- Warn users about limitations of time of day filter -->
+<baw-sites-without-timezones
+  [site]="site"
+  [region]="region"
+  [project]="project"
+></baw-sites-without-timezones>
+
 <form #form>
   <!-- Project -->
   <div *ngIf="project" class="mb-3">
@@ -46,19 +53,21 @@
     </label>
     <!-- TODO Replace with dates using yyyy-mm-dd format -->
     <input
-      id="recording-started-after"
-      name="recordingStartedAfter"
+      id="started-after"
+      name="startedAfter"
       type="date"
       class="form-control"
-      [(ngModel)]="model.recordingStartedAfter"
+      [(ngModel)]="model.startedAfter"
       useValueAsDate
     />
 
-    <small class="form-text text-muted">
-      The UTC (+00:00) time zone is used for all date filtering. If you're
-      unsure if your data will be included in a filter, expand your date range
-      by one-day in either direction.
-    </small>
+    <div class="form-text">
+      <strong
+        >The UTC (+00:00) time zone is used for all date filtering.</strong
+      >
+      If you're unsure if your data will be included in a filter, expand your
+      date range by one-day in either direction.
+    </div>
   </div>
 
   <!-- End Date -->
@@ -68,26 +77,119 @@
     </label>
     <!-- TODO Replace with dates using yyyy-mm-dd format -->
     <input
-      id="recording-finished-before"
-      name="recordingFinishedBefore"
+      id="finished-before"
+      name="finishedBefore"
       type="date"
       class="form-control"
-      [(ngModel)]="model.recordingFinishedBefore"
+      [(ngModel)]="model.finishedBefore"
       useValueAsDate
     />
 
-    <small class="form-text text-muted">
-      The UTC (+00:00) time zone is used for all date filtering. If you're
-      unsure if your data will be included in a filter, expand your date range
-      by one-day in either direction.
-    </small>
+    <div class="form-text">
+      <strong
+        >The UTC (+00:00) time zone is used for all date filtering.</strong
+      >
+      If you're unsure if your data will be included in a filter, expand your
+      date range by one-day in either direction.
+    </div>
 
     <!-- TODO Warning message if end date is before start date -->
   </div>
+
+  <!-- Time of Day Selector -->
+
+  <label for="timeOfDay" class="form-label">Time of Day Filter</label>
+
+  <div class="form-check mb-3">
+    <input
+      id="tod-filtering"
+      name="todEnabled"
+      type="checkbox"
+      class="form-check-input"
+      [(ngModel)]="model.todEnabled"
+    />
+
+    <label class="form-check-label" for="tod-filtering">
+      Enable filtering by time of day
+    </label>
+  </div>
+
+  <div
+    id="tod-filters-wrapper"
+    #collapse="ngbCollapse"
+    [ngbCollapse]="!model.todEnabled"
+  >
+    <div class="form-check mb-3">
+      <input
+        id="tod-ignore-dst"
+        name="todIgnoreDst"
+        type="checkbox"
+        class="form-check-input"
+        [disabled]="!model.todEnabled"
+        [(ngModel)]="model.todIgnoreDst"
+      />
+
+      <label class="form-check-label" for="tod-ignore-dst">
+        Ignore day light savings (DST)
+      </label>
+
+      <div class="form-text">
+        Real world events, like dawn chorus, or the vocalization of fauna are
+        not affected by daylight savings time. Ignoring DST is advised to ensure
+        audio is filtered consistently. If any recordings occur during a DST
+        period, the base offset, that is the time it would be if DST were not in
+        effect, will be used.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <div class="input-group">
+        <span class="input-group-text">Start Time</span>
+        <input
+          id="tod-started-after"
+          name="todStartedAfter"
+          type="time"
+          class="form-control"
+          [class.is-invalid]="errors.todBoundaryError"
+          [disabled]="!model.todEnabled"
+          [(ngModel)]="todStartedAfter"
+        />
+        <span class="input-group-text">End Time</span>
+        <input
+          id="tod-finished-before"
+          name="todFinishedBefore"
+          type="time"
+          class="form-control"
+          [class.is-invalid]="errors.todBoundaryError"
+          [disabled]="!model.todEnabled"
+          [(ngModel)]="todFinishedBefore"
+        />
+      </div>
+
+      <div class="form-text">
+        Filter recordings by the time of day they were recorded. If any part of
+        a recording overlaps these limits, then it will be included.
+      </div>
+
+      <div *ngIf="errors.todBoundaryError" class="form-error">
+        Time of day filtering does not currently support filtering past a day
+        boundary. Please adjust your request so that the start time is before
+        the end time.
+      </div>
+    </div>
+  </div>
 </form>
 
+<baw-download-table [recordings$]="recordings$"></baw-download-table>
+
 <div class="clearfix">
-  <a class="btn btn-primary float-end mt-3" [href]="href">Download Script</a>
+  <a
+    id="download-script"
+    class="btn btn-primary float-end mt-3"
+    [class.disabled]="invalidForm(errors)"
+    [href]="href"
+    >Download Script</a
+  >
 </div>
 
 <!-- TODO Preview audio recordings which will be downloaded by this request -->
@@ -130,7 +232,24 @@
     move the script to your external hard drive.
   </p>
 
-  <h3>3. Open a terminal</h3>
+  <h3>3. Unblock the downloader script</h3>
+
+  <ul>
+    <li>
+      If you are on Windows
+      <a href="https://www.thewindowsclub.com/fix-windows-blocked-access-file"
+        >unblock the file</a
+      >
+    </li>
+    <li>
+      If you are on Linux or MacOS, update the permissions of the file using
+      <code>chmod +x "download_audio_files.ps1"</code>
+    </li>
+  </ul>
+
+  <p>Depending on your personal settings,</p>
+
+  <h3>4. Open a terminal</h3>
 
   <p>
     Next open PowerShell in the same folder as your script. In most operating
@@ -145,7 +264,7 @@
     shell (like <code>cmd</code>/<code>bash</code>/<code>zsh</code>).
   </p>
 
-  <h3>4. Get an authentication token</h3>
+  <h3>5. Get an authentication token</h3>
 
   <p>
     Each time you want to run this script, you will need to supply an
@@ -159,7 +278,7 @@
 
   <!-- TODO Show users how with asciicast -->
 
-  <h3>5. Run the script</h3>
+  <h3>6. Run the script</h3>
 
   <p>
     Copy and paste the following command into your PowerShell session. Ensure
@@ -168,7 +287,7 @@
 
   <p>
     <code>
-      ./download_audio_files.ps1 -auth_token="INSERT_AUTH_TOKEN_HERE
+      ./download_audio_files.ps1 -auth_token "INSERT_AUTH_TOKEN_HERE
     </code>
   </p>
 
