@@ -311,7 +311,11 @@
 
   <code *ngIf="!authToken">{{ runScriptCommand }}</code>
 
-  <baw-hidden-copy *ngIf="authToken" tooltip="Show/Hide command">
+  <baw-hidden-copy
+    *ngIf="authToken"
+    tooltip="Show/Hide command"
+    [value]="runScriptCommand"
+  >
     <code>{{ runScriptCommand }}</code>
   </baw-hidden-copy>
 

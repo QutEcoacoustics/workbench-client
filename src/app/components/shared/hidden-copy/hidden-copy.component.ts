@@ -22,7 +22,7 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
       </button>
 
       <pre
-        class="text-center form-control">{{ visible ? value : "..." }}<ng-content *ngIf="visible"></ng-content></pre>
+        class="text-center form-control">{{ visible ? content : "..." }}<ng-content *ngIf="visible"></ng-content></pre>
 
       <button
         type="button"
@@ -53,6 +53,7 @@ export class HiddenCopyComponent {
   @Input() public tooltip: string;
   @Input() public disabled: string | undefined;
   @Input() public value: string;
+  @Input() public content: string;
   public visible: boolean;
 
   public toggleVisibility() {
