@@ -75,36 +75,11 @@
                   <p class="px-1">{{ authTokenDescription }}</p>
                 </small>
                 <!-- User auth token -->
-                <div id="auth-token" class="input-group">
-                  <button
-                    type="button"
-                    class="btn btn-outline-secondary"
-                    ngbTooltip="Show/Hide authentication token"
-                    container="body"
-                    [disabled]="!authToken"
-                    [class.active]="isShowingAuthToken"
-                    (click)="toggleAuthTokenVisibility()"
-                  >
-                    <fa-icon [icon]="['fas', 'eye']"></fa-icon>
-                  </button>
-
-                  <pre
-                    class="text-center form-control"
-                  ><baw-loading *ngIf="!authToken"></baw-loading><small *ngIf="authToken">{{isShowingAuthToken ? authToken: '…'}}</small></pre>
-
-                  <button
-                    type="button"
-                    class="btn btn-outline-secondary"
-                    ngbTooltip="Copied!"
-                    triggers="click"
-                    container="body"
-                    [disabled]="!authToken"
-                  >
-                    <span ngxClipboard [cbContent]="authToken">
-                      <fa-icon [icon]="['fas', 'copy']"></fa-icon>
-                    </span>
-                  </button>
-                </div>
+                <baw-hidden-copy
+                  tooltip="Show/Hide authentication token"
+                  [content]="authToken"
+                  [value]="authToken"
+                ></baw-hidden-copy>
               </li>
             </ul>
           </div>

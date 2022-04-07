@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { Filters } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
@@ -108,6 +109,7 @@ class MyProfileComponent
   public constructor(
     public config: ConfigService,
     protected route: ActivatedRoute,
+    protected session: BawSessionService,
     protected audioEventsApi: ShallowAudioEventsService,
     protected bookmarksApi: BookmarksService,
     protected projectsApi: ProjectsService,
@@ -129,10 +131,7 @@ class MyProfileComponent
     this.updateUserProfile(this.user);
     this.updateStatistics(this.user);
 
-    this.securityApi
-      ?.sessionDetails()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((session) => (this.authToken = session.authToken));
+    this.authToken = this.session.authToken;
   }
 
   public toggleAuthTokenVisibility(): void {
