@@ -2,14 +2,15 @@ import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { visualizeRoute } from "./visualize.routes";
 
 export const visualizeCategory: Category = {
-  icon: ["fas", "poll"],
-  label: "Visualize",
+  icon: ["fas", "timeline"],
+  label: "Timeline",
   route: visualizeRoute,
 };
 
 export const visualizeMenuItem = menuRoute({
   icon: visualizeCategory.icon,
-  label: "Visualize Audio",
+  label: "View Timeline",
   route: visualizeRoute,
-  tooltip: () => "Explore an audio recording through visualization",
+  tooltip: () =>
+    "Explore the timeline of audio recordings through visualization",
 });
