@@ -233,16 +233,18 @@
     <a [strongRoute]="contactUs.route">{{ contactUs.label }}.</a>
   </p>
 
-  <h3>1. Install PowerShell</h3>
+  <h3>1. Install PowerShell 7+</h3>
 
   <p>
     If you do not already have PowerShell 7 or newer installed on your machine,
-    read through
     <a
       href="https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2"
     >
-      this guide.
-    </a>
+      download here</a
+    >.
+    <strong>
+      Having the latest version of Windows does not mean you have PowerShell 7.
+    </strong>
   </p>
 
   <!-- TODO Show users how with asciicast -->
@@ -251,44 +253,65 @@
 
   <p>
     Find the file you have downloaded (likely from the downloads folder) and
-    move it to the location where you want audio files to be downloaded.
+    move it to the location where you want audio files to be downloaded. For
+    example, if you wanted to download files to your external hard drive, move
+    the script to your external hard drive.
   </p>
 
   <p>
-    For example, if you wanted to download files to your external hard drive,
-    move the script to your external hard drive.
+    We suggest not using a cloud folder, such as google drive, as the downloaded
+    recordings may use a lot of storage space.
   </p>
 
   <h3>3. Unblock the downloader script</h3>
 
+  <p></p>
+
   <ul>
     <li>
       If you are on Windows
-      <a href="https://www.thewindowsclub.com/fix-windows-blocked-access-file"
-        >unblock the file</a
-      >
+      <a href="https://www.thewindowsclub.com/fix-windows-blocked-access-file">
+        unblock the file</a
+      >. If you don't see the option to unblock the file, skip this step.
     </li>
     <li>
-      If you are on Linux or MacOS, update the permissions of the file using
-      <code>chmod +x "download_audio_files.ps1"</code>
+      If you are on Linux/MacOS, update the permissions of the file using:
+      <code>chmod +x "download_audio_files.ps1"</code>. You can open the folder
+      containing the file in a terminal following
+      <a
+        href="https://www.groovypost.com/howto/open-command-window-terminal-window-specific-folder-windows-mac-linux/"
+        >this guide</a
+      >
     </li>
   </ul>
 
-  <p>Depending on your personal settings,</p>
-
   <h3>4. Open a terminal</h3>
 
-  <p>
-    Next open PowerShell in the same folder as your script. In most operating
-    systems the file manager has the option to open the current folder in a
-    terminal. If that is not possible, you will need to copy the folder path,
-    and use <code>cd "FOLDER_LOCATION_HERE"</code> to change to the correct
-    directory.
-  </p>
+  <ul>
+    <li>
+      If you are on Windows,
+      <a
+        href="https://www.groovypost.com/howto/open-command-window-terminal-window-specific-folder-windows-mac-linux/"
+        >open the folder containing the script in a PowerShell shell</a
+      >
+    </li>
+    <li>
+      If you are on MacOS,
+      <a
+        href="https://www.handlebar-online.com/popular-questions/how-do-i-open-a-terminal-in-a-specific-folder-mac/"
+      >
+        open the folder containing the script in a terminal</a
+      >
+    </li>
+    <li>
+      If you are on Linux, instructions should be similar to MacOS, however you
+      may need to find instructions relevant to your distro/file manager.
+    </li>
+  </ul>
 
   <p>
-    You can open a PowerShell shell by running <code>pwsh</code> inside a normal
-    shell (like <code>cmd</code>/<code>bash</code>/<code>zsh</code>).
+    You can then open the PowerShell shell by running <code>pwsh</code> inside
+    the terminal you just opened
   </p>
 
   <h3>5. Get an authentication token</h3>
@@ -314,7 +337,7 @@
 
   <p>
     <code>
-      ./download_audio_files.ps1 -auth_token "INSERT_AUTH_TOKEN_HERE
+      ./download_audio_files.ps1 -auth_token "INSERT_AUTH_TOKEN_HERE"
     </code>
   </p>
 
