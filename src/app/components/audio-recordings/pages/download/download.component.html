@@ -238,14 +238,16 @@
 
   <p>
     If you do not already have PowerShell 7 or newer installed on your machine,
+    then you can
     <a
       href="https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2"
     >
-      download here</a
-    >.
-    <strong>
-      Having the latest version of Windows does not mean you have PowerShell 7.
-    </strong>
+      download it here</a
+    >. Windows users should install the MSI package.
+  </p>
+  <p>
+    You cannot use the default PowerShell installed with Windows. The newer
+    version 7 is needed.
   </p>
 
   <!-- TODO Show users how with asciicast -->
@@ -260,8 +262,8 @@
   </p>
 
   <p>
-    We suggest not using a cloud folder, such as google drive, as the downloaded
-    recordings may use a lot of storage space.
+    We suggest not using a cloud folder, such as Google Drive, or OneDrive, as
+    the downloaded recordings may use a lot of storage space.
   </p>
 
   <h3>3. Unblock the downloader script</h3>
@@ -288,59 +290,30 @@
 
   <h3>4. Open a terminal</h3>
 
-  <ul>
-    <li>
-      If you are on Windows,
-      <a
-        href="https://www.groovypost.com/howto/open-command-window-terminal-window-specific-folder-windows-mac-linux/"
-        >open the folder containing the script in a PowerShell shell</a
-      >
-    </li>
-    <li>
-      If you are on MacOS,
-      <a
-        href="https://www.handlebar-online.com/popular-questions/how-do-i-open-a-terminal-in-a-specific-folder-mac/"
-      >
-        open the folder containing the script in a terminal</a
-      >
-    </li>
-    <li>
-      If you are on Linux, instructions should be similar to MacOS, however you
-      may need to find instructions relevant to your distro/file manager.
-    </li>
-  </ul>
-
   <p>
-    You can then open the PowerShell shell by running <code>pwsh</code> inside
-    the terminal you just opened
-  </p>
-
-  <h3>5. Get an authentication token</h3>
-
-  <p>
-    Each time you want to run this script, you will need to supply an
-    authentication token (auth token).
-    <strong class="text-danger"> Treat this code like your password.</strong>
-    You can find the auth token in your
-    <a [strongRoute]="profile.route">{{ profile.label }}</a> page, under the
-    "Authentication Token" section. Copy the auth token, and keep it for the
-    next step.
+    <a
+      href="https://www.groovypost.com/howto/open-command-window-terminal-window-specific-folder-windows-mac-linux/"
+      >Open a PowerShell shell</a
+    >
+    in the folder containing the download script
   </p>
 
   <!-- TODO Show users how with asciicast -->
 
-  <h3>6. Run the script</h3>
+  <h3>5. Run the script</h3>
 
   <p>
-    Copy and paste the following command into your PowerShell session. Ensure
-    you replace INSERT_AUTH_TOKEN_HERE with your auth token.
+    Copy and paste the following command into your PowerShell session.
+    <span *ngIf="!authToken">
+      Login to see the command filled with your authentication token.
+    </span>
   </p>
 
-  <p>
-    <code>
-      ./download_audio_files.ps1 -auth_token "INSERT_AUTH_TOKEN_HERE"
-    </code>
-  </p>
+  <code *ngIf="!authToken">{{ runScriptCommand }}</code>
 
-  <p>Press <kbd>enter</kbd> to run the script.</p>
+  <baw-hidden-copy *ngIf="authToken" tooltip="Show/Hide command">
+    <code>{{ runScriptCommand }}</code>
+  </baw-hidden-copy>
+
+  <p class="mt-3">Press <kbd>enter</kbd> to run the script.</p>
 </section>

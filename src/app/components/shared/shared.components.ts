@@ -16,7 +16,6 @@ import { PipesModule } from "@pipes/pipes.module";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { NgxCaptchaModule } from "ngx-captcha";
-import { ClipboardModule } from "ngx-clipboard";
 import { ToastrModule } from "ngx-toastr";
 import { DirectivesModule } from "src/app/directives/directives.module";
 import { AnnotationDownloadComponent } from "./annotation-download/annotation-download.component";
@@ -30,6 +29,7 @@ import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
 import { CustomInputsModule } from "./formly/custom-inputs.module";
+import { HiddenCopyModule } from "./hidden-copy/hidden-copy.module";
 import { IconsModule } from "./icons/icons.module";
 import { IndicatorModule } from "./indicator/indicator.module";
 import { ItemsModule } from "./items/items.module";
@@ -67,7 +67,6 @@ export const sharedModules = [
   FormlyBootstrapModule,
   NgxDatatableModule,
   ToastrModule,
-  ClipboardModule,
   DateValueAccessorModule,
 
   IconsModule,
@@ -84,6 +83,7 @@ export const sharedModules = [
   CheckboxModule,
   DetailViewModule,
   BreadcrumbModule,
+  HiddenCopyModule,
 ];
 
 export const internalModules = [...sharedModules, NgxCaptchaModule];
