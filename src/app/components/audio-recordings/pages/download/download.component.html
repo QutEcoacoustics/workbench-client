@@ -69,59 +69,53 @@
   >
     <div class="card">
       <div class="card-body">
-        <!-- Start date input -->
-        <div class="mb-3">
-          <label for="day-started-after" class="form-label"> Start date </label>
-          <!-- TODO Replace with dates using yyyy-mm-dd format -->
-          <input
-            id="day-started-after"
-            name="dayStartedAfter"
-            type="date"
-            class="form-control"
-            [(ngModel)]="model.dayStartedAfter"
-            useValueAsDate
-          />
+        <div class="row">
+          <!-- Start date input -->
+          <div class="col-md-6 mb-3 mb-md-0">
+            <div class="input-group">
+              <span class="input-group-text">Start date</span>
+              <!-- TODO Replace with dates using yyyy-mm-dd format -->
+              <input
+                id="day-started-after"
+                name="dayStartedAfter"
+                type="date"
+                class="form-control"
+                [(ngModel)]="model.dayStartedAfter"
+                useValueAsDate
+              />
+            </div>
+          </div>
 
-          <div class="form-text">
-            <strong
-              >The UTC (+00:00) time zone is used for all date
-              filtering.</strong
-            >
-            If you're unsure if your data will be included in a filter, expand
-            your date range by one-day in either direction.
+          <!-- End date input -->
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text">End date</span>
+              <!-- TODO Replace with dates using yyyy-mm-dd format -->
+              <input
+                id="day-finished-before"
+                name="dayFinishedBefore"
+                type="date"
+                class="form-control"
+                [(ngModel)]="model.dayFinishedBefore"
+                useValueAsDate
+              />
+            </div>
           </div>
         </div>
 
-        <!-- End date input -->
-        <div>
-          <label for="day-finished-before" class="form-label"> End date </label>
-          <!-- TODO Replace with dates using yyyy-mm-dd format -->
-          <input
-            id="day-finished-before"
-            name="dayFinishedBefore"
-            type="date"
-            class="form-control"
-            [(ngModel)]="model.dayFinishedBefore"
-            useValueAsDate
-          />
-
-          <div class="form-text">
-            <strong
-              >The UTC (+00:00) time zone is used for all date
-              filtering.</strong
-            >
-            If you're unsure if your data will be included in a filter, expand
-            your date range by one-day in either direction.
-          </div>
-
-          <!-- TODO Warning message if end date is before start date -->
+        <div class="form-text">
+          <strong>
+            The UTC (+00:00) time zone is used for all date filtering.
+          </strong>
+          If you're unsure if your data will be included in a filter, expand
+          your date range by one-day in either direction.
         </div>
       </div>
     </div>
   </div>
 
   <!-- Toggle filtering by time of day -->
-  <div class="form-check">
+  <div class="form-check mt-3">
     <input
       id="tod-filtering"
       name="todFiltering"
@@ -148,8 +142,48 @@
   >
     <div class="card">
       <div class="card-body">
+        <div class="row mb-3">
+          <!-- Start time input -->
+          <div class="col-md-6 mb-3 mb-md-0">
+            <div class="input-group">
+              <span class="input-group-text">Start Time</span>
+              <input
+                id="tod-started-after"
+                name="todStartedAfter"
+                type="time"
+                class="form-control"
+                [class.is-invalid]="errors.todBoundaryError"
+                [disabled]="!model.todFiltering"
+                [(ngModel)]="todStartedAfter"
+              />
+            </div>
+          </div>
+
+          <!-- End time input -->
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text">End Time</span>
+              <input
+                id="tod-finished-before"
+                name="todFinishedBefore"
+                type="time"
+                class="form-control"
+                [class.is-invalid]="errors.todBoundaryError"
+                [disabled]="!model.todFiltering"
+                [(ngModel)]="todFinishedBefore"
+              />
+            </div>
+          </div>
+
+          <div *ngIf="errors.todBoundaryError" class="form-error">
+            Time of day filtering does not currently support filtering past a
+            day boundary. Please adjust your request so that the start time is
+            before the end time.
+          </div>
+        </div>
+
         <!-- Ignore daylight savings checkbox -->
-        <div class="form-check mb-3">
+        <div class="form-check">
           <input
             id="tod-ignore-dst"
             name="todIgnoreDst"
@@ -169,39 +203,6 @@
             to ensure audio is filtered consistently. If any recordings occur
             during a DST period, the base offset, that is the time it would be
             if DST were not in effect, will be used.
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <div class="input-group">
-            <!-- Start time input -->
-            <span class="input-group-text">Start Time</span>
-            <input
-              id="tod-started-after"
-              name="todStartedAfter"
-              type="time"
-              class="form-control"
-              [class.is-invalid]="errors.todBoundaryError"
-              [disabled]="!model.todFiltering"
-              [(ngModel)]="todStartedAfter"
-            />
-            <!-- End time input -->
-            <span class="input-group-text">End Time</span>
-            <input
-              id="tod-finished-before"
-              name="todFinishedBefore"
-              type="time"
-              class="form-control"
-              [class.is-invalid]="errors.todBoundaryError"
-              [disabled]="!model.todFiltering"
-              [(ngModel)]="todFinishedBefore"
-            />
-          </div>
-
-          <div *ngIf="errors.todBoundaryError" class="form-error">
-            Time of day filtering does not currently support filtering past a
-            day boundary. Please adjust your request so that the start time is
-            before the end time.
           </div>
         </div>
       </div>
