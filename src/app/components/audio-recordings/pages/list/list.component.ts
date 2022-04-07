@@ -9,6 +9,7 @@ import {
   audioRecordingMenuItems,
   audioRecordingsCategory,
 } from "@components/audio-recordings/audio-recording.menus";
+import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
@@ -168,7 +169,7 @@ function getPageInfo(subRoute: keyof typeof menuItems): IPageInfo {
   return {
     category: audioRecordingsCategory,
     pageRoute: menuItems[subRoute],
-    menus: { actions: List([downloadMenuItems[subRoute]]) },
+    menus: { actions: List([downloadMenuItems[subRoute], visualizeMenuItem]) },
     resolvers: {
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
