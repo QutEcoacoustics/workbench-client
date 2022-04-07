@@ -69,7 +69,10 @@ class AudioRecordingsListComponent
             site: recording,
             // yyyy-mm-dd hh:mm
             recorded: recording,
-            duration: toRelative(recording.duration, { largest: 1 }),
+            duration: toRelative(recording.duration, {
+              largest: 2,
+              round: true,
+            }),
             model: recording,
           })
         ),
