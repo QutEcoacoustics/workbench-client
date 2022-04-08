@@ -9,6 +9,7 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
   template: `
     <div id="auth-token" class="input-group">
       <button
+        id="visibility-btn"
         type="button"
         class="btn"
         container="body"
@@ -25,15 +26,22 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
         class="text-center form-control">{{ visible ? content : "..." }}<ng-content *ngIf="visible"></ng-content></pre>
 
       <button
+        #copyTooltip="ngbTooltip"
+        id="copy-btn"
         type="button"
         class="btn"
-        [ngbTooltip]="disabled ? disabled : 'Copied!'"
-        triggers="click"
+        triggers="manual"
         container="body"
+        ngbTooltip="Copied!"
         [ngClass]="'btn-outline-' + color"
         [disabled]="disabled"
       >
-        <span ngxClipboard [cbContent]="value">
+        <!-- ! Be careful changing how the clipboard works. It is not tested -->
+        <span
+          ngxClipboard
+          [cbContent]="value"
+          (cbOnSuccess)="copyTooltip.open()"
+        >
           <fa-icon [icon]="['fas', 'copy']"></fa-icon>
         </span>
       </button>

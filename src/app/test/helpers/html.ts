@@ -77,11 +77,18 @@ export function assertImage(
  * @param target Target element
  * @param tooltip Tooltip text
  */
-export function assertTooltip(target: HTMLElement, tooltip: string): void {
+export function assertTooltip(
+  target: HTMLElement,
+  tooltip: string,
+  props: Partial<Exclude<NgbTooltip, "ngbTooltip">> = {}
+): void {
   expect(target).toBeTruthy("No tooltip detected");
   const directive = getDirective<NgbTooltip>(target, NgbTooltip);
   expect(directive).toBeTruthy("No tooltip directive detected");
   expect(directive.ngbTooltip).toContain(tooltip);
+  Object.keys(props).forEach((key) => {
+    expect(directive[key]).toEqual(props[key]);
+  });
 }
 
 export function assertHref(target: HTMLAnchorElement, href: string): void {
