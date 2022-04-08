@@ -49,23 +49,23 @@
   <!-- Toggle filtering by date -->
   <div class="form-check">
     <input
-      id="day-filtering"
-      name="dayFiltering"
+      id="date-filtering"
+      name="dateFiltering"
       type="checkbox"
       class="form-check-input"
-      [(ngModel)]="model.dayFiltering"
+      [(ngModel)]="model.dateFiltering"
     />
 
-    <label class="form-check-label" for="day-filtering">Filter by date</label>
+    <label class="form-check-label" for="date-filtering">Filter by date</label>
 
     <div class="form-text">Filter recordings over a date range</div>
   </div>
 
   <!-- Date filters -->
   <div
-    id="day-range-filters-wrapper"
+    id="date-filters-wrapper"
     #collapse="ngbCollapse"
-    [ngbCollapse]="!model.dayFiltering"
+    [ngbCollapse]="!model.dateFiltering"
   >
     <div class="card">
       <div class="card-body">
@@ -76,11 +76,11 @@
               <span class="input-group-text">Start date</span>
               <!-- TODO Replace with dates using yyyy-mm-dd format -->
               <input
-                id="day-started-after"
-                name="dayStartedAfter"
+                id="date-started-after"
+                name="dateStartedAfter"
                 type="date"
                 class="form-control"
-                [(ngModel)]="model.dayStartedAfter"
+                [(ngModel)]="model.dateStartedAfter"
                 useValueAsDate
               />
             </div>
@@ -92,11 +92,11 @@
               <span class="input-group-text">End date</span>
               <!-- TODO Replace with dates using yyyy-mm-dd format -->
               <input
-                id="day-finished-before"
-                name="dayFinishedBefore"
+                id="date-finished-before"
+                name="dateFinishedBefore"
                 type="date"
                 class="form-control"
-                [(ngModel)]="model.dayFinishedBefore"
+                [(ngModel)]="model.dateFinishedBefore"
                 useValueAsDate
               />
             </div>

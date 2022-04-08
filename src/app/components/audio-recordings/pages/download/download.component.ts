@@ -44,9 +44,9 @@ interface Model {
   projects?: Project[];
   regions?: Region[];
   sites?: Site[];
-  dayFiltering?: boolean;
-  dayStartedAfter?: Date;
-  dayFinishedBefore?: Date;
+  dateFiltering?: boolean;
+  dateStartedAfter?: Date;
+  dateFinishedBefore?: Date;
   todFiltering?: boolean;
   todIgnoreDst?: boolean;
   todStartedAfter?: string;
@@ -162,20 +162,20 @@ class DownloadAudioRecordingsComponent
     filter: InnerFilter<AudioRecording>,
     model: Model
   ): void {
-    if (!model.dayFiltering) {
+    if (!model.dateFiltering) {
       return;
     }
 
-    if (model.dayStartedAfter) {
+    if (model.dateStartedAfter) {
       filter["recordedDate"] ??= {};
       filter["recordedDate"].greaterThanOrEqual =
-        model.dayStartedAfter.toISOString();
+        model.dateStartedAfter.toISOString();
     }
 
-    if (model.dayFinishedBefore) {
+    if (model.dateFinishedBefore) {
       filter["recordedEndDate"] ??= {};
       (filter["recordedEndDate"] as Comparisons).lessThanOrEqual =
-        model.dayFinishedBefore.toISOString();
+        model.dateFinishedBefore.toISOString();
     }
   }
 
