@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
@@ -41,6 +42,7 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
 
   public constructor(
     config: ConfigService,
+    session: BawSessionService,
     route: ActivatedRoute,
     audioEventsApi: ShallowAudioEventsService,
     bookmarksApi: BookmarksService,
@@ -50,6 +52,7 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
   ) {
     super(
       config,
+      session,
       route,
       audioEventsApi,
       bookmarksApi,

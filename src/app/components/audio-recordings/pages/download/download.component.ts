@@ -8,6 +8,7 @@ import {
   Filters,
   InnerFilter,
 } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
@@ -42,9 +43,10 @@ interface Model {
   projects?: Project[];
   regions?: Region[];
   sites?: Site[];
-  startedAfter?: Date;
-  finishedBefore?: Date;
-  todEnabled?: boolean;
+  dateFiltering?: boolean;
+  dateStartedAfter?: Date;
+  dateFinishedBefore?: Date;
+  todFiltering?: boolean;
   todIgnoreDst?: boolean;
   todStartedAfter?: string;
   todFinishedBefore?: string;
@@ -76,6 +78,7 @@ class DownloadAudioRecordingsComponent
 
   public constructor(
     private route: ActivatedRoute,
+    public session: BawSessionService,
     private recordingsApi: AudioRecordingsService
   ) {
     super();
@@ -97,7 +100,11 @@ class DownloadAudioRecordingsComponent
 
   public ngAfterViewInit(): void {
     this.form.valueChanges
-      .pipe(takeUntil(this.unsubscribe))
+      .pipe(
+        debounceTime(defaultDebounceTime),
+        distinctUntilChanged(),
+        takeUntil(this.unsubscribe)
+      )
       .subscribe((model: Model): void => {
         this.updateHref(model);
       });
@@ -113,6 +120,12 @@ class DownloadAudioRecordingsComponent
 
   public get site(): Site {
     return this.models[siteKey] as Site;
+  }
+
+  public get runScriptCommand(): string {
+    return `./download_audio_files.ps1 -auth_token "${
+      this.session.authToken ?? "INSERT_AUTH_TOKEN_HERE"
+    }"`;
   }
 
   public updateHref(model: Model): void {
@@ -146,16 +159,20 @@ class DownloadAudioRecordingsComponent
     filter: InnerFilter<AudioRecording>,
     model: Model
   ): void {
-    if (model.startedAfter) {
-      filter["recordedDate"] ??= {};
-      filter["recordedDate"].greaterThanOrEqual =
-        model.startedAfter.toISOString();
+    if (!model.dateFiltering) {
+      return;
     }
 
-    if (model.finishedBefore) {
+    if (model.dateStartedAfter) {
+      filter["recordedDate"] ??= {};
+      filter["recordedDate"].greaterThanOrEqual =
+        model.dateStartedAfter.toISOString();
+    }
+
+    if (model.dateFinishedBefore) {
       filter["recordedEndDate"] ??= {};
       (filter["recordedEndDate"] as Comparisons).lessThanOrEqual =
-        model.finishedBefore.toISOString();
+        model.dateFinishedBefore.toISOString();
     }
   }
 
@@ -163,10 +180,7 @@ class DownloadAudioRecordingsComponent
     filter: InnerFilter<AudioRecording>,
     model: Model
   ): void {
-    if (
-      !model.todEnabled ||
-      model.todFinishedBefore === model.todStartedAfter
-    ) {
+    if (!model.todFiltering) {
       return;
     }
 

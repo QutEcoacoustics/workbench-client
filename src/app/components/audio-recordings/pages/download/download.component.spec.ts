@@ -1,9 +1,14 @@
 import { fakeAsync } from "@angular/core/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { BawApiService } from "@baw-api/baw-api.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
+import {
+  BawSessionService,
+  guestAuthToken,
+} from "@baw-api/baw-session.service";
 import { DownloadTableComponent } from "@components/audio-recordings/download-table/download-table.component";
 import { SitesWithoutTimezonesComponent } from "@components/audio-recordings/sites-without-timezones/sites-without-timezones.component";
+import { Writeable } from "@helpers/advancedTypes";
+import { AuthToken } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -15,10 +20,12 @@ import {
   SpectatorRouting,
 } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
+import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
+import { modelData } from "@test/helpers/faker";
 import { assertHref } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
@@ -55,10 +62,14 @@ describe("DownloadAudioRecordingsComponent", () => {
   const getSiteLabel = () => spec.query<HTMLLabelElement>("#site-label");
   const getDownloadLink = () =>
     spec.query<HTMLAnchorElement>("#download-script");
-  const getStartedAfterInput = () =>
-    spec.query<HTMLInputElement>("#started-after");
-  const getFinishedBeforeInput = () =>
-    spec.query<HTMLInputElement>("#finished-before");
+  const getDateToggleInput = () =>
+    spec.query<HTMLInputElement>("#date-filtering");
+  const getDateInputWrapper = () =>
+    spec.query("#date-filters-wrapper", { read: NgbCollapse });
+  const getDateStartedAfterInput = () =>
+    spec.query<HTMLInputElement>("#date-started-after");
+  const getDateFinishedBeforeInput = () =>
+    spec.query<HTMLInputElement>("#date-finished-before");
   const getTodInputWrapper = () =>
     spec.query("#tod-filters-wrapper", { read: NgbCollapse });
   const getTodToggleInput = () =>
@@ -70,8 +81,18 @@ describe("DownloadAudioRecordingsComponent", () => {
   const getTodFinishedBeforeInput = () =>
     spec.query<HTMLInputElement>("#tod-finished-before");
 
-  function toggleTod() {
+  function toggleTodFilters() {
     const input = getTodToggleInput();
+    input.click();
+    input.dispatchEvent(new Event("input"));
+    spec.detectChanges();
+    // NgbCollapse takes a bit to open/close
+    spec.tick(1000);
+    spec.detectChanges();
+  }
+
+  function toggleDateFilters() {
+    const input = getDateToggleInput();
     input.click();
     input.dispatchEvent(new Event("input"));
     spec.detectChanges();
@@ -87,7 +108,20 @@ describe("DownloadAudioRecordingsComponent", () => {
     spec.detectChanges();
   }
 
-  function setup(project: Project, region?: Region, site?: Site) {
+  function loadForm() {
+    // Have to do this tick because of
+    // https://github.com/angular/angular/issues/22606#issuecomment-377390233
+    // Also because the observable which updates the filter has a debounce timer
+    spec.tick(1000);
+    spec.detectChanges();
+  }
+
+  function setup(
+    project: Project,
+    region?: Region,
+    site?: Site,
+    authToken?: AuthToken
+  ) {
     const resolvers = {};
     const models = {};
 
@@ -107,6 +141,11 @@ describe("DownloadAudioRecordingsComponent", () => {
     spec = createComponent({
       data: { resolvers, ...models },
       detectChanges: false,
+      providers: [
+        mockProvider(BawSessionService, {
+          authToken: authToken ?? guestAuthToken,
+        }),
+      ],
     });
     apiFilter = new Subject();
     api = spec.inject(AudioRecordingsService);
@@ -125,102 +164,108 @@ describe("DownloadAudioRecordingsComponent", () => {
       it("should show project if exists", fakeAsync(() => {
         setup(defaultProject);
         spec.detectChanges();
-        // Have to do this tick because of
-        // https://github.com/angular/angular/issues/22606#issuecomment-377390233
-        spec.tick();
+        loadForm();
         expect(getProjectInput()).toHaveValue(defaultProject.name);
       }));
 
-      it("should sort bulk download by projects", () => {
+      it("should sort bulk download by projects", fakeAsync(() => {
         const expectedFilter: any = {
           filter: { "projects.id": { eq: defaultProject.id } },
         };
         setup(defaultProject);
         spec.detectChanges();
+        loadForm();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
         assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
-      });
+      }));
     });
 
     describe("region", () => {
-      it("should not show region if not exists", () => {
+      it("should not show region if not exists", fakeAsync(() => {
         setup(defaultProject);
         spec.detectChanges();
+        loadForm();
         expect(getRegionInput()).toBeFalsy();
-      });
+      }));
 
       it("should show region if exists", fakeAsync(() => {
         setup(defaultProject, defaultRegion);
         spec.detectChanges();
-        spec.tick();
+        loadForm();
         expect(getRegionInput()).toHaveValue(defaultRegion.name);
       }));
 
-      it("should sort bulk download by regions", () => {
+      it("should sort bulk download by regions", fakeAsync(() => {
         const expectedFilter: any = {
           filter: { "regions.id": { eq: defaultRegion.id } },
         };
         setup(defaultProject, defaultRegion);
         spec.detectChanges();
+        loadForm();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
         assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
-      });
+      }));
     });
 
     describe("site", () => {
-      it("should not show site if not exists", () => {
+      it("should not show site if not exists", fakeAsync(() => {
         setup(defaultProject, defaultRegion);
         spec.detectChanges();
+        loadForm();
         expect(getSiteInput()).toBeFalsy();
-      });
+      }));
 
-      it("should show site label if exists", () => {
+      it("should show site label if exists", fakeAsync(() => {
         setup(defaultProject, undefined, defaultSite);
         spec.detectChanges();
+        loadForm();
         expect(getSiteLabel()).toHaveText("Site");
-      });
+      }));
 
       it("should show site if exists", fakeAsync(() => {
         setup(defaultProject, undefined, defaultSite);
         spec.detectChanges();
-        spec.tick();
+        loadForm();
         expect(getSiteInput()).toHaveValue(defaultSite.name);
       }));
 
-      it("should sort bulk download by sites", () => {
+      it("should sort bulk download by sites", fakeAsync(() => {
         const expectedFilter: any = {
           filter: { "sites.id": { eq: defaultSite.id } },
         };
         setup(defaultProject, undefined, defaultSite);
         spec.detectChanges();
+        loadForm();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
         assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
-      });
+      }));
     });
 
     describe("point", () => {
-      it("should show point label if region and site exists", () => {
+      it("should show point label if region and site exists", fakeAsync(() => {
         setup(defaultProject, defaultRegion, defaultSite);
         spec.detectChanges();
+        loadForm();
         expect(getSiteLabel()).toHaveText("Point");
-      });
+      }));
 
       it("should show point if region and site exists", fakeAsync(() => {
         setup(defaultProject, defaultRegion, defaultSite);
         spec.detectChanges();
-        spec.tick();
+        loadForm();
         expect(getSiteInput()).toHaveValue(defaultSite.name);
       }));
 
-      it("should sort bulk download by points", () => {
+      it("should sort bulk download by points", fakeAsync(() => {
         const expectedFilter: any = {
           filter: { "sites.id": { eq: defaultSite.id } },
         };
         setup(defaultProject, defaultRegion, defaultSite);
         spec.detectChanges();
+        loadForm();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
         assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
-      });
+      }));
     });
 
     describe("sites without timezones", () => {
@@ -228,81 +273,114 @@ describe("DownloadAudioRecordingsComponent", () => {
         return spec.query(SitesWithoutTimezonesComponent);
       }
 
-      it("should pass project to sites without timezones component", () => {
+      it("should pass project to sites without timezones component", fakeAsync(() => {
         setup(defaultProject);
         spec.detectChanges();
+        loadForm();
         expect(getSitesWithoutTimezones().project).toBe(defaultProject);
-      });
+      }));
 
-      it("should pass region to sites without timezones component if exists", () => {
+      it("should pass region to sites without timezones component if exists", fakeAsync(() => {
         setup(defaultProject, defaultRegion);
         spec.detectChanges();
+        loadForm();
         expect(getSitesWithoutTimezones().region).toBe(defaultRegion);
-      });
+      }));
 
-      it("should not pass region to sites without timezones component if exists", () => {
+      it("should not pass region to sites without timezones component if exists", fakeAsync(() => {
         setup(defaultProject);
         spec.detectChanges();
+        loadForm();
         expect(getSitesWithoutTimezones().region).toBeFalsy();
-      });
+      }));
 
-      it("should pass site to sites without timezones component if exists", () => {
+      it("should pass site to sites without timezones component if exists", fakeAsync(() => {
         setup(defaultProject, undefined, defaultSite);
         spec.detectChanges();
+        loadForm();
         expect(getSitesWithoutTimezones().site).toBe(defaultSite);
-      });
+      }));
 
-      it("should not pass site to sites without timezones component if exists", () => {
+      it("should not pass site to sites without timezones component if exists", fakeAsync(() => {
         setup(defaultProject);
         spec.detectChanges();
+        loadForm();
         expect(getSitesWithoutTimezones().site).toBeFalsy();
-      });
+      }));
     });
   });
 
-  describe("date inputs", () => {
+  describe("date filter", () => {
     beforeEach(fakeAsync(() => {
       setup(defaultProject);
       // Load form elements
       spec.detectChanges();
-      spec.tick();
+      loadForm();
     }));
 
-    it("should include start date in filter", fakeAsync(() => {
-      const date = new Date("2020-01-01");
-      const expectedFilter: any = {
-        filter: {
-          "projects.id": { eq: defaultProject.id },
-          recordedDate: {
-            greaterThanOrEqual: date.toISOString(),
+    describe("toggle fields", () => {
+      it("should initially hide date filters", fakeAsync(() => {
+        expect(getDateToggleInput()).toBeTruthy();
+        expect(getDateInputWrapper().collapsed).toBeTrue();
+      }));
+
+      it("should show date filters when checkbox selected", fakeAsync(() => {
+        toggleDateFilters();
+        expect(getDateToggleInput()).toBeTruthy();
+        expect(getDateInputWrapper().collapsed).toBeFalse();
+      }));
+
+      it("should hide time of day filters when checkbox unselected", fakeAsync(() => {
+        toggleDateFilters();
+        toggleDateFilters();
+        expect(getDateToggleInput()).toBeTruthy();
+        expect(getDateInputWrapper().collapsed).toBeTrue();
+      }));
+    });
+
+    describe("date inputs", () => {
+      beforeEach(fakeAsync(() => {
+        toggleDateFilters();
+      }));
+
+      it("should include start date in filter", fakeAsync(() => {
+        const date = new Date("2020-01-01");
+        const expectedFilter: any = {
+          filter: {
+            "projects.id": { eq: defaultProject.id },
+            recordedDate: {
+              greaterThanOrEqual: date.toISOString(),
+            },
           },
-        },
-      };
+        };
 
-      spec.typeInElement("2020-01-01", getStartedAfterInput());
-      spec.detectChanges();
+        spec.typeInElement("2020-01-01", getDateStartedAfterInput());
+        spec.detectChanges();
+        loadForm();
 
-      expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-      assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
-    }));
+        expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
+        assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
+      }));
 
-    it("should include end date in filter", fakeAsync(() => {
-      const date = new Date("2020-01-01");
-      const expectedFilter: any = {
-        filter: {
-          "projects.id": { eq: defaultProject.id },
-          recordedEndDate: {
-            lessThanOrEqual: date.toISOString(),
+      it("should include end date in filter", fakeAsync(() => {
+        const date = new Date("2020-01-01");
+        const expectedFilter: any = {
+          filter: {
+            "projects.id": { eq: defaultProject.id },
+            recordedEndDate: {
+              lessThanOrEqual: date.toISOString(),
+            },
           },
-        },
-      };
+        };
 
-      spec.typeInElement("2020-01-01", getFinishedBeforeInput());
-      spec.detectChanges();
+        spec.typeInElement("2020-01-01", getDateFinishedBeforeInput());
+        spec.detectChanges();
+        loadForm();
 
-      expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-      assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
-    }));
+        expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
+        assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
+      }));
+    });
   });
 
   describe("time of day filtering", () => {
@@ -310,7 +388,7 @@ describe("DownloadAudioRecordingsComponent", () => {
       beforeEach(fakeAsync(() => {
         setup(defaultProject);
         spec.detectChanges();
-        spec.tick();
+        loadForm();
       }));
 
       it("should initially hide time of day filters", fakeAsync(() => {
@@ -319,14 +397,14 @@ describe("DownloadAudioRecordingsComponent", () => {
       }));
 
       it("should show time of day filters when checkbox selected", fakeAsync(() => {
-        toggleTod();
+        toggleTodFilters();
         expect(getTodToggleInput()).toBeTruthy();
         expect(getTodInputWrapper().collapsed).toBeFalse();
       }));
 
       it("should hide time of day filters when checkbox unselected", fakeAsync(() => {
-        toggleTod();
-        toggleTod();
+        toggleTodFilters();
+        toggleTodFilters();
         expect(getTodToggleInput()).toBeTruthy();
         expect(getTodInputWrapper().collapsed).toBeTrue();
       }));
@@ -335,7 +413,7 @@ describe("DownloadAudioRecordingsComponent", () => {
         const expectedFilter: any = {
           filter: { "projects.id": { eq: defaultProject.id } },
         };
-        toggleTod();
+        toggleTodFilters();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
         assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
       }));
@@ -345,8 +423,8 @@ describe("DownloadAudioRecordingsComponent", () => {
       beforeEach(fakeAsync(() => {
         setup(defaultProject);
         spec.detectChanges();
-        spec.tick();
-        toggleTod();
+        loadForm();
+        toggleTodFilters();
       }));
 
       it("should initially be enabled", () => {
@@ -356,6 +434,7 @@ describe("DownloadAudioRecordingsComponent", () => {
 
       it("should disable on click", fakeAsync(() => {
         toggleIgnoreDst();
+        loadForm();
         expect(getTodIgnoreDstInput().checked).toBeFalse();
         expect(spec.component.model.todIgnoreDst).toBeFalse();
       }));
@@ -365,8 +444,8 @@ describe("DownloadAudioRecordingsComponent", () => {
       beforeEach(fakeAsync(() => {
         setup(defaultProject);
         spec.detectChanges();
-        spec.tick();
-        toggleTod();
+        loadForm();
+        toggleTodFilters();
       }));
 
       [true, false].forEach((ignoreDst) => {
@@ -395,6 +474,7 @@ describe("DownloadAudioRecordingsComponent", () => {
 
           spec.typeInElement(time, getTodStartedAfterInput());
           spec.detectChanges();
+          loadForm();
 
           expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
           assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
@@ -425,6 +505,7 @@ describe("DownloadAudioRecordingsComponent", () => {
 
           spec.typeInElement(time, getTodFinishedBeforeInput());
           spec.detectChanges();
+          loadForm();
 
           expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
           assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
@@ -462,14 +543,16 @@ describe("DownloadAudioRecordingsComponent", () => {
 
       setup(defaultProject);
       spec.detectChanges();
-      spec.tick();
-      toggleTod();
+      loadForm();
+      toggleDateFilters();
+      toggleTodFilters();
 
-      spec.typeInElement("2019-01-01", getStartedAfterInput());
-      spec.typeInElement("2020-01-01", getFinishedBeforeInput());
+      spec.typeInElement("2019-01-01", getDateStartedAfterInput());
+      spec.typeInElement("2020-01-01", getDateFinishedBeforeInput());
       spec.typeInElement(startTime, getTodStartedAfterInput());
       spec.typeInElement(endTime, getTodFinishedBeforeInput());
       spec.detectChanges();
+      loadForm();
 
       expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
       assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
@@ -478,9 +561,49 @@ describe("DownloadAudioRecordingsComponent", () => {
     // TODO Expand to test various edge cases
   });
 
-  it("should have instructions", () => {
-    setup(defaultProject);
-    spec.detectChanges();
-    expect(spec.query("section")).toContainText("Instructions");
+  describe("instructions", () => {
+    it("should have instructions", () => {
+      setup(defaultProject);
+      spec.detectChanges();
+      expect(spec.query("section")).toContainText("Instructions");
+    });
+
+    it("should show instructions for guest users", () => {
+      setup(defaultProject);
+      spec.detectChanges();
+      expect(spec.query("#run-script-description")).toContainText("Login");
+      expect(spec.query("#guest-run-script")).toBeTruthy();
+      expect(spec.query(HiddenCopyComponent)).toBeFalsy();
+    });
+
+    it("should show instructions for logged in users", () => {
+      const authToken = modelData.authToken();
+      setup(defaultProject, undefined, undefined, authToken);
+      spec.detectChanges();
+
+      expect(spec.query("#run-script-description")).not.toContainText("Login");
+      expect(spec.query("#guest-run-script")).toBeFalsy();
+
+      const hiddenCopy = spec.query(HiddenCopyComponent);
+      expect(hiddenCopy).toBeTruthy();
+      expect(hiddenCopy.tooltip).toBe("Show/Hide command");
+      expect(hiddenCopy.value).toBe(
+        `./download_audio_files.ps1 -auth_token "${authToken}"`
+      );
+    });
+
+    it("should hide logged in user instructions after logout", () => {
+      const authToken = modelData.authToken();
+      setup(defaultProject, undefined, undefined, authToken);
+      spec.detectChanges();
+
+      spec.inject<Writeable<BawSessionService>>(BawSessionService).authToken =
+        guestAuthToken;
+      spec.detectChanges();
+
+      expect(spec.query("#run-script-description")).toContainText("Login");
+      expect(spec.query("#guest-run-script")).toBeTruthy();
+      expect(spec.query(HiddenCopyComponent)).toBeFalsy();
+    });
   });
 });

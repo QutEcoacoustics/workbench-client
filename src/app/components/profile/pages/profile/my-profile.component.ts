@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { Filters } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
@@ -64,7 +65,6 @@ class MyProfileComponent
   public thirdPerson = false;
   public user: User;
   public isShowingAuthToken = false;
-  public authToken: string;
   public userStatistics: List<IItem> = List([
     {
       icon: projectsMenuItem.icon,
@@ -107,6 +107,7 @@ class MyProfileComponent
 
   public constructor(
     public config: ConfigService,
+    public session: BawSessionService,
     protected route: ActivatedRoute,
     protected audioEventsApi: ShallowAudioEventsService,
     protected bookmarksApi: BookmarksService,
@@ -128,11 +129,6 @@ class MyProfileComponent
     this.user = userModel.model;
     this.updateUserProfile(this.user);
     this.updateStatistics(this.user);
-
-    this.securityApi
-      ?.sessionDetails()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((session) => (this.authToken = session.authToken));
   }
 
   public toggleAuthTokenVisibility(): void {

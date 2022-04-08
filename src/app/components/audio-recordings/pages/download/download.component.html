@@ -7,7 +7,7 @@
   [project]="project"
 ></baw-sites-without-timezones>
 
-<form #form>
+<form #form class="mb-3">
   <!-- Project -->
   <div *ngIf="project" class="mb-3">
     <label id="project-label" for="project" class="form-label">Project</label>
@@ -46,140 +46,171 @@
     />
   </div>
 
-  <!-- Start Date -->
-  <div class="mb-3">
-    <label for="startDate" class="form-label">
-      Date recording started after
-    </label>
-    <!-- TODO Replace with dates using yyyy-mm-dd format -->
+  <!-- Toggle filtering by date -->
+  <div class="form-check">
     <input
-      id="started-after"
-      name="startedAfter"
-      type="date"
-      class="form-control"
-      [(ngModel)]="model.startedAfter"
-      useValueAsDate
-    />
-
-    <div class="form-text">
-      <strong
-        >The UTC (+00:00) time zone is used for all date filtering.</strong
-      >
-      If you're unsure if your data will be included in a filter, expand your
-      date range by one-day in either direction.
-    </div>
-  </div>
-
-  <!-- End Date -->
-  <div class="mb-3">
-    <label for="endDate" class="form-label">
-      Date recording ended before
-    </label>
-    <!-- TODO Replace with dates using yyyy-mm-dd format -->
-    <input
-      id="finished-before"
-      name="finishedBefore"
-      type="date"
-      class="form-control"
-      [(ngModel)]="model.finishedBefore"
-      useValueAsDate
-    />
-
-    <div class="form-text">
-      <strong
-        >The UTC (+00:00) time zone is used for all date filtering.</strong
-      >
-      If you're unsure if your data will be included in a filter, expand your
-      date range by one-day in either direction.
-    </div>
-
-    <!-- TODO Warning message if end date is before start date -->
-  </div>
-
-  <!-- Time of Day Selector -->
-
-  <label for="timeOfDay" class="form-label">Time of Day Filter</label>
-
-  <div class="form-check mb-3">
-    <input
-      id="tod-filtering"
-      name="todEnabled"
+      id="date-filtering"
+      name="dateFiltering"
       type="checkbox"
       class="form-check-input"
-      [(ngModel)]="model.todEnabled"
+      [(ngModel)]="model.dateFiltering"
+    />
+
+    <label class="form-check-label" for="date-filtering">Filter by date</label>
+
+    <div class="form-text">Filter recordings over a date range</div>
+  </div>
+
+  <!-- Date filters -->
+  <div
+    id="date-filters-wrapper"
+    #collapse="ngbCollapse"
+    [ngbCollapse]="!model.dateFiltering"
+  >
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <!-- Start date input -->
+          <div class="col-md-6 mb-3 mb-md-0">
+            <div class="input-group">
+              <span class="input-group-text">Start date</span>
+              <!-- TODO Replace with dates using yyyy-mm-dd format -->
+              <input
+                id="date-started-after"
+                name="dateStartedAfter"
+                type="date"
+                class="form-control"
+                [(ngModel)]="model.dateStartedAfter"
+                useValueAsDate
+              />
+            </div>
+          </div>
+
+          <!-- End date input -->
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text">End date</span>
+              <!-- TODO Replace with dates using yyyy-mm-dd format -->
+              <input
+                id="date-finished-before"
+                name="dateFinishedBefore"
+                type="date"
+                class="form-control"
+                [(ngModel)]="model.dateFinishedBefore"
+                useValueAsDate
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-text">
+          <strong>
+            The UTC (+00:00) time zone is used for all date filtering.
+          </strong>
+          If you're unsure if your data will be included in a filter, expand
+          your date range by one-day in either direction.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toggle filtering by time of day -->
+  <div class="form-check mt-3">
+    <input
+      id="tod-filtering"
+      name="todFiltering"
+      type="checkbox"
+      class="form-check-input"
+      [(ngModel)]="model.todFiltering"
     />
 
     <label class="form-check-label" for="tod-filtering">
-      Enable filtering by time of day
+      Filter by time of day
     </label>
+
+    <div class="form-text">
+      Filter recordings by the time of day they were recorded. If any part of a
+      recording overlaps these limits, then it will be included.
+    </div>
   </div>
 
+  <!-- Time of day filters -->
   <div
     id="tod-filters-wrapper"
     #collapse="ngbCollapse"
-    [ngbCollapse]="!model.todEnabled"
+    [ngbCollapse]="!model.todFiltering"
   >
-    <div class="form-check mb-3">
-      <input
-        id="tod-ignore-dst"
-        name="todIgnoreDst"
-        type="checkbox"
-        class="form-check-input"
-        [disabled]="!model.todEnabled"
-        [(ngModel)]="model.todIgnoreDst"
-      />
+    <div class="card">
+      <div class="card-body">
+        <div class="row mb-3">
+          <!-- Start time input -->
+          <div class="col-md-6 mb-3 mb-md-0">
+            <div class="input-group">
+              <span class="input-group-text">Start Time</span>
+              <input
+                id="tod-started-after"
+                name="todStartedAfter"
+                type="time"
+                class="form-control"
+                [class.is-invalid]="errors.todBoundaryError"
+                [disabled]="!model.todFiltering"
+                [(ngModel)]="todStartedAfter"
+              />
+            </div>
+          </div>
 
-      <label class="form-check-label" for="tod-ignore-dst">
-        Ignore day light savings (DST)
-      </label>
+          <!-- End time input -->
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text">End Time</span>
+              <input
+                id="tod-finished-before"
+                name="todFinishedBefore"
+                type="time"
+                class="form-control"
+                [class.is-invalid]="errors.todBoundaryError"
+                [disabled]="!model.todFiltering"
+                [(ngModel)]="todFinishedBefore"
+              />
+            </div>
+          </div>
 
-      <div class="form-text">
-        Real world events, like dawn chorus, or the vocalization of fauna are
-        not affected by daylight savings time. Ignoring DST is advised to ensure
-        audio is filtered consistently. If any recordings occur during a DST
-        period, the base offset, that is the time it would be if DST were not in
-        effect, will be used.
-      </div>
-    </div>
+          <div *ngIf="errors.todBoundaryError" class="form-error">
+            Time of day filtering does not currently support filtering past a
+            day boundary. Please adjust your request so that the start time is
+            before the end time.
+          </div>
+        </div>
 
-    <div class="mb-3">
-      <div class="input-group">
-        <span class="input-group-text">Start Time</span>
-        <input
-          id="tod-started-after"
-          name="todStartedAfter"
-          type="time"
-          class="form-control"
-          [class.is-invalid]="errors.todBoundaryError"
-          [disabled]="!model.todEnabled"
-          [(ngModel)]="todStartedAfter"
-        />
-        <span class="input-group-text">End Time</span>
-        <input
-          id="tod-finished-before"
-          name="todFinishedBefore"
-          type="time"
-          class="form-control"
-          [class.is-invalid]="errors.todBoundaryError"
-          [disabled]="!model.todEnabled"
-          [(ngModel)]="todFinishedBefore"
-        />
-      </div>
+        <!-- Ignore daylight savings checkbox -->
+        <div class="form-check">
+          <input
+            id="tod-ignore-dst"
+            name="todIgnoreDst"
+            type="checkbox"
+            class="form-check-input"
+            [disabled]="!model.todFiltering"
+            [(ngModel)]="model.todIgnoreDst"
+          />
 
-      <div class="form-text">
-        Filter recordings by the time of day they were recorded. If any part of
-        a recording overlaps these limits, then it will be included.
-      </div>
+          <label class="form-check-label" for="tod-ignore-dst">
+            Ignore day light savings (DST)
+          </label>
 
-      <div *ngIf="errors.todBoundaryError" class="form-error">
-        Time of day filtering does not currently support filtering past a day
-        boundary. Please adjust your request so that the start time is before
-        the end time.
+          <div class="form-text">
+            Real world events, like dawn chorus, or the vocalization of fauna
+            are not affected by daylight savings time. Ignoring DST is advised
+            to ensure audio is filtered consistently. If any recordings occur
+            during a DST period, the base offset, that is the time it would be
+            if DST were not in effect, will be used.
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </form>
 
+<!-- TODO Preview audio recordings which will be downloaded by this request -->
 <baw-download-table [recordings$]="recordings$"></baw-download-table>
 
 <div class="clearfix">
@@ -188,13 +219,10 @@
     class="btn btn-primary float-end mt-3"
     [class.disabled]="invalidForm(errors)"
     [href]="href"
-    >Download Script</a
   >
+    Download Script
+  </a>
 </div>
-
-<!-- TODO Preview audio recordings which will be downloaded by this request -->
-
-<hr />
 
 <!-- TODO Extract to CMS? -->
 <section>
@@ -206,16 +234,20 @@
     <a [strongRoute]="contactUs.route">{{ contactUs.label }}.</a>
   </p>
 
-  <h3>1. Install PowerShell</h3>
+  <h3>1. Install PowerShell 7+</h3>
 
   <p>
     If you do not already have PowerShell 7 or newer installed on your machine,
-    read through
+    then you can
     <a
       href="https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2"
     >
-      this guide.
-    </a>
+      download it here</a
+    >. Windows users should install the MSI package.
+  </p>
+  <p>
+    You cannot use the default PowerShell installed with Windows. The newer
+    version 7 is needed.
   </p>
 
   <!-- TODO Show users how with asciicast -->
@@ -224,72 +256,70 @@
 
   <p>
     Find the file you have downloaded (likely from the downloads folder) and
-    move it to the location where you want audio files to be downloaded.
+    move it to the location where you want audio files to be downloaded. For
+    example, if you wanted to download files to your external hard drive, move
+    the script to your external hard drive.
   </p>
 
   <p>
-    For example, if you wanted to download files to your external hard drive,
-    move the script to your external hard drive.
+    We suggest not using a cloud folder, such as Google Drive, or OneDrive, as
+    the downloaded recordings may use a lot of storage space.
   </p>
 
   <h3>3. Unblock the downloader script</h3>
 
+  <p></p>
+
   <ul>
     <li>
       If you are on Windows
-      <a href="https://www.thewindowsclub.com/fix-windows-blocked-access-file"
-        >unblock the file</a
-      >
+      <a href="https://www.thewindowsclub.com/fix-windows-blocked-access-file">
+        unblock the file</a
+      >. If you don't see the option to unblock the file, skip this step.
     </li>
     <li>
-      If you are on Linux or MacOS, update the permissions of the file using
-      <code>chmod +x "download_audio_files.ps1"</code>
+      If you are on Linux/MacOS, update the permissions of the file using:
+      <code>chmod +x "download_audio_files.ps1"</code>. You can open the folder
+      containing the file in a terminal following
+      <a
+        href="https://www.groovypost.com/howto/open-command-window-terminal-window-specific-folder-windows-mac-linux/"
+        >this guide</a
+      >
     </li>
   </ul>
-
-  <p>Depending on your personal settings,</p>
 
   <h3>4. Open a terminal</h3>
 
   <p>
-    Next open PowerShell in the same folder as your script. In most operating
-    systems the file manager has the option to open the current folder in a
-    terminal. If that is not possible, you will need to copy the folder path,
-    and use <code>cd "FOLDER_LOCATION_HERE"</code> to change to the correct
-    directory.
-  </p>
-
-  <p>
-    You can open a PowerShell shell by running <code>pwsh</code> inside a normal
-    shell (like <code>cmd</code>/<code>bash</code>/<code>zsh</code>).
-  </p>
-
-  <h3>5. Get an authentication token</h3>
-
-  <p>
-    Each time you want to run this script, you will need to supply an
-    authentication token (auth token).
-    <strong class="text-danger"> Treat this code like your password.</strong>
-    You can find the auth token in your
-    <a [strongRoute]="profile.route">{{ profile.label }}</a> page, under the
-    "Authentication Token" section. Copy the auth token, and keep it for the
-    next step.
+    <a
+      href="https://www.groovypost.com/howto/open-command-window-terminal-window-specific-folder-windows-mac-linux/"
+      >Open a PowerShell shell</a
+    >
+    in the folder containing the download script
   </p>
 
   <!-- TODO Show users how with asciicast -->
 
-  <h3>6. Run the script</h3>
+  <h3>5. Run the script</h3>
 
-  <p>
-    Copy and paste the following command into your PowerShell session. Ensure
-    you replace INSERT_AUTH_TOKEN_HERE with your auth token.
+  <p id="run-script-description">
+    Copy and paste the following command into your PowerShell session.
+    <span *ngIf="!session.authToken">
+      Login to see the command filled with your authentication token.
+    </span>
   </p>
 
-  <p>
-    <code>
-      ./download_audio_files.ps1 -auth_token "INSERT_AUTH_TOKEN_HERE
-    </code>
-  </p>
+  <code id="guest-run-script" *ngIf="!session.authToken">{{
+    runScriptCommand
+  }}</code>
 
-  <p>Press <kbd>enter</kbd> to run the script.</p>
+  <baw-hidden-copy
+    *ngIf="session.authToken"
+    tooltip="Show/Hide command"
+    [value]="runScriptCommand"
+  >
+    <code>{{ runScriptCommand }}</code>
+  </baw-hidden-copy>
+
+  <p class="mt-3">Press <kbd>enter</kbd> to run the script.</p>
 </section>
