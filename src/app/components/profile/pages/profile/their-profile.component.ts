@@ -42,8 +42,8 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
 
   public constructor(
     config: ConfigService,
-    route: ActivatedRoute,
     session: BawSessionService,
+    route: ActivatedRoute,
     audioEventsApi: ShallowAudioEventsService,
     bookmarksApi: BookmarksService,
     projectsApi: ProjectsService,
@@ -52,8 +52,8 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
   ) {
     super(
       config,
-      route,
       session,
+      route,
       audioEventsApi,
       bookmarksApi,
       projectsApi,

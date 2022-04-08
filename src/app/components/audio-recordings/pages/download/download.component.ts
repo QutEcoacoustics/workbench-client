@@ -21,7 +21,6 @@ import {
 import { myAccountMenuItem } from "@components/profile/profile.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { AuthToken } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -72,7 +71,6 @@ class DownloadAudioRecordingsComponent
   public model: Model = { todIgnoreDst: true };
   public models: ResolvedModelList;
   public profile = myAccountMenuItem;
-  public authToken: AuthToken;
 
   public errors: {
     todBoundaryError?: boolean;
@@ -80,7 +78,7 @@ class DownloadAudioRecordingsComponent
 
   public constructor(
     private route: ActivatedRoute,
-    private session: BawSessionService,
+    public session: BawSessionService,
     private recordingsApi: AudioRecordingsService
   ) {
     super();
@@ -98,7 +96,6 @@ class DownloadAudioRecordingsComponent
 
     this.models = retrieveResolvers(this.route.snapshot.data);
     this.updateHref(this.model);
-    this.authToken = this.session.authToken;
   }
 
   public ngAfterViewInit(): void {
@@ -127,7 +124,7 @@ class DownloadAudioRecordingsComponent
 
   public get runScriptCommand(): string {
     return `./download_audio_files.ps1 -auth_token "${
-      this.authToken ?? "INSERT_AUTH_TOKEN_HERE"
+      this.session.authToken ?? "INSERT_AUTH_TOKEN_HERE"
     }"`;
   }
 

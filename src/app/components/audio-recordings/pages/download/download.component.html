@@ -302,17 +302,19 @@
 
   <h3>5. Run the script</h3>
 
-  <p>
+  <p id="run-script-description">
     Copy and paste the following command into your PowerShell session.
-    <span *ngIf="!authToken">
+    <span *ngIf="!session.authToken">
       Login to see the command filled with your authentication token.
     </span>
   </p>
 
-  <code *ngIf="!authToken">{{ runScriptCommand }}</code>
+  <code id="guest-run-script" *ngIf="!session.authToken">{{
+    runScriptCommand
+  }}</code>
 
   <baw-hidden-copy
-    *ngIf="authToken"
+    *ngIf="session.authToken"
     tooltip="Show/Hide command"
     [value]="runScriptCommand"
   >

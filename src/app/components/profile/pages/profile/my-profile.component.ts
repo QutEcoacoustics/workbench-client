@@ -65,7 +65,6 @@ class MyProfileComponent
   public thirdPerson = false;
   public user: User;
   public isShowingAuthToken = false;
-  public authToken: string;
   public userStatistics: List<IItem> = List([
     {
       icon: projectsMenuItem.icon,
@@ -108,8 +107,8 @@ class MyProfileComponent
 
   public constructor(
     public config: ConfigService,
+    public session: BawSessionService,
     protected route: ActivatedRoute,
-    protected session: BawSessionService,
     protected audioEventsApi: ShallowAudioEventsService,
     protected bookmarksApi: BookmarksService,
     protected projectsApi: ProjectsService,
@@ -130,8 +129,6 @@ class MyProfileComponent
     this.user = userModel.model;
     this.updateUserProfile(this.user);
     this.updateStatistics(this.user);
-
-    this.authToken = this.session.authToken;
   }
 
   public toggleAuthTokenVisibility(): void {

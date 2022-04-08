@@ -7,6 +7,7 @@ import {
 } from "@baw-api/baw-session.service";
 import { DownloadTableComponent } from "@components/audio-recordings/download-table/download-table.component";
 import { SitesWithoutTimezonesComponent } from "@components/audio-recordings/sites-without-timezones/sites-without-timezones.component";
+import { Writeable } from "@helpers/advancedTypes";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
@@ -19,10 +20,12 @@ import {
   SpectatorRouting,
 } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
+import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
+import { modelData } from "@test/helpers/faker";
 import { assertHref } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
@@ -558,9 +561,49 @@ describe("DownloadAudioRecordingsComponent", () => {
     // TODO Expand to test various edge cases
   });
 
-  it("should have instructions", () => {
-    setup(defaultProject);
-    spec.detectChanges();
-    expect(spec.query("section")).toContainText("Instructions");
+  describe("instructions", () => {
+    it("should have instructions", () => {
+      setup(defaultProject);
+      spec.detectChanges();
+      expect(spec.query("section")).toContainText("Instructions");
+    });
+
+    it("should show instructions for guest users", () => {
+      setup(defaultProject);
+      spec.detectChanges();
+      expect(spec.query("#run-script-description")).toContainText("Login");
+      expect(spec.query("#guest-run-script")).toBeTruthy();
+      expect(spec.query(HiddenCopyComponent)).toBeFalsy();
+    });
+
+    it("should show instructions for logged in users", () => {
+      const authToken = modelData.authToken();
+      setup(defaultProject, undefined, undefined, authToken);
+      spec.detectChanges();
+
+      expect(spec.query("#run-script-description")).not.toContainText("Login");
+      expect(spec.query("#guest-run-script")).toBeFalsy();
+
+      const hiddenCopy = spec.query(HiddenCopyComponent);
+      expect(hiddenCopy).toBeTruthy();
+      expect(hiddenCopy.tooltip).toBe("Show/Hide command");
+      expect(hiddenCopy.value).toBe(
+        `./download_audio_files.ps1 -auth_token "${authToken}"`
+      );
+    });
+
+    it("should hide logged in user instructions after logout", () => {
+      const authToken = modelData.authToken();
+      setup(defaultProject, undefined, undefined, authToken);
+      spec.detectChanges();
+
+      spec.inject<Writeable<BawSessionService>>(BawSessionService).authToken =
+        guestAuthToken;
+      spec.detectChanges();
+
+      expect(spec.query("#run-script-description")).toContainText("Login");
+      expect(spec.query("#guest-run-script")).toBeTruthy();
+      expect(spec.query(HiddenCopyComponent)).toBeFalsy();
+    });
   });
 });
