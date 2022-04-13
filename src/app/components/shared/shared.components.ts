@@ -32,6 +32,7 @@ import { CustomInputsModule } from "./formly/custom-inputs.module";
 import { HiddenCopyModule } from "./hidden-copy/hidden-copy.module";
 import { IconsModule } from "./icons/icons.module";
 import { IndicatorModule } from "./indicator/indicator.module";
+import { InputModule } from "./input/input.module";
 import { ItemsModule } from "./items/items.module";
 import { LoadingModule } from "./loading/loading.module";
 import { MenuModule } from "./menu/menu.module";
@@ -84,6 +85,7 @@ export const sharedModules = [
   DetailViewModule,
   BreadcrumbModule,
   HiddenCopyModule,
+  InputModule,
 ];
 
 export const internalModules = [...sharedModules, NgxCaptchaModule];

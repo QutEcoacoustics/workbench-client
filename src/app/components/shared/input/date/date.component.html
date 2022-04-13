@@ -1,0 +1,20 @@
+<div class="input-group">
+  <span class="input-group-text">{{ label }}</span>
+  <input
+    ngbDatepicker
+    #dateInput="ngbDatepicker"
+    class="form-control"
+    placeholder="yyyy-mm-dd"
+    [maxDate]="maxDate"
+    [minDate]="minDate"
+    [value]="formattedDate"
+    (dateSelect)="setDate($event)"
+  />
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    (click)="dateInput.toggle()"
+  >
+    <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
+  </button>
+</div>

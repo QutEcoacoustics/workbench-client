@@ -72,34 +72,22 @@
         <div class="row">
           <!-- Start date input -->
           <div class="col-md-6 mb-3 mb-md-0">
-            <div class="input-group">
-              <span class="input-group-text">Start date</span>
-              <!-- TODO Replace with dates using yyyy-mm-dd format -->
-              <input
-                id="date-started-after"
-                name="dateStartedAfter"
-                type="date"
-                class="form-control"
-                [(ngModel)]="model.dateStartedAfter"
-                useValueAsDate
-              />
-            </div>
+            <baw-date
+              id="date-started-after"
+              name="dateStartedAfter"
+              label="Start Date"
+              [(ngModel)]="model.dateStartedAfter"
+            ></baw-date>
           </div>
 
           <!-- End date input -->
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text">End date</span>
-              <!-- TODO Replace with dates using yyyy-mm-dd format -->
-              <input
-                id="date-finished-before"
-                name="dateFinishedBefore"
-                type="date"
-                class="form-control"
-                [(ngModel)]="model.dateFinishedBefore"
-                useValueAsDate
-              />
-            </div>
+          <div class="col-md-6 mb-3 mb-md-0">
+            <baw-date
+              id="date-finished-before"
+              name="dateFinishedBefore"
+              label="End Date"
+              [(ngModel)]="model.dateFinishedBefore"
+            ></baw-date>
           </div>
         </div>
 

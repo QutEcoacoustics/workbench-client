@@ -25,6 +25,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
+import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import {
   debounceTime,
   distinctUntilChanged,
@@ -44,8 +45,8 @@ interface Model {
   regions?: Region[];
   sites?: Site[];
   dateFiltering?: boolean;
-  dateStartedAfter?: Date;
-  dateFinishedBefore?: Date;
+  dateStartedAfter?: string;
+  dateFinishedBefore?: string;
   todFiltering?: boolean;
   todIgnoreDst?: boolean;
   todStartedAfter?: string;
@@ -71,14 +72,15 @@ class DownloadAudioRecordingsComponent
   public model: Model = { todIgnoreDst: true };
   public models: ResolvedModelList;
   public profile = myAccountMenuItem;
+  public hoveredDate: NgbDate;
 
   public errors: {
     todBoundaryError?: boolean;
   } = {};
 
   public constructor(
-    private route: ActivatedRoute,
     public session: BawSessionService,
+    private route: ActivatedRoute,
     private recordingsApi: AudioRecordingsService
   ) {
     super();
@@ -106,6 +108,7 @@ class DownloadAudioRecordingsComponent
         takeUntil(this.unsubscribe)
       )
       .subscribe((model: Model): void => {
+        console.log(model);
         this.updateHref(model);
       });
   }
@@ -165,14 +168,13 @@ class DownloadAudioRecordingsComponent
 
     if (model.dateStartedAfter) {
       filter["recordedDate"] ??= {};
-      filter["recordedDate"].greaterThanOrEqual =
-        model.dateStartedAfter.toISOString();
+      filter["recordedDate"].greaterThanOrEqual = model.dateStartedAfter;
     }
 
     if (model.dateFinishedBefore) {
       filter["recordedEndDate"] ??= {};
       (filter["recordedEndDate"] as Comparisons).lessThanOrEqual =
-        model.dateFinishedBefore.toISOString();
+        model.dateFinishedBefore;
     }
   }
 
