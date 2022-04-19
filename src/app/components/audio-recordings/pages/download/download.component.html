@@ -133,34 +133,22 @@
         <div class="row mb-3">
           <!-- Start time input -->
           <div class="col-md-6 mb-3 mb-md-0">
-            <div class="input-group">
-              <span class="input-group-text">Start Time</span>
-              <input
-                id="tod-started-after"
-                name="todStartedAfter"
-                type="time"
-                class="form-control"
-                [class.is-invalid]="errors.todBoundaryError"
-                [disabled]="!model.todFiltering"
-                [(ngModel)]="todStartedAfter"
-              />
-            </div>
+            <baw-time
+              id="tod-started-after"
+              name="todStartedAfter"
+              label="Start Time"
+              type="time"
+            ></baw-time>
           </div>
 
           <!-- End time input -->
           <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text">End Time</span>
-              <input
-                id="tod-finished-before"
-                name="todFinishedBefore"
-                type="time"
-                class="form-control"
-                [class.is-invalid]="errors.todBoundaryError"
-                [disabled]="!model.todFiltering"
-                [(ngModel)]="todFinishedBefore"
-              />
-            </div>
+            <baw-time
+              id="tod-finished-before"
+              name="todFinishedBefore"
+              label="End Time"
+              type="time"
+            ></baw-time>
           </div>
 
           <div *ngIf="errors.todBoundaryError" class="form-error">

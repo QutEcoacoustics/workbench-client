@@ -35,12 +35,12 @@ export const formlyConfig: ConfigOption = {
   validationMessages: [
     { name: "required", message: "This field is required" },
     {
-      name: "minlength",
+      name: "minLength",
       message: (_, field) =>
         `Input should have at least ${field.templateOptions.minLength} characters`,
     },
     {
-      name: "maxlength",
+      name: "maxLength",
       message: (_, field) =>
         `This value should be less than ${field.templateOptions.maxLength} characters`,
     },

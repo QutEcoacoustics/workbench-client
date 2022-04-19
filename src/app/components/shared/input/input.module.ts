@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgbDatepickerModule } from "@ng-bootstrap/ng-bootstrap";
 import { IconsModule } from "@shared/icons/icons.module";
 import { DateComponent } from "./date/date.component";
@@ -10,7 +10,13 @@ const components = [DateComponent, TimeComponent];
 
 @NgModule({
   declarations: components,
-  imports: [CommonModule, IconsModule, NgbDatepickerModule, FormsModule],
+  imports: [
+    CommonModule,
+    IconsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgbDatepickerModule,
+  ],
   exports: components,
 })
 export class InputModule {}

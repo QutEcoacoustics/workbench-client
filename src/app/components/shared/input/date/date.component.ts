@@ -9,8 +9,6 @@ import {
 
 @Component({
   selector: "baw-date",
-  templateUrl: "./date.component.html",
-  styleUrls: ["./date.component.scss"],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -18,8 +16,31 @@ import {
       multi: true,
     },
   ],
+  template: `
+    <div class="input-group">
+      <span class="input-group-text">{{ label }}</span>
+      <input
+        ngbDatepicker
+        #dateInput="ngbDatepicker"
+        class="form-control"
+        placeholder="yyyy-mm-dd"
+        [maxDate]="maxDate"
+        [minDate]="minDate"
+        [value]="formattedDate"
+        (dateSelect)="setDate($event)"
+      />
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="dateInput.toggle()"
+      >
+        <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
+      </button>
+    </div>
+  `,
 })
 export class DateComponent implements ControlValueAccessor {
+  /** Label next to input */
   @Input() public label: string;
 
   public value: Date;
@@ -48,6 +69,20 @@ export class DateComponent implements ControlValueAccessor {
   public onTouched: () => void = () => {};
 
   /**
+   * Registers a callback function that should be called when the control's value changes in the UI.
+   *
+   * @param fn
+   */
+  public registerOnChange = (fn: any): void => (this.onChange = fn);
+
+  /**
+   * Registers a callback function that should be called when the control receives a blur event.
+   *
+   * @param fn
+   */
+  public registerOnTouched = (fn: any): void => (this.onTouched = fn);
+
+  /**
    * Method that is invoked on an update of a model.
    */
   public updateChanges(): void {
@@ -62,24 +97,6 @@ export class DateComponent implements ControlValueAccessor {
   public writeValue(value: string): void {
     this.setDate(this.validateInput(this.date, value));
     this.updateChanges();
-  }
-
-  /**
-   * Registers a callback function that should be called when the control's value changes in the UI.
-   *
-   * @param fn
-   */
-  public registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
-
-  /**
-   * Registers a callback function that should be called when the control receives a blur event.
-   *
-   * @param fn
-   */
-  public registerOnTouched(fn: any): void {
-    this.onTouched = fn;
   }
 
   public validateInput(
