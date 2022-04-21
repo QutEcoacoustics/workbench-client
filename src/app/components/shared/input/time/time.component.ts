@@ -93,12 +93,12 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   /**
    * Invoked when the model has been changed
    */
-  public onChange = (value: string): void => this.normalizeInput(value);
+  public onChange: (_: any) => void = () => {};
 
   /**
    * Invoked when the model has been touched
    */
-  public onTouched: () => void = (): boolean => (this.touched = true);
+  public onTouched: () => void = () => {};
 
   /**
    * Registers a callback function that should be called when the control's value changes in the UI.
@@ -163,7 +163,8 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   public normalizeInput(value: string) {
     if (!value) {
       this.value = undefined;
-      this._errors = {};
+      this._errors = null;
+      this.onChange(this.value);
       return;
     }
 
@@ -181,6 +182,12 @@ export class TimeComponent implements ControlValueAccessor, Validator {
     this._errors = this.validateInput(this.value);
     this.dirty = true;
     this.touched = true;
+    this.onTouched();
+
+    // Update model if valid input given
+    if (!this._errors) {
+      this.onChange(this.value);
+    }
   }
 
   public validateInput(value: string): ValidationErrors | null {
