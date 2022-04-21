@@ -1,8 +1,7 @@
-import { Component, Input, Optional, Self } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import {
   AbstractControl,
   ControlValueAccessor,
-  NgControl,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
@@ -25,17 +24,17 @@ import { DateTime } from "luxon";
     },
   ],
   template: `
-    <div class="input-group has-validation">
+    <div class="input-group">
       <span class="input-group-text">{{ label }}</span>
       <input
         class="form-control"
         placeholder="hh:mm"
         [maxLength]="inputLength"
-        [class.is-valid]="touched && !showError"
-        [class.is-invalid]="touched && showError"
+        [class.is-valid]="value && touched && !showError"
+        [class.is-invalid]="showError"
         [required]="required"
         [disabled]="disabled"
-        [value]="value"
+        [value]="value ?? ''"
         (input)="onInput($event)"
         (change)="onInput($event)"
         (blur)="onTouched()"
@@ -68,24 +67,20 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   @Input() public required = false;
   @Input() public disabled = false;
 
-  public errorMessages: Map<string, () => string>;
-  public dirty: boolean;
-  public touched: boolean;
   public _errors: ValidationErrors;
-
+  public dirty: boolean;
+  public errorMessages: Map<string, () => string>;
   public inputLength = 5;
-  public value = "";
+  public touched: boolean;
+  public value: string;
 
-  public constructor(@Self() @Optional() public control: NgControl) {
-    if (this.control) {
-      this.control.valueAccessor = this;
-    }
+  public constructor() {
     this.errorMessages = new Map([
       ["required", () => `${this.label} is required`],
       [
         "minLength",
         () =>
-          `The number of characters should not be less than ${this.inputLength}`,
+          "The time should follow the format hh:mm, e.g. 12:00, 12:30, 13:00, 13:30",
       ],
       ["delimiter", () => "Input must include a ':'"],
       ["hours", () => "Hours must be between 00 and 24"],
@@ -98,22 +93,7 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   /**
    * Invoked when the model has been changed
    */
-  public onChange = (value: string): void => {
-    if (value.length < this.value.length) {
-      this.value = value.endsWith(":") ? value.slice(0, -1) : value;
-    } else {
-      this.value = value;
-    }
-
-    const hasColon = this.value.includes(":");
-    if (!hasColon && this.value.length >= 3) {
-      this.value = this.value.slice(0, 2) + ":" + this.value.slice(2);
-    }
-
-    this._errors = this.validateInput(this.value);
-    this.dirty = true;
-    this.onTouched();
-  };
+  public onChange = (value: string): void => this.normalizeInput(value);
 
   /**
    * Invoked when the model has been touched
@@ -177,13 +157,36 @@ export class TimeComponent implements ControlValueAccessor, Validator {
 
   public onInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
-    this.onChange(value);
+    this.normalizeInput(value);
+  }
+
+  public normalizeInput(value: string) {
+    if (!value) {
+      this.value = undefined;
+      this._errors = {};
+      return;
+    }
+
+    if (value.length < (this.value?.length ?? 0)) {
+      this.value = value.endsWith(":") ? value.slice(0, -1) : value;
+    } else {
+      this.value = value;
+    }
+
+    const hasColon = this.value.includes(":");
+    if (!hasColon && this.value.length >= 3) {
+      this.value = this.value.slice(0, 2) + ":" + this.value.slice(2);
+    }
+
+    this._errors = this.validateInput(this.value);
+    this.dirty = true;
+    this.touched = true;
   }
 
   public validateInput(value: string): ValidationErrors | null {
-    if (!value && !this.required) {
-      // No value provided
-      return { required: true };
+    if (!value) {
+      // No value provided on required input
+      return this.required ? { required: true } : null;
     } else if (value.length < this.inputLength) {
       // Validate length of input
       return { minLength: true };
