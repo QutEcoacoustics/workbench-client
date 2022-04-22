@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { DateComponent } from "./date.component";
 
-describe("DateComponent", () => {
+//TODO
+xdescribe("DateComponent", () => {
   let component: DateComponent;
   let fixture: ComponentFixture<DateComponent>;
 

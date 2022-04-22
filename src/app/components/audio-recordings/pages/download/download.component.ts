@@ -108,7 +108,6 @@ class DownloadAudioRecordingsComponent
         takeUntil(this.unsubscribe)
       )
       .subscribe((model: Model): void => {
-        console.log(model);
         this.updateHref(model);
       });
   }
