@@ -25,7 +25,11 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbDate, NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbCalendar,
+  NgbDate,
+  NgbDateParserFormatter,
+} from "@ng-bootstrap/ng-bootstrap";
 import {
   debounceTime,
   distinctUntilChanged,
@@ -82,7 +86,8 @@ class DownloadAudioRecordingsComponent
     public session: BawSessionService,
     private route: ActivatedRoute,
     private recordingsApi: AudioRecordingsService,
-    private formatter: NgbDateParserFormatter
+    private formatter: NgbDateParserFormatter,
+    private calendar: NgbCalendar
   ) {
     super();
   }
@@ -169,14 +174,14 @@ class DownloadAudioRecordingsComponent
       return;
     }
 
-    if (model.dateStartedAfter instanceof NgbDate) {
+    if (this.calendar.isValid(model.dateStartedAfter)) {
       filter["recordedDate"] ??= {};
       filter["recordedDate"].greaterThanOrEqual = this.formatter.format(
         model.dateStartedAfter
       );
     }
 
-    if (model.dateFinishedBefore instanceof NgbDate) {
+    if (this.calendar.isValid(model.dateFinishedBefore)) {
       filter["recordedEndDate"] ??= {};
       (filter["recordedEndDate"] as Comparisons).lessThanOrEqual =
         this.formatter.format(model.dateFinishedBefore);

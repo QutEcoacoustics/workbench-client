@@ -7,9 +7,8 @@ import {
   ValidationErrors,
   Validator,
 } from "@angular/forms";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { DateTime } from "luxon";
-import { shouldShowError, getErrorMessages } from "../input.helpers";
+import { getErrorMessages, shouldShowError } from "../input.helpers";
 
 @Component({
   selector: "baw-time",
@@ -32,7 +31,6 @@ import { shouldShowError, getErrorMessages } from "../input.helpers";
         class="form-control"
         placeholder="hh:mm"
         [maxLength]="inputLength"
-        [class.is-valid]="showValid"
         [class.is-invalid]="showError"
         [required]="required"
         [disabled]="disabled"
@@ -127,10 +125,6 @@ export class TimeComponent implements ControlValueAccessor, Validator {
    */
   public validate(control: AbstractControl): ValidationErrors | null {
     return this.validateInput(control.value);
-  }
-
-  public get showValid(): boolean {
-    return isInstantiated(this.value) && this.touched && !this.showError;
   }
 
   public get showError(): boolean {
