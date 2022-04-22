@@ -86,6 +86,7 @@
               id="date-finished-before"
               name="dateFinishedBefore"
               label="End Date"
+              [minDate]="model.dateStartedAfter"
               [(ngModel)]="model.dateFinishedBefore"
             ></baw-date>
           </div>

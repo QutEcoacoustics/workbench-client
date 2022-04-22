@@ -7,7 +7,9 @@ import {
   ValidationErrors,
   Validator,
 } from "@angular/forms";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { DateTime } from "luxon";
+import { shouldShowError, getErrorMessages } from "../input.helpers";
 
 @Component({
   selector: "baw-time",
@@ -30,7 +32,7 @@ import { DateTime } from "luxon";
         class="form-control"
         placeholder="hh:mm"
         [maxLength]="inputLength"
-        [class.is-valid]="value && touched && !showError"
+        [class.is-valid]="showValid"
         [class.is-invalid]="showError"
         [required]="required"
         [disabled]="disabled"
@@ -44,61 +46,54 @@ import { DateTime } from "luxon";
       </div>
     </div>
   `,
-  styles: [
-    `
-      .required {
-        label::after {
-          content: "*";
-          position: relative;
-          top: -3px;
-          left: 3px;
-          font-size: 0.85rem;
-          color: red;
-        }
-      }
-    `,
-  ],
 })
 export class TimeComponent implements ControlValueAccessor, Validator {
   /** Time increments in seconds */
   @Input() public increment = 1800;
   /** Label next to input */
   @Input() public label: string;
+  /** Is input required */
   @Input() public required = false;
+  /** Is input disabled */
   @Input() public disabled = false;
 
-  public _errors: ValidationErrors;
-  public dirty: boolean;
-  public errorMessages: Map<string, () => string>;
-  public inputLength = 5;
-  public touched: boolean;
+  /** Current value */
   public value: string;
+  /** Has value been set */
+  public dirty: boolean;
+  /** Has input been touched */
+  public touched: boolean;
+
+  /** Errors for current input */
+  public _errors: ValidationErrors;
+  /** Potential error messages */
+  public errorTypes: Map<string, () => string>;
+  /** Length of input hh:mm */
+  public inputLength = 5;
 
   public constructor() {
-    this.errorMessages = new Map([
+    this.errorTypes = new Map([
       ["required", () => `${this.label} is required`],
       [
         "minLength",
-        () =>
-          "The time should follow the format hh:mm, e.g. 12:00, 12:30, 13:00, 13:30",
+        () => "The time should follow the format hh:mm, e.g. 15:30",
       ],
       ["delimiter", () => "Input must include a ':'"],
-      ["hours", () => "Hours must be between 00 and 24"],
-      ["minutes", () => "Minutes must be between 00 and 59"],
+      ["hour", () => "Hours must be between 00 and 24"],
+      ["minute", () => "Minutes must be between 00 and 59"],
       ["afterMidnight", () => "Times after 24:00 are invalid"],
       ["invalid", () => "Invalid time selected"],
     ]);
   }
 
-  /**
-   * Invoked when the model has been changed
-   */
-  public onChange: (_: any) => void = () => {};
+  /** Invoked when the model has been changed */
+  public onChange: (_: string) => void = () => {};
 
-  /**
-   * Invoked when the model has been touched
-   */
+  /** Invoked when the model has been touched */
   public onTouched: () => void = () => {};
+
+  /** Method that is invoked on an update of a model. */
+  public updateChanges = () => this.onChange(this.value);
 
   /**
    * Registers a callback function that should be called when the control's value changes in the UI.
@@ -121,11 +116,6 @@ export class TimeComponent implements ControlValueAccessor, Validator {
     (this.disabled = isDisabled);
 
   /**
-   * Method that is invoked on an update of a model.
-   */
-  public updateChanges = () => this.onChange(this.value);
-
-  /**
    * Writes a new item to the element.
    *
    * @param value the value
@@ -142,52 +132,53 @@ export class TimeComponent implements ControlValueAccessor, Validator {
     return this.validateInput(control.value);
   }
 
+  public get showValid(): boolean {
+    return isInstantiated(this.value) && this.touched && !this.showError;
+  }
+
   public get showError(): boolean {
-    return (this.dirty || this.touched) && this.errors.length > 0;
+    return shouldShowError(this.dirty, this.touched, this.errors);
   }
 
   public get errors(): string[] {
-    if (!this._errors) {
-      return [];
-    }
-    return Object.keys(this._errors).map((key): string =>
-      this.errorMessages.get(key)()
-    );
+    return getErrorMessages(this._errors, this.errorTypes);
   }
 
   public onInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
-    this.normalizeInput(value);
-  }
-
-  public normalizeInput(value: string) {
-    if (!value) {
-      this.value = undefined;
-      this._errors = null;
-      this.onChange(this.value);
-      return;
-    }
-
-    if (value.length < (this.value?.length ?? 0)) {
-      this.value = value.endsWith(":") ? value.slice(0, -1) : value;
-    } else {
-      this.value = value;
-    }
-
-    const hasColon = this.value.includes(":");
-    if (!hasColon && this.value.length >= 3) {
-      this.value = this.value.slice(0, 2) + ":" + this.value.slice(2);
-    }
-
+    this.value = this.normalizeInput(value);
     this._errors = this.validateInput(this.value);
-    this.dirty = true;
-    this.touched = true;
-    this.onTouched();
+
+    if (this.value) {
+      this.dirty = true;
+      this.touched = true;
+      this.onTouched();
+    }
 
     // Update model if valid input given
-    if (!this._errors) {
+    if (this.errors.length === 0) {
       this.onChange(this.value);
     }
+  }
+
+  public normalizeInput(value: string): string {
+    if (!value) {
+      return undefined;
+    }
+
+    let output: string;
+    if (value.length < (this.value?.length ?? 0)) {
+      output = value.endsWith(":") ? value.slice(0, -1) : value;
+    } else {
+      output = value;
+    }
+
+    const hasColon = output.includes(":");
+    if (!hasColon && output.length >= 3) {
+      output = output.slice(0, 2) + ":" + output.slice(2);
+    }
+
+    return output;
   }
 
   public validateInput(value: string): ValidationErrors | null {
@@ -202,10 +193,10 @@ export class TimeComponent implements ControlValueAccessor, Validator {
       return { delimiter: true };
     } else if (!/^(([0-1]\d)|2[0-4]):/.test(value)) {
       // Validate hours are between 00 - 24
-      return { hours: true };
+      return { hour: true };
     } else if (!/(:[0-5]\d)$/.test(value)) {
       // Validate minutes are between 00 - 59
-      return { minutes: true };
+      return { minute: true };
     } else if (value.startsWith("24") && !value.endsWith("00")) {
       // Validate that only 24:00 is valid
       return { afterMidnight: true };

@@ -45,8 +45,8 @@ interface Model {
   regions?: Region[];
   sites?: Site[];
   dateFiltering?: boolean;
-  dateStartedAfter?: string;
-  dateFinishedBefore?: string;
+  dateStartedAfter?: Date;
+  dateFinishedBefore?: Date;
   todFiltering?: boolean;
   todIgnoreDst?: boolean;
   todStartedAfter?: string;
@@ -168,14 +168,25 @@ class DownloadAudioRecordingsComponent
 
     if (model.dateStartedAfter) {
       filter["recordedDate"] ??= {};
-      filter["recordedDate"].greaterThanOrEqual = model.dateStartedAfter;
+      filter["recordedDate"].greaterThanOrEqual = this.formatDate(
+        model.dateStartedAfter
+      );
     }
 
     if (model.dateFinishedBefore) {
       filter["recordedEndDate"] ??= {};
       (filter["recordedEndDate"] as Comparisons).lessThanOrEqual =
-        model.dateFinishedBefore;
+        this.formatDate(model.dateFinishedBefore);
     }
+  }
+
+  /** Convert date to string in format of yyyy-mm-dd */
+  private formatDate(date: Date): string {
+    const zeroPad = (num: number): string => String(num).padStart(2, "0");
+    const year = date.getFullYear();
+    const month = zeroPad(date.getMonth() + 1);
+    const day = zeroPad(date.getDate());
+    return `${year}-${month}-${day}`;
   }
 
   private setTimeOfDayFilter(
