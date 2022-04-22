@@ -74,10 +74,7 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   public constructor() {
     this.errorTypes = new Map([
       ["required", () => `${this.label} is required`],
-      [
-        "minLength",
-        () => "The time should follow the format hh:mm, e.g. 15:30",
-      ],
+      ["length", () => "The time should follow the format hh:mm, e.g. 15:30"],
       ["delimiter", () => "Input must include a ':'"],
       ["hour", () => "Hours must be between 00 and 24"],
       ["minute", () => "Minutes must be between 00 and 59"],
@@ -185,25 +182,30 @@ export class TimeComponent implements ControlValueAccessor, Validator {
     if (!value) {
       // No value provided on required input
       return this.required ? { required: true } : null;
-    } else if (value.length < this.inputLength) {
-      // Validate length of input
-      return { minLength: true };
+    } else if (value.length !== this.inputLength) {
+      // Input is not the correct length
+      return { length: true };
     } else if (!value.includes(":")) {
-      // Validate value includes a colon
+      // Input missing a colon
       return { delimiter: true };
-    } else if (!/^(([0-1]\d)|2[0-4]):/.test(value)) {
-      // Validate hours are between 00 - 24
+    } else if (!validHoursRegex.test(value)) {
+      // Input hours are between 00 - 24
       return { hour: true };
-    } else if (!/(:[0-5]\d)$/.test(value)) {
-      // Validate minutes are between 00 - 59
+    } else if (!validMinutesRegex.test(value)) {
+      // Input minutes are between 00 - 59
       return { minute: true };
     } else if (value.startsWith("24") && !value.endsWith("00")) {
-      // Validate that only 24:00 is valid
+      // Input that only 24:00 is valid
       return { afterMidnight: true };
     } else {
-      // Validate time is valid
+      // Input time is valid
       const date = DateTime.fromFormat(value, "HH:mm");
       return date.isValid ? null : { invalid: true };
     }
   }
 }
+
+/** Validate the hours portion of a time follows the format hh: with numbers between 0 and 24 */
+const validHoursRegex = /^(([0-1]\d)|2[0-4]):/;
+/** Validate the minutes portion of a time follows the format :mm with numbers between 0 and 59 */
+const validMinutesRegex = /(:[0-5]\d)$/;
