@@ -72,23 +72,64 @@
         <div class="row">
           <!-- Start date input -->
           <div class="col-md-6 mb-3 mb-md-0">
-            <baw-date
-              id="date-started-after"
-              name="dateStartedAfter"
-              label="Start Date"
-              [(ngModel)]="model.dateStartedAfter"
-            ></baw-date>
+            <div class="input-group">
+              <span class="input-group-text">Start Date</span>
+              <input
+                #dateStartedAfter="ngbDatepicker"
+                ngbDatepicker
+                id="date-started-after"
+                name="dateStartedAfter"
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                [class.is-invalid]="invalidDate(model.dateStartedAfter)"
+                [maxDate]="model.dateFinishedBefore"
+                [(ngModel)]="model.dateStartedAfter"
+              />
+              <button
+                class="btn btn-outline-secondary"
+                (click)="dateStartedAfter.toggle()"
+                type="button"
+              >
+                <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
+              </button>
+              <div
+                *ngIf="invalidDate(model.dateStartedAfter)"
+                class="invalid-feedback"
+              >
+                The time should follow the format yyyy-mm-dd, e.g. 2022-12-01
+              </div>
+            </div>
           </div>
 
           <!-- End date input -->
           <div class="col-md-6 mb-3 mb-md-0">
-            <baw-date
-              id="date-finished-before"
-              name="dateFinishedBefore"
-              label="End Date"
-              [minDate]="model.dateStartedAfter"
-              [(ngModel)]="model.dateFinishedBefore"
-            ></baw-date>
+            <div class="input-group">
+              <span class="input-group-text">End Date</span>
+              <input
+                #dateFinishedBefore="ngbDatepicker"
+                ngbDatepicker
+                id="date-finished-before"
+                name="dateFinishedBefore"
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                [class.is-invalid]="invalidDate(model.dateFinishedBefore)"
+                [minDate]="model.dateStartedAfter"
+                [(ngModel)]="model.dateFinishedBefore"
+              />
+              <button
+                class="btn btn-outline-secondary"
+                (click)="dateFinishedBefore.toggle()"
+                type="button"
+              >
+                <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
+              </button>
+              <div
+                *ngIf="invalidDate(model.dateFinishedBefore)"
+                class="invalid-feedback"
+              >
+                The time should follow the format yyyy-mm-dd, e.g. 2022-12-01
+              </div>
+            </div>
           </div>
         </div>
 

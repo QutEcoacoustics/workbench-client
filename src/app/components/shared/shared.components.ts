@@ -5,6 +5,7 @@ import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   NgbCollapseModule,
+  NgbDatepickerModule,
   NgbPaginationModule,
   NgbProgressbarModule,
   NgbTooltipModule,
@@ -61,6 +62,7 @@ export const sharedModules = [
   NgbPaginationModule,
   NgbProgressbarModule,
   NgbCollapseModule,
+  NgbDatepickerModule,
   FontAwesomeModule,
   FormsModule,
   ReactiveFormsModule,

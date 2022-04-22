@@ -25,7 +25,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDate, NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import {
   debounceTime,
   distinctUntilChanged,
@@ -45,8 +45,8 @@ interface Model {
   regions?: Region[];
   sites?: Site[];
   dateFiltering?: boolean;
-  dateStartedAfter?: Date;
-  dateFinishedBefore?: Date;
+  dateStartedAfter?: NgbDate;
+  dateFinishedBefore?: NgbDate;
   todFiltering?: boolean;
   todIgnoreDst?: boolean;
   todStartedAfter?: string;
@@ -81,7 +81,8 @@ class DownloadAudioRecordingsComponent
   public constructor(
     public session: BawSessionService,
     private route: ActivatedRoute,
-    private recordingsApi: AudioRecordingsService
+    private recordingsApi: AudioRecordingsService,
+    private formatter: NgbDateParserFormatter
   ) {
     super();
   }
@@ -140,6 +141,10 @@ class DownloadAudioRecordingsComponent
     return Object.entries(errors).some((value) => value[1]);
   }
 
+  public invalidDate(date: string | NgbDate): boolean {
+    return typeof date === "string";
+  }
+
   private generateFilter(model: Model): Filters<AudioRecording> {
     const filter: InnerFilter<AudioRecording> = {};
 
@@ -153,7 +158,6 @@ class DownloadAudioRecordingsComponent
 
     this.setDateFilter(filter, model);
     this.setTimeOfDayFilter(filter, model);
-
     return { filter };
   }
 
@@ -165,27 +169,18 @@ class DownloadAudioRecordingsComponent
       return;
     }
 
-    if (model.dateStartedAfter) {
+    if (model.dateStartedAfter instanceof NgbDate) {
       filter["recordedDate"] ??= {};
-      filter["recordedDate"].greaterThanOrEqual = this.formatDate(
+      filter["recordedDate"].greaterThanOrEqual = this.formatter.format(
         model.dateStartedAfter
       );
     }
 
-    if (model.dateFinishedBefore) {
+    if (model.dateFinishedBefore instanceof NgbDate) {
       filter["recordedEndDate"] ??= {};
       (filter["recordedEndDate"] as Comparisons).lessThanOrEqual =
-        this.formatDate(model.dateFinishedBefore);
+        this.formatter.format(model.dateFinishedBefore);
     }
-  }
-
-  /** Convert date to string in format of yyyy-mm-dd */
-  private formatDate(date: Date): string {
-    const zeroPad = (num: number): string => String(num).padStart(2, "0");
-    const year = date.getFullYear();
-    const month = zeroPad(date.getMonth() + 1);
-    const day = zeroPad(date.getDate());
-    return `${year}-${month}-${day}`;
   }
 
   private setTimeOfDayFilter(
