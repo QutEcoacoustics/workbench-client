@@ -104,7 +104,7 @@
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-rxjs": "^5.0.2",
     "eslint-plugin-rxjs-angular": "^2.0.0",
-    "jasmine-core": "^4.0.0",
+    "jasmine-core": "^4.1.0",
     "jasmine-reporters": "^2.5.0",
     "jasmine-spec-reporter": "^7.0.0",
     "karma": "^6.3.16",
