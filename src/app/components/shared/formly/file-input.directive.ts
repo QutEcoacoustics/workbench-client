@@ -11,7 +11,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
   selector: "input[type=file]",
   // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     "(change)": "onChange($event.target.files)",
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     "(blur)": "onTouched()",
   },
   providers: [

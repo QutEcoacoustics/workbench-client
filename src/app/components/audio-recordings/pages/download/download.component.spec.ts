@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { fakeAsync } from "@angular/core/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { BawApiService } from "@baw-api/baw-api.service";
@@ -77,9 +78,9 @@ describe("DownloadAudioRecordingsComponent", () => {
   const getTodIgnoreDstInput = () =>
     spec.query<HTMLInputElement>("#tod-ignore-dst");
   const getTodStartedAfterInput = () =>
-    spec.query<HTMLInputElement>("#tod-started-after");
+    spec.query<HTMLInputElement>("#tod-started-after input");
   const getTodFinishedBeforeInput = () =>
-    spec.query<HTMLInputElement>("#tod-finished-before");
+    spec.query<HTMLInputElement>("#tod-finished-before input");
 
   function toggleTodFilters() {
     const input = getTodToggleInput();
@@ -344,17 +345,17 @@ describe("DownloadAudioRecordingsComponent", () => {
       }));
 
       it("should include start date in filter", fakeAsync(() => {
-        const date = new Date("2020-01-01");
+        const date = "2020-01-01";
         const expectedFilter: any = {
           filter: {
             "projects.id": { eq: defaultProject.id },
             recordedDate: {
-              greaterThanOrEqual: date.toISOString(),
+              greaterThanOrEqual: date,
             },
           },
         };
 
-        spec.typeInElement("2020-01-01", getDateStartedAfterInput());
+        spec.typeInElement(date, getDateStartedAfterInput());
         spec.detectChanges();
         loadForm();
 
@@ -363,17 +364,17 @@ describe("DownloadAudioRecordingsComponent", () => {
       }));
 
       it("should include end date in filter", fakeAsync(() => {
-        const date = new Date("2020-01-01");
+        const date = "2020-01-01";
         const expectedFilter: any = {
           filter: {
             "projects.id": { eq: defaultProject.id },
             recordedEndDate: {
-              lessThanOrEqual: date.toISOString(),
+              lessThanOrEqual: date,
             },
           },
         };
 
-        spec.typeInElement("2020-01-01", getDateFinishedBeforeInput());
+        spec.typeInElement(date, getDateFinishedBeforeInput());
         spec.detectChanges();
         loadForm();
 
@@ -516,8 +517,8 @@ describe("DownloadAudioRecordingsComponent", () => {
 
   describe("multiple inputs", () => {
     it("should handle all inputs being set", fakeAsync(() => {
-      const startDate = new Date("2019-01-01");
-      const endDate = new Date("2020-01-01");
+      const startDate = "2019-01-01";
+      const endDate = "2020-01-01";
       const startTime = "06:00";
       const endTime = "18:00";
 
@@ -525,14 +526,14 @@ describe("DownloadAudioRecordingsComponent", () => {
         filter: {
           "projects.id": { eq: defaultProject.id },
           recordedDate: {
-            greaterThanOrEqual: startDate.toISOString(),
+            greaterThanOrEqual: startDate,
             lessThanOrEqual: {
               expressions: ["local_offset", "time_of_day"],
               value: endTime,
             },
           },
           recordedEndDate: {
-            lessThanOrEqual: endDate.toISOString(),
+            lessThanOrEqual: endDate,
             greaterThanOrEqual: {
               expressions: ["local_offset", "time_of_day"],
               value: startTime,
@@ -547,8 +548,8 @@ describe("DownloadAudioRecordingsComponent", () => {
       toggleDateFilters();
       toggleTodFilters();
 
-      spec.typeInElement("2019-01-01", getDateStartedAfterInput());
-      spec.typeInElement("2020-01-01", getDateFinishedBeforeInput());
+      spec.typeInElement(startDate, getDateStartedAfterInput());
+      spec.typeInElement(endDate, getDateFinishedBeforeInput());
       spec.typeInElement(startTime, getTodStartedAfterInput());
       spec.typeInElement(endTime, getTodFinishedBeforeInput());
       spec.detectChanges();

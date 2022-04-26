@@ -382,7 +382,9 @@ describe("BawFormApiService", () => {
 
     it("should insert form data", () => {
       const formData = new URLSearchParams({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         "user[login]": "example username",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         "user[password]": "Ex@mp1e_P@55w0rd+=",
       });
       apiFormRequest("/broken_link", formData).subscribe(noop);

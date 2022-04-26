@@ -1,4 +1,4 @@
-FROM node:14-alpine as BUILD_IMAGE
+FROM node:18-alpine as BUILD_IMAGE
 
 ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION
@@ -13,7 +13,7 @@ WORKDIR /home/node/workbench-client
 COPY --chown=node package*.json ./
 
 # install deps
-RUN npm ci \
+RUN npm ci --force \
   # run the ng compatibility compiler to speed up (and cache) subsequent compilation steps
   && npx ngcc
 
@@ -49,7 +49,7 @@ LABEL maintainer="Charles Alleman <alleman@qut.edu.au>" \
 
 # Add ability to make https wget requests
 RUN apk upgrade libssl1.1 --update-cache && \
-    apk add wget ca-certificates
+  apk add wget ca-certificates
 
 # drop privileges
 USER node

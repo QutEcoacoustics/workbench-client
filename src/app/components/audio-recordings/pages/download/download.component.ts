@@ -26,6 +26,11 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import {
+  NgbCalendar,
+  NgbDate,
+  NgbDateParserFormatter,
+} from "@ng-bootstrap/ng-bootstrap";
+import {
   debounceTime,
   distinctUntilChanged,
   Observable,
@@ -44,8 +49,8 @@ interface Model {
   regions?: Region[];
   sites?: Site[];
   dateFiltering?: boolean;
-  dateStartedAfter?: Date;
-  dateFinishedBefore?: Date;
+  dateStartedAfter?: NgbDate;
+  dateFinishedBefore?: NgbDate;
   todFiltering?: boolean;
   todIgnoreDst?: boolean;
   todStartedAfter?: string;
@@ -71,15 +76,18 @@ class DownloadAudioRecordingsComponent
   public model: Model = { todIgnoreDst: true };
   public models: ResolvedModelList;
   public profile = myAccountMenuItem;
+  public hoveredDate: NgbDate;
 
   public errors: {
     todBoundaryError?: boolean;
   } = {};
 
   public constructor(
-    private route: ActivatedRoute,
     public session: BawSessionService,
-    private recordingsApi: AudioRecordingsService
+    private route: ActivatedRoute,
+    private recordingsApi: AudioRecordingsService,
+    private formatter: NgbDateParserFormatter,
+    private calendar: NgbCalendar
   ) {
     super();
   }
@@ -138,6 +146,10 @@ class DownloadAudioRecordingsComponent
     return Object.entries(errors).some((value) => value[1]);
   }
 
+  public invalidDate(date: string | NgbDate): boolean {
+    return typeof date === "string";
+  }
+
   private generateFilter(model: Model): Filters<AudioRecording> {
     const filter: InnerFilter<AudioRecording> = {};
 
@@ -151,7 +163,6 @@ class DownloadAudioRecordingsComponent
 
     this.setDateFilter(filter, model);
     this.setTimeOfDayFilter(filter, model);
-
     return { filter };
   }
 
@@ -163,16 +174,17 @@ class DownloadAudioRecordingsComponent
       return;
     }
 
-    if (model.dateStartedAfter) {
+    if (this.calendar.isValid(model.dateStartedAfter)) {
       filter["recordedDate"] ??= {};
-      filter["recordedDate"].greaterThanOrEqual =
-        model.dateStartedAfter.toISOString();
+      filter["recordedDate"].greaterThanOrEqual = this.formatter.format(
+        model.dateStartedAfter
+      );
     }
 
-    if (model.dateFinishedBefore) {
+    if (this.calendar.isValid(model.dateFinishedBefore)) {
       filter["recordedEndDate"] ??= {};
       (filter["recordedEndDate"] as Comparisons).lessThanOrEqual =
-        model.dateFinishedBefore.toISOString();
+        this.formatter.format(model.dateFinishedBefore);
     }
   }
 
