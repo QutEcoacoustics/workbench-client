@@ -17,7 +17,12 @@ describe("LoadingComponent", () => {
     return spec.query(`#spinner.${klass}`);
   }
 
-  beforeEach(() => (spec = createComponent({ detectChanges: false })));
+  function setup(props: Partial<LoadingComponent>) {
+    spec = createComponent({
+      detectChanges: false,
+      props,
+    });
+  }
 
   describe("colors", () => {
     const colors: BootstrapColorTypes[] = [
@@ -33,7 +38,7 @@ describe("LoadingComponent", () => {
 
     colors.forEach((color) => {
       it(`should display spinner with ${color} color`, () => {
-        spec.setInput("color", color);
+        setup({ color });
         spec.detectChanges();
         expect(getSpinner(`text-${color}`)).toBeTruthy();
       });
@@ -45,15 +50,13 @@ describe("LoadingComponent", () => {
 
     sizes.forEach((size) => {
       it(`should display border spinner with ${size} size`, () => {
-        spec.setInput("type", "border");
-        spec.setInput("size", size);
+        setup({ type: "border", size });
         spec.detectChanges();
         expect(getSpinner(`spinner-border-${size}`)).toBeTruthy();
       });
 
       it(`should display grower spinner with ${size} size`, () => {
-        spec.setInput("type", "grower");
-        spec.setInput("size", size);
+        setup({ type: "grower", size });
         spec.detectChanges();
         expect(getSpinner(`spinner-grower-${size}`)).toBeTruthy();
       });
@@ -62,13 +65,13 @@ describe("LoadingComponent", () => {
 
   describe("type", () => {
     it("should display a border type spinner", () => {
-      spec.setInput("type", "border");
+      setup({ type: "border" });
       spec.detectChanges();
       expect(getSpinner("spinner-border")).toBeTruthy();
     });
 
     it("should display a grower type spinner", () => {
-      spec.setInput("type", "grower");
+      setup({ type: "grower" });
       spec.detectChanges();
       expect(getSpinner("spinner-grower")).toBeTruthy();
     });

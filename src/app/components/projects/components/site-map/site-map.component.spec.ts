@@ -23,8 +23,10 @@ import { SiteMapComponent } from "./site-map.component";
 const mockMap = MockComponent(MapComponent);
 
 describe("SiteMapComponent", () => {
+  let defaultProject: Project;
+  let defaultRegion: Region;
   let api: SpyObject<SitesService>;
-  let spectator: Spectator<SiteMapComponent>;
+  let spec: Spectator<SiteMapComponent>;
   const createComponent = createComponentFactory({
     component: SiteMapComponent,
     declarations: [mockMap],
@@ -32,10 +34,17 @@ describe("SiteMapComponent", () => {
   });
 
   beforeEach(() => {
-    spectator = createComponent({ detectChanges: false });
-    spectator.setInput("project", new Project(generateProject()));
-    api = spectator.inject(SitesService);
+    defaultProject = new Project(generateProject());
+    defaultRegion = new Region(generateRegion());
   });
+
+  function setup(project: Project, region?: Region) {
+    spec = createComponent({
+      detectChanges: false,
+      props: { project, region },
+    });
+    api = spec.inject(SitesService);
+  }
 
   function generatePagedSites(
     numSites: number,
@@ -75,7 +84,7 @@ describe("SiteMapComponent", () => {
   }
 
   function getMapMarkers() {
-    return spectator.query(mockMap).markers.toArray();
+    return spec.query(mockMap).markers.toArray();
   }
 
   function interceptApiRequest(
@@ -91,18 +100,23 @@ describe("SiteMapComponent", () => {
   }
 
   async function assertMapMarkers(promise: Promise<any>, allSites: Site[][]) {
-    spectator.detectChanges();
+    spec.detectChanges();
     await promise;
-    spectator.detectChanges();
+    spec.detectChanges();
     expect(getMapMarkers()).toEqual(generateMarkers(allSites));
   }
 
   it("should handle error", async () => {
+    setup(defaultProject);
     const promise = Promise.all(interceptApiRequest([generateBawApiError()]));
     await assertMapMarkers(promise, []);
   });
 
   describe("markers", () => {
+    beforeEach(() => {
+      setup(defaultProject);
+    });
+
     it("should display map placeholder box when no sites found", async () => {
       const promise = Promise.all(interceptApiRequest([[]]));
       await assertMapMarkers(promise, []);
@@ -167,54 +181,49 @@ describe("SiteMapComponent", () => {
     }
 
     it("should generate filter commands with initial filter", async () => {
+      setup(defaultProject);
+
       const sites = generatePagedSites(1);
       const promise = Promise.all(
-        interceptApiRequest(sites, [
-          assertFilter(1, spectator.component.project),
-        ])
+        interceptApiRequest(sites, [assertFilter(1, defaultProject)])
       );
 
-      spectator.detectChanges();
+      spec.detectChanges();
       await promise;
-      spectator.detectChanges();
+      spec.detectChanges();
     });
 
     it("should generate filter commands with incremental page numbers", async () => {
+      setup(defaultProject);
+
       const sites = generatePagedSites(100);
       const promise = Promise.all(
-        interceptApiRequest(sites, [
-          assertFilter(1, spectator.component.project),
-          assertFilter(2, spectator.component.project),
-          assertFilter(3, spectator.component.project),
-          assertFilter(4, spectator.component.project),
-        ])
+        interceptApiRequest(
+          sites,
+          [1, 2, 3, 4].map((page) => assertFilter(page, defaultProject))
+        )
       );
 
-      spectator.detectChanges();
+      spec.detectChanges();
       await promise;
-      spectator.detectChanges();
+      spec.detectChanges();
     });
 
     it("should generate filter commands with region id", async () => {
-      spectator.setInput("region", new Region(generateRegion()));
+      setup(defaultProject, defaultRegion);
+
       const sites = generatePagedSites(1);
       const promise = Promise.all(
         interceptApiRequest(
           sites,
-          [
-            assertFilter(
-              1,
-              spectator.component.project,
-              spectator.component.region
-            ),
-          ],
+          [assertFilter(1, defaultProject, defaultRegion)],
           true
         )
       );
 
-      spectator.detectChanges();
+      spec.detectChanges();
       await promise;
-      spectator.detectChanges();
+      spec.detectChanges();
     });
   });
 });

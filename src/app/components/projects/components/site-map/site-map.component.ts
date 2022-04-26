@@ -7,7 +7,7 @@ import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
 import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
-import { merge, noop, Observable } from "rxjs";
+import { merge, Observable } from "rxjs";
 import { switchMap, takeUntil } from "rxjs/operators";
 
 @Component({
@@ -33,7 +33,10 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
         switchMap((models) => this.getMarkers(models)),
         takeUntil(this.unsubscribe)
       )
-      .subscribe((sites) => this.pushMarkers(sites), noop);
+      .subscribe({
+        next: (sites) => this.pushMarkers(sites),
+        error: () => this.pushMarkers([]),
+      });
   }
 
   private getFilter(

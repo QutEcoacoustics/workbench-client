@@ -68,9 +68,9 @@ describe("DownloadAudioRecordingsComponent", () => {
   const getDateInputWrapper = () =>
     spec.query("#date-filters-wrapper", { read: NgbCollapse });
   const getDateStartedAfterInput = () =>
-    spec.query<HTMLInputElement>("#date-started-after input");
+    spec.query<HTMLInputElement>("#date-started-after");
   const getDateFinishedBeforeInput = () =>
-    spec.query<HTMLInputElement>("#date-finished-before input");
+    spec.query<HTMLInputElement>("#date-finished-before");
   const getTodInputWrapper = () =>
     spec.query("#tod-filters-wrapper", { read: NgbCollapse });
   const getTodToggleInput = () =>
