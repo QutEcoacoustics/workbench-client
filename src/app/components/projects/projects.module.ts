@@ -23,6 +23,7 @@ import { HarvestMetadataExtractionComponent } from "./components/harvest/metadat
 import { HarvestNewComponent } from "./components/harvest/new.component";
 import { HarvestProcessingComponent } from "./components/harvest/processing.component";
 import { HarvestStreamUploadingComponent } from "./components/harvest/stream-uploading.component";
+import { UploadAnnotationsComponent } from "./pages/upload-annotations/upload-annotations.component";
 
 const components = [
   HarvestNewComponent,
@@ -34,6 +35,7 @@ const components = [
   HarvestReviewComponent,
   HarvestCompleteComponent,
 
+  UploadAnnotationsComponent,
   AssignComponent,
   DeleteComponent,
   DetailsComponent,

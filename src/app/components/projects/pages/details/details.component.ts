@@ -10,6 +10,7 @@ import {
 import { SitesService } from "@baw-api/site/sites.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import {
+  uploadAnnotationsProjectMenuItem,
   assignSiteMenuItem,
   deleteProjectMenuItem,
   editProjectMenuItem,
@@ -43,6 +44,7 @@ export const projectMenuItemActions = [
   audioRecordingMenuItems.list.project,
   audioRecordingMenuItems.batch.project,
   harvestProjectMenuItem,
+  uploadAnnotationsProjectMenuItem,
 ];
 
 const projectKey = "project";

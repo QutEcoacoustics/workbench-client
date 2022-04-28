@@ -14,12 +14,13 @@
   <!-- App Content-->
   <div
     id="container"
-    [ngClass]="{ 'container-fluid': fullscreen, container: !fullscreen }"
+    [class.container-fluid]="fullscreen"
     [class.fullscreen]="fullscreen"
+    [class.container]="!fullscreen"
     [class.menu-layout]="!fullscreen"
   >
     <!-- Default and Error Segments -->
-    <div id="page">
+    <div id="page" class="mb-3">
       <baw-breadcrumbs></baw-breadcrumbs>
 
       <router-outlet
