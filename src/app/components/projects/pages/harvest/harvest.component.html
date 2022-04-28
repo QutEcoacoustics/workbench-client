@@ -12,44 +12,42 @@
   </div>
 
   <div [ngSwitch]="stage">
-    <div *ngSwitchCase="harvestStage.start">
-      <baw-harvest-start (stage)="setStage($event)"></baw-harvest-start>
+    <div *ngSwitchCase="harvestStage.newHarvest">
+      <baw-harvest-new (stage)="setStage($event)"></baw-harvest-new>
     </div>
 
-    <div *ngSwitchCase="harvestStage.streamingUpload">
-      <baw-harvest-stream-upload
+    <div *ngSwitchCase="harvestStage.streamUploading">
+      <baw-harvest-stream-uploading
         (stage)="setStage($event)"
-      ></baw-harvest-stream-upload>
+      ></baw-harvest-stream-uploading>
     </div>
 
-    <div *ngSwitchCase="harvestStage.batchUpload">
-      <baw-harvest-batch-upload
+    <div *ngSwitchCase="harvestStage.batchUploading">
+      <baw-harvest-batch-uploading
         (stage)="setStage($event)"
-      ></baw-harvest-batch-upload>
+      ></baw-harvest-batch-uploading>
     </div>
 
-    <div *ngSwitchCase="harvestStage.uploadVerification">
-      <baw-harvest-upload-verification
+    <div *ngSwitchCase="harvestStage.metadataExtraction">
+      <baw-harvest-metadata-extraction
         (stage)="setStage($event)"
-      ></baw-harvest-upload-verification>
+      ></baw-harvest-metadata-extraction>
     </div>
 
-    <div *ngSwitchCase="harvestStage.uploadReview">
-      <baw-harvest-upload-review
+    <div *ngSwitchCase="harvestStage.metadataReview">
+      <baw-harvest-metadata-review
         (stage)="setStage($event)"
-      ></baw-harvest-upload-review>
+      ></baw-harvest-metadata-review>
     </div>
 
-    <div *ngSwitchCase="harvestStage.fileVerification">
-      <baw-harvest-file-verification
+    <div *ngSwitchCase="harvestStage.processing">
+      <baw-harvest-processing
         (stage)="setStage($event)"
-      ></baw-harvest-file-verification>
+      ></baw-harvest-processing>
     </div>
 
-    <div *ngSwitchCase="harvestStage.fileReview">
-      <baw-harvest-file-review
-        (stage)="setStage($event)"
-      ></baw-harvest-file-review>
+    <div *ngSwitchCase="harvestStage.review">
+      <baw-harvest-review (stage)="setStage($event)"></baw-harvest-review>
     </div>
 
     <div *ngSwitchCase="harvestStage.complete">

@@ -3,16 +3,11 @@ import { HarvestStage } from "@components/projects/pages/harvest/harvest.compone
 import { endWith, startWith, tap, timer } from "rxjs";
 
 @Component({
-  selector: "baw-harvest-upload-verification",
+  selector: "baw-harvest-processing",
   template: `
-    <h3>Checking Files</h3>
+    <h3>Saving...</h3>
 
-    <p>We are checking the files you uploaded!</p>
-
-    <p>
-      We will make sure files have no errors and find any extra information
-      about them.
-    </p>
+    <p>We are adding in all those files!</p>
 
     <p>
       You can leave this page and come back later. The process won't be
@@ -30,7 +25,7 @@ import { endWith, startWith, tap, timer } from "rxjs";
     </p>
   `,
 })
-export class HarvestUploadVerificationComponent {
+export class HarvestProcessingComponent {
   @Output() public stage = new EventEmitter<HarvestStage>();
 
   private intervalSpeed = 300;
@@ -39,7 +34,7 @@ export class HarvestUploadVerificationComponent {
     endWith(100),
     tap((progress) => {
       if (progress >= 100) {
-        this.stage.emit(HarvestStage.uploadReview);
+        this.stage.emit(HarvestStage.review);
       }
     })
   );

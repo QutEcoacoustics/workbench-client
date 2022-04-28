@@ -3,11 +3,16 @@ import { HarvestStage } from "@components/projects/pages/harvest/harvest.compone
 import { endWith, startWith, tap, timer } from "rxjs";
 
 @Component({
-  selector: "baw-harvest-file-verification",
+  selector: "baw-harvest-metadata-extraction",
   template: `
-    <h3>Saving...</h3>
+    <h3>Checking Files</h3>
 
-    <p>We are adding in all those files!</p>
+    <p>We are checking the files you uploaded!</p>
+
+    <p>
+      We will make sure files have no errors and find any extra information
+      about them.
+    </p>
 
     <p>
       You can leave this page and come back later. The process won't be
@@ -25,7 +30,7 @@ import { endWith, startWith, tap, timer } from "rxjs";
     </p>
   `,
 })
-export class HarvestFileVerificationComponent {
+export class HarvestMetadataExtractionComponent {
   @Output() public stage = new EventEmitter<HarvestStage>();
 
   private intervalSpeed = 300;
@@ -34,7 +39,7 @@ export class HarvestFileVerificationComponent {
     endWith(100),
     tap((progress) => {
       if (progress >= 100) {
-        this.stage.emit(HarvestStage.fileReview);
+        this.stage.emit(HarvestStage.metadataReview);
       }
     })
   );

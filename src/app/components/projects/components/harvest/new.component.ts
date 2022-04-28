@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from "@angular/core";
 import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
 
 @Component({
-  selector: "baw-harvest-start",
+  selector: "baw-harvest-new",
   template: `
     <h3>Introduction</h3>
 
@@ -57,14 +57,14 @@ import { HarvestStage } from "@components/projects/pages/harvest/harvest.compone
     </div>
   `,
 })
-export class HarvestStartComponent {
+export class HarvestNewComponent {
   @Output() public stage = new EventEmitter<HarvestStage>();
 
   public onStreamingUploadClick(): void {
-    this.stage.emit(HarvestStage.streamingUpload);
+    this.stage.emit(HarvestStage.streamUploading);
   }
 
   public onBatchUploadClick(): void {
-    this.stage.emit(HarvestStage.batchUpload);
+    this.stage.emit(HarvestStage.batchUploading);
   }
 }

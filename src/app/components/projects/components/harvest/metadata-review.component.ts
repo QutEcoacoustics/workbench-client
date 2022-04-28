@@ -8,7 +8,7 @@ import { Site } from "@models/Site";
 import { Observable } from "rxjs";
 
 @Component({
-  selector: "baw-harvest-upload-review",
+  selector: "baw-harvest-metadata-review",
   template: `
     <h3>Review</h3>
 
@@ -97,7 +97,7 @@ import { Observable } from "rxjs";
     `,
   ],
 })
-export class HarvestUploadReviewComponent implements OnInit {
+export class HarvestMetadataReviewComponent implements OnInit {
   @Output() public stage = new EventEmitter<HarvestStage>();
 
   public sites$: Observable<Site[]>;
@@ -129,10 +129,10 @@ export class HarvestUploadReviewComponent implements OnInit {
   }
 
   public onBackClick(): void {
-    this.stage.emit(HarvestStage.batchUpload);
+    this.stage.emit(HarvestStage.batchUploading);
   }
 
   public onSaveClick(): void {
-    this.stage.emit(HarvestStage.fileVerification);
+    this.stage.emit(HarvestStage.processing);
   }
 }

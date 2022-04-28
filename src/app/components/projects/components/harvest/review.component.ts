@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from "@angular/core";
 import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
 
 @Component({
-  selector: "baw-harvest-file-review",
+  selector: "baw-harvest-review",
   template: `
     <h3>Review</h3>
 
@@ -23,11 +23,11 @@ import { HarvestStage } from "@components/projects/pages/harvest/harvest.compone
     </div>
   `,
 })
-export class HarvestFileReviewComponent {
+export class HarvestReviewComponent {
   @Output() public stage = new EventEmitter<HarvestStage>();
 
   public onMakeChangesClick(): void {
-    this.stage.emit(HarvestStage.batchUpload);
+    this.stage.emit(HarvestStage.batchUploading);
   }
 
   public onFinishClick(): void {

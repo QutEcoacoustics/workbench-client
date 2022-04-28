@@ -9,13 +9,13 @@ import { harvestProjectMenuItem, projectCategory } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
 
 export enum HarvestStage {
-  start,
-  streamingUpload,
-  batchUpload,
-  uploadVerification,
-  uploadReview,
-  fileVerification,
-  fileReview,
+  newHarvest,
+  streamUploading,
+  batchUploading,
+  metadataExtraction,
+  metadataReview,
+  processing,
+  review,
   complete,
 }
 
@@ -27,7 +27,7 @@ const projectKey = "project";
 })
 class HarvestComponent extends PageComponent implements OnInit {
   public project: Project;
-  public stage: HarvestStage = HarvestStage.start;
+  public stage: HarvestStage = HarvestStage.newHarvest;
   public harvestStage = HarvestStage;
 
   public constructor(private route: ActivatedRoute) {

@@ -4,7 +4,7 @@ import filesize from "filesize";
 import { endWith, startWith, timer } from "rxjs";
 
 @Component({
-  selector: "baw-harvest-batch-upload",
+  selector: "baw-harvest-batch-uploading",
   template: `
     <h3>Uploading Files</h3>
 
@@ -24,13 +24,13 @@ import { endWith, startWith, timer } from "rxjs";
         </ng-template>
       </li>
       <li [ngbNavItem]="2">
-        <a ngbNavLink>Two</a>
+        <a ngbNavLink>MacOS</a>
         <ng-template ngbNavContent>
           <p>TODO: Instructions</p>
         </ng-template>
       </li>
       <li [ngbNavItem]="3">
-        <a ngbNavLink>Three</a>
+        <a ngbNavLink>Linux</a>
         <ng-template ngbNavContent>
           <p>TODO: Instructions</p>
         </ng-template>
@@ -79,7 +79,7 @@ import { endWith, startWith, timer } from "rxjs";
     </div>
   `,
 })
-export class HarvestBatchUploadComponent {
+export class HarvestBatchUploadingComponent {
   @Output() public stage = new EventEmitter<HarvestStage>();
 
   public active = 1;
@@ -97,10 +97,10 @@ export class HarvestBatchUploadComponent {
   }
 
   public onCancel(): void {
-    this.stage.emit(HarvestStage.start);
+    this.stage.emit(HarvestStage.newHarvest);
   }
 
   public onFinishedUploading(): void {
-    this.stage.emit(HarvestStage.uploadVerification);
+    this.stage.emit(HarvestStage.metadataExtraction);
   }
 }

@@ -108,7 +108,8 @@ export const harvestProjectMenuItem = menuRoute({
   icon: ["fas", "upload"],
   label: "Upload Audio",
   parent: projectMenuItem,
-  predicate: isProjectEditorPredicate,
+  // TODO #1888 Change to isProjectEditorPredicate when finished
+  predicate: isAdminPredicate,
   route: projectMenuItem.route.add("upload"),
   tooltip: () => "(UNDER DEVELOPMENT) Upload new audio to this project",
 });

@@ -10,7 +10,7 @@ import filesize from "filesize";
 import { endWith, Observable, startWith, timer } from "rxjs";
 
 @Component({
-  selector: "baw-harvest-stream-upload",
+  selector: "baw-harvest-stream-uploading",
   template: `
     <h3>Uploading Files</h3>
 
@@ -83,7 +83,7 @@ import { endWith, Observable, startWith, timer } from "rxjs";
     </div>
   `,
 })
-export class HarvestStreamUploadComponent implements OnInit {
+export class HarvestStreamUploadingComponent implements OnInit {
   @Output() public stage = new EventEmitter<HarvestStage>();
 
   public active = 1;
