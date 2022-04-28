@@ -107,9 +107,9 @@ export const deleteProjectMenuItem = menuRoute({
 
 export const harvestProjectMenuItem = menuRoute({
   icon: defaultAudioIcon,
-  label: "Harvest Data",
+  label: "Upload Audio",
   parent: projectMenuItem,
   predicate: isProjectEditorPredicate,
-  route: projectMenuItem.route.add("harvest"),
+  route: projectMenuItem.route.add("upload"),
   tooltip: () => "Upload new audio to this project",
 });

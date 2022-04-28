@@ -3,9 +3,14 @@ import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { MapModule } from "@shared/map/map.module";
 import { SharedModule } from "@shared/shared.module";
-import { HarvestCompleteComponent } from "./components/harvest-complete/harvest-complete.component";
-import { HarvestReviewComponent } from "./components/harvest-review/harvest-review.component";
-import { PillListComponent } from "./components/pill-list/pill-list.component";
+import { HarvestCompleteComponent } from "./components/harvest/complete/complete.component";
+import { HarvestFileReviewComponent } from "./components/harvest/review/file.component";
+import { HarvestUploadReviewComponent } from "./components/harvest/review/upload.component";
+import { HarvestStartComponent } from "./components/harvest/start/start.component";
+import { HarvestBatchUploadComponent } from "./components/harvest/upload/batch.component";
+import { HarvestStreamUploadComponent } from "./components/harvest/upload/stream.component";
+import { HarvestFileVerificationComponent } from "./components/harvest/verification/file.component";
+import { HarvestUploadVerificationComponent } from "./components/harvest/verification/upload.component";
 import { SiteCardComponent } from "./components/site-card/site-card.component";
 import { SiteMapComponent } from "./components/site-map/site-map.component";
 import { AssignComponent } from "./pages/assign/assign.component";
@@ -20,17 +25,24 @@ import { RequestComponent } from "./pages/request/request.component";
 import { projectsRoute } from "./projects.routes";
 
 const components = [
+  HarvestStartComponent,
+  HarvestStreamUploadComponent,
+  HarvestBatchUploadComponent,
+  HarvestUploadVerificationComponent,
+  HarvestFileVerificationComponent,
+  HarvestUploadReviewComponent,
+  HarvestFileReviewComponent,
+  HarvestCompleteComponent,
+
   AssignComponent,
   DeleteComponent,
   DetailsComponent,
   EditComponent,
   HarvestCompleteComponent,
   HarvestComponent,
-  HarvestReviewComponent,
   ListComponent,
   NewComponent,
   PermissionsComponent,
-  PillListComponent,
   RequestComponent,
   SiteCardComponent,
   SiteMapComponent,
