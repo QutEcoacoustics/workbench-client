@@ -2,7 +2,6 @@ import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import {
-  defaultAudioIcon,
   defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
@@ -111,5 +110,5 @@ export const harvestProjectMenuItem = menuRoute({
   parent: projectMenuItem,
   predicate: isProjectEditorPredicate,
   route: projectMenuItem.route.add("upload"),
-  tooltip: () => "Upload new audio to this project",
+  tooltip: () => "(UNDER DEVELOPMENT) Upload new audio to this project",
 });
