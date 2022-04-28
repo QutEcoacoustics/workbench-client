@@ -106,7 +106,7 @@ export const deleteProjectMenuItem = menuRoute({
 });
 
 export const harvestProjectMenuItem = menuRoute({
-  icon: defaultAudioIcon,
+  icon: ["fas", "upload"],
   label: "Upload Audio",
   parent: projectMenuItem,
   predicate: isProjectEditorPredicate,
