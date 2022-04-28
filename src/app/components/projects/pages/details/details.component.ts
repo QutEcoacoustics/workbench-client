@@ -14,6 +14,7 @@ import {
   deleteProjectMenuItem,
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
+  harvestProjectMenuItem,
   projectCategory,
   projectMenuItem,
 } from "@components/projects/projects.menus";
@@ -41,6 +42,7 @@ export const projectMenuItemActions = [
   deleteProjectMenuItem,
   audioRecordingMenuItems.list.project,
   audioRecordingMenuItems.batch.project,
+  harvestProjectMenuItem,
 ];
 
 const projectKey = "project";

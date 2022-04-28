@@ -6,6 +6,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   NgbCollapseModule,
   NgbDatepickerModule,
+  NgbNavModule,
   NgbPaginationModule,
   NgbProgressbarModule,
   NgbTooltipModule,
@@ -63,6 +64,7 @@ export const sharedModules = [
   NgbProgressbarModule,
   NgbCollapseModule,
   NgbDatepickerModule,
+  NgbNavModule,
   FontAwesomeModule,
   FormsModule,
   ReactiveFormsModule,
