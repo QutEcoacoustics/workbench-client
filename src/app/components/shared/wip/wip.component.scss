@@ -1,0 +1,47 @@
+:root {
+  --wip-color: #f39c12
+}
+
+.placeholder {
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  background-color: var(--wip-color);
+  color: white;
+
+  & > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  & > :first-child {
+    width: 100px;
+    background-color: rgba(0, 0, 0, 0.25);
+  }
+
+  & > :last-child {
+    flex-grow: 1;
+    padding: 1rem;
+  }
+}
+
+.wip-wrapper {
+  display: flex;
+  flex-direction: column;
+  border: var(--wip-color) 1px solid;
+
+  & > :first-child {
+    background-color: var(--wip-color);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+  }
+
+  & > :last-child {
+    padding: 1rem;
+  }
+}
