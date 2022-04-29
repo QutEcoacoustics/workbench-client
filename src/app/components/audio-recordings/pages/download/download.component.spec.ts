@@ -6,8 +6,6 @@ import {
   BawSessionService,
   guestAuthToken,
 } from "@baw-api/baw-session.service";
-import { DownloadTableComponent } from "@components/audio-recordings/download-table/download-table.component";
-import { SitesWithoutTimezonesComponent } from "@components/audio-recordings/sites-without-timezones/sites-without-timezones.component";
 import { Writeable } from "@helpers/advancedTypes";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
@@ -31,6 +29,8 @@ import { assertHref } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
+import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
+import { DownloadTableComponent } from "../../components/download-table/download-table.component";
 import { DownloadAudioRecordingsComponent } from "./download.component";
 
 describe("DownloadAudioRecordingsComponent", () => {
