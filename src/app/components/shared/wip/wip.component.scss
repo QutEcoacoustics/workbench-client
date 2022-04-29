@@ -1,13 +1,14 @@
 :root {
-  --wip-color: #f39c12
+  --wip-bg-color: white;
+  --wip-color: #f39c12;
+  --wip-border-color: #f39c12;
 }
 
-.placeholder {
+.wip-placeholder {
   height: 100px;
   display: flex;
   flex-direction: row;
-  background-color: var(--wip-color);
-  color: white;
+  border: var(--wip-border-color) 1px solid;
 
   & > div {
     display: flex;
@@ -18,7 +19,8 @@
 
   & > :first-child {
     width: 100px;
-    background-color: rgba(0, 0, 0, 0.25);
+    background-color: var(--wip-bg-color);
+    color: var(--wip-color);
   }
 
   & > :last-child {
@@ -30,11 +32,11 @@
 .wip-wrapper {
   display: flex;
   flex-direction: column;
-  border: var(--wip-color) 1px solid;
+  border: var(--wip-border-color) 1px solid;
 
   & > :first-child {
-    background-color: var(--wip-color);
-    color: white;
+    background-color: var(--wip-bg-color);
+    color: var(--wip-color);
     display: flex;
     justify-content: center;
     align-items: center;

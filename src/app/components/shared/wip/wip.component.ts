@@ -24,7 +24,10 @@ import { ConfigService } from "@services/config/config.service";
     </ng-container>
 
     <ng-template #placeholder>
-      <div class="placeholder" ngbTooltip="This feature is a work in progress">
+      <div
+        class="wip-placeholder"
+        ngbTooltip="This feature is a work in progress"
+      >
         <ng-container *ngTemplateOutlet="icon"></ng-container>
         <div>
           <span>
