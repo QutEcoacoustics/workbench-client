@@ -30,14 +30,7 @@ import {
   NgbDate,
   NgbDateParserFormatter,
 } from "@ng-bootstrap/ng-bootstrap";
-import {
-  debounceTime,
-  distinctUntilChanged,
-  Observable,
-  Subject,
-  switchMap,
-  takeUntil,
-} from "rxjs";
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
 
 const projectKey = "project";
@@ -69,7 +62,6 @@ class DownloadAudioRecordingsComponent
   @ViewChild(NgForm) public form: NgForm;
 
   public filters$: Subject<Filters<AudioRecording>>;
-  public recordings$: Observable<AudioRecording[]>;
 
   public contactUs = contactUsMenuItem;
   public href = "";
@@ -94,14 +86,6 @@ class DownloadAudioRecordingsComponent
 
   public ngOnInit(): void {
     this.filters$ = new Subject();
-    this.recordings$ = this.filters$.pipe(
-      debounceTime(defaultDebounceTime),
-      distinctUntilChanged(),
-      switchMap((filters: Filters<AudioRecording>) =>
-        this.recordingsApi.filter(filters)
-      )
-    );
-
     this.models = retrieveResolvers(this.route.snapshot.data);
     this.updateHref(this.model);
   }

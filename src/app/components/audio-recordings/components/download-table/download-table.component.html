@@ -1,0 +1,43 @@
+<ngx-datatable
+  #table
+  bawDatatableDefaults
+  [columnMode]="ColumnMode.force"
+  [columns]="columns"
+  [loadingIndicator]="loading$ | async"
+  [rows]="rows$ | async"
+  [count]="total$ | async"
+  [offset]="page$ | async"
+  (page)="setPage($event)"
+  (sort)="onSort($event)"
+>
+  <ngx-datatable-column name="Id" [width]="70" [maxWidth]="70">
+  </ngx-datatable-column>
+
+  <ngx-datatable-column name="Site">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <baw-loading
+        *ngIf="value.site | isUnresolved; else site"
+        size="sm"
+      ></baw-loading>
+      <ng-template #site>
+        <a [bawUrl]="value.site.viewUrl">{{ value.site.name }}</a>
+      </ng-template>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column name="Recorded" [width]="150" [maxWidth]="150">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span [ngbTooltip]="value.recordedDateTimezone ?? 'UTC'">
+        {{ formatDate(value.recordedDate) }}
+      </span>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column name="Duration" [width]="170" [maxWidth]="170">
+  </ngx-datatable-column>
+
+  <ngx-datatable-column name="Media Type" [width]="100" [maxWidth]="100">
+  </ngx-datatable-column>
+
+  <ngx-datatable-column name="Original File Name"></ngx-datatable-column>
+</ngx-datatable>
