@@ -1,12 +1,11 @@
 import { Component, Input } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
-import { Column } from "@directives/datatable/pagination.directive";
 import { toRelative } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { ColumnMode } from "@swimlane/ngx-datatable";
 import { DateTime, Duration } from "luxon";
-import { Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 
 type RecordingFilters = Filters<AudioRecording>;
 
@@ -15,18 +14,10 @@ type RecordingFilters = Filters<AudioRecording>;
   templateUrl: "./download-table.component.html",
 })
 export class DownloadTableComponent {
-  @Input() public filters$: Observable<RecordingFilters>;
+  @Input() public filters$: BehaviorSubject<RecordingFilters>;
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public ColumnMode = ColumnMode;
-  public columns: Column<AudioRecording>[] = [
-    { key: "id", name: "Id" },
-    { key: "siteId", name: "Site" },
-    { key: "recordedDate", name: "Recorded" },
-    { key: "durationSeconds", name: "Duration" },
-    { key: "mediaType", name: "Media Type" },
-    { key: "originalFileName", name: "Original File Name" },
-  ];
 
   public constructor(private recordingsApi: AudioRecordingsService) {}
 

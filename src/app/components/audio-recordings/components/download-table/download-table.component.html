@@ -1,53 +1,61 @@
 <ngx-datatable
   bawDatatableDefaults
   bawDatatablePagination
-  [paginationFilters$]="filters$"
-  [paginationGetModels]="getModels"
-  [columns]="columns"
+  [pagination]="{ filters: filters$, getModels: getModels }"
 >
-  <ngx-datatable-column name="Id" [width]="70" [maxWidth]="70">
+  <ngx-datatable-column prop="id" [width]="70" [maxWidth]="70">
     <ng-template let-value="value" ngx-datatable-cell-template>
-      {{ asRecording(value).id }}
+      {{ value }}
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column name="Site">
-    <ng-template let-value="value" ngx-datatable-cell-template>
+  <ngx-datatable-column prop="site" sortKey="siteId">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
       <baw-loading
-        *ngIf="asRecording(value).site | isUnresolved; else site"
+        *ngIf="asRecording(row).site | isUnresolved; else site"
         size="sm"
       ></baw-loading>
       <ng-template #site>
-        <a [bawUrl]="asRecording(value).site.viewUrl">
-          {{ asRecording(value).site.name }}
+        <a [bawUrl]="asRecording(row).site.viewUrl">
+          {{ asRecording(row).site.name }}
         </a>
       </ng-template>
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column name="Recorded" [width]="150" [maxWidth]="150">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      <span [ngbTooltip]="asRecording(value).recordedDateTimezone ?? 'UTC'">
-        {{ formatDate(asRecording(value).recordedDate) }}
+  <ngx-datatable-column
+    name="Recorded"
+    prop="recordedDate"
+    [width]="150"
+    [maxWidth]="150"
+  >
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <span [ngbTooltip]="asRecording(row).recordedDateTimezone ?? 'UTC'">
+        {{ formatDate(value) }}
       </span>
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column name="Duration" [width]="170" [maxWidth]="170">
+  <ngx-datatable-column
+    prop="duration"
+    sortKey="durationSeconds"
+    [width]="170"
+    [maxWidth]="170"
+  >
     <ng-template let-value="value" ngx-datatable-cell-template>
-      {{ formatDuration(asRecording(value).duration) }}
+      {{ formatDuration(value) }}
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column name="Media Type" [width]="100" [maxWidth]="100">
+  <ngx-datatable-column prop="mediaType" [width]="100" [maxWidth]="100">
     <ng-template let-value="value" ngx-datatable-cell-template>
-      {{ asRecording(value).mediaType }}
+      {{ value }}
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column name="Original File Name">
+  <ngx-datatable-column prop="originalFileName">
     <ng-template let-value="value" ngx-datatable-cell-template>
-      {{ asRecording(value).originalFileName }}
+      {{ value }}
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>

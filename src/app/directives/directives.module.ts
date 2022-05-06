@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
+import { DatatableColumnDirective } from "./datatable/column.directive";
 import { DatatableDirective } from "./datatable/datatable.directive";
 import { DatatablePaginationDirective } from "./datatable/pagination.directive";
 import { AuthenticatedImageDirective } from "./image/image.directive";
@@ -12,6 +13,7 @@ const directives = [
   AuthenticatedImageDirective,
   DatatableDirective,
   DatatablePaginationDirective,
+  DatatableColumnDirective,
   StrongRouteActiveDirective,
   StrongRouteDirective,
   UrlActiveDirective,

@@ -1,5 +1,10 @@
-/* eslint-disable @angular-eslint/no-input-rename */
-import { Directive, Host, Input, OnInit } from "@angular/core";
+import {
+  AfterContentInit,
+  Directive,
+  Host,
+  Input,
+  OnInit,
+} from "@angular/core";
 import { Direction, Filters, Sorting } from "@baw-api/baw-api.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
@@ -9,6 +14,7 @@ import {
   combineLatest,
   map,
   Observable,
+  of,
   switchMap,
   takeUntil,
   tap,
@@ -23,9 +29,7 @@ import {
  *
  * ```ts
  * class Example {
- *    public asModel = (model: any): Model => model;
  *    public getModels = (filters) => this.api.filter(filters);
- *    public columns = [{key: "id", name: "Id"}]
  *    public filters$ = new BehaviorSubject<Filters<Model>>({filter: {id: {gt: 10}}});
  * }
  * ```
@@ -34,14 +38,8 @@ import {
  * <ngx-datatable
  *  bawDatatableDefaults
  *  bawDatatablePagination
- *  [paginationFilters$]="filters$"
- *  [paginationGetModels]="getModels"
- *  [columns]="columns">
- *    <ngx-datatable-column name="Id">
- *      <ng-template let-value="value" ngx-datatable-cell-template>
- *        {{ asModel(value).id }}
- *      </ng-template>
- *    </ngx-datatable-column>
+ *  [pagination]="{ filters: filters$, getModels: getModels}">
+ *    ...
  * </ngx-datatable>
  * ```
  *
@@ -49,9 +47,7 @@ import {
  *
  * ```ts
  * class Example {
- *    public asModel = (model: any): Model => model;
  *    public getModels = (filters) => this.api.filter(filters);
- *    public columns = [{key: "id", name: "Id"}]
  *    public filters = {filter: {id: {gt: 10}}};
  * }
  * ```
@@ -60,14 +56,44 @@ import {
  * <ngx-datatable
  *  bawDatatableDefaults
  *  bawDatatablePagination
- *  [paginationFilters]="filters"
- *  [paginationGetModels]="getModels"
- *  [columns]="columns">
- *    <ngx-datatable-column name="Id">
+ *  [pagination]="{ filters: filters, getModels: getModels}">
+ *    ...
+ * </ngx-datatable>
+ * ```
+ *
+ * ## Example with columns
+ *
+ * ```html
+ * <ngx-datatable
+ *  bawDatatableDefaults
+ *  bawDatatablePagination
+ *  [pagination]="{ filters: filters, getModels: getModels}">
+ *    <ngx-datatable-column prop="id">
  *      <ng-template let-value="value" ngx-datatable-cell-template>
- *        {{ asModel(value).id }}
+ *        {{ value }}
  *      </ng-template>
  *    </ngx-datatable-column>
+ * </ngx-datatable>
+ * ```
+ *
+ * ## Example with associated models
+ *
+ * ```html
+ * <ngx-datatable
+ *  bawDatatableDefaults
+ *  bawDatatablePagination
+ *  [pagination]="{ filters: filters, getModels: getModels}">
+ *   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+ *     <baw-loading
+ *       *ngIf="row.site | isUnresolved; else site"
+ *       size="sm"
+ *     ></baw-loading>
+ *     <ng-template #site>
+ *       <a [bawUrl]="row.site.viewUrl">
+ *         {{ row.site.name }}
+ *       </a>
+ *     </ng-template>
+ *   </ng-template>
  * </ngx-datatable>
  * ```
  */
@@ -76,29 +102,24 @@ import {
 })
 export class DatatablePaginationDirective<Model extends AbstractModel>
   extends withUnsubscribe()
-  implements OnInit
+  implements OnInit, AfterContentInit
 {
   /**
-   * Base api filters for table. On trigger, this will update the table to
-   * match the new filters
+   * @param filters Base api filters for table. If this is an observable, on
+   * trigger, it will update the table to match the new filters. If this is a
+   * plain object, it will be used directly. This value is not compatible with
+   * the async pipe
+   * @param getModels Get models for the table. This will be fed the filters
+   * for the current page of the table, and should output the matching models
    */
-  @Input("paginationFilters$") public filters$: Observable<Filters<Model>>;
-  /** Base api filters for table */
-  @Input("paginationFilters") public filters: Filters<Model>;
-  /**
-   * Get models for table. This will be fed the filters for the current page of
-   * the table, and should output the matching models
-   */
-  @Input("paginationGetModels") public getModels: (
-    filters: Filters<Model>
-  ) => Observable<Model[]>;
-  /**
-   * Shared with ngx-datatable columns input, this should include the key (used
-   * for filter requests, and should be a filterable model key) and name of the
-   * column (used by ngx-datable for column names)
-   */
-  @Input() public columns: Column<Model>[];
+  @Input() public pagination: {
+    filters: BehaviorSubject<Filters<Model>> | Filters<Model>;
+    getModels: (filters: Filters<Model>) => Observable<Model[]>;
+    getSortKey?: (key: string) => keyof Model | null;
+  };
 
+  /** Base API filters, this is extracted from the pagination input */
+  private filters$: Observable<Filters<Model>>;
   /**
    * Observable which outputs each table row. Each row value will be the model
    * retrieved from the api request
@@ -119,11 +140,14 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
     super();
   }
 
-  public ngOnInit(): void {
+  public ngOnInit(): void {}
+
+  public ngAfterContentInit(): void {
     // Convert basic filters to observable
-    if (this.filters && !this.filters$) {
-      this.filters$ = new BehaviorSubject(this.filters);
-    }
+    this.filters$ =
+      this.pagination.filters instanceof BehaviorSubject
+        ? this.pagination.filters
+        : of(this.pagination.filters);
 
     // Get the latest list of models whenever a change occurs to the page,
     // sorting, or base filters
@@ -139,20 +163,16 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
           paging: { page: pageAndSort.page + 1 },
         })
       ),
-      switchMap((filters): Observable<Model[]> => this.getModels(filters)),
+      switchMap(
+        (filters): Observable<Model[]> => this.pagination.getModels(filters)
+      ),
       // Clear loading animation
       tap((): void => this.loading$.next(false))
     );
 
     // Convert models into rows by creating an object where each key is the
     // column prop, and the value is the model
-    const convertToRow = (model: Model): any =>
-      this.columns
-        .map((column) => ({ [column.prop]: model }))
-        .reduce((previous, current) => ({ ...previous, ...current }), {});
-    this.rows$ = models$.pipe(
-      map((models) => models.map((model) => convertToRow(model)))
-    );
+    this.rows$ = models$;
 
     // Get the total number of models for the current filter from the
     // responses metadata
@@ -181,13 +201,12 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
       // Trigger with unset sort, and reset page to 0
       this.pageAndSort$.next({ sort: null, page: 0 });
     } else {
-      // Extract sorting key from columns
-      const orderBy = this.columns.find(
-        (column) => column.name === event.column.name
-      ).key;
       // Trigger with new sorting value and reset page to 0
       this.pageAndSort$.next({
-        sort: { direction: event.newValue, orderBy },
+        sort: {
+          direction: event.newValue,
+          orderBy: event.column.sortKey as keyof Model,
+        },
         page: 0,
       });
     }
@@ -245,7 +264,7 @@ interface PageAndSort<Model> {
 }
 
 /** TableColumns with  */
-export type Column<Model> = TableColumn & { key: keyof Model };
+export type Column<Model> = TableColumn & { sortKey: keyof Model };
 
 /** NgxDatatable page event data */
 interface PageEvent {
@@ -263,5 +282,6 @@ interface SortEvent {
     sortable: boolean;
     prop: string;
     name: string;
+    sortKey: string;
   };
 }
