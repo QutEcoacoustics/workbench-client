@@ -1,8 +1,8 @@
 <ngx-datatable
   bawDatatableDefaults
   bawDatatablePagination
-  [filters$]="filters$"
-  [models]="getModels"
+  [paginationFilters$]="filters$"
+  [paginationGetModels]="getModels"
   [columns]="columns"
 >
   <ngx-datatable-column name="Id" [width]="70" [maxWidth]="70">

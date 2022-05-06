@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { Column } from "@directives/datatable/pagination.directive";
@@ -14,7 +14,7 @@ type RecordingFilters = Filters<AudioRecording>;
   selector: "baw-download-table",
   templateUrl: "./download-table.component.html",
 })
-export class DownloadTableComponent implements OnInit {
+export class DownloadTableComponent {
   @Input() public filters$: Observable<RecordingFilters>;
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -29,8 +29,6 @@ export class DownloadTableComponent implements OnInit {
   ];
 
   public constructor(private recordingsApi: AudioRecordingsService) {}
-
-  public ngOnInit(): void {}
 
   public getModels = (filters: Filters<AudioRecording>) =>
     this.recordingsApi.filter(filters);
