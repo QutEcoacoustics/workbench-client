@@ -1,10 +1,4 @@
-import {
-  AfterContentInit,
-  Directive,
-  Host,
-  Input,
-  OnInit,
-} from "@angular/core";
+import { AfterContentInit, Directive, Host, Input } from "@angular/core";
 import { Direction, Filters, Sorting } from "@baw-api/baw-api.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
@@ -37,8 +31,7 @@ import {
  * ```html
  * <ngx-datatable
  *  bawDatatableDefaults
- *  bawDatatablePagination
- *  [pagination]="{ filters: filters$, getModels: getModels}">
+ *  [bawDatatablePagination]="{ filters: filters$, getModels: getModels}">
  *    ...
  * </ngx-datatable>
  * ```
@@ -55,8 +48,7 @@ import {
  * ```html
  * <ngx-datatable
  *  bawDatatableDefaults
- *  bawDatatablePagination
- *  [pagination]="{ filters: filters, getModels: getModels}">
+ *  [bawDatatablePagination]="{ filters: filters, getModels: getModels}">
  *    ...
  * </ngx-datatable>
  * ```
@@ -66,8 +58,7 @@ import {
  * ```html
  * <ngx-datatable
  *  bawDatatableDefaults
- *  bawDatatablePagination
- *  [pagination]="{ filters: filters, getModels: getModels}">
+ *  [bawDatatablePagination]="{ filters: filters, getModels: getModels}">
  *    <ngx-datatable-column prop="id">
  *      <ng-template let-value="value" ngx-datatable-cell-template>
  *        {{ value }}
@@ -78,12 +69,15 @@ import {
  *
  * ## Example with associated models
  *
+ * We can't directly use the value, as angular will not detect changes unless
+ * the user hovers over the row, leaving the loading animation forever until
+ * then.
+ *
  * ```html
  * <ngx-datatable
  *  bawDatatableDefaults
- *  bawDatatablePagination
- *  [pagination]="{ filters: filters, getModels: getModels}">
- *   <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+ *  [bawDatatablePagination]="{ filters: filters, getModels: getModels}">
+ *   <ng-template let-row="row" ngx-datatable-cell-template>
  *     <baw-loading
  *       *ngIf="row.site | isUnresolved; else site"
  *       size="sm"
@@ -102,7 +96,7 @@ import {
 })
 export class DatatablePaginationDirective<Model extends AbstractModel>
   extends withUnsubscribe()
-  implements OnInit, AfterContentInit
+  implements AfterContentInit
 {
   /**
    * @param filters Base api filters for table. If this is an observable, on
@@ -112,10 +106,10 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
    * @param getModels Get models for the table. This will be fed the filters
    * for the current page of the table, and should output the matching models
    */
-  @Input() public pagination: {
+  // eslint-disable-next-line @typescript-eslint/quotes
+  @Input("bawDatatablePagination") public pagination: {
     filters: BehaviorSubject<Filters<Model>> | Filters<Model>;
     getModels: (filters: Filters<Model>) => Observable<Model[]>;
-    getSortKey?: (key: string) => keyof Model | null;
   };
 
   /** Base API filters, this is extracted from the pagination input */
@@ -139,8 +133,6 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
   public constructor(@Host() private datatable: DatatableComponent) {
     super();
   }
-
-  public ngOnInit(): void {}
 
   public ngAfterContentInit(): void {
     // Convert basic filters to observable

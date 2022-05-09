@@ -1,12 +1,8 @@
 <ngx-datatable
   bawDatatableDefaults
-  bawDatatablePagination
-  [pagination]="{ filters: filters$, getModels: getModels }"
+  [bawDatatablePagination]="{ filters: filters$, getModels: getModels }"
 >
   <ngx-datatable-column prop="id" [width]="70" [maxWidth]="70">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      {{ value }}
-    </ng-template>
   </ngx-datatable-column>
 
   <ngx-datatable-column prop="site" sortKey="siteId">
@@ -48,14 +44,7 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column prop="mediaType" [width]="100" [maxWidth]="100">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      {{ value }}
-    </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column prop="originalFileName">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      {{ value }}
-    </ng-template>
-  </ngx-datatable-column>
+  <ngx-datatable-column prop="originalFileName"> </ngx-datatable-column>
 </ngx-datatable>
