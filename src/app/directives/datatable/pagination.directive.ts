@@ -118,7 +118,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
    * Observable which outputs each table row. Each row value will be the model
    * retrieved from the api request
    */
-  private rows$: Observable<any>;
+  private rows$: Observable<any[]>;
   /**
    * Observable tracking the total number of models for the current base filter
    */
@@ -143,7 +143,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
 
     // Get the latest list of models whenever a change occurs to the page,
     // sorting, or base filters
-    const models$ = combineLatest([this.pageAndSort$, this.filters$]).pipe(
+    this.rows$ = combineLatest([this.pageAndSort$, this.filters$]).pipe(
       // Show loading animation during request
       tap((): void => this.loading$.next(true)),
       // Combine base filter, paging, and sorting
@@ -158,18 +158,13 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
       switchMap(
         (filters): Observable<Model[]> => this.pagination.getModels(filters)
       ),
-      // Clear loading animation
       tap((): void => this.loading$.next(false))
     );
 
-    // Convert models into rows by creating an object where each key is the
-    // column prop, and the value is the model
-    this.rows$ = models$;
-
-    // Get the total number of models for the current filter from the
-    // responses metadata
-    this.total$ = models$.pipe(
-      map((models) => models[0]?.getMetadata().paging.total ?? 0)
+    this.total$ = this.rows$.pipe(
+      // Get the total number of models for the current filter from the
+      // responses metadata
+      map((models): number => models[0]?.getMetadata().paging.total ?? 0)
     );
 
     this.subscribeToTableOutputs();

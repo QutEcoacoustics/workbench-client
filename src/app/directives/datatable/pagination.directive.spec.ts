@@ -4,12 +4,13 @@ import { MockModel } from "@models/AbstractModel.spec";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import {
   DataTableColumnDirective,
+  DatatableComponent,
   DataTableHeaderCellComponent,
   DataTablePagerComponent,
   NgxDatatableModule,
 } from "@swimlane/ngx-datatable";
 import { modelData } from "@test/helpers/faker";
-import { BehaviorSubject, delay, of } from "rxjs";
+import { BehaviorSubject, delay, Observable, of } from "rxjs";
 import { DatatableDirective } from "./datatable.directive";
 import { DatatablePaginationDirective } from "./pagination.directive";
 
@@ -29,7 +30,7 @@ describe("DatatablePaginationDirective", () => {
       numModels: number;
       totalModels?: number;
     } = { numModels: 1 }
-  ) {
+  ): void {
     const models: MockModel[] = [];
     for (let i = 0; i < modelOpts.numModels; i++) {
       const model = new MockModel({ id: i, name: modelData.random.word() });
@@ -48,8 +49,9 @@ describe("DatatablePaginationDirective", () => {
 
   function setup(
     props: Partial<DatatablePaginationDirective<MockModel>>,
-    columns: { prop: string; sortKey?: string }[] = [{ prop: "id" }]
-  ) {
+    columns: { prop: string; sortKey?: string }[] = [{ prop: "id" }],
+    detectChanges: boolean = true
+  ): void {
     const columnsHtml = columns
       .map(
         (column) =>
@@ -67,11 +69,11 @@ describe("DatatablePaginationDirective", () => {
         [bawDatatablePagination]="{ filters: filters, getModels: getModels }"
       >${columnsHtml}</ngx-datatable>
     `,
-      { hostProps: props }
+      { hostProps: props, detectChanges }
     );
   }
 
-  function getModels(delayMs?: number) {
+  function getModels(delayMs?: number): () => Observable<MockModel[]> {
     const obs = of(defaultModels);
     return () => (delayMs ? obs.pipe(delay(delayMs)) : obs);
   }
@@ -80,7 +82,7 @@ describe("DatatablePaginationDirective", () => {
     return spec.queryAll("datatable-row-wrapper");
   }
 
-  function getRowValues(row: number) {
+  function getRowValues(row: number): HTMLElement[] {
     return spec.queryAll(
       `datatable-row-wrapper:nth-child(${row + 1}) datatable-body-cell`
     );
@@ -131,7 +133,7 @@ describe("DatatablePaginationDirective", () => {
     const delayMs = 10000;
 
     function assertLoading(isLoading: boolean) {
-      expect(spec.directive["loading$"].getValue()).toBe(isLoading);
+      expect(spec.query(DatatableComponent).loadingIndicator).toBe(isLoading);
     }
 
     function flushGetModels() {
@@ -140,7 +142,8 @@ describe("DatatablePaginationDirective", () => {
 
     it("should return false by default", () => {
       generateModels();
-      setup({ filters: {}, getModels: getModels() });
+      // Turn off change detection so that we get the initial value
+      setup({ filters: {}, getModels: getModels(delayMs) }, undefined, false);
       assertLoading(false);
     });
 
@@ -196,11 +199,62 @@ describe("DatatablePaginationDirective", () => {
     }));
   });
 
-  xdescribe("total", () => {});
+  describe("total", () => {
+    function assertTotal(total: number) {
+      expect(spec.query(DatatableComponent).count).toBe(total);
+    }
 
-  xdescribe("page", () => {});
+    it("should initially be 0", () => {
+      generateModels();
+      // Turn off change detection so that we get the initial value
+      setup({ filters: {}, getModels: getModels() }, undefined, false);
+      assertTotal(0);
+    });
 
-  xdescribe("onSortChange", () => {});
+    it("should match the metadata of the models returned by the api", () => {
+      generateModels({ numModels: 25, totalModels: 100 });
+      setup({ filters: {}, getModels: getModels() });
+      assertTotal(100);
+    });
 
-  xdescribe("onPageChange", () => {});
+    it("should be 0 if api returns 0 results", () => {
+      generateModels({ numModels: 0 });
+      setup({ filters: {}, getModels: getModels() });
+      assertTotal(0);
+    });
+  });
+
+  describe("page", () => {
+    function assertPage(page: number) {
+      // Offset is the current page number, minus one
+      expect(spec.query(DatatableComponent).offset).toBe(page - 1);
+    }
+
+    it("should update on page event", () => {
+      generateModels({ numModels: 25, totalModels: 100 });
+      setup({ filters: {}, getModels: getModels() });
+      setPage(2);
+      assertPage(2);
+    });
+
+    // This is currently not a behaviour of our system
+    xit("should reset to 0 on filter change", () => {
+      const filters$ = new BehaviorSubject<Filters<MockModel>>({});
+      generateModels({ numModels: 25, totalModels: 100 });
+      setup({ filters: filters$, getModels: getModels() });
+      setPage(3);
+      assertPage(3);
+      filters$.next({ filter: { id: { eq: 1 } } });
+      assertPage(1);
+    });
+
+    it("should reset to 0 on sort change", () => {
+      generateModels({ numModels: 25, totalModels: 100 });
+      setup({ filters: {}, getModels: getModels() });
+      setPage(2);
+      assertPage(2);
+      sortColumn(0);
+      assertPage(1);
+    });
+  });
 });
