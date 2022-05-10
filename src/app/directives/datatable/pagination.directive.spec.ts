@@ -1,5 +1,5 @@
 import { fakeAsync } from "@angular/core/testing";
-import { Filters } from "@baw-api/baw-api.service";
+import { Direction, Filters } from "@baw-api/baw-api.service";
 import { MockModel } from "@models/AbstractModel.spec";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import {
@@ -11,6 +11,7 @@ import {
 } from "@swimlane/ngx-datatable";
 import { modelData } from "@test/helpers/faker";
 import { BehaviorSubject, delay, Observable, of } from "rxjs";
+import { DatatableColumnDirective } from "./column.directive";
 import { DatatableDirective } from "./datatable.directive";
 import { DatatablePaginationDirective } from "./pagination.directive";
 
@@ -21,7 +22,11 @@ describe("DatatablePaginationDirective", () => {
     DatatablePaginationDirective<MockModel>
   >({
     directive: DatatablePaginationDirective,
-    declarations: [DataTableColumnDirective, DatatableDirective],
+    declarations: [
+      DataTableColumnDirective,
+      DatatableDirective,
+      DatatableColumnDirective,
+    ],
     imports: [NgxDatatableModule],
   });
 
@@ -238,7 +243,7 @@ describe("DatatablePaginationDirective", () => {
     });
 
     // This is currently not a behaviour of our system
-    xit("should reset to 0 on filter change", () => {
+    it("should reset to 0 on filter change", () => {
       const filters$ = new BehaviorSubject<Filters<MockModel>>({});
       generateModels({ numModels: 25, totalModels: 100 });
       setup({ filters: filters$, getModels: getModels() });
@@ -255,6 +260,96 @@ describe("DatatablePaginationDirective", () => {
       assertPage(2);
       sortColumn(0);
       assertPage(1);
+    });
+  });
+
+  describe("sorting", () => {
+    function assertSort(sortKey: string, direction: Direction = "asc") {
+      expect(spec.directive["pageAndSort$"].getValue().sort).toEqual({
+        direction,
+        orderBy: sortKey as keyof MockModel,
+      });
+    }
+
+    it("should read sort key from datatable column template", () => {
+      generateModels();
+      spec = createDirective(
+        `
+        <ngx-datatable
+          bawDatatableDefaults
+          [bawDatatablePagination]="{ filters: filters, getModels: getModels }"
+        >
+          <ngx-datatable-column
+            prop="id"
+            sortKey="sortKey"
+          ></ngx-datatable-column>
+        </ngx-datatable>
+      `,
+        { hostProps: { filters: {}, getModels: getModels() } }
+      );
+      sortColumn(0);
+      assertSort("sortKey");
+    });
+
+    it("should use column prop from datatable column template", () => {
+      generateModels();
+      spec = createDirective(
+        `
+        <ngx-datatable
+          bawDatatableDefaults
+          [bawDatatablePagination]="{ filters: filters, getModels: getModels }"
+        >
+          <ngx-datatable-column prop="id"></ngx-datatable-column>
+        </ngx-datatable>
+      `,
+        { hostProps: { filters: {}, getModels: getModels() } }
+      );
+      sortColumn(0);
+      assertSort("id");
+    });
+
+    it("should use column prop from datatable column input", () => {
+      generateModels();
+      spec = createDirective(
+        `
+        <ngx-datatable
+          bawDatatableDefaults
+          [bawDatatablePagination]="{ filters: filters, getModels: getModels }"
+          [columns]="columns"
+        ></ngx-datatable>
+      `,
+        {
+          hostProps: {
+            filters: {},
+            getModels: getModels(),
+            columns: [{ prop: "id" }],
+          },
+        }
+      );
+      sortColumn(0);
+      assertSort("id");
+    });
+
+    it("should use column name from datatable column input", () => {
+      generateModels();
+      spec = createDirective(
+        `
+        <ngx-datatable
+          bawDatatableDefaults
+          [bawDatatablePagination]="{ filters: filters, getModels: getModels }"
+          [columns]="columns"
+        ></ngx-datatable>
+      `,
+        {
+          hostProps: {
+            filters: {},
+            getModels: getModels(),
+            columns: [{ name: "Id" }],
+          },
+        }
+      );
+      sortColumn(0);
+      assertSort("id");
     });
   });
 });

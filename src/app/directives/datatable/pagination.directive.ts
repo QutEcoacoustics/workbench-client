@@ -2,7 +2,11 @@ import { AfterContentInit, Directive, Host, Input } from "@angular/core";
 import { Direction, Filters, Sorting } from "@baw-api/baw-api.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
-import { DatatableComponent, TableColumn } from "@swimlane/ngx-datatable";
+import {
+  DataTableColumnDirective,
+  DatatableComponent,
+  TableColumn,
+} from "@swimlane/ngx-datatable";
 import {
   BehaviorSubject,
   combineLatest,
@@ -141,6 +145,13 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
         ? this.pagination.filters
         : of(this.pagination.filters);
 
+    this.filters$.pipe(takeUntil(this.unsubscribe)).subscribe(() => {
+      this.pageAndSort$.next({
+        page: 0,
+        sort: this.pageAndSort$.getValue().sort,
+      });
+    });
+
     // Get the latest list of models whenever a change occurs to the page,
     // sorting, or base filters
     this.rows$ = combineLatest([this.pageAndSort$, this.filters$]).pipe(
@@ -172,10 +183,10 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
   }
 
   /** Re-triggers the pageAndSort$ observable with the new page number */
-  public setPage = (page: PageEvent): void => {
+  public setPage = (page: DatatablePageEvent): void => {
     this.pageAndSort$.next({
       page: page.offset,
-      sort: this.pageAndSort$.value.sort,
+      sort: this.pageAndSort$.getValue().sort,
     });
   };
 
@@ -183,17 +194,16 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
    * Re-triggers the pageAndSort$ observable with the new sort values. This
    * also resets the page number to 0
    */
-  public onSort = (event: SortEvent): void => {
+  public onSort = (event: DatatableSortEvent): void => {
     if (!event.newValue) {
       // Trigger with unset sort, and reset page to 0
       this.pageAndSort$.next({ sort: null, page: 0 });
     } else {
+      const sortKey = event.column.sortKey ?? event.column.prop?.toString();
+
       // Trigger with new sorting value and reset page to 0
       this.pageAndSort$.next({
-        sort: {
-          direction: event.newValue,
-          orderBy: event.column.sortKey as keyof Model,
-        },
+        sort: { direction: event.newValue, orderBy: sortKey as keyof Model },
         page: 0,
       });
     }
@@ -254,7 +264,7 @@ interface PageAndSort<Model> {
 export type Column<Model> = TableColumn & { sortKey: keyof Model };
 
 /** NgxDatatable page event data */
-interface PageEvent {
+export interface DatatablePageEvent {
   count: number;
   pageSize: number;
   limit: number;
@@ -262,13 +272,8 @@ interface PageEvent {
 }
 
 /** NgxDatatable sort event data */
-interface SortEvent {
+export interface DatatableSortEvent {
   newValue: Direction;
   prevValue: Direction;
-  column: {
-    sortable: boolean;
-    prop: string;
-    name: string;
-    sortKey: string;
-  };
+  column: DataTableColumnDirective & { sortKey: string };
 }

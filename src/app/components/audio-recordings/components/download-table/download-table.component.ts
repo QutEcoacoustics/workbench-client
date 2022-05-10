@@ -7,14 +7,12 @@ import { ColumnMode } from "@swimlane/ngx-datatable";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject } from "rxjs";
 
-type RecordingFilters = Filters<AudioRecording>;
-
 @Component({
   selector: "baw-download-table",
   templateUrl: "./download-table.component.html",
 })
 export class DownloadTableComponent {
-  @Input() public filters$: BehaviorSubject<RecordingFilters>;
+  @Input() public filters$: BehaviorSubject<Filters<AudioRecording>>;
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public ColumnMode = ColumnMode;
@@ -36,6 +34,6 @@ export class DownloadTableComponent {
   }
 
   public formatDate(date: DateTime): string {
-    return date.toFormat("yyyy-MM-dd hh:mm:ss");
+    return date.toFormat("yyyy-MM-dd HH:mm:ss");
   }
 }

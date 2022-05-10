@@ -1,34 +1,50 @@
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import {
-  DataTableColumnDirective as NgxDataTableColumnDirective,
+  DatatableComponent,
+  DataTableHeaderCellComponent,
   NgxDatatableModule,
 } from "@swimlane/ngx-datatable";
+import { getCallArgs } from "@test/helpers/general";
 import { DatatableColumnDirective } from "./column.directive";
+import { DatatableSortEvent } from "./pagination.directive";
 
 describe("DatatableColumnDirective", () => {
-  let spec: SpectatorDirective<DatatableColumnDirective>;
+  let spec: SpectatorDirective<DatatableComponent>;
   const createHost = createDirectiveFactory({
-    directive: DatatableColumnDirective,
+    directive: DatatableComponent,
+    declarations: [DatatableColumnDirective],
     imports: [NgxDatatableModule],
   });
 
   function assertSortKey(sortKey: string) {
-    const columnDirective = spec.query(NgxDataTableColumnDirective);
-    expect(columnDirective["sortKey"]).toEqual(sortKey);
+    spyOn(spec.directive, "onColumnSort").and.callThrough();
+    spec.query(DataTableHeaderCellComponent).onSort();
+
+    expect(spec.directive.onColumnSort).toHaveBeenCalled();
+    const sortEvent: DatatableSortEvent = getCallArgs(
+      spec.directive.onColumnSort as jasmine.Spy
+    )[0];
+    expect(sortEvent.column.sortKey).toBe(sortKey);
   }
 
-  it("should set sort key to datatable prop if none provided", () => {
+  it("should not set sort key to datatable prop if none provided", () => {
     const sortKey = "propSortKey";
     spec = createHost(
-      `<ngx-datatable-column prop="${sortKey}"></ngx-datatable-column>`
+      `
+      <ngx-datatable>
+        <ngx-datatable-column prop="${sortKey}"></ngx-datatable-column>
+      </ngx-datatable>`
     );
-    assertSortKey(sortKey);
+    assertSortKey(undefined);
   });
 
   it("should set sort key if provided", () => {
     const sortKey = "customSortKey";
     spec = createHost(
-      `<ngx-datatable-column prop="propKey" sortKey="${sortKey}"></ngx-datatable-column>`
+      `
+      <ngx-datatable>
+        <ngx-datatable-column prop="propKey" sortKey="${sortKey}"></ngx-datatable-column>
+      </ngx-datatable>`
     );
     assertSortKey(sortKey);
   });
