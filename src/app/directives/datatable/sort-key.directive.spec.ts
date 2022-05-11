@@ -1,0 +1,51 @@
+import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
+import {
+  DatatableComponent,
+  DataTableHeaderCellComponent,
+  NgxDatatableModule,
+} from "@swimlane/ngx-datatable";
+import { getCallArgs } from "@test/helpers/general";
+import { DatatableSortKeyDirective } from "./sort-key.directive";
+import { DatatableSortEvent } from "./pagination.directive";
+
+describe("DatatableSortKeyDirective", () => {
+  let spec: SpectatorDirective<DatatableComponent>;
+  const createHost = createDirectiveFactory({
+    directive: DatatableComponent,
+    declarations: [DatatableSortKeyDirective],
+    imports: [NgxDatatableModule],
+  });
+
+  function assertSortKey(sortKey: string) {
+    spyOn(spec.directive, "onColumnSort").and.callThrough();
+    spec.query(DataTableHeaderCellComponent).onSort();
+
+    expect(spec.directive.onColumnSort).toHaveBeenCalled();
+    const sortEvent: DatatableSortEvent = getCallArgs(
+      spec.directive.onColumnSort as jasmine.Spy
+    )[0];
+    expect(sortEvent.column.sortKey).toBe(sortKey);
+  }
+
+  it("should not set sort key to datatable prop if none provided", () => {
+    const sortKey = "propSortKey";
+    spec = createHost(
+      `
+      <ngx-datatable>
+        <ngx-datatable-column prop="${sortKey}"></ngx-datatable-column>
+      </ngx-datatable>`
+    );
+    assertSortKey(undefined);
+  });
+
+  it("should set sort key if provided", () => {
+    const sortKey = "customSortKey";
+    spec = createHost(
+      `
+      <ngx-datatable>
+        <ngx-datatable-column prop="propKey" sortKey="${sortKey}"></ngx-datatable-column>
+      </ngx-datatable>`
+    );
+    assertSortKey(sortKey);
+  });
+});

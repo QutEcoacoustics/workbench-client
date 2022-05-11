@@ -1,0 +1,49 @@
+:root {
+  --wip-bg-color: white;
+  --wip-color: #f39c12;
+  --wip-border-color: #f39c12;
+}
+
+.wip-placeholder {
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  border: var(--wip-border-color) 1px solid;
+
+  & > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  & > :first-child {
+    width: 100px;
+    background-color: var(--wip-bg-color);
+    color: var(--wip-color);
+  }
+
+  & > :last-child {
+    flex-grow: 1;
+    padding: 1rem;
+  }
+}
+
+.wip-wrapper {
+  display: flex;
+  flex-direction: column;
+  border: var(--wip-border-color) 1px solid;
+
+  & > :first-child {
+    background-color: var(--wip-bg-color);
+    color: var(--wip-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+  }
+
+  & > :last-child {
+    padding: 1rem;
+  }
+}

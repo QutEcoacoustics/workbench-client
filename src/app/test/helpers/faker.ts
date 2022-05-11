@@ -59,7 +59,7 @@ export const modelData = {
     faker.datatype.number(11) +
     ":" +
     faker.random.arrayElement(["00", "30"]),
-  param: () => faker.name.title().replace(specialCharRegex, ""),
+  param: () => faker.name.jobTitle().replace(specialCharRegex, ""),
   seconds: () => faker.datatype.number(86400 - 30) + 30,
   startEndSeconds: () => {
     const min = faker.datatype.number(86400 - 30) + 30;

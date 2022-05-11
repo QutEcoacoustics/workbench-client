@@ -1,6 +1,10 @@
 import { Directive, ElementRef, Host, Input, OnInit } from "@angular/core";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { DatatableComponent, SortType } from "@swimlane/ngx-datatable";
+import {
+  ColumnMode,
+  DatatableComponent,
+  SortType,
+} from "@swimlane/ngx-datatable";
 
 /**
  * Datatable default directives.
@@ -13,7 +17,7 @@ import { DatatableComponent, SortType } from "@swimlane/ngx-datatable";
 @Directive({
   selector: "[bawDatatableDefaults]",
 })
-export class DatatableDirective implements OnInit {
+export class DatatableDefaultsDirective implements OnInit {
   @Input() public externalPaging = true;
   @Input() public externalSorting = true;
   @Input() public footerHeight = 50;
@@ -34,6 +38,7 @@ export class DatatableDirective implements OnInit {
     this.datatableRef.nativeElement.classList.add("bootstrap");
 
     // Set overrides
+    this.datatable.columnMode = ColumnMode.force;
     this.datatable.externalPaging = this.externalPaging;
     this.datatable.externalSorting = this.externalSorting;
     this.datatable.footerHeight = this.footerHeight;

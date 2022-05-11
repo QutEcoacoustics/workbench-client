@@ -230,19 +230,18 @@
   </div>
 </form>
 
-<!-- TODO Preview audio recordings which will be downloaded by this request -->
-<baw-download-table [recordings$]="recordings$"></baw-download-table>
-
 <div class="clearfix">
   <a
     id="download-script"
-    class="btn btn-primary float-end mt-3"
+    class="btn btn-primary float-end mb-3"
     [class.disabled]="invalidForm(errors)"
     [href]="href"
   >
     Download Script
   </a>
 </div>
+
+<baw-download-table [filters$]="filters$"></baw-download-table>
 
 <!-- TODO Extract to CMS? -->
 <section>
@@ -308,7 +307,7 @@
     </li>
   </ul>
 
-  <h3>4. Open a terminal</h3>
+  <h3>4. Open PowerShell</h3>
 
   <p>
     <a
