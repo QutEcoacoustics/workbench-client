@@ -5,14 +5,14 @@ import {
   NgxDatatableModule,
 } from "@swimlane/ngx-datatable";
 import { getCallArgs } from "@test/helpers/general";
-import { DatatableColumnDirective } from "./column.directive";
+import { DatatableSortKeyDirective } from "./sort-key.directive";
 import { DatatableSortEvent } from "./pagination.directive";
 
-describe("DatatableColumnDirective", () => {
+describe("DatatableSortKeyDirective", () => {
   let spec: SpectatorDirective<DatatableComponent>;
   const createHost = createDirectiveFactory({
     directive: DatatableComponent,
-    declarations: [DatatableColumnDirective],
+    declarations: [DatatableSortKeyDirective],
     imports: [NgxDatatableModule],
   });
 

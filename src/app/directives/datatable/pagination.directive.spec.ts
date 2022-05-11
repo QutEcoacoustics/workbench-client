@@ -11,8 +11,8 @@ import {
 } from "@swimlane/ngx-datatable";
 import { modelData } from "@test/helpers/faker";
 import { BehaviorSubject, delay, Observable, of } from "rxjs";
-import { DatatableColumnDirective } from "./column.directive";
-import { DatatableDirective } from "./datatable.directive";
+import { DatatableSortKeyDirective } from "./sort-key.directive";
+import { DatatableDefaultsDirective } from "./defaults.directive";
 import { DatatablePaginationDirective } from "./pagination.directive";
 
 describe("DatatablePaginationDirective", () => {
@@ -24,8 +24,8 @@ describe("DatatablePaginationDirective", () => {
     directive: DatatablePaginationDirective,
     declarations: [
       DataTableColumnDirective,
-      DatatableDirective,
-      DatatableColumnDirective,
+      DatatableDefaultsDirective,
+      DatatableSortKeyDirective,
     ],
     imports: [NgxDatatableModule],
   });
@@ -372,6 +372,6 @@ describe("DatatablePaginationDirective", () => {
       );
       sortColumn(0);
       assertSort("sortKey");
-    })
+    });
   });
 });

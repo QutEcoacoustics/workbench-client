@@ -17,7 +17,7 @@ import {
 @Directive({
   selector: "[bawDatatableDefaults]",
 })
-export class DatatableDirective implements OnInit {
+export class DatatableDefaultsDirective implements OnInit {
   @Input() public externalPaging = true;
   @Input() public externalSorting = true;
   @Input() public footerHeight = 50;
