@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewEncapsulation,
 } from "@angular/core";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { ConfigService } from "@services/config/config.service";
 
 /**
@@ -12,20 +13,37 @@ import { ConfigService } from "@services/config/config.service";
 @Component({
   selector: "baw-wip",
   template: `
-    <ng-container *ngIf="!production">
-      <p class="h1 text-warning text-center">Work In Progress</p>
-      <div class="wip-wrapper">
-        <ng-content></ng-content>
+    <ng-container *ngIf="showWipContent; else placeholder">
+      <div class="wip-wrapper" ngbTooltip="This feature is a work in progress">
+        <ng-container *ngTemplateOutlet="icon"></ng-container>
+
+        <div class="wip-content">
+          <ng-content></ng-content>
+        </div>
       </div>
     </ng-container>
+
+    <ng-template #placeholder>
+      <div
+        class="wip-placeholder"
+        ngbTooltip="This feature is a work in progress"
+      >
+        <ng-container *ngTemplateOutlet="icon"></ng-container>
+        <div>
+          <span>
+            This section is a work in progress. Expect new things here soon!
+          </span>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #icon>
+      <div class="wip-icon">
+        <fa-icon size="lg" [icon]="['fas', 'person-digging']"></fa-icon>
+      </div>
+    </ng-template>
   `,
-  styles: [
-    `
-      .wip-wrapper {
-        background-color: rgba(0, 0, 0, 0.2);
-      }
-    `,
-  ],
+  styleUrls: ["wip.component.scss"],
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,9 +51,16 @@ import { ConfigService } from "@services/config/config.service";
 export class WIPComponent implements OnInit {
   public production: boolean;
 
-  public constructor(private config: ConfigService) {}
+  public constructor(
+    private session: BawSessionService,
+    private config: ConfigService
+  ) {}
 
   public ngOnInit() {
     this.production = this.config.config.production;
+  }
+
+  public get showWipContent(): boolean {
+    return !this.production || this.session.loggedInUser?.isAdmin;
   }
 }

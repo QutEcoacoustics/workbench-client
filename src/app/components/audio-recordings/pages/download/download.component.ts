@@ -6,7 +6,7 @@ import {
   Comparisons,
   DateExpressions,
   Filters,
-  InnerFilter,
+  InnerFilter
 } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -16,7 +16,7 @@ import { siteResolvers } from "@baw-api/site/sites.service";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import {
   audioRecordingMenuItems,
-  audioRecordingsCategory,
+  audioRecordingsCategory
 } from "@components/audio-recordings/audio-recording.menus";
 import { myAccountMenuItem } from "@components/profile/profile.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -28,15 +28,12 @@ import { Site } from "@models/Site";
 import {
   NgbCalendar,
   NgbDate,
-  NgbDateParserFormatter,
+  NgbDateParserFormatter
 } from "@ng-bootstrap/ng-bootstrap";
 import {
+  BehaviorSubject,
   debounceTime,
-  distinctUntilChanged,
-  Observable,
-  Subject,
-  switchMap,
-  takeUntil,
+  distinctUntilChanged, takeUntil
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
 
@@ -68,8 +65,7 @@ class DownloadAudioRecordingsComponent
 {
   @ViewChild(NgForm) public form: NgForm;
 
-  public filters$: Subject<Filters<AudioRecording>>;
-  public recordings$: Observable<AudioRecording[]>;
+  public filters$: BehaviorSubject<Filters<AudioRecording>>;
 
   public contactUs = contactUsMenuItem;
   public href = "";
@@ -93,15 +89,7 @@ class DownloadAudioRecordingsComponent
   }
 
   public ngOnInit(): void {
-    this.filters$ = new Subject();
-    this.recordings$ = this.filters$.pipe(
-      debounceTime(defaultDebounceTime),
-      distinctUntilChanged(),
-      switchMap((filters: Filters<AudioRecording>) =>
-        this.recordingsApi.filter(filters)
-      )
-    );
-
+    this.filters$ = new BehaviorSubject({});
     this.models = retrieveResolvers(this.route.snapshot.data);
     this.updateHref(this.model);
   }

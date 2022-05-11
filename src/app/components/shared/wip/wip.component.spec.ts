@@ -1,27 +1,22 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { BawSessionService } from "@baw-api/baw-session.service";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
-import { appLibraryImports } from "src/app/app.module";
 import { SharedModule } from "../shared.module";
 import { WIPComponent } from "./wip.component";
 
 describe("WIPComponent", () => {
-  let component: WIPComponent;
-  let fixture: ComponentFixture<WIPComponent>;
+  let spec: Spectator<WIPComponent>;
+  const createComponent = createComponentFactory({
+    component: WIPComponent,
+    providers: [BawSessionService],
+    imports: [SharedModule, MockAppConfigModule],
+  });
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, MockAppConfigModule],
-      declarations: [WIPComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(WIPComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spec = createComponent();
   });
 
   it("should create", () => {
-    expect(component).toBeTruthy();
+    expect(spec.component).toBeTruthy();
   });
-
-  // TODO Add tests
 });
