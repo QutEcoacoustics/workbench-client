@@ -145,6 +145,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
         ? this.pagination.filters
         : of(this.pagination.filters);
 
+    // Reset page number on filter change, but keep current sort
     this.filters$.pipe(takeUntil(this.unsubscribe)).subscribe(() => {
       this.pageAndSort$.next({
         page: 0,

@@ -351,5 +351,27 @@ describe("DatatablePaginationDirective", () => {
       sortColumn(0);
       assertSort("id");
     });
+
+    it("should use sort key from datatable column input", () => {
+      generateModels();
+      spec = createDirective(
+        `
+        <ngx-datatable
+          bawDatatableDefaults
+          [bawDatatablePagination]="{ filters: filters, getModels: getModels }"
+          [columns]="columns"
+        ></ngx-datatable>
+      `,
+        {
+          hostProps: {
+            filters: {},
+            getModels: getModels(),
+            columns: [{ name: "Id", sortKey: "sortKey" }],
+          },
+        }
+      );
+      sortColumn(0);
+      assertSort("sortKey");
+    })
   });
 });
