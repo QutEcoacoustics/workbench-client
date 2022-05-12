@@ -113,3 +113,14 @@ export const harvestProjectMenuItem = menuRoute({
   route: projectMenuItem.route.add("upload"),
   tooltip: () => "(UNDER DEVELOPMENT) Upload new audio to this project",
 });
+
+export const uploadAnnotationsProjectMenuItem = menuRoute({
+  icon: ["fas", "upload"],
+  label: "Batch Upload Annotations",
+  parent: projectMenuItem,
+  // TODO Change to isProjectEditorPredicate
+  predicate: isAdminPredicate,
+  route: projectMenuItem.route.add("batch-annotations"),
+  tooltip: () =>
+    "(UNDER DEVELOPMENT) Upload multiple annotations to this project",
+});
