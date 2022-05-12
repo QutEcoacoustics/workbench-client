@@ -10,7 +10,11 @@ import {
   isLoggedInPredicate,
   isProjectEditorPredicate,
 } from "src/app/app.menus";
-import { projectRoute, projectsRoute } from "./projects.routes";
+import {
+  projectHarvestRoute,
+  projectRoute,
+  projectsRoute,
+} from "./projects.routes";
 
 /*
   Projects Category
@@ -110,7 +114,7 @@ export const harvestProjectMenuItem = menuRoute({
   parent: projectMenuItem,
   // TODO #1888 Change to isProjectEditorPredicate when finished
   predicate: isAdminPredicate,
-  route: projectMenuItem.route.add("upload"),
+  route: projectHarvestRoute,
   tooltip: () => "(UNDER DEVELOPMENT) Upload new audio to this project",
 });
 

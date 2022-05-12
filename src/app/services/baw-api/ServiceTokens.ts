@@ -17,6 +17,8 @@ import type { DataRequest } from "@models/data/DataRequest";
 import type { ReportProblem } from "@models/data/ReportProblem";
 import type { Dataset } from "@models/Dataset";
 import type { DatasetItem } from "@models/DatasetItem";
+import type { Harvest } from "@models/harvest/Harvest";
+import type { HarvestItem } from "@models/harvest/HarvestItem";
 import type { ProgressEvent } from "@models/ProgressEvent";
 import type { Project } from "@models/Project";
 import type { Question } from "@models/Question";
@@ -40,9 +42,17 @@ import type {
 } from "./audio-event/audio-events.service";
 import type { AudioRecordingsService } from "./audio-recording/audio-recordings.service";
 import type { BookmarksService } from "./bookmark/bookmarks.service";
-import { DataRequestService } from "./data-request/data-request.service";
+import type { DataRequestService } from "./data-request/data-request.service";
 import type { DatasetItemsService } from "./dataset/dataset-items.service";
 import type { DatasetsService } from "./dataset/datasets.service";
+import type {
+  HarvestItemsService,
+  ShallowHarvestItemsService,
+} from "./harvest/harvest-items.service";
+import type {
+  HarvestsService,
+  ShallowHarvestsService,
+} from "./harvest/harvest.service";
 import type { ProgressEventsService } from "./progress-event/progress-events.service";
 import type { ProjectsService } from "./project/projects.service";
 import type {
@@ -121,6 +131,18 @@ export const DATASET_ITEM = new ServiceToken<DatasetItemsService, DatasetItem>(
 export const DATA_REQUEST = new ServiceToken<DataRequestService, DataRequest>(
   "DATA_REQUEST"
 );
+export const HARVEST = new ServiceToken<HarvestsService, Harvest>("HARVEST");
+export const SHALLOW_HARVEST = new ServiceToken<
+  ShallowHarvestsService,
+  Harvest
+>("SHALLOW_HARVEST");
+export const HARVEST_ITEM = new ServiceToken<HarvestItemsService, HarvestItem>(
+  "HARVEST_ITEM"
+);
+export const SHALLOW_HARVEST_ITEM = new ServiceToken<
+  ShallowHarvestItemsService,
+  HarvestItem
+>("SHALLOW_HARVEST_ITEM");
 export const PROGRESS_EVENT = new ServiceToken<
   ProgressEventsService,
   ProgressEvent
