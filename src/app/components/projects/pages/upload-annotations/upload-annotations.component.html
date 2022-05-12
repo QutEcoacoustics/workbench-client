@@ -1,0 +1,37 @@
+<h3>Batch Annotations Upload</h3>
+
+<p>
+  Upload your annotations in bulk from outside sources such as Raven. This
+  allows you to use the workflows you find to be the most efficient.
+</p>
+
+<form action="/intentionally_broken" method="post">
+  <div class="mb-3 has-validation">
+    <label for="annotationsCsv" class="form-label">Annotations CSV File</label>
+    <input
+      id="annotationsCsv"
+      class="form-control"
+      [class.is-invalid]="showErrors"
+      type="file"
+      accept=".csv"
+    />
+  </div>
+
+  <div *ngIf="showErrors" class="alert mt-3">
+    We had trouble reading your file, the errors we found were:
+
+    <ul class="mb-0">
+      <li *ngFor="let error of errors">
+        {{ error }}
+      </li>
+    </ul>
+  </div>
+
+  <button
+    type="button"
+    class="btn btn-primary float-end"
+    (click)="showErrors = true"
+  >
+    Upload
+  </button>
+</form>
