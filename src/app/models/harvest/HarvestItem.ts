@@ -1,13 +1,16 @@
 import { Injector } from "@angular/core";
-import { AUDIO_RECORDING, SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
-import { DateTimeTimezone, HasUpdater, Id } from "@interfaces/apiInterfaces";
+import {
+  ACCOUNT,
+  AUDIO_RECORDING,
+  SHALLOW_HARVEST,
+} from "@baw-api/ServiceTokens";
+import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { bawDateTime } from "@models/AttributeDecorators";
 import { AudioRecording } from "@models/AudioRecording";
 import { AbstractModel } from "../AbstractModel";
-import { hasOne, updater } from "../AssociationDecorators";
+import { hasOne } from "../AssociationDecorators";
 import { User } from "../User";
 import { Harvest } from "./Harvest";
-import { HarvestItemInfo, IHarvestItemInfo } from "./HarvestItemInfo";
 
 /**
  * State of a harvest item
@@ -25,15 +28,23 @@ export type HarvestItemState =
   | "completed"
   | "errored";
 
-export interface IHarvestItem extends HasUpdater {
+export interface IHarvestItemValidation {
+  name?: string;
+  status?: "fixable" | "notFixable";
+  message?: string;
+}
+
+export interface IHarvestItem {
   id?: Id;
   harvestId?: Id;
   audioRecordingId?: Id;
   createdAt?: DateTimeTimezone | string;
+  uploaderId?: Id;
+  uploadedAt?: DateTimeTimezone | string;
   deleted?: boolean;
-  info?: HarvestItemInfo | IHarvestItemInfo;
   path?: string;
   status?: HarvestItemState;
+  validations?: IHarvestItemValidation[];
 }
 
 export class HarvestItem extends AbstractModel implements IHarvestItem {
@@ -42,26 +53,25 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
   public readonly harvestId?: Id;
   public readonly audioRecordingId?: Id;
   public readonly deleted?: boolean;
-  public readonly info?: HarvestItemInfo;
   public readonly path?: string;
   public readonly status?: HarvestItemState;
   @bawDateTime()
   public readonly creatorAt?: DateTimeTimezone;
-  public readonly updaterId?: Id;
+  public readonly uploaderId?: Id;
   @bawDateTime()
-  public readonly updatedAt?: DateTimeTimezone;
+  public readonly uploadedAt?: DateTimeTimezone;
+  public readonly validations?: IHarvestItemValidation[];
 
   // Associations
   @hasOne<HarvestItem, Harvest>(SHALLOW_HARVEST, "harvestId")
   public harvest: Harvest;
   @hasOne<HarvestItem, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording: AudioRecording;
-  @updater<HarvestItem>()
-  public updater?: User;
+  @hasOne<HarvestItem, User>(ACCOUNT, "uploaderId")
+  public uploader?: User;
 
   public constructor(data: IHarvestItem, injector?: Injector) {
     super(data, injector);
-    this.info = new HarvestItemInfo(data.info, injector);
   }
 
   public get viewUrl(): string {

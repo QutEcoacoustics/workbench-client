@@ -4,8 +4,9 @@ import {
   filterParam,
   IdOr,
   IdParam,
-  ListOnlyApi,
+  IdParamOptional,
   option,
+  ReadonlyApi,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { ListResolver } from "@baw-api/resolver-common";
@@ -18,12 +19,13 @@ import { Observable } from "rxjs";
 
 const projectId: IdParam<Project> = id;
 const harvestId: IdParam<Harvest> = id;
-const endpoint = stringTemplate`/projects/${projectId}/harvest/${harvestId}/harvest_items/${option}`;
-const shallowEndpoint = stringTemplate`/harvest/${harvestId}/harvest_items/${option}`;
+const harvestItemId: IdParamOptional<HarvestItem> = id;
+const endpoint = stringTemplate`/projects/${projectId}/harvest/${harvestId}/harvest_items/${harvestItemId}${option}`;
+const shallowEndpoint = stringTemplate`/harvest/${harvestId}/harvest_items/${harvestItemId}${option}`;
 
 @Injectable()
 export class HarvestItemsService
-  implements ListOnlyApi<HarvestItem, [IdOr<Project>, IdOr<Harvest>]>
+  implements ReadonlyApi<HarvestItem, [IdOr<Project>, IdOr<Harvest>]>
 {
   public constructor(private api: BawApiService<HarvestItem>) {}
 
@@ -31,7 +33,10 @@ export class HarvestItemsService
     project: IdOr<Project>,
     harvest: IdOr<Harvest>
   ): Observable<HarvestItem[]> {
-    return this.api.list(HarvestItem, endpoint(project, harvest, emptyParam));
+    return this.api.list(
+      HarvestItem,
+      endpoint(project, harvest, emptyParam, emptyParam)
+    );
   }
 
   public filter(
@@ -41,20 +46,34 @@ export class HarvestItemsService
   ): Observable<HarvestItem[]> {
     return this.api.filter(
       HarvestItem,
-      endpoint(project, harvest, filterParam),
+      endpoint(project, harvest, emptyParam, filterParam),
       filters
+    );
+  }
+
+  public show(
+    model: IdOr<HarvestItem>,
+    project: IdOr<Project>,
+    harvest: IdOr<Harvest>
+  ): Observable<HarvestItem> {
+    return this.api.show(
+      HarvestItem,
+      endpoint(project, harvest, model, emptyParam)
     );
   }
 }
 
 @Injectable()
 export class ShallowHarvestItemsService
-  implements ListOnlyApi<HarvestItem, [IdOr<Harvest>]>
+  implements ReadonlyApi<HarvestItem, [IdOr<Harvest>]>
 {
   public constructor(private api: BawApiService<HarvestItem>) {}
 
   public list(harvest: IdOr<Harvest>): Observable<HarvestItem[]> {
-    return this.api.list(HarvestItem, shallowEndpoint(harvest, emptyParam));
+    return this.api.list(
+      HarvestItem,
+      shallowEndpoint(harvest, emptyParam, emptyParam)
+    );
   }
 
   public filter(
@@ -63,8 +82,18 @@ export class ShallowHarvestItemsService
   ): Observable<HarvestItem[]> {
     return this.api.filter(
       HarvestItem,
-      shallowEndpoint(harvest, filterParam),
+      shallowEndpoint(harvest, emptyParam, filterParam),
       filters
+    );
+  }
+
+  public show(
+    model: IdOr<HarvestItem>,
+    harvest: IdOr<Harvest>
+  ): Observable<HarvestItem> {
+    return this.api.show(
+      HarvestItem,
+      shallowEndpoint(harvest, model, emptyParam)
     );
   }
 }

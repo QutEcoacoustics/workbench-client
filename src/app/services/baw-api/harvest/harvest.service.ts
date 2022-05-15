@@ -27,7 +27,10 @@ const shallowEndpoint = stringTemplate`/harvest/${harvestId}${option}`;
 
 @Injectable()
 export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
-  public constructor(private api: BawApiService<Harvest>) {}
+  public constructor(
+    private api: BawApiService<Harvest>,
+    private shallowHarvestsApi: ShallowHarvestsService
+  ) {}
 
   public list(project: IdOr<Project>): Observable<Harvest[]> {
     return this.api.list(Harvest, endpoint(project, emptyParam, emptyParam));
@@ -75,42 +78,14 @@ export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
     return this.api.destroy(endpoint(project, model, emptyParam));
   }
 
-  /**
-   * Transition the status of a harvest to the next step
-   *
-   * @param status Status to change to if valid
-   * @param project Project of harvest
-   */
-  public transitionStatus(
-    status: HarvestStatus,
-    project: IdOr<Project>
-  ): Observable<Harvest> {
-    return this.api
-      .httpPatch(
-        endpoint(project, emptyParam, emptyParam),
-        // TODO Replace harvest with Harvest.kind
-        { harvest: { status } }
-      )
-      .pipe(map(this.api.handleSingleResponse(Harvest)));
+  /** @inheritdoc ShallowHarvestsService.transitionStatus */
+  public transitionStatus(status: HarvestStatus): Observable<Harvest> {
+    return this.shallowHarvestsApi.transitionStatus(status);
   }
 
-  /**
-   * Update the mappings of a harvest
-   *
-   * @param mappings Mappings of folders to sites
-   * @param project Project of harvest
-   */
-  public updateMappings(
-    mappings: IHarvestMapping[],
-    project: IdOr<Project>
-  ): Observable<Harvest> {
-    return this.api
-      .httpPatch(
-        endpoint(project, emptyParam, emptyParam),
-        // TODO Replace harvest with Harvest.kind
-        { harvest: { mappings } }
-      )
-      .pipe(map(this.api.handleSingleResponse(Harvest)));
+  /** @inheritdoc ShallowHarvestsService.updateMappings */
+  public updateMappings(mappings: IHarvestMapping[]): Observable<Harvest> {
+    return this.shallowHarvestsApi.updateMappings(mappings);
   }
 }
 

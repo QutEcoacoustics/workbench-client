@@ -60,7 +60,7 @@ export class AudioRecording
   public readonly recordedDate?: DateTimeTimezone;
   public readonly siteId?: Id;
   @bawDuration<IAudioRecording>({ key: "durationSeconds" })
-  public readonly duration: Duration;
+  public readonly duration?: Duration;
   public readonly durationSeconds?: number;
   public readonly sampleRateHertz?: number;
   public readonly channels?: number;

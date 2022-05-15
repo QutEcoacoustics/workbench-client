@@ -230,19 +230,6 @@ export abstract class ImmutableApi<
 }
 
 /**
- * Api Class with only list and filter abilities enabled
- */
-export abstract class ListOnlyApi<M extends AbstractModel, P extends any[] = []>
-  implements ApiList<M, P>
-{
-  public abstract list(...urlParameters: P): Observable<M[]>;
-  public abstract filter(
-    filters: Filters<M>,
-    ...urlParameters: P
-  ): Observable<M[]>;
-}
-
-/**
  * Api Class with only readable abilities enabled
  */
 export abstract class ReadonlyApi<M extends AbstractModel, P extends any[] = []>
