@@ -59,72 +59,27 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
   public ngOnChanges(): void {
     this.stepLabels = Array(this.numSteps)
       .fill(0)
-      .map((_, i): number => i);
+      .map((_, i): number => i + 1);
   }
 
   public ngAfterViewInit(): void {
+    // Detect whenever an element intersects with the stepper wrapper
     this.intersectionObserver = new IntersectionObserver(
-      (entries): void => {
-        this.zone.run(() => {
-          for (const entry of entries) {
-            const intersecting = entry.isIntersecting;
-            entry.target.classList.toggle(this.notVisibleClass, !intersecting);
-          }
-
-          const isNotVisibleStep = (step: ElementRef<HTMLElement>) =>
-            step.nativeElement.classList.contains(this.notVisibleClass);
-
-          /** Do steps on the left side of the stepper have the not visible class */
-          const leftStepsNotVisible = isNotVisibleStep(this.stepItems.get(0));
-          /** Do steps on the right side of the stepper have the not visible class */
-          const rightStepsNotVisible = isNotVisibleStep(
-            this.stepItems.get(this.stepItems.length - 1)
-          );
-          /** What is the index of the active step */
-          const activeStepIndex = this.stepItems
-            .toArray()
-            .findIndex((step) =>
-              step.nativeElement.classList.contains(this.activeClass)
-            );
-
-          /** Show left dots if steps are hidden, and the first step is not active */
-          const showLeftDots = leftStepsNotVisible && activeStepIndex !== 0;
-          /** Show right dots if steps are hidden, and the last step is not active */
-          const showRightDots =
-            rightStepsNotVisible && activeStepIndex !== this.numSteps - 1;
-
-          // Show/Hide dots
-          this.leftDots.nativeElement.classList.toggle(
-            this.hiddenClass,
-            !showLeftDots
-          );
-          this.rightDots.nativeElement.classList.toggle(
-            this.hiddenClass,
-            !showRightDots
-          );
-        });
-      },
-      {
-        root: this.stepper.nativeElement,
-        threshold: 1,
-      }
+      (entries): void =>
+        // Wrap in zone so that angular can detect changes
+        this.zone.run((): void => this.onIntersection(entries)),
+      { root: this.stepper.nativeElement, threshold: 1 }
+    );
+    // Observe each step
+    this.stepItems.forEach((step): void =>
+      this.intersectionObserver.observe(step.nativeElement)
     );
 
-    this.stepItems.forEach((step) => {
-      this.intersectionObserver.observe(step.nativeElement);
-    });
-
-    this.resizeObserver = new ResizeObserver(() => {
-      this.zone.run(() => {
-        const active = this.stepItems.find((step) =>
-          step.nativeElement.classList.contains(this.activeClass)
-        ).nativeElement;
-        this.steps.nativeElement.scroll(
-          active.offsetLeft - active.clientWidth,
-          0
-        );
-      });
-    });
+    // Detect any resize events on the stepper wrapper
+    this.resizeObserver = new ResizeObserver((): void =>
+      // Wrap in zone so that angular can detect changes
+      this.zone.run((): void => this.onWrapperResize())
+    );
     this.resizeObserver.observe(this.stepper.nativeElement);
   }
 
@@ -137,5 +92,52 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
 
   public isActive(step: number): boolean {
     return step === this.activeStep;
+  }
+
+  private onIntersection(entries: IntersectionObserverEntry[]): void {
+    // Update any steps so they track whether they are currently displayed outside of the wrapper
+    for (const entry of entries) {
+      const intersecting = entry.isIntersecting;
+      entry.target.classList.toggle(this.notVisibleClass, !intersecting);
+    }
+
+    const isNotVisibleStep = (step: ElementRef<HTMLElement>): boolean =>
+      this.getClassList(step).contains(this.notVisibleClass);
+
+    /** Do steps on the left side of the stepper have the not visible class */
+    const leftStepsNotVisible = isNotVisibleStep(this.stepItems.get(0));
+    /** Do steps on the right side of the stepper have the not visible class */
+    const rightStepsNotVisible = isNotVisibleStep(
+      this.stepItems.get(this.stepItems.length - 1)
+    );
+    /** What is the index of the active step */
+    const activeStepIndex = this.activeStepIndex;
+
+    /** Show left dots if steps are hidden, and the first step is not active */
+    const showLeftDots = leftStepsNotVisible && activeStepIndex !== 0;
+    /** Show right dots if steps are hidden, and the last step is not active */
+    const showRightDots =
+      rightStepsNotVisible && activeStepIndex !== this.numSteps - 1;
+
+    // Show/Hide dots
+    this.getClassList(this.leftDots).toggle(this.hiddenClass, !showLeftDots);
+    this.getClassList(this.rightDots).toggle(this.hiddenClass, !showRightDots);
+  }
+
+  private onWrapperResize(): void {
+    const active = this.stepItems.get(this.activeStepIndex).nativeElement;
+    this.steps.nativeElement.scroll(active.offsetLeft - active.clientWidth, 0);
+  }
+
+  private getClassList(ref: ElementRef<Element>) {
+    return ref.nativeElement.classList;
+  }
+
+  private get activeStepIndex(): number {
+    return this.stepItems
+      .toArray()
+      .findIndex((step): boolean =>
+        step.nativeElement.classList.contains(this.activeClass)
+      );
   }
 }
