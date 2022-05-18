@@ -3,7 +3,6 @@ import {
   Component,
   ElementRef,
   Input,
-  NgZone,
   OnChanges,
   OnDestroy,
   QueryList,
@@ -54,7 +53,7 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
   private activeClass = "active";
   private hiddenClass = "hidden";
 
-  public constructor(private zone: NgZone) {}
+  public constructor() {}
 
   public ngOnChanges(): void {
     this.stepLabels = Array(this.numSteps)
@@ -65,9 +64,7 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
   public ngAfterViewInit(): void {
     // Detect whenever an element intersects with the stepper wrapper
     this.intersectionObserver = new IntersectionObserver(
-      (entries): void =>
-        // Wrap in zone so that angular can detect changes
-        this.zone.run((): void => this.onIntersection(entries)),
+      (entries): void => this.onIntersection(entries),
       { root: this.stepper.nativeElement, threshold: 1 }
     );
     // Observe each step
@@ -77,8 +74,7 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
 
     // Detect any resize events on the stepper wrapper
     this.resizeObserver = new ResizeObserver((): void =>
-      // Wrap in zone so that angular can detect changes
-      this.zone.run((): void => this.onWrapperResize())
+      this.onWrapperResize()
     );
     this.resizeObserver.observe(this.stepper.nativeElement);
   }
