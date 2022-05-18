@@ -1,62 +1,90 @@
 .stepper {
-  --stepper-size: 50px;
-  --stepper-margin: 10px;
-  --color: rgb(156, 156, 156);
+  --font-size: 2.3em;
+  --stepper-size: 1.5em;
+  --stepper-gap: 1em;
+  --color: #9c9c9c;
   --active-color: var(--baw-highlight);
   --active-contrast: var(--baw-highlight-contrast);
 
-  height: var(--stepper-size);
-  margin: 20px;
-  overflow: hidden;
-  position: relative;
-  text-align: center;
-
-  &:before {
-    background: var(--color);
-    border-top: 1px solid var(--color);
-    content: "";
-    left: 0;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 100%;
-  }
-}
-
-.steps {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  position: relative;
-}
-
-.step {
-  height: var(--stepper-size);
-  position: relative;
-  width: var(--stepper-size);
-  margin: 0 var(--stepper-margin);
-}
-
-.text {
-  background-color: white;
-  border-radius: 50%;
-  border: 2px solid var(--color);
-  color: black;
-  height: 100%;
-  text-align: center;
+  display: grid;
   width: 100%;
+  position: relative;
+  overflow: clip;
 
-  &.active {
-    background-color: var(--active-color);
-    border-color: var(--active-color);
-    color: var(--active-contrast);
+  .not-visible {
+    opacity: 0;
   }
 
-  p {
-    font-size: 21px;
-    line-height: var(--stepper-size);
-    margin-top: -2px;
-    margin: 0;
-    padding: 0;
+  .lines {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    position: absolute;
+    top: 0%;
+    width: 100%;
+    z-index: 50;
+
+    .main {
+      border-top: 2px solid var(--color);
+      flex-grow: 1;
+      height: min-content;
+    }
+
+    .dots {
+      border-top: 2px dashed var(--color);
+      height: min-content;
+      width: 4em;
+
+      &.hidden {
+        width: 0;
+      }
+    }
+  }
+
+  .steps {
+    display: flex;
+    gap: var(--stepper-gap);
+    margin-left: 1em;
+    margin-right: 1em;
+    overflow: hidden;
+    width: calc(100% - 2em);
+
+    &::before {
+      content: " ";
+      display: block;
+      flex: 1 1 auto;
+      height: var(--stepper-size);
+      width: var(--stepper-size);
+    }
+
+    &::after {
+      content: " ";
+      display: block;
+      flex: 1 1 auto;
+      height: var(--stepper-size);
+      width: var(--stepper-size);
+    }
+
+    .step {
+      background-color: var(--color);
+      border-radius: 50%;
+      border: 1px solid var(--color);
+      color: white;
+      flex-grow: 0;
+      flex-shrink: 0;
+      font-size: var(--font-size);
+      height: var(--stepper-size);
+      margin-bottom: 1em;
+      margin-top: 1em;
+      text-align: center;
+      width: var(--stepper-size);
+      z-index: 100;
+
+      &.active {
+        border-color: var(--active-color);
+        background-color: var(--active-color);
+        color: var(--active-contrast);
+      }
+    }
   }
 }
