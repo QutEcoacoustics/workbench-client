@@ -71,8 +71,8 @@ describe("StepperComponent", () => {
 
     async function awaitHtmlObserverTriggers() {
       // We have no way to reliably trigger or await the triggering of the
-      // intersection and resize observers. So just wait 10ms
-      return new Promise((resolve) => setTimeout(resolve, 10));
+      // intersection and resize observers. So just wait 50ms
+      return new Promise((resolve) => setTimeout(resolve, 50));
     }
 
     it("should not show dotted lines when no steps are hidden", async () => {
