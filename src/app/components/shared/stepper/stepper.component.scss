@@ -3,6 +3,7 @@
   --stepper-size: 1.5em;
   --stepper-gap: 1em;
   --color: #9c9c9c;
+  --contrast: white;
   --active-color: var(--baw-highlight);
   --active-contrast: var(--baw-highlight-contrast);
 
@@ -69,7 +70,7 @@
       background-color: var(--color);
       border-radius: 50%;
       border: 1px solid var(--color);
-      color: white;
+      color: var(--contrast);
       flex-grow: 0;
       flex-shrink: 0;
       font-size: var(--font-size);
