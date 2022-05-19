@@ -10,14 +10,16 @@ import { projectMenuItemActions } from "../details/details.component";
 
 export enum HarvestStage {
   newHarvest,
-  streamUploading,
-  batchUploading,
+  uploading,
+  scanning,
   metadataExtraction,
   metadataReview,
   processing,
   review,
   complete,
 }
+
+export type UploadType = "batch" | "stream";
 
 const projectKey = "project";
 
@@ -29,6 +31,7 @@ class HarvestComponent extends PageComponent implements OnInit {
   public project: Project;
   public stage: HarvestStage = HarvestStage.newHarvest;
   public harvestStage = HarvestStage;
+  public isStreaming: boolean;
 
   public constructor(private route: ActivatedRoute) {
     super();
@@ -40,6 +43,10 @@ class HarvestComponent extends PageComponent implements OnInit {
 
   public setStage(stage: HarvestStage): void {
     this.stage = stage;
+  }
+
+  public setType(stage: UploadType): void {
+    this.isStreaming = stage === "stream";
   }
 }
 

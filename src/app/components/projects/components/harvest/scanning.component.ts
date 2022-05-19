@@ -3,11 +3,11 @@ import { HarvestStage } from "@components/projects/pages/harvest/harvest.compone
 import { endWith, startWith, tap, timer } from "rxjs";
 
 @Component({
-  selector: "baw-harvest-processing",
+  selector: "baw-harvest-scanning",
   template: `
-    <h3>Saving...</h3>
+    <h3>Scanning</h3>
 
-    <p>We are adding in all those files!</p>
+    <p>We are searching through our files to find all the files you uploaded</p>
 
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
@@ -22,16 +22,16 @@ import { endWith, startWith, tap, timer } from "rxjs";
     </p>
   `,
 })
-export class HarvestProcessingComponent {
+export class HarvestScanningComponent {
   @Output() public stage = new EventEmitter<HarvestStage>();
 
-  private intervalSpeed = 300;
+  private intervalSpeed = 150;
   public progress$ = timer(0, this.intervalSpeed).pipe(
     startWith(0),
     endWith(100),
     tap((progress) => {
       if (progress >= 100) {
-        this.stage.emit(HarvestStage.review);
+        this.stage.emit(HarvestStage.metadataExtraction);
       }
     })
   );

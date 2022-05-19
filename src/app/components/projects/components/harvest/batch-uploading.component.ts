@@ -101,6 +101,6 @@ export class HarvestBatchUploadingComponent {
   }
 
   public onFinishedUploading(): void {
-    this.stage.emit(HarvestStage.metadataExtraction);
+    this.stage.emit(HarvestStage.scanning);
   }
 }

@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Output } from "@angular/core";
-import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
+import {
+  HarvestStage,
+  UploadType,
+} from "@components/projects/pages/harvest/harvest.component";
 
 @Component({
   selector: "baw-harvest-new",
@@ -59,12 +62,15 @@ import { HarvestStage } from "@components/projects/pages/harvest/harvest.compone
 })
 export class HarvestNewComponent {
   @Output() public stage = new EventEmitter<HarvestStage>();
+  @Output() public type = new EventEmitter<UploadType>();
 
   public onStreamingUploadClick(): void {
-    this.stage.emit(HarvestStage.streamUploading);
+    this.stage.emit(HarvestStage.uploading);
+    this.type.emit("stream");
   }
 
   public onBatchUploadClick(): void {
-    this.stage.emit(HarvestStage.batchUploading);
+    this.stage.emit(HarvestStage.uploading);
+    this.type.emit("batch");
   }
 }
