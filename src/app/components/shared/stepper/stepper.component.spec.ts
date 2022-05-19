@@ -12,14 +12,6 @@ describe("StepperComponent", () => {
     return spec.queryAll(".step:not(.not-visible)");
   }
 
-  beforeEach(() => {
-    if (document.visibilityState !== "visible") {
-      // These tests will fail when the browser is minimised as the browser
-      // will not trigger the intersection and resize observers
-      fail("Browser cannot be minimised when running these tests");
-    }
-  });
-
   afterEach(() => {
     viewport.reset();
   });
