@@ -12,11 +12,7 @@ import {
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import {
-  Harvest,
-  HarvestStatus,
-  IHarvestMapping,
-} from "@models/harvest/Harvest";
+import { Harvest, HarvestStatus, IHarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { map, Observable } from "rxjs";
 

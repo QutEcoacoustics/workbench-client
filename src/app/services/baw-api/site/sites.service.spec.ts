@@ -28,7 +28,7 @@ type Service = SitesService;
 describe("SitesService", (): void => {
   const createModel = () => new Site(generateSite({ id: 10 }));
   const listUrl = "/projects/5/sites/";
-  const showUrl = "/projects/5/sites/10";
+  const showUrl = listUrl + "10";
   let service: SitesService;
   let apiRoot: string;
   let spec: SpectatorService<SitesService>;

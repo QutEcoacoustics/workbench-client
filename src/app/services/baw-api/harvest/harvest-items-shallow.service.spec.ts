@@ -1,25 +1,27 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { BawApiService } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import { AnalysisJobItem } from "@models/AnalysisJobItem";
+import { HarvestItem } from "@models/HarvestItem";
 import {
   createServiceFactory,
   mockProvider,
   SpectatorService,
 } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
-import { generateAnalysisJobItem } from "@test/fakes/AnalysisJobItem";
+import { generateHarvestItem } from "@test/fakes/HarvestItem";
 import { validateReadonlyApi } from "@test/helpers/api-common";
 import { ToastrService } from "ngx-toastr";
-import { AnalysisJobItemsService } from "./analysis-job-items.service";
+import { ShallowHarvestItemsService } from "./harvest-items.service";
 
-describe("AnalysisJobItemsService", (): void => {
+describe("ShallowHarvestItemsService", () => {
+  const harvestItemId = 10;
   const createModel = () =>
-    new AnalysisJobItem(generateAnalysisJobItem({ id: 10 }));
-  const baseUrl = "/analysis_jobs/5/audio_recordings/";
-  let spec: SpectatorService<AnalysisJobItemsService>;
+    new HarvestItem(generateHarvestItem({ id: harvestItemId }));
+  const baseUrl = "/harvest/5/harvest_items/";
+  const showUrl = baseUrl + harvestItemId;
+  let spec: SpectatorService<ShallowHarvestItemsService>;
   const createService = createServiceFactory({
-    service: AnalysisJobItemsService,
+    service: ShallowHarvestItemsService,
     imports: [MockAppConfigModule, HttpClientTestingModule],
     providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
@@ -30,12 +32,12 @@ describe("AnalysisJobItemsService", (): void => {
 
   validateReadonlyApi(
     () => spec,
-    AnalysisJobItem,
+    HarvestItem,
     baseUrl,
     baseUrl + "filter",
-    baseUrl + "10",
+    showUrl,
     createModel,
-    10,
-    5
+    harvestItemId, // harvest item
+    5 // harvest
   );
 });

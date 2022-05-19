@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import {
   emptyParam,
   filterParam,
+  id,
   IdOr,
   IdParam,
   IdParamOptional,
@@ -11,10 +12,9 @@ import {
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { ListResolver } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Harvest } from "@models/harvest/Harvest";
-import { HarvestItem } from "@models/harvest/HarvestItem";
+import { Harvest } from "@models/Harvest";
+import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
-import { id } from "@swimlane/ngx-datatable";
 import { Observable } from "rxjs";
 
 const projectId: IdParam<Project> = id;

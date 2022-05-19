@@ -7,9 +7,9 @@ import {
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { bawDateTime } from "@models/AttributeDecorators";
 import { AudioRecording } from "@models/AudioRecording";
-import { AbstractModel } from "../AbstractModel";
-import { hasOne } from "../AssociationDecorators";
-import { User } from "../User";
+import { AbstractModel } from "./AbstractModel";
+import { hasOne } from "./AssociationDecorators";
+import { User } from "./User";
 import { Harvest } from "./Harvest";
 
 /**
@@ -56,7 +56,7 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
   public readonly path?: string;
   public readonly status?: HarvestItemState;
   @bawDateTime()
-  public readonly creatorAt?: DateTimeTimezone;
+  public readonly createdAt?: DateTimeTimezone;
   public readonly uploaderId?: Id;
   @bawDateTime()
   public readonly uploadedAt?: DateTimeTimezone;
