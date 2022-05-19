@@ -26,6 +26,11 @@ import {
   DatasetItemsService,
 } from "./dataset/dataset-items.service";
 import { datasetResolvers, DatasetsService } from "./dataset/datasets.service";
+import { HarvestItemsService, ShallowHarvestItemsService } from "./harvest/harvest-items.service";
+import {
+  HarvestsService,
+  ShallowHarvestsService,
+} from "./harvest/harvest.service";
 import {
   progressEventResolvers,
   ProgressEventsService,
@@ -123,6 +128,22 @@ const serviceList = [
   {
     serviceToken: Tokens.DATA_REQUEST,
     service: DataRequestService,
+  },
+  {
+    serviceToken: Tokens.HARVEST,
+    service: HarvestsService,
+  },
+  {
+    serviceToken: Tokens.SHALLOW_HARVEST,
+    service: ShallowHarvestsService,
+  },
+  {
+    serviceToken: Tokens.HARVEST_ITEM,
+    service: HarvestItemsService,
+  },
+  {
+    serviceToken: Tokens.SHALLOW_HARVEST_ITEM,
+    service: ShallowHarvestItemsService,
   },
   {
     serviceToken: Tokens.PROGRESS_EVENT,

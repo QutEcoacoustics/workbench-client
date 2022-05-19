@@ -1,0 +1,63 @@
+import {
+  HarvestStatus,
+  IHarvest,
+  IHarvestMapping,
+  IHarvestReport,
+} from "@models/Harvest";
+import { modelData } from "@test/helpers/faker";
+
+export function generateHarvestMapping(
+  data?: Partial<IHarvestMapping>
+): Required<IHarvestMapping> {
+  return {
+    path: modelData.system.filePath(),
+    siteId: modelData.id(),
+    utcOffset: modelData.random.arrayElement(["-10:00", "00:00", "+10:00"]),
+    recursive: modelData.datatype.boolean(),
+    ...data,
+  };
+}
+
+export function generateHarvestReport(
+  data?: Partial<IHarvestReport>
+): Required<IHarvestReport> {
+  return {
+    itemsTotal: modelData.datatype.number(),
+    itemsSizeBytes: modelData.datatype.number(),
+    itemsDurationSeconds: modelData.datatype.number(),
+    itemsInvalidFixable: modelData.datatype.number(),
+    itemsInvalidNotFixable: modelData.datatype.number(),
+    itemsNew: modelData.datatype.number(),
+    itemsMetadataGathered: modelData.datatype.number(),
+    itemsFailed: modelData.datatype.number(),
+    itemsCompleted: modelData.datatype.number(),
+    itemsErrored: modelData.datatype.number(),
+    latestActivity: modelData.timestamp(),
+    runTimeSeconds: modelData.datatype.number(),
+    ...data,
+  };
+}
+
+export function generateHarvest(data?: Partial<IHarvest>): Required<IHarvest> {
+  return {
+    id: modelData.id(),
+    streaming: modelData.datatype.boolean(),
+    status: modelData.random.arrayElement<HarvestStatus>([
+      "uploading",
+      "metadataExtraction",
+      "metadataReview",
+      "processing",
+      "complete",
+    ]),
+    projectId: modelData.id(),
+    uploadPassword: modelData.internet.password(),
+    uploadUser: modelData.internet.userName(),
+    uploadUrl: modelData.internet.url(),
+    mappings: Array(modelData.datatype.number({ min: 0, max: 3 })).map(() =>
+      generateHarvestMapping()
+    ),
+    report: generateHarvestReport(),
+    ...modelData.model.generateCreatorAndUpdater(),
+    ...data,
+  };
+}
