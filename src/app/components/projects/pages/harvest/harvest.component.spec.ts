@@ -5,9 +5,12 @@ import { HarvestMetadataReviewComponent } from "@components/projects/components/
 import { HarvestNewComponent } from "@components/projects/components/harvest/new.component";
 import { HarvestProcessingComponent } from "@components/projects/components/harvest/processing.component";
 import { HarvestReviewComponent } from "@components/projects/components/harvest/review.component";
+import { HarvestScanningComponent } from "@components/projects/components/harvest/scanning.component";
 import { HarvestStreamUploadingComponent } from "@components/projects/components/harvest/stream-uploading.component";
 import { Project } from "@models/Project";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import { SharedModule } from "@shared/shared.module";
+import { StepperComponent } from "@shared/stepper/stepper.component";
 import { generateProject } from "@test/fakes/Project";
 import { MockComponents } from "ng-mocks";
 import { HarvestComponent, HarvestStage } from "./harvest.component";
@@ -19,6 +22,7 @@ describe("HarvestComponent", () => {
     component: HarvestComponent,
     declarations: MockComponents(
       HarvestNewComponent,
+      HarvestScanningComponent,
       HarvestStreamUploadingComponent,
       HarvestBatchUploadingComponent,
       HarvestMetadataExtractionComponent,
@@ -27,6 +31,7 @@ describe("HarvestComponent", () => {
       HarvestReviewComponent,
       HarvestCompleteComponent
     ),
+    imports: [SharedModule],
   });
 
   beforeEach(() => {
@@ -53,34 +58,44 @@ describe("HarvestComponent", () => {
   });
 
   describe("stages", () => {
-    function assertStage(stage: HarvestStage, component: any) {
+    function setStage(stage: HarvestStage) {
       setup();
       spec.detectChanges();
       spec.component.setStage(stage);
       spec.detectChanges();
+    }
+
+    function assertStage(stage: HarvestStage, component: any) {
       expect(spec.query(component)).toBeInstanceOf(component);
+      expect(spec.query(StepperComponent).activeStep).toBe(stage);
     }
 
     it("should show new harvest stage", () => {
-      setup();
-      spec.detectChanges();
-      expect(spec.query(HarvestNewComponent)).toBeInstanceOf(
-        HarvestNewComponent
-      );
+      setStage(HarvestStage.newHarvest);
+      assertStage(HarvestStage.newHarvest, HarvestNewComponent);
     });
 
     it("should show stream uploading stage", () => {
-      assertStage(
-        HarvestStage.streamUploading,
-        HarvestStreamUploadingComponent
-      );
+      setStage(HarvestStage.uploading);
+      spec.component.isStreaming = true;
+      spec.detectChanges();
+      assertStage(HarvestStage.uploading, HarvestStreamUploadingComponent);
     });
 
     it("should show batch uploading stage", () => {
-      assertStage(HarvestStage.batchUploading, HarvestBatchUploadingComponent);
+      setStage(HarvestStage.uploading);
+      spec.component.isStreaming = false;
+      spec.detectChanges();
+      assertStage(HarvestStage.uploading, HarvestBatchUploadingComponent);
+    });
+
+    it("should show scanning stage", () => {
+      setStage(HarvestStage.scanning);
+      assertStage(HarvestStage.scanning, HarvestScanningComponent);
     });
 
     it("should show metadata extraction stage", () => {
+      setStage(HarvestStage.metadataExtraction);
       assertStage(
         HarvestStage.metadataExtraction,
         HarvestMetadataExtractionComponent
@@ -88,18 +103,22 @@ describe("HarvestComponent", () => {
     });
 
     it("should show metadata review stage", () => {
+      setStage(HarvestStage.metadataReview);
       assertStage(HarvestStage.metadataReview, HarvestMetadataReviewComponent);
     });
 
     it("should show processing stage", () => {
+      setStage(HarvestStage.processing);
       assertStage(HarvestStage.processing, HarvestProcessingComponent);
     });
 
     it("should show review stage", () => {
+      setStage(HarvestStage.review);
       assertStage(HarvestStage.review, HarvestReviewComponent);
     });
 
     it("should show complete stage", () => {
+      setStage(HarvestStage.complete);
       assertStage(HarvestStage.complete, HarvestCompleteComponent);
     });
   });

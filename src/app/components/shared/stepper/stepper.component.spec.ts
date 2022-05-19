@@ -12,6 +12,14 @@ describe("StepperComponent", () => {
     return spec.queryAll(".step:not(.not-visible)");
   }
 
+  beforeEach(() => {
+    if (document.visibilityState !== "visible") {
+      // These tests will fail when the browser is minimised as the browser
+      // will not trigger the intersection and resize observers
+      fail("Browser cannot be minimised when running these tests");
+    }
+  });
+
   afterEach(() => {
     viewport.reset();
   });
@@ -22,7 +30,7 @@ describe("StepperComponent", () => {
     });
 
     it("should create a single step", () => {
-      spec = createComponent({ props: { numSteps: 1, activeStep: 1 } });
+      spec = createComponent({ props: { numSteps: 1, activeStep: 0 } });
 
       const steps = getSteps();
       expect(steps).toHaveLength(1);
@@ -45,7 +53,7 @@ describe("StepperComponent", () => {
   describe("activeStep", () => {
     it("should set active class on active step", () => {
       const numSteps = 3;
-      spec = createComponent({ props: { numSteps, activeStep: 2 } });
+      spec = createComponent({ props: { numSteps, activeStep: 1 } });
 
       const steps = getSteps();
       expect(steps[0]).not.toHaveClass("active");
@@ -77,7 +85,8 @@ describe("StepperComponent", () => {
 
     it("should not show dotted lines when no steps are hidden", async () => {
       viewport.set(1000, viewports.extraLargeDimensions.height);
-      spec = createComponent({ props: { numSteps: 3, activeStep: 2 } });
+      spec = createComponent({ props: { numSteps: 3, activeStep: 1 } });
+      spec.detectChanges();
       await awaitHtmlObserverTriggers();
       spec.detectChanges();
       // Should show all steps
@@ -88,6 +97,7 @@ describe("StepperComponent", () => {
     it("should only show dotted line on left when left steps are hidden", async () => {
       viewport.set(1000, viewports.extraLargeDimensions.height);
       spec = createComponent({ props: { numSteps: 14, activeStep: 2 } });
+      spec.detectChanges();
       await awaitHtmlObserverTriggers();
       spec.detectChanges();
       // Should only show 13 steps
@@ -97,7 +107,8 @@ describe("StepperComponent", () => {
 
     it("should only show dotted line on right when right steps are hidden", async () => {
       viewport.set(1000, viewports.extraLargeDimensions.height);
-      spec = createComponent({ props: { numSteps: 14, activeStep: 14 } });
+      spec = createComponent({ props: { numSteps: 14, activeStep: 13 } });
+      spec.detectChanges();
       await awaitHtmlObserverTriggers();
       spec.detectChanges();
       // Should only show 13 steps
@@ -108,6 +119,7 @@ describe("StepperComponent", () => {
     it("should show dotted line on both sides when steps either side are hidden", async () => {
       viewport.set(1000, viewports.extraLargeDimensions.height);
       spec = createComponent({ props: { numSteps: 100, activeStep: 50 } });
+      spec.detectChanges();
       await awaitHtmlObserverTriggers();
       spec.detectChanges();
       // Should only show 13 steps

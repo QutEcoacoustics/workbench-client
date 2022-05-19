@@ -81,10 +81,14 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.intersectionObserver.unobserve(this.stepper?.nativeElement);
-    this.resizeObserver.unobserve(this.stepper?.nativeElement);
-    this.intersectionObserver.disconnect();
-    this.resizeObserver.disconnect();
+    // This may be called before ngAfterViewInit, so treat observers and
+    // elements as potentially undefined
+    this.stepItems?.forEach((step): void =>
+      this.intersectionObserver?.observe(step.nativeElement)
+    );
+    this.resizeObserver?.unobserve(this.stepper?.nativeElement);
+    this.intersectionObserver?.disconnect();
+    this.resizeObserver?.disconnect();
   }
 
   public isActive(step: number): boolean {
