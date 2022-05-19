@@ -1,25 +1,26 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { BawApiService } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import { AnalysisJobItem } from "@models/AnalysisJobItem";
+import { HarvestItem } from "@models/HarvestItem";
 import {
   createServiceFactory,
   mockProvider,
   SpectatorService,
 } from "@ngneat/spectator";
 import { MockAppConfigModule } from "@services/config/configMock.module";
-import { generateAnalysisJobItem } from "@test/fakes/AnalysisJobItem";
+import { generateHarvestItem } from "@test/fakes/HarvestItem";
 import { validateReadonlyApi } from "@test/helpers/api-common";
 import { ToastrService } from "ngx-toastr";
-import { AnalysisJobItemsService } from "./analysis-job-items.service";
+import { HarvestItemsService } from "./harvest-items.service";
 
-describe("AnalysisJobItemsService", (): void => {
+describe("HarvestItemsService", () => {
+  const harvestItemId = 15;
   const createModel = () =>
-    new AnalysisJobItem(generateAnalysisJobItem({ id: 10 }));
-  const baseUrl = "/analysis_jobs/5/audio_recordings/";
-  let spec: SpectatorService<AnalysisJobItemsService>;
+    new HarvestItem(generateHarvestItem({ id: harvestItemId }));
+  const baseUrl = "/projects/5/harvest/10/harvest_items/";
+  let spec: SpectatorService<HarvestItemsService>;
   const createService = createServiceFactory({
-    service: AnalysisJobItemsService,
+    service: HarvestItemsService,
     imports: [MockAppConfigModule, HttpClientTestingModule],
     providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
   });
@@ -30,12 +31,13 @@ describe("AnalysisJobItemsService", (): void => {
 
   validateReadonlyApi(
     () => spec,
-    AnalysisJobItem,
+    HarvestItem,
     baseUrl,
     baseUrl + "filter",
-    baseUrl + "10",
+    baseUrl + harvestItemId,
     createModel,
-    10,
-    5
+    harvestItemId, // harvest item
+    5, // project
+    10, // harvest
   );
 });

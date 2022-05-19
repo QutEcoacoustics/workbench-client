@@ -56,51 +56,25 @@ export class BawApiService<
   /**
    * Handle API collection response
    *
-   * @param response Api Response
+   * @param cb AbstractModel class
    */
-  private handleCollectionResponse(
-    classBuilder: ClassBuilder,
-    response: ApiResponse<Model[]>
-  ): Model[] {
-    if (response.data instanceof Array) {
-      return response.data.map((data) => {
-        const model = new classBuilder(data, this.injector);
-        model.addMetadata(response.meta);
-        return model;
-      });
-    } else {
-      const model = new classBuilder(response.data, this.injector);
-      model.addMetadata(response.meta);
-      return [model];
-    }
-  }
+  public handleCollectionResponse: (
+    cb: ClassBuilder
+  ) => (resp: ApiResponse<Model>) => Model[];
 
   /**
    * Handle API single model response
    *
-   * @param response Api Response
+   * @param cb AbstractModel class
    */
-  private handleSingleResponse(
-    classBuilder: ClassBuilder,
-    response: ApiResponse<Model>
-  ): Model {
-    if (response.data instanceof Array) {
-      throw new Error(
-        "Received an array of API results when only a single result was expected"
-      );
-    }
-
-    const model = new classBuilder(response.data, this.injector);
-    model.addMetadata(response.meta);
-    return model;
-  }
+  public handleSingleResponse: (
+    cb: ClassBuilder
+  ) => (resp: ApiResponse<Model>) => Model;
 
   /**
    * Handle API empty response
    */
-  private handleEmptyResponse(): null {
-    return null;
-  }
+  private handleEmptyResponse = () => null;
 
   public constructor(
     @Inject(API_ROOT) protected apiRoot: string,
@@ -109,7 +83,31 @@ export class BawApiService<
     protected injector: Injector,
     protected session: BawSessionService,
     protected notifications: ToastrService
-  ) {}
+  ) {
+    const createModel = (cb: ClassBuilder, data: Model, meta: Meta): Model => {
+      const model = new cb(data, this.injector);
+      model.addMetadata(meta);
+      return model;
+    };
+
+    this.handleCollectionResponse =
+      (cb: ClassBuilder) =>
+      (resp: ApiResponse<Model>): Model[] =>
+        resp.data instanceof Array
+          ? resp.data.map((data): Model => createModel(cb, data, resp.meta))
+          : [createModel(cb, resp.data, resp.meta)];
+
+    this.handleSingleResponse =
+      (cb: ClassBuilder) =>
+      (resp: ApiResponse<Model>): Model => {
+        if (resp.data instanceof Array) {
+          throw new Error(
+            "Received an array of API results when only a single result was expected"
+          );
+        }
+        return createModel(cb, resp.data, resp.meta);
+      };
+  }
 
   /**
    * Handle custom Errors thrown in API services
@@ -134,9 +132,7 @@ export class BawApiService<
   public list(classBuilder: ClassBuilder, path: string): Observable<Model[]> {
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpGet(path)),
-      map((models: ApiResponse<Model[]>) =>
-        this.handleCollectionResponse(classBuilder, models)
-      )
+      map(this.handleCollectionResponse(classBuilder))
     );
   }
 
@@ -154,9 +150,7 @@ export class BawApiService<
   ): Observable<Model[]> {
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters)),
-      map((models: ApiResponse<Model[]>) =>
-        this.handleCollectionResponse(classBuilder, models)
-      )
+      map(this.handleCollectionResponse(classBuilder))
     );
   }
 
@@ -169,9 +163,7 @@ export class BawApiService<
   public show(classBuilder: ClassBuilder, path: string): Observable<Model> {
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpGet(path)),
-      map((model: ApiResponse<Model>) =>
-        this.handleSingleResponse(classBuilder, model)
-      )
+      map(this.handleSingleResponse(classBuilder))
     );
   }
 
@@ -192,9 +184,7 @@ export class BawApiService<
   ): Observable<Model> {
     const jsonData = body?.getJsonAttributes?.({ create: true });
     const request = this.httpPost(createPath, jsonData ?? body).pipe(
-      map((model: ApiResponse<Model>) =>
-        this.handleSingleResponse(classBuilder, model)
-      )
+      map(this.handleSingleResponse(classBuilder))
     );
 
     if (body?.hasFormDataOnlyAttributes({ create: true })) {
@@ -203,9 +193,7 @@ export class BawApiService<
         mergeMap((model) =>
           this.httpPut(updatePath(model), formData, multiPartHeaders)
         ),
-        map((model: ApiResponse<Model>) =>
-          this.handleSingleResponse(classBuilder, model)
-        )
+        map(this.handleSingleResponse(classBuilder))
       );
     }
 
@@ -227,18 +215,14 @@ export class BawApiService<
   ): Observable<Model> {
     const jsonData = body.getJsonAttributes?.({ update: true });
     const request = this.httpPatch(path, jsonData ?? body).pipe(
-      map((model: ApiResponse<Model>) =>
-        this.handleSingleResponse(classBuilder, model)
-      )
+      map(this.handleSingleResponse(classBuilder))
     );
 
     if (body?.hasFormDataOnlyAttributes({ update: true })) {
       const formData = body.getFormDataOnlyAttributes({ update: true });
       return request.pipe(
         mergeMap(() => this.httpPut(path, formData, multiPartHeaders)),
-        map((model: ApiResponse<Model>) =>
-          this.handleSingleResponse(classBuilder, model)
-        )
+        map(this.handleSingleResponse(classBuilder))
       );
     }
     return request;
