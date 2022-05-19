@@ -1,0 +1,91 @@
+.stepper {
+  --font-size: 2.3em;
+  --stepper-size: 1.5em;
+  --stepper-gap: 1em;
+  --color: #9c9c9c;
+  --contrast: white;
+  --active-color: var(--baw-highlight);
+  --active-contrast: var(--baw-highlight-contrast);
+
+  display: grid;
+  width: 100%;
+  position: relative;
+  overflow: clip;
+
+  .not-visible {
+    opacity: 0;
+  }
+
+  .lines {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    position: absolute;
+    top: 0%;
+    width: 100%;
+    z-index: 50;
+
+    .main {
+      border-top: 2px solid var(--color);
+      flex-grow: 1;
+      height: min-content;
+    }
+
+    .dots {
+      border-top: 2px dashed var(--color);
+      height: min-content;
+      width: 4em;
+
+      &.hidden {
+        width: 0;
+      }
+    }
+  }
+
+  .steps {
+    display: flex;
+    gap: var(--stepper-gap);
+    margin-left: 1em;
+    margin-right: 1em;
+    overflow: hidden;
+    width: calc(100% - 2em);
+
+    &::before {
+      content: " ";
+      display: block;
+      flex: 1 1 auto;
+      height: var(--stepper-size);
+      width: var(--stepper-size);
+    }
+
+    &::after {
+      content: " ";
+      display: block;
+      flex: 1 1 auto;
+      height: var(--stepper-size);
+      width: var(--stepper-size);
+    }
+
+    .step {
+      background-color: var(--color);
+      border-radius: 50%;
+      border: 1px solid var(--color);
+      color: var(--contrast);
+      flex-grow: 0;
+      flex-shrink: 0;
+      font-size: var(--font-size);
+      height: var(--stepper-size);
+      margin-bottom: 1em;
+      margin-top: 1em;
+      text-align: center;
+      width: var(--stepper-size);
+      z-index: 100;
+
+      &.active {
+        border-color: var(--active-color);
+        background-color: var(--active-color);
+        color: var(--active-contrast);
+      }
+    }
+  }
+}
