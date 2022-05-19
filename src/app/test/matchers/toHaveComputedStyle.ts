@@ -30,7 +30,7 @@ function validateStyles(
   ) => CustomMatcherResult
 ): CustomMatcherResult {
   if (!actual) {
-    return failure("HTML input does not exist");
+    return failure("HTMLElement is undefined");
   } else if (!(actual instanceof HTMLElement)) {
     return failure(
       `Input must be of type HTMLElement, got ${

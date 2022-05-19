@@ -39,6 +39,7 @@ import { ItemsModule } from "./items/items.module";
 import { LoadingModule } from "./loading/loading.module";
 import { MenuModule } from "./menu/menu.module";
 import { ModelCardsModule } from "./model-cards/model-cards.module";
+import { StepperModule } from "./stepper/stepper.module";
 import { UserLinkModule } from "./user-link/user-link.module";
 import { WIPComponent } from "./wip/wip.component";
 
@@ -55,41 +56,42 @@ export const sharedComponents = [
 export const internalComponents = [];
 
 export const sharedModules = [
-  CommonModule,
-  RouterModule,
   BrowserAnimationsModule,
+  CommonModule,
+  DateValueAccessorModule,
+  FontAwesomeModule,
+  FormlyBootstrapModule,
+  FormlyModule,
+  FormsModule,
   LoadingBarHttpClientModule,
-  NgbTooltipModule,
-  NgbPaginationModule,
-  NgbProgressbarModule,
   NgbCollapseModule,
   NgbDatepickerModule,
   NgbNavModule,
-  FontAwesomeModule,
-  FormsModule,
-  ReactiveFormsModule,
-  FormlyModule,
-  FormlyBootstrapModule,
+  NgbPaginationModule,
+  NgbProgressbarModule,
+  NgbTooltipModule,
   NgxDatatableModule,
+  ReactiveFormsModule,
+  RouterModule,
   ToastrModule,
-  DateValueAccessorModule,
 
-  IconsModule,
-  DirectivesModule,
-  PipesModule,
   BawClientModule,
-  CustomInputsModule,
-  ModelCardsModule,
-  ItemsModule,
-  MenuModule,
-  LoadingModule,
-  IndicatorModule,
-  UserLinkModule,
-  CheckboxModule,
-  DetailViewModule,
   BreadcrumbModule,
+  CheckboxModule,
+  CustomInputsModule,
+  DetailViewModule,
+  DirectivesModule,
   HiddenCopyModule,
+  IconsModule,
+  IndicatorModule,
   InputModule,
+  ItemsModule,
+  LoadingModule,
+  MenuModule,
+  ModelCardsModule,
+  PipesModule,
+  StepperModule,
+  UserLinkModule,
 ];
 
 export const internalModules = [...sharedModules, NgxCaptchaModule];
