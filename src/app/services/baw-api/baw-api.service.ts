@@ -119,7 +119,9 @@ export class BawApiService<
       ? err
       : new BawApiError(unknownErrorCode, err.message);
 
-    this.notifications.error(error.formattedMessage("<br />"));
+    this.notifications.error(error.formattedMessage("<br />"), undefined, {
+      disableTimeOut: true,
+    });
     return throwError(() => error);
   }
 

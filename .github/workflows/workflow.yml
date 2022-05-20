@@ -72,7 +72,7 @@ jobs:
           name: baw-client
 
   test:
-    name: Unit Tests (${{ matrix.os }})
+    name: Unit Tests (${{ matrix.os }} ${{ matrix.browsers }})
     needs: baw-client
     runs-on: ${{ matrix.os }}
 

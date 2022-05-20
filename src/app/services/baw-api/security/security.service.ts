@@ -6,11 +6,13 @@ import {
   RecaptchaSettings,
 } from "@baw-api/baw-form-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { LoginDetails } from "@models/data/LoginDetails";
 import { RegisterDetails } from "@models/data/RegisterDetails";
 import { Session, User } from "@models/User";
+import { UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
 import { Observable, throwError } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
@@ -190,7 +192,13 @@ export class SecurityService {
         first(),
         catchError((err) => {
           this.clearData();
-          return this.formApi.handleError(err);
+
+          if (err.status === UNAUTHORIZED) {
+            const msg = `An unknown error has occurred, if this persists please use the ${reportProblemMenuItem.label} page`;
+            return this.formApi.handleError(Error(msg));
+          } else {
+            return this.formApi.handleError(err);
+          }
         })
       );
   }

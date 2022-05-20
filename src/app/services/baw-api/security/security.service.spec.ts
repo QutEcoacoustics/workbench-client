@@ -33,6 +33,7 @@ import { generateRegisterDetails } from "@test/fakes/RegisterDetails";
 import { generateSession, generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertOk, getCallArgs, nStepObservable } from "@test/helpers/general";
+import { FORBIDDEN, UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
 import { ToastrService } from "ngx-toastr";
 import { noop, Subject, throwError } from "rxjs";
@@ -165,7 +166,7 @@ describe("SecurityService", () => {
       session: new Session(generateSession({ authToken })),
       loginDetails: new LoginDetails(generateLoginDetails()),
       registerDetails: new RegisterDetails(generateRegisterDetails()),
-      error: generateBawApiError(),
+      error: generateBawApiError(FORBIDDEN),
     };
   });
 
@@ -578,6 +579,24 @@ describe("SecurityService", () => {
         handleAuth().subscribe({ next: noop, error: noop });
         await promise;
         expect(spec.service["clearData"]).toHaveBeenCalled();
+      });
+
+      it("should convert unauthorized requests to custom error message", (done) => {
+        interceptMakeFormRequest();
+        interceptSession(defaults.session);
+        interceptUser(generateBawApiError(UNAUTHORIZED));
+        handleAuth().subscribe({
+          next: shouldNotSucceed,
+          error: (err) => {
+            expect(err).toEqual(
+              new BawApiError(
+                unknownErrorCode,
+                "An unknown error has occurred, if this persists please use the Report Problem page"
+              )
+            );
+            done();
+          },
+        });
       });
     });
   });
