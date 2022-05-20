@@ -303,7 +303,20 @@ describe("SecurityService", () => {
         spec.service.signUp(defaults.registerDetails);
         expect(function () {
           getCallArgs(handleAuthSpy)[3](response);
-        }).toThrowError("Username has already been taken.");
+        }).toThrowError("Username has already been taken");
+      });
+
+      it("should throw error if username does not follow proper format", () => {
+        const response =
+          '<input id="user_user_name" />' +
+          '<span class="help-block">Only letters, numbers, spaces ( ), underscores (_) and dashes (-) are valid.</span>';
+
+        spec.service.signUp(defaults.registerDetails);
+        expect(function () {
+          getCallArgs(handleAuthSpy)[3](response);
+        }).toThrowError(
+          "Username can only include letters, numbers, spaces ( ), underscores (_) and dashes (-)"
+        );
       });
 
       it("should throw error if email is not unique", () => {
@@ -314,7 +327,7 @@ describe("SecurityService", () => {
         spec.service.signUp(defaults.registerDetails);
         expect(function () {
           getCallArgs(handleAuthSpy)[3](response);
-        }).toThrowError("Email address has already been taken.");
+        }).toThrowError("Email address has already been taken");
       });
 
       it("should throw error if no recaptcha token", () => {
