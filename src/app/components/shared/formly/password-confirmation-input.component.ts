@@ -8,7 +8,7 @@ import { asFormControl } from "./helper";
 @Component({
   selector: "baw-password-confirmation-input",
   template: `
-    <div class="form-group">
+    <div class="form-group mb-3">
       <label for="password">Password {{ to.required ? " *" : "" }}</label>
       <input
         id="password"

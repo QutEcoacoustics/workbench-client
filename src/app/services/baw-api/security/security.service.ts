@@ -52,21 +52,36 @@ export class SecurityService {
    * @param details Details provided by registration form
    */
   public signUp(details: RegisterDetails): Observable<void> {
-    // Read page response for unique username error
-    const validateUniqueUsername = (page: string) => {
-      const errMsg =
-        'id="user_user_name" /><span class="help-block">has already been taken';
-      if (page.includes(errMsg)) {
-        throw Error("Username has already been taken.");
+    /** Extract page error data from page response */
+    const getPageError = (page: string): [string, string] => {
+      const pageError = / id="(.+)" \/><span class="help-block">(.+)<\/span>/;
+      const match = page.match(pageError);
+      return match.length === 3 ? [match[1], match[2]] : undefined;
+    };
+
+    /** Read page response for unique username error */
+    const validateUniqueUsername = ([type, msg]: [string, string]): void => {
+      if (type === "user_user_name" && msg === "has already been taken") {
+        throw Error("Username has already been taken");
       }
     };
 
-    // Read page response for unique email error
-    const validateUniqueEmail = (page: string) => {
-      const errMsg =
-        'id="user_email" /><span class="help-block">has already been taken';
-      if (page.includes(errMsg)) {
-        throw Error("Email address has already been taken.");
+    /** Read page response for username constraints */
+    const validateUsernameConstraints = ([type, msg]: [
+      string,
+      string
+    ]): void => {
+      if (type === "user_user_name" && msg.includes("Only letters, numbers")) {
+        throw Error(
+          "Username can only include letters, numbers, spaces ( ), underscores (_) and dashes (-)"
+        );
+      }
+    };
+
+    /** Read page response for unique email error */
+    const validateUniqueEmail = ([type, msg]: [string, string]): void => {
+      if (type === "user_email" && msg === "has already been taken") {
+        throw Error("Email address has already been taken");
       }
     };
 
@@ -74,9 +89,14 @@ export class SecurityService {
       accountEndpoint(signUpParam),
       accountEndpoint(emptyParam),
       (token: string) => details.getBody(token),
-      (page) => {
-        validateUniqueUsername(page);
-        validateUniqueEmail(page);
+      (page): void => {
+        const pageError = getPageError(page);
+        if (!pageError) {
+          return;
+        }
+        validateUniqueUsername(pageError);
+        validateUniqueEmail(pageError);
+        validateUsernameConstraints(pageError);
       }
     );
   }
