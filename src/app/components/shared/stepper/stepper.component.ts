@@ -28,7 +28,7 @@ import {
           class="step"
           [class.active]="isActive(step)"
         >
-          <p>{{ step }}</p>
+          <p>{{ step + 1 }}</p>
         </div>
       </div>
     </div>
@@ -41,7 +41,9 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
   @ViewChild("steps") public steps: ElementRef<HTMLElement>;
   @ViewChildren("step") public stepItems: QueryList<ElementRef<HTMLElement>>;
 
+  /** Number of steps to display */
   @Input() public numSteps: number;
+  /** Step to show as active, starting from 0 */
   @Input() public activeStep: number;
 
   public stepLabels: number[];
@@ -50,15 +52,12 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
 
   // CSS classes
   private notVisibleClass = "not-visible";
-  private activeClass = "active";
   private hiddenClass = "hidden";
-
-  public constructor() {}
 
   public ngOnChanges(): void {
     this.stepLabels = Array(this.numSteps)
       .fill(0)
-      .map((_, i): number => i + 1);
+      .map((_, i): number => i);
   }
 
   public ngAfterViewInit(): void {
@@ -80,10 +79,14 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.intersectionObserver.unobserve(this.stepper?.nativeElement);
-    this.resizeObserver.unobserve(this.stepper?.nativeElement);
-    this.intersectionObserver.disconnect();
-    this.resizeObserver.disconnect();
+    // This may be called before ngAfterViewInit, so treat observers and
+    // elements as potentially undefined
+    this.stepItems?.forEach((step): void =>
+      this.intersectionObserver?.observe(step.nativeElement)
+    );
+    this.resizeObserver?.unobserve(this.stepper?.nativeElement);
+    this.intersectionObserver?.disconnect();
+    this.resizeObserver?.disconnect();
   }
 
   public isActive(step: number): boolean {
@@ -106,14 +109,11 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
     const rightStepsNotVisible = isNotVisibleStep(
       this.stepItems.get(this.stepItems.length - 1)
     );
-    /** What is the index of the active step */
-    const activeStepIndex = this.activeStepIndex;
-
     /** Show left dots if steps are hidden, and the first step is not active */
-    const showLeftDots = leftStepsNotVisible && activeStepIndex !== 0;
+    const showLeftDots = leftStepsNotVisible && this.activeStep !== 0;
     /** Show right dots if steps are hidden, and the last step is not active */
     const showRightDots =
-      rightStepsNotVisible && activeStepIndex !== this.numSteps - 1;
+      rightStepsNotVisible && this.activeStep !== this.numSteps - 1;
 
     // Show/Hide dots
     this.getClassList(this.leftDots).toggle(this.hiddenClass, !showLeftDots);
@@ -121,19 +121,11 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   private onWrapperResize(): void {
-    const active = this.stepItems.get(this.activeStepIndex).nativeElement;
+    const active = this.stepItems.get(this.activeStep).nativeElement;
     this.steps.nativeElement.scroll(active.offsetLeft - active.clientWidth, 0);
   }
 
   private getClassList(ref: ElementRef<Element>) {
     return ref.nativeElement.classList;
-  }
-
-  private get activeStepIndex(): number {
-    return this.stepItems
-      .toArray()
-      .findIndex((step): boolean =>
-        step.nativeElement.classList.contains(this.activeClass)
-      );
   }
 }

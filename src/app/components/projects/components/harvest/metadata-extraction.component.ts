@@ -14,10 +14,7 @@ import { endWith, startWith, tap, timer } from "rxjs";
       about them.
     </p>
 
-    <p>
-      You can leave this page and come back later. The process won't be
-      interrupted.
-    </p>
+    <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
     <p>
       <ngb-progressbar

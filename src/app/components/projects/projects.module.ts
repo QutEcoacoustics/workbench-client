@@ -24,16 +24,20 @@ import { HarvestNewComponent } from "./components/harvest/new.component";
 import { HarvestProcessingComponent } from "./components/harvest/processing.component";
 import { HarvestStreamUploadingComponent } from "./components/harvest/stream-uploading.component";
 import { UploadAnnotationsComponent } from "./pages/upload-annotations/upload-annotations.component";
+import { HarvestScanningComponent } from "./components/harvest/scanning.component";
+import { HarvestCanCloseDialogComponent } from "./components/harvest/can-close-dialog.component";
 
 const components = [
-  HarvestNewComponent,
-  HarvestStreamUploadingComponent,
   HarvestBatchUploadingComponent,
-  HarvestMetadataExtractionComponent,
-  HarvestProcessingComponent,
-  HarvestMetadataReviewComponent,
-  HarvestReviewComponent,
+  HarvestCanCloseDialogComponent,
   HarvestCompleteComponent,
+  HarvestMetadataExtractionComponent,
+  HarvestMetadataReviewComponent,
+  HarvestNewComponent,
+  HarvestProcessingComponent,
+  HarvestReviewComponent,
+  HarvestScanningComponent,
+  HarvestStreamUploadingComponent,
 
   UploadAnnotationsComponent,
   AssignComponent,

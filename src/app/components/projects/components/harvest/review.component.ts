@@ -27,7 +27,7 @@ export class HarvestReviewComponent {
   @Output() public stage = new EventEmitter<HarvestStage>();
 
   public onMakeChangesClick(): void {
-    this.stage.emit(HarvestStage.batchUploading);
+    this.stage.emit(HarvestStage.uploading);
   }
 
   public onFinishClick(): void {

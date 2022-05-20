@@ -129,7 +129,7 @@ export class HarvestMetadataReviewComponent implements OnInit {
   }
 
   public onBackClick(): void {
-    this.stage.emit(HarvestStage.batchUploading);
+    this.stage.emit(HarvestStage.uploading);
   }
 
   public onSaveClick(): void {

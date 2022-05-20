@@ -5,27 +5,30 @@
     Harvest
   </h1>
 
-  <div>
-    Placeholder for Steps Component
-    (https://primefaces.org/primeng/showcase/#/steps). Currently on step:
-    {{ stage }}
-  </div>
+  <baw-stepper [numSteps]="8" [activeStep]="stage"></baw-stepper>
 
   <div [ngSwitch]="stage">
     <div *ngSwitchCase="harvestStage.newHarvest">
-      <baw-harvest-new (stage)="setStage($event)"></baw-harvest-new>
+      <baw-harvest-new
+        (stage)="setStage($event)"
+        (type)="setType($event)"
+      ></baw-harvest-new>
     </div>
 
-    <div *ngSwitchCase="harvestStage.streamUploading">
+    <div *ngSwitchCase="harvestStage.uploading">
       <baw-harvest-stream-uploading
+        *ngIf="isStreaming"
         (stage)="setStage($event)"
       ></baw-harvest-stream-uploading>
-    </div>
 
-    <div *ngSwitchCase="harvestStage.batchUploading">
       <baw-harvest-batch-uploading
+        *ngIf="!isStreaming"
         (stage)="setStage($event)"
       ></baw-harvest-batch-uploading>
+    </div>
+
+    <div *ngSwitchCase="harvestStage.scanning">
+      <baw-harvest-scanning (stage)="setStage($event)"></baw-harvest-scanning>
     </div>
 
     <div *ngSwitchCase="harvestStage.metadataExtraction">
