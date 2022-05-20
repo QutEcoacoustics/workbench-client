@@ -54,8 +54,6 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
   private notVisibleClass = "not-visible";
   private hiddenClass = "hidden";
 
-  public constructor() {}
-
   public ngOnChanges(): void {
     this.stepLabels = Array(this.numSteps)
       .fill(0)

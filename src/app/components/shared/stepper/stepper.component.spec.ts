@@ -63,60 +63,86 @@ describe("StepperComponent", () => {
       );
     }
 
+    function getDottedLines() {
+      return spec.queryAll<HTMLElement>(".dots");
+    }
+
     function assertDottedLines(left: boolean, right: boolean): void {
-      const [leftEl, rightEl] = spec.queryAll<HTMLElement>(".dots");
+      const [leftEl, rightEl] = getDottedLines();
       assertDottedLine(leftEl, left);
       assertDottedLine(rightEl, right);
     }
 
-    async function awaitHtmlObserverTriggers() {
-      // We have no way to reliably trigger or await the triggering of the
-      // intersection and resize observers. So just wait 50ms
-      return new Promise((resolve) => setTimeout(resolve, 50));
+    async function waitForDottedLineStateUpdate(
+      left: boolean,
+      right: boolean,
+      numSteps: number
+    ): Promise<void> {
+      const [leftEl, rightEl] = getDottedLines();
+
+      const checkState = () =>
+        getComputedStyle(leftEl).width === (left ? "64px" : "0px") &&
+        getComputedStyle(rightEl).width === (right ? "64px" : "0px") &&
+        getSteps().length === numSteps;
+
+      return new Promise((resolve) => {
+        interval = setInterval(() => {
+          if (checkState()) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, 50);
+      });
     }
+
+    let interval: NodeJS.Timer;
+
+    afterEach(() => {
+      clearInterval(interval);
+    });
 
     it("should not show dotted lines when no steps are hidden", async () => {
       viewport.set(1000, viewports.extraLargeDimensions.height);
       spec = createComponent({ props: { numSteps: 3, activeStep: 1 } });
-      spec.detectChanges();
-      await awaitHtmlObserverTriggers();
+      await waitForDottedLineStateUpdate(false, false, 3);
       spec.detectChanges();
       // Should show all steps
       expect(getSteps()).toHaveLength(3);
       assertDottedLines(false, false);
+      spec.component.ngOnDestroy();
+    });
+
+    it("should only show dotted lines on right when right steps are hidden", async () => {
+      viewport.set(1000, viewports.extraLargeDimensions.height);
+      spec = createComponent({ props: { numSteps: 14, activeStep: 0 } });
+      await waitForDottedLineStateUpdate(false, true, 13);
+      spec.detectChanges();
+      // Should only show 13 steps
+      expect(getSteps()).toHaveLength(13);
+      assertDottedLines(false, true);
+      spec.component.ngOnDestroy();
     });
 
     it("should only show dotted line on left when left steps are hidden", async () => {
       viewport.set(1000, viewports.extraLargeDimensions.height);
-      spec = createComponent({ props: { numSteps: 14, activeStep: 2 } });
-      spec.detectChanges();
-      await awaitHtmlObserverTriggers();
-      spec.detectChanges();
-      // Should only show 13 steps
-      expect(getSteps()).toHaveLength(13);
-      assertDottedLines(true, false);
-    });
-
-    it("should only show dotted line on right when right steps are hidden", async () => {
-      viewport.set(1000, viewports.extraLargeDimensions.height);
       spec = createComponent({ props: { numSteps: 14, activeStep: 13 } });
-      spec.detectChanges();
-      await awaitHtmlObserverTriggers();
+      await waitForDottedLineStateUpdate(true, false, 13);
       spec.detectChanges();
       // Should only show 13 steps
       expect(getSteps()).toHaveLength(13);
       assertDottedLines(true, false);
+      spec.component.ngOnDestroy();
     });
 
     it("should show dotted line on both sides when steps either side are hidden", async () => {
       viewport.set(1000, viewports.extraLargeDimensions.height);
       spec = createComponent({ props: { numSteps: 100, activeStep: 50 } });
-      spec.detectChanges();
-      await awaitHtmlObserverTriggers();
+      await waitForDottedLineStateUpdate(true, true, 13);
       spec.detectChanges();
       // Should only show 13 steps
       expect(getSteps()).toHaveLength(13);
       assertDottedLines(true, true);
+      spec.component.ngOnDestroy();
     });
   });
 });
