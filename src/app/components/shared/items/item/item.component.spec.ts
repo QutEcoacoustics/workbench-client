@@ -5,7 +5,6 @@ import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { IconsModule } from "@shared/icons/icons.module";
 import { modelData } from "@test/helpers/faker";
-import { assertTooltip } from "@test/helpers/html";
 import { ItemComponent } from "./item.component";
 
 describe("ItemComponent", () => {
@@ -64,6 +63,6 @@ describe("ItemComponent", () => {
     const value = modelData.company.companyName();
     setup(["fas", "home"], "Test", value, () => "custom tooltip");
     spec.detectChanges();
-    assertTooltip(spec.query("#icon"), "custom tooltip");
+    expect(spec.query("#icon")).toHaveTooltip("custom tooltip");
   });
 });

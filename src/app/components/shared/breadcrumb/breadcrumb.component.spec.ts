@@ -17,7 +17,6 @@ import { SharedActivatedRouteService } from "@services/shared-activated-route/sh
 import { IconsModule } from "@shared/icons/icons.module";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
-import { assertIcon, assertStrongRouteLink } from "@test/helpers/html";
 import { OrderedSet } from "immutable";
 import { Subject } from "rxjs";
 import { BreadcrumbComponent } from "./breadcrumb.component";
@@ -120,7 +119,7 @@ describe("BreadcrumbComponent", () => {
     });
 
     it("should show icon", () => {
-      assertIcon(element, { icon: crumb.icon });
+      expect(element).toHaveIcon(crumb.icon);
     });
   });
 
@@ -134,7 +133,7 @@ describe("BreadcrumbComponent", () => {
       ]);
       spec.detectChanges();
       const element = getBreadcrumbs()[0].querySelector("a");
-      assertStrongRouteLink(element, { strongRoute: crumb.route });
+      expect(element).toHaveStrongRoute(crumb.route);
     });
 
     it("should pass query parameters to route", async () => {
@@ -152,9 +151,9 @@ describe("BreadcrumbComponent", () => {
       ]);
       spec.detectChanges();
       const element = getBreadcrumbs()[0].querySelector("a");
-      assertStrongRouteLink(element, {
-        strongRoute: crumb.route,
+      expect(element).toHaveStrongRoute(crumb.route, {
         queryParams: { projectId: 5 },
+        routeParams: {},
       });
     });
 
@@ -170,8 +169,8 @@ describe("BreadcrumbComponent", () => {
       ]);
       spec.detectChanges();
       const element = getBreadcrumbs()[0].querySelector("a");
-      assertStrongRouteLink(element, {
-        strongRoute: crumb.route,
+      expect(element).toHaveStrongRoute(crumb.route, {
+        queryParams: {},
         routeParams: { projectId: 5 },
       });
     });

@@ -10,7 +10,6 @@ import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { CheckboxModule } from "@shared/checkbox/checkbox.module";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { modelData } from "@test/helpers/faker";
-import { assertImage } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -493,11 +492,9 @@ describe("RenderFieldComponent", () => {
       setImageSpy();
       spec.detectChanges();
       const value = getElement.image()[0];
-      assertImage(
-        value,
-        `${websiteHttpUrl}${assetRoot}/test/test.png`,
-        "model image alt"
-      );
+      expect(value).toHaveImage(`${websiteHttpUrl}${assetRoot}/test/test.png`, {
+        alt: "model image alt",
+      });
     });
   });
 
@@ -515,7 +512,7 @@ describe("RenderFieldComponent", () => {
       setup(imageUrls);
       spec.detectChanges();
       const value = getElement.image()[0];
-      assertImage(value, imageUrls[0].url, "model image alt");
+      expect(value).toHaveImage(imageUrls[0].url, { alt: "model image alt" });
     });
 
     it("should display multiple value imageUrls array", () => {
@@ -523,7 +520,7 @@ describe("RenderFieldComponent", () => {
       setup(imageUrls);
       spec.detectChanges();
       const value = getElement.image()[0];
-      assertImage(value, imageUrls[0].url, "model image alt");
+      expect(value).toHaveImage(imageUrls[0].url, { alt: "model image alt" });
     });
 
     it("should handle invalid imageUrl", () => {
@@ -533,7 +530,7 @@ describe("RenderFieldComponent", () => {
       const value = getElement.image()[0];
       value.onerror("unit test");
       spec.detectChanges();
-      assertImage(value, imageUrls[1].url, "model image alt");
+      expect(value).toHaveImage(imageUrls[1].url, { alt: "model image alt" });
     });
   });
 });

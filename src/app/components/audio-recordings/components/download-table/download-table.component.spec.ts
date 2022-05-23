@@ -16,7 +16,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateSite } from "@test/fakes/Site";
 import { nStepObservable } from "@test/helpers/general";
-import { assertSpinner, assertTooltip, assertUrl } from "@test/helpers/html";
+import { assertSpinner} from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
 import { DownloadTableComponent } from "./download-table.component";
 
@@ -110,7 +110,7 @@ describe("DownloadTableComponent", () => {
     it("should link to site", async () => {
       setup(new BehaviorSubject({}));
       await loadRows([defaultRecording], defaultSite);
-      assertUrl(getCell().querySelector("a"), { bawUrl: defaultSite.viewUrl });
+      expect(getCell().querySelector("a")).toHaveUrl(defaultSite.viewUrl);
     });
   });
 
@@ -137,7 +137,7 @@ describe("DownloadTableComponent", () => {
     it("should have tooltip with recorded date timezone", async () => {
       setup(new BehaviorSubject({}));
       await loadRows([defaultRecording], defaultSite);
-      assertTooltip(getCell(), defaultRecording.recordedDateTimezone);
+      expect(getCell()).toHaveTooltip(defaultRecording.recordedDateTimezone);
     });
 
     it("should have tooltip with UTC if recorded date timezone is undefined", async () => {
@@ -150,7 +150,7 @@ describe("DownloadTableComponent", () => {
         injector
       );
       await loadRows([recording], defaultSite);
-      assertTooltip(getCell(), "UTC");
+      expect(getCell()).toHaveTooltip("UTC");
     });
   });
 

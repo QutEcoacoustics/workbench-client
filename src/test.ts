@@ -8,7 +8,9 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { computedStyleMatchers } from "@test/matchers/toHaveComputedStyle";
+import { computedStyleMatchers } from "@test/matchers/computedStyle";
+import { htmlMatchers } from "@test/matchers/html";
+import { injectableMatchers } from "@test/matchers/injectables";
 
 declare const require: any;
 
@@ -18,6 +20,8 @@ beforeEach(function () {
   // Load matchers into jasmine
   // https://stackoverflow.com/questions/11942085/is-there-a-way-to-add-a-jasmine-matcher-to-the-whole-environment
   jasmine.addMatchers(computedStyleMatchers);
+  jasmine.addMatchers(injectableMatchers);
+  jasmine.addMatchers(htmlMatchers);
 
   if (document.visibilityState !== "visible") {
     // Browsers when minimised optimise their behaviour in a way that can cause

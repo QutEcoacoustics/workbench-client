@@ -10,7 +10,6 @@ import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { MockAppConfigModule } from "@services/config/configMock.module";
-import { assertStrongRouteActive } from "@test/helpers/html";
 import { FooterComponent } from "./footer.component";
 
 describe("FooterComponent", () => {
@@ -64,7 +63,11 @@ describe("FooterComponent", () => {
         });
 
         it("should set link", () => {
-          assertStrongRouteActive(getLink());
+          expect(getLink()).toHaveStrongRoute(link.route);
+        });
+
+        it("should highlight link on active page", () => {
+          expect(getLink()).toHaveStrongRouteActive("active");
         });
       });
     });

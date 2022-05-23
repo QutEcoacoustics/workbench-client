@@ -21,7 +21,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
-import { assertImage, assertSpinner, assertUrl } from "@test/helpers/html";
+import { assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
 import { CardComponent } from "./card.component";
@@ -84,11 +84,9 @@ describe("CardComponent", () => {
       spec.detectChanges();
 
       const image = spec.query<HTMLImageElement>("img");
-      assertImage(
-        image,
-        `${websiteHttpUrl}${baseUrl}/300/300`,
-        `${model.name} image`
-      );
+      expect(image).toHaveImage(`${websiteHttpUrl}${baseUrl}/300/300`, {
+        alt: `${model.name} image`,
+      });
     });
 
     it("should display remote image", () => {
@@ -98,7 +96,9 @@ describe("CardComponent", () => {
       spec.detectChanges();
 
       const image = spec.query<HTMLImageElement>("img");
-      assertImage(image, baseUrl + "/300/300", `${model.name} image`);
+      expect(image).toHaveImage(baseUrl + "/300/300", {
+        alt: `${model.name} image`,
+      });
     });
 
     it("should have default description when none provided", () => {
@@ -136,7 +136,7 @@ describe("CardComponent", () => {
       spec.detectChanges();
 
       const route = spec.query<HTMLAnchorElement>(".card-image a");
-      assertUrl(route, { bawUrl: model.viewUrl });
+      expect(route).toHaveUrl(model.viewUrl);
     });
 
     it("should have title route when route provided", () => {
@@ -148,7 +148,7 @@ describe("CardComponent", () => {
       spec.detectChanges();
 
       const link = spec.query<HTMLAnchorElement>(".card-title");
-      assertUrl(link, { bawUrl: model.viewUrl });
+      expect(link).toHaveUrl(model.viewUrl);
     });
 
     function getNoAudioBadge() {

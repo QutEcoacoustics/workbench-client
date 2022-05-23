@@ -3,7 +3,6 @@ import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { IconsModule } from "@shared/icons/icons.module";
 import { modelData } from "@test/helpers/faker";
-import { assertIcon, assertTooltip } from "@test/helpers/html";
 import { ClipboardModule } from "ngx-clipboard";
 import { HiddenCopyComponent } from "./hidden-copy.component";
 
@@ -40,7 +39,7 @@ describe("HiddenCopyComponent", () => {
   describe("visibility button", () => {
     it("should have icon", () => {
       setup({});
-      assertIcon(getVisibilityButton(), { icon: ["fas", "eye"] });
+      expect(getVisibilityButton()).toHaveIcon(["fas", "eye"]);
     });
 
     it("should have tooltip", () => {
@@ -48,7 +47,9 @@ describe("HiddenCopyComponent", () => {
       setup({ tooltip });
       // Container is body so that we dont have issues with the tooltip
       // breaking css and clipping
-      assertTooltip(getVisibilityButton(), tooltip, { container: "body" });
+      expect(getVisibilityButton()).toHaveTooltip(tooltip, {
+        container: "body",
+      });
     });
 
     it("should not be disabled", () => {
@@ -68,7 +69,7 @@ describe("HiddenCopyComponent", () => {
   describe("copy button", () => {
     it("should have icon", () => {
       setup({});
-      assertIcon(getCopyButton(), { icon: ["fas", "copy"] });
+      expect(getCopyButton()).toHaveIcon(["fas", "copy"]);
     });
 
     it("should have tooltip", () => {
@@ -77,7 +78,7 @@ describe("HiddenCopyComponent", () => {
       // Container is body so that we dont have issues with the tooltip
       // breaking css and clipping
       // Tooltip should only show on click
-      assertTooltip(getCopyButton(), "Copied!", {
+      expect(getCopyButton()).toHaveTooltip("Copied!", {
         triggers: "manual",
         container: "body",
       });
@@ -126,7 +127,7 @@ describe("HiddenCopyComponent", () => {
       const tooltip = modelData.random.words();
       const disabled = modelData.random.words();
       setup({ tooltip, disabled });
-      assertTooltip(getVisibilityButton(), disabled);
+      expect(getVisibilityButton()).toHaveTooltip(disabled);
     });
 
     it("should disable copy button", () => {

@@ -1,24 +1,9 @@
+import { matcherFailure, matcherSuccess } from ".";
 import CustomMatcherFactories = jasmine.CustomMatcherFactories;
 import CustomMatcher = jasmine.CustomMatcher;
 import CustomMatcherResult = jasmine.CustomMatcherResult;
 
-/**
- * Custom matchers use a combination of the following resources:
- * https://stackoverflow.com/questions/42956195/create-custom-jasmine-matcher-using-typescript
- * https://jasmine.github.io/tutorials/custom_matcher
- *
- * Remember to update matcher-types.d.ts when making changes
- */
-
 type StyleValue = string | number;
-
-function success(): CustomMatcherResult {
-  return { pass: true };
-}
-
-function failure(message: string): CustomMatcherResult {
-  return { pass: false, message };
-}
 
 function validateStyles(
   actual: HTMLElement,
@@ -30,15 +15,15 @@ function validateStyles(
   ) => CustomMatcherResult
 ): CustomMatcherResult {
   if (!actual) {
-    return failure("HTMLElement is undefined");
+    return matcherFailure("HTMLElement is undefined");
   } else if (!(actual instanceof HTMLElement)) {
-    return failure(
+    return matcherFailure(
       `Input must be of type HTMLElement, got ${
         (actual as any).constructor.name
       } instead`
     );
   } else if (!document.body.contains(actual)) {
-    return failure("HTMLElement does not exist in the DOM");
+    return matcherFailure("HTMLElement does not exist in the DOM");
   }
 
   const computedStyle = getComputedStyle(actual);
@@ -58,17 +43,16 @@ function validateStyles(
 
   // Return aggregation of failure messages
   if (failures.length > 0) {
-    return failure(failures.join("\n"));
+    return matcherFailure(failures.join("\n"));
   }
 
-  return success();
+  return matcherSuccess();
 }
 
 export const computedStyleMatchers: CustomMatcherFactories = {
   /**
    * Determines if the computed style of an element matches the expected values
    *
-   * @param util Jasmine matcher utilities
    * @returns Jasmine comparison function
    */
   toHaveComputedStyle(): CustomMatcher {
@@ -79,8 +63,10 @@ export const computedStyleMatchers: CustomMatcherFactories = {
       ): CustomMatcherResult =>
         validateStyles(actual, expected, (key, actualStyle, expectedStyle) =>
           actualStyle !== expectedStyle
-            ? success()
-            : failure(`Expected ${key} to be not be equal to ${expectedStyle}`)
+            ? matcherSuccess()
+            : matcherFailure(
+                `Expected ${key} to be not be equal to ${expectedStyle}`
+              )
         ),
       compare: (
         actual: HTMLElement,
@@ -88,8 +74,8 @@ export const computedStyleMatchers: CustomMatcherFactories = {
       ): CustomMatcherResult =>
         validateStyles(actual, expected, (key, actualStyle, expectedStyle) =>
           actualStyle === expectedStyle
-            ? success()
-            : failure(
+            ? matcherSuccess()
+            : matcherFailure(
                 `Expected ${key} to be equal to ${expectedStyle}, got ${actualStyle} instead`
               )
         ),

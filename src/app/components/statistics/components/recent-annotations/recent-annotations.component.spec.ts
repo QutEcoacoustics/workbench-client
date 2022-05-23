@@ -3,6 +3,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import {
   ACCOUNT,
@@ -13,6 +14,7 @@ import {
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Errorable } from "@helpers/advancedTypes";
+import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
 import { ISite, Site } from "@models/Site";
@@ -30,6 +32,7 @@ import {
 } from "@swimlane/ngx-datatable";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { generateTag } from "@test/fakes/Tag";
 import { generateTagging } from "@test/fakes/Tagging";
@@ -38,10 +41,6 @@ import {
   interceptFilterApiRequest,
   interceptShowApiRequest,
 } from "@test/helpers/general";
-import { assertUrl } from "@test/helpers/html";
-import { BawSessionService } from "@baw-api/baw-session.service";
-import { generateBawApiError } from "@test/fakes/BawApiError";
-import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { RecentAnnotationsComponent } from "./recent-annotations.component";
 
 describe("RecentAnnotationsComponent", () => {
@@ -434,18 +433,18 @@ describe("RecentAnnotationsComponent", () => {
           isLoggedIn ? "" : "not "
         }logged in`, async () => {
           await setup({ annotations: [defaultAnnotation], isLoggedIn });
-          assertUrl(getPlayButton(isLoggedIn), {
-            bawUrl: defaultAnnotation.listenViewUrl,
-          });
+          expect(getPlayButton(isLoggedIn)).toHaveUrl(
+            defaultAnnotation.listenViewUrl
+          );
         });
 
         it(`should link to annotations page when ${
           isLoggedIn ? "" : "not "
         }logged in`, async () => {
           await setup({ annotations: [defaultAnnotation], isLoggedIn });
-          assertUrl(getAnnotationButton(isLoggedIn), {
-            bawUrl: defaultAnnotation.annotationViewUrl,
-          });
+          expect(getAnnotationButton(isLoggedIn)).toHaveUrl(
+            defaultAnnotation.annotationViewUrl
+          );
         });
       });
     });

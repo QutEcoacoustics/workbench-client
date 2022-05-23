@@ -14,7 +14,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { nStepObservable } from "@test/helpers/general";
-import { assertImage, assertSpinner, assertUrl } from "@test/helpers/html";
+import { assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
 import { SiteCardComponent } from "./site-card.component";
@@ -93,7 +93,7 @@ describe("SiteCardComponent", () => {
           setup(defaultModel);
           spec.detectChanges();
           const name = spec.query<HTMLAnchorElement>("#nameLink");
-          assertUrl(name, { bawUrl: defaultModel.getViewUrl(defaultProject) });
+          expect(name).toHaveUrl(defaultModel.getViewUrl(defaultProject));
         });
       });
 
@@ -107,21 +107,18 @@ describe("SiteCardComponent", () => {
           setup(model);
           spec.detectChanges();
 
-          assertImage(
-            getImage(),
+          expect(getImage()).toHaveImage(
             `${websiteHttpUrl}${model.imageUrls[0].url}`,
-            `${model.name} alt`
+            { alt: `${model.name} alt` }
           );
         });
 
         it("should display custom model image", () => {
           setup(defaultModel);
           spec.detectChanges();
-          assertImage(
-            getImage(),
-            defaultModel.imageUrls.at(0).url,
-            `${defaultModel.name} alt`
-          );
+          expect(getImage()).toHaveImage(defaultModel.imageUrls.at(0).url, {
+            alt: `${defaultModel.name} alt`,
+          });
         });
       });
 
