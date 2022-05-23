@@ -7,7 +7,7 @@ export function generateProgressEvent(
   return {
     id: modelData.id(),
     datasetItemId: modelData.id(),
-    activity: modelData.random.arrayElement(["viewed", "played", "annotated"]),
+    activity: modelData.helpers.arrayElement(["viewed", "played", "annotated"]),
     ...modelData.model.generateCreator(),
     ...data,
   };

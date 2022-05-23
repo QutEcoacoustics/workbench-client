@@ -22,7 +22,7 @@ export function generateAnalysisJob(
     scriptId: modelData.id(),
     savedSearchId: modelData.id(),
     startedAt: modelData.timestamp(),
-    overallStatus: modelData.random.arrayElement(statuses),
+    overallStatus: modelData.helpers.arrayElement(statuses),
     overallStatusModifiedAt: modelData.timestamp(),
     overallProgress: {
       queued: 1,

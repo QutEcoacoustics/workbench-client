@@ -12,7 +12,7 @@ export function generateHarvestMapping(
   return {
     path: modelData.system.filePath(),
     siteId: modelData.id(),
-    utcOffset: modelData.random.arrayElement(["-10:00", "00:00", "+10:00"]),
+    utcOffset: modelData.helpers.arrayElement(["-10:00", "00:00", "+10:00"]),
     recursive: modelData.datatype.boolean(),
     ...data,
   };
@@ -42,7 +42,7 @@ export function generateHarvest(data?: Partial<IHarvest>): Required<IHarvest> {
   return {
     id: modelData.id(),
     streaming: modelData.datatype.boolean(),
-    status: modelData.random.arrayElement<HarvestStatus>([
+    status: modelData.helpers.arrayElement<HarvestStatus>([
       "uploading",
       "metadataExtraction",
       "metadataReview",

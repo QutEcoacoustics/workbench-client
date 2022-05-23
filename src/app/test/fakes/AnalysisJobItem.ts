@@ -23,7 +23,7 @@ export function generateAnalysisJobItem(
     analysisJobId: modelData.id(),
     audioRecordingId: modelData.id(),
     queueId: modelData.datatype.uuid(),
-    status: modelData.random.arrayElement(statuses),
+    status: modelData.helpers.arrayElement(statuses),
     createdAt: modelData.timestamp(),
     queuedAt: modelData.timestamp(),
     workStartedAt: modelData.timestamp(),
