@@ -6,11 +6,13 @@ import {
   RecaptchaSettings,
 } from "@baw-api/baw-form-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { LoginDetails } from "@models/data/LoginDetails";
 import { RegisterDetails } from "@models/data/RegisterDetails";
 import { Session, User } from "@models/User";
+import { UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
 import { Observable, throwError } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
@@ -52,21 +54,36 @@ export class SecurityService {
    * @param details Details provided by registration form
    */
   public signUp(details: RegisterDetails): Observable<void> {
-    // Read page response for unique username error
-    const validateUniqueUsername = (page: string) => {
-      const errMsg =
-        'id="user_user_name" /><span class="help-block">has already been taken';
-      if (page.includes(errMsg)) {
-        throw Error("Username has already been taken.");
+    /** Extract page error data from page response */
+    const getPageError = (page: string): [string, string] => {
+      const pageError = / id="(.+)" \/><span class="help-block">(.+)<\/span>/;
+      const match = page.match(pageError);
+      return match.length === 3 ? [match[1], match[2]] : undefined;
+    };
+
+    /** Read page response for unique username error */
+    const validateUniqueUsername = ([type, msg]: [string, string]): void => {
+      if (type === "user_user_name" && msg === "has already been taken") {
+        throw Error("Username has already been taken");
       }
     };
 
-    // Read page response for unique email error
-    const validateUniqueEmail = (page: string) => {
-      const errMsg =
-        'id="user_email" /><span class="help-block">has already been taken';
-      if (page.includes(errMsg)) {
-        throw Error("Email address has already been taken.");
+    /** Read page response for username constraints */
+    const validateUsernameConstraints = ([type, msg]: [
+      string,
+      string
+    ]): void => {
+      if (type === "user_user_name" && msg.includes("Only letters, numbers")) {
+        throw Error(
+          "Username can only include letters, numbers, spaces ( ), underscores (_) and dashes (-)"
+        );
+      }
+    };
+
+    /** Read page response for unique email error */
+    const validateUniqueEmail = ([type, msg]: [string, string]): void => {
+      if (type === "user_email" && msg === "has already been taken") {
+        throw Error("Email address has already been taken");
       }
     };
 
@@ -74,9 +91,14 @@ export class SecurityService {
       accountEndpoint(signUpParam),
       accountEndpoint(emptyParam),
       (token: string) => details.getBody(token),
-      (page) => {
-        validateUniqueUsername(page);
-        validateUniqueEmail(page);
+      (page): void => {
+        const pageError = getPageError(page);
+        if (!pageError) {
+          return;
+        }
+        validateUniqueUsername(pageError);
+        validateUniqueEmail(pageError);
+        validateUsernameConstraints(pageError);
       }
     );
   }
@@ -170,7 +192,13 @@ export class SecurityService {
         first(),
         catchError((err) => {
           this.clearData();
-          return this.formApi.handleError(err);
+
+          if (err.status === UNAUTHORIZED) {
+            const msg = `An unknown error has occurred, if this persists please use the ${reportProblemMenuItem.label} page`;
+            return this.formApi.handleError(Error(msg));
+          } else {
+            return this.formApi.handleError(err);
+          }
         })
       );
   }

@@ -72,7 +72,7 @@ jobs:
           name: baw-client
 
   test:
-    name: Unit Tests (${{ matrix.os }})
+    name: Unit Tests (${{ matrix.os }} ${{ matrix.browsers }})
     needs: baw-client
     runs-on: ${{ matrix.os }}
 
@@ -83,7 +83,9 @@ jobs:
           - ubuntu-latest
           - macOS-latest
           - windows-latest
-
+        browsers:
+          - ChromeHeadless
+          - FirefoxHeadless
     steps:
       - name: Checkout Workbench Client
         uses: actions/checkout@v2
@@ -105,11 +107,8 @@ jobs:
       - name: Install project dependencies
         run: npm ci
 
-      - name: Run test suite on chrome
-        run: npm run test:pipeline -- --browsers ChromeHeadless
-
-      - name: Run test suite on firefox
-        run: npm run test:pipeline -- --browsers FirefoxHeadless
+      - name: Run test suite on ${{ matrix.browsers }}
+        run: npm run test:pipeline -- --browsers ${{ matrix.browsers }}
 
       - name: Upload Unit Test Results
         if: always()

@@ -160,7 +160,7 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
   /**
    * @see BawApiService.handleError for more information
    */
-  public handleError(err: BawApiError): Observable<never> {
+  public handleError(err: BawApiError | Error): Observable<never> {
     return this.api.handleError(err);
   }
 

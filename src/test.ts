@@ -12,7 +12,7 @@ import { computedStyleMatchers } from "@test/matchers/toHaveComputedStyle";
 
 declare const require: any;
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 beforeEach(function () {
   // Load matchers into jasmine
