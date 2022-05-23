@@ -83,7 +83,12 @@ const toHaveIcon = (util: MatchersUtil): CustomMatcher => ({
       return matcherFailure("Target element should exist");
     }
 
-    const component = ng.getComponent<FaIconComponent>(target);
+    const targetIcon = target.querySelector("fa-icon");
+    if (!targetIcon) {
+      return matcherFailure("Target element does not have icon");
+    }
+
+    const component = ng.getComponent<FaIconComponent>(targetIcon);
     const expectedProps = { icon, ...props };
 
     if (!component) {
@@ -160,7 +165,11 @@ const toHaveTooltip = (util: MatchersUtil): CustomMatcher => ({
       ? matcherSuccess()
       : matcherFailure("Tooltip should not exist");
   },
-  compare: (target: HTMLElement, tooltip: string): CustomMatcherResult => {
+  compare: (
+    target: HTMLElement,
+    tooltip: string,
+    props?: Partial<NgbTooltip>
+  ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Target element should exist");
     }
@@ -172,6 +181,7 @@ const toHaveTooltip = (util: MatchersUtil): CustomMatcher => ({
 
     const results = validateAttributes(util, directive, {
       _ngbTooltip: tooltip,
+      ...props,
     });
     return results ? results : matcherSuccess();
   },

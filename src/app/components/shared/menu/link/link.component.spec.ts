@@ -128,7 +128,7 @@ describe("MenuLinkComponent", () => {
         const icon: IconProp = ["fas", "ad"];
         setup({ link: link({ icon }) });
         spec.detectChanges();
-        expect(spec.query("fa-icon")).toHaveIcon(icon);
+        expect(spec.element).toHaveIcon(icon);
       });
 
       it("should have label", () => {

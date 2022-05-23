@@ -184,7 +184,7 @@ describe("MenuComponent", () => {
         title: { label: "SECONDARY", icon },
       });
       spec.detectChanges();
-      expect(getTitle().querySelector("fa-icon")).toHaveIcon(icon);
+      expect(getTitle()).toHaveIcon(icon);
     });
 
     it("should create capitalized title", () => {

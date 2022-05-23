@@ -6,6 +6,7 @@ import { UrlDirective } from "@directives/url/url.directive";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 
 declare global {
   namespace jasmine {
@@ -22,7 +23,7 @@ declare global {
         imageProps?: Partial<HTMLImageElement>,
         directiveProps?: Partial<AuthenticatedImageDirective>
       ): boolean;
-      toHaveTooltip(tooltip: string): boolean;
+      toHaveTooltip(tooltip: string, props?: Partial<NgbTooltip>): boolean;
       toHaveRoute(
         routerLink: string,
         props?: Partial<Exclude<RouterLinkWithHref, "routerLink">>

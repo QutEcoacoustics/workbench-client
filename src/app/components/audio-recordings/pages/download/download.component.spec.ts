@@ -25,7 +25,6 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
-import { assertHref } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
@@ -177,7 +176,9 @@ describe("DownloadAudioRecordingsComponent", () => {
         spec.detectChanges();
         loadForm();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
+        expect(getDownloadLink()).toHaveHref(
+          api.batchDownloadUrl(expectedFilter)
+        );
       }));
     });
 
@@ -204,7 +205,9 @@ describe("DownloadAudioRecordingsComponent", () => {
         spec.detectChanges();
         loadForm();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
+        expect(getDownloadLink()).toHaveHref(
+          api.batchDownloadUrl(expectedFilter)
+        );
       }));
     });
 
@@ -238,7 +241,9 @@ describe("DownloadAudioRecordingsComponent", () => {
         spec.detectChanges();
         loadForm();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
+        expect(getDownloadLink()).toHaveHref(
+          api.batchDownloadUrl(expectedFilter)
+        );
       }));
     });
 
@@ -265,7 +270,9 @@ describe("DownloadAudioRecordingsComponent", () => {
         spec.detectChanges();
         loadForm();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
+        expect(getDownloadLink()).toHaveHref(
+          api.batchDownloadUrl(expectedFilter)
+        );
       }));
     });
 
@@ -360,7 +367,9 @@ describe("DownloadAudioRecordingsComponent", () => {
         loadForm();
 
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
+        expect(getDownloadLink()).toHaveHref(
+          api.batchDownloadUrl(expectedFilter)
+        );
       }));
 
       it("should include end date in filter", fakeAsync(() => {
@@ -379,7 +388,9 @@ describe("DownloadAudioRecordingsComponent", () => {
         loadForm();
 
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
+        expect(getDownloadLink()).toHaveHref(
+          api.batchDownloadUrl(expectedFilter)
+        );
       }));
     });
   });
@@ -416,7 +427,9 @@ describe("DownloadAudioRecordingsComponent", () => {
         };
         toggleTodFilters();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
+        expect(getDownloadLink()).toHaveHref(
+          api.batchDownloadUrl(expectedFilter)
+        );
       }));
     });
 
@@ -478,7 +491,9 @@ describe("DownloadAudioRecordingsComponent", () => {
           loadForm();
 
           expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-          assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
+          expect(getDownloadLink()).toHaveHref(
+            api.batchDownloadUrl(expectedFilter)
+          );
         }));
 
         it(`should include end time in filter with ignoreDst ${
@@ -509,7 +524,9 @@ describe("DownloadAudioRecordingsComponent", () => {
           loadForm();
 
           expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-          assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
+          expect(getDownloadLink()).toHaveHref(
+            api.batchDownloadUrl(expectedFilter)
+          );
         }));
       });
     });
@@ -556,7 +573,9 @@ describe("DownloadAudioRecordingsComponent", () => {
       loadForm();
 
       expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-      assertHref(getDownloadLink(), api.batchDownloadUrl(expectedFilter));
+      expect(getDownloadLink()).toHaveHref(
+        api.batchDownloadUrl(expectedFilter)
+      );
     }));
 
     // TODO Expand to test various edge cases

@@ -119,7 +119,7 @@ describe("BreadcrumbComponent", () => {
     });
 
     it("should show icon", () => {
-      expect(element.querySelector("fa-icon")).toHaveIcon(crumb.icon);
+      expect(element).toHaveIcon(crumb.icon);
     });
   });
 

@@ -15,7 +15,7 @@ function validateStyles(
   ) => CustomMatcherResult
 ): CustomMatcherResult {
   if (!actual) {
-    return failure("HTMLElement is undefined");
+    return matcherFailure("HTMLElement is undefined");
   } else if (!(actual instanceof HTMLElement)) {
     return matcherFailure(
       `Input must be of type HTMLElement, got ${

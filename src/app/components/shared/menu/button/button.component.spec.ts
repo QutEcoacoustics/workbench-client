@@ -60,7 +60,7 @@ describe("MenuButtonComponent", () => {
   it("should have icon", () => {
     setup({ link: defaultLink });
     spec.detectChanges();
-    expect(spec.query("fa-icon")).toHaveIcon(defaultLink.icon);
+    expect(spec.element).toHaveIcon(defaultLink.icon);
   });
 
   it("should have label", () => {
