@@ -141,7 +141,7 @@ describe("HiddenCopyComponent", () => {
     let color: BootstrapColorTypes;
 
     beforeEach(() => {
-      color = modelData.random.arrayElement<BootstrapColorTypes>([
+      color = modelData.helpers.arrayElement<BootstrapColorTypes>([
         "primary",
         "secondary",
         "success",

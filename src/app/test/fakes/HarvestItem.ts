@@ -10,7 +10,7 @@ export function generateHarvestItemValidation(
 ): Required<IHarvestItemValidation> {
   return {
     name: modelData.random.word(),
-    status: modelData.random.arrayElement(["fixable", "notFixable"]),
+    status: modelData.helpers.arrayElement(["fixable", "notFixable"]),
     message: modelData.random.words(),
     ...data,
   };

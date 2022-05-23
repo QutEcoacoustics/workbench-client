@@ -12,7 +12,7 @@ const specialCharRegex = /[^\w\s]/gi;
 
 export const modelData = {
   accessLevel: () =>
-    faker.random.arrayElement<AccessLevel>([
+    faker.helpers.arrayElement<AccessLevel>([
       AccessLevel.reader,
       AccessLevel.writer,
       AccessLevel.owner,
@@ -42,7 +42,7 @@ export const modelData = {
   imageUrls,
   icon: (): IconProp => [
     "fas",
-    faker.random.arrayElement<IconName>([
+    faker.helpers.arrayElement<IconName>([
       "anchor",
       "apple-whole",
       "atom",
@@ -55,10 +55,10 @@ export const modelData = {
   longitude: () => parseFloat(faker.address.longitude()),
   notes: () => randomObject(1, 5),
   offset: () =>
-    faker.random.arrayElement(["+", "-"]) +
+    faker.helpers.arrayElement(["+", "-"]) +
     faker.datatype.number(11) +
     ":" +
-    faker.random.arrayElement(["00", "30"]),
+    faker.helpers.arrayElement(["00", "30"]),
   param: () => faker.name.jobTitle().replace(specialCharRegex, ""),
   seconds: () => faker.datatype.number(86400 - 30) + 30,
   startEndSeconds: () => {
@@ -73,7 +73,7 @@ export const modelData = {
   },
   timestamp: () => faker.date.past().toISOString(),
   tzInfoTz: () =>
-    faker.random.arrayElement([
+    faker.helpers.arrayElement([
       "America/Costa_Rica",
       "Australia/Brisbane",
       "Asia/Makassar",
@@ -168,7 +168,7 @@ function imageUrls(url?: string): ImageUrl[] {
  * Generate timezone data
  */
 function timezone(): TimezoneInformation {
-  return faker.random.arrayElement<TimezoneInformation>([
+  return faker.helpers.arrayElement<TimezoneInformation>([
     {
       identifierAlt: null,
       identifier: "America/Costa_Rica",
@@ -201,7 +201,7 @@ function timezone(): TimezoneInformation {
 function hexaDecimal(count: number = 1): string {
   let wholeString = "";
   for (let i = 0; i < count; i++) {
-    wholeString += faker.random.arrayElement([
+    wholeString += faker.helpers.arrayElement([
       "0",
       "1",
       "2",

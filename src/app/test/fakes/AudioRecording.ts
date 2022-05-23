@@ -5,10 +5,10 @@ import { DateTime } from "luxon";
 export function generateAudioRecording(
   data?: Partial<IAudioRecording>
 ): Required<IAudioRecording> {
-  const bitRateBps = modelData.random.arrayElement(
+  const bitRateBps = modelData.helpers.arrayElement(
     modelData.defaults.bitRateBps
   );
-  const durationSeconds = modelData.random.arrayElement([
+  const durationSeconds = modelData.helpers.arrayElement([
     30, 60, 1800, 3600, 7200, 21600,
   ]);
   const mediaTypes = ["audio/mpeg", "audio/flac", "audio/wave"];
@@ -32,15 +32,15 @@ export function generateAudioRecording(
     recordedDate: recordedDate.toISO(),
     siteId: modelData.id(),
     durationSeconds,
-    sampleRateHertz: modelData.random.arrayElement(
+    sampleRateHertz: modelData.helpers.arrayElement(
       modelData.defaults.sampleRateHertz
     ),
-    channels: modelData.random.arrayElement([1, 2, 4, 6]),
+    channels: modelData.helpers.arrayElement([1, 2, 4, 6]),
     bitRateBps,
-    mediaType: modelData.random.arrayElement(mediaTypes),
+    mediaType: modelData.helpers.arrayElement(mediaTypes),
     dataLengthBytes: durationSeconds * bitRateBps,
     fileHash: modelData.hash(),
-    status: modelData.random.arrayElement(statuses),
+    status: modelData.helpers.arrayElement(statuses),
     notes: modelData.notes(),
     originalFileName: modelData.system.commonFileName(".mpg"),
     recordedDateTimezone: recordedDate.zoneName,

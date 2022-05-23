@@ -536,6 +536,9 @@ describe("BawApiService", () => {
           if (singleResult) {
             it("should handle response", (done) => {
               const response = { meta: meta.single, data: responses.single };
+              const model = new MockModel(response.data, service["injector"]);
+              model.addMetadata(response.meta);
+
               successRequest(response);
               functionCall().subscribe({
                 next: (data) => {
@@ -543,9 +546,7 @@ describe("BawApiService", () => {
                   if (method === "destroy") {
                     expect(data).toBe(null);
                   } else {
-                    expect(data).toEqual(
-                      new MockModel(response.data, service["injector"])
-                    );
+                    expect(data).toEqual(model);
                   }
                   done();
                 },
@@ -568,14 +569,16 @@ describe("BawApiService", () => {
 
             it("should handle response", (done) => {
               const response = { meta: meta.multi, data: responses.multi };
+              const models = response.data.map((_data) => {
+                const model = new MockModel(_data, service["injector"]);
+                model.addMetadata(response.meta);
+                return model;
+              });
+
               successRequest(response);
               functionCall().subscribe({
                 next: (data) => {
-                  expect(data).toEqual(
-                    response.data.map(
-                      (model) => new MockModel(model, service["injector"])
-                    )
-                  );
+                  expect(data).toEqual(models);
                   done();
                 },
                 error: shouldNotFail,
@@ -606,32 +609,59 @@ describe("BawApiService", () => {
           });
 
           if (updateOnAuthTrigger) {
-            it("should retrigger if auth changes", (done) => {
-              let count = 0;
-              const response = singleResult
-                ? { meta: meta.single, data: responses.single }
-                : { meta: meta.multi, data: responses.multi };
-              successRequest(response);
-              functionCall().subscribe({
-                next: (data): void => {
-                  expect(data).toEqual(
-                    singleResult
-                      ? new MockModel(responses.single, service["injector"])
-                      : responses.multi.map(
-                          (model) => new MockModel(model, service["injector"])
-                        )
-                  );
-                  if (count === 2) {
-                    done();
-                  } else {
-                    count++;
-                  }
-                },
-                error: shouldNotFail,
+            if (singleResult) {
+              it("should retrigger if auth changes", (done) => {
+                let count = 0;
+                const response = { meta: meta.single, data: responses.single };
+                const model = new MockModel(
+                  responses.single,
+                  service["injector"]
+                );
+                model.addMetadata(response.meta);
+
+                successRequest(response);
+                functionCall().subscribe({
+                  next: (data): void => {
+                    expect(data).toEqual(model);
+                    if (count === 2) {
+                      done();
+                    } else {
+                      count++;
+                    }
+                  },
+                  error: shouldNotFail,
+                });
+                signIn(defaultUser, defaultAuthToken);
+                signOut();
               });
-              signIn(defaultUser, defaultAuthToken);
-              signOut();
-            });
+            }
+
+            if (multiResult) {
+              it("should retrigger if auth changes", (done) => {
+                let count = 0;
+                const response = { meta: meta.multi, data: responses.multi };
+                const models = responses.multi.map((_data) => {
+                  const model = new MockModel(_data, service["injector"]);
+                  model.addMetadata(response.meta);
+                  return model;
+                });
+
+                successRequest(response);
+                functionCall().subscribe({
+                  next: (data): void => {
+                    expect(data).toEqual(models);
+                    if (count === 2) {
+                      done();
+                    } else {
+                      count++;
+                    }
+                  },
+                  error: shouldNotFail,
+                });
+                signIn(defaultUser, defaultAuthToken);
+                signOut();
+              });
+            }
           } else {
             it("should complete on api response", (done) => {
               const response = singleResult
