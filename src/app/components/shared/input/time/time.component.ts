@@ -148,7 +148,7 @@ export class TimeComponent implements ControlValueAccessor, Validator {
 
     // Update model if valid input given
     if (this.errors.length === 0) {
-      this.onChange(this.value);
+      this.updateChanges();
     }
   }
 

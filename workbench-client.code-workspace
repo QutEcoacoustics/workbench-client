@@ -55,10 +55,7 @@
     "recommendations": [
       "cyrilletuzi.angular-schematics",
       "dbaeumer.vscode-eslint",
-      "streetsidesoftware.code-spell-checker",
-      "msjsdiag.debugger-for-chrome",
-      "hbenl.vscode-test-explorer",
-      "raagh.angular-karma-test-explorer"
+      "streetsidesoftware.code-spell-checker"
     ]
   }
 }

@@ -29,7 +29,7 @@ const projectKey = "project";
 })
 class HarvestComponent extends PageComponent implements OnInit {
   public project: Project;
-  public stage: HarvestStage = HarvestStage.newHarvest;
+  public stage: HarvestStage = HarvestStage.metadataReview;
   public harvestStage = HarvestStage;
   public isStreaming: boolean;
 

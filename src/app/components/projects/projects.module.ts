@@ -26,6 +26,8 @@ import { HarvestStreamUploadingComponent } from "./components/harvest/stream-upl
 import { UploadAnnotationsComponent } from "./pages/upload-annotations/upload-annotations.component";
 import { HarvestScanningComponent } from "./components/harvest/scanning.component";
 import { HarvestCanCloseDialogComponent } from "./components/harvest/can-close-dialog.component";
+import { SiteSelectorComponent } from "./components/inputs/site-selector.component";
+import { UTCOffsetSelectorComponent } from "./components/inputs/timezone-selector.component";
 
 const components = [
   HarvestBatchUploadingComponent,
@@ -38,6 +40,9 @@ const components = [
   HarvestReviewComponent,
   HarvestScanningComponent,
   HarvestStreamUploadingComponent,
+
+  SiteSelectorComponent,
+  UTCOffsetSelectorComponent,
 
   UploadAnnotationsComponent,
   AssignComponent,

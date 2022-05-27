@@ -5,6 +5,7 @@ import { SitesService } from "@baw-api/site/sites.service";
 import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
+import { ConfigService } from "@services/config/config.service";
 import { Observable } from "rxjs";
 
 @Component({
@@ -18,7 +19,7 @@ import { Observable } from "rxjs";
       <thead>
         <tr>
           <th scope="col" class="w-100">Path</th>
-          <th scope="col">Point</th>
+          <th scope="col">{{ siteColumnLabel }}</th>
           <th scope="col">UTC Offset</th>
         </tr>
       </thead>
@@ -33,45 +34,29 @@ import { Observable } from "rxjs";
         <tr *ngFor="let site of sites.value">
           <!-- TODO Show Region name -->
           <td>/{{ site.id }}</td>
-          <td>{{ site.id }}</td>
           <td>
-            <ng-container *ngIf="site.timezoneInformation">
-              {{ humanizeOffset(site.timezoneInformation.utcOffset) }}
-
-              <button class="btn btn-sm btn-secondary float-end">Change</button>
-            </ng-container>
-            <ng-container *ngIf="!site.timezoneInformation">
-              <div class="input-group input-group-sm">
-                <input class="form-control" type="text" placeholder="+hh:mm" />
-                <button type="button" class="btn btn-outline-secondary">
-                  Set
-                </button>
-              </div>
-            </ng-container>
+            <baw-site-selector
+              [project]="project"
+              [site]="site"
+            ></baw-site-selector>
+          </td>
+          <td>
+            <baw-utc-offset-selector
+              [project]="project"
+              [site]="site"
+            ></baw-utc-offset-selector>
           </td>
         </tr>
 
         <tr *ngIf="sites.value">
           <td>/obviously_fake_path</td>
           <td>
-            <div class="input-group input-group-sm">
-              <input
-                class="form-control"
-                type="number"
-                placeholder="point id"
-              />
-              <button type="button" class="btn btn-outline-secondary">
-                Set
-              </button>
-            </div>
+            <baw-site-selector [project]="project"></baw-site-selector>
           </td>
           <td>
-            <div class="input-group input-group-sm">
-              <input class="form-control" type="text" placeholder="+hh:mm" />
-              <button type="button" class="btn btn-outline-secondary">
-                Set
-              </button>
-            </div>
+            <baw-utc-offset-selector
+              [project]="project"
+            ></baw-utc-offset-selector>
           </td>
         </tr>
       </tbody>
@@ -84,6 +69,7 @@ import { Observable } from "rxjs";
       >
         Make changes or upload more files
       </button>
+      <!-- Redirect to metadata extraction instead of next step if changes made -->
       <button class="btn btn-primary float-end" (click)="onSaveClick()">
         Save and upload
       </button>
@@ -102,8 +88,10 @@ export class HarvestMetadataReviewComponent implements OnInit {
 
   public sites$: Observable<Site[]>;
   public project: Project;
+  public siteColumnLabel: string;
 
   public constructor(
+    private config: ConfigService,
     private siteApi: SitesService,
     private route: ActivatedRoute
   ) {}
@@ -111,6 +99,7 @@ export class HarvestMetadataReviewComponent implements OnInit {
   public ngOnInit(): void {
     this.project = retrieveResolvedModel(this.route.snapshot.data, Project);
     this.sites$ = this.siteApi.list(this.project);
+    this.siteColumnLabel = this.config.settings.hideProjects ? "Point" : "Site";
   }
 
   public humanizeOffset(offset: number): string {
