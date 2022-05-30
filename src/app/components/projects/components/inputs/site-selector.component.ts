@@ -1,8 +1,16 @@
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from "@angular/core";
+import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { SitesService } from "@baw-api/site/sites.service";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { Id } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
-import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
@@ -15,6 +23,7 @@ import {
   OperatorFunction,
   Subject,
   switchMap,
+  takeUntil,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
 
@@ -56,7 +65,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
         (focus)="focus$.next($any($event).target.value)"
         (click)="onSelection($any($event).target.value)"
         (blur)="onTouched()"
-        (selectItem)="updateChanges()"
+        (selectItem)="emitSite()"
       />
     </div>
   `,
@@ -76,64 +85,34 @@ import { defaultDebounceTime } from "src/app/app.helper";
     `,
   ],
 })
-export class SiteSelectorComponent implements OnInit, ControlValueAccessor {
+export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;
   @Input() public project: Project;
-  @Input() public region: Region;
-  @Input() public site: Site;
+  @Input() public siteId: Id;
+  @Output() public siteIdChange = new EventEmitter<Id>();
 
   public focus$ = new Subject<Site>();
   public click$ = new Subject<Site>();
   public search$: OperatorFunction<string, readonly Site[]>;
 
   public prevValue: Site;
-
-  /** Current value */
   public value: Site;
-  /** Has value been set */
-  public dirty: boolean;
-  /** Has input been touched */
-  public touched: boolean;
 
   public constructor(
     private config: ConfigService,
     private sitesApi: SitesService
-  ) {}
-
-  /** Invoked when the model has been changed */
-  public onChange: (_: Site) => void = () => {};
-
-  /** Invoked when the model has been touched */
-  public onTouched: () => void = () => {};
-
-  /** Method that is invoked on an update of a model. */
-  public updateChanges = () => this.onChange(this.value);
-
-  /**
-   * Registers a callback function that should be called when the control's value changes in the UI.
-   *
-   * @param fn
-   */
-  public registerOnChange = (fn: any): void => (this.onChange = fn);
-
-  /**
-   * Registers a callback function that should be called when the control receives a blur event.
-   *
-   * @param fn
-   */
-  public registerOnTouched = (fn: any): void => (this.onTouched = fn);
-
-  /**
-   * Method that is invoked when the control status changes to or from "DISABLED".
-   */
-  public setDisabledState = (_: boolean) => {};
-
-  public writeValue(value: Site): void {
-    this.value = value;
-    this.updateChanges();
+  ) {
+    super();
   }
 
   public ngOnInit(): void {
+    if (this.siteId) {
+      this.sitesApi
+        .show(this.siteId, this.project)
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe((site) => (this.value = site));
+    }
+
     this.search$ = (text$: Observable<string>): Observable<Site[]> => {
       const debouncedText$ = text$.pipe(
         debounceTime(defaultDebounceTime),
@@ -160,8 +139,6 @@ export class SiteSelectorComponent implements OnInit, ControlValueAccessor {
         )
       );
     };
-
-    this.value = this.site;
   }
 
   public get inputPlaceholder(): string {
@@ -180,10 +157,13 @@ export class SiteSelectorComponent implements OnInit, ControlValueAccessor {
     return site.name;
   }
 
+  public emitSite(): void {
+    this.siteIdChange.emit(this.value?.id ?? undefined);
+  }
+
   public resetSite(): void {
     this.prevValue = this.value;
     this.value = undefined;
-    this.updateChanges();
   }
 
   public onSelection(site: Site): void {

@@ -28,6 +28,7 @@ import { HarvestScanningComponent } from "./components/harvest/scanning.componen
 import { HarvestCanCloseDialogComponent } from "./components/harvest/can-close-dialog.component";
 import { SiteSelectorComponent } from "./components/inputs/site-selector.component";
 import { UTCOffsetSelectorComponent } from "./components/inputs/timezone-selector.component";
+import { HarvestMappingComponent } from "./components/harvest/mapping.component";
 
 const components = [
   HarvestBatchUploadingComponent,
@@ -43,6 +44,7 @@ const components = [
 
   SiteSelectorComponent,
   UTCOffsetSelectorComponent,
+  HarvestMappingComponent,
 
   UploadAnnotationsComponent,
   AssignComponent,

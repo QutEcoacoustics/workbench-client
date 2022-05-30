@@ -1,12 +1,21 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Injector,
+  OnInit,
+  Output,
+} from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
+import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { Harvest, IHarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
-import { Site } from "@models/Site";
 import { ConfigService } from "@services/config/config.service";
-import { Observable } from "rxjs";
+import { generateHarvest } from "@test/fakes/Harvest";
+import { takeUntil } from "rxjs";
 
 @Component({
   selector: "baw-harvest-metadata-review",
@@ -15,52 +24,20 @@ import { Observable } from "rxjs";
 
     <p>This is a review of the audio data</p>
 
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col" class="w-100">Path</th>
-          <th scope="col">{{ siteColumnLabel }}</th>
-          <th scope="col">UTC Offset</th>
-        </tr>
-      </thead>
+    <div
+      style="display: grid; grid-template-columns: repeat(3, minmax(0, auto));"
+    >
+      <div>Path</div>
+      <div>{{ siteColumnLabel }}</div>
+      <div>UTC Offset</div>
 
-      <tbody *ngIf="sites$ | withLoading | async as sites">
-        <tr *ngIf="sites.loading">
-          <td><span class="placeholder w-25"></span></td>
-          <td><span class="placeholder w-25"></span></td>
-          <td><span class="placeholder w-100"></span></td>
-        </tr>
-
-        <tr *ngFor="let site of sites.value">
-          <!-- TODO Show Region name -->
-          <td>/{{ site.id }}</td>
-          <td>
-            <baw-site-selector
-              [project]="project"
-              [site]="site"
-            ></baw-site-selector>
-          </td>
-          <td>
-            <baw-utc-offset-selector
-              [project]="project"
-              [site]="site"
-            ></baw-utc-offset-selector>
-          </td>
-        </tr>
-
-        <tr *ngIf="sites.value">
-          <td>/obviously_fake_path</td>
-          <td>
-            <baw-site-selector [project]="project"></baw-site-selector>
-          </td>
-          <td>
-            <baw-utc-offset-selector
-              [project]="project"
-            ></baw-utc-offset-selector>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <baw-mapping-form
+        *ngFor="let mapping of mappings; let i = index; trackBy: trackByPath"
+        style="display:contents;"
+        [project]="project"
+        [(mapping)]="mappings[i]"
+      ></baw-mapping-form>
+    </div>
 
     <div class="clearfix">
       <button
@@ -75,46 +52,63 @@ import { Observable } from "rxjs";
       </button>
     </div>
   `,
-  styles: [
-    `
-      .input-group {
-        width: 170px;
-      }
-    `,
-  ],
 })
-export class HarvestMetadataReviewComponent implements OnInit {
+export class HarvestMetadataReviewComponent
+  extends withUnsubscribe()
+  implements OnInit, UnsavedInputCheckingComponent
+{
   @Output() public stage = new EventEmitter<HarvestStage>();
 
-  public sites$: Observable<Site[]>;
+  public hasUnsavedChange: boolean;
+
   public project: Project;
   public siteColumnLabel: string;
+  public harvest: Harvest;
+  public mappings: IHarvestMapping[] = [];
 
   public constructor(
     private config: ConfigService,
     private siteApi: SitesService,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    private injector: Injector
+  ) {
+    super();
+  }
 
   public ngOnInit(): void {
     this.project = retrieveResolvedModel(this.route.snapshot.data, Project);
-    this.sites$ = this.siteApi.list(this.project);
     this.siteColumnLabel = this.config.settings.hideProjects ? "Point" : "Site";
+    this.harvest = new Harvest(generateHarvest(), this.injector);
+
+    // TODO this is temporary until we have a real API
+    this.siteApi
+      .list(this.project)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((sites) => {
+        this.mappings = sites.map((site) => ({
+          path: site.id + "/",
+          siteId: site.id,
+          utcOffset: undefined,
+          recursive: false,
+        }));
+
+        this.mappings.push({
+          path: "obviously_wrong_path/",
+          recursive: true,
+        });
+      });
   }
 
-  public humanizeOffset(offset: number): string {
-    if (!offset) {
-      return undefined;
-    }
+  public setMapping(index: number, mapping: IHarvestMapping) {
+    this.mappings[index] = mapping;
+  }
 
-    // Convert number to UTC offset
-    const hours = Math.abs(offset / 3600)
-      .toFixed(0)
-      .padStart(2, "0");
-    const minutes = Math.abs(offset % 3600)
-      .toFixed(0)
-      .padStart(2, "0");
-    return `${offset < 0 ? "-" : "+"}${hours}:${minutes}`;
+  public onGoForwards(): void {
+    // If changes made to harvest, show warning modal
+  }
+
+  public trackByPath(_: number, mapping: IHarvestMapping) {
+    return mapping.path;
   }
 
   public onBackClick(): void {

@@ -1,8 +1,6 @@
-import { Component, Input } from "@angular/core";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { Site } from "@models/Site";
 
 @Component({
   selector: "baw-utc-offset-selector",
@@ -56,55 +54,12 @@ import { Site } from "@models/Site";
     `,
   ],
 })
-export class UTCOffsetSelectorComponent implements ControlValueAccessor {
+export class UTCOffsetSelectorComponent {
   @Input() public project: Project;
-  @Input() public region: Region;
-  @Input() public site: Site;
+  @Input() public offset: string;
+  @Output() public offsetChange = new EventEmitter<string>();
 
-  /** Current value */
   public value: string;
-  /** Has value been set */
-  public dirty: boolean;
-  /** Has input been touched */
-  public touched: boolean;
-
-  /** Invoked when the model has been changed */
-  public onChange: (_: string) => void = () => {};
-
-  /** Invoked when the model has been touched */
-  public onTouched: () => void = () => {};
-
-  /** Method that is invoked on an update of a model. */
-  public updateChanges = () => this.onChange(this.value);
-
-  /**
-   * Registers a callback function that should be called when the control's value changes in the UI.
-   *
-   * @param fn
-   */
-  public registerOnChange = (fn: any): void => (this.onChange = fn);
-
-  /**
-   * Registers a callback function that should be called when the control receives a blur event.
-   *
-   * @param fn
-   */
-  public registerOnTouched = (fn: any): void => (this.onTouched = fn);
-
-  /**
-   * Method that is invoked when the control status changes to or from "DISABLED".
-   */
-  public setDisabledState = (_: boolean) => {};
-
-  /**
-   * Writes a new item to the element.
-   *
-   * @param value the value
-   */
-  public writeValue(value: string): void {
-    this.value = value;
-    this.updateChanges();
-  }
 
   public get editTooltip(): string {
     return "Change the utc offset for this recordings stored in this folder";
@@ -112,12 +67,16 @@ export class UTCOffsetSelectorComponent implements ControlValueAccessor {
 
   public resetSite(): void {
     this.value = undefined;
-    this.updateChanges();
+    this.offsetChange.emit(this.value);
   }
 
   public onSelection(offset: string): void {
     this.value = offset;
-    this.updateChanges();
+    this.offsetChange.emit(this.value);
+  }
+
+  public get offsets(): string[] {
+    return UTCOffsetSelectorComponent.offsets;
   }
 
   /**
@@ -125,7 +84,7 @@ export class UTCOffsetSelectorComponent implements ControlValueAccessor {
    * if users request a timezone which is not listed here
    * https://en.wikipedia.org/wiki/List_of_UTC_offsets
    */
-  public offsets = [
+  public static offsets = [
     "-12:00",
     "-11:00",
     "-10:30",
