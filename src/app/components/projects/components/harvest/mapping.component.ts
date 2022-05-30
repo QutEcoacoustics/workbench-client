@@ -5,17 +5,17 @@ import { Project } from "@models/Project";
 @Component({
   selector: "baw-mapping-form",
   template: `
-    <div>
+    <div class="grid-table-cell d-flex align-items-center">
       {{ mapping.path }}
     </div>
-    <div>
+    <div class="grid-table-cell">
       <baw-site-selector
         [project]="project"
         [siteId]="mapping.siteId"
         (siteIdChange)="setSite($event)"
       ></baw-site-selector>
     </div>
-    <div>
+    <div class="grid-table-cell">
       <baw-utc-offset-selector
         [project]="project"
         [offset]="mapping.utcOffset"

@@ -4,6 +4,7 @@ import {
   Injector,
   OnInit,
   Output,
+  ViewEncapsulation,
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
@@ -24,16 +25,16 @@ import { takeUntil } from "rxjs";
 
     <p>This is a review of the audio data</p>
 
-    <div
-      style="display: grid; grid-template-columns: repeat(3, minmax(0, auto));"
-    >
-      <div>Path</div>
-      <div>{{ siteColumnLabel }}</div>
-      <div>UTC Offset</div>
+    <div class="table table-sm table-striped grid-table">
+      <div class="grid-table-header">
+        <div>Path</div>
+        <div>{{ siteColumnLabel }}</div>
+        <div>UTC Offset</div>
+      </div>
 
       <baw-mapping-form
         *ngFor="let mapping of mappings; let i = index; trackBy: trackByPath"
-        style="display:contents;"
+        class="grid-table-row"
         [project]="project"
         [(mapping)]="mappings[i]"
       ></baw-mapping-form>
@@ -52,6 +53,7 @@ import { takeUntil } from "rxjs";
       </button>
     </div>
   `,
+  styleUrls: ["metadata-review.component.scss"],
 })
 export class HarvestMetadataReviewComponent
   extends withUnsubscribe()
