@@ -11,6 +11,8 @@ import {
   AbstractModelConstructor,
   AbstractModelWithoutId,
 } from "@models/AbstractModel";
+import { withCache } from "@ngneat/cashew";
+import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import { ToastrService } from "ngx-toastr";
 import { Observable, throwError } from "rxjs";
 import { map, mergeMap, switchMap } from "rxjs/operators";
@@ -162,9 +164,15 @@ export class BawApiService<
    * @param classBuilder Model to create
    * @param path API path
    */
-  public show(classBuilder: ClassBuilder, path: string): Observable<Model> {
+  public show(
+    classBuilder: ClassBuilder,
+    path: string,
+    cacheResponse = true
+  ): Observable<Model> {
     return this.session.authTrigger.pipe(
-      switchMap(() => this.httpGet(path)),
+      switchMap(() =>
+        this.httpGet(path, defaultHeaders, { cache: cacheResponse, ttl: 50 })
+      ),
       map(this.handleSingleResponse(classBuilder))
     );
   }
@@ -248,11 +256,13 @@ export class BawApiService<
    */
   public httpGet(
     path: string,
-    options: any = defaultHeaders
+    options: any = defaultHeaders,
+    cacheOptions?: ContextOptions
   ): Observable<ApiResponse<Model | Model[]>> {
     return this.http.get<ApiResponse<Model>>(this.getPath(path), {
       responseType: "json",
       headers: options,
+      context: withCache(cacheOptions ?? { cache: false }),
     });
   }
 
