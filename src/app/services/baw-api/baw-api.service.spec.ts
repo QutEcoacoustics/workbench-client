@@ -32,7 +32,7 @@ import { modelData } from "@test/helpers/faker";
 import { assertOk } from "@test/helpers/general";
 import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
 import { ToastrService } from "ngx-toastr";
-import { BehaviorSubject, noop, Observable, single, Subject } from "rxjs";
+import { BehaviorSubject, noop, Observable, Subject } from "rxjs";
 import {
   BawSessionService,
   guestAuthToken,
