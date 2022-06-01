@@ -5,6 +5,7 @@ import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
 import {
   ApiResponse,
   BawApiService,
+  defaultApiHeaders,
   Filters,
   Meta,
 } from "@baw-api/baw-api.service";
@@ -17,6 +18,8 @@ import { AuthToken } from "@interfaces/apiInterfaces";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 import { User } from "@models/User";
+import { withCache } from "@ngneat/cashew";
+import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import {
   createHttpFactory,
   HttpMethod,
@@ -29,7 +32,7 @@ import { modelData } from "@test/helpers/faker";
 import { assertOk } from "@test/helpers/general";
 import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
 import { ToastrService } from "ngx-toastr";
-import { BehaviorSubject, noop, Observable, Subject } from "rxjs";
+import { BehaviorSubject, noop, Observable, single, Subject } from "rxjs";
 import {
   BawSessionService,
   guestAuthToken,
@@ -397,6 +400,27 @@ describe("BawApiService", () => {
         }
       });
     });
+
+    describe("httpGet", () => {
+      function catchFunctionCall() {
+        return catchRequest("/broken_link", HttpMethod.GET);
+      }
+
+      it("should cache results when given", () => {
+        const cacheOptions: ContextOptions = { cache: true };
+        service
+          .httpGet("/broken_link", defaultApiHeaders, cacheOptions)
+          .subscribe();
+        const context = catchFunctionCall().request.context;
+        expect(context).toEqual(withCache(cacheOptions));
+      });
+
+      it("should not cache results when not given", () => {
+        service.httpGet("/broken_link").subscribe();
+        const context = catchFunctionCall().request.context;
+        expect(context).toEqual(withCache({ cache: false }));
+      });
+    });
   });
 
   describe("API Request Methods", () => {
@@ -524,7 +548,13 @@ describe("BawApiService", () => {
             const spy = successRequest(response);
             functionCall().subscribe();
 
-            if (hasBody) {
+            if (method === "show") {
+              expect(spy).toHaveBeenCalledWith(
+                "/broken_link",
+                defaultApiHeaders,
+                { cache: true, ttl: 50 }
+              );
+            } else if (hasBody) {
               expect(spy).toHaveBeenCalledWith("/broken_link", defaultBody);
             } else if (hasFilter) {
               expect(spy).toHaveBeenCalledWith("/broken_link", defaultFilter);
@@ -680,5 +710,23 @@ describe("BawApiService", () => {
         });
       }
     );
+
+    describe("show", () => {
+      it("should not cache responses if requested", () => {
+        const response = { meta: meta.single, data: responses.single };
+        spyOn(service, "httpGet").and.callFake(() => {
+          const subject = new BehaviorSubject<ApiResponse<any>>(response);
+          setTimeout(() => subject.complete(), 0);
+          return subject.asObservable();
+        });
+        service.show(MockModel, "/broken_link", false).subscribe();
+
+        expect(service.httpGet).toHaveBeenCalledWith(
+          "/broken_link",
+          defaultApiHeaders,
+          { cache: false, ttl: 50 }
+        );
+      });
+    });
   });
 });

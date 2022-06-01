@@ -23,14 +23,14 @@ export const defaultApiPageSize = 25;
 export const unknownErrorCode = -1;
 
 /** Default headers for API requests */
-const defaultHeaders = new HttpHeaders({
+export const defaultApiHeaders = new HttpHeaders({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Accept: "application/json",
   // eslint-disable-next-line @typescript-eslint/naming-convention
   "Content-Type": "application/json",
 });
 /** Headers for MultiPart API requests */
-const multiPartHeaders = new HttpHeaders({
+export const multiPartApiHeaders = new HttpHeaders({
   // Do not set Content-Type for this request, otherwise web browsers wont calculate boundaries automatically
   // https://muffinman.io/blog/uploading-files-using-fetch-multipart-form-data/
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -171,7 +171,7 @@ export class BawApiService<
   ): Observable<Model> {
     return this.session.authTrigger.pipe(
       switchMap(() =>
-        this.httpGet(path, defaultHeaders, { cache: cacheResponse, ttl: 50 })
+        this.httpGet(path, defaultApiHeaders, { cache: cacheResponse, ttl: 50 })
       ),
       map(this.handleSingleResponse(classBuilder))
     );
@@ -201,7 +201,7 @@ export class BawApiService<
       const formData = body.getFormDataOnlyAttributes({ create: true });
       return request.pipe(
         mergeMap((model) =>
-          this.httpPut(updatePath(model), formData, multiPartHeaders)
+          this.httpPut(updatePath(model), formData, multiPartApiHeaders)
         ),
         map(this.handleSingleResponse(classBuilder))
       );
@@ -231,7 +231,7 @@ export class BawApiService<
     if (body?.hasFormDataOnlyAttributes({ update: true })) {
       const formData = body.getFormDataOnlyAttributes({ update: true });
       return request.pipe(
-        mergeMap(() => this.httpPut(path, formData, multiPartHeaders)),
+        mergeMap(() => this.httpPut(path, formData, multiPartApiHeaders)),
         map(this.handleSingleResponse(classBuilder))
       );
     }
@@ -256,7 +256,7 @@ export class BawApiService<
    */
   public httpGet(
     path: string,
-    options: any = defaultHeaders,
+    options: any = defaultApiHeaders,
     cacheOptions?: ContextOptions
   ): Observable<ApiResponse<Model | Model[]>> {
     return this.http.get<ApiResponse<Model>>(this.getPath(path), {
@@ -275,7 +275,7 @@ export class BawApiService<
    */
   public httpDelete(
     path: string,
-    options: any = defaultHeaders
+    options: any = defaultApiHeaders
   ): Observable<ApiResponse<Model | void>> {
     return this.http.delete<ApiResponse<null>>(this.getPath(path), {
       responseType: "json",
@@ -294,7 +294,7 @@ export class BawApiService<
   public httpPost(
     path: string,
     body?: any,
-    options: any = defaultHeaders
+    options: any = defaultApiHeaders
   ): Observable<ApiResponse<Model | Model[]>> {
     return this.http.post<ApiResponse<Model | Model[]>>(
       this.getPath(path),
@@ -317,7 +317,7 @@ export class BawApiService<
   public httpPut(
     path: string,
     body?: any,
-    options: any = defaultHeaders
+    options: any = defaultApiHeaders
   ): Observable<ApiResponse<Model>> {
     return this.http.put<ApiResponse<Model>>(this.getPath(path), body, {
       responseType: "json",
@@ -336,7 +336,7 @@ export class BawApiService<
   public httpPatch(
     path: string,
     body?: any,
-    options: any = defaultHeaders
+    options: any = defaultApiHeaders
   ): Observable<ApiResponse<Model>> {
     return this.http.patch<ApiResponse<Model>>(this.getPath(path), body, {
       responseType: "json",
