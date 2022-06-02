@@ -32,7 +32,7 @@ export function generateHarvestReport(
     itemsFailed: modelData.datatype.number(),
     itemsCompleted: modelData.datatype.number(),
     itemsErrored: modelData.datatype.number(),
-    latestActivity: modelData.timestamp(),
+    latestActivityAt: modelData.timestamp(),
     runTimeSeconds: modelData.datatype.number(),
     ...data,
   };
@@ -57,6 +57,7 @@ export function generateHarvest(data?: Partial<IHarvest>): Required<IHarvest> {
       generateHarvestMapping()
     ),
     report: generateHarvestReport(),
+    lastMetadataReviewAt: modelData.timestamp(),
     ...modelData.model.generateCreatorAndUpdater(),
     ...data,
   };

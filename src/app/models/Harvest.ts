@@ -67,6 +67,7 @@ export class Harvest extends AbstractModel implements IHarvest {
   public readonly uploadUrl?: string;
   public readonly mappings?: IHarvestMapping[];
   public readonly report?: HarvestReport;
+  @bawDateTime()
   public readonly lastMetadataReviewAt: DateTimeTimezone;
 
   // Associations
