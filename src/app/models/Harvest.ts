@@ -49,7 +49,8 @@ export interface IHarvest extends HasCreatorAndUpdater {
   uploadUrl?: string;
   mappings?: IHarvestMapping[];
   report?: IHarvestReport | HarvestReport;
-  lastMetadataReviewAt: DateTimeTimezone | string;
+  lastMetadataReviewAt?: DateTimeTimezone | string;
+  lastMappingUpdateAt?: DateTimeTimezone | string;
 }
 
 export class Harvest extends AbstractModel implements IHarvest {
@@ -68,7 +69,9 @@ export class Harvest extends AbstractModel implements IHarvest {
   public readonly mappings?: IHarvestMapping[];
   public readonly report?: HarvestReport;
   @bawDateTime()
-  public readonly lastMetadataReviewAt: DateTimeTimezone;
+  public readonly lastMetadataReviewAt?: DateTimeTimezone;
+  @bawDateTime()
+  public readonly lastMappingUpdateAt?: DateTimeTimezone;
 
   // Associations
   @creator<Harvest>()
@@ -87,7 +90,7 @@ export class Harvest extends AbstractModel implements IHarvest {
 
   /** Is true if mappings array has changes which have not been reviewed */
   public get isMappingsDirty(): boolean {
-    return this.lastMetadataReviewAt < this.updatedAt;
+    return this.lastMetadataReviewAt < this.lastMappingUpdateAt;
   }
 }
 

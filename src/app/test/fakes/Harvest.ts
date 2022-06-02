@@ -58,6 +58,7 @@ export function generateHarvest(data?: Partial<IHarvest>): Required<IHarvest> {
     ),
     report: generateHarvestReport(),
     lastMetadataReviewAt: modelData.timestamp(),
+    lastMappingUpdateAt: modelData.timestamp(),
     ...modelData.model.generateCreatorAndUpdater(),
     ...data,
   };
