@@ -38,9 +38,9 @@ export interface IHarvestItem {
   id?: Id;
   harvestId?: Id;
   audioRecordingId?: Id;
-  createdAt?: DateTimeTimezone | string;
   uploaderId?: Id;
-  uploadedAt?: DateTimeTimezone | string;
+  createdAt?: DateTimeTimezone | string;
+  updatedAt?: DateTimeTimezone | string;
   deleted?: boolean;
   path?: string;
   status?: HarvestItemState;
@@ -52,14 +52,14 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
   public readonly id?: Id;
   public readonly harvestId?: Id;
   public readonly audioRecordingId?: Id;
+  public readonly uploaderId?: Id;
+  @bawDateTime()
+  public readonly createdAt?: DateTimeTimezone;
+  @bawDateTime()
+  public readonly updatedAt?: DateTimeTimezone;
   public readonly deleted?: boolean;
   public readonly path?: string;
   public readonly status?: HarvestItemState;
-  @bawDateTime()
-  public readonly createdAt?: DateTimeTimezone;
-  public readonly uploaderId?: Id;
-  @bawDateTime()
-  public readonly uploadedAt?: DateTimeTimezone;
   public readonly validations?: IHarvestItemValidation[];
 
   // Associations
