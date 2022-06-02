@@ -11,13 +11,13 @@ import {
   AbstractModelConstructor,
   AbstractModelWithoutId,
 } from "@models/AbstractModel";
-import { withCache } from "@ngneat/cashew";
+import { HttpCacheManager, withCache } from "@ngneat/cashew";
 import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { cacheSettings } from "@services/cache/cache-settings";
 import { ToastrService } from "ngx-toastr";
 import { Observable, throwError } from "rxjs";
-import { map, mergeMap, switchMap } from "rxjs/operators";
+import { map, mergeMap, switchMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { BawSessionService } from "./baw-session.service";
 
@@ -83,6 +83,7 @@ export class BawApiService<
   public constructor(
     @Inject(API_ROOT) protected apiRoot: string,
     @Inject(IS_SERVER_PLATFORM) protected isServer: boolean,
+    protected manager: HttpCacheManager,
     protected http: HttpClient,
     protected injector: Injector,
     protected session: BawSessionService,
@@ -238,7 +239,7 @@ export class BawApiService<
         map(this.handleSingleResponse(classBuilder))
       );
     }
-    return request;
+    return request.pipe(tap(() => this.manager.delete(path)));
   }
 
   /**
@@ -247,7 +248,10 @@ export class BawApiService<
    * @param path API path
    */
   public destroy(path: string): Observable<null> {
-    return this.httpDelete(path).pipe(map(this.handleEmptyResponse));
+    return this.httpDelete(path).pipe(
+      map(this.handleEmptyResponse),
+      tap(() => this.manager.delete(path))
+    );
   }
 
   /**
