@@ -87,7 +87,7 @@ export class Harvest extends AbstractModel implements IHarvest {
 
   /** Is true if mappings array has changes which have not been reviewed */
   public get isMappingsDirty(): boolean {
-    return this.lastMetadataReviewAt > this.updatedAt;
+    return this.lastMetadataReviewAt < this.updatedAt;
   }
 }
 
