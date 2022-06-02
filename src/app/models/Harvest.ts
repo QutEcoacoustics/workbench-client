@@ -6,8 +6,10 @@ import {
   Id,
 } from "@interfaces/apiInterfaces";
 import { Duration } from "luxon";
-import { bawDateTime, bawDuration } from "./AttributeDecorators";
 import { AbstractModel, AbstractModelWithoutId } from "./AbstractModel";
+import { creator, updater } from "./AssociationDecorators";
+import { bawDateTime, bawDuration } from "./AttributeDecorators";
+import { User } from "./User";
 
 /**
  * Status of a harvest
@@ -47,6 +49,8 @@ export interface IHarvest extends HasCreatorAndUpdater {
   uploadUrl?: string;
   mappings?: IHarvestMapping[];
   report?: IHarvestReport | HarvestReport;
+  lastMetadataReviewAt?: DateTimeTimezone | string;
+  lastMappingUpdateAt?: DateTimeTimezone | string;
 }
 
 export class Harvest extends AbstractModel implements IHarvest {
@@ -55,11 +59,25 @@ export class Harvest extends AbstractModel implements IHarvest {
   public readonly streaming?: boolean;
   public readonly status?: HarvestStatus;
   public readonly projectId?: Id;
+  public readonly creatorId?: Id;
+  public readonly createdAt?: DateTimeTimezone;
+  public readonly updaterId?: Id;
+  public readonly updatedAt?: DateTimeTimezone;
   public readonly uploadPassword?: string;
   public readonly uploadUser?: string;
   public readonly uploadUrl?: string;
   public readonly mappings?: IHarvestMapping[];
   public readonly report?: HarvestReport;
+  @bawDateTime()
+  public readonly lastMetadataReviewAt?: DateTimeTimezone;
+  @bawDateTime()
+  public readonly lastMappingUpdateAt?: DateTimeTimezone;
+
+  // Associations
+  @creator<Harvest>()
+  public creator?: User;
+  @updater<Harvest>()
+  public updater?: User;
 
   public constructor(data: IHarvest, injector?: Injector) {
     super(data, injector);
@@ -68,6 +86,11 @@ export class Harvest extends AbstractModel implements IHarvest {
 
   public get viewUrl(): string {
     return projectHarvestRoute.format({ projectId: this.projectId });
+  }
+
+  /** Is true if mappings array has changes which have not been reviewed */
+  public get isMappingsDirty(): boolean {
+    return this.lastMetadataReviewAt < this.lastMappingUpdateAt;
   }
 }
 
@@ -82,7 +105,7 @@ export interface IHarvestReport {
   itemsFailed?: number;
   itemsCompleted?: number;
   itemsErrored?: number;
-  latestActivity?: DateTimeTimezone | string;
+  latestActivityAt?: DateTimeTimezone | string;
   runTimeSeconds?: number;
 }
 
@@ -104,7 +127,7 @@ export class HarvestReport
   public readonly itemsCompleted?: number;
   public readonly itemsErrored?: number;
   @bawDateTime()
-  public readonly latestActivity?: DateTimeTimezone;
+  public readonly latestActivityAt?: DateTimeTimezone;
   public readonly runTimeSeconds?: number;
 
   public constructor(data: IHarvestReport, injector?: Injector) {
