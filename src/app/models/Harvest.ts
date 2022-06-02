@@ -83,6 +83,11 @@ export class Harvest extends AbstractModel implements IHarvest {
   public get viewUrl(): string {
     return projectHarvestRoute.format({ projectId: this.projectId });
   }
+
+  /** Is true if mappings array has changes which have not been reviewed */
+  public get isMappingsDirty(): boolean {
+    return !this.lastMetadataReviewAt.equals(this.updatedAt);
+  }
 }
 
 export interface IHarvestReport {
