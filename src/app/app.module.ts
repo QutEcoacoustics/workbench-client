@@ -10,10 +10,10 @@ import { LibraryModule } from "@components/library/library.module";
 import { RegionsModule } from "@components/regions/regions.module";
 import { VisualizeModule } from "@components/visualize/visualize.module";
 import { GuardModule } from "@guards/guards.module";
-import { HttpCacheInterceptorModule } from "@ngneat/cashew";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
+import { CacheModule } from "@services/cache/cache.module";
 import { AppConfigModule } from "@services/config/config.module";
 import { RehydrationModule } from "@services/rehydration/rehydration.module";
 import { BawTimeoutModule } from "@services/timeout/timeout.module";
@@ -81,10 +81,9 @@ export const appImports = [
     BrowserModule.withServerTransition({ appId: "workbench-client" }),
     // Timeout API requests after set period
     BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
-    // Cache API requests
-    HttpCacheInterceptorModule.forRoot({ strategy: "explicit" }),
     AppRoutingModule,
     AppConfigModule,
+    CacheModule,
     BawApiModule,
     // Rehydrate data from SSR. This must be set after BawApiModule so that the
     // interceptor runs after the API interceptor

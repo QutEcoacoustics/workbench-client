@@ -13,6 +13,8 @@ import {
 } from "@models/AbstractModel";
 import { withCache } from "@ngneat/cashew";
 import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
+import { withCacheLogging } from "@services/cache/cache-logging.service";
+import { cacheSettings } from "@services/cache/cache-settings";
 import { ToastrService } from "ngx-toastr";
 import { Observable, throwError } from "rxjs";
 import { map, mergeMap, switchMap } from "rxjs/operators";
@@ -169,9 +171,10 @@ export class BawApiService<
     path: string,
     cacheResponse = true
   ): Observable<Model> {
+    cacheResponse = cacheResponse && cacheSettings.enabled;
     return this.session.authTrigger.pipe(
       switchMap(() =>
-        this.httpGet(path, defaultApiHeaders, { cache: cacheResponse, ttl: 50 })
+        this.httpGet(path, defaultApiHeaders, { cache: cacheResponse })
       ),
       map(this.handleSingleResponse(classBuilder))
     );
@@ -257,12 +260,16 @@ export class BawApiService<
   public httpGet(
     path: string,
     options: any = defaultApiHeaders,
-    cacheOptions?: ContextOptions
+    cacheOptions: ContextOptions = { cache: false }
   ): Observable<ApiResponse<Model | Model[]>> {
     return this.http.get<ApiResponse<Model>>(this.getPath(path), {
       responseType: "json",
       headers: options,
-      context: withCache(cacheOptions ?? { cache: false }),
+      context: withCache({
+        ...cacheOptions,
+        ttl: 50,
+        context: withCacheLogging(),
+      }),
     });
   }
 
