@@ -103,7 +103,7 @@ export abstract class BawResolver<
 
         const id =
           route.paramMap.get(uniqueId) ?? route.queryParamMap.get(uniqueId);
-        return convertToId(id);
+        return isInstantiated(id) ? convertToId(id) : undefined;
       }
 
       /**
@@ -326,7 +326,7 @@ export class ShowOptionalResolver<
   }
 
   public resolverFn(_: any, api: Service, id: Id, ids: Params) {
-    return api.show(id, ...ids);
+    return id ? api.show(id, ...ids) : of(undefined);
   }
 }
 
