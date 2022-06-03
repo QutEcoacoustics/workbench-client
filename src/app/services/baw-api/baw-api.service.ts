@@ -80,6 +80,16 @@ export class BawApiService<
    */
   private handleEmptyResponse = () => null;
 
+  /**
+   * Clear an API call from the cache. Note: This does not currently work with
+   * API requests which include QSP and may be an issue in the future.
+   *
+   * @param path API path
+   */
+  private clearCache = (path: string) => {
+    this.manager.delete(path);
+  };
+
   public constructor(
     @Inject(API_ROOT) protected apiRoot: string,
     @Inject(IS_SERVER_PLATFORM) protected isServer: boolean,
@@ -236,7 +246,7 @@ export class BawApiService<
         map(this.handleSingleResponse(classBuilder))
       );
     }
-    return request.pipe(tap(() => this.manager.delete(path)));
+    return request.pipe(tap(() => this.clearCache(path)));
   }
 
   /**
@@ -247,7 +257,7 @@ export class BawApiService<
   public destroy(path: string): Observable<null> {
     return this.httpDelete(path).pipe(
       map(this.handleEmptyResponse),
-      tap(() => this.manager.delete(path))
+      tap(() => this.clearCache(path))
     );
   }
 
