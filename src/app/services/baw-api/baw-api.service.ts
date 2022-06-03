@@ -138,7 +138,9 @@ export class BawApiService<
    */
   public list(classBuilder: ClassBuilder, path: string): Observable<Model[]> {
     return this.session.authTrigger.pipe(
-      switchMap(() => this.httpGet(path)),
+      switchMap(() =>
+        this.httpGet(path, defaultApiHeaders, { cache: cacheSettings.enabled })
+      ),
       map(this.handleCollectionResponse(classBuilder))
     );
   }
@@ -167,15 +169,10 @@ export class BawApiService<
    * @param classBuilder Model to create
    * @param path API path
    */
-  public show(
-    classBuilder: ClassBuilder,
-    path: string,
-    cacheResponse = true
-  ): Observable<Model> {
-    cacheResponse = cacheResponse && cacheSettings.enabled;
+  public show(classBuilder: ClassBuilder, path: string): Observable<Model> {
     return this.session.authTrigger.pipe(
       switchMap(() =>
-        this.httpGet(path, defaultApiHeaders, { cache: cacheResponse })
+        this.httpGet(path, defaultApiHeaders, { cache: cacheSettings.enabled })
       ),
       map(this.handleSingleResponse(classBuilder))
     );
@@ -270,9 +267,9 @@ export class BawApiService<
       responseType: "json",
       headers: options,
       context: withCache({
-        ...cacheOptions,
-        ttl: 50,
+        ttl: cacheSettings.httpGetTtlMs,
         context: withCacheLogging(),
+        ...cacheOptions,
       }),
     });
   }

@@ -202,6 +202,11 @@ function createModelDecorator<
 
     // Create service and request from API
     const service = injector.get(serviceToken.token);
+
+    // Set initial value for field
+    updateBackingField(parent, backingFieldKey, unresolvedValue);
+
+    // Load value from API (note: because of caching, this can be instant)
     apiRequest(service, parent, parameters).subscribe({
       next: (model) => updateBackingField(parent, backingFieldKey, model),
       error: (error) => {
@@ -215,8 +220,6 @@ function createModelDecorator<
       },
     });
 
-    // Save request to cache so other requests are ignored
-    updateBackingField(parent, backingFieldKey, unresolvedValue);
     return unresolvedValue;
   }
 

@@ -1,4 +1,7 @@
 class CacheSettings {
+  /** TTL for HTTP GET requests */
+  public httpGetTtlMs = 1000;
+
   public constructor(private _enabled: boolean, private withLogging: boolean) {}
 
   /** Is cache logging enabled */

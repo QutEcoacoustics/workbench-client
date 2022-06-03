@@ -13,7 +13,6 @@ import { GuardModule } from "@guards/guards.module";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
-import { CacheModule } from "@services/cache/cache.module";
 import { AppConfigModule } from "@services/config/config.module";
 import { RehydrationModule } from "@services/rehydration/rehydration.module";
 import { BawTimeoutModule } from "@services/timeout/timeout.module";
@@ -83,7 +82,6 @@ export const appImports = [
     BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
     AppRoutingModule,
     AppConfigModule,
-    CacheModule,
     BawApiModule,
     // Rehydrate data from SSR. This must be set after BawApiModule so that the
     // interceptor runs after the API interceptor
