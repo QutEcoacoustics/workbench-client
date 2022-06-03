@@ -28,6 +28,7 @@ import { modelData } from "@test/helpers/faker";
 import { MockComponent } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
+import { CacheModule } from "@services/cache/cache.module";
 import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
 import { DownloadTableComponent } from "../../components/download-table/download-table.component";
 import { DownloadAudioRecordingsComponent } from "./download.component";
@@ -41,7 +42,12 @@ describe("DownloadAudioRecordingsComponent", () => {
   let spec: SpectatorRouting<DownloadAudioRecordingsComponent>;
   const createComponent = createRoutingFactory({
     component: DownloadAudioRecordingsComponent,
-    imports: [SharedModule, NgbCollapseModule, MockAppConfigModule],
+    imports: [
+      SharedModule,
+      NgbCollapseModule,
+      MockAppConfigModule,
+      CacheModule,
+    ],
     declarations: [
       MockComponent(SitesWithoutTimezonesComponent),
       MockComponent(DownloadTableComponent),

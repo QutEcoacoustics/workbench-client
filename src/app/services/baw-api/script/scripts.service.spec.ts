@@ -1,17 +1,12 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { BawApiService } from "@baw-api/baw-api.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { Script } from "@models/Script";
-import {
-  createServiceFactory,
-  mockProvider,
-  SpectatorService,
-} from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateScript } from "@test/fakes/Script";
-import { validateNonDestructableApi } from "@test/helpers/api-common";
-import { ToastrService } from "ngx-toastr";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateNonDestructableApi,
+} from "@test/helpers/api-common";
 
 describe("ScriptsService", function () {
   const createModel = () => new Script(generateScript({ id: 5 }));
@@ -20,8 +15,8 @@ describe("ScriptsService", function () {
   let spec: SpectatorService<ScriptsService>;
   const createService = createServiceFactory({
     service: ScriptsService,
-    imports: [MockAppConfigModule, HttpClientTestingModule],
-    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
+    imports: mockServiceImports,
+    providers: mockServiceProviders,
   });
 
   beforeEach((): void => {

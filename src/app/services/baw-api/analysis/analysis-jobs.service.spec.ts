@@ -1,16 +1,11 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { BawApiService } from "@baw-api/baw-api.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { AnalysisJob } from "@models/AnalysisJob";
-import {
-  createServiceFactory,
-  mockProvider,
-  SpectatorService,
-} from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
-import { validateReadAndUpdateApi } from "@test/helpers/api-common";
-import { ToastrService } from "ngx-toastr";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateReadAndUpdateApi,
+} from "@test/helpers/api-common";
 import { AnalysisJobsService } from "./analysis-jobs.service";
 
 describe("AnalysisJobsService", (): void => {
@@ -19,8 +14,8 @@ describe("AnalysisJobsService", (): void => {
   let spec: SpectatorService<AnalysisJobsService>;
   const createService = createServiceFactory({
     service: AnalysisJobsService,
-    imports: [MockAppConfigModule, HttpClientTestingModule],
-    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
+    imports: mockServiceImports,
+    providers: mockServiceProviders,
   });
 
   beforeEach((): void => {

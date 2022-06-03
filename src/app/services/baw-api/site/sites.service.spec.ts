@@ -1,24 +1,17 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr, setTimezoneQSP } from "@baw-api/api-common";
-import { BawApiService } from "@baw-api/baw-api.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import {
-  SpectatorService,
-  createServiceFactory,
-  mockProvider,
-} from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import {
-  validateStandardApi,
+  mockServiceImports,
+  mockServiceProviders,
   validateCustomApiFilter,
+  validateStandardApi,
 } from "@test/helpers/api-common";
-import { ToastrService } from "ngx-toastr";
 import { SitesService } from "./sites.service";
 
 type Model = Site;
@@ -34,8 +27,8 @@ describe("SitesService", (): void => {
   let spec: SpectatorService<SitesService>;
   const createService = createServiceFactory({
     service: SitesService,
-    imports: [MockAppConfigModule, HttpClientTestingModule],
-    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
+    imports: mockServiceImports,
+    providers: mockServiceProviders,
   });
 
   beforeEach((): void => {

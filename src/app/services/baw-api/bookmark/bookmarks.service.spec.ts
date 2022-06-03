@@ -1,21 +1,14 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
-import { BawApiService } from "@baw-api/baw-api.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
-import {
-  createServiceFactory,
-  mockProvider,
-  SpectatorService,
-} from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateBookmark } from "@test/fakes/Bookmark";
 import {
+  mockServiceImports,
+  mockServiceProviders,
   validateCustomApiFilter,
   validateStandardApi,
 } from "@test/helpers/api-common";
-import { ToastrService } from "ngx-toastr";
 import { BookmarksService } from "./bookmarks.service";
 
 describe("BookmarksService", (): void => {
@@ -25,8 +18,8 @@ describe("BookmarksService", (): void => {
   let spec: SpectatorService<BookmarksService>;
   const createService = createServiceFactory({
     service: BookmarksService,
-    imports: [MockAppConfigModule, HttpClientTestingModule],
-    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
+    imports: mockServiceImports,
+    providers: mockServiceProviders,
   });
 
   beforeEach((): void => {
