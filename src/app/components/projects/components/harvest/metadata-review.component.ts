@@ -138,7 +138,7 @@ export class HarvestMetadataReviewComponent
           itemsFailed: 49183,
           itemsCompleted: 87754,
           itemsErrored: 28281,
-          latestActivity: "2022-01-18T05:14:37.892Z",
+          latestActivityAt: "2022-01-18T05:14:37.892Z",
           runTimeSeconds: 30693,
         },
         creatorId: 12,
