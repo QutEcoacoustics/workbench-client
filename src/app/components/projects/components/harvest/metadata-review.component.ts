@@ -15,7 +15,6 @@ import { Harvest, IHarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { ConfigService } from "@services/config/config.service";
 import { ColumnMode } from "@swimlane/ngx-datatable";
-import { generateHarvest } from "@test/fakes/Harvest";
 import { takeUntil } from "rxjs";
 
 @Component({
@@ -117,7 +116,37 @@ export class HarvestMetadataReviewComponent
   public ngOnInit(): void {
     this.project = retrieveResolvedModel(this.route.snapshot.data, Project);
     this.siteColumnLabel = this.config.settings.hideProjects ? "Point" : "Site";
-    this.harvest = new Harvest(generateHarvest(), this.injector);
+    this.harvest = new Harvest(
+      {
+        id: 1,
+        streaming: false,
+        status: "metadataExtraction",
+        projectId: 16,
+        uploadPassword: "w4XNP2eex0Inn6b",
+        uploadUser: "Amir8",
+        uploadUrl: "http://torn-rebel.name",
+        mappings: [],
+        report: {
+          itemsTotal: 28007,
+          itemsSizeBytes: 98463,
+          itemsDurationSeconds: 21751,
+          itemsInvalidFixable: 24169,
+          itemsInvalidNotFixable: 66148,
+          itemsNew: 70929,
+          itemsMetadataGathered: 20843,
+          itemsFailed: 49183,
+          itemsCompleted: 87754,
+          itemsErrored: 28281,
+          latestActivity: "2022-01-18T05:14:37.892Z",
+          runTimeSeconds: 30693,
+        },
+        creatorId: 12,
+        createdAt: "2022-02-24T15:53:12.027Z",
+        updaterId: 13,
+        updatedAt: "2021-08-26T04:04:28.745Z",
+      },
+      this.injector
+    );
 
     // TODO this is temporary until we have a real API
     this.siteApi
