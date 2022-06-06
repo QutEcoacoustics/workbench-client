@@ -4,7 +4,6 @@ import {
   Injector,
   OnInit,
   Output,
-  ViewEncapsulation,
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
@@ -15,6 +14,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest, IHarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { ConfigService } from "@services/config/config.service";
+import { ColumnMode } from "@swimlane/ngx-datatable";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { takeUntil } from "rxjs";
 
@@ -25,19 +25,52 @@ import { takeUntil } from "rxjs";
 
     <p>This is a review of the audio data</p>
 
-    <div class="table table-sm table-striped grid-table">
-      <div class="grid-table-header">
-        <div>Path</div>
-        <div>{{ siteColumnLabel }}</div>
-        <div>UTC Offset</div>
-      </div>
-
-      <baw-mapping-form
-        *ngFor="let mapping of mappings; let i = index; trackBy: trackByPath"
-        class="grid-table-row"
-        [project]="project"
-        [(mapping)]="mappings[i]"
-      ></baw-mapping-form>
+    <div class="w-100">
+      <ngx-datatable
+        class="mb-3"
+        bawDatatableDefaults
+        [rows]="mappings"
+        [externalPaging]="false"
+        [externalSorting]="false"
+      >
+        <ngx-datatable-column prop="path">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            {{ value }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="siteId" [width]="300" [maxWidth]="300">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            {{ siteColumnLabel }}
+          </ng-template>
+          <ng-template
+            let-row="row"
+            let-value="value"
+            ngx-datatable-cell-template
+          >
+            <baw-site-selector
+              [project]="project"
+              [siteId]="value"
+              (siteIdChange)="setSite(row, $event)"
+            ></baw-site-selector>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="utcOffset" [width]="200" [maxWidth]="200">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            UTC Offset
+          </ng-template>
+          <ng-template
+            let-row="row"
+            let-value="value"
+            ngx-datatable-cell-template
+          >
+            <baw-utc-offset-selector
+              [project]="project"
+              [offset]="value"
+              (offsetChange)="setOffset(row, $event)"
+            ></baw-utc-offset-selector>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
     </div>
 
     <div class="clearfix">
@@ -53,7 +86,6 @@ import { takeUntil } from "rxjs";
       </button>
     </div>
   `,
-  styleUrls: ["metadata-review.component.scss"],
 })
 export class HarvestMetadataReviewComponent
   extends withUnsubscribe()
@@ -63,6 +95,8 @@ export class HarvestMetadataReviewComponent
 
   public hasUnsavedChange: boolean;
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public ColumnMode = ColumnMode;
   public project: Project;
   public siteColumnLabel: string;
   public harvest: Harvest;
@@ -119,5 +153,13 @@ export class HarvestMetadataReviewComponent
 
   public onSaveClick(): void {
     this.stage.emit(HarvestStage.processing);
+  }
+
+  public setSite(mapping: IHarvestMapping, siteId: number) {
+    mapping.siteId = siteId;
+  }
+
+  public setOffset(mapping: IHarvestMapping, offset: string) {
+    mapping.utcOffset = offset;
   }
 }
