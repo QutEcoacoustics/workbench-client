@@ -36,6 +36,7 @@ import { takeUntil } from "rxjs";
           {{ value }}
         </ng-template>
       </ngx-datatable-column>
+      <!-- Enable overflow so that typeahead options will show -->
       <ngx-datatable-column
         prop="siteId"
         cellClass="overflow-visible"
