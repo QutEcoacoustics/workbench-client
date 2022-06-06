@@ -64,7 +64,6 @@ import { defaultDebounceTime } from "src/app/app.helper";
         [(ngModel)]="value"
         (focus)="focus$.next($any($event).target.value)"
         (click)="onSelection($any($event).target.value)"
-        (blur)="onTouched()"
         (selectItem)="emitSite()"
       />
     </div>

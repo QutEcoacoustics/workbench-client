@@ -25,53 +25,56 @@ import { takeUntil } from "rxjs";
 
     <p>This is a review of the audio data</p>
 
-    <div class="w-100">
-      <ngx-datatable
-        class="mb-3"
-        bawDatatableDefaults
-        [rows]="mappings"
-        [externalPaging]="false"
-        [externalSorting]="false"
+    <ngx-datatable
+      class="mb-3"
+      bawDatatableDefaults
+      [rows]="mappings"
+      [externalPaging]="false"
+      [externalSorting]="false"
+    >
+      <ngx-datatable-column prop="path">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        prop="siteId"
+        cellClass="overflow-visible"
+        [width]="300"
+        [maxWidth]="300"
       >
-        <ngx-datatable-column prop="path">
-          <ng-template let-value="value" ngx-datatable-cell-template>
-            {{ value }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="siteId" [width]="300" [maxWidth]="300">
-          <ng-template let-column="column" ngx-datatable-header-template>
-            {{ siteColumnLabel }}
-          </ng-template>
-          <ng-template
-            let-row="row"
-            let-value="value"
-            ngx-datatable-cell-template
-          >
-            <baw-site-selector
-              [project]="project"
-              [siteId]="value"
-              (siteIdChange)="setSite(row, $event)"
-            ></baw-site-selector>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column prop="utcOffset" [width]="200" [maxWidth]="200">
-          <ng-template let-column="column" ngx-datatable-header-template>
-            UTC Offset
-          </ng-template>
-          <ng-template
-            let-row="row"
-            let-value="value"
-            ngx-datatable-cell-template
-          >
-            <baw-utc-offset-selector
-              [project]="project"
-              [offset]="value"
-              (offsetChange)="setOffset(row, $event)"
-            ></baw-utc-offset-selector>
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
-    </div>
+        <ng-template let-column="column" ngx-datatable-header-template>
+          {{ siteColumnLabel }}
+        </ng-template>
+        <ng-template
+          let-row="row"
+          let-value="value"
+          ngx-datatable-cell-template
+        >
+          <baw-site-selector
+            [project]="project"
+            [siteId]="value"
+            (siteIdChange)="setSite(row, $event)"
+          ></baw-site-selector>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="utcOffset" [width]="200" [maxWidth]="200">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          UTC Offset
+        </ng-template>
+        <ng-template
+          let-row="row"
+          let-value="value"
+          ngx-datatable-cell-template
+        >
+          <baw-utc-offset-selector
+            [project]="project"
+            [offset]="value"
+            (offsetChange)="setOffset(row, $event)"
+          ></baw-utc-offset-selector>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
 
     <div class="clearfix">
       <button
