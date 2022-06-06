@@ -103,7 +103,7 @@ export abstract class BawResolver<
 
         const id =
           route.paramMap.get(uniqueId) ?? route.queryParamMap.get(uniqueId);
-        return convertToId(id);
+        return isInstantiated(id) ? convertToId(id) : undefined;
       }
 
       /**
@@ -326,7 +326,7 @@ export class ShowOptionalResolver<
   }
 
   public resolverFn(_: any, api: Service, id: Id, ids: Params) {
-    return api.show(id, ...ids);
+    return id ? api.show(id, ...ids) : of(undefined);
   }
 }
 
@@ -383,7 +383,8 @@ export function retrieveResolvers(data: IPageInfo): ResolvedModelList {
   const keys = Object.keys(data?.resolvers || {});
 
   if (keys.length === 0) {
-    console.warn("resolver-common: Failed to detect any resolvers");
+    // eslint-disable-next-line no-console
+    console.debug("resolver-common: Failed to detect any resolvers");
     return models;
   }
 

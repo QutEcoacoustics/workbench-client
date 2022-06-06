@@ -11,9 +11,13 @@ import {
   AbstractModelConstructor,
   AbstractModelWithoutId,
 } from "@models/AbstractModel";
+import { HttpCacheManager, withCache } from "@ngneat/cashew";
+import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
+import { withCacheLogging } from "@services/cache/cache-logging.service";
+import { cacheSettings } from "@services/cache/cache-settings";
 import { ToastrService } from "ngx-toastr";
 import { Observable, throwError } from "rxjs";
-import { map, mergeMap, switchMap } from "rxjs/operators";
+import { map, mergeMap, switchMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { BawSessionService } from "./baw-session.service";
 
@@ -21,14 +25,14 @@ export const defaultApiPageSize = 25;
 export const unknownErrorCode = -1;
 
 /** Default headers for API requests */
-const defaultHeaders = new HttpHeaders({
+export const defaultApiHeaders = new HttpHeaders({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Accept: "application/json",
   // eslint-disable-next-line @typescript-eslint/naming-convention
   "Content-Type": "application/json",
 });
 /** Headers for MultiPart API requests */
-const multiPartHeaders = new HttpHeaders({
+export const multiPartApiHeaders = new HttpHeaders({
   // Do not set Content-Type for this request, otherwise web browsers wont calculate boundaries automatically
   // https://muffinman.io/blog/uploading-files-using-fetch-multipart-form-data/
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -76,9 +80,20 @@ export class BawApiService<
    */
   private handleEmptyResponse = () => null;
 
+  /**
+   * Clear an API call from the cache. Note: This does not currently work with
+   * API requests which include QSP and may be an issue in the future.
+   *
+   * @param path API path
+   */
+  private clearCache = (path: string) => {
+    this.manager.delete(path);
+  };
+
   public constructor(
     @Inject(API_ROOT) protected apiRoot: string,
     @Inject(IS_SERVER_PLATFORM) protected isServer: boolean,
+    protected manager: HttpCacheManager,
     protected http: HttpClient,
     protected injector: Injector,
     protected session: BawSessionService,
@@ -133,7 +148,9 @@ export class BawApiService<
    */
   public list(classBuilder: ClassBuilder, path: string): Observable<Model[]> {
     return this.session.authTrigger.pipe(
-      switchMap(() => this.httpGet(path)),
+      switchMap(() =>
+        this.httpGet(path, defaultApiHeaders, { cache: cacheSettings.enabled })
+      ),
       map(this.handleCollectionResponse(classBuilder))
     );
   }
@@ -164,7 +181,9 @@ export class BawApiService<
    */
   public show(classBuilder: ClassBuilder, path: string): Observable<Model> {
     return this.session.authTrigger.pipe(
-      switchMap(() => this.httpGet(path)),
+      switchMap(() =>
+        this.httpGet(path, defaultApiHeaders, { cache: cacheSettings.enabled })
+      ),
       map(this.handleSingleResponse(classBuilder))
     );
   }
@@ -193,7 +212,7 @@ export class BawApiService<
       const formData = body.getFormDataOnlyAttributes({ create: true });
       return request.pipe(
         mergeMap((model) =>
-          this.httpPut(updatePath(model), formData, multiPartHeaders)
+          this.httpPut(updatePath(model), formData, multiPartApiHeaders)
         ),
         map(this.handleSingleResponse(classBuilder))
       );
@@ -223,11 +242,11 @@ export class BawApiService<
     if (body?.hasFormDataOnlyAttributes({ update: true })) {
       const formData = body.getFormDataOnlyAttributes({ update: true });
       return request.pipe(
-        mergeMap(() => this.httpPut(path, formData, multiPartHeaders)),
+        mergeMap(() => this.httpPut(path, formData, multiPartApiHeaders)),
         map(this.handleSingleResponse(classBuilder))
       );
     }
-    return request;
+    return request.pipe(tap(() => this.clearCache(path)));
   }
 
   /**
@@ -236,7 +255,10 @@ export class BawApiService<
    * @param path API path
    */
   public destroy(path: string): Observable<null> {
-    return this.httpDelete(path).pipe(map(this.handleEmptyResponse));
+    return this.httpDelete(path).pipe(
+      map(this.handleEmptyResponse),
+      tap(() => this.clearCache(path))
+    );
   }
 
   /**
@@ -248,11 +270,17 @@ export class BawApiService<
    */
   public httpGet(
     path: string,
-    options: any = defaultHeaders
+    options: any = defaultApiHeaders,
+    cacheOptions: ContextOptions = { cache: false }
   ): Observable<ApiResponse<Model | Model[]>> {
     return this.http.get<ApiResponse<Model>>(this.getPath(path), {
       responseType: "json",
       headers: options,
+      context: withCache({
+        ttl: cacheSettings.httpGetTtlMs,
+        context: withCacheLogging(),
+        ...cacheOptions,
+      }),
     });
   }
 
@@ -265,7 +293,7 @@ export class BawApiService<
    */
   public httpDelete(
     path: string,
-    options: any = defaultHeaders
+    options: any = defaultApiHeaders
   ): Observable<ApiResponse<Model | void>> {
     return this.http.delete<ApiResponse<null>>(this.getPath(path), {
       responseType: "json",
@@ -284,7 +312,7 @@ export class BawApiService<
   public httpPost(
     path: string,
     body?: any,
-    options: any = defaultHeaders
+    options: any = defaultApiHeaders
   ): Observable<ApiResponse<Model | Model[]>> {
     return this.http.post<ApiResponse<Model | Model[]>>(
       this.getPath(path),
@@ -307,7 +335,7 @@ export class BawApiService<
   public httpPut(
     path: string,
     body?: any,
-    options: any = defaultHeaders
+    options: any = defaultApiHeaders
   ): Observable<ApiResponse<Model>> {
     return this.http.put<ApiResponse<Model>>(this.getPath(path), body, {
       responseType: "json",
@@ -326,7 +354,7 @@ export class BawApiService<
   public httpPatch(
     path: string,
     body?: any,
-    options: any = defaultHeaders
+    options: any = defaultApiHeaders
   ): Observable<ApiResponse<Model>> {
     return this.http.patch<ApiResponse<Model>>(this.getPath(path), body, {
       responseType: "json",

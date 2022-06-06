@@ -5,6 +5,7 @@ import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
 import {
   ApiResponse,
   BawApiService,
+  defaultApiHeaders,
   Filters,
   Meta,
 } from "@baw-api/baw-api.service";
@@ -17,12 +18,17 @@ import { AuthToken } from "@interfaces/apiInterfaces";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 import { User } from "@models/User";
+import { withCache } from "@ngneat/cashew";
+import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import {
   createHttpFactory,
   HttpMethod,
   mockProvider,
   SpectatorHttp,
 } from "@ngneat/spectator";
+import { withCacheLogging } from "@services/cache/cache-logging.service";
+import { cacheSettings } from "@services/cache/cache-settings";
+import { CacheModule } from "@services/cache/cache.module";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
@@ -107,7 +113,7 @@ describe("BawApiService", () => {
   let spec: SpectatorHttp<BawApiService<MockModel>>;
   const createService = createHttpFactory<BawApiService<MockModel>>({
     service: BawApiService,
-    imports: [MockAppConfigModule],
+    imports: [MockAppConfigModule, CacheModule],
     providers: [
       BawSessionService,
       mockProvider(ToastrService),
@@ -397,6 +403,48 @@ describe("BawApiService", () => {
         }
       });
     });
+
+    describe("httpGet", () => {
+      const defaultCache = {
+        ttl: cacheSettings.httpGetTtlMs,
+        context: withCacheLogging(),
+      };
+
+      function catchFunctionCall() {
+        return catchRequest("/broken_link", HttpMethod.GET);
+      }
+
+      it("should cache results when given", () => {
+        service
+          .httpGet("/broken_link", defaultApiHeaders, { cache: true })
+          .subscribe();
+        const context = catchFunctionCall().request.context;
+        expect(context).toEqual(withCache({ cache: true, ...defaultCache }));
+      });
+
+      it("should override default cache settings", () => {
+        const cacheOptions: ContextOptions = { cache: true, ttl: 10000 };
+        service
+          .httpGet("/broken_link", defaultApiHeaders, cacheOptions)
+          .subscribe();
+        const context = catchFunctionCall().request.context;
+        expect(context).toEqual(
+          withCache({ ...defaultCache, ...cacheOptions })
+        );
+      });
+
+      it("should not cache results when not given", () => {
+        service.httpGet("/broken_link").subscribe();
+        const context = catchFunctionCall().request.context;
+        expect(context).toEqual(
+          withCache({
+            cache: false,
+            ttl: cacheSettings.httpGetTtlMs,
+            context: withCacheLogging(),
+          })
+        );
+      });
+    });
   });
 
   describe("API Request Methods", () => {
@@ -418,7 +466,6 @@ describe("BawApiService", () => {
       {
         method: "filter",
         http: "httpPost",
-        hasFilter: true,
         multiResult: true,
         updateOnAuthTrigger: true,
       },
@@ -431,13 +478,11 @@ describe("BawApiService", () => {
       {
         method: "create",
         http: "httpPost",
-        hasBody: true,
         singleResult: true,
       },
       {
         method: "update",
         http: "httpPatch",
-        hasBody: true,
         singleResult: true,
       },
       {
@@ -447,15 +492,7 @@ describe("BawApiService", () => {
       },
     ];
     tests.forEach(
-      ({
-        method,
-        http,
-        hasFilter,
-        hasBody,
-        singleResult,
-        multiResult,
-        updateOnAuthTrigger,
-      }) => {
+      ({ method, http, singleResult, multiResult, updateOnAuthTrigger }) => {
         describe(method, () => {
           let defaultBody: IMockModel;
           let defaultFilter: Filters<IMockModel>;
@@ -490,6 +527,7 @@ describe("BawApiService", () => {
           function functionCall(): Observable<MockModel[] | MockModel> {
             switch (method) {
               case "list":
+              case "show":
                 return service[method](MockModel, "/broken_link");
               case "filter":
                 return service[method](
@@ -497,8 +535,6 @@ describe("BawApiService", () => {
                   "/broken_link",
                   defaultFilter
                 );
-              case "show":
-                return service[method](MockModel, "/broken_link");
               case "create":
                 return service[method](
                   MockModel,
@@ -524,12 +560,25 @@ describe("BawApiService", () => {
             const spy = successRequest(response);
             functionCall().subscribe();
 
-            if (hasBody) {
-              expect(spy).toHaveBeenCalledWith("/broken_link", defaultBody);
-            } else if (hasFilter) {
-              expect(spy).toHaveBeenCalledWith("/broken_link", defaultFilter);
-            } else {
-              expect(spy).toHaveBeenCalledWith("/broken_link");
+            switch (method) {
+              case "list":
+              case "show":
+                expect(spy).toHaveBeenCalledWith(
+                  "/broken_link",
+                  defaultApiHeaders,
+                  { cache: true }
+                );
+                break;
+              case "filter":
+                expect(spy).toHaveBeenCalledWith("/broken_link", defaultFilter);
+                break;
+              case "create":
+              case "update":
+                expect(spy).toHaveBeenCalledWith("/broken_link", defaultBody);
+                break;
+              case "destroy":
+                expect(spy).toHaveBeenCalledWith("/broken_link");
+                break;
             }
           });
 

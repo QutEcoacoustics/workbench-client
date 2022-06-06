@@ -1,16 +1,11 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { BawApiService } from "@baw-api/baw-api.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { SavedSearch } from "@models/SavedSearch";
-import {
-  createServiceFactory,
-  mockProvider,
-  SpectatorService,
-} from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateSavedSearch } from "@test/fakes/SavedSearch";
-import { validateImmutableApi } from "@test/helpers/api-common";
-import { ToastrService } from "ngx-toastr";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateImmutableApi,
+} from "@test/helpers/api-common";
 import { SavedSearchesService } from "./saved-searches.service";
 
 describe("SavedSearchesService", (): void => {
@@ -20,8 +15,8 @@ describe("SavedSearchesService", (): void => {
   let spec: SpectatorService<SavedSearchesService>;
   const createService = createServiceFactory({
     service: SavedSearchesService,
-    imports: [MockAppConfigModule, HttpClientTestingModule],
-    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
+    imports: mockServiceImports,
+    providers: mockServiceProviders,
   });
 
   beforeEach((): void => {

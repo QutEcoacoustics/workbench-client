@@ -12,19 +12,21 @@ import {
 } from "../admin.menus";
 import { adminOrphansMenuItem } from "../orphan/orphans.menus";
 import { adminScriptsMenuItem } from "../scripts/scripts.menus";
+import { adminSettingsMenuItem } from "../settings/settings.menus";
 import { adminTagGroupsMenuItem } from "../tag-group/tag-group.menus";
 import { adminTagsMenuItem } from "../tags/tags.menus";
 
 export const adminMenuItemActions = [
-  adminUserListMenuItem,
+  adminAnalysisJobsMenuItem,
+  adminCmsMenuItem,
+  adminJobStatusMenuItem,
   adminOrphansMenuItem,
   adminScriptsMenuItem,
-  adminTagsMenuItem,
+  adminSettingsMenuItem,
   adminTagGroupsMenuItem,
-  adminAnalysisJobsMenuItem,
-  adminJobStatusMenuItem,
-  adminCmsMenuItem,
+  adminTagsMenuItem,
   adminThemeMenuItem,
+  adminUserListMenuItem,
 ];
 
 @Component({

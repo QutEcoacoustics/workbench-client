@@ -1,18 +1,13 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
-import { BawApiService } from "@baw-api/baw-api.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
-import {
-  createServiceFactory,
-  mockProvider,
-  SpectatorService,
-} from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import { validateStandardApi } from "@test/helpers/api-common";
-import { ToastrService } from "ngx-toastr";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateStandardApi,
+} from "@test/helpers/api-common";
 import { AudioEventsService } from "./audio-events.service";
 
 type Model = AudioEvent;
@@ -26,8 +21,8 @@ describe("AudioEventsService", (): void => {
   let spec: SpectatorService<AudioEventsService>;
   const createService = createServiceFactory({
     service: AudioEventsService,
-    imports: [MockAppConfigModule, HttpClientTestingModule],
-    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
+    imports: mockServiceImports,
+    providers: mockServiceProviders,
   });
 
   beforeEach((): void => {

@@ -1,9 +1,15 @@
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { BawFormApiService } from "@baw-api/baw-form-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { CmsService } from "@baw-api/cms/cms.service";
 import { MayBeAsync } from "@helpers/advancedTypes";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
-import { Spectator, SpectatorService } from "@ngneat/spectator";
+import { mockProvider, Spectator, SpectatorService } from "@ngneat/spectator";
+import { CacheModule } from "@services/cache/cache.module";
+import { MockAppConfigModule } from "@services/config/configMock.module";
 import { CmsComponent } from "@shared/cms/cms.component";
+import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import {
   ApiCreate,
@@ -21,6 +27,19 @@ import {
 } from "../../services/baw-api/api-common";
 import { BawApiService, Filters } from "../../services/baw-api/baw-api.service";
 import { getCallArgs } from "./general";
+
+export const mockServiceImports = [
+  MockAppConfigModule,
+  HttpClientTestingModule,
+  CacheModule,
+];
+
+export const mockServiceProviders = [
+  BawApiService,
+  BawFormApiService,
+  BawSessionService,
+  mockProvider(ToastrService),
+];
 
 type CustomList<Model extends AbstractModel, Params extends any[]> = (
   ...urlParameters: Params

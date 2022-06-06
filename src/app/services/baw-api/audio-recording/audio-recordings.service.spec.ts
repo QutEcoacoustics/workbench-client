@@ -1,4 +1,3 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
 import { BawApiService } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -8,18 +7,17 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
 import {
   createServiceFactory,
-  mockProvider,
   SpectatorService,
   SpyObject,
 } from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import {
+  mockServiceImports,
+  mockServiceProviders,
   validateCustomApiFilter,
   validateReadonlyApi,
 } from "@test/helpers/api-common";
 import { modelData } from "@test/helpers/faker";
-import { ToastrService } from "ngx-toastr";
 import { AudioRecordingsService } from "./audio-recordings.service";
 
 type Model = AudioRecording;
@@ -33,8 +31,8 @@ describe("AudioRecordingsService", function () {
   let spec: SpectatorService<AudioRecordingsService>;
   const createService = createServiceFactory({
     service: AudioRecordingsService,
-    imports: [MockAppConfigModule, HttpClientTestingModule],
-    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
+    imports: mockServiceImports,
+    providers: mockServiceProviders,
   });
 
   beforeEach(function () {

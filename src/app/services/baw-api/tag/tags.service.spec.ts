@@ -1,21 +1,14 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { IdOr } from "@baw-api/api-common";
-import { BawApiService } from "@baw-api/baw-api.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
-import {
-  createServiceFactory,
-  mockProvider,
-  SpectatorService,
-} from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateTag } from "@test/fakes/Tag";
 import {
+  mockServiceImports,
+  mockServiceProviders,
   validateCustomApiFilter,
   validateStandardApi,
 } from "@test/helpers/api-common";
-import { ToastrService } from "ngx-toastr";
 import { TagsService } from "./tags.service";
 
 describe("TagsService", (): void => {
@@ -25,8 +18,8 @@ describe("TagsService", (): void => {
   let spec: SpectatorService<TagsService>;
   const createService = createServiceFactory({
     service: TagsService,
-    imports: [MockAppConfigModule, HttpClientTestingModule],
-    providers: [BawApiService, BawSessionService, mockProvider(ToastrService)],
+    imports: mockServiceImports,
+    providers: mockServiceProviders,
   });
 
   beforeEach((): void => {

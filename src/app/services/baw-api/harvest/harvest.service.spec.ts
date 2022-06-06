@@ -1,16 +1,11 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { BawApiService } from "@baw-api/baw-api.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { Harvest } from "@models/Harvest";
-import {
-  createServiceFactory,
-  mockProvider,
-  SpectatorService,
-} from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateHarvest } from "@test/fakes/Harvest";
-import { validateStandardApi } from "@test/helpers/api-common";
-import { ToastrService } from "ngx-toastr";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateStandardApi,
+} from "@test/helpers/api-common";
 import { HarvestsService, ShallowHarvestsService } from "./harvest.service";
 
 describe("HarvestsService", () => {
@@ -20,13 +15,8 @@ describe("HarvestsService", () => {
   let spec: SpectatorService<HarvestsService>;
   const createService = createServiceFactory({
     service: HarvestsService,
-    imports: [MockAppConfigModule, HttpClientTestingModule],
-    providers: [
-      BawApiService,
-      BawSessionService,
-      ShallowHarvestsService,
-      mockProvider(ToastrService),
-    ],
+    imports: mockServiceImports,
+    providers: [...mockServiceProviders, ShallowHarvestsService],
   });
 
   beforeEach((): void => {
