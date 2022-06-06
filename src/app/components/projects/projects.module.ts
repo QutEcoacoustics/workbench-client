@@ -3,9 +3,18 @@ import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { MapModule } from "@shared/map/map.module";
 import { SharedModule } from "@shared/shared.module";
+import { HarvestBatchUploadingComponent } from "./components/harvest/batch-uploading.component";
+import { HarvestCanCloseDialogComponent } from "./components/harvest/can-close-dialog.component";
 import { HarvestCompleteComponent } from "./components/harvest/complete.component";
-import { HarvestReviewComponent } from "./components/harvest/review.component";
+import { HarvestMetadataExtractionComponent } from "./components/harvest/metadata-extraction.component";
 import { HarvestMetadataReviewComponent } from "./components/harvest/metadata-review.component";
+import { HarvestNewComponent } from "./components/harvest/new.component";
+import { HarvestProcessingComponent } from "./components/harvest/processing.component";
+import { HarvestReviewComponent } from "./components/harvest/review.component";
+import { HarvestScanningComponent } from "./components/harvest/scanning.component";
+import { HarvestStreamUploadingComponent } from "./components/harvest/stream-uploading.component";
+import { SiteSelectorComponent } from "./components/inputs/site-selector.component";
+import { UTCOffsetSelectorComponent } from "./components/inputs/utc-offset-selector.component";
 import { SiteCardComponent } from "./components/site-card/site-card.component";
 import { SiteMapComponent } from "./components/site-map/site-map.component";
 import { AssignComponent } from "./pages/assign/assign.component";
@@ -17,15 +26,8 @@ import { ListComponent } from "./pages/list/list.component";
 import { NewComponent } from "./pages/new/new.component";
 import { PermissionsComponent } from "./pages/permissions/permissions.component";
 import { RequestComponent } from "./pages/request/request.component";
-import { projectsRoute } from "./projects.routes";
-import { HarvestBatchUploadingComponent } from "./components/harvest/batch-uploading.component";
-import { HarvestMetadataExtractionComponent } from "./components/harvest/metadata-extraction.component";
-import { HarvestNewComponent } from "./components/harvest/new.component";
-import { HarvestProcessingComponent } from "./components/harvest/processing.component";
-import { HarvestStreamUploadingComponent } from "./components/harvest/stream-uploading.component";
 import { UploadAnnotationsComponent } from "./pages/upload-annotations/upload-annotations.component";
-import { HarvestScanningComponent } from "./components/harvest/scanning.component";
-import { HarvestCanCloseDialogComponent } from "./components/harvest/can-close-dialog.component";
+import { projectsRoute } from "./projects.routes";
 
 const components = [
   HarvestBatchUploadingComponent,
@@ -38,6 +40,9 @@ const components = [
   HarvestReviewComponent,
   HarvestScanningComponent,
   HarvestStreamUploadingComponent,
+
+  SiteSelectorComponent,
+  UTCOffsetSelectorComponent,
 
   UploadAnnotationsComponent,
   AssignComponent,

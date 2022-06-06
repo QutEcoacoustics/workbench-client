@@ -1,11 +1,21 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Injector,
+  OnInit,
+  Output,
+} from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
+import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { Harvest, IHarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
-import { Site } from "@models/Site";
-import { Observable } from "rxjs";
+import { ConfigService } from "@services/config/config.service";
+import { ColumnMode } from "@swimlane/ngx-datatable";
+import { takeUntil } from "rxjs";
 
 @Component({
   selector: "baw-harvest-metadata-review",
@@ -14,68 +24,57 @@ import { Observable } from "rxjs";
 
     <p>This is a review of the audio data</p>
 
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col" class="w-100">Path</th>
-          <th scope="col">Point</th>
-          <th scope="col">UTC Offset</th>
-        </tr>
-      </thead>
-
-      <tbody *ngIf="sites$ | withLoading | async as sites">
-        <tr *ngIf="sites.loading">
-          <td><span class="placeholder w-25"></span></td>
-          <td><span class="placeholder w-25"></span></td>
-          <td><span class="placeholder w-100"></span></td>
-        </tr>
-
-        <tr *ngFor="let site of sites.value">
-          <!-- TODO Show Region name -->
-          <td>/{{ site.id }}</td>
-          <td>{{ site.id }}</td>
-          <td>
-            <ng-container *ngIf="site.timezoneInformation">
-              {{ humanizeOffset(site.timezoneInformation.utcOffset) }}
-
-              <button class="btn btn-sm btn-secondary float-end">Change</button>
-            </ng-container>
-            <ng-container *ngIf="!site.timezoneInformation">
-              <div class="input-group input-group-sm">
-                <input class="form-control" type="text" placeholder="+hh:mm" />
-                <button type="button" class="btn btn-outline-secondary">
-                  Set
-                </button>
-              </div>
-            </ng-container>
-          </td>
-        </tr>
-
-        <tr *ngIf="sites.value">
-          <td>/obviously_fake_path</td>
-          <td>
-            <div class="input-group input-group-sm">
-              <input
-                class="form-control"
-                type="number"
-                placeholder="point id"
-              />
-              <button type="button" class="btn btn-outline-secondary">
-                Set
-              </button>
-            </div>
-          </td>
-          <td>
-            <div class="input-group input-group-sm">
-              <input class="form-control" type="text" placeholder="+hh:mm" />
-              <button type="button" class="btn btn-outline-secondary">
-                Set
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <ngx-datatable
+      class="mb-3"
+      bawDatatableDefaults
+      [rows]="mappings"
+      [externalPaging]="false"
+      [externalSorting]="false"
+    >
+      <ngx-datatable-column prop="path">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <!-- Enable overflow so that typeahead options will show -->
+      <ngx-datatable-column
+        prop="siteId"
+        cellClass="overflow-visible"
+        [width]="300"
+        [maxWidth]="300"
+      >
+        <ng-template let-column="column" ngx-datatable-header-template>
+          {{ siteColumnLabel }}
+        </ng-template>
+        <ng-template
+          let-row="row"
+          let-value="value"
+          ngx-datatable-cell-template
+        >
+          <baw-site-selector
+            [project]="project"
+            [siteId]="value"
+            (siteIdChange)="setSite(row, $event)"
+          ></baw-site-selector>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="utcOffset" [width]="200" [maxWidth]="200">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          UTC Offset
+        </ng-template>
+        <ng-template
+          let-row="row"
+          let-value="value"
+          ngx-datatable-cell-template
+        >
+          <baw-utc-offset-selector
+            [project]="project"
+            [offset]="value"
+            (offsetChange)="setOffset(row, $event)"
+          ></baw-utc-offset-selector>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
 
     <div class="clearfix">
       <button
@@ -84,48 +83,101 @@ import { Observable } from "rxjs";
       >
         Make changes or upload more files
       </button>
+      <!-- Redirect to metadata extraction instead of next step if changes made -->
       <button class="btn btn-primary float-end" (click)="onSaveClick()">
         Save and upload
       </button>
     </div>
   `,
-  styles: [
-    `
-      .input-group {
-        width: 170px;
-      }
-    `,
-  ],
 })
-export class HarvestMetadataReviewComponent implements OnInit {
+export class HarvestMetadataReviewComponent
+  extends withUnsubscribe()
+  implements OnInit, UnsavedInputCheckingComponent
+{
   @Output() public stage = new EventEmitter<HarvestStage>();
 
-  public sites$: Observable<Site[]>;
+  public hasUnsavedChange: boolean;
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public ColumnMode = ColumnMode;
   public project: Project;
+  public siteColumnLabel: string;
+  public harvest: Harvest;
+  public mappings: IHarvestMapping[] = [];
 
   public constructor(
+    private config: ConfigService,
     private siteApi: SitesService,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    private injector: Injector
+  ) {
+    super();
+  }
 
   public ngOnInit(): void {
     this.project = retrieveResolvedModel(this.route.snapshot.data, Project);
-    this.sites$ = this.siteApi.list(this.project);
+    this.siteColumnLabel = this.config.settings.hideProjects ? "Point" : "Site";
+    this.harvest = new Harvest(
+      {
+        id: 1,
+        streaming: false,
+        status: "metadataExtraction",
+        projectId: 16,
+        uploadPassword: "w4XNP2eex0Inn6b",
+        uploadUser: "Amir8",
+        uploadUrl: "http://torn-rebel.name",
+        mappings: [],
+        report: {
+          itemsTotal: 28007,
+          itemsSizeBytes: 98463,
+          itemsDurationSeconds: 21751,
+          itemsInvalidFixable: 24169,
+          itemsInvalidNotFixable: 66148,
+          itemsNew: 70929,
+          itemsMetadataGathered: 20843,
+          itemsFailed: 49183,
+          itemsCompleted: 87754,
+          itemsErrored: 28281,
+          latestActivityAt: "2022-01-18T05:14:37.892Z",
+          runTimeSeconds: 30693,
+        },
+        creatorId: 12,
+        createdAt: "2022-02-24T15:53:12.027Z",
+        updaterId: 13,
+        updatedAt: "2021-08-26T04:04:28.745Z",
+      },
+      this.injector
+    );
+
+    // TODO this is temporary until we have a real API
+    this.siteApi
+      .list(this.project)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((sites) => {
+        this.mappings = sites.map((site) => ({
+          path: site.id + "/",
+          siteId: site.id,
+          utcOffset: undefined,
+          recursive: false,
+        }));
+
+        this.mappings.push({
+          path: "obviously_wrong_path/",
+          recursive: true,
+        });
+      });
   }
 
-  public humanizeOffset(offset: number): string {
-    if (!offset) {
-      return undefined;
-    }
+  public setMapping(index: number, mapping: IHarvestMapping) {
+    this.mappings[index] = mapping;
+  }
 
-    // Convert number to UTC offset
-    const hours = Math.abs(offset / 3600)
-      .toFixed(0)
-      .padStart(2, "0");
-    const minutes = Math.abs(offset % 3600)
-      .toFixed(0)
-      .padStart(2, "0");
-    return `${offset < 0 ? "-" : "+"}${hours}:${minutes}`;
+  public onGoForwards(): void {
+    // If changes made to harvest, show warning modal
+  }
+
+  public trackByPath(_: number, mapping: IHarvestMapping) {
+    return mapping.path;
   }
 
   public onBackClick(): void {
@@ -134,5 +186,13 @@ export class HarvestMetadataReviewComponent implements OnInit {
 
   public onSaveClick(): void {
     this.stage.emit(HarvestStage.processing);
+  }
+
+  public setSite(mapping: IHarvestMapping, siteId: number) {
+    mapping.siteId = siteId;
+  }
+
+  public setOffset(mapping: IHarvestMapping, offset: string) {
+    mapping.utcOffset = offset;
   }
 }
