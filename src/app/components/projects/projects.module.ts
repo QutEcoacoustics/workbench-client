@@ -14,7 +14,7 @@ import { HarvestReviewComponent } from "./components/harvest/review.component";
 import { HarvestScanningComponent } from "./components/harvest/scanning.component";
 import { HarvestStreamUploadingComponent } from "./components/harvest/stream-uploading.component";
 import { SiteSelectorComponent } from "./components/inputs/site-selector.component";
-import { UTCOffsetSelectorComponent } from "./components/inputs/timezone-selector.component";
+import { UTCOffsetSelectorComponent } from "./components/inputs/utc-offset-selector.component";
 import { SiteCardComponent } from "./components/site-card/site-card.component";
 import { SiteMapComponent } from "./components/site-map/site-map.component";
 import { AssignComponent } from "./pages/assign/assign.component";
