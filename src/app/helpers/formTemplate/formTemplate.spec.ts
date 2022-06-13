@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
@@ -61,6 +62,7 @@ describe("formTemplate", () => {
     component: MockComponent,
     imports: [SharedModule, ...appLibraryImports],
     mocks: [ToastrService],
+    providers: [BawSessionService],
   });
 
   function setup(
@@ -146,31 +148,6 @@ describe("formTemplate", () => {
       spec.detectChanges();
       expect(spec.component.failure).toBeFalsy();
     });
-
-    it("should set failure flag if single resolver fails", () => {
-      setup(
-        createResolvers(
-          ["mockModel"],
-          [makeResolvedModel(undefined, defaultError)]
-        )
-      );
-      spec.detectChanges();
-      expect(spec.component.failure).toBeTruthy();
-    });
-
-    it("should set failure flag if resolver fails in list", () => {
-      setup(
-        createResolvers(
-          ["mockModel", "mockModels"],
-          [
-            makeResolvedModel(defaultModel),
-            makeResolvedModel(undefined, defaultError),
-          ]
-        )
-      );
-      spec.detectChanges();
-      expect(spec.component.failure).toBeTruthy();
-    });
   });
 
   describe("getModel", () => {
@@ -201,15 +178,6 @@ describe("formTemplate", () => {
       spec.detectChanges();
       expect(spec.component.failure).toBeFalsy();
       expect(spec.component.model).toBe(defaultModel);
-    });
-
-    it("should set failure flag if failure to find model", () => {
-      setup(
-        createResolvers(["mockModels"], [makeResolvedModel(defaultModel)]),
-        { getModel: (models) => models["unknownModel"] as MockModel }
-      );
-      spec.detectChanges();
-      expect(spec.component.failure).toBeTruthy();
     });
   });
 

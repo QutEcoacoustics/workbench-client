@@ -1,55 +1,33 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { accountResolvers } from "@baw-api/account/accounts.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { User } from "@models/User";
+import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { mockActivatedRoute } from "@test/helpers/testbed";
-import { appLibraryImports } from "src/app/app.module";
+import { generateUser } from "@test/fakes/User";
+import { ToastrService } from "ngx-toastr";
 import { TheirEditComponent } from "./their-edit.component";
 
 describe("TheirProfileEditComponent", () => {
-  let component: TheirEditComponent;
-  let fixture: ComponentFixture<TheirEditComponent>;
   let defaultUser: User;
+  let spec: SpectatorRouting<TheirEditComponent>;
+  const createComponent = createRoutingFactory({
+    component: TheirEditComponent,
+    mocks: [ToastrService],
+    imports: [SharedModule, MockBawApiModule],
+  });
 
-  function configureTestingModule(model: User, error?: BawApiError) {
-    TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [TheirEditComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { account: accountResolvers.show },
-            { account: { model, error } }
-          ),
-        },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(TheirEditComponent);
-    component = fixture.componentInstance;
-
-    fixture.detectChanges();
+  function setup(model: User) {
+    spec = createComponent({
+      data: { resolvers: { account: "resolver" }, account: { model } },
+    });
+    spec.detectChanges();
   }
 
   beforeEach(() => {
-    defaultUser = new User({
-      id: 1,
-      userName: "Username",
-    });
+    defaultUser = new User(generateUser());
   });
 
   it("should create", () => {
-    configureTestingModule(defaultUser);
-    expect(component).toBeTruthy();
+    setup(defaultUser);
+    expect(spec.component).toBeInstanceOf(TheirEditComponent);
   });
 });

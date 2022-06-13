@@ -24,8 +24,7 @@ const tagTypesKey = "tagTypes";
   selector: "baw-admin-tags-edit",
   template: `
     <baw-form
-      *ngIf="!failure"
-      [title]="title"
+      [title]="'Edit ' + model.text"
       [model]="model"
       [fields]="fields"
       [submitLoading]="loading"
@@ -36,7 +35,6 @@ const tagTypesKey = "tagTypes";
 })
 class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
   public fields = schema.fields;
-  public title: string;
 
   public constructor(
     private api: TagsService,
@@ -53,13 +51,8 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
 
   public ngOnInit() {
     super.ngOnInit();
+
     const typeOfTagIndex = 1;
-
-    if (this.failure) {
-      return;
-    }
-
-    this.title = `Edit ${this.model.text}`;
     this.fields[typeOfTagIndex].templateOptions.options = this.typeOfTags.map(
       ({ name }) => ({
         label: name,

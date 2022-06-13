@@ -1,10 +1,5 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import {
-  regionResolvers,
-  RegionsService,
-} from "@baw-api/region/regions.service";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { RegionsService } from "@baw-api/region/regions.service";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import {
@@ -12,12 +7,9 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { FormComponent } from "@shared/form/form.component";
-import { generateBawApiError } from "@test/fakes/BawApiError";
+import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
-import { assertErrorHandler } from "@test/helpers/html";
-import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
 import { DeleteComponent } from "./delete.component";
@@ -26,35 +18,25 @@ describe("RegionsDeleteComponent", () => {
   let api: SpyObject<RegionsService>;
   let defaultRegion: Region;
   let defaultProject: Project;
-  let spectator: SpectatorRouting<DeleteComponent>;
+  let spec: SpectatorRouting<DeleteComponent>;
   const createComponent = createRoutingFactory({
-    imports: [...testFormImports, MockBawApiModule],
-    declarations: [FormComponent],
-    mocks: [ToastrService],
     component: DeleteComponent,
-    stubsEnabled: true,
+    imports: [SharedModule, MockBawApiModule],
+    mocks: [ToastrService],
   });
 
-  function setup(
-    project: Project,
-    region: Region,
-    projectError?: BawApiError,
-    regionError?: BawApiError
-  ) {
-    spectator = createComponent({
+  function setup(project: Project, region: Region) {
+    spec = createComponent({
       detectChanges: false,
       data: {
-        resolvers: {
-          project: projectResolvers.show,
-          region: regionResolvers.show,
-        },
-        project: { model: project, error: projectError },
-        region: { model: region, error: regionError },
+        resolvers: { project: "resolver", region: "resolver" },
+        project: { model: project },
+        region: { model: region },
       },
     });
 
-    api = spectator.inject(RegionsService);
-    spectator.detectChanges();
+    api = spec.inject(RegionsService);
+    spec.detectChanges();
   }
 
   beforeEach(() => {
@@ -65,30 +47,20 @@ describe("RegionsDeleteComponent", () => {
   describe("form", () => {
     it("should have no fields", () => {
       setup(defaultProject, defaultRegion);
-      expect(spectator.component.fields).toEqual([]);
+      expect(spec.component.fields).toEqual([]);
     });
   });
 
   describe("component", () => {
     it("should create", () => {
       setup(defaultProject, defaultRegion);
-      expect(spectator.component).toBeTruthy();
-    });
-
-    it("should handle project error", () => {
-      setup(undefined, defaultRegion, generateBawApiError());
-      assertErrorHandler(spectator.fixture);
-    });
-
-    it("should handle region error", () => {
-      setup(defaultProject, undefined, undefined, generateBawApiError());
-      assertErrorHandler(spectator.fixture);
+      expect(spec.component).toBeTruthy();
     });
 
     it("should call api", () => {
       setup(defaultProject, defaultRegion);
       api.destroy.and.callFake(() => new Subject());
-      spectator.component.submit({});
+      spec.component.submit({});
       expect(api.destroy).toHaveBeenCalled();
     });
 
@@ -97,7 +69,7 @@ describe("RegionsDeleteComponent", () => {
       setup(defaultProject, defaultRegion);
       api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 
-      spectator.component.submit({});
+      spec.component.submit({});
       expect(spy).toHaveBeenCalled();
     });
   });

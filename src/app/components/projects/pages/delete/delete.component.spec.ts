@@ -1,85 +1,71 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import {
-  projectResolvers,
-  ProjectsService,
-} from "@baw-api/project/projects.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import {
   createRoutingFactory,
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { FormComponent } from "@shared/form/form.component";
-import { generateBawApiError } from "@test/fakes/BawApiError";
+import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
-import { assertErrorHandler } from "@test/helpers/html";
-import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
 import { DeleteComponent } from "./delete.component";
 
 describe("ProjectsDeleteComponent", () => {
   let api: SpyObject<ProjectsService>;
-  let defaultProject: Project;
-  let spectator: SpectatorRouting<DeleteComponent>;
+  let defaultModel: Project;
+  let spec: SpectatorRouting<DeleteComponent>;
   const createComponent = createRoutingFactory({
-    imports: [...testFormImports, MockBawApiModule],
-    declarations: [FormComponent],
-    mocks: [ToastrService],
     component: DeleteComponent,
-    stubsEnabled: true,
+    imports: [SharedModule, MockBawApiModule],
+    mocks: [ToastrService],
   });
 
-  function setup(model: Project, error?: BawApiError) {
-    spectator = createComponent({
+  function setup(model: Project) {
+    spec = createComponent({
       detectChanges: false,
       data: {
-        resolvers: { project: projectResolvers.show },
-        project: { model, error },
+        resolvers: { project: "resolver" },
+        project: { model },
       },
     });
 
-    api = spectator.inject(ProjectsService);
-    spectator.detectChanges();
+    api = spec.inject(ProjectsService);
+    spec.detectChanges();
   }
 
   beforeEach(() => {
-    defaultProject = new Project(generateProject());
+    defaultModel = new Project(generateProject());
   });
 
   describe("form", () => {
     it("should have no fields", () => {
-      setup(defaultProject);
-      expect(spectator.component.fields).toEqual([]);
+      setup(defaultModel);
+      expect(spec.component.fields).toEqual([]);
     });
   });
 
   describe("component", () => {
     it("should create", () => {
-      setup(defaultProject);
-      expect(spectator.component).toBeTruthy();
-    });
-
-    it("should handle project error", () => {
-      setup(undefined, generateBawApiError());
-      assertErrorHandler(spectator.fixture);
+      setup(defaultModel);
+      expect(spec.component).toBeTruthy();
     });
 
     it("should call api", () => {
-      setup(defaultProject);
+      setup(defaultModel);
       api.destroy.and.callFake(() => new Subject());
-      spectator.component.submit({ ...defaultProject });
-      expect(api.destroy).toHaveBeenCalledWith(new Project(defaultProject));
+      spec.component.submit({ ...defaultModel });
+      expect(api.destroy).toHaveBeenCalledWith(new Project(defaultModel));
     });
 
     it("should redirect to projects", () => {
-      setup(defaultProject);
+      setup(defaultModel);
       api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 
-      spectator.component.submit({});
-      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
+      spec.component.submit({});
+      expect(spec.router.navigateByUrl).toHaveBeenCalledWith(
         projectsMenuItem.route.toRouterLink()
       );
     });

@@ -1,98 +1,67 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { TagsService } from "@baw-api/tag/tags.service";
 import { Tag } from "@models/Tag";
-import { SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateTag } from "@test/fakes/Tag";
-import { assertErrorHandler } from "@test/helpers/html";
-import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { adminTagsMenuItem } from "../tags.menus";
 import { AdminTagsDeleteComponent } from "./delete.component";
 
 describe("AdminTagsDeleteComponent", () => {
   let api: SpyObject<TagsService>;
-  let component: AdminTagsDeleteComponent;
-  let defaultTag: Tag;
-  let fixture: ComponentFixture<AdminTagsDeleteComponent>;
-  let notifications: ToastrService;
-  let router: Router;
+  let defaultModel: Tag;
+  let spec: SpectatorRouting<AdminTagsDeleteComponent>;
+  const createComponent = createRoutingFactory({
+    component: AdminTagsDeleteComponent,
+    mocks: [ToastrService],
+    imports: [SharedModule, MockBawApiModule],
+  });
 
-  function configureTestingModule(model: Tag, error?: BawApiError) {
-    TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [AdminTagsDeleteComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { tag: tagResolvers.show },
-            { tag: { model, error } }
-          ),
-        },
-      ],
-    }).compileComponents();
+  function setup(model: Tag) {
+    spec = createComponent({
+      data: { resolvers: { tag: "resolver" }, tag: { model } },
+    });
 
-    fixture = TestBed.createComponent(AdminTagsDeleteComponent);
-    api = TestBed.inject(TagsService) as SpyObject<TagsService>;
-    router = TestBed.inject(Router);
-    notifications = TestBed.inject(ToastrService);
-    component = fixture.componentInstance;
-
-    spyOn(notifications, "success").and.stub();
-    spyOn(notifications, "error").and.stub();
-    spyOn(router, "navigateByUrl").and.stub();
-
-    fixture.detectChanges();
+    api = spec.inject(TagsService);
+    spec.detectChanges();
   }
 
   beforeEach(() => {
-    defaultTag = new Tag(generateTag());
+    defaultModel = new Tag(generateTag());
   });
 
   describe("form", () => {
     it("should have no fields", () => {
-      configureTestingModule(defaultTag);
-      expect(component.fields).toEqual([]);
+      setup(defaultModel);
+      expect(spec.component.fields).toEqual([]);
     });
   });
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultTag);
-      expect(component).toBeTruthy();
-    });
-
-    it("should handle tag error", () => {
-      configureTestingModule(undefined, generateBawApiError());
-      assertErrorHandler(fixture);
+      setup(defaultModel);
+      expect(spec.component).toBeTruthy();
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultTag);
+      setup(defaultModel);
       api.destroy.and.callFake(() => new Subject());
-      component.submit({});
+      spec.component.submit({});
       expect(api.destroy).toHaveBeenCalled();
     });
 
     it("should redirect to tag list", () => {
-      configureTestingModule(defaultTag);
+      setup(defaultModel);
       api.destroy.and.callFake(() => new BehaviorSubject<void>(null));
 
-      component.submit({});
-      expect(router.navigateByUrl).toHaveBeenCalledWith(
+      spec.component.submit({});
+      expect(spec.router.navigateByUrl).toHaveBeenCalledWith(
         adminTagsMenuItem.route.toRouterLink()
       );
     });

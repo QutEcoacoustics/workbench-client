@@ -1,6 +1,5 @@
 <baw-form
-  *ngIf="!failure"
-  [title]="title"
+  [title]="'Are you certain you wish to delete ' + model.name"
   [model]="model"
   [fields]="fields"
   btnColor="danger"

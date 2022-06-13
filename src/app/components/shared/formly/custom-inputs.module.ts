@@ -74,7 +74,7 @@ const components = [
     NgbTypeaheadModule,
     FormsModule,
     ReactiveFormsModule,
-    FormlyModule,
+    FormlyModule.forRoot(formlyConfig),
     FormlyBootstrapModule,
     MapModule,
     IconsModule,
