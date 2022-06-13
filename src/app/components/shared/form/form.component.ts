@@ -15,7 +15,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ReCaptchaV3Service } from "ngx-captcha";
 import { ToastrService } from "ngx-toastr";
 
-export type FormFieldConfig = FormlyFieldConfig & {
+export type SchemaConfig = FormlyFieldConfig & {
   adminOnly?: boolean;
   ownerOnly?: boolean;
 };
@@ -32,7 +32,7 @@ export type FormFieldConfig = FormlyFieldConfig & {
 })
 export class FormComponent extends withUnsubscribe() implements OnChanges {
   @Input() public btnColor: BootstrapColorTypes = "primary";
-  @Input() public fields: FormFieldConfig[] = [];
+  @Input() public fields: SchemaConfig[] = [];
   @Input() public model: Record<string, any> = {};
   @Input() public size: "small" | "default" = "default";
   @Input() public submitLabel = "Submit";
@@ -52,7 +52,7 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
   @Output() public modelChange = new EventEmitter<any>();
 
   public form = new FormGroup({});
-  public formFields: FormFieldConfig[];
+  public formFields: SchemaConfig[];
 
   public constructor(
     private notifications: ToastrService,

@@ -25,7 +25,7 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
-import schema from "../../region.base.json";
+import schema from "../../region.schema.json";
 import { EditComponent } from "./edit.component";
 
 describe("RegionsEditComponent", () => {
