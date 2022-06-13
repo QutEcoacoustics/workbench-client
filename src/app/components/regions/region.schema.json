@@ -4,8 +4,7 @@
       "key": "id",
       "hide": true,
       "templateOptions": {
-        "label": "Site Id",
-        "disabled": true
+        "label": "Site Id"
       }
     },
     {
@@ -31,8 +30,7 @@
       "key": "imageUrls",
       "hide": true,
       "templateOptions": {
-        "label": "Image",
-        "disabled": true
+        "label": "Image"
       }
     },
     {
@@ -47,48 +45,42 @@
       "key": "creator",
       "hide": true,
       "templateOptions": {
-        "label": "Creator",
-        "disabled": true
+        "label": "Creator"
       }
     },
     {
       "key": "createdAt",
       "hide": true,
       "templateOptions": {
-        "label": "Created At",
-        "disabled": true
+        "label": "Created At"
       }
     },
     {
       "key": "updater",
       "hide": true,
       "templateOptions": {
-        "label": "Updater",
-        "disabled": true
+        "label": "Updater"
       }
     },
     {
       "key": "updatedAt",
       "hide": true,
       "templateOptions": {
-        "label": "Updated At",
-        "disabled": true
+        "label": "Updated At"
       }
     },
     {
       "key": "project",
       "hide": true,
       "templateOptions": {
-        "label": "Project",
-        "disabled": true
+        "label": "Project"
       }
     },
     {
       "key": "sites",
       "hide": true,
       "templateOptions": {
-        "label": "Sites",
-        "disabled": true
+        "label": "Sites"
       }
     }
   ]

@@ -98,24 +98,21 @@
       "key": "group",
       "hide": true,
       "templateOptions": {
-        "label": "Group",
-        "disabled": true
+        "label": "Group"
       }
     },
     {
       "key": "creator",
       "hide": true,
       "templateOptions": {
-        "label": "Creator",
-        "disabled": true
+        "label": "Creator"
       }
     },
     {
       "key": "createdAt",
       "hide": true,
       "templateOptions": {
-        "label": "Created At",
-        "disabled": true
+        "label": "Created At"
       }
     }
   ]

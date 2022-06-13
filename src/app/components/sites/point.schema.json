@@ -4,8 +4,7 @@
       "key": "id",
       "hide": true,
       "templateOptions": {
-        "label": "Point Id",
-        "disabled": true
+        "label": "Point Id"
       }
     },
     {
@@ -31,8 +30,7 @@
       "key": "locationObfuscated",
       "hide": true,
       "templateOptions": {
-        "label": "Location Obfuscated",
-        "disabled": true
+        "label": "Location Obfuscated"
       }
     },
     {
@@ -46,40 +44,35 @@
       "key": "latitude",
       "hide": true,
       "templateOptions": {
-        "label": "Latitude",
-        "disabled": true
+        "label": "Latitude"
       }
     },
     {
       "key": "longitude",
       "hide": true,
       "templateOptions": {
-        "label": "Longitude",
-        "disabled": true
+        "label": "Longitude"
       }
     },
     {
       "key": "customLatitude",
       "hide": true,
       "templateOptions": {
-        "label": "Custom Latitude",
-        "disabled": true
+        "label": "Custom Latitude"
       }
     },
     {
       "key": "customLongitude",
       "hide": true,
       "templateOptions": {
-        "label": "Custom Longitude",
-        "disabled": true
+        "label": "Custom Longitude"
       }
     },
     {
       "key": "imageUrls",
       "hide": true,
       "templateOptions": {
-        "label": "Images",
-        "disabled": true
+        "label": "Images"
       }
     },
     {
@@ -102,48 +95,42 @@
       "key": "timezoneInformation",
       "hide": true,
       "templateOptions": {
-        "label": "Time Zone Information",
-        "disabled": true
+        "label": "Time Zone Information"
       }
     },
     {
       "key": "creator",
       "hide": true,
       "templateOptions": {
-        "label": "Creator",
-        "disabled": true
+        "label": "Creator"
       }
     },
     {
       "key": "createdAt",
       "hide": true,
       "templateOptions": {
-        "label": "Created At",
-        "disabled": true
+        "label": "Created At"
       }
     },
     {
       "key": "updater",
       "hide": true,
       "templateOptions": {
-        "label": "Updater",
-        "disabled": true
+        "label": "Updater"
       }
     },
     {
       "key": "updatedAt",
       "hide": true,
       "templateOptions": {
-        "label": "Updated At",
-        "disabled": true
+        "label": "Updated At"
       }
     },
     {
       "key": "projects",
       "hide": true,
       "templateOptions": {
-        "label": "Projects",
-        "disabled": true
+        "label": "Projects"
       }
     }
   ]

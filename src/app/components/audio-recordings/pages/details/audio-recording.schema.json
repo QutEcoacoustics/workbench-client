@@ -4,13 +4,13 @@
       "key": "id",
       "hide": true,
       "templateOptions": {
-        "label": "Id",
-        "disabled": true
+        "label": "Id"
       }
     },
     {
       "key": "uuid",
       "type": "input",
+      "hide": true,
       "templateOptions": {
         "label": "Uuid",
         "type": "text",
@@ -21,13 +21,13 @@
       "key": "uploader",
       "hide": true,
       "templateOptions": {
-        "label": "Uploader",
-        "disabled": true
+        "label": "Uploader"
       }
     },
     {
       "key": "recordedDate",
       "type": "input",
+      "hide": true,
       "templateOptions": {
         "label": "Recorded Date",
         "type": "text"
@@ -37,16 +37,14 @@
       "key": "recordedDateTimezone",
       "hide": true,
       "templateOptions": {
-        "label": "Recorded Date Timezone",
-        "disabled": true
+        "label": "Recorded Date Timezone"
       }
     },
     {
       "key": "site",
       "hide": true,
       "templateOptions": {
-        "label": "Site",
-        "disabled": true
+        "label": "Site"
       }
     },
     {
@@ -55,75 +53,74 @@
       "hide": true,
       "templateOptions": {
         "label": "Duration",
-        "type": "text",
-        "disabled": true
+        "type": "text"
       }
     },
     {
       "key": "sampleRateHertz",
       "type": "input",
+      "hide": true,
       "templateOptions": {
         "label": "Sample Rate Hertz",
-        "type": "text",
-        "disabled": true
+        "type": "text"
       }
     },
     {
       "key": "channels",
       "type": "input",
+      "hide": true,
       "templateOptions": {
         "label": "Channels",
-        "type": "text",
-        "disabled": true
+        "type": "text"
       }
     },
     {
       "key": "bitRateBps",
       "type": "input",
+      "hide": true,
       "templateOptions": {
         "label": "Bit Rate (bps)",
-        "type": "number",
-        "disabled": true
+        "type": "number"
       }
     },
     {
       "key": "mediaType",
       "type": "input",
+      "hide": true,
       "templateOptions": {
         "label": "Media Type",
-        "type": "text",
-        "disabled": true
+        "type": "text"
       }
     },
     {
       "key": "dataLengthBytes",
       "type": "input",
+      "hide": true,
       "templateOptions": {
         "label": "Data Length Bytes",
-        "type": "text",
-        "disabled": true
+        "type": "text"
       }
     },
     {
       "key": "fileHash",
       "hide": true,
       "templateOptions": {
-        "label": "File Hash",
-        "disabled": true
+        "label": "File Hash"
       }
     },
     {
       "key": "status",
       "type": "input",
+      "hide": true,
       "templateOptions": {
         "label": "Status",
-        "type": "text",
-        "disabled": true
+        "type": "text"
       }
     },
     {
       "key": "notes",
       "type": "textarea",
+      "hide": true,
       "templateOptions": {
         "label": "Notes",
         "required": false,
@@ -134,56 +131,49 @@
       "key": "creator",
       "hide": true,
       "templateOptions": {
-        "label": "Creator",
-        "disabled": true
-      }
-    },
-    {
-      "key": "updater",
-      "hide": true,
-      "templateOptions": {
-        "label": "Updater",
-        "disabled": true
-      }
-    },
-    {
-      "key": "deleter",
-      "hide": true,
-      "templateOptions": {
-        "label": "Deleter",
-        "disabled": true
+        "label": "Creator"
       }
     },
     {
       "key": "createdAt",
       "hide": true,
       "templateOptions": {
-        "label": "Created At",
-        "disabled": true
+        "label": "Created At"
+      }
+    },
+    {
+      "key": "updater",
+      "hide": true,
+      "templateOptions": {
+        "label": "Updater"
       }
     },
     {
       "key": "updatedAt",
       "hide": true,
       "templateOptions": {
-        "label": "Updated At",
-        "disabled": true
+        "label": "Updated At"
+      }
+    },
+    {
+      "key": "deleter",
+      "hide": true,
+      "templateOptions": {
+        "label": "Deleter"
       }
     },
     {
       "key": "deletedAt",
       "hide": true,
       "templateOptions": {
-        "label": "Deleted At",
-        "disabled": true
+        "label": "Deleted At"
       }
     },
     {
       "key": "originalFileName",
       "hide": true,
       "templateOptions": {
-        "label": "Original File Name",
-        "disabled": true
+        "label": "Original File Name"
       }
     }
   ]

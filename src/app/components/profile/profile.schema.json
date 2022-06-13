@@ -4,8 +4,7 @@
       "key": "id",
       "hide": true,
       "templateOptions": {
-        "label": "Id",
-        "disabled": true
+        "label": "Id"
       }
     },
     {
@@ -53,8 +52,7 @@
       "type": "checkbox",
       "hide": true,
       "templateOptions": {
-        "label": "Email Confirmation",
-        "disabled": true
+        "label": "Email Confirmation"
       }
     },
     {
@@ -62,136 +60,120 @@
       "type": "checkbox",
       "hide": true,
       "templateOptions": {
-        "label": "Account Confirmation",
-        "disabled": true
+        "label": "Account Confirmation"
       }
     },
     {
       "key": "confirmedAt",
       "hide": true,
       "templateOptions": {
-        "label": "Last Seen At",
-        "disabled": true
+        "label": "Last Seen At"
       }
     },
     {
       "key": "resetPasswordSentAt",
       "hide": true,
       "templateOptions": {
-        "label": "Reset Password Sent At",
-        "disabled": true
+        "label": "Reset Password Sent At"
       }
     },
     {
       "key": "rememberCreatedAt",
       "hide": true,
       "templateOptions": {
-        "label": "Remember Created At",
-        "disabled": true
+        "label": "Remember Created At"
       }
     },
     {
       "key": "signInCount",
       "hide": true,
       "templateOptions": {
-        "label": "Sign In Count",
-        "disabled": true
+        "label": "Sign In Count"
       }
     },
     {
       "key": "lastSeenAt",
       "hide": true,
       "templateOptions": {
-        "label": "Last Seen At",
-        "disabled": true
+        "label": "Last Seen At"
       }
     },
     {
       "key": "currentSignInAt",
       "hide": true,
       "templateOptions": {
-        "label": "Current Sign In At",
-        "disabled": true
+        "label": "Current Sign In At"
       }
     },
     {
       "key": "lastSignInAt",
       "hide": true,
       "templateOptions": {
-        "label": "Last Sign In At",
-        "disabled": true
+        "label": "Last Sign In At"
       }
     },
     {
       "key": "currentSignInIp",
       "hide": true,
       "templateOptions": {
-        "label": "Current Sign In IP",
-        "disabled": true
+        "label": "Current Sign In IP"
       }
     },
     {
       "key": "lastSignInIp",
       "hide": true,
       "templateOptions": {
-        "label": "Last Sign In IP",
-        "disabled": true
+        "label": "Last Sign In IP"
       }
     },
     {
       "key": "confirmationSentAt",
       "hide": true,
       "templateOptions": {
-        "label": "Confirmation Sent At",
-        "disabled": true
+        "label": "Confirmation Sent At"
       }
     },
     {
       "key": "failedAttempts",
       "hide": true,
       "templateOptions": {
-        "label": "Failed Attempts",
-        "disabled": true
+        "label": "Failed Attempts"
       }
     },
     {
       "key": "lockedAt",
       "hide": true,
       "templateOptions": {
-        "label": "Locked At",
-        "disabled": true
+        "label": "Locked At"
       }
     },
     {
       "key": "createdAt",
       "hide": true,
       "templateOptions": {
-        "label": "Created At",
-        "disabled": true
+        "label": "Created At"
       }
     },
     {
       "key": "updatedAt",
       "hide": true,
       "templateOptions": {
-        "label": "Updated At",
-        "disabled": true
+        "label": "Updated At"
       }
     },
     {
       "key": "rolesMaskNames",
       "type": "textarea",
+      "hide": true,
       "templateOptions": {
-        "label": "Roles Mask Names",
-        "disabled": true
+        "label": "Roles Mask Names"
       }
     },
     {
       "key": "imageUpdatedAt",
       "hide": true,
       "templateOptions": {
-        "label": "Image Updated At",
-        "disabled": true
+        "label": "Image Updated At"
       }
     }
   ]
