@@ -18,8 +18,8 @@ import { map, Observable } from "rxjs";
 
 const projectId: IdParam<Project> = id;
 const harvestId: IdParamOptional<Harvest> = id;
-const endpoint = stringTemplate`/projects/${projectId}/harvest/${harvestId}${option}`;
-const shallowEndpoint = stringTemplate`/harvest/${harvestId}${option}`;
+const endpoint = stringTemplate`/projects/${projectId}/harvests/${harvestId}${option}`;
+const shallowEndpoint = stringTemplate`/harvests/${harvestId}${option}`;
 
 @Injectable()
 export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
@@ -72,6 +72,18 @@ export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
     project: IdOr<Project>
   ): Observable<Harvest | void> {
     return this.api.destroy(endpoint(project, model, emptyParam));
+  }
+
+  public currentHarvest(
+    project: IdOr<Project>
+  ): Observable<Harvest | undefined> {
+    return this.filter(
+      {
+        sorting: { orderBy: "createdAt", direction: "desc" },
+        filter: { status: { notEq: "complete" } },
+      },
+      project
+    ).pipe(map((harvests) => harvests[0] ?? undefined));
   }
 
   /** @inheritdoc ShallowHarvestsService.transitionStatus */

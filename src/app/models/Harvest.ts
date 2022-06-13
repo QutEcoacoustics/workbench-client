@@ -8,7 +8,11 @@ import {
 import { Duration } from "luxon";
 import { AbstractModel, AbstractModelWithoutId } from "./AbstractModel";
 import { creator, updater } from "./AssociationDecorators";
-import { bawDateTime, bawDuration } from "./AttributeDecorators";
+import {
+  bawDateTime,
+  bawDuration,
+  bawPersistAttr,
+} from "./AttributeDecorators";
 import { User } from "./User";
 
 /**
@@ -27,9 +31,11 @@ import { User } from "./User";
 export type HarvestStatus =
   | "newHarvest"
   | "uploading"
+  | "scanning"
   | "metadataExtraction"
   | "metadataReview"
   | "processing"
+  | "review"
   | "complete";
 
 export interface IHarvestMapping {
@@ -56,7 +62,9 @@ export interface IHarvest extends HasCreatorAndUpdater {
 export class Harvest extends AbstractModel implements IHarvest {
   public readonly kind = "Harvest";
   public readonly id?: Id;
+  @bawPersistAttr({ create: true, update: false })
   public readonly streaming?: boolean;
+  @bawPersistAttr()
   public readonly status?: HarvestStatus;
   public readonly projectId?: Id;
   public readonly creatorId?: Id;
@@ -66,6 +74,7 @@ export class Harvest extends AbstractModel implements IHarvest {
   public readonly uploadPassword?: string;
   public readonly uploadUser?: string;
   public readonly uploadUrl?: string;
+  @bawPersistAttr()
   public mappings?: IHarvestMapping[];
   public readonly report?: HarvestReport;
   @bawDateTime()

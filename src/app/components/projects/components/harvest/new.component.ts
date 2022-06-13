@@ -1,8 +1,15 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { HarvestsService } from "@baw-api/harvest/harvest.service";
+import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import {
   HarvestStage,
   UploadType,
 } from "@components/projects/pages/harvest/harvest.component";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { Harvest, IHarvest } from "@models/Harvest";
+import { Project } from "@models/Project";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "baw-harvest-new",
@@ -50,27 +57,67 @@ import {
     <div class="clearfix d-flex justify-content-center">
       <button
         class="btn btn-outline-primary d-inline me-3"
+        [disabled]="loading"
         (click)="onStreamingUploadClick()"
       >
         Start streaming upload
       </button>
-      <button class="btn btn-primary d-inline" (click)="onBatchUploadClick()">
+      <button
+        class="btn btn-primary d-inline"
+        [disabled]="loading"
+        (click)="onBatchUploadClick()"
+      >
         Upload batch
       </button>
     </div>
   `,
 })
-export class HarvestNewComponent {
+export class HarvestNewComponent implements OnInit {
   @Output() public stage = new EventEmitter<HarvestStage>();
   @Output() public type = new EventEmitter<UploadType>();
 
+  public project: Project;
+  public loading: boolean;
+
+  public constructor(
+    private notifications: ToastrService,
+    private route: ActivatedRoute,
+    private harvestApi: HarvestsService
+  ) {}
+
+  public ngOnInit(): void {
+    this.project = retrieveResolvedModel(this.route.snapshot.data, Project);
+  }
+
   public onStreamingUploadClick(): void {
-    this.stage.emit(HarvestStage.uploading);
-    this.type.emit("stream");
+    this.createHarvest({ streaming: true }, "stream");
   }
 
   public onBatchUploadClick(): void {
-    this.stage.emit(HarvestStage.uploading);
-    this.type.emit("batch");
+    this.createHarvest({ streaming: false }, "batch");
+  }
+
+  private createHarvest(body: IHarvest, type: UploadType) {
+    this.loading = true;
+
+    // We want this api request to complete regardless of component destruction
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+    this.harvestApi.create(new Harvest(body), this.project).subscribe({
+      error: (err: BawApiError): void => {
+        this.loading = false;
+
+        if (err.info?.project) {
+          // Project has not enabled audio uploading
+          this.notifications.error(err.info.project as string);
+        } else {
+          this.notifications.error("Failed to create harvest");
+        }
+      },
+      complete: (): void => {
+        this.stage.emit(HarvestStage.uploading);
+        this.type.emit(type);
+        this.loading = false;
+      },
+    });
   }
 }
