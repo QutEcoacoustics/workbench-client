@@ -2,7 +2,7 @@
   "fields": [
     {
       "key": "id",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Site Id"
       }
@@ -28,7 +28,7 @@
     },
     {
       "key": "locationObfuscated",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Location Obfuscated"
       }
@@ -42,35 +42,35 @@
     },
     {
       "key": "latitude",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Latitude"
       }
     },
     {
       "key": "longitude",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Longitude"
       }
     },
     {
       "key": "customLatitude",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Custom Latitude"
       }
     },
     {
       "key": "customLongitude",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Custom Longitude"
       }
     },
     {
       "key": "imageUrls",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Images"
       }
@@ -93,42 +93,42 @@
     },
     {
       "key": "timezoneInformation",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Time Zone Information"
       }
     },
     {
       "key": "creator",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Creator"
       }
     },
     {
       "key": "createdAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Created At"
       }
     },
     {
       "key": "updater",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Updater"
       }
     },
     {
       "key": "updatedAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Updated At"
       }
     },
     {
       "key": "projects",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Projects"
       }

@@ -2,7 +2,7 @@
   "fields": [
     {
       "key": "id",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Id"
       }
@@ -46,7 +46,7 @@
     },
     {
       "key": "script",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Script"
       }
@@ -61,7 +61,7 @@
     },
     {
       "key": "savedSearch",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Saved Search"
       }
@@ -76,84 +76,84 @@
     },
     {
       "key": "startedAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Started At"
       }
     },
     {
       "key": "overallStatus",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Overall Status"
       }
     },
     {
       "key": "overallStatusModifiedAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Overall Status Modified At"
       }
     },
     {
       "key": "overallCount",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Overall Count"
       }
     },
     {
       "key": "overallDuration",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Overall Duration"
       }
     },
     {
       "key": "overallDataLengthBytes",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Overall Data Length Bytes"
       }
     },
     {
       "key": "creator",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Creator"
       }
     },
     {
       "key": "createdAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Created At"
       }
     },
     {
       "key": "updater",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Updater"
       }
     },
     {
       "key": "updatedAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Updated At"
       }
     },
     {
       "key": "deleter",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Deleter"
       }
     },
     {
       "key": "deletedAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Deleted At"
       }

@@ -18,6 +18,7 @@ import { ToastrService } from "ngx-toastr";
 export type SchemaConfig = FormlyFieldConfig & {
   adminOnly?: boolean;
   ownerOnly?: boolean;
+  renderFieldOnly?: boolean;
 };
 
 /**
@@ -65,7 +66,7 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
   public ngOnChanges(): void {
     // Filter out fields which fail their checks
     this.formFields = this.fields.filter((field): boolean => {
-      if (field.hide) {
+      if (field.renderFieldOnly) {
         return false;
       } else if (field.adminOnly && !this.session.loggedInUser?.isAdmin) {
         return false;

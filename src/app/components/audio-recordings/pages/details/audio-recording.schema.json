@@ -2,7 +2,7 @@
   "fields": [
     {
       "key": "id",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Id"
       }
@@ -10,7 +10,7 @@
     {
       "key": "uuid",
       "type": "input",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Uuid",
         "type": "text",
@@ -19,7 +19,7 @@
     },
     {
       "key": "uploader",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Uploader"
       }
@@ -27,7 +27,7 @@
     {
       "key": "recordedDate",
       "type": "input",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Recorded Date",
         "type": "text"
@@ -35,14 +35,14 @@
     },
     {
       "key": "recordedDateTimezone",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Recorded Date Timezone"
       }
     },
     {
       "key": "site",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Site"
       }
@@ -50,7 +50,7 @@
     {
       "key": "duration",
       "type": "input",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Duration",
         "type": "text"
@@ -59,7 +59,7 @@
     {
       "key": "sampleRateHertz",
       "type": "input",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Sample Rate Hertz",
         "type": "text"
@@ -68,7 +68,7 @@
     {
       "key": "channels",
       "type": "input",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Channels",
         "type": "text"
@@ -77,7 +77,7 @@
     {
       "key": "bitRateBps",
       "type": "input",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Bit Rate (bps)",
         "type": "number"
@@ -86,7 +86,7 @@
     {
       "key": "mediaType",
       "type": "input",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Media Type",
         "type": "text"
@@ -95,7 +95,7 @@
     {
       "key": "dataLengthBytes",
       "type": "input",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Data Length Bytes",
         "type": "text"
@@ -103,7 +103,7 @@
     },
     {
       "key": "fileHash",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "File Hash"
       }
@@ -111,7 +111,7 @@
     {
       "key": "status",
       "type": "input",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Status",
         "type": "text"
@@ -120,7 +120,7 @@
     {
       "key": "notes",
       "type": "textarea",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Notes",
         "required": false,
@@ -129,49 +129,49 @@
     },
     {
       "key": "creator",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Creator"
       }
     },
     {
       "key": "createdAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Created At"
       }
     },
     {
       "key": "updater",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Updater"
       }
     },
     {
       "key": "updatedAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Updated At"
       }
     },
     {
       "key": "deleter",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Deleter"
       }
     },
     {
       "key": "deletedAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Deleted At"
       }
     },
     {
       "key": "originalFileName",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Original File Name"
       }
