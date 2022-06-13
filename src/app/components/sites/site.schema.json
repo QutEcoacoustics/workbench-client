@@ -105,6 +105,46 @@
         "label": "Time Zone Information",
         "disabled": true
       }
+    },
+    {
+      "key": "creator",
+      "hide": true,
+      "templateOptions": {
+        "label": "Creator",
+        "disabled": true
+      }
+    },
+    {
+      "key": "createdAt",
+      "hide": true,
+      "templateOptions": {
+        "label": "Created At",
+        "disabled": true
+      }
+    },
+    {
+      "key": "updater",
+      "hide": true,
+      "templateOptions": {
+        "label": "Updater",
+        "disabled": true
+      }
+    },
+    {
+      "key": "updatedAt",
+      "hide": true,
+      "templateOptions": {
+        "label": "Updated At",
+        "disabled": true
+      }
+    },
+    {
+      "key": "projects",
+      "hide": true,
+      "templateOptions": {
+        "label": "Projects",
+        "disabled": true
+      }
     }
   ]
 }

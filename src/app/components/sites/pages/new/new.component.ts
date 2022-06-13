@@ -17,8 +17,8 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import pointSchema from "../../point.base.json";
-import siteSchema from "../../site.base.json";
+import pointSchema from "../../point.schema.json";
+import siteSchema from "../../site.schema.json";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -47,12 +47,10 @@ class SiteNewComponent extends FormTemplate<Site> implements OnInit {
   public ngOnInit(): void {
     super.ngOnInit();
 
-    if (!this.failure) {
-      // Only sites with regions have their own page, normal sites are part of
-      // a wizard
-      this.title = this.region ? "New Point" : "";
-      this.fields = this.region ? pointSchema.fields : siteSchema.fields;
-    }
+    // Only sites with regions have their own page, normal sites are part of a
+    // wizard
+    this.title = this.region ? "New Point" : "";
+    this.fields = this.region ? pointSchema.fields : siteSchema.fields;
   }
 
   public get region(): Region {

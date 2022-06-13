@@ -1,13 +1,8 @@
 import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  hasResolvedSuccessfully,
-  ResolvedModelList,
-  retrieveResolvers,
-} from "@baw-api/resolver-common";
+import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import { withFormCheck } from "@guards/form/form.guard";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { RecaptchaState } from "@shared/form/form.component";
@@ -39,8 +34,6 @@ export abstract class FormTemplate<Model extends AbstractModel>
 {
   /** Form submission processing */
   public loading: boolean;
-  /** Initial setup failed */
-  public failure: boolean;
   /** Model to edit using form */
   public model: Partial<Model>;
   /** Extra models stored in data */
@@ -84,18 +77,10 @@ export abstract class FormTemplate<Model extends AbstractModel>
 
     // Retrieve models and handle potential failure
     const models = retrieveResolvers(data);
-    if (!hasResolvedSuccessfully(models)) {
-      this.failure = true;
-      return;
-    }
     this.models = models;
 
     // Retrieve model and handle potential failure
     this.model = this.opts.getModel(this.models);
-    if (!isInstantiated(this.model)) {
-      this.failure = true;
-      return;
-    }
 
     /*
      * First pass attempt a generating success message. This is required

@@ -18,8 +18,8 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import pointSchema from "../../point.base.json";
-import siteSchema from "../../site.base.json";
+import pointSchema from "../../point.schema.json";
+import siteSchema from "../../site.schema.json";
 import { editSiteMenuItem, sitesCategory } from "../../sites.menus";
 import {
   pointMenuItemActions,

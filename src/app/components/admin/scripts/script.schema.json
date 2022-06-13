@@ -4,8 +4,7 @@
       "key": "id",
       "hide": true,
       "templateOptions": {
-        "label": "Script Id",
-        "disabled": true
+        "label": "Script Id"
       }
     },
     {
@@ -92,7 +91,30 @@
       "key": "groupId",
       "hide": true,
       "templateOptions": {
-        "label": "Group Id",
+        "label": "Group Id"
+      }
+    },
+    {
+      "key": "group",
+      "hide": true,
+      "templateOptions": {
+        "label": "Group",
+        "disabled": true
+      }
+    },
+    {
+      "key": "creator",
+      "hide": true,
+      "templateOptions": {
+        "label": "Creator",
+        "disabled": true
+      }
+    },
+    {
+      "key": "createdAt",
+      "hide": true,
+      "templateOptions": {
+        "label": "Created At",
         "disabled": true
       }
     }

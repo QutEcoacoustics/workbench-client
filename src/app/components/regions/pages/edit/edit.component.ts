@@ -18,7 +18,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import schema from "../../region.base.json";
+import schema from "../../region.schema.json";
 import { regionMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
@@ -31,8 +31,7 @@ const regionKey = "region";
   selector: "baw-regions-edit",
   template: `
     <baw-form
-      *ngIf="!failure"
-      [title]="title"
+      [title]="'Edit ' + model.name"
       [model]="model"
       [fields]="fields"
       [submitLoading]="loading"
@@ -43,7 +42,6 @@ const regionKey = "region";
 })
 class EditComponent extends FormTemplate<Region> implements OnInit {
   public fields = schema.fields;
-  public title: string;
 
   public constructor(
     private api: RegionsService,
@@ -58,16 +56,8 @@ class EditComponent extends FormTemplate<Region> implements OnInit {
     });
   }
 
-  public ngOnInit() {
-    super.ngOnInit();
-
-    if (!this.failure) {
-      this.title = `Edit ${this.model.name}`;
-    }
-  }
-
   public get project(): Project {
-    return this.models.project as Project;
+    return this.models[projectKey] as Project;
   }
 
   protected apiAction(model: Partial<Region>) {

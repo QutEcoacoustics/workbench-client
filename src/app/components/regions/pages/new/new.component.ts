@@ -15,7 +15,7 @@ import {
 import { Region } from "@models/Region";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import schema from "../../region.base.json";
+import schema from "../../region.schema.json";
 import { regionsMenuItemActions } from "../list/list.component";
 
 /**
@@ -25,7 +25,6 @@ import { regionsMenuItemActions } from "../list/list.component";
   selector: "baw-regions-new",
   template: `
     <baw-form
-      *ngIf="!failure"
       [title]="hideTitle ? '' : 'New Region'"
       [model]="model"
       [fields]="fields"

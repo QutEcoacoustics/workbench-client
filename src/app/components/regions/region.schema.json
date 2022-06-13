@@ -42,6 +42,54 @@
         "label": "Image",
         "required": false
       }
+    },
+    {
+      "key": "creator",
+      "hide": true,
+      "templateOptions": {
+        "label": "Creator",
+        "disabled": true
+      }
+    },
+    {
+      "key": "createdAt",
+      "hide": true,
+      "templateOptions": {
+        "label": "Created At",
+        "disabled": true
+      }
+    },
+    {
+      "key": "updater",
+      "hide": true,
+      "templateOptions": {
+        "label": "Updater",
+        "disabled": true
+      }
+    },
+    {
+      "key": "updatedAt",
+      "hide": true,
+      "templateOptions": {
+        "label": "Updated At",
+        "disabled": true
+      }
+    },
+    {
+      "key": "project",
+      "hide": true,
+      "templateOptions": {
+        "label": "Project",
+        "disabled": true
+      }
+    },
+    {
+      "key": "sites",
+      "hide": true,
+      "templateOptions": {
+        "label": "Sites",
+        "disabled": true
+      }
     }
   ]
 }
