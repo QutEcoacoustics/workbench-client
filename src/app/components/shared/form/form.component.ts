@@ -16,8 +16,11 @@ import { ReCaptchaV3Service } from "ngx-captcha";
 import { ToastrService } from "ngx-toastr";
 
 export type SchemaConfig = FormlyFieldConfig & {
+  /** Only show this field to admin users */
   adminOnly?: boolean;
+  /** Only show this field to users with owner permissions */
   ownerOnly?: boolean;
+  /** Only show this field in render field components */
   renderFieldOnly?: boolean;
 };
 
@@ -40,6 +43,10 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
   @Input() public submitLoading: boolean;
   @Input() public subTitle?: string;
   @Input() public title?: string;
+  /**
+   * Does this user have owner permissions. Required if the schema makes use of
+   * the `ownerOnly` attribute
+   */
   @Input() public isOwner?: boolean;
   /**
    * Recaptcha seed. If set, form will be disabled until recaptcha
