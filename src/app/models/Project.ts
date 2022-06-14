@@ -1,3 +1,4 @@
+import { Capability } from "@baw-api/baw-api.service";
 import { ACCOUNT, SHALLOW_REGION, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { projectRoute } from "@components/projects/projects.routes";
 import {
@@ -6,8 +7,8 @@ import {
   Description,
   HasAllUsers,
   HasDescription,
-  hasRequiredAccessLevelOrHigher,
   Hash,
+  hasRequiredAccessLevelOrHigher,
   Id,
   Ids,
   ImageUrl,
@@ -25,6 +26,8 @@ import {
 import type { Region } from "./Region";
 import type { Site } from "./Site";
 import type { User } from "./User";
+
+export type ProjectCapabilities = "updateAllowAudioUpload" | "createHarvest";
 
 /**
  * A project model.
@@ -77,6 +80,8 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public readonly notes?: Hash;
   @bawPersistAttr()
   public readonly allowOriginalDownload?: AccessLevel;
+  @bawPersistAttr()
+  public readonly allowAudioUpload?: boolean;
 
   // Associations
   @hasMany<Project, Site>(SHALLOW_SITE, "siteIds")
@@ -91,6 +96,10 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public updater?: User;
   @deleter<Project>()
   public deleter?: User;
+
+  public override can(capability: ProjectCapabilities): Capability {
+    return super.can(capability);
+  }
 
   /**
    * Returns true if user has the permissions to edit this model

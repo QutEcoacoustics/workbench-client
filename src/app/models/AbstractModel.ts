@@ -4,7 +4,11 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import snakeCase from "just-snake-case";
 import { DateTime, Duration } from "luxon";
 import { Id } from "../interfaces/apiInterfaces";
-import { Meta } from "../services/baw-api/baw-api.service";
+import {
+  Capability,
+  CapabilityKey,
+  Meta,
+} from "../services/baw-api/baw-api.service";
 import { BawAttributeMeta } from "./AttributeDecorators";
 
 export type AbstractModelConstructor<Model> = new (
@@ -149,6 +153,10 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   public getPersistentAttributes(): Array<BawAttributeMeta> {
     // TODO #1005 Store this statically in the model
     return (this[AbstractModel.keys.attributes] ??= []);
+  }
+
+  public can(capability: CapabilityKey): Capability {
+    return this.getMetadata().capabilities[capability];
   }
 
   /**
