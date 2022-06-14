@@ -105,7 +105,7 @@ jobs:
         run: mkdir src/assets/old-client && cp -r baw-client/baw-client/* src/assets/old-client
 
       - name: Install project dependencies
-        run: npm ci --force
+        run: npm ci
 
       - name: Run test suite on ${{ matrix.browsers }}
         run: npm run test:pipeline -- --browsers ${{ matrix.browsers }}
@@ -186,7 +186,7 @@ jobs:
           cache: "npm"
 
       - name: Install project dependencies
-        run: npm ci --force
+        run: npm ci
 
       - name: Build the workbench client
         run: npm run build
