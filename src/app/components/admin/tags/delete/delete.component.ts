@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import {
@@ -22,8 +22,7 @@ const tagKey = "tag";
   selector: "baw-delete",
   template: `
     <baw-form
-      *ngIf="!failure"
-      [title]="title"
+      [title]="'Are you certain you wish to delete ' + model.text"
       [model]="model"
       [fields]="fields"
       btnColor="danger"
@@ -33,9 +32,7 @@ const tagKey = "tag";
     ></baw-form>
   `,
 })
-class AdminTagsDeleteComponent extends FormTemplate<Tag> implements OnInit {
-  public title: string;
-
+class AdminTagsDeleteComponent extends FormTemplate<Tag> {
   public constructor(
     private api: TagsService,
     notifications: ToastrService,
@@ -48,14 +45,6 @@ class AdminTagsDeleteComponent extends FormTemplate<Tag> implements OnInit {
       redirectUser: () =>
         this.router.navigateByUrl(adminTagsMenuItem.route.toRouterLink()),
     });
-  }
-
-  public ngOnInit(): void {
-    super.ngOnInit();
-
-    if (!this.failure) {
-      this.title = `Are you certain you wish to delete ${this.model.text}?`;
-    }
   }
 
   protected apiAction(model: Partial<Tag>) {

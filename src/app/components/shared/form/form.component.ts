@@ -7,12 +7,22 @@ import {
   ViewEncapsulation,
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ReCaptchaV3Service } from "ngx-captcha";
 import { ToastrService } from "ngx-toastr";
+
+export type SchemaConfig = FormlyFieldConfig & {
+  /** Only show this field to admin users */
+  adminOnly?: boolean;
+  /** Only show this field to users with owner permissions */
+  ownerOnly?: boolean;
+  /** Only show this field in render field components */
+  renderFieldOnly?: boolean;
+};
 
 /**
  * Formly Form Wrapper
@@ -26,13 +36,18 @@ import { ToastrService } from "ngx-toastr";
 })
 export class FormComponent extends withUnsubscribe() implements OnChanges {
   @Input() public btnColor: BootstrapColorTypes = "primary";
-  @Input() public fields: FormlyFieldConfig[] = [];
+  @Input() public fields: SchemaConfig[] = [];
   @Input() public model: Record<string, any> = {};
   @Input() public size: "small" | "default" = "default";
   @Input() public submitLabel = "Submit";
   @Input() public submitLoading: boolean;
   @Input() public subTitle?: string;
   @Input() public title?: string;
+  /**
+   * Does this user have owner permissions. Required if the schema makes use of
+   * the `ownerOnly` attribute
+   */
+  @Input() public isOwner?: boolean;
   /**
    * Recaptcha seed. If set, form will be disabled until recaptcha
    * seed is loaded
@@ -45,21 +60,33 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
   @Output() public modelChange = new EventEmitter<any>();
 
   public form = new FormGroup({});
+  public formFields: SchemaConfig[];
 
   public constructor(
     private notifications: ToastrService,
+    private session: BawSessionService,
     private recaptcha: ReCaptchaV3Service
   ) {
     super();
   }
 
-  public ngOnChanges() {
-    if (!isInstantiated(this.recaptchaSeed)) {
-      return;
-    }
+  public ngOnChanges(): void {
+    // Filter out fields which fail their checks
+    this.formFields = this.fields.filter((field): boolean => {
+      if (field.renderFieldOnly) {
+        return false;
+      } else if (field.adminOnly && !this.session.loggedInUser?.isAdmin) {
+        return false;
+      } else if (field.ownerOnly && !this.isOwner) {
+        return false;
+      }
+      return true;
+    });
 
-    // Submit button should be inactive while retrieving recaptcha seed
-    this.submitLoading = this.recaptchaSeed.state === "loading";
+    if (isInstantiated(this.recaptchaSeed)) {
+      // Submit button should be inactive while retrieving recaptcha seed
+      this.submitLoading = this.recaptchaSeed.state === "loading";
+    }
   }
 
   /**

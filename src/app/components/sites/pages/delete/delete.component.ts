@@ -54,10 +54,7 @@ class SiteDeleteComponent extends FormTemplate<Site> implements OnInit {
 
   public ngOnInit() {
     super.ngOnInit();
-
-    if (!this.failure) {
-      this.title = `Are you certain you wish to delete ${this.model.name}?`;
-    }
+    this.title = `Are you certain you wish to delete ${this.model.name}?`;
   }
 
   public get region(): Option<Region> {

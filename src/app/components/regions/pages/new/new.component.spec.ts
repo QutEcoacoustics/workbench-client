@@ -1,7 +1,5 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import {
   destroyGoogleMaps,
   embedGoogleMaps,
@@ -14,19 +12,17 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
-import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { testFormlyFields } from "@test/helpers/formly";
-import { assertErrorHandler } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
-import schema from "../../region.base.json";
+import schema from "../../region.schema.json";
 import { NewComponent } from "./new.component";
 
 describe("RegionsNewComponent", () => {
-  let spectator: SpectatorRouting<NewComponent>;
+  let spec: SpectatorRouting<NewComponent>;
   const { fields } = schema;
   const createComponent = createRoutingFactory({
     component: NewComponent,
@@ -62,18 +58,18 @@ describe("RegionsNewComponent", () => {
     let api: SpyObject<RegionsService>;
     let defaultProject: Project;
 
-    function setup(error?: BawApiError) {
-      spectator = createComponent({
+    function setup() {
+      spec = createComponent({
         detectChanges: false,
         params: { projectId: defaultProject?.id },
         data: {
-          resolvers: { project: projectResolvers.show },
-          project: { model: defaultProject, error },
+          resolvers: { project: "resolver" },
+          project: { model: defaultProject },
         },
       });
 
-      api = spectator.inject(RegionsService);
-      spectator.detectChanges();
+      api = spec.inject(RegionsService);
+      spec.detectChanges();
     }
 
     beforeAll(async () => await embedGoogleMaps());
@@ -84,19 +80,14 @@ describe("RegionsNewComponent", () => {
 
     it("should create", () => {
       setup();
-      expect(spectator.component).toBeTruthy();
-    });
-
-    it("should handle project error", () => {
-      setup(generateBawApiError());
-      assertErrorHandler(spectator.fixture);
+      expect(spec.component).toBeTruthy();
     });
 
     it("should call api", () => {
       setup();
       api.create.and.callFake(() => new Subject());
 
-      spectator.component.submit({});
+      spec.component.submit({});
       expect(api.create).toHaveBeenCalled();
     });
 
@@ -105,8 +96,8 @@ describe("RegionsNewComponent", () => {
       const region = new Region(generateRegion());
       api.create.and.callFake(() => new BehaviorSubject<Region>(region));
 
-      spectator.component.submit({});
-      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
+      spec.component.submit({});
+      expect(spec.router.navigateByUrl).toHaveBeenCalledWith(
         region.getViewUrl(defaultProject)
       );
     });

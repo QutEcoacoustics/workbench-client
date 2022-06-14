@@ -1,5 +1,5 @@
 <div
-  *ngIf="fields"
+  *ngIf="formFields"
   class="login-form ps-2 pe-2 pb-3"
   [ngClass]="{ small: size === 'small' }"
 >
@@ -14,7 +14,7 @@
       <!-- Form -->
       <formly-form
         [form]="form"
-        [fields]="fields"
+        [fields]="formFields"
         [model]="model"
         (modelChange)="onModelChange($event)"
       ></formly-form>
@@ -26,7 +26,7 @@
           type="submit"
           class="btn float-end mt-3"
           [ngClass]="'btn-' + btnColor"
-          [disabled]="!fields || submitLoading"
+          [disabled]="!formFields || submitLoading"
         >
           {{ submitLabel }}
         </button>

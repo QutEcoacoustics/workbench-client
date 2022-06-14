@@ -2,15 +2,15 @@
   "fields": [
     {
       "key": "id",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Id",
-        "disabled": true
+        "label": "Id"
       }
     },
     {
       "key": "uuid",
       "type": "input",
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Uuid",
         "type": "text",
@@ -19,15 +19,15 @@
     },
     {
       "key": "uploader",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Uploader",
-        "disabled": true
+        "label": "Uploader"
       }
     },
     {
       "key": "recordedDate",
       "type": "input",
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Recorded Date",
         "type": "text"
@@ -35,95 +35,92 @@
     },
     {
       "key": "recordedDateTimezone",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Recorded Date Timezone",
-        "disabled": true
+        "label": "Recorded Date Timezone"
       }
     },
     {
       "key": "site",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Site",
-        "disabled": true
+        "label": "Site"
       }
     },
     {
       "key": "duration",
       "type": "input",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Duration",
-        "type": "text",
-        "disabled": true
+        "type": "text"
       }
     },
     {
       "key": "sampleRateHertz",
       "type": "input",
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Sample Rate Hertz",
-        "type": "text",
-        "disabled": true
+        "type": "text"
       }
     },
     {
       "key": "channels",
       "type": "input",
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Channels",
-        "type": "text",
-        "disabled": true
+        "type": "text"
       }
     },
     {
       "key": "bitRateBps",
       "type": "input",
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Bit Rate (bps)",
-        "type": "number",
-        "disabled": true
+        "type": "number"
       }
     },
     {
       "key": "mediaType",
       "type": "input",
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Media Type",
-        "type": "text",
-        "disabled": true
+        "type": "text"
       }
     },
     {
       "key": "dataLengthBytes",
       "type": "input",
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Data Length Bytes",
-        "type": "text",
-        "disabled": true
+        "type": "text"
       }
     },
     {
       "key": "fileHash",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "File Hash",
-        "disabled": true
+        "label": "File Hash"
       }
     },
     {
       "key": "status",
       "type": "input",
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Status",
-        "type": "text",
-        "disabled": true
+        "type": "text"
       }
     },
     {
       "key": "notes",
       "type": "textarea",
+      "renderFieldOnly": true,
       "templateOptions": {
         "label": "Notes",
         "required": false,
@@ -132,58 +129,51 @@
     },
     {
       "key": "creator",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Creator",
-        "disabled": true
-      }
-    },
-    {
-      "key": "updater",
-      "hide": true,
-      "templateOptions": {
-        "label": "Updater",
-        "disabled": true
-      }
-    },
-    {
-      "key": "deleter",
-      "hide": true,
-      "templateOptions": {
-        "label": "Deleter",
-        "disabled": true
+        "label": "Creator"
       }
     },
     {
       "key": "createdAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Created At",
-        "disabled": true
+        "label": "Created At"
+      }
+    },
+    {
+      "key": "updater",
+      "renderFieldOnly": true,
+      "templateOptions": {
+        "label": "Updater"
       }
     },
     {
       "key": "updatedAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Updated At",
-        "disabled": true
+        "label": "Updated At"
+      }
+    },
+    {
+      "key": "deleter",
+      "renderFieldOnly": true,
+      "templateOptions": {
+        "label": "Deleter"
       }
     },
     {
       "key": "deletedAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Deleted At",
-        "disabled": true
+        "label": "Deleted At"
       }
     },
     {
       "key": "originalFileName",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Original File Name",
-        "disabled": true
+        "label": "Original File Name"
       }
     }
   ]

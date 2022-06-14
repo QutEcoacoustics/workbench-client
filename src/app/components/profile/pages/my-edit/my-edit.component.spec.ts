@@ -1,54 +1,33 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { userResolvers } from "@baw-api/user/user.service";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { User } from "@models/User";
+import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateUser } from "@test/fakes/User";
-import { mockActivatedRoute } from "@test/helpers/testbed";
-import { appLibraryImports } from "src/app/app.module";
+import { ToastrService } from "ngx-toastr";
 import { MyEditComponent } from "./my-edit.component";
 
 describe("MyProfileEditComponent", () => {
-  let component: MyEditComponent;
-  let fixture: ComponentFixture<MyEditComponent>;
   let defaultUser: User;
+  let spec: SpectatorRouting<MyEditComponent>;
+  const createComponent = createRoutingFactory({
+    component: MyEditComponent,
+    mocks: [ToastrService],
+    imports: [SharedModule, MockBawApiModule],
+  });
 
-  function configureTestingModule(model: User, error?: BawApiError) {
-    TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [MyEditComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { user: userResolvers.show },
-            { user: { model, error } }
-          ),
-        },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(MyEditComponent);
-    component = fixture.componentInstance;
-
-    fixture.detectChanges();
+  function setup(model: User) {
+    spec = createComponent({
+      data: { resolvers: { user: "resolver" }, user: { model } },
+    });
+    spec.detectChanges();
   }
 
   beforeEach(() => {
-    // TODO Handle image urls
-    defaultUser = new User(generateUser({ imageUrls: undefined }));
+    defaultUser = new User(generateUser());
   });
 
   it("should create", () => {
-    configureTestingModule(defaultUser);
-    expect(component).toBeTruthy();
+    setup(defaultUser);
+    expect(spec.component).toBeInstanceOf(MyEditComponent);
   });
 });

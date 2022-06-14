@@ -1,18 +1,14 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Router } from "@angular/router";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import {
-  projectResolvers,
-  ProjectsService,
-} from "@baw-api/project/projects.service";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
-import { SpyObject } from "@ngneat/spectator";
-import { generateBawApiError } from "@test/fakes/BawApiError";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
+import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { testFormlyFields } from "@test/helpers/formly";
-import { assertErrorHandler } from "@test/helpers/html";
-import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import schema from "../../project.schema.json";
@@ -20,43 +16,26 @@ import { EditComponent } from "./edit.component";
 
 describe("ProjectsEditComponent", () => {
   let api: SpyObject<ProjectsService>;
-  let component: EditComponent;
-  let defaultProject: Project;
-  let fixture: ComponentFixture<EditComponent>;
-  let notifications: ToastrService;
-  let router: Router;
+  let defaultModel: Project;
+  let spec: SpectatorRouting<EditComponent>;
+  const createComponent = createRoutingFactory({
+    component: EditComponent,
+    mocks: [ToastrService],
+    imports: [SharedModule, MockBawApiModule],
+  });
   const { fields } = schema;
 
-  function configureTestingModule(model: Project, error?: BawApiError) {
-    TestBed.configureTestingModule({
-      imports: [...testFormImports, MockBawApiModule],
-      declarations: [EditComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { project: projectResolvers.show },
-            { project: { model, error } }
-          ),
-        },
-      ],
-    }).compileComponents();
+  function setup(model: Project) {
+    spec = createComponent({
+      data: { resolvers: { project: "resolver" }, project: { model } },
+    });
 
-    fixture = TestBed.createComponent(EditComponent);
-    component = fixture.componentInstance;
-    router = TestBed.inject(Router);
-    api = TestBed.inject(ProjectsService) as SpyObject<ProjectsService>;
-    notifications = TestBed.inject(ToastrService);
-
-    spyOn(notifications, "success").and.stub();
-    spyOn(notifications, "error").and.stub();
-    spyOn(router, "navigateByUrl").and.stub();
-
-    fixture.detectChanges();
+    api = spec.inject(ProjectsService);
+    spec.detectChanges();
   }
 
   beforeEach(() => {
-    defaultProject = new Project(generateProject());
+    defaultModel = new Project(generateProject());
   });
 
   describe("form", () => {
@@ -89,19 +68,14 @@ describe("ProjectsEditComponent", () => {
 
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultProject);
-      expect(component).toBeTruthy();
-    });
-
-    it("should handle project error", () => {
-      configureTestingModule(undefined, generateBawApiError());
-      assertErrorHandler(fixture);
+      setup(defaultModel);
+      expect(spec.component).toBeTruthy();
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultProject);
+      setup(defaultModel);
       api.update.and.callFake(() => new Subject());
-      component.submit({});
+      spec.component.submit({});
       expect(api.update).toHaveBeenCalled();
     });
   });

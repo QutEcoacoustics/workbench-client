@@ -26,8 +26,8 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
-import pointSchema from "../../point.base.json";
-import siteSchema from "../../site.base.json";
+import pointSchema from "../../point.schema.json";
+import siteSchema from "../../site.schema.json";
 import { SiteNewComponent } from "./new.component";
 
 describe("SiteNewComponent", () => {

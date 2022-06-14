@@ -1,8 +1,5 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { ResolvedModel } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
-import { Errorable } from "@helpers/advancedTypes";
-import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -11,13 +8,10 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { FormComponent } from "@shared/form/form.component";
-import { generateBawApiError } from "@test/fakes/BawApiError";
+import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { assertErrorHandler } from "@test/helpers/html";
-import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
 import { SiteDeleteComponent } from "./delete.component";
@@ -29,40 +23,27 @@ describe("SiteDeleteComponent", () => {
   let defaultSite: Site;
   let spec: SpectatorRouting<SiteDeleteComponent>;
   const createComponent = createRoutingFactory({
-    imports: [...testFormImports, MockBawApiModule],
-    declarations: [FormComponent],
+    imports: [SharedModule, MockBawApiModule],
     mocks: [ToastrService],
     component: SiteDeleteComponent,
-    stubsEnabled: true,
   });
 
-  function setup(
-    project: Errorable<Project>,
-    site: Errorable<Site>,
-    region?: Errorable<Region>
-  ) {
-    function getResolvedModel<T>(model: Errorable<T>): ResolvedModel<T> {
-      return isBawApiError(model) ? { error: model } : { model };
-    }
-
+  function setup(project: Project, site: Site, region?: Region) {
     const resolvedModels = {
-      project: getResolvedModel(project),
-      site: getResolvedModel(site),
+      project: { model: project },
+      site: { model: site },
     };
 
-    const resolvers = {
-      project: "resolver",
-      site: "resolver",
-    };
+    const resolvers = { project: "resolver", site: "resolver" };
 
     if (region) {
-      resolvedModels["region"] = getResolvedModel(region);
+      resolvedModels["region"] = { model: region };
       resolvers["region"] = "resolver";
     }
 
     spec = createComponent({
-      detectChanges: false,
       data: { resolvers, ...resolvedModels },
+      detectChanges: false,
     });
 
     api = spec.inject(SitesService);
@@ -91,23 +72,6 @@ describe("SiteDeleteComponent", () => {
         it("should create", () => {
           setup(defaultProject, defaultSite, defaultRegion);
           expect(spec.component).toBeTruthy();
-        });
-
-        it("should handle project error", () => {
-          setup(generateBawApiError(), defaultSite, defaultRegion);
-          assertErrorHandler(spec.fixture);
-        });
-
-        if (withRegion) {
-          it("should handle region error", () => {
-            setup(defaultProject, defaultSite, generateBawApiError());
-            assertErrorHandler(spec.fixture);
-          });
-        }
-
-        it("should handle site error", () => {
-          setup(defaultProject, generateBawApiError(), defaultRegion);
-          assertErrorHandler(spec.fixture);
         });
 
         it("should call api", () => {

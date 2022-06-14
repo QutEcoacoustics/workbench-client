@@ -12,13 +12,12 @@ import { adminTagsMenuItemActions } from "../list/list.component";
 import schema from "../tag.schema.json";
 import { adminNewTagMenuItem, adminTagsCategory } from "../tags.menus";
 
-const typeOfTagsKey = "typeOfTags";
+const typeOfTagsKey = "tagTypes";
 
 @Component({
   selector: "baw-admin-tags-new",
   template: `
     <baw-form
-      *ngIf="!failure"
       title="New Tag"
       [model]="model"
       [fields]="fields"
@@ -45,12 +44,8 @@ class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
 
   public ngOnInit() {
     super.ngOnInit();
+
     const typeOfTagIndex = 1;
-
-    if (this.failure) {
-      return;
-    }
-
     this.fields[typeOfTagIndex].templateOptions.options = this.typeOfTags.map(
       ({ name }) => ({
         label: name,

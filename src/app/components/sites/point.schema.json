@@ -2,17 +2,16 @@
   "fields": [
     {
       "key": "id",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Site Id",
-        "disabled": true
+        "label": "Point Id"
       }
     },
     {
       "key": "name",
       "type": "input",
       "templateOptions": {
-        "label": "Site Name",
+        "label": "Point Name",
         "type": "text",
         "required": true
       }
@@ -29,10 +28,9 @@
     },
     {
       "key": "locationObfuscated",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Location Obfuscated",
-        "disabled": true
+        "label": "Location Obfuscated"
       }
     },
     {
@@ -44,42 +42,37 @@
     },
     {
       "key": "latitude",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Latitude",
-        "disabled": true
+        "label": "Latitude"
       }
     },
     {
       "key": "longitude",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Longitude",
-        "disabled": true
+        "label": "Longitude"
       }
     },
     {
       "key": "customLatitude",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Custom Latitude",
-        "disabled": true
+        "label": "Custom Latitude"
       }
     },
     {
       "key": "customLongitude",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Custom Longitude",
-        "disabled": true
+        "label": "Custom Longitude"
       }
     },
     {
       "key": "imageUrls",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Images",
-        "disabled": true
+        "label": "Images"
       }
     },
     {
@@ -100,10 +93,44 @@
     },
     {
       "key": "timezoneInformation",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Time Zone Information",
-        "disabled": true
+        "label": "Time Zone Information"
+      }
+    },
+    {
+      "key": "creator",
+      "renderFieldOnly": true,
+      "templateOptions": {
+        "label": "Creator"
+      }
+    },
+    {
+      "key": "createdAt",
+      "renderFieldOnly": true,
+      "templateOptions": {
+        "label": "Created At"
+      }
+    },
+    {
+      "key": "updater",
+      "renderFieldOnly": true,
+      "templateOptions": {
+        "label": "Updater"
+      }
+    },
+    {
+      "key": "updatedAt",
+      "renderFieldOnly": true,
+      "templateOptions": {
+        "label": "Updated At"
+      }
+    },
+    {
+      "key": "projects",
+      "renderFieldOnly": true,
+      "templateOptions": {
+        "label": "Projects"
       }
     }
   ]

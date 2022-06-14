@@ -2,10 +2,9 @@
   "fields": [
     {
       "key": "id",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Id",
-        "disabled": true
+        "label": "Id"
       }
     },
     {
@@ -47,10 +46,9 @@
     },
     {
       "key": "script",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Script",
-        "disabled": true
+        "label": "Script"
       }
     },
     {
@@ -63,10 +61,9 @@
     },
     {
       "key": "savedSearch",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Saved Search",
-        "disabled": true
+        "label": "Saved Search"
       }
     },
     {
@@ -79,98 +76,86 @@
     },
     {
       "key": "startedAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Started At",
-        "disabled": true
+        "label": "Started At"
       }
     },
     {
       "key": "overallStatus",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Overall Status",
-        "disabled": true
+        "label": "Overall Status"
       }
     },
     {
       "key": "overallStatusModifiedAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Overall Status Modified At",
-        "disabled": true
+        "label": "Overall Status Modified At"
       }
     },
     {
       "key": "overallCount",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Overall Count",
-        "disabled": true
+        "label": "Overall Count"
       }
     },
     {
       "key": "overallDuration",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Overall Duration",
-        "disabled": true
+        "label": "Overall Duration"
       }
     },
     {
       "key": "overallDataLengthBytes",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Overall Data Length Bytes",
-        "disabled": true
+        "label": "Overall Data Length Bytes"
       }
     },
     {
       "key": "creator",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Creator",
-        "disabled": true
+        "label": "Creator"
       }
     },
     {
       "key": "createdAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Created At",
-        "disabled": true
+        "label": "Created At"
       }
     },
     {
       "key": "updater",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Updater",
-        "disabled": true
+        "label": "Updater"
       }
     },
     {
       "key": "updatedAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Updated At",
-        "disabled": true
+        "label": "Updated At"
       }
     },
     {
       "key": "deleter",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Deleter",
-        "disabled": true
+        "label": "Deleter"
       }
     },
     {
       "key": "deletedAt",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Deleted At",
-        "disabled": true
+        "label": "Deleted At"
       }
     }
   ]

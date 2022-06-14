@@ -2,10 +2,9 @@
   "fields": [
     {
       "key": "id",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Script Id",
-        "disabled": true
+        "label": "Script Id"
       }
     },
     {
@@ -90,10 +89,30 @@
     },
     {
       "key": "groupId",
-      "hide": true,
+      "renderFieldOnly": true,
       "templateOptions": {
-        "label": "Group Id",
-        "disabled": true
+        "label": "Group Id"
+      }
+    },
+    {
+      "key": "group",
+      "renderFieldOnly": true,
+      "templateOptions": {
+        "label": "Group"
+      }
+    },
+    {
+      "key": "creator",
+      "renderFieldOnly": true,
+      "templateOptions": {
+        "label": "Creator"
+      }
+    },
+    {
+      "key": "createdAt",
+      "renderFieldOnly": true,
+      "templateOptions": {
+        "label": "Created At"
       }
     }
   ]
