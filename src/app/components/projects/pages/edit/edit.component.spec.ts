@@ -84,6 +84,20 @@ describe("ProjectsEditComponent", () => {
         label: "Image",
         type: "image",
       },
+      {
+        testGroup: "Project Allow Original Download",
+        field: fields[3],
+        key: "allowOriginalDownload",
+        label: "Allow whole audio recording downloads",
+        type: "select",
+      },
+      {
+        testGroup: "Project Allow Recording Uploads",
+        field: fields[4],
+        key: "allowAudioUpload",
+        label: "Allow audio recording uploads",
+        type: "checkbox",
+      },
     ]);
   });
 
