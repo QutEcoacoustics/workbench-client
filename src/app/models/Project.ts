@@ -77,6 +77,8 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public readonly notes?: Hash;
   @bawPersistAttr()
   public readonly allowOriginalDownload?: AccessLevel;
+  @bawPersistAttr()
+  public readonly allowAudioUpload?: boolean;
 
   // Associations
   @hasMany<Project, Site>(SHALLOW_SITE, "siteIds")

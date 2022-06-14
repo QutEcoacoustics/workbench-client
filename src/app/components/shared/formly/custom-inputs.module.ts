@@ -16,11 +16,7 @@ import { TimezoneInputComponent } from "./timezone-input.component";
 
 export const formlyConfig: ConfigOption = {
   types: [
-    {
-      name: "checkbox",
-      component: CheckboxInputComponent,
-      wrappers: ["form-field-horizontal"],
-    },
+    { name: "checkbox", component: CheckboxInputComponent },
     { name: "image", component: ImageInputComponent },
     { name: "timezone", component: TimezoneInputComponent },
     { name: "location", component: LocationInputComponent },
