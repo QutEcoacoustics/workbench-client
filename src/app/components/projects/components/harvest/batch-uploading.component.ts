@@ -1,7 +1,10 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { Harvest, HarvestStatus } from "@models/Harvest";
 import filesize from "filesize";
-import { endWith, startWith, timer } from "rxjs";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "baw-harvest-batch-uploading",
@@ -14,7 +17,10 @@ import { endWith, startWith, timer } from "rxjs";
         <ng-template ngbNavContent>
           <ol>
             <li>
-              Install <a href="https://winscp.net/eng/index.php">WinSCP</a>
+              Install
+              <a target="_blank" href="https://winscp.net/eng/index.php">
+                WinSCP
+              </a>
             </li>
             <li>
               Click on the link below to open WinSCP and connect to our cloud
@@ -50,57 +56,89 @@ import { endWith, startWith, timer } from "rxjs";
       </li>
     </ul>
 
-    <a
-      href="sftp://harvest:jhgsdfjhgsdfjhgsdfjhgsdfjhg@upload.ecosounds.qut.ecoacoustics.info:22"
-    >
-      sftp://harvest:jhgsdfjhgsdfjhgsdfjhgsdfjhg@upload.ecosounds.qut.ecoacoustics.info:22
-    </a>
+    <p>
+      Server URL:
+      <a target="_blank" [href]="harvest.uploadUrl">
+        {{ harvest.uploadUrl }}
+      </a>
+    </p>
+
+    <p>Username: {{ harvest.uploadUser }}</p>
+    <p>Password: {{ harvest.uploadPassword }}</p>
 
     <hr />
 
+    <!-- TODO Extract to sub component -->
     <h4>Current Progress</h4>
 
-    <ul *ngIf="progress$ | async as progress">
-      <li><b>Uploaded Files: </b>{{ progress }}</li>
+    <ul>
+      <li><b>Uploaded Files: </b>{{ harvest.report.itemsTotal }}</li>
       <li>
-        <b>Uploaded Bytes: </b>{{ progressBytes(progress) }} ({{
-          filesize(progressBytes(progress))
+        <b>Uploaded Bytes: </b>{{ harvest.report.itemsSizeBytes }} ({{
+          filesize(harvest.report.itemsSizeBytes)
         }})
       </li>
     </ul>
 
     <div class="clearfix">
-      <button class="btn btn-danger float-start" (click)="onCancel()">
+      <button
+        class="btn btn-danger float-start"
+        [disabled]="loading"
+        (click)="onCancel()"
+      >
         Cancel
       </button>
-      <button class="btn btn-warning float-end" (click)="onFinishedUploading()">
+      <button
+        class="btn btn-warning float-end"
+        [disabled]="loading"
+        (click)="onFinishedUploading()"
+      >
         Upload batch
       </button>
     </div>
   `,
 })
-export class HarvestBatchUploadingComponent {
+export class HarvestBatchUploadingComponent implements OnInit {
+  @Input() public harvest: Harvest;
+  @Input() public startPolling: (interval: number) => void;
+
   @Output() public stage = new EventEmitter<HarvestStage>();
 
+  public loading: boolean;
   public active = 1;
   public filesize = filesize;
 
-  private intervalSpeed = 300;
-  public progress$ = timer(0, this.intervalSpeed).pipe(
-    startWith(0),
-    endWith(100)
-  );
+  public constructor(
+    private notification: ToastrService,
+    private harvestApi: ShallowHarvestsService
+  ) {}
 
-  public progressBytes(progress: number): number {
-    // Multiply progress by random offset
-    return progress * 31234321;
+  public ngOnInit(): void {
+    this.startPolling(1000);
   }
 
   public onCancel(): void {
-    this.stage.emit(HarvestStage.newHarvest);
+    this.transition("complete");
   }
 
   public onFinishedUploading(): void {
-    this.stage.emit(HarvestStage.scanning);
+    this.transition("scanning");
+  }
+
+  private transition(stage: HarvestStatus) {
+    this.loading = true;
+
+    // We want this api request to complete regardless of component destruction
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+    this.harvestApi.transitionStatus(this.harvest, stage).subscribe({
+      next: (harvest) => {
+        this.loading = false;
+        this.stage.emit(HarvestStage[harvest.status]);
+      },
+      error: (err: BawApiError) => {
+        this.loading = false;
+        this.notification.error(err.message);
+      },
+    });
   }
 }

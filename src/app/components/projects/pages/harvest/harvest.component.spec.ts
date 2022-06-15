@@ -71,8 +71,8 @@ describe("HarvestComponent", () => {
     }
 
     it("should show new harvest stage", () => {
-      setStage(HarvestStage.newHarvest);
-      assertStage(HarvestStage.newHarvest, HarvestNewComponent);
+      setStage(HarvestStage.new_harvest);
+      assertStage(HarvestStage.new_harvest, HarvestNewComponent);
     });
 
     it("should show stream uploading stage", () => {
@@ -95,16 +95,16 @@ describe("HarvestComponent", () => {
     });
 
     it("should show metadata extraction stage", () => {
-      setStage(HarvestStage.metadataExtraction);
+      setStage(HarvestStage.metadata_extraction);
       assertStage(
-        HarvestStage.metadataExtraction,
+        HarvestStage.metadata_extraction,
         HarvestMetadataExtractionComponent
       );
     });
 
     it("should show metadata review stage", () => {
-      setStage(HarvestStage.metadataReview);
-      assertStage(HarvestStage.metadataReview, HarvestMetadataReviewComponent);
+      setStage(HarvestStage.metadata_review);
+      assertStage(HarvestStage.metadata_review, HarvestMetadataReviewComponent);
     });
 
     it("should show processing stage", () => {

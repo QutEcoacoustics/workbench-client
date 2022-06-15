@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -9,30 +10,34 @@ import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import {
+  catchError,
   filter,
   interval,
-  Observable,
   Subject,
   Subscription,
   switchMap,
   takeUntil,
+  throwError,
 } from "rxjs";
 import { harvestProjectMenuItem, projectCategory } from "../../projects.menus";
 import { projectMenuItemActions } from "../details/details.component";
 
+// TODO Rename these so they match JS standards
 export enum HarvestStage {
-  newHarvest,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  new_harvest,
   uploading,
   scanning,
-  metadataExtraction,
-  metadataReview,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  metadata_extraction,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  metadata_review,
   processing,
   review,
   complete,
 }
-
-export type UploadType = "batch" | "stream";
 
 const projectKey = "project";
 
@@ -46,15 +51,16 @@ class HarvestComponent
 {
   public project: Project;
 
-  public harvest$: Observable<Harvest | undefined>;
+  public harvest: Harvest;
   public harvestTrigger$ = new Subject<void>();
   public harvestInterval: Subscription;
 
-  public stage: HarvestStage = HarvestStage.newHarvest;
+  public stage: HarvestStage = HarvestStage.new_harvest;
   public harvestStage = HarvestStage;
   public isStreaming: boolean;
 
   public constructor(
+    private notifications: ToastrService,
     private route: ActivatedRoute,
     private harvestApi: HarvestsService
   ) {
@@ -63,17 +69,23 @@ class HarvestComponent
 
   public ngOnInit(): void {
     this.project = this.route.snapshot.data[projectKey].model;
-    this.harvest$ = this.harvestTrigger$.pipe(
-      switchMap(() => this.harvestApi.currentHarvest(this.project))
-    );
-
-    this.harvest$
+    this.harvestTrigger$
       .pipe(
+        switchMap(() => this.harvestApi.currentHarvest(this.project)),
+        catchError((err: BawApiError) => {
+          this.notifications.error(
+            "Failed to load harvest data, refresh this page to reconnect",
+            undefined,
+            { disableTimeOut: true }
+          );
+          return throwError(() => err);
+        }),
         filter((harvest) => isInstantiated(harvest)),
         takeUntil(this.unsubscribe)
       )
       .subscribe((harvest): void => {
         console.log(harvest);
+        this.harvest = harvest;
         this.stage = HarvestStage[harvest.status];
       });
 
@@ -81,27 +93,24 @@ class HarvestComponent
   }
 
   public setStage(stage: HarvestStage): void {
+    this.stopPolling();
     this.reloadModel();
     this.stage = stage;
-  }
-
-  public setType(stage: UploadType): void {
-    this.isStreaming = stage === "stream";
   }
 
   public reloadModel(): void {
     this.harvestTrigger$.next();
   }
 
-  public startPolling(intervalMs: number = 1000): void {
+  public startPolling = (intervalMs: number = 1000): void => {
     this.harvestInterval = interval(intervalMs)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((): void => this.reloadModel());
-  }
+  };
 
-  public stopPolling(): void {
-    this.harvestInterval.unsubscribe();
-  }
+  public stopPolling = (): void => {
+    this.harvestInterval?.unsubscribe();
+  };
 }
 
 HarvestComponent.linkToRoute({

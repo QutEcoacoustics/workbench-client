@@ -1,4 +1,5 @@
 import { Injector } from "@angular/core";
+import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { projectHarvestRoute } from "@components/projects/projects.routes";
 import {
   DateTimeTimezone,
@@ -7,13 +8,15 @@ import {
 } from "@interfaces/apiInterfaces";
 import { Duration } from "luxon";
 import { AbstractModel, AbstractModelWithoutId } from "./AbstractModel";
-import { creator, updater } from "./AssociationDecorators";
+import { creator, hasOne, updater } from "./AssociationDecorators";
 import {
   bawDateTime,
   bawDuration,
   bawPersistAttr,
 } from "./AttributeDecorators";
-import { User } from "./User";
+import type { Project } from "./Project";
+import type { Site } from "./Site";
+import type { User } from "./User";
 
 /**
  * Status of a harvest
@@ -29,11 +32,11 @@ import { User } from "./User";
  * @param complete The harvest is complete
  */
 export type HarvestStatus =
-  | "newHarvest"
+  | "new_harvest"
   | "uploading"
   | "scanning"
-  | "metadataExtraction"
-  | "metadataReview"
+  | "metadata_extraction"
+  | "metadata_review"
   | "processing"
   | "review"
   | "complete";
@@ -45,6 +48,33 @@ export interface IHarvestMapping {
   recursive?: boolean;
 }
 
+export class HarvestMapping
+  extends AbstractModelWithoutId
+  implements IHarvestMapping
+{
+  public readonly kind = "HarvestMapping";
+  @bawPersistAttr()
+  public readonly path?: string;
+  @bawPersistAttr()
+  public readonly siteId?: Id;
+  @bawPersistAttr()
+  public readonly utcOffset?: string;
+  @bawPersistAttr()
+  public readonly recursive?: boolean;
+
+  // Associations
+  @hasOne<HarvestMapping, Site>(SHALLOW_SITE, "siteId")
+  public site?: Site;
+
+  public constructor(data: IHarvestMapping, injector?: Injector) {
+    super(data, injector);
+  }
+
+  public get viewUrl(): string {
+    throw new Error("HarvestMapping has no viewUrl");
+  }
+}
+
 export interface IHarvest extends HasCreatorAndUpdater {
   id?: Id;
   streaming?: boolean;
@@ -53,7 +83,7 @@ export interface IHarvest extends HasCreatorAndUpdater {
   uploadPassword?: string;
   uploadUser?: string;
   uploadUrl?: string;
-  mappings?: IHarvestMapping[];
+  mappings?: IHarvestMapping[] | HarvestMapping[];
   report?: IHarvestReport | HarvestReport;
   lastMetadataReviewAt?: DateTimeTimezone | string;
   lastMappingUpdateAt?: DateTimeTimezone | string;
@@ -75,7 +105,7 @@ export class Harvest extends AbstractModel implements IHarvest {
   public readonly uploadUser?: string;
   public readonly uploadUrl?: string;
   @bawPersistAttr()
-  public mappings?: IHarvestMapping[];
+  public mappings?: HarvestMapping[];
   public readonly report?: HarvestReport;
   @bawDateTime()
   public readonly lastMetadataReviewAt?: DateTimeTimezone;
@@ -83,6 +113,8 @@ export class Harvest extends AbstractModel implements IHarvest {
   public readonly lastMappingUpdateAt?: DateTimeTimezone;
 
   // Associations
+  @hasOne<Harvest, Project>(PROJECT, "projectId")
+  public project?: Project;
   @creator<Harvest>()
   public creator?: User;
   @updater<Harvest>()
@@ -90,6 +122,9 @@ export class Harvest extends AbstractModel implements IHarvest {
 
   public constructor(data: IHarvest, injector?: Injector) {
     super(data, injector);
+    this.mappings = ((data.mappings as IHarvestMapping[]) ?? []).map(
+      (mapping) => new HarvestMapping(mapping, injector)
+    );
     this.report = new HarvestReport(data.report, injector);
   }
 
@@ -100,6 +135,14 @@ export class Harvest extends AbstractModel implements IHarvest {
   /** Is true if mappings array has changes which have not been reviewed */
   public get isMappingsDirty(): boolean {
     return this.lastMetadataReviewAt < this.lastMappingUpdateAt;
+  }
+
+  public addMapping(mapping: IHarvestMapping | HarvestMapping): void {
+    if (mapping instanceof HarvestMapping) {
+      this.mappings.push(mapping);
+    } else {
+      this.mappings.push(new HarvestMapping(mapping, this.injector));
+    }
   }
 }
 

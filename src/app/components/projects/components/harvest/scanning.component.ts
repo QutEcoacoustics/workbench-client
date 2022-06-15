@@ -31,7 +31,7 @@ export class HarvestScanningComponent {
     endWith(100),
     tap((progress) => {
       if (progress >= 100) {
-        this.stage.emit(HarvestStage.metadataExtraction);
+        this.stage.emit(HarvestStage.metadata_extraction);
       }
     })
   );

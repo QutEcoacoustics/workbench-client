@@ -36,7 +36,7 @@ export class HarvestMetadataExtractionComponent {
     endWith(100),
     tap((progress) => {
       if (progress >= 100) {
-        this.stage.emit(HarvestStage.metadataReview);
+        this.stage.emit(HarvestStage.metadata_review);
       }
     })
   );

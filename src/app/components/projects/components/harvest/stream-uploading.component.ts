@@ -1,13 +1,12 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { retrieveResolvedModel } from "@baw-api/resolver-common";
-import { SitesService } from "@baw-api/site/sites.service";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { Harvest, HarvestMapping, IHarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
-import { Site } from "@models/Site";
 import filesize from "filesize";
-import { endWith, Observable, startWith, timer } from "rxjs";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "baw-harvest-stream-uploading",
@@ -16,7 +15,9 @@ import { endWith, Observable, startWith, timer } from "rxjs";
 
     <p>You can upload to:</p>
 
-    <p><a [href]="baseHarvestLink"> baseHarvestLink </a></p>
+    <p>
+      <a [href]="harvest.uploadUrl">{{ harvest.uploadUrl }}</a>
+    </p>
 
     <p>Rules:</p>
 
@@ -34,40 +35,58 @@ import { endWith, Observable, startWith, timer } from "rxjs";
 
     <p>Here are some example URLs you can use to upload your files:</p>
 
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">Point name</th>
-          <th scope="col">Upload folder</th>
-          <th scope="col">Example url</th>
-        </tr>
-      </thead>
+    <ngx-datatable
+      class="mb-3"
+      bawDatatableDefaults
+      [rows]="mappings"
+      [externalPaging]="false"
+      [externalSorting]="false"
+    >
+      <ngx-datatable-column prop="siteId">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Site/Point
+        </ng-template>
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <baw-loading
+            *ngIf="row.site | isUnresolved; else showSite"
+            size="sm"
+          ></baw-loading>
 
-      <tbody *ngIf="sites$ | withLoading | async as sites">
-        <tr *ngIf="sites.loading">
-          <td><span class="placeholder w-25"></span></td>
-          <td><span class="placeholder w-25"></span></td>
-          <td><span class="placeholder w-100"></span></td>
-        </tr>
+          <ng-template #showSite>
+            <a [bawUrl]="row.site.getViewUrl(project)">
+              {{ row.site.name }}
+            </a>
+          </ng-template>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="path">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Upload folder
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="url">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Example URL
+        </ng-template>
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <a [href]="getMappingUploadUrl(row)">
+            {{ getMappingUploadUrl(row) }}
+          </a>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
 
-        <tr *ngFor="let site of sites.value">
-          <!-- TODO Show Region name -->
-          <td>{{ project.name }} / {{ site.name }}</td>
-          <td>{{ site.id }}</td>
-          <td>
-            <a [href]="getHarvestLink(site)">{{ getHarvestLink(site) }}</a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
+    <!-- TODO Extract to sub component -->
     <h4>Current Progress</h4>
 
-    <ul *ngIf="progress$ | async as progress">
-      <li><b>Uploaded Files: </b>{{ progress }}</li>
+    <ul>
+      <li><b>Uploaded Files: </b>{{ harvest.report.itemsTotal }}</li>
       <li>
-        <b>Uploaded Bytes: </b>{{ progressBytes(progress) }} ({{
-          filesize(progressBytes(progress))
+        <b>Uploaded Bytes: </b>{{ harvest.report.itemsSizeBytes }} ({{
+          filesize(harvest.report.itemsSizeBytes)
         }})
       </li>
     </ul>
@@ -77,51 +96,55 @@ import { endWith, Observable, startWith, timer } from "rxjs";
         If you close this harvest you cannot reopen it and the passwords will be
         revoked permanently
       </p>
-      <button class="btn btn-danger float-end" (click)="closeConnectionClick()">
+      <button
+        class="btn btn-danger float-end"
+        [disabled]="loading"
+        (click)="closeConnectionClick()"
+      >
         Close Connection
       </button>
     </div>
   `,
 })
 export class HarvestStreamUploadingComponent implements OnInit {
+  @Input() public project: Project;
+  @Input() public harvest: Harvest;
+  @Input() public startPolling: (interval: number) => void;
   @Output() public stage = new EventEmitter<HarvestStage>();
 
+  public loading: boolean;
   public active = 1;
   public filesize = filesize;
   public audioRecordings = audioRecordingMenuItems.list.project;
-  public sites$: Observable<Site[]>;
-  public project: Project;
-
-  private intervalSpeed = 300;
-  public progress$ = timer(0, this.intervalSpeed).pipe(
-    startWith(0),
-    endWith(100)
-  );
+  public mappings: HarvestMapping[];
 
   public constructor(
-    private siteApi: SitesService,
-    private route: ActivatedRoute
+    private notifications: ToastrService,
+    private harvestApi: ShallowHarvestsService
   ) {}
 
   public ngOnInit(): void {
-    this.project = retrieveResolvedModel(this.route.snapshot.data, Project);
-    this.sites$ = this.siteApi.list(this.project);
+    this.mappings = this.harvest.mappings;
+    this.startPolling(5000);
   }
 
-  public progressBytes(progress: number): number {
-    // Multiply progress by random offset
-    return progress * 31234321;
-  }
-
-  public get baseHarvestLink(): string {
-    return "sftp://harvest:kjhgasdfkjhgasdkjfhgasdfkjhg@upload.ecosounds.qut.ecoacoustics.info:22";
-  }
-
-  public getHarvestLink(site: Site): string {
-    return `${this.baseHarvestLink}/${site.id}`;
+  public getMappingUploadUrl(mapping: IHarvestMapping) {
+    return this.harvest.uploadUrl + "/" + mapping.path;
   }
 
   public closeConnectionClick(): void {
-    this.stage.emit(HarvestStage.complete);
+    this.loading = true;
+
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+    this.harvestApi.transitionStatus(this.harvest, "complete").subscribe({
+      next: (harvest): void => {
+        this.loading = false;
+        this.stage.emit(HarvestStage[harvest.status]);
+      },
+      error: (err: BawApiError): void => {
+        this.loading = false;
+        this.notifications.error(err.message);
+      },
+    });
   }
 }

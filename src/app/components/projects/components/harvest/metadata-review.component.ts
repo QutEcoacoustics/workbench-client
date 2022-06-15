@@ -121,7 +121,7 @@ export class HarvestMetadataReviewComponent
       {
         id: 1,
         streaming: false,
-        status: "metadataExtraction",
+        status: "metadata_extraction",
         projectId: 16,
         uploadPassword: "w4XNP2eex0Inn6b",
         uploadUser: "Amir8",

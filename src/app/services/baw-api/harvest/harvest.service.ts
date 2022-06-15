@@ -87,13 +87,19 @@ export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
   }
 
   /** @inheritdoc ShallowHarvestsService.transitionStatus */
-  public transitionStatus(status: HarvestStatus): Observable<Harvest> {
-    return this.shallowHarvestsApi.transitionStatus(status);
+  public transitionStatus(
+    model: IdOr<Harvest>,
+    status: HarvestStatus
+  ): Observable<Harvest> {
+    return this.shallowHarvestsApi.transitionStatus(model, status);
   }
 
   /** @inheritdoc ShallowHarvestsService.updateMappings */
-  public updateMappings(mappings: IHarvestMapping[]): Observable<Harvest> {
-    return this.shallowHarvestsApi.updateMappings(mappings);
+  public updateMappings(
+    model: IdOr<Harvest>,
+    mappings: IHarvestMapping[]
+  ): Observable<Harvest> {
+    return this.shallowHarvestsApi.updateMappings(model, mappings);
   }
 }
 
@@ -139,10 +145,13 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
    *
    * @param status Status to change to if valid
    */
-  public transitionStatus(status: HarvestStatus): Observable<Harvest> {
+  public transitionStatus(
+    model: IdOr<Harvest>,
+    status: HarvestStatus
+  ): Observable<Harvest> {
     return this.api
       .httpPatch(
-        shallowEndpoint(emptyParam, emptyParam),
+        shallowEndpoint(model, emptyParam),
         // TODO Replace harvest with Harvest.kind
         { harvest: { status } }
       )
@@ -154,10 +163,13 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
    *
    * @param mappings Mappings of folders to sites
    */
-  public updateMappings(mappings: IHarvestMapping[]): Observable<Harvest> {
+  public updateMappings(
+    model: IdOr<Harvest>,
+    mappings: IHarvestMapping[]
+  ): Observable<Harvest> {
     return this.api
       .httpPatch(
-        shallowEndpoint(emptyParam, emptyParam),
+        shallowEndpoint(model, emptyParam),
         // TODO Replace harvest with Harvest.kind
         { harvest: { mappings } }
       )

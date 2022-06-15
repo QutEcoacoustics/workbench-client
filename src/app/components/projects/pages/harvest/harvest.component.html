@@ -8,53 +8,59 @@
   <baw-stepper [numSteps]="8" [activeStep]="stage"></baw-stepper>
 
   <div [ngSwitch]="stage">
-    <div *ngSwitchCase="harvestStage.newHarvest">
-      <baw-harvest-new
-        (stage)="setStage($event)"
-        (type)="setType($event)"
-      ></baw-harvest-new>
-    </div>
+    <baw-harvest-new
+      *ngSwitchCase="harvestStage.new_harvest"
+      [project]="project"
+      (stage)="setStage($event)"
+    ></baw-harvest-new>
 
     <div *ngSwitchCase="harvestStage.uploading">
+      <baw-loading *ngIf="!harvest"></baw-loading>
+
       <baw-harvest-stream-uploading
-        *ngIf="isStreaming"
+        *ngIf="harvest?.streaming"
+        [project]="project"
+        [harvest]="harvest"
+        [startPolling]="startPolling"
         (stage)="setStage($event)"
       ></baw-harvest-stream-uploading>
 
       <baw-harvest-batch-uploading
-        *ngIf="!isStreaming"
+        *ngIf="!harvest?.streaming"
+        [harvest]="harvest"
+        [startPolling]="startPolling"
         (stage)="setStage($event)"
       ></baw-harvest-batch-uploading>
     </div>
 
-    <div *ngSwitchCase="harvestStage.scanning">
-      <baw-harvest-scanning (stage)="setStage($event)"></baw-harvest-scanning>
-    </div>
+    <baw-harvest-scanning
+      *ngSwitchCase="harvestStage.scanning"
+      (stage)="setStage($event)"
+    ></baw-harvest-scanning>
 
-    <div *ngSwitchCase="harvestStage.metadataExtraction">
-      <baw-harvest-metadata-extraction
-        (stage)="setStage($event)"
-      ></baw-harvest-metadata-extraction>
-    </div>
+    <baw-harvest-metadata-extraction
+      *ngSwitchCase="harvestStage.metadata_extraction"
+      (stage)="setStage($event)"
+    ></baw-harvest-metadata-extraction>
 
-    <div *ngSwitchCase="harvestStage.metadataReview">
-      <baw-harvest-metadata-review
-        (stage)="setStage($event)"
-      ></baw-harvest-metadata-review>
-    </div>
+    <baw-harvest-metadata-review
+      *ngSwitchCase="harvestStage.metadata_review"
+      (stage)="setStage($event)"
+    ></baw-harvest-metadata-review>
 
-    <div *ngSwitchCase="harvestStage.processing">
-      <baw-harvest-processing
-        (stage)="setStage($event)"
-      ></baw-harvest-processing>
-    </div>
+    <baw-harvest-processing
+      *ngSwitchCase="harvestStage.processing"
+      (stage)="setStage($event)"
+    ></baw-harvest-processing>
 
-    <div *ngSwitchCase="harvestStage.review">
-      <baw-harvest-review (stage)="setStage($event)"></baw-harvest-review>
-    </div>
+    <baw-harvest-review
+      *ngSwitchCase="harvestStage.review"
+      (stage)="setStage($event)"
+    ></baw-harvest-review>
 
-    <div *ngSwitchCase="harvestStage.complete">
-      <baw-harvest-complete (stage)="setStage($event)"></baw-harvest-complete>
-    </div>
+    <baw-harvest-complete
+      *ngSwitchCase="harvestStage.complete"
+      (stage)="setStage($event)"
+    ></baw-harvest-complete>
   </div>
 </div>
