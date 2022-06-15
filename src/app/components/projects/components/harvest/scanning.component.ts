@@ -1,5 +1,9 @@
-import { Component, EventEmitter, Output } from "@angular/core";
-import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import {
+  HarvestPolling,
+  HarvestStage,
+} from "@components/projects/pages/harvest/harvest.component";
+import { Harvest } from "@models/Harvest";
 import { endWith, startWith, tap, timer } from "rxjs";
 
 @Component({
@@ -23,6 +27,9 @@ import { endWith, startWith, tap, timer } from "rxjs";
   `,
 })
 export class HarvestScanningComponent {
+  @Input() public harvest: Harvest;
+  @Input() public startPolling: HarvestPolling;
+
   @Output() public stage = new EventEmitter<HarvestStage>();
 
   private intervalSpeed = 150;

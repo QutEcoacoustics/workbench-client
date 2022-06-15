@@ -15,6 +15,8 @@ import { HarvestScanningComponent } from "./components/harvest/scanning.componen
 import { HarvestStreamUploadingComponent } from "./components/harvest/stream-uploading.component";
 import { SiteSelectorComponent } from "./components/inputs/site-selector.component";
 import { UTCOffsetSelectorComponent } from "./components/inputs/utc-offset-selector.component";
+import { HarvestProgressComponent } from "./components/shared/progress.component";
+import { HarvestUploadUrlComponent } from "./components/shared/upload-url.component";
 import { SiteCardComponent } from "./components/site-card/site-card.component";
 import { SiteMapComponent } from "./components/site-map/site-map.component";
 import { AssignComponent } from "./pages/assign/assign.component";
@@ -30,6 +32,7 @@ import { UploadAnnotationsComponent } from "./pages/upload-annotations/upload-an
 import { projectsRoute } from "./projects.routes";
 
 const components = [
+  // Harvest screens
   HarvestBatchUploadingComponent,
   HarvestCanCloseDialogComponent,
   HarvestCompleteComponent,
@@ -41,6 +44,11 @@ const components = [
   HarvestScanningComponent,
   HarvestStreamUploadingComponent,
 
+  // Shared
+  HarvestProgressComponent,
+  HarvestUploadUrlComponent,
+
+  // Input
   SiteSelectorComponent,
   UTCOffsetSelectorComponent,
 

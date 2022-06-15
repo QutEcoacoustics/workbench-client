@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import {
@@ -17,9 +18,7 @@ import { ToastrService } from "ngx-toastr";
 
     <p>You can upload to:</p>
 
-    <p>
-      <a [href]="harvest.uploadUrl">{{ harvest.uploadUrl }}</a>
-    </p>
+    <baw-harvest-upload-url [harvest]="harvest"></baw-harvest-upload-url>
 
     <p>Rules:</p>
 
@@ -74,24 +73,14 @@ import { ToastrService } from "ngx-toastr";
           Example URL
         </ng-template>
         <ng-template let-row="row" ngx-datatable-cell-template>
-          <a [href]="getMappingUploadUrl(row)">
+          <a [href]="getTrustedMappingUploadUrl(row)">
             {{ getMappingUploadUrl(row) }}
           </a>
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
 
-    <!-- TODO Extract to sub component -->
-    <h4>Current Progress</h4>
-
-    <ul>
-      <li><b>Uploaded Files: </b>{{ harvest.report.itemsTotal }}</li>
-      <li>
-        <b>Uploaded Bytes: </b>{{ harvest.report.itemsSizeBytes }} ({{
-          harvest.report.itemsSize
-        }})
-      </li>
-    </ul>
+    <baw-harvest-progress [harvest]="harvest"></baw-harvest-progress>
 
     <div class="clearfix">
       <p>
@@ -120,17 +109,26 @@ export class HarvestStreamUploadingComponent implements OnInit {
   public mappings: HarvestMapping[];
 
   public constructor(
+    private domSanitizer: DomSanitizer,
     private notifications: ToastrService,
     private harvestApi: ShallowHarvestsService
   ) {}
 
   public ngOnInit(): void {
+    // TODO If mapping updates are possible after the initial load, we may want
+    // to check for changes whenever harvest is updated
     this.mappings = this.harvest.mappings;
     this.startPolling(5000);
   }
 
   public getMappingUploadUrl(mapping: IHarvestMapping) {
     return this.harvest.uploadUrl + "/" + mapping.path;
+  }
+
+  public getTrustedMappingUploadUrl(mapping: IHarvestMapping) {
+    return this.domSanitizer.bypassSecurityTrustUrl(
+      this.getMappingUploadUrl(mapping)
+    );
   }
 
   public closeConnectionClick(): void {

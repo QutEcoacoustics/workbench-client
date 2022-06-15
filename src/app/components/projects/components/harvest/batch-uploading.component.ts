@@ -58,29 +58,11 @@ import { ToastrService } from "ngx-toastr";
       </li>
     </ul>
 
-    <p>
-      Server URL:
-      <a target="_blank" [href]="harvest.uploadUrl">
-        {{ harvest.uploadUrl }}
-      </a>
-    </p>
-
-    <p>Username: {{ harvest.uploadUser }}</p>
-    <p>Password: {{ harvest.uploadPassword }}</p>
+    <baw-harvest-upload-url [harvest]="harvest"></baw-harvest-upload-url>
 
     <hr />
 
-    <!-- TODO Extract to sub component -->
-    <h4>Current Progress</h4>
-
-    <ul>
-      <li><b>Uploaded Files: </b>{{ harvest.report.itemsTotal }}</li>
-      <li>
-        <b>Uploaded Bytes: </b>{{ harvest.report.itemsSizeBytes }} ({{
-          harvest.report.itemsSize
-        }})
-      </li>
-    </ul>
+    <baw-harvest-progress [harvest]="harvest"></baw-harvest-progress>
 
     <div class="clearfix">
       <button
