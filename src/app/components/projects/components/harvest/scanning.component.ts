@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import {
   HarvestPolling,
   HarvestStage,
@@ -26,20 +26,13 @@ import { endWith, startWith, tap, timer } from "rxjs";
     </p>
   `,
 })
-export class HarvestScanningComponent {
+export class HarvestScanningComponent implements OnInit {
   @Input() public harvest: Harvest;
   @Input() public startPolling: HarvestPolling;
 
   @Output() public stage = new EventEmitter<HarvestStage>();
 
-  private intervalSpeed = 150;
-  public progress$ = timer(0, this.intervalSpeed).pipe(
-    startWith(0),
-    endWith(100),
-    tap((progress) => {
-      if (progress >= 100) {
-        this.stage.emit(HarvestStage.metadata_extraction);
-      }
-    })
-  );
+  public ngOnInit(): void {
+    this.startPolling(5000);
+  }
 }
