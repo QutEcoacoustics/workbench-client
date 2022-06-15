@@ -39,6 +39,8 @@ export enum HarvestStage {
   complete,
 }
 
+export type HarvestPolling = (interval: number) => void;
+
 const projectKey = "project";
 
 @Component({
@@ -102,7 +104,7 @@ class HarvestComponent
     this.harvestTrigger$.next();
   }
 
-  public startPolling = (intervalMs: number = 1000): void => {
+  public startPolling: HarvestPolling = (intervalMs: number = 1000): void => {
     this.harvestInterval = interval(intervalMs)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((): void => this.reloadModel());

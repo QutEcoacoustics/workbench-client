@@ -15,6 +15,7 @@ import {
 import { AbstractModel } from "./AbstractModel";
 import { creator, deleter, hasOne, updater } from "./AssociationDecorators";
 import {
+  bawBytes,
   bawDateTime,
   bawDuration,
   bawPersistAttr,
@@ -80,6 +81,8 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly overallDuration?: Duration;
   public readonly overallDurationSeconds?: number;
   public readonly overallDataLengthBytes?: number;
+  @bawBytes({ key: "overallDataLengthBytes" })
+  public readonly overallDataLength?: string;
 
   // Associations
   @creator<AnalysisJob>()

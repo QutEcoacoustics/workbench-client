@@ -105,6 +105,15 @@
       }
     },
     {
+      "key": "dataLength",
+      "type": "input",
+      "templateOptions": {
+        "label": "Data Length Humanized",
+        "type": "text",
+        "disabled": true
+      }
+    },
+    {
       "key": "fileHash",
       "hide": true,
       "templateOptions": {

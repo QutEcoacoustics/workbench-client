@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
-import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
+import {
+  HarvestPolling,
+  HarvestStage,
+} from "@components/projects/pages/harvest/harvest.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Harvest, HarvestMapping, IHarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
-import filesize from "filesize";
 import { ToastrService } from "ngx-toastr";
 
 @Component({
@@ -86,7 +88,7 @@ import { ToastrService } from "ngx-toastr";
       <li><b>Uploaded Files: </b>{{ harvest.report.itemsTotal }}</li>
       <li>
         <b>Uploaded Bytes: </b>{{ harvest.report.itemsSizeBytes }} ({{
-          filesize(harvest.report.itemsSizeBytes)
+          harvest.report.itemsSize
         }})
       </li>
     </ul>
@@ -109,12 +111,11 @@ import { ToastrService } from "ngx-toastr";
 export class HarvestStreamUploadingComponent implements OnInit {
   @Input() public project: Project;
   @Input() public harvest: Harvest;
-  @Input() public startPolling: (interval: number) => void;
+  @Input() public startPolling: HarvestPolling;
   @Output() public stage = new EventEmitter<HarvestStage>();
 
   public loading: boolean;
   public active = 1;
-  public filesize = filesize;
   public audioRecordings = audioRecordingMenuItems.list.project;
   public mappings: HarvestMapping[];
 

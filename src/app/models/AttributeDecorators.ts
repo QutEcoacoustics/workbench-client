@@ -1,6 +1,7 @@
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
+import fileSize from "filesize";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 
@@ -189,6 +190,18 @@ export function bawDuration<Model>(opts?: BawDecoratorOptions<Model>) {
         : null;
     }
   );
+}
+
+/**
+ * Convert bytes into a human readable format
+ */
+export function bawBytes<Model>(opts?: BawDecoratorOptions<Model>) {
+  return createDecorator<Model>(opts, (model, key, bytes: number | string) => {
+    if (typeof bytes === "string") {
+      return;
+    }
+    model[key] = isInstantiated(bytes) ? fileSize(bytes) : null;
+  });
 }
 
 /**

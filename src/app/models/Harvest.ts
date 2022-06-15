@@ -10,6 +10,7 @@ import { Duration } from "luxon";
 import { AbstractModel, AbstractModelWithoutId } from "./AbstractModel";
 import { creator, hasOne, updater } from "./AssociationDecorators";
 import {
+  bawBytes,
   bawDateTime,
   bawDuration,
   bawPersistAttr,
@@ -85,8 +86,9 @@ export interface IHarvest extends HasCreatorAndUpdater {
   uploadUrl?: string;
   mappings?: IHarvestMapping[] | HarvestMapping[];
   report?: IHarvestReport | HarvestReport;
+  lastUploadAt?: DateTimeTimezone | string;
   lastMetadataReviewAt?: DateTimeTimezone | string;
-  lastMappingUpdateAt?: DateTimeTimezone | string;
+  lastMappingsChangeAt?: DateTimeTimezone | string;
 }
 
 export class Harvest extends AbstractModel implements IHarvest {
@@ -98,8 +100,10 @@ export class Harvest extends AbstractModel implements IHarvest {
   public readonly status?: HarvestStatus;
   public readonly projectId?: Id;
   public readonly creatorId?: Id;
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
   public readonly updaterId?: Id;
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
   public readonly uploadPassword?: string;
   public readonly uploadUser?: string;
@@ -108,9 +112,11 @@ export class Harvest extends AbstractModel implements IHarvest {
   public mappings?: HarvestMapping[];
   public readonly report?: HarvestReport;
   @bawDateTime()
+  public readonly lastUploadAt?: DateTimeTimezone;
+  @bawDateTime()
   public readonly lastMetadataReviewAt?: DateTimeTimezone;
   @bawDateTime()
-  public readonly lastMappingUpdateAt?: DateTimeTimezone;
+  public readonly lastMappingsChangeAt?: DateTimeTimezone;
 
   // Associations
   @hasOne<Harvest, Project>(PROJECT, "projectId")
@@ -134,7 +140,7 @@ export class Harvest extends AbstractModel implements IHarvest {
 
   /** Is true if mappings array has changes which have not been reviewed */
   public get isMappingsDirty(): boolean {
-    return this.lastMetadataReviewAt < this.lastMappingUpdateAt;
+    return this.lastMetadataReviewAt < this.lastMappingsChangeAt;
   }
 
   public addMapping(mapping: IHarvestMapping | HarvestMapping): void {
@@ -168,6 +174,8 @@ export class HarvestReport
   public readonly kind = "HarvestReport";
   public readonly itemsTotal?: number;
   public readonly itemsSizeBytes?: number;
+  @bawBytes<HarvestReport>({ key: "itemsSizeBytes" })
+  public readonly itemsSize?: string;
   public readonly itemsDurationSeconds?: number;
   @bawDuration<HarvestReport>({ key: "itemsDurationSeconds" })
   public readonly itemsDuration?: Duration;

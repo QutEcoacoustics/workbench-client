@@ -17,7 +17,7 @@ import {
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { creator, deleter, hasOne, updater } from "./AssociationDecorators";
-import { bawDateTime, bawDuration } from "./AttributeDecorators";
+import { bawBytes, bawDateTime, bawDuration } from "./AttributeDecorators";
 import { Project } from "./Project";
 import { Region } from "./Region";
 import type { Site } from "./Site";
@@ -67,6 +67,8 @@ export class AudioRecording
   public readonly bitRateBps?: number;
   public readonly mediaType?: string;
   public readonly dataLengthBytes?: number;
+  @bawBytes<AudioRecording>({ key: "dataLengthBytes" })
+  public readonly dataLength?: string;
   public readonly fileHash?: string;
   public readonly status?: AudioRecordingStatus;
   public readonly notes?: Blob;
