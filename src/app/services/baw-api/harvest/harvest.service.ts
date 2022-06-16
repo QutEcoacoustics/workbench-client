@@ -12,7 +12,12 @@ import {
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Harvest, HarvestStatus, IHarvestMapping } from "@models/Harvest";
+import {
+  Harvest,
+  HarvestMapping,
+  HarvestStatus,
+  IHarvestMapping,
+} from "@models/Harvest";
 import { Project } from "@models/Project";
 import { map, Observable } from "rxjs";
 
@@ -74,18 +79,6 @@ export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
     return this.api.destroy(endpoint(project, model, emptyParam));
   }
 
-  public currentHarvest(
-    project: IdOr<Project>
-  ): Observable<Harvest | undefined> {
-    return this.filter(
-      {
-        sorting: { orderBy: "createdAt", direction: "desc" },
-        filter: { status: { notEq: "complete" } },
-      },
-      project
-    ).pipe(map((harvests) => harvests[0] ?? undefined));
-  }
-
   /** @inheritdoc ShallowHarvestsService.transitionStatus */
   public transitionStatus(
     model: IdOr<Harvest>,
@@ -97,7 +90,7 @@ export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
   /** @inheritdoc ShallowHarvestsService.updateMappings */
   public updateMappings(
     model: IdOr<Harvest>,
-    mappings: IHarvestMapping[]
+    mappings: (IHarvestMapping | HarvestMapping)[]
   ): Observable<Harvest> {
     return this.shallowHarvestsApi.updateMappings(model, mappings);
   }
@@ -165,13 +158,19 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
    */
   public updateMappings(
     model: IdOr<Harvest>,
-    mappings: IHarvestMapping[]
+    mappings: (HarvestMapping | IHarvestMapping)[]
   ): Observable<Harvest> {
+    const mappingData: IHarvestMapping[] = mappings.map((mapping) =>
+      mapping instanceof HarvestMapping
+        ? mapping.getJsonAttributes({ update: true })
+        : mapping
+    );
+
     return this.api
       .httpPatch(
         shallowEndpoint(model, emptyParam),
         // TODO Replace harvest with Harvest.kind
-        { harvest: { mappings } }
+        { harvest: { mappings: mappingData } }
       )
       .pipe(map(this.api.handleSingleResponse(Harvest)));
   }

@@ -1,21 +1,14 @@
-import {
-  Component,
-  EventEmitter,
-  Injector,
-  OnInit,
-  Output,
-} from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { retrieveResolvedModel } from "@baw-api/resolver-common";
-import { SitesService } from "@baw-api/site/sites.service";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { Harvest, IHarvestMapping } from "@models/Harvest";
+import { Harvest, HarvestMapping, HarvestStatus } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { ConfigService } from "@services/config/config.service";
 import { ColumnMode } from "@swimlane/ngx-datatable";
-import { takeUntil } from "rxjs";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "baw-harvest-metadata-review",
@@ -27,7 +20,7 @@ import { takeUntil } from "rxjs";
     <ngx-datatable
       class="mb-3"
       bawDatatableDefaults
-      [rows]="mappings"
+      [rows]="harvest.mappings"
       [externalPaging]="false"
       [externalSorting]="false"
     >
@@ -51,11 +44,18 @@ import { takeUntil } from "rxjs";
           let-value="value"
           ngx-datatable-cell-template
         >
-          <baw-site-selector
-            [project]="project"
-            [siteId]="value"
-            (siteIdChange)="setSite(row, $event)"
-          ></baw-site-selector>
+          <baw-loading
+            *ngIf="row.site | isUnresolved; else siteSelector"
+            size="sm"
+          ></baw-loading>
+
+          <ng-template #siteSelector>
+            <baw-site-selector
+              [project]="project"
+              [site]="row.site"
+              (siteIdChange)="setSite(row, $event)"
+            ></baw-site-selector>
+          </ng-template>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column prop="utcOffset" [width]="200" [maxWidth]="200">
@@ -68,7 +68,6 @@ import { takeUntil } from "rxjs";
           ngx-datatable-cell-template
         >
           <baw-utc-offset-selector
-            [project]="project"
             [offset]="value"
             (offsetChange)="setOffset(row, $event)"
           ></baw-utc-offset-selector>
@@ -76,16 +75,34 @@ import { takeUntil } from "rxjs";
       </ngx-datatable-column>
     </ngx-datatable>
 
-    <div class="clearfix">
+    <div class="d-flex justify-content-around">
       <button
-        class="btn btn-outline-primary float-start"
+        class="btn btn-outline-primary"
+        [disabled]="loading"
         (click)="onBackClick()"
       >
         Make changes or upload more files
       </button>
+      <button
+        *ngIf="harvest.isMappingsDirty"
+        class="btn btn-primary"
+        [disabled]="loading"
+        (click)="onSaveClick()"
+      >
+        Save changes
+      </button>
       <!-- Redirect to metadata extraction instead of next step if changes made -->
-      <button class="btn btn-primary float-end" (click)="onSaveClick()">
-        Save and upload
+      <!-- TODO Modal popup when hasUnsavedChanges -->
+      <button
+        class="btn"
+        [class.btn-primary]="!harvest.isMappingsDirty"
+        [class.btn-danger]="harvest.isMappingsDirty"
+        [disabled]="loading"
+        (click)="onNextClick()"
+      >
+        {{
+          harvest.isMappingsDirty ? "Ignore changes and continue" : "Continue"
+        }}
       </button>
     </div>
   `,
@@ -94,105 +111,85 @@ export class HarvestMetadataReviewComponent
   extends withUnsubscribe()
   implements OnInit, UnsavedInputCheckingComponent
 {
+  @Input() public project: Project;
+  @Input() public harvest: Harvest;
+
   @Output() public stage = new EventEmitter<HarvestStage>();
 
-  public hasUnsavedChange: boolean;
+  public loading: boolean;
+  public hasUnsavedChanges: boolean;
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public ColumnMode = ColumnMode;
-  public project: Project;
   public siteColumnLabel: string;
-  public harvest: Harvest;
-  public mappings: IHarvestMapping[] = [];
 
   public constructor(
     private config: ConfigService,
-    private siteApi: SitesService,
-    private route: ActivatedRoute,
-    private injector: Injector
+    private notification: ToastrService,
+    private harvestApi: ShallowHarvestsService
   ) {
     super();
   }
 
   public ngOnInit(): void {
-    this.project = retrieveResolvedModel(this.route.snapshot.data, Project);
     this.siteColumnLabel = this.config.settings.hideProjects ? "Point" : "Site";
-    this.harvest = new Harvest(
-      {
-        id: 1,
-        streaming: false,
-        status: "metadata_extraction",
-        projectId: 16,
-        uploadPassword: "w4XNP2eex0Inn6b",
-        uploadUser: "Amir8",
-        uploadUrl: "http://torn-rebel.name",
-        mappings: [],
-        report: {
-          itemsTotal: 28007,
-          itemsSizeBytes: 98463,
-          itemsDurationSeconds: 21751,
-          itemsInvalidFixable: 24169,
-          itemsInvalidNotFixable: 66148,
-          itemsNew: 70929,
-          itemsMetadataGathered: 20843,
-          itemsFailed: 49183,
-          itemsCompleted: 87754,
-          itemsErrored: 28281,
-          latestActivityAt: "2022-01-18T05:14:37.892Z",
-          runTimeSeconds: 30693,
-        },
-        creatorId: 12,
-        createdAt: "2022-02-24T15:53:12.027Z",
-        updaterId: 13,
-        updatedAt: "2021-08-26T04:04:28.745Z",
-      },
-      this.injector
-    );
-
-    // TODO this is temporary until we have a real API
-    this.siteApi
-      .list(this.project)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((sites) => {
-        this.mappings = sites.map((site) => ({
-          path: site.id + "/",
-          siteId: site.id,
-          utcOffset: undefined,
-          recursive: false,
-        }));
-
-        this.mappings.push({
-          path: "obviously_wrong_path/",
-          recursive: true,
-        });
-      });
   }
 
-  public setMapping(index: number, mapping: IHarvestMapping) {
-    this.mappings[index] = mapping;
+  public setMapping(index: number, mapping: HarvestMapping) {
+    this.harvest.mappings[index] = mapping;
   }
 
-  public onGoForwards(): void {
-    // If changes made to harvest, show warning modal
-  }
-
-  public trackByPath(_: number, mapping: IHarvestMapping) {
+  public trackByPath(_: number, mapping: HarvestMapping) {
     return mapping.path;
   }
 
+  public onNextClick(): void {
+    this.transition("processing");
+  }
+
   public onBackClick(): void {
-    this.stage.emit(HarvestStage.uploading);
+    this.transition("uploading");
   }
 
   public onSaveClick(): void {
-    this.stage.emit(HarvestStage.processing);
+    this.transition("scanning");
   }
 
-  public setSite(mapping: IHarvestMapping, siteId: number) {
+  private transition(stage: HarvestStatus): void {
+    this.loading = true;
+
+    // We want this api request to complete regardless of component destruction
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+    this.harvestApi.transitionStatus(this.harvest, stage).subscribe({
+      next: (harvest) => {
+        this.loading = false;
+        this.stage.emit(HarvestStage[harvest.status]);
+      },
+      error: (err: BawApiError) => {
+        this.loading = false;
+        this.notification.error(err.message);
+      },
+    });
+  }
+
+  public setSite(mapping: HarvestMapping, siteId: number) {
     mapping.siteId = siteId;
+    this.updateHarvestWithMappingChange();
   }
 
-  public setOffset(mapping: IHarvestMapping, offset: string) {
+  public setOffset(mapping: HarvestMapping, offset: string) {
     mapping.utcOffset = offset;
+    this.updateHarvestWithMappingChange();
+  }
+
+  private updateHarvestWithMappingChange(): void {
+    this.hasUnsavedChanges = true;
+    this.harvestApi
+      .updateMappings(this.harvest, this.harvest.mappings)
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      .subscribe({
+        error: (err: BawApiError) =>
+          this.notification.error("Failed to make that change: " + err.message),
+      });
   }
 }

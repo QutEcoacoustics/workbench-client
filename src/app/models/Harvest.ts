@@ -1,6 +1,7 @@
 import { Injector } from "@angular/core";
 import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { projectHarvestRoute } from "@components/projects/projects.routes";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
@@ -55,13 +56,13 @@ export class HarvestMapping
 {
   public readonly kind = "HarvestMapping";
   @bawPersistAttr()
-  public readonly path?: string;
+  public path?: string;
   @bawPersistAttr()
-  public readonly siteId?: Id;
+  public siteId?: Id;
   @bawPersistAttr()
-  public readonly utcOffset?: string;
+  public utcOffset?: string;
   @bawPersistAttr()
-  public readonly recursive?: boolean;
+  public recursive?: boolean;
 
   // Associations
   @hasOne<HarvestMapping, Site>(SHALLOW_SITE, "siteId")
@@ -69,6 +70,15 @@ export class HarvestMapping
 
   public constructor(data: IHarvestMapping, injector?: Injector) {
     super(data, injector);
+  }
+
+  public get isValid(): boolean {
+    return (
+      isInstantiated(this.path) &&
+      isInstantiated(this.siteId) &&
+      isInstantiated(this.utcOffset) &&
+      isInstantiated(this.recursive)
+    );
   }
 
   public get viewUrl(): string {
@@ -141,14 +151,6 @@ export class Harvest extends AbstractModel implements IHarvest {
   /** Is true if mappings array has changes which have not been reviewed */
   public get isMappingsDirty(): boolean {
     return this.lastMetadataReviewAt < this.lastMappingsChangeAt;
-  }
-
-  public addMapping(mapping: IHarvestMapping | HarvestMapping): void {
-    if (mapping instanceof HarvestMapping) {
-      this.mappings.push(mapping);
-    } else {
-      this.mappings.push(new HarvestMapping(mapping, this.injector));
-    }
   }
 }
 

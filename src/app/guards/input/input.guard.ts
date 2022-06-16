@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { CanDeactivate } from "@angular/router";
 
 export interface UnsavedInputCheckingComponent {
-  hasUnsavedChange: boolean;
+  hasUnsavedChanges: boolean;
 }
 
 /**
@@ -20,7 +20,7 @@ export class UnsavedInputGuard
       return true;
     }
 
-    return component.hasUnsavedChange
+    return component.hasUnsavedChanges
       ? confirm(
           "Changes to this page may be lost! Are you sure you want to leave?"
         )

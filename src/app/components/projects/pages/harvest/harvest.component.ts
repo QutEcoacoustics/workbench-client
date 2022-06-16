@@ -9,12 +9,15 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
+import { NOT_FOUND, UNAUTHORIZED } from "http-status";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import {
   catchError,
   filter,
   interval,
+  map,
+  Observable,
   Subject,
   Subscription,
   switchMap,
@@ -52,14 +55,14 @@ class HarvestComponent
   implements OnInit
 {
   public project: Project;
-
   public harvest: Harvest;
+  public error: BawApiError;
+
   public harvestTrigger$ = new Subject<void>();
   public harvestInterval: Subscription;
 
   public stage: HarvestStage = HarvestStage.new_harvest;
   public harvestStage = HarvestStage;
-  public isStreaming: boolean;
 
   public constructor(
     private notifications: ToastrService,
@@ -71,17 +74,32 @@ class HarvestComponent
 
   public ngOnInit(): void {
     this.project = this.route.snapshot.data[projectKey].model;
+
     this.harvestTrigger$
       .pipe(
-        switchMap(() => this.harvestApi.currentHarvest(this.project)),
+        switchMap(() => {
+          if (this.harvest) {
+            // Show requests are faster, use them when we know the harvest id
+            return this.harvestApi.show(this.harvest, this.project);
+          } else {
+            // Otherwise, filter for the latest harvest
+            return this.getCurrentHarvestId(this.project);
+          }
+        }),
         catchError((err: BawApiError) => {
-          this.notifications.error(
-            "Failed to load harvest data, refresh this page to reconnect",
-            undefined,
-            { disableTimeOut: true }
-          );
+          if ([UNAUTHORIZED, NOT_FOUND].includes(err.status)) {
+            this.error = err;
+          } else {
+            this.notifications.error(
+              "Failed to load harvest data, refresh this page to reconnect",
+              undefined,
+              { disableTimeOut: true }
+            );
+          }
+
           return throwError(() => err);
         }),
+        // Filter out harvests which do not exist
         filter((harvest) => isInstantiated(harvest)),
         takeUntil(this.unsubscribe)
       )
@@ -113,6 +131,18 @@ class HarvestComponent
   public stopPolling = (): void => {
     this.harvestInterval?.unsubscribe();
   };
+
+  public getCurrentHarvestId(project: Project): Observable<Harvest | null> {
+    return this.harvestApi
+      .filter(
+        {
+          sorting: { orderBy: "createdAt", direction: "desc" },
+          filter: { status: { notEq: "complete" } },
+        },
+        project
+      )
+      .pipe(map((harvests) => harvests[0] ?? null));
+  }
 }
 
 HarvestComponent.linkToRoute({

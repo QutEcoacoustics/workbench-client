@@ -23,20 +23,13 @@ import {
   OperatorFunction,
   Subject,
   switchMap,
-  takeUntil,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
 
 @Component({
   selector: "baw-site-selector",
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: SiteSelectorComponent,
-    },
-  ],
   template: `
+    <!-- Show site name and link if exists -->
     <div *ngIf="value" class="site-label">
       <a [bawUrl]="value.getViewUrl(project)">{{ value.name }}</a>
 
@@ -51,6 +44,8 @@ import { defaultDebounceTime } from "src/app/app.helper";
         </button>
       </div>
     </div>
+
+    <!-- Show user input if no site -->
     <div [class.d-none]="value" class="input-group input-group-sm">
       <input
         #selector="ngbTypeahead"
@@ -87,7 +82,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
 export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;
   @Input() public project: Project;
-  @Input() public siteId: Id;
+  @Input() public site: Site | null;
   @Output() public siteIdChange = new EventEmitter<Id>();
 
   public focus$ = new Subject<Site>();
@@ -105,12 +100,7 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   }
 
   public ngOnInit(): void {
-    if (this.siteId) {
-      this.sitesApi
-        .show(this.siteId, this.project)
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe((site) => (this.value = site));
-    }
+    this.value = this.site;
 
     this.search$ = (text$: Observable<string>): Observable<Site[]> => {
       const debouncedText$ = text$.pipe(

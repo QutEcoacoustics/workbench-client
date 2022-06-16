@@ -1,4 +1,4 @@
-<div *ngIf="!failure">
+<div *ngIf="!error">
   <h1>
     <small class="text-muted"> Project: {{ project.name }} </small>
     <br />
@@ -47,6 +47,8 @@
 
     <baw-harvest-metadata-review
       *ngSwitchCase="harvestStage.metadata_review"
+      [project]="project"
+      [harvest]="harvest"
       (stage)="setStage($event)"
     ></baw-harvest-metadata-review>
 
@@ -66,3 +68,5 @@
     ></baw-harvest-complete>
   </div>
 </div>
+
+<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
