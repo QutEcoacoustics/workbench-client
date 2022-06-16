@@ -122,7 +122,7 @@ class HarvestComponent
     this.harvestTrigger$.next();
   }
 
-  public startPolling: HarvestPolling = (intervalMs: number = 1000): void => {
+  public startPolling: HarvestPolling = (intervalMs: number = 5000): void => {
     this.harvestInterval = interval(intervalMs)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((): void => this.reloadModel());

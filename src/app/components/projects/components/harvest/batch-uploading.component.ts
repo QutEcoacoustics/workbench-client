@@ -77,7 +77,7 @@ import { ToastrService } from "ngx-toastr";
         [disabled]="loading"
         (click)="onFinishedUploading()"
       >
-        Upload batch
+        Finished uploading
       </button>
     </div>
   `,
@@ -97,7 +97,7 @@ export class HarvestBatchUploadingComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.startPolling(1000);
+    this.startPolling(5000);
   }
 
   public onCancel(): void {

@@ -54,16 +54,14 @@
 
     <baw-harvest-processing
       *ngSwitchCase="harvestStage.processing"
+      [harvest]="harvest"
+      [startPolling]="startPolling"
       (stage)="setStage($event)"
     ></baw-harvest-processing>
 
-    <baw-harvest-review
-      *ngSwitchCase="harvestStage.review"
-      (stage)="setStage($event)"
-    ></baw-harvest-review>
-
     <baw-harvest-complete
       *ngSwitchCase="harvestStage.complete"
+      [harvest]="harvest"
       (stage)="setStage($event)"
     ></baw-harvest-complete>
   </div>

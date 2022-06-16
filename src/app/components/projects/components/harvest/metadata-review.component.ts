@@ -17,6 +17,7 @@ import { ToastrService } from "ngx-toastr";
 
     <p>This is a review of the audio data</p>
 
+    <!-- Should use harvest items list instead of harvest mappings. This allows for us to open sub-directories, etc -->
     <ngx-datatable
       class="mb-3"
       bawDatatableDefaults
@@ -75,13 +76,13 @@ import { ToastrService } from "ngx-toastr";
       </ngx-datatable-column>
     </ngx-datatable>
 
-    <div class="d-flex justify-content-around">
+    <div class="d-flex justify-content-between">
       <button
         class="btn btn-outline-primary"
         [disabled]="loading"
         (click)="onBackClick()"
       >
-        Make changes or upload more files
+        Upload more files
       </button>
       <button
         *ngIf="harvest.isMappingsDirty"
@@ -89,7 +90,7 @@ import { ToastrService } from "ngx-toastr";
         [disabled]="loading"
         (click)="onSaveClick()"
       >
-        Save changes
+        Check changes
       </button>
       <!-- Redirect to metadata extraction instead of next step if changes made -->
       <!-- TODO Modal popup when hasUnsavedChanges -->
@@ -101,7 +102,9 @@ import { ToastrService } from "ngx-toastr";
         (click)="onNextClick()"
       >
         {{
-          harvest.isMappingsDirty ? "Ignore changes and continue" : "Continue"
+          harvest.isMappingsDirty
+            ? "Continue without checking changes"
+            : "Continue"
         }}
       </button>
     </div>

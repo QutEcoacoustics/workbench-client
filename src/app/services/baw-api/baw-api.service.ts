@@ -179,10 +179,16 @@ export class BawApiService<
    * @param classBuilder Model to create
    * @param path API path
    */
-  public show(classBuilder: ClassBuilder, path: string): Observable<Model> {
+  public show(
+    classBuilder: ClassBuilder,
+    path: string,
+    cache: boolean = true
+  ): Observable<Model> {
     return this.session.authTrigger.pipe(
       switchMap(() =>
-        this.httpGet(path, defaultApiHeaders, { cache: cacheSettings.enabled })
+        this.httpGet(path, defaultApiHeaders, {
+          cache: cacheSettings.enabled && cache,
+        })
       ),
       map(this.handleSingleResponse(classBuilder))
     );

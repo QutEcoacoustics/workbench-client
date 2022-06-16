@@ -10,7 +10,6 @@ import { HarvestMetadataExtractionComponent } from "./components/harvest/metadat
 import { HarvestMetadataReviewComponent } from "./components/harvest/metadata-review.component";
 import { HarvestNewComponent } from "./components/harvest/new.component";
 import { HarvestProcessingComponent } from "./components/harvest/processing.component";
-import { HarvestReviewComponent } from "./components/harvest/review.component";
 import { HarvestScanningComponent } from "./components/harvest/scanning.component";
 import { HarvestStreamUploadingComponent } from "./components/harvest/stream-uploading.component";
 import { SiteSelectorComponent } from "./components/inputs/site-selector.component";
@@ -40,7 +39,6 @@ const components = [
   HarvestMetadataReviewComponent,
   HarvestNewComponent,
   HarvestProcessingComponent,
-  HarvestReviewComponent,
   HarvestScanningComponent,
   HarvestStreamUploadingComponent,
 
