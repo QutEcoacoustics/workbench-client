@@ -40,7 +40,6 @@ export type HarvestStatus =
   | "metadata_extraction"
   | "metadata_review"
   | "processing"
-  | "review"
   | "complete";
 
 export interface IHarvestMapping {

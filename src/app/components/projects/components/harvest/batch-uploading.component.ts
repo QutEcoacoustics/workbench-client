@@ -34,13 +34,17 @@ import { ToastrService } from "ngx-toastr";
       <li [ngbNavItem]="2">
         <a ngbNavLink>MacOS</a>
         <ng-template ngbNavContent>
-          <p>TODO: Instructions</p>
+          <baw-wip>
+            <p>TODO: Instructions</p>
+          </baw-wip>
         </ng-template>
       </li>
       <li [ngbNavItem]="3">
         <a ngbNavLink>Linux</a>
         <ng-template ngbNavContent>
-          <p>TODO: Instructions</p>
+          <baw-wip>
+            <p>TODO: Instructions</p>
+          </baw-wip>
         </ng-template>
       </li>
     </ul>
@@ -66,14 +70,14 @@ import { ToastrService } from "ngx-toastr";
 
     <div class="clearfix">
       <button
-        class="btn btn-danger float-start"
+        class="btn btn-warning float-start"
         [disabled]="loading"
         (click)="onCancel()"
       >
         Cancel
       </button>
       <button
-        class="btn btn-warning float-end"
+        class="btn btn-primary float-end"
         [disabled]="loading"
         (click)="onFinishedUploading()"
       >

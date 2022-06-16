@@ -5,13 +5,13 @@
     Harvest
   </h1>
 
-  <baw-stepper [numSteps]="8" [activeStep]="stage"></baw-stepper>
+  <baw-stepper [numSteps]="7" [activeStep]="stage"></baw-stepper>
 
   <div [ngSwitch]="stage">
     <baw-harvest-new
       *ngSwitchCase="harvestStage.new_harvest"
       [project]="project"
-      (stage)="setStage($event)"
+      (stage)="onStageChange($event)"
     ></baw-harvest-new>
 
     <div *ngSwitchCase="harvestStage.uploading">
@@ -22,14 +22,14 @@
         [project]="project"
         [harvest]="harvest"
         [startPolling]="startPolling"
-        (stage)="setStage($event)"
+        (stage)="onStageChange($event)"
       ></baw-harvest-stream-uploading>
 
       <baw-harvest-batch-uploading
         *ngIf="!harvest?.streaming"
         [harvest]="harvest"
         [startPolling]="startPolling"
-        (stage)="setStage($event)"
+        (stage)="onStageChange($event)"
       ></baw-harvest-batch-uploading>
     </div>
 
@@ -49,20 +49,18 @@
       *ngSwitchCase="harvestStage.metadata_review"
       [project]="project"
       [harvest]="harvest"
-      (stage)="setStage($event)"
+      (stage)="onStageChange($event)"
     ></baw-harvest-metadata-review>
 
     <baw-harvest-processing
       *ngSwitchCase="harvestStage.processing"
       [harvest]="harvest"
       [startPolling]="startPolling"
-      (stage)="setStage($event)"
     ></baw-harvest-processing>
 
     <baw-harvest-complete
       *ngSwitchCase="harvestStage.complete"
       [harvest]="harvest"
-      (stage)="setStage($event)"
     ></baw-harvest-complete>
   </div>
 </div>

@@ -61,7 +61,7 @@ describe("HarvestComponent", () => {
     function setStage(stage: HarvestStage) {
       setup();
       spec.detectChanges();
-      spec.component.setStage(stage);
+      spec.component.onStageChange(stage);
       spec.detectChanges();
     }
 

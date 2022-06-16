@@ -22,6 +22,15 @@ export class HarvestUploadUrlComponent {
   public constructor(private domSanitizer: DomSanitizer) {}
 
   public get trustedUploadUrl(): SafeUrl {
-    return this.domSanitizer.bypassSecurityTrustUrl(this.harvest.uploadUrl);
+    let url = this.harvest.uploadUrl;
+    url = url.replace(
+      "sftp://",
+      "sftp://" +
+        this.harvest.uploadUser +
+        ":" +
+        this.harvest.uploadPassword +
+        "@"
+    );
+    return this.domSanitizer.bypassSecurityTrustUrl(url);
   }
 }

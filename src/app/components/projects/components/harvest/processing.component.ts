@@ -1,8 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import {
-  HarvestPolling,
-  HarvestStage,
-} from "@components/projects/pages/harvest/harvest.component";
+import { Component, Input, OnInit } from "@angular/core";
+import { HarvestPolling } from "@components/projects/pages/harvest/harvest.component";
 import { Harvest } from "@models/Harvest";
 
 @Component({
@@ -28,7 +25,6 @@ import { Harvest } from "@models/Harvest";
 export class HarvestProcessingComponent implements OnInit {
   @Input() public harvest: Harvest;
   @Input() public startPolling: HarvestPolling;
-  @Output() public stage = new EventEmitter<HarvestStage>();
 
   public ngOnInit(): void {
     this.startPolling(5000);

@@ -38,7 +38,6 @@ export enum HarvestStage {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   metadata_review,
   processing,
-  review,
   complete,
 }
 
@@ -106,16 +105,10 @@ class HarvestComponent
       .subscribe((harvest): void => {
         console.log(harvest);
         this.harvest = harvest;
-        this.stage = HarvestStage[harvest.status];
+        this.setStage(HarvestStage[harvest.status]);
       });
 
     this.reloadModel();
-  }
-
-  public setStage(stage: HarvestStage): void {
-    this.stopPolling();
-    this.reloadModel();
-    this.stage = stage;
   }
 
   public reloadModel(): void {
@@ -142,6 +135,19 @@ class HarvestComponent
         project
       )
       .pipe(map((harvests) => harvests[0] ?? null));
+  }
+
+  public onStageChange(stage: HarvestStage): void {
+    this.setStage(stage);
+    this.reloadModel();
+  }
+
+  public setStage(stage: HarvestStage) {
+    if (stage === this.stage) {
+      return;
+    }
+    this.stopPolling();
+    this.stage = stage;
   }
 }
 
