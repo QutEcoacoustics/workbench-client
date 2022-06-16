@@ -35,12 +35,14 @@
 
     <baw-harvest-scanning
       *ngSwitchCase="harvestStage.scanning"
-      (stage)="setStage($event)"
+      [harvest]="harvest"
+      [startPolling]="startPolling"
     ></baw-harvest-scanning>
 
     <baw-harvest-metadata-extraction
       *ngSwitchCase="harvestStage.metadata_extraction"
-      (stage)="setStage($event)"
+      [harvest]="harvest"
+      [startPolling]="startPolling"
     ></baw-harvest-metadata-extraction>
 
     <baw-harvest-metadata-review

@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Output } from "@angular/core";
-import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
-import { endWith, startWith, tap, timer } from "rxjs";
+import { Component, Input, OnInit } from "@angular/core";
+import { HarvestPolling } from "@components/projects/pages/harvest/harvest.component";
+import { Harvest } from "@models/Harvest";
 
 @Component({
   selector: "baw-harvest-metadata-extraction",
@@ -20,24 +20,26 @@ import { endWith, startWith, tap, timer } from "rxjs";
       <ngb-progressbar
         type="success"
         [showValue]="true"
-        [value]="progress$ | async"
         [striped]="true"
         [animated]="true"
+        [value]="progress"
       ></ngb-progressbar>
     </p>
   `,
 })
-export class HarvestMetadataExtractionComponent {
-  @Output() public stage = new EventEmitter<HarvestStage>();
+export class HarvestMetadataExtractionComponent implements OnInit {
+  @Input() public harvest: Harvest;
+  @Input() public startPolling: HarvestPolling;
 
-  private intervalSpeed = 300;
-  public progress$ = timer(0, this.intervalSpeed).pipe(
-    startWith(0),
-    endWith(100),
-    tap((progress) => {
-      if (progress >= 100) {
-        this.stage.emit(HarvestStage.metadata_review);
-      }
-    })
-  );
+  public ngOnInit(): void {
+    this.startPolling(5000);
+  }
+
+  public get progress(): number {
+    return (
+      (this.harvest.report.itemsMetadataGathered /
+        this.harvest.report.itemsTotal) *
+      100
+    );
+  }
 }
