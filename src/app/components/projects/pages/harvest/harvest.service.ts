@@ -1,17 +1,23 @@
 import { Injectable } from "@angular/core";
+import { HarvestItemsService } from "@baw-api/harvest/harvest-items.service";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest, HarvestStatus } from "@models/Harvest";
+import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
 import { NOT_FOUND, UNAUTHORIZED } from "http-status";
+import { isIndexed } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import {
   BehaviorSubject,
   catchError,
+  filter,
   interval,
   map,
   Observable,
+  of,
   Subject,
   Subscription,
   switchMap,
@@ -26,12 +32,14 @@ export class HarvestStagesService extends withUnsubscribe() {
   public stage: HarvestStatus;
 
   private _harvest$ = new BehaviorSubject<Harvest | null>(null);
+  private _harvestItems$ = new BehaviorSubject<HarvestItem[]>([]);
   private harvestTrigger$ = new Subject<void>();
   private harvestInterval: Subscription;
 
   public constructor(
     private notifications: ToastrService,
-    private harvestApi: HarvestsService
+    private harvestApi: HarvestsService,
+    private harvestItemsApi: HarvestItemsService
   ) {
     super();
 
@@ -62,13 +70,25 @@ export class HarvestStagesService extends withUnsubscribe() {
         takeUntil(this.unsubscribe)
       )
       .subscribe((harvest): void => {
-        console.log(harvest);
+        console.log("Harvest", harvest);
         if (!harvest) {
           this.setStage("new_harvest");
         } else {
           this.setStage(harvest.status);
           this._harvest$.next(harvest);
         }
+      });
+
+    this.harvestTrigger$
+      .pipe(
+        filter(() => isInstantiated(this.harvest)),
+        switchMap(() => this.harvestItemsApi.list(this.project, this.harvest)),
+        catchError(() => of([])),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe((harvestItems) => {
+        console.log("Harvest Items", harvestItems);
+        this._harvestItems$.next(harvestItems);
       });
   }
 
@@ -78,6 +98,14 @@ export class HarvestStagesService extends withUnsubscribe() {
 
   public get harvest(): Harvest | null {
     return this._harvest$.value;
+  }
+
+  public get harvestItems$(): Observable<HarvestItem[]> {
+    return this._harvestItems$.asObservable();
+  }
+
+  public get harvestItems(): HarvestItem[] {
+    return this._harvestItems$.value;
   }
 
   public get numStages(): number {
@@ -107,6 +135,9 @@ export class HarvestStagesService extends withUnsubscribe() {
 
   public initialize(project: Project): void {
     this.project = project;
+    this._harvest$ = new BehaviorSubject<Harvest | null>(null);
+    this._harvestItems$ = new BehaviorSubject<HarvestItem[]>([]);
+    this.setStage("new_harvest");
     this.reloadModel();
   }
 
@@ -155,6 +186,14 @@ export class HarvestStagesService extends withUnsubscribe() {
 
   public isCurrentStage(stage: HarvestStatus): boolean {
     return this.stage === stage;
+  }
+
+  public calculateProgress(numItems: number) {
+    const progress = (numItems / this.harvest.report.itemsTotal) * 100;
+    if (progress < 1 && progress !== 0) {
+      return 1;
+    }
+    return Math.floor(progress);
   }
 
   private setStage(stage: HarvestStatus): void {

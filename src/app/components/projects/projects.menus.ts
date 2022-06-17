@@ -110,7 +110,7 @@ export const deleteProjectMenuItem = menuRoute({
 
 export const harvestProjectMenuItem = menuRoute({
   icon: ["fas", "upload"],
-  label: "Upload Audio",
+  label: "Upload Recordings",
   parent: projectMenuItem,
   // TODO #1888 Change to isProjectEditorPredicate when finished
   predicate: isAdminPredicate,

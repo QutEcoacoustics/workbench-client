@@ -46,7 +46,7 @@
       "type": "checkbox",
       "templateOptions": {
         "label": "Allow audio recording uploads",
-        "description": "This allows the owner of the project to upload audio files to the project. However only select users are currently able to set this property, contact us if you need this permission."
+        "description": "This allows the owner of the project to upload recording files to the project. However only select users are currently able to set this property, contact us if you need this permission."
       }
     }
   ]
