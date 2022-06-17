@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HarvestItemsService } from "@baw-api/harvest/harvest-items.service";
+import { ShallowHarvestItemsService } from "@baw-api/harvest/harvest-items.service";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -8,7 +8,6 @@ import { Harvest, HarvestStatus } from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
 import { NOT_FOUND, UNAUTHORIZED } from "http-status";
-import { isIndexed } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import {
   BehaviorSubject,
@@ -39,7 +38,7 @@ export class HarvestStagesService extends withUnsubscribe() {
   public constructor(
     private notifications: ToastrService,
     private harvestApi: HarvestsService,
-    private harvestItemsApi: HarvestItemsService
+    private harvestItemsApi: ShallowHarvestItemsService
   ) {
     super();
 
@@ -82,7 +81,7 @@ export class HarvestStagesService extends withUnsubscribe() {
     this.harvestTrigger$
       .pipe(
         filter(() => isInstantiated(this.harvest)),
-        switchMap(() => this.harvestItemsApi.list(this.project, this.harvest)),
+        switchMap(() => this.harvestItemsApi.list(this.harvest)),
         catchError(() => of([])),
         takeUntil(this.unsubscribe)
       )
@@ -189,11 +188,16 @@ export class HarvestStagesService extends withUnsubscribe() {
   }
 
   public calculateProgress(numItems: number) {
-    const progress = (numItems / this.harvest.report.itemsTotal) * 100;
-    if (progress < 1 && progress !== 0) {
-      return 1;
+    const progress =
+      ((numItems ?? 0) / (this.harvest.report.itemsTotal ?? 1)) * 100;
+
+    if (progress > 99.99 && progress !== 100) {
+      return 99.99;
     }
-    return Math.floor(progress);
+    if (progress < 0.01 && progress !== 0) {
+      return 0.01;
+    }
+    return +progress.toFixed(2);
   }
 
   private setStage(stage: HarvestStatus): void {

@@ -54,7 +54,7 @@ export class UTCOffsetSelectorComponent {
   }
 
   public resetSite(): void {
-    this.offset = undefined;
+    this.offset = null;
     this.offsetChange.emit(this.offset);
   }
 

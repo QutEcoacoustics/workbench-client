@@ -20,16 +20,16 @@ import { HarvestReport } from "@models/Harvest";
       <ng-container
         [ngTemplateOutlet]="progressBar"
         [ngTemplateOutletContext]="{
-          progress: newFileProgress,
-          color: 'bg-info'
+          progress: successProgress,
+          color: 'bg-success'
         }"
       ></ng-container>
 
       <ng-container
         [ngTemplateOutlet]="progressBar"
         [ngTemplateOutletContext]="{
-          progress: metadataProgress,
-          color: 'bg-primary'
+          progress: invalidFixableProgress,
+          color: 'bg-warning'
         }"
       ></ng-container>
 
@@ -64,17 +64,23 @@ export class HarvestMetadataExtractionComponent implements OnInit {
     this.stages.startPolling(5000);
   }
 
-  public get newFileProgress(): number {
-    return this.stages.calculateProgress(this.report.itemsNew);
+  public get successProgress(): number {
+    return this.stages.calculateProgress(
+      this.report.itemsMetadataGathered -
+        this.report.itemsInvalidFixable -
+        this.report.itemsInvalidNotFixable
+    );
   }
 
-  public get metadataProgress(): number {
-    return this.stages.calculateProgress(this.report.itemsMetadataGathered);
+  public get invalidFixableProgress(): number {
+    return this.stages.calculateProgress(this.report.itemsInvalidFixable);
   }
 
   public get errorProgress(): number {
     return this.stages.calculateProgress(
-      this.report.itemsErrored + this.report.itemsFailed
+      this.report.itemsInvalidNotFixable +
+        this.report.itemsErrored +
+        this.report.itemsFailed
     );
   }
 

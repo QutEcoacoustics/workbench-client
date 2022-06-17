@@ -27,14 +27,6 @@ import { HarvestReport } from "@models/Harvest";
           color: 'bg-primary'
         }"
       ></ng-container>
-
-      <ng-container
-        [ngTemplateOutlet]="progressBar"
-        [ngTemplateOutletContext]="{
-          progress: errorProgress,
-          color: 'bg-danger'
-        }"
-      ></ng-container>
     </div>
 
     <ng-template #progressBar let-progress="progress" let-color="color">
@@ -65,12 +57,6 @@ export class HarvestScanningComponent implements OnInit {
 
   public get metadataProgress(): number {
     return this.stages.calculateProgress(this.report.itemsMetadataGathered);
-  }
-
-  public get errorProgress(): number {
-    return this.stages.calculateProgress(
-      this.report.itemsErrored + this.report.itemsFailed
-    );
   }
 
   private get report(): HarvestReport {

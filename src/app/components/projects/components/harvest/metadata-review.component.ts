@@ -154,7 +154,7 @@ export class HarvestMetadataReviewComponent
   }
 
   public onSaveClick(): void {
-    this.transition("scanning");
+    this.transition("metadata_extraction");
   }
 
   private transition(stage: HarvestStatus): void {
