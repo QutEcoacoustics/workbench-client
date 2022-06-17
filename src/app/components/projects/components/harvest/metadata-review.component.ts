@@ -1,11 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
-import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
+import { HarvestStagesService } from "@components/projects/pages/harvest/harvest.service";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest, HarvestMapping, HarvestStatus } from "@models/Harvest";
-import { Project } from "@models/Project";
 import { ConfigService } from "@services/config/config.service";
 import { ColumnMode } from "@swimlane/ngx-datatable";
 import { ToastrService } from "ngx-toastr";
@@ -114,11 +113,6 @@ export class HarvestMetadataReviewComponent
   extends withUnsubscribe()
   implements OnInit, UnsavedInputCheckingComponent
 {
-  @Input() public project: Project;
-  @Input() public harvest: Harvest;
-
-  @Output() public stage = new EventEmitter<HarvestStage>();
-
   public loading: boolean;
   public hasUnsavedChanges: boolean;
 
@@ -127,11 +121,16 @@ export class HarvestMetadataReviewComponent
   public siteColumnLabel: string;
 
   public constructor(
+    private stages: HarvestStagesService,
     private config: ConfigService,
     private notification: ToastrService,
     private harvestApi: ShallowHarvestsService
   ) {
     super();
+  }
+
+  public get harvest(): Harvest {
+    return this.stages.harvest;
   }
 
   public ngOnInit(): void {
@@ -160,19 +159,7 @@ export class HarvestMetadataReviewComponent
 
   private transition(stage: HarvestStatus): void {
     this.loading = true;
-
-    // We want this api request to complete regardless of component destruction
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.harvestApi.transitionStatus(this.harvest, stage).subscribe({
-      next: (harvest) => {
-        this.loading = false;
-        this.stage.emit(HarvestStage[harvest.status]);
-      },
-      error: (err: BawApiError) => {
-        this.loading = false;
-        this.notification.error(err.message);
-      },
-    });
+    this.stages.transition(stage, () => (this.loading = false));
   }
 
   public setSite(mapping: HarvestMapping, siteId: number) {

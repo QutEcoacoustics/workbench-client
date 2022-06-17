@@ -5,64 +5,49 @@
     Harvest
   </h1>
 
-  <baw-stepper [numSteps]="7" [activeStep]="stage"></baw-stepper>
+  <baw-stepper
+    [numSteps]="stages.numStages"
+    [activeStep]="stages.currentStage"
+  ></baw-stepper>
 
-  <div [ngSwitch]="stage">
-    <baw-harvest-new
-      *ngSwitchCase="harvestStage.new_harvest"
-      [project]="project"
-      (stage)="onStageChange($event)"
-    ></baw-harvest-new>
+  <baw-harvest-new
+    *ngIf="stages.isCurrentStage('new_harvest')"
+  ></baw-harvest-new>
 
-    <div *ngSwitchCase="harvestStage.uploading">
-      <baw-loading *ngIf="!harvest"></baw-loading>
+  <div *ngIf="stages.isCurrentStage('uploading')">
+    <baw-loading *ngIf="!stages.harvest"></baw-loading>
 
-      <baw-harvest-stream-uploading
-        *ngIf="harvest?.streaming"
-        [project]="project"
-        [harvest]="harvest"
-        [startPolling]="startPolling"
-        (stage)="onStageChange($event)"
-      ></baw-harvest-stream-uploading>
+    <baw-harvest-stream-uploading
+      *ngIf="stages.harvest?.streaming"
+    ></baw-harvest-stream-uploading>
 
-      <baw-harvest-batch-uploading
-        *ngIf="!harvest?.streaming"
-        [harvest]="harvest"
-        [startPolling]="startPolling"
-        (stage)="onStageChange($event)"
-      ></baw-harvest-batch-uploading>
-    </div>
-
-    <baw-harvest-scanning
-      *ngSwitchCase="harvestStage.scanning"
-      [harvest]="harvest"
-      [startPolling]="startPolling"
-    ></baw-harvest-scanning>
-
-    <baw-harvest-metadata-extraction
-      *ngSwitchCase="harvestStage.metadata_extraction"
-      [harvest]="harvest"
-      [startPolling]="startPolling"
-    ></baw-harvest-metadata-extraction>
-
-    <baw-harvest-metadata-review
-      *ngSwitchCase="harvestStage.metadata_review"
-      [project]="project"
-      [harvest]="harvest"
-      (stage)="onStageChange($event)"
-    ></baw-harvest-metadata-review>
-
-    <baw-harvest-processing
-      *ngSwitchCase="harvestStage.processing"
-      [harvest]="harvest"
-      [startPolling]="startPolling"
-    ></baw-harvest-processing>
-
-    <baw-harvest-complete
-      *ngSwitchCase="harvestStage.complete"
-      [harvest]="harvest"
-    ></baw-harvest-complete>
+    <baw-harvest-batch-uploading
+      *ngIf="!stages.harvest?.streaming"
+    ></baw-harvest-batch-uploading>
   </div>
+
+  <baw-harvest-scanning
+    *ngIf="stages.isCurrentStage('scanning')"
+  ></baw-harvest-scanning>
+
+  <baw-harvest-metadata-extraction
+    *ngIf="stages.isCurrentStage('metadata_extraction')"
+  ></baw-harvest-metadata-extraction>
+
+  <baw-harvest-metadata-review
+    *ngIf="stages.isCurrentStage('metadata_review')"
+  ></baw-harvest-metadata-review>
+
+  <baw-harvest-processing
+    *ngIf="stages.isCurrentStage('processing')"
+  ></baw-harvest-processing>
+
+  <baw-harvest-complete
+    *ngIf="stages.isCurrentStage('complete')"
+  ></baw-harvest-complete>
 </div>
 
-<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+<baw-error-handler
+  *ngIf="stages.error"
+  [error]="stages.error"
+></baw-error-handler>

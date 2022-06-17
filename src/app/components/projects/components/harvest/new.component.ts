@@ -1,9 +1,8 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component } from "@angular/core";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
-import { HarvestStage } from "@components/projects/pages/harvest/harvest.component";
+import { HarvestStagesService } from "@components/projects/pages/harvest/harvest.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Harvest, IHarvest } from "@models/Harvest";
-import { Project } from "@models/Project";
 import { ToastrService } from "ngx-toastr";
 
 @Component({
@@ -68,12 +67,10 @@ import { ToastrService } from "ngx-toastr";
   `,
 })
 export class HarvestNewComponent {
-  @Input() public project: Project;
-  @Output() public stage = new EventEmitter<HarvestStage>();
-
   public loading: boolean;
 
   public constructor(
+    private stages: HarvestStagesService,
     private notifications: ToastrService,
     private harvestApi: HarvestsService
   ) {}
@@ -91,10 +88,10 @@ export class HarvestNewComponent {
 
     // We want this api request to complete regardless of component destruction
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.harvestApi.create(new Harvest(body), this.project).subscribe({
+    this.harvestApi.create(new Harvest(body), this.stages.project).subscribe({
       next: (harvest): void => {
-        this.stage.emit(HarvestStage[harvest.status]);
         this.loading = false;
+        this.stages.trackHarvest(harvest);
       },
       error: (err: BawApiError): void => {
         this.loading = false;

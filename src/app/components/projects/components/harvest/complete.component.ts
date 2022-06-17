@@ -1,17 +1,18 @@
-import { Component, Input } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { audioRecordingsRoutes } from "@components/audio-recordings/audio-recording.routes";
-import { Harvest } from "@models/Harvest";
+import { HarvestStagesService } from "@components/projects/pages/harvest/harvest.service";
+import { IHarvestReport } from "@models/Harvest";
 
 @Component({
   selector: "baw-harvest-complete",
   template: `
     <h3>Finished</h3>
 
-    <p>{{ harvest.report.itemsCompleted }} files were successfully added!</p>
+    <p>{{ report.itemsCompleted }} files were successfully added!</p>
 
     <p>
-      {{ harvest.report.itemsFailed + harvest.report.itemsErrored }} files
-      failed to be harvested!
+      {{ report.itemsFailed + report.itemsErrored }} files failed to be
+      harvested!
     </p>
 
     <baw-wip>
@@ -30,8 +31,16 @@ import { Harvest } from "@models/Harvest";
     </div>
   `,
 })
-export class HarvestCompleteComponent {
-  @Input() public harvest: Harvest;
-
+export class HarvestCompleteComponent implements OnInit {
   public audioRecordingsRoute = audioRecordingsRoutes.project;
+
+  public constructor(public stages: HarvestStagesService) {}
+
+  public ngOnInit(): void {
+    this.stages.startPolling(5000);
+  }
+
+  public get report(): IHarvestReport {
+    return this.stages.harvest.report;
+  }
 }

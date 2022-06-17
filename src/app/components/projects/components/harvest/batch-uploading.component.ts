@@ -1,12 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
-import {
-  HarvestPolling,
-  HarvestStage,
-} from "@components/projects/pages/harvest/harvest.component";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { Component, OnInit } from "@angular/core";
+import { HarvestStagesService } from "@components/projects/pages/harvest/harvest.service";
 import { Harvest, HarvestStatus } from "@models/Harvest";
-import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "baw-harvest-batch-uploading",
@@ -87,21 +81,17 @@ import { ToastrService } from "ngx-toastr";
   `,
 })
 export class HarvestBatchUploadingComponent implements OnInit {
-  @Input() public harvest: Harvest;
-  @Input() public startPolling: HarvestPolling;
-
-  @Output() public stage = new EventEmitter<HarvestStage>();
-
   public loading: boolean;
   public active = 1;
 
-  public constructor(
-    private notification: ToastrService,
-    private harvestApi: ShallowHarvestsService
-  ) {}
+  public constructor(public stages: HarvestStagesService) {}
 
   public ngOnInit(): void {
-    this.startPolling(5000);
+    this.stages.startPolling(5000);
+  }
+
+  public get harvest(): Harvest {
+    return this.stages.harvest;
   }
 
   public onCancel(): void {
@@ -114,18 +104,6 @@ export class HarvestBatchUploadingComponent implements OnInit {
 
   private transition(stage: HarvestStatus) {
     this.loading = true;
-
-    // We want this api request to complete regardless of component destruction
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.harvestApi.transitionStatus(this.harvest, stage).subscribe({
-      next: (harvest) => {
-        this.loading = false;
-        this.stage.emit(HarvestStage[harvest.status]);
-      },
-      error: (err: BawApiError) => {
-        this.loading = false;
-        this.notification.error(err.message);
-      },
-    });
+    this.stages.transition(stage, () => (this.loading = false));
   }
 }

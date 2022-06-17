@@ -1,15 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
-import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
+import { Component, OnInit } from "@angular/core";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
-import {
-  HarvestPolling,
-  HarvestStage,
-} from "@components/projects/pages/harvest/harvest.component";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { HarvestStagesService } from "@components/projects/pages/harvest/harvest.service";
 import { Harvest, HarvestMapping, IHarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
-import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "baw-harvest-stream-uploading",
@@ -73,9 +66,7 @@ import { ToastrService } from "ngx-toastr";
           Example URL
         </ng-template>
         <ng-template let-row="row" ngx-datatable-cell-template>
-          <a [href]="getTrustedMappingUploadUrl(row)">
-            {{ getMappingUploadUrl(row) }}
-          </a>
+          {{ getMappingUploadUrl(row) }}
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
@@ -88,7 +79,7 @@ import { ToastrService } from "ngx-toastr";
         revoked permanently
       </p>
       <button
-        class="btn btn-danger float-end"
+        class="btn btn-warning float-end"
         [disabled]="loading"
         (click)="closeConnectionClick()"
       >
@@ -98,52 +89,34 @@ import { ToastrService } from "ngx-toastr";
   `,
 })
 export class HarvestStreamUploadingComponent implements OnInit {
-  @Input() public project: Project;
-  @Input() public harvest: Harvest;
-  @Input() public startPolling: HarvestPolling;
-  @Output() public stage = new EventEmitter<HarvestStage>();
-
   public loading: boolean;
   public active = 1;
   public audioRecordings = audioRecordingMenuItems.list.project;
   public mappings: HarvestMapping[];
 
-  public constructor(
-    private domSanitizer: DomSanitizer,
-    private notifications: ToastrService,
-    private harvestApi: ShallowHarvestsService
-  ) {}
+  public constructor(private stages: HarvestStagesService) {}
+
+  public get harvest(): Harvest {
+    return this.stages.harvest;
+  }
+
+  public get project(): Project {
+    return this.stages.project;
+  }
 
   public ngOnInit(): void {
     // TODO If mapping updates are possible after the initial load, we may want
     // to check for changes whenever harvest is updated
-    this.mappings = this.harvest.mappings;
-    this.startPolling(5000);
+    this.mappings = this.stages.harvest.mappings;
+    this.stages.startPolling(5000);
   }
 
   public getMappingUploadUrl(mapping: IHarvestMapping) {
-    return this.harvest.uploadUrl + "/" + mapping.path;
-  }
-
-  public getTrustedMappingUploadUrl(mapping: IHarvestMapping) {
-    return this.domSanitizer.bypassSecurityTrustUrl(
-      this.getMappingUploadUrl(mapping)
-    );
+    return this.stages.harvest.uploadUrl + "/" + mapping.path;
   }
 
   public closeConnectionClick(): void {
     this.loading = true;
-
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.harvestApi.transitionStatus(this.harvest, "complete").subscribe({
-      next: (harvest): void => {
-        this.loading = false;
-        this.stage.emit(HarvestStage[harvest.status]);
-      },
-      error: (err: BawApiError): void => {
-        this.loading = false;
-        this.notifications.error(err.message);
-      },
-    });
+    this.stages.transition("complete", () => (this.loading = false));
   }
 }

@@ -1,6 +1,5 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { HarvestPolling } from "@components/projects/pages/harvest/harvest.component";
-import { Harvest } from "@models/Harvest";
+import { Component, OnInit } from "@angular/core";
+import { HarvestStagesService } from "@components/projects/pages/harvest/harvest.service";
 
 @Component({
   selector: "baw-harvest-metadata-extraction",
@@ -28,18 +27,14 @@ import { Harvest } from "@models/Harvest";
   `,
 })
 export class HarvestMetadataExtractionComponent implements OnInit {
-  @Input() public harvest: Harvest;
-  @Input() public startPolling: HarvestPolling;
+  public constructor(private stages: HarvestStagesService) {}
 
   public ngOnInit(): void {
-    this.startPolling(5000);
+    this.stages.startPolling(5000);
   }
 
   public get progress(): number {
-    return (
-      (this.harvest.report.itemsMetadataGathered /
-        this.harvest.report.itemsTotal) *
-      100
-    );
+    const { itemsMetadataGathered, itemsTotal } = this.stages.harvest.report;
+    return (itemsMetadataGathered / itemsTotal) * 100;
   }
 }
