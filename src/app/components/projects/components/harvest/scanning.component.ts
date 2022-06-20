@@ -12,36 +12,20 @@ import { HarvestReport } from "@models/Harvest";
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
     <div class="progress">
-      <ng-container
-        [ngTemplateOutlet]="progressBar"
-        [ngTemplateOutletContext]="{
-          progress: newFileProgress,
-          color: 'bg-info'
-        }"
-      ></ng-container>
+      <baw-progress-bar
+        style="display: contents"
+        color="info"
+        description="Files which have been found"
+        [progress]="newFileProgress"
+      ></baw-progress-bar>
 
-      <ng-container
-        [ngTemplateOutlet]="progressBar"
-        [ngTemplateOutletContext]="{
-          progress: metadataProgress,
-          color: 'bg-primary'
-        }"
-      ></ng-container>
+      <baw-progress-bar
+        style="display: contents"
+        color="primary"
+        description="Files which have had their metadata successfully extracted"
+        [progress]="metadataProgress"
+      ></baw-progress-bar>
     </div>
-
-    <ng-template #progressBar let-progress="progress" let-color="color">
-      <div
-        class="progress-bar progress-bar-striped progress-bar-animated"
-        [ngClass]="color"
-        role="progressbar"
-        aria-valuemin="0"
-        aria-valuemax="100"
-        [ngStyle]="{ width: progress + '%' }"
-        [attr.aria-valuenow]="progress"
-      >
-        {{ progress + "%" }}
-      </div>
-    </ng-template>
   `,
 })
 export class HarvestScanningComponent implements OnInit {

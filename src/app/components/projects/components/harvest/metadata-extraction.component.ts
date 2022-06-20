@@ -17,44 +17,27 @@ import { HarvestReport } from "@models/Harvest";
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
     <div class="progress">
-      <ng-container
-        [ngTemplateOutlet]="progressBar"
-        [ngTemplateOutletContext]="{
-          progress: successProgress,
-          color: 'bg-success'
-        }"
-      ></ng-container>
+      <baw-progress-bar
+        style="display: contents"
+        color="success"
+        description="Files which have had their metadata successfully extracted"
+        [progress]="successProgress"
+      ></baw-progress-bar>
 
-      <ng-container
-        [ngTemplateOutlet]="progressBar"
-        [ngTemplateOutletContext]="{
-          progress: invalidFixableProgress,
-          color: 'bg-warning'
-        }"
-      ></ng-container>
+      <baw-progress-bar
+        style="display: contents"
+        color="warning"
+        description="Files which have some problems, however can be fixed"
+        [progress]="invalidFixableProgress"
+      ></baw-progress-bar>
 
-      <ng-container
-        [ngTemplateOutlet]="progressBar"
-        [ngTemplateOutletContext]="{
-          progress: errorProgress,
-          color: 'bg-danger'
-        }"
-      ></ng-container>
+      <baw-progress-bar
+        style="display: contents"
+        color="danger"
+        description="Files which have some problems, and cannot be fixed"
+        [progress]="errorProgress"
+      ></baw-progress-bar>
     </div>
-
-    <ng-template #progressBar let-progress="progress" let-color="color">
-      <div
-        class="progress-bar progress-bar-striped progress-bar-animated"
-        [ngClass]="color"
-        role="progressbar"
-        aria-valuemin="0"
-        aria-valuemax="100"
-        [ngStyle]="{ width: progress + '%' }"
-        [attr.aria-valuenow]="progress"
-      >
-        {{ progress + "%" }}
-      </div>
-    </ng-template>
   `,
 })
 export class HarvestMetadataExtractionComponent implements OnInit {

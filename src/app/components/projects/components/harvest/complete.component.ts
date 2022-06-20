@@ -24,7 +24,7 @@ import { IHarvestReport } from "@models/Harvest";
       </p>
     </baw-wip>
 
-    <div class="clearfix">
+    <div class="clearfix mt-3">
       <a class="btn btn-primary float-end" [strongRoute]="audioRecordingsRoute">
         Show audio files
       </a>

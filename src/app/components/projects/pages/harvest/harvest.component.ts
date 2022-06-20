@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -18,7 +18,7 @@ const projectKey = "project";
 })
 class HarvestComponent
   extends withUnsubscribe(PageComponent)
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   public project: Project;
 
@@ -32,6 +32,10 @@ class HarvestComponent
   public ngOnInit(): void {
     this.project = this.route.snapshot.data[projectKey].model;
     this.stages.initialize(this.project);
+  }
+
+  public ngOnDestroy(): void {
+    this.stages.stopPolling();
   }
 }
 

@@ -136,8 +136,9 @@ class AudioRecordingsListComponent
       const siteInnerFilter: InnerFilter<AudioRecording> =
         (siteFilters.filter ??= {});
       const siteFilter = (siteInnerFilter.siteId ??= {});
-      if (sites instanceof Set) {
-        siteFilter.in = Array.from(sites);
+      // TODO Fix this quick patch
+      if (sites instanceof Set || (sites as any) instanceof Array) {
+        siteFilter.in = Array.from<Id>(sites as any);
       } else {
         siteFilter.eq = sites;
       }

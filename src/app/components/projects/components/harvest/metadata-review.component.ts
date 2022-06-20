@@ -5,6 +5,7 @@ import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest, HarvestMapping, HarvestStatus } from "@models/Harvest";
+import { Project } from "@models/Project";
 import { ConfigService } from "@services/config/config.service";
 import { ColumnMode } from "@swimlane/ngx-datatable";
 import { ToastrService } from "ngx-toastr";
@@ -131,6 +132,10 @@ export class HarvestMetadataReviewComponent
 
   public get harvest(): Harvest {
     return this.stages.harvest;
+  }
+
+  public get project(): Project {
+    return this.stages.project;
   }
 
   public ngOnInit(): void {

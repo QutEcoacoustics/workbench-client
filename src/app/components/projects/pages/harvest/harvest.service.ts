@@ -188,8 +188,11 @@ export class HarvestStagesService extends withUnsubscribe() {
   }
 
   public calculateProgress(numItems: number) {
-    const progress =
-      ((numItems ?? 0) / (this.harvest.report.itemsTotal ?? 1)) * 100;
+    if (this.harvest.report.itemsTotal === 0) {
+      return 0;
+    }
+
+    const progress = ((numItems ?? 0) / this.harvest.report.itemsTotal) * 100;
 
     if (progress > 99.99 && progress !== 100) {
       return 99.99;
