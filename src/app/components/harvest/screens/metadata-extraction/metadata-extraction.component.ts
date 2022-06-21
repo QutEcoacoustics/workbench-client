@@ -16,10 +16,22 @@ import { HarvestReport } from "@models/Harvest";
 
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
+    <h4>Progress</h4>
+
     <baw-progress>
       <baw-progress-bar
         color="success"
-        description="Files which have had their metadata successfully extracted"
+        description="Files which have been processed"
+        [progress]="progress"
+      ></baw-progress-bar>
+    </baw-progress>
+
+    <h4>Distribution</h4>
+
+    <baw-progress>
+      <baw-progress-bar
+        color="success"
+        description="Files which have successfully been extracted"
         [progress]="successProgress"
       ></baw-progress-bar>
 
@@ -44,11 +56,16 @@ export class HarvestMetadataExtractionComponent implements OnInit {
     this.stages.startPolling(5000);
   }
 
+  public get progress(): number {
+    return this.stages.calculateProgress(this.report.itemsMetadataGathered);
+  }
+
   public get successProgress(): number {
     return this.stages.calculateProgress(
-      this.report.itemsMetadataGathered -
-        this.report.itemsInvalidFixable -
-        this.report.itemsInvalidNotFixable
+      this.report.itemsTotal -
+        this.report.itemsInvalidNotFixable -
+        this.report.itemsErrored -
+        this.report.itemsFailed
     );
   }
 

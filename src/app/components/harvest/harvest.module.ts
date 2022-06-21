@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
+import { ListComponent } from "./pages/list/list.component";
 import { SiteSelectorComponent } from "./components/inputs/site-selector.component";
 import { UTCOffsetSelectorComponent } from "./components/inputs/utc-offset-selector.component";
 import { HarvestCanCloseDialogComponent } from "./components/shared/can-close-dialog.component";
@@ -38,6 +39,7 @@ const components = [
   UTCOffsetSelectorComponent,
 
   // Pages
+  ListComponent,
   StateComponent,
   NewComponent,
 ];

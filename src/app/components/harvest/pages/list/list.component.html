@@ -1,0 +1,40 @@
+<ngx-datatable
+  bawDatatableDefaults
+  [bawDatatablePagination]="{ filters: filters, getModels: getModels }"
+  [sorts]="[{ prop: 'createdAt', dir: 'desc' }]"
+>
+  <ngx-datatable-column prop="createdAt">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Created
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ formatDate(value) }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="streaming">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Upload Type
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value ? "Stream" : "Batch" }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="status">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="action">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Action
+    </ng-template>
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <a class="btn btn-sm btn-primary" [bawUrl]="row.viewUrl">
+        {{ asHarvest(row).status !== "complete" ? "Continue" : "View" }}
+      </a>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>

@@ -112,7 +112,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
    */
   // eslint-disable-next-line @typescript-eslint/quotes
   @Input("bawDatatablePagination") public pagination: {
-    filters: BehaviorSubject<Filters<Model>> | Filters<Model>;
+    filters?: BehaviorSubject<Filters<Model>> | Filters<Model>;
     getModels: (filters: Filters<Model>) => Observable<Model[]>;
   };
 
@@ -143,13 +143,13 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
     this.filters$ =
       this.pagination.filters instanceof BehaviorSubject
         ? this.pagination.filters
-        : of(this.pagination.filters);
+        : of(this.pagination.filters ?? {});
 
     // Reset page number on filter change, but keep current sort
-    this.filters$.pipe(takeUntil(this.unsubscribe)).subscribe(() => {
+    this.filters$.pipe(takeUntil(this.unsubscribe)).subscribe((filters) => {
       this.pageAndSort$.next({
         page: 0,
-        sort: this.pageAndSort$.getValue().sort,
+        sort: this.pageAndSort$.getValue().sort ?? filters.sorting,
       });
     });
 

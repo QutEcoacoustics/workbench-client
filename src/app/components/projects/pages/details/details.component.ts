@@ -9,7 +9,7 @@ import {
 } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
-import { newHarvestMenuItem } from "@components/harvest/harvest.menus";
+import { harvestsMenuItem } from "@components/harvest/harvest.menus";
 import {
   assignSiteMenuItem,
   deleteProjectMenuItem,
@@ -43,7 +43,7 @@ export const projectMenuItemActions = [
   deleteProjectMenuItem,
   audioRecordingMenuItems.list.project,
   audioRecordingMenuItems.batch.project,
-  newHarvestMenuItem,
+  harvestsMenuItem,
   uploadAnnotationsProjectMenuItem,
 ];
 

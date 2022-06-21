@@ -37,10 +37,9 @@ class StateComponent
 
   public ngOnInit(): void {
     const routeData = this.route.snapshot.data;
-    this.project = routeData[projectKey].model;
     const harvest: Harvest = routeData[harvestKey]?.model;
-    this.stages.initialize(this.project);
-    this.stages.trackHarvest(harvest);
+    this.project = routeData[projectKey].model;
+    this.stages.initialize(this.project, harvest);
   }
 
   public ngOnDestroy(): void {

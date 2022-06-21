@@ -128,12 +128,17 @@ export class HarvestStagesService extends withUnsubscribe() {
     }
   }
 
-  public initialize(project: Project): void {
+  public initialize(project: Project, harvest?: Harvest): void {
     this.project = project;
-    this._harvest$ = new BehaviorSubject<Harvest | null>(null);
+    this._harvest$ = new BehaviorSubject<Harvest | null>(harvest);
     this._harvestItems$ = new BehaviorSubject<HarvestItem[]>([]);
-    this.setStage("new_harvest");
-    this.reloadModel();
+
+    if (!harvest) {
+      this.setStage("new_harvest");
+      this.reloadModel();
+    } else {
+      this.trackHarvest(harvest);
+    }
   }
 
   public trackHarvest(harvest: Harvest): void {

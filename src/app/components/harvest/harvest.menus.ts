@@ -12,7 +12,7 @@ export const harvestsCategory = projectCategory;
 
 export const harvestsMenuItem = menuRoute({
   icon: ["fas", "cloud"],
-  label: "Uploads",
+  label: "Recording Uploads",
   parent: projectMenuItem,
   predicate: isAdminPredicate,
   route: harvestsRoute,
