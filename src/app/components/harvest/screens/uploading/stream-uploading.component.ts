@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
-import { HarvestStagesService } from "@components/projects/pages/harvest/harvest.service";
+import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { Harvest, HarvestMapping, IHarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
 

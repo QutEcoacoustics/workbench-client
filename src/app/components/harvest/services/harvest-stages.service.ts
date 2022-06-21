@@ -66,16 +66,12 @@ export class HarvestStagesService extends withUnsubscribe() {
 
           return throwError(() => err);
         }),
+        filter((harvest) => isInstantiated(harvest)),
         takeUntil(this.unsubscribe)
       )
       .subscribe((harvest): void => {
         console.log("Harvest", harvest);
-        if (!harvest) {
-          this.setStage("new_harvest");
-        } else {
-          this.setStage(harvest.status);
-          this._harvest$.next(harvest);
-        }
+        this.trackHarvest(harvest);
       });
 
     this.harvestTrigger$
@@ -193,14 +189,8 @@ export class HarvestStagesService extends withUnsubscribe() {
     }
 
     const progress = ((numItems ?? 0) / this.harvest.report.itemsTotal) * 100;
-
-    if (progress > 99.99 && progress !== 100) {
-      return 99.99;
-    }
-    if (progress < 0.01 && progress !== 0) {
-      return 0.01;
-    }
-    return +progress.toFixed(2);
+    const almostDone = progress > 99.99 && progress !== 100;
+    return almostDone ? 99.99 : +progress.toFixed(2);
   }
 
   private setStage(stage: HarvestStatus): void {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { HarvestStagesService } from "@components/projects/pages/harvest/harvest.service";
+import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { HarvestReport } from "@models/Harvest";
 
 @Component({

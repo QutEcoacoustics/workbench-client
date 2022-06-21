@@ -1,6 +1,6 @@
 import { Injector } from "@angular/core";
 import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import { projectHarvestRoute } from "@components/projects/projects.routes";
+import { harvestRoute } from "@components/harvest/harvest.routes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   DateTimeTimezone,
@@ -26,10 +26,11 @@ import type { User } from "./User";
  * Explanation of state transition:
  * https://github.com/QutEcoacoustics/baw-server/wiki/Harvest-Workflows#stages
  *
- * @param newHarvest A new harvest has been created (this will not be seen by the client)
+ * @param new_harvest A new harvest has been created (this will not be seen by the client)
  * @param uploading The user is able to upload files to the harvest
- * @param metadataExtraction Metadata is being extracted from the uploaded files
- * @param metadataReview The user is able to review the extracted metadata to validate everything is correct
+ * @param scanning Scanning the list of uploaded files to find everything
+ * @param metadata_extraction Metadata is being extracted from the uploaded files
+ * @param metadata_review The user is able to review the extracted metadata to validate everything is correct
  * @param processing The files are being harvested
  * @param complete The harvest is complete
  */
@@ -144,7 +145,10 @@ export class Harvest extends AbstractModel implements IHarvest {
   }
 
   public get viewUrl(): string {
-    return projectHarvestRoute.format({ projectId: this.projectId });
+    return harvestRoute.format({
+      projectId: this.projectId,
+      harvestId: this.id,
+    });
   }
 
   /** Is true if mappings array has changes which have not been reviewed */

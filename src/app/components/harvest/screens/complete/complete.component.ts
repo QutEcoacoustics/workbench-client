@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { audioRecordingsRoutes } from "@components/audio-recordings/audio-recording.routes";
-import { HarvestStagesService } from "@components/projects/pages/harvest/harvest.service";
+import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { IHarvestReport } from "@models/Harvest";
 
 @Component({

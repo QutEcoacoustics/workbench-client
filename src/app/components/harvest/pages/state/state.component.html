@@ -1,4 +1,5 @@
 <div *ngIf="!error">
+  <!-- TODO Extract title to shared component -->
   <h1>
     <small class="text-muted"> Project: {{ project.name }} </small>
     <br />
@@ -9,10 +10,6 @@
     [numSteps]="stages.numStages"
     [activeStep]="stages.currentStage"
   ></baw-stepper>
-
-  <baw-harvest-new
-    *ngIf="stages.isCurrentStage('new_harvest')"
-  ></baw-harvest-new>
 
   <div *ngIf="stages.isCurrentStage('uploading')">
     <baw-loading *ngIf="!stages.harvest"></baw-loading>

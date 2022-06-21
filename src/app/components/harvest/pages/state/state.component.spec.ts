@@ -1,11 +1,11 @@
-import { HarvestBatchUploadingComponent } from "@components/projects/components/harvest/batch-uploading.component";
-import { HarvestCompleteComponent } from "@components/projects/components/harvest/complete.component";
-import { HarvestMetadataExtractionComponent } from "@components/projects/components/harvest/metadata-extraction.component";
-import { HarvestMetadataReviewComponent } from "@components/projects/components/harvest/metadata-review.component";
-import { HarvestNewComponent } from "@components/projects/components/harvest/new.component";
-import { HarvestProcessingComponent } from "@components/projects/components/harvest/processing.component";
+import { HarvestBatchUploadingComponent } from "@components/harvest/screens/uploading/batch-uploading.component";
+import { HarvestCompleteComponent } from "@components/harvest/screens/complete/complete.component";
+import { HarvestMetadataExtractionComponent } from "@components/harvest/screens/metadata-extraction/metadata-extraction.component";
+import { HarvestMetadataReviewComponent } from "@components/harvest/screens/metadata-review/metadata-review.component";
+import { HarvestNewComponent } from "@components/harvest/pages/new/new.component";
+import { HarvestProcessingComponent } from "@components/harvest/screens/processing/processing.component";
 import { HarvestReviewComponent } from "@components/projects/components/harvest/review.component";
-import { HarvestScanningComponent } from "@components/projects/components/harvest/scanning.component";
+import { HarvestScanningComponent } from "@components/harvest/screens/scanning/scanning.component";
 import { HarvestStreamUploadingComponent } from "@components/projects/components/harvest/stream-uploading.component";
 import { Project } from "@models/Project";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
@@ -13,13 +13,13 @@ import { SharedModule } from "@shared/shared.module";
 import { StepperComponent } from "@shared/stepper/stepper.component";
 import { generateProject } from "@test/fakes/Project";
 import { MockComponents } from "ng-mocks";
-import { HarvestComponent, HarvestStage } from "./harvest.component";
+import { StateComponent, HarvestStage } from "./state.component";
 
-describe("HarvestComponent", () => {
+describe("StateComponent", () => {
   let defaultProject: Project;
-  let spec: SpectatorRouting<HarvestComponent>;
+  let spec: SpectatorRouting<StateComponent>;
   const createComponent = createRoutingFactory({
-    component: HarvestComponent,
+    component: StateComponent,
     declarations: MockComponents(
       HarvestNewComponent,
       HarvestScanningComponent,
@@ -48,7 +48,7 @@ describe("HarvestComponent", () => {
   it("should create", () => {
     setup();
     spec.detectChanges();
-    expect(spec.component).toBeInstanceOf(HarvestComponent);
+    expect(spec.component).toBeInstanceOf(StateComponent);
   });
 
   it("should show project name", () => {

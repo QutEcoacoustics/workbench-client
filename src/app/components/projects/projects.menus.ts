@@ -10,11 +10,7 @@ import {
   isLoggedInPredicate,
   isProjectEditorPredicate,
 } from "src/app/app.menus";
-import {
-  projectHarvestRoute,
-  projectRoute,
-  projectsRoute,
-} from "./projects.routes";
+import { projectRoute, projectsRoute } from "./projects.routes";
 
 /*
   Projects Category
@@ -108,18 +104,8 @@ export const deleteProjectMenuItem = menuRoute({
   tooltip: () => "Delete this project",
 });
 
-export const harvestProjectMenuItem = menuRoute({
-  icon: ["fas", "upload"],
-  label: "Upload Recordings",
-  parent: projectMenuItem,
-  // TODO #1888 Change to isProjectEditorPredicate when finished
-  predicate: isAdminPredicate,
-  route: projectHarvestRoute,
-  tooltip: () => "(UNDER DEVELOPMENT) Upload new audio to this project",
-});
-
 export const uploadAnnotationsProjectMenuItem = menuRoute({
-  icon: ["fas", "upload"],
+  icon: ["fas", "file-import"],
   label: "Batch Upload Annotations",
   parent: projectMenuItem,
   // TODO Change to isProjectEditorPredicate

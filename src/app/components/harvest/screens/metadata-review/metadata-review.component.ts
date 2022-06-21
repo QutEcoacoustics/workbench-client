@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
-import { HarvestStagesService } from "@components/projects/pages/harvest/harvest.service";
+import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
