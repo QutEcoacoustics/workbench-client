@@ -17,9 +17,17 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
       {{ progress + "%" }}
     </div>
   `,
+  styles: [
+    `
+      div {
+        cursor: help;
+      }
+    `,
+  ],
 })
 export class ProgressBarComponent {
   @Input() public progress: number;
   @Input() public color: BootstrapColorTypes;
   @Input() public description: string;
+  // TODO Add options for all progress-bar settings
 }

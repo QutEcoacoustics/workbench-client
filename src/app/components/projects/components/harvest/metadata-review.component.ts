@@ -21,7 +21,7 @@ import { ToastrService } from "ngx-toastr";
     <ngx-datatable
       class="mb-3"
       bawDatatableDefaults
-      [rows]="harvest.mappings"
+      [rows]="mappings"
       [externalPaging]="false"
       [externalSorting]="false"
     >
@@ -114,6 +114,7 @@ export class HarvestMetadataReviewComponent
   extends withUnsubscribe()
   implements OnInit, UnsavedInputCheckingComponent
 {
+  public mappings: HarvestMapping[];
   public loading: boolean;
   public hasUnsavedChanges: boolean;
 
@@ -130,24 +131,17 @@ export class HarvestMetadataReviewComponent
     super();
   }
 
-  public get harvest(): Harvest {
-    return this.stages.harvest;
-  }
-
   public get project(): Project {
     return this.stages.project;
   }
 
+  public get harvest(): Harvest {
+    return this.stages.harvest;
+  }
+
   public ngOnInit(): void {
     this.siteColumnLabel = this.config.settings.hideProjects ? "Point" : "Site";
-  }
-
-  public setMapping(index: number, mapping: HarvestMapping) {
-    this.harvest.mappings[index] = mapping;
-  }
-
-  public trackByPath(_: number, mapping: HarvestMapping) {
-    return mapping.path;
+    this.mappings = this.harvest.mappings;
   }
 
   public onNextClick(): void {
@@ -180,9 +174,10 @@ export class HarvestMetadataReviewComponent
   private updateHarvestWithMappingChange(): void {
     this.hasUnsavedChanges = true;
     this.harvestApi
-      .updateMappings(this.harvest, this.harvest.mappings)
+      .updateMappings(this.harvest, this.mappings)
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       .subscribe({
+        next: () => this.stages.reloadModel(),
         error: (err: BawApiError) =>
           this.notification.error("Failed to make that change: " + err.message),
       });

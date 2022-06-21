@@ -11,21 +11,19 @@ import { HarvestReport } from "@models/Harvest";
 
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
-    <div class="progress">
+    <baw-progress>
       <baw-progress-bar
-        style="display: contents"
         color="info"
         description="Files which have been found"
         [progress]="newFileProgress"
       ></baw-progress-bar>
 
       <baw-progress-bar
-        style="display: contents"
         color="primary"
         description="Files which have had their metadata successfully extracted"
         [progress]="metadataProgress"
       ></baw-progress-bar>
-    </div>
+    </baw-progress>
   `,
 })
 export class HarvestScanningComponent implements OnInit {

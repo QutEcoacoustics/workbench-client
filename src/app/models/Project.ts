@@ -17,7 +17,12 @@ import {
 import { assetRoot } from "@services/config/config.service";
 import { AbstractModel } from "./AbstractModel";
 import { creator, deleter, hasMany, updater } from "./AssociationDecorators";
-import { bawDateTime, bawImage, bawPersistAttr } from "./AttributeDecorators";
+import {
+  bawCollection,
+  bawDateTime,
+  bawImage,
+  bawPersistAttr,
+} from "./AttributeDecorators";
 import type { Region } from "./Region";
 import type { Site } from "./Site";
 import type { User } from "./User";
@@ -66,8 +71,11 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public readonly updatedAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
+  @bawCollection()
   public readonly ownerIds?: Ids;
+  @bawCollection()
   public readonly siteIds?: Ids;
+  @bawCollection()
   public readonly regionIds?: Ids;
   @bawPersistAttr()
   public readonly notes?: Hash;

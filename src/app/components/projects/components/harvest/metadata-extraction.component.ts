@@ -16,28 +16,25 @@ import { HarvestReport } from "@models/Harvest";
 
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
-    <div class="progress">
+    <baw-progress>
       <baw-progress-bar
-        style="display: contents"
         color="success"
         description="Files which have had their metadata successfully extracted"
         [progress]="successProgress"
       ></baw-progress-bar>
 
       <baw-progress-bar
-        style="display: contents"
         color="warning"
         description="Files which have some problems, however can be fixed"
         [progress]="invalidFixableProgress"
       ></baw-progress-bar>
 
       <baw-progress-bar
-        style="display: contents"
         color="danger"
         description="Files which have some problems, and cannot be fixed"
         [progress]="errorProgress"
       ></baw-progress-bar>
-    </div>
+    </baw-progress>
   `,
 })
 export class HarvestMetadataExtractionComponent implements OnInit {

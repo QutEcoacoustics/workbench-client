@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { HarvestStagesService } from "@components/projects/pages/harvest/harvest.service";
+import { HarvestReport } from "@models/Harvest";
 
 @Component({
   selector: "baw-harvest-processing",
@@ -10,15 +11,19 @@ import { HarvestStagesService } from "@components/projects/pages/harvest/harvest
 
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
-    <p>
-      <ngb-progressbar
-        type="success"
-        [showValue]="true"
-        [striped]="true"
-        [animated]="true"
-        [value]="progress"
-      ></ngb-progressbar>
-    </p>
+    <baw-progress>
+      <baw-progress-bar
+        color="success"
+        description="Files which have been successfully processed"
+        [progress]="progress"
+      ></baw-progress-bar>
+
+      <baw-progress-bar
+        color="danger"
+        description="Files which have failed to be processed"
+        [progress]="errorProgress"
+      ></baw-progress-bar>
+    </baw-progress>
   `,
 })
 export class HarvestProcessingComponent implements OnInit {
@@ -29,8 +34,16 @@ export class HarvestProcessingComponent implements OnInit {
   }
 
   public get progress(): number {
-    const { itemsCompleted, itemsFailed, itemsErrored, itemsTotal } =
-      this.stages.harvest.report;
-    return ((itemsCompleted + itemsFailed + itemsErrored) / itemsTotal) * 100;
+    return this.stages.calculateProgress(this.report.itemsCompleted);
+  }
+
+  public get errorProgress(): number {
+    return this.stages.calculateProgress(
+      this.report.itemsFailed + this.report.itemsErrored
+    );
+  }
+
+  private get report(): HarvestReport {
+    return this.stages.harvest.report;
   }
 }

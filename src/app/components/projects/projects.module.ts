@@ -14,7 +14,6 @@ import { HarvestScanningComponent } from "./components/harvest/scanning.componen
 import { HarvestStreamUploadingComponent } from "./components/harvest/stream-uploading.component";
 import { SiteSelectorComponent } from "./components/inputs/site-selector.component";
 import { UTCOffsetSelectorComponent } from "./components/inputs/utc-offset-selector.component";
-import { ProgressBarComponent } from "./components/shared/progress-bar.component";
 import { HarvestProgressComponent } from "./components/shared/progress.component";
 import { HarvestUploadUrlComponent } from "./components/shared/upload-url.component";
 import { SiteCardComponent } from "./components/site-card/site-card.component";
@@ -44,7 +43,6 @@ const components = [
   HarvestStreamUploadingComponent,
 
   // Shared
-  ProgressBarComponent,
   HarvestProgressComponent,
   HarvestUploadUrlComponent,
 
