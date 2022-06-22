@@ -41,50 +41,8 @@ export class HarvestStagesService extends withUnsubscribe() {
     private harvestItemsApi: ShallowHarvestItemsService
   ) {
     super();
-
-    this.harvestTrigger$
-      .pipe(
-        switchMap(() => {
-          if (this.harvest) {
-            // Show requests are faster, use them when we know the harvest id
-            return this.harvestApi.show(this.harvest, this.project);
-          } else {
-            // Otherwise, filter for the latest harvest
-            return this.getCurrentHarvestId(this.project);
-          }
-        }),
-        catchError((err: BawApiError) => {
-          if ([UNAUTHORIZED, NOT_FOUND].includes(err.status)) {
-            this.error = err;
-          } else {
-            this.notifications.error(
-              "Failed to load harvest data, refresh this page to reconnect",
-              undefined,
-              { disableTimeOut: true }
-            );
-          }
-
-          return throwError(() => err);
-        }),
-        filter((harvest) => isInstantiated(harvest)),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe((harvest): void => {
-        console.log("Harvest", harvest);
-        this.trackHarvest(harvest);
-      });
-
-    this.harvestTrigger$
-      .pipe(
-        filter(() => isInstantiated(this.harvest)),
-        switchMap(() => this.harvestItemsApi.list(this.harvest)),
-        catchError(() => of([])),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe((harvestItems) => {
-        console.log("Harvest Items", harvestItems);
-        this._harvestItems$.next(harvestItems);
-      });
+    this.trackHarvest();
+    this.trackHarvestItems();
   }
 
   public get harvest$(): Observable<Harvest | null> {
@@ -130,20 +88,12 @@ export class HarvestStagesService extends withUnsubscribe() {
 
   public initialize(project: Project, harvest?: Harvest): void {
     this.project = project;
-    this._harvest$ = new BehaviorSubject<Harvest | null>(harvest);
-    this._harvestItems$ = new BehaviorSubject<HarvestItem[]>([]);
-
-    if (!harvest) {
-      this.setStage("new_harvest");
-      this.reloadModel();
-    } else {
-      this.trackHarvest(harvest);
-    }
+    this.setHarvest(harvest ?? null);
   }
 
-  public trackHarvest(harvest: Harvest): void {
+  public setHarvest(harvest: Harvest): void {
     this._harvest$.next(harvest);
-    this.setStage(harvest.status);
+    this.setStage(harvest?.status ?? "new_harvest");
   }
 
   public reloadModel(): void {
@@ -157,9 +107,7 @@ export class HarvestStagesService extends withUnsubscribe() {
   public startPolling(intervalMs: number): void {
     this.harvestInterval = interval(intervalMs)
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(() => {
-        this.reloadModel();
-      });
+      .subscribe(() => this.reloadModel());
   }
 
   public stopPolling(): void {
@@ -216,5 +164,55 @@ export class HarvestStagesService extends withUnsubscribe() {
         project
       )
       .pipe(map((harvests) => harvests[0] ?? null));
+  }
+
+  private trackHarvest(): void {
+    this.harvestTrigger$
+      .pipe(
+        switchMap(() => {
+          if (this.harvest) {
+            // Show requests are faster, use them when we know the harvest id
+            return this.harvestApi.show(this.harvest, this.project);
+          } else {
+            // Otherwise, filter for the latest harvest
+            return this.getCurrentHarvestId(this.project);
+          }
+        }),
+        catchError((err: BawApiError) => {
+          if ([UNAUTHORIZED, NOT_FOUND].includes(err.status)) {
+            this.error = err;
+          } else {
+            this.notifications.error(
+              "Failed to load harvest data, refresh this page to reconnect",
+              undefined,
+              { disableTimeOut: true }
+            );
+          }
+
+          return throwError(() => err);
+        }),
+        filter((harvest) => isInstantiated(harvest)),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe((harvest): void => {
+        console.log("Harvest", harvest);
+        this.setHarvest(harvest);
+      });
+  }
+
+  private trackHarvestItems(): void {
+    this.harvest$
+      .pipe(
+        switchMap((harvest) => {
+          console.log({ harvest });
+          return harvest ? this.harvestItemsApi.list(harvest) : of([]);
+        }),
+        catchError(() => of([])),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe((harvestItems) => {
+        console.log("Harvest Items", harvestItems);
+        this._harvestItems$.next(harvestItems);
+      });
   }
 }

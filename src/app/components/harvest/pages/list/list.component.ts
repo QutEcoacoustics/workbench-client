@@ -15,8 +15,8 @@ import { Project } from "@models/Project";
 import { List } from "immutable";
 import { DateTime } from "luxon";
 
+export const harvestsMenuItemActions = [newHarvestMenuItem];
 const projectKey = "project";
-const harvestsMenuItemActions = [newHarvestMenuItem];
 
 @Component({
   selector: "baw-harvests",

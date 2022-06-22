@@ -18,7 +18,7 @@ import { HarvestReport } from "@models/Harvest";
 
     <h4>Progress</h4>
 
-    <baw-progress>
+    <baw-progress class="mb-3">
       <baw-progress-bar
         color="success"
         description="Files which have been processed"
@@ -63,9 +63,8 @@ export class HarvestMetadataExtractionComponent implements OnInit {
   public get successProgress(): number {
     return this.stages.calculateProgress(
       this.report.itemsTotal -
-        this.report.itemsInvalidNotFixable -
-        this.report.itemsErrored -
-        this.report.itemsFailed
+        this.report.itemsInvalidFixable -
+        this.report.itemsInvalidNotFixable
     );
   }
 

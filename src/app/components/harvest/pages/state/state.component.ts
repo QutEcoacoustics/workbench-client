@@ -3,10 +3,9 @@ import { ActivatedRoute } from "@angular/router";
 import { harvestResolvers } from "@baw-api/harvest/harvest.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
-  harvestsCategory,
   harvestMenuItem,
+  harvestsCategory,
 } from "@components/harvest/harvest.menus";
-import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
@@ -14,6 +13,7 @@ import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { HarvestStagesService } from "../../services/harvest-stages.service";
+import { harvestsMenuItemActions } from "../list/list.component";
 
 const projectKey = "project";
 const harvestKey = "harvest";
@@ -50,7 +50,7 @@ class StateComponent
 StateComponent.linkToRoute({
   category: harvestsCategory,
   menus: {
-    actions: List(projectMenuItemActions),
+    actions: List(harvestsMenuItemActions),
     actionWidgets: List([permissionsWidgetMenuItem]),
   },
   pageRoute: harvestMenuItem,

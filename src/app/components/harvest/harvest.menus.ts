@@ -1,14 +1,15 @@
-import {
-  projectCategory,
-  projectMenuItem,
-} from "@components/projects/projects.menus";
-import { menuRoute } from "@interfaces/menusInterfaces";
+import { projectMenuItem } from "@components/projects/projects.menus";
+import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { isAdminPredicate } from "src/app/app.menus";
-import { newHarvestRoute, harvestsRoute, harvestRoute } from "./harvest.routes";
+import { harvestRoute, harvestsRoute, newHarvestRoute } from "./harvest.routes";
 
 // TODO #1888 Change isAdminPredicate to isProjectEditorPredicate when finished
 
-export const harvestsCategory = projectCategory;
+export const harvestsCategory: Category = {
+  icon: ["fas", "cloud"],
+  label: "Recording Uploads",
+  route: harvestsRoute,
+};
 
 export const harvestsMenuItem = menuRoute({
   icon: ["fas", "cloud"],
@@ -21,7 +22,7 @@ export const harvestsMenuItem = menuRoute({
 
 export const newHarvestMenuItem = menuRoute({
   icon: ["fas", "upload"],
-  label: "Upload Recordings",
+  label: "Upload",
   parent: harvestsMenuItem,
   predicate: isAdminPredicate,
   route: newHarvestRoute,
