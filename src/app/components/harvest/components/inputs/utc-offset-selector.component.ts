@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
-  selector: "baw-utc-offset-selector",
+  selector: "baw-harvest-utc-offset-selector",
   template: `
     <div *ngIf="offset" class="utc-label">
       <span>{{ offset }}</span>

@@ -137,7 +137,7 @@ class AudioRecordingsListComponent
         (siteFilters.filter ??= {});
       const siteFilter = (siteInnerFilter.siteId ??= {});
       if (sites instanceof Set) {
-        siteFilter.in = Array.from<Id>(sites as any);
+        siteFilter.in = Array.from(sites);
       } else {
         siteFilter.eq = sites;
       }

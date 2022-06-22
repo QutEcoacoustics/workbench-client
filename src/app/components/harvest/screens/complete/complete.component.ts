@@ -31,7 +31,7 @@ import { IHarvestReport } from "@models/Harvest";
     </div>
   `,
 })
-export class HarvestCompleteComponent implements OnInit {
+export class CompleteComponent implements OnInit {
   public audioRecordingsRoute = audioRecordingsRoutes.project;
 
   public constructor(public stages: HarvestStagesService) {}

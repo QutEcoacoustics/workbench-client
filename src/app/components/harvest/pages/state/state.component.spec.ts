@@ -1,11 +1,11 @@
-import { HarvestBatchUploadingComponent } from "@components/harvest/screens/uploading/batch-uploading.component";
-import { HarvestCompleteComponent } from "@components/harvest/screens/complete/complete.component";
-import { HarvestMetadataExtractionComponent } from "@components/harvest/screens/metadata-extraction/metadata-extraction.component";
-import { HarvestMetadataReviewComponent } from "@components/harvest/screens/metadata-review/metadata-review.component";
+import { BatchUploadingComponent } from "@components/harvest/screens/uploading/batch-uploading.component";
+import { CompleteComponent } from "@components/harvest/screens/complete/complete.component";
+import { MetadataExtractionComponent } from "@components/harvest/screens/metadata-extraction/metadata-extraction.component";
+import { MetadataReviewComponent } from "@components/harvest/screens/metadata-review/metadata-review.component";
 import { HarvestNewComponent } from "@components/harvest/pages/new/new.component";
-import { HarvestProcessingComponent } from "@components/harvest/screens/processing/processing.component";
+import { ProcessingComponent } from "@components/harvest/screens/processing/processing.component";
 import { HarvestReviewComponent } from "@components/projects/components/harvest/review.component";
-import { HarvestScanningComponent } from "@components/harvest/screens/scanning/scanning.component";
+import { ScanningComponent } from "@components/harvest/screens/scanning/scanning.component";
 import { HarvestStreamUploadingComponent } from "@components/projects/components/harvest/stream-uploading.component";
 import { Project } from "@models/Project";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
@@ -22,14 +22,14 @@ describe("StateComponent", () => {
     component: StateComponent,
     declarations: MockComponents(
       HarvestNewComponent,
-      HarvestScanningComponent,
+      ScanningComponent,
       HarvestStreamUploadingComponent,
-      HarvestBatchUploadingComponent,
-      HarvestMetadataExtractionComponent,
-      HarvestProcessingComponent,
-      HarvestMetadataReviewComponent,
+      BatchUploadingComponent,
+      MetadataExtractionComponent,
+      ProcessingComponent,
+      MetadataReviewComponent,
       HarvestReviewComponent,
-      HarvestCompleteComponent
+      CompleteComponent
     ),
     imports: [SharedModule],
   });
@@ -86,30 +86,30 @@ describe("StateComponent", () => {
       setStage(HarvestStage.uploading);
       spec.component.isStreaming = false;
       spec.detectChanges();
-      assertStage(HarvestStage.uploading, HarvestBatchUploadingComponent);
+      assertStage(HarvestStage.uploading, BatchUploadingComponent);
     });
 
     it("should show scanning stage", () => {
       setStage(HarvestStage.scanning);
-      assertStage(HarvestStage.scanning, HarvestScanningComponent);
+      assertStage(HarvestStage.scanning, ScanningComponent);
     });
 
     it("should show metadata extraction stage", () => {
       setStage(HarvestStage.metadata_extraction);
       assertStage(
         HarvestStage.metadata_extraction,
-        HarvestMetadataExtractionComponent
+        MetadataExtractionComponent
       );
     });
 
     it("should show metadata review stage", () => {
       setStage(HarvestStage.metadata_review);
-      assertStage(HarvestStage.metadata_review, HarvestMetadataReviewComponent);
+      assertStage(HarvestStage.metadata_review, MetadataReviewComponent);
     });
 
     it("should show processing stage", () => {
       setStage(HarvestStage.processing);
-      assertStage(HarvestStage.processing, HarvestProcessingComponent);
+      assertStage(HarvestStage.processing, ProcessingComponent);
     });
 
     it("should show review stage", () => {
@@ -119,7 +119,7 @@ describe("StateComponent", () => {
 
     it("should show complete stage", () => {
       setStage(HarvestStage.complete);
-      assertStage(HarvestStage.complete, HarvestCompleteComponent);
+      assertStage(HarvestStage.complete, CompleteComponent);
     });
   });
 });

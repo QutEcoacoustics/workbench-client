@@ -29,7 +29,7 @@ import {
 import { defaultDebounceTime } from "src/app/app.helper";
 
 @Component({
-  selector: "baw-site-selector",
+  selector: "baw-harvest-site-selector",
   template: `
     <!-- Show site name and link if exists -->
     <div *ngIf="site" class="site-label">

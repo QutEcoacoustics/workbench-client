@@ -9,4 +9,4 @@ import { Component } from "@angular/core";
     </p>
   `,
 })
-export class HarvestCanCloseDialogComponent {}
+export class CanCloseDialogComponent {}

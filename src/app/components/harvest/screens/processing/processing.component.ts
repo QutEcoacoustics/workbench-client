@@ -26,7 +26,7 @@ import { HarvestReport } from "@models/Harvest";
     </baw-progress>
   `,
 })
-export class HarvestProcessingComponent implements OnInit {
+export class ProcessingComponent implements OnInit {
   public constructor(private stages: HarvestStagesService) {}
 
   public ngOnInit(): void {

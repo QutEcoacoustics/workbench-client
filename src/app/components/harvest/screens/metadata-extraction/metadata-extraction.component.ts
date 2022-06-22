@@ -49,7 +49,7 @@ import { HarvestReport } from "@models/Harvest";
     </baw-progress>
   `,
 })
-export class HarvestMetadataExtractionComponent implements OnInit {
+export class MetadataExtractionComponent implements OnInit {
   public constructor(private stages: HarvestStagesService) {}
 
   public ngOnInit(): void {

@@ -7,7 +7,6 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest, HarvestStatus } from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
-import { NOT_FOUND, UNAUTHORIZED } from "http-status";
 import { ToastrService } from "ngx-toastr";
 import {
   BehaviorSubject,
@@ -27,7 +26,6 @@ import {
 @Injectable({ providedIn: "root" })
 export class HarvestStagesService extends withUnsubscribe() {
   public project: Project;
-  public error: BawApiError;
   public stage: HarvestStatus;
 
   private _harvest$ = new BehaviorSubject<Harvest | null>(null);
@@ -169,7 +167,7 @@ export class HarvestStagesService extends withUnsubscribe() {
   private trackHarvest(): void {
     this.harvestTrigger$
       .pipe(
-        switchMap(() => {
+        switchMap((): Observable<Harvest> => {
           if (this.harvest) {
             // Show requests are faster, use them when we know the harvest id
             return this.harvestApi.show(this.harvest, this.project);
@@ -179,39 +177,32 @@ export class HarvestStagesService extends withUnsubscribe() {
           }
         }),
         catchError((err: BawApiError) => {
-          if ([UNAUTHORIZED, NOT_FOUND].includes(err.status)) {
-            this.error = err;
-          } else {
-            this.notifications.error(
-              "Failed to load harvest data, refresh this page to reconnect",
-              undefined,
-              { disableTimeOut: true }
-            );
-          }
-
+          this.notifications.error(
+            "Failed to load harvest data, refresh this page to reconnect",
+            undefined,
+            { disableTimeOut: true }
+          );
           return throwError(() => err);
         }),
-        filter((harvest) => isInstantiated(harvest)),
+        filter((harvest): boolean => isInstantiated(harvest)),
         takeUntil(this.unsubscribe)
       )
       .subscribe((harvest): void => {
-        console.log("Harvest", harvest);
         this.setHarvest(harvest);
       });
   }
 
   private trackHarvestItems(): void {
+    const defaultResponse: Observable<HarvestItem[]> = of([]);
     this.harvest$
       .pipe(
-        switchMap((harvest) => {
-          console.log({ harvest });
-          return harvest ? this.harvestItemsApi.list(harvest) : of([]);
-        }),
-        catchError(() => of([])),
+        switchMap((harvest) =>
+          harvest ? this.harvestItemsApi.list(harvest) : defaultResponse
+        ),
+        catchError(() => defaultResponse),
         takeUntil(this.unsubscribe)
       )
-      .subscribe((harvestItems) => {
-        console.log("Harvest Items", harvestItems);
+      .subscribe((harvestItems): void => {
         this._harvestItems$.next(harvestItems);
       });
   }

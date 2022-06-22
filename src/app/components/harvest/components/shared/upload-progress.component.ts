@@ -2,7 +2,7 @@ import { Component, Input } from "@angular/core";
 import { Harvest } from "@models/Harvest";
 
 @Component({
-  selector: "baw-harvest-progress",
+  selector: "baw-harvest-upload-progress",
   template: `
     <h4>Current Progress</h4>
 
@@ -16,6 +16,6 @@ import { Harvest } from "@models/Harvest";
     </ul>
   `,
 })
-export class HarvestProgressComponent {
+export class UploadProgressComponent {
   @Input() public harvest: Harvest;
 }

@@ -16,7 +16,7 @@ import { Harvest } from "@models/Harvest";
     <p>Password: {{ harvest.uploadPassword }}</p>
   `,
 })
-export class HarvestUploadUrlComponent {
+export class UploadUrlComponent {
   @Input() public harvest: Harvest;
 
   public constructor(private domSanitizer: DomSanitizer) {}
