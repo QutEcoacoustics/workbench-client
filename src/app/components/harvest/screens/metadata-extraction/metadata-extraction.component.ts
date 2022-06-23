@@ -18,35 +18,43 @@ import { HarvestReport } from "@models/Harvest";
 
     <h4>Progress</h4>
 
-    <baw-progress class="mb-3">
-      <baw-progress-bar
-        color="success"
-        description="Files which have been processed"
-        [progress]="progress"
-      ></baw-progress-bar>
-    </baw-progress>
+    <p *ngIf="loadingProgress">Loading...</p>
 
-    <h4>Distribution</h4>
+    <ng-container *ngIf="!loadingProgress">
+      <baw-progress>
+        <baw-progress-bar
+          color="success"
+          description="Files which have been processed"
+          [progress]="progress"
+        ></baw-progress-bar>
+      </baw-progress>
 
-    <baw-progress>
-      <baw-progress-bar
-        color="success"
-        description="Files which have successfully been extracted"
-        [progress]="successProgress"
-      ></baw-progress-bar>
+      <h4 class="mt-3">File Status</h4>
 
-      <baw-progress-bar
-        color="warning"
-        description="Files which have some problems, however can be fixed"
-        [progress]="invalidFixableProgress"
-      ></baw-progress-bar>
+      <baw-progress>
+        <baw-progress-bar
+          color="success"
+          description="Files which have no problems"
+          [striped]="false"
+          [progress]="successProgress"
+        ></baw-progress-bar>
 
-      <baw-progress-bar
-        color="danger"
-        description="Files which have some problems, and cannot be fixed"
-        [progress]="errorProgress"
-      ></baw-progress-bar>
-    </baw-progress>
+        <baw-progress-bar
+          color="warning"
+          textColor="dark"
+          description="Files which have some problems, however can be fixed"
+          [striped]="false"
+          [progress]="invalidFixableProgress"
+        ></baw-progress-bar>
+
+        <baw-progress-bar
+          color="danger"
+          description="Files which have some problems, and cannot be fixed"
+          [striped]="false"
+          [progress]="errorProgress"
+        ></baw-progress-bar>
+      </baw-progress>
+    </ng-container>
   `,
 })
 export class MetadataExtractionComponent implements OnInit {
@@ -54,6 +62,10 @@ export class MetadataExtractionComponent implements OnInit {
 
   public ngOnInit(): void {
     this.stages.startPolling(5000);
+  }
+
+  public get loadingProgress(): boolean {
+    return this.report.itemsMetadataGathered === 0;
   }
 
   public get progress(): number {

@@ -11,8 +11,16 @@
             WinSCP
           </a>
         </li>
-        <li>Click on the link below to open WinSCP and connect to our cloud</li>
-        <li>Upload all of your files and we will check them for you</li>
+        <li>
+          Click on this
+          <a [href]="harvest.uploadUrlWithAuth | safe: 'url'">link</a> to open
+          WinSCP and connect to our cloud
+        </li>
+        <li>
+          Upload all of your files using this
+          <a href="https://winscp.net/eng/docs/guide_upload">guide</a> and we
+          will check them for you
+        </li>
       </ol>
     </ng-template>
   </li>

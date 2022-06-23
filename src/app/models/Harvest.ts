@@ -155,6 +155,13 @@ export class Harvest extends AbstractModel implements IHarvest {
   public get isMappingsDirty(): boolean {
     return this.lastMetadataReviewAt < this.lastMappingsChangeAt;
   }
+
+  public get uploadUrlWithAuth(): string {
+    return this.uploadUrl.replace(
+      "://",
+      `://${this.uploadUser}:${this.uploadPassword}@`
+    );
+  }
 }
 
 export interface IHarvestReport {
