@@ -4,15 +4,22 @@ import { HarvestStagesService } from "@components/harvest/services/harvest-stage
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { toRelative } from "@interfaces/apiInterfaces";
 import { Harvest, HarvestMapping, HarvestStatus } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { ConfigService } from "@services/config/config.service";
 import { ColumnMode } from "@swimlane/ngx-datatable";
+import { Duration } from "luxon";
 import { ToastrService } from "ngx-toastr";
+
+// TODO Show additional information to users if itemsError is non zero. Ie:
+// An unexpected error occurred in xxx files. Please contact us so we can investigate the issue.
+// You can choose to continue the harvest, but any files that produced errors will be ignored
 
 @Component({
   selector: "baw-harvest-metadata-review",
   templateUrl: "metadata-review.component.html",
+  styleUrls: ["metadata-review.component.scss"],
 })
 export class MetadataReviewComponent
   extends withUnsubscribe()
@@ -46,6 +53,10 @@ export class MetadataReviewComponent
   public ngOnInit(): void {
     this.siteColumnLabel = this.config.settings.hideProjects ? "Point" : "Site";
     this.mappings = this.harvest.mappings;
+  }
+
+  public humanizeDuration(duration: Duration): string {
+    return toRelative(duration, { largest: 1, maxDecimalPoint: 0 });
   }
 
   public onNextClick(): void {
