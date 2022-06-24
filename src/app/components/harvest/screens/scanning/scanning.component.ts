@@ -13,9 +13,7 @@ import { HarvestReport } from "@models/Harvest";
 
     <h4>Progress</h4>
 
-    <p *ngIf="loadingProgress">Loading...</p>
-
-    <baw-progress *ngIf="!loadingProgress">
+    <baw-progress [showZero]="zeroProgress">
       <baw-progress-bar
         color="info"
         description="Files which have been found"
@@ -37,7 +35,7 @@ export class ScanningComponent implements OnInit {
     this.stages.startPolling(5000);
   }
 
-  public get loadingProgress(): boolean {
+  public get zeroProgress(): boolean {
     return this.report.itemsNew + this.report.itemsMetadataGathered === 0;
   }
 
