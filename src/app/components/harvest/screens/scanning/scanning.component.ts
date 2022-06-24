@@ -36,7 +36,7 @@ export class ScanningComponent implements OnInit {
   }
 
   public get zeroProgress(): boolean {
-    return this.report.itemsNew + this.report.itemsMetadataGathered === 0;
+    return this.newFileProgress + this.metadataProgress === 0;
   }
 
   public get newFileProgress(): number {

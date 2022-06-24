@@ -11,7 +11,7 @@ import { HarvestReport } from "@models/Harvest";
 
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
-    <baw-progress>
+    <baw-progress [showZero]="zeroProgress">
       <baw-progress-bar
         color="success"
         description="Files which have been successfully processed"
@@ -31,6 +31,10 @@ export class ProcessingComponent implements OnInit {
 
   public ngOnInit(): void {
     this.stages.startPolling(5000);
+  }
+
+  public get zeroProgress(): boolean {
+    return this.progress + this.errorProgress === 0;
   }
 
   public get progress(): number {
