@@ -37,7 +37,8 @@ export function generateHarvestItem(
     createdAt: modelData.timestamp(),
     updatedAt: modelData.timestamp(),
     deleted: modelData.datatype.boolean(),
-    path: modelData.system.filePath(),
+    // File path without leading '/'
+    path: modelData.system.filePath().slice(1),
     status,
     validations,
     ...data,

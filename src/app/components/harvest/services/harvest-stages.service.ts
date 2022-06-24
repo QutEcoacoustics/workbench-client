@@ -7,6 +7,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest, HarvestStatus } from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
+import { cacheSettings } from "@services/cache/cache-settings";
 import { Step } from "@shared/stepper/stepper.component";
 import { ToastrService } from "ngx-toastr";
 import {
@@ -115,7 +116,16 @@ export class HarvestStagesService extends withUnsubscribe() {
     this.harvestTrigger$?.next();
   }
 
+  /**
+   * Start polling for changes to the harvest model. intervalMs cannot be less
+   * than the cache timeout
+   */
   public startPolling(intervalMs: number): void {
+    // Prevent devs from setting a polling time less than the cache
+    if (intervalMs + 200 <= cacheSettings.httpGetTtlMs) {
+      intervalMs = cacheSettings.httpGetTtlMs + 200;
+    }
+
     this.harvestInterval = interval(intervalMs)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(() => this.reloadModel());

@@ -51,6 +51,7 @@ export class HarvestItemsService
     );
   }
 
+  // TODO Allow path input as id
   public show(
     model: HarvestItem,
     project: IdOr<Project>,
@@ -87,6 +88,7 @@ export class ShallowHarvestItemsService
     );
   }
 
+  // TODO Allow path input as id
   public show(
     model: HarvestItem,
     harvest: IdOr<Harvest>

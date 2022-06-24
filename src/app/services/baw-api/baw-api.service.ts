@@ -245,7 +245,11 @@ export class BawApiService<
     model: AbstractModel
   ): Observable<Model> {
     const jsonData = model.getJsonAttributes?.({ update: true });
-    const request = this.httpPatch(path, jsonData ?? model).pipe(
+    const body = model.kind
+      ? { [model.kind]: jsonData ?? model }
+      : jsonData ?? model;
+
+    const request = this.httpPatch(path, body).pipe(
       map(this.handleSingleResponse(classBuilder))
     );
 

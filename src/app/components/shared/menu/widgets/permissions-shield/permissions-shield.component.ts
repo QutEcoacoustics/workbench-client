@@ -7,7 +7,7 @@ import {
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { AccessLevel } from "@interfaces/apiInterfaces";
+import { AccessLevel, Id, Ids } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -144,7 +144,11 @@ export class PermissionsShieldComponent
         userKey: "owners",
       },
     ].forEach((badge) => {
-      if (isInstantiated(model[badge.id])) {
+      const id: Id | Ids = model[badge.id];
+      const idExists = typeof id === "number" && isInstantiated(id);
+      const idsExists = id instanceof Set && id.size > 0;
+
+      if (idExists || idsExists) {
         badges.push({
           label: badge.label,
           userKey: badge.userKey,

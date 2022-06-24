@@ -52,7 +52,7 @@ export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
     model: IdOr<Harvest>,
     project: IdOr<Project>
   ): Observable<Harvest> {
-    return this.api.show(Harvest, endpoint(project, model, emptyParam), false);
+    return this.api.show(Harvest, endpoint(project, model, emptyParam));
   }
 
   public create(model: Harvest, project: IdOr<Project>): Observable<Harvest> {
@@ -113,7 +113,7 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
   }
 
   public show(model: IdOr<Harvest>): Observable<Harvest> {
-    return this.api.show(Harvest, shallowEndpoint(model, emptyParam), false);
+    return this.api.show(Harvest, shallowEndpoint(model, emptyParam));
   }
 
   public create(model: Harvest): Observable<Harvest> {

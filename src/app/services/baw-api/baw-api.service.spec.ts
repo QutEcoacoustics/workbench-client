@@ -574,7 +574,10 @@ describe("BawApiService", () => {
                 break;
               case "create":
               case "update":
-                expect(spy).toHaveBeenCalledWith("/broken_link", defaultBody);
+                expect(spy).toHaveBeenCalledWith("/broken_link", {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  "Mock Model": defaultBody,
+                });
                 break;
               case "destroy":
                 expect(spy).toHaveBeenCalledWith("/broken_link");

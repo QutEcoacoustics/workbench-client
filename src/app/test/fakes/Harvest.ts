@@ -44,8 +44,8 @@ export function generateHarvest(data?: Partial<IHarvest>): Required<IHarvest> {
     streaming: modelData.datatype.boolean(),
     status: modelData.helpers.arrayElement<HarvestStatus>([
       "uploading",
-      "metadataExtraction",
-      "metadataReview",
+      "metadata_extraction",
+      "metadata_review",
       "processing",
       "complete",
     ]),
@@ -58,7 +58,8 @@ export function generateHarvest(data?: Partial<IHarvest>): Required<IHarvest> {
     ),
     report: generateHarvestReport(),
     lastMetadataReviewAt: modelData.timestamp(),
-    lastMappingUpdateAt: modelData.timestamp(),
+    lastMappingsChangeAt: modelData.timestamp(),
+    lastUploadAt: modelData.timestamp(),
     ...modelData.model.generateCreatorAndUpdater(),
     ...data,
   };

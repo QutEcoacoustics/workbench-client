@@ -11,7 +11,7 @@ import { HarvestsService, ShallowHarvestsService } from "./harvest.service";
 describe("HarvestsService", () => {
   const harvestId = 10;
   const createModel = () => new Harvest(generateHarvest({ id: harvestId }));
-  const baseUrl = "/projects/5/harvest/";
+  const baseUrl = "/projects/5/harvests/";
   let spec: SpectatorService<HarvestsService>;
   const createService = createServiceFactory({
     service: HarvestsService,

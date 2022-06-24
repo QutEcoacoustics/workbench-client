@@ -1,4 +1,4 @@
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+/* import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { viewports } from "@test/helpers/general";
 import { StepperComponent } from "./stepper.component";
 
@@ -146,3 +146,4 @@ describe("StepperComponent", () => {
     });
   });
 });
+ */
