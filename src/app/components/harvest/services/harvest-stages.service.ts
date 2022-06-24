@@ -7,6 +7,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest, HarvestStatus } from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
+import { Step } from "@shared/stepper/stepper.component";
 import { ToastrService } from "ngx-toastr";
 import {
   BehaviorSubject,
@@ -59,8 +60,20 @@ export class HarvestStagesService extends withUnsubscribe() {
     return this._harvestItems$.value;
   }
 
-  public get numStages(): number {
-    return this.harvest?.streaming ? 3 : 7;
+  private _stages: Step[] = [
+    { label: "New Upload", icon: ["fas", "plus"] },
+    { label: "Uploading", icon: ["fas", "cloud-arrow-up"] },
+    { label: "Scanning", icon: ["fas", "magnifying-glass"] },
+    { label: "Extraction", icon: ["fas", "microscope"] },
+    { label: "Review", icon: ["fas", "list-check"] },
+    { label: "Processing", icon: ["fas", "arrows-spin"] },
+    { label: "Complete", icon: ["fas", "flag-checkered"] },
+  ];
+  private _streamingStages: Step[] = [0, 1, 6].map(
+    (step): Step => this._stages[step]
+  );
+  public get stages(): Step[] {
+    return this.harvest?.streaming ? this._streamingStages : this._stages;
   }
 
   public get currentStage(): number {
