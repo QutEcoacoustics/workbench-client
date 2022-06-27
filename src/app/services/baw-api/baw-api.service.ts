@@ -617,7 +617,7 @@ export interface Capability {
  */
 export interface Meta<
   Model = unknown,
-  Capabilities extends CapabilityKey = string
+  Capabilities extends CapabilityKey = CapabilityKey
 > extends Filters<Model> {
   /** Response status */
   status?: number;

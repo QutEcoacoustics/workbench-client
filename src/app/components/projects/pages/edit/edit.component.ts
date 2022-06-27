@@ -55,8 +55,16 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
   public ngOnInit() {
     super.ngOnInit();
 
-    if (!this.failure) {
-      this.title = `Edit ${this.model.name}`;
+    if (this.failure) {
+      return;
+    }
+
+    this.title = `Edit ${this.model.name}`;
+
+    if (!this.model.can("updateAllowAudioUpload").can) {
+      this.fields = this.fields.filter(
+        (field) => field.key !== "allowAudioUpload"
+      );
     }
   }
 

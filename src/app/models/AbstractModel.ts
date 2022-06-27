@@ -19,10 +19,7 @@ export type AbstractModelConstructor<Model> = new (
 /**
  * BAW Server Abstract Model
  */
-export abstract class AbstractModelWithoutId<
-  Model = Record<string, any>,
-  Capabilities extends CapabilityKey = any
-> {
+export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   public constructor(raw: Model, protected injector?: Injector) {
     return Object.assign(this, raw);
   }
@@ -140,12 +137,12 @@ export abstract class AbstractModelWithoutId<
    *
    * @param meta Metadata
    */
-  public addMetadata(meta: Meta<Model, Capabilities>): void {
+  public addMetadata(meta: Meta): void {
     this[AbstractModel.keys.meta] = meta;
   }
 
   /** Get hidden model metadata */
-  public getMetadata(): Meta<Model, Capabilities> {
+  public getMetadata(): Meta {
     return this[AbstractModel.keys.meta];
   }
 
@@ -158,7 +155,7 @@ export abstract class AbstractModelWithoutId<
     return (this[AbstractModel.keys.attributes] ??= []);
   }
 
-  public can(capability: Capabilities): Capability {
+  public can(capability: CapabilityKey): Capability {
     return this.getMetadata().capabilities[capability];
   }
 
@@ -209,9 +206,8 @@ export abstract class AbstractModelWithoutId<
 }
 
 export abstract class AbstractModel<
-  Model = Record<string, any>,
-  Capabilities extends CapabilityKey = any
-> extends AbstractModelWithoutId<Model, Capabilities> {
+  Model = Record<string, any>
+> extends AbstractModelWithoutId<Model> {
   /** Model ID */
   public readonly id?: Id;
 

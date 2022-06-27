@@ -1,3 +1,4 @@
+import { Capability } from "@baw-api/baw-api.service";
 import { ACCOUNT, SHALLOW_REGION, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { projectRoute } from "@components/projects/projects.routes";
 import {
@@ -47,10 +48,7 @@ export interface IProject extends HasAllUsers, HasDescription {
 /**
  * A project model.
  */
-export class Project
-  extends AbstractModel<IProject, Capabilities>
-  implements IProject
-{
+export class Project extends AbstractModel<IProject> implements IProject {
   public readonly kind = "Project";
   public readonly id?: Id;
   @bawPersistAttr()
@@ -98,6 +96,10 @@ export class Project
   public updater?: User;
   @deleter<Project>()
   public deleter?: User;
+
+  public override can(capability: Capabilities): Capability {
+    return super.can(capability);
+  }
 
   /**
    * Returns true if user has the permissions to edit this model
