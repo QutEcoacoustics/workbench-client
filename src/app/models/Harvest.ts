@@ -1,7 +1,6 @@
 import { Injector } from "@angular/core";
 import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { harvestRoute } from "@components/harvest/harvest.routes";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
@@ -70,15 +69,6 @@ export class HarvestMapping
 
   public constructor(data: IHarvestMapping, injector?: Injector) {
     super(data, injector);
-  }
-
-  public get isValid(): boolean {
-    return (
-      isInstantiated(this.path) &&
-      isInstantiated(this.siteId) &&
-      isInstantiated(this.utcOffset) &&
-      isInstantiated(this.recursive)
-    );
   }
 
   public get viewUrl(): string {

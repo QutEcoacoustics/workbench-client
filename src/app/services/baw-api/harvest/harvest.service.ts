@@ -55,6 +55,13 @@ export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
     return this.api.show(Harvest, endpoint(project, model, emptyParam));
   }
 
+  public showWithoutCache(
+    model: IdOr<Harvest>,
+    project: IdOr<Project>
+  ): Observable<Harvest> {
+    return this.api.show(Harvest, endpoint(project, model, emptyParam), false);
+  }
+
   public create(model: Harvest, project: IdOr<Project>): Observable<Harvest> {
     return this.api.create(
       Harvest,
@@ -98,6 +105,8 @@ export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
 
 @Injectable()
 export class ShallowHarvestsService implements StandardApi<Harvest> {
+  private harvestKind = new Harvest({}).kind;
+
   public constructor(private api: BawApiService<Harvest>) {}
 
   public list(): Observable<Harvest[]> {
@@ -143,11 +152,9 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
     status: HarvestStatus
   ): Observable<Harvest> {
     return this.api
-      .httpPatch(
-        shallowEndpoint(model, emptyParam),
-        // TODO Replace harvest with Harvest.kind
-        { harvest: { status } }
-      )
+      .httpPatch(shallowEndpoint(model, emptyParam), {
+        [this.harvestKind]: { status },
+      })
       .pipe(map(this.api.handleSingleResponse(Harvest)));
   }
 
@@ -167,11 +174,9 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
     );
 
     return this.api
-      .httpPatch(
-        shallowEndpoint(model, emptyParam),
-        // TODO Replace harvest with Harvest.kind
-        { harvest: { mappings: mappingData } }
-      )
+      .httpPatch(shallowEndpoint(model, emptyParam), {
+        [this.harvestKind]: { mappings: mappingData },
+      })
       .pipe(map(this.api.handleSingleResponse(Harvest)));
   }
 }

@@ -1,6 +1,5 @@
 import { Injector } from "@angular/core";
 import { Writeable, XOR } from "@helpers/advancedTypes";
-import { toSnakeCase } from "@helpers/case-converter/case-converter";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import camelCase from "just-camel-case";
 import snakeCase from "just-snake-case";
@@ -26,7 +25,8 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     this.getPersistentAttributes()
       .filter((attr) => attr.convertCase)
       .forEach((attr) => {
-        raw[attr.key] = camelCase(raw[attr.key]);
+        const value = raw[attr.key];
+        raw[attr.key] = isInstantiated(value) ? camelCase(value) : value;
       });
 
     return Object.assign(this, raw);

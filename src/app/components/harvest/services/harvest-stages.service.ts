@@ -77,34 +77,26 @@ export class HarvestStagesService extends withUnsubscribe() {
   }
 
   public get currentStage(): number {
-    switch (this.stage) {
-      case "newHarvest":
-        return 0;
-      case "uploading":
-        return 1;
-      case "scanning":
-        return 2;
-      case "metadataExtraction":
-        return 3;
-      case "metadataReview":
-        return 4;
-      case "processing":
-        return 5;
-      case "complete":
-        return this.harvest?.streaming ? 2 : 6;
-      default:
-        return 0;
-    }
+    const temp: Record<HarvestStatus, number> = {
+      newHarvest: 0,
+      uploading: 1,
+      scanning: 2,
+      metadataExtraction: 3,
+      metadataReview: 4,
+      processing: 5,
+      complete: this.harvest?.streaming ? 2 : 6,
+    };
+    return temp[this.stage];
   }
 
-  public initialize(project: Project, harvest?: Harvest): void {
+  public initialize(project: Project, harvest: Harvest): void {
     this.project = project;
-    this.setHarvest(harvest ?? null);
+    this.setHarvest(harvest);
   }
 
-  public setHarvest(harvest: Harvest): void {
+  private setHarvest(harvest: Harvest): void {
     this._harvest$.next(harvest);
-    this.setStage(harvest?.status ?? "newHarvest");
+    this.setStage(harvest.status);
   }
 
   public reloadModel(): void {
@@ -120,11 +112,6 @@ export class HarvestStagesService extends withUnsubscribe() {
    * than the cache timeout
    */
   public startPolling(intervalMs: number): void {
-    // Prevent devs from setting a polling time less than the cache
-    if (intervalMs + 200 <= cacheSettings.httpGetTtlMs) {
-      intervalMs = cacheSettings.httpGetTtlMs + 200;
-    }
-
     this.harvestInterval = interval(intervalMs)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(() => this.reloadModel());
@@ -143,7 +130,7 @@ export class HarvestStagesService extends withUnsubscribe() {
     this.harvestApi.transitionStatus(this.harvest, stage).subscribe({
       next: (harvest): void => {
         onComplete(harvest);
-        this.reloadModel();
+        this.setHarvest(harvest);
       },
       error: (err: BawApiError) => {
         onComplete(err);
@@ -180,7 +167,7 @@ export class HarvestStagesService extends withUnsubscribe() {
         filter(() => isInstantiated(this.harvest)),
         switchMap(
           (): Observable<Harvest> =>
-            this.harvestApi.show(this.harvest, this.project)
+            this.harvestApi.showWithoutCache(this.harvest, this.project)
         ),
         catchError((err: BawApiError) => {
           this.notifications.error(

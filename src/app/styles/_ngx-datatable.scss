@@ -5,12 +5,6 @@
 $ngx-datatable-selected-active-background: lightgrey;
 $ngx-datatable-selected-active-background-hover: rgba(lightgrey, 0.5);
 
-.datatable-body {
-  // We use typeaheads inside of datatable rows. Datatable body by default
-  // prevents overflow, which causes the typeahead inputs to be cut off
-  overflow-x: unset !important;
-}
-
 // Fix to invisible loading bar on bootstrap theme
 // https://github.com/swimlane/ngx-datatable/issues/881#issuecomment-929701938
 .progress-linear {
