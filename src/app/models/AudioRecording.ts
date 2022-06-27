@@ -15,9 +15,18 @@ import {
   Id,
   Uuid,
 } from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
+import {
+  AbstractModel,
+  isUnresolvedModel,
+  UnresolvedModel,
+} from "./AbstractModel";
 import { creator, deleter, hasOne, updater } from "./AssociationDecorators";
-import { bawBytes, bawDateTime, bawDuration } from "./AttributeDecorators";
+import {
+  bawBytes,
+  bawDateTime,
+  bawDuration,
+  bawReadonlyConvertCase,
+} from "./AttributeDecorators";
 import { Project } from "./Project";
 import { Region } from "./Region";
 import type { Site } from "./Site";
@@ -70,6 +79,7 @@ export class AudioRecording
   @bawBytes<AudioRecording>({ key: "dataLengthBytes" })
   public readonly dataLength?: string;
   public readonly fileHash?: string;
+  @bawReadonlyConvertCase()
   public readonly status?: AudioRecordingStatus;
   public readonly notes?: Blob;
   public readonly creatorId?: Id;
@@ -138,12 +148,26 @@ export class AudioRecording
 
   /** Routes to the details page relative to the parent models */
   public getDetailsUrl(
-    project?: IdOr<Project>,
-    region?: IdOr<Region>,
-    site?: IdOr<Site>
+    project?: IdOr<Project | UnresolvedModel>,
+    region?: IdOr<Region | UnresolvedModel>,
+    site?: IdOr<Site | UnresolvedModel>
   ): string {
+    function ensureResolvedId<T extends AbstractModel>(
+      model: IdOr<T | UnresolvedModel>
+    ): IdOr<T> | null {
+      if (typeof model === "number" || !isUnresolvedModel(model)) {
+        return model;
+      }
+      return null;
+    }
+
     const routes = audioRecordingRoutes;
-    return this.selectRoute(routes, project, region, site);
+    return this.selectRoute(
+      routes,
+      ensureResolvedId(project),
+      ensureResolvedId(region),
+      ensureResolvedId(site)
+    );
   }
 
   private selectRoute(
@@ -151,7 +175,7 @@ export class AudioRecording
     project: IdOr<Project>,
     region: IdOr<Region>,
     site: IdOr<Site>
-  ) {
+  ): string {
     const routeParams = {
       audioRecordingId: this.id,
       projectId: id(project),
@@ -178,7 +202,7 @@ export class AudioRecording
 export type AudioRecordingStatus =
   | "new"
   | "uploading"
-  | "to_check"
+  | "toCheck"
   | "ready"
   | "corrupt"
   | "aborted";

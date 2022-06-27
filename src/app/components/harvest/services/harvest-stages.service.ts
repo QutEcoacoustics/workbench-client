@@ -15,7 +15,6 @@ import {
   catchError,
   filter,
   interval,
-  map,
   Observable,
   of,
   Subject,
@@ -79,15 +78,15 @@ export class HarvestStagesService extends withUnsubscribe() {
 
   public get currentStage(): number {
     switch (this.stage) {
-      case "new_harvest":
+      case "newHarvest":
         return 0;
       case "uploading":
         return 1;
       case "scanning":
         return 2;
-      case "metadata_extraction":
+      case "metadataExtraction":
         return 3;
-      case "metadata_review":
+      case "metadataReview":
         return 4;
       case "processing":
         return 5;
@@ -105,7 +104,7 @@ export class HarvestStagesService extends withUnsubscribe() {
 
   public setHarvest(harvest: Harvest): void {
     this._harvest$.next(harvest);
-    this.setStage(harvest?.status ?? "new_harvest");
+    this.setStage(harvest?.status ?? "newHarvest");
   }
 
   public reloadModel(): void {

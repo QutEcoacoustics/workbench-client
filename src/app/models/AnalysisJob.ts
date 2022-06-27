@@ -70,6 +70,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly savedSearchId?: Id;
   @bawDateTime()
   public readonly startedAt?: DateTimeTimezone;
+  @bawPersistAttr({ create: true, update: true, convertCase: true })
   public readonly overallStatus?: AnalysisJobStatus;
   @bawDateTime()
   public readonly overallStatusModifiedAt?: DateTimeTimezone;
@@ -117,7 +118,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
 }
 
 export type AnalysisJobStatus =
-  | "before_save"
+  | "beforeSave"
   | "new"
   | "preparing"
   | "processing"

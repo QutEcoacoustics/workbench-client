@@ -68,7 +68,7 @@ export class MetadataReviewComponent
   }
 
   public onSaveClick(): void {
-    this.transition("metadata_extraction");
+    this.transition("metadataExtraction");
   }
 
   private transition(stage: HarvestStatus): void {

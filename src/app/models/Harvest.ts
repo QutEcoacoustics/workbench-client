@@ -35,11 +35,11 @@ import type { User } from "./User";
  * @param complete The harvest is complete
  */
 export type HarvestStatus =
-  | "new_harvest"
+  | "newHarvest"
   | "uploading"
   | "scanning"
-  | "metadata_extraction"
-  | "metadata_review"
+  | "metadataExtraction"
+  | "metadataReview"
   | "processing"
   | "complete";
 
@@ -106,7 +106,7 @@ export class Harvest extends AbstractModel implements IHarvest {
   public readonly id?: Id;
   @bawPersistAttr({ create: true, update: false })
   public readonly streaming?: boolean;
-  @bawPersistAttr()
+  @bawPersistAttr({ convertCase: true })
   public readonly status?: HarvestStatus;
   public readonly projectId?: Id;
   public readonly creatorId?: Id;

@@ -1,6 +1,8 @@
 import { Injector } from "@angular/core";
 import { Writeable, XOR } from "@helpers/advancedTypes";
+import { toSnakeCase } from "@helpers/case-converter/case-converter";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import camelCase from "just-camel-case";
 import snakeCase from "just-snake-case";
 import { DateTime, Duration } from "luxon";
 import { Id } from "../interfaces/apiInterfaces";
@@ -21,6 +23,12 @@ export type AbstractModelConstructor<Model> = new (
  */
 export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   public constructor(raw: Model, protected injector?: Injector) {
+    this.getPersistentAttributes()
+      .filter((attr) => attr.convertCase)
+      .forEach((attr) => {
+        raw[attr.key] = camelCase(raw[attr.key]);
+      });
+
     return Object.assign(this, raw);
   }
 
@@ -74,7 +82,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * be sent in a JSON API request
    */
   public getJsonAttributes(opts?: ModelSerializationOptions): Partial<this> {
-    return this.toObject(this.getModelAttributes(opts));
+    return this.toObject(this.getModelAttributes(opts), opts);
   }
 
   /**
@@ -95,7 +103,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   public getFormDataOnlyAttributes(opts?: ModelSerializationOptions): FormData {
     const output = new FormData();
     const keys = this.getModelAttributes({ ...opts, formData: true });
-    const data = this.toObject(keys);
+    const data = this.toObject(keys, opts);
 
     if (!this.kind) {
       console.error("Model does not have a kind attribute", this);
@@ -166,18 +174,26 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    *
    * @param keys List of attributes to extract
    */
-  private toObject(keys: string[]): Partial<this> {
+  private toObject(
+    keys: string[],
+    opts?: ModelSerializationOptions
+  ): Partial<this> {
     const output: Partial<Writeable<this>> = {};
     keys.forEach((attribute: keyof AbstractModel) => {
       const value = this[attribute];
       if (value instanceof Set) {
-        output[attribute] = Array.from(value);
+        const valueAsArray = Array.from(value);
+        output[attribute] = opts?.convertCase
+          ? valueAsArray.map(snakeCase)
+          : valueAsArray;
       } else if (value instanceof DateTime) {
         output[attribute] = value.toISO();
       } else if (value instanceof Duration) {
         output[attribute] = value.as("seconds");
       } else {
-        output[attribute] = this[attribute] as any;
+        output[attribute] = opts?.convertCase
+          ? snakeCase(this[attribute])
+          : this[attribute];
       }
     });
     return output;
@@ -187,11 +203,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * Retrieves a list of all attributes associated with the model which are
    * not the injector
    */
-  private getModelAttributes(opts?: {
-    create?: boolean;
-    update?: boolean;
-    formData?: boolean;
-  }): string[] {
+  private getModelAttributes(opts?: ModelSerializationOptions): string[] {
     if (opts?.create || opts?.update) {
       return this.getPersistentAttributes()
         .filter((meta) => (opts.create ? meta.create : meta.update))
@@ -266,4 +278,7 @@ export function getUnknownViewUrl(errorMsg: string) {
 export type ModelSerializationOptions = XOR<
   { create: boolean },
   { update: boolean }
->;
+> & {
+  convertCase?: boolean;
+  formData?: boolean;
+};

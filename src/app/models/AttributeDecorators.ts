@@ -8,6 +8,7 @@ import { AbstractModel } from "./AbstractModel";
 export interface BawAttributeOptions {
   create: boolean;
   update: boolean;
+  convertCase: boolean;
   supportedFormats: Array<"json" | "formData">;
 }
 
@@ -37,6 +38,7 @@ function persistAttr(
     const defaultOpts: BawAttributeOptions = {
       create: true,
       update: true,
+      convertCase: false,
       supportedFormats: ["json"],
     };
 
@@ -54,6 +56,22 @@ function persistAttr(
 export function bawPersistAttr(opts?: Partial<BawAttributeOptions>) {
   return function (model: AbstractModel, key: string): void {
     persistAttr(model, key, opts);
+  };
+}
+
+/**
+ * Decorator wrapper for converting an attribute values case from snake case to
+ * camel case.
+ * ! DO NOT USE IN CONJUNCTION WITH bawPersistAttr
+ */
+export function bawReadonlyConvertCase() {
+  return function (model: AbstractModel, key: string): void {
+    persistAttr(model, key, {
+      create: false,
+      update: false,
+      convertCase: true,
+      supportedFormats: [],
+    });
   };
 }
 
