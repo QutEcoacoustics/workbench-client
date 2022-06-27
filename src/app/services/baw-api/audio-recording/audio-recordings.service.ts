@@ -4,6 +4,7 @@ import { toSnakeCase } from "@helpers/case-converter/case-converter";
 import { toBase64Url } from "@helpers/encoding/encoding";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioRecording } from "@models/AudioRecording";
+import { Harvest } from "@models/Harvest";
 import type { Project } from "@models/Project";
 import type { Region } from "@models/Region";
 import type { Site } from "@models/Site";
@@ -95,6 +96,21 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
   ): Observable<AudioRecording[]> {
     return this.filter(
       this.api.filterThroughAssociation(filters, "projects.id" as any, project)
+    );
+  }
+
+  /**
+   * Filter audio recordings by project id
+   *
+   * @param filters Audio recording filters
+   * @param project Project to filter by
+   */
+  public filterByHarvest(
+    filters: Filters<AudioRecording>,
+    harvest: IdOr<Harvest>
+  ): Observable<AudioRecording[]> {
+    return this.filter(
+      this.api.filterThroughAssociation(filters, "harvests.id" as any, harvest)
     );
   }
 

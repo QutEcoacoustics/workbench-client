@@ -1,46 +1,58 @@
 import { Component, OnInit } from "@angular/core";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { Filters } from "@baw-api/baw-api.service";
 import { audioRecordingsRoutes } from "@components/audio-recordings/audio-recording.routes";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
-import { IHarvestReport } from "@models/Harvest";
+import { toRelative } from "@interfaces/apiInterfaces";
+import { AudioRecording } from "@models/AudioRecording";
+import { HarvestReport } from "@models/Harvest";
+import { Project } from "@models/Project";
+import { DateTime, Duration } from "luxon";
 
 @Component({
   selector: "baw-harvest-complete",
-  template: `
-    <h3>Finished</h3>
-
-    <p>{{ report.itemsCompleted }} files were successfully added!</p>
-
-    <p>
-      {{ report.itemsFailed + report.itemsErrored }} files failed to be
-      harvested!
-    </p>
-
-    <baw-wip>
-      <p>
-        <a href="/intentionally_broken">
-          <fa-icon [icon]="['fas', 'download']"></fa-icon> Download summary of
-          harvest
-        </a>
-      </p>
-    </baw-wip>
-
-    <div class="clearfix mt-3">
-      <a class="btn btn-primary float-end" [strongRoute]="audioRecordingsRoute">
-        Show audio files
-      </a>
-    </div>
-  `,
+  templateUrl: "complete.component.html",
+  styleUrls: ["complete.component.scss"],
 })
 export class CompleteComponent implements OnInit {
   public audioRecordingsRoute = audioRecordingsRoutes.project;
 
-  public constructor(public stages: HarvestStagesService) {}
+  public constructor(
+    public stages: HarvestStagesService,
+    private recordingsApi: AudioRecordingsService
+  ) {}
 
   public ngOnInit(): void {
     this.stages.startPolling(5000);
   }
 
-  public get report(): IHarvestReport {
+  public getModels = (filters: Filters<AudioRecording>) =>
+    this.recordingsApi.filterByHarvest(filters, this.stages.harvest);
+
+  public asRecording(model: any): AudioRecording {
+    return model;
+  }
+
+  public get report(): HarvestReport {
     return this.stages.harvest.report;
+  }
+
+  public get project(): Project {
+    return this.stages.project;
+  }
+
+  public humanizeDuration(duration: Duration): string {
+    return toRelative(duration, { largest: 1, maxDecimalPoint: 0 });
+  }
+
+  public humanizeDurationLong(duration: Duration): string {
+    return toRelative(duration, {
+      largest: 2,
+      round: true,
+    });
+  }
+
+  public formatDate(date: DateTime): string {
+    return date.toFormat("yyyy-MM-dd HH:mm:ss");
   }
 }

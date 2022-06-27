@@ -150,7 +150,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
       const pageAndSort = this.pageAndSort$.getValue();
 
       // If the user has already sorted the table, use their sort
-      if (pageAndSort.sort) {
+      if (pageAndSort.sort || !filters.sorting) {
         this.pageAndSort$.next({ page: 0, sort: pageAndSort.sort });
         return;
       }

@@ -8,7 +8,13 @@
 
 <ol>
   <li>Files must be placed in the provided folders (shown below)</li>
-  <li>Files must use an unambiguous format INSERT LINK</li>
+  <li>
+    Files must use an
+    <a
+      href="https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md"
+      >unambiguous datestamp format filename</a
+    >
+  </li>
   <li>
     Successfully uploaded files will no longer be visible in the SFTP connection
     - you can access them from the
@@ -27,7 +33,7 @@
   [externalPaging]="false"
   [externalSorting]="false"
 >
-  <ngx-datatable-column prop="siteId">
+  <ngx-datatable-column prop="siteId" [width]="300" [maxWidth]="300">
     <ng-template let-column="column" ngx-datatable-header-template>
       Site/Point
     </ng-template>
@@ -44,7 +50,8 @@
       </ng-template>
     </ng-template>
   </ngx-datatable-column>
-  <ngx-datatable-column prop="path">
+
+  <ngx-datatable-column prop="path" [width]="200" [maxWidth]="200">
     <ng-template let-column="column" ngx-datatable-header-template>
       Upload folder
     </ng-template>
@@ -52,6 +59,7 @@
       {{ value }}
     </ng-template>
   </ngx-datatable-column>
+
   <ngx-datatable-column prop="url">
     <ng-template let-column="column" ngx-datatable-header-template>
       Example URL

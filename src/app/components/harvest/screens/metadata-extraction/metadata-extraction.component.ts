@@ -28,7 +28,7 @@ import { HarvestReport } from "@models/Harvest";
 
     <h4 class="mt-3">File Status</h4>
 
-    <baw-progress>
+    <baw-progress [showZero]="!hasFileStatuses">
       <baw-progress-bar
         color="success"
         description="Files which have no problems"
@@ -62,6 +62,13 @@ export class MetadataExtractionComponent implements OnInit {
 
   public get progress(): number {
     return this.stages.calculateProgress(this.report.itemsMetadataGathered);
+  }
+
+  public hasFileStatuses(): boolean {
+    return (
+      this.successProgress + this.invalidFixableProgress + this.errorProgress >
+      0
+    );
   }
 
   public get successProgress(): number {

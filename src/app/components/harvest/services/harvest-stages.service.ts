@@ -175,30 +175,14 @@ export class HarvestStagesService extends withUnsubscribe() {
     this.stage = stage;
   }
 
-  private getCurrentHarvestId(project: Project): Observable<Harvest | null> {
-    return this.harvestApi
-      .filter(
-        {
-          sorting: { orderBy: "createdAt", direction: "desc" },
-          filter: { status: { notEq: "complete" } },
-        },
-        project
-      )
-      .pipe(map((harvests) => harvests[0] ?? null));
-  }
-
   private trackHarvest(): void {
     this.harvestTrigger$
       .pipe(
-        switchMap((): Observable<Harvest> => {
-          if (this.harvest) {
-            // Show requests are faster, use them when we know the harvest id
-            return this.harvestApi.show(this.harvest, this.project);
-          } else {
-            // Otherwise, filter for the latest harvest
-            return this.getCurrentHarvestId(this.project);
-          }
-        }),
+        filter(() => isInstantiated(this.harvest)),
+        switchMap(
+          (): Observable<Harvest> =>
+            this.harvestApi.show(this.harvest, this.project)
+        ),
         catchError((err: BawApiError) => {
           this.notifications.error(
             "Failed to load harvest data, refresh this page to reconnect",
@@ -207,7 +191,6 @@ export class HarvestStagesService extends withUnsubscribe() {
           );
           return throwError(() => err);
         }),
-        filter((harvest): boolean => isInstantiated(harvest)),
         takeUntil(this.unsubscribe)
       )
       .subscribe((harvest): void => {
@@ -219,9 +202,8 @@ export class HarvestStagesService extends withUnsubscribe() {
     const defaultResponse: Observable<HarvestItem[]> = of([]);
     this.harvest$
       .pipe(
-        switchMap((harvest) =>
-          harvest ? this.harvestItemsApi.list(harvest) : defaultResponse
-        ),
+        filter((): boolean => !this.isCurrentStage("metadataReview")),
+        switchMap((harvest) => this.harvestItemsApi.list(harvest)),
         catchError(() => defaultResponse),
         takeUntil(this.unsubscribe)
       )

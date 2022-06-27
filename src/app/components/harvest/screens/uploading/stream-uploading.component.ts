@@ -32,7 +32,7 @@ export class StreamUploadingComponent implements OnInit {
   }
 
   public getMappingUploadUrl(mapping: IHarvestMapping) {
-    return this.stages.harvest.uploadUrl + "/" + mapping.path;
+    return this.stages.harvest.uploadUrlWithAuth + "/" + mapping.path;
   }
 
   public closeConnectionClick(): void {
