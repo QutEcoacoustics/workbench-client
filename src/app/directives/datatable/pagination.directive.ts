@@ -1,4 +1,4 @@
-import { AfterContentInit, Directive, Host, Input } from "@angular/core";
+import { AfterViewInit, Directive, Host, Input } from "@angular/core";
 import { Direction, Filters, Sorting } from "@baw-api/baw-api.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
@@ -100,7 +100,7 @@ import {
 })
 export class DatatablePaginationDirective<Model extends AbstractModel>
   extends withUnsubscribe()
-  implements AfterContentInit
+  implements AfterViewInit
 {
   /**
    * @param filters Base api filters for table. If this is an observable, on
@@ -138,7 +138,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
     super();
   }
 
-  public ngAfterContentInit(): void {
+  public ngAfterViewInit(): void {
     // Convert basic filters to observable
     this.filters$ =
       this.pagination.filters instanceof BehaviorSubject
@@ -147,10 +147,19 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
 
     // Reset page number on filter change, but keep current sort
     this.filters$.pipe(takeUntil(this.unsubscribe)).subscribe((filters) => {
-      this.pageAndSort$.next({
-        page: 0,
-        sort: this.pageAndSort$.getValue().sort ?? filters.sorting,
-      });
+      const pageAndSort = this.pageAndSort$.getValue();
+
+      // If the user has already sorted the table, use their sort
+      if (pageAndSort.sort) {
+        this.pageAndSort$.next({ page: 0, sort: pageAndSort.sort });
+        return;
+      }
+
+      // Otherwise, use the sort from the filter observable as the default
+      this.datatable.sorts = [
+        { prop: filters.sorting.orderBy, dir: filters.sorting.direction },
+      ];
+      this.pageAndSort$.next({ page: pageAndSort.page, sort: filters.sorting });
     });
 
     // Get the latest list of models whenever a change occurs to the page,

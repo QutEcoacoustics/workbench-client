@@ -1,7 +1,6 @@
 <ngx-datatable
   bawDatatableDefaults
   [bawDatatablePagination]="{ filters: filters, getModels: getModels }"
-  [sorts]="[{ prop: 'createdAt', dir: 'desc' }]"
 >
   <ngx-datatable-column prop="createdAt">
     <ng-template let-column="column" ngx-datatable-header-template>
