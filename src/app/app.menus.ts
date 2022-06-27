@@ -1,7 +1,8 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { Project } from "./models/Project";
 import { User } from "./models/User";
-import { ResolvedModel } from "./services/baw-api/resolver-common";
+import { retrieveResolvedModel } from "./services/baw-api/resolver-common";
 
 export const defaultAudioIcon: IconProp = ["fas", "file-audio"];
 export const defaultDeleteIcon: IconProp = ["fas", "trash"];
@@ -31,8 +32,11 @@ export const isLoggedInPredicate = (user: User): boolean => !!user;
  * @param user Session User Data
  * @param data Page Data
  */
-export const isProjectEditorPredicate = (user: User, data: any): boolean => {
-  const project = (data?.project as ResolvedModel<Project>)?.model;
+export const isProjectEditorPredicate = (
+  user: User,
+  data: IPageInfo
+): boolean => {
+  const project = retrieveResolvedModel(data, Project);
   return isAdminPredicate(user) || !!project?.canEdit;
 };
 

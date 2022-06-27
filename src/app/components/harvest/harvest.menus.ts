@@ -1,9 +1,15 @@
+import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { projectMenuItem } from "@components/projects/projects.menus";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
-import { isAdminPredicate } from "src/app/app.menus";
+import { Project } from "@models/Project";
 import { harvestRoute, harvestsRoute, newHarvestRoute } from "./harvest.routes";
 
-// TODO #1888 Change isAdminPredicate to isProjectEditorPredicate when finished
+export const createHarvestPredicate = (_: any, data: IPageInfo): boolean => {
+  const project = retrieveResolvedModel(data, Project);
+  // TODO Use project.can("createHarvest")
+  return true;
+};
 
 export const harvestsCategory: Category = {
   icon: ["fas", "cloud"],
@@ -15,18 +21,18 @@ export const harvestsMenuItem = menuRoute({
   icon: ["fas", "cloud"],
   label: "Recording Uploads",
   parent: projectMenuItem,
-  predicate: isAdminPredicate,
+  predicate: createHarvestPredicate,
   route: harvestsRoute,
-  tooltip: () => "(UNDER DEVELOPMENT) View bulk uploads for this project",
+  tooltip: () => "(BETA) View bulk uploads for this project",
 });
 
 export const newHarvestMenuItem = menuRoute({
-  icon: ["fas", "upload"],
-  label: "Upload",
+  icon: ["fas", "cloud-arrow-up"],
+  label: "New Upload",
   parent: harvestsMenuItem,
-  predicate: isAdminPredicate,
+  predicate: createHarvestPredicate,
   route: newHarvestRoute,
-  tooltip: () => "(UNDER DEVELOPMENT) Upload new audio to this project",
+  tooltip: () => "(BETA) Upload new audio to this project",
 });
 
 export const harvestMenuItem = menuRoute({
