@@ -209,7 +209,7 @@ function createDecorator<Model>(
     // If override key provided, intercept its getter to update the decorated key
     if (opts?.key) {
       // Store override keys value
-      const overrideKey = Symbol("_" + opts.key);
+      const overrideKey = Symbol("_" + opts.key.toString());
 
       // Update override key access
       Object.defineProperty(model, opts.key, {

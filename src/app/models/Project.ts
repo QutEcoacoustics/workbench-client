@@ -6,8 +6,8 @@ import {
   Description,
   HasAllUsers,
   HasDescription,
-  hasRequiredAccessLevelOrHigher,
   Hash,
+  hasRequiredAccessLevelOrHigher,
   Id,
   Ids,
   ImageUrl,
@@ -25,6 +25,8 @@ import {
 import type { Region } from "./Region";
 import type { Site } from "./Site";
 import type { User } from "./User";
+
+type Capabilities = "updateAllowAudioUpload" | "createHarvest";
 
 /**
  * A project model.
@@ -45,7 +47,10 @@ export interface IProject extends HasAllUsers, HasDescription {
 /**
  * A project model.
  */
-export class Project extends AbstractModel<IProject> implements IProject {
+export class Project
+  extends AbstractModel<IProject, Capabilities>
+  implements IProject
+{
   public readonly kind = "Project";
   public readonly id?: Id;
   @bawPersistAttr()

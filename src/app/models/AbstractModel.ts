@@ -4,7 +4,11 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import snakeCase from "just-snake-case";
 import { DateTime, Duration } from "luxon";
 import { Id } from "../interfaces/apiInterfaces";
-import { Meta } from "../services/baw-api/baw-api.service";
+import {
+  Capability,
+  CapabilityKey,
+  Meta,
+} from "../services/baw-api/baw-api.service";
 import { BawAttributeMeta } from "./AttributeDecorators";
 
 export type AbstractModelConstructor<Model> = new (
@@ -15,7 +19,10 @@ export type AbstractModelConstructor<Model> = new (
 /**
  * BAW Server Abstract Model
  */
-export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
+export abstract class AbstractModelWithoutId<
+  Model = Record<string, any>,
+  Capabilities extends CapabilityKey = any
+> {
   public constructor(raw: Model, protected injector?: Injector) {
     return Object.assign(this, raw);
   }
@@ -133,12 +140,12 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    *
    * @param meta Metadata
    */
-  public addMetadata(meta: Meta): void {
+  public addMetadata(meta: Meta<Model, Capabilities>): void {
     this[AbstractModel.keys.meta] = meta;
   }
 
   /** Get hidden model metadata */
-  public getMetadata(): Meta {
+  public getMetadata(): Meta<Model, Capabilities> {
     return this[AbstractModel.keys.meta];
   }
 
@@ -149,6 +156,10 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   public getPersistentAttributes(): Array<BawAttributeMeta> {
     // TODO #1005 Store this statically in the model
     return (this[AbstractModel.keys.attributes] ??= []);
+  }
+
+  public can(capability: Capabilities): Capability {
+    return this.getMetadata().capabilities[capability];
   }
 
   /**
@@ -198,8 +209,9 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
 }
 
 export abstract class AbstractModel<
-  Model = Record<string, any>
-> extends AbstractModelWithoutId<Model> {
+  Model = Record<string, any>,
+  Capabilities extends CapabilityKey = any
+> extends AbstractModelWithoutId<Model, Capabilities> {
   /** Model ID */
   public readonly id?: Id;
 

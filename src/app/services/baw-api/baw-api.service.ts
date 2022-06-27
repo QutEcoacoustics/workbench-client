@@ -605,14 +605,25 @@ export interface Filters<Model = unknown, K extends keyof Model = keyof Model> {
   paging?: Paging;
 }
 
+export type CapabilityKey = string | number;
+
+export interface Capability {
+  can: boolean;
+  details: string;
+}
+
 /**
  * Metadata from api response
  */
-export interface Meta<Model = unknown> extends Filters<Model> {
+export interface Meta<
+  Model = unknown,
+  Capabilities extends CapabilityKey = string
+> extends Filters<Model> {
   /** Response status */
   status?: number;
   /** Human readable response status */
   message?: string;
+  capabilities?: Record<Capabilities, Capability>;
   /** Optional error metadata */
   error?: {
     /** Error message */
