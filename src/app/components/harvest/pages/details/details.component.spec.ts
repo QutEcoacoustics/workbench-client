@@ -12,14 +12,14 @@ import { SharedModule } from "@shared/shared.module";
 import { StepperComponent } from "@shared/stepper/stepper.component";
 import { generateProject } from "@test/fakes/Project";
 import { MockComponents } from "ng-mocks";
-import { StateComponent } from "./state.component";
+import { DetailsComponent } from "./details.component";
 
 // TODO Re-implement
-xdescribe("StateComponent", () => {
+xdescribe("DetailsComponent", () => {
   let defaultProject: Project;
-  let spec: SpectatorRouting<StateComponent>;
+  let spec: SpectatorRouting<DetailsComponent>;
   const createComponent = createRoutingFactory({
-    component: StateComponent,
+    component: DetailsComponent,
     declarations: MockComponents(
       ScanningComponent,
       StreamUploadingComponent,
@@ -46,7 +46,7 @@ xdescribe("StateComponent", () => {
   it("should create", () => {
     setup();
     spec.detectChanges();
-    expect(spec.component).toBeInstanceOf(StateComponent);
+    expect(spec.component).toBeInstanceOf(DetailsComponent);
   });
 
   it("should show project name", () => {

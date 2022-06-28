@@ -20,9 +20,9 @@ const harvestKey = "harvest";
 
 @Component({
   selector: "baw-harvest",
-  templateUrl: "./state.component.html",
+  templateUrl: "./details.component.html",
 })
-class StateComponent
+class DetailsComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit, OnDestroy
 {
@@ -47,7 +47,7 @@ class StateComponent
   }
 }
 
-StateComponent.linkToRoute({
+DetailsComponent.linkToRoute({
   category: harvestsCategory,
   menus: {
     actions: List(harvestsMenuItemActions),
@@ -60,4 +60,4 @@ StateComponent.linkToRoute({
   },
 });
 
-export { StateComponent };
+export { DetailsComponent };
