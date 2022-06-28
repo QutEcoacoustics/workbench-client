@@ -116,7 +116,11 @@
   <ngx-datatable-column prop="mediaType" [width]="100" [maxWidth]="100">
   </ngx-datatable-column>
 
-  <ngx-datatable-column prop="originalFileName"> </ngx-datatable-column>
+  <ngx-datatable-column prop="originalFileName">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <p class="m-0 text-break">{{ value }}</p>
+    </ng-template>
+  </ngx-datatable-column>
 
   <ngx-datatable-column
     name="Actions"

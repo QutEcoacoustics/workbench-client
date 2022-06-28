@@ -7,7 +7,6 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest, HarvestStatus } from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
-import { cacheSettings } from "@services/cache/cache-settings";
 import { Step } from "@shared/stepper/stepper.component";
 import { ToastrService } from "ngx-toastr";
 import {
