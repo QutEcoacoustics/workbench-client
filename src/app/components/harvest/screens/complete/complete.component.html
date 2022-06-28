@@ -1,69 +1,15 @@
 <h3>Finished</h3>
 
-<div class="statistics">
-  <div class="card shadow">
-    <div class="card-body">
-      <div class="bg-success icon">
-        <fa-icon [icon]="['fas', 'folder-tree']"></fa-icon>
-      </div>
-
-      <div class="fs-5 font-monospace">{{ report.itemsTotal }}</div>
-      <div class="title fs-6 text-muted">Total Files</div>
-    </div>
-  </div>
-
-  <div class="card shadow">
-    <div class="card-body">
-      <div class="bg-success icon">
-        <fa-icon [icon]="['fas', 'hard-drive']"></fa-icon>
-      </div>
-
-      <div class="fs-5 font-monospace">{{ report.itemsSize }}</div>
-      <div class="title fs-6 text-muted">Total Size</div>
-    </div>
-  </div>
-
-  <div class="card shadow">
-    <div class="card-body">
-      <div class="bg-success icon">
-        <fa-icon [icon]="['fas', 'clock']"></fa-icon>
-      </div>
-
-      <div class="fs-5 font-monospace">
-        {{ humanizeDuration(report.itemsDuration) }}
-      </div>
-      <div class="title fs-6 text-muted">Total Duration</div>
-    </div>
-  </div>
-
-  <div class="card shadow">
-    <div class="card-body">
-      <div class="bg-danger icon">
-        <fa-icon class="text-white" [icon]="['fas', 'xmark']"></fa-icon>
-      </div>
-
-      <div class="fs-5 font-monospace">
-        {{ report.itemsErrored + report.itemsFailed }}
-      </div>
-      <div class="title fs-6 text-muted">Failures</div>
-    </div>
-  </div>
-
-  <div class="card shadow">
-    <div class="card-body">
-      <div class="bg-highlight icon">
-        <fa-icon [icon]="['fas', 'download']"></fa-icon>
-      </div>
-
-      <div class="fs-5 font-monospace">&nbsp;</div>
-      <baw-wip>
-        <div class="title fs-6 text-muted">
-          <a href="/intentionally_broken">Download CSV</a>
-        </div>
+<baw-harvest-statistics [statistics]="getStatistics(report)">
+  <baw-harvest-statistic-group>
+    <baw-harvest-statistic-item [statistic]="getDownloadStatistic()">
+      <span id="value">&nbsp;</span>
+      <baw-wip id="label">
+        <a href="/intentionally_broken">Download CSV</a>
       </baw-wip>
-    </div>
-  </div>
-</div>
+    </baw-harvest-statistic-item>
+  </baw-harvest-statistic-group>
+</baw-harvest-statistics>
 
 <h4 class="my-3">Uploaded Recordings</h4>
 

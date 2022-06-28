@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
+import { Statistic } from "@components/harvest/components/shared/statistics.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -9,7 +10,6 @@ import { Harvest, HarvestMapping, HarvestStatus } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { ConfigService } from "@services/config/config.service";
 import { ColumnMode } from "@swimlane/ngx-datatable";
-import { Duration } from "luxon";
 import { ToastrService } from "ngx-toastr";
 
 // TODO Show additional information to users if itemsError is non zero. Ie:
@@ -55,8 +55,54 @@ export class MetadataReviewComponent
     this.mappings = this.harvest.mappings;
   }
 
-  public humanizeDuration(duration: Duration): string {
-    return toRelative(duration, { largest: 1, maxDecimalPoint: 0 });
+  public getStatistics(harvest: Harvest): Statistic[][] {
+    const report = harvest.report;
+    return [
+      [
+        {
+          bgColor: "success",
+          icon: ["fas", "folder-tree"],
+          label: "Total Files",
+          value: report.itemsTotal.toLocaleString(),
+        },
+      ],
+      [
+        {
+          bgColor: "success",
+          icon: ["fas", "hard-drive"],
+          label: "Total Size",
+          value: report.itemsSize,
+          tooltip: report.itemsSizeBytes.toLocaleString() + " bytes",
+        },
+      ],
+      [
+        {
+          bgColor: "success",
+          icon: ["fas", "clock"],
+          label: "Total Duration",
+          value: toRelative(report.itemsDuration, {
+            largest: 1,
+            maxDecimalPoint: 0,
+          }),
+          tooltip: report.itemsDurationSeconds.toLocaleString() + " seconds",
+        },
+      ],
+      [
+        {
+          bgColor: "warning",
+          icon: ["fas", "triangle-exclamation"],
+          label: "Need Attention",
+          value: report.itemsInvalidFixable.toLocaleString(),
+        },
+        {
+          color: "light",
+          bgColor: "danger",
+          icon: ["fas", "xmark"],
+          label: "Problems",
+          value: report.itemsInvalidNotFixable.toLocaleString(),
+        },
+      ],
+    ];
   }
 
   public onNextClick(): void {

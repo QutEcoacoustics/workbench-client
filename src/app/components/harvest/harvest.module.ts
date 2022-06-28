@@ -19,6 +19,11 @@ import { ScanningComponent } from "./screens/scanning/scanning.component";
 import { BatchUploadingComponent } from "./screens/uploading/batch-uploading.component";
 import { StreamUploadingComponent } from "./screens/uploading/stream-uploading.component";
 import { TitleComponent } from "./components/shared/title.component";
+import {
+  StatisticGroupComponent,
+  StatisticItemComponent,
+  StatisticsComponent,
+} from "./components/shared/statistics.component";
 
 const internalComponents = [
   // Screens
@@ -31,10 +36,13 @@ const internalComponents = [
   StreamUploadingComponent,
 
   // Shared
-  UploadProgressComponent,
   CanCloseDialogComponent,
-  UploadUrlComponent,
+  StatisticItemComponent,
+  StatisticGroupComponent,
+  StatisticsComponent,
   TitleComponent,
+  UploadProgressComponent,
+  UploadUrlComponent,
 
   // Input
   SiteSelectorComponent,
@@ -44,8 +52,8 @@ const internalComponents = [
 const components = [
   // Pages
   ListComponent,
-  StateComponent,
   NewComponent,
+  StateComponent,
 ];
 
 const routes = harvestsRoute.compileRoutes(getRouteConfigForPage);

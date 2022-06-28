@@ -2,79 +2,9 @@
 
 <p>This is a review of the audio data</p>
 
-<div class="statistics">
-  <div class="card shadow">
-    <div class="card-body">
-      <div class="bg-success icon">
-        <fa-icon [icon]="['fas', 'folder-tree']" class="text-white"></fa-icon>
-      </div>
-
-      <div class="fs-5 font-monospace">
-        {{ harvest.report.itemsTotal | number }}
-      </div>
-      <div class="title fs-6 text-muted">Total Files</div>
-    </div>
-  </div>
-
-  <div class="card shadow">
-    <div
-      class="card-body"
-      [ngbTooltip]="(harvest.report.itemsSizeBytes | number) + ' bytes'"
-    >
-      <div class="bg-success icon">
-        <fa-icon [icon]="['fas', 'hard-drive']" class="text-white"></fa-icon>
-      </div>
-
-      <div class="fs-5 font-monospace">
-        {{ harvest.report.itemsSize }}
-      </div>
-      <div class="title fs-6 text-muted">Total Size</div>
-    </div>
-  </div>
-
-  <div class="card shadow">
-    <div
-      class="card-body"
-      [ngbTooltip]="(harvest.report.itemsDurationSeconds | number) + ' seconds'"
-    >
-      <div class="bg-success icon">
-        <fa-icon [icon]="['fas', 'clock']" class="text-white"></fa-icon>
-      </div>
-
-      <div class="fs-5 font-monospace">
-        {{ humanizeDuration(harvest.report.itemsDuration) }}
-      </div>
-      <div class="title fs-6 text-muted">Total Duration</div>
-    </div>
-  </div>
-
-  <div class="card shadow">
-    <div class="card-body">
-      <div class="bg-warning icon">
-        <fa-icon
-          class="text-black"
-          [icon]="['fas', 'triangle-exclamation']"
-        ></fa-icon>
-      </div>
-
-      <div class="fs-5 font-monospace">
-        {{ harvest.report.itemsInvalidFixable | number }}
-      </div>
-      <div class="title fs-6 text-muted">Need Attention</div>
-    </div>
-
-    <div class="card-body">
-      <div class="bg-danger icon">
-        <fa-icon [icon]="['fas', 'xmark']" class="text-white"></fa-icon>
-      </div>
-
-      <div class="fs-5 font-monospace">
-        {{ harvest.report.itemsInvalidNotFixable | number }}
-      </div>
-      <div class="title fs-6 text-muted">Problems</div>
-    </div>
-  </div>
-</div>
+<baw-harvest-statistics
+  [statistics]="getStatistics(harvest)"
+></baw-harvest-statistics>
 
 <!-- Should use harvest items list instead of harvest mappings. This allows for us to open sub-directories, etc -->
 <ngx-datatable
