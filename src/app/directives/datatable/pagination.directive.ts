@@ -1,4 +1,4 @@
-import { AfterViewInit, Directive, Host, Input } from "@angular/core";
+import { AfterContentInit, Directive, Host, Input } from "@angular/core";
 import { Direction, Filters, Sorting } from "@baw-api/baw-api.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
@@ -100,7 +100,7 @@ import {
 })
 export class DatatablePaginationDirective<Model extends AbstractModel>
   extends withUnsubscribe()
-  implements AfterViewInit
+  implements AfterContentInit
 {
   /**
    * @param filters Base api filters for table. If this is an observable, on
@@ -138,7 +138,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
     super();
   }
 
-  public ngAfterViewInit(): void {
+  public ngAfterContentInit(): void {
     // Convert basic filters to observable
     this.filters$ =
       this.pagination.filters instanceof BehaviorSubject

@@ -13,7 +13,7 @@ export function generateAnalysisJobItem(
     "queued",
     "working",
     "failed",
-    "timed_out",
+    "timedOut",
     "cancelling",
     "cancelled",
   ];

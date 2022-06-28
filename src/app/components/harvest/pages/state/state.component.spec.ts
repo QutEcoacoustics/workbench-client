@@ -88,12 +88,12 @@ xdescribe("StateComponent", () => {
     });
 
     it("should show metadata extraction stage", () => {
-      setStage("metadata_extraction");
+      setStage("metadataExtraction");
       assertStage(3, MetadataExtractionComponent);
     });
 
     it("should show metadata review stage", () => {
-      setStage("metadata_review");
+      setStage("metadataReview");
       assertStage(4, MetadataReviewComponent);
     });
 

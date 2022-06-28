@@ -44,8 +44,8 @@ export function generateHarvest(data?: Partial<IHarvest>): Required<IHarvest> {
     streaming: modelData.datatype.boolean(),
     status: modelData.helpers.arrayElement<HarvestStatus>([
       "uploading",
-      "metadata_extraction",
-      "metadata_review",
+      "metadataExtraction",
+      "metadataReview",
       "processing",
       "complete",
     ]),
