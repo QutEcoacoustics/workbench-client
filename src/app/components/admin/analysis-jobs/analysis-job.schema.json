@@ -126,6 +126,14 @@
       }
     },
     {
+      "key": "overallDataLength",
+      "hide": true,
+      "templateOptions": {
+        "label": "Overall Data Length Humanized",
+        "disabled": true
+      }
+    },
+    {
       "key": "creator",
       "hide": true,
       "templateOptions": {

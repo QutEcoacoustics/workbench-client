@@ -3,6 +3,7 @@ import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { CmsService } from "@baw-api/cms/cms.service";
 import { MayBeAsync } from "@helpers/advancedTypes";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { mockProvider, Spectator, SpectatorService } from "@ngneat/spectator";
@@ -135,10 +136,13 @@ export function validateApiShow<
       expect(api.show).toHaveBeenCalledWith(modelBuilder, endpoint);
     });
 
-    it("should handle show endpoint using id", () => {
-      service.show(id, ...parameters).subscribe();
-      expect(api.show).toHaveBeenCalledWith(modelBuilder, endpoint);
-    });
+    // Some services do not accept an id parameter
+    if (isInstantiated(id)) {
+      it("should handle show endpoint using id", () => {
+        service.show(id, ...parameters).subscribe();
+        expect(api.show).toHaveBeenCalledWith(modelBuilder, endpoint);
+      });
+    }
   });
 }
 
@@ -288,7 +292,7 @@ export function validateCustomApiList<
   key: keyof Service,
   ...parameters: Params
 ): void {
-  describe(`Api List (${key})`, (): void => {
+  describe(`Api List (${key.toString()})`, (): void => {
     it("should handle list endpoint", (): void => {
       const spec = createService();
       const service = spec.service;
@@ -317,7 +321,7 @@ export function validateCustomApiFilter<
   models: () => Model[] = () => [],
   ...parameters: Params
 ): void {
-  describe(`Api Filter (${key})`, (): void => {
+  describe(`Api Filter (${key.toString()})`, (): void => {
     it("should handle filter endpoint", (): void => {
       const spec = createService();
       const testModels = models();

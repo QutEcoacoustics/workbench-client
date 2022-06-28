@@ -43,6 +43,7 @@ describe("Predicates", () => {
   describe("isProjectEditorPredicate", () => {
     function createData(accessLevel: AccessLevel = AccessLevel.owner) {
       return {
+        resolvers: { project: "resolver" },
         project: {
           model: new Project({
             id: 1,
@@ -60,10 +61,10 @@ describe("Predicates", () => {
 
     [
       { accessLevel: AccessLevel.owner, hasPermission: true },
+      { accessLevel: AccessLevel.writer, hasPermission: false },
       { accessLevel: AccessLevel.reader, hasPermission: false },
       { accessLevel: AccessLevel.unknown, hasPermission: false },
       { accessLevel: AccessLevel.unresolved, hasPermission: false },
-      { accessLevel: AccessLevel.writer, hasPermission: true },
     ].forEach(({ accessLevel, hasPermission }) => {
       it(`should return ${hasPermission} when access level is ${accessLevel}`, () => {
         expect(

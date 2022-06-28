@@ -17,6 +17,10 @@ export class BawApiError extends Error {
     return this.formattedMessage();
   }
 
+  public get rawMessage(): string {
+    return this._message;
+  }
+
   /**
    * Format the error message. This is more useful for errors which contain
    * additional information

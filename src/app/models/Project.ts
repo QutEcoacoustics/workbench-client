@@ -1,3 +1,4 @@
+import { Capability } from "@baw-api/baw-api.service";
 import { ACCOUNT, SHALLOW_REGION, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { projectRoute } from "@components/projects/projects.routes";
 import {
@@ -6,8 +7,8 @@ import {
   Description,
   HasAllUsers,
   HasDescription,
-  hasRequiredAccessLevelOrHigher,
   Hash,
+  hasRequiredAccessLevelOrHigher,
   Id,
   Ids,
   ImageUrl,
@@ -25,6 +26,8 @@ import {
 import type { Region } from "./Region";
 import type { Site } from "./Site";
 import type { User } from "./User";
+
+export type ProjectCapabilities = "updateAllowAudioUpload" | "createHarvest";
 
 /**
  * A project model.
@@ -68,15 +71,18 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public readonly updatedAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
+  @bawCollection()
   public readonly ownerIds?: Ids;
-  @bawCollection({ persist: true })
+  @bawCollection()
   public readonly siteIds?: Ids;
-  @bawCollection({ persist: true })
+  @bawCollection()
   public readonly regionIds?: Ids;
   @bawPersistAttr()
   public readonly notes?: Hash;
   @bawPersistAttr()
   public readonly allowOriginalDownload?: AccessLevel;
+  @bawPersistAttr()
+  public readonly allowAudioUpload?: boolean;
 
   // Associations
   @hasMany<Project, Site>(SHALLOW_SITE, "siteIds")
@@ -92,10 +98,22 @@ export class Project extends AbstractModel<IProject> implements IProject {
   @deleter<Project>()
   public deleter?: User;
 
+  public override can(capability: ProjectCapabilities): Capability {
+    return super.can(capability);
+  }
+
   /**
    * Returns true if user has the permissions to edit this model
    */
   public get canEdit(): boolean {
+    return hasRequiredAccessLevelOrHigher(AccessLevel.owner, this.accessLevel);
+  }
+
+  /**
+   * Returns true if user can contribute to this model. Ie Adding
+   * annotations/tags
+   */
+  public get canContribute(): boolean {
     return hasRequiredAccessLevelOrHigher(AccessLevel.writer, this.accessLevel);
   }
 

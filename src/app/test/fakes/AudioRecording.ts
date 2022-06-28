@@ -15,7 +15,7 @@ export function generateAudioRecording(
   const statuses: AudioRecordingStatus[] = [
     "new",
     "uploading",
-    "to_check",
+    "toCheck",
     "ready",
     "corrupt",
     "aborted",

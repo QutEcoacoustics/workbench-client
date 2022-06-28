@@ -6,6 +6,7 @@
  */
 @mixin baw-background($property, $fallback) {
   background-color: var(--baw-#{$property}, #{$fallback}) !important;
+  color: var(--baw-#{$property}-contrast, black) !important;
 }
 
 @each $theme, $default in $theme-colors {

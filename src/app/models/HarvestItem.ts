@@ -5,12 +5,15 @@ import {
   SHALLOW_HARVEST,
 } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
-import { bawDateTime } from "@models/AttributeDecorators";
+import {
+  bawDateTime,
+  bawReadonlyConvertCase,
+} from "@models/AttributeDecorators";
 import { AudioRecording } from "@models/AudioRecording";
 import { AbstractModel } from "./AbstractModel";
 import { hasOne } from "./AssociationDecorators";
-import { User } from "./User";
 import { Harvest } from "./Harvest";
+import { User } from "./User";
 
 /**
  * State of a harvest item
@@ -59,6 +62,7 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
   public readonly updatedAt?: DateTimeTimezone;
   public readonly deleted?: boolean;
   public readonly path?: string;
+  @bawReadonlyConvertCase()
   public readonly status?: HarvestItemState;
   public readonly validations?: IHarvestItemValidation[];
 

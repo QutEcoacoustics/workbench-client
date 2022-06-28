@@ -231,16 +231,21 @@ describe("PermissionsShieldComponent", () => {
         });
 
         it("should not create badge if id is not found", () => {
-          defaultProject[id] = undefined;
-          setup([{ model: defaultProject }]);
+          const project = new Project(
+            generateProject({ [id]: undefined }),
+            injector
+          );
+          setup([{ model: project }]);
           spec.detectChanges();
           expect(spec.component.badges[index]?.label).not.toBe(label);
         });
 
         it("should not create label if id is not found", () => {
-          defaultProject[id] = undefined;
-          setup([{ model: defaultProject }]);
-          spec.detectChanges();
+          const project = new Project(
+            generateProject({ [id]: undefined }),
+            injector
+          );
+          setup([{ model: project }]);
           expect(getLabel()).not.toHaveText(label);
         });
 

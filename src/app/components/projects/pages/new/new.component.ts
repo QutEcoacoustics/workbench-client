@@ -42,6 +42,12 @@ class NewComponent extends FormTemplate<Project> {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
+
+    // Filter out allowAudioUpload field on new form. We can do this
+    // intelligently with https://github.com/QutEcoacoustics/baw-server/issues/561
+    this.fields = this.fields.filter(
+      (field) => field.key !== "allowAudioUpload"
+    );
   }
 
   protected apiAction(model: Partial<Project>) {

@@ -112,7 +112,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
    */
   // eslint-disable-next-line @typescript-eslint/quotes
   @Input("bawDatatablePagination") public pagination: {
-    filters: BehaviorSubject<Filters<Model>> | Filters<Model>;
+    filters?: BehaviorSubject<Filters<Model>> | Filters<Model>;
     getModels: (filters: Filters<Model>) => Observable<Model[]>;
   };
 
@@ -143,14 +143,23 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
     this.filters$ =
       this.pagination.filters instanceof BehaviorSubject
         ? this.pagination.filters
-        : of(this.pagination.filters);
+        : of(this.pagination.filters ?? {});
 
     // Reset page number on filter change, but keep current sort
-    this.filters$.pipe(takeUntil(this.unsubscribe)).subscribe(() => {
-      this.pageAndSort$.next({
-        page: 0,
-        sort: this.pageAndSort$.getValue().sort,
-      });
+    this.filters$.pipe(takeUntil(this.unsubscribe)).subscribe((filters) => {
+      const pageAndSort = this.pageAndSort$.getValue();
+
+      // If the user has already sorted the table, use their sort
+      if (pageAndSort.sort || !filters.sorting) {
+        this.pageAndSort$.next({ page: 0, sort: pageAndSort.sort });
+        return;
+      }
+
+      // Otherwise, use the sort from the filter observable as the default
+      this.datatable.sorts = [
+        { prop: filters.sorting.orderBy, dir: filters.sorting.direction },
+      ];
+      this.pageAndSort$.next({ page: pageAndSort.page, sort: filters.sorting });
     });
 
     // Get the latest list of models whenever a change occurs to the page,

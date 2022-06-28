@@ -1,0 +1,87 @@
+<h3>Uploading Files</h3>
+
+<p>You can upload to:</p>
+
+<baw-harvest-upload-url [harvest]="harvest"></baw-harvest-upload-url>
+
+<p>Rules:</p>
+
+<ol>
+  <li>Files must be placed in the provided folders (shown below)</li>
+  <li>
+    Files must use an
+    <a
+      href="https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md"
+      >unambiguous datestamp format filename</a
+    >
+  </li>
+  <li>
+    Successfully uploaded files will no longer be visible in the SFTP connection
+    - you can access them from the
+    <a [strongRoute]="audioRecordings.route">{{ audioRecordings.label }}</a>
+    page
+  </li>
+  <li>Duplicate or corrupt files will be rejected automatically</li>
+</ol>
+
+<p>Here are some example URLs you can use to upload your files:</p>
+
+<ngx-datatable
+  class="mb-3"
+  bawDatatableDefaults
+  [rows]="mappings"
+  [externalPaging]="false"
+  [externalSorting]="false"
+>
+  <ngx-datatable-column prop="siteId" [width]="300" [maxWidth]="300">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Site/Point
+    </ng-template>
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <baw-loading
+        *ngIf="row.site | isUnresolved; else showSite"
+        size="sm"
+      ></baw-loading>
+
+      <ng-template #showSite>
+        <a [bawUrl]="row.site.getViewUrl(project)">
+          {{ row.site.name }}
+        </a>
+      </ng-template>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="path" [width]="200" [maxWidth]="200">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Upload folder
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{ value }}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="url">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Example URL
+    </ng-template>
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      {{ getMappingUploadUrl(row) }}
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
+
+<baw-harvest-upload-progress [harvest]="harvest"></baw-harvest-upload-progress>
+
+<div class="clearfix">
+  <p>
+    If you close this harvest you cannot reopen it and the passwords will be
+    revoked permanently
+  </p>
+  <button
+    class="btn btn-warning float-end"
+    [disabled]="loading"
+    (click)="closeConnectionClick()"
+  >
+    Close Connection
+  </button>
+</div>

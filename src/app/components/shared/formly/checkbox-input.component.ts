@@ -8,10 +8,7 @@ import { asFormControl } from "./helper";
 @Component({
   selector: "baw-checkbox-input",
   template: `
-    <div
-      style="width: 24px;"
-      class="custom-control custom-checkbox col-form-label"
-    >
+    <div style="width: 24px;" class="custom-control custom-checkbox">
       <input
         type="checkbox"
         class="custom-control-input"

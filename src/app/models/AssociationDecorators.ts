@@ -168,7 +168,7 @@ function createModelDecorator<
     parent: Parent
   ): Readonly<AbstractModel | AbstractModel[]> {
     // Check for any backing models
-    const backingFieldKey = "_" + identifierKey;
+    const backingFieldKey = "_" + identifierKey.toString();
     if (Object.prototype.hasOwnProperty.call(parent, backingFieldKey)) {
       return parent[backingFieldKey];
     }
@@ -177,7 +177,7 @@ function createModelDecorator<
     const injector = parent["injector"];
     if (!injector) {
       throw new Error(
-        `${parent} does not have injector service. Tried to access ${identifierKey}`
+        `${parent} does not have injector service. Tried to access ${identifierKey.toString()}`
       );
     }
 
@@ -210,7 +210,7 @@ function createModelDecorator<
     apiRequest(service, parent, parameters).subscribe({
       next: (model) => updateBackingField(parent, backingFieldKey, model),
       error: (error) => {
-        console.error(`${parent} failed to load ${identifierKey}.`, {
+        console.error(`${parent} failed to load ${identifierKey.toString()}.`, {
           target: parent,
           associationKey: identifierKey,
           identifier,

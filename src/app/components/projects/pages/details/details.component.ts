@@ -9,15 +9,15 @@ import {
 } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
+import { harvestsMenuItem } from "@components/harvest/harvest.menus";
 import {
-  uploadAnnotationsProjectMenuItem,
   assignSiteMenuItem,
   deleteProjectMenuItem,
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
-  harvestProjectMenuItem,
   projectCategory,
   projectMenuItem,
+  uploadAnnotationsProjectMenuItem,
 } from "@components/projects/projects.menus";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
@@ -43,7 +43,7 @@ export const projectMenuItemActions = [
   deleteProjectMenuItem,
   audioRecordingMenuItems.list.project,
   audioRecordingMenuItems.batch.project,
-  harvestProjectMenuItem,
+  harvestsMenuItem,
   uploadAnnotationsProjectMenuItem,
 ];
 
