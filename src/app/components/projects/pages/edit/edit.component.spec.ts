@@ -1,62 +1,47 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute, Router } from "@angular/router";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import {
-  projectResolvers,
-  ProjectsService,
-} from "@baw-api/project/projects.service";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { ProjectsService } from "@baw-api/project/projects.service";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { Project } from "@models/Project";
-import { SpyObject } from "@ngneat/spectator";
-import { generateBawApiError } from "@test/fakes/BawApiError";
-import { generateProject } from "@test/fakes/Project";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
+import { FormComponent } from "@shared/form/form.component";
+import { generateProject, generateProjectMeta } from "@test/fakes/Project";
 import { testFormlyFields } from "@test/helpers/formly";
-import { assertErrorHandler } from "@test/helpers/html";
-import { mockActivatedRoute, testFormImports } from "@test/helpers/testbed";
+import { MockComponent } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import schema from "../../project.schema.json";
 import { EditComponent } from "./edit.component";
 
 describe("ProjectsEditComponent", () => {
-  let api: SpyObject<ProjectsService>;
-  let component: EditComponent;
-  let defaultProject: Project;
-  let fixture: ComponentFixture<EditComponent>;
-  let notifications: ToastrService;
-  let router: Router;
   const { fields } = schema;
+  let api: SpyObject<ProjectsService>;
+  let spec: SpectatorRouting<EditComponent>;
+  let defaultProject: Project;
+  const createComponent = createRoutingFactory({
+    component: EditComponent,
+    declarations: [MockComponent(FormComponent)],
+    imports: [MockBawApiModule],
+    mocks: [ToastrService],
+  });
 
-  function configureTestingModule(model: Project, error?: BawApiError) {
-    TestBed.configureTestingModule({
-      imports: [...testFormImports, MockBawApiModule],
-      declarations: [EditComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { project: projectResolvers.show },
-            { project: { model, error } }
-          ),
-        },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(EditComponent);
-    component = fixture.componentInstance;
-    router = TestBed.inject(Router);
-    api = TestBed.inject(ProjectsService) as SpyObject<ProjectsService>;
-    notifications = TestBed.inject(ToastrService);
-
-    spyOn(notifications, "success").and.stub();
-    spyOn(notifications, "error").and.stub();
-    spyOn(router, "navigateByUrl").and.stub();
-
-    fixture.detectChanges();
+  function setup(project: Project): void {
+    spec = createComponent({
+      data: {
+        resolvers: { project: "resolver" },
+        project: { model: project },
+      } as IPageInfo,
+    });
+    api = spec.inject(ProjectsService);
+    spec.detectChanges();
   }
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
+    defaultProject.addMetadata(generateProjectMeta());
   });
 
   describe("form", () => {
@@ -101,21 +86,54 @@ describe("ProjectsEditComponent", () => {
     ]);
   });
 
+  describe("capability fields", () => {
+    describe("updateAllowAudioUpload capability", () => {
+      function getField() {
+        return spec.component.fields.find(
+          (field) => field.key === "allowAudioUpload"
+        );
+      }
+
+      it("should hide allowAudioUpload field when unset", () => {
+        defaultProject.addMetadata(
+          generateProjectMeta({
+            capabilities: {
+              createHarvest: { can: false, details: "Unset in test" },
+              updateAllowAudioUpload: { can: false, details: "Unset in test" },
+            },
+          })
+        );
+        setup(defaultProject);
+        spec.detectChanges();
+        expect(getField()).not.toBeTruthy();
+      });
+
+      it("should show allowAudioUpload field when set", () => {
+        defaultProject.addMetadata(
+          generateProjectMeta({
+            capabilities: {
+              createHarvest: { can: false, details: "Unset in test" },
+              updateAllowAudioUpload: { can: true, details: null },
+            },
+          })
+        );
+        setup(defaultProject);
+        spec.detectChanges();
+        expect(getField()).toBeTruthy();
+      });
+    });
+  });
+
   describe("component", () => {
     it("should create", () => {
-      configureTestingModule(defaultProject);
-      expect(component).toBeTruthy();
-    });
-
-    it("should handle project error", () => {
-      configureTestingModule(undefined, generateBawApiError());
-      assertErrorHandler(fixture);
+      setup(defaultProject);
+      expect(spec.component).toBeInstanceOf(EditComponent);
     });
 
     it("should call api", () => {
-      configureTestingModule(defaultProject);
+      setup(defaultProject);
       api.update.and.callFake(() => new Subject());
-      component.submit({});
+      spec.component.submit({});
       expect(api.update).toHaveBeenCalled();
     });
   });

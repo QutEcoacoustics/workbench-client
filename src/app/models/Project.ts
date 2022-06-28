@@ -27,7 +27,7 @@ import type { Region } from "./Region";
 import type { Site } from "./Site";
 import type { User } from "./User";
 
-type Capabilities = "updateAllowAudioUpload" | "createHarvest";
+export type ProjectCapabilities = "updateAllowAudioUpload" | "createHarvest";
 
 /**
  * A project model.
@@ -97,7 +97,7 @@ export class Project extends AbstractModel<IProject> implements IProject {
   @deleter<Project>()
   public deleter?: User;
 
-  public override can(capability: Capabilities): Capability {
+  public override can(capability: ProjectCapabilities): Capability {
     return super.can(capability);
   }
 

@@ -609,7 +609,7 @@ export type CapabilityKey = string | number;
 
 export interface Capability {
   can: boolean;
-  details: string;
+  details: string | null;
 }
 
 /**
@@ -623,7 +623,8 @@ export interface Meta<
   status?: number;
   /** Human readable response status */
   message?: string;
-  capabilities?: Record<Capabilities, Capability>;
+  /** User capabilities */
+  capabilities?: Record<Capabilities | CapabilityKey, Capability>;
   /** Optional error metadata */
   error?: {
     /** Error message */
