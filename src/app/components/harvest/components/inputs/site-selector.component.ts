@@ -6,13 +6,15 @@ import {
   Output,
   ViewChild,
 } from "@angular/core";
-import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { SitesService } from "@baw-api/site/sites.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Id } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import { NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbTypeahead,
+  NgbTypeaheadSelectItemEvent,
+} from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import {
   debounceTime,
@@ -23,22 +25,15 @@ import {
   OperatorFunction,
   Subject,
   switchMap,
-  takeUntil,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
 
 @Component({
-  selector: "baw-site-selector",
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: SiteSelectorComponent,
-    },
-  ],
+  selector: "baw-harvest-site-selector",
   template: `
-    <div *ngIf="value" class="site-label">
-      <a [bawUrl]="value.getViewUrl(project)">{{ value.name }}</a>
+    <!-- Show site name and link if exists -->
+    <div *ngIf="site" class="site-label">
+      <a [bawUrl]="site.getViewUrl(project)">{{ site.name }}</a>
 
       <div>
         <button
@@ -51,7 +46,9 @@ import { defaultDebounceTime } from "src/app/app.helper";
         </button>
       </div>
     </div>
-    <div [class.d-none]="value" class="input-group input-group-sm">
+
+    <!-- Show user input if no site -->
+    <div [class.d-none]="site" class="input-group input-group-sm">
       <input
         #selector="ngbTypeahead"
         id="selector"
@@ -61,10 +58,9 @@ import { defaultDebounceTime } from "src/app/app.helper";
         [ngbTypeahead]="search$"
         [resultFormatter]="formatter"
         [editable]="false"
-        [(ngModel)]="value"
+        [(ngModel)]="site"
         (focus)="focus$.next($any($event).target.value)"
-        (click)="onSelection($any($event).target.value)"
-        (selectItem)="emitSite()"
+        (selectItem)="onSelectItem($event)"
       />
     </div>
   `,
@@ -87,15 +83,14 @@ import { defaultDebounceTime } from "src/app/app.helper";
 export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;
   @Input() public project: Project;
-  @Input() public siteId: Id;
-  @Output() public siteIdChange = new EventEmitter<Id>();
+  @Input() public site: Site | null;
+  @Output() public siteIdChange = new EventEmitter<Id | null>();
 
   public focus$ = new Subject<Site>();
   public click$ = new Subject<Site>();
   public search$: OperatorFunction<string, readonly Site[]>;
 
   public prevValue: Site;
-  public value: Site;
 
   public constructor(
     private config: ConfigService,
@@ -105,13 +100,6 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   }
 
   public ngOnInit(): void {
-    if (this.siteId) {
-      this.sitesApi
-        .show(this.siteId, this.project)
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe((site) => (this.value = site));
-    }
-
     this.search$ = (text$: Observable<string>): Observable<Site[]> => {
       const debouncedText$ = text$.pipe(
         debounceTime(defaultDebounceTime),
@@ -156,16 +144,18 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
     return site.name;
   }
 
-  public emitSite(): void {
-    this.siteIdChange.emit(this.value?.id ?? undefined);
+  public emitSite(site: Site): void {
+    this.siteIdChange.emit(site?.id ?? null);
+  }
+
+  public onSelectItem(item: NgbTypeaheadSelectItemEvent<Site>): void {
+    this.site = item.item;
+    this.emitSite(this.site);
   }
 
   public resetSite(): void {
     this.prevValue = this.value;
-    this.value = undefined;
-  }
-
-  public onSelection(site: Site): void {
-    this.click$.next(site);
+    this.site = null;
+    this.emitSite(this.site);
   }
 }

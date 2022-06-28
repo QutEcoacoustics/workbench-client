@@ -71,10 +71,11 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public readonly updatedAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
+  @bawCollection()
   public readonly ownerIds?: Ids;
-  @bawCollection({ persist: true })
+  @bawCollection()
   public readonly siteIds?: Ids;
-  @bawCollection({ persist: true })
+  @bawCollection()
   public readonly regionIds?: Ids;
   @bawPersistAttr()
   public readonly notes?: Hash;
@@ -105,6 +106,14 @@ export class Project extends AbstractModel<IProject> implements IProject {
    * Returns true if user has the permissions to edit this model
    */
   public get canEdit(): boolean {
+    return hasRequiredAccessLevelOrHigher(AccessLevel.owner, this.accessLevel);
+  }
+
+  /**
+   * Returns true if user can contribute to this model. Ie Adding
+   * annotations/tags
+   */
+  public get canContribute(): boolean {
     return hasRequiredAccessLevelOrHigher(AccessLevel.writer, this.accessLevel);
   }
 

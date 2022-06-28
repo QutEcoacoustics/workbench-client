@@ -4,7 +4,7 @@ import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import type { AnalysisJob } from "./AnalysisJob";
 import { hasOne } from "./AssociationDecorators";
-import { bawDateTime } from "./AttributeDecorators";
+import { bawDateTime, bawReadonlyConvertCase } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 
 export interface IAnalysisJobItem {
@@ -26,6 +26,7 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   public readonly analysisJobId?: Id;
   public readonly audioRecordingId?: Id;
   public readonly queueId?: string;
+  @bawReadonlyConvertCase()
   public readonly status?: AnalysisJobItemStatus;
   @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
@@ -60,6 +61,6 @@ export type AnalysisJobItemStatus =
   | "queued"
   | "working"
   | "failed"
-  | "timed_out"
+  | "timedOut"
   | "cancelling"
   | "cancelled";

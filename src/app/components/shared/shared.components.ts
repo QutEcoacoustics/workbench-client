@@ -40,6 +40,7 @@ import { ItemsModule } from "./items/items.module";
 import { LoadingModule } from "./loading/loading.module";
 import { MenuModule } from "./menu/menu.module";
 import { ModelCardsModule } from "./model-cards/model-cards.module";
+import { ProgressModule } from "./progress/progress.module";
 import { StepperModule } from "./stepper/stepper.module";
 import { UserLinkModule } from "./user-link/user-link.module";
 import { WIPComponent } from "./wip/wip.component";
@@ -92,6 +93,7 @@ export const sharedModules = [
   MenuModule,
   ModelCardsModule,
   PipesModule,
+  ProgressModule,
   StepperModule,
   UserLinkModule,
 ];

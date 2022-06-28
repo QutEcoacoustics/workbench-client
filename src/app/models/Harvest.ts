@@ -1,5 +1,6 @@
 import { Injector } from "@angular/core";
-import { projectHarvestRoute } from "@components/projects/projects.routes";
+import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { harvestRoute } from "@components/harvest/harvest.routes";
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
@@ -7,9 +8,16 @@ import {
 } from "@interfaces/apiInterfaces";
 import { Duration } from "luxon";
 import { AbstractModel, AbstractModelWithoutId } from "./AbstractModel";
-import { creator, updater } from "./AssociationDecorators";
-import { bawDateTime, bawDuration } from "./AttributeDecorators";
-import { User } from "./User";
+import { creator, hasOne, updater } from "./AssociationDecorators";
+import {
+  bawBytes,
+  bawDateTime,
+  bawDuration,
+  bawPersistAttr,
+} from "./AttributeDecorators";
+import type { Project } from "./Project";
+import type { Site } from "./Site";
+import type { User } from "./User";
 
 /**
  * Status of a harvest
@@ -17,16 +25,18 @@ import { User } from "./User";
  * Explanation of state transition:
  * https://github.com/QutEcoacoustics/baw-server/wiki/Harvest-Workflows#stages
  *
- * @param newHarvest A new harvest has been created (this will not be seen by the client)
+ * @param new_harvest A new harvest has been created (this will not be seen by the client)
  * @param uploading The user is able to upload files to the harvest
- * @param metadataExtraction Metadata is being extracted from the uploaded files
- * @param metadataReview The user is able to review the extracted metadata to validate everything is correct
+ * @param scanning Scanning the list of uploaded files to find everything
+ * @param metadata_extraction Metadata is being extracted from the uploaded files
+ * @param metadata_review The user is able to review the extracted metadata to validate everything is correct
  * @param processing The files are being harvested
  * @param complete The harvest is complete
  */
 export type HarvestStatus =
   | "newHarvest"
   | "uploading"
+  | "scanning"
   | "metadataExtraction"
   | "metadataReview"
   | "processing"
@@ -39,6 +49,33 @@ export interface IHarvestMapping {
   recursive?: boolean;
 }
 
+export class HarvestMapping
+  extends AbstractModelWithoutId
+  implements IHarvestMapping
+{
+  public readonly kind = "HarvestMapping";
+  @bawPersistAttr()
+  public path?: string;
+  @bawPersistAttr()
+  public siteId?: Id;
+  @bawPersistAttr()
+  public utcOffset?: string;
+  @bawPersistAttr()
+  public recursive?: boolean;
+
+  // Associations
+  @hasOne<HarvestMapping, Site>(SHALLOW_SITE, "siteId")
+  public site?: Site;
+
+  public constructor(data: IHarvestMapping, injector?: Injector) {
+    super(data, injector);
+  }
+
+  public get viewUrl(): string {
+    throw new Error("HarvestMapping has no viewUrl");
+  }
+}
+
 export interface IHarvest extends HasCreatorAndUpdater {
   id?: Id;
   streaming?: boolean;
@@ -47,33 +84,43 @@ export interface IHarvest extends HasCreatorAndUpdater {
   uploadPassword?: string;
   uploadUser?: string;
   uploadUrl?: string;
-  mappings?: IHarvestMapping[];
+  mappings?: IHarvestMapping[] | HarvestMapping[];
   report?: IHarvestReport | HarvestReport;
+  lastUploadAt?: DateTimeTimezone | string;
   lastMetadataReviewAt?: DateTimeTimezone | string;
-  lastMappingUpdateAt?: DateTimeTimezone | string;
+  lastMappingsChangeAt?: DateTimeTimezone | string;
 }
 
 export class Harvest extends AbstractModel implements IHarvest {
   public readonly kind = "Harvest";
   public readonly id?: Id;
+  @bawPersistAttr({ create: true, update: false })
   public readonly streaming?: boolean;
+  @bawPersistAttr({ convertCase: true })
   public readonly status?: HarvestStatus;
   public readonly projectId?: Id;
   public readonly creatorId?: Id;
+  @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
   public readonly updaterId?: Id;
+  @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
   public readonly uploadPassword?: string;
   public readonly uploadUser?: string;
   public readonly uploadUrl?: string;
-  public mappings?: IHarvestMapping[];
+  @bawPersistAttr()
+  public mappings?: HarvestMapping[];
   public readonly report?: HarvestReport;
+  @bawDateTime()
+  public readonly lastUploadAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly lastMetadataReviewAt?: DateTimeTimezone;
   @bawDateTime()
-  public readonly lastMappingUpdateAt?: DateTimeTimezone;
+  public readonly lastMappingsChangeAt?: DateTimeTimezone;
 
   // Associations
+  @hasOne<Harvest, Project>(PROJECT, "projectId")
+  public project?: Project;
   @creator<Harvest>()
   public creator?: User;
   @updater<Harvest>()
@@ -81,16 +128,29 @@ export class Harvest extends AbstractModel implements IHarvest {
 
   public constructor(data: IHarvest, injector?: Injector) {
     super(data, injector);
+    this.mappings = ((data.mappings as IHarvestMapping[]) ?? []).map(
+      (mapping) => new HarvestMapping(mapping, injector)
+    );
     this.report = new HarvestReport(data.report, injector);
   }
 
   public get viewUrl(): string {
-    return projectHarvestRoute.format({ projectId: this.projectId });
+    return harvestRoute.format({
+      projectId: this.projectId,
+      harvestId: this.id,
+    });
   }
 
   /** Is true if mappings array has changes which have not been reviewed */
   public get isMappingsDirty(): boolean {
-    return this.lastMetadataReviewAt < this.lastMappingUpdateAt;
+    return this.lastMetadataReviewAt < this.lastMappingsChangeAt;
+  }
+
+  public get uploadUrlWithAuth(): string {
+    return this.uploadUrl.replace(
+      "://",
+      `://${this.uploadUser}:${this.uploadPassword}@`
+    );
   }
 }
 
@@ -116,6 +176,8 @@ export class HarvestReport
   public readonly kind = "HarvestReport";
   public readonly itemsTotal?: number;
   public readonly itemsSizeBytes?: number;
+  @bawBytes<HarvestReport>({ key: "itemsSizeBytes" })
+  public readonly itemsSize?: string;
   public readonly itemsDurationSeconds?: number;
   @bawDuration<HarvestReport>({ key: "itemsDurationSeconds" })
   public readonly itemsDuration?: Duration;

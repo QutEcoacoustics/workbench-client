@@ -179,10 +179,16 @@ export class BawApiService<
    * @param classBuilder Model to create
    * @param path API path
    */
-  public show(classBuilder: ClassBuilder, path: string): Observable<Model> {
+  public show(
+    classBuilder: ClassBuilder,
+    path: string,
+    cache: boolean = true
+  ): Observable<Model> {
     return this.session.authTrigger.pipe(
       switchMap(() =>
-        this.httpGet(path, defaultApiHeaders, { cache: cacheSettings.enabled })
+        this.httpGet(path, defaultApiHeaders, {
+          cache: cacheSettings.enabled && cache,
+        })
       ),
       map(this.handleSingleResponse(classBuilder))
     );
@@ -195,24 +201,28 @@ export class BawApiService<
    * @param classBuilder Model to create
    * @param createPath API create path
    * @param updatePath API update path
-   * @param body Request body
+   * @param model Model to insert into API request
    */
   public create(
     classBuilder: ClassBuilder,
     createPath: string,
     updatePath: (model: Model) => string,
-    body: AbstractModel
+    model: AbstractModel
   ): Observable<Model> {
-    const jsonData = body?.getJsonAttributes?.({ create: true });
-    const request = this.httpPost(createPath, jsonData ?? body).pipe(
+    const jsonData = model?.getJsonAttributes?.({ create: true });
+    const body = model.kind
+      ? { [model.kind]: jsonData ?? model }
+      : jsonData ?? model;
+
+    const request = this.httpPost(createPath, body).pipe(
       map(this.handleSingleResponse(classBuilder))
     );
 
-    if (body?.hasFormDataOnlyAttributes({ create: true })) {
-      const formData = body.getFormDataOnlyAttributes({ create: true });
+    if (model?.hasFormDataOnlyAttributes({ create: true })) {
+      const formData = model.getFormDataOnlyAttributes({ create: true });
       return request.pipe(
-        mergeMap((model) =>
-          this.httpPut(updatePath(model), formData, multiPartApiHeaders)
+        mergeMap((data) =>
+          this.httpPut(updatePath(data), formData, multiPartApiHeaders)
         ),
         map(this.handleSingleResponse(classBuilder))
       );
@@ -227,20 +237,24 @@ export class BawApiService<
    *
    * @param classBuilder Model to create
    * @param path API path
-   * @param body Request body
+   * @param model Model to insert into API request
    */
   public update(
     classBuilder: ClassBuilder,
     path: string,
-    body: AbstractModel
+    model: AbstractModel
   ): Observable<Model> {
-    const jsonData = body.getJsonAttributes?.({ update: true });
-    const request = this.httpPatch(path, jsonData ?? body).pipe(
+    const jsonData = model.getJsonAttributes?.({ update: true });
+    const body = model.kind
+      ? { [model.kind]: jsonData ?? model }
+      : jsonData ?? model;
+
+    const request = this.httpPatch(path, body).pipe(
       map(this.handleSingleResponse(classBuilder))
     );
 
-    if (body?.hasFormDataOnlyAttributes({ update: true })) {
-      const formData = body.getFormDataOnlyAttributes({ update: true });
+    if (model?.hasFormDataOnlyAttributes({ update: true })) {
+      const formData = model.getFormDataOnlyAttributes({ update: true });
       return request.pipe(
         mergeMap(() => this.httpPut(path, formData, multiPartApiHeaders)),
         map(this.handleSingleResponse(classBuilder))

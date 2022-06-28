@@ -6,13 +6,15 @@ import {
   mockServiceProviders,
   validateReadonlyApi,
 } from "@test/helpers/api-common";
+import { modelData } from "@test/helpers/faker";
 import { HarvestItemsService } from "./harvest-items.service";
 
 describe("HarvestItemsService", () => {
-  const harvestItemId = 15;
+  // File path without leading '/'
+  const harvestItemPath = modelData.system.filePath().slice(1);
   const createModel = () =>
-    new HarvestItem(generateHarvestItem({ id: harvestItemId }));
-  const baseUrl = "/projects/5/harvest/10/harvest_items/";
+    new HarvestItem(generateHarvestItem({ path: harvestItemPath }));
+  const baseUrl = "/projects/5/harvests/10/items/";
   let spec: SpectatorService<HarvestItemsService>;
   const createService = createServiceFactory({
     service: HarvestItemsService,
@@ -29,9 +31,9 @@ describe("HarvestItemsService", () => {
     HarvestItem,
     baseUrl,
     baseUrl + "filter",
-    baseUrl + harvestItemId,
+    baseUrl + harvestItemPath,
     createModel,
-    harvestItemId, // harvest item
+    undefined, // harvest item
     5, // project
     10 // harvest
   );

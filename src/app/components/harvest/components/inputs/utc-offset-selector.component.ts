@@ -1,19 +1,10 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { NG_VALUE_ACCESSOR } from "@angular/forms";
-import { Project } from "@models/Project";
 
 @Component({
-  selector: "baw-utc-offset-selector",
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: UTCOffsetSelectorComponent,
-    },
-  ],
+  selector: "baw-harvest-utc-offset-selector",
   template: `
-    <div *ngIf="value" class="utc-label">
-      <span>{{ value }}</span>
+    <div *ngIf="offset" class="utc-label">
+      <span>{{ offset }}</span>
 
       <div>
         <button
@@ -27,7 +18,7 @@ import { Project } from "@models/Project";
       </div>
     </div>
     <select
-      *ngIf="!value"
+      *ngIf="!offset"
       class="form-select form-select-sm"
       aria-label="UTC offset"
       (change)="onSelection($any($event).target.value)"
@@ -55,24 +46,21 @@ import { Project } from "@models/Project";
   ],
 })
 export class UTCOffsetSelectorComponent {
-  @Input() public project: Project;
   @Input() public offset: string;
   @Output() public offsetChange = new EventEmitter<string>();
-
-  public value: string;
 
   public get editTooltip(): string {
     return "Change the utc offset for this recordings stored in this folder";
   }
 
   public resetSite(): void {
-    this.value = undefined;
-    this.offsetChange.emit(this.value);
+    this.offset = null;
+    this.offsetChange.emit(this.offset);
   }
 
   public onSelection(offset: string): void {
-    this.value = offset;
-    this.offsetChange.emit(this.value);
+    this.offset = offset;
+    this.offsetChange.emit(this.offset);
   }
 
   public get offsets(): string[] {

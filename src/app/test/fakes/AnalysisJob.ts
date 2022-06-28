@@ -7,7 +7,7 @@ export function generateAnalysisJob(
   const overallDurationSeconds = modelData.datatype.number(3.154e7); // 1 year
   const overallDataLengthBytes = overallDurationSeconds * 22050 * 2; // duration seconds * sample rate * two bytes per sample
   const statuses: AnalysisJobStatus[] = [
-    "before_save",
+    "beforeSave",
     "new",
     "preparing",
     "processing",

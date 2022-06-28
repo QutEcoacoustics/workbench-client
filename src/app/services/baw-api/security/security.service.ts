@@ -58,7 +58,7 @@ export class SecurityService {
     const getPageError = (page: string): [string, string] => {
       const pageError = / id="(.+)" \/><span class="help-block">(.+)<\/span>/;
       const match = page.match(pageError);
-      return match.length === 3 ? [match[1], match[2]] : undefined;
+      return match?.length === 3 ? [match[1], match[2]] : undefined;
     };
 
     /** Read page response for unique username error */

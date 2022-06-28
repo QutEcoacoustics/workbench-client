@@ -1,12 +1,14 @@
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
+import fileSize from "filesize";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
 
 export interface BawAttributeOptions {
   create: boolean;
   update: boolean;
+  convertCase: boolean;
   supportedFormats: Array<"json" | "formData">;
 }
 
@@ -36,6 +38,7 @@ function persistAttr(
     const defaultOpts: BawAttributeOptions = {
       create: true,
       update: true,
+      convertCase: false,
       supportedFormats: ["json"],
     };
 
@@ -53,6 +56,22 @@ function persistAttr(
 export function bawPersistAttr(opts?: Partial<BawAttributeOptions>) {
   return function (model: AbstractModel, key: string): void {
     persistAttr(model, key, opts);
+  };
+}
+
+/**
+ * Decorator wrapper for converting an attribute values case from snake case to
+ * camel case.
+ * ! DO NOT USE IN CONJUNCTION WITH bawPersistAttr
+ */
+export function bawReadonlyConvertCase() {
+  return function (model: AbstractModel, key: string): void {
+    persistAttr(model, key, {
+      create: false,
+      update: false,
+      convertCase: true,
+      supportedFormats: [],
+    });
   };
 }
 
@@ -189,6 +208,18 @@ export function bawDuration<Model>(opts?: BawDecoratorOptions<Model>) {
         : null;
     }
   );
+}
+
+/**
+ * Convert bytes into a human readable format
+ */
+export function bawBytes<Model>(opts?: BawDecoratorOptions<Model>) {
+  return createDecorator<Model>(opts, (model, key, bytes: number | string) => {
+    if (typeof bytes === "string") {
+      return;
+    }
+    model[key] = isInstantiated(bytes) ? fileSize(bytes) : null;
+  });
 }
 
 /**

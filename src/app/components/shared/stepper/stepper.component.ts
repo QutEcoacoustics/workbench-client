@@ -1,14 +1,21 @@
 import {
-  AfterViewInit,
+  AfterViewChecked,
   Component,
   ElementRef,
   Input,
   OnChanges,
   OnDestroy,
   QueryList,
+  SimpleChanges,
   ViewChild,
   ViewChildren,
 } from "@angular/core";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+
+export interface Step {
+  label: string;
+  icon: IconProp;
+}
 
 @Component({
   selector: "baw-stepper",
@@ -24,29 +31,37 @@ import {
       <div #steps class="steps">
         <div
           #step
-          *ngFor="let step of stepLabels"
+          *ngFor="let step of stepList; let i = index"
           class="step"
-          [class.active]="isActive(step)"
+          [class.active]="isActive(i)"
         >
-          <p>{{ step + 1 }}</p>
+          <div class="step-body">
+            <div class="icon" [class.active]="isActive(i)">
+              <fa-icon size="xs" [icon]="step.icon"></fa-icon>
+            </div>
+
+            <div class="title fs-6 text-muted">{{ step.label }}</div>
+          </div>
         </div>
       </div>
     </div>
   `,
 })
-export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
+export class StepperComponent
+  implements OnChanges, AfterViewChecked, OnDestroy
+{
   @ViewChild("stepper") public stepper: ElementRef<HTMLElement>;
   @ViewChild("leftDots") public leftDots: ElementRef<HTMLElement>;
   @ViewChild("rightDots") public rightDots: ElementRef<HTMLElement>;
   @ViewChild("steps") public steps: ElementRef<HTMLElement>;
   @ViewChildren("step") public stepItems: QueryList<ElementRef<HTMLElement>>;
 
-  /** Number of steps to display */
-  @Input() public numSteps: number;
+  // eslint-disable-next-line @angular-eslint/no-input-rename
+  @Input("steps") public stepList: Step[];
   /** Step to show as active, starting from 0 */
   @Input() public activeStep: number;
 
-  public stepLabels: number[];
+  private updateObservers: boolean;
   private resizeObserver: ResizeObserver;
   private intersectionObserver: IntersectionObserver;
 
@@ -54,13 +69,21 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
   private notVisibleClass = "not-visible";
   private hiddenClass = "hidden";
 
-  public ngOnChanges(): void {
-    this.stepLabels = Array(this.numSteps)
-      .fill(0)
-      .map((_, i): number => i);
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes.stepList) {
+      this.updateObservers = true;
+    }
   }
 
-  public ngAfterViewInit(): void {
+  public ngAfterViewChecked(): void {
+    // Nothing to update
+    if (!this.updateObservers) {
+      return;
+    }
+
+    this.updateObservers = false;
+    this.destroyObservers();
+
     // Detect whenever an element intersects with the stepper wrapper
     this.intersectionObserver = new IntersectionObserver(
       (entries): void => this.onIntersection(entries),
@@ -79,6 +102,14 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.destroyObservers();
+  }
+
+  public isActive(step: number): boolean {
+    return step === this.activeStep;
+  }
+
+  private destroyObservers() {
     // This may be called before ngAfterViewInit, so treat observers and
     // elements as potentially undefined
     this.stepItems?.forEach((step): void =>
@@ -87,10 +118,6 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
     this.resizeObserver?.unobserve(this.stepper?.nativeElement);
     this.intersectionObserver?.disconnect();
     this.resizeObserver?.disconnect();
-  }
-
-  public isActive(step: number): boolean {
-    return step === this.activeStep;
   }
 
   private onIntersection(entries: IntersectionObserverEntry[]): void {
@@ -113,7 +140,7 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
     const showLeftDots = leftStepsNotVisible && this.activeStep !== 0;
     /** Show right dots if steps are hidden, and the last step is not active */
     const showRightDots =
-      rightStepsNotVisible && this.activeStep !== this.numSteps - 1;
+      rightStepsNotVisible && this.activeStep !== this.stepList.length - 1;
 
     // Show/Hide dots
     this.getClassList(this.leftDots).toggle(this.hiddenClass, !showLeftDots);
@@ -121,7 +148,11 @@ export class StepperComponent implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   private onWrapperResize(): void {
-    const active = this.stepItems.get(this.activeStep).nativeElement;
+    const active = this.stepItems.get(this.activeStep)?.nativeElement;
+    // Active component is not yet rendered
+    if (!active) {
+      return;
+    }
     this.steps.nativeElement.scroll(active.offsetLeft - active.clientWidth, 0);
   }
 

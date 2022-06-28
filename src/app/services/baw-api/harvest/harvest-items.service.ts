@@ -5,8 +5,8 @@ import {
   id,
   IdOr,
   IdParam,
-  IdParamOptional,
   option,
+  param,
   ReadonlyApi,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
@@ -19,9 +19,9 @@ import { Observable } from "rxjs";
 
 const projectId: IdParam<Project> = id;
 const harvestId: IdParam<Harvest> = id;
-const harvestItemId: IdParamOptional<HarvestItem> = id;
-const endpoint = stringTemplate`/projects/${projectId}/harvest/${harvestId}/harvest_items/${harvestItemId}${option}`;
-const shallowEndpoint = stringTemplate`/harvest/${harvestId}/harvest_items/${harvestItemId}${option}`;
+const harvestItemPath = param;
+const endpoint = stringTemplate`/projects/${projectId}/harvests/${harvestId}/items/${harvestItemPath}${option}`;
+const shallowEndpoint = stringTemplate`/harvests/${harvestId}/items/${harvestItemPath}${option}`;
 
 @Injectable()
 export class HarvestItemsService
@@ -51,14 +51,15 @@ export class HarvestItemsService
     );
   }
 
+  // TODO Allow path input as id
   public show(
-    model: IdOr<HarvestItem>,
+    model: HarvestItem,
     project: IdOr<Project>,
     harvest: IdOr<Harvest>
   ): Observable<HarvestItem> {
     return this.api.show(
       HarvestItem,
-      endpoint(project, harvest, model, emptyParam)
+      endpoint(project, harvest, model.path, emptyParam)
     );
   }
 }
@@ -87,13 +88,14 @@ export class ShallowHarvestItemsService
     );
   }
 
+  // TODO Allow path input as id
   public show(
-    model: IdOr<HarvestItem>,
+    model: HarvestItem,
     harvest: IdOr<Harvest>
   ): Observable<HarvestItem> {
     return this.api.show(
       HarvestItem,
-      shallowEndpoint(harvest, model, emptyParam)
+      shallowEndpoint(harvest, model.path, emptyParam)
     );
   }
 }
