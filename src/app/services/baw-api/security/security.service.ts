@@ -180,16 +180,18 @@ export class SecurityService {
         tap((page) => pageValidation(page)),
         // Trade the cookie for an API auth token (mimicking old baw-client)
         mergeMap(() => this.sessionDetails()),
+        // Only accept the first result from the API (can return multiple times)
+        first(),
         // Save to local storage
         tap((user: Session) => (authToken = user.authToken)),
         // Get user details
         mergeMap(() => this.userService.show()),
+        // Only accept the first result from the API (can return multiple times)
+        first(),
         // Update session user with user details and save to local storage
         tap((user: User) => this.session.setLoggedInUser(user, authToken)),
         // Void output
-        map(() => undefined),
-        // Complete observable
-        first(),
+        map(() => {}),
         catchError((err) => {
           this.clearData();
 
