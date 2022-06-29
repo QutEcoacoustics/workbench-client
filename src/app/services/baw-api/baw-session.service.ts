@@ -2,13 +2,7 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { User } from "@models/User";
-import {
-  BehaviorSubject,
-  distinctUntilChanged,
-  Observable,
-  share,
-  tap,
-} from "rxjs";
+import { BehaviorSubject, distinctUntilChanged, Observable } from "rxjs";
 
 export type GuestUser = undefined;
 export type GuestAuthToken = undefined;

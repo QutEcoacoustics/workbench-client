@@ -11,6 +11,7 @@ export const toastrRoot: Partial<GlobalConfig> = {
   positionClass: "toast-top-center",
   preventDuplicates: true,
   includeTitleDuplicates: false,
+  resetTimeoutOnDuplicate: true,
 };
 
 /**
