@@ -145,12 +145,13 @@ export class BawApiService<
     err: BawApiError | Error,
     disableNotification?: boolean
   ): Observable<never> => {
+    const error = isBawApiError(err)
+      ? err
+      : new BawApiError(unknownErrorCode, err.message);
     if (!disableNotification) {
-      this.notifications.error(
-        this.convertToBawApiError(err).formattedMessage("<br />")
-      );
+      this.notifications.error(error.formattedMessage("<br />"));
     }
-    return throwError((): BawApiError => this.convertToBawApiError(err));
+    return throwError((): BawApiError => error);
   };
 
   /**
@@ -496,13 +497,6 @@ export class BawApiService<
         },
       },
     };
-  }
-
-  /** Convert a generic error to a BawApiError */
-  private convertToBawApiError(err: BawApiError | Error): BawApiError {
-    return isBawApiError(err)
-      ? err
-      : new BawApiError(unknownErrorCode, err.message);
   }
 }
 

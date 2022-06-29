@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
 import { emptyParam, param } from "@baw-api/api-common";
 import { BawApiService } from "@baw-api/baw-api.service";
 import {
@@ -17,7 +16,14 @@ import { Session, User } from "@models/User";
 import { UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
 import { Observable } from "rxjs";
-import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
+import {
+  catchError,
+  first,
+  map,
+  mergeMap,
+  switchMap,
+  tap,
+} from "rxjs/operators";
 import { UserService } from "../user/user.service";
 
 const signUpParam = "sign_up" as const;
@@ -38,8 +44,7 @@ export class SecurityService {
     private formApi: BawFormApiService<Session>,
     private userService: UserService,
     private cookies: CookieService,
-    private session: BawSessionService,
-    private router: Router
+    private session: BawSessionService
   ) {
     this.updateAuthToken();
   }
@@ -184,13 +189,13 @@ export class SecurityService {
       .pipe(
         tap((page) => pageValidation(page)),
         // Trade the cookie for an API auth token (mimicking old baw-client)
-        mergeMap(() => this.sessionDetails()),
+        switchMap(() => this.sessionDetails()),
         // Only accept the first result from the API (can return multiple times)
         first(),
         // Save to local storage
         tap((user: Session) => (authToken = user.authToken)),
         // Get user details
-        mergeMap(() => this.userService.showWithoutNotification()),
+        switchMap(() => this.userService.showWithoutNotification()),
         // Only accept the first result from the API (can return multiple times)
         first(),
         // Update session user with user details and save to local storage
