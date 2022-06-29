@@ -8,7 +8,7 @@ import { harvestRoute, harvestsRoute, newHarvestRoute } from "./harvest.routes";
 
 export const createHarvestPredicate = (_: any, data: IPageInfo): boolean => {
   const project = retrieveResolvedModel(data, Project);
-  return project.can("createHarvest").can;
+  return project?.can("createHarvest").can;
 };
 
 export const harvestsCategory: Category = {

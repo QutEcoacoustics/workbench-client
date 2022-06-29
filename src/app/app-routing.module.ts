@@ -32,6 +32,9 @@ const routes: Routes = [
     RouterModule.forRoot(routes, {
       initialNavigation: "enabled",
       scrollPositionRestoration: "enabled",
+      // Reload the page if navigating to the same route, this is required for
+      // auth changes to reload resolvers
+      onSameUrlNavigation: "reload",
     }),
   ],
   exports: [RouterModule],

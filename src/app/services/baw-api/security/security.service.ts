@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { emptyParam, param } from "@baw-api/api-common";
 import { BawApiService } from "@baw-api/baw-api.service";
 import {
@@ -7,6 +8,7 @@ import {
 } from "@baw-api/baw-form-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { LoginDetails } from "@models/data/LoginDetails";
@@ -14,7 +16,7 @@ import { RegisterDetails } from "@models/data/RegisterDetails";
 import { Session, User } from "@models/User";
 import { UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
-import { Observable, throwError } from "rxjs";
+import { Observable } from "rxjs";
 import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
 import { UserService } from "../user/user.service";
 
@@ -36,7 +38,8 @@ export class SecurityService {
     private formApi: BawFormApiService<Session>,
     private userService: UserService,
     private cookies: CookieService,
-    private session: BawSessionService
+    private session: BawSessionService,
+    private router: Router
   ) {
     this.updateAuthToken();
   }
@@ -137,20 +140,22 @@ export class SecurityService {
    * Logout user and clear session storage values
    */
   public signOut(): Observable<void> {
-    return this.api.destroy(signOutEndpoint()).pipe(
-      tap(() => this.clearData()),
-      catchError((err) => {
-        this.clearData();
-        // Don't use handleError function from api service, as it will throw
-        // out a notification
-        return throwError(() => err);
-      })
-    ) as Observable<void>;
+    return this.api
+      .destroy(signOutEndpoint(), { disableNotification: true })
+      .pipe(
+        tap(() => this.clearData()),
+        catchError((err: BawApiError) => {
+          this.clearData();
+          return this.api.handleError(err, true);
+        })
+      );
   }
 
   /** Get details of currently logged in user */
   public sessionDetails(): Observable<Session> {
-    return this.api.show(Session, sessionUserEndpoint(Date.now().toString()));
+    return this.api.show(Session, sessionUserEndpoint(Date.now().toString()), {
+      disableNotification: true,
+    });
   }
 
   /**
@@ -185,7 +190,7 @@ export class SecurityService {
         // Save to local storage
         tap((user: Session) => (authToken = user.authToken)),
         // Get user details
-        mergeMap(() => this.userService.show()),
+        mergeMap(() => this.userService.showWithoutNotification()),
         // Only accept the first result from the API (can return multiple times)
         first(),
         // Update session user with user details and save to local storage
@@ -211,7 +216,7 @@ export class SecurityService {
     this.sessionDetails()
       .pipe(
         tap((user) => (authToken = user.authToken)),
-        mergeMap(() => this.userService.show()),
+        mergeMap(() => this.userService.showWithoutNotification()),
         first()
       )
       .subscribe({
@@ -227,7 +232,7 @@ export class SecurityService {
   /**
    * Clear session and cookie data, then trigger authTrigger
    */
-  private clearData() {
+  private clearData(): void {
     this.session.clearLoggedInUser();
     this.cookies.deleteAll();
   }

@@ -1,7 +1,14 @@
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { User } from "@models/User";
-import { BehaviorSubject, Observable } from "rxjs";
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  Observable,
+  share,
+  tap,
+} from "rxjs";
 
 export type GuestUser = undefined;
 export type GuestAuthToken = undefined;
@@ -21,6 +28,8 @@ export class BawSessionService {
   private _loggedInUser: User | GuestUser;
   private _authToken: AuthToken | GuestAuthToken;
 
+  public constructor(private router: Router) {}
+
   /** Get logged in user */
   public get loggedInUser(): User | GuestUser {
     return this._loggedInUser;
@@ -39,9 +48,17 @@ export class BawSessionService {
   }
 
   /** Clear user details */
-  public clearLoggedInUser(): void {
+  public async clearLoggedInUser(): Promise<void> {
+    if (
+      this._loggedInUser === guestUser &&
+      this._authToken === guestAuthToken
+    ) {
+      return;
+    }
+
     this._loggedInUser = guestUser;
     this._authToken = guestAuthToken;
+    await this.router.navigate([this.router.url]);
     this._authTrigger.next({ user: guestUser });
   }
 
@@ -52,6 +69,11 @@ export class BawSessionService {
 
   /** Returns a subject which tracks the change in loggedIn status */
   public get authTrigger(): Observable<AuthTriggerData> {
-    return this._authTrigger;
+    return this._authTrigger.pipe(
+      // Only trigger when the state of the users auth has changed
+      distinctUntilChanged(
+        (prev, curr): boolean => prev.authToken === curr.authToken
+      )
+    );
   }
 }

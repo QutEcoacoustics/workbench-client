@@ -31,6 +31,12 @@ export class UserService implements ApiShow<User> {
     return this.api.show(User, endpoint(emptyParam, emptyParam));
   }
 
+  public showWithoutNotification(): Observable<User> {
+    return this.api.show(User, endpoint(emptyParam, emptyParam), {
+      disableNotification: true,
+    });
+  }
+
   public confirmPassword(details: ConfirmPassword): Observable<void> {
     return this.formApi.makeFormRequestWithoutOutput(
       endpoint(confirmationParam, newParam),
