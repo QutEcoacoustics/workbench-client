@@ -45,9 +45,7 @@ export class SecurityService {
     private userService: UserService,
     private cookies: CookieService,
     private session: BawSessionService
-  ) {
-    this.updateAuthToken();
-  }
+  ) {}
 
   /**
    * Returns the recaptcha seed for the registration form
@@ -215,29 +213,10 @@ export class SecurityService {
       );
   }
 
-  private updateAuthToken(): void {
-    // Update authToken using cookie if exists
-    let authToken: AuthToken;
-    this.sessionDetails()
-      .pipe(
-        tap((user) => (authToken = user.authToken)),
-        mergeMap(() => this.userService.showWithoutNotification()),
-        first()
-      )
-      .subscribe({
-        next: (user) => {
-          this.session.setLoggedInUser(user, authToken);
-        },
-        error: () => {
-          this.clearData();
-        },
-      });
-  }
-
   /**
    * Clear session and cookie data, then trigger authTrigger
    */
-  private clearData(): void {
+  public clearData(): void {
     this.session.clearLoggedInUser();
     this.cookies.deleteAll();
   }

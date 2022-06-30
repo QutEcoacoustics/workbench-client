@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { User } from "@models/User";
 import { BehaviorSubject, distinctUntilChanged, Observable } from "rxjs";
@@ -21,8 +20,6 @@ export class BawSessionService {
   });
   private _loggedInUser: User | GuestUser;
   private _authToken: AuthToken | GuestAuthToken;
-
-  public constructor(private router: Router) {}
 
   /** Get logged in user */
   public get loggedInUser(): User | GuestUser {
@@ -52,7 +49,6 @@ export class BawSessionService {
 
     this._loggedInUser = guestUser;
     this._authToken = guestAuthToken;
-    await this.router.navigate([this.router.url]);
     this._authTrigger.next({ user: guestUser });
   }
 

@@ -27,23 +27,18 @@ export function getRouteConfigForPage(strongRoute: StrongRoute): Option<Route> {
     ...config, // data is inherited in child routes
     data: pageInfo,
     resolve: pageInfo.resolvers,
-    // Re-run resolvers if the page is refreshed. This is required for
-    // resolvers to run
-    runGuardsAndResolvers: "always",
     children: [
       {
         path: "",
         pathMatch: "full",
         component: pageInfo.component,
         canDeactivate: [FormTouchedGuard],
-        runGuardsAndResolvers: "always",
       },
       {
         path: "",
         pathMatch: "full",
         outlet: "error",
         component: ResolverHandlerComponent,
-        runGuardsAndResolvers: "always",
       },
     ],
   } as Route;
