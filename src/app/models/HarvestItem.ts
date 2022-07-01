@@ -4,13 +4,17 @@ import {
   AUDIO_RECORDING,
   SHALLOW_HARVEST,
 } from "@baw-api/ServiceTokens";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import {
+  bawBytes,
   bawDateTime,
+  bawDuration,
   bawReadonlyConvertCase,
 } from "@models/AttributeDecorators";
 import { AudioRecording } from "@models/AudioRecording";
-import { AbstractModel } from "./AbstractModel";
+import { Duration } from "luxon";
+import { AbstractModel, AbstractModelWithoutId } from "./AbstractModel";
 import { hasOne } from "./AssociationDecorators";
 import { Harvest } from "./Harvest";
 import { User } from "./User";
@@ -48,10 +52,12 @@ export interface IHarvestItem {
   path?: string;
   status?: HarvestItemState;
   validations?: IHarvestItemValidation[];
+  report?: IHarvestItemReport | HarvestItemReport;
 }
 
 export class HarvestItem extends AbstractModel implements IHarvestItem {
   public readonly kind = "HarvestItem";
+  /** Only harvest items for files will have an id */
   public readonly id?: Id;
   public readonly harvestId?: Id;
   public readonly audioRecordingId?: Id;
@@ -65,6 +71,7 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
   @bawReadonlyConvertCase()
   public readonly status?: HarvestItemState;
   public readonly validations?: IHarvestItemValidation[];
+  public readonly report?: HarvestItemReport;
 
   // Associations
   @hasOne<HarvestItem, Harvest>(SHALLOW_HARVEST, "harvestId")
@@ -78,7 +85,53 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
     super(data, injector);
   }
 
+  public get isDirectory(): boolean {
+    return !isInstantiated(this.id);
+  }
+
   public get viewUrl(): string {
     throw new Error("HarvestItem viewUrl not implemented");
+  }
+}
+
+export interface IHarvestItemReport {
+  itemsTotal?: number;
+  itemsSizeBytes?: number;
+  itemsDurationSeconds?: number;
+  itemsInvalidFixable?: number;
+  itemsInvalidNotFixable?: number;
+  itemsNew?: number;
+  itemsMetadataGathered?: number;
+  itemsFailed?: number;
+  itemsCompleted?: number;
+  itemsErrored?: number;
+}
+
+export class HarvestItemReport
+  extends AbstractModelWithoutId
+  implements IHarvestItemReport
+{
+  public readonly kind = "HarvestReport";
+  public readonly itemsTotal?: number;
+  public readonly itemsSizeBytes?: number;
+  @bawBytes<HarvestItemReport>({ key: "itemsSizeBytes" })
+  public readonly itemsSize?: string;
+  public readonly itemsDurationSeconds?: number;
+  @bawDuration<HarvestItemReport>({ key: "itemsDurationSeconds" })
+  public readonly itemsDuration?: Duration;
+  public readonly itemsInvalidFixable?: number;
+  public readonly itemsInvalidNotFixable?: number;
+  public readonly itemsNew?: number;
+  public readonly itemsMetadataGathered?: number;
+  public readonly itemsFailed?: number;
+  public readonly itemsCompleted?: number;
+  public readonly itemsErrored?: number;
+
+  public constructor(data: IHarvestItemReport, injector?: Injector) {
+    super(data, injector);
+  }
+
+  public get viewUrl(): string {
+    throw new Error("HarvestItemReport does not have a viewUrl");
   }
 }

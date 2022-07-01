@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from "@angular/core";
 
 @Component({
   selector: "baw-checkbox",
@@ -11,6 +17,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
           [id]="id + '-checkbox'"
           [checked]="checked"
           [disabled]="disabled"
+          (change)="checkedChange.emit($any($event).target.checked)"
         />
         <label class="custom-control-label" for="checkbox"></label>
       </div>
@@ -23,4 +30,5 @@ export class CheckboxComponent {
   @Input() public checked: boolean;
   @Input() public disabled: boolean;
   @Input() public isCentered = true;
+  @Output() public checkedChange = new EventEmitter<boolean>();
 }

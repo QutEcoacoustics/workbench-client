@@ -31,22 +31,24 @@ export class HarvestItemsService
 
   public list(
     project: IdOr<Project>,
-    harvest: IdOr<Harvest>
+    harvest: Harvest,
+    harvestItem?: HarvestItem
   ): Observable<HarvestItem[]> {
     return this.api.list(
       HarvestItem,
-      endpoint(project, harvest, emptyParam, emptyParam)
+      endpoint(project, harvest, harvestItem?.path ?? emptyParam, emptyParam)
     );
   }
 
   public filter(
     filters: Filters<HarvestItem>,
     project: IdOr<Project>,
-    harvest: IdOr<Harvest>
+    harvest: IdOr<Harvest>,
+    harvestItem?: HarvestItem
   ): Observable<HarvestItem[]> {
     return this.api.filter(
       HarvestItem,
-      endpoint(project, harvest, emptyParam, filterParam),
+      endpoint(project, harvest, harvestItem?.path ?? emptyParam, filterParam),
       filters
     );
   }

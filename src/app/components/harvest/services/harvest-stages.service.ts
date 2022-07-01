@@ -1,11 +1,9 @@
 import { Injectable } from "@angular/core";
-import { ShallowHarvestItemsService } from "@baw-api/harvest/harvest-items.service";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest, HarvestStatus } from "@models/Harvest";
-import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
 import { Step } from "@shared/stepper/stepper.component";
 import { ToastrService } from "ngx-toastr";
@@ -15,7 +13,6 @@ import {
   filter,
   interval,
   Observable,
-  of,
   Subject,
   Subscription,
   switchMap,
@@ -29,18 +26,15 @@ export class HarvestStagesService extends withUnsubscribe() {
   public stage: HarvestStatus;
 
   private _harvest$ = new BehaviorSubject<Harvest | null>(null);
-  private _harvestItems$ = new BehaviorSubject<HarvestItem[]>([]);
   private harvestTrigger$ = new Subject<void>();
   private harvestInterval: Subscription;
 
   public constructor(
     private notifications: ToastrService,
-    private harvestApi: HarvestsService,
-    private harvestItemsApi: ShallowHarvestItemsService
+    private harvestApi: HarvestsService
   ) {
     super();
     this.trackHarvest();
-    this.trackHarvestItems();
   }
 
   public get harvest$(): Observable<Harvest | null> {
@@ -49,14 +43,6 @@ export class HarvestStagesService extends withUnsubscribe() {
 
   public get harvest(): Harvest | null {
     return this._harvest$.value;
-  }
-
-  public get harvestItems$(): Observable<HarvestItem[]> {
-    return this._harvestItems$.asObservable();
-  }
-
-  public get harvestItems(): HarvestItem[] {
-    return this._harvestItems$.value;
   }
 
   private _stages: Step[] = [
@@ -180,20 +166,6 @@ export class HarvestStagesService extends withUnsubscribe() {
       )
       .subscribe((harvest): void => {
         this.setHarvest(harvest);
-      });
-  }
-
-  private trackHarvestItems(): void {
-    const defaultResponse: Observable<HarvestItem[]> = of([]);
-    this.harvest$
-      .pipe(
-        filter((): boolean => this.isCurrentStage("metadataReview")),
-        switchMap((harvest) => this.harvestItemsApi.list(harvest)),
-        catchError(() => defaultResponse),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe((harvestItems): void => {
-        this._harvestItems$.next(harvestItems);
       });
   }
 }

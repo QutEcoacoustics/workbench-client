@@ -15,49 +15,106 @@
 <ngx-datatable
   class="mb-3"
   bawDatatableDefaults
-  [rows]="mappings"
+  [rows]="rows.toArray()"
   [externalPaging]="false"
   [externalSorting]="false"
 >
-  <ngx-datatable-column prop="path">
+  <ngx-datatable-column
+    prop="fileType"
+    [width]="50"
+    [maxWidth]="50"
+    [sortable]="false"
+  >
+    <ng-template let-column="column" ngx-datatable-header-template>
+    </ng-template>
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-value="value"
+      ngx-datatable-cell-template
+    >
+      <button
+        *ngIf="value === FileType.closedFolder"
+        class="btn btn-link p-0"
+        (click)="openFolder(rowIndex)"
+      >
+        <fa-icon [icon]="['fas', 'folder-closed']"></fa-icon>
+      </button>
+      <button
+        *ngIf="value === FileType.openedFolder"
+        class="btn btn-link p-0"
+        (click)="closeFolder(rowIndex)"
+      >
+        <fa-icon [icon]="['fas', 'folder-open']"></fa-icon>
+      </button>
+      <fa-icon
+        *ngIf="value === FileType.file"
+        class="float-end"
+        [icon]="['fas', 'file']"
+      ></fa-icon>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="path" [sortable]="false">
     <ng-template let-value="value" ngx-datatable-cell-template>
       {{ value }}
     </ng-template>
   </ngx-datatable-column>
+
   <!-- Enable overflow so that typeahead options will show -->
   <ngx-datatable-column
     prop="siteId"
     cellClass="overflow-visible"
     [width]="300"
     [maxWidth]="300"
+    [sortable]="false"
   >
     <ng-template let-column="column" ngx-datatable-header-template>
       {{ siteColumnLabel }}
     </ng-template>
     <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
       <baw-loading
-        *ngIf="row.site | isUnresolved; else siteSelector"
+        *ngIf="row.mapping.site | isUnresolved; else siteSelector"
         size="sm"
       ></baw-loading>
 
       <ng-template #siteSelector>
         <baw-harvest-site-selector
           [project]="project"
-          [site]="row.site"
-          (siteIdChange)="setSite(row, $event)"
+          [site]="row.mapping.site"
+          (siteIdChange)="setSite(row.mapping, $event)"
         ></baw-harvest-site-selector>
       </ng-template>
     </ng-template>
   </ngx-datatable-column>
-  <ngx-datatable-column prop="utcOffset" [width]="200" [maxWidth]="200">
+
+  <ngx-datatable-column
+    prop="utcOffset"
+    [width]="200"
+    [maxWidth]="200"
+    [sortable]="false"
+  >
     <ng-template let-column="column" ngx-datatable-header-template>
       UTC Offset
     </ng-template>
     <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
       <baw-harvest-utc-offset-selector
         [offset]="value"
-        (offsetChange)="setOffset(row, $event)"
+        (offsetChange)="setOffset(row.mapping, $event)"
       ></baw-harvest-utc-offset-selector>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column
+    prop="recursive"
+    [width]="75"
+    [maxWidth]="75"
+    [sortable]="false"
+  >
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <baw-checkbox
+        [checked]="value"
+        (checkedChange)="setIsRecursive(row.mapping, $event)"
+      ></baw-checkbox>
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>
