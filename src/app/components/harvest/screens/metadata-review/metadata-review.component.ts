@@ -13,7 +13,6 @@ import { ConfigService } from "@services/config/config.service";
 import { ColumnMode } from "@swimlane/ngx-datatable";
 import { ToastrService } from "ngx-toastr";
 
-// TODO Give instructions on how to make sites
 // TODO Show additional information to users if itemsError is non zero. Ie:
 // An unexpected error occurred in xxx files. Please contact us so we can investigate the issue.
 // You can choose to continue the harvest, but any files that produced errors will be ignored
