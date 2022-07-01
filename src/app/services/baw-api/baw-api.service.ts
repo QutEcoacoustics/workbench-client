@@ -2,10 +2,12 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
+import { toSnakeCase } from "@helpers/case-converter/case-converter";
 import {
   BawApiError,
   isBawApiError,
 } from "@helpers/custom-errors/baw-api-error";
+import { toBase64Url } from "@helpers/encoding/encoding";
 import {
   AbstractModel,
   AbstractModelConstructor,
@@ -374,6 +376,23 @@ export class BawApiService<
       responseType: "json",
       headers: options,
     });
+  }
+
+  public encodeFilter(filter: Filters<Model>, disablePaging?: boolean): string {
+    const body = {
+      // Base64 RFC 4648 §5 encoding
+      filterEncoded: toBase64Url(JSON.stringify(toSnakeCase(filter))),
+    };
+
+    if (disablePaging) {
+      body["disablePaging"] = "true";
+    }
+
+    if (this.session.isLoggedIn) {
+      body["authToken"] = this.session.authToken;
+    }
+
+    return new URLSearchParams(toSnakeCase(body)).toString();
   }
 
   /**

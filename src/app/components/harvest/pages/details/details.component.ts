@@ -8,7 +8,6 @@ import {
 } from "@components/harvest/harvest.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
@@ -49,10 +48,7 @@ class DetailsComponent
 
 DetailsComponent.linkToRoute({
   category: harvestsCategory,
-  menus: {
-    actions: List(harvestsMenuItemActions),
-    actionWidgets: List([permissionsWidgetMenuItem]),
-  },
+  menus: { actions: List(harvestsMenuItemActions) },
   pageRoute: harvestMenuItem,
   resolvers: {
     [projectKey]: projectResolvers.show,
