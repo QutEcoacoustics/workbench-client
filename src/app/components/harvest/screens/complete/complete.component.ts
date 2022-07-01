@@ -45,11 +45,11 @@ export class CompleteComponent implements OnInit {
   }
 
   public get recordingsReportUrl(): string {
-    return this.recordingsApi.harvestReportUrl(this.stages.harvest);
+    return this.recordingsApi.harvestCsvReportUrl(this.stages.harvest);
   }
 
   public get harvestItemsReportUrl(): string {
-    return this.harvestItemsApi.harvestReportUrl(this.stages.harvest);
+    return this.harvestItemsApi.harvestCsvReportUrl(this.stages.harvest);
   }
 
   public getStatistics(report: HarvestReport): Statistic[][] {

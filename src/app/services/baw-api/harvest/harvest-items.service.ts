@@ -99,7 +99,7 @@ export class ShallowHarvestItemsService
     );
   }
 
-  public harvestReportUrl(harvest: IdOr<Harvest>): string {
+  public harvestCsvReportUrl(harvest: IdOr<Harvest>): string {
     const filter = this.api.filterThroughAssociation(
       {
         projection: {

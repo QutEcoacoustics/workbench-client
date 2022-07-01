@@ -117,7 +117,7 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
     return this.api.getPath(audioRecordingOriginalEndpoint(audioRecording));
   }
 
-  public harvestReportUrl(harvest: IdOr<Harvest>): string {
+  public harvestCsvReportUrl(harvest: IdOr<Harvest>): string {
     const filter = this.api.filterThroughAssociation(
       {
         projection: {
