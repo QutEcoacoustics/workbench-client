@@ -145,20 +145,26 @@ export class SecurityService {
    * Logout user and clear session storage values
    */
   public signOut(): Observable<void> {
-    return this.api
-      .destroy(signOutEndpoint(), { disableNotification: true })
-      .pipe(
-        tap(() => this.clearData()),
-        catchError((err: BawApiError) => {
-          this.clearData();
-          return this.api.handleError(err, true);
-        })
-      );
+    return (
+      this.api
+        // Sign out without notification so that signUp and signIn endpoints
+        // don't show failure notifications
+        .destroy(signOutEndpoint(), { disableNotification: true })
+        .pipe(
+          tap(() => this.clearData()),
+          catchError((err: BawApiError) => {
+            this.clearData();
+            return this.api.handleError(err, true);
+          })
+        )
+    );
   }
 
   /** Get details of currently logged in user */
   public sessionDetails(): Observable<Session> {
     return this.api.show(Session, sessionUserEndpoint(Date.now().toString()), {
+      // This is used when we are unsure if the user is logged in, no need to
+      // show an error as it generally is an expected outcome
       disableNotification: true,
     });
   }
