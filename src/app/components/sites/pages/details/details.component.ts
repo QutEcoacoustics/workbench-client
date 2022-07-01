@@ -11,7 +11,6 @@ import { audioRecordingMenuItems } from "@components/audio-recordings/audio-reco
 import {
   deletePointMenuItem,
   editPointMenuItem,
-  pointHarvestMenuItem,
   pointMenuItem,
   pointsCategory,
 } from "@components/sites/points.menus";
@@ -28,7 +27,6 @@ import { List } from "immutable";
 import {
   deleteSiteMenuItem,
   editSiteMenuItem,
-  siteHarvestMenuItem,
   siteMenuItem,
   sitesCategory,
 } from "../../sites.menus";
@@ -37,7 +35,6 @@ export const siteMenuItemActions = [
   visualizeMenuItem,
   siteAnnotationsModal,
   editSiteMenuItem,
-  siteHarvestMenuItem,
   deleteSiteMenuItem,
   audioRecordingMenuItems.list.site,
   audioRecordingMenuItems.batch.site,
@@ -47,7 +44,6 @@ export const pointMenuItemActions = [
   visualizeMenuItem,
   pointAnnotationsModal,
   editPointMenuItem,
-  pointHarvestMenuItem,
   deletePointMenuItem,
   audioRecordingMenuItems.list.siteAndRegion,
   audioRecordingMenuItems.batch.siteAndRegion,

@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { Filters } from "@baw-api/baw-api.service";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { contactUsMenuItem } from "@components/about/about.menus";
 import {
   harvestsCategory,
   harvestsMenuItem,
@@ -23,6 +24,7 @@ const projectKey = "project";
   templateUrl: "list.component.html",
 })
 class ListComponent extends PageComponent implements OnInit {
+  public contactUs = contactUsMenuItem;
   public project: Project;
   public filters: Filters<Harvest> = {
     sorting: {
@@ -36,6 +38,10 @@ class ListComponent extends PageComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     super();
+  }
+
+  public canCreateHarvestCapability(): boolean {
+    return this.project.can("createHarvest").can;
   }
 
   public ngOnInit(): void {

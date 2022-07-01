@@ -3,6 +3,7 @@ import { projectMenuItem } from "@components/projects/projects.menus";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
+import { isProjectEditorPredicate } from "src/app/app.menus";
 import { harvestRoute, harvestsRoute, newHarvestRoute } from "./harvest.routes";
 
 export const createHarvestPredicate = (_: any, data: IPageInfo): boolean => {
@@ -20,7 +21,7 @@ export const harvestsMenuItem = menuRoute({
   icon: ["fas", "cloud"],
   label: "Recording Uploads",
   parent: projectMenuItem,
-  predicate: createHarvestPredicate,
+  predicate: isProjectEditorPredicate,
   route: harvestsRoute,
   tooltip: () => "(BETA) View bulk uploads for this project",
 });
