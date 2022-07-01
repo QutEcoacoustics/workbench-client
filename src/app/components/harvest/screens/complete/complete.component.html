@@ -2,11 +2,17 @@
 
 <baw-harvest-statistics [statistics]="getStatistics(report)">
   <baw-harvest-statistic-group>
-    <baw-harvest-statistic-item [statistic]="getDownloadStatistic()">
+    <baw-harvest-statistic-item [statistic]="downloadIcon">
       <span id="value">&nbsp;</span>
-      <baw-wip id="label">
-        <a href="/intentionally_broken">Download CSV</a>
-      </baw-wip>
+      <a id="label" [href]="recordingsReportUrl | safe: 'url'">
+        Recordings Report
+      </a>
+    </baw-harvest-statistic-item>
+    <baw-harvest-statistic-item [statistic]="downloadIcon">
+      <span id="value">&nbsp;</span>
+      <a id="label" [href]="harvestItemsReportUrl | safe: 'url'">
+        Upload Report
+      </a>
     </baw-harvest-statistic-item>
   </baw-harvest-statistic-group>
 </baw-harvest-statistics>

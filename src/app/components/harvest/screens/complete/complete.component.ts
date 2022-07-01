@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
+import { ShallowHarvestItemsService } from "@baw-api/harvest/harvest-items.service";
 import { audioRecordingsRoutes } from "@components/audio-recordings/audio-recording.routes";
 import { Statistic } from "@components/harvest/components/shared/statistics.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
@@ -20,6 +21,7 @@ export class CompleteComponent implements OnInit {
 
   public constructor(
     public stages: HarvestStagesService,
+    private harvestItemsApi: ShallowHarvestItemsService,
     private recordingsApi: AudioRecordingsService
   ) {}
 
@@ -40,6 +42,14 @@ export class CompleteComponent implements OnInit {
 
   public get project(): Project {
     return this.stages.project;
+  }
+
+  public get recordingsReportUrl(): string {
+    return this.recordingsApi.harvestReportUrl(this.stages.harvest);
+  }
+
+  public get harvestItemsReportUrl(): string {
+    return this.harvestItemsApi.harvestReportUrl(this.stages.harvest);
   }
 
   public getStatistics(report: HarvestReport): Statistic[][] {
@@ -85,7 +95,7 @@ export class CompleteComponent implements OnInit {
     ];
   }
 
-  public getDownloadStatistic(): Statistic {
+  public get downloadIcon(): Statistic {
     return {
       bgColor: "highlight",
       icon: ["fas", "download"],

@@ -187,7 +187,7 @@ export class HarvestStagesService extends withUnsubscribe() {
     const defaultResponse: Observable<HarvestItem[]> = of([]);
     this.harvest$
       .pipe(
-        filter((): boolean => !this.isCurrentStage("metadataReview")),
+        filter((): boolean => this.isCurrentStage("metadataReview")),
         switchMap((harvest) => this.harvestItemsApi.list(harvest)),
         catchError(() => defaultResponse),
         takeUntil(this.unsubscribe)

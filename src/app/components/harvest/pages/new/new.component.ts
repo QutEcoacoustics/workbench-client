@@ -10,7 +10,6 @@ import { harvestRoute } from "@components/harvest/harvest.routes";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Harvest, IHarvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
@@ -78,10 +77,7 @@ class NewComponent extends PageComponent implements OnInit {
 
 NewComponent.linkToRoute({
   category: harvestsCategory,
-  menus: {
-    actions: List(projectMenuItemActions),
-    actionWidgets: List([permissionsWidgetMenuItem]),
-  },
+  menus: { actions: List(projectMenuItemActions) },
   pageRoute: newHarvestMenuItem,
   resolvers: {
     [projectKey]: projectResolvers.show,

@@ -98,6 +98,23 @@ export class ShallowHarvestItemsService
       shallowEndpoint(harvest, model.path, emptyParam)
     );
   }
+
+  public harvestReportUrl(harvest: IdOr<Harvest>): string {
+    const filter = this.api.filterThroughAssociation(
+      {
+        projection: {
+          include: ["id", "harvestId", "path", "status", "audioRecordingId"],
+        },
+      },
+      "harvests.id" as any,
+      harvest
+    );
+    return (
+      this.api.getPath(
+        shallowEndpoint(harvest, emptyParam, filterParam) + ".csv?"
+      ) + this.api.encodeFilter(filter, true)
+    );
+  }
 }
 
 export const harvestItemResolvers = new ListResolver<

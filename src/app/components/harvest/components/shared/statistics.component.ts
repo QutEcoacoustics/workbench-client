@@ -36,7 +36,7 @@ export interface Statistic {
     `
       .card-body {
         text-align: center;
-        min-width: 10rem;
+        min-width: 7.5rem;
       }
 
       .icon {

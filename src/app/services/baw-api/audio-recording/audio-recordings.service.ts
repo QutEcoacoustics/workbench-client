@@ -1,7 +1,5 @@
 import { Injectable } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import { toSnakeCase } from "@helpers/case-converter/case-converter";
-import { toBase64Url } from "@helpers/encoding/encoding";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioRecording } from "@models/AudioRecording";
 import { Harvest } from "@models/Harvest";
@@ -24,6 +22,7 @@ import { Resolvers } from "../resolver-common";
 const audioRecordingId: IdParamOptional<AudioRecording> = id;
 const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}${option}`;
 const downloadEndpoint = stringTemplate`/audio_recordings/downloader`;
+
 /**
  * Path to download original audio recording. This currently requires the
  * apiRoot to be prepended to the endpoint
@@ -103,7 +102,7 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
    * Filter audio recordings by project id
    *
    * @param filters Audio recording filters
-   * @param project Project to filter by
+   * @param harvest Harvest to filter by
    */
   public filterByHarvest(
     filters: Filters<AudioRecording>,
@@ -114,8 +113,31 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
     );
   }
 
-  public downloadUrl(audioRecording: IdOr<AudioRecording>) {
+  public downloadUrl(audioRecording: IdOr<AudioRecording>): string {
     return this.api.getPath(audioRecordingOriginalEndpoint(audioRecording));
+  }
+
+  public harvestReportUrl(harvest: IdOr<Harvest>): string {
+    const filter = this.api.filterThroughAssociation(
+      {
+        projection: {
+          include: [
+            "id",
+            "siteId",
+            "recordedDate",
+            "durationSeconds",
+            "mediaType",
+            "originalFileName",
+          ],
+        },
+      },
+      "harvests.id" as any,
+      harvest
+    );
+    return (
+      this.api.getPath(endpoint(emptyParam, filterParam) + ".csv?") +
+      this.api.encodeFilter(filter, true)
+    );
   }
 
   /**
@@ -124,21 +146,10 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
    * @param filter Audio recording filters
    */
   public batchDownloadUrl(filter: Filters<AudioRecording>): string {
-    // TODO Implement logic from sites downloadAnnotations function
-    // TODO Extract this logic with URLSearchParams to some core functionality
-    let body = {
-      // Base64 RFC 4648 §5 encoding
-      filterEncoded: toBase64Url(JSON.stringify(toSnakeCase(filter))),
-    };
-
-    if (this.session.isLoggedIn) {
-      body["authToken"] = this.session.authToken;
-    }
-
-    body = toSnakeCase(body);
-
-    const qsp = new URLSearchParams(body);
-    return this.api.getPath(downloadEndpoint()) + "?" + qsp.toString();
+    return (
+      this.api.getPath(downloadEndpoint() + "?") +
+      this.api.encodeFilter(filter, false)
+    );
   }
 }
 
