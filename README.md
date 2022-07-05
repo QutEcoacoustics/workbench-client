@@ -34,7 +34,7 @@ Normal development
 $ npm start
 ```
 
-Then open a web browser to `http://localhost:4200`.
+Then open a web browser to `https://localhost:4200`.
 
 Server side rendering
 
@@ -61,35 +61,7 @@ This website can be customised through the environment file located at `./src/as
 | `settings.links`         | This is a list of external links used throughout the website. Check the template for the list of modifiable links                          |
 | `settings.customMenu`    | This is a list of custom menu items which changes the contents of the header with instance specific links. Check the template for examples |
 
-### Access the ng tool
-
-```bash
-$ npx ng
-```
-
-or
-
-```bash
-$ npm run ng
-```
-
 ### Testing
-
-#### End to End Testing
-
-To run the application end to end test suite:
-
-```bash
-$ npm run e2e
-```
-
-Note: Make sure you are running the 64 bit version of chrome installed to the following folder: `C:/Program Files/Google/Chrome/Application/chrome.exe`. Otherwise the e2e tests will fail with the following error: `E/launcher - WebDriverError: unknown error: cannot find Chrome binary`
-
-To debug the e2e tests, read the following [guide](https://medium.com/@scott.williams.dev/how-to-debug-protractor-tests-a19568e9016f) and run the following command:
-
-```bash
-$ npm run e2e:debug
-```
 
 #### Unit tests
 
