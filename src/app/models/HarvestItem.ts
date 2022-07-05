@@ -41,6 +41,24 @@ export interface IHarvestItemValidation {
   message?: string;
 }
 
+export class HarvestItemValidation
+  extends AbstractModelWithoutId
+  implements IHarvestItemValidation
+{
+  public readonly name?: string;
+  @bawReadonlyConvertCase()
+  public readonly status?: "fixable" | "notFixable";
+  public readonly message?: string;
+
+  public constructor(data: IHarvestItemValidation, injector?: Injector) {
+    super(data, injector);
+  }
+
+  public get viewUrl(): string {
+    throw new Error("HarvestItemValidation viewUrl not implemented");
+  }
+}
+
 export interface IHarvestItem {
   id?: Id;
   harvestId?: Id;
@@ -51,7 +69,7 @@ export interface IHarvestItem {
   deleted?: boolean;
   path?: string;
   status?: HarvestItemState;
-  validations?: IHarvestItemValidation[];
+  validations?: IHarvestItemValidation[] | HarvestItemValidation[];
   report?: IHarvestItemReport | HarvestItemReport;
 }
 
@@ -70,7 +88,7 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
   public readonly path?: string;
   @bawReadonlyConvertCase()
   public readonly status?: HarvestItemState;
-  public readonly validations?: IHarvestItemValidation[];
+  public readonly validations?: HarvestItemValidation[];
   public readonly report?: HarvestItemReport;
 
   // Associations
@@ -83,6 +101,12 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
 
   public constructor(data: IHarvestItem, injector?: Injector) {
     super(data, injector);
+
+    if (data.validations) {
+      this.validations = (data.validations as IHarvestItemValidation[])?.map(
+        (validation) => new HarvestItemValidation(validation, injector)
+      );
+    }
   }
 
   public get isDirectory(): boolean {

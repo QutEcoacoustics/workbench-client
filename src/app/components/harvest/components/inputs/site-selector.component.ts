@@ -75,7 +75,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
       .site-label,
       .input-group {
         width: 100%;
-        min-width: 170px;
+        min-width: 200px;
       }
     `,
   ],

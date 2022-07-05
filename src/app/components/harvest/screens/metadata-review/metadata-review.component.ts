@@ -4,8 +4,10 @@ import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { Statistic } from "@components/harvest/components/shared/statistics.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Id, toRelative } from "@interfaces/apiInterfaces";
 import { Harvest, HarvestMapping, HarvestStatus } from "@models/Harvest";
@@ -22,28 +24,44 @@ import { takeUntil } from "rxjs";
 // You can choose to continue the harvest, but any files that produced errors will be ignored
 
 enum RowType {
-  item,
-  loading,
-  more,
-}
-
-enum FileType {
-  closedFolder,
-  openedFolder,
+  folder,
   file,
+  loadMore,
 }
 
-interface Row {
-  fileType: FileType;
+interface Base {
+  rowType: RowType;
+  harvestItem: HarvestItem;
+  mapping: HarvestMapping;
+}
+
+interface Item extends Base {
   path: string;
+  parentFolder?: Folder;
+  indentation: number;
+}
+
+interface File extends Item {
+  rowType: RowType.file;
+}
+
+interface Folder extends Item {
+  rowType: RowType.folder;
+  isOpen: boolean;
+  page: number;
   siteId: Id;
   utcOffset: string;
   recursive: boolean;
-  harvestItem: HarvestItem;
-  mapping: HarvestMapping;
-  parentItem?: HarvestItem;
-  page: number;
 }
+
+interface LoadMore extends Base {
+  rowType: RowType.loadMore;
+  parentFolder?: Folder;
+  page: number;
+  isLoading: boolean;
+}
+
+type Row = File | Folder | LoadMore;
 
 @Component({
   selector: "baw-harvest-metadata-review",
@@ -57,7 +75,7 @@ export class MetadataReviewComponent
   public newSiteMenuItem = newSiteMenuItem;
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  public FileType = FileType;
+  public RowType = RowType;
 
   public rows = List<Row>();
   /** List of harvest items, indexes must match mappings */
@@ -100,12 +118,14 @@ export class MetadataReviewComponent
         this.harvestItems = harvestItems;
         this.rows = List(
           this.harvestItems.map(
-            (harvestItem): Row => this.generateRow(harvestItem, null, 0)
+            (harvestItem): Row => this.generateRow(harvestItem, null, 1)
           )
         );
       });
   }
 
+  public attentionIcon: IconProp = ["fas", "triangle-exclamation"];
+  public problemIcon: IconProp = ["fas", "xmark"];
   public getStatistics(harvest: Harvest): Statistic[][] {
     const report = harvest.report;
     return [
@@ -141,14 +161,14 @@ export class MetadataReviewComponent
       [
         {
           bgColor: "warning",
-          icon: ["fas", "triangle-exclamation"],
+          icon: this.attentionIcon,
           label: "Need Attention",
           value: report.itemsInvalidFixable.toLocaleString(),
         },
         {
           color: "light",
           bgColor: "danger",
-          icon: ["fas", "xmark"],
+          icon: this.problemIcon,
           label: "Problems",
           value: report.itemsInvalidNotFixable.toLocaleString(),
         },
@@ -160,36 +180,90 @@ export class MetadataReviewComponent
     return this.harvestItems[index];
   }
 
-  public openFolder(index: number): void {
-    const row = this.rows.get(index);
-    row.fileType = FileType.openedFolder;
-    console.log("openFolder", index, row);
+  public toggleFolder(index: number): void {
+    const row = this.rows.get(index) as Folder;
+    if (row.isOpen) {
+      this.closeFolder(index);
+    } else {
+      row.isOpen = true;
+      this.loadMore(index);
+    }
+  }
+
+  public loadMore(index: number): void {
+    const row = this.rows.get(index) as Folder | LoadMore;
+
+    if (this.isLoadMore(row)) {
+      row.isLoading = true;
+    }
+
+    console.log("loadMore", index, row);
     this.harvestItemsApi
-      .list(this.project, this.harvest, row.harvestItem)
+      .listByPage(row.page, this.project, this.harvest, row.harvestItem)
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe((harvestItems) => {
-        this.rows = this.rows.splice(
-          index + 1,
-          0,
-          ...harvestItems.map((harvestItem) =>
-            this.generateRow(harvestItem, row.harvestItem, row.page + 1)
-          )
+      .subscribe((harvestItems): void => {
+        const parentFolder: Folder = this.isFolder(row)
+          ? row
+          : row.parentFolder;
+        const newRows = harvestItems.map(
+          (harvestItem): Row =>
+            this.generateRow(harvestItem, parentFolder, row.page + 1)
         );
+
+        const meta = harvestItems[0]?.getMetadata();
+        if (meta && meta.paging.maxPage !== meta.paging.page) {
+          newRows.push({
+            rowType: RowType.loadMore,
+            harvestItem: row.harvestItem,
+            mapping: row.mapping,
+            page: row.page + 1,
+            parentFolder,
+            isLoading: false,
+          } as LoadMore);
+        }
+
+        if (this.isFolder(row)) {
+          // Insert elements after row without replacing anything
+          const firstChildIndex = index + 1;
+          this.rows = this.rows.splice(firstChildIndex, 0, ...newRows);
+        } else {
+          // Insert elements replace load more row
+          this.rows = this.rows.splice(index, 1, ...newRows);
+        }
       });
   }
 
   public closeFolder(index: number): void {
-    const row = this.rows.get(index);
-    row.fileType = FileType.closedFolder;
-
-    let offset = 0;
-    let currRow = this.rows.get(index + 1 + offset);
-    while (currRow?.parentItem === row.harvestItem) {
-      offset++;
-      currRow = this.rows.get(index + 1 + offset);
+    function isChild(parent: Folder, child: Row): boolean {
+      let lineage = child.parentFolder;
+      while (isInstantiated(lineage) && lineage !== parent) {
+        lineage = lineage.parentFolder;
+      }
+      return lineage === parent;
     }
 
-    this.rows = this.rows.splice(index + 1, index + offset);
+    const row = this.rows.get(index) as Folder;
+    row.isOpen = false;
+
+    // Find any children, and increment offset
+    let offset = 1;
+    let currRow = this.rows.get(index + offset);
+    while (isChild(row, currRow)) {
+      offset++;
+      currRow = this.rows.get(index + offset);
+    }
+
+    // Remove final row from list as it is not a child
+    offset--;
+
+    // If no children, don't delete anything
+    if (offset === 0) {
+      return;
+    }
+
+    // Remove all children
+    const firstChildIndex = index + 1;
+    this.rows = this.rows.splice(firstChildIndex, offset);
   }
 
   public onNextClick(): void {
@@ -224,6 +298,33 @@ export class MetadataReviewComponent
     this.updateHarvestWithMappingChange();
   }
 
+  public isFolder(row: Row): row is Folder {
+    return row.rowType === RowType.folder;
+  }
+
+  public isFile(row: Row): row is File {
+    return row.rowType === RowType.file;
+  }
+
+  public isLoadMore(row: Row): row is LoadMore {
+    return row.rowType === RowType.loadMore;
+  }
+
+  public getValidationMessages(row: Folder | File, fixable: boolean): string[] {
+    return (row.harvestItem.validations ?? [])
+      .filter((validation): boolean => {
+        console.log(validation.status);
+
+        return fixable
+          ? validation.status === "fixable"
+          : validation.status === "notFixable";
+      })
+      .map((validation): string => {
+        console.log(validation, validation.message);
+        return validation.message;
+      });
+  }
+
   private findMapping(
     harvest: Harvest,
     harvestItem: HarvestItem
@@ -250,21 +351,41 @@ export class MetadataReviewComponent
 
   private generateRow(
     harvestItem: HarvestItem,
-    parent: HarvestItem,
+    parentRow: Folder,
     page: number
   ): Row {
     const mapping = this.findMapping(this.harvest, harvestItem);
-    return {
-      fileType: harvestItem.isDirectory ? FileType.closedFolder : FileType.file,
-      path: harvestItem.path,
-      siteId: mapping.siteId,
-      utcOffset: mapping.utcOffset,
-      recursive: mapping.recursive,
-      page,
-      harvestItem,
-      mapping,
-      parentItem: parent,
-    };
+    // While it is technically possible in linux to have filenames which
+    // include the character '/', our server should block it from being used
+    // and bad actors will gain nothing from taking advantage of it
+    const paths = harvestItem.path.split("/");
+    const indentation = paths.length - 1;
+    const filename = paths.pop();
+
+    if (harvestItem.isDirectory) {
+      return {
+        rowType: RowType.folder,
+        harvestItem,
+        isOpen: false,
+        mapping,
+        page,
+        path: filename,
+        recursive: mapping.recursive,
+        siteId: mapping.siteId,
+        utcOffset: mapping.utcOffset,
+        parentFolder: parentRow,
+        indentation,
+      } as Folder;
+    } else {
+      return {
+        rowType: RowType.file,
+        harvestItem,
+        mapping,
+        path: filename,
+        parentFolder: parentRow,
+        indentation,
+      } as File;
+    }
   }
 
   private updateHarvestWithMappingChange(): void {
@@ -272,7 +393,10 @@ export class MetadataReviewComponent
     this.harvestApi
       .updateMappings(
         this.harvest,
-        this.rows.map((row) => row.mapping).toArray()
+        this.rows
+          .filter((row) => row.rowType === RowType.folder)
+          .map((row) => row.mapping)
+          .toArray()
       )
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       .subscribe({
@@ -283,5 +407,11 @@ export class MetadataReviewComponent
         error: (err: BawApiError) =>
           this.notification.error("Failed to make that change: " + err.message),
       });
+  }
+
+  public replaceMe(length: number) {
+    return Array(length)
+      .fill(0)
+      .map((_, i) => i);
   }
 }

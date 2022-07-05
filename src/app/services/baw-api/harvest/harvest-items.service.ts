@@ -40,6 +40,20 @@ export class HarvestItemsService
     );
   }
 
+  public listByPage(
+    page: number,
+    project: IdOr<Project>,
+    harvest: Harvest,
+    harvestItem?: HarvestItem
+  ): Observable<HarvestItem[]> {
+    const paging = page <= 1 ? "" : `?page=${page}`;
+    return this.api.list(
+      HarvestItem,
+      endpoint(project, harvest, harvestItem?.path ?? emptyParam, emptyParam) +
+        paging
+    );
+  }
+
   public filter(
     filters: Filters<HarvestItem>,
     project: IdOr<Project>,

@@ -11,113 +11,168 @@
   [statistics]="getStatistics(harvest)"
 ></baw-harvest-statistics>
 
-<!-- Should use harvest items list instead of harvest mappings. This allows for us to open sub-directories, etc -->
-<ngx-datatable
-  class="mb-3"
-  bawDatatableDefaults
-  [rows]="rows.toArray()"
-  [externalPaging]="false"
-  [externalSorting]="false"
->
-  <ngx-datatable-column
-    prop="fileType"
-    [width]="50"
-    [maxWidth]="50"
-    [sortable]="false"
+<div class="grid-table mb-3">
+  <!-- Headers -->
+  <div class="grid-table-row">
+    <div class="grid-table-header">Path</div>
+    <div class="grid-table-header">{{ siteColumnLabel }}</div>
+    <div class="grid-table-header">UTC Offset</div>
+    <div class="grid-table-header">Recursive</div>
+    <div class="grid-table-header"></div>
+  </div>
+
+  <div
+    *ngFor="let row of rows.toArray(); let i = index"
+    class="grid-table-row"
+    [class.even]="i % 2 === 1"
   >
-    <ng-template let-column="column" ngx-datatable-header-template>
-    </ng-template>
-    <ng-template
-      let-rowIndex="rowIndex"
-      let-value="value"
-      ngx-datatable-cell-template
-    >
-      <button
-        *ngIf="value === FileType.closedFolder"
-        class="btn btn-link p-0"
-        (click)="openFolder(rowIndex)"
-      >
-        <fa-icon [icon]="['fas', 'folder-closed']"></fa-icon>
-      </button>
-      <button
-        *ngIf="value === FileType.openedFolder"
-        class="btn btn-link p-0"
-        (click)="closeFolder(rowIndex)"
-      >
-        <fa-icon [icon]="['fas', 'folder-open']"></fa-icon>
-      </button>
-      <fa-icon
-        *ngIf="value === FileType.file"
-        class="float-end"
-        [icon]="['fas', 'file']"
-      ></fa-icon>
-    </ng-template>
-  </ngx-datatable-column>
+    <!-- Folder Row -->
+    <ng-container *ngIf="row.rowType === RowType.folder">
+      <!-- Icon and Path -->
+      <div class="grid-table-item">
+        <!-- Whitespace -->
+        <ng-container
+          [ngTemplateOutlet]="whitespace"
+          [ngTemplateOutletContext]="{
+            indentation: row.indentation,
+            openFolder: row.isOpen
+          }"
+        ></ng-container>
+        <button class="btn btn-link p-0 me-2" (click)="toggleFolder(i)">
+          <fa-icon
+            [icon]="['fas', row.isOpen ? 'folder-open' : 'folder-closed']"
+          ></fa-icon>
+        </button>
+        <div>
+          {{ row.path }}
+        </div>
+      </div>
+      <!-- Site Selector -->
+      <div class="grid-table-item">
+        <baw-loading
+          *ngIf="row.mapping.site | isUnresolved; else siteSelector"
+          size="sm"
+        ></baw-loading>
 
-  <ngx-datatable-column prop="path" [sortable]="false">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      {{ value }}
-    </ng-template>
-  </ngx-datatable-column>
+        <ng-template #siteSelector>
+          <baw-harvest-site-selector
+            [project]="project"
+            [site]="row.mapping.site"
+            (siteIdChange)="setSite(row.mapping, $event)"
+          ></baw-harvest-site-selector>
+        </ng-template>
+      </div>
+      <!-- UTC Offset -->
+      <div class="grid-table-item">
+        <baw-harvest-utc-offset-selector
+          [offset]="row.utcOffset"
+          (offsetChange)="setOffset(row.mapping, $event)"
+        ></baw-harvest-utc-offset-selector>
+      </div>
+      <!-- Recursive -->
+      <div class="grid-table-item">
+        <baw-checkbox
+          [checked]="row.recursive"
+          (checkedChange)="setIsRecursive(row.mapping, $event)"
+        ></baw-checkbox>
+      </div>
+      <!-- Issue Icons -->
+      <div class="grid-table-item">
+        <ng-template #warningMessage>
+          <p *ngFor="let message of getValidationMessages(row, true)">
+            {{ message }}
+          </p>
+        </ng-template>
+        <ng-template #dangerMessage>
+          <p *ngFor="let message of getValidationMessages(row, false)">
+            {{ message }}
+          </p>
+        </ng-template>
 
-  <!-- Enable overflow so that typeahead options will show -->
-  <ngx-datatable-column
-    prop="siteId"
-    cellClass="overflow-visible"
-    [width]="300"
-    [maxWidth]="300"
-    [sortable]="false"
-  >
-    <ng-template let-column="column" ngx-datatable-header-template>
-      {{ siteColumnLabel }}
-    </ng-template>
-    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-      <baw-loading
-        *ngIf="row.mapping.site | isUnresolved; else siteSelector"
-        size="sm"
-      ></baw-loading>
+        <fa-icon
+          *ngIf="row.harvestItem.report.itemsInvalidFixable > 0"
+          class="text-warning me-2"
+          [icon]="attentionIcon"
+          [ngbTooltip]="isFile(row) ? warningMessage : ''"
+        ></fa-icon>
+        <fa-icon
+          *ngIf="row.harvestItem.report.itemsInvalidNotFixable > 0"
+          class="text-danger"
+          [icon]="problemIcon"
+          [ngbTooltip]="isFile(row) ? dangerMessage : ''"
+        ></fa-icon>
+      </div>
+    </ng-container>
 
-      <ng-template #siteSelector>
-        <baw-harvest-site-selector
-          [project]="project"
-          [site]="row.mapping.site"
-          (siteIdChange)="setSite(row.mapping, $event)"
-        ></baw-harvest-site-selector>
-      </ng-template>
-    </ng-template>
-  </ngx-datatable-column>
+    <!-- File Row -->
+    <ng-container *ngIf="row.rowType === RowType.file">
+      <!-- Icon and Path -->
+      <div class="grid-table-item path-extended">
+        <!-- Whitespace -->
+        <ng-container
+          [ngTemplateOutlet]="whitespace"
+          [ngTemplateOutletContext]="{ indentation: row.indentation }"
+        ></ng-container>
+        <fa-icon class="me-2" [icon]="['fas', 'file']"></fa-icon>
+        <small>{{ row.path }}</small>
+      </div>
+      <!-- Issues -->
+      <div class="grid-table-item">
+        <ng-template #warningMessage>
+          <p *ngFor="let message of getValidationMessages(row, true)">
+            {{ message }}
+          </p>
+        </ng-template>
+        <ng-template #dangerMessage>
+          <p *ngFor="let message of getValidationMessages(row, false)">
+            {{ message }}
+          </p>
+        </ng-template>
 
-  <ngx-datatable-column
-    prop="utcOffset"
-    [width]="200"
-    [maxWidth]="200"
-    [sortable]="false"
-  >
-    <ng-template let-column="column" ngx-datatable-header-template>
-      UTC Offset
-    </ng-template>
-    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-      <baw-harvest-utc-offset-selector
-        [offset]="value"
-        (offsetChange)="setOffset(row.mapping, $event)"
-      ></baw-harvest-utc-offset-selector>
-    </ng-template>
-  </ngx-datatable-column>
+        <fa-icon
+          *ngIf="row.harvestItem.report.itemsInvalidFixable > 0"
+          class="text-warning me-2"
+          [icon]="attentionIcon"
+          [ngbTooltip]="isFile(row) ? warningMessage : ''"
+        ></fa-icon>
+        <fa-icon
+          *ngIf="row.harvestItem.report.itemsInvalidNotFixable > 0"
+          class="text-danger"
+          [icon]="problemIcon"
+          [ngbTooltip]="isFile(row) ? dangerMessage : ''"
+        ></fa-icon>
+      </div>
+    </ng-container>
 
-  <ngx-datatable-column
-    prop="recursive"
-    [width]="75"
-    [maxWidth]="75"
-    [sortable]="false"
-  >
-    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-      <baw-checkbox
-        [checked]="value"
-        (checkedChange)="setIsRecursive(row.mapping, $event)"
-      ></baw-checkbox>
-    </ng-template>
-  </ngx-datatable-column>
-</ngx-datatable>
+    <!-- Load More Row -->
+    <ng-container *ngIf="row.rowType === RowType.loadMore">
+      <div class="grid-table-item load-more">
+        <!-- Whitespace -->
+        <ng-container
+          [ngTemplateOutlet]="whitespace"
+          [ngTemplateOutletContext]="{
+            indentation: row.parentFolder.indentation
+          }"
+        ></ng-container>
+
+        <baw-loading
+          *ngIf="row.isLoading"
+          class="m-auto"
+          size="sm"
+        ></baw-loading>
+
+        <button
+          *ngIf="!row.isLoading"
+          class="btn btn-sm btn-outline-primary m-auto"
+          (click)="loadMore(i)"
+        >
+          Load More from
+          <span class="font-monospace">{{ row.parentFolder.path }}</span>
+        </button>
+      </div>
+    </ng-container>
+  </div>
+</div>
 
 <div class="d-flex justify-content-between">
   <button
@@ -149,3 +204,16 @@
     }}
   </button>
 </div>
+
+<ng-template
+  #whitespace
+  let-indentation="indentation"
+  let-openFolder="openFolder"
+>
+  <ng-container *ngFor="let indent of replaceMe(indentation)">
+    <span class="vertical-line"></span>
+    <div class="whitespace-block"></div>
+  </ng-container>
+
+  <span *ngIf="openFolder" class="vertical-half-line"></span>
+</ng-template>

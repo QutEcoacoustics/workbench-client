@@ -15,7 +15,6 @@ import {
   IdParamOptional,
   option,
   param,
-  setTimezoneQSP,
   StandardApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
@@ -104,7 +103,7 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
     const url = new URL(
       this.api.getPath(annotationsEndpoint(project, model, emptyParam))
     );
-    setTimezoneQSP(url, selectedTimezone);
+    url.searchParams.set("selected_timezone_name", selectedTimezone ?? "UTC");
     return url.toString();
   }
 

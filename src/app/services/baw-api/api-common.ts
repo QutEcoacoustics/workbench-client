@@ -1,6 +1,6 @@
-import { Option, PartialWith } from "@helpers/advancedTypes";
+import { PartialWith } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { AuthToken, Param } from "@interfaces/apiInterfaces";
+import { Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
 import { Filters } from "./baw-api.service";
@@ -47,28 +47,6 @@ export function param(x: Param) {
 }
 
 /**
- * Set selected timezone query parameter in URL object
- *
- * @param url URL object
- * @param timezoneName Selected timezone name
- */
-export function setTimezoneQSP(url: URL, timezoneName: Option<string>): void {
-  url.searchParams.set("selected_timezone_name", timezoneName ?? "UTC");
-}
-
-/**
- * Set authorization query parameter in URL object
- *
- * @param url URL object
- * @param token Local user authentication token
- */
-export function setAuthorizationQSP(url: URL, token: Option<AuthToken>): void {
-  if (token) {
-    url.searchParams.set("user_token", token);
-  }
-}
-
-/**
  * Create option (used by stringTemplate)
  *
  * @param x Api option
@@ -92,8 +70,6 @@ export type Filter = "filter";
 export const emptyParam: Empty = "";
 export const newParam: New = "new";
 export const filterParam: Filter = "filter";
-export const timezoneQueryParam = "selected_timezone_name" as const;
-export const authorizationQueryParam = "user_token" as const;
 
 /**
  * API List functionality
@@ -102,7 +78,7 @@ export interface ApiList<M, P extends any[] = []> {
   /**
    * Get list of models
    *
-   * @param args URL parameter values
+   * @param urlParameters URL parameter values
    */
   list(...urlParameters: P): Observable<M[]>;
 }
@@ -114,7 +90,8 @@ export interface ApiFilter<M extends AbstractModel, P extends any[] = []> {
   /**
    * Get list of models, but filtered using the filter API
    *
-   * @param args URL parameter values
+   * @param filters Model filters
+   * @param urlParameters URL parameter values
    */
   filter(filters: Filters<M>, ...urlParameters: P): Observable<M[]>;
 }
@@ -130,7 +107,8 @@ export interface ApiShow<
   /**
    * Get individual model
    *
-   * @param args URL parameter values
+   * @param model Model or model id to retrieve
+   * @param urlParameters URL parameter values
    */
   show(model: M | I, ...urlParameters: P): Observable<M>;
 }
@@ -140,9 +118,10 @@ export interface ApiShow<
  */
 export interface ApiCreate<M extends AbstractModel, P extends any[] = []> {
   /**
-   * Get individual model
+   * Create new model
    *
-   * @param args URL parameter values
+   * @param model Model data to insert into new model
+   * @param urlParameters URL parameter values
    */
   create(model: M, ...urlParameters: P): Observable<M>;
 }
@@ -152,9 +131,10 @@ export interface ApiCreate<M extends AbstractModel, P extends any[] = []> {
  */
 export interface ApiUpdate<M extends AbstractModel, P extends any[] = []> {
   /**
-   * Get individual model
+   * Update an existing model
    *
-   * @param args URL parameter values
+   * @param model Model data to update model with
+   * @param urlParameters URL parameter values
    */
   update(model: PartialWith<M, "id">, ...urlParameters: P): Observable<M>;
 }
@@ -167,9 +147,10 @@ export interface ApiDestroy<
   I extends IdOr<M> = IdOr<M>
 > {
   /**
-   * destroy  individual model
+   * Destroy individual model
    *
-   * @param args URL parameter values
+   * @param model Model or model id to destroy
+   * @param urlParameters URL parameter values
    */
   destroy(model: I, ...urlParameters: P): Observable<M | void>;
 }
