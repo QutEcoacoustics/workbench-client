@@ -59,19 +59,56 @@ const convertCase = (
 };
 
 /**
+ * Convert snake case text into camel case
+ * Original version can be found here: https://github.com/microsoft/TypeScript/pull/40580#issuecomment-780187521
+ *
+ * @author Mikael Waltersson
+ */
+type ToCamelCase<T> = T extends `${infer A}_${infer B}`
+  ? `${Uncapitalize<A>}${Capitalize<ToCamelCase<B>>}`
+  : T extends string
+  ? Uncapitalize<T>
+  : T extends (infer A)[]
+  ? ToCamelCase<A>[]
+  : T extends object
+  ? { [K in keyof T as ToCamelCase<K>]: T[K] }
+  : T;
+
+/**
+ * Convert camel case text into snake case
+ * Original version can be found here: https://github.com/microsoft/TypeScript/pull/40580#issuecomment-780187521
+ *
+ * @author Mikael Waltersson
+ */
+type ToSnakeCase<T> = T extends `${infer A}${infer B}${infer C}`
+  ? [A, B, C] extends [Lowercase<A>, Exclude<Uppercase<B>, "_">, C]
+    ? `${A}_${Lowercase<B>}${ToSnakeCase<C>}`
+    : `${Lowercase<A>}${ToSnakeCase<`${B}${C}`>}`
+  : T extends string
+  ? Lowercase<T>
+  : T extends (infer A)[]
+  ? ToSnakeCase<A>[]
+  : T extends object
+  ? { [K in keyof T as ToSnakeCase<K>]: T[K] }
+  : T;
+
+/**
  * Convert object to camelCase
  *
  * @param obj Object to convert
  */
-export const toCamelCase = (obj: any) => convertCase(obj, camelCase);
+export const toCamelCase = <T>(obj: T): ToCamelCase<T> =>
+  convertCase(obj, camelCase);
 
 /**
  * Convert object to snake_case
  *
  * @param obj Object to convert
  */
-export const toSnakeCase = (obj: any) => convertCase(obj, snakeCase);
+export const toSnakeCase = <T>(obj: T): ToSnakeCase<T> =>
+  convertCase(obj, snakeCase);
 
+// TODO Type this function similar to camel and snake case
 export function titleCase(str: string): string {
   // https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
   let upper = true;
