@@ -154,6 +154,8 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
   ): Observable<Harvest> {
     return this.api
       .httpPatch(shallowEndpoint(model, emptyParam), {
+        // TODO This is a sub-optimal solution, if we encounter this in other
+        // places, a more permanent solution should be found
         [this.harvestKind]: { status: snakeCase(status) },
       })
       .pipe(map(this.api.handleSingleResponse(Harvest)));
