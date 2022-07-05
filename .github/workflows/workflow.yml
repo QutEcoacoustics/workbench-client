@@ -226,8 +226,5 @@ jobs:
       (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tag'))
     uses: ./.github/workflows/publish.yml
     with:
-      github_actor: ${{ github.actor }}
       release_tag: 'beta'
-    secrets:
-      docker_username: ${{ secrets.DOCKER_HUB_USER }}
-      docker_password: ${{ secrets.DOCKER_HUB_TOKEN }}
+    secrets: inherit

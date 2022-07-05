@@ -5,17 +5,9 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
-      github_actor:
-        required: true
-        type: string
       release_tag:
         required: true
         type: string
-    secrets:
-      docker_username:
-        required: true
-      docker_password:
-        required: true
 
 jobs:
   publish:
@@ -49,4 +41,4 @@ jobs:
 
       - name: Build and push Docker image
         shell: pwsh
-        run: ./scripts/build_docker.ps1 -github_actor '${{ inputs.github_actor }}' -release_tag '${{ inputs.release_tag }}'
+        run: ./scripts/build_docker.ps1 -github_actor '${{ github.actor }}' -release_tag '${{ inputs.release_tag }}'
