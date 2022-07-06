@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { Statistic } from "@components/harvest/components/shared/statistics.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
+import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -25,6 +26,8 @@ export class MetadataReviewComponent
   extends withUnsubscribe()
   implements OnInit, UnsavedInputCheckingComponent
 {
+  public newSiteMenuItem = newSiteMenuItem;
+
   public mappings: HarvestMapping[];
   public loading: boolean;
   public hasUnsavedChanges: boolean;

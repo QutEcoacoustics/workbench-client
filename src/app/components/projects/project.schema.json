@@ -6,7 +6,8 @@
       "templateOptions": {
         "type": "text",
         "label": "Project Name",
-        "required": true
+        "required": true,
+        "minLength": 2
       }
     },
     {

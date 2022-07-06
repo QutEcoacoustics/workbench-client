@@ -46,6 +46,6 @@ jobs:
 
       - name: Build and push Docker image
         shell: pwsh
-        run: ./scripts/build_docker.ps1 \
-          -github_actor '${{ github.actor }}' \
+        run: ./scripts/build_docker.ps1
+          -github_actor '${{ github.actor }}'
           -release_tag '${{ inputs.release_tag }}${{ github.event.inputs.release_tag }}'

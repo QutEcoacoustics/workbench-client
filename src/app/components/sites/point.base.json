@@ -14,7 +14,8 @@
       "templateOptions": {
         "label": "Point Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "minLength": 2
       }
     },
     {

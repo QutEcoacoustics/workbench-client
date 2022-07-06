@@ -3,7 +3,6 @@ import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
 import { Site } from "@models/Site";
 import {
   defaultAnnotationDownloadIcon,
-  defaultAudioIcon,
   defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
@@ -50,15 +49,6 @@ export const editSiteMenuItem = menuRoute({
   predicate: isProjectEditorPredicate,
   route: siteMenuItem.route.add("edit"),
   tooltip: () => "Change the details for this site",
-});
-
-export const siteHarvestMenuItem = menuRoute({
-  icon: defaultAudioIcon,
-  label: "Harvesting",
-  parent: siteMenuItem,
-  predicate: isProjectEditorPredicate,
-  route: siteMenuItem.route.add("harvest"),
-  tooltip: () => "Upload new audio to this site",
 });
 
 export const deleteSiteMenuItem = menuRoute({

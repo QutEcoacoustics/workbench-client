@@ -379,7 +379,7 @@ export class BawApiService<
   }
 
   public encodeFilter(filter: Filters<Model>, disablePaging?: boolean): string {
-    const body = {
+    const body: Record<string, string> = {
       // Base64 RFC 4648 §5 encoding
       filterEncoded: toBase64Url(JSON.stringify(toSnakeCase(filter))),
     };

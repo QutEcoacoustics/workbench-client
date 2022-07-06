@@ -19,6 +19,7 @@ import {
   IHarvestMapping,
 } from "@models/Harvest";
 import { Project } from "@models/Project";
+import snakeCase from "just-snake-case";
 import { map, Observable } from "rxjs";
 
 const projectId: IdParam<Project> = id;
@@ -153,7 +154,9 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
   ): Observable<Harvest> {
     return this.api
       .httpPatch(shallowEndpoint(model, emptyParam), {
-        [this.harvestKind]: { status },
+        // TODO This is a sub-optimal solution, if we encounter this in other
+        // places, a more permanent solution should be found
+        [this.harvestKind]: { status: snakeCase(status) },
       })
       .pipe(map(this.api.handleSingleResponse(Harvest)));
   }

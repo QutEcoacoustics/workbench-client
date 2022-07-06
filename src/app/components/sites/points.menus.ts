@@ -8,7 +8,6 @@ import {
   deleteSiteMenuItem,
   editSiteMenuItem,
   newSiteMenuItem,
-  siteHarvestMenuItem,
   siteMenuItem,
   sitesCategory,
 } from "./sites.menus";
@@ -49,13 +48,6 @@ export const editPointMenuItem = menuRoute({
   parent: pointMenuItem,
   route: pointMenuItem.route.add("edit"),
   tooltip: () => "Change the details for this point",
-});
-
-export const pointHarvestMenuItem = menuRoute({
-  ...siteHarvestMenuItem,
-  parent: pointMenuItem,
-  route: pointMenuItem.route.add("harvest"),
-  tooltip: () => "Upload new audio to this point",
 });
 
 export const deletePointMenuItem = menuRoute({
