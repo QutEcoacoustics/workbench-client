@@ -2,14 +2,13 @@
   --padding: 0.35rem;
 
   display: grid;
-  grid-template-columns: 1fr repeat(3, min-content) auto;
+  grid-template-columns: 1fr minmax(200px, min-content) repeat(3, min-content);
   grid-template-rows: 1fr;
-  //align-items: center;
 
   .grid-table-row {
     display: contents;
 
-    &.even {
+    &:nth-child(2n) {
       .grid-table-item {
         background-color: rgba(0, 0, 0, 0.05);
       }
@@ -28,7 +27,19 @@
   }
 
   .path-extended {
-    grid-column: 1 / 5;
+    grid-column: 1 / 3;
+  }
+
+  .issues-extended {
+    grid-column: 3 / 5;
+    position: relative;
+
+    .dropdown-icon {
+      position: absolute;
+      right: var(--padding);
+      top: var(--padding);
+      cursor: pointer;
+    }
   }
 
   .load-more {
@@ -69,4 +80,58 @@
 .whitespace-block {
   display: inline-block;
   width: 1rem;
+}
+
+.callout {
+  display: block;
+  width: auto;
+  word-break: break-word;
+  padding: 0.25rem;
+  line-height: 1em;
+
+  &.callout-warning {
+    background-color: hsla(var(--baw-warning-hsl), 0.075);
+    border-left: 0.25rem solid hsla(var(--baw-warning-hsl), 0.5);
+  }
+
+  &.callout-danger {
+    background-color: hsla(var(--baw-danger-hsl), 0.075);
+    border-left: 0.25rem solid hsla(var(--baw-danger-hsl), 0.5);
+  }
+}
+
+.icon-wrapper {
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+
+  & > *:nth-child(n) {
+    margin-right: 0.5rem;
+  }
+
+  & > *:last-child {
+    margin-right: 0;
+  }
+}
+
+// TODO This instantly expands the containing row, a better solution could be
+// achieved using JS: https://stackoverflow.com/questions/3508605/how-can-i-transition-height-0-to-height-auto-using-css
+.expander-wrapper {
+  display: grid;
+
+  .expander {
+    display: flex;
+    flex-direction: column;
+
+    &.expand .content {
+      flex: 1;
+    }
+
+    .content {
+      flex-basis: 1.26em;
+      transition: 0.1s;
+      overflow: hidden;
+    }
+  }
 }

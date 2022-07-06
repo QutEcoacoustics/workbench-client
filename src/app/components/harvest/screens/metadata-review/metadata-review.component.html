@@ -7,6 +7,13 @@
   and refresh this page.
 </p>
 
+<p *ngIf="harvest.report.itemsErrored > 0" class="alert alert-danger">
+  An unexpected error occurred in
+  {{ harvest.report.itemsErrored | number }} files. Please contact us so we can
+  investigate the issue. You can choose to continue the harvest, but any files
+  that produced errors will be ignored
+</p>
+
 <baw-harvest-statistics
   [statistics]="getStatistics(harvest)"
 ></baw-harvest-statistics>
@@ -21,11 +28,7 @@
     <div class="grid-table-header"></div>
   </div>
 
-  <div
-    *ngFor="let row of rows.toArray(); let i = index"
-    class="grid-table-row"
-    [class.even]="i % 2 === 1"
-  >
+  <div *ngFor="let row of rows.toArray(); let i = index" class="grid-table-row">
     <!-- Folder Row -->
     <ng-container *ngIf="row.rowType === RowType.folder">
       <!-- Icon and Path -->
@@ -78,29 +81,24 @@
       </div>
       <!-- Issue Icons -->
       <div class="grid-table-item">
-        <ng-template #warningMessage>
-          <p *ngFor="let message of getValidationMessages(row, true)">
-            {{ message }}
-          </p>
-        </ng-template>
-        <ng-template #dangerMessage>
-          <p *ngFor="let message of getValidationMessages(row, false)">
-            {{ message }}
-          </p>
-        </ng-template>
-
-        <fa-icon
-          *ngIf="row.harvestItem.report.itemsInvalidFixable > 0"
-          class="text-warning me-2"
-          [icon]="attentionIcon"
-          [ngbTooltip]="isFile(row) ? warningMessage : ''"
-        ></fa-icon>
-        <fa-icon
-          *ngIf="row.harvestItem.report.itemsInvalidNotFixable > 0"
-          class="text-danger"
-          [icon]="problemIcon"
-          [ngbTooltip]="isFile(row) ? dangerMessage : ''"
-        ></fa-icon>
+        <div class="icon-wrapper">
+          <span *ngIf="hasItemsInvalidFixable(row)" class="badge bg-warning">
+            <fa-icon [icon]="icons.warning"></fa-icon>
+            {{ row.harvestItem.report.itemsInvalidFixable | number }}
+          </span>
+          <span
+            *ngIf="hasItemsInvalidNotFixable(row)"
+            class="badge bg-danger text-light"
+          >
+            <fa-icon [icon]="icons.failure"></fa-icon>
+            {{ row.harvestItem.report.itemsInvalidNotFixable | number }}
+          </span>
+          <fa-icon
+            *ngIf="!hasItemsInvalid(row)"
+            class="text-success"
+            [icon]="['fas', 'circle-check']"
+          ></fa-icon>
+        </div>
       </div>
     </ng-container>
 
@@ -117,30 +115,50 @@
         <small>{{ row.path }}</small>
       </div>
       <!-- Issues -->
-      <div class="grid-table-item">
-        <ng-template #warningMessage>
-          <p *ngFor="let message of getValidationMessages(row, true)">
-            {{ message }}
-          </p>
-        </ng-template>
-        <ng-template #dangerMessage>
-          <p *ngFor="let message of getValidationMessages(row, false)">
-            {{ message }}
-          </p>
-        </ng-template>
+      <div class="grid-table-item issues-extended">
+        <div *ngIf="hasItemsInvalid(row)" class="dropdown-icon">
+          <fa-icon
+            [icon]="[
+              'fas',
+              row.showValidations ? 'chevron-up' : 'chevron-down'
+            ]"
+            (click)="row.showValidations = !row.showValidations"
+          ></fa-icon>
+        </div>
 
-        <fa-icon
-          *ngIf="row.harvestItem.report.itemsInvalidFixable > 0"
-          class="text-warning me-2"
-          [icon]="attentionIcon"
-          [ngbTooltip]="isFile(row) ? warningMessage : ''"
-        ></fa-icon>
-        <fa-icon
-          *ngIf="row.harvestItem.report.itemsInvalidNotFixable > 0"
-          class="text-danger"
-          [icon]="problemIcon"
-          [ngbTooltip]="isFile(row) ? dangerMessage : ''"
-        ></fa-icon>
+        <div class="expander-wrapper">
+          <div class="expander" [class.expand]="row.showValidations">
+            <div class="content">
+              <small
+                *ngFor="let validation of getValidationMessages(row)"
+                class="callout"
+                [class.callout-danger]="!validation.fixable"
+                [class.callout-warning]="validation.fixable"
+              >
+                {{ validation.message }}
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-table-item">
+        <div class="icon-wrapper">
+          <fa-icon
+            *ngIf="hasItemsInvalidFixable(row)"
+            class="text-warning"
+            [icon]="icons.warningCircle"
+          ></fa-icon>
+          <fa-icon
+            *ngIf="hasItemsInvalidNotFixable(row)"
+            class="text-danger"
+            [icon]="icons.failureCircle"
+          ></fa-icon>
+          <fa-icon
+            *ngIf="!hasItemsInvalid(row)"
+            class="text-success"
+            [icon]="icons.successCircle"
+          ></fa-icon>
+        </div>
       </div>
     </ng-container>
 
@@ -155,11 +173,7 @@
           }"
         ></ng-container>
 
-        <baw-loading
-          *ngIf="row.isLoading"
-          class="m-auto"
-          size="sm"
-        ></baw-loading>
+        <baw-loading *ngIf="row.isLoading" class="m-auto"></baw-loading>
 
         <button
           *ngIf="!row.isLoading"
@@ -204,6 +218,24 @@
     }}
   </button>
 </div>
+
+<ng-template #issues let-row="row">
+  <fa-icon
+    *ngIf="hasItemsInvalidFixable(row)"
+    class="text-warning"
+    [icon]="['fas', 'triangle-exclamation']"
+  ></fa-icon>
+  <fa-icon
+    *ngIf="hasItemsInvalidNotFixable(row)"
+    class="text-danger"
+    [icon]="['fas', 'xmark-circle']"
+  ></fa-icon>
+  <fa-icon
+    *ngIf="!hasItemsInvalid(row)"
+    class="text-success"
+    [icon]="['fas', 'circle-check']"
+  ></fa-icon>
+</ng-template>
 
 <ng-template
   #whitespace

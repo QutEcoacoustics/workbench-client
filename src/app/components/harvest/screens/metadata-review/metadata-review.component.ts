@@ -19,10 +19,6 @@ import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs";
 
-// TODO Show additional information to users if itemsError is non zero. Ie:
-// An unexpected error occurred in xxx files. Please contact us so we can investigate the issue.
-// You can choose to continue the harvest, but any files that produced errors will be ignored
-
 enum RowType {
   folder,
   file,
@@ -43,6 +39,7 @@ interface Item extends Base {
 
 interface File extends Item {
   rowType: RowType.file;
+  showValidations: boolean;
 }
 
 interface Folder extends Item {
@@ -88,6 +85,14 @@ export class MetadataReviewComponent
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public ColumnMode = ColumnMode;
   public siteColumnLabel: string;
+  public icons = {
+    successCircle: ["fas", "circle-check"] as IconProp,
+    success: ["fas", "check"] as IconProp,
+    warningCircle: ["fas", "circle-exclamation"] as IconProp,
+    warning: ["fas", "triangle-exclamation"] as IconProp,
+    failureCircle: ["fas", "xmark-circle"] as IconProp,
+    failure: ["fas", "xmark"] as IconProp,
+  };
 
   public constructor(
     private stages: HarvestStagesService,
@@ -124,8 +129,6 @@ export class MetadataReviewComponent
       });
   }
 
-  public attentionIcon: IconProp = ["fas", "triangle-exclamation"];
-  public problemIcon: IconProp = ["fas", "xmark"];
   public getStatistics(harvest: Harvest): Statistic[][] {
     const report = harvest.report;
     return [
@@ -161,14 +164,14 @@ export class MetadataReviewComponent
       [
         {
           bgColor: "warning",
-          icon: this.attentionIcon,
+          icon: this.icons.warning,
           label: "Need Attention",
           value: report.itemsInvalidFixable.toLocaleString(),
         },
         {
           color: "light",
           bgColor: "danger",
-          icon: this.problemIcon,
+          icon: this.icons.failure,
           label: "Problems",
           value: report.itemsInvalidNotFixable.toLocaleString(),
         },
@@ -197,7 +200,6 @@ export class MetadataReviewComponent
       row.isLoading = true;
     }
 
-    console.log("loadMore", index, row);
     this.harvestItemsApi
       .listByPage(row.page, this.project, this.harvest, row.harvestItem)
       .pipe(takeUntil(this.unsubscribe))
@@ -235,7 +237,7 @@ export class MetadataReviewComponent
 
   public closeFolder(index: number): void {
     function isChild(parent: Folder, child: Row): boolean {
-      let lineage = child.parentFolder;
+      let lineage = child?.parentFolder;
       while (isInstantiated(lineage) && lineage !== parent) {
         lineage = lineage.parentFolder;
       }
@@ -310,19 +312,33 @@ export class MetadataReviewComponent
     return row.rowType === RowType.loadMore;
   }
 
-  public getValidationMessages(row: Folder | File, fixable: boolean): string[] {
-    return (row.harvestItem.validations ?? [])
-      .filter((validation): boolean => {
-        console.log(validation.status);
+  public getValidationMessages(
+    row: Folder | File
+  ): { fixable: boolean; message: string }[] {
+    return (row.harvestItem.validations ?? []).map((validation) => ({
+      fixable: validation.status === "fixable",
+      message: validation.message,
+    }));
+  }
 
-        return fixable
-          ? validation.status === "fixable"
-          : validation.status === "notFixable";
-      })
-      .map((validation): string => {
-        console.log(validation, validation.message);
-        return validation.message;
-      });
+  public toggleValidationMessages(row: File | Folder): void {
+    if (this.isFile(row)) {
+      row.showValidations = !row.showValidations;
+    }
+  }
+
+  public hasItemsInvalidFixable(row: Row): boolean {
+    return row.harvestItem.report.itemsInvalidFixable > 0;
+  }
+
+  public hasItemsInvalidNotFixable(row: Row): boolean {
+    return row.harvestItem.report.itemsInvalidNotFixable > 0;
+  }
+
+  public hasItemsInvalid(row: Row): boolean {
+    return (
+      this.hasItemsInvalidFixable(row) || this.hasItemsInvalidNotFixable(row)
+    );
   }
 
   private findMapping(
@@ -384,6 +400,7 @@ export class MetadataReviewComponent
         path: filename,
         parentFolder: parentRow,
         indentation,
+        showValidations: false,
       } as File;
     }
   }
