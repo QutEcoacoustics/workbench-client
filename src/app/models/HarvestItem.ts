@@ -102,6 +102,7 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
   public constructor(data: IHarvestItem, injector?: Injector) {
     super(data, injector);
 
+    this.report = new HarvestItemReport(data.report, injector);
     if (data.validations) {
       this.validations = (data.validations as IHarvestItemValidation[])?.map(
         (validation) => new HarvestItemValidation(validation, injector)

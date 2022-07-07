@@ -6,6 +6,8 @@
  */
 @mixin baw-background($property, $fallback) {
   background-color: var(--baw-#{$property}, #{$fallback}) !important;
+  // TODO This is no longer required, bootstrap has created a text-bg-property
+  // class for backgrounds with contrasting text: https://getbootstrap.com/docs/5.2/helpers/color-background/
   color: var(--baw-#{$property}-contrast, black) !important;
 }
 

@@ -9,7 +9,7 @@ import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { Id, toRelative } from "@interfaces/apiInterfaces";
+import { toRelative } from "@interfaces/apiInterfaces";
 import { Harvest, HarvestMapping, HarvestStatus } from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
@@ -17,7 +17,7 @@ import { ConfigService } from "@services/config/config.service";
 import { ColumnMode } from "@swimlane/ngx-datatable";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { takeUntil } from "rxjs";
+import { first, takeUntil } from "rxjs";
 
 enum RowType {
   folder,
@@ -27,14 +27,18 @@ enum RowType {
 
 interface Base {
   rowType: RowType;
-  harvestItem: HarvestItem;
-  mapping: HarvestMapping;
+  harvestItem?: HarvestItem;
+  /**
+   * Row Mapping, if unset, this row will not be included in the mappings sent
+   * to the server
+   */
+  mapping?: HarvestMapping;
 }
 
 interface Item extends Base {
   path: string;
   parentFolder?: Folder;
-  indentation: number;
+  indentation: Array<void>;
 }
 
 interface File extends Item {
@@ -46,9 +50,7 @@ interface Folder extends Item {
   rowType: RowType.folder;
   isOpen: boolean;
   page: number;
-  siteId: Id;
-  utcOffset: string;
-  recursive: boolean;
+  isRoot: boolean;
 }
 
 interface LoadMore extends Base {
@@ -60,6 +62,8 @@ interface LoadMore extends Base {
 
 type Row = File | Folder | LoadMore;
 
+const rootMappingPath = "";
+
 @Component({
   selector: "baw-harvest-metadata-review",
   templateUrl: "metadata-review.component.html",
@@ -70,16 +74,18 @@ export class MetadataReviewComponent
   implements OnInit, UnsavedInputCheckingComponent
 {
   public newSiteMenuItem = newSiteMenuItem;
+  public statistics: Statistic[][];
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public RowType = RowType;
 
-  public rows = List<Row>();
+  public rows: List<Row>;
   /** List of harvest items, indexes must match mappings */
   public harvestItems: HarvestItem[];
   /** List of mappings, indexes must match harvestItems */
   public mappings: HarvestMapping[];
   public loading: boolean;
+  public tableLoading: boolean;
   public hasUnsavedChanges: boolean;
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -92,6 +98,8 @@ export class MetadataReviewComponent
     warning: ["fas", "triangle-exclamation"] as IconProp,
     failureCircle: ["fas", "xmark-circle"] as IconProp,
     failure: ["fas", "xmark"] as IconProp,
+    errorCircle: ["fas", "xmark-circle"] as IconProp,
+    error: ["fas", "xmark"] as IconProp,
   };
 
   public constructor(
@@ -115,18 +123,20 @@ export class MetadataReviewComponent
 
   public ngOnInit(): void {
     this.siteColumnLabel = this.config.settings.hideProjects ? "Point" : "Site";
+    this.statistics = this.getStatistics(this.stages.harvest);
 
-    this.harvestItemsApi
-      .list(this.project, this.harvest)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((harvestItems): void => {
-        this.harvestItems = harvestItems;
-        this.rows = List(
-          this.harvestItems.map(
-            (harvestItem): Row => this.generateRow(harvestItem, null, 1)
-          )
-        );
-      });
+    const rootFolder: Folder = {
+      rowType: RowType.folder,
+      isRoot: true,
+      indentation: [],
+      isOpen: true,
+      page: 1,
+      path: rootMappingPath,
+      parentFolder: null,
+    };
+
+    this.rows = List<Row>([rootFolder]);
+    this.loadMore(0);
   }
 
   public getStatistics(harvest: Harvest): Statistic[][] {
@@ -195,33 +205,22 @@ export class MetadataReviewComponent
 
   public loadMore(index: number): void {
     const row = this.rows.get(index) as Folder | LoadMore;
-
-    if (this.isLoadMore(row)) {
-      row.isLoading = true;
-    }
+    this.tableLoading = true;
 
     this.harvestItemsApi
       .listByPage(row.page, this.project, this.harvest, row.harvestItem)
-      .pipe(takeUntil(this.unsubscribe))
+      .pipe(first(), takeUntil(this.unsubscribe))
       .subscribe((harvestItems): void => {
         const parentFolder: Folder = this.isFolder(row)
           ? row
           : row.parentFolder;
         const newRows = harvestItems.map(
-          (harvestItem): Row =>
-            this.generateRow(harvestItem, parentFolder, row.page + 1)
+          (harvestItem): Row => this.generateRow(harvestItem, parentFolder)
         );
 
         const meta = harvestItems[0]?.getMetadata();
         if (meta && meta.paging.maxPage !== meta.paging.page) {
-          newRows.push({
-            rowType: RowType.loadMore,
-            harvestItem: row.harvestItem,
-            mapping: row.mapping,
-            page: row.page + 1,
-            parentFolder,
-            isLoading: false,
-          } as LoadMore);
+          newRows.push(this.generateLoadMore(row, parentFolder));
         }
 
         if (this.isFolder(row)) {
@@ -232,6 +231,7 @@ export class MetadataReviewComponent
           // Insert elements replace load more row
           this.rows = this.rows.splice(index, 1, ...newRows);
         }
+        this.tableLoading = false;
       });
   }
 
@@ -314,11 +314,21 @@ export class MetadataReviewComponent
 
   public getValidationMessages(
     row: Folder | File
-  ): { fixable: boolean; message: string }[] {
-    return (row.harvestItem.validations ?? []).map((validation) => ({
-      fixable: validation.status === "fixable",
+  ): { type: string; message: string }[] {
+    // TODO Sort to make nonfixable errors on top
+    const messages = (row.harvestItem.validations ?? []).map((validation) => ({
+      type: validation.status === "fixable" ? "warning" : "danger",
       message: validation.message,
     }));
+
+    if (this.hasItemsErrored(row)) {
+      messages.unshift({
+        type: "error",
+        message: "An unknown error has occurred",
+      });
+    }
+
+    return messages;
   }
 
   public toggleValidationMessages(row: File | Folder): void {
@@ -328,54 +338,75 @@ export class MetadataReviewComponent
   }
 
   public hasItemsInvalidFixable(row: Row): boolean {
-    return row.harvestItem.report.itemsInvalidFixable > 0;
+    return row.harvestItem?.report.itemsInvalidFixable > 0;
   }
 
   public hasItemsInvalidNotFixable(row: Row): boolean {
-    return row.harvestItem.report.itemsInvalidNotFixable > 0;
+    return row.harvestItem?.report.itemsInvalidNotFixable > 0;
+  }
+
+  public hasItemsErrored(row: Row): boolean {
+    return row.harvestItem?.report.itemsErrored > 0;
   }
 
   public hasItemsInvalid(row: Row): boolean {
     return (
-      this.hasItemsInvalidFixable(row) || this.hasItemsInvalidNotFixable(row)
+      this.hasItemsInvalidFixable(row) ||
+      this.hasItemsInvalidNotFixable(row) ||
+      this.hasItemsErrored(row)
     );
   }
+
+  public createMapping(row: Folder): void {
+    const mapping = new HarvestMapping(
+      {
+        // Root folder does not have a harvest item
+        path: row.isRoot ? row.path : row.harvestItem.path,
+        recursive: true,
+        siteId: null,
+        utcOffset: null,
+      },
+      this.injector
+    );
+    row.mapping = mapping;
+    this.harvest.mappings.push(mapping);
+  }
+
+  public trackByRow = (_: number, row: Row): string =>
+    (row as Folder).isRoot ? (row as Folder).path : row.harvestItem?.path;
 
   private findMapping(
     harvest: Harvest,
     harvestItem: HarvestItem
-  ): HarvestMapping {
-    let mapping = harvest.mappings.find(
+  ): HarvestMapping | null {
+    const mapping = harvest.mappings.find(
       (_mapping): boolean => harvestItem.path === _mapping.path
     );
-
-    if (!mapping) {
-      mapping = new HarvestMapping(
-        {
-          path: harvestItem.path,
-          recursive: true,
-          siteId: null,
-          utcOffset: null,
-        },
-        this.injector
-      );
-      harvest.mappings.push(mapping);
-    }
-
     return mapping;
   }
 
-  private generateRow(
-    harvestItem: HarvestItem,
-    parentRow: Folder,
-    page: number
-  ): Row {
+  private generateLoadMore(
+    parentRow: Folder | LoadMore | null,
+    parentFolder: Folder | null
+  ): LoadMore {
+    return {
+      rowType: RowType.loadMore,
+      harvestItem: parentRow.harvestItem,
+      mapping: parentRow.mapping,
+      page: parentRow.page + 1,
+      parentFolder,
+      isLoading: false,
+    };
+  }
+
+  private generateRow(harvestItem: HarvestItem, parentRow: Folder): Row {
     const mapping = this.findMapping(this.harvest, harvestItem);
     // While it is technically possible in linux to have filenames which
     // include the character '/', our server should block it from being used
     // and bad actors will gain nothing from taking advantage of it
     const paths = harvestItem.path.split("/");
-    const indentation = paths.length - 1;
+    // Indentation is the number of '/' characters, plus the root folder
+    const indentation = paths.length;
     const filename = paths.pop();
 
     if (harvestItem.isDirectory) {
@@ -384,13 +415,11 @@ export class MetadataReviewComponent
         harvestItem,
         isOpen: false,
         mapping,
-        page,
+        page: 1,
         path: filename,
-        recursive: mapping.recursive,
-        siteId: mapping.siteId,
-        utcOffset: mapping.utcOffset,
         parentFolder: parentRow,
-        indentation,
+        indentation: Array(indentation),
+        isRoot: false,
       } as Folder;
     } else {
       return {
@@ -399,7 +428,7 @@ export class MetadataReviewComponent
         mapping,
         path: filename,
         parentFolder: parentRow,
-        indentation,
+        indentation: Array(indentation),
         showValidations: false,
       } as File;
     }
@@ -411,7 +440,7 @@ export class MetadataReviewComponent
       .updateMappings(
         this.harvest,
         this.rows
-          .filter((row) => row.rowType === RowType.folder)
+          .filter((row) => row.rowType === RowType.folder && row.mapping)
           .map((row) => row.mapping)
           .toArray()
       )
@@ -424,11 +453,5 @@ export class MetadataReviewComponent
         error: (err: BawApiError) =>
           this.notification.error("Failed to make that change: " + err.message),
       });
-  }
-
-  public replaceMe(length: number) {
-    return Array(length)
-      .fill(0)
-      .map((_, i) => i);
   }
 }

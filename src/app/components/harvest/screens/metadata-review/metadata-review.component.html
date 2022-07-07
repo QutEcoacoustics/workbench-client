@@ -9,26 +9,37 @@
 
 <p *ngIf="harvest.report.itemsErrored > 0" class="alert alert-danger">
   An unexpected error occurred in
-  {{ harvest.report.itemsErrored | number }} files. Please contact us so we can
-  investigate the issue. You can choose to continue the harvest, but any files
-  that produced errors will be ignored
+  {{ harvest.report.itemsErrored | number }} file(s). Please contact us so we
+  can investigate the issue. You can choose to continue the harvest, but any
+  files that produced errors will be ignored.
 </p>
 
-<baw-harvest-statistics
-  [statistics]="getStatistics(harvest)"
-></baw-harvest-statistics>
+<baw-harvest-statistics [statistics]="statistics"></baw-harvest-statistics>
 
 <div class="grid-table mb-3">
   <!-- Headers -->
   <div class="grid-table-row">
     <div class="grid-table-header">Path</div>
     <div class="grid-table-header">{{ siteColumnLabel }}</div>
-    <div class="grid-table-header">UTC Offset</div>
+    <div class="grid-table-header">UTC offset</div>
     <div class="grid-table-header">Recursive</div>
     <div class="grid-table-header"></div>
   </div>
 
-  <div *ngFor="let row of rows.toArray(); let i = index" class="grid-table-row">
+  <!-- Re-use the progress animation from ngx-datatable -->
+  <div
+    *ngIf="tableLoading"
+    class="grid-table-item table-progress progress-linear"
+  >
+    <div class="container">
+      <div class="bar"></div>
+    </div>
+  </div>
+
+  <div
+    *ngFor="let row of rows.toArray(); trackBy: trackByRow; let i = index"
+    class="grid-table-row"
+  >
     <!-- Folder Row -->
     <ng-container *ngIf="row.rowType === RowType.folder">
       <!-- Icon and Path -->
@@ -38,20 +49,40 @@
           [ngTemplateOutlet]="whitespace"
           [ngTemplateOutletContext]="{
             indentation: row.indentation,
-            openFolder: row.isOpen
+            openFolder: row.isOpen && !row.isRoot
           }"
         ></ng-container>
-        <button class="btn btn-link p-0 me-2" (click)="toggleFolder(i)">
-          <fa-icon
-            [icon]="['fas', row.isOpen ? 'folder-open' : 'folder-closed']"
-          ></fa-icon>
+        <button
+          class="btn btn-link p-0 text-decoration-none me-3"
+          (click)="toggleFolder(i)"
+        >
+          <fa-layers class="fa-custom-icon" [fixedWidth]="true">
+            <fa-icon
+              [icon]="['fas', row.isOpen ? 'folder-open' : 'folder-closed']"
+            ></fa-icon>
+            <fa-layers-counter
+              *ngIf="!row.isRoot"
+              class="text-light"
+              [content]="row.harvestItem?.report.itemsTotal ?? 0 | number"
+              [classes]="['fa-custom-counter']"
+            ></fa-layers-counter>
+          </fa-layers>
         </button>
         <div>
           {{ row.path }}
         </div>
       </div>
+      <!-- Create Mapping -->
+      <div *ngIf="!row.mapping" class="grid-table-item create-mapping">
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="createMapping(row)"
+        >
+          Change Site or UTC for folder
+        </button>
+      </div>
       <!-- Site Selector -->
-      <div class="grid-table-item">
+      <div *ngIf="row.mapping" class="grid-table-item">
         <baw-loading
           *ngIf="row.mapping.site | isUnresolved; else siteSelector"
           size="sm"
@@ -66,22 +97,22 @@
         </ng-template>
       </div>
       <!-- UTC Offset -->
-      <div class="grid-table-item">
+      <div *ngIf="row.mapping" class="grid-table-item">
         <baw-harvest-utc-offset-selector
-          [offset]="row.utcOffset"
+          [offset]="row.mapping.utcOffset"
           (offsetChange)="setOffset(row.mapping, $event)"
         ></baw-harvest-utc-offset-selector>
       </div>
       <!-- Recursive -->
-      <div class="grid-table-item">
+      <div *ngIf="row.mapping" class="grid-table-item">
         <baw-checkbox
-          [checked]="row.recursive"
+          [checked]="row.mapping.recursive"
           (checkedChange)="setIsRecursive(row.mapping, $event)"
         ></baw-checkbox>
       </div>
       <!-- Issue Icons -->
       <div class="grid-table-item">
-        <div class="icon-wrapper">
+        <div *ngIf="!row.isRoot" class="icon-wrapper">
           <span *ngIf="hasItemsInvalidFixable(row)" class="badge bg-warning">
             <fa-icon [icon]="icons.warning"></fa-icon>
             {{ row.harvestItem.report.itemsInvalidFixable | number }}
@@ -92,6 +123,10 @@
           >
             <fa-icon [icon]="icons.failure"></fa-icon>
             {{ row.harvestItem.report.itemsInvalidNotFixable | number }}
+          </span>
+          <span *ngIf="hasItemsErrored(row)" class="badge bg-black text-light">
+            <fa-icon [icon]="icons.errorCircle"></fa-icon>
+            {{ row.harvestItem.report.itemsErrored | number }}
           </span>
           <fa-icon
             *ngIf="!hasItemsInvalid(row)"
@@ -113,6 +148,14 @@
         ></ng-container>
         <fa-icon class="me-2" [icon]="['fas', 'file']"></fa-icon>
         <small>{{ row.path }}</small>
+        <span
+          class="badge bg-secondary ms-3"
+          [ngbTooltip]="
+            (row.harvestItem.report.itemsSizeBytes | number) + ' bytes'
+          "
+        >
+          {{ row.harvestItem.report.itemsSize }}
+        </span>
       </div>
       <!-- Issues -->
       <div class="grid-table-item issues-extended">
@@ -132,8 +175,7 @@
               <small
                 *ngFor="let validation of getValidationMessages(row)"
                 class="callout"
-                [class.callout-danger]="!validation.fixable"
-                [class.callout-warning]="validation.fixable"
+                [ngClass]="['callout-' + validation.type]"
               >
                 {{ validation.message }}
               </small>
@@ -158,6 +200,11 @@
             class="text-success"
             [icon]="icons.successCircle"
           ></fa-icon>
+          <fa-icon
+            *ngIf="hasItemsErrored(row)"
+            class="text-black"
+            [icon]="icons.errorCircle"
+          ></fa-icon>
         </div>
       </div>
     </ng-container>
@@ -181,7 +228,9 @@
           (click)="loadMore(i)"
         >
           Load More from
-          <span class="font-monospace">{{ row.parentFolder.path }}</span>
+          <span class="font-monospace">{{
+            row.parentFolder.path || "root folder"
+          }}</span>
         </button>
       </div>
     </ng-container>
@@ -219,30 +268,12 @@
   </button>
 </div>
 
-<ng-template #issues let-row="row">
-  <fa-icon
-    *ngIf="hasItemsInvalidFixable(row)"
-    class="text-warning"
-    [icon]="['fas', 'triangle-exclamation']"
-  ></fa-icon>
-  <fa-icon
-    *ngIf="hasItemsInvalidNotFixable(row)"
-    class="text-danger"
-    [icon]="['fas', 'xmark-circle']"
-  ></fa-icon>
-  <fa-icon
-    *ngIf="!hasItemsInvalid(row)"
-    class="text-success"
-    [icon]="['fas', 'circle-check']"
-  ></fa-icon>
-</ng-template>
-
 <ng-template
   #whitespace
   let-indentation="indentation"
   let-openFolder="openFolder"
 >
-  <ng-container *ngFor="let indent of replaceMe(indentation)">
+  <ng-container *ngFor="let indent of indentation">
     <span class="vertical-line"></span>
     <div class="whitespace-block"></div>
   </ng-container>

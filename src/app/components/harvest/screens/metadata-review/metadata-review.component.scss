@@ -8,14 +8,17 @@
   .grid-table-row {
     display: contents;
 
-    &:nth-child(2n) {
-      .grid-table-item {
-        background-color: rgba(0, 0, 0, 0.05);
-      }
+    &:nth-child(2n) .grid-table-item {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    &:last-child .grid-table-item {
+      border-bottom: 2px solid #d1d4d7;
     }
 
     .grid-table-header {
       line-height: 24px;
+      border-bottom: 2px solid #d1d4d7;
     }
 
     .grid-table-item {
@@ -26,12 +29,16 @@
     }
   }
 
+  .table-progress {
+    grid-column: 1 / 6;
+  }
+
   .path-extended {
-    grid-column: 1 / 3;
+    grid-column: 1 / 2;
   }
 
   .issues-extended {
-    grid-column: 3 / 5;
+    grid-column: 2 / 5;
     position: relative;
 
     .dropdown-icon {
@@ -40,6 +47,10 @@
       top: var(--padding);
       cursor: pointer;
     }
+  }
+
+  .create-mapping {
+    grid-column: 2 / 5;
   }
 
   .load-more {
@@ -84,10 +95,10 @@
 
 .callout {
   display: block;
-  width: auto;
+  width: 100%;
   word-break: break-word;
   padding: 0.25rem;
-  line-height: 1em;
+  line-height: 1.5em;
 
   &.callout-warning {
     background-color: hsla(var(--baw-warning-hsl), 0.075);
@@ -97,6 +108,11 @@
   &.callout-danger {
     background-color: hsla(var(--baw-danger-hsl), 0.075);
     border-left: 0.25rem solid hsla(var(--baw-danger-hsl), 0.5);
+  }
+
+  &.callout-error {
+    background-color: rgba(0, 0, 0, 0.075);
+    border-left: 0.25rem solid black;
   }
 }
 
@@ -119,6 +135,7 @@
 // achieved using JS: https://stackoverflow.com/questions/3508605/how-can-i-transition-height-0-to-height-auto-using-css
 .expander-wrapper {
   display: grid;
+  width: 100%;
 
   .expander {
     display: flex;
@@ -129,9 +146,21 @@
     }
 
     .content {
-      flex-basis: 1.26em;
+      flex-basis: 1.8em;
       transition: 0.1s;
       overflow: hidden;
     }
   }
+}
+
+.badge {
+  height: min-content;
+}
+
+:host ::ng-deep .fa-custom-counter {
+  transform: scale(0.4) translateX(50%) translateY(75%);
+}
+
+.fa-custom-icon {
+  font-size: 1.5em;
 }
