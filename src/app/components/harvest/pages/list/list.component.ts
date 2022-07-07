@@ -32,6 +32,7 @@ class ListComponent extends PageComponent implements OnInit {
       orderBy: "createdAt",
     },
   };
+  public canCreateHarvestCapability: boolean;
 
   public constructor(
     private harvestsApi: HarvestsService,
@@ -40,12 +41,9 @@ class ListComponent extends PageComponent implements OnInit {
     super();
   }
 
-  public canCreateHarvestCapability(): boolean {
-    return this.project.can("createHarvest").can;
-  }
-
   public ngOnInit(): void {
     this.project = this.route.snapshot.data[projectKey].model;
+    this.canCreateHarvestCapability = this.project.can("createHarvest").can;
   }
 
   public getModels = (filters: Filters<Harvest>) =>
