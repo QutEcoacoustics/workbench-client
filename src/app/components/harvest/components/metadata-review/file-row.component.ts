@@ -1,0 +1,148 @@
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { MetaReviewFile } from "@components/harvest/screens/metadata-review/metadata-review.component";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { HarvestMapping } from "@models/Harvest";
+import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
+
+interface ValidationMessage {
+  type: string;
+  message: string;
+}
+
+@Component({
+  selector: "baw-meta-review-file-row",
+  template: `
+    <!-- Icon and Path -->
+    <div class="grid-table-item path-extended">
+      <!-- Whitespace -->
+      <baw-meta-review-whitespace
+        style="display: contents"
+        [indentation]="row.indentation"
+      ></baw-meta-review-whitespace>
+      <fa-icon class="me-2" [icon]="['fas', 'file']"></fa-icon>
+      <small>{{ row.path }}</small>
+      <span
+        class="badge bg-secondary ms-3"
+        [ngbTooltip]="(report.itemsSizeBytes | number) + ' bytes'"
+      >
+        {{ report.itemsSize }}
+      </span>
+    </div>
+    <!-- Issues -->
+    <div class="grid-table-item issues-extended">
+      <div *ngIf="harvestItem.hasItemsInvalid" class="dropdown-icon">
+        <fa-icon
+          [icon]="['fas', row.showValidations ? 'chevron-up' : 'chevron-down']"
+          (click)="row.showValidations = !row.showValidations"
+        ></fa-icon>
+      </div>
+
+      <div class="expander-wrapper">
+        <div class="expander" [class.expand]="row.showValidations">
+          <div class="content">
+            <small
+              *ngFor="let validation of validationMessages"
+              class="callout"
+              [ngClass]="['callout-' + validation.type]"
+            >
+              {{ validation.message }}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="grid-table-item">
+      <div class="icon-wrapper">
+        <fa-icon
+          *ngIf="harvestItem.hasItemsInvalidFixable"
+          class="text-warning"
+          [icon]="icons.warningCircle"
+        ></fa-icon>
+        <fa-icon
+          *ngIf="harvestItem.hasItemsInvalidNotFixable"
+          class="text-danger"
+          [icon]="icons.failureCircle"
+        ></fa-icon>
+        <fa-icon
+          *ngIf="!harvestItem.hasItemsInvalid"
+          class="text-success"
+          [icon]="icons.successCircle"
+        ></fa-icon>
+        <fa-icon
+          *ngIf="harvestItem.hasItemsErrored"
+          class="text-black"
+          [icon]="icons.errorCircle"
+        ></fa-icon>
+      </div>
+    </div>
+  `,
+  styleUrls: ["file-row.component.scss"],
+  // Nothing in this component can change without a change in the row
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FileRowComponent implements OnInit {
+  @Input() public row: MetaReviewFile;
+
+  public validationMessages: ValidationMessage[];
+  public icons = {
+    folderOpen: ["fas", "folder-open"] as IconProp,
+    folderClosed: ["fas", "folder-closed"] as IconProp,
+    successCircle: ["fas", "circle-check"] as IconProp,
+    success: ["fas", "check"] as IconProp,
+    warningCircle: ["fas", "circle-exclamation"] as IconProp,
+    warning: ["fas", "triangle-exclamation"] as IconProp,
+    failureCircle: ["fas", "xmark-circle"] as IconProp,
+    failure: ["fas", "xmark"] as IconProp,
+    errorCircle: ["fas", "xmark-circle"] as IconProp,
+    error: ["fas", "xmark"] as IconProp,
+  };
+
+  public get mapping(): HarvestMapping {
+    return this.row.mapping;
+  }
+
+  public get harvestItem(): HarvestItem {
+    return this.row.harvestItem;
+  }
+
+  public get report(): HarvestItemReport {
+    return this.harvestItem.report;
+  }
+
+  public ngOnInit(): void {
+    this.validationMessages = [];
+
+    this.harvestItem.validations?.forEach((validation) => {
+      if (validation.status === "notFixable") {
+        // Prepend non fixable messages to the start
+        this.validationMessages.unshift({
+          type: "danger",
+          message: validation.message,
+        });
+      } else {
+        // Append fixable messages to the end
+        this.validationMessages.push({
+          type: "warning",
+          message: validation.message,
+        });
+      }
+    });
+
+    if (this.harvestItem.hasItemsErrored) {
+      // Prepend error message to the start
+      this.validationMessages.unshift({
+        type: "error",
+        message: "An unknown error has occurred",
+      });
+    }
+  }
+
+  public toggleValidationMessages(row: MetaReviewFile): void {
+    row.showValidations = !row.showValidations;
+  }
+}

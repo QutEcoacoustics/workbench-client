@@ -114,6 +114,26 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
     return !isInstantiated(this.id);
   }
 
+  public get hasItemsInvalidFixable(): boolean {
+    return this.report.itemsInvalidFixable > 0;
+  }
+
+  public get hasItemsInvalidNotFixable(): boolean {
+    return this.report.itemsInvalidNotFixable > 0;
+  }
+
+  public get hasItemsErrored(): boolean {
+    return this.report.itemsErrored > 0;
+  }
+
+  public get hasItemsInvalid(): boolean {
+    return (
+      this.hasItemsInvalidFixable ||
+      this.hasItemsInvalidNotFixable ||
+      this.hasItemsErrored
+    );
+  }
+
   public get viewUrl(): string {
     throw new Error("HarvestItem viewUrl not implemented");
   }

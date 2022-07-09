@@ -40,7 +40,6 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
       .utc-label,
       select {
         width: 100%;
-        min-width: 130px;
       }
     `,
   ],

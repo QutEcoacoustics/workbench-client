@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -10,13 +11,16 @@ import { ToastrService } from "ngx-toastr";
 import {
   BehaviorSubject,
   catchError,
+  delay,
   filter,
   interval,
   Observable,
+  of,
   Subject,
   Subscription,
   switchMap,
   takeUntil,
+  tap,
   throwError,
 } from "rxjs";
 
@@ -99,7 +103,7 @@ export class HarvestStagesService extends withUnsubscribe() {
   public startPolling(intervalMs: number): void {
     this.harvestInterval = interval(intervalMs)
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(() => this.reloadModel());
+      .subscribe((): void => this.reloadModel());
   }
 
   public stopPolling(): void {
@@ -112,16 +116,37 @@ export class HarvestStagesService extends withUnsubscribe() {
   ): void {
     // We want this api request to complete regardless of lifecycle destruction
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.harvestApi.transitionStatus(this.harvest, stage).subscribe({
-      next: (harvest): void => {
-        onComplete(harvest);
-        this.setHarvest(harvest);
-      },
-      error: (err: BawApiError) => {
-        onComplete(err);
-        this.notifications.error(err.message);
-      },
-    });
+    this.harvestApi
+      .transitionStatus(this.harvest, stage)
+      .pipe(
+        catchError((err: BawApiError) => {
+          if (err.status !== CLIENT_TIMEOUT) {
+            return throwError(() => err);
+          }
+
+          const delaySeconds = 5;
+          this.notifications.info(
+            `Attempting to reload page in ${delaySeconds} seconds`
+          );
+          // Just in case, check if the transition was successful. Long
+          // transitions can cause timeouts
+          of(null).pipe(
+            delay(delaySeconds * 1000),
+            tap(() => this.harvestTrigger$?.next())
+          );
+          return throwError(() => err);
+        })
+      )
+      .subscribe({
+        next: (harvest): void => {
+          onComplete(harvest);
+          this.setHarvest(harvest);
+        },
+        error: (err: BawApiError): void => {
+          onComplete(err);
+          this.notifications.error(err.message);
+        },
+      });
   }
 
   public isCurrentStage(stage: HarvestStatus): boolean {

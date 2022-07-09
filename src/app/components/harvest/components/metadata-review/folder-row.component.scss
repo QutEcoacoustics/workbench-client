@@ -1,0 +1,30 @@
+:host ::ng-deep .fa-custom-counter {
+  transform: scale(0.4) translateX(50%) translateY(75%);
+}
+
+.fa-custom-icon {
+  font-size: 1.5em;
+}
+
+.icon-wrapper {
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+
+  & > *:nth-child(n) {
+    margin-right: 0.5rem;
+  }
+
+  & > *:last-child {
+    margin-right: 0;
+  }
+}
+
+.create-mapping {
+  grid-column: 2 / 5;
+}
+
+.badge {
+  height: min-content;
+}

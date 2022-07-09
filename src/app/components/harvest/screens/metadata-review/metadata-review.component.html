@@ -18,21 +18,22 @@
 
 <div class="grid-table mb-3">
   <!-- Headers -->
-  <div class="grid-table-row">
-    <div class="grid-table-header">Path</div>
-    <div class="grid-table-header">{{ siteColumnLabel }}</div>
-    <div class="grid-table-header">UTC offset</div>
-    <div class="grid-table-header">Recursive</div>
-    <div class="grid-table-header"></div>
+  <div class="grid-table-header">
+    <div class="grid-table-item">Path</div>
+    <div class="grid-table-item">{{ siteColumnLabel }}</div>
+    <div class="grid-table-item">UTC offset</div>
+    <div class="grid-table-item">Recursive</div>
+    <div class="grid-table-item"></div>
   </div>
 
   <!-- Re-use the progress animation from ngx-datatable -->
-  <div
-    *ngIf="tableLoading"
-    class="grid-table-item table-progress progress-linear"
-  >
-    <div class="container">
-      <div class="bar"></div>
+  <div class="grid-table-row">
+    <div>
+      <div *ngIf="tableLoading" class="table-progress progress-linear">
+        <div class="container">
+          <div class="bar"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -40,200 +41,25 @@
     *ngFor="let row of rows.toArray(); trackBy: trackByRow; let i = index"
     class="grid-table-row"
   >
-    <!-- Folder Row -->
-    <ng-container *ngIf="row.rowType === RowType.folder">
-      <!-- Icon and Path -->
-      <div class="grid-table-item">
-        <!-- Whitespace -->
-        <ng-container
-          [ngTemplateOutlet]="whitespace"
-          [ngTemplateOutletContext]="{
-            indentation: row.indentation,
-            openFolder: row.isOpen && !row.isRoot
-          }"
-        ></ng-container>
-        <button
-          class="btn btn-link p-0 text-decoration-none me-3"
-          (click)="toggleFolder(i)"
-        >
-          <fa-layers class="fa-custom-icon" [fixedWidth]="true">
-            <fa-icon
-              [icon]="['fas', row.isOpen ? 'folder-open' : 'folder-closed']"
-            ></fa-icon>
-            <fa-layers-counter
-              *ngIf="!row.isRoot"
-              class="text-light"
-              [content]="row.harvestItem?.report.itemsTotal ?? 0 | number"
-              [classes]="['fa-custom-counter']"
-            ></fa-layers-counter>
-          </fa-layers>
-        </button>
-        <div>
-          {{ row.path }}
-        </div>
-      </div>
-      <!-- Create Mapping -->
-      <div *ngIf="!row.mapping" class="grid-table-item create-mapping">
-        <button
-          class="btn btn-sm btn-outline-primary"
-          (click)="createMapping(row)"
-        >
-          Change Site or UTC for folder
-        </button>
-      </div>
-      <!-- Site Selector -->
-      <div *ngIf="row.mapping" class="grid-table-item">
-        <baw-loading
-          *ngIf="row.mapping.site | isUnresolved; else siteSelector"
-          size="sm"
-        ></baw-loading>
+    <baw-meta-review-folder-row
+      *ngIf="isFolder(row)"
+      [harvest]="harvest"
+      [project]="project"
+      [row]="row"
+      (toggleFolder)="toggleFolder(i)"
+      (mappingsChange)="updateHarvestWithMappingChange()"
+    ></baw-meta-review-folder-row>
 
-        <ng-template #siteSelector>
-          <baw-harvest-site-selector
-            [project]="project"
-            [site]="row.mapping.site"
-            (siteIdChange)="setSite(row.mapping, $event)"
-          ></baw-harvest-site-selector>
-        </ng-template>
-      </div>
-      <!-- UTC Offset -->
-      <div *ngIf="row.mapping" class="grid-table-item">
-        <baw-harvest-utc-offset-selector
-          [offset]="row.mapping.utcOffset"
-          (offsetChange)="setOffset(row.mapping, $event)"
-        ></baw-harvest-utc-offset-selector>
-      </div>
-      <!-- Recursive -->
-      <div *ngIf="row.mapping" class="grid-table-item">
-        <baw-checkbox
-          [checked]="row.mapping.recursive"
-          (checkedChange)="setIsRecursive(row.mapping, $event)"
-        ></baw-checkbox>
-      </div>
-      <!-- Issue Icons -->
-      <div class="grid-table-item">
-        <div *ngIf="!row.isRoot" class="icon-wrapper">
-          <span *ngIf="hasItemsInvalidFixable(row)" class="badge bg-warning">
-            <fa-icon [icon]="icons.warning"></fa-icon>
-            {{ row.harvestItem.report.itemsInvalidFixable | number }}
-          </span>
-          <span
-            *ngIf="hasItemsInvalidNotFixable(row)"
-            class="badge bg-danger text-light"
-          >
-            <fa-icon [icon]="icons.failure"></fa-icon>
-            {{ row.harvestItem.report.itemsInvalidNotFixable | number }}
-          </span>
-          <span *ngIf="hasItemsErrored(row)" class="badge bg-black text-light">
-            <fa-icon [icon]="icons.errorCircle"></fa-icon>
-            {{ row.harvestItem.report.itemsErrored | number }}
-          </span>
-          <fa-icon
-            *ngIf="!hasItemsInvalid(row)"
-            class="text-success"
-            [icon]="['fas', 'circle-check']"
-          ></fa-icon>
-        </div>
-      </div>
-    </ng-container>
+    <baw-meta-review-file-row
+      *ngIf="isFile(row)"
+      [row]="row"
+    ></baw-meta-review-file-row>
 
-    <!-- File Row -->
-    <ng-container *ngIf="row.rowType === RowType.file">
-      <!-- Icon and Path -->
-      <div class="grid-table-item path-extended">
-        <!-- Whitespace -->
-        <ng-container
-          [ngTemplateOutlet]="whitespace"
-          [ngTemplateOutletContext]="{ indentation: row.indentation }"
-        ></ng-container>
-        <fa-icon class="me-2" [icon]="['fas', 'file']"></fa-icon>
-        <small>{{ row.path }}</small>
-        <span
-          class="badge bg-secondary ms-3"
-          [ngbTooltip]="
-            (row.harvestItem.report.itemsSizeBytes | number) + ' bytes'
-          "
-        >
-          {{ row.harvestItem.report.itemsSize }}
-        </span>
-      </div>
-      <!-- Issues -->
-      <div class="grid-table-item issues-extended">
-        <div *ngIf="hasItemsInvalid(row)" class="dropdown-icon">
-          <fa-icon
-            [icon]="[
-              'fas',
-              row.showValidations ? 'chevron-up' : 'chevron-down'
-            ]"
-            (click)="row.showValidations = !row.showValidations"
-          ></fa-icon>
-        </div>
-
-        <div class="expander-wrapper">
-          <div class="expander" [class.expand]="row.showValidations">
-            <div class="content">
-              <small
-                *ngFor="let validation of getValidationMessages(row)"
-                class="callout"
-                [ngClass]="['callout-' + validation.type]"
-              >
-                {{ validation.message }}
-              </small>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="grid-table-item">
-        <div class="icon-wrapper">
-          <fa-icon
-            *ngIf="hasItemsInvalidFixable(row)"
-            class="text-warning"
-            [icon]="icons.warningCircle"
-          ></fa-icon>
-          <fa-icon
-            *ngIf="hasItemsInvalidNotFixable(row)"
-            class="text-danger"
-            [icon]="icons.failureCircle"
-          ></fa-icon>
-          <fa-icon
-            *ngIf="!hasItemsInvalid(row)"
-            class="text-success"
-            [icon]="icons.successCircle"
-          ></fa-icon>
-          <fa-icon
-            *ngIf="hasItemsErrored(row)"
-            class="text-black"
-            [icon]="icons.errorCircle"
-          ></fa-icon>
-        </div>
-      </div>
-    </ng-container>
-
-    <!-- Load More Row -->
-    <ng-container *ngIf="row.rowType === RowType.loadMore">
-      <div class="grid-table-item load-more">
-        <!-- Whitespace -->
-        <ng-container
-          [ngTemplateOutlet]="whitespace"
-          [ngTemplateOutletContext]="{
-            indentation: row.parentFolder.indentation
-          }"
-        ></ng-container>
-
-        <baw-loading *ngIf="row.isLoading" class="m-auto"></baw-loading>
-
-        <button
-          *ngIf="!row.isLoading"
-          class="btn btn-sm btn-outline-primary m-auto"
-          (click)="loadMore(i)"
-        >
-          Load More from
-          <span class="font-monospace">{{
-            row.parentFolder.path || "root folder"
-          }}</span>
-        </button>
-      </div>
-    </ng-container>
+    <baw-meta-review-load-more-row
+      *ngIf="isLoadMore(row)"
+      [row]="row"
+      (loadMore)="loadMore(i)"
+    ></baw-meta-review-load-more-row>
   </div>
 </div>
 
@@ -267,16 +93,3 @@
     }}
   </button>
 </div>
-
-<ng-template
-  #whitespace
-  let-indentation="indentation"
-  let-openFolder="openFolder"
->
-  <ng-container *ngFor="let indent of indentation">
-    <span class="vertical-line"></span>
-    <div class="whitespace-block"></div>
-  </ng-container>
-
-  <span *ngIf="openFolder" class="vertical-half-line"></span>
-</ng-template>

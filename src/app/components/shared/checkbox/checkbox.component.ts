@@ -9,7 +9,7 @@ import {
 @Component({
   selector: "baw-checkbox",
   template: `
-    <div [ngClass]="{ 'mx-auto': isCentered }" style="width: 24px;">
+    <div class="checkbox-wrapper" [ngClass]="{ 'mx-auto': isCentered }">
       <div class="custom-control custom-checkbox">
         <input
           type="checkbox"
@@ -23,6 +23,13 @@ import {
       </div>
     </div>
   `,
+  styles: [
+    `
+      .checkbox-wrapper {
+        width: min-content;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckboxComponent {

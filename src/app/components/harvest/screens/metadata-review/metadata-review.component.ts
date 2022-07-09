@@ -25,7 +25,7 @@ enum RowType {
   loadMore,
 }
 
-interface Base {
+export interface MetaReviewBase {
   rowType: RowType;
   harvestItem?: HarvestItem;
   /**
@@ -35,32 +35,35 @@ interface Base {
   mapping?: HarvestMapping;
 }
 
-interface Item extends Base {
+export interface MetaReviewItem extends MetaReviewBase {
   path: string;
-  parentFolder?: Folder;
+  parentFolder?: MetaReviewFolder;
   indentation: Array<void>;
 }
 
-interface File extends Item {
+export interface MetaReviewFile extends MetaReviewItem {
   rowType: RowType.file;
   showValidations: boolean;
 }
 
-interface Folder extends Item {
+export interface MetaReviewFolder extends MetaReviewItem {
   rowType: RowType.folder;
   isOpen: boolean;
   page: number;
   isRoot: boolean;
 }
 
-interface LoadMore extends Base {
+export interface MetaReviewLoadMore extends MetaReviewBase {
   rowType: RowType.loadMore;
-  parentFolder?: Folder;
+  parentFolder?: MetaReviewFolder;
   page: number;
   isLoading: boolean;
 }
 
-type Row = File | Folder | LoadMore;
+export type MetaReviewRow =
+  | MetaReviewFile
+  | MetaReviewFolder
+  | MetaReviewLoadMore;
 
 const rootMappingPath = "";
 
@@ -79,7 +82,7 @@ export class MetadataReviewComponent
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public RowType = RowType;
 
-  public rows: List<Row>;
+  public rows: List<MetaReviewRow>;
   /** List of harvest items, indexes must match mappings */
   public harvestItems: HarvestItem[];
   /** List of mappings, indexes must match harvestItems */
@@ -125,7 +128,7 @@ export class MetadataReviewComponent
     this.siteColumnLabel = this.config.settings.hideProjects ? "Point" : "Site";
     this.statistics = this.getStatistics(this.stages.harvest);
 
-    const rootFolder: Folder = {
+    const rootFolder: MetaReviewFolder = {
       rowType: RowType.folder,
       isRoot: true,
       indentation: [],
@@ -135,7 +138,7 @@ export class MetadataReviewComponent
       parentFolder: null,
     };
 
-    this.rows = List<Row>([rootFolder]);
+    this.rows = List<MetaReviewRow>([rootFolder]);
     this.loadMore(0);
   }
 
@@ -194,7 +197,7 @@ export class MetadataReviewComponent
   }
 
   public toggleFolder(index: number): void {
-    const row = this.rows.get(index) as Folder;
+    const row = this.rows.get(index) as MetaReviewFolder;
     if (row.isOpen) {
       this.closeFolder(index);
     } else {
@@ -204,18 +207,19 @@ export class MetadataReviewComponent
   }
 
   public loadMore(index: number): void {
-    const row = this.rows.get(index) as Folder | LoadMore;
+    const row = this.rows.get(index) as MetaReviewFolder | MetaReviewLoadMore;
     this.tableLoading = true;
 
     this.harvestItemsApi
       .listByPage(row.page, this.project, this.harvest, row.harvestItem)
       .pipe(first(), takeUntil(this.unsubscribe))
       .subscribe((harvestItems): void => {
-        const parentFolder: Folder = this.isFolder(row)
+        const parentFolder: MetaReviewFolder = this.isFolder(row)
           ? row
           : row.parentFolder;
         const newRows = harvestItems.map(
-          (harvestItem): Row => this.generateRow(harvestItem, parentFolder)
+          (harvestItem): MetaReviewRow =>
+            this.generateRow(harvestItem, parentFolder)
         );
 
         const meta = harvestItems[0]?.getMetadata();
@@ -236,7 +240,7 @@ export class MetadataReviewComponent
   }
 
   public closeFolder(index: number): void {
-    function isChild(parent: Folder, child: Row): boolean {
+    function isChild(parent: MetaReviewFolder, child: MetaReviewRow): boolean {
       let lineage = child?.parentFolder;
       while (isInstantiated(lineage) && lineage !== parent) {
         lineage = lineage.parentFolder;
@@ -244,7 +248,7 @@ export class MetadataReviewComponent
       return lineage === parent;
     }
 
-    const row = this.rows.get(index) as Folder;
+    const row = this.rows.get(index) as MetaReviewFolder;
     row.isOpen = false;
 
     // Find any children, and increment offset
@@ -285,35 +289,20 @@ export class MetadataReviewComponent
     this.stages.transition(stage, () => (this.loading = false));
   }
 
-  public setSite(mapping: HarvestMapping, siteId: number): void {
-    mapping.siteId = siteId;
-    this.updateHarvestWithMappingChange();
-  }
-
-  public setOffset(mapping: HarvestMapping, offset: string): void {
-    mapping.utcOffset = offset;
-    this.updateHarvestWithMappingChange();
-  }
-
-  public setIsRecursive(mapping: HarvestMapping, isRecursive: boolean): void {
-    mapping.recursive = isRecursive;
-    this.updateHarvestWithMappingChange();
-  }
-
-  public isFolder(row: Row): row is Folder {
+  public isFolder(row: MetaReviewRow): row is MetaReviewFolder {
     return row.rowType === RowType.folder;
   }
 
-  public isFile(row: Row): row is File {
+  public isFile(row: MetaReviewRow): row is MetaReviewFile {
     return row.rowType === RowType.file;
   }
 
-  public isLoadMore(row: Row): row is LoadMore {
+  public isLoadMore(row: MetaReviewRow): row is MetaReviewLoadMore {
     return row.rowType === RowType.loadMore;
   }
 
   public getValidationMessages(
-    row: Folder | File
+    row: MetaReviewFolder | MetaReviewFile
   ): { type: string; message: string }[] {
     // TODO Sort to make nonfixable errors on top
     const messages = (row.harvestItem.validations ?? []).map((validation) => ({
@@ -331,25 +320,27 @@ export class MetadataReviewComponent
     return messages;
   }
 
-  public toggleValidationMessages(row: File | Folder): void {
+  public toggleValidationMessages(
+    row: MetaReviewFile | MetaReviewFolder
+  ): void {
     if (this.isFile(row)) {
       row.showValidations = !row.showValidations;
     }
   }
 
-  public hasItemsInvalidFixable(row: Row): boolean {
+  public hasItemsInvalidFixable(row: MetaReviewRow): boolean {
     return row.harvestItem?.report.itemsInvalidFixable > 0;
   }
 
-  public hasItemsInvalidNotFixable(row: Row): boolean {
+  public hasItemsInvalidNotFixable(row: MetaReviewRow): boolean {
     return row.harvestItem?.report.itemsInvalidNotFixable > 0;
   }
 
-  public hasItemsErrored(row: Row): boolean {
+  public hasItemsErrored(row: MetaReviewRow): boolean {
     return row.harvestItem?.report.itemsErrored > 0;
   }
 
-  public hasItemsInvalid(row: Row): boolean {
+  public hasItemsInvalid(row: MetaReviewRow): boolean {
     return (
       this.hasItemsInvalidFixable(row) ||
       this.hasItemsInvalidNotFixable(row) ||
@@ -357,7 +348,7 @@ export class MetadataReviewComponent
     );
   }
 
-  public createMapping(row: Folder): void {
+  public createMapping(row: MetaReviewFolder): void {
     const mapping = new HarvestMapping(
       {
         // Root folder does not have a harvest item
@@ -372,8 +363,10 @@ export class MetadataReviewComponent
     this.harvest.mappings.push(mapping);
   }
 
-  public trackByRow = (_: number, row: Row): string =>
-    (row as Folder).isRoot ? (row as Folder).path : row.harvestItem?.path;
+  public trackByRow = (_: number, row: MetaReviewRow): string =>
+    (row as MetaReviewFolder).isRoot
+      ? (row as MetaReviewFolder).path
+      : row.harvestItem?.path;
 
   private findMapping(
     harvest: Harvest,
@@ -386,9 +379,9 @@ export class MetadataReviewComponent
   }
 
   private generateLoadMore(
-    parentRow: Folder | LoadMore | null,
-    parentFolder: Folder | null
-  ): LoadMore {
+    parentRow: MetaReviewFolder | MetaReviewLoadMore | null,
+    parentFolder: MetaReviewFolder | null
+  ): MetaReviewLoadMore {
     return {
       rowType: RowType.loadMore,
       harvestItem: parentRow.harvestItem,
@@ -399,7 +392,10 @@ export class MetadataReviewComponent
     };
   }
 
-  private generateRow(harvestItem: HarvestItem, parentRow: Folder): Row {
+  private generateRow(
+    harvestItem: HarvestItem,
+    parentRow: MetaReviewFolder
+  ): MetaReviewRow {
     const mapping = this.findMapping(this.harvest, harvestItem);
     // While it is technically possible in linux to have filenames which
     // include the character '/', our server should block it from being used
@@ -420,7 +416,7 @@ export class MetadataReviewComponent
         parentFolder: parentRow,
         indentation: Array(indentation),
         isRoot: false,
-      } as Folder;
+      } as MetaReviewFolder;
     } else {
       return {
         rowType: RowType.file,
@@ -430,11 +426,11 @@ export class MetadataReviewComponent
         parentFolder: parentRow,
         indentation: Array(indentation),
         showValidations: false,
-      } as File;
+      } as MetaReviewFile;
     }
   }
 
-  private updateHarvestWithMappingChange(): void {
+  public updateHarvestWithMappingChange(): void {
     this.hasUnsavedChanges = true;
     this.harvestApi
       .updateMappings(

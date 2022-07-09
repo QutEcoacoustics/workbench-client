@@ -4,6 +4,10 @@ import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { SiteSelectorComponent } from "./components/inputs/site-selector.component";
 import { UTCOffsetSelectorComponent } from "./components/inputs/utc-offset-selector.component";
+import { FileRowComponent } from "./components/metadata-review/file-row.component";
+import { FolderRowComponent } from "./components/metadata-review/folder-row.component";
+import { LoadMoreComponent } from "./components/metadata-review/load-more.component";
+import { WhitespaceComponent } from "./components/metadata-review/whitespace.component";
 import { CanCloseDialogComponent } from "./components/shared/can-close-dialog.component";
 import {
   StatisticGroupComponent,
@@ -43,6 +47,12 @@ const internalComponents = [
   TitleComponent,
   UploadProgressComponent,
   UploadUrlComponent,
+
+  // Meta Review
+  FolderRowComponent,
+  FileRowComponent,
+  WhitespaceComponent,
+  LoadMoreComponent,
 
   // Input
   SiteSelectorComponent,

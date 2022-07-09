@@ -17,11 +17,13 @@ import {
   BawApiError,
   isBawApiError,
 } from "@helpers/custom-errors/baw-api-error";
-import { BAD_GATEWAY, NOT_FOUND } from "http-status";
+import { NOT_FOUND } from "http-status";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
-import { BawSessionService } from "./baw-session.service";
 import { ApiResponse } from "./baw-api.service";
+import { BawSessionService } from "./baw-session.service";
+
+export const CLIENT_TIMEOUT = 0;
 
 /**
  * BAW API Interceptor.
@@ -124,11 +126,11 @@ export class BawApiInterceptor implements HttpInterceptor {
     }
 
     // Response timed out
-    if (response.status === 0) {
+    if (response.status === CLIENT_TIMEOUT) {
       const error = new BawApiError(
-        BAD_GATEWAY,
-        "Unable to reach our servers right now." +
-          "This may be an issue with your connection to us, " +
+        CLIENT_TIMEOUT,
+        "A request took longer than expected to return, " +
+          "this may be an issue with your connection to us, " +
           "or a temporary issue with our services."
       );
       return throwError(() => error);
