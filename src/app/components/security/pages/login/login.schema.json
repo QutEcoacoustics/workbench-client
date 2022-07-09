@@ -4,6 +4,9 @@
       "key": "login",
       "type": "input",
       "templateOptions": {
+        "attributes": {
+          "autocomplete": "username"
+        },
         "label": "Username or Email Address",
         "type": "text",
         "required": true
@@ -13,6 +16,9 @@
       "key": "password",
       "type": "input",
       "templateOptions": {
+        "attributes": {
+          "autocomplete": "current-password"
+        },
         "label": "Password",
         "type": "password",
         "minLength": 6,

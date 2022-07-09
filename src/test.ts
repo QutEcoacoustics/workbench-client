@@ -14,7 +14,7 @@ import { injectableMatchers } from "@test/matchers/injectables";
 
 declare const require: any;
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
 
 beforeEach(function () {
   // Load matchers into jasmine

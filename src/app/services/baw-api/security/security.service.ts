@@ -7,6 +7,7 @@ import {
 } from "@baw-api/baw-form-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { LoginDetails } from "@models/data/LoginDetails";
@@ -14,8 +15,15 @@ import { RegisterDetails } from "@models/data/RegisterDetails";
 import { Session, User } from "@models/User";
 import { UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
-import { Observable, throwError } from "rxjs";
-import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
+import { Observable } from "rxjs";
+import {
+  catchError,
+  first,
+  map,
+  mergeMap,
+  switchMap,
+  tap,
+} from "rxjs/operators";
 import { UserService } from "../user/user.service";
 
 const signUpParam = "sign_up" as const;
@@ -137,20 +145,28 @@ export class SecurityService {
    * Logout user and clear session storage values
    */
   public signOut(): Observable<void> {
-    return this.api.destroy(signOutEndpoint()).pipe(
-      tap(() => this.clearData()),
-      catchError((err) => {
-        this.clearData();
-        // Don't use handleError function from api service, as it will throw
-        // out a notification
-        return throwError(() => err);
-      })
-    ) as Observable<void>;
+    return (
+      this.api
+        // Sign out without notification so that signUp and signIn endpoints
+        // don't show failure notifications
+        .destroy(signOutEndpoint(), { disableNotification: true })
+        .pipe(
+          tap(() => this.clearData()),
+          catchError((err: BawApiError) => {
+            this.clearData();
+            return this.api.handleError(err, true);
+          })
+        )
+    );
   }
 
   /** Get details of currently logged in user */
   public sessionDetails(): Observable<Session> {
-    return this.api.show(Session, sessionUserEndpoint(Date.now().toString()));
+    return this.api.show(Session, sessionUserEndpoint(Date.now().toString()), {
+      // This is used when we are unsure if the user is logged in, no need to
+      // show an error as it generally is an expected outcome
+      disableNotification: true,
+    });
   }
 
   /**
@@ -179,17 +195,19 @@ export class SecurityService {
       .pipe(
         tap((page) => pageValidation(page)),
         // Trade the cookie for an API auth token (mimicking old baw-client)
-        mergeMap(() => this.sessionDetails()),
+        switchMap(() => this.sessionDetails()),
+        // Only accept the first result from the API (can return multiple times)
+        first(),
         // Save to local storage
         tap((user: Session) => (authToken = user.authToken)),
         // Get user details
-        mergeMap(() => this.userService.show()),
+        switchMap(() => this.userService.showWithoutNotification()),
+        // Only accept the first result from the API (can return multiple times)
+        first(),
         // Update session user with user details and save to local storage
         tap((user: User) => this.session.setLoggedInUser(user, authToken)),
         // Void output
-        map(() => undefined),
-        // Complete observable
-        first(),
+        map(() => {}),
         catchError((err) => {
           this.clearData();
 
@@ -209,7 +227,7 @@ export class SecurityService {
     this.sessionDetails()
       .pipe(
         tap((user) => (authToken = user.authToken)),
-        mergeMap(() => this.userService.show()),
+        mergeMap(() => this.userService.showWithoutNotification()),
         first()
       )
       .subscribe({
@@ -223,9 +241,9 @@ export class SecurityService {
   }
 
   /**
-   * Clear session and cookie data, then trigger authTrigger
+   * Clear session and cookie data
    */
-  private clearData() {
+  private clearData(): void {
     this.session.clearLoggedInUser();
     this.cookies.deleteAll();
   }

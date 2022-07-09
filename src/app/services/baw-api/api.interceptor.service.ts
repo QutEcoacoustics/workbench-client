@@ -95,7 +95,7 @@ export class BawApiInterceptor implements HttpInterceptor {
           ? response.clone({ body: toCamelCase(response.body) })
           : response
       ),
-      catchError((response) => this.handleError(response))
+      catchError(this.handleError)
     );
   }
 
@@ -105,9 +105,9 @@ export class BawApiInterceptor implements HttpInterceptor {
    * @param response HTTP Error
    * @throws Observable<never>
    */
-  private handleError(
+  private handleError = (
     response: HttpErrorResponse | ApiErrorResponse | BawApiError
-  ): Observable<never> {
+  ): Observable<never> => {
     // Interceptor has already handled this error
     if (isBawApiError(response)) {
       return throwError(() => response);
@@ -147,7 +147,7 @@ export class BawApiInterceptor implements HttpInterceptor {
     // Unknown error occurred, throw generic error
     console.error("Unknown error occurred: ", response);
     return throwError(() => new BawApiError(response.status, response.message));
-  }
+  };
 }
 
 /**

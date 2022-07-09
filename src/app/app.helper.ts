@@ -9,6 +9,9 @@ export const toastrRoot: Partial<GlobalConfig> = {
   closeButton: true,
   enableHtml: true,
   positionClass: "toast-top-center",
+  preventDuplicates: true,
+  includeTitleDuplicates: false,
+  resetTimeoutOnDuplicate: true,
 };
 
 /**

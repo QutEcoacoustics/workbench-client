@@ -79,7 +79,7 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
       // Complete observable
       first(),
       // Handle custom errors
-      catchError((err: BawApiError) => this.handleError(err))
+      catchError(this.handleError)
     );
   }
 
@@ -94,10 +94,9 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
   }
 
   /**
-   * Retrieve a recatpcha seed for a form
+   * Retrieve a recaptcha seed for a form
    *
-   * @param path Path to retrieve recatpcha seed from
-   * @param extractSeed Regex to extract recaptcha seed from HTML response
+   * @param path Path to retrieve recaptcha seed from
    */
   public getRecaptchaSeed(path: string): Observable<RecaptchaSettings> {
     // Mock a HTML request to the server
@@ -116,7 +115,7 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
       // Complete observable
       first(),
       // Handle custom errors
-      catchError((err: BawApiError) => this.handleError(err))
+      catchError(this.handleError)
     );
   }
 
@@ -160,9 +159,8 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
   /**
    * @see BawApiService.handleError for more information
    */
-  public handleError(err: BawApiError | Error): Observable<never> {
-    return this.api.handleError(err);
-  }
+  public handleError = (err: BawApiError | Error): Observable<never> =>
+    this.api.handleError(err);
 
   /**
    * @see BawApiService.getPath for more information

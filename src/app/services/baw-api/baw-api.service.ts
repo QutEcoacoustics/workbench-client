@@ -19,12 +19,20 @@ import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { cacheSettings } from "@services/cache/cache-settings";
 import { ToastrService } from "ngx-toastr";
 import { Observable, throwError } from "rxjs";
-import { map, mergeMap, switchMap, tap } from "rxjs/operators";
+import { catchError, map, mergeMap, switchMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { BawSessionService } from "./baw-session.service";
 
 export const defaultApiPageSize = 25;
 export const unknownErrorCode = -1;
+
+interface NotificationsOpt {
+  disableNotification?: boolean;
+}
+
+interface CacheOpt {
+  disableCache?: boolean;
+}
 
 /** Default headers for API requests */
 export const defaultApiHeaders = new HttpHeaders({
@@ -127,20 +135,24 @@ export class BawApiService<
   }
 
   /**
-   * Handle custom Errors thrown in API services
+   * Normalise errors thrown in API services to BawApiError's
    *
    * @param err Error
+   * @param disableNotification If unset, a notification will be shown to the
+   * user with the details of the error
    */
-  public handleError(err: BawApiError | Error): Observable<never> {
+  public handleError = (
+    err: BawApiError | Error,
+    disableNotification?: boolean
+  ): Observable<never> => {
     const error = isBawApiError(err)
       ? err
       : new BawApiError(unknownErrorCode, err.message);
-
-    this.notifications.error(error.formattedMessage("<br />"), undefined, {
-      disableTimeOut: true,
-    });
-    return throwError(() => error);
-  }
+    if (!disableNotification) {
+      this.notifications.error(error.formattedMessage("<br />"));
+    }
+    return throwError((): BawApiError => error);
+  };
 
   /**
    * Get response from list route
@@ -148,12 +160,19 @@ export class BawApiService<
    * @param classBuilder Model to create
    * @param path API path
    */
-  public list(classBuilder: ClassBuilder, path: string): Observable<Model[]> {
+  public list(
+    classBuilder: ClassBuilder,
+    path: string,
+    opts?: CacheOpt & NotificationsOpt
+  ): Observable<Model[]> {
     return this.session.authTrigger.pipe(
       switchMap(() =>
-        this.httpGet(path, defaultApiHeaders, { cache: cacheSettings.enabled })
+        this.httpGet(path, defaultApiHeaders, {
+          cache: cacheSettings.enabled && !opts?.disableCache,
+        })
       ),
-      map(this.handleCollectionResponse(classBuilder))
+      map(this.handleCollectionResponse(classBuilder)),
+      catchError((err) => this.handleError(err, opts?.disableNotification))
     );
   }
 
@@ -167,11 +186,13 @@ export class BawApiService<
   public filter(
     classBuilder: ClassBuilder,
     path: string,
-    filters: Filters<Model>
+    filters: Filters<Model>,
+    opts?: NotificationsOpt
   ): Observable<Model[]> {
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters)),
-      map(this.handleCollectionResponse(classBuilder))
+      map(this.handleCollectionResponse(classBuilder)),
+      catchError((err) => this.handleError(err, opts?.disableNotification))
     );
   }
 
@@ -184,15 +205,16 @@ export class BawApiService<
   public show(
     classBuilder: ClassBuilder,
     path: string,
-    cache: boolean = true
+    opts?: CacheOpt & NotificationsOpt
   ): Observable<Model> {
     return this.session.authTrigger.pipe(
       switchMap(() =>
         this.httpGet(path, defaultApiHeaders, {
-          cache: cacheSettings.enabled && cache,
+          cache: cacheSettings.enabled && !opts?.disableCache,
         })
       ),
-      map(this.handleSingleResponse(classBuilder))
+      map(this.handleSingleResponse(classBuilder)),
+      catchError((err) => this.handleError(err, opts?.disableNotification))
     );
   }
 
@@ -209,7 +231,8 @@ export class BawApiService<
     classBuilder: ClassBuilder,
     createPath: string,
     updatePath: (model: Model) => string,
-    model: AbstractModel
+    model: AbstractModel,
+    opts?: NotificationsOpt
   ): Observable<Model> {
     const jsonData = model?.getJsonAttributes?.({ create: true });
     const body = model.kind
@@ -230,7 +253,9 @@ export class BawApiService<
       );
     }
 
-    return request;
+    return request.pipe(
+      catchError((err) => this.handleError(err, opts?.disableNotification))
+    );
   }
 
   /**
@@ -244,7 +269,8 @@ export class BawApiService<
   public update(
     classBuilder: ClassBuilder,
     path: string,
-    model: AbstractModel
+    model: AbstractModel,
+    opts?: NotificationsOpt
   ): Observable<Model> {
     const jsonData = model.getJsonAttributes?.({ update: true });
     const body = model.kind
@@ -262,7 +288,9 @@ export class BawApiService<
         map(this.handleSingleResponse(classBuilder))
       );
     }
-    return request.pipe(tap(() => this.clearCache(path)));
+    return request.pipe(
+      catchError((err) => this.handleError(err, opts?.disableNotification))
+    );
   }
 
   /**
@@ -270,10 +298,11 @@ export class BawApiService<
    *
    * @param path API path
    */
-  public destroy(path: string): Observable<null> {
+  public destroy(path: string, opts?: NotificationsOpt): Observable<null> {
     return this.httpDelete(path).pipe(
       map(this.handleEmptyResponse),
-      tap(() => this.clearCache(path))
+      tap(() => this.clearCache(path)),
+      catchError((err) => this.handleError(err, opts?.disableNotification))
     );
   }
 
@@ -425,7 +454,7 @@ export class BawApiService<
     key: AssociationKeys<Model>,
     models: string[] | number[],
     comparison: keyof Subsets = "in"
-  ) {
+  ): Filters<Model> {
     return this.associationFilter(filters, key, models, comparison);
   }
 

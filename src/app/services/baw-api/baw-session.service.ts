@@ -39,7 +39,14 @@ export class BawSessionService {
   }
 
   /** Clear user details */
-  public clearLoggedInUser(): void {
+  public async clearLoggedInUser(): Promise<void> {
+    if (
+      this._loggedInUser === guestUser &&
+      this._authToken === guestAuthToken
+    ) {
+      return;
+    }
+
     this._loggedInUser = guestUser;
     this._authToken = guestAuthToken;
     this._authTrigger.next({ user: guestUser });

@@ -1,6 +1,7 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { CacheModule } from "@services/cache/cache.module";
+import { ToastrModule } from "ngx-toastr";
 import { AppConfigModule } from "../config/config.module";
 import { BawApiInterceptor } from "./api.interceptor.service";
 import { BawApiService } from "./baw-api.service";
@@ -11,7 +12,7 @@ import { SecurityService } from "./security/security.service";
 import { serviceResolvers, services, serviceTokens } from "./ServiceProviders";
 
 @NgModule({
-  imports: [HttpClientModule, AppConfigModule, CacheModule],
+  imports: [HttpClientModule, AppConfigModule, CacheModule, ToastrModule],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
