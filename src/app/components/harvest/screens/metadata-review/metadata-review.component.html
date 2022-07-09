@@ -66,7 +66,7 @@
 <div class="d-flex justify-content-between">
   <button
     class="btn btn-outline-primary"
-    [disabled]="loading"
+    [disabled]="transitioningStage"
     (click)="onBackClick()"
   >
     Upload more files
@@ -74,18 +74,17 @@
   <button
     *ngIf="harvest.isMappingsDirty"
     class="btn btn-primary"
-    [disabled]="loading"
+    [disabled]="transitioningStage"
     (click)="onSaveClick()"
   >
     Check changes
   </button>
-  <!-- Redirect to metadata extraction instead of next step if changes made -->
   <!-- TODO Modal popup when hasUnsavedChanges -->
   <button
     class="btn"
     [class.btn-primary]="!harvest.isMappingsDirty"
     [class.btn-warning]="harvest.isMappingsDirty"
-    [disabled]="loading"
+    [disabled]="transitioningStage"
     (click)="onNextClick()"
   >
     {{

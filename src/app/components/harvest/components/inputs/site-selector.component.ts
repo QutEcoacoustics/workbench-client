@@ -153,7 +153,7 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   }
 
   public resetSite(): void {
-    this.prevValue = this.value;
+    this.prevValue = this.site;
     this.site = null;
     this.emitSite(this.site);
   }

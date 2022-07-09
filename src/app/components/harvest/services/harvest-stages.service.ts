@@ -28,6 +28,11 @@ import {
 export class HarvestStagesService extends withUnsubscribe() {
   public project: Project;
   public stage: HarvestStatus;
+  /**
+   * If true, state of harvest is in transition, and buttons to transition
+   * state should be disabled
+   */
+  public transitioningStage: boolean;
 
   private _harvest$ = new BehaviorSubject<Harvest | null>(null);
   private harvestTrigger$ = new Subject<void>();
@@ -110,10 +115,9 @@ export class HarvestStagesService extends withUnsubscribe() {
     this.harvestInterval?.unsubscribe();
   }
 
-  public transition(
-    stage: HarvestStatus,
-    onComplete: (resp: Harvest | BawApiError) => void
-  ): void {
+  public transition(stage: HarvestStatus): void {
+    this.transitioningStage = true;
+
     // We want this api request to complete regardless of lifecycle destruction
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.harvestApi
@@ -132,19 +136,19 @@ export class HarvestStagesService extends withUnsubscribe() {
           // transitions can cause timeouts
           of(null).pipe(
             delay(delaySeconds * 1000),
-            tap(() => this.harvestTrigger$?.next())
+            tap((): void => this.harvestTrigger$?.next())
           );
           return throwError(() => err);
         })
       )
       .subscribe({
         next: (harvest): void => {
-          onComplete(harvest);
           this.setHarvest(harvest);
+          this.transitioningStage = true;
         },
         error: (err: BawApiError): void => {
-          onComplete(err);
           this.notifications.error(err.message);
+          this.transitioningStage = true;
         },
       });
   }
@@ -153,7 +157,7 @@ export class HarvestStagesService extends withUnsubscribe() {
     return this.stage === stage;
   }
 
-  public calculateProgress(numItems: number) {
+  public calculateProgress(numItems: number): number {
     if (this.harvest.report.itemsTotal === 0) {
       return 0;
     }
@@ -174,7 +178,7 @@ export class HarvestStagesService extends withUnsubscribe() {
   private trackHarvest(): void {
     this.harvestTrigger$
       .pipe(
-        filter(() => isInstantiated(this.harvest)),
+        filter((): boolean => isInstantiated(this.harvest)),
         switchMap(
           (): Observable<Harvest> =>
             this.harvestApi.showWithoutCache(this.harvest, this.project)
