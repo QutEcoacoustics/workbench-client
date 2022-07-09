@@ -37,11 +37,7 @@ import { FORBIDDEN, UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
 import { ToastrService } from "ngx-toastr";
 import { noop, Subject, throwError } from "rxjs";
-import {
-  shouldNotComplete,
-  shouldNotFail,
-  shouldNotSucceed,
-} from "../baw-api.service.spec";
+import { shouldNotFail, shouldNotSucceed } from "../baw-api.service.spec";
 import { UserService } from "../user/user.service";
 import { SecurityService } from "./security.service";
 
@@ -59,7 +55,7 @@ describe("SecurityService", () => {
     apiDestroy: Subject<null>;
     getRecaptchaSeed: Subject<RecaptchaSettings>;
     makeFormRequest: Subject<string>;
-    userShow: Subject<User>;
+    userShowWithoutNotification: Subject<User>;
   };
   let session: BawSessionService;
   let userApi: UserService;
@@ -102,9 +98,9 @@ describe("SecurityService", () => {
     );
   }
 
-  function triggerUserShow(model: Errorable<User>) {
+  function triggerUserShowWithoutNotification(model: Errorable<User>) {
     return nStepObservable(
-      subjects.userShow,
+      subjects.userShowWithoutNotification,
       () => model,
       isBawApiError(model)
     );
@@ -112,7 +108,7 @@ describe("SecurityService", () => {
 
   async function handleAuthTokenRetrievalDuringInitialization() {
     await triggerApiShow(defaults.session);
-    await triggerUserShow(defaults.user);
+    await triggerUserShowWithoutNotification(defaults.user);
     session.clearLoggedInUser();
   }
 
@@ -122,7 +118,14 @@ describe("SecurityService", () => {
       apiDestroy: new Subject(),
       getRecaptchaSeed: new Subject(),
       makeFormRequest: new Subject(),
-      userShow: new Subject(),
+      userShowWithoutNotification: new Subject(),
+    };
+
+    const handleError = (err) => {
+      const error = isBawApiError(err)
+        ? err
+        : new BawApiError(unknownErrorCode, err.message);
+      return throwError(() => error);
     };
 
     spec = createService({
@@ -132,6 +135,10 @@ describe("SecurityService", () => {
           destroy: jasmine
             .createSpy("destroy")
             .and.callFake(() => subjects.apiDestroy),
+          // TODO Would prefer this to actually use the real service
+          handleError: jasmine
+            .createSpy("handleError")
+            .and.callFake(handleError),
         }),
         mockProvider(BawFormApiService, {
           getRecaptchaSeed: jasmine
@@ -141,15 +148,14 @@ describe("SecurityService", () => {
             .createSpy("makeFormRequest")
             .and.callFake(() => subjects.makeFormRequest),
           // TODO Would prefer this to actually use the real service
-          handleError: jasmine.createSpy("handleError").and.callFake((err) => {
-            const error = isBawApiError(err)
-              ? err
-              : new BawApiError(unknownErrorCode, err.message);
-            return throwError(() => error);
-          }),
+          handleError: jasmine
+            .createSpy("handleError")
+            .and.callFake(handleError),
         }),
         mockProvider(UserService, {
-          show: jasmine.createSpy("show").and.callFake(() => subjects.userShow),
+          showWithoutNotification: jasmine
+            .createSpy("showWithoutNotification")
+            .and.callFake(() => subjects.userShowWithoutNotification),
         }),
       ],
     });
@@ -365,7 +371,7 @@ describe("SecurityService", () => {
     }
 
     function interceptUser(model: Errorable<User>) {
-      return triggerUserShow(model);
+      return triggerUserShowWithoutNotification(model);
     }
 
     function interceptMakeFormRequest(
@@ -502,7 +508,7 @@ describe("SecurityService", () => {
         interceptUser(defaults.user);
         handleAuth().subscribe({ next: noop, error: noop });
         await initialSteps;
-        expect(userApi.show).toHaveBeenCalled();
+        expect(userApi.showWithoutNotification).toHaveBeenCalled();
       });
 
       it("should handle user details failure", (done) => {
@@ -535,17 +541,6 @@ describe("SecurityService", () => {
             done();
           },
         });
-      });
-
-      it("should trigger authTrigger", async () => {
-        const trigger = session.authTrigger as Subject<AuthTriggerData>;
-        trigger.subscribe({ complete: shouldNotComplete });
-        spyOn(trigger, "next").and.callThrough();
-        expect(trigger.next).toHaveBeenCalledTimes(0);
-        const promise = initialSteps();
-        handleAuth().subscribe({ next: noop, error: noop });
-        await promise;
-        expect(trigger.next).toHaveBeenCalledTimes(1);
       });
 
       it("should call next", (done) => {
@@ -612,13 +607,6 @@ describe("SecurityService", () => {
       spec.service["clearData"]();
       expect(session.clearLoggedInUser).toHaveBeenCalled();
     });
-
-    it("should trigger authTrigger", () => {
-      spec.service["clearData"]();
-      expect(
-        (session.authTrigger as Subject<AuthTriggerData>).next
-      ).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe("signOut", () => {
@@ -629,7 +617,9 @@ describe("SecurityService", () => {
     it("should call destroy", async () => {
       spec.service.signOut().subscribe({ next: noop, error: noop });
       await triggerApiDestroy();
-      expect(api.destroy).toHaveBeenCalledWith("/security/");
+      expect(api.destroy).toHaveBeenCalledWith("/security/", {
+        disableNotification: true,
+      });
     });
 
     it("should handle response", (done) => {

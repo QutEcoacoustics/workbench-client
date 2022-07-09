@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { User } from "@models/User";
-import { BehaviorSubject, distinctUntilChanged, Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 
 export type GuestUser = undefined;
 export type GuestAuthToken = undefined;
@@ -59,11 +59,6 @@ export class BawSessionService {
 
   /** Returns a subject which tracks the change in loggedIn status */
   public get authTrigger(): Observable<AuthTriggerData> {
-    return this._authTrigger.pipe(
-      // Only trigger when the state of the users auth has changed
-      distinctUntilChanged(
-        (prev, curr): boolean => prev.authToken === curr.authToken
-      )
-    );
+    return this._authTrigger;
   }
 }

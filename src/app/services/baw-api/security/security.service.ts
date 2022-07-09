@@ -241,7 +241,7 @@ export class SecurityService {
   }
 
   /**
-   * Clear session and cookie data, then trigger authTrigger
+   * Clear session and cookie data
    */
   private clearData(): void {
     this.session.clearLoggedInUser();
