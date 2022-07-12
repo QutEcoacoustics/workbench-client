@@ -9,7 +9,7 @@
     display: flex;
     flex-direction: row;
     padding: var(--table-padding);
-    background-color: white;
+    background-color: inherit;
   }
 }
 
@@ -31,11 +31,6 @@
     display: contents;
   }
 
-  .grid-table-header .grid-table-item {
-    line-height: 24px;
-    border-bottom: 2px solid #d1d4d7;
-  }
-
   .grid-table-row {
     > * {
       display: contents;
@@ -43,7 +38,11 @@
   }
 
   .table-progress {
-    display: grid;
-    grid-column: 1 / 6;
+    .wrapper {
+      min-height: 7px;
+      border-bottom: 2px solid #d1d4d7;
+      display: grid;
+      grid-column: 1 / 6;
+    }
   }
 }

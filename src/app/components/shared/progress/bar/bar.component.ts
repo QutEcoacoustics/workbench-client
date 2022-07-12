@@ -14,6 +14,7 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
       [ngStyle]="{ width: progress + '%' }"
       [ngbTooltip]="description"
     >
+      <!-- TODO Don't show progress text if text is clipping off screen -->
       {{ progress + "%" }}
     </div>
   `,

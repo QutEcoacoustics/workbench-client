@@ -8,6 +8,7 @@ import { Project } from "@models/Project";
       <small class="text-muted"> Project: {{ project.name }} </small>
       <br />
       Upload Recordings
+      <!-- TODO Show stage here -->
     </h1>
   `,
 })

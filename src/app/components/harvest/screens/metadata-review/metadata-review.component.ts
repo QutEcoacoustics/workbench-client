@@ -16,7 +16,14 @@ import { Project } from "@models/Project";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import { first, takeUntil } from "rxjs";
+import {
+  concatMap,
+  first,
+  firstValueFrom,
+  Subject,
+  takeUntil,
+  tap,
+} from "rxjs";
 
 enum RowType {
   folder,
@@ -64,6 +71,8 @@ export type MetaReviewRow =
   | MetaReviewFolder
   | MetaReviewLoadMore;
 
+export type Rows = List<MetaReviewRow>;
+
 const rootMappingPath = "";
 
 @Component({
@@ -78,11 +87,15 @@ export class MetadataReviewComponent
   /** Changes to harvest have not yet been saved to the server */
   public hasUnsavedChanges: boolean;
   public newSiteMenuItem = newSiteMenuItem;
-  public rows: List<MetaReviewRow>;
+  public rows: Rows = List<MetaReviewRow>([]);
   public siteColumnLabel: "Point" | "Site";
   public statistics: Statistic[][];
   /** Table is loading new data */
   public tableLoading: boolean;
+
+  private userInputBuffer$ = new Subject<
+    MetaReviewFolder | MetaReviewLoadMore
+  >();
 
   public icons = {
     successCircle: ["fas", "circle-check"] as IconProp,
@@ -125,69 +138,47 @@ export class MetadataReviewComponent
       rowType: RowType.folder,
       isRoot: true,
       indentation: [],
-      isOpen: true,
+      isOpen: false,
       page: 1,
       path: rootMappingPath,
       parentFolder: null,
+      mapping: this.harvest.mappings.find(
+        (mapping) => mapping.path === rootMappingPath
+      ),
     };
 
     this.rows = List<MetaReviewRow>([rootFolder]);
-    this.loadMore(0);
+
+    this.userInputBuffer$
+      .pipe(
+        concatMap(async (row): Promise<Rows> => {
+          let rows = this.rows;
+          const index = rows.findIndex((_row): boolean => _row === row);
+
+          if (this.isLoadMore(row)) {
+            return await this.loadMore(rows, index, row);
+          }
+
+          if (row.isOpen) {
+            rows = this.closeFolder(rows, index, row);
+          } else {
+            rows = await this.loadMore(rows, index, row);
+          }
+          row.isOpen = !row.isOpen;
+          return rows;
+        }),
+        tap((rows): void => {
+          this.rows = rows;
+        }),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe();
+
+    this.toggleRow(rootFolder);
   }
 
-  /**
-   * Toggle a folder between opened and closed
-   *
-   * @param index Row index of folder
-   */
-  public toggleFolder(index: number): void {
-    const row = this.rows.get(index) as MetaReviewFolder;
-    if (row.isOpen) {
-      this.closeFolder(index);
-    } else {
-      this.loadMore(index);
-    }
-    row.isOpen = !row.isOpen;
-  }
-
-  /**
-   * Load more harvest items for the folder, and create table rows for them. If
-   * the folder has more harvest items left, this will also create a load more
-   * row
-   *
-   * @param index Row index of folder
-   */
-  public loadMore(index: number): void {
-    const row = this.rows.get(index) as MetaReviewFolder | MetaReviewLoadMore;
-    this.tableLoading = true;
-
-    this.harvestItemsApi
-      .listByPage(row.page, this.project, this.harvest, row.harvestItem)
-      .pipe(first(), takeUntil(this.unsubscribe))
-      .subscribe((harvestItems): void => {
-        const parentFolder: MetaReviewFolder = this.isFolder(row)
-          ? row
-          : row.parentFolder;
-        const newRows = harvestItems.map(
-          (harvestItem): MetaReviewRow =>
-            this.generateRow(harvestItem, parentFolder)
-        );
-
-        const meta = harvestItems[0]?.getMetadata();
-        if (meta && meta.paging.maxPage !== meta.paging.page) {
-          newRows.push(this.generateLoadMore(parentFolder, row.page + 1));
-        }
-
-        if (this.isFolder(row)) {
-          // Insert elements after row without replacing anything
-          const firstChildIndex = index + 1;
-          this.rows = this.rows.splice(firstChildIndex, 0, ...newRows);
-        } else {
-          // Insert elements replace load more row
-          this.rows = this.rows.splice(index, 1, ...newRows);
-        }
-        this.tableLoading = false;
-      });
+  public toggleRow(row: MetaReviewFolder | MetaReviewLoadMore): void {
+    this.userInputBuffer$.next(row);
   }
 
   /** Transition harvest to processing stage */
@@ -241,7 +232,8 @@ export class MetadataReviewComponent
       .updateMappings(this.harvest, mappings)
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       .subscribe({
-        next: (): void => {
+        next: (harvest: Harvest): void => {
+          this.stages.setHarvest(harvest);
           this.hasUnsavedChanges = false;
         },
         error: (err: BawApiError) =>
@@ -250,12 +242,72 @@ export class MetadataReviewComponent
   }
 
   /**
+   * Load more harvest items for the folder, and create table rows for them. If
+   * the folder has more harvest items left, this will also create a load more
+   * row
+   *
+   * @param row Table row
+   */
+  private async loadMore(
+    rows: Rows,
+    rowIndex: number,
+    row: MetaReviewFolder | MetaReviewLoadMore
+  ): Promise<Rows> {
+    this.tableLoading = true;
+
+    // Retrieve harvest items
+    let harvestItems: HarvestItem[];
+    try {
+      harvestItems = await firstValueFrom(
+        this.harvestItemsApi
+          .listByPage(row.page, this.project, this.harvest, row.harvestItem)
+          .pipe(first(), takeUntil(this.unsubscribe))
+      );
+    } catch (err: any) {
+      console.error(err);
+      this.notification.error(
+        `Failed to load the contents of ${row.harvestItem.path}`
+      );
+      this.tableLoading = false;
+      return rows;
+    }
+
+    const parentFolder: MetaReviewFolder = this.isFolder(row)
+      ? row
+      : row.parentFolder;
+    const newRows = harvestItems.map(
+      (harvestItem): MetaReviewRow =>
+        this.generateRow(harvestItem, parentFolder)
+    );
+
+    const meta = harvestItems[0]?.getMetadata();
+    if (meta && meta.paging.maxPage !== meta.paging.page) {
+      newRows.push(this.generateLoadMore(parentFolder, row.page + 1));
+    }
+
+    if (this.isFolder(row)) {
+      // Insert elements after row without replacing anything
+      const firstChildIndex = rowIndex + 1;
+      rows = rows.splice(firstChildIndex, 0, ...newRows);
+    } else {
+      // Insert elements replace load more row
+      rows = rows.splice(rowIndex, 1, ...newRows);
+    }
+    this.tableLoading = false;
+    return rows;
+  }
+
+  /**
    * Close a folder, removing its children (and grandchildren) from the table
    * rows
    *
-   * @param index Row index of folder
+   * @param row Table row
    */
-  private closeFolder(index: number): void {
+  private closeFolder(
+    rows: Rows,
+    rowIndex: number,
+    row: MetaReviewFolder
+  ): Rows {
     /**
      * Check if the parent, or ancestors, of the child row match the parent
      * folder
@@ -271,14 +323,12 @@ export class MetadataReviewComponent
       return lineage === parent;
     }
 
-    const row = this.rows.get(index) as MetaReviewFolder;
-
     // Find any children, and increment offset
     let offset = 1;
-    let currRow = this.rows.get(index + offset);
+    let currRow = rows.get(rowIndex + offset);
     while (isChild(row, currRow)) {
       offset++;
-      currRow = this.rows.get(index + offset);
+      currRow = rows.get(rowIndex + offset);
     }
 
     // Remove final row from list as it is not a child
@@ -290,8 +340,8 @@ export class MetadataReviewComponent
     }
 
     // Remove all children
-    const firstChildIndex = index + 1;
-    this.rows = this.rows.splice(firstChildIndex, offset);
+    const firstChildIndex = rowIndex + 1;
+    return rows.splice(firstChildIndex, offset);
   }
 
   /**

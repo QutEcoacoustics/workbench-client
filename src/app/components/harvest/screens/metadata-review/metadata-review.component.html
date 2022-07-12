@@ -27,9 +27,9 @@
   </div>
 
   <!-- Re-use the progress animation from ngx-datatable -->
-  <div class="grid-table-row">
-    <div>
-      <div *ngIf="tableLoading" class="table-progress progress-linear">
+  <div class="grid-table-header table-progress">
+    <div class="wrapper">
+      <div *ngIf="tableLoading" class="progress-linear">
         <div class="container">
           <div class="bar"></div>
         </div>
@@ -37,34 +37,35 @@
     </div>
   </div>
 
+  <!--
+    We could use css to determine if the row is even, however this can increase
+    repaint times
+  -->
   <div
-    *ngFor="
-      let row of rows.toArray();
-      let i = index;
-      let even = even;
-      trackBy: trackByRow
-    "
+    *ngFor="let row of rows.toArray(); let even = even; trackBy: trackByRow"
     class="grid-table-row"
-    [class.even]="even"
   >
     <baw-meta-review-folder-row
       *ngIf="isFolder(row)"
       [harvest]="harvest"
       [project]="project"
       [row]="row"
-      (toggleFolder)="toggleFolder(i)"
+      [ngStyle]="{ backgroundColor: even ? 'rgba(0, 0, 0, 0.05)' : 'white' }"
+      (toggleFolder)="toggleRow(row)"
       (mappingsChange)="updateHarvestWithMappingChange()"
     ></baw-meta-review-folder-row>
 
     <baw-meta-review-file-row
       *ngIf="isFile(row)"
       [row]="row"
+      [ngStyle]="{ backgroundColor: even ? 'rgba(0, 0, 0, 0.05)' : 'white' }"
     ></baw-meta-review-file-row>
 
     <baw-meta-review-load-more-row
       *ngIf="isLoadMore(row)"
       [row]="row"
-      (loadMore)="loadMore(i)"
+      [ngStyle]="{ backgroundColor: even ? 'rgba(0, 0, 0, 0.05)' : 'white' }"
+      (loadMore)="toggleRow(row)"
     ></baw-meta-review-load-more-row>
   </div>
 </div>

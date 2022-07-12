@@ -88,7 +88,7 @@ export class HarvestStagesService extends withUnsubscribe() {
     this.setHarvest(harvest);
   }
 
-  private setHarvest(harvest: Harvest): void {
+  public setHarvest(harvest: Harvest): void {
     this._harvest$.next(harvest);
     this.setStage(harvest.status);
   }

@@ -119,7 +119,14 @@ export class ShallowHarvestItemsService
     const filter = this.api.filterThroughAssociation(
       {
         projection: {
-          include: ["id", "harvestId", "path", "status", "audioRecordingId"],
+          include: [
+            "id",
+            "harvestId",
+            "path",
+            "status",
+            "audioRecordingId",
+            "validations",
+          ],
         },
       },
       "harvests.id" as any,

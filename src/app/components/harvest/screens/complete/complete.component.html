@@ -1,5 +1,3 @@
-<h3>Finished</h3>
-
 <baw-harvest-statistics [statistics]="getStatistics(report)">
   <baw-harvest-statistic-group>
     <baw-harvest-statistic-item [statistic]="downloadIcon">
@@ -16,6 +14,14 @@
     </baw-harvest-statistic-item>
   </baw-harvest-statistic-group>
 </baw-harvest-statistics>
+
+<div>
+  <a
+    class="btn btn-outline-primary mx-auto"
+    [strongRoute]="projectMenuItem.route"
+    >Finished</a
+  >
+</div>
 
 <h4 class="my-3">Uploaded Recordings</h4>
 
