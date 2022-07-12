@@ -95,7 +95,7 @@ export function toRelative(
   dur: Duration,
   opts?: HumanizeDurationOptions
 ): string {
-  return humanizeDuration(dur.as("milliseconds"), opts);
+  return humanizeDuration(dur.as("milliseconds"), { delimiter: " ", ...opts });
 }
 
 /**

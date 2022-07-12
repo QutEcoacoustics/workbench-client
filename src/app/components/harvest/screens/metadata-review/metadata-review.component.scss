@@ -1,10 +1,6 @@
 :host ::ng-deep {
   .grid-table-row {
-    &:last-child .grid-table-item {
-      border-bottom: 2px solid #d1d4d7;
-    }
-
-    &:nth-of-type(2n + 1) .grid-table-item {
+    &.even .grid-table-item {
       background-color: rgba(0, 0, 0, 0.05);
     }
   }
@@ -28,6 +24,7 @@
     min-content
     min-content;
   grid-template-rows: 1fr;
+  border-bottom: 2px solid #d1d4d7;
 
   .grid-table-row,
   .grid-table-header {

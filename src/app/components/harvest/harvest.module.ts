@@ -9,11 +9,10 @@ import { FolderRowComponent } from "./components/metadata-review/folder-row.comp
 import { LoadMoreComponent } from "./components/metadata-review/load-more.component";
 import { WhitespaceComponent } from "./components/metadata-review/whitespace.component";
 import { CanCloseDialogComponent } from "./components/shared/can-close-dialog.component";
-import {
-  StatisticGroupComponent,
-  StatisticItemComponent,
-  StatisticsComponent,
-} from "./components/shared/statistics.component";
+import { EtaComponent } from "./components/shared/eta.component";
+import { StatisticGroupComponent } from "./components/shared/statistics/group.component";
+import { StatisticItemComponent } from "./components/shared/statistics/item.component";
+import { StatisticsComponent } from "./components/shared/statistics/statistics.component";
 import { TitleComponent } from "./components/shared/title.component";
 import { UploadProgressComponent } from "./components/shared/upload-progress.component";
 import { UploadUrlComponent } from "./components/shared/upload-url.component";
@@ -22,6 +21,7 @@ import { DetailsComponent } from "./pages/details/details.component";
 import { ListComponent } from "./pages/list/list.component";
 import { NewComponent } from "./pages/new/new.component";
 import { CompleteComponent } from "./screens/complete/complete.component";
+import { ErrorComponent } from "./screens/error/error.component";
 import { MetadataExtractionComponent } from "./screens/metadata-extraction/metadata-extraction.component";
 import { MetadataReviewComponent } from "./screens/metadata-review/metadata-review.component";
 import { ProcessingComponent } from "./screens/processing/processing.component";
@@ -33,6 +33,7 @@ const internalComponents = [
   // Screens
   BatchUploadingComponent,
   CompleteComponent,
+  ErrorComponent,
   MetadataExtractionComponent,
   MetadataReviewComponent,
   ProcessingComponent,
@@ -41,18 +42,19 @@ const internalComponents = [
 
   // Shared
   CanCloseDialogComponent,
-  StatisticItemComponent,
+  EtaComponent,
   StatisticGroupComponent,
+  StatisticItemComponent,
   StatisticsComponent,
   TitleComponent,
   UploadProgressComponent,
   UploadUrlComponent,
 
   // Meta Review
-  FolderRowComponent,
   FileRowComponent,
-  WhitespaceComponent,
+  FolderRowComponent,
   LoadMoreComponent,
+  WhitespaceComponent,
 
   // Input
   SiteSelectorComponent,

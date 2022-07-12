@@ -144,11 +144,11 @@ export class HarvestStagesService extends withUnsubscribe() {
       .subscribe({
         next: (harvest): void => {
           this.setHarvest(harvest);
-          this.transitioningStage = true;
+          this.transitioningStage = false;
         },
         error: (err: BawApiError): void => {
           this.notifications.error(err.message);
-          this.transitioningStage = true;
+          this.transitioningStage = false;
         },
       });
   }

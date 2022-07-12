@@ -3,7 +3,7 @@ import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recording
 import { Filters } from "@baw-api/baw-api.service";
 import { ShallowHarvestItemsService } from "@baw-api/harvest/harvest-items.service";
 import { audioRecordingsRoutes } from "@components/audio-recordings/audio-recording.routes";
-import { Statistic } from "@components/harvest/components/shared/statistics.component";
+import { Statistic } from "@components/harvest/components/shared/statistics/statistics.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { toRelative } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";

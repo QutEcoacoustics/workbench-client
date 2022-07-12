@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { HarvestItemsService } from "@baw-api/harvest/harvest-items.service";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
-import { Statistic } from "@components/harvest/components/shared/statistics.component";
+import { Statistic } from "@components/harvest/components/shared/statistics/statistics.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";

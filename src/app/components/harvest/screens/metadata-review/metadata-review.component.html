@@ -38,8 +38,14 @@
   </div>
 
   <div
-    *ngFor="let row of rows.toArray(); trackBy: trackByRow; let i = index"
+    *ngFor="
+      let row of rows.toArray();
+      let i = index;
+      let even = even;
+      trackBy: trackByRow
+    "
     class="grid-table-row"
+    [class.even]="even"
   >
     <baw-meta-review-folder-row
       *ngIf="isFolder(row)"
