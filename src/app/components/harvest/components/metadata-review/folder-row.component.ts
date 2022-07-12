@@ -88,22 +88,19 @@ import { Project } from "@models/Project";
       <div *ngIf="!row.isRoot" class="icon-wrapper">
         <span
           *ngIf="harvestItem.hasItemsInvalidFixable"
-          class="badge bg-warning"
+          class="badge text-bg-warning"
         >
           <fa-icon [icon]="icons.warning"></fa-icon>
           {{ report.itemsInvalidFixable | number }}
         </span>
         <span
           *ngIf="harvestItem.hasItemsInvalidNotFixable"
-          class="badge bg-danger text-light"
+          class="badge text-bg-danger text-light"
         >
           <fa-icon [icon]="icons.failure"></fa-icon>
           {{ report.itemsInvalidNotFixable | number }}
         </span>
-        <span
-          *ngIf="harvestItem.hasItemsErrored"
-          class="badge bg-black text-light"
-        >
+        <span *ngIf="harvestItem.hasItemsErrored" class="badge text-bg-dark">
           <fa-icon [icon]="icons.errorCircle"></fa-icon>
           {{ report.itemsErrored | number }}
         </span>

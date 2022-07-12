@@ -15,8 +15,8 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
 @Component({
   selector: "baw-footer",
   template: `
-    <footer class="container-fluid bg-light">
-      <nav class="container navbar navbar-expand-lg navbar-light bg-light">
+    <footer class="container-fluid text-bg-light">
+      <nav class="container navbar navbar-expand-lg navbar-light text-bg-light">
         <ul class="nav me-auto align-items-center m-auto">
           <li class="nav-item">
             <p id="copyright" class="nav-link disabled m-0">

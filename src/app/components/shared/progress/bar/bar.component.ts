@@ -34,7 +34,7 @@ export class ProgressBarComponent {
   // TODO Add options for all progress-bar settings
 
   public get classes(): string {
-    const klasses = [`bg-${this.color}`, `text-${this.textColor}`];
+    const klasses = [`text-bg-${this.color}`, `text-${this.textColor}`];
 
     if (this.striped) {
       klasses.push("progress-bar-striped", "progress-bar-animated");

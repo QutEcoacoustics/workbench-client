@@ -40,7 +40,9 @@ import { map, Observable } from "rxjs";
         </div>
 
         <div class="card-badges">
-          <div *ngIf="isOwner" id="owner" class="badge bg-highlight">Owner</div>
+          <div *ngIf="isOwner" id="owner" class="badge text-bg-highlight">
+            Owner
+          </div>
           <ng-container [ngTemplateOutlet]="noAudioTemplate"></ng-container>
         </div>
       </div>
@@ -51,7 +53,7 @@ import { map, Observable } from "rxjs";
         <div
           *ngIf="hasNoAudio.value !== false"
           id="no-audio"
-          class="badge bg-secondary"
+          class="badge text-bg-secondary"
         >
           <baw-loading
             *ngIf="hasNoAudio.loading"

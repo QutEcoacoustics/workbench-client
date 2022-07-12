@@ -27,7 +27,7 @@ interface ValidationMessage {
       <fa-icon class="me-2" [icon]="['fas', 'file']"></fa-icon>
       <small>{{ row.path }}</small>
       <span
-        class="badge bg-secondary ms-3"
+        class="badge text-bg-secondary ms-3"
         [ngbTooltip]="(report.itemsSizeBytes | number) + ' bytes'"
       >
         {{ report.itemsSize }}

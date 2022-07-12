@@ -43,7 +43,6 @@ import { Harvest, HarvestReport } from "@models/Harvest";
 
       <baw-progress-bar
         color="warning"
-        textColor="dark"
         description="Files which have some problems, however can be fixed"
         [striped]="false"
         [progress]="invalidFixableProgress"

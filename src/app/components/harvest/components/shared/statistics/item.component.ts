@@ -5,7 +5,7 @@ import { Statistic } from "./statistics.component";
   selector: "baw-harvest-statistic-item",
   template: `
     <div class="card-body" [ngbTooltip]="statistic.tooltip">
-      <div class="icon" [ngClass]="'bg-' + statistic.bgColor">
+      <div class="icon" [ngClass]="'text-bg-' + statistic.bgColor">
         <fa-icon
           [icon]="statistic.icon"
           [ngClass]="'text-' + statistic.color"

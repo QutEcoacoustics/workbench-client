@@ -6,8 +6,9 @@
  */
 @mixin baw-background($property, $fallback) {
   background-color: var(--baw-#{$property}, #{$fallback}) !important;
-  // TODO This is no longer required, bootstrap has created a text-bg-property
-  // class for backgrounds with contrasting text: https://getbootstrap.com/docs/5.2/helpers/color-background/
+}
+
+@mixin baw-text-contrast($property, $fallback) {
   color: var(--baw-#{$property}-contrast, black) !important;
 }
 
@@ -15,10 +16,20 @@
   .bg-#{$theme} {
     @include baw-background($theme, $default);
   }
+
+  .text-bg-#{$theme} {
+    @include baw-background($theme, $default);
+    @include baw-text-contrast($theme, $default);
+  }
 }
 
 /* Custom highlight background */
 
 .bg-highlight {
   @include baw-background("highlight", $primary);
+}
+
+.text-bg-highlight {
+  @include baw-background("highlight", $primary);
+  @include baw-text-contrast("highlight", $primary);
 }
