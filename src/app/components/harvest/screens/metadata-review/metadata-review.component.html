@@ -47,24 +47,27 @@
   >
     <baw-meta-review-folder-row
       *ngIf="isFolder(row)"
+      class="display-contents"
       [harvest]="harvest"
       [project]="project"
       [row]="row"
-      [ngStyle]="{ backgroundColor: even ? 'rgba(0, 0, 0, 0.05)' : 'white' }"
+      [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
       (toggleFolder)="toggleRow(row)"
       (mappingsChange)="updateHarvestWithMappingChange()"
     ></baw-meta-review-folder-row>
 
     <baw-meta-review-file-row
       *ngIf="isFile(row)"
+      class="display-contents"
       [row]="row"
-      [ngStyle]="{ backgroundColor: even ? 'rgba(0, 0, 0, 0.05)' : 'white' }"
+      [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
     ></baw-meta-review-file-row>
 
     <baw-meta-review-load-more-row
       *ngIf="isLoadMore(row)"
+      class="display-contents"
       [row]="row"
-      [ngStyle]="{ backgroundColor: even ? 'rgba(0, 0, 0, 0.05)' : 'white' }"
+      [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
       (loadMore)="toggleRow(row)"
     ></baw-meta-review-load-more-row>
   </div>

@@ -49,8 +49,7 @@
       }
     ],
     "theme": {
-      "highlight": "#304f3b",
-      "warning": "#eb770a"
+      "highlight": "#304f3b"
     }
   }
 }

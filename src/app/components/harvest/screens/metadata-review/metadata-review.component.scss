@@ -1,10 +1,4 @@
 :host ::ng-deep {
-  .grid-table-row {
-    &.even .grid-table-item {
-      background-color: rgba(0, 0, 0, 0.05);
-    }
-  }
-
   .grid-table-item {
     display: flex;
     flex-direction: row;
@@ -31,12 +25,6 @@
     display: contents;
   }
 
-  .grid-table-row {
-    > * {
-      display: contents;
-    }
-  }
-
   .table-progress {
     .wrapper {
       min-height: 7px;
@@ -45,4 +33,8 @@
       grid-column: 1 / 6;
     }
   }
+}
+
+.display-contents {
+  display: contents;
 }

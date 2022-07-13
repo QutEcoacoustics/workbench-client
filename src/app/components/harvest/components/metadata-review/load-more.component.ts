@@ -13,7 +13,6 @@ import { MetaReviewLoadMore } from "@components/harvest/screens/metadata-review/
     <div class="grid-table-item load-more">
       <!-- Whitespace -->
       <baw-meta-review-whitespace
-        style="display: contents"
         [indentation]="row.parentFolder.indentation"
       ></baw-meta-review-whitespace>
 
@@ -21,13 +20,11 @@ import { MetaReviewLoadMore } from "@components/harvest/screens/metadata-review/
 
       <button
         *ngIf="!row.isLoading"
-        class="btn btn-sm btn-outline-primary m-auto"
+        class="btn btn-sm btn-outline-primary m-auto load-more"
         (click)="loadMore.emit()"
       >
-        Load More from
-        <span class="font-monospace">{{
-          row.parentFolder.path || "root folder"
-        }}</span>
+        {{ row.parentFolder.isRoot ? "Load More" : "Load more from " }}
+        <span class="font-monospace">{{ row.parentFolder.path }}</span>
       </button>
     </div>
   `,
@@ -35,6 +32,10 @@ import { MetaReviewLoadMore } from "@components/harvest/screens/metadata-review/
     `
       .load-more {
         grid-column: 1 / 6;
+      }
+
+      baw-meta-review-whitespace {
+        display: contents;
       }
     `,
   ],

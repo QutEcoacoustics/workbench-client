@@ -142,6 +142,7 @@ export class MetadataReviewComponent
       page: 1,
       path: rootMappingPath,
       parentFolder: null,
+      // Root folder does not have harvestItem, use hard-coded path for search
       mapping: this.harvest.mappings.find(
         (mapping) => mapping.path === rootMappingPath
       ),
@@ -149,19 +150,29 @@ export class MetadataReviewComponent
 
     this.rows = List<MetaReviewRow>([rootFolder]);
 
+    /*
+     * This buffers user inputs so that only one input is executed at a time.
+     * We are inserting/deleting rows, so the user inputs are dependant on the
+     * state of the previous input (as the row they clicked on may have moved).
+     */
     this.userInputBuffer$
       .pipe(
         concatMap(async (row): Promise<Rows> => {
           let rows = this.rows;
+          // Find the current index of the row (this may be different from when
+          // the user clicked on the button)
           const index = rows.findIndex((_row): boolean => _row === row);
 
+          // Load more button clicked, load next page of results
           if (this.isLoadMore(row)) {
             return await this.loadMore(rows, index, row);
           }
 
           if (row.isOpen) {
+            // Open folder clicked, close folder, and remove children rows
             rows = this.closeFolder(rows, index, row);
           } else {
+            // Closed folder clicked, load first page of children
             rows = await this.loadMore(rows, index, row);
           }
           row.isOpen = !row.isOpen;

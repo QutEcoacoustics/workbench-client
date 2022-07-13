@@ -18,12 +18,12 @@ import { Project } from "@models/Project";
     <div class="grid-table-item">
       <!-- Whitespace -->
       <baw-meta-review-whitespace
-        style="display: contents"
         [indentation]="row.indentation"
         [isFolder]="row.isOpen"
       ></baw-meta-review-whitespace>
       <button
         class="btn btn-link p-0 text-decoration-none me-3"
+        [class.open-folder]="!row.isOpen"
         (click)="toggleFolder.emit()"
       >
         <fa-layers class="fa-custom-icon" [fixedWidth]="true">
@@ -42,6 +42,7 @@ import { Project } from "@models/Project";
         {{ row.path }}
       </div>
     </div>
+
     <!-- Create Mapping -->
     <div *ngIf="!mapping" class="grid-table-item create-mapping">
       <button
@@ -51,38 +52,44 @@ import { Project } from "@models/Project";
         Change Site or UTC for folder
       </button>
     </div>
-    <!-- Site Selector -->
-    <div *ngIf="mapping" class="grid-table-item">
-      <baw-loading
-        *ngIf="mapping.site | isUnresolved; else siteSelector"
-        size="sm"
-      ></baw-loading>
 
-      <ng-template #siteSelector>
-        <baw-harvest-site-selector
+    <ng-container *ngIf="mapping">
+      <!-- Site Selector -->
+      <div class="grid-table-item">
+        <baw-loading
+          *ngIf="mapping.site | isUnresolved; else siteSelector"
+          size="sm"
+        ></baw-loading>
+
+        <ng-template #siteSelector>
+          <baw-harvest-site-selector
+            class="w-100"
+            [project]="project"
+            [site]="mapping.site"
+            (siteIdChange)="setSite(mapping, $event)"
+          ></baw-harvest-site-selector>
+        </ng-template>
+      </div>
+
+      <!-- UTC Offset -->
+      <div class="grid-table-item">
+        <baw-harvest-utc-offset-selector
           class="w-100"
-          [project]="project"
-          [site]="mapping.site"
-          (siteIdChange)="setSite(mapping, $event)"
-        ></baw-harvest-site-selector>
-      </ng-template>
-    </div>
-    <!-- UTC Offset -->
-    <div *ngIf="mapping" class="grid-table-item">
-      <baw-harvest-utc-offset-selector
-        class="w-100"
-        [offset]="mapping.utcOffset"
-        (offsetChange)="setOffset(mapping, $event)"
-      ></baw-harvest-utc-offset-selector>
-    </div>
-    <!-- Recursive -->
-    <div *ngIf="mapping" class="grid-table-item">
-      <baw-checkbox
-        class="w-100"
-        [checked]="mapping.recursive"
-        (checkedChange)="setIsRecursive(mapping, $event)"
-      ></baw-checkbox>
-    </div>
+          [offset]="mapping.utcOffset"
+          (offsetChange)="setOffset(mapping, $event)"
+        ></baw-harvest-utc-offset-selector>
+      </div>
+
+      <!-- Recursive -->
+      <div class="grid-table-item">
+        <baw-checkbox
+          class="w-100"
+          [checked]="mapping.recursive"
+          (checkedChange)="setIsRecursive(mapping, $event)"
+        ></baw-checkbox>
+      </div>
+    </ng-container>
+
     <!-- Issue Icons -->
     <div class="grid-table-item">
       <div *ngIf="!row.isRoot" class="icon-wrapper">
@@ -122,13 +129,6 @@ export class FolderRowComponent {
   @Output() public toggleFolder = new EventEmitter<void>();
   @Output() public mappingsChange = new EventEmitter<void>();
 
-  public status: {
-    hasItemsInvalidFixable: boolean;
-    hasItemsInvalidNotFixable: boolean;
-    hasItemsErrored: boolean;
-    hasItemsInvalid: boolean;
-  };
-
   public icons = {
     folderOpen: ["fas", "folder-open"] as IconProp,
     folderClosed: ["fas", "folder-closed"] as IconProp,
@@ -159,7 +159,8 @@ export class FolderRowComponent {
   public createMapping(row: MetaReviewFolder): void {
     const mapping = new HarvestMapping(
       {
-        // Root folder does not have a harvest item
+        // Root folder is not a harvest item, so root folder row does not have
+        // a harvest item
         path: row.isRoot ? row.path : row.harvestItem.path,
         recursive: true,
         siteId: null,

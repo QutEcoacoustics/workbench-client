@@ -18,10 +18,9 @@ interface ValidationMessage {
   selector: "baw-meta-review-file-row",
   template: `
     <!-- Icon and Path -->
-    <div class="grid-table-item path-extended">
+    <div class="grid-table-item">
       <!-- Whitespace -->
       <baw-meta-review-whitespace
-        style="display: contents"
         [indentation]="row.indentation"
       ></baw-meta-review-whitespace>
       <fa-icon class="me-2" [icon]="['fas', 'file']"></fa-icon>
@@ -33,6 +32,7 @@ interface ValidationMessage {
         {{ report.itemsSize }}
       </span>
     </div>
+
     <!-- Issues -->
     <div class="grid-table-item issues-extended">
       <div *ngIf="harvestItem.hasItemsInvalid" class="dropdown-icon">
@@ -56,6 +56,8 @@ interface ValidationMessage {
         </div>
       </div>
     </div>
+
+    <!-- Issue icons -->
     <div class="grid-table-item">
       <div class="icon-wrapper">
         <fa-icon

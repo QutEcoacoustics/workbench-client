@@ -11,7 +11,7 @@
   @include create-variable("secondary", $secondary);
   @include create-variable("success", $success);
   @include create-variable("info", $info);
-  @include create-variable("warning", $warning);
+  @include create-variable("warning", #eb770a);
   @include create-variable("danger", $danger);
   @include create-variable("light", $light);
   @include create-variable("dark", $dark);
