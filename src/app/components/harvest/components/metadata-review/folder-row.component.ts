@@ -5,8 +5,10 @@ import {
   Input,
   Output,
 } from "@angular/core";
-import { MetaReviewFolder } from "@components/harvest/screens/metadata-review/metadata-review.component";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import {
+  MetaReviewFolder,
+  metaReviewIcons,
+} from "@components/harvest/screens/metadata-review/metadata-review.component";
 import { Harvest, HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
 import { Project } from "@models/Project";
@@ -129,18 +131,7 @@ export class FolderRowComponent {
   @Output() public toggleFolder = new EventEmitter<void>();
   @Output() public mappingsChange = new EventEmitter<void>();
 
-  public icons = {
-    folderOpen: ["fas", "folder-open"] as IconProp,
-    folderClosed: ["fas", "folder-closed"] as IconProp,
-    successCircle: ["fas", "circle-check"] as IconProp,
-    success: ["fas", "check"] as IconProp,
-    warningCircle: ["fas", "circle-exclamation"] as IconProp,
-    warning: ["fas", "triangle-exclamation"] as IconProp,
-    failureCircle: ["fas", "xmark-circle"] as IconProp,
-    failure: ["fas", "xmark"] as IconProp,
-    errorCircle: ["fas", "xmark-circle"] as IconProp,
-    error: ["fas", "xmark"] as IconProp,
-  };
+  public icons = metaReviewIcons;
 
   public get mapping(): HarvestMapping {
     return this.row.mapping;

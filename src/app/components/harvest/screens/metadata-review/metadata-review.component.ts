@@ -31,6 +31,19 @@ enum RowType {
   loadMore,
 }
 
+export const metaReviewIcons = {
+  folderOpen: ["fas", "folder-open"] as IconProp,
+  folderClosed: ["fas", "folder-closed"] as IconProp,
+  successCircle: ["fas", "circle-check"] as IconProp,
+  success: ["fas", "check"] as IconProp,
+  warningCircle: ["fas", "circle-exclamation"] as IconProp,
+  warning: ["fas", "triangle-exclamation"] as IconProp,
+  failureCircle: ["fas", "xmark-circle"] as IconProp,
+  failure: ["fas", "xmark"] as IconProp,
+  errorCircle: ["fas", "xmark-circle"] as IconProp,
+  error: ["fas", "xmark"] as IconProp,
+};
+
 export interface MetaReviewBase {
   rowType: RowType;
   harvestItem?: HarvestItem;
@@ -97,16 +110,7 @@ export class MetadataReviewComponent
     MetaReviewFolder | MetaReviewLoadMore
   >();
 
-  public icons = {
-    successCircle: ["fas", "circle-check"] as IconProp,
-    success: ["fas", "check"] as IconProp,
-    warningCircle: ["fas", "circle-exclamation"] as IconProp,
-    warning: ["fas", "triangle-exclamation"] as IconProp,
-    failureCircle: ["fas", "xmark-circle"] as IconProp,
-    failure: ["fas", "xmark"] as IconProp,
-    errorCircle: ["fas", "xmark-circle"] as IconProp,
-    error: ["fas", "xmark"] as IconProp,
-  };
+  public icons = metaReviewIcons;
 
   public constructor(
     private stages: HarvestStagesService,

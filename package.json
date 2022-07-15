@@ -7,6 +7,7 @@
   "description": "Client-side website for online ecoacoustic analysis.",
   "version": "3.0.0",
   "scripts": {
+    "ci": "npm ci --force",
     "build": "ng build --configuration production",
     "e2e": "ng e2e",
     "e2e:debug": "node --max_old_space_size=4096 --inspect-brk ./node_modules/protractor/bin/protractor e2e/protractor.conf.js",

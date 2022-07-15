@@ -4,6 +4,13 @@
     flex-direction: row;
     padding: var(--table-padding);
     background-color: inherit;
+
+    // Optimises how the table is shown, currently only works on chromium
+    // browsers
+    // https://web.dev/content-visibility/
+    // https://github.com/mozilla/standards-positions/issues/135
+    content-visibility: auto;
+    contain-intrinsic-size: 42.2px;
   }
 }
 
@@ -13,12 +20,13 @@
   display: grid;
   grid-template-columns:
     1fr
-    minmax(14rem, min-content)
-    minmax(9rem, min-content)
+    14rem
+    9rem
     min-content
     min-content;
   grid-template-rows: 1fr;
   border-bottom: 2px solid #d1d4d7;
+  background-color: white;
 
   .grid-table-row,
   .grid-table-header {

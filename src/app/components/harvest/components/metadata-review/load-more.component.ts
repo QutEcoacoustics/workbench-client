@@ -1,9 +1,9 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
   Output,
-  ChangeDetectionStrategy,
 } from "@angular/core";
 import { MetaReviewLoadMore } from "@components/harvest/screens/metadata-review/metadata-review.component";
 
