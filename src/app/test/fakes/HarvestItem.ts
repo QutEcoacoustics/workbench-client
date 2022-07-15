@@ -1,6 +1,7 @@
 import {
   HarvestItemState,
   IHarvestItem,
+  IHarvestItemReport,
   IHarvestItemValidation,
 } from "@models/HarvestItem";
 import { modelData } from "@test/helpers/faker";
@@ -12,6 +13,24 @@ export function generateHarvestItemValidation(
     name: modelData.random.word(),
     status: modelData.helpers.arrayElement(["fixable", "notFixable"]),
     message: modelData.random.words(),
+    ...data,
+  };
+}
+
+export function generateHarvestReport(
+  data?: Partial<IHarvestItemReport>
+): Required<IHarvestItemReport> {
+  return {
+    itemsTotal: modelData.datatype.number(),
+    itemsSizeBytes: modelData.datatype.number(),
+    itemsDurationSeconds: modelData.datatype.number(),
+    itemsInvalidFixable: modelData.datatype.number(),
+    itemsInvalidNotFixable: modelData.datatype.number(),
+    itemsNew: modelData.datatype.number(),
+    itemsMetadataGathered: modelData.datatype.number(),
+    itemsFailed: modelData.datatype.number(),
+    itemsCompleted: modelData.datatype.number(),
+    itemsErrored: modelData.datatype.number(),
     ...data,
   };
 }
@@ -41,6 +60,7 @@ export function generateHarvestItem(
     path: modelData.system.filePath().slice(1),
     status,
     validations,
+    report: generateHarvestReport(),
     ...data,
   };
 }

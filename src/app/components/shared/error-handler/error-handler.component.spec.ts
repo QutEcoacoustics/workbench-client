@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
+import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { unknownErrorCode } from "@baw-api/baw-api.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { MockAppConfigModule } from "@services/config/configMock.module";
@@ -120,8 +121,11 @@ describe("ErrorHandlerComponent", () => {
       ),
     },
     {
-      title: "Unknown Error",
-      error: generateBawApiError(0, "Unknown error has occurred."),
+      title: "Connection Failure",
+      error: generateBawApiError(
+        CLIENT_TIMEOUT,
+        "A request took longer than expected to return"
+      ),
     },
     {
       title: "Unknown Error",

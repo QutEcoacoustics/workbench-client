@@ -32,12 +32,12 @@ describe("ToRelativePipe", () => {
 
   it("should display duration", () => {
     setup(Duration.fromISO("PT28M37.957S"));
-    assertPipe("28 minutes, 37.957 seconds");
+    assertPipe("28 minutes 37.957 seconds");
   });
 
   it("should display duration with custom options", () => {
     setup(Duration.fromISO("PT28M37.957S"), { round: true });
-    assertPipe("28 minutes, 38 seconds");
+    assertPipe("28 minutes 38 seconds");
   });
 
   it("should display datetime", () => {

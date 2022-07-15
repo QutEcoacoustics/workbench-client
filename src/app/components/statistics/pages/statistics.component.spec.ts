@@ -220,7 +220,7 @@ describe("StatisticsComponent", () => {
         test: "overall annotation duration",
         index: 3,
         data: partialStatistic({ annotationsTotalDuration: 123456789 }),
-        expectedOutput: "3 years, 11 months",
+        expectedOutput: "3 years 11 months",
       },
       {
         test: "number of users online",
@@ -244,7 +244,7 @@ describe("StatisticsComponent", () => {
         test: "overall audio duration",
         index: 7,
         data: partialStatistic({ audioRecordingsTotalDuration: 123456789 }),
-        expectedOutput: "3 years, 11 months",
+        expectedOutput: "3 years 11 months",
       },
     ].forEach(({ test, index, data, expectedOutput }) => {
       it(`should display ${test}`, async () => {

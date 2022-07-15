@@ -27,7 +27,7 @@ import { map } from "rxjs/operators";
         <ul class="nav mb-0">
           <li *ngIf="region" class="nav-item" id="points">
             <span class="badge rounded-pill text-bg-highlight my-1">
-              {{ numPoints() }} {{ numPoints() > 1 ? "Points" : "Point" }}
+              {{ numPoints() }} {{ numPoints() === 1 ? "Point" : "Points" }}
             </span>
           </li>
 
