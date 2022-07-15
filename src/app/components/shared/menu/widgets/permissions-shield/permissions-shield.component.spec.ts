@@ -35,7 +35,6 @@ describe("PermissionsShieldComponent", () => {
   let defaultSite: Site;
   let defaultModel: MockModel;
   let defaultUser: User;
-  let injector: Injector;
   let spec: Spectator<PermissionsShieldComponent>;
   const createComponent = createComponentFactory({
     component: PermissionsShieldComponent,
@@ -57,9 +56,16 @@ describe("PermissionsShieldComponent", () => {
         }),
       ],
     });
-    injector = spec.inject(Injector);
+    const injector = spec.inject(Injector);
     const userApi = spec.inject(ACCOUNT.token);
     const projectApi = spec.inject(PROJECT.token);
+
+    // Set injectors on models
+    models.forEach((model) => {
+      if (model.model) {
+        model.model["injector"] = injector;
+      }
+    });
 
     // Insert injectors into models
     defaultProject["injector"] = injector;
@@ -231,20 +237,14 @@ describe("PermissionsShieldComponent", () => {
         });
 
         it("should not create badge if id is not found", () => {
-          const project = new Project(
-            generateProject({ [id]: undefined }),
-            injector
-          );
+          const project = new Project(generateProject({ [id]: undefined }));
           setup([{ model: project }]);
           spec.detectChanges();
           expect(spec.component.badges[index]?.label).not.toBe(label);
         });
 
         it("should not create label if id is not found", () => {
-          const project = new Project(
-            generateProject({ [id]: undefined }),
-            injector
-          );
+          const project = new Project(generateProject({ [id]: undefined }));
           setup([{ model: project }]);
           expect(getLabel()).not.toHaveText(label);
         });
