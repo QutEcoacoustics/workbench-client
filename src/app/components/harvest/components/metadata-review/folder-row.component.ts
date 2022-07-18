@@ -17,32 +17,26 @@ import { Project } from "@models/Project";
   selector: "baw-meta-review-folder-row",
   template: `
     <!-- Icon and Path -->
-    <div class="grid-table-item">
+    <div class="grid-table-item pointer" (click)="toggleFolder.emit()">
       <!-- Whitespace -->
       <baw-meta-review-whitespace
         [indentation]="row.indentation"
         [isFolder]="row.isOpen"
       ></baw-meta-review-whitespace>
-      <button
-        class="btn btn-link p-0 text-decoration-none me-3"
-        [class.open-folder]="!row.isOpen"
-        (click)="toggleFolder.emit()"
-      >
-        <fa-layers class="fa-custom-icon" [fixedWidth]="true">
-          <fa-icon
-            [icon]="row.isOpen ? icons.folderOpen : icons.folderClosed"
-          ></fa-icon>
-          <fa-layers-counter
-            *ngIf="!row.isRoot"
-            class="text-light"
-            [content]="report.itemsTotal ?? 0 | number"
-            [classes]="['fa-custom-counter']"
-          ></fa-layers-counter>
-        </fa-layers>
-      </button>
-      <div>
+      <fa-layers class="fa-custom-icon me-3" [fixedWidth]="true">
+        <fa-icon
+          [icon]="row.isOpen ? icons.folderOpen : icons.folderClosed"
+        ></fa-icon>
+        <fa-layers-counter
+          *ngIf="!row.isRoot"
+          class="text-light"
+          [content]="report.itemsTotal ?? 0 | number"
+          [classes]="['fa-custom-counter']"
+        ></fa-layers-counter>
+      </fa-layers>
+      <span>
         {{ row.path }}
-      </div>
+      </span>
     </div>
 
     <!-- Create Mapping -->
@@ -97,26 +91,33 @@ import { Project } from "@models/Project";
       <div *ngIf="!row.isRoot" class="icon-wrapper">
         <span
           *ngIf="harvestItem.hasItemsInvalidFixable"
-          class="badge text-bg-warning"
+          class="badge text-bg-warning pointer"
+          (click)="toggleFolder.emit()"
         >
           <fa-icon [icon]="icons.warning"></fa-icon>
           {{ report.itemsInvalidFixable | number }}
         </span>
         <span
           *ngIf="harvestItem.hasItemsInvalidNotFixable"
-          class="badge text-bg-danger text-light"
+          class="badge text-bg-danger text-light pointer"
+          (click)="toggleFolder.emit()"
         >
           <fa-icon [icon]="icons.failure"></fa-icon>
           {{ report.itemsInvalidNotFixable | number }}
         </span>
-        <span *ngIf="harvestItem.hasItemsErrored" class="badge text-bg-dark">
+        <span
+          *ngIf="harvestItem.hasItemsErrored"
+          class="badge text-bg-dark pointer"
+          (click)="toggleFolder.emit()"
+        >
           <fa-icon [icon]="icons.errorCircle"></fa-icon>
           {{ report.itemsErrored | number }}
         </span>
         <fa-icon
           *ngIf="!row.harvestItem.hasItemsInvalid"
-          class="text-success"
+          class="text-success pointer"
           [icon]="['fas', 'circle-check']"
+          (click)="toggleFolder.emit()"
         ></fa-icon>
       </div>
     </div>

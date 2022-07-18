@@ -88,6 +88,11 @@ export type Rows = List<MetaReviewRow>;
 
 const rootMappingPath = "";
 
+/**
+ * TODO Potential quality of life changes:
+ * - Show/hide successful files/folders
+ * - Wrap table in virtual scroll
+ */
 @Component({
   selector: "baw-harvest-metadata-review",
   templateUrl: "metadata-review.component.html",

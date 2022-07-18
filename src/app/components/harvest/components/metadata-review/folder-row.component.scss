@@ -1,5 +1,8 @@
 :host ::ng-deep .fa-custom-counter {
-  transform: scale(0.4) translateX(50%) translateY(75%);
+  background-color: #737373;
+  color: white;
+  font-weight: bold;
+  transform: scale(0.5) translateX(40%) translateY(65%);
 }
 
 .fa-custom-icon {
@@ -27,6 +30,10 @@
 
 .badge {
   height: min-content;
+}
+
+.pointer {
+  cursor: pointer;
 }
 
 baw-meta-review-whitespace {
