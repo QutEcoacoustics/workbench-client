@@ -64,7 +64,7 @@
     "full-icu": "^1.4.0",
     "http-status": "^1.5.2",
     "humanize-duration": "^3.27.1",
-    "immutable": "^4.0.0",
+    "immutable": "^4.1.0",
     "include-media": "^1.4.10",
     "just-camel-case": "^6.0.1",
     "just-snake-case": "^3.0.1",
