@@ -20,7 +20,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
       <span id="name">{{ name }}</span>
 
       <!-- Item value -->
-      <span id="value" class="badge rounded bg-secondary float-end">
+      <span id="value" class="badge rounded text-bg-secondary float-end">
         {{ value ?? "Unknown" }}
       </span>
     </div>

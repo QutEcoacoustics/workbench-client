@@ -1,4 +1,4 @@
-import { IdOr, setTimezoneQSP } from "@baw-api/api-common";
+import { IdOr } from "@baw-api/api-common";
 import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -63,8 +63,9 @@ describe("SitesService", (): void => {
     const defaultTimezone = "UTC";
 
     function getUrl(timezone: string = defaultTimezone) {
-      const url = new URL(`${apiRoot}${showUrl}/audio_events/download`);
-      setTimezoneQSP(url, timezone);
+      const url = new URL(
+        `${apiRoot}${showUrl}/audio_events/download?selected_timezone_name=${timezone}`
+      );
       return url.toString();
     }
 

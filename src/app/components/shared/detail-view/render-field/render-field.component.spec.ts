@@ -259,7 +259,7 @@ describe("RenderFieldComponent", () => {
     it("should display Duration value", () => {
       const value = getElement.normal()[0];
       expect(value).toHaveExactText(
-        "PT1H10M50S (1 hour, 10 minutes, 50 seconds)"
+        "PT1H10M50S (1 hour 10 minutes 50 seconds)"
       );
     });
   });

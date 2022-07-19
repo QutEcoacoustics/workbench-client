@@ -218,7 +218,7 @@ export function bawBytes<Model>(opts?: BawDecoratorOptions<Model>) {
     if (typeof bytes === "string") {
       return;
     }
-    model[key] = isInstantiated(bytes) ? fileSize(bytes) : null;
+    model[key] = isInstantiated(bytes) ? fileSize(bytes) : "No data";
   });
 }
 

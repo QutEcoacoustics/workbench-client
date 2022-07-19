@@ -148,7 +148,9 @@ export class BawApiService<
     const error = isBawApiError(err)
       ? err
       : new BawApiError(unknownErrorCode, err.message);
-    if (!disableNotification) {
+    // Do not show error notifications during SSR, otherwise they cannot be
+    // cleared
+    if (!disableNotification && !this.isServer) {
       this.notifications.error(error.formattedMessage("<br />"));
     }
     return throwError((): BawApiError => error);

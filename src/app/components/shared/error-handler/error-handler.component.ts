@@ -1,17 +1,17 @@
 import { Component, Inject, Input, OnInit } from "@angular/core";
+import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
-import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import {
-  UNAUTHORIZED,
-  FORBIDDEN,
-  NOT_FOUND,
-  REQUEST_TIMEOUT,
-  BAD_GATEWAY,
-} from "http-status";
 import {
   ApiErrorDetails,
   BawApiError,
 } from "@helpers/custom-errors/baw-api-error";
+import {
+  FORBIDDEN,
+  NOT_FOUND,
+  REQUEST_TIMEOUT,
+  UNAUTHORIZED,
+} from "http-status";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 /**
  * Error Handler Wrapper
@@ -40,7 +40,7 @@ export class ErrorHandlerComponent implements OnInit {
     [FORBIDDEN]: "Access Forbidden",
     [NOT_FOUND]: "Not Found",
     [REQUEST_TIMEOUT]: "Request Timed Out",
-    [BAD_GATEWAY]: "Connection Failure",
+    [CLIENT_TIMEOUT]: "Connection Failure",
   };
 
   public constructor(@Inject(IS_SERVER_PLATFORM) private isSsr: boolean) {}
@@ -53,13 +53,15 @@ export class ErrorHandlerComponent implements OnInit {
     // If this is SSR, ignore auth or disconnect issues
     if (
       this.isSsr &&
-      [UNAUTHORIZED, REQUEST_TIMEOUT, BAD_GATEWAY].includes(this.error.status)
+      [UNAUTHORIZED, REQUEST_TIMEOUT, CLIENT_TIMEOUT].includes(
+        this.error.status
+      )
     ) {
       this.hideErrorDetails = true;
     }
   }
 
-  public getTitle() {
+  public getTitle(): string {
     return this.titles[this.error.status] ?? "Unknown Error";
   }
 }

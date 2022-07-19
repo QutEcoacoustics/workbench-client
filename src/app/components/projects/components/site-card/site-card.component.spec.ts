@@ -185,6 +185,13 @@ describe("SiteCardComponent", () => {
       expect(getBadge()).toContainText("0 Points");
     });
 
+    it("should display 1 region point", () => {
+      const region = new Region({ ...generateRegion(), siteIds: [1] });
+      setup(region);
+      spec.detectChanges();
+      expect(getBadge()).toContainText("1 Point");
+    });
+
     it("should display multiple region points", () => {
       const region = new Region({ ...generateRegion(), siteIds: [1, 2, 3] });
       setup(region);

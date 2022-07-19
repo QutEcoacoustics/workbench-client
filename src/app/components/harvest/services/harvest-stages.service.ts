@@ -1,17 +1,17 @@
 import { Injectable } from "@angular/core";
-import { ShallowHarvestItemsService } from "@baw-api/harvest/harvest-items.service";
+import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest, HarvestStatus } from "@models/Harvest";
-import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
 import { Step } from "@shared/stepper/stepper.component";
 import { ToastrService } from "ngx-toastr";
 import {
   BehaviorSubject,
   catchError,
+  delay,
   filter,
   interval,
   Observable,
@@ -20,6 +20,7 @@ import {
   Subscription,
   switchMap,
   takeUntil,
+  tap,
   throwError,
 } from "rxjs";
 
@@ -27,20 +28,22 @@ import {
 export class HarvestStagesService extends withUnsubscribe() {
   public project: Project;
   public stage: HarvestStatus;
+  /**
+   * If true, state of harvest is in transition, and buttons to transition
+   * state should be disabled
+   */
+  public transitioningStage: boolean;
 
   private _harvest$ = new BehaviorSubject<Harvest | null>(null);
-  private _harvestItems$ = new BehaviorSubject<HarvestItem[]>([]);
   private harvestTrigger$ = new Subject<void>();
   private harvestInterval: Subscription;
 
   public constructor(
     private notifications: ToastrService,
-    private harvestApi: HarvestsService,
-    private harvestItemsApi: ShallowHarvestItemsService
+    private harvestApi: HarvestsService
   ) {
     super();
     this.trackHarvest();
-    this.trackHarvestItems();
   }
 
   public get harvest$(): Observable<Harvest | null> {
@@ -49,14 +52,6 @@ export class HarvestStagesService extends withUnsubscribe() {
 
   public get harvest(): Harvest | null {
     return this._harvest$.value;
-  }
-
-  public get harvestItems$(): Observable<HarvestItem[]> {
-    return this._harvestItems$.asObservable();
-  }
-
-  public get harvestItems(): HarvestItem[] {
-    return this._harvestItems$.value;
   }
 
   private _stages: Step[] = [
@@ -93,7 +88,7 @@ export class HarvestStagesService extends withUnsubscribe() {
     this.setHarvest(harvest);
   }
 
-  private setHarvest(harvest: Harvest): void {
+  public setHarvest(harvest: Harvest): void {
     this._harvest$.next(harvest);
     this.setStage(harvest.status);
   }
@@ -113,36 +108,56 @@ export class HarvestStagesService extends withUnsubscribe() {
   public startPolling(intervalMs: number): void {
     this.harvestInterval = interval(intervalMs)
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(() => this.reloadModel());
+      .subscribe((): void => this.reloadModel());
   }
 
   public stopPolling(): void {
     this.harvestInterval?.unsubscribe();
   }
 
-  public transition(
-    stage: HarvestStatus,
-    onComplete: (resp: Harvest | BawApiError) => void
-  ): void {
+  public transition(stage: HarvestStatus): void {
+    this.transitioningStage = true;
+
     // We want this api request to complete regardless of lifecycle destruction
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.harvestApi.transitionStatus(this.harvest, stage).subscribe({
-      next: (harvest): void => {
-        onComplete(harvest);
-        this.setHarvest(harvest);
-      },
-      error: (err: BawApiError) => {
-        onComplete(err);
-        this.notifications.error(err.message);
-      },
-    });
+    this.harvestApi
+      .transitionStatus(this.harvest, stage)
+      .pipe(
+        catchError((err: BawApiError) => {
+          if (err.status !== CLIENT_TIMEOUT) {
+            return throwError(() => err);
+          }
+
+          const delaySeconds = 5;
+          this.notifications.info(
+            `Attempting to reload page in ${delaySeconds} seconds`
+          );
+          // Just in case, check if the transition was successful. Long
+          // transitions can cause timeouts
+          of(null).pipe(
+            delay(delaySeconds * 1000),
+            tap((): void => this.harvestTrigger$?.next())
+          );
+          return throwError(() => err);
+        })
+      )
+      .subscribe({
+        next: (harvest): void => {
+          this.setHarvest(harvest);
+          this.transitioningStage = false;
+        },
+        error: (err: BawApiError): void => {
+          this.notifications.error(err.message);
+          this.transitioningStage = false;
+        },
+      });
   }
 
   public isCurrentStage(stage: HarvestStatus): boolean {
     return this.stage === stage;
   }
 
-  public calculateProgress(numItems: number) {
+  public calculateProgress(numItems: number): number {
     if (this.harvest.report.itemsTotal === 0) {
       return 0;
     }
@@ -163,7 +178,7 @@ export class HarvestStagesService extends withUnsubscribe() {
   private trackHarvest(): void {
     this.harvestTrigger$
       .pipe(
-        filter(() => isInstantiated(this.harvest)),
+        filter((): boolean => isInstantiated(this.harvest)),
         switchMap(
           (): Observable<Harvest> =>
             this.harvestApi.showWithoutCache(this.harvest, this.project)
@@ -180,20 +195,6 @@ export class HarvestStagesService extends withUnsubscribe() {
       )
       .subscribe((harvest): void => {
         this.setHarvest(harvest);
-      });
-  }
-
-  private trackHarvestItems(): void {
-    const defaultResponse: Observable<HarvestItem[]> = of([]);
-    this.harvest$
-      .pipe(
-        filter((): boolean => this.isCurrentStage("metadataReview")),
-        switchMap((harvest) => this.harvestItemsApi.list(harvest)),
-        catchError(() => defaultResponse),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe((harvestItems): void => {
-        this._harvestItems$.next(harvestItems);
       });
   }
 }

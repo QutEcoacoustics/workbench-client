@@ -5,6 +5,10 @@
   [activeStep]="stages.currentStage"
 ></baw-stepper>
 
+<baw-harvest-error
+  *ngIf="stages.isCurrentStage('newHarvest')"
+></baw-harvest-error>
+
 <div *ngIf="stages.isCurrentStage('uploading')">
   <baw-loading *ngIf="!stages.harvest"></baw-loading>
 
@@ -36,3 +40,6 @@
 <baw-harvest-complete
   *ngIf="stages.isCurrentStage('complete')"
 ></baw-harvest-complete>
+
+<!-- Bottom padding -->
+<div class="mb-3"></div>

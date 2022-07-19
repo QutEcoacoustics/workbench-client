@@ -4,6 +4,7 @@ import { generateHarvestItem } from "@test/fakes/HarvestItem";
 import {
   mockServiceImports,
   mockServiceProviders,
+  validateApiList,
   validateReadonlyApi,
 } from "@test/helpers/api-common";
 import { modelData } from "@test/helpers/faker";
@@ -27,7 +28,7 @@ describe("HarvestItemsService", () => {
   });
 
   validateReadonlyApi(
-    () => spec,
+    () => spec as any,
     HarvestItem,
     baseUrl,
     baseUrl + "filter",
@@ -36,5 +37,14 @@ describe("HarvestItemsService", () => {
     undefined, // harvest item
     5, // project
     10 // harvest
+  );
+
+  validateApiList(
+    () => spec as any,
+    HarvestItem,
+    baseUrl + harvestItemPath,
+    5,
+    10,
+    createModel()
   );
 });

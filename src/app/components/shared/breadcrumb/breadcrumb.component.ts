@@ -21,7 +21,7 @@ import { map, Observable } from "rxjs";
       <nav
         *ngIf="shouldShowBreadcrumbs(data)"
         aria-label="breadcrumb"
-        class="bg-light"
+        class="text-bg-light"
       >
         <ol class="breadcrumb p-1">
           <li

@@ -16,7 +16,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateSite } from "@test/fakes/Site";
 import { nStepObservable } from "@test/helpers/general";
-import { assertSpinner} from "@test/helpers/html";
+import { assertSpinner } from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
 import { DownloadTableComponent } from "./download-table.component";
 
@@ -161,7 +161,7 @@ describe("DownloadTableComponent", () => {
       injector
     );
     await loadRows([recording], defaultSite);
-    expect(getRowItem(3)).toContainText("1 hour, 33 minutes");
+    expect(getRowItem(3)).toContainText("1 hour 33 minutes");
   });
 
   it("should show media type in table row", async () => {

@@ -43,6 +43,8 @@
     var(--baw-#{$property}-saturation),
     #{$lightness}
   );
+  --baw-#{$property}#{$variant}-hsl: var(--baw-#{$property}-hue),
+    var(--baw-#{$property}-saturation), #{$lightness};
   --baw-#{$property}#{$variant}-contrast: #{contrast(
       #{$lightness},
       var(--baw-contrast-threshold)

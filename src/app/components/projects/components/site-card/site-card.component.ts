@@ -26,8 +26,8 @@ import { map } from "rxjs/operators";
 
         <ul class="nav mb-0">
           <li *ngIf="region" class="nav-item" id="points">
-            <span class="badge rounded-pill bg-highlight my-1">
-              {{ numPoints() }} Points
+            <span class="badge rounded-pill text-bg-highlight my-1">
+              {{ numPoints() }} {{ numPoints() === 1 ? "Point" : "Points" }}
             </span>
           </li>
 
@@ -42,7 +42,7 @@ import { map } from "rxjs/operators";
           <span
             *ngIf="hasNoAudio.value !== false"
             id="no-audio"
-            class="badge rounded-pill bg-secondary my-1"
+            class="badge rounded-pill text-bg-secondary my-1"
           >
             <baw-loading
               *ngIf="hasNoAudio.loading"

@@ -1,0 +1,41 @@
+:host ::ng-deep .fa-custom-counter {
+  background-color: #737373;
+  color: white;
+  font-weight: bold;
+  transform: scale(0.5) translateX(40%) translateY(65%);
+}
+
+.fa-custom-icon {
+  font-size: 1.5em;
+}
+
+.icon-wrapper {
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+
+  & > *:nth-child(n) {
+    margin-right: 0.5rem;
+  }
+
+  & > *:last-child {
+    margin-right: 0;
+  }
+}
+
+.create-mapping {
+  grid-column: 2 / 5;
+}
+
+.badge {
+  height: min-content;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+baw-meta-review-whitespace {
+  display: contents;
+}

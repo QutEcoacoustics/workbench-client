@@ -75,7 +75,10 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <span *ngFor="let tag of value.tags" class="badge bg-highlight me-1">
+          <span
+            *ngFor="let tag of value.tags"
+            class="badge text-bg-highlight me-1"
+          >
             {{ tag.text }}
           </span>
 

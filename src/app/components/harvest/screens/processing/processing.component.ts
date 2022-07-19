@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
-import { HarvestReport } from "@models/Harvest";
+import { Harvest, HarvestReport } from "@models/Harvest";
 
 @Component({
   selector: "baw-harvest-processing",
@@ -11,11 +11,16 @@ import { HarvestReport } from "@models/Harvest";
 
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
+    <baw-harvest-eta
+      [harvest]="harvest"
+      [progress]="successProgress + errorProgress"
+    ></baw-harvest-eta>
+
     <baw-progress [showZero]="zeroProgress">
       <baw-progress-bar
         color="success"
         description="Files which have been successfully processed"
-        [progress]="progress"
+        [progress]="successProgress"
       ></baw-progress-bar>
 
       <baw-progress-bar
@@ -34,10 +39,10 @@ export class ProcessingComponent implements OnInit {
   }
 
   public get zeroProgress(): boolean {
-    return this.progress + this.errorProgress === 0;
+    return this.successProgress + this.errorProgress === 0;
   }
 
-  public get progress(): number {
+  public get successProgress(): number {
     return this.stages.calculateProgress(this.report.itemsCompleted);
   }
 
@@ -45,6 +50,10 @@ export class ProcessingComponent implements OnInit {
     return this.stages.calculateProgress(
       this.report.itemsFailed + this.report.itemsErrored
     );
+  }
+
+  public get harvest(): Harvest {
+    return this.stages.harvest;
   }
 
   private get report(): HarvestReport {

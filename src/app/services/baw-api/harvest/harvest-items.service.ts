@@ -31,22 +31,38 @@ export class HarvestItemsService
 
   public list(
     project: IdOr<Project>,
-    harvest: IdOr<Harvest>
+    harvest: Harvest,
+    harvestItem?: HarvestItem
   ): Observable<HarvestItem[]> {
     return this.api.list(
       HarvestItem,
-      endpoint(project, harvest, emptyParam, emptyParam)
+      endpoint(project, harvest, harvestItem?.path ?? emptyParam, emptyParam)
+    );
+  }
+
+  public listByPage(
+    page: number,
+    project: IdOr<Project>,
+    harvest: Harvest,
+    harvestItem?: HarvestItem
+  ): Observable<HarvestItem[]> {
+    const paging = page <= 1 ? "" : `?page=${page}`;
+    return this.api.list(
+      HarvestItem,
+      endpoint(project, harvest, harvestItem?.path ?? emptyParam, emptyParam) +
+        paging
     );
   }
 
   public filter(
     filters: Filters<HarvestItem>,
     project: IdOr<Project>,
-    harvest: IdOr<Harvest>
+    harvest: IdOr<Harvest>,
+    harvestItem?: HarvestItem
   ): Observable<HarvestItem[]> {
     return this.api.filter(
       HarvestItem,
-      endpoint(project, harvest, emptyParam, filterParam),
+      endpoint(project, harvest, harvestItem?.path ?? emptyParam, filterParam),
       filters
     );
   }
@@ -103,7 +119,14 @@ export class ShallowHarvestItemsService
     const filter = this.api.filterThroughAssociation(
       {
         projection: {
-          include: ["id", "harvestId", "path", "status", "audioRecordingId"],
+          include: [
+            "id",
+            "harvestId",
+            "path",
+            "status",
+            "audioRecordingId",
+            "validations",
+          ],
         },
       },
       "harvests.id" as any,

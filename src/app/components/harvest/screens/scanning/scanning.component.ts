@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
-import { HarvestReport } from "@models/Harvest";
+import { Harvest, HarvestReport } from "@models/Harvest";
 
 @Component({
   selector: "baw-harvest-scanning",
@@ -12,6 +12,11 @@ import { HarvestReport } from "@models/Harvest";
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
     <h4>Progress</h4>
+
+    <baw-harvest-eta
+      [harvest]="harvest"
+      [progress]="newFileProgress + metadataProgress"
+    ></baw-harvest-eta>
 
     <baw-progress [showZero]="zeroProgress">
       <baw-progress-bar
@@ -45,6 +50,10 @@ export class ScanningComponent implements OnInit {
 
   public get metadataProgress(): number {
     return this.stages.calculateProgress(this.report.itemsMetadataGathered);
+  }
+
+  public get harvest(): Harvest {
+    return this.stages.harvest;
   }
 
   private get report(): HarvestReport {

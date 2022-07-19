@@ -6,6 +6,9 @@
  */
 @mixin baw-background($property, $fallback) {
   background-color: var(--baw-#{$property}, #{$fallback}) !important;
+}
+
+@mixin baw-text-contrast($property, $fallback) {
   color: var(--baw-#{$property}-contrast, black) !important;
 }
 
@@ -13,10 +16,20 @@
   .bg-#{$theme} {
     @include baw-background($theme, $default);
   }
+
+  .text-bg-#{$theme} {
+    @include baw-background($theme, $default);
+    @include baw-text-contrast($theme, $default);
+  }
 }
 
 /* Custom highlight background */
 
 .bg-highlight {
   @include baw-background("highlight", $primary);
+}
+
+.text-bg-highlight {
+  @include baw-background("highlight", $primary);
+  @include baw-text-contrast("highlight", $primary);
 }

@@ -9,7 +9,6 @@ import { Project } from "@models/Project";
   templateUrl: "stream-uploading.component.html",
 })
 export class StreamUploadingComponent implements OnInit {
-  public loading: boolean;
   public active = 1;
   public audioRecordings = audioRecordingMenuItems.list.project;
   public mappings: HarvestMapping[];
@@ -24,9 +23,11 @@ export class StreamUploadingComponent implements OnInit {
     return this.stages.project;
   }
 
+  public get loading(): boolean {
+    return this.stages.transitioningStage;
+  }
+
   public ngOnInit(): void {
-    // TODO If mapping updates are possible after the initial load, we may want
-    // to check for changes whenever harvest is updated
     this.mappings = this.stages.harvest.mappings;
     this.stages.startPolling(5000);
   }
@@ -36,7 +37,6 @@ export class StreamUploadingComponent implements OnInit {
   }
 
   public closeConnectionClick(): void {
-    this.loading = true;
-    this.stages.transition("complete", () => (this.loading = false));
+    this.stages.transition("complete");
   }
 }

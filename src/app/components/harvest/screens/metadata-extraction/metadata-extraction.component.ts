@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
-import { HarvestReport } from "@models/Harvest";
+import { Harvest, HarvestReport } from "@models/Harvest";
 
 @Component({
   selector: "baw-harvest-metadata-extraction",
@@ -17,6 +17,11 @@ import { HarvestReport } from "@models/Harvest";
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
     <h4>Progress</h4>
+
+    <baw-harvest-eta
+      [harvest]="harvest"
+      [progress]="progress"
+    ></baw-harvest-eta>
 
     <baw-progress [showZero]="progress === 0">
       <baw-progress-bar
@@ -38,7 +43,6 @@ import { HarvestReport } from "@models/Harvest";
 
       <baw-progress-bar
         color="warning"
-        textColor="dark"
         description="Files which have some problems, however can be fixed"
         [striped]="false"
         [progress]="invalidFixableProgress"
@@ -62,6 +66,14 @@ export class MetadataExtractionComponent implements OnInit {
 
   public get progress(): number {
     return this.stages.calculateProgress(this.report.itemsMetadataGathered);
+  }
+
+  public get harvest(): Harvest {
+    return this.stages.harvest;
+  }
+
+  private get report(): HarvestReport {
+    return this.stages.harvest.report;
   }
 
   public hasFileStatuses(): boolean {
@@ -89,9 +101,5 @@ export class MetadataExtractionComponent implements OnInit {
         this.report.itemsErrored +
         this.report.itemsFailed
     );
-  }
-
-  private get report(): HarvestReport {
-    return this.stages.harvest.report;
   }
 }

@@ -7,9 +7,9 @@ import { Harvest } from "@models/Harvest";
     <h4>Current Progress</h4>
 
     <ul>
-      <li><b>Uploaded Files: </b>{{ harvest.report.itemsTotal }}</li>
+      <li><b>Uploaded Files: </b>{{ harvest.report.itemsTotal | number }}</li>
       <li>
-        <b>Uploaded Bytes: </b>{{ harvest.report.itemsSizeBytes }} ({{
+        <b>Uploaded Bytes: </b>{{ harvest.report.itemsSizeBytes | number }} ({{
           harvest.report.itemsSize
         }})
       </li>

@@ -23,7 +23,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
       aria-label="UTC offset"
       (change)="onSelection($any($event).target.value)"
     >
-      <option selected disabled>Select UTC Offset</option>
+      <option selected disabled>Select offset</option>
       <option *ngFor="let offset of offsets" [value]="offset">
         {{ offset }}
       </option>
@@ -40,7 +40,6 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
       .utc-label,
       select {
         width: 100%;
-        min-width: 170px;
       }
     `,
   ],

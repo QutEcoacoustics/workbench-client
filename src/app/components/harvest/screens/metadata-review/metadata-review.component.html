@@ -7,65 +7,77 @@
   and refresh this page.
 </p>
 
-<baw-harvest-statistics
-  [statistics]="getStatistics(harvest)"
-></baw-harvest-statistics>
+<p *ngIf="harvest.report.itemsErrored > 0" class="alert alert-danger">
+  An unexpected error occurred in
+  {{ harvest.report.itemsErrored | number }} file(s). Please contact us so we
+  can investigate the issue. You can choose to continue the harvest, but any
+  files that produced errors will be ignored.
+</p>
 
-<!-- Should use harvest items list instead of harvest mappings. This allows for us to open sub-directories, etc -->
-<ngx-datatable
-  class="mb-3"
-  bawDatatableDefaults
-  [rows]="mappings"
-  [externalPaging]="false"
-  [externalSorting]="false"
->
-  <ngx-datatable-column prop="path">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      {{ value }}
-    </ng-template>
-  </ngx-datatable-column>
-  <!-- Enable overflow so that typeahead options will show -->
-  <ngx-datatable-column
-    prop="siteId"
-    cellClass="overflow-visible"
-    [width]="300"
-    [maxWidth]="300"
+<baw-harvest-statistics [statistics]="statistics"></baw-harvest-statistics>
+
+<div class="grid-table">
+  <!-- Headers -->
+  <div class="grid-table-header">
+    <div class="grid-table-item">Path</div>
+    <div class="grid-table-item">{{ siteColumnLabel }}</div>
+    <div class="grid-table-item">UTC offset</div>
+    <div
+      class="grid-table-item"
+      ngbTooltip="Enabling this will apply the folders settings to all files and folders inside"
+    >
+      Recursive
+    </div>
+    <div class="grid-table-item"></div>
+  </div>
+
+  <!-- Re-use the progress animation from ngx-datatable -->
+  <div class="grid-table-header table-progress">
+    <div class="wrapper">
+      <div *ngIf="tableLoading" class="progress-linear">
+        <div class="container">
+          <div class="bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    *ngFor="let row of rows.toArray(); let even = even; trackBy: trackByRow"
+    class="grid-table-row"
   >
-    <ng-template let-column="column" ngx-datatable-header-template>
-      {{ siteColumnLabel }}
-    </ng-template>
-    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-      <baw-loading
-        *ngIf="row.site | isUnresolved; else siteSelector"
-        size="sm"
-      ></baw-loading>
+    <baw-meta-review-folder-row
+      *ngIf="isFolder(row)"
+      class="display-contents"
+      [harvest]="harvest"
+      [project]="project"
+      [row]="row"
+      [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
+      (toggleFolder)="toggleRow(row)"
+      (mappingsChange)="updateHarvestWithMappingChange()"
+    ></baw-meta-review-folder-row>
 
-      <ng-template #siteSelector>
-        <baw-harvest-site-selector
-          [project]="project"
-          [site]="row.site"
-          (siteIdChange)="setSite(row, $event)"
-        ></baw-harvest-site-selector>
-      </ng-template>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column prop="utcOffset" [width]="200" [maxWidth]="200">
-    <ng-template let-column="column" ngx-datatable-header-template>
-      UTC Offset
-    </ng-template>
-    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-      <baw-harvest-utc-offset-selector
-        [offset]="value"
-        (offsetChange)="setOffset(row, $event)"
-      ></baw-harvest-utc-offset-selector>
-    </ng-template>
-  </ngx-datatable-column>
-</ngx-datatable>
+    <baw-meta-review-file-row
+      *ngIf="isFile(row)"
+      class="display-contents"
+      [row]="row"
+      [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
+    ></baw-meta-review-file-row>
 
-<div class="d-flex justify-content-between">
+    <baw-meta-review-load-more-row
+      *ngIf="isLoadMore(row)"
+      class="display-contents"
+      [row]="row"
+      [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
+      (loadMore)="toggleRow(row)"
+    ></baw-meta-review-load-more-row>
+  </div>
+</div>
+
+<div class="mt-3 d-flex justify-content-between">
   <button
     class="btn btn-outline-primary"
-    [disabled]="loading"
+    [disabled]="transitioningStage"
     (click)="onBackClick()"
   >
     Upload more files
@@ -73,18 +85,17 @@
   <button
     *ngIf="harvest.isMappingsDirty"
     class="btn btn-primary"
-    [disabled]="loading"
+    [disabled]="transitioningStage"
     (click)="onSaveClick()"
   >
     Check changes
   </button>
-  <!-- Redirect to metadata extraction instead of next step if changes made -->
   <!-- TODO Modal popup when hasUnsavedChanges -->
   <button
     class="btn"
     [class.btn-primary]="!harvest.isMappingsDirty"
     [class.btn-warning]="harvest.isMappingsDirty"
-    [disabled]="loading"
+    [disabled]="transitioningStage"
     (click)="onNextClick()"
   >
     {{

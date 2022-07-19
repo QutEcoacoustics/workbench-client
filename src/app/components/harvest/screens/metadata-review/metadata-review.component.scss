@@ -1,34 +1,41 @@
-.statistics {
-  margin-bottom: 2rem;
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: 1rem;
-  align-items: center;
-  justify-content: center;
-
-  > * {
+:host ::ng-deep {
+  .grid-table-item {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
+    padding: var(--table-padding);
+    background-color: inherit;
+  }
+}
 
-    .card-body {
-      text-align: center;
-      min-width: 10rem;
-    }
+.grid-table {
+  --table-padding: 0.35rem;
 
-    .icon {
-      margin: 0 auto 0.5rem auto;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 50px;
-      height: 50px;
-    }
+  display: grid;
+  grid-template-columns:
+    1fr
+    14rem
+    9rem
+    min-content
+    min-content;
+  grid-template-rows: 1fr;
+  border-bottom: 2px solid #d1d4d7;
+  background-color: white;
 
-    .title {
-      font-weight: bold;
+  .grid-table-row,
+  .grid-table-header {
+    display: contents;
+  }
+
+  .table-progress {
+    .wrapper {
+      min-height: 7px;
+      border-bottom: 2px solid #d1d4d7;
+      display: grid;
+      grid-column: 1 / 6;
     }
   }
+}
+
+.display-contents {
+  display: contents;
 }
