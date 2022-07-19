@@ -4,13 +4,6 @@
     flex-direction: row;
     padding: var(--table-padding);
     background-color: inherit;
-
-    // Optimises how the table is shown, currently only works on chromium
-    // browsers
-    // https://web.dev/content-visibility/
-    // https://github.com/mozilla/standards-positions/issues/135
-    content-visibility: auto;
-    contain-intrinsic-size: 42.2px;
   }
 }
 
