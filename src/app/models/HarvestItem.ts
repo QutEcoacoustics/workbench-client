@@ -35,9 +35,37 @@ export type HarvestItemState =
   | "completed"
   | "errored";
 
+export type ValidationFixable =
+  | "missingDate"
+  | "ambiguousDateTime"
+  | "futureDate"
+  | "missingUploader"
+  | "noSiteId";
+
+export type ValidationNotFixable =
+  | "doesNotExist"
+  | "notAFile"
+  | "fileEmpty"
+  | "invalidExtension"
+  | "noDuration"
+  | "tooShort"
+  | "channelCount"
+  | "sampleRate"
+  | "bitRate"
+  | "mediaType"
+  | "duplicateFile"
+  | "duplicateFileInHarvest"
+  | "notAllowedToUpload"
+  | "overlappingFilesInHarvest"
+  | "overlappingFiles";
+
+export type ValidationName = ValidationFixable | ValidationNotFixable;
+
+export type ValidationStatus = "fixable" | "notFixable";
+
 export interface IHarvestItemValidation {
-  name?: string;
-  status?: "fixable" | "notFixable";
+  name?: ValidationName;
+  status?: ValidationStatus;
   message?: string;
 }
 
@@ -45,7 +73,8 @@ export class HarvestItemValidation
   extends AbstractModelWithoutId
   implements IHarvestItemValidation
 {
-  public readonly name?: string;
+  @bawReadonlyConvertCase()
+  public readonly name?: ValidationName;
   @bawReadonlyConvertCase()
   public readonly status?: "fixable" | "notFixable";
   public readonly message?: string;

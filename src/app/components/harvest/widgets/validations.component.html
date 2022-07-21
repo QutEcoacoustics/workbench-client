@@ -1,0 +1,93 @@
+<h5>Instructions</h5>
+
+<hr />
+
+<p>
+  Open up some rows by clicking on the folder icon, or path. As you expose
+  issues, we will provide more customised help
+</p>
+
+
+<ng-container *ngIf="showFixableIssues">
+  <hr />
+
+  <h5>How to handle files which <span id="attention-file-title">need
+      attention</span></h5>
+
+  <hr />
+
+  <p>
+    A number of files have fixable problems. You can ignore these issues,
+    however if you do, they will not be processed
+    in the next stage.
+  </p>
+
+  <p *ngIf="errors.get('noSiteId') || errors.get('ambiguousDateTime')">
+    Some files require more information from you. Ensure you have set the
+    site and UTC offset for their folder.
+  </p>
+
+  <p *ngIf="errors.get('missingDate')">
+    Some files have missing dates. To fix, go back to the upload stage, and
+    ensure their filenames include a
+    <a target="_blank"
+      href="https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md">
+      date
+    </a>.
+  </p>
+
+  <p *ngIf="errors.get('futureDate')">
+    Some files have dates in the future. To fix, go back to the upload
+    stage, and
+    <a target="_blank"
+      href="https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md">
+      rename the files
+    </a>.
+  </p>
+</ng-container>
+
+<ng-container *ngIf="showNonFixableIssues">
+  <hr />
+
+  <h5>How to handle <span id="problem-file-title">problem files</span></h5>
+
+  <hr />
+
+  <p>
+    These files will automatically be ignored, you can upload the rest of
+    your files and everything will be okay. Some issues can be resolved by
+    returning to the upload stage, and removing/re-uploading the problem files.
+  </p>
+
+  <p>
+    If you think there is nothing wrong with your files,
+    <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a>, and we will
+    investigate.
+  </p>
+
+  <p *ngIf="errors.get('invalidExtension')">
+    Some files have invalid extensions, these may not be audio files. Supported
+    file types include: mp3, webm, ogg, flac, and wav. Convert the files to a
+    supported file type, and re-upload.
+  </p>
+
+  <p *ngIf="corruptedFile">
+    Some files are corrupted, check against the original copy to determine if it
+    was an upload error. If this was an upload error, re-upload it.
+  </p>
+
+  <p
+    *ngIf="errors.get('duplicateFile') || errors.get('duplicateFileInHarvest')">
+    Some files are duplicates of previously uploaded files indicating an
+    accidental upload. You can delete the files if required.
+  </p>
+
+  <p
+    *ngIf="errors.get('overlappingFiles') || errors.get('overlappingFilesInHarvest')">
+    Some recordings are overlapping other recordings. This may be a sign of
+    accidentally setting the wrong site on a folder, or a fault in the recording
+    sensor.
+  </p>
+</ng-container>
+
+<div class="mb-3"></div>

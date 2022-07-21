@@ -23,9 +23,7 @@
         </li>
         <li>
           Upload all of your files using this
-          <a target="_blank" href="https://winscp.net/eng/docs/guide_upload"
-            >guide</a
-          >
+          <a target="_blank" href="https://winscp.net/eng/docs/guide_upload">guide</a>
           and we will check them for you
         </li>
       </ol>
@@ -51,24 +49,69 @@
 
 <div [ngbNavOutlet]="nav" class="mt-2"></div>
 
-<ul>
-  <li>
-    We recommend using an Ethernet connection instead of WiFi. The file transfer
-    will be more stable, and faster
-  </li>
-  <li>
-    We have created some folders for you to put your files in already - but you
-    can make your own
-  </li>
-  <li>
-    Make sure files from each different sensor are in their own folder and are
-    not mixed together
-  </li>
-  <li>
-    When you are finished uploading files with WinSCP, close the WinSCP and
-    click on the "Finished uploading" button below to proceed
-  </li>
-</ul>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-3">
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <fa-icon class="icon-wrapper" size="2x"
+          [icon]="['fas', 'network-wired']"></fa-icon>
+
+        We recommend using an Ethernet connection instead of WiFi. The file
+        transfer will be more stable, and faster
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="project.sites.length > 0" class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <fa-icon class="icon-wrapper" size="2x" [icon]="['fas', 'folder-open']">
+        </fa-icon>
+
+        <ng-container>
+          <p>
+            We have created some folders for you to put your files in already,
+            however you are not required to use them.
+            They will look like the following:
+          </p>
+
+          <p>
+            <fa-icon class="d-inline" [icon]="['fas', 'folder-closed']">
+            </fa-icon>
+            {{ exampleSite(project).name + "_" + exampleSite(project).id }}
+          </p>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <fa-icon class="icon-wrapper" size="2x" [icon]="['fas', 'cubes']">
+        </fa-icon>
+
+        Make sure files from each different sensor are in their own folder and
+        are not mixed together
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <fa-icon class="icon-wrapper" size="2x" [icon]="['fas', 'folder-tree']">
+        </fa-icon>
+
+        <p>
+          Upload your data using whatever folder structure you would like.
+          Filenames will need to follow this <a target="_blank"
+            href="https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md">guide</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <baw-harvest-upload-url [harvest]="harvest"></baw-harvest-upload-url>
 

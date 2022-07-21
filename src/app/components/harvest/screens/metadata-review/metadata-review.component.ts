@@ -16,14 +16,7 @@ import { Project } from "@models/Project";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import {
-  concatMap,
-  first,
-  firstValueFrom,
-  Subject,
-  takeUntil,
-  tap,
-} from "rxjs";
+import { concatMap, Subject, takeUntil, tap } from "rxjs";
 
 enum RowType {
   folder,
@@ -274,33 +267,23 @@ export class MetadataReviewComponent
     row: MetaReviewFolder | MetaReviewLoadMore
   ): Promise<Rows> {
     this.tableLoading = true;
+    const harvestItems = await this.stages.getHarvestItems(
+      row.harvestItem,
+      row.page
+    );
+    this.tableLoading = false;
 
-    // Retrieve harvest items
-    let harvestItems: HarvestItem[];
-    try {
-      harvestItems = await firstValueFrom(
-        this.harvestItemsApi
-          .listByPage(row.page, this.project, this.harvest, row.harvestItem)
-          .pipe(first(), takeUntil(this.unsubscribe))
-      );
-    } catch (err: any) {
-      console.error(err);
-      this.notification.error(
-        `Failed to load the contents of ${row.harvestItem.path}`
-      );
-      this.tableLoading = false;
+    if (harvestItems.length === 0) {
       return rows;
     }
 
-    const parentFolder: MetaReviewFolder = this.isFolder(row)
-      ? row
-      : row.parentFolder;
+    const parentFolder = this.isFolder(row) ? row : row.parentFolder;
     const newRows = harvestItems.map(
       (harvestItem): MetaReviewRow =>
         this.generateRow(harvestItem, parentFolder)
     );
 
-    const meta = harvestItems[0]?.getMetadata();
+    const meta = harvestItems[0].getMetadata();
     if (meta && meta.paging.maxPage !== meta.paging.page) {
       newRows.push(this.generateLoadMore(parentFolder, row.page + 1));
     }
@@ -313,7 +296,6 @@ export class MetadataReviewComponent
       // Insert elements replace load more row
       rows = rows.splice(rowIndex, 1, ...newRows);
     }
-    this.tableLoading = false;
     return rows;
   }
 

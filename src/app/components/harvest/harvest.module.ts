@@ -28,6 +28,7 @@ import { ProcessingComponent } from "./screens/processing/processing.component";
 import { ScanningComponent } from "./screens/scanning/scanning.component";
 import { BatchUploadingComponent } from "./screens/uploading/batch-uploading.component";
 import { StreamUploadingComponent } from "./screens/uploading/stream-uploading.component";
+import { ValidationsWidgetComponent } from "./widgets/validations.component";
 
 const internalComponents = [
   // Screens
@@ -49,6 +50,9 @@ const internalComponents = [
   TitleComponent,
   UploadProgressComponent,
   UploadUrlComponent,
+
+  // Widgets
+  ValidationsWidgetComponent,
 
   // Meta Review
   FileRowComponent,
