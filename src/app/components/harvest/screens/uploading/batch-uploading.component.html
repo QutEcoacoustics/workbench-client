@@ -49,7 +49,7 @@
 
 <div [ngbNavOutlet]="nav" class="mt-2"></div>
 
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-3">
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-3">
   <div class="col">
     <div class="card h-100">
       <div class="card-body">
@@ -111,13 +111,36 @@
       </div>
     </div>
   </div>
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="icon-wrapper">
+          <baw-loading size="lg" color="highlight"></baw-loading>
+        </div>
+
+        <b>Uploaded Files:</b>
+        <p>{{ harvest.report.itemsTotal | number }}</p>
+
+        <b>Uploaded Bytes:</b>
+        <p>
+          {{ harvest.report.itemsSizeBytes | number }}
+          ({{ harvest.report.itemsSize }})
+        </p>
+      </div>
+
+    </div>
+  </div>
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <fa-icon class="icon-wrapper" size="2x" [icon]="['fas', 'server']">
+        </fa-icon>
+
+        <baw-harvest-upload-url [harvest]="harvest"></baw-harvest-upload-url>
+      </div>
+    </div>
+  </div>
 </div>
-
-<baw-harvest-upload-url [harvest]="harvest"></baw-harvest-upload-url>
-
-<hr />
-
-<baw-harvest-upload-progress [harvest]="harvest"></baw-harvest-upload-progress>
 
 <div class="clearfix">
   <button

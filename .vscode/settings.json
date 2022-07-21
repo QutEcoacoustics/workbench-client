@@ -1,8 +1,4 @@
 {
   "typescript.tsdk": "node_modules\\typescript\\lib",
-  "cSpell.words": [
-    "Datatable",
-    "Ecoacoustics"
-  ],
-  "editor.formatOnSave": true
+  "cSpell.words": ["Datatable", "Ecoacoustics"]
 }

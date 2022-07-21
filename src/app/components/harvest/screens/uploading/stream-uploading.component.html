@@ -70,7 +70,16 @@
   </ngx-datatable-column>
 </ngx-datatable>
 
-<baw-harvest-upload-progress [harvest]="harvest"></baw-harvest-upload-progress>
+<h4>Current Progress</h4>
+
+<ul>
+  <li><b>Uploaded Files: </b>{{ harvest.report.itemsTotal | number }}</li>
+  <li>
+    <b>Uploaded Bytes: </b>{{ harvest.report.itemsSizeBytes | number }} ({{
+      harvest.report.itemsSize
+    }})
+  </li>
+</ul>
 
 <div class="clearfix">
   <p>

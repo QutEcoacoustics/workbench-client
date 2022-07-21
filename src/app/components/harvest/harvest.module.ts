@@ -14,7 +14,6 @@ import { StatisticGroupComponent } from "./components/shared/statistics/group.co
 import { StatisticItemComponent } from "./components/shared/statistics/item.component";
 import { StatisticsComponent } from "./components/shared/statistics/statistics.component";
 import { TitleComponent } from "./components/shared/title.component";
-import { UploadProgressComponent } from "./components/shared/upload-progress.component";
 import { UploadUrlComponent } from "./components/shared/upload-url.component";
 import { harvestsRoute } from "./harvest.routes";
 import { DetailsComponent } from "./pages/details/details.component";
@@ -48,7 +47,6 @@ const internalComponents = [
   StatisticItemComponent,
   StatisticsComponent,
   TitleComponent,
-  UploadProgressComponent,
   UploadUrlComponent,
 
   // Widgets
