@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { HarvestItemsService } from "@baw-api/harvest/harvest-items.service";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
+import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { Statistic } from "@components/harvest/components/shared/statistics/statistics.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
@@ -13,6 +13,7 @@ import { toRelative } from "@interfaces/apiInterfaces";
 import { Harvest, HarvestMapping } from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
@@ -115,7 +116,7 @@ export class MetadataReviewComponent
     private config: ConfigService,
     private notification: ToastrService,
     private harvestApi: ShallowHarvestsService,
-    private harvestItemsApi: HarvestItemsService
+    private modal: NgbModal
   ) {
     super();
   }
@@ -195,18 +196,45 @@ export class MetadataReviewComponent
   }
 
   /** Transition harvest to processing stage */
-  public onNextClick(): void {
-    this.stages.transition("processing");
+  public async openProcessingModal(): Promise<void> {
+    const ref = this.modal.open(ConfirmationComponent, { centered: true });
+    ref.componentInstance.description =
+      "Are you sure you are done with this upload? There is no returning from here!";
+    ref.componentInstance.cancelBtn = "Cancel";
+    ref.componentInstance.nextBtn = "Continue";
+
+    try {
+      await ref.result;
+      this.stages.transition("processing");
+    } catch (err) {}
   }
 
   /** Transition harvest to uploading stage */
-  public onBackClick(): void {
-    this.stages.transition("uploading");
+  public async openUploadModal(): Promise<void> {
+    const ref = this.modal.open(ConfirmationComponent, { centered: true });
+    ref.componentInstance.description =
+      "Are you sure you wish to return to the uploading stage?";
+    ref.componentInstance.cancelBtn = "Cancel";
+    ref.componentInstance.nextBtn = "Upload More";
+
+    try {
+      await ref.result;
+      this.stages.transition("uploading");
+    } catch (err) {}
   }
 
   /** Transition harvest to meta extraction stage */
-  public onSaveClick(): void {
-    this.stages.transition("metadataExtraction");
+  public async openExtractionModal(): Promise<void> {
+    const ref = this.modal.open(ConfirmationComponent, { centered: true });
+    ref.componentInstance.description =
+      "Are you sure you want to check these changes to your uploaded files?";
+    ref.componentInstance.cancelBtn = "Cancel";
+    ref.componentInstance.nextBtn = "Check Changes";
+
+    try {
+      await ref.result;
+      this.stages.transition("metadataExtraction");
+    } catch (err) {}
   }
 
   public isFolder(row: MetaReviewRow): row is MetaReviewFolder {

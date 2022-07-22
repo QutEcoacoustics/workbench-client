@@ -1,9 +1,8 @@
-import { Component } from "@angular/core";
-import { retrieveResolvedModel } from "@baw-api/resolver-common";
+import { Component, OnInit } from "@angular/core";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
-import { Harvest } from "@models/Harvest";
+import { map, Observable, startWith } from "rxjs";
 import { HarvestStagesService } from "../services/harvest-stages.service";
 
 @Component({
@@ -29,10 +28,18 @@ import { HarvestStagesService } from "../services/harvest-stages.service";
     `,
   ],
 })
-export class ValidationsWidgetComponent implements WidgetComponent {
+export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
   public contactUs = contactUsMenuItem;
+  public isMetaReviewStage$: Observable<boolean>;
 
   public constructor(private stages: HarvestStagesService) {}
+
+  public ngOnInit(): void {
+    this.isMetaReviewStage$ = this.stages.harvest$.pipe(
+      startWith(false),
+      map((): boolean => this.stages.isCurrentStage("metadataReview")),
+    );
+  }
 
   public get errors() {
     return this.stages.harvestItemErrors;
@@ -60,9 +67,5 @@ export class ValidationsWidgetComponent implements WidgetComponent {
 }
 
 export const harvestValidationsWidgetMenuItem = new WidgetMenuItem(
-  ValidationsWidgetComponent,
-  (_, data): boolean => {
-    const harvest = retrieveResolvedModel(data, Harvest);
-    return harvest?.status === "metadataReview";
-  }
+  ValidationsWidgetComponent
 );

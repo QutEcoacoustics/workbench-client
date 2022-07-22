@@ -78,7 +78,7 @@
   <button
     class="btn btn-outline-primary"
     [disabled]="transitioningStage"
-    (click)="onBackClick()"
+    (click)="openUploadModal()"
   >
     Upload more files
   </button>
@@ -86,7 +86,7 @@
     *ngIf="harvest.isMappingsDirty"
     class="btn btn-primary"
     [disabled]="transitioningStage"
-    (click)="onSaveClick()"
+    (click)="openExtractionModal()"
   >
     Check changes
   </button>
@@ -96,7 +96,7 @@
     [class.btn-primary]="!harvest.isMappingsDirty"
     [class.btn-warning]="harvest.isMappingsDirty"
     [disabled]="transitioningStage"
-    (click)="onNextClick()"
+    (click)="openProcessingModal()"
   >
     {{
       harvest.isMappingsDirty ? "Continue without checking changes" : "Continue"

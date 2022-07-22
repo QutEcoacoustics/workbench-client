@@ -23,7 +23,8 @@
         </li>
         <li>
           Upload all of your files using this
-          <a target="_blank" href="https://winscp.net/eng/docs/guide_upload">guide</a>
+          <a target="_blank"
+             href="https://winscp.net/eng/docs/guide_upload">guide</a>
           and we will check them for you
         </li>
       </ol>
@@ -54,7 +55,7 @@
     <div class="card h-100">
       <div class="card-body">
         <fa-icon class="icon-wrapper" size="2x"
-          [icon]="['fas', 'network-wired']"></fa-icon>
+                 [icon]="['fas', 'network-wired']"></fa-icon>
 
         We recommend using an Ethernet connection instead of WiFi. The file
         transfer will be more stable, and faster
@@ -106,7 +107,7 @@
         <p>
           Upload your data using whatever folder structure you would like.
           Filenames will need to follow this <a target="_blank"
-            href="https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md">guide</a>.
+             href="https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md">guide</a>.
         </p>
       </div>
     </div>
@@ -146,14 +147,14 @@
   <button
     class="btn btn-warning float-start"
     [disabled]="loading"
-    (click)="onCancel()"
+    (click)="openCancelModal()"
   >
     Cancel
   </button>
   <button
     class="btn btn-primary float-end"
     [disabled]="loading"
-    (click)="onFinishedUploading()"
+    (click)="openFinishedUploadingModal()"
   >
     Finished uploading
   </button>
