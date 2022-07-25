@@ -3,16 +3,37 @@ import {
   IHarvestItem,
   IHarvestItemReport,
   IHarvestItemValidation,
+  ValidationName,
 } from "@models/HarvestItem";
 import { modelData } from "@test/helpers/faker";
 
 export function generateHarvestItemValidation(
   data?: Partial<IHarvestItemValidation>
 ): Required<IHarvestItemValidation> {
+  const status = modelData.helpers.arrayElement([
+    "fixable",
+    "notFixable",
+  ] as const);
+
+  let name: ValidationName;
+  if (status === "fixable") {
+    name = modelData.helpers.arrayElement([
+      "noSiteId",
+      "ambiguousDateTime",
+      "futureDate",
+    ] as const);
+  } else {
+    name = modelData.helpers.arrayElement([
+      "doesNotExist",
+      "duplicateFile",
+      "overlappingFiles",
+    ] as const);
+  }
+
   return {
-    name: modelData.random.word(),
-    status: modelData.helpers.arrayElement(["fixable", "notFixable"]),
     message: modelData.random.words(),
+    name,
+    status,
     ...data,
   };
 }
