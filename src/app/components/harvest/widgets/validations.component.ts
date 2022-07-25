@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
+import { ValidationName } from "@models/HarvestItem";
 import { map, Observable, startWith } from "rxjs";
 import { HarvestStagesService } from "../services/harvest-stages.service";
 
@@ -37,31 +38,31 @@ export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
   public ngOnInit(): void {
     this.isMetaReviewStage$ = this.stages.harvest$.pipe(
       startWith(false),
-      map((): boolean => this.stages.isCurrentStage("metadataReview")),
+      map((): boolean => this.stages.isCurrentStage("metadataReview"))
     );
   }
 
-  public get errors() {
-    return this.stages.harvestItemErrors;
+  public hasError(error: ValidationName): boolean {
+    return this.stages.harvestItemErrors.has(error);
   }
 
   public get showFixableIssues(): boolean {
-    return this.stages.hasHarvestItemsFixable;
+    return !!this.stages.hasHarvestItemsFixable;
   }
 
   public get showNonFixableIssues(): boolean {
-    return this.stages.hasHarvestItemsNotFixable;
+    return !!this.stages.hasHarvestItemsNotFixable;
   }
 
   public get corruptedFile(): boolean {
     return (
-      this.errors.get("fileEmpty") ||
-      this.errors.get("noDuration") ||
-      this.errors.get("tooShort") ||
-      this.errors.get("channelCount") ||
-      this.errors.get("sampleRate") ||
-      this.errors.get("bitRate") ||
-      this.errors.get("mediaType")
+      this.hasError("fileEmpty") ||
+      this.hasError("noDuration") ||
+      this.hasError("tooShort") ||
+      this.hasError("channelCount") ||
+      this.hasError("sampleRate") ||
+      this.hasError("bitRate") ||
+      this.hasError("mediaType")
     );
   }
 }

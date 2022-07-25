@@ -25,7 +25,7 @@ import {
   switchMap,
   takeUntil,
   tap,
-  throwError
+  throwError,
 } from "rxjs";
 
 @Injectable({ providedIn: "root" })
@@ -109,7 +109,7 @@ export class HarvestStagesService implements OnDestroy {
   public initialize(project: Project, harvest: Harvest): void {
     this.project = project;
     this.setHarvest(harvest);
-    this.harvestItemErrors = Map();
+    this.resetHarvestItemsErrors();
     this.stopPolling();
   }
 
@@ -117,7 +117,7 @@ export class HarvestStagesService implements OnDestroy {
   public destroy(): void {
     this.project = null;
     this._harvest$ = new BehaviorSubject<Harvest | null>(null);
-    this.harvestItemErrors = Map();
+    this.resetHarvestItemsErrors();
     this.stopPolling();
     this.unsubscribe.next();
   }
@@ -238,7 +238,7 @@ export class HarvestStagesService implements OnDestroy {
         next: (harvest): void => {
           this.setHarvest(harvest);
           this.stopPolling();
-          this.harvestItemErrors = Map();
+          this.resetHarvestItemsErrors();
           this.transitioningStage = false;
         },
         error: (err: BawApiError): void => {
@@ -260,6 +260,12 @@ export class HarvestStagesService implements OnDestroy {
     const progress = ((numItems ?? 0) / this.harvest.report.itemsTotal) * 100;
     const almostDone = progress > 99.99 && progress !== 100;
     return almostDone ? 99.99 : +progress.toFixed(2);
+  }
+
+  private resetHarvestItemsErrors(): void {
+    this.harvestItemErrors = this.harvestItemErrors.clear();
+    this.hasHarvestItemsFixable = false;
+    this.hasHarvestItemsNotFixable = false;
   }
 
   /**
