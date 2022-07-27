@@ -4,6 +4,7 @@ import { HarvestStagesService } from "@components/harvest/services/harvest-stage
 import { Harvest, HarvestMapping, IHarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ConfigService } from "@services/config/config.service";
 
 @Component({
   selector: "baw-harvest-stream-uploading",
@@ -16,7 +17,8 @@ export class StreamUploadingComponent implements OnInit {
 
   public constructor(
     public modals: NgbModal,
-    private stages: HarvestStagesService
+    private stages: HarvestStagesService,
+    private config: ConfigService
   ) {}
 
   public get harvest(): Harvest {
@@ -25,6 +27,10 @@ export class StreamUploadingComponent implements OnInit {
 
   public get project(): Project {
     return this.stages.project;
+  }
+
+  public get filenameGuide(): string {
+    return this.config.settings.links.harvestFilenameGuide;
   }
 
   public get loading(): boolean {

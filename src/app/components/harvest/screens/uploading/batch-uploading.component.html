@@ -66,8 +66,8 @@
         >
         </fa-icon>
 
-        We recommend using an Ethernet connection instead of WiFi. The file
-        transfer will be more stable, and faster
+        Use a wired network connection instead of WiFi. The file transfer will
+        faster and more stable.
       </div>
     </div>
   </div>
@@ -90,8 +90,8 @@
           </div>
         </div>
 
-        Make sure files from each different sensor are in their own folder and
-        are not mixed together
+        Ensure files from each sensor are in their own folder. Do not mix files
+        together.
       </div>
     </div>
   </div>
@@ -105,11 +105,7 @@
         <p>
           Upload your data using whatever folder structure you would like.
           Filenames will need to follow this
-          <a
-            target="_blank"
-            href="https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md"
-            >guide</a
-          >.
+          <a target="_blank" [href]="filenameGuide | safe: 'url'">guide</a>.
         </p>
       </div>
     </div>
@@ -123,10 +119,13 @@
 
         <ng-container>
           <p>
-            We have created some folders (using the site name and id for the
-            folder name) for you to put your files in already, however you are
-            not required to use them. Here is an example of one:
+            We have created some default folders for each of your
+            {{ hideProjects ? "point" : "site" }}s. They use the
+            <i>{{ hideProjects ? "point" : "site" }} name</i> along with a
+            unique id in their name. You don't have to use these folders if you
+            don't want to.
           </p>
+          <p>Here is an example of one:</p>
           <p>
             <fa-icon class="d-inline" [icon]="['fas', 'folder-closed']">
             </fa-icon>
@@ -187,8 +186,7 @@
     [modal]="modal"
   >
     <p>
-      Are you sure you want to cancel this upload? Any uploaded files will be
-      deleted!
+      Are you sure you want to cancel this upload? Closing cannot be undone.
     </p>
   </baw-harvest-confirmation-modal>
 </ng-template>

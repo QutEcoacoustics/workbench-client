@@ -1,23 +1,22 @@
 <!-- TODO Show something when not meta review stage -->
 <ng-container *ngIf="isMetaReviewStage$ | async">
-  <h5>Instructions</h5>
+  <h5>
+    <fa-icon class="pe-1" [icon]="['fas', 'circle-info']"></fa-icon>Instructions
+  </h5>
 
-  <p>
-    Open up some rows by clicking on the folder icon, or path. As you expose
-    issues, we will provide more customised help
-  </p>
+  <p>You can open and close folders by clicking on them.</p>
 
   <ng-container *ngIf="showFixableIssues">
     <hr />
 
     <h5>
       How to handle files which
-      <span id="attention-file-title">need attention</span>
+      <span class="d-inline callout callout-warning">need attention</span>
     </h5>
 
     <p>
       A number of files have fixable problems. You can ignore these issues,
-      however if you do, they will not be processed in the next stage.
+      however if you do, they will not be included in the final upload.
     </p>
 
     <p *ngIf="hasError('noSiteId') || hasError('ambiguousDateTime')">
@@ -28,22 +27,14 @@
     <p *ngIf="hasError('missingDate')">
       Some files have missing dates. To fix, go back to the upload stage, and
       ensure their filenames include a
-      <a
-        target="_blank"
-        href="https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md"
-      >
-        date </a
-      >.
+      <a target="_blank" [href]="filenameGuide | safe: 'url'">date</a>.
     </p>
 
     <p *ngIf="hasError('futureDate')">
       Some files have dates in the future. To fix, go back to the upload stage,
       and
-      <a
-        target="_blank"
-        href="https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md"
-      >
-        rename the files </a
+      <a target="_blank" [href]="filenameGuide | safe: 'url'"
+        >rename the files</a
       >.
     </p>
   </ng-container>
@@ -51,13 +42,15 @@
   <ng-container *ngIf="showNonFixableIssues">
     <hr />
 
-    <h5>How to handle <span id="problem-file-title">problem files</span></h5>
+    <h5>
+      How to handle
+      <span class="d-inline callout callout-danger">problem files</span>
+    </h5>
 
     <p>
-      These files will automatically be ignored, you can upload the rest of your
-      files and everything will be okay. Some issues can be resolved by
-      returning to the upload stage, and removing/re-uploading the problem
-      files.
+      These files have problems we don't know how to fix. These files will
+      automatically be ignored - you can upload the rest of your files and all
+      the files without problems will be uploaded just fine.
     </p>
 
     <p>
@@ -79,7 +72,10 @@
 
     <p *ngIf="hasError('duplicateFile') || hasError('duplicateFileInHarvest')">
       Some files are duplicates of previously uploaded files indicating an
-      accidental upload. You can delete the files if required.
+      accidental upload. You should go back to the upload stage and delete the
+      duplicates.<br />If you have duplicates in <i>Site A</i> and in
+      <i>Site B</i> we'll reject both. We don't know for sure which site they're
+      meant to be in.
     </p>
 
     <p

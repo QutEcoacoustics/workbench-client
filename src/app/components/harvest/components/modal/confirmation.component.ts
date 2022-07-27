@@ -35,10 +35,10 @@ export class ConfirmationComponent {
   @Output() public confirm = new EventEmitter<void>();
 
   public close(): void {
-    this.modal.dismiss("close");
+    this.modal.close(false);
   }
 
   public continue(): void {
-    this.modal.close("next");
+    this.modal.close(true);
   }
 }

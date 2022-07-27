@@ -4,6 +4,7 @@ import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ConfigService } from "@services/config/config.service";
 
 @Component({
   selector: "baw-harvest-batch-uploading",
@@ -12,14 +13,17 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class BatchUploadingComponent implements OnInit {
   public active = 1;
+  public hideProjects: boolean;
 
   public constructor(
     public stages: HarvestStagesService,
-    public modals: NgbModal
+    public modals: NgbModal,
+    private config: ConfigService
   ) {}
 
   public ngOnInit(): void {
     this.stages.startPolling(5000);
+    this.hideProjects = this.config.settings.hideProjects;
   }
 
   public get harvest(): Harvest {
@@ -28,6 +32,10 @@ export class BatchUploadingComponent implements OnInit {
 
   public get project(): Project {
     return this.stages.project;
+  }
+
+  public get filenameGuide(): string {
+    return this.config.settings.links.harvestFilenameGuide;
   }
 
   public get loading(): boolean {

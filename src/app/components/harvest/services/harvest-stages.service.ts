@@ -5,7 +5,11 @@ import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Harvest, HarvestStatus } from "@models/Harvest";
-import { HarvestItem, ValidationName } from "@models/HarvestItem";
+import {
+  HarvestItem,
+  HarvestItemValidation,
+  ValidationName,
+} from "@models/HarvestItem";
 import { Project } from "@models/Project";
 import { Step } from "@shared/stepper/stepper.component";
 import { Map } from "immutable";
@@ -36,10 +40,7 @@ export class HarvestStagesService implements OnDestroy {
    * state should be disabled
    */
   public transitioningStage: boolean;
-  /** Harvest items errors. If true, the error is fixable */
-  public harvestItemErrors: Map<ValidationName, boolean> = Map();
-  public hasHarvestItemsFixable: boolean;
-  public hasHarvestItemsNotFixable: boolean;
+  public harvestItemErrors: Map<ValidationName, HarvestItemValidation> = Map();
 
   private _harvest$ = new BehaviorSubject<Harvest | null>(null);
   private harvestTrigger$ = new Subject<void>();
@@ -171,13 +172,7 @@ export class HarvestStagesService implements OnDestroy {
         (list): void => {
           items.forEach((_item: HarvestItem): void => {
             _item.validations?.forEach((validation): void => {
-              list = list.set(validation.name, true);
-
-              if (validation.status === "fixable") {
-                this.hasHarvestItemsFixable = true;
-              } else {
-                this.hasHarvestItemsNotFixable = true;
-              }
+              list = list.set(validation.name, validation);
             });
           });
         }
@@ -264,8 +259,6 @@ export class HarvestStagesService implements OnDestroy {
 
   private resetHarvestItemsErrors(): void {
     this.harvestItemErrors = this.harvestItemErrors.clear();
-    this.hasHarvestItemsFixable = false;
-    this.hasHarvestItemsNotFixable = false;
   }
 
   /**

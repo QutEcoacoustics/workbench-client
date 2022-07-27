@@ -3,7 +3,9 @@ import { contactUsMenuItem } from "@components/about/about.menus";
 import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { ValidationName } from "@models/HarvestItem";
+import { ConfigService } from "@services/config/config.service";
 import { map, Observable, startWith } from "rxjs";
+import { metaReviewIcons } from "../screens/metadata-review/metadata-review.component";
 import { HarvestStagesService } from "../services/harvest-stages.service";
 
 @Component({
@@ -31,9 +33,13 @@ import { HarvestStagesService } from "../services/harvest-stages.service";
 })
 export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
   public contactUs = contactUsMenuItem;
+  public icons = metaReviewIcons;
   public isMetaReviewStage$: Observable<boolean>;
 
-  public constructor(private stages: HarvestStagesService) {}
+  public constructor(
+    private stages: HarvestStagesService,
+    private config: ConfigService
+  ) {}
 
   public ngOnInit(): void {
     this.isMetaReviewStage$ = this.stages.harvest$.pipe(
@@ -47,11 +53,19 @@ export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
   }
 
   public get showFixableIssues(): boolean {
-    return !!this.stages.hasHarvestItemsFixable;
+    return this.stages.harvestItemErrors.some(
+      (validation): boolean => validation.status === "fixable"
+    );
   }
 
   public get showNonFixableIssues(): boolean {
-    return !!this.stages.hasHarvestItemsNotFixable;
+    return this.stages.harvestItemErrors.some(
+      (validation): boolean => validation.status === "notFixable"
+    );
+  }
+
+  public get filenameGuide(): string {
+    return this.config.settings.links.harvestFilenameGuide;
   }
 
   public get corruptedFile(): boolean {
