@@ -3,6 +3,7 @@ import { audioRecordingMenuItems } from "@components/audio-recordings/audio-reco
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { Harvest, HarvestMapping, IHarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "baw-harvest-stream-uploading",
@@ -13,7 +14,10 @@ export class StreamUploadingComponent implements OnInit {
   public audioRecordings = audioRecordingMenuItems.list.project;
   public mappings: HarvestMapping[];
 
-  public constructor(private stages: HarvestStagesService) {}
+  public constructor(
+    public modals: NgbModal,
+    private stages: HarvestStagesService
+  ) {}
 
   public get harvest(): Harvest {
     return this.stages.harvest;
@@ -36,7 +40,12 @@ export class StreamUploadingComponent implements OnInit {
     return this.stages.harvest.uploadUrlWithAuth + "/" + mapping.path;
   }
 
-  public closeConnectionClick(): void {
-    this.stages.transition("complete");
+  public async closeConnection(template: any): Promise<void> {
+    const ref = this.modals.open(template);
+    const success = await ref.result.catch((_) => false);
+
+    if (success) {
+      this.stages.transition("complete");
+    }
   }
 }

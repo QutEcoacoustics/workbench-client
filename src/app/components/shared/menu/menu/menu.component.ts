@@ -111,10 +111,9 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   private setModalActions(): Set<AnyMenuItem | MenuModal> {
     return (
       // Change modal menu item links into menu actions
-      this.links
-        .map((link) =>
-          isMenuModal(link) ? this.createModalAction(link) : link
-        )
+      this.links.map((link) =>
+        isMenuModal(link) ? this.createModalAction(link) : link
+      )
     );
   }
 
@@ -153,6 +152,9 @@ export class MenuComponent implements OnChanges, AfterViewInit {
    * @param widget Widget Component
    */
   private insertWidget(widget: WidgetMenuItem): void {
-    this.menuWidget.createComponent(widget.component);
+    const temp = this.menuWidget.createComponent(widget.component);
+    // This is needed, otherwise widgets sometimes throw
+    // ExpressionChangedAfterItHasBeenCheckedError
+    temp.changeDetectorRef.detectChanges();
   }
 }

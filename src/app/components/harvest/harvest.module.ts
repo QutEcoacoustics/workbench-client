@@ -8,6 +8,7 @@ import { FileRowComponent } from "./components/metadata-review/file-row.componen
 import { FolderRowComponent } from "./components/metadata-review/folder-row.component";
 import { LoadMoreComponent } from "./components/metadata-review/load-more.component";
 import { WhitespaceComponent } from "./components/metadata-review/whitespace.component";
+import { ConfirmationComponent } from "./components/modal/confirmation.component";
 import { CanCloseDialogComponent } from "./components/shared/can-close-dialog.component";
 import { EtaComponent } from "./components/shared/eta.component";
 import { StatisticGroupComponent } from "./components/shared/statistics/group.component";
@@ -48,6 +49,9 @@ const internalComponents = [
   StatisticsComponent,
   TitleComponent,
   UploadUrlComponent,
+
+  // Modals
+  ConfirmationComponent,
 
   // Widgets
   ValidationsWidgetComponent,

@@ -89,8 +89,17 @@
   <button
     class="btn btn-warning float-end"
     [disabled]="loading"
-    (click)="closeConnectionClick()"
+    (click)="closeConnection(closeConnectionModal)"
   >
     Close Connection
   </button>
 </div>
+
+<ng-template #closeConnectionModal let-modal>
+  <baw-harvest-confirmation-modal nextLabel="Close Connection" [modal]="modal">
+    <p>
+      Are you sure you want to cancel this upload? Any uploaded files will be
+      deleted!
+    </p>
+  </baw-harvest-confirmation-modal>
+</ng-template>

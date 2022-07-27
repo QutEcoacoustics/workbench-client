@@ -23,7 +23,9 @@
         </li>
         <li>
           Upload all of your files using this
-          <a target="_blank" href="https://winscp.net/eng/docs/guide_upload">guide</a>
+          <a target="_blank" href="https://winscp.net/eng/docs/guide_upload"
+            >guide</a
+          >
           and we will check them for you
         </li>
         <li>
@@ -53,11 +55,15 @@
 
 <div [ngbNavOutlet]="nav" class="mt-2"></div>
 
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-3">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 mb-3">
   <div class="col">
     <div class="card h-100">
       <div class="card-body">
-        <fa-icon class="icon-wrapper" size="2x" [icon]="['fas', 'network-wired']">
+        <fa-icon
+          class="icon-wrapper"
+          size="2x"
+          [icon]="['fas', 'network-wired']"
+        >
         </fa-icon>
 
         We recommend using an Ethernet connection instead of WiFi. The file
@@ -69,8 +75,20 @@
   <div class="col">
     <div class="card h-100">
       <div class="card-body">
-        <fa-icon class="icon-wrapper" size="2x" [icon]="['fas', 'cubes']">
-        </fa-icon>
+        <div class="icon-wrapper">
+          <div class="pe-1">
+            <fa-icon [icon]="['fas', 'microphone']"></fa-icon>
+            <fa-icon [icon]="['fas', 'folder-open']"></fa-icon>
+          </div>
+          <div class="pe-1">
+            <fa-icon [icon]="['fas', 'microphone']"></fa-icon>
+            <fa-icon [icon]="['fas', 'folder-open']"></fa-icon>
+          </div>
+          <div>
+            <fa-icon [icon]="['fas', 'microphone']"></fa-icon>
+            <fa-icon [icon]="['fas', 'folder-open']"></fa-icon>
+          </div>
+        </div>
 
         Make sure files from each different sensor are in their own folder and
         are not mixed together
@@ -87,8 +105,11 @@
         <p>
           Upload your data using whatever folder structure you would like.
           Filenames will need to follow this
-          <a target="_blank"
-            href="https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md">guide</a>.
+          <a
+            target="_blank"
+            href="https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md"
+            >guide</a
+          >.
         </p>
       </div>
     </div>
@@ -105,45 +126,31 @@
             We have created some folders (using the site name and id for the
             folder name) for you to put your files in already, however you are
             not required to use them. Here is an example of one:
-            </p>
+          </p>
           <p>
             <fa-icon class="d-inline" [icon]="['fas', 'folder-closed']">
             </fa-icon>
             {{ exampleSite(project).name + "_" + exampleSite(project).id }}
           </p>
-          </ng-container>
+        </ng-container>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="col">
-    <div class="card h-100">
-      <div class="card-body">
-        <div class="icon-wrapper">
-          <baw-loading size="lg" color="highlight"></baw-loading>
-        </div>
+<div class="row">
+  <baw-harvest-upload-url
+    class="col-md"
+    [harvest]="harvest"
+  ></baw-harvest-upload-url>
 
-        <b>Uploaded Files:</b>
-        <p>{{ harvest.report.itemsTotal | number }}</p>
-
-        <b>Uploaded Bytes:</b>
-        <p>
-          {{ harvest.report.itemsSizeBytes | number }}
-          ({{ harvest.report.itemsSize }})
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <div class="col">
-    <div class="card h-100">
-      <div class="card-body">
-        <fa-icon class="icon-wrapper" size="2x" [icon]="['fas', 'server']">
-        </fa-icon>
-
-        <baw-harvest-upload-url [harvest]="harvest"></baw-harvest-upload-url>
-      </div>
-    </div>
+  <div class="col-md">
+    <p><b>Uploaded Files:</b> {{ harvest.report.itemsTotal | number }}</p>
+    <p>
+      <b>Uploaded Bytes:</b> {{ harvest.report.itemsSizeBytes | number }} ({{
+        harvest.report.itemsSize
+      }})
+    </p>
   </div>
 </div>
 
@@ -151,15 +158,37 @@
   <button
     class="btn btn-warning float-start"
     [disabled]="loading"
-    (click)="openCancelModal()"
+    (click)="cancelUpload(cancelUploadModal)"
   >
     Cancel
   </button>
   <button
     class="btn btn-primary float-end"
     [disabled]="loading"
-    (click)="openFinishedUploadingModal()"
+    (click)="finishUpload(finishUploadModal)"
   >
     Finished uploading
   </button>
 </div>
+
+<ng-template #finishUploadModal let-modal>
+  <baw-harvest-confirmation-modal nextLabel="Scan Files" [modal]="modal">
+    <p>
+      Are you sure your upload is finished? You can come back here later, if
+      there are any issues.
+    </p>
+  </baw-harvest-confirmation-modal>
+</ng-template>
+
+<ng-template #cancelUploadModal let-modal>
+  <baw-harvest-confirmation-modal
+    nextLabel="Cancel Upload"
+    cancelLabel="Return"
+    [modal]="modal"
+  >
+    <p>
+      Are you sure you want to cancel this upload? Any uploaded files will be
+      deleted!
+    </p>
+  </baw-harvest-confirmation-modal>
+</ng-template>

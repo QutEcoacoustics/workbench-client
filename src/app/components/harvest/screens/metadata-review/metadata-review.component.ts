@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
-import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { Statistic } from "@components/harvest/components/shared/statistics/statistics.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
@@ -112,11 +111,11 @@ export class MetadataReviewComponent
   public icons = metaReviewIcons;
 
   public constructor(
+    public modals: NgbModal,
     private stages: HarvestStagesService,
     private config: ConfigService,
     private notification: ToastrService,
-    private harvestApi: ShallowHarvestsService,
-    private modal: NgbModal
+    private harvestApi: ShallowHarvestsService
   ) {
     super();
   }
@@ -195,46 +194,31 @@ export class MetadataReviewComponent
     this.userInputBuffer$.next(row);
   }
 
-  /** Transition harvest to processing stage */
-  public async openProcessingModal(): Promise<void> {
-    const ref = this.modal.open(ConfirmationComponent, { centered: true });
-    ref.componentInstance.description =
-      "Are you sure you are done with this upload? There is no returning from here!";
-    ref.componentInstance.cancelBtn = "Cancel";
-    ref.componentInstance.nextBtn = "Continue";
+  public async processing(template: any): Promise<void> {
+    const ref = this.modals.open(template);
+    const success = await ref.result.catch((_) => false);
 
-    try {
-      await ref.result;
+    if (success) {
       this.stages.transition("processing");
-    } catch (err) {}
+    }
   }
 
-  /** Transition harvest to uploading stage */
-  public async openUploadModal(): Promise<void> {
-    const ref = this.modal.open(ConfirmationComponent, { centered: true });
-    ref.componentInstance.description =
-      "Are you sure you wish to return to the uploading stage?";
-    ref.componentInstance.cancelBtn = "Cancel";
-    ref.componentInstance.nextBtn = "Upload More";
+  public async upload(template: any): Promise<void> {
+    const ref = this.modals.open(template);
+    const success = await ref.result.catch((_) => false);
 
-    try {
-      await ref.result;
+    if (success) {
       this.stages.transition("uploading");
-    } catch (err) {}
+    }
   }
 
-  /** Transition harvest to meta extraction stage */
-  public async openExtractionModal(): Promise<void> {
-    const ref = this.modal.open(ConfirmationComponent, { centered: true });
-    ref.componentInstance.description =
-      "Are you sure you want to check these changes to your uploaded files?";
-    ref.componentInstance.cancelBtn = "Cancel";
-    ref.componentInstance.nextBtn = "Check Changes";
+  public async extraction(template: any): Promise<void> {
+    const ref = this.modals.open(template);
+    const success = await ref.result.catch((_) => false);
 
-    try {
-      await ref.result;
+    if (success) {
       this.stages.transition("metadataExtraction");
-    } catch (err) {}
+    }
   }
 
   public isFolder(row: MetaReviewRow): row is MetaReviewFolder {

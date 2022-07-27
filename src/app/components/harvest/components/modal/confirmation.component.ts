@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
@@ -6,23 +6,39 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
   template: `
     <div class="modal-header">
       <h4 class="modal-title">Confirm</h4>
-      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('cancel')"></button>
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="close()"
+      ></button>
     </div>
 
     <div class="modal-body">
-      <p>{{ description }}</p>
+      <ng-content></ng-content>
 
       <div class="clearfix">
-        <div class="btn btn-outline-primary float-start" (click)="modal.dismiss('cancel')">{{ cancelBtn }}</div>
-        <div class="btn btn-primary float-end" (click)="modal.close('next')">{{ nextBtn }}</div>
+        <button class="btn btn-outline-primary float-start" (click)="close()">
+          {{ cancelLabel }}
+        </button>
+        <button class="btn btn-primary float-end" (click)="continue()">
+          {{ nextLabel }}
+        </button>
       </div>
     </div>
-  `
+  `,
 })
 export class ConfirmationComponent {
-  @Input() public description: string;
-  @Input() public cancelBtn: string;
-  @Input() public nextBtn: string;
+  @Input() public nextLabel: string;
+  @Input() public cancelLabel = "Cancel";
+  @Input() public modal: NgbActiveModal;
+  @Output() public confirm = new EventEmitter<void>();
 
-  public constructor(public modal: NgbActiveModal) {}
+  public close(): void {
+    this.modal.dismiss("close");
+  }
+
+  public continue(): void {
+    this.modal.close("next");
+  }
 }
