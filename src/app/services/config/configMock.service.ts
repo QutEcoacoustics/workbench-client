@@ -54,6 +54,7 @@ export const testApiConfig = new Configuration({
     links: {
       sourceRepository: "http://broken_link",
       sourceRepositoryIssues: "http://broken_link",
+      harvestFilenameGuide: "http://broken_link",
     },
     hideProjects: false,
     customMenu: [
