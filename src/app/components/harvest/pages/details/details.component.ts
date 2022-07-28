@@ -6,6 +6,8 @@ import {
   harvestMenuItem,
   harvestsCategory,
 } from "@components/harvest/harvest.menus";
+import { harvestValidationsWidgetMenuItem } from "@components/harvest/widgets/validations.component";
+import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest } from "@models/Harvest";
@@ -42,13 +44,16 @@ class DetailsComponent
   }
 
   public ngOnDestroy(): void {
-    this.stages.stopPolling();
+    this.stages.destroy();
   }
 }
 
 DetailsComponent.linkToRoute({
   category: harvestsCategory,
-  menus: { actions: List(harvestsMenuItemActions) },
+  menus: {
+    actions: List([...harvestsMenuItemActions, newSiteMenuItem]),
+    actionWidgets: List([harvestValidationsWidgetMenuItem]),
+  },
   pageRoute: harvestMenuItem,
   resolvers: {
     [projectKey]: projectResolvers.show,

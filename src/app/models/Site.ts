@@ -188,7 +188,7 @@ export class Site extends AbstractModel<ISite> implements ISite {
   /**
    * Returns true if site should display as a point
    */
-  public get isPoint() {
+  public get isPoint(): boolean {
     return isInstantiated(this.regionId);
   }
 

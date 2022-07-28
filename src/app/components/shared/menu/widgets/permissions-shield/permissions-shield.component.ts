@@ -22,7 +22,7 @@ import { WidgetComponent } from "../widget.component";
  * TODO Let page decide which model to display permissions for
  */
 @Component({
-  selector: "baw-permissions-shield",
+  selector: "baw-permissions-shield-widget",
   template: `
     <section *ngIf="model" class="pb-3">
       <div *ngFor="let badge of badges">

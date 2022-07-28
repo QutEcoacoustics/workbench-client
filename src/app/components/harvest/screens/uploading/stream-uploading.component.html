@@ -10,10 +10,9 @@
   <li>Files must be placed in the provided folders (shown below)</li>
   <li>
     Files must use an
-    <a
-      href="https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md"
-      >unambiguous datestamp format filename</a
-    >
+    <a target="_blank" [href]="filenameGuide | safe: 'url'">
+      unambiguous datestamp format filename
+    </a>
   </li>
   <li>
     Successfully uploaded files will no longer be visible in the SFTP connection
@@ -70,7 +69,16 @@
   </ngx-datatable-column>
 </ngx-datatable>
 
-<baw-harvest-upload-progress [harvest]="harvest"></baw-harvest-upload-progress>
+<h4>Current Progress</h4>
+
+<ul>
+  <li><b>Uploaded Files: </b>{{ harvest.report.itemsTotal | number }}</li>
+  <li>
+    <b>Uploaded Bytes: </b>{{ harvest.report.itemsSizeBytes | number }} ({{
+      harvest.report.itemsSize
+    }})
+  </li>
+</ul>
 
 <div class="clearfix">
   <p>
@@ -80,8 +88,17 @@
   <button
     class="btn btn-warning float-end"
     [disabled]="loading"
-    (click)="closeConnectionClick()"
+    (click)="closeConnection(closeConnectionModal)"
   >
     Close Connection
   </button>
 </div>
+
+<ng-template #closeConnectionModal let-modal>
+  <baw-harvest-confirmation-modal nextLabel="Close Connection" [modal]="modal">
+    <p>
+      Are you sure you want to cancel this upload? Any uploaded files will be
+      deleted!
+    </p>
+  </baw-harvest-confirmation-modal>
+</ng-template>

@@ -5,14 +5,13 @@ import { Harvest } from "@models/Harvest";
   selector: "baw-harvest-upload-url",
   template: `
     <p>
-      Server URL:
-      <a [href]="harvest.uploadUrlWithAuth | safe: 'url'">
+      <b>Server URL: </b><a [href]="harvest.uploadUrlWithAuth | safe: 'url'">
         {{ harvest.uploadUrl }}
       </a>
     </p>
 
-    <p>Username: {{ harvest.uploadUser }}</p>
-    <p>Password: {{ harvest.uploadPassword }}</p>
+    <p><b>Username:</b> {{ harvest.uploadUser }}</p>
+    <p><b>Password:</b> {{ harvest.uploadPassword }}</p>
   `,
 })
 export class UploadUrlComponent {

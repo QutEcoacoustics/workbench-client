@@ -12,7 +12,7 @@ import { HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
 
 interface ValidationMessage {
-  type: string;
+  type: "warning" | "danger" | "error";
   message: string;
 }
 
@@ -50,7 +50,7 @@ interface ValidationMessage {
             <small
               *ngFor="let validation of validationMessages"
               class="callout"
-              [ngClass]="['callout-' + validation.type]"
+              [ngClass]="[getCalloutClass(validation)]"
             >
               {{ validation.message }}
             </small>
@@ -133,6 +133,12 @@ export class FileRowComponent implements OnInit {
         message: "An unknown error has occurred",
       });
     }
+  }
+
+  public getCalloutClass(validation: ValidationMessage): string {
+    return validation.type === "error"
+      ? "callout-black"
+      : `callout-${validation.type}`;
   }
 
   public toggleValidationMessages(row: MetaReviewFile): void {

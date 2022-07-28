@@ -110,13 +110,10 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   /** Update modal menu items to include an action which will open/close the modal */
   private setModalActions(): Set<AnyMenuItem | MenuModal> {
     return (
-      this.links
-        /*
-         * Change modal menu item links into menu actions
-         */
-        .map((link) =>
-          isMenuModal(link) ? this.createModalAction(link) : link
-        )
+      // Change modal menu item links into menu actions
+      this.links.map((link) =>
+        isMenuModal(link) ? this.createModalAction(link) : link
+      )
     );
   }
 
@@ -127,17 +124,17 @@ export class MenuComponent implements OnChanges, AfterViewInit {
    * @param modal Modal menu item
    * @returns Menu Action
    */
-  private createModalAction(link: MenuModalWithoutAction): MenuModal {
+  private createModalAction(modal: MenuModalWithoutAction): MenuModal {
     const action = (): void => {
-      const modalRef = this.modalService.open(link.component, link.modalOpts);
+      const modalRef = this.modalService.open(modal.component, modal.modalOpts);
       const component: ModalComponent = modalRef.componentInstance;
-      link.assignComponentData(component, modalRef);
+      modal.assignComponentData(component, modalRef);
     };
-    return menuModal({ ...link, action }) as MenuModal;
+    return menuModal({ ...modal, action }) as MenuModal;
   }
 
   /** Clear widgets */
-  private clearWidgets() {
+  private clearWidgets(): void {
     this.menuWidget?.clear();
   }
 
@@ -155,6 +152,9 @@ export class MenuComponent implements OnChanges, AfterViewInit {
    * @param widget Widget Component
    */
   private insertWidget(widget: WidgetMenuItem): void {
-    this.menuWidget.createComponent(widget.component);
+    const temp = this.menuWidget.createComponent(widget.component);
+    // This is needed, otherwise widgets sometimes throw
+    // ExpressionChangedAfterItHasBeenCheckedError
+    temp.changeDetectorRef.detectChanges();
   }
 }

@@ -47,6 +47,8 @@ describe("ToRelativePipe", () => {
 
   it("should display datetime with custom options", () => {
     setup(DateTime.utc(), { style: "short" });
+    // This test seems to be dependant on local settings, it sometimes will
+    // fail with the value '0 sec ago'. Check with CI before changing
     assertPipe("0 sec. ago");
   });
 });
