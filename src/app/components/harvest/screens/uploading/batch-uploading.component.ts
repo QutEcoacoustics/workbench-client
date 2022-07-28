@@ -13,7 +13,6 @@ import { ConfigService } from "@services/config/config.service";
 })
 export class BatchUploadingComponent implements OnInit {
   public active = 1;
-  public hideProjects: boolean;
 
   public constructor(
     public stages: HarvestStagesService,
@@ -23,7 +22,6 @@ export class BatchUploadingComponent implements OnInit {
 
   public ngOnInit(): void {
     this.stages.startPolling(5000);
-    this.hideProjects = this.config.settings.hideProjects;
   }
 
   public get harvest(): Harvest {

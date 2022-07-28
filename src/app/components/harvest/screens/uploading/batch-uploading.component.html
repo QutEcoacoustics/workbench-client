@@ -119,11 +119,9 @@
 
         <ng-container>
           <p>
-            We have created some default folders for each of your
-            {{ hideProjects ? "point" : "site" }}s. They use the
-            <i>{{ hideProjects ? "point" : "site" }} name</i> along with a
-            unique id in their name. You don't have to use these folders if you
-            don't want to.
+            We have created some default folders for each of your points/sites.
+            They use the <i>point/site name</i> along with a unique id in their
+            name. You don't have to use these folders if you don't want to.
           </p>
           <p>Here is an example of one:</p>
           <p>
@@ -174,7 +172,8 @@
   <baw-harvest-confirmation-modal nextLabel="Scan Files" [modal]="modal">
     <p>
       Are you sure your upload is finished? You can come back here later, if
-      there are any issues.
+      there are any issues. This will close the WinSCP connection so we can work
+      on the files.
     </p>
   </baw-harvest-confirmation-modal>
 </ng-template>
@@ -186,7 +185,8 @@
     [modal]="modal"
   >
     <p>
-      Are you sure you want to cancel this upload? Closing cannot be undone.
+      Are you sure you want to cancel this upload? Cancelling will not process
+      any uploaded files, and cannot be undone.
     </p>
   </baw-harvest-confirmation-modal>
 </ng-template>

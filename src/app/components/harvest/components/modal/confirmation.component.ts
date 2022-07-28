@@ -32,7 +32,6 @@ export class ConfirmationComponent {
   @Input() public nextLabel: string;
   @Input() public cancelLabel = "Cancel";
   @Input() public modal: NgbActiveModal;
-  @Output() public confirm = new EventEmitter<void>();
 
   public close(): void {
     this.modal.close(false);

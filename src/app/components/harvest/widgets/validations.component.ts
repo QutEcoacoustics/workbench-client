@@ -20,14 +20,6 @@ import { HarvestStagesService } from "../services/harvest-stages.service";
       p {
         font-size: 0.85em;
       }
-
-      #attention-file-title {
-        border-bottom: 2px solid hsl(var(--baw-warning-hsl));
-      }
-
-      #problem-file-title {
-        border-bottom: 2px solid hsl(var(--baw-danger-hsl));
-      }
     `,
   ],
 })
