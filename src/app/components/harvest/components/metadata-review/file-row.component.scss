@@ -1,26 +1,3 @@
-.callout {
-  display: block;
-  width: 100%;
-  word-break: break-word;
-  padding: 0.25rem;
-  line-height: 1.5em;
-
-  &.callout-warning {
-    background-color: hsla(var(--baw-warning-hsl), 0.075);
-    border-left: 0.25rem solid hsla(var(--baw-warning-hsl), 0.5);
-  }
-
-  &.callout-danger {
-    background-color: hsla(var(--baw-danger-hsl), 0.075);
-    border-left: 0.25rem solid hsla(var(--baw-danger-hsl), 0.5);
-  }
-
-  &.callout-error {
-    background-color: rgba(0, 0, 0, 0.075);
-    border-left: 0.25rem solid black;
-  }
-}
-
 // TODO This instantly expands the containing row, a better solution could be
 // achieved using JS: https://stackoverflow.com/questions/3508605/how-can-i-transition-height-0-to-height-auto-using-css
 .expander-wrapper {

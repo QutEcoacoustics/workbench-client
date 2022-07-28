@@ -22,7 +22,8 @@
     },
     "links": {
       "sourceRepository": "https://github.com/QutEcoacoustics/workbench-client",
-      "sourceRepositoryIssues": "https://github.com/QutEcoacoustics/workbench-client/issues"
+      "sourceRepositoryIssues": "https://github.com/QutEcoacoustics/workbench-client/issues",
+      "harvestFilenameGuide": "https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md"
     },
     "hideProjects": false,
     "customMenu": [

@@ -48,6 +48,7 @@ export interface Settings {
   links: {
     sourceRepository: string;
     sourceRepositoryIssues: string;
+    harvestFilenameGuide: string;
   };
   hideProjects: boolean;
   customMenu: CustomMenuItem[];

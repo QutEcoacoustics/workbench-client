@@ -72,7 +72,8 @@
         "@typescript-eslint/no-unused-vars": [
           "error",
           {
-            "argsIgnorePattern": "^_"
+            "argsIgnorePattern": "^_",
+            "destructuredArrayIgnorePattern": "^_"
           }
         ],
         "@typescript-eslint/quotes": [

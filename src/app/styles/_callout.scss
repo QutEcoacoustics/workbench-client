@@ -1,0 +1,25 @@
+.callout {
+  --callout-color: 0, 0, 0;
+
+  display: block;
+  width: 100%;
+  word-break: break-word;
+  padding: 0.25rem;
+  line-height: 1.5em;
+  background-color: hsla(var(--callout-color), 0.075);
+  border-left: 0.25rem solid hsla(var(--callout-color), 0.5);
+
+  @each $theme, $default in $theme-colors {
+    &.callout-#{$theme} {
+      --callout-color: var(--baw-#{$theme}-hsl);
+    }
+  }
+
+  &.callout-highlight {
+    --callout-color: var(--baw-highlight-hsl);
+  }
+
+  &.callout-black {
+    --callout-color: 0, 0, 0;
+  }
+}

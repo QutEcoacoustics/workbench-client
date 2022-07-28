@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { HarvestItemsService } from "@baw-api/harvest/harvest-items.service";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { Statistic } from "@components/harvest/components/shared/statistics/statistics.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
@@ -13,17 +12,11 @@ import { toRelative } from "@interfaces/apiInterfaces";
 import { Harvest, HarvestMapping } from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
-import {
-  concatMap,
-  first,
-  firstValueFrom,
-  Subject,
-  takeUntil,
-  tap,
-} from "rxjs";
+import { concatMap, Subject, takeUntil, tap } from "rxjs";
 
 enum RowType {
   folder,
@@ -118,11 +111,11 @@ export class MetadataReviewComponent
   public icons = metaReviewIcons;
 
   public constructor(
+    public modals: NgbModal,
     private stages: HarvestStagesService,
     private config: ConfigService,
     private notification: ToastrService,
-    private harvestApi: ShallowHarvestsService,
-    private harvestItemsApi: HarvestItemsService
+    private harvestApi: ShallowHarvestsService
   ) {
     super();
   }
@@ -201,19 +194,31 @@ export class MetadataReviewComponent
     this.userInputBuffer$.next(row);
   }
 
-  /** Transition harvest to processing stage */
-  public onNextClick(): void {
-    this.stages.transition("processing");
+  public async processing(template: any): Promise<void> {
+    const ref = this.modals.open(template);
+    const success = await ref.result.catch((_) => false);
+
+    if (success) {
+      this.stages.transition("processing");
+    }
   }
 
-  /** Transition harvest to uploading stage */
-  public onBackClick(): void {
-    this.stages.transition("uploading");
+  public async upload(template: any): Promise<void> {
+    const ref = this.modals.open(template);
+    const success = await ref.result.catch((_) => false);
+
+    if (success) {
+      this.stages.transition("uploading");
+    }
   }
 
-  /** Transition harvest to meta extraction stage */
-  public onSaveClick(): void {
-    this.stages.transition("metadataExtraction");
+  public async extraction(template: any): Promise<void> {
+    const ref = this.modals.open(template);
+    const success = await ref.result.catch((_) => false);
+
+    if (success) {
+      this.stages.transition("metadataExtraction");
+    }
   }
 
   public isFolder(row: MetaReviewRow): row is MetaReviewFolder {
@@ -274,33 +279,23 @@ export class MetadataReviewComponent
     row: MetaReviewFolder | MetaReviewLoadMore
   ): Promise<Rows> {
     this.tableLoading = true;
+    const harvestItems = await this.stages.getHarvestItems(
+      row.harvestItem,
+      row.page
+    );
+    this.tableLoading = false;
 
-    // Retrieve harvest items
-    let harvestItems: HarvestItem[];
-    try {
-      harvestItems = await firstValueFrom(
-        this.harvestItemsApi
-          .listByPage(row.page, this.project, this.harvest, row.harvestItem)
-          .pipe(first(), takeUntil(this.unsubscribe))
-      );
-    } catch (err: any) {
-      console.error(err);
-      this.notification.error(
-        `Failed to load the contents of ${row.harvestItem.path}`
-      );
-      this.tableLoading = false;
+    if (harvestItems.length === 0) {
       return rows;
     }
 
-    const parentFolder: MetaReviewFolder = this.isFolder(row)
-      ? row
-      : row.parentFolder;
+    const parentFolder = this.isFolder(row) ? row : row.parentFolder;
     const newRows = harvestItems.map(
       (harvestItem): MetaReviewRow =>
         this.generateRow(harvestItem, parentFolder)
     );
 
-    const meta = harvestItems[0]?.getMetadata();
+    const meta = harvestItems[0].getMetadata();
     if (meta && meta.paging.maxPage !== meta.paging.page) {
       newRows.push(this.generateLoadMore(parentFolder, row.page + 1));
     }
@@ -313,7 +308,6 @@ export class MetadataReviewComponent
       // Insert elements replace load more row
       rows = rows.splice(rowIndex, 1, ...newRows);
     }
-    this.tableLoading = false;
     return rows;
   }
 

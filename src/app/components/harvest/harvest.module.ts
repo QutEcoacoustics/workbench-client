@@ -8,13 +8,13 @@ import { FileRowComponent } from "./components/metadata-review/file-row.componen
 import { FolderRowComponent } from "./components/metadata-review/folder-row.component";
 import { LoadMoreComponent } from "./components/metadata-review/load-more.component";
 import { WhitespaceComponent } from "./components/metadata-review/whitespace.component";
+import { ConfirmationComponent } from "./components/modal/confirmation.component";
 import { CanCloseDialogComponent } from "./components/shared/can-close-dialog.component";
 import { EtaComponent } from "./components/shared/eta.component";
 import { StatisticGroupComponent } from "./components/shared/statistics/group.component";
 import { StatisticItemComponent } from "./components/shared/statistics/item.component";
 import { StatisticsComponent } from "./components/shared/statistics/statistics.component";
 import { TitleComponent } from "./components/shared/title.component";
-import { UploadProgressComponent } from "./components/shared/upload-progress.component";
 import { UploadUrlComponent } from "./components/shared/upload-url.component";
 import { harvestsRoute } from "./harvest.routes";
 import { DetailsComponent } from "./pages/details/details.component";
@@ -28,6 +28,7 @@ import { ProcessingComponent } from "./screens/processing/processing.component";
 import { ScanningComponent } from "./screens/scanning/scanning.component";
 import { BatchUploadingComponent } from "./screens/uploading/batch-uploading.component";
 import { StreamUploadingComponent } from "./screens/uploading/stream-uploading.component";
+import { ValidationsWidgetComponent } from "./widgets/validations.component";
 
 const internalComponents = [
   // Screens
@@ -47,8 +48,13 @@ const internalComponents = [
   StatisticItemComponent,
   StatisticsComponent,
   TitleComponent,
-  UploadProgressComponent,
   UploadUrlComponent,
+
+  // Modals
+  ConfirmationComponent,
+
+  // Widgets
+  ValidationsWidgetComponent,
 
   // Meta Review
   FileRowComponent,

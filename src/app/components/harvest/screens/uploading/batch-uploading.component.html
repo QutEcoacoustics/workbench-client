@@ -28,6 +28,10 @@
           >
           and we will check them for you
         </li>
+        <li>
+          Once done uploading, close WinSCP before clicking on the Finished
+          Uploading button below
+        </li>
       </ol>
     </ng-template>
   </li>
@@ -51,44 +55,138 @@
 
 <div [ngbNavOutlet]="nav" class="mt-2"></div>
 
-<ul>
-  <li>
-    We recommend using an Ethernet connection instead of WiFi. The file transfer
-    will be more stable, and faster
-  </li>
-  <li>
-    We have created some folders for you to put your files in already - but you
-    can make your own
-  </li>
-  <li>
-    Make sure files from each different sensor are in their own folder and are
-    not mixed together
-  </li>
-  <li>
-    When you are finished uploading files with WinSCP, close the WinSCP and
-    click on the "Finished uploading" button below to proceed
-  </li>
-</ul>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 mb-3">
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <fa-icon
+          class="icon-wrapper"
+          size="2x"
+          [icon]="['fas', 'network-wired']"
+        >
+        </fa-icon>
 
-<baw-harvest-upload-url [harvest]="harvest"></baw-harvest-upload-url>
+        Use a wired network connection instead of WiFi. The file transfer will
+        faster and more stable.
+      </div>
+    </div>
+  </div>
 
-<hr />
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="icon-wrapper">
+          <div class="pe-1">
+            <fa-icon [icon]="['fas', 'microphone']"></fa-icon>
+            <fa-icon [icon]="['fas', 'folder-open']"></fa-icon>
+          </div>
+          <div class="pe-1">
+            <fa-icon [icon]="['fas', 'microphone']"></fa-icon>
+            <fa-icon [icon]="['fas', 'folder-open']"></fa-icon>
+          </div>
+          <div>
+            <fa-icon [icon]="['fas', 'microphone']"></fa-icon>
+            <fa-icon [icon]="['fas', 'folder-open']"></fa-icon>
+          </div>
+        </div>
 
-<baw-harvest-upload-progress [harvest]="harvest"></baw-harvest-upload-progress>
+        Ensure files from each sensor are in their own folder. Do not mix files
+        together.
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <fa-icon class="icon-wrapper" size="2x" [icon]="['fas', 'folder-tree']">
+        </fa-icon>
+
+        <p>
+          Upload your data using whatever folder structure you would like.
+          Filenames will need to follow this
+          <a target="_blank" [href]="filenameGuide | safe: 'url'">guide</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="project.sites.length > 0" class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <fa-icon class="icon-wrapper" size="2x" [icon]="['fas', 'folder-open']">
+        </fa-icon>
+
+        <ng-container>
+          <p>
+            We have created some default folders for each of your points/sites.
+            They use the <i>point/site name</i> along with a unique id in their
+            name. You don't have to use these folders if you don't want to.
+          </p>
+          <p>Here is an example of one:</p>
+          <p>
+            <fa-icon class="d-inline" [icon]="['fas', 'folder-closed']">
+            </fa-icon>
+            {{ exampleSite(project).name + "_" + exampleSite(project).id }}
+          </p>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <baw-harvest-upload-url
+    class="col-md"
+    [harvest]="harvest"
+  ></baw-harvest-upload-url>
+
+  <div class="col-md">
+    <p><b>Uploaded Files:</b> {{ harvest.report.itemsTotal | number }}</p>
+    <p>
+      <b>Uploaded Bytes:</b> {{ harvest.report.itemsSizeBytes | number }} ({{
+        harvest.report.itemsSize
+      }})
+    </p>
+  </div>
+</div>
 
 <div class="clearfix">
   <button
     class="btn btn-warning float-start"
     [disabled]="loading"
-    (click)="onCancel()"
+    (click)="cancelUpload(cancelUploadModal)"
   >
     Cancel
   </button>
   <button
     class="btn btn-primary float-end"
     [disabled]="loading"
-    (click)="onFinishedUploading()"
+    (click)="finishUpload(finishUploadModal)"
   >
     Finished uploading
   </button>
 </div>
+
+<ng-template #finishUploadModal let-modal>
+  <baw-harvest-confirmation-modal nextLabel="Scan Files" [modal]="modal">
+    <p>
+      Are you sure your upload is finished? You can come back here later, if
+      there are any issues. This will close the WinSCP connection so we can work
+      on the files.
+    </p>
+  </baw-harvest-confirmation-modal>
+</ng-template>
+
+<ng-template #cancelUploadModal let-modal>
+  <baw-harvest-confirmation-modal
+    nextLabel="Cancel Upload"
+    cancelLabel="Return"
+    [modal]="modal"
+  >
+    <p>
+      Are you sure you want to cancel this upload? Cancelling will not process
+      any uploaded files, and cannot be undone.
+    </p>
+  </baw-harvest-confirmation-modal>
+</ng-template>

@@ -24,7 +24,7 @@
     <div class="grid-table-item">UTC offset</div>
     <div
       class="grid-table-item"
-      ngbTooltip="Enabling this will apply the folders settings to all files and folders inside"
+      ngbTooltip="Enabling this will apply the settings to all files in all sub-folders"
     >
       Recursive
     </div>
@@ -78,7 +78,7 @@
   <button
     class="btn btn-outline-primary"
     [disabled]="transitioningStage"
-    (click)="onBackClick()"
+    (click)="upload(uploadModal)"
   >
     Upload more files
   </button>
@@ -86,7 +86,7 @@
     *ngIf="harvest.isMappingsDirty"
     class="btn btn-primary"
     [disabled]="transitioningStage"
-    (click)="onSaveClick()"
+    (click)="extraction(extractionModal)"
   >
     Check changes
   </button>
@@ -96,10 +96,31 @@
     [class.btn-primary]="!harvest.isMappingsDirty"
     [class.btn-warning]="harvest.isMappingsDirty"
     [disabled]="transitioningStage"
-    (click)="onNextClick()"
+    (click)="processing(processingModal)"
   >
     {{
       harvest.isMappingsDirty ? "Continue without checking changes" : "Continue"
     }}
   </button>
 </div>
+
+<ng-template #processingModal let-modal>
+  <baw-harvest-confirmation-modal nextLabel="Continue" [modal]="modal">
+    <p>
+      Proceeding will finish the upload and no more changes can be made. Are you
+      sure you are done making changes?
+    </p>
+  </baw-harvest-confirmation-modal>
+</ng-template>
+
+<ng-template #uploadModal let-modal>
+  <baw-harvest-confirmation-modal nextLabel="Upload More" [modal]="modal">
+    <p>Are you sure you wish to return to the uploading stage?</p>
+  </baw-harvest-confirmation-modal>
+</ng-template>
+
+<ng-template #extractionModal let-modal>
+  <baw-harvest-confirmation-modal nextLabel="Check Changes" [modal]="modal">
+    <p>Are you sure you want to check these changes to your uploaded files?</p>
+  </baw-harvest-confirmation-modal>
+</ng-template>

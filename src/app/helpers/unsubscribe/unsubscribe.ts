@@ -11,7 +11,7 @@ export function withUnsubscribe<T extends Type<any>>(
   base: T = class {} as any
 ) {
   return class extends base implements OnDestroy {
-    protected unsubscribe = new Subject<void>();
+    public unsubscribe = new Subject<void>();
 
     public ngOnDestroy() {
       this.unsubscribe.next();
