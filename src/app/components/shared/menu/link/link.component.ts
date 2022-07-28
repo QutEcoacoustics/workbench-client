@@ -43,6 +43,7 @@ import { Observable } from "rxjs";
           class="nav-link ps-3 py-2 rounded"
           [href]="href(routeParams | async)"
           [class.disabled]="link.disabled"
+          [class.primary]="link.primaryBackground"
         >
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
         </a>
