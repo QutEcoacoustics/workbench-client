@@ -16,7 +16,7 @@
     color: var(--baw-highlight-contrast);
   }
 
-  &.primary {
+  &.primary:not(.active) {
     background-image: linear-gradient(
       to right,
       var(--baw-primary),
@@ -24,6 +24,7 @@
     );
     color: var(--baw-primary-contrast);
     border-radius: 0.5rem;
+    margin: 0 0.5rem;
 
     &:hover,
     &:focus {

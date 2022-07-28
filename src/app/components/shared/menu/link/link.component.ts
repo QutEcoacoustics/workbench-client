@@ -17,7 +17,6 @@ import { Observable } from "rxjs";
   selector: "baw-menu-link",
   template: `
     <div
-      [class.px-2]="link.primaryBackground"
       placement="auto"
       [ngbTooltip]="tooltipContent"
       [class.disabled]="link.disabled"
@@ -26,7 +25,6 @@ import { Observable } from "rxjs";
         <!-- Internal Link -->
         <a
           class="nav-link ps-3 py-2"
-          [class.primary]="link.primaryBackground"
           strongRouteActive="active"
           [strongRoute]="internalLink.route"
           [strongRouteActiveOptions]="activeOptions"
@@ -34,6 +32,7 @@ import { Observable } from "rxjs";
           [routeParams]="routeParams | async"
           [class.active]="link.highlight"
           [class.disabled]="link.disabled"
+          [class.primary]="link.primaryBackground"
         >
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
         </a>
