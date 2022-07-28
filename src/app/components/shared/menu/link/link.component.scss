@@ -16,6 +16,26 @@
     color: var(--baw-highlight-contrast);
   }
 
+  &.primary {
+    background-image: linear-gradient(
+      to right,
+      var(--baw-primary),
+      var(--baw-primary-lighter)
+    );
+    color: var(--baw-primary-contrast);
+    border-radius: 0.5rem;
+
+    &:hover,
+    &:focus {
+      background-image: linear-gradient(
+        to right,
+        var(--baw-primary-darker),
+        var(--baw-primary)
+      );
+      color: var(--baw-primary-darker-contrast);
+    }
+  }
+
   .icon {
     display: inline-block;
     justify-content: center;
