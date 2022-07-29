@@ -16,7 +16,7 @@ import { Observable } from "rxjs";
 @Component({
   selector: "baw-menu-link",
   template: `
-    <span
+    <div
       placement="auto"
       [ngbTooltip]="tooltipContent"
       [class.disabled]="link.disabled"
@@ -32,6 +32,7 @@ import { Observable } from "rxjs";
           [routeParams]="routeParams | async"
           [class.active]="link.highlight"
           [class.disabled]="link.disabled"
+          [class.primary]="link.primaryBackground"
         >
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
         </a>
@@ -42,11 +43,12 @@ import { Observable } from "rxjs";
           class="nav-link ps-3 py-2 rounded"
           [href]="href(routeParams | async)"
           [class.disabled]="link.disabled"
+          [class.primary]="link.primaryBackground"
         >
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
         </a>
       </ng-template>
-    </span>
+    </div>
 
     <!-- Link Details -->
     <ng-template #linkDetails>

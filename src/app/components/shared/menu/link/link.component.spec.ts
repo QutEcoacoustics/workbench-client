@@ -38,7 +38,7 @@ describe("MenuLinkComponent", () => {
   });
 
   function getWrapper(): HTMLSpanElement {
-    return spec.query("span");
+    return spec.query("div");
   }
 
   function getLink(): HTMLAnchorElement {
@@ -198,6 +198,26 @@ describe("MenuLinkComponent", () => {
           });
           spec.detectChanges();
           assertTooltip("custom disabled message");
+        });
+      });
+
+      describe("primary", () => {
+        it("should set primary class when primaryBackground set to true", () => {
+          setup({ link: link({ primaryBackground: true }) });
+          spec.detectChanges();
+          expect(getLink()).toHaveClass("primary");
+        });
+
+        it("should set primary class when primaryBackground set to false", () => {
+          setup({ link: link({ primaryBackground: false }) });
+          spec.detectChanges();
+          expect(getLink()).not.toHaveClass("primary");
+        });
+
+        it("should not set primary class by default", () => {
+          setup({ link: link({}) });
+          spec.detectChanges();
+          expect(getLink()).not.toHaveClass("primary");
         });
       });
     });
