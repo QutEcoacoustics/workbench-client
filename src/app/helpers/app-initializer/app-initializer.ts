@@ -1,12 +1,7 @@
-import { Inject, Injectable, InjectionToken } from "@angular/core";
+import { Inject, Injectable, Optional } from "@angular/core";
+import { ConfigService } from "@services/config/config.service";
+import { API_CONFIG } from "@services/config/config.tokens";
 import { BawTheme } from "@services/theme/theme.service";
-import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import { environment } from "src/environments/environment";
-
-export const API_CONFIG = new InjectionToken<Promise<Configuration>>(
-  "baw.api.config"
-);
-export const API_ROOT = new InjectionToken<string>("baw.api.root");
 
 /**
  * App Initializer class.
@@ -15,22 +10,15 @@ export const API_ROOT = new InjectionToken<string>("baw.api.root");
  */
 @Injectable()
 export class AppInitializer {
-  public constructor() {}
-
   public static initializerFactory(
-    @Inject(API_CONFIG)
-    apiEnvironment: Promise<Configuration>
-  ) {
-    return async () => {
-      const config = await apiEnvironment;
-      Object.assign(environment, config);
-    };
+    @Optional() @Inject(API_CONFIG) config: Promise<Configuration>,
+    configService: ConfigService
+  ): () => Promise<void> {
+    return async (): Promise<void> => configService.init(config);
   }
 
-  public static apiRootFactory(@Inject(IS_SERVER_PLATFORM) isServer: boolean) {
-    return isConfiguration(environment, isServer)
-      ? environment.endpoints.apiRoot
-      : "";
+  public static apiRootFactory(configService: ConfigService): string {
+    return configService.endpoints.apiRoot;
   }
 }
 

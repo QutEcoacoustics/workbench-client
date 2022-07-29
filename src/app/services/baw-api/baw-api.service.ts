@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { toSnakeCase } from "@helpers/case-converter/case-converter";
 import {
   BawApiError,
@@ -17,6 +16,7 @@ import { HttpCacheManager, withCache } from "@ngneat/cashew";
 import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { cacheSettings } from "@services/cache/cache-settings";
+import { API_ROOT } from "@services/config/config.tokens";
 import { ToastrService } from "ngx-toastr";
 import { Observable, throwError } from "rxjs";
 import { catchError, map, mergeMap, switchMap, tap } from "rxjs/operators";

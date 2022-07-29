@@ -11,10 +11,10 @@ import {
   securityCategory,
   unlockAccountMenuItem,
 } from "@components/security/security.menus";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { ILoginDetails, LoginDetails } from "@models/data/LoginDetails";
+import { API_ROOT } from "@services/config/config.tokens";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import schema from "./login.schema.json";

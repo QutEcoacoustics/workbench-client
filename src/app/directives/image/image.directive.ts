@@ -7,9 +7,9 @@ import {
   SimpleChanges,
 } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
+import { API_ROOT } from "@services/config/config.tokens";
 import { OrderedSet } from "immutable";
 
 export const notFoundImage: ImageUrl = {

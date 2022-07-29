@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { Title } from "@angular/platform-browser";
+import { Router } from "@angular/router";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
@@ -34,9 +35,11 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     public menu: MenuService,
     private sharedRoute: SharedActivatedRouteService,
     private config: ConfigService,
-    private title: Title
+    private title: Title,
+    router: Router
   ) {
     super();
+    router.initialNavigation();
   }
 
   public ngOnInit(): void {

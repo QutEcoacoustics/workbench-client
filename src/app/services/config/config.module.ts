@@ -1,12 +1,9 @@
-import { APP_INITIALIZER, NgModule } from "@angular/core";
-import {
-  API_CONFIG,
-  API_ROOT,
-  AppInitializer,
-} from "@helpers/app-initializer/app-initializer";
+import { HttpBackend } from "@angular/common/http";
+import { APP_INITIALIZER, NgModule, Optional } from "@angular/core";
+import { AppInitializer } from "@helpers/app-initializer/app-initializer";
 import { ToastrModule } from "ngx-toastr";
-import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { ConfigService } from "./config.service";
+import { API_CONFIG, API_ROOT } from "./config.tokens";
 
 @NgModule({
   imports: [ToastrModule],
@@ -14,13 +11,13 @@ import { ConfigService } from "./config.service";
     {
       provide: APP_INITIALIZER,
       useFactory: AppInitializer.initializerFactory,
+      deps: [[new Optional(), API_CONFIG], ConfigService, HttpBackend],
       multi: true,
-      deps: [API_CONFIG],
     },
     {
       provide: API_ROOT,
       useFactory: AppInitializer.apiRootFactory,
-      deps: [IS_SERVER_PLATFORM],
+      deps: [ConfigService],
     },
     ConfigService,
   ],

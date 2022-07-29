@@ -28,7 +28,7 @@ export async function embedGoogleMaps(key?: string): Promise<void> {
   await new Promise<void>((resolve, reject) => {
     let count = 0;
 
-    function mapLoaded() {
+    function mapLoaded(): void {
       if (typeof google !== "undefined") {
         resolve();
       } else if (count > 10) {
