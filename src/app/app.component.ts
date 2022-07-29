@@ -39,6 +39,9 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     router: Router
   ) {
     super();
+    // TODO Add better explanation
+    // Run initial navigation because of
+    // https://github.com/angular/angular/issues/14588
     router.initialNavigation();
   }
 

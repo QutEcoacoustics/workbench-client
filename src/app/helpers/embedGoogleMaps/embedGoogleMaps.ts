@@ -6,9 +6,8 @@ export const googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js";
 let node: HTMLScriptElement;
 
 /**
- * Embed google maps script into the document. This should only be
- * access by `main.ts` or unit tests as it makes reference to the
- * `document` global
+ * Embed google maps script into the document. This makes use of the document
+ * so it is not compatible with SSR, and is dangerous to use in tests
  *
  * @param key Google maps API key
  */

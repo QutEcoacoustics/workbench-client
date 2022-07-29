@@ -33,12 +33,14 @@ export class ConfigService {
   ) {
     // This is to bypass the interceptor and prevent circular dependencies
     // (interceptor requires API_ROOT)
+    // https://stackoverflow.com/questions/57850927/angular-app-initializer-circular-dependencies-at-runtime
     this.http = new HttpClient(handler);
   }
 
   public async init(defaultConfig?: Promise<Configuration>): Promise<void> {
     const embedGoogleMapsIfValid = async () => {
-      if (this.validConfig) {
+      // Only insert if valid config, and not SSR
+      if (this.validConfig && !this.isServer) {
         await embedGoogleMaps();
       }
     };
@@ -52,14 +54,15 @@ export class ConfigService {
     return firstValueFrom(
       this.http.get("assets/environment.json").pipe(
         retry({ count: 5, delay: 1000 }),
-        // API Interceptor is not transforming this error
-        catchError((err: any) => {
-          console.error("API_CONFIG Failed to load configuration file: ", err);
-          return of(undefined);
-        }),
         mergeMap(async (config): Promise<void> => {
           this.setConfig(new Configuration(config));
           await embedGoogleMapsIfValid();
+        }),
+        // API Interceptor is not transforming this error
+        catchError((err: any) => {
+          console.error("API_CONFIG Failed to load configuration file: ", err);
+          this.setConfig(new Configuration(undefined));
+          return of();
         })
       )
     );

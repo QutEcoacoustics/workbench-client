@@ -10,14 +10,12 @@ import "zone.js/node";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { APP_BASE_HREF } from "@angular/common";
-import {
-  API_CONFIG,
-  Configuration,
-} from "@helpers/app-initializer/app-initializer";
+import { Configuration } from "@helpers/app-initializer/app-initializer";
 import { ngExpressEngine } from "@nguniversal/express-engine";
 import { assetRoot } from "@services/config/config.service";
 import express from "express";
 import { environment } from "src/environments/environment";
+import { API_CONFIG } from "@services/config/config.tokens";
 import { AppServerModule } from "./src/main.server";
 
 // The Express app is exported so that it can be used by serverless Functions.

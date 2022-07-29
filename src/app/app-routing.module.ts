@@ -30,6 +30,9 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
+      // TODO Add better explanation
+      // Disabled initial navigation because of
+      // https://github.com/angular/angular/issues/14588
       initialNavigation: "disabled",
       scrollPositionRestoration: "enabled",
     }),

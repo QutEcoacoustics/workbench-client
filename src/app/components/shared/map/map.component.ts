@@ -76,6 +76,13 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public ngOnChanges() {
     this.hasMarkers = false;
     this.filteredMarkers = [];
+
+    // Cannot access google global during SSR
+    // https://github.com/angular/components/issues/19882
+    if (this.isServer) {
+      return;
+    }
+
     // Calculate pin boundaries so that map can be auto-focused properly
     const bounds = new google.maps.LatLngBounds();
     this.markers?.forEach((marker) => {
@@ -86,7 +93,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
       }
     });
 
-    if (!this.hasMarkers || this.isServer) {
+    if (!this.hasMarkers) {
       return;
     }
 
