@@ -32,6 +32,7 @@ export const newHarvestMenuItem = menuRoute({
   parent: harvestsMenuItem,
   predicate: createHarvestPredicate,
   route: newHarvestRoute,
+  primaryBackground: true,
   tooltip: () => "(BETA) Upload new audio to this project",
 });
 

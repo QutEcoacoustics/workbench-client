@@ -104,6 +104,11 @@ export interface MenuItem extends LabelAndIcon {
    */
   highlight?: boolean;
   /**
+   * TODO Expand to more colors if required
+   * Set a primary background color on the menu item to make it stand out
+   */
+  primaryBackground?: boolean;
+  /**
    * Tracks whether this link, or one of its children is currently actively being displayed.
    * It allows the link to skip its predicate temporarily.
    */
