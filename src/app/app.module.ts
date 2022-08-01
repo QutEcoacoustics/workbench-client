@@ -18,7 +18,6 @@ import { AppConfigModule } from "@services/config/config.module";
 import { RehydrationModule } from "@services/rehydration/rehydration.module";
 import { BawTimeoutModule } from "@services/timeout/timeout.module";
 import { formlyConfig } from "@shared/formly/custom-inputs.module";
-import { NgxGoogleAnalyticsModule } from "ngx-google-analytics";
 import { ToastrModule } from "ngx-toastr";
 import { environment } from "src/environments/environment";
 import { AppRoutingModule } from "./app-routing.module";
@@ -83,7 +82,6 @@ export const appImports = [
     BrowserModule.withServerTransition({ appId: "workbench-client" }),
     // Timeout API requests after set period
     BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
-    NgxGoogleAnalyticsModule,
     AppRoutingModule,
     AppConfigModule,
     BawApiModule,
@@ -97,12 +95,6 @@ export const appImports = [
   providers: [
     // Show loading animation after 3 seconds
     { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
-    /* {
-      provide: NGX_GOOGLE_ANALYTICS_SETTINGS_TOKEN,
-      useFactory: () => console.log("test"),
-      deps: [], //[ConfigService, NGX_GTAG_FN, DOCUMENT],
-      multi: true,
-    }, */
   ],
   exports: [],
 })
@@ -111,18 +103,3 @@ export class AppModule implements DoBootstrap {
     app.bootstrap(AppComponent);
   }
 }
-
-/* export async function initGoogleAnalytics(
-  config: ConfigService,
-  gtag: GtagFn,
-  doc: Document
-): Promise<void> {
-  const gaTag = config.keys.googleAnalytics.trackingId;
-  if (isInstantiated(gaTag)) {
-    console.error("Google analytics tag is not found");
-    return;
-  }
-
-  return await GoogleAnalyticsInitializer({ trackingCode: gaTag }, gtag, doc)();
-}
-*/

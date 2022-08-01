@@ -1,15 +1,18 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core";
 import { Title } from "@angular/platform-browser";
-import { Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
-import { Observable, takeUntil } from "rxjs";
+import { filter, Observable, takeUntil } from "rxjs";
+import { IS_SERVER_PLATFORM } from "./app.helper";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "./services/config/config.service";
+
+declare const gtag: Gtag.Gtag;
 
 /**
  * App Root Component
@@ -36,13 +39,14 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     private sharedRoute: SharedActivatedRouteService,
     private config: ConfigService,
     private title: Title,
-    router: Router
+    private router: Router,
+    @Inject(IS_SERVER_PLATFORM) private isServer: boolean
   ) {
     super();
     // TODO Add better explanation
     // Run initial navigation because of
     // https://github.com/angular/angular/issues/14588
-    router.initialNavigation();
+    this.router.initialNavigation();
   }
 
   public ngOnInit(): void {
@@ -56,6 +60,21 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
         this.resolvedSuccessfully = hasResolvedSuccessfully(
           retrieveResolvers(pageInfo)
         );
+      });
+
+    // Google Analytics is not tracked during SSR
+    if (this.isServer) {
+      return;
+    }
+
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.unsubscribe)
+      )
+      .subscribe((event: NavigationEnd): void => {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        gtag("event", "page_view", { page_path: event.urlAfterRedirects });
       });
   }
 }
