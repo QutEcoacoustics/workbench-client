@@ -30,7 +30,7 @@ RUN npm run build:ssr
 
 
 
-FROM node:14-alpine
+FROM node:18-alpine
 
 ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION

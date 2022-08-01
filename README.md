@@ -34,15 +34,16 @@ Normal development
 $ npm start
 ```
 
-Then open a web browser to `https://localhost:4200`.
+Then open a web browser to `https://localhost:4200` or `https://development.ecosounds.org:4200`.
 
 Server side rendering
 
 ```bash
+$ npm run build:ssr
 $ npm run serve:ssr
 ```
 
-Then open a web browser to `http://localhost:4000`.
+Then open a web browser to `http://localhost:4000` or `http://development.ecosounds.org:4000`.
 
 ### Environment
 
