@@ -7,7 +7,8 @@ import {
   Keys,
   Settings,
 } from "@helpers/app-initializer/app-initializer";
-import { embedGoogleMaps } from "@helpers/embedGoogleMaps/embedGoogleMaps";
+import { embedGoogleAnalytics } from "@helpers/embedScript/embedGoogleAnalytics";
+import { embedGoogleMaps } from "@helpers/embedScript/embedGoogleMaps";
 import { ThemeService } from "@services/theme/theme.service";
 import { ToastrService } from "ngx-toastr";
 import { catchError, firstValueFrom, mergeMap, of, retry } from "rxjs";
@@ -38,16 +39,17 @@ export class ConfigService {
   }
 
   public async init(defaultConfig?: Promise<Configuration>): Promise<void> {
-    const embedGoogleMapsIfValid = async () => {
+    const embedGoogleServicesIfValid = async () => {
       // Only insert if valid config, and not SSR
       if (this.validConfig && !this.isServer) {
-        await embedGoogleMaps();
+        await embedGoogleMaps(this.keys.googleMaps);
+        await embedGoogleAnalytics(this.keys.googleAnalytics.trackingId);
       }
     };
 
     if (defaultConfig) {
       this.setConfig(await defaultConfig);
-      await embedGoogleMapsIfValid();
+      await embedGoogleServicesIfValid();
       return;
     }
 
@@ -56,7 +58,7 @@ export class ConfigService {
         retry({ count: 5, delay: 1000 }),
         mergeMap(async (config): Promise<void> => {
           this.setConfig(new Configuration(config));
-          await embedGoogleMapsIfValid();
+          await embedGoogleServicesIfValid();
         }),
         // API Interceptor is not transforming this error
         catchError((err: any) => {

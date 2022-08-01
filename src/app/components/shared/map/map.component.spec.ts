@@ -2,7 +2,7 @@ import { GoogleMapsModule } from "@angular/google-maps";
 import {
   destroyGoogleMaps,
   embedGoogleMaps,
-} from "@helpers/embedGoogleMaps/embedGoogleMaps";
+} from "@helpers/embedScript/embedGoogleMaps";
 import { Site } from "@models/Site";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { generateSite } from "@test/fakes/Site";

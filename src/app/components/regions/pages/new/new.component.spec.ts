@@ -5,7 +5,7 @@ import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import {
   destroyGoogleMaps,
   embedGoogleMaps,
-} from "@helpers/embedGoogleMaps/embedGoogleMaps";
+} from "@helpers/embedScript/embedGoogleMaps";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import {

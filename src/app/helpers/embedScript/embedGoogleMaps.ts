@@ -18,9 +18,10 @@ export async function embedGoogleMaps(key?: string): Promise<void> {
   }
 
   node = document.createElement("script");
+  node.id = "google-maps";
+  node.type = "text/javascript";
   node.async = true;
   node.src = googleMapsUrl;
-  node.type = "text/javascript";
   document.getElementsByTagName("head")[0].appendChild(node);
 
   // Detect when google maps properly embeds
@@ -48,5 +49,5 @@ export async function embedGoogleMaps(key?: string): Promise<void> {
  * only be accessed by unit tests.
  */
 export function destroyGoogleMaps() {
-  document.getElementsByTagName("head")[0].removeChild(node);
+  document.getElementById("google-maps").removeChild(node);
 }
