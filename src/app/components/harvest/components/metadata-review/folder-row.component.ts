@@ -34,7 +34,7 @@ import { Project } from "@models/Project";
           [classes]="['fa-custom-counter']"
         ></fa-layers-counter>
       </fa-layers>
-      <span>
+      <span class="folderpath">
         {{ row.path }}
       </span>
     </div>

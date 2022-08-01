@@ -26,13 +26,12 @@ interface ValidationMessage {
         [indentation]="row.indentation"
       ></baw-meta-review-whitespace>
       <fa-icon class="me-2" [icon]="['fas', 'file']"></fa-icon>
-      <small>{{ row.path }}</small>
-      <span
-        class="badge text-bg-secondary ms-3"
-        [ngbTooltip]="(report.itemsSizeBytes | number) + ' bytes'"
-      >
-        {{ report.itemsSize }}
-      </span>
+      <small class="filepath">{{ row.path }}
+        <span
+          class="badge text-bg-secondary ms-3 float-end"
+          [ngbTooltip]="(report.itemsSizeBytes | number) + ' bytes'"
+        >{{ report.itemsSize }}</span>
+      </small>
     </div>
 
     <!-- Issues -->
