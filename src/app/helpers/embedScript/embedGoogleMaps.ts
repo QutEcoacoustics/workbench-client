@@ -3,7 +3,6 @@ import { defaultDebounceTime } from "src/app/app.helper";
 declare let google: any;
 
 export const googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js";
-let node: HTMLScriptElement;
 
 /**
  * Embed google maps script into the document. This makes use of the document
@@ -17,7 +16,7 @@ export async function embedGoogleMaps(key?: string): Promise<void> {
     googleMapsUrl += "?key=" + key;
   }
 
-  node = document.createElement("script");
+  const node: HTMLScriptElement = document.createElement("script");
   node.id = "google-maps";
   node.type = "text/javascript";
   node.async = true;
@@ -48,6 +47,6 @@ export async function embedGoogleMaps(key?: string): Promise<void> {
  * Remove the google maps script from the document. This should
  * only be accessed by unit tests.
  */
-export function destroyGoogleMaps() {
-  document.getElementById("google-maps").removeChild(node);
+export function destroyGoogleMaps(): void {
+  document.getElementById("google-maps").remove();
 }

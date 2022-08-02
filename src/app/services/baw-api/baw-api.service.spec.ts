@@ -12,7 +12,6 @@ import {
 import { MockSecurityService } from "@baw-api/mock/securityMock.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { UserService } from "@baw-api/user/user.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
@@ -29,6 +28,7 @@ import {
 import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { cacheSettings } from "@services/cache/cache-settings";
 import { CacheModule } from "@services/cache/cache.module";
+import { API_ROOT } from "@services/config/config.tokens";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";

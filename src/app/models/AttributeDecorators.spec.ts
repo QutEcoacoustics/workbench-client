@@ -1,8 +1,8 @@
 import { Injector } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
+import { API_ROOT } from "@services/config/config.tokens";
 import { MockAppConfigModule } from "@services/config/configMock.module";
 import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";

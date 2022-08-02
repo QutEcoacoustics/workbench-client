@@ -43,9 +43,10 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean
   ) {
     super();
-    // TODO Add better explanation
-    // Run initial navigation because of
-    // https://github.com/angular/angular/issues/14588
+    /*
+     * Perform the initial navigation of the router, this is because we have
+     * disabled this in the app routing module
+     */
     this.router.initialNavigation();
   }
 
@@ -67,6 +68,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
       return;
     }
 
+    // Tell google analytics about each page which is visited
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),

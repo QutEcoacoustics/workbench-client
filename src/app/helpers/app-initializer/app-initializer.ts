@@ -11,6 +11,7 @@ import { BawTheme } from "@services/theme/theme.service";
 @Injectable()
 export class AppInitializer {
   public static initializerFactory(
+    // SSR Sets a default config
     @Optional() @Inject(API_CONFIG) config: Promise<Configuration>,
     configService: ConfigService
   ): () => Promise<void> {

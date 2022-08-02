@@ -3,7 +3,6 @@ import { defaultDebounceTime } from "src/app/app.helper";
 declare let gtag: Gtag.Gtag;
 
 export const googleTagsBaseUrl = "https://www.googletagmanager.com/gtag/js";
-let node: HTMLScriptElement;
 
 /**
  * Embed google analytics script into the document. This makes use of the
@@ -17,7 +16,7 @@ export async function embedGoogleAnalytics(key?: string): Promise<void> {
     googleTagsUrl += "?id=" + key;
   }
 
-  node = document.createElement("script");
+  const node: HTMLScriptElement = document.createElement("script");
   node.id = "google-analytics";
   node.type = "text/javascript";
   node.async = true;
@@ -51,5 +50,5 @@ export async function embedGoogleAnalytics(key?: string): Promise<void> {
  * only be accessed by unit tests.
  */
 export function destroyGoogleAnalytics(): void {
-  document.getElementById("google-analytics").removeChild(node);
+  document.getElementById("google-analytics").remove();
 }
