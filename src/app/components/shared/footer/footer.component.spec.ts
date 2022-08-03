@@ -35,7 +35,7 @@ describe("FooterComponent", () => {
   });
 
   it("should show build version", () => {
-    const version = configService.config.version;
+    const version = configService.environment.version;
     expect(spec.query("#version")).toContainText(version);
   });
 

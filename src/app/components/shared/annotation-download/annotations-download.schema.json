@@ -3,7 +3,7 @@
     {
       "key": "timezone",
       "type": "timezone",
-      "templateOptions": {
+      "props": {
         "label": "Select timezone",
         "required": true,
         "validationMessages": [

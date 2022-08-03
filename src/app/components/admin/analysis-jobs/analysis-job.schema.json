@@ -3,7 +3,7 @@
     {
       "key": "id",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Id",
         "disabled": true
       }
@@ -11,7 +11,7 @@
     {
       "key": "name",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Name",
         "type": "text",
         "required": true
@@ -20,7 +20,7 @@
     {
       "key": "description",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Description",
         "required": false,
         "rows": 8
@@ -29,7 +29,7 @@
     {
       "key": "annotationName",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Annotation Name",
         "type": "text",
         "required": true
@@ -38,7 +38,7 @@
     {
       "key": "customSettings",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Custom Settings",
         "required": false,
         "rows": 8,
@@ -48,7 +48,7 @@
     {
       "key": "script",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Script",
         "disabled": true
       }
@@ -56,7 +56,7 @@
     {
       "key": "scriptId",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Script Id",
         "type": "text"
       }
@@ -64,7 +64,7 @@
     {
       "key": "savedSearch",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Saved Search",
         "disabled": true
       }
@@ -72,7 +72,7 @@
     {
       "key": "savedSearchId",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Saved Search Id",
         "type": "text"
       }
@@ -80,7 +80,7 @@
     {
       "key": "startedAt",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Started At",
         "disabled": true
       }
@@ -88,7 +88,7 @@
     {
       "key": "overallStatus",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Overall Status",
         "disabled": true
       }
@@ -96,7 +96,7 @@
     {
       "key": "overallStatusModifiedAt",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Overall Status Modified At",
         "disabled": true
       }
@@ -104,7 +104,7 @@
     {
       "key": "overallCount",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Overall Count",
         "disabled": true
       }
@@ -112,7 +112,7 @@
     {
       "key": "overallDuration",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Overall Duration",
         "disabled": true
       }
@@ -120,7 +120,7 @@
     {
       "key": "overallDataLengthBytes",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Overall Data Length Bytes",
         "disabled": true
       }
@@ -128,7 +128,7 @@
     {
       "key": "overallDataLength",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Overall Data Length Humanized",
         "disabled": true
       }
@@ -136,7 +136,7 @@
     {
       "key": "creator",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Creator",
         "disabled": true
       }
@@ -144,7 +144,7 @@
     {
       "key": "createdAt",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Created At",
         "disabled": true
       }
@@ -152,7 +152,7 @@
     {
       "key": "updater",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Updater",
         "disabled": true
       }
@@ -160,7 +160,7 @@
     {
       "key": "updatedAt",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Updated At",
         "disabled": true
       }
@@ -168,7 +168,7 @@
     {
       "key": "deleter",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Deleter",
         "disabled": true
       }
@@ -176,7 +176,7 @@
     {
       "key": "deletedAt",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Deleted At",
         "disabled": true
       }

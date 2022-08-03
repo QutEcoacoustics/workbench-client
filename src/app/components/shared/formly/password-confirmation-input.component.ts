@@ -9,7 +9,7 @@ import { asFormControl } from "./helper";
   selector: "baw-password-confirmation-input",
   template: `
     <div class="form-group mb-3">
-      <label for="password">Password {{ to.required ? " *" : "" }}</label>
+      <label for="password">Password {{ props.required ? " *" : "" }}</label>
       <input
         id="password"
         type="password"
@@ -32,7 +32,7 @@ import { asFormControl } from "./helper";
 
     <div class="form-group">
       <label for="confirmation">
-        Password Confirmation {{ to.required ? " *" : "" }}
+        Password Confirmation {{ props.required ? " *" : "" }}
       </label>
       <input
         id="confirmation"

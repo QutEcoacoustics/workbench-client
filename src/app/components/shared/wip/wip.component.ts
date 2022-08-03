@@ -56,8 +56,8 @@ export class WIPComponent implements OnInit {
     private config: ConfigService
   ) {}
 
-  public ngOnInit() {
-    this.production = this.config.config.production;
+  public ngOnInit(): void {
+    this.production = this.config.environment.production;
   }
 
   public get showWipContent(): boolean {

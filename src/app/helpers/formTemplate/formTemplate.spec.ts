@@ -13,11 +13,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-  FormTemplateOptions as TemplateOptions,
-} from "./formTemplate";
+import { defaultSuccessMsg, FormProps, FormTemplate } from "./formTemplate";
 
 class MockModel extends AbstractModel {
   public kind = "Mock Model" as const;
@@ -40,7 +36,7 @@ class MockComponent extends FormTemplate<MockModel> {
     route: ActivatedRoute,
     router: Router
   ) {
-    super(notifications, route, router, formTemplateOptions);
+    super(notifications, route, router, formProps);
   }
 
   protected apiAction(model: Partial<MockModel>) {
@@ -48,7 +44,7 @@ class MockComponent extends FormTemplate<MockModel> {
   }
 }
 
-const formTemplateOptions: Partial<TemplateOptions<MockModel>> = {};
+const formProps: Partial<FormProps<MockModel>> = {};
 
 describe("formTemplate", () => {
   let defaultError: BawApiError;
@@ -65,13 +61,13 @@ describe("formTemplate", () => {
 
   function setup(
     componentOptions?: SpectatorRoutingOverrides<MockComponent>,
-    templateOptions?: Partial<TemplateOptions<MockModel>>
+    templateProps?: Partial<FormProps<MockModel>>
   ) {
     // Set new formTemplateOptions without losing reference
-    for (const key of Object.keys(formTemplateOptions)) {
-      delete formTemplateOptions[key];
+    for (const key of Object.keys(formProps)) {
+      delete formProps[key];
     }
-    Object.assign(formTemplateOptions, templateOptions);
+    Object.assign(formProps, templateProps);
     spec = createComponent(componentOptions);
 
     notifications = spec.inject(ToastrService);

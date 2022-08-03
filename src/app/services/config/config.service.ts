@@ -3,6 +3,7 @@ import { Inject, Injectable } from "@angular/core";
 import {
   Configuration,
   Endpoints,
+  IConfiguration,
   isConfiguration,
   Keys,
   Settings,
@@ -13,6 +14,7 @@ import { ThemeService } from "@services/theme/theme.service";
 import { ToastrService } from "ngx-toastr";
 import { catchError, firstValueFrom, mergeMap, of, retry } from "rxjs";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { environment } from "src/environments/environment";
 
 export const assetRoot = "/assets";
 
@@ -38,7 +40,7 @@ export class ConfigService {
     this.http = new HttpClient(handler);
   }
 
-  public async init(defaultConfig?: Promise<Configuration>): Promise<void> {
+  public async init(defaultConfig?: Promise<IConfiguration>): Promise<void> {
     const embedGoogleServicesIfValid = async () => {
       // Only insert if valid config, and not SSR
       if (this.validConfig && !this.isServer) {
@@ -68,6 +70,11 @@ export class ConfigService {
         })
       )
     );
+  }
+
+  /** Get environment */
+  public get environment() {
+    return environment;
   }
 
   /** Get config data */

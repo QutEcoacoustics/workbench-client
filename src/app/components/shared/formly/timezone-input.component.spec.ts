@@ -7,7 +7,7 @@ import {
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyModule, FormlyTemplateOptions } from "@ngx-formly/core";
+import { FormlyModule, FormlyFieldProps } from "@ngx-formly/core";
 import { formlyConfig } from "./custom-inputs.module";
 import { TimezoneInputComponent } from "./timezone-input.component";
 
@@ -15,7 +15,7 @@ import { TimezoneInputComponent } from "./timezone-input.component";
 describe("FormlyTimezoneInput", () => {
   let model: { timezone?: string };
   let formGroup: FormGroup;
-  let spectator: SpectatorHost<TimezoneInputComponent>;
+  let spec: SpectatorHost<TimezoneInputComponent>;
   const createHost = createHostFactory({
     component: TimezoneInputComponent,
     imports: [
@@ -27,11 +27,11 @@ describe("FormlyTimezoneInput", () => {
     ],
   });
 
-  function setup(options: FormlyTemplateOptions = {}) {
+  function setup(props: FormlyFieldProps = {}) {
     formGroup = new FormGroup({ timezone: new FormControl("") });
     model = {};
 
-    spectator = createHost(
+    spec = createHost(
       `
       <form [formGroup]="formGroup">
         <baw-timezone-input></baw-timezone-input>
@@ -44,17 +44,17 @@ describe("FormlyTimezoneInput", () => {
             model,
             key: "timezone",
             formControl: formGroup.get("timezone"),
-            templateOptions: options,
+            props,
           },
         },
       }
     );
-    spectator.detectChanges();
+    spec.detectChanges();
   }
 
   describe("label", () => {
     function getLabel() {
-      return spectator.query("label");
+      return spec.query("label");
     }
 
     it("should display label", () => {

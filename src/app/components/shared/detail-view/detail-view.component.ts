@@ -8,7 +8,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
     <div *ngFor="let field of fields" class="row">
       <dt
         class="col-sm-3 text-start text-sm-end fw-bold"
-        [innerText]="field.templateOptions.label"
+        [innerText]="field.props.label"
       ></dt>
       <baw-render-field
         class="col-sm-9"

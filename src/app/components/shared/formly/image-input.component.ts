@@ -10,8 +10,8 @@ import { asFormControl } from "./helper";
   selector: "baw-image-input",
   template: `
     <div class="form-group mb-3">
-      <label *ngIf="to.label" [for]="field.id">
-        {{ to.label + (to.required ? " *" : "") }}
+      <label *ngIf="props.label" [for]="field.id">
+        {{ props.label + (props.required ? " *" : "") }}
       </label>
 
       <div

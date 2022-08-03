@@ -3,7 +3,7 @@
     {
       "key": "id",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Id",
         "disabled": true
       }
@@ -11,7 +11,7 @@
     {
       "key": "uuid",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Uuid",
         "type": "text",
         "required": true
@@ -20,7 +20,7 @@
     {
       "key": "uploader",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Uploader",
         "disabled": true
       }
@@ -28,7 +28,7 @@
     {
       "key": "recordedDate",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Recorded Date",
         "type": "text"
       }
@@ -36,7 +36,7 @@
     {
       "key": "recordedDateTimezone",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Recorded Date Timezone",
         "disabled": true
       }
@@ -44,7 +44,7 @@
     {
       "key": "site",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Site",
         "disabled": true
       }
@@ -53,7 +53,7 @@
       "key": "duration",
       "type": "input",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Duration",
         "type": "text",
         "disabled": true
@@ -62,7 +62,7 @@
     {
       "key": "sampleRateHertz",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Sample Rate Hertz",
         "type": "text",
         "disabled": true
@@ -71,7 +71,7 @@
     {
       "key": "channels",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Channels",
         "type": "text",
         "disabled": true
@@ -80,7 +80,7 @@
     {
       "key": "bitRateBps",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Bit Rate (bps)",
         "type": "number",
         "disabled": true
@@ -89,7 +89,7 @@
     {
       "key": "mediaType",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Media Type",
         "type": "text",
         "disabled": true
@@ -98,7 +98,7 @@
     {
       "key": "dataLengthBytes",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Data Length Bytes",
         "type": "text",
         "disabled": true
@@ -107,7 +107,7 @@
     {
       "key": "dataLength",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Data Length Humanized",
         "type": "text",
         "disabled": true
@@ -116,7 +116,7 @@
     {
       "key": "fileHash",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "File Hash",
         "disabled": true
       }
@@ -124,7 +124,7 @@
     {
       "key": "status",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Status",
         "type": "text",
         "disabled": true
@@ -133,7 +133,7 @@
     {
       "key": "notes",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Notes",
         "required": false,
         "rows": 8
@@ -142,7 +142,7 @@
     {
       "key": "creator",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Creator",
         "disabled": true
       }
@@ -150,7 +150,7 @@
     {
       "key": "updater",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Updater",
         "disabled": true
       }
@@ -158,7 +158,7 @@
     {
       "key": "deleter",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Deleter",
         "disabled": true
       }
@@ -166,7 +166,7 @@
     {
       "key": "createdAt",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Created At",
         "disabled": true
       }
@@ -174,7 +174,7 @@
     {
       "key": "updatedAt",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Updated At",
         "disabled": true
       }
@@ -182,7 +182,7 @@
     {
       "key": "deletedAt",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Deleted At",
         "disabled": true
       }
@@ -190,7 +190,7 @@
     {
       "key": "originalFileName",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Original File Name",
         "disabled": true
       }

@@ -13,7 +13,7 @@ import { asFormControl } from "./helper";
   selector: "baw-location-input",
   template: `
     <div class="form-group">
-      <label for="latitude"> Latitude {{ to.required ? " *" : "" }} </label>
+      <label for="latitude"> Latitude {{ props.required ? " *" : "" }} </label>
       <input
         id="latitude"
         type="number"
@@ -34,7 +34,9 @@ import { asFormControl } from "./helper";
     </div>
 
     <div class="form-group">
-      <label for="longitude"> Longitude {{ to.required ? " *" : "" }} </label>
+      <label for="longitude">
+        Longitude {{ props.required ? " *" : "" }}
+      </label>
       <input
         id="longitude"
         type="number"

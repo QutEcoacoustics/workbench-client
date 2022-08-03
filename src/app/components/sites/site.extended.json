@@ -3,7 +3,7 @@
     {
       "key": "creator",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Creator",
         "disabled": true
       }
@@ -11,7 +11,7 @@
     {
       "key": "updater",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Updater",
         "disabled": true
       }
@@ -19,7 +19,7 @@
     {
       "key": "createdAt",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Created At",
         "disabled": true
       }
@@ -27,7 +27,7 @@
     {
       "key": "updatedAt",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Updated At",
         "disabled": true
       }
@@ -35,7 +35,7 @@
     {
       "key": "projects",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Projects",
         "disabled": true
       }

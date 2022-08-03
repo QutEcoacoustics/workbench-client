@@ -3,7 +3,7 @@
     {
       "key": "id",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Site Id",
         "disabled": true
       }
@@ -11,7 +11,7 @@
     {
       "key": "name",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Site Name",
         "type": "text",
         "required": true,
@@ -21,7 +21,7 @@
     {
       "key": "description",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Description",
         "required": false,
         "rows": 8,
@@ -31,7 +31,7 @@
     {
       "key": "imageUrls",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Image",
         "disabled": true
       }
@@ -39,7 +39,7 @@
     {
       "key": "image",
       "type": "image",
-      "templateOptions": {
+      "props": {
         "label": "Image",
         "required": false
       }

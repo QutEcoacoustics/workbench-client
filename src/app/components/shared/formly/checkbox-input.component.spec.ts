@@ -6,7 +6,7 @@ import {
 } from "@angular/forms";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyModule, FormlyTemplateOptions } from "@ngx-formly/core";
+import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
 import { CheckboxInputComponent } from "./checkbox-input.component";
 import { formlyConfig } from "./custom-inputs.module";
 
@@ -28,10 +28,7 @@ describe("FormlyCheckboxInput", () => {
     return spectator.query<HTMLInputElement>("input[type='checkbox']");
   }
 
-  function setup(
-    key: string = "checkbox",
-    options: FormlyTemplateOptions = {}
-  ) {
+  function setup(key: string = "checkbox", options: FormlyFieldProps = {}) {
     formGroup = new FormGroup({ checkbox: new FormControl("") });
     model = {};
 
@@ -48,7 +45,7 @@ describe("FormlyCheckboxInput", () => {
             model,
             key,
             formControl: formGroup.get("checkbox"),
-            templateOptions: options,
+            props: options,
           },
         },
       }

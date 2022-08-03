@@ -67,36 +67,24 @@ export interface Keys {
 /**
  * External configuration file contents
  */
-export interface Configuration {
+export interface IConfiguration {
   kind: "Configuration";
-  /** Is the current environment running in production mode */
-  production: boolean;
-  /** Timeout for web requests in server side renderer */
-  ssrTimeout: number;
-  /** Timeout for web requests in browser */
-  browserTimeout: number;
-  /**
-   * Current build version of this code. This is set by the docker container
-   * and should not be modified without care
-   */
-  version: string;
   endpoints: Endpoints;
-  keys: Keys;
   settings: Settings;
+  keys: Keys;
 }
 
 /**
  * External configuration.
  * Wrapper to automatically initialize kind key
  */
-export class Configuration implements Configuration {
+export class Configuration implements IConfiguration {
   public kind: "Configuration" = "Configuration";
-  public production: boolean;
-  public version: string;
   public endpoints: Endpoints;
   public settings: Settings;
+  public keys: Keys;
 
-  public constructor(configuration: Partial<Configuration>) {
+  public constructor(configuration: Partial<IConfiguration>) {
     Object.assign(this, configuration);
   }
 }

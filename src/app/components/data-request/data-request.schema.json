@@ -3,7 +3,7 @@
     {
       "key": "name",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Your name",
         "required": false
       }
@@ -11,7 +11,7 @@
     {
       "key": "email",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "type": "email",
         "label": "Contact Email",
         "required": true
@@ -20,7 +20,7 @@
     {
       "key": "group",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Organization",
         "required": true
       }
@@ -29,7 +29,7 @@
       "key": "groupType",
       "type": "select",
       "defaultValue": "general",
-      "templateOptions": {
+      "props": {
         "label": "Organization Type",
         "options": [
           { "label": "General", "value": "general" },
@@ -45,7 +45,7 @@
     {
       "key": "content",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Request details",
         "description": "Include Projects/Sites, dates/times, and data format.",
         "rows": 8,

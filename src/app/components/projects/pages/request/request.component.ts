@@ -51,7 +51,7 @@ class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
       .subscribe({
         next: (projects) => {
           this.projects = projects;
-          this.fields[0].templateOptions.options = projects.map((project) => ({
+          this.fields[0].props.options = projects.map((project) => ({
             value: project.id,
             label: project.name,
           }));

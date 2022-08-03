@@ -92,7 +92,7 @@ describe("WithFormCheck", () => {
             {
               key: "input",
               type: "input",
-              templateOptions: {
+              props: {
                 label: "input element",
                 required: false,
               },

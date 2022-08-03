@@ -3,7 +3,7 @@
     {
       "key": "name",
       "type": "select",
-      "templateOptions": {
+      "props": {
         "label": "Project Name",
         "description": "Select one or more projects by holding Ctrl on Windows or Command on a Mac, and clicking the project names.",
         "multiple": true,
@@ -14,7 +14,7 @@
     {
       "key": "reason",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Reason",
         "required": false,
         "rows": 8,

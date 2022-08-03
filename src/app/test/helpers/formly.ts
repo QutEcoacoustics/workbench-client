@@ -32,7 +32,7 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
         });
 
         it(`should ${required ? "not " : ""}be required`, () => {
-          expect(field.templateOptions?.required ?? false).toBe(required);
+          expect(field.props?.required ?? false).toBe(required);
         });
 
         if (type) {
@@ -43,19 +43,19 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
 
         if (label) {
           it("should have label", () => {
-            expect(field.templateOptions.label).toBe(label);
+            expect(field.props.label).toBe(label);
           });
         }
 
         if (inputType) {
           it(`should be input of type "${inputType}"`, () => {
-            expect(field.templateOptions.type).toBe(inputType);
+            expect(field.props.type).toBe(inputType);
           });
         }
 
         if (description) {
           it("should contain description", () => {
-            expect(field.templateOptions.description).toBe(description);
+            expect(field.props.description).toBe(description);
           });
         }
       });

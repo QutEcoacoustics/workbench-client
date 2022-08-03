@@ -6,7 +6,7 @@ import {
 } from "@angular/forms";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyModule, FormlyTemplateOptions } from "@ngx-formly/core";
+import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
 import { formlyConfig } from "./custom-inputs.module";
 import { PasswordConfirmationInputComponent } from "./password-confirmation-input.component";
 
@@ -44,7 +44,7 @@ describe("FormlyPasswordConfirmationInput", () => {
     expect(formGroup.valid).toBe(isValid);
   }
 
-  function setup(options: FormlyTemplateOptions = {}) {
+  function setup(options: FormlyFieldProps = {}) {
     formGroup = new FormGroup({ confirmation: new FormControl("") });
     model = {};
 
@@ -61,7 +61,7 @@ describe("FormlyPasswordConfirmationInput", () => {
             model,
             key: "confirmation",
             formControl: formGroup.get("confirmation"),
-            templateOptions: options,
+            props: options,
           },
         },
       }
