@@ -42,8 +42,8 @@ export class ConfigService {
     const embedGoogleServicesIfValid = async () => {
       // Only insert if valid config, and not SSR
       if (this.validConfig && !this.isServer) {
+        embedGoogleAnalytics(this.keys.googleAnalytics.trackingId);
         await embedGoogleMaps(this.keys.googleMaps);
-        await embedGoogleAnalytics(this.keys.googleAnalytics.trackingId);
       }
     };
 
@@ -55,7 +55,7 @@ export class ConfigService {
 
     return firstValueFrom(
       this.http.get("assets/environment.json").pipe(
-        retry({ count: 5, delay: 1000 }),
+        retry({ count: 5 }),
         mergeMap(async (config): Promise<void> => {
           this.setConfig(new Configuration(config));
           await embedGoogleServicesIfValid();

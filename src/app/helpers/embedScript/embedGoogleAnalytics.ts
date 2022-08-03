@@ -1,5 +1,3 @@
-import { defaultDebounceTime } from "src/app/app.helper";
-
 declare let gtag: Gtag.Gtag;
 
 export const googleTagsBaseUrl = "https://www.googletagmanager.com/gtag/js";
@@ -10,7 +8,7 @@ export const googleTagsBaseUrl = "https://www.googletagmanager.com/gtag/js";
  *
  * @param key Google analytics API key
  */
-export async function embedGoogleAnalytics(key?: string): Promise<void> {
+export function embedGoogleAnalytics(key?: string): void {
   let googleTagsUrl = googleTagsBaseUrl;
   if (key) {
     googleTagsUrl += "?id=" + key;
@@ -23,26 +21,15 @@ export async function embedGoogleAnalytics(key?: string): Promise<void> {
   node.src = googleTagsUrl;
   document.getElementsByTagName("head")[0].appendChild(node);
 
-  // Detect when google analytics properly embeds
-  await new Promise<void>((resolve, reject) => {
-    let count = 0;
+  // Create Create dataLayer for google analytics:
+  // developers.google.com/tag-platform/tag-manager/web/datalayer
+  window["dataLayer"] = window["dataLayer"] || [];
+  window["gtag"] = function (...args: any) {
+    window["dataLayer"].push(args);
+  };
 
-    function analyticsLoaded(): void {
-      if (typeof gtag !== "undefined") {
-        gtag("js", new Date());
-        gtag("config", key);
-        resolve();
-      } else if (count > 10) {
-        console.error("Failed to load google analytics.");
-        reject("Google Analytics API Bundle took too long to download.");
-      } else {
-        count++;
-        setTimeout(() => analyticsLoaded(), defaultDebounceTime);
-      }
-    }
-
-    analyticsLoaded();
-  });
+  gtag("js", new Date());
+  gtag("config", key);
 }
 
 /**
