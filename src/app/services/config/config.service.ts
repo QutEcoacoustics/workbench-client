@@ -57,7 +57,7 @@ export class ConfigService {
 
     return firstValueFrom(
       this.http.get("assets/environment.json").pipe(
-        retry({ count: 5 }),
+        retry({ count: 5, delay: 250 }),
         mergeMap(async (config): Promise<void> => {
           this.setConfig(new Configuration(config));
           await embedGoogleServicesIfValid();
