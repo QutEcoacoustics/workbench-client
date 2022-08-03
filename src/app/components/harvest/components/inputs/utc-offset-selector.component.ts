@@ -5,17 +5,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
   template: `
     <div *ngIf="offset" class="utc-label">
       <span>{{ offset }}</span>
-
-      <div>
-        <button
-          type="button"
-          class="btn btn-sm p-0 me-1"
-          [ngbTooltip]="editTooltip"
-          (click)="resetSite()"
-        >
-          <fa-icon [icon]="['fas', 'pen-to-square']"></fa-icon>
-        </button>
-      </div>
+      <baw-harvest-edit-item (click)="resetSite()"></baw-harvest-edit-item>
     </div>
     <select
       *ngIf="!offset"

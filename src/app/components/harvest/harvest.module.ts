@@ -3,6 +3,7 @@ import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { SiteSelectorComponent } from "./components/inputs/site-selector.component";
+import { EditButtonComponent } from "./components/metadata-review/edit-button.component";
 import { UTCOffsetSelectorComponent } from "./components/inputs/utc-offset-selector.component";
 import { FileRowComponent } from "./components/metadata-review/file-row.component";
 import { FolderRowComponent } from "./components/metadata-review/folder-row.component";
@@ -61,6 +62,7 @@ const internalComponents = [
   FolderRowComponent,
   LoadMoreComponent,
   WhitespaceComponent,
+  EditButtonComponent,
 
   // Input
   SiteSelectorComponent,

@@ -43,3 +43,15 @@ baw-meta-review-whitespace {
 .folderpath {
   flex: 1;
 }
+
+
+.site-label, .utc-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-label,
+.utc-label {
+  width: 100%;
+}

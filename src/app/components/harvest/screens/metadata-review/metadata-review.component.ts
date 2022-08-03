@@ -12,6 +12,7 @@ import { toRelative } from "@interfaces/apiInterfaces";
 import { Harvest, HarvestMapping } from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
@@ -63,6 +64,7 @@ export interface MetaReviewFolder extends MetaReviewItem {
   isOpen: boolean;
   page: number;
   isRoot: boolean;
+  inheritedMapping: HarvestMapping;
 }
 
 export interface MetaReviewLoadMore extends MetaReviewBase {
@@ -139,6 +141,7 @@ export class MetadataReviewComponent
     const rootFolder: MetaReviewFolder = {
       rowType: RowType.folder,
       isRoot: true,
+      inheritedMapping: null,
       indentation: [],
       isOpen: false,
       page: 1,
@@ -405,12 +408,14 @@ export class MetadataReviewComponent
     };
 
     if (harvestItem.isDirectory) {
+
       return {
         rowType: RowType.folder,
         isOpen: false,
         page: 1,
         parentFolder,
         isRoot: false,
+        inheritedMapping: parentFolder.mapping ?? parentFolder.inheritedMapping,
         ...baseData,
       } as MetaReviewFolder;
     } else {

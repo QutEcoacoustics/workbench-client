@@ -40,20 +40,47 @@ import { Project } from "@models/Project";
     </div>
 
     <!-- Create Mapping -->
-    <div *ngIf="!mapping" class="grid-table-item create-mapping">
-      <button
-        class="btn btn-sm btn-outline-primary"
-        (click)="createMapping(row)"
-      >
+    <div *ngIf="!mapping && !row.inheritedMapping" class="grid-table-item create-mapping">
+      <button class="btn btn-sm btn-outline-primary" (click)="createMapping(row)">
         Change Site or UTC for folder
       </button>
     </div>
+
+    <ng-container *ngIf="!mapping && row.inheritedMapping">
+
+      <!-- Site Selector -->
+      <div class="grid-table-item" >
+        <div class="site-label">
+          <span class="text-muted">{{ row.inheritedMapping.site.name }}</span>
+          <baw-harvest-edit-item (click)="createMapping(row)"></baw-harvest-edit-item>
+        </div>
+      </div>
+
+      <!-- UTC Offset -->
+      <div class="grid-table-item">
+        <div class="utc-label">
+          <span class="text-muted">{{ row.inheritedMapping.utcOffset }}</span>
+          <baw-harvest-edit-item (click)="createMapping(row)"></baw-harvest-edit-item>
+        </div>
+      </div>
+
+      <!-- Recursive -->
+      <div class="grid-table-item">
+
+      </div>
+
+
+    </ng-container>
+
+
+
+
 
     <ng-container *ngIf="mapping">
       <!-- Site Selector -->
       <div class="grid-table-item">
         <baw-loading
-          *ngIf="mapping.site | isUnresolved; else siteSelector"
+          *ngIf="((mapping.site | isUnresolved) || (row.inheritedMapping?.site | isUnresolved)) ; else siteSelector"
           size="sm"
         ></baw-loading>
 
@@ -62,6 +89,7 @@ import { Project } from "@models/Project";
             class="w-100"
             [project]="project"
             [site]="mapping.site"
+            [inheritedSite]="row.inheritedMapping?.site"
             (siteIdChange)="setSite(mapping, $event)"
           ></baw-harvest-site-selector>
         </ng-template>

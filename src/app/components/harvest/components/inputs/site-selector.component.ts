@@ -2,11 +2,14 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from "@angular/core";
 import { SitesService } from "@baw-api/site/sites.service";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Id } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
@@ -16,6 +19,7 @@ import {
   NgbTypeaheadSelectItemEvent,
 } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
+import { is } from "immutable";
 import {
   debounceTime,
   distinctUntilChanged,
@@ -32,23 +36,18 @@ import { defaultDebounceTime } from "src/app/app.helper";
   selector: "baw-harvest-site-selector",
   template: `
     <!-- Show site name and link if exists -->
-    <div *ngIf="site" class="site-label">
+    <div *ngIf="site && !isEditing" class="site-label">
       <a [bawUrl]="site.getViewUrl(project)">{{ site.name }}</a>
+      <baw-harvest-edit-item (click)="isEditing = true"></baw-harvest-edit-item>
+    </div>
 
-      <div>
-        <button
-          type="button"
-          class="btn btn-sm p-0 me-1"
-          [ngbTooltip]="editTooltip"
-          (click)="resetSite()"
-        >
-          <fa-icon [icon]="['fas', 'pen-to-square']"></fa-icon>
-        </button>
-      </div>
+    <div *ngIf="!site && inheritedSite && !isEditing" class="site-label">
+      <span class="text-muted">{{ inheritedSite.name }}</span>
+      <baw-harvest-edit-item (click)="isEditing = true"></baw-harvest-edit-item>
     </div>
 
     <!-- Show user input if no site -->
-    <div [class.d-none]="site" class="input-group input-group-sm">
+    <div [class.d-none]="!isEditing" class="input-group input-group-sm">
       <input
         #selector="ngbTypeahead"
         id="selector"
@@ -63,6 +62,8 @@ import { defaultDebounceTime } from "src/app/app.helper";
         (selectItem)="onSelectItem($event)"
       />
     </div>
+
+
   `,
   styles: [
     `
@@ -79,10 +80,11 @@ import { defaultDebounceTime } from "src/app/app.helper";
     `,
   ],
 })
-export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
+export class SiteSelectorComponent extends withUnsubscribe() implements OnInit, OnChanges {
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;
   @Input() public project: Project;
   @Input() public site: Site | null;
+  @Input() public inheritedSite: Site | null;
   @Output() public siteIdChange = new EventEmitter<Id | null>();
 
   public focus$ = new Subject<Site>();
@@ -90,6 +92,9 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   public search$: OperatorFunction<string, readonly Site[]>;
 
   public prevValue: Site;
+  public emptyText = "Same as Parent";
+
+  public isEditing = false;
 
   public constructor(
     private config: ConfigService,
@@ -98,7 +103,20 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
     super();
   }
 
+  public ngOnChanges({inheritedSite}: SimpleChanges): void {
+    if (this.site) {
+      return;
+    }
+    if (!inheritedSite.previousValue && inheritedSite.currentValue) {
+      this.isEditing = false;
+    } else if (inheritedSite.previousValue && !inheritedSite.currentValue) {
+      this.isEditing = true;
+    }
+  }
+
   public ngOnInit(): void {
+    this.isEditing = (!this.site && !this.inheritedSite)
+
     this.search$ = (text$: Observable<string>): Observable<Site[]> => {
       const debouncedText$ = text$.pipe(
         debounceTime(defaultDebounceTime),
@@ -127,11 +145,16 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
     };
   }
 
+  // public get inputPlaceholder(): string {
+  //   if (this.prevValue) {
+  //     return this.prevValue.name;
+  //   }
+  //   return this.config.settings.hideProjects ? "Point" : "Site";
+  // }
+
   public get inputPlaceholder(): string {
-    if (this.prevValue) {
-      return this.prevValue.name;
-    }
-    return this.config.settings.hideProjects ? "Point" : "Site";
+    //const siteType = this.config.settings.hideProjects ? "Point" : "Site";
+    return "Select site"
   }
 
   public get editTooltip(): string {
@@ -148,8 +171,10 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   }
 
   public onSelectItem(item: NgbTypeaheadSelectItemEvent<Site>): void {
+    console.log("onSelectItem", item);
     this.site = item.item;
     this.emitSite(this.site);
+    this.isEditing = false;
   }
 
   public resetSite(): void {
