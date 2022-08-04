@@ -40,18 +40,18 @@ import { Project } from "@models/Project";
     </div>
 
     <!-- Create Mapping -->
-    <div *ngIf="!mapping && !row.inheritedMapping" class="grid-table-item create-mapping">
+    <div *ngIf="!mapping && !inheritedMapping" class="grid-table-item create-mapping">
       <button class="btn btn-sm btn-outline-primary" (click)="createMapping(row)">
-        Change Site or UTC for folder
+        Set Site or UTC for folder
       </button>
     </div>
 
-    <ng-container *ngIf="!mapping && row.inheritedMapping">
+    <ng-container *ngIf="!mapping && inheritedMapping">
 
       <!-- Site Selector -->
       <div class="grid-table-item" >
         <div class="site-label">
-          <span class="text-muted">{{ row.inheritedMapping.site.name }}</span>
+          <span class="text-muted">{{ inheritedMapping.site?.name }}</span>
           <baw-harvest-edit-item (click)="createMapping(row)"></baw-harvest-edit-item>
         </div>
       </div>
@@ -59,7 +59,7 @@ import { Project } from "@models/Project";
       <!-- UTC Offset -->
       <div class="grid-table-item">
         <div class="utc-label">
-          <span class="text-muted">{{ row.inheritedMapping.utcOffset }}</span>
+          <span class="text-muted">{{ inheritedMapping.utcOffset }}</span>
           <baw-harvest-edit-item (click)="createMapping(row)"></baw-harvest-edit-item>
         </div>
       </div>
@@ -69,18 +69,13 @@ import { Project } from "@models/Project";
 
       </div>
 
-
     </ng-container>
-
-
-
-
 
     <ng-container *ngIf="mapping">
       <!-- Site Selector -->
       <div class="grid-table-item">
         <baw-loading
-          *ngIf="((mapping.site | isUnresolved) || (row.inheritedMapping?.site | isUnresolved)) ; else siteSelector"
+          *ngIf="((mapping.site | isUnresolved) || (inheritedMapping?.site | isUnresolved)) ; else siteSelector"
           size="sm"
         ></baw-loading>
 
@@ -89,7 +84,6 @@ import { Project } from "@models/Project";
             class="w-100"
             [project]="project"
             [site]="mapping.site"
-            [inheritedSite]="row.inheritedMapping?.site"
             (siteIdChange)="setSite(mapping, $event)"
           ></baw-harvest-site-selector>
         </ng-template>
@@ -190,6 +184,16 @@ export class FolderRowComponent {
     );
     row.mapping = mapping;
     this.harvest.mappings.push(mapping);
+  }
+
+  public get inheritedMapping() {
+    if (this.row.parentFolder?.mapping && this.row.parentFolder?.mapping?.recursive) {
+      return this.row.parentFolder.mapping
+    } else if (this.row.parentFolder?.inheritedMapping && this.row.parentFolder?.inheritedMapping?.recursive) {
+      return this.row.parentFolder?.inheritedMapping
+    } else {
+      return null
+    }
   }
 
   public setSite(mapping: HarvestMapping, siteId: number): void {

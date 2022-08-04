@@ -2,10 +2,8 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
-  SimpleChanges,
   ViewChild,
 } from "@angular/core";
 import { SitesService } from "@baw-api/site/sites.service";
@@ -36,13 +34,8 @@ import { defaultDebounceTime } from "src/app/app.helper";
   selector: "baw-harvest-site-selector",
   template: `
     <!-- Show site name and link if exists -->
-    <div *ngIf="site && !isEditing" class="site-label">
+    <div *ngIf="!isEditing" class="site-label">
       <a [bawUrl]="site.getViewUrl(project)">{{ site.name }}</a>
-      <baw-harvest-edit-item (click)="isEditing = true"></baw-harvest-edit-item>
-    </div>
-
-    <div *ngIf="!site && inheritedSite && !isEditing" class="site-label">
-      <span class="text-muted">{{ inheritedSite.name }}</span>
       <baw-harvest-edit-item (click)="isEditing = true"></baw-harvest-edit-item>
     </div>
 
@@ -80,11 +73,10 @@ import { defaultDebounceTime } from "src/app/app.helper";
     `,
   ],
 })
-export class SiteSelectorComponent extends withUnsubscribe() implements OnInit, OnChanges {
+export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;
   @Input() public project: Project;
   @Input() public site: Site | null;
-  @Input() public inheritedSite: Site | null;
   @Output() public siteIdChange = new EventEmitter<Id | null>();
 
   public focus$ = new Subject<Site>();
@@ -94,7 +86,7 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit, 
   public prevValue: Site;
   public emptyText = "Same as Parent";
 
-  public isEditing = false;
+  public isEditing = true;
 
   public constructor(
     private config: ConfigService,
@@ -103,19 +95,9 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit, 
     super();
   }
 
-  public ngOnChanges({inheritedSite}: SimpleChanges): void {
-    if (this.site) {
-      return;
-    }
-    if (!inheritedSite.previousValue && inheritedSite.currentValue) {
-      this.isEditing = false;
-    } else if (inheritedSite.previousValue && !inheritedSite.currentValue) {
-      this.isEditing = true;
-    }
-  }
-
   public ngOnInit(): void {
-    this.isEditing = (!this.site && !this.inheritedSite)
+
+    this.isEditing = (!this.site)
 
     this.search$ = (text$: Observable<string>): Observable<Site[]> => {
       const debouncedText$ = text$.pipe(

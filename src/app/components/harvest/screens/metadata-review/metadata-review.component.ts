@@ -415,7 +415,6 @@ export class MetadataReviewComponent
         page: 1,
         parentFolder,
         isRoot: false,
-        inheritedMapping: parentFolder.mapping ?? parentFolder.inheritedMapping,
         ...baseData,
       } as MetaReviewFolder;
     } else {
@@ -427,6 +426,7 @@ export class MetadataReviewComponent
       } as MetaReviewFile;
     }
   }
+
 
   /**
    * Find mapping if exists in the harvest model, using the harvest items path
