@@ -1,4 +1,5 @@
 import { defaultDebounceTime } from "src/app/app.helper";
+import { environment } from "src/environments/environment";
 
 declare let google: any;
 
@@ -11,6 +12,11 @@ export const googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js";
  * @param key Google maps API key
  */
 export async function embedGoogleMaps(key?: string): Promise<void> {
+  // Do not insert during testing
+  if (environment.testing) {
+    return;
+  }
+
   let googleMapsUrl = googleMapsBaseUrl;
   if (key) {
     googleMapsUrl += "?key=" + key;
@@ -49,4 +55,12 @@ export async function embedGoogleMaps(key?: string): Promise<void> {
  */
 export function destroyGoogleMaps(): void {
   document.getElementById("google-maps").remove();
+}
+
+export function googleMapsLoaded(): boolean {
+  let isDefined = false;
+  try {
+    isDefined = !!google;
+  } catch (err) {}
+  return isDefined;
 }

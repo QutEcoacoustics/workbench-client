@@ -4,7 +4,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { unknownErrorCode } from "@baw-api/baw-api.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import {
   FORBIDDEN,
@@ -75,7 +75,7 @@ describe("ErrorHandlerComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, RouterTestingModule, MockAppConfigModule],
+      imports: [SharedModule, RouterTestingModule, MockConfigModule],
       declarations: [ErrorHandlerComponent, MockComponent],
     }).compileComponents();
 

@@ -1,4 +1,5 @@
 export const environment = {
+  testing: false,
   /** Is the current environment running in production mode */
   production: false,
   /** Timeout for web requests in server side renderer */

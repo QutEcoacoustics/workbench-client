@@ -8,7 +8,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { mockProvider, Spectator, SpectatorService } from "@ngneat/spectator";
 import { CacheModule } from "@services/cache/cache.module";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { CmsComponent } from "@shared/cms/cms.component";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
@@ -30,7 +30,7 @@ import { BawApiService, Filters } from "../../services/baw-api/baw-api.service";
 import { getCallArgs } from "./general";
 
 export const mockServiceImports = [
-  MockAppConfigModule,
+  MockConfigModule,
   HttpClientTestingModule,
   CacheModule,
 ];

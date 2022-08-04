@@ -18,7 +18,7 @@ import {
   mockProvider,
   SpectatorRouting,
 } from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
@@ -42,12 +42,7 @@ describe("DownloadAudioRecordingsComponent", () => {
   let spec: SpectatorRouting<DownloadAudioRecordingsComponent>;
   const createComponent = createRoutingFactory({
     component: DownloadAudioRecordingsComponent,
-    imports: [
-      SharedModule,
-      NgbCollapseModule,
-      MockAppConfigModule,
-      CacheModule,
-    ],
+    imports: [SharedModule, NgbCollapseModule, MockConfigModule, CacheModule],
     declarations: [
       MockComponent(SitesWithoutTimezonesComponent),
       MockComponent(DownloadTableComponent),

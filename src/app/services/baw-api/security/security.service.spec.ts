@@ -25,7 +25,7 @@ import {
   mockProvider,
   SpectatorHttp,
 } from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateLoginDetails } from "@test/fakes/LoginDetails";
@@ -65,7 +65,7 @@ describe("SecurityService", () => {
   let spec: SpectatorHttp<SecurityService>;
   const createService = createHttpFactory({
     service: SecurityService,
-    imports: [MockAppConfigModule],
+    imports: [MockConfigModule],
     providers: [
       BawSessionService,
       CookieService,

@@ -7,7 +7,7 @@ describe("ToRelativePipe", () => {
   let spec: SpectatorPipe<ToRelativePipe>;
   const createPipe = createPipeFactory(ToRelativePipe);
 
-  function assertPipe(value: string) {
+  function assertPipe(value: string | string[] | ((text: string) => boolean)) {
     expect(spec.element).toHaveText(value);
   }
 
@@ -49,6 +49,8 @@ describe("ToRelativePipe", () => {
     setup(DateTime.utc(), { style: "short" });
     // This test seems to be dependant on local settings, it sometimes will
     // fail with the value '0 sec ago'. Check with CI before changing
-    assertPipe("0 sec. ago");
+    assertPipe(
+      (text): boolean => text === "0 sec. ago" || text === "0 sec ago"
+    );
   });
 });

@@ -1,3 +1,5 @@
+import { environment } from "src/environments/environment";
+
 declare let gtag: Gtag.Gtag;
 
 export const googleTagsBaseUrl = "https://www.googletagmanager.com/gtag/js";
@@ -9,6 +11,11 @@ export const googleTagsBaseUrl = "https://www.googletagmanager.com/gtag/js";
  * @param key Google analytics API key
  */
 export function embedGoogleAnalytics(key?: string): void {
+  // Do not insert during testing
+  if (environment.testing) {
+    return;
+  }
+
   let googleTagsUrl = googleTagsBaseUrl;
   if (key) {
     googleTagsUrl += "?id=" + key;

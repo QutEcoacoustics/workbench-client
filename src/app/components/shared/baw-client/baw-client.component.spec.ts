@@ -5,7 +5,7 @@ import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { modelData } from "@test/helpers/faker";
@@ -22,7 +22,7 @@ describe("BawClientComponent", () => {
   let spec: SpectatorRouting<BawClientComponent>;
   const createComponent = createRoutingFactory({
     component: BawClientComponent,
-    imports: [LoadingModule, RouterTestingModule, MockAppConfigModule],
+    imports: [LoadingModule, RouterTestingModule, MockConfigModule],
   });
 
   function bawClientSource(route: string) {

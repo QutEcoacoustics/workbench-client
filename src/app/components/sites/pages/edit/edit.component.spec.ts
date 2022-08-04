@@ -3,10 +3,6 @@ import { ResolvedModel } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
-import {
-  destroyGoogleMaps,
-  embedGoogleMaps,
-} from "@helpers/embedScript/embedGoogleMaps";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -83,8 +79,7 @@ describe("SiteEditComponent", () => {
     });
   });
 
-  // TODO Disabled because of #1338
-  xdescribe("component", () => {
+  describe("component", () => {
     let api: SpyObject<SitesService>;
     let defaultProject: Project;
     let defaultRegion: Region;
@@ -118,9 +113,6 @@ describe("SiteEditComponent", () => {
       api = spec.inject(SitesService);
       spec.detectChanges();
     }
-
-    beforeAll(async () => await embedGoogleMaps());
-    afterAll(() => destroyGoogleMaps());
 
     [true, false].forEach((withRegion) => {
       describe(withRegion ? "withRegion" : "withoutRegion", () => {

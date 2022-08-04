@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { FieldType } from "@ngx-formly/core";
-import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
+import {
+  MapMarkerOptions,
+  sanitizeMapMarkers,
+} from "@shared/map/map.component";
 import { List } from "immutable";
 import { asFormControl } from "./helper";
 
@@ -73,7 +76,7 @@ export class LocationInputComponent extends FieldType implements OnInit {
   public latitudeError: boolean;
   public longitude: number;
   public longitudeError: boolean;
-  public marker: List<MapMarkerOption>;
+  public marker: List<MapMarkerOptions>;
 
   public ngOnInit() {
     this.latitude = this.model["latitude"];

@@ -22,4 +22,4 @@ import { ConfigMockService, testApiConfig } from "./configMock.service";
     },
   ],
 })
-export class MockAppConfigModule {}
+export class MockConfigModule {}

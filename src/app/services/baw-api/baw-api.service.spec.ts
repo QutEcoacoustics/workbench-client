@@ -29,7 +29,7 @@ import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { cacheSettings } from "@services/cache/cache-settings";
 import { CacheModule } from "@services/cache/cache.module";
 import { API_ROOT } from "@services/config/config.tokens";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertOk } from "@test/helpers/general";
@@ -113,7 +113,7 @@ describe("BawApiService", () => {
   let spec: SpectatorHttp<BawApiService<MockModel>>;
   const createService = createHttpFactory<BawApiService<MockModel>>({
     service: BawApiService,
-    imports: [MockAppConfigModule, CacheModule],
+    imports: [MockConfigModule, CacheModule],
     providers: [
       BawSessionService,
       mockProvider(ToastrService),

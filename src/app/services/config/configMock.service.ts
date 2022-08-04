@@ -6,14 +6,13 @@ import {
   Settings,
 } from "@helpers/app-initializer/app-initializer";
 import { websiteHttpUrl } from "@test/helpers/url";
-import { fromJS } from "immutable";
 import { environment } from "src/environments/environment";
 import { assetRoot } from "./config.service";
 
 @Injectable()
 export class ConfigMockService {
   public get environment() {
-    return fromJS(environment).toJS();
+    return new Proxy(environment, {});
   }
 
   public get config(): Configuration {
@@ -43,10 +42,10 @@ export const testApiConfig = new Configuration({
     oldClientBase: `${assetRoot}/old-client/index.html`,
   },
   keys: {
-    googleMaps: "<< googleMaps >>",
+    googleMaps: "",
     googleAnalytics: {
-      domain: "<< domain >>",
-      trackingId: "<< googleAnalytics >>",
+      domain: "",
+      trackingId: "",
     },
   },
   settings: {

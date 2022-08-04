@@ -5,7 +5,10 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
-import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
+import {
+  MapMarkerOptions,
+  sanitizeMapMarkers,
+} from "@shared/map/map.component";
 import { List } from "immutable";
 import { merge, Observable } from "rxjs";
 import { switchMap, takeUntil } from "rxjs/operators";
@@ -19,7 +22,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
   @Input() public selected: List<Site>;
   @Input() public project: Project;
   @Input() public region: Region;
-  public markers: List<MapMarkerOption> = List([]);
+  public markers: List<MapMarkerOptions> = List([]);
 
   public constructor(private sitesApi: SitesService) {
     super();

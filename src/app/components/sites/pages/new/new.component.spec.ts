@@ -1,12 +1,5 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { ResolvedModel } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
-import { Errorable } from "@helpers/advancedTypes";
-import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
-import {
-  destroyGoogleMaps,
-  embedGoogleMaps,
-} from "@helpers/embedScript/embedGoogleMaps";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -17,12 +10,10 @@ import {
 } from "@ngneat/spectator";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormComponent } from "@shared/form/form.component";
-import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { testFormlyFields } from "@test/helpers/formly";
-import { assertErrorHandler } from "@test/helpers/html";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -37,7 +28,6 @@ describe("SiteNewComponent", () => {
     imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent],
     mocks: [ToastrService],
-    stubsEnabled: true,
   });
 
   describe("form", () => {
@@ -83,25 +73,18 @@ describe("SiteNewComponent", () => {
     });
   });
 
-  // TODO Disabled because of #1338
-  xdescribe("component", () => {
+  describe("component", () => {
     let api: SpyObject<SitesService>;
     let defaultProject: Project;
     let defaultRegion: Region;
 
-    function setup(project: Errorable<Project>, region?: Errorable<Region>) {
-      function getResolvedModel<T>(model: Errorable<T>): ResolvedModel<T> {
-        return isBawApiError(model) ? { error: model } : { model };
-      }
-
-      const resolvers = { project: "resolver", site: "resolver" };
-      const models = {
-        project: getResolvedModel(project),
-      };
+    function setup(project: Project, region?: Region) {
+      const resolvers = { project: "resolver" };
+      const models = { project: { model: project } };
 
       if (region) {
         resolvers["region"] = "resolver";
-        models["region"] = getResolvedModel(region);
+        models["region"] = { model: region };
       }
 
       spec = createComponent({
@@ -113,14 +96,16 @@ describe("SiteNewComponent", () => {
       spec.detectChanges();
     }
 
-    beforeAll(async () => await embedGoogleMaps());
-    afterAll(() => destroyGoogleMaps());
+    beforeEach(() => {
+      defaultProject = new Project(generateProject());
+    });
 
     [true, false].forEach((withRegion) => {
-      xdescribe(withRegion ? "withRegion" : "withoutRegion", () => {
+      describe(withRegion ? "withRegion" : "withoutRegion", () => {
         beforeEach(() => {
-          defaultProject = new Project(generateProject());
-          defaultRegion = withRegion ? new Region(generateRegion()) : undefined;
+          if (withRegion) {
+            defaultRegion = new Region(generateRegion());
+          }
         });
 
         it("should create", () => {
@@ -128,22 +113,10 @@ describe("SiteNewComponent", () => {
           expect(spec.component).toBeTruthy();
         });
 
-        if (withRegion) {
-          it("should handle region error", () => {
-            setup(defaultProject, generateBawApiError());
-            assertErrorHandler(spec.fixture);
-          });
-        }
-
-        it("should handle project error", () => {
-          setup(generateBawApiError(), defaultRegion);
-          assertErrorHandler(spec.fixture);
-        });
-
         // TODO Validate region id is set in api call
         it("should call api", () => {
           setup(defaultProject, defaultRegion);
-          api.update.and.callFake(() => new Subject());
+          api.create.and.callFake(() => new Subject());
           const site = new Site(
             generateSite(withRegion ? { regionId: defaultRegion.id } : {})
           );
@@ -160,7 +133,7 @@ describe("SiteNewComponent", () => {
           const site = new Site(
             generateSite(withRegion ? { regionId: defaultRegion.id } : {})
           );
-          api.update.and.callFake(() => new BehaviorSubject<Site>(site));
+          api.create.and.callFake(() => new BehaviorSubject<Site>(site));
 
           spec.component.submit({});
           expect(spec.router.navigateByUrl).toHaveBeenCalledWith(

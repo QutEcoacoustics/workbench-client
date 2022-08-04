@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { StrongRouteActiveDirective } from "./strong-route-active.directive";
 import { StrongRouteDirective } from "./strong-route.directive";
 
@@ -33,7 +33,7 @@ describe("StrongRouteActiveDirective", () => {
     component: MockComponent,
     declarations: [StrongRouteDirective, StrongRouteActiveDirective],
     imports: [
-      MockAppConfigModule,
+      MockConfigModule,
       RouterTestingModule.withRoutes([
         {
           path: baseRoute.toRouteCompilePath(),

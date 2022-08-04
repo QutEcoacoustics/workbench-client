@@ -1,7 +1,7 @@
 import { GoogleMapsModule } from "@angular/google-maps";
 import {
-  destroyGoogleMaps,
   embedGoogleMaps,
+  destroyGoogleMaps,
 } from "@helpers/embedScript/embedGoogleMaps";
 import { Site } from "@models/Site";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
@@ -9,6 +9,7 @@ import { generateSite } from "@test/fakes/Site";
 import { List } from "immutable";
 import { MapComponent } from "./map.component";
 
+// Disabled because google maps bundle interferes with other tests
 xdescribe("MapComponent", () => {
   let spectator: Spectator<MapComponent>;
   const createComponent = createComponentFactory({

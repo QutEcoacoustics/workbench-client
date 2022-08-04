@@ -28,4 +28,4 @@ import { API_CONFIG, API_ROOT } from "./config.tokens";
     ConfigService,
   ],
 })
-export class AppConfigModule {}
+export class ConfigModule {}
