@@ -5,6 +5,7 @@ import {
   hasResolvedSuccessfully,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
+import { GlobalsService } from "@services/globals/globals.service";
 import { MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { filter, Observable, takeUntil } from "rxjs";
@@ -40,7 +41,8 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     private config: ConfigService,
     private title: Title,
     private router: Router,
-    @Inject(IS_SERVER_PLATFORM) private isServer: boolean
+    @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
+    globals: GlobalsService
   ) {
     super();
     /*
@@ -48,6 +50,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
      * disabled this in the app routing module
      */
     this.router.initialNavigation();
+    globals.initialize();
   }
 
   public ngOnInit(): void {
