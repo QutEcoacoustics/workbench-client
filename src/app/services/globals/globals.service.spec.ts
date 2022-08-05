@@ -1,27 +1,33 @@
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
-import { cacheSettings } from "@services/cache/cache-settings";
+import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
+import { CacheModule } from "@services/cache/cache.module";
 import { getCallArgs } from "@test/helpers/general";
 import { GlobalsService } from "./globals.service";
 
 describe("GlobalsService", () => {
   let consoleSpy: jasmine.Spy;
+  let cacheSettings: CacheSettings;
   let spec: SpectatorService<GlobalsService>;
-  const createService = createServiceFactory(GlobalsService);
+  const createService = createServiceFactory({
+    service: GlobalsService,
+    imports: [CacheModule],
+  });
 
   function stubConsoleLogs() {
     consoleSpy = spyOn(spec.service as any, "logToConsole").and.stub();
   }
 
-  function checkGlobalFunction(func: string) {
-    expect(window["__bawWorkbenchClient"][func]).toBeTruthy();
+  function callGlobalGetterFunction(func: string): any {
+    return window["__bawWorkbenchClient"][func];
   }
 
-  function callGlobalFunction(func: string) {
-    window["__bawWorkbenchClient"][func]();
+  function callGlobalSetterFunction(func: string, value: any) {
+    window["__bawWorkbenchClient"][func] = value;
   }
 
   beforeEach(() => {
     spec = createService();
+    cacheSettings = spec.inject(CACHE_SETTINGS);
   });
 
   describe("introduction", () => {
@@ -35,7 +41,9 @@ describe("GlobalsService", () => {
     });
   });
 
-  describe("toggle cache", () => {
+  describe("cache", () => {
+    const funcName = "cacheEnabled";
+
     beforeEach(() => {
       stubConsoleLogs();
       spec.service.initialize();
@@ -43,54 +51,54 @@ describe("GlobalsService", () => {
 
     it("should list option", () => {
       expect(getCallArgs(consoleSpy)[0]).toContain(
-        "- __bawWorkbenchClient.toggleCache(): This will toggle on/off caching of API requests"
+        `- __bawWorkbenchClient.${funcName}:`
       );
     });
 
-    it("should add function to windows global", () => {
-      checkGlobalFunction("toggleCache");
-    });
-
-    it("should toggle caching on", () => {
+    it("should turn caching on", () => {
       cacheSettings.setCaching(false);
-      callGlobalFunction("toggleCache");
+      callGlobalSetterFunction(funcName, true);
       expect(cacheSettings.enabled).toBeTrue();
     });
 
-    it("should toggle caching off", () => {
+    it("should turn caching off", () => {
       cacheSettings.setCaching(true);
-      callGlobalFunction("toggleCache");
+      callGlobalSetterFunction(funcName, false);
       expect(cacheSettings.enabled).toBeFalse();
+    });
+
+    it("should return state of cache", () => {
+      cacheSettings.setCaching(true);
+      expect(callGlobalGetterFunction(funcName)).toBeTrue();
+      cacheSettings.setCaching(false);
+      expect(callGlobalGetterFunction(funcName)).toBeFalse();
     });
   });
 
-  describe("toggle cache logging", () => {
+  describe("cache logging", () => {
+    const funcName = "cacheLoggingEnabled";
+
     beforeEach(() => {
+      cacheSettings.setCaching(true);
       stubConsoleLogs();
       spec.service.initialize();
     });
 
     it("should list option", () => {
       expect(getCallArgs(consoleSpy)[0]).toContain(
-        "- __bawWorkbenchClient.toggleCacheLogging(): This will toggle on/off logging when API request caching occurs"
+        `- __bawWorkbenchClient.${funcName}:`
       );
     });
 
-    it("should add function to windows global", () => {
-      checkGlobalFunction("toggleCacheLogging");
-    });
-
-    it("should toggle cache logging on", () => {
-      cacheSettings.setCaching(true);
+    it("should turn cache logging on", () => {
       cacheSettings.setLogging(false);
-      callGlobalFunction("toggleCacheLogging");
+      callGlobalSetterFunction(funcName, true);
       expect(cacheSettings.showLogging).toBeTrue();
     });
 
-    it("should toggle cache logging off", () => {
-      cacheSettings.setCaching(true);
+    it("should turn cache logging off", () => {
       cacheSettings.setLogging(true);
-      callGlobalFunction("toggleCacheLogging");
+      callGlobalSetterFunction(funcName, false);
       expect(cacheSettings.showLogging).toBeFalse();
     });
   });

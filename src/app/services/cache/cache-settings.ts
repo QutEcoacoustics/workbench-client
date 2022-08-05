@@ -1,4 +1,6 @@
-class CacheSettings {
+import { InjectionToken } from "@angular/core";
+
+export class CacheSettings {
   /** TTL for HTTP GET requests */
   public httpGetTtlMs = 1000;
 
@@ -28,4 +30,7 @@ class CacheSettings {
   }
 }
 
+export const CACHE_SETTINGS = new InjectionToken<CacheSettings>(
+  "baw.cache.settings"
+);
 export const cacheSettings = new CacheSettings(true, false);

@@ -15,7 +15,7 @@ import {
 import { HttpCacheManager, withCache } from "@ngneat/cashew";
 import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import { withCacheLogging } from "@services/cache/cache-logging.service";
-import { cacheSettings } from "@services/cache/cache-settings";
+import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { API_ROOT } from "@services/config/config.tokens";
 import { ToastrService } from "ngx-toastr";
 import { Observable, throwError } from "rxjs";
@@ -107,7 +107,8 @@ export class BawApiService<
     protected http: HttpClient,
     protected injector: Injector,
     protected session: BawSessionService,
-    protected notifications: ToastrService
+    protected notifications: ToastrService,
+    @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings
   ) {
     const createModel = (cb: ClassBuilder, data: Model, meta: Meta): Model => {
       const model = new cb(data, this.injector);
@@ -170,7 +171,7 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() =>
         this.httpGet(path, defaultApiHeaders, {
-          cache: cacheSettings.enabled && !opts?.disableCache,
+          cache: this.cacheSettings.enabled && !opts?.disableCache,
         })
       ),
       map(this.handleCollectionResponse(classBuilder)),
@@ -212,7 +213,7 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() =>
         this.httpGet(path, defaultApiHeaders, {
-          cache: cacheSettings.enabled && !opts?.disableCache,
+          cache: this.cacheSettings.enabled && !opts?.disableCache,
         })
       ),
       map(this.handleSingleResponse(classBuilder)),
@@ -324,7 +325,7 @@ export class BawApiService<
       responseType: "json",
       headers: options,
       context: withCache({
-        ttl: cacheSettings.httpGetTtlMs,
+        ttl: this.cacheSettings.httpGetTtlMs,
         context: withCacheLogging(),
         ...cacheOptions,
       }),

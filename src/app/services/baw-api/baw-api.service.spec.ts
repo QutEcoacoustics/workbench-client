@@ -26,7 +26,7 @@ import {
   SpectatorHttp,
 } from "@ngneat/spectator";
 import { withCacheLogging } from "@services/cache/cache-logging.service";
-import { cacheSettings } from "@services/cache/cache-settings";
+import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { CacheModule } from "@services/cache/cache.module";
 import { API_ROOT } from "@services/config/config.tokens";
 import { MockConfigModule } from "@services/config/configMock.module";
@@ -105,6 +105,7 @@ describe("BawApiService", () => {
     errorInfo: BawApiError;
   };
 
+  let cacheSettings: CacheSettings;
   let defaultAuthToken: AuthToken;
   let defaultUser: User;
   let apiRoot: string;
@@ -171,6 +172,9 @@ describe("BawApiService", () => {
     service = spec.service;
     apiRoot = spec.inject(API_ROOT);
     session = spec.inject(BawSessionService);
+
+    cacheSettings = spec.inject(CACHE_SETTINGS);
+    cacheSettings.setCaching(true);
 
     defaultAuthToken = modelData.authToken();
     defaultUser = new User(generateUser());
@@ -405,14 +409,18 @@ describe("BawApiService", () => {
     });
 
     describe("httpGet", () => {
-      const defaultCache = {
-        ttl: cacheSettings.httpGetTtlMs,
-        context: withCacheLogging(),
-      };
+      let defaultCache: ContextOptions;
 
       function catchFunctionCall() {
         return catchRequest("/broken_link", HttpMethod.GET);
       }
+
+      beforeEach(() => {
+        defaultCache = {
+          ttl: cacheSettings.httpGetTtlMs,
+          context: withCacheLogging(),
+        };
+      });
 
       it("should cache results when given", () => {
         service
