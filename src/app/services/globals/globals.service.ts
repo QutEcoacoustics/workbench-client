@@ -1,5 +1,6 @@
 import { Inject, Injectable } from "@angular/core";
 import { CACHE_SETTINGS, CacheSettings } from "@services/cache/cache-settings";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 /**
  * Global functions accessible in the console dev tools
@@ -9,10 +10,15 @@ export class GlobalsService {
   private namespace = "__bawWorkbenchClient";
 
   public constructor(
-    @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings
+    @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
+    @Inject(IS_SERVER_PLATFORM) private isServer: boolean
   ) {}
 
   public initialize(): void {
+    if (this.isServer) {
+      return;
+    }
+
     window[this.namespace] = this;
     this.logToConsole(`
       ~~~~~~~~~~~~~~~~~~~~
