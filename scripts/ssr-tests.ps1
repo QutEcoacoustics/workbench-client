@@ -74,7 +74,7 @@ function Assert-Image {
 
 # TODO Replace this dependency with cross-platform solution
 Format-Info "Install dependencies"
-sudo apt install pngcheck
+sudo apt-get install pngcheck
 
 # Home page tests
 Format-Info "Retrieve home page"

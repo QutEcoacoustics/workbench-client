@@ -75,7 +75,7 @@ const regionKey = "region";
         No additional data to display here, try adding points to the site
       </p>
 
-      <div id="model-grid">
+      <ul id="model-grid" class="list-group">
         <!-- Google Maps -->
         <div *ngIf="hasSites()" class="item map">
           <baw-site-map [project]="project" [region]="region"></baw-site-map>
@@ -85,7 +85,7 @@ const regionKey = "region";
         <div *ngFor="let site of sites" class="item">
           <baw-site-card [project]="project" [site]="site"></baw-site-card>
         </div>
-      </div>
+      </ul>
 
       <ngb-pagination
         *ngIf="displayPagination"

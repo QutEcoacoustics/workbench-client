@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { ApiResponse } from "@baw-api/baw-api.service";
 import { HttpCacheInterceptorModule } from "@ngneat/cashew";
 import { CacheLoggingService } from "./cache-logging.service";
-import { cacheSettings } from "./cache-settings";
+import { cacheSettings, CACHE_SETTINGS } from "./cache-settings";
 
 @NgModule({
   imports: [
@@ -28,6 +28,7 @@ import { cacheSettings } from "./cache-settings";
       useClass: CacheLoggingService,
       multi: true,
     },
+    { provide: CACHE_SETTINGS, useValue: cacheSettings },
   ],
 })
 export class CacheModule {}

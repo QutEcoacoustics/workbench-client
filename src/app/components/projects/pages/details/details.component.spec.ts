@@ -17,7 +17,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -25,7 +24,6 @@ import {
   FilterExpectations,
   interceptRepeatApiRequests,
 } from "@test/helpers/general";
-import { assertErrorHandler } from "@test/helpers/html";
 import { assertPaginationTemplate } from "@test/helpers/paginationTemplate";
 import { MockComponent } from "ng-mocks";
 import { DetailsComponent } from "./details.component";
@@ -176,15 +174,6 @@ describe("ProjectDetailsComponent", () => {
     expect(description.innerHTML.trim()).toContain(
       defaultProject.descriptionHtml
     );
-  });
-
-  describe("error handling", () => {
-    it("should handle failure to retrieve project", () => {
-      setup(undefined, generateBawApiError());
-      interceptApiRequest(emptyResponse, emptyResponse);
-      spectator.detectChanges();
-      assertErrorHandler(spectator.fixture);
-    });
   });
 
   assertPaginationTemplate<Site | Region, DetailsComponent>(() => {
