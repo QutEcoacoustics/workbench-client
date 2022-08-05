@@ -21,7 +21,7 @@
     "sourceMap": true,
     "strict": false,
     "target": "ES2015",
-
+    "types": ["@types/gtag.js"],
     "paths": {
       "@assets/*": ["./src/assets/*"],
       "@menu/*": [

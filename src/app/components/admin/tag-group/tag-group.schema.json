@@ -3,7 +3,7 @@
     {
       "key": "tagId",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Tag",
         "type": "text",
         "required": true
@@ -12,7 +12,7 @@
     {
       "key": "groupIdentifier",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Group Identifier",
         "type": "text",
         "required": true

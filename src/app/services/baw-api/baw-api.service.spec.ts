@@ -12,7 +12,6 @@ import {
 import { MockSecurityService } from "@baw-api/mock/securityMock.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { UserService } from "@baw-api/user/user.service";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
@@ -27,9 +26,10 @@ import {
   SpectatorHttp,
 } from "@ngneat/spectator";
 import { withCacheLogging } from "@services/cache/cache-logging.service";
-import { cacheSettings } from "@services/cache/cache-settings";
+import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { CacheModule } from "@services/cache/cache.module";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { API_ROOT } from "@services/config/config.tokens";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertOk } from "@test/helpers/general";
@@ -105,6 +105,7 @@ describe("BawApiService", () => {
     errorInfo: BawApiError;
   };
 
+  let cacheSettings: CacheSettings;
   let defaultAuthToken: AuthToken;
   let defaultUser: User;
   let apiRoot: string;
@@ -113,7 +114,7 @@ describe("BawApiService", () => {
   let spec: SpectatorHttp<BawApiService<MockModel>>;
   const createService = createHttpFactory<BawApiService<MockModel>>({
     service: BawApiService,
-    imports: [MockAppConfigModule, CacheModule],
+    imports: [MockConfigModule, CacheModule],
     providers: [
       BawSessionService,
       mockProvider(ToastrService),
@@ -171,6 +172,9 @@ describe("BawApiService", () => {
     service = spec.service;
     apiRoot = spec.inject(API_ROOT);
     session = spec.inject(BawSessionService);
+
+    cacheSettings = spec.inject(CACHE_SETTINGS);
+    cacheSettings.setCaching(true);
 
     defaultAuthToken = modelData.authToken();
     defaultUser = new User(generateUser());
@@ -405,14 +409,18 @@ describe("BawApiService", () => {
     });
 
     describe("httpGet", () => {
-      const defaultCache = {
-        ttl: cacheSettings.httpGetTtlMs,
-        context: withCacheLogging(),
-      };
+      let defaultCache: ContextOptions;
 
       function catchFunctionCall() {
         return catchRequest("/broken_link", HttpMethod.GET);
       }
+
+      beforeEach(() => {
+        defaultCache = {
+          ttl: cacheSettings.httpGetTtlMs,
+          context: withCacheLogging(),
+        };
+      });
 
       it("should cache results when given", () => {
         service

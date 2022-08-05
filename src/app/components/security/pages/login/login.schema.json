@@ -3,7 +3,7 @@
     {
       "key": "login",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "attributes": {
           "autocomplete": "username"
         },
@@ -15,7 +15,7 @@
     {
       "key": "password",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "attributes": {
           "autocomplete": "current-password"
         },

@@ -7,7 +7,10 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { MapMarkerOption, sanitizeMapMarkers } from "@shared/map/map.component";
+import {
+  MapMarkerOptions,
+  sanitizeMapMarkers,
+} from "@shared/map/map.component";
 import { List } from "immutable";
 import { DateTime } from "luxon";
 import { Observable } from "rxjs";
@@ -30,7 +33,7 @@ class SiteComponent extends PageComponent implements OnInit {
   public recordings: AudioRecording[];
   public oldestRecording: AudioRecording;
   public newestRecording: AudioRecording;
-  public marker: List<MapMarkerOption>;
+  public marker: List<MapMarkerOptions>;
   public recentAudioEvents: AudioEvent[];
 
   public constructor(private audioRecordingsApi: AudioRecordingsService) {

@@ -1,6 +1,6 @@
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
+import { API_ROOT } from "@services/config/config.tokens";
 import fileSize from "filesize";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";

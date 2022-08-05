@@ -3,7 +3,7 @@
     {
       "key": "name",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Your name",
         "required": false
       }
@@ -11,7 +11,7 @@
     {
       "key": "email",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "type": "email",
         "label": "Contact Email",
         "required": false
@@ -20,7 +20,7 @@
     {
       "key": "date",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "type": "date",
         "label": "Date issue occurred",
         "required": true
@@ -29,7 +29,7 @@
     {
       "key": "description",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Steps to reproduce issue",
         "rows": 4,
         "required": true
@@ -38,7 +38,7 @@
     {
       "key": "content",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "What do you expect to happen? What actually happens?",
         "rows": 7,
         "required": true

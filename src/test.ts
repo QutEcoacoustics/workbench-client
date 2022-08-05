@@ -11,8 +11,11 @@ import {
 import { computedStyleMatchers } from "@test/matchers/computedStyle";
 import { htmlMatchers } from "@test/matchers/html";
 import { injectableMatchers } from "@test/matchers/injectables";
+import { environment } from "./environments/environment";
 
 declare const require: any;
+
+environment.testing = true;
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
 

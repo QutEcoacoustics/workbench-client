@@ -9,7 +9,7 @@ import { statisticsMenuItem } from "@components/statistics/statistics.menus";
 import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { FooterComponent } from "./footer.component";
 
 describe("FooterComponent", () => {
@@ -17,7 +17,7 @@ describe("FooterComponent", () => {
   let spec: Spectator<FooterComponent>;
   const createComponent = createComponentFactory({
     component: FooterComponent,
-    imports: [RouterTestingModule, MockDirectivesModule, MockAppConfigModule],
+    imports: [RouterTestingModule, MockDirectivesModule, MockConfigModule],
   });
 
   beforeEach(() => {
@@ -35,7 +35,7 @@ describe("FooterComponent", () => {
   });
 
   it("should show build version", () => {
-    const version = configService.config.version;
+    const version = configService.environment.version;
     expect(spec.query("#version")).toContainText(version);
   });
 

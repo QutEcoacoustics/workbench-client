@@ -1,9 +1,9 @@
 import { Injector } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { API_ROOT } from "@services/config/config.tokens";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel } from "./AbstractModel";
@@ -343,7 +343,7 @@ describe("Attribute Decorators", () => {
 
       beforeEach(() => {
         TestBed.configureTestingModule({
-          imports: [MockAppConfigModule],
+          imports: [MockConfigModule],
         }).compileComponents();
         injector = TestBed.inject(Injector);
         apiRoot = TestBed.inject(API_ROOT);

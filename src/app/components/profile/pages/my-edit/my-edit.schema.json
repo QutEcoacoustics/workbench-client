@@ -3,7 +3,7 @@
     {
       "key": "userName",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "User name",
         "require": true
       }
@@ -11,7 +11,7 @@
     {
       "key": "email",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "type": "email",
         "label": "Email",
         "required": true
@@ -20,7 +20,7 @@
     {
       "key": "tzinfoTz",
       "type": "timezone",
-      "templateOptions": {
+      "props": {
         "label": "Time Zone Identifier",
         "required": false
       }
@@ -28,7 +28,7 @@
     {
       "key": "image",
       "type": "image",
-      "templateOptions": {
+      "props": {
         "label": "Image Upload",
         "required": false
       }
@@ -36,7 +36,7 @@
     {
       "key": "currentPassword",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "type": "password",
         "label": "Current Password",
         "required": true,

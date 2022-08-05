@@ -1,7 +1,6 @@
 import {
-  ChangeDetectorRef,
+  AfterViewChecked,
   Component,
-  Inject,
   Input,
   OnChanges,
   QueryList,
@@ -9,7 +8,7 @@ import {
   ViewChildren,
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
-import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { googleMapsLoaded } from "@helpers/embedScript/embedGoogleMaps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
@@ -21,14 +20,8 @@ import { takeUntil } from "rxjs/operators";
 @Component({
   selector: "baw-map",
   template: `
-    <ng-container *ngIf="!isServer; else loadingMap">
-      <ng-container *ngIf="hasMarkers; else placeholderMap">
-        <ng-container *ngTemplateOutlet="loadedMap"></ng-container>
-      </ng-container>
-    </ng-container>
-
     <!-- Display map -->
-    <ng-template #loadedMap>
+    <ng-container *ngIf="hasMarkers && googleMapsLoaded">
       <google-map height="100%" width="100%" [options]="mapOptions">
         <map-marker
           *ngFor="let marker of filteredMarkers"
@@ -38,71 +31,82 @@ import { takeUntil } from "rxjs/operators";
         </map-marker>
         <map-info-window>{{ infoContent }}</map-info-window>
       </google-map>
-    </ng-template>
+    </ng-container>
 
     <!-- Map is loading -->
-    <ng-template #loadingMap>
+    <ng-container *ngIf="hasMarkers && !googleMapsLoaded">
       <div class="map-placeholder"><p>Map loading</p></div>
-    </ng-template>
+    </ng-container>
 
     <!-- No map markers to display -->
-    <ng-template #placeholderMap>
+    <ng-container *ngIf="!hasMarkers">
       <div class="map-placeholder"><p>No locations specified</p></div>
-    </ng-template>
+    </ng-container>
   `,
   styleUrls: ["./map.component.scss"],
 })
-export class MapComponent extends withUnsubscribe() implements OnChanges {
+export class MapComponent
+  extends withUnsubscribe()
+  implements OnChanges, AfterViewChecked
+{
   @ViewChild(GoogleMap, { static: false }) public map: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) public info: MapInfoWindow;
   @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
 
-  @Input() public markers: List<MapMarkerOption>;
-  public filteredMarkers: MapMarkerOption[];
+  @Input() public markers: List<MapMarkerOptions>;
+  public filteredMarkers: MapMarkerOptions[];
   public hasMarkers = false;
   public infoContent = "";
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
-  public mapOptions: google.maps.MapOptions = { mapTypeId: "satellite" };
-  public markerOptions: google.maps.MarkerOptions = {};
+  public mapOptions: MapOptions = { mapTypeId: "satellite" };
+  public markerOptions: MapMarkerOptions = {};
+  public bounds: google.maps.LatLngBounds;
+  private updateMap: boolean;
 
-  public constructor(
-    @Inject(IS_SERVER_PLATFORM) public isServer: boolean,
-    private ref: ChangeDetectorRef
-  ) {
-    super();
+  public get googleMapsLoaded(): boolean {
+    return googleMapsLoaded();
   }
 
-  public ngOnChanges() {
+  public ngOnChanges(): void {
     this.hasMarkers = false;
     this.filteredMarkers = [];
-    // Calculate pin boundaries so that map can be auto-focused properly
-    const bounds = new google.maps.LatLngBounds();
-    this.markers?.forEach((marker) => {
-      if (isMarkerValid(marker)) {
-        this.hasMarkers = true;
-        this.filteredMarkers.push(marker);
-        bounds.extend(marker.position);
-      }
-    });
 
-    if (!this.hasMarkers || this.isServer) {
+    // Google global may not be declared
+    if (!this.googleMapsLoaded) {
       return;
     }
 
-    // Detect changes required so map loads
-    this.ref.detectChanges();
-    this.map.fitBounds(bounds);
-    this.map.panToBounds(bounds);
+    // Calculate pin boundaries so that map can be auto-focused properly
+    this.bounds = new google.maps.LatLngBounds();
+    this.markers?.forEach((marker): void => {
+      if (isMarkerValid(marker)) {
+        this.hasMarkers = true;
+        this.filteredMarkers.push(marker);
+        this.bounds.extend(marker.position);
+      }
+    });
+    this.updateMap = true;
+  }
+
+  public ngAfterViewChecked(): void {
+    if (!this.map || !this.hasMarkers || !this.updateMap) {
+      return;
+    }
+
+    this.updateMap = false;
+    this.map.fitBounds(this.bounds);
+    this.map.panToBounds(this.bounds);
     // Setup info windows for each marker
     this.mapMarkers?.forEach((marker, index) => {
-      marker.mapMouseover.pipe(takeUntil(this.unsubscribe)).subscribe(
-        () => {
+      marker.mapMouseover.pipe(takeUntil(this.unsubscribe)).subscribe({
+        next: (): void => {
           this.infoContent = this.filteredMarkers[index].label as string;
           this.info.open(marker);
         },
-        () => console.error("Failed to create info content for map marker")
-      );
+        error: (): void =>
+          console.error("Failed to create info content for map marker"),
+      });
     });
   }
 }
@@ -112,7 +116,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
  *
  * @param marker Marker to validate
  */
-function isMarkerValid(marker: MapMarkerOption): boolean {
+function isMarkerValid(marker: MapMarkerOptions): boolean {
   return (
     typeof marker?.position?.lat === "number" &&
     typeof marker?.position?.lng === "number"
@@ -123,9 +127,9 @@ function isMarkerValid(marker: MapMarkerOption): boolean {
  * Handles sanitization of map markers so change detection will run properly
  */
 export function sanitizeMapMarkers(
-  markers: MapMarkerOption | MapMarkerOption[]
-): List<MapMarkerOption> {
-  const output: MapMarkerOption[] = [];
+  markers: MapMarkerOptions | MapMarkerOptions[]
+): List<MapMarkerOptions> {
+  const output: MapMarkerOptions[] = [];
 
   if (markers instanceof Array) {
     markers.forEach((marker) => {
@@ -142,4 +146,5 @@ export function sanitizeMapMarkers(
   return List(output);
 }
 
-export type MapMarkerOption = google.maps.MarkerOptions;
+export type MapMarkerOptions = google.maps.MarkerOptions;
+export type MapOptions = google.maps.MapOptions;

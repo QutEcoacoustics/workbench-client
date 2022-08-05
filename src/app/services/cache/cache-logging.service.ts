@@ -6,9 +6,9 @@ import {
   HttpInterceptor,
   HttpRequest,
 } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { cacheSettings } from "./cache-settings";
+import { CacheSettings, CACHE_SETTINGS } from "./cache-settings";
 
 const CACHE_LOGGING = new HttpContextToken<boolean>(() => false);
 
@@ -27,13 +27,15 @@ export const withCacheLogging = () =>
 
 @Injectable()
 export class CacheLoggingService implements HttpInterceptor {
-  public constructor() {}
+  public constructor(
+    @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings
+  ) {}
 
   public intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (cacheSettings.showLogging && req.context.get(CACHE_LOGGING)) {
+    if (this.cacheSettings.showLogging && req.context.get(CACHE_LOGGING)) {
       // eslint-disable-next-line no-console
       console.debug("(CacheLoggingService) Caching requests for ", req.url);
     }

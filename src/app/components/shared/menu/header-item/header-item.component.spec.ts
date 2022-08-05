@@ -8,7 +8,7 @@ import {
   NavigableMenuItem,
 } from "@interfaces/menusInterfaces";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { generateMenuLink, generateMenuRoute } from "@test/fakes/MenuItem";
 import { HeaderItemComponent } from "./header-item.component";
 
@@ -18,7 +18,7 @@ describe("HeaderItemComponent", () => {
   let spec: Spectator<HeaderItemComponent>;
   const createComponent = createComponentFactory({
     component: HeaderItemComponent,
-    imports: [RouterTestingModule, MockDirectivesModule, MockAppConfigModule],
+    imports: [RouterTestingModule, MockDirectivesModule, MockConfigModule],
   });
 
   function getLink() {

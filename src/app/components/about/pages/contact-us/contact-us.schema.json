@@ -3,7 +3,7 @@
     {
       "key": "name",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Your name",
         "required": false
       }
@@ -11,7 +11,7 @@
     {
       "key": "email",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "type": "email",
         "label": "Contact Email",
         "required": false
@@ -20,7 +20,7 @@
     {
       "key": "content",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Message",
         "rows": 8,
         "required": true

@@ -74,7 +74,7 @@ describe("DetailViewComponent", () => {
     describe("single field", () => {
       beforeEach(() => {
         spec.setInput({
-          fields: [{ key: "id", templateOptions: { label: "custom label" } }],
+          fields: [{ key: "id", props: { label: "custom label" } }],
           model: new MockModel({ id: 0 }),
         });
         spec.detectChanges();
@@ -103,15 +103,15 @@ describe("DetailViewComponent", () => {
           fields: [
             {
               key: "id",
-              templateOptions: { label: "custom label 0" },
+              props: { label: "custom label 0" },
             },
             {
               key: "text",
-              templateOptions: { label: "custom label 1" },
+              props: { label: "custom label 1" },
             },
             {
               key: "object",
-              templateOptions: { label: "custom label 2" },
+              props: { label: "custom label 2" },
             },
           ],
           model: new MockModel({
@@ -151,7 +151,7 @@ describe("DetailViewComponent", () => {
     describe("abstract models", () => {
       function setupComponent(key: string) {
         spec.setInput({
-          fields: [{ key, templateOptions: { label: "custom label" } }],
+          fields: [{ key, props: { label: "custom label" } }],
           model: new MockModel({ id: 0, ids: 0 }, injector),
         });
         spec.detectChanges();
@@ -217,7 +217,7 @@ describe("DetailViewComponent", () => {
   describe("screen size", () => {
     beforeEach(() => {
       spec.setInput({
-        fields: [{ key: "id", templateOptions: { label: "custom label" } }],
+        fields: [{ key: "id", props: { label: "custom label" } }],
         model: new MockModel({ id: 0 }),
       });
       spec.detectChanges();

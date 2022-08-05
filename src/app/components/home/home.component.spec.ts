@@ -17,7 +17,7 @@ import {
 } from "@ngneat/spectator";
 import { PipesModule } from "@pipes/pipes.module";
 import { ConfigService } from "@services/config/config.service";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { testApiConfig } from "@services/config/configMock.service";
 import { IconsModule } from "@shared/icons/icons.module";
 import { LoadingModule } from "@shared/loading/loading.module";
@@ -42,7 +42,7 @@ describe("HomeComponent", () => {
     declarations: [CardsComponent, MockComponent(CardComponent)],
     imports: [
       MockBawApiModule,
-      MockAppConfigModule,
+      MockConfigModule,
       IconsModule,
       MockDirectivesModule,
       RouterTestingModule,

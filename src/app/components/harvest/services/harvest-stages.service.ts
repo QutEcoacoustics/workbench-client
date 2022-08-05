@@ -108,10 +108,9 @@ export class HarvestStagesService implements OnDestroy {
    * @param harvest Current harvest
    */
   public initialize(project: Project, harvest: Harvest): void {
+    this.destroy();
     this.project = project;
     this.setHarvest(harvest);
-    this.resetHarvestItemsErrors();
-    this.stopPolling();
   }
 
   /** Destroy the current  */
@@ -120,7 +119,6 @@ export class HarvestStagesService implements OnDestroy {
     this._harvest$ = new BehaviorSubject<Harvest | null>(null);
     this.resetHarvestItemsErrors();
     this.stopPolling();
-    this.unsubscribe.next();
   }
 
   /** Manually set the harvest model */
@@ -134,7 +132,7 @@ export class HarvestStagesService implements OnDestroy {
       console.error("Must initialize the service first");
       return;
     }
-    this.harvestTrigger$?.next();
+    this.harvestTrigger$.next();
   }
 
   /**
@@ -143,9 +141,12 @@ export class HarvestStagesService implements OnDestroy {
    * @param intervalMs How often to poll for the latest harvest
    */
   public startPolling(intervalMs: number): void {
+    this.harvestInterval?.unsubscribe();
     this.harvestInterval = interval(intervalMs)
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe((): void => this.reloadModel());
+      .subscribe((): void => {
+        this.reloadModel();
+      });
   }
 
   /**
@@ -224,15 +225,15 @@ export class HarvestStagesService implements OnDestroy {
           // transitions can cause timeouts
           of(null).pipe(
             delay(delaySeconds * 1000),
-            tap((): void => this.harvestTrigger$?.next())
+            tap((): void => this.harvestTrigger$.next())
           );
           return throwError(() => err);
         })
       )
       .subscribe({
         next: (harvest): void => {
-          this.setHarvest(harvest);
           this.stopPolling();
+          this.setHarvest(harvest);
           this.resetHarvestItemsErrors();
           this.transitioningStage = false;
         },

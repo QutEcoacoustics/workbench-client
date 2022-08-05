@@ -3,7 +3,7 @@
     {
       "key": "text",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Text",
         "type": "text",
         "required": true
@@ -12,7 +12,7 @@
     {
       "key": "typeOfTag",
       "type": "select",
-      "templateOptions": {
+      "props": {
         "label": "Type of Tag",
         "required": true,
         "options": []
@@ -21,7 +21,7 @@
     {
       "key": "notes",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Notes",
         "required": false,
         "rows": 8
@@ -30,7 +30,7 @@
     {
       "key": "retired",
       "type": "checkbox",
-      "templateOptions": {
+      "props": {
         "label": "Retired",
         "required": false
       }
@@ -38,7 +38,7 @@
     {
       "key": "isTaxonomic",
       "type": "checkbox",
-      "templateOptions": {
+      "props": {
         "label": "Is Taxonomic",
         "required": false
       }

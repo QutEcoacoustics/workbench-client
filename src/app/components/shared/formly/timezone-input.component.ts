@@ -21,8 +21,8 @@ import { asFormControl } from "./helper";
   selector: "baw-timezone-input",
   template: `
     <div class="form-group">
-      <label *ngIf="to.label" [for]="field.id">
-        {{ to.label + (to.required ? " *" : "") }}
+      <label *ngIf="props.label" [for]="field.id">
+        {{ props.label + (props.required ? " *" : "") }}
       </label>
 
       <ng-template #resultTemplate let-r="result" let-t="term">
@@ -96,7 +96,7 @@ export class TimezoneInputComponent extends FieldType implements OnInit {
       return;
     }
 
-    if (this.to.required && !this.timezone && this.formControl.dirty) {
+    if (this.props.required && !this.timezone && this.formControl.dirty) {
       return "Timezone must be selected from dropdown menu";
     }
   }

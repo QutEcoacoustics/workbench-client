@@ -1,9 +1,9 @@
 import { IdOr } from "@baw-api/api-common";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import { API_ROOT } from "@services/config/config.tokens";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import {

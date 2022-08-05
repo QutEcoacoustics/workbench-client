@@ -1,12 +1,12 @@
 import { Component, Inject, Input, OnChanges, OnInit } from "@angular/core";
 import { IsActiveMatchOptions, Params } from "@angular/router";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
   isInternalRoute,
   MenuLink,
   MenuRoute,
 } from "@interfaces/menusInterfaces";
+import { API_ROOT } from "@services/config/config.tokens";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { Observable } from "rxjs";
 

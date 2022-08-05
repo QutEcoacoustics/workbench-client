@@ -89,7 +89,7 @@ const projectKey = "project";
         No additional data to display here, try adding sites to the project
       </p>
 
-      <div id="model-grid">
+      <ul id="model-grid" class="list-group">
         <!-- Google Maps -->
         <div *ngIf="hasSites || hasRegions || loading" class="item map">
           <baw-site-map [project]="project"></baw-site-map>
@@ -104,7 +104,7 @@ const projectKey = "project";
         <div *ngFor="let site of sites" class="item">
           <baw-site-card [project]="project" [site]="site"></baw-site-card>
         </div>
-      </div>
+      </ul>
 
       <ngb-pagination
         *ngIf="displayPagination"
@@ -114,6 +114,8 @@ const projectKey = "project";
         [(page)]="page"
       ></ngb-pagination>
     </ng-container>
+
+    <div class="mb-3"></div>
   `,
   styleUrls: ["./details.component.scss"],
 })

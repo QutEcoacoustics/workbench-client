@@ -1,11 +1,16 @@
-import { Configuration } from "@helpers/app-initializer/app-initializer";
-
 export const environment = {
+  testing: false,
+  /** Is the current environment running in production mode */
   production: false,
+  /** Timeout for web requests in server side renderer */
   ssrTimeout: 1_000,
+  /** Timeout for web requests in browser */
   browserTimeout: 10_000,
-  // Version is set by the docker container, edit with care
+  /**
+   * Current build version of this code. This is set by the docker container
+   * and should not be modified without care
+   */
   version: "<<VERSION_REPLACED_WHEN_BUILT>>",
-} as Partial<Configuration> as Configuration;
+};
 
 import "zone.js/plugins/zone-error"; // Included with Angular CLI.

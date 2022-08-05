@@ -63,7 +63,7 @@ describe("FormComponent", () => {
     return {
       key: opts?.key ?? "input",
       type: "input",
-      templateOptions: {
+      props: {
         label: opts?.label ?? "input element",
         type,
         required,
@@ -75,7 +75,7 @@ describe("FormComponent", () => {
     return {
       key: "message",
       type: "textarea",
-      templateOptions: {
+      props: {
         label: "Message",
         rows: 8,
         required,
@@ -96,7 +96,7 @@ describe("FormComponent", () => {
       {
         key: "input",
         type: "input",
-        templateOptions: { label: "input element", required: false },
+        props: { label: "input element", required: false },
       },
     ];
   });

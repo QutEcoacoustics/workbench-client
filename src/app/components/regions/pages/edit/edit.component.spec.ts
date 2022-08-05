@@ -5,10 +5,6 @@ import {
   RegionsService,
 } from "@baw-api/region/regions.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import {
-  destroyGoogleMaps,
-  embedGoogleMaps,
-} from "@helpers/embedGoogleMaps/embedGoogleMaps";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import {
@@ -60,8 +56,7 @@ describe("RegionsEditComponent", () => {
     ]);
   });
 
-  // TODO Disabled because of #1338
-  xdescribe("component", () => {
+  describe("component", () => {
     let api: SpyObject<RegionsService>;
     let defaultProject: Project;
     let defaultRegion: Region;
@@ -84,8 +79,6 @@ describe("RegionsEditComponent", () => {
       spectator.detectChanges();
     }
 
-    beforeAll(async () => await embedGoogleMaps());
-    afterAll(() => destroyGoogleMaps());
     beforeEach(() => {
       defaultProject = new Project(generateProject());
       defaultRegion = new Region(generateRegion());

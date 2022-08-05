@@ -17,7 +17,7 @@ import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "../page/pageComponent";
 import { IPageInfo } from "../page/pageInfo";
 
-export interface FormTemplateOptions<Model> {
+export interface FormProps<Model> {
   successMsg: (model: Partial<Model>) => string;
   failureMsg?: (err: BawApiError) => string;
   onSuccess?: (model: Model | void) => void;
@@ -25,7 +25,7 @@ export interface FormTemplateOptions<Model> {
   getModel: (models: ResolvedModelList) => Partial<Model>;
   hasFormCheck?: boolean;
 }
-const defaultOptions: FormTemplateOptions<any> = {
+const defaultOptions: FormProps<any> = {
   successMsg: () => defaultSuccessMsg("updated", "model"),
   getModel: () => ({}),
   hasFormCheck: true,
@@ -52,7 +52,7 @@ export abstract class FormTemplate<Model extends AbstractModel>
   /** Success message */
   private successMessage: string;
   /** Form template options */
-  private opts: FormTemplateOptions<Model>;
+  private opts: FormProps<Model>;
 
   /**
    * Customize form template
@@ -66,7 +66,7 @@ export abstract class FormTemplate<Model extends AbstractModel>
     protected notifications: ToastrService,
     protected route: ActivatedRoute,
     protected router: Router,
-    opts: Partial<FormTemplateOptions<Model>>
+    opts: Partial<FormProps<Model>>
   ) {
     super();
     this.opts = { ...defaultOptions, ...opts };

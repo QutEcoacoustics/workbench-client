@@ -8,7 +8,6 @@ import {
   HttpResponse,
 } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
-import { API_ROOT } from "@helpers/app-initializer/app-initializer";
 import {
   toCamelCase,
   toSnakeCase,
@@ -17,6 +16,7 @@ import {
   BawApiError,
   isBawApiError,
 } from "@helpers/custom-errors/baw-api-error";
+import { API_ROOT } from "@services/config/config.tokens";
 import { NOT_FOUND } from "http-status";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";

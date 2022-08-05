@@ -6,10 +6,15 @@ import {
   Settings,
 } from "@helpers/app-initializer/app-initializer";
 import { websiteHttpUrl } from "@test/helpers/url";
+import { environment } from "src/environments/environment";
 import { assetRoot } from "./config.service";
 
 @Injectable()
-export class AppConfigMockService {
+export class ConfigMockService {
+  public get environment() {
+    return new Proxy(environment, {});
+  }
+
   public get config(): Configuration {
     return new Proxy(testApiConfig, {});
   }
@@ -28,8 +33,6 @@ export class AppConfigMockService {
 }
 
 export const testApiConfig = new Configuration({
-  production: false,
-  version: "3.0.0",
   endpoints: {
     environment: "testing",
     apiRoot: "https://www.testing.com/api",
@@ -39,10 +42,10 @@ export const testApiConfig = new Configuration({
     oldClientBase: `${assetRoot}/old-client/index.html`,
   },
   keys: {
-    googleMaps: "<< googleMaps >>",
+    googleMaps: "",
     googleAnalytics: {
-      domain: "<< domain >>",
-      trackingId: "<< googleAnalytics >>",
+      domain: "",
+      trackingId: "",
     },
   },
   settings: {

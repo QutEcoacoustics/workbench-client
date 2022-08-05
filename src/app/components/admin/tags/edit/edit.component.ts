@@ -60,7 +60,7 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
     }
 
     this.title = `Edit ${this.model.text}`;
-    this.fields[typeOfTagIndex].templateOptions.options = this.typeOfTags.map(
+    this.fields[typeOfTagIndex].props.options = this.typeOfTags.map(
       ({ name }) => ({
         label: name,
         value: name,

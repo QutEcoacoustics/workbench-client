@@ -3,7 +3,7 @@
     {
       "key": "login",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Username or Email Address",
         "type": "text",
         "required": true

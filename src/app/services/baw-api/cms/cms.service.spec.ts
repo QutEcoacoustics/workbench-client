@@ -5,7 +5,7 @@ import {
   HttpMethod,
   SpectatorHttp,
 } from "@ngneat/spectator";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { testApiConfig } from "@services/config/configMock.service";
 import { assertOk } from "@test/helpers/general";
 import { noop } from "rxjs";
@@ -17,7 +17,7 @@ describe("CmsService", () => {
   let spectator: SpectatorHttp<CmsService>;
   const createService = createHttpFactory({
     service: CmsService,
-    imports: [MockAppConfigModule],
+    imports: [MockConfigModule],
     providers: [SecurityService, UserService],
   });
   const defaultUrl = CMS.home;

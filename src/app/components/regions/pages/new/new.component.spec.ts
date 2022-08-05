@@ -2,10 +2,6 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import {
-  destroyGoogleMaps,
-  embedGoogleMaps,
-} from "@helpers/embedGoogleMaps/embedGoogleMaps";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import {
@@ -57,8 +53,7 @@ describe("RegionsNewComponent", () => {
     ]);
   });
 
-  // TODO Disabled because of #1338
-  xdescribe("component", () => {
+  describe("component", () => {
     let api: SpyObject<RegionsService>;
     let defaultProject: Project;
 
@@ -76,8 +71,6 @@ describe("RegionsNewComponent", () => {
       spectator.detectChanges();
     }
 
-    beforeAll(async () => await embedGoogleMaps());
-    afterAll(() => destroyGoogleMaps());
     beforeEach(() => {
       defaultProject = new Project(generateProject());
     });

@@ -1,6 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, Inject } from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { cacheSettings } from "@services/cache/cache-settings";
+import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { List } from "immutable";
 import { adminCategory } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
@@ -47,7 +47,11 @@ import { adminSettingsMenuItem } from "./settings.menus";
   `,
 })
 class AdminSettingsComponent extends PageComponent {
-  public cacheSettings = cacheSettings;
+  public constructor(
+    @Inject(CACHE_SETTINGS) public cacheSettings: CacheSettings
+  ) {
+    super();
+  }
 }
 
 AdminSettingsComponent.linkToRoute({

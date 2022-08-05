@@ -55,7 +55,7 @@ export class FooterComponent implements OnInit {
 
   public constructor(private configService: ConfigService) {}
 
-  public ngOnInit() {
-    this.version = this.configService.config.version;
+  public ngOnInit(): void {
+    this.version = this.configService.environment.version;
   }
 }

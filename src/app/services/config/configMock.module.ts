@@ -1,11 +1,9 @@
 import { NgModule } from "@angular/core";
-import {
-  API_CONFIG,
-  API_ROOT,
-  Configuration,
-} from "@helpers/app-initializer/app-initializer";
+import { Configuration } from "@helpers/app-initializer/app-initializer";
 import { ConfigService } from "./config.service";
-import { AppConfigMockService, testApiConfig } from "./configMock.service";
+import { API_ROOT, API_CONFIG } from "./config.tokens";
+import { ConfigMockService, testApiConfig } from "./configMock.service";
+
 @NgModule({
   providers: [
     {
@@ -20,8 +18,8 @@ import { AppConfigMockService, testApiConfig } from "./configMock.service";
     },
     {
       provide: ConfigService,
-      useClass: AppConfigMockService,
+      useClass: ConfigMockService,
     },
   ],
 })
-export class MockAppConfigModule {}
+export class MockConfigModule {}

@@ -3,7 +3,7 @@
     {
       "key": "id",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Script Id",
         "disabled": true
       }
@@ -11,7 +11,7 @@
     {
       "key": "name",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Name",
         "type": "text",
         "required": true
@@ -20,7 +20,7 @@
     {
       "key": "description",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Description",
         "required": false,
         "rows": 8
@@ -29,7 +29,7 @@
     {
       "key": "version",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Version",
         "type": "number",
         "required": false
@@ -38,7 +38,7 @@
     {
       "key": "analysisIdentifier",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Analysis Identifier",
         "type": "Text",
         "required": true
@@ -47,7 +47,7 @@
     {
       "key": "executableCommand",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Executable Command",
         "required": true,
         "rows": 8
@@ -56,7 +56,7 @@
     {
       "key": "executableSettings",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Executable Settings",
         "required": true,
         "rows": 8
@@ -66,7 +66,7 @@
       "key": "executableSettingsMediaType",
       "type": "input",
       "defaultValue": "text/plain",
-      "templateOptions": {
+      "props": {
         "label": "Executable Settings Media Type",
         "type": "text",
         "required": true
@@ -75,7 +75,7 @@
     {
       "key": "analysisActionParams",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Analysis Action Parameters",
         "required": false,
         "rows": 8
@@ -84,14 +84,14 @@
     {
       "key": "verified",
       "type": "checkbox",
-      "templateOptions": {
+      "props": {
         "label": "Verified"
       }
     },
     {
       "key": "groupId",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Group Id",
         "disabled": true
       }

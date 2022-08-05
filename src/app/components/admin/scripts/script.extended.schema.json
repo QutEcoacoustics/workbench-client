@@ -3,7 +3,7 @@
     {
       "key": "group",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Group",
         "disabled": true
       }
@@ -11,7 +11,7 @@
     {
       "key": "creator",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Creator",
         "disabled": true
       }
@@ -19,7 +19,7 @@
     {
       "key": "createdAt",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Created At",
         "disabled": true
       }

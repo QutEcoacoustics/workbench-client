@@ -30,7 +30,12 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      initialNavigation: "enabledBlocking",
+      /*
+       * Initial navigation triggers resolvers before APP_INITIALIZER which
+       * means that the config has not been loaded. Disabling this fixes the
+       * problem. https://github.com/angular/angular/issues/14588
+       */
+      initialNavigation: "disabled",
       scrollPositionRestoration: "enabled",
     }),
   ],

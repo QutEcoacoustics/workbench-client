@@ -12,7 +12,7 @@ import {
   SpectatorHttp,
 } from "@ngneat/spectator";
 import { CacheModule } from "@services/cache/cache.module";
-import { MockAppConfigModule } from "@services/config/configMock.module";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { modelData } from "@test/helpers/faker";
 import { assertOk, getCallArgs, nStepObservable } from "@test/helpers/general";
@@ -31,7 +31,7 @@ describe("BawFormApiService", () => {
   let spec: SpectatorHttp<BawFormApiService<MockForm>>;
   const createService = createHttpFactory<BawFormApiService<MockForm>>({
     service: BawFormApiService,
-    imports: [MockAppConfigModule, CacheModule],
+    imports: [MockConfigModule, CacheModule],
     providers: [
       BawSessionService,
       BawApiService,

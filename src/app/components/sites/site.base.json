@@ -3,7 +3,7 @@
     {
       "key": "id",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Site Id",
         "disabled": true
       }
@@ -11,7 +11,7 @@
     {
       "key": "name",
       "type": "input",
-      "templateOptions": {
+      "props": {
         "label": "Site Name",
         "type": "text",
         "required": true,
@@ -21,7 +21,7 @@
     {
       "key": "description",
       "type": "textarea",
-      "templateOptions": {
+      "props": {
         "label": "Description",
         "required": false,
         "rows": 8,
@@ -31,7 +31,7 @@
     {
       "key": "locationObfuscated",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Location Obfuscated",
         "disabled": true
       }
@@ -39,14 +39,14 @@
     {
       "key": "location",
       "type": "location",
-      "templateOptions": {
+      "props": {
         "label": "Location"
       }
     },
     {
       "key": "latitude",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Latitude",
         "disabled": true
       }
@@ -54,7 +54,7 @@
     {
       "key": "longitude",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Longitude",
         "disabled": true
       }
@@ -62,7 +62,7 @@
     {
       "key": "customLatitude",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Custom Latitude",
         "disabled": true
       }
@@ -70,7 +70,7 @@
     {
       "key": "customLongitude",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Custom Longitude",
         "disabled": true
       }
@@ -78,7 +78,7 @@
     {
       "key": "imageUrls",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Images",
         "disabled": true
       }
@@ -86,7 +86,7 @@
     {
       "key": "image",
       "type": "image",
-      "templateOptions": {
+      "props": {
         "label": "Image Upload",
         "required": false
       }
@@ -94,7 +94,7 @@
     {
       "key": "tzinfoTz",
       "type": "timezone",
-      "templateOptions": {
+      "props": {
         "label": "Time Zone Identifier",
         "required": false
       }
@@ -102,7 +102,7 @@
     {
       "key": "timezoneInformation",
       "hide": true,
-      "templateOptions": {
+      "props": {
         "label": "Time Zone Information",
         "disabled": true
       }

@@ -1,13 +1,18 @@
+import { HttpBackend, HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import {
   Configuration,
   Endpoints,
+  IConfiguration,
   isConfiguration,
   Keys,
   Settings,
 } from "@helpers/app-initializer/app-initializer";
+import { embedGoogleAnalytics } from "@helpers/embedScript/embedGoogleAnalytics";
+import { embedGoogleMaps } from "@helpers/embedScript/embedGoogleMaps";
 import { ThemeService } from "@services/theme/theme.service";
 import { ToastrService } from "ngx-toastr";
+import { catchError, firstValueFrom, mergeMap, of, retry } from "rxjs";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
 
@@ -19,30 +24,57 @@ export const assetRoot = "/assets";
  */
 @Injectable()
 export class ConfigService {
+  private _validConfig: boolean;
   private _config: Configuration;
+  private http: HttpClient;
 
   public constructor(
     private notification: ToastrService,
     private theme: ThemeService,
+    handler: HttpBackend,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean
   ) {
-    if (!isConfiguration(environment, this.isServer)) {
-      console.error("Detected invalid environment.");
-      this.notification.error(
-        "The website is not configured correctly. Try coming back at another time.",
-        "Unrecoverable Error",
-        {
-          closeButton: false,
-          disableTimeOut: true,
-          tapToDismiss: false,
-          positionClass: "toast-center-center",
-        }
-      );
+    // This is to bypass the interceptor and prevent circular dependencies
+    // (interceptor requires API_ROOT)
+    // https://stackoverflow.com/questions/57850927/angular-app-initializer-circular-dependencies-at-runtime
+    this.http = new HttpClient(handler);
+  }
+
+  public async init(defaultConfig?: Promise<IConfiguration>): Promise<void> {
+    const embedGoogleServicesIfValid = async () => {
+      // Only insert if valid config, and not SSR
+      if (this.validConfig && !this.isServer) {
+        embedGoogleAnalytics(this.keys.googleAnalytics.trackingId);
+        await embedGoogleMaps(this.keys.googleMaps);
+      }
+    };
+
+    if (defaultConfig) {
+      this.setConfig(await defaultConfig);
+      await embedGoogleServicesIfValid();
       return;
     }
 
-    this._config = new Proxy(environment, {});
-    this.theme.setTheme(this.settings.theme ?? {});
+    return firstValueFrom(
+      this.http.get("assets/environment.json").pipe(
+        retry({ count: 5, delay: 250 }),
+        mergeMap(async (config): Promise<void> => {
+          this.setConfig(new Configuration(config));
+          await embedGoogleServicesIfValid();
+        }),
+        // API Interceptor is not transforming this error
+        catchError((err: any) => {
+          console.error("API_CONFIG Failed to load configuration file: ", err);
+          this.setConfig(new Configuration(undefined));
+          return of();
+        })
+      )
+    );
+  }
+
+  /** Get environment */
+  public get environment() {
+    return environment;
   }
 
   /** Get config data */
@@ -63,5 +95,33 @@ export class ConfigService {
   /** Get setting values */
   public get settings(): Settings {
     return this._config.settings;
+  }
+
+  /** True if the current config is valid */
+  public get validConfig(): boolean {
+    return this._validConfig;
+  }
+
+  private setConfig(config: Configuration): void {
+    this._config = new Proxy(config, {});
+
+    if (!isConfiguration(config, this.isServer)) {
+      console.error("Detected invalid environment.");
+      this._validConfig = false;
+      this.notification.error(
+        "The website is not configured correctly. Try coming back at another time.",
+        "Unrecoverable Error",
+        {
+          closeButton: false,
+          disableTimeOut: true,
+          tapToDismiss: false,
+          positionClass: "toast-center-center",
+        }
+      );
+      return;
+    }
+
+    this._validConfig = true;
+    this.theme.setTheme(this.settings.theme ?? {});
   }
 }
