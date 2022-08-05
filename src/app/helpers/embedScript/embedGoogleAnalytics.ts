@@ -21,13 +21,6 @@ export function embedGoogleAnalytics(key?: string): void {
     googleTagsUrl += "?id=" + key;
   }
 
-  const node: HTMLScriptElement = document.createElement("script");
-  node.id = "google-analytics";
-  node.type = "text/javascript";
-  node.async = true;
-  node.src = googleTagsUrl;
-  document.getElementsByTagName("head")[0].appendChild(node);
-
   // Create Create dataLayer for google analytics:
   // developers.google.com/tag-platform/tag-manager/web/datalayer
   window["dataLayer"] = window["dataLayer"] || [];
@@ -37,6 +30,13 @@ export function embedGoogleAnalytics(key?: string): void {
 
   gtag("js", new Date());
   gtag("config", key);
+
+  const node: HTMLScriptElement = document.createElement("script");
+  node.id = "google-analytics";
+  node.type = "text/javascript";
+  node.async = true;
+  node.src = googleTagsUrl;
+  document.getElementsByTagName("head")[0].appendChild(node);
 }
 
 /**
