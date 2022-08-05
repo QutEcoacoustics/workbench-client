@@ -1,7 +1,9 @@
-/* eslint-disable no-console */
 import { Injectable } from "@angular/core";
 import { cacheSettings } from "@services/cache/cache-settings";
 
+/**
+ * Global functions accessible in the console dev tools
+ */
 @Injectable({ providedIn: "root" })
 export class GlobalsService {
   private globals = {};
@@ -9,16 +11,13 @@ export class GlobalsService {
   private namespace = "__bawWorkbenchClient";
 
   public initialize(): void {
-    console.log("Hello");
     window[this.namespace] = this.globals;
-    console.debug(`
-      (GlobalsService)
-
+    this.logToConsole(`
       ~~~~~~~~~~~~~~~~~~~~
       BAW Workbench Client
       ~~~~~~~~~~~~~~~~~~~~
 
-      Some functionality of this website can be toggled from the developer console. A list of commands and their usages can be seen below:
+      Some functionality of this website can be toggled from the dev tools. A list of commands and their usages can be seen below:
       - ${this.toggleCaching()}
       - ${this.toggleCacheLogging()}
     `);
@@ -30,9 +29,8 @@ export class GlobalsService {
     const functionName = "toggleCache";
     this.globals[functionName] = (): void => {
       cacheSettings.setCaching(!cacheSettings.enabled);
-      console.debug(
-        "(GlobalsService) Cache is now " +
-          (cacheSettings.enabled ? "enabled" : "disabled")
+      this.logToConsole(
+        "Cache is now " + (cacheSettings.enabled ? "enabled" : "disabled")
       );
     };
     return `${this.namespace}.${functionName}(): This will toggle on/off caching of API requests`;
@@ -42,12 +40,18 @@ export class GlobalsService {
     const functionName = "toggleCacheLogging";
     this.globals[functionName] = (): void => {
       cacheSettings.setLogging(!cacheSettings.showLogging);
-      console.debug(
+      this.logToConsole(
         "(GlobalsService) Cache logging is now " +
           (cacheSettings.showLogging ? "enabled" : "disabled")
       );
     };
 
     return `${this.namespace}.${functionName}(): This will toggle on/off logging when API request caching occurs`;
+  }
+
+  // TODO This should just go through a console wrapper
+  private logToConsole(text: string): void {
+    // eslint-disable-next-line no-console
+    console.debug("(GlobalsService) " + text);
   }
 }
