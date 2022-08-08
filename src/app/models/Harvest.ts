@@ -91,6 +91,13 @@ export interface IHarvest extends HasCreatorAndUpdater {
   lastMappingsChangeAt?: DateTimeTimezone | string;
 }
 
+export interface HarvestUploadConnectionArguments {
+  user: string;
+  host: string;
+  port: string;
+  password: string;
+}
+
 export class Harvest extends AbstractModel implements IHarvest {
   public readonly kind = "Harvest";
   public readonly id?: Id;
@@ -152,6 +159,20 @@ export class Harvest extends AbstractModel implements IHarvest {
       `://${this.uploadUser}:${this.uploadPassword}@`
     );
   }
+
+  public get uploadArguments(): HarvestUploadConnectionArguments {
+    return {
+      user: this.uploadUser,
+      // matches string of any character except colon after "sftp://"
+      host: this.uploadUrl.match(/sftp:\/\/([^:]+)/)[1],
+      // matches digits at the end after a colon
+      port: this.uploadUrl.match(/:([0-9]+)$/)[1],
+      password: this.uploadPassword
+    }
+
+  }
+
+
 }
 
 export interface IHarvestReport {

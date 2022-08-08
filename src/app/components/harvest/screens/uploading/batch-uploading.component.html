@@ -48,7 +48,7 @@
         <li>
           Click on this
           <a [href]="harvest.uploadUrlWithAuth | safe: 'url'">link</a> to open
-          Cyberduck and connect to our cloud
+          Cyberduck and connect to our cloud.
         </li>
         <li>
           On your first connection to our cloud, Cyberduck may prompt you with 
@@ -66,8 +66,6 @@
           Uploading button below
         </li>
       </ol>
-
-
     </ng-template>
   </li>
   <li [ngbNavItem]="3">
@@ -76,6 +74,40 @@
       <baw-wip>
         <p>TODO: Instructions</p>
       </baw-wip>
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="4">
+    <a ngbNavLink>R Clone</a>
+    <ng-template ngbNavContent>
+      <ol>
+        <li>
+           Rclone is a <b>command line</b> tool for transferring files, which you can download 
+           and install <a target="_blank" href="https://rclone.org/install/">here</a>. 
+        </li>
+        <li>
+          Paste the following command into your terminal, making sure to replace the [path to your files]    
+          <ul>
+            <li>
+              <code>
+                rclone copy -v 
+                --sftp-user {{ harvest.uploadArguments.user }} 
+                --sftp-pass $(rclone obscure {{ harvest.uploadArguments.password }}) 
+                --sftp-host {{ harvest.uploadArguments.host }} 
+                --sftp-port {{ harvest.uploadArguments.port }} 
+                "[path to your files]"
+                :sftp:/
+              </code>   
+            </li>
+
+            <li>
+              Note that rclone will copy the <em>contents</em> of the [path to your files] folder to the destination, not the source folder itself.
+              So if you have a folder for each site, specify their parent folder as the [path to your files] value. 
+            </li>
+          </ul>
+
+          
+
+      </ol>
     </ng-template>
   </li>
 </ul>
