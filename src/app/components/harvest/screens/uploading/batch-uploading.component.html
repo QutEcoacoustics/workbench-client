@@ -38,9 +38,36 @@
   <li [ngbNavItem]="2">
     <a ngbNavLink>MacOS</a>
     <ng-template ngbNavContent>
-      <baw-wip>
-        <p>TODO: Instructions</p>
-      </baw-wip>
+      <ol>
+        <li>
+          Install
+          <a target="_blank" href="https://cyberduck.io/download/">
+            Cyberduck
+          </a>
+        </li>
+        <li>
+          Click on this
+          <a [href]="harvest.uploadUrlWithAuth | safe: 'url'">link</a> to open
+          Cyberduck and connect to our cloud
+        </li>
+        <li>
+          On your first connection to our cloud, Cyberduck may prompt you with 
+          an "unknown fingerprint" message. Select "Allow".  
+        </li>
+        <li>
+          Upload all of your files by dragging them into the cyberduck window and we will check them for you. This  
+          <a target="_blank" href="https://docs.cyberduck.io/cyberduck/upload/"
+            >guide</a
+          >
+          has more help about uploading using cyberduck
+        </li>
+        <li>
+          Once done uploading, close Cyberduck before clicking on the Finished
+          Uploading button below
+        </li>
+      </ol>
+
+
     </ng-template>
   </li>
   <li [ngbNavItem]="3">
