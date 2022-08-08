@@ -2,7 +2,7 @@ import { Capability } from "@baw-api/baw-api.service";
 import { ACCOUNT, SHALLOW_REGION, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { projectRoute } from "@components/projects/projects.routes";
 import {
-  AccessLevel,
+  PermissionLevel,
   DateTimeTimezone,
   Description,
   HasAllUsers,
@@ -37,12 +37,12 @@ export interface IProject extends HasAllUsers, HasDescription {
   name?: Param;
   imageUrls?: ImageUrl[];
   image?: File;
-  accessLevel?: AccessLevel;
+  accessLevel?: PermissionLevel;
   ownerIds?: Ids | Id[];
   siteIds?: Ids | Id[];
   regionIds?: Ids | Id[];
   notes?: Hash;
-  allowOriginalDownload?: AccessLevel;
+  allowOriginalDownload?: PermissionLevel;
 }
 
 /**
@@ -61,7 +61,7 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public readonly imageUrls!: ImageUrl[];
   @bawPersistAttr({ supportedFormats: ["formData"] })
   public readonly image?: File;
-  public readonly accessLevel?: AccessLevel;
+  public readonly accessLevel?: PermissionLevel;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
@@ -80,7 +80,7 @@ export class Project extends AbstractModel<IProject> implements IProject {
   @bawPersistAttr()
   public readonly notes?: Hash;
   @bawPersistAttr()
-  public readonly allowOriginalDownload?: AccessLevel;
+  public readonly allowOriginalDownload?: PermissionLevel;
   @bawPersistAttr()
   public readonly allowAudioUpload?: boolean;
 
@@ -106,7 +106,10 @@ export class Project extends AbstractModel<IProject> implements IProject {
    * Returns true if user has the permissions to edit this model
    */
   public get canEdit(): boolean {
-    return hasRequiredAccessLevelOrHigher(AccessLevel.owner, this.accessLevel);
+    return hasRequiredAccessLevelOrHigher(
+      PermissionLevel.owner,
+      this.accessLevel
+    );
   }
 
   /**
@@ -114,7 +117,10 @@ export class Project extends AbstractModel<IProject> implements IProject {
    * annotations/tags
    */
   public get canContribute(): boolean {
-    return hasRequiredAccessLevelOrHigher(AccessLevel.writer, this.accessLevel);
+    return hasRequiredAccessLevelOrHigher(
+      PermissionLevel.writer,
+      this.accessLevel
+    );
   }
 
   public get viewUrl(): string {

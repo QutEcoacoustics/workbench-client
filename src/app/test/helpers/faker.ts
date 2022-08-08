@@ -1,6 +1,6 @@
 import { IconName, IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
-  AccessLevel,
+  PermissionLevel,
   Id,
   ImageSizes,
   ImageUrl,
@@ -12,10 +12,10 @@ const specialCharRegex = /[^\w\s]/gi;
 
 export const modelData = {
   accessLevel: () =>
-    faker.helpers.arrayElement<AccessLevel>([
-      AccessLevel.reader,
-      AccessLevel.writer,
-      AccessLevel.owner,
+    faker.helpers.arrayElement<PermissionLevel>([
+      PermissionLevel.reader,
+      PermissionLevel.writer,
+      PermissionLevel.owner,
     ]),
   authToken: () => faker.random.alphaNumeric(20),
   bool: () => faker.datatype.boolean(),

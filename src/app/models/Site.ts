@@ -10,7 +10,7 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { assetRoot } from "@services/config/config.service";
 import { MapMarkerOptions } from "@shared/map/map.component";
 import {
-  AccessLevel,
+  PermissionLevel,
   DateTimeTimezone,
   Description,
   HasAllUsers,
@@ -163,26 +163,26 @@ export class Site extends AbstractModel<ISite> implements ISite {
     }
   }
 
-  public get accessLevel(): AccessLevel {
+  public get accessLevel(): PermissionLevel {
     if ((this.projects as any) === UnresolvedModel.many) {
-      return AccessLevel.unresolved;
+      return PermissionLevel.unresolved;
     }
 
     if (this.projects.length === 0) {
-      return AccessLevel.unknown;
+      return PermissionLevel.unknown;
     }
 
     let isWriter = false;
 
     for (const project of this.projects) {
-      if (project.accessLevel === AccessLevel.owner) {
+      if (project.accessLevel === PermissionLevel.owner) {
         return project.accessLevel;
-      } else if (project.accessLevel === AccessLevel.writer) {
+      } else if (project.accessLevel === PermissionLevel.writer) {
         isWriter = true;
       }
     }
 
-    return isWriter ? AccessLevel.writer : AccessLevel.reader;
+    return isWriter ? PermissionLevel.writer : PermissionLevel.reader;
   }
 
   /**

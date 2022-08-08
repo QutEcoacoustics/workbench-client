@@ -4,7 +4,7 @@ import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { ACCOUNT, PROJECT } from "@baw-api/ServiceTokens";
 import { titleCase } from "@helpers/case-converter/case-converter";
-import { AccessLevel } from "@interfaces/apiInterfaces";
+import { PermissionLevel } from "@interfaces/apiInterfaces";
 import { UserBadgeComponent } from "@menu/user-badge/user-badge.component";
 import { UnresolvedModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
@@ -154,7 +154,7 @@ describe("PermissionsShieldComponent", () => {
   });
 
   describe("access level", () => {
-    function assertAccessLevel(accessLevel?: AccessLevel) {
+    function assertAccessLevel(accessLevel?: PermissionLevel) {
       if (!accessLevel) {
         expect(spec.query("#access-level-label")).toBeFalsy();
         expect(spec.query("#access-level")).toBeFalsy();

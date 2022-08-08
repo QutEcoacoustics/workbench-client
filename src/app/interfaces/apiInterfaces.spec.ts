@@ -1,7 +1,7 @@
 import { modelData } from "@test/helpers/faker";
 import { Duration } from "luxon";
 import {
-  AccessLevel,
+  PermissionLevel,
   hasRequiredAccessLevelOrHigher,
   ImageSizes,
   ImageUrl,
@@ -10,7 +10,7 @@ import {
 } from "./apiInterfaces";
 
 describe("hasRequiredAccessLevelOrHigher", () => {
-  const { owner, writer, reader, unresolved, unknown } = AccessLevel;
+  const { owner, writer, reader, unresolved, unknown } = PermissionLevel;
 
   [
     { required: owner, current: owner, expected: true },

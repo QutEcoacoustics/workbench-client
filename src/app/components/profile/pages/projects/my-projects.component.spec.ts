@@ -4,7 +4,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { AccessLevel } from "@interfaces/apiInterfaces";
+import { PermissionLevel } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
 import {
@@ -116,7 +116,7 @@ describe("MyProjectsComponent", () => {
     });
 
     describe("access level", () => {
-      (["reader", "writer", "owner"] as AccessLevel[]).forEach(
+      (["reader", "writer", "owner"] as PermissionLevel[]).forEach(
         (accessLevel) => {
           it(`should display ${accessLevel} permissions`, async () => {
             const project = new Project({ ...generateProject(), accessLevel });

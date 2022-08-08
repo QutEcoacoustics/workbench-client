@@ -3,7 +3,7 @@ import { titleCase } from "@helpers/case-converter/case-converter";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
 import {
-  AccessLevel,
+  PermissionLevel,
   hasRequiredAccessLevelOrHigher,
 } from "@interfaces/apiInterfaces";
 import { MockModel } from "@models/AbstractModel.spec";
@@ -76,7 +76,11 @@ describe("AllowsOriginalDownloadComponent", () => {
   });
 
   describe("access level", () => {
-    const levels = [AccessLevel.owner, AccessLevel.writer, AccessLevel.reader];
+    const levels = [
+      PermissionLevel.owner,
+      PermissionLevel.writer,
+      PermissionLevel.reader,
+    ];
 
     levels.forEach((required) => {
       levels.forEach((current) => {
