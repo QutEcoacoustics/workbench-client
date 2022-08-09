@@ -115,6 +115,8 @@ export class Harvest extends AbstractModel implements IHarvest {
   public readonly uploadPassword?: string;
   public readonly uploadUser?: string;
   public readonly uploadUrl?: string;
+  public readonly uploadHost?: string;
+  public readonly uploadPort?: number;
   @bawPersistAttr()
   public mappings?: HarvestMapping[];
   public readonly report?: HarvestReport;
@@ -139,6 +141,13 @@ export class Harvest extends AbstractModel implements IHarvest {
       (mapping) => new HarvestMapping(mapping, injector)
     );
     this.report = new HarvestReport(data.report, injector);
+    if (this.uploadUrl) {
+      this.uploadHost = this.uploadUrl.match(/sftp:\/\/([^:]+)/)[1];
+      this.uploadPort = parseInt(this.uploadUrl.match(/:([0-9]+)$/)[1], 10);
+    }
+
+    //this.uploadHost = "";
+    //this.uploadPort = 2020;
   }
 
   public get viewUrl(): string {
@@ -159,19 +168,6 @@ export class Harvest extends AbstractModel implements IHarvest {
       `://${this.uploadUser}:${this.uploadPassword}@`
     );
   }
-
-  public get uploadArguments(): HarvestUploadConnectionArguments {
-    return {
-      user: this.uploadUser,
-      // matches string of any character except colon after "sftp://"
-      host: this.uploadUrl.match(/sftp:\/\/([^:]+)/)[1],
-      // matches digits at the end after a colon
-      port: this.uploadUrl.match(/:([0-9]+)$/)[1],
-      password: this.uploadPassword
-    }
-
-  }
-
 
 }
 
