@@ -8,14 +8,14 @@
 <ng-container *ngIf="inline; else list">
   <button
     *ngFor="let option of options; let i = index"
-    class="btn btn-default btn-sm inline-spread"
-    [disabled]="isSelected(i)"
+    class="btn btn-sm btn-default me-1"
+    [disabled]="isSelected(i) || disabled"
     (click)="changeSelection(i)"
   >
     {{ option.label }}
 
     <fa-icon
-      *ngIf="isSelected(i)"
+      *ngIf="isSelected(i) && !disabled"
       class="text-success"
       [icon]="['fas', 'check']"
     ></fa-icon>

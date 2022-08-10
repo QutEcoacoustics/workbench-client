@@ -8,8 +8,8 @@ import { defaultDebounceTime } from "src/app/app.helper";
   selector: "baw-debounce-input",
   template: `
     <div class="input-group mb-3">
-      <div *ngIf="label" class="input-group-prepend">
-        <span class="input-group-text">{{ label }}</span>
+      <div *ngIf="label" class="input-group-prepend input-group-text">
+        {{ label }}
       </div>
       <input
         type="text"
@@ -23,7 +23,8 @@ import { defaultDebounceTime } from "src/app/app.helper";
 })
 export class DebounceInputComponent
   extends withUnsubscribe()
-  implements OnInit {
+  implements OnInit
+{
   @Input() public label: string;
   @Input() public placeholder = "";
   @Input() public default = "";

@@ -22,6 +22,7 @@ export class DatatableDefaultsDirective implements OnInit {
   @Input() public externalSorting = true;
   @Input() public footerHeight = 50;
   @Input() public headerHeight = 50;
+  @Input() public summaryHeight = 50;
   @Input() public limit = defaultApiPageSize;
   @Input() public reorderable = false;
   @Input() public rowHeight: ((row: any) => number) | number | "auto" = "auto";
@@ -43,6 +44,7 @@ export class DatatableDefaultsDirective implements OnInit {
     this.datatable.externalSorting = this.externalSorting;
     this.datatable.footerHeight = this.footerHeight;
     this.datatable.headerHeight = this.headerHeight;
+    this.datatable.summaryHeight = this.summaryHeight;
     this.datatable.limit = this.limit;
     this.datatable.reorderable = this.reorderable;
     this.datatable.rowHeight = this.rowHeight;
