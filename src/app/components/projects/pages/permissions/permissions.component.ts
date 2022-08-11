@@ -14,7 +14,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { Id, PermissionLevel } from "@interfaces/apiInterfaces";
+import { PermissionLevel } from "@interfaces/apiInterfaces";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { IPermission, Permission } from "@models/Permission";
 import { Project } from "@models/Project";
@@ -44,11 +44,11 @@ class PermissionsComponent
   implements OnInit
 {
   public project: Project;
-  public anonymousUser: Permission;
-  public loggedInUser: Permission;
+  public anonymousPermission: Permission;
+  public userPermission: Permission;
   public selectedUser: User;
 
-  public disabledTypeaheadUsers: Id[];
+  public permissionsMatchingUsername: Permission[];
 
   public userIcon: IconProp = theirProfileMenuItem.icon;
   public helpIcon: IconProp = ["fas", "info-circle"];
@@ -108,17 +108,19 @@ class PermissionsComponent
         .subscribe(next);
 
     getLevel({ filter: { allowAnonymous: { eq: true } } }, (permission) => {
-      this.anonymousUser = permission;
+      this.anonymousPermission = permission;
     });
     getLevel({ filter: { allowLoggedIn: { eq: true } } }, (permission) => {
-      this.loggedInUser = permission;
+      this.userPermission = permission;
     });
 
     this.reloadPermissions$.next();
   }
 
   public doesUserAlreadyHavePermissions(user: User): boolean {
-    return this.disabledTypeaheadUsers.includes(user.id);
+    return this.permissionsMatchingUsername.some(
+      (permission) => permission.userId === user.id
+    );
   }
 
   public getPermissions = (
@@ -131,8 +133,10 @@ class PermissionsComponent
 
     return this.accountsApi
       .filter({
+        // Show a maximum of 10 results
         paging: { items: 10 },
         filter: {
+          // Filter out admin users
           rolesMask: { eq: 2 },
           userName: { contains: (user as User)?.userName || (user as string) },
         },
@@ -146,9 +150,12 @@ class PermissionsComponent
           );
         }),
         map((permissionsForUsers: Permission[]) => {
-          this.disabledTypeaheadUsers = permissionsForUsers.map(
-            (permission) => permission.userId
+          console.log(
+            "Permissions matching username set: ",
+            permissionsForUsers
           );
+
+          this.permissionsMatchingUsername = permissionsForUsers;
           return users;
         })
       );
@@ -157,8 +164,8 @@ class PermissionsComponent
   public highestPermission(user: Permission): string {
     const hasLevel = (level: PermissionLevel): boolean =>
       [
-        this.anonymousUser?.level,
-        this.loggedInUser?.level,
+        this.anonymousPermission?.level,
+        this.userPermission?.level,
         user.level,
       ].includes(level);
 
@@ -185,8 +192,14 @@ class PermissionsComponent
       : this.selectionIndex.none;
   }
 
-  public createUserPermission(user: User, selection: number): void {
-    this.updateUserPermission(
+  public getPermissionForUser(userId: User | number): Permission {
+    return this.permissionsMatchingUsername?.find(
+      (permission) => permission.userId === ((userId as User)?.id ?? userId)
+    );
+  }
+
+  public createSingleUserPermission(user: User, selection: number): void {
+    this.updatePermission(
       this.individualOptions,
       selection,
       { userId: user.id, allowAnonymous: false, allowLoggedIn: false },
@@ -201,52 +214,56 @@ class PermissionsComponent
   }
 
   public updateSingleUserPermission(user: Permission, selection: number): void {
-    this.updateUserPermission(this.userOptions, selection, user, () => {
+    this.updatePermission(this.individualOptions, selection, user, () => {
       // TODO It would be nice to use the username, but it is not available
       this.notifications.success("Successfully updated user permission");
       this.updateTable();
     });
+
+    // Clear selected user as the typeahead is now out of date
+    console.log("Clearing selected user");
+    this.selectedUser = undefined;
   }
 
-  public updateAnonymousUserPermission(selection: number): void {
+  public updateAnonymousPermission(selection: number): void {
     const anonymousPermissions = {
       userId: null,
       allowAnonymous: true,
       allowLoggedIn: false,
     };
 
-    this.updateUserPermission(
+    this.updatePermission(
       this.anonymousOptions,
       selection,
-      this.anonymousUser ?? anonymousPermissions,
+      this.anonymousPermission ?? anonymousPermissions,
       (permission: Permission) => {
         this.notifications.success("Successfully updated visitor permissions");
-        this.anonymousUser = permission;
+        this.anonymousPermission = permission;
       }
     );
   }
 
-  public updateLoggedInUserPermission(selection: number): void {
+  public updateUserPermission(selection: number): void {
     const loggedInPermissions = {
       userId: null,
       allowAnonymous: false,
       allowLoggedIn: true,
     };
 
-    this.updateUserPermission(
+    this.updatePermission(
       this.individualOptions,
       selection,
-      this.loggedInUser ?? loggedInPermissions,
+      this.userPermission ?? loggedInPermissions,
       (permission: Permission) => {
         this.notifications.success(
           "Successfully updated logged in user permissions"
         );
-        this.loggedInUser = permission;
+        this.userPermission = permission;
       }
     );
   }
 
-  private updateUserPermission(
+  private updatePermission(
     options: ISelectableItem[],
     selection: number,
     basePermission: Permission | IPermission,
@@ -261,15 +278,18 @@ class PermissionsComponent
     }
 
     const level = options[selection].value;
+    const existingPermission = this.getPermissionForUser(basePermission.userId);
     const permission = new Permission(
-      { ...basePermission, id: basePermission?.id, level },
+      {
+        ...basePermission,
+        id: basePermission?.id ?? existingPermission?.id,
+        level,
+      },
       this.injector
     );
 
-    console.log("Updating : ", permission, basePermission);
-
     // Choose between create or update based on if an id exists
-    (isInstantiated(basePermission?.id)
+    (isInstantiated(permission.id)
       ? this.permissionsApi.update(permission, this.project)
       : this.permissionsApi.create(permission, this.project)
     )

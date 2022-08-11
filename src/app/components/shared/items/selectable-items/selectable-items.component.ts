@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 /**
  * Selectable Items Component.
@@ -19,7 +19,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
     `,
   ],
 })
-export class SelectableItemsComponent implements OnInit {
+export class SelectableItemsComponent {
   @Input() public title: string;
   @Input() public description: string;
   @Input() public options: ISelectableItem[];
@@ -27,10 +27,6 @@ export class SelectableItemsComponent implements OnInit {
   @Input() public inline = false;
   @Input() public disabled = false;
   @Output() public selectionChange = new EventEmitter<number>();
-
-  public constructor() {}
-
-  public ngOnInit() {}
 
   public changeSelection(index: number) {
     this.selection = index;

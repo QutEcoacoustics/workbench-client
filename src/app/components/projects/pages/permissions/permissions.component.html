@@ -34,8 +34,8 @@
       title="Visitors"
       description="Visitors are public (anonymous) users that are either not logged in or have not registered."
       [options]="anonymousOptions"
-      [selection]="getSelectionIndex(anonymousUser?.level)"
-      (selectionChange)="updateAnonymousUserPermission($event)"
+      [selection]="getSelectionIndex(anonymousPermission?.level)"
+      (selectionChange)="updateAnonymousPermission($event)"
     ></baw-selectable-items>
   </div>
   <div class="col-md-6">
@@ -43,8 +43,8 @@
       title="Users"
       description="Users are people that have registered and have logged into the website. "
       [options]="userOptions"
-      [selection]="getSelectionIndex(loggedInUser?.level)"
-      (selectionChange)="updateLoggedInUserPermission($event)"
+      [selection]="getSelectionIndex(userPermission?.level)"
+      (selectionChange)="updateUserPermission($event)"
     ></baw-selectable-items>
   </div>
 </div>
@@ -78,7 +78,7 @@
   </ng-template>
 
   <baw-model-selector
-    class="me-3"
+    [class.me-3]="selectedUser"
     [class.flex-grow-1]="!selectedUser"
     label="Search Users"
     [getModels]="getUsers"
@@ -90,9 +90,9 @@
     *ngIf="selectedUser"
     class="flex-grow-1"
     [options]="individualOptions"
-    [selection]="getSelectionIndex(value)"
+    [selection]="getSelectionIndex(getPermissionForUser(selectedUser)?.level)"
     [inline]="true"
-    (selectionChange)="createUserPermission(selectedUser, $event)"
+    (selectionChange)="createSingleUserPermission(selectedUser, $event)"
   ></baw-selectable-items>
 </section>
 
