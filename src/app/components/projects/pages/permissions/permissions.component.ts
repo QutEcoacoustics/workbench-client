@@ -29,7 +29,6 @@ import {
   mergeMap,
   Observable,
   of,
-  Subject,
   switchMap,
   takeUntil,
 } from "rxjs";
@@ -47,20 +46,25 @@ class PermissionsComponent
   implements OnInit
 {
   public project: Project;
+  /** Permissions for anonymous guests */
   public anonymousPermission: Permission;
+  /** Base permission for all users */
   public usersPermission: Permission;
+  /** Current selected user by typeahead */
   public selectedUser: User;
-
+  /** Permissions for users in typeahead */
   public permissionsMatchingUsername: Permission[];
 
   public userIcon: IconProp = theirProfileMenuItem.icon;
   public helpIcon: IconProp = ["fas", "info-circle"];
 
+  /** Filters for permissions table */
   public filters$ = new BehaviorSubject<Filters<Permission>>({
+    // Filter out anonymous and logged in user permissions
     filter: { userId: { notEq: null } },
   });
 
-  private reloadPermissions$ = new Subject<void>();
+  /** Mapping between permission levels, and selection indexes */
   private selectionIndex = {
     [PermissionLevel.owner]: 3,
     [PermissionLevel.writer]: 2,
@@ -68,16 +72,19 @@ class PermissionsComponent
     none: 0,
   };
 
+  /** Permission level options for individual users */
   public individualOptions: ISelectableItem[] = [
     { label: "None", value: "none" },
     { label: "Reader", value: PermissionLevel.reader },
     { label: "Writer", value: PermissionLevel.writer },
     { label: "Owner", value: PermissionLevel.owner },
   ];
+  /** Permission level options for anonymous guests */
   public anonymousOptions: ISelectableItem[] = [
     { label: "No access (none)", value: "none" },
     { label: "Reader access", value: PermissionLevel.reader },
   ];
+  /** Permission level options for any logged in user */
   public userOptions: ISelectableItem[] = [
     ...this.anonymousOptions,
     { label: "Writer access", value: PermissionLevel.writer },
@@ -102,35 +109,37 @@ class PermissionsComponent
       filters: Filters<Permission>,
       next: (permission: Permission) => void
     ) =>
-      this.reloadPermissions$
+      this.permissionsApi
+        .filter(filters, this.project)
         .pipe(
-          switchMap(() => this.permissionsApi.filter(filters, this.project)),
           map((permissions) => permissions[0]),
           takeUntil(this.unsubscribe)
         )
         .subscribe(next);
 
+    // Find the levels for anonymous guests and users
     getLevel({ filter: { allowAnonymous: { eq: true } } }, (permission) => {
       this.anonymousPermission = permission;
     });
     getLevel({ filter: { allowLoggedIn: { eq: true } } }, (permission) => {
       this.usersPermission = permission;
     });
-
-    this.reloadPermissions$.next();
   }
 
+  /** Determine if user in typeahead already has permissions */
   public doesUserAlreadyHavePermissions(user: User): boolean {
     return this.permissionsMatchingUsername.some(
       (permission) => permission.userId === user.id
     );
   }
 
+  /** Get permissions for current table page */
   public getPermissions = (
     filters: Filters<Permission>
   ): Observable<Permission[]> =>
     this.permissionsApi.filter(filters, this.project);
 
+  /** Get users for typeahead, this also updates permissionsMatchingUsername */
   public getUsers = (user: User | string) => {
     let users: User[];
 
@@ -159,6 +168,7 @@ class PermissionsComponent
       );
   };
 
+  /** Determine highest permission for user */
   public highestPermission(user: Permission): string {
     const hasLevel = (level: PermissionLevel): boolean =>
       [
@@ -178,24 +188,28 @@ class PermissionsComponent
     }
   }
 
+  /** Update table filter */
   public updateFilter(input: string): void {
     this.filters$.next({
       filter: { ["users.userName" as any]: { contains: input } },
     });
   }
 
+  /** Get selection index for permission level */
   public getSelectionIndex(level: PermissionLevel): number {
     return isInstantiated(level)
       ? this.selectionIndex[level]
       : this.selectionIndex.none;
   }
 
+  /** Get permissions for a user which is in the typeahead options */
   public getPermissionForUser(userId: User | number): Permission {
     return this.permissionsMatchingUsername?.find(
       (permission) => permission.userId === ((userId as User)?.id ?? userId)
     );
   }
 
+  /** Create/update permissions for a new user */
   public createNewPermission(user: User, selection: number): void {
     const successMsg = `Successfully created permissions for ${user.userName}`;
     const level = this.individualOptions[selection].value;
@@ -222,6 +236,7 @@ class PermissionsComponent
     }
   }
 
+  /** Update permissions for existing user */
   public updateExistingPermission(
     permission: Permission,
     selection: number
@@ -246,6 +261,7 @@ class PermissionsComponent
     }
   }
 
+  /** Update anonymous permissions */
   public updateAnonymousPermission(selection: number): void {
     const successMsg = "Successfully updated visitor permission";
     const level = this.anonymousOptions[selection].value;
@@ -276,6 +292,7 @@ class PermissionsComponent
     }
   }
 
+  /** Update base permissions for all users */
   public updateUserPermission(selection: number): void {
     const level = this.individualOptions[selection].value;
     const successMsg =
@@ -337,6 +354,7 @@ class PermissionsComponent
     );
   }
 
+  /** Determine if the permissions are for the only remaining owner */
   private isUserOnlyOwnerOfProject(
     permission: Permission
   ): Observable<boolean> {
@@ -368,6 +386,7 @@ class PermissionsComponent
       );
   }
 
+  /** Force update the table */
   private updateTable() {
     this.filters$.next(this.filters$.value);
   }
