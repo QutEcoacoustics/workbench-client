@@ -191,7 +191,7 @@
     </div>
   </div>
 
-  <div *ngIf="project.sites.length > 0" class="col">
+  <div *ngIf="project.sites?.length > 0" class="col">
     <div class="card h-100">
       <div class="card-body">
         <fa-icon class="icon-wrapper" size="2x" [icon]="['fas', 'folder-open']">
@@ -233,6 +233,7 @@
 
 <div class="clearfix">
   <button
+    id="cancel-btn"
     class="btn btn-warning float-start"
     [disabled]="loading"
     (click)="cancelUpload(cancelUploadModal)"
@@ -240,6 +241,7 @@
     Cancel
   </button>
   <button
+    id="finish-btn"
     class="btn btn-primary float-end"
     [disabled]="loading"
     (click)="finishUpload(finishUploadModal)"

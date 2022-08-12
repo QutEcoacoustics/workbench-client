@@ -7,7 +7,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import { DeviceDetectorService } from "ngx-device-detector";
 
-type InstructionTab="Windows"|"Mac"|"Linux"|"RClone"
+export type UploadingInstructionTab="Windows"|"Mac"|"Linux"|"RClone"
 
 @Component({
   selector: "baw-harvest-batch-uploading",
@@ -26,10 +26,10 @@ export class BatchUploadingComponent implements OnInit {
 
   public ngOnInit(): void {
     this.stages.startPolling(5000);
-    this.activateTab(this.deviceDetector.os as InstructionTab)
+    this.activateTab(this.deviceDetector.os as UploadingInstructionTab)
   }
 
-  public activateTab(tabName: InstructionTab): void {
+  public activateTab(tabName: UploadingInstructionTab): void {
     this.active = Math.max(["Windows", "Mac", "Linux", "RClone"].indexOf(tabName) + 1, 1);
   }
 
