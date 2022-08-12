@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { noop, Subject } from "rxjs";
+import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { defaultDebounceTime } from "src/app/app.helper";
 
@@ -14,7 +14,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
       <input
         type="text"
         class="form-control"
-        [value]="default ? default : ''"
+        [value]="default ?? ''"
         [placeholder]="placeholder"
         (keyup)="onFilter($event)"
       />
@@ -39,7 +39,7 @@ export class DebounceInputComponent
         distinctUntilChanged(),
         takeUntil(this.unsubscribe)
       )
-      .subscribe((input) => this.filter.next(input), noop);
+      .subscribe((input) => this.filter.next(input));
   }
 
   public onFilter(event: KeyboardEvent) {
