@@ -1,5 +1,5 @@
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
-import { AccessLevel } from "@interfaces/apiInterfaces";
+import { PermissionLevel } from "@interfaces/apiInterfaces";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { createPipeFactory, SpectatorPipe } from "@ngneat/spectator";
 import { IsUnresolvedPipe } from "./is-unresolved.pipe";
@@ -17,7 +17,7 @@ describe("IsUnresolvedPipe", () => {
   }
 
   function setup(
-    value: Readonly<AbstractModel> | Readonly<AbstractModel[]> | AccessLevel
+    value: Readonly<AbstractModel> | Readonly<AbstractModel[]> | PermissionLevel
   ) {
     spec = createPipe("<p>{{ value | isUnresolved }}</p>", {
       hostProps: { value },
@@ -70,10 +70,10 @@ describe("IsUnresolvedPipe", () => {
 
   describe("access level", () => {
     [
-      AccessLevel.reader,
-      AccessLevel.writer,
-      AccessLevel.owner,
-      AccessLevel.unknown,
+      PermissionLevel.reader,
+      PermissionLevel.writer,
+      PermissionLevel.owner,
+      PermissionLevel.unknown,
     ].forEach((accessLevel) => {
       it(`should return false for ${accessLevel} access level`, () => {
         setup(accessLevel);
@@ -81,8 +81,8 @@ describe("IsUnresolvedPipe", () => {
       });
     });
 
-    it(`should return true for ${AccessLevel.unresolved} access level`, () => {
-      setup(AccessLevel.unresolved);
+    it(`should return true for ${PermissionLevel.unresolved} access level`, () => {
+      setup(PermissionLevel.unresolved);
       assertPipeIsTrue();
     });
   });

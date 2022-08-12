@@ -1,4 +1,4 @@
-import { AccessLevel } from "@interfaces/apiInterfaces";
+import { PermissionLevel } from "@interfaces/apiInterfaces";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateUser } from "@test/fakes/User";
 import { UNAUTHORIZED } from "http-status";
@@ -41,7 +41,7 @@ describe("Predicates", () => {
   });
 
   describe("isProjectEditorPredicate", () => {
-    function createData(accessLevel: AccessLevel = AccessLevel.owner) {
+    function createData(accessLevel: PermissionLevel = PermissionLevel.owner) {
       return {
         resolvers: { project: "resolver" },
         project: {
@@ -60,11 +60,11 @@ describe("Predicates", () => {
     });
 
     [
-      { accessLevel: AccessLevel.owner, hasPermission: true },
-      { accessLevel: AccessLevel.writer, hasPermission: false },
-      { accessLevel: AccessLevel.reader, hasPermission: false },
-      { accessLevel: AccessLevel.unknown, hasPermission: false },
-      { accessLevel: AccessLevel.unresolved, hasPermission: false },
+      { accessLevel: PermissionLevel.owner, hasPermission: true },
+      { accessLevel: PermissionLevel.writer, hasPermission: false },
+      { accessLevel: PermissionLevel.reader, hasPermission: false },
+      { accessLevel: PermissionLevel.unknown, hasPermission: false },
+      { accessLevel: PermissionLevel.unresolved, hasPermission: false },
     ].forEach(({ accessLevel, hasPermission }) => {
       it(`should return ${hasPermission} when access level is ${accessLevel}`, () => {
         expect(

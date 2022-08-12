@@ -9,7 +9,7 @@ import { dataRequestMenuItem } from "@components/data-request/data-request.menus
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { AccessLevel } from "@interfaces/apiInterfaces";
+import { PermissionLevel } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
@@ -149,23 +149,25 @@ describe("TheirSitesComponent", () => {
     });
 
     describe("access level", () => {
-      [AccessLevel.reader, AccessLevel.writer, AccessLevel.owner].forEach(
-        (accessLevel) => {
-          it(`should display ${accessLevel} permissions`, async () => {
-            const site = new Site(generateSite({ projectIds: [1] }));
-            const project = new Project({ ...generateProject(), accessLevel });
+      [
+        PermissionLevel.reader,
+        PermissionLevel.writer,
+        PermissionLevel.owner,
+      ].forEach((accessLevel) => {
+        it(`should display ${accessLevel} permissions`, async () => {
+          const site = new Site(generateSite({ projectIds: [1] }));
+          const project = new Project({ ...generateProject(), accessLevel });
 
-            setup(defaultUser);
-            interceptSiteRequest([site]);
-            const projectPromise = interceptProjectRequest([project]);
-            spec.detectChanges();
-            await projectPromise;
-            spec.detectChanges();
+          setup(defaultUser);
+          interceptSiteRequest([site]);
+          const projectPromise = interceptProjectRequest([project]);
+          spec.detectChanges();
+          await projectPromise;
+          spec.detectChanges();
 
-            expect(getCells()[2]).toHaveText(titleCase(accessLevel));
-          });
-        }
-      );
+          expect(getCells()[2]).toHaveText(titleCase(accessLevel));
+        });
+      });
 
       it("should display unknown permissions when no projects found", async () => {
         const site = new Site(generateSite({ projectIds: [] }));
@@ -186,9 +188,9 @@ describe("TheirSitesComponent", () => {
         setup(defaultUser);
         interceptSiteRequest([site]);
         const projectPromise = interceptProjectRequest([
-          new Project(generateProject({ accessLevel: AccessLevel.reader })),
-          new Project(generateProject({ accessLevel: AccessLevel.owner })),
-          new Project(generateProject({ accessLevel: AccessLevel.writer })),
+          new Project(generateProject({ accessLevel: PermissionLevel.reader })),
+          new Project(generateProject({ accessLevel: PermissionLevel.owner })),
+          new Project(generateProject({ accessLevel: PermissionLevel.writer })),
         ]);
         spec.detectChanges();
         await projectPromise;
@@ -203,9 +205,9 @@ describe("TheirSitesComponent", () => {
         setup(defaultUser);
         interceptSiteRequest([site]);
         const projectPromise = interceptProjectRequest([
-          new Project(generateProject({ accessLevel: AccessLevel.reader })),
-          new Project(generateProject({ accessLevel: AccessLevel.writer })),
-          new Project(generateProject({ accessLevel: AccessLevel.reader })),
+          new Project(generateProject({ accessLevel: PermissionLevel.reader })),
+          new Project(generateProject({ accessLevel: PermissionLevel.writer })),
+          new Project(generateProject({ accessLevel: PermissionLevel.reader })),
         ]);
         spec.detectChanges();
         await projectPromise;

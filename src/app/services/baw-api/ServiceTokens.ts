@@ -19,6 +19,7 @@ import type { Dataset } from "@models/Dataset";
 import type { DatasetItem } from "@models/DatasetItem";
 import type { Harvest } from "@models/Harvest";
 import type { HarvestItem } from "@models/HarvestItem";
+import type { Permission } from "@models/Permission";
 import type { ProgressEvent } from "@models/ProgressEvent";
 import type { Project } from "@models/Project";
 import type { Question } from "@models/Question";
@@ -53,6 +54,7 @@ import type {
   HarvestsService,
   ShallowHarvestsService,
 } from "./harvest/harvest.service";
+import type { PermissionsService } from "./permissions/permissions.service";
 import type { ProgressEventsService } from "./progress-event/progress-events.service";
 import type { ProjectsService } from "./project/projects.service";
 import type {
@@ -143,6 +145,9 @@ export const SHALLOW_HARVEST_ITEM = new ServiceToken<
   ShallowHarvestItemsService,
   HarvestItem
 >("SHALLOW_HARVEST_ITEM");
+export const PERMISSION = new ServiceToken<PermissionsService, Permission>(
+  "PROGRESS"
+);
 export const PROGRESS_EVENT = new ServiceToken<
   ProgressEventsService,
   ProgressEvent

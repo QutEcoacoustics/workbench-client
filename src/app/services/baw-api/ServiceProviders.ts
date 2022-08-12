@@ -39,6 +39,10 @@ import {
   ShallowHarvestsService,
 } from "./harvest/harvest.service";
 import {
+  permissionResolvers,
+  PermissionsService,
+} from "./permissions/permissions.service";
+import {
   progressEventResolvers,
   ProgressEventsService,
 } from "./progress-event/progress-events.service";
@@ -155,6 +159,11 @@ const serviceList = [
     serviceToken: Tokens.SHALLOW_HARVEST_ITEM,
     service: ShallowHarvestItemsService,
     resolvers: shallowHarvestItemResolvers,
+  },
+  {
+    serviceToken: Tokens.PERMISSION,
+    service: PermissionsService,
+    resolvers: permissionResolvers,
   },
   {
     serviceToken: Tokens.PROGRESS_EVENT,
