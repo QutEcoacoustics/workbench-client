@@ -29,8 +29,7 @@ export class SelectableItemsComponent {
   @Output() public selectionChange = new EventEmitter<number>();
 
   public changeSelection(index: number) {
-    this.selection = index;
-    this.selectionChange.next(this.selection);
+    this.selectionChange.next(index);
   }
 
   public isSelected(index: number): boolean {

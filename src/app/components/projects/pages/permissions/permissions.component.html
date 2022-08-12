@@ -43,7 +43,7 @@
       title="Users"
       description="Users are people that have registered and have logged into the website. "
       [options]="userOptions"
-      [selection]="getSelectionIndex(userPermission?.level)"
+      [selection]="getSelectionIndex(usersPermission?.level)"
       (selectionChange)="updateUserPermission($event)"
     ></baw-selectable-items>
   </div>
@@ -77,6 +77,7 @@
     </div>
   </ng-template>
 
+  <!-- User selector -->
   <baw-model-selector
     [class.me-3]="selectedUser"
     [class.flex-grow-1]="!selectedUser"
@@ -86,24 +87,27 @@
     [(model)]="selectedUser"
   ></baw-model-selector>
 
+  <!-- User permissions -->
   <baw-selectable-items
     *ngIf="selectedUser"
     class="flex-grow-1"
     [options]="individualOptions"
     [selection]="getSelectionIndex(getPermissionForUser(selectedUser)?.level)"
     [inline]="true"
-    (selectionChange)="createSingleUserPermission(selectedUser, $event)"
+    (selectionChange)="createNewPermission(selectedUser, $event)"
   ></baw-selectable-items>
 </section>
 
 <h4>Current users</h4>
 
+<!-- Filter permissions by username -->
 <baw-debounce-input
   label="Filter"
   placeholder="Filter Users"
   (filter)="updateFilter($event)"
 ></baw-debounce-input>
 
+<!-- Permissions table -->
 <ngx-datatable
   class="mb-3"
   bawDatatableDefaults
@@ -124,7 +128,7 @@
   </ngx-datatable-column>
 
   <!-- Access Level Template -->
-  <ngx-datatable-column prop="level">
+  <ngx-datatable-column prop="level" [minWidth]="300" [maxWidth]="300">
     <ng-template let-column="column" ngx-datatable-header-template>
       Individual
     </ng-template>
@@ -134,12 +138,16 @@
         [options]="individualOptions"
         [selection]="getSelectionIndex(value)"
         [inline]="true"
-        (selectionChange)="updateSingleUserPermission(row, $event)"
+        (selectionChange)="updateExistingPermission(row, $event)"
       ></baw-selectable-items>
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column name="Effective Permission">
+  <ngx-datatable-column
+    name="Effective Permission"
+    [minWidth]="210"
+    [maxWidth]="210"
+  >
     <ng-template let-column="column" ngx-datatable-header-template>
       <fa-icon
         ngbTooltip="The effective permission for a user is the highest permission that applies to them"

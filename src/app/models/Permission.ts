@@ -25,10 +25,10 @@ export class Permission
   implements IPermission
 {
   public readonly kind = "Permission";
-  public readonly id?: Id;
-  public readonly projectId?: Id;
+  public id?: Id;
+  public projectId?: Id;
   @bawPersistAttr({ create: true })
-  public readonly userId?: Id;
+  public userId?: Id;
   @bawPersistAttr()
   public level?: PermissionLevel;
   @bawPersistAttr()

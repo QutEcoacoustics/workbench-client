@@ -16,7 +16,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { PermissionLevel } from "@interfaces/apiInterfaces";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
-import { IPermission, Permission } from "@models/Permission";
+import { Permission } from "@models/Permission";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
 import { ISelectableItem } from "@shared/items/selectable-items/selectable-items.component";
@@ -24,8 +24,11 @@ import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import {
   BehaviorSubject,
+  filter,
   map,
+  mergeMap,
   Observable,
+  of,
   Subject,
   switchMap,
   takeUntil,
@@ -45,7 +48,7 @@ class PermissionsComponent
 {
   public project: Project;
   public anonymousPermission: Permission;
-  public userPermission: Permission;
+  public usersPermission: Permission;
   public selectedUser: User;
 
   public permissionsMatchingUsername: Permission[];
@@ -111,7 +114,7 @@ class PermissionsComponent
       this.anonymousPermission = permission;
     });
     getLevel({ filter: { allowLoggedIn: { eq: true } } }, (permission) => {
-      this.userPermission = permission;
+      this.usersPermission = permission;
     });
 
     this.reloadPermissions$.next();
@@ -150,11 +153,6 @@ class PermissionsComponent
           );
         }),
         map((permissionsForUsers: Permission[]) => {
-          console.log(
-            "Permissions matching username set: ",
-            permissionsForUsers
-          );
-
           this.permissionsMatchingUsername = permissionsForUsers;
           return users;
         })
@@ -165,7 +163,7 @@ class PermissionsComponent
     const hasLevel = (level: PermissionLevel): boolean =>
       [
         this.anonymousPermission?.level,
-        this.userPermission?.level,
+        this.usersPermission?.level,
         user.level,
       ].includes(level);
 
@@ -198,103 +196,176 @@ class PermissionsComponent
     );
   }
 
-  public createSingleUserPermission(user: User, selection: number): void {
-    this.updatePermission(
-      this.individualOptions,
-      selection,
-      { userId: user.id, allowAnonymous: false, allowLoggedIn: false },
-      () => {
-        this.notifications.success(
-          `Successfully created permissions for ${user.userName}`
-        );
-        // Update table so that it shows the new value
-        this.updateTable();
-      }
-    );
-  }
-
-  public updateSingleUserPermission(user: Permission, selection: number): void {
-    this.updatePermission(this.individualOptions, selection, user, () => {
-      // TODO It would be nice to use the username, but it is not available
-      this.notifications.success("Successfully updated user permission");
-      this.updateTable();
+  public createNewPermission(user: User, selection: number): void {
+    const successMsg = `Successfully created permissions for ${user.userName}`;
+    const level = this.individualOptions[selection].value;
+    const permission = new Permission({
+      userId: user.id,
+      allowAnonymous: false,
+      allowLoggedIn: false,
     });
 
-    // Clear selected user as the typeahead is now out of date
-    console.log("Clearing selected user");
-    this.selectedUser = undefined;
+    if (selection === this.selectionIndex.none) {
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      this.destroyPermission(permission).subscribe(() => {
+        this.notifications.success(successMsg);
+        this.selectedUser = undefined;
+        this.updateTable();
+      });
+    } else {
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      this.updatePermission(permission, level).subscribe(() => {
+        this.notifications.success(successMsg);
+        this.selectedUser = undefined;
+        this.updateTable();
+      });
+    }
+  }
+
+  public updateExistingPermission(
+    permission: Permission,
+    selection: number
+  ): void {
+    // TODO It would be nice to use the username
+    const successMsg = "Successfully updated user permission";
+    const level = this.individualOptions[selection].value;
+
+    if (selection === this.selectionIndex.none) {
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      this.destroyPermission(permission).subscribe(() => {
+        this.notifications.success(successMsg);
+        this.selectedUser = undefined;
+        this.updateTable();
+      });
+    } else {
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      this.updatePermission(permission, level).subscribe(() => {
+        this.notifications.success(successMsg);
+        this.updateTable();
+      });
+    }
   }
 
   public updateAnonymousPermission(selection: number): void {
-    const anonymousPermissions = {
-      userId: null,
-      allowAnonymous: true,
-      allowLoggedIn: false,
-    };
-
-    this.updatePermission(
-      this.anonymousOptions,
-      selection,
-      this.anonymousPermission ?? anonymousPermissions,
-      (permission: Permission) => {
-        this.notifications.success("Successfully updated visitor permissions");
-        this.anonymousPermission = permission;
-      }
-    );
-  }
-
-  public updateUserPermission(selection: number): void {
-    const loggedInPermissions = {
-      userId: null,
-      allowAnonymous: false,
-      allowLoggedIn: true,
-    };
-
-    this.updatePermission(
-      this.individualOptions,
-      selection,
-      this.userPermission ?? loggedInPermissions,
-      (permission: Permission) => {
-        this.notifications.success(
-          "Successfully updated logged in user permissions"
-        );
-        this.userPermission = permission;
-      }
-    );
-  }
-
-  private updatePermission(
-    options: ISelectableItem[],
-    selection: number,
-    basePermission: Permission | IPermission,
-    onSuccess: (permission?: Permission) => void
-  ): void {
-    if (selection === this.selectionIndex.none) {
-      this.permissionsApi
-        .destroy(basePermission as Permission, this.project)
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe(onSuccess);
-      return;
-    }
-
-    const level = options[selection].value;
-    const existingPermission = this.getPermissionForUser(basePermission.userId);
+    const successMsg = "Successfully updated visitor permission";
+    const level = this.anonymousOptions[selection].value;
     const permission = new Permission(
       {
-        ...basePermission,
-        id: basePermission?.id ?? existingPermission?.id,
-        level,
+        id: this.anonymousPermission?.id,
+        userId: null,
+        allowAnonymous: true,
+        allowLoggedIn: false,
       },
       this.injector
     );
 
-    // Choose between create or update based on if an id exists
-    (isInstantiated(permission.id)
-      ? this.permissionsApi.update(permission, this.project)
-      : this.permissionsApi.create(permission, this.project)
-    )
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(onSuccess);
+    if (selection === this.selectionIndex.none) {
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      this.destroyPermission(permission).subscribe(() => {
+        this.notifications.success(successMsg);
+        this.anonymousPermission = undefined;
+      });
+    } else {
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      this.updatePermission(permission, level).subscribe(
+        (result: Permission) => {
+          this.notifications.success(successMsg);
+          this.anonymousPermission = result;
+        }
+      );
+    }
+  }
+
+  public updateUserPermission(selection: number): void {
+    const level = this.individualOptions[selection].value;
+    const successMsg =
+      "Successfully updated permissions for all logged in users";
+    const permission = new Permission(
+      {
+        id: this.usersPermission?.id,
+        userId: null,
+        allowAnonymous: false,
+        allowLoggedIn: true,
+      },
+      this.injector
+    );
+    if (selection === this.selectionIndex.none) {
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      this.destroyPermission(permission).subscribe(() => {
+        this.notifications.success(successMsg);
+        this.usersPermission = undefined;
+      });
+    } else {
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      this.updatePermission(permission, level).subscribe(
+        (result: Permission) => {
+          this.notifications.success(successMsg);
+          this.usersPermission = result;
+        }
+      );
+    }
+  }
+
+  /** Create or update a permission based on if the id property exists */
+  private updatePermission(
+    permission: Permission,
+    level: PermissionLevel
+  ): Observable<Permission> {
+    return this.isUserOnlyOwnerOfProject(permission).pipe(
+      filter((isOnlyOwner) => !isOnlyOwner),
+      mergeMap(() => {
+        permission.level = level;
+        // If we know the id for this permission, use it
+        permission.id =
+          permission.id ?? this.getPermissionForUser(permission.userId)?.id;
+
+        // Choose between create or update based on if an id exists
+        return isInstantiated(permission.id)
+          ? this.permissionsApi.update(permission, this.project)
+          : this.permissionsApi.create(permission, this.project);
+      })
+    );
+  }
+
+  /** Destroy a permission */
+  private destroyPermission(
+    permission: Permission
+  ): Observable<void | Permission> {
+    return this.isUserOnlyOwnerOfProject(permission).pipe(
+      filter((isOnlyOwner) => !isOnlyOwner),
+      mergeMap(() => this.permissionsApi.destroy(permission, this.project))
+    );
+  }
+
+  private isUserOnlyOwnerOfProject(
+    permission: Permission
+  ): Observable<boolean> {
+    if (permission.level !== PermissionLevel.owner) {
+      return of(false);
+    }
+
+    return this.permissionsApi
+      .filter(
+        {
+          paging: { items: 1 },
+          filter: {
+            level: { eq: PermissionLevel.owner },
+            userId: { notEq: permission.userId },
+          },
+        },
+        this.project
+      )
+      .pipe(
+        map((permissions) => {
+          if (permissions.length === 0) {
+            this.notifications.error(
+              "This is the only owner of the project, their permissions cannot be changed unless another owner is appointed."
+            );
+            return true;
+          }
+          return false;
+        })
+      );
   }
 
   private updateTable() {
