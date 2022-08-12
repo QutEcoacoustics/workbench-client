@@ -11,7 +11,7 @@ import { faker } from "@faker-js/faker";
 const specialCharRegex = /[^\w\s]/gi;
 
 export const modelData = {
-  accessLevel: () =>
+  permissionLevel: () =>
     faker.helpers.arrayElement<PermissionLevel>([
       PermissionLevel.reader,
       PermissionLevel.writer,

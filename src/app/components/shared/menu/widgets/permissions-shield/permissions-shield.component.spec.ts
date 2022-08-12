@@ -165,7 +165,7 @@ describe("PermissionsShieldComponent", () => {
     }
 
     it("should display access level", () => {
-      const accessLevel = modelData.accessLevel();
+      const accessLevel = modelData.permissionLevel();
       const model = new MockModel({ accessLevel });
       setup([{ model }]);
       spec.detectChanges();
@@ -179,7 +179,7 @@ describe("PermissionsShieldComponent", () => {
     });
 
     it("should display access level of model if known", () => {
-      const accessLevel = modelData.accessLevel();
+      const accessLevel = modelData.permissionLevel();
       setup([{ model: defaultSite }]);
       spyOnProperty(defaultSite, "accessLevel").and.returnValue(accessLevel);
       spec.detectChanges();
