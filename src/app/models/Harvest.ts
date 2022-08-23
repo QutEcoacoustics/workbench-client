@@ -142,12 +142,10 @@ export class Harvest extends AbstractModel implements IHarvest {
     );
     this.report = new HarvestReport(data.report, injector);
     if (this.uploadUrl) {
-      this.uploadHost = this.uploadUrl.match(/sftp:\/\/([^:]+)/)[1];
-      this.uploadPort = parseInt(this.uploadUrl.match(/:([0-9]+)$/)[1], 10);
+      const matches = this.uploadUrl.match(/sftp:\/\/([^:]+):([0-9]+)$/)
+      this.uploadHost = matches[1];
+      this.uploadPort = parseInt(matches[2], 10);
     }
-
-    //this.uploadHost = "";
-    //this.uploadPort = 2020;
   }
 
   public get viewUrl(): string {

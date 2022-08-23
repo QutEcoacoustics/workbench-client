@@ -4,7 +4,7 @@ import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { UploadUrlComponent } from "@components/harvest/components/shared/upload-url.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
-import { Harvest } from "@models/Harvest";
+import { Harvest, HarvestStatus } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -39,8 +39,8 @@ describe("BatchUploadingComponent", () => {
         harvest: undefined,
         startPolling: jasmine.createSpy("start polling") as any,
         stopPolling: jasmine.createSpy("stop polling") as any,
-        transition: jasmine.createSpy("transition") as any
-      }),
+        transition: (_stage: HarvestStatus) => {}
+      })
     ],
     imports: [MockBawApiModule, SharedModule],
     mocks: [ToastrService],
@@ -54,6 +54,9 @@ describe("BatchUploadingComponent", () => {
     stages = spec.inject<SpyObject<HarvestStagesService>>(
       HarvestStagesService as any
     );
+    // spy needs to be created after createComponent is called and cannot be
+    // created inside a mockProvider definition
+    stages.transition = jasmine.createSpy("transition") as any;
     stages.startPolling.and.stub();
     stages.project = project;
     (stages as any).harvest = harvest;
@@ -63,9 +66,61 @@ describe("BatchUploadingComponent", () => {
     return nStepObservable(subject, () => sites);
   }
 
+  function getModalNextBtn() {
+      return spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #next-btn", { root: true });
+  }
+
+  function getModalCancelBtn() {
+    return spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #cancel-btn", { root: true });
+  }
+
+  function getModal() {
+    return spec.query("baw-harvest-confirmation-modal", { root: true });
+  }
+
+  function launchModal(btnSelector, modalText) {
+    const btn = spec.query(btnSelector);
+    spec.click(btn);
+    spec.detectChanges();
+    const modal = getModal();
+    expect(modal).toBeTruthy();
+    expect(modal).toContainText(modalText);
+    spec.detectChanges();
+  }
+
+  function clickModal(button, callback) {
+    let btn;
+    if (button === "cancel") {
+      btn = getModalCancelBtn();
+    } else {
+      btn = getModalNextBtn();
+    }
+    spec.click(btn);
+    spec.detectChanges();
+    const interval = setInterval(() => {
+        spec.detectChanges();
+        if (!getModal()) {
+            // if the click worked, the modal will disappear and we can check the button action
+            callback()
+            clearInterval(interval);
+        }
+    }, 50);
+  }
+
+  function cancelModal(done) {
+    clickModal("cancel", () => {
+      expect(stages.transition).not.toHaveBeenCalled();
+      done()
+    })
+  }
+
+  function clickModalNext(callback) {
+    clickModal("next", callback);
+  }
+
   beforeEach(() => {
     defaultProject = new Project(generateProject());
-    defaultHarvest = new Harvest(generateHarvest({ status: "uploading" }));
+    defaultHarvest = new Harvest(generateHarvest({ status: "metadataReview" }));
     defaultSite = new Site(generateSite());
   });
 
@@ -143,52 +198,40 @@ describe("BatchUploadingComponent", () => {
     let modalService: NgbModal;
 
     beforeEach(() => {
-        setup(defaultProject, defaultHarvest, [defaultSite]);
-        modalService = spec.inject(NgbModal);
+      setup(defaultProject, defaultHarvest, [defaultSite]);
+      modalService = spec.inject(NgbModal);
     });
 
     afterEach(() => {
         modalService.dismissAll();
-
     });
 
-    function getCancelButton() {
-      return spec.query("#cancel-btn");
-    }
-
-    function getConfirmCancelButton() {
-        return spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #next-btn", { root: true });
-    }
-
-    function getModal() {
-      return spec.query("baw-harvest-confirmation-modal", { root: true });
-    }
-
-    // this test is disabled because it causes the following one to fail if it is run first
-    xit("should open cancel modal on cancel click", () => {
-      spec.detectChanges();
-      const btn = getCancelButton();
-      spec.click(btn);
-      const modal = getModal();
-      expect(modal).toBeTruthy();
-      expect(modal).toContainText("Are you sure you want to cancel this upload");
+    it ("should cancel upload when cancel is clicked and the 'cancel upload' modal button is clicked", (done) => {
+      launchModal("#cancel-btn", "Are you sure you want to cancel this upload");
+      clickModalNext(() => {
+        expect(stages.transition).toHaveBeenCalledWith("complete");
+        done();
+      })
     });
 
-    it ("should cancel upload when modal cancel button is clicked", (done) => {
-        spec.click(getCancelButton());
-        spec.detectChanges();
-        spec.click(getConfirmCancelButton());
-        const interval = setInterval(() => {
-            spec.detectChanges();
-            if (!getConfirmCancelButton()) {
-                // if the click worked, the button will disappear and we can check the button action
-                expect(stages.transition).toHaveBeenCalledWith("complete");
-                clearInterval(interval);
-                done();
-            }
-        }, 150);
+    it ("should change harvest stage when 'Finished uploading' is clicked and scan files modal button is clicked", (done) => {
+      launchModal("#finish-btn", "Are you sure your upload is finished");
+      clickModalNext(() => {
+        expect(stages.transition).toHaveBeenCalledWith("scanning");
+        done();
+      })
+    });
 
+    it ("should launch and cancel modal when 'cancel' button is clicked and then 'return' is clicked", (done) => {
+      launchModal("#cancel-btn", "Are you sure you want to cancel this upload");
+      cancelModal(done);
+    });
+
+    it ("should launch and cancel modal when 'finished uploading' button is clicked and then cancel is clicked", (done) => {
+      launchModal("#finish-btn", "Are you sure your upload is finished");
+      cancelModal(done);
     });
 
   });
+
 });
