@@ -566,10 +566,10 @@ export interface Expression {
 }
 
 export interface Comparisons {
-  eq?: string | number;
-  equal?: string | number;
-  notEq?: string | number;
-  notEqual?: string | number;
+  eq?: string | number | boolean;
+  equal?: string | number | boolean;
+  notEq?: string | number | boolean;
+  notEqual?: string | number | boolean;
   lt?: string | number | Expression;
   lessThan?: string | number | Expression;
   notLt?: string | number | Expression;

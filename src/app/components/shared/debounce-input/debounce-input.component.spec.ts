@@ -25,7 +25,7 @@ describe("DebounceInputComponent", () => {
 
   describe("label", () => {
     function getLabel() {
-      return spectator.query("span.input-group-text");
+      return spectator.query(".input-group-text");
     }
 
     it("should hide label when none provided", () => {
@@ -35,7 +35,7 @@ describe("DebounceInputComponent", () => {
 
     it("should display custom label", () => {
       setup("Custom Filter");
-      expect(getLabel().textContent).toBe("Custom Filter");
+      expect(getLabel()).toContainText("Custom Filter");
     });
   });
 

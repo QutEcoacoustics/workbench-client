@@ -10,7 +10,11 @@ import {
   isLoggedInPredicate,
   isProjectEditorPredicate,
 } from "src/app/app.menus";
-import { projectRoute, projectsRoute } from "./projects.routes";
+import {
+  editProjectPermissionsRoute,
+  projectRoute,
+  projectsRoute,
+} from "./projects.routes";
 
 /*
   Projects Category
@@ -81,7 +85,7 @@ export const editProjectPermissionsMenuItem = menuRoute({
   label: "Edit permissions",
   parent: projectMenuItem,
   predicate: isProjectEditorPredicate,
-  route: projectMenuItem.route.add("permissions"),
+  route: editProjectPermissionsRoute,
   tooltip: () => "Edit this projects permissions",
 });
 

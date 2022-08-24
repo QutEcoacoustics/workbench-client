@@ -7,7 +7,7 @@ import {
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { AccessLevel, Id, Ids } from "@interfaces/apiInterfaces";
+import { PermissionLevel, Id, Ids } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -160,7 +160,7 @@ export class PermissionsShieldComponent
     return badges;
   }
 
-  private getAccessLevel(): AccessLevel {
+  private getAccessLevel(): PermissionLevel {
     if (this.project) {
       return this.project.accessLevel;
     }

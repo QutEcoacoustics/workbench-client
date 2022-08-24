@@ -32,9 +32,9 @@ export type UserName = string;
 export type AuthToken = string;
 
 /**
- * BAW API Access Levels
+ * BAW API Permission Levels
  */
-export enum AccessLevel {
+export enum PermissionLevel {
   owner = "owner",
   writer = "writer",
   reader = "reader",
@@ -50,10 +50,10 @@ export enum AccessLevel {
  * @param currentLevel The current access level
  */
 export function hasRequiredAccessLevelOrHigher(
-  requiredLevel: AccessLevel,
-  currentLevel: AccessLevel
+  requiredLevel: PermissionLevel,
+  currentLevel: PermissionLevel
 ): boolean {
-  const { owner, writer, reader, unresolved, unknown } = AccessLevel;
+  const { owner, writer, reader, unresolved, unknown } = PermissionLevel;
 
   if (
     !unresolved ||

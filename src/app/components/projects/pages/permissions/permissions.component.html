@@ -1,138 +1,166 @@
-<baw-wip>
-  <div *ngIf="project">
-    <h2 class="text-center">{{ project.name }} Permissions</h2>
+<h2 class="text-center">{{ project.name }} Permissions</h2>
 
-    <!-- Permission Explanation -->
-    <p>
-      This page allows you to change who can view or modify this project and the
-      sites it contains. As an owner, you can assign one of four levels of
-      permissions.
-    </p>
-    <ul>
-      <li>
-        <strong> No access (none) </strong>
-        prevents users from viewing anything in this project.
-      </li>
-      <li>
-        <strong> Reader </strong>
-        allows users to view anything in this project.
-      </li>
-      <li>
-        <strong> Writer </strong>
-        allows users to add and change annotations, in addition to reader
-        permission.
-      </li>
-      <li>
-        <strong> Owner </strong>
-        allows users to modify and delete this project and its sites, in
-        addition to writer permission.
-      </li>
-    </ul>
+<!-- Permission Explanation -->
+<p>
+  This page allows you to change who can view or modify this project and the
+  sites it contains. As an owner, you can assign one of four levels of
+  permissions.
+</p>
+<ul>
+  <li>
+    <strong> No access (none) </strong>
+    prevents users from viewing anything in this project.
+  </li>
+  <li>
+    <strong> Reader </strong>
+    allows users to view anything in this project.
+  </li>
+  <li>
+    <strong> Writer </strong>
+    allows users to add and change annotations, in addition to reader
+    permission.
+  </li>
+  <li>
+    <strong> Owner </strong>
+    allows users to modify and delete this project and its sites, in addition to
+    writer permission.
+  </li>
+</ul>
 
-    <!-- Global Permissions -->
-    <div class="row">
-      <div class="col-md-6">
-        <baw-selectable-items
-          title="Visitors"
-          description="Visitors are public (anonymous) users that are either not logged in or have not registered."
-          [options]="visitorOptions"
-          [selected]="1"
-        ></baw-selectable-items>
-      </div>
-      <div class="col-md-6">
-        <baw-selectable-items
-          title="Users"
-          description="Users are people that have registered and have logged into the website. "
-          [options]="userOptions"
-          [selected]="1"
-        ></baw-selectable-items>
-      </div>
-    </div>
-
-    <!-- Individual Permissions -->
-    <h3>Individual Users</h3>
-    <p>
-      You can assign permissions to individual logged in users. Individual
-      permissions are the most important permissions - they override
-      <em>Logged In Users</em> permissions.
-    </p>
-    <p>
-      <strong>
-        If you only want some users to have access, use this section only.
-      </strong>
-    </p>
-
-    <baw-debounce-input
-      label="Filter"
-      placeholder="Filter Users"
-      (filter)="updateFilter($event)"
-    ></baw-debounce-input>
-
-    <ngx-datatable
-      #table
-      bawDatatableDefaults
-      [rows]="rows"
-      [columns]="columns"
-    >
-      <!-- User Template -->
-      <ngx-datatable-column name="User">
-        <ng-template let-column="column" ngx-datatable-header-template>
-          <fa-icon [icon]="userIcon"></fa-icon
-          ><strong>{{ column.name }}</strong>
-        </ng-template>
-
-        <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
-        </ng-template>
-      </ngx-datatable-column>
-
-      <!-- Individual Template -->
-      <ngx-datatable-column name="Individual" [width]="275">
-        <ng-template let-column="column" ngx-datatable-header-template>
-          <strong>{{ column.name }}</strong>
-        </ng-template>
-
-        <ng-template let-value="value" ngx-datatable-cell-template>
-          <baw-selectable-items
-            [options]="individualOptions"
-            [selected]="1"
-            [inline]="true"
-          ></baw-selectable-items>
-        </ng-template>
-      </ngx-datatable-column>
-
-      <!-- Visitor Permissions Template -->
-      <ngx-datatable-column name="Visitors" [width]="100">
-        <ng-template let-column="column" ngx-datatable-header-template>
-          <strong>{{ column.name }}</strong>
-        </ng-template>
-
-        <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
-        </ng-template>
-      </ngx-datatable-column>
-
-      <!-- Users Permissions Template -->
-      <ngx-datatable-column name="Users" [width]="100">
-        <ng-template let-column="column" ngx-datatable-header-template>
-          <strong>{{ column.name }}</strong>
-        </ng-template>
-
-        <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
-        </ng-template>
-      </ngx-datatable-column>
-
-      <!-- Overall Permissions Template -->
-      <ngx-datatable-column name="Overall" [width]="100">
-        <ng-template let-column="column" ngx-datatable-header-template>
-          <strong>{{ column.name }}</strong>
-        </ng-template>
-
-        <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
-        </ng-template>
-      </ngx-datatable-column>
-    </ngx-datatable>
+<!-- Global Permissions -->
+<div class="row">
+  <div class="col-md-6">
+    <baw-selectable-items
+      title="Visitors"
+      description="Visitors are public (anonymous) users that are either not logged in or have not registered."
+      [options]="anonymousOptions"
+      [selection]="getSelectionIndex(anonymousPermission?.level)"
+      (selectionChange)="updateAnonymousPermission($event)"
+    ></baw-selectable-items>
   </div>
-</baw-wip>
+  <div class="col-md-6">
+    <baw-selectable-items
+      title="Users"
+      description="Users are people that have registered and have logged into the website. "
+      [options]="userOptions"
+      [selection]="getSelectionIndex(usersPermission?.level)"
+      (selectionChange)="updateUserPermission($event)"
+    ></baw-selectable-items>
+  </div>
+</div>
+
+<!-- Individual Permissions -->
+<h3>Individual Users</h3>
+<p>
+  You can assign permissions to individual logged in users. Individual
+  permissions are the most important permissions - they override
+  <em>Logged In Users</em> permissions.
+</p>
+<p>
+  <strong>
+    If you only want some users to have access, use this section only.
+  </strong>
+</p>
+
+<!-- Add a new user-->
+<h4>Add a user</h4>
+
+<section class="mb-3 d-flex">
+  <ng-template #resultTemplate let-result="result" let-term="term">
+    <div [class.bg-text-secondary]="doesUserAlreadyHavePermissions(result)">
+      <ngb-highlight [result]="result.userName" [term]="term"></ngb-highlight>
+      <small
+        class="ms-3 float-end"
+        *ngIf="doesUserAlreadyHavePermissions(result)"
+      >
+        Already Set
+      </small>
+    </div>
+  </ng-template>
+
+  <!-- User selector -->
+  <baw-model-selector
+    [class.me-3]="selectedUser"
+    [class.flex-grow-1]="!selectedUser"
+    label="Search Users"
+    [getModels]="getUsers"
+    [resultTemplate]="resultTemplate"
+    [(model)]="selectedUser"
+  ></baw-model-selector>
+
+  <!-- User permissions -->
+  <baw-selectable-items
+    *ngIf="selectedUser"
+    class="flex-grow-1"
+    [options]="individualOptions"
+    [selection]="getSelectionIndex(getPermissionForUser(selectedUser)?.level)"
+    [inline]="true"
+    (selectionChange)="createNewPermission(selectedUser, $event)"
+  ></baw-selectable-items>
+</section>
+
+<h4>Current users</h4>
+
+<!-- Filter permissions by username -->
+<baw-debounce-input
+  label="Filter"
+  placeholder="Filter Users"
+  (filter)="updateFilter($event)"
+></baw-debounce-input>
+
+<!-- Permissions table -->
+<ngx-datatable
+  class="mb-3"
+  bawDatatableDefaults
+  [bawDatatablePagination]="{ getModels: getPermissions, filters: filters$ }"
+>
+  <!-- User Template -->
+  <ngx-datatable-column prop="userId" [sortable]="false">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      <fa-icon [icon]="userIcon"></fa-icon>User
+    </ng-template>
+
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <baw-loading *ngIf="row.user | isUnresolved; else showUser"></baw-loading>
+      <ng-template #showUser>
+        <a [bawUrl]="row.user.viewUrl">{{ row.user.userName }}</a>
+      </ng-template>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <!-- Access Level Template -->
+  <ngx-datatable-column prop="level" [minWidth]="300" [maxWidth]="300">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Individual
+    </ng-template>
+
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <baw-selectable-items
+        [options]="individualOptions"
+        [selection]="getSelectionIndex(value)"
+        [inline]="true"
+        (selectionChange)="updateExistingPermission(row, $event)"
+      ></baw-selectable-items>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <!-- Effective Permissions Template -->
+  <ngx-datatable-column
+    name="Effective Permission"
+    [minWidth]="210"
+    [maxWidth]="210"
+  >
+    <ng-template let-column="column" ngx-datatable-header-template>
+      <fa-icon
+        ngbTooltip="The effective permission for a user is the highest permission that applies to them"
+        container="body"
+        [icon]="helpIcon"
+      ></fa-icon>
+      Effective Permission
+    </ng-template>
+
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      {{ highestPermission(row) }}
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>

@@ -40,6 +40,7 @@ import { ItemsModule } from "./items/items.module";
 import { LoadingModule } from "./loading/loading.module";
 import { MenuModule } from "./menu/menu.module";
 import { ModelCardsModule } from "./model-cards/model-cards.module";
+import { ModelSelectorComponent } from "./model-selector/model-selector.component";
 import { ProgressModule } from "./progress/progress.module";
 import { StepperModule } from "./stepper/stepper.module";
 import { UserLinkModule } from "./user-link/user-link.module";
@@ -53,6 +54,7 @@ export const sharedComponents = [
   FooterComponent,
   FormComponent,
   WIPComponent,
+  ModelSelectorComponent,
 ];
 
 export const internalComponents = [];

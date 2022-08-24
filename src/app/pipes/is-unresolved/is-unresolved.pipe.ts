@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { AccessLevel } from "@interfaces/apiInterfaces";
+import { PermissionLevel } from "@interfaces/apiInterfaces";
 import { AbstractModel, isUnresolvedModel } from "@models/AbstractModel";
 
 /**
@@ -10,9 +10,9 @@ import { AbstractModel, isUnresolvedModel } from "@models/AbstractModel";
 })
 export class IsUnresolvedPipe implements PipeTransform {
   public transform(
-    value: Readonly<AbstractModel | AbstractModel[]> | AccessLevel
+    value: Readonly<AbstractModel | AbstractModel[]> | PermissionLevel
   ): boolean {
-    const isUnresolvedAccessLevel = value === AccessLevel.unresolved;
+    const isUnresolvedAccessLevel = value === PermissionLevel.unresolved;
     return (
       isUnresolvedAccessLevel ||
       isUnresolvedModel(value as AbstractModel | AbstractModel[])
