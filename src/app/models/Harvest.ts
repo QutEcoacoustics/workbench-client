@@ -91,6 +91,13 @@ export interface IHarvest extends HasCreatorAndUpdater {
   lastMappingsChangeAt?: DateTimeTimezone | string;
 }
 
+export interface HarvestUploadConnectionArguments {
+  user: string;
+  host: string;
+  port: string;
+  password: string;
+}
+
 export class Harvest extends AbstractModel implements IHarvest {
   public readonly kind = "Harvest";
   public readonly id?: Id;
@@ -108,6 +115,8 @@ export class Harvest extends AbstractModel implements IHarvest {
   public readonly uploadPassword?: string;
   public readonly uploadUser?: string;
   public readonly uploadUrl?: string;
+  public readonly uploadHost?: string;
+  public readonly uploadPort?: number;
   @bawPersistAttr()
   public mappings?: HarvestMapping[];
   public readonly report?: HarvestReport;
@@ -132,6 +141,11 @@ export class Harvest extends AbstractModel implements IHarvest {
       (mapping) => new HarvestMapping(mapping, injector)
     );
     this.report = new HarvestReport(data.report, injector);
+    if (this.uploadUrl) {
+      const matches = this.uploadUrl.match(/sftp:\/\/([^:]+):([0-9]+)$/)
+      this.uploadHost = matches[1];
+      this.uploadPort = parseInt(matches[2], 10);
+    }
   }
 
   public get viewUrl(): string {
@@ -152,6 +166,7 @@ export class Harvest extends AbstractModel implements IHarvest {
       `://${this.uploadUser}:${this.uploadPassword}@`
     );
   }
+
 }
 
 export interface IHarvestReport {

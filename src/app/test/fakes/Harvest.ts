@@ -52,7 +52,7 @@ export function generateHarvest(data?: Partial<IHarvest>): Required<IHarvest> {
     projectId: modelData.id(),
     uploadPassword: modelData.internet.password(),
     uploadUser: modelData.internet.userName(),
-    uploadUrl: modelData.internet.url(),
+    uploadUrl: `sftp://${modelData.random.word()}.${modelData.random.word()}.org:2020`,
     mappings: Array(modelData.datatype.number({ min: 0, max: 3 })).map(() =>
       generateHarvestMapping()
     ),

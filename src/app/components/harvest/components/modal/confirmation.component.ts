@@ -18,10 +18,10 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
       <ng-content></ng-content>
 
       <div class="clearfix">
-        <button class="btn btn-outline-primary float-start" (click)="close()">
+        <button id="cancel-btn" class="btn btn-outline-primary float-start" (click)="close()">
           {{ cancelLabel }}
         </button>
-        <button class="btn btn-primary float-end" (click)="continue()">
+        <button id="next-btn" class="btn btn-primary float-end" (click)="continue()">
           {{ nextLabel }}
         </button>
       </div>
