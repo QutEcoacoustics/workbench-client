@@ -12,11 +12,14 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
+import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import schema from "../../region.base.json";
 import { regionsMenuItemActions } from "../list/list.component";
+
+const projectKey = "project";
 
 /**
  * New Region Component
@@ -51,8 +54,12 @@ class NewComponent extends FormTemplate<Region> {
     });
   }
 
+  public get project(): Project {
+    return this.models[projectKey] as Project;
+  }
+
   protected apiAction(model: Partial<Region>) {
-    return this.api.create(new Region(model), this.model.projectId);
+    return this.api.create(new Region(model), this.project);
   }
 }
 

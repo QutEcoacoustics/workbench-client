@@ -88,9 +88,8 @@ describe("RegionsNewComponent", () => {
     it("should call api", () => {
       setup();
       api.create.and.callFake(() => new Subject());
-
       spectator.component.submit({});
-      expect(api.create).toHaveBeenCalled();
+      expect(api.create).toHaveBeenCalledWith(jasmine.any(Object), defaultProject);
     });
 
     it("should redirect to region", () => {
