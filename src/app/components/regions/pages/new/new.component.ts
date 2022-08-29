@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { defaultProjectResolver, projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import { projectCategory } from "@components/projects/projects.menus";
@@ -20,6 +21,7 @@ import schema from "../../region.base.json";
 import { regionsMenuItemActions } from "../list/list.component";
 
 const projectKey = "project";
+const projectsKey = "projects";
 
 /**
  * New Region Component
@@ -29,7 +31,7 @@ const projectKey = "project";
   template: `
     <baw-form
       *ngIf="!failure"
-      [title]="hideTitle ? '' : 'New Region'"
+      [title]="hideTitle ? '' : 'New Site'"
       [model]="model"
       [fields]="fields"
       [submitLoading]="loading"
@@ -55,7 +57,11 @@ class NewComponent extends FormTemplate<Region> {
   }
 
   public get project(): Project {
-    return this.models[projectKey] as Project;
+    if (this.models[projectKey] === undefined) {
+      return this.models[projectsKey][0] as Project;
+    } else {
+      return this.models[projectKey] as Project;
+    }
   }
 
   protected apiAction(model: Partial<Region>) {
@@ -67,10 +73,16 @@ NewComponent.linkToRoute({
   category: projectCategory,
   pageRoute: newRegionMenuItem,
   menus: { actions: List(projectMenuItemActions) },
+  resolvers: {
+    [projectKey]: projectResolvers.show
+  },
 }).linkToRoute({
   category: shallowRegionsCategory,
   pageRoute: shallowNewRegionMenuItem,
   menus: { actions: List(regionsMenuItemActions) },
+  resolvers: {
+    [projectsKey]: defaultProjectResolver.show
+  },
 });
 
 export { NewComponent };
