@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { defaultProjectResolver, projectResolvers } from "@baw-api/project/projects.service";
+import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import { projectCategory } from "@components/projects/projects.menus";
@@ -21,7 +21,6 @@ import schema from "../../region.base.json";
 import { regionsMenuItemActions } from "../list/list.component";
 
 const projectKey = "project";
-const projectsKey = "projects";
 
 /**
  * New Region Component
@@ -57,11 +56,7 @@ class NewComponent extends FormTemplate<Region> {
   }
 
   public get project(): Project {
-    if (this.models[projectKey] === undefined) {
-      return this.models[projectsKey][0] as Project;
-    } else {
-      return this.models[projectKey] as Project;
-    }
+    return this.models[projectKey] as Project;
   }
 
   protected apiAction(model: Partial<Region>) {
@@ -74,14 +69,14 @@ NewComponent.linkToRoute({
   pageRoute: newRegionMenuItem,
   menus: { actions: List(projectMenuItemActions) },
   resolvers: {
-    [projectKey]: projectResolvers.show
+    [projectKey]: projectResolvers.show,
   },
 }).linkToRoute({
   category: shallowRegionsCategory,
   pageRoute: shallowNewRegionMenuItem,
   menus: { actions: List(regionsMenuItemActions) },
   resolvers: {
-    [projectsKey]: defaultProjectResolver.show
+    [projectKey]: projectResolvers.showDefault,
   },
 });
 

@@ -1,16 +1,9 @@
-import { Injectable, Type } from "@angular/core";
-import { Resolve } from "@angular/router";
-import { Tuple } from "@helpers/advancedTypes";
+import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Id } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "@models/AbstractModel";
 import { IProject, Project } from "@models/Project";
 import type { User } from "@models/User";
-import { map, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import {
-  ApiFilter,
-  ApiList,
-  ApiShow,
   emptyParam,
   filterParam,
   id,
@@ -20,7 +13,8 @@ import {
   StandardApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
-import { BawResolver, ListResolver, ResolvedModel, Resolvers } from "../resolver-common";
+import { Resolvers } from "../resolver-common";
+import { ShowDefaultResolver } from "../ShowDefaultResolver";
 
 const projectId: IdParamOptional<Project> = id;
 const endpoint = stringTemplate`/projects/${projectId}${option}`;
@@ -73,50 +67,13 @@ export class ProjectsService implements StandardApi<Project> {
   }
 }
 
+const defaultProjectResolver = new ShowDefaultResolver<
+  Project,
+  [],
+  ProjectsService
+>([ProjectsService], null).create("Project");
+
 export const projectResolvers = new Resolvers<Project, []>(
   [ProjectsService],
   "projectId"
-).create("Project");
-
-
-export class ShowDefaultResolver<
-  Model extends AbstractModel,
-  Params extends any[],
-  Service extends ApiFilter<Model, Params> = ApiFilter<
-    Model,
-    Params
-  >
-> extends BawResolver<Model, Model, Params, Service, { show: string }> {
-  public constructor(
-    deps: Type<Service>[],
-    uniqueId?: string,
-    params?: Tuple<string, Params["length"]>
-  ) {
-    super(deps, uniqueId, params);
-  }
-
-  public createProviders(
-    name: string,
-    resolver: Type<Resolve<ResolvedModel<Model>>>,
-    deps: Type<Service>[]
-  ) {
-    return {
-      show: name + "DefaultShowResolver",
-      providers: [{ provide: name + "DefaultShowResolver", useClass: resolver, deps }],
-    };
-  }
-
-  public create(name: string, required: true = true) {
-    return super.create(name, required);
-  }
-
-  public resolverFn(_: any, api: Service, __: Id, ids: Params) {
-    const filters = { paging: { items: 1 } } as Filters<Model>
-    return api.filter(filters, ...ids).pipe(map((data) => data[0]));
-  }
-}
-
-export const defaultProjectResolver = new ShowDefaultResolver<Project, [], ProjectsService>(
-  [ProjectsService],
-  null
-).create("Project");
+).create("Project", defaultProjectResolver);
