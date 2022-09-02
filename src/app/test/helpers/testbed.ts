@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { HttpHeaders } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -12,6 +13,7 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { LoadingModule } from "@shared/loading/loading.module";
+import { IMockBuilder } from "ng-mocks";
 import { NgxCaptchaModule } from "ngx-captcha";
 import { ToastrModule } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
@@ -27,10 +29,19 @@ export const testFormImports = [
   FormlyBootstrapModule,
   ToastrModule.forRoot(toastrRoot),
   HttpClientTestingModule,
-  RouterTestingModule,
   LoadingModule,
   NgxCaptchaModule,
+  RouterTestingModule,
 ];
+
+export function addStandardFormImportsToMockBuilder(builder: IMockBuilder) {
+  const module = builder.build();
+
+  // https://github.com/help-me-mom/ng-mocks/issues/197#issuecomment-705431358
+  module.imports = [...module.imports, ...testFormImports];
+
+  return TestBed.configureTestingModule(module).compileComponents();
+}
 
 /**
  * Create a mock ActivatedRoute class
