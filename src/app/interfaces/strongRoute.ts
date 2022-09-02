@@ -30,17 +30,44 @@ export class StrongRoute {
   /**
    * Root StrongRoute of this StrongRoute, all children of this root
    * StrongRoute will be compiled together
+   * NOTE: using hard private to remove cyclical loops in property traversal.
    */
-  public readonly root: StrongRoute;
+  readonly #root: StrongRoute;
+  /**
+   * Gets the root StrongRoute of this StrongRoute, all children of this root
+   * StrongRoute will be compiled together
+   */
+  public get root() {
+    return this.#root;
+  }
   /**
    * Children StrongRoutes of this StrongRoute. This allows for tracing
    * down the hierarchical tree of StrongRoutes.
+   * NOTE: using hard private to remove cyclical loops in property traversal.
    */
-  public readonly children: StrongRoute[] = [];
+  readonly #children: StrongRoute[] = [];
+  /**
+   * Gets the children StrongRoutes of this StrongRoute. This allows for tracing
+   * down the hierarchical tree of StrongRoutes.
+   */
+  public get children() {
+    return this.#children;
+  }
   /**
    * Is this StrongRoute segment a route parameters? (ie. `":siteId"`)
    */
   private readonly isParameter: boolean;
+  /**
+   * The parent for this route.
+   * NOTE: using hard private to remove cyclical loops in property traversal.
+   */
+  readonly #parent: StrongRoute;
+  /**
+   * Gets the parent for this route.
+   */
+  public get parent() {
+    return this.#parent;
+  }
 
   /**
    * Constructor
@@ -66,12 +93,14 @@ export class StrongRoute {
    * @param isRoot Is this a root StrongRoute
    */
   private constructor(
-    public readonly parent?: StrongRoute,
+    parent?: StrongRoute,
     public readonly pathFragment: string = StrongRoute.rootPath,
     public readonly queryParams: QSPCallback = () => ({}),
     public readonly angularRouteConfig: Partial<Route> = {},
     isRoot?: boolean
   ) {
+    this.#parent = parent;
+
     // Check pathFragment does not have a leading '/'
     if (pathFragment.startsWith("/")) {
       const msg = "StrongRoute pathFragment should not start with a '/'";
@@ -82,11 +111,11 @@ export class StrongRoute {
     this.isParameter = pathFragment.startsWith(":");
     this.angularRouteConfig = angularRouteConfig;
 
-    if (parent && !isRoot) {
-      this.root = parent.root;
-      this.parent.children.push(this);
+    if (this.parent && !isRoot) {
+      this.#root = this.parent.root;
+      this.parent.linkChild(this);
     } else {
-      this.root = this;
+      this.#root = this;
     }
 
     this.angularRouteConfig = {
@@ -360,5 +389,9 @@ export class StrongRoute {
     }
 
     return [fragments.reverse(), parameters.reverse()];
+  }
+
+  private linkChild(child) {
+    this.children.push(child);
   }
 }

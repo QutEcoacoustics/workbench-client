@@ -72,7 +72,7 @@ export class Region extends AbstractModel<IRegion> implements IRegion {
   public readonly deletedAt?: DateTimeTimezone;
   @bawPersistAttr()
   public readonly projectId?: Id;
-  @bawCollection({ persist: true })
+  @bawCollection({ persist: false })
   public readonly siteIds?: Ids;
   @bawPersistAttr()
   public readonly notes?: Hash;

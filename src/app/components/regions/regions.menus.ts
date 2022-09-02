@@ -31,7 +31,7 @@ export const shallowRegionsMenuItem = menuRoute({
 export const shallowNewRegionMenuItem = menuRoute({
   icon: defaultNewIcon,
   label: "New site",
-  parent: projectMenuItem,
+  parent: shallowRegionsMenuItem,
   predicate: isProjectEditorPredicate,
   route: shallowRegionsRoute.add("new"),
   tooltip: () => "Create a new site",

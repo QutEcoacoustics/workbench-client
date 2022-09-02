@@ -180,7 +180,10 @@ export class Resolvers<
    *
    * @param name Name of provider
    */
-  public create(name: string) {
+  public create<T extends object & { providers: BawProvider[] }>(
+    name: string,
+    extra: T = null
+  ) {
     const { serviceDeps, uniqueId, params } = this;
     const listResolver = new ListResolver<Model, Params, Service>(
       serviceDeps,
@@ -201,10 +204,12 @@ export class Resolvers<
       ...listResolver,
       ...showResolver,
       ...showOptionalResolver,
+      ...extra,
       providers: [
         ...listResolver.providers,
         ...showResolver.providers,
         ...showOptionalResolver.providers,
+        ...(extra?.providers || []),
       ],
     };
   }

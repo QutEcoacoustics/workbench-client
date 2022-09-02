@@ -14,6 +14,7 @@ import {
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
+import { ShowDefaultResolver } from "../ShowDefaultResolver";
 
 const projectId: IdParamOptional<Project> = id;
 const endpoint = stringTemplate`/projects/${projectId}${option}`;
@@ -66,7 +67,13 @@ export class ProjectsService implements StandardApi<Project> {
   }
 }
 
+const defaultProjectResolver = new ShowDefaultResolver<
+  Project,
+  [],
+  ProjectsService
+>([ProjectsService], null).create("Project");
+
 export const projectResolvers = new Resolvers<Project, []>(
   [ProjectsService],
   "projectId"
-).create("Project");
+).create("Project", defaultProjectResolver);
