@@ -291,6 +291,7 @@ export class BawApiService<
         map(this.handleSingleResponse(classBuilder))
       );
     }
+
     return request.pipe(
       catchError((err) => this.handleError(err, opts?.disableNotification))
     );

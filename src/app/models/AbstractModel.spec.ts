@@ -132,7 +132,116 @@ describe("AbstractModel", () => {
     });
   });
 
+  describe("emitting file or null in formdata or json requests", () => {
+    const testFile = new File([""], "testFileName.png");
+
+    it("should emit null when serializing a model via JSON and deleting a file", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        public image: any;
+      }
+      const model = new Model({ id: 1, image: null });
+      const actual = model.getJsonAttributes({ create: true });
+      expect(actual).toEqual(jasmine.objectContaining({
+        image: null
+      }));
+    });
+
+    it("should not emit file type objects in JSON attributes", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        public image: any;
+      }
+      const model = new Model({ id: 1, image: testFile });
+      const actual = model.getJsonAttributes({ create: true });
+      expect(Object.keys(actual)).not.toContain("image");
+    });
+
+    it("should emit file type objects when serializing a model via formData", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        public image: any;
+      }
+      const model = new Model({ id: 1, image: testFile });
+      const actual = model.getFormDataOnlyAttributes({ create: true });
+      expect(actual.get("mock_model[image]")).toEqual(model.image);
+    });
+
+    it("should not emit null values when serializing a model via formData", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        public image: any;
+      }
+      const model = new Model({ id: 1, image: null });
+      const actual = model.getFormDataOnlyAttributes({ create: true });
+      expect(actual.has("mock_model[image]")).toBeFalse();
+      expect(actual.keys()).toHaveSize(0);
+    });
+
+    it("toJSON emits values as is (null case)", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        public image: any;
+      }
+      const model = new Model({ id: 1, image: null });
+      const actual = model.toJSON();
+      expect(actual.image).toBeNull();
+    });
+
+    it("toJSON emits values as is (File type object case)", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        public image: any;
+      }
+      const model = new Model({ id: 1, image: testFile });
+      const actual = model.toJSON();
+      expect(actual.image).toBeInstanceOf(File);
+    });
+
+    it("should emit file type objects when serializing a model via formData", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        public image: any;
+      }
+      const model = new Model({ id: 1, image: testFile });
+      const actual = model.getFormDataOnlyAttributes({ create: true });
+      expect(actual.get("mock_model[image]")).toEqual(model.image);
+    });
+
+    it("should not emit null values when serializing a model via formData", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        public image: any;
+      }
+      const model = new Model({ id: 1, image: null });
+      const actual = model.getFormDataOnlyAttributes({ create: true });
+      expect(actual.has("mock_model[image]")).toBeFalse();
+      expect(actual.keys()).toHaveSize(0);
+    });
+
+    it("toJSON emits values as is (null case)", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        public image: any;
+      }
+      const model = new Model({ id: 1, image: null });
+      const actual = model.toJSON();
+      expect(actual.image).toBeNull();
+    });
+
+    it("toJSON emits values as is (File type object case)", () => {
+      class Model extends MockModel {
+        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        public image: any;
+      }
+      const model = new Model({ id: 1, image: testFile });
+      const actual = model.toJSON();
+      expect(actual.image).toBeInstanceOf(File);
+    });
+  });
+
   describe("hasFormData", () => {
+    const testFile = new File([""], "testFileName.png");
     [
       { label: "create: true", create: true },
       { label: "update: true", update: true },
@@ -172,6 +281,7 @@ describe("AbstractModel", () => {
           const model = new Model({ value0: "value" });
           expect(hasFormDataOnlyAttributes(model)).toBeTrue();
         });
+
         it("should return false is no attributes are instantiated", () => {
           class Model extends MockModel {
             @bawPersistAttr({ supportedFormats: ["formData"] })
@@ -187,6 +297,24 @@ describe("AbstractModel", () => {
           class Model extends MockModel {}
           const model = new Model({});
           expect(hasFormDataOnlyAttributes(model)).toBeFalse();
+        });
+
+        it("should not want to send a formdata request if attribute is null", () => {
+          class Model extends MockModel {
+            @bawPersistAttr({ supportedFormats: ["json", "formData"] })
+            public image: any;
+          }
+          const model = new Model({image: null});
+          expect(hasFormDataOnlyAttributes(model)).toBeFalse();
+        });
+
+        it("should want to send FormData request if attribute is a File type object", () => {
+          class Model extends MockModel {
+            @bawPersistAttr({ supportedFormats: ["json", "formData"] })
+            public image: any;
+          }
+          const model = new Model({image: testFile});
+          expect(hasFormDataOnlyAttributes(model)).toBeTrue();
         });
       });
     });
