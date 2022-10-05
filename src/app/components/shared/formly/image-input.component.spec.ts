@@ -1,1 +1,103 @@
-// TODO
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule
+} from "@angular/forms";
+import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
+import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
+import { ImageInputComponent } from "./image-input.component";
+import { formlyConfig } from "./custom-inputs.module";
+
+describe("FormlyImageInput", () => {
+  let model: any;
+  let formGroup: FormGroup;
+  let spectator: SpectatorHost<ImageInputComponent>;
+  const createHost = createHostFactory({
+    component: ImageInputComponent,
+    imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      FormlyModule.forRoot(formlyConfig),
+      FormlyBootstrapModule,
+    ],
+  });
+
+  function getInput() {
+    return spectator.query<HTMLInputElement>("input[type='file']");
+  }
+
+  function getButton() {
+    return spectator.query<HTMLButtonElement>("button");
+  }
+
+  function setup(key: string = "file", options: FormlyFieldProps = {}) {
+    formGroup = new FormGroup({ asFormControl: new FormControl("") });
+    model = {
+      image: ""
+    };
+
+    spectator = createHost(
+      `
+      <form [formGroup]="formGroup">
+        <baw-image-input></baw-image-input>
+      </form>
+      `,
+      {
+        hostProps: { formGroup },
+        props: {
+          field: {
+            model,
+            key,
+            formControl: formGroup.get("asFormControl"),
+            props: options,
+          },
+        },
+      }
+    );
+    spectator.detectChanges();
+  }
+
+  describe("imageInput", () => {
+    it("should display file input", () => {
+      setup();
+      expect(getInput()).toBeTruthy();
+    });
+  });
+
+  describe("removeImage", () => {
+    it("should display the remove image button", () => {
+      setup();
+      expect(getButton()).toBeTruthy();
+    });
+
+    it("should set model value to null on click", () => {
+      setup();
+      getButton().click();
+      expect(model.image).toBeNull();
+    });
+
+    it("should remove file from image input field", () => {
+      setup();
+      const imageInput = getInput();
+
+      const testingFile = new File([""], "testFile.png");
+
+      // Use the JS data transfer API to simulate a user
+      // drag and dropping a file into the file image input.
+      // this is done to add a mock file to the input field which we can
+      // then test to see if it is removed with the getButton().click() method
+      const dataTransfer = new DataTransfer();
+      // Add the mock file to dataTransfer's DataTransferItemList object
+      // DataTransferItemList is an object which stores a list of all DataTransfer Objects
+      dataTransfer.items.add(testingFile);
+      // Set the Image Input file field to the DataTransferItemList Objects list of items by value
+      imageInput.files = dataTransfer.files;
+
+      expect(imageInput.value).toBeTruthy();
+      getButton().click();
+      expect(imageInput.value).toBeFalsy();
+    });
+  });
+});

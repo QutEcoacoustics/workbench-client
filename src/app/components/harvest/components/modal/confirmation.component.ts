@@ -21,7 +21,12 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
         <button id="cancel-btn" class="btn btn-outline-primary float-start" (click)="close()">
           {{ cancelLabel }}
         </button>
-        <button id="next-btn" class="btn btn-primary float-end" (click)="continue()">
+        <button
+          id="next-btn"
+          class="btn float-end"
+          [ngClass]="this.isDanger === 'true' ? 'btn-danger text-white' : 'btn-primary'"
+          (click)="continue()"
+        >
           {{ nextLabel }}
         </button>
       </div>
@@ -31,6 +36,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 export class ConfirmationComponent {
   @Input() public nextLabel: string;
   @Input() public cancelLabel = "Cancel";
+  @Input() public isDanger;
   @Input() public modal: NgbActiveModal;
 
   public close(): void {

@@ -111,7 +111,6 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     }
 
     for (const attr of Object.keys(data)) {
-      // Do not include undefined/null data
       if (!isInstantiated(data[attr])) {
         continue;
       }
@@ -207,6 +206,11 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     if (opts?.create || opts?.update) {
       return this.getPersistentAttributes()
         .filter((meta) => (opts.create ? meta.create : meta.update))
+        // The following filter splits values for attributes that support both json and formData formats
+        // when a  null value is present, we send the value in the json request
+        // when a File value is present, we send the value in the formData request
+        // The null/json scenario is used to support deleting images.
+        .filter((meta) => this[meta.key] instanceof(File) ? opts.formData : true)
         .filter((meta) =>
           meta.supportedFormats.includes(opts.formData ? "formData" : "json")
         )

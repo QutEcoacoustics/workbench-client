@@ -234,11 +234,11 @@
 <div class="clearfix">
   <button
     id="cancel-btn"
-    class="btn btn-warning float-start"
+    class="btn btn-outline-danger float-start"
     [disabled]="loading"
-    (click)="cancelUpload(cancelUploadModal)"
+    (click)="abortUpload(abortUploadModal)"
   >
-    Cancel
+    Abort
   </button>
   <button
     id="finish-btn"
@@ -260,14 +260,15 @@
   </baw-harvest-confirmation-modal>
 </ng-template>
 
-<ng-template #cancelUploadModal let-modal>
+<ng-template #abortUploadModal let-modal>
   <baw-harvest-confirmation-modal
-    nextLabel="Cancel Upload"
+    nextLabel="Abort Upload"
     cancelLabel="Return"
+    isDanger="true"
     [modal]="modal"
   >
     <p>
-      Are you sure you want to cancel this upload? Cancelling will not process
+      Are you sure you want to abort this upload? Aborting will not process
       any uploaded files, and cannot be undone.
     </p>
   </baw-harvest-confirmation-modal>

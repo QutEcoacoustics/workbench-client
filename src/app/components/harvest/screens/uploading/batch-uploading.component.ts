@@ -62,7 +62,7 @@ export class BatchUploadingComponent implements OnInit {
     }
   }
 
-  public async cancelUpload(template: any): Promise<void> {
+  public async abortUpload(template: any): Promise<void> {
     const ref = this.modals.open(template);
     const success = await ref.result.catch((_) => false);
 

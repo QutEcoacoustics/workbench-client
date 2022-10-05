@@ -167,6 +167,16 @@ export class Harvest extends AbstractModel implements IHarvest {
     );
   }
 
+  public isAbortable(): boolean {
+    const notTransitionableStates: HarvestStatus[] = [
+      "scanning",
+      "metadataExtraction",
+      "processing",
+      "complete"
+    ];
+
+    return !notTransitionableStates.includes(this.status);
+  }
 }
 
 export interface IHarvestReport {
