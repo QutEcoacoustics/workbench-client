@@ -206,8 +206,11 @@ describe("BatchUploadingComponent", () => {
         modalService.dismissAll();
     });
 
-    it ("should cancel upload when cancel is clicked and the 'cancel upload' modal button is clicked", (done) => {
-      launchModal("#cancel-btn", "Are you sure you want to cancel this upload");
+    it ("should abort upload when abort is clicked and the 'abort upload' modal button is clicked", (done) => {
+      launchModal(
+        "#cancel-btn",
+        "Are you sure you want to abort this upload? Aborting will not process any uploaded files, and cannot be undone."
+      );
       clickModalNext(() => {
         expect(stages.transition).toHaveBeenCalledWith("complete");
         done();
@@ -223,7 +226,10 @@ describe("BatchUploadingComponent", () => {
     });
 
     it ("should launch and cancel modal when 'cancel' button is clicked and then 'return' is clicked", (done) => {
-      launchModal("#cancel-btn", "Are you sure you want to cancel this upload");
+      launchModal(
+        "#cancel-btn",
+        "Are you sure you want to abort this upload? Aborting will not process any uploaded files, and cannot be undone."
+      );
       cancelModal(done);
     });
 

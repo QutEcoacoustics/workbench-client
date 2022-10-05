@@ -15,6 +15,14 @@ import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { DateTime } from "luxon";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import {
+  BehaviorSubject,
+  catchError,
+  throwError
+} from "rxjs";
+import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 
 export const harvestsMenuItemActions = [newHarvestMenuItem];
 const projectKey = "project";
@@ -26,15 +34,11 @@ const projectKey = "project";
 class ListComponent extends PageComponent implements OnInit {
   public contactUs = contactUsMenuItem;
   public project: Project;
-  public filters: Filters<Harvest> = {
-    sorting: {
-      direction: "desc",
-      orderBy: "createdAt",
-    },
-  };
+  public filters$: BehaviorSubject<Filters<Harvest>>;
   public canCreateHarvestCapability: boolean;
 
   public constructor(
+    public modals: NgbModal,
     private harvestsApi: HarvestsService,
     private route: ActivatedRoute
   ) {
@@ -44,6 +48,41 @@ class ListComponent extends PageComponent implements OnInit {
   public ngOnInit(): void {
     this.project = this.route.snapshot.data[projectKey].model;
     this.canCreateHarvestCapability = this.project.can("createHarvest").can;
+    // A BehaviorSubject is need on fitlers$ to update the ngx-datatable harvest list & models
+    // The this.filters$ is triggered in abortUpload()
+    this.filters$ = new BehaviorSubject({
+      sorting: {
+        direction: "desc",
+        orderBy: "createdAt",
+      }
+    });
+  }
+
+  public async abortUpload(template: any, harvest: Harvest): Promise<void> {
+    const ref = this.modals.open(template);
+    const success = await ref.result.catch((_) => false);
+
+    if (success) {
+      this.harvestsApi
+      .transitionStatus(harvest, "complete")
+      .pipe(
+        catchError((err: BawApiError) => {
+          if (err.status !== CLIENT_TIMEOUT) {
+            return throwError(() => err);
+          }
+        })
+      )
+      // We want this api request to complete regardless of lifecycle destruction
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      .subscribe({
+        next: (): void => {
+          this.filters$.next({});
+        },
+        error: (err: BawApiError): void => {
+          this.notifications.error(err.message);
+        },
+      });
+    }
   }
 
   public getModels = (filters: Filters<Harvest>) =>

@@ -221,6 +221,15 @@ export class MetadataReviewComponent
     }
   }
 
+  public async abortUpload(template: any): Promise<void> {
+    const ref = this.modals.open(template);
+    const success = await ref.result.catch((_) => false);
+
+    if (success) {
+      this.stages.transition("complete");
+    }
+  }
+
   public isFolder(row: MetaReviewRow): row is MetaReviewFolder {
     return row.rowType === RowType.folder;
   }
