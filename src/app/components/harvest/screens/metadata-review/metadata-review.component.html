@@ -75,33 +75,49 @@
 </div>
 
 <div class="mt-3 d-flex justify-content-between">
-  <button
+  <div>
+    <button
+      id="harvest-abort-button"
+      class="btn btn-outline-danger me-2"
+      [disabled]="transitioningStage"
+      (click)="abortUpload(abortUploadModal)"
+    >
+      Abort
+    </button>
+
+    <button
     class="btn btn-outline-primary"
     [disabled]="transitioningStage"
     (click)="upload(uploadModal)"
-  >
-    Upload more files
-  </button>
-  <button
-    *ngIf="harvest.isMappingsDirty"
-    class="btn btn-primary"
-    [disabled]="transitioningStage"
-    (click)="extraction(extractionModal)"
-  >
-    Check changes
-  </button>
+    >
+      Upload more files
+    </button>
+  </div>
+
   <!-- TODO Modal popup when hasUnsavedChanges -->
-  <button
-    class="btn"
-    [class.btn-primary]="!harvest.isMappingsDirty"
-    [class.btn-warning]="harvest.isMappingsDirty"
-    [disabled]="transitioningStage"
-    (click)="processing(processingModal)"
-  >
-    {{
-      harvest.isMappingsDirty ? "Continue without checking changes" : "Continue"
-    }}
-  </button>
+  <div>
+    <button
+      *ngIf="harvest.isMappingsDirty"
+      class="btn btn-primary"
+      [disabled]="transitioningStage"
+      (click)="extraction(extractionModal)"
+    >
+      Check changes
+    </button>
+
+    <button
+      id="harvest-continue-button"
+      class="btn"
+      [class.btn-primary]="!harvest.isMappingsDirty"
+      [class.btn-warning]="harvest.isMappingsDirty"
+      [disabled]="transitioningStage"
+      (click)="processing(processingModal)"
+    >
+      {{
+        harvest.isMappingsDirty ? "Continue without checking changes" : "Continue"
+      }}
+    </button>
+  </div>
 </div>
 
 <ng-template #processingModal let-modal>
@@ -122,5 +138,19 @@
 <ng-template #extractionModal let-modal>
   <baw-harvest-confirmation-modal nextLabel="Check Changes" [modal]="modal">
     <p>Are you sure you want to check these changes to your uploaded files?</p>
+  </baw-harvest-confirmation-modal>
+</ng-template>
+
+<ng-template #abortUploadModal let-modal>
+  <baw-harvest-confirmation-modal
+    nextLabel="Abort Upload"
+    cancelLabel="Return"
+    isDanger="true"
+    [modal]="modal"
+  >
+    <p>
+      Are you sure you want to abort this upload? Aborting will not process
+      any uploaded files, and cannot be undone.
+    </p>
   </baw-harvest-confirmation-modal>
 </ng-template>
