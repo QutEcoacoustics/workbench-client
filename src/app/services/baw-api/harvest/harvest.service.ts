@@ -164,6 +164,22 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
   }
 
   /**
+   * Updates the name of a harvest
+   *
+   * @param name New name of the harvest
+   */
+  public updateName(
+    model: Harvest,
+    newHarvestName: string
+  ): Observable<Harvest> {
+    return this.api
+      .httpPatch(shallowEndpoint(model, emptyParam), {
+        [this.harvestKind]: { name: newHarvestName }
+      })
+      .pipe(map(this.api.handleSingleResponse(Harvest)));
+  }
+
+  /**
    * Update the mappings of a harvest
    *
    * @param mappings Mappings of folders to sites

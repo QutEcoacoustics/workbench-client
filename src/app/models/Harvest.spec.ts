@@ -1,32 +1,59 @@
 import { Harvest, HarvestStatus } from "@models/Harvest";
 import { generateHarvest } from "@test/fakes/Harvest";
 
-describe("isAbortable", () => {
-  const createModel = (harvestStatus: HarvestStatus) =>
+const createModel = (harvestStatus: HarvestStatus) =>
     new Harvest(generateHarvest({ status: harvestStatus }));
 
-  const transitionalHarvestStates: HarvestStatus[] = [
+describe("isAbortable", () => {
+  const abortableHarvestStates: HarvestStatus[] = [
     "metadataReview",
     "uploading",
     "newHarvest"
   ];
 
-  const notTransitionalHarvestStates: HarvestStatus[] = [
+  const notAbortableHarvestStates: HarvestStatus[] = [
     "scanning",
     "metadataExtraction",
     "processing",
     "complete"
   ];
 
-  transitionalHarvestStates.forEach((harvestStatus: HarvestStatus) => {
+  abortableHarvestStates.forEach((harvestStatus: HarvestStatus) => {
     it(`should return true for a Harvest with the status of ${harvestStatus}`, () => {
       expect(createModel(harvestStatus).isAbortable()).toBeTrue();
     });
   });
 
-  notTransitionalHarvestStates.forEach((harvestStatus: HarvestStatus) => {
+  notAbortableHarvestStates.forEach((harvestStatus: HarvestStatus) => {
     it(`should return false for a Harvest with the status of ${harvestStatus}`, () => {
       expect(createModel(harvestStatus).isAbortable()).toBeFalse();
+    });
+  });
+});
+
+describe("canUpdate", () => {
+  const transitionableHarvestStates: HarvestStatus[] = [
+    "metadataReview",
+    "uploading",
+    "newHarvest",
+    "complete"
+  ];
+
+  const notTransitionableHarvestStates: HarvestStatus[] = [
+    "scanning",
+    "metadataExtraction",
+    "processing"
+  ];
+
+  transitionableHarvestStates.forEach((harvestStatus: HarvestStatus) => {
+    it(`should return true for a Harvest with the status of ${harvestStatus}`, () => {
+      expect(createModel(harvestStatus).canUpdate).toBeTrue();
+    });
+  });
+
+  notTransitionableHarvestStates.forEach((harvestStatus: HarvestStatus) => {
+    it(`should return false for a Harvest with the status of ${harvestStatus}`, () => {
+      expect(createModel(harvestStatus).canUpdate).toBeFalse();
     });
   });
 });

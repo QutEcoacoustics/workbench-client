@@ -1,0 +1,19 @@
+// the following classes are needed to align items in the same positions across browsers
+// align the flexbox to the same position in all browsers
+.flexbox-align {
+  display: flex !important;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  align-items: baseline !important;
+  justify-content: left;
+  word-break: break-word;
+
+  // center the elements in the flexbox
+  // translateY(0.25rem) is equivalent to m-1 in ng-bootstrap
+  .fit-content {
+      transform: translateY(0.25rem);
+      height: fit-content;
+  }
+}

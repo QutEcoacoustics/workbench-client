@@ -41,6 +41,7 @@ export function generateHarvestReport(
 export function generateHarvest(data?: Partial<IHarvest>): Required<IHarvest> {
   return {
     id: modelData.id(),
+    name: modelData.random.word(),
     streaming: modelData.datatype.boolean(),
     status: modelData.helpers.arrayElement<HarvestStatus>([
       "uploading",

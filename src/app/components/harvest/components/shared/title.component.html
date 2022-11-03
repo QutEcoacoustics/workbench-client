@@ -1,0 +1,36 @@
+<h1>
+<small class="text-muted">
+    Project: {{ project.name }}
+</small>
+<br />
+    <form #f="ngForm" (ngSubmit)="updateHarvestName(f)" class="form-group flexbox-align">
+        <div class="d-flex flex-row">
+            Upload Recordings: {{ !editingHarvestName ? harvest.name : '' }}
+            <div *ngIf="editingHarvestName" class="d-flex fit-content">
+                <input
+                    type="text"
+                    name="harvestNameInput"
+                    [ngModel]="harvest.name"
+                    class="form-control"
+                    placeholder="{{harvest.name}}"
+                    ngModel
+                />
+                <button type="submit" class="btn btn-primary ms-1">
+                <fa-icon [icon]="['fas', 'check']"></fa-icon>
+                </button>
+                <button type="button" class="btn btn-outline-danger ms-1" (click)="toggleHarvestNameEditing(false)">
+                <fa-icon [icon]="['fas', 'times']"></fa-icon>
+                </button>
+            </div>
+
+            <sub
+                *ngIf="harvest.canUpdate && !editingHarvestName"
+                (click)="toggleHarvestNameEditing(true)"
+                style="cursor: pointer;"
+                class="ms-2 mt-2"
+            >
+                <fa-icon [icon]="['fas', 'pencil']" size="xs"></fa-icon>
+            </sub>
+        </div>
+    </form>
+</h1>

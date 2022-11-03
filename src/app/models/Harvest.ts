@@ -78,6 +78,7 @@ export class HarvestMapping
 
 export interface IHarvest extends HasCreatorAndUpdater {
   id?: Id;
+  name?: string;
   streaming?: boolean;
   status?: HarvestStatus;
   projectId?: Id;
@@ -101,6 +102,8 @@ export interface HarvestUploadConnectionArguments {
 export class Harvest extends AbstractModel implements IHarvest {
   public readonly kind = "Harvest";
   public readonly id?: Id;
+  @bawPersistAttr()
+  public name?: string;
   @bawPersistAttr({ create: true, update: false })
   public readonly streaming?: boolean;
   @bawPersistAttr({ convertCase: true })
@@ -167,15 +170,18 @@ export class Harvest extends AbstractModel implements IHarvest {
     );
   }
 
-  public isAbortable(): boolean {
+  public get canUpdate(): boolean {
     const notTransitionableStates: HarvestStatus[] = [
       "scanning",
       "metadataExtraction",
-      "processing",
-      "complete"
+      "processing"
     ];
 
     return !notTransitionableStates.includes(this.status);
+  }
+
+  public isAbortable(): boolean {
+    return this.canUpdate && this.status !== "complete";
   }
 }
 
