@@ -28,6 +28,7 @@ class DetailsComponent
   implements OnInit, OnDestroy
 {
   public project: Project;
+  public harvest: Harvest;
 
   public constructor(
     public stages: HarvestStagesService,
@@ -38,9 +39,9 @@ class DetailsComponent
 
   public ngOnInit(): void {
     const routeData = this.route.snapshot.data;
-    const harvest: Harvest = routeData[harvestKey]?.model;
+    this.harvest = routeData[harvestKey]?.model;
     this.project = routeData[projectKey].model;
-    this.stages.initialize(this.project, harvest);
+    this.stages.initialize(this.project, this.harvest);
   }
 
   public ngOnDestroy(): void {

@@ -10,6 +10,15 @@
   bawDatatableDefaults
   [bawDatatablePagination]="{ filters: filters$, getModels: getModels }"
 >
+  <ngx-datatable-column prop="name">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Name
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+
   <ngx-datatable-column prop="createdAt">
     <ng-template let-column="column" ngx-datatable-header-template>
       Created
