@@ -35,7 +35,8 @@ describe("FormlyImageInput", () => {
   function setup(key: string = "file", options: FormlyFieldProps = {}) {
     formGroup = new FormGroup({ asFormControl: new FormControl("") });
     model = {
-      image: ""
+      image: "",
+      imageUrls: []
     };
 
     spectator = createHost(
@@ -67,9 +68,33 @@ describe("FormlyImageInput", () => {
   });
 
   describe("removeImage", () => {
-    it("should display the remove image button", () => {
+    it("should display the remove image button if the model has an image", () => {
+      setup();
+      // project_span4.png is the file name of the project default image
+      // if this test is not passing, it may be because the condition for the remove
+      // image button is dependent on the file name
+      model.image = new File([""], "project_span4.png");
+      spectator.detectChanges();
+
+      expect(getButton()).toBeTruthy();
+    });
+
+    it("should not display remove image button if the model does not have an image" , () => {
+      setup();
+      model.image = null;
+      spectator.detectChanges();
+
+      expect(getButton()).toBeNull();
+    });
+
+    it("should not display remove image button once the button has been clicked", () => {
       setup();
       expect(getButton()).toBeTruthy();
+
+      getButton().click();
+      spectator.detectChanges();
+
+      expect(getButton()).toBeNull();
     });
 
     it("should set model value to null on click", () => {

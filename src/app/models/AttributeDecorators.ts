@@ -83,7 +83,11 @@ export function bawImage<Model>(
   opts?: BawDecoratorOptions<Model>
 ) {
   // Retrieve default image and prepend site url if required
-  const defaultImage: ImageUrl = { size: ImageSizes.default, url: defaultUrl };
+  const defaultImage: ImageUrl = {
+    size: ImageSizes.default,
+    url: defaultUrl,
+    default: true,
+  };
 
   const sortImageUrls = (a: ImageUrl, b: ImageUrl): -1 | 0 | 1 => {
     // Default image should always be last in array
@@ -128,6 +132,19 @@ export function bawImage<Model>(
           defaultImage,
         ];
       } else if (imageUrls instanceof Array && imageUrls.length > 0) {
+        // TODO This code chunk is only a temporary hack and can be removed without modification when the baw-api issue below is resolved
+        // https://github.com/QutEcoacoustics/baw-server/issues/640
+        // at the moment, default images are defined by the baw-api by returning image urls matching the regex expression below
+        // in a future iteration of the api, the image urls attribute will not be returned when the image is a default image
+        const defaultImageMatchingRegex = new RegExp(
+          "^/images/(.*)/(\\1)_span.*.png$"
+        );
+        // iterate through the image url's validating if they match the default image url format. If they do, set the default flag
+        imageUrls = imageUrls.map((image) => ({
+          ...image,
+          ...(defaultImageMatchingRegex.test(image.url) && { default: true }),
+        }));
+
         // Copy and sort image urls
         const output = imageUrls
           .map((imageUrl) => ({
