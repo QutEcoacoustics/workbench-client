@@ -72,6 +72,13 @@ describe("titleComponent", () => {
     expect(getHarvestTitle().innerText).toEqual(expectedTitle);
   });
 
+  it("should not attempt to load the harvest name when a Harvest model is not initialized" , () => {
+    mockHarvest = undefined;
+    setup();
+
+    expect(getHarvestTitle()).toBeNull();
+  });
+
   it("should display an input box with the name of the Harvest when the pencil edit icon is clicked", fakeAsync(() => {
     setup();
 
