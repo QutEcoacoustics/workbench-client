@@ -93,8 +93,7 @@ const rootMappingPath = "";
 })
 export class MetadataReviewComponent
   extends withUnsubscribe()
-  implements OnInit, UnsavedInputCheckingComponent
-{
+  implements OnInit, UnsavedInputCheckingComponent {
   /** Changes to harvest have not yet been saved to the server */
   public hasUnsavedChanges: boolean;
   public newSiteMenuItem = newSiteMenuItem;
@@ -134,7 +133,7 @@ export class MetadataReviewComponent
 
   public ngOnInit(): void {
     this.siteColumnLabel = this.config.settings.hideProjects ? "Point" : "Site";
-    this.statistics = this.getStatistics(this.stages.harvest);
+    this.statistics = this.getStatistics(this.harvest);
 
     const rootFolder: MetaReviewFolder = {
       rowType: RowType.folder,
@@ -248,27 +247,43 @@ export class MetadataReviewComponent
       : row.harvestItem?.path;
 
   public updateHarvestWithMappingChange(): void {
-    const mappings: HarvestMapping[] = [];
+    // create a new "temporary" model of the Harvest mappings
+    const newMappings = new Map(this.harvest.mappings.map(x => [x.path, x]));
 
-    /*
+    /**
      * Iterate through all the rows, extract folders which have mappings and
      * push that list to the mappings array. We could use a filter and map for
      * this, however it's likely less performant
      */
     this.rows.forEach((row): void => {
+
       if (row.rowType === RowType.folder && isInstantiated(row.mapping)) {
-        mappings.push(row.mapping);
+        const rowMapping = row.mapping;
+        const existing = newMappings.get(rowMapping.path);
+
+        if (existing) {
+          Object.assign(existing, rowMapping);
+        } else {
+          newMappings.set(rowMapping.path, rowMapping);
+        }
+
       }
+
     });
+
+    const adjustedMappings = Array.from(newMappings.values());
 
     this.hasUnsavedChanges = true;
     this.harvestApi
-      .updateMappings(this.harvest, mappings)
+      .updateMappings(this.harvest, adjustedMappings)
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       .subscribe({
         next: (harvest: Harvest): void => {
           this.stages.setHarvest(harvest);
           this.hasUnsavedChanges = false;
+
+          // update the wider Harvest model once the baw-api PATCH request was accepted
+          this.harvest.mappings = adjustedMappings;
         },
         error: (err: BawApiError) =>
           this.notification.error("Failed to make that change: " + err.message),
