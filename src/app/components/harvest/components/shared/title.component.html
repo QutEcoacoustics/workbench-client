@@ -3,7 +3,7 @@
     Project: {{ project.name }}
 </small>
 <br />
-    <form #f="ngForm" (ngSubmit)="updateHarvestName(f)" class="form-group flexbox-align">
+    <form *ngIf="harvest !== undefined" #f="ngForm" (ngSubmit)="updateHarvestName(f)" class="form-group flexbox-align">
         <div class="d-flex flex-row">
             Upload Recordings: {{ !editingHarvestName ? harvest.name : '' }}
             <div *ngIf="editingHarvestName" class="d-flex fit-content">
