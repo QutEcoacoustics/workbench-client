@@ -117,3 +117,12 @@ export const downloadAudioRecordingMenuItem = menuLink({
   uri: ({ audioRecordingId }) =>
     audioRecordingOriginalEndpoint(audioRecordingId),
 });
+
+// TODO: when this button is clicked it should action a download
+export const downloadAudioRecordingAnalysesMenuItem = menuLink({
+  icon: ["fas", "file"],
+  label: "Download Analyses",
+  tooltip: () => "Download audio recording analyses",
+  disabled: "BETA: Will be available soon.",
+  uri: () => "#"
+});

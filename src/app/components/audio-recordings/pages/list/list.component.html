@@ -67,8 +67,8 @@
     </ngx-datatable-column>
     <ngx-datatable-column
       name="Model"
-      [width]="127"
-      [maxWidth]="127"
+      [width]="170"
+      [maxWidth]="170"
       [sortable]="false"
     >
       <ng-template let-column="column" ngx-datatable-header-template>
@@ -83,7 +83,6 @@
           <fa-icon [icon]="['fas', 'play']"></fa-icon>
         </a>
         <a
-          class="btn btn-sm btn-default mx-1"
           class="btn btn-sm btn-default me-1"
           placement="left"
           [ngbTooltip]="'Download audio recording'"
@@ -91,6 +90,17 @@
         >
           <fa-icon [icon]="['fas', 'download']"></fa-icon>
         </a>
+
+        <span [ngbTooltip]="'BETA: Will be available soon. Download audio recording analyses'">
+          <button
+            class="btn btn-sm btn-default me-1"
+            placement="left"
+            [disabled]="true"
+          >
+            <fa-icon [icon]="['fas', 'file']"></fa-icon>
+          </button>
+        </span>
+
         <!-- Change this link dynamically -->
         <a
           class="btn btn-sm btn-default"
