@@ -1,5 +1,9 @@
 import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
+  analysisJobItemResultResolvers,
+  AnalysisJobItemResultsService,
+} from "./analysis/analysis-job-item-result.service";
+import {
   analysisJobItemResolvers,
   AnalysisJobItemsService,
 } from "./analysis/analysis-job-items.service";
@@ -102,6 +106,11 @@ const serviceList = [
     serviceToken: Tokens.ANALYSIS_JOB_ITEM,
     service: AnalysisJobItemsService,
     resolvers: analysisJobItemResolvers,
+  },
+  {
+    serviceToken: Tokens.ANALYSIS_JOB_ITEM_RESULTS,
+    service: AnalysisJobItemResultsService,
+    resolvers: analysisJobItemResultResolvers,
   },
   {
     serviceToken: Tokens.AUDIO_EVENT,

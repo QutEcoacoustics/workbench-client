@@ -9,6 +9,7 @@ import { InjectionToken } from "@angular/core";
 import type { AbstractModel } from "@models/AbstractModel";
 import type { AnalysisJob } from "@models/AnalysisJob";
 import type { AnalysisJobItem } from "@models/AnalysisJobItem";
+import type { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import type { AudioEvent } from "@models/AudioEvent";
 import type { AudioRecording } from "@models/AudioRecording";
 import type { Bookmark } from "@models/Bookmark";
@@ -80,6 +81,7 @@ import type { TagGroupsService } from "./tag/tag-group.service";
 import type { TaggingsService } from "./tag/taggings.service";
 import type { TagsService } from "./tag/tags.service";
 import type { UserService } from "./user/user.service";
+import type { AnalysisJobItemResultsService } from "./analysis/analysis-job-item-result.service";
 
 /**
  * Wrapper for InjectionToken class. This is required because of
@@ -109,6 +111,10 @@ export const ANALYSIS_JOB_ITEM = new ServiceToken<
   AnalysisJobItemsService,
   AnalysisJobItem
 >("A_JOB_ITEM");
+export const ANALYSIS_JOB_ITEM_RESULTS = new ServiceToken<
+  AnalysisJobItemResultsService,
+  AnalysisJobItemResult
+>("A_JOB_ITEM_RESULTS");
 export const AUDIO_EVENT = new ServiceToken<AudioEventsService, AudioEvent>(
   "AUDIO"
 );
