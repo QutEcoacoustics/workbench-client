@@ -120,7 +120,7 @@ export const downloadAudioRecordingMenuItem = menuLink({
 
 // TODO: when this button is clicked it should action a download
 export const downloadAudioRecordingAnalysesMenuItem = menuLink({
-  icon: ["fas", "file"],
+  icon: ["fas", "file-arrow-down"],
   label: "Download Analyses",
   tooltip: () => "Download audio recording analyses",
   disabled: "BETA: Will be available soon.",
