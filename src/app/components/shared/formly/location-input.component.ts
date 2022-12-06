@@ -11,6 +11,7 @@ import { asFormControl } from "./helper";
 /**
  * Location Input
  * ! Warning, test manually after changes
+ * Modifying the location through map clicks and drag are not fully tested through the unit tests and should be tested manually
  */
 @Component({
   selector: "baw-location-input",
@@ -66,7 +67,11 @@ import { asFormControl } from "./helper";
     </div>
 
     <div class="mb-3" style="height: 400px">
-      <baw-map [markers]="marker"></baw-map>
+      <baw-map
+        [markers]="marker"
+        [markerOptions]="{ draggable: true }"
+        (newLocation)="updateModel($event.latLng.lng(), $event.latLng.lat())"
+      ></baw-map>
     </div>
   `,
 })
@@ -92,7 +97,10 @@ export class LocationInputComponent extends FieldType implements OnInit {
   /**
    * Update hidden input
    */
-  public updateModel() {
+  public updateModel(longitude?: number, latitude?: number) {
+    this.latitude = latitude ?? this.latitude;
+    this.longitude = longitude ?? this.longitude;
+
     this.formControl.setValue({
       latitude: this.latitude,
       longitude: this.longitude,
