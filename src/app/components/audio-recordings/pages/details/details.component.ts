@@ -12,7 +12,7 @@ import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   audioRecordingMenuItems,
   audioRecordingsCategory,
-  downloadAudioRecordingAnalysesMenuItem,
+  audioRecordingAnalysesMenuItem,
   downloadAudioRecordingMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -78,7 +78,7 @@ function getPageInfo(
   return {
     pageRoute: audioRecordingMenuItems.details[subRoute],
     category: audioRecordingsCategory,
-    menus: { actions: List([downloadAudioRecordingMenuItem, downloadAudioRecordingAnalysesMenuItem]) },
+    menus: { actions: List([downloadAudioRecordingMenuItem, audioRecordingAnalysesMenuItem]) },
     resolvers: {
       [audioRecordingKey]: audioRecordingResolvers.show,
       [projectKey]: projectResolvers.showOptional,

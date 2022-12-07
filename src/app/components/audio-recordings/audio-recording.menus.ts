@@ -13,6 +13,7 @@ import {
 import { AudioRecording } from "@models/AudioRecording";
 import {
   audioRecordingBatchRoutes,
+  audioRecordingResults,
   audioRecordingRoutes,
   audioRecordingsRoutes,
   RecordingRoute,
@@ -64,6 +65,18 @@ function makeBatchMenuItem(subRoute: RecordingRoute): MenuRoute {
   });
 }
 
+function makeAnalysesMenuItem(subRoute: RecordingRoute): MenuRoute {
+  return menuRoute({
+    icon: ["fas", "file-arrow-down"],
+    label: "Download Analyses",
+    tooltip: () => "Download audio recording analyses",
+    route: audioRecordingResults[subRoute],
+    parent: listMenuItems[subRoute],
+    breadcrumbResolve: (pageInfo) =>
+      retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),
+  });
+}
+
 const listMenuItems: RecordingMenuRoutes = {
   /** /audio_recordings */
   base: makeListMenuItem("base"),
@@ -103,10 +116,24 @@ const batchMenuItems: RecordingMenuRoutes = {
   project: makeBatchMenuItem("project"),
 };
 
+const analysesMenuItems: RecordingMenuRoutes = {
+  /** /audio_recordings/download */
+  base: makeAnalysesMenuItem("base"),
+  /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId/results */
+  site: makeAnalysesMenuItem("site"),
+  /** /project/:projectId/region/:regionId/point/:pointId/audio_recordings/:audioRecordingId/results */
+  siteAndRegion: makeAnalysesMenuItem("siteAndRegion"),
+  /** /region/:regionId/audio_recordings/:audioRecordingId/results */
+  region: makeAnalysesMenuItem("region"),
+  /** /project/:projectId/audio_recordings/:audioRecordingId/results */
+  project: makeAnalysesMenuItem("project"),
+};
+
 export const audioRecordingMenuItems = {
   list: listMenuItems,
   details: detailsMenuItems,
   batch: batchMenuItems,
+  analyses: analysesMenuItems,
 };
 
 export const downloadAudioRecordingMenuItem = menuLink({
@@ -118,11 +145,10 @@ export const downloadAudioRecordingMenuItem = menuLink({
     audioRecordingOriginalEndpoint(audioRecordingId),
 });
 
-// TODO: when this button is clicked it should action a download
-export const downloadAudioRecordingAnalysesMenuItem = menuLink({
+export const audioRecordingAnalysesMenuItem = menuRoute({
   icon: ["fas", "file-arrow-down"],
   label: "Download Analyses",
+  parent: analysesMenuItems,
+  route: audioRecordingResults.base,
   tooltip: () => "Download audio recording analyses",
-  disabled: "BETA: Will be available soon.",
-  uri: () => "#"
 });

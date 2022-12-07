@@ -1,0 +1,38 @@
+$border-color: #737373;
+$margin-offset: 13px;
+
+:host ::ng-deep .fa-custom-counter {
+  background-color: $border-color;
+  color: white;
+  font-weight: bold;
+  transform: scale(0.75) translateX(40%) translateY(65%);
+  left: 2px;
+  top: -4px;
+}
+
+.grid-table {
+  display: grid;
+  grid-template-columns:
+    1fr
+    14rem
+    9rem
+    min-content
+    min-content;
+
+  .grid-table-row {
+    display: contents;
+  }
+}
+
+.btn-border {
+  border-style: solid;
+  border-color: $border-color;
+}
+
+.fa-custom-icon {
+  margin: $margin-offset;
+  margin-left: 5px;
+  margin-top: 5px;
+  padding: $margin-offset;
+  font-size: 1.3em;
+}

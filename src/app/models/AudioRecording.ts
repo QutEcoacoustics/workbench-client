@@ -4,6 +4,7 @@ import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-r
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import {
   audioRecordingBatchRoutes,
+  audioRecordingResults,
   audioRecordingRoutes,
   RecordingStrongRoutes,
 } from "@components/audio-recordings/audio-recording.routes";
@@ -138,6 +139,15 @@ export class AudioRecording
     site?: IdOr<Site>
   ): string {
     const routes = audioRecordingBatchRoutes;
+    return this.selectRoute(routes, project, region, site);
+  }
+
+  public getAnalysisResultsUrl(
+    project?: IdOr<Project>,
+    region?: IdOr<Region>,
+    site?: IdOr<Site>
+  ): string {
+    const routes = audioRecordingResults;
     return this.selectRoute(routes, project, region, site);
   }
 

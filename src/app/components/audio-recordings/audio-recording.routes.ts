@@ -7,6 +7,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 const listRoutePath = "audio_recordings";
 const showRoutePath = ":audioRecordingId";
 const batchDownloadRoutePath = "download";
+const resultsPath = "results";
 
 export type RecordingRoute =
   | "base"
@@ -56,4 +57,19 @@ export const audioRecordingBatchRoutes: RecordingStrongRoutes = {
   region: audioRecordingsRoutes.region.add(batchDownloadRoutePath),
   /** /project/:projectId/audio_recordings/download */
   project: audioRecordingsRoutes.project.add(batchDownloadRoutePath),
+};
+
+export const audioRecordingResults: RecordingStrongRoutes = {
+  /** /audio_recordings/:audioRecordingId/results */
+  base: audioRecordingRoutes.base.add(resultsPath),
+  /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId/results */
+  site: audioRecordingRoutes.site.add(resultsPath),
+  /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings/:audioRecordingId/results */
+  siteAndRegion: audioRecordingRoutes.siteAndRegion.add(
+    resultsPath
+  ),
+  /** /project/:projectId/region/:regionId/audio_recordings/:audioRecordingId/results */
+  region: audioRecordingRoutes.region.add(resultsPath),
+  /** /project/:projectId/audio_recordings/results */
+  project: audioRecordingRoutes.project.add(resultsPath),
 };

@@ -91,15 +91,14 @@
           <fa-icon [icon]="['fas', 'download']"></fa-icon>
         </a>
 
-        <span [ngbTooltip]="'BETA: Will be available soon. Download audio recording analyses'">
-          <button
-            class="btn btn-sm btn-default me-1"
-            placement="left"
-            [disabled]="true"
-          >
-            <fa-icon [icon]="['fas', 'file-arrow-down']"></fa-icon>
-          </button>
-        </span>
+        <a
+          class="btn btn-sm btn-default me-1"
+          placement="left"
+          [ngbTooltip]="'Download audio recording analyses'"
+          [href]="value.getAnalysisResultsUrl(projectId, region, site)"
+        >
+          <fa-icon [icon]="['fas', 'file-arrow-down']"></fa-icon>
+        </a>
 
         <!-- Change this link dynamically -->
         <a
