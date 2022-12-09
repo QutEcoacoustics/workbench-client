@@ -22,7 +22,7 @@
       </div>
     </div>
     <div *ngFor="let row of rows$ | async; let even = even; trackBy: trackByRow">
-      <baw-directory-row [item]="row" [even]="even"></baw-directory-row>
+      <baw-directory-row [item]="row" [even]="even" (loadChildren)="loadMore(row)"></baw-directory-row>
     </div>
   </div>
 </div>

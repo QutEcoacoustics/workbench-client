@@ -45,12 +45,3 @@
     </span>
   </div>
 </div>
-
-<!-- Child folders & items -->
-<ng-container *ngIf="open">
-  <baw-directory-row
-    *ngFor="let item of item.children"
-    [item]="item"
-    [even]="!even"
-  ></baw-directory-row>
-</ng-container>

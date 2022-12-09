@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { rootPath } from "@components/audio-recordings/pages/analysis-results/analyses-results.component";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 
@@ -7,11 +7,12 @@ import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
   templateUrl: "analyses-download-row.component.html",
   styleUrls: ["analyses-download-row.component.scss"],
 })
-export class DirectoryRowComponent {
+export class AnalysesDownloadComponent {
   public constructor() {}
 
   @Input() public item: AnalysisJobItemResult;
   @Input() public even: boolean;
+  @Output() public loadChildren = new EventEmitter<AnalysisJobItemResult>();
   public open: boolean;
 
   public downloadAnalysisResults() {
@@ -26,6 +27,7 @@ export class DirectoryRowComponent {
   protected setOpen(): void {
     if (this.isFolder) {
       this.open = !this.open;
+      this.loadChildren.emit(this.item);
     }
   }
 

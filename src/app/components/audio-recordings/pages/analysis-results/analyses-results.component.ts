@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnChanges } from "@angular/core";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -11,7 +11,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { analysisJobResultsDemoData } from "@test/fakes/AnalysisJobItemResult";
-import { Observable, of } from "rxjs";
+import { Observable } from "rxjs";
 
 const audioRecordingKey = "audioRecording";
 const projectKey = "project";
@@ -23,25 +23,49 @@ export const rootPath = "/";
 @Component({
   selector: "baw-analyses-results",
   templateUrl: "analyses-results.component.html",
-  styleUrls: ["analyses-results.component.scss"]
+  styleUrls: ["analyses-results.component.scss"],
 })
-export class AnalysesResultsComponent extends PageComponent implements OnInit {
-  public constructor(
-  ) {
+export class AnalysesResultsComponent extends PageComponent implements OnChanges {
+  public constructor() {
     super();
+    this.getData();
   }
 
-  public rows$: Observable<AnalysisJobItemResult[]>;
-  private rows = this.getItemResults();
-  public getRows$: Observable<AnalysisJobItemResult[]> = of(this.rows);
+  public getData = (): Observable<AnalysisJobItemResult[]> => this.rows$ = this.getRows();
+  public ngOnChanges = (): Observable<AnalysisJobItemResult[]> => this.getData();
+  private createRootFolder = (): AnalysisJobItemResult[] => [
+    new AnalysisJobItemResult({ resultsPath: rootPath, open: true }),
+  ];
 
-  public ngOnInit(): void {
-      this.rows$ = this.getRows$;
+  private rows = this.getRootItems();
+  public rows$: Observable<AnalysisJobItemResult[]>;
+
+  public getRows() {
+    const data = new Observable<AnalysisJobItemResult[]>((observer) => {
+      observer.next(this.rows);
+    });
+    return data;
   }
 
   // at the moment this always returns demo data as we are awaiting server implementation
-  public getItemResults(): AnalysisJobItemResult[] {
-    return analysisJobResultsDemoData;
+  public getRootItems(): AnalysisJobItemResult[] {
+    const allItems = this.createRootFolder().concat(analysisJobResultsDemoData);
+    return allItems;
+  }
+
+  public loadMore(item: AnalysisJobItemResult) {
+    // check if the folder is open
+    if (this.rows.indexOf(item.children[0]) === -1) {
+      // the folder is closed
+      this.rows.splice(this.rows.indexOf(item) + 1, 0, ...item.children);
+    } else {
+      // the folder is open
+      this.rows = this.rows.filter(
+          (folder) => !folder.resultsPath.includes(item.resultsPath) || folder.resultsPath === item.resultsPath
+      );
+    }
+
+    this.getData();
   }
 
 }
@@ -66,7 +90,3 @@ AnalysesResultsComponent.linkToRoute(getPageInfo("base"))
   .linkToRoute(getPageInfo("siteAndRegion"))
   .linkToRoute(getPageInfo("region"))
   .linkToRoute(getPageInfo("project"));
-function generateAnalysisJob(): import("@models/AnalysisJob").IAnalysisJob {
-  throw new Error("Function not implemented.");
-}
-
