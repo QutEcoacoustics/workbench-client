@@ -59,19 +59,6 @@ export class AnalysisJobItemResult
     throw new Error("AnalysisJobItemResult viewUrl not implemented.");
   }
 
-  public userFriendlyFileSize(): string {
-    // taken from https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
-    // I need to find a better solution before PR (maybe library???)
-    function formatBytes(bytes: number) {
-      const k = 1024;
-      const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
-  }
-
-    return formatBytes(this.sizeBytes);
-  }
-
   public parentFolders(): string[] {
     return this.resultsPath.split("/").splice(-1);
   }
