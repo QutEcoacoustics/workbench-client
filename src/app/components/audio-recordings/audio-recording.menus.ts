@@ -65,7 +65,7 @@ function makeBatchMenuItem(subRoute: RecordingRoute): MenuRoute {
   });
 }
 
-function makeAnalysesMenuItem(subRoute: RecordingRoute): MenuRoute {
+export function makeAnalysesMenuItem(subRoute: RecordingRoute): MenuRoute {
   return menuRoute({
     icon: ["fas", "file-arrow-down"],
     label: "Download Analyses",
@@ -143,12 +143,4 @@ export const downloadAudioRecordingMenuItem = menuLink({
   // Relative routes go to api
   uri: ({ audioRecordingId }) =>
     audioRecordingOriginalEndpoint(audioRecordingId),
-});
-
-export const audioRecordingAnalysesMenuItem = menuRoute({
-  icon: ["fas", "file-arrow-down"],
-  label: "Download Analyses",
-  parent: analysesMenuItems,
-  route: audioRecordingResults.base,
-  tooltip: () => "Download audio recording analyses",
 });

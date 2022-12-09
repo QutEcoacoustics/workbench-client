@@ -1,0 +1,28 @@
+<div>
+  <h1 class="text-muted">
+    <small>
+      Analysis Results: Example
+    </small>
+  </h1>
+
+  <p>
+    Results are available as they are generated. Download analysis reports of
+    individual files by clicking the <i>Download</i> button, or
+    <i>Download ZIP</i> to download an entire folders results in the form of a ZIP
+    file.
+  </p>
+
+  <!-- my code goes here -->
+  <div class="grid-table-wider">
+    <div class="grid-table">
+      <div class="grid-table-header">
+        <span class="grid-table-item">Path</span>
+        <span class="grid-table-item">Size</span>
+        <span class="grid-table-item">Download Results</span>
+      </div>
+    </div>
+    <div *ngFor="let row of rows$ | async; let even = even; trackBy: trackByRow">
+      <baw-directory-row [item]="row" [even]="even"></baw-directory-row>
+    </div>
+  </div>
+</div>

@@ -8,15 +8,13 @@ import { AudioRecordingsDetailsComponent } from "./pages/details/details.compone
 import { DownloadAudioRecordingsComponent } from "./pages/download/download.component";
 import { AudioRecordingsListComponent } from "./pages/list/list.component";
 import { SitesWithoutTimezonesComponent } from "./components/sites-without-timezones/sites-without-timezones.component";
-import { AnalysisResultsComponent } from "./pages/analysis-results/analysis-results.component";
-import { DirectoryExplorerComponent } from "./components/directory-row/directory-explorer.component";
-import { DirectoryRowComponent } from "./components/directory-row/directory-row.component";
-import { DirectoryWhitespaceComponent } from "./components/directory-row/directory-whitespace.component";
+import { AnalysesResultsComponent } from "./pages/analysis-results/analyses-results.component";
+import { DirectoryRowComponent } from "./components/analyses-download/analyses-downlaod-row.component";
+import { DirectoryWhitespaceComponent } from "./components/analyses-download/analyses-download-whitespace.component";
 
 const internalComponents = [
   SitesWithoutTimezonesComponent,
   DownloadTableComponent,
-  DirectoryExplorerComponent,
   DirectoryRowComponent,
   DirectoryWhitespaceComponent,
 ];
@@ -25,7 +23,7 @@ const components = [
   AudioRecordingsListComponent,
   AudioRecordingsDetailsComponent,
   DownloadAudioRecordingsComponent,
-  AnalysisResultsComponent,
+  AnalysesResultsComponent,
 ];
 
 const routes = Object.values(audioRecordingsRoutes)

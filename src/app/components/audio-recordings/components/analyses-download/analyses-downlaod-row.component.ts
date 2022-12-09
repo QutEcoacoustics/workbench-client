@@ -1,11 +1,11 @@
 import { Component, Input } from "@angular/core";
+import { rootPath } from "@components/audio-recordings/pages/analysis-results/analyses-results.component";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
-import { rootPath } from "./directory-explorer.component";
 
 @Component({
   selector: "baw-directory-row",
-  templateUrl: "directory-row.component.html",
-  styleUrls: ["directory-row.component.scss"],
+  templateUrl: "analyses-download-row.component.html",
+  styleUrls: ["analyses-download-row.component.scss"],
 })
 export class DirectoryRowComponent {
   public constructor() {}

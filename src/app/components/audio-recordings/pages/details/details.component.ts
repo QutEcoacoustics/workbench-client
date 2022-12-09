@@ -12,8 +12,8 @@ import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   audioRecordingMenuItems,
   audioRecordingsCategory,
-  audioRecordingAnalysesMenuItem,
   downloadAudioRecordingMenuItem,
+  makeAnalysesMenuItem,
 } from "@components/audio-recordings/audio-recording.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -78,7 +78,7 @@ function getPageInfo(
   return {
     pageRoute: audioRecordingMenuItems.details[subRoute],
     category: audioRecordingsCategory,
-    menus: { actions: List([downloadAudioRecordingMenuItem, audioRecordingAnalysesMenuItem]) },
+    menus: { actions: List([downloadAudioRecordingMenuItem, makeAnalysesMenuItem(subRoute)]) },
     resolvers: {
       [audioRecordingKey]: audioRecordingResolvers.show,
       [projectKey]: projectResolvers.showOptional,

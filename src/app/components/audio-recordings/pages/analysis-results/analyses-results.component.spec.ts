@@ -1,6 +1,5 @@
 import { FormsModule } from "@angular/forms";
-import { DirectoryExplorerComponent } from "@components/audio-recordings/components/directory-row/directory-explorer.component";
-import { DirectoryRowComponent } from "@components/audio-recordings/components/directory-row/directory-row.component";
+import { DirectoryRowComponent } from "@components/audio-recordings/components/analyses-download/directory-row.component";
 import {
   FaLayersComponent,
 } from "@fortawesome/angular-fontawesome";
@@ -9,25 +8,24 @@ import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { SpectatorHost, createHostFactory } from "@ngneat/spectator";
 import { generateAnalysisJobResults } from "@test/fakes/AnalysisJobItemResult";
 import { ToastrService } from "ngx-toastr";
-import { AnalysisResultsComponent } from "./analysis-results.component";
+import { AnalysesResultsComponent } from "./analyses-results.component";
 
 describe("analysisResultsComponent", () => {
-  let spectator: SpectatorHost<AnalysisResultsComponent>;
+  let spectator: SpectatorHost<AnalysesResultsComponent>;
 
   const createHost = createHostFactory({
     declarations: [
       NgbTooltip,
       FaLayersComponent,
-      DirectoryExplorerComponent,
       DirectoryRowComponent,
     ],
-    component: AnalysisResultsComponent,
+    component: AnalysesResultsComponent,
     imports: [FormsModule],
       mocks: [ToastrService],
   });
 
   const setup = () =>
-    (spectator = createHost("<baw-analysis-results></baw-analysis-results>"));
+    (spectator = createHost("<baw-analyses-results></baw-analyses-results>"));
 
   const getDirectoryRow = (index: number): HTMLElement =>
     spectator.queryAll<HTMLElement>("baw-directory-row")[index];
@@ -35,7 +33,7 @@ describe("analysisResultsComponent", () => {
   it("should create", () => {
     setup();
     spectator.detectChanges();
-    expect(spectator.component).toBeInstanceOf(AnalysisResultsComponent);
+    expect(spectator.component).toBeInstanceOf(AnalysesResultsComponent);
   });
 
   // this is only temporary until we have the API's functional

@@ -44,6 +44,7 @@ export class AnalysisJobItemResult
   public readonly hasZip?: boolean;
   public readonly type?: ResultsItemType = "directory";
   public readonly children?: AnalysisJobItemResult[];
+  public open?: boolean;
 
   // Associations
   @hasOne<AnalysisJobItemResult, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
