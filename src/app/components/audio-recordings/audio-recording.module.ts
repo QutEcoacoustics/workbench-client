@@ -9,14 +9,14 @@ import { DownloadAudioRecordingsComponent } from "./pages/download/download.comp
 import { AudioRecordingsListComponent } from "./pages/list/list.component";
 import { SitesWithoutTimezonesComponent } from "./components/sites-without-timezones/sites-without-timezones.component";
 import { AnalysesResultsComponent } from "./pages/analysis-results/analyses-results.component";
-import { AnalysesDownloadComponent } from "./components/analyses-download/analyses-downlaod-row.component";
-import { DirectoryWhitespaceComponent } from "./components/analyses-download/analyses-download-whitespace.component";
+import { AnalysesDownloadRowComponent } from "./components/analyses-download/analyses-download-row.component";
+import { AnalysisDownloadWhitespaceComponent } from "./components/analyses-download/analyses-download-whitespace.component";
 
 const internalComponents = [
   SitesWithoutTimezonesComponent,
   DownloadTableComponent,
-  AnalysesDownloadComponent,
-  DirectoryWhitespaceComponent,
+  AnalysesDownloadRowComponent,
+  AnalysisDownloadWhitespaceComponent,
 ];
 
 const components = [

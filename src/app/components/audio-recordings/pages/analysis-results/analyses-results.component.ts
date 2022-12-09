@@ -37,7 +37,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnChanges
     new AnalysisJobItemResult({ resultsPath: rootPath, open: true }),
   ];
 
-  private rows = this.getRootItems();
+  public rows = this.getRootItems();
   public rows$: Observable<AnalysisJobItemResult[]>;
 
   public getRows() {

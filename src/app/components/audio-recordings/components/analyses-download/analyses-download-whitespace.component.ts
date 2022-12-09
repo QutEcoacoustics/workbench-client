@@ -36,7 +36,7 @@ import { Component, Input } from "@angular/core";
     `,
   ],
 })
-export class DirectoryWhitespaceComponent {
+export class AnalysisDownloadWhitespaceComponent {
   @Input() public isFolder: boolean;
   @Input() public open: boolean;
 }

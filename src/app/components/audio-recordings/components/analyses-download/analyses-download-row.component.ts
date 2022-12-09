@@ -7,7 +7,7 @@ import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
   templateUrl: "analyses-download-row.component.html",
   styleUrls: ["analyses-download-row.component.scss"],
 })
-export class AnalysesDownloadComponent {
+export class AnalysesDownloadRowComponent {
   public constructor() {}
 
   @Input() public item: AnalysisJobItemResult;
