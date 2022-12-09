@@ -1,8 +1,10 @@
 import {
   AfterViewChecked,
   Component,
+  EventEmitter,
   Input,
   OnChanges,
+  Output,
   QueryList,
   ViewChild,
   ViewChildren,
@@ -22,11 +24,17 @@ import { takeUntil } from "rxjs/operators";
   template: `
     <!-- Display map -->
     <ng-container *ngIf="hasMarkers && googleMapsLoaded">
-      <google-map height="100%" width="100%" [options]="mapOptions">
+      <google-map
+        height="100%"
+        width="100%"
+        [options]="mapOptions"
+        (mapClick)="markerOptions.draggable && newLocation.emit($event)"
+      >
         <map-marker
           *ngFor="let marker of filteredMarkers"
           [options]="markerOptions"
           [position]="marker.position"
+          (mapDragend)="newLocation.emit($event)"
         >
         </map-marker>
         <map-info-window>{{ infoContent }}</map-info-window>
@@ -54,13 +62,15 @@ export class MapComponent
   @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
 
   @Input() public markers: List<MapMarkerOptions>;
+  @Input() public markerOptions: MapMarkerOptions;
+  @Output() public newLocation = new EventEmitter<google.maps.MapMouseEvent>();
+
   public filteredMarkers: MapMarkerOptions[];
   public hasMarkers = false;
   public infoContent = "";
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public mapOptions: MapOptions = { mapTypeId: "satellite" };
-  public markerOptions: MapMarkerOptions = {};
   public bounds: google.maps.LatLngBounds;
   private updateMap: boolean;
 
