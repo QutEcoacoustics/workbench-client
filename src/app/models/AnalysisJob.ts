@@ -28,7 +28,7 @@ import type { User } from "./User";
  * An analysis job model.
  */
 export interface IAnalysisJob extends HasAllUsers, HasDescription {
-  id?: Id;
+  id?: Id | Param;
   name?: Param;
   annotationName?: Param;
   customSettings?: Hash;

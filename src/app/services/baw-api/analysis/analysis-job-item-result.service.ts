@@ -21,7 +21,8 @@ const analysisJobId: IdParamOptional<AnalysisJob> = id;
 const audioRecordingId: IdParamOptional<AudioRecording> = id;
 const analysisJobItemResultsPath = param;
 
-const endpoint = stringTemplate`/analysis_jobs/${analysisJobId}/results/${audioRecordingId}/${analysisJobItemResultsPath}${option}`;
+export const analysisJobItemResultsEndpoint =
+  stringTemplate`/analysis_jobs/${analysisJobId}/results/${audioRecordingId}/${analysisJobItemResultsPath}${option}`;
 
 @Injectable()
 export class AnalysisJobItemResultsService
@@ -41,10 +42,10 @@ export class AnalysisJobItemResultsService
   ): Observable<AnalysisJobItemResult[]> {
     return this.api.list(
       AnalysisJobItemResult,
-      endpoint(
+      analysisJobItemResultsEndpoint(
         analysisJob,
         audioRecording,
-        analysisJobItemResult?.resultsPath ?? emptyParam,
+        analysisJobItemResult?.name ?? emptyParam,
         emptyParam
       )
     );
@@ -59,10 +60,10 @@ export class AnalysisJobItemResultsService
   ): Observable<AnalysisJobItemResult[]> {
     return this.api.filter(
       AnalysisJobItemResult,
-      endpoint(
+      analysisJobItemResultsEndpoint(
         analysisJob,
         audioRecording,
-        analysisJobItemResult?.resultsPath ?? emptyParam,
+        analysisJobItemResult?.name ?? emptyParam,
         filterParam
       ),
       filters
@@ -77,10 +78,10 @@ export class AnalysisJobItemResultsService
   ): Observable<AnalysisJobItemResult> {
     return this.api.show(
       AnalysisJobItemResult,
-      endpoint(
+      analysisJobItemResultsEndpoint(
         analysisJob,
         audioRecording,
-        analysisJobItemResult.resultsPath,
+        analysisJobItemResult.name,
         emptyParam
       )
     );

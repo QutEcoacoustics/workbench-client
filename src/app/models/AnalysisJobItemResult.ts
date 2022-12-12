@@ -20,6 +20,7 @@ export interface IAnalysisJobItemResult {
   type?: ResultsItemType;
   children?: AnalysisJobItemResult[];
   open?: boolean;
+  parentItem?: AnalysisJobItemResult;
 }
 
 export class AnalysisJobItemResult
@@ -36,7 +37,7 @@ export class AnalysisJobItemResult
   public readonly kind = "Analysis Job Item Results";
   public readonly id?: Id;
   public readonly name?: Param;
-  public readonly resultsPath?: Param;
+  public readonly path?: Param;
   public readonly analysisJobId?: Id;
   public readonly audioRecordingId?: Id;
   public readonly sizeBytes?: number;
@@ -45,6 +46,7 @@ export class AnalysisJobItemResult
   public readonly hasZip?: boolean;
   public readonly type?: ResultsItemType = "directory";
   public readonly children?: AnalysisJobItemResult[];
+  public parentItem: AnalysisJobItemResult;
 
   // Associations
   @hasOne<AnalysisJobItemResult, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
@@ -60,6 +62,6 @@ export class AnalysisJobItemResult
   }
 
   public parentFolders(): string[] {
-    return this.resultsPath.split("/").splice(-1);
+    return this.path.split("/").splice(-1);
   }
 }

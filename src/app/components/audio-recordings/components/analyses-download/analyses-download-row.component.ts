@@ -1,5 +1,9 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import {
+  AnalysisJobItemResultsService,
+} from "@baw-api/analysis/analysis-job-item-result.service";
 import { rootPath } from "@components/audio-recordings/pages/analysis-results/analyses-results.component";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 
 @Component({
@@ -7,21 +11,41 @@ import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
   templateUrl: "analyses-download-row.component.html",
   styleUrls: ["analyses-download-row.component.scss"],
 })
-export class AnalysesDownloadRowComponent {
-  public constructor() {}
+export class AnalysesDownloadRowComponent implements OnInit {
+  public constructor(public api: AnalysisJobItemResultsService) {}
 
   @Input() public item: AnalysisJobItemResult;
+  @Input() public parentItem: AnalysisJobItemResult;
   @Input() public even: boolean;
   @Output() public loadChildren = new EventEmitter<AnalysisJobItemResult>();
-  public open: boolean;
 
-  public downloadAnalysisResults() {
-    throw new Error("Downloading Analysis Results not Implemented...");
+  public open: boolean;
+  public rawFileEndpoint = "";
+
+  public ngOnInit() {
+    const apiEndpoint = "https://api.staging.ecosounds.org";
+    this.rawFileEndpoint = apiEndpoint + `${this.item.parentItem.path}${this.item.name}`;
   }
 
+  private subDirectoriesCount = (path: string) => path.split("/").length;
+
+  public downloadAnalysisResults() {
+    throw new Error("Error! Method not implemented!");
+  }
+
+  /**
+   * Calculates how much indentation a certain folder needs
+   *
+   * @returns an empty array of length n, representing how many nested sub folders the item is under
+   */
   protected indentation(): Array<void> {
-    const subPaths = this.item.resultsPath.split("/");
-    return Array(this.isRoot ? 0 : subPaths.length);
+    // files don't have a path, so we need to use the name
+    const subPaths = this.subDirectoriesCount(
+      isInstantiated(this.item.path) ? this.item.path : this.relativePath
+    );
+
+    const indentationAmount = subPaths - this.subDirectoriesCount(rootPath) - 1;
+    return Array(indentationAmount);
   }
 
   protected setOpen(): void {
@@ -32,14 +56,21 @@ export class AnalysesDownloadRowComponent {
   }
 
   public get isRoot(): boolean {
-    return this.item?.resultsPath === rootPath;
+    return this.item?.path === rootPath;
   }
 
   public get isFolder(): boolean {
-    return !this.itemName.includes(".");
+    return this.item.type === "directory";
   }
 
   public get itemName(): string {
-    return this.item?.resultsPath.split("/").slice(-1)[0];
+    return this.item?.name;
+  }
+
+  /**
+   * Returns the path of the analysis result item, relative to the root path
+   */
+  public get relativePath() {
+    return `${this.item.parentItem.path}/${this.item.name}`;
   }
 }
