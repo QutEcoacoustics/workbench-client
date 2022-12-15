@@ -62,7 +62,7 @@ export class AnalysesDownloadRowComponent {
   /**
    * Returns the path of the analysis result item, relative to the root path
    */
-  public get relativePath() {
+   private get relativePath() {
     return `${this.item.parentItem.path}/${this.item.name}`;
   }
 }
