@@ -59,7 +59,7 @@ export const audioRecordingBatchRoutes: RecordingStrongRoutes = {
   project: audioRecordingsRoutes.project.add(batchDownloadRoutePath),
 };
 
-export const audioRecordingResults: RecordingStrongRoutes = {
+export const audioRecordingResultsRoutes: RecordingStrongRoutes = {
   /** /audio_recordings/:audioRecordingId/results */
   base: audioRecordingRoutes.base.add(resultsPath),
   /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId/results */

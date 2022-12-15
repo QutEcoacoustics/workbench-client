@@ -1,13 +1,17 @@
 import { FormsModule } from "@angular/forms";
-import { AnalysesDownloadRowComponent } from "@components/audio-recordings/components/analyses-download/analyses-download-row.component";
+import { ActivatedRoute } from "@angular/router";
+import { AnalysisJobItemResultsService } from "@baw-api/analysis/analysis-job-item-result.service";
+import { AnalysesDownloadRowComponent } from "@components/audio-recordings/components/analyses-download/analysis-download-row.component";
 import {
   AnalysisDownloadWhitespaceComponent
-} from "@components/audio-recordings/components/analyses-download/analyses-download-whitespace.component";
+} from "@components/audio-recordings/components/analyses-download/analysis-download-whitespace.component";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { SpectatorHost, createHostFactory } from "@ngneat/spectator";
+import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { generateAnalysisJobResults } from "@test/fakes/AnalysisJobItemResult";
+import { MockProvider } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
+import { of } from "rxjs";
 import { AnalysesResultsComponent } from "./analyses-results.component";
 
 describe("analysesResultsComponent", () => {
@@ -22,6 +26,10 @@ describe("analysesResultsComponent", () => {
     component: AnalysesResultsComponent,
     imports: [FormsModule],
     mocks: [ToastrService],
+    providers: [
+      MockProvider(AnalysisJobItemResultsService),
+      MockProvider(ActivatedRoute),
+    ],
   });
 
   function setup() {
@@ -51,7 +59,7 @@ describe("analysesResultsComponent", () => {
   }
 
   function mockDirectoryStructure(newStructure: AnalysisJobItemResult[]) {
-    spectator.component.rows = newStructure;
+    spectator.component.rows$ = of(newStructure);
     updateComponent();
 
     // as we are not interested in the root folder in many of our tests
@@ -71,11 +79,11 @@ describe("analysesResultsComponent", () => {
     const singleFolderDirectory: AnalysisJobItemResult[] = [
       new AnalysisJobItemResult(
         generateAnalysisJobResults({
-          resultsPath: "/",
+          path: "/",
           children: [
             new AnalysisJobItemResult(
               generateAnalysisJobResults({
-                resultsPath: "result_item.csv",
+                path: "result_item.csv",
               })
             ),
           ],
@@ -96,11 +104,11 @@ describe("analysesResultsComponent", () => {
     const singleFolderDirectory: AnalysisJobItemResult[] = [
       new AnalysisJobItemResult(
         generateAnalysisJobResults({
-          resultsPath: "/",
+          path: "/",
           children: [
             new AnalysisJobItemResult(
               generateAnalysisJobResults({
-                resultsPath: "/FolderA",
+                path: "/FolderA",
               })
             ),
           ],
@@ -122,15 +130,15 @@ describe("analysesResultsComponent", () => {
     const nestedFolderDirectory: AnalysisJobItemResult[] = [
       new AnalysisJobItemResult(
         generateAnalysisJobResults({
-          resultsPath: "/",
+          path: "/",
           children: [
             new AnalysisJobItemResult(
               generateAnalysisJobResults({
-                resultsPath: "/FolderA",
+                path: "/FolderA",
                 children: [
                   new AnalysisJobItemResult(
                     generateAnalysisJobResults({
-                      resultsPath: `/FolderA/${expectedFileName}`,
+                      path: `/FolderA/${expectedFileName}`,
                     })
                   ),
                 ],
@@ -155,19 +163,19 @@ describe("analysesResultsComponent", () => {
     const nestedFolderDirectory: AnalysisJobItemResult[] = [
       new AnalysisJobItemResult(
         generateAnalysisJobResults({
-          resultsPath: "/",
+          path: "/",
           children: [
             new AnalysisJobItemResult(
               generateAnalysisJobResults({
-                resultsPath: "/FolderA",
+                path: "/FolderA",
                 children: [
                   new AnalysisJobItemResult(
                     generateAnalysisJobResults({
-                      resultsPath: "/FolderA/aa",
+                      path: "/FolderA/aa",
                       children: [
                         new AnalysisJobItemResult(
                           generateAnalysisJobResults({
-                            resultsPath: `/FolderA/aa/${folderAaaTestingFileName}`,
+                            path: `/FolderA/aa/${folderAaaTestingFileName}`,
                           })
                         ),
                         new AnalysisJobItemResult(

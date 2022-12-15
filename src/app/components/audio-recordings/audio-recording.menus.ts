@@ -13,7 +13,7 @@ import {
 import { AudioRecording } from "@models/AudioRecording";
 import {
   audioRecordingBatchRoutes,
-  audioRecordingResults,
+  audioRecordingResultsRoutes,
   audioRecordingRoutes,
   audioRecordingsRoutes,
   RecordingRoute,
@@ -70,7 +70,7 @@ export function makeAnalysesMenuItem(subRoute: RecordingRoute): MenuRoute {
     icon: ["fas", "file-arrow-down"],
     label: "Download Analyses",
     tooltip: () => "Download audio recording analyses",
-    route: audioRecordingResults[subRoute],
+    route: audioRecordingResultsRoutes[subRoute],
     parent: listMenuItems[subRoute],
     breadcrumbResolve: (pageInfo) =>
       retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),

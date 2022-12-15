@@ -10,7 +10,7 @@ export type ResultsItemType = "directory" | "file";
 
 export interface IAnalysisJobItemResult {
   id?: Id;
-  resultsPath?: string;
+  path?: string;
   analysisJobId?: Id;
   audioRecordingId?: Id;
   name?: string;
@@ -46,7 +46,8 @@ export class AnalysisJobItemResult
   public readonly hasZip?: boolean;
   public readonly type?: ResultsItemType = "directory";
   public readonly children?: AnalysisJobItemResult[];
-  public parentItem: AnalysisJobItemResult;
+  public parentItem?: AnalysisJobItemResult;
+  public open?: boolean;
 
   // Associations
   @hasOne<AnalysisJobItemResult, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
@@ -59,9 +60,5 @@ export class AnalysisJobItemResult
 
   public get viewUrl(): string {
     throw new Error("AnalysisJobItemResult viewUrl not implemented.");
-  }
-
-  public parentFolders(): string[] {
-    return this.path.split("/").splice(-1);
   }
 }
