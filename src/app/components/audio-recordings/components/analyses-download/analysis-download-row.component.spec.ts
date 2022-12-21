@@ -3,16 +3,15 @@ import { AnalysisJobItemResultsService } from "@baw-api/analysis/analysis-job-it
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AnalysesDownloadRowComponent } from "@components/audio-recordings/components/analyses-download/analysis-download-row.component";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
-import { createHostFactory, mockProvider, SpectatorHost } from "@ngneat/spectator";
+import { createComponentFactory, mockProvider, Spectator } from "@ngneat/spectator";
 import { generateAnalysisJobResults } from "@test/fakes/AnalysisJobItemResult";
 import { ToastrService } from "ngx-toastr";
-import { AnalysisDownloadWhitespaceComponent } from "./analysis-download-whitespace.component";
 
 describe("analysesResultsComponent", () => {
-  let spectator: SpectatorHost<AnalysesDownloadRowComponent>;
+  let spectator: Spectator<AnalysesDownloadRowComponent>;
+  let defaultAnalysisJobItemResult: AnalysisJobItemResult;
 
-  const createHost = createHostFactory({
-    declarations: [AnalysisDownloadWhitespaceComponent],
+  const createComponent = createComponentFactory({
     component: AnalysesDownloadRowComponent,
     imports: [FormsModule, MockBawApiModule],
     mocks: [ToastrService],
@@ -24,25 +23,49 @@ describe("analysesResultsComponent", () => {
   const createAnalysisJobItemResult = (): AnalysisJobItemResult =>
     new AnalysisJobItemResult(generateAnalysisJobResults());
 
-  function setup() {
-    const defaultAnalysisJobItemResult = createAnalysisJobItemResult();
+  const getDirectoryRow = (): HTMLSpanElement =>
+    spectator.query<HTMLSpanElement>(".directory-listing-item");
 
-    spectator = createHost(
-      "<baw-directory-row></baw-directory-row>",
-      {
-        props: {
-          item: defaultAnalysisJobItemResult
-        }
+  const getDirectoryRowDownloadButton = (): HTMLAnchorElement =>
+    spectator.query<HTMLAnchorElement>("a");
+
+  const getFileName = (): string =>
+    getDirectoryRow().innerText;
+
+  function setup() {
+    spectator = createComponent({
+      props: {
+        item: defaultAnalysisJobItemResult
       }
-    );
+    });
 
     spectator.component.item = defaultAnalysisJobItemResult;
     spectator.detectChanges();
   }
 
-  beforeEach(() => setup());
+  beforeEach(() => defaultAnalysisJobItemResult = createAnalysisJobItemResult());
 
   it("should create", () => {
+    setup();
     expect(spectator.component).toBeInstanceOf(AnalysesDownloadRowComponent);
+  });
+
+  it("should display the file name correctly", () => {
+    const expectedFileName = "test.csv";
+    defaultAnalysisJobItemResult = new AnalysisJobItemResult(generateAnalysisJobResults({
+      name: expectedFileName
+    }));
+
+    setup();
+
+    const realizedFileName = getFileName();
+
+    expect(realizedFileName).toEqual(expectedFileName);
+  });
+
+  it("should display a download button next to file", () => {
+    setup();
+    const downloadButtonElement = getDirectoryRowDownloadButton();
+    expect(downloadButtonElement).toBeTruthy();
   });
 });

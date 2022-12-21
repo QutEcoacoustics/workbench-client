@@ -1,14 +1,14 @@
 $container-borders: 2px solid #d1d4d7;
 
 :host ::ng-deep {
-  .grid-table-item {
+  .directory-listing-item {
     display: flex;
     flex-direction: row;
     background-color: inherit;
   }
 }
 
-.grid-table {
+.directory-column-header {
   display: grid;
   grid-template-columns:
     1fr
@@ -19,12 +19,9 @@ $container-borders: 2px solid #d1d4d7;
   grid-template-rows: 1fr;
   border-bottom: $container-borders;
   background-color: white;
-
-  .grid-table-header {
-    display: contents;
-  }
 }
 
-.grid-table-wider {
+.directory-listing-container {
+  position: relative;
   border-bottom: $container-borders;
 }

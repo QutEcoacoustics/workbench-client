@@ -10,13 +10,11 @@ import { AudioRecordingsListComponent } from "./pages/list/list.component";
 import { SitesWithoutTimezonesComponent } from "./components/sites-without-timezones/sites-without-timezones.component";
 import { AnalysesResultsComponent } from "./pages/analysis-results/analyses-results.component";
 import { AnalysesDownloadRowComponent } from "./components/analyses-download/analysis-download-row.component";
-import { AnalysisDownloadWhitespaceComponent } from "./components/analyses-download/analysis-download-whitespace.component";
 
 const internalComponents = [
   SitesWithoutTimezonesComponent,
   DownloadTableComponent,
   AnalysesDownloadRowComponent,
-  AnalysisDownloadWhitespaceComponent,
 ];
 
 const components = [

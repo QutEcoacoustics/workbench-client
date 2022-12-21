@@ -10,15 +10,12 @@
     ZIP file.
   </p>
 
-  <!-- my code goes here -->
-  <div class="grid-table-wider">
-    <div class="grid-table">
-      <div class="grid-table-header">
-        <span class="grid-table-item">Path</span>
-        <span class="grid-table-item">Size</span>
-        <span class="grid-table-item">Download Results</span>
+  <div class="directory-listing-container">
+      <div class="directory-column-header">
+        <span>Path</span>
+        <span>Size</span>
+        <span>Download Results</span>
       </div>
-    </div>
     <div
       *ngFor="let row of rows$ | async; let even = even; trackBy: trackByRow"
     >

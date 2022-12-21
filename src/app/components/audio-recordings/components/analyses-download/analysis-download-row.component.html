@@ -1,15 +1,14 @@
-<div class="grid-table">
+<div class="directory-listing-container">
   <div
-    class="grid-table-row"
+    class="display-contents"
     [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
   >
-    <span class="grid-table-item" (click)="toggleOpen()" style="cursor: pointer">
+    <span class="directory-listing-item" (click)="toggleOpen()" style="cursor: pointer">
       <!-- indentation of files in tree hierarchy -->
       <span class="whitespace-indentation" *ngFor="let i of indentation()">
-        <baw-directory-whitespace
-          [isFolder]="isFolder"
-          [open]="open"
-        ></baw-directory-whitespace>
+        <span class="whitespace-vertical-line"></span>
+        <div class="whitespace-block"></div>
+        <span *ngIf="isFolder && open" class="whitespace-vertical-half-line"></span>
       </span>
 
       <fa-layers class="fa-custom-icon m-2" [fixedWidth]="true">
@@ -20,35 +19,24 @@
             !isFolder ? 'file' : open ? 'folder-open' : 'folder-closed'
           ]"
         ></fa-icon>
-        <fa-layers-counter
-          *ngIf="isFolder"
-          class="text-light"
-          [content]="
-            item.children !== undefined ? item.children.length.toString() : '0'
-          "
-          [classes]="['fa-custom-counter']"
-        ></fa-layers-counter>
       </fa-layers>
 
       {{ itemName }}
     </span>
 
-    <span class="grid-table-item">
+    <span class="directory-listing-item">
       <ng-container *ngIf="!isFolder">
         {{ item.sizeBytes }} Bytes
       </ng-container>
     </span>
 
-    <span class="grid-table-item">
+    <span class="directory-listing-item">
       <span
-        [ngbTooltip]="
-          isFolder
-            ? 'BETA: will be available soon. Download ZIP of audio recording analysis'
-            : ''
-        "
+        [disableTooltip]="isFile"
+        [ngbTooltip]="'BETA: will be available soon. Download ZIP of audio recording analysis'"
       >
         <a
-          class="btn btn-light btn-sm mb-2 mt-1 btn-border"
+          class="btn btn-light btn-sm mb-2 mt-1 border"
           [class.disabled]="isFolder"
           [href]="downloadUrl"
         >

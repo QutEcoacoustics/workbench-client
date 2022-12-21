@@ -1,16 +1,7 @@
-$border-color: #737373;
+$vertical-line-color: grey;
 $margin-offset: 13px;
 
-:host ::ng-deep .fa-custom-counter {
-  background-color: $border-color;
-  color: white;
-  font-weight: bold;
-  transform: scale(0.75) translateX(40%) translateY(65%);
-  left: 2px;
-  top: -4px;
-}
-
-.grid-table {
+.directory-listing-container {
   display: grid;
   grid-template-columns:
     1fr
@@ -18,15 +9,10 @@ $margin-offset: 13px;
     9rem
     min-content
     min-content;
-
-  .grid-table-row {
-    display: contents;
-  }
 }
 
-.btn-border {
-  border-style: solid;
-  border-color: $border-color;
+.display-contents {
+  display: contents;
 }
 
 .fa-custom-icon {
@@ -35,4 +21,29 @@ $margin-offset: 13px;
   margin-top: 5px;
   padding: $margin-offset;
   font-size: 1.3em;
+}
+
+.whitespace-vertical-half-line {
+  position: absolute;
+  border-left: 1px solid $vertical-line-color;
+  display: inline-block;
+  height: 30%;
+  bottom: 20px;
+  left: 5px;
+  width: 1px;
+  margin: 0;
+}
+
+
+.whitespace-vertical-line {
+  display: block;
+  border-left: 1px solid $vertical-line-color;
+  width: 1px;
+  height: 100%;
+  margin-left: 5px;
+}
+
+.whitespace-block {
+  display: inline-block;
+  width: 1rem;
 }

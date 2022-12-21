@@ -67,9 +67,9 @@ function makeBatchMenuItem(subRoute: RecordingRoute): MenuRoute {
 
 export function makeAnalysesMenuItem(subRoute: RecordingRoute): MenuRoute {
   return menuRoute({
-    icon: ["fas", "file-arrow-down"],
-    label: "Download Analyses",
-    tooltip: () => "Download audio recording analyses",
+    icon: ["fas", "folder-tree"],
+    label: "Download analysis results",
+    tooltip: () => "Download analysis results",
     route: audioRecordingResultsRoutes[subRoute],
     parent: listMenuItems[subRoute],
     breadcrumbResolve: (pageInfo) =>

@@ -1,9 +1,7 @@
 import { Injector } from "@angular/core";
-import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { Id, Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { AnalysisJob } from "./AnalysisJob";
-import { hasOne } from "./AssociationDecorators";
 import { AudioRecording } from "./AudioRecording";
 
 export type ResultsItemType = "directory" | "file";
@@ -19,8 +17,6 @@ export interface IAnalysisJobItemResult {
   hasZip?: boolean;
   type?: ResultsItemType;
   children?: AnalysisJobItemResult[];
-  open?: boolean;
-  parentItem?: AnalysisJobItemResult;
 }
 
 export class AnalysisJobItemResult
@@ -44,21 +40,22 @@ export class AnalysisJobItemResult
   public readonly mime?: Param;
   public readonly hasChildren?: boolean;
   public readonly hasZip?: boolean;
-  public readonly type?: ResultsItemType = "directory";
+  public readonly type?: ResultsItemType;
   public readonly children?: AnalysisJobItemResult[];
-  public parentItem?: AnalysisJobItemResult;
-  public open?: boolean;
 
   // Associations
-  @hasOne<AnalysisJobItemResult, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
   public analysisJob?: AnalysisJob;
-  @hasOne<AnalysisJobItemResult, AudioRecording>(
-    AUDIO_RECORDING,
-    "audioRecordingId"
-  )
   public audioRecording?: AudioRecording;
 
   public get viewUrl(): string {
     throw new Error("AnalysisJobItemResult viewUrl not implemented.");
   }
+
+  public downloadUrl(apiRoot: string): string {
+    return apiRoot + this.path;
+  }
+}
+
+export class AnalysisJobItemResultViewModel extends AnalysisJobItemResult {
+  public open?: boolean;
 }

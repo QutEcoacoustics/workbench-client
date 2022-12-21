@@ -12,17 +12,15 @@ export function generateAnalysisJobResults(
 
   return {
     id: modelData.id(),
-    path: `${rootPath}/${modelData.system.fileName()}`,
+    path: `${rootPath}${modelData.id()}/${modelData.system.fileName()}`,
     analysisJobId: modelData.id(),
     audioRecordingId: modelData.id(),
-    name: `${rootPath}/${modelData.system.fileName()}`,
+    name: `${rootPath}${modelData.system.fileName()}`,
     sizeBytes: modelData.datatype.number(1000),
     hasChildren: modelData.bool(),
     hasZip: modelData.bool(),
     type: modelData.helpers.arrayElement(resultItemTypes),
     children: [],
-    parentItem: null,
-    open: true,
     ...data,
   };
 }

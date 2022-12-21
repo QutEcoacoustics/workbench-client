@@ -9,13 +9,12 @@ import {
   audioRecordingMenuItems,
   audioRecordingsCategory,
 } from "@components/audio-recordings/audio-recording.menus";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
+import { AnalysisJobItemResult, AnalysisJobItemResultViewModel } from "@models/AnalysisJobItemResult";
 import { AudioRecording } from "@models/AudioRecording";
-import { first, lastValueFrom, Observable, takeUntil } from "rxjs";
+import { Observable, map, of, takeUntil } from "rxjs";
 
 const audioRecordingKey = "audioRecording";
 const projectKey = "project";
@@ -32,41 +31,40 @@ export const rootPath = "/analysis_jobs/system/results/";
 export class AnalysesResultsComponent extends PageComponent implements OnInit {
   public constructor(
     public api: AnalysisJobItemResultsService,
-    private route: ActivatedRoute
+    public route: ActivatedRoute
   ) {
     super();
   }
 
-  public rows$: Observable<AnalysisJobItemResult[]>;
+  public rows$: Observable<AnalysisJobItemResultViewModel[]>;
   private readonly routeData = this.route.snapshot.data;
-  private readonly audioRecording: AudioRecording = this.routeData[audioRecordingKey]?.model;
-  private rows = Array<AnalysisJobItemResult>();
+  public audioRecording: AudioRecording = this.routeData[audioRecordingKey]?.model;
+  private rows = Array<AnalysisJobItemResultViewModel>();
+  private rootItemPath: string;
 
-  public get analysisJob() {
+  public get analysisJob(): AnalysisJob {
     // since this component is currently only used for default analysis jobs, we can hard code the attributes of this job
     return new AnalysisJob({
-      name: "system",
       id: "system",
+      name: "system",
     });
   }
 
   public ngOnInit() {
-    this.getItems()
-      .then((items: AnalysisJobItemResult[]) => {
-        this.rows = items;
-        this.updateRows();
-      });
+    this.rootItemPath = `${rootPath}${this.audioRecording.id}/`;
+
+    const rootItem = new AnalysisJobItemResult({
+      name: "",
+      path: this.rootItemPath,
+      type: "directory"
+    });
+
+    this.rows = [rootItem];
+    this.updateRows();
   }
 
   public updateRows = (): Observable<AnalysisJobItemResult[]> =>
-    this.rows$ = this.getRows();
-
-  public getRows() {
-    const data = new Observable<AnalysisJobItemResult[]>((observer) => {
-      observer.next(this.rows);
-    });
-    return data;
-  }
+    this.rows$ = of(this.rows);
 
   /**
    * Fetches the `AnalysisJobItemResult` model from the baw-api
@@ -74,93 +72,80 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
    * @param model The id of the model that is requested from the baw-api
    * @returns The complete `AnalysisJobItemResult` model of the requested item. If the item is not defined, the root path will be returned
    */
-  public async getItems(model?: AnalysisJobItemResult): Promise<AnalysisJobItemResult[]> {
-    return new Promise((resolveTo) => {
-      const analysisJobId = this.analysisJob;
-      const response = lastValueFrom(this.api
-        .list(analysisJobId, this.audioRecording.id, model)
-        .pipe(first())
-        .pipe(
-          takeUntil(this.unsubscribe)
-        )
+  public getItem(model?: AnalysisJobItemResult): Observable<AnalysisJobItemResult> {
+    const analysisJobId = this.analysisJob;
+    return this.api.show(model, analysisJobId, this.audioRecording.id);
+  }
+
+  public toggleRow(model: AnalysisJobItemResultViewModel): void {
+    if (model.open) {
+      this.rows = this.rows.filter(item =>
+        // if the path is the root folder, all the following conditions will fail, except for the last `item.name === model.name`
+        // causing all folders to collapse
+        model.path !== this.rootItemPath &&
+        // because POSIX compliant file names cannot include backslashes, we can use this quick operator to check if the file path
+        // of the item includes the folder that was clicked on. The two backslashes before and after are needed to ensure that
+        // folders such as `folderA` and `folderAa` would not match (as they would with `includes(model.name)`).
+        !item.path.includes(`/${model.name}/`) ||
+        // this condition ensures that the folder that was clicked on is always preserved after the filter
+        item.name === model.name
       );
+    } else {
+      this.getModelChildren(model)
+        .pipe(map(returnedValues => this.rows.splice(this.rows.indexOf(model) + 1, 0, ...returnedValues)))
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe();
+    }
 
-      resolveTo(response);
-    });
+    model.open = !model.open;
+    this.updateRows();
   }
 
-  // this method needs to be refactored
-  public toggleRow(model: AnalysisJobItemResult) {
-    this.getModelChildren(model.children ?? [], model).then((childItems) => {
-      this.addParentInformation(childItems, model);
-
-      if (model.open) {
-        // the relative path for all sub folders should include the folders name & two back slashes before and after the name
-        // this prevents false positives e.g. if the folder name is contained within another folders name
-        this.rows = this.rows.filter(item =>
-          // only the root item will not have a parent item, in this case, we can quickly determine that all folders need to be closed
-          !isInstantiated(item.parentItem) ||
-          !item.parentItem.path.includes(`/${model.name}/`) ||
-          item.name === model.name
-        );
-      } else {
-        this.rows.splice(this.rows.indexOf(model) + 1, 0, ...childItems);
-      }
-
-      model.open = !model.open;
-      this.updateRows();
-    });
-  }
-
-  // not all analysisJobItemResult models from the baw-api contain a path attribute therefore, we can not know the location of the item
-  // therefore, by adding information about the parent object, we can easily derive the relative path and hierarchy of a sub item
-  private addParentInformation(models: AnalysisJobItemResult[], parent: AnalysisJobItemResult) {
-    models.forEach(analysisJobItemResultItem => {
-      analysisJobItemResultItem.parentItem = parent;
+  /**
+   * returns a models child items by evaluating the object using the baw-api and adds path information to the model
+   * this helper method is intended to take a partial model, as is present in a complete models children attribute.
+   *
+   * @param model A model with a name attribute to evaluate the child items of
+   * @returns The models child items
+   */
+  public getModelChildren(
+    model: AnalysisJobItemResult,
+  ): Observable<AnalysisJobItemResult[]> {
+    return new Observable(subscriber => {
+      this.getItem(model)
+        // add the path information to all child items
+        .pipe(map(returnedValue => this.childItemsWithPathInformation(returnedValue)))
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe({
+          next(modelChildren) {
+            subscriber.next(modelChildren);
+          }
+        });
     });
   }
 
   /**
-   * Sub directories of `AnalysisJobItemResults` do not contain all the information needed e.g. How many child items the sub directory has.
-   * Therefore, we need to evaluate the child sub directory items explicitly and use their `AnalysisJobItemResult` model.
+   * Takes an AnalysisJobItemResult model and returns the child items, with the `path` information attribute
    *
-   * @param children The models children elements as defined in the `model.children` attribute
-   * @param parent The model parent `AnalysisJobItemResult`
-   * @returns The child elements of the parent model in the form of an `AnalysisJobItemResult` array
+   * @param model An AnalysisJobItemResults to fetch the children of
+   * @returns An array of `AnalysisJobItemResult` representing the child items inside the model
    */
-  private async getModelChildren(
-    children: AnalysisJobItemResult[],
-    parent: AnalysisJobItemResult
-  ): Promise<AnalysisJobItemResult[]> {
+  private childItemsWithPathInformation(model: AnalysisJobItemResult): AnalysisJobItemResult[] {
     const evaluatedSubItems = Array<AnalysisJobItemResult>();
 
-    // file elements do not have to be evaluated, so we can return the child items as specified in the children attribute
-    children.forEach(childItem => {
-      if (childItem.type === "file") {
-        evaluatedSubItems.push(childItem);
-      }
+    model.children.forEach(item => {
+      evaluatedSubItems.push(
+        new AnalysisJobItemResult({
+          path: model.path + item.name,
+          type: "file",
+          ...item
+        })
+      );
     });
 
-    const directoryItems = children.filter(item => !evaluatedSubItems.includes(item));
-
-    return new Promise((resolveTo) => {
-      if (directoryItems.length === 0) {
-        resolveTo(evaluatedSubItems);
-      }
-
-      directoryItems.forEach(async directory => {
-        this.getItems(directory)
-          .then((folderSubDirectory) => {
-            folderSubDirectory.forEach(directorySubItem => {
-              if (directorySubItem.path !== parent.path) {
-                evaluatedSubItems.push(directorySubItem);
-              }
-            });
-            resolveTo(evaluatedSubItems);
-          });
-      });
-    });
+    return evaluatedSubItems;
   }
+
 }
 
 function getPageInfo(
@@ -178,7 +163,8 @@ function getPageInfo(
   };
 }
 
-AnalysesResultsComponent.linkToRoute(getPageInfo("base"))
+AnalysesResultsComponent
+  .linkToRoute(getPageInfo("base"))
   .linkToRoute(getPageInfo("site"))
   .linkToRoute(getPageInfo("siteAndRegion"))
   .linkToRoute(getPageInfo("region"))
