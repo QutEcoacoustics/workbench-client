@@ -50,11 +50,13 @@ describe("analysesResultsComponent", () => {
     expect(spectator.component).toBeInstanceOf(AnalysesDownloadRowComponent);
   });
 
-  it("should display the file name correctly", () => {
+  fit("should display the file name correctly", () => {
     const expectedFileName = "test.csv";
-    defaultAnalysisJobItemResult = new AnalysisJobItemResult(generateAnalysisJobResults({
-      name: expectedFileName
-    }));
+    defaultAnalysisJobItemResult = new AnalysisJobItemResult(
+      generateAnalysisJobResults({
+        name: expectedFileName
+      })
+    );
 
     setup();
 
