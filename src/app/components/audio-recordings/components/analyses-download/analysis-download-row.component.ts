@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
 import { AnalysisJobItemResultsService } from "@baw-api/analysis/analysis-job-item-result.service";
 import { rootPath } from "@components/audio-recordings/pages/analysis-results/analyses-results.component";
+import { AnalysisJob } from "@models/AnalysisJob";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
+import { AudioRecording } from "@models/AudioRecording";
 import { API_ROOT } from "@services/config/config.tokens";
 
 @Component({
@@ -17,6 +19,8 @@ export class AnalysesDownloadRowComponent {
 
   public open: boolean;
   @Input() public item: AnalysisJobItemResult;
+  @Input() public analysisJob: AnalysisJob;
+  @Input() public audioRecording: AudioRecording;
   @Input() public even: boolean;
   @Output() public loadChildren = new EventEmitter<AnalysisJobItemResult>();
 
@@ -55,8 +59,11 @@ export class AnalysesDownloadRowComponent {
     return this.item?.name;
   }
 
-  // TODO: this download URL needs to be refactored into a strong route
   public get downloadUrl(): string {
-    return this.item.downloadUrl(this.apiRoot);
+    return this.api.downloadUrl(
+      this.analysisJob,
+      this.audioRecording,
+      this.item
+    );
   }
 }

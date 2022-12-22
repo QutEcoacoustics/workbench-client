@@ -21,6 +21,8 @@
     >
       <baw-directory-row
         [item]="row"
+        [analysisJob]="analysisJob"
+        [audioRecording]="audioRecording"
         [even]="even"
         (loadChildren)="toggleRow(row)"
       ></baw-directory-row>

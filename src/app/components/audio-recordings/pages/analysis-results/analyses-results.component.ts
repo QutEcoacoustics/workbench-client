@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AnalysisJobItemResultsService } from "@baw-api/analysis/analysis-job-item-result.service";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
@@ -12,9 +12,9 @@ import {
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { AnalysisJobItemResult, AnalysisJobItemResultViewModel } from "@models/AnalysisJobItemResult";
+import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { AudioRecording } from "@models/AudioRecording";
-import { Observable, map, of, takeUntil } from "rxjs";
+import { Observable, map, takeUntil } from "rxjs";
 
 const audioRecordingKey = "audioRecording";
 const projectKey = "project";
@@ -36,10 +36,10 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     super();
   }
 
-  public rows$: Observable<AnalysisJobItemResultViewModel[]>;
+  public rows$: Observable<ViewModel[]>;
   private readonly routeData = this.route.snapshot.data;
   public audioRecording: AudioRecording = this.routeData[audioRecordingKey]?.model;
-  private rows = Array<AnalysisJobItemResultViewModel>();
+  private rows = Array<ViewModel>();
   private rootItemPath: string;
 
   public get analysisJob(): AnalysisJob {
@@ -53,18 +53,18 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   public ngOnInit() {
     this.rootItemPath = `${rootPath}${this.audioRecording.id}/`;
 
-    const rootItem = new AnalysisJobItemResult({
+    const rootItem = new ViewModel({
       name: "",
       path: this.rootItemPath,
       type: "directory"
     });
 
     this.rows = [rootItem];
-    this.updateRows();
-  }
 
-  public updateRows = (): Observable<AnalysisJobItemResult[]> =>
-    this.rows$ = of(this.rows);
+    this.rows$ = new Observable(subscribers => {
+      subscribers.next(this.rows);
+    });
+  }
 
   /**
    * Fetches the `AnalysisJobItemResult` model from the baw-api
@@ -72,33 +72,40 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
    * @param model The id of the model that is requested from the baw-api
    * @returns The complete `AnalysisJobItemResult` model of the requested item. If the item is not defined, the root path will be returned
    */
-  public getItem(model?: AnalysisJobItemResult): Observable<AnalysisJobItemResult> {
+  public getItem(model?: ViewModel): Observable<AnalysisJobItemResult> {
     const analysisJobId = this.analysisJob;
     return this.api.show(model, analysisJobId, this.audioRecording.id);
   }
 
-  public toggleRow(model: AnalysisJobItemResultViewModel): void {
-    if (model.open) {
-      this.rows = this.rows.filter(item =>
-        // if the path is the root folder, all the following conditions will fail, except for the last `item.name === model.name`
-        // causing all folders to collapse
-        model.path !== this.rootItemPath &&
-        // because POSIX compliant file names cannot include backslashes, we can use this quick operator to check if the file path
-        // of the item includes the folder that was clicked on. The two backslashes before and after are needed to ensure that
-        // folders such as `folderA` and `folderAa` would not match (as they would with `includes(model.name)`).
-        !item.path.includes(`/${model.name}/`) ||
-        // this condition ensures that the folder that was clicked on is always preserved after the filter
-        item.name === model.name
-      );
-    } else {
-      this.getModelChildren(model)
-        .pipe(map(returnedValues => this.rows.splice(this.rows.indexOf(model) + 1, 0, ...returnedValues)))
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe();
-    }
+  private closeRow(model: ViewModel): void {
+    model.children?.forEach(child => {
+      // remove the child element from the rows
+      this.rows.splice(this.rows.indexOf(child), 1);
 
-    model.open = !model.open;
-    this.updateRows();
+      // close all the child elements of the row
+      this.closeRow(child)
+    });
+
+    model.open = false;
+  }
+
+  private openRow(model: ViewModel): void {
+    this.getModelChildren(model)
+      // append the child information to the view model
+      .pipe(map(children => model.children = children))
+      .pipe(map(returnedValues => this.rows.splice(this.rows.indexOf(model) + 1, 0, ...returnedValues)))
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe();
+
+    model.open = true;
+  }
+
+  public toggleRow(model: ViewModel): void {
+    if (model.open) {
+      this.closeRow(model);
+    } else {
+      this.openRow(model);
+    }
   }
 
   /**
@@ -109,43 +116,59 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
    * @returns The models child items
    */
   public getModelChildren(
-    model: AnalysisJobItemResult,
-  ): Observable<AnalysisJobItemResult[]> {
-    return new Observable(subscriber => {
-      this.getItem(model)
-        // add the path information to all child items
-        .pipe(map(returnedValue => this.childItemsWithPathInformation(returnedValue)))
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe({
-          next(modelChildren) {
-            subscriber.next(modelChildren);
-          }
-        });
-    });
+    model: ViewModel,
+  ): Observable<ViewModel[]> {
+    return new Observable<ViewModel[]>(
+      subscriber => {
+        this.getItem(model)
+          // add the path information to all child items
+          .pipe(map(returnedValue => this.childItemsWithParentInformation(returnedValue)))
+          .pipe(takeUntil(this.unsubscribe))
+          .subscribe({
+            next(modelChildren) {
+              subscriber.next(modelChildren);
+            }
+          });
+      }
+    );
   }
 
   /**
-   * Takes an AnalysisJobItemResult model and returns the child items, with the `path` information attribute
+   * Takes a view model and returns the child items, with the `path`, `analysisJobId`, and `audioRecordingId` attributes
    *
-   * @param model An AnalysisJobItemResults to fetch the children of
+   * @param model A view model to fetch the children of
    * @returns An array of `AnalysisJobItemResult` representing the child items inside the model
    */
-  private childItemsWithPathInformation(model: AnalysisJobItemResult): AnalysisJobItemResult[] {
-    const evaluatedSubItems = Array<AnalysisJobItemResult>();
+  private childItemsWithParentInformation(model: ViewModel): ViewModel[] {
+    const evaluatedSubItems = Array<ViewModel>();
 
-    model.children.forEach(item => {
+    model.children.forEach(item =>
       evaluatedSubItems.push(
-        new AnalysisJobItemResult({
+        new ViewModel({
           path: model.path + item.name,
           type: "file",
+          parentItem: model,
           ...item
         })
-      );
-    });
+      )
+    );
 
     return evaluatedSubItems;
   }
 
+}
+
+class ViewModel extends AnalysisJobItemResult {
+  public constructor(
+    analysisJobItemResults,
+    injector?: Injector
+  ) {
+    super(analysisJobItemResults, injector);
+  }
+
+  public children?: ViewModel[];
+  public open?: boolean;
+  public parentItem?: AnalysisJobItemResult;
 }
 
 function getPageInfo(

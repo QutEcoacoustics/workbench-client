@@ -1,8 +1,10 @@
 import { Injector } from "@angular/core";
 import { Id, Param } from "@interfaces/apiInterfaces";
+import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { AbstractModel } from "./AbstractModel";
 import { AnalysisJob } from "./AnalysisJob";
 import { AudioRecording } from "./AudioRecording";
+import { hasOne } from "./AssociationDecorators";
 
 export type ResultsItemType = "directory" | "file";
 
@@ -44,18 +46,15 @@ export class AnalysisJobItemResult
   public readonly children?: AnalysisJobItemResult[];
 
   // Associations
+  @hasOne<AnalysisJobItemResult, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
   public analysisJob?: AnalysisJob;
+  @hasOne<AnalysisJobItemResult, AudioRecording>(
+    AUDIO_RECORDING,
+    "audioRecordingId"
+  )
   public audioRecording?: AudioRecording;
 
   public get viewUrl(): string {
     throw new Error("AnalysisJobItemResult viewUrl not implemented.");
   }
-
-  public downloadUrl(apiRoot: string): string {
-    return apiRoot + this.path;
-  }
-}
-
-export class AnalysisJobItemResultViewModel extends AnalysisJobItemResult {
-  public open?: boolean;
 }

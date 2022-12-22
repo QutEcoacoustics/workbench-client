@@ -22,6 +22,6 @@ $container-borders: 2px solid #d1d4d7;
 }
 
 .directory-listing-container {
-  position: relative;
+  min-width: fit-content;
   border-bottom: $container-borders;
 }

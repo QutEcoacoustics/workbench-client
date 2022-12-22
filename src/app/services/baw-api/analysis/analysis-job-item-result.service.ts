@@ -38,7 +38,7 @@ export class AnalysisJobItemResultsService
     analysisJob: IdOr<AnalysisJob>,
     audioRecording: IdOr<AudioRecording>,
     // TODO: we should consider overloads that take a path or model
-    analysisJobItemResult?: AnalysisJobItemResult
+    analysisJobItemResult?: AnalysisJobItemResult,
   ): Observable<AnalysisJobItemResult[]> {
     return this.api.list(
       AnalysisJobItemResult,
@@ -56,7 +56,7 @@ export class AnalysisJobItemResultsService
     analysisJob: IdOr<AnalysisJob>,
     audioRecording: IdOr<AudioRecording>,
     // TODO: we should consider overloads that take a path or model
-    analysisJobItemResult?: AnalysisJobItemResult
+    analysisJobItemResult?: AnalysisJobItemResult,
   ): Observable<AnalysisJobItemResult[]> {
     return this.api.filter(
       AnalysisJobItemResult,
@@ -78,6 +78,22 @@ export class AnalysisJobItemResultsService
   ): Observable<AnalysisJobItemResult> {
     return this.api.show(
       AnalysisJobItemResult,
+      analysisJobItemResultsEndpoint(
+        analysisJob,
+        audioRecording,
+        analysisJobItemResult.name,
+        emptyParam
+      )
+    );
+  }
+
+  public downloadUrl(
+    analysisJob: IdOr<AnalysisJob>,
+    audioRecording: IdOr<AudioRecording>,
+    // TODO: we should consider overloads that take a path or model
+    analysisJobItemResult?: AnalysisJobItemResult
+  ) {
+    return this.api.getPath(
       analysisJobItemResultsEndpoint(
         analysisJob,
         audioRecording,
