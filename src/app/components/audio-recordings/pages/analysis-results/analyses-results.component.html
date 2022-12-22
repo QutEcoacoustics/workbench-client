@@ -1,4 +1,4 @@
-<div>
+<div class="mb-5">
   <h1 class="text-muted">
     <small> Analysis Results: {{ this.analysisJob.name }} </small>
   </h1>
@@ -20,7 +20,7 @@
       *ngFor="let row of rows$ | async; let even = even; trackBy: trackByRow"
     >
       <baw-directory-row
-        [item]="row"
+        [item]="row.result"
         [analysisJob]="analysisJob"
         [audioRecording]="audioRecording"
         [even]="even"

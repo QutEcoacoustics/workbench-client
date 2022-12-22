@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AnalysisJobItemResultsService } from "@baw-api/analysis/analysis-job-item-result.service";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
@@ -36,10 +36,10 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     super();
   }
 
-  public rows$: Observable<ViewModel[]>;
+  public rows$: Observable<ResultNode[]>;
   private readonly routeData = this.route.snapshot.data;
   public audioRecording: AudioRecording = this.routeData[audioRecordingKey]?.model;
-  private rows = Array<ViewModel>();
+  private rows = Array<ResultNode>();
   private rootItemPath: string;
 
   public get analysisJob(): AnalysisJob {
@@ -53,13 +53,17 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   public ngOnInit() {
     this.rootItemPath = `${rootPath}${this.audioRecording.id}/`;
 
-    const rootItem = new ViewModel({
+    const rootItem = new AnalysisJobItemResult({
       name: "",
       path: this.rootItemPath,
       type: "directory"
     });
 
-    this.rows = [rootItem];
+    const rootNode = {
+      result: rootItem,
+    };
+
+    this.rows = [rootNode];
 
     this.rows$ = new Observable(subscribers => {
       subscribers.next(this.rows);
@@ -67,17 +71,17 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   }
 
   /**
-   * Fetches the `AnalysisJobItemResult` model from the baw-api
+   * Fetches the `AnalysisJobItemResult` model from the baw-api and converts it to to be compliant with the `ResultNode` interface
    *
    * @param model The id of the model that is requested from the baw-api
    * @returns The complete `AnalysisJobItemResult` model of the requested item. If the item is not defined, the root path will be returned
    */
-  public getItem(model?: ViewModel): Observable<AnalysisJobItemResult> {
+  public getItem(model?: ResultNode): Observable<AnalysisJobItemResult> {
     const analysisJobId = this.analysisJob;
-    return this.api.show(model, analysisJobId, this.audioRecording.id);
+    return this.api.show(model.result, analysisJobId, this.audioRecording.id);
   }
 
-  private closeRow(model: ViewModel): void {
+  private closeRow(model: ResultNode): void {
     model.children?.forEach(child => {
       // remove the child element from the rows
       this.rows.splice(this.rows.indexOf(child), 1);
@@ -89,7 +93,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     model.open = false;
   }
 
-  private openRow(model: ViewModel): void {
+  private openRow(model: ResultNode): void {
     this.getModelChildren(model)
       // append the child information to the view model
       .pipe(map(children => model.children = children))
@@ -100,7 +104,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     model.open = true;
   }
 
-  public toggleRow(model: ViewModel): void {
+  public toggleRow(model: ResultNode): void {
     if (model.open) {
       this.closeRow(model);
     } else {
@@ -116,9 +120,9 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
    * @returns The models child items
    */
   public getModelChildren(
-    model: ViewModel,
-  ): Observable<ViewModel[]> {
-    return new Observable<ViewModel[]>(
+    model: ResultNode,
+  ): Observable<ResultNode[]> {
+    return new Observable<ResultNode[]>(
       subscriber => {
         this.getItem(model)
           // add the path information to all child items
@@ -139,18 +143,18 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
    * @param model A view model to fetch the children of
    * @returns An array of `AnalysisJobItemResult` representing the child items inside the model
    */
-  private childItemsWithParentInformation(model: ViewModel): ViewModel[] {
-    const evaluatedSubItems = Array<ViewModel>();
+  private childItemsWithParentInformation(model: AnalysisJobItemResult): ResultNode[] {
+    const evaluatedSubItems = Array<ResultNode>();
 
     model.children.forEach(item =>
-      evaluatedSubItems.push(
-        new ViewModel({
-          path: model.path + item.name,
+      evaluatedSubItems.push({
+        parentItem: model,
+        result: new AnalysisJobItemResult({
           type: "file",
-          parentItem: model,
+          path: model.path + item.name,
           ...item
-        })
-      )
+        }),
+      })
     );
 
     return evaluatedSubItems;
@@ -158,17 +162,11 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
 
 }
 
-class ViewModel extends AnalysisJobItemResult {
-  public constructor(
-    analysisJobItemResults,
-    injector?: Injector
-  ) {
-    super(analysisJobItemResults, injector);
-  }
-
-  public children?: ViewModel[];
-  public open?: boolean;
-  public parentItem?: AnalysisJobItemResult;
+interface ResultNode {
+  result?: AnalysisJobItemResult,
+  children?: ResultNode[],
+  parentItem?: AnalysisJobItemResult,
+  open?: boolean,
 }
 
 function getPageInfo(
