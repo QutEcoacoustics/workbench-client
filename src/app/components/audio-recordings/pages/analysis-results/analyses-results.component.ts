@@ -43,7 +43,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   private rootItemPath: string;
 
   public get analysisJob(): AnalysisJob {
-    // since this component is currently only used for default analysis jobs, we can hard code the attributes of this job
+    // since this component is currently only used for default analysis jobs, we can hard code the analysis job
     return new AnalysisJob({
       id: "system",
       name: "system",
@@ -73,8 +73,8 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   /**
    * Fetches the `AnalysisJobItemResult` model from the baw-api and converts it to to be compliant with the `ResultNode` interface
    *
-   * @param model The id of the model that is requested from the baw-api
-   * @returns The complete `AnalysisJobItemResult` model of the requested item. If the item is not defined, the root path will be returned
+   * @param model An incomplete result node that must include the result model name or id attribute
+   * @returns The complete `AnalysisJobItemResult` model of the requested item. If no model is not defined, the root path will be returned
    */
   public getItem(model?: ResultNode): Observable<AnalysisJobItemResult> {
     const analysisJobId = this.analysisJob;
@@ -95,7 +95,8 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
 
   private openRow(model: ResultNode): void {
     this.getModelChildren(model)
-      // append the child information to the view model
+      // since we have evaluated the children of the model, append this information to the model
+      // so that we don't have to re-query this information in the future from the API
       .pipe(map(children => model.children = children))
       .pipe(map(returnedValues => this.rows.splice(this.rows.indexOf(model) + 1, 0, ...returnedValues)))
       .pipe(takeUntil(this.unsubscribe))
@@ -117,7 +118,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
    * this helper method is intended to take a partial model, as is present in a complete models children attribute.
    *
    * @param model A model with a name attribute to evaluate the child items of
-   * @returns The models child items
+   * @returns An array of type `ResultNode` representing the child items, of the model, the child items parent, and their path
    */
   public getModelChildren(
     model: ResultNode,
@@ -125,7 +126,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     return new Observable<ResultNode[]>(
       subscriber => {
         this.getItem(model)
-          // add the path information to all child items
+          // add the path & parent information to all child items
           .pipe(map(returnedValue => this.childItemsWithParentInformation(returnedValue)))
           .pipe(takeUntil(this.unsubscribe))
           .subscribe({

@@ -30,7 +30,7 @@ describe("analysesResultsComponent", () => {
     spectator.query<HTMLAnchorElement>("a");
 
   const getFileName = (): string =>
-    getDirectoryRow().innerText;
+    getDirectoryRow().textContent;
 
   function setup() {
     spectator = createComponent({
@@ -50,7 +50,7 @@ describe("analysesResultsComponent", () => {
     expect(spectator.component).toBeInstanceOf(AnalysesDownloadRowComponent);
   });
 
-  fit("should display the file name correctly", () => {
+  it("should display the file name correctly", () => {
     const expectedFileName = "test.csv";
     defaultAnalysisJobItemResult = new AnalysisJobItemResult(
       generateAnalysisJobResults({
@@ -62,7 +62,7 @@ describe("analysesResultsComponent", () => {
 
     const realizedFileName = getFileName();
 
-    expect(realizedFileName).toEqual(expectedFileName);
+    expect(realizedFileName).toEqual(` ${expectedFileName} `);
   });
 
   it("should display a download button next to file", () => {
