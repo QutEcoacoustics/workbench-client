@@ -49,13 +49,23 @@ describe("analysesResultsComponent", () => {
 
   beforeEach(() => setup());
 
-  function getDirectoryRow(item: AnalysisJobItemResult): HTMLElement {
-    const itemName = item.name;
-    return getItemByName(itemName).parentElement.parentElement;
-  }
+  const isFile = (item: AnalysisJobItemResult) =>
+    item.type === "file";
 
   const getDownloadButton = (item: AnalysisJobItemResult): HTMLButtonElement =>
     getDirectoryRow(item).getElementsByClassName("btn-light")[0] as HTMLButtonElement;
+
+  function getDirectoryRow(item: AnalysisJobItemResult): HTMLElement {
+    const itemName = item.name;
+    const itemSize = isFile(item) ? `${item.sizeBytes} Bytes` : "";
+    const expectedInnerText = `${itemName}\n${itemSize}`;
+
+    const directoryRow = spectator.debugElement.query(
+      (el) => el.nativeElement.innerText === expectedInnerText
+    )?.nativeElement as HTMLElement;
+
+    return directoryRow;
+  }
 
   function clickFolder(item: AnalysisJobItemResult) {
     const itemName = item.name;
@@ -109,7 +119,7 @@ describe("analysesResultsComponent", () => {
     expect(spectator.component).toBeInstanceOf(AnalysesResultsComponent);
   });
 
-  it("should display an enabled file download button for files", () => {
+  fit("should display an enabled file download button for files", () => {
     const rootFolder = generateRootFolder();
     const subFile = new AnalysisJobItemResult(
       generateAnalysisJobResults({ type: "file" })
@@ -123,8 +133,8 @@ describe("analysesResultsComponent", () => {
     clickFolder(rootFolder);
 
     // get the download button of this sub item / file and assert that the button is enabled
-    // const downloadButton = getDownloadButton(subFile);
-    // expect(downloadButton).not.toHaveClass("disabled");
+    const downloadButton = getDownloadButton(subFile);
+    expect(downloadButton).not.toHaveClass("disabled");
   });
 
   // this is only temporary until we have the API's functionality for downloading analysis folders as archives
