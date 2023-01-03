@@ -34,7 +34,7 @@ Normal development
 $ npm start
 ```
 
-Then open a web browser to `https://localhost:4200`.
+Then open a web browser to `https://development.ecosounds.org:4200`.
 
 Server side rendering
 
