@@ -589,12 +589,13 @@ describe("DownloadAudioRecordingsComponent", () => {
       expect(spec.query("section")).toContainText("Instructions");
     });
 
-    it("should show instructions for guest users", () => {
+    it("should show a prompt to log in for guest users", () => {
       setup(defaultProject);
       spec.detectChanges();
-      expect(spec.query("#run-script-description")).toContainText("Login");
       expect(spec.query("#guest-run-script")).toBeTruthy();
       expect(spec.query(HiddenCopyComponent)).toBeFalsy();
+
+      expect((spec.query("#guest-run-script") as HTMLElement).innerText).toEqual("Log in to see this command.");
     });
 
     it("should show instructions for logged in users", () => {
@@ -602,7 +603,6 @@ describe("DownloadAudioRecordingsComponent", () => {
       setup(defaultProject, undefined, undefined, authToken);
       spec.detectChanges();
 
-      expect(spec.query("#run-script-description")).not.toContainText("Login");
       expect(spec.query("#guest-run-script")).toBeFalsy();
 
       const hiddenCopy = spec.query(HiddenCopyComponent);
@@ -622,7 +622,6 @@ describe("DownloadAudioRecordingsComponent", () => {
         guestAuthToken;
       spec.detectChanges();
 
-      expect(spec.query("#run-script-description")).toContainText("Login");
       expect(spec.query("#guest-run-script")).toBeTruthy();
       expect(spec.query(HiddenCopyComponent)).toBeFalsy();
     });
