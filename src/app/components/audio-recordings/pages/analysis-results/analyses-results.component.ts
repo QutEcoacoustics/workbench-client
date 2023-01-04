@@ -86,7 +86,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
       // remove the child element from the rows
       this.rows.splice(this.rows.indexOf(child), 1);
 
-      // close all the child elements of the row
+      // Recursive: close all the child elements of the row
       this.closeRow(child)
     });
 
