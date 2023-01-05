@@ -29,6 +29,13 @@
           and we will check them for you
         </li>
         <li>
+          We advise that you use this
+          <a href="https://winscp.net/eng/docs/ui_pref_background#background_transfers">
+            guide
+          </a>
+          to enable the WinSCP background transfer by default option
+        </li>
+        <li>
           Once done uploading, close WinSCP before clicking on the Finished
           Uploading button below
         </li>
@@ -135,7 +142,7 @@
 
 <div [ngbNavOutlet]="nav" class="mt-2"></div>
 
-<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 mb-3">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-2 g-4 mb-3">
   <div class="col">
     <div class="card h-100">
       <div class="card-body">
@@ -186,6 +193,7 @@
           Upload your data using whatever folder structure you would like.
           Filenames will need to follow this
           <a target="_blank" [href]="filenameGuide | safe: 'url'">guide</a>.
+          You will be able to assign a point/site to any folder later on.
         </p>
       </div>
     </div>
