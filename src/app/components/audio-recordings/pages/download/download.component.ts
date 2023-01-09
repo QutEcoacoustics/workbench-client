@@ -21,6 +21,7 @@ import {
 import { myAccountMenuItem } from "@components/profile/profile.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -36,6 +37,7 @@ import {
   distinctUntilChanged, takeUntil
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
+import { loginMenuItem } from "src/app/components/security/security.menus"
 
 const projectKey = "project";
 const regionKey = "region";
@@ -119,9 +121,11 @@ class DownloadAudioRecordingsComponent
   }
 
   public get runScriptCommand(): string {
-    return `./download_audio_files.ps1 -auth_token "${
-      this.session.authToken ?? "INSERT_AUTH_TOKEN_HERE"
-    }"`;
+    return `./download_audio_files.ps1 -auth_token "${this.session.authToken}"`;
+  }
+
+  public get loginStrongRoute(): StrongRoute {
+    return loginMenuItem.route;
   }
 
   public updateHref(model: Model): void {
