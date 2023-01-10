@@ -21,7 +21,7 @@ const analysisJobId: IdParamOptional<AnalysisJob> = id;
 const audioRecordingId: IdParamOptional<AudioRecording> = id;
 const analysisJobItemResultsPath = param;
 
-export const analysisJobItemResultsEndpoint =
+const analysisJobItemResultsEndpoint =
   stringTemplate`/analysis_jobs/${analysisJobId}/results/${audioRecordingId}/${analysisJobItemResultsPath}${option}`;
 
 @Injectable()
@@ -81,7 +81,7 @@ export class AnalysisJobItemResultsService
       analysisJobItemResultsEndpoint(
         analysisJob,
         audioRecording,
-        analysisJobItemResult.name,
+        analysisJobItemResult?.name ?? emptyParam,
         emptyParam
       )
     );
@@ -97,7 +97,7 @@ export class AnalysisJobItemResultsService
       analysisJobItemResultsEndpoint(
         analysisJob,
         audioRecording,
-        analysisJobItemResult.name,
+        analysisJobItemResult?.name ?? emptyParam,
         emptyParam
       )
     );

@@ -12,14 +12,16 @@ import {
 } from "@interfaces/menusInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import {
+  AnalysisRoute,
   audioRecordingBatchRoutes,
-  audioRecordingResultsRoutes,
+  analysisResultsRoutes,
   audioRecordingRoutes,
   audioRecordingsRoutes,
   RecordingRoute,
 } from "./audio-recording.routes";
 
 export type RecordingMenuRoutes = Record<RecordingRoute, MenuRoute>;
+export type AnalysisMenuRoutes = Record<AnalysisRoute, MenuRoute>;
 
 export const audioRecordingsCategory: Category = {
   icon: ["fas", "file-archive"],
@@ -70,7 +72,7 @@ export function makeAnalysesMenuItem(subRoute: RecordingRoute): MenuRoute {
     icon: ["fas", "folder-tree"],
     label: "Download analysis results",
     tooltip: () => "Download analysis results",
-    route: audioRecordingResultsRoutes[subRoute],
+    route: analysisResultsRoutes[subRoute],
     parent: listMenuItems[subRoute],
     breadcrumbResolve: (pageInfo) =>
       retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),
@@ -116,7 +118,7 @@ const batchMenuItems: RecordingMenuRoutes = {
   project: makeBatchMenuItem("project"),
 };
 
-const analysesMenuItems: RecordingMenuRoutes = {
+const analysesMenuItems: AnalysisMenuRoutes = {
   /** /audio_recordings/download */
   base: makeAnalysesMenuItem("base"),
   /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId/results */

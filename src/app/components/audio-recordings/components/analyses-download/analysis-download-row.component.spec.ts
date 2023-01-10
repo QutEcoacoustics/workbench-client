@@ -30,7 +30,7 @@ describe("analysesResultsComponent", () => {
     spectator.query<HTMLAnchorElement>("a");
 
   const getFileName = (): string =>
-    getDirectoryRow().textContent;
+    getDirectoryRow().innerText;
 
   function setup() {
     spectator = createComponent({
@@ -62,12 +62,26 @@ describe("analysesResultsComponent", () => {
 
     const realizedFileName = getFileName();
 
-    expect(realizedFileName).toEqual(` ${expectedFileName} `);
+    expect(realizedFileName).toEqual(expectedFileName);
   });
 
   it("should display a download button next to file", () => {
     setup();
     const downloadButtonElement = getDirectoryRowDownloadButton();
     expect(downloadButtonElement).toBeTruthy();
+  });
+
+  // this test is only temporary until downloading analysis result items as zip files is functional
+  it("should display a disabled download button next to folder types", () => {
+    defaultAnalysisJobItemResult = new AnalysisJobItemResult(
+      generateAnalysisJobResults({
+        type: "directory"
+      })
+    );
+
+    setup();
+
+    const downloadButtonElement = getDirectoryRowDownloadButton();
+    expect(downloadButtonElement).toHaveClass("disabled");
   });
 });

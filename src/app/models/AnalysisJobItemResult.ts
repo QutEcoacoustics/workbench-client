@@ -1,10 +1,13 @@
 import { Injector } from "@angular/core";
 import { Id, Param } from "@interfaces/apiInterfaces";
 import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
+import fileSize from "filesize";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "./AbstractModel";
 import { AnalysisJob } from "./AnalysisJob";
 import { AudioRecording } from "./AudioRecording";
 import { hasOne } from "./AssociationDecorators";
+import { bawBytes } from "./AttributeDecorators";
 
 export type ResultsItemType = "directory" | "file";
 
@@ -18,7 +21,20 @@ export interface IAnalysisJobItemResult {
   hasChildren?: boolean;
   hasZip?: boolean;
   type?: ResultsItemType;
-  children?: AnalysisJobItemResult[];
+  children?: (IDirectory | IFile)[];
+}
+
+interface IDirectory {
+  path?: string;
+  name?: string;
+  type?: ResultsItemType;
+  hasChildren?: boolean;
+}
+
+interface IFile {
+  name?: string;
+  sizeBytes?: number;
+  type: ResultsItemType;
 }
 
 export class AnalysisJobItemResult
@@ -43,7 +59,7 @@ export class AnalysisJobItemResult
   public readonly hasChildren?: boolean;
   public readonly hasZip?: boolean;
   public readonly type?: ResultsItemType;
-  public readonly children?: AnalysisJobItemResult[];
+  public readonly children?: (IDirectory | IFile)[];
 
   // Associations
   @hasOne<AnalysisJobItemResult, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
@@ -53,6 +69,22 @@ export class AnalysisJobItemResult
     "audioRecordingId"
   )
   public audioRecording?: AudioRecording;
+
+  public get isFolder(): boolean {
+    return this.type === "directory";
+  }
+
+  public get isFile(): boolean {
+    return this.type === "file";
+  }
+
+  public get humanReadableSize(): string {
+    if (isInstantiated(this.sizeBytes)) {
+      return fileSize(this.sizeBytes, { round: 2 });
+    } else {
+      return "";
+    }
+  }
 
   public get viewUrl(): string {
     throw new Error("AnalysisJobItemResult viewUrl not implemented.");

@@ -11,19 +11,20 @@
   </p>
 
   <div class="directory-listing-container">
-      <div class="directory-column-header">
-        <span>Path</span>
-        <span>Size</span>
-        <span>Download Results</span>
-      </div>
+    <div class="directory-column-container directory-listing-container">
+      <span>Path</span>
+      <span>Size</span>
+      <span>Download Results</span>
+    </div>
     <div
-      *ngFor="let row of rows$ | async; let even = even; trackBy: trackByRow"
+      class="directory-items-container"
+      *ngFor="let row of rows$ | async; trackBy: trackByRow"
     >
       <baw-directory-row
         [item]="row.result"
         [analysisJob]="analysisJob"
         [audioRecording]="audioRecording"
-        [even]="even"
+        [indentation]="getIndentation(row)"
         (loadChildren)="toggleRow(row)"
       ></baw-directory-row>
     </div>

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
 import { AnalysisJobItemResultsService } from "@baw-api/analysis/analysis-job-item-result.service";
-import { rootPath } from "@components/audio-recordings/pages/analysis-results/analyses-results.component";
+import { IconPrefix } from "@fortawesome/fontawesome-common-types";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { AudioRecording } from "@models/AudioRecording";
@@ -14,45 +15,21 @@ import { API_ROOT } from "@services/config/config.tokens";
 export class AnalysesDownloadRowComponent {
   public constructor(
     @Inject(API_ROOT) public apiRoot: string,
-    public api: AnalysisJobItemResultsService,
-  ) { }
+    public api: AnalysisJobItemResultsService
+  ) {}
 
   public open: boolean;
   @Input() public item: AnalysisJobItemResult;
+  @Input() public indentation: Array<void>;
   @Input() public analysisJob: AnalysisJob;
   @Input() public audioRecording: AudioRecording;
-  @Input() public even: boolean;
   @Output() public loadChildren = new EventEmitter<AnalysisJobItemResult>();
 
-  private subDirectoriesCount = (path: string) => path.split("/").length;
-
-  /**
-   * Calculates how much indentation a certain folder needs
-   *
-   * @returns an empty array object of length `n`, representing how many nested sub folders the item is under
-   */
-  protected indentation(): Array<void> {
-    const subPaths = this.subDirectoriesCount(this.item.path);
-
-    // because the path of folders end with a slash e.g. /folderA/aa/, we need to subtract one path count
-    // because files do not end with a trailing backslash, we can calculate the path count directly, without any subtraction
-    const indentationAmount = subPaths - this.subDirectoriesCount(rootPath) - (this.isFolder ? 1 : 0);
-    return Array<void>(indentationAmount);
-  }
-
   protected toggleOpen(): void {
-    if (this.isFolder) {
+    if (this.item.isFolder) {
       this.open = !this.open;
       this.loadChildren.emit(this.item);
     }
-  }
-
-  public get isFolder(): boolean {
-    return this.item.type === "directory";
-  }
-
-  public get isFile(): boolean {
-    return this.item.type === "file";
   }
 
   public get itemName(): string {
@@ -65,5 +42,19 @@ export class AnalysesDownloadRowComponent {
       this.audioRecording,
       this.item
     );
+  }
+
+  public chooseIcon(): IconProp {
+    const iconClass: IconPrefix = "fas";
+
+    if (this.item.isFolder) {
+      if (this.open) {
+        return [iconClass, "folder-open"];
+      } else {
+        return [iconClass, "folder-closed"];
+      }
+    }
+
+    return [iconClass, "file"];
   }
 }

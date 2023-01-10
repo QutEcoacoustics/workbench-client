@@ -1,31 +1,20 @@
-$vertical-line-color: grey;
-$margin-offset: 13px;
-
-.directory-listing-container {
-  display: grid;
-  grid-template-columns:
-    1fr
-    14rem
-    9rem
-    min-content
-    min-content;
-}
+$whitespace-line-color: var(--baw-secondary);
 
 .display-contents {
   display: contents;
 }
 
+.item-name {
+  cursor: pointer;
+}
+
 .fa-custom-icon {
-  margin: $margin-offset;
-  margin-left: 5px;
-  margin-top: 5px;
-  padding: $margin-offset;
   font-size: 1.3em;
 }
 
 .whitespace-vertical-half-line {
   position: absolute;
-  border-left: 1px solid $vertical-line-color;
+  border-left: 1px solid $whitespace-line-color;
   display: inline-block;
   height: 30%;
   bottom: 20px;
@@ -34,16 +23,11 @@ $margin-offset: 13px;
   margin: 0;
 }
 
-
 .whitespace-vertical-line {
   display: block;
-  border-left: 1px solid $vertical-line-color;
+  border-left: 1px solid $whitespace-line-color;
   width: 1px;
   height: 100%;
-  margin-left: 5px;
-}
-
-.whitespace-block {
-  display: inline-block;
-  width: 1rem;
+  margin-left: 0.5rem;
+  margin-right: 1rem;
 }

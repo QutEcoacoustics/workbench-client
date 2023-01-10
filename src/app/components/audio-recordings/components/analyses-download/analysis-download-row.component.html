@@ -1,50 +1,81 @@
-<div class="directory-listing-container">
+<div class="directory-item">
   <div
     class="display-contents"
-    [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
   >
-    <span class="directory-listing-item" (click)="toggleOpen()" style="cursor: pointer">
-      <!-- indentation of files in tree hierarchy -->
-      <span class="whitespace-indentation" *ngFor="let i of indentation()">
-        <span class="whitespace-vertical-line"></span>
-        <div class="whitespace-block"></div>
-        <span *ngIf="isFolder && open" class="whitespace-vertical-half-line"></span>
-      </span>
+    <!-- Template for files -->
+    <ng-container *ngIf="item.isFile">
+      <span class="directory-listing-item item-name" (click)="toggleOpen()">
+        <!-- indentation for files / folders in tree hierarchy -->
+        <span class="whitespace-indentation" *ngFor="let i of indentation">
+          <span class="whitespace-vertical-line"></span>
+        </span>
 
-      <fa-layers class="fa-custom-icon m-2" [fixedWidth]="true">
-        <fa-icon
-          class="fa-custom-icon"
-          [icon]="[
-            'fas',
-            !isFolder ? 'file' : open ? 'folder-open' : 'folder-closed'
-          ]"
-        ></fa-icon>
-      </fa-layers>
-
-      {{ itemName }}
-    </span>
-
-    <span class="directory-listing-item">
-      <ng-container *ngIf="!isFolder">
-        {{ item.sizeBytes }} Bytes
-      </ng-container>
-    </span>
-
-    <span class="directory-listing-item">
-      <span
-        [disableTooltip]="isFile"
-        [ngbTooltip]="'BETA: will be available soon. Download ZIP of audio recording analysis'"
-      >
-        <a
-          class="btn btn-light btn-sm mb-2 mt-1 border"
-          [class.disabled]="isFolder"
-          [href]="downloadUrl"
-        >
+        <fa-layers class="fa-custom-icon m-2">
           <fa-icon
-            [icon]="['fas', isFolder ? 'file-archive' : 'file-arrow-down']"
+            class="fa-custom-icon"
+            [icon]="['fas', 'file']"
           ></fa-icon>
-        </a>
+        </fa-layers>
+
+        {{ itemName }}
       </span>
-    </span>
+
+      <span class="directory-listing-item">
+        <ng-container *ngIf="!item.isFolder">
+          {{ item.humanReadableSize }}
+        </ng-container>
+      </span>
+
+      <span class="directory-listing-item">
+          <a
+            class="btn btn-light btn-sm mb-2 mt-1 border"
+            [href]="downloadUrl"
+          >
+            <fa-icon
+              [icon]="chooseIcon()"
+            ></fa-icon>
+          </a>
+      </span>
+    </ng-container>
+
+    <!-- Template for folders -->
+    <ng-container *ngIf="item.isFolder">
+      <span class="directory-listing-item item-name" (click)="toggleOpen()">
+        <!-- indentation for files / folders in tree hierarchy -->
+        <span class="whitespace-indentation" *ngFor="let i of indentation">
+          <span class="whitespace-vertical-line"></span>
+          <span *ngIf="open" class="whitespace-vertical-half-line"></span>
+        </span>
+
+        <fa-layers class="fa-custom-icon m-2">
+          <fa-icon
+            class="fa-custom-icon"
+            [icon]="chooseIcon()"
+          ></fa-icon>
+        </fa-layers>
+
+        {{ itemName }}
+      </span>
+
+      <span class="directory-listing-item">
+        {{ item.humanReadableSize }}
+      </span>
+
+      <span class="directory-listing-item">
+        <span
+          [ngbTooltip]="'BETA: will be available soon. Download ZIP of audio recording analysis'"
+        >
+          <a
+            class="btn btn-light btn-sm mb-2 mt-1 border"
+            [class.disabled]="true"
+            [href]="downloadUrl"
+          >
+            <fa-icon
+              [icon]="['fas', 'file-archive']"
+            ></fa-icon>
+          </a>
+        </span>
+      </span>
+    </ng-container>
   </div>
 </div>

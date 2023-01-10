@@ -6,22 +6,24 @@ $container-borders: 2px solid #d1d4d7;
     flex-direction: row;
     background-color: inherit;
   }
-}
 
-.directory-column-header {
-  display: grid;
-  grid-template-columns:
-    1fr
-    14rem
-    9rem
-    min-content
-    min-content;
-  grid-template-rows: 1fr;
-  border-bottom: $container-borders;
-  background-color: white;
+  .directory-item, .directory-column-container {
+    display: grid;
+    grid-template-columns:
+      1fr
+      14rem
+      9rem
+      min-content
+      min-content;
+    grid-template-rows: 1fr;
+  }
 }
 
 .directory-listing-container {
   min-width: fit-content;
   border-bottom: $container-borders;
+}
+
+.directory-items-container:nth-child(2n) {
+  background-color: #f2f2f2;
 }

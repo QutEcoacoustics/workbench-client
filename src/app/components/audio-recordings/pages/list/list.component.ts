@@ -108,7 +108,7 @@ class AudioRecordingsListComponent
 
   public get site(): Site | undefined {
     return this.models[siteKey] as Site;
-  }
+  }z
 
   public get siteColumnName(): string {
     const hideProjects = this.config.settings.hideProjects;
