@@ -43,6 +43,9 @@ export class AnalysisJobsService implements ReadAndUpdateApi<AnalysisJob> {
     return this.api.update(AnalysisJob, endpoint(model, emptyParam), model);
   }
 
+  // TODO: Remove this hard coded system analysis job.
+  // At the moment, there is a bug in the API where the system job does not exist in the database and will not be returned when requested.
+  // This systemAnalysisJob is a workaround that can be used on if the route data returns null & is requesting the system analysis job.
   public get systemAnalysisJob(): AnalysisJob {
     return new AnalysisJob({
       id: "system",

@@ -1,4 +1,12 @@
+import { modelData } from "@test/helpers/faker";
+
 describe("Files helper", () => {
+  it("should run", () => {
+    const mockPaths = [ Array<void>(3).map(_ => modelData.system.fileName) ];
+    console.log(mockPaths);
+    expect(true).toBeFalse();
+  });
+
   it("should return 0 for files at the same depth", () => {
   });
 

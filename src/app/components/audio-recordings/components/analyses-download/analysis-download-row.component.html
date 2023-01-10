@@ -2,65 +2,42 @@
   <div
     class="display-contents"
   >
-    <!-- Template for files -->
+    <span class="directory-listing-item item-name" (click)="toggleOpen()">
+      <!-- indentation for files / folders in tree hierarchy -->
+      <span class="whitespace-indentation" *ngFor="let i of indentation">
+        <span class="whitespace-vertical-line"></span>
+      </span>
+
+      <fa-layers class="fa-custom-icon m-2">
+        <fa-icon
+          class="fa-custom-icon"
+          [icon]="chooseIcon()"
+        ></fa-icon>
+      </fa-layers>
+
+      {{ itemName }}
+    </span>
+
+    <span class="directory-listing-item">
+      {{ item.humanReadableSize }}
+    </span>
+
+    <!-- Template for file downloads -->
     <ng-container *ngIf="item.isFile">
-      <span class="directory-listing-item item-name" (click)="toggleOpen()">
-        <!-- indentation for files / folders in tree hierarchy -->
-        <span class="whitespace-indentation" *ngFor="let i of indentation">
-          <span class="whitespace-vertical-line"></span>
-        </span>
-
-        <fa-layers class="fa-custom-icon m-2">
-          <fa-icon
-            class="fa-custom-icon"
-            [icon]="['fas', 'file']"
-          ></fa-icon>
-        </fa-layers>
-
-        {{ itemName }}
-      </span>
-
-      <span class="directory-listing-item">
-        <ng-container *ngIf="!item.isFolder">
-          {{ item.humanReadableSize }}
-        </ng-container>
-      </span>
-
       <span class="directory-listing-item">
           <a
             class="btn btn-light btn-sm mb-2 mt-1 border"
             [href]="downloadUrl"
           >
             <fa-icon
-              [icon]="chooseIcon()"
+              [icon]="['fas', 'file-arrow-down']"
             ></fa-icon>
           </a>
       </span>
     </ng-container>
 
-    <!-- Template for folders -->
+    <!-- Template for folder downloads -->
     <ng-container *ngIf="item.isFolder">
-      <span class="directory-listing-item item-name" (click)="toggleOpen()">
-        <!-- indentation for files / folders in tree hierarchy -->
-        <span class="whitespace-indentation" *ngFor="let i of indentation">
-          <span class="whitespace-vertical-line"></span>
-          <span *ngIf="open" class="whitespace-vertical-half-line"></span>
-        </span>
-
-        <fa-layers class="fa-custom-icon m-2">
-          <fa-icon
-            class="fa-custom-icon"
-            [icon]="chooseIcon()"
-          ></fa-icon>
-        </fa-layers>
-
-        {{ itemName }}
-      </span>
-
-      <span class="directory-listing-item">
-        {{ item.humanReadableSize }}
-      </span>
-
       <span class="directory-listing-item">
         <span
           [ngbTooltip]="'BETA: will be available soon. Download ZIP of audio recording analysis'"

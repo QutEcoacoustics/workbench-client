@@ -32,11 +32,11 @@ export class AnalysesDownloadRowComponent {
     }
   }
 
-  public get itemName(): string {
+  protected get itemName(): string {
     return this.item?.name;
   }
 
-  public get downloadUrl(): string {
+  protected get downloadUrl(): string {
     return this.api.downloadUrl(
       this.analysisJob,
       this.audioRecording,
@@ -44,7 +44,12 @@ export class AnalysesDownloadRowComponent {
     );
   }
 
-  public chooseIcon(): IconProp {
+  /**
+   * Chooses a font awesome IconProp to use to represent the analysis item result
+   *
+   * @returns A font awesome IconProp that can be used in the `fa-icon` elements `[icon]` property
+   */
+  protected chooseIcon(): IconProp {
     const iconClass: IconPrefix = "fas";
 
     if (this.item.isFolder) {

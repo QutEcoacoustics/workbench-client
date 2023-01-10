@@ -1,4 +1,3 @@
-import { rootPath } from "@components/audio-recordings/pages/analysis-results/analyses-results.component";
 import {
   IAnalysisJobItemResult,
   ResultsItemType,
@@ -12,10 +11,10 @@ export function generateAnalysisJobResults(
 
   return {
     id: modelData.id(),
-    path: `${rootPath}${modelData.id()}/${modelData.system.fileName()}`,
+    path: `${modelData.id()}/${modelData.system.fileName()}`,
     analysisJobId: modelData.id(),
     audioRecordingId: modelData.id(),
-    name: `${rootPath}${modelData.system.fileName()}`,
+    name: modelData.system.fileName(),
     sizeBytes: modelData.datatype.number(1000),
     hasChildren: modelData.bool(),
     hasZip: modelData.bool(),

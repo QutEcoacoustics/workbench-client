@@ -14,21 +14,18 @@ import {
   audioRecordingsCategory,
 } from "@components/audio-recordings/audio-recording.menus";
 import { compareByPath } from "@helpers/files/files";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { AudioRecording } from "@models/AudioRecording";
-import { Observable, map, takeUntil, of, firstValueFrom, pipe } from "rxjs";
+import { Observable, map, takeUntil, of } from "rxjs";
 
 const audioRecordingKey = "audioRecording";
 const analysisJobKey = "analysisJob";
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
-
-export const rootPath = "/analysis_jobs/system/results/";
 
 @Component({
   selector: "baw-analyses-results",
@@ -45,15 +42,18 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   }
 
   public rows$: Observable<ResultNode[]>;
+  private rows = Array<ResultNode>();
+
   private readonly routeData = this.route.snapshot.data;
-  public audioRecording: AudioRecording =
-    this.routeData[audioRecordingKey]?.model;
+  public audioRecording: AudioRecording = this.routeData[audioRecordingKey]?.model;
+  // TODO: once api functionality for the system AnalysisJob is working, the if undefined condition can be removed
   public analysisJob: AnalysisJob =
     this.routeData[analysisJobKey]?.model ??
     this.analysisJobsServiceApi.systemAnalysisJob;
-  private rows = Array<ResultNode>();
+
 
   public ngOnInit() {
+    // by supplying zero arguments to `getNodeChildren`, it will fetch the root paths child elements and place them on the view
     this.getNodeChildren()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(x => {
@@ -64,12 +64,12 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   }
 
   /**
-   * Fetches the `AnalysisJobItemResult` model from the baw-api and returns an Observable of type AnalysisJobItemResult
+   * Fetches a single `AnalysisJobItemResult` model from the baw-api and returns an Observable of type AnalysisJobItemResult
    *
    * @param node An incomplete result node that must include the result node name or id attribute
    * @returns The complete `AnalysisJobItemResult` model of the requested item. If no model is not defined, the root path will be returned
    */
-  public getItem(node?: ResultNode): Observable<AnalysisJobItemResult> {
+  private getItem(node?: ResultNode): Observable<AnalysisJobItemResult> {
     const analysisJobId = this.analysisJob;
     return this.resultsServiceApi.show(
       node?.result,
@@ -79,7 +79,8 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   }
 
   private closeRow(node: ResultNode): void {
-    this.rows = this.rows.filter((row) => this.isChildOf(row, node));
+    this.rows = this.rows.filter(row => !this.isChildOf(row, node));
+
     node.open = false;
 
     // for some reason this is needed
@@ -97,7 +98,10 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
           this.rows = this.rows
             .concat(returnedValues)
             .sort((a, b) =>
-              compareByPath(this.nodeRelativePath(a), this.nodeRelativePath(b))
+              compareByPath(
+                a.parentItem.path + a.result.name,
+                b.parentItem.path + a.result.name
+              )
             );
           this.rows$ = of(this.rows);
         })
@@ -106,8 +110,6 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
       .subscribe();
 
     node.open = true;
-
-    this.rows$ = of(this.rows);
   }
 
   public toggleRow(node: ResultNode): void {
@@ -119,13 +121,13 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   }
 
   /**
-   * returns a nodes child items by evaluating the object using the baw-api and adds path information to the node
-   * this helper method is intended to take a partial node, as is present in a complete nodes children attribute.
+   * Fetches the child elements of a result node and returns the children in the form of a resultNode array
+   * with parent information.
    *
    * @param node A node with a name attribute to evaluate the child items of
-   * @returns An array of type `ResultNode` representing the child items, of the node, the child items parent, and their path
+   * @returns An observable of type `Array<ResultNode>` representing the child items, of the node
    */
-  public getNodeChildren(node?: ResultNode): Observable<ResultNode[]> {
+  private getNodeChildren(node?: ResultNode): Observable<ResultNode[]> {
     return (
       this.getItem(node)
         // add the path & parent information to all child items
@@ -141,11 +143,12 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
    * Takes a view model and returns the child items, with the `path`, `analysisJobId`, and `audioRecordingId` attributes
    *
    * @param model A view model to fetch the children of
-   * @returns An array of nodes representing the child items in the model
+   * @returns An array of result nodes representing the child items in the model with parent information and result information
    */
   private childItemsWithParentInformation(
     model: AnalysisJobItemResult
   ): ResultNode[] {
+    // FIXME: For some reason, if I don't recreate the result model, it doesn't update this.rows$, I need to figure out why
     return model.children.map(
       (item) =>
         ({
@@ -155,31 +158,19 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     );
   }
 
-  private subDirectoriesCount(path: string): number {
-    return path.split("/").length;
-  }
-
   protected getIndentation(node: ResultNode): Array<void> {
-    const nodePath = this.nodeRelativePath(node);
-    const subPaths = this.subDirectoriesCount(nodePath);
+    const nodePath = node.parentItem.path + node.result.name;
+    const subPaths = nodePath.split("/").length;
 
-    // because the path of folders end with a slash e.g. /folderA/aa/, we need to subtract one path count
-    // because files do not end with a trailing backslash, we can calculate the path count directly, without any subtraction
-    const indentationAmount = subPaths - this.subDirectoriesCount(rootPath) - 1;
+    // result node paths follow the format /analysis_jobs/:analysisJobId/results/:audioRecordingId/:analysisJobItemResultsPath/
+    // because we are only interested in the number of paths (:analysisJobItemResultsPath), we have to subtract the leading path count (6)
+    const indentationAmount = subPaths - 6;
 
     return Array<void>(indentationAmount);
   }
 
   private isChildOf(node: ResultNode, parent: ResultNode): boolean {
-    return parent.result.path.includes(node.result.path);
-  }
-
-  private nodeRelativePath(node: ResultNode): string {
-    if (!isInstantiated(node.parentItem)) {
-      return rootPath;
-    }
-
-    return node.result.path ?? node.parentItem.path + node.result.name;
+    return node.parentItem.path === parent.result.path;
   }
 }
 
@@ -197,8 +188,8 @@ function getPageInfo(
     pageRoute: audioRecordingMenuItems.analyses[subRoute],
     category: audioRecordingsCategory,
     resolvers: {
-      [analysisJobKey]: analysisJobResolvers.showOptional,
       [audioRecordingKey]: audioRecordingResolvers.show,
+      [analysisJobKey]: analysisJobResolvers.showOptional,
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
