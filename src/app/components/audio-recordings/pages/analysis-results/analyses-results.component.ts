@@ -48,7 +48,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
 
   private readonly routeData = this.route.snapshot.data;
   public audioRecording: AudioRecording = this.routeData[audioRecordingKey]?.model;
-  // TODO: once api functionality for the system AnalysisJob is working, the if undefined condition can be removed
+  // TODO: once api functionality for the system AnalysisJob is working, the "if undefined, then systemAnalysisJob" condition can be removed
   public analysisJob: AnalysisJob =
     this.routeData[analysisJobKey]?.model ??
     systemAnalysisJob;
@@ -60,7 +60,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(rootChildren => {
         // validate that the response is valid and has analysis job item results.
-        // If not, throw an error and display the error to the user in the form of a toast
+        // If not, throw an error and display the error to the user in the form of a toast notification
         if (rootChildren.length < 1) {
           const errorMessage = "Could not find Analysis Job Item Results. If you believe this to be an error, please report a problem.";
           this.notifications.error(errorMessage);
@@ -82,11 +82,17 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     return this.resultsServiceApi.show(
       node?.result,
       analysisJobId,
-      this.audioRecording.id
+      this.audioRecording
     );
   }
 
-  // Recursive: close all the child elements of the row
+  /**
+   * Recursive: close all the child elements of a row
+   * This method needs to be recursive so it can close folders of more than 1 depth.
+   * e.g. closing folderA/ will close FolderA/aa/bb/
+   *
+   * @param node A result node / row to close
+   */
   private closeRow(node: ResultNode): void {
     this.rows = this.rows.filter(row => !this.isChildOf(row, node));
 
@@ -128,16 +134,16 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   }
 
   /**
-   * Fetches the child elements of a result node and returns the children in the form of a resultNode array
-   * with parent information.
+   * Fetches the child elements of a result node and returns the children in the form of a an resultNode array
+   * with the node.parent attribute set
    *
-   * @param node A node with a name attribute to evaluate the child items of
+   * @param node A result node with a name attribute
    * @returns An observable of type `Array<ResultNode>` representing the child items, of the node
    */
   private getNodeChildren(node?: ResultNode): Observable<ResultNode[]> {
     return (
       this.getItem(node)
-        // add the path & parent information to all child items
+        // add the path & parent information to all child items so this doesn't have to be required in the future
         .pipe(
           map((returnedValue) =>
             this.childItemsWithParentInformation(returnedValue)
@@ -159,7 +165,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
       (item) =>
       ({
         parentItem: model,
-        result: new AnalysisJobItemResult({ ...item }),
+        result: item,
       } as ResultNode)
     );
   }
@@ -168,7 +174,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     const nodePath = this.getNodePath(node);
     const subPaths = nodePath.split("/").length;
 
-    // result node paths follow the format /analysis_jobs/:analysisJobId/results/:audioRecordingId/:analysisJobItemResultsPath/
+    // result node paths follow the format `/analysis_jobs/:analysisJobId/results/:audioRecordingId/:analysisJobItemResultsPath/`
     // because we are only interested in the number of paths (:analysisJobItemResultsPath), we have to subtract the leading path count (6)
     const indentationAmount = subPaths - 6;
 

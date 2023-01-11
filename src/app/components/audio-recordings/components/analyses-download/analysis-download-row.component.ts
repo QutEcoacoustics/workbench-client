@@ -1,11 +1,10 @@
-import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { AnalysisJobItemResultsService } from "@baw-api/analysis/analysis-job-item-result.service";
 import { IconPrefix } from "@fortawesome/fontawesome-common-types";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { AudioRecording } from "@models/AudioRecording";
-import { API_ROOT } from "@services/config/config.tokens";
 
 @Component({
   selector: "baw-directory-row",
@@ -14,19 +13,18 @@ import { API_ROOT } from "@services/config/config.tokens";
 })
 export class AnalysesDownloadRowComponent {
   public constructor(
-    @Inject(API_ROOT) public apiRoot: string,
     public api: AnalysisJobItemResultsService
-  ) {}
+  ) { }
 
-  public open: boolean;
   @Input() public item: ResultNode;
   @Input() public indentation: Array<void>;
   @Input() public analysisJob: AnalysisJob;
   @Input() public audioRecording: AudioRecording;
   @Output() public loadChildren = new EventEmitter<AnalysisJobItemResult>();
+  public open: boolean;
 
   protected toggleOpen(): void {
-    if (this.item.result.isFolder) {
+    if (this.item.result.isFolder()) {
       this.open = !this.open;
       this.loadChildren.emit(this.item.result);
     }
@@ -48,7 +46,7 @@ export class AnalysesDownloadRowComponent {
   protected chooseIcon(): IconProp {
     const iconClass: IconPrefix = "fas";
 
-    if (this.item.result.isFolder) {
+    if (this.item.result.isFolder()) {
       if (this.open) {
         return [iconClass, "folder-open"];
       } else {

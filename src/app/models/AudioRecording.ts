@@ -10,6 +10,7 @@ import {
 } from "@components/audio-recordings/audio-recording.routes";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { Duration } from "luxon";
+import { systemAnalysisJob } from "@baw-api/analysis/analysis-jobs.service";
 import {
   DateTimeTimezone,
   HasAllUsers,
@@ -150,7 +151,7 @@ export class AudioRecording
     analysisJob?: IdOr<AnalysisJob>,
   ): string {
     const routes = analysisResultsRoutes;
-    return this.selectRoute(routes, project, region, site, analysisJob);
+    return this.selectRoute(routes, project, region, site, analysisJob ?? systemAnalysisJob);
   }
 
   /** Routes to the base details page */

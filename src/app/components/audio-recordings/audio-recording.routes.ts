@@ -1,4 +1,3 @@
-import { systemAnalysisJob } from "@baw-api/analysis/analysis-jobs.service";
 import { projectRoute } from "@components/projects/projects.routes";
 import { regionRoute } from "@components/regions/regions.routes";
 import { pointRoute } from "@components/sites/points.routes";
@@ -86,17 +85,18 @@ export const analysisJobsRoutes: AnalysisStrongRoutes = {
   project: audioRecordingRoutes.project.add(analysisRoutePath),
 };
 
+// TODO: I need to move this to the menu items instead of the route
 export const analysisJobRoute: AnalysisStrongRoutes = {
   /** /audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId */
-  base: analysisJobsRoutes.base.add(systemAnalysisJob.id.toString()),
+  base: analysisJobsRoutes.base.add(analysisShowRoutePath),
   /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId */
-  site: analysisJobsRoutes.site.add(systemAnalysisJob.id.toString()),
+  site: analysisJobsRoutes.site.add(analysisShowRoutePath),
   /** /project/:projectId/region/:regionId/site/:siteId/audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId */
-  siteAndRegion: analysisJobsRoutes.siteAndRegion.add(systemAnalysisJob.id.toString()),
+  siteAndRegion: analysisJobsRoutes.siteAndRegion.add(analysisShowRoutePath),
   /** /project/:projectId/region/:regionId/audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId */
-  region: analysisJobsRoutes.region.add(systemAnalysisJob.id.toString()),
+  region: analysisJobsRoutes.region.add(analysisShowRoutePath),
   /** /project/:projectId/audio_recordings/analysis_jobs/:analysisJobId */
-  project: analysisJobsRoutes.project.add(systemAnalysisJob.id.toString()),
+  project: analysisJobsRoutes.project.add(analysisShowRoutePath),
 };
 
 export const analysisResultsRoutes: AnalysisStrongRoutes = {

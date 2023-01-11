@@ -20,20 +20,18 @@ export interface IAnalysisJobItemResult {
   hasChildren?: boolean;
   hasZip?: boolean;
   type?: ResultsItemType;
-  children?: (IDirectory | IFile)[];
+  children?: IChildren[];
 }
 
-interface IDirectory {
+export interface IChildren {
   path?: string;
   name?: string;
   type?: ResultsItemType;
   hasChildren?: boolean;
-}
 
-interface IFile {
-  name?: string;
-  sizeBytes?: number;
-  type: ResultsItemType;
+  isFile: () => boolean;
+  isFolder: () => boolean;
+  humanReadableByteSize: () => string;
 }
 
 export class AnalysisJobItemResult
@@ -45,6 +43,12 @@ export class AnalysisJobItemResult
     injector?: Injector
   ) {
     super(analysisJobItemResults, injector);
+    this.children.forEach(childItem => {
+      childItem.isFile = () => this.type === "file";
+      childItem.isFolder = () => this.type === "directory";
+      childItem.humanReadableByteSize = () =>
+        this.sizeBytes ? fileSize(this.sizeBytes, { round: 2 }) : "";
+    });
   }
 
   public readonly kind = "Analysis Job Item Results";
@@ -57,7 +61,7 @@ export class AnalysisJobItemResult
   public readonly hasChildren?: boolean;
   public readonly hasZip?: boolean;
   public readonly type?: ResultsItemType;
-  public readonly children?: (IDirectory | IFile)[];
+  public readonly children?: IChildren[];
   public readonly sizeBytes?: number;
   @bawBytes<AnalysisJobItemResult>({ key: "sizeBytes" })
 
@@ -70,15 +74,15 @@ export class AnalysisJobItemResult
     )
   public audioRecording?: AudioRecording;
 
-  public get isFolder(): boolean {
-    return this.type === "directory";
-  }
-
-  public get isFile(): boolean {
+  public isFile(): boolean {
     return this.type === "file";
   }
 
-  public get humanReadableSize(): string {
+  public isFolder(): boolean {
+    return this.type === "directory";
+  }
+
+  public humanReadableByteSize(): string {
     return this.sizeBytes ? fileSize(this.sizeBytes, { round: 2 }) : "";
   }
 

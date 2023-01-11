@@ -18,7 +18,7 @@ describe("analysesResultsComponent", () => {
   let defaultAudioRecording: AudioRecording;
   let getItemSpy: jasmine.Spy<(model: AnalysisJobItemResult) => Observable<AnalysisJobItemResult>>;
 
-  const rootPath = "/analysis_jobs/system/results/1/";
+  const mockRootPath = "/analysis_jobs/system/results/1/";
 
   const createHost = createHostFactory({
     declarations: [
@@ -39,7 +39,7 @@ describe("analysesResultsComponent", () => {
   function setup() {
     spectator = createHost("<baw-analyses-results></baw-analyses-results>", { detectChanges: false });
 
-    defaultAudioRecording = new AudioRecording(generateAudioRecording({ id: 1 }));
+    defaultAudioRecording = new AudioRecording(generateAudioRecording());
     spectator.component.audioRecording = defaultAudioRecording;
 
     getItemSpy = spyOn(spectator.component, "getItem").and.stub();
@@ -50,7 +50,7 @@ describe("analysesResultsComponent", () => {
 
   function getDirectoryRow(item: AnalysisJobItemResult): HTMLElement {
     const itemName = item.name;
-    const itemSize = item.humanReadableSize;
+    const itemSize = item.humanReadableByteSize;
     const expectedInnerText = `${itemName}\n${itemSize}`;
 
     const directoryRow = spectator.debugElement.query(
@@ -62,7 +62,6 @@ describe("analysesResultsComponent", () => {
 
   function clickFolder(item: AnalysisJobItemResult) {
     const itemName = item.name;
-
     const rowItem = getItemByName(itemName);
 
     rowItem.click();
@@ -84,7 +83,7 @@ describe("analysesResultsComponent", () => {
   const resultsItemFactory = (itemName: string = "", data?: object): AnalysisJobItemResult =>
     new AnalysisJobItemResult({
       name: itemName,
-      path: rootPath + itemName,
+      path: mockRootPath + itemName,
       ...data
     });
 
@@ -121,14 +120,14 @@ describe("analysesResultsComponent", () => {
 
   it("should display an enabled file download button for files", () => {
     setup();
-    const mockFileResult = new AnalysisJobItemResult(
+    const mockFile = new AnalysisJobItemResult(
       generateAnalysisJobResults({ type: "file" })
     );
 
-    mockDirectory(parentlessItem(), [mockFileResult]);
+    mockDirectory(parentlessItem(), [mockFile]);
 
     // get the download button of this sub item / file and assert that the button is enabled
-    const downloadButton = getDownloadButton(mockFileResult);
+    const downloadButton = getDownloadButton(mockFile);
     expect(downloadButton).not.toHaveClass("disabled");
   });
 

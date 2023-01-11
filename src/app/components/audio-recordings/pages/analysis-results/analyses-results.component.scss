@@ -1,5 +1,3 @@
-$container-borders: 2px solid #d1d4d7;
-
 :host ::ng-deep {
   .directory-listing-item {
     display: flex;
@@ -17,13 +15,11 @@ $container-borders: 2px solid #d1d4d7;
       min-content;
     grid-template-rows: 1fr;
   }
-}
-
-.directory-listing-container {
+  
+  // fit-content is needed to scale on small screens & mobile properly
   min-width: fit-content;
-  border-bottom: $container-borders;
 }
 
 .directory-items-container:nth-child(2n) {
-  background-color: #f2f2f2;
+  background-color: var(--baw-checkerboard-dark);
 }
