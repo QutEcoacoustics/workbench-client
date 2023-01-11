@@ -32,6 +32,7 @@ import { Project } from "./Project";
 import { Region } from "./Region";
 import type { Site } from "./Site";
 import type { User } from "./User";
+import { AnalysisJob } from "./AnalysisJob";
 
 /**
  * An audio recording model
@@ -145,10 +146,11 @@ export class AudioRecording
   public getAnalysisResultsUrl(
     project?: IdOr<Project>,
     region?: IdOr<Region>,
-    site?: IdOr<Site>
+    site?: IdOr<Site>,
+    analysisJob?: IdOr<AnalysisJob>,
   ): string {
     const routes = analysisResultsRoutes;
-    return this.selectRoute(routes, project, region, site);
+    return this.selectRoute(routes, project, region, site, analysisJob);
   }
 
   /** Routes to the base details page */
@@ -184,13 +186,15 @@ export class AudioRecording
     routes: RecordingStrongRoutes,
     project: IdOr<Project>,
     region: IdOr<Region>,
-    site: IdOr<Site>
+    site: IdOr<Site>,
+    analysisJob?: IdOr<AnalysisJob>,
   ): string {
     const routeParams = {
       audioRecordingId: this.id,
       projectId: id(project),
       regionId: id(region),
       siteId: id(site),
+      analysisJobId: id(analysisJob),
     };
 
     if (site) {

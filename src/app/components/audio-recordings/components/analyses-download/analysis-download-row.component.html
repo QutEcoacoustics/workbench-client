@@ -19,11 +19,11 @@
     </span>
 
     <span class="directory-listing-item">
-      {{ item.humanReadableSize }}
+      {{ item.result.humanReadableSize }}
     </span>
 
     <!-- Template for file downloads -->
-    <ng-container *ngIf="item.isFile">
+    <ng-container *ngIf="item.result.isFile">
       <span class="directory-listing-item">
           <a
             class="btn btn-light btn-sm mb-2 mt-1 border"
@@ -37,15 +37,15 @@
     </ng-container>
 
     <!-- Template for folder downloads -->
-    <ng-container *ngIf="item.isFolder">
+    <ng-container *ngIf="item.result.isFolder">
       <span class="directory-listing-item">
         <span
           [ngbTooltip]="'BETA: will be available soon. Download ZIP of audio recording analysis'"
         >
           <a
+            [ngbTooltip]="'BETA: will be available soon. Download ZIP of audio recording analysis'"
             class="btn btn-light btn-sm mb-2 mt-1 border"
             [class.disabled]="true"
-            [href]="downloadUrl"
           >
             <fa-icon
               [icon]="['fas', 'file-archive']"

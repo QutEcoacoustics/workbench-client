@@ -87,20 +87,8 @@ export class AnalysisJobItemResultsService
     );
   }
 
-  public downloadUrl(
-    analysisJob: IdOr<AnalysisJob>,
-    audioRecording: IdOr<AudioRecording>,
-    // TODO: we should consider overloads that take a path or model
-    analysisJobItemResult?: AnalysisJobItemResult
-  ) {
-    return this.api.getPath(
-      analysisJobItemResultsEndpoint(
-        analysisJob,
-        audioRecording,
-        analysisJobItemResult?.name ?? emptyParam,
-        emptyParam
-      )
-    );
+  public downloadUrl(analysisJobItemResultPath?: string) {
+    return this.api.getPath(analysisJobItemResultPath ?? emptyParam);
   }
 }
 

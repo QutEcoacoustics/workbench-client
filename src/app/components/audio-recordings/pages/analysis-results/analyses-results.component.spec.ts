@@ -43,21 +43,14 @@ describe("analysesResultsComponent", () => {
     spectator.component.audioRecording = defaultAudioRecording;
 
     getItemSpy = spyOn(spectator.component, "getItem").and.stub();
-
-    spectator.detectChanges();
   }
-
-  beforeEach(() => setup());
-
-  const isFile = (item: AnalysisJobItemResult) =>
-    item.type === "file";
 
   const getDownloadButton = (item: AnalysisJobItemResult): HTMLButtonElement =>
     getDirectoryRow(item).getElementsByClassName("btn-light")[0] as HTMLButtonElement;
 
   function getDirectoryRow(item: AnalysisJobItemResult): HTMLElement {
     const itemName = item.name;
-    const itemSize = isFile(item) ? `${item.sizeBytes} Bytes` : "";
+    const itemSize = item.humanReadableSize;
     const expectedInnerText = `${itemName}\n${itemSize}`;
 
     const directoryRow = spectator.debugElement.query(
@@ -95,7 +88,7 @@ describe("analysesResultsComponent", () => {
       ...data
     });
 
-  const generateRootFolder = (): AnalysisJobItemResult =>
+  const parentlessItem = (): AnalysisJobItemResult =>
     resultsItemFactory();
 
   /**
@@ -104,7 +97,12 @@ describe("analysesResultsComponent", () => {
    * @param item The parent item that the test will click on to load the child items
    * @param itemChildren The child elements that will be shown when the user clicks on the row
    */
-  function mockDirectoryItemChildren(item?: AnalysisJobItemResult, itemChildren?: AnalysisJobItemResult[]) {
+  function mockDirectory(
+    item: AnalysisJobItemResult = parentlessItem(),
+    itemChildren: AnalysisJobItemResult[] = [
+      new AnalysisJobItemResult(generateAnalysisJobResults())
+    ]
+  ) {
     getItemSpy.and.returnValue(new Observable<AnalysisJobItemResult>(subscriber => {
       subscriber.next(new AnalysisJobItemResult({
         children: itemChildren,
@@ -116,51 +114,48 @@ describe("analysesResultsComponent", () => {
   }
 
   it("should create", () => {
+    setup();
+    mockDirectory();
     expect(spectator.component).toBeInstanceOf(AnalysesResultsComponent);
   });
 
-  fit("should display an enabled file download button for files", () => {
-    const rootFolder = generateRootFolder();
-    const subFile = new AnalysisJobItemResult(
+  it("should display an enabled file download button for files", () => {
+    setup();
+    const mockFileResult = new AnalysisJobItemResult(
       generateAnalysisJobResults({ type: "file" })
     );
-    const rootFolderContents = [
-      resultsItemFactory(rootFolder.name, { ...subFile })
-    ];
 
-    // open the root folder, that contains a single AnalysisJobItemResult item of type file
-    mockDirectoryItemChildren(rootFolder, rootFolderContents);
-    clickFolder(rootFolder);
+    mockDirectory(parentlessItem(), [mockFileResult]);
 
     // get the download button of this sub item / file and assert that the button is enabled
-    const downloadButton = getDownloadButton(subFile);
+    const downloadButton = getDownloadButton(mockFileResult);
     expect(downloadButton).not.toHaveClass("disabled");
   });
 
   // this is only temporary until we have the API's functionality for downloading analysis folders as archives
-  it("should have a disabled zip download button for folders", () => {
-    const rootFolder = generateRootFolder();
+  it("should have a disabled zip download button for directories", () => {
+    setup();
+    const mockDirectoryResult = new AnalysisJobItemResult(
+      generateAnalysisJobResults({ type: "directory" })
+    );
+
+    mockDirectory(parentlessItem(), [mockDirectoryResult]);
 
     // since the root folder is of type folder, we can assert that the root folder has a disabled download button
-    const downloadButton = getDownloadButton(rootFolder);
+    const downloadButton = getDownloadButton(mockDirectoryResult);
     expect(downloadButton).toHaveClass("disabled");
   });
 
   it("should show sub directory folders and items when a folder is clicked", () => {
     const assertedFileName = "Sound_File2022-11-05T08:15:30-05:00.wav";
-    const rootFolder = generateRootFolder();
     const folderA = resultsItemFactory("folderA", { type: "directory" });
-    const rootFolderChildren = [folderA];
-    const folderAChildren = [
-      resultsItemFactory(assertedFileName)
-    ];
+    const folderAChildren = [ resultsItemFactory(assertedFileName) ];
 
-    // mock and click on root folder
-    mockDirectoryItemChildren(rootFolder, rootFolderChildren);
-    clickFolder(rootFolder);
+    setup();
+    mockDirectory(parentlessItem(), [folderA]);
 
     // mock and click on FolderA/
-    mockDirectoryItemChildren(folderA, folderAChildren);
+    mockDirectory(folderA, folderAChildren);
     clickFolder(folderA);
 
     // assert that the the predetermined file `assertedFileName` is shown under folderA
@@ -169,19 +164,17 @@ describe("analysesResultsComponent", () => {
 
   it("should remove all sub-folders from model if a folder is clicked on while open", () => {
     const folderBTestingFileName = "FolderA/B/assertMe.csv";
-
-    const rootFolder = generateRootFolder();
     const folderA = resultsItemFactory("folderA", { type: "directory" });
-    const rootFolderChildren = [folderA];
+    const rootChildren = [folderA];
 
-    mockDirectoryItemChildren(rootFolder, rootFolderChildren);
-    clickFolder(rootFolder);
+    setup();
+    mockDirectory(parentlessItem(), rootChildren);
 
     // open folderA
     const folderAChildren = [
       resultsItemFactory("FolderA/B", { type: "directory" })
     ];
-    mockDirectoryItemChildren(folderA, folderAChildren);
+    mockDirectory(folderA, folderAChildren);
     clickFolder(folderA);
 
     // open sub folder folderA/B
@@ -189,17 +182,17 @@ describe("analysesResultsComponent", () => {
     const folderBChildren = [
       resultsItemFactory(folderBTestingFileName)
     ];
-    mockDirectoryItemChildren(folderB, folderBChildren);
+    mockDirectory(folderB, folderBChildren);
     clickFolder(folderB);
 
     // assert that folderA/B is open
     expect(getItemByName(folderB.name)).toBeTruthy();
 
     // click on the root folder to close all folders
-    mockDirectoryItemChildren(rootFolder, rootFolderChildren);
-    clickFolder(rootFolder);
+    mockDirectory(folderA, []);
+    clickFolder(folderA);
 
-    // assert that folderA/B is closed
-    expect(getItemByName(folderB.name)).toBeUndefined();
+    // assert that the file under folderA/B (folderBTestingFileName) is not visible
+    expect(getItemByName(folderBTestingFileName)).toBeUndefined();
   });
 });

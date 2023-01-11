@@ -42,7 +42,7 @@ describe("AudioRecording", () => {
     });
 
     it("should construct correct analyses download URL", () => {
-      const expectedUrl = `/audio_recordings/${audioRecordingModel.id}/results`;
+      const expectedUrl = `/audio_recordings/${audioRecordingModel.id}/analysis_jobs/system/results`;
       const realizedUrl = audioRecordingModel.getAnalysisResultsUrl();
 
       expect(realizedUrl).toEqual(expectedUrl);
@@ -65,7 +65,7 @@ describe("AudioRecording", () => {
     });
 
     it("should construct correct analyses download URL", () => {
-      const expectedUrl = `/projects/${projectModel.id}/audio_recordings/${audioRecordingModel.id}/results`;
+      const expectedUrl = `/projects/${projectModel.id}/audio_recordings/${audioRecordingModel.id}/analysis_jobs/system/results`;
       const realizedUrl =
         audioRecordingModel.getAnalysisResultsUrl(projectModel);
 
@@ -92,7 +92,9 @@ describe("AudioRecording", () => {
     });
 
     it("should construct correct analyses download URL", () => {
-      const expectedUrl = `/projects/${projectModel.id}/regions/${regionModel.id}/audio_recordings/${audioRecordingModel.id}/results`;
+      const expectedUrl = `/projects/${projectModel.id}/regions/${regionModel.id}` +
+      `/audio_recordings/${audioRecordingModel.id}/analysis_jobs/system/results`;
+
       const realizedUrl = audioRecordingModel.getAnalysisResultsUrl(
         projectModel,
         regionModel
@@ -126,7 +128,8 @@ describe("AudioRecording", () => {
 
     it("should construct correct analyses download URL", () => {
       const expectedUrl =
-        `/projects/${projectModel.id}/regions/${regionModel.id}/points/${siteModel.id}/audio_recordings/${audioRecordingModel.id}/results`;
+        `/projects/${projectModel.id}/regions/${regionModel.id}/points/` +
+        `${siteModel.id}/audio_recordings/${audioRecordingModel.id}/analysis_jobs/system/results`;
 
       const realizedUrl = audioRecordingModel.getAnalysisResultsUrl(
         projectModel,
@@ -139,7 +142,9 @@ describe("AudioRecording", () => {
 
     it("should construct correct details URL", () => {
       const expectedUrl =
-        `/projects/${projectModel.id}/regions/${regionModel.id}/points/${siteModel.id}/audio_recordings/${audioRecordingModel.id}`;
+        `/projects/${projectModel.id}/regions/${regionModel.id}/points/` +
+        `${siteModel.id}/audio_recordings/${audioRecordingModel.id}`;
+
       const realizedUrl = audioRecordingModel.getDetailsUrl(
         projectModel,
         regionModel,

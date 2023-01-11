@@ -67,7 +67,7 @@ function makeBatchMenuItem(subRoute: RecordingRoute): MenuRoute {
   });
 }
 
-export function makeAnalysesMenuItem(subRoute: RecordingRoute): MenuRoute {
+export function makeAnalysesMenuItem(subRoute: AnalysisRoute): MenuRoute {
   return menuRoute({
     icon: ["fas", "folder-tree"],
     label: "Download analysis results",
@@ -119,15 +119,15 @@ const batchMenuItems: RecordingMenuRoutes = {
 };
 
 const analysesMenuItems: AnalysisMenuRoutes = {
-  /** /audio_recordings/download */
+  /** /audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId/results */
   base: makeAnalysesMenuItem("base"),
-  /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId/results */
+  /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId/results */
   site: makeAnalysesMenuItem("site"),
-  /** /project/:projectId/region/:regionId/point/:pointId/audio_recordings/:audioRecordingId/results */
+  /** /project/:projectId/region/:regionId/point/:pointId/audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId/results */
   siteAndRegion: makeAnalysesMenuItem("siteAndRegion"),
-  /** /region/:regionId/audio_recordings/:audioRecordingId/results */
+  /** /region/:regionId/audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId/results */
   region: makeAnalysesMenuItem("region"),
-  /** /project/:projectId/audio_recordings/:audioRecordingId/results */
+  /** /project/:projectId/audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId/results */
   project: makeAnalysesMenuItem("project"),
 };
 

@@ -19,29 +19,25 @@ export class AnalysesDownloadRowComponent {
   ) {}
 
   public open: boolean;
-  @Input() public item: AnalysisJobItemResult;
+  @Input() public item: ResultNode;
   @Input() public indentation: Array<void>;
   @Input() public analysisJob: AnalysisJob;
   @Input() public audioRecording: AudioRecording;
   @Output() public loadChildren = new EventEmitter<AnalysisJobItemResult>();
 
   protected toggleOpen(): void {
-    if (this.item.isFolder) {
+    if (this.item.result.isFolder) {
       this.open = !this.open;
-      this.loadChildren.emit(this.item);
+      this.loadChildren.emit(this.item.result);
     }
   }
 
   protected get itemName(): string {
-    return this.item?.name;
+    return this.item.result?.name;
   }
 
   protected get downloadUrl(): string {
-    return this.api.downloadUrl(
-      this.analysisJob,
-      this.audioRecording,
-      this.item
-    );
+    return this.api.downloadUrl(this.item.parentItem.path + this.item.result.name);
   }
 
   /**
@@ -52,7 +48,7 @@ export class AnalysesDownloadRowComponent {
   protected chooseIcon(): IconProp {
     const iconClass: IconPrefix = "fas";
 
-    if (this.item.isFolder) {
+    if (this.item.result.isFolder) {
       if (this.open) {
         return [iconClass, "folder-open"];
       } else {
@@ -63,3 +59,9 @@ export class AnalysesDownloadRowComponent {
     return [iconClass, "file"];
   }
 }
+
+interface ResultNode {
+  result?: AnalysisJobItemResult;
+  parentItem?: AnalysisJobItemResult;
+}
+

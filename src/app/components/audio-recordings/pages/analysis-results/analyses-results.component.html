@@ -18,10 +18,10 @@
     </div>
     <div
       class="directory-items-container"
-      *ngFor="let row of rows$ | async; trackBy: trackByRow"
+      *ngFor="let row of rows; trackBy: trackByRow"
     >
       <baw-directory-row
-        [item]="row.result"
+        [item]="row"
         [analysisJob]="analysisJob"
         [audioRecording]="audioRecording"
         [indentation]="getIndentation(row)"

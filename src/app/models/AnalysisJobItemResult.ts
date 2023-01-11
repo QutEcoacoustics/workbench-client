@@ -2,7 +2,6 @@ import { Injector } from "@angular/core";
 import { Id, Param } from "@interfaces/apiInterfaces";
 import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import fileSize from "filesize";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "./AbstractModel";
 import { AnalysisJob } from "./AnalysisJob";
 import { AudioRecording } from "./AudioRecording";
@@ -54,12 +53,13 @@ export class AnalysisJobItemResult
   public readonly path?: Param;
   public readonly analysisJobId?: Id;
   public readonly audioRecordingId?: Id;
-  public readonly sizeBytes?: number;
   public readonly mime?: Param;
   public readonly hasChildren?: boolean;
   public readonly hasZip?: boolean;
   public readonly type?: ResultsItemType;
   public readonly children?: (IDirectory | IFile)[];
+  public readonly sizeBytes?: number;
+  @bawBytes<AnalysisJobItemResult>({ key: "sizeBytes" })
 
   // Associations
   @hasOne<AnalysisJobItemResult, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
@@ -67,7 +67,7 @@ export class AnalysisJobItemResult
   @hasOne<AnalysisJobItemResult, AudioRecording>(
     AUDIO_RECORDING,
     "audioRecordingId"
-  )
+    )
   public audioRecording?: AudioRecording;
 
   public get isFolder(): boolean {
@@ -79,11 +79,7 @@ export class AnalysisJobItemResult
   }
 
   public get humanReadableSize(): string {
-    if (isInstantiated(this.sizeBytes)) {
-      return fileSize(this.sizeBytes, { round: 2 });
-    } else {
-      return "";
-    }
+    return this.sizeBytes ? fileSize(this.sizeBytes, { round: 2 }) : "";
   }
 
   public get viewUrl(): string {

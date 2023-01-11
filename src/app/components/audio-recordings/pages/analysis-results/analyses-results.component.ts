@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { AnalysisJobItemResultsService } from "@baw-api/analysis/analysis-job-item-result.service";
 import {
   analysisJobResolvers,
-  AnalysisJobsService,
+  systemAnalysisJob,
 } from "@baw-api/analysis/analysis-jobs.service";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -13,13 +13,16 @@ import {
   audioRecordingMenuItems,
   audioRecordingsCategory,
 } from "@components/audio-recordings/audio-recording.menus";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { compareByPath } from "@helpers/files/files";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { AudioRecording } from "@models/AudioRecording";
-import { Observable, map, takeUntil, of } from "rxjs";
+import { NOT_FOUND } from "http-status";
+import { ToastrService } from "ngx-toastr";
+import { Observable, map, takeUntil } from "rxjs";
 
 const audioRecordingKey = "audioRecording";
 const analysisJobKey = "analysisJob";
@@ -35,31 +38,36 @@ const siteKey = "site";
 export class AnalysesResultsComponent extends PageComponent implements OnInit {
   public constructor(
     public resultsServiceApi: AnalysisJobItemResultsService,
-    public analysisJobsServiceApi: AnalysisJobsService,
+    public notifications: ToastrService,
     public route: ActivatedRoute
   ) {
     super();
   }
 
-  public rows$: Observable<ResultNode[]>;
-  private rows = Array<ResultNode>();
+  protected rows = Array<ResultNode>();
 
   private readonly routeData = this.route.snapshot.data;
   public audioRecording: AudioRecording = this.routeData[audioRecordingKey]?.model;
   // TODO: once api functionality for the system AnalysisJob is working, the if undefined condition can be removed
   public analysisJob: AnalysisJob =
     this.routeData[analysisJobKey]?.model ??
-    this.analysisJobsServiceApi.systemAnalysisJob;
+    systemAnalysisJob;
 
 
   public ngOnInit() {
     // by supplying zero arguments to `getNodeChildren`, it will fetch the root paths child elements and place them on the view
     this.getNodeChildren()
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(x => {
-        this.rows = x;
-        // set up an observable so that rows$ updates when the value of this.rows changes
-        this.rows$ = new Observable((subscribers) => subscribers.next(this.rows));
+      .subscribe(rootChildren => {
+        // validate that the response is valid and has analysis job item results.
+        // If not, throw an error and display the error to the user in the form of a toast
+        if (rootChildren.length < 1) {
+          const errorMessage = "Could not find Analysis Job Item Results. If you believe this to be an error, please report a problem.";
+          this.notifications.error(errorMessage);
+          throw new BawApiError(NOT_FOUND, errorMessage);
+        }
+
+        this.rows = rootChildren;
       });
   }
 
@@ -69,7 +77,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
    * @param node An incomplete result node that must include the result node name or id attribute
    * @returns The complete `AnalysisJobItemResult` model of the requested item. If no model is not defined, the root path will be returned
    */
-  private getItem(node?: ResultNode): Observable<AnalysisJobItemResult> {
+  public getItem(node?: ResultNode): Observable<AnalysisJobItemResult> {
     const analysisJobId = this.analysisJob;
     return this.resultsServiceApi.show(
       node?.result,
@@ -78,14 +86,14 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     );
   }
 
+  // Recursive: close all the child elements of the row
   private closeRow(node: ResultNode): void {
     this.rows = this.rows.filter(row => !this.isChildOf(row, node));
 
-    node.open = false;
+    // close the children of the children, etc.. all the way down the tree
+    node.children?.forEach(child => this.closeRow(child));
 
-    // for some reason this is needed
-    // TODO: remove the following line
-    this.rows$ = of(this.rows);
+    node.open = false;
   }
 
   private openRow(node: ResultNode): void {
@@ -99,11 +107,10 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
             .concat(returnedValues)
             .sort((a, b) =>
               compareByPath(
-                a.parentItem.path + a.result.name,
-                b.parentItem.path + a.result.name
+                this.getNodePath(a),
+                this.getNodePath(b)
               )
             );
-          this.rows$ = of(this.rows);
         })
       )
       .pipe(takeUntil(this.unsubscribe))
@@ -148,18 +155,17 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   private childItemsWithParentInformation(
     model: AnalysisJobItemResult
   ): ResultNode[] {
-    // FIXME: For some reason, if I don't recreate the result model, it doesn't update this.rows$, I need to figure out why
     return model.children.map(
       (item) =>
-        ({
-          parentItem: model,
-          result: new AnalysisJobItemResult({ ...item }),
-        } as ResultNode)
+      ({
+        parentItem: model,
+        result: new AnalysisJobItemResult({ ...item }),
+      } as ResultNode)
     );
   }
 
   protected getIndentation(node: ResultNode): Array<void> {
-    const nodePath = node.parentItem.path + node.result.name;
+    const nodePath = this.getNodePath(node);
     const subPaths = nodePath.split("/").length;
 
     // result node paths follow the format /analysis_jobs/:analysisJobId/results/:audioRecordingId/:analysisJobItemResultsPath/
@@ -167,6 +173,10 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     const indentationAmount = subPaths - 6;
 
     return Array<void>(indentationAmount);
+  }
+
+  private getNodePath(node: ResultNode): string {
+    return node.parentItem.path + node.result.name;
   }
 
   private isChildOf(node: ResultNode, parent: ResultNode): boolean {

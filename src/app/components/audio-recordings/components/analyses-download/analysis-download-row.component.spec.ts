@@ -10,6 +10,8 @@ import { ToastrService } from "ngx-toastr";
 describe("analysesResultsComponent", () => {
   let spectator: Spectator<AnalysesDownloadRowComponent>;
   let defaultAnalysisJobItemResult: AnalysisJobItemResult;
+  let defaultAnalysisJobItemResultParent: AnalysisJobItemResult;
+  let defaultRowNode: ResultNode;
 
   const createComponent = createComponentFactory({
     component: AnalysesDownloadRowComponent,
@@ -30,22 +32,33 @@ describe("analysesResultsComponent", () => {
     spectator.query<HTMLAnchorElement>("a");
 
   const getFileName = (): string =>
-    getDirectoryRow().innerText;
+    // the is a new line after the {{ itemName }} mustache for code formatting / readability reasons.
+    // this makes the code easier to read, but adds a space character after the mustache.
+    // therefore, in the tests, we need to remove the extra space
+    getDirectoryRow().innerText.trimEnd();
 
   function setup() {
     spectator = createComponent({
       props: {
-        item: defaultAnalysisJobItemResult
+        item: defaultRowNode
       }
     });
 
-    spectator.component.item = defaultAnalysisJobItemResult;
+    spectator.component.item = defaultRowNode;
     spectator.detectChanges();
   }
 
-  beforeEach(() => defaultAnalysisJobItemResult = createAnalysisJobItemResult());
+  beforeEach(() => {
+    defaultAnalysisJobItemResult = createAnalysisJobItemResult();
+    defaultAnalysisJobItemResultParent = createAnalysisJobItemResult();
 
-  it("should create", () => {
+    defaultRowNode = {
+      parentItem: defaultAnalysisJobItemResultParent,
+      result: defaultAnalysisJobItemResult
+    } as ResultNode;
+  });
+
+  fit("should create", () => {
     setup();
     expect(spectator.component).toBeInstanceOf(AnalysesDownloadRowComponent);
   });
@@ -85,3 +98,10 @@ describe("analysesResultsComponent", () => {
     expect(downloadButtonElement).toHaveClass("disabled");
   });
 });
+
+interface ResultNode {
+  result?: AnalysisJobItemResult;
+  children?: ResultNode[];
+  parentItem?: AnalysisJobItemResult;
+  open?: boolean;
+}
