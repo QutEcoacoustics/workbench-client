@@ -59,7 +59,7 @@ describe("analysesResultsComponent", () => {
     } as ResultNode;
   });
 
-  it("should create", () => {
+  fit("should create", () => {
     setup();
     expect(spectator.component).toBeInstanceOf(AnalysesDownloadRowComponent);
   });

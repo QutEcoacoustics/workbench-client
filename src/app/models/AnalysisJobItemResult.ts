@@ -21,6 +21,10 @@ export interface IAnalysisJobItemResult {
   hasZip?: boolean;
   type?: ResultsItemType;
   children?: IChildren[];
+
+  isFile?: () => boolean;
+  isFolder?: () => boolean;
+  humanReadableByteSize?: () => string;
 }
 
 export interface IChildren {
@@ -28,10 +32,11 @@ export interface IChildren {
   name?: string;
   type?: ResultsItemType;
   hasChildren?: boolean;
+  sizeBytes?: number;
 
-  isFile: () => boolean;
-  isFolder: () => boolean;
-  humanReadableByteSize: () => string;
+  isFile?: () => boolean;
+  isFolder?: () => boolean;
+  humanReadableByteSize?: () => string;
 }
 
 export class AnalysisJobItemResult
@@ -43,11 +48,12 @@ export class AnalysisJobItemResult
     injector?: Injector
   ) {
     super(analysisJobItemResults, injector);
+
     this.children.forEach(childItem => {
-      childItem.isFile = () => this.type === "file";
-      childItem.isFolder = () => this.type === "directory";
+      childItem.isFile = () => childItem.type === "file";
+      childItem.isFolder = () => childItem.type === "directory";
       childItem.humanReadableByteSize = () =>
-        this.sizeBytes ? fileSize(this.sizeBytes, { round: 2 }) : "";
+        childItem?.sizeBytes ? fileSize(childItem.sizeBytes) : "";
     });
   }
 
@@ -83,7 +89,7 @@ export class AnalysisJobItemResult
   }
 
   public humanReadableByteSize(): string {
-    return this.sizeBytes ? fileSize(this.sizeBytes, { round: 2 }) : "";
+    return this?.sizeBytes ? fileSize(this.sizeBytes) : "";
   }
 
   public get viewUrl(): string {
