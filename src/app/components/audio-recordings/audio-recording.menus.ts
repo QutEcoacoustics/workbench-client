@@ -11,14 +11,13 @@ import {
   menuRoute,
 } from "@interfaces/menusInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
-import { systemAnalysisJob } from "@baw-api/analysis/analysis-jobs.service";
 import {
   AnalysisRoute,
   audioRecordingBatchRoutes,
   audioRecordingRoutes,
   audioRecordingsRoutes,
   RecordingRoute,
-  analysisJobsRoutes,
+  systemAnalysisJobRoute,
 } from "./audio-recording.routes";
 
 export type RecordingMenuRoutes = Record<RecordingRoute, MenuRoute>;
@@ -73,10 +72,9 @@ export function makeAnalysesMenuItem(subRoute: AnalysisRoute): MenuRoute {
     icon: ["fas", "folder-tree"],
     label: "Download analysis results",
     tooltip: () => "Download analysis results",
-    route: analysisJobsRoutes[subRoute]
-      // since system job models are currently not returned from the api, this method will fail without a hard coded system job
-      // TODO: Remove this hacky bit of code bellow when the api returns the system analysis job
-      .add(systemAnalysisJob.id.toString()).add("results"),
+    // since system job models are currently not returned from the api, this method will fail without a hard coded system job
+    // TODO: Remove this hacky bit of code bellow when the api returns the system analysis job
+    route: systemAnalysisJobRoute[subRoute].add("results"),
     parent: listMenuItems[subRoute],
     breadcrumbResolve: (pageInfo) =>
       retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),

@@ -6,6 +6,7 @@ import { AnalysesDownloadRowComponent } from "@components/audio-recordings/compo
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { createComponentFactory, mockProvider, Spectator } from "@ngneat/spectator";
 import { generateAnalysisJobResults } from "@test/fakes/AnalysisJobItemResult";
+import fileSize from "filesize";
 import { ToastrService } from "ngx-toastr";
 
 describe("analysesResultsComponent", () => {
@@ -59,7 +60,7 @@ describe("analysesResultsComponent", () => {
     } as ResultNode;
   });
 
-  fit("should create", () => {
+  it("should create", () => {
     setup();
     expect(spectator.component).toBeInstanceOf(AnalysesDownloadRowComponent);
   });
@@ -70,23 +71,53 @@ describe("analysesResultsComponent", () => {
     expect(realizedFileName).toEqual(defaultAnalysisJobItemResult.name);
   });
 
-  it("should display a download button next to file", () => {
+  it("should display a download button next to file", fakeAsync(() => {
+    defaultRowNode = {
+      parentItem: {
+        path: ""
+      },
+      result: {
+        name: "file.csv",
+        type: "file",
+        sizeBytes: 12,
+        isFile: () => true,
+        isFolder: () => false,
+        humanReadableByteSize: () => fileSize(12)
+      }
+    } as ResultNode;
+
     setup();
+
+    spectator.detectChanges();
+    flush();
+    spectator.detectChanges();
+
     const downloadButtonElement = getDirectoryRowDownloadButton();
+
     expect(downloadButtonElement).not.toHaveClass("disabled");
-  });
+  }));
 
   // this test is only temporary until downloading analysis result items as zip files is functional
   it("should display a disabled download button next to folder types", fakeAsync(() => {
-    defaultAnalysisJobItemResult = new AnalysisJobItemResult(
-      generateAnalysisJobResults({
-        type: "directory"
-      })
-    );
+    defaultRowNode = {
+      parentItem: {
+        path: ""
+      },
+      result: {
+        name: "folderA/",
+        type: "directory",
+        sizeBytes: 12,
+        isFile: () => false,
+        isFolder: () => true,
+        humanReadableByteSize: () => fileSize(12)
+      }
+    } as ResultNode;
 
     setup();
 
+    spectator.detectChanges();
     flush();
+    spectator.detectChanges();
 
     const downloadButtonElement = getDirectoryRowDownloadButton();
     expect(downloadButtonElement).toHaveClass("disabled");

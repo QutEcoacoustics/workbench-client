@@ -50,7 +50,7 @@ describe("analysesResultsComponent", () => {
 
   function getDirectoryRow(item: AnalysisJobItemResult): HTMLElement {
     const itemName = item.name;
-    const itemSize = item.humanReadableByteSize;
+    const itemSize = item.humanReadableByteSize();
     const expectedInnerText = `${itemName}\n${itemSize}`;
 
     const directoryRow = spectator.debugElement.query(

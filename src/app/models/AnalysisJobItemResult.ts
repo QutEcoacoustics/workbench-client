@@ -24,7 +24,6 @@ export interface IAnalysisJobItemResult {
 
   isFile?: () => boolean;
   isFolder?: () => boolean;
-  humanReadableByteSize?: () => string;
 }
 
 export interface IChildren {
@@ -49,7 +48,7 @@ export class AnalysisJobItemResult
   ) {
     super(analysisJobItemResults, injector);
 
-    this.children.forEach(childItem => {
+    this.children?.forEach(childItem => {
       childItem.isFile = () => childItem.type === "file";
       childItem.isFolder = () => childItem.type === "directory";
       childItem.humanReadableByteSize = () =>
