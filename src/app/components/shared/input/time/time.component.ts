@@ -7,7 +7,8 @@ import {
   ValidationErrors,
   Validator,
 } from "@angular/forms";
-import { DateTime } from "luxon";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { DateTime, Duration } from "luxon";
 import { getErrorMessages, shouldShowError } from "../input.helpers";
 
 @Component({
@@ -28,13 +29,14 @@ import { getErrorMessages, shouldShowError } from "../input.helpers";
     <div class="input-group">
       <span class="input-group-text">{{ label }}</span>
       <input
+        ngbTimepicker
         class="form-control"
         placeholder="hh:mm"
         [maxLength]="inputLength"
         [class.is-invalid]="showError"
         [required]="required"
         [disabled]="disabled"
-        [value]="value ?? ''"
+        [value]="rawValue ?? ''"
         (input)="onInput($event)"
         (change)="onInput($event)"
         (blur)="onTouched()"
@@ -56,18 +58,21 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   @Input() public disabled = false;
 
   /** Current value */
-  public value: string;
+  public value: Duration;
   /** Has value been set */
   public dirty: boolean;
   /** Has input been touched */
   public touched: boolean;
 
-  /** Errors for current input */
-  public _errors: ValidationErrors;
   /** Potential error messages */
   public errorTypes: Map<string, () => string>;
   /** Length of input hh:mm */
   public inputLength = 5;
+
+  /** The formatted value displayed in the input */
+  protected rawValue: string;
+  /** Errors for current input */
+  private _errors: ValidationErrors;
 
   public constructor() {
     this.errorTypes = new Map([
@@ -82,7 +87,7 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   }
 
   /** Invoked when the model has been changed */
-  public onChange: (_: string) => void = () => {};
+  public onChange: (_: Duration) => void = () => {}
 
   /** Invoked when the model has been touched */
   public onTouched: () => void = () => {};
@@ -115,7 +120,7 @@ export class TimeComponent implements ControlValueAccessor, Validator {
    *
    * @param value the value
    */
-  public writeValue(value: string): void {
+  public writeValue(value: Duration): void {
     this.value = value;
     this.updateChanges();
   }
@@ -136,43 +141,55 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   }
 
   public onInput(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.value = this.normalizeInput(value);
-    this._errors = this.validateInput(this.value);
+    const rawInputValue = (event.target as HTMLInputElement).value;
+    this.rawValue = this.normalizeUserInput(rawInputValue);
+    this._errors = this.validateInput(rawInputValue);
+
+    if (!isInstantiated(this.rawValue)) {
+      this.value = null;
+      this.updateChanges();
+    }
+
+    // Update model if valid input given
+    if (this.errors.length === 0 && this.rawValue) {
+      const [hours, minutes]: number[] = this.rawValue.split(":").map(Number);
+      this.value = Duration.fromObject({ hours, minutes });
+
+      this.updateChanges();
+    }
 
     if (this.value) {
       this.dirty = true;
       this.touched = true;
       this.onTouched();
     }
-
-    // Update model if valid input given
-    if (this.errors.length === 0) {
-      this.updateChanges();
-    }
   }
 
-  public normalizeInput(value: string): string {
-    if (!value) {
+  public normalizeUserInput(input: string): string {
+    if (!input) {
       return undefined;
     }
 
     let output: string;
-    if (value.length < (this.value?.length ?? 0)) {
-      output = value.endsWith(":") ? value.slice(0, -1) : value;
+    if (input.length < (input?.length ?? 0)) {
+      output = input.endsWith(":") ? input.slice(0, -1) : input;
     } else {
-      output = value;
+      output = input;
     }
 
-    const hasColon = output.includes(":");
-    if (!hasColon && output.length >= 3) {
+    const hasSeparator = output.includes(":");
+    if (!hasSeparator && output.length >= 3) {
       output = output.slice(0, 2) + ":" + output.slice(2);
     }
 
     return output;
   }
 
-  public validateInput(value: string): ValidationErrors | null {
+  public validateInput(value: string | Duration): ValidationErrors | null {
+    if (value instanceof Duration) {
+      return {};
+    }
+
     if (!value) {
       // No value provided on required input
       return this.required ? { required: true } : null;

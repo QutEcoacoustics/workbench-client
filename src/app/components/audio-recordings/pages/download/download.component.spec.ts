@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { fakeAsync } from "@angular/core/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { BawApiService } from "@baw-api/baw-api.service";
+import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import {
   BawSessionService,
   guestAuthToken,
@@ -12,7 +12,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbCollapse, NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
 import {
   createRoutingFactory,
   mockProvider,
@@ -29,6 +29,7 @@ import { MockComponent } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { CacheModule } from "@services/cache/cache.module";
+import { AudioRecordingsFilterComponent } from "@shared/date-time-filter/audio-recordings-filter.component";
 import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
 import { DownloadTableComponent } from "../../components/download-table/download-table.component";
 import { DownloadAudioRecordingsComponent } from "./download.component";
@@ -46,6 +47,7 @@ describe("DownloadAudioRecordingsComponent", () => {
     declarations: [
       MockComponent(SitesWithoutTimezonesComponent),
       MockComponent(DownloadTableComponent),
+      AudioRecordingsFilterComponent,
     ],
     // We are relying on AudioRecordingsService's batchDownloadUrl so we will
     // mock out any API calls
@@ -63,51 +65,6 @@ describe("DownloadAudioRecordingsComponent", () => {
   const getSiteLabel = () => spec.query<HTMLLabelElement>("#site-label");
   const getDownloadLink = () =>
     spec.query<HTMLAnchorElement>("#download-script");
-  const getDateToggleInput = () =>
-    spec.query<HTMLInputElement>("#date-filtering");
-  const getDateInputWrapper = () =>
-    spec.query("#date-filters-wrapper", { read: NgbCollapse });
-  const getDateStartedAfterInput = () =>
-    spec.query<HTMLInputElement>("#date-started-after");
-  const getDateFinishedBeforeInput = () =>
-    spec.query<HTMLInputElement>("#date-finished-before");
-  const getTodInputWrapper = () =>
-    spec.query("#tod-filters-wrapper", { read: NgbCollapse });
-  const getTodToggleInput = () =>
-    spec.query<HTMLInputElement>("#tod-filtering");
-  const getTodIgnoreDstInput = () =>
-    spec.query<HTMLInputElement>("#tod-ignore-dst");
-  const getTodStartedAfterInput = () =>
-    spec.query<HTMLInputElement>("#tod-started-after input");
-  const getTodFinishedBeforeInput = () =>
-    spec.query<HTMLInputElement>("#tod-finished-before input");
-
-  function toggleTodFilters() {
-    const input = getTodToggleInput();
-    input.click();
-    input.dispatchEvent(new Event("input"));
-    spec.detectChanges();
-    // NgbCollapse takes a bit to open/close
-    spec.tick(1000);
-    spec.detectChanges();
-  }
-
-  function toggleDateFilters() {
-    const input = getDateToggleInput();
-    input.click();
-    input.dispatchEvent(new Event("input"));
-    spec.detectChanges();
-    // NgbCollapse takes a bit to open/close
-    spec.tick(1000);
-    spec.detectChanges();
-  }
-
-  function toggleIgnoreDst() {
-    const input = getTodIgnoreDstInput();
-    input.click();
-    input.dispatchEvent(new Event("input"));
-    spec.detectChanges();
-  }
 
   function loadForm() {
     // Have to do this tick because of
@@ -199,9 +156,11 @@ describe("DownloadAudioRecordingsComponent", () => {
       }));
 
       it("should sort bulk download by regions", fakeAsync(() => {
-        const expectedFilter: any = {
-          filter: { "regions.id": { eq: defaultRegion.id } },
-        };
+        const expectedFilter = {
+          filter: {
+            "regions.id": { eq: defaultRegion.id },
+          },
+        } as Filters<AudioRecording, keyof AudioRecording>;
         setup(defaultProject, defaultRegion);
         spec.detectChanges();
         loadForm();
@@ -235,9 +194,11 @@ describe("DownloadAudioRecordingsComponent", () => {
       }));
 
       it("should sort bulk download by sites", fakeAsync(() => {
-        const expectedFilter: any = {
-          filter: { "sites.id": { eq: defaultSite.id } },
-        };
+        const expectedFilter = {
+          filter: {
+            "sites.id": { eq: defaultSite.id },
+          },
+        } as Filters<AudioRecording, keyof AudioRecording>;
         setup(defaultProject, undefined, defaultSite);
         spec.detectChanges();
         loadForm();
@@ -264,9 +225,11 @@ describe("DownloadAudioRecordingsComponent", () => {
       }));
 
       it("should sort bulk download by points", fakeAsync(() => {
-        const expectedFilter: any = {
-          filter: { "sites.id": { eq: defaultSite.id } },
-        };
+        const expectedFilter: Filters<AudioRecording> = {
+          filter: {
+            "sites.id": { eq: defaultSite.id },
+          },
+        } as Filters<AudioRecording, keyof AudioRecording>;
         setup(defaultProject, defaultRegion, defaultSite);
         spec.detectChanges();
         loadForm();
@@ -319,269 +282,6 @@ describe("DownloadAudioRecordingsComponent", () => {
     });
   });
 
-  describe("date filter", () => {
-    beforeEach(fakeAsync(() => {
-      setup(defaultProject);
-      // Load form elements
-      spec.detectChanges();
-      loadForm();
-    }));
-
-    describe("toggle fields", () => {
-      it("should initially hide date filters", fakeAsync(() => {
-        expect(getDateToggleInput()).toBeTruthy();
-        expect(getDateInputWrapper().collapsed).toBeTrue();
-      }));
-
-      it("should show date filters when checkbox selected", fakeAsync(() => {
-        toggleDateFilters();
-        expect(getDateToggleInput()).toBeTruthy();
-        expect(getDateInputWrapper().collapsed).toBeFalse();
-      }));
-
-      it("should hide time of day filters when checkbox unselected", fakeAsync(() => {
-        toggleDateFilters();
-        toggleDateFilters();
-        expect(getDateToggleInput()).toBeTruthy();
-        expect(getDateInputWrapper().collapsed).toBeTrue();
-      }));
-    });
-
-    describe("date inputs", () => {
-      beforeEach(fakeAsync(() => {
-        toggleDateFilters();
-      }));
-
-      it("should include start date in filter", fakeAsync(() => {
-        const date = "2020-01-01";
-        const expectedFilter: any = {
-          filter: {
-            "projects.id": { eq: defaultProject.id },
-            recordedDate: {
-              greaterThanOrEqual: date,
-            },
-          },
-        };
-
-        spec.typeInElement(date, getDateStartedAfterInput());
-        spec.detectChanges();
-        loadForm();
-
-        expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        expect(getDownloadLink()).toHaveHref(
-          api.batchDownloadUrl(expectedFilter)
-        );
-      }));
-
-      it("should include end date in filter", fakeAsync(() => {
-        const date = "2020-01-01";
-        const expectedFilter: any = {
-          filter: {
-            "projects.id": { eq: defaultProject.id },
-            recordedEndDate: {
-              lessThanOrEqual: date,
-            },
-          },
-        };
-
-        spec.typeInElement(date, getDateFinishedBeforeInput());
-        spec.detectChanges();
-        loadForm();
-
-        expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        expect(getDownloadLink()).toHaveHref(
-          api.batchDownloadUrl(expectedFilter)
-        );
-      }));
-    });
-  });
-
-  describe("time of day filtering", () => {
-    describe("enable tod input", () => {
-      beforeEach(fakeAsync(() => {
-        setup(defaultProject);
-        spec.detectChanges();
-        loadForm();
-      }));
-
-      it("should initially hide time of day filters", fakeAsync(() => {
-        expect(getTodToggleInput()).toBeTruthy();
-        expect(getTodInputWrapper().collapsed).toBeTrue();
-      }));
-
-      it("should show time of day filters when checkbox selected", fakeAsync(() => {
-        toggleTodFilters();
-        expect(getTodToggleInput()).toBeTruthy();
-        expect(getTodInputWrapper().collapsed).toBeFalse();
-      }));
-
-      it("should hide time of day filters when checkbox unselected", fakeAsync(() => {
-        toggleTodFilters();
-        toggleTodFilters();
-        expect(getTodToggleInput()).toBeTruthy();
-        expect(getTodInputWrapper().collapsed).toBeTrue();
-      }));
-
-      it("should not affect filter until time inputs are set", fakeAsync(() => {
-        const expectedFilter: any = {
-          filter: { "projects.id": { eq: defaultProject.id } },
-        };
-        toggleTodFilters();
-        expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        expect(getDownloadLink()).toHaveHref(
-          api.batchDownloadUrl(expectedFilter)
-        );
-      }));
-    });
-
-    describe("ignore dst input", () => {
-      beforeEach(fakeAsync(() => {
-        setup(defaultProject);
-        spec.detectChanges();
-        loadForm();
-        toggleTodFilters();
-      }));
-
-      it("should initially be enabled", () => {
-        expect(getTodIgnoreDstInput().checked).toBeTrue();
-        expect(spec.component.model.todIgnoreDst).toBeTrue();
-      });
-
-      it("should disable on click", fakeAsync(() => {
-        toggleIgnoreDst();
-        loadForm();
-        expect(getTodIgnoreDstInput().checked).toBeFalse();
-        expect(spec.component.model.todIgnoreDst).toBeFalse();
-      }));
-    });
-
-    describe("time input", () => {
-      beforeEach(fakeAsync(() => {
-        setup(defaultProject);
-        spec.detectChanges();
-        loadForm();
-        toggleTodFilters();
-      }));
-
-      [true, false].forEach((ignoreDst) => {
-        it(`should include start time in filter with ignoreDst ${
-          ignoreDst ? "set" : "unset"
-        }`, fakeAsync(() => {
-          const time = "06:00";
-          const expectedFilter: any = {
-            filter: {
-              "projects.id": { eq: defaultProject.id },
-              recordedEndDate: {
-                greaterThanOrEqual: {
-                  expressions: ignoreDst
-                    ? ["local_offset", "time_of_day"]
-                    : ["local_tz", "time_of_day"],
-                  value: time,
-                },
-              },
-            },
-          };
-
-          // If ignoreDst is unset, toggle state
-          if (!ignoreDst) {
-            toggleIgnoreDst();
-          }
-
-          spec.typeInElement(time, getTodStartedAfterInput());
-          spec.detectChanges();
-          loadForm();
-
-          expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-          expect(getDownloadLink()).toHaveHref(
-            api.batchDownloadUrl(expectedFilter)
-          );
-        }));
-
-        it(`should include end time in filter with ignoreDst ${
-          ignoreDst ? "set" : "unset"
-        }`, fakeAsync(() => {
-          const time = "06:00";
-          const expectedFilter: any = {
-            filter: {
-              "projects.id": { eq: defaultProject.id },
-              recordedDate: {
-                lessThanOrEqual: {
-                  expressions: ignoreDst
-                    ? ["local_offset", "time_of_day"]
-                    : ["local_tz", "time_of_day"],
-                  value: time,
-                },
-              },
-            },
-          };
-
-          // If ignoreDst is unset, toggle state
-          if (!ignoreDst) {
-            toggleIgnoreDst();
-          }
-
-          spec.typeInElement(time, getTodFinishedBeforeInput());
-          spec.detectChanges();
-          loadForm();
-
-          expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-          expect(getDownloadLink()).toHaveHref(
-            api.batchDownloadUrl(expectedFilter)
-          );
-        }));
-      });
-    });
-  });
-
-  describe("multiple inputs", () => {
-    it("should handle all inputs being set", fakeAsync(() => {
-      const startDate = "2019-01-01";
-      const endDate = "2020-01-01";
-      const startTime = "06:00";
-      const endTime = "18:00";
-
-      const expectedFilter: any = {
-        filter: {
-          "projects.id": { eq: defaultProject.id },
-          recordedDate: {
-            greaterThanOrEqual: startDate,
-            lessThanOrEqual: {
-              expressions: ["local_offset", "time_of_day"],
-              value: endTime,
-            },
-          },
-          recordedEndDate: {
-            lessThanOrEqual: endDate,
-            greaterThanOrEqual: {
-              expressions: ["local_offset", "time_of_day"],
-              value: startTime,
-            },
-          },
-        },
-      };
-
-      setup(defaultProject);
-      spec.detectChanges();
-      loadForm();
-      toggleDateFilters();
-      toggleTodFilters();
-
-      spec.typeInElement(startDate, getDateStartedAfterInput());
-      spec.typeInElement(endDate, getDateFinishedBeforeInput());
-      spec.typeInElement(startTime, getTodStartedAfterInput());
-      spec.typeInElement(endTime, getTodFinishedBeforeInput());
-      spec.detectChanges();
-      loadForm();
-
-      expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-      expect(getDownloadLink()).toHaveHref(
-        api.batchDownloadUrl(expectedFilter)
-      );
-    }));
-
-    // TODO Expand to test various edge cases
-  });
-
   describe("instructions", () => {
     it("should have instructions", () => {
       setup(defaultProject);
@@ -595,7 +295,9 @@ describe("DownloadAudioRecordingsComponent", () => {
       expect(spec.query("#guest-run-script")).toBeTruthy();
       expect(spec.query(HiddenCopyComponent)).toBeFalsy();
 
-      expect((spec.query("#guest-run-script") as HTMLElement).innerText).toEqual("Log in to see this command.");
+      expect(
+        (spec.query("#guest-run-script") as HTMLElement).innerText
+      ).toEqual("Log in to see this command.");
     });
 
     it("should show instructions for logged in users", () => {

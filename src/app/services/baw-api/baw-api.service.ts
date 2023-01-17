@@ -545,6 +545,17 @@ export interface Combinations<T> {
 }
 
 /**
+ * A serializable object that can be directly passed as the body for an API call
+ *
+ * @description
+ * Objects that implement `.toJSON` or `.toString` are considered serializable as they are serialized by Angular's request body serializer
+ */
+export interface SerializableObject {
+  toJSON(): string;
+  toString(): string;
+}
+
+/**
  * Date filter expressions
  * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering#supported-expressions
  *
@@ -567,26 +578,26 @@ export interface Expression {
 }
 
 export interface Comparisons {
-  eq?: string | number | boolean;
-  equal?: string | number | boolean;
-  notEq?: string | number | boolean;
-  notEqual?: string | number | boolean;
-  lt?: string | number | Expression;
-  lessThan?: string | number | Expression;
-  notLt?: string | number | Expression;
-  notLessThan?: string | number | Expression;
-  gt?: string | number | Expression;
-  greaterThan?: string | number | Expression;
-  notGt?: string | number | Expression;
-  notGreaterThan?: string | number | Expression;
-  lteq?: string | number | Expression;
-  lessThanOrEqual?: string | number | Expression;
-  notLteq?: string | number | Expression;
-  notLessThanOrEqual?: string | number | Expression;
-  gteq?: string | number | Expression;
-  greaterThanOrEqual?: string | number | Expression;
-  notGteq?: string | number | Expression;
-  notGreaterThanOrEqual?: string | number | Expression;
+  eq?: string | number | boolean | SerializableObject;
+  equal?: string | number | boolean | SerializableObject;
+  notEq?: string | number | boolean | SerializableObject;
+  notEqual?: string | number | boolean | SerializableObject;
+  lt?: string | number | Expression | SerializableObject;
+  lessThan?: string | number | Expression | SerializableObject;
+  notLt?: string | number | Expression | SerializableObject;
+  notLessThan?: string | number | Expression | SerializableObject;
+  gt?: string | number | Expression | SerializableObject;
+  greaterThan?: string | number | Expression | SerializableObject;
+  notGt?: string | number | Expression | SerializableObject;
+  notGreaterThan?: string | number | Expression | SerializableObject;
+  lteq?: string | number | Expression | SerializableObject;
+  lessThanOrEqual?: string | number | Expression | SerializableObject;
+  notLteq?: string | number | Expression | SerializableObject;
+  notLessThanOrEqual?: string | number | Expression | SerializableObject;
+  gteq?: string | number | Expression | SerializableObject;
+  greaterThanOrEqual?: string | number | Expression | SerializableObject;
+  notGteq?: string | number | Expression | SerializableObject;
+  notGreaterThanOrEqual?: string | number | Expression | SerializableObject;
 }
 
 /**

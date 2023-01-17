@@ -44,6 +44,11 @@ const convertCase = (
   } else {
     newObject = {};
 
+    // under the circumstances that the top level object can be simplified with toJSON, a simplified object should be emitted
+    if (oldObject?.toJSON instanceof Function) {
+      return oldObject.toJSON();
+    }
+
     // Change object keys
     Object.keys(oldObject).forEach((oldKey) => {
       const newKey = converterFn(oldKey);
@@ -51,7 +56,15 @@ const convertCase = (
         convertValue ||
         allowList.keys.some((key) => key === newKey || key === oldKey);
 
-      newObject[newKey] = convertCase(oldObject[oldKey], callback, allowedKeys);
+      // knowledge on how to simplify an object using an objects implementation of toJSON is lost after case conversion
+      // therefore, all values that can be simplified through toJSON implementations should be actioned
+      // if no implementation of toJSON is present, the object should emitted in-place
+      const oldObjectValue = oldObject[oldKey];
+      const implementsToJSON = oldObjectValue?.toJSON instanceof Function;
+      const simplifiedOldObject = implementsToJSON ? oldObjectValue.toJSON() : oldObjectValue;
+
+      const convertedCase = convertCase(simplifiedOldObject, callback, allowedKeys);
+      newObject[newKey] = convertedCase
     });
   }
 
