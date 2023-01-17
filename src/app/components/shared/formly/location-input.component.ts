@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
+import { MapMarker } from "@angular/google-maps";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { FieldType } from "@ngx-formly/core";
 import {
-  MapMarkerOptions,
   sanitizeMapMarkers,
 } from "@shared/map/map.component";
 import { List } from "immutable";
@@ -81,7 +81,7 @@ export class LocationInputComponent extends FieldType implements OnInit {
   public latitudeError: boolean;
   public longitude: number;
   public longitudeError: boolean;
-  public marker: List<MapMarkerOptions>;
+  public marker: List<MapMarker>;
 
   public ngOnInit() {
     this.latitude = this.model["latitude"];
@@ -126,7 +126,7 @@ export class LocationInputComponent extends FieldType implements OnInit {
         ? {
             position: { lat: latitude, lng: longitude },
             label: `Position (${latitude},${longitude})`,
-          }
+          } as MapMarker
         : null
     );
   }

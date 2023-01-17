@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { MapMarker } from "@angular/google-maps";
 import { Filters } from "@baw-api/baw-api.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -6,7 +7,6 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
 import {
-  MapMarkerOptions,
   sanitizeMapMarkers,
 } from "@shared/map/map.component";
 import { List } from "immutable";
@@ -22,7 +22,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
   @Input() public selected: List<Site>;
   @Input() public project: Project;
   @Input() public region: Region;
-  public markers: List<MapMarkerOptions> = List([]);
+  public markers: List<MapMarker> = List([]);
 
   public constructor(private sitesApi: SitesService) {
     super();

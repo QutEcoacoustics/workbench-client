@@ -28,7 +28,7 @@ import { takeUntil } from "rxjs/operators";
         height="100%"
         width="100%"
         [options]="mapOptions"
-        (mapClick)="markerOptions.draggable && newLocation.emit($event)"
+        (mapClick)="markerOptions?.draggable && newLocation.emit($event)"
       >
         <map-marker
           *ngFor="let marker of filteredMarkers"
@@ -61,7 +61,7 @@ export class MapComponent
   @ViewChild(MapInfoWindow, { static: false }) public info: MapInfoWindow;
   @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
 
-  @Input() public markers: List<MapMarkerOptions>;
+  @Input() public markers: List<MapMarker>;
   @Input() public markerOptions: MapMarkerOptions;
   @Output() public newLocation = new EventEmitter<google.maps.MapMouseEvent>();
 
@@ -126,7 +126,7 @@ export class MapComponent
  *
  * @param marker Marker to validate
  */
-function isMarkerValid(marker: MapMarkerOptions): boolean {
+function isMarkerValid(marker: MapMarker): boolean {
   return (
     typeof marker?.position?.lat === "number" &&
     typeof marker?.position?.lng === "number"
@@ -137,9 +137,9 @@ function isMarkerValid(marker: MapMarkerOptions): boolean {
  * Handles sanitization of map markers so change detection will run properly
  */
 export function sanitizeMapMarkers(
-  markers: MapMarkerOptions | MapMarkerOptions[]
-): List<MapMarkerOptions> {
-  const output: MapMarkerOptions[] = [];
+  markers: MapMarker | MapMarker[]
+): List<MapMarker> {
+  const output: MapMarker[] = [];
 
   if (markers instanceof Array) {
     markers.forEach((marker) => {

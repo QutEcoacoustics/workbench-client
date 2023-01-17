@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { MapMarker } from "@angular/google-maps";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -8,7 +9,6 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import {
-  MapMarkerOptions,
   sanitizeMapMarkers,
 } from "@shared/map/map.component";
 import { List } from "immutable";
@@ -33,7 +33,7 @@ class SiteComponent extends PageComponent implements OnInit {
   public recordings: AudioRecording[];
   public oldestRecording: AudioRecording;
   public newestRecording: AudioRecording;
-  public marker: List<MapMarkerOptions>;
+  public marker: List<MapMarker>;
   public recentAudioEvents: AudioEvent[];
 
   public constructor(private audioRecordingsApi: AudioRecordingsService) {

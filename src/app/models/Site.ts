@@ -1,4 +1,5 @@
 import { Injector } from "@angular/core";
+import { MapMarker } from "@angular/google-maps";
 import { id, IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
 import { adminOrphanMenuItem } from "@components/admin/orphan/orphans.menus";
@@ -8,7 +9,6 @@ import { siteRoute } from "@components/sites/sites.routes";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { assetRoot } from "@services/config/config.service";
-import { MapMarkerOptions } from "@shared/map/map.component";
 import {
   PermissionLevel,
   DateTimeTimezone,
@@ -210,7 +210,7 @@ export class Site extends AbstractModel<ISite> implements ISite {
    * Create google maps marker options
    * ! When using map markers, you should always run the output through `sanitizeMapMarkers()`
    */
-  public getMapMarker(): MapMarkerOptions {
+  public getMapMarker(): MapMarker {
     const hasCoordinates =
       isInstantiated(this.getLatitude()) && isInstantiated(this.getLongitude());
 
@@ -218,7 +218,8 @@ export class Site extends AbstractModel<ISite> implements ISite {
       ? {
           position: { lat: this.getLatitude(), lng: this.getLongitude() },
           label: this.name,
-        }
+          clickable: true,
+        } as MapMarker
       : null;
   }
 }
