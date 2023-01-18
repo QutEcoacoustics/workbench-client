@@ -35,7 +35,8 @@ import { defaultDebounceTime } from "src/app/app.helper";
     <div *ngIf="site" class="site-label">
       <a
         [bawUrl]="site.getViewUrl(project)"
-        [ngbTooltip]="'Site Id: ' + site.id.toString()"
+        [ngbTooltip]="site?.isPoint ? 'Point' : 'Site' + ' id: ' + site?.id.toString()"
+        [disableTooltip]="site === null"
       >{{ site.name }}</a>
 
       <div>

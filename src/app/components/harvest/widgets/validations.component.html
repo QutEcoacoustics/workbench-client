@@ -75,17 +75,21 @@
     <p *ngIf="hasError('duplicateFile')">
       Some files in the current upload are duplicate files from a previous
       uploaded indicating an accidental upload. You can go back and
-      <a href="https://www.google.com">change the files</a> to delete the
-      duplicates duplicates.
+      <a href="javascript:void(0)" (click)="upload(uploadModal)"
+        >change the files</a
+      >
+      to delete the duplicates duplicates.
     </p>
 
     <p *ngIf="hasError('duplicateFileInHarvest')">
       Some files in the current upload are duplicates of each other indicating
       an accidental upload. You can go back and
-      <a href="https://www.google.com">change the files</a> to delete the
-      duplicates duplicates.<br />If you have duplicates in <i>Site A</i> and in
-      <i>Site B</i> we'll reject both. We don't know for sure which site they're
-      meant to be in.
+      <a href="javascript:void(0)" (click)="upload(uploadModal)"
+        >change the files</a
+      >
+      to delete the duplicates duplicates.<br />If you have duplicates in
+      <i>Site A</i> and in <i>Site B</i> we'll reject both. We don't know for
+      sure which site they're meant to be in.
     </p>
 
     <p
@@ -101,3 +105,12 @@
 
   <div class="mb-3"></div>
 </ng-container>
+
+<ng-template #uploadModal let-modal>
+  <baw-harvest-confirmation-modal
+    nextLabel="Change or add more files"
+    [modal]="modal"
+  >
+    <p>Are you sure you wish to return to the uploading stage?</p>
+  </baw-harvest-confirmation-modal>
+</ng-template>

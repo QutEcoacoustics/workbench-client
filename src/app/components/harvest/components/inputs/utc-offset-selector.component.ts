@@ -72,11 +72,12 @@ export class UTCOffsetSelectorComponent {
    * Returns the UTC offsets that are relevant to the site location
    */
   public get relevantUTCOffsets(): string[] {
+    // if the site or timezone information is not set, it can be assumed that there are no relevant / suggested time zones
     if (isInstantiated(this.site?.timezoneInformation)) {
       return [
-        this.convertUnixOffsetToUTCOffset(
-          this.site.timezoneInformation.utcOffset
-        ),
+        this.convertUnixOffsetToUTCOffset(this.site.timezoneInformation.utcOffset),
+        // sometimes there is a second UTC offset e.g. daylight saving time
+        // therefore, if the two UTC offsets are different, we need to add the second offset to the suggested timezones
         this.site.timezoneInformation.utcOffset !== this.site.timezoneInformation.utcTotalOffset &&
           this.convertUnixOffsetToUTCOffset(this.site.timezoneInformation.utcTotalOffset),
         this.relevantOffsetListSeparator,
@@ -95,11 +96,13 @@ export class UTCOffsetSelectorComponent {
   }
 
   public convertUnixOffsetToUTCOffset(unixOffset: number): string {
-    // unix offset is in relative seconds. Therefore, if we divide the number by 3600, we get the offset as an hour decimal
-    const timeDecimal = unixOffset / 3600;
+    const directionalIndicator = unixOffset >= 0 ? "+" : "-";
 
-    // eslint-disable-next-line max-len
-    return `${timeDecimal >= 0 ? "+" : "-"}${timeDecimal.toString().split(".")[0]}:00`;
+    const utcOffsetTime = new Date(0);
+    // unix offset is in relative seconds. Therefore, if we divide the number by 3600, we get the offset as an hour decimal
+    utcOffsetTime.setHours(unixOffset / 3600);
+
+    return `${directionalIndicator}${utcOffsetTime.getHours()}:${utcOffsetTime.getMinutes().toString().padStart(2, "0")}`;
   }
 
   /**
