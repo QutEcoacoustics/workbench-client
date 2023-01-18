@@ -6,6 +6,8 @@
 
   <p>You can open and close folders by clicking on them.</p>
 
+  <p>You don't have to change anything for files that have no problems.</p>
+
   <ng-container *ngIf="showFixableIssues">
     <hr />
 
@@ -27,13 +29,13 @@
     <p *ngIf="hasError('missingDate')">
       Some files have missing dates. To fix, go back to the upload stage, and
       ensure their filenames include a
-      <a target="_blank" [href]="filenameGuide | safe: 'url'">date</a>.
+      <a target="_blank" [href]="filenameGuide | safe : 'url'">date</a>.
     </p>
 
     <p *ngIf="hasError('futureDate')">
       Some files have dates in the future. To fix, go back to the upload stage,
       and
-      <a target="_blank" [href]="filenameGuide | safe: 'url'"
+      <a target="_blank" [href]="filenameGuide | safe : 'url'"
         >rename the files</a
       >.
     </p>
@@ -70,10 +72,18 @@
       it was an upload error. If this was an upload error, re-upload it.
     </p>
 
-    <p *ngIf="hasError('duplicateFile') || hasError('duplicateFileInHarvest')">
-      Some files are duplicates of previously uploaded files indicating an
-      accidental upload. You should go back to the upload stage and delete the
-      duplicates.<br />If you have duplicates in <i>Site A</i> and in
+    <p *ngIf="hasError('duplicateFile')">
+      Some files in the current upload are duplicate files from a previous
+      uploaded indicating an accidental upload. You can go back and
+      <a href="https://www.google.com">change the files</a> to delete the
+      duplicates duplicates.
+    </p>
+
+    <p *ngIf="hasError('duplicateFileInHarvest')">
+      Some files in the current upload are duplicates of each other indicating
+      an accidental upload. You can go back and
+      <a href="https://www.google.com">change the files</a> to delete the
+      duplicates duplicates.<br />If you have duplicates in <i>Site A</i> and in
       <i>Site B</i> we'll reject both. We don't know for sure which site they're
       meant to be in.
     </p>

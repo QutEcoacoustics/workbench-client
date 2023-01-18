@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { Site } from "@models/Site";
 
 @Component({
   selector: "baw-harvest-utc-offset-selector",
@@ -24,7 +26,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
       (change)="onSelection($any($event).target.value)"
     >
       <option selected disabled>Select offset</option>
-      <option *ngFor="let offset of offsets" [value]="offset">
+      <option *ngFor="let offset of offsets" [value]="offset" [disabled]="offset === relevantOffsetListSeparator">
         {{ offset }}
       </option>
     </select>
@@ -45,6 +47,10 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
   ],
 })
 export class UTCOffsetSelectorComponent {
+  protected relevantOffsetListSeparator = "---";
+
+  // the UTC input component needs knowledge of the site so that it can suggest the relevant UTC offsets relative to the site location
+  @Input() public site: Site;
   @Input() public offset: string;
   @Output() public offsetChange = new EventEmitter<string>();
 
@@ -62,8 +68,38 @@ export class UTCOffsetSelectorComponent {
     this.offsetChange.emit(this.offset);
   }
 
+  /**
+   * Returns the UTC offsets that are relevant to the site location
+   */
+  public get relevantUTCOffsets(): string[] {
+    if (isInstantiated(this.site?.timezoneInformation)) {
+      return [
+        this.convertUnixOffsetToUTCOffset(
+          this.site.timezoneInformation.utcOffset
+        ),
+        this.site.timezoneInformation.utcOffset !== this.site.timezoneInformation.utcTotalOffset &&
+          this.convertUnixOffsetToUTCOffset(this.site.timezoneInformation.utcTotalOffset),
+        this.relevantOffsetListSeparator,
+      ];
+    }
+
+    // the selected site does not have any timezone / location information
+    return [];
+  }
+
+  /**
+   * Returns a list of UTC offsets with the relevant offsets appended to the top
+   */
   public get offsets(): string[] {
-    return UTCOffsetSelectorComponent.offsets;
+    return this.relevantUTCOffsets.concat(UTCOffsetSelectorComponent.offsets);
+  }
+
+  public convertUnixOffsetToUTCOffset(unixOffset: number): string {
+    // unix offset is in relative seconds. Therefore, if we divide the number by 3600, we get the offset as an hour decimal
+    const timeDecimal = unixOffset / 3600;
+
+    // eslint-disable-next-line max-len
+    return `${timeDecimal >= 0 ? "+" : "-"}${timeDecimal.toString().split(".")[0]}:00`;
   }
 
   /**

@@ -42,10 +42,11 @@ import { Project } from "@models/Project";
     <!-- Create Mapping -->
     <div *ngIf="!mapping" class="grid-table-item create-mapping">
       <button
+        *ngIf="hasHarvestItems"
         class="btn btn-sm btn-outline-primary"
         (click)="createMapping(row)"
       >
-        Change Site or UTC for folder
+        Add
       </button>
     </div>
 
@@ -71,6 +72,7 @@ import { Project } from "@models/Project";
       <div class="grid-table-item">
         <baw-harvest-utc-offset-selector
           class="w-100"
+          [site]="mapping.site"
           [offset]="mapping.utcOffset"
           (offsetChange)="setOffset(mapping, $event)"
         ></baw-harvest-utc-offset-selector>
@@ -144,6 +146,10 @@ export class FolderRowComponent {
 
   public get report(): HarvestItemReport {
     return this.harvestItem.report;
+  }
+
+  public get hasHarvestItems(): boolean {
+    return !this.mapping && !(this.row.isRoot && !+this.row.harvestItem);
   }
 
   public constructor(private injector: Injector) {}

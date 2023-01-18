@@ -37,7 +37,7 @@ interface ValidationMessage {
 
     <!-- Issues -->
     <div class="grid-table-item issues-extended">
-      <div *ngIf="harvestItem.hasItemsInvalid" class="dropdown-icon">
+      <div *ngIf="harvestItem.hasItemsInvalid && expandableValidationMessage(row)" class="dropdown-icon">
         <fa-icon
           [icon]="['fas', row.showValidations ? 'chevron-up' : 'chevron-down']"
           (click)="row.showValidations = !row.showValidations"
@@ -141,7 +141,12 @@ export class FileRowComponent implements OnInit {
       : `callout-${validation.type}`;
   }
 
-  public toggleValidationMessages(row: MetaReviewFile): void {
-    row.showValidations = !row.showValidations;
+  public expandableValidationMessage(row: MetaReviewFile): boolean {
+    let validationsMessageLength = 0;
+    row.harvestItem.validations.forEach((validation) => {
+      validationsMessageLength += validation.message.length;
+    });
+
+    return validationsMessageLength > 100;
   }
 }
