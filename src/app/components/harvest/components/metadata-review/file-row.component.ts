@@ -1,8 +1,11 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   Input,
   OnInit,
+  ViewChild,
 } from "@angular/core";
 import {
   MetaReviewFile,
@@ -10,6 +13,7 @@ import {
 } from "@components/harvest/screens/metadata-review/metadata-review.component";
 import { HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
+import { BehaviorSubject, Observable, takeUntil } from "rxjs";
 
 interface ValidationMessage {
   type: "warning" | "danger" | "error";
@@ -36,8 +40,14 @@ interface ValidationMessage {
     </div>
 
     <!-- Issues -->
-    <div #container class="grid-table-item issues-extended">
-      <div *ngIf="harvestItem.hasItemsInvalid && expandableValidationMessage(row, container)" class="dropdown-icon">
+    <div class="grid-table-item issues-extended">
+      <div
+        *ngIf="
+          harvestItem.hasItemsInvalid &&
+          ((shouldShowChevron$ | async) || row.showValidations)
+        "
+        class="dropdown-icon"
+      >
         <fa-icon
           [icon]="['fas', row.showValidations ? 'chevron-up' : 'chevron-down']"
           (click)="row.showValidations = !row.showValidations"
@@ -46,13 +56,14 @@ interface ValidationMessage {
 
       <div class="expander-wrapper">
         <div class="expander" [class.expand]="row.showValidations">
-          <div class="content">
+          <div #validationsContainer class="content">
             <small
               *ngFor="let validation of validationMessages"
               class="callout"
               [ngClass]="[getCalloutClass(validation)]"
             >
               {{ validation.message }}
+              <ng-container *ngIf="updateChevronState(validationsContainer) || true"></ng-container>
             </small>
           </div>
         </div>
@@ -89,8 +100,13 @@ interface ValidationMessage {
   // Nothing in this component can change without a change in the row
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FileRowComponent implements OnInit {
+export class FileRowComponent implements OnInit, AfterViewInit {
   @Input() public row: MetaReviewFile;
+  @ViewChild("validationsContainer")
+  public validationsContainer: HTMLDivElement;
+
+  public shouldShowChevron$: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(false);
 
   public validationMessages: ValidationMessage[];
   public icons = metaReviewIcons;
@@ -135,19 +151,26 @@ export class FileRowComponent implements OnInit {
     }
   }
 
+  public ngAfterViewInit(): void {
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+    this.updateChevronState(this.validationsContainer);
+  }
+
   public getCalloutClass(validation: ValidationMessage): string {
     return validation.type === "error"
       ? "callout-black"
       : `callout-${validation.type}`;
   }
 
-  public expandableValidationMessage(row: MetaReviewFile, container: HTMLDivElement): boolean {
-    if (row.harvestItem.validations.length > 1) {
-      return true;
+  public updateChevronState(container: HTMLDivElement): boolean {
+    // if there is more than one validation or it is already expanded it can be known for certain that the validations can be expanded
+    if (this.row.harvestItem.validations.length > 1) {
+      this.shouldShowChevron$.next(true);
     }
 
-    const containerHeight = container.clientHeight;
-    console.log(containerHeight);
+    // to validate if the validation messages span multiple lines. Get the total height of the validation message container
+    // and if it is larger than what the user can see, we can assert that the container is overflowing and needs a dropdown chevron
+    this.shouldShowChevron$.next(container.scrollHeight > container.clientHeight);
 
     return true;
   }

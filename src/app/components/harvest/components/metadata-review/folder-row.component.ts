@@ -46,7 +46,7 @@ import { Project } from "@models/Project";
         class="btn btn-sm btn-outline-primary"
         (click)="createMapping(row)"
       >
-        Add
+        Add Site or UTC for folder
       </button>
     </div>
 
