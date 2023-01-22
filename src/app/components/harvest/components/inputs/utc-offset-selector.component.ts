@@ -72,20 +72,26 @@ export class UTCOffsetSelectorComponent {
    * Returns the UTC offsets that are relevant to the site location
    */
   public get relevantUTCOffsets(): string[] {
+    const foundRelevantOffsets = Array<string>();
+
     // if the site or timezone information is not set, it can be assumed that there are no relevant / suggested time zones
     if (isInstantiated(this.site?.timezoneInformation)) {
-      return [
-        this.convertUnixOffsetToUTCOffset(this.site.timezoneInformation.utcOffset),
-        // sometimes there is a second UTC offset e.g. daylight saving time
-        // therefore, if the two UTC offsets are different, we need to add the second offset to the suggested timezones
-        this.site.timezoneInformation.utcOffset !== this.site.timezoneInformation.utcTotalOffset &&
-          this.convertUnixOffsetToUTCOffset(this.site.timezoneInformation.utcTotalOffset),
-        this.relevantOffsetListSeparator,
-      ];
+      const utcOffset = this.site.timezoneInformation.utcOffset;
+      const totalUtcOffset = this.site.timezoneInformation.utcTotalOffset;
+
+      foundRelevantOffsets.push(this.convertUnixOffsetToUTCOffset(utcOffset));
+
+      // if the total offset is not equal to the utc offset, this is an indicator of two potential time offsets.
+      // e.g. daylight savings time
+      if (utcOffset !== totalUtcOffset) {
+        foundRelevantOffsets.push(this.convertUnixOffsetToUTCOffset(totalUtcOffset));
+      }
+
+      // add a separator that the user can not select to distinguish between relevant and all utc offsets
+      foundRelevantOffsets.push(this.relevantOffsetListSeparator);
     }
 
-    // the selected site does not have any timezone / location information
-    return [];
+    return foundRelevantOffsets;
   }
 
   /**

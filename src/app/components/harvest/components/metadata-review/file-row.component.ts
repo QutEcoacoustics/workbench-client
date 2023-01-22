@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
   Input,
   OnInit,
   ViewChild,
@@ -13,7 +12,7 @@ import {
 } from "@components/harvest/screens/metadata-review/metadata-review.component";
 import { HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
-import { BehaviorSubject, Observable, takeUntil } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 
 interface ValidationMessage {
   type: "warning" | "danger" | "error";
@@ -30,7 +29,7 @@ interface ValidationMessage {
         [indentation]="row.indentation"
       ></baw-meta-review-whitespace>
       <fa-icon class="me-2" [icon]="['fas', 'file']"></fa-icon>
-      <small>{{ row.path }}</small>
+      <small class="file-name">{{ row.path }}</small>
       <span
         class="badge text-bg-secondary ms-3"
         [ngbTooltip]="(report.itemsSizeBytes | number) + ' bytes'"
@@ -170,7 +169,7 @@ export class FileRowComponent implements OnInit, AfterViewInit {
 
     // to validate if the validation messages span multiple lines. Get the total height of the validation message container
     // and if it is larger than what the user can see, we can assert that the container is overflowing and needs a dropdown chevron
-    this.shouldShowChevron$.next(container.scrollHeight > container.clientHeight);
+    this.shouldShowChevron$.next(container.scrollHeight > (container.clientHeight + 1));
 
     return true;
   }

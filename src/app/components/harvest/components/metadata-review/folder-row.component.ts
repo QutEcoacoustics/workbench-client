@@ -3,12 +3,15 @@ import {
   EventEmitter,
   Injector,
   Input,
+  OnChanges,
   Output,
+  SimpleChanges,
 } from "@angular/core";
 import {
   MetaReviewFolder,
   metaReviewIcons,
 } from "@components/harvest/screens/metadata-review/metadata-review.component";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Harvest, HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
 import { Project } from "@models/Project";
@@ -126,7 +129,7 @@ import { Project } from "@models/Project";
   `,
   styleUrls: ["folder-row.component.scss"],
 })
-export class FolderRowComponent {
+export class FolderRowComponent implements OnChanges {
   @Input() public harvest: Harvest;
   @Input() public project: Project;
   @Input() public row: MetaReviewFolder;
@@ -153,6 +156,16 @@ export class FolderRowComponent {
   }
 
   public constructor(private injector: Injector) {}
+
+  public ngOnChanges(): void {
+    // if the parent item has a new mapping, apply it to the current row
+    const parentFolderMappings = this.row.parentFolder?.mapping;
+    if (!isInstantiated(this.mapping) && isInstantiated(parentFolderMappings)) {
+      this.setSite(this.mapping, parentFolderMappings.siteId);
+      this.setOffset(this.mapping, parentFolderMappings.utcOffset);
+      this.setIsRecursive(this.mapping, parentFolderMappings.recursive);
+    }
+  }
 
   public createMapping(row: MetaReviewFolder): void {
     const mapping = new HarvestMapping(
