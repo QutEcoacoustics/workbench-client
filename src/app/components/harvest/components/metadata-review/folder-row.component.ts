@@ -161,9 +161,16 @@ export class FolderRowComponent implements OnChanges {
     if (isInstantiated(this.row.parentFolder?.mapping) && !isInstantiated(this.row.mapping)) {
       this.createMapping(this.row);
 
-      this.setSite(this.row.mapping, this.row.parentFolder.mapping.siteId);
-      this.setOffset(this.row.mapping, this.row.parentFolder.mapping.utcOffset);
+      // since recursive has a "default value", it is possible to set it on the child elements if we know the parent item has a mapping
       this.setIsRecursive(this.row.mapping, this.row.parentFolder.mapping.recursive);
+    }
+
+    if (isInstantiated(this.row.parentFolder?.mapping?.siteId) && !isInstantiated(this.row.mapping.siteId)) {
+      this.setSite(this.row.mapping, this.row.parentFolder.mapping.siteId);
+    }
+
+    if (isInstantiated(this.row.parentFolder?.mapping?.utcOffset) && !isInstantiated(this.row.mapping.utcOffset)) {
+      this.setOffset(this.row.mapping, this.row.parentFolder.mapping.utcOffset);
     }
   }
 
