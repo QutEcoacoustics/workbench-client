@@ -5,7 +5,6 @@ import {
   Input,
   OnChanges,
   Output,
-  SimpleChanges,
 } from "@angular/core";
 import {
   MetaReviewFolder,
@@ -37,7 +36,7 @@ import { Project } from "@models/Project";
           [classes]="['fa-custom-counter']"
         ></fa-layers-counter>
       </fa-layers>
-      <span>
+      <span class="folder-path">
         {{ row.path }}
       </span>
     </div>
@@ -49,7 +48,7 @@ import { Project } from "@models/Project";
         class="btn btn-sm btn-outline-primary"
         (click)="createMapping(row)"
       >
-        Add Site or UTC for folder
+        Add Site or UTC to folder
       </button>
     </div>
 
@@ -158,25 +157,24 @@ export class FolderRowComponent implements OnChanges {
   public constructor(private injector: Injector) {}
 
   public ngOnChanges(): void {
-    // if the parent item has a new mapping, apply it to the current row
-    const parentFolderMappings = this.row.parentFolder?.mapping;
-    if (!isInstantiated(this.mapping) && isInstantiated(parentFolderMappings)) {
-      this.setSite(this.mapping, parentFolderMappings.siteId);
-      this.setOffset(this.mapping, parentFolderMappings.utcOffset);
-      this.setIsRecursive(this.mapping, parentFolderMappings.recursive);
+    // to inherit mappings values among ancestor items, if the parent item gains a Harvest Mapping, then all the child items should too
+    if (isInstantiated(this.row.parentFolder?.mapping) && !isInstantiated(this.row.mapping)) {
+      this.createMapping(this.row);
+
+      this.setSite(this.row.mapping, this.row.parentFolder.mapping.siteId);
+      this.setOffset(this.row.mapping, this.row.parentFolder.mapping.utcOffset);
+      this.setIsRecursive(this.row.mapping, this.row.parentFolder.mapping.recursive);
     }
   }
 
   public createMapping(row: MetaReviewFolder): void {
     const mapping = new HarvestMapping(
       {
-        // Root folder is not a harvest item, so root folder row does not have
-        // a harvest item
-        path: row.isRoot ? row.path : row.harvestItem.path,
+        path: this.row.isRoot ? this.row.path : this.row.harvestItem.path,
         recursive: true,
         siteId: null,
         utcOffset: null,
-      },
+      } as HarvestMapping,
       this.injector
     );
     row.mapping = mapping;
