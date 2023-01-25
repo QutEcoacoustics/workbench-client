@@ -6,6 +6,7 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { SharedModule } from "@shared/shared.module";
 import { generateSite } from "@test/fakes/Site";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminOrphansComponent } from "./list.component";
@@ -41,6 +42,12 @@ describe("AdminOrphansComponent", () => {
 
   // TODO Write Tests
   assertPagination<Site, ShallowSitesService>("orphanFilter");
+
+  assertPageInfo(AdminOrphansComponent, "Orphan Sites");
+
+  it("should create", () => {
+    expect(fixture.componentInstance).toBeInstanceOf(AdminOrphansComponent);
+  });
 
   xdescribe("rows", () => {});
   xdescribe("actions", () => {});

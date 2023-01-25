@@ -8,6 +8,7 @@ import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateTagGroup } from "@test/fakes/TagGroup";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
 import { ToastrService } from "ngx-toastr";
 import { of } from "rxjs";
@@ -57,6 +58,8 @@ describe("AdminTagGroupsComponent", () => {
   });
 
   assertPagination<TagGroup, TagGroupsService>();
+
+  assertPageInfo(AdminTagGroupsComponent, "Tag Group");
 
   it("should create", () => {
     expect(fixture.componentInstance).toBeInstanceOf(AdminTagGroupsComponent);

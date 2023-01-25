@@ -6,6 +6,7 @@ import { ScriptsService } from "@baw-api/script/scripts.service";
 import { Script } from "@models/Script";
 import { SharedModule } from "@shared/shared.module";
 import { generateScript } from "@test/fakes/Script";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminScriptsComponent } from "./list.component";
@@ -41,6 +42,12 @@ describe("AdminScriptsComponent", () => {
 
   // TODO Write tests
   assertPagination<Script, ScriptsService>();
+
+  assertPageInfo(AdminScriptsComponent, "Scripts");
+
+  it("should create", () => {
+    expect(fixture.componentInstance).toBeInstanceOf(AdminScriptsComponent);
+  });
 
   xdescribe("rows", () => {});
   xdescribe("actions", () => {});

@@ -20,8 +20,9 @@ import { BawTimeoutModule } from "@services/timeout/timeout.module";
 import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { ToastrModule } from "ngx-toastr";
 import { environment } from "src/environments/environment";
+import { TitleStrategy } from "@angular/router";
 import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
+import { AppComponent, PageTitleStrategy } from "./app.component";
 import { toastrRoot } from "./app.helper";
 import { AboutModule } from "./components/about/about.module";
 import { AdminModule } from "./components/admin/admin.module";
@@ -93,6 +94,7 @@ export const appImports = [
     ...appImports,
   ],
   providers: [
+    { provide: TitleStrategy, useClass: PageTitleStrategy },
     // Show loading animation after 3 seconds
     { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
   ],

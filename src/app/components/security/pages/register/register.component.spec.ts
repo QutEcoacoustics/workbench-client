@@ -10,6 +10,7 @@ import { generateRegisterDetails } from "@test/fakes/RegisterDetails";
 import { modelData } from "@test/helpers/faker";
 import { testFormlyFields } from "@test/helpers/formly";
 import { nStepObservable } from "@test/helpers/general";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
@@ -72,6 +73,8 @@ describe("RegisterComponent", () => {
       spyOn(toastr, "success").and.stub();
       spyOn(toastr, "error").and.stub();
     });
+
+    assertPageInfo(RegisterComponent, "Register");
 
     it("should create", () => {
       isSignedIn(false);

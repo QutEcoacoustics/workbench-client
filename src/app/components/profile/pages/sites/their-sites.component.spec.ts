@@ -25,6 +25,7 @@ import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { BehaviorSubject, Subject } from "rxjs";
 import { TheirSitesComponent } from "./their-sites.component";
 
@@ -75,6 +76,8 @@ describe("TheirSitesComponent", () => {
     projectsApi.filter.and.callFake(() => subject);
     return nStepObservable(subject, () => projects || error, !projects);
   }
+
+  assertPageInfo(TheirSitesComponent, "Sites");
 
   beforeEach(() => {
     defaultUser = new User(generateUser());

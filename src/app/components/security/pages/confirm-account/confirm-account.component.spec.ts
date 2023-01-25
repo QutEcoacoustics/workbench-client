@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { ConfirmPasswordComponent } from "./confirm-account.component";
@@ -42,6 +43,8 @@ describe("ConfirmPasswordComponent", () => {
       spyOn(notifications, "success").and.stub();
       spyOn(notifications, "error").and.stub();
     });
+
+    assertPageInfo(ConfirmPasswordComponent, "Confirm Account");
 
     it("should create", () => {
       expect(component).toBeTruthy();

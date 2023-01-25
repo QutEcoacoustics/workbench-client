@@ -1,5 +1,5 @@
 import { Injector } from "@angular/core";
-import { Params } from "@angular/router";
+import { Params, RouterStateSnapshot } from "@angular/router";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
@@ -161,6 +161,9 @@ export interface MenuRoute extends MenuItem {
   kind: "MenuRoute";
   /** The internal route this menu item points to */
   route: StrongRoute;
+
+  /** A computed tab title callback that should be used to identify the route */
+  title?: (routerState?: RouterStateSnapshot) => string
 
   /** Custom label when shown in the breadcrumb */
   breadcrumbResolve?: (pageInfo: IPageInfo, injector: Injector) => string;

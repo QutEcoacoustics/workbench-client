@@ -7,6 +7,7 @@ import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
 import { generateUser } from "@test/fakes/User";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
 import { MyEditComponent } from "./my-edit.component";
@@ -41,6 +42,8 @@ describe("MyProfileEditComponent", () => {
 
     fixture.detectChanges();
   }
+
+  assertPageInfo(MyEditComponent, "Edit My Profile");
 
   beforeEach(() => {
     // TODO Handle image urls

@@ -13,6 +13,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateScript } from "@test/fakes/Script";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
@@ -59,6 +60,8 @@ describe("AdminScriptsEditComponent", () => {
 
     fixture.detectChanges();
   }
+
+  assertPageInfo<Script>(AdminScriptsEditComponent, "Edit");
 
   beforeEach(() => {
     defaultModel = new Script(generateScript());

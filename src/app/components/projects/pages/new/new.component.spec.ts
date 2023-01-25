@@ -7,6 +7,7 @@ import {
 } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
@@ -23,6 +24,8 @@ describe("ProjectsNewComponent", () => {
     imports: [MockBawApiModule],
     mocks: [ToastrService],
   });
+
+  assertPageInfo(NewComponent, "New Project");
 
   function setup(): void {
     spec = createComponent();

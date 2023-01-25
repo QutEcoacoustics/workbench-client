@@ -27,6 +27,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { interceptFilterApiRequest } from "@test/helpers/general";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
 import { HomeComponent } from "./home.component";
@@ -111,6 +112,8 @@ describe("HomeComponent", () => {
     cmsService = spec.inject(CmsService);
     cmsService.get.and.callFake(() => new BehaviorSubject("cms content"));
   }
+
+  assertPageInfo(HomeComponent, "Home");
 
   beforeEach(() => {
     spec = createComponent({ detectChanges: false });

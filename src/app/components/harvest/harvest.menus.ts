@@ -1,3 +1,4 @@
+import { RouterStateSnapshot } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -40,4 +41,8 @@ export const harvestMenuItem = menuRoute({
   ...newHarvestMenuItem,
   icon: ["fas", "cloud-arrow-up"],
   route: harvestRoute,
+  title: (routeData: RouterStateSnapshot): string => {
+    const componentModel = routeData.root.firstChild.data;
+    return componentModel.harvest.model.name;
+  },
 });

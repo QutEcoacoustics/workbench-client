@@ -1,4 +1,5 @@
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
+import { RouterStateSnapshot } from "@angular/router";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { Region } from "@models/Region";
@@ -7,6 +8,7 @@ import {
   defaultNewIcon,
   isProjectEditorPredicate,
 } from "src/app/app.menus";
+import { CommonRouteTitles } from "src/app/stringConstants";
 import {
   regionRoute,
   regionsRoute,
@@ -49,6 +51,10 @@ export const regionMenuItem = menuRoute({
   tooltip: () => "The current site",
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, Region)?.name,
+  title: (routeData: RouterStateSnapshot): string => {
+    const componentModel = routeData.root.firstChild.data;
+    return componentModel.region.model.name;
+  },
 });
 
 export const newRegionMenuItem = menuRoute({
@@ -63,4 +69,5 @@ export const editRegionMenuItem = menuRoute({
   predicate: isProjectEditorPredicate,
   route: regionMenuItem.route.add("edit"),
   tooltip: () => "Change the details for this site",
+  title: () => CommonRouteTitles.routeEditTitle,
 });

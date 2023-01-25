@@ -1,3 +1,4 @@
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { CompleteComponent } from "@components/harvest/screens/complete/complete.component";
 import { MetadataExtractionComponent } from "@components/harvest/screens/metadata-extraction/metadata-extraction.component";
 import { MetadataReviewComponent } from "@components/harvest/screens/metadata-review/metadata-review.component";
@@ -5,19 +6,24 @@ import { ProcessingComponent } from "@components/harvest/screens/processing/proc
 import { ScanningComponent } from "@components/harvest/screens/scanning/scanning.component";
 import { BatchUploadingComponent } from "@components/harvest/screens/uploading/batch-uploading.component";
 import { StreamUploadingComponent } from "@components/harvest/screens/uploading/stream-uploading.component";
-import { HarvestStatus } from "@models/Harvest";
+import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
+import { Harvest, HarvestStatus } from "@models/Harvest";
 import { Project } from "@models/Project";
-import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import { createRoutingFactory, mockProvider, SpectatorRouting } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { StepperComponent } from "@shared/stepper/stepper.component";
+import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponents } from "ng-mocks";
+import { ToastrService } from "ngx-toastr";
+import { PageTitleStrategy } from "src/app/app.component";
 import { DetailsComponent } from "./details.component";
 
-// TODO Re-implement
-xdescribe("DetailsComponent", () => {
-  let defaultProject: Project;
+describe("DetailsComponent", () => {
   let spec: SpectatorRouting<DetailsComponent>;
+  let defaultProject: Project;
+
   const createComponent = createRoutingFactory({
     component: DetailsComponent,
     declarations: MockComponents(
@@ -29,7 +35,18 @@ xdescribe("DetailsComponent", () => {
       MetadataReviewComponent,
       CompleteComponent
     ),
-    imports: [SharedModule],
+    providers: [
+      mockProvider(HarvestStagesService),
+      PageTitleStrategy,
+    ],
+    imports: [MockBawApiModule, SharedModule],
+    mocks: [ToastrService],
+  });
+
+  assertPageInfo<Harvest>(DetailsComponent, "test name", {
+    harvest: {
+      model: new Harvest(generateHarvest({ name: "test name" }))
+    },
   });
 
   beforeEach(() => {
@@ -41,21 +58,22 @@ xdescribe("DetailsComponent", () => {
       detectChanges: false,
       data: { project: { model: project } },
     });
+    spec.detectChanges();
   }
 
   it("should create", () => {
     setup();
-    spec.detectChanges();
     expect(spec.component).toBeInstanceOf(DetailsComponent);
   });
 
-  it("should show project name", () => {
+  xit("should show project name", () => {
     setup();
     spec.detectChanges();
     expect(spec.query("h1")).toHaveText(defaultProject.name);
   });
 
-  describe("stages", () => {
+  // TODO: Re-implement tests
+  xdescribe("stages", () => {
     function setStage(stage: HarvestStatus) {
       setup();
       spec.detectChanges();

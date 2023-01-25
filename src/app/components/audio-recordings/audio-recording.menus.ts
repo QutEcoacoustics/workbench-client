@@ -1,3 +1,4 @@
+import { RouterStateSnapshot } from "@angular/router";
 import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { projectMenuItem } from "@components/projects/projects.menus";
@@ -49,6 +50,10 @@ function makeDetailsMenuItem(subRoute: RecordingRoute): MenuRoute {
     // TODO #346 Show local date time of recording date using timezone where sensor was. Should show timezone on highlight?
     breadcrumbResolve: (pageInfo) =>
       retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),
+    title: (routeData: RouterStateSnapshot): string => {
+      const componentModel = routeData.root.firstChild.data;
+      return componentModel.audioRecording.model.id.toString();
+    },
   });
 }
 

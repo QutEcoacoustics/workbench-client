@@ -8,6 +8,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { SiteNewComponent } from "../new/new.component";
 import { WizardComponent } from "./wizard.component";
@@ -51,6 +52,8 @@ describe("WizardComponent", () => {
   beforeEach(() => {
     defaultProject = new Project(generateProject());
   });
+
+  assertPageInfo(WizardComponent, "New Site");
 
   it("should create", () => {
     setup(defaultProject);

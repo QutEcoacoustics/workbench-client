@@ -6,6 +6,7 @@ import { AnalysisJob } from "@models/AnalysisJob";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
 import { AdminAnalysisJobsComponent } from "./list.component";
 
@@ -34,6 +35,12 @@ describe("AdminAnalysisJobsComponent", () => {
   });
 
   assertPagination<AnalysisJob, AnalysisJobsService>();
+
+  assertPageInfo(AdminAnalysisJobsComponent, "Analysis Jobs")
+
+  it("should create", () => {
+    expect(spec.component).toBeInstanceOf(AdminAnalysisJobsComponent);
+  });
 
   // TODO Write Tests
   xdescribe("rows", () => {});

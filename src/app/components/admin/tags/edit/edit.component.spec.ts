@@ -10,6 +10,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateTag } from "@test/fakes/Tag";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { of, Subject } from "rxjs";
@@ -68,6 +69,8 @@ describe("AdminTagsEditComponent", () => {
 
     fixture.detectChanges();
   }
+
+  assertPageInfo(AdminTagsEditComponent, "Edit");
 
   beforeEach(() => {
     defaultTag = new Tag(generateTag());

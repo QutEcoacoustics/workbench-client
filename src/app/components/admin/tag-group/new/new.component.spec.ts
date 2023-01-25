@@ -5,6 +5,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
@@ -17,6 +18,8 @@ describe("AdminTagGroupsNewComponent", () => {
   let fixture: ComponentFixture<AdminTagGroupsNewComponent>;
   let notifications: ToastrService;
   let router: Router;
+
+  assertPageInfo(AdminTagGroupsNewComponent, "New Tag Group")
 
   xdescribe("form", () => {});
 

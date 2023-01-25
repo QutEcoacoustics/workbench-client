@@ -1,3 +1,4 @@
+import { RouterStateSnapshot } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuAction, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -38,6 +39,10 @@ export const audioAnalysisMenuItem = menuRoute({
   parent: audioAnalysesMenuItem,
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, AnalysisJob)?.name,
+  title: (routeData: RouterStateSnapshot): string => {
+    const componentModel = routeData.root.firstChild.data;
+    return componentModel.analysisJob.model.name;
+  },
 });
 
 export const audioAnalysisResultsMenuItem = menuRoute({

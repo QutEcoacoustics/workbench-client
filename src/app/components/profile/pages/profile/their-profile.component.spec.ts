@@ -32,6 +32,7 @@ import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { Subject } from "rxjs";
 import { TheirProfileComponent } from "./their-profile.component";
 
@@ -107,6 +108,12 @@ describe("TheirProfileComponent", () => {
       interceptApiRequest(tagsApi, "filterByCreator", models.tags),
     ]);
   }
+
+  assertPageInfo<User>(TheirProfileComponent, "test user's Profile", {
+    account: {
+      model: new User(generateUser({ userName: "test user" })),
+    }
+  });
 
   beforeEach(() => {
     defaultUser = new User(generateUser());

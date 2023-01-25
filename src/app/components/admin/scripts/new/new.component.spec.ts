@@ -5,6 +5,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
@@ -16,6 +17,8 @@ describe("AdminScriptsNewComponent", () => {
   let fixture: ComponentFixture<AdminScriptsNewComponent>;
   let notifications: ToastrService;
   let router: Router;
+
+  assertPageInfo(AdminScriptsNewComponent, "New Script");
 
   beforeEach(() => {
     TestBed.configureTestingModule({

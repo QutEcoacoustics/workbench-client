@@ -18,6 +18,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateScript } from "@test/fakes/Script";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
@@ -79,6 +80,12 @@ describe("ScriptComponent", () => {
       ),
     ]);
   }
+
+  assertPageInfo<Script>(AdminScriptComponent, "Test Script", {
+    script: {
+      model: new Script(generateScript({ name: "Test Script" })),
+    }
+  });
 
   it("should create", () => {
     configureTestingModule(new Script(generateScript()));

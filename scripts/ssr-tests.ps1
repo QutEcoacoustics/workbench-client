@@ -81,7 +81,7 @@ Format-Info "Retrieve home page"
 $indexFile = "index.html"
 Get-Page "" $indexFile
 Format-Info "Validate title"
-Assert-Contains "<title>&lt;&lt;brandName&gt;&gt;</title>" $indexFile
+Assert-Contains "<title>&lt;&lt;brandName&gt;&gt; | Home</title>" $indexFile
 Format-Info "Validate routing"
 Assert-Contains "<\/router-outlet><baw-home.*<\/baw-home>" $indexFile
 Format-Info "Validate footer contains version"

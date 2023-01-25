@@ -1,9 +1,11 @@
+import { RouterStateSnapshot } from "@angular/router";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import {
   defaultEditIcon,
   defaultNewIcon,
   isAdminPredicate,
 } from "src/app/app.menus";
+import { CommonRouteTitles } from "src/app/stringConstants";
 import { adminDashboardMenuItem, adminRoute } from "../admin.menus";
 
 export const adminScriptsRoute = adminRoute.addFeatureModule("scripts");
@@ -41,6 +43,11 @@ export const adminScriptMenuItem = menuRoute({
   tooltip: () => "Manage script",
   parent: adminScriptsMenuItem,
   predicate: isAdminPredicate,
+  title: (routeData: RouterStateSnapshot): string => {
+    const componentModel = routeData.root.firstChild.data;
+    const scriptName = componentModel.script.model.name;
+    return scriptName;
+  }
 });
 
 export const adminEditScriptMenuItem = menuRoute({
@@ -50,4 +57,5 @@ export const adminEditScriptMenuItem = menuRoute({
   tooltip: () => "Create new version of this script",
   parent: adminScriptMenuItem,
   predicate: isAdminPredicate,
+  title: () => CommonRouteTitles.routeEditTitle,
 });

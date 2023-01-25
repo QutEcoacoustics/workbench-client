@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { ResetPasswordComponent } from "./reset-password.component";
@@ -42,6 +43,8 @@ describe("ResetPasswordComponent", () => {
       spyOn(notifications, "success").and.stub();
       spyOn(notifications, "error").and.stub();
     });
+
+    assertPageInfo(ResetPasswordComponent, "Reset Password");
 
     it("should create", () => {
       expect(component).toBeTruthy();

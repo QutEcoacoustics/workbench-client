@@ -1,3 +1,4 @@
+import { RouterStateSnapshot } from "@angular/router";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { isAdminPredicate } from "src/app/app.menus";
 import { adminDashboardMenuItem, adminRoute } from "../admin.menus";
@@ -28,4 +29,8 @@ export const adminAnalysisJobMenuItem = menuRoute({
   tooltip: () => "Manage analysis job",
   parent: adminAnalysisJobsMenuItem,
   predicate: isAdminPredicate,
+  title: (routeData: RouterStateSnapshot): string => {
+    const componentModel = routeData.root.firstChild.data;
+    return componentModel.analysisJob.model.name;
+  }
 });

@@ -4,6 +4,7 @@ import { AudioAnalysisModule } from "@components/audio-analysis/audio-analysis.m
 import { AnalysisJob } from "@models/AnalysisJob";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
 import { validateBawClientPage } from "@test/helpers/baw-client";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { BehaviorSubject } from "rxjs";
 import { AudioAnalysisComponent } from "./details.component";
 
@@ -22,4 +23,10 @@ describe("AudioAnalysisComponent", () => {
       );
     }
   );
+
+  assertPageInfo<AnalysisJob>(AudioAnalysisComponent, "Test Analysis Job", {
+    analysisJob: {
+      model: new AnalysisJob(generateAnalysisJob({ name: "Test Analysis Job" })),
+    }
+  });
 });

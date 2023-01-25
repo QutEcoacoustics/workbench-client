@@ -10,6 +10,7 @@ import { FormComponent } from "@shared/form/form.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { testFormlyFields } from "@test/helpers/formly";
 import { nStepObservable } from "@test/helpers/general";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
 import { UNAUTHORIZED } from "http-status";
 import { ToastrService } from "ngx-toastr";
@@ -89,6 +90,8 @@ describe("LoginComponent", () => {
   });
 
   describe("component", () => {
+    assertPageInfo(LoginComponent, "Log In");
+
     it("should create", () => {
       setup();
       isSignedIn(false);

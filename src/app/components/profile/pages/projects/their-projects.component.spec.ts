@@ -17,6 +17,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateUser } from "@test/fakes/User";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { BehaviorSubject } from "rxjs";
 import { TheirProjectsComponent } from "./their-projects.component";
 
@@ -30,6 +31,8 @@ describe("TheirProjectsComponent", () => {
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
     stubsEnabled: false,
   });
+
+  assertPageInfo(TheirProjectsComponent, "Projects");
 
   function setup(model: User, error?: BawApiError) {
     spec = createComponent({

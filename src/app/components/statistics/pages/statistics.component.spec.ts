@@ -27,6 +27,7 @@ import {
   interceptFilterApiRequest,
   interceptShowApiRequest,
 } from "@test/helpers/general";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { RecentAnnotationsComponent } from "../components/recent-annotations/recent-annotations.component";
 import { RecentAudioRecordingsComponent } from "../components/recent-audio-recordings/recent-audio-recordings.component";
@@ -51,6 +52,8 @@ describe("StatisticsComponent", () => {
       mock.recentAudioRecordingsComponent,
     ],
   });
+
+  assertPageInfo(StatisticsComponent, "Statistics");
 
   function interceptStatisticsRequest(
     data: Errorable<IStatistics>

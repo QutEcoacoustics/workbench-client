@@ -37,6 +37,7 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { ToastrService } from "ngx-toastr";
 import { of, Subject } from "rxjs";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MyProfileComponent } from "./my-profile.component";
 
 describe("MyProfileComponent", () => {
@@ -117,6 +118,12 @@ describe("MyProfileComponent", () => {
 
   beforeEach(() => {
     defaultUser = new User(generateUser());
+  });
+
+  assertPageInfo<User>(MyProfileComponent, "test user's Profile", {
+    account: {
+      model: new User(generateUser({ userName: "test user" })),
+    }
   });
 
   it("should create", () => {

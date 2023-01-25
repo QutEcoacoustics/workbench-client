@@ -32,6 +32,7 @@ import {
   testFormImports,
 } from "@test/helpers/testbed";
 import { MockBuilder, MockRender, ngMocks } from "ng-mocks";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, of, Subject } from "rxjs";
 import { Location } from "@angular/common";
@@ -91,6 +92,8 @@ describe("RegionsNewComponent", () => {
     beforeEach(() => {
       defaultProject = new Project(generateProject());
     });
+
+    assertPageInfo(NewComponent, "New Site");
 
     it("should create", () => {
       setup();

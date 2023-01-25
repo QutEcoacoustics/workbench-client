@@ -19,6 +19,7 @@ import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -84,6 +85,8 @@ describe("SiteEditComponent", () => {
     let defaultProject: Project;
     let defaultRegion: Region;
     let defaultSite: Site;
+
+    assertPageInfo(SiteEditComponent, "Edit")
 
     function setup(
       project: Errorable<Project>,
