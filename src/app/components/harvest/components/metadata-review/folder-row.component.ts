@@ -165,11 +165,11 @@ export class FolderRowComponent implements OnChanges {
       this.setIsRecursive(this.row.mapping, this.row.parentFolder.mapping.recursive);
     }
 
-    if (isInstantiated(this.row.parentFolder?.mapping?.siteId) && !isInstantiated(this.row.mapping.siteId)) {
+    if (isInstantiated(this.row.parentFolder?.mapping?.siteId) && !isInstantiated(this.row.mapping?.siteId)) {
       this.setSite(this.row.mapping, this.row.parentFolder.mapping.siteId);
     }
 
-    if (isInstantiated(this.row.parentFolder?.mapping?.utcOffset) && !isInstantiated(this.row.mapping.utcOffset)) {
+    if (isInstantiated(this.row.parentFolder?.mapping?.utcOffset) && !isInstantiated(this.row.mapping?.utcOffset)) {
       this.setOffset(this.row.mapping, this.row.parentFolder.mapping.utcOffset);
     }
   }

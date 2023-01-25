@@ -355,4 +355,7 @@ describe("MetadataReviewComponent", () => {
     discardPeriodicTasks();
   }));
 
+  it("should inherit mappings from parent item if harvest item mappings are not set", fakeAsync(() => {
+    setup();
+  }));
 });

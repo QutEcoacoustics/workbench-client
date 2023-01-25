@@ -16,7 +16,7 @@ describe("FolderRowComponent", () => {
 
   const createHost = createComponentFactory({
     component: FolderRowComponent,
-    declarations: [ WhitespaceComponent ]
+    declarations: [WhitespaceComponent]
   });
 
   function setup() {

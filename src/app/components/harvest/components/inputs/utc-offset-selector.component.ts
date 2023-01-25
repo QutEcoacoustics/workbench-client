@@ -104,11 +104,29 @@ export class UTCOffsetSelectorComponent {
   public convertUnixOffsetToUTCOffset(unixOffset: number): string {
     const directionalIndicator = unixOffset >= 0 ? "+" : "-";
 
-    const utcOffsetTime = new Date(0);
     // unix offset is in relative seconds. Therefore, if we divide the number by 3600, we get the offset as an hour decimal
-    utcOffsetTime.setHours(unixOffset / 3600);
+    const secondsToHoursScalarMultiple = 3600;
 
-    return `${directionalIndicator}${utcOffsetTime.getHours()}:${utcOffsetTime.getMinutes().toString().padStart(2, "0")}`;
+    // assert that the provided dates are within the legal range. If not, throw an error
+    if (unixOffset >= (12 * secondsToHoursScalarMultiple) || unixOffset <= (-12 * secondsToHoursScalarMultiple)) {
+      throw new Error("UTC Offset out of bounds.");
+    }
+
+    const utcOffsetTime = new Date(0);
+    utcOffsetTime.setHours(unixOffset / secondsToHoursScalarMultiple);
+
+    let hoursTimeFormat = utcOffsetTime.getHours();
+
+    // since -1 is the same as +23, it will be encoded as +23 at this point
+    // however, since the user is expecting -1, subtracting 24 hours (if greater than 12 hours) will return the result the user is expecting
+    if (hoursTimeFormat > 12) {
+      hoursTimeFormat -= 24; // hours
+    }
+
+    const hours: string = directionalIndicator + hoursTimeFormat.toString().replace("-", "").padStart(2, "0");
+    const minutes: string = utcOffsetTime.getMinutes().toString().padStart(2, "0");
+
+    return `${hours}:${minutes}`;
   }
 
   /**

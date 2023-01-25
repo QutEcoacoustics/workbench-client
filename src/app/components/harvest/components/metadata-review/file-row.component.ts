@@ -62,7 +62,6 @@ interface ValidationMessage {
               [ngClass]="[getCalloutClass(validation)]"
             >
               {{ validation.message }}
-              <ng-container *ngIf="updateChevronState(validationsContainer) || true"></ng-container>
             </small>
           </div>
         </div>
@@ -94,6 +93,7 @@ interface ValidationMessage {
         ></fa-icon>
       </div>
     </div>
+    <ng-container *if="updateChevronState(validationsContainer)"></ng-container>
   `,
   styleUrls: ["file-row.component.scss"],
   // Nothing in this component can change without a change in the row
@@ -151,7 +151,6 @@ export class FileRowComponent implements OnInit, AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.updateChevronState(this.validationsContainer);
   }
 

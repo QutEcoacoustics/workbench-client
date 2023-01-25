@@ -99,4 +99,55 @@ describe("UTCOffsetSelectorComponent", () => {
 
     expect(getOffsetInput().innerText).toEqual(expectedValue);
   });
+
+  // since the timezone converter tests are unit tests and do not rely on the GUI components
+  // there is no need to generate the component through the component factory
+  describe("timezone converter", () => {
+    const convertHourToUnixOffset = (hours: number) => hours * 3600;
+
+    function assertConversion(decimalHourOffset: number, expectedResult: string) {
+      const unixOffset = convertHourToUnixOffset(decimalHourOffset);
+
+      expect(spectator.component.convertUnixOffsetToUTCOffset(unixOffset)).toEqual(expectedResult);
+    }
+
+    it("should correctly process utc offsets of < +1 hour", () => {
+      assertConversion(1, "+01:00");
+    });
+
+    it("should correctly process utc offsets of < -1 hour", () => {
+      assertConversion(-1, "-01:00");
+    });
+
+    it("should correctly process known times (Brisbane)", () => {
+      assertConversion(10, "+10:00");
+    });
+
+    it("should correctly process known times (New York)", () => {
+      assertConversion(-5, "-05:00");
+    });
+
+    it("should correctly process a utc offset of + and -00:00", () => {
+      assertConversion(0, "+00:00");
+      assertConversion(-0, "+00:00");
+    });
+
+    it("should throw an error if the utc offset is incorrect (>= +12)", () => {
+      setup();
+      const offset = convertHourToUnixOffset(13);
+
+      expect(() => spectator.component.convertUnixOffsetToUTCOffset(offset)).toThrow(
+        new Error("UTC Offset out of bounds.")
+      );
+    });
+
+    it("should throw an error if the utc offset is incorrect (<= -12)", () => {
+      setup();
+      const offset = convertHourToUnixOffset(-12.1);
+
+      expect(() => spectator.component.convertUnixOffsetToUTCOffset(offset)).toThrow(
+        new Error("UTC Offset out of bounds.")
+      );
+    });
+  });
 });

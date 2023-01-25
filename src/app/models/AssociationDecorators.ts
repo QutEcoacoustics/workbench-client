@@ -167,10 +167,19 @@ function createModelDecorator<
   function getAssociatedModel(
     parent: Parent
   ): Readonly<AbstractModel | AbstractModel[]> {
+    // Get child model identifying ID/s
+    const identifier: Id | Ids = parent[identifierKey] as any;
+
     // Check for any backing models
     const backingFieldKey = "_" + identifierKey.toString();
     if (Object.prototype.hasOwnProperty.call(parent, backingFieldKey)) {
-      return parent[backingFieldKey];
+
+      // if the model has already been fetched, don't query the api again, instead return a cached model
+      // if the two models have a different identifier, re-query the api
+      const backedModel = parent[backingFieldKey].id;
+      if (identifier === backedModel) {
+        return parent[backingFieldKey];
+      }
     }
 
     // Get Angular Injector Service
@@ -181,8 +190,6 @@ function createModelDecorator<
       );
     }
 
-    // Get child model identifying ID/s
-    const identifier: Id | Ids = parent[identifierKey] as any;
     if (!isInstantiated(identifier) || (identifier as Set<any>)?.size === 0) {
       return failureValue;
     }
