@@ -78,7 +78,7 @@ const regionKey = "region";
       <ul id="model-grid" class="list-group">
         <!-- Google Maps -->
         <div *ngIf="hasSites()" class="item map">
-          <baw-site-map [project]="project" [region]="region"></baw-site-map>
+          <baw-site-map [projects]="[project]" [regions]="[region]"></baw-site-map>
         </div>
 
         <!-- Sites -->

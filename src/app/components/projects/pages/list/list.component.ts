@@ -24,6 +24,12 @@ export const projectsMenuItemActions = [
   selector: "baw-projects-list",
   template: `
     <ng-container *ngIf="!error">
+      <ng-container *ngIf="!loading && models.size > 0;">
+        <div style="width: 100%; height: 500px;">
+          <baw-site-map [projects]="models.toArray()"></baw-site-map>
+        </div>
+      </ng-container>
+
       <baw-debounce-input
         label="Filter"
         placeholder="Filter Projects"

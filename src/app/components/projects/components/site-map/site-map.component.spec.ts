@@ -41,7 +41,7 @@ describe("SiteMapComponent", () => {
   function setup(project: Project, region?: Region) {
     spec = createComponent({
       detectChanges: false,
-      props: { project, region },
+      props: { projects: project, regions: region },
     });
     api = spec.inject(SitesService);
   }
