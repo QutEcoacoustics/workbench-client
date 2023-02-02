@@ -22,6 +22,12 @@ export const regionsMenuItemActions = [
   selector: "baw-regions",
   template: `
     <ng-container *ngIf="!error">
+      <ng-container *ngIf="!loading && models.size > 0;">
+        <div style="width: 100%; height: 500px;">
+          <baw-site-map [regions]="models.toArray()"></baw-site-map>
+        </div>
+      </ng-container>
+
       <baw-debounce-input
         label="Filter"
         placeholder="Filter Sites"

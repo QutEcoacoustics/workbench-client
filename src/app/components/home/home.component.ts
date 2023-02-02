@@ -33,6 +33,7 @@ class HomeComponent extends PageComponent implements OnInit {
   };
   public viewMoreLink: { label: string; link: StrongRoute };
   public models$: Observable<List<Project | Region>>;
+  public allSites$: Observable<List<Project | Region>>;
   public sourceRepo: string;
 
   public constructor(
@@ -81,6 +82,9 @@ class HomeComponent extends PageComponent implements OnInit {
       map((models) => List<Project | Region>(models)),
       takeUntil(this.unsubscribe)
     );
+
+    // to render the "live site map" at the bottom of the home page, the home component has to have knowledge of all the site locations
+    this.fetchAllSiteLocations();
   }
 
   public calculateSvgTextYPos(index: number) {
@@ -116,6 +120,38 @@ class HomeComponent extends PageComponent implements OnInit {
     );
 
     return `${xPos} ${yPos} ${width} ${height}`;
+  }
+
+  /**
+   * The home component must have knowledge on all site locations for the overview map
+   */
+  public fetchAllSiteLocations(): Observable<List<Project | Region>> {
+    const settings = this.config.settings;
+
+    let pageNumber = 1;
+    // Get the first page of points. This will also provide information on the max page length to search through
+    let maxPageNumber = 1;
+
+    while (pageNumber <= maxPageNumber) {
+      const filter = { paging: { page: pageNumber } };
+
+      const sites: Observable<Region[] | Project[]> = settings.hideProjects
+        ? this.regionApi.filter(filter)
+        : this.projectApi.filter(filter);
+
+      this.allSites$ = sites.pipe(
+        map((models) => List<Project | Region>(models)),
+        takeUntil(this.unsubscribe)
+      );
+
+      // find the max page number from the metadata
+      this.allSites$
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe((site) => maxPageNumber = site.toArray().shift().getMetadata()?.paging?.maxPage);
+      pageNumber++;
+    }
+
+    return this.allSites$;
   }
 }
 
