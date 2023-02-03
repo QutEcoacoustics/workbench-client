@@ -231,8 +231,13 @@ describe("HomeComponent", () => {
       });
     });
 
-    it("should create live map", () => {
-      expect(spec.query("#interactiveMap")).toExist();
+    describe("site map", () => {
+      it("should create", () => {
+        expect(spec.query("#interactiveMap")).toExist();
+      });
+
+      it("should handle taking both projects and regions", async () => {
+      });
     });
   });
 });
