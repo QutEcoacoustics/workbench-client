@@ -162,10 +162,11 @@
     <ng-container *ngIf="allSites$ | withLoading | async as sites">
       <baw-loading *ngIf="sites.loading" [size]="lg"></baw-loading>
 
-      <div style="width: 100%; height: 600px">
+      <div style="width: 100%; height: 24em;">
         <baw-site-map
           *ngIf="!sites.loading && sites.value.size > 0"
-          [unstructuredLocations]="sites.value"
+          [projects]="projects(sites.value).toArray()"
+          [regions]="regions(sites.value).toArray()"
         ></baw-site-map>
       </div>
     </ng-container>

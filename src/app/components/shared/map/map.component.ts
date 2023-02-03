@@ -28,7 +28,7 @@ import { takeUntil } from "rxjs/operators";
         height="100%"
         width="100%"
         [options]="mapOptions"
-        (mapClick)="markerOptions.draggable && newLocation.emit($event)"
+        (mapClick)="markerOptions?.draggable && newLocation.emit($event)"
       >
         <map-marker
           *ngFor="let marker of filteredMarkers"

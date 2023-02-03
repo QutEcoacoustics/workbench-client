@@ -237,7 +237,7 @@ describe("ProjectDetailsComponent", () => {
       );
       spectator.detectChanges();
       await awaitChanges(promise);
-      expect(getMap().projects).toEqual(defaultProject);
+      expect(getMap().projects).toEqual([defaultProject]);
     });
   });
 

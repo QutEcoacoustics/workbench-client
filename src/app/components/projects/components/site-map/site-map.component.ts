@@ -20,9 +20,8 @@ import { switchMap, takeUntil } from "rxjs/operators";
 export class SiteMapComponent extends withUnsubscribe() implements OnInit {
   // TODO Implement system to change colour of selected sites
   @Input() public selected: List<Site>;
-  @Input() public unstructuredLocations: List<Project | Region> | undefined;
-  @Input() public projects: Project[] | undefined;
-  @Input() public regions: Region[] | undefined;
+  @Input() public projects: Project[];
+  @Input() public regions: Region[];
   public markers: List<MapMarkerOptions> = List([]);
 
   public constructor(private sitesApi: SitesService) {
@@ -30,46 +29,14 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
   }
 
   public ngOnInit(): void {
-    // sometimes an unstructured array of locations can be passed to the map component
-    // therefore, it is necessary that the data is structured before
-    if (this.unstructuredLocations) {
-      const locationsArray = this.unstructuredLocations.toArray();
-
-      locationsArray.forEach((location) => {
-        if (location["type"] === "Region") {
-          if (!this.regions) {
-            this.regions = [];
-          }
-
-          this.regions.push(location as Region);
-        } else {
-          if (!this.projects) {
-            this.projects = [];
-          }
-
-          this.projects.push(location as Project);
-        }
-      });
-    }
-
-    // a list of regions will only ever have one project, while a project will never have a region
-    // therefore, we can decide how to iterate through a list of items on the predicate if there is a region
-    if (this.regions) {
-      this.regions.forEach((region) => {
-        this.addSingleLocationMarkers(this.projects[0], region);
-      });
-    } else {
-      this.projects.forEach((project) => {
-        this.addSingleLocationMarkers(project, undefined);
-      });
-    }
+    this.regions?.forEach((region) => this.addSingleLocationMarkers(this.projects.pop(), region));
+    this.projects?.forEach((project) => this.addSingleLocationMarkers(project));
   }
 
   /**
-   * Fetches the markers and adds the markers to the `markers` list for a single location
-   * e.g. A project or region
+   * Fetches the markers for a project or region and adds the markers to the `markers` list for a single location
    */
-  private addSingleLocationMarkers(project: Project, region: Region): void {
+  private addSingleLocationMarkers(project?: Project, region?: Region): void {
     const filters: Filters<ISite> = { paging: { page: 1 } };
 
     this.getFilter(filters, project, region)
@@ -85,12 +52,12 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
 
   private getFilter(
     filters: Filters<ISite>,
-    project: Project | undefined,
-    region?: Region | undefined
+    project: Project,
+    region?: Region
   ): Observable<Site[]> {
-    return this.regions
-      ? this.sitesApi.filterByRegion(filters, project, region)
-      : this.sitesApi.filter(filters, project);
+    // since the region parameter is optional, if a region is not specified, it will default to undefined
+    // and will have the same result as `siteApi.filter()`
+    return this.sitesApi.filterByRegion(filters, project, region)
   }
 
   /**

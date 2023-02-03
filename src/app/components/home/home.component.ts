@@ -147,11 +147,19 @@ class HomeComponent extends PageComponent implements OnInit {
       // find the max page number from the metadata
       this.allSites$
         .pipe(takeUntil(this.unsubscribe))
-        .subscribe((site) => maxPageNumber = site.toArray().shift().getMetadata()?.paging?.maxPage);
+        .subscribe((site) => maxPageNumber = site.toArray()?.shift()?.getMetadata()?.paging?.maxPage);
       pageNumber++;
     }
 
     return this.allSites$;
+  }
+
+  public projects(sites: List<Project | Region>): List<Project> {
+    return sites?.filter((location) => location.kind === "Project") as List<Project>;
+  }
+
+  public regions(sites: List<Project | Region>): List<Region> {
+    return sites?.filter((location) => location.kind === "Region") as List<Region>;
   }
 }
 

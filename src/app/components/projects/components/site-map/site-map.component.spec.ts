@@ -41,7 +41,7 @@ describe("SiteMapComponent", () => {
   function setup(project: Project, region?: Region) {
     spec = createComponent({
       detectChanges: false,
-      props: { projects: project, regions: region },
+      props: { projects: [project], regions: [region] },
     });
     api = spec.inject(SitesService);
   }
@@ -90,10 +90,9 @@ describe("SiteMapComponent", () => {
   function interceptApiRequest(
     responses: Errorable<Site[]>[],
     expectations?: ((filter: Filters<ISite>, project: Project) => void)[],
-    hasRegion?: boolean
   ): Promise<void>[] {
     return interceptRepeatApiRequests<ISite, Site[]>(
-      hasRegion ? api.filterByRegion : api.filter,
+      api.filterByRegion,
       responses,
       expectations
     );
@@ -216,8 +215,7 @@ describe("SiteMapComponent", () => {
       const promise = Promise.all(
         interceptApiRequest(
           sites,
-          [assertFilter(1, defaultProject, defaultRegion)],
-          true
+          [assertFilter(1, defaultProject, defaultRegion)]
         )
       );
 

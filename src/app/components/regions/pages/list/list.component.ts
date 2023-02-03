@@ -23,7 +23,7 @@ export const regionsMenuItemActions = [
   template: `
     <ng-container *ngIf="!error">
       <ng-container *ngIf="!loading && models.size > 0;">
-        <div style="width: 100%; height: 500px;">
+        <div style="width: 100%; height: 24em;">
           <baw-site-map [regions]="models.toArray()"></baw-site-map>
         </div>
       </ng-container>

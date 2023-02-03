@@ -28,7 +28,9 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { interceptFilterApiRequest } from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
+import { MapComponent } from "@shared/map/map.component";
+import { List } from "immutable";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
@@ -37,9 +39,14 @@ describe("HomeComponent", () => {
   let cmsService: SpyObject<CmsService>;
   let config: ConfigService;
   let spec: Spectator<HomeComponent>;
+
   const createComponent = createComponentFactory({
     component: HomeComponent,
-    declarations: [CardsComponent, MockComponent(CardComponent)],
+    declarations: [
+      CardsComponent,
+      MockComponent(MapComponent),
+      MockComponent(CardComponent),
+    ],
     imports: [
       MockBawApiModule,
       MockConfigModule,
@@ -112,12 +119,20 @@ describe("HomeComponent", () => {
     cmsService.get.and.callFake(() => new BehaviorSubject("cms content"));
   }
 
-  beforeEach(() => {
+  function setup() {
     spec = createComponent({ detectChanges: false });
     projectApi = spec.inject(ProjectsService);
     regionApi = spec.inject(ShallowRegionsService);
     config = spec.inject(ConfigService);
-  });
+
+    const mockProjectList = List<Project | Region>([]);
+    spyOn(spec.component, "fetchAllSiteLocations").and.callFake(() => of(mockProjectList));
+    spec.component.models$ = of(mockProjectList);
+    spec.component.allSites$ = of(mockProjectList);
+
+  }
+
+  beforeEach(() => setup());
 
   // TODO Re-enable once cms is setup
   /* assertCms<HomeComponent>(async () => {
@@ -214,6 +229,10 @@ describe("HomeComponent", () => {
         expect(button).toHaveText(`More ${test.modelName}s`);
         expect(button).toHaveStrongRoute(test.link);
       });
+    });
+
+    it("should create live map", () => {
+      expect(spec.query("#interactiveMap")).toExist();
     });
   });
 });

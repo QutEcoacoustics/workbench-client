@@ -21,6 +21,7 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
+import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
 import { ListComponent } from "./list.component";
 
 const mockCardsComponent = MockComponent(CardsComponent);
@@ -40,6 +41,9 @@ describe("RegionsListComponent", () => {
           },
         },
       ],
+    ],
+    declarations: [
+      MockComponent(SiteMapComponent)
     ],
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
   });
@@ -194,5 +198,12 @@ describe("RegionsListComponent", () => {
       getFilter().filter.next("custom value");
       expect(spec.component.onFilter).toHaveBeenCalled();
     });
+  });
+
+  it("should display a baw-map", async () => {
+    const regions = generateRegions(1);
+    await handleApiRequest(regions);
+
+    expect(spec.query(SiteMapComponent)).toExist();
   });
 });
