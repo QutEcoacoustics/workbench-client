@@ -229,15 +229,13 @@ export class RenderFieldComponent
   ) {
     this.setLoading();
 
-    value.pipe(takeUntil(this.unsubscribe)).subscribe(
-      (models) => {
+    value.pipe(takeUntil(this.unsubscribe)).subscribe({
+      next: (models) => {
         this.humanize(models);
         this.ref.detectChanges();
       },
-      () => {
-        this.setError();
-      }
-    );
+      error: () => this.setError(),
+    });
   }
 
   /**
