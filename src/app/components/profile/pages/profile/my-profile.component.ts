@@ -197,8 +197,8 @@ class MyProfileComponent
     api
       .filterByCreator(additionalFilters, user)
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (models) => {
+      .subscribe({
+        next: (models) => {
           const total = models.length > 0 ? getPageTotal(models[0]) : 0;
           this.userStatistics = this.userStatistics.update(
             index,
@@ -206,8 +206,8 @@ class MyProfileComponent
           );
           callback?.(models);
         },
-        () => this.handleError(index)
-      );
+        error: () => this.handleError(index),
+      });
   }
 
   /** Set failed statistic value to unknown */

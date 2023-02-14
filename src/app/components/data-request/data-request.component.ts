@@ -68,14 +68,14 @@ class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
     this.api
       .seed()
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        ({ seed, action }) =>
+      .subscribe({
+        next: ({ seed, action }) =>
           (this.recaptchaSeed = { state: "loaded", seed, action }),
-        (err) => {
+        error: (err) => {
           console.error(err);
           this.notifications.error("Failed to load form");
-        }
-      );
+        },
+      });
   }
 
   protected apiAction(model: IDataRequest): Observable<void> {

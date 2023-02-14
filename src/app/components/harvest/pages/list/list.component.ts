@@ -20,6 +20,7 @@ import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import {
   BehaviorSubject,
   catchError,
+  takeUntil,
   throwError
 } from "rxjs";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
@@ -64,24 +65,23 @@ class ListComponent extends PageComponent implements OnInit {
 
     if (success) {
       this.harvestsApi
-      .transitionStatus(harvest, "complete")
-      .pipe(
-        catchError((err: BawApiError) => {
-          if (err.status !== CLIENT_TIMEOUT) {
-            return throwError(() => err);
-          }
-        })
-      )
-      // We want this api request to complete regardless of lifecycle destruction
-      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-      .subscribe({
-        next: (): void => {
-          this.filters$.next({});
-        },
-        error: (err: BawApiError): void => {
-          this.notifications.error(err.message);
-        },
-      });
+        .transitionStatus(harvest, "complete")
+        .pipe(
+          catchError((err: BawApiError) => {
+            if (err.status !== CLIENT_TIMEOUT) {
+              return throwError(() => err);
+            }
+          })
+        )
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe({
+          next: (): void => {
+            this.filters$.next({});
+          },
+          error: (err: BawApiError): void => {
+            this.notifications.error(err.message);
+          },
+        });
     }
   }
 
