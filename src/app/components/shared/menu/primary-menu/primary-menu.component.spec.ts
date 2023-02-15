@@ -158,6 +158,19 @@ describe("PrimaryMenuComponent", () => {
             expect(element).toContainText(menuItem.label);
             expect(element).toHaveStrongRoute(menuItem.route);
           });
+
+          // this assertion assumes navbar menu items use routes with no knowledge of parent routes (routes always act as a new instance)
+          // if this test is failing and your navbar item is designed to inherit routeParams, disable this test for the navbar menu item
+          it(`should not inherit route params to use in ${link} route`, fakeAsync(() => {
+            setup({ hideProjects, user: defaultUser });
+            spec.component["router"].routerState.snapshot.root.queryParams = { page: 1 };
+            spec.detectChanges();
+
+            const expectedRoute = menuItem.route.queryParams();
+            const realizedRoute = menuItem.route.queryParams(spec.component["router"]);
+
+            expect(realizedRoute).toEqual(expectedRoute);
+          }));
         });
 
         it("should create header links from external config", () => {

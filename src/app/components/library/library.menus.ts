@@ -1,6 +1,10 @@
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 
+// there is a clear distinction between the nav route and the library route because the nav route should never have knowledge of the current
+// component route params. The library nav route should instead always act as if its creating a new instance of the library view.
+export const libraryNavRoute = StrongRoute.newRoot().add("library");
+
 export const libraryRoute = StrongRoute.newRoot().add("library", (params) =>
   !params
     ? {}
@@ -29,7 +33,7 @@ export const libraryCategory: Category = {
 export const libraryMenuItem = menuRoute({
   icon: libraryCategory.icon,
   label: "Library",
-  route: libraryRoute,
+  route: libraryNavRoute,
   order: 6,
   tooltip: () => "Library of annotations",
 });

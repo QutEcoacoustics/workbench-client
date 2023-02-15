@@ -97,7 +97,7 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
       });
   }
 
-  private setHeaderLinks() {
+  private setHeaderLinks(): void {
     this.links = List([
       this.config.settings.hideProjects
         ? shallowRegionsMenuItem
