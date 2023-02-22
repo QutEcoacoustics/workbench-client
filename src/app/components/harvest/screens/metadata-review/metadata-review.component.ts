@@ -257,6 +257,7 @@ export class MetadataReviewComponent
      */
     this.rows.forEach((row): void => {
 
+      console.log("scanned rows", row.mapping);
       if (row.rowType === RowType.folder && isInstantiated(row.mapping)) {
         const rowMapping = row.mapping;
         const existing = newMappings.get(rowMapping.path);

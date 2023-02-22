@@ -40,7 +40,7 @@ import { Project } from "@models/Project";
     </div>
 
     <!-- Create Mapping -->
-    <div *ngIf="!mapping" class="grid-table-item create-mapping">
+    <div *ngIf="!viewMapping" class="grid-table-item create-mapping">
       <button
         *ngIf="hasHarvestItems"
         class="btn btn-sm btn-outline-primary"
@@ -50,11 +50,11 @@ import { Project } from "@models/Project";
       </button>
     </div>
 
-    <ng-container *ngIf="mapping">
+    <ng-container *ngIf="viewMapping">
       <!-- Site Selector -->
       <div class="grid-table-item">
         <baw-loading
-          *ngIf="mapping.site | isUnresolved; else siteSelector"
+          *ngIf="viewMapping.site | isUnresolved; else siteSelector"
           size="sm"
         ></baw-loading>
 
@@ -62,7 +62,7 @@ import { Project } from "@models/Project";
           <baw-harvest-site-selector
             class="w-100"
             [project]="project"
-            [site]="mapping.site"
+            [site]="viewMapping.site"
             (siteIdChange)="setSite(mapping, $event)"
           ></baw-harvest-site-selector>
         </ng-template>
@@ -72,8 +72,8 @@ import { Project } from "@models/Project";
       <div class="grid-table-item">
         <baw-harvest-utc-offset-selector
           class="w-100"
-          [site]="mapping.site"
-          [offset]="mapping.utcOffset"
+          [site]="viewMapping.site"
+          [offset]="viewMapping.utcOffset"
           (offsetChange)="setOffset(mapping, $event)"
         ></baw-harvest-utc-offset-selector>
       </div>
@@ -82,7 +82,7 @@ import { Project } from "@models/Project";
       <div class="grid-table-item">
         <baw-checkbox
           class="w-100"
-          [checked]="mapping.recursive"
+          [checked]="viewMapping.recursive"
           (checkedChange)="setIsRecursive(mapping, $event)"
         ></baw-checkbox>
       </div>
@@ -137,15 +137,23 @@ export class FolderRowComponent {
   public icons = metaReviewIcons;
 
   public get mapping(): HarvestMapping {
-    // mappings are inherited through server side rules and these rules need to be reflected on the view
-    // therefore, this `mappings` getter does not update the model, but changes are only reflected on the view
-    let currentRow = this.row;
+    return this.row.mapping;
+  }
 
-    while(!!currentRow && !currentRow?.mapping) {
-      currentRow = currentRow?.parentFolder;
+  /**
+   * The row mapping and the view mapping diverge because there are server side rules that define how mappings are inherited
+   * These mappings however, should not be reflected in the models, but should be displayed to the user as inherited
+   */
+  public get viewMapping(): HarvestMapping {
+    let currentFolder = this.row;
+
+    // some folders such as the root folder do not have a parent folder. In this case, the current folder will be set to undefined, and
+    // it can be concured that there is no mapping anywhere in the hierarchy
+    while (!!currentFolder && !currentFolder?.mapping) {
+      currentFolder = currentFolder?.parentFolder;
     }
 
-    return currentRow?.mapping;
+    return currentFolder?.mapping;
   }
 
   public get harvestItem(): HarvestItem {
@@ -162,13 +170,13 @@ export class FolderRowComponent {
 
   public constructor(private injector: Injector) {}
 
-  public createMapping(row: MetaReviewFolder): void {
+  public createMapping(row: MetaReviewFolder, data?: Partial<HarvestMapping>): void {
     const mapping = new HarvestMapping(
       {
         path: this.row.isRoot ? this.row.path : this.row.harvestItem.path,
-        recursive: true,
-        siteId: null,
-        utcOffset: null,
+        recursive: data?.recursive ?? true,
+        siteId: data?.siteId ?? null,
+        utcOffset: data?.utcOffset ?? null,
       } as HarvestMapping,
       this.injector
     );
@@ -177,16 +185,28 @@ export class FolderRowComponent {
   }
 
   public setSite(mapping: HarvestMapping, siteId: number): void {
+    if (!mapping) {
+      this.createMapping(this.row, this.viewMapping);
+    }
+
     mapping.siteId = siteId;
     this.mappingsChange.emit();
   }
 
   public setOffset(mapping: HarvestMapping, offset: string): void {
+    if (!mapping) {
+      this.createMapping(this.row, this.viewMapping);
+    }
+
     mapping.utcOffset = offset;
     this.mappingsChange.emit();
   }
 
   public setIsRecursive(mapping: HarvestMapping, isRecursive: boolean): void {
+    if (!mapping) {
+      this.createMapping(this.row, this.viewMapping);
+    }
+
     mapping.recursive = isRecursive;
     this.mappingsChange.emit();
   }
