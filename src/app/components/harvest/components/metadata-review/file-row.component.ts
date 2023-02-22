@@ -1,6 +1,7 @@
 import {
-  ChangeDetectionStrategy,
+  AfterViewInit,
   Component,
+  ElementRef,
   Input,
   OnInit,
   ViewChild,
@@ -41,7 +42,7 @@ interface ValidationMessage {
       <div
         *ngIf="
           harvestItem.hasItemsInvalid &&
-          (shouldShowChevron(validationsContainer) || row.showValidations)
+          (areValidationsExpandable || row.showValidations)
         "
         class="dropdown-icon"
       >
@@ -93,16 +94,16 @@ interface ValidationMessage {
     </div>
   `,
   styleUrls: ["file-row.component.scss"],
-  // Nothing in this component can change without a change in the row
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FileRowComponent implements OnInit {
-  @Input() public row: MetaReviewFile;
+export class FileRowComponent implements OnInit, AfterViewInit {
   @ViewChild("validationsContainer")
-  public validationsContainer: HTMLDivElement;
+  public validationsContainer: ElementRef<HTMLDivElement>;
+  @Input()
+  public row: MetaReviewFile;
 
   public validationMessages: ValidationMessage[];
   public icons = metaReviewIcons;
+  public areValidationsExpandable = false;
 
   public get mapping(): HarvestMapping {
     return this.row.mapping;
@@ -144,17 +145,25 @@ export class FileRowComponent implements OnInit {
     }
   }
 
+  public ngAfterViewInit(): void {
+    this.updateDropdownCapabilities(this.validationsContainer);
+  }
+
   public getCalloutClass(validation: ValidationMessage): string {
     return validation.type === "error"
       ? "callout-black"
       : `callout-${validation.type}`;
   }
 
-  protected shouldShowChevron(container: HTMLDivElement): boolean {
-    // if there is more than one validation or it is already expanded it can be known for certain that the validations can be expanded
-    return this.row.harvestItem.validations.length > 1 ||
+  protected updateDropdownCapabilities(container: ElementRef<HTMLDivElement>): void {
+    const containerElement = container.nativeElement;
+
+    this.areValidationsExpandable = (
+      // if there is more than one validation or it is already expanded it can be known for certain that the validations can be expanded
+      this.row.harvestItem.validations.length > 1 ||
       // to validate if the validation messages span multiple lines. Get the total height of the validation message container
       // and if it is larger than what the user can see, we can assert that the container is overflowing and needs a dropdown chevron
-      container.scrollHeight > container.clientHeight;
+      containerElement.scrollHeight > containerElement.clientHeight
+    );
   }
 }
