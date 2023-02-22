@@ -3,14 +3,12 @@ import {
   EventEmitter,
   Injector,
   Input,
-  OnChanges,
   Output,
 } from "@angular/core";
 import {
   MetaReviewFolder,
   metaReviewIcons,
 } from "@components/harvest/screens/metadata-review/metadata-review.component";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Harvest, HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
 import { Project } from "@models/Project";
@@ -128,7 +126,7 @@ import { Project } from "@models/Project";
   `,
   styleUrls: ["folder-row.component.scss"],
 })
-export class FolderRowComponent implements OnChanges {
+export class FolderRowComponent {
   @Input() public harvest: Harvest;
   @Input() public project: Project;
   @Input() public row: MetaReviewFolder;
@@ -139,7 +137,15 @@ export class FolderRowComponent implements OnChanges {
   public icons = metaReviewIcons;
 
   public get mapping(): HarvestMapping {
-    return this.row.mapping;
+    // mappings are inherited through server side rules and these rules need to be reflected on the view
+    // therefore, this `mappings` getter does not update the model, but changes are only reflected on the view
+    let currentRow = this.row;
+
+    while(!!currentRow && !currentRow?.mapping) {
+      currentRow = currentRow?.parentFolder;
+    }
+
+    return currentRow?.mapping;
   }
 
   public get harvestItem(): HarvestItem {
@@ -155,24 +161,6 @@ export class FolderRowComponent implements OnChanges {
   }
 
   public constructor(private injector: Injector) {}
-
-  public ngOnChanges(): void {
-    // to inherit mappings values among ancestor items, if the parent item gains a Harvest Mapping, then all the child items should too
-    if (isInstantiated(this.row.parentFolder?.mapping) && !isInstantiated(this.row.mapping)) {
-      this.createMapping(this.row);
-
-      // since recursive has a "default value", it is possible to set it on the child elements if we know the parent item has a mapping
-      this.setIsRecursive(this.row.mapping, this.row.parentFolder.mapping.recursive);
-    }
-
-    if (isInstantiated(this.row.parentFolder?.mapping?.siteId) && !isInstantiated(this.row.mapping?.siteId)) {
-      this.setSite(this.row.mapping, this.row.parentFolder.mapping.siteId);
-    }
-
-    if (isInstantiated(this.row.parentFolder?.mapping?.utcOffset) && !isInstantiated(this.row.mapping?.utcOffset)) {
-      this.setOffset(this.row.mapping, this.row.parentFolder.mapping.utcOffset);
-    }
-  }
 
   public createMapping(row: MetaReviewFolder): void {
     const mapping = new HarvestMapping(

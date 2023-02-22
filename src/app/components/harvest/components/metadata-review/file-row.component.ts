@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   Input,
@@ -12,7 +11,6 @@ import {
 } from "@components/harvest/screens/metadata-review/metadata-review.component";
 import { HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
-import { BehaviorSubject } from "rxjs";
 
 interface ValidationMessage {
   type: "warning" | "danger" | "error";
@@ -43,7 +41,7 @@ interface ValidationMessage {
       <div
         *ngIf="
           harvestItem.hasItemsInvalid &&
-          ((shouldShowChevron$ | async) || row.showValidations)
+          (shouldShowChevron(validationsContainer) || row.showValidations)
         "
         class="dropdown-icon"
       >
@@ -93,19 +91,15 @@ interface ValidationMessage {
         ></fa-icon>
       </div>
     </div>
-    <ng-container *if="updateChevronState(validationsContainer)"></ng-container>
   `,
   styleUrls: ["file-row.component.scss"],
   // Nothing in this component can change without a change in the row
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FileRowComponent implements OnInit, AfterViewInit {
+export class FileRowComponent implements OnInit {
   @Input() public row: MetaReviewFile;
   @ViewChild("validationsContainer")
   public validationsContainer: HTMLDivElement;
-
-  public shouldShowChevron$: BehaviorSubject<boolean> =
-    new BehaviorSubject<boolean>(false);
 
   public validationMessages: ValidationMessage[];
   public icons = metaReviewIcons;
@@ -150,26 +144,17 @@ export class FileRowComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public ngAfterViewInit(): void {
-    this.updateChevronState(this.validationsContainer);
-  }
-
   public getCalloutClass(validation: ValidationMessage): string {
     return validation.type === "error"
       ? "callout-black"
       : `callout-${validation.type}`;
   }
 
-  public updateChevronState(container: HTMLDivElement): boolean {
+  protected shouldShowChevron(container: HTMLDivElement): boolean {
     // if there is more than one validation or it is already expanded it can be known for certain that the validations can be expanded
-    if (this.row.harvestItem.validations.length > 1) {
-      this.shouldShowChevron$.next(true);
-    }
-
-    // to validate if the validation messages span multiple lines. Get the total height of the validation message container
-    // and if it is larger than what the user can see, we can assert that the container is overflowing and needs a dropdown chevron
-    this.shouldShowChevron$.next(container.scrollHeight > (container.clientHeight + 1));
-
-    return true;
+    return this.row.harvestItem.validations.length > 1 ||
+      // to validate if the validation messages span multiple lines. Get the total height of the validation message container
+      // and if it is larger than what the user can see, we can assert that the container is overflowing and needs a dropdown chevron
+      container.scrollHeight > container.clientHeight;
   }
 }

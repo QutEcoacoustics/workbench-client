@@ -63,7 +63,7 @@ describe("MetadataReviewComponent", () => {
       MockProvider(HarvestStagesService, {
         project: defaultProject,
         harvest: defaultHarvest,
-        transition: (_stage: HarvestStatus) => {}
+        transition: (_stage: HarvestStatus) => { }
       }),
     ],
     imports: [MockBawApiModule, SharedModule],
@@ -100,6 +100,12 @@ describe("MetadataReviewComponent", () => {
   const getModalCancelButton = (): HTMLButtonElement =>
     spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #cancel-btn", { root: true });
 
+  const getHarvestMappingRecursiveCheckbox = (index: number): HTMLInputElement =>
+    spec.queryAll<HTMLInputElement>("#undefined-checkbox", { root: true })[index]
+
+  const getEditMappingButton = (index: number): HTMLButtonElement =>
+    spec.queryAll<HTMLButtonElement>(".btn-outline-primary", { root: true })[index];
+
   function getAbortButton(): HTMLButtonElement {
     return spec.debugElement.query(
       (el) => el.nativeElement.innerText === "Abort"
@@ -127,13 +133,13 @@ describe("MetadataReviewComponent", () => {
   }
 
   function clickEditMappingButton(index: number): void {
-    const mappingEditButton = spec.queryAll<HTMLButtonElement>(".btn-outline-primary", { root: true })[index];
+    const mappingEditButton = getEditMappingButton(index);
     mappingEditButton.click();
     updateComponent();
   }
 
   function toggleHarvestMappingRecursive(index: number): void {
-    const mappingRecursiveCheckbox = spec.queryAll<HTMLInputElement>("#undefined-checkbox", { root: true })[index];
+    const mappingRecursiveCheckbox = getHarvestMappingRecursiveCheckbox(index);
     mappingRecursiveCheckbox.click();
     updateComponent();
   }
@@ -141,14 +147,22 @@ describe("MetadataReviewComponent", () => {
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultProject.addMetadata(generateProjectMeta({}));
-    defaultHarvest = new Harvest(generateHarvest({ status: "metadataReview" }));
+
+    // by default, harvests will not have any inherited mappings
+    // to set inherited mappings, set the mappings attribute in the default harvest before calling `setup()`
+    defaultHarvest = new Harvest(generateHarvest({
+      status: "metadataReview",
+      mappings: []
+    }));
   });
 
-  afterEach(() => {
+  afterEach(fakeAsync(() => {
     // dismiss all bootstrap modals, so if a test fails
     // it doesn't impact future tests by using a stale modal
     modalService.dismissAll();
-  });
+    flush();
+    discardPeriodicTasks();
+  }));
 
   it("should create", () => {
     setup();
@@ -165,8 +179,6 @@ describe("MetadataReviewComponent", () => {
     tick();
 
     expect(stages.transition).not.toHaveBeenCalled();
-    discardPeriodicTasks();
-    flush();
   }));
 
   it("should transition the Harvest to 'complete' when the 'Abort Harvest' button is clicked in abort warning modal", fakeAsync(() => {
@@ -179,17 +191,10 @@ describe("MetadataReviewComponent", () => {
     tick();
 
     expect(stages.transition).toHaveBeenCalledWith("complete");
-    discardPeriodicTasks();
-    flush();
   }));
 
   it("should have persistent mappings when folders close", fakeAsync(() => {
     setup();
-
-    defaultHarvest = new Harvest({
-      ...defaultHarvest,
-      mappings: []
-    });
 
     // when a folder item is clicked, the getHarvestItems() method returns the sub folders & items included in the folder
     // therefore, by mocking getHarvestItems() and resolving to custom files, we can control the sub-folders & items
@@ -265,9 +270,6 @@ describe("MetadataReviewComponent", () => {
     clickEditMappingButton(4);
     toggleHarvestMappingRecursive(0);
     expect(harvestService.updateMappings).toHaveBeenCalledTimes(2);
-
-    flush();
-    discardPeriodicTasks();
   }));
 
   it("should retain mappings assigned in previous stages after change in mapping through interface", fakeAsync(() => {
@@ -316,7 +318,7 @@ describe("MetadataReviewComponent", () => {
     utcInputDropdown.dispatchEvent(new Event("change"));
     updateComponent();
 
-    const expectedMappings: HarvestMapping[]  = [
+    const expectedMappings: HarvestMapping[] = [
       new HarvestMapping({
         path: "A",
         recursive: true,
@@ -350,12 +352,52 @@ describe("MetadataReviewComponent", () => {
 
     expect(harvestService.updateMappings).toHaveBeenCalledTimes(1);
     expect(JSON.stringify(spec.component.harvest.mappings)).toEqual(JSON.stringify(expectedMappings));
-
-    flush();
-    discardPeriodicTasks();
   }));
 
-  it("should inherit mappings from parent item if harvest item mappings are not set", fakeAsync(() => {
+  it("should retain inherited mappings when a child harvest is rendered", fakeAsync(() => {
     setup();
+    const mockParentFolderName = "mockParentFolder";
+    const mockSubFolderName = `${mockParentFolderName}/mockSubFolder`;
+    const rootFolderStructure = folderStructureFactory([mockParentFolderName]);
+    const subFolderStructure = folderStructureFactory([mockSubFolderName]);
+
+    // define that there is a folder "mockSubFolder" underneath the parent folder
+    const getHarvestItemsSpy = spyOn(stages, "getHarvestItems").and.resolveTo(rootFolderStructure);
+    updateComponent();
+
+    // assign mappings to the root folder (toggle recursive)
+    // These mappings should be inherited and retained to the child folder when the root folder is opened
+    clickEditMappingButton(0);
+    toggleHarvestMappingRecursive(0);
+    updateComponent();
+
+    // open the root folder to render the sub folder "mockSubFolder"
+    getHarvestItemsSpy.and.callThrough();
+    getHarvestItemsSpy.and.resolveTo(subFolderStructure);
+    clickFolder(mockParentFolderName);
+
+    // assert that the mapping of the root folder can also be seen on the sub folder "mockSubFolder"
+    // assert that the recursive mapping is disabled visually
+    const subFolderRowNumber = 1;
+    const parentMappingModel = new HarvestMapping({
+      path: mockParentFolderName,
+      recursive: false,
+      siteId: null,
+      utcOffset: null,
+    });
+
+    // the sub and parent mappings should be identical with the exception of the path attribute
+    const expectedModelMappings: HarvestMapping[] = [
+      parentMappingModel,
+      new HarvestMapping({
+        ...parentMappingModel,
+        path: mockSubFolderName
+      }),
+    ];
+
+    expect(getHarvestMappingRecursiveCheckbox(subFolderRowNumber).checked).toBeFalse();
+
+    // assert that the recursive mapping is disabled in the model
+    expect(JSON.stringify(spec.component.harvest.mappings)).toEqual(JSON.stringify(expectedModelMappings));
   }));
 });
