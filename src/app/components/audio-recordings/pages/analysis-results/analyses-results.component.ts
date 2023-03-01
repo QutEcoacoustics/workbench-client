@@ -44,15 +44,13 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     super();
   }
 
-  protected rows = Array<ResultNode>();
-
   private readonly routeData = this.route.snapshot.data;
+  protected rows = Array<ResultNode>();
   public audioRecording: AudioRecording = this.routeData[audioRecordingKey]?.model;
   // TODO: once api functionality for the system AnalysisJob is working, the "if undefined, then systemAnalysisJob" condition can be removed
   public analysisJob: AnalysisJob =
     this.routeData[analysisJobKey]?.model ??
     systemAnalysisJob;
-
 
   public ngOnInit() {
     // by supplying zero arguments to `getNodeChildren`, it will fetch the root paths child elements and place them on the view
