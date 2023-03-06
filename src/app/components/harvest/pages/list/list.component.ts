@@ -93,7 +93,7 @@ class ListComponent extends PageComponent implements OnInit {
   }
 
   public formatDate(date: DateTime): string {
-    return date.toFormat("yyyy-MM-dd HH:mm:ss");
+    return date.toLocal().toFormat("yyyy-MM-dd HH:mm:ss");
   }
 }
 

@@ -1,24 +1,19 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import { SharedModule } from "@shared/shared.module";
 import { AudioRecordingsListComponent } from "./list.component";
 
-// TODO
-xdescribe("AudioRecordingsListComponent", () => {
-  let component: AudioRecordingsListComponent;
-  let fixture: ComponentFixture<AudioRecordingsListComponent>;
+describe("AudioRecordingsListComponent", () => {
+  let spectator: SpectatorRouting<AudioRecordingsListComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [AudioRecordingsListComponent],
-    }).compileComponents();
+  const createComponent = createRoutingFactory({
+    component: AudioRecordingsListComponent,
+    imports: [MockBawApiModule, SharedModule],
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AudioRecordingsListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => spectator = createComponent({ detectChanges: false }));
 
   it("should create", () => {
-    expect(component).toBeTruthy();
+    expect(spectator.component).toBeInstanceOf(AudioRecordingsListComponent);
   });
 });
