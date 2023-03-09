@@ -233,6 +233,7 @@ describe("Attribute Decorators", () => {
       defaultImageUrl = {
         url: `${assetRoot}/broken_link.png`,
         size: ImageSizes.default,
+        default: true,
       };
     });
 

@@ -141,6 +141,7 @@ export interface ImageUrl {
   url: string;
   height?: number;
   width?: number;
+  default?: boolean;
 }
 
 /**
