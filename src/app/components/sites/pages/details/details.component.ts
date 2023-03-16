@@ -1,22 +1,22 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
-import { siteResolvers } from "@baw-api/site/sites.service";
+import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import {
-  deletePointMenuItem,
   editPointMenuItem,
   pointMenuItem,
   pointsCategory,
 } from "@components/sites/points.menus";
-import { pointAnnotationsModal } from "@components/sites/points.modals";
-import { siteAnnotationsModal } from "@components/sites/sites.modals";
+import { deletePointModal, pointAnnotationsModal } from "@components/sites/points.modals";
+import { deleteSiteModal, siteAnnotationsModal } from "@components/sites/sites.modals";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
+import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
@@ -24,27 +24,30 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { takeUntil } from "rxjs";
+import { ConfigService } from "@services/config/config.service";
+import { shallowRegionsRoute } from "@components/regions/regions.routes";
 import {
-  deleteSiteMenuItem,
   editSiteMenuItem,
   siteMenuItem,
   sitesCategory,
 } from "../../sites.menus";
 
 export const siteMenuItemActions = [
+  deleteSiteModal,
   visualizeMenuItem,
   siteAnnotationsModal,
   editSiteMenuItem,
-  deleteSiteMenuItem,
   audioRecordingMenuItems.list.site,
   audioRecordingMenuItems.batch.site,
 ];
 
 export const pointMenuItemActions = [
+  deletePointModal,
   visualizeMenuItem,
   pointAnnotationsModal,
   editPointMenuItem,
-  deletePointMenuItem,
   audioRecordingMenuItems.list.siteAndRegion,
   audioRecordingMenuItems.batch.siteAndRegion,
 ];
@@ -73,7 +76,13 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
   public site: Site;
   public failure: boolean;
 
-  public constructor(protected route: ActivatedRoute) {
+  public constructor(
+    protected route: ActivatedRoute,
+    private sitesApi: SitesService,
+    private router: Router,
+    private notifications: ToastrService,
+    private config: ConfigService,
+  ) {
     super();
   }
 
@@ -88,6 +97,26 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
     this.project = models[projectKey] as Project;
     this.region = models[regionKey] as Region;
     this.site = models[siteKey] as Site;
+  }
+
+  public deleteModel(): void {
+    this.sitesApi.destroy(this.site, this.project)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        complete: () => {
+          this.notifications.success(defaultSuccessMsg("destroyed", this.site?.name));
+
+          // points have a parent region. Therefore, if the site is a point, navigate to the region details page
+          // if the site is not a point, the parent item is conditional on if projects are hidden
+          // if projects are hidden, navigate to the sites list page, if projects are shown, navigate to the parent project details page
+          if (this.site.isPoint) {
+            this.router.navigateByUrl(this.region.viewUrl);
+          } else {
+            const hideProjects = this.config.settings.hideProjects;
+            this.router.navigateByUrl(hideProjects ? shallowRegionsRoute.toRouterLink() : this.project.viewUrl);
+          }
+        }
+      });
   }
 }
 

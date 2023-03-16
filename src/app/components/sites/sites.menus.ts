@@ -3,7 +3,6 @@ import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
 import { Site } from "@models/Site";
 import {
   defaultAnnotationDownloadIcon,
-  defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
   isProjectEditorPredicate,
@@ -49,13 +48,4 @@ export const editSiteMenuItem = menuRoute({
   predicate: isProjectEditorPredicate,
   route: siteMenuItem.route.add("edit"),
   tooltip: () => "Change the details for this site",
-});
-
-export const deleteSiteMenuItem = menuRoute({
-  icon: defaultDeleteIcon,
-  label: "Delete site",
-  parent: siteMenuItem,
-  predicate: isProjectEditorPredicate,
-  route: siteMenuItem.route.add("delete"),
-  tooltip: () => "Delete this site",
 });

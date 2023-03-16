@@ -9,13 +9,15 @@ import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Tag, TagType } from "@models/Tag";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
+import { takeUntil } from "rxjs";
 import { adminTagsMenuItemActions } from "../list/list.component";
 import schema from "../tag.schema.json";
 import {
-  adminDeleteTagMenuItem,
   adminEditTagMenuItem,
   adminTagsCategory,
+  adminTagsMenuItem,
 } from "../tags.menus";
+import { adminDeleteTagModal } from "../tags.modals";
 
 const tagKey = "tag";
 const tagTypesKey = "tagTypes";
@@ -72,6 +74,17 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
     return this.models[tagTypesKey] as TagType[];
   }
 
+  public deleteModel(): void {
+    this.api.destroy(new Tag(this.model))
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        complete: () => {
+          this.notifications.success(defaultSuccessMsg("destroyed", this.model.text));
+          this.router.navigateByUrl(adminTagsMenuItem.route.toRouterLink());
+        },
+      });
+  }
+
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/449
   protected apiAction(model: Partial<Tag>) {
     return this.api.update(new Tag(model));
@@ -85,7 +98,7 @@ AdminTagsEditComponent.linkToRoute({
     actions: List([
       ...adminTagsMenuItemActions,
       adminEditTagMenuItem,
-      adminDeleteTagMenuItem,
+      adminDeleteTagModal,
     ]),
     actionWidgets: List([permissionsWidgetMenuItem]),
   },

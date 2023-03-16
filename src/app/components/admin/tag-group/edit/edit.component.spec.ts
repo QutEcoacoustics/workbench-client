@@ -15,7 +15,7 @@ import { generateTagGroup } from "@test/fakes/TagGroup";
 import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
-import { Subject } from "rxjs";
+import { of, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagGroupsEditComponent } from "./edit.component";
 
@@ -83,5 +83,26 @@ describe("AdminTagGroupsEditComponent", () => {
       component.submit({});
       expect(api.update).toHaveBeenCalled();
     });
-  });
+
+    describe("delete tag-group", () => {
+      it("should make the correct api calls when the deleteModel() method is called", () => {
+        configureTestingModule(defaultTagGroup);
+        component.model = defaultTagGroup;
+        api.destroy.and.callFake(() => of(null));
+
+        component.deleteModel();
+        expect(api.destroy).toHaveBeenCalledWith(defaultTagGroup);
+      });
+
+      it("should not navigate when the deleteModel() method succeeds", () => {
+        const expectedRoute = "/admin/tag_groups";
+        configureTestingModule(defaultTagGroup);
+        component.model = defaultTagGroup;
+        api.destroy.and.callFake(() => of(null));
+
+        component.deleteModel();
+
+        expect(router.navigateByUrl).toHaveBeenCalledWith(expectedRoute);
+      });
+    });  });
 });

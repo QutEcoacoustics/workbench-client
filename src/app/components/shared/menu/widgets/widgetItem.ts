@@ -1,4 +1,5 @@
 import { Type } from "@angular/core";
+import { PageComponent } from "@helpers/page/pageComponent";
 import { MenuAction, UserCallback } from "@interfaces/menusInterfaces";
 import { NgbModalOptions, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ModalComponent, WidgetComponent } from "./widget.component";
@@ -20,8 +21,9 @@ export class WidgetMenuItem {
 export interface MenuModal extends Omit<MenuAction, "kind"> {
   kind: "MenuModal";
   component: Type<ModalComponent>;
-  modalOpts: NgbModalOptions;
+  modalOpts?: NgbModalOptions;
   assignComponentData(component: ModalComponent, modalRef: NgbModalRef): void;
+  successCallback?: (componentInstance?: PageComponent) => void;
 }
 
 /** Modal widget menu item without action function set */
@@ -32,7 +34,8 @@ export function menuModal<
 >(item: T): MenuModal | MenuModalWithoutAction {
   return Object.assign(item, {
     kind: "MenuModal" as const,
-    indentation: 0,
+    indentation: item.parent ? item.parent.indentation + 1 : 0,
+    order: item.parent?.order ?? item.order,
     modalOpts: {
       size: "lg",
       centered: true,
@@ -43,6 +46,7 @@ export function menuModal<
       const defaultOpts: ModalComponent = {
         dismissModal: (reason: any) => modalRef.dismiss(reason),
         closeModal: (result: any) => modalRef.close(result),
+        successCallback: item?.successCallback,
       };
       Object.assign(component, defaultOpts);
     },

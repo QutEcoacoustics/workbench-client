@@ -5,7 +5,6 @@ import { Site } from "@models/Site";
 import { defaultAnnotationDownloadIcon } from "src/app/app.menus";
 import { pointRoute, pointsRoute } from "./points.routes";
 import {
-  deleteSiteMenuItem,
   editSiteMenuItem,
   newSiteMenuItem,
   siteMenuItem,
@@ -48,12 +47,4 @@ export const editPointMenuItem = menuRoute({
   parent: pointMenuItem,
   route: pointMenuItem.route.add("edit"),
   tooltip: () => "Change the details for this point",
-});
-
-export const deletePointMenuItem = menuRoute({
-  ...deleteSiteMenuItem,
-  label: "Delete point",
-  parent: pointMenuItem,
-  route: pointMenuItem.route.add("delete"),
-  tooltip: () => "Delete this point",
 });

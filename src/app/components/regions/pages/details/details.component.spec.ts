@@ -1,6 +1,7 @@
+import { Router } from "@angular/router";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { regionResolvers } from "@baw-api/region/regions.service";
+import { regionResolvers, RegionsService } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { SiteCardComponent } from "@components/projects/components/site-card/site-card.component";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
@@ -22,6 +23,9 @@ import { interceptRepeatApiRequests } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPaginationTemplate } from "@test/helpers/paginationTemplate";
 import { MockComponent } from "ng-mocks";
+import { ToastrService } from "ngx-toastr";
+import { of } from "rxjs";
+import { ConfigService } from "@services/config/config.service";
 import { DetailsComponent } from "./details.component";
 
 const mock = {
@@ -30,13 +34,17 @@ const mock = {
 };
 
 describe("RegionDetailsComponent", () => {
-  let api: SpyObject<SitesService>;
+  let sitesApi: SpyObject<SitesService>;
+  let regionsApi: SpyObject<RegionsService>;
+  let routerSpy: SpyObject<Router>;
+  let configService: SpyObject<ConfigService>;
   let defaultProject: Project;
   let defaultRegion: Region;
   let spectator: SpectatorRouting<DetailsComponent>;
   const createComponent = createRoutingFactory({
     imports: [SharedModule, MockBawApiModule],
     declarations: [mock.map, mock.card],
+    mocks: [ToastrService],
     component: DetailsComponent,
   });
 
@@ -58,18 +66,22 @@ describe("RegionDetailsComponent", () => {
       },
     });
 
-    api = spectator.inject(SitesService);
+    sitesApi = spectator.inject(SitesService);
+    regionsApi = spectator.inject(RegionsService);
+    routerSpy = spectator.inject(Router);
   }
 
   function interceptApiRequest(responses: Site[] | BawApiError) {
-    return interceptRepeatApiRequests<ISite, Site[]>(api.filter, [
+    return interceptRepeatApiRequests<ISite, Site[]>(sitesApi.filter, [
       responses,
     ])[0];
   }
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
-    defaultRegion = new Region(generateRegion());
+    defaultRegion = new Region(generateRegion({
+      projectId: defaultProject.id,
+    }));
   });
 
   it("should create", () => {
@@ -128,6 +140,39 @@ describe("RegionDetailsComponent", () => {
     interceptApiRequest([]);
     spectator.detectChanges();
     return spectator;
+  });
+
+  // the deleteModel() method should perform differently depending on if projects are hidden
+  [false, true].forEach((projectsHidden: boolean) => {
+    describe(`deleteModel ${projectsHidden ? "with" : "without"} projects hidden`, () => {
+      beforeEach(() => {
+        setup(defaultProject, defaultRegion);
+        configService ||= spectator.inject(ConfigService);
+        configService.settings.hideProjects = projectsHidden;
+      });
+      afterEach(() => configService.settings.hideProjects = false);
+
+      it("should invoke the correct api calls when the deleteModel() method is called", () => {
+        interceptApiRequest([]);
+        regionsApi.destroy.and.callFake(() => of(null));
+        spectator.detectChanges();
+
+        spectator.component.deleteModel();
+
+        expect(regionsApi.destroy).toHaveBeenCalledWith(defaultRegion, defaultProject);
+      });
+
+      it(`should navigate to the ${projectsHidden ? "regions list" : "parent project details"} page when deleteModel() succeeds`, () => {
+        const expectedRoute = projectsHidden ? "/regions" : `/projects/${defaultProject.id}`;
+        interceptApiRequest([]);
+        regionsApi.destroy.and.callFake(() => of(null));
+        spectator.detectChanges();
+
+        spectator.component.deleteModel();
+
+        expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(expectedRoute);
+      });
+    });
   });
 
   describe("maps", () => {

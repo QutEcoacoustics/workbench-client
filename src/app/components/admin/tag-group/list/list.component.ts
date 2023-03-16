@@ -1,22 +1,27 @@
-import { Component } from "@angular/core";
+import { Component, TemplateRef } from "@angular/core";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
+import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
+import { ModalComponent } from "@menu/widget.component";
 import { TagGroup } from "@models/TagGroup";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { takeUntil } from "rxjs";
 import {
-  adminDeleteTagGroupMenuItem,
   adminEditTagGroupMenuItem,
   adminNewTagGroupMenuItem,
   adminTagGroupsCategory,
   adminTagGroupsMenuItem,
 } from "../tag-group.menus";
+import { adminDeleteTagGroupModal } from "../tag-group.modals";
 
 export const adminTagGroupsMenuItemActions = [adminNewTagGroupMenuItem];
 export const adminTagGroupMenuItemActions = [
   adminNewTagGroupMenuItem,
   adminEditTagGroupMenuItem,
-  adminDeleteTagGroupMenuItem,
+  adminDeleteTagGroupModal,
 ];
 
 @Component({
@@ -27,10 +32,13 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
   public columns = [{ name: "Tag" }, { name: "Group" }, { name: "Model" }];
   public sortKeys = { tag: "tagId", group: "groupIdentifier" };
   public editPath = adminEditTagGroupMenuItem.route;
-  public deletePath = adminDeleteTagGroupMenuItem.route;
 
-  public constructor(api: TagGroupsService) {
-    super(api, (tagGroups) =>
+  public constructor(
+    protected tagGroupsApi: TagGroupsService,
+    protected notifications: ToastrService,
+    protected modals: NgbModal,
+  ) {
+    super(tagGroupsApi, (tagGroups) =>
       tagGroups.map((tagGroup) => ({
         tag: tagGroup.tagId,
         group: tagGroup.groupIdentifier,
@@ -39,6 +47,19 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
     );
 
     this.filterKey = "groupIdentifier";
+  }
+
+  public async confirmTagGroupDeletion(template: TemplateRef<ModalComponent>, tagModel: TagGroup) {
+    const modal = this.modals.open(template);
+    const userConfirmed = await modal.result.catch((_) => false);
+
+    if (userConfirmed) {
+      this.tagGroupsApi.destroy(tagModel)
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe({
+          complete: () => this.notifications.success(defaultSuccessMsg("destroyed", this.tagModel?.groupIdentifier)),
+        });
+    }
   }
 }
 

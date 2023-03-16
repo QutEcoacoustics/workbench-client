@@ -9,6 +9,7 @@ import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { DEFAULT_MENU, IDefaultMenu } from "@helpers/page/defaultMenus";
+import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -159,6 +160,16 @@ export class MenuService extends withUnsubscribe() {
   /** Returns the latest pageInfo */
   public get pageInfo(): IPageInfo {
     return this._pageInfo;
+  }
+
+  /**
+   * Constructs a success callback that has knowledge of the current page component instance
+   * This is used in the `menuModal` menu widget as it allows the menu item to interact with the current view component
+   *
+   * @returns A callback function that takes a page component instance as the first argument
+   */
+  public constructSuccessCallback(callback: (instance: PageComponent) => void): (instance: PageComponent) => void {
+    return () => callback(this.sharedRoute.pageComponentInstance);
   }
 
   /**

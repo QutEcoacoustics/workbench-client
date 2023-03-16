@@ -6,7 +6,6 @@ import { MapModule } from "@shared/map/map.module";
 import { SharedModule } from "@shared/shared.module";
 import { RecentAnnotationsComponent } from "./components/recent-annotations/recent-annotations.component";
 import { SiteComponent } from "./components/site/site.component";
-import { SiteDeleteComponent } from "./pages/delete/delete.component";
 import { SiteDetailsComponent } from "./pages/details/details.component";
 import { SiteEditComponent } from "./pages/edit/edit.component";
 import { SiteNewComponent } from "./pages/new/new.component";
@@ -16,7 +15,6 @@ import { sitesRoute } from "./sites.routes";
 
 const components = [
   SiteComponent,
-  SiteDeleteComponent,
   SiteDetailsComponent,
   SiteEditComponent,
   SiteNewComponent,

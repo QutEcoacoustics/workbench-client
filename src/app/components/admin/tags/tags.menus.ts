@@ -1,6 +1,5 @@
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import {
-  defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
   isAdminPredicate,
@@ -40,15 +39,6 @@ export const adminEditTagMenuItem = menuRoute({
   label: "Edit Tag",
   route: adminTagRoute.add("edit"),
   tooltip: () => "Edit an existing tag",
-  parent: adminTagsMenuItem,
-  predicate: isAdminPredicate,
-});
-
-export const adminDeleteTagMenuItem = menuRoute({
-  icon: defaultDeleteIcon,
-  label: "Delete Tag",
-  route: adminTagRoute.add("delete"),
-  tooltip: () => "Delete an existing tag",
   parent: adminTagsMenuItem,
   predicate: isAdminPredicate,
 });

@@ -2,7 +2,6 @@ import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import {
-  defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
   defaultPermissionsIcon,
@@ -97,15 +96,6 @@ export const assignSiteMenuItem = menuRoute({
   predicate: isAdminPredicate,
   route: projectMenuItem.route.add("assign"),
   tooltip: () => "Change which sites belong to this project",
-});
-
-export const deleteProjectMenuItem = menuRoute({
-  icon: defaultDeleteIcon,
-  label: "Delete Project",
-  parent: projectMenuItem,
-  predicate: isProjectEditorPredicate,
-  route: projectMenuItem.route.add("delete"),
-  tooltip: () => "Delete this project",
 });
 
 export const uploadAnnotationsProjectMenuItem = menuRoute({

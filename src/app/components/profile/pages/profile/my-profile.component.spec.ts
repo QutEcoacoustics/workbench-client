@@ -1,4 +1,5 @@
 import { RouterTestingModule } from "@angular/router/testing";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
@@ -34,7 +35,8 @@ import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
-import { Subject } from "rxjs";
+import { ToastrService } from "ngx-toastr";
+import { of, Subject } from "rxjs";
 import { MyProfileComponent } from "./my-profile.component";
 
 describe("MyProfileComponent", () => {
@@ -43,12 +45,14 @@ describe("MyProfileComponent", () => {
   let projectsApi: SpyObject<ProjectsService>;
   let sitesApi: SpyObject<ShallowSitesService>;
   let tagsApi: SpyObject<TagsService>;
+  let accountsApi: SpyObject<AccountsService>;
 
   let defaultUser: User;
   let spec: SpectatorRouting<MyProfileComponent>;
   const createComponent = createRoutingFactory({
     component: MyProfileComponent,
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    mocks: [ToastrService],
     stubsEnabled: false,
   });
 
@@ -66,6 +70,7 @@ describe("MyProfileComponent", () => {
     projectsApi = spec.inject(ProjectsService);
     sitesApi = spec.inject(ShallowSitesService);
     tagsApi = spec.inject(TagsService);
+    accountsApi = spec.inject(AccountsService);
   }
 
   type Intercept<Model extends AbstractModel> = Errorable<Model[]>;
@@ -145,6 +150,31 @@ describe("MyProfileComponent", () => {
       alt: `${defaultUser.userName} profile image`,
     });
     expect(spec.query("h1")).toHaveText(defaultUser.userName);
+  });
+
+  describe("Cancel account", () => {
+    it("should make the correct api calls when the cancelAccount() method is called", () => {
+      setup(defaultUser);
+      interceptApiRequests({});
+      spec.detectChanges();
+      accountsApi.destroy.and.callFake(() => of(null));
+
+      spec.component.cancelAccount();
+
+      expect(accountsApi.destroy).toHaveBeenCalledWith(defaultUser);
+    });
+
+    it("should navigate to the root path (home screen) once the cancelAccount() method succeeds", () => {
+      setup(defaultUser);
+      interceptApiRequests({});
+      spec.detectChanges();
+      const navigateSpy = spyOn(spec.component.router, "navigateByUrl");
+      accountsApi.destroy.and.callFake(() => of(null));
+
+      spec.component.cancelAccount();
+
+      expect(navigateSpy).toHaveBeenCalledWith("/");
+    });
   });
 
   describe("download annotations", () => {

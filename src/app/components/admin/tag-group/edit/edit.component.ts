@@ -12,10 +12,12 @@ import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
+import { takeUntil } from "rxjs";
 import { adminTagGroupMenuItemActions } from "../list/list.component";
 import {
   adminEditTagGroupMenuItem,
   adminTagGroupsCategory,
+  adminTagGroupsRoute,
 } from "../tag-group.menus";
 import schema from "../tag-group.schema.json";
 
@@ -62,6 +64,17 @@ class AdminTagGroupsEditComponent
     if (!this.failure) {
       this.title = `Edit ${this.model.groupIdentifier}`;
     }
+  }
+
+  public deleteModel(): void {
+    this.api.destroy(new TagGroup(this.model))
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        complete: () => {
+          this.notifications.success(defaultSuccessMsg("destroyed", this.model?.groupIdentifier));
+          this.router.navigateByUrl(adminTagGroupsRoute.toRouterLink());
+        },
+      });
   }
 
   protected apiAction(model: Partial<TagGroup>) {

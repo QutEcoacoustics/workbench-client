@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { regionResolvers } from "@baw-api/region/regions.service";
+import { regionResolvers, RegionsService } from "@baw-api/region/regions.service";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
@@ -9,13 +9,15 @@ import {
 import { SitesService } from "@baw-api/site/sites.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import {
-  deleteRegionMenuItem,
   editRegionMenuItem,
   regionMenuItem,
   regionsCategory,
 } from "@components/regions/regions.menus";
+import { deleteRegionModal } from "@components/regions/regions.modals";
+import { shallowRegionsRoute } from "@components/regions/regions.routes";
 import { newPointMenuItem } from "@components/sites/points.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
+import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
@@ -23,13 +25,16 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { takeUntil } from "rxjs";
 
 export const regionMenuItemActions = [
+  deleteRegionModal,
   newPointMenuItem,
   visualizeMenuItem,
   editRegionMenuItem,
-  deleteRegionMenuItem,
   audioRecordingMenuItems.list.region,
   audioRecordingMenuItems.batch.region,
 ];
@@ -107,7 +112,10 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
     router: Router,
     route: ActivatedRoute,
     config: NgbPaginationConfig,
-    sitesApi: SitesService
+    sitesApi: SitesService,
+    private regionsApi: RegionsService,
+    private notifications: ToastrService,
+    private clientConfig: ConfigService,
   ) {
     super(
       router,
@@ -133,6 +141,20 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
 
   public hasSites() {
     return this.sites.size > 0;
+  }
+
+  public deleteModel(): void {
+    const hideProjects = this.clientConfig.settings.hideProjects;
+
+    this.regionsApi.destroy(this.region, this.project)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        complete: () => {
+          this.notifications.success(defaultSuccessMsg("destroyed", this.region.name));
+          const newRouteLocation = hideProjects ? shallowRegionsRoute.toRouterLink() : this.project.viewUrl;
+          this.router.navigateByUrl(newRouteLocation);
+        }
+      });
   }
 }
 

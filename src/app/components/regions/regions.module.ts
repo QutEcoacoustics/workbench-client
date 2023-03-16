@@ -3,7 +3,6 @@ import { RouterModule } from "@angular/router";
 import { ProjectsModule } from "@components/projects/projects.module";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
-import { DeleteComponent } from "./pages/delete/delete.component";
 import { DetailsComponent } from "./pages/details/details.component";
 import { EditComponent } from "./pages/edit/edit.component";
 import { ListComponent } from "./pages/list/list.component";
@@ -11,7 +10,6 @@ import { NewComponent } from "./pages/new/new.component";
 import { regionsRoute, shallowRegionsRoute } from "./regions.routes";
 
 const components = [
-  DeleteComponent,
   DetailsComponent,
   EditComponent,
   ListComponent,

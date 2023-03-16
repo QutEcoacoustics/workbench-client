@@ -28,7 +28,14 @@
         id="error"
         name="error"
       ></router-outlet>
-      <router-outlet *ngIf="resolvedSuccessfully" id="primary"></router-outlet>
+      <router-outlet
+        *ngIf="resolvedSuccessfully"
+        id="primary"
+        (activate)="onRouterOutlet($event)"
+        (deactivate)="onRouterOutlet(null)"
+        (attach)="onRouterOutlet($event)"
+        (detach)="onRouterOutlet(null)"
+      ></router-outlet>
     </div>
 
     <!-- Action Menu -->
