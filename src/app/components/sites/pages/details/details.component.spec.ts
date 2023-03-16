@@ -3,7 +3,7 @@ import { SiteComponent } from "@components/sites/components/site/site.component"
 import { Errorable } from "@helpers/advancedTypes";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { assertErrorHandler } from "@test/helpers/html";
@@ -15,6 +15,13 @@ import {
   isBawApiError,
 } from "@helpers/custom-errors/baw-api-error";
 import { generateBawApiError } from "@test/fakes/BawApiError";
+import { ToastrService } from "ngx-toastr";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { SharedModule } from "@shared/shared.module";
+import { Router } from "@angular/router";
+import { of } from "rxjs";
+import { SitesService } from "@baw-api/site/sites.service";
+import { ConfigService } from "@services/config/config.service";
 import { SiteDetailsComponent } from "./details.component";
 
 const mockSiteComponent = MockComponent(SiteComponent);
@@ -24,9 +31,15 @@ describe("SiteDetailsComponent", () => {
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
+  let sitesApi: SpyObject<SitesService>;
+  let routerSpy: SpyObject<Router>;
+  let configService: SpyObject<ConfigService>;
   let spec: SpectatorRouting<SiteDetailsComponent>;
+
   const createComponent = createRoutingFactory({
+    imports: [SharedModule, MockBawApiModule],
     declarations: [mockSiteComponent],
+    mocks: [ToastrService],
     component: SiteDetailsComponent,
   });
 
@@ -54,18 +67,28 @@ describe("SiteDetailsComponent", () => {
       detectChanges: false,
       data: { resolvers, ...models },
     });
+
+    sitesApi = spec.inject(SitesService);
+    routerSpy = spec.inject(Router);
   }
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
-    defaultSite = new Site(generateSite());
     defaultError = generateBawApiError();
   });
 
   [true, false].forEach((withRegion) => {
     describe(withRegion ? "withRegion" : "withoutRegion", () => {
       beforeEach(() => {
-        defaultRegion = withRegion ? new Region(generateRegion()) : undefined;
+        defaultRegion = withRegion ? new Region(generateRegion({
+          projectId: defaultProject.id,
+        })) : undefined;
+
+        if (withRegion) {
+          defaultSite = new Site(generateSite({ regionId: defaultRegion.id }));
+        } else {
+          defaultSite = new Site(generateSite());
+        }
       });
 
       it("should create", () => {
@@ -101,6 +124,46 @@ describe("SiteDetailsComponent", () => {
         expect(project).toEqual(defaultProject);
         expect(region).toEqual(defaultRegion);
         expect(site).toEqual(defaultSite);
+      });
+
+      [false, true].forEach((projectsHidden: boolean) => {
+        describe(`deleteModel ${projectsHidden ? "with" : "without"} projects hidden`, () => {
+          beforeEach(() => {
+            setup(defaultProject, defaultSite, defaultRegion);
+            sitesApi.destroy.and.callFake(() => of(null));
+
+            configService ||= spec.inject(ConfigService);
+            configService.settings.hideProjects = projectsHidden;
+          });
+          afterEach(() => configService.settings.hideProjects = false);
+
+          it("should invoke the correct api calls when the deleteModel() method is called", () => {
+            spec.detectChanges();
+            spec.component.deleteModel();
+            expect(sitesApi.destroy).toHaveBeenCalledWith(defaultSite, defaultProject);
+          });
+
+          it(`should navigate to ${withRegion ? "parent region" : projectsHidden ? "sites" : "projects"} page after success`, () => {
+            const projectSubRoute = `/projects/${defaultProject.id}`;
+            let expectedRoute: string;
+
+            if (withRegion) {
+              expectedRoute = `${projectSubRoute}/regions/${defaultRegion.id}`;
+            } else {
+              if (projectsHidden) {
+                expectedRoute = "/regions";
+              } else {
+                expectedRoute = projectSubRoute;
+              }
+            }
+
+            spec.detectChanges();
+
+            spec.component.deleteModel();
+
+            expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(expectedRoute);
+          });
+        });
       });
     });
   });

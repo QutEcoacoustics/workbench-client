@@ -12,7 +12,7 @@ import { generateTag } from "@test/fakes/Tag";
 import { assertErrorHandler } from "@test/helpers/html";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
-import { Subject } from "rxjs";
+import { of, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagsEditComponent } from "./edit.component";
 
@@ -27,9 +27,9 @@ describe("AdminTagsEditComponent", () => {
 
   function configureTestingModule(
     tag: Tag,
-    tagError: BawApiError,
-    tagTypes: TagType[],
-    tagTypesError: BawApiError
+    tagError?: BawApiError,
+    tagTypes?: TagType[],
+    tagTypesError?: BawApiError
   ) {
     TestBed.configureTestingModule({
       imports: [
@@ -111,6 +111,28 @@ describe("AdminTagsEditComponent", () => {
       api.update.and.callFake(() => new Subject());
       component.submit({});
       expect(api.update).toHaveBeenCalled();
+    });
+
+    describe("delete tag", () => {
+      it("should make the correct api calls when the deleteModel() method is called", () => {
+        configureTestingModule(defaultTag);
+        component.model = defaultTag;
+        api.destroy.and.callFake(() => of(null));
+
+        component.deleteModel();
+        expect(api.destroy).toHaveBeenCalledWith(defaultTag);
+      });
+
+      it("should not navigate when the deleteModel() method succeeds", () => {
+        const expectedRoute = "/admin/tags";
+        configureTestingModule(defaultTag);
+        component.model = defaultTag;
+        api.destroy.and.callFake(() => of(null));
+
+        component.deleteModel();
+
+        expect(router.navigateByUrl).toHaveBeenCalledWith(expectedRoute);
+      });
     });
   });
 });

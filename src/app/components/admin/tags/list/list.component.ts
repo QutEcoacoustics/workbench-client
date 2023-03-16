@@ -1,10 +1,14 @@
-import { Component } from "@angular/core";
+import { Component, TemplateRef } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
+import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
+import { ModalComponent } from "@menu/widget.component";
 import { Tag } from "@models/Tag";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
+import { takeUntil } from "rxjs";
 import {
-  adminDeleteTagMenuItem,
   adminEditTagMenuItem,
   adminNewTagMenuItem,
   adminTagsCategory,
@@ -32,10 +36,13 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
     type: "typeOfTag",
   };
   public editPath = adminEditTagMenuItem.route;
-  public deletePath = adminDeleteTagMenuItem.route;
 
-  public constructor(api: TagsService) {
-    super(api, (tags) =>
+  public constructor(
+    protected tagsApi: TagsService,
+    protected modals: NgbModal,
+    protected notifications: ToastrService,
+  ) {
+    super(tagsApi, (tags) =>
       tags.map((tag) => ({
         text: tag.text,
         taxonomic: tag.isTaxonomic ? "Taxonomic" : "Folksonomic",
@@ -46,6 +53,19 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
     );
 
     this.filterKey = "text";
+  }
+
+  public async confirmTagDeletion(template: TemplateRef<ModalComponent>, tagModel: Tag) {
+    const modal = this.modals.open(template);
+    const userConfirmed = await modal.result.catch((_) => false);
+
+    if (userConfirmed) {
+      this.tagsApi.destroy(tagModel)
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe({
+          complete: () => this.notifications.success(defaultSuccessMsg("destroyed", this.tagModel?.text)),
+        });
+    }
   }
 }
 

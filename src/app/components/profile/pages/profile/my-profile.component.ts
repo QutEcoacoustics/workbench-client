@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -12,19 +13,21 @@ import { TagsService } from "@baw-api/tag/tags.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import { adminTagsMenuItem } from "@components/admin/tags/tags.menus";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
+import { homeMenuItem } from "@components/home/home.menus";
 import {
   myAccountCategory,
   myAccountMenuItem,
   myAnnotationsMenuItem,
   myBookmarksMenuItem,
-  myDeleteMenuItem,
   myEditMenuItem,
   myPasswordMenuItem,
   myProjectsMenuItem,
   mySitesMenuItem,
 } from "@components/profile/profile.menus";
+import { myDeleteAccountModal } from "@components/profile/profile.modals";
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
+import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
@@ -34,13 +37,14 @@ import { User } from "@models/User";
 import { ConfigService } from "@services/config/config.service";
 import { IItem } from "@shared/items/item/item.component";
 import { List } from "immutable";
+import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
 export const myAccountActions = [
   myEditMenuItem,
   myPasswordMenuItem,
-  myDeleteMenuItem,
+  myDeleteAccountModal,
   myProjectsMenuItem,
   mySitesMenuItem,
   myBookmarksMenuItem,
@@ -114,7 +118,10 @@ class MyProfileComponent
     protected projectsApi: ProjectsService,
     protected sitesApi: ShallowSitesService,
     protected tagsApi: TagsService,
-    protected securityApi?: SecurityService
+    public router?: Router,
+    protected securityApi?: SecurityService,
+    private accountsApi?: AccountsService,
+    private notifications?: ToastrService,
   ) {
     super();
   }
@@ -141,6 +148,17 @@ class MyProfileComponent
       "Tools will ask you for auth token when they need one, copy the text below and paste it where needed. " +
       "Treat this code like your password, don't share it with anyone!"
     );
+  }
+
+  public cancelAccount(): void {
+    this.accountsApi.destroy(this.user)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        complete: () => {
+          this.notifications.success(defaultSuccessMsg("destroyed", this.user?.userName));
+          this.router.navigateByUrl(homeMenuItem.route.toRouterLink());
+        }
+      });
   }
 
   /** Update user details */

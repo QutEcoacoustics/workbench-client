@@ -5,6 +5,7 @@ import {
   hasResolvedSuccessfully,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
+import { PageComponent } from "@helpers/page/pageComponent";
 import { GlobalsService } from "@services/globals/globals.service";
 import { MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
@@ -81,5 +82,11 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         gtag("event", "page_view", { page_path: event.urlAfterRedirects });
       });
+  }
+
+  protected onRouterOutlet(componentInstance: PageComponent | unknown): void {
+    if (componentInstance || componentInstance === null) {
+      this.sharedRoute.pageComponentInstance = componentInstance as PageComponent;
+    }
   }
 }

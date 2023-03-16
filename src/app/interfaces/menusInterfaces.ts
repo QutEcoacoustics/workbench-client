@@ -81,6 +81,9 @@ export type UserCallback<T> = null | ((user?: User, data?: any) => T);
 export interface MenuItem extends LabelAndIcon {
   kind: MenuItemKinds;
 
+  /** Menu parent */
+  parent?: MenuRoute;
+
   /**
    * The tooltip that will be shown when context for this link is required.
    */
@@ -158,9 +161,6 @@ export interface MenuRoute extends MenuItem {
   kind: "MenuRoute";
   /** The internal route this menu item points to */
   route: StrongRoute;
-
-  /** Menu parent */
-  parent?: MenuRoute;
 
   /** Custom label when shown in the breadcrumb */
   breadcrumbResolve?: (pageInfo: IPageInfo, injector: Injector) => string;

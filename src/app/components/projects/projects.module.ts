@@ -6,7 +6,6 @@ import { SharedModule } from "@shared/shared.module";
 import { SiteCardComponent } from "./components/site-card/site-card.component";
 import { SiteMapComponent } from "./components/site-map/site-map.component";
 import { AssignComponent } from "./pages/assign/assign.component";
-import { DeleteComponent } from "./pages/delete/delete.component";
 import { DetailsComponent } from "./pages/details/details.component";
 import { EditComponent } from "./pages/edit/edit.component";
 import { ListComponent } from "./pages/list/list.component";
@@ -19,7 +18,6 @@ import { projectsRoute } from "./projects.routes";
 const components = [
   UploadAnnotationsComponent,
   AssignComponent,
-  DeleteComponent,
   DetailsComponent,
   EditComponent,
   ListComponent,

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Filters } from "@baw-api/baw-api.service";
-import { projectResolvers } from "@baw-api/project/projects.service";
+import { ProjectsService, projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
 import {
   hasResolvedSuccessfully,
@@ -12,15 +12,17 @@ import { audioRecordingMenuItems } from "@components/audio-recordings/audio-reco
 import { harvestsMenuItem } from "@components/harvest/harvest.menus";
 import {
   assignSiteMenuItem,
-  deleteProjectMenuItem,
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
   projectCategory,
   projectMenuItem,
+  projectsMenuItem,
   uploadAnnotationsProjectMenuItem,
 } from "@components/projects/projects.menus";
+import { deleteProjectModal } from "@components/projects/projects.modals";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
+import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import {
@@ -32,15 +34,16 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
-import { merge, Observable } from "rxjs";
+import { ToastrService } from "ngx-toastr";
+import { merge, Observable, takeUntil } from "rxjs";
 
 export const projectMenuItemActions = [
   visualizeMenuItem,
   editProjectMenuItem,
   editProjectPermissionsMenuItem,
+  deleteProjectModal,
   newSiteMenuItem,
   assignSiteMenuItem,
-  deleteProjectMenuItem,
   audioRecordingMenuItems.list.project,
   audioRecordingMenuItems.batch.project,
   harvestsMenuItem,
@@ -121,8 +124,7 @@ const projectKey = "project";
 })
 class DetailsComponent
   extends PaginationTemplate<Site | Region>
-  implements OnInit
-{
+  implements OnInit {
   public collectionSize = 0;
   public collectionSizes = { sites: 0, regions: 0 };
   public defaultDescription = "<i>No description found</i>";
@@ -140,8 +142,10 @@ class DetailsComponent
     route: ActivatedRoute,
     router: Router,
     config: NgbPaginationConfig,
+    private projectsApi: ProjectsService,
     private regionsApi: RegionsService,
-    private sitesApi: SitesService
+    private sitesApi: SitesService,
+    public notifications: ToastrService,
   ) {
     super(
       router,
@@ -185,6 +189,17 @@ class DetailsComponent
     }
     this.project = models[projectKey] as Project;
     super.ngOnInit();
+  }
+
+  public deleteModel(): void {
+    this.projectsApi.destroy(this.project)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        complete: () => {
+          this.notifications.success(defaultSuccessMsg("destroyed", this.project.name));
+          this.router.navigateByUrl(projectsMenuItem.route.toRouterLink());
+        },
+      });
   }
 
   protected getModels(): Observable<Site[] | Region[]> {

@@ -130,6 +130,13 @@ export class MenuComponent implements OnChanges, AfterViewInit {
       const component: ModalComponent = modalRef.componentInstance;
       modal.assignComponentData(component, modalRef);
     };
+
+    // modal success callbacks should be called with the current page instance
+    // the page instance is set from the menu service because the menu item should not have any knowledge of the current route
+    if (modal.successCallback) {
+      modal.successCallback = this.menuService.constructSuccessCallback(modal.successCallback);
+    }
+
     return menuModal({ ...modal, action }) as MenuModal;
   }
 

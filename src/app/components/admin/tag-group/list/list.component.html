@@ -42,8 +42,7 @@
         </a>
         <a
           class="btn btn-sm btn-danger"
-          [strongRoute]="deletePath"
-          [routeParams]="{ tagGroupId: value.id }"
+          (click)="confirmTagGroupDeletion(deleteModalTemplate, value)"
         >
           Delete
         </a>
@@ -51,5 +50,12 @@
     </ngx-datatable-column>
   </ngx-datatable>
 </ng-container>
+
+<ng-template #deleteModalTemplate let-modal>
+  <baw-delete-modal
+    [closeModal]="modal.close"
+    [dismissModal]="modal.dismiss"
+  ></baw-delete-modal>
+</ng-template>
 
 <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>

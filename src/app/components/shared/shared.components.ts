@@ -27,6 +27,7 @@ import { BreadcrumbModule } from "./breadcrumb/breadcrumb.module";
 import { CheckboxModule } from "./checkbox/checkbox.module";
 import { CmsComponent } from "./cms/cms.component";
 import { DebounceInputComponent } from "./debounce-input/debounce-input.component";
+import { DeleteModalComponent } from "./delete-modal/delete-modal.component";
 import { DetailViewModule } from "./detail-view/detail-view.module";
 import { ErrorHandlerComponent } from "./error-handler/error-handler.component";
 import { FooterComponent } from "./footer/footer.component";
@@ -55,6 +56,7 @@ export const sharedComponents = [
   FormComponent,
   WIPComponent,
   ModelSelectorComponent,
+  DeleteModalComponent,
 ];
 
 export const internalComponents = [];

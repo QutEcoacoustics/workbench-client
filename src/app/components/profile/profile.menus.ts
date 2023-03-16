@@ -4,7 +4,6 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { AbstractModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import {
-  defaultDeleteIcon,
   defaultEditIcon,
   defaultUserIcon,
   isAdminPredicate,
@@ -54,16 +53,6 @@ export const myPasswordMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: myEditMenuItem.route.add("password"),
   tooltip: () => "Change the password for your profile",
-  disabled: "BETA: Will be available soon.",
-});
-
-export const myDeleteMenuItem = menuRoute({
-  icon: defaultDeleteIcon,
-  label: "Cancel my account",
-  parent: myAccountMenuItem,
-  predicate: isLoggedInPredicate,
-  route: myAccountMenuItem.route.add("delete"),
-  tooltip: () => "Remove your account from this website",
   disabled: "BETA: Will be available soon.",
 });
 

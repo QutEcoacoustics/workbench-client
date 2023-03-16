@@ -43,6 +43,7 @@ export class SharedActivatedRouteService extends withUnsubscribe() {
   private _fragment: Observable<string | null>;
   private _data: Observable<Data>;
   private _component: Observable<Type<any> | string | null>;
+  private _pageComponentInstance: PageComponent;
   private _snapshot: Observable<ActivatedRouteSnapshot>;
 
   public constructor(router: Router, route: ActivatedRoute) {
@@ -107,6 +108,14 @@ export class SharedActivatedRouteService extends withUnsubscribe() {
    */
   public get pageInfo(): Observable<IPageInfo> {
     return this.data.pipe(filter((data): boolean => isIPageInfo(data)));
+  }
+
+  public get pageComponentInstance(): PageComponent {
+    return this._pageComponentInstance;
+  }
+
+  public set pageComponentInstance(instance: PageComponent) {
+    this._pageComponentInstance = instance;
   }
 
   /**

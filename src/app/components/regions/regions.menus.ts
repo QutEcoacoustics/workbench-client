@@ -3,7 +3,6 @@ import { projectMenuItem } from "@components/projects/projects.menus";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { Region } from "@models/Region";
 import {
-  defaultDeleteIcon,
   defaultEditIcon,
   defaultNewIcon,
   isProjectEditorPredicate,
@@ -64,13 +63,4 @@ export const editRegionMenuItem = menuRoute({
   predicate: isProjectEditorPredicate,
   route: regionMenuItem.route.add("edit"),
   tooltip: () => "Change the details for this site",
-});
-
-export const deleteRegionMenuItem = menuRoute({
-  icon: defaultDeleteIcon,
-  label: "Delete site",
-  parent: regionMenuItem,
-  predicate: isProjectEditorPredicate,
-  route: regionMenuItem.route.add("delete"),
-  tooltip: () => "Delete this site",
 });

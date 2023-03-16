@@ -1,6 +1,7 @@
+import { Router } from "@angular/router";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { projectResolvers } from "@baw-api/project/projects.service";
+import { projectResolvers, ProjectsService } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { SiteCardComponent } from "@components/projects/components/site-card/site-card.component";
@@ -26,6 +27,8 @@ import {
 } from "@test/helpers/general";
 import { assertPaginationTemplate } from "@test/helpers/paginationTemplate";
 import { MockComponent } from "ng-mocks";
+import { ToastrService } from "ngx-toastr";
+import { of } from "rxjs";
 import { DetailsComponent } from "./details.component";
 
 const mock = {
@@ -36,12 +39,15 @@ const mock = {
 describe("ProjectDetailsComponent", () => {
   let siteApi: SpyObject<SitesService>;
   let regionApi: SpyObject<RegionsService>;
+  let projectApi: SpyObject<ProjectsService>;
+  let routerSpy: SpyObject<Router>;
   let defaultProject: Project;
   let spectator: SpectatorRouting<DetailsComponent>;
   let component: DetailsComponent;
   const createComponent = createRoutingFactory({
     imports: [SharedModule, MockBawApiModule],
     declarations: [mock.map, mock.card],
+    mocks: [ToastrService],
     component: DetailsComponent,
   });
   const emptyResponse = [[]];
@@ -98,6 +104,8 @@ describe("ProjectDetailsComponent", () => {
     component = spectator.component;
     siteApi = spectator.inject(SitesService);
     regionApi = spectator.inject(RegionsService);
+    projectApi = spectator.inject(ProjectsService);
+    routerSpy = spectator.inject(Router);
   }
 
   function interceptApiRequest(
@@ -174,6 +182,30 @@ describe("ProjectDetailsComponent", () => {
     expect(description.innerHTML.trim()).toContain(
       defaultProject.descriptionHtml
     );
+  });
+
+  it("should invoke the correct api calls when the deleteModel() method is called", () => {
+    setup(defaultProject);
+    interceptApiRequest(emptyResponse, emptyResponse);
+    projectApi.destroy.and.callFake(() => of(null));
+    spectator.detectChanges();
+
+    spectator.component.deleteModel();
+
+    expect(projectApi.destroy).toHaveBeenCalledWith(defaultProject);
+  });
+
+  it("should navigate to the projects list page after the destroy api call succeeds", () => {
+    const expectedRoute = "/projects";
+
+    setup(defaultProject);
+    interceptApiRequest(emptyResponse, emptyResponse);
+    projectApi.destroy.and.callFake(() => of(null));
+    spectator.detectChanges();
+
+    spectator.component.deleteModel();
+
+    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(expectedRoute);
   });
 
   assertPaginationTemplate<Site | Region, DetailsComponent>(() => {

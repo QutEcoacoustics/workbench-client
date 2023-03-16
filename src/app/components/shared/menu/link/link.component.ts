@@ -24,7 +24,7 @@ import { Observable } from "rxjs";
       <ng-container *ngIf="isInternalLink; else external">
         <!-- Internal Link -->
         <a
-          class="nav-link ps-3 py-2"
+          class="nav-link ps-3 py-2 rounded"
           strongRouteActive="active"
           [strongRoute]="internalLink.route"
           [strongRouteActiveOptions]="activeOptions"
