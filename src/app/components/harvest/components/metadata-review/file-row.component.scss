@@ -16,6 +16,10 @@
       flex-basis: 1.8em;
       transition: 0.1s;
       overflow: hidden;
+
+      & > small {
+        padding-right: 1rem;
+      }
     }
   }
 }
@@ -30,6 +34,10 @@
     top: var(--table-padding);
     cursor: pointer;
   }
+}
+
+.file-name {
+  width: min-content;
 }
 
 .badge {

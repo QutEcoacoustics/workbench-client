@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { Site } from "@models/Site";
 
 @Component({
   selector: "baw-harvest-utc-offset-selector",
@@ -24,7 +26,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
       (change)="onSelection($any($event).target.value)"
     >
       <option selected disabled>Select offset</option>
-      <option *ngFor="let offset of offsets" [value]="offset">
+      <option *ngFor="let offset of offsets" [value]="offset" [disabled]="offset === relevantOffsetListSeparator">
         {{ offset }}
       </option>
     </select>
@@ -45,6 +47,10 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
   ],
 })
 export class UTCOffsetSelectorComponent {
+  protected relevantOffsetListSeparator = "---";
+
+  // the UTC input component needs knowledge of the site so that it can suggest the relevant UTC offsets relative to the site location
+  @Input() public site: Site;
   @Input() public offset: string;
   @Output() public offsetChange = new EventEmitter<string>();
 
@@ -62,8 +68,65 @@ export class UTCOffsetSelectorComponent {
     this.offsetChange.emit(this.offset);
   }
 
+  /**
+   * Returns the UTC offsets that are relevant to the site location
+   */
+  public get relevantUTCOffsets(): string[] {
+    const foundRelevantOffsets = Array<string>();
+
+    // if the site or timezone information is not set, it can be assumed that there are no relevant / suggested time zones
+    if (isInstantiated(this.site?.timezoneInformation)) {
+      const utcOffset = this.site.timezoneInformation.utcOffset;
+      const totalUtcOffset = this.site.timezoneInformation.utcTotalOffset;
+
+      foundRelevantOffsets.push(this.convertUnixOffsetToUTCOffset(utcOffset));
+
+      // if the total offset is not equal to the utc offset, this is an indicator of two potential time offsets.
+      // e.g. daylight savings time
+      if (utcOffset !== totalUtcOffset) {
+        foundRelevantOffsets.push(this.convertUnixOffsetToUTCOffset(totalUtcOffset));
+      }
+
+      // add a separator that the user can not select to distinguish between relevant and all utc offsets
+      foundRelevantOffsets.push(this.relevantOffsetListSeparator);
+    }
+
+    return foundRelevantOffsets;
+  }
+
+  /**
+   * Returns a list of UTC offsets with the relevant offsets appended to the top
+   */
   public get offsets(): string[] {
-    return UTCOffsetSelectorComponent.offsets;
+    return this.relevantUTCOffsets.concat(UTCOffsetSelectorComponent.offsets);
+  }
+
+  public convertUnixOffsetToUTCOffset(unixOffset: number): string {
+    const directionalIndicator = unixOffset >= 0 ? "+" : "-";
+
+    // unix offset is in relative seconds. Therefore, if we divide the number by 3600, we get the offset as an hour decimal
+    const secondsToHoursScalarMultiple = 3600;
+
+    // assert that the provided dates are within the legal range. If not, throw an error
+    if (unixOffset >= (12 * secondsToHoursScalarMultiple) || unixOffset <= (-12 * secondsToHoursScalarMultiple)) {
+      throw new Error("UTC Offset out of bounds.");
+    }
+
+    const utcOffsetTime = new Date(0);
+    utcOffsetTime.setHours(unixOffset / secondsToHoursScalarMultiple);
+
+    let hoursTimeFormat = utcOffsetTime.getHours();
+
+    // since -1 is the same as +23, it will be encoded as +23 at this point
+    // however, since the user is expecting -1, subtracting 24 hours (if greater than 12 hours) will return the result the user is expecting
+    if (hoursTimeFormat > 12) {
+      hoursTimeFormat -= 24; // hours
+    }
+
+    const hours: string = directionalIndicator + hoursTimeFormat.toString().replace("-", "").padStart(2, "0");
+    const minutes: string = utcOffsetTime.getMinutes().toString().padStart(2, "0");
+
+    return `${hours}:${minutes}`;
   }
 
   /**

@@ -5,6 +5,7 @@ import { WidgetMenuItem } from "@menu/widgetItem";
 import { ValidationName } from "@models/HarvestItem";
 import { ConfigService } from "@services/config/config.service";
 import { map, Observable, startWith } from "rxjs";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { metaReviewIcons } from "../screens/metadata-review/metadata-review.component";
 import { HarvestStagesService } from "../services/harvest-stages.service";
 
@@ -30,7 +31,8 @@ export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
 
   public constructor(
     private stages: HarvestStagesService,
-    private config: ConfigService
+    private config: ConfigService,
+    public modals: NgbModal,
   ) {}
 
   public ngOnInit(): void {
@@ -38,6 +40,15 @@ export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
       startWith(false),
       map((): boolean => this.stages.isCurrentStage("metadataReview"))
     );
+  }
+
+  public async upload(template: any): Promise<void> {
+    const ref = this.modals.open(template);
+    const success = await ref.result.catch((_) => false);
+
+    if (success) {
+      this.stages.transition("uploading");
+    }
   }
 
   public hasError(error: ValidationName): boolean {

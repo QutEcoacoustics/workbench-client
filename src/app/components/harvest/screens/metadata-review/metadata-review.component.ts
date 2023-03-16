@@ -276,7 +276,7 @@ export class MetadataReviewComponent
     this.hasUnsavedChanges = true;
     this.harvestApi
       .updateMappings(this.harvest, adjustedMappings)
-      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         next: (harvest: Harvest): void => {
           this.stages.setHarvest(harvest);

@@ -86,11 +86,11 @@
     </button>
 
     <button
-    class="btn btn-outline-primary"
-    [disabled]="transitioningStage"
-    (click)="upload(uploadModal)"
+      class="btn btn-outline-primary"
+      [disabled]="transitioningStage"
+      (click)="upload(uploadModal)"
     >
-      Upload more files
+      Change or add more files
     </button>
   </div>
 
@@ -130,7 +130,7 @@
 </ng-template>
 
 <ng-template #uploadModal let-modal>
-  <baw-harvest-confirmation-modal nextLabel="Upload More" [modal]="modal">
+  <baw-harvest-confirmation-modal nextLabel="Change or add more files" [modal]="modal">
     <p>Are you sure you wish to return to the uploading stage?</p>
   </baw-harvest-confirmation-modal>
 </ng-template>
