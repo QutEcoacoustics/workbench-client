@@ -150,3 +150,25 @@
     </ng-container>
   </div>
 </section>
+
+<!-- Live an interactive map -->
+<section
+  id="interactiveMap"
+  class="pb-5 pt-5 border-top border-top text-bg-light"
+>
+  <div class="container">
+    <h2>View the Live Site Map</h2>
+
+    <ng-container *ngIf="allSites$ | withLoading | async as sites">
+      <baw-loading *ngIf="sites.loading" [size]="lg"></baw-loading>
+
+      <div style="width: 100%; height: 24em;">
+        <baw-site-map
+          *ngIf="!sites.loading && sites.value.size > 0"
+          [projects]="projects(sites.value).toArray()"
+          [regions]="regions(sites.value).toArray()"
+        ></baw-site-map>
+      </div>
+    </ng-container>
+  </div>
+</section>

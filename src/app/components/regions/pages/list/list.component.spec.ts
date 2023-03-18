@@ -21,6 +21,8 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
+import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
+import { modelData } from "@test/helpers/faker";
 import { ListComponent } from "./list.component";
 
 const mockCardsComponent = MockComponent(CardsComponent);
@@ -40,6 +42,9 @@ describe("RegionsListComponent", () => {
           },
         },
       ],
+    ],
+    declarations: [
+      MockComponent(SiteMapComponent)
     ],
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
   });
@@ -195,4 +200,31 @@ describe("RegionsListComponent", () => {
       expect(spec.component.onFilter).toHaveBeenCalled();
     });
   });
+
+  describe("site map", () => {
+    it("should create", async () => {
+      const regions = generateRegions(modelData.datatype.number({ min: 1 }));
+      await handleApiRequest(regions);
+
+      expect(spec.query(SiteMapComponent)).toExist();
+    });
+
+    it("should display the same projects that are displayed in the filtered list", async () => {
+      const regions = generateRegions(modelData.datatype.number({ min: 1 }));
+      await handleApiRequest(regions);
+
+      const mapComponent = spec.query(SiteMapComponent);
+
+      const listedRegions = spec.component.models.toArray();
+      const mapProjects = mapComponent.projects;
+      const mapRegions = mapComponent.regions;
+
+      expect(mapRegions).toEqual(listedRegions);
+
+      // since there are no projects specified in the region component, there should not be any projects in the map component
+      // if this assertion fails, there is a problem with the `ngOnInit()` method
+      expect(mapProjects).toBeUndefined();
+    });
+  });
+
 });

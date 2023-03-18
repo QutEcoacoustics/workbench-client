@@ -204,7 +204,7 @@ describe("RegionDetailsComponent", () => {
       spectator.detectChanges();
       await promise;
       spectator.detectChanges();
-      expect(getMap().project).toEqual(defaultProject);
+      expect(getMap().projects).toEqual([defaultProject]);
     });
 
     it("should provide region to maps component", async () => {
@@ -213,7 +213,7 @@ describe("RegionDetailsComponent", () => {
       spectator.detectChanges();
       await promise;
       spectator.detectChanges();
-      expect(getMap().region).toEqual(defaultRegion);
+      expect(getMap().regions).toEqual([defaultRegion]);
     });
   });
 

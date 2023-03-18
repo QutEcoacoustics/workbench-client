@@ -20,8 +20,8 @@ import { switchMap, takeUntil } from "rxjs/operators";
 export class SiteMapComponent extends withUnsubscribe() implements OnInit {
   // TODO Implement system to change colour of selected sites
   @Input() public selected: List<Site>;
-  @Input() public project: Project;
-  @Input() public region: Region;
+  @Input() public projects: Project[];
+  @Input() public regions: Region[];
   public markers: List<MapMarkerOptions> = List([]);
 
   public constructor(private sitesApi: SitesService) {
@@ -29,11 +29,19 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.regions?.forEach((region) => this.addSingleLocationMarkers(this.projects.pop(), region));
+    this.projects?.forEach((project) => this.addSingleLocationMarkers(project));
+  }
+
+  /**
+   * Fetches the markers for a project or region and adds the markers to the `markers` list for a single location
+   */
+  private addSingleLocationMarkers(project?: Project, region?: Region): void {
     const filters: Filters<ISite> = { paging: { page: 1 } };
 
-    this.getFilter(filters, this.project, this.region)
+    this.getFilter(filters, project, region)
       .pipe(
-        switchMap((models) => this.getMarkers(models)),
+        switchMap((models) => this.getMarkers(models, project, region)),
         takeUntil(this.unsubscribe)
       )
       .subscribe({
@@ -46,24 +54,26 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
     filters: Filters<ISite>,
     project: Project,
     region?: Region
-  ) {
-    return this.region
-      ? this.sitesApi.filterByRegion(filters, project, region)
-      : this.sitesApi.filter(filters, project);
+  ): Observable<Site[]> {
+    // since the region parameter is optional, if a region is not specified, it will default to undefined
+    // and will have the same result as `siteApi.filter()`
+    return this.sitesApi.filterByRegion(filters, project, region)
   }
 
   /**
    * Retrieve map markers from api
    */
-  private getMarkers(sites: Site[]) {
+  private getMarkers(
+    sites: Site[],
+    project: Project,
+    region: Region
+  ): Observable<Site[]> {
     const numPages = sites?.[0]?.getMetadata()?.paging?.maxPage || 1;
     const observables: Observable<Site[]>[] = [];
 
     // Can skip first page because initial filter produces the results
     for (let page = 2; page <= numPages; page++) {
-      observables.push(
-        this.getFilter({ paging: { page } }, this.project, this.region)
-      );
+      observables.push(this.getFilter({ paging: { page } }, project, region));
     }
 
     this.pushMarkers(sites);
@@ -73,7 +83,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
   /**
    * Push new sites to markers list
    */
-  private pushMarkers(sites: Site[]) {
+  private pushMarkers(sites: Site[]): void {
     this.markers = this.markers.concat(
       sanitizeMapMarkers(sites.map((site) => site.getMapMarker()))
     );
