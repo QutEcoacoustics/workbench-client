@@ -13,6 +13,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateTagGroup } from "@test/fakes/TagGroup";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { of, Subject } from "rxjs";
@@ -59,6 +60,8 @@ describe("AdminTagGroupsEditComponent", () => {
 
     fixture.detectChanges();
   }
+
+  assertPageInfo(AdminTagGroupsEditComponent, "Edit");
 
   beforeEach(() => {
     defaultTagGroup = new TagGroup(generateTagGroup());

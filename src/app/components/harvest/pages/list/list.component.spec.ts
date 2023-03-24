@@ -13,6 +13,7 @@ import { generateProject, generateProjectMeta } from "@test/fakes/Project";
 import { ToastrService } from "ngx-toastr";
 import { of } from "rxjs";
 import { DateTime, Settings } from "luxon";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ListComponent } from "./list.component";
 
 describe("ListComponent", () => {
@@ -104,10 +105,12 @@ describe("ListComponent", () => {
   afterEach(() => {
     // dismiss all bootstrap modals, so if a test fails
     // it doesn't impact future tests by using a stale modal
-    modalService.dismissAll();
+    modalService?.dismissAll();
     // some tests mock the luxon timezone. To ensure all tests default to using the users timezone, set luxon.Settings.defaultTime to null
     Settings.defaultZone = null;
   });
+
+  assertPageInfo(ListComponent, "Recording Uploads");
 
   it("should create", () => {
     setup(defaultProject, defaultHarvest);

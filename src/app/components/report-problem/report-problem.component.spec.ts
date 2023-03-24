@@ -1,33 +1,27 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import {
+  createRoutingFactory,
+  Spectator,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { appLibraryImports } from "src/app/app.module";
+import { assertPageInfo } from "@test/helpers/pageRoute";
+import { ToastrService } from "ngx-toastr";
 import { ReportProblemComponent } from "./report-problem.component";
 
-// TODO Implement tests
+describe("ReportProblemComponent", () => {
+  let spectator: Spectator<ReportProblemComponent>;
 
-xdescribe("ReportProblemComponent", () => {
-  let component: ReportProblemComponent;
-  let fixture: ComponentFixture<ReportProblemComponent>;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        MockBawApiModule,
-        RouterTestingModule,
-      ],
-      declarations: [ReportProblemComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(ReportProblemComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  const createComponent = createRoutingFactory({
+    component: ReportProblemComponent,
+    imports: [MockBawApiModule, SharedModule],
+    mocks: [ToastrService],
   });
 
+  beforeEach(() => (spectator = createComponent({ detectChanges: false })));
+
+  assertPageInfo(ReportProblemComponent, "Report Problem");
+
   it("should create", () => {
-    expect(component).toBeTruthy();
+    expect(spectator.component).toBeInstanceOf(ReportProblemComponent);
   });
 });

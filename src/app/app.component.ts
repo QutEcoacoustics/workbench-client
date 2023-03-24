@@ -1,11 +1,24 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core";
+import {
+  Component,
+  Inject,
+  Injectable,
+  OnInit,
+  ViewEncapsulation,
+} from "@angular/core";
 import { Title } from "@angular/platform-browser";
-import { NavigationEnd, Router } from "@angular/router";
+import {
+  NavigationEnd,
+  Router,
+  RouterStateSnapshot,
+  TitleStrategy,
+} from "@angular/router";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
+import { titleCase } from "@helpers/case-converter/case-converter";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { MenuRoute } from "@interfaces/menusInterfaces";
 import { GlobalsService } from "@services/globals/globals.service";
 import { MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
@@ -39,8 +52,6 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
   public constructor(
     public menu: MenuService,
     private sharedRoute: SharedActivatedRouteService,
-    private config: ConfigService,
-    private title: Title,
     private router: Router,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
     globals: GlobalsService
@@ -55,7 +66,6 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.title.setTitle(this.config.settings.brand.short);
     this.fullscreen = true;
 
     this.sharedRoute.pageInfo
@@ -86,7 +96,63 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
 
   protected onRouterOutlet(componentInstance: PageComponent | unknown): void {
     if (componentInstance || componentInstance === null) {
-      this.sharedRoute.pageComponentInstance = componentInstance as PageComponent;
+      this.sharedRoute.pageComponentInstance =
+        componentInstance as PageComponent;
     }
+  }
+}
+
+@Injectable()
+export class PageTitleStrategy extends TitleStrategy {
+  public constructor(
+    private title: Title,
+    private config: ConfigService,
+  ) {
+    super();
+  }
+
+  private routerState: RouterStateSnapshot;
+
+  /**
+   * Recursively builds the title from the page route and its parent routes
+   *
+   * @param subRoute A page route to construct the title for
+   * @returns A title of the route and its parents constructed in the format " | parent | subRoute"
+   */
+  private buildHierarchicalTitle(subRoute: MenuRoute): string {
+    // If the page route has an explicit way to construct the title, use the title callback
+    // if there is no `title` callback defined in the menuRoute, use the category label as a fallback
+    let componentTitle = " | ";
+
+    if (subRoute?.title) {
+      // in the case that the title callback throws an error, the category label should be used as a fallback
+      try {
+        componentTitle += subRoute.title(this.routerState);
+      } catch (error: unknown) {
+        componentTitle += titleCase(subRoute.label);
+        console.error(`Failed to resolve title callback ${error}`);
+      }
+    } else {
+      // since category labels are not title cased (first letter after space capitalized), we need to title case them
+      // since explicit route titles commonly include model names which are case sensitive, explicit titles should not change casing
+      // e.g. Project name "Tasmanian wetlands" != "Tasmanian Wetlands" as the user has explicitly not capitalized "Wetlands"
+      componentTitle += titleCase(subRoute.label);
+    }
+
+    return subRoute?.parent
+        ? this.buildHierarchicalTitle(subRoute.parent) + componentTitle
+        : componentTitle;
+  }
+
+  // all site titles should follow the format <<brandName>> | ...PageComponentTitles
+  // e.g. Ecosounds | Projects | Cooloola | Audio Recordings | 261658
+  public override updateTitle(newRouterState: RouterStateSnapshot): void {
+    this.routerState = newRouterState;
+    const brandName = this.config.settings.brand.short;
+
+    const rootPageRoute = this.routerState.root.firstChild;
+    const newTitle = this.buildHierarchicalTitle(rootPageRoute.data.pageRoute);
+
+    this.title.setTitle(brandName + newTitle);
   }
 }

@@ -7,6 +7,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { validateBawClientPage } from "@test/helpers/baw-client";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { BehaviorSubject } from "rxjs";
 import { AnnotationComponent } from "./details.component";
 
@@ -33,4 +34,6 @@ describe("AnnotationComponent", () => {
       );
     }
   );
+
+  assertPageInfo(AnnotationComponent, "Annotation");
 });

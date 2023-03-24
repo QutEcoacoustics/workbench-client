@@ -18,6 +18,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -34,6 +35,8 @@ describe("RegionsEditComponent", () => {
     mocks: [ToastrService],
     stubsEnabled: true,
   });
+
+  assertPageInfo(EditComponent, "Edit");
 
   describe("form", () => {
     testFormlyFields([

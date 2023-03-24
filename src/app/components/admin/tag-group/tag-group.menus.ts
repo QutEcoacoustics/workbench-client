@@ -4,6 +4,7 @@ import {
   defaultNewIcon,
   isAdminPredicate,
 } from "src/app/app.menus";
+import { CommonRouteTitles } from "src/app/stringConstants";
 import { adminDashboardMenuItem, adminRoute } from "../admin.menus";
 
 export const adminTagGroupsRoute = adminRoute.addFeatureModule("tag_groups");
@@ -41,4 +42,5 @@ export const adminEditTagGroupMenuItem = menuRoute({
   tooltip: () => "Update an existing tag group",
   parent: adminTagGroupsMenuItem,
   predicate: isAdminPredicate,
+  title: () => CommonRouteTitles.routeEditTitle,
 });

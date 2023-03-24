@@ -21,11 +21,13 @@ import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { interceptRepeatApiRequests } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPaginationTemplate } from "@test/helpers/paginationTemplate";
 import { MockComponent } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { of } from "rxjs";
 import { ConfigService } from "@services/config/config.service";
+import { PageTitleStrategy } from "src/app/app.component";
 import { DetailsComponent } from "./details.component";
 
 const mock = {
@@ -46,6 +48,13 @@ describe("RegionDetailsComponent", () => {
     declarations: [mock.map, mock.card],
     mocks: [ToastrService],
     component: DetailsComponent,
+    providers: [PageTitleStrategy],
+  });
+
+  assertPageInfo(DetailsComponent, "test name", {
+    region: {
+      model: new Region(generateRegion({ name: "test name" }))
+    },
   });
 
   function setup(

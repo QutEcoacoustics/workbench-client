@@ -10,6 +10,7 @@ import {
 import { FormComponent } from "@shared/form/form.component";
 import { generateProject, generateProjectMeta } from "@test/fakes/Project";
 import { testFormlyFields } from "@test/helpers/formly";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
@@ -27,6 +28,8 @@ describe("ProjectsEditComponent", () => {
     imports: [MockBawApiModule],
     mocks: [ToastrService],
   });
+
+  assertPageInfo(EditComponent, "Edit");
 
   function setup(project: Project): void {
     spec = createComponent({

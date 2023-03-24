@@ -1,3 +1,4 @@
+import { RouterStateSnapshot } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
 import { Site } from "@models/Site";
@@ -7,6 +8,7 @@ import {
   defaultNewIcon,
   isProjectEditorPredicate,
 } from "src/app/app.menus";
+import { CommonRouteTitles } from "src/app/stringConstants";
 import { projectMenuItem } from "../projects/projects.menus";
 import { siteRoute, sitesRoute } from "./sites.routes";
 
@@ -23,6 +25,10 @@ export const siteMenuItem = menuRoute({
   route: sitesCategory.route,
   tooltip: () => "The current site",
   breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, Site)?.name,
+  title: (routeData: RouterStateSnapshot) => {
+    const componentModel = routeData.root.firstChild.data;
+    return componentModel.site.model.name;
+  }
 });
 
 export const newSiteMenuItem = menuRoute({
@@ -48,4 +54,5 @@ export const editSiteMenuItem = menuRoute({
   predicate: isProjectEditorPredicate,
   route: siteMenuItem.route.add("edit"),
   tooltip: () => "Change the details for this site",
+  title: () => CommonRouteTitles.routeEditTitle,
 });

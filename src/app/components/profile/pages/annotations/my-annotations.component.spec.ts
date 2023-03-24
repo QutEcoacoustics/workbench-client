@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MyAnnotationsComponent } from "./my-annotations.component";
 
 xdescribe("MyAnnotationsComponent", () => {
@@ -14,6 +15,8 @@ xdescribe("MyAnnotationsComponent", () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
+  assertPageInfo(MyAnnotationsComponent, "Annotations");
 
   it("should create", () => {
     expect(component).toBeTruthy();

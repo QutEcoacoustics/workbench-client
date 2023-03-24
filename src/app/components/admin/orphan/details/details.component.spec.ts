@@ -17,6 +17,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
@@ -81,6 +82,12 @@ describe("AdminOrphanComponent", () => {
 
     return promise;
   }
+
+  assertPageInfo<Site>(AdminOrphanComponent, "Test Orphaned Site", {
+    site: {
+      model: new Site(generateSite({ name: "Test Orphaned Site" })),
+    }
+  });
 
   it("should create", () => {
     configureTestingModule(new Site(generateSite()));

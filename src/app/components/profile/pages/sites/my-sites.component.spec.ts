@@ -25,6 +25,7 @@ import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { BehaviorSubject, Subject } from "rxjs";
 import { MySitesComponent } from "./my-sites.component";
 
@@ -40,6 +41,8 @@ describe("MySitesComponent", () => {
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
     stubsEnabled: false,
   });
+
+  assertPageInfo(MySitesComponent, "Sites");
 
   function setup(model: User, error?: BawApiError) {
     spec = createComponent({

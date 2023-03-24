@@ -28,6 +28,7 @@ export function generateMenuRoute(data?: Partial<MenuRoute>): MenuRoute {
     label: modelData.random.word(),
     route: StrongRoute.newRoot().addFeatureModule(modelData.random.word()),
     tooltip: () => tooltip,
+    title: () => modelData.word.noun(),
     ...data,
   });
 }

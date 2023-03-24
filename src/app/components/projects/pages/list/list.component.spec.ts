@@ -19,6 +19,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { ListComponent } from "./list.component";
@@ -93,6 +94,8 @@ describe("ProjectsListComponent", () => {
     spec = createComponent({ detectChanges: false });
     api = spec.inject(ProjectsService);
   });
+
+  assertPageInfo(ListComponent, "Projects");
 
   it("should initially request page 1", async () => {
     await handleApiRequest([], (filter) => expect(filter.paging.page).toBe(1));

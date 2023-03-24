@@ -17,8 +17,10 @@ import { generateScript } from "@test/fakes/Script";
 import { generateUser } from "@test/fakes/User";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
+import { PageTitleStrategy } from "src/app/app.component";
 import { AdminAnalysisJobComponent } from "./details.component";
 
 describe("AdminAnalysisJobComponent", () => {
@@ -27,6 +29,12 @@ describe("AdminAnalysisJobComponent", () => {
   const createComponent = createComponentFactory({
     component: AdminAnalysisJobComponent,
     imports: [SharedModule, MockBawApiModule, RouterTestingModule],
+  });
+
+  assertPageInfo<AnalysisJob>(AdminAnalysisJobComponent, "test name", {
+    analysisJob: {
+      model: new AnalysisJob(generateAnalysisJob({ name: "test name" }))
+    },
   });
 
   function setup(model: AnalysisJob, error?: BawApiError) {
@@ -39,6 +47,9 @@ describe("AdminAnalysisJobComponent", () => {
             { analysisJob: "resolver" },
             { analysisJob: { model, error } }
           ),
+        },
+        {
+          provide: PageTitleStrategy,
         },
       ],
     });

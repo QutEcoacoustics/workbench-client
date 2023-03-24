@@ -22,6 +22,8 @@ import { Router } from "@angular/router";
 import { of } from "rxjs";
 import { SitesService } from "@baw-api/site/sites.service";
 import { ConfigService } from "@services/config/config.service";
+import { PageTitleStrategy } from "src/app/app.component";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { SiteDetailsComponent } from "./details.component";
 
 const mockSiteComponent = MockComponent(SiteComponent);
@@ -38,6 +40,7 @@ describe("SiteDetailsComponent", () => {
 
   const createComponent = createRoutingFactory({
     imports: [SharedModule, MockBawApiModule],
+    providers: [PageTitleStrategy],
     declarations: [mockSiteComponent],
     mocks: [ToastrService],
     component: SiteDetailsComponent,
@@ -75,6 +78,13 @@ describe("SiteDetailsComponent", () => {
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultError = generateBawApiError();
+  });
+
+  // since sites and points use the same client model class, we can assert that both the site and point details page use the same title
+  assertPageInfo<Site>(SiteDetailsComponent, "test name", {
+    site: {
+      model: new Site(generateSite({ name: "test name" }))
+    },
   });
 
   [true, false].forEach((withRegion) => {

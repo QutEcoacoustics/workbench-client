@@ -25,10 +25,12 @@ import {
   FilterExpectations,
   interceptRepeatApiRequests,
 } from "@test/helpers/general";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPaginationTemplate } from "@test/helpers/paginationTemplate";
 import { MockComponent } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { of } from "rxjs";
+import { PageTitleStrategy } from "src/app/app.component";
 import { DetailsComponent } from "./details.component";
 
 const mock = {
@@ -49,8 +51,15 @@ describe("ProjectDetailsComponent", () => {
     declarations: [mock.map, mock.card],
     mocks: [ToastrService],
     component: DetailsComponent,
+    providers: [PageTitleStrategy],
   });
   const emptyResponse = [[]];
+
+  assertPageInfo<Project>(DetailsComponent, "test name", {
+    project: {
+      model: new Project(generateProject({ name: "test name" }))
+    }
+  });
 
   function createModelWithMeta<M extends AbstractModel>(
     construct: (id: number) => M,

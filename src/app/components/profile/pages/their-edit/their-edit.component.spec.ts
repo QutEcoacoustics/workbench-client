@@ -6,6 +6,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { User } from "@models/User";
 import { SharedModule } from "@shared/shared.module";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.module";
 import { TheirEditComponent } from "./their-edit.component";
@@ -40,6 +41,8 @@ describe("TheirProfileEditComponent", () => {
 
     fixture.detectChanges();
   }
+
+  assertPageInfo(TheirEditComponent, "Edit Profile");
 
   beforeEach(() => {
     defaultUser = new User({

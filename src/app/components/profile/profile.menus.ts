@@ -1,3 +1,4 @@
+import { RouterStateSnapshot } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -34,6 +35,10 @@ export const myAccountMenuItem = menuRoute({
   tooltip: () => "View profile",
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, User)?.userName,
+  title: (routeData: RouterStateSnapshot): string => {
+    const componentModel = routeData.root.firstChild.data;
+    return `${componentModel.account.model.userName}'s Profile`;
+  },
 });
 
 export const myEditMenuItem = menuRoute({
@@ -63,6 +68,7 @@ export const myProjectsMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: myAccountMenuItem.route.add("projects"),
   tooltip: (user) => `Projects ${getUserName(user)} can access`,
+  title: () => "Projects",
 });
 
 export const mySitesMenuItem = menuRoute({
@@ -72,6 +78,7 @@ export const mySitesMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: myAccountMenuItem.route.add("sites"),
   tooltip: (user) => `Sites ${getUserName(user)} can access`,
+  title: () => "Sites",
 });
 
 export const myBookmarksMenuItem = menuRoute({
@@ -81,6 +88,7 @@ export const myBookmarksMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: myAccountMenuItem.route.add("bookmarks"),
   tooltip: (user) => `Bookmarks created by ${getUserName(user)}`,
+  title: () => "Bookmarks",
 });
 
 export const myAnnotationsMenuItem = menuRoute({
@@ -90,6 +98,7 @@ export const myAnnotationsMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: myAccountMenuItem.route.add("annotations"),
   tooltip: (user) => `Annotations created by ${getUserName(user)}`,
+  title: () => "Annotations",
 });
 
 /**
@@ -114,6 +123,10 @@ export const theirProfileMenuItem = menuRoute({
   tooltip: () => "View their profile",
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, User)?.userName,
+  title: (routeData: RouterStateSnapshot): string => {
+    const componentModel = routeData.root.firstChild.data;
+    return `${componentModel.account.model.userName}'s Profile`;
+  }
 });
 
 export const theirEditMenuItem = menuRoute({
@@ -124,6 +137,7 @@ export const theirEditMenuItem = menuRoute({
   route: theirProfileMenuItem.route.add("edit"),
   tooltip: () => "Change the details for this profile",
   disabled: "BETA: Will be available soon.",
+  title: () => "Edit Profile",
 });
 
 export const theirProjectsMenuItem = menuRoute({
@@ -133,6 +147,7 @@ export const theirProjectsMenuItem = menuRoute({
   predicate: isAdminPredicate,
   route: theirProfileMenuItem.route.add("projects"),
   tooltip: () => "Projects they can access",
+  title: () => "Projects",
 });
 
 export const theirSitesMenuItem = menuRoute({
@@ -142,6 +157,7 @@ export const theirSitesMenuItem = menuRoute({
   predicate: isAdminPredicate,
   route: theirProfileMenuItem.route.add("sites"),
   tooltip: () => "Sites they can access",
+  title: () => "Sites",
 });
 
 export const theirBookmarksMenuItem = menuRoute({
@@ -151,6 +167,7 @@ export const theirBookmarksMenuItem = menuRoute({
   predicate: isAdminPredicate,
   route: theirProfileMenuItem.route.add("bookmarks"),
   tooltip: () => "Bookmarks created by them",
+  title: () => "Bookmarks",
 });
 
 export const theirAnnotationsMenuItem = menuRoute({
@@ -160,4 +177,5 @@ export const theirAnnotationsMenuItem = menuRoute({
   predicate: isAdminPredicate,
   route: theirProfileMenuItem.route.add("annotations"),
   tooltip: () => "Annotations created by them",
+  title: () => "Annotations",
 });

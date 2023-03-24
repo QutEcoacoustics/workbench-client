@@ -9,6 +9,7 @@ import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
@@ -55,6 +56,8 @@ describe("AdminTagsNewComponent", () => {
 
     fixture.detectChanges();
   }
+
+  assertPageInfo(AdminTagsNewComponent, "New Tag");
 
   beforeEach(() => {
     defaultTagTypes = [

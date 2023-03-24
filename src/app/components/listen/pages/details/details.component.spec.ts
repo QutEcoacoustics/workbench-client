@@ -4,6 +4,7 @@ import { ListenModule } from "@components/listen/listen.module";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { validateBawClientPage } from "@test/helpers/baw-client";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { BehaviorSubject } from "rxjs";
 import { ListenRecordingComponent } from "./details.component";
 
@@ -25,4 +26,6 @@ describe("ListenRecordingComponent", () => {
       );
     }
   );
+
+  assertPageInfo(ListenRecordingComponent, "Play");
 });

@@ -15,6 +15,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateBookmark } from "@test/fakes/Bookmark";
 import { generateUser } from "@test/fakes/User";
 import { assertErrorHandler } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { BehaviorSubject } from "rxjs";
 import { TheirBookmarksComponent } from "./their-bookmarks.component";
 
@@ -28,6 +29,8 @@ describe("TheirBookmarksComponent", () => {
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
     stubsEnabled: false,
   });
+
+  assertPageInfo(TheirBookmarksComponent, "Bookmarks");
 
   function setup(model: User, error?: BawApiError) {
     spec = createComponent({
