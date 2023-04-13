@@ -62,4 +62,3 @@ interface ResultNode {
   result?: AnalysisJobItemResult;
   parentItem?: AnalysisJobItemResult;
 }
-

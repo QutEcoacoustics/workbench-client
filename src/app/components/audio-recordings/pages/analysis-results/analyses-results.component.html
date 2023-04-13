@@ -16,16 +16,17 @@
     <span>Download Results</span>
   </div>
   <div class="border-top border-bottom">
-    <div class="directory-items-container">
-      <ng-container *ngFor="let row of rows; trackBy: trackByRow">
-        <baw-directory-row
-          [item]="row"
-          [analysisJob]="analysisJob"
-          [audioRecording]="audioRecording"
-          [indentation]="getIndentation(row)"
-          (loadChildren)="toggleRow(row)"
-        ></baw-directory-row>
-      </ng-container>
+    <div
+      class="directory-items-container"
+      *ngFor="let row of rows; trackBy: trackByRow"
+    >
+      <baw-directory-row
+        [item]="row"
+        [analysisJob]="analysisJob"
+        [audioRecording]="audioRecording"
+        [indentation]="getIndentation(row)"
+        (loadChildren)="toggleRow(row)"
+      ></baw-directory-row>
     </div>
   </div>
 </div>

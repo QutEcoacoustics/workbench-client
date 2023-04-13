@@ -6,6 +6,7 @@ import {
   systemAnalysisJob,
 } from "@baw-api/analysis/analysis-jobs.service";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
+import { InnerFilter } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
@@ -76,6 +77,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
    * @returns The complete `AnalysisJobItemResult` model of the requested item. If no model is not defined, the root path will be returned
    */
   public getItem(node?: ResultNode): Observable<AnalysisJobItemResult> {
+    console.log(node?.result);
     const analysisJobId = this.analysisJob;
     return this.resultsServiceApi.show(
       node?.result,
@@ -111,9 +113,6 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
    */
   private openRow(node: ResultNode): void {
     this.getNodeChildren(node)
-      // since we have evaluated the children of the node, append this information to the node
-      // so that we don't have to re-query this information in the future from the API
-      .pipe(map((children) => (node.children = children)))
       .pipe(
         map((returnedValues) => {
           this.rows = this.rows
@@ -138,6 +137,17 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     } else {
       this.openRow(node);
     }
+  }
+
+  protected getIndentation(node: ResultNode): Array<void> {
+    const nodePath = this.getNodePath(node);
+    const subPaths = nodePath.split("/").length;
+
+    // result node paths follow the format `/analysis_jobs/:analysisJobId/results/:audioRecordingId/:analysisJobItemResultsPath/`
+    // because we are only interested in the number of paths (:analysisJobItemResultsPath), we have to subtract the leading path count (6)
+    const indentationAmount = subPaths - 6;
+
+    return Array<void>(indentationAmount);
   }
 
   /**
@@ -168,7 +178,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   private childItemsWithParentInformation(
     model: AnalysisJobItemResult
   ): ResultNode[] {
-    const modelChildren = model.children.map(
+    let modelChildren = model.children.map(
       (item) =>
       ({
         parentItem: model,
@@ -176,20 +186,25 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
       } as ResultNode)
     );
 
-    console.log(modelChildren);
+    const hasMoreChildren = model.getMetadata().paging.page !== model.getMetadata().paging.maxPage;
+
+    if (hasMoreChildren) {
+      modelChildren = this.addLoadMoreRow(model, modelChildren);
+    }
 
     return modelChildren;
   }
 
-  protected getIndentation(node: ResultNode): Array<void> {
-    const nodePath = this.getNodePath(node);
-    const subPaths = nodePath.split("/").length;
+  private addLoadMoreRow(parent: AnalysisJobItemResult, loadedChildren: ResultNode[]): ResultNode[] {
+    const loadMoreRow: LoadMoreRow = {
+      parentItem: parent,
+      result: new AnalysisJobItemResult({
+        ...parent,
+        path: parent.getMetadata().paging["next"],
+      }),
+    }
 
-    // result node paths follow the format `/analysis_jobs/:analysisJobId/results/:audioRecordingId/:analysisJobItemResultsPath/`
-    // because we are only interested in the number of paths (:analysisJobItemResultsPath), we have to subtract the leading path count (6)
-    const indentationAmount = subPaths - 6;
-
-    return Array<void>(indentationAmount);
+    return loadedChildren.concat(loadMoreRow);
   }
 
   private getNodePath(node: ResultNode): string {
@@ -208,8 +223,8 @@ interface ResultNode {
   open?: boolean;
 }
 
-interface loadMoreRow extends ResultNode {
-  loadMore: () => void;
+interface LoadMoreRow extends ResultNode {
+  filter: InnerFilter<AnalysisJobItemResult>,
 }
 
 function getPageInfo(
