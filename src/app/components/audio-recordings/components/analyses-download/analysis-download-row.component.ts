@@ -31,7 +31,7 @@ export class AnalysesDownloadRowComponent {
   }
 
   protected get itemName(): string {
-    return this.item.result?.name;
+    return this.item.result.name;
   }
 
   protected get downloadUrl(): string {

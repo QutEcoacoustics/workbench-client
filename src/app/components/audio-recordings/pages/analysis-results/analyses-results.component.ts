@@ -92,14 +92,23 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
    * @param node A result node / row to close
    */
   private closeRow(node: ResultNode): void {
-    this.rows = this.rows.filter(row => !this.isChildOf(row, node));
+    this.rows = this.rows.filter((row) => !this.isChildOf(row, node));
 
     // close the children of the children, etc.. all the way down the tree
-    node.children?.forEach(child => this.closeRow(child));
+    if (node.children) {
+      node.children.forEach((child) => this.closeRow(child));
+    }
 
     node.open = false;
   }
 
+  /**
+   * Opens an analysis result folder, and sorts the child items by path
+   *
+   * @param node The result node to open
+   * @param isIncomplete Specifies if there are more items to be fetched from the API.
+   * If `isIncomplete` is set, a "load more" button is expected
+   */
   private openRow(node: ResultNode): void {
     this.getNodeChildren(node)
       // since we have evaluated the children of the node, append this information to the node
@@ -159,13 +168,17 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   private childItemsWithParentInformation(
     model: AnalysisJobItemResult
   ): ResultNode[] {
-    return model.children.map(
+    const modelChildren = model.children.map(
       (item) =>
       ({
         parentItem: model,
         result: item,
       } as ResultNode)
     );
+
+    console.log(modelChildren);
+
+    return modelChildren;
   }
 
   protected getIndentation(node: ResultNode): Array<void> {
@@ -193,6 +206,10 @@ interface ResultNode {
   children?: ResultNode[];
   parentItem?: AnalysisJobItemResult;
   open?: boolean;
+}
+
+interface loadMoreRow extends ResultNode {
+  loadMore: () => void;
 }
 
 function getPageInfo(
