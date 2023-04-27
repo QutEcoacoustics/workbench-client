@@ -1,0 +1,67 @@
+<div class="directory-item">
+  <div
+    class="display-contents"
+  >
+    <ng-container *ngIf="isDirectoryItem">
+      <span class="directory-listing-item item-name" (click)="toggleOpen()">
+        <span [bawIndentation]="indentation"></span>
+
+        <fa-layers class="fa-custom-icon m-2">
+          <fa-icon
+            class="fa-custom-icon"
+            [icon]="chooseIcon()"
+          ></fa-icon>
+        </fa-layers>
+
+        {{ itemName }}
+      </span>
+
+      <span class="directory-listing-item">
+        {{ item.result.humanReadableByteSize() }}
+      </span>
+    </ng-container>
+
+    <!-- Template for file downloads -->
+    <ng-container *ngIf="item.result.isFile() && isDirectoryItem">
+      <span class="directory-listing-item">
+          <a
+            class="btn btn-light btn-sm mb-2 mt-1 border"
+            [href]="downloadUrl"
+          >
+            <fa-icon
+              [icon]="['fas', 'file-arrow-down']"
+            ></fa-icon>
+          </a>
+      </span>
+    </ng-container>
+
+    <!-- Template for folder downloads -->
+    <ng-container *ngIf="item.result.isFolder() && isDirectoryItem">
+      <span class="directory-listing-item">
+        <span
+          [ngbTooltip]="'BETA: will be available soon. Download ZIP of audio recording analysis'"
+        >
+          <a
+            class="btn btn-light btn-sm mb-2 mt-1 border"
+            [class.disabled]="true"
+          >
+            <fa-icon
+              [icon]="['fas', 'file-archive']"
+            ></fa-icon>
+          </a>
+        </span>
+      </span>
+    </ng-container>
+
+    <!-- Template for load more button -->
+    <ng-container *ngIf="!isDirectoryItem">
+      <span class="directory-listing-item">
+        <span [bawIndentation]="indentation"></span>
+
+        <button class="btn btn-sm m-2 btn-outline-primary" (click)="toggleOpen()">
+          Load More Results
+        </button>
+      </span>
+    </ng-container>
+  </div>
+</div>

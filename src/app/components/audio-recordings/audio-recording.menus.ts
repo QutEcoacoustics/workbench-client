@@ -13,13 +13,16 @@ import {
 } from "@interfaces/menusInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import {
+  AnalysisRoute,
   audioRecordingBatchRoutes,
   audioRecordingRoutes,
   audioRecordingsRoutes,
   RecordingRoute,
+  systemAnalysisJobRoute,
 } from "./audio-recording.routes";
 
 export type RecordingMenuRoutes = Record<RecordingRoute, MenuRoute>;
+export type AnalysisMenuRoutes = Record<AnalysisRoute, MenuRoute>;
 
 export const audioRecordingsCategory: Category = {
   icon: ["fas", "file-archive"],
@@ -69,6 +72,20 @@ function makeBatchMenuItem(subRoute: RecordingRoute): MenuRoute {
   });
 }
 
+export function makeAnalysesMenuItem(subRoute: AnalysisRoute): MenuRoute {
+  return menuRoute({
+    icon: ["fas", "folder-tree"],
+    label: "Download analysis results",
+    tooltip: () => "Download analysis results",
+    // since system job models are currently not returned from the api, this method will fail without a hard coded system job
+    // TODO: Remove this hacky bit of code bellow when the api returns the system analysis job
+    route: systemAnalysisJobRoute[subRoute].add("results"),
+    parent: listMenuItems[subRoute],
+    breadcrumbResolve: (pageInfo) =>
+      retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),
+  });
+}
+
 const listMenuItems: RecordingMenuRoutes = {
   /** /audio_recordings */
   base: makeListMenuItem("base"),
@@ -108,10 +125,24 @@ const batchMenuItems: RecordingMenuRoutes = {
   project: makeBatchMenuItem("project"),
 };
 
+const analysesMenuItems: AnalysisMenuRoutes = {
+  /** /audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId/results */
+  base: makeAnalysesMenuItem("base"),
+  /** /project/:projectId/site/:siteId/audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId/results */
+  site: makeAnalysesMenuItem("site"),
+  /** /project/:projectId/region/:regionId/point/:pointId/audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId/results */
+  siteAndRegion: makeAnalysesMenuItem("siteAndRegion"),
+  /** /region/:regionId/audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId/results */
+  region: makeAnalysesMenuItem("region"),
+  /** /project/:projectId/audio_recordings/:audioRecordingId/analysis_jobs/:analysisJobId/results */
+  project: makeAnalysesMenuItem("project"),
+};
+
 export const audioRecordingMenuItems = {
   list: listMenuItems,
   details: detailsMenuItems,
   batch: batchMenuItems,
+  analyses: analysesMenuItems,
 };
 
 export const downloadAudioRecordingMenuItem = menuLink({
@@ -121,13 +152,4 @@ export const downloadAudioRecordingMenuItem = menuLink({
   // Relative routes go to api
   uri: ({ audioRecordingId }) =>
     audioRecordingOriginalEndpoint(audioRecordingId),
-});
-
-// TODO: when this button is clicked it should action a download
-export const downloadAudioRecordingAnalysesMenuItem = menuLink({
-  icon: ["fas", "file-arrow-down"],
-  label: "Download Analyses",
-  tooltip: () => "Download audio recording analyses",
-  disabled: "BETA: Will be available soon.",
-  uri: () => "#"
 });

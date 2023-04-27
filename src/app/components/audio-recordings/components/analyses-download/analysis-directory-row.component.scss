@@ -1,0 +1,20 @@
+.display-contents {
+  display: contents;
+}
+
+.item-name {
+  cursor: pointer;
+}
+
+.fa-custom-icon {
+  font-size: 1.3em;
+}
+
+.whitespace-vertical-line {
+  display: block;
+  border-left: 0.1rem solid var(--baw-secondary);
+  width: 0.1rem;
+  height: 100%;
+  margin-left: 0.5rem;
+  margin-right: 1rem;
+}

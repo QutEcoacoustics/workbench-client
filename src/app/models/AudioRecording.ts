@@ -3,12 +3,14 @@ import { id, IdOr } from "@baw-api/api-common";
 import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import {
+  analysisResultsRoutes,
   audioRecordingBatchRoutes,
   audioRecordingRoutes,
   RecordingStrongRoutes,
 } from "@components/audio-recordings/audio-recording.routes";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { Duration } from "luxon";
+import { systemAnalysisJob } from "@baw-api/analysis/analysis-jobs.service";
 import {
   DateTimeTimezone,
   HasAllUsers,
@@ -31,6 +33,7 @@ import { Project } from "./Project";
 import { Region } from "./Region";
 import type { Site } from "./Site";
 import type { User } from "./User";
+import { AnalysisJob } from "./AnalysisJob";
 
 /**
  * An audio recording model
@@ -141,6 +144,16 @@ export class AudioRecording
     return this.selectRoute(routes, project, region, site);
   }
 
+  public getAnalysisResultsUrl(
+    project?: IdOr<Project>,
+    region?: IdOr<Region>,
+    site?: IdOr<Site>,
+    analysisJob?: IdOr<AnalysisJob>,
+  ): string {
+    const routes = analysisResultsRoutes;
+    return this.selectRoute(routes, project, region, site, analysisJob ?? systemAnalysisJob);
+  }
+
   /** Routes to the base details page */
   public get detailsUrl(): string {
     return this.getDetailsUrl();
@@ -174,13 +187,15 @@ export class AudioRecording
     routes: RecordingStrongRoutes,
     project: IdOr<Project>,
     region: IdOr<Region>,
-    site: IdOr<Site>
+    site: IdOr<Site>,
+    analysisJob?: IdOr<AnalysisJob>,
   ): string {
     const routeParams = {
       audioRecordingId: this.id,
       projectId: id(project),
       regionId: id(region),
       siteId: id(site),
+      analysisJobId: id(analysisJob),
     };
 
     if (site) {

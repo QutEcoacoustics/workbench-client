@@ -21,7 +21,8 @@ const analysisJobId: IdParamOptional<AnalysisJob> = id;
 const audioRecordingId: IdParamOptional<AudioRecording> = id;
 const analysisJobItemResultsPath = param;
 
-const endpoint = stringTemplate`/analysis_jobs/${analysisJobId}/results/${audioRecordingId}/${analysisJobItemResultsPath}${option}`;
+const analysisJobItemResultsEndpoint =
+  stringTemplate`/analysis_jobs/${analysisJobId}/results/${audioRecordingId}/${analysisJobItemResultsPath}${option}`;
 
 @Injectable()
 export class AnalysisJobItemResultsService
@@ -41,10 +42,10 @@ export class AnalysisJobItemResultsService
   ): Observable<AnalysisJobItemResult[]> {
     return this.api.list(
       AnalysisJobItemResult,
-      endpoint(
+      analysisJobItemResultsEndpoint(
         analysisJob,
         audioRecording,
-        analysisJobItemResult?.resultsPath ?? emptyParam,
+        analysisJobItemResult?.name ?? emptyParam,
         emptyParam
       )
     );
@@ -59,10 +60,10 @@ export class AnalysisJobItemResultsService
   ): Observable<AnalysisJobItemResult[]> {
     return this.api.filter(
       AnalysisJobItemResult,
-      endpoint(
+      analysisJobItemResultsEndpoint(
         analysisJob,
         audioRecording,
-        analysisJobItemResult?.resultsPath ?? emptyParam,
+        analysisJobItemResult?.name ?? emptyParam,
         filterParam
       ),
       filters
@@ -70,20 +71,38 @@ export class AnalysisJobItemResultsService
   }
 
   public show(
-    // TODO: we should consider overloads that take a path or model
     analysisJobItemResult: AnalysisJobItemResult,
     analysisJob: IdOr<AnalysisJob>,
     audioRecording: IdOr<AudioRecording>
+  ): Observable<AnalysisJobItemResult>;
+  public show(
+    analysisJobItemResultPath: string,
+    ...args: unknown[]
+  ): Observable<AnalysisJobItemResult>;
+
+  public show(
+    analysisJobItemResult: AnalysisJobItemResult | string,
+    analysisJob?: IdOr<AnalysisJob>,
+    audioRecording?: IdOr<AudioRecording>
   ): Observable<AnalysisJobItemResult> {
+    if (typeof analysisJobItemResult === "string") {
+      const adjustedPath = analysisJobItemResult.replace("http://api.staging.ecosounds.org", "");
+      return this.api.show(AnalysisJobItemResult, adjustedPath);
+    }
+
     return this.api.show(
       AnalysisJobItemResult,
-      endpoint(
+      analysisJobItemResultsEndpoint(
         analysisJob,
         audioRecording,
-        analysisJobItemResult.resultsPath,
+        analysisJobItemResult?.name ?? emptyParam,
         emptyParam
       )
     );
+  }
+
+  public downloadUrl(analysisJobItemResultPath?: string) {
+    return this.api.getPath(analysisJobItemResultPath ?? emptyParam);
   }
 }
 

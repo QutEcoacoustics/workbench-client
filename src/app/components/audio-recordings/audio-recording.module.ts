@@ -8,16 +8,22 @@ import { AudioRecordingsDetailsComponent } from "./pages/details/details.compone
 import { DownloadAudioRecordingsComponent } from "./pages/download/download.component";
 import { AudioRecordingsListComponent } from "./pages/list/list.component";
 import { SitesWithoutTimezonesComponent } from "./components/sites-without-timezones/sites-without-timezones.component";
+import { AnalysisResultsComponent } from "./pages/analysis-results/analysis-results.component";
+import { AnalysisDirectoryRowComponent } from "./components/analyses-download/analysis-directory-row.component";
+import { AnalysisDirectoryIndentationDirective } from "./components/analyses-download/analysis-directory-whitespace.directive";
 
 const internalComponents = [
   SitesWithoutTimezonesComponent,
   DownloadTableComponent,
+  AnalysisDirectoryRowComponent,
 ];
 
 const components = [
   AudioRecordingsListComponent,
   AudioRecordingsDetailsComponent,
   DownloadAudioRecordingsComponent,
+  AnalysisResultsComponent,
+  AnalysisDirectoryIndentationDirective,
 ];
 
 const routes = Object.values(audioRecordingsRoutes)

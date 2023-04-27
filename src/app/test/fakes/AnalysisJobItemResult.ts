@@ -9,17 +9,21 @@ export function generateAnalysisJobResults(
 ): Required<IAnalysisJobItemResult> {
   const resultItemTypes: ResultsItemType[] = ["directory", "file"];
 
+  const resultType = modelData.helpers.arrayElement(resultItemTypes);
+
   return {
     id: modelData.id(),
-    resultsPath: modelData.system.fileName(),
+    path: `${modelData.id()}/${modelData.system.fileName()}`,
     analysisJobId: modelData.id(),
     audioRecordingId: modelData.id(),
-    name: modelData.param(),
+    name: modelData.system.fileName(),
     sizeBytes: modelData.datatype.number(1000),
     hasChildren: modelData.bool(),
     hasZip: modelData.bool(),
-    type: modelData.helpers.arrayElement(resultItemTypes),
-    children: [],
+    type: resultType,
+    children: [{}],
+    isFile: () => resultType === "file",
+    isFolder: () => resultType === "directory",
     ...data,
   };
 }

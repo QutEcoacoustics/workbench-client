@@ -12,13 +12,13 @@ import { AnalysisJobItemResultsService } from "./analysis-job-item-result.servic
 describe("AnalysisJobItemsResultsService", (): void => {
   let spec: SpectatorService<AnalysisJobItemResultsService>;
   const baseUrl = "/analysis_jobs/10/results/15/";
-  const mockResultsPath = "testA/testB/fileA.csv";
+  const mockFileName = "testA/testB/fileA.csv";
 
   const createModel = () =>
     new AnalysisJobItemResult(
       generateAnalysisJobResults({
         id: 5,
-        resultsPath: mockResultsPath,
+        name: mockFileName,
       })
     );
 
@@ -37,7 +37,7 @@ describe("AnalysisJobItemsResultsService", (): void => {
     AnalysisJobItemResult,
     baseUrl, // list
     baseUrl + "filter", // filter
-    baseUrl + mockResultsPath, // show
+    baseUrl + mockFileName, // show
     createModel,
     undefined, // analysis job item results
     10, // analysis job
@@ -48,7 +48,7 @@ describe("AnalysisJobItemsResultsService", (): void => {
   validateApiShow(
     () => spec as any,
     AnalysisJobItemResult,
-    baseUrl + mockResultsPath,
+    baseUrl + mockFileName,
     undefined,
     createModel,
     10,

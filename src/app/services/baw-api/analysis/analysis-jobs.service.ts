@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { ShowDefaultResolver } from "@baw-api/ShowDefaultResolver";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { Observable } from "rxjs";
@@ -43,7 +44,18 @@ export class AnalysisJobsService implements ReadAndUpdateApi<AnalysisJob> {
   }
 }
 
+// TODO: Remove this hard coded system analysis job.
+// At the moment, there is a bug in the API where the system job does not exist in the database and will not be returned when requested.
+// This systemAnalysisJob is a workaround that can be used on if the route data returns null & is requesting the system analysis job.
+export const systemAnalysisJob: AnalysisJob = new AnalysisJob({ id: "system", name: "system" });
+
+const defaultAnalysisJobResolver = new ShowDefaultResolver<
+  AnalysisJob,
+  [],
+  AnalysisJobsService
+>([AnalysisJobsService], null).create("AnalysisJob");
+
 export const analysisJobResolvers = new Resolvers<AnalysisJob, []>(
   [AnalysisJobsService],
   "analysisJobId"
-).create("AnalysisJob");
+).create("AnalysisJob", defaultAnalysisJobResolver);

@@ -1,0 +1,32 @@
+<div class="mb-5">
+  <h1 class="text-muted">
+    <small> Analysis Results: {{ this.analysisJob.name }} </small>
+  </h1>
+
+  <p>
+    Results are available as they are generated. Download analysis reports of
+    individual files by clicking the <i>Download</i> button, or
+    <i>Download ZIP</i> to download an entire folders results in the form of a
+    ZIP file.
+  </p>
+
+  <div class="directory-column-container directory-listing-container">
+    <span>Path</span>
+    <span>Size</span>
+    <span>Download Results</span>
+  </div>
+  <div class="border-top border-bottom">
+    <div
+      class="directory-items-container"
+      *ngFor="let row of rows; trackBy: trackByRow"
+    >
+      <baw-analysis-directory-row
+        [item]="row"
+        [analysisJob]="analysisJob"
+        [audioRecording]="audioRecording"
+        [indentation]="getIndentation(row)"
+        (loadChildren)="toggleRow(row)"
+      ></baw-analysis-directory-row>
+    </div>
+  </div>
+</div>

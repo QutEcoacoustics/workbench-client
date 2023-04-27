@@ -1,0 +1,25 @@
+:host ::ng-deep {
+  .directory-listing-item {
+    display: flex;
+    flex-direction: row;
+    background-color: inherit;
+  }
+
+  .directory-item, .directory-column-container {
+    display: grid;
+    grid-template-columns:
+      1fr
+      14rem
+      9rem
+      min-content
+      min-content;
+    grid-template-rows: 1fr;
+  }
+
+  // fit-content is needed to scale on small screens & mobile properly
+  min-width: fit-content;
+}
+
+.directory-items-container:nth-child(2n) {
+  background-color: var(--baw-checkerboard-dark);
+}
