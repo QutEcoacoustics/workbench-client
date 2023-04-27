@@ -11,10 +11,10 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
-import { AnalysesResultsComponent } from "./analyses-results.component";
+import { AnalysisResultsComponent } from "./analysis-results.component";
 
 describe("analysesResultsComponent", () => {
-  let spectator: SpectatorHost<AnalysesResultsComponent>;
+  let spectator: SpectatorHost<AnalysisResultsComponent>;
   let defaultAudioRecording: AudioRecording;
   let getItemSpy: jasmine.Spy<(model: AnalysisJobItemResult) => Observable<AnalysisJobItemResult>>;
 
@@ -25,7 +25,7 @@ describe("analysesResultsComponent", () => {
       NgbTooltip,
       AnalysesDownloadRowComponent,
     ],
-    component: AnalysesResultsComponent,
+    component: AnalysisResultsComponent,
     imports: [MockBawApiModule, FormsModule],
     mocks: [ToastrService],
     providers: [
@@ -115,7 +115,7 @@ describe("analysesResultsComponent", () => {
   it("should create", () => {
     setup();
     mockDirectory();
-    expect(spectator.component).toBeInstanceOf(AnalysesResultsComponent);
+    expect(spectator.component).toBeInstanceOf(AnalysisResultsComponent);
   });
 
   it("should display an enabled file download button for files", () => {

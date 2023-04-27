@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Data } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { AnalysisJobItemResultsService } from "@baw-api/analysis/analysis-job-item-result.service";
 import {
   analysisJobResolvers,
@@ -8,6 +8,7 @@ import {
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
+import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   audioRecordingMenuItems,
@@ -31,11 +32,11 @@ const regionKey = "region";
 const siteKey = "site";
 
 @Component({
-  selector: "baw-analyses-results",
-  templateUrl: "analyses-results.component.html",
-  styleUrls: ["analyses-results.component.scss"],
+  selector: "baw-analysis-results",
+  templateUrl: "analysis-results.component.html",
+  styleUrls: ["analysis-results.component.scss"],
 })
-export class AnalysesResultsComponent extends PageComponent implements OnInit {
+export class AnalysisResultsComponent extends PageComponent implements OnInit {
   public constructor(
     public resultsServiceApi: AnalysisJobItemResultsService,
     public notifications: ToastrService,
@@ -44,29 +45,37 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     super();
   }
 
-  private readonly routeData: Data = this.route.snapshot.data;
+  private models: ResolvedModelList;
   protected rows = Array<ResultNode>();
-  public audioRecording: AudioRecording = this.routeData[audioRecordingKey]?.model;
-  // TODO: once api functionality for the system AnalysisJob is working, the "if undefined, then systemAnalysisJob" condition can be removed
-  public analysisJob: AnalysisJob =
-    this.routeData[analysisJobKey]?.model ??
-    systemAnalysisJob;
 
   public ngOnInit() {
+    this.models = retrieveResolvers(this.route.snapshot.data);
+
     // by supplying zero arguments to `getNodeChildren`, it will fetch the root paths child elements and place them on the view
     this.getNodeChildren()
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(rootChildren => {
+      .subscribe((rootChildren: ResultNode[]) => {
         // validate that the response is valid and has analysis job item results.
         // If not, throw an error and display the error to the user in the form of a toast notification
-        if (rootChildren.length < 1) {
-          const errorMessage = "Could not find Analysis Job Item Results. If you believe this to be an error, please report a problem.";
-          this.notifications.error(errorMessage);
-          throw new BawApiError(NOT_FOUND, errorMessage);
+        if (rootChildren.length === 0) {
+          throw new BawApiError(
+            NOT_FOUND,
+            "Could not find Analysis Job Item Results. If you believe this to be an error, please report a problem."
+          );
         }
 
         this.rows = rootChildren;
       });
+  }
+
+  public get audioRecording(): AudioRecording {
+    return this.models[audioRecordingKey] as AudioRecording;
+  }
+
+  public get analysisJob(): AnalysisJob {
+    // TODO: once api functionality for the system AnalysisJob is working, the if undefined, then systemAnalysisJob condition can be removed
+    // this is needed because the system analysis job cannot be resolved by the api yet (as it uses a text descriptor not integer id)
+    return (this.models[analysisJobKey] ?? systemAnalysisJob) as AnalysisJob;
   }
 
   /**
@@ -125,17 +134,16 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
           this.rows = this.rows
             .concat(returnedValues)
             .sort((a, b) =>
-              compareByPath(
-                this.getNodePath(a),
-                this.getNodePath(b)
-              )
+              compareByPath(this.getNodePath(a), this.getNodePath(b))
             );
         })
       )
       .pipe(takeUntil(this.unsubscribe))
       .subscribe();
 
-    this.rows = this.rows.filter((row) => !(row.result.name === "Load more..." && row === node));
+    this.rows = this.rows.filter(
+      (row) => !(row.result.name === "Load more..." && row === node)
+    );
 
     node.open = true;
   }
@@ -148,7 +156,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     }
   }
 
-  protected getIndentation(node: ResultNode): Array<void> {
+  protected getIndentation(node: ResultNode): number {
     const nodePath = this.getNodePath(node);
     const subPaths = nodePath.split("/").length;
 
@@ -156,7 +164,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     // because we are only interested in the number of paths (:analysisJobItemResultsPath), we have to subtract the leading path count (6)
     const indentationAmount = subPaths - 6;
 
-    return Array<void>(indentationAmount);
+    return indentationAmount;
   }
 
   /**
@@ -189,13 +197,14 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   ): ResultNode[] {
     let modelChildren = model.children.map(
       (item) =>
-      ({
-        parentItem: model,
-        result: item,
-      } as ResultNode)
+        ({
+          parentItem: model,
+          result: item,
+        } as ResultNode)
     );
 
-    const hasMoreChildren = model.getMetadata().paging.page !== model.getMetadata().paging.maxPage;
+    const hasMoreChildren =
+      model.getMetadata().paging.page !== model.getMetadata().paging.maxPage;
 
     if (hasMoreChildren) {
       modelChildren = this.addLoadMoreRow(model, modelChildren);
@@ -204,7 +213,10 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     return modelChildren;
   }
 
-  private addLoadMoreRow(parent: AnalysisJobItemResult, loadedChildren: ResultNode[]): ResultNode[] {
+  private addLoadMoreRow(
+    parent: AnalysisJobItemResult,
+    loadedChildren: ResultNode[]
+  ): ResultNode[] {
     const loadMoreRow: ResultNode = {
       parentItem: parent,
       result: new AnalysisJobItemResult({
@@ -212,7 +224,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
         name: "Load more...",
         path: parent.getMetadata().paging["next"],
       }),
-    }
+    };
 
     return loadedChildren.concat(loadMoreRow);
   }
@@ -249,7 +261,7 @@ function getPageInfo(
   };
 }
 
-AnalysesResultsComponent.linkToRoute(getPageInfo("base"))
+AnalysisResultsComponent.linkToRoute(getPageInfo("base"))
   .linkToRoute(getPageInfo("site"))
   .linkToRoute(getPageInfo("siteAndRegion"))
   .linkToRoute(getPageInfo("region"))

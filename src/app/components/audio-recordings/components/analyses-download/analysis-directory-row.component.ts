@@ -7,17 +7,17 @@ import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { AudioRecording } from "@models/AudioRecording";
 
 @Component({
-  selector: "baw-analysis-file-row",
-  templateUrl: "analysis-file-row.component.html",
-  styleUrls: ["analysis-row.component.scss"],
+  selector: "baw-analysis-directory-row",
+  templateUrl: "analysis-directory-row.component.html",
+  styleUrls: ["analysis-directory-row.component.scss"],
 })
-export class AnalysisFileRowComponent {
+export class AnalysisDirectoryRowComponent {
   public constructor(
     public api: AnalysisJobItemResultsService
   ) { }
 
   @Input() public item: ResultNode;
-  @Input() public indentation: Array<void>;
+  @Input() public indentation: number;
   @Input() public analysisJob: AnalysisJob;
   @Input() public audioRecording: AudioRecording;
   @Output() public loadChildren = new EventEmitter<AnalysisJobItemResult>();
@@ -36,6 +36,10 @@ export class AnalysisFileRowComponent {
 
   protected get downloadUrl(): string {
     return this.api.downloadUrl(this.item.parentItem.path + this.item.result.name);
+  }
+
+  protected get isDirectoryItem(): boolean {
+    return this.itemName !== "Load more...";
   }
 
   /**
