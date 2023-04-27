@@ -38,7 +38,7 @@ export class AnalysisJobItemResultsService
     analysisJob: IdOr<AnalysisJob>,
     audioRecording: IdOr<AudioRecording>,
     // TODO: we should consider overloads that take a path or model
-    analysisJobItemResult?: AnalysisJobItemResult,
+    analysisJobItemResult?: AnalysisJobItemResult
   ): Observable<AnalysisJobItemResult[]> {
     return this.api.list(
       AnalysisJobItemResult,
@@ -56,7 +56,7 @@ export class AnalysisJobItemResultsService
     analysisJob: IdOr<AnalysisJob>,
     audioRecording: IdOr<AudioRecording>,
     // TODO: we should consider overloads that take a path or model
-    analysisJobItemResult?: AnalysisJobItemResult,
+    analysisJobItemResult?: AnalysisJobItemResult
   ): Observable<AnalysisJobItemResult[]> {
     return this.api.filter(
       AnalysisJobItemResult,
@@ -71,11 +71,24 @@ export class AnalysisJobItemResultsService
   }
 
   public show(
-    // TODO: we should consider overloads that take a path or model
     analysisJobItemResult: AnalysisJobItemResult,
     analysisJob: IdOr<AnalysisJob>,
     audioRecording: IdOr<AudioRecording>
+  ): Observable<AnalysisJobItemResult>;
+  // public show(
+  //   analysisJobItemResultPath: string
+  // ): Observable<AnalysisJobItemResult>;
+
+  public show(
+    analysisJobItemResult: AnalysisJobItemResult,
+    analysisJob?: IdOr<AnalysisJob>,
+    audioRecording?: IdOr<AudioRecording>
   ): Observable<AnalysisJobItemResult> {
+    if (analysisJobItemResult?.path) {
+      const adjustedPath = analysisJobItemResult.path.replace("http://api.staging.ecosounds.org", "");
+      return this.api.show(AnalysisJobItemResult, adjustedPath);
+    }
+
     return this.api.show(
       AnalysisJobItemResult,
       analysisJobItemResultsEndpoint(

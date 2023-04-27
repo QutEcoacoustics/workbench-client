@@ -6,7 +6,6 @@ import {
   systemAnalysisJob,
 } from "@baw-api/analysis/analysis-jobs.service";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
-import { InnerFilter } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
@@ -77,8 +76,8 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
    * @returns The complete `AnalysisJobItemResult` model of the requested item. If no model is not defined, the root path will be returned
    */
   public getItem(node?: ResultNode): Observable<AnalysisJobItemResult> {
-    console.log(node?.result);
     const analysisJobId = this.analysisJob;
+
     return this.resultsServiceApi.show(
       node?.result,
       analysisJobId,
@@ -127,6 +126,8 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
       )
       .pipe(takeUntil(this.unsubscribe))
       .subscribe();
+
+    this.rows = this.rows.filter((row) => !(row.result.name === "Load more..." && row === node));
 
     node.open = true;
   }
@@ -196,10 +197,11 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   }
 
   private addLoadMoreRow(parent: AnalysisJobItemResult, loadedChildren: ResultNode[]): ResultNode[] {
-    const loadMoreRow: LoadMoreRow = {
+    const loadMoreRow: ResultNode = {
       parentItem: parent,
       result: new AnalysisJobItemResult({
         ...parent,
+        name: "Load more...",
         path: parent.getMetadata().paging["next"],
       }),
     }
@@ -221,10 +223,6 @@ interface ResultNode {
   children?: ResultNode[];
   parentItem?: AnalysisJobItemResult;
   open?: boolean;
-}
-
-interface LoadMoreRow extends ResultNode {
-  filter: InnerFilter<AnalysisJobItemResult>,
 }
 
 function getPageInfo(
