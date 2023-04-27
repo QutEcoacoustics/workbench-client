@@ -20,13 +20,13 @@
       class="directory-items-container"
       *ngFor="let row of rows; trackBy: trackByRow"
     >
-      <baw-directory-row
+      <baw-analysis-file-row
         [item]="row"
         [analysisJob]="analysisJob"
         [audioRecording]="audioRecording"
         [indentation]="getIndentation(row)"
         (loadChildren)="toggleRow(row)"
-      ></baw-directory-row>
+      ></baw-analysis-file-row>
     </div>
   </div>
 </div>

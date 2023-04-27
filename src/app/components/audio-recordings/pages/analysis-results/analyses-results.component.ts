@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Data } from "@angular/router";
 import { AnalysisJobItemResultsService } from "@baw-api/analysis/analysis-job-item-result.service";
 import {
   analysisJobResolvers,
@@ -44,7 +44,7 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
     super();
   }
 
-  private readonly routeData = this.route.snapshot.data;
+  private readonly routeData: Data = this.route.snapshot.data;
   protected rows = Array<ResultNode>();
   public audioRecording: AudioRecording = this.routeData[audioRecordingKey]?.model;
   // TODO: once api functionality for the system AnalysisJob is working, the "if undefined, then systemAnalysisJob" condition can be removed

@@ -7,11 +7,11 @@ import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { AudioRecording } from "@models/AudioRecording";
 
 @Component({
-  selector: "baw-directory-row",
-  templateUrl: "analysis-download-row.component.html",
-  styleUrls: ["analysis-download-row.component.scss"],
+  selector: "baw-analysis-file-row",
+  templateUrl: "analysis-file-row.component.html",
+  styleUrls: ["analysis-row.component.scss"],
 })
-export class AnalysesDownloadRowComponent {
+export class AnalysisFileRowComponent {
   public constructor(
     public api: AnalysisJobItemResultsService
   ) { }
