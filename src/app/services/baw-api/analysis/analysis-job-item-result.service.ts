@@ -75,17 +75,18 @@ export class AnalysisJobItemResultsService
     analysisJob: IdOr<AnalysisJob>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AnalysisJobItemResult>;
-  // public show(
-  //   analysisJobItemResultPath: string
-  // ): Observable<AnalysisJobItemResult>;
+  public show(
+    analysisJobItemResultPath: string,
+    ...args: unknown[]
+  ): Observable<AnalysisJobItemResult>;
 
   public show(
-    analysisJobItemResult: AnalysisJobItemResult,
+    analysisJobItemResult: AnalysisJobItemResult | string,
     analysisJob?: IdOr<AnalysisJob>,
     audioRecording?: IdOr<AudioRecording>
   ): Observable<AnalysisJobItemResult> {
-    if (analysisJobItemResult?.path) {
-      const adjustedPath = analysisJobItemResult.path.replace("http://api.staging.ecosounds.org", "");
+    if (typeof analysisJobItemResult === "string") {
+      const adjustedPath = analysisJobItemResult.replace("http://api.staging.ecosounds.org", "");
       return this.api.show(AnalysisJobItemResult, adjustedPath);
     }
 

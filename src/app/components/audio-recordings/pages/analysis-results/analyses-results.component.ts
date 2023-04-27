@@ -78,6 +78,14 @@ export class AnalysesResultsComponent extends PageComponent implements OnInit {
   public getItem(node?: ResultNode): Observable<AnalysisJobItemResult> {
     const analysisJobId = this.analysisJob;
 
+    if (node?.result?.path) {
+      return this.resultsServiceApi.show(
+        node.result.path,
+        analysisJobId,
+        this.audioRecording
+      );
+    }
+
     return this.resultsServiceApi.show(
       node?.result,
       analysisJobId,
