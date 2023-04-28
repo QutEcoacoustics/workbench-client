@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { Filters } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
@@ -10,9 +10,10 @@ import {
   audioRecordingsCategory,
 } from "@components/audio-recordings/audio-recording.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
+import { filterModel } from "@helpers/filters/filters";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { Id, Ids, toRelative } from "@interfaces/apiInterfaces";
+import { toRelative } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -20,7 +21,7 @@ import { Site } from "@models/Site";
 import { ConfigService } from "@services/config/config.service";
 import { API_ROOT } from "@services/config/config.tokens";
 import { List } from "immutable";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable, takeUntil } from "rxjs";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -51,6 +52,8 @@ class AudioRecordingsListComponent
     duration: "durationSeconds",
     site: "siteId",
   };
+  public filters$: BehaviorSubject<Filters<AudioRecording>> =
+    new BehaviorSubject({});
   protected api: AudioRecordingsService;
 
   public constructor(
@@ -92,6 +95,9 @@ class AudioRecordingsListComponent
 
     // Update table to show default sort
     this.table.sorts = [{ prop: "recorded", dir: "asc" }];
+    this.filters$.pipe(takeUntil(this.unsubscribe)).subscribe((filters) => {
+      this.updateFilters(filters);
+    });
   }
 
   public get projectId(): number | undefined {
@@ -128,28 +134,26 @@ class AudioRecordingsListComponent
     return recording.recordedDate.toFormat("yyyy-LL-dd HH:mm");
   }
 
+  public updateFilters(incomingFilters: Filters<AudioRecording>): void {
+    // since sorting is handled by the pagination table, when the filter is updated, it would remove the sorting order
+    // to ensure that sorting is retained throughout filtering, retain the previous sorting information
+    this.filters = {
+      sorting: this.filters?.sorting,
+      ...incomingFilters,
+    };
+
+    this.getPageData();
+  }
+
   protected apiAction(
     filters: Filters<AudioRecording>
   ): Observable<AudioRecording[]> {
-    function updateFilterWithSite(sites: Ids | Id) {
-      const siteFilters: Filters<AudioRecording> = (filters ??= {});
-      const siteInnerFilter: InnerFilter<AudioRecording> =
-        (siteFilters.filter ??= {});
-      const siteFilter = (siteInnerFilter.siteId ??= {});
-      if (sites instanceof Set) {
-        siteFilter.in = Array.from(sites);
-      } else {
-        siteFilter.eq = sites;
-      }
-    }
-
-    // Order matters
     if (this.site) {
-      updateFilterWithSite(this.site.id);
+      filters.filter = filterModel<Site, AudioRecording>("sites", this.site, filters.filter);
     } else if (this.region) {
-      updateFilterWithSite(this.region.siteIds);
+      filters.filter = filterModel<Region, AudioRecording>("regions", this.region, filters.filter);
     } else if (this.project) {
-      updateFilterWithSite(this.project.siteIds);
+      filters.filter = filterModel<Project, AudioRecording>("projects", this.project, filters.filter);
     }
 
     return this.api.filter(filters);

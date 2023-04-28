@@ -81,11 +81,11 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
         distinctUntilChanged(),
         takeUntil(this.unsubscribe)
       )
-      .subscribe(
-        () => this.getPageData(),
+      .subscribe({
+        next: () => this.getPageData(),
         // Filter event doesn't have an error output
-        (err) => console.error(err)
-      );
+        error: (err) => console.error(err),
+      });
   }
 
   public ngOnInit() {

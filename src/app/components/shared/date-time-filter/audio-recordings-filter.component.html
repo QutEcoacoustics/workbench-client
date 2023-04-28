@@ -1,0 +1,180 @@
+<form #form class="mb-3">
+  <!-- Toggle filtering by date -->
+  <div class="form-check">
+    <input
+      id="date-filtering"
+      name="dateFiltering"
+      type="checkbox"
+      class="form-check-input"
+      [(ngModel)]="model.dateFiltering"
+    />
+
+    <label class="form-check-label" for="date-filtering">Filter by date</label>
+
+    <div class="form-text">Filter recordings over a date range</div>
+  </div>
+
+  <!-- Date filters -->
+  <div
+    id="date-filters-wrapper"
+    #collapse="ngbCollapse"
+    [ngbCollapse]="!model.dateFiltering"
+  >
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <!-- Start date input -->
+          <div class="col-md-6 mb-3 mb-md-0">
+            <div class="input-group">
+              <span class="input-group-text">Start Date</span>
+              <input
+                #dateStartedAfter="ngbDatepicker"
+                #dateStartedAfterForm="ngModel"
+                ngbDatepicker
+                id="date-started-after"
+                name="dateStartedAfter"
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                [maxDate]="model.dateFinishedBefore"
+                [class.is-invalid]="dateStartedAfterForm.errors?.ngbDate?.invalid"
+                [(ngModel)]="model.dateStartedAfter"
+              />
+              <button
+                class="btn btn-outline-secondary"
+                (click)="dateStartedAfter.toggle()"
+                type="button"
+              >
+                <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
+              </button>
+              <div class="invalid-feedback">
+                The date should follow the format yyyy-mm-dd, e.g. 2022-12-01
+              </div>
+            </div>
+          </div>
+
+          <!-- End date input -->
+          <div class="col-md-6 mb-3 mb-md-0">
+            <div class="input-group">
+              <span class="input-group-text">End Date</span>
+              <input
+                #dateFinishedBefore="ngbDatepicker"
+                #dateFinishedBeforeForm="ngModel"
+                ngbDatepicker
+                id="date-finished-before"
+                name="dateFinishedBefore"
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                [class.is-invalid]="dateFinishedBeforeForm.errors?.ngbDate?.invalid"
+                [minDate]="model.dateStartedAfter"
+                [(ngModel)]="model.dateFinishedBefore"
+              />
+              <button
+                class="btn btn-outline-secondary"
+                (click)="dateFinishedBefore.toggle()"
+                type="button"
+              >
+                <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
+              </button>
+              <div class="invalid-feedback">
+                The date should follow the format yyyy-mm-dd, e.g. 2022-12-01
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          *ngIf="dateFinishedBeforeForm.errors?.ngbDate?.minDate"
+          class="form-error"
+        >
+          The filter dates are outside the date boundary. Ensure that the start
+          date occurs before the end date.
+        </div>
+
+        <div class="form-text">
+          <strong>
+            The UTC (+00:00) time zone is used for all date filtering.
+          </strong>
+          If you're unsure if your data will be included in a filter, expand
+          your date range by one-day in either direction.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toggle filtering by time of day -->
+  <div class="form-check mt-3">
+    <input
+      id="time-filtering"
+      name="timeFiltering"
+      type="checkbox"
+      class="form-check-input"
+      [(ngModel)]="model.timeFiltering"
+    />
+
+    <label class="form-check-label" for="time-filtering">
+      Filter by time of day
+    </label>
+
+    <div class="form-text">
+      Filter recordings by the time of day they were recorded. If any part of a
+      recording overlaps these limits, then it will be included.
+    </div>
+  </div>
+
+  <!-- Time of day filters -->
+  <div
+    id="time-filters-wrapper"
+    #collapse="ngbCollapse"
+    [ngbCollapse]="!model.timeFiltering"
+  >
+    <div class="card">
+      <div class="card-body">
+        <div class="row mb-3">
+          <!-- Start time input -->
+          <div class="col-md-6 mb-3 mb-md-0">
+            <baw-time
+              id="time-started-after"
+              name="timeStartedAfter"
+              label="Start Time"
+              [(ngModel)]="model.timeStartedAfter"
+            ></baw-time>
+          </div>
+
+          <!-- End time input -->
+          <div class="col-md-6">
+            <baw-time
+              id="time-finished-before"
+              name="timeFinishedBefore"
+              label="End Time"
+              [(ngModel)]="model.timeFinishedBefore"
+            ></baw-time>
+          </div>
+        </div>
+
+        <!-- Ignore daylight savings checkbox -->
+        <div class="form-check">
+          <input
+            id="ignore-daylight-savings"
+            name="ignoreDaylightSavings"
+            type="checkbox"
+            class="form-check-input"
+            [disabled]="!model.timeFiltering"
+            [(ngModel)]="model.ignoreDaylightSavings"
+          />
+
+          <label class="form-check-label" for="ignore-daylight-savings">
+            Ignore day light savings (DST)
+          </label>
+
+          <div class="form-text">
+            Real world events, like dawn chorus, or the vocalization of fauna
+            are not affected by daylight savings time. Ignoring DST is advised
+            to ensure audio is filtered consistently. If any recordings occur
+            during a DST period, the base offset, that is the time it would be
+            if DST were not in effect, will be used.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

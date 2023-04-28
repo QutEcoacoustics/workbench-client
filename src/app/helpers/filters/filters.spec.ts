@@ -1,0 +1,141 @@
+import { InnerFilter } from "@baw-api/baw-api.service";
+import { Project } from "@models/Project";
+import { generateProject } from "@test/fakes/Project";
+import { Writeable } from "@helpers/advancedTypes";
+import { filterAnd, filterModel } from "./filters";
+
+describe("ModelFilters", () => {
+  describe("addFilters", () => {
+    it("should return the inner filter unchanged if there is no existing filter", () => {
+      const currentFilters = undefined;
+      const additionalFilters = {
+        ["projects.id"]: {
+          eq: 1,
+        },
+      };
+
+      const observedResult = filterAnd(currentFilters, additionalFilters);
+      expect(observedResult).toEqual(additionalFilters);
+    });
+
+    it("should create an 'and' condition if there is no and condition for a newly multi conditional filter", () => {
+      const currentFilters = {
+        ["projects.id"]: {
+          eq: 1,
+        },
+      };
+      const additionalFilters = {
+        recordedDate: { greaterThan: "2021-10-10" },
+      };
+
+      const expectedResult: InnerFilter = {
+        and: [
+          {
+            ["projects.id"]: {
+              eq: 1,
+            },
+          },
+          {
+            recordedDate: { greaterThan: "2021-10-10" },
+          },
+        ],
+      };
+
+      const observedResult = filterAnd(currentFilters, additionalFilters);
+      expect(observedResult).toEqual(expectedResult);
+    });
+
+    it("should append the a condition to the 'and' block if there is an existing 'and' conditional block", () => {
+      const currentFilters: InnerFilter = {
+        and: [
+          {
+            ["projects.id"]: { eq: 1 },
+          },
+          {
+            recordedDate: { greaterThan: "2021-10-10" },
+          },
+        ],
+      };
+
+      const additionalFilters = {
+        ["sites.id"]: {
+          in: [{ eq: 1 }, { eq: 2 }],
+        },
+      };
+
+      const expectedResult: InnerFilter = {
+        and: [
+          {
+            ["projects.id"]: {
+              eq: 1,
+            },
+          },
+          {
+            recordedDate: { greaterThan: "2021-10-10" },
+          },
+          {
+            ["sites.id"]: {
+              in: [{ eq: 1 }, { eq: 2 }],
+            },
+          },
+        ],
+      };
+
+      const observedResult = filterAnd(currentFilters, additionalFilters);
+      expect(observedResult).toEqual(expectedResult);
+    });
+  });
+
+  it("should return an empty filter if no model is specified", () => {
+    const mockModel: Project = undefined;
+    const initialFilters: InnerFilter<Writeable<any>> = {};
+
+    const observedResult = filterModel<Project, any>("projects", mockModel, initialFilters);
+    expect(observedResult).toEqual(initialFilters);
+  });
+
+  it("should return an empty filter if the model does not have an id property", () => {
+    const mockModel = new Project(generateProject({ id: undefined }));
+    const initialFilters: InnerFilter<Writeable<any>> = {};
+
+    const observedResult = filterModel<Project, any>("projects", mockModel, initialFilters);
+    expect(observedResult).toEqual(initialFilters);
+  });
+
+  it("should return the exiting filter unmodified if no model is specified", () => {
+    const mockModel: Project = undefined;
+    const currentFilters = {
+      ["regions.id"]: {
+        eq: 1,
+      },
+    };
+
+    const observedResult = filterModel<Project, any>("projects", mockModel, currentFilters);
+    expect(observedResult).toEqual(currentFilters);
+  });
+
+  it("should return the exiting filter unmodified if the model does not have an id property", () => {
+    const mockModel = new Project(generateProject({ id: undefined }));
+    const currentFilters = {
+      ["regions.id"]: {
+        eq: 1,
+      },
+    };
+
+    const observedResult = filterModel<Project, any>("projects", mockModel, currentFilters);
+    expect(observedResult).toEqual(currentFilters);
+  });
+
+  it("should create the correct model filter for a project", () => {
+    const mockProject = new Project(generateProject({ id: 11 }));
+    const initialFilters: InnerFilter = {};
+    const expectedResult = {
+      ["projects.id"]: {
+        eq: mockProject.id,
+      },
+    };
+
+    const observedResult = filterModel<Project, any>("projects", mockProject, initialFilters);
+    expect(observedResult).toEqual(expectedResult);
+  });
+});
