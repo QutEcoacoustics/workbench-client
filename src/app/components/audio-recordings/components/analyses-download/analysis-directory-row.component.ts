@@ -31,7 +31,7 @@ export class AnalysisDirectoryRowComponent {
   }
 
   protected get itemName(): string {
-    return this.item.result.name;
+    return this.item.label ?? this.item.result.name;
   }
 
   protected get downloadUrl(): string {
@@ -39,7 +39,7 @@ export class AnalysisDirectoryRowComponent {
   }
 
   protected get isDirectoryItem(): boolean {
-    return this.itemName !== "Load more...";
+    return !this.itemName.includes("Load more");
   }
 
   /**
@@ -65,4 +65,5 @@ export class AnalysisDirectoryRowComponent {
 interface ResultNode {
   result?: AnalysisJobItemResult;
   parentItem?: AnalysisJobItemResult;
+  label?: string;
 }

@@ -87,14 +87,6 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
   public getItem(node?: ResultNode): Observable<AnalysisJobItemResult> {
     const analysisJobId = this.analysisJob;
 
-    if (node?.result?.path) {
-      return this.resultsServiceApi.show(
-        node.result.path,
-        analysisJobId,
-        this.audioRecording
-      );
-    }
-
     return this.resultsServiceApi.show(
       node?.result,
       analysisJobId,
@@ -142,7 +134,7 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
       .subscribe();
 
     this.rows = this.rows.filter(
-      (row) => !(row.result.name === "Load more..." && row === node)
+      (row) => !(row?.label?.includes("Load more") && row === node)
     );
 
     node.open = true;
@@ -203,8 +195,7 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
         } as ResultNode)
     );
 
-    const hasMoreChildren =
-      model.getMetadata().paging.page !== model.getMetadata().paging.maxPage;
+    const hasMoreChildren = model.getMetadata().paging.page !== model.getMetadata().paging.maxPage;
 
     if (hasMoreChildren) {
       modelChildren = this.addLoadMoreRow(model, modelChildren);
@@ -219,9 +210,9 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
   ): ResultNode[] {
     const loadMoreRow: ResultNode = {
       parentItem: parent,
+      label: `Load more from ${parent.name}`,
       result: new AnalysisJobItemResult({
         ...parent,
-        name: "Load more...",
         path: parent.getMetadata().paging["next"],
       }),
     };
@@ -239,6 +230,7 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
 }
 
 interface ResultNode {
+  label?: string;
   result?: AnalysisJobItemResult;
   children?: ResultNode[];
   parentItem?: AnalysisJobItemResult;

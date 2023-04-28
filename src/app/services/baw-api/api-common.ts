@@ -51,7 +51,7 @@ export function param(x: Param) {
  *
  * @param x Api option
  */
-export function option(x?: New | Filter | Empty) {
+export function option(x?: New | Filter | Empty | string) {
   return x ? x : emptyParam;
 }
 

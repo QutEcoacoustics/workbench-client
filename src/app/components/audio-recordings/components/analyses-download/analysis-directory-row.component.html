@@ -4,7 +4,7 @@
   >
     <ng-container *ngIf="isDirectoryItem">
       <span class="directory-listing-item item-name" (click)="toggleOpen()">
-        <span [bawIndentation]="indentation"></span>
+        <span class="whitespace-vertical-line" [bawIndentation]="indentation"></span>
 
         <fa-layers class="fa-custom-icon m-2">
           <fa-icon
@@ -56,10 +56,10 @@
     <!-- Template for load more button -->
     <ng-container *ngIf="!isDirectoryItem">
       <span class="directory-listing-item">
-        <span [bawIndentation]="indentation"></span>
+        <span class="whitespace-vertical-line" [bawIndentation]="indentation"></span>
 
-        <button class="btn btn-sm m-2 btn-outline-primary" (click)="toggleOpen()">
-          Load More Results
+        <button class="btn btn-sm m-2 btn-outline-primary d-flex justify-center" (click)="toggleOpen()">
+          {{ itemName }}
         </button>
       </span>
     </ng-container>

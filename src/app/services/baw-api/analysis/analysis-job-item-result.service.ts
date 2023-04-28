@@ -72,22 +72,13 @@ export class AnalysisJobItemResultsService
 
   public show(
     analysisJobItemResult: AnalysisJobItemResult,
-    analysisJob: IdOr<AnalysisJob>,
-    audioRecording: IdOr<AudioRecording>
-  ): Observable<AnalysisJobItemResult>;
-  public show(
-    analysisJobItemResultPath: string,
-    ...args: unknown[]
-  ): Observable<AnalysisJobItemResult>;
-
-  public show(
-    analysisJobItemResult: AnalysisJobItemResult | string,
     analysisJob?: IdOr<AnalysisJob>,
     audioRecording?: IdOr<AudioRecording>
   ): Observable<AnalysisJobItemResult> {
-    if (typeof analysisJobItemResult === "string") {
-      const adjustedPath = analysisJobItemResult.replace("http://api.staging.ecosounds.org", "");
-      return this.api.show(AnalysisJobItemResult, adjustedPath);
+    let options = analysisJobItemResult?.path.split("?", 2)[1] ?? emptyParam;
+
+    if (options !== emptyParam) {
+      options = `?${options}`;
     }
 
     return this.api.show(
@@ -96,7 +87,7 @@ export class AnalysisJobItemResultsService
         analysisJob,
         audioRecording,
         analysisJobItemResult?.name ?? emptyParam,
-        emptyParam
+        options
       )
     );
   }
