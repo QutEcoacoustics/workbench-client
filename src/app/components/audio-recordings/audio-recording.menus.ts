@@ -75,9 +75,7 @@ export function makeAnalysesMenuItem(subRoute: AnalysisRoute): MenuRoute {
     // since system job models are currently not returned from the api, this method will fail without a hard coded system job
     // TODO: Remove this hacky bit of code bellow when the api returns the system analysis job
     route: systemAnalysisJobRoute[subRoute].add("results"),
-    parent: listMenuItems[subRoute],
-    breadcrumbResolve: (pageInfo) =>
-      retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),
+    parent: detailsMenuItems[subRoute],
   });
 }
 

@@ -8,12 +8,12 @@
 
 .fa-custom-icon {
   font-size: 1.3em;
+  padding-right: 2rem;
 }
 
 .whitespace-vertical-line {
   display: block;
-  border-left: 0.1rem solid var(--baw-secondary);
-  width: 0.1rem;
+  background: linear-gradient(to right, black 1px, transparent 1px);
+  background-size: 1.2rem;
   height: 100%;
-  margin-right: 1rem;
 }

@@ -1,15 +1,14 @@
-import { AfterViewInit, Directive, ElementRef, Input } from "@angular/core";
+import { Directive, HostBinding, Input, OnInit } from "@angular/core";
 
 @Directive({
-  selector: "[bawIndentation]"
+  selector: "[bawIndentation]",
 })
-export class AnalysisDirectoryIndentationDirective implements AfterViewInit
+export class AnalysisDirectoryIndentationDirective implements OnInit
 {
-  public constructor(private element: ElementRef) { }
+  @Input("bawIndentation") public indentation: number;
+  @HostBinding("style.width") public width: string;
 
-  public ngAfterViewInit(): void {
-    this.element.nativeElement.style.marginLeft = `${this.indentation * 1.5}em`;
+  public ngOnInit(): void {
+    this.width = `${this.indentation}rem`;
   }
-
-  @Input("bawIndentation") public indentation: any;
 }

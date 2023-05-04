@@ -536,6 +536,10 @@ export interface Paging {
   total?: number;
   /** Maximum page number */
   maxPage?: number;
+  /** The next page get request location */
+  next?: string;
+  /** The previous page get request location */
+  previous?: string;
 }
 
 export interface Combinations<T> {

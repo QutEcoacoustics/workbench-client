@@ -1,67 +1,69 @@
 <div class="directory-item">
-  <div
-    class="display-contents"
-  >
-    <ng-container *ngIf="isDirectoryItem">
-      <span class="directory-listing-item item-name" (click)="toggleOpen()">
-        <span class="whitespace-vertical-line" [bawIndentation]="indentation"></span>
-
-        <fa-layers class="fa-custom-icon m-2">
-          <fa-icon
-            class="fa-custom-icon"
-            [icon]="chooseIcon()"
-          ></fa-icon>
-        </fa-layers>
-
-        {{ itemName }}
-      </span>
-
-      <span class="directory-listing-item">
-        {{ item.result.humanReadableByteSize() }}
-      </span>
-    </ng-container>
-
-    <!-- Template for file downloads -->
-    <ng-container *ngIf="item.result.isFile() && isDirectoryItem">
-      <span class="directory-listing-item">
-          <a
-            class="btn btn-light btn-sm mb-2 mt-1 border"
-            [href]="downloadUrl"
-          >
-            <fa-icon
-              [icon]="['fas', 'file-arrow-down']"
-            ></fa-icon>
-          </a>
-      </span>
-    </ng-container>
-
-    <!-- Template for folder downloads -->
-    <ng-container *ngIf="item.result.isFolder() && isDirectoryItem">
-      <span class="directory-listing-item">
-        <span
-          [ngbTooltip]="'BETA: will be available soon. Download ZIP of audio recording analysis'"
-        >
-          <a
-            class="btn btn-light btn-sm mb-2 mt-1 border"
-            [class.disabled]="true"
-          >
-            <fa-icon
-              [icon]="['fas', 'file-archive']"
-            ></fa-icon>
-          </a>
-        </span>
-      </span>
-    </ng-container>
-
-    <!-- Template for load more button -->
-    <ng-container *ngIf="!isDirectoryItem">
-      <span class="directory-listing-item">
-        <span class="whitespace-vertical-line" [bawIndentation]="indentation"></span>
-
-        <button class="btn btn-sm m-2 btn-outline-primary d-flex justify-center" (click)="toggleOpen()">
-          {{ itemName }}
-        </button>
-      </span>
-    </ng-container>
+  <div class="display-contents">
+    <ng-container *ngIf="isLoadMoreButton; then loadMoreButton; else directoryRowItem"></ng-container>
   </div>
 </div>
+
+<!-- Template for directory row items -->
+<!-- This template is used for files and folders -->
+<ng-template #directoryRowItem>
+  <span class="directory-listing-item align-items-center item-name" (click)="toggleOpen()">
+    <span class="whitespace-vertical-line" [bawIndentation]="indentation"></span>
+    <fa-layers class="fa-custom-icon m-2">
+      <fa-icon
+      class="fa-custom-icon"
+      [icon]="chooseIcon()"
+      ></fa-icon>
+    </fa-layers>
+
+    {{ itemName }}
+  </span>
+
+  <span class="directory-listing-item">
+    {{ item.result.humanReadableByteSize() }}
+  </span>
+
+  <!-- Template for file downloads -->
+  <ng-container *ngIf="!isLoadMoreButton && item.result.isFile()">
+    <span class="directory-listing-item">
+        <a
+          class="btn btn-light btn-sm mb-2 mt-1 border"
+          [href]="downloadUrl"
+        >
+          <fa-icon
+            [icon]="['fas', 'file-arrow-down']"
+          ></fa-icon>
+        </a>
+    </span>
+  </ng-container>
+
+  <!-- Template for folder downloads -->
+  <ng-container *ngIf="!isLoadMoreButton && item.result.isFolder()">
+    <span class="directory-listing-item">
+      <span
+        [ngbTooltip]="'BETA: will be available soon. Download ZIP of audio recording analysis'"
+      >
+        <a
+          class="btn btn-light btn-sm mb-2 mt-1 border"
+          [class.disabled]="true"
+        >
+          <fa-icon
+            [icon]="['fas', 'file-archive']"
+          ></fa-icon>
+        </a>
+      </span>
+    </span>
+  </ng-container>
+</ng-template>
+
+
+<!-- Template for load more button -->
+<ng-template #loadMoreButton>
+  <span class="directory-listing-item">
+    <span class="whitespace-vertical-line" [bawIndentation]="indentation"></span>
+
+    <button class="btn btn-sm m-2 btn-outline-primary d-flex justify-center" (click)="toggleOpen()">
+      Load more from {{ item.parentItem.name }}
+    </button>
+  </span>
+</ng-template>

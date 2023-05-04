@@ -1,15 +1,15 @@
 import { Injectable } from "@angular/core";
 import {
   emptyParam,
-  filterParam,
   IdOr,
   id,
   IdParamOptional,
   option,
-  ReadonlyApi,
   param,
+  ApiList,
+  ApiShow,
 } from "@baw-api/api-common";
-import { BawApiService, Filters } from "@baw-api/baw-api.service";
+import { BawApiService } from "@baw-api/baw-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { AnalysisJob } from "@models/AnalysisJob";
@@ -24,13 +24,13 @@ const analysisJobItemResultsPath = param;
 const analysisJobItemResultsEndpoint =
   stringTemplate`/analysis_jobs/${analysisJobId}/results/${audioRecordingId}/${analysisJobItemResultsPath}${option}`;
 
+// inner filters are not supported by the AnalysisJobItemResults endpoint
+// All pagination and sorting is done through the analysis job list & show body's
 @Injectable()
 export class AnalysisJobItemResultsService
   implements
-    ReadonlyApi<
-      AnalysisJobItemResult,
-      [IdOr<AnalysisJob>, IdOr<AudioRecording>]
-    >
+    ApiShow<AnalysisJobItemResult, [IdOr<AnalysisJob>, IdOr<AudioRecording>]>,
+    ApiList<AnalysisJobItemResult, [IdOr<AnalysisJob>, IdOr<AudioRecording>]>
 {
   public constructor(private api: BawApiService<AnalysisJobItemResult>) {}
 
@@ -48,25 +48,6 @@ export class AnalysisJobItemResultsService
         analysisJobItemResult?.name ?? emptyParam,
         emptyParam
       )
-    );
-  }
-
-  public filter(
-    filters: Filters<AnalysisJobItemResult>,
-    analysisJob: IdOr<AnalysisJob>,
-    audioRecording: IdOr<AudioRecording>,
-    // TODO: we should consider overloads that take a path or model
-    analysisJobItemResult?: AnalysisJobItemResult
-  ): Observable<AnalysisJobItemResult[]> {
-    return this.api.filter(
-      AnalysisJobItemResult,
-      analysisJobItemResultsEndpoint(
-        analysisJob,
-        audioRecording,
-        analysisJobItemResult?.name ?? emptyParam,
-        filterParam
-      ),
-      filters
     );
   }
 

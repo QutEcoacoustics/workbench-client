@@ -22,7 +22,6 @@ import { AnalysisJob } from "@models/AnalysisJob";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { AudioRecording } from "@models/AudioRecording";
 import { NOT_FOUND } from "http-status";
-import { ToastrService } from "ngx-toastr";
 import { Observable, map, takeUntil } from "rxjs";
 
 const audioRecordingKey = "audioRecording";
@@ -30,6 +29,21 @@ const analysisJobKey = "analysisJob";
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
+
+export enum ResultNodeType {
+  file,
+  folder,
+  loadMore,
+}
+
+export interface ResultNode {
+  rowType: ResultNodeType;
+  result?: AnalysisJobItemResult;
+  children?: ResultNode[];
+  parentItem?: AnalysisJobItemResult;
+  open?: boolean;
+  onClick?: () => void;
+}
 
 @Component({
   selector: "baw-analysis-results",
@@ -39,7 +53,6 @@ const siteKey = "site";
 export class AnalysisResultsComponent extends PageComponent implements OnInit {
   public constructor(
     public resultsServiceApi: AnalysisJobItemResultsService,
-    public notifications: ToastrService,
     public route: ActivatedRoute
   ) {
     super();
@@ -47,6 +60,16 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
 
   private models: ResolvedModelList;
   protected rows = Array<ResultNode>();
+
+  public get audioRecording(): AudioRecording {
+    return this.models[audioRecordingKey] as AudioRecording;
+  }
+
+  public get analysisJob(): AnalysisJob {
+    // TODO: once api functionality for the system AnalysisJob is working, the if undefined, then systemAnalysisJob condition can be removed
+    // this is needed because the system analysis job cannot be resolved by the api yet (as it uses a text descriptor not integer id)
+    return (this.models[analysisJobKey] ?? systemAnalysisJob) as AnalysisJob;
+  }
 
   public ngOnInit() {
     this.models = retrieveResolvers(this.route.snapshot.data);
@@ -65,17 +88,9 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
         }
 
         this.rows = rootChildren;
+
+        this.rows = this.rows.sort((a, b) => compareByPath(this.getNodePath(a), this.getNodePath(b)));
       });
-  }
-
-  public get audioRecording(): AudioRecording {
-    return this.models[audioRecordingKey] as AudioRecording;
-  }
-
-  public get analysisJob(): AnalysisJob {
-    // TODO: once api functionality for the system AnalysisJob is working, the if undefined, then systemAnalysisJob condition can be removed
-    // this is needed because the system analysis job cannot be resolved by the api yet (as it uses a text descriptor not integer id)
-    return (this.models[analysisJobKey] ?? systemAnalysisJob) as AnalysisJob;
   }
 
   /**
@@ -84,63 +99,19 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
    * @param node An incomplete result node that must include the result node name or id attribute
    * @returns The complete `AnalysisJobItemResult` model of the requested item. If no model is not defined, the root path will be returned
    */
-  public getItem(node?: ResultNode): Observable<AnalysisJobItemResult> {
-    const analysisJobId = this.analysisJob;
-
+  public getItem(node: ResultNode): Observable<AnalysisJobItemResult> {
     return this.resultsServiceApi.show(
       node?.result,
-      analysisJobId,
+      this.analysisJob,
       this.audioRecording
     );
   }
 
-  /**
-   * Recursive: close all the child elements of a row
-   * This method needs to be recursive so it can close folders of more than 1 depth.
-   * e.g. closing folderA/ will close FolderA/aa/bb/
-   *
-   * @param node A result node / row to close
-   */
-  private closeRow(node: ResultNode): void {
-    this.rows = this.rows.filter((row) => !this.isChildOf(row, node));
-
-    // close the children of the children, etc.. all the way down the tree
-    if (node.children) {
-      node.children.forEach((child) => this.closeRow(child));
+  public toggleRow(node: ResultNode): void {
+    if (node.onClick instanceof Function) {
+      node.onClick();
     }
 
-    node.open = false;
-  }
-
-  /**
-   * Opens an analysis result folder, and sorts the child items by path
-   *
-   * @param node The result node to open
-   * @param isIncomplete Specifies if there are more items to be fetched from the API.
-   * If `isIncomplete` is set, a "load more" button is expected
-   */
-  private openRow(node: ResultNode): void {
-    this.getNodeChildren(node)
-      .pipe(
-        map((returnedValues) => {
-          this.rows = this.rows
-            .concat(returnedValues)
-            .sort((a, b) =>
-              compareByPath(this.getNodePath(a), this.getNodePath(b))
-            );
-        })
-      )
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe();
-
-    this.rows = this.rows.filter(
-      (row) => !(row?.label?.includes("Load more") && row === node)
-    );
-
-    node.open = true;
-  }
-
-  public toggleRow(node: ResultNode): void {
     if (node.open) {
       this.closeRow(node);
     } else {
@@ -160,6 +131,52 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
   }
 
   /**
+   * Recursive: close all the child elements of a row
+   * This method needs to be recursive so it can close folders of more than 1 depth.
+   * e.g. closing folderA/ will close FolderA/aa/bb/
+   *
+   * @param node A result node / row to close
+   */
+  private closeRow(node: ResultNode): void {
+    this.rows = this.rows.filter((row) => !this.isChildOf(row, node));
+
+    // since only folders can be opened, we do not need to iterate through every child item. We only need to close folder items
+    const nodeChildFolders: ResultNode[] = node.children.filter((child: ResultNode) => child.rowType === ResultNodeType.folder);
+
+    if (nodeChildFolders.length) {
+      nodeChildFolders.forEach((child: ResultNode) => this.closeRow(child));
+    }
+
+    node.open = false;
+  }
+
+  /**
+   * Opens an analysis result folder, and sorts the child items by path
+   *
+   * @param node The result node to open
+   * @param isIncomplete Specifies if there are more items to be fetched from the API.
+   * If `isIncomplete` is set, a "load more" button is expected
+   */
+  private openRow(node: ResultNode): void {
+
+    this.getNodeChildren(node)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((children: ResultNode[]) => {
+        node.children = children;
+        this.rows = this.rows
+          .concat(children)
+          .sort((a: ResultNode, b: ResultNode) =>
+            compareByPath(
+              this.getNodePath(a),
+              this.getNodePath(b)
+            )
+          );
+      });
+
+    node.open = true;
+  }
+
+  /**
    * Fetches the child elements of a result node and returns the children in the form of a an resultNode array
    * with the node.parent attribute set
    *
@@ -169,9 +186,9 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
   private getNodeChildren(node?: ResultNode): Observable<ResultNode[]> {
     return (
       this.getItem(node)
-        // add the path & parent information to all child items so this doesn't have to be required in the future
+        // transform each AnalysisJobItemResult into a ResultNode. This requires the addition path and parent information to each child node
         .pipe(
-          map((returnedValue) =>
+          map((returnedValue: AnalysisJobItemResult): ResultNode[] =>
             this.childItemsWithParentInformation(returnedValue)
           )
         )
@@ -187,37 +204,42 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
   private childItemsWithParentInformation(
     model: AnalysisJobItemResult
   ): ResultNode[] {
-    let modelChildren = model.children.map(
-      (item) =>
-        ({
-          parentItem: model,
-          result: item,
-        } as ResultNode)
+    const modelChildren = model.children.map(
+      (item): ResultNode => ({
+        rowType: item?.isFile() ? ResultNodeType.file : ResultNodeType.folder,
+        parentItem: model,
+        result: item as AnalysisJobItemResult,
+      })
     );
 
-    const hasMoreChildren = model.getMetadata().paging.page !== model.getMetadata().paging.maxPage;
-
-    if (hasMoreChildren) {
-      modelChildren = this.addLoadMoreRow(model, modelChildren);
+    if (
+      model.getMetadata().paging.page < model.getMetadata().paging.maxPage &&
+      model.getMetadata().paging.total !== 0
+    ) {
+      const loadMoreRow = this.createLoadMoreRow(model);
+      return modelChildren.concat(loadMoreRow)
     }
 
     return modelChildren;
   }
 
-  private addLoadMoreRow(
-    parent: AnalysisJobItemResult,
-    loadedChildren: ResultNode[]
-  ): ResultNode[] {
+  private createLoadMoreRow(parent: AnalysisJobItemResult): ResultNode {
     const loadMoreRow: ResultNode = {
+      rowType: ResultNodeType.loadMore,
       parentItem: parent,
-      label: `Load more from ${parent.name}`,
-      result: new AnalysisJobItemResult({
-        ...parent,
-        path: parent.getMetadata().paging["next"],
-      }),
+      result: {
+        name: parent.name,
+        path: parent.getMetadata().paging.next,
+      } as AnalysisJobItemResult,
+      onClick: () => {
+        this.rows = this.rows.filter(
+          (row) =>
+            row.rowType !== ResultNodeType.loadMore && row !== loadMoreRow
+        );
+      },
     };
 
-    return loadedChildren.concat(loadMoreRow);
+    return loadMoreRow;
   }
 
   private getNodePath(node: ResultNode): string {
@@ -227,14 +249,6 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
   private isChildOf(node: ResultNode, parent: ResultNode): boolean {
     return node.parentItem.path === parent.result.path;
   }
-}
-
-interface ResultNode {
-  label?: string;
-  result?: AnalysisJobItemResult;
-  children?: ResultNode[];
-  parentItem?: AnalysisJobItemResult;
-  open?: boolean;
 }
 
 function getPageInfo(
