@@ -20,13 +20,14 @@ export interface IAnalysisJobItemResult {
   hasChildren?: boolean;
   hasZip?: boolean;
   type?: ResultsItemType;
-  children?: IChildren[];
+  children?: IAnalysisJobItemResultChild[];
 
   isFile?: () => boolean;
   isFolder?: () => boolean;
+  humanReadableByteSize?: () => string;
 }
 
-export interface IChildren {
+export interface IAnalysisJobItemResultChild {
   path?: string;
   name?: string;
   type?: ResultsItemType;
@@ -39,7 +40,7 @@ export interface IChildren {
 }
 
 export class AnalysisJobItemResult
-  extends AbstractModel
+  extends AbstractModel<IAnalysisJobItemResult>
   implements IAnalysisJobItemResult
 {
   public constructor(
@@ -66,7 +67,7 @@ export class AnalysisJobItemResult
   public readonly hasChildren?: boolean;
   public readonly hasZip?: boolean;
   public readonly type?: ResultsItemType;
-  public readonly children?: IChildren[];
+  public readonly children?: IAnalysisJobItemResultChild[];
   public readonly sizeBytes?: number;
   @bawBytes<AnalysisJobItemResult>({ key: "sizeBytes" })
 

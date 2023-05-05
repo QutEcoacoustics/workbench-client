@@ -95,7 +95,7 @@
           class="btn btn-sm btn-default me-1"
           placement="left"
           [ngbTooltip]="'Download audio recording analysis results'"
-          [href]="value.getAnalysisResultsUrl(projectId, region, sitezz)"
+          [bawUrl]="value.getAnalysisResultsUrl(projectId, region, site)"
         >
           <fa-icon [icon]="['fas', 'file-arrow-down']"></fa-icon>
         </a>

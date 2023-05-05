@@ -6,6 +6,7 @@ import {
   systemAnalysisJob,
 } from "@baw-api/analysis/analysis-jobs.service";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
+import { Filters } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
@@ -19,7 +20,7 @@ import { compareByPath } from "@helpers/files/files";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
+import { AnalysisJobItemResult, IAnalysisJobItemResultChild } from "@models/AnalysisJobItemResult";
 import { AudioRecording } from "@models/AudioRecording";
 import { NOT_FOUND } from "http-status";
 import { Observable, map, takeUntil } from "rxjs";
@@ -38,9 +39,9 @@ export enum ResultNodeType {
 
 export interface ResultNode {
   rowType: ResultNodeType;
-  result?: AnalysisJobItemResult;
+  result?: AnalysisJobItemResult | IAnalysisJobItemResultChild;
   children?: ResultNode[];
-  parentItem?: AnalysisJobItemResult;
+  parentItem?: Partial<AnalysisJobItemResult>;
   open?: boolean;
   onClick?: () => void;
 }
@@ -50,7 +51,7 @@ export interface ResultNode {
   templateUrl: "analysis-results.component.html",
   styleUrls: ["analysis-results.component.scss"],
 })
-export class AnalysisResultsComponent extends PageComponent implements OnInit {
+class AnalysisResultsComponent extends PageComponent implements OnInit {
   public constructor(
     public resultsServiceApi: AnalysisJobItemResultsService,
     public route: ActivatedRoute
@@ -58,6 +59,7 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
     super();
   }
 
+  private readonly maximumResultsPerNode = 50;
   private models: ResolvedModelList;
   protected rows = Array<ResultNode>();
 
@@ -89,7 +91,9 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
 
         this.rows = rootChildren;
 
-        this.rows = this.rows.sort((a, b) => compareByPath(this.getNodePath(a), this.getNodePath(b)));
+        this.rows = this.rows.sort((a, b) =>
+          compareByPath(this.getNodePath(a), this.getNodePath(b))
+        );
       });
   }
 
@@ -100,14 +104,33 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
    * @returns The complete `AnalysisJobItemResult` model of the requested item. If no model is not defined, the root path will be returned
    */
   public getItem(node: ResultNode): Observable<AnalysisJobItemResult> {
-    return this.resultsServiceApi.show(
-      node?.result,
+    const page: number = node?.rowType === ResultNodeType.loadMore ?
+      node.parentItem.getMetadata().paging.page + 1 : 1;
+
+    const filter: Filters<AnalysisJobItemResult> = {
+      paging: {
+        page,
+        items: this.maximumResultsPerNode
+      },
+    };
+
+    return this.resultsServiceApi.filter(
+      filter,
       this.analysisJob,
-      this.audioRecording
-    );
+      this.audioRecording,
+      node?.result as AnalysisJobItemResult,
+    )[0];
+
+    // return this.resultsServiceApi.show(
+    //   node?.result,
+    //   this.analysisJob,
+    //   this.audioRecording,
+    // );
   }
 
   public toggleRow(node: ResultNode): void {
+    // some nodes have an onClick callback
+    // this is used by the "Load More" button where it deletes itself from this.rows once clicked
     if (node.onClick instanceof Function) {
       node.onClick();
     }
@@ -141,10 +164,12 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
     this.rows = this.rows.filter((row) => !this.isChildOf(row, node));
 
     // since only folders can be opened, we do not need to iterate through every child item. We only need to close folder items
-    const nodeChildFolders: ResultNode[] = node.children.filter((child: ResultNode) => child.rowType === ResultNodeType.folder);
+    const expandableNodes: ResultNode[] = node.children?.filter(
+      (child: ResultNode) => child.rowType !== ResultNodeType.file
+    );
 
-    if (nodeChildFolders.length) {
-      nodeChildFolders.forEach((child: ResultNode) => this.closeRow(child));
+    if (expandableNodes.length) {
+      expandableNodes.forEach((child: ResultNode) => this.closeRow(child));
     }
 
     node.open = false;
@@ -158,19 +183,14 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
    * If `isIncomplete` is set, a "load more" button is expected
    */
   private openRow(node: ResultNode): void {
-
     this.getNodeChildren(node)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((children: ResultNode[]) => {
         node.children = children;
-        this.rows = this.rows
-          .concat(children)
-          .sort((a: ResultNode, b: ResultNode) =>
-            compareByPath(
-              this.getNodePath(a),
-              this.getNodePath(b)
-            )
-          );
+        this.rows = this.rows.concat(children);
+        this.rows.sort((a: ResultNode, b: ResultNode) =>
+          compareByPath(this.getNodePath(a), this.getNodePath(b))
+        );
       });
 
     node.open = true;
@@ -208,7 +228,7 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
       (item): ResultNode => ({
         rowType: item?.isFile() ? ResultNodeType.file : ResultNodeType.folder,
         parentItem: model,
-        result: item as AnalysisJobItemResult,
+        result: item,
       })
     );
 
@@ -217,7 +237,7 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
       model.getMetadata().paging.total !== 0
     ) {
       const loadMoreRow = this.createLoadMoreRow(model);
-      return modelChildren.concat(loadMoreRow)
+      return modelChildren.concat(loadMoreRow);
     }
 
     return modelChildren;
@@ -228,16 +248,11 @@ export class AnalysisResultsComponent extends PageComponent implements OnInit {
       rowType: ResultNodeType.loadMore,
       parentItem: parent,
       result: {
-        name: parent.name,
-        path: parent.getMetadata().paging.next,
+        path: parent.path,
       } as AnalysisJobItemResult,
-      onClick: () => {
-        this.rows = this.rows.filter(
-          (row) =>
-            row.rowType !== ResultNodeType.loadMore && row !== loadMoreRow
-        );
-      },
     };
+
+    loadMoreRow.onClick = () => this.rows = this.rows.filter((row: ResultNode) => row !== loadMoreRow);
 
     return loadMoreRow;
   }
@@ -272,3 +287,5 @@ AnalysisResultsComponent.linkToRoute(getPageInfo("base"))
   .linkToRoute(getPageInfo("siteAndRegion"))
   .linkToRoute(getPageInfo("region"))
   .linkToRoute(getPageInfo("project"));
+
+export { AnalysisResultsComponent };

@@ -6,10 +6,8 @@ import {
   IdParamOptional,
   option,
   param,
-  ApiList,
-  ApiShow,
 } from "@baw-api/api-common";
-import { BawApiService } from "@baw-api/baw-api.service";
+import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { AnalysisJob } from "@models/AnalysisJob";
@@ -28,18 +26,21 @@ const analysisJobItemResultsEndpoint =
 // All pagination and sorting is done through the analysis job list & show body's
 @Injectable()
 export class AnalysisJobItemResultsService
-  implements
-    ApiShow<AnalysisJobItemResult, [IdOr<AnalysisJob>, IdOr<AudioRecording>]>,
-    ApiList<AnalysisJobItemResult, [IdOr<AnalysisJob>, IdOr<AudioRecording>]>
 {
   public constructor(private api: BawApiService<AnalysisJobItemResult>) {}
 
   public list(
     analysisJob: IdOr<AnalysisJob>,
     audioRecording: IdOr<AudioRecording>,
-    // TODO: we should consider overloads that take a path or model
-    analysisJobItemResult?: AnalysisJobItemResult
+    analysisJobItemResult?: AnalysisJobItemResult,
   ): Observable<AnalysisJobItemResult[]> {
+    if (analysisJobItemResult?.path) {
+      return this.api.list(
+        AnalysisJobItemResult,
+        analysisJobItemResult.path
+      );
+    }
+
     return this.api.list(
       AnalysisJobItemResult,
       analysisJobItemResultsEndpoint(
@@ -53,13 +54,14 @@ export class AnalysisJobItemResultsService
 
   public show(
     analysisJobItemResult: AnalysisJobItemResult,
-    analysisJob?: IdOr<AnalysisJob>,
-    audioRecording?: IdOr<AudioRecording>
+    analysisJob: IdOr<AnalysisJob>,
+    audioRecording: IdOr<AudioRecording>
   ): Observable<AnalysisJobItemResult> {
-    let options = analysisJobItemResult?.path.split("?", 2)[1] ?? emptyParam;
-
-    if (options !== emptyParam) {
-      options = `?${options}`;
+    if (analysisJobItemResult?.path) {
+      return this.api.show(
+        AnalysisJobItemResult,
+        analysisJobItemResult.path
+      );
     }
 
     return this.api.show(
@@ -68,8 +70,34 @@ export class AnalysisJobItemResultsService
         analysisJob,
         audioRecording,
         analysisJobItemResult?.name ?? emptyParam,
-        options
+        emptyParam
       )
+    );
+  }
+
+  public filter(
+    filters: Filters<AnalysisJobItemResult>,
+    analysisJob?: IdOr<AnalysisJob>,
+    audioRecording?: IdOr<AudioRecording>,
+    analysisJobItemResult?: AnalysisJobItemResult,
+  ): Observable<AnalysisJobItemResult[]> {
+    if (analysisJobItemResult?.path) {
+      return this.api.filter(
+        AnalysisJobItemResult,
+        analysisJobItemResult.path,
+        filters
+      );
+    }
+
+    return this.api.filter(
+      AnalysisJobItemResult,
+      analysisJobItemResultsEndpoint(
+        analysisJob,
+        audioRecording,
+        analysisJobItemResult?.name ?? emptyParam,
+        emptyParam
+      ),
+      filters
     );
   }
 

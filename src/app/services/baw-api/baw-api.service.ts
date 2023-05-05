@@ -19,7 +19,7 @@ import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { API_ROOT } from "@services/config/config.tokens";
 import { ToastrService } from "ngx-toastr";
 import { Observable, throwError } from "rxjs";
-import { catchError, map, mergeMap, switchMap, tap } from "rxjs/operators";
+import { catchError, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { BawSessionService } from "./baw-session.service";
 
@@ -192,6 +192,8 @@ export class BawApiService<
     filters: Filters<Model>,
     opts?: NotificationsOpt
   ): Observable<Model[]> {
+    console.log(this);
+
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters)),
       map(this.handleCollectionResponse(classBuilder)),
@@ -536,9 +538,9 @@ export interface Paging {
   total?: number;
   /** Maximum page number */
   maxPage?: number;
-  /** The next page get request location */
+  /** The next page location (page + 1) */
   next?: string;
-  /** The previous page get request location */
+  /** The previous page location (page - 1) */
   previous?: string;
 }
 
