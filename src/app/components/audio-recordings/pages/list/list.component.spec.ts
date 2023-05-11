@@ -18,7 +18,7 @@ describe("AudioRecordingsListComponent", () => {
 
   beforeEach(() => setup());
 
-  assertPageInfo(AudioRecordingsListComponent, "Audio Recordings")
+  assertPageInfo(AudioRecordingsListComponent, "Audio Recordings");
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(AudioRecordingsListComponent);

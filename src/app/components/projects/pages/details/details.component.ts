@@ -21,6 +21,7 @@ import {
 } from "@components/projects/projects.menus";
 import { deleteProjectModal } from "@components/projects/projects.modals";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
+import { reportMenuItems } from "@components/reports/reports.menu";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -48,6 +49,7 @@ export const projectMenuItemActions = [
   audioRecordingMenuItems.batch.project,
   harvestsMenuItem,
   uploadAnnotationsProjectMenuItem,
+  reportMenuItems.new.project,
 ];
 
 const projectKey = "project";

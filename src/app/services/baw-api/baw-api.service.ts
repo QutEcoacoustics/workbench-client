@@ -65,6 +65,7 @@ export class BawApiService<
     update -> PATCH with id
     destroy -> DELETE with ID
     filter -> POST with filter body
+    filterShow -> POST with filter body to create a model
   */
 
   /**
@@ -195,6 +196,26 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters)),
       map(this.handleCollectionResponse(classBuilder)),
+      catchError((err) => this.handleError(err, opts?.disableNotification))
+    );
+  }
+
+  /**
+   * Gets a model that was created from filter conditions
+   *
+   * @param classBuilder Model to create
+   * @param path API path
+   * @param filters API filters
+   */
+  public filterShow(
+    classBuilder: ClassBuilder,
+    path: string,
+    filters: Filters<Model>,
+    opts?: NotificationsOpt
+  ): Observable<Model> {
+    return this.session.authTrigger.pipe(
+      switchMap(() => this.httpPost(path, filters)),
+      map(this.handleSingleResponse(classBuilder)),
       catchError((err) => this.handleError(err, opts?.disableNotification))
     );
   }

@@ -1,0 +1,47 @@
+<div>
+  <label *ngIf="label" for="typeahead-input" class="form-label">
+    {{ label }}
+  </label>
+  <div class="typeahead-input-container form-control">
+    <ng-container *ngIf="multipleInputs">
+      <span
+        *ngFor="let item of value; let i = index"
+        class="item-pill badge"
+        tabindex="0"
+        (keydown.backspace)="removeItem(i)"
+        (keydown.delete)="removeItem(i)"
+      >
+        <fa-icon
+          class="remove-button text-sm"
+          (click)="removeItem(i)"
+          [icon]="['fas', 'square-xmark']"
+        ></fa-icon>
+
+        <ng-container *ngIf="resultTemplate; else defaultTemplate">
+          <ng-container
+            [ngTemplateOutletContext]="{ result: item }"
+            [ngTemplateOutlet]="resultTemplate"
+          ></ng-container>
+        </ng-container>
+
+        <ng-template #defaultTemplate>
+          {{ item }}
+        </ng-template>
+      </span>
+    </ng-container>
+
+    <input
+      id="typeahead-input"
+      name="typeahead-input"
+      type="text"
+      class="form-control"
+      [placeholder]="value.length < 1 ? inputPlaceholder : ''"
+      [ngbTypeahead]="findOptions"
+      [resultTemplate]="resultTemplate"
+      [(ngModel)]="inputModel"
+      (selectItem)="onItemSelected($event)"
+      (keydown.backspace)="removeLastItem()"
+      [disabled]="inputDisabled"
+    />
+  </div>
+</div>

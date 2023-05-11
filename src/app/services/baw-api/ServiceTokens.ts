@@ -35,6 +35,8 @@ import type { Tag } from "@models/Tag";
 import type { Tagging } from "@models/Tagging";
 import type { TagGroup } from "@models/TagGroup";
 import type { User } from "@models/User";
+import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { EventSummaryReport } from "@models/EventSummaryReport";
 import type { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
@@ -82,6 +84,8 @@ import type { TaggingsService } from "./tag/taggings.service";
 import type { TagsService } from "./tag/tags.service";
 import type { UserService } from "./user/user.service";
 import type { AnalysisJobItemResultsService } from "./analysis/analysis-job-item-result.service";
+import { AudioEventProvenanceService } from "./AudioEventProvenance/AudioEventProvenance.service";
+import { EventSummaryReportService } from "./reports/event-report/event-summary-report.service";
 
 /**
  * Wrapper for InjectionToken class. This is required because of
@@ -199,3 +203,5 @@ export const TAG_GROUP = new ServiceToken<TagGroupsService, TagGroup>(
 );
 export const TAGGING = new ServiceToken<TaggingsService, Tagging>("TAGGING");
 export const USER = new ServiceToken<UserService, User>("USER");
+export const AUDIO_EVENT_PROVENANCE = new ServiceToken<AudioEventProvenanceService, AudioEventProvenance>("AUDIO_EVENT_PROVENANCE");
+export const AUDIO_EVENT_SUMMARY_REPORT = new ServiceToken<EventSummaryReportService, EventSummaryReport>("AUDIO_EVENT_SUMMARY_REPORT");

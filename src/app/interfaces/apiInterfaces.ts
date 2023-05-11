@@ -12,6 +12,11 @@ export type Id = number;
 export type Ids = Set<Id>;
 
 /**
+ * Union of Id and Ids
+ */
+export type CollectionIds = Ids | Id[];
+
+/**
  * BAW API UUID
  */
 export type Uuid = string;

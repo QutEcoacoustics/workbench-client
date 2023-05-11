@@ -1,0 +1,96 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": "container",
+  "height": "container",
+  "data": {
+    "values": []
+  },
+    "params": [
+    { "name": "bawTitleSize", "value": 20 },
+    { "name": "bawFontSize", "value": 18 }
+  ],
+  "config": {
+    "customFormatTypes": true
+  },
+  "mark": "area",
+  "transform": [
+    {
+      "calculate": "format(datum.ratio, '.2f')",
+      "as": "formatted_ratio"
+    },
+    {
+      "calculate": "customFormatter(datum.tagId)",
+      "as": "formatted_tagId"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "date",
+      "title": "Date",
+      "type": "temporal",
+      "timeUnit": "yearmonthdate",
+      "axis": {
+        "labelAngle": 45,
+        "grid": false,
+        "title": null,
+        "format": "%Y-%m-%d",
+        "zindex": 1,
+        "tickCount": "day",
+        "labelFontSize": {
+          "expr": "bawFontSize"
+        }
+      },
+      "scale": {
+        "padding": 0
+      }
+    },
+    "y": {
+      "title": "Ratio of Tags",
+      "aggregate": "sum",
+      "field": "ratio",
+      "type": "quantitative",
+      "axis": {
+        "titleFontSize": {
+          "expr": "bawTitleSize"
+        },
+        "labelFontSize": {
+          "expr": "bawFontSize"
+        }
+      }
+    },
+    "color": {
+      "field": "tagId",
+      "type": "nominal",
+      "scale": {
+        "scheme": "category10"
+      },
+      "legend": {
+        "orient": "top",
+        "formatType": "customFormatter",
+        "title": "Tags",
+        "columns": 6,
+        "titleFontSize": {
+          "expr": "bawTitleSize"
+        },
+        "titleFontWeight": "normal",
+        "labelLimit": 500,
+        "symbolSize": {
+          "expr": "bawTitleSize * 16"
+        },
+        "labelFontSize": {
+          "expr": "bawTitleSize"
+        }
+      }
+    },
+    "tooltip": [
+      {
+        "type": "temporal",
+        "field": "date",
+        "title": "Date",
+        "format": "%Y-%m-%d"
+      },
+      {"field": "formatted_tagId", "title": "Event"},
+      {"field": "formatted_ratio", "title": "Ratio"}
+    ]
+  }
+}

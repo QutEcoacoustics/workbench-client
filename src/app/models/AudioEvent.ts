@@ -1,5 +1,5 @@
 import { Injector } from "@angular/core";
-import { AUDIO_RECORDING, TAG } from "@baw-api/ServiceTokens";
+import { AUDIO_EVENT_PROVENANCE, AUDIO_RECORDING, TAG } from "@baw-api/ServiceTokens";
 import { annotationMenuItem } from "@components/library/library.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import {
@@ -21,6 +21,7 @@ import type { AudioRecording } from "./AudioRecording";
 import type { Tag } from "./Tag";
 import { ITagging, Tagging } from "./Tagging";
 import type { User } from "./User";
+import { AudioEventProvenance } from "./AudioEventProvenance";
 
 export interface IAudioEvent extends HasAllUsers {
   id?: Id;
@@ -31,6 +32,7 @@ export interface IAudioEvent extends HasAllUsers {
   highFrequencyHertz?: number;
   isReference?: boolean;
   taggings?: ITagging[] | Tagging[];
+  provenanceId?: Id;
 }
 
 export class AudioEvent
@@ -38,7 +40,6 @@ export class AudioEvent
   implements IAudioEvent
 {
   public readonly kind = "Audio Event";
-  public readonly id?: Id;
   @bawPersistAttr()
   public readonly audioRecordingId?: Id;
   @bawPersistAttr()
@@ -61,6 +62,7 @@ export class AudioEvent
   public readonly updatedAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
+  public readonly provenanceId?: Id;
 
   // Associations
   @creator<AudioEvent>()
@@ -71,6 +73,8 @@ export class AudioEvent
   public deleter?: User;
   @hasOne<AudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
+  @hasOne<AudioEvent, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenanceId")
+  public provenance?: AudioEventProvenance;
   @hasMany<AudioEvent, Tag>(TAG, "tagIds")
   public tags?: Tag[];
 

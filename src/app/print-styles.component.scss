@@ -1,0 +1,113 @@
+/*
+  When using Microsoft print to PDF (and printer drivers which us it), the browser will render the page content as if it were a screen
+  and a screenshot it taken of the page content and pasted into a PDF. If the image is larger than the PDF size, it'll be scaled down
+  This means that the PDF size cannot be specified with our @page css attribute.
+  Because we want all content to print the same (just scaled up or down), we have to get the browser to render content at A2 size
+  then get Microsoft print to PDF to downscale it to the size the user wants.
+*/
+@media print {
+  // for A4 page size and less, we want to zoom out the page so that it fits on the page
+  // while the width of an A4 page is technically 210mm, we have to use 211mm because as of Chromium version 117.0.x.x
+  // max width is exclusive, meaning that 210mm will not be included in the media query
+  @media print and (max-width: 211mm) {
+    html {
+      zoom: 0.5;
+    }
+  }
+
+  html {
+    // by making the page content A2 strictly A2 size, we can ensure that the page content will always fit to all pages below A2
+    // this is because (with Microsoft print to PDF), the page content will be scaled down to fit the page, but will not be scaled up
+    // A2 size: 420mm x 594mm
+    min-width: 420mm;
+    max-width: 420mm;
+    height: 100%;
+
+    // some page sizes (eg. letter, legal) do not follow the same aspect ratio as A1-5
+    // as content assumes an A1-5 aspect ratio, and we want to maintain the same content aspect ratio, we center the page content
+    // essentially giving it a small margin on other aspect ratios that don't follow the contents aspect ratio
+    margin: auto;
+
+    // because the page size is A2, content will be small and unreadable
+    // by enlarging the page content, we can make it more readable
+    font-size: 166%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  // hide branding during printing
+  baw-footer,
+  baw-header {
+    display: none;
+  }
+
+  // hide navigation during printing
+  baw-menu-toggle,
+  baw-breadcrumbs,
+  .nav-link,
+  .navbar-brand,
+  #navbar {
+    display: none;
+  }
+
+  ngx-loading-bar {
+    // we have to use !important here since it's explicitly shown/hidden in the component using the same display style
+    // this style override will only be applied to print styles and should not be applied under any other circumstances
+    display: none !important;
+  }
+
+  // this is the main container that holds the page content
+  .container {
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+  }
+
+  #page {
+    // on small screen sizes, bootstrap adds a margin to the page content
+    // we therefore have to override this with the use of !important
+    margin: 0 !important;
+  }
+
+  // there are some bugs in ngBootstrap where tooltips are emitted during printing
+  // as tooltips are an extension of the users mouse (which is hidden), we should also hide the tooltips
+  .tooltip,
+  #vg-tooltip-element {
+    display: none;
+  }
+
+  // because modals are used for action items and user feedback, we don't want to print them as it's not part of the content
+  ngb-modal-window,
+  ngb-modal-backdrop {
+    // we can't use display: none; here because bootstrap uses display: block !important;
+    // therefore, to hide modals, we reduce the size to 0
+    scale: 0 !important;
+  }
+
+  // when printing with a modal open, ngBootstrap will add a style to the body element to hide overflow (preventing scrolling)
+  // this means that only the first page will be printed, therefore, we revert this change in print styles
+  body {
+    // we have to use !important here because bootstrap explicitly sets the overflow to hidden and we have to override it
+    overflow: visible !important;
+  }
+
+  // hide the overlay container that is usually used to display user feedback (alerts, toasts, etc)
+  .overlay-container {
+    display: none;
+  }
+
+  // we want iframes to seamlessly integrate with the page, and therefore should not have them on their own page
+  // we allow iframes to break between pages because otherwise there would always be a page break before an iframe
+  iframe {
+    break-inside: auto;
+  }
+
+  @page {
+    margin: 0;
+    size: A2 portrait;
+  }
+
+  @page:empty {
+    display: none !important;
+  }
+}

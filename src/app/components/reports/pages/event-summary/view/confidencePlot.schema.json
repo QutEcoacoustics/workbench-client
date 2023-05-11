@@ -1,0 +1,67 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": "container",
+  "height": "container",
+  "data": {
+    "values": []
+  },
+  "mark": {
+    "type": "area",
+    "interpolate": "monotone"
+  },
+  "autosize": {
+    "resize": true
+  },
+  "encoding": {
+    "x": {
+      "field": "data",
+      "type": "quantitative",
+      "axis": {
+        "grid": true,
+        "domain": true,
+        "labels": false,
+        "ticks": false,
+        "title": null,
+        "format": ".1f"
+      },
+      "scale": {
+        "domain": [0, 1],
+        "padding": 0,
+        "nice": true,
+        "type": "linear",
+        "round": true
+      }
+    },
+    "y": {
+      "aggregate": "sum",
+      "field": "data",
+      "axis": null,
+      "stack": "zero"
+    },
+    "color": {
+      "field": "category",
+      "type": "nominal",
+      "scale": {
+        "scheme": "category20"
+      },
+      "legend": null
+    },
+    "tooltip": [
+      { "field": "data", "title": "Score", "format": ".1f" },
+      {
+        "aggregate": "count",
+        "field": "category",
+        "type": "quantitative",
+        "title": "Count"
+      }
+    ]
+  },
+  "config": {
+    "view": {
+      "stroke": "transparent"
+    },
+    "axis": {
+      "gridScale": 5
+    }
+  }
+}

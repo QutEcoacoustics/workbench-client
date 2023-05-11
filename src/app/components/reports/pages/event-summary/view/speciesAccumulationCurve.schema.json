@@ -1,0 +1,193 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": "container",
+  "height": "container",
+  "data": {
+    "values": []
+  },
+  "transform": [
+    {
+      "calculate": "datum.count - datum.error",
+      "as": "count_subtract_error"
+    }
+  ],
+  "params": [
+    {
+      "name": "bawTitleSize",
+      "value": 20
+    },
+    {
+      "name": "bawFontSize",
+      "value": 18
+    }
+  ],
+  "config": {
+    "legend": {
+      "title": null,
+      "labelFontSize": {
+        "expr": "bawFontSize"
+      },
+      "orient": "top"
+    }
+  },
+  "resolve": {
+    "legend": {
+      "color": "independent"
+    }
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "errorband",
+        "interpolate": "linear",
+        "color": "black",
+        "opacity": 0.1,
+        "tension": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "date",
+          "type": "temporal",
+          "timeUnit": "yearmonthdate",
+          "axis": {
+            "labelAngle": 45,
+            "title": null,
+            "grid": true,
+            "format": "%Y-%m-%d",
+            "tickCount": "day",
+            "labelFontSize": {
+              "expr": "bawFontSize"
+            }
+          },
+          "scale": {
+            "padding": 0
+          }
+        },
+        "y": {
+          "title": "Count of Tags",
+          "field": "count_subtract_error",
+          "type": "quantitative"
+        },
+        "y2": {
+          "field": "count"
+        },
+        "color": {
+          "field": "datum",
+          "legend": {
+            "values": [
+              "Error"
+            ],
+            "symbolStrokeColor": "black",
+            "symbolOpacity": 0.1,
+            "symbolStrokeWidth": 10
+          }
+        },
+        "tooltip": [
+          {
+            "field": "date",
+            "type": "temporal",
+            "title": "Date",
+            "format": "%Y-%m-%d"
+          },
+          {
+            "field": "count",
+            "type": "quantitative",
+            "title": "Count of Tags"
+          },
+          {
+            "field": "error",
+            "type": "quantitative",
+            "title": "Error"
+          },
+          {
+            "title": "Count - Error",
+            "type": "quantitative",
+            "field": "count_subtract_error"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "line",
+        "interpolate": "linear",
+        "color": "var(--baw-primary)"
+      },
+      "encoding": {
+        "x": {
+          "field": "date",
+          "type": "temporal",
+          "timeUnit": "yearmonthdate",
+          "axis": {
+            "title": null
+          }
+        },
+        "y": {
+          "title": "Count of Tags",
+          "field": "count",
+          "type": "quantitative",
+          "axis": {
+            "titleFontSize": {
+              "expr": "bawTitleSize"
+            },
+            "labelFontSize": {
+              "expr": "bawFontSize"
+            }
+          }
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "color": "black"
+      },
+      "encoding": {
+        "x": {
+          "title": "Date",
+          "field": "date",
+          "type": "temporal",
+          "timeUnit": "yearmonthdate"
+        },
+        "y": {
+          "title": "Count of Tags",
+          "field": "count",
+          "type": "quantitative"
+        },
+        "color": {
+          "field": "datum",
+          "legend": {
+            "values": [ "Count of Tags" ],
+            "symbolType": "stroke",
+            "symbolStrokeColor": "var(--baw-primary)",
+            "symbolStrokeWidth": 4
+          }
+        },
+        "tooltip": [
+          {
+            "field": "date",
+            "type": "temporal",
+            "title": "Date",
+            "format": "%Y-%m-%d"
+          },
+          {
+            "field": "count",
+            "type": "quantitative",
+            "title": "Count of Tags"
+          },
+          {
+            "field": "error",
+            "type": "quantitative",
+            "title": "Error"
+          },
+          {
+            "title": "Count - Error",
+            "type": "quantitative",
+            "field": "count_subtract_error"
+          }
+        ]
+      }
+    }
+  ]
+}

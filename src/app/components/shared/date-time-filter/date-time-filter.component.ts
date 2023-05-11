@@ -5,6 +5,8 @@ import {
   Input,
   ViewChild,
   ChangeDetectorRef,
+  EventEmitter,
+  Output,
 } from "@angular/core";
 import { NgForm } from "@angular/forms";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
@@ -26,7 +28,7 @@ import {
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
 
-export interface Model {
+export interface DateTimeFilterModel {
   projects?: Project[];
   regions?: Region[];
   sites?: Site[];
@@ -40,11 +42,11 @@ export interface Model {
 }
 
 @Component({
-  selector: "baw-audio-recordings-filter",
-  templateUrl: "audio-recordings-filter.component.html",
-  styleUrls: ["audio-recordings-filter.component.scss"],
+  selector: "baw-date-time-filter",
+  templateUrl: "date-time-filter.component.html",
+  styleUrls: ["date-time-filter.component.scss"],
 })
-export class AudioRecordingsFilterComponent
+export class DateTimeFilterComponent
   extends withUnsubscribe()
   implements AfterViewInit, AfterContentChecked
 {
@@ -57,8 +59,9 @@ export class AudioRecordingsFilterComponent
   @Input() public region: Region;
   @Input() public site: Site;
   @Input() public constructedFilters: BehaviorSubject<Filters<AudioRecording>>;
+  @Output() public modelChange = new EventEmitter<DateTimeFilterModel>();
 
-  public model: Model = { ignoreDaylightSavings: true };
+  public model: DateTimeFilterModel = { ignoreDaylightSavings: true };
   private previousFilters: Immutable.Collection<unknown, unknown>;
 
   public ngAfterViewInit(): void {
@@ -68,7 +71,7 @@ export class AudioRecordingsFilterComponent
         distinctUntilChanged(),
         takeUntil(this.unsubscribe)
       )
-      .subscribe((model: Model) => this.emitFilterUpdate(model));
+      .subscribe((model: DateTimeFilterModel) => this.emitFilterUpdate(model));
   }
 
   // TODO: Refactor the following hacky code block
@@ -80,7 +83,7 @@ export class AudioRecordingsFilterComponent
     this.changeDetector.detectChanges();
   }
 
-  public emitFilterUpdate(model: Model): void {
+  public emitFilterUpdate(model: DateTimeFilterModel): void {
     // we should only send new filter requests when the user has not input any "bad" / incorrect values into the input fields
     // e.g. 2020-31-31 is not a valid date should display an error, and not send a new filter request
     if (!this.form.valid) {
@@ -90,12 +93,15 @@ export class AudioRecordingsFilterComponent
     const [changed, newFilters] = this.generateFilters(this.previousFilters, model);
 
     if (changed) {
-      this.constructedFilters.next(newFilters);
+      // since this component can output a model, and/or a filter
+      // we need to emit both the model and the filter if they are both present
+      this.modelChange?.emit(model);
+      this.constructedFilters?.next(newFilters);
       this.previousFilters = fromJS(newFilters);
     }
   }
 
-  private generateFilters(previousFilters: Immutable.Collection<unknown, unknown>, model: Model): [boolean, Filters] {
+  private generateFilters(previousFilters: Immutable.Collection<unknown, unknown>, model: DateTimeFilterModel): [boolean, Filters] {
     let newInnerFilters: InnerFilter<AudioRecording> = {};
 
     newInnerFilters = this.setModelFilters(newInnerFilters);
@@ -129,7 +135,7 @@ export class AudioRecordingsFilterComponent
     return filters;
   }
 
-  private setDateFilters(model: Model, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
+  private setDateFilters(model: DateTimeFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
     const modelStartDate = model?.dateStartedAfter;
     const modelEndDate = model?.dateFinishedBefore;
 
@@ -147,7 +153,7 @@ export class AudioRecordingsFilterComponent
     return filterDate(filters, startDate, endDate);
   }
 
-  private setTimeOfDayFilters(model: Model, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
+  private setTimeOfDayFilters(model: DateTimeFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
     const modelStartTime = model?.timeStartedAfter;
     const modelEndTime = model?.timeFinishedBefore;
 

@@ -114,6 +114,20 @@ export interface ApiShow<
 }
 
 /**
+ * This is used for specialized endpoints that return aggregations or other summarizations of data.
+ * The filter filters the input before it is aggregated into the specialized single item model.
+ */
+export interface ApiFilterShow<M extends AbstractModel, P extends any[] = []> {
+  /**
+   * Get a single model filtered using the filter API
+   *
+   * @param filters Model filters
+   * @param urlParameters URL parameter values
+   */
+  filterShow(filters: Filters<M>, ...urlParameters: P): Observable<M>;
+}
+
+/**
  * API Create functionality
  */
 export interface ApiCreate<M extends AbstractModel, P extends any[] = []> {

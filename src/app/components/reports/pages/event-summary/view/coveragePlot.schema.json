@@ -1,0 +1,269 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "datasets": {},
+  "params": [
+    { "name": "bawFontSize", "value": 18 }
+  ],
+  "resolve": {
+    "scale": {
+      "x": "shared"
+    }
+  },
+  "data": {
+    "name": "recordingCoverage"
+  },
+  "config": {
+    "concat": {
+      "spacing": 0
+    },
+    "style": {
+      "cell": {
+        "stroke": "transparent"
+      }
+    },
+    "legend": {
+      "symbolStrokeWidth": 10,
+      "offset": 0,
+      "orient": "bottom",
+      "labelLimit": 300,
+      "title": null,
+      "labelFontSize": {
+        "expr": "bawFontSize"
+      }
+    }
+  },
+  "vconcat": [
+    {
+      "resolve": {
+        "legend": {
+          "color": "independent"
+        }
+      },
+      "view": {
+        "height": 0,
+        "padding": 0
+      },
+      "layer": [
+        {
+          "mark": "text",
+          "encoding": {
+            "color": {
+              "field": "startDate",
+              "legend": {
+                "values": [ "Recordings" ],
+                "symbolStrokeColor": "var(--baw-primary)"
+              }
+            }
+          }
+        },
+        {
+          "mark": "text",
+          "encoding": {
+            "color": {
+              "field": "startDate",
+              "legend": {
+                "values": [ "Analysis" ],
+                "symbolStrokeColor": "var(--baw-success)"
+              }
+            }
+          }
+        },
+        {
+          "mark": "text",
+          "encoding": {
+            "color": {
+              "field": "startDate",
+              "legend": {
+                "values": [ "Missing Analysis" ],
+                "symbolStrokeColor": "var(--baw-warning)"
+              }
+            }
+          }
+        },
+        {
+          "mark": "text",
+          "encoding": {
+            "color": {
+              "field": "startDate",
+              "legend": {
+                "values": [ "Failed Analysis" ],
+                "symbolStrokeColor": "var(--baw-danger)"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "",
+      "width": "container",
+      "height": 50,
+      "mark": "bar",
+      "encoding": {
+        "x": {
+          "field": "startDate",
+          "type": "temporal",
+          "timeUnit": "yearmonthdate",
+          "axis": {
+            "title": null,
+            "labels": false,
+            "ticks": false,
+            "domain": false,
+            "grid": true,
+            "tickCount": "day"
+          }
+        },
+        "x2": {
+          "timeUnit": "yearmonthdate",
+          "field": "endDate"
+        },
+        "color": {
+          "value": "var(--baw-primary)"
+        },
+        "tooltip": [
+          {
+            "type": "temporal",
+            "field": "startDate",
+            "title": "Recording Start Date",
+            "format": "%Y-%m-%d"
+          },
+          {
+            "type": "temporal",
+            "field": "endDate",
+            "title": "Recording End Date",
+            "format": "%Y-%m-%d"
+          }
+        ]
+      }
+    },
+    {
+      "title": "",
+      "width": "container",
+      "height": 50,
+      "layer": [
+        {
+          "data": {
+            "name": "missingAnalysisCoverage"
+          },
+          "mark": "bar",
+          "encoding": {
+            "x": {
+              "field": "startDate",
+              "type": "temporal",
+              "timeUnit": "yearmonthdate",
+              "axis": {
+                "labelAngle": 45,
+                "title": null,
+                "grid": true,
+                "format": "%Y-%m-%d",
+                "tickCount": "day",
+                "labelFontSize": {
+                  "expr": "bawFontSize"
+                }
+              }
+            },
+            "x2": {
+              "timeUnit": "yearmonthdate",
+              "field": "endDate"
+            },
+            "color": {
+              "value": "var(--baw-warning)"
+            },
+            "tooltip": [
+              {
+                "type": "temporal",
+                "field": "startDate",
+                "title": "Missing Analysis Start Date",
+                "format": "%Y-%m-%d"
+              },
+              {
+                "type": "temporal",
+                "field": "endDate",
+                "title": "Missing Analysis End Date",
+                "format": "%Y-%m-%d"
+              }
+            ]
+          }
+        },
+        {
+          "data": {
+            "name": "failedAnalysisCoverage"
+          },
+          "mark": "bar",
+          "encoding": {
+            "x": {
+              "field": "startDate",
+              "type": "temporal",
+              "timeUnit": "yearmonthdate",
+              "axis": {
+                "labelAngle": 45,
+                "title": null,
+                "grid": false,
+                "format": "%Y-%m-%d",
+                "tickCount": "day",
+                "labelFontSize": {
+                  "expr": "bawFontSize"
+                }
+              }
+            },
+            "x2": {
+              "timeUnit": "yearmonthdate",
+              "field": "endDate"
+            },
+            "color": {
+              "value": "var(--baw-danger)"
+            },
+            "tooltip": [
+              {
+                "type": "temporal",
+                "field": "startDate",
+                "title": "Failed Analysis Start Date",
+                "format": "%Y-%m-%d"
+              },
+              {
+                "type": "temporal",
+                "field": "endDate",
+                "title": "Failed Analysis End Date",
+                "format": "%Y-%m-%d"
+              }
+            ]
+          }
+        },
+        {
+          "data": {
+            "name": "analysisCoverage"
+          },
+          "mark": "bar",
+          "encoding": {
+            "x": {
+              "field": "startDate",
+              "type": "temporal",
+              "timeUnit": "yearmonthdate"
+            },
+            "x2": {
+              "timeUnit": "yearmonthdate",
+              "field": "endDate"
+            },
+            "color": {
+              "value": "var(--baw-success)"
+            },
+            "tooltip": [
+              {
+                "type": "temporal",
+                "field": "startDate",
+                "title": "Analysis Start Date",
+                "format": "%Y-%m-%d"
+              },
+              {
+                "type": "temporal",
+                "field": "endDate",
+                "title": "Analysis End Date",
+                "format": "%Y-%m-%d"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
