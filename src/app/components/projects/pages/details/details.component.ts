@@ -36,18 +36,20 @@ import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { merge, Observable, takeUntil } from "rxjs";
+import { generateSummaryReportMenuItem } from "src/app/summary-reports/summary-report.menu";
 
 export const projectMenuItemActions = [
-  visualizeMenuItem,
-  editProjectMenuItem,
-  editProjectPermissionsMenuItem,
-  deleteProjectModal,
-  newSiteMenuItem,
   assignSiteMenuItem,
   audioRecordingMenuItems.list.project,
-  audioRecordingMenuItems.batch.project,
-  harvestsMenuItem,
   uploadAnnotationsProjectMenuItem,
+  deleteProjectModal,
+  editProjectPermissionsMenuItem,
+  editProjectMenuItem,
+  newSiteMenuItem,
+  harvestsMenuItem,
+  audioRecordingMenuItems.batch.project,
+  generateSummaryReportMenuItem,
+  visualizeMenuItem,
 ];
 
 const projectKey = "project";
