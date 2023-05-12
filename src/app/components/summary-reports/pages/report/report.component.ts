@@ -9,6 +9,15 @@ import { PageComponent } from "@helpers/page/pageComponent";
 
 const projectKey = "project";
 
+interface IRow {
+  event?: string;
+  recogniser: string;
+  detections: number;
+  daysWithDetections: number;
+  daysWithRain: number;
+  confidence: number[];
+}
+
 @Component({
   selector: "baw-summary-report",
   templateUrl: "./report.component.html",
@@ -20,6 +29,47 @@ class SummaryReportComponent extends PageComponent {
   ) {
     super();
   }
+
+  public rows: IRow[] = [
+    {
+      event: "Ninox boobook",
+      recogniser: "BirdNet",
+      detections: 23,
+      daysWithDetections: 10,
+      daysWithRain: 4,
+      confidence: [0.2, 0.3, 0.5],
+    },
+    {
+      recogniser: "Lance's",
+      detections: 11,
+      daysWithDetections: 1,
+      daysWithRain: 4,
+      confidence: [0.2, 0.3, 0.5],
+    },
+    {
+      event: "Calyptorhynchus lathami",
+      recogniser: "BirdNet",
+      detections: 19,
+      daysWithDetections: 13,
+      daysWithRain: 2,
+      confidence: [0.2, 0.3, 0.5],
+    },
+    {
+      recogniser: "Lance's",
+      detections: 84,
+      daysWithDetections: 11,
+      daysWithRain: 5,
+      confidence: [0.2, 0.3, 0.5],
+    },
+    {
+      event: "Petaurus australis",
+      recogniser: "BirdNet",
+      detections: 250,
+      daysWithDetections: 200,
+      daysWithRain: 30,
+      confidence: [0.2, 0.3, 0.5],
+    }
+  ];
 
   public printPage(): void {
     window.print();
