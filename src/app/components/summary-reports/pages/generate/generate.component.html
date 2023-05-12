@@ -2,51 +2,59 @@
 <p>Hold ctrl to select multiple items.</p>
 
 <div class="container fw-bold">
-  <div class="row">
-    <div class="col">
-      Sites
-      <input type="text">
-    </div>
+  <div class="row p-2">
+    <div class="col">Sites:</div>
 
     <div class="col">
-      Points
-      <input type="text">
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col">
-      Time range:
-      <input type="text">
+      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
     </div>
 
+    <div class="col">Points:</div>
+
     <div class="col">
-      Date range:
-      <input type="text">
+      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
     </div>
   </div>
 
-  <div class="row">
-    <div class="col">
-      Duration:
-      <input type="text">
-    </div>
+  <div class="row p-2">
+    <div class="col">Time range:</div>
 
     <div class="col">
-      Recognisers:
-      <input type="text">
+      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
+    </div>
+
+    <div class="col">Date range:</div>
+
+    <div class="col">
+      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
     </div>
   </div>
 
-  <div class="row">
-    <div class="col">
-      Charts
-      <input type="text">
-    </div>
+  <div class="row p-2">
+    <div class="col">Duration:</div>
 
     <div class="col">
-      Cut-off
-      <input type="text">
+      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
+    </div>
+
+    <div class="col">Recognisers:</div>
+
+    <div class="col">
+      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
+    </div>
+  </div>
+
+  <div class="row p-2">
+    <div class="col">Charts:</div>
+
+    <div class="col">
+      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
+    </div>
+
+    <div class="col">Cut-off:</div>
+
+    <div class="col">
+      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
     </div>
   </div>
 </div>
@@ -54,7 +62,7 @@
 <div class="eventsOfInterestContainer mt-5">
   <h4>Events of interest</h4>
 
-  <input type="text" placeholder="Type of browse...">
+  <input type="text" class="form-control" placeholder="Type of browse..." />
 </div>
 
 <button class="btn btn-primary" (click)="submit()">Submit</button>

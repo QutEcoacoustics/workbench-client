@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
   summaryReportCategory,
@@ -14,8 +15,14 @@ const projectKey = "project";
   styleUrls: ["./report.component.scss"],
 })
 class SummaryReportComponent extends PageComponent {
-  public constructor() {
+  public constructor(
+    public router: Router,
+  ) {
     super();
+  }
+
+  public printPage(): void {
+    window.print();
   }
 }
 

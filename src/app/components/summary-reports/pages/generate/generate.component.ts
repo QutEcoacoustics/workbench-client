@@ -1,44 +1,24 @@
 import { Component } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { FormTemplate } from "@helpers/formTemplate/formTemplate";
-import { AbstractModel } from "@models/AbstractModel";
-import { Observable } from "rxjs";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
+import { Router } from "@angular/router";
+import { PageComponent } from "@helpers/page/pageComponent";
 import { generateProjectSummaryReportCategory, generateSummaryReportMenuItem } from "../../summary-report.menu";
-import schema from "./generate.base.schema.json";
 
 const projectKey = "project";
-
-class Fields extends AbstractModel {
-  public get viewUrl(): string {
-    throw new Error("Method not implemented.");
-  }
-  public sites: string;
-}
-
 @Component({
   selector: "baw-generate-summary-report",
   templateUrl: "./generate.component.html",
   styleUrls: ["./generate.component.scss"],
 })
-class GenerateSummaryReportComponent extends FormTemplate<Fields> {
+class GenerateSummaryReportComponent extends PageComponent {
   public constructor(
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    public router: Router
   ) {
-    super(notifications, route, router, {});
+    super();
   }
-
-  public fields = schema.fields;
 
   public submit(): void {
     this.router.navigateByUrl("/projects/1135/report");
-  }
-
-  protected apiAction(): Observable<void | Fields> {
-    throw new Error("Method not implemented.");
   }
 }
 
