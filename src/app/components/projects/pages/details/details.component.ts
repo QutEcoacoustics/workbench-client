@@ -22,6 +22,7 @@ import {
 import { deleteProjectModal } from "@components/projects/projects.modals";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
+import { generateSummaryReportMenuItem } from "@components/summary-reports/summary-report.menu";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
@@ -36,7 +37,6 @@ import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { merge, Observable, takeUntil } from "rxjs";
-import { generateSummaryReportMenuItem } from "src/app/summary-reports/summary-report.menu";
 
 export const projectMenuItemActions = [
   assignSiteMenuItem,

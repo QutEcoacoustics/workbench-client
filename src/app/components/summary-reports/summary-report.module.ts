@@ -6,12 +6,13 @@ import { GenerateSummaryReportComponent } from "./pages/generate/generate.compon
 import { SummaryReportComponent } from "./pages/report/report.component";
 import { projectGenerateReportRoute } from "./summary-report.routes";
 
-const internalComponents = [
+const internalComponents = [];
+
+const components = [
+  // pages
   GenerateSummaryReportComponent,
   SummaryReportComponent,
 ];
-
-const components = [];
 
 const routes = projectGenerateReportRoute.compileRoutes(getRouteConfigForPage);
 
