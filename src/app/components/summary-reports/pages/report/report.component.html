@@ -80,14 +80,16 @@
   <div class="border w-100 h-5 my-4"></div>
 
   <div class="summaryTable">
-    <b>Total number of days analysed: </b> 240 <br />
-    <strong>279 hours</strong> of recordings were found within the requested
-    <strong>300 hours</strong> (see
-    <a
-      class="link-primary"
-      href="https://api.staging.ecosounds.org/projects/1135/audio_events/download.csv"
-      >Sites.dawnxmonth.csv</a
-    >). <br />
+    <div class="my-4">
+      <b>Total number of days analysed: </b> 240 <br />
+      <strong>279 hours</strong> of recordings were found within the requested
+      <strong>300 hours</strong> (see
+      <a
+        class="link-primary"
+        href="https://api.staging.ecosounds.org/projects/1135/audio_events/download.csv"
+        >Sites.dawnxmonth.csv</a
+      >).
+    </div>
 
     <div class="table">
       <ngx-datatable [rows]="rows" [rowHeight]="'auto'">

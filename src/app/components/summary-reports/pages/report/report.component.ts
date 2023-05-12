@@ -6,16 +6,49 @@ import {
   summaryReportMenuItem
 } from "@components/summary-reports/summary-report.menu";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { Id } from "@interfaces/apiInterfaces";
+import { AnalysisJob } from "@models/AnalysisJob";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { Tag } from "@models/Tag";
+import { DateTime } from "luxon";
 
 const projectKey = "project";
 
-interface IRow {
+interface Row {
   event?: string;
   recogniser: string;
   detections: number;
   daysWithDetections: number;
   daysWithRain: number;
   confidence: number[];
+}
+
+interface Report {
+  project: Project;
+  region?: Region[];
+  sites?: Site[];
+  startDate: DateTime;
+  endDate: DateTime;
+  provenances: Id[];
+  score: number;
+  tags: Tag[];
+  analysisJob: AnalysisJob;
+}
+
+interface AccumulationData {
+  date: DateTime;
+  countOfSpecies: number;
+  error: number;
+}
+
+interface SpeciesCompositionData {
+  date: DateTime;
+  values: {
+    tagId: Id;
+    ratio: number;
+  }
 }
 
 @Component({
@@ -30,7 +63,12 @@ class SummaryReportComponent extends PageComponent {
     super();
   }
 
-  public rows: IRow[] = [
+  public report: Report;
+
+  protected accumulationData: AccumulationData[];
+  protected speciesCompositionData: SpeciesCompositionData[];
+
+  protected rows: Row[] = [
     {
       event: "Ninox boobook",
       recogniser: "BirdNet",
