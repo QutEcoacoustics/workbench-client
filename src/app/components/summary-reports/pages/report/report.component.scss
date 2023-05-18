@@ -2,7 +2,7 @@
   display: flex;
   border-style: solid;
   border-width: thin;
-  max-width: 10em;
+  max-width: 13em;
   height: 10em;
   justify-content: center;
   align-items: center;
@@ -28,4 +28,14 @@
 
 .table-row {
   height: 15em;
+}
+
+@media print {
+  #printBtn {
+    visibility: hidden;
+  }
+
+  * {
+    background-color: red !important;
+  }
 }

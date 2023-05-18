@@ -1,68 +1,168 @@
-<h2>Acoustic Event Summary Report Generator</h2>
-<p>Hold ctrl to select multiple items.</p>
+<h1 class="text-muted">Project: aaaaaaa</h1>
+<h1 class="mb-5">Acoustic Event Summary Report Generator</h1>
 
-<div class="container fw-bold">
-  <div class="row p-2">
-    <div class="col">Sites:</div>
+<baw-audio-recordings-filter [constructedFilters]="filters$">
+</baw-audio-recordings-filter>
 
-    <div class="col">
-      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
-    </div>
+<label for="sitesInput" class="mt-4">Site(s)</label>
+<input type="text" name="sitesInput" class="form-control mb-2">
 
-    <div class="col">Points:</div>
+<ngx-datatable
+    [columns]="columns"
+    [rows]="sites"
+    class="border p-3"
+  >
+  <ngx-datatable-column
+    [canAutoResize]="false"
+    [checkboxable]="true"
+    [draggable]="false"
+    [headerCheckboxable]="true"
+    [resizeable]="false"
+    [sortable]="false"
+    [width]="30"
+  >
+  </ngx-datatable-column>
+  <ngx-datatable-column name="name">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="description">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
 
-    <div class="col">
-      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
-    </div>
-  </div>
+<label for="pointsInput" class="mt-4">Point(s)</label>
+<input type="text" name="pointsInput" class="form-control mb-2">
 
-  <div class="row p-2">
-    <div class="col">Time range:</div>
+<ngx-datatable
+    [columns]="columns"
+    [rows]="recognizers"
+    class="border p-3"
+  >
+  <ngx-datatable-column
+    [canAutoResize]="false"
+    [checkboxable]="true"
+    [draggable]="false"
+    [headerCheckboxable]="true"
+    [resizeable]="false"
+    [sortable]="false"
+    [width]="30"
+  >
+  </ngx-datatable-column>
+  <ngx-datatable-column name="name">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="description">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
 
-    <div class="col">
-      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
-    </div>
+<label name="recognisersInput" class="mt-4">Recogniser(s)</label>
+<input type="text" name="recognisersInput" class="form-control mb-2">
 
-    <div class="col">Date range:</div>
+<ngx-datatable
+    [columns]="columns"
+    [rows]="recognizers"
+    class="border p-3"
+  >
+  <ngx-datatable-column
+    [canAutoResize]="false"
+    [checkboxable]="true"
+    [draggable]="false"
+    [headerCheckboxable]="true"
+    [resizeable]="false"
+    [sortable]="false"
+    [width]="30"
+  >
+  </ngx-datatable-column>
+  <ngx-datatable-column name="name">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="description">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
 
-    <div class="col">
-      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
-    </div>
-  </div>
+<label for="recognisersCutOffInput" class="mt-4">Recogniser Cut-Off</label>
+<input
+  type="number"
+  name="recognisersCutOffInput"
+  class="form-control"
+  value="0.8"
+  step="0.05"
+  max="1"
+  min="0"
+>
 
-  <div class="row p-2">
-    <div class="col">Duration:</div>
+<label for="chartsInput" class="mt-4">Chat(s)</label>
+<input type="text" name="chartsInput" class="form-control mb-2">
 
-    <div class="col">
-      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
-    </div>
+<ngx-datatable
+    [columns]="columns"
+    [rows]="recognizers"
+    class="border p-3"
+  >
+  <ngx-datatable-column
+    [canAutoResize]="false"
+    [checkboxable]="true"
+    [draggable]="false"
+    [headerCheckboxable]="true"
+    [resizeable]="false"
+    [sortable]="false"
+    [width]="30"
+  >
+  </ngx-datatable-column>
+  <ngx-datatable-column name="name">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="description">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
 
-    <div class="col">Recognisers:</div>
+<label for="eventsOfInterestInput" class="mt-4">Events of Interest</label>
+<input type="text" name="eventsOfInterestInput" class="form-control mb-2">
 
-    <div class="col">
-      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
-    </div>
-  </div>
+<ngx-datatable
+    [columns]="columns"
+    [rows]="recognizers"
+    class="border p-3"
+  >
+  <ngx-datatable-column
+    [canAutoResize]="false"
+    [checkboxable]="true"
+    [draggable]="false"
+    [headerCheckboxable]="true"
+    [resizeable]="false"
+    [sortable]="false"
+    [width]="30"
+  >
+  </ngx-datatable-column>
+  <ngx-datatable-column name="name">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="description">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
 
-  <div class="row p-2">
-    <div class="col">Charts:</div>
-
-    <div class="col">
-      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
-    </div>
-
-    <div class="col">Cut-off:</div>
-
-    <div class="col">
-      <input type="text" class="form-control" style="position: relative; left: -13em; top: -0.5em;" />
-    </div>
-  </div>
-</div>
-
-<div class="eventsOfInterestContainer mt-2">
-  <h4>Events of interest</h4>
-
-  <input type="text" class="form-control w-50" placeholder="Type of browse..." />
-</div>
-
-<button class="btn btn-primary mt-2" (click)="submit()">Submit</button>
+<button class="btn btn-primary my-3" (click)="submit()">Generate</button>

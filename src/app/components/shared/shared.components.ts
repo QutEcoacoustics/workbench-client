@@ -46,6 +46,7 @@ import { ProgressModule } from "./progress/progress.module";
 import { StepperModule } from "./stepper/stepper.module";
 import { UserLinkModule } from "./user-link/user-link.module";
 import { WIPComponent } from "./wip/wip.component";
+import { AudioRecordingsFilterComponent } from "./date-time-filter/audio-recordings-filter.component";
 
 export const sharedComponents = [
   AnnotationDownloadComponent,
@@ -57,6 +58,7 @@ export const sharedComponents = [
   WIPComponent,
   ModelSelectorComponent,
   DeleteModalComponent,
+  AudioRecordingsFilterComponent,
 ];
 
 export const internalComponents = [];

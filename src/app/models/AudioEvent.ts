@@ -21,6 +21,7 @@ import type { AudioRecording } from "./AudioRecording";
 import type { Tag } from "./Tag";
 import { ITagging, Tagging } from "./Tagging";
 import type { User } from "./User";
+import { AudioEventProvenance } from "./AudioEventProvenance";
 
 export interface IAudioEvent extends HasAllUsers {
   id?: Id;
@@ -31,6 +32,7 @@ export interface IAudioEvent extends HasAllUsers {
   highFrequencyHertz?: number;
   isReference?: boolean;
   taggings?: ITagging[] | Tagging[];
+  provenance?: AudioEventProvenance;
 }
 
 export class AudioEvent
@@ -61,6 +63,7 @@ export class AudioEvent
   public readonly updatedAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
+  public readonly provenance?: AudioEventProvenance;
 
   // Associations
   @creator<AudioEvent>()

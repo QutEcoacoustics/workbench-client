@@ -51,6 +51,7 @@ import {
   ProgressEventsService,
 } from "./progress-event/progress-events.service";
 import { projectResolvers, ProjectsService } from "./project/projects.service";
+import { audioEventProvenanceResolvers, AudioEventProvenanceService } from "./AudioEventProvenance/AudioEventProvenance.service";
 import {
   regionResolvers,
   RegionsService,
@@ -267,6 +268,11 @@ const serviceList = [
     service: UserService,
     resolvers: userResolvers,
   },
+  {
+    serviceToken: Tokens.AUDIO_EVENT_PROVENANCE,
+    service: AudioEventProvenanceService,
+    resolvers: audioEventProvenanceResolvers,
+  }
 ];
 
 const services = serviceList.map(({ service }) => service);

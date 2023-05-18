@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ElementRef, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
@@ -12,9 +12,56 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
-import { DateTime } from "luxon";
+import { DateTime, Duration } from "luxon";
 
 const projectKey = "project";
+
+type GraphUrl = string;
+
+type AccumulationDataGraph = AccumulationDataPoint[];
+type SpeciesCompositionDataGraph = SpeciesCompositionDataPoint[];
+type AnalysisCoverageDataGraph = AnalysisCoverageDataPoint[];
+
+interface AccumulationDataPoint {
+  date: DateTime;
+  countOfSpecies: number;
+  error: number;
+}
+
+interface SpeciesCompositionDataPoint {
+  date: DateTime;
+  values: {
+    tagId: Id;
+    ratio: number;
+  }[]
+}
+
+interface AnalysisCoverageDataPoint {
+  date: DateTime;
+  audioCoverage: number;
+  analysisCoverage: number;
+}
+
+type Graph =
+  AccumulationDataGraph |
+  SpeciesCompositionDataGraph |
+  AnalysisCoverageDataGraph |
+  GraphUrl;
+
+interface Report {
+  project: Project;
+  region?: Region[];
+  sites?: Site[];
+  startDate?: DateTime;
+  endDate?: DateTime;
+  startTime?: Duration;
+  endTime?: Duration;
+  provenances?: Id[];
+  minimumScore: number;
+  tags?: Tag[];
+  analysisJob: AnalysisJob;
+  graphs?: Graph[];
+}
 
 interface Row {
   event?: string;
@@ -23,32 +70,6 @@ interface Row {
   daysWithDetections: number;
   daysWithRain: number;
   confidence: number[];
-}
-
-interface Report {
-  project: Project;
-  region?: Region[];
-  sites?: Site[];
-  startDate: DateTime;
-  endDate: DateTime;
-  provenances: Id[];
-  score: number;
-  tags: Tag[];
-  analysisJob: AnalysisJob;
-}
-
-interface AccumulationData {
-  date: DateTime;
-  countOfSpecies: number;
-  error: number;
-}
-
-interface SpeciesCompositionData {
-  date: DateTime;
-  values: {
-    tagId: Id;
-    ratio: number;
-  }
 }
 
 @Component({
@@ -63,10 +84,10 @@ class SummaryReportComponent extends PageComponent {
     super();
   }
 
-  public report: Report;
+  @ViewChild("printableReport")
+  public printableReport: ElementRef;
 
-  protected accumulationData: AccumulationData[];
-  protected speciesCompositionData: SpeciesCompositionData[];
+  public report: Report;
 
   protected rows: Row[] = [
     {
