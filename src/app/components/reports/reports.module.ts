@@ -2,23 +2,25 @@ import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { NgModule } from "@angular/core";
-import { GenerateSummaryReportComponent } from "./pages/generate/generate.component";
-import { SummaryReportComponent } from "./pages/report/report.component";
-import { projectGenerateReportRoute } from "./summary-report.routes";
+import { NewEventReportComponent } from "./pages/event-summary/new/new.component";
+import { ViewEventReportComponent } from "./pages/event-summary/view/view.component";
+import { reportsRoute } from "./reports.routes";
 
 const internalComponents = [];
 
 const components = [
   // pages
-  GenerateSummaryReportComponent,
-  SummaryReportComponent,
+  NewEventReportComponent,
+  ViewEventReportComponent,
 ];
 
-const routes = projectGenerateReportRoute.compileRoutes(getRouteConfigForPage);
+const routes = Object.values(reportsRoute)
+  .map((route) => route.compileRoutes(getRouteConfigForPage))
+  .flat();
 
 @NgModule({
   declarations: [...internalComponents, ...components],
   imports: [SharedModule, RouterModule.forChild(routes)],
   exports: [RouterModule, ...components],
 })
-export class SummaryReportModule {}
+export class ReportModule {}

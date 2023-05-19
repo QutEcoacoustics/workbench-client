@@ -23,13 +23,13 @@
     <div class="row py-2">
       <div class="col fw-bold">Site</div>
 
-      <div class="col" style="position: relative; left: -12em">
+      <div class="col">
         Dalby, St George Narrabri
       </div>
 
       <div class="col fw-bold">Points</div>
 
-      <div class="col" style="position: relative; left: -12em">
+      <div class="col">
         Wet A, B; Dry A, B
       </div>
     </div>
@@ -37,13 +37,13 @@
     <div class="row py-2">
       <div class="col fw-bold">Times</div>
 
-      <div class="col" style="position: relative; left: -12em">
+      <div class="col">
         05:00 - 06:00
       </div>
 
       <div class="col fw-bold">Date Range</div>
 
-      <div class="col" style="position: relative; left: -12em">
+      <div class="col">
         20220.01.01 - 2023.12.31
       </div>
     </div>
@@ -51,11 +51,11 @@
     <div class="row py-2">
       <div class="col fw-bold">Duration</div>
 
-      <div class="col" style="position: relative; left: -12em">Month</div>
+      <div class="col">Month</div>
 
       <div class="col fw-bold">Recognisers</div>
 
-      <div class="col" style="position: relative; left: -12em">
+      <div class="col">
         Birdnet, Lance, 50% confidence cutoff
       </div>
     </div>
@@ -101,82 +101,86 @@
     </div>
 
     <div class="table">
-      <ngx-datatable [rows]="rows" [rowHeight]="'auto'" [columnMode]="'force'">
-        <ngx-datatable-column>
-          <ng-template let-column="column" ngx-datatable-header-template>
-            Events
-          </ng-template>
+      <div class="container">
+        <div class="row">
+          <div class="col border py-1 fw-bold">Events</div>
+          <div class="col border py-1 fw-bold">Recogniser</div>
+          <div class="col border py-1 fw-bold">Detections</div>
+          <div class="col border py-1 fw-bold">Detection Days</div>
+          <div class="col border py-1 fw-bold">Days with Rain</div>
+          <div class="col border py-1 fw-bold">Confidence Plot</div>
+        </div>
 
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <div class="table-row border py-1">
-              {{ row.event }}
-            </div>
-          </ng-template>
-        </ngx-datatable-column>
+        <div class="row">
+          <div class="col border py-1">Ninox boobook</div>
+          <div class="col border py-1">BirdNet</div>
+          <div class="col border py-1">23</div>
+          <div class="col border py-1">10</div>
+          <div class="col border py-1">4</div>
+          <div class="col border py-1">
+            <div class="embeddedFigure">Confidence Plot</div>
 
-        <ngx-datatable-column>
-          <ng-template let-column="column" ngx-datatable-header-template>
-            Recogniser
-          </ng-template>
+            <small class="m-1">Mean: 1</small> <br />
+            <small class="m-1">Standard Deviation: 1</small>
+          </div>
+        </div>
 
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <div class="table-row border py-1">
-              {{ row.recogniser }}
-            </div>
-          </ng-template>
-        </ngx-datatable-column>
+        <div class="row">
+          <div class="col border py-1"></div>
+          <div class="col border py-1">Lance's</div>
+          <div class="col border py-1">11</div>
+          <div class="col border py-1">1</div>
+          <div class="col border py-1">4</div>
+          <div class="col border py-1">
+            <div class="embeddedFigure">Confidence Plot</div>
 
-        <ngx-datatable-column>
-          <ng-template let-column="column" ngx-datatable-header-template>
-            Detections
-          </ng-template>
+            <small class="m-1">Mean: 1</small> <br />
+            <small class="m-1">Standard Deviation: 1</small>
+          </div>
+        </div>
 
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <div class="table-row border py-1">
-              {{ row.detections }}
-            </div>
-          </ng-template>
-        </ngx-datatable-column>
+        <div class="row">
+          <div class="col border py-1">Calyptorhynchus lathami</div>
+          <div class="col border py-1">BirdNet</div>
+          <div class="col border py-1">19</div>
+          <div class="col border py-1">13</div>
+          <div class="col border py-1">2</div>
+          <div class="col border py-1">
+            <div class="embeddedFigure">Confidence Plot</div>
 
-        <ngx-datatable-column>
-          <ng-template let-column="column" ngx-datatable-header-template>
-            Detection Days
-          </ng-template>
+            <small class="m-1">Mean: 1</small> <br />
+            <small class="m-1">Standard Deviation: 1</small>
+          </div>
+        </div>
 
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <div class="table-row border py-1">
-              {{ row.daysWithDetections }}
-            </div>
-          </ng-template>
-        </ngx-datatable-column>
+        <div class="row">
+          <div class="col border py-1"></div>
+          <div class="col border py-1">Lance's</div>
+          <div class="col border py-1">84</div>
+          <div class="col border py-1">11</div>
+          <div class="col border py-1">5</div>
+          <div class="col border py-1">
+            <div class="embeddedFigure">Confidence Plot</div>
 
-        <ngx-datatable-column>
-          <ng-template let-column="column" ngx-datatable-header-template>
-            Days with Rain
-          </ng-template>
+            <small class="m-1">Mean: 1</small> <br />
+            <small class="m-1">Standard Deviation: 1</small>
+          </div>
+        </div>
 
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <div class="table-row border py-1">
-              {{ row.daysWithRain }}
-            </div>
-          </ng-template>
-        </ngx-datatable-column>
+        <div class="row">
+          <div class="col border py-1">Petaurus australis</div>
+          <div class="col border py-1">BirdNet</div>
+          <div class="col border py-1">250</div>
+          <div class="col border py-1">200</div>
+          <div class="col border py-1">30</div>
+          <div class="col border py-1">
+            <div class="embeddedFigure">Confidence Plot</div>
 
-        <ngx-datatable-column [sortable]="false">
-          <ng-template let-column="column" ngx-datatable-header-template>
-            Confidence Plot
-          </ng-template>
-
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <div class="table-row border py-1">
-              <div class="embeddedFigure">Confidence Plot</div>
-
-              <small class="m-1">Mean: 1</small> <br />
-              <small class="m-1">Standard Deviation: 1</small>
-            </div>
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
+            <small class="m-1">Mean: 1</small> <br />
+            <small class="m-1">Standard Deviation: 1</small>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

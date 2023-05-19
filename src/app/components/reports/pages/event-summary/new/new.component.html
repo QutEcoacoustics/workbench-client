@@ -5,13 +5,22 @@
 </baw-audio-recordings-filter>
 
 <label for="sitesInput" class="mt-4">Site(s)</label>
-<input type="text" name="sitesInput" class="form-control mb-2">
+<input
+  type="text"
+  name="sitesInput"
+  class="form-control mb-2"
+  placeholder="All"
+  (focus)="showSitesSelector = true"
+  (blur)="showSitesSelector = false"
+/>
 
 <ngx-datatable
-    [columns]="columns"
-    [rows]="sites"
-    class="border p-3"
-  >
+  #collapse="ngbCollapse"
+  [ngbCollapse]="!showSitesSelector"
+  [columns]="columns"
+  [rows]="sites"
+  class="border p-3"
+>
   <ngx-datatable-column
     [canAutoResize]="false"
     [checkboxable]="true"
@@ -35,13 +44,22 @@
 </ngx-datatable>
 
 <label for="pointsInput" class="mt-4">Point(s)</label>
-<input type="text" name="pointsInput" class="form-control mb-2">
+<input
+  type="text"
+  name="pointsInput"
+  class="form-control mb-2"
+  placeholder="All"
+  (focus)="showPointSelector = true"
+  (blur)="showPointSelector = false"
+/>
 
 <ngx-datatable
-    [columns]="columns"
-    [rows]="recognizers"
-    class="border p-3"
-  >
+  #collapse="ngbCollapse"
+  [ngbCollapse]="!showPointSelector"
+  [columns]="columns"
+  [rows]="recognizers"
+  class="border p-3"
+>
   <ngx-datatable-column
     [canAutoResize]="false"
     [checkboxable]="true"
@@ -65,13 +83,22 @@
 </ngx-datatable>
 
 <label name="recognisersInput" class="mt-4">Recogniser(s)</label>
-<input type="text" name="recognisersInput" class="form-control mb-2">
+<input
+  type="text"
+  name="recognisersInput"
+  class="form-control mb-2"
+  placeholder="All"
+  (focus)="showRecognizerSelector = true"
+  (blur)="showRecognizerSelector = false"
+/>
 
 <ngx-datatable
-    [columns]="columns"
-    [rows]="recognizers"
-    class="border p-3"
-  >
+  #collapse="ngbCollapse"
+  [ngbCollapse]="!showRecognizerSelector"
+  [columns]="columns"
+  [rows]="recognizers"
+  class="border p-3"
+>
   <ngx-datatable-column
     [canAutoResize]="false"
     [checkboxable]="true"
@@ -99,20 +126,30 @@
   type="number"
   name="recognisersCutOffInput"
   class="form-control"
+  placeholder="All"
   value="0.8"
   step="0.05"
   max="1"
   min="0"
->
+/>
 
-<label for="chartsInput" class="mt-4">Chat(s)</label>
-<input type="text" name="chartsInput" class="form-control mb-2">
+<label for="chartsInput" class="mt-4">Chart(s)</label>
+<input
+  type="text"
+  name="chartsInput"
+  class="form-control mb-2"
+  placeholder="All"
+  (focus)="showChartSelector = true"
+  (blur)="showChartSelector = false"
+/>
 
 <ngx-datatable
-    [columns]="columns"
-    [rows]="recognizers"
-    class="border p-3"
-  >
+  #collapse="ngbCollapse"
+  [ngbCollapse]="!showChartSelector"
+  [columns]="columns"
+  [rows]="recognizers"
+  class="border p-3"
+>
   <ngx-datatable-column
     [canAutoResize]="false"
     [checkboxable]="true"
@@ -136,13 +173,29 @@
 </ngx-datatable>
 
 <label for="eventsOfInterestInput" class="mt-4">Events of Interest</label>
-<input type="text" name="eventsOfInterestInput" class="form-control mb-2">
+<p
+  name="eventsOfInterestInput"
+  class="form-control mb-2"
+  contenteditable="true"
+  spellcheck="false"
+  (focus)="showEventsOfInterestSelector = true"
+  (blur)="showEventsOfInterestSelector = false"
+>
+  <span contenteditable="false" class="event-pill badge badge-pill text-bg-primary text-light pointer p-2 me-2">Ninox boobook</span>
+  <span contenteditable="false" class="event-pill badge badge-pill text-bg-secondary text-light pointer p-2 me-2">Calyptorhynchus lathami</span>
+  <span contenteditable="false" class="event-pill badge badge-pill text-bg-danger text-light pointer p-2 me-2">Petaurus australis</span>
+  <span contenteditable="false" class="event-pill badge badge-pill text-bg-warning text-light pointer p-2 me-2">Corvus monedula</span>
+
+  <span class="event-pill p-1"></span>
+</p>
 
 <ngx-datatable
-    [columns]="columns"
-    [rows]="recognizers"
-    class="border p-3"
-  >
+  #collapse="ngbCollapse"
+  [ngbCollapse]="false"
+  [columns]="columns"
+  [rows]="eventsOfInterest"
+  class="border p-3"
+>
   <ngx-datatable-column
     [canAutoResize]="false"
     [checkboxable]="true"
@@ -155,7 +208,7 @@
   </ngx-datatable-column>
   <ngx-datatable-column name="name">
     <ng-template let-value="value" ngx-datatable-cell-template>
-      <span>{{ value }}</span>
+      <span class="badge badge-pill text-bg-primary text-light pointer">{{ value }}</span>
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column name="description">

@@ -12,7 +12,6 @@
 .largeEmbeddedFigure {
   @extend .embeddedFigure;
   height: 15em;
-  width: 30em;
   max-width: 30em;
 }
 
@@ -32,10 +31,15 @@
 
 @media print {
   #printBtn {
-    visibility: hidden;
+    display: none;
   }
 
-  * {
-    background-color: red !important;
+  .largeEmbeddedFigure {
+    break-inside: avoid;
+  }
+
+  .printPageBreak {
+    clear: both;
+    break-before: always !important;
   }
 }

@@ -21,8 +21,8 @@ import {
 } from "@components/projects/projects.menus";
 import { deleteProjectModal } from "@components/projects/projects.modals";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
+import { reportMenuItems } from "@components/reports/reports.menu";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
-import { generateSummaryReportMenuItem } from "@components/summary-reports/summary-report.menu";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
@@ -48,7 +48,7 @@ export const projectMenuItemActions = [
   newSiteMenuItem,
   harvestsMenuItem,
   audioRecordingMenuItems.batch.project,
-  generateSummaryReportMenuItem,
+  reportMenuItems.new.project,
   visualizeMenuItem,
 ];
 

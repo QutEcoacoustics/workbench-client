@@ -1,11 +1,11 @@
 import { Component, ElementRef, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import {
-  summaryReportCategory,
-  summaryReportMenuItem
-} from "@components/summary-reports/summary-report.menu";
+import { regionResolvers } from "@baw-api/region/regions.service";
+import { siteResolvers } from "@baw-api/site/sites.service";
+import { reportMenuItems, viewReportCategory } from "@components/reports/reports.menu";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { Id } from "@interfaces/apiInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { Project } from "@models/Project";
@@ -15,6 +15,8 @@ import { Tag } from "@models/Tag";
 import { DateTime, Duration } from "luxon";
 
 const projectKey = "project";
+const regionKey = "region";
+const siteKey = "site";
 
 type GraphUrl = string;
 
@@ -74,10 +76,10 @@ interface Row {
 
 @Component({
   selector: "baw-summary-report",
-  templateUrl: "./report.component.html",
-  styleUrls: ["./report.component.scss"],
+  templateUrl: "./view.component.html",
+  styleUrls: ["./view.component.scss"],
 })
-class SummaryReportComponent extends PageComponent {
+class ViewEventReportComponent extends PageComponent {
   public constructor(
     public router: Router,
   ) {
@@ -135,13 +137,24 @@ class SummaryReportComponent extends PageComponent {
   }
 }
 
-SummaryReportComponent.linkToRoute({
-  category: summaryReportCategory,
-  menus: {},
-  pageRoute: summaryReportMenuItem,
-  resolvers: {
-    [projectKey]: projectResolvers.show,
-  },
-});
+function getPageInfo(
+  subRoute: keyof typeof reportMenuItems.view
+): IPageInfo {
+  return {
+    pageRoute: reportMenuItems.view[subRoute],
+    category: viewReportCategory,
+    resolvers: {
+      [projectKey]: projectResolvers.showOptional,
+      [regionKey]: regionResolvers.showOptional,
+      [siteKey]: siteResolvers.showOptional,
+    },
+  };
+}
 
-export { SummaryReportComponent }
+ViewEventReportComponent
+  .linkToRoute(getPageInfo("project"))
+  .linkToRoute(getPageInfo("region"))
+  .linkToRoute(getPageInfo("site"))
+  .linkToRoute(getPageInfo("siteAndRegion"));
+
+export { ViewEventReportComponent }

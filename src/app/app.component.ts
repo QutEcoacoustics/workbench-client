@@ -35,7 +35,7 @@ declare const gtag: Gtag.Gtag;
 @Component({
   selector: "baw-root",
   templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"],
+  styleUrls: ["./app.component.scss", "./print-app.component.scss"],
   /*
    * Need this so that router-outlet components can be styled. If removed,
    * validate that pages which rely on full height pages such as IFrames are

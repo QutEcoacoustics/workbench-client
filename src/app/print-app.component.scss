@@ -1,0 +1,15 @@
+@media print {
+  .nav-link {
+    display: none;
+  }
+
+  baw-menu-toggle,
+  baw-footer,
+  baw-breadcrumbs {
+    display: none;
+  }
+
+  @page {
+    margin: 0;
+  }
+}
