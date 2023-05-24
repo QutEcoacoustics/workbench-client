@@ -9,7 +9,11 @@
     display: none;
   }
 
-  @page {
-    margin: 0;
+  .navbar-brand {
+    display: none;
+  }
+
+  baw-header, #navbar {
+    background-color: transparent !important;
   }
 }

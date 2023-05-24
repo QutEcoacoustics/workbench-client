@@ -25,21 +25,18 @@
   align-items: center;
 }
 
-.table-row {
-  height: 15em;
-}
-
 @media print {
   #printBtn {
     display: none;
   }
 
+  .row,
+  .eventsTable,
   .largeEmbeddedFigure {
     break-inside: avoid;
   }
 
-  .printPageBreak {
-    clear: both;
-    break-before: always !important;
+  .eventsTable {
+    overflow-wrap: anywhere;
   }
 }

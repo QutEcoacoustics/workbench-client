@@ -5,6 +5,7 @@
 </baw-audio-recordings-filter>
 
 <label for="sitesInput" class="mt-4">Site(s)</label>
+
 <input
   type="text"
   name="sitesInput"
@@ -20,6 +21,7 @@
   [columns]="columns"
   [rows]="sites"
   class="border p-3"
+  (mousedown)="void ()"
 >
   <ngx-datatable-column
     [canAutoResize]="false"
@@ -59,6 +61,7 @@
   [columns]="columns"
   [rows]="recognizers"
   class="border p-3"
+  (mousedown)="void ()"
 >
   <ngx-datatable-column
     [canAutoResize]="false"
@@ -98,6 +101,7 @@
   [columns]="columns"
   [rows]="recognizers"
   class="border p-3"
+  (mousedown)="void ()"
 >
   <ngx-datatable-column
     [canAutoResize]="false"
@@ -149,6 +153,7 @@
   [columns]="columns"
   [rows]="recognizers"
   class="border p-3"
+  (mousedown)="void ()"
 >
   <ngx-datatable-column
     [canAutoResize]="false"
@@ -181,20 +186,21 @@
   (focus)="showEventsOfInterestSelector = true"
   (blur)="showEventsOfInterestSelector = false"
 >
-  <span contenteditable="false" class="event-pill badge badge-pill text-bg-primary text-light pointer p-2 me-2">Ninox boobook</span>
-  <span contenteditable="false" class="event-pill badge badge-pill text-bg-secondary text-light pointer p-2 me-2">Calyptorhynchus lathami</span>
-  <span contenteditable="false" class="event-pill badge badge-pill text-bg-danger text-light pointer p-2 me-2">Petaurus australis</span>
-  <span contenteditable="false" class="event-pill badge badge-pill text-bg-warning text-light pointer p-2 me-2">Corvus monedula</span>
+  <span contenteditable="false" class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2">Ninox boobook</span>
+  <span contenteditable="false" class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2">Calyptorhynchus lathami</span>
+  <span contenteditable="false" class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2">Petaurus australis</span>
+  <span contenteditable="false" class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2">Corvus monedula</span>
 
-  <span class="event-pill p-1"></span>
+  <span class="p-1"></span>
 </p>
 
 <ngx-datatable
   #collapse="ngbCollapse"
-  [ngbCollapse]="false"
+  [ngbCollapse]="!showEventsOfInterestSelector"
   [columns]="columns"
   [rows]="eventsOfInterest"
   class="border p-3"
+  (mousedown)="void ()"
 >
   <ngx-datatable-column
     [canAutoResize]="false"
@@ -208,7 +214,7 @@
   </ngx-datatable-column>
   <ngx-datatable-column name="name">
     <ng-template let-value="value" ngx-datatable-cell-template>
-      <span class="badge badge-pill text-bg-primary text-light pointer">{{ value }}</span>
+      <span class="badge badge-pill pill-color text-light pointer">{{ value }}</span>
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column name="description">
