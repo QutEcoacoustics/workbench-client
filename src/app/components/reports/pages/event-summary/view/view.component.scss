@@ -2,8 +2,8 @@
   display: flex;
   border-style: solid;
   border-width: thin;
-  max-width: 13em;
-  height: 10em;
+  max-width: 15em;
+  max-height: 10em;
   justify-content: center;
   align-items: center;
   margin: 0.5em;
@@ -13,6 +13,7 @@
   @extend .embeddedFigure;
   height: 15em;
   max-width: 30em;
+  max-height: 15em;
 }
 
 .siteMap {
@@ -38,5 +39,9 @@
 
   .eventsTable {
     overflow-wrap: anywhere;
+  }
+
+  h3 {
+    page-break-before: always;
   }
 }

@@ -51,7 +51,7 @@ type Graph =
   GraphUrl;
 
 interface Report {
-  project: Project;
+  project?: Project;
   region?: Region[];
   sites?: Site[];
   startDate?: DateTime;
@@ -59,9 +59,9 @@ interface Report {
   startTime?: Duration;
   endTime?: Duration;
   provenances?: Id[];
-  minimumScore: number;
+  minimumScore?: number;
   tags?: Tag[];
-  analysisJob: AnalysisJob;
+  analysisJob?: AnalysisJob;
   graphs?: Graph[];
 }
 
@@ -89,7 +89,7 @@ class ViewEventReportComponent extends PageComponent {
   @ViewChild("printableReport")
   public printableReport: ElementRef;
 
-  public report: Report;
+  public report: Report = {};
 
   protected rows: Row[] = [
     {
