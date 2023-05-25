@@ -18,11 +18,12 @@ import {
 } from "@baw-api/resolver-common";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { MenuRoute } from "@interfaces/menusInterfaces";
+import { MenuRoute, TitleOptionsHash } from "@interfaces/menusInterfaces";
 import { GlobalsService } from "@services/globals/globals.service";
 import { MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { filter, Observable, takeUntil } from "rxjs";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IS_SERVER_PLATFORM } from "./app.helper";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "./services/config/config.service";
@@ -122,21 +123,29 @@ export class PageTitleStrategy extends TitleStrategy {
   private buildHierarchicalTitle(subRoute: MenuRoute): string {
     // If the page route has an explicit way to construct the title, use the title callback
     // if there is no `title` callback defined in the menuRoute, use the category label as a fallback
-    let componentTitle = " | ";
+    let componentTitle = "";
 
     if (subRoute?.title) {
-      // in the case that the title callback throws an error, the category label should be used as a fallback
+      // in the rare case that the title callback throws an error, the category label should be used as a fallback
       try {
-        componentTitle += subRoute.title(this.routerState);
+        const hideProjects: boolean = this.config.settings.hideProjects;
+        const titleOptions: TitleOptionsHash = { hideProjects };
+
+        const routeFragmentTitle = subRoute.title(this.routerState, titleOptions);
+
+        // to explicitly omit a route title fragment, the title callback will return null
+        if (isInstantiated(routeFragmentTitle)) {
+          componentTitle = " | " + routeFragmentTitle;
+        }
       } catch (error: unknown) {
-        componentTitle += titleCase(subRoute.label);
+        componentTitle = titleCase(subRoute.label);
         console.error(`Failed to resolve title callback ${error}`);
       }
     } else {
       // since category labels are not title cased (first letter after space capitalized), we need to title case them
       // since explicit route titles commonly include model names which are case sensitive, explicit titles should not change casing
       // e.g. Project name "Tasmanian wetlands" != "Tasmanian Wetlands" as the user has explicitly not capitalized "Wetlands"
-      componentTitle += titleCase(subRoute.label);
+      componentTitle = " | " + titleCase(subRoute.label);
     }
 
     return subRoute?.parent

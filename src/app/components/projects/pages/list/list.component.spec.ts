@@ -22,6 +22,7 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
+import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { ListComponent } from "./list.component";
 
 const mockCardsComponent = MockComponent(CardsComponent);
@@ -95,7 +96,7 @@ describe("ProjectsListComponent", () => {
     api = spec.inject(ProjectsService);
   });
 
-  assertPageInfo(ListComponent, "Projects");
+  assertPageInfo(ListComponent, ["Projects", shallowRegionsMenuItem.label]);
 
   it("should initially request page 1", async () => {
     await handleApiRequest([], (filter) => expect(filter.paging.page).toBe(1));

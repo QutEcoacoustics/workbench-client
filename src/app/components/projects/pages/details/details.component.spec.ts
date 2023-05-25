@@ -1,7 +1,10 @@
 import { Router } from "@angular/router";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { projectResolvers, ProjectsService } from "@baw-api/project/projects.service";
+import {
+  projectResolvers,
+  ProjectsService,
+} from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { SiteCardComponent } from "@components/projects/components/site-card/site-card.component";
@@ -57,8 +60,8 @@ describe("ProjectDetailsComponent", () => {
 
   assertPageInfo<Project>(DetailsComponent, "test name", {
     project: {
-      model: new Project(generateProject({ name: "test name" }))
-    }
+      model: new Project(generateProject({ name: "test name" })),
+    },
   });
 
   function createModelWithMeta<M extends AbstractModel>(

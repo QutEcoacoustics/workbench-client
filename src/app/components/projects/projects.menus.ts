@@ -1,6 +1,6 @@
 import { RouterStateSnapshot } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
-import { Category, menuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuRoute, TitleOptionsHash } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import {
   defaultEditIcon,
@@ -32,7 +32,8 @@ export const projectsMenuItem = menuRoute({
   order: 4,
   route: projectsRoute,
   tooltip: () => "View projects I have access to",
-  title: () => "Projects",
+  title: (_routerState: RouterStateSnapshot, titleOptions: TitleOptionsHash) =>
+    titleOptions.hideProjects ? "Sites" : "Projects",
 });
 
 export const newProjectMenuItem = menuRoute({
