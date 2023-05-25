@@ -243,7 +243,7 @@ describe("AppComponent", () => {
     });
 
     it("should have an injected page title strategy", () => {
-      expect(titleStrategyInjectable).toBeTruthy();
+      expect(titleStrategyInjectable).toBeInstanceOf(PageTitleStrategy);
     });
 
     // a route without a hierarchy is a route with no `parent` property

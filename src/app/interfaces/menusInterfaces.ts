@@ -151,6 +151,10 @@ export function menuLink<T extends Omit<MenuLink, "kind">>(item: T): MenuLink {
   });
 }
 
+export interface TitleOptionsHash {
+  hideProjects: boolean;
+}
+
 /**
  * MenuRoute interface. Defines an internal page/route within this application.
  * Must be known to this angular app. e.g. /security/login
@@ -163,7 +167,7 @@ export interface MenuRoute extends MenuItem {
   route: StrongRoute;
 
   /** A computed tab title callback that should be used to identify the route */
-  title?: (routerState?: RouterStateSnapshot) => string
+  title?: (routerState?: RouterStateSnapshot, titleOptions?: TitleOptionsHash) => string | null;
 
   /** Custom label when shown in the breadcrumb */
   breadcrumbResolve?: (pageInfo: IPageInfo, injector: Injector) => string;

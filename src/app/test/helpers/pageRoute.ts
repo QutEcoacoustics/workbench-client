@@ -3,7 +3,7 @@ import { RouterStateSnapshot } from "@angular/router";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { getPageInfos, IPageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
-import { MenuRoute } from "@interfaces/menusInterfaces";
+import { MenuRoute, TitleOptionsHash } from "@interfaces/menusInterfaces";
 
 /**
  * Asserts that the specified page component has the correct page title when mounted at all locations
@@ -15,11 +15,17 @@ import { MenuRoute } from "@interfaces/menusInterfaces";
 export function assertPageInfo<T>(
   componentType: Type<IPageComponent>,
   expectedPageTitles: string[] | string,
-  modelState?: IRouteModel<T>,
+  modelState?: IRouteModel<T>
 ) {
   describe("pageRoute", () => {
     const componentPageInfo: PageInfo[] = getPageInfos(componentType);
-    const componentPageRoutes: MenuRoute[] = componentPageInfo.map((pageInfo: IPageInfo) => pageInfo.pageRoute);
+    const componentPageRoutes: MenuRoute[] = componentPageInfo.map(
+      (pageInfo: IPageInfo) => pageInfo.pageRoute
+    );
+    const testedTitleOptions: TitleOptionsHash[] = [
+      { hideProjects: false },
+      { hideProjects: true },
+    ];
 
     const mockRouteState: RouterStateSnapshot = Object({
       root: {
@@ -41,7 +47,8 @@ export function assertPageInfo<T>(
     beforeAll(() => {
       if (typeof expectedPageTitles === "string") {
         // if one title is provided, assume that this title is used at all route locations
-        expectedPageTitles = Array(componentPageInfo.length).fill(expectedPageTitles);
+        const numberOfTestedTitles: number = componentPageInfo.length + testedTitleOptions.length;
+        expectedPageTitles = Array(numberOfTestedTitles).fill(expectedPageTitles);
       }
     });
 
@@ -60,10 +67,15 @@ export function assertPageInfo<T>(
 
       // some page routes do not have a page title, therefore there is no use in an assertion of page title
       if (pageRoute.title) {
-        it(`should use the correct page title for the route "/${pageRoutePath}"`, () => {
-          const expectedTitle = expectedPageTitles[i];
-          const observedTitle = pageRoute.title(mockRouteState);
-          expect(observedTitle).toEqual(expectedTitle);
+        testedTitleOptions.forEach((testingTitleOption: TitleOptionsHash, j: number) => {
+          it(`should use the correct page title for the route "/${pageRoutePath}" with projects ${testingTitleOption.hideProjects}`, () => {
+            const expectedTitle = expectedPageTitles[i + j];
+            const observedTitle = pageRoute.title(
+              mockRouteState,
+              testingTitleOption
+            );
+            expect(observedTitle).toEqual(expectedTitle);
+          });
         });
       } else {
         it(`should use the correct fallback menu route label for the route "/${pageRoutePath}"`, () => {
@@ -88,5 +100,5 @@ export function assertPageInfo<T>(
 interface IRouteModel<T> {
   [key: string]: {
     model: T;
-  }
+  };
 }
