@@ -1,9 +1,12 @@
-import { Component, ElementRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
-import { reportMenuItems, viewReportCategory } from "@components/reports/reports.menu";
+import {
+  reportMenuItems,
+  viewReportCategory,
+} from "@components/reports/reports.menu";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { Id } from "@interfaces/apiInterfaces";
@@ -13,6 +16,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { DateTime, Duration } from "luxon";
+import embed, { VisualizationSpec } from "vega-embed";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -35,7 +39,7 @@ interface SpeciesCompositionDataPoint {
   values: {
     tagId: Id;
     ratio: number;
-  }[]
+  }[];
 }
 
 interface AnalysisCoverageDataPoint {
@@ -45,10 +49,10 @@ interface AnalysisCoverageDataPoint {
 }
 
 type Graph =
-  AccumulationDataGraph |
-  SpeciesCompositionDataGraph |
-  AnalysisCoverageDataGraph |
-  GraphUrl;
+  | AccumulationDataGraph
+  | SpeciesCompositionDataGraph
+  | AnalysisCoverageDataGraph
+  | GraphUrl;
 
 interface Report {
   project?: Project;
@@ -65,81 +69,121 @@ interface Report {
   graphs?: Graph[];
 }
 
-interface Row {
-  event?: string;
-  recogniser: string;
-  detections: number;
-  daysWithDetections: number;
-  daysWithRain: number;
-  confidence: number[];
-}
-
 @Component({
   selector: "baw-summary-report",
   templateUrl: "./view.component.html",
   styleUrls: ["./view.component.scss"],
 })
-class ViewEventReportComponent extends PageComponent {
-  public constructor(
-    public router: Router,
-  ) {
+class ViewEventReportComponent extends PageComponent implements AfterViewInit {
+  public constructor(public router: Router) {
     super();
   }
 
-  @ViewChild("printableReport")
-  public printableReport: ElementRef;
-
+  @ViewChild("accumulationCurve") public accumulationCurveElement: ElementRef;
+  @ViewChild("compositionCurve") public compositionCurveElement: ElementRef;
   public report: Report = {};
 
-  protected rows: Row[] = [
-    {
-      event: "Ninox boobook",
-      recogniser: "BirdNet",
-      detections: 23,
-      daysWithDetections: 10,
-      daysWithRain: 4,
-      confidence: [0.2, 0.3, 0.5],
+  public ngAfterViewInit(): void {
+    embed(
+      this.accumulationCurveElement.nativeElement,
+      this.speciesAccumulationCurveData
+    );
+    embed(
+      this.compositionCurveElement.nativeElement,
+      this.compositionCurveData
+    );
+  }
+
+  public speciesAccumulationCurveData: VisualizationSpec = {
+    width: "container",
+    height: "container",
+    data: {
+      values: [
+        { date: "22-05-2023", species: 5, error: 5 - 0.5, error2: 5 + 0.5 },
+        { date: "23-05-2023", species: 3, error: 3 - 0.5, error2: 3 + 0.5 },
+        { date: "24-05-2023", species: 4, error: 4 - 0.5, error2: 4 + 0.5 },
+        { date: "25-05-2023", species: 2, error: 2 - 0.5, error2: 2 + 0.5 },
+        { date: "26-05-2023", species: 6, error: 6 - 0.5, error2: 6 + 0.5 },
+      ],
     },
-    {
-      recogniser: "Lance's",
-      detections: 11,
-      daysWithDetections: 1,
-      daysWithRain: 4,
-      confidence: [0.2, 0.3, 0.5],
-    },
-    {
-      event: "Calyptorhynchus lathami",
-      recogniser: "BirdNet",
-      detections: 19,
-      daysWithDetections: 13,
-      daysWithRain: 2,
-      confidence: [0.2, 0.3, 0.5],
-    },
-    {
-      recogniser: "Lance's",
-      detections: 84,
-      daysWithDetections: 11,
-      daysWithRain: 5,
-      confidence: [0.2, 0.3, 0.5],
-    },
-    {
-      event: "Petaurus australis",
-      recogniser: "BirdNet",
-      detections: 250,
-      daysWithDetections: 200,
-      daysWithRain: 30,
-      confidence: [0.2, 0.3, 0.5],
-    }
-  ];
+    layer: [
+      {
+        mark: {
+          type: "point",
+          filled: true,
+          color: "black",
+        },
+        encoding: {
+          x: { field: "date", type: "nominal", axis: { labelAngle: 0 } },
+          y: { field: "species", type: "quantitative", axis: { labelAngle: 0 } },
+        },
+      },
+      {
+        mark: "errorbar",
+        encoding: {
+          x: {
+            field: "date",
+            type: "nominal",
+          },
+          y: { field: "error", type: "quantitative" },
+          y2: { field: "error2", type: "quantitative" }
+        },
+      },
+      {
+        mark: "line",
+        encoding: {
+          x: { field: "date", type: "nominal", axis: { labelAngle: 0 } },
+          y: { field: "species", type: "quantitative", axis: { labelAngle: 0 } },
+        },
+      },
+    ],
+  };
 
   public printPage(): void {
     window.print();
   }
+
+  public compositionCurveData: VisualizationSpec = {
+    width: 300,
+    height: 200,
+    data: [
+      {
+        series: "Government",
+        year: 2000,
+        month: 9,
+        count: 408,
+        rate: 2.1,
+        date: "2000-09-01T07:00:00.000Z",
+      },
+      {
+        series: "Government",
+        year: 2000,
+        month: 10,
+        count: 391,
+        rate: 2,
+        date: "2000-10-01T07:00:00.000Z",
+      },
+    ],
+    mark: "area",
+    encoding: {
+      x: {
+        timeUnit: "yearmonth",
+        field: "date",
+        axis: { format: "%Y" },
+      },
+      y: {
+        aggregate: "sum",
+        field: "count",
+      },
+      color: {
+        field: "series",
+        scale: { scheme: "category20b" },
+      },
+    },
+  };
 }
 
-function getPageInfo(
-  subRoute: keyof typeof reportMenuItems.view
-): IPageInfo {
+function getPageInfo(subRoute: keyof typeof reportMenuItems.view): IPageInfo {
   return {
     pageRoute: reportMenuItems.view[subRoute],
     category: viewReportCategory,
@@ -151,10 +195,9 @@ function getPageInfo(
   };
 }
 
-ViewEventReportComponent
-  .linkToRoute(getPageInfo("project"))
+ViewEventReportComponent.linkToRoute(getPageInfo("project"))
   .linkToRoute(getPageInfo("region"))
   .linkToRoute(getPageInfo("site"))
   .linkToRoute(getPageInfo("siteAndRegion"));
 
-export { ViewEventReportComponent }
+export { ViewEventReportComponent };

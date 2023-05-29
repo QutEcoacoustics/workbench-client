@@ -12,8 +12,13 @@
 .largeEmbeddedFigure {
   @extend .embeddedFigure;
   height: 15em;
-  max-width: 30em;
+  min-width: 30em;
   max-height: 15em;
+}
+
+.largeEmbeddedFigure-filled {
+  @extend .largeEmbeddedFigure;
+  border: none;
 }
 
 .siteMap {
@@ -33,7 +38,8 @@
 
   .row,
   .eventsTable,
-  .largeEmbeddedFigure {
+  .largeEmbeddedFigure,
+  .largeEmbeddedFigure-filled {
     break-inside: avoid;
   }
 
