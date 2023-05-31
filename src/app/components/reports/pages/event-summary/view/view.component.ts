@@ -144,32 +144,44 @@ class ViewEventReportComponent extends PageComponent implements AfterViewInit {
   }
 
   public compositionCurveData: VisualizationSpec = {
-    width: 300,
-    height: 200,
-    data: [
-      {
-        series: "Government",
-        year: 2000,
-        month: 9,
-        count: 408,
-        rate: 2.1,
-        date: "2000-09-01T07:00:00.000Z",
-      },
-      {
-        series: "Government",
-        year: 2000,
-        month: 10,
-        count: 391,
-        rate: 2,
-        date: "2000-10-01T07:00:00.000Z",
-      },
-    ],
+    width: "container",
+    height: "container",
+    data: {
+      values: [
+        { date: "22-05-2023", series: "crow", count: 1 },
+        { date: "22-05-2023", series: "magpie", count: 3 },
+        { date: "22-05-2023", series: "ibus", count: 5 },
+        { date: "22-06-2023", series: "crow", count: 4 },
+        { date: "22-06-2023", series: "magpie", count: 1 },
+        { date: "22-06-2023", series: "ibus", count: 3 },
+        { date: "22-07-2023", series: "crow", count: 2 },
+        { date: "22-07-2023", series: "magpie", count: 4 },
+        { date: "22-07-2023", series: "ibus", count: 4 },
+        { date: "22-08-2023", series: "crow", count: 1 },
+        { date: "22-08-2023", series: "magpie", count: 3 },
+        { date: "22-18-2023", series: "ibus", count: 5 },
+        { date: "22-09-2023", series: "crow", count: 4 },
+        { date: "22-09-2023", series: "magpie", count: 1 },
+        { date: "22-09-2023", series: "ibus", count: 3 },
+        { date: "22-10-2023", series: "crow", count: 2 },
+        { date: "22-10-2023", series: "magpie", count: 4 },
+        { date: "22-10-2023", series: "ibus", count: 4 },
+        { date: "22-11-2023", series: "crow", count: 1 },
+        { date: "22-11-2023", series: "magpie", count: 3 },
+        { date: "22-11-2023", series: "ibus", count: 5 },
+        { date: "22-12-2023", series: "crow", count: 4 },
+        { date: "22-12-2023", series: "magpie", count: 1 },
+        { date: "22-12-2023", series: "ibus", count: 3 },
+        { date: "22-01-2024", series: "crow", count: 2 },
+        { date: "22-01-2024", series: "magpie", count: 4 },
+        { date: "22-01-2024", series: "ibus", count: 4 },
+      ]
+    },
     mark: "area",
     encoding: {
       x: {
-        timeUnit: "yearmonth",
         field: "date",
-        axis: { format: "%Y" },
+        type: "nominal"
       },
       y: {
         aggregate: "sum",
