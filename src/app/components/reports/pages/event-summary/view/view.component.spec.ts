@@ -8,14 +8,16 @@ import { SharedModule } from "@shared/shared.module";
 import { toBase64Url } from "@helpers/encoding/encoding";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
 import { MockComponent, MockedComponent } from "ng-mocks";
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
-import { ViewEventReportComponent } from "./view.component";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
+import { AudioEventSummaryReport } from "@models/AudioEventSummaryReport";
+import { AUDIO_EVENT_PROVENANCE, AUDIO_EVENT_SUMMARY } from "@baw-api/ServiceTokens";
+import { ViewEventReportComponent } from "./view.component";
 
-xdescribe("ViewEventReportComponent", () => {
+describe("ViewEventReportComponent", () => {
   let spectator: SpectatorRouting<ViewEventReportComponent>;
-  let mockAudioEventProvenanceService: SpyObject<AudioEventProvenanceService>;
+  let mockAudioEventProvenanceService: SpyObject<any>; // TODO: BEFORE REVIEW MAKE THIS TYPE SAFE
+  let mockEventSummaryService: SpyObject<any>;
 
   // we need to mock components that call external apis such as the google maps embedded component
   const mockSiteMap = MockComponent(SiteMapComponent);
@@ -31,9 +33,15 @@ xdescribe("ViewEventReportComponent", () => {
     spectator.detectChanges();
 
     // mock services
-    mockAudioEventProvenanceService = spectator.inject<SpyObject<AudioEventProvenanceService>>(AudioEventProvenanceService as any);
-    mockAudioEventProvenanceService.show.and.callFake(
+    mockAudioEventProvenanceService = spectator.inject(AUDIO_EVENT_PROVENANCE.token);
+    mockEventSummaryService = spectator.inject(AUDIO_EVENT_SUMMARY.token);
+
+    mockAudioEventProvenanceService.api.show.and.callFake(
       () => new AudioEventProvenance(generateAudioEventProvenance())
+    );
+
+    mockEventSummaryService.api.show.and.callFake(
+      () => new AudioEventSummaryReport()
     );
   }
 

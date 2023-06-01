@@ -7,7 +7,7 @@ import { TimeComponent } from "@shared/input/time/time.component";
 import { Router } from "@angular/router";
 import { NewEventReportComponent } from "./new.component";
 
-xdescribe("NewEventReportComponent", () => {
+describe("NewEventReportComponent", () => {
   let spectator: SpectatorRouting<NewEventReportComponent>;
   let routerSpy: SpyObject<Router>;
 
@@ -32,13 +32,15 @@ xdescribe("NewEventReportComponent", () => {
 
   beforeEach(() => setup());
 
-  const sitesInput = (): HTMLInputElement => spectator.query("input[name='sitesInput']");
-  const pointsInput = (): HTMLInputElement => spectator.query("input[name='pointsInput']");
-  const recognizersInput = (): HTMLInputElement => spectator.query("input[name='recognizersInput']");
-  const recognizersCutOffInput = (): HTMLInputElement => spectator.query("input[name='recognizersCutOffInput']");
-  const chartsInput = (): HTMLInputElement => spectator.query("input[name='chartsInput']");
-  const eventsOfInterestInput = (): HTMLInputElement => spectator.query("input[name='eventsOfInterestInput']");
-  const submitFormButton = (): HTMLButtonElement => spectator.query("#generateReportButton");
+  // we have to use "as HTMLInputElement" because `query` can return null if the element is not found
+  // is a jasmine error is thrown "property x cannot be found on object null", the element names are not being found
+  const sitesInput = (): HTMLInputElement => spectator.query("input[name='sitesInput']") as HTMLInputElement;
+  const pointsInput = (): HTMLInputElement => spectator.query("input[name='pointsInput']") as HTMLInputElement;
+  const recognizersInput = (): HTMLInputElement => spectator.query("input[name='recognizersInput']") as HTMLInputElement;
+  const recognizersCutOffInput = (): HTMLInputElement => spectator.query("input[name='recognizersCutOffInput']") as HTMLInputElement;
+  const chartsInput = (): HTMLInputElement => spectator.query("input[name='chartsInput']") as HTMLInputElement;
+  const eventsOfInterestInput = (): HTMLInputElement => spectator.query("input[name='eventsOfInterestInput']") as HTMLInputElement;
+  const submitFormButton = (): HTMLButtonElement => spectator.query("#generateReportButton") as HTMLInputElement;
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(NewEventReportComponent);
