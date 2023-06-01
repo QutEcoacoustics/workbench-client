@@ -1,6 +1,5 @@
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { hsl } from "d3-color";
-import { DeviceDetectorService } from "ngx-device-detector";
 import { ThemeColor, ThemeService } from "./theme.service";
 
 const themeColors: ThemeColor[] = [
@@ -16,7 +15,6 @@ const themeColors: ThemeColor[] = [
 ];
 
 describe("ThemeService", () => {
-  let isFirefox: boolean;
   let spec: SpectatorService<ThemeService>;
   const createService = createServiceFactory(ThemeService);
   const defaultColorName: ThemeColor = "highlight";
@@ -45,7 +43,7 @@ describe("ThemeService", () => {
     const lightness = `${prefix}-lightness`;
 
     function readHslValue(value: number) {
-      return isFirefox ? value.toFixed(2) : value;
+      return value.toFixed(2);
     }
 
     const style = document.documentElement.style;
@@ -61,7 +59,6 @@ describe("ThemeService", () => {
 
     // Styles are not reset between tests, so we reset here
     spec.service.resetTheme();
-    isFirefox = spec.inject(DeviceDetectorService).browser === "Firefox";
   });
 
   afterAll(() => spec.service.resetTheme());
