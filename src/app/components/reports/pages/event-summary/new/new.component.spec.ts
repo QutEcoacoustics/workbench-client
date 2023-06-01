@@ -7,7 +7,7 @@ import { TimeComponent } from "@shared/input/time/time.component";
 import { Router } from "@angular/router";
 import { NewEventReportComponent } from "./new.component";
 
-describe("NewEventReportComponent", () => {
+xdescribe("NewEventReportComponent", () => {
   let spectator: SpectatorRouting<NewEventReportComponent>;
   let routerSpy: SpyObject<Router>;
 

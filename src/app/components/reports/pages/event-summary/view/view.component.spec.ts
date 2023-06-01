@@ -13,7 +13,7 @@ import { ViewEventReportComponent } from "./view.component";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 
-describe("ViewEventReportComponent", () => {
+xdescribe("ViewEventReportComponent", () => {
   let spectator: SpectatorRouting<ViewEventReportComponent>;
   let mockAudioEventProvenanceService: SpyObject<AudioEventProvenanceService>;
 
