@@ -36,6 +36,7 @@ import type { Tagging } from "@models/Tagging";
 import type { TagGroup } from "@models/TagGroup";
 import type { User } from "@models/User";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { AudioEventSummaryReport } from "@models/AudioEventSummaryReport";
 import type { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";

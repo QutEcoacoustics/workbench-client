@@ -10,65 +10,11 @@ import {
 } from "@components/reports/reports.menu";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { Id } from "@interfaces/apiInterfaces";
-import { AnalysisJob } from "@models/AnalysisJob";
-import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { Site } from "@models/Site";
-import { Tag } from "@models/Tag";
-import { DateTime, Duration } from "luxon";
 import embed, { VisualizationSpec } from "vega-embed";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
-
-type GraphUrl = string;
-
-type AccumulationDataGraph = AccumulationDataPoint[];
-type SpeciesCompositionDataGraph = SpeciesCompositionDataPoint[];
-type AnalysisCoverageDataGraph = AnalysisCoverageDataPoint[];
-
-interface AccumulationDataPoint {
-  date: DateTime;
-  countOfSpecies: number;
-  error: number;
-}
-
-interface SpeciesCompositionDataPoint {
-  date: DateTime;
-  values: {
-    tagId: Id;
-    ratio: number;
-  }[];
-}
-
-interface AnalysisCoverageDataPoint {
-  date: DateTime;
-  audioCoverage: number;
-  analysisCoverage: number;
-}
-
-type Graph =
-  | AccumulationDataGraph
-  | SpeciesCompositionDataGraph
-  | AnalysisCoverageDataGraph
-  | GraphUrl;
-
-interface Report {
-  project?: Project;
-  region?: Region[];
-  sites?: Site[];
-  startDate?: DateTime;
-  endDate?: DateTime;
-  startTime?: Duration;
-  endTime?: Duration;
-  provenances?: Id[];
-  minimumScore?: number;
-  tags?: Tag[];
-  analysisJob?: AnalysisJob;
-  graphs?: Graph[];
-}
 
 @Component({
   selector: "baw-summary-report",

@@ -12,6 +12,7 @@ import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { AudioEventSummaryReport } from "@models/AudioEventSummaryReport";
 import { AUDIO_EVENT_PROVENANCE, AUDIO_EVENT_SUMMARY } from "@baw-api/ServiceTokens";
+import { generateAudioEventSummaryReport } from "@test/fakes/AudioEventSummaryReport";
 import { ViewEventReportComponent } from "./view.component";
 
 describe("ViewEventReportComponent", () => {
@@ -41,7 +42,7 @@ describe("ViewEventReportComponent", () => {
     );
 
     mockEventSummaryService.api.show.and.callFake(
-      () => new AudioEventSummaryReport()
+      () => new AudioEventSummaryReport(generateAudioEventSummaryReport())
     );
   }
 

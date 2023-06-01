@@ -32,6 +32,20 @@ interface IInterferenceEvent {
   value: number;
 }
 
+interface IAccumulationData {
+  date: Param;
+  count: number;
+  error: number;
+}
+
+interface ISpeciesCompositionData {
+  date: Param;
+
+}
+
+interface IAnalysisCoverageData {
+}
+
 export interface IAudioEventSummaryReport {
   id?: Id;
   name: Param;
