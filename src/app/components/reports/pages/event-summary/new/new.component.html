@@ -85,10 +85,10 @@
   </ngx-datatable-column>
 </ngx-datatable>
 
-<label name="recognisersInput" class="mt-4">Recogniser(s)</label>
+<label name="recognizersInput" class="mt-4">Recogniser(s)</label>
 <input
   type="text"
-  name="recognisersInput"
+  name="recognizersInput"
   class="form-control mb-2"
   placeholder="All"
   (focus)="showRecognizerSelector = true"
@@ -224,4 +224,4 @@
   </ngx-datatable-column>
 </ngx-datatable>
 
-<button class="btn btn-primary my-3" (click)="submit()">Generate</button>
+<button id="generateReportButton" type="submit" class="btn btn-primary my-3" (click)="generateReport()">Generate</button>

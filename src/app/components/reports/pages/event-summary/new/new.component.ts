@@ -11,6 +11,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { newReportCategory, reportMenuItems } from "../../../reports.menu";
 
 interface ViewModel {
@@ -46,7 +47,7 @@ const siteKey = "site";
   templateUrl: "./new.component.html",
   styleUrls: ["./new.component.scss"],
 })
-class NewEventReportComponent extends PageComponent {
+class NewEventReportComponent extends withUnsubscribe(PageComponent) {
   public constructor(public router: Router) {
     super();
   }
@@ -81,7 +82,7 @@ class NewEventReportComponent extends PageComponent {
     },
   ];
 
-  public submit(): void {
+  public generateReport(): void {
     this.router.navigateByUrl("/projects/1135/reports/event-summary");
   }
 

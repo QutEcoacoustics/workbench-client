@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import { Filters } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
@@ -82,6 +83,7 @@ class ViewEventReportComponent extends PageComponent implements AfterViewInit {
   @ViewChild("accumulationCurve") public accumulationCurveElement: ElementRef;
   @ViewChild("compositionCurve") public compositionCurveElement: ElementRef;
   public report: Report = {};
+  public reportFilters: Filters = {};
 
   public ngAfterViewInit(): void {
     embed(

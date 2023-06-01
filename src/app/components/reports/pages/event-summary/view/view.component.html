@@ -1,7 +1,7 @@
 <h2 class="text-decoration-underline">
   Acoustic Event Summary Report
 
-  <a id="printBtn" class="ms-3" (click)="printPage()">
+  <a id="printButton" class="ms-3" (click)="printPage()">
     <fa-icon [icon]="['fas', 'print']"></fa-icon>
   </a>
 </h2>
@@ -12,6 +12,7 @@
   <div class="associatedFiles fst-italic my-2">
     Associated file:
     <a
+      name="downloadEventsLink"
       class="link-primary"
       href="https://api.staging.ecosounds.org/projects/1135/audio_events/download.csv"
     >
@@ -80,7 +81,7 @@
         </div>
 
         <div class="col">
-          <div class="siteMap">Point Map</div>
+          <div name="siteMap" class="siteMap">Point Map</div>
         </div>
       </div>
     </div>
@@ -94,6 +95,7 @@
       <strong>279 hours</strong> of recordings were found within the requested
       <strong>300 hours</strong> (see
       <a
+        name="downloadEventsLink"
         class="link-primary"
         href="https://api.staging.ecosounds.org/projects/1135/audio_events/download.csv"
         >Sites.dawnxmonth.csv</a
@@ -197,7 +199,7 @@
   <div class="container">
     <div class="row">
       <div class="col border p-3">
-        <div class="largeEmbeddedFigure">Map</div>
+        <div name="siteMap" class="largeEmbeddedFigure">Map</div>
       </div>
 
       <div class="col border p-3">Map of sensors / points</div>

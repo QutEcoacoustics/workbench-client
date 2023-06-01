@@ -7,7 +7,6 @@ export interface IAudioEventProvenance {
   version: string;
   description: string;
   score: number;
-  precision: number;
 }
 
 export class AudioEventProvenance extends AbstractModel implements AudioEventProvenance {
@@ -16,7 +15,6 @@ export class AudioEventProvenance extends AbstractModel implements AudioEventPro
   public readonly version: string;
   public readonly description: string;
   public readonly score: number;
-  public readonly precision: number;
 
   public get viewUrl(): string {
     throw new Error("Method not implemented.");
