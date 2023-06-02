@@ -66,6 +66,22 @@ describe("NewEventReportComponent", () => {
     });
   });
 
+  describe("recognizer cut off input", () => {
+    it("should not be able to have an input above 1 (100%)", () => {
+      const testValue = 1.01;
+      spectator.typeInElement(testValue.toString(), recognizersCutOffInput());
+      spectator.detectChanges();
+      expect(recognizersCutOffInput().value).toEqual("1");
+    });
+
+    it("should not be able to have an input below 0 (0%)", () => {
+      const testValue = -0.01;
+      spectator.typeInElement(testValue.toString(), recognizersCutOffInput());
+      spectator.detectChanges();
+      expect(recognizersCutOffInput().value).toEqual("0");
+    });
+  });
+
   describe("type ahead filters", () => {
     it("should not throw an error on input", () => {
       const typeAheadInputs: HTMLInputElement[] = [

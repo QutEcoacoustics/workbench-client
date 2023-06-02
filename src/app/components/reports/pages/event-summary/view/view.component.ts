@@ -10,6 +10,9 @@ import {
 } from "@components/reports/reports.menu";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
+import { AudioEventSummaryReport, IEventGroup } from "@models/AudioEventSummaryReport";
+import { generateAudioEventSummaryReport } from "@test/fakes/AudioEventSummaryReport";
+import { DateTime } from "luxon";
 import embed, { VisualizationSpec } from "vega-embed";
 
 const projectKey = "project";
@@ -28,7 +31,7 @@ class ViewEventReportComponent extends PageComponent implements AfterViewInit {
 
   @ViewChild("accumulationCurve") public accumulationCurveElement: ElementRef;
   @ViewChild("compositionCurve") public compositionCurveElement: ElementRef;
-  public report: Report = {};
+  public report: AudioEventSummaryReport = new AudioEventSummaryReport(generateAudioEventSummaryReport());
   public reportFilters: Filters = {};
 
   public ngAfterViewInit(): void {
@@ -40,19 +43,15 @@ class ViewEventReportComponent extends PageComponent implements AfterViewInit {
       this.compositionCurveElement.nativeElement,
       this.compositionCurveData
     );
+
+    console.log(this.report);
   }
 
   public speciesAccumulationCurveData: VisualizationSpec = {
     width: "container",
     height: "container",
     data: {
-      values: [
-        { date: "22-05-2023", species: 5, error: 5 - 0.5, error2: 5 + 0.5 },
-        { date: "23-05-2023", species: 3, error: 3 - 0.5, error2: 3 + 0.5 },
-        { date: "24-05-2023", species: 4, error: 4 - 0.5, error2: 4 + 0.5 },
-        { date: "25-05-2023", species: 2, error: 2 - 0.5, error2: 2 + 0.5 },
-        { date: "26-05-2023", species: 6, error: 6 - 0.5, error2: 6 + 0.5 },
-      ],
+      values: this.report.graphs.accumulationData
     },
     layer: [
       {
@@ -95,35 +94,7 @@ class ViewEventReportComponent extends PageComponent implements AfterViewInit {
     width: "container",
     height: "container",
     data: {
-      values: [
-        { date: "22-05-2023", series: "crow", count: 1 },
-        { date: "22-05-2023", series: "magpie", count: 3 },
-        { date: "22-05-2023", series: "ibus", count: 5 },
-        { date: "22-06-2023", series: "crow", count: 4 },
-        { date: "22-06-2023", series: "magpie", count: 1 },
-        { date: "22-06-2023", series: "ibus", count: 3 },
-        { date: "22-07-2023", series: "crow", count: 2 },
-        { date: "22-07-2023", series: "magpie", count: 4 },
-        { date: "22-07-2023", series: "ibus", count: 4 },
-        { date: "22-08-2023", series: "crow", count: 1 },
-        { date: "22-08-2023", series: "magpie", count: 3 },
-        { date: "22-18-2023", series: "ibus", count: 5 },
-        { date: "22-09-2023", series: "crow", count: 4 },
-        { date: "22-09-2023", series: "magpie", count: 1 },
-        { date: "22-09-2023", series: "ibus", count: 3 },
-        { date: "22-10-2023", series: "crow", count: 2 },
-        { date: "22-10-2023", series: "magpie", count: 4 },
-        { date: "22-10-2023", series: "ibus", count: 4 },
-        { date: "22-11-2023", series: "crow", count: 1 },
-        { date: "22-11-2023", series: "magpie", count: 3 },
-        { date: "22-11-2023", series: "ibus", count: 5 },
-        { date: "22-12-2023", series: "crow", count: 4 },
-        { date: "22-12-2023", series: "magpie", count: 1 },
-        { date: "22-12-2023", series: "ibus", count: 3 },
-        { date: "22-01-2024", series: "crow", count: 2 },
-        { date: "22-01-2024", series: "magpie", count: 4 },
-        { date: "22-01-2024", series: "ibus", count: 4 },
-      ]
+      values: this.report.graphs.speciesCompositionData
     },
     mark: "area",
     encoding: {
@@ -141,6 +112,43 @@ class ViewEventReportComponent extends PageComponent implements AfterViewInit {
       },
     },
   };
+
+  private viewDateFromModelAttribute(date: DateTime | string): string {
+    const reportDateTimeObject: DateTime = date instanceof DateTime ? date : DateTime.fromISO(date);
+    return reportDateTimeObject.toFormat("yyyy.MM.dd");
+  }
+
+  public get eventGroups(): IEventGroup[] {
+    return this.report.eventGroups;
+  }
+
+  public get reportGenerationDate(): string {
+    return this.viewDateFromModelAttribute(this.report.generatedDate);
+  }
+
+  public get numberOfRecordingsAnalyzed(): string {
+    return this.report.statistics.countOfRecordingsAnalyzed.toString() + " recordings";
+  }
+
+  public get numberOfBinsAnalyzed(): string {
+    return this.report.statistics.countOfRecordingsAnalyzed.toString() + " bins";
+  }
+
+  public get totalSearchSpan(): string {
+    return this.report.statistics.totalSearchSpan.toString() + " hours";
+  }
+
+  public get audioCoverageSpan(): string {
+    return this.report.statistics.audioCoverageOverSpan.toString() + " hours";
+  }
+
+  public get audioStartDate(): string {
+    return this.viewDateFromModelAttribute(this.report.statistics.coverageStartDay);
+  }
+
+  public get audioEndDate(): string {
+    return this.viewDateFromModelAttribute(this.report.statistics.coverageEndDay);
+  }
 }
 
 function getPageInfo(subRoute: keyof typeof reportMenuItems.view): IPageInfo {
