@@ -1,0 +1,38 @@
+{
+  "width": "container",
+  "height": "container",
+  "data": {
+    "values": []
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "color": "black"
+      },
+      "encoding": {
+        "x": { "field": "date", "type": "nominal", "axis": { "labelAngle": 0 } },
+        "y": { "field": "count", "type": "quantitative", "axis": { "labelAngle": 0 } }
+      }
+    },
+    {
+      "mark": "errorbar",
+      "encoding": {
+        "x": {
+          "field": "date",
+          "type": "nominal"
+        },
+        "y": { "field": "error", "type": "quantitative" },
+        "y2": { "field": "error2", "type": "quantitative" }
+      }
+    },
+    {
+      "mark": "line",
+      "encoding": {
+        "x": { "field:": "date", "type": "nominal", "axis": { "labelAngle": 0 } },
+        "y": { "field": "count", "type": "quantitative", "axis": { "labelAngle": 0 } }
+      }
+    }
+  ]
+}

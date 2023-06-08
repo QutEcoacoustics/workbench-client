@@ -2,7 +2,7 @@ import { SpectatorRouting, SpyObject, createRoutingFactory } from "@ngneat/spect
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
-import { AudioRecordingsFilterComponent } from "@shared/date-time-filter/audio-recordings-filter.component";
+import { AudioRecordingsFilterComponent } from "@shared/audio-recordings-filter/audio-recordings-filter.component";
 import { TimeComponent } from "@shared/input/time/time.component";
 import { Router } from "@angular/router";
 import { NewEventReportComponent } from "./new.component";

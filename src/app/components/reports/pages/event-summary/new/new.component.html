@@ -4,128 +4,22 @@
 <baw-audio-recordings-filter [constructedFilters]="filters$">
 </baw-audio-recordings-filter>
 
-<label for="sitesInput" class="mt-4">Site(s)</label>
+<baw-typeahead-input
+  label="Site(s)"
+  [options]="siteNames"
+></baw-typeahead-input>
 
-<input
-  type="text"
-  name="sitesInput"
-  class="form-control mb-2"
-  placeholder="All"
-  (focus)="showSitesSelector = true"
-  (blur)="showSitesSelector = false"
-/>
+<baw-typeahead-input
+  label="Point(s)"
+  [options]="siteNames"
+></baw-typeahead-input>
 
-<ngx-datatable
-  #collapse="ngbCollapse"
-  [ngbCollapse]="!showSitesSelector"
-  [columns]="columns"
-  [rows]="sites"
-  class="border p-3"
-  (mousedown)="void ()"
->
-  <ngx-datatable-column
-    [canAutoResize]="false"
-    [checkboxable]="true"
-    [draggable]="false"
-    [headerCheckboxable]="true"
-    [resizeable]="false"
-    [sortable]="false"
-    [width]="30"
-  >
-  </ngx-datatable-column>
-  <ngx-datatable-column name="name">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      <span>{{ value }}</span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="description">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      <span>{{ value }}</span>
-    </ng-template>
-  </ngx-datatable-column>
-</ngx-datatable>
+<baw-typeahead-input
+  label="Recogniser(s)"
+  [options]="recognizersNames"
+></baw-typeahead-input>
 
-<label for="pointsInput" class="mt-4">Point(s)</label>
-<input
-  type="text"
-  name="pointsInput"
-  class="form-control mb-2"
-  placeholder="All"
-  (focus)="showPointSelector = true"
-  (blur)="showPointSelector = false"
-/>
-
-<ngx-datatable
-  #collapse="ngbCollapse"
-  [ngbCollapse]="!showPointSelector"
-  [columns]="columns"
-  [rows]="recognizers"
-  class="border p-3"
-  (mousedown)="void ()"
->
-  <ngx-datatable-column
-    [canAutoResize]="false"
-    [checkboxable]="true"
-    [draggable]="false"
-    [headerCheckboxable]="true"
-    [resizeable]="false"
-    [sortable]="false"
-    [width]="30"
-  >
-  </ngx-datatable-column>
-  <ngx-datatable-column name="name">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      <span>{{ value }}</span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="description">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      <span>{{ value }}</span>
-    </ng-template>
-  </ngx-datatable-column>
-</ngx-datatable>
-
-<label name="recognizersInput" class="mt-4">Recogniser(s)</label>
-<input
-  type="text"
-  name="recognizersInput"
-  class="form-control mb-2"
-  placeholder="All"
-  (focus)="showRecognizerSelector = true"
-  (blur)="showRecognizerSelector = false"
-/>
-
-<ngx-datatable
-  #collapse="ngbCollapse"
-  [ngbCollapse]="!showRecognizerSelector"
-  [columns]="columns"
-  [rows]="recognizers"
-  class="border p-3"
-  (mousedown)="void ()"
->
-  <ngx-datatable-column
-    [canAutoResize]="false"
-    [checkboxable]="true"
-    [draggable]="false"
-    [headerCheckboxable]="true"
-    [resizeable]="false"
-    [sortable]="false"
-    [width]="30"
-  >
-  </ngx-datatable-column>
-  <ngx-datatable-column name="name">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      <span>{{ value }}</span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="description">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      <span>{{ value }}</span>
-    </ng-template>
-  </ngx-datatable-column>
-</ngx-datatable>
-
-<label for="recognizersCutOffInput" class="mt-4">Recogniser Cut-Off</label>
+<label for="recognizersCutOffInput">Recogniser Cut-Off</label>
 <input
   type="number"
   name="recognizersCutOffInput"
@@ -137,45 +31,10 @@
   min="0"
 />
 
-<label for="chartsInput" class="mt-4">Chart(s)</label>
-<input
-  type="text"
-  name="chartsInput"
-  class="form-control mb-2"
-  placeholder="All"
-  (focus)="showChartSelector = true"
-  (blur)="showChartSelector = false"
-/>
-
-<ngx-datatable
-  #collapse="ngbCollapse"
-  [ngbCollapse]="!showChartSelector"
-  [columns]="columns"
-  [rows]="recognizers"
-  class="border p-3"
-  (mousedown)="void ()"
->
-  <ngx-datatable-column
-    [canAutoResize]="false"
-    [checkboxable]="true"
-    [draggable]="false"
-    [headerCheckboxable]="true"
-    [resizeable]="false"
-    [sortable]="false"
-    [width]="30"
-  >
-  </ngx-datatable-column>
-  <ngx-datatable-column name="name">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      <span>{{ value }}</span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="description">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      <span>{{ value }}</span>
-    </ng-template>
-  </ngx-datatable-column>
-</ngx-datatable>
+<baw-typeahead-input
+  label="Chart(s)"
+  [options]="chartsNames"
+></baw-typeahead-input>
 
 <label for="eventsOfInterestInput" class="mt-4">Events of Interest</label>
 <p
@@ -186,10 +45,26 @@
   (focus)="showEventsOfInterestSelector = true"
   (blur)="showEventsOfInterestSelector = false"
 >
-  <span contenteditable="false" class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2">Ninox boobook</span>
-  <span contenteditable="false" class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2">Calyptorhynchus lathami</span>
-  <span contenteditable="false" class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2">Petaurus australis</span>
-  <span contenteditable="false" class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2">Corvus monedula</span>
+  <span
+    contenteditable="false"
+    class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2"
+    >Ninox boobook</span
+  >
+  <span
+    contenteditable="false"
+    class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2"
+    >Calyptorhynchus lathami</span
+  >
+  <span
+    contenteditable="false"
+    class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2"
+    >Petaurus australis</span
+  >
+  <span
+    contenteditable="false"
+    class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2"
+    >Corvus monedula</span
+  >
 
   <span class="p-1"></span>
 </p>
@@ -200,7 +75,7 @@
   [columns]="columns"
   [rows]="eventsOfInterest"
   class="border p-3"
-  (mousedown)="void ()"
+  (mousedown)="void()"
 >
   <ngx-datatable-column
     [canAutoResize]="false"
@@ -214,7 +89,9 @@
   </ngx-datatable-column>
   <ngx-datatable-column name="name">
     <ng-template let-value="value" ngx-datatable-cell-template>
-      <span class="badge badge-pill pill-color text-light pointer">{{ value }}</span>
+      <span class="badge badge-pill pill-color text-light pointer">{{
+        value
+      }}</span>
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column name="description">
@@ -224,4 +101,11 @@
   </ngx-datatable-column>
 </ngx-datatable>
 
-<button id="generateReportButton" type="submit" class="btn btn-primary my-3" (click)="generateReport()">Generate</button>
+<button
+  id="generateReportButton"
+  type="submit"
+  class="btn btn-primary my-3"
+  (click)="generateReport()"
+>
+  Generate
+</button>

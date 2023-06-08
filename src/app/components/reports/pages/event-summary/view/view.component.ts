@@ -14,6 +14,8 @@ import { AudioEventSummaryReport, IEventGroup } from "@models/AudioEventSummaryR
 import { generateAudioEventSummaryReport } from "@test/fakes/AudioEventSummaryReport";
 import { DateTime } from "luxon";
 import embed, { VisualizationSpec } from "vega-embed";
+import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json"
+import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -33,89 +35,30 @@ class ViewEventReportComponent extends PageComponent implements AfterViewInit {
   @ViewChild("compositionCurve") public compositionCurveElement: ElementRef;
   public report: AudioEventSummaryReport = new AudioEventSummaryReport(generateAudioEventSummaryReport());
   public reportFilters: Filters = {};
+  public speciesAccumulationCurveData = speciesAccumulationCurveSchema;
+  public speciesCompositionCurveData = speciesCompositionCurveSchema;
 
   public ngAfterViewInit(): void {
+    this.speciesAccumulationCurveData.data.values = this.report.graphs.accumulationData;
+    this.speciesCompositionCurveData.data.values = this.report.graphs.speciesCompositionData;
+
     embed(
       this.accumulationCurveElement.nativeElement,
-      this.speciesAccumulationCurveData
+      this.speciesAccumulationCurveData as VisualizationSpec
     );
     embed(
       this.compositionCurveElement.nativeElement,
-      this.compositionCurveData
+      this.compositionCurveData as VisualizationSpec
     );
-
-    console.log(this.report);
   }
-
-  public speciesAccumulationCurveData: VisualizationSpec = {
-    width: "container",
-    height: "container",
-    data: {
-      values: this.report.graphs.accumulationData
-    },
-    layer: [
-      {
-        mark: {
-          type: "point",
-          filled: true,
-          color: "black",
-        },
-        encoding: {
-          x: { field: "date", type: "nominal", axis: { labelAngle: 0 } },
-          y: { field: "species", type: "quantitative", axis: { labelAngle: 0 } },
-        },
-      },
-      {
-        mark: "errorbar",
-        encoding: {
-          x: {
-            field: "date",
-            type: "nominal",
-          },
-          y: { field: "error", type: "quantitative" },
-          y2: { field: "error2", type: "quantitative" }
-        },
-      },
-      {
-        mark: "line",
-        encoding: {
-          x: { field: "date", type: "nominal", axis: { labelAngle: 0 } },
-          y: { field: "species", type: "quantitative", axis: { labelAngle: 0 } },
-        },
-      },
-    ],
-  };
 
   public printPage(): void {
     window.print();
   }
 
-  public compositionCurveData: VisualizationSpec = {
-    width: "container",
-    height: "container",
-    data: {
-      values: this.report.graphs.speciesCompositionData
-    },
-    mark: "area",
-    encoding: {
-      x: {
-        field: "date",
-        type: "nominal"
-      },
-      y: {
-        aggregate: "sum",
-        field: "count",
-      },
-      color: {
-        field: "series",
-        scale: { scheme: "category20b" },
-      },
-    },
-  };
-
   private viewDateFromModelAttribute(date: DateTime | string): string {
     const reportDateTimeObject: DateTime = date instanceof DateTime ? date : DateTime.fromISO(date);
-    return reportDateTimeObject.toFormat("yyyy.MM.dd");
+    return reportDateTimeObject.toFormat("yyyy-MM-dd HH:MM");
   }
 
   public get eventGroups(): IEventGroup[] {

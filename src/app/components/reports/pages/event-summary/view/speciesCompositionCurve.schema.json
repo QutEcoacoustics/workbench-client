@@ -1,0 +1,22 @@
+{
+  "width": "container",
+  "height": "container",
+  "data": {
+    "values": []
+  },
+  "mark": "area",
+  "encoding": {
+    "x": {
+      "field": "date",
+      "type": "nominal"
+    },
+    "y": {
+      "aggregate": "sum",
+      "field": "date.ratio"
+    },
+    "color": {
+      "field": "date.tagId",
+      "scale": { "scheme": "category20b" }
+    }
+  }
+}
