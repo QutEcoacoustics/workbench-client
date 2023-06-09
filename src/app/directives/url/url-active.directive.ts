@@ -35,9 +35,8 @@ export class UrlActiveDirective extends RouterLinkActive {
     _element: ElementRef,
     _renderer: Renderer2,
     _cdr: ChangeDetectorRef,
-    @Optional() _link?: RouterLink,
-    @Optional() _linkWithHref?: UrlDirective
+    @Optional() _link?: RouterLink
   ) {
-    super(_router, _element, _renderer, _cdr, _link, _linkWithHref);
+    super(_router, _element, _renderer, _cdr, _link);
   }
 }

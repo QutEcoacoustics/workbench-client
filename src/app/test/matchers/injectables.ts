@@ -1,4 +1,4 @@
-import { RouterLinkWithHref } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import {
   StrongRouteActiveDirective,
@@ -200,18 +200,18 @@ const toHaveRoute = (util: MatchersUtil): CustomMatcher => ({
   compare: (
     target: HTMLAnchorElement,
     routerLink: string,
-    props: Partial<Exclude<RouterLinkWithHref, "routerLink">>
+    props: Partial<Exclude<RouterLink, "routerLink">>
   ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Target element should exist");
     }
 
-    const directive = getDirective<RouterLinkWithHref>(
+    const directive = getDirective<RouterLink>(
       target,
-      RouterLinkWithHref
+      RouterLink
     );
     if (!directive) {
-      return matcherFailure("RouterLinkWithHref directive should exist");
+      return matcherFailure("RouterLink directive should exist");
     }
 
     const results = validateAttributes(util, directive, {

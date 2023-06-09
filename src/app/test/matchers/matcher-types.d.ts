@@ -1,4 +1,4 @@
-import { RouterLinkWithHref } from "@angular/router";
+import { RouterLink } from "@angular/router";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import { RouterLinkActiveOptions } from "@directives/strongRoute/strong-route-active.directive";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
@@ -26,7 +26,7 @@ declare global {
       toHaveTooltip(tooltip: string, props?: Partial<NgbTooltip>): boolean;
       toHaveRoute(
         routerLink: string,
-        props?: Partial<Exclude<RouterLinkWithHref, "routerLink">>
+        props?: Partial<Exclude<RouterLink, "routerLink">>
       ): boolean;
       toHaveStrongRoute(
         strongRoute: StrongRoute,

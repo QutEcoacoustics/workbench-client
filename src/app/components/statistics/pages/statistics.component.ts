@@ -5,7 +5,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { toRelative } from "@interfaces/apiInterfaces";
 import { StatisticsRecent } from "@models/Statistics";
 import { IItem } from "@shared/items/item/item.component";
-import fileSize from "filesize";
+import { filesize } from "filesize";
 import { List, Map } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { defaultAudioIcon, defaultUserIcon } from "src/app/app.menus";
@@ -150,7 +150,7 @@ class StatisticsComponent
         setGroupTwoValue("users", summary.usersOnline);
         setGroupTwoValue(
           "storedData",
-          fileSize(summary.audioRecordingsTotalSize, { round: 2 })
+          filesize(summary.audioRecordingsTotalSize, { round: 2 }) as number
         );
         setGroupTwoValue("newRecordings", summary.audioRecordingsRecent);
         setGroupTwoValue(

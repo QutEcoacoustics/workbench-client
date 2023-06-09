@@ -1,10 +1,10 @@
 import { LocationStrategy } from "@angular/common";
-import { Directive, Input, OnInit } from "@angular/core";
+import { Directive, ElementRef, Input, OnInit, Renderer2 } from "@angular/core";
 import {
   ActivatedRoute,
   Params,
   Router,
-  RouterLinkWithHref,
+  RouterLink,
   UrlTree,
 } from "@angular/router";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
@@ -19,7 +19,7 @@ import { map, takeUntil, tap } from "rxjs/operators";
   selector: "a[strongRoute]",
 })
 export class StrongRouteDirective
-  extends withUnsubscribe(RouterLinkWithHref)
+  extends withUnsubscribe(RouterLink)
   implements OnInit
 {
   @Input() public strongRoute: StrongRoute;
@@ -43,11 +43,13 @@ export class StrongRouteDirective
 
   public constructor(
     private _router: Router,
+    _element: ElementRef,
+    _renderer: Renderer2,
     _route: ActivatedRoute,
     private sharedRoute: SharedActivatedRouteService,
     _locationStrategy: LocationStrategy
   ) {
-    super(_router, _route, _locationStrategy);
+    super(_router, _route, null, _renderer, _element, _locationStrategy);
   }
 
   public ngOnInit(): void {
@@ -85,11 +87,11 @@ export class StrongRouteDirective
           // trigger the change detection. This is calling this function:
           // eslint-disable-next-line max-len
           // https://github.com/angular/angular/blob/e1e440d65af928e569533bb1725eefcdf0794ebf/packages/router/src/directives/router_link.ts#L417-L421
-          (this as RouterLinkWithHref)["updateTargetUrlAndHref"]();
+          (this as RouterLink)["updateTargetUrlAndHref"]();
         },
       });
 
-    // Just in case angular updates the RouterLinkWithHref one day
+    // Just in case angular updates the RouterLink one day
     super.ngOnInit?.();
   }
 
