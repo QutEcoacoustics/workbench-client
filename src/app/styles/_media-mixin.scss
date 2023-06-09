@@ -1,7 +1,7 @@
 @use "sass:map";
-@import "~include-media/dist/include-media";
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
+@import "include-media/dist/include-media";
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
 
 // These breakpoints must exist for include-media to function
 $breakpoints: (

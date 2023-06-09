@@ -27,7 +27,10 @@
             "assets": ["src/favicon.ico", "src/assets", "src/manifest.json"],
             "styles": ["src/styles.scss"],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/app/styles"]
+              "includePaths": [
+                "./node_modules",
+                "src/app/styles"
+              ]
             },
             "scripts": [],
             "sourceMap": true,
@@ -97,7 +100,10 @@
             "assets": ["src/assets", "src/manifest.json"],
             "styles": ["src/styles.scss"],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/app/styles"]
+              "includePaths": [
+                "./node_modules",
+                "src/app/styles"
+              ]
             },
             "scripts": []
           }
@@ -127,7 +133,10 @@
             "main": "server.ts",
             "tsConfig": "tsconfig.server.json",
             "stylePreprocessorOptions": {
-              "includePaths": ["src/app/styles"]
+              "includePaths": [
+                "./node_modules",
+                "src/app/styles"
+              ]
             },
             "sourceMap": true,
             "optimization": false
