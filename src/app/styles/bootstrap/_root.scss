@@ -15,5 +15,4 @@
   @include create-variable("danger", $danger);
   @include create-variable("light", $light);
   @include create-variable("dark", $dark);
-  @include create-variable("highlight", #304f3b);
 }
