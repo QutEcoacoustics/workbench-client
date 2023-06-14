@@ -85,9 +85,8 @@ export class StrongRouteDirective
         next: () => {
           // Call change detection manually because the above observable does not
           // trigger the change detection. This is calling this function:
-          // eslint-disable-next-line max-len
-          // https://github.com/angular/angular/blob/e1e440d65af928e569533bb1725eefcdf0794ebf/packages/router/src/directives/router_link.ts#L417-L421
-          (this as RouterLink)["updateTargetUrlAndHref"]();
+          // https://github.com/angular/angular/blob/16.0.x/packages/router/src/directives/router_link.ts#L328-L348
+          (this as RouterLink)["updateHref"]();
         },
       });
 

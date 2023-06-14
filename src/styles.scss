@@ -15,9 +15,6 @@
   --baw-default-background: white;
   --baw-default-background-light: lightgrey;
   --baw-default-background-dark: darkgrey;
-
-  /* Theme highlight colour, this is used to create an accent for objects following the 60/30/10 rule */
-  @include create-variable("highlight", #304f3b);
 }
 
 /* You can add global styles to this file, and also import other style files */
