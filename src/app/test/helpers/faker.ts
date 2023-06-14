@@ -17,7 +17,7 @@ export const modelData = {
       PermissionLevel.writer,
       PermissionLevel.owner,
     ]),
-  authToken: () => faker.random.alphaNumeric(20),
+  authToken: () => faker.string.alphanumeric(20),
   bool: () => faker.datatype.boolean(),
   description: () => faker.lorem.sentence().replace(specialCharRegex, ""),
   descriptionLong: () =>
@@ -36,9 +36,9 @@ export const modelData = {
   },
   hash: () => "SHA256::" + modelData.hexaDecimal(256 / 4).substring(2),
   html: () => "hello <b>world</b>",
-  id: (id?: Id) => (id ? id : faker.datatype.number(25)),
-  ids: () => randomArray(1, 5, () => faker.datatype.number(100)),
-  imageUrl: () => faker.image.imageUrl(),
+  id: (id?: Id) => (id ? id : faker.number.int(25)),
+  ids: () => randomArray(1, 5, () => faker.number.int(100)),
+  imageUrl: () => faker.image.url(),
   imageUrls,
   icon: (): IconProp => [
     "fas",
@@ -51,24 +51,24 @@ export const modelData = {
       "bed",
     ]),
   ],
-  latitude: () => parseFloat(faker.address.latitude()),
-  longitude: () => parseFloat(faker.address.longitude()),
+  latitude: () => faker.location.latitude(),
+  longitude: () => faker.location.longitude(),
   notes: () => randomObject(1, 5),
   offset: () =>
     faker.helpers.arrayElement(["+", "-"]) +
-    faker.datatype.number(11) +
+    faker.number.int(11) +
     ":" +
     faker.helpers.arrayElement(["00", "30"]),
-  param: () => faker.name.jobTitle().replace(specialCharRegex, ""),
-  seconds: () => faker.datatype.number(86400 - 30) + 30,
+  param: () => faker.person.jobTitle().replace(specialCharRegex, ""),
+  seconds: () => faker.number.int(86400 - 30) + 30,
   startEndSeconds: () => {
-    const min = faker.datatype.number(86400 - 30) + 30;
-    const max = faker.datatype.number(86400 - min) + min;
+    const min = faker.number.int(86400 - 30) + 30;
+    const max = faker.number.int(86400 - min) + min;
     return [min, max];
   },
   startEndArray: (arr: any[]) => {
-    const min = faker.datatype.number(arr.length - 1);
-    const inc = faker.datatype.number(arr.length - 1 - min);
+    const min = faker.number.int(arr.length - 1);
+    const inc = faker.number.int(arr.length - 1 - min);
     return [arr[min], arr[min + inc]];
   },
   timestamp: () => faker.date.past().toISOString(),
@@ -158,7 +158,10 @@ function imageUrls(url?: string): ImageUrl[] {
     { image: ImageSizes.tiny, size: 30 },
   ].map(({ image, size }) => ({
     size: image,
-    url: url ? url + "/300/300" : faker.image.imageUrl(size, size),
+    url: url ? url + "/300/300" : faker.image.url({
+      width: size,
+      height: size
+    }),
     width: size,
     height: size,
   }));
@@ -236,7 +239,7 @@ function randomArray<T>(
   max: number,
   callback: (index: number) => T
 ): T[] {
-  const len = faker.datatype.number({ min, max });
+  const len = faker.number.int({ min, max });
   const array = [];
 
   for (let i = 0; i < len; ++i) {
@@ -253,11 +256,11 @@ function randomArray<T>(
  * @param max Maximum number of keys
  */
 function randomObject(min: number, max: number): Record<string, string> {
-  const len = faker.datatype.number({ min, max });
+  const len = faker.number.int({ min, max });
   const obj = {};
 
   for (let i = 0; i < len; ++i) {
-    obj[faker.random.word().replace(specialCharRegex, "")] = faker.random
+    obj[faker.lorem.word().replace(specialCharRegex, "")] = faker.lorem
       .words()
       .replace(specialCharRegex, "");
   }

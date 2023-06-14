@@ -39,7 +39,7 @@ describe("ItemComponent", () => {
   });
 
   it("should display name", () => {
-    const name = modelData.company.companyName();
+    const name = modelData.company.name();
     setup(["fas", "home"], name, 0);
     spec.detectChanges();
     expect(spec.query("#name")).toContainText(name);
@@ -53,14 +53,14 @@ describe("ItemComponent", () => {
   });
 
   it("should display string value", () => {
-    const value = modelData.company.companyName();
+    const value = modelData.company.name();
     setup(["fas", "home"], "Test", value);
     spec.detectChanges();
     expect(spec.query("#value")).toContainText(value.toString());
   });
 
   it("should display tooltip if given", () => {
-    const value = modelData.company.companyName();
+    const value = modelData.company.name();
     setup(["fas", "home"], "Test", value, () => "custom tooltip");
     spec.detectChanges();
     expect(spec.query("#icon")).toHaveTooltip("custom tooltip");
