@@ -179,6 +179,9 @@
   },
   "defaultProject": "workbench-client",
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "cache": {
+      "enabled": false
+    }
   }
 }
