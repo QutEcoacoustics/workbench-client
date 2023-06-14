@@ -39,8 +39,7 @@ class AssignComponent
     { name: "Description" },
   ];
   public sortKeys = { siteId: "id", name: "name" };
-  public error: BawApiError;
-  protected api: ShallowSitesService;
+  protected declare api: ShallowSitesService;
   private oldSiteIds: Id[];
 
   public constructor(

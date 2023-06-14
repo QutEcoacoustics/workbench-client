@@ -177,11 +177,7 @@
       }
     }
   },
-  "defaultProject": "workbench-client",
   "cli": {
-    "analytics": false,
-    "cache": {
-      "enabled": false
-    }
+    "analytics": false
   }
 }

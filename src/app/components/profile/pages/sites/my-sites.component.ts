@@ -29,7 +29,7 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   ];
   public sortKeys = { site: "name", lastModified: "updatedAt" };
   public annotationLink = dataRequestMenuItem.route;
-  protected api: ShallowSitesService;
+  protected declare api: ShallowSitesService;
 
   public constructor(api: ShallowSitesService, route: ActivatedRoute) {
     super(

@@ -33,7 +33,6 @@ export class AnalysisJobItemResult
   }
 
   public readonly kind = "Analysis Job Item Results";
-  public readonly id?: Id;
   public readonly name?: Param;
   public readonly resultsPath?: Param;
   public readonly analysisJobId?: Id;

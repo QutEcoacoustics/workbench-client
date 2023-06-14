@@ -19,7 +19,7 @@ const userKey = "user";
   templateUrl: "./projects.component.html",
 })
 class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
-  protected api: ProjectsService;
+  protected declare api: ProjectsService;
   public columns = [
     { name: "Project" },
     { name: "Sites" },

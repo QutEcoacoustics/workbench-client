@@ -23,7 +23,7 @@ const userKey = "user";
 class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   public columns = [{ name: "Site" }, { name: "Updated" }, { name: "Tags" }];
   public sortKeys = { updated: "updatedAt" };
-  protected api: ShallowAudioEventsService;
+  protected declare api: ShallowAudioEventsService;
 
   public constructor(
     api: ShallowAudioEventsService,

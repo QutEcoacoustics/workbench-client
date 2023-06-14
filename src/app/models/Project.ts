@@ -50,7 +50,6 @@ export interface IProject extends HasAllUsers, HasDescription {
  */
 export class Project extends AbstractModel<IProject> implements IProject {
   public readonly kind = "Project";
-  public readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;
   @bawPersistAttr()

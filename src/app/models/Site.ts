@@ -58,7 +58,6 @@ export interface ISite extends HasAllUsers, HasDescription {
  */
 export class Site extends AbstractModel<ISite> implements ISite {
   public readonly kind = "Site";
-  public readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;
   @bawImage<ISite>(`${assetRoot}/images/site/site_span4.png`)

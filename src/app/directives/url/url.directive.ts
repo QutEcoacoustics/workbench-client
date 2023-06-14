@@ -13,14 +13,14 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 @Directive({ selector: "a[bawUrl]" })
 export class UrlDirective extends withUnsubscribe(RouterLink) {
   @Input() public bawUrl: string;
-  @Input() public queryParams: Params;
+  @Input() public declare queryParams: Params;
 
   public constructor(
     _element: ElementRef,
     _renderer: Renderer2,
     router: Router,
     route: ActivatedRoute,
-    locationStrategy: LocationStrategy
+    locationStrategy: LocationStrategy,
   ) {
     super(router, route, null, _renderer, _element, locationStrategy);
   }

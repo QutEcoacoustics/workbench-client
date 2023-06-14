@@ -54,7 +54,7 @@ class AudioRecordingsListComponent
   };
   public filters$: BehaviorSubject<Filters<AudioRecording>> =
     new BehaviorSubject({});
-  protected api: AudioRecordingsService;
+  protected declare api: AudioRecordingsService;
 
   public constructor(
     @Inject(API_ROOT) public apiRoot: string,

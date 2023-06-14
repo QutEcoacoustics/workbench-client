@@ -19,7 +19,7 @@ const userKey = "user";
   templateUrl: "./bookmarks.component.html",
 })
 class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
-  public api: BookmarksService;
+  public declare api: BookmarksService;
   public columns = [
     { name: "Bookmark" },
     { name: "Category" },

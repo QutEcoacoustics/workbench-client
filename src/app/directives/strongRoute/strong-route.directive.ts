@@ -32,7 +32,7 @@ export class StrongRouteDirective
    * Additional query parameters to apply to the StrongRoute. By default, all
    * of the angular route parameters are already given to the StrongRoute.
    */
-  @Input() public queryParams: Params;
+  @Input() public declare queryParams: Params;
 
   private routeState = {
     resolvedModels: {} as ResolvedModelList,
