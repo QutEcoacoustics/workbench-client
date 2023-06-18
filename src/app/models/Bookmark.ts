@@ -27,6 +27,7 @@ export interface IBookmark extends HasCreatorAndUpdater, HasDescription {
 
 export class Bookmark extends AbstractModel<IBookmark> implements IBookmark {
   public readonly kind = "Bookmark";
+  public declare readonly id?: Id;
   @bawPersistAttr()
   public readonly audioRecordingId?: Id;
   @bawPersistAttr()

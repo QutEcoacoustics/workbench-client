@@ -142,7 +142,7 @@ describe("ImageDirective", () => {
 
     function createApiDirective(
       src: ImageUrl[],
-      ignoreAuthToken: boolean = false
+      ignoreAuthToken = false
     ) {
       const spec = createDirective(
         '<img alt="alt" [src]="src" [ignoreAuthToken]="ignoreAuthToken" />',

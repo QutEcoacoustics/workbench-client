@@ -201,7 +201,7 @@ function timezone(): TimezoneInformation {
  *
  * @param count Size of hash
  */
-function hexaDecimal(count: number = 1): string {
+function hexaDecimal(count = 1): string {
   let wholeString = "";
   for (let i = 0; i < count; i++) {
     wholeString += faker.helpers.arrayElement([

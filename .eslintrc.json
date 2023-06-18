@@ -23,6 +23,7 @@
         "import"
       ],
       "rules": {
+        "@typescript-eslint/no-empty-function": "off",
         "no-console": ["error", { "allow": ["warn", "error"] }],
         "import/no-unresolved": "off",
         "import/no-deprecated": "error",

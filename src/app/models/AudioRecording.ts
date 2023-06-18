@@ -62,6 +62,7 @@ export class AudioRecording
   implements IAudioRecording
 {
   public readonly kind = "Audio Recording";
+  public declare readonly id?: Id;
   public readonly uuid?: Uuid;
   public readonly uploaderId?: Id;
   @bawDateTime()

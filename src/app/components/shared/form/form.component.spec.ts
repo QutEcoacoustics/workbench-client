@@ -40,8 +40,8 @@ describe("FormComponent", () => {
   }
 
   function findInput(
-    selector: string = "input",
-    position: number = 0
+    selector = "input",
+    position = 0
   ): HTMLElement {
     return spec.queryAll<HTMLElement>("form " + selector)[position];
   }

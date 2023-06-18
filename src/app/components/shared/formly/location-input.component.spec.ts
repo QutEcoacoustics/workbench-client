@@ -35,7 +35,7 @@ describe("FormlyLocationInput", () => {
     ],
   });
 
-  function setup(key: string = "input", options: FormlyFieldProps = {}) {
+  function setup(key = "input", options: FormlyFieldProps = {}) {
     formGroup = new FormGroup({ input: new FormControl("") });
     model = {};
 

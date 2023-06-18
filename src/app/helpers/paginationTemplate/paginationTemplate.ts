@@ -146,7 +146,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   /**
    * Handle filter events
    */
-  public onFilter(filterText: string, page: number = 1) {
+  public onFilter(filterText: string, page = 1) {
     this.apiRequest$.next({ page, filterText });
   }
 

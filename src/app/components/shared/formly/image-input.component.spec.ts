@@ -32,7 +32,7 @@ describe("FormlyImageInput", () => {
     return spectator.query<HTMLButtonElement>("button");
   }
 
-  function setup(key: string = "file", options: FormlyFieldProps = {}) {
+  function setup(key = "file", options: FormlyFieldProps = {}) {
     formGroup = new FormGroup({ asFormControl: new FormControl("") });
     model = {
       image: "",

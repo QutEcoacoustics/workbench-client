@@ -23,6 +23,7 @@ export class DatasetItem
   implements IDatasetItem
 {
   public readonly kind = "Dataset Item";
+  public declare readonly id?: Id;
   @bawPersistAttr()
   public readonly datasetId?: Id;
   @bawPersistAttr()

@@ -77,7 +77,7 @@ describe("PaginationTemplate", () => {
     return promise;
   }
 
-  function generateFilter(page: number = 1, filterText?: string) {
+  function generateFilter(page = 1, filterText?: string) {
     return {
       paging: { page },
       filter: filterText

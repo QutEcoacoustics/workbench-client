@@ -33,7 +33,7 @@ describe("LoginComponent", () => {
     mocks: [ToastrService],
   });
 
-  function isSignedIn(signedIn: boolean = true) {
+  function isSignedIn(signedIn = true) {
     spyOnProperty(session, "isLoggedIn").and.callFake(() => signedIn);
   }
 

@@ -55,7 +55,7 @@ describe("DatatablePaginationDirective", () => {
   function setup(
     props: Partial<DatatablePaginationDirective<MockModel>>,
     columns: { prop: string; sortKey?: string }[] = [{ prop: "id" }],
-    detectChanges: boolean = true
+    detectChanges = true
   ): void {
     const columnsHtml = columns
       .map(

@@ -24,6 +24,7 @@ export class SavedSearch
   implements ISavedSearch
 {
   public readonly kind = "Saved Search";
+  public declare readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;
   @bawPersistAttr()

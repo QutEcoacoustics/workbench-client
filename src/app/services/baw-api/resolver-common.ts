@@ -59,7 +59,7 @@ export abstract class BawResolver<
 
   public create(
     name: string,
-    required: boolean = false
+    required = false
   ): ResolverName & { providers: BawProvider[] } {
     // Store reference to 'this' values before 'this' is changed inside class
     const { uniqueId, params: serviceArgs, resolverFn } = this;

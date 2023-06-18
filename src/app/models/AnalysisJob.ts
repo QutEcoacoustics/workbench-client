@@ -46,6 +46,7 @@ export interface IAnalysisJob extends HasAllUsers, HasDescription {
 
 export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly kind = "Analysis Job";
+  public declare readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;
   @bawPersistAttr()

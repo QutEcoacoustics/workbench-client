@@ -46,7 +46,7 @@ export function datatableApiResponse<M extends AbstractModel>(
   api: ApiFilter<M, any[]>,
   models: M[],
   paging?: Paging,
-  apiAction: string = "filter"
+  apiAction = "filter"
 ) {
   paging = {
     page: 1,
@@ -69,7 +69,7 @@ export function datatableApiResponse<M extends AbstractModel>(
 export function assertPagination<
   M extends AbstractModel,
   S extends ApiFilter<M, any[]>
->(apiAction: string = "filter") {
+>(apiAction = "filter") {
   describe("pagination", function () {
     let api: S;
     let defaultModels: M[];

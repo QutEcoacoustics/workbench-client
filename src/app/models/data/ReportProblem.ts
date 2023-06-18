@@ -27,6 +27,8 @@ export class ReportProblem
   public readonly description: Description;
   @bawPersistAttr()
   public readonly content: Description;
+  @bawPersistAttr()
+  public declare readonly recaptchaToken: string;
 
   public getBody(token: string): URLSearchParams {
     this.validateRecaptchaToken();

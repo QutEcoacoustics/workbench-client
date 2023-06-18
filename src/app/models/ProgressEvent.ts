@@ -15,6 +15,7 @@ export class ProgressEvent
   implements IProgressEvent
 {
   public readonly kind = "Progress Event";
+  public declare readonly id?: Id;
   public readonly creatorId?: Id;
   @bawPersistAttr()
   public readonly datasetItemId?: Id;

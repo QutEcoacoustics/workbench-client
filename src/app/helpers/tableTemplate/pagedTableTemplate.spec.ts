@@ -97,7 +97,7 @@ describe("PagedTableTemplate", () => {
     component.setPage(pageInfo);
   }
 
-  function generateMetaData(page: number = 1, total: number = 1) {
+  function generateMetaData(page = 1, total = 1) {
     return {
       status: 200,
       message: "OK",

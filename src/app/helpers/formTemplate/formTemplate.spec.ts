@@ -392,7 +392,7 @@ describe("formTemplate", () => {
   describe("loading", () => {
     beforeEach(() => setup());
 
-    function assertLoading(loading: boolean = true) {
+    function assertLoading(loading = true) {
       if (loading) {
         expect(spec.component.loading).toBeTruthy();
       } else {

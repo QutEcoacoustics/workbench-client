@@ -14,6 +14,8 @@ export class ResetPassword
   public readonly kind = "Reset Password";
   @bawPersistAttr()
   public readonly login: Param;
+  @bawPersistAttr()
+  public declare readonly recaptchaToken: string;
 
   public getBody(token: string): URLSearchParams {
     const body = new URLSearchParams();

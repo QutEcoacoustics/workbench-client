@@ -52,8 +52,8 @@ export const testStepInterval = 0;
 export function nStepObservable<T>(
   subject: Subject<T>,
   callback: () => Errorable<T>,
-  isError: boolean = false,
-  stepsRemaining: number = 0
+  isError = false,
+  stepsRemaining = 0
 ): Promise<void> {
   return new Promise((resolve) => {
     function waitOne() {

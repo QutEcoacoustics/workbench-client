@@ -38,6 +38,7 @@ export class AudioEvent
   implements IAudioEvent
 {
   public readonly kind = "Audio Event";
+  public declare readonly id?: Id;
   @bawPersistAttr()
   public readonly audioRecordingId?: Id;
   @bawPersistAttr()

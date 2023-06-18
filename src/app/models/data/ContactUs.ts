@@ -17,6 +17,8 @@ export class ContactUs extends AbstractForm<IContactUs> implements IContactUs {
   public readonly email: Param;
   @bawPersistAttr()
   public readonly content: Description;
+  @bawPersistAttr()
+  public declare readonly recaptchaToken: string;
 
   public getBody(token: string): URLSearchParams {
     this.validateRecaptchaToken();

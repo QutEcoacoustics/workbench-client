@@ -68,7 +68,7 @@ class AdminThemeTemplateComponent
     this.theme.setColor(color, value);
   }
 
-  public getBoxColor(colorIndex: number, variantIndex: number = 0) {
+  public getBoxColor(colorIndex: number, variantIndex = 0) {
     if (!this.colorBoxes || this.isServer) {
       return "#000";
     }
