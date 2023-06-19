@@ -6,21 +6,34 @@
 
 <baw-typeahead-input
   label="Site(s)"
-  [options]="siteNames"
+  [inputPlaceholder]="'All'"
+  [optionsCallback]="regionsServiceListFilter"
+  [multipleInputs]="true"
+  [formatter]="regionFormatter"
+  (modelChange)="(model.regions)"
 ></baw-typeahead-input>
 
 <baw-typeahead-input
   label="Point(s)"
-  [options]="siteNames"
+  [inputPlaceholder]="'All'"
+  [optionsCallback]="sitesServiceListFilter"
+  [multipleInputs]="true"
+  [formatter]="siteFormatter"
+  (modelChange)="(model.sites)"
 ></baw-typeahead-input>
 
 <baw-typeahead-input
   label="Recogniser(s)"
-  [options]="recognizersNames"
+  [inputPlaceholder]="'All'"
+  [optionsCallback]="provenanceServiceListFilter"
+  [multipleInputs]="true"
+  [formatter]="provenanceFormatter"
+  (modelChange)="(model.recognizers)"
 ></baw-typeahead-input>
 
 <label for="recognizersCutOffInput">Recogniser Cut-Off</label>
 <input
+  [(ngModel)]="model.recognizerCutOff"
   type="number"
   name="recognizersCutOffInput"
   class="form-control"
@@ -33,73 +46,21 @@
 
 <baw-typeahead-input
   label="Chart(s)"
-  [options]="chartsNames"
+  [inputPlaceholder]="'All'"
+  [optionsCallback]="chartsFilter"
+  [multipleInputs]="true"
+  [formatter]="chartsFormatter"
+  (modelChange)="(model.charts)"
 ></baw-typeahead-input>
 
-<label for="eventsOfInterestInput" class="mt-4">Events of Interest</label>
-<p
-  name="eventsOfInterestInput"
-  class="form-control mb-2"
-  contenteditable="true"
-  spellcheck="false"
-  (focus)="showEventsOfInterestSelector = true"
-  (blur)="showEventsOfInterestSelector = false"
->
-  <span
-    contenteditable="false"
-    class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2"
-    >Ninox boobook</span
-  >
-  <span
-    contenteditable="false"
-    class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2"
-    >Calyptorhynchus lathami</span
-  >
-  <span
-    contenteditable="false"
-    class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2"
-    >Petaurus australis</span
-  >
-  <span
-    contenteditable="false"
-    class="event-pill pill-color badge badge-pill text-light pointer p-2 me-2"
-    >Corvus monedula</span
-  >
-
-  <span class="p-1"></span>
-</p>
-
-<ngx-datatable
-  #collapse="ngbCollapse"
-  [ngbCollapse]="!showEventsOfInterestSelector"
-  [columns]="columns"
-  [rows]="eventsOfInterest"
-  class="border p-3"
-  (mousedown)="void()"
->
-  <ngx-datatable-column
-    [canAutoResize]="false"
-    [checkboxable]="true"
-    [draggable]="false"
-    [headerCheckboxable]="true"
-    [resizeable]="false"
-    [sortable]="false"
-    [width]="30"
-  >
-  </ngx-datatable-column>
-  <ngx-datatable-column name="name">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      <span class="badge badge-pill pill-color text-light pointer">{{
-        value
-      }}</span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="description">
-    <ng-template let-value="value" ngx-datatable-cell-template>
-      <span>{{ value }}</span>
-    </ng-template>
-  </ngx-datatable-column>
-</ngx-datatable>
+<baw-typeahead-input
+  label="Events of Interest"
+  [inputPlaceholder]="'All'"
+  [optionsCallback]="eventsOfInterestFilter"
+  [multipleInputs]="true"
+  [formatter]="eventsOfInterestFormatter"
+  (modelChange)="(model.eventsOfInterest)"
+></baw-typeahead-input>
 
 <button
   id="generateReportButton"

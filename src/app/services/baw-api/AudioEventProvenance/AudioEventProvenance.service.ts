@@ -1,40 +1,46 @@
 import { Injectable } from "@angular/core";
-import { StandardApi, IdOr, id, IdParam, option, emptyParam } from "@baw-api/api-common";
+import {
+  StandardApi,
+  IdOr,
+  id,
+  option,
+  emptyParam,
+  IdParamOptional,
+} from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { Observable } from "rxjs";
 import { Resolvers } from "@baw-api/resolver-common";
 
-const audioEventProvenanceId: IdParam<AudioEventProvenance> = id;
+const audioEventProvenanceId: IdParamOptional<AudioEventProvenance> = id;
 const endpoint = stringTemplate`/provenance/${audioEventProvenanceId}${option}`;
 
 @Injectable()
 export class AudioEventProvenanceService
   implements StandardApi<AudioEventProvenance, [IdOr<AudioEventProvenance>]>
 {
-  public constructor(
-    protected api: BawApiService<AudioEventProvenance>,
-  ) {}
+  public constructor(protected api: BawApiService<AudioEventProvenance>) {}
 
   public list(
-    model: IdOr<AudioEventProvenance>,
+    model: IdOr<AudioEventProvenance>
   ): Observable<AudioEventProvenance[]> {
     return this.api.list(AudioEventProvenance, endpoint(model, emptyParam));
   }
 
   public filter(
-    filters: Filters<AudioEventProvenance>,
-    model: IdOr<AudioEventProvenance>,
+    filters: Filters<AudioEventProvenance>
   ): Observable<AudioEventProvenance[]> {
     return this.api.filter(
       AudioEventProvenance,
-      endpoint(model, emptyParam),
-      filters,
+      endpoint(emptyParam, emptyParam),
+      filters
     );
   }
 
-  public show(model: IdOr<AudioEventProvenance>): Observable<AudioEventProvenance> {
+  public show(
+    model: IdOr<AudioEventProvenance>
+  ): Observable<AudioEventProvenance> {
     return this.api.show(AudioEventProvenance, endpoint(model, emptyParam));
   }
 
@@ -43,7 +49,7 @@ export class AudioEventProvenanceService
       AudioEventProvenance,
       endpoint(model, emptyParam),
       (audioEventProvenance) => endpoint(audioEventProvenance, emptyParam),
-      model,
+      model
     );
   }
 
@@ -51,11 +57,13 @@ export class AudioEventProvenanceService
     return this.api.update(
       AudioEventProvenance,
       endpoint(model, emptyParam),
-      model,
+      model
     );
   }
 
-  public destroy(model: IdOr<AudioEventProvenance>): Observable<void | AudioEventProvenance> {
+  public destroy(
+    model: IdOr<AudioEventProvenance>
+  ): Observable<void | AudioEventProvenance> {
     return this.api.destroy(endpoint(model, emptyParam));
   }
 }
@@ -63,4 +71,6 @@ export class AudioEventProvenanceService
 export const audioEventProvenanceResolvers = new Resolvers<
   AudioEventProvenance,
   [IdOr<AudioEventProvenance>]
->([AudioEventProvenanceService], "audioEventProvenanceId").create("AUDIO_EVENT_PROVENANCE");
+>([AudioEventProvenanceService], "audioEventProvenanceId").create(
+  "AUDIO_EVENT_PROVENANCE"
+);

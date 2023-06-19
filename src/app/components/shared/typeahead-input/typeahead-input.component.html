@@ -1,8 +1,24 @@
-<label for="typeahead-input">{{ label }}</label>
-<input
-  name="typeahead-input"
-  type="text"
-  class="form-control mb-2"
-  placeholder="All"
-  [ngbTypeahead]="findOptions"
->
+<label *ngIf="label" for="typeahead-input">{{ label }}</label>
+<div class="d-flex form-inline form-group form-control border p-0">
+  <ng-container *ngIf="multipleInputs">
+    <span
+      *ngFor="let item of activeItems"
+      class="control-label bg-primary rounded-pill p-1 text-white me-1"
+      (keydown.backspace)="removeItem(item)"
+    >
+      {{ formatter(item) }}
+    </span>
+  </ng-container>
+
+  <input
+    #typeaheadInputRef
+    name="typeahead-input"
+    type="text"
+    class="form-control border-0"
+    [placeholder]="activeItems.length < 1 ? inputPlaceholder : ''"
+    [ngbTypeahead]="findOptions"
+    [(ngModel)]="inputModel"
+    (selectItem)="onItemSelected($event)"
+    (keydown.backspace)="removeLastItem()"
+  />
+</div>
