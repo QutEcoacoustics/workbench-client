@@ -37,7 +37,6 @@ import type { TagGroup } from "@models/TagGroup";
 import type { User } from "@models/User";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { AudioEventSummaryReport } from "@models/AudioEventSummaryReport";
-import { QueryParameterResolver } from "@components/reports/pages/event-summary/eventSummaryResolver.service";
 import type { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
@@ -206,6 +205,3 @@ export const TAGGING = new ServiceToken<TaggingsService, Tagging>("TAGGING");
 export const USER = new ServiceToken<UserService, User>("USER");
 export const AUDIO_EVENT_PROVENANCE = new ServiceToken<AudioEventProvenanceService, AudioEventProvenance>("AUDIO_EVENT_PROVENANCE");
 export const AUDIO_EVENT_SUMMARY = new ServiceToken<EventSummaryReportService, AudioEventSummaryReport>("AUDIO_EVENT_SUMMARY");
-export const REPORT_QUERY_PARAMETER_RESOLVER = new ServiceToken<QueryParameterResolver, AudioEventSummaryReport>(
-  "REPORT_QUERY_PARAMETER_RESOLVER"
-);

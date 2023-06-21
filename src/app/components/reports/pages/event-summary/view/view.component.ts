@@ -1,6 +1,9 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
+import { eventSummaryResolvers } from "@baw-api/reports/event-summary/event-summary.service";
+import { retrieveResolvers, hasResolvedSuccessfully } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   reportMenuItems,
@@ -12,33 +15,52 @@ import {
   AudioEventSummaryReport,
   IEventGroup,
 } from "@models/AudioEventSummaryReport";
-import { generateAudioEventSummaryReport } from "@test/fakes/AudioEventSummaryReport";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
 import { DateTime } from "luxon";
 import embed, { VisualizationSpec } from "vega-embed";
-import { parameterResolver } from "../eventSummaryResolver.service";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
-const parametersKey = "parameters";
+const parametersKey = "report";
 
 @Component({
   selector: "baw-summary-report",
   templateUrl: "./view.component.html",
   styleUrls: ["./view.component.scss"],
 })
-class ViewEventReportComponent extends PageComponent implements AfterViewInit {
-  public constructor() {
+class ViewEventReportComponent extends PageComponent implements AfterViewInit, OnInit {
+  public constructor(
+    private route: ActivatedRoute
+  ) {
     super();
   }
 
   @ViewChild("accumulationCurve") public accumulationCurveElement: ElementRef;
   @ViewChild("compositionCurve") public compositionCurveElement: ElementRef;
-  public report: AudioEventSummaryReport = new AudioEventSummaryReport(
-    generateAudioEventSummaryReport()
-  );
+  public report: AudioEventSummaryReport;
+  public project: Project;
+  public region?: Region;
+  public site?: Site;
+
+  public ngOnInit(): void {
+    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+
+    if (!hasResolvedSuccessfully(models)) {
+      return;
+    }
+
+    // console.log(models);
+
+    this.project = models[projectKey] as Project;
+    this.region = models[regionKey] as Region;
+    this.site = models[siteKey] as Site;
+    this.report = models[parametersKey] as AudioEventSummaryReport;
+  }
 
   public ngAfterViewInit(): void {
     const speciesAccumulationCurveData = speciesAccumulationCurveSchema;
@@ -118,8 +140,7 @@ function getPageInfo(subRoute: keyof typeof reportMenuItems.view): IPageInfo {
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
-      // TODO: Once the API is fully functional, this should be replaced with `show`
-      [parametersKey]: parameterResolver.showOptional,
+      [parametersKey]: eventSummaryResolvers.show,
     },
   };
 }

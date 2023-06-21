@@ -6,7 +6,6 @@ import { ProjectsModule } from "../projects/projects.module";
 import { NewEventReportComponent } from "./pages/event-summary/new/new.component";
 import { ViewEventReportComponent } from "./pages/event-summary/view/view.component";
 import { reportsRoute } from "./reports.routes";
-import { QueryParameterResolver } from "./pages/event-summary/eventSummaryResolver.service";
 
 const internalComponents = [];
 
@@ -24,6 +23,5 @@ const routes = Object.values(reportsRoute)
   declarations: [...internalComponents, ...components],
   exports: [RouterModule, ...components],
   imports: [SharedModule, RouterModule.forChild(routes), ProjectsModule],
-  providers: [QueryParameterResolver],
 })
 export class ReportModule {}
