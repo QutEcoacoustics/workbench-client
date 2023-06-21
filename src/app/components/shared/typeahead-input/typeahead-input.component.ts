@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, Output, ViewChild } from "@angular/core";
+import { Component, ElementRef, Input, ViewChild } from "@angular/core";
 import { NgbTypeaheadSelectItemEvent } from "@ng-bootstrap/ng-bootstrap";
 import {
   BehaviorSubject,
@@ -14,6 +14,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
 @Component({
   selector: "baw-typeahead-input[optionsCallback]",
   templateUrl: "typeahead-input.component.html",
+  styleUrls: ["typeahead-input.component.scss"],
 })
 export class TypeaheadInputComponent {
   public constructor() {}
@@ -34,7 +35,7 @@ export class TypeaheadInputComponent {
    * When the user adds or removes an item from the active items array, a BehaviorSubject event should fire
    * If this BehaviorSubject is from another component, we can make the external component listen to this event
    */
-  @Output() public modelChange: BehaviorSubject<unknown[]> =
+  @Input() public modelChange: BehaviorSubject<unknown[]> =
     new BehaviorSubject([]);
 
   @ViewChild("typeaheadInputRef")

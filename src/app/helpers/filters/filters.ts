@@ -1,6 +1,7 @@
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { Writeable } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 
 /**
@@ -81,6 +82,33 @@ export function filterModel<T extends AbstractModel, U extends AbstractModel>(
   const additionalFilter: InnerFilter = {
     [`${key}.id`]: {
       eq: model.id,
+    },
+  };
+
+  return filterAnd(currentFilter, additionalFilter);
+}
+
+/**
+ * Adds a new filter to an existing filter that filters by several model ids
+ *
+ * @param key The key identifier of the model, most likely the type
+ * @example key = "projects"
+ * @param model The model to filter by
+ * @param currentFilter (optional) A filter that model condition will be added to. If no filter is provided, a new filter will be created
+ * @returns A new filter with the model conditions added
+ */
+export function filterModelIds<T extends AbstractModel>(
+  key: string,
+  ids: Id[],
+  currentFilter: InnerFilter<T>
+): InnerFilter<Writeable<T>> {
+  if (!isInstantiated(ids)) {
+    return currentFilter;
+  }
+
+  const additionalFilter: InnerFilter = {
+    [`${key}.id`]: {
+      in: ids,
     },
   };
 

@@ -1,25 +1,28 @@
-<h1 class="text-muted">Project: aaaaaaa</h1>
+<h1 class="text-muted">{{ viewTitle }}</h1>
 <h1 class="mb-5">Acoustic Event Summary Report Generator</h1>
 
 <baw-audio-recordings-filter [constructedFilters]="filters$">
 </baw-audio-recordings-filter>
 
+<!-- Only projects should show a region filter -->
 <baw-typeahead-input
+  *ngIf="!region"
   label="Site(s)"
   [inputPlaceholder]="'All'"
   [optionsCallback]="regionsServiceListFilter"
   [multipleInputs]="true"
   [formatter]="regionFormatter"
-  (modelChange)="(model.regions)"
+  [modelChange]="(model.regions)"
 ></baw-typeahead-input>
 
 <baw-typeahead-input
+  *ngIf="!site"
   label="Point(s)"
   [inputPlaceholder]="'All'"
   [optionsCallback]="sitesServiceListFilter"
   [multipleInputs]="true"
   [formatter]="siteFormatter"
-  (modelChange)="(model.sites)"
+  [modelChange]="(model.sites)"
 ></baw-typeahead-input>
 
 <baw-typeahead-input
@@ -28,14 +31,14 @@
   [optionsCallback]="provenanceServiceListFilter"
   [multipleInputs]="true"
   [formatter]="provenanceFormatter"
-  (modelChange)="(model.recognizers)"
+  [modelChange]="(model.provenances)"
 ></baw-typeahead-input>
 
-<label for="recognizersCutOffInput">Recogniser Cut-Off</label>
+<label for="provenancesCutOffInput" class="form-label">Recogniser Cut-Off</label>
 <input
   [(ngModel)]="model.recognizerCutOff"
   type="number"
-  name="recognizersCutOffInput"
+  name="provenancesCutOffInput"
   class="form-control"
   placeholder="All"
   value="0.8"
@@ -50,7 +53,7 @@
   [optionsCallback]="chartsFilter"
   [multipleInputs]="true"
   [formatter]="chartsFormatter"
-  (modelChange)="(model.charts)"
+  [modelChange]="(model.charts)"
 ></baw-typeahead-input>
 
 <baw-typeahead-input
@@ -59,7 +62,7 @@
   [optionsCallback]="eventsOfInterestFilter"
   [multipleInputs]="true"
   [formatter]="eventsOfInterestFormatter"
-  (modelChange)="(model.eventsOfInterest)"
+  [modelChange]="(model.eventsOfInterest)"
 ></baw-typeahead-input>
 
 <button

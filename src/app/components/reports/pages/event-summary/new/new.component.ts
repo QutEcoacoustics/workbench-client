@@ -3,12 +3,15 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Site } from "@models/Site";
-import { BehaviorSubject, Observable, of, takeUntil } from "rxjs";
-import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { BehaviorSubject, Observable, of } from "rxjs";
+import { Filters } from "@baw-api/baw-api.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
-import { regionResolvers, RegionsService } from "@baw-api/region/regions.service";
+import {
+  regionResolvers,
+  RegionsService,
+} from "@baw-api/region/regions.service";
 import {
   retrieveResolvers,
   hasResolvedSuccessfully,
@@ -24,6 +27,8 @@ import {
 import { Tag } from "@models/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { Id } from "@interfaces/apiInterfaces";
+import { EventSummaryReportParameters } from "../eventSummaryParameters";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -33,7 +38,7 @@ interface IEventReportConditions {
   dateTime: Filters<AudioRecording>;
   regions: BehaviorSubject<Region[]>;
   sites: BehaviorSubject<Site[]>;
-  recognizers: BehaviorSubject<AudioEventProvenance[]>;
+  provenances: BehaviorSubject<AudioEventProvenance[]>;
   recognizerCutOff: number;
   charts: BehaviorSubject<string[]>;
   eventsOfInterest: BehaviorSubject<Tag[]>;
@@ -59,18 +64,16 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   public project: Project;
   public region: Region;
   public site: Site;
-  public recognizerCutOff: number;
-  public charts: string[];
-  public eventsOfInterest: Tag[];
+
+  // TODO: remove this
   public filters$: BehaviorSubject<Filters<AudioRecording>> =
     new BehaviorSubject({});
-  public points: string;
 
   public model: IEventReportConditions = {
     dateTime: {},
     regions: new BehaviorSubject<Region[]>([]),
     sites: new BehaviorSubject<Site[]>([]),
-    recognizers: new BehaviorSubject<AudioEventProvenance[]>([]),
+    provenances: new BehaviorSubject<AudioEventProvenance[]>([]),
     recognizerCutOff: 0.8,
     charts: new BehaviorSubject<string[]>([]),
     eventsOfInterest: new BehaviorSubject<Tag[]>([]),
@@ -86,22 +89,6 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     this.project = models[projectKey] as Project;
     this.region = models[regionKey] as Region;
     this.site = models[siteKey] as Site;
-
-    const tagsFilter = {
-      filters: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        "project.id": {
-          eq: this.project.id,
-        },
-      },
-    };
-
-    this.tagsApi
-      .filter(tagsFilter as any)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((response) => {
-        this.eventsOfInterest = response;
-      });
   }
 
   public get siteNames(): string[] {
@@ -138,73 +125,115 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   }
 
   public get chartsNames(): string[] {
-    return ["Chart 1", "Chart 2", "Chart 3", "Chart 4"];
+    return [
+      "Sensor Point Map",
+      "Species Accumulation Curve",
+      "Species Composition Curve",
+      "False Colour Spectrograms",
+    ];
   }
 
   public generateReport(): void {
-    this.router.navigateByUrl("/projects/1135/reports/event-summary");
+    const parameterModel = this.createSearchParametersDataModel();
+    const queryStringParameters = parameterModel.toQueryString();
+    this.router.navigateByUrl(
+      `/projects/1135/reports/event-summary?${queryStringParameters}`
+    );
   }
 
   public regionFormatter = (region: Region) => region.name;
-  public regionsServiceListFilter = (regionName: string): Observable<Region[]> => {
+  public regionsServiceListFilter = (
+    regionName: string
+  ): Observable<Region[]> => {
     const filter: Filters<IRegion> = {
       filter: {
         name: {
-          contains: regionName
-        }
-      }
+          contains: regionName,
+        },
+      },
     };
 
     return this.regionsApi.filter(filter, this.project);
-  }
+  };
 
   public siteFormatter = (site: Site) => site.name;
   public sitesServiceListFilter = (siteName: string): Observable<Site[]> => {
     const filter: Filters<Site> = {
       filter: {
         name: {
-          contains: siteName
-        }
-      }
+          contains: siteName,
+        },
+      },
     };
 
     return this.sitesApi.filter(filter, this.project);
-  }
+  };
 
-  public provenanceFormatter = (provenance: AudioEventProvenance) => provenance.name;
-  public provenanceServiceListFilter = (provenanceName: string): Observable<AudioEventProvenance[]> => {
+  public provenanceFormatter = (provenance: AudioEventProvenance) =>
+    provenance.name;
+  public provenanceServiceListFilter = (
+    provenanceName: string
+  ): Observable<AudioEventProvenance[]> => {
     const filter: Filters<AudioEventProvenance> = {
       filter: {
         name: {
-          contains: provenanceName
-        }
-      }
+          contains: provenanceName,
+        },
+      },
     };
 
     return this.provenanceApi.filter(filter);
-  }
+  };
 
   public chartsFormatter = (chart: string) => chart;
-  public chartsFilter(text: string): Observable<string[]> {
-    return of(this.chartsNames.filter((chart) => chart.includes(text)));
-  }
+  public chartsFilter = (text: string): Observable<string[]> =>
+    of(this.chartsNames.filter((chart) => chart.includes(text)));
 
   public eventsFormatter = (tag: Tag): string => tag.text;
   public eventsOfInterestFilter = (text: string): Observable<Tag[]> => {
     const filter: Filters<Tag> = {
       filter: {
         text: {
-          contains: text
-        }
-      }
+          contains: text,
+        },
+      },
     };
 
     return this.tagsApi.filter(filter);
+  };
+
+  protected get viewTitle(): string {
+    if (this.site) {
+      if (this.site.isPoint) {
+        return `Point: ${this.site.name}`;
+      }
+
+      return `Site: ${this.site.name}`;
+    } else if (this.region) {
+      return `Site: ${this.region.name}`;
+    }
+
+    return `Project: ${this.project.name}`;
   }
 
-  private constructFilters(): InnerFilter {
-    const filters: InnerFilter = {};
-    return filters;
+  private createSearchParametersDataModel(): EventSummaryReportParameters {
+    const regionIds: Id[] = this.model.regions.value.map((region) => region.id);
+    const siteIds: Id[] = this.model.sites.value.map((site) => site.id);
+    const provenanceIds: Id[] = this.model.provenances.value.map(
+      (provenance) => provenance.id
+    );
+    const eventIds: Id[] = this.model.eventsOfInterest.value.map(
+      (event) => event.id
+    );
+
+    return new EventSummaryReportParameters(
+      regionIds,
+      siteIds,
+      provenanceIds,
+      eventIds,
+      this.model.recognizerCutOff,
+      this.model.charts.value
+    );
   }
 }
 

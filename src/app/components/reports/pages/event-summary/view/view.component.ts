@@ -1,6 +1,4 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
-import { Router } from "@angular/router";
-import { Filters } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
@@ -10,16 +8,21 @@ import {
 } from "@components/reports/reports.menu";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { AudioEventSummaryReport, IEventGroup } from "@models/AudioEventSummaryReport";
+import {
+  AudioEventSummaryReport,
+  IEventGroup,
+} from "@models/AudioEventSummaryReport";
 import { generateAudioEventSummaryReport } from "@test/fakes/AudioEventSummaryReport";
 import { DateTime } from "luxon";
 import embed, { VisualizationSpec } from "vega-embed";
-import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json"
+import { parameterResolver } from "../eventSummaryResolver.service";
+import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
+const parametersKey = "parameters";
 
 @Component({
   selector: "baw-summary-report",
@@ -27,38 +30,36 @@ const siteKey = "site";
   styleUrls: ["./view.component.scss"],
 })
 class ViewEventReportComponent extends PageComponent implements AfterViewInit {
-  public constructor(public router: Router) {
+  public constructor() {
     super();
   }
 
   @ViewChild("accumulationCurve") public accumulationCurveElement: ElementRef;
   @ViewChild("compositionCurve") public compositionCurveElement: ElementRef;
-  public report: AudioEventSummaryReport = new AudioEventSummaryReport(generateAudioEventSummaryReport());
-  public reportFilters: Filters = {};
-  public speciesAccumulationCurveData = speciesAccumulationCurveSchema;
-  public speciesCompositionCurveData = speciesCompositionCurveSchema;
+  public report: AudioEventSummaryReport = new AudioEventSummaryReport(
+    generateAudioEventSummaryReport()
+  );
 
   public ngAfterViewInit(): void {
-    this.speciesAccumulationCurveData.data.values = this.report.graphs.accumulationData;
-    this.speciesCompositionCurveData.data.values = this.report.graphs.speciesCompositionData;
+    const speciesAccumulationCurveData = speciesAccumulationCurveSchema;
+    const speciesCompositionCurveData = speciesCompositionCurveSchema;
+    speciesAccumulationCurveData.data.values =
+      this.report.graphs.accumulationData;
+    speciesCompositionCurveData.data.values =
+      this.report.graphs.speciesCompositionData;
 
     embed(
       this.accumulationCurveElement.nativeElement,
-      this.speciesAccumulationCurveData as VisualizationSpec
+      speciesAccumulationCurveData as VisualizationSpec
     );
     embed(
       this.compositionCurveElement.nativeElement,
-      this.compositionCurveData as VisualizationSpec
+      speciesCompositionCurveData as VisualizationSpec
     );
   }
 
   public printPage(): void {
     window.print();
-  }
-
-  private viewDateFromModelAttribute(date: DateTime | string): string {
-    const reportDateTimeObject: DateTime = date instanceof DateTime ? date : DateTime.fromISO(date);
-    return reportDateTimeObject.toFormat("yyyy-MM-dd HH:MM");
   }
 
   public get eventGroups(): IEventGroup[] {
@@ -70,11 +71,16 @@ class ViewEventReportComponent extends PageComponent implements AfterViewInit {
   }
 
   public get numberOfRecordingsAnalyzed(): string {
-    return this.report.statistics.countOfRecordingsAnalyzed.toString() + " recordings";
+    return (
+      this.report.statistics.countOfRecordingsAnalyzed.toString() +
+      " recordings"
+    );
   }
 
   public get numberOfBinsAnalyzed(): string {
-    return this.report.statistics.countOfRecordingsAnalyzed.toString() + " bins";
+    return (
+      this.report.statistics.countOfRecordingsAnalyzed.toString() + " bins"
+    );
   }
 
   public get totalSearchSpan(): string {
@@ -86,11 +92,21 @@ class ViewEventReportComponent extends PageComponent implements AfterViewInit {
   }
 
   public get audioStartDate(): string {
-    return this.viewDateFromModelAttribute(this.report.statistics.coverageStartDay);
+    return this.viewDateFromModelAttribute(
+      this.report.statistics.coverageStartDay
+    );
   }
 
   public get audioEndDate(): string {
-    return this.viewDateFromModelAttribute(this.report.statistics.coverageEndDay);
+    return this.viewDateFromModelAttribute(
+      this.report.statistics.coverageEndDay
+    );
+  }
+
+  private viewDateFromModelAttribute(date: DateTime | string): string {
+    const reportDateTimeObject: DateTime =
+      date instanceof DateTime ? date : DateTime.fromISO(date);
+    return reportDateTimeObject.toFormat("yyyy-MM-dd HH:MM");
   }
 }
 
@@ -102,6 +118,8 @@ function getPageInfo(subRoute: keyof typeof reportMenuItems.view): IPageInfo {
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
+      // TODO: Once the API is fully functional, this should be replaced with `show`
+      [parametersKey]: parameterResolver.showOptional,
     },
   };
 }

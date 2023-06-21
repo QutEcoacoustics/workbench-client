@@ -91,7 +91,7 @@ import { tagGroupResolvers, TagGroupsService } from "./tag/tag-group.service";
 import { taggingResolvers, TaggingsService } from "./tag/taggings.service";
 import { tagResolvers, TagsService } from "./tag/tags.service";
 import { userResolvers, UserService } from "./user/user.service";
-import { EventSummaryService, eventSummaryResolvers } from "./reports/event-summary/event-summary.service";
+import { EventSummaryReportService, eventSummaryResolvers } from "./reports/event-summary/event-summary.service";
 
 const serviceList = [
   {
@@ -276,9 +276,14 @@ const serviceList = [
   },
   {
     serviceToken: Tokens.AUDIO_EVENT_SUMMARY,
-    service: EventSummaryService,
+    service: EventSummaryReportService,
     resolvers: eventSummaryResolvers,
-  }
+  },
+  // {
+  //   serviceToken: Tokens.REPORT_QUERY_PARAMETER_RESOLVER,
+  //   service: QueryParameterResolver,
+  //   resolvers: parameterResolver,
+  // }
 ];
 
 const services = serviceList.map(({ service }) => service);

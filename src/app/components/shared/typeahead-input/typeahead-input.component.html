@@ -1,9 +1,9 @@
-<label *ngIf="label" for="typeahead-input">{{ label }}</label>
-<div class="d-flex form-inline form-group form-control border p-0">
+<label *ngIf="label" for="typeahead-input" class="form-label">{{ label }}</label>
+<div class="typeahead-input-container d-flex form-inline form-group form-control border p-0">
   <ng-container *ngIf="multipleInputs">
     <span
       *ngFor="let item of activeItems"
-      class="control-label bg-primary rounded-pill p-1 text-white me-1"
+      class="item-pill bg-primary rounded-pill text-white me-1 p-1 px-3"
       (keydown.backspace)="removeItem(item)"
     >
       {{ formatter(item) }}
