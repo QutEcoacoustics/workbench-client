@@ -5,7 +5,6 @@ import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import {
   BawResolver,
   ResolvedModel,
-  Resolvers,
 } from "@baw-api/resolver-common";
 import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/eventSummaryParameters";
 import { Tuple } from "@helpers/advancedTypes";
@@ -31,11 +30,21 @@ export class EventSummaryReportService {
   ): Observable<AudioEventSummaryReport> {
     return of(new AudioEventSummaryReport(generateAudioEventSummaryReport()));
   }
+
+  public show() {
+    return of(new AudioEventSummaryReport(generateAudioEventSummaryReport()));
+  }
 }
 
 // when fetching the EventSummaryReports from route data, query string parameters are used to construct a filter request
 // therefore, we have to create a custom resolver to handle fetch an object using query string parameters
-export class EventSummaryResolvers extends BawResolver<AudioEventSummaryReport, AudioEventSummaryReport, [], any, { parameters: string }> {
+class EventSummaryResolver extends BawResolver<
+  AudioEventSummaryReport,
+  AudioEventSummaryReport,
+  [],
+  EventSummaryReportService,
+  { filterShow: string }
+> {
   public constructor(
     deps: Type<EventSummaryReportService>[],
     params?: Tuple<string, Params["length"]>
@@ -48,17 +57,17 @@ export class EventSummaryResolvers extends BawResolver<AudioEventSummaryReport, 
     resolver: Type<Resolve<ResolvedModel<AudioEventSummaryReport>>>,
     deps: Type<EventSummaryReportService>[]
   ) {
-    return {
-      parameters: name,
-      providers: [{ provide: name, useClass: resolver, deps }],
+    const filterShowProvider = {
+      filterShow: name + "FilterShowResolver",
+      providers: [{ provide: name + "FilterShowResolver", useClass: resolver, deps }],
     };
+
+    return filterShowProvider;
   }
 
   public resolverFn(
     route: ActivatedRouteSnapshot,
-    api: EventSummaryReportService,
-    _: any,
-    __: any
+    api: EventSummaryReportService
   ): Observable<AudioEventSummaryReport> {
     const parametersModel = new EventSummaryReportParameters(
       route.paramMap.getAll("sites").map((uid) => parseInt(uid, 10)),
@@ -76,26 +85,20 @@ export class EventSummaryResolvers extends BawResolver<AudioEventSummaryReport, 
 
 class ReportResolvers {
   public create(name: string) {
-    const additionalProvider = new Resolvers<AudioEventSummaryReport, []>(
-      [EventSummaryReportService] as any,
-      "reportId"
-    ).create(name);
-    const tagTypeProvider = new EventSummaryResolvers([AudioEventSummaryReport] as any).create(name);
+    const tagTypeProvider = new EventSummaryResolver([
+      EventSummaryReportService,
+    ]).create(name);
     const providers = [
-      ...additionalProvider.providers,
       ...tagTypeProvider.providers,
     ];
 
     const resolver = {
-      ...additionalProvider,
       ...tagTypeProvider,
       providers,
     };
-
-    console.log(resolver);
 
     return resolver;
   }
 }
 
-export const eventSummaryResolvers = new ReportResolvers().create("report");
+export const eventSummaryResolvers = new ReportResolvers().create("AudioEventSummaryReport");

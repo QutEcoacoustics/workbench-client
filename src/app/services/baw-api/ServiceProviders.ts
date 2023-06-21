@@ -279,11 +279,6 @@ const serviceList = [
     service: EventSummaryReportService,
     resolvers: eventSummaryResolvers,
   },
-  // {
-  //   serviceToken: Tokens.REPORT_QUERY_PARAMETER_RESOLVER,
-  //   service: QueryParameterResolver,
-  //   resolvers: parameterResolver,
-  // }
 ];
 
 const services = serviceList.map(({ service }) => service);

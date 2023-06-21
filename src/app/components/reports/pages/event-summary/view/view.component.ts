@@ -140,7 +140,7 @@ function getPageInfo(subRoute: keyof typeof reportMenuItems.view): IPageInfo {
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
-      [parametersKey]: eventSummaryResolvers.show,
+      [parametersKey]: eventSummaryResolvers.filterShow,
     },
   };
 }
