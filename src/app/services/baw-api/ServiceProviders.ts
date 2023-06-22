@@ -91,7 +91,7 @@ import { tagGroupResolvers, TagGroupsService } from "./tag/tag-group.service";
 import { taggingResolvers, TaggingsService } from "./tag/taggings.service";
 import { tagResolvers, TagsService } from "./tag/tags.service";
 import { userResolvers, UserService } from "./user/user.service";
-import { EventSummaryReportService, eventSummaryResolvers } from "./reports/event-summary/event-summary.service";
+import { EventSummaryReportService, eventSummaryResolvers } from "./reports/event-report/event-summary-report.service";
 
 const serviceList = [
   {

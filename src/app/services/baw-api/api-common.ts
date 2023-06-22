@@ -114,6 +114,19 @@ export interface ApiShow<
 }
 
 /**
+ * API Filter Show functionality
+ */
+export interface ApiFilterShow<M extends AbstractModel, P extends any[] = []> {
+  /**
+   * Get a single model filtered using the filter API
+   *
+   * @param filters Model filters
+   * @param urlParameters URL parameter values
+   */
+  filterShow(filters: Filters<M>, ...urlParameters: P): Observable<M>;
+}
+
+/**
  * API Create functionality
  */
 export interface ApiCreate<M extends AbstractModel, P extends any[] = []> {

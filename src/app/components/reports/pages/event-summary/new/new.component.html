@@ -1,7 +1,7 @@
 <h1 class="text-muted">{{ viewTitle }}</h1>
 <h1 class="mb-5">Acoustic Event Summary Report Generator</h1>
 
-<baw-audio-recordings-filter [constructedFilters]="filters$">
+<baw-audio-recordings-filter [constructedFilters]="filters$" [constructedModel]="dateTimeConditions$">
 </baw-audio-recordings-filter>
 
 <!-- Only projects should show a region filter -->

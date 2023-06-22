@@ -10,7 +10,7 @@ import { SiteMapComponent } from "@components/projects/components/site-map/site-
 import { MockComponent, MockedComponent } from "ng-mocks";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
-import { AudioEventSummaryReport } from "@models/AudioEventSummaryReport";
+import { EventSummaryReport } from "@models/AudioEventSummaryReport";
 import { AUDIO_EVENT_PROVENANCE, AUDIO_EVENT_SUMMARY } from "@baw-api/ServiceTokens";
 import { generateAudioEventSummaryReport } from "@test/fakes/AudioEventSummaryReport";
 import { ViewEventReportComponent } from "./view.component";
@@ -42,7 +42,7 @@ describe("ViewEventReportComponent", () => {
     );
 
     mockEventSummaryService.api.show.and.callFake(
-      () => new AudioEventSummaryReport(generateAudioEventSummaryReport())
+      () => new EventSummaryReport(generateAudioEventSummaryReport())
     );
   }
 

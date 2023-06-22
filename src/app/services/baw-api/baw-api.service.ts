@@ -200,6 +200,30 @@ export class BawApiService<
   }
 
   /**
+   * Get response from filter route
+   *
+   * @param classBuilder Model to create
+   * @param path API path
+   * @param filters API filters
+   *
+   * ! This is a temporary method to generate fake data for the audio event summary report
+   * ! Once the api is fully functional, this method should be properly implemented
+   * ! The method is only used in the reports view at the moment and assumes that it is only used for the reports component
+   */
+  public filterShow(
+    classBuilder: ClassBuilder,
+    path: string,
+    filters: Filters<Model>,
+    opts?: NotificationsOpt
+  ): Observable<Model> {
+    return this.session.authTrigger.pipe(
+      switchMap(() => this.httpPost(path, filters)),
+      map(this.handleSingleResponse(classBuilder)),
+      catchError((err) => this.handleError(err, opts?.disableNotification))
+    );
+  }
+
+  /**
    * Get response from show route
    *
    * @param classBuilder Model to create

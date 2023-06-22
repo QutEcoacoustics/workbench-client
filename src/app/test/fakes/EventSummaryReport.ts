@@ -1,16 +1,16 @@
 import {
-  IAccumulationData,
-  IAnalysisCoverageData,
-  IAudioEventSummaryReport,
+  IAccumulationGraphData,
+  IAnalysisCoverageGraphData,
+  IEventSummaryReport,
   IEventGroup,
-  IInterferenceEvent,
-  ISpeciesCompositionData,
-} from "@models/AudioEventSummaryReport";
+  IReportEvent,
+  ISpeciesCompositionGraphData,
+} from "@models/EventSummaryReport";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAudioEventSummaryReport(
-  data?: Partial<IAudioEventSummaryReport>
-): Required<IAudioEventSummaryReport> {
+export function generateEventSummaryReport(
+  data?: Partial<IEventSummaryReport>
+): Required<IEventSummaryReport> {
   return {
     id: modelData.id(),
     name: modelData.param(),
@@ -29,7 +29,7 @@ export function generateAudioEventSummaryReport(
         tagId: modelData.id(),
         detections: modelData.datatype.number(),
         binsWithDetections: modelData.datatype.number(),
-        binsWithInterference: modelData.randomArray<IInterferenceEvent>(
+        binsWithInterference: modelData.randomArray<IReportEvent>(
           0,
           10,
           () =>
@@ -41,7 +41,7 @@ export function generateAudioEventSummaryReport(
         score: {
           histogram: modelData.datatype.array(
             modelData.datatype.number()
-          ) as number[], // TODO: REMOVE THIS TYPE CAST BEFORE REVIEW
+          ),
           standardDeviation: modelData.datatype.number(),
           mean: modelData.datatype.number(),
           min: modelData.datatype.number(),
@@ -49,18 +49,16 @@ export function generateAudioEventSummaryReport(
         },
       })
     ),
-    locations: modelData.randomArray<number>(1, 30, () =>
-      modelData.datatype.number()
-    ),
+    siteIds: modelData.ids(),
     graphs: {
-      accumulationData: modelData.randomArray<IAccumulationData>(1, 10, () =>
+      accumulationData: modelData.randomArray<IAccumulationGraphData>(1, 10, () =>
         Object({
           date: modelData.date.recent().toISOString(),
           count: modelData.datatype.number(),
           error: modelData.datatype.number(),
         })
       ),
-      speciesCompositionData: modelData.randomArray<ISpeciesCompositionData>(
+      speciesCompositionData: modelData.randomArray<ISpeciesCompositionGraphData>(
         0,
         10,
         () =>
@@ -74,7 +72,7 @@ export function generateAudioEventSummaryReport(
             ),
           })
       ),
-      analysisCoverageData: modelData.randomArray<IAnalysisCoverageData>(
+      analysisCoverageData: modelData.randomArray<IAnalysisCoverageGraphData>(
         0,
         10,
         () =>

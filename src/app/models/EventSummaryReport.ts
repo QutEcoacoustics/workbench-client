@@ -1,6 +1,9 @@
-import { DateTimeTimezone, Id, Param } from "@interfaces/apiInterfaces";
+import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { DateTimeTimezone, Id, Ids, Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { bawDateTime } from "./AttributeDecorators";
+import { hasMany } from "./AssociationDecorators";
+import { bawCollection, bawDateTime } from "./AttributeDecorators";
+import { Site } from "./Site";
 
 export interface IAudioEventSummaryReportStatistics {
   totalSearchSpan: number;
@@ -16,7 +19,7 @@ export interface IEventGroup {
   tagId: Id;
   detections: number;
   binsWithDetections: number;
-  binsWithInterference?: IInterferenceEvent[];
+  binsWithInterference?: IReportEvent[];
   score: IEventScore;
 }
 
@@ -28,48 +31,51 @@ export interface IEventScore {
   max: number;
 }
 
-export interface IInterferenceEvent {
+export interface IReportEvent {
   name: Param;
   value: number;
 }
 
-export interface IAccumulationData {
+export interface IAccumulationGraphData {
   date: Param;
   count: number;
   error: number;
 }
 
-export interface ISpeciesCompositionData {
+export interface ISpeciesCompositionGraphData {
   date: Param;
   values: {
     tagId: Id;
     ratio: number;
-  }[]
+  }[];
 }
 
-export interface IAnalysisCoverageData {
+export interface IAnalysisCoverageGraphData {
   date: Param;
   audioCoverage: number;
   analysisCoverage: number;
 }
 
-export interface IGraphs {
-  accumulationData: IAccumulationData[];
-  speciesCompositionData: ISpeciesCompositionData[];
-  analysisCoverageData: IAnalysisCoverageData[];
+export interface IEventSummaryGraphs {
+  accumulationData: IAccumulationGraphData[];
+  speciesCompositionData: ISpeciesCompositionGraphData[];
+  analysisCoverageData: IAnalysisCoverageGraphData[];
 }
 
-export interface IAudioEventSummaryReport {
+export interface IEventSummaryReport {
   id?: Id;
   name: Param;
   generatedDate: DateTimeTimezone | string;
   statistics: IAudioEventSummaryReportStatistics;
   eventGroups: IEventGroup[];
-  locations: Id[];
-  graphs: IGraphs;
+  siteIds: Id[] | Ids;
+  graphs: IEventSummaryGraphs;
 }
 
-export class AudioEventSummaryReport extends AbstractModel implements IAudioEventSummaryReport {
+export class EventSummaryReport
+  extends AbstractModel<IEventSummaryReport>
+  implements IEventSummaryReport
+{
   public readonly kind = "AudioEventSummaryReport";
   public readonly id?: Id;
   public readonly name: Param;
@@ -77,8 +83,12 @@ export class AudioEventSummaryReport extends AbstractModel implements IAudioEven
   public readonly generatedDate: DateTimeTimezone | string;
   public readonly statistics: IAudioEventSummaryReportStatistics;
   public readonly eventGroups: IEventGroup[];
-  public readonly locations: Id[];
-  public readonly graphs: IGraphs;
+  @bawCollection()
+  public readonly siteIds: Ids;
+  public readonly graphs: IEventSummaryGraphs;
+
+  @hasMany<EventSummaryReport, Site>(SHALLOW_SITE, "siteIds")
+  public sites?: Site[];
 
   public get viewUrl(): string {
     throw new Error("Method not implemented.");

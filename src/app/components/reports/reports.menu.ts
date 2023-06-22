@@ -11,17 +11,21 @@ import {
 
 export type ReportMenuRoutes = Record<ReportRoute, MenuRoute>;
 
-export const newReportCategory: Category = {
-  icon: ["fas", "map-marker-alt"],
-  label: "Generate Summary Report",
-  route: newEventReportRoute.project,
-};
+function makeEventReportCategory(subRoute: ReportRoute): Category {
+  return {
+    icon: ["fas", "map-marker-alt"],
+    label: "Event Summary Report",
+    route: eventReportRoute[subRoute],
+  };
+}
 
-export const viewReportCategory: Category = {
-  icon: ["fas", "map-marker-alt"],
-  label: "Summary Report",
-  route: eventReportRoute.project,
-};
+function makeNewReportCategory(subRoute: ReportRoute): Category {
+  return {
+    icon: ["fas", "map-marker-alt"],
+    label: "New Event Summary Report",
+    route: newEventReportRoute[subRoute],
+  };
+}
 
 function makeViewEventReportMenuItem(
   subRoute: ReportRoute,
@@ -29,7 +33,7 @@ function makeViewEventReportMenuItem(
 ): MenuRoute {
   return menuRoute({
     icon: ["fas", "file"],
-    label: "Summary Report",
+    label: "Event Summary Report",
     tooltip: () => "View event summary report",
     route: eventReportRoute[subRoute],
     parent,
@@ -42,8 +46,8 @@ function makeNewEventReportMenuItem(
 ): MenuRoute {
   return menuRoute({
     icon: ["fas", "file"],
-    label: "Create Event Report",
-    tooltip: () => "Create event summary report",
+    label: "New Event Report",
+    tooltip: () => "New event summary report",
     route: newEventReportRoute[subRoute],
     parent,
   });
@@ -64,6 +68,25 @@ const newReportMenuItem: ReportMenuRoutes = {
     "siteAndRegion",
     pointMenuItem
   ),
+};
+
+const viewReportCategory = {
+  project: makeEventReportCategory("project"),
+  region: makeEventReportCategory("region"),
+  site: makeEventReportCategory("site"),
+  siteAndRegion: makeEventReportCategory("siteAndRegion"),
+};
+
+const newReportCategory = {
+  project: makeNewReportCategory("project"),
+  region: makeNewReportCategory("region"),
+  site: makeNewReportCategory("site"),
+  siteAndRegion: makeNewReportCategory("siteAndRegion"),
+};
+
+export const reportCategories = {
+  new: newReportCategory,
+  view: viewReportCategory,
 };
 
 export const reportMenuItems = {

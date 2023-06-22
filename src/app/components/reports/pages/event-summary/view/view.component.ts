@@ -1,25 +1,35 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+import { ActivatedRoute, Params } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import { eventSummaryResolvers } from "@baw-api/reports/event-summary/event-summary.service";
-import { retrieveResolvers, hasResolvedSuccessfully } from "@baw-api/resolver-common";
+import {
+  retrieveResolvers,
+  hasResolvedSuccessfully,
+} from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
+  reportCategories,
   reportMenuItems,
-  viewReportCategory,
 } from "@components/reports/reports.menu";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import {
-  AudioEventSummaryReport,
-  IEventGroup,
-} from "@models/AudioEventSummaryReport";
+import { EventSummaryReport, IEventGroup } from "@models/EventSummaryReport";
+import { User } from "@models/User";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { DateTime } from "luxon";
 import embed, { VisualizationSpec } from "vega-embed";
+import { BawSessionService } from "@baw-api/baw-session.service";
+import { eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
+import { takeUntil } from "rxjs";
+import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
 
@@ -33,16 +43,22 @@ const parametersKey = "report";
   templateUrl: "./view.component.html",
   styleUrls: ["./view.component.scss"],
 })
-class ViewEventReportComponent extends PageComponent implements AfterViewInit, OnInit {
+class ViewEventReportComponent
+  extends PageComponent
+  implements AfterViewInit, OnInit
+{
   public constructor(
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private session: BawSessionService
   ) {
     super();
   }
 
   @ViewChild("accumulationCurve") public accumulationCurveElement: ElementRef;
   @ViewChild("compositionCurve") public compositionCurveElement: ElementRef;
-  public report: AudioEventSummaryReport;
+  public queryStringParameters: EventSummaryReportParameters;
+  public report: EventSummaryReport;
+  public user: User;
   public project: Project;
   public region?: Region;
   public site?: Site;
@@ -50,16 +66,32 @@ class ViewEventReportComponent extends PageComponent implements AfterViewInit, O
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
 
+    this.route.queryParams
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(
+        (parameters: Params) =>
+          (this.queryStringParameters = new EventSummaryReportParameters(
+            parameters["sites"],
+            parameters["points"],
+            parameters["provenances"],
+            parameters["events"],
+            parameters["provenanceCutOff"],
+            parameters["charts"],
+            parameters["timeStartedAfter"],
+            parameters["timeFinishedBefore"],
+            parameters["dateStartedAfter"],
+            parameters["dateFinishedBefore"]
+          ))
+      );
+
     if (!hasResolvedSuccessfully(models)) {
       return;
     }
 
-    // console.log(models);
-
     this.project = models[projectKey] as Project;
     this.region = models[regionKey] as Region;
     this.site = models[siteKey] as Site;
-    this.report = models[parametersKey] as AudioEventSummaryReport;
+    this.report = models[parametersKey] as EventSummaryReport;
   }
 
   public ngAfterViewInit(): void {
@@ -84,45 +116,65 @@ class ViewEventReportComponent extends PageComponent implements AfterViewInit, O
     window.print();
   }
 
-  public get eventGroups(): IEventGroup[] {
+  protected get eventGroups(): IEventGroup[] {
     return this.report.eventGroups;
   }
 
-  public get reportGenerationDate(): string {
+  protected get reportGenerationDate(): string {
     return this.viewDateFromModelAttribute(this.report.generatedDate);
   }
 
-  public get numberOfRecordingsAnalyzed(): string {
+  protected get numberOfRecordingsAnalyzed(): string {
     return (
       this.report.statistics.countOfRecordingsAnalyzed.toString() +
       " recordings"
     );
   }
 
-  public get numberOfBinsAnalyzed(): string {
+  protected get numberOfBinsAnalyzed(): string {
     return (
       this.report.statistics.countOfRecordingsAnalyzed.toString() + " bins"
     );
   }
 
-  public get totalSearchSpan(): string {
+  protected get totalSearchSpan(): string {
     return this.report.statistics.totalSearchSpan.toString() + " hours";
   }
 
-  public get audioCoverageSpan(): string {
+  protected get audioCoverageSpan(): string {
     return this.report.statistics.audioCoverageOverSpan.toString() + " hours";
   }
 
-  public get audioStartDate(): string {
-    return this.viewDateFromModelAttribute(
-      this.report.statistics.coverageStartDay
-    );
+  protected get currentUser(): string {
+    if (this.session.isLoggedIn) {
+      return this.session.loggedInUser.userName;
+    }
+
+    return "Unknown User";
   }
 
-  public get audioEndDate(): string {
-    return this.viewDateFromModelAttribute(
-      this.report.statistics.coverageEndDay
-    );
+  protected get timeRange(): string {
+    return `${this.startTime} - ${this.endTime}`;
+  }
+
+  protected get dateRange(): string {
+    return `${this.startDate} - ${this.endDate}`;
+  }
+
+  private get startDate(): string {
+    return this.queryStringParameters.dateFinishedBefore ?? "0000-00-00";
+  }
+
+  private get endDate(): string {
+    return this.queryStringParameters.dateStartedAfter ?? "9999-00-00";
+  }
+
+  private get startTime(): string {
+    return this.queryStringParameters.timeFinishedBefore ?? "00:00";
+  }
+
+  private get endTime(): string {
+    return this.queryStringParameters.timeStartedAfter ?? "24:00";
   }
 
   private viewDateFromModelAttribute(date: DateTime | string): string {
@@ -135,7 +187,7 @@ class ViewEventReportComponent extends PageComponent implements AfterViewInit, O
 function getPageInfo(subRoute: keyof typeof reportMenuItems.view): IPageInfo {
   return {
     pageRoute: reportMenuItems.view[subRoute],
-    category: viewReportCategory,
+    category: reportCategories.view[subRoute],
     resolvers: {
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
