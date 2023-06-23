@@ -6,6 +6,7 @@ import {
   option,
   emptyParam,
   IdParamOptional,
+  filterParam,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
@@ -18,14 +19,12 @@ const endpoint = stringTemplate`/provenance/${audioEventProvenanceId}${option}`;
 
 @Injectable()
 export class AudioEventProvenanceService
-  implements StandardApi<AudioEventProvenance, [IdOr<AudioEventProvenance>]>
+  implements StandardApi<AudioEventProvenance>
 {
   public constructor(protected api: BawApiService<AudioEventProvenance>) {}
 
-  public list(
-    model: IdOr<AudioEventProvenance>
-  ): Observable<AudioEventProvenance[]> {
-    return this.api.list(AudioEventProvenance, endpoint(model, emptyParam));
+  public list(): Observable<AudioEventProvenance[]> {
+    return this.api.list(AudioEventProvenance, endpoint(emptyParam, emptyParam));
   }
 
   public filter(
@@ -33,11 +32,12 @@ export class AudioEventProvenanceService
   ): Observable<AudioEventProvenance[]> {
     return this.api.filter(
       AudioEventProvenance,
-      endpoint(emptyParam, emptyParam),
+      endpoint(emptyParam, filterParam),
       filters
     );
   }
 
+  // since the API for this service isn't currently functional, we return a fake model
   public show(
     model: IdOr<AudioEventProvenance>
   ): Observable<AudioEventProvenance> {
@@ -47,7 +47,7 @@ export class AudioEventProvenanceService
   public create(model: AudioEventProvenance): Observable<AudioEventProvenance> {
     return this.api.create(
       AudioEventProvenance,
-      endpoint(model, emptyParam),
+      endpoint(emptyParam, emptyParam),
       (audioEventProvenance) => endpoint(audioEventProvenance, emptyParam),
       model
     );

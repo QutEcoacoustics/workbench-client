@@ -27,7 +27,9 @@ export class TypeaheadInputComponent {
   /** Since models are usually passed to the typeahead input, there needs to be a way to use a property as a human readable value
    * The formatter callback takes a model and specifies what human readable description the models should be displayed as
    */
-  @Input() public formatter: (item: unknown) => string;
+  @Input() public formatter: (item: unknown) => string = (
+    item: unknown
+  ): string => item.toString();
   /** The options callback is typically linked to a service as it should return a list observable of options that the user could select */
   @Input() public optionsCallback!: (text: string) => Observable<unknown[]>;
 
@@ -35,25 +37,38 @@ export class TypeaheadInputComponent {
    * When the user adds or removes an item from the active items array, a BehaviorSubject event should fire
    * If this BehaviorSubject is from another component, we can make the external component listen to this event
    */
-  @Input() public modelChange: BehaviorSubject<unknown[]> =
-    new BehaviorSubject([]);
+  @Input() public modelChange: BehaviorSubject<unknown[]> = new BehaviorSubject(
+    []
+  );
 
   @ViewChild("typeaheadInputRef")
   public typeaheadInput: ElementRef<HTMLInputElement>;
   public activeItems: unknown[] = [];
   public inputModel: string;
 
-  public findOptions: OperatorFunction<string, readonly unknown[]> = (text$: Observable<string>) =>
+  public findOptions: OperatorFunction<string, readonly unknown[]> = (
+    text$: Observable<string>
+  ) =>
     text$.pipe(
       debounceTime(defaultDebounceTime),
       distinctUntilChanged(),
       switchMap((term: string) =>
         this.optionsCallback(term).pipe(
-          debounceTime(defaultDebounceTime),
-          distinctUntilChanged(),
           map((items: unknown[]) =>
             items
-              .filter((item) => this.formatter(item).toLowerCase().indexOf(term.toLowerCase()) > -1)
+              .filter(
+                (item: unknown) =>
+                  !this.activeItems.some(
+                    (activeItem: unknown) =>
+                      JSON.stringify(activeItem) === JSON.stringify(item)
+                  )
+              )
+              .filter(
+                (item: unknown) =>
+                  this.formatter(item)
+                    .toLowerCase()
+                    .indexOf(term.toLowerCase()) > -1
+              )
               .slice(0, 10)
           )
         )
@@ -62,17 +77,25 @@ export class TypeaheadInputComponent {
 
   public onItemSelected($event: NgbTypeaheadSelectItemEvent<unknown>) {
     $event.preventDefault();
-
     const selectedItem = $event.item;
-    this.activeItems.push(selectedItem);
-    this.modelChange.next(this.activeItems);
 
-    this.typeaheadInput.nativeElement.value = "";
-    this.inputModel = "";
+    if (this.multipleInputs) {
+      this.activeItems.push(selectedItem);
+      this.modelChange.next(this.activeItems);
+
+      this.typeaheadInput.nativeElement.value = "";
+      this.inputModel = "";
+    } else {
+      this.modelChange.next([selectedItem]);
+    }
   }
 
   public removeLastItem() {
-    if (this.multipleInputs && this.inputModel === "" && this.activeItems.length > 0) {
+    if (
+      this.multipleInputs &&
+      (this.inputModel === "" || this.inputModel === undefined) &&
+      this.activeItems.length > 0
+    ) {
       this.activeItems.pop();
     }
   }

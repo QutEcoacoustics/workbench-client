@@ -80,7 +80,8 @@ class ViewEventReportComponent
             parameters["timeStartedAfter"],
             parameters["timeFinishedBefore"],
             parameters["dateStartedAfter"],
-            parameters["dateFinishedBefore"]
+            parameters["dateFinishedBefore"],
+            parameters["binSize"]
           ))
       );
 
@@ -98,9 +99,9 @@ class ViewEventReportComponent
     const speciesAccumulationCurveData = speciesAccumulationCurveSchema;
     const speciesCompositionCurveData = speciesCompositionCurveSchema;
     speciesAccumulationCurveData.data.values =
-      this.report.graphs.accumulationData;
+      this.report?.graphs?.accumulationData;
     speciesCompositionCurveData.data.values =
-      this.report.graphs.speciesCompositionData;
+      this.report?.graphs?.speciesCompositionData;
 
     embed(
       this.accumulationCurveElement.nativeElement,
@@ -117,32 +118,34 @@ class ViewEventReportComponent
   }
 
   protected get eventGroups(): IEventGroup[] {
-    return this.report.eventGroups;
+    return this.report?.eventGroups;
   }
 
   protected get reportGenerationDate(): string {
-    return this.viewDateFromModelAttribute(this.report.generatedDate);
+    return this.viewDateFromModelAttribute(
+      this.report?.generatedDate ?? DateTime.now()
+    );
   }
 
   protected get numberOfRecordingsAnalyzed(): string {
     return (
-      this.report.statistics.countOfRecordingsAnalyzed.toString() +
+      this.report?.statistics?.countOfRecordingsAnalyzed?.toString() +
       " recordings"
     );
   }
 
   protected get numberOfBinsAnalyzed(): string {
     return (
-      this.report.statistics.countOfRecordingsAnalyzed.toString() + " bins"
+      this.report?.statistics?.countOfRecordingsAnalyzed?.toString() + " bins"
     );
   }
 
   protected get totalSearchSpan(): string {
-    return this.report.statistics.totalSearchSpan.toString() + " hours";
+    return this.report?.statistics?.totalSearchSpan?.toString() + " hours";
   }
 
   protected get audioCoverageSpan(): string {
-    return this.report.statistics.audioCoverageOverSpan.toString() + " hours";
+    return this.report?.statistics?.audioCoverageOverSpan?.toString() + " hours";
   }
 
   protected get currentUser(): string {
@@ -159,6 +162,10 @@ class ViewEventReportComponent
 
   protected get dateRange(): string {
     return `${this.startDate} - ${this.endDate}`;
+  }
+
+  protected get binSize(): string {
+    return this.queryStringParameters.binSize ?? "Month";
   }
 
   private get startDate(): string {

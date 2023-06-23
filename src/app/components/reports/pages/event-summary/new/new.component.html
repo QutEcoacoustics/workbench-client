@@ -1,7 +1,10 @@
 <h1 class="text-muted">{{ viewTitle }}</h1>
-<h1 class="mb-5">Acoustic Event Summary Report Generator</h1>
+<h1 class="mb-5">Reports: New Event Summary Report</h1>
 
-<baw-audio-recordings-filter [constructedFilters]="filters$" [constructedModel]="dateTimeConditions$">
+<baw-audio-recordings-filter
+  [constructedFilters]="filters$"
+  [constructedModel]="dateTimeConditions$"
+>
 </baw-audio-recordings-filter>
 
 <!-- Only projects should show a region filter -->
@@ -12,7 +15,7 @@
   [optionsCallback]="regionsServiceListFilter"
   [multipleInputs]="true"
   [formatter]="regionFormatter"
-  [modelChange]="(model.regions)"
+  [modelChange]="model.regions"
 ></baw-typeahead-input>
 
 <baw-typeahead-input
@@ -22,7 +25,7 @@
   [optionsCallback]="sitesServiceListFilter"
   [multipleInputs]="true"
   [formatter]="siteFormatter"
-  [modelChange]="(model.sites)"
+  [modelChange]="model.sites"
 ></baw-typeahead-input>
 
 <baw-typeahead-input
@@ -31,12 +34,14 @@
   [optionsCallback]="provenanceServiceListFilter"
   [multipleInputs]="true"
   [formatter]="provenanceFormatter"
-  [modelChange]="(model.provenances)"
+  [modelChange]="model.provenances"
 ></baw-typeahead-input>
 
-<label for="provenancesCutOffInput" class="form-label">Recogniser Cut-Off</label>
+<label for="provenancesCutOffInput" class="form-label"
+  >Recogniser Cut-Off</label
+>
 <input
-  [(ngModel)]="model.recognizerCutOff"
+  [(ngModel)]="model.provenanceCutOff"
   type="number"
   name="provenancesCutOffInput"
   class="form-control"
@@ -45,7 +50,26 @@
   step="0.05"
   max="1"
   min="0"
+  (ngModelChange)="validateProvenanceCutOffValue($event)"
 />
+<label
+  *ngIf="provenanceCutOffError"
+  for="provenancesCutOffInput"
+  class="form-error"
+>
+  The recogniser cut-off are outside the permitted boundary. Ensure that the
+  value is between 0 and 1.
+</label>
+
+<label for="binSizeInput">Bin Size</label>
+<select name="binSizeInput" class="form-select" [(ngModel)]="model.binSize">
+  <option value="day">Day</option>
+  <option value="week">Week</option>
+  <option value="fortnight">Fortnight</option>
+  <option value="month" selected>Month</option>
+  <option value="seasonally">Seasonally</option>
+  <option value="year">Year</option>
+</select>
 
 <baw-typeahead-input
   label="Chart(s)"
@@ -53,7 +77,7 @@
   [optionsCallback]="chartsFilter"
   [multipleInputs]="true"
   [formatter]="chartsFormatter"
-  [modelChange]="(model.charts)"
+  [modelChange]="model.charts"
 ></baw-typeahead-input>
 
 <baw-typeahead-input
@@ -62,7 +86,7 @@
   [optionsCallback]="eventsOfInterestFilter"
   [multipleInputs]="true"
   [formatter]="eventsOfInterestFormatter"
-  [modelChange]="(model.eventsOfInterest)"
+  [modelChange]="model.eventsOfInterest"
 ></baw-typeahead-input>
 
 <button

@@ -39,14 +39,23 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
+export type BinSize =
+  | "day"
+  | "week"
+  | "fortnight"
+  | "month"
+  | "seasonally"
+  | "year";
+
 interface IEventReportConditions {
   dateTime: AudioRecordingFilterModel;
   regions: BehaviorSubject<Region[]>;
   sites: BehaviorSubject<Site[]>;
   provenances: BehaviorSubject<AudioEventProvenance[]>;
-  recognizerCutOff: number;
+  provenanceCutOff: number;
   charts: BehaviorSubject<string[]>;
   eventsOfInterest: BehaviorSubject<Tag[]>;
+  binSize: BinSize;
 }
 
 @Component({
@@ -73,16 +82,19 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   // TODO: remove this
   public dateTimeConditions$: BehaviorSubject<AudioRecordingFilterModel> =
     new BehaviorSubject({});
-  public filters$: BehaviorSubject<Filters<AudioRecording>> = new BehaviorSubject({});
+  public filters$: BehaviorSubject<Filters<AudioRecording>> =
+    new BehaviorSubject({});
+  protected provenanceCutOffError: boolean;
 
   public model: IEventReportConditions = {
     dateTime: {},
     regions: new BehaviorSubject<Region[]>([]),
     sites: new BehaviorSubject<Site[]>([]),
     provenances: new BehaviorSubject<AudioEventProvenance[]>([]),
-    recognizerCutOff: 0.8,
+    provenanceCutOff: 0.8,
     charts: new BehaviorSubject<string[]>([]),
     eventsOfInterest: new BehaviorSubject<Tag[]>([]),
+    binSize: "month",
   };
 
   public ngOnInit(): void {
@@ -202,13 +214,19 @@ class NewEventReportComponent extends PageComponent implements OnInit {
       return `Site: ${this.site.name}`;
     } else if (this.region) {
       return `Site: ${this.region.name}`;
+    } else if (this.project) {
+      return `Project: ${this.project.name}`;
     }
 
-    return `Project: ${this.project.name}`;
+    return "testing123";
+  }
+
+  protected validateProvenanceCutOffValue(value: number): void {
+    this.provenanceCutOffError = value < 0 || value > 1;
   }
 
   // since the report is mounted at multiple points in the client (projects, regions, sites), we need to derive the lowest route to use
-  public viewUrl(): string {
+  protected viewUrl(): string {
     const routeParameters: RouteParams = {
       projectId: id(this.project),
       regionId: id(this.region),
@@ -242,19 +260,21 @@ class NewEventReportComponent extends PageComponent implements OnInit {
       (event) => event.id
     );
 
-    const audioRecordingFilters: AudioRecordingFilterModel = this.model.dateTime;
+    const audioRecordingFilters: AudioRecordingFilterModel =
+      this.model.dateTime;
 
     return new EventSummaryReportParameters(
       regionIds,
       siteIds,
       provenanceIds,
       eventIds,
-      this.model.recognizerCutOff,
+      this.model.provenanceCutOff,
       this.model.charts.value,
       audioRecordingFilters.timeStartedAfter,
       audioRecordingFilters.timeFinishedBefore,
       audioRecordingFilters.dateStartedAfter as any,
-      audioRecordingFilters.dateFinishedBefore as any
+      audioRecordingFilters.dateFinishedBefore as any,
+      this.model.binSize
     );
   }
 }

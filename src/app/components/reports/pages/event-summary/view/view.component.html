@@ -46,7 +46,7 @@
     <div class="row py-2">
       <div class="col fw-bold">Duration</div>
 
-      <div class="col">Month</div>
+      <div class="col">{{ binSize | titlecase }}</div>
 
       <div class="col fw-bold">Recognisers</div>
 
@@ -75,6 +75,7 @@
 
         <div class="col">
           <div name="siteMap" class="siteMap">
+            Site Map
           </div>
         </div>
       </div>
@@ -140,14 +141,15 @@
 
     <div class="container">
       <div class="row">
-        <div class="col border p-3">
-          <div name="siteMap" class="largeEmbeddedFigure">
+        <div class="row">
+          <div class="col border p-3">
+            <div class="largeEmbeddedFigure">Site Map</div>
           </div>
 
           <div class="col border p-3">Map of sensors / points</div>
         </div>
 
-        <div *ngIf="report.graphs.accumulationData" class="row">
+        <div *ngIf="report?.graphs?.accumulationData || true" class="row">
           <div class="col border p-3">
             <div #accumulationCurve class="largeEmbeddedFigure">
               Insufficient data to create accumulation plot
@@ -157,7 +159,7 @@
           <div class="col border p-3">Species Accumulation Curve</div>
         </div>
 
-        <div *ngIf="report.graphs.speciesCompositionData" class="row">
+        <div *ngIf="report?.graphs?.speciesCompositionData || true" class="row">
           <div class="col border p-3">
             <div #compositionCurve class="largeEmbeddedFigure">
               Insufficient data to create composition plot

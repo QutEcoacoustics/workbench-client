@@ -17,6 +17,7 @@
     class="form-control border-0"
     [placeholder]="activeItems.length < 1 ? inputPlaceholder : ''"
     [ngbTypeahead]="findOptions"
+    [resultFormatter]="formatter"
     [(ngModel)]="inputModel"
     (selectItem)="onItemSelected($event)"
     (keydown.backspace)="removeLastItem()"

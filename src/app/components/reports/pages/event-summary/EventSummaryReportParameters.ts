@@ -13,7 +13,7 @@ export type GraphType =
   | "Species Composition Curve"
   | "False Colour Spectrograms";
 
-interface IEventSummaryReportParameters {
+export interface IEventSummaryReportParameters {
   sites: Id[];
   points: Id[];
   provenances: Id[];
@@ -24,6 +24,7 @@ interface IEventSummaryReportParameters {
   timeFinishedBefore: string;
   dateStartedAfter: string;
   dateFinishedBefore: string;
+  binSize: string;
 }
 
 export class EventSummaryReportParameters implements IEventSummaryReportParameters {
@@ -37,7 +38,8 @@ export class EventSummaryReportParameters implements IEventSummaryReportParamete
     timeStartedAfter?: Duration,
     timeFinishedBefore?: Duration,
     dateStartedAfter?: DateTime,
-    dateFinishedBefore?: DateTime
+    dateFinishedBefore?: DateTime,
+    binSize?: string
   ) {
     if (typeof regions === "string") {
       this.sites = regions.split(",").map(Number);
@@ -70,6 +72,7 @@ export class EventSummaryReportParameters implements IEventSummaryReportParamete
 
     this.provenanceCutOff = provenanceCutOff;
     this.charts = charts;
+    this.binSize = binSize;
   }
 
   private formatDateTime(dateTime: DateTime): string {
@@ -100,6 +103,7 @@ export class EventSummaryReportParameters implements IEventSummaryReportParamete
   public timeFinishedBefore: string;
   public dateStartedAfter: string;
   public dateFinishedBefore: string;
+  public binSize: string;
 
   public toFilter(): Filters<EventSummaryReport> {
     let filter: InnerFilter<EventSummaryReport>;

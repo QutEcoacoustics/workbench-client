@@ -1,4 +1,4 @@
-import { EnvironmentInjector, Injectable, Type } from "@angular/core";
+import { Injectable, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import {
   IdParamOptional,
@@ -6,6 +6,7 @@ import {
   option,
   emptyParam,
   ApiFilterShow,
+  filterParam,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { BawResolver, ResolvedModel } from "@baw-api/resolver-common";
@@ -28,15 +29,11 @@ export class EventSummaryReportService
 
   // because filter returns an array of item, and we want to return one item given filter conditions
   // we cannot use the generalised filter service interface
-  // TODO: this should fetch a response from the API once the API is complete rather than returning a fake model
+  // TODO: we should probably generalise this service type to an interface once reports get expanded
   public filterShow(
     filters: Filters<EventSummaryReport>
   ): Observable<EventSummaryReport> {
-    // as the api is not currently functional, we are returning a mock report model
-    // this is done so that the reports can be showcased with a working view
-    // TODO: remove the following line of code once the API is fully functional
-    return of(new EventSummaryReport(generateEventSummaryReport()));
-    return this.api.filterShow(EventSummaryReport, endpoint(emptyParam, emptyParam), filters);
+    return this.api.filterShow(EventSummaryReport, endpoint(emptyParam, filterParam), filters);
   }
 }
 
@@ -82,6 +79,11 @@ class EventSummaryReportResolver extends BawResolver<
     );
     const filters: Filters<EventSummaryReport> = parametersModel.toFilter();
 
+    // as the api is not currently functional, we are returning a mock report model
+    // this is done so that the reports can be showcased with a working view
+    // this is done in the resolver so that we can unit test and mock the services correctly
+    // TODO: remove the following line of code once the API is fully functional
+    return of(new EventSummaryReport(generateEventSummaryReport()));
     return api.filterShow(filters);
   }
 }
