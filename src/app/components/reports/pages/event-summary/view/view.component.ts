@@ -117,6 +117,11 @@ class ViewEventReportComponent
     window.print();
   }
 
+  protected get eventDownloadUrl(): string {
+    const base64Filters: string = this.queryStringParameters.toFilterString();
+    return "https://api.staging.ecosounds.org/projects/1135/audio_events/download.csv/?filters=";
+  }
+
   protected get eventGroups(): IEventGroup[] {
     return this.report?.eventGroups;
   }

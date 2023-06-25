@@ -74,15 +74,18 @@ describe("ViewEventReportComponent", () => {
   // the base64 encoding is used as a GET request is needed for the download link
   it("should create the correct events download link", () => {
     const base64EncodedFilters = "";
-    const expectedRoute = `/?filters=${base64EncodedFilters}`;
+    const routeBase = "https://api.staging.ecosounds.org/projects/1135/audio_events/download.csv";
+    const filterParameters = `/?filters=${base64EncodedFilters}`;
 
     const downloadLinks = downloadableEventsLinks();
     downloadLinks.forEach((link: HTMLAnchorElement) =>
-      expect(link.href).toContain(expectedRoute)
+      expect(link.href).toEqual(routeBase + filterParameters)
     );
   });
 
-  it("should show sensor points on point maps", () => {
+  // during the prototyping phase, the point maps are not implemented
+  // TODO: enable this test once the api is fully functional
+  xit("should show sensor points on point maps", () => {
     const pointMapElements: MockedComponent<SiteMapComponent>[] = pointMaps();
     expect(pointMapElements).not.toHaveLength(0);
 

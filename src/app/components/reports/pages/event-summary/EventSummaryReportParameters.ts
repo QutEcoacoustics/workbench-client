@@ -1,5 +1,6 @@
 import { HttpParams } from "@angular/common/http";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { toBase64Url } from "@helpers/encoding/encoding";
 import { filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id } from "@interfaces/apiInterfaces";
@@ -75,22 +76,6 @@ export class EventSummaryReportParameters implements IEventSummaryReportParamete
     this.binSize = binSize;
   }
 
-  private formatDateTime(dateTime: DateTime): string {
-    if (dateTime !== undefined) {
-      return dateTime as any;
-    }
-
-    return undefined;
-  }
-
-  private formatDuration(duration: Duration): string {
-    if (duration !== undefined) {
-      return duration as any;
-    }
-
-    return undefined;
-  }
-
   // since these properties are exposed to the user in the form of query string parameters
   // we use the user friendly names
   public sites: Id[];
@@ -132,6 +117,12 @@ export class EventSummaryReportParameters implements IEventSummaryReportParamete
     return { filter };
   }
 
+  public toFilterString(): string {
+    return toBase64Url(
+      JSON.stringify(this.toFilter())
+    );
+  }
+
   public toQueryString(): string {
     let params = new HttpParams();
 
@@ -144,5 +135,17 @@ export class EventSummaryReportParameters implements IEventSummaryReportParamete
     });
 
     return params.toString();
+  }
+
+  private formatDateTime(dateTime: DateTime): string {
+    if (dateTime !== undefined) {
+      return dateTime as any;
+    }
+  }
+
+  private formatDuration(duration: Duration): string {
+    if (duration !== undefined) {
+      return duration as any;
+    }
   }
 }
