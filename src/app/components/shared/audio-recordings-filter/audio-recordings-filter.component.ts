@@ -91,8 +91,10 @@ export class AudioRecordingsFilterComponent
     const [changed, newFilters] = this.generateFilters(this.previousFilters, model);
 
     if (changed) {
+      // since this component can output a model, and/or a filter
+      // we need to emit both the model and the filter if they are both present
       this.constructedModel?.next(model);
-      this.constructedFilters.next(newFilters);
+      this.constructedFilters?.next(newFilters);
       this.previousFilters = fromJS(newFilters);
     }
   }

@@ -1,17 +1,18 @@
 import { DateTime, Duration } from "luxon";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { Filters } from "@baw-api/baw-api.service";
+import { modelData } from "@test/helpers/faker";
 import { EventSummaryReportParameters } from "./EventSummaryReportParameters";
 
 describe("EventSummaryReportParameters", () => {
-  const fakeDuration = Duration.fromObject({
-    years: 1,
-    months: 2,
-    days: 3,
-    hours: 4,
-    minutes: 5,
-    seconds: 6,
-    milliseconds: 7,
+  const generateFakeDuration = (): Duration => Duration.fromObject({
+    years: modelData.datatype.number({ min: 0, max: 10 }),
+    months: modelData.datatype.number({ min: 0, max: 11 }),
+    days: modelData.datatype.number({ min: 0, max: 28 }),
+    hours: modelData.datatype.number({ min: 0, max: 23 }),
+    minutes: modelData.datatype.number({ min: 0, max: 59 }),
+    seconds: modelData.datatype.number({ min: 0, max: 59 }),
+    milliseconds: modelData.datatype.number({ min: 0, max: 10 }),
   });
 
   // as this is a component specific data model, it's not generalized in the model fakes
@@ -28,8 +29,8 @@ describe("EventSummaryReportParameters", () => {
       [10, 11, 12],
       0.5,
       ["chart1", "chart2"],
-      fakeDuration,
-      fakeDuration,
+      generateFakeDuration(),
+      generateFakeDuration(),
       DateTime.fromJSDate(new Date(2020, 1, 1)),
       DateTime.fromJSDate(new Date(2020, 2, 1))
     );
@@ -58,8 +59,8 @@ describe("EventSummaryReportParameters", () => {
       [1123404, 121, 112],
       0.98,
       ["species accumulation curve"],
-      fakeDuration,
-      fakeDuration,
+      generateFakeDuration(),
+      generateFakeDuration(),
       DateTime.fromJSDate(new Date(2020, 9, 7)),
       DateTime.fromJSDate(new Date(2022, 12, 5))
     );

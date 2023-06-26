@@ -3,7 +3,7 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Site } from "@models/Site";
-import { BehaviorSubject, Observable, of, takeUntil } from "rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
@@ -29,8 +29,8 @@ import { Id } from "@interfaces/apiInterfaces";
 import { id } from "@baw-api/api-common";
 import { RouteParams } from "@interfaces/strongRoute";
 import { AudioRecordingFilterModel } from "@shared/audio-recordings-filter/audio-recordings-filter.component";
-import { AudioRecording } from "@models/AudioRecording";
 import {
+  BinSize,
   EventSummaryReportParameters,
   GraphType,
 } from "../EventSummaryReportParameters";
@@ -39,16 +39,8 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
-export type BinSize =
-  | "day"
-  | "week"
-  | "fortnight"
-  | "month"
-  | "seasonally"
-  | "year";
-
 interface IEventReportConditions {
-  dateTime: AudioRecordingFilterModel;
+  dateTime: BehaviorSubject<AudioRecordingFilterModel>;
   regions: BehaviorSubject<Region[]>;
   sites: BehaviorSubject<Site[]>;
   provenances: BehaviorSubject<AudioEventProvenance[]>;
@@ -65,29 +57,22 @@ interface IEventReportConditions {
 })
 class NewEventReportComponent extends PageComponent implements OnInit {
   public constructor(
+    protected sitesApi: SitesService,
+    protected regionsApi: RegionsService,
+    protected provenanceApi: AudioEventProvenanceService,
+    protected tagsApi: TagsService,
     private route: ActivatedRoute,
-    private router: Router,
-    private sitesApi: SitesService,
-    private regionsApi: RegionsService,
-    private provenanceApi: AudioEventProvenanceService,
-    private tagsApi: TagsService
+    private router: Router
   ) {
     super();
   }
 
   public project: Project;
-  public region: Region;
-  public site: Site;
-
-  // TODO: remove this
-  public dateTimeConditions$: BehaviorSubject<AudioRecordingFilterModel> =
-    new BehaviorSubject({});
-  public filters$: BehaviorSubject<Filters<AudioRecording>> =
-    new BehaviorSubject({});
-  protected provenanceCutOffError: boolean;
+  public region: Region | null;
+  public site: Site | null;
 
   public model: IEventReportConditions = {
-    dateTime: {},
+    dateTime: new BehaviorSubject<AudioRecordingFilterModel>({}),
     regions: new BehaviorSubject<Region[]>([]),
     sites: new BehaviorSubject<Site[]>([]),
     provenances: new BehaviorSubject<AudioEventProvenance[]>([]),
@@ -98,12 +83,6 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   };
 
   public ngOnInit(): void {
-    this.dateTimeConditions$
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((conditions) => {
-        this.model.dateTime = conditions;
-      });
-
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
 
     if (!hasResolvedSuccessfully(models)) {
@@ -115,36 +94,29 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     this.site = models[siteKey] as Site;
   }
 
-  public get siteNames(): string[] {
-    let sites: Site[];
-    if (this.project) {
-      sites = this.project.sites;
-    } else if (this.region) {
-      sites = this.region.sites;
-    } else {
-      sites = [this.site];
+  public generateReport(): void {
+    if (!this.isValidProvenanceCutOff()) {
+      return;
     }
 
-    return sites.map((site: Site) => site.name);
-  }
-
-  public get chartsNames(): GraphType[] {
-    return [
-      "Sensor Point Map",
-      "Species Accumulation Curve",
-      "Species Composition Curve",
-      "False Colour Spectrograms",
-    ];
-  }
-
-  public generateReport(): void {
     const parameterModel = this.createSearchParametersDataModel();
     const queryStringParameters = parameterModel.toQueryString();
 
-    this.router.navigateByUrl(this.viewUrl() + `?${queryStringParameters}`);
+    this.router.navigateByUrl(
+      this.viewReportUrl() + `?${queryStringParameters}`
+    );
   }
 
+  // while this could be generalised, I have chosen not to as it'd lose a lot of strong type safety without the use of generics
+  // as we are using these formatters in ng html templates, it is not possible to use TypeScript generics to enfore type safety
+  // on a generalised function
   public regionFormatter = (region: Region) => region.name;
+  public siteFormatter = (site: Site) => site.name;
+  public provenanceFormatter = (provenance: AudioEventProvenance) =>
+    provenance.name;
+  public chartsFormatter = (chart: string) => chart;
+  public eventsOfInterestFormatter = (tag: Tag): string => tag.text;
+
   public regionsServiceListFilter = (
     regionName: string
   ): Observable<Region[]> => {
@@ -159,7 +131,6 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return this.regionsApi.filter(filter, this.project);
   };
 
-  public siteFormatter = (site: Site) => site.name;
   public sitesServiceListFilter = (siteName: string): Observable<Site[]> => {
     const filter: Filters<Site> = {
       filter: {
@@ -172,8 +143,6 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return this.sitesApi.filter(filter, this.project);
   };
 
-  public provenanceFormatter = (provenance: AudioEventProvenance) =>
-    provenance.name;
   public provenanceServiceListFilter = (
     provenanceName: string
   ): Observable<AudioEventProvenance[]> => {
@@ -188,11 +157,6 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return this.provenanceApi.filter(filter);
   };
 
-  public chartsFormatter = (chart: string) => chart;
-  public chartsFilter = (text: string): Observable<string[]> =>
-    of(this.chartsNames.filter((chart) => chart.includes(text)));
-
-  public eventsOfInterestFormatter = (tag: Tag): string => tag.text;
   public eventsOfInterestFilter = (text: string): Observable<Tag[]> => {
     const filter: Filters<Tag> = {
       filter: {
@@ -205,28 +169,38 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return this.tagsApi.filter(filter);
   };
 
-  protected get viewTitle(): string {
-    if (this.site) {
-      if (this.site.isPoint) {
-        return `Point: ${this.site.name}`;
-      }
+  public chartsFilter = (text: string): Observable<string[]> =>
+    of(this.availableCharts.filter((chart) => chart.includes(text)));
 
-      return `Site: ${this.site.name}`;
-    } else if (this.region) {
-      return `Site: ${this.region.name}`;
-    } else if (this.project) {
-      return `Project: ${this.project.name}`;
-    }
-
-    return "testing123";
+  protected isValidProvenanceCutOff(): boolean {
+    return this.model.provenanceCutOff >= 0 && this.model.provenanceCutOff <= 1;
   }
 
-  protected validateProvenanceCutOffValue(value: number): void {
-    this.provenanceCutOffError = value < 0 || value > 1;
+  protected get viewTitle(): string {
+    if (this.site) {
+      return this.site.isPoint ?
+        `Point: ${this.site.name}`:
+        `Site: ${this.site.name}`;
+    } else if (this.region) {
+      return `Site: ${this.region.name}`;
+    }
+
+    // it can be assumed that all reports will be generated from at least at the project level
+    // therefore, if no sites or regions are specified, we can assume that the report is being generated at the project level
+    return `Project: ${this.project.name}`;
+  }
+
+  private get availableCharts(): GraphType[] {
+    return [
+      "Sensor Point Map",
+      "Species Accumulation Curve",
+      "Species Composition Curve",
+      "False Colour Spectrograms",
+    ];
   }
 
   // since the report is mounted at multiple points in the client (projects, regions, sites), we need to derive the lowest route to use
-  protected viewUrl(): string {
+  private viewReportUrl(): string {
     const routeParameters: RouteParams = {
       projectId: id(this.project),
       regionId: id(this.region),
@@ -234,20 +208,14 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     };
 
     if (this.site) {
-      if (this.site.isPoint) {
-        return reportMenuItems.view.siteAndRegion.route.format(routeParameters);
-      } else {
-        return reportMenuItems.view.site.route.format(routeParameters);
-      }
+      return this.site.isPoint
+        ? reportMenuItems.view.siteAndRegion.route.format(routeParameters)
+        : reportMenuItems.view.site.route.format(routeParameters);
     } else if (this.region) {
       return reportMenuItems.view.region.route.format(routeParameters);
-    } else if (this.project) {
-      return reportMenuItems.view.project.route.format(routeParameters);
     }
 
-    // the function should never reach this point as reports will always have at least a project
-    // TODO: Although the program should never reach this position, we should show an "unrecoverable error" to the user
-    return null;
+    return reportMenuItems.view.project.route.format(routeParameters);
   }
 
   private createSearchParametersDataModel(): EventSummaryReportParameters {
@@ -261,7 +229,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     );
 
     const audioRecordingFilters: AudioRecordingFilterModel =
-      this.model.dateTime;
+      this.model.dateTime.getValue();
 
     return new EventSummaryReportParameters(
       regionIds,

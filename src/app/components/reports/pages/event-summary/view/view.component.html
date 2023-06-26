@@ -1,7 +1,7 @@
 <h2 class="text-decoration-underline">
   Acoustic Event Summary Report
 
-  <a id="printButton" class="ms-3" (click)="printPage()">
+  <a id="printButton" class="ms-3" (click)="window.print()">
     <fa-icon [icon]="['fas', 'print']"></fa-icon>
   </a>
 </h2>
@@ -36,11 +36,11 @@
     <div class="row py-2">
       <div class="col fw-bold">Times</div>
 
-      <div class="col">{{ timeRange }}</div>
+      <div class="col" [innerHTML]="timeRange"></div>
 
       <div class="col fw-bold">Date Range</div>
 
-      <div class="col">{{ dateRange }}</div>
+      <div class="col" [innerHTML]="dateRange"></div>
     </div>
 
     <div class="row py-2">
@@ -50,7 +50,9 @@
 
       <div class="col fw-bold">Recognisers</div>
 
-      <div class="col">Birdnet, Lance, 50% confidence cutoff</div>
+      <div class="col">
+        Birdnet, Lance, {{ confidenceCutOffPercentage }} confidence cutoff
+      </div>
     </div>
   </div>
 
@@ -74,9 +76,7 @@
         </div>
 
         <div class="col">
-          <div name="siteMap" class="siteMap">
-            Site Map
-          </div>
+          <div name="siteMap" class="siteMap">Site Map</div>
         </div>
       </div>
     </div>
@@ -108,7 +108,7 @@
           <div class="col border py-1 fw-bold">Confidence Plot</div>
         </div>
 
-        <ng-container *ngFor="let item of eventGroups">
+        <ng-container *ngFor="let item of report.eventGroups">
           <div class="row">
             <div class="col border py-1">{{ item.tagId }}</div>
             <div class="col border py-1">{{ item.provenanceId }}</div>

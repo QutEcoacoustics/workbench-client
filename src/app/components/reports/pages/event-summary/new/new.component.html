@@ -1,10 +1,7 @@
 <h1 class="text-muted">{{ viewTitle }}</h1>
 <h1 class="mb-5">Reports: New Event Summary Report</h1>
 
-<baw-audio-recordings-filter
-  [constructedFilters]="filters$"
-  [constructedModel]="dateTimeConditions$"
->
+<baw-audio-recordings-filter [constructedModel]="model.dateTime">
 </baw-audio-recordings-filter>
 
 <!-- Only projects should show a region filter -->
@@ -50,10 +47,9 @@
   step="0.05"
   max="1"
   min="0"
-  (ngModelChange)="validateProvenanceCutOffValue($event)"
 />
 <label
-  *ngIf="provenanceCutOffError"
+  *ngIf="!isValidProvenanceCutOff()"
   for="provenancesCutOffInput"
   class="form-error"
 >
@@ -66,7 +62,7 @@
   <option value="day">Day</option>
   <option value="week">Week</option>
   <option value="fortnight">Fortnight</option>
-  <option value="month" selected>Month</option>
+  <option value="month">Month</option>
   <option value="seasonally">Seasonally</option>
   <option value="year">Year</option>
 </select>

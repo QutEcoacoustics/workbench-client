@@ -6,7 +6,6 @@ import {
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { AudioRecordingsFilterComponent } from "@shared/audio-recordings-filter/audio-recordings-filter.component";
-import { TimeComponent } from "@shared/input/time/time.component";
 import { Router } from "@angular/router";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
@@ -22,11 +21,7 @@ describe("NewEventReportComponent", () => {
   let routerSpy: SpyObject<Router>;
 
   const createComponent = createRoutingFactory({
-    declarations: [
-      TimeComponent,
-      AudioRecordingsFilterComponent,
-      TypeaheadInputComponent,
-    ],
+    declarations: [AudioRecordingsFilterComponent, TypeaheadInputComponent],
     imports: [SharedModule, MockBawApiModule],
     component: NewEventReportComponent,
   });
@@ -35,7 +30,6 @@ describe("NewEventReportComponent", () => {
     spectator = createComponent({ detectChanges: false });
     routerSpy = spectator.inject(Router);
 
-    // ngOnInit
     spectator.detectChanges();
 
     // since resolver models are assigned during ngOnInit, we can replicate this functionality
@@ -44,47 +38,113 @@ describe("NewEventReportComponent", () => {
     spectator.component.region = new Region(generateRegion());
     spectator.component.site = new Site(generateSite());
 
-    // afterViewInit
     spectator.detectChanges();
   }
 
   beforeEach(() => setup());
 
-  // we have to use "as HTMLInputElement" because `query` can return null if the element is not found
-  // is a jasmine error is thrown "property x cannot be found on object null", the element names are not being found
-  const regionsInput = () =>
-    spectator.query("baw-typeahead-input[label='Site(s)']");
+  // from audio-recording-filter.component.spec.ts
+  const getDateToggleInput = (): HTMLInputElement =>
+    spectator.query<HTMLInputElement>("#date-filtering");
+  const getDateStartedAfterInput = (): HTMLInputElement =>
+    spectator.query<HTMLInputElement>("#date-started-after");
+  const getDateFinishedBeforeInput = (): HTMLInputElement =>
+    spectator.query<HTMLInputElement>("#date-finished-before");
+  const getTimeOfDayToggleInput = (): HTMLInputElement =>
+    spectator.query<HTMLInputElement>("#time-filtering");
+  const getIgnoreDaylightSavingsInput = (): HTMLInputElement =>
+    spectator.query<HTMLInputElement>("#ignore-daylight-savings");
+  const getTimeOfDayStartedAfterInput = (): HTMLInputElement =>
+    spectator.query<HTMLInputElement>("#time-started-after input");
+  const getTimeOfDayFinishedBeforeInput = (): HTMLInputElement =>
+    spectator.query<HTMLInputElement>("#time-finished-before input");
+
+  const regionsInput = (): HTMLElement =>
+    spectator.query<HTMLElement>("baw-typeahead-input[label='Site(s)']");
+  const sitesInpt = (): HTMLElement =>
+    spectator.query<HTMLElement>("baw-typeahead-input[label='Point(s)']");
+  const provenancesInput = (): HTMLElement =>
+    spectator.query<HTMLElement>("baw-typeahead-input[label='Recogniser(s)']");
   const recognizersCutOffInput = (): HTMLInputElement =>
     spectator.query<HTMLInputElement>("input[name='provenancesCutOffInput']");
-  const submitFormButton = (): HTMLButtonElement =>
+  const binSizeInput = (): HTMLSelectElement =>
+    spectator.query<HTMLSelectElement>("select[name='binSizeInput']");
+  const chartsInput = (): HTMLElement =>
+    spectator.query<HTMLElement>("baw-typeahead-input[label='Chart(s)']");
+  const tagsInput = (): HTMLElement =>
+    spectator.query<HTMLElement>("baw-typeahead-input[label='Events of Interest']");
+
+  const generateReportButton = (): HTMLButtonElement =>
     spectator.query<HTMLButtonElement>("#generateReportButton");
   const pageTitle = (): string =>
     spectator.query<HTMLHeadingElement>("h1.text-muted").innerText;
-  const recognizerError = (): HTMLLabelElement | null =>
-    spectator.query<HTMLLabelElement>(
-      "label[for='provenancesCutOffInput'].form-error"
-    );
+
+  function getElementByInnerText<T extends HTMLElement>(text: string): T {
+    return spectator.debugElement.query(
+      (el) => el.nativeElement.innerText === text
+    ).nativeElement;
+  }
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(NewEventReportComponent);
   });
 
-  it("should navigate to the correct url when the form is submitted with no user input/default values", () => {
-    const expectedUrl = `/projects/${spectator.component.project.id}/regions/${
-      spectator.component.region.id
-    }/sites/${spectator.component.site.id}/reports/eventSummary?recognizersCutOff=${
-      recognizersCutOffInput().value
-    }&binSize=month`;
+  it("should navigate to the correct route when the form is submitted with no user input/default values", () => {
+    // the default properties are hard coded into the tests and not fetched from DOM to ensure tests fail if default values are wrong
+    // e.g. (undefined, null, "", etc..)
+    // change these values if the default values change
+    const defaultRecognizerCutOff = "0.8";
+    const defaultBinSize = "month";
+    const projectId = spectator.component.project.id;
+    const regionId = spectator.component.region.id;
+    const siteId = spectator.component.site.id;
 
-    submitFormButton().click();
+    const expectedRoute = `/projects/${projectId}` +
+      `/regions/${regionId}` +
+      `/sites/${siteId}/reports/eventSummary` +
+      `?recogniserCutOff=${defaultRecognizerCutOff}` +
+      `&binSize=${defaultBinSize}`;
 
-    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(expectedUrl);
+    generateReportButton().click();
+
+    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(expectedRoute);
   });
 
   it("should navigate to the correct route when the form is submitted when all fields have a value", () => {
-    const expectedRoute = `/projects/${spectator.component.project.id}/regions/`;
+    const projectId = spectator.component.project.id;
+    const regionId = spectator.component.region.id;
+    const siteId = spectator.component.site.id;
 
-    submitFormButton().click();
+    const startDate = "2020-01-01";
+    const endDate = "2020-02-01";
+    const startTime = "00:00:00";
+    const endTime = "23:59:59";
+    const ignoreDaylightSavings = true;
+    const regions = ["Brisbane", "Tasmania", "multiple words"];
+    const sites = ["Cluster", "aaa", "foo", "bar", "hello world"];
+    const provenances = ["BirdNet", "Lance's recognizer"];
+    const recognizerCutOf = 0.5;
+    const binSize = "Day";
+    const charts = ["test chart 1"];
+    const eventsOfInterest = ["kookaburra", "mallard", "black-headed gull"];
+
+    const expectedRoute = `/projects/${projectId}` +
+      `/regions/${regionId}` +
+      `/sites/${siteId}/reports/eventSummary` +
+      `?sites=${regions.join(",")}` +
+      `&points=${sites.join(",")}` +
+      `&recognizers=${provenances.join(",")}` +
+      `&events=${eventsOfInterest.join(",")}` +
+      `&recogniserCutOff=${recognizerCutOf}` +
+      `&charts=${charts.join(",")}` +
+      `&timeStartedAfter=${startTime}` +
+      `&timeFinishedBefore=${endTime}` +
+      `&dateStartedAfter=${startDate}` +
+      `&dateFinishedBefore=${endDate}` +
+      `&binSize=${binSize}` +
+      `&ignoreDaylightSavings=${ignoreDaylightSavings}`;
+
+    generateReportButton().click();
 
     expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(expectedRoute);
   });
@@ -119,20 +179,28 @@ describe("NewEventReportComponent", () => {
 
     it("should not be able to have an input above 1 (100%)", () => {
       const testValue = 1.01;
+      const expectedError = "The recogniser cut-off are outside the permitted boundary. Ensure that the value is between 0 and 1.";
+
       spectator.typeInElement(testValue.toString(), recognizersCutOffInput());
       spectator.detectChanges();
 
-      const errorMessageElement: HTMLLabelElement = recognizerError();
+      const errorMessageElement: HTMLLabelElement =
+        getElementByInnerText<HTMLLabelElement>(expectedError);
       expect(errorMessageElement).toExist();
+      expect(errorMessageElement).toHaveClass("form-error");
     });
 
     it("should not be able to have an input below 0 (0%)", () => {
       const testValue = -0.01;
+      const expectedError = "The recogniser cut-off are outside the permitted boundary. Ensure that the value is between 0 and 1.";
+
       spectator.typeInElement(testValue.toString(), recognizersCutOffInput());
       spectator.detectChanges();
 
-      const errorMessageElement: HTMLLabelElement = recognizerError();
+      const errorMessageElement: HTMLLabelElement =
+        getElementByInnerText<HTMLLabelElement>(expectedError);
       expect(errorMessageElement).toExist();
+      expect(errorMessageElement).toHaveClass("form-error");
     });
   });
 });

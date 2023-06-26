@@ -19,7 +19,7 @@ import {
 } from "@components/reports/reports.menu";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { EventSummaryReport, IEventGroup } from "@models/EventSummaryReport";
+import { EventSummaryReport } from "@models/EventSummaryReport";
 import { User } from "@models/User";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -89,6 +89,9 @@ class ViewEventReportComponent
       return;
     }
 
+    // since route.snapshot.data is loosely typed as an object casing to a specific model type
+    // adds additional type checking rather than losing type checking
+    // however, if the models are in the wrong format here, TypeScript will not throw an error and result in a JS error during runtime
     this.project = models[projectKey] as Project;
     this.region = models[regionKey] as Region;
     this.site = models[siteKey] as Site;
@@ -99,9 +102,9 @@ class ViewEventReportComponent
     const speciesAccumulationCurveData = speciesAccumulationCurveSchema;
     const speciesCompositionCurveData = speciesCompositionCurveSchema;
     speciesAccumulationCurveData.data.values =
-      this.report?.graphs?.accumulationData;
+      this.report.graphs?.accumulationData;
     speciesCompositionCurveData.data.values =
-      this.report?.graphs?.speciesCompositionData;
+      this.report.graphs?.speciesCompositionData;
 
     embed(
       this.accumulationCurveElement.nativeElement,
@@ -113,44 +116,28 @@ class ViewEventReportComponent
     );
   }
 
-  public printPage(): void {
-    window.print();
-  }
-
   protected get eventDownloadUrl(): string {
-    const base64Filters: string = this.queryStringParameters.toFilterString();
-    return "https://api.staging.ecosounds.org/projects/1135/audio_events/download.csv/?filters=" + base64Filters;
-  }
-
-  protected get eventGroups(): IEventGroup[] {
-    return this.report?.eventGroups;
-  }
-
-  protected get reportGenerationDate(): string {
-    return this.viewDateFromModelAttribute(
-      this.report?.generatedDate ?? DateTime.now()
+    const base64Filters: string = this.queryStringParameters?.toFilterString();
+    return (
+      "https://api.staging.ecosounds.org/projects/1135/audio_events/download.csv/?filters=" +
+      base64Filters
     );
   }
 
   protected get numberOfRecordingsAnalyzed(): string {
-    return (
-      this.report?.statistics?.countOfRecordingsAnalyzed?.toString() +
-      " recordings"
-    );
+    return `${this.report.statistics?.countOfRecordingsAnalyzed} recordings`;
   }
 
   protected get numberOfBinsAnalyzed(): string {
-    return (
-      this.report?.statistics?.countOfRecordingsAnalyzed?.toString() + " bins"
-    );
+    return `${this.report.statistics?.countOfRecordingsAnalyzed} ${this.binSize}'s`;
   }
 
   protected get totalSearchSpan(): string {
-    return this.report?.statistics?.totalSearchSpan?.toString() + " hours";
+    return `${this.report.statistics?.totalSearchSpan} ${this.binSize}'s`;
   }
 
   protected get audioCoverageSpan(): string {
-    return this.report?.statistics?.audioCoverageOverSpan?.toString() + " hours";
+    return `${this.report.statistics?.audioCoverageOverSpan} ${this.binSize}'s`;
   }
 
   protected get currentUser(): string {
@@ -158,38 +145,65 @@ class ViewEventReportComponent
       return this.session.loggedInUser.userName;
     }
 
+    // Using "Unknown User" is consistent with other locations in the client when the user is not logged in
+    // e.g. The audio recordings list page
     return "Unknown User";
   }
 
-  protected get timeRange(): string {
-    return `${this.startTime} - ${this.endTime}`;
+  // bin size is a mandatory field on the report creation page
+  // however, the API defaults to "Month" if no value is provided
+  // therefore, we should reflect this client side
+  protected get binSize(): string {
+    if (this.queryStringParameters?.binSize) {
+      return this.queryStringParameters.binSize;
+    }
+
+    return "month";
+  }
+
+  protected get confidenceCutOffPercentage(): string {
+    // the queryStringParameters data model stores provenanceCutOff as a float between 0 and 1
+    // because the view requires the value in a "percentage" (really score), we convert it in the view model
+    if (this.queryStringParameters?.recogniserCutOff) {
+      return this.queryStringParameters.recogniserCutOff * 100 + "%";
+    }
+
+    // the default cutoff is 0% as it allows all events through, regardless of confidence score
+    return "0%";
   }
 
   protected get dateRange(): string {
-    return `${this.startDate} - ${this.endDate}`;
+    const endash = "&#8211;";
+    const startDate: string =
+      this.queryStringParameters?.dateStartedAfter ?? "";
+    const endDate: string =
+      this.queryStringParameters?.dateFinishedBefore ?? "";
+
+    if (!startDate && !endDate) {
+      return "(not specified)";
+    }
+
+    // we use an endash HTML character code to separate the start and end dates as they are a date range
+    return `${startDate} ${endash} ${endDate}`;
   }
 
-  protected get binSize(): string {
-    return this.queryStringParameters.binSize ?? "Month";
+  protected get timeRange(): string {
+    const endash = "&#8211;";
+    const startTime: string =
+      this.queryStringParameters?.timeStartedAfter ?? "";
+    const endTime: string =
+      this.queryStringParameters?.timeFinishedBefore ?? "";
+
+    if (!startTime && !endTime) {
+      return "(not specified)";
+    }
+
+    return `${startTime} ${endash} ${endTime}`;
   }
 
-  private get startDate(): string {
-    return this.queryStringParameters.dateFinishedBefore ?? "0000-00-00";
-  }
+  protected get reportGenerationDate(): string {
+    const date: DateTime | string = this.report.generatedDate ?? DateTime.now();
 
-  private get endDate(): string {
-    return this.queryStringParameters.dateStartedAfter ?? "9999-00-00";
-  }
-
-  private get startTime(): string {
-    return this.queryStringParameters.timeFinishedBefore ?? "00:00";
-  }
-
-  private get endTime(): string {
-    return this.queryStringParameters.timeStartedAfter ?? "24:00";
-  }
-
-  private viewDateFromModelAttribute(date: DateTime | string): string {
     const reportDateTimeObject: DateTime =
       date instanceof DateTime ? date : DateTime.fromISO(date);
     return reportDateTimeObject.toFormat("yyyy-MM-dd HH:MM");

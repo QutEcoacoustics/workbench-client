@@ -14,66 +14,65 @@ export type GraphType =
   | "Species Composition Curve"
   | "False Colour Spectrograms";
 
+export type BinSize =
+  | "day"
+  | "week"
+  | "fortnight"
+  | "month"
+  | "seasonally"
+  | "year";
+
 export interface IEventSummaryReportParameters {
   sites: Id[];
   points: Id[];
   provenances: Id[];
   events: Id[];
-  provenanceCutOff: number;
+  recogniserCutOff: number;
   charts: string[];
   timeStartedAfter: string;
   timeFinishedBefore: string;
   dateStartedAfter: string;
   dateFinishedBefore: string;
-  binSize: string;
+  binSize: BinSize;
+  ignoreDaylightSavings: boolean;
 }
 
 export class EventSummaryReportParameters implements IEventSummaryReportParameters {
   public constructor(
-    regions?: Id[] | string,
-    sites?: Id[] | string,
-    provenances?: Id[] | string,
-    events?: Id[] | string,
+    regions?: Id[],
+    sites?: Id[],
+    provenances?: Id[],
+    events?: Id[],
     provenanceCutOff?: number,
     charts?: string[],
     timeStartedAfter?: Duration,
     timeFinishedBefore?: Duration,
     dateStartedAfter?: DateTime,
     dateFinishedBefore?: DateTime,
-    binSize?: string
+    binSize?: BinSize,
+    ignoreDaylightSavings?: boolean
   ) {
-    if (typeof regions === "string") {
-      this.sites = regions.split(",").map(Number);
+    this.sites = regions;
+    this.points = sites;
+    this.provenances = provenances;
+    this.events = events;
+
+    this.timeStartedAfter = timeStartedAfter?.toFormat("hh:mm");
+    this.timeFinishedBefore = timeFinishedBefore?.toFormat("hh:mm");
+
+    if (typeof dateStartedAfter === "string") {
+      this.dateStartedAfter = DateTime.fromFormat(dateStartedAfter, "yyy-MM-dd");
     } else {
-      this.sites = regions as Id[];
+      this.dateStartedAfter = dateStartedAfter;
     }
 
-    if (typeof sites === "string") {
-      this.points = sites.split(",").map(Number);
-    } else {
-      this.sites = sites as Id[];
-    }
 
-    if (typeof provenances === "string") {
-      this.provenances = provenances.split(",").map(Number);
-    } else {
-      this.provenances = provenances as Id[];
-    }
+    this.dateFinishedBefore = dateFinishedBefore?.toFormat("yyyy-MM-dd");
 
-    if (typeof events === "string") {
-      this.events = events.split(",").map(Number);
-    } else {
-      this.events = events as Id[];
-    }
-
-    this.timeStartedAfter = this.formatDuration(timeStartedAfter);
-    this.timeFinishedBefore = this.formatDuration(timeFinishedBefore);
-    this.dateStartedAfter = this.formatDateTime(dateStartedAfter);
-    this.dateFinishedBefore = this.formatDateTime(dateFinishedBefore);
-
-    this.provenanceCutOff = provenanceCutOff;
+    this.recogniserCutOff = provenanceCutOff;
     this.charts = charts;
     this.binSize = binSize;
+    this.ignoreDaylightSavings = ignoreDaylightSavings;
   }
 
   // since these properties are exposed to the user in the form of query string parameters
@@ -82,13 +81,14 @@ export class EventSummaryReportParameters implements IEventSummaryReportParamete
   public points: Id[];
   public provenances: Id[];
   public events: Id[];
-  public provenanceCutOff: number;
+  public recogniserCutOff: number;
   public charts: string[];
   public timeStartedAfter: string;
   public timeFinishedBefore: string;
-  public dateStartedAfter: string;
+  public dateStartedAfter: DateTime;
   public dateFinishedBefore: string;
-  public binSize: string;
+  public binSize: BinSize;
+  public ignoreDaylightSavings: boolean;
 
   public toFilter(): Filters<EventSummaryReport> {
     let filter: InnerFilter<EventSummaryReport>;
@@ -135,17 +135,5 @@ export class EventSummaryReportParameters implements IEventSummaryReportParamete
     });
 
     return params.toString();
-  }
-
-  private formatDateTime(dateTime: DateTime): string {
-    if (dateTime !== undefined) {
-      return dateTime as any;
-    }
-  }
-
-  private formatDuration(duration: Duration): string {
-    if (duration !== undefined) {
-      return duration as any;
-    }
   }
 }

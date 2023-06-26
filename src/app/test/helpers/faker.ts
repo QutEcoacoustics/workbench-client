@@ -54,7 +54,7 @@ export const modelData = {
   latitude: () => parseFloat(faker.address.latitude()),
   longitude: () => parseFloat(faker.address.longitude()),
   percentage: (): number =>
-    faker.datatype.number({ min: 0, max: 1, precision: 0.0001 }),
+    faker.datatype.float({ min: 0, max: 1, precision: 0.0001 }),
   notes: () => randomObject(1, 5),
   offset: () =>
     faker.helpers.arrayElement(["+", "-"]) +
