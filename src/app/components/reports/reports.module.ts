@@ -24,4 +24,4 @@ const routes = Object.values(reportsRoute)
   exports: [RouterModule, ...components],
   imports: [SharedModule, RouterModule.forChild(routes), ProjectsModule],
 })
-export class ReportModule {}
+export class ReportsModule {}

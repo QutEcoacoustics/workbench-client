@@ -119,7 +119,7 @@ class ViewEventReportComponent
 
   protected get eventDownloadUrl(): string {
     const base64Filters: string = this.queryStringParameters.toFilterString();
-    return "https://api.staging.ecosounds.org/projects/1135/audio_events/download.csv/?filters=";
+    return "https://api.staging.ecosounds.org/projects/1135/audio_events/download.csv/?filters=" + base64Filters;
   }
 
   protected get eventGroups(): IEventGroup[] {

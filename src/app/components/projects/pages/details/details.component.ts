@@ -39,17 +39,17 @@ import { ToastrService } from "ngx-toastr";
 import { merge, Observable, takeUntil } from "rxjs";
 
 export const projectMenuItemActions = [
+  visualizeMenuItem,
+  editProjectMenuItem,
+  editProjectPermissionsMenuItem,
+  deleteProjectModal,
+  newSiteMenuItem,
   assignSiteMenuItem,
   audioRecordingMenuItems.list.project,
-  uploadAnnotationsProjectMenuItem,
-  deleteProjectModal,
-  editProjectPermissionsMenuItem,
-  editProjectMenuItem,
-  newSiteMenuItem,
-  harvestsMenuItem,
   audioRecordingMenuItems.batch.project,
+  harvestsMenuItem,
+  uploadAnnotationsProjectMenuItem,
   reportMenuItems.new.project,
-  visualizeMenuItem,
 ];
 
 const projectKey = "project";

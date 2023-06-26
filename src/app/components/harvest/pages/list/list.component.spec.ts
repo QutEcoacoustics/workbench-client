@@ -49,8 +49,6 @@ describe("ListComponent", () => {
       paging: { items: 1, page: 0, total: 1, maxPage: 5 },
     });
 
-    console.log(mockHarvestApi.filter.and);
-
     // inject the NgbModal service so that we can
     // dismiss all modals at the end of every test
     modalService = spec.inject(NgbModal);
