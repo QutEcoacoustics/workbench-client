@@ -39,15 +39,14 @@ export interface IReportEvent {
 export interface IAccumulationGraphData {
   date: Param;
   count: number;
-  error: number;
+  errorPositive: number;
+  errorNegative: number;
 }
 
 export interface ISpeciesCompositionGraphData {
   date: Param;
-  values: {
-    tagId: Id;
-    ratio: number;
-  }[];
+  tagId: Id;
+  ratio: number;
 }
 
 export interface IAnalysisCoverageGraphData {

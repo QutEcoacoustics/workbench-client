@@ -1,5 +1,5 @@
-<h1 class="text-muted">{{ viewTitle }}</h1>
-<h1 class="mb-5">Reports: New Event Summary Report</h1>
+<h1 class="text-muted">{{ componentTitle }}</h1>
+<h1 class="mb-5">New Event Summary Report</h1>
 
 <baw-audio-recordings-filter [constructedModel]="model.dateTime">
 </baw-audio-recordings-filter>
@@ -9,7 +9,7 @@
   *ngIf="!region"
   label="Site(s)"
   [inputPlaceholder]="'All'"
-  [optionsCallback]="regionsServiceListFilter"
+  [optionsCallback]="regionsOptions"
   [multipleInputs]="true"
   [formatter]="regionFormatter"
   [modelChange]="model.regions"
@@ -19,7 +19,7 @@
   *ngIf="!site"
   label="Point(s)"
   [inputPlaceholder]="'All'"
-  [optionsCallback]="sitesServiceListFilter"
+  [optionsCallback]="siteOptions"
   [multipleInputs]="true"
   [formatter]="siteFormatter"
   [modelChange]="model.sites"
@@ -28,17 +28,17 @@
 <baw-typeahead-input
   label="Recogniser(s)"
   [inputPlaceholder]="'All'"
-  [optionsCallback]="provenanceServiceListFilter"
+  [optionsCallback]="provenanceOptions"
   [multipleInputs]="true"
   [formatter]="provenanceFormatter"
   [modelChange]="model.provenances"
 ></baw-typeahead-input>
 
-<label for="provenancesCutOffInput" class="form-label"
-  >Recogniser Cut-Off</label
->
+<label for="provenancesCutOffInput" class="form-label">
+  Recogniser Cut-Off
+</label>
 <input
-  [(ngModel)]="model.provenanceCutOff"
+  [(ngModel)]="model.provenanceScoreCutOff"
   type="number"
   name="provenancesCutOffInput"
   class="form-control"
@@ -72,14 +72,13 @@
   [inputPlaceholder]="'All'"
   [optionsCallback]="chartsFilter"
   [multipleInputs]="true"
-  [formatter]="chartsFormatter"
   [modelChange]="model.charts"
 ></baw-typeahead-input>
 
 <baw-typeahead-input
   label="Events of Interest"
   [inputPlaceholder]="'All'"
-  [optionsCallback]="eventsOfInterestFilter"
+  [optionsCallback]="eventsOfInterestOptions"
   [multipleInputs]="true"
   [formatter]="eventsOfInterestFormatter"
   [modelChange]="model.eventsOfInterest"

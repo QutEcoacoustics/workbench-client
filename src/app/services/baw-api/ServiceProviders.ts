@@ -275,7 +275,7 @@ const serviceList = [
     resolvers: audioEventProvenanceResolvers,
   },
   {
-    serviceToken: Tokens.AUDIO_EVENT_SUMMARY,
+    serviceToken: Tokens.AUDIO_EVENT_SUMMARY_REPORT,
     service: EventSummaryReportService,
     resolvers: eventSummaryResolvers,
   },

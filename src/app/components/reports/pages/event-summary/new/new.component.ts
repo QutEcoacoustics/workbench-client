@@ -29,6 +29,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { id } from "@baw-api/api-common";
 import { RouteParams } from "@interfaces/strongRoute";
 import { AudioRecordingFilterModel } from "@shared/audio-recordings-filter/audio-recordings-filter.component";
+import { DateTime } from "luxon";
 import {
   BinSize,
   EventSummaryReportParameters,
@@ -44,7 +45,7 @@ interface IEventReportConditions {
   regions: BehaviorSubject<Region[]>;
   sites: BehaviorSubject<Site[]>;
   provenances: BehaviorSubject<AudioEventProvenance[]>;
-  provenanceCutOff: number;
+  provenanceScoreCutOff: number;
   charts: BehaviorSubject<string[]>;
   eventsOfInterest: BehaviorSubject<Tag[]>;
   binSize: BinSize;
@@ -68,15 +69,15 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   }
 
   public project: Project;
-  public region: Region | null;
-  public site: Site | null;
+  public region?: Region;
+  public site?: Site;
 
   public model: IEventReportConditions = {
     dateTime: new BehaviorSubject<AudioRecordingFilterModel>({}),
     regions: new BehaviorSubject<Region[]>([]),
     sites: new BehaviorSubject<Site[]>([]),
     provenances: new BehaviorSubject<AudioEventProvenance[]>([]),
-    provenanceCutOff: 0.8,
+    provenanceScoreCutOff: 0.8,
     charts: new BehaviorSubject<string[]>([]),
     eventsOfInterest: new BehaviorSubject<Tag[]>([]),
     binSize: "month",
@@ -112,12 +113,11 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   // on a generalised function
   public regionFormatter = (region: Region) => region.name;
   public siteFormatter = (site: Site) => site.name;
-  public provenanceFormatter = (provenance: AudioEventProvenance) =>
-    provenance.name;
+  public provenanceFormatter = (provenance: AudioEventProvenance) => provenance.name;
   public chartsFormatter = (chart: string) => chart;
   public eventsOfInterestFormatter = (tag: Tag): string => tag.text;
 
-  public regionsServiceListFilter = (
+  public regionsOptions = (
     regionName: string
   ): Observable<Region[]> => {
     const filter: Filters<IRegion> = {
@@ -131,7 +131,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return this.regionsApi.filter(filter, this.project);
   };
 
-  public sitesServiceListFilter = (siteName: string): Observable<Site[]> => {
+  public siteOptions = (siteName: string): Observable<Site[]> => {
     const filter: Filters<Site> = {
       filter: {
         name: {
@@ -143,7 +143,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return this.sitesApi.filter(filter, this.project);
   };
 
-  public provenanceServiceListFilter = (
+  public provenanceOptions = (
     provenanceName: string
   ): Observable<AudioEventProvenance[]> => {
     const filter: Filters<AudioEventProvenance> = {
@@ -157,7 +157,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return this.provenanceApi.filter(filter);
   };
 
-  public eventsOfInterestFilter = (text: string): Observable<Tag[]> => {
+  public eventsOfInterestOptions = (text: string): Observable<Tag[]> => {
     const filter: Filters<Tag> = {
       filter: {
         text: {
@@ -170,16 +170,16 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   };
 
   public chartsFilter = (text: string): Observable<string[]> =>
-    of(this.availableCharts.filter((chart) => chart.includes(text)));
+    of(NewEventReportComponent.availableCharts.filter((chart) => chart.includes(text)));
 
   protected isValidProvenanceCutOff(): boolean {
-    return this.model.provenanceCutOff >= 0 && this.model.provenanceCutOff <= 1;
+    return this.model.provenanceScoreCutOff >= 0 && this.model.provenanceScoreCutOff <= 1;
   }
 
-  protected get viewTitle(): string {
+  protected get componentTitle(): string {
     if (this.site) {
       return this.site.isPoint ?
-        `Point: ${this.site.name}`:
+        `Point: ${this.site.name}` :
         `Site: ${this.site.name}`;
     } else if (this.region) {
       return `Site: ${this.region.name}`;
@@ -188,15 +188,6 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     // it can be assumed that all reports will be generated from at least at the project level
     // therefore, if no sites or regions are specified, we can assume that the report is being generated at the project level
     return `Project: ${this.project.name}`;
-  }
-
-  private get availableCharts(): GraphType[] {
-    return [
-      "Sensor Point Map",
-      "Species Accumulation Curve",
-      "Species Composition Curve",
-      "False Colour Spectrograms",
-    ];
   }
 
   // since the report is mounted at multiple points in the client (projects, regions, sites), we need to derive the lowest route to use
@@ -228,23 +219,41 @@ class NewEventReportComponent extends PageComponent implements OnInit {
       (event) => event.id
     );
 
-    const audioRecordingFilters: AudioRecordingFilterModel =
+    // since audio recording filters are a behavior subject, it is possible to get the last emitted value
+    // without race conditions, subscriptions, or succumbing or poor coding practices
+    const dateTimeFilters: AudioRecordingFilterModel =
       this.model.dateTime.getValue();
 
-    return new EventSummaryReportParameters(
-      regionIds,
-      siteIds,
-      provenanceIds,
-      eventIds,
-      this.model.provenanceCutOff,
-      this.model.charts.value,
-      audioRecordingFilters.timeStartedAfter,
-      audioRecordingFilters.timeFinishedBefore,
-      audioRecordingFilters.dateStartedAfter as any,
-      audioRecordingFilters.dateFinishedBefore as any,
-      this.model.binSize
-    );
+    const dataModel = new EventSummaryReportParameters();
+
+    const startDate: DateTime = dateTimeFilters.dateStartedAfter
+      ? DateTime.fromObject(dateTimeFilters.dateStartedAfter) : null;
+    const endDate: DateTime = dateTimeFilters.dateFinishedBefore
+      ? DateTime.fromObject(dateTimeFilters.dateFinishedBefore) : null;
+
+    dataModel.sites = regionIds;
+    dataModel.points = siteIds;
+    dataModel.provenances = provenanceIds;
+    dataModel.events = eventIds;
+    dataModel.recogniserCutOff = this.model.provenanceScoreCutOff;
+    dataModel.charts = this.model.charts.value;
+    dataModel.timeStartedAfter = dateTimeFilters.timeStartedAfter;
+    dataModel.timeFinishedBefore = dateTimeFilters.timeFinishedBefore;
+    dataModel.dateStartedAfter = startDate;
+    dataModel.dateFinishedBefore = endDate;
+    dataModel.binSize = this.model.binSize;
+    dataModel.ignoreDaylightSavings = dateTimeFilters.ignoreDaylightSavings;
+
+    return dataModel;
   }
+
+  // we use a static array here as the list of possible charts the report can generate is directly linked to the template
+  private static availableCharts: GraphType[] = [
+    "Sensor Point Map",
+    "Species Accumulation Curve",
+    "Species Composition Curve",
+    "False Colour Spectrograms",
+  ];
 }
 
 function getPageInfo(subRoute: keyof typeof reportMenuItems.new): IPageInfo {

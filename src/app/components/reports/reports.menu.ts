@@ -3,6 +3,7 @@ import { projectMenuItem } from "@components/projects/projects.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { siteMenuItem } from "@components/sites/sites.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
+import { isAdminPredicate } from "src/app/app.menus";
 import {
   ReportRoute,
   newEventReportRoute,
@@ -37,6 +38,7 @@ function makeViewEventReportMenuItem(
     tooltip: () => "View event summary report",
     route: eventReportRoute[subRoute],
     parent,
+    predicate: isAdminPredicate,
   });
 }
 
@@ -50,6 +52,7 @@ function makeNewEventReportMenuItem(
     tooltip: () => "New event summary report",
     route: newEventReportRoute[subRoute],
     parent,
+    predicate: isAdminPredicate,
   });
 }
 

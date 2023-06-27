@@ -1,13 +1,14 @@
 import { HttpParams } from "@angular/common/http";
+import { Params } from "@angular/router";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { toBase64Url } from "@helpers/encoding/encoding";
-import { filterModelIds } from "@helpers/filters/filters";
+import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
+import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id } from "@interfaces/apiInterfaces";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { DateTime, Duration } from "luxon";
 
-// these properties are serialised in the query strings, therefore, need to be user facing
 export type GraphType =
   | "Sensor Point Map"
   | "Species Accumulation Curve"
@@ -29,66 +30,97 @@ export interface IEventSummaryReportParameters {
   events: Id[];
   recogniserCutOff: number;
   charts: string[];
-  timeStartedAfter: string;
-  timeFinishedBefore: string;
-  dateStartedAfter: string;
-  dateFinishedBefore: string;
   binSize: BinSize;
   ignoreDaylightSavings: boolean;
 }
 
 export class EventSummaryReportParameters implements IEventSummaryReportParameters {
-  public constructor(
-    regions?: Id[],
-    sites?: Id[],
-    provenances?: Id[],
-    events?: Id[],
-    provenanceCutOff?: number,
-    charts?: string[],
-    timeStartedAfter?: Duration,
-    timeFinishedBefore?: Duration,
-    dateStartedAfter?: DateTime,
-    dateFinishedBefore?: DateTime,
-    binSize?: BinSize,
-    ignoreDaylightSavings?: boolean
-  ) {
-    this.sites = regions;
-    this.points = sites;
-    this.provenances = provenances;
-    this.events = events;
-
-    this.timeStartedAfter = timeStartedAfter?.toFormat("hh:mm");
-    this.timeFinishedBefore = timeFinishedBefore?.toFormat("hh:mm");
-
-    if (typeof dateStartedAfter === "string") {
-      this.dateStartedAfter = DateTime.fromFormat(dateStartedAfter, "yyy-MM-dd");
-    } else {
-      this.dateStartedAfter = dateStartedAfter;
-    }
-
-
-    this.dateFinishedBefore = dateFinishedBefore?.toFormat("yyyy-MM-dd");
-
-    this.recogniserCutOff = provenanceCutOff;
-    this.charts = charts;
-    this.binSize = binSize;
-    this.ignoreDaylightSavings = ignoreDaylightSavings;
+  public constructor(queryStringParameters: Params = {}) {
+    // since query string parameters are losely typed using a string from the user space
+    // we have to use this hacky implementation of manual key-value checking and assignment
+    Object.entries(queryStringParameters).forEach(([key, value]) => {
+      if (key in this) {
+        this[key] = value;
+      }
+    });
   }
 
   // since these properties are exposed to the user in the form of query string parameters
   // we use the user friendly names
-  public sites: Id[];
-  public points: Id[];
-  public provenances: Id[];
-  public events: Id[];
-  public recogniserCutOff: number;
-  public charts: string[];
-  public timeStartedAfter: string;
-  public timeFinishedBefore: string;
-  public dateStartedAfter: DateTime;
-  public dateFinishedBefore: string;
-  public binSize: BinSize;
-  public ignoreDaylightSavings: boolean;
+  public sites: Id[] = [];
+  public points: Id[] = [];
+  public provenances: Id[] = [];
+  public events: Id[] = [];
+  public recogniserCutOff = 0;
+  public charts: string[] = [];
+  public binSize: BinSize = "month";
+  public ignoreDaylightSavings = true;
+  private _timeStartedAfter: Duration = null;
+  private _timeFinishedBefore: Duration = null;
+  private _dateStartedAfter: DateTime = null;
+  private _dateFinishedBefore: DateTime = null;
+
+  public get timeStartedAfter(): string {
+    return this._timeStartedAfter?.toFormat("hh:mm");
+  }
+
+  public set timeStartedAfter(value: string | Duration) {
+    if (typeof value === "string") {
+      // assuming the time/duration format hh:mm. This is the same format emitted by the reports generation page
+      const [hoursString, minutesString]: string[] = value.split(":");
+
+      // we use Number instead of parseInt() here because we want to fail hard if the duration string is invalid
+      // this is because parseInt() will parse as much of the number as possible omitting non-number characters
+      // if parseInt was used, a user might input an invalid time, assume the time was correct and unknowingly be returned incorrect results
+      this._timeStartedAfter = Duration.fromObject({
+        hours: Number(hoursString),
+        minutes: Number(minutesString)
+      });
+    } else {
+      this._timeStartedAfter = value;
+    }
+  }
+
+  public get timeFinishedBefore(): string {
+    return this._timeFinishedBefore?.toFormat("hh:mm");
+  }
+
+  public set timeFinishedBefore(value: string | Duration) {
+    if (typeof value === "string") {
+      const [hoursString, minutesString]: string[] = value.split(":");
+
+      this._timeFinishedBefore = Duration.fromObject({
+        hours: Number(hoursString),
+        minutes: Number(minutesString)
+      });
+    } else {
+      this._timeFinishedBefore = value;
+    }
+  }
+
+  public get dateStartedAfter(): string {
+    return this._dateStartedAfter?.toFormat("yyyy-MM-dd");
+  }
+
+  public set dateStartedAfter(value: string | DateTime) {
+    if (typeof value === "string") {
+      this._dateStartedAfter = DateTime.fromFormat(value, "yyyy-MM-dd");
+    } else {
+      this._dateStartedAfter = value;
+    }
+  }
+
+  public get dateFinishedBefore(): string {
+    return this._dateFinishedBefore?.toFormat("yyyy-MM-dd");
+  }
+
+  public set dateFinishedBefore(value: string | DateTime) {
+    if (typeof value === "string") {
+      this._dateFinishedBefore = DateTime.fromFormat(value, "yyyy-MM-dd");
+    } else {
+      this._dateFinishedBefore = value;
+    }
+  }
 
   public toFilter(): Filters<EventSummaryReport> {
     let filter: InnerFilter<EventSummaryReport>;
@@ -114,9 +146,32 @@ export class EventSummaryReportParameters implements IEventSummaryReportParamete
       filter
     );
 
+    filter = filterAnd<EventSummaryReport>(
+      filter,
+      {
+        score: {
+          gteq: this.recogniserCutOff
+        },
+      } as InnerFilter
+    );
+
+    filter = filterDate(
+      filter,
+      this._dateStartedAfter,
+      this._dateFinishedBefore
+    );
+
+    filter = filterTime(
+      filter,
+      this.ignoreDaylightSavings,
+      this._timeStartedAfter,
+      this._timeFinishedBefore
+    );
+
     return { filter };
   }
 
+  /** Converts the report parameters to filters and base64 encodes them */
   public toFilterString(): string {
     return toBase64Url(
       JSON.stringify(this.toFilter())
@@ -130,7 +185,13 @@ export class EventSummaryReportParameters implements IEventSummaryReportParamete
       const keyValue = this[key];
 
       if (isInstantiated(keyValue) && keyValue.length !== 0) {
-        params = params.append(key, keyValue);
+        if (keyValue instanceof DateTime) {
+          params = params.append(key.replace("_", ""), keyValue.toFormat("yyyy-MM-dd"));
+        } else if (keyValue instanceof Duration) {
+          params = params.append(key.replace("_", ""), keyValue.toFormat("hh:mm"));
+        } else {
+          params = params.append(key, keyValue);
+        }
       }
     });
 

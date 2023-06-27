@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  Inject,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -11,6 +12,7 @@ import { regionResolvers } from "@baw-api/region/regions.service";
 import {
   retrieveResolvers,
   hasResolvedSuccessfully,
+  ResolvedModelList,
 } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
@@ -19,7 +21,7 @@ import {
 } from "@components/reports/reports.menu";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { EventSummaryReport } from "@models/EventSummaryReport";
+import { EventSummaryReport, IEventGroup } from "@models/EventSummaryReport";
 import { User } from "@models/User";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -29,6 +31,7 @@ import embed, { VisualizationSpec } from "vega-embed";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
 import { takeUntil } from "rxjs";
+import { API_ROOT } from "@services/config/config.tokens";
 import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
@@ -45,18 +48,18 @@ const parametersKey = "report";
 })
 class ViewEventReportComponent
   extends PageComponent
-  implements AfterViewInit, OnInit
-{
+  implements AfterViewInit, OnInit {
   public constructor(
     private route: ActivatedRoute,
-    private session: BawSessionService
+    private session: BawSessionService,
+    @Inject(API_ROOT) private apiRoot: string
   ) {
     super();
   }
 
   @ViewChild("accumulationCurve") public accumulationCurveElement: ElementRef;
   @ViewChild("compositionCurve") public compositionCurveElement: ElementRef;
-  public queryStringParameters: EventSummaryReportParameters;
+  public parameterDataModel: EventSummaryReportParameters;
   public report: EventSummaryReport;
   public user: User;
   public project: Project;
@@ -64,26 +67,14 @@ class ViewEventReportComponent
   public site?: Site;
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+    // we can use "as" here to provide stronger typing because the data property is a standard object type without any typing
+    const models: ResolvedModelList = retrieveResolvers(this.route.snapshot.data as IPageInfo);
 
     this.route.queryParams
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (parameters: Params) =>
-          (this.queryStringParameters = new EventSummaryReportParameters(
-            parameters["sites"],
-            parameters["points"],
-            parameters["provenances"],
-            parameters["events"],
-            parameters["provenanceCutOff"],
-            parameters["charts"],
-            parameters["timeStartedAfter"],
-            parameters["timeFinishedBefore"],
-            parameters["dateStartedAfter"],
-            parameters["dateFinishedBefore"],
-            parameters["binSize"]
-          ))
-      );
+      .subscribe((parameters: Params) => {
+        this.parameterDataModel = new EventSummaryReportParameters(parameters);
+      });
 
     if (!hasResolvedSuccessfully(models)) {
       return;
@@ -99,29 +90,26 @@ class ViewEventReportComponent
   }
 
   public ngAfterViewInit(): void {
-    const speciesAccumulationCurveData = speciesAccumulationCurveSchema;
-    const speciesCompositionCurveData = speciesCompositionCurveSchema;
-    speciesAccumulationCurveData.data.values =
-      this.report.graphs?.accumulationData;
-    speciesCompositionCurveData.data.values =
-      this.report.graphs?.speciesCompositionData;
+    speciesAccumulationCurveSchema.data.values = this.report.graphs?.accumulationData;
+    speciesCompositionCurveSchema.data.values = this.report.graphs?.speciesCompositionData;
 
     embed(
       this.accumulationCurveElement.nativeElement,
-      speciesAccumulationCurveData as VisualizationSpec
+      speciesAccumulationCurveSchema as VisualizationSpec
     );
     embed(
       this.compositionCurveElement.nativeElement,
-      speciesCompositionCurveData as VisualizationSpec
+      speciesCompositionCurveSchema as VisualizationSpec
     );
   }
 
+  protected printPage(): void {
+    window.print();
+  }
+
   protected get eventDownloadUrl(): string {
-    const base64Filters: string = this.queryStringParameters?.toFilterString();
-    return (
-      "https://api.staging.ecosounds.org/projects/1135/audio_events/download.csv/?filters=" +
-      base64Filters
-    );
+    const base64Filters: string = this.parameterDataModel?.toFilterString();
+    return `${this.apiRoot}/projects/1135/audio_events/download.csv/?filters=${base64Filters}`;
   }
 
   protected get numberOfRecordingsAnalyzed(): string {
@@ -129,15 +117,15 @@ class ViewEventReportComponent
   }
 
   protected get numberOfBinsAnalyzed(): string {
-    return `${this.report.statistics?.countOfRecordingsAnalyzed} ${this.binSize}'s`;
+    return `${this.report.statistics?.countOfRecordingsAnalyzed} ${this.binSize}s`;
   }
 
   protected get totalSearchSpan(): string {
-    return `${this.report.statistics?.totalSearchSpan} ${this.binSize}'s`;
+    return `${this.report.statistics?.totalSearchSpan} ${this.binSize}s`;
   }
 
   protected get audioCoverageSpan(): string {
-    return `${this.report.statistics?.audioCoverageOverSpan} ${this.binSize}'s`;
+    return `${this.report.statistics?.audioCoverageOverSpan} ${this.binSize}s`;
   }
 
   protected get currentUser(): string {
@@ -151,11 +139,11 @@ class ViewEventReportComponent
   }
 
   // bin size is a mandatory field on the report creation page
-  // however, the API defaults to "Month" if no value is provided
+  // however, the API defaults to "month" if no value is provided
   // therefore, we should reflect this client side
   protected get binSize(): string {
-    if (this.queryStringParameters?.binSize) {
-      return this.queryStringParameters.binSize;
+    if (this.parameterDataModel?.binSize) {
+      return this.parameterDataModel.binSize;
     }
 
     return "month";
@@ -164,8 +152,8 @@ class ViewEventReportComponent
   protected get confidenceCutOffPercentage(): string {
     // the queryStringParameters data model stores provenanceCutOff as a float between 0 and 1
     // because the view requires the value in a "percentage" (really score), we convert it in the view model
-    if (this.queryStringParameters?.recogniserCutOff) {
-      return this.queryStringParameters.recogniserCutOff * 100 + "%";
+    if (this.parameterDataModel?.recogniserCutOff) {
+      return this.parameterDataModel.recogniserCutOff * 100 + "%";
     }
 
     // the default cutoff is 0% as it allows all events through, regardless of confidence score
@@ -175,9 +163,9 @@ class ViewEventReportComponent
   protected get dateRange(): string {
     const endash = "&#8211;";
     const startDate: string =
-      this.queryStringParameters?.dateStartedAfter ?? "";
+      this.parameterDataModel?.dateStartedAfter ?? "";
     const endDate: string =
-      this.queryStringParameters?.dateFinishedBefore ?? "";
+      this.parameterDataModel?.dateFinishedBefore ?? "";
 
     if (!startDate && !endDate) {
       return "(not specified)";
@@ -190,9 +178,9 @@ class ViewEventReportComponent
   protected get timeRange(): string {
     const endash = "&#8211;";
     const startTime: string =
-      this.queryStringParameters?.timeStartedAfter ?? "";
+      this.parameterDataModel?.timeStartedAfter ?? "";
     const endTime: string =
-      this.queryStringParameters?.timeFinishedBefore ?? "";
+      this.parameterDataModel?.timeFinishedBefore ?? "";
 
     if (!startTime && !endTime) {
       return "(not specified)";
@@ -207,6 +195,10 @@ class ViewEventReportComponent
     const reportDateTimeObject: DateTime =
       date instanceof DateTime ? date : DateTime.fromISO(date);
     return reportDateTimeObject.toFormat("yyyy-MM-dd HH:MM");
+  }
+
+  protected binsWithRain(eventGroup: IEventGroup): number {
+    return eventGroup.binsWithInterference.length;
   }
 }
 

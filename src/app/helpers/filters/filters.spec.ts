@@ -2,7 +2,8 @@ import { InnerFilter } from "@baw-api/baw-api.service";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { Writeable } from "@helpers/advancedTypes";
-import { filterAnd, filterModel } from "./filters";
+import { Id } from "@interfaces/apiInterfaces";
+import { filterAnd, filterModel, filterModelIds } from "./filters";
 
 describe("ModelFilters", () => {
   describe("addFilters", () => {
@@ -136,6 +137,19 @@ describe("ModelFilters", () => {
     };
 
     const observedResult = filterModel<Project, any>("projects", mockProject, initialFilters);
+    expect(observedResult).toEqual(expectedResult);
+  });
+
+  it("should create the correct modelId filter for an array of project ids", () => {
+    const mockProjectIds: Id[] = [12, 231, 4123];
+    const initialFilters: InnerFilter<Project> = {};
+    const expectedResult = {
+      ["projects.id"]: {
+        in: mockProjectIds,
+      },
+    };
+
+    const observedResult = filterModelIds<Project>("projects", mockProjectIds, initialFilters);
     expect(observedResult).toEqual(expectedResult);
   });
 });

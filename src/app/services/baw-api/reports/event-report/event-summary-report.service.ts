@@ -4,9 +4,7 @@ import {
   IdParamOptional,
   id,
   option,
-  emptyParam,
   ApiFilterShow,
-  filterParam,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { BawResolver, ResolvedModel } from "@baw-api/resolver-common";
@@ -19,6 +17,8 @@ import { Observable, of } from "rxjs";
 // at the current moment, the api does not support fetching saved reports from id. However, this is planned for the future
 // to backfill in preparation, this service has been backfilled
 const reportId: IdParamOptional<EventSummaryReport> = id;
+// TODO: remove this TypeScript exception once the API is fully functional
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const endpoint = stringTemplate`/reports/audio_event_summary/${reportId}${option}`;
 
 @Injectable()
@@ -29,11 +29,15 @@ export class EventSummaryReportService
 
   // because filter returns an array of item, and we want to return one item given filter conditions
   // we cannot use the generalised filter service interface
-  // TODO: we should probably generalise this service type to an interface once reports get expanded
   public filterShow(
-    filters: Filters<EventSummaryReport>
+    _filters: Filters<EventSummaryReport>
   ): Observable<EventSummaryReport> {
-    return this.api.filterShow(EventSummaryReport, endpoint(emptyParam, filterParam), filters);
+    // as the api is not currently functional, we are returning a mock report model
+    // this is done so that the reports can be showcased with a working view
+    // this is done in the resolver so that we can unit test and mock the services correctly
+    // TODO: remove the following line of code once the API is fully functional
+    return of(new EventSummaryReport(generateEventSummaryReport()))
+    // return this.api.filterShow(EventSummaryReport, endpoint(emptyParam, filterParam), filters);
   }
 }
 
@@ -69,21 +73,9 @@ class EventSummaryReportResolver extends BawResolver<
     route: ActivatedRouteSnapshot,
     api: EventSummaryReportService
   ): Observable<EventSummaryReport> {
-    const parametersModel = new EventSummaryReportParameters(
-      route.paramMap.getAll("sites").map((uid) => parseInt(uid, 10)),
-      route.paramMap.getAll("points").map((uid) => parseInt(uid, 10)),
-      route.paramMap.getAll("provenances").map((uid) => parseInt(uid, 10)),
-      route.paramMap.getAll("events").map((uid) => parseInt(uid, 10)),
-      parseInt(route.paramMap.get("provenanceCutOff"), 10),
-      route.paramMap.getAll("charts")
-    );
+    const parametersModel = new EventSummaryReportParameters(route.params);
     const filters: Filters<EventSummaryReport> = parametersModel.toFilter();
 
-    // as the api is not currently functional, we are returning a mock report model
-    // this is done so that the reports can be showcased with a working view
-    // this is done in the resolver so that we can unit test and mock the services correctly
-    // TODO: remove the following line of code once the API is fully functional
-    return of(new EventSummaryReport(generateEventSummaryReport()));
     return api.filterShow(filters);
   }
 }

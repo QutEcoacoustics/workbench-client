@@ -35,30 +35,6 @@ export function filterAnd<T extends AbstractModel>(
   }
 }
 
-export function filterOr<T extends AbstractModel>(
-  filter: InnerFilter,
-  newFilter: InnerFilter
-): InnerFilter<Writeable<T>> {
-  if (!newFilter || Object.keys(newFilter).length === 0) {
-    return filter;
-  }
-
-  // because the api is expecting multiple conditions with the or combinator condition
-  // if there are multiple conditions, we need to wrap the filter in an or: [] combinator
-  // if there is only a single condition, the filter should be returned without the or block
-  if (!filter || Object.keys(filter).length === 0) {
-    return newFilter;
-  } else {
-    // if the current filter already contains an "or" conditional block, the additional filter should be added to the existing "or" block
-    // otherwise, the current and additional filters should be wrapped in an "or" conditional block together
-    return {
-      or: filter.or
-        ? [...(filter.or as InnerFilter[]), newFilter]
-        : [filter, newFilter],
-    };
-  }
-}
-
 /**
  * Adds a new filter to an existing filter that filters by a model's id
  *

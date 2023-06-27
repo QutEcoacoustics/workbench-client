@@ -204,4 +204,4 @@ export const TAG_GROUP = new ServiceToken<TagGroupsService, TagGroup>(
 export const TAGGING = new ServiceToken<TaggingsService, Tagging>("TAGGING");
 export const USER = new ServiceToken<UserService, User>("USER");
 export const AUDIO_EVENT_PROVENANCE = new ServiceToken<AudioEventProvenanceService, AudioEventProvenance>("AUDIO_EVENT_PROVENANCE");
-export const AUDIO_EVENT_SUMMARY = new ServiceToken<EventSummaryReportService, EventSummaryReport>("AUDIO_EVENT_SUMMARY");
+export const AUDIO_EVENT_SUMMARY_REPORT = new ServiceToken<EventSummaryReportService, EventSummaryReport>("AUDIO_EVENT_SUMMARY_REPORT");

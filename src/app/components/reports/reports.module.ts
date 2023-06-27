@@ -10,7 +10,6 @@ import { reportsRoute } from "./reports.routes";
 const internalComponents = [];
 
 const components = [
-  // pages
   NewEventReportComponent,
   ViewEventReportComponent,
 ];

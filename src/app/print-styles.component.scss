@@ -1,19 +1,16 @@
 @media print {
-  .nav-link {
-    display: none;
-  }
-
-  baw-menu-toggle,
+  // hide branding during printing
   baw-footer,
-  baw-breadcrumbs {
+  baw-header {
     display: none;
   }
 
-  .navbar-brand {
+  // hide navigation during printing
+  baw-menu-toggle,
+  baw-breadcrumbs,
+  .nav-link,
+  .navbar-brand,
+  #navbar {
     display: none;
-  }
-
-  baw-header, #navbar {
-    background-color: transparent !important;
   }
 }

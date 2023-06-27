@@ -12,10 +12,12 @@
     },
     "y": {
       "aggregate": "sum",
-      "field": "date.ratio"
+      "field": "ratio",
+      "type": "quantitative"
     },
     "color": {
-      "field": "date.tagId",
+      "field": "tagId",
+      "type": "nominal",
       "scale": { "scheme": "category20b" }
     }
   }

@@ -3,8 +3,10 @@
   <ng-container *ngIf="multipleInputs">
     <span
       *ngFor="let item of activeItems"
-      class="item-pill bg-primary rounded-pill text-white me-1 p-1 px-3"
+      class="item-pill primary rounded-pill text-white me-1 p-1 px-3"
       (keydown.backspace)="removeItem(item)"
+      (keydown.delete)="removeItem(item)"
+      tabindex="0"
     >
       {{ formatter(item) }}
     </span>

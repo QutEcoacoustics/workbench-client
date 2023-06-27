@@ -1,10 +1,8 @@
 import {
-  IAccumulationGraphData,
   IAnalysisCoverageGraphData,
   IEventSummaryReport,
   IEventGroup,
   IReportEvent,
-  ISpeciesCompositionGraphData,
 } from "@models/EventSummaryReport";
 import { modelData } from "@test/helpers/faker";
 
@@ -50,28 +48,32 @@ export function generateEventSummaryReport(
       })
     ),
     siteIds: modelData.ids(),
+    // while not truely random, the use of hard coded graph data was used to ensure lifelike graphs during presentations
     graphs: {
-      accumulationData: modelData.randomArray<IAccumulationGraphData>(1, 10, () =>
-        Object({
-          date: modelData.date.recent().toISOString(),
-          count: modelData.datatype.number(),
-          error: modelData.datatype.number(),
-        })
-      ),
-      speciesCompositionData: modelData.randomArray<ISpeciesCompositionGraphData>(
-        0,
-        10,
-        () =>
-          Object({
-            date: modelData.date.recent().toISOString(),
-            values: modelData.randomArray<number>(1, 10, () =>
-              Object({
-                tagId: modelData.id(),
-                ratio: modelData.datatype.number(),
-              })
-            ),
-          })
-      ),
+      accumulationData: [
+        { date: "22-05-2023", count: 5, errorPositive: 5 + 0.5, errorNegative: 5 - 0.5 },
+        { date: "23-05-2023", count: 3, errorPositive: 3 + 0.5, errorNegative: 3 - 0.5 },
+        { date: "24-05-2023", count: 4, errorPositive: 4 + 0.5, errorNegative: 4 - 0.5 },
+        { date: "25-05-2023", count: 2, errorPositive: 2 + 0.5, errorNegative: 2 - 0.5 },
+        { date: "26-05-2023", count: 6, errorPositive: 6 + 0.5, errorNegative: 6 - 0.5 },
+      ],
+      speciesCompositionData: [
+        { date: "22-05-2023", tagId: 1, ratio: 0.55 },
+        { date: "22-05-2023", tagId: 39, ratio: 0.30 },
+        { date: "22-05-2023", tagId: 277, ratio: 0.15 },
+        { date: "23-05-2023", tagId: 1, ratio: 0.45 },
+        { date: "23-05-2023", tagId: 39, ratio: 0.20 },
+        { date: "23-05-2023", tagId: 277, ratio: 0.35 },
+        { date: "24-05-2023", tagId: 1, ratio: 0.05 },
+        { date: "24-05-2023", tagId: 39, ratio: 0.25 },
+        { date: "24-05-2023", tagId: 277, ratio: 0.7 },
+        { date: "25-05-2023", tagId: 1, ratio: 0.5 },
+        { date: "25-05-2023", tagId: 39, ratio: 0.2 },
+        { date: "25-05-2023", tagId: 277, ratio: 0.3 },
+        { date: "26-05-2023", tagId: 1, ratio: 0.25 },
+        { date: "26-05-2023", tagId: 39, ratio: 0.40 },
+        { date: "26-05-2023", tagId: 277, ratio: 0.35 }
+      ],
       analysisCoverageData: modelData.randomArray<IAnalysisCoverageGraphData>(
         0,
         10,

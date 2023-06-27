@@ -7,7 +7,7 @@ import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import {
   AUDIO_EVENT_PROVENANCE,
-  AUDIO_EVENT_SUMMARY,
+  AUDIO_EVENT_SUMMARY_REPORT,
 } from "@baw-api/ServiceTokens";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { generateEventSummaryReport } from "@test/fakes/EventSummaryReport";
@@ -15,8 +15,6 @@ import { ViewEventReportComponent } from "./view.component";
 
 describe("ViewEventReportComponent", () => {
   let spectator: SpectatorRouting<ViewEventReportComponent>;
-
-  // we need to mock components that call external apis such as the google maps embedded component
   const mockSiteMap = MockComponent(SiteMapComponent);
 
   // there are two locations in the view where the raw events can be download from in the report
@@ -32,7 +30,7 @@ describe("ViewEventReportComponent", () => {
     component: ViewEventReportComponent,
     providers: [
       {
-        provide: AUDIO_EVENT_SUMMARY.token,
+        provide: AUDIO_EVENT_SUMMARY_REPORT.token,
         useValue: {
           filterShow: () =>
             new EventSummaryReport(generateEventSummaryReport()),
@@ -73,9 +71,9 @@ describe("ViewEventReportComponent", () => {
   // the event download link uses a base64 encoding of the filters used to create the report
   // the base64 encoding is used as a GET request is needed for the download link
   it("should create the correct events download link", () => {
-    const base64EncodedFilters = "";
+    const expectedBase64EncodedFilters = "";
     const routeBase = "https://api.staging.ecosounds.org/projects/1135/audio_events/download.csv";
-    const filterParameters = `/?filters=${base64EncodedFilters}`;
+    const filterParameters = `/?filters=${expectedBase64EncodedFilters}`;
 
     const downloadLinks = downloadableEventsLinks();
     downloadLinks.forEach((link: HTMLAnchorElement) =>

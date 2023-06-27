@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, ViewChild } from "@angular/core";
+import { AbstractModel } from "@models/AbstractModel";
 import { NgbTypeaheadSelectItemEvent } from "@ng-bootstrap/ng-bootstrap";
 import {
   BehaviorSubject,
@@ -17,34 +18,31 @@ import { defaultDebounceTime } from "src/app/app.helper";
   styleUrls: ["typeahead-input.component.scss"],
 })
 export class TypeaheadInputComponent {
-  public constructor() {}
+  public constructor() { }
 
-  @Input() public options: string[]; // to remove
-
-  @Input() public label = "";
-  @Input() public inputPlaceholder = "";
-  @Input() public multipleInputs = false;
-  /** Since models are usually passed to the typeahead input, there needs to be a way to use a property as a human readable value
-   * The formatter callback takes a model and specifies what human readable description the models should be displayed as
-   */
-  @Input() public formatter: (item: unknown) => string = (
-    item: unknown
-  ): string => item.toString();
+  /** A behavior subject that emits the current models selected/active */
+  @Input() public modelChange: BehaviorSubject<AbstractModel[] | string[]> = new BehaviorSubject([]);
   /** The options callback is typically linked to a service as it should return a list observable of options that the user could select */
-  @Input() public optionsCallback!: (text: string) => Observable<unknown[]>;
-
-  /**
-   * When the user adds or removes an item from the active items array, a BehaviorSubject event should fire
-   * If this BehaviorSubject is from another component, we can make the external component listen to this event
+  @Input() public optionsCallback!: (text: string) => Observable<AbstractModel[] | string[]>;
+  /** Describes how to convert an object model into a human readable form for use in the pills and typeahead dropdown */
+  @Input() public formatter: (item: AbstractModel) => string = (item: AbstractModel): string => item.toString();
+  /** Whether the typeahead input should allow multiple inputs in pill form */
+  @Input() public multipleInputs = false;
+  /** Text to show above the input field. Usually a one 1-2 word descriptor. */
+  @Input() public label = "";
+  /** Placeholder text that is shown when the input field is empty.
+   * Note: This value is not emitted at any point
    */
-  @Input() public modelChange: BehaviorSubject<unknown[]> = new BehaviorSubject(
-    []
-  );
+  @Input() public inputPlaceholder = "";
 
   @ViewChild("typeaheadInputRef")
   public typeaheadInput: ElementRef<HTMLInputElement>;
-  public activeItems: unknown[] = [];
   public inputModel: string;
+
+  /** if multiple items are enabled, they will be added to the activeItems */
+  public activeItems: AbstractModel[] = [];
+  /** if the user clicks on a pill, it will be the selected item */
+  public selectedItem: AbstractModel;
 
   public findOptions: OperatorFunction<string, readonly unknown[]> = (
     text$: Observable<string>
@@ -54,17 +52,17 @@ export class TypeaheadInputComponent {
       distinctUntilChanged(),
       switchMap((term: string) =>
         this.optionsCallback(term).pipe(
-          map((items: unknown[]) =>
+          map((items: AbstractModel[]) =>
             items
               .filter(
-                (item: unknown) =>
+                (item: AbstractModel) =>
                   !this.activeItems.some(
-                    (activeItem: unknown) =>
+                    (activeItem: AbstractModel) =>
                       JSON.stringify(activeItem) === JSON.stringify(item)
                   )
               )
               .filter(
-                (item: unknown) =>
+                (item: AbstractModel) =>
                   this.formatter(item)
                     .toLowerCase()
                     .indexOf(term.toLowerCase()) > -1
@@ -75,7 +73,7 @@ export class TypeaheadInputComponent {
       )
     );
 
-  public onItemSelected($event: NgbTypeaheadSelectItemEvent<unknown>) {
+  public onItemSelected($event: NgbTypeaheadSelectItemEvent<AbstractModel>) {
     $event.preventDefault();
     const selectedItem = $event.item;
 
@@ -100,8 +98,8 @@ export class TypeaheadInputComponent {
     }
   }
 
-  public removeItem(item: unknown) {
-    this.activeItems = this.activeItems.filter((i: unknown) => i !== item);
+  public removeItem(item: AbstractModel) {
+    this.activeItems = this.activeItems.filter((i: AbstractModel) => i !== item);
     this.modelChange.next(this.activeItems);
   }
 }

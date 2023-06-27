@@ -41,17 +41,15 @@ describe("TypeaheadInputComponent", () => {
     );
 
     mockSitesService = spectator.inject(SHALLOW_SITE.token);
-    mockSitesService.filter.and.callFake(() => of(defaultFakeSites));
+    mockSitesService.filter.and.returnValue(of(defaultFakeSites));
 
+    const mockSiteFormatter = (site: Site) => site.name;
     spectator.component.optionsCallback = mockSitesService.filter;
-    spectator.component.formatter = siteTestFormatter;
+    spectator.component.formatter = mockSiteFormatter;
 
     spectator.detectChanges();
   }
 
-  function siteTestFormatter(site: Site) {
-    return site.name;
-  }
 
   const inputBox = (): HTMLInputElement =>
     spectator.query<HTMLInputElement>("input");
@@ -91,7 +89,7 @@ describe("TypeaheadInputComponent", () => {
     discardPeriodicTasks();
   }));
 
-  it("should include text above the input box for the label attribute", () => {
+  it("should include a label above the input if a input label has been specified", () => {
     const testLabelContent = modelData.lorem.words();
 
     spectator.component.label = testLabelContent;
@@ -108,10 +106,9 @@ describe("TypeaheadInputComponent", () => {
 
   it("should not create object pills if multiple inputs is disabled", () => {
     spectator.component.multipleInputs = false;
-    spectator.component.activeItems = defaultFakeSites.slice(
-      0,
-      defaultFakeSites.length - 1
-    );
+    const numberOfActiveItems = 1;
+
+    spectator.component.activeItems = defaultFakeSites.slice(0, defaultFakeSites.length - numberOfActiveItems);
     spectator.detectChanges();
 
     const pillElements: HTMLSpanElement[] = itemPills();
@@ -120,10 +117,9 @@ describe("TypeaheadInputComponent", () => {
 
   it("should create object pills if multiple inputs is enabled", () => {
     spectator.component.multipleInputs = true;
-    spectator.component.activeItems = defaultFakeSites.slice(
-      0,
-      defaultFakeSites.length - 2
-    );
+    const numberOfActiveItems = 2;
+
+    spectator.component.activeItems = defaultFakeSites.slice(0, defaultFakeSites.length - numberOfActiveItems);
 
     spectator.detectChanges();
 
@@ -132,6 +128,7 @@ describe("TypeaheadInputComponent", () => {
     expect(pillElements.length).toEqual(spectator.component.activeItems.length);
     pillElements.forEach((pill: HTMLSpanElement, i: number) => {
       expect(pill.innerText).toEqual(
+        // since the type of the active items is a TypeScript unknown, the as Site is acceptable as it adds type safety
         (spectator.component.activeItems[i] as Site).name
       );
     });
@@ -154,7 +151,7 @@ describe("TypeaheadInputComponent", () => {
     discardPeriodicTasks();
   }));
 
-  it("should clear the input if the user adds an item and multiple inputs are enabled", fakeAsync(() => {
+  it("should clear the input if the user selects an item and multiple inputs are enabled", fakeAsync(() => {
     const testInput: string = defaultFakeSites[0].name;
     spectator.component.multipleInputs = true;
 
@@ -170,7 +167,7 @@ describe("TypeaheadInputComponent", () => {
     discardPeriodicTasks();
   }));
 
-  it("should not clear the input if the selects an items from an input that doesn't have multiple inputs", fakeAsync(() => {
+  it("should not clear the input if the user selects an item and the input only emits a singular value", fakeAsync(() => {
     const testInput = defaultFakeSites[0].name;
     spectator.component.multipleInputs = false;
 
@@ -199,7 +196,7 @@ describe("TypeaheadInputComponent", () => {
     });
 
     expect(spectator.component.activeItems).toHaveLength(0);
-    expect(spectator.component.modelChange.next).toHaveBeenCalledWith([ sitesToSelect[1] ]);
+    expect(spectator.component.modelChange.next).toHaveBeenCalledWith([sitesToSelect[1]]);
 
     flush();
     discardPeriodicTasks();
@@ -274,7 +271,7 @@ describe("TypeaheadInputComponent", () => {
     discardPeriodicTasks();
   }));
 
-  it("should allow duplicate items in the dropdown if multiple inputs is disabled", fakeAsync(() => {
+  it("should allow duplicate items in the dropdown if multiple inputs are disabled", fakeAsync(() => {
     spectator.component.multipleInputs = false;
 
     const testInput: string = defaultFakeSites[0].name;
@@ -293,11 +290,11 @@ describe("TypeaheadInputComponent", () => {
   }));
 
   it("should use the formatter callback for the dropdown items", fakeAsync(() => {
-    const formattedName: string = siteTestFormatter(defaultFakeSites[0]);
-    typeInInput(formattedName);
+    const testInput: string = defaultFakeSites[0].name;
+    typeInInput(testInput);
     tick(defaultDebounceTime);
 
-    expect(selectedDropdownOption().innerText).toEqual(formattedName);
+    expect(selectedDropdownOption().innerText).toEqual(testInput);
 
     flush();
     discardPeriodicTasks();
@@ -305,12 +302,13 @@ describe("TypeaheadInputComponent", () => {
 
   it("should use the formatter callback for the active pill items", fakeAsync(() => {
     spectator.component.multipleInputs = true;
-
     const activeSite: Site = defaultFakeSites[0];
+    const expectedPillText = activeSite.name;
+
     spectator.component.activeItems = [activeSite];
     spectator.detectChanges();
 
-    expect(itemPills()[0].innerText).toEqual(siteTestFormatter(activeSite));
+    expect(itemPills()[0].innerText).toEqual(expectedPillText);
 
     flush();
     discardPeriodicTasks();

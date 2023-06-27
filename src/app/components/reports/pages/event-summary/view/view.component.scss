@@ -1,7 +1,5 @@
-.embeddedFigure {
+.embedded-figure {
   display: flex;
-  border-style: solid;
-  border-width: thin;
   max-width: 15em;
   max-height: 10em;
   justify-content: center;
@@ -9,19 +7,14 @@
   margin: 0.5em;
 }
 
-.largeEmbeddedFigure {
-  @extend .embeddedFigure;
+.large-embedded-figure {
+  @extend .embedded-figure;
   height: 15em;
   min-width: 30em;
   max-height: 15em;
 }
 
-.largeEmbeddedFigure-filled {
-  @extend .largeEmbeddedFigure;
-  border: none;
-}
-
-.siteMap {
+.site-map {
   display: flex;
   border-style: solid;
   border-width: thin;
@@ -32,18 +25,15 @@
 }
 
 @media print {
-  #printButton {
+  #print-button {
     display: none;
   }
 
-  .row,
-  .eventsTable,
-  .largeEmbeddedFigure,
-  .largeEmbeddedFigure-filled {
+  .col {
     break-inside: avoid;
   }
 
-  .eventsTable {
+  .events-table {
     overflow-wrap: anywhere;
   }
 

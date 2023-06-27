@@ -200,15 +200,11 @@ export class BawApiService<
   }
 
   /**
-   * Get response from filter route
+   * Get a single response from a filter route
    *
    * @param classBuilder Model to create
    * @param path API path
    * @param filters API filters
-   *
-   * ! This is a temporary method to generate fake data for the audio event summary report
-   * ! Once the api is fully functional, this method should be properly implemented
-   * ! The method is only used in the reports view at the moment and assumes that it is only used for the reports component
    */
   public filterShow(
     classBuilder: ClassBuilder,

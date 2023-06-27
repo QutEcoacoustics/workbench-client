@@ -23,14 +23,14 @@
           "field": "date",
           "type": "nominal"
         },
-        "y": { "field": "error", "type": "quantitative" },
-        "y2": { "field": "error2", "type": "quantitative" }
+        "y": { "field": "errorPositive", "type": "quantitative" },
+        "y2": { "field": "errorNegative", "type": "quantitative" }
       }
     },
     {
       "mark": "line",
       "encoding": {
-        "x": { "field:": "date", "type": "nominal", "axis": { "labelAngle": 0 } },
+        "x": { "field": "date", "type": "nominal", "axis": { "labelAngle": 0 } },
         "y": { "field": "count", "type": "quantitative", "axis": { "labelAngle": 0 } }
       }
     }

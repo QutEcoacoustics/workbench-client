@@ -1,7 +1,7 @@
 <h2 class="text-decoration-underline">
   Acoustic Event Summary Report
 
-  <a id="printButton" class="ms-3" (click)="window.print()">
+  <a id="print-button" class="ms-3" (click)="printPage()">
     <fa-icon [icon]="['fas', 'print']"></fa-icon>
   </a>
 </h2>
@@ -56,7 +56,7 @@
     </div>
   </div>
 
-  <div class="border w-100 h-5 my-4"></div>
+  <hr>
 
   <div class="reportOverview">
     <div class="alert alert-warning p-3 my-3">
@@ -68,7 +68,7 @@
       <div class="row">
         <div class="col">
           <div class="speciesList">
-            <!-- TODO: Dynamically update these values. This will most likely require a 3rd party API -->
+            <!-- TODO: Fetching these values. This will most likely require a 3rd party API -->
             <h4 class="py-1">Native Species: 5</h4>
             <h4 class="py-1">Non-native: 3</h4>
             <h4 class="py-1">Invasive: 3</h4>
@@ -76,15 +76,15 @@
         </div>
 
         <div class="col">
-          <div name="siteMap" class="siteMap">Site Map</div>
+          <div name="siteMap" class="site-map">Site Map</div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="border w-100 h-5 my-4"></div>
+  <hr>
 
-  <div class="summaryTable eventsTable">
+  <div class="events-table">
     <div class="py-4">
       <b>Total number of bins analysed: </b> {{ numberOfBinsAnalyzed }} <br />
       <strong>{{ audioCoverageSpan }}</strong> of recordings were found within
@@ -103,9 +103,9 @@
           <div class="col border py-1 fw-bold">Events</div>
           <div class="col border py-1 fw-bold">Recogniser</div>
           <div class="col border py-1 fw-bold"># Detections</div>
-          <div class="col border py-1 fw-bold"># Detection Days</div>
-          <div class="col border py-1 fw-bold"># Days with Rain</div>
-          <div class="col border py-1 fw-bold">Confidence Plot</div>
+          <div class="col border py-1 fw-bold"># Detection {{ binSize }}s</div>
+          <div class="col border py-1 fw-bold"># {{ binSize }}s with Rain</div>
+          <div class="col border py-1 fw-bold border">Confidence Plot</div>
         </div>
 
         <ng-container *ngFor="let item of report.eventGroups">
@@ -114,11 +114,9 @@
             <div class="col border py-1">{{ item.provenanceId }}</div>
             <div class="col border py-1">{{ item.detections }}</div>
             <div class="col border py-1">{{ item.binsWithDetections }}</div>
+            <div class="col border py-1">{{ binsWithRain(item) }}</div>
             <div class="col border py-1">
-              {{ item.binsWithInterference[0]?.name }}
-            </div>
-            <div class="col border py-1">
-              <div class="embeddedFigure">Confidence Plot</div>
+              <div class="embedded-figure border">Confidence Plot</div>
 
               <small class="m-1">Mean: {{ item.score.mean }}</small> <br />
               <small class="m-1">SD: {{ item.score.standardDeviation }}</small>
@@ -129,7 +127,7 @@
     </div>
   </div>
 
-  <div class="border w-100 h-5 my-4"></div>
+  <hr>
 
   <h3 class="text-decoration-underline">Summary of Selected Biophony</h3>
 
@@ -143,15 +141,15 @@
       <div class="row">
         <div class="row">
           <div class="col border p-3">
-            <div class="largeEmbeddedFigure">Site Map</div>
+            <div class="large-embedded-figure p-1 border">Site Map</div>
           </div>
 
           <div class="col border p-3">Map of sensors / points</div>
         </div>
 
-        <div *ngIf="report?.graphs?.accumulationData || true" class="row">
+        <div *ngIf="report?.graphs?.accumulationData" class="row">
           <div class="col border p-3">
-            <div #accumulationCurve class="largeEmbeddedFigure">
+            <div #accumulationCurve class="large-embedded-figure p-1 border">
               Insufficient data to create accumulation plot
             </div>
           </div>
@@ -159,9 +157,9 @@
           <div class="col border p-3">Species Accumulation Curve</div>
         </div>
 
-        <div *ngIf="report?.graphs?.speciesCompositionData || true" class="row">
+        <div *ngIf="report?.graphs?.speciesCompositionData" class="row">
           <div class="col border p-3">
-            <div #compositionCurve class="largeEmbeddedFigure">
+            <div #compositionCurve class="large-embedded-figure p-1 border">
               Insufficient data to create composition plot
             </div>
           </div>
@@ -171,10 +169,10 @@
 
         <div class="row">
           <div class="col border p-3">
-            <div class="largeEmbeddedFigure">Graph(s)</div>
+            <div class="large-embedded-figure p-1 border">False colour spectrogram graph(s)</div>
           </div>
 
-          <div class="col border p-3">False colour spectrograms / X days</div>
+          <div class="col border p-3">False colour spectrograms / {{ totalSearchSpan }}</div>
         </div>
       </div>
     </div>
