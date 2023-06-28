@@ -35,7 +35,6 @@ import { API_ROOT } from "@services/config/config.tokens";
 import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
-import confidencePlotSchema from "./confidencePlot.schema.json";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -53,6 +52,7 @@ class ViewEventReportComponent
   public constructor(
     private route: ActivatedRoute,
     private session: BawSessionService,
+    private elementRef: ElementRef,
     @Inject(API_ROOT) private apiRoot: string
   ) {
     super();
@@ -60,6 +60,7 @@ class ViewEventReportComponent
 
   @ViewChild("accumulationCurve") public accumulationCurveElement: ElementRef;
   @ViewChild("compositionCurve") public compositionCurveElement: ElementRef;
+
   public parameterDataModel: EventSummaryReportParameters;
   public report: EventSummaryReport;
   public user: User;
@@ -208,13 +209,6 @@ class ViewEventReportComponent
 
   protected binsWithRain(eventGroup: IEventGroup): number {
     return eventGroup.binsWithInterference.length;
-  }
-
-  protected confidencePlot(element: HTMLDivElement, values: number[]): string {
-    const plotSchema = confidencePlotSchema as VisualizationSpec;
-    plotSchema.data = values;
-
-    return "Insufficient data to generate graph";
   }
 }
 

@@ -162,6 +162,8 @@ export class EventSummaryReportParameters
         } else if (keyValue instanceof Duration) {
           params = params.append(key, keyValue.toFormat("hh:mm"));
         } else {
+          // appending an array of Ids (numbers) to HttpParams will result in a comma separated string values
+          // this is handled by Angular and does not require any additional logic
           params = params.append(key, keyValue);
         }
       }
