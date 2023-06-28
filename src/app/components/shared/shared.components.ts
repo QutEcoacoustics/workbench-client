@@ -48,6 +48,7 @@ import { UserLinkModule } from "./user-link/user-link.module";
 import { WIPComponent } from "./wip/wip.component";
 import { AudioRecordingsFilterComponent } from "./audio-recordings-filter/audio-recordings-filter.component";
 import { TypeaheadInputComponent } from "./typeahead-input/typeahead-input.component";
+import { ChartComponent } from "./chart/chart.component";
 
 export const sharedComponents = [
   AnnotationDownloadComponent,
@@ -61,6 +62,7 @@ export const sharedComponents = [
   DeleteModalComponent,
   AudioRecordingsFilterComponent,
   TypeaheadInputComponent,
+  ChartComponent,
 ];
 
 export const internalComponents = [];

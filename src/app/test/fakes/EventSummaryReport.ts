@@ -37,9 +37,7 @@ export function generateEventSummaryReport(
             })
         ),
         score: {
-          histogram: modelData.datatype.array(
-            modelData.datatype.number()
-          ),
+          histogram: modelData.randomArray<number>(10, 20, () => modelData.datatype.number()),
           standardDeviation: modelData.datatype.number(),
           mean: modelData.datatype.number(),
           min: modelData.datatype.number(),

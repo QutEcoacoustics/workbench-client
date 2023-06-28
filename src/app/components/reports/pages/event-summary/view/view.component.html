@@ -56,7 +56,7 @@
     </div>
   </div>
 
-  <hr>
+  <hr />
 
   <div class="reportOverview">
     <div class="alert alert-warning p-3 my-3">
@@ -82,7 +82,7 @@
     </div>
   </div>
 
-  <hr>
+  <hr />
 
   <div class="events-table">
     <div class="py-4">
@@ -116,9 +116,11 @@
             <div class="col border py-1">{{ item.binsWithDetections }}</div>
             <div class="col border py-1">{{ binsWithRain(item) }}</div>
             <div class="col border py-1">
-              <div class="embedded-figure border">
-                Insufficient data to create confidence plot
-              </div>
+              <baw-chart
+                class="embedded-figure border"
+                [spec]="confidencePlotSchema"
+                [data]="item.score.histogram"
+              ></baw-chart>
 
               <small class="m-1">Mean: {{ item.score.mean }}</small> <br />
               <small class="m-1">SD: {{ item.score.standardDeviation }}</small>
@@ -129,7 +131,7 @@
     </div>
   </div>
 
-  <hr>
+  <hr />
 
   <h3 class="text-decoration-underline">Summary of Selected Biophony</h3>
 
@@ -151,9 +153,11 @@
 
         <div *ngIf="report.graphs?.accumulationData" class="row">
           <div class="col border p-3">
-            <div #accumulationCurve class="large-embedded-figure p-1 border">
-              Insufficient data to create accumulation plot
-            </div>
+            <baw-chart
+              class="large-embedded-figure border"
+              [spec]="speciesAccumulationCurveSchema"
+              [data]="report.graphs?.accumulationData"
+            ></baw-chart>
           </div>
 
           <div class="col border p-3">Species Accumulation Curve</div>
@@ -161,9 +165,11 @@
 
         <div *ngIf="report.graphs?.speciesCompositionData" class="row">
           <div class="col border p-3">
-            <div #compositionCurve class="large-embedded-figure p-1 border">
-              Insufficient data to create composition plot
-            </div>
+            <baw-chart
+              class="large-embedded-figure border"
+              [spec]="speciesCompositionCurveSchema"
+              [data]="report.graphs?.speciesCompositionData"
+            ></baw-chart>
           </div>
 
           <div class="col border p-3">Species composition</div>
@@ -171,10 +177,14 @@
 
         <div class="row">
           <div class="col border p-3">
-            <div class="large-embedded-figure p-1 border">False colour spectrogram(s)</div>
+            <div class="large-embedded-figure p-1 border">
+              False colour spectrogram(s)
+            </div>
           </div>
 
-          <div class="col border p-3">False colour spectrograms / {{ totalSearchSpan }}</div>
+          <div class="col border p-3">
+            False colour spectrograms / {{ totalSearchSpan }}
+          </div>
         </div>
       </div>
     </div>

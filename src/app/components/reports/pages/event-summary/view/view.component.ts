@@ -1,10 +1,7 @@
 import {
-  AfterViewInit,
   Component,
-  ElementRef,
   Inject,
   OnInit,
-  ViewChild,
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -27,7 +24,6 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { DateTime } from "luxon";
-import embed, { VisualizationSpec } from "vega-embed";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
 import { takeUntil } from "rxjs";
@@ -35,6 +31,7 @@ import { API_ROOT } from "@services/config/config.tokens";
 import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
+import confidencePlotSchema from "./confidencePlot.schema.json";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -48,18 +45,14 @@ const reportKey = "report";
 })
 class ViewEventReportComponent
   extends PageComponent
-  implements AfterViewInit, OnInit {
+  implements OnInit {
   public constructor(
     private route: ActivatedRoute,
     private session: BawSessionService,
-    private elementRef: ElementRef,
     @Inject(API_ROOT) private apiRoot: string
   ) {
     super();
   }
-
-  @ViewChild("accumulationCurve") public accumulationCurveElement: ElementRef;
-  @ViewChild("compositionCurve") public compositionCurveElement: ElementRef;
 
   public parameterDataModel: EventSummaryReportParameters;
   public report: EventSummaryReport;
@@ -67,6 +60,10 @@ class ViewEventReportComponent
   public project: Project;
   public region?: Region;
   public site?: Site;
+
+  protected speciesAccumulationCurveSchema = speciesAccumulationCurveSchema;
+  protected speciesCompositionCurveSchema = speciesCompositionCurveSchema;
+  protected confidencePlotSchema = confidencePlotSchema;
 
   public ngOnInit(): void {
     // we can use "as" here to provide stronger typing because the data property is a standard object type without any typing
@@ -97,20 +94,6 @@ class ViewEventReportComponent
     if (models[reportKey]) {
       this.report = models[reportKey] as EventSummaryReport;
     }
-  }
-
-  public ngAfterViewInit(): void {
-    speciesAccumulationCurveSchema.data.values = this.report.graphs?.accumulationData;
-    speciesCompositionCurveSchema.data.values = this.report.graphs?.speciesCompositionData;
-
-    embed(
-      this.accumulationCurveElement.nativeElement,
-      speciesAccumulationCurveSchema as VisualizationSpec
-    );
-    embed(
-      this.compositionCurveElement.nativeElement,
-      speciesCompositionCurveSchema as VisualizationSpec
-    );
   }
 
   protected printPage(): void {
