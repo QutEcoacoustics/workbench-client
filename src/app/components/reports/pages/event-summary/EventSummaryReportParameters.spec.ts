@@ -36,17 +36,17 @@ describe("EventSummaryReportParameters", () => {
 
     // splitting these line by parameter allows for easier visualization
     const expectedParameters: string =
-      "sites=4,5,6" +
-      "&provenances=7,8,9" +
-      "&events=10,11,12" +
-      "&recogniserCutOff=0.5" +
-      "&charts=chart1,chart2" +
+      "recogniserCutOff=0.5" +
       "&binSize=month" +
       "&ignoreDaylightSavings=true" +
+      "&sites=4,5,6" +
+      "&provenances=7,8,9" +
+      "&events=10,11,12" +
       "&timeStartedAfter=01:30" +
       "&timeFinishedBefore=22:15" +
       "&dateStartedAfter=2020-02-01" +
-      "&dateFinishedBefore=2020-03-01";
+      "&dateFinishedBefore=2020-03-01" +
+      "&charts=chart1,chart2"
 
     const realizedParameters = dataModel.toQueryString();
 
@@ -172,15 +172,15 @@ describe("EventSummaryReportParameters", () => {
   });
 
   it("should be able to reconstruct the same query string parameters that it was created with", () => {
-    const mockQueryString =
-      "sites=4,5,6" +
+    const mockQueryString: string =
+      "recogniserCutOff=0.995" +
+      "&binSize=season" +
+      "&ignoreDaylightSavings=false" +
+      "&sites=4,5,6" +
       "&points=7,8,9" +
       "&provenances=11,23,2" +
       "&events=10,11,12" +
-      "&recogniserCutOff=0.995" +
-      "&charts=Species%20Composition%20Curve,False%20Colour%20Spectrogram,Species%20Accumulation%20Curve" +
-      "&binSize=season" +
-      "&ignoreDaylightSavings=false";
+      "&charts=Species%20Composition%20Curve,False%20Colour%20Spectrogram,Species%20Accumulation%20Curve"
 
     const mockSearchParameters: Params = {
       sites: "4,5,6",

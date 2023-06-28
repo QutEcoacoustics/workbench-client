@@ -116,7 +116,7 @@
             <div class="col border py-1">{{ item.binsWithDetections }}</div>
             <div class="col border py-1">{{ binsWithRain(item) }}</div>
             <div class="col border py-1">
-              <div class="embedded-figure border">Confidence Plot</div>
+              <div #confidencePlotContainer class="embedded-figure border">{{ confidencePlot(confidencePlotContainer, item.score.histogram) }}</div>
 
               <small class="m-1">Mean: {{ item.score.mean }}</small> <br />
               <small class="m-1">SD: {{ item.score.standardDeviation }}</small>

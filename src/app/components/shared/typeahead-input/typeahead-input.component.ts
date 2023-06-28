@@ -78,13 +78,12 @@ export class TypeaheadInputComponent {
     );
   }
 
-
   public onItemSelected($event: NgbTypeaheadSelectItemEvent<AbstractModel>) {
     $event.preventDefault();
     const selectedItem: AbstractModel = $event.item;
 
     if (this.multipleInputs) {
-      this.activeItems.push($event.item);
+      this.activeItems.push(selectedItem);
       this.modelChange.next(this.activeItems);
 
       this.typeaheadInput.nativeElement.value = "";
