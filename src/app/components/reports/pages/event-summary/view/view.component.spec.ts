@@ -1,4 +1,4 @@
-import { SpectatorRouting, createRoutingFactory } from "@ngneat/spectator";
+import { SpectatorRouting, SpyObject, createRoutingFactory } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
@@ -11,10 +11,21 @@ import {
 } from "@baw-api/ServiceTokens";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { generateEventSummaryReport } from "@test/fakes/EventSummaryReport";
+import { API_ROOT } from "@services/config/config.tokens";
+import { ActivatedRoute, Params } from "@angular/router";
+import { Project } from "@models/Project";
+import { generateProject } from "@test/fakes/Project";
+import { Region } from "@models/Region";
+import { generateRegion } from "@test/fakes/Region";
+import { of } from "rxjs";
+import { Filters } from "@baw-api/baw-api.service";
+import { toBase64Url } from "@helpers/encoding/encoding";
 import { ViewEventReportComponent } from "./view.component";
 
 describe("ViewEventReportComponent", () => {
   let spectator: SpectatorRouting<ViewEventReportComponent>;
+  let routeSpy: SpyObject<ActivatedRoute>
+  let apiRoot: string;
   const mockSiteMap = MockComponent(SiteMapComponent);
 
   // there are two locations in the view where the raw events can be download from in the report
@@ -47,12 +58,19 @@ describe("ViewEventReportComponent", () => {
 
   function setup(): void {
     spectator = createComponent({ detectChanges: false });
+    apiRoot = spectator.inject(API_ROOT);
+    routeSpy = spectator.inject(ActivatedRoute);
 
-    // these models are usually assigned during the route resolver
-    // to mock this behavior, we can
-    spectator.component.report = new EventSummaryReport(
-      generateEventSummaryReport()
-    );
+    spectator.component.project = new Project(generateProject());
+    spectator.component.region = new Region(generateRegion());
+    spectator.component.report = new EventSummaryReport(generateEventSummaryReport());
+
+    routeSpy.queryParams = of({
+      ignoreDaylightSavings: true,
+      recogniserCutOff: 0.8,
+      binSize: "month"
+    } as Params);
+
     spectator.detectChanges();
   }
 
@@ -64,16 +82,35 @@ describe("ViewEventReportComponent", () => {
 
   it("should call the system print dialog api when the print icon is clicked", () => {
     const printSpy = spyOn(window, "print");
-    spectator.click("#printButton");
+    spectator.click("#print-button");
     expect(printSpy).toHaveBeenCalled();
   });
 
   // the event download link uses a base64 encoding of the filters used to create the report
   // the base64 encoding is used as a GET request is needed for the download link
   it("should create the correct events download link", () => {
-    const expectedBase64EncodedFilters = "";
-    const routeBase = "https://api.staging.ecosounds.org/projects/1135/audio_events/download.csv";
-    const filterParameters = `/?filters=${expectedBase64EncodedFilters}`;
+    const defaultFilters: Filters<EventSummaryReport> = {
+      filter: {
+        and: [
+          {
+            score: {
+              gteq: 0.8
+            },
+          },
+          {
+            binSize: {
+              eq: "month"
+            }
+          }
+        ]
+      }
+    };
+
+    const expectedBase64Filters = toBase64Url(
+      JSON.stringify(defaultFilters)
+    );
+    const routeBase = apiRoot + "/projects/1135/audio_events/download.csv";
+    const filterParameters = `/?filters=${expectedBase64Filters}`;
 
     const downloadLinks = downloadableEventsLinks();
     downloadLinks.forEach((link: HTMLAnchorElement) =>
@@ -95,5 +132,5 @@ describe("ViewEventReportComponent", () => {
   });
 
   // TODO: since false colour spectrograms will be handled by another un-built server route, we need to create tests once functional
-  xit("should make the correct api calls for the false colour spectrograms", () => {});
+  xit("should make the correct api calls for the false colour spectrograms", () => { });
 });

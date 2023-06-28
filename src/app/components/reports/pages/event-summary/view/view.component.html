@@ -131,7 +131,7 @@
 
   <h3 class="text-decoration-underline">Summary of Selected Biophony</h3>
 
-  <div class="summaryGraphs">
+  <div class="summaryCharts">
     <div class="alert alert-warning p-3 my-3">
       Graphical representations below are only a collected and collated over the
       selected ranges and filters.
@@ -147,7 +147,7 @@
           <div class="col border p-3">Map of sensors / points</div>
         </div>
 
-        <div *ngIf="report?.graphs?.accumulationData" class="row">
+        <div *ngIf="report.graphs?.accumulationData" class="row">
           <div class="col border p-3">
             <div #accumulationCurve class="large-embedded-figure p-1 border">
               Insufficient data to create accumulation plot
@@ -157,7 +157,7 @@
           <div class="col border p-3">Species Accumulation Curve</div>
         </div>
 
-        <div *ngIf="report?.graphs?.speciesCompositionData" class="row">
+        <div *ngIf="report.graphs?.speciesCompositionData" class="row">
           <div class="col border p-3">
             <div #compositionCurve class="large-embedded-figure p-1 border">
               Insufficient data to create composition plot
@@ -169,7 +169,7 @@
 
         <div class="row">
           <div class="col border p-3">
-            <div class="large-embedded-figure p-1 border">False colour spectrogram graph(s)</div>
+            <div class="large-embedded-figure p-1 border">False colour spectrogram(s)</div>
           </div>
 
           <div class="col border p-3">False colour spectrograms / {{ totalSearchSpan }}</div>

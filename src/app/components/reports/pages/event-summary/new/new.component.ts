@@ -33,7 +33,7 @@ import { DateTime } from "luxon";
 import {
   BinSize,
   EventSummaryReportParameters,
-  GraphType,
+  ChartType,
 } from "../EventSummaryReportParameters";
 
 const projectKey = "project";
@@ -80,7 +80,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     provenanceScoreCutOff: 0.8,
     charts: new BehaviorSubject<string[]>([]),
     eventsOfInterest: new BehaviorSubject<Tag[]>([]),
-    binSize: "month",
+    binSize: BinSize.month,
   };
 
   public ngOnInit(): void {
@@ -90,9 +90,17 @@ class NewEventReportComponent extends PageComponent implements OnInit {
       return;
     }
 
-    this.project = models[projectKey] as Project;
-    this.region = models[regionKey] as Region;
-    this.site = models[siteKey] as Site;
+    if (models[projectKey]) {
+      this.project = models[projectKey] as Project;
+    }
+
+    if (models[regionKey]) {
+      this.region = models[regionKey] as Region;
+    }
+
+    if (models[siteKey]) {
+      this.site = models[siteKey] as Site;
+    }
   }
 
   public generateReport(): void {
@@ -113,13 +121,12 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   // on a generalised function
   public regionFormatter = (region: Region) => region.name;
   public siteFormatter = (site: Site) => site.name;
-  public provenanceFormatter = (provenance: AudioEventProvenance) => provenance.name;
+  public provenanceFormatter = (provenance: AudioEventProvenance) =>
+    provenance.name;
   public chartsFormatter = (chart: string) => chart;
   public eventsOfInterestFormatter = (tag: Tag): string => tag.text;
 
-  public regionsOptions = (
-    regionName: string
-  ): Observable<Region[]> => {
+  public regionsOptions = (regionName: string): Observable<Region[]> => {
     const filter: Filters<IRegion> = {
       filter: {
         name: {
@@ -169,18 +176,21 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return this.tagsApi.filter(filter);
   };
 
-  public chartsFilter = (text: string): Observable<string[]> =>
-    of(NewEventReportComponent.availableCharts.filter((chart) => chart.includes(text)));
+  public chartOptions = (): Observable<string[]> =>
+    of(NewEventReportComponent.availableCharts);
 
   protected isValidProvenanceCutOff(): boolean {
-    return this.model.provenanceScoreCutOff >= 0 && this.model.provenanceScoreCutOff <= 1;
+    return (
+      this.model.provenanceScoreCutOff >= 0 &&
+      this.model.provenanceScoreCutOff <= 1
+    );
   }
 
   protected get componentTitle(): string {
     if (this.site) {
-      return this.site.isPoint ?
-        `Point: ${this.site.name}` :
-        `Site: ${this.site.name}`;
+      return this.site.isPoint
+        ? `Point: ${this.site.name}`
+        : `Site: ${this.site.name}`;
     } else if (this.region) {
       return `Site: ${this.region.name}`;
     }
@@ -226,10 +236,13 @@ class NewEventReportComponent extends PageComponent implements OnInit {
 
     const dataModel = new EventSummaryReportParameters();
 
+    // we have to use a null default as fromObject will return the current date if null or undefined is provided
     const startDate: DateTime = dateTimeFilters.dateStartedAfter
-      ? DateTime.fromObject(dateTimeFilters.dateStartedAfter) : null;
+      ? DateTime.fromObject(dateTimeFilters.dateStartedAfter)
+      : null;
     const endDate: DateTime = dateTimeFilters.dateFinishedBefore
-      ? DateTime.fromObject(dateTimeFilters.dateFinishedBefore) : null;
+      ? DateTime.fromObject(dateTimeFilters.dateFinishedBefore)
+      : null;
 
     dataModel.sites = regionIds;
     dataModel.points = siteIds;
@@ -248,11 +261,11 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   }
 
   // we use a static array here as the list of possible charts the report can generate is directly linked to the template
-  private static availableCharts: GraphType[] = [
-    "Sensor Point Map",
-    "Species Accumulation Curve",
-    "Species Composition Curve",
-    "False Colour Spectrograms",
+  private static availableCharts: ChartType[] = [
+    ChartType.sensorPointMap,
+    ChartType.speciesAccumulationCurve,
+    ChartType.speciesCompositionCurve,
+    ChartType.falseColorSpectrograms,
   ];
 }
 

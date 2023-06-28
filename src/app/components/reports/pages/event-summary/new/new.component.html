@@ -63,14 +63,14 @@
   <option value="week">Week</option>
   <option value="fortnight">Fortnight</option>
   <option value="month">Month</option>
-  <option value="seasonally">Seasonally</option>
+  <option value="season">Season</option>
   <option value="year">Year</option>
 </select>
 
 <baw-typeahead-input
   label="Chart(s)"
   [inputPlaceholder]="'All'"
-  [optionsCallback]="chartsFilter"
+  [optionsCallback]="chartOptions"
   [multipleInputs]="true"
   [modelChange]="model.charts"
 ></baw-typeahead-input>

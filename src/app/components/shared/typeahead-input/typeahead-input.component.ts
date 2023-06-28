@@ -18,14 +18,19 @@ import { defaultDebounceTime } from "src/app/app.helper";
   styleUrls: ["typeahead-input.component.scss"],
 })
 export class TypeaheadInputComponent {
-  public constructor() { }
+  public constructor() {}
 
   /** A behavior subject that emits the current models selected/active */
-  @Input() public modelChange: BehaviorSubject<AbstractModel[] | string[]> = new BehaviorSubject([]);
+  @Input() public modelChange: BehaviorSubject<AbstractModel[] | string[]> =
+    new BehaviorSubject([]);
   /** The options callback is typically linked to a service as it should return a list observable of options that the user could select */
-  @Input() public optionsCallback!: (text: string) => Observable<AbstractModel[] | string[]>;
+  @Input() public optionsCallback!: (
+    text: string
+  ) => Observable<AbstractModel[] | string[]>;
   /** Describes how to convert an object model into a human readable form for use in the pills and typeahead dropdown */
-  @Input() public formatter: (item: AbstractModel) => string = (item: AbstractModel): string => item.toString();
+  @Input() public formatter: (item: AbstractModel) => string = (
+    item: AbstractModel
+  ): string => item.toString();
   /** Whether the typeahead input should allow multiple inputs in pill form */
   @Input() public multipleInputs = false;
   /** Text to show above the input field. Usually a one 1-2 word descriptor. */
@@ -46,8 +51,10 @@ export class TypeaheadInputComponent {
 
   public findOptions: OperatorFunction<string, readonly unknown[]> = (
     text$: Observable<string>
-  ) =>
-    text$.pipe(
+  ) => {
+    const maximumResults = 10;
+
+    return text$.pipe(
       debounceTime(defaultDebounceTime),
       distinctUntilChanged(),
       switchMap((term: string) =>
@@ -56,29 +63,28 @@ export class TypeaheadInputComponent {
             items
               .filter(
                 (item: AbstractModel) =>
-                  !this.activeItems.some(
-                    (activeItem: AbstractModel) =>
-                      JSON.stringify(activeItem) === JSON.stringify(item)
-                  )
-              )
-              .filter(
-                (item: AbstractModel) =>
                   this.formatter(item)
                     .toLowerCase()
-                    .indexOf(term.toLowerCase()) > -1
+                    .includes(term.toLowerCase()) &&
+                  !this.activeItems.some(
+                    (activeItem: AbstractModel) =>
+                      activeItem.toString() === item.toString()
+                  )
               )
-              .slice(0, 10)
+              .slice(0, maximumResults)
           )
         )
       )
     );
+  }
+
 
   public onItemSelected($event: NgbTypeaheadSelectItemEvent<AbstractModel>) {
     $event.preventDefault();
-    const selectedItem = $event.item;
+    const selectedItem: AbstractModel = $event.item;
 
     if (this.multipleInputs) {
-      this.activeItems.push(selectedItem);
+      this.activeItems.push($event.item);
       this.modelChange.next(this.activeItems);
 
       this.typeaheadInput.nativeElement.value = "";
@@ -91,15 +97,17 @@ export class TypeaheadInputComponent {
   public removeLastItem() {
     if (
       this.multipleInputs &&
-      (this.inputModel === "" || this.inputModel === undefined) &&
-      this.activeItems.length > 0
+      this.activeItems.length > 0 &&
+      (this.inputModel === "" || this.inputModel === undefined)
     ) {
       this.activeItems.pop();
     }
   }
 
   public removeItem(item: AbstractModel) {
-    this.activeItems = this.activeItems.filter((i: AbstractModel) => i !== item);
+    this.activeItems = this.activeItems.filter(
+      (activeItem: AbstractModel) => activeItem !== item
+    );
     this.modelChange.next(this.activeItems);
   }
 }

@@ -39,7 +39,7 @@ import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
-const parametersKey = "report";
+const reportKey = "report";
 
 @Component({
   selector: "baw-summary-report",
@@ -80,13 +80,21 @@ class ViewEventReportComponent
       return;
     }
 
-    // since route.snapshot.data is loosely typed as an object casing to a specific model type
-    // adds additional type checking rather than losing type checking
-    // however, if the models are in the wrong format here, TypeScript will not throw an error and result in a JS error during runtime
-    this.project = models[projectKey] as Project;
-    this.region = models[regionKey] as Region;
-    this.site = models[siteKey] as Site;
-    this.report = models[parametersKey] as EventSummaryReport;
+    if (models[projectKey]) {
+      this.project = models[projectKey] as Project;
+    }
+
+    if (models[regionKey]) {
+      this.region = models[regionKey] as Region;
+    }
+
+    if (models[siteKey]) {
+      this.site = models[siteKey] as Site;
+    }
+
+    if (models[reportKey]) {
+      this.report = models[reportKey] as EventSummaryReport;
+    }
   }
 
   public ngAfterViewInit(): void {
@@ -153,7 +161,7 @@ class ViewEventReportComponent
     // the queryStringParameters data model stores provenanceCutOff as a float between 0 and 1
     // because the view requires the value in a "percentage" (really score), we convert it in the view model
     if (this.parameterDataModel?.recogniserCutOff) {
-      return this.parameterDataModel.recogniserCutOff * 100 + "%";
+      return `${this.parameterDataModel.recogniserCutOff * 100}%`;
     }
 
     // the default cutoff is 0% as it allows all events through, regardless of confidence score
@@ -163,9 +171,9 @@ class ViewEventReportComponent
   protected get dateRange(): string {
     const endash = "&#8211;";
     const startDate: string =
-      this.parameterDataModel?.dateStartedAfter ?? "";
+      this.parameterDataModel?.dateStartedAfter?.toFormat("yyyy-MM-dd") ?? "";
     const endDate: string =
-      this.parameterDataModel?.dateFinishedBefore ?? "";
+      this.parameterDataModel?.dateFinishedBefore?.toFormat("yyyy-MM-dd") ?? "";
 
     if (!startDate && !endDate) {
       return "(not specified)";
@@ -178,9 +186,9 @@ class ViewEventReportComponent
   protected get timeRange(): string {
     const endash = "&#8211;";
     const startTime: string =
-      this.parameterDataModel?.timeStartedAfter ?? "";
+      this.parameterDataModel?.timeStartedAfter?.toFormat("hh:mm") ?? "";
     const endTime: string =
-      this.parameterDataModel?.timeFinishedBefore ?? "";
+      this.parameterDataModel?.timeFinishedBefore?.toFormat("hh:mm") ?? "";
 
     if (!startTime && !endTime) {
       return "(not specified)";
@@ -210,7 +218,7 @@ function getPageInfo(subRoute: keyof typeof reportMenuItems.view): IPageInfo {
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
-      [parametersKey]: eventSummaryResolvers.filterShow,
+      [reportKey]: eventSummaryResolvers.filterShow,
     },
   };
 }
