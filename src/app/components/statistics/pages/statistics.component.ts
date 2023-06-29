@@ -150,7 +150,7 @@ class StatisticsComponent
         setGroupTwoValue("users", summary.usersOnline);
         setGroupTwoValue(
           "storedData",
-          filesize(summary.audioRecordingsTotalSize, { round: 2 }) as number
+          filesize(summary.audioRecordingsTotalSize, { round: 2 }) as string | number
         );
         setGroupTwoValue("newRecordings", summary.audioRecordingsRecent);
         setGroupTwoValue(

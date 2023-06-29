@@ -79,7 +79,7 @@ export interface IConfiguration {
  * Wrapper to automatically initialize kind key
  */
 export class Configuration implements IConfiguration {
-  public kind: "Configuration" = "Configuration" as const;
+  public kind = "Configuration" as const;
   public endpoints: Endpoints;
   public settings: Settings;
   public keys: Keys;

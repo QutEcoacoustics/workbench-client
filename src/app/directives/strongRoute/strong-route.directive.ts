@@ -49,6 +49,8 @@ export class StrongRouteDirective
     private sharedRoute: SharedActivatedRouteService,
     _locationStrategy: LocationStrategy
   ) {
+    // the `null` value in this constructor is used for the tabIndexAttribute
+    // since this is a generic directive, tab indexes should be set by the parent anchor element
     super(_router, _route, null, _renderer, _element, _locationStrategy);
   }
 

@@ -11,7 +11,6 @@ import {
 import {
   IsActiveMatchOptions,
   Router,
-  RouterLink,
   RouterLinkActive,
 } from "@angular/router";
 import { StrongRouteDirective } from "./strong-route.directive";
@@ -41,7 +40,7 @@ export class StrongRouteActiveDirective extends RouterLinkActive {
     _element: ElementRef,
     _renderer: Renderer2,
     _cdr: ChangeDetectorRef,
-    @Optional() _link?: RouterLink
+    @Optional() _link?: StrongRouteDirective
   ) {
     super(_router, _element, _renderer, _cdr, _link);
   }

@@ -12,11 +12,11 @@ The Angular client for an acoustic workbench application.
 
 Generally we try to stick to the Latest Stable Release (LSR) for all requirements and dependencies.
 
-- Node LTS
-- NPM LTS
-- Chrome LTS
-- Firefox LTS
-- Edge (Chromium) LTS
+- Node LSR
+- NPM LSR
+- Chrome LSR
+- Firefox LSR
+- Edge (Chromium) LSR
 
 ### Installation
 
