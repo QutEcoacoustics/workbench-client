@@ -24,7 +24,7 @@ export class TypeaheadInputComponent {
   @Input() public modelChange: BehaviorSubject<AbstractModel[] | string[]> =
     new BehaviorSubject([]);
   /** The options callback is typically linked to a service as it should return a list observable of options that the user could select */
-  @Input() public optionsCallback!: (
+  @Input() public optionsCallback: (
     text: string
   ) => Observable<AbstractModel[] | string[]>;
   /** Describes how to convert an object model into a human readable form for use in the pills and typeahead dropdown */
@@ -76,7 +76,7 @@ export class TypeaheadInputComponent {
         )
       )
     );
-  }
+  };
 
   public onItemSelected($event: NgbTypeaheadSelectItemEvent<AbstractModel>) {
     $event.preventDefault();

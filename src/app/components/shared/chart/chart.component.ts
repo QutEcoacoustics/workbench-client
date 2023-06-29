@@ -11,11 +11,10 @@ import { Data } from "vega-lite/build/src/data";
 @Component({
   selector: "baw-chart",
   template: `
-    <div #chartContainer class="max-content">
+    <div #chartContainer class="w-100 h-100">
       Insufficient data to create graph
     </div>
   `,
-  styleUrls: [ "chart.component.scss" ],
 })
 export class ChartComponent implements AfterViewInit {
   public constructor() {}

@@ -46,7 +46,7 @@ describe("EventSummaryReportParameters", () => {
       "&timeFinishedBefore=22:15" +
       "&dateStartedAfter=2020-02-01" +
       "&dateFinishedBefore=2020-03-01" +
-      "&charts=chart1,chart2"
+      "&charts=chart1,chart2";
 
     const realizedParameters = dataModel.toQueryString();
 
@@ -121,6 +121,7 @@ describe("EventSummaryReportParameters", () => {
       charts: ChartType.falseColorSpectrograms,
       ignoreDayLightSavings: "true",
     };
+
     const dataModel = new EventSummaryReportParameters(mockQueryParameters);
 
     expect(dataModel.sites).toEqual([41, 52, 46]);
@@ -180,7 +181,7 @@ describe("EventSummaryReportParameters", () => {
       "&points=7,8,9" +
       "&provenances=11,23,2" +
       "&events=10,11,12" +
-      "&charts=Species%20Composition%20Curve,False%20Colour%20Spectrogram,Species%20Accumulation%20Curve"
+      "&charts=Species%20Composition%20Curve,False%20Colour%20Spectrogram,Species%20Accumulation%20Curve";
 
     const mockSearchParameters: Params = {
       sites: "4,5,6",
