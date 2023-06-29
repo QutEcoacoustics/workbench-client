@@ -86,7 +86,7 @@ describe("NewEventReportComponent", () => {
 
   it("should navigate to the correct route when the form is submitted with no user input/default values", () => {
     const defaultRecognizerCutOff = "0.8";
-    const defaultBinSize = "month";
+    const defaultBinSize = BinSize.month;
 
     const expectedRoute =
       `/projects/${defaultProject.id}` +
@@ -149,16 +149,16 @@ describe("NewEventReportComponent", () => {
       `/projects/${defaultProject.id}` +
       `/regions/${defaultRegion.id}` +
       `/points/${defaultSite.id}/reports/event-summary` +
-      "?provenances=1,2" +
-      "&events=1,2" +
-      `&recogniserCutOff=${provenanceCutOff}` +
-      "&charts=Sensor%20Point%20Map,Species%20Accumulation%20Curve" +
+      `?recogniserCutOff=${provenanceCutOff}` +
       `&binSize=${binSize}` +
       "&ignoreDaylightSavings=false" +
+      "&provenances=1,2" +
+      "&events=1,2" +
+      "&charts=Sensor%20Point%20Map,Species%20Accumulation%20Curve" +
       "&timeStartedAfter=00:00" +
       "&timeFinishedBefore=23:59" +
       "&dateStartedAfter=2020-01-01" +
-      "&dateFinishedBefore=2020-02-01"
+      "&dateFinishedBefore=2020-02-01";
 
     // since typeahead callbacks/model emission is tested within its own component
     // and testing inputs would require mocking option callbacks (negating all benefit from testing through inputs)

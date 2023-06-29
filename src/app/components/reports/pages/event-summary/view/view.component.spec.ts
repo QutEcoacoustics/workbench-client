@@ -1,4 +1,8 @@
-import { SpectatorRouting, SpyObject, createRoutingFactory } from "@ngneat/spectator";
+import {
+  SpectatorRouting,
+  SpyObject,
+  createRoutingFactory,
+} from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
@@ -20,11 +24,12 @@ import { generateRegion } from "@test/fakes/Region";
 import { of } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
 import { toBase64Url } from "@helpers/encoding/encoding";
+import { BinSize } from "../EventSummaryReportParameters";
 import { ViewEventReportComponent } from "./view.component";
 
 describe("ViewEventReportComponent", () => {
   let spectator: SpectatorRouting<ViewEventReportComponent>;
-  let routeSpy: SpyObject<ActivatedRoute>
+  let routeSpy: SpyObject<ActivatedRoute>;
   let apiRoot: string;
   const mockSiteMap = MockComponent(SiteMapComponent);
 
@@ -63,12 +68,14 @@ describe("ViewEventReportComponent", () => {
 
     spectator.component.project = new Project(generateProject());
     spectator.component.region = new Region(generateRegion());
-    spectator.component.report = new EventSummaryReport(generateEventSummaryReport());
+    spectator.component.report = new EventSummaryReport(
+      generateEventSummaryReport()
+    );
 
     routeSpy.queryParams = of({
       ignoreDaylightSavings: true,
       recogniserCutOff: 0.8,
-      binSize: "month"
+      binSize: "month",
     } as Params);
 
     spectator.detectChanges();
@@ -92,23 +99,13 @@ describe("ViewEventReportComponent", () => {
     const defaultFilters: Filters<EventSummaryReport> = {
       filter: {
         and: [
-          {
-            score: {
-              gteq: 0.8
-            },
-          },
-          {
-            binSize: {
-              eq: "month"
-            }
-          }
-        ]
-      }
+          { score: { gteq: 0.8 } },
+          { binSize: { eq: BinSize.month } },
+        ],
+      },
     };
 
-    const expectedBase64Filters = toBase64Url(
-      JSON.stringify(defaultFilters)
-    );
+    const expectedBase64Filters = toBase64Url(JSON.stringify(defaultFilters));
     const routeBase = apiRoot + "/projects/1135/audio_events/download.csv";
     const filterParameters = `/?filters=${expectedBase64Filters}`;
 
@@ -132,5 +129,5 @@ describe("ViewEventReportComponent", () => {
   });
 
   // TODO: since false colour spectrograms will be handled by another un-built server route, we need to create tests once functional
-  xit("should make the correct api calls for the false colour spectrograms", () => { });
+  xit("should make the correct api calls for the false colour spectrograms", () => {});
 });

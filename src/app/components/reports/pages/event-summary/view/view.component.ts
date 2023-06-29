@@ -28,7 +28,7 @@ import { BawSessionService } from "@baw-api/baw-session.service";
 import { eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
 import { takeUntil } from "rxjs";
 import { API_ROOT } from "@services/config/config.tokens";
-import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
+import { BinSize, EventSummaryReportParameters } from "../EventSummaryReportParameters";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
 import confidencePlotSchema from "./confidencePlot.schema.json";
@@ -139,7 +139,7 @@ class ViewEventReportComponent
       return this.parameterDataModel.binSize;
     }
 
-    return "month";
+    return BinSize.month;
   }
 
   protected get confidenceCutOffPercentage(): string {
