@@ -5,14 +5,14 @@ import {
   Input,
   ViewChild,
 } from "@angular/core";
-import embed from "vega-embed";
+import embed, { EmbedOptions } from "vega-embed";
 import { Data } from "vega-lite/build/src/data";
 
 @Component({
   selector: "baw-chart",
   template: `
-    <div #chartContainer class="w-100 h-100">
-      Insufficient data to create graph
+    <div #chartContainer style="height: 100%; width: 100%;">
+      Loading...
     </div>
   `,
 })
@@ -23,11 +23,16 @@ export class ChartComponent implements AfterViewInit {
 
   @Input() public spec;
   @Input() public data: Data;
+  @Input() public options: EmbedOptions;
 
   public ngAfterViewInit() {
     const fullSpec = this.spec;
     fullSpec.data.values = this.data;
 
-    embed(this.element.nativeElement, fullSpec);
+    embed(
+      this.element.nativeElement,
+      fullSpec,
+      this.options
+    );
   }
 }

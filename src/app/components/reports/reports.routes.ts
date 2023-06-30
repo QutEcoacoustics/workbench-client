@@ -4,7 +4,14 @@ import { pointRoute } from "@components/sites/points.routes";
 import { siteRoute } from "@components/sites/sites.routes";
 import { StrongRoute } from "@interfaces/strongRoute";
 
-const eventSummaryReportName = "event-summary";
+const eventSummaryReportRouteName = "event-summary";
+
+const summaryReportRouteQueryParamResolver = (params) =>
+  params
+    ? {
+        score: params.score,
+    }
+    : {};
 
 export type ReportRoute = "project" | "region" | "site" | "siteAndRegion";
 export type ReportStrongRoutes = Record<ReportRoute, StrongRoute>;
@@ -17,10 +24,10 @@ export const reportsRoute: ReportStrongRoutes = {
 };
 
 export const eventReportRoute: ReportStrongRoutes = {
-  project: reportsRoute.project.add(eventSummaryReportName),
-  region: reportsRoute.region.add(eventSummaryReportName),
-  site: reportsRoute.site.add(eventSummaryReportName),
-  siteAndRegion: reportsRoute.siteAndRegion.add(eventSummaryReportName),
+  project: reportsRoute.project.add(eventSummaryReportRouteName, summaryReportRouteQueryParamResolver),
+  region: reportsRoute.region.add(eventSummaryReportRouteName, summaryReportRouteQueryParamResolver),
+  site: reportsRoute.site.add(eventSummaryReportRouteName, summaryReportRouteQueryParamResolver),
+  siteAndRegion: reportsRoute.siteAndRegion.add(eventSummaryReportRouteName, summaryReportRouteQueryParamResolver),
 };
 
 export const newEventReportRoute: ReportStrongRoutes = {

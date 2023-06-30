@@ -46,7 +46,7 @@ import { ProgressModule } from "./progress/progress.module";
 import { StepperModule } from "./stepper/stepper.module";
 import { UserLinkModule } from "./user-link/user-link.module";
 import { WIPComponent } from "./wip/wip.component";
-import { AudioRecordingsFilterComponent } from "./audio-recordings-filter/audio-recordings-filter.component";
+import { DateTimeFilterComponent } from "./date-time-filter/date-time-filter.component";
 import { TypeaheadInputComponent } from "./typeahead-input/typeahead-input.component";
 import { ChartComponent } from "./chart/chart.component";
 
@@ -60,7 +60,7 @@ export const sharedComponents = [
   WIPComponent,
   ModelSelectorComponent,
   DeleteModalComponent,
-  AudioRecordingsFilterComponent,
+  DateTimeFilterComponent,
   TypeaheadInputComponent,
   ChartComponent,
 ];

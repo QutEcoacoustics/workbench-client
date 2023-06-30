@@ -13,8 +13,16 @@
         "color": "black"
       },
       "encoding": {
-        "x": { "field": "date", "type": "nominal", "axis": { "labelAngle": 0 } },
-        "y": { "field": "count", "type": "quantitative", "axis": { "labelAngle": 0 } }
+        "x": {
+          "field": "date",
+          "type": "nominal",
+          "axis": { "labelAngle": 0 }
+        },
+        "y": {
+          "field": "count",
+          "type": "quantitative",
+          "axis": { "labelAngle": 0 }
+        }
       }
     },
     {
@@ -31,8 +39,16 @@
     {
       "mark": "line",
       "encoding": {
-        "x": { "field": "date", "type": "nominal", "axis": { "labelAngle": 0 } },
-        "y": { "field": "count", "type": "quantitative", "axis": { "labelAngle": 0 } }
+        "x": {
+          "field": "date",
+          "type": "nominal",
+          "axis": { "labelAngle": 0 }
+        },
+        "y": {
+          "field": "count",
+          "type": "quantitative",
+          "axis": { "labelAngle": 0 }
+        }
       }
     }
   ]

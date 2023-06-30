@@ -1,27 +1,35 @@
-<label *ngIf="label" for="typeahead-input" class="form-label">{{ label }}</label>
-<div class="typeahead-input-container d-flex form-inline form-group form-control border p-0">
-  <ng-container *ngIf="multipleInputs">
-    <span
-      *ngFor="let item of activeItems"
-      class="item-pill primary rounded-pill text-white me-1 p-1 px-3"
-      (keydown.backspace)="removeItem(item)"
-      (keydown.delete)="removeItem(item)"
-      tabindex="0"
-    >
-      {{ formatter(item) }}
-    </span>
-  </ng-container>
+<div>
+  <label *ngIf="label" for="typeahead-input" class="form-label">
+    {{ label }}
+  </label>
+  <div class="typeahead-input-container d-flex form-inline form-group form-control border p-0">
+    <ng-container *ngIf="multipleInputs">
+      <span
+        *ngFor="let item of activeItems"
+        class="item-pill badge fw-normal mx-1 my-1"
+        (keydown.backspace)="removeItem(item)"
+        (keydown.delete)="removeItem(item)"
+        tabindex="0"
+      >
+        {{ formatter(item) }}
+        <fa-icon
+          (click)="removeItem(item)"
+          [icon]="['fas', 'square-xmark']"
+        ></fa-icon>
+      </span>
+    </ng-container>
 
-  <input
-    #typeaheadInputRef
-    name="typeahead-input"
-    type="text"
-    class="form-control border-0"
-    [placeholder]="activeItems.length < 1 ? inputPlaceholder : ''"
-    [ngbTypeahead]="findOptions"
-    [resultFormatter]="formatter"
-    [(ngModel)]="inputModel"
-    (selectItem)="onItemSelected($event)"
-    (keydown.backspace)="removeLastItem()"
-  />
+    <input
+      #typeaheadInputRef
+      name="typeahead-input"
+      type="text"
+      class="form-control border-0"
+      [placeholder]="activeItems.length < 1 ? inputPlaceholder : ''"
+      [ngbTypeahead]="findOptions"
+      [resultFormatter]="formatter"
+      [(ngModel)]="inputModel"
+      (selectItem)="onItemSelected($event)"
+      (keydown.backspace)="removeLastItem()"
+    />
+  </div>
 </div>

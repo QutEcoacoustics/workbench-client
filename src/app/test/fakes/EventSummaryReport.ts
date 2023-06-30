@@ -26,8 +26,8 @@ export function generateEventSummaryReport(
         provenanceId: modelData.id(),
         tagId: modelData.id(),
         detections: modelData.datatype.number(),
-        binsWithDetections: modelData.datatype.number(),
-        binsWithInterference: modelData.randomArray<IReportEvent>(
+        bucketsWithDetections: modelData.datatype.number(),
+        bucketsWithInterference: modelData.randomArray<IReportEvent>(
           0,
           10,
           () =>
@@ -36,12 +36,14 @@ export function generateEventSummaryReport(
               value: modelData.datatype.number(),
             })
         ),
+        // since all these values will be scores from recognizers/provenances, they will be bounded between 0 and 1
+        // while not technically percentages, they can be mocked with fake data using a percentage because of the same domain
         score: {
-          histogram: modelData.randomArray<number>(10, 20, () => modelData.datatype.number()),
-          standardDeviation: modelData.datatype.number(),
-          mean: modelData.datatype.number(),
-          min: modelData.datatype.number(),
-          max: modelData.datatype.number(),
+          histogram: modelData.randomArray<number>(10, 20, () => modelData.percentage()),
+          standardDeviation: modelData.percentage(),
+          mean: modelData.percentage(),
+          min: modelData.percentage(),
+          max: modelData.percentage(),
         },
       })
     ),
@@ -49,11 +51,14 @@ export function generateEventSummaryReport(
     // while not truely random, the use of hard coded graph data was used to ensure lifelike graphs during presentations
     graphs: {
       accumulationData: [
-        { date: "22-05-2023", count: 5, errorPositive: 5 + 0.5, errorNegative: 5 - 0.5 },
-        { date: "23-05-2023", count: 3, errorPositive: 3 + 0.5, errorNegative: 3 - 0.5 },
-        { date: "24-05-2023", count: 4, errorPositive: 4 + 0.5, errorNegative: 4 - 0.5 },
-        { date: "25-05-2023", count: 2, errorPositive: 2 + 0.5, errorNegative: 2 - 0.5 },
-        { date: "26-05-2023", count: 6, errorPositive: 6 + 0.5, errorNegative: 6 - 0.5 },
+        { date: "22-05-2023", count: 4, errorPositive: 4.5, errorNegative: 4 },
+        { date: "23-05-2023", count: 9, errorPositive: 9.5, errorNegative: 9 },
+        { date: "24-05-2023", count: 12, errorPositive: 12.5, errorNegative: 12 },
+        { date: "25-05-2023", count: 12, errorPositive: 12.5, errorNegative: 12 },
+        { date: "26-05-2023", count: 12, errorPositive: 12.5, errorNegative: 12 },
+        { date: "27-05-2023", count: 12, errorPositive: 12.5, errorNegative: 12 },
+        { date: "28-05-2023", count: 12, errorPositive: 12.5, errorNegative: 12 },
+        { date: "29-05-2023", count: 13, errorPositive: 13.5, errorNegative: 13 },
       ],
       speciesCompositionData: [
         { date: "22-05-2023", tagId: 1, ratio: 0.55 },

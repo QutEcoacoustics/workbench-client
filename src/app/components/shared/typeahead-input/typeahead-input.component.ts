@@ -1,8 +1,13 @@
-import { Component, ElementRef, Input, ViewChild } from "@angular/core";
-import { AbstractModel } from "@models/AbstractModel";
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from "@angular/core";
 import { NgbTypeaheadSelectItemEvent } from "@ng-bootstrap/ng-bootstrap";
 import {
-  BehaviorSubject,
   debounceTime,
   distinctUntilChanged,
   map,
@@ -13,23 +18,20 @@ import {
 import { defaultDebounceTime } from "src/app/app.helper";
 
 @Component({
-  selector: "baw-typeahead-input[optionsCallback]",
+  selector: "baw-typeahead-input[searchCallback]",
   templateUrl: "typeahead-input.component.html",
   styleUrls: ["typeahead-input.component.scss"],
 })
 export class TypeaheadInputComponent {
   public constructor() {}
 
-  /** A behavior subject that emits the current models selected/active */
-  @Input() public modelChange: BehaviorSubject<AbstractModel[] | string[]> =
-    new BehaviorSubject([]);
   /** The options callback is typically linked to a service as it should return a list observable of options that the user could select */
-  @Input() public optionsCallback: (
+  @Input() public searchCallback: (
     text: string
-  ) => Observable<AbstractModel[] | string[]>;
+  ) => Observable<object[] | string[]>;
   /** Describes how to convert an object model into a human readable form for use in the pills and typeahead dropdown */
-  @Input() public formatter: (item: AbstractModel) => string = (
-    item: AbstractModel
+  @Input() public formatter: (item: object) => string = (
+    item: object
   ): string => item.toString();
   /** Whether the typeahead input should allow multiple inputs in pill form */
   @Input() public multipleInputs = false;
@@ -39,57 +41,54 @@ export class TypeaheadInputComponent {
    * Note: This value is not emitted at any point
    */
   @Input() public inputPlaceholder = "";
+  /** An event emitter when a user adds, removes, or selects and item from the typeahead input */
+  @Output() public modelChange = new EventEmitter<object[] | string[]>();
 
   @ViewChild("typeaheadInputRef")
   public typeaheadInput: ElementRef<HTMLInputElement>;
-  public inputModel: string;
+  public inputModel: string | null = null;
 
   /** if multiple items are enabled, they will be added to the activeItems */
-  public activeItems: AbstractModel[] = [];
-  /** if the user clicks on a pill, it will be the selected item */
-  public selectedItem: AbstractModel;
+  public activeItems: object[] = [];
 
   public findOptions: OperatorFunction<string, readonly unknown[]> = (
     text$: Observable<string>
   ) => {
     const maximumResults = 10;
 
+    const removeIntersection = (items: object[]) =>
+      items.filter(
+        (item: object) =>
+          !this.activeItems.some(
+            (activeItem) => activeItem.toString() === item.toString()
+          )
+      );
+
     return text$.pipe(
       debounceTime(defaultDebounceTime),
       distinctUntilChanged(),
       switchMap((term: string) =>
-        this.optionsCallback(term).pipe(
-          map((items: AbstractModel[]) =>
-            items
-              .filter(
-                (item: AbstractModel) =>
-                  this.formatter(item)
-                    .toLowerCase()
-                    .includes(term.toLowerCase()) &&
-                  !this.activeItems.some(
-                    (activeItem: AbstractModel) =>
-                      activeItem.toString() === item.toString()
-                  )
-              )
-              .slice(0, maximumResults)
+        this.searchCallback(term).pipe(
+          map((items: object[]) =>
+            removeIntersection(items).slice(0, maximumResults)
           )
         )
       )
     );
   };
 
-  public onItemSelected($event: NgbTypeaheadSelectItemEvent<AbstractModel>) {
+  public onItemSelected($event: NgbTypeaheadSelectItemEvent<object>) {
     $event.preventDefault();
-    const selectedItem: AbstractModel = $event.item;
+    const selectedItem: object = $event.item;
 
     if (this.multipleInputs) {
       this.activeItems.push(selectedItem);
-      this.modelChange.next(this.activeItems);
+      this.modelChange.emit(this.activeItems);
 
       this.typeaheadInput.nativeElement.value = "";
       this.inputModel = "";
     } else {
-      this.modelChange.next([selectedItem]);
+      this.modelChange.emit([selectedItem]);
     }
   }
 
@@ -97,15 +96,15 @@ export class TypeaheadInputComponent {
     if (
       this.multipleInputs &&
       this.activeItems.length > 0 &&
-      (this.inputModel === "" || this.inputModel === undefined)
+      !this.inputModel
     ) {
       this.activeItems.pop();
     }
   }
 
-  public removeItem(item: AbstractModel) {
+  public removeItem(item: object) {
     this.activeItems = this.activeItems.filter(
-      (activeItem: AbstractModel) => activeItem !== item
+      (activeItem: object) => activeItem !== item
     );
     this.modelChange.next(this.activeItems);
   }

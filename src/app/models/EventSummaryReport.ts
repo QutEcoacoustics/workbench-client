@@ -18,8 +18,8 @@ export interface IEventGroup {
   provenanceId: Id;
   tagId: Id;
   detections: number;
-  binsWithDetections: number;
-  binsWithInterference?: IReportEvent[];
+  bucketsWithDetections: number;
+  bucketsWithInterference?: IReportEvent[];
   score: IEventScore;
 }
 
@@ -36,6 +36,7 @@ export interface IReportEvent {
   value: number;
 }
 
+// while there is positive and negative error, it was found by Anthony and Phil that only positive error bars are needed
 export interface IAccumulationGraphData {
   date: Param;
   count: number;

@@ -24,7 +24,7 @@ import { generateRegion } from "@test/fakes/Region";
 import { of } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
 import { toBase64Url } from "@helpers/encoding/encoding";
-import { BinSize } from "../EventSummaryReportParameters";
+import { BucketSize } from "../EventSummaryReportParameters";
 import { ViewEventReportComponent } from "./view.component";
 
 describe("ViewEventReportComponent", () => {
@@ -74,8 +74,8 @@ describe("ViewEventReportComponent", () => {
 
     routeSpy.queryParams = of({
       ignoreDaylightSavings: true,
-      recogniserCutOff: 0.8,
-      binSize: "month",
+      score: 0.8,
+      bucketSize: "month",
     } as Params);
 
     spectator.detectChanges();
@@ -100,7 +100,7 @@ describe("ViewEventReportComponent", () => {
       filter: {
         and: [
           { score: { gteq: 0.8 } },
-          { binSize: { eq: BinSize.month } },
+          { bucketSize: { eq: BucketSize.month } },
         ],
       },
     };

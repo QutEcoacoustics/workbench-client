@@ -5,6 +5,7 @@ import { SafePipe } from "./safe/safe.pipe";
 import { TimezonePipe } from "./timezone/timezone.pipe";
 import { ToRelativePipe } from "./to-relative/to-relative.pipe";
 import { WithLoadingPipe } from "./with-loading/with-loading.pipe";
+import { TimePipe } from "./time/time.pipe";
 
 const pipes = [
   IsGhostUserPipe,
@@ -13,6 +14,7 @@ const pipes = [
   TimezonePipe,
   ToRelativePipe,
   WithLoadingPipe,
+  TimePipe,
 ];
 
 @NgModule({

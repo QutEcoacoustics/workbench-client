@@ -23,12 +23,11 @@ import { User } from "@models/User";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { DateTime } from "luxon";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
 import { takeUntil } from "rxjs";
 import { API_ROOT } from "@services/config/config.tokens";
-import { BinSize, EventSummaryReportParameters } from "../EventSummaryReportParameters";
+import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
 import confidencePlotSchema from "./confidencePlot.schema.json";
@@ -101,97 +100,24 @@ class ViewEventReportComponent
   }
 
   protected get eventDownloadUrl(): string {
-    const base64Filters: string = this.parameterDataModel?.toFilterString();
-    return `${this.apiRoot}/projects/1135/audio_events/download.csv/?filters=${base64Filters}`;
+    return `${this.apiRoot}/projects/1135/audio_events/download.csv`;
   }
 
-  protected get numberOfRecordingsAnalyzed(): string {
-    return `${this.report.statistics?.countOfRecordingsAnalyzed} recordings`;
-  }
-
-  protected get numberOfBinsAnalyzed(): string {
-    return `${this.report.statistics?.countOfRecordingsAnalyzed} ${this.binSize}s`;
-  }
-
-  protected get totalSearchSpan(): string {
-    return `${this.report.statistics?.totalSearchSpan} ${this.binSize}s`;
-  }
-
-  protected get audioCoverageSpan(): string {
-    return `${this.report.statistics?.audioCoverageOverSpan} ${this.binSize}s`;
-  }
-
-  protected get currentUser(): string {
+  protected get currentUser(): User {
     if (this.session.isLoggedIn) {
-      return this.session.loggedInUser.userName;
+      return this.session.loggedInUser;
     }
 
-    // Using "Unknown User" is consistent with other locations in the client when the user is not logged in
-    // e.g. The audio recordings list page
-    return "Unknown User";
+    return User.getUnknownUser(null);
   }
 
-  // bin size is a mandatory field on the report creation page
-  // however, the API defaults to "month" if no value is provided
-  // therefore, we should reflect this client side
-  protected get binSize(): string {
-    if (this.parameterDataModel?.binSize) {
-      return this.parameterDataModel.binSize;
-    }
-
-    return BinSize.month;
+  protected bucketsWithRain(eventGroup: IEventGroup): number {
+    return eventGroup.bucketsWithInterference.length;
   }
 
-  protected get confidenceCutOffPercentage(): string {
-    // the queryStringParameters data model stores provenanceCutOff as a float between 0 and 1
-    // because the view requires the value in a "percentage" (really score), we convert it in the view model
-    if (this.parameterDataModel?.recogniserCutOff) {
-      return `${this.parameterDataModel.recogniserCutOff * 100}%`;
-    }
-
-    // the default cutoff is 0% as it allows all events through, regardless of confidence score
-    return "0%";
-  }
-
-  protected get dateRange(): string {
-    const endash = "&#8211;";
-    const startDate: string =
-      this.parameterDataModel?.dateStartedAfter?.toFormat("yyyy-MM-dd") ?? "";
-    const endDate: string =
-      this.parameterDataModel?.dateFinishedBefore?.toFormat("yyyy-MM-dd") ?? "";
-
-    if (!startDate && !endDate) {
-      return "(not specified)";
-    }
-
-    // we use an endash HTML character code to separate the start and end dates as they are a date range
-    return `${startDate} ${endash} ${endDate}`;
-  }
-
-  protected get timeRange(): string {
-    const endash = "&#8211;";
-    const startTime: string =
-      this.parameterDataModel?.timeStartedAfter?.toFormat("hh:mm") ?? "";
-    const endTime: string =
-      this.parameterDataModel?.timeFinishedBefore?.toFormat("hh:mm") ?? "";
-
-    if (!startTime && !endTime) {
-      return "(not specified)";
-    }
-
-    return `${startTime} ${endash} ${endTime}`;
-  }
-
-  protected get reportGenerationDate(): string {
-    const date: DateTime | string = this.report.generatedDate ?? DateTime.now();
-
-    const reportDateTimeObject: DateTime =
-      date instanceof DateTime ? date : DateTime.fromISO(date);
-    return reportDateTimeObject.toFormat("yyyy-MM-dd HH:MM");
-  }
-
-  protected binsWithRain(eventGroup: IEventGroup): number {
-    return eventGroup.binsWithInterference.length;
+  // this text is used whenever a filter parameter has not been explicitly defined. e.g. neither a start or end date/time range is specified
+  protected static defaultFilterText(): string {
+    return "(not specified)";
   }
 }
 

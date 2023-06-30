@@ -1,94 +1,98 @@
 <h1 class="text-muted">{{ componentTitle }}</h1>
 <h1 class="mb-5">New Event Summary Report</h1>
 
-<baw-audio-recordings-filter [constructedModel]="model.dateTime">
-</baw-audio-recordings-filter>
+<baw-date-time-filter>
+</baw-date-time-filter>
 
 <!-- Only projects should show a region filter -->
 <baw-typeahead-input
   *ngIf="!region"
   label="Site(s)"
   [inputPlaceholder]="'All'"
-  [optionsCallback]="regionsOptions"
+  [searchCallback]="regionsSearchCallback"
   [multipleInputs]="true"
   [formatter]="regionFormatter"
-  [modelChange]="model.regions"
+  (modelChange)="model.sites"
 ></baw-typeahead-input>
 
 <baw-typeahead-input
   *ngIf="!site"
   label="Point(s)"
   [inputPlaceholder]="'All'"
-  [optionsCallback]="siteOptions"
+  [searchCallback]="siteSearchCallback"
   [multipleInputs]="true"
   [formatter]="siteFormatter"
-  [modelChange]="model.sites"
+  (modelChange)="model.sites"
 ></baw-typeahead-input>
 
 <baw-typeahead-input
   label="Recogniser(s)"
   [inputPlaceholder]="'All'"
-  [optionsCallback]="provenanceOptions"
+  [searchCallback]="provenanceSearchCallback"
   [multipleInputs]="true"
   [formatter]="provenanceFormatter"
-  [modelChange]="model.provenances"
+  (modelChange)="model.provenances"
 ></baw-typeahead-input>
 
 <label for="provenancesCutOffInput" class="form-label">
-  Recogniser Cut-Off
+  Recogniser Score Cut-Off
 </label>
 <input
-  [(ngModel)]="model.provenanceScoreCutOff"
+  [(ngModel)]="model.score"
   type="number"
   name="provenancesCutOffInput"
   class="form-control"
-  placeholder="All"
-  value="0.8"
-  step="0.05"
+  placeholder="0"
+  step="0.1"
   max="1"
   min="0"
 />
 <label
   *ngIf="!isValidProvenanceCutOff()"
   for="provenancesCutOffInput"
-  class="form-error"
+  class="text-danger"
 >
-  The recogniser cut-off are outside the permitted boundary. Ensure that the
-  value is between 0 and 1.
+  The recogniser score cut-off are outside the permitted boundary. Ensure that
+  the value is between 0 and 1.
 </label>
 
-<label for="binSizeInput">Bin Size</label>
-<select name="binSizeInput" class="form-select" [(ngModel)]="model.binSize">
-  <option value="day">Day</option>
-  <option value="week">Week</option>
-  <option value="fortnight">Fortnight</option>
-  <option value="month">Month</option>
-  <option value="season">Season</option>
-  <option value="year">Year</option>
-</select>
+<div>
+  <label for="bucketSizeInput">Bucket Size</label>
+  <select
+    name="bucketSizeInput"
+    class="form-select"
+    [(ngModel)]="model.bucketSize"
+  >
+    <option value="{{bucketSizes.day}}">{{ bucketSizes.day }}</option>
+    <option value="{{bucketSizes.month}}">{{ bucketSizes.month }}</option>
+    <option value="{{bucketSizes.fortnight}}">{{ bucketSizes.fortnight }}</option>
+    <option value="{{bucketSizes.month}}">{{ bucketSizes.month }}</option>
+    <option value="{{bucketSizes.season}}">{{ bucketSizes.season }}</option>
+    <option value="{{bucketSizes.year}}">{{ bucketSizes.year }}</option>
+  </select>
+</div>
 
 <baw-typeahead-input
   label="Chart(s)"
   [inputPlaceholder]="'All'"
-  [optionsCallback]="chartOptions"
+  [searchCallback]="chartsSearchCallback"
   [multipleInputs]="true"
-  [modelChange]="model.charts"
+  (modelChange)="model.charts"
 ></baw-typeahead-input>
 
 <baw-typeahead-input
   label="Events of Interest"
   [inputPlaceholder]="'All'"
-  [optionsCallback]="eventsOfInterestOptions"
+  [searchCallback]="eventsOfInterestSearchCallback"
   [multipleInputs]="true"
   [formatter]="eventsOfInterestFormatter"
-  [modelChange]="model.eventsOfInterest"
+  (modelChange)="model.events"
 ></baw-typeahead-input>
 
-<button
-  id="generateReportButton"
-  type="submit"
-  class="btn btn-primary my-3"
-  (click)="generateReport()"
+<a
+  class="btn btn-primary my-3 generateReportButton"
+  [strongRoute]="viewReportRoute()"
+  [queryParams]="{ score: 1 }"
 >
   Generate
-</button>
+</a>

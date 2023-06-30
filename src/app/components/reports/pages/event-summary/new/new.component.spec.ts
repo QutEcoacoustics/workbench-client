@@ -6,9 +6,9 @@ import {
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import {
-  AudioRecordingFilterModel,
-  AudioRecordingsFilterComponent,
-} from "@shared/audio-recordings-filter/audio-recordings-filter.component";
+  DateTimeFilterModel,
+  DateTimeFilterComponent,
+} from "@shared/date-time-filter/date-time-filter.component";
 import { Router } from "@angular/router";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
@@ -25,7 +25,7 @@ import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { generateTag } from "@test/fakes/Tag";
 import { Duration } from "luxon";
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
-import { BinSize, ChartType } from "../EventSummaryReportParameters";
+import { BucketSize, ChartType } from "../EventSummaryReportParameters";
 import { NewEventReportComponent } from "./new.component";
 
 describe("NewEventReportComponent", () => {
@@ -36,7 +36,7 @@ describe("NewEventReportComponent", () => {
   let defaultSite: Site;
 
   const createComponent = createRoutingFactory({
-    declarations: [AudioRecordingsFilterComponent, TypeaheadInputComponent],
+    declarations: [DateTimeFilterComponent, TypeaheadInputComponent],
     imports: [SharedModule, MockBawApiModule],
     component: NewEventReportComponent,
   });
@@ -85,15 +85,15 @@ describe("NewEventReportComponent", () => {
   });
 
   it("should navigate to the correct route when the form is submitted with no user input/default values", () => {
-    const defaultRecognizerCutOff = "0.8";
-    const defaultBinSize = BinSize.month;
+    const defaultScoreCutOff = "0.8";
+    const defaultBucketSize = BucketSize.month;
 
     const expectedRoute =
       `/projects/${defaultProject.id}` +
       `/regions/${defaultRegion.id}` +
       `/points/${defaultSite.id}/reports/event-summary` +
-      `?recogniserCutOff=${defaultRecognizerCutOff}` +
-      `&binSize=${defaultBinSize}`;
+      `?score=${defaultScoreCutOff}` +
+      `&bucketSize=${defaultBucketSize}`;
 
     generateReportButton().click();
 
@@ -101,7 +101,7 @@ describe("NewEventReportComponent", () => {
   });
 
   it("should navigate to the correct route when the form is submitted when all fields have a value", fakeAsync(() => {
-    const dateTime: AudioRecordingFilterModel = {
+    const dateTime: DateTimeFilterModel = {
       dateStartedAfter: new NgbDate(2020, 1, 1),
       dateFinishedBefore: new NgbDate(2020, 2, 1),
       timeStartedAfter: Duration.fromObject({
@@ -116,7 +116,7 @@ describe("NewEventReportComponent", () => {
     };
 
     const provenanceCutOff = 0.5;
-    const binSize: BinSize = BinSize.day;
+    const bucketSize: BucketSize = BucketSize.day;
     const charts: ChartType[] = [ ChartType.sensorPointMap, ChartType.speciesAccumulationCurve ];
 
     const provenances: AudioEventProvenance[] = [
@@ -149,9 +149,9 @@ describe("NewEventReportComponent", () => {
       `/projects/${defaultProject.id}` +
       `/regions/${defaultRegion.id}` +
       `/points/${defaultSite.id}/reports/event-summary` +
-      `?recogniserCutOff=${provenanceCutOff}` +
-      `&binSize=${binSize}` +
-      "&ignoreDaylightSavings=false" +
+      `?score=${provenanceCutOff}` +
+      `&bucketSize=${bucketSize}` +
+      "&daylightSavings=false" +
       "&provenances=1,2" +
       "&events=1,2" +
       "&charts=Sensor%20Point%20Map,Species%20Accumulation%20Curve" +
@@ -164,14 +164,14 @@ describe("NewEventReportComponent", () => {
     // and testing inputs would require mocking option callbacks (negating all benefit from testing through inputs)
     // we can just set the callback models directly
     spectator.component.model = {
-      dateTime: new BehaviorSubject<AudioRecordingFilterModel>(dateTime),
+      dateTime: new BehaviorSubject<DateTimeFilterModel>(dateTime),
       regions: new BehaviorSubject<Region[]>([]),
       sites: new BehaviorSubject<Site[]>([]),
       provenances: new BehaviorSubject<AudioEventProvenance[]>(provenances),
       provenanceScoreCutOff: provenanceCutOff,
       charts: new BehaviorSubject<string[]>(charts),
       eventsOfInterest: new BehaviorSubject<Tag[]>(tags),
-      binSize
+      bucketSize
     };
 
     generateReportButton().click();
@@ -201,7 +201,7 @@ describe("NewEventReportComponent", () => {
   });
 
   // testing other inputs is not needed as they are tested in their own components
-  // the recognizer cutoff however, is only implemented in the new view, and therefore, needs to be tested here
+  // the provenance cutoff however, is only implemented in the new view, and therefore, needs to be tested here
   describe("provenance cut off input", () => {
     it("should allow valid inputs without showing an error", () => {
       const testValue = 0.64313;
@@ -213,7 +213,7 @@ describe("NewEventReportComponent", () => {
     it("should not be able to have an input above 1 (100%)", () => {
       const testValue = 1.01;
       const expectedError =
-        "The recogniser cut-off are outside the permitted boundary. Ensure that the value is between 0 and 1.";
+        "The recogniser score cut-off are outside the permitted boundary. Ensure that the value is between 0 and 1.";
 
       spectator.typeInElement(testValue.toString(), provenanceCutOffInput());
       spectator.detectChanges();
@@ -221,13 +221,13 @@ describe("NewEventReportComponent", () => {
       const errorMessageElement: HTMLLabelElement =
         getElementByInnerText<HTMLLabelElement>(expectedError);
       expect(errorMessageElement).toExist();
-      expect(errorMessageElement).toHaveClass("form-error");
+      expect(errorMessageElement).toHaveClass("text-danger");
     });
 
     it("should not be able to have an input below 0 (0%)", () => {
       const testValue = -0.01;
       const expectedError =
-        "The recogniser cut-off are outside the permitted boundary. Ensure that the value is between 0 and 1.";
+        "The recogniser score cut-off are outside the permitted boundary. Ensure that the value is between 0 and 1.";
 
       spectator.typeInElement(testValue.toString(), provenanceCutOffInput());
       spectator.detectChanges();
@@ -235,7 +235,7 @@ describe("NewEventReportComponent", () => {
       const errorMessageElement: HTMLLabelElement =
         getElementByInnerText<HTMLLabelElement>(expectedError);
       expect(errorMessageElement).toExist();
-      expect(errorMessageElement).toHaveClass("form-error");
+      expect(errorMessageElement).toHaveClass("text-danger");
     });
   });
 });

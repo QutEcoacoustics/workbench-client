@@ -31,14 +31,14 @@ describe("EventSummaryReportParameters", () => {
     dataModel.dateFinishedBefore = DateTime.fromISO(
       "2020-03-01T00:00:00.000+00:00"
     );
-    dataModel.recogniserCutOff = 0.5;
+    dataModel.score = 0.5;
     dataModel.charts = ["chart1", "chart2"];
 
     // splitting these line by parameter allows for easier visualization
     const expectedParameters: string =
-      "recogniserCutOff=0.5" +
-      "&binSize=month" +
-      "&ignoreDaylightSavings=true" +
+      "score=0.5" +
+      "&bucketSize=month" +
+      "&daylightSavings=true" +
       "&sites=4,5,6" +
       "&provenances=7,8,9" +
       "&events=10,11,12" +
@@ -48,7 +48,7 @@ describe("EventSummaryReportParameters", () => {
       "&dateFinishedBefore=2020-03-01" +
       "&charts=chart1,chart2";
 
-    const realizedParameters = dataModel.toQueryString();
+    const realizedParameters = dataModel.toHttpParams();
 
     expect(realizedParameters).toEqual(expectedParameters);
   });
@@ -60,14 +60,14 @@ describe("EventSummaryReportParameters", () => {
       timeFinishedBefore: "22:15",
       dateStartedAfter: "2020-02-01",
       dateFinishedBefore: "2020-03-01",
-      ignoreDayLightSavings: "true",
+      daylightSavings: "true",
       sites: "4,5,6",
       points: "7,8,9",
       provenances: "11,23,2",
       events: "10,11,12",
-      recogniserCutOff: "0.5",
+      score: "0.5",
       charts: "chart1,chart2",
-      binSize: "month",
+      bucketSize: "month",
     };
 
     const dataModel = new EventSummaryReportParameters(mockQueryParameters);
@@ -83,7 +83,7 @@ describe("EventSummaryReportParameters", () => {
           { "provenance.id": { in: [11, 23, 2] } },
           { "tag.id": { in: [10, 11, 12] } },
           { score: { gteq: 0.5 } },
-          { binSize: { eq: "month" } },
+          { bucketSize: { eq: "month" } },
           { recordedEndDate: { greaterThan: "2020-02-01T00:00:00.000Z" } },
           { recordedDate: { lessThan: "2020-03-01T00:00:00.000Z" } },
           {
@@ -117,17 +117,17 @@ describe("EventSummaryReportParameters", () => {
   it("should create correctly from incomplete query string parameters", () => {
     const mockQueryParameters: Params = {
       sites: "41,52,46",
-      recogniserCutOff: "0.5",
+      score: "0.5",
       charts: ChartType.falseColorSpectrograms,
-      ignoreDayLightSavings: "true",
+      daylightSavings: "true",
     };
 
     const dataModel = new EventSummaryReportParameters(mockQueryParameters);
 
     expect(dataModel.sites).toEqual([41, 52, 46]);
-    expect(dataModel.recogniserCutOff).toEqual(0.5);
+    expect(dataModel.score).toEqual(0.5);
     expect(dataModel.charts).toEqual(["False Colour Spectrograms"]);
-    expect(dataModel.ignoreDaylightSavings).toEqual(true);
+    expect(dataModel.daylightSavings).toEqual(true);
   });
 
   it("should create correctly using all query string parameters", () => {
@@ -136,10 +136,10 @@ describe("EventSummaryReportParameters", () => {
       points: "7,8,9",
       provenances: "11,23,2",
       events: "10,11,12",
-      recogniserCutOff: "0.5",
+      score: "0.5",
       charts: "chart1,chart2",
-      binSize: "month",
-      ignoreDayLightSavings: "true",
+      bucketSize: "month",
+      daylightSavings: "true",
     };
 
     const dataModel = new EventSummaryReportParameters(mockQueryParameters);
@@ -148,24 +148,24 @@ describe("EventSummaryReportParameters", () => {
     expect(dataModel.points).toEqual([7, 8, 9]);
     expect(dataModel.provenances).toEqual([11, 23, 2]);
     expect(dataModel.events).toEqual([10, 11, 12]);
-    expect(dataModel.recogniserCutOff).toEqual(0.5);
+    expect(dataModel.score).toEqual(0.5);
     expect(dataModel.charts).toEqual(["chart1", "chart2"]);
-    expect(dataModel.binSize).toEqual("month");
-    expect(dataModel.ignoreDaylightSavings).toEqual(true);
+    expect(dataModel.bucketSize).toEqual("month");
+    expect(dataModel.daylightSavings).toEqual(true);
   });
 
   it("should create correctly with additional query string parameters that don't belong to the data model", () => {
     const mockQueryParameters: Params = {
       time: "11:11", // this is not a part of the data model
       sites: "4,5,6",
-      ignoreDayLightSavings: "true",
+      daylightSavings: "true",
       error: "true", // this is not a part of the data model
     };
 
     const dataModel = new EventSummaryReportParameters(mockQueryParameters);
 
     expect(dataModel.sites).toEqual([4, 5, 6]);
-    expect(dataModel.ignoreDaylightSavings).toEqual(true);
+    expect(dataModel.daylightSavings).toEqual(true);
 
     // we have to use manual access because these fields are not and should not be a part of the class structure
     expect(dataModel["time"]).toBeUndefined();
@@ -174,9 +174,9 @@ describe("EventSummaryReportParameters", () => {
 
   it("should be able to reconstruct the same query string parameters that it was created with", () => {
     const mockQueryString: string =
-      "recogniserCutOff=0.995" +
-      "&binSize=season" +
-      "&ignoreDaylightSavings=false" +
+      "score=0.995" +
+      "&bucketSize=season" +
+      "&daylightSavings=false" +
       "&sites=4,5,6" +
       "&points=7,8,9" +
       "&provenances=11,23,2" +
@@ -188,16 +188,16 @@ describe("EventSummaryReportParameters", () => {
       points: "7,8,9",
       provenances: "11,23,2",
       events: "10,11,12",
-      recogniserCutOff: "0.995",
+      score: "0.995",
       charts:
         "Species Composition Curve,False Colour Spectrogram,Species Accumulation Curve",
-      binSize: "season",
-      ignoreDaylightSavings: "false",
+      bucketSize: "season",
+      daylightSavings: "false",
     };
 
     const dataModel = new EventSummaryReportParameters(mockSearchParameters);
 
-    const realizedParameters = dataModel.toQueryString();
+    const realizedParameters = dataModel.toHttpParams();
 
     expect(realizedParameters).toEqual(mockQueryString);
   });

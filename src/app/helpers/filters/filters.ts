@@ -90,3 +90,14 @@ export function filterModelIds<T extends AbstractModel>(
 
   return filterAnd(currentFilter, additionalFilter);
 }
+
+export function propertyFilter<T extends AbstractModel>(
+  key: keyof T,
+  value: T[keyof T],
+) {
+  return {
+    [key]: {
+      contains: value,
+    },
+  } as InnerFilter;
+}

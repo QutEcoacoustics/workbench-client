@@ -1,10 +1,12 @@
 .item-pill {
   min-width: fit-content;
   background-color: var(--baw-highlight);
+  font-size: medium;
+  text-decoration: none;
 
   // when a pill is in focus, a user can press backspace or delete to remove it
   // therefore, we need a way to give feedback to the user which item is selected
   &:focus {
-    background-color: var(--baw-highlight-lightest);
+    background-color: var(--baw-highlight-lighter);
   }
 }

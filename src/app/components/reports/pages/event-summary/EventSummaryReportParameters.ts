@@ -1,7 +1,7 @@
 import { HttpParams } from "@angular/common/http";
 import { Params } from "@angular/router";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
-import { toBase64Url } from "@helpers/encoding/encoding";
+import { Tuple } from "@helpers/advancedTypes";
 import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -16,7 +16,7 @@ export enum ChartType {
   falseColorSpectrograms = "False Colour Spectrograms",
 }
 
-export enum BinSize {
+export enum BucketSize {
   day = "day",
   week = "week",
   fortnight = "fortnight",
@@ -30,10 +30,12 @@ export interface IEventSummaryReportParameters {
   points: Id[];
   provenances: Id[];
   events: Id[];
-  recogniserCutOff: number;
+  score: number;
   charts: string[];
-  binSize: BinSize;
-  ignoreDaylightSavings: boolean;
+  bucketSize: BucketSize;
+  daylightSavings: boolean;
+  time: Tuple<Duration, 2>;
+  date: Tuple<DateTime, 2>;
 }
 
 export class EventSummaryReportParameters
@@ -45,20 +47,16 @@ export class EventSummaryReportParameters
       points: (value: string) => value.split(",").map(Number),
       provenances: (value: string) => value.split(",").map(Number),
       events: (value: string) => value.split(",").map(Number),
-      recogniserCutOff: (value: string) => Number(value),
+      score: (value: string) => Number(value),
       charts: (value: string) => value.split(","),
-      binSize: (value: string) => value,
-      ignoreDaylightSavings: (value: string) => value === "true",
-      dateStartedAfter: (value: string) => DateTime.fromISO(value, { zone: "utc" }),
-      dateFinishedBefore: (value: string) => DateTime.fromISO(value, { zone: "utc" }),
-      timeStartedAfter: (value: string) => Duration.fromObject({
-        hours: Number(value.split(":")[0]),
-        minutes: Number(value.split(":")[1]),
-      }),
-      timeFinishedBefore: (value: string) => Duration.fromObject({
-        hours: Number(value.split(":")[0]),
-        minutes: Number(value.split(":")[1]),
-      }),
+      bucketSize: (value: string) => value,
+      daylightSavings: (value: string) => value === "true",
+      date: (value: string) => value.split(",").map(
+        (date) => DateTime.fromISO(date, { zone: "utc" })
+      ),
+      time: (value: string) => value.split(",").map(
+        (time) => Duration.fromISOTime(time)
+      )
     };
 
     // since query string parameters are losely typed using a string from the user space
@@ -76,14 +74,36 @@ export class EventSummaryReportParameters
   public points: Id[];
   public provenances: Id[];
   public events: Id[];
-  public recogniserCutOff = 0;
+  public score = 0;
   public charts: string[];
-  public binSize: BinSize = BinSize.month;
-  public ignoreDaylightSavings = true;
-  public timeStartedAfter: Duration;
-  public timeFinishedBefore: Duration;
-  public dateStartedAfter: DateTime;
-  public dateFinishedBefore: DateTime;
+  public bucketSize: BucketSize = BucketSize.month;
+  public daylightSavings = true;
+  public time: Tuple<Duration, 2>;
+  public date: Tuple<DateTime, 2>;
+
+  public get dateStartedAfter(): DateTime {
+    return this.date ?
+      this.date[0] :
+      null;
+  }
+
+  public get dateFinishedBefore(): DateTime {
+    return this.date ?
+      this.date[1] :
+      null;
+  }
+
+  public get timeStartedAfter(): Duration {
+    return this.time ?
+      this.time[0] :
+      null;
+  }
+
+  public get timeFinishedBefore(): Duration {
+    return this.time ?
+      this.time[1] :
+      null;
+  }
 
   public toFilter(): Filters<EventSummaryReport> {
     let filter: InnerFilter<EventSummaryReport>;
@@ -108,19 +128,19 @@ export class EventSummaryReportParameters
       filter = filterModelIds<EventSummaryReport>("tag", this.events, filter);
     }
 
-    // we use isInstantiated() here because 0 is a valid value for recogniserCutOff
-    if (isInstantiated(this.recogniserCutOff)) {
+    // we use isInstantiated() here because 0 is a valid value for score
+    if (isInstantiated(this.score)) {
       filter = filterAnd<EventSummaryReport>(filter, {
         score: {
-          gteq: this.recogniserCutOff,
+          gteq: this.score,
         },
       } as InnerFilter);
     }
 
-    if (this.binSize) {
+    if (this.bucketSize) {
       filter = filterAnd<EventSummaryReport>(filter, {
-        binSize: {
-          eq: this.binSize,
+        bucketSize: {
+          eq: this.bucketSize,
         },
       } as InnerFilter);
     }
@@ -136,7 +156,7 @@ export class EventSummaryReportParameters
     if (this.timeStartedAfter || this.timeFinishedBefore) {
       filter = filterTime(
         filter,
-        this.ignoreDaylightSavings,
+        this.daylightSavings,
         this.timeStartedAfter,
         this.timeFinishedBefore
       );
@@ -145,12 +165,7 @@ export class EventSummaryReportParameters
     return { filter };
   }
 
-  /** Converts the report parameters to filters and base64 encodes them */
-  public toFilterString(): string {
-    return toBase64Url(JSON.stringify(this.toFilter()));
-  }
-
-  public toQueryString(): string {
+  public toHttpParams(): Params {
     let params = new HttpParams();
 
     Object.keys(this).forEach((key: string) => {
@@ -169,6 +184,6 @@ export class EventSummaryReportParameters
       }
     });
 
-    return params.toString();
+    return params;
   }
 }

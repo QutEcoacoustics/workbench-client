@@ -26,7 +26,7 @@ import {
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
 
-export interface AudioRecordingFilterModel {
+export interface DateTimeFilterModel {
   projects?: Project[];
   regions?: Region[];
   sites?: Site[];
@@ -40,11 +40,11 @@ export interface AudioRecordingFilterModel {
 }
 
 @Component({
-  selector: "baw-audio-recordings-filter",
-  templateUrl: "audio-recordings-filter.component.html",
-  styleUrls: ["audio-recordings-filter.component.scss"],
+  selector: "baw-date-time-filter",
+  templateUrl: "date-time-filter.component.html",
+  styleUrls: ["date-time-filter.component.scss"],
 })
-export class AudioRecordingsFilterComponent
+export class DateTimeFilterComponent
   extends withUnsubscribe()
   implements AfterViewInit, AfterContentChecked
 {
@@ -57,9 +57,8 @@ export class AudioRecordingsFilterComponent
   @Input() public region: Region;
   @Input() public site: Site;
   @Input() public constructedFilters: BehaviorSubject<Filters<AudioRecording>>;
-  @Input() public constructedModel?: BehaviorSubject<AudioRecordingFilterModel>;
 
-  public model: AudioRecordingFilterModel = { ignoreDaylightSavings: true };
+  @Input() public model: DateTimeFilterModel = { ignoreDaylightSavings: true };
   private previousFilters: Immutable.Collection<unknown, unknown>;
 
   public ngAfterViewInit(): void {
@@ -69,7 +68,7 @@ export class AudioRecordingsFilterComponent
         distinctUntilChanged(),
         takeUntil(this.unsubscribe)
       )
-      .subscribe((model: AudioRecordingFilterModel) => this.emitFilterUpdate(model));
+      .subscribe((model: DateTimeFilterModel) => this.emitFilterUpdate(model));
   }
 
   // TODO: Refactor the following hacky code block
@@ -81,7 +80,7 @@ export class AudioRecordingsFilterComponent
     this.changeDetector.detectChanges();
   }
 
-  public emitFilterUpdate(model: AudioRecordingFilterModel): void {
+  public emitFilterUpdate(model: DateTimeFilterModel): void {
     // we should only send new filter requests when the user has not input any "bad" / incorrect values into the input fields
     // e.g. 2020-31-31 is not a valid date should display an error, and not send a new filter request
     if (!this.form.valid) {
@@ -99,7 +98,7 @@ export class AudioRecordingsFilterComponent
     }
   }
 
-  private generateFilters(previousFilters: Immutable.Collection<unknown, unknown>, model: AudioRecordingFilterModel): [boolean, Filters] {
+  private generateFilters(previousFilters: Immutable.Collection<unknown, unknown>, model: DateTimeFilterModel): [boolean, Filters] {
     let newInnerFilters: InnerFilter<AudioRecording> = {};
 
     newInnerFilters = this.setModelFilters(newInnerFilters);
@@ -133,7 +132,7 @@ export class AudioRecordingsFilterComponent
     return filters;
   }
 
-  private setDateFilters(model: AudioRecordingFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
+  private setDateFilters(model: DateTimeFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
     const modelStartDate = model?.dateStartedAfter;
     const modelEndDate = model?.dateFinishedBefore;
 
@@ -151,7 +150,7 @@ export class AudioRecordingsFilterComponent
     return filterDate(filters, startDate, endDate);
   }
 
-  private setTimeOfDayFilters(model: AudioRecordingFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
+  private setTimeOfDayFilters(model: DateTimeFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
     const modelStartTime = model?.timeStartedAfter;
     const modelEndTime = model?.timeFinishedBefore;
 
