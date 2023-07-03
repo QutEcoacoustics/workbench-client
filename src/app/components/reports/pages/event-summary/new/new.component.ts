@@ -34,7 +34,6 @@ import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.c
 import {
   BucketSize,
   EventSummaryReportParameters,
-  ChartType,
 } from "../EventSummaryReportParameters";
 
 const projectKey = "project";
@@ -93,7 +92,6 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   public siteFormatter = (site: Site) => site.name;
   public provenanceFormatter = (provenance: AudioEventProvenance) =>
     provenance.name;
-  public chartsFormatter = (chart: string) => chart;
   public eventsOfInterestFormatter = (tag: Tag): string => tag.text;
 
   // TODO: this currently does not scope to projects, regions, sites correctly
@@ -118,9 +116,6 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     this.tagsApi.filter({
       filter: propertyFilter<Tag>("text", text),
     } as Filters<Tag>);
-
-  public chartsSearchCallback = (): Observable<string[]> =>
-    of(NewEventReportComponent.availableCharts);
 
   protected isValidProvenanceCutOff(): boolean {
     return (
@@ -155,14 +150,6 @@ class NewEventReportComponent extends PageComponent implements OnInit {
 
     return reportMenuItems.view.project.route;
   }
-
-  // we use a static array here as the list of possible charts the report can generate is directly linked to the template
-  private static availableCharts: ChartType[] = [
-    ChartType.sensorPointMap,
-    ChartType.speciesAccumulationCurve,
-    ChartType.speciesCompositionCurve,
-    ChartType.falseColorSpectrograms,
-  ];
 }
 
 function getPageInfo(subRoute: keyof typeof reportMenuItems.new): IPageInfo {

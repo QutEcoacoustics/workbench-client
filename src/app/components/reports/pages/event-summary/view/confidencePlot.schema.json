@@ -18,5 +18,8 @@
       "type": "quantitative",
       "axis": null
     }
+  },
+  "config": {
+    "view": {"stroke": "transparent"}
   }
 }

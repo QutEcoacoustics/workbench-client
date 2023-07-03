@@ -1,17 +1,19 @@
-import {
-  Component,
-  Inject,
-  OnInit,
-} from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { regionResolvers } from "@baw-api/region/regions.service";
+import {
+  ShallowRegionsService,
+  regionResolvers,
+} from "@baw-api/region/regions.service";
 import {
   retrieveResolvers,
   hasResolvedSuccessfully,
   ResolvedModelList,
 } from "@baw-api/resolver-common";
-import { siteResolvers } from "@baw-api/site/sites.service";
+import {
+  ShallowSitesService,
+  siteResolvers,
+} from "@baw-api/site/sites.service";
 import {
   reportCategories,
   reportMenuItems,
@@ -25,8 +27,12 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
-import { takeUntil } from "rxjs";
+import { Observable, forkJoin, map, takeUntil } from "rxjs";
 import { API_ROOT } from "@services/config/config.tokens";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { Id } from "@interfaces/apiInterfaces";
+import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
@@ -42,12 +48,14 @@ const reportKey = "report";
   templateUrl: "./view.component.html",
   styleUrls: ["./view.component.scss"],
 })
-class ViewEventReportComponent
-  extends PageComponent
-  implements OnInit {
+class ViewEventReportComponent extends PageComponent implements OnInit {
   public constructor(
     private route: ActivatedRoute,
     private session: BawSessionService,
+    private provenanceApi: AudioEventProvenanceService,
+    private tagsApi: TagsService,
+    private regionApi: ShallowRegionsService,
+    private sitesApi: ShallowSitesService,
     @Inject(API_ROOT) private apiRoot: string
   ) {
     super();
@@ -60,13 +68,18 @@ class ViewEventReportComponent
   public region?: Region;
   public site?: Site;
 
+  protected regions: Observable<Region[]>;
+  protected sites: Observable<Site[]>;
+
   protected speciesAccumulationCurveSchema = speciesAccumulationCurveSchema;
   protected speciesCompositionCurveSchema = speciesCompositionCurveSchema;
   protected confidencePlotSchema = confidencePlotSchema;
 
   public ngOnInit(): void {
     // we can use "as" here to provide stronger typing because the data property is a standard object type without any typing
-    const models: ResolvedModelList = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+    const models: ResolvedModelList = retrieveResolvers(
+      this.route.snapshot.data as IPageInfo
+    );
 
     this.route.queryParams
       .pipe(takeUntil(this.unsubscribe))
@@ -78,9 +91,7 @@ class ViewEventReportComponent
       return;
     }
 
-    if (models[projectKey]) {
-      this.project = models[projectKey] as Project;
-    }
+    this.project = models[projectKey] as Project;
 
     if (models[regionKey]) {
       this.region = models[regionKey] as Region;
@@ -93,6 +104,18 @@ class ViewEventReportComponent
     if (models[reportKey]) {
       this.report = models[reportKey] as EventSummaryReport;
     }
+
+    this.regions = forkJoin(
+      this.parameterDataModel.sites?.map((regionId: Id) =>
+        this.regionApi.show(regionId)
+      )
+    );
+
+    this.sites = forkJoin(
+      this.parameterDataModel.points?.map((siteId: Id) =>
+        this.sitesApi.show(siteId)
+      )
+    );
   }
 
   protected printPage(): void {
@@ -118,6 +141,16 @@ class ViewEventReportComponent
   // this text is used whenever a filter parameter has not been explicitly defined. e.g. neither a start or end date/time range is specified
   protected static defaultFilterText(): string {
     return "(not specified)";
+  }
+
+  protected provenanceNames(): Observable<string[]> {
+    const provenanceNames = this.parameterDataModel.provenances.map(
+      (provenanceId: Id) =>
+        this.provenanceApi
+          .show(provenanceId)
+          .pipe(map((provenance: AudioEventProvenance) => provenance.name))
+    );
+    return forkJoin(provenanceNames);
   }
 }
 

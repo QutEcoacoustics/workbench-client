@@ -2,7 +2,9 @@
   <label *ngIf="label" for="typeahead-input" class="form-label">
     {{ label }}
   </label>
-  <div class="typeahead-input-container d-flex form-inline form-group form-control border p-0">
+  <div
+    class="typeahead-input-container d-flex form-inline form-group form-control border p-0"
+  >
     <ng-container *ngIf="multipleInputs">
       <span
         *ngFor="let item of activeItems"
@@ -11,11 +13,12 @@
         (keydown.delete)="removeItem(item)"
         tabindex="0"
       >
-        {{ formatter(item) }}
         <fa-icon
           (click)="removeItem(item)"
+          class="btn-sm text-danger"
           [icon]="['fas', 'square-xmark']"
         ></fa-icon>
+        {{ formatter(item) }}
       </span>
     </ng-container>
 

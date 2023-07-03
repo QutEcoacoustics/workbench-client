@@ -22,6 +22,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
   @Input() public selected: List<Site>;
   @Input() public project: Project;
   @Input() public region: Region;
+  @Input() public sites: Site[];
   public markers: List<MapMarkerOptions> = List([]);
 
   public constructor(private sitesApi: SitesService) {
@@ -30,6 +31,8 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
 
   public ngOnInit(): void {
     const filters: Filters<ISite> = { paging: { page: 1 } };
+
+    this.pushMarkers(this.sites);
 
     this.getFilter(filters, this.project, this.region)
       .pipe(

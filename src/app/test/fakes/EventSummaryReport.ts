@@ -39,7 +39,7 @@ export function generateEventSummaryReport(
         // since all these values will be scores from recognizers/provenances, they will be bounded between 0 and 1
         // while not technically percentages, they can be mocked with fake data using a percentage because of the same domain
         score: {
-          histogram: modelData.randomArray<number>(10, 20, () => modelData.percentage()),
+          histogram: modelData.randomArray<number>(30, 30, () => modelData.percentage()),
           standardDeviation: modelData.percentage(),
           mean: modelData.percentage(),
           min: modelData.percentage(),
@@ -51,14 +51,14 @@ export function generateEventSummaryReport(
     // while not truely random, the use of hard coded graph data was used to ensure lifelike graphs during presentations
     graphs: {
       accumulationData: [
-        { date: "22-05-2023", count: 4, errorPositive: 4.5, errorNegative: 4 },
-        { date: "23-05-2023", count: 9, errorPositive: 9.5, errorNegative: 9 },
-        { date: "24-05-2023", count: 12, errorPositive: 12.5, errorNegative: 12 },
-        { date: "25-05-2023", count: 12, errorPositive: 12.5, errorNegative: 12 },
-        { date: "26-05-2023", count: 12, errorPositive: 12.5, errorNegative: 12 },
-        { date: "27-05-2023", count: 12, errorPositive: 12.5, errorNegative: 12 },
-        { date: "28-05-2023", count: 12, errorPositive: 12.5, errorNegative: 12 },
-        { date: "29-05-2023", count: 13, errorPositive: 13.5, errorNegative: 13 },
+        { date: "22-05-2023", count: 4, error: 1 },
+        { date: "23-05-2023", count: 9, error: 1 },
+        { date: "24-05-2023", count: 12, error: 1 },
+        { date: "25-05-2023", count: 12, error: 1 },
+        { date: "26-05-2023", count: 12, error: 1 },
+        { date: "27-05-2023", count: 12, error: 1 },
+        { date: "28-05-2023", count: 12, error: 1 },
+        { date: "29-05-2023", count: 13, error: 1 },
       ],
       speciesCompositionData: [
         { date: "22-05-2023", tagId: 1, ratio: 0.55 },

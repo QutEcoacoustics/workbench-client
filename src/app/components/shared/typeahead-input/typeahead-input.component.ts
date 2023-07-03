@@ -44,8 +44,6 @@ export class TypeaheadInputComponent {
   /** An event emitter when a user adds, removes, or selects and item from the typeahead input */
   @Output() public modelChange = new EventEmitter<object[] | string[]>();
 
-  @ViewChild("typeaheadInputRef")
-  public typeaheadInput: ElementRef<HTMLInputElement>;
   public inputModel: string | null = null;
 
   /** if multiple items are enabled, they will be added to the activeItems */
@@ -85,8 +83,7 @@ export class TypeaheadInputComponent {
       this.activeItems.push(selectedItem);
       this.modelChange.emit(this.activeItems);
 
-      this.typeaheadInput.nativeElement.value = "";
-      this.inputModel = "";
+      this.inputModel = null;
     } else {
       this.modelChange.emit([selectedItem]);
     }
@@ -103,9 +100,10 @@ export class TypeaheadInputComponent {
   }
 
   public removeItem(item: object) {
-    this.activeItems = this.activeItems.filter(
-      (activeItem: object) => activeItem !== item
-    );
-    this.modelChange.next(this.activeItems);
+    const indexToRemove = this.activeItems.indexOf(item);
+    if (indexToRemove !== -1) {
+      this.activeItems.splice(indexToRemove, 1);
+      this.modelChange.next(this.activeItems);
+    }
   }
 }

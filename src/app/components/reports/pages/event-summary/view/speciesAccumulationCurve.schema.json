@@ -26,14 +26,19 @@
       }
     },
     {
-      "mark": "errorbar",
+      "mark": {
+        "type": "errorbar",
+        "extent": "ci",
+        "ticks": true,
+        "color": "black"
+      },
       "encoding": {
         "x": {
           "field": "date",
           "type": "nominal"
         },
-        "y": { "field": "errorPositive", "type": "quantitative" },
-        "y2": { "field": "errorNegative", "type": "quantitative" }
+        "y": {"field": "count", "type": "quantitative"},
+        "yError": { "field": "error" }
       }
     },
     {

@@ -40,8 +40,7 @@ export interface IReportEvent {
 export interface IAccumulationGraphData {
   date: Param;
   count: number;
-  errorPositive: number;
-  errorNegative: number;
+  error: number;
 }
 
 export interface ISpeciesCompositionGraphData {

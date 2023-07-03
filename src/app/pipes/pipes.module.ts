@@ -6,6 +6,8 @@ import { TimezonePipe } from "./timezone/timezone.pipe";
 import { ToRelativePipe } from "./to-relative/to-relative.pipe";
 import { WithLoadingPipe } from "./with-loading/with-loading.pipe";
 import { TimePipe } from "./time/time.pipe";
+import { DateTimePipe } from "./date/date.pipe";
+import { DatePipe } from "@angular/common";
 
 const pipes = [
   IsGhostUserPipe,
@@ -15,10 +17,16 @@ const pipes = [
   ToRelativePipe,
   WithLoadingPipe,
   TimePipe,
+  DateTimePipe,
+];
+
+const providers = [
+  DatePipe,
 ];
 
 @NgModule({
   declarations: pipes,
   exports: pipes,
+  providers,
 })
 export class PipesModule {}

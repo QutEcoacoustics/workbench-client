@@ -11,9 +11,15 @@ import { Data } from "vega-lite/build/src/data";
 @Component({
   selector: "baw-chart",
   template: `
-    <div #chartContainer style="height: 100%; width: 100%;">
-      Loading...
-    </div>
+    <ng-container *ngIf="data; else insufficientDataTemplate">
+      <div #chartContainer style="height: 100%; width: 100%;">
+        Chart loading
+      </div>
+    </ng-container>
+
+    <ng-template #insufficientDataTemplate>
+      Insufficient data to create graph
+    </ng-template>
   `,
 })
 export class ChartComponent implements AfterViewInit {

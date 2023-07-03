@@ -1,29 +1,40 @@
 <h1 class="text-muted">{{ componentTitle }}</h1>
 <h1 class="mb-5">New Event Summary Report</h1>
 
-<baw-date-time-filter>
-</baw-date-time-filter>
+<baw-date-time-filter> </baw-date-time-filter>
 
 <!-- Only projects should show a region filter -->
-<baw-typeahead-input
-  *ngIf="!region"
-  label="Site(s)"
-  [inputPlaceholder]="'All'"
-  [searchCallback]="regionsSearchCallback"
-  [multipleInputs]="true"
-  [formatter]="regionFormatter"
-  (modelChange)="model.sites"
-></baw-typeahead-input>
+<ng-container *ngIf="!region; else immutableRegionTemplate">
+  <baw-typeahead-input
+    label="Site(s)"
+    [inputPlaceholder]="'All'"
+    [searchCallback]="regionsSearchCallback"
+    [multipleInputs]="true"
+    [formatter]="regionFormatter"
+    (modelChange)="(model.sites)"
+  ></baw-typeahead-input>
+</ng-container>
 
-<baw-typeahead-input
-  *ngIf="!site"
-  label="Point(s)"
-  [inputPlaceholder]="'All'"
-  [searchCallback]="siteSearchCallback"
-  [multipleInputs]="true"
-  [formatter]="siteFormatter"
-  (modelChange)="model.sites"
-></baw-typeahead-input>
+<ng-template #immutableRegionTemplate>
+  <label>Site(s)</label>
+  <p>{{ region.name }}</p>
+</ng-template>
+
+<ng-container *ngIf="!site; else immutableSiteTemplate">
+  <baw-typeahead-input
+    label="Point(s)"
+    [inputPlaceholder]="'All'"
+    [searchCallback]="siteSearchCallback"
+    [multipleInputs]="true"
+    [formatter]="siteFormatter"
+    (modelChange)="(model.sites)"
+  ></baw-typeahead-input>
+</ng-container>
+
+<ng-template #immutableSiteTemplate>
+  <label>Point(s)</label>
+  <p>{{ region.name }}</p>
+</ng-template>
 
 <baw-typeahead-input
   label="Recogniser(s)"
@@ -31,7 +42,7 @@
   [searchCallback]="provenanceSearchCallback"
   [multipleInputs]="true"
   [formatter]="provenanceFormatter"
-  (modelChange)="model.provenances"
+  (modelChange)="(model.provenances)"
 ></baw-typeahead-input>
 
 <label for="provenancesCutOffInput" class="form-label">
@@ -63,22 +74,16 @@
     class="form-select"
     [(ngModel)]="model.bucketSize"
   >
-    <option value="{{bucketSizes.day}}">{{ bucketSizes.day }}</option>
-    <option value="{{bucketSizes.month}}">{{ bucketSizes.month }}</option>
-    <option value="{{bucketSizes.fortnight}}">{{ bucketSizes.fortnight }}</option>
-    <option value="{{bucketSizes.month}}">{{ bucketSizes.month }}</option>
-    <option value="{{bucketSizes.season}}">{{ bucketSizes.season }}</option>
-    <option value="{{bucketSizes.year}}">{{ bucketSizes.year }}</option>
+    <option value="{{ bucketSizes.day }}">{{ bucketSizes.day }}</option>
+    <option value="{{ bucketSizes.month }}">{{ bucketSizes.month }}</option>
+    <option value="{{ bucketSizes.fortnight }}">
+      {{ bucketSizes.fortnight }}
+    </option>
+    <option value="{{ bucketSizes.month }}">{{ bucketSizes.month }}</option>
+    <option value="{{ bucketSizes.season }}">{{ bucketSizes.season }}</option>
+    <option value="{{ bucketSizes.year }}">{{ bucketSizes.year }}</option>
   </select>
 </div>
-
-<baw-typeahead-input
-  label="Chart(s)"
-  [inputPlaceholder]="'All'"
-  [searchCallback]="chartsSearchCallback"
-  [multipleInputs]="true"
-  (modelChange)="model.charts"
-></baw-typeahead-input>
 
 <baw-typeahead-input
   label="Events of Interest"
@@ -86,13 +91,14 @@
   [searchCallback]="eventsOfInterestSearchCallback"
   [multipleInputs]="true"
   [formatter]="eventsOfInterestFormatter"
-  (modelChange)="model.events"
+  (modelChange)="(model.events)"
 ></baw-typeahead-input>
 
 <a
+  type="submit"
   class="btn btn-primary my-3 generateReportButton"
   [strongRoute]="viewReportRoute()"
-  [queryParams]="{ score: 1 }"
+  [queryParams]="model"
 >
   Generate
 </a>

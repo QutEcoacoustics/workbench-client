@@ -25,40 +25,25 @@ export enum BucketSize {
   year = "year",
 }
 
-export interface IEventSummaryReportParameters {
-  sites: Id[];
-  points: Id[];
-  provenances: Id[];
-  events: Id[];
-  score: number;
-  charts: string[];
-  bucketSize: BucketSize;
-  daylightSavings: boolean;
-  time: Tuple<Duration, 2>;
-  date: Tuple<DateTime, 2>;
-}
+const conversionTable = {
+  sites: (value: string) => value.split(",").map(Number),
+  points: (value: string) => value.split(",").map(Number),
+  provenances: (value: string) => value.split(",").map(Number),
+  events: (value: string) => value.split(",").map(Number),
+  score: (value: string) => Number(value),
+  charts: (value: string) => value.split(","),
+  bucketSize: (value: string) => value,
+  daylightSavings: (value: string) => value === "true",
+  date: (value: string) => value.split(",").map(
+    (date) => DateTime.fromISO(date, { zone: "utc" })
+  ),
+  time: (value: string) => value.split(",").map(
+    (time) => Duration.fromISOTime(time)
+  )
+};
 
-export class EventSummaryReportParameters
-  implements IEventSummaryReportParameters
-{
+export class EventSummaryReportParameters {
   public constructor(queryStringParameters: Params = {}) {
-    const conversionTable = {
-      sites: (value: string) => value.split(",").map(Number),
-      points: (value: string) => value.split(",").map(Number),
-      provenances: (value: string) => value.split(",").map(Number),
-      events: (value: string) => value.split(",").map(Number),
-      score: (value: string) => Number(value),
-      charts: (value: string) => value.split(","),
-      bucketSize: (value: string) => value,
-      daylightSavings: (value: string) => value === "true",
-      date: (value: string) => value.split(",").map(
-        (date) => DateTime.fromISO(date, { zone: "utc" })
-      ),
-      time: (value: string) => value.split(",").map(
-        (time) => Duration.fromISOTime(time)
-      )
-    };
-
     // since query string parameters are losely typed using a string from the user space
     // we have to use this hacky implementation of manual key-value checking and assignment
     Object.entries(queryStringParameters).forEach(([key, value]) => {

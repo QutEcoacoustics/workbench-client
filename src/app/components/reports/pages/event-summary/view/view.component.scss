@@ -1,8 +1,15 @@
+section {
+  border-top-style: solid;
+  border-top-width: thin;
+  border-color: var(--baw-secondary-lightest);
+}
+
 .embedded-figure {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0.5em;
+  margin: 0em;
+  padding: 0em;
 }
 
 .large-embedded-figure {
@@ -14,8 +21,6 @@
 
 .site-map {
   display: flex;
-  border-style: solid;
-  border-width: thin;
   width: 100%;
   height: 20em;
   justify-content: center;
