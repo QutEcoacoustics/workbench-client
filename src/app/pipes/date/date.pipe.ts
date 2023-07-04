@@ -11,8 +11,9 @@ import { DateTime } from "luxon";
   name: "dateTime"
 })
 export class DateTimePipe implements PipeTransform {
-  constructor(private angularDatePipe: DatePipe) {
-  }
+  public constructor(
+    private angularDatePipe: DatePipe
+  ) {}
 
   public transform(value: DateTime): string {
     const dateFormat = "yyyy-MM-dd";

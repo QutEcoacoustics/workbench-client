@@ -3,8 +3,8 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { ActivatedRoute } from "@angular/router";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Site } from "@models/Site";
-import { Observable, of } from "rxjs";
-import { Filters } from "@baw-api/baw-api.service";
+import { Observable } from "rxjs";
+import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import {
   ShallowSitesService,
@@ -29,7 +29,7 @@ import { Tag } from "@models/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
 import { StrongRoute } from "@interfaces/strongRoute";
-import { propertyFilter } from "@helpers/filters/filters";
+import { filterAnd, filterModel, propertyFilter } from "@helpers/filters/filters";
 import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
 import {
   BucketSize,
@@ -83,6 +83,12 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     if (models[siteKey]) {
       this.site = models[siteKey] as Site;
     }
+
+    // if there is a region or site, we should immutable scope the report to this location
+    this.model = new EventSummaryReportParameters({
+      sites: [this.region],
+      points: [this.site],
+    });
   }
 
   // while this could be generalised, I have chosen not to as it'd lose a lot of strong type safety without the use of generics
@@ -97,24 +103,33 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   // TODO: this currently does not scope to projects, regions, sites correctly
   public regionsSearchCallback = (regionName: string): Observable<Region[]> =>
     this.regionsApi.filter({
-      filter: propertyFilter<Region>("name", regionName),
+      filter: filterAnd(
+        this.defaultFilter(),
+        propertyFilter<Region>("name", regionName)
+      ),
     } as Filters<Region>);
 
   public siteSearchCallback = (siteName: string): Observable<Site[]> =>
     this.sitesApi.filter({
-      filter: propertyFilter<Site>("name", siteName),
+      filter: filterAnd(
+        this.defaultFilter(),
+        propertyFilter<Site>("name", siteName)
+      ),
     } as Filters<Site>);
 
   public provenanceSearchCallback = (
     provenanceName: string
   ): Observable<AudioEventProvenance[]> =>
     this.provenanceApi.filter({
-      filter: propertyFilter<AudioEventProvenance>("name", provenanceName),
+      filter: filterAnd(
+        this.defaultFilter,
+        propertyFilter<AudioEventProvenance>("name", provenanceName)
+      ),
     } as Filters<AudioEventProvenance>);
 
   public eventsOfInterestSearchCallback = (text: string): Observable<Tag[]> =>
     this.tagsApi.filter({
-      filter: propertyFilter<Tag>("text", text),
+      filter: propertyFilter<Tag>("text", text)
     } as Filters<Tag>);
 
   protected isValidProvenanceCutOff(): boolean {
@@ -149,6 +164,24 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     }
 
     return reportMenuItems.view.project.route;
+  }
+
+  protected getIdsFromAbstractModelArray(item: any[]): number[] {
+    return item.map((am) => am.id);
+  }
+
+  // we need a default filter to scope to projects, regions, sites
+  private defaultFilter(): InnerFilter {
+    // we don't need to filter for every route, we only need to filter for the lowest level
+    // this is because all sites have a region, all regions have a project, etc..
+    // so it can be logically inferred
+    if (this.site) {
+      return filterModel("sites", this.site);
+    } else if (this.region) {
+      return filterModel("regions", this.region);
+    } else {
+      return filterModel("projects", this.project);
+    }
   }
 }
 

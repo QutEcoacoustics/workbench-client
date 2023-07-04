@@ -3,7 +3,7 @@
     {{ label }}
   </label>
   <div
-    class="typeahead-input-container d-flex form-inline form-group form-control border p-0"
+    class="typeahead-input-container d-flex form-group form-control border p-0"
   >
     <ng-container *ngIf="multipleInputs">
       <span
@@ -15,7 +15,7 @@
       >
         <fa-icon
           (click)="removeItem(item)"
-          class="btn-sm text-danger"
+          class="btn-sm"
           [icon]="['fas', 'square-xmark']"
         ></fa-icon>
         {{ formatter(item) }}
@@ -24,6 +24,7 @@
 
     <input
       #typeaheadInputRef
+      id="typeahead-input"
       name="typeahead-input"
       type="text"
       class="form-control border-0"
@@ -33,6 +34,7 @@
       [(ngModel)]="inputModel"
       (selectItem)="onItemSelected($event)"
       (keydown.backspace)="removeLastItem()"
+      [disabled]="inputDisabled"
     />
   </div>
 </div>

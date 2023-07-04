@@ -27,12 +27,14 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
-import { Observable, forkJoin, map, takeUntil } from "rxjs";
+import { Observable, forkJoin, map, take, takeUntil } from "rxjs";
 import { API_ROOT } from "@services/config/config.tokens";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { Duration } from "luxon";
+import { Tag } from "@models/Tag";
 import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
@@ -70,6 +72,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
   protected regions: Observable<Region[]>;
   protected sites: Observable<Site[]>;
+  protected tags: Observable<Tag[]>;
 
   protected speciesAccumulationCurveSchema = speciesAccumulationCurveSchema;
   protected speciesCompositionCurveSchema = speciesCompositionCurveSchema;
@@ -107,13 +110,25 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
     this.regions = forkJoin(
       this.parameterDataModel.sites?.map((regionId: Id) =>
-        this.regionApi.show(regionId)
+        this.regionApi.show(regionId).pipe(
+          take(1)
+        )
       )
     );
 
     this.sites = forkJoin(
       this.parameterDataModel.points?.map((siteId: Id) =>
-        this.sitesApi.show(siteId)
+        this.sitesApi.show(siteId).pipe(
+          take(1)
+        )
+      )
+    );
+
+    this.tags = forkJoin(
+      this.parameterDataModel.events?.map((tagId: Id) =>
+        this.tagsApi.show(tagId).pipe(
+          take(1)
+        )
       )
     );
   }
@@ -124,6 +139,14 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
   protected get eventDownloadUrl(): string {
     return `${this.apiRoot}/projects/1135/audio_events/download.csv`;
+  }
+
+  protected audioCoverageOverSpan(): Duration {
+    return Duration.fromDurationLike(this.report.statistics?.audioCoverageOverSpan * 1000);
+  }
+
+  protected totalSearchSpan(): Duration {
+    return Duration.fromDurationLike(this.report.statistics?.totalSearchSpan * 1000);
   }
 
   protected get currentUser(): User {

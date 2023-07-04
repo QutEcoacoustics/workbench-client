@@ -47,7 +47,7 @@ export function filterAnd<T extends AbstractModel>(
 export function filterModel<T extends AbstractModel, U extends AbstractModel>(
   key: string,
   model: T,
-  currentFilter: InnerFilter
+  currentFilter: InnerFilter = {}
 ): InnerFilter<Writeable<U>> {
   // all model filters condition on the id attribute. While it is very rare for a model to not have an id, it is possible
   // this bailout is typically evoked if the model is undefined

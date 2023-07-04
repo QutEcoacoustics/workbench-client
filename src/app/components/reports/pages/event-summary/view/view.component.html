@@ -18,22 +18,23 @@
     <div class="row py-2">
       <div class="col fw-bold">Sites</div>
 
-
-      <ng-container *ngIf="regions | async as reportRegions">
-        <span *ngFor="let item of reportRegions">
+      <div *ngIf="regions | async as reportRegions" class="col">
+        <span *ngFor="let item of reportRegions; let last = last">
           {{ item.name }}
+          <ng-container *ngIf="!last">,</ng-container>
         </span>
-      </ng-container>
+      </div>
 
       <div *ngIf="!parameterDataModel.sites" class="col">(not specified)</div>
 
       <div class="col fw-bold">Points</div>
 
-      <ng-container *ngIf="sites | async as reportSites">
-        <span *ngFor="let item of reportSites">
+      <div *ngIf="sites | async as reportSites" class="col">
+        <span *ngFor="let item of reportSites; let last = last">
           {{ item.name }}
+          <ng-container *ngIf="!last">,</ng-container>
         </span>
-      </ng-container>
+      </div>
 
       <div *ngIf="!parameterDataModel.points" class="col">(not specified)</div>
     </div>
@@ -95,8 +96,9 @@
 
       <div *ngIf="parameterDataModel.provenances" class="col">
         <ng-container *ngIf="provenanceNames() | async as provenanceNames">
-          <span *ngFor="let item of provenanceNames">
+          <span *ngFor="let item of provenanceNames; let last = last">
             {{ item }}
+            <ng-container *ngIf="!last">,</ng-container>
           </span>
         </ng-container>
       </div>
@@ -117,9 +119,17 @@
         }}
       </div>
 
-      <div class="col"></div>
+      <div class="col fw-bold">Events</div>
 
-      <div class="col"></div>
+      <div *ngIf="tags | async as reportEvents" class="col">
+        <span *ngFor="let item of reportEvents; let last = last">
+          {{ item.text }}
+          <ng-container *ngIf="!last">,</ng-container>
+        </span>
+      </div>
+
+      <div *ngIf="!parameterDataModel.events" class="col">
+      </div>
     </div>
   </div>
 </section>
@@ -152,7 +162,7 @@
               class="site-map"
               [project]="project"
               [region]="region"
-              [sites]="[]"
+              [sites]="sites | async"
             ></baw-site-map>
           </div>
         </div>
@@ -178,11 +188,11 @@
       {{ report.statistics?.countOfRecordingsAnalyzed }}
       {{ parameterDataModel.bucketSize | titlecase }}s <br />
       <strong>
-        {{ report.statistics?.audioCoverageOverSpan }} {{ parameterDataModel.bucketSize | titlecase }}s
+        {{ audioCoverageOverSpan() | toRelative }}
       </strong>
       of recordings were found within the requested
       <strong>
-        {{ report.statistics?.totalSearchSpan }} {{ parameterDataModel.bucketSize | titlecase }}s
+        {{ totalSearchSpan() | toRelative }}
       </strong>
       <a
         name="downloadEventsLink"
@@ -210,9 +220,9 @@
         <tr class="row">
           <td class="col border py-1">{{ item.tagId }}</td>
           <td class="col border py-1">{{ item.provenanceId }}</td>
-          <td class="col border py-1">{{ item.detections }}</td>
-          <td class="col border py-1">{{ item.bucketsWithDetections }}</td>
-          <td class="col border py-1">{{ bucketsWithRain(item) }}</td>
+          <td class="col border py-1">{{ item.detections | number }}</td>
+          <td class="col border py-1">{{ item.bucketsWithDetections | number }}</td>
+          <td class="col border py-1">{{ bucketsWithRain(item) | number }}</td>
           <td class="col border py-1">
             <baw-chart
               class="embedded-figure"
@@ -252,9 +262,10 @@
       <h4>Site Map</h4>
       <div class="large-embedded-figure p-1">
         <baw-site-map
+          class="w-100 h-100"
           [project]="project"
           [region]="region"
-          [sites]="[]"
+          [sites]="sites | async"
         ></baw-site-map>
       </div>
     </div>

@@ -73,7 +73,7 @@ class EventSummaryReportResolver extends BawResolver<
     route: ActivatedRouteSnapshot,
     api: EventSummaryReportService
   ): Observable<EventSummaryReport> {
-    const parametersModel = new EventSummaryReportParameters(route.params);
+    const parametersModel = new EventSummaryReportParameters(route.queryParams);
     const filters: Filters<EventSummaryReport> = parametersModel.toFilter();
 
     return api.filterShow(filters);

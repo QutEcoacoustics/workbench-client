@@ -2,6 +2,7 @@ section {
   border-top-style: solid;
   border-top-width: thin;
   border-color: var(--baw-secondary-lightest);
+  page-break-inside: avoid;
 }
 
 .embedded-figure {
@@ -14,9 +15,9 @@ section {
 
 .large-embedded-figure {
   @extend .embedded-figure;
-  height: 15em;
+  height: 25em;
   min-width: 30em;
-  max-height: 15em;
+  max-height: 25em;
 }
 
 .site-map {
@@ -38,9 +39,5 @@ section {
 
   .events-table {
     overflow-wrap: anywhere;
-  }
-
-  h3 {
-    page-break-before: always;
   }
 }

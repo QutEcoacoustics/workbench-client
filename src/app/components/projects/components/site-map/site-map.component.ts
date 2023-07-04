@@ -15,7 +15,7 @@ import { switchMap, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "baw-site-map",
-  template: '<baw-map [markers]="markers"></baw-map>',
+  template: '<baw-map class="h-100 w-100" [markers]="markers"></baw-map>',
 })
 export class SiteMapComponent extends withUnsubscribe() implements OnInit {
   // TODO Implement system to change colour of selected sites
@@ -32,7 +32,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
   public ngOnInit(): void {
     const filters: Filters<ISite> = { paging: { page: 1 } };
 
-    this.pushMarkers(this.sites);
+    this.pushMarkers(this.sites ?? []);
 
     this.getFilter(filters, this.project, this.region)
       .pipe(

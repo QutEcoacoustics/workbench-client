@@ -11,13 +11,13 @@
     [searchCallback]="regionsSearchCallback"
     [multipleInputs]="true"
     [formatter]="regionFormatter"
-    (modelChange)="(model.sites)"
+    (modelChange)="model.sites = getIdsFromAbstractModelArray($event)"
   ></baw-typeahead-input>
 </ng-container>
 
 <ng-template #immutableRegionTemplate>
   <label>Site(s)</label>
-  <p>{{ region.name }}</p>
+  <baw-typeahead-input [inputDisabled]="true" [inputPlaceholder]="region.name"></baw-typeahead-input>
 </ng-template>
 
 <ng-container *ngIf="!site; else immutableSiteTemplate">
@@ -27,13 +27,13 @@
     [searchCallback]="siteSearchCallback"
     [multipleInputs]="true"
     [formatter]="siteFormatter"
-    (modelChange)="(model.sites)"
+    (modelChange)="model.points = getIdsFromAbstractModelArray($event)"
   ></baw-typeahead-input>
 </ng-container>
 
 <ng-template #immutableSiteTemplate>
   <label>Point(s)</label>
-  <p>{{ region.name }}</p>
+  <baw-typeahead-input [inputDisabled]="true" [inputPlaceholder]="site.name"></baw-typeahead-input>
 </ng-template>
 
 <baw-typeahead-input
@@ -42,7 +42,7 @@
   [searchCallback]="provenanceSearchCallback"
   [multipleInputs]="true"
   [formatter]="provenanceFormatter"
-  (modelChange)="(model.provenances)"
+  (modelChange)="model.provenances = getIdsFromAbstractModelArray($event)"
 ></baw-typeahead-input>
 
 <label for="provenancesCutOffInput" class="form-label">
@@ -91,7 +91,7 @@
   [searchCallback]="eventsOfInterestSearchCallback"
   [multipleInputs]="true"
   [formatter]="eventsOfInterestFormatter"
-  (modelChange)="(model.events)"
+  (modelChange)="model.events = getIdsFromAbstractModelArray($event)"
 ></baw-typeahead-input>
 
 <a

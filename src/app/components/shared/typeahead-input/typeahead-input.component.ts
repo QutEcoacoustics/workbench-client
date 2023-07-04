@@ -1,10 +1,8 @@
 import {
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   Output,
-  ViewChild,
 } from "@angular/core";
 import { NgbTypeaheadSelectItemEvent } from "@ng-bootstrap/ng-bootstrap";
 import {
@@ -18,7 +16,7 @@ import {
 import { defaultDebounceTime } from "src/app/app.helper";
 
 @Component({
-  selector: "baw-typeahead-input[searchCallback]",
+  selector: "baw-typeahead-input",
   templateUrl: "typeahead-input.component.html",
   styleUrls: ["typeahead-input.component.scss"],
 })
@@ -41,6 +39,7 @@ export class TypeaheadInputComponent {
    * Note: This value is not emitted at any point
    */
   @Input() public inputPlaceholder = "";
+  @Input() public inputDisabled = false;
   /** An event emitter when a user adds, removes, or selects and item from the typeahead input */
   @Output() public modelChange = new EventEmitter<object[] | string[]>();
 
