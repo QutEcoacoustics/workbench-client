@@ -55,10 +55,21 @@ export interface IAnalysisCoverageGraphData {
   analysisCoverage: number;
 }
 
+export interface ITimeSeriesGraph {
+  analysisCoverage: IDateRange[];
+  recordingCoverage: IDateRange[];
+}
+
+export interface IDateRange {
+  startDate: DateTimeTimezone | string;
+  endDate: DateTimeTimezone | string;
+}
+
 export interface IEventSummaryGraphs {
   accumulationData: IAccumulationGraphData[];
   speciesCompositionData: ISpeciesCompositionGraphData[];
-  analysisCoverageData: IAnalysisCoverageGraphData[];
+  analysisConfidenceData: IAnalysisCoverageGraphData[];
+  coverageData: ITimeSeriesGraph;
 }
 
 export interface IEventSummaryReport {
@@ -85,6 +96,7 @@ export class EventSummaryReport
   @bawCollection()
   public readonly siteIds: Ids;
   public readonly graphs: IEventSummaryGraphs;
+  public readonly timeSeriesGraph: ITimeSeriesGraph[];
 
   @hasMany<EventSummaryReport, Site>(SHALLOW_SITE, "siteIds")
   public sites?: Site[];

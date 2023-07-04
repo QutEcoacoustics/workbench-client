@@ -14,122 +14,122 @@
 <section>
   <h3>Search Parameters</h3>
 
-  <div class="reportInformation container">
-    <div class="row py-2">
-      <div class="col fw-bold">Sites</div>
+  <div class="search-parameters">
+    <div class="search-parameters-container">
+      <span class="fw-bold">Sites:</span>
 
-      <div *ngIf="regions | async as reportRegions" class="col">
-        <span *ngFor="let item of reportRegions; let last = last">
+      <span *ngIf="regions | async as reportRegions">
+        <ng-container *ngFor="let item of reportRegions; let last = last">
           {{ item.name }}
           <ng-container *ngIf="!last">,</ng-container>
-        </span>
-      </div>
+        </ng-container>
+      </span>
 
-      <div *ngIf="!parameterDataModel.sites" class="col">(not specified)</div>
-
-      <div class="col fw-bold">Points</div>
-
-      <div *ngIf="sites | async as reportSites" class="col">
-        <span *ngFor="let item of reportSites; let last = last">
-          {{ item.name }}
-          <ng-container *ngIf="!last">,</ng-container>
-        </span>
-      </div>
-
-      <div *ngIf="!parameterDataModel.points" class="col">(not specified)</div>
+      <span *ngIf="!parameterDataModel.sites">(not specified)</span>
     </div>
 
-    <div class="row py-2">
-      <div class="col fw-bold">Times</div>
+    <div class="search-parameters-container">
+      <span class="fw-bold">Points:</span>
 
-      <div
+      <span *ngIf="sites | async as reportSites">
+        <ng-container *ngFor="let item of reportSites; let last = last">
+          {{ item.name }}
+          <ng-container *ngIf="!last">,</ng-container>
+        </ng-container>
+      </span>
+
+      <span *ngIf="!parameterDataModel.points">(not specified)</span>
+    </div>
+
+    <div class="search-parameters-container">
+      <span class="fw-bold">Times:</span>
+
+      <span
         *ngIf="
           parameterDataModel.timeStartedAfter ||
           parameterDataModel.timeFinishedBefore
         "
-        class="col"
       >
         {{ parameterDataModel.timeStartedAfter | time }} –
         {{ parameterDataModel.timeFinishedBefore | time }}
-      </div>
+      </span>
 
-      <div
+      <span
         *ngIf="
           !parameterDataModel.timeStartedAfter &&
           !parameterDataModel.timeFinishedBefore
         "
-        class="col"
       >
         (not specified)
-      </div>
+      </span>
+    </div>
 
-      <div class="col fw-bold">Date Range</div>
+    <div class="search-parameters-container">
+      <span class="fw-bold">Date Range:</span>
 
-      <div
+      <span
         *ngIf="
           parameterDataModel.dateStartedAfter ||
           parameterDataModel.dateFinishedBefore
         "
-        class="col"
       >
         {{ parameterDataModel.dateStartedAfter | dateTime }} –
         {{ parameterDataModel.dateFinishedBefore | dateTime }}
-      </div>
+      </span>
 
-      <div
+      <span
         *ngIf="
           !parameterDataModel.dateStartedAfter &&
           !parameterDataModel.dateFinishedBefore
         "
-        class="col"
       >
         (not specified)
-      </div>
+      </span>
     </div>
 
-    <div class="row py-2">
-      <div class="col fw-bold">Duration</div>
+    <div class="search-parameters-container">
+      <span>
+        <b>Duration</b> {{ parameterDataModel.bucketSize | titlecase }}
+      </span>
+    </div>
 
-      <div class="col">{{ parameterDataModel.bucketSize | titlecase }}</div>
+    <div class="search-parameters-container">
+      <span class="fw-bold">Recognisers:</span>
 
-      <div class="col fw-bold">Recognisers</div>
-
-      <div *ngIf="parameterDataModel.provenances" class="col">
+      <span *ngIf="parameterDataModel.provenances">
         <ng-container *ngIf="provenanceNames() | async as provenanceNames">
-          <span *ngFor="let item of provenanceNames; let last = last">
+          <ng-container *ngFor="let item of provenanceNames; let last = last">
             {{ item }}
             <ng-container *ngIf="!last">,</ng-container>
-          </span>
+          </ng-container>
         </ng-container>
-      </div>
+      </span>
 
-      <div *ngIf="!parameterDataModel.provenances" class="col">
-        (not specified)
-      </div>
+      <span *ngIf="!parameterDataModel.provenances"> (not specified) </span>
     </div>
 
-    <div class="row py-2">
-      <div class="col fw-bold">Score Cutoff</div>
+    <div class="search-parameters-container">
+      <span class="fw-bold">Score Cutoff:</span>
 
-      <div class="col">
+      <span>
         {{
           parameterDataModel.score ??
-            ViewEventReportComponent.defaultFilterText()
-          | number: '1.1-1'
+            ViewEventReportComponent.defaultFilterText() | number : "1.1-1"
         }}
-      </div>
+      </span>
+    </div>
 
-      <div class="col fw-bold">Events</div>
+    <div class="search-parameters-container">
+      <span class="fw-bold">Events:</span>
 
-      <div *ngIf="tags | async as reportEvents" class="col">
-        <span *ngFor="let item of reportEvents; let last = last">
+      <span *ngIf="tags | async as reportEvents">
+        <ng-container *ngFor="let item of reportEvents; let last = last">
           {{ item.text }}
           <ng-container *ngIf="!last">,</ng-container>
-        </span>
-      </div>
+        </ng-container>
+      </span>
 
-      <div *ngIf="!parameterDataModel.events" class="col">
-      </div>
+      <span *ngIf="!parameterDataModel.events"></span>
     </div>
   </div>
 </section>
@@ -169,13 +169,21 @@
       </div>
     </div>
 
-    <div class="border border-5 p-2 m-2">
-      Time series graph
-    </div>
+    <label for="audioCoverageGraph"><b>Audio Recording Coverage</b></label>
+    <baw-chart
+      name="audioCoverageGraph"
+      class="coverageGraph"
+      [spec]="coveragePlotSchema"
+      [data]="report.graphs.coverageData.recordingCoverage"
+    ></baw-chart>
 
-    <div class="border border-5 p-2 m-2">
-      Time series graph
-    </div>
+    <label for="analysisCoverageGraph"><b>Analysis Coverage</b></label>
+    <baw-chart
+      name="analysisCoverageGraph"
+      class="coverageGraph"
+      [spec]="coveragePlotSchema"
+      [data]="report.graphs.coverageData.analysisCoverage"
+    ></baw-chart>
   </div>
 </section>
 
@@ -184,7 +192,10 @@
 
   <div class="events-table">
     <div class="py-4">
-      <b>Total number of {{ parameterDataModel.bucketSize | titlecase }}s analysed: </b>
+      <b
+        >Total number of {{ parameterDataModel.bucketSize | titlecase }}s
+        analysed:
+      </b>
       {{ report.statistics?.countOfRecordingsAnalyzed }}
       {{ parameterDataModel.bucketSize | titlecase }}s <br />
       <strong>
@@ -218,10 +229,12 @@
 
       <ng-container *ngFor="let item of report.eventGroups">
         <tr class="row">
-          <td class="col border py-1">{{ item.tagId }}</td>
-          <td class="col border py-1">{{ item.provenanceId }}</td>
+          <td class="col border py-1">{{ tagName(item.tagId) | async }}</td>
+          <td class="col border py-1">{{ provenanceName(item.provenanceId) | async }}</td>
           <td class="col border py-1">{{ item.detections | number }}</td>
-          <td class="col border py-1">{{ item.bucketsWithDetections | number }}</td>
+          <td class="col border py-1">
+            {{ item.bucketsWithDetections | number }}
+          </td>
           <td class="col border py-1">{{ bucketsWithRain(item) | number }}</td>
           <td class="col border py-1">
             <baw-chart
@@ -231,9 +244,11 @@
               [options]="{ actions: false }"
             ></baw-chart>
 
-            <small class="m-1 text-muted">x̄: {{ item.score.mean | number: '1.2-2' }}</small>
             <small class="m-1 text-muted"
-              >σ: {{ item.score.standardDeviation | number: '1.2-2' }}</small
+              >x̄: {{ item.score.mean | number : "1.2-2" }}</small
+            >
+            <small class="m-1 text-muted"
+              >σ: {{ item.score.standardDeviation | number : "1.2-2" }}</small
             >
           </td>
         </tr>
@@ -251,12 +266,12 @@
 
   <div class="my-1">
     <button
-      class="btn btn-secondary"
+      class="toggle-graph-button btn btn-secondary btn-sm"
       (click)="siteMapCollapsed = !siteMapCollapsed"
       aria-controls="collapseExample"
       aria-expanded="false"
     >
-      Toggle Sitemap
+      {{ siteMapCollapsed ? "Show" : "Hide" }} Toggle Sitemap
     </button>
     <div id="siteMapContainer" [ngbCollapse]="siteMapCollapsed">
       <h4>Site Map</h4>
@@ -273,12 +288,12 @@
 
   <div class="my-1" *ngIf="report.graphs?.accumulationData">
     <button
-      class="btn btn-secondary"
+      class="toggle-graph-button btn btn-secondary btn-sm"
       (click)="accumulationCurveCollapsed = !accumulationCurveCollapsed"
       aria-controls="collapseExample"
       aria-expanded="false"
     >
-      Toggle Accumulation Curve
+      {{ accumulationCurveCollapsed ? "Show" : "Hide" }} Accumulation Curve
     </button>
     <div [ngbCollapse]="accumulationCurveCollapsed">
       <h4>Species Accumulation Curve</h4>
@@ -292,12 +307,12 @@
 
   <div class="my-1" *ngIf="report.graphs?.speciesCompositionData">
     <button
-      class="btn btn-secondary"
+      class="toggle-graph-button btn btn-secondary btn-sm"
       (click)="compositionCurveCollapsed = !compositionCurveCollapsed"
       aria-controls="collapseExample"
       aria-expanded="false"
     >
-      Toggle Composition Curve
+      {{ compositionCurveCollapsed ? "Show" : "Hide" }} Composition Curve
     </button>
     <div [ngbCollapse]="compositionCurveCollapsed">
       <h4>Species Composition</h4>
@@ -311,14 +326,12 @@
 
   <div class="my-1">
     <button
-      class="btn btn-secondary"
-      (click)="
-        falseColorSpectrogramsCollapsed = !falseColorSpectrogramsCollapsed
-      "
+      class="toggle-graph-button btn btn-secondary btn-sm"
+      (click)="falseColorSpectrogramsCollapsed = !falseColorSpectrogramsCollapsed"
       aria-controls="collapseExample"
       aria-expanded="false"
     >
-      Toggle False Colour Spectrograms
+      {{ falseColorSpectrogramsCollapsed ? "Show" : "Hide" }} False Colour Spectrograms
     </button>
     <div [ngbCollapse]="falseColorSpectrogramsCollapsed">
       <h4>False colour spectrogram(s)</h4>

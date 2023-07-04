@@ -28,8 +28,21 @@ section {
   align-items: center;
 }
 
+.search-parameters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.search-parameters-container {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  flex-basis: auto;
+  margin: 1rem;
+}
+
 @media print {
-  #print-button {
+  #print-button, .toggle-graph-button {
     display: none;
   }
 

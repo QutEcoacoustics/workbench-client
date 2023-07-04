@@ -16,12 +16,16 @@
         "x": {
           "field": "date",
           "type": "nominal",
-          "axis": { "labelAngle": 0 }
+          "axis": {
+            "labelAngle": 0
+          }
         },
         "y": {
           "field": "count",
           "type": "quantitative",
-          "axis": { "labelAngle": 0 }
+          "axis": {
+            "labelAngle": 0
+          }
         }
       }
     },
@@ -37,8 +41,13 @@
           "field": "date",
           "type": "nominal"
         },
-        "y": {"field": "count", "type": "quantitative"},
-        "yError": { "field": "error" }
+        "y": {
+          "field": "count",
+          "type": "quantitative"
+        },
+        "yError": {
+          "field": "error"
+        }
       }
     },
     {
@@ -47,12 +56,16 @@
         "x": {
           "field": "date",
           "type": "nominal",
-          "axis": { "labelAngle": 0 }
+          "axis": {
+            "labelAngle": 0
+          }
         },
         "y": {
           "field": "count",
           "type": "quantitative",
-          "axis": { "labelAngle": 0 }
+          "axis": {
+            "labelAngle": 0
+          }
         }
       }
     }

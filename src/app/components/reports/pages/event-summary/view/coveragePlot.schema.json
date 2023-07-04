@@ -1,0 +1,19 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": "container",
+  "height": 50,
+  "data": {
+    "values": []
+  },
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "startDate",
+      "type": "nominal",
+      "axis": null
+    },
+    "x2": {
+      "field": "endDate"
+    }
+  }
+}

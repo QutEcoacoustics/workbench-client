@@ -27,7 +27,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
-import { Observable, forkJoin, map, take, takeUntil } from "rxjs";
+import { Observable, forkJoin, map, of, take, takeUntil } from "rxjs";
 import { API_ROOT } from "@services/config/config.tokens";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Id } from "@interfaces/apiInterfaces";
@@ -35,10 +35,12 @@ import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/Audio
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
+import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
 import confidencePlotSchema from "./confidencePlot.schema.json";
+import coveragePlotSchema from "./coveragePlot.schema.json";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -77,6 +79,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   protected speciesAccumulationCurveSchema = speciesAccumulationCurveSchema;
   protected speciesCompositionCurveSchema = speciesCompositionCurveSchema;
   protected confidencePlotSchema = confidencePlotSchema;
+  protected coveragePlotSchema = coveragePlotSchema;
 
   public ngOnInit(): void {
     // we can use "as" here to provide stronger typing because the data property is a standard object type without any typing
@@ -174,6 +177,16 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
           .pipe(map((provenance: AudioEventProvenance) => provenance.name))
     );
     return forkJoin(provenanceNames);
+  }
+
+  protected tagName(tagId: Id): Observable<Tag> {
+    return this.tagsApi.show(tagId).pipe(take(1));
+  }
+
+  protected provenanceName(provenanceId: Id): Observable<AudioEventProvenance> {
+    return of(new AudioEventProvenance(generateAudioEventProvenance({
+      id: provenanceId
+    })));
   }
 }
 

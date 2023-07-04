@@ -5,6 +5,14 @@ import { Tuple } from "@helpers/advancedTypes";
 import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import {
+  queryStringArray,
+  queryStringBoolean,
+  queryStringDateTimeArray,
+  queryStringDurationTimeArray,
+  queryStringNumber,
+  queryStringToNumberArray,
+} from "@helpers/query-string-parameters/query-string-parameters";
 import { Id } from "@interfaces/apiInterfaces";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { DateTime, Duration } from "luxon";
@@ -26,20 +34,16 @@ export enum BucketSize {
 }
 
 const conversionTable = {
-  sites: (value: string) => value.split(",").map(Number),
-  points: (value: string) => value.split(",").map(Number),
-  provenances: (value: string) => value.split(",").map(Number),
-  events: (value: string) => value.split(",").map(Number),
-  score: (value: string) => Number(value),
-  charts: (value: string) => value.split(","),
+  sites: (value: string) => queryStringToNumberArray(value),
+  points: (value: string) => queryStringToNumberArray(value),
+  provenances: (value: string) => queryStringToNumberArray(value),
+  events: (value: string) => queryStringToNumberArray(value),
+  score: (value: string) => queryStringNumber(value),
+  charts: (value: string) => queryStringArray(value),
   bucketSize: (value: string) => value,
-  daylightSavings: (value: string) => value === "true",
-  date: (value: string) => value.split(",").map(
-    (date) => DateTime.fromISO(date, { zone: "utc" })
-  ),
-  time: (value: string) => value.split(",").map(
-    (time) => Duration.fromISOTime(time)
-  )
+  daylightSavings: (value: string) => queryStringBoolean(value),
+  date: (value: string) => queryStringDateTimeArray(value),
+  time: (value: string) => queryStringDurationTimeArray(value),
 };
 
 export class EventSummaryReportParameters {
@@ -67,27 +71,19 @@ export class EventSummaryReportParameters {
   public date: Tuple<DateTime, 2>;
 
   public get dateStartedAfter(): DateTime {
-    return this.date ?
-      this.date[0] :
-      null;
+    return this.date ? this.date[0] : null;
   }
 
   public get dateFinishedBefore(): DateTime {
-    return this.date ?
-      this.date[1] :
-      null;
+    return this.date ? this.date[1] : null;
   }
 
   public get timeStartedAfter(): Duration {
-    return this.time ?
-      this.time[0] :
-      null;
+    return this.time ? this.time[0] : null;
   }
 
   public get timeFinishedBefore(): Duration {
-    return this.time ?
-      this.time[1] :
-      null;
+    return this.time ? this.time[1] : null;
   }
 
   public toFilter(): Filters<EventSummaryReport> {

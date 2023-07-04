@@ -9,17 +9,25 @@
   "encoding": {
     "x": {
       "field": "date",
-      "type": "nominal"
+      "type": "nominal",
+      "axis": {
+        "labelAngle": 0
+      }
     },
     "y": {
       "aggregate": "sum",
       "field": "ratio",
-      "type": "quantitative"
+      "type": "quantitative",
+      "axis": {
+        "labelAngle": 0
+      }
     },
     "color": {
       "field": "tagId",
       "type": "nominal",
-      "scale": { "scheme": "category20b" }
+      "scale": {
+        "scheme": "category20b"
+      }
     }
   }
 }

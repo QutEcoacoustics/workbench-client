@@ -1,104 +1,112 @@
 <h1 class="text-muted">{{ componentTitle }}</h1>
 <h1 class="mb-5">New Event Summary Report</h1>
 
-<baw-date-time-filter> </baw-date-time-filter>
+<form>
+  <baw-date-time-filter> </baw-date-time-filter>
 
-<!-- Only projects should show a region filter -->
-<ng-container *ngIf="!region; else immutableRegionTemplate">
+  <!-- Only projects should show a region filter -->
+  <ng-container *ngIf="!region; else immutableRegionTemplate">
+    <baw-typeahead-input
+      label="Site(s)"
+      [inputPlaceholder]="'All'"
+      [searchCallback]="regionsSearchCallback"
+      [multipleInputs]="true"
+      [formatter]="regionFormatter"
+      (modelChange)="model.sites = getIdsFromAbstractModelArray($event)"
+    ></baw-typeahead-input>
+  </ng-container>
+
+  <ng-template #immutableRegionTemplate>
+    <label>Site(s)</label>
+    <baw-typeahead-input
+      [inputDisabled]="true"
+      [inputPlaceholder]="region.name"
+    ></baw-typeahead-input>
+  </ng-template>
+
+  <ng-container *ngIf="!site; else immutableSiteTemplate">
+    <baw-typeahead-input
+      label="Point(s)"
+      [inputPlaceholder]="'All'"
+      [searchCallback]="siteSearchCallback"
+      [multipleInputs]="true"
+      [formatter]="siteFormatter"
+      (modelChange)="model.points = getIdsFromAbstractModelArray($event)"
+    ></baw-typeahead-input>
+  </ng-container>
+
+  <ng-template #immutableSiteTemplate>
+    <label>Point(s)</label>
+    <baw-typeahead-input
+      [inputDisabled]="true"
+      [inputPlaceholder]="site.name"
+    ></baw-typeahead-input>
+  </ng-template>
+
   <baw-typeahead-input
-    label="Site(s)"
+    label="Recogniser(s)"
     [inputPlaceholder]="'All'"
-    [searchCallback]="regionsSearchCallback"
+    [searchCallback]="provenanceSearchCallback"
     [multipleInputs]="true"
-    [formatter]="regionFormatter"
-    (modelChange)="model.sites = getIdsFromAbstractModelArray($event)"
+    [formatter]="provenanceFormatter"
+    (modelChange)="model.provenances = getIdsFromAbstractModelArray($event)"
   ></baw-typeahead-input>
-</ng-container>
 
-<ng-template #immutableRegionTemplate>
-  <label>Site(s)</label>
-  <baw-typeahead-input [inputDisabled]="true" [inputPlaceholder]="region.name"></baw-typeahead-input>
-</ng-template>
-
-<ng-container *ngIf="!site; else immutableSiteTemplate">
-  <baw-typeahead-input
-    label="Point(s)"
-    [inputPlaceholder]="'All'"
-    [searchCallback]="siteSearchCallback"
-    [multipleInputs]="true"
-    [formatter]="siteFormatter"
-    (modelChange)="model.points = getIdsFromAbstractModelArray($event)"
-  ></baw-typeahead-input>
-</ng-container>
-
-<ng-template #immutableSiteTemplate>
-  <label>Point(s)</label>
-  <baw-typeahead-input [inputDisabled]="true" [inputPlaceholder]="site.name"></baw-typeahead-input>
-</ng-template>
-
-<baw-typeahead-input
-  label="Recogniser(s)"
-  [inputPlaceholder]="'All'"
-  [searchCallback]="provenanceSearchCallback"
-  [multipleInputs]="true"
-  [formatter]="provenanceFormatter"
-  (modelChange)="model.provenances = getIdsFromAbstractModelArray($event)"
-></baw-typeahead-input>
-
-<label for="provenancesCutOffInput" class="form-label">
-  Recogniser Score Cut-Off
-</label>
-<input
-  [(ngModel)]="model.score"
-  type="number"
-  name="provenancesCutOffInput"
-  class="form-control"
-  placeholder="0"
-  step="0.1"
-  max="1"
-  min="0"
-/>
-<label
-  *ngIf="!isValidProvenanceCutOff()"
-  for="provenancesCutOffInput"
-  class="text-danger"
->
-  The recogniser score cut-off are outside the permitted boundary. Ensure that
-  the value is between 0 and 1.
-</label>
-
-<div>
-  <label for="bucketSizeInput">Bucket Size</label>
-  <select
-    name="bucketSizeInput"
-    class="form-select"
-    [(ngModel)]="model.bucketSize"
+  <label for="provenancesCutOffInput" class="form-label">
+    Recogniser Score Cut-Off
+  </label>
+  <input
+    [(ngModel)]="model.score"
+    type="number"
+    name="provenancesCutOffInput"
+    class="form-control"
+    placeholder="0"
+    step="0.1"
+    max="1"
+    min="0"
+  />
+  <label
+    *ngIf="!isValidProvenanceCutOff()"
+    for="provenancesCutOffInput"
+    class="text-danger"
   >
-    <option value="{{ bucketSizes.day }}">{{ bucketSizes.day }}</option>
-    <option value="{{ bucketSizes.month }}">{{ bucketSizes.month }}</option>
-    <option value="{{ bucketSizes.fortnight }}">
-      {{ bucketSizes.fortnight }}
-    </option>
-    <option value="{{ bucketSizes.month }}">{{ bucketSizes.month }}</option>
-    <option value="{{ bucketSizes.season }}">{{ bucketSizes.season }}</option>
-    <option value="{{ bucketSizes.year }}">{{ bucketSizes.year }}</option>
-  </select>
-</div>
+    The recogniser score cut-off are outside the permitted boundary. Ensure that
+    the value is between 0 and 1.
+  </label>
 
-<baw-typeahead-input
-  label="Events of Interest"
-  [inputPlaceholder]="'All'"
-  [searchCallback]="eventsOfInterestSearchCallback"
-  [multipleInputs]="true"
-  [formatter]="eventsOfInterestFormatter"
-  (modelChange)="model.events = getIdsFromAbstractModelArray($event)"
-></baw-typeahead-input>
+  <div>
+    <label for="bucketSizeInput">Bucket Size</label>
+    <select
+      name="bucketSizeInput"
+      class="form-select"
+      [(ngModel)]="model.bucketSize"
+    >
+      <option value="{{ bucketSizes.day }}">{{ bucketSizes.day }}</option>
+      <option value="{{ bucketSizes.month }}">{{ bucketSizes.month }}</option>
+      <option value="{{ bucketSizes.fortnight }}">
+        {{ bucketSizes.fortnight }}
+      </option>
+      <option value="{{ bucketSizes.month }}">{{ bucketSizes.month }}</option>
+      <option value="{{ bucketSizes.season }}">{{ bucketSizes.season }}</option>
+      <option value="{{ bucketSizes.year }}">{{ bucketSizes.year }}</option>
+    </select>
+  </div>
 
-<a
-  type="submit"
-  class="btn btn-primary my-3 generateReportButton"
-  [strongRoute]="viewReportRoute()"
-  [queryParams]="model"
->
-  Generate
-</a>
+  <baw-typeahead-input
+    label="Events of Interest"
+    [inputPlaceholder]="'All'"
+    [searchCallback]="eventsOfInterestSearchCallback"
+    [multipleInputs]="true"
+    [formatter]="eventsOfInterestFormatter"
+    (modelChange)="model.events = getIdsFromAbstractModelArray($event)"
+  ></baw-typeahead-input>
+
+  <a
+    type="submit"
+    class="btn btn-primary my-3 generateReportButton"
+    [strongRoute]="viewReportRoute()"
+    [queryParams]="model"
+  >
+    Generate
+  </a>
+</form>

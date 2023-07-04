@@ -10,8 +10,9 @@ import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { BawResolver, ResolvedModel } from "@baw-api/resolver-common";
 import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/EventSummaryReportParameters";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { EventSummaryReport } from "@models/EventSummaryReport";
+import { EventSummaryReport, IEventGroup } from "@models/EventSummaryReport";
 import { generateEventSummaryReport } from "@test/fakes/EventSummaryReport";
+import { modelData } from "@test/helpers/faker";
 import { Observable, of } from "rxjs";
 
 // at the current moment, the api does not support fetching saved reports from id. However, this is planned for the future
@@ -30,13 +31,48 @@ export class EventSummaryReportService
   // because filter returns an array of item, and we want to return one item given filter conditions
   // we cannot use the generalised filter service interface
   public filterShow(
-    _filters: Filters<EventSummaryReport>
+    filters: Filters<EventSummaryReport>
   ): Observable<EventSummaryReport> {
     // as the api is not currently functional, we are returning a mock report model
     // this is done so that the reports can be showcased with a working view
-    // this is done in the resolver so that we can unit test and mock the services correctly
-    // TODO: remove the following line of code once the API is fully functional
-    return of(new EventSummaryReport(generateEventSummaryReport()))
+
+    // to make the report believable, we have to use the filter parameters so that it uses actual sites, tags, etc...
+    const regionIds: number[] = filters.filter.and[0]["region.id"].in;
+    const siteIds: number[] = filters.filter.and[1]["site.id"].in;
+    const provenanceIds: number[] = filters.filter.and[2]["provenance.id"].in;
+    const tagIds: number[] = filters.filter.and[3]["tag.id"].in;
+
+    function flatten2DArray(arr) {
+      return [].concat(...arr);
+    }
+
+    return of(
+      new EventSummaryReport(
+        generateEventSummaryReport({
+          siteIds,
+          eventGroups: flatten2DArray(tagIds.map((tagId: number) =>
+            provenanceIds.map((provenanceId: number) =>
+              Object({
+                provenanceId,
+                tagId,
+                detections: modelData.datatype.number(),
+                bucketsWithDetections: modelData.datatype.number(),
+                bucketsWithInterference: [],
+                score: Object({
+                  histogram: modelData.randomArray<number>(30, 30, () =>
+                    modelData.percentage()
+                  ),
+                  standardDeviation: modelData.percentage(),
+                  mean: modelData.percentage(),
+                  min: modelData.percentage(),
+                  max: modelData.percentage(),
+                }),
+              } as IEventGroup)
+            )
+          )),
+        })
+      )
+    );
     // return this.api.filterShow(EventSummaryReport, endpoint(emptyParam, filterParam), filters);
   }
 }

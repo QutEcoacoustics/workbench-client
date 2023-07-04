@@ -1,8 +1,6 @@
 import {
   IAnalysisCoverageGraphData,
   IEventSummaryReport,
-  IEventGroup,
-  IReportEvent,
 } from "@models/EventSummaryReport";
 import { modelData } from "@test/helpers/faker";
 
@@ -21,23 +19,13 @@ export function generateEventSummaryReport(
       coverageStartDay: modelData.date.recent().toISOString(),
       coverageEndDay: modelData.date.recent().toISOString(),
     },
-    eventGroups: modelData.randomArray<IEventGroup>(1, 10, () =>
-      Object({
-        provenanceId: modelData.id(),
-        tagId: modelData.id(),
-        detections: modelData.datatype.number(),
-        bucketsWithDetections: modelData.datatype.number(),
-        bucketsWithInterference: modelData.randomArray<IReportEvent>(
-          0,
-          10,
-          () =>
-            Object({
-              name: modelData.param(),
-              value: modelData.datatype.number(),
-            })
-        ),
-        // since all these values will be scores from recognizers/provenances, they will be bounded between 0 and 1
-        // while not technically percentages, they can be mocked with fake data using a percentage because of the same domain
+    eventGroups: [
+      {
+        provenanceId: modelData.datatype.number(),
+        tagId: 2883,
+        detections: 2112,
+        bucketsWithDetections: 123,
+        bucketsWithInterference: [],
         score: {
           histogram: modelData.randomArray<number>(30, 30, () => modelData.percentage()),
           standardDeviation: modelData.percentage(),
@@ -45,8 +33,78 @@ export function generateEventSummaryReport(
           min: modelData.percentage(),
           max: modelData.percentage(),
         },
-      })
-    ),
+      },
+      {
+        provenanceId: modelData.datatype.number(),
+        tagId: 2883,
+        detections: 323,
+        bucketsWithDetections: 2,
+        bucketsWithInterference: [],
+        score: {
+          histogram: modelData.randomArray<number>(30, 30, () => modelData.percentage()),
+          standardDeviation: modelData.percentage(),
+          mean: modelData.percentage(),
+          min: modelData.percentage(),
+          max: modelData.percentage(),
+        },
+      },
+      {
+        provenanceId: modelData.datatype.number(),
+        tagId: 2883,
+        detections: 1233,
+        bucketsWithDetections: 22,
+        bucketsWithInterference: [],
+        score: {
+          histogram: modelData.randomArray<number>(30, 30, () => modelData.percentage()),
+          standardDeviation: modelData.percentage(),
+          mean: modelData.percentage(),
+          min: modelData.percentage(),
+          max: modelData.percentage(),
+        },
+      },
+      {
+        provenanceId: modelData.datatype.number(),
+        tagId: 1950,
+        detections: 13213523,
+        bucketsWithDetections: 2411,
+        bucketsWithInterference: [],
+        score: {
+          histogram: modelData.randomArray<number>(30, 30, () => modelData.percentage()),
+          standardDeviation: modelData.percentage(),
+          mean: modelData.percentage(),
+          min: modelData.percentage(),
+          max: modelData.percentage(),
+        },
+      },
+      {
+        provenanceId: modelData.datatype.number(),
+        tagId: 1831,
+        detections: 321,
+        bucketsWithDetections: 223,
+        bucketsWithInterference: [],
+        score: {
+          histogram: modelData.randomArray<number>(30, 30, () => modelData.percentage()),
+          standardDeviation: modelData.percentage(),
+          mean: modelData.percentage(),
+          min: modelData.percentage(),
+          max: modelData.percentage(),
+        },
+      },
+      {
+        provenanceId: modelData.datatype.number(),
+        tagId: 1831,
+        detections: 213,
+        bucketsWithDetections: 211,
+        bucketsWithInterference: [],
+        score: {
+          histogram: modelData.randomArray<number>(30, 30, () => modelData.percentage()),
+          standardDeviation: modelData.percentage(),
+          mean: modelData.percentage(),
+          min: modelData.percentage(),
+          max: modelData.percentage(),
+        },
+      },
+    ],
     siteIds: modelData.ids(),
     // while not truely random, the use of hard coded graph data was used to ensure lifelike graphs during presentations
     graphs: {
@@ -77,7 +135,26 @@ export function generateEventSummaryReport(
         { date: "26-05-2023", tagId: 39, ratio: 0.40 },
         { date: "26-05-2023", tagId: 277, ratio: 0.35 }
       ],
-      analysisCoverageData: modelData.randomArray<IAnalysisCoverageGraphData>(
+      coverageData: {
+        analysisCoverage: [
+          { startDate: "2020-10-10", endDate: "2020-10-11" },
+          { startDate: "2020-10-12", endDate: "2020-10-15" },
+          { startDate: "2020-10-19", endDate: "2020-10-23" },
+          { startDate: "2020-10-26", endDate: "2020-11-01" },
+          { startDate: "2020-11-10", endDate: "2020-12-01" },
+          { startDate: "2020-12-01", endDate: "2020-12-28" },
+          { startDate: "2021-01-01", endDate: "2021-04-11" },
+          { startDate: "2021-08-10", endDate: "2021-10-11" }
+        ],
+        recordingCoverage: [
+          { startDate: "2020-10-10", endDate: "2020-10-11" },
+          { startDate: "2020-10-19", endDate: "2020-10-23" },
+          { startDate: "2020-12-01", endDate: "2020-12-28" },
+          { startDate: "2021-01-01", endDate: "2021-04-11" },
+          { startDate: "2021-08-10", endDate: "2021-10-11" }
+        ]
+      },
+      analysisConfidenceData: modelData.randomArray<IAnalysisCoverageGraphData>(
         0,
         10,
         () =>

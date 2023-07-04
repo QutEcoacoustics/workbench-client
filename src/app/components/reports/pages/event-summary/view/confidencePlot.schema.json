@@ -20,6 +20,8 @@
     }
   },
   "config": {
-    "view": {"stroke": "transparent"}
+    "view": {
+      "stroke": "transparent"
+    }
   }
 }
