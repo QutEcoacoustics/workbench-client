@@ -4,15 +4,15 @@ import {
   IdParamOptional,
   id,
   option,
-  ApiFilterShow,
+  FilterCreate,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
-import { BawResolver, ResolvedModel } from "@baw-api/resolver-common";
+import { BawProvider, BawResolver, ResolvedModel } from "@baw-api/resolver-common";
 import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/EventSummaryReportParameters";
+import { faker } from "@faker-js/faker";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { EventSummaryReport, IEventGroup } from "@models/EventSummaryReport";
 import { generateEventSummaryReport } from "@test/fakes/EventSummaryReport";
-import { modelData } from "@test/helpers/faker";
 import { Observable, of } from "rxjs";
 
 // at the current moment, the api does not support fetching saved reports from id. However, this is planned for the future
@@ -24,7 +24,7 @@ const endpoint = stringTemplate`/reports/audio_event_summary/${reportId}${option
 
 @Injectable()
 export class EventSummaryReportService
-  implements ApiFilterShow<EventSummaryReport>
+  implements FilterCreate<EventSummaryReport>
 {
   public constructor(protected api: BawApiService<EventSummaryReport>) {}
 
@@ -37,7 +37,6 @@ export class EventSummaryReportService
     // this is done so that the reports can be showcased with a working view
 
     // to make the report believable, we have to use the filter parameters so that it uses actual sites, tags, etc...
-    const regionIds: number[] = filters.filter.and[0]["region.id"].in;
     const siteIds: number[] = filters.filter.and[1]["site.id"].in;
     const provenanceIds: number[] = filters.filter.and[2]["provenance.id"].in;
     const tagIds: number[] = filters.filter.and[3]["tag.id"].in;
@@ -55,17 +54,18 @@ export class EventSummaryReportService
               Object({
                 provenanceId,
                 tagId,
-                detections: modelData.datatype.number(),
-                bucketsWithDetections: modelData.datatype.number(),
+                detections: faker.datatype.number(),
+                bucketsWithDetections: faker.datatype.number(),
                 bucketsWithInterference: [],
                 score: Object({
-                  histogram: modelData.randomArray<number>(30, 30, () =>
-                    modelData.percentage()
+                  histogram: faker.helpers.arrayElements(
+                    [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                    30
                   ),
-                  standardDeviation: modelData.percentage(),
-                  mean: modelData.percentage(),
-                  min: modelData.percentage(),
-                  max: modelData.percentage(),
+                  standardDeviation: faker.datatype.number({ min: 0, max: 1, precision: 0.001 }),
+                  mean: faker.datatype.number({ min: 0, max: 1, precision: 0.001 }),
+                  min: faker.datatype.number({ min: 0, max: 1, precision: 0.001 }),
+                  max: faker.datatype.number({ min: 0, max: 1, precision: 0.001 }),
                 }),
               } as IEventGroup)
             )
@@ -79,12 +79,16 @@ export class EventSummaryReportService
 
 // when fetching the EventSummaryReports from route data, query string parameters are used to construct a filter request
 // therefore, we have to create a custom resolver to handle fetch an object using query string parameters
+interface ResolverNames {
+  filterShow: string,
+  parameterDataModel: string,
+}
 class EventSummaryReportResolver extends BawResolver<
   EventSummaryReport,
   EventSummaryReport,
   [],
   EventSummaryReportService,
-  { filterShow: string }
+  ResolverNames
 > {
   public constructor(dependencies: Type<EventSummaryReportService>[]) {
     super(dependencies);
@@ -94,11 +98,12 @@ class EventSummaryReportResolver extends BawResolver<
     name: string,
     resolver: Type<Resolve<ResolvedModel<EventSummaryReport>>>,
     deps: Type<EventSummaryReportService>[]
-  ) {
+  ): ResolverNames & { providers: BawProvider[] } {
     const filterShowProvider = {
-      filterShow: name + "FilterShowResolver",
+      filterShow: name + "CreateFromFilterResolver",
+      parameterDataModel: name + "ParameterDataResolver",
       providers: [
-        { provide: name + "FilterShowResolver", useClass: resolver, deps },
+        { provide: name + "CreateFromFilterResolver", useClass: resolver, deps },
       ],
     };
 

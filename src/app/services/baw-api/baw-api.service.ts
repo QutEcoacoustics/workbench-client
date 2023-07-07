@@ -200,7 +200,7 @@ export class BawApiService<
   }
 
   /**
-   * Get a single response from a filter route
+   * Gets a model that was created from filter conditions
    *
    * @param classBuilder Model to create
    * @param path API path

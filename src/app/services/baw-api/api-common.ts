@@ -116,7 +116,7 @@ export interface ApiShow<
 /**
  * API Filter Show functionality
  */
-export interface ApiFilterShow<M extends AbstractModel, P extends any[] = []> {
+export interface FilterCreate<M extends AbstractModel, P extends any[] = []> {
   /**
    * Get a single model filtered using the filter API
    *

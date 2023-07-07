@@ -5,6 +5,8 @@ import {
   Input,
   ViewChild,
   ChangeDetectorRef,
+  EventEmitter,
+  Output,
 } from "@angular/core";
 import { NgForm } from "@angular/forms";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
@@ -57,8 +59,9 @@ export class DateTimeFilterComponent
   @Input() public region: Region;
   @Input() public site: Site;
   @Input() public constructedFilters: BehaviorSubject<Filters<AudioRecording>>;
+  @Output() public modelChange = new EventEmitter<DateTimeFilterModel>();
 
-  @Input() public model: DateTimeFilterModel = { ignoreDaylightSavings: true };
+  public model: DateTimeFilterModel = { ignoreDaylightSavings: true };
   private previousFilters: Immutable.Collection<unknown, unknown>;
 
   public ngAfterViewInit(): void {
@@ -92,7 +95,7 @@ export class DateTimeFilterComponent
     if (changed) {
       // since this component can output a model, and/or a filter
       // we need to emit both the model and the filter if they are both present
-      this.constructedModel?.next(model);
+      this.modelChange?.emit(model);
       this.constructedFilters?.next(newFilters);
       this.previousFilters = fromJS(newFilters);
     }

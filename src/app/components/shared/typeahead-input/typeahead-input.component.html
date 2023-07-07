@@ -15,10 +15,18 @@
       >
         <fa-icon
           (click)="removeItem(item)"
-          class="btn-sm"
+          class="btn-sm me-1"
           [icon]="['fas', 'square-xmark']"
         ></fa-icon>
-        {{ formatter(item) }}
+
+        <ng-container *ngIf="!resultTemplate; else customTemplate">
+          <!-- default results template -->
+          {{ item }}
+        </ng-container>
+
+        <ng-template #customTemplate>
+          <ng-container #customTemplate *ngTemplateOutlet="resultTemplate; context: { result: item }"></ng-container>
+        </ng-template>
       </span>
     </ng-container>
 
@@ -30,7 +38,7 @@
       class="form-control border-0"
       [placeholder]="activeItems.length < 1 ? inputPlaceholder : ''"
       [ngbTypeahead]="findOptions"
-      [resultFormatter]="formatter"
+      [resultTemplate]="resultTemplate"
       [(ngModel)]="inputModel"
       (selectItem)="onItemSelected($event)"
       (keydown.backspace)="removeLastItem()"

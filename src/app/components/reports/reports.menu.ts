@@ -48,7 +48,7 @@ function makeNewEventReportMenuItem(
 ): MenuRoute {
   return menuRoute({
     icon: ["fas", "file"],
-    label: "New Event Report",
+    label: "New Event Summary Report",
     tooltip: () => "New event summary report",
     route: newEventReportRoute[subRoute],
     parent,
@@ -57,34 +57,39 @@ function makeNewEventReportMenuItem(
 }
 
 const viewReportMenuItem: ReportMenuRoutes = {
-  project: makeViewEventReportMenuItem("project", projectMenuItem),
-  region: makeViewEventReportMenuItem("region", regionMenuItem),
+  /** /project/:projectId/site/:siteId/reports/event-summary */
   site: makeViewEventReportMenuItem("site", siteMenuItem),
+  /** /project/:projectId/region/:regionId/site/:siteId/reports/event-summary */
   siteAndRegion: makeViewEventReportMenuItem("siteAndRegion", pointMenuItem),
+  /** /project/:projectId/region/:regionId/reports/event-summary */
+  region: makeViewEventReportMenuItem("region", regionMenuItem),
+  /** /project/:projectId/reports/event-summary */
+  project: makeViewEventReportMenuItem("project", projectMenuItem),
 };
 
 const newReportMenuItem: ReportMenuRoutes = {
-  project: makeNewEventReportMenuItem("project", projectMenuItem),
-  region: makeNewEventReportMenuItem("region", regionMenuItem),
+  /** /project/:projectId/site/:siteId/reports/event-summary/new */
   site: makeNewEventReportMenuItem("site", siteMenuItem),
-  siteAndRegion: makeNewEventReportMenuItem(
-    "siteAndRegion",
-    pointMenuItem
-  ),
+  /** /project/:projectId/region/:regionId/site/:siteId/reports/event-summary/new */
+  siteAndRegion: makeNewEventReportMenuItem("siteAndRegion",pointMenuItem),
+  /** /project/:projectId/region/:regionId/reports/event-summary/new */
+  region: makeNewEventReportMenuItem("region", regionMenuItem),
+  /** /project/:projectId/reports/event-summary/new */
+  project: makeNewEventReportMenuItem("project", projectMenuItem),
 };
 
 const viewReportCategory = {
-  project: makeEventReportCategory("project"),
-  region: makeEventReportCategory("region"),
   site: makeEventReportCategory("site"),
   siteAndRegion: makeEventReportCategory("siteAndRegion"),
+  region: makeEventReportCategory("region"),
+  project: makeEventReportCategory("project"),
 };
 
 const newReportCategory = {
-  project: makeNewReportCategory("project"),
-  region: makeNewReportCategory("region"),
   site: makeNewReportCategory("site"),
   siteAndRegion: makeNewReportCategory("siteAndRegion"),
+  region: makeNewReportCategory("region"),
+  project: makeNewReportCategory("project"),
 };
 
 export const reportCategories = {

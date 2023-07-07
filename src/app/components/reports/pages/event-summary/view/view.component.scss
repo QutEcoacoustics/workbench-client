@@ -31,7 +31,7 @@ section {
 .search-parameters {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .search-parameters-container {
@@ -39,6 +39,10 @@ section {
   justify-content: flex-start;
   flex-basis: auto;
   margin: 1rem;
+}
+
+.toggle-graph-button {
+  float: right;
 }
 
 @media print {

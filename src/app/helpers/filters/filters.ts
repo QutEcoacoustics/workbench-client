@@ -94,10 +94,35 @@ export function filterModelIds<T extends AbstractModel>(
 export function propertyFilter<T extends AbstractModel>(
   key: keyof T,
   value: T[keyof T],
+  currentFilter: InnerFilter<T> = {}
 ) {
-  return {
+  if (!isInstantiated(value)) {
+    return currentFilter;
+  }
+
+  const additionalFilter: InnerFilter = {
     [key]: {
       contains: value,
     },
   } as InnerFilter;
+
+  return filterAnd(currentFilter, additionalFilter);
+}
+
+export function excludePropertyValues<T extends AbstractModel>(
+  key: keyof T,
+  values: T[],
+  currentFilter: InnerFilter<Writeable<T>> = {}
+) {
+  if (!isInstantiated(values)) {
+    return currentFilter;
+  }
+
+  const additionalFilter: InnerFilter = {
+    [key]: {
+      notIn: values.map((item: T) => item[key]),
+    },
+  };
+
+  return filterAnd(currentFilter, additionalFilter);
 }

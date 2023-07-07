@@ -1,8 +1,11 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   Output,
+  TemplateRef,
+  ViewChild,
 } from "@angular/core";
 import { NgbTypeaheadSelectItemEvent } from "@ng-bootstrap/ng-bootstrap";
 import {
@@ -23,14 +26,16 @@ import { defaultDebounceTime } from "src/app/app.helper";
 export class TypeaheadInputComponent {
   public constructor() {}
 
-  /** The options callback is typically linked to a service as it should return a list observable of options that the user could select */
+  /**
+   * The options callback is typically linked to a service as it should return a list observable of options that the user could select
+   * Active items are included in the callback as the api request should have a filter condition to filter these results out
+   */
   @Input() public searchCallback: (
-    text: string
+    text: string,
+    activeItems: object[]
   ) => Observable<object[] | string[]>;
   /** Describes how to convert an object model into a human readable form for use in the pills and typeahead dropdown */
-  @Input() public formatter: (item: object) => string = (
-    item: object
-  ): string => item.toString();
+  @Input() public resultTemplate: TemplateRef<any>;
   /** Whether the typeahead input should allow multiple inputs in pill form */
   @Input() public multipleInputs = false;
   /** Text to show above the input field. Usually a one 1-2 word descriptor. */
@@ -43,6 +48,8 @@ export class TypeaheadInputComponent {
   /** An event emitter when a user adds, removes, or selects and item from the typeahead input */
   @Output() public modelChange = new EventEmitter<object[] | string[]>();
 
+  @ViewChild("typeaheadInputRef") public typeaheadInput: ElementRef;
+
   public inputModel: string | null = null;
 
   /** if multiple items are enabled, they will be added to the activeItems */
@@ -53,22 +60,12 @@ export class TypeaheadInputComponent {
   ) => {
     const maximumResults = 10;
 
-    const removeIntersection = (items: object[]) =>
-      items.filter(
-        (item: object) =>
-          !this.activeItems.some(
-            (activeItem) => activeItem.toString() === item.toString()
-          )
-      );
-
     return text$.pipe(
       debounceTime(defaultDebounceTime),
       distinctUntilChanged(),
       switchMap((term: string) =>
-        this.searchCallback(term).pipe(
-          map((items: object[]) =>
-            removeIntersection(items).slice(0, maximumResults)
-          )
+        this.searchCallback(term, this.activeItems).pipe(
+          map((items: object[]) => items.slice(0, maximumResults))
         )
       )
     );

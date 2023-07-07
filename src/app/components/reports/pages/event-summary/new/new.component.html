@@ -1,8 +1,8 @@
 <h1 class="text-muted">{{ componentTitle }}</h1>
 <h1 class="mb-5">New Event Summary Report</h1>
 
-<form>
-  <baw-date-time-filter> </baw-date-time-filter>
+<form #form="ngForm">
+  <baw-date-time-filter (modelChange)="updateViewModelFromDateTimeModel($event)"></baw-date-time-filter>
 
   <!-- Only projects should show a region filter -->
   <ng-container *ngIf="!region; else immutableRegionTemplate">
@@ -10,8 +10,8 @@
       label="Site(s)"
       [inputPlaceholder]="'All'"
       [searchCallback]="regionsSearchCallback"
+      [resultTemplate]="nameTypeaheadTemplate"
       [multipleInputs]="true"
-      [formatter]="regionFormatter"
       (modelChange)="model.sites = getIdsFromAbstractModelArray($event)"
     ></baw-typeahead-input>
   </ng-container>
@@ -29,8 +29,8 @@
       label="Point(s)"
       [inputPlaceholder]="'All'"
       [searchCallback]="siteSearchCallback"
+      [resultTemplate]="nameTypeaheadTemplate"
       [multipleInputs]="true"
-      [formatter]="siteFormatter"
       (modelChange)="model.points = getIdsFromAbstractModelArray($event)"
     ></baw-typeahead-input>
   </ng-container>
@@ -47,8 +47,8 @@
     label="Recogniser(s)"
     [inputPlaceholder]="'All'"
     [searchCallback]="provenanceSearchCallback"
+    [resultTemplate]="nameTypeaheadTemplate"
     [multipleInputs]="true"
-    [formatter]="provenanceFormatter"
     (modelChange)="model.provenances = getIdsFromAbstractModelArray($event)"
   ></baw-typeahead-input>
 
@@ -57,6 +57,7 @@
   </label>
   <input
     [(ngModel)]="model.score"
+    [class.is-invalid]="isInvalidProvenanceCutOff(model.score)"
     type="number"
     name="provenancesCutOffInput"
     class="form-control"
@@ -64,9 +65,10 @@
     step="0.1"
     max="1"
     min="0"
+    required
   />
   <label
-    *ngIf="!isValidProvenanceCutOff()"
+    *ngIf="isInvalidProvenanceCutOff(model.score)"
     for="provenancesCutOffInput"
     class="text-danger"
   >
@@ -80,15 +82,16 @@
       name="bucketSizeInput"
       class="form-select"
       [(ngModel)]="model.bucketSize"
+      required
     >
-      <option value="{{ bucketSizes.day }}">{{ bucketSizes.day }}</option>
-      <option value="{{ bucketSizes.month }}">{{ bucketSizes.month }}</option>
+      <option value="{{ bucketSizes.day }}">{{ bucketSizes.day | titlecase }}</option>
+      <option value="{{ bucketSizes.month }}">{{ bucketSizes.month | titlecase }}</option>
       <option value="{{ bucketSizes.fortnight }}">
-        {{ bucketSizes.fortnight }}
+        {{ bucketSizes.fortnight | titlecase }}
       </option>
-      <option value="{{ bucketSizes.month }}">{{ bucketSizes.month }}</option>
-      <option value="{{ bucketSizes.season }}">{{ bucketSizes.season }}</option>
-      <option value="{{ bucketSizes.year }}">{{ bucketSizes.year }}</option>
+      <option value="{{ bucketSizes.month }}">{{ bucketSizes.month | titlecase }}</option>
+      <option value="{{ bucketSizes.season }}">{{ bucketSizes.season | titlecase }}</option>
+      <option value="{{ bucketSizes.year }}">{{ bucketSizes.year | titlecase }}</option>
     </select>
   </div>
 
@@ -96,8 +99,8 @@
     label="Events of Interest"
     [inputPlaceholder]="'All'"
     [searchCallback]="eventsOfInterestSearchCallback"
+    [resultTemplate]="tagsTypeaheadTemplate"
     [multipleInputs]="true"
-    [formatter]="eventsOfInterestFormatter"
     (modelChange)="model.events = getIdsFromAbstractModelArray($event)"
   ></baw-typeahead-input>
 
@@ -106,7 +109,16 @@
     class="btn btn-primary my-3 generateReportButton"
     [strongRoute]="viewReportRoute()"
     [queryParams]="model"
+    [class.disabled]="!form.valid"
   >
     Generate
   </a>
 </form>
+
+<ng-template #nameTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
+</ng-template>
+
+<ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
+</ng-template>

@@ -27,7 +27,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
-import { Observable, forkJoin, map, of, take, takeUntil } from "rxjs";
+import { Observable, first, forkJoin, take, takeUntil } from "rxjs";
 import { API_ROOT } from "@services/config/config.tokens";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Id } from "@interfaces/apiInterfaces";
@@ -35,7 +35,6 @@ import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/Audio
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
@@ -46,6 +45,7 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 const reportKey = "report";
+const parameterDataModelKey = "parameterDataModel";
 
 @Component({
   selector: "baw-summary-report",
@@ -113,25 +113,19 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
     this.regions = forkJoin(
       this.parameterDataModel.sites?.map((regionId: Id) =>
-        this.regionApi.show(regionId).pipe(
-          take(1)
-        )
+        this.regionApi.show(regionId).pipe(take(1), first())
       )
     );
 
     this.sites = forkJoin(
       this.parameterDataModel.points?.map((siteId: Id) =>
-        this.sitesApi.show(siteId).pipe(
-          take(1)
-        )
+        this.sitesApi.show(siteId).pipe(take(1), first())
       )
     );
 
     this.tags = forkJoin(
       this.parameterDataModel.events?.map((tagId: Id) =>
-        this.tagsApi.show(tagId).pipe(
-          take(1)
-        )
+        this.tagsApi.show(tagId).pipe(take(1), first())
       )
     );
   }
@@ -145,11 +139,15 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   }
 
   protected audioCoverageOverSpan(): Duration {
-    return Duration.fromDurationLike(this.report.statistics?.audioCoverageOverSpan * 1000);
+    return Duration.fromDurationLike(
+      this.report.statistics?.audioCoverageOverSpan * 1000
+    );
   }
 
   protected totalSearchSpan(): Duration {
-    return Duration.fromDurationLike(this.report.statistics?.totalSearchSpan * 1000);
+    return Duration.fromDurationLike(
+      this.report.statistics?.totalSearchSpan * 1000
+    );
   }
 
   protected get currentUser(): User {
@@ -169,24 +167,10 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return "(not specified)";
   }
 
-  protected provenanceNames(): Observable<string[]> {
-    const provenanceNames = this.parameterDataModel.provenances.map(
-      (provenanceId: Id) =>
-        this.provenanceApi
-          .show(provenanceId)
-          .pipe(map((provenance: AudioEventProvenance) => provenance.name))
+  protected getProvenance(provenanceId: Id): Observable<AudioEventProvenance> {
+    return this.provenanceApi.show(provenanceId).pipe(
+      first()
     );
-    return forkJoin(provenanceNames);
-  }
-
-  protected tagName(tagId: Id): Observable<Tag> {
-    return this.tagsApi.show(tagId).pipe(take(1));
-  }
-
-  protected provenanceName(provenanceId: Id): Observable<AudioEventProvenance> {
-    return of(new AudioEventProvenance(generateAudioEventProvenance({
-      id: provenanceId
-    })));
   }
 }
 

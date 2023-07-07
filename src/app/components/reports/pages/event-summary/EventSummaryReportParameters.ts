@@ -1,7 +1,5 @@
-import { HttpParams } from "@angular/common/http";
 import { Params } from "@angular/router";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
-import { Tuple } from "@helpers/advancedTypes";
 import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -17,7 +15,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { DateTime, Duration } from "luxon";
 
-export enum ChartType {
+export enum Chart {
   sensorPointMap = "Sensor Point Map",
   speciesAccumulationCurve = "Species Accumulation Curve",
   speciesCompositionCurve = "Species Composition Curve",
@@ -64,11 +62,11 @@ export class EventSummaryReportParameters {
   public provenances: Id[];
   public events: Id[];
   public score = 0;
-  public charts: string[];
+  public charts: Chart[];
   public bucketSize: BucketSize = BucketSize.month;
   public daylightSavings = true;
-  public time: Tuple<Duration, 2>;
-  public date: Tuple<DateTime, 2>;
+  public time: Duration[];
+  public date: DateTime[];
 
   public get dateStartedAfter(): DateTime {
     return this.date ? this.date[0] : null;
@@ -144,27 +142,5 @@ export class EventSummaryReportParameters {
     }
 
     return { filter };
-  }
-
-  public toHttpParams(): Params {
-    let params = new HttpParams();
-
-    Object.keys(this).forEach((key: string) => {
-      const keyValue = this[key];
-
-      if (isInstantiated(keyValue) && keyValue.length !== 0) {
-        if (keyValue instanceof DateTime) {
-          params = params.append(key, keyValue.toFormat("yyyy-MM-dd"));
-        } else if (keyValue instanceof Duration) {
-          params = params.append(key, keyValue.toFormat("hh:mm"));
-        } else {
-          // appending an array of Ids (numbers) to HttpParams will result in a comma separated string values
-          // this is handled by Angular and does not require any additional logic
-          params = params.append(key, keyValue);
-        }
-      }
-    });
-
-    return params;
   }
 }

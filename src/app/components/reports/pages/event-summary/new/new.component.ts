@@ -4,7 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Site } from "@models/Site";
 import { Observable } from "rxjs";
-import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { InnerFilter } from "@baw-api/baw-api.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import {
   ShallowSitesService,
@@ -29,12 +29,18 @@ import { Tag } from "@models/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
 import { StrongRoute } from "@interfaces/strongRoute";
-import { filterAnd, filterModel, propertyFilter } from "@helpers/filters/filters";
+import {
+  excludePropertyValues,
+  filterAnd,
+  filterModel,
+  propertyFilter,
+} from "@helpers/filters/filters";
 import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
 import {
   BucketSize,
   EventSummaryReportParameters,
 } from "../EventSummaryReportParameters";
+import { DateTime } from "luxon";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -60,8 +66,6 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   public site?: Site;
   public model = new EventSummaryReportParameters();
 
-  public dateTimeModel: DateTimeFilterModel;
-
   // TODO: remove before review
   public bucketSizes = BucketSize;
 
@@ -72,72 +76,78 @@ class NewEventReportComponent extends PageComponent implements OnInit {
       return;
     }
 
+    this.model = new EventSummaryReportParameters();
+
     if (models[projectKey]) {
       this.project = models[projectKey] as Project;
     }
 
     if (models[regionKey]) {
       this.region = models[regionKey] as Region;
+      this.model.sites = [this.region.id];
     }
 
     if (models[siteKey]) {
       this.site = models[siteKey] as Site;
+      this.model.points = [this.site.id];
     }
-
-    // if there is a region or site, we should immutable scope the report to this location
-    this.model = new EventSummaryReportParameters({
-      sites: [this.region],
-      points: [this.site],
-    });
   }
 
-  // while this could be generalised, I have chosen not to as it'd lose a lot of strong type safety without the use of generics
-  // as we are using these formatters in ng html templates, it is not possible to use TypeScript generics to enfore type safety
-  // on a generalised function
-  public regionFormatter = (region: Region) => region.name;
-  public siteFormatter = (site: Site) => site.name;
-  public provenanceFormatter = (provenance: AudioEventProvenance) =>
-    provenance.name;
-  public eventsOfInterestFormatter = (tag: Tag): string => tag.text;
-
-  // TODO: this currently does not scope to projects, regions, sites correctly
-  public regionsSearchCallback = (regionName: string): Observable<Region[]> =>
+  public regionsSearchCallback = (
+    regionName: string,
+    activeRegions: Region[]
+  ): Observable<Region[]> =>
     this.regionsApi.filter({
       filter: filterAnd(
-        this.defaultFilter(),
-        propertyFilter<Region>("name", regionName)
+        propertyFilter<Region>(
+          "name",
+          regionName,
+          this.defaultFilter() as InnerFilter<Region>
+        ),
+        excludePropertyValues<Region>("name", activeRegions)
       ),
-    } as Filters<Region>);
+    });
 
-  public siteSearchCallback = (siteName: string): Observable<Site[]> =>
+  public siteSearchCallback = (
+    siteName: string,
+    activeSites: Site[]
+  ): Observable<Site[]> =>
     this.sitesApi.filter({
       filter: filterAnd(
-        this.defaultFilter(),
-        propertyFilter<Site>("name", siteName)
+        propertyFilter<Site>(
+          "name",
+          siteName,
+          this.defaultFilter() as InnerFilter<Site>
+        ),
+        excludePropertyValues<Site>("name", activeSites)
       ),
-    } as Filters<Site>);
+    });
 
   public provenanceSearchCallback = (
-    provenanceName: string
+    provenanceName: string,
+    activeProvenances: AudioEventProvenance[]
   ): Observable<AudioEventProvenance[]> =>
     this.provenanceApi.filter({
       filter: filterAnd(
-        this.defaultFilter,
-        propertyFilter<AudioEventProvenance>("name", provenanceName)
+        propertyFilter<AudioEventProvenance>(
+          "name",
+          provenanceName,
+          this.defaultFilter() as InnerFilter<AudioEventProvenance>
+        ),
+        excludePropertyValues<AudioEventProvenance>("name", activeProvenances)
       ),
-    } as Filters<AudioEventProvenance>);
+    });
 
-  public eventsOfInterestSearchCallback = (text: string): Observable<Tag[]> =>
+  public eventsOfInterestSearchCallback = (
+    text: string,
+    activeTags: Tag[]
+  ): Observable<Tag[]> =>
     this.tagsApi.filter({
-      filter: propertyFilter<Tag>("text", text)
-    } as Filters<Tag>);
-
-  protected isValidProvenanceCutOff(): boolean {
-    return (
-      this.model.score >= 0 &&
-      this.model.score <= 1
-    );
-  }
+      filter: filterAnd(
+        propertyFilter<Tag>("text", text),
+        excludePropertyValues<Tag>("text", activeTags)
+      ),
+    });
 
   protected get componentTitle(): string {
     if (this.site) {
@@ -166,12 +176,35 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return reportMenuItems.view.project.route;
   }
 
+  protected isInvalidProvenanceCutOff(value: any): boolean {
+    // if the user inputs a string (and not a number) into the input, the value will be null
+    if (value === null) {
+      return true;
+    }
+
+    return value < 0 || value > 1;
+  }
+
   protected getIdsFromAbstractModelArray(item: any[]): number[] {
     return item.map((am) => am.id);
   }
 
+  protected updateViewModelFromDateTimeModel(
+    dateTimeModel: DateTimeFilterModel
+  ): void {
+    this.model.daylightSavings = !dateTimeModel.ignoreDaylightSavings;
+    this.model.date = [
+      DateTime.fromObject(dateTimeModel.dateStartedAfter),
+      DateTime.fromObject(dateTimeModel.dateFinishedBefore),
+    ];
+    this.model.time = [
+      dateTimeModel.timeStartedAfter,
+      dateTimeModel.timeFinishedBefore,
+    ];
+  }
+
   // we need a default filter to scope to projects, regions, sites
-  private defaultFilter(): InnerFilter {
+  private defaultFilter(): InnerFilter<Region | Site> {
     // we don't need to filter for every route, we only need to filter for the lowest level
     // this is because all sites have a region, all regions have a project, etc..
     // so it can be logically inferred

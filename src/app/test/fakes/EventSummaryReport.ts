@@ -160,8 +160,8 @@ export function generateEventSummaryReport(
         () =>
           Object({
             date: modelData.date.recent().toISOString(),
-            audioCoverage: modelData.datatype.number(),
-            analysisCoverage: modelData.datatype.number(),
+            audioCoverage: modelData.percentage(),
+            analysisCoverage: modelData.percentage(),
           })
       ),
     },
