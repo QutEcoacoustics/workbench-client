@@ -5,12 +5,20 @@ section {
   page-break-inside: avoid;
 }
 
+.col {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+}
+
 .embedded-figure {
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 0em;
   padding: 0em;
+  height: 3rem;
+  width: 100%;
 }
 
 .large-embedded-figure {
@@ -38,7 +46,9 @@ section {
   flex-wrap: wrap;
   justify-content: flex-start;
   flex-basis: auto;
+  align-items: center;
   margin: 1rem;
+  margin-right: 3em;
 }
 
 .toggle-graph-button {
@@ -56,5 +66,9 @@ section {
 
   .events-table {
     overflow-wrap: anywhere;
+  }
+
+  .hide-in-print {
+    display: none;
   }
 }

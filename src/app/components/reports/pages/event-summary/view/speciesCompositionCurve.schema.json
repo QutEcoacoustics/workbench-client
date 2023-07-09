@@ -9,17 +9,19 @@
   "encoding": {
     "x": {
       "field": "date",
+      "title": "Date",
       "type": "nominal",
       "axis": {
-        "labelAngle": 0
+        "labelAngle": 45
       }
     },
     "y": {
+      "title": "Sum of Ratio",
       "aggregate": "sum",
       "field": "ratio",
       "type": "quantitative",
       "axis": {
-        "labelAngle": 0
+        "labelAngle": 45
       }
     },
     "color": {

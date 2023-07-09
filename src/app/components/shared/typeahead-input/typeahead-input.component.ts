@@ -92,6 +92,7 @@ export class TypeaheadInputComponent {
       !this.inputModel
     ) {
       this.activeItems.pop();
+      this.modelChange.emit(this.activeItems);
     }
   }
 
@@ -99,7 +100,7 @@ export class TypeaheadInputComponent {
     const indexToRemove = this.activeItems.indexOf(item);
     if (indexToRemove !== -1) {
       this.activeItems.splice(indexToRemove, 1);
-      this.modelChange.next(this.activeItems);
+      this.modelChange.emit(this.activeItems);
     }
   }
 }

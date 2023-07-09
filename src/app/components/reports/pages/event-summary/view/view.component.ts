@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
@@ -51,6 +51,7 @@ const parameterDataModelKey = "parameterDataModel";
   selector: "baw-summary-report",
   templateUrl: "./view.component.html",
   styleUrls: ["./view.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
   public constructor(
@@ -169,6 +170,12 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
   protected getProvenance(provenanceId: Id): Observable<AudioEventProvenance> {
     return this.provenanceApi.show(provenanceId).pipe(
+      first()
+    );
+  }
+
+  protected getTag(tagId: Id): Observable<Tag> {
+    return this.tagsApi.show(tagId).pipe(
       first()
     );
   }

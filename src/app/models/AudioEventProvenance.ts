@@ -16,7 +16,11 @@ export class AudioEventProvenance extends AbstractModel implements AudioEventPro
   public readonly description: string;
   public readonly score: number;
 
+  /**
+   * Navigates to the details page of an AudioEventProvenance
+   * WARNING: THIS IS NOT CURRENTLY FUNCTIONAL, BUT WE DO USE THIS IN THE CODEBASE AS A STAGING PLACEHOLDER
+   */
   public get viewUrl(): string {
-    throw new Error("Method not implemented.");
+    return "";
   }
 }

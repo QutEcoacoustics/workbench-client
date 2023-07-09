@@ -36,11 +36,11 @@ import {
   propertyFilter,
 } from "@helpers/filters/filters";
 import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
+import { DateTime } from "luxon";
 import {
   BucketSize,
   EventSummaryReportParameters,
 } from "../EventSummaryReportParameters";
-import { DateTime } from "luxon";
 
 const projectKey = "project";
 const regionKey = "region";

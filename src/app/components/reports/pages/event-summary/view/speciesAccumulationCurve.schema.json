@@ -14,13 +14,15 @@
       },
       "encoding": {
         "x": {
+          "title": "Date",
           "field": "date",
           "type": "nominal",
           "axis": {
-            "labelAngle": 0
+            "labelAngle": 45
           }
         },
         "y": {
+          "title": "Count",
           "field": "count",
           "type": "quantitative",
           "axis": {
@@ -31,10 +33,12 @@
     },
     {
       "mark": {
-        "type": "errorbar",
+        "type": "errorband",
         "extent": "ci",
-        "ticks": true,
-        "color": "black"
+        "interpolate": "monotone",
+        "color": "black",
+        "opacity": 0.1,
+        "tension": 0.5
       },
       "encoding": {
         "x": {
@@ -42,6 +46,7 @@
           "type": "nominal"
         },
         "y": {
+          "title": "Count",
           "field": "count",
           "type": "quantitative"
         },
@@ -51,16 +56,20 @@
       }
     },
     {
-      "mark": "line",
+      "mark": {
+        "type": "line",
+        "interpolate": "monotone"
+      },
       "encoding": {
         "x": {
           "field": "date",
           "type": "nominal",
           "axis": {
-            "labelAngle": 0
+            "labelAngle": 45
           }
         },
         "y": {
+          "title": "Count",
           "field": "count",
           "type": "quantitative",
           "axis": {

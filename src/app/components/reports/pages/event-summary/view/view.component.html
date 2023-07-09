@@ -14,7 +14,7 @@
 </div>
 
 <section>
-  <h3>Search Parameters</h3>
+  <h3>Search Conditions</h3>
 
   <div class="search-parameters">
     <div class="search-parameters-container">
@@ -22,7 +22,9 @@
 
       <span *ngIf="regions | async as reportRegions">
         <ng-container *ngFor="let item of reportRegions; let last = last">
-          {{ item.name }}
+          <a [href]="item.viewUrl">
+            {{ item.name }}
+          </a>
           <ng-container *ngIf="!last">,</ng-container>
         </ng-container>
       </span>
@@ -35,7 +37,9 @@
 
       <span *ngIf="sites | async as reportSites">
         <ng-container *ngFor="let item of reportSites; let last = last">
-          {{ item.name }}
+          <a [href]="item.viewUrl">
+            {{ item.name }}
+          </a>
           <ng-container *ngIf="!last">,</ng-container>
         </ng-container>
       </span>
@@ -97,8 +101,15 @@
       <b>Recognisers:</b>
 
       <span *ngIf="parameterDataModel.provenances">
-        <ng-container *ngFor="let provenance of parameterDataModel.provenances; let last = last">
-          {{ (getProvenance(provenance) | async).name }}
+        <ng-container
+          *ngFor="
+            let provenance of parameterDataModel.provenances;
+            let last = last
+          "
+        >
+          <a [href]="(getProvenance(provenance) | async).viewUrl">
+            {{ (getProvenance(provenance) | async).name }}
+          </a>
           <ng-container *ngIf="!last">,</ng-container>
         </ng-container>
       </span>
@@ -120,12 +131,16 @@
     <div class="search-parameters-container">
       <b>Events:</b>
 
-      <span *ngIf="tags | async as reportEvents">
+      <span *ngIf="tags | async as reportEvents; else noTagsTemplate">
         <ng-container *ngFor="let item of reportEvents; let last = last">
-          {{ item.text }}
+          <a [href]="item.viewUrl">
+            {{ item.text }}
+          </a>
           <ng-container *ngIf="!last">,</ng-container>
         </ng-container>
       </span>
+
+      <ng-template #noTagsTemplate> (not specified) </ng-template>
 
       <span *ngIf="!parameterDataModel.events"></span>
     </div>
@@ -143,45 +158,40 @@
       </b>
     </div>
 
-    <div class="container">
-      <div class="row">
-        <div class="col">
-          <div>
-            <!-- TODO: Fetching these values. This will most likely require a 3rd party API -->
-            <h4 class="py-1 w-25">Native Species: 5</h4>
-            <h4 class="py-1 w-25">Non-native: 3</h4>
-            <h4 class="py-1 w-25">Invasive: 3</h4>
-          </div>
-        </div>
-
-        <div class="col">
-          <div name="siteMap">
-            <baw-site-map
-              class="site-map"
-              [project]="project"
-              [region]="region"
-              [sites]="sites | async"
-            ></baw-site-map>
-          </div>
-        </div>
+    <div class="d-flex">
+      <div class="w-25">
+        <!-- TODO: Fetching these values. This will most likely require a 3rd party API -->
+        <h4 class="py-1">Native Species: 5</h4>
+        <h4 class="py-1">Non-native: 3</h4>
+        <h4 class="py-1">Invasive: 3</h4>
       </div>
+
+      <baw-site-map
+        class="site-map"
+        [project]="project"
+        [region]="region"
+        [sites]="sites | async"
+      ></baw-site-map>
     </div>
 
-    <label for="audioCoverageGraph"><b>Audio Recording Coverage</b></label>
     <baw-chart
-      name="audioCoverageGraph"
       class="coverageGraph"
+      [title]="'Audio Recording Coverage'"
       [spec]="coveragePlotSchema"
       [data]="report.graphs.coverageData.recordingCoverage"
     ></baw-chart>
 
-    <label for="analysisCoverageGraph"><b>Analysis Coverage</b></label>
     <baw-chart
       name="analysisCoverageGraph"
       class="coverageGraph"
+      [title]="'Analysis Coverage'"
       [spec]="coveragePlotSchema"
       [data]="report.graphs.coverageData.analysisCoverage"
     ></baw-chart>
+
+    <p>
+      For the requested {{ totalSearchSpan() | toRelative }}, we've analysed 90%
+    </p>
   </div>
 </section>
 
@@ -203,43 +213,51 @@
       <strong>
         {{ totalSearchSpan() | toRelative }}
       </strong>
-      <a
-        name="downloadEventsLink"
-        class="link-primary"
-        href="{{ eventDownloadUrl }}"
-        >download this table</a
-      >.
+
+      <a name="downloadEventsLink" [href]="eventDownloadUrl">
+        <fa-icon
+          [icon]="['fas', 'file-arrow-down']"
+          [ngbTooltip]="'Download this table'"
+        ></fa-icon>
+      </a>
     </div>
 
     <table class="table">
       <tr class="row">
-        <th class="col border py-1 fw-bold">Events</th>
-        <th class="col border py-1 fw-bold">Recogniser</th>
-        <th class="col border py-1 fw-bold"># Detections</th>
-        <th class="col border py-1 fw-bold">
-          Detection {{ parameterDataModel.bucketSize | titlecase }}s
+        <th class="col fw-bold">Events</th>
+        <th class="col fw-bold">Recogniser</th>
+        <th class="col fw-bold">Detections</th>
+        <th class="col fw-bold">
+          % of {{ parameterDataModel.bucketSize | titlecase }}s with Detections
         </th>
-        <th class="col border py-1 fw-bold">
-          {{ parameterDataModel.bucketSize | titlecase }}s with Rain
+        <th class="col fw-bold">
+          % of {{ parameterDataModel.bucketSize | titlecase }}s with Rain
         </th>
-        <th class="col border py-1 fw-bold border">Confidence Plot</th>
+        <th class="col fw-bold border">Confidence Plot</th>
       </tr>
 
       <ng-container *ngFor="let item of report.eventGroups">
         <tr class="row">
-          <td class="col border py-1">tag name</td>
-          <td class="col border py-1">{{ getProvenance(item.provenanceId) | async }}</td>
-          <td class="col border py-1">{{ item.detections | number }}</td>
-          <td class="col border py-1">
-            {{ item.bucketsWithDetections | number }}
+          <td class="col">
+            <a [href]="(getTag(item.tagId) | async).viewUrl">
+              {{ (getTag(item.tagId) | async).text }}
+            </a>
           </td>
-          <td class="col border py-1">{{ bucketsWithRain(item) | number }}</td>
-          <td class="col border py-1">
+          <td class="col">
+            <a [href]="(getProvenance(item.provenanceId) | async).viewUrl">
+              {{ (getProvenance(item.provenanceId) | async).name }}
+            </a>
+          </td>
+          <td class="col">{{ item.detections | number }}</td>
+          <td class="col">
+            {{ item.bucketsWithDetections | percent }}
+          </td>
+          <td class="col">{{ bucketsWithRain(item) | percent }}</td>
+          <td class="col">
             <baw-chart
               class="embedded-figure"
               [spec]="confidencePlotSchema"
               [data]="item.score.histogram"
-              [options]="{ actions: false }"
             ></baw-chart>
 
             <small class="m-1 text-muted"
@@ -256,48 +274,34 @@
 </section>
 
 <section>
-  <h3>Graphs</h3>
+  <h3>Charts</h3>
 
   <div class="alert alert-info p-3 my-3">
     Some kind of text to put these figures into context.
   </div>
 
-  <div class="my-1">
-    <h4>
-      Site Map
-
-      <button
-        class="toggle-graph-button btn btn-secondary btn-sm"
-        (click)="siteMapCollapsed = !siteMapCollapsed"
-        aria-controls="collapseExample"
-        aria-expanded="false"
-      >
-        {{ siteMapCollapsed ? "Show" : "Hide" }}
-      </button>
-    </h4>
-    <div id="siteMapContainer" [ngbCollapse]="siteMapCollapsed">
-      <div class="large-embedded-figure p-1">
-        <baw-site-map
-          class="w-100 h-100"
-          [project]="project"
-          [region]="region"
-          [sites]="sites | async"
-        ></baw-site-map>
-      </div>
-    </div>
-  </div>
-
-  <div class="my-1" *ngIf="report.graphs?.accumulationData">
+  <div
+    class="my-1"
+    [class.hide-in-print]="accumulationCurveCollapsed"
+    *ngIf="report.graphs?.accumulationData"
+  >
     <h4>
       Species Accumulation Curve
+
+      <a [href]="eventDownloadUrl">
+        <fa-icon
+          [icon]="['fas', 'file-arrow-down']"
+          [ngbTooltip]="'Download this graphs data'"
+        ></fa-icon>
+      </a>
 
       <button
         class="toggle-graph-button btn btn-secondary btn-sm"
         (click)="accumulationCurveCollapsed = !accumulationCurveCollapsed"
-        aria-controls="collapseExample"
-        aria-expanded="false"
       >
-        {{ accumulationCurveCollapsed ? "Show" : "Hide" }}
+        <fa-icon
+          [icon]="['fas', accumulationCurveCollapsed ? 'maximize' : 'minimize']"
+        ></fa-icon>
       </button>
     </h4>
     <div [ngbCollapse]="accumulationCurveCollapsed">
@@ -309,17 +313,28 @@
     </div>
   </div>
 
-  <div class="my-1" *ngIf="report.graphs?.speciesCompositionData">
+  <div
+    class="my-1"
+    [class.hide-in-print]="compositionCurveCollapsed"
+    *ngIf="report.graphs?.speciesCompositionData"
+  >
     <h4>
       Species Composition
+
+      <a [href]="eventDownloadUrl">
+        <fa-icon
+          [icon]="['fas', 'file-arrow-down']"
+          [ngbTooltip]="'Download this graphs data'"
+        ></fa-icon>
+      </a>
 
       <button
         class="toggle-graph-button btn btn-secondary btn-sm"
         (click)="compositionCurveCollapsed = !compositionCurveCollapsed"
-        aria-controls="collapseExample"
-        aria-expanded="false"
       >
-        {{ compositionCurveCollapsed ? "Show" : "Hide" }}
+        <fa-icon
+          [icon]="['fas', compositionCurveCollapsed ? 'maximize' : 'minimize']"
+        ></fa-icon>
       </button>
     </h4>
     <div [ngbCollapse]="compositionCurveCollapsed">
@@ -331,17 +346,29 @@
     </div>
   </div>
 
-  <div class="my-1">
+  <div class="my-1" [class.hide-in-print]="falseColorSpectrogramsCollapsed">
     <h4>
       False colour spectrogram(s)
 
+      <a [href]="eventDownloadUrl">
+        <fa-icon
+          [icon]="['fas', 'file-arrow-down']"
+          [ngbTooltip]="'Download false colour spectrogram(s)'"
+        ></fa-icon>
+      </a>
+
       <button
         class="toggle-graph-button btn btn-secondary btn-sm"
-        (click)="falseColorSpectrogramsCollapsed = !falseColorSpectrogramsCollapsed"
-        aria-controls="collapseExample"
-        aria-expanded="false"
+        (click)="
+          falseColorSpectrogramsCollapsed = !falseColorSpectrogramsCollapsed
+        "
       >
-        {{ falseColorSpectrogramsCollapsed ? "Show" : "Hide" }}
+        <fa-icon
+          [icon]="[
+            'fas',
+            falseColorSpectrogramsCollapsed ? 'maximize' : 'minimize'
+          ]"
+        ></fa-icon>
       </button>
     </h4>
     <div [ngbCollapse]="falseColorSpectrogramsCollapsed">

@@ -5,18 +5,29 @@
   "data": {
     "values": []
   },
-  "mark": "bar",
+  "mark": {
+    "type": "area",
+    "interpolate": "monotone"
+  },
   "encoding": {
     "x": {
       "field": "data",
       "type": "quantitative",
-      "bin": true,
       "axis": null
     },
     "y": {
-      "aggregate": "count",
-      "type": "quantitative",
-      "axis": null
+      "aggregate": "sum",
+      "field": "data",
+      "axis": null,
+      "stack": "center"
+    },
+    "color": {
+      "field": "category",
+      "type": "nominal",
+      "scale": {
+        "scheme": "category20"
+      },
+      "legend": null
     }
   },
   "config": {
