@@ -21,7 +21,6 @@ export interface ITagGroup extends HasCreator {
  */
 export class TagGroup extends AbstractModel<ITagGroup> implements ITagGroup {
   public readonly kind = "Tag Group";
-  public declare readonly id?: Id;
   @bawPersistAttr()
   public readonly groupIdentifier?: string;
   @bawPersistAttr()

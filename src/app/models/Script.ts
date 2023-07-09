@@ -32,7 +32,6 @@ export interface IScript extends HasCreator, HasDescription {
 
 export class Script extends AbstractModel<IScript> implements IScript {
   public readonly kind = "Script";
-  public declare readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;
   @bawPersistAttr()

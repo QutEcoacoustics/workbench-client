@@ -28,7 +28,6 @@ export interface ITag extends HasCreatorAndUpdater {
  */
 export class Tag extends AbstractModel<ITag> implements ITag {
   public readonly kind = "Tag";
-  public declare readonly id?: Id;
   @bawPersistAttr()
   public readonly text?: string;
   @bawPersistAttr()

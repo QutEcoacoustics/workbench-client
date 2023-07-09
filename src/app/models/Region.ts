@@ -50,7 +50,6 @@ export interface IRegion extends HasAllUsers, HasDescription {
  */
 export class Region extends AbstractModel<IRegion> implements IRegion {
   public readonly kind = "Region";
-  public declare readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;
   @bawImage<IRegion>(`${assetRoot}/images/site/site_span4.png`)

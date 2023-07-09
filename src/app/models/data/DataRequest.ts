@@ -37,8 +37,6 @@ export class DataRequest
   public readonly groupType: DataRequestGroupType;
   @bawPersistAttr()
   public readonly content: string;
-  @bawPersistAttr()
-  public declare readonly recaptchaToken: string;
 
   public getBody(token: string): URLSearchParams {
     const body = new URLSearchParams();

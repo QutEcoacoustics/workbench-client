@@ -23,8 +23,6 @@ export class RegisterDetails
   public readonly password: Param;
   @bawPersistAttr()
   public readonly passwordConfirmation: Param;
-  @bawPersistAttr()
-  public declare readonly recaptchaToken: string;
 
   public getBody(token: string): URLSearchParams {
     this.validateRecaptchaToken();

@@ -101,7 +101,6 @@ export interface HarvestUploadConnectionArguments {
 
 export class Harvest extends AbstractModel implements IHarvest {
   public readonly kind = "Harvest";
-  public declare readonly id?: Id;
   @bawPersistAttr()
   public name?: string;
   @bawPersistAttr({ create: true, update: false })

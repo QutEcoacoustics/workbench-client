@@ -16,7 +16,6 @@ export interface IQuestion {
 
 export class Question extends AbstractModel<IQuestion> implements IQuestion {
   public readonly kind = "Question";
-  public declare readonly id?: Id;
   @bawPersistAttr()
   public readonly text?: string;
   @bawPersistAttr()

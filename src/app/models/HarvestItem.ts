@@ -104,8 +104,6 @@ export interface IHarvestItem {
 
 export class HarvestItem extends AbstractModel implements IHarvestItem {
   public readonly kind = "HarvestItem";
-  /** Only harvest items for files will have an id */
-  public declare readonly id?: Id;
   public readonly harvestId?: Id;
   public readonly audioRecordingId?: Id;
   public readonly uploaderId?: Id;
