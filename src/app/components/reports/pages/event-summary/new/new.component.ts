@@ -194,8 +194,8 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   ): void {
     this.model.daylightSavings = !dateTimeModel.ignoreDaylightSavings;
     this.model.date = [
-      DateTime.fromObject(dateTimeModel.dateStartedAfter),
-      DateTime.fromObject(dateTimeModel.dateFinishedBefore),
+      dateTimeModel.dateStartedAfter ? DateTime.fromObject(dateTimeModel.dateStartedAfter) : undefined,
+      dateTimeModel.dateFinishedBefore ? DateTime.fromObject(dateTimeModel.dateFinishedBefore) : undefined,
     ];
     this.model.time = [
       dateTimeModel.timeStartedAfter,

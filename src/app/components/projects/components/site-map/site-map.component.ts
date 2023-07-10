@@ -1,4 +1,9 @@
-import { Component, Input, OnInit } from "@angular/core";
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+} from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -17,7 +22,10 @@ import { switchMap, takeUntil } from "rxjs/operators";
   selector: "baw-site-map",
   template: '<baw-map class="h-100 w-100" [markers]="markers"></baw-map>',
 })
-export class SiteMapComponent extends withUnsubscribe() implements OnInit {
+export class SiteMapComponent
+  extends withUnsubscribe()
+  implements OnInit, OnChanges
+{
   // TODO Implement system to change colour of selected sites
   @Input() public selected: List<Site>;
   @Input() public project: Project;
@@ -32,17 +40,21 @@ export class SiteMapComponent extends withUnsubscribe() implements OnInit {
   public ngOnInit(): void {
     const filters: Filters<ISite> = { paging: { page: 1 } };
 
-    this.pushMarkers(this.sites ?? []);
+    if (this.project || this.region) {
+      this.getFilter(filters, this.project, this.region)
+        .pipe(
+          switchMap((models) => this.getMarkers(models)),
+          takeUntil(this.unsubscribe)
+        )
+        .subscribe({
+          next: (sites) => this.pushMarkers(sites),
+          error: () => this.pushMarkers([]),
+        });
+    }
+  }
 
-    this.getFilter(filters, this.project, this.region)
-      .pipe(
-        switchMap((models) => this.getMarkers(models)),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe({
-        next: (sites) => this.pushMarkers(sites),
-        error: () => this.pushMarkers([]),
-      });
+  public ngOnChanges(): void {
+    this.pushMarkers(this.sites ?? []);
   }
 
   private getFilter(

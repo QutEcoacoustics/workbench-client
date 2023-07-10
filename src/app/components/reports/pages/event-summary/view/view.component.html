@@ -168,9 +168,7 @@
 
       <baw-site-map
         class="site-map"
-        [project]="project"
-        [region]="region"
-        [sites]="sites | async"
+        [sites]="selectedSites() | async"
       ></baw-site-map>
     </div>
 

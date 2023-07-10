@@ -108,7 +108,7 @@
     type="submit"
     class="btn btn-primary my-3 generateReportButton"
     [strongRoute]="viewReportRoute()"
-    [queryParams]="model"
+    [queryParams]="model.toQueryParams()"
     [class.disabled]="!form.valid"
   >
     Generate

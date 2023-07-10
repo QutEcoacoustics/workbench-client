@@ -27,7 +27,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
-import { Observable, first, forkJoin, take, takeUntil } from "rxjs";
+import { Observable, first, forkJoin, of, take, takeUntil } from "rxjs";
 import { API_ROOT } from "@services/config/config.tokens";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Id } from "@interfaces/apiInterfaces";
@@ -178,6 +178,20 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return this.tagsApi.show(tagId).pipe(
       first()
     );
+  }
+
+  protected selectedSites(): Observable<Site[]> {
+    if (!this.sites) {
+      if (this.site) {
+        return of([this.site]);
+      } else if (this.region) {
+        return of(this.region.sites);
+      } else if (this.project) {
+        return of(this.project.sites);
+      }
+    } else {
+      return this.sites;
+    }
   }
 }
 

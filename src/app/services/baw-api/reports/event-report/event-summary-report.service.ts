@@ -134,7 +134,7 @@ export class EventSummaryReportService
           { date: "30-05-2023", tagId: 277, ratio: 0.85 },
         ],
         coverageData: {
-          analysisCoverage: [
+          recordingCoverage: [
             { startDate: "2020-10-10", endDate: "2020-10-11" },
             { startDate: "2020-10-12", endDate: "2020-10-15" },
             { startDate: "2020-10-19", endDate: "2020-10-23" },
@@ -144,9 +144,12 @@ export class EventSummaryReportService
             { startDate: "2021-01-01", endDate: "2021-04-11" },
             { startDate: "2021-08-10", endDate: "2021-10-11" },
           ],
-          recordingCoverage: [
+          analysisCoverage: [
             { startDate: "2020-10-10", endDate: "2020-10-11" },
-            { startDate: "2020-10-19", endDate: "2020-10-23" },
+            { startDate: "2020-10-12", endDate: "2020-10-15" },
+            { startDate: "2020-10-19", endDate: "2020-10-09" },
+            { startDate: "2020-10-26", endDate: "2020-11-01" },
+            { startDate: "2020-11-10", endDate: "2020-12-01" },
             { startDate: "2020-12-01", endDate: "2020-12-28" },
             { startDate: "2021-01-01", endDate: "2021-04-11" },
             { startDate: "2021-08-10", endDate: "2021-10-11" },

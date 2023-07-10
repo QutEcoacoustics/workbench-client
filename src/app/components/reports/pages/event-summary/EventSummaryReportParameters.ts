@@ -4,6 +4,8 @@ import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
+  dateTimeArrayToQueryString,
+  durationArrayToQueryString,
   queryStringArray,
   queryStringBoolean,
   queryStringDateTimeArray,
@@ -64,7 +66,7 @@ export class EventSummaryReportParameters {
   public score = 0;
   public charts: Chart[];
   public bucketSize: BucketSize = BucketSize.month;
-  public daylightSavings = true;
+  public daylightSavings;
   public time: Duration[];
   public date: DateTime[];
 
@@ -142,5 +144,27 @@ export class EventSummaryReportParameters {
     }
 
     return { filter };
+  }
+
+  public toQueryParams(): Params {
+    const paramsObject: Params = {};
+
+    Object.entries(this).forEach(([key, value]) => {
+      if (key in conversionTable) {
+        if (value instanceof Array) {
+          if (value[0] instanceof DateTime) {
+            paramsObject[key] = dateTimeArrayToQueryString(value);
+          } else if (value[0] instanceof Duration) {
+            paramsObject[key] = durationArrayToQueryString(value);
+          } else {
+            paramsObject[key] = value;
+          }
+        } else {
+          paramsObject[key] = value;
+        }
+      }
+    });
+
+    return paramsObject;
   }
 }
