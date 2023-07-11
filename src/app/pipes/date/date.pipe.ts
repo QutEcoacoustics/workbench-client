@@ -6,7 +6,7 @@ import { DateTime } from "luxon";
 // this pipe is used to convert a Luxon DateTime object into a JavaScript Date object before passing it to the Angular date pipe
 // this retains all the functionality and options of the Angular date pipe while allowing us to use Luxon dates without
 // having to cast to a JavaScript Date object in each component
-// using this pipe also allows us to change the format of all dates within the client at once
+// using this pipe also allows us to standardise the date format throughout the client
 @Pipe({
   name: "dateTime"
 })

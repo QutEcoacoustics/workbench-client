@@ -19,8 +19,8 @@ export interface IEventGroup {
   tagId: Id;
   detections: number;
   bucketsWithDetections: number;
-  bucketsWithInterference?: IReportEvent[];
   score: IEventScore;
+  bucketsWithInterference?: IReportEvent[];
 }
 
 export interface IEventScore {
@@ -36,7 +36,6 @@ export interface IReportEvent {
   value: number;
 }
 
-// while there is positive and negative error, it was found by Anthony and Phil that only positive error bars are needed
 export interface IAccumulationGraphData {
   date: Param;
   count: number;
@@ -61,8 +60,8 @@ export interface ITimeSeriesGraph {
 }
 
 export interface IDateRange {
-  startDate: DateTimeTimezone | string;
-  endDate: DateTimeTimezone | string;
+  startDate: Param;
+  endDate: Param;
 }
 
 export interface IEventSummaryGraphs {

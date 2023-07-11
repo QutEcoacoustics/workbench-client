@@ -7,8 +7,6 @@ import { NewEventReportComponent } from "./pages/event-summary/new/new.component
 import { ViewEventReportComponent } from "./pages/event-summary/view/view.component";
 import { reportsRoute } from "./reports.routes";
 
-const internalComponents = [];
-
 const components = [
   NewEventReportComponent,
   ViewEventReportComponent,
@@ -19,7 +17,7 @@ const routes = Object.values(reportsRoute)
   .flat();
 
 @NgModule({
-  declarations: [...internalComponents, ...components],
+  declarations: components,
   exports: [RouterModule, ...components],
   imports: [SharedModule, RouterModule.forChild(routes), ProjectsModule],
 })

@@ -47,7 +47,7 @@ export function filterAnd<T extends AbstractModel>(
 export function filterModel<T extends AbstractModel, U extends AbstractModel>(
   key: string,
   model: T,
-  currentFilter: InnerFilter = {}
+  currentFilter: InnerFilter<T> = {}
 ): InnerFilter<Writeable<U>> {
   // all model filters condition on the id attribute. While it is very rare for a model to not have an id, it is possible
   // this bailout is typically evoked if the model is undefined
@@ -61,7 +61,7 @@ export function filterModel<T extends AbstractModel, U extends AbstractModel>(
     },
   };
 
-  return filterAnd(currentFilter, additionalFilter);
+  return filterAnd<T>(currentFilter, additionalFilter);
 }
 
 /**
@@ -76,7 +76,7 @@ export function filterModel<T extends AbstractModel, U extends AbstractModel>(
 export function filterModelIds<T extends AbstractModel>(
   key: string,
   ids: Id[],
-  currentFilter: InnerFilter<T>
+  currentFilter: InnerFilter<T> = {}
 ): InnerFilter<Writeable<T>> {
   if (!isInstantiated(ids)) {
     return currentFilter;
@@ -88,14 +88,14 @@ export function filterModelIds<T extends AbstractModel>(
     },
   };
 
-  return filterAnd(currentFilter, additionalFilter);
+  return filterAnd<T>(currentFilter, additionalFilter);
 }
 
 export function propertyFilter<T extends AbstractModel>(
   key: keyof T,
   value: T[keyof T],
   currentFilter: InnerFilter<T> = {}
-) {
+): InnerFilter<Writeable<T>> {
   if (!isInstantiated(value)) {
     return currentFilter;
   }
@@ -104,16 +104,16 @@ export function propertyFilter<T extends AbstractModel>(
     [key]: {
       contains: value,
     },
-  } as InnerFilter;
+  };
 
-  return filterAnd(currentFilter, additionalFilter);
+  return filterAnd<T>(currentFilter, additionalFilter);
 }
 
 export function excludePropertyValues<T extends AbstractModel>(
   key: keyof T,
   values: T[],
-  currentFilter: InnerFilter<Writeable<T>> = {}
-) {
+  currentFilter: InnerFilter<T> = {}
+): InnerFilter<Writeable<T>> {
   if (!isInstantiated(values)) {
     return currentFilter;
   }
@@ -124,5 +124,5 @@ export function excludePropertyValues<T extends AbstractModel>(
     },
   };
 
-  return filterAnd(currentFilter, additionalFilter);
+  return filterAnd<T>(currentFilter, additionalFilter);
 }

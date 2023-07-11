@@ -3,35 +3,34 @@
     {{ label }}
   </label>
   <div
-    class="typeahead-input-container d-flex form-group form-control border p-0"
+    class="typeahead-input-container form-group form-control border"
   >
     <ng-container *ngIf="multipleInputs">
       <span
         *ngFor="let item of activeItems"
-        class="item-pill badge fw-normal mx-1 my-1"
+        class="item-pill badge"
+        tabindex="0"
         (keydown.backspace)="removeItem(item)"
         (keydown.delete)="removeItem(item)"
-        tabindex="0"
       >
         <fa-icon
+          class="remove-button btn-sm"
           (click)="removeItem(item)"
-          class="btn-sm me-1"
           [icon]="['fas', 'square-xmark']"
         ></fa-icon>
 
-        <ng-container *ngIf="!resultTemplate; else customTemplate">
-          <!-- default results template -->
-          {{ item }}
+        <ng-container *ngIf="resultTemplate; else defaultTemplate">
+          <ng-container *ngTemplateOutlet="resultTemplate; context: { result: item }"></ng-container>
         </ng-container>
 
-        <ng-template #customTemplate>
-          <ng-container #customTemplate *ngTemplateOutlet="resultTemplate; context: { result: item }"></ng-container>
+        <ng-template #defaultTemplate>
+          {{ item }}
         </ng-template>
       </span>
     </ng-container>
 
     <input
-      #typeaheadInputRef
+      #typeaheadInput
       id="typeahead-input"
       name="typeahead-input"
       type="text"

@@ -66,7 +66,7 @@ export class EventSummaryReportParameters {
   public score = 0;
   public charts: Chart[];
   public bucketSize: BucketSize = BucketSize.month;
-  public daylightSavings;
+  public daylightSavings: boolean;
   public time: Duration[];
   public date: DateTime[];
 
@@ -152,9 +152,9 @@ export class EventSummaryReportParameters {
     Object.entries(this).forEach(([key, value]) => {
       if (key in conversionTable) {
         if (value instanceof Array) {
-          if (value[0] instanceof DateTime) {
+          if (value[0] instanceof DateTime || value[1] instanceof DateTime) {
             paramsObject[key] = dateTimeArrayToQueryString(value);
-          } else if (value[0] instanceof Duration) {
+          } else if (value[0] instanceof Duration || value[1] instanceof Duration) {
             paramsObject[key] = durationArrayToQueryString(value);
           } else {
             paramsObject[key] = value;

@@ -14,7 +14,7 @@ export type ReportMenuRoutes = Record<ReportRoute, MenuRoute>;
 
 function makeEventReportCategory(subRoute: ReportRoute): Category {
   return {
-    icon: ["fas", "map-marker-alt"],
+    icon: ["fas", "file-lines"],
     label: "Event Summary Report",
     route: eventReportRoute[subRoute],
   };
@@ -22,7 +22,7 @@ function makeEventReportCategory(subRoute: ReportRoute): Category {
 
 function makeNewReportCategory(subRoute: ReportRoute): Category {
   return {
-    icon: ["fas", "map-marker-alt"],
+    icon: ["fas", "file-circle-plus"],
     label: "New Event Summary Report",
     route: newEventReportRoute[subRoute],
   };
@@ -33,12 +33,12 @@ function makeViewEventReportMenuItem(
   parent?: MenuRoute
 ): MenuRoute {
   return menuRoute({
-    icon: ["fas", "file"],
+    icon: ["fas", "file-lines"],
     label: "Event Summary Report",
-    tooltip: () => "View event summary report",
+    tooltip: () => "Event summary report",
     route: eventReportRoute[subRoute],
-    parent,
     predicate: isAdminPredicate,
+    parent,
   });
 }
 
@@ -47,12 +47,12 @@ function makeNewEventReportMenuItem(
   parent?: MenuRoute
 ): MenuRoute {
   return menuRoute({
-    icon: ["fas", "file"],
+    icon: ["fas", "file-circle-plus"],
     label: "New Event Summary Report",
     tooltip: () => "New event summary report",
     route: newEventReportRoute[subRoute],
-    parent,
     predicate: isAdminPredicate,
+    parent,
   });
 }
 

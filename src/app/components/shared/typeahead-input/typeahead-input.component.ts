@@ -8,6 +8,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { NgbTypeaheadSelectItemEvent } from "@ng-bootstrap/ng-bootstrap";
+import { ResultTemplateContext } from "@ng-bootstrap/ng-bootstrap/typeahead/typeahead-window";
 import {
   debounceTime,
   distinctUntilChanged,
@@ -33,9 +34,9 @@ export class TypeaheadInputComponent {
   @Input() public searchCallback: (
     text: string,
     activeItems: object[]
-  ) => Observable<object[] | string[]>;
+  ) => Observable<object[]>;
   /** Describes how to convert an object model into a human readable form for use in the pills and typeahead dropdown */
-  @Input() public resultTemplate: TemplateRef<any>;
+  @Input() public resultTemplate: TemplateRef<ResultTemplateContext>;
   /** Whether the typeahead input should allow multiple inputs in pill form */
   @Input() public multipleInputs = false;
   /** Text to show above the input field. Usually a one 1-2 word descriptor. */
@@ -46,9 +47,9 @@ export class TypeaheadInputComponent {
   @Input() public inputPlaceholder = "";
   @Input() public inputDisabled = false;
   /** An event emitter when a user adds, removes, or selects and item from the typeahead input */
-  @Output() public modelChange = new EventEmitter<object[] | string[]>();
+  @Output() public modelChange = new EventEmitter<object[]>();
 
-  @ViewChild("typeaheadInputRef") public typeaheadInput: ElementRef;
+  @ViewChild("typeaheadInput") public typeaheadInput: ElementRef;
 
   public inputModel: string | null = null;
 
@@ -97,6 +98,8 @@ export class TypeaheadInputComponent {
   }
 
   public removeItem(item: object) {
+    // using indexOf means that JavaScript doesn't have to search through the entire array to remove the item
+    // and will only search until that item is found
     const indexToRemove = this.activeItems.indexOf(item);
     if (indexToRemove !== -1) {
       this.activeItems.splice(indexToRemove, 1);

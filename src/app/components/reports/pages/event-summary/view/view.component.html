@@ -16,8 +16,8 @@
 <section>
   <h3>Search Conditions</h3>
 
-  <div class="search-parameters">
-    <div class="search-parameters-container">
+  <div class="search-parameters-container">
+    <div class="search-parameter">
       <b>Sites:</b>
 
       <span *ngIf="regions | async as reportRegions">
@@ -32,7 +32,7 @@
       <span *ngIf="!parameterDataModel.sites">(not specified)</span>
     </div>
 
-    <div class="search-parameters-container">
+    <div class="search-parameter">
       <b>Points:</b>
 
       <span *ngIf="sites | async as reportSites">
@@ -47,7 +47,7 @@
       <span *ngIf="!parameterDataModel.points">(not specified)</span>
     </div>
 
-    <div class="search-parameters-container">
+    <div class="search-parameter">
       <b>Times:</b>
 
       <span
@@ -70,7 +70,7 @@
       </span>
     </div>
 
-    <div class="search-parameters-container">
+    <div class="search-parameter">
       <b>Date Range:</b>
 
       <span
@@ -93,11 +93,11 @@
       </span>
     </div>
 
-    <div class="search-parameters-container">
+    <div class="search-parameter">
       <b>Duration:</b> {{ parameterDataModel.bucketSize | titlecase }}
     </div>
 
-    <div class="search-parameters-container">
+    <div class="search-parameter">
       <b>Recognisers:</b>
 
       <span *ngIf="parameterDataModel.provenances">
@@ -117,7 +117,7 @@
       <span *ngIf="!parameterDataModel.provenances"> (not specified) </span>
     </div>
 
-    <div class="search-parameters-container">
+    <div class="search-parameter">
       <b>Score Cutoff:</b>
 
       <span>
@@ -128,7 +128,7 @@
       </span>
     </div>
 
-    <div class="search-parameters-container">
+    <div class="search-parameter">
       <b>Events:</b>
 
       <span *ngIf="tags | async as reportEvents; else noTagsTemplate">
@@ -161,9 +161,9 @@
     <div class="d-flex">
       <div class="w-25">
         <!-- TODO: Fetching these values. This will most likely require a 3rd party API -->
-        <h4 class="py-1">Native Species: 5</h4>
-        <h4 class="py-1">Non-native: 3</h4>
-        <h4 class="py-1">Invasive: 3</h4>
+        <h4>Native Species: 5</h4>
+        <h4>Non-native: 3</h4>
+        <h4>Invasive: 3</h4>
       </div>
 
       <baw-site-map
@@ -222,16 +222,16 @@
 
     <table class="table">
       <tr class="row">
-        <th class="col fw-bold">Events</th>
-        <th class="col fw-bold">Recogniser</th>
-        <th class="col fw-bold">Detections</th>
-        <th class="col fw-bold">
-          % of {{ parameterDataModel.bucketSize | titlecase }}s with Detections
+        <th class="col">Events</th>
+        <th class="col">Recogniser</th>
+        <th class="col">Detections</th>
+        <th class="col">
+          % {{ parameterDataModel.bucketSize | titlecase }}s with Detections
         </th>
-        <th class="col fw-bold">
-          % of {{ parameterDataModel.bucketSize | titlecase }}s with Rain
+        <th class="col">
+          % {{ parameterDataModel.bucketSize | titlecase }}s with Rain
         </th>
-        <th class="col fw-bold border">Confidence Plot</th>
+        <th class="col">Confidence Plot</th>
       </tr>
 
       <ng-container *ngFor="let item of report.eventGroups">

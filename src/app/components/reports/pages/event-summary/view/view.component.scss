@@ -5,50 +5,42 @@ section {
   page-break-inside: avoid;
 }
 
-.col {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
-}
-
-.embedded-figure {
+.search-parameters-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0em;
-  padding: 0em;
-  height: 3rem;
-  width: 100%;
+  flex-wrap: wrap;
 }
 
-.large-embedded-figure {
-  @extend .embedded-figure;
-  height: 25em;
-  min-width: 30em;
-  max-height: 25em;
+.search-parameter {
+  margin: 0.5rem;
+  margin-right: 2rem;
 }
 
 .site-map {
   display: flex;
   width: 100%;
-  height: 20em;
-  justify-content: center;
-  align-items: center;
+  height: 20rem;
 }
 
-.search-parameters {
+.col {
+  border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+
+  // if there is a log tag name, event, etc...
+  // the name will be broken by words. This causes padding on the broken line to be 0, while the start is padded by 0.25rem
+  // to make the table consistent,  we therefore, remove start (left) padding of links
+  a {
+    padding-left: 0em;
+  }
+}
+
+.embedded-figure {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  padding: 0;
+  height: 3rem;
 }
 
-.search-parameters-container {
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  flex-basis: auto;
-  align-items: center;
-  margin: 1rem;
-  margin-right: 3em;
+.large-embedded-figure {
+  @extend .embedded-figure;
+  height: 25em;
 }
 
 .toggle-graph-button {
@@ -56,7 +48,9 @@ section {
 }
 
 @media print {
-  #print-button, .toggle-graph-button {
+  #print-button,
+  .toggle-graph-button,
+  .hide-in-print {
     display: none;
   }
 
@@ -66,9 +60,5 @@ section {
 
   .events-table {
     overflow-wrap: anywhere;
-  }
-
-  .hide-in-print {
-    display: none;
   }
 }

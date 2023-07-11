@@ -3,8 +3,8 @@ import { EventSummaryReport } from "@models/EventSummaryReport";
 import { Filters } from "@baw-api/baw-api.service";
 import { Params } from "@angular/router";
 import {
+  Chart,
   EventSummaryReportParameters,
-  ChartType,
 } from "./EventSummaryReportParameters";
 
 describe("EventSummaryReportParameters", () => {
@@ -48,7 +48,7 @@ describe("EventSummaryReportParameters", () => {
       "&dateFinishedBefore=2020-03-01" +
       "&charts=chart1,chart2";
 
-    const realizedParameters = dataModel.toHttpParams();
+    const realizedParameters = dataModel.toQueryParams();
 
     expect(realizedParameters).toEqual(expectedParameters);
   });
@@ -118,7 +118,7 @@ describe("EventSummaryReportParameters", () => {
     const mockQueryParameters: Params = {
       sites: "41,52,46",
       score: "0.5",
-      charts: ChartType.falseColorSpectrograms,
+      charts: Chart.falseColorSpectrograms,
       daylightSavings: "true",
     };
 
