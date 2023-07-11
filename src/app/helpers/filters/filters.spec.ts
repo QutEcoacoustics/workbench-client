@@ -89,17 +89,17 @@ describe("ModelFilters", () => {
 
   it("should return an empty filter if no model is specified", () => {
     const mockModel: Project = undefined;
-    const initialFilters: InnerFilter<Writeable<any>> = {};
+    const initialFilters: InnerFilter<Project> = {};
 
-    const observedResult = filterModel<Project, any>("projects", mockModel, initialFilters);
+    const observedResult = filterModel<Project, any>("projects", mockModel, initialFilters) as any;
     expect(observedResult).toEqual(initialFilters);
   });
 
   it("should return an empty filter if the model does not have an id property", () => {
     const mockModel = new Project(generateProject({ id: undefined }));
-    const initialFilters: InnerFilter<Writeable<any>> = {};
+    const initialFilters: InnerFilter<Project> = {};
 
-    const observedResult = filterModel<Project, any>("projects", mockModel, initialFilters);
+    const observedResult = filterModel<Project, any>("projects", mockModel, initialFilters) as any;
     expect(observedResult).toEqual(initialFilters);
   });
 
@@ -109,9 +109,9 @@ describe("ModelFilters", () => {
       ["regions.id"]: {
         eq: 1,
       },
-    };
+    } as InnerFilter<Project>;
 
-    const observedResult = filterModel<Project, any>("projects", mockModel, currentFilters);
+    const observedResult = filterModel<Project, any>("projects", mockModel, currentFilters) as any;
     expect(observedResult).toEqual(currentFilters);
   });
 
@@ -121,22 +121,22 @@ describe("ModelFilters", () => {
       ["regions.id"]: {
         eq: 1,
       },
-    };
+    } as InnerFilter<Project>;
 
-    const observedResult = filterModel<Project, any>("projects", mockModel, currentFilters);
+    const observedResult = filterModel<Project, any>("projects", mockModel, currentFilters) as any;
     expect(observedResult).toEqual(currentFilters);
   });
 
   it("should create the correct model filter for a project", () => {
     const mockProject = new Project(generateProject({ id: 11 }));
-    const initialFilters: InnerFilter = {};
+    const initialFilters: InnerFilter<Project> = {};
     const expectedResult = {
       ["projects.id"]: {
         eq: mockProject.id,
       },
-    };
+    } as InnerFilter<Project>;
 
-    const observedResult = filterModel<Project, any>("projects", mockProject, initialFilters);
+    const observedResult = filterModel<Project, any>("projects", mockProject, initialFilters) as any;
     expect(observedResult).toEqual(expectedResult);
   });
 

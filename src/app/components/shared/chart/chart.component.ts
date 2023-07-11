@@ -5,7 +5,7 @@ import {
   Input,
   ViewChild,
 } from "@angular/core";
-import embed, { EmbedOptions } from "vega-embed";
+import embed, { EmbedOptions, VisualizationSpec } from "vega-embed";
 import { Data } from "vega-lite/build/src/data";
 
 // this component exists for us to render vega-lite charts in an *ngFor loop
@@ -14,17 +14,14 @@ import { Data } from "vega-lite/build/src/data";
 @Component({
   selector: "baw-chart",
   template: `
-    <label for="chartContainer">
-      <b>{{ title | titlecase }}</b>
-    </label>
     <ng-container *ngIf="data; else insufficientDataTemplate">
-      <div #chartContainer name="chartContainer" style="height: 100%; width: 100%;">
+      <div #chartContainer style="height: 100%; width: 100%;">
         Chart loading
       </div>
     </ng-container>
 
     <ng-template #insufficientDataTemplate>
-      Insufficient data to create graph
+      Insufficient data to create chart
     </ng-template>
   `,
 })
@@ -38,15 +35,16 @@ export class ChartComponent implements AfterViewInit {
   @Input() public spec;
   @Input() public data: Data;
   @Input() public options: EmbedOptions = { actions: false };
-  // since the title is usually specified within the schema, but the same schema may be used for multiple charts
-  // we should set the title at the component level. This also for standardisation of title formats
-  @Input() public title: string;
 
   public ngAfterViewInit() {
     // since vega lite graphs are objects, we need to create the new component spec by value, rather than by reference
     // updating by reference will cause all other graphs to update as well
-    const fullSpec = JSON.parse(JSON.stringify(this.spec));
-    fullSpec.data.values = this.data;
+    const fullSpec: VisualizationSpec = {
+      ...this.spec,
+      data: {
+        values: this.data
+      }
+    };
 
     embed(
       this.element.nativeElement,

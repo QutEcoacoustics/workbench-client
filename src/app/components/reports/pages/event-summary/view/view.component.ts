@@ -35,6 +35,7 @@ import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/Audio
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
+import { Data } from "vega-lite/build/src/data";
 import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
@@ -138,6 +139,10 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return `${this.apiRoot}/projects/1135/audio_events/download.csv`;
   }
 
+  protected get spectrogramUrls(): string[] {
+    return [];
+  }
+
   protected audioCoverageOverSpan(): Duration {
     return Duration.fromDurationLike(
       this.report.statistics?.audioCoverageOverSpan * 1000
@@ -191,6 +196,29 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     } else {
       return this.sites;
     }
+  }
+
+  protected coverageData(): Data {
+    // recordingCoverage: report.graphs.coverageData.recordingCoverage,
+    // analysisCoverage: report.graphs.coverageData.analysisCoverage
+    const recordingCoverage = this.report.graphs.coverageData.recordingCoverage.map((dateRange) =>
+      Object({
+        recordingStartDate: dateRange.startDate,
+        recordingEndDate: dateRange.endDate,
+      })
+    );
+
+    const analysisCoverage = this.report.graphs.coverageData.analysisCoverage.map((dateRange) =>
+      Object({
+        analysisStartDate: dateRange.startDate,
+        analysisEndDate: dateRange.endDate
+      })
+    );
+
+    return [
+      ...recordingCoverage,
+      ...analysisCoverage
+    ];
   }
 }
 

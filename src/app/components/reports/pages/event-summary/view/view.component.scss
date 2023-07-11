@@ -1,8 +1,20 @@
+$border-color: lightgray;
+
 section {
   border-top-style: solid;
   border-top-width: thin;
-  border-color: var(--baw-secondary-lightest);
+  border-color: $border-color;
   page-break-inside: avoid;
+}
+
+h3 {
+  width: 100%;
+}
+
+// we do this in css because it's styling, not inline offset (<i>) or emphasis (<em>)
+// see https://stackoverflow.com/a/53095149 for more information
+#generatedByLabel {
+  font-style: italic;
 }
 
 .search-parameters-container {
@@ -18,16 +30,17 @@ section {
 .site-map {
   display: flex;
   width: 100%;
-  height: 20rem;
+  height: 400px;
 }
 
 .col {
-  border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+  border: thin solid $border-color;
 
   // if there is a log tag name, event, etc...
   // the name will be broken by words. This causes padding on the broken line to be 0, while the start is padded by 0.25rem
   // to make the table consistent,  we therefore, remove start (left) padding of links
-  a {
+  & > a {
+    word-break: normal;
     padding-left: 0em;
   }
 }
@@ -45,6 +58,10 @@ section {
 
 .toggle-graph-button {
   float: right;
+  text-align: center;
+  // since the maximize and minimize buttons are slightly different sizes, we have to set the size explicitly using css
+  width: 2.5em;
+  height: 2.5em;
 }
 
 @media print {
@@ -54,7 +71,9 @@ section {
     display: none;
   }
 
-  .col {
+  th, td {
+    text-align: left;
+    vertical-align: middle;
     break-inside: avoid;
   }
 

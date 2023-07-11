@@ -84,14 +84,12 @@
       [(ngModel)]="model.bucketSize"
       required
     >
-      <option value="{{ bucketSizes.day }}">{{ bucketSizes.day | titlecase }}</option>
-      <option value="{{ bucketSizes.month }}">{{ bucketSizes.month | titlecase }}</option>
-      <option value="{{ bucketSizes.fortnight }}">
-        {{ bucketSizes.fortnight | titlecase }}
-      </option>
-      <option value="{{ bucketSizes.month }}">{{ bucketSizes.month | titlecase }}</option>
-      <option value="{{ bucketSizes.season }}">{{ bucketSizes.season | titlecase }}</option>
-      <option value="{{ bucketSizes.year }}">{{ bucketSizes.year | titlecase }}</option>
+      <option [value]="bucketSizes.day">{{ bucketSizes.day | titlecase }}</option>
+      <option [value]="bucketSizes.month">{{ bucketSizes.month | titlecase }}</option>
+      <option [value]="bucketSizes.fortnight">{{ bucketSizes.fortnight | titlecase }}</option>
+      <option [value]="bucketSizes.month">{{ bucketSizes.month | titlecase }}</option>
+      <option [value]="bucketSizes.season">{{ bucketSizes.season | titlecase }}</option>
+      <option [value]="bucketSizes.year">{{ bucketSizes.year | titlecase }}</option>
     </select>
   </div>
 

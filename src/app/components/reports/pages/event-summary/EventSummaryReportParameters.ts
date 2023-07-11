@@ -18,7 +18,6 @@ import { EventSummaryReport } from "@models/EventSummaryReport";
 import { DateTime, Duration } from "luxon";
 
 export enum Chart {
-  sensorPointMap = "Sensor Point Map",
   speciesAccumulationCurve = "Species Accumulation Curve",
   speciesCompositionCurve = "Species Composition Curve",
   falseColorSpectrograms = "False Colour Spectrograms",

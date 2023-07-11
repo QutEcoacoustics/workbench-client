@@ -1,19 +1,63 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "width": "container",
-  "height": 50,
   "data": {
     "values": []
   },
-  "mark": "bar",
-  "encoding": {
-    "x": {
-      "field": "startDate",
-      "type": "nominal",
-      "axis": null
-    },
-    "x2": {
-      "field": "endDate"
+  "resolve": {
+    "scale": {
+      "x": "shared"
     }
-  }
+  },
+  "vconcat": [
+    {
+      "title": {
+        "text": "Audio recording Coverage",
+        "anchor": "start",
+        "fontSize": 14,
+        "fontWeight": "normal"
+      },
+      "width": "container",
+      "height": 50,
+      "mark": "bar",
+      "encoding": {
+        "x": {
+          "field": "recordingStartDate",
+          "type": "nominal",
+          "axis": {
+            "title": null,
+            "labels": false,
+            "ticks": false,
+            "domain": false
+          }
+        },
+        "x2": {
+          "field": "recordingEndDate"
+        }
+      }
+    },
+    {
+      "title": {
+        "text": "Analysis Coverage",
+        "anchor": "start",
+        "fontSize": 14,
+        "fontWeight": "normal"
+      },
+      "width": "container",
+      "height": 50,
+      "mark": "bar",
+      "encoding": {
+        "x": {
+          "field": "analysisStartDate",
+          "type": "nominal",
+          "axis": {
+            "labelAngle": 45,
+            "title": null
+          }
+        },
+        "x2": {
+          "field": "analysisEndDate"
+        }
+      }
+    }
+  ]
 }

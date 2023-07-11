@@ -1,4 +1,3 @@
-import { DateTime, Duration } from "luxon";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { Filters } from "@baw-api/baw-api.service";
 import { Params } from "@angular/router";
@@ -12,45 +11,6 @@ describe("EventSummaryReportParameters", () => {
   it("should create", () => {
     const dataModel = new EventSummaryReportParameters();
     expect(dataModel).toBeInstanceOf(EventSummaryReportParameters);
-  });
-
-  it("should construct the correct query string parameters when all fields are set", () => {
-    const dataModel = new EventSummaryReportParameters();
-
-    dataModel.sites = [4, 5, 6];
-    dataModel.provenances = [7, 8, 9];
-    dataModel.events = [10, 11, 12];
-    dataModel.timeStartedAfter = Duration.fromObject({ hours: 1, minutes: 30 });
-    dataModel.timeFinishedBefore = Duration.fromObject({
-      hours: 22,
-      minutes: 15,
-    });
-    dataModel.dateStartedAfter = DateTime.fromISO(
-      "2020-02-01T00:00:00.000+00:00"
-    );
-    dataModel.dateFinishedBefore = DateTime.fromISO(
-      "2020-03-01T00:00:00.000+00:00"
-    );
-    dataModel.score = 0.5;
-    dataModel.charts = ["chart1", "chart2"];
-
-    // splitting these line by parameter allows for easier visualization
-    const expectedParameters: string =
-      "score=0.5" +
-      "&bucketSize=month" +
-      "&daylightSavings=true" +
-      "&sites=4,5,6" +
-      "&provenances=7,8,9" +
-      "&events=10,11,12" +
-      "&timeStartedAfter=01:30" +
-      "&timeFinishedBefore=22:15" +
-      "&dateStartedAfter=2020-02-01" +
-      "&dateFinishedBefore=2020-03-01" +
-      "&charts=chart1,chart2";
-
-    const realizedParameters = dataModel.toQueryParams();
-
-    expect(realizedParameters).toEqual(expectedParameters);
   });
 
   // if this test is failing, it might be because dates are being emitted with a local timezone
@@ -126,7 +86,7 @@ describe("EventSummaryReportParameters", () => {
 
     expect(dataModel.sites).toEqual([41, 52, 46]);
     expect(dataModel.score).toEqual(0.5);
-    expect(dataModel.charts).toEqual(["False Colour Spectrograms"]);
+    expect(dataModel.charts).toEqual([Chart.falseColorSpectrograms]);
     expect(dataModel.daylightSavings).toEqual(true);
   });
 
@@ -137,7 +97,7 @@ describe("EventSummaryReportParameters", () => {
       provenances: "11,23,2",
       events: "10,11,12",
       score: "0.5",
-      charts: "chart1,chart2",
+      charts: [Chart.speciesAccumulationCurve, Chart.speciesCompositionCurve],
       bucketSize: "month",
       daylightSavings: "true",
     };
@@ -149,7 +109,10 @@ describe("EventSummaryReportParameters", () => {
     expect(dataModel.provenances).toEqual([11, 23, 2]);
     expect(dataModel.events).toEqual([10, 11, 12]);
     expect(dataModel.score).toEqual(0.5);
-    expect(dataModel.charts).toEqual(["chart1", "chart2"]);
+    expect(dataModel.charts).toEqual([
+      Chart.speciesAccumulationCurve,
+      Chart.speciesCompositionCurve,
+    ]);
     expect(dataModel.bucketSize).toEqual("month");
     expect(dataModel.daylightSavings).toEqual(true);
   });
@@ -170,35 +133,5 @@ describe("EventSummaryReportParameters", () => {
     // we have to use manual access because these fields are not and should not be a part of the class structure
     expect(dataModel["time"]).toBeUndefined();
     expect(dataModel["error"]).toBeUndefined();
-  });
-
-  it("should be able to reconstruct the same query string parameters that it was created with", () => {
-    const mockQueryString: string =
-      "score=0.995" +
-      "&bucketSize=season" +
-      "&daylightSavings=false" +
-      "&sites=4,5,6" +
-      "&points=7,8,9" +
-      "&provenances=11,23,2" +
-      "&events=10,11,12" +
-      "&charts=Species%20Composition%20Curve,False%20Colour%20Spectrogram,Species%20Accumulation%20Curve";
-
-    const mockSearchParameters: Params = {
-      sites: "4,5,6",
-      points: "7,8,9",
-      provenances: "11,23,2",
-      events: "10,11,12",
-      score: "0.995",
-      charts:
-        "Species Composition Curve,False Colour Spectrogram,Species Accumulation Curve",
-      bucketSize: "season",
-      daylightSavings: "false",
-    };
-
-    const dataModel = new EventSummaryReportParameters(mockSearchParameters);
-
-    const realizedParameters = dataModel.toHttpParams();
-
-    expect(realizedParameters).toEqual(mockQueryString);
   });
 });

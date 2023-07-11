@@ -5,10 +5,7 @@ import {
 } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
-import {
-  DateTimeFilterModel,
-  DateTimeFilterComponent,
-} from "@shared/date-time-filter/date-time-filter.component";
+import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { Router } from "@angular/router";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
@@ -18,14 +15,13 @@ import { generateSite } from "@test/fakes/Site";
 import { Site } from "@models/Site";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { discardPeriodicTasks, fakeAsync, flush } from "@angular/core/testing";
-import { BehaviorSubject } from "rxjs";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
-import { Tag } from "@models/Tag";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
-import { generateTag } from "@test/fakes/Tag";
-import { Duration } from "luxon";
-import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
-import { BucketSize, ChartType } from "../EventSummaryReportParameters";
+import { DateTime, Duration } from "luxon";
+import { Id } from "@interfaces/apiInterfaces";
+import {
+  BucketSize,
+  Chart,
+  EventSummaryReportParameters,
+} from "../EventSummaryReportParameters";
 import { NewEventReportComponent } from "./new.component";
 
 describe("NewEventReportComponent", () => {
@@ -101,49 +97,14 @@ describe("NewEventReportComponent", () => {
   });
 
   it("should navigate to the correct route when the form is submitted when all fields have a value", fakeAsync(() => {
-    const dateTime: DateTimeFilterModel = {
-      dateStartedAfter: new NgbDate(2020, 1, 1),
-      dateFinishedBefore: new NgbDate(2020, 2, 1),
-      timeStartedAfter: Duration.fromObject({
-        hours: 0,
-        minutes: 0,
-      }),
-      timeFinishedBefore: Duration.fromObject({
-        hours: 23,
-        minutes: 59,
-      }),
-      ignoreDaylightSavings: false
-    };
-
     const provenanceCutOff = 0.5;
     const bucketSize: BucketSize = BucketSize.day;
-    const charts: ChartType[] = [ ChartType.sensorPointMap, ChartType.speciesAccumulationCurve ];
-
-    const provenances: AudioEventProvenance[] = [
-      new AudioEventProvenance(
-        generateAudioEventProvenance({
-          id: 1,
-          name: "BirdNet",
-        })
-      ),
-      new AudioEventProvenance(
-        generateAudioEventProvenance({
-          id: 2,
-          name: "Lance's recognizer",
-        })
-      ),
+    const charts: Chart[] = [
+      Chart.falseColorSpectrograms,
+      Chart.speciesAccumulationCurve,
     ];
 
-    const tags: Tag[] = [
-      new Tag(generateTag({
-        id: 1,
-        text: "kookaburra",
-      })),
-      new Tag(generateTag({
-        id: 2,
-        text: "mallard",
-      })),
-    ];
+    const provenances: Id[] = [1, 2];
 
     const expectedRoute =
       `/projects/${defaultProject.id}` +
@@ -155,7 +116,7 @@ describe("NewEventReportComponent", () => {
       "&provenances=1,2" +
       "&events=1,2" +
       "&charts=Sensor%20Point%20Map,Species%20Accumulation%20Curve" +
-      "&timeStartedAfter=00:00" +
+      "&time=[0,1]" +
       "&timeFinishedBefore=23:59" +
       "&dateStartedAfter=2020-01-01" +
       "&dateFinishedBefore=2020-02-01";
@@ -163,16 +124,22 @@ describe("NewEventReportComponent", () => {
     // since typeahead callbacks/model emission is tested within its own component
     // and testing inputs would require mocking option callbacks (negating all benefit from testing through inputs)
     // we can just set the callback models directly
-    spectator.component.model = {
-      dateTime: new BehaviorSubject<DateTimeFilterModel>(dateTime),
-      regions: new BehaviorSubject<Region[]>([]),
-      sites: new BehaviorSubject<Site[]>([]),
-      provenances: new BehaviorSubject<AudioEventProvenance[]>(provenances),
-      provenanceScoreCutOff: provenanceCutOff,
-      charts: new BehaviorSubject<string[]>(charts),
-      eventsOfInterest: new BehaviorSubject<Tag[]>(tags),
-      bucketSize
-    };
+    spectator.component.model = new EventSummaryReportParameters({
+      date: [
+        DateTime.fromFormat("2020-01-01", "yyyy-MM-dd"),
+        DateTime.fromFormat("2020-02-01", "yyyy-MM-dd"),
+      ],
+      time: [
+        Duration.fromObject({ hours: 0, minutes: 0 }),
+        Duration.fromObject({ hours: 23, minutes: 59 }),
+      ],
+      sites: [],
+      provenances,
+      score: provenanceCutOff,
+      charts,
+      events: [1, 2],
+      bucketSize,
+    });
 
     generateReportButton().click();
 

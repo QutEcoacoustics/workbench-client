@@ -43,9 +43,7 @@ describe("TypeaheadInputComponent", () => {
     mockSitesService = spectator.inject(SHALLOW_SITE.token);
     mockSitesService.filter.and.returnValue(of(defaultFakeSites));
 
-    const mockSiteFormatter = (site: Site) => site.name;
-    spectator.component.optionsCallback = mockSitesService.filter;
-    spectator.component.formatter = mockSiteFormatter;
+    spectator.component.searchCallback = mockSitesService.filter;
 
     spectator.detectChanges();
   }
