@@ -12,7 +12,8 @@
       "title": "Date",
       "type": "nominal",
       "axis": {
-        "labelAngle": 45
+        "labelAngle": 45,
+        "title": null
       }
     },
     "y": {
@@ -29,6 +30,9 @@
       "type": "nominal",
       "scale": {
         "scheme": "category20b"
+      },
+      "legend": {
+        "orient": "top"
       }
     }
   }

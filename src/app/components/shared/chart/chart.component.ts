@@ -5,8 +5,8 @@ import {
   Input,
   ViewChild,
 } from "@angular/core";
+import { Data } from "@angular/router";
 import embed, { EmbedOptions, VisualizationSpec } from "vega-embed";
-import { Data } from "vega-lite/build/src/data";
 
 // this component exists for us to render vega-lite charts in an *ngFor loop
 // render multiple charts using different dynamically updating data from the same schema
@@ -42,8 +42,8 @@ export class ChartComponent implements AfterViewInit {
     const fullSpec: VisualizationSpec = {
       ...this.spec,
       data: {
-        values: this.data
-      }
+        values: this.data,
+      },
     };
 
     embed(

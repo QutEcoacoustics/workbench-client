@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
@@ -51,7 +51,8 @@ const parameterDataModelKey = "parameterDataModel";
 @Component({
   selector: "baw-summary-report",
   templateUrl: "./view.component.html",
-  styleUrls: ["./view.component.scss"]
+  styleUrls: ["./view.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
   public constructor(

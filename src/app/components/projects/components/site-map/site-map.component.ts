@@ -20,7 +20,7 @@ import { switchMap, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "baw-site-map",
-  template: '<baw-map style="width: 100%; height: 100%;" [markers]="markers"></baw-map>',
+  template: '<baw-map [markers]="markers"></baw-map>',
 })
 export class SiteMapComponent
   extends withUnsubscribe()

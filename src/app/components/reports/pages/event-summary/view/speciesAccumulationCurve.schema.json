@@ -18,7 +18,8 @@
           "field": "date",
           "type": "nominal",
           "axis": {
-            "labelAngle": 45
+            "labelAngle": 45,
+            "title": null
           }
         },
         "y": {
@@ -65,7 +66,8 @@
           "field": "date",
           "type": "nominal",
           "axis": {
-            "labelAngle": 45
+            "labelAngle": 45,
+            "title": null
           }
         },
         "y": {
