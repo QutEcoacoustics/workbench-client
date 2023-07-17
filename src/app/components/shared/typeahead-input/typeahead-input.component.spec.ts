@@ -106,7 +106,7 @@ describe("TypeaheadInputComponent", () => {
     spectator.component.multipleInputs = false;
     const numberOfActiveItems = 1;
 
-    spectator.component.activeItems = defaultFakeSites.slice(0, defaultFakeSites.length - numberOfActiveItems);
+    spectator.component.value = defaultFakeSites.slice(0, defaultFakeSites.length - numberOfActiveItems);
     spectator.detectChanges();
 
     const pillElements: HTMLSpanElement[] = itemPills();
@@ -117,17 +117,17 @@ describe("TypeaheadInputComponent", () => {
     spectator.component.multipleInputs = true;
     const numberOfActiveItems = 2;
 
-    spectator.component.activeItems = defaultFakeSites.slice(0, defaultFakeSites.length - numberOfActiveItems);
+    spectator.component.value = defaultFakeSites.slice(0, defaultFakeSites.length - numberOfActiveItems);
 
     spectator.detectChanges();
 
     const pillElements: HTMLSpanElement[] = itemPills();
 
-    expect(pillElements.length).toEqual(spectator.component.activeItems.length);
+    expect(pillElements.length).toEqual(spectator.component.value.length);
     pillElements.forEach((pill: HTMLSpanElement, i: number) => {
       expect(pill.innerText).toEqual(
         // since the type of the active items is a TypeScript unknown, the as Site is acceptable as it adds type safety
-        (spectator.component.activeItems[i] as Site).name
+        (spectator.component.value[i] as Site).name
       );
     });
   });
@@ -193,7 +193,7 @@ describe("TypeaheadInputComponent", () => {
       spectator.detectChanges();
     });
 
-    expect(spectator.component.activeItems).toHaveLength(0);
+    expect(spectator.component.value).toHaveLength(0);
     expect(spectator.component.modelChange.next).toHaveBeenCalledWith([sitesToSelect[1]]);
 
     flush();
@@ -208,7 +208,7 @@ describe("TypeaheadInputComponent", () => {
     );
 
     spectator.component.multipleInputs = true;
-    spectator.component.activeItems = defaultFakeSites;
+    spectator.component.value = defaultFakeSites;
 
     const inputBoxElement: HTMLInputElement = inputBox();
     inputBoxElement.dispatchEvent(
@@ -218,7 +218,7 @@ describe("TypeaheadInputComponent", () => {
     tick(defaultDebounceTime);
     spectator.detectChanges();
 
-    expect(spectator.component.activeItems).toEqual(expectedSites);
+    expect(spectator.component.value).toEqual(expectedSites);
 
     flush();
     discardPeriodicTasks();
@@ -240,10 +240,10 @@ describe("TypeaheadInputComponent", () => {
   it("should not display an item in the dropdown if it is already selected and the input allows multiple inputs", fakeAsync(() => {
     spectator.component.multipleInputs = true;
     // the items in the activeItems property should not be displayed in the dropdown
-    spectator.component.activeItems = defaultFakeSites.slice(0, 3);
+    spectator.component.value = defaultFakeSites.slice(0, 3);
     spectator.detectChanges();
 
-    const activeItemsText: string[] = spectator.component.activeItems.map(
+    const activeItemsText: string[] = spectator.component.value.map(
       (item: Site) => item.name
     );
 
@@ -303,7 +303,7 @@ describe("TypeaheadInputComponent", () => {
     const activeSite: Site = defaultFakeSites[0];
     const expectedPillText = activeSite.name;
 
-    spectator.component.activeItems = [activeSite];
+    spectator.component.value = [activeSite];
     spectator.detectChanges();
 
     expect(itemPills()[0].innerText).toEqual(expectedPillText);

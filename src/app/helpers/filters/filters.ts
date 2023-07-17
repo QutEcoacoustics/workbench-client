@@ -91,9 +91,9 @@ export function filterModelIds<T extends AbstractModel>(
   return filterAnd<T>(currentFilter, additionalFilter);
 }
 
-export function propertyFilter<T extends AbstractModel>(
-  key: keyof T,
-  value: T[keyof T],
+export function propertyFilter<T extends AbstractModel, K extends keyof T>(
+  key: K,
+  value: T[K],
   currentFilter: InnerFilter<T> = {}
 ): InnerFilter<Writeable<T>> {
   if (!isInstantiated(value)) {

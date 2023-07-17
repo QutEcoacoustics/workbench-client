@@ -1,6 +1,6 @@
 import { Injectable, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
-import { IdParamOptional, id, option, FilterCreate } from "@baw-api/api-common";
+import { IdParamOptional, id, option, ApiFilterShow } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import {
   BawProvider,
@@ -21,7 +21,7 @@ const endpoint = stringTemplate`/reports/audio_event_summary/${reportId}${option
 
 @Injectable()
 export class EventSummaryReportService
-  implements FilterCreate<EventSummaryReport>
+  implements ApiFilterShow<EventSummaryReport>
 {
   public constructor(protected api: BawApiService<EventSummaryReport>) {}
 
@@ -34,17 +34,18 @@ export class EventSummaryReportService
     // this is done so that the reports can be showcased with a working view
 
     // to make the report believable, we have to use the filter parameters so that it uses actual sites, tags, etc...
+    // this information is returned by the api, and can therefore be removed once a fully functional api is available
     const filterConditions: object[] = filters.filter.and as object[];
 
-    const sideIdFilter = filterConditions.find(
+    const sideIdFilter = filterConditions?.find(
       (filterCondition) => "site.id" in filterCondition
     );
 
-    const provenanceIdFilter = filterConditions.find(
+    const provenanceIdFilter = filterConditions?.find(
       (filterCondition) => "provenance.id" in filterCondition
     );
 
-    const tagIdFilter = filterConditions.find(
+    const tagIdFilter = filterConditions?.find(
       (filterCondition) => "tag.id" in filterCondition
     );
 
@@ -56,6 +57,7 @@ export class EventSummaryReportService
       : [];
     const tagIds: number[] = tagIdFilter ? tagIdFilter["tag.id"].in : [];
 
+    // for "realistic" looking data we use real tags and provenances so that each provenance has a fixed number of detections for each tag
     const eventGroups: IEventGroup[] = tagIds
       ?.map((tagId: number): IEventGroup[] =>
         provenanceIds.map(
@@ -80,6 +82,8 @@ export class EventSummaryReportService
       )
       .flat();
 
+    // hard coded graph and statics data was used to generate "realistic" event summary reports
+    // faker.js was not used as it is a dev-dependency and would significantly increase the initial bundle size
     const fakeReport: EventSummaryReport = new EventSummaryReport({
       siteIds,
       name: "Mock Event Summary Report",

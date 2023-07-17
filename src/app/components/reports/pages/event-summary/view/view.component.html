@@ -11,7 +11,7 @@
   {{ report.generatedDate ?? DateTime.now() | dateTime }}
 </p>
 
-<section class="search-parameters-container">
+<section id="search-parameters-container">
   <h3>Search Conditions</h3>
 
   <div class="search-parameter">
@@ -20,12 +20,13 @@
     <ng-container
       *ngIf="regions | async as reportRegions; else defaultConditionTemplate"
     >
-      <ng-container *ngFor="let item of reportRegions; let last = last">
-        <a [href]="item.viewUrl">
-          {{ item.name }}
-        </a>
-        <ng-container *ngIf="!last">,</ng-container>
-      </ng-container>
+      <a
+        *ngFor="let item of reportRegions; last as isLast"
+        [href]="item.viewUrl"
+      >
+        {{ item.name }}
+        <ng-container *ngIf="!isLast">,</ng-container>
+      </a>
     </ng-container>
   </div>
 
@@ -35,12 +36,10 @@
     <ng-container
       *ngIf="sites | async as reportSites; else defaultConditionTemplate"
     >
-      <ng-container *ngFor="let item of reportSites; let last = last">
-        <a [href]="item.viewUrl">
-          {{ item.name }}
-        </a>
-        <ng-container *ngIf="!last">,</ng-container>
-      </ng-container>
+      <a *ngFor="let item of reportSites; last as isLast" [href]="item.viewUrl">
+        {{ item.name }}
+        <ng-container *ngIf="!isLast">,</ng-container>
+      </a>
     </ng-container>
   </div>
 
@@ -84,27 +83,28 @@
     <ng-container
       *ngIf="parameterDataModel.provenances; else defaultConditionTemplate"
     >
-      <ng-container
+      <a
         *ngFor="
           let provenance of parameterDataModel.provenances;
-          let last = last
+          last as isLast
         "
+        [href]="(getProvenance(provenance) | async).viewUrl"
       >
-        <a [href]="(getProvenance(provenance) | async).viewUrl">
-          {{ (getProvenance(provenance) | async).name }}
-        </a>
-        <ng-container *ngIf="!last">,</ng-container>
-      </ng-container>
+        {{ (getProvenance(provenance) | async).name }}
+        <ng-container *ngIf="!isLast">,</ng-container>
+      </a>
     </ng-container>
   </div>
 
   <div class="search-parameter">
     <b>Score Cutoff:</b>
 
-    {{
-      parameterDataModel.score ?? ViewEventReportComponent.defaultFilterText()
-        | number : "1.1-1"
-    }}
+    <!--
+      If the user doesn't explicitly define a provenance score, we should display 0 instead of (not specified)
+      This is because this a not specified provenance score allows through all events, which is equivalent to a score cut-off of 0
+      To be verbose, we reflect this client side to the user by using 0.0 as the score cut-off instead of (not specified)
+    -->
+    {{ parameterDataModel.score ?? 0 | number : "1.1-1" }}
   </div>
 
   <div class="search-parameter">
@@ -113,12 +113,13 @@
     <ng-container
       *ngIf="tags | async as reportEvents; else defaultConditionTemplate"
     >
-      <ng-container *ngFor="let item of reportEvents; let last = last">
-        <a [href]="item.viewUrl">
-          {{ item.text }}
-        </a>
-        <ng-container *ngIf="!last">,</ng-container>
-      </ng-container>
+      <a
+        *ngFor="let item of reportEvents; last as isLast"
+        [href]="item.viewUrl"
+      >
+        {{ item.text }}
+        <ng-container *ngIf="!isLast">,</ng-container>
+      </a>
     </ng-container>
   </div>
 </section>
@@ -126,61 +127,48 @@
 <section>
   <h3>Summary</h3>
 
-  <div>
-    <div class="alert alert-warning p-3 my-3">
-      <strong>
-        General warning about different recognisers, 'interpret with cation and
-        validate' etc; qualifiers about performance in different regions, etc
-      </strong>
-    </div>
+  <div class="alert alert-warning p-3 my-3">
+    <strong>
+      General warning about different recognisers, 'interpret with cation and
+      validate' etc; qualifiers about performance in different regions, etc
+    </strong>
+  </div>
 
-    <span class="d-flex">
-      <div class="w-25">
-        <!-- TODO: Fetching these values. This will most likely require a 3rd party API -->
-        <h4>Native Species: 5</h4>
-        <h4>Non-native: 3</h4>
-        <h4>Invasive: 3</h4>
-      </div>
-
-      <baw-site-map
-        class="site-map"
-        [sites]="selectedSites() | async"
-      ></baw-site-map>
+  <div class="d-flex">
+    <span id="native-species-container">
+      <!-- TODO: Fetching these values. This will most likely require a 3rd party API -->
+      <h4>Native Species: 5</h4>
+      <h4>Non-native: 3</h4>
+      <h4>Invasive: 3</h4>
     </span>
 
-    <baw-chart [spec]="coveragePlotSchema" [data]="coverageData()"></baw-chart>
-
-    <p>
-      For the requested {{ totalSearchSpan() | toRelative }}, we've analysed 90%
-    </p>
+    <baw-site-map
+      class="site-map"
+      [sites]="selectedSites() | async"
+    ></baw-site-map>
   </div>
+
+  <baw-chart [spec]="coveragePlotSchema" [data]="coverageData()"></baw-chart>
+
+  <p>
+    For the requested <b>{{ totalSearchSpan() | toRelative }}</b
+    >, we've analysed <b>70%</b> of the available
+    <b>{{ audioCoverageOverSpan() | toRelative }}</b> of audio recording time.
+  </p>
 </section>
 
 <section class="events-table">
-  <h3>Events Table</h3>
-
-  <div class="py-4">
-    <b
-      >Total number of {{ parameterDataModel.bucketSize | titlecase }}s
-      analysed:</b
-    >
-    {{ report.statistics?.countOfRecordingsAnalyzed }}
-    {{ parameterDataModel.bucketSize | titlecase }}s <br />
-    <b>
-      {{ audioCoverageOverSpan() | toRelative }}
-    </b>
-    of recordings were found within the requested
-    <b>
-      {{ totalSearchSpan() | toRelative }}
-    </b>
+  <h3>
+    Events Table
 
     <a [href]="eventDownloadUrl">
       <fa-icon
+        class="download-button"
         [icon]="['fas', 'file-arrow-down']"
         [ngbTooltip]="'Download this table'"
       ></fa-icon>
     </a>
-  </div>
+  </h3>
 
   <table class="table">
     <tr class="row">
@@ -199,8 +187,8 @@
     <ng-container *ngFor="let item of report.eventGroups">
       <tr class="row">
         <td class="col">
-          <a [href]="(getTag(item.tagId) | async).viewUrl">
-            {{ (getTag(item.tagId) | async).text }}
+          <a [href]="(getTag(item.tagId) | async)?.viewUrl">
+            {{ (getTag(item.tagId) | async)?.text }}
           </a>
         </td>
         <td class="col">
@@ -239,16 +227,13 @@
     Some kind of text to put these figures into context.
   </div>
 
-  <div
-    *ngIf="report.graphs?.accumulationData"
-    [class.hide-in-print]="accumulationCurveCollapsed"
-  >
+  <div [class.hide-in-print]="!showChart(chartTypes.speciesAccumulationCurve)">
     <h4>
       Species Accumulation Curve
 
       <a [href]="eventDownloadUrl">
         <fa-icon
-          class="hide-in-print"
+          class="hide-in-print download-button"
           [icon]="['fas', 'file-arrow-down']"
           [ngbTooltip]="'Download this graphs data'"
         ></fa-icon>
@@ -256,12 +241,22 @@
 
       <fa-icon
         class="toggle-graph-button btn btn-secondary btn-sm"
-        (click)="accumulationCurveCollapsed = !accumulationCurveCollapsed"
-        [icon]="['fas', accumulationCurveCollapsed ? 'maximize' : 'minimize']"
+        (click)="
+          toggleChart(
+            chartTypes.speciesAccumulationCurve,
+            !showChart(chartTypes.speciesAccumulationCurve)
+          )
+        "
+        [icon]="[
+          'fas',
+          showChart(chartTypes.speciesAccumulationCurve)
+            ? 'minimize'
+            : 'maximize'
+        ]"
       ></fa-icon>
     </h4>
 
-    <div [ngbCollapse]="accumulationCurveCollapsed">
+    <div [ngbCollapse]="!showChart(chartTypes.speciesAccumulationCurve)">
       <baw-chart
         class="large-embedded-figure"
         [spec]="speciesAccumulationCurveSchema"
@@ -270,16 +265,13 @@
     </div>
   </div>
 
-  <div
-    *ngIf="report.graphs?.speciesCompositionData"
-    [class.hide-in-print]="compositionCurveCollapsed"
-  >
+  <div [class.hide-in-print]="!showChart(chartTypes.speciesCompositionCurve)">
     <h4>
       Species Composition
 
       <a [href]="eventDownloadUrl">
         <fa-icon
-          class="hide-in-print"
+          class="hide-in-print download-button"
           [icon]="['fas', 'file-arrow-down']"
           [ngbTooltip]="'Download this graphs data'"
         ></fa-icon>
@@ -287,12 +279,22 @@
 
       <fa-icon
         class="toggle-graph-button btn btn-secondary btn-sm"
-        (click)="compositionCurveCollapsed = !compositionCurveCollapsed"
-        [icon]="['fas', compositionCurveCollapsed ? 'maximize' : 'minimize']"
+        (click)="
+          toggleChart(
+            chartTypes.speciesCompositionCurve,
+            !showChart(chartTypes.speciesCompositionCurve)
+          )
+        "
+        [icon]="[
+          'fas',
+          showChart(chartTypes.speciesCompositionCurve)
+            ? 'minimize'
+            : 'maximize'
+        ]"
       ></fa-icon>
     </h4>
 
-    <div [ngbCollapse]="compositionCurveCollapsed">
+    <div [ngbCollapse]="!showChart(chartTypes.speciesCompositionCurve)">
       <baw-chart
         class="large-embedded-figure"
         [spec]="speciesCompositionCurveSchema"
@@ -301,10 +303,7 @@
     </div>
   </div>
 
-  <div
-    *ngIf="spectrogramUrls.length"
-    [class.hide-in-print]="spectrogramsCollapsed"
-  >
+  <div [class.hide-in-print]="!showChart(chartTypes.falseColorSpectrograms)">
     <h4>
       False colour spectrogram(s)
 
@@ -318,11 +317,19 @@
 
       <fa-icon
         class="toggle-graph-button btn btn-secondary btn-sm"
-        (click)="spectrogramsCollapsed = !spectrogramsCollapsed"
-        [icon]="['fas', spectrogramsCollapsed ? 'maximize' : 'minimize']"
+        (click)="
+          toggleChart(
+            chartTypes.falseColorSpectrograms,
+            !showChart(chartTypes.falseColorSpectrograms)
+          )
+        "
+        [icon]="[
+          'fas',
+          showChart(chartTypes.falseColorSpectrograms) ? 'minimize' : 'maximize'
+        ]"
       ></fa-icon>
     </h4>
-    <div [ngbCollapse]="spectrogramsCollapsed">
+    <div [ngbCollapse]="!showChart(chartTypes.falseColorSpectrograms)">
       <div class="large-embedded-figure p-1">False colour spectrogram(s)</div>
     </div>
   </div>

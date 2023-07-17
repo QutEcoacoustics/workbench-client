@@ -86,7 +86,7 @@ describe("EventSummaryReportParameters", () => {
 
     expect(dataModel.sites).toEqual([41, 52, 46]);
     expect(dataModel.score).toEqual(0.5);
-    expect(dataModel.charts).toEqual([Chart.falseColorSpectrograms]);
+    expect(dataModel.hiddenCharts).toEqual([Chart.falseColorSpectrograms]);
     expect(dataModel.daylightSavings).toEqual(true);
   });
 
@@ -109,7 +109,7 @@ describe("EventSummaryReportParameters", () => {
     expect(dataModel.provenances).toEqual([11, 23, 2]);
     expect(dataModel.events).toEqual([10, 11, 12]);
     expect(dataModel.score).toEqual(0.5);
-    expect(dataModel.charts).toEqual([
+    expect(dataModel.hiddenCharts).toEqual([
       Chart.speciesAccumulationCurve,
       Chart.speciesCompositionCurve,
     ]);

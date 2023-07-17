@@ -18,9 +18,10 @@ import { EventSummaryReport } from "@models/EventSummaryReport";
 import { DateTime, Duration } from "luxon";
 
 export enum Chart {
-  speciesAccumulationCurve = "Species Accumulation Curve",
-  speciesCompositionCurve = "Species Composition Curve",
-  falseColorSpectrograms = "False Colour Spectrograms",
+  speciesAccumulationCurve = "accumulation",
+  speciesCompositionCurve = "composition",
+  falseColorSpectrograms = "false-colour",
+  none = "none",
 }
 
 export enum BucketSize {
@@ -62,26 +63,26 @@ export class EventSummaryReportParameters {
   public points: Id[];
   public provenances: Id[];
   public events: Id[];
-  public score = 0;
-  public charts: Chart[];
+  public score: number;
   public bucketSize: BucketSize = BucketSize.month;
   public daylightSavings: boolean;
   public time: Duration[];
   public date: DateTime[];
+  public charts: Chart[];
 
-  public get dateStartedAfter(): DateTime {
+  public get dateStartedAfter(): DateTime | null {
     return this.date ? this.date[0] : null;
   }
 
-  public get dateFinishedBefore(): DateTime {
+  public get dateFinishedBefore(): DateTime | null {
     return this.date ? this.date[1] : null;
   }
 
-  public get timeStartedAfter(): Duration {
+  public get timeStartedAfter(): Duration | null {
     return this.time ? this.time[0] : null;
   }
 
-  public get timeFinishedBefore(): Duration {
+  public get timeFinishedBefore(): Duration | null {
     return this.time ? this.time[1] : null;
   }
 
@@ -118,7 +119,7 @@ export class EventSummaryReportParameters {
     }
 
     if (this.bucketSize) {
-      filter = filterAnd<EventSummaryReport>(filter, {
+      filter = filterAnd(filter, {
         bucketSize: {
           eq: this.bucketSize,
         },
@@ -148,21 +149,22 @@ export class EventSummaryReportParameters {
   public toQueryParams(): Params {
     const paramsObject: Params = {};
 
-    Object.entries(this).forEach(([key, value]) => {
-      if (key in conversionTable) {
+    Object.entries(this)
+      // we use isInstantiated here because in some cases 0 is a valid value, and therefore can't use a double negation
+      .filter(([key, value]) => key in conversionTable && isInstantiated(value))
+      .forEach(([key, value]) => {
         if (value instanceof Array) {
-          if (value[0] instanceof DateTime || value[1] instanceof DateTime) {
+          if (value.some((v) => v instanceof DateTime)) {
             paramsObject[key] = dateTimeArrayToQueryString(value);
-          } else if (value[0] instanceof Duration || value[1] instanceof Duration) {
+          } else if (value.some((v) => v instanceof Duration)) {
             paramsObject[key] = durationArrayToQueryString(value);
           } else {
-            paramsObject[key] = value;
+            paramsObject[key] = value.toString();
           }
         } else {
           paramsObject[key] = value;
         }
-      }
-    });
+      });
 
     return paramsObject;
   }

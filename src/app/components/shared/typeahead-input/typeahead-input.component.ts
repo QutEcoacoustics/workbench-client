@@ -1,11 +1,9 @@
 import {
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   Output,
   TemplateRef,
-  ViewChild,
 } from "@angular/core";
 import { NgbTypeaheadSelectItemEvent } from "@ng-bootstrap/ng-bootstrap";
 import { ResultTemplateContext } from "@ng-bootstrap/ng-bootstrap/typeahead/typeahead-window";
@@ -14,7 +12,6 @@ import {
   distinctUntilChanged,
   map,
   Observable,
-  OperatorFunction,
   switchMap,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
@@ -38,8 +35,8 @@ export class TypeaheadInputComponent {
   /** Describes how to convert an object model into a human readable form for use in the pills and typeahead dropdown */
   @Input() public resultTemplate: TemplateRef<ResultTemplateContext>;
   /** Whether the typeahead input should allow multiple inputs in pill form */
-  @Input() public multipleInputs = false;
-  /** Text to show above the input field. Usually a one 1-2 word descriptor. */
+  @Input() public multipleInputs = true;
+  /** Text to show above the input field. Usually a one 1-2 word description. */
   @Input() public label = "";
   /** Placeholder text that is shown when the input field is empty.
    * Note: This value is not emitted at any point
@@ -49,36 +46,32 @@ export class TypeaheadInputComponent {
   /** An event emitter when a user adds, removes, or selects and item from the typeahead input */
   @Output() public modelChange = new EventEmitter<object[]>();
 
-  @ViewChild("typeaheadInput") public typeaheadInput: ElementRef;
+  // if multiple items are enabled, they will be added to the value
+  // if multiple inputs are disabled, the value will always be an array with a single element
+  // we use the variable name "value" so the component can be used in ngForms and can bind to [(ngModel)]
+  public value: object[] = [];
+  protected inputModel!: string | null;
 
-  public inputModel: string | null = null;
-
-  /** if multiple items are enabled, they will be added to the activeItems */
-  public activeItems: object[] = [];
-
-  public findOptions: OperatorFunction<string, readonly unknown[]> = (
+  public findOptions = (
     text$: Observable<string>
-  ) => {
+  ): Observable<object[]> => {
     const maximumResults = 10;
 
     return text$.pipe(
       debounceTime(defaultDebounceTime),
       distinctUntilChanged(),
-      switchMap((term: string) =>
-        this.searchCallback(term, this.activeItems).pipe(
-          map((items: object[]) => items.slice(0, maximumResults))
-        )
-      )
+      switchMap((term: string) => this.searchCallback(term, this.value)),
+      map((items: object[]) => items.slice(0, maximumResults))
     );
   };
 
-  public onItemSelected($event: NgbTypeaheadSelectItemEvent<object>) {
+  public onItemSelected($event: NgbTypeaheadSelectItemEvent<object>): void {
     $event.preventDefault();
     const selectedItem: object = $event.item;
 
     if (this.multipleInputs) {
-      this.activeItems.push(selectedItem);
-      this.modelChange.emit(this.activeItems);
+      this.value.push(selectedItem);
+      this.modelChange.emit(this.value);
 
       this.inputModel = null;
     } else {
@@ -86,24 +79,25 @@ export class TypeaheadInputComponent {
     }
   }
 
-  public removeLastItem() {
+  public removeLastItem(): void {
     if (
       this.multipleInputs &&
-      this.activeItems.length > 0 &&
+      this.value.length > 0 &&
       !this.inputModel
     ) {
-      this.activeItems.pop();
-      this.modelChange.emit(this.activeItems);
+      this.value.pop();
+      this.modelChange.emit(this.value);
     }
   }
 
-  public removeItem(item: object) {
+  public removeItem(item: object): void {
     // using indexOf means that JavaScript doesn't have to search through the entire array to remove the item
     // and will only search until that item is found
-    const indexToRemove = this.activeItems.indexOf(item);
+    const indexToRemove = this.value.indexOf(item);
+
     if (indexToRemove !== -1) {
-      this.activeItems.splice(indexToRemove, 1);
-      this.modelChange.emit(this.activeItems);
+      this.value.splice(indexToRemove, 1);
+      this.modelChange.emit(this.value);
     }
   }
 }

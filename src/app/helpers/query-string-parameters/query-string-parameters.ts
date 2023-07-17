@@ -34,11 +34,11 @@ export function queryStringDurationTimeArray(value: string): Duration[] {
 export function dateTimeArrayToQueryString(value: DateTime[]): string {
   return value
     .map((date: DateTime) => (date ? date.toFormat("yyyy-MM-dd") : ""))
-    .toString();
+    .join(",");
 }
 
 export function durationArrayToQueryString(value: Duration[]): string {
   return value
     .map((duration: Duration) => (duration ? duration.toFormat("hh:mm") : ""))
-    .toString();
+    .join(",");
 }

@@ -1,5 +1,15 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from "@angular/core";
-import { ActivatedRoute, Params } from "@angular/router";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+} from "@angular/core";
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  NavigationStart,
+  Params,
+  Router,
+} from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
   ShallowRegionsService,
@@ -27,8 +37,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
-import { Observable, first, forkJoin, of, take, takeUntil } from "rxjs";
-import { API_ROOT } from "@services/config/config.tokens";
+import { Observable, first, forkJoin, of, takeUntil } from "rxjs";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
@@ -36,7 +45,10 @@ import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
 import { Data } from "vega-lite/build/src/data";
-import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
+import {
+  Chart,
+  EventSummaryReportParameters,
+} from "../EventSummaryReportParameters";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
 import confidencePlotSchema from "./confidencePlot.schema.json";
@@ -57,12 +69,12 @@ const parameterDataModelKey = "parameterDataModel";
 class ViewEventReportComponent extends PageComponent implements OnInit {
   public constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private session: BawSessionService,
     private provenanceApi: AudioEventProvenanceService,
     private tagsApi: TagsService,
     private regionApi: ShallowRegionsService,
     private sitesApi: ShallowSitesService,
-    @Inject(API_ROOT) private apiRoot: string
   ) {
     super();
   }
@@ -82,6 +94,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   protected speciesCompositionCurveSchema = speciesCompositionCurveSchema;
   protected confidencePlotSchema = confidencePlotSchema;
   protected coveragePlotSchema = coveragePlotSchema;
+  protected chartTypes = Chart;
 
   public ngOnInit(): void {
     // we can use "as" here to provide stronger typing because the data property is a standard object type without any typing
@@ -115,29 +128,25 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
     this.regions = forkJoin(
       this.parameterDataModel.sites?.map((regionId: Id) =>
-        this.regionApi.show(regionId).pipe(take(1), first())
+        this.regionApi.show(regionId).pipe(first())
       )
     );
 
     this.sites = forkJoin(
       this.parameterDataModel.points?.map((siteId: Id) =>
-        this.sitesApi.show(siteId).pipe(take(1), first())
+        this.sitesApi.show(siteId).pipe(first())
       )
     );
 
     this.tags = forkJoin(
       this.parameterDataModel.events?.map((tagId: Id) =>
-        this.tagsApi.show(tagId).pipe(take(1), first())
+        this.tagsApi.show(tagId).pipe(first())
       )
     );
   }
 
   protected printPage(): void {
     window.print();
-  }
-
-  protected get eventDownloadUrl(): string {
-    return `${this.apiRoot}/projects/1135/audio_events/download.csv`;
   }
 
   protected get spectrogramUrls(): string[] {
@@ -164,25 +173,20 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return User.getUnknownUser(null);
   }
 
+  protected get eventDownloadUrl(): string {
+    return "";
+  }
+
   protected bucketsWithRain(eventGroup: IEventGroup): number {
     return eventGroup.bucketsWithInterference.length;
   }
 
-  // this text is used whenever a filter parameter has not been explicitly defined. e.g. neither a start or end date/time range is specified
-  protected static defaultFilterText(): string {
-    return "(not specified)";
-  }
-
   protected getProvenance(provenanceId: Id): Observable<AudioEventProvenance> {
-    return this.provenanceApi.show(provenanceId).pipe(
-      first()
-    );
+    return this.provenanceApi.show(provenanceId).pipe(first());
   }
 
   protected getTag(tagId: Id): Observable<Tag> {
-    return this.tagsApi.show(tagId).pipe(
-      first()
-    );
+    return this.tagsApi.show(tagId).pipe(first());
   }
 
   protected selectedSites(): Observable<Site[]> {
@@ -202,24 +206,66 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   protected coverageData(): Data {
     // recordingCoverage: report.graphs.coverageData.recordingCoverage,
     // analysisCoverage: report.graphs.coverageData.analysisCoverage
-    const recordingCoverage = this.report.graphs.coverageData.recordingCoverage.map((dateRange) =>
-      Object({
-        recordingStartDate: dateRange.startDate,
-        recordingEndDate: dateRange.endDate,
-      })
-    );
+    const recordingCoverage =
+      this.report.graphs.coverageData.recordingCoverage.map((dateRange) =>
+        Object({
+          recordingStartDate: dateRange.startDate,
+          recordingEndDate: dateRange.endDate,
+        })
+      );
 
-    const analysisCoverage = this.report.graphs.coverageData.analysisCoverage.map((dateRange) =>
-      Object({
-        analysisStartDate: dateRange.startDate,
-        analysisEndDate: dateRange.endDate
-      })
-    );
+    const analysisCoverage =
+      this.report.graphs.coverageData.analysisCoverage.map((dateRange) =>
+        Object({
+          analysisStartDate: dateRange.startDate,
+          analysisEndDate: dateRange.endDate,
+        })
+      );
 
-    return [
-      ...recordingCoverage,
-      ...analysisCoverage
-    ];
+    return [...recordingCoverage, ...analysisCoverage];
+  }
+
+  protected showChart(chart: Chart): boolean {
+    // we should display all charts if a subset hasn't been specified
+    if (
+      !this.parameterDataModel.charts
+    ) {
+      return true;
+    }
+
+    return this.parameterDataModel.charts.includes(chart);
+  }
+
+  protected toggleChart(chart: Chart, show: boolean): void {
+    if (!this.parameterDataModel.charts) {
+      this.parameterDataModel.charts = [
+        Chart.speciesCompositionCurve,
+        Chart.speciesAccumulationCurve,
+        Chart.falseColorSpectrograms,
+      ];
+    }
+
+    if (show) {
+      this.parameterDataModel.charts.push(chart);
+    } else {
+      this.parameterDataModel.charts = this.parameterDataModel.charts.filter(
+        (item: Chart) => item !== chart
+      );
+    }
+
+    if (this.parameterDataModel.charts.length === 0) {
+      this.parameterDataModel.charts = [];
+    } else if (this.parameterDataModel.charts.length === 3) {
+      this.parameterDataModel.charts = null;
+    }
+
+    this.updateQueryStringParameters();
+  }
+
+  // updates the query string parameters to the data models value
+  private updateQueryStringParameters(): void {
+    const queryParams = this.parameterDataModel.toQueryParams();
+    this.router.navigate([], { queryParams });
   }
 }
 

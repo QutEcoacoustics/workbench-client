@@ -1,40 +1,23 @@
-$border-color: lightgray;
-
 section {
   border-top-style: solid;
   border-top-width: thin;
-  border-color: $border-color;
+  border-color: var(--baw-secondary-lightest);
   page-break-inside: avoid;
+  padding: 1.25rem 0;
 }
 
 h3 {
   width: 100%;
 }
 
-// we do this in css because it's styling, not inline offset (<i>) or emphasis (<em>)
-// see https://stackoverflow.com/a/53095149 for more information
-#generatedByLabel {
-  font-style: italic;
-}
-
-.search-parameters-container {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.search-parameter {
-  margin: 0.5rem;
-  margin-right: 2rem;
-}
-
-.site-map {
-  display: block;
-  width: 100%;
-  height: 400px;
+// by default, table will exceed their containers width because each row has a margin
+// therefore, to make sure that tables fit inside their containers, we remove the margin from the rows
+.row {
+  margin: 0;
 }
 
 .col {
-  border: thin solid $border-color;
+  border: thin solid var(--baw-secondary-lightest);
 
   // if there is a log tag name, event, etc...
   // the name will be broken by words. This causes padding on the broken line to be 0, while the start is padded by 0.25rem
@@ -43,6 +26,38 @@ h3 {
     word-break: normal;
     padding-left: 0em;
   }
+}
+
+// we do this in css because it's styling, not inline offset (<i>) or emphasis (<em>)
+// see https://stackoverflow.com/a/53095149 for more information
+#generatedByLabel {
+  font-style: italic;
+}
+
+#native-species-container {
+  width: 25%;
+  max-width: fit-content;
+  margin-right: 1em;
+}
+
+#search-parameters-container {
+  display: flex;
+  flex-wrap: wrap;
+
+  & > .search-parameter {
+    margin: 0.5rem;
+    margin-right: 2rem;
+  }
+}
+
+.download-button {
+  font-size: 1.25rem;
+}
+
+.site-map {
+  display: block;
+  width: 100%;
+  height: 400px;
 }
 
 .embedded-figure {

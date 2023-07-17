@@ -19,7 +19,7 @@ import {
   ApiCreate,
   ApiDestroy,
   ApiFilter,
-  FilterCreate,
+  ApiFilterShow,
   ApiList,
   ApiShow,
   ApiUpdate,
@@ -47,7 +47,7 @@ export abstract class BawResolver<
     | ApiCreate<ServiceModel, ServiceParams>
     | ApiUpdate<ServiceModel, ServiceParams>
     | ApiDestroy<ServiceModel, ServiceParams, IdOr<ServiceModel>>
-    | FilterCreate<ServiceModel, ServiceParams>,
+    | ApiFilterShow<ServiceModel, ServiceParams>,
   ResolverName = { customResolver: string }
 > {
   public constructor(

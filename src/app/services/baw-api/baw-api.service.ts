@@ -65,6 +65,7 @@ export class BawApiService<
     update -> PATCH with id
     destroy -> DELETE with ID
     filter -> POST with filter body
+    filterShow -> POST with filter body
   */
 
   /**

@@ -1,3 +1,16 @@
+#typeahead-input {
+  width: max-content;
+  min-width: 10rem;
+  flex-grow: 1;
+  border: 0;
+}
+
+.typeahead-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+}
+
 .item-pill {
   display: flex;
   max-width: fit-content;
@@ -6,25 +19,13 @@
   font-weight: normal;
   margin: 0.25rem;
 
+  & > .remove-button {
+    margin-right: 0.25rem;
+  }
+
   // when a pill is in focus, a user can press backspace or delete to remove it
   // therefore, we need a way to give feedback to the user which item is selected
   &:focus {
     background-color: var(--baw-highlight-lighter);
   }
-}
-
-.remove-button {
-  margin-right: 0.25rem;
-}
-
-#typeahead-input {
-  width: max-content;
-  min-width: 10rem;
-  flex-grow: 1;
-}
-
-.typeahead-input-container {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0;
 }

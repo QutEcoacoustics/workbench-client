@@ -14,9 +14,10 @@
     display: none;
   }
 
-  // this is the main container that pads the page
+  // this is the main container that spans the entire page
   .container {
-    margin-left: 0px;
-    margin-right: 0px;
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
   }
 }

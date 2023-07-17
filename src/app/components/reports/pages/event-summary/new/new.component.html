@@ -2,53 +2,34 @@
 <h1 class="mb-5">New Event Summary Report</h1>
 
 <form #form="ngForm">
-  <baw-date-time-filter (modelChange)="updateViewModelFromDateTimeModel($event)"></baw-date-time-filter>
+  <baw-date-time-filter
+    (modelChange)="updateViewModelFromDateTimeModel($event)"
+  ></baw-date-time-filter>
 
-  <!-- Only projects should show a region filter -->
-  <ng-container *ngIf="!region; else immutableRegionTemplate">
-    <baw-typeahead-input
-      label="Site(s)"
-      [inputPlaceholder]="'All'"
-      [searchCallback]="regionsSearchCallback"
-      [resultTemplate]="nameTypeaheadTemplate"
-      [multipleInputs]="true"
-      (modelChange)="model.sites = getIdsFromAbstractModelArray($event)"
-    ></baw-typeahead-input>
-  </ng-container>
+  <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
+  <baw-typeahead-input
+    label="Site(s)"
+    [inputPlaceholder]="region ? region.name : 'All'"
+    [searchCallback]="regionsSearchCallback"
+    [resultTemplate]="nameTypeaheadTemplate"
+    [inputDisabled]="!!region"
+    (modelChange)="model.sites = getIdsFromAbstractModelArray($event)"
+  ></baw-typeahead-input>
 
-  <ng-template #immutableRegionTemplate>
-    <label>Site(s)</label>
-    <baw-typeahead-input
-      [inputDisabled]="true"
-      [inputPlaceholder]="region.name"
-    ></baw-typeahead-input>
-  </ng-template>
-
-  <ng-container *ngIf="!site; else immutableSiteTemplate">
-    <baw-typeahead-input
-      label="Point(s)"
-      [inputPlaceholder]="'All'"
-      [searchCallback]="siteSearchCallback"
-      [resultTemplate]="nameTypeaheadTemplate"
-      [multipleInputs]="true"
-      (modelChange)="model.points = getIdsFromAbstractModelArray($event)"
-    ></baw-typeahead-input>
-  </ng-container>
-
-  <ng-template #immutableSiteTemplate>
-    <label>Point(s)</label>
-    <baw-typeahead-input
-      [inputDisabled]="true"
-      [inputPlaceholder]="site.name"
-    ></baw-typeahead-input>
-  </ng-template>
+  <baw-typeahead-input
+    label="Point(s)"
+    [inputPlaceholder]="site ? site.name : 'All'"
+    [searchCallback]="siteSearchCallback"
+    [resultTemplate]="nameTypeaheadTemplate"
+    [inputDisabled]="!!site"
+    (modelChange)="model.points = getIdsFromAbstractModelArray($event)"
+  ></baw-typeahead-input>
 
   <baw-typeahead-input
     label="Recogniser(s)"
     [inputPlaceholder]="'All'"
     [searchCallback]="provenanceSearchCallback"
     [resultTemplate]="nameTypeaheadTemplate"
-    [multipleInputs]="true"
     (modelChange)="model.provenances = getIdsFromAbstractModelArray($event)"
   ></baw-typeahead-input>
 
@@ -56,26 +37,25 @@
     Recogniser Score Cut-Off
   </label>
   <input
+    #provenanceCutOffInput="ngModel"
     [(ngModel)]="model.score"
-    [class.is-invalid]="isInvalidProvenanceCutOff(model.score)"
     type="number"
     name="provenancesCutOffInput"
     class="form-control"
     placeholder="0"
-    step="0.1"
+    step="0.01"
     max="1"
     min="0"
-    required
   />
+
   <label
-    *ngIf="isInvalidProvenanceCutOff(model.score)"
+    *ngIf="provenanceCutOffInput.invalid && provenanceCutOffInput.dirty"
     for="provenancesCutOffInput"
     class="text-danger"
   >
     The recogniser score cut-off are outside the permitted boundary. Ensure that
     the value is between 0 and 1.
   </label>
-
   <div>
     <label for="bucketSizeInput">Bucket Size</label>
     <select
@@ -84,12 +64,12 @@
       [(ngModel)]="model.bucketSize"
       required
     >
-      <option [value]="bucketSizes.day">{{ bucketSizes.day | titlecase }}</option>
-      <option [value]="bucketSizes.month">{{ bucketSizes.month | titlecase }}</option>
-      <option [value]="bucketSizes.fortnight">{{ bucketSizes.fortnight | titlecase }}</option>
-      <option [value]="bucketSizes.month">{{ bucketSizes.month | titlecase }}</option>
-      <option [value]="bucketSizes.season">{{ bucketSizes.season | titlecase }}</option>
-      <option [value]="bucketSizes.year">{{ bucketSizes.year | titlecase }}</option>
+      <option
+        *ngFor="let bucketSize of availableBucketSizes"
+        [value]="bucketSize"
+      >
+        {{ bucketSize | titlecase }}
+      </option>
     </select>
   </div>
 
@@ -98,7 +78,6 @@
     [inputPlaceholder]="'All'"
     [searchCallback]="eventsOfInterestSearchCallback"
     [resultTemplate]="tagsTypeaheadTemplate"
-    [multipleInputs]="true"
     (modelChange)="model.events = getIdsFromAbstractModelArray($event)"
   ></baw-typeahead-input>
 
@@ -107,7 +86,7 @@
     class="btn btn-primary my-3 generateReportButton"
     [strongRoute]="viewReportRoute()"
     [queryParams]="model.toQueryParams()"
-    [class.disabled]="!form.valid"
+    [class.disabled]="form.invalid"
   >
     Generate
   </a>

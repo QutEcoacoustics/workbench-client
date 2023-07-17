@@ -99,7 +99,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   ): Observable<Region[]> =>
     this.regionsApi.filter({
       filter: filterAnd(
-        propertyFilter<Region>(
+        propertyFilter<Region, "name">(
           "name",
           regionName,
           this.defaultFilter() as InnerFilter<Region>
@@ -114,7 +114,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   ): Observable<Site[]> =>
     this.sitesApi.filter({
       filter: filterAnd(
-        propertyFilter<Site>(
+        propertyFilter<Site, "name">(
           "name",
           siteName,
           this.defaultFilter() as InnerFilter<Site>
@@ -129,7 +129,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   ): Observable<AudioEventProvenance[]> =>
     this.provenanceApi.filter({
       filter: filterAnd(
-        propertyFilter<AudioEventProvenance>(
+        propertyFilter<AudioEventProvenance, "name">(
           "name",
           provenanceName,
           this.defaultFilter() as InnerFilter<AudioEventProvenance>
@@ -144,7 +144,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   ): Observable<Tag[]> =>
     this.tagsApi.filter({
       filter: filterAnd(
-        propertyFilter<Tag>("text", text),
+        propertyFilter<Tag, "text">("text", text),
         excludePropertyValues<Tag>("text", activeTags)
       ),
     });
@@ -176,31 +176,33 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return reportMenuItems.view.project.route;
   }
 
-  protected isInvalidProvenanceCutOff(value: any): boolean {
-    // if the user inputs a string (and not a number) into the input, the value will be null
-    if (value === null) {
-      return true;
-    }
-
-    return value < 0 || value > 1;
-  }
-
-  protected getIdsFromAbstractModelArray(item: any[]): number[] {
-    return item.map((am) => am.id);
+  protected getIdsFromAbstractModelArray(items: any[]): number[] {
+    return items.map((item) => item.id);
   }
 
   protected updateViewModelFromDateTimeModel(
     dateTimeModel: DateTimeFilterModel
   ): void {
-    this.model.daylightSavings = !dateTimeModel.ignoreDaylightSavings;
-    this.model.date = [
-      dateTimeModel.dateStartedAfter ? DateTime.fromObject(dateTimeModel.dateStartedAfter) : undefined,
-      dateTimeModel.dateFinishedBefore ? DateTime.fromObject(dateTimeModel.dateFinishedBefore) : undefined,
-    ];
-    this.model.time = [
-      dateTimeModel.timeStartedAfter,
-      dateTimeModel.timeFinishedBefore,
-    ];
+    if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
+      this.model.date = [
+        dateTimeModel.dateStartedAfter ? DateTime.fromObject(dateTimeModel.dateStartedAfter) : null,
+        dateTimeModel.dateFinishedBefore ? DateTime.fromObject(dateTimeModel.dateFinishedBefore) : null,
+      ];
+    }
+
+    if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
+      this.model.time = [
+        dateTimeModel.timeStartedAfter,
+        dateTimeModel.timeFinishedBefore,
+      ];
+
+      // because the daylight savings filter is a modifier on the time filter we do not need to update it unless the time filter has a value
+      this.model.daylightSavings = !dateTimeModel.ignoreDaylightSavings;
+    }
+  }
+
+  protected get availableBucketSizes() {
+    return Object.keys(this.bucketSizes);
   }
 
   // we need a default filter to scope to projects, regions, sites
