@@ -6,6 +6,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { Data } from "@angular/router";
+import { Map } from "immutable";
 import embed, { EmbedOptions, VisualizationSpec } from "vega-embed";
 
 // this component exists for us to render vega-lite charts in an *ngFor loop
@@ -36,19 +37,21 @@ export class ChartComponent implements AfterViewInit {
   @Input() public data: Data;
   @Input() public options: EmbedOptions = { actions: false };
 
+  private fullSpec: Immutable.Collection<VisualizationSpec, VisualizationSpec>;
+
   public ngAfterViewInit() {
     // since vega lite graphs are objects, we need to create the new component spec by value, rather than by reference
     // updating by reference will cause all other graphs to update as well
-    const fullSpec: VisualizationSpec = {
+    this.fullSpec = Map({
       ...this.spec,
       data: {
         values: this.data,
       },
-    };
+    });
 
     embed(
       this.element.nativeElement,
-      fullSpec,
+      this.fullSpec.toObject(),
       this.options
     );
   }

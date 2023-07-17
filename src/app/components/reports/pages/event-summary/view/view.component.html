@@ -144,7 +144,7 @@
 
     <baw-site-map
       class="site-map"
-      [sites]="selectedSites()"
+      [sites]="selectedSites() | async"
     ></baw-site-map>
   </div>
 

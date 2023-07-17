@@ -8,6 +8,7 @@
 
   <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
   <baw-typeahead-input
+    *ngIf="!site || site?.isPoint"
     label="Site(s)"
     [inputPlaceholder]="region ? region.name : 'All'"
     [searchCallback]="regionsSearchCallback"
@@ -17,7 +18,7 @@
   ></baw-typeahead-input>
 
   <baw-typeahead-input
-    label="Point(s)"
+    [label]="site ? (site?.isPoint ? 'Point(s)' : 'Site(s)') : 'Point(s)'"
     [inputPlaceholder]="site ? site.name : 'All'"
     [searchCallback]="siteSearchCallback"
     [resultTemplate]="nameTypeaheadTemplate"

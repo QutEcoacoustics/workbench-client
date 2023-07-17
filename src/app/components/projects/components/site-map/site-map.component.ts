@@ -1,9 +1,4 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-} from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -22,10 +17,7 @@ import { switchMap, takeUntil } from "rxjs/operators";
   selector: "baw-site-map",
   template: '<baw-map [markers]="markers"></baw-map>',
 })
-export class SiteMapComponent
-  extends withUnsubscribe()
-  implements OnInit, OnChanges
-{
+export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   // TODO Implement system to change colour of selected sites
   @Input() public selected: List<Site>;
   @Input() public project: Project;
@@ -37,8 +29,12 @@ export class SiteMapComponent
     super();
   }
 
-  public ngOnInit(): void {
+  // use are using ngOnChanges instead of ngOnInit for reactivity
+  // this allows us to dynamically update the projects, regions, sites, etc... without destroying the entire component
+  public ngOnChanges(): void {
     const filters: Filters<ISite> = { paging: { page: 1 } };
+
+    this.markers = List([]);
 
     if (this.project || this.region) {
       this.getFilter(filters, this.project, this.region)
@@ -51,9 +47,6 @@ export class SiteMapComponent
           error: () => this.pushMarkers([]),
         });
     }
-  }
-
-  public ngOnChanges(): void {
     this.pushMarkers(this.sites ?? []);
   }
 

@@ -20,7 +20,7 @@ import {
 } from "@components/reports/reports.menu";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { EventSummaryReport, IEventGroup } from "@models/EventSummaryReport";
+import { EventSummaryReport } from "@models/EventSummaryReport";
 import { User } from "@models/User";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -35,6 +35,7 @@ import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
 import { Data } from "vega-lite/build/src/data";
+import { Location } from "@angular/common";
 import {
   Chart,
   EventSummaryReportParameters,
@@ -64,7 +65,8 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     private provenanceApi: AudioEventProvenanceService,
     private tagsApi: TagsService,
     private regionApi: ShallowRegionsService,
-    private sitesApi: ShallowSitesService
+    private sitesApi: ShallowSitesService,
+    private location: Location,
   ) {
     super();
   }
@@ -146,6 +148,12 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     window.print();
   }
 
+  // on certain browsers (Firefox), window.print and Ctrl + P work differently
+  // therefore, we disable the print button of Firefox in the name of uniformity as Ctrl + P has the same layout as Chromium based browsers
+  protected hidePrintButton(): boolean {
+    return true;
+  }
+
   protected unixEpochToDuration(unixEpoch: number): Duration {
     return Duration.fromMillis(unixEpoch * 1000);
   }
@@ -158,7 +166,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return this.tagsApi.show(tagId).pipe(first());
   }
 
-  protected selectedSites(): Site[] {
+  protected selectedSites(): Observable<Site[]> {
     // the most common case is when the user has selected sites using the site selector
     if (this.sites) {
       return this.sites;
@@ -166,12 +174,12 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
     // if the user didn't select any sites, the report will default to all sites
     if (this.site) {
-      return [this.site];
+      return of([this.site]);
     } else if (this.region) {
-      return this.region.sites;
+      return of(this.region.sites);
     }
 
-    return this.project.sites;
+    return of(this.project.sites);
   }
 
   protected coverageData(): Data {
@@ -234,7 +242,8 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   /** updates the query string parameters to the data models value */
   private updateQueryStringParameters(): void {
     const queryParams = this.parameterDataModel.toQueryParams();
-    this.router.navigate([], { queryParams });
+    const urlTree = this.router.createUrlTree([], { queryParams });
+    this.location.replaceState(urlTree.toString())
   }
 }
 

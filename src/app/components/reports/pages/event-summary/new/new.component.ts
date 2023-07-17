@@ -37,6 +37,7 @@ import {
 } from "@helpers/filters/filters";
 import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
 import { DateTime } from "luxon";
+import { Id } from "@interfaces/apiInterfaces";
 import {
   BucketSize,
   EventSummaryReportParameters,
@@ -59,6 +60,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     super();
+    this.model = new EventSummaryReportParameters();
   }
 
   public project: Project;
@@ -66,8 +68,24 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   public site?: Site;
   public model = new EventSummaryReportParameters();
 
-  // TODO: remove before review
-  public bucketSizes = BucketSize;
+  protected get componentTitle(): string {
+    if (this.site) {
+      return this.site.isPoint
+        ? `Point: ${this.site.name}`
+        : `Site: ${this.site.name}`;
+    } else if (this.region) {
+      return `Site: ${this.region.name}`;
+    }
+
+    // it can be assumed that all reports will be generated from at least at the project level
+    // therefore, if no sites or regions are specified, we can assume that the report is being generated at the project level
+    return `Project: ${this.project.name}`;
+  }
+
+
+  protected get availableBucketSizes() {
+    return Object.keys(BucketSize);
+  }
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -76,12 +94,10 @@ class NewEventReportComponent extends PageComponent implements OnInit {
       return;
     }
 
-    this.model = new EventSummaryReportParameters();
+    // each report is mounted/scoped from at least the project level
+    this.project = models[projectKey] as Project;
 
-    if (models[projectKey]) {
-      this.project = models[projectKey] as Project;
-    }
-
+    // generating a report from the region, or site level will immutably scope the report to the model(s)
     if (models[regionKey]) {
       this.region = models[regionKey] as Region;
       this.model.sites = [this.region.id];
@@ -149,20 +165,6 @@ class NewEventReportComponent extends PageComponent implements OnInit {
       ),
     });
 
-  protected get componentTitle(): string {
-    if (this.site) {
-      return this.site.isPoint
-        ? `Point: ${this.site.name}`
-        : `Site: ${this.site.name}`;
-    } else if (this.region) {
-      return `Site: ${this.region.name}`;
-    }
-
-    // it can be assumed that all reports will be generated from at least at the project level
-    // therefore, if no sites or regions are specified, we can assume that the report is being generated at the project level
-    return `Project: ${this.project.name}`;
-  }
-
   // since the report is mounted at multiple points in the client (projects, regions, sites), we need to derive the lowest route to use
   protected viewReportRoute(): StrongRoute {
     if (this.site) {
@@ -176,16 +178,17 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return reportMenuItems.view.project.route;
   }
 
-  protected getIdsFromAbstractModelArray(items: any[]): number[] {
+  protected getIdsFromAbstractModelArray(items: any[]): Id[] {
     // by default, typeahead inputs return an empty array if no items are selected
     // as we want to omit all conditions with no values in the qsp's, we should return null instead
     if (items.length === 0) {
       return null;
     }
 
-    return items.map((item) => item.id);
+    return items.map((item): Id => item.id);
   }
 
+  // because the DateTimeFilterModel is coming from a shared component, we need to serialize for use in the data model
   protected updateViewModelFromDateTimeModel(
     dateTimeModel: DateTimeFilterModel
   ): void {
@@ -205,10 +208,6 @@ class NewEventReportComponent extends PageComponent implements OnInit {
       // because the daylight savings filter is a modifier on the time filter we do not need to update it unless the time filter has a value
       this.model.daylightSavings = !dateTimeModel.ignoreDaylightSavings;
     }
-  }
-
-  protected get availableBucketSizes() {
-    return Object.keys(this.bucketSizes);
   }
 
   // we need a default filter to scope to projects, regions, sites
