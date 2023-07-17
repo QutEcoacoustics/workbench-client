@@ -1,15 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-} from "@angular/core";
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  NavigationStart,
-  Params,
-  Router,
-} from "@angular/router";
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
   ShallowRegionsService,
@@ -74,7 +64,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     private provenanceApi: AudioEventProvenanceService,
     private tagsApi: TagsService,
     private regionApi: ShallowRegionsService,
-    private sitesApi: ShallowSitesService,
+    private sitesApi: ShallowSitesService
   ) {
     super();
   }
@@ -113,18 +103,9 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     }
 
     this.project = models[projectKey] as Project;
-
-    if (models[regionKey]) {
-      this.region = models[regionKey] as Region;
-    }
-
-    if (models[siteKey]) {
-      this.site = models[siteKey] as Site;
-    }
-
-    if (models[reportKey]) {
-      this.report = models[reportKey] as EventSummaryReport;
-    }
+    this.region = models[regionKey] as Region;
+    this.site = models[siteKey] as Site;
+    this.report = models[reportKey] as EventSummaryReport;
 
     this.regions = forkJoin(
       this.parameterDataModel.sites?.map((regionId: Id) =>
@@ -145,40 +126,28 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     );
   }
 
-  protected printPage(): void {
-    window.print();
+  protected get currentUser(): User {
+    if (this.session.isLoggedIn) {
+      return this.session.loggedInUser;
+    }
+
+    return User.getUnknownUser(undefined);
   }
 
   protected get spectrogramUrls(): string[] {
     return [];
   }
 
-  protected audioCoverageOverSpan(): Duration {
-    return Duration.fromDurationLike(
-      this.report.statistics?.audioCoverageOverSpan * 1000
-    );
-  }
-
-  protected totalSearchSpan(): Duration {
-    return Duration.fromDurationLike(
-      this.report.statistics?.totalSearchSpan * 1000
-    );
-  }
-
-  protected get currentUser(): User {
-    if (this.session.isLoggedIn) {
-      return this.session.loggedInUser;
-    }
-
-    return User.getUnknownUser(null);
-  }
-
   protected get eventDownloadUrl(): string {
     return "";
   }
 
-  protected bucketsWithRain(eventGroup: IEventGroup): number {
-    return eventGroup.bucketsWithInterference.length;
+  protected printPage(): void {
+    window.print();
+  }
+
+  protected unixEpochToDuration(unixEpoch: number): Duration {
+    return Duration.fromMillis(unixEpoch * 1000);
   }
 
   protected getProvenance(provenanceId: Id): Observable<AudioEventProvenance> {
@@ -189,18 +158,20 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return this.tagsApi.show(tagId).pipe(first());
   }
 
-  protected selectedSites(): Observable<Site[]> {
-    if (!this.sites) {
-      if (this.site) {
-        return of([this.site]);
-      } else if (this.region) {
-        return of(this.region.sites);
-      } else if (this.project) {
-        return of(this.project.sites);
-      }
-    } else {
+  protected selectedSites(): Site[] {
+    // the most common case is when the user has selected sites using the site selector
+    if (this.sites) {
       return this.sites;
     }
+
+    // if the user didn't select any sites, the report will default to all sites
+    if (this.site) {
+      return [this.site];
+    } else if (this.region) {
+      return this.region.sites;
+    }
+
+    return this.project.sites;
   }
 
   protected coverageData(): Data {
@@ -227,9 +198,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
   protected showChart(chart: Chart): boolean {
     // we should display all charts if a subset hasn't been specified
-    if (
-      !this.parameterDataModel.charts
-    ) {
+    if (!this.parameterDataModel.charts) {
       return true;
     }
 
@@ -262,7 +231,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     this.updateQueryStringParameters();
   }
 
-  // updates the query string parameters to the data models value
+  /** updates the query string parameters to the data models value */
   private updateQueryStringParameters(): void {
     const queryParams = this.parameterDataModel.toQueryParams();
     this.router.navigate([], { queryParams });

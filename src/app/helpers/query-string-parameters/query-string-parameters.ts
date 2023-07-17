@@ -42,3 +42,7 @@ export function durationArrayToQueryString(value: Duration[]): string {
     .map((duration: Duration) => (duration ? duration.toFormat("hh:mm") : ""))
     .join(",");
 }
+
+export function arrayToQueryString(value: unknown[]): string {
+  return value.join(",");
+}

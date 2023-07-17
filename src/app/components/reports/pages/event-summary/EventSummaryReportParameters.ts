@@ -4,6 +4,7 @@ import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
+  arrayToQueryString,
   dateTimeArrayToQueryString,
   durationArrayToQueryString,
   queryStringArray,
@@ -159,7 +160,7 @@ export class EventSummaryReportParameters {
           } else if (value.some((v) => v instanceof Duration)) {
             paramsObject[key] = durationArrayToQueryString(value);
           } else {
-            paramsObject[key] = value.toString();
+            paramsObject[key] = arrayToQueryString(value);
           }
         } else {
           paramsObject[key] = value;

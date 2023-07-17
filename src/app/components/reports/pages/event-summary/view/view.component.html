@@ -144,16 +144,16 @@
 
     <baw-site-map
       class="site-map"
-      [sites]="selectedSites() | async"
+      [sites]="selectedSites()"
     ></baw-site-map>
   </div>
 
   <baw-chart [spec]="coveragePlotSchema" [data]="coverageData()"></baw-chart>
 
   <p>
-    For the requested <b>{{ totalSearchSpan() | toRelative }}</b
+    For the requested <b>{{ unixEpochToDuration(this.report.statistics?.totalSearchSpan) | toRelative }}</b
     >, we've analysed <b>70%</b> of the available
-    <b>{{ audioCoverageOverSpan() | toRelative }}</b> of audio recording time.
+    <b>{{ unixEpochToDuration(this.report.statistics?.audioCoverageOverSpan) | toRelative }}</b> of audio recording time.
   </p>
 </section>
 
@@ -200,7 +200,7 @@
         <td class="col">
           {{ item.bucketsWithDetections | percent }}
         </td>
-        <td class="col">{{ bucketsWithRain(item) | percent }}</td>
+        <td class="col">{{ item.bucketsWithInterference.length }}</td>
         <td class="col">
           <baw-chart
             class="embedded-figure"

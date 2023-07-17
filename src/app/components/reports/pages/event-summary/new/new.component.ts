@@ -177,6 +177,12 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   }
 
   protected getIdsFromAbstractModelArray(items: any[]): number[] {
+    // by default, typeahead inputs return an empty array if no items are selected
+    // as we want to omit all conditions with no values in the qsp's, we should return null instead
+    if (items.length === 0) {
+      return null;
+    }
+
     return items.map((item) => item.id);
   }
 
