@@ -1,8 +1,22 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "datasets": {},
   "data": {
-    "values": []
+    "name": "recordingCoverage"
   },
+  "transform": [
+    {
+      "lookup": "startDate",
+      "from": {
+        "data": {
+          "name": "analysisCoverage"
+        },
+        "key": "startDate",
+        "fields": ["startDate", "endDate"]
+      },
+      "as": ["analysis.startDate", "analysis.endDate"]
+    }
+  ],
   "resolve": {
     "scale": {
       "x": "shared"
@@ -21,7 +35,7 @@
       "mark": "bar",
       "encoding": {
         "x": {
-          "field": "recordingStartDate",
+          "field": "startDate",
           "type": "nominal",
           "axis": {
             "title": null,
@@ -31,7 +45,7 @@
           }
         },
         "x2": {
-          "field": "recordingEndDate"
+          "field": "endDate"
         }
       }
     },
@@ -47,7 +61,7 @@
       "mark": "bar",
       "encoding": {
         "x": {
-          "field": "analysisStartDate",
+          "field": "analysis.startDate",
           "type": "nominal",
           "axis": {
             "labelAngle": 45,
@@ -55,7 +69,7 @@
           }
         },
         "x2": {
-          "field": "analysisEndDate"
+          "field": "analysis.endDate"
         }
       }
     }

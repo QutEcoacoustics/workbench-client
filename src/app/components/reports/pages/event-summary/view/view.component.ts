@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Params, Router } from "@angular/router";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
   ShallowRegionsService,
@@ -26,16 +26,20 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import { eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
-import { Observable, first, forkJoin, of, takeUntil } from "rxjs";
+import {
+  EventSummaryReportService,
+  eventSummaryResolvers,
+} from "@baw-api/reports/event-report/event-summary-report.service";
+import { Observable, first, forkJoin, of } from "rxjs";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
-import { Data } from "vega-lite/build/src/data";
 import { Location } from "@angular/common";
+import { Datasets } from "vega-lite/build/src/spec/toplevel";
+import { DeviceDetectorService } from "ngx-device-detector";
 import {
   Chart,
   EventSummaryReportParameters,
@@ -49,16 +53,15 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 const reportKey = "report";
-const parameterDataModelKey = "parameterDataModel";
 
 @Component({
   selector: "baw-summary-report",
   templateUrl: "./view.component.html",
   styleUrls: ["./view.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
   public constructor(
+    protected eventSummaryReportApi: EventSummaryReportService,
     private route: ActivatedRoute,
     private router: Router,
     private session: BawSessionService,
@@ -67,6 +70,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     private regionApi: ShallowRegionsService,
     private sitesApi: ShallowSitesService,
     private location: Location,
+    private userAgent: DeviceDetectorService
   ) {
     super();
   }
@@ -94,12 +98,6 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
       this.route.snapshot.data as IPageInfo
     );
 
-    this.route.queryParams
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((parameters: Params) => {
-        this.parameterDataModel = new EventSummaryReportParameters(parameters);
-      });
-
     if (!hasResolvedSuccessfully(models)) {
       return;
     }
@@ -107,7 +105,10 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     this.project = models[projectKey] as Project;
     this.region = models[regionKey] as Region;
     this.site = models[siteKey] as Site;
-    this.report = models[reportKey] as EventSummaryReport;
+    this.report = models[reportKey][0] as EventSummaryReport;
+    this.parameterDataModel = models[
+      reportKey
+    ][1] as EventSummaryReportParameters;
 
     this.regions = forkJoin(
       this.parameterDataModel.sites?.map((regionId: Id) =>
@@ -140,18 +141,17 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return [];
   }
 
-  protected get eventDownloadUrl(): string {
-    return "";
-  }
-
   protected printPage(): void {
     window.print();
   }
 
   // on certain browsers (Firefox), window.print and Ctrl + P work differently
-  // therefore, we disable the print button of Firefox in the name of uniformity as Ctrl + P has the same layout as Chromium based browsers
-  protected hidePrintButton(): boolean {
-    return true;
+  // we disable the print button in Firefox and ask the user to print with Ctrl + P as it will print the same as Chromium based browsers
+  protected printButtonReplacement(): boolean {
+    // unfortunately, this is not an enum of a strongly typed string
+    //! Test this when upgrading ngx-device-detector
+    // return this.userAgent.browser === "Firefox";
+    return false;
   }
 
   protected unixEpochToDuration(unixEpoch: number): Duration {
@@ -166,7 +166,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return this.tagsApi.show(tagId).pipe(first());
   }
 
-  protected selectedSites(): Observable<Site[]> {
+  protected filteredSites(): Observable<Site[]> {
     // the most common case is when the user has selected sites using the site selector
     if (this.sites) {
       return this.sites;
@@ -180,28 +180,6 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     }
 
     return of(this.project.sites);
-  }
-
-  protected coverageData(): Data {
-    // recordingCoverage: report.graphs.coverageData.recordingCoverage,
-    // analysisCoverage: report.graphs.coverageData.analysisCoverage
-    const recordingCoverage =
-      this.report.graphs.coverageData.recordingCoverage.map((dateRange) =>
-        Object({
-          recordingStartDate: dateRange.startDate,
-          recordingEndDate: dateRange.endDate,
-        })
-      );
-
-    const analysisCoverage =
-      this.report.graphs.coverageData.analysisCoverage.map((dateRange) =>
-        Object({
-          analysisStartDate: dateRange.startDate,
-          analysisEndDate: dateRange.endDate,
-        })
-      );
-
-    return [...recordingCoverage, ...analysisCoverage];
   }
 
   protected showChart(chart: Chart): boolean {
@@ -239,11 +217,18 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     this.updateQueryStringParameters();
   }
 
+  protected coverageDataset(): Datasets {
+    return {
+      recordingCoverage: this.report.graphs.coverageData.recordingCoverage,
+      analysisCoverage: this.report.graphs.coverageData.analysisCoverage,
+    };
+  }
+
   /** updates the query string parameters to the data models value */
   private updateQueryStringParameters(): void {
     const queryParams = this.parameterDataModel.toQueryParams();
     const urlTree = this.router.createUrlTree([], { queryParams });
-    this.location.replaceState(urlTree.toString())
+    this.location.replaceState(urlTree.toString());
   }
 }
 

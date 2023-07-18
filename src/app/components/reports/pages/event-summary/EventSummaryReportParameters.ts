@@ -1,3 +1,4 @@
+import { Injector } from "@angular/core";
 import { Params } from "@angular/router";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
@@ -15,6 +16,7 @@ import {
   queryStringToNumberArray,
 } from "@helpers/query-string-parameters/query-string-parameters";
 import { Id } from "@interfaces/apiInterfaces";
+import { AbstractModelWithoutId } from "@models/AbstractModel";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { DateTime, Duration } from "luxon";
 
@@ -47,8 +49,29 @@ const conversionTable = {
   time: (value: string) => queryStringDurationTimeArray(value),
 };
 
-export class EventSummaryReportParameters {
-  public constructor(queryStringParameters: Params = {}) {
+export interface IEventSummaryReportParameters {
+  sites: Id[];
+  points: Id[];
+  provenances: Id[];
+  events: Id[];
+  score: number;
+  bucketSize: BucketSize;
+  daylightSavings: boolean;
+  time: Duration[];
+  date: DateTime[];
+  charts: Chart[];
+}
+
+export class EventSummaryReportParameters
+  extends AbstractModelWithoutId
+  implements IEventSummaryReportParameters
+{
+  public constructor(
+    queryStringParameters: Params = {},
+    data?: IEventSummaryReportParameters,
+    injector?: Injector
+  ) {
+    super(data, injector);
     // since query string parameters are losely typed using a string from the user space
     // we have to use this hacky implementation of manual key-value checking and assignment
     Object.entries(queryStringParameters).forEach(([key, value]) => {
@@ -168,5 +191,9 @@ export class EventSummaryReportParameters {
       });
 
     return paramsObject;
+  }
+
+  public get viewUrl(): string {
+    throw new Error("Method not implemented.");
   }
 }

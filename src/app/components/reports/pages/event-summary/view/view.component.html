@@ -1,7 +1,14 @@
 <h2>
   Acoustic Event Summary Report
 
-  <a id="print-button" class="ms-2" (click)="printPage()">
+  <a
+    id="print-button"
+    class="ms-2"
+    (click)="!printButtonReplacement() && printPage()"
+    [class.disabled]="printButtonReplacement()"
+    [class.text-secondary]="printButtonReplacement()"
+    [ngbTooltip]="printButtonReplacement() ? 'Please use Ctrl + P to print this report' : 'Print this report'"
+  >
     <fa-icon [icon]="['fas', 'print']"></fa-icon>
   </a>
 </h2>
@@ -144,11 +151,11 @@
 
     <baw-site-map
       class="site-map"
-      [sites]="selectedSites() | async"
+      [sites]="filteredSites() | async"
     ></baw-site-map>
   </div>
 
-  <baw-chart [spec]="coveragePlotSchema" [data]="coverageData()"></baw-chart>
+  <baw-chart [spec]="coveragePlotSchema" [datasets]="coverageDataset()"></baw-chart>
 
   <p>
     For the requested <b>{{ unixEpochToDuration(this.report.statistics?.totalSearchSpan) | toRelative }}</b
@@ -161,7 +168,7 @@
   <h3>
     Events Table
 
-    <a [href]="eventDownloadUrl">
+    <a [href]="eventSummaryReportApi.eventDownloadUrl()">
       <fa-icon
         class="download-button"
         [icon]="['fas', 'file-arrow-down']"
@@ -231,7 +238,7 @@
     <h4>
       Species Accumulation Curve
 
-      <a [href]="eventDownloadUrl">
+      <a [href]="eventSummaryReportApi.eventDownloadUrl()">
         <fa-icon
           class="hide-in-print download-button"
           [icon]="['fas', 'file-arrow-down']"
@@ -269,7 +276,7 @@
     <h4>
       Species Composition
 
-      <a [href]="eventDownloadUrl">
+      <a [href]="eventSummaryReportApi.eventDownloadUrl()">
         <fa-icon
           class="hide-in-print download-button"
           [icon]="['fas', 'file-arrow-down']"
@@ -307,7 +314,7 @@
     <h4>
       False colour spectrogram(s)
 
-      <a [href]="eventDownloadUrl">
+      <a [href]="eventSummaryReportApi.eventDownloadUrl()">
         <fa-icon
           class="hide-in-print"
           [icon]="['fas', 'file-arrow-down']"

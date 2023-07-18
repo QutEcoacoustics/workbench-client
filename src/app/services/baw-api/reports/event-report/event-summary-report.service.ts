@@ -1,7 +1,12 @@
 import { Injectable, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
-import { IdParamOptional, id, option, ApiFilterShow } from "@baw-api/api-common";
-import { BawApiService, Filters } from "@baw-api/baw-api.service";
+import {
+  IdParamOptional,
+  id,
+  option,
+  ApiFilterShow,
+} from "@baw-api/api-common";
+import { BawApiService, Filters, InnerFilter } from "@baw-api/baw-api.service";
 import {
   BawProvider,
   BawResolver,
@@ -10,7 +15,7 @@ import {
 import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/EventSummaryReportParameters";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { EventSummaryReport, IEventGroup } from "@models/EventSummaryReport";
-import { Observable, of } from "rxjs";
+import { Observable, Subscriber } from "rxjs";
 
 // at the current moment, the api does not support fetching saved reports from id. However, this is planned for the future
 // to backfill in preparation, this service has been backfilled
@@ -37,21 +42,19 @@ export class EventSummaryReportService
     // this information is returned by the api, and can therefore be removed once a fully functional api is available
     const filterConditions: object[] = filters.filter.and as object[];
 
-    const sideIdFilter = filterConditions?.find(
-      (filterCondition) => "site.id" in filterCondition
-    );
+    const sideIdFilter: InnerFilter<EventSummaryReport> =
+      filterConditions?.find((filterCondition) => "site.id" in filterCondition);
 
-    const provenanceIdFilter = filterConditions?.find(
-      (filterCondition) => "provenance.id" in filterCondition
-    );
+    const provenanceIdFilter: InnerFilter<EventSummaryReport> =
+      filterConditions?.find(
+        (filterCondition) => "provenance.id" in filterCondition
+      );
 
-    const tagIdFilter = filterConditions?.find(
+    const tagIdFilter: InnerFilter<EventSummaryReport> = filterConditions?.find(
       (filterCondition) => "tag.id" in filterCondition
     );
 
-    const siteIds: number[] = sideIdFilter
-      ? sideIdFilter["site.id"].in
-      : [];
+    const siteIds: number[] = sideIdFilter ? sideIdFilter["site.id"].in : [];
     const provenanceIds: number[] = provenanceIdFilter
       ? provenanceIdFilter["provenance.id"].in
       : [];
@@ -151,10 +154,10 @@ export class EventSummaryReportService
           analysisCoverage: [
             { startDate: "2020-10-10", endDate: "2020-10-11" },
             { startDate: "2020-10-12", endDate: "2020-10-15" },
-            { startDate: "2020-10-19", endDate: "2020-10-09" },
+            { startDate: "2020-10-19", endDate: "2020-10-20" },
             { startDate: "2020-10-26", endDate: "2020-11-01" },
             { startDate: "2020-11-10", endDate: "2020-12-01" },
-            { startDate: "2020-12-01", endDate: "2020-12-28" },
+            { startDate: "2020-12-01", endDate: "2020-12-18" },
             { startDate: "2021-01-01", endDate: "2021-04-11" },
             { startDate: "2021-08-10", endDate: "2021-10-11" },
           ],
@@ -171,19 +174,27 @@ export class EventSummaryReportService
       },
     });
 
-    return of(fakeReport);
+    return new Observable((observer: Subscriber<EventSummaryReport>) => {
+      observer.next(fakeReport);
+      observer.complete();
+    });
     // return this.api.filterShow(EventSummaryReport, endpoint(emptyParam, filterParam), filters);
+  }
+
+  public eventDownloadUrl(): string {
+    return "https://www.google.com";
   }
 }
 
-// when fetching the EventSummaryReports from route data, query string parameters are used to construct a filter request
-// therefore, we have to create a custom resolver to handle fetch an object using query string parameters
 interface ResolverNames {
   filterShow: string;
-  parameterDataModel: string;
 }
+
+// the creation of a EventSummaryReport involves getting query string parameters, serializing them as a filter request through a data model
+// and sending the request to the server to fetch the EventSummaryReports model.
+// as we have already fetched the query string parameter data model, we should keep it in route data for future use
 class EventSummaryReportResolver extends BawResolver<
-  EventSummaryReport,
+  [EventSummaryReport, EventSummaryReportParameters],
   EventSummaryReport,
   [],
   EventSummaryReportService,
@@ -195,18 +206,19 @@ class EventSummaryReportResolver extends BawResolver<
 
   public createProviders(
     name: string,
-    resolver: Type<Resolve<ResolvedModel<EventSummaryReport>>>,
+    resolver: Type<
+      Resolve<ResolvedModel<[EventSummaryReport, EventSummaryReportParameters]>>
+    >,
     deps: Type<EventSummaryReportService>[]
   ): ResolverNames & { providers: BawProvider[] } {
     const filterShowProvider = {
       filterShow: name + "CreateFromFilterResolver",
-      parameterDataModel: name + "ParameterDataResolver",
       providers: [
         {
           provide: name + "CreateFromFilterResolver",
           useClass: resolver,
           deps,
-        },
+        }
       ],
     };
 
@@ -216,11 +228,22 @@ class EventSummaryReportResolver extends BawResolver<
   public resolverFn(
     route: ActivatedRouteSnapshot,
     api: EventSummaryReportService
-  ): Observable<EventSummaryReport> {
+  ): Observable<[EventSummaryReport, EventSummaryReportParameters]> {
     const parametersModel = new EventSummaryReportParameters(route.queryParams);
     const filters: Filters<EventSummaryReport> = parametersModel.toFilter();
 
-    return api.filterShow(filters);
+    // because we are returning the data model that was used to fetch the reports model
+    // we need to unpack the model response and create a new observable that encapsulates both the report and data model
+    return new Observable<[EventSummaryReport, EventSummaryReportParameters]>(
+      (subscriber) => {
+        api.filterShow(filters).subscribe(
+          (data: EventSummaryReport) => {
+            subscriber.next([data, parametersModel]);
+            subscriber.complete();
+          }
+        );
+      }
+    );
   }
 }
 

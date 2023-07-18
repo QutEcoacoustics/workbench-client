@@ -28,6 +28,10 @@ h3 {
   }
 }
 
+#print-button:not(.disabled) {
+  cursor: pointer;
+}
+
 // we do this in css because it's styling, not inline offset (<i>) or emphasis (<em>)
 // see https://stackoverflow.com/a/53095149 for more information
 #generatedByLabel {
