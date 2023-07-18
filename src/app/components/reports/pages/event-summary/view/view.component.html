@@ -4,10 +4,8 @@
   <a
     id="print-button"
     class="ms-2"
-    (click)="!printButtonReplacement() && printPage()"
-    [class.disabled]="printButtonReplacement()"
-    [class.text-secondary]="printButtonReplacement()"
-    [ngbTooltip]="printButtonReplacement() ? 'Please use Ctrl + P to print this report' : 'Print this report'"
+    ngbTooltip="Print this report"
+    (click)="printPage()"
   >
     <fa-icon [icon]="['fas', 'print']"></fa-icon>
   </a>

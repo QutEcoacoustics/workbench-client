@@ -16,10 +16,11 @@ import { Datasets } from "vega-lite/build/src/spec/toplevel";
 @Component({
   selector: "baw-chart",
   template: `
-    <div #chartContainer style="height: 100%; width: 100%;">
+    <div #chartContainer class="chartContainer">
       Chart loading
     </div>
   `,
+  styleUrls: [ "chart.component.scss" ],
 })
 export class ChartComponent implements AfterViewInit {
   public constructor() {}

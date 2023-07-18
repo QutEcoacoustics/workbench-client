@@ -19,5 +19,18 @@
     margin: 0;
     padding: 0;
     max-width: 100%;
+    vertical-align: top;
+  }
+
+  // there are some bugs in ngBootstrap where tooltips that are present when printing are emitted in the printed file
+  // as tooltips are an extension of the users mouse (which is hidden), we should also hide the tooltips
+  .tooltip {
+    display: none;
+  }
+
+  // every browser has their own custom headers, footers, and default margin sizes
+  @page {
+    margin: 0;
+    transform: scale(1);
   }
 }

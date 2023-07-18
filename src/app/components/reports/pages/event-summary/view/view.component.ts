@@ -145,15 +145,6 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     window.print();
   }
 
-  // on certain browsers (Firefox), window.print and Ctrl + P work differently
-  // we disable the print button in Firefox and ask the user to print with Ctrl + P as it will print the same as Chromium based browsers
-  protected printButtonReplacement(): boolean {
-    // unfortunately, this is not an enum of a strongly typed string
-    //! Test this when upgrading ngx-device-detector
-    // return this.userAgent.browser === "Firefox";
-    return false;
-  }
-
   protected unixEpochToDuration(unixEpoch: number): Duration {
     return Duration.fromMillis(unixEpoch * 1000);
   }

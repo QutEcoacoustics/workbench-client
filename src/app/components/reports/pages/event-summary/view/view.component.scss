@@ -2,7 +2,7 @@ section {
   border-top-style: solid;
   border-top-width: thin;
   border-color: var(--baw-secondary-lightest);
-  page-break-inside: avoid;
+  page-break-inside: avoid-page;
   padding: 1.25rem 0;
 }
 
@@ -68,11 +68,13 @@ h3 {
   display: flex;
   padding: 0;
   height: 3rem;
+  max-width: 6rem;
 }
 
 .large-embedded-figure {
   @extend .embedded-figure;
   height: 25em;
+  max-width: 100%;
 }
 
 .toggle-graph-button {
