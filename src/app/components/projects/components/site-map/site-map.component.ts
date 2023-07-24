@@ -36,7 +36,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
 
     this.markers = List([]);
 
-    if (this.project || this.region) {
+    if ((this.project || this.region) && !this.sites) {
       this.getFilter(filters, this.project, this.region)
         .pipe(
           switchMap((models) => this.getMarkers(models)),

@@ -2,7 +2,7 @@ section {
   border-top-style: solid;
   border-top-width: thin;
   border-color: var(--baw-secondary-lightest);
-  page-break-inside: avoid-page;
+  page-break-inside: avoid;
   padding: 1.25rem 0;
 }
 
@@ -68,7 +68,7 @@ h3 {
   display: flex;
   padding: 0;
   height: 3rem;
-  max-width: 6rem;
+  max-width: 100%;
 }
 
 .large-embedded-figure {

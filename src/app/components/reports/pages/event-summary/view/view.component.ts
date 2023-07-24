@@ -30,7 +30,7 @@ import {
   EventSummaryReportService,
   eventSummaryResolvers,
 } from "@baw-api/reports/event-report/event-summary-report.service";
-import { Observable, first, forkJoin, of } from "rxjs";
+import { Observable, first, forkJoin, map, of, takeUntil } from "rxjs";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
@@ -48,6 +48,7 @@ import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.js
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
 import confidencePlotSchema from "./confidencePlot.schema.json";
 import coveragePlotSchema from "./coveragePlot.schema.json";
+import { ExpressionFunction, vega } from "vega-embed";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -145,6 +146,11 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     window.print();
   }
 
+  protected vegaTagText: ExpressionFunction =
+    vega.expressionFunction("customFormatA", function(datum, params) {
+      return "<formatted string>";
+    });
+
   protected unixEpochToDuration(unixEpoch: number): Duration {
     return Duration.fromMillis(unixEpoch * 1000);
   }
@@ -154,7 +160,13 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   }
 
   protected getTag(tagId: Id): Observable<Tag> {
-    return this.tagsApi.show(tagId).pipe(first());
+    return this.tags
+      .pipe(
+        map((tags: Tag[]) =>
+          tags.filter((tag: Tag) => tag.id === tagId).pop()
+        ),
+        takeUntil(this.unsubscribe)
+      );
   }
 
   protected filteredSites(): Observable<Site[]> {

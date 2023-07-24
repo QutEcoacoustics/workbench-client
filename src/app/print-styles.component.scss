@@ -14,7 +14,13 @@
     display: none;
   }
 
-  // this is the main container that spans the entire page
+  ngx-loading-bar {
+    // we have to use !important here since it's explicitly shown/hidden in the component using the same display style
+    // this style override will only be applied to print styles and should not be applied under any other circumstances
+    display: none !important;
+  }
+
+  // this is the main container that holds the page content
   .container {
     margin: 0;
     padding: 0;
@@ -28,9 +34,15 @@
     display: none;
   }
 
-  // every browser has their own custom headers, footers, and default margin sizes
+  // hide the overlay container that is usually used to display user feedback (alerts, toasts, etc)
+  .overlay-container {
+    display: none;
+  }
+
+  // every browser has their own custom headers, footers, default page size, and default margin sizes
   @page {
     margin: 0;
     transform: scale(1);
+    size: A4;
   }
 }
