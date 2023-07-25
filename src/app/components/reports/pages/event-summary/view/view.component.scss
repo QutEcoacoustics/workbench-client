@@ -2,7 +2,6 @@ section {
   border-top-style: solid;
   border-top-width: thin;
   border-color: var(--baw-secondary-lightest);
-  page-break-inside: avoid;
   padding: 1.25rem 0;
 }
 
@@ -18,6 +17,8 @@ h3 {
 
 .col {
   border: thin solid var(--baw-secondary-lightest);
+  width: calc(100% / 6);
+  overflow-wrap: break-word;
 
   // if there is a log tag name, event, etc...
   // the name will be broken by words. This causes padding on the broken line to be 0, while the start is padded by 0.25rem
@@ -54,6 +55,10 @@ h3 {
   }
 }
 
+.charts-section {
+  page-break-inside: avoid;
+}
+
 .download-button {
   font-size: 1.25rem;
 }
@@ -62,6 +67,7 @@ h3 {
   display: block;
   width: 100%;
   height: 400px;
+  max-height: 20em;
 }
 
 .embedded-figure {
@@ -78,6 +84,7 @@ h3 {
 .toggle-graph-button {
   float: right;
   text-align: center;
+  vertical-align: middle;
   // since the maximize and minimize buttons are slightly different sizes, we have to set the size explicitly using css
   width: 2.5em;
   height: 2.5em;
@@ -94,9 +101,5 @@ h3 {
     text-align: left;
     vertical-align: middle;
     break-inside: avoid;
-  }
-
-  .events-table-section {
-    overflow-wrap: anywhere;
   }
 }

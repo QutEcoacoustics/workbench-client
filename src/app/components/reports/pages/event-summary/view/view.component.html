@@ -224,6 +224,7 @@
           <small class="m-1 text-muted">
             x̄: {{ item.score.mean | number : "1.2-2" }}
           </small>
+          <wbr>
           <small class="m-1 text-muted">
             σ: {{ item.score.standardDeviation | number : "1.2-2" }}
           </small>
@@ -233,7 +234,7 @@
   </table>
 </section>
 
-<section>
+<section class="charts-section">
   <h3>Charts</h3>
 
   <div class="alert alert-info p-3 my-3">
@@ -252,21 +253,27 @@
         ></fa-icon>
       </a>
 
-      <fa-icon
-        class="toggle-graph-button btn btn-secondary btn-sm"
-        (click)="
-          toggleChart(
-            chartTypes.speciesAccumulationCurve,
-            !showChart(chartTypes.speciesAccumulationCurve)
-          )
-        "
-        [icon]="[
-          'fas',
-          showChart(chartTypes.speciesAccumulationCurve)
-            ? 'minimize'
-            : 'maximize'
-        ]"
-      ></fa-icon>
+      <button class="toggle-graph-button btn btn-secondary btn-sm">
+        <fa-icon
+          (click)="
+            toggleChart(
+              chartTypes.speciesAccumulationCurve,
+              !showChart(chartTypes.speciesAccumulationCurve)
+            )
+          "
+          [icon]="[
+            'fas',
+            showChart(chartTypes.speciesAccumulationCurve)
+              ? 'minimize'
+              : 'maximize'
+          ]"
+          [ngbTooltip]="
+            showChart(chartTypes.speciesAccumulationCurve)
+              ? 'Minimize'
+              : 'Maximize'
+          "
+        ></fa-icon>
+      </button>
     </h4>
 
     <div [ngbCollapse]="!showChart(chartTypes.speciesAccumulationCurve)">
@@ -290,21 +297,27 @@
         ></fa-icon>
       </a>
 
-      <fa-icon
-        class="toggle-graph-button btn btn-secondary btn-sm"
-        (click)="
-          toggleChart(
-            chartTypes.speciesCompositionCurve,
-            !showChart(chartTypes.speciesCompositionCurve)
-          )
-        "
-        [icon]="[
-          'fas',
-          showChart(chartTypes.speciesCompositionCurve)
-            ? 'minimize'
-            : 'maximize'
-        ]"
-      ></fa-icon>
+      <button class="toggle-graph-button btn btn-secondary btn-sm">
+        <fa-icon
+          (click)="
+            toggleChart(
+              chartTypes.speciesCompositionCurve,
+              !showChart(chartTypes.speciesCompositionCurve)
+            )
+          "
+          [icon]="[
+            'fas',
+            showChart(chartTypes.speciesCompositionCurve)
+              ? 'minimize'
+              : 'maximize'
+          ]"
+          [ngbTooltip]="
+            showChart(chartTypes.speciesCompositionCurve)
+              ? 'Minimize'
+              : 'Maximize'
+          "
+        ></fa-icon>
+      </button>
     </h4>
 
     <div [ngbCollapse]="!showChart(chartTypes.speciesCompositionCurve)">
@@ -318,7 +331,10 @@
     </div>
   </div>
 
-  <div [class.hide-in-print]="!showChart(chartTypes.falseColorSpectrograms)">
+  <div
+    *ngIf="spectrogramUrls.length > 0"
+    [class.hide-in-print]="!showChart(chartTypes.falseColorSpectrograms)"
+  >
     <h4>
       False colour spectrogram(s)
 
@@ -330,19 +346,28 @@
         ></fa-icon>
       </a>
 
-      <fa-icon
-        class="toggle-graph-button btn btn-secondary btn-sm"
-        (click)="
-          toggleChart(
-            chartTypes.falseColorSpectrograms,
-            !showChart(chartTypes.falseColorSpectrograms)
-          )
-        "
-        [icon]="[
-          'fas',
-          showChart(chartTypes.falseColorSpectrograms) ? 'minimize' : 'maximize'
-        ]"
-      ></fa-icon>
+      <button class="toggle-graph-button btn btn-secondary btn-sm">
+        <fa-icon
+          class="toggle-graph-button btn btn-secondary btn-sm"
+          (click)="
+            toggleChart(
+              chartTypes.falseColorSpectrograms,
+              !showChart(chartTypes.falseColorSpectrograms)
+            )
+          "
+          [icon]="[
+            'fas',
+            showChart(chartTypes.falseColorSpectrograms)
+              ? 'minimize'
+              : 'maximize'
+          ]"
+          [ngbTooltip]="
+            showChart(chartTypes.falseColorSpectrograms)
+              ? 'Minimize'
+              : 'Maximize'
+          "
+        ></fa-icon>
+      </button>
     </h4>
     <div [ngbCollapse]="!showChart(chartTypes.falseColorSpectrograms)">
       <div class="large-embedded-figure p-1">False colour spectrogram(s)</div>

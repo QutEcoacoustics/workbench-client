@@ -25,7 +25,11 @@ const customFormatterName = "customVegaFormatter";
 @Component({
   selector: "baw-chart",
   template: `
-    <div #chartContainer class="chartContainer" (window:resize)="resizeEvent()">
+    <div
+      #chartContainer
+      class="chartContainer"
+      (window:resize)="resizeEvent()"
+    >
       Chart loading
     </div>
   `,
@@ -100,8 +104,9 @@ export class ChartComponent implements AfterViewInit {
     }
   }
 
-  // this is triggered by the window.resize event, which will trigger on all browsers when the window or container is resized
-  // this event will also trigger when printing, causing the graphs to fit to the page
+  // by default, vega lite graphs only update when the window resize event is triggered
+  // however, we want to trigger a resize even whenever the component ios resized
+  // we sometimes want to resize the component eg. when collapsing/collapsing the component through show/hide buttons
   protected resizeEvent(): void {
     this.vegaView.view.resize();
     this.vegaView.view.run();

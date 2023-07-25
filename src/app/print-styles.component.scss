@@ -1,4 +1,9 @@
 @media print {
+  // html {
+  //   width: 210mm;
+  //   overflow-x: hidden;
+  // }
+
   // hide branding during printing
   baw-footer,
   baw-header {
@@ -24,8 +29,8 @@
   .container {
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
     max-width: 100%;
-    vertical-align: top;
   }
 
   // there are some bugs in ngBootstrap where tooltips that are present when printing are emitted in the printed file
@@ -42,6 +47,6 @@
   // every browser has their own custom headers, footers, default page size, and default margin sizes
   @page {
     margin: 0;
-    size: A4;
+    size: portrait;
   }
 }
