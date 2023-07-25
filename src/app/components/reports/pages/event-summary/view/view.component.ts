@@ -30,7 +30,7 @@ import {
   EventSummaryReportService,
   eventSummaryResolvers,
 } from "@baw-api/reports/event-report/event-summary-report.service";
-import { Observable, first, forkJoin, map, of, takeUntil } from "rxjs";
+import { Observable, first, takeUntil } from "rxjs";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
@@ -39,7 +39,7 @@ import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
 import { Location } from "@angular/common";
 import { Datasets } from "vega-lite/build/src/spec/toplevel";
-import { DeviceDetectorService } from "ngx-device-detector";
+import { ExpressionFunction, vega } from "vega-embed";
 import {
   Chart,
   EventSummaryReportParameters,
@@ -48,7 +48,6 @@ import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.js
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
 import confidencePlotSchema from "./confidencePlot.schema.json";
 import coveragePlotSchema from "./coveragePlot.schema.json";
-import { ExpressionFunction, vega } from "vega-embed";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -70,8 +69,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     private tagsApi: TagsService,
     private regionApi: ShallowRegionsService,
     private sitesApi: ShallowSitesService,
-    private location: Location,
-    private userAgent: DeviceDetectorService
+    private location: Location
   ) {
     super();
   }
@@ -83,9 +81,9 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   public region?: Region;
   public site?: Site;
 
-  protected regions: Observable<Region[]>;
-  protected sites: Observable<Site[]>;
-  protected tags: Observable<Tag[]>;
+  public regions: Region[] = [];
+  public sites: Site[] = [];
+  public tags: Tag[] = [];
 
   protected speciesAccumulationCurveSchema = speciesAccumulationCurveSchema;
   protected speciesCompositionCurveSchema = speciesCompositionCurveSchema;
@@ -111,22 +109,25 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
       reportKey
     ][1] as EventSummaryReportParameters;
 
-    this.regions = forkJoin(
-      this.parameterDataModel.sites?.map((regionId: Id) =>
-        this.regionApi.show(regionId).pipe(first())
-      )
+    this.parameterDataModel.sites?.map((regionId: Id) =>
+      this.regionApi
+        .show(regionId)
+        .pipe(first(), takeUntil(this.unsubscribe))
+        .subscribe((regionModel: Region) => this.regions.push(regionModel))
     );
 
-    this.sites = forkJoin(
-      this.parameterDataModel.points?.map((siteId: Id) =>
-        this.sitesApi.show(siteId).pipe(first())
-      )
+    this.parameterDataModel.points?.map((siteId: Id) =>
+      this.sitesApi
+        .show(siteId)
+        .pipe(first(), takeUntil(this.unsubscribe))
+        .subscribe((siteModel: Site) => this.sites.push(siteModel))
     );
 
-    this.tags = forkJoin(
-      this.parameterDataModel.events?.map((tagId: Id) =>
-        this.tagsApi.show(tagId).pipe(first())
-      )
+    this.parameterDataModel.events?.map((tagId: Id) =>
+      this.tagsApi
+        .show(tagId)
+        .pipe(first(), takeUntil(this.unsubscribe))
+        .subscribe((tagModel: Tag) => this.tags.push(tagModel))
     );
   }
 
@@ -138,6 +139,16 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return User.getUnknownUser(undefined);
   }
 
+  protected vegaTagText: ExpressionFunction = vega.expressionFunction(
+    "customFormatter",
+    (tagId: number): string => this.getTag(tagId)?.text
+  );
+
+  protected vegaLegendClickCallback = (item) => console.log(item);
+
+  protected vegaTagTextFormatter = (tagId: number): string =>
+    this.getTag(tagId)?.text;
+
   protected get spectrogramUrls(): string[] {
     return [];
   }
@@ -145,11 +156,6 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   protected printPage(): void {
     window.print();
   }
-
-  protected vegaTagText: ExpressionFunction =
-    vega.expressionFunction("customFormatA", function(datum, params) {
-      return "<formatted string>";
-    });
 
   protected unixEpochToDuration(unixEpoch: number): Duration {
     return Duration.fromMillis(unixEpoch * 1000);
@@ -159,30 +165,24 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return this.provenanceApi.show(provenanceId).pipe(first());
   }
 
-  protected getTag(tagId: Id): Observable<Tag> {
-    return this.tags
-      .pipe(
-        map((tags: Tag[]) =>
-          tags.filter((tag: Tag) => tag.id === tagId).pop()
-        ),
-        takeUntil(this.unsubscribe)
-      );
+  protected getTag(tagId: Id): Tag {
+    return this.tags.find((tagModel: Tag) => tagModel.id === tagId);
   }
 
-  protected filteredSites(): Observable<Site[]> {
+  protected filteredSites(): Site[] {
     // the most common case is when the user has selected sites using the site selector
-    if (this.sites) {
+    if (this.sites.length > 0) {
       return this.sites;
     }
 
     // if the user didn't select any sites, the report will default to all sites
     if (this.site) {
-      return of([this.site]);
+      return [this.site];
     } else if (this.region) {
-      return of(this.region.sites);
+      return this.region.sites;
     }
 
-    return of(this.project.sites);
+    return this.project.sites;
   }
 
   protected showChart(chart: Chart): boolean {

@@ -68,13 +68,11 @@ h3 {
   display: flex;
   padding: 0;
   height: 3rem;
-  max-width: 100%;
 }
 
 .large-embedded-figure {
   @extend .embedded-figure;
   height: 25em;
-  max-width: 100%;
 }
 
 .toggle-graph-button {
@@ -98,7 +96,7 @@ h3 {
     break-inside: avoid;
   }
 
-  .events-table {
+  .events-table-section {
     overflow-wrap: anywhere;
   }
 }

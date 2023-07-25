@@ -8,8 +8,16 @@ import {
 } from "@angular/core";
 import { Data } from "@angular/router";
 import { Map } from "immutable";
-import embed, { EmbedOptions, ExpressionFunction, Result, VisualizationSpec } from "vega-embed";
+import embed, {
+  EmbedOptions,
+  ExpressionFunction,
+  Result,
+  VisualizationSpec,
+  vega,
+} from "vega-embed";
 import { Datasets } from "vega-lite/build/src/spec/toplevel";
+
+const customFormatterName = "customVegaFormatter";
 
 // this component exists for us to render vega-lite charts in an *ngFor loop
 // render multiple charts using different dynamically updating data from the same schema
@@ -40,10 +48,7 @@ export class ChartComponent implements AfterViewInit {
    * If your spec contains one graph, use the `[data]` attribute instead
    */
   @Input() public datasets?: Datasets;
-  @Input() public options?: EmbedOptions = {
-    actions: false,
-    renderer: "svg",
-  };
+  @Input() public options?: EmbedOptions = { actions: false };
   /**
    * Specifies a way to turn model values into user-facing values
    * e.g. turn a model id into its model name
@@ -53,13 +58,12 @@ export class ChartComponent implements AfterViewInit {
    *
    * @example
    * ```typescript
-   * vega.expressionFunction('customFormatA', function(datum, params) {
-   *   ...
-   *   return "<formatted string>";
-   * });
+   * const vegaProjectNameFormatter = (projectId: Id) =>
+   *    this.projects.find((project: Project) => project.id === projectId);
    * ```
    */
- @Input() public formatter: ExpressionFunction;
+  @Input() public formatter: (item: unknown) => string;
+  @Input() public legendItemClickCallback: (item) => void;
 
   private fullSpec: Immutable.Collection<VisualizationSpec, VisualizationSpec>;
   private vegaView: Result;
@@ -89,18 +93,23 @@ export class ChartComponent implements AfterViewInit {
       this.options
     );
 
-    this.vegaView.embedOptions.expressionFunctions = {
-      customFormatter: this.formatter,
-    };
+    if (this.formatter) {
+      this.vegaView.embedOptions.expressionFunctions = {
+        [`${customFormatterName}`]: this.vegaFormatter,
+      };
+    }
   }
 
-  // using vega-lite "width: container" doesn't update correctly when the window is resized
-  // eg. If the window resizes from smaller to larger, charts will grow slightly. Repeated will result in a chart larger than its container
   // this is triggered by the window.resize event, which will trigger on all browsers when the window or container is resized
-  // however, this event will trigger on Firefox when printing, but not chromium based browsers (chrome, edge, etc...)
-  // therefore, we need to add another event listener for the print event
+  // this event will also trigger when printing, causing the graphs to fit to the page
   protected resizeEvent(): void {
     this.vegaView.view.resize();
     this.vegaView.view.run();
+  }
+
+  private vegaFormatter(): ExpressionFunction {
+    return vega.expressionFunction(customFormatterName, (datum) =>
+      this.formatter(datum)
+    );
   }
 }

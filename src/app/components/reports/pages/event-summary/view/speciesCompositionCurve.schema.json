@@ -5,6 +5,9 @@
   "data": {
     "values": []
   },
+  "config": {
+    "customFormatTypes": true
+  },
   "mark": "area",
   "encoding": {
     "x": {
@@ -32,7 +35,10 @@
         "scheme": "category20b"
       },
       "legend": {
-        "orient": "top"
+        "orient": "top",
+        "format": "number",
+        "formatType": "customFormatter",
+        "labelFontSize": 14
       }
     }
   }

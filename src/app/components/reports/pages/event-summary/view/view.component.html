@@ -20,36 +20,31 @@
   <h3>Search Conditions</h3>
 
   <div class="search-parameter">
-    <b>Sites:</b>
+    <b>Sites: </b>
 
     <ng-container
-      *ngIf="regions | async as reportRegions; else defaultConditionTemplate"
+      *ngIf="regions as reportRegions; else defaultConditionTemplate"
     >
-      <a
-        *ngFor="let item of reportRegions; last as isLast"
-        [href]="item.viewUrl"
-      >
-        {{ item.name }}
-        <ng-container *ngIf="!isLast">,</ng-container>
-      </a>
+      <span *ngFor="let item of reportRegions; last as isLast">
+        <a [href]="item.viewUrl">{{ item.name }}</a>
+        <ng-container *ngIf="!isLast">, </ng-container>
+      </span>
     </ng-container>
   </div>
 
   <div class="search-parameter">
-    <b>Points:</b>
+    <b>Points: </b>
 
-    <ng-container
-      *ngIf="sites | async as reportSites; else defaultConditionTemplate"
-    >
-      <a *ngFor="let item of reportSites; last as isLast" [href]="item.viewUrl">
-        {{ item.name }}
-        <ng-container *ngIf="!isLast">,</ng-container>
-      </a>
+    <ng-container *ngIf="sites as reportSites; else defaultConditionTemplate">
+      <span *ngFor="let item of reportSites; last as isLast">
+        <a [href]="item.viewUrl">{{ item.name }}</a>
+        <ng-container *ngIf="!isLast">, </ng-container>
+      </span>
     </ng-container>
   </div>
 
   <div class="search-parameter">
-    <b>Times:</b>
+    <b>Times: </b>
 
     <span
       *ngIf="
@@ -64,7 +59,7 @@
   </div>
 
   <div class="search-parameter">
-    <b>Date Range:</b>
+    <b>Date Range: </b>
 
     <span
       *ngIf="
@@ -79,30 +74,31 @@
   </div>
 
   <div class="search-parameter">
-    <b>Duration:</b> {{ parameterDataModel.bucketSize | titlecase }}
+    <b>Duration: </b> {{ parameterDataModel.bucketSize | titlecase }}
   </div>
 
   <div class="search-parameter">
-    <b>Recognisers:</b>
+    <b>Recognisers: </b>
 
     <ng-container
       *ngIf="parameterDataModel.provenances; else defaultConditionTemplate"
     >
-      <a
+      <span
         *ngFor="
           let provenance of parameterDataModel.provenances;
           last as isLast
         "
-        [href]="(getProvenance(provenance) | async).viewUrl"
       >
-        {{ (getProvenance(provenance) | async).name }}
-        <ng-container *ngIf="!isLast">,</ng-container>
-      </a>
+        <a [href]="(getProvenance(provenance) | async).viewUrl">{{
+          (getProvenance(provenance) | async).name
+        }}</a>
+        <ng-container *ngIf="!isLast">, </ng-container>
+      </span>
     </ng-container>
   </div>
 
   <div class="search-parameter">
-    <b>Score Cutoff:</b>
+    <b>Score Cutoff: </b>
 
     <!--
       If the user doesn't explicitly define a provenance score, we should display 0 instead of (not specified)
@@ -113,18 +109,18 @@
   </div>
 
   <div class="search-parameter">
-    <b>Events:</b>
+    <b>Events: </b>
 
     <ng-container
-      *ngIf="tags | async as reportEvents; else defaultConditionTemplate"
+      *ngIf="
+        parameterDataModel.events as reportEvents;
+        else defaultConditionTemplate
+      "
     >
-      <a
-        *ngFor="let item of reportEvents; last as isLast"
-        [href]="item.viewUrl"
-      >
-        {{ item.text }}
-        <ng-container *ngIf="!isLast">,</ng-container>
-      </a>
+      <span *ngFor="let item of reportEvents; last as isLast">
+        <a [href]="getTag(item).viewUrl">{{ getTag(item).text }}</a>
+        <ng-container *ngIf="!isLast">, </ng-container>
+      </span>
     </ng-container>
   </div>
 </section>
@@ -149,22 +145,32 @@
 
     <baw-site-map
       class="site-map"
-      [sites]="filteredSites() | async"
+      [sites]="filteredSites()"
       [project]="project"
       [region]="region"
     ></baw-site-map>
   </div>
 
-  <baw-chart [spec]="coveragePlotSchema" [datasets]="coverageDataset()"></baw-chart>
+  <baw-chart
+    [spec]="coveragePlotSchema"
+    [datasets]="coverageDataset()"
+  ></baw-chart>
 
   <p>
-    For the requested <b>{{ unixEpochToDuration(this.report.statistics?.totalSearchSpan) | toRelative }}</b
+    For the requested
+    <b>{{
+      unixEpochToDuration(this.report.statistics?.totalSearchSpan) | toRelative
+    }}</b
     >, we've analysed <b>70%</b> of the available
-    <b>{{ unixEpochToDuration(this.report.statistics?.audioCoverageOverSpan) | toRelative }}</b> of audio recording time.
+    <b>{{
+      unixEpochToDuration(this.report.statistics?.audioCoverageOverSpan)
+        | toRelative
+    }}</b>
+    of audio recording time.
   </p>
 </section>
 
-<section class="events-table">
+<section class="events-table-section">
   <h3>
     Events Table
 
@@ -194,8 +200,8 @@
     <ng-container *ngFor="let item of report.eventGroups">
       <tr class="row">
         <td class="col">
-          <a [href]="(getTag(item.tagId) | async)?.viewUrl">
-            {{ (getTag(item.tagId) | async)?.text }}
+          <a [href]="getTag(item.tagId)?.viewUrl">
+            {{ getTag(item.tagId)?.text }}
           </a>
         </td>
         <td class="col">
@@ -306,6 +312,8 @@
         class="large-embedded-figure"
         [spec]="speciesCompositionCurveSchema"
         [data]="report.graphs?.speciesCompositionData"
+        [formatter]="vegaTagTextFormatter"
+        [legendItemClickCallback]="vegaLegendClickCallback"
       ></baw-chart>
     </div>
   </div>

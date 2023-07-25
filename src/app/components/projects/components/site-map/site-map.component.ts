@@ -36,7 +36,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
 
     this.markers = List([]);
 
-    if ((this.project || this.region) && !this.sites) {
+    if ((this.project || this.region) && !(this.sites?.length <= 0)) {
       this.getFilter(filters, this.project, this.region)
         .pipe(
           switchMap((models) => this.getMarkers(models)),
@@ -47,6 +47,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
           error: () => this.pushMarkers([]),
         });
     }
+
     this.pushMarkers(this.sites ?? []);
   }
 

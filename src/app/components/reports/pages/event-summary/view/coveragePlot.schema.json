@@ -4,6 +4,9 @@
   "data": {
     "name": "recordingCoverage"
   },
+  "config": {
+    "font": "'Helvetica Neue', Helvetica, Arial, sans-serif"
+  },
   "transform": [
     {
       "lookup": "startDate",
