@@ -89,8 +89,8 @@
           last as isLast
         "
       >
-        <a [href]="(getProvenance(provenance) | async).viewUrl">{{
-          (getProvenance(provenance) | async).name
+        <a [href]="getProvenance(provenance)?.viewUrl">{{
+          getProvenance(provenance)?.name
         }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
@@ -118,7 +118,7 @@
       "
     >
       <span *ngFor="let item of reportEvents; last as isLast">
-        <a [href]="getTag(item)?.viewUrl">{{ getTag(item)?.text }}</a>
+        <a [href]="getTag(item).viewUrl">{{ getTag(item)?.text }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
     </ng-container>
@@ -126,7 +126,7 @@
 </section>
 
 <section>
-  <h3>Summary</h3>
+  <h3>Coverage Summary</h3>
 
   <div class="alert alert-warning p-3 my-3">
     <strong>
@@ -147,7 +147,7 @@
     [datasets]="coverageDataset()"
   ></baw-chart>
 
-  <div class="coverage-text-summary">
+  <div>
     <div>
       <b>Total requested range: </b>
       {{ unixEpochToDuration(this.report.statistics?.totalSearchSpan) | toRelative }}
@@ -202,8 +202,8 @@
           </a>
         </td>
         <td class="col">
-          <a [href]="(getProvenance(item.provenanceId) | async).viewUrl">
-            {{ (getProvenance(item.provenanceId) | async).name }}
+          <a [href]="getProvenance(item.provenanceId)?.viewUrl">
+            {{ getProvenance(item.provenanceId)?.name }}
           </a>
         </td>
         <td class="col">{{ item.detections | number }}</td>
@@ -244,7 +244,7 @@
 
       <a [href]="eventSummaryReportApi.eventDownloadUrl()">
         <fa-icon
-          class="hide-in-print download-button"
+          class="download-button"
           [icon]="['fas', 'file-arrow-down']"
           [ngbTooltip]="'Download this graphs data'"
         ></fa-icon>
@@ -288,7 +288,7 @@
 
       <a [href]="eventSummaryReportApi.eventDownloadUrl()">
         <fa-icon
-          class="hide-in-print download-button"
+          class="download-button"
           [icon]="['fas', 'file-arrow-down']"
           [ngbTooltip]="'Download this graphs data'"
         ></fa-icon>
@@ -336,7 +336,7 @@
 
       <a [href]="eventSummaryReportApi.eventDownloadUrl()">
         <fa-icon
-          class="hide-in-print"
+          class="download-button"
           [icon]="['fas', 'file-arrow-down']"
           [ngbTooltip]="'Download false colour spectrogram(s)'"
         ></fa-icon>

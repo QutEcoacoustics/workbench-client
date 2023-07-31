@@ -24,7 +24,6 @@ import {
   EventSummaryReportService,
   eventSummaryResolvers,
 } from "@baw-api/reports/event-report/event-summary-report.service";
-import { Observable, first } from "rxjs";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
@@ -93,7 +92,6 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     this.parameterDataModel = models[
       reportKey
     ][1] as EventSummaryReportParameters;
-    // console.log(JSON.stringify(this.report.tags));
   }
 
   protected get currentUser(): User {
@@ -104,12 +102,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return User.getUnknownUser(undefined);
   }
 
-  protected vegaLegendClickCallback = (item) => console.log(item);
-
-  protected vegaTagTextFormatter = (tagId: number): string => {
-    console.log("fetching tag");
-    return this.getTag(tagId)?.text;
-  }
+  protected vegaTagTextFormatter = (tagId: number): string => this.getTag(tagId)?.text;
 
   protected get spectrogramUrls(): string[] {
     return [];
@@ -123,8 +116,10 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return Duration.fromMillis(unixEpoch * 1000);
   }
 
-  protected getProvenance(provenanceId: Id): Observable<AudioEventProvenance> {
-    return this.provenanceApi.show(provenanceId).pipe(first());
+  protected getProvenance(provenanceId: Id): AudioEventProvenance {
+    return this.report.provenances.find(
+      (provenance: AudioEventProvenance) => provenance.id === provenanceId
+    );
   }
 
   protected getTag(tagId: Id): Tag {

@@ -1,4 +1,8 @@
 .chartContainer {
-  width: 100%;
+  width: 100% !important;
   height: 100%;
+}
+
+::ng-deep .chartContainer > .marks {
+  width: inherit;
 }

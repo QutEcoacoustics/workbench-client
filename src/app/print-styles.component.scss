@@ -1,8 +1,28 @@
+@mixin heading-size($size) {
+  font-size: $size + px;
+}
+
+$heading-sizes: (
+  h1: 40,
+  h2: 32,
+  h3: 28,
+  h4: 24,
+  h5: 20,
+  h6: 16
+);
+
 @media print {
-  // html {
-  //   width: 210mm;
-  //   overflow-x: hidden;
-  // }
+  // Loop through the heading sizes map and apply the mixin
+  @each $heading, $size in $heading-sizes {
+    #{$heading} {
+      @include heading-size($size);
+    }
+  }
+
+  html {
+    width: 210mm;
+    height: 297mm;
+  }
 
   // hide branding during printing
   baw-footer,
@@ -44,21 +64,21 @@
     display: none;
   }
 
-  // links will still retain their "visited" state styling
-  // as users cannot click on links when printing, we should remove this styling
-  a:visited {
-    color: inherit;
-  }
-
   // we want iframes to seamlessly integrate with the page, and therefore should not have them on their own page
   // we allow iframes to break between pages because otherwise there would always be a page break before an iframe
   iframe {
     break-inside: auto;
   }
 
+  // under certain conditions, scroll bars will be shown in the print preview
+  // we should therefore explicitly hide them
+  ::-webkit-scrollbar  {
+    display: none;
+  }
+
   // every browser has their own custom headers, footers, default page size, and default margin sizes
   @page {
     margin: 0;
-    size: portrait;
+    size: A4;
   }
 }

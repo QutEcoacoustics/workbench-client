@@ -70,9 +70,6 @@ h3 {
   max-height: 20em;
 }
 
-.coverage-text-summary {
-}
-
 .embedded-figure {
   display: flex;
   padding: 0;
@@ -96,13 +93,22 @@ h3 {
 @media print {
   #print-button,
   .toggle-graph-button,
+  .download-button,
   .hide-in-print {
     display: none;
   }
 
-  th, td {
+  tr {
     text-align: left;
     vertical-align: middle;
     break-inside: avoid;
+  }
+
+  // since the Google maps component uses a canvas, it is hidden when "background graphics" (Chrome) is disabled
+  // this will cause an empty spot where the map should be, and therefore defective
+  // we should allow the user to disable printing other background graphics in order to conserve ink
+  .site-map {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
   }
 }

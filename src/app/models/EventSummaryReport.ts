@@ -1,4 +1,9 @@
-import { SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
+import {
+  AUDIO_EVENT_PROVENANCE,
+  SHALLOW_REGION,
+  SHALLOW_SITE,
+  TAG,
+} from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id, Ids, Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { hasMany } from "./AssociationDecorators";
@@ -6,6 +11,7 @@ import { bawCollection, bawDateTime } from "./AttributeDecorators";
 import { Site } from "./Site";
 import { Tag } from "./Tag";
 import { Region } from "./Region";
+import { AudioEventProvenance } from "./AudioEventProvenance";
 
 export interface IAudioEventSummaryReportStatistics {
   totalSearchSpan: number;
@@ -82,6 +88,7 @@ export interface IEventSummaryReport {
   siteIds: Id[] | Ids;
   regionIds: Id[] | Ids;
   tagIds: Id[] | Ids;
+  provenanceIds: Id[] | Ids;
   graphs: IEventSummaryGraphs;
 }
 
@@ -104,14 +111,21 @@ export class EventSummaryReport
   public readonly timeSeriesGraph: ITimeSeriesGraph[];
   @bawCollection()
   public readonly tagIds: Ids;
+  @bawCollection()
+  public readonly provenanceIds: Ids;
 
   // associations
   @hasMany<EventSummaryReport, Region>(SHALLOW_REGION, "regionIds")
   public regions?: Region[];
   @hasMany<EventSummaryReport, Site>(SHALLOW_SITE, "siteIds")
   public sites?: Site[];
-  @hasMany<EventSummaryReport, Tag>(TAG, "tagIds" as any)
+  @hasMany<EventSummaryReport, Tag>(TAG, "tagIds")
   public tags?: Tag[];
+  @hasMany<EventSummaryReport, AudioEventProvenance>(
+    AUDIO_EVENT_PROVENANCE,
+    "provenanceIds"
+  )
+  public provenances?: AudioEventProvenance[];
 
   public get viewUrl(): string {
     throw new Error("Method not implemented.");

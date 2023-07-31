@@ -100,6 +100,8 @@ export class EventSummaryReportService
       regionIds,
       // remove this before review as it's not in line with the spec
       tagIds,
+      // same with this line
+      provenanceIds,
       name: "Mock Event Summary Report",
       generatedDate: "2023-07-07T00:00:00.0000000",
       eventGroups,

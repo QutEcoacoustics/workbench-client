@@ -21,6 +21,6 @@ export class AudioEventProvenance extends AbstractModel implements AudioEventPro
    * WARNING: THIS IS NOT CURRENTLY FUNCTIONAL, BUT WE DO USE THIS IN THE CODEBASE AS A STAGING PLACEHOLDER
    */
   public get viewUrl(): string {
-    return "";
+    return null;
   }
 }

@@ -25,7 +25,11 @@ const customFormatterName = "customFormatter";
 @Component({
   selector: "baw-chart",
   template: `
-    <div #chartContainer class="chartContainer" (window:resize)="resizeEvent()">
+    <div
+      #chartContainer
+      class="chartContainer marks"
+      (window:resize)="resizeEvent()"
+    >
       Chart loading
     </div>
   `,
@@ -63,11 +67,10 @@ export class ChartComponent implements AfterViewInit {
    * ```
    */
   @Input() public formatter?: (item: unknown) => string;
-  @Input() public legendItemClickCallback: (item) => void;
 
   private fullSpec: Immutable.Collection<VisualizationSpec, VisualizationSpec>;
   private vegaView: Result;
-  private vegaFormatterFunction: ExpressionFunction
+  private vegaFormatterFunction: ExpressionFunction;
 
   public async ngAfterViewInit() {
     if (this.formatter) {
@@ -98,7 +101,11 @@ export class ChartComponent implements AfterViewInit {
     this.vegaView = await embed(
       this.element.nativeElement,
       this.fullSpec.toObject(),
-      this.options
+      {
+        // we always want to use svg as the renderer (unless unless explicitly overridden in the options) as it has sharper text
+        renderer: "svg",
+        ...this.options,
+      }
     );
 
     if (this.formatter) {
