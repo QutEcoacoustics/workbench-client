@@ -5,6 +5,17 @@
   "data": {
     "values": []
   },
+  "config": {
+    "tooltip": {
+      "fontSize": 42
+    }
+  },
+  "transform": [
+    {
+      "calculate": "datum.count + datum.error",
+      "as": "count_plus_error"
+    }
+  ],
   "layer": [
     {
       "mark": {
@@ -35,7 +46,6 @@
     {
       "mark": {
         "type": "errorband",
-        "extent": "ci",
         "interpolate": "monotone",
         "color": "black",
         "opacity": 0.1,
@@ -53,7 +63,29 @@
         },
         "yError": {
           "field": "error"
-        }
+        },
+        "tooltip": [
+          {
+            "field": "date",
+            "type": "nominal",
+            "title": "Date"
+          },
+          {
+            "field": "count",
+            "type": "quantitative",
+            "title": "Count"
+          },
+          {
+            "field": "error",
+            "type": "quantitative",
+            "title": "Error"
+          },
+          {
+            "title": "Count + Error",
+            "type": "quantitative",
+            "field": "count_plus_error"
+          }
+        ]
       }
     },
     {

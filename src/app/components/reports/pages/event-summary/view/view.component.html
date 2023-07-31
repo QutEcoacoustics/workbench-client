@@ -23,7 +23,7 @@
     <b>Sites: </b>
 
     <ng-container
-      *ngIf="regions as reportRegions; else defaultConditionTemplate"
+      *ngIf="report.regions as reportRegions; else defaultConditionTemplate"
     >
       <span *ngFor="let item of reportRegions; last as isLast">
         <a [href]="item.viewUrl">{{ item.name }}</a>
@@ -35,7 +35,7 @@
   <div class="search-parameter">
     <b>Points: </b>
 
-    <ng-container *ngIf="sites as reportSites; else defaultConditionTemplate">
+    <ng-container *ngIf="report.sites as reportSites; else defaultConditionTemplate">
       <span *ngFor="let item of reportSites; last as isLast">
         <a [href]="item.viewUrl">{{ item.name }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
@@ -118,7 +118,7 @@
       "
     >
       <span *ngFor="let item of reportEvents; last as isLast">
-        <a [href]="getTag(item).viewUrl">{{ getTag(item).text }}</a>
+        <a [href]="getTag(item)?.viewUrl">{{ getTag(item)?.text }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
     </ng-container>
@@ -135,39 +135,36 @@
     </strong>
   </div>
 
-  <div class="d-flex">
-    <span id="native-species-container">
-      <!-- TODO: Fetching these values. This will most likely require a 3rd party API -->
-      <h4>Native Species: 5</h4>
-      <h4>Non-native: 3</h4>
-      <h4>Invasive: 3</h4>
-    </span>
-
-    <baw-site-map
-      class="site-map"
-      [sites]="filteredSites()"
-      [project]="project"
-      [region]="region"
-    ></baw-site-map>
-  </div>
+  <baw-site-map
+    class="site-map"
+    [sites]="filteredSites()"
+    [project]="project"
+    [region]="region"
+  ></baw-site-map>
 
   <baw-chart
     [spec]="coveragePlotSchema"
     [datasets]="coverageDataset()"
   ></baw-chart>
 
-  <p>
-    For the requested
-    <b>{{
-      unixEpochToDuration(this.report.statistics?.totalSearchSpan) | toRelative
-    }}</b
-    >, we've analysed <b>70%</b> of the available
-    <b>{{
-      unixEpochToDuration(this.report.statistics?.audioCoverageOverSpan)
-        | toRelative
-    }}</b>
-    of audio recording time.
-  </p>
+  <div class="coverage-text-summary">
+    <div>
+      <b>Total requested range: </b>
+      {{ unixEpochToDuration(this.report.statistics?.totalSearchSpan) | toRelative }}
+    </div>
+
+    <div>
+      <b>Total Duration of selected audio recordings: </b>
+      {{unixEpochToDuration(this.report.statistics?.audioCoverageOverSpan) | toRelative}}
+      (50% of requested range)
+    </div>
+
+    <div>
+      <b>Total analysed duration of selected audio recordings: </b>
+      {{ unixEpochToDuration(this.report.statistics?.analysisCoverageOverSpan) | toRelative }}
+      (30% of audio recording range)
+    </div>
+  </div>
 </section>
 
 <section class="events-table-section">
@@ -326,7 +323,6 @@
         [spec]="speciesCompositionCurveSchema"
         [data]="report.graphs?.speciesCompositionData"
         [formatter]="vegaTagTextFormatter"
-        [legendItemClickCallback]="vegaLegendClickCallback"
       ></baw-chart>
     </div>
   </div>

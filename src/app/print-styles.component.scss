@@ -44,6 +44,18 @@
     display: none;
   }
 
+  // links will still retain their "visited" state styling
+  // as users cannot click on links when printing, we should remove this styling
+  a:visited {
+    color: inherit;
+  }
+
+  // we want iframes to seamlessly integrate with the page, and therefore should not have them on their own page
+  // we allow iframes to break between pages because otherwise there would always be a page break before an iframe
+  iframe {
+    break-inside: auto;
+  }
+
   // every browser has their own custom headers, footers, default page size, and default margin sizes
   @page {
     margin: 0;

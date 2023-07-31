@@ -17,7 +17,7 @@ import embed, {
 } from "vega-embed";
 import { Datasets } from "vega-lite/build/src/spec/toplevel";
 
-const customFormatterName = "customVegaFormatter";
+const customFormatterName = "customFormatter";
 
 // this component exists for us to render vega-lite charts in an *ngFor loop
 // render multiple charts using different dynamically updating data from the same schema
@@ -25,11 +25,7 @@ const customFormatterName = "customVegaFormatter";
 @Component({
   selector: "baw-chart",
   template: `
-    <div
-      #chartContainer
-      class="chartContainer"
-      (window:resize)="resizeEvent()"
-    >
+    <div #chartContainer class="chartContainer" (window:resize)="resizeEvent()">
       Chart loading
     </div>
   `,
@@ -66,13 +62,21 @@ export class ChartComponent implements AfterViewInit {
    *    this.projects.find((project: Project) => project.id === projectId);
    * ```
    */
-  @Input() public formatter: (item: unknown) => string;
+  @Input() public formatter?: (item: unknown) => string;
   @Input() public legendItemClickCallback: (item) => void;
 
   private fullSpec: Immutable.Collection<VisualizationSpec, VisualizationSpec>;
   private vegaView: Result;
+  private vegaFormatterFunction: ExpressionFunction
 
   public async ngAfterViewInit() {
+    if (this.formatter) {
+      this.vegaFormatterFunction = vega.expressionFunction(
+        customFormatterName,
+        (datum: unknown) => this.formatter(datum)
+      );
+    }
+
     // since vega lite graphs are objects, we need to create the new component spec by value, rather than by reference
     // updating by reference will cause all other graphs to update as well
     if (this.datasets) {
@@ -99,22 +103,19 @@ export class ChartComponent implements AfterViewInit {
 
     if (this.formatter) {
       this.vegaView.embedOptions.expressionFunctions = {
-        [`${customFormatterName}`]: this.vegaFormatter,
+        [`${customFormatterName}`]: this.vegaFormatterFunction,
       };
     }
   }
 
-  // by default, vega lite graphs only update when the window resize event is triggered
-  // however, we want to trigger a resize even whenever the component ios resized
-  // we sometimes want to resize the component eg. when collapsing/collapsing the component through show/hide buttons
+  // this is triggered by the window.resize event, which will trigger on all browsers when the window or container is resized
+  // this event will also trigger when printing, causing the graphs to fit to the page
   protected resizeEvent(): void {
-    this.vegaView.view.resize();
-    this.vegaView.view.run();
-  }
-
-  private vegaFormatter(): ExpressionFunction {
-    return vega.expressionFunction(customFormatterName, (datum) =>
-      this.formatter(datum)
-    );
+    // it is possible to trigger the resize event before the vega chart is embedded
+    // this will cause this component to throw an error and have no effect/benefits
+    if (this.vegaView) {
+      this.vegaView.view.resize();
+      this.vegaView.view.run();
+    }
   }
 }

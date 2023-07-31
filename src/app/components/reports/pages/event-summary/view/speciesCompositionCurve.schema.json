@@ -9,6 +9,23 @@
     "customFormatTypes": true
   },
   "mark": "area",
+  "selection": {
+    "hover": {
+      "type": "single",
+      "on": "mouseover",
+      "empty": "none"
+    }
+  },
+  "transform": [
+    {
+      "calculate": "format(datum.ratio, '.2f')",
+      "as": "formatted_ratio"
+    },
+    {
+      "calculate": "customFormatter(datum.tagId)",
+      "as": "formatted_tagId"
+    }
+  ],
   "encoding": {
     "x": {
       "field": "date",
@@ -20,7 +37,7 @@
       }
     },
     "y": {
-      "title": "Sum of Ratio",
+      "title": "Ratio",
       "aggregate": "sum",
       "field": "ratio",
       "type": "quantitative",
@@ -32,7 +49,7 @@
       "field": "tagId",
       "type": "nominal",
       "scale": {
-        "scheme": "category20b"
+        "scheme": "category10"
       },
       "legend": {
         "orient": "top",
@@ -40,6 +57,15 @@
         "formatType": "customFormatter",
         "labelFontSize": 14
       }
-    }
+    },
+    "opacity": {
+      "condition": {"selection": "hover", "value": 0.85},
+      "value": 1
+    },
+    "tooltip": [
+      {"field": "date", "title": "Date"},
+      {"field": "formatted_tagId", "title": "Event"},
+      {"field": "formatted_ratio", "title": "Ratio"}
+    ]
   }
 }

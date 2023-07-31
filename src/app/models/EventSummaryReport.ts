@@ -1,9 +1,11 @@
-import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id, Ids, Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { hasMany } from "./AssociationDecorators";
 import { bawCollection, bawDateTime } from "./AttributeDecorators";
 import { Site } from "./Site";
+import { Tag } from "./Tag";
+import { Region } from "./Region";
 
 export interface IAudioEventSummaryReportStatistics {
   totalSearchSpan: number;
@@ -78,6 +80,8 @@ export interface IEventSummaryReport {
   statistics: IAudioEventSummaryReportStatistics;
   eventGroups: IEventGroup[];
   siteIds: Id[] | Ids;
+  regionIds: Id[] | Ids;
+  tagIds: Id[] | Ids;
   graphs: IEventSummaryGraphs;
 }
 
@@ -94,11 +98,20 @@ export class EventSummaryReport
   public readonly eventGroups: IEventGroup[];
   @bawCollection()
   public readonly siteIds: Ids;
+  @bawCollection()
+  public readonly regionIds: Ids;
   public readonly graphs: IEventSummaryGraphs;
   public readonly timeSeriesGraph: ITimeSeriesGraph[];
+  @bawCollection()
+  public readonly tagIds: Ids;
 
+  // associations
+  @hasMany<EventSummaryReport, Region>(SHALLOW_REGION, "regionIds")
+  public regions?: Region[];
   @hasMany<EventSummaryReport, Site>(SHALLOW_SITE, "siteIds")
   public sites?: Site[];
+  @hasMany<EventSummaryReport, Tag>(TAG, "tagIds" as any)
+  public tags?: Tag[];
 
   public get viewUrl(): string {
     throw new Error("Method not implemented.");

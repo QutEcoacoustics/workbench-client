@@ -6,7 +6,8 @@ import {
   option,
   ApiFilterShow,
 } from "@baw-api/api-common";
-import { BawApiService, Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { ApiResponse, BawApiService, Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import {
   BawProvider,
   BawResolver,
@@ -14,8 +15,8 @@ import {
 } from "@baw-api/resolver-common";
 import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/EventSummaryReportParameters";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { EventSummaryReport, IEventGroup } from "@models/EventSummaryReport";
-import { Observable, Subscriber } from "rxjs";
+import { EventSummaryReport, IEventGroup, IEventSummaryReport } from "@models/EventSummaryReport";
+import { Observable, map, of } from "rxjs";
 
 // at the current moment, the api does not support fetching saved reports from id. However, this is planned for the future
 // to backfill in preparation, this service has been backfilled
@@ -28,7 +29,10 @@ const endpoint = stringTemplate`/reports/audio_event_summary/${reportId}${option
 export class EventSummaryReportService
   implements ApiFilterShow<EventSummaryReport>
 {
-  public constructor(protected api: BawApiService<EventSummaryReport>) {}
+  public constructor(
+    protected session: BawSessionService,
+    protected api: BawApiService<EventSummaryReport>
+  ) {}
 
   // because filter returns an array of item, and we want to return one item given filter conditions
   // we cannot use the generalised filter service interface
@@ -41,6 +45,9 @@ export class EventSummaryReportService
     // to make the report believable, we have to use the filter parameters so that it uses actual sites, tags, etc...
     // this information is returned by the api, and can therefore be removed once a fully functional api is available
     const filterConditions: object[] = filters.filter.and as object[];
+
+    const regionIdFilter: InnerFilter<EventSummaryReport> =
+      filterConditions?.find((filterCondition) => "region.id" in filterCondition);
 
     const sideIdFilter: InnerFilter<EventSummaryReport> =
       filterConditions?.find((filterCondition) => "site.id" in filterCondition);
@@ -59,6 +66,7 @@ export class EventSummaryReportService
       ? provenanceIdFilter["provenance.id"].in
       : [];
     const tagIds: number[] = tagIdFilter ? tagIdFilter["tag.id"].in : [];
+    const regionIds: number[] = regionIdFilter ? regionIdFilter["region.id"].in : [];
 
     // for "realistic" looking data we use real tags and provenances so that each provenance has a fixed number of detections for each tag
     const eventGroups: IEventGroup[] = tagIds
@@ -87,8 +95,11 @@ export class EventSummaryReportService
 
     // hard coded graph and statics data was used to generate "realistic" event summary reports
     // faker.js was not used as it is a dev-dependency and would significantly increase the initial bundle size
-    const fakeReport: EventSummaryReport = new EventSummaryReport({
+    const fakeReport: IEventSummaryReport = {
       siteIds,
+      regionIds,
+      // remove this before review as it's not in line with the spec
+      tagIds,
       name: "Mock Event Summary Report",
       generatedDate: "2023-07-07T00:00:00.0000000",
       eventGroups,
@@ -172,12 +183,21 @@ export class EventSummaryReportService
           { date: "2023-01-08", audioCoverage: 0.1, analysisCoverage: 0.0 },
         ],
       },
-    });
+    };
 
-    return new Observable((observer: Subscriber<EventSummaryReport>) => {
-      observer.next(fakeReport);
-      observer.complete();
-    });
+    //we have to create a fake response so that we can add the correct injection service
+    const fakeResponse: ApiResponse<IEventSummaryReport> = {
+      meta: {
+        status: 200,
+        message: "OK",
+      },
+      data: fakeReport,
+    };
+
+    // using the api.handleSingleResponse method, we can create a model with the correct injection services
+    return of(fakeResponse).pipe(
+      map(this.api.handleSingleResponse(EventSummaryReport))
+    );
     // return this.api.filterShow(EventSummaryReport, endpoint(emptyParam, filterParam), filters);
   }
 

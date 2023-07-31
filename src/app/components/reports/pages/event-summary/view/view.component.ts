@@ -1,19 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import {
-  ShallowRegionsService,
-  regionResolvers,
-} from "@baw-api/region/regions.service";
+import { regionResolvers } from "@baw-api/region/regions.service";
 import {
   retrieveResolvers,
   hasResolvedSuccessfully,
   ResolvedModelList,
 } from "@baw-api/resolver-common";
-import {
-  ShallowSitesService,
-  siteResolvers,
-} from "@baw-api/site/sites.service";
+import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   reportCategories,
   reportMenuItems,
@@ -30,8 +24,7 @@ import {
   EventSummaryReportService,
   eventSummaryResolvers,
 } from "@baw-api/reports/event-report/event-summary-report.service";
-import { Observable, first, takeUntil } from "rxjs";
-import { TagsService } from "@baw-api/tag/tags.service";
+import { Observable, first } from "rxjs";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
@@ -39,7 +32,6 @@ import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
 import { Location } from "@angular/common";
 import { Datasets } from "vega-lite/build/src/spec/toplevel";
-import { ExpressionFunction, vega } from "vega-embed";
 import {
   Chart,
   EventSummaryReportParameters,
@@ -66,9 +58,6 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     private router: Router,
     private session: BawSessionService,
     private provenanceApi: AudioEventProvenanceService,
-    private tagsApi: TagsService,
-    private regionApi: ShallowRegionsService,
-    private sitesApi: ShallowSitesService,
     private location: Location
   ) {
     super();
@@ -80,10 +69,6 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   public project: Project;
   public region?: Region;
   public site?: Site;
-
-  public regions: Region[] = [];
-  public sites: Site[] = [];
-  public tags: Tag[] = [];
 
   protected speciesAccumulationCurveSchema = speciesAccumulationCurveSchema;
   protected speciesCompositionCurveSchema = speciesCompositionCurveSchema;
@@ -108,27 +93,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     this.parameterDataModel = models[
       reportKey
     ][1] as EventSummaryReportParameters;
-
-    this.parameterDataModel.sites?.map((regionId: Id) =>
-      this.regionApi
-        .show(regionId)
-        .pipe(first(), takeUntil(this.unsubscribe))
-        .subscribe((regionModel: Region) => this.regions.push(regionModel))
-    );
-
-    this.parameterDataModel.points?.map((siteId: Id) =>
-      this.sitesApi
-        .show(siteId)
-        .pipe(first(), takeUntil(this.unsubscribe))
-        .subscribe((siteModel: Site) => this.sites.push(siteModel))
-    );
-
-    this.parameterDataModel.events?.map((tagId: Id) =>
-      this.tagsApi
-        .show(tagId)
-        .pipe(first(), takeUntil(this.unsubscribe))
-        .subscribe((tagModel: Tag) => this.tags.push(tagModel))
-    );
+    // console.log(JSON.stringify(this.report.tags));
   }
 
   protected get currentUser(): User {
@@ -139,15 +104,12 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return User.getUnknownUser(undefined);
   }
 
-  protected vegaTagText: ExpressionFunction = vega.expressionFunction(
-    "customFormatter",
-    (tagId: number): string => this.getTag(tagId)?.text
-  );
-
   protected vegaLegendClickCallback = (item) => console.log(item);
 
-  protected vegaTagTextFormatter = (tagId: number): string =>
-    this.getTag(tagId)?.text;
+  protected vegaTagTextFormatter = (tagId: number): string => {
+    console.log("fetching tag");
+    return this.getTag(tagId)?.text;
+  }
 
   protected get spectrogramUrls(): string[] {
     return [];
@@ -166,12 +128,12 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   }
 
   protected getTag(tagId: Id): Tag {
-    return this.tags.find((tagModel: Tag) => tagModel.id === tagId);
+    return this.report.tags.find((tagModel: Tag) => tagModel.id === tagId);
   }
 
   protected filteredSites(): Site[] {
     // the most common case is when the user has selected sites using the site selector
-    if (this.sites.length > 0) {
+    if (this.report.sites.length > 0) {
       return this.sites;
     }
 
