@@ -20,8 +20,8 @@ $heading-sizes: (
   }
 
   html {
+    // A4 page size width
     width: 210mm;
-    height: 297mm;
   }
 
   // hide branding during printing
@@ -79,6 +79,6 @@ $heading-sizes: (
   // every browser has their own custom headers, footers, default page size, and default margin sizes
   @page {
     margin: 0;
-    size: A4;
+    size: A4 portrait;
   }
 }
