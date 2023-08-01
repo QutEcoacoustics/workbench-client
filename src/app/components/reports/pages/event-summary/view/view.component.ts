@@ -118,13 +118,13 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   }
 
   protected getProvenance(provenanceId: Id): AudioEventProvenance {
-    return this.report.provenances.find(
+    return this.parameterDataModel.provenanceModels.find(
       (provenance: AudioEventProvenance) => provenance.id === provenanceId
     );
   }
 
   protected getTag(tagId: Id): Tag {
-    return this.report.tags.find((tagModel: Tag) => tagModel.id === tagId);
+    return this.parameterDataModel.tagModels.find((tagModel: Tag) => tagModel.id === tagId);
   }
 
   protected filteredSites(): Site[] {

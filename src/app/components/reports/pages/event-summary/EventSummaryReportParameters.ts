@@ -1,5 +1,6 @@
 import { Injector } from "@angular/core";
 import { Params } from "@angular/router";
+import { AUDIO_EVENT_PROVENANCE, SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
@@ -17,7 +18,12 @@ import {
 } from "@helpers/query-string-parameters/query-string-parameters";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
+import { hasMany } from "@models/AssociationDecorators";
+import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { EventSummaryReport } from "@models/EventSummaryReport";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { Tag } from "@models/Tag";
 import { DateTime, Duration } from "luxon";
 
 export enum Chart {
@@ -93,6 +99,15 @@ export class EventSummaryReportParameters
   public time: Duration[];
   public date: DateTime[];
   public charts: Chart[];
+
+  @hasMany<EventSummaryReportParameters, Region>(SHALLOW_REGION, "sites")
+  public regions: Region[];
+  @hasMany<EventSummaryReportParameters, Site>(SHALLOW_SITE, "points")
+  public siteModels: Site[];
+  @hasMany<EventSummaryReportParameters, Tag>(TAG, "events")
+  public tagModels: Tag[];
+  @hasMany<EventSummaryReportParameters, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenances")
+  public provenanceModels: AudioEventProvenance[];
 
   public get dateStartedAfter(): DateTime | null {
     return this.date ? this.date[0] : null;

@@ -140,14 +140,14 @@ export class EventSummaryReportService
       },
       graphs: {
         accumulationData: [
-          { date: "22-05-2023", count: 5.25, error: 0.93 },
-          { date: "23-05-2023", count: 9.75, error: 1.72 },
-          { date: "24-05-2023", count: 12.5, error: 2.38 },
-          { date: "25-05-2023", count: 12.51, error: 2.38 },
-          { date: "26-05-2023", count: 12.9, error: 2.51 },
-          { date: "27-05-2023", count: 12.93, error: 2.51 },
-          { date: "28-05-2023", count: 13.2, error: 2.6 },
-          { date: "29-05-2023", count: 13.5, error: 2.7 },
+          { date: "22-05-2023", count: 0, error: 0 },
+          { date: "23-05-2023", count: 3, error: 0 },
+          { date: "24-05-2023", count: 9, error: 1 },
+          { date: "25-05-2023", count: 15, error: 1 },
+          { date: "26-05-2023", count: 17, error: 2 },
+          { date: "27-05-2023", count: 18, error: 2 },
+          { date: "28-05-2023", count: 18, error: 2 },
+          { date: "29-05-2023", count: 20, error: 3 },
         ],
         speciesCompositionData: [
           { date: "22-05-2023", tagId: 1, ratio: 0.55 },
