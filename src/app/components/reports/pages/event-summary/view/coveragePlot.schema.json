@@ -4,9 +4,6 @@
   "data": {
     "name": "recordingCoverage"
   },
-  "config": {
-    "font": "'Helvetica Neue', Helvetica, Arial, sans-serif"
-  },
   "transform": [
     {
       "lookup": "startDate",
@@ -15,9 +12,15 @@
           "name": "analysisCoverage"
         },
         "key": "startDate",
-        "fields": ["startDate", "endDate"]
+        "fields": [
+          "startDate",
+          "endDate"
+        ]
       },
-      "as": ["analysis.startDate", "analysis.endDate"]
+      "as": [
+        "analysis.startDate",
+        "analysis.endDate"
+      ]
     }
   ],
   "resolve": {
@@ -30,7 +33,7 @@
       "title": {
         "text": "Audio recording Coverage",
         "anchor": "start",
-        "fontSize": 14,
+        "fontSize": 16,
         "fontWeight": "normal"
       },
       "width": "container",
@@ -44,12 +47,26 @@
             "title": null,
             "labels": false,
             "ticks": false,
+            "grid": true,
             "domain": false
           }
         },
         "x2": {
           "field": "endDate"
-        }
+        },
+        "color": {
+          "value": "var(--baw-primary)"
+        },
+        "tooltip": [
+          {
+            "field": "startDate",
+            "title": "Recording Start Date"
+          },
+          {
+            "field": "endDate",
+            "title": "Recording End Date"
+          }
+        ]
       }
     },
     {
@@ -61,20 +78,56 @@
       },
       "width": "container",
       "height": 50,
-      "mark": "bar",
-      "encoding": {
-        "x": {
-          "field": "analysis.startDate",
-          "type": "nominal",
-          "axis": {
-            "labelAngle": 45,
-            "title": null
+      "layer": [
+        {
+          "mark": "bar",
+          "encoding": {
+            "x": {
+              "field": "startDate",
+              "type": "nominal",
+              "axis": {
+                "labelAngle": 45,
+                "labelFontSize": 11,
+                "title": null,
+                "grid": true,
+                "tickCount": 1,
+                "tickMinStep": 1
+              }
+            },
+            "x2": {
+              "field": "endDate"
+            },
+            "color": {
+              "value": "var(--baw-warning)"
+            }
           }
         },
-        "x2": {
-          "field": "analysis.endDate"
+        {
+          "mark": "bar",
+          "encoding": {
+            "x": {
+              "field": "analysis.startDate",
+              "type": "nominal"
+            },
+            "x2": {
+              "field": "analysis.endDate"
+            },
+            "color": {
+              "value": "var(--baw-success)"
+            },
+            "tooltip": [
+              {
+                "field": "analysis.startDate",
+                "title": "Analysis Start Date"
+              },
+              {
+                "field": "analysis.endDate",
+                "title": "Analysis End Date"
+              }
+            ]
+          }
         }
-      }
+      ]
     }
   ]
 }

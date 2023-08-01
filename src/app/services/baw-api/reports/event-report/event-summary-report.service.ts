@@ -6,7 +6,7 @@ import {
   option,
   ApiFilterShow,
 } from "@baw-api/api-common";
-import { ApiResponse, BawApiService, Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { ApiResponse, BawApiService, Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import {
   BawProvider,
@@ -15,7 +15,11 @@ import {
 } from "@baw-api/resolver-common";
 import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/EventSummaryReportParameters";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { EventSummaryReport, IEventGroup, IEventSummaryReport } from "@models/EventSummaryReport";
+import { EventGroup } from "@models/EventGroup";
+import {
+  EventSummaryReport,
+  IEventSummaryReport,
+} from "@models/EventSummaryReport";
 import { Observable, map, of } from "rxjs";
 
 // at the current moment, the api does not support fetching saved reports from id. However, this is planned for the future
@@ -37,61 +41,13 @@ export class EventSummaryReportService
   // because filter returns an array of item, and we want to return one item given filter conditions
   // we cannot use the generalised filter service interface
   public filterShow(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     filters: Filters<EventSummaryReport>
   ): Observable<EventSummaryReport> {
-    // as the api is not currently functional, we are returning a mock report model
-    // this is done so that the reports can be showcased with a working view
-
-    // to make the report believable, we have to use the filter parameters so that it uses actual sites, tags, etc...
-    // this information is returned by the api, and can therefore be removed once a fully functional api is available
-    const filterConditions: object[] = filters.filter.and as object[];
-
-    const regionIdFilter: InnerFilter<EventSummaryReport> =
-      filterConditions?.find((filterCondition) => "region.id" in filterCondition);
-
-    const sideIdFilter: InnerFilter<EventSummaryReport> =
-      filterConditions?.find((filterCondition) => "site.id" in filterCondition);
-
-    const provenanceIdFilter: InnerFilter<EventSummaryReport> =
-      filterConditions?.find(
-        (filterCondition) => "provenance.id" in filterCondition
-      );
-
-    const tagIdFilter: InnerFilter<EventSummaryReport> = filterConditions?.find(
-      (filterCondition) => "tag.id" in filterCondition
-    );
-
-    const siteIds: number[] = sideIdFilter ? sideIdFilter["site.id"].in : [];
-    const provenanceIds: number[] = provenanceIdFilter
-      ? provenanceIdFilter["provenance.id"].in
-      : [];
-    const tagIds: number[] = tagIdFilter ? tagIdFilter["tag.id"].in : [];
-    const regionIds: number[] = regionIdFilter ? regionIdFilter["region.id"].in : [];
-
-    // for "realistic" looking data we use real tags and provenances so that each provenance has a fixed number of detections for each tag
-    const eventGroups: IEventGroup[] = tagIds
-      ?.map((tagId: number): IEventGroup[] =>
-        provenanceIds.map(
-          (provenanceId: number): IEventGroup => ({
-            provenanceId,
-            tagId,
-            detections: 55,
-            bucketsWithDetections: 0.7,
-            bucketsWithInterference: [],
-            score: {
-              histogram: [
-                0.9, 0.8, 0.7, 0.7, 0.6, 0.6, 0.5, 0.5, 0.5, 0.5, 0.4, 0.4, 0.3,
-                0.3, 0.2, 0.1,
-              ],
-              standardDeviation: 0.2,
-              mean: 0.5,
-              min: 0.1,
-              max: 0.9,
-            },
-          })
-        )
-      )
-      .flat();
+    const regionIds: number[] = [14, 7];
+    const siteIds: number[] = [3600, 3609, 3332, 3331];
+    const provenanceIds: number[] = [1];
+    const tagIds: number[] = [1, 1950, 39, 277];
 
     // hard coded graph and statics data was used to generate "realistic" event summary reports
     // faker.js was not used as it is a dev-dependency and would significantly increase the initial bundle size
@@ -104,7 +60,76 @@ export class EventSummaryReportService
       provenanceIds,
       name: "Mock Event Summary Report",
       generatedDate: "2023-07-07T00:00:00.0000000",
-      eventGroups,
+      eventGroups: [
+        new EventGroup({
+          provenanceId: 1,
+          tagId: 1,
+          detections: 55,
+          bucketsWithDetections: 0.7,
+          bucketsWithInterference: [],
+          score: {
+            histogram: [
+              0.9, 0.8, 0.7, 0.7, 0.6, 0.6, 0.5, 0.5, 0.5, 0.5, 0.4, 0.4, 0.3,
+              0.3, 0.2, 0.1,
+            ],
+            standardDeviation: 0.2,
+            mean: 0.5,
+            min: 0.1,
+            max: 0.9,
+          },
+        }),
+        new EventGroup({
+          provenanceId: 1,
+          tagId: 1950,
+          detections: 55,
+          bucketsWithDetections: 0.7,
+          bucketsWithInterference: [],
+          score: {
+            histogram: [
+              0.1, 0.2, 0.3, 0.3, 0.6, 0.6, 0.5, 0.2, 0.5, 0.5, 0.4, 0.4, 0.3,
+              0.3, 0.5, 0.1,
+            ],
+            standardDeviation: 0.4,
+            mean: 0.6,
+            min: 0.4,
+            max: 0.98,
+          },
+        }),
+        new EventGroup({
+          provenanceId: 1,
+          tagId: 39,
+          detections: 55,
+          bucketsWithDetections: 0.7,
+          bucketsWithInterference: [],
+          score: {
+            histogram: [
+              0.2, 0.5, 0.4, 0.4, 0.3, 0.3, 0.6, 0.2, 0.4, 0.3, 0.1, 0.4, 0.3,
+              0.3, 0.3, 0.1,
+            ],
+            standardDeviation: 0.1,
+            mean: 0.3,
+            min: 0.1,
+            max: 0.3,
+          },
+        }),
+        new EventGroup({
+          provenanceId: 1,
+          tagId: 277,
+          detections: 55,
+          bucketsWithDetections: 0.7,
+          bucketsWithInterference: [],
+          score: {
+            histogram: [
+              0.9, 0.1, 0.7, 0.7, 0.6, 0.3, 0.5, 0.3, 0.5, 0.2, 0.4, 0.4, 0.3,
+              0.3, 1, 0.9,
+            ],
+            standardDeviation: 0.2,
+            mean: 0.5,
+            min: 0.1,
+            max: 0.9,
+          },
+        }),
+      ],
       statistics: {
         totalSearchSpan: 256,
         audioCoverageOverSpan: 128,
@@ -115,14 +140,14 @@ export class EventSummaryReportService
       },
       graphs: {
         accumulationData: [
-          { date: "22-05-2023", count: 5.25, error: 1.5 },
-          { date: "23-05-2023", count: 9.75, error: 1.25 },
-          { date: "24-05-2023", count: 12.5, error: 1.1 },
-          { date: "25-05-2023", count: 12.5, error: 1.3 },
-          { date: "26-05-2023", count: 12.9, error: 1.2 },
-          { date: "27-05-2023", count: 12.93, error: 1.4 },
-          { date: "28-05-2023", count: 13.2, error: 1.15 },
-          { date: "29-05-2023", count: 13.5, error: 1.05 },
+          { date: "22-05-2023", count: 5.25, error: 0.93 },
+          { date: "23-05-2023", count: 9.75, error: 1.72 },
+          { date: "24-05-2023", count: 12.5, error: 2.38 },
+          { date: "25-05-2023", count: 12.51, error: 2.38 },
+          { date: "26-05-2023", count: 12.9, error: 2.51 },
+          { date: "27-05-2023", count: 12.93, error: 2.51 },
+          { date: "28-05-2023", count: 13.2, error: 2.6 },
+          { date: "29-05-2023", count: 13.5, error: 2.7 },
         ],
         speciesCompositionData: [
           { date: "22-05-2023", tagId: 1, ratio: 0.55 },
@@ -204,7 +229,7 @@ export class EventSummaryReportService
   }
 
   public eventDownloadUrl(): string {
-    return "https://www.google.com";
+    return "/";
   }
 }
 
@@ -240,7 +265,7 @@ class EventSummaryReportResolver extends BawResolver<
           provide: name + "CreateFromFilterResolver",
           useClass: resolver,
           deps,
-        }
+        },
       ],
     };
 
@@ -258,12 +283,10 @@ class EventSummaryReportResolver extends BawResolver<
     // we need to unpack the model response and create a new observable that encapsulates both the report and data model
     return new Observable<[EventSummaryReport, EventSummaryReportParameters]>(
       (subscriber) => {
-        api.filterShow(filters).subscribe(
-          (data: EventSummaryReport) => {
-            subscriber.next([data, parametersModel]);
-            subscriber.complete();
-          }
-        );
+        api.filterShow(filters).subscribe((data: EventSummaryReport) => {
+          subscriber.next([data, parametersModel]);
+          subscriber.complete();
+        });
       }
     );
   }

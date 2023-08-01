@@ -13,13 +13,21 @@
     "x": {
       "field": "data",
       "type": "quantitative",
-      "axis": null
+      "axis": {
+        "domain": true,
+        "labels": false,
+        "ticks": false,
+        "title": null
+      },
+      "scale": {
+        "domain": [0, 1]
+      }
     },
     "y": {
       "aggregate": "sum",
       "field": "data",
       "axis": null,
-      "stack": "center"
+      "stack": "zero"
     },
     "color": {
       "field": "category",
@@ -28,7 +36,10 @@
         "scheme": "category20"
       },
       "legend": null
-    }
+    },
+    "tooltip": [
+      { "field": "data", "title": "Score" }
+    ]
   },
   "config": {
     "view": {

@@ -33,6 +33,8 @@
       "type": "nominal",
       "axis": {
         "labelAngle": 45,
+        "labelFontSize": 11,
+        "grid": true,
         "title": null
       }
     },
@@ -42,7 +44,7 @@
       "field": "ratio",
       "type": "quantitative",
       "axis": {
-        "labelAngle": 45
+        "labelFontSize": 11
       }
     },
     "color": {

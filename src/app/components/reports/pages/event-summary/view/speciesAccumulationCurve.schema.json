@@ -5,14 +5,9 @@
   "data": {
     "values": []
   },
-  "config": {
-    "tooltip": {
-      "fontSize": 42
-    }
-  },
   "transform": [
     {
-      "calculate": "datum.count + datum.error",
+      "calculate": "datum.count - datum.error",
       "as": "count_plus_error"
     }
   ],
@@ -30,6 +25,8 @@
           "type": "nominal",
           "axis": {
             "labelAngle": 45,
+            "labelFontSize": 11,
+            "grid": true,
             "title": null
           }
         },
@@ -46,10 +43,10 @@
     {
       "mark": {
         "type": "errorband",
-        "interpolate": "monotone",
+        "interpolate": "linear",
         "color": "black",
         "opacity": 0.1,
-        "tension": 0.5
+        "tension": 1
       },
       "encoding": {
         "x": {
@@ -58,11 +55,11 @@
         },
         "y": {
           "title": "Count",
-          "field": "count",
+          "field": "count_plus_error",
           "type": "quantitative"
         },
-        "yError": {
-          "field": "error"
+        "y2": {
+          "field": "count"
         },
         "tooltip": [
           {
@@ -91,7 +88,7 @@
     {
       "mark": {
         "type": "line",
-        "interpolate": "monotone"
+        "interpolate": "linear"
       },
       "encoding": {
         "x": {
@@ -99,6 +96,7 @@
           "type": "nominal",
           "axis": {
             "labelAngle": 45,
+            "labelFontSize": 11,
             "title": null
           }
         },

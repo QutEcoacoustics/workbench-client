@@ -4,10 +4,9 @@ import {
   ElementRef,
   Input,
   ViewChild,
-  ChangeDetectionStrategy,
 } from "@angular/core";
 import { Data } from "@angular/router";
-import { Map } from "immutable";
+import { DeviceDetectorService } from "ngx-device-detector";
 import embed, {
   EmbedOptions,
   ExpressionFunction,
@@ -29,21 +28,27 @@ const customFormatterName = "customFormatter";
       #chartContainer
       class="chartContainer marks"
       (window:resize)="resizeEvent()"
+      (window:beforeprint)="resizeEvent()"
+      (window:afterprint)="resizeEvent()"
     >
       Chart loading
     </div>
   `,
   styleUrls: ["chart.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChartComponent implements AfterViewInit {
-  public constructor() {}
+  public constructor(
+    private deviceDetector: DeviceDetectorService
+  ) {}
 
   @ViewChild("chartContainer") public element: ElementRef;
 
   // vega lite spec and data are the same object, therefore, by separating the two at the component level
   // we can create multiple graphs with different data from the same spec
-  @Input() public spec;
+  // we use an immutablejs object because the only way to recreate a graph is to destroy it and recreate it
+  // we therefore don't allow it to be updated with change detection or through an RxJS observable
+  //! look at https://vega.github.io/vega-lite/tutorials/streaming.html to double check if we can implement this
+  @Input() public spec: Immutable.Collection<unknown, unknown>;
   /** A single data input */
   @Input() public data?: Data;
   /**
@@ -68,11 +73,17 @@ export class ChartComponent implements AfterViewInit {
    */
   @Input() public formatter?: (item: unknown) => string;
 
-  private fullSpec: Immutable.Collection<VisualizationSpec, VisualizationSpec>;
   private vegaView: Result;
   private vegaFormatterFunction: ExpressionFunction;
 
   public async ngAfterViewInit() {
+    const defaultOptions: EmbedOptions = {
+      // we always want to use svg as the renderer (unless unless explicitly overridden in the options) as it has sharper text
+      // svg is currently buggy on Firefox (Window's) and results in bad rendered text https://bugzilla.mozilla.org/show_bug.cgi?id=1747705
+      // therefore, we need to use canvas if the user is on Firefox
+      renderer: this.isFirefox() ? "canvas" : "svg"
+    };
+
     if (this.formatter) {
       this.vegaFormatterFunction = vega.expressionFunction(
         customFormatterName,
@@ -82,31 +93,16 @@ export class ChartComponent implements AfterViewInit {
 
     // since vega lite graphs are objects, we need to create the new component spec by value, rather than by reference
     // updating by reference will cause all other graphs to update as well
-    if (this.datasets) {
-      this.fullSpec = Map({
-        ...this.spec,
-        datasets: this.datasets,
-      });
-    } else if (this.data) {
-      this.fullSpec = Map({
-        ...this.spec,
-        data: {
-          values: this.data,
-        },
-      });
-    } else {
-      this.fullSpec = Map(this.spec);
-    }
-
-    this.vegaView = await embed(
-      this.element.nativeElement,
-      this.fullSpec.toObject(),
-      {
-        // we always want to use svg as the renderer (unless unless explicitly overridden in the options) as it has sharper text
-        renderer: "svg",
-        ...this.options,
-      }
+    const fullSpec: VisualizationSpec = this.addDataToSpec(
+      this.spec,
+      this.datasets,
+      this.data
     );
+
+    this.vegaView = await embed(this.element.nativeElement, fullSpec, {
+      ...defaultOptions,
+      ...this.options,
+    });
 
     if (this.formatter) {
       this.vegaView.embedOptions.expressionFunctions = {
@@ -123,6 +119,32 @@ export class ChartComponent implements AfterViewInit {
     if (this.vegaView) {
       this.vegaView.view.resize();
       this.vegaView.view.run();
+    }
+  }
+
+  private isFirefox(): boolean {
+    return this.deviceDetector.browser === "Firefox";
+  }
+
+  private addDataToSpec(
+    spec,
+    datasets = undefined,
+    data = undefined
+  ): VisualizationSpec {
+    if (this.datasets) {
+      return {
+        ...spec.toObject(),
+        datasets,
+      };
+    } else if (this.data) {
+      return {
+        ...spec.toObject(),
+        data: {
+          values: data,
+        },
+      };
+    } else {
+      return spec.toObject();
     }
   }
 }

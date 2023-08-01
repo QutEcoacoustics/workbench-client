@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import {  Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -31,6 +31,7 @@ import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
 import { Location } from "@angular/common";
 import { Datasets } from "vega-lite/build/src/spec/toplevel";
+import { Map } from "immutable";
 import {
   Chart,
   EventSummaryReportParameters,
@@ -69,10 +70,10 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   public region?: Region;
   public site?: Site;
 
-  protected speciesAccumulationCurveSchema = speciesAccumulationCurveSchema;
-  protected speciesCompositionCurveSchema = speciesCompositionCurveSchema;
-  protected confidencePlotSchema = confidencePlotSchema;
-  protected coveragePlotSchema = coveragePlotSchema;
+  protected speciesAccumulationCurveSchema = Map(speciesAccumulationCurveSchema);
+  protected speciesCompositionCurveSchema = Map(speciesCompositionCurveSchema);
+  protected confidencePlotSchema = Map(confidencePlotSchema);
+  protected coveragePlotSchema = Map(coveragePlotSchema);
   protected chartTypes = Chart;
 
   public ngOnInit(): void {

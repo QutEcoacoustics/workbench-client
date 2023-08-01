@@ -5,6 +5,7 @@ import {
   TAG,
 } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id, Ids, Param } from "@interfaces/apiInterfaces";
+import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/EventSummaryReportParameters";
 import { AbstractModel } from "./AbstractModel";
 import { hasMany } from "./AssociationDecorators";
 import { bawCollection, bawDateTime } from "./AttributeDecorators";
@@ -12,6 +13,7 @@ import { Site } from "./Site";
 import { Tag } from "./Tag";
 import { Region } from "./Region";
 import { AudioEventProvenance } from "./AudioEventProvenance";
+import { EventGroup } from "./EventGroup";
 
 export interface IAudioEventSummaryReportStatistics {
   totalSearchSpan: number;
@@ -20,15 +22,6 @@ export interface IAudioEventSummaryReportStatistics {
   countOfRecordingsAnalyzed: number;
   coverageStartDay: DateTimeTimezone | string;
   coverageEndDay: DateTimeTimezone | string;
-}
-
-export interface IEventGroup {
-  provenanceId: Id;
-  tagId: Id;
-  detections: number;
-  bucketsWithDetections: number;
-  score: IEventScore;
-  bucketsWithInterference?: IReportEvent[];
 }
 
 export interface IEventScore {
@@ -84,12 +77,13 @@ export interface IEventSummaryReport {
   name: Param;
   generatedDate: DateTimeTimezone | string;
   statistics: IAudioEventSummaryReportStatistics;
-  eventGroups: IEventGroup[];
+  eventGroups: EventGroup[];
   siteIds: Id[] | Ids;
   regionIds: Id[] | Ids;
   tagIds: Id[] | Ids;
   provenanceIds: Id[] | Ids;
   graphs: IEventSummaryGraphs;
+  generationParameters?: EventSummaryReportParameters;
 }
 
 export class EventSummaryReport
@@ -102,7 +96,7 @@ export class EventSummaryReport
   @bawDateTime()
   public readonly generatedDate: DateTimeTimezone | string;
   public readonly statistics: IAudioEventSummaryReportStatistics;
-  public readonly eventGroups: IEventGroup[];
+  public readonly eventGroups: EventGroup[];
   @bawCollection()
   public readonly siteIds: Ids;
   @bawCollection()
@@ -113,6 +107,7 @@ export class EventSummaryReport
   public readonly tagIds: Ids;
   @bawCollection()
   public readonly provenanceIds: Ids;
+  public readonly generationParameters?: EventSummaryReportParameters;
 
   // associations
   @hasMany<EventSummaryReport, Region>(SHALLOW_REGION, "regionIds")

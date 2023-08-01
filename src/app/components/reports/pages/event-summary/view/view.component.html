@@ -105,7 +105,7 @@
       This is because this a not specified provenance score allows through all events, which is equivalent to a score cut-off of 0
       To be verbose, we reflect this client side to the user by using 0.0 as the score cut-off instead of (not specified)
     -->
-    {{ parameterDataModel.score ?? 0 | number : "1.1-1" }}
+    {{ parameterDataModel.score ?? 0 | number : "1.2-2" }}
   </div>
 
   <div class="search-parameter">
@@ -149,20 +149,20 @@
 
   <div>
     <div>
-      <b>Total requested range: </b>
+      <b>Search condition range: </b>
       {{ unixEpochToDuration(this.report.statistics?.totalSearchSpan) | toRelative }}
     </div>
 
     <div>
-      <b>Total Duration of selected audio recordings: </b>
+      <b>Total duration of selected audio recordings: </b>
       {{unixEpochToDuration(this.report.statistics?.audioCoverageOverSpan) | toRelative}}
-      (50% of requested range)
+      (50% of search condition range)
     </div>
 
     <div>
       <b>Total analysed duration of selected audio recordings: </b>
       {{ unixEpochToDuration(this.report.statistics?.analysisCoverageOverSpan) | toRelative }}
-      (30% of audio recording range)
+      (30% of search condition range)
     </div>
   </div>
 </section>
@@ -218,11 +218,11 @@
             [data]="item.score.histogram"
           ></baw-chart>
 
-          <small class="m-1 text-muted">
+          <small class="m-1 text-muted text-nowrap">
             x̄: {{ item.score.mean | number : "1.2-2" }}
           </small>
           <wbr>
-          <small class="m-1 text-muted">
+          <small class="m-1 text-muted text-nowrap">
             σ: {{ item.score.standardDeviation | number : "1.2-2" }}
           </small>
         </td>
