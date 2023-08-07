@@ -6,7 +6,6 @@ import {
   ViewChild,
 } from "@angular/core";
 import { Data } from "@angular/router";
-import { DeviceDetectorService } from "ngx-device-detector";
 import embed, {
   EmbedOptions,
   ExpressionFunction,
@@ -37,9 +36,7 @@ const customFormatterName = "customFormatter";
   styleUrls: ["chart.component.scss"],
 })
 export class ChartComponent implements AfterViewInit {
-  public constructor(
-    private deviceDetector: DeviceDetectorService
-  ) {}
+  public constructor() {}
 
   @ViewChild("chartContainer") public element: ElementRef;
 
@@ -80,8 +77,7 @@ export class ChartComponent implements AfterViewInit {
     const defaultOptions: EmbedOptions = {
       // we always want to use svg as the renderer (unless unless explicitly overridden in the options) as it has sharper text
       // svg is currently buggy on Firefox (Window's) and results in bad rendered text https://bugzilla.mozilla.org/show_bug.cgi?id=1747705
-      // therefore, we need to use canvas if the user is on Firefox
-      renderer: this.isFirefox() ? "canvas" : "svg"
+      renderer: "svg"
     };
 
     if (this.formatter) {
@@ -111,6 +107,14 @@ export class ChartComponent implements AfterViewInit {
     }
   }
 
+  public async downloadChartAsCsv(): Promise<void> {
+    if (this.vegaView) {
+      // download the chart as csv here
+    } else {
+      console.error("Failed to download vega-lite chart as CSV. Chart is not loaded or does not exist.");
+    }
+  }
+
   // this is triggered by the window.resize event, which will trigger on all browsers when the window or container is resized
   // this event will also trigger when printing, causing the graphs to fit to the page
   protected resizeEvent(): void {
@@ -120,10 +124,6 @@ export class ChartComponent implements AfterViewInit {
       this.vegaView.view.resize();
       this.vegaView.view.run();
     }
-  }
-
-  private isFirefox(): boolean {
-    return this.deviceDetector.browser === "Firefox";
   }
 
   private addDataToSpec(

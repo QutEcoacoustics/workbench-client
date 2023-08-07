@@ -167,7 +167,7 @@
   </div>
 </section>
 
-<section class="events-table-section">
+<section id="events-table-container">
   <h3>
     Events Table
 
@@ -210,7 +210,9 @@
         <td class="col">
           {{ item.bucketsWithDetections | percent }}
         </td>
-        <td class="col">{{ item.bucketsWithInterference.length }}</td>
+        <td class="col">
+          {{ item.bucketsWithInterference.length }}
+        </td>
         <td class="col">
           <baw-chart
             class="embedded-figure"
@@ -231,7 +233,7 @@
   </table>
 </section>
 
-<section class="charts-section">
+<section id="charts-container">
   <h3>Charts</h3>
 
   <div class="alert alert-info p-3 my-3">
@@ -242,7 +244,10 @@
     <h4>
       Species Accumulation Curve
 
-      <a [href]="eventSummaryReportApi.eventDownloadUrl()">
+      <a
+        href="javascript:void 0"
+        (click)="accumulationChart.downloadChartAsCsv()"
+      >
         <fa-icon
           class="download-button"
           [icon]="['fas', 'file-arrow-down']"
@@ -250,14 +255,16 @@
         ></fa-icon>
       </a>
 
-      <button class="toggle-graph-button btn btn-secondary btn-sm">
+      <button
+        class="toggle-graph-button btn btn-secondary btn-sm"
+        (click)="
+          toggleChart(
+            chartTypes.speciesAccumulationCurve,
+            !showChart(chartTypes.speciesAccumulationCurve)
+          )
+        "
+      >
         <fa-icon
-          (click)="
-            toggleChart(
-              chartTypes.speciesAccumulationCurve,
-              !showChart(chartTypes.speciesAccumulationCurve)
-            )
-          "
           [icon]="[
             'fas',
             showChart(chartTypes.speciesAccumulationCurve)
@@ -275,6 +282,7 @@
 
     <div [ngbCollapse]="!showChart(chartTypes.speciesAccumulationCurve)">
       <baw-chart
+        #accumulationChart
         class="large-embedded-figure"
         [spec]="speciesAccumulationCurveSchema"
         [data]="report.graphs?.accumulationData"
@@ -286,7 +294,10 @@
     <h4>
       Species Composition
 
-      <a [href]="eventSummaryReportApi.eventDownloadUrl()">
+      <a
+        href="javascript:void 0"
+        (click)="compositionChart.downloadChartAsCsv()"
+      >
         <fa-icon
           class="download-button"
           [icon]="['fas', 'file-arrow-down']"
@@ -294,14 +305,16 @@
         ></fa-icon>
       </a>
 
-      <button class="toggle-graph-button btn btn-secondary btn-sm">
+      <button
+        class="toggle-graph-button btn btn-secondary btn-sm"
+        (click)="
+          toggleChart(
+            chartTypes.speciesCompositionCurve,
+            !showChart(chartTypes.speciesCompositionCurve)
+          )
+        "
+      >
         <fa-icon
-          (click)="
-            toggleChart(
-              chartTypes.speciesCompositionCurve,
-              !showChart(chartTypes.speciesCompositionCurve)
-            )
-          "
           [icon]="[
             'fas',
             showChart(chartTypes.speciesCompositionCurve)
@@ -319,6 +332,7 @@
 
     <div [ngbCollapse]="!showChart(chartTypes.speciesCompositionCurve)">
       <baw-chart
+        #compositionChart
         class="large-embedded-figure"
         [spec]="speciesCompositionCurveSchema"
         [data]="report.graphs?.speciesCompositionData"
@@ -342,15 +356,17 @@
         ></fa-icon>
       </a>
 
-      <button class="toggle-graph-button btn btn-secondary btn-sm">
+      <button
+        class="toggle-graph-button btn btn-secondary btn-sm"
+        (click)="
+          toggleChart(
+            chartTypes.falseColorSpectrograms,
+            !showChart(chartTypes.falseColorSpectrograms)
+          )
+        "
+      >
         <fa-icon
           class="toggle-graph-button btn btn-secondary btn-sm"
-          (click)="
-            toggleChart(
-              chartTypes.falseColorSpectrograms,
-              !showChart(chartTypes.falseColorSpectrograms)
-            )
-          "
           [icon]="[
             'fas',
             showChart(chartTypes.falseColorSpectrograms)

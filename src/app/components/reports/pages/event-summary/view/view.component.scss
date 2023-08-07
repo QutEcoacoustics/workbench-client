@@ -39,12 +39,6 @@ h3 {
   font-style: italic;
 }
 
-#native-species-container {
-  width: 25%;
-  max-width: fit-content;
-  margin-right: 1em;
-}
-
 #search-parameters-container {
   display: flex;
   flex-wrap: wrap;
@@ -110,5 +104,10 @@ h3 {
   .site-map {
     -webkit-print-color-adjust: exact;
     color-adjust: exact;
+  }
+
+  #events-table-container,
+  #charts-container {
+    break-before: always;
   }
 }

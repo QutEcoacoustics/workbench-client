@@ -36,6 +36,9 @@
         "labelFontSize": 11,
         "grid": true,
         "title": null
+      },
+      "scale": {
+        "padding": 0
       }
     },
     "y": {
@@ -55,9 +58,12 @@
       },
       "legend": {
         "orient": "top",
-        "format": "number",
         "formatType": "customFormatter",
-        "labelFontSize": 14
+        "labelFontSize": 14,
+        "labelColor": "var(--bs-body-color)",
+        "title": "Events",
+        "titleFontSize": 16,
+        "titleFontWeight": "normal"
       }
     },
     "opacity": {

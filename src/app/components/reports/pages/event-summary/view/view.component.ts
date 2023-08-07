@@ -1,4 +1,4 @@
-import {  Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -20,12 +20,8 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import {
-  EventSummaryReportService,
-  eventSummaryResolvers,
-} from "@baw-api/reports/event-report/event-summary-report.service";
+import { EventSummaryReportService, eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
 import { Id } from "@interfaces/apiInterfaces";
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
@@ -57,7 +53,6 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private session: BawSessionService,
-    private provenanceApi: AudioEventProvenanceService,
     private location: Location
   ) {
     super();
@@ -70,7 +65,9 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   public region?: Region;
   public site?: Site;
 
-  protected speciesAccumulationCurveSchema = Map(speciesAccumulationCurveSchema);
+  protected speciesAccumulationCurveSchema = Map(
+    speciesAccumulationCurveSchema
+  );
   protected speciesCompositionCurveSchema = Map(speciesCompositionCurveSchema);
   protected confidencePlotSchema = Map(confidencePlotSchema);
   protected coveragePlotSchema = Map(coveragePlotSchema);
@@ -103,7 +100,8 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return User.getUnknownUser(undefined);
   }
 
-  protected vegaTagTextFormatter = (tagId: number): string => this.getTag(tagId)?.text;
+  protected vegaTagTextFormatter = (tagId: number): string =>
+    this.getTag(tagId)?.text;
 
   protected get spectrogramUrls(): string[] {
     return [];
@@ -124,7 +122,9 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   }
 
   protected getTag(tagId: Id): Tag {
-    return this.parameterDataModel.tagModels.find((tagModel: Tag) => tagModel.id === tagId);
+    return this.parameterDataModel.tagModels.find(
+      (tagModel: Tag) => tagModel.id === tagId
+    );
   }
 
   protected filteredSites(): Site[] {

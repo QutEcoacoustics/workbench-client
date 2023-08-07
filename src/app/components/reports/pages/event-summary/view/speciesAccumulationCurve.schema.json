@@ -8,38 +8,10 @@
   "transform": [
     {
       "calculate": "datum.count - datum.error",
-      "as": "count_plus_error"
+      "as": "count_subtract_error"
     }
   ],
   "layer": [
-    {
-      "mark": {
-        "type": "point",
-        "filled": true,
-        "color": "black"
-      },
-      "encoding": {
-        "x": {
-          "title": "Date",
-          "field": "date",
-          "type": "nominal",
-          "axis": {
-            "labelAngle": 45,
-            "labelFontSize": 11,
-            "grid": true,
-            "title": null
-          }
-        },
-        "y": {
-          "title": "Count",
-          "field": "count",
-          "type": "quantitative",
-          "axis": {
-            "labelAngle": 0
-          }
-        }
-      }
-    },
     {
       "mark": {
         "type": "errorband",
@@ -51,11 +23,20 @@
       "encoding": {
         "x": {
           "field": "date",
-          "type": "nominal"
+          "type": "nominal",
+          "axis": {
+            "labelAngle": 45,
+            "labelFontSize": 11,
+            "grid": true,
+            "title": null
+          },
+          "scale": {
+            "padding": 0
+          }
         },
         "y": {
           "title": "Count",
-          "field": "count_plus_error",
+          "field": "count_subtract_error",
           "type": "quantitative"
         },
         "y2": {
@@ -78,9 +59,9 @@
             "title": "Error"
           },
           {
-            "title": "Count + Error",
+            "title": "Count - Error",
             "type": "quantitative",
-            "field": "count_plus_error"
+            "field": "count_subtract_error"
           }
         ]
       }
@@ -98,6 +79,31 @@
             "labelAngle": 45,
             "labelFontSize": 11,
             "title": null
+          }
+        },
+        "y": {
+          "title": "Count",
+          "field": "count",
+          "type": "quantitative",
+          "axis": {
+            "labelAngle": 0
+          }
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "color": "black"
+      },
+      "encoding": {
+        "x": {
+          "title": "Date",
+          "field": "date",
+          "type": "nominal",
+          "scale": {
+            "padding": 0
           }
         },
         "y": {

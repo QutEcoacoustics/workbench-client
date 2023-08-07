@@ -27,7 +27,7 @@ export class AudioEventProvenanceService
   private mockAudioEventProvenance: AudioEventProvenance =
     new AudioEventProvenance({
       id: 1,
-      name: "Mock Audio Event Provenance",
+      name: "Fake Audio Event Provenance",
       version: "1.0",
       description: "Mock Description",
       score: 0.5,

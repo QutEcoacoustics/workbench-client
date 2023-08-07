@@ -57,6 +57,7 @@
     The recogniser score cut-off are outside the permitted boundary. Ensure that
     the value is between 0 and 1.
   </label>
+
   <div>
     <label for="bucketSizeInput">Bucket Size</label>
     <select
@@ -84,7 +85,7 @@
 
   <a
     type="submit"
-    class="btn btn-primary my-3 generateReportButton"
+    class="btn btn-primary my-3"
     [strongRoute]="viewReportRoute()"
     [queryParams]="model.toQueryParams()"
     [class.disabled]="form.invalid"

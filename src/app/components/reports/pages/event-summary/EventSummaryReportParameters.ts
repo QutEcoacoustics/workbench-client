@@ -1,6 +1,11 @@
 import { Injector } from "@angular/core";
 import { Params } from "@angular/router";
-import { AUDIO_EVENT_PROVENANCE, SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
+import {
+  AUDIO_EVENT_PROVENANCE,
+  SHALLOW_REGION,
+  SHALLOW_SITE,
+  TAG,
+} from "@baw-api/ServiceTokens";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
@@ -17,7 +22,7 @@ import {
   queryStringToNumberArray,
 } from "@helpers/query-string-parameters/query-string-parameters";
 import { Id } from "@interfaces/apiInterfaces";
-import { AbstractModelWithoutId } from "@models/AbstractModel";
+import { ImplementsInjector } from "@models/AbstractModel";
 import { hasMany } from "@models/AssociationDecorators";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { EventSummaryReport } from "@models/EventSummaryReport";
@@ -69,15 +74,12 @@ export interface IEventSummaryReportParameters {
 }
 
 export class EventSummaryReportParameters
-  extends AbstractModelWithoutId
-  implements IEventSummaryReportParameters
+  implements IEventSummaryReportParameters, ImplementsInjector
 {
   public constructor(
     queryStringParameters: Params = {},
-    data?: IEventSummaryReportParameters,
-    injector?: Injector
+    public injector?: Injector
   ) {
-    super(data, injector);
     // since query string parameters are losely typed using a string from the user space
     // we have to use this hacky implementation of manual key-value checking and assignment
     Object.entries(queryStringParameters).forEach(([key, value]) => {
@@ -106,7 +108,10 @@ export class EventSummaryReportParameters
   public siteModels: Site[];
   @hasMany<EventSummaryReportParameters, Tag>(TAG, "events")
   public tagModels: Tag[];
-  @hasMany<EventSummaryReportParameters, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenances")
+  @hasMany<EventSummaryReportParameters, AudioEventProvenance>(
+    AUDIO_EVENT_PROVENANCE,
+    "provenances"
+  )
   public provenanceModels: AudioEventProvenance[];
 
   public get dateStartedAfter(): DateTime | null {

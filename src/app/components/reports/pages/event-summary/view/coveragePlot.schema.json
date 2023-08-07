@@ -31,7 +31,7 @@
   "vconcat": [
     {
       "title": {
-        "text": "Audio recording Coverage",
+        "text": "Audio Recording Coverage",
         "anchor": "start",
         "fontSize": 16,
         "fontWeight": "normal"
@@ -42,7 +42,7 @@
       "encoding": {
         "x": {
           "field": "startDate",
-          "type": "nominal",
+          "type": "temporal",
           "axis": {
             "title": null,
             "labels": false,
@@ -59,12 +59,16 @@
         },
         "tooltip": [
           {
+            "type": "temporal",
             "field": "startDate",
-            "title": "Recording Start Date"
+            "title": "Recording Start Date",
+            "timeUnit": "yearmonthdate"
           },
           {
+            "type": "temporal",
             "field": "endDate",
-            "title": "Recording End Date"
+            "title": "Recording End Date",
+            "timeUnit": "yearmonthdate"
           }
         ]
       }
@@ -73,7 +77,7 @@
       "title": {
         "text": "Analysis Coverage",
         "anchor": "start",
-        "fontSize": 14,
+        "fontSize": 16,
         "fontWeight": "normal"
       },
       "width": "container",
@@ -84,14 +88,20 @@
           "encoding": {
             "x": {
               "field": "startDate",
-              "type": "nominal",
+              "type": "temporal",
               "axis": {
                 "labelAngle": 45,
-                "labelFontSize": 11,
+                "labelFontSize": 12,
                 "title": null,
                 "grid": true,
-                "tickCount": 1,
-                "tickMinStep": 1
+                "tickCount": {
+                  "interval": "month"
+                },
+                "format": "%b %Y"
+              },
+              "scale": {
+                "padding": 0,
+                "paddingInner": 1
               }
             },
             "x2": {
@@ -107,7 +117,7 @@
           "encoding": {
             "x": {
               "field": "analysis.startDate",
-              "type": "nominal"
+              "type": "temporal"
             },
             "x2": {
               "field": "analysis.endDate"

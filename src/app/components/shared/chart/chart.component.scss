@@ -6,18 +6,10 @@
 ::ng-deep .chartContainer > .marks {
   width: inherit;
   height: auto;
-  // because SVG text rendering is buggy on Firefox (Window's only)
-  // we use a HTML canvas which is usually optimized for speed (not quality)
-  // this results in text being "blurry"
-  // to fix this issue we use the image-rendering: crisp-edges to make the text sharper
-  // this only effects Firefox as Chromium based browsers (Chrome & Edge) use SVG
-  image-rendering: crisp-edges;
 }
 
 @media print {
-  // using crisp-edges rendering in print styles causes the text to become unreadable
-  // we therefore use auto image rendering for print styles
-  ::ng-deep .chartContainer > .marks {
-    image-rendering: auto;
+  .chartContainer {
+    break-inside: avoid;
   }
 }

@@ -87,7 +87,7 @@ export class EventSummaryReportService
           score: {
             histogram: [
               0.1, 0.2, 0.3, 0.3, 0.6, 0.6, 0.5, 0.2, 0.5, 0.5, 0.4, 0.4, 0.3,
-              0.3, 0.5, 0.1,
+              0.3, 0.5, 0.1, 0.7, 0.7, 0.6, 0.7, 0.8, 0.8, 0.9
             ],
             standardDeviation: 0.4,
             mean: 0.6,
@@ -104,7 +104,7 @@ export class EventSummaryReportService
           score: {
             histogram: [
               0.2, 0.5, 0.4, 0.4, 0.3, 0.3, 0.6, 0.2, 0.4, 0.3, 0.1, 0.4, 0.3,
-              0.3, 0.3, 0.1,
+              0.3, 0.3, 0.1, 0.6, 0.7, 0.8, 0.9
             ],
             standardDeviation: 0.1,
             mean: 0.3,
@@ -200,6 +200,7 @@ export class EventSummaryReportService
             { startDate: "2021-08-10", endDate: "2021-10-11" },
           ],
         },
+        // TODO: I might be able to remove this
         analysisConfidenceData: [
           { date: "2023-01-02", audioCoverage: 0.5, analysisCoverage: 0.5 },
           { date: "2023-01-03", audioCoverage: 0.6, analysisCoverage: 0.5 },
@@ -241,7 +242,7 @@ interface ResolverNames {
 // and sending the request to the server to fetch the EventSummaryReports model.
 // as we have already fetched the query string parameter data model, we should keep it in route data for future use
 class EventSummaryReportResolver extends BawResolver<
-  [EventSummaryReport, EventSummaryReportParameters],
+  [EventSummaryReport, any],
   EventSummaryReport,
   [],
   EventSummaryReportService,
@@ -276,7 +277,19 @@ class EventSummaryReportResolver extends BawResolver<
     route: ActivatedRouteSnapshot,
     api: EventSummaryReportService
   ): Observable<[EventSummaryReport, EventSummaryReportParameters]> {
+    const requiredEvents = [ 1, 2, 1950, 39, 277 ];
+    const requiredProvenances = [ 1 ];
+
     const parametersModel = new EventSummaryReportParameters(route.queryParams);
+
+    if (parametersModel.events) {
+      parametersModel.events = [ ...parametersModel.events, ...requiredEvents ];
+    } else {
+      parametersModel.events = requiredEvents;
+    }
+
+    parametersModel.provenances = requiredProvenances;
+
     const filters: Filters<EventSummaryReport> = parametersModel.toFilter();
 
     // because we are returning the data model that was used to fetch the reports model
@@ -284,7 +297,12 @@ class EventSummaryReportResolver extends BawResolver<
     return new Observable<[EventSummaryReport, EventSummaryReportParameters]>(
       (subscriber) => {
         api.filterShow(filters).subscribe((data: EventSummaryReport) => {
-          subscriber.next([data, parametersModel]);
+          parametersModel.injector = data["injector"];
+
+          subscriber.next([
+            data,
+            parametersModel
+          ]);
           subscriber.complete();
         });
       }

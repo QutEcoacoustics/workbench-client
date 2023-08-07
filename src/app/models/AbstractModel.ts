@@ -17,6 +17,12 @@ export type AbstractModelConstructor<Model> = new (
   _injector?: Injector
 ) => Model;
 
+export interface ImplementsInjector {
+  injector?: Injector;
+}
+
+export type AssociationInjector = ImplementsInjector | AbstractModel;
+
 /**
  * BAW Server Abstract Model
  */
