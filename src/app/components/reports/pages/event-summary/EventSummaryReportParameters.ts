@@ -21,9 +21,10 @@ import {
   queryStringNumber,
   queryStringToNumberArray,
 } from "@helpers/query-string-parameters/query-string-parameters";
-import { Id } from "@interfaces/apiInterfaces";
+import { Id, Ids } from "@interfaces/apiInterfaces";
 import { ImplementsInjector } from "@models/AbstractModel";
 import { hasMany } from "@models/AssociationDecorators";
+import { bawCollection } from "@models/AttributeDecorators";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { Region } from "@models/Region";
@@ -61,10 +62,10 @@ const conversionTable = {
 };
 
 export interface IEventSummaryReportParameters {
-  sites: Id[];
-  points: Id[];
-  provenances: Id[];
-  events: Id[];
+  sites: Id[] | Ids;
+  points: Id[] | Ids;
+  provenances: Id[] | Ids;
+  events: Id[] | Ids;
   score: number;
   bucketSize: BucketSize;
   daylightSavings: boolean;
@@ -91,10 +92,14 @@ export class EventSummaryReportParameters
 
   // since these properties are exposed to the user in the form of query string parameters
   // we use the user friendly names
-  public sites: Id[];
-  public points: Id[];
-  public provenances: Id[];
-  public events: Id[];
+  @bawCollection()
+  public sites: Ids;
+  @bawCollection()
+  public points: Ids;
+  @bawCollection()
+  public provenances: Ids;
+  @bawCollection()
+  public events: Ids;
   public score: number;
   public bucketSize: BucketSize = BucketSize.month;
   public daylightSavings: boolean;

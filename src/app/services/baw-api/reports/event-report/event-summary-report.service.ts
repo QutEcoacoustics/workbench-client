@@ -69,8 +69,9 @@ export class EventSummaryReportService
           bucketsWithInterference: [],
           score: {
             histogram: [
-              0.9, 0.8, 0.7, 0.7, 0.6, 0.6, 0.5, 0.5, 0.5, 0.5, 0.4, 0.4, 0.3,
-              0.3, 0.2, 0.1,
+              // these values should be rounded to 1 decimal place in the confidence plot
+              0.91, 0.82, 0.71, 0.71, 0.62, 0.63, 0.54, 0.52, 0.51, 0.51, 0.41, 0.4, 0.30,
+              0.32, 0.22, 0.13,
             ],
             standardDeviation: 0.2,
             mean: 0.5,
@@ -222,7 +223,7 @@ export class EventSummaryReportService
       data: fakeReport,
     };
 
-    // using the api.handleSingleResponse method, we can create a model with the correct injection services
+    // using the api.handleSingleResponse method, we can create a model with the correct injected services
     return of(fakeResponse).pipe(
       map(this.api.handleSingleResponse(EventSummaryReport))
     );

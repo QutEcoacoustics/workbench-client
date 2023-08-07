@@ -13,18 +13,23 @@
     "x": {
       "field": "data",
       "type": "quantitative",
-        "axis": {
-          "grid": true,
-          "domain": true,
-          "labels": false,
-          "ticks": false,
-          "title": null
-        },
-        "scale": {
-          "domain": [0, 1],
-          "padding": 0
-        }
+      "axis": {
+        "grid": true,
+        "domain": true,
+        "labels": false,
+        "ticks": false,
+        "title": null,
+        "format": ".1f"
       },
+      "scale": {
+        "domain": [0, 1],
+        "padding": 0,
+        "nice": true,
+        "tickCount": 10,
+        "type": "linear",
+        "round": true
+      }
+    },
     "y": {
       "aggregate": "sum",
       "field": "data",
@@ -40,7 +45,13 @@
       "legend": null
     },
     "tooltip": [
-      { "field": "data", "title": "Score" }
+      { "field": "data", "title": "Score", "format": ".1f" },
+      {
+        "aggregate": "count",
+        "field": "category",
+        "type": "quantitative",
+        "title": "Count"
+      }
     ]
   },
   "config": {

@@ -1,7 +1,7 @@
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { Writeable } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { Id } from "@interfaces/apiInterfaces";
+import { Id, Ids } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 
 /**
@@ -75,7 +75,7 @@ export function filterModel<T extends AbstractModel, U extends AbstractModel>(
  */
 export function filterModelIds<T extends AbstractModel>(
   key: string,
-  ids: Id[],
+  ids: Id[] | Ids,
   currentFilter: InnerFilter<T> = {}
 ): InnerFilter<Writeable<T>> {
   if (!isInstantiated(ids)) {

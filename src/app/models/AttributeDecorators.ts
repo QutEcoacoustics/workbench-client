@@ -3,7 +3,7 @@ import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { API_ROOT } from "@services/config/config.tokens";
 import fileSize from "filesize";
 import { DateTime, Duration } from "luxon";
-import { AbstractModel } from "./AbstractModel";
+import { AbstractModel, AssociationInjector } from "./AbstractModel";
 
 export interface BawAttributeOptions {
   create: boolean;
@@ -249,7 +249,7 @@ function createDecorator<Model>(
   opts: BawDecoratorOptions<Model> = {},
   setValue: (model: any, key: symbol, ...args: any[]) => void
 ) {
-  return function (model: AbstractModel, key: string): void {
+  return function (model: AssociationInjector, key: string): void {
     // Store decorated keys value
     const decoratedKey = Symbol("_" + key);
     let keySetter: (args: any) => void;
@@ -291,7 +291,7 @@ function createDecorator<Model>(
       configurable: true,
     });
 
-    if (opts.persist) {
+    if (opts.persist && model instanceof AbstractModel) {
       // Add key to toJSON method
       persistAttr(model, key, opts.persist);
     }
