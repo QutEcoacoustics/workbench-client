@@ -69,6 +69,7 @@ export class ChartComponent implements AfterViewInit {
    * ```
    */
   @Input() public formatter?: (item: unknown) => string;
+  @Input() public legendClickEvent?: (item: unknown) => void;
 
   private vegaView: Result;
   private vegaFormatterFunction: ExpressionFunction;
@@ -105,19 +106,27 @@ export class ChartComponent implements AfterViewInit {
         [`${customFormatterName}`]: this.vegaFormatterFunction,
       };
     }
+
+    if (this.legendClickEvent) {
+      this.vegaView.view.addEventListener("click", (value) =>
+        this.legendClickEvent(value)
+      );
+    }
   }
 
   public async downloadChartAsCsv(): Promise<void> {
     if (this.vegaView) {
-      // download the chart as csv here
+      // TODO: call an api endpoint to download the chart as CSV
     } else {
-      console.error("Failed to download vega-lite chart as CSV. Chart is not loaded or does not exist.");
+      console.error(
+        "Failed to download vega-lite chart as CSV. Chart is not loaded or does not exist."
+      );
     }
   }
 
   // this is triggered by the window.resize event, which will trigger on all browsers when the window or container is resized
   // this event will also trigger when printing, causing the graphs to fit to the page
-  protected resizeEvent(): void {
+  public resizeEvent(): void {
     // it is possible to trigger the resize event before the vega chart is embedded
     // this will cause this component to throw an error and have no effect/benefits
     if (this.vegaView) {
@@ -126,6 +135,9 @@ export class ChartComponent implements AfterViewInit {
     }
   }
 
+  // because data is inherently a field on the vega lite spec, but is separated in our component
+  // we have to retroactively add the data to the spec as part of this component
+  // we keep the data and the spec separate so that we can create multiple graphs with different data from the same spec
   private addDataToSpec(
     spec,
     datasets = undefined,

@@ -11,6 +11,9 @@
       "as": "count_subtract_error"
     }
   ],
+  "autosize": {
+    "resize": true
+  },
   "layer": [
     {
       "mark": {
@@ -23,12 +26,13 @@
       "encoding": {
         "x": {
           "field": "date",
-          "type": "nominal",
+          "type": "temporal",
           "axis": {
             "labelAngle": 45,
-            "labelFontSize": 11,
+            "labelFontSize": 12,
+            "title": null,
             "grid": true,
-            "title": null
+            "format": "%Y-%m-%d"
           },
           "scale": {
             "padding": 0
@@ -45,7 +49,7 @@
         "tooltip": [
           {
             "field": "date",
-            "type": "nominal",
+            "type": "temporal",
             "title": "Date"
           },
           {
@@ -74,10 +78,8 @@
       "encoding": {
         "x": {
           "field": "date",
-          "type": "nominal",
+          "type": "temporal",
           "axis": {
-            "labelAngle": 45,
-            "labelFontSize": 11,
             "title": null
           }
         },
@@ -101,7 +103,7 @@
         "x": {
           "title": "Date",
           "field": "date",
-          "type": "nominal",
+          "type": "temporal",
           "scale": {
             "padding": 0
           }
@@ -113,7 +115,29 @@
           "axis": {
             "labelAngle": 0
           }
-        }
+        },
+        "tooltip": [
+          {
+            "field": "date",
+            "type": "temporal",
+            "title": "Date"
+          },
+          {
+            "field": "count",
+            "type": "quantitative",
+            "title": "Count"
+          },
+          {
+            "field": "error",
+            "type": "quantitative",
+            "title": "Error"
+          },
+          {
+            "title": "Count - Error",
+            "type": "quantitative",
+            "field": "count_subtract_error"
+          }
+        ]
       }
     }
   ]

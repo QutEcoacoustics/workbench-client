@@ -9,6 +9,9 @@
   "data": {
     "name": "recordingCoverage"
   },
+  "autosize": {
+    "resize": true
+  },
   "vconcat": [
     {
       "title": {
@@ -28,11 +31,12 @@
             "title": null,
             "labels": false,
             "ticks": false,
+            "domain": false,
             "grid": true,
             "tickCount": {
-              "interval": "month"
-            },
-            "domain": false
+              "interval": "month",
+              "step": 1
+            }
           }
         },
         "x2": {
@@ -78,10 +82,11 @@
                 "labelFontSize": 12,
                 "title": null,
                 "grid": true,
+                "format": "%Y-%m-%d",
                 "tickCount": {
-                  "interval": "month"
-                },
-                "format": "%b %Y"
+                  "interval": "month",
+                  "step": 1
+                }
               },
               "scale": {
                 "padding": 0

@@ -9,6 +9,9 @@
     "type": "area",
     "interpolate": "monotone"
   },
+  "autosize": {
+    "resize": true
+  },
   "encoding": {
     "x": {
       "field": "data",

@@ -20,7 +20,10 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import { EventSummaryReportService, eventSummaryResolvers } from "@baw-api/reports/event-report/event-summary-report.service";
+import {
+  EventSummaryReportService,
+  eventSummaryResolvers,
+} from "@baw-api/reports/event-report/event-summary-report.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { Duration } from "luxon";
@@ -102,6 +105,9 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
   protected vegaTagTextFormatter = (tagId: number): string =>
     this.getTag(tagId)?.text;
+
+  protected compositionCurveClickHandler = (value: unknown): void =>
+    console.log("here", value);
 
   protected get spectrogramUrls(): string[] {
     return [];

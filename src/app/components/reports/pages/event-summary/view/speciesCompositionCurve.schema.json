@@ -8,6 +8,9 @@
   "config": {
     "customFormatTypes": true
   },
+  "autosize": {
+    "resize": true
+  },
   "mark": "area",
   "selection": {
     "hover": {
@@ -60,7 +63,6 @@
         "orient": "top",
         "formatType": "customFormatter",
         "labelFontSize": 14,
-        "labelColor": "var(--bs-body-color)",
         "title": "Events",
         "titleFontSize": 16,
         "titleFontWeight": "normal"
@@ -71,7 +73,10 @@
       "value": 1
     },
     "tooltip": [
-      {"field": "date", "title": "Date"},
+      {
+        "field": "date",
+        "title": "Date"
+      },
       {"field": "formatted_tagId", "title": "Event"},
       {"field": "formatted_ratio", "title": "Ratio"}
     ]
