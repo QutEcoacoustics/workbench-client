@@ -29,6 +29,9 @@
             "labels": false,
             "ticks": false,
             "grid": true,
+            "tickCount": {
+              "interval": "month"
+            },
             "domain": false
           }
         },
@@ -81,8 +84,7 @@
                 "format": "%b %Y"
               },
               "scale": {
-                "padding": 0,
-                "paddingInner": 1
+                "padding": 0
               }
             },
             "x2": {

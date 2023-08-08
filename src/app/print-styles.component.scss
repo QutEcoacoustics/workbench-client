@@ -20,9 +20,13 @@ $heading-sizes: (
   }
 
   html {
-    // A4 page size width
-    width: 210mm;
-    min-width: 100%;
+    width: 100%;
+    // divide the size of the page by the size of an A4 page
+    // this is so that we can scale the page to be the same size as an A4 page
+    max-width: 210mm;
+    margin: auto;
+    overflow: visible;
+    zoom: 1;
   }
 
   // hide branding during printing
@@ -50,7 +54,6 @@ $heading-sizes: (
   .container {
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
     max-width: 100%;
   }
 
@@ -69,12 +72,6 @@ $heading-sizes: (
   // we allow iframes to break between pages because otherwise there would always be a page break before an iframe
   iframe {
     break-inside: auto;
-  }
-
-  // under certain conditions, scroll bars will be shown in the print preview
-  // we should therefore explicitly hide them
-  ::-webkit-scrollbar  {
-    display: none;
   }
 
   // every browser has their own custom headers, footers, default page size, and default margin sizes
