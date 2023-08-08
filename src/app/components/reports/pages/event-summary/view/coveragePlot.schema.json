@@ -1,32 +1,13 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "datasets": {},
-  "data": {
-    "name": "recordingCoverage"
-  },
-  "transform": [
-    {
-      "lookup": "startDate",
-      "from": {
-        "data": {
-          "name": "analysisCoverage"
-        },
-        "key": "startDate",
-        "fields": [
-          "startDate",
-          "endDate"
-        ]
-      },
-      "as": [
-        "analysis.startDate",
-        "analysis.endDate"
-      ]
-    }
-  ],
   "resolve": {
     "scale": {
       "x": "shared"
     }
+  },
+  "data": {
+    "name": "recordingCoverage"
   },
   "vconcat": [
     {
@@ -62,13 +43,13 @@
             "type": "temporal",
             "field": "startDate",
             "title": "Recording Start Date",
-            "timeUnit": "yearmonthdate"
+            "format": "%Y-%m-%d"
           },
           {
             "type": "temporal",
             "field": "endDate",
             "title": "Recording End Date",
-            "timeUnit": "yearmonthdate"
+            "format": "%Y-%m-%d"
           }
         ]
       }
@@ -113,26 +94,33 @@
           }
         },
         {
+          "data": {
+            "name": "analysisCoverage"
+          },
           "mark": "bar",
           "encoding": {
             "x": {
-              "field": "analysis.startDate",
+              "field": "startDate",
               "type": "temporal"
             },
             "x2": {
-              "field": "analysis.endDate"
+              "field": "endDate"
             },
             "color": {
               "value": "var(--baw-success)"
             },
             "tooltip": [
               {
-                "field": "analysis.startDate",
-                "title": "Analysis Start Date"
+                "type": "temporal",
+                "field": "startDate",
+                "title": "Analysis Start Date",
+                "format": "%Y-%m-%d"
               },
               {
-                "field": "analysis.endDate",
-                "title": "Analysis End Date"
+                "type": "temporal",
+                "field": "endDate",
+                "title": "Analysis End Date",
+                "format": "%Y-%m-%d"
               }
             ]
           }

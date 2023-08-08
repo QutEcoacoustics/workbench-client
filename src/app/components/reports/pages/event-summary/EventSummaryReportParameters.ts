@@ -24,7 +24,6 @@ import {
 import { Id, Ids } from "@interfaces/apiInterfaces";
 import { ImplementsInjector } from "@models/AbstractModel";
 import { hasMany } from "@models/AssociationDecorators";
-import { bawCollection } from "@models/AttributeDecorators";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { Region } from "@models/Region";
@@ -92,14 +91,10 @@ export class EventSummaryReportParameters
 
   // since these properties are exposed to the user in the form of query string parameters
   // we use the user friendly names
-  @bawCollection()
-  public sites: Ids;
-  @bawCollection()
-  public points: Ids;
-  @bawCollection()
-  public provenances: Ids;
-  @bawCollection()
-  public events: Ids;
+  public sites: Id[] | Ids;
+  public points: Id[] | Ids;
+  public provenances: Id[] | Ids;
+  public events: Id[] | Ids;
   public score: number;
   public bucketSize: BucketSize = BucketSize.month;
   public daylightSavings: boolean;

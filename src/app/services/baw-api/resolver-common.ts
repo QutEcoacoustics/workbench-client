@@ -1,6 +1,6 @@
 // !Be careful with imports, resolvers are string-ly typed and can easily create
 // circular dependencies which are not detected by typescript
-import type { Type } from "@angular/core";
+import { Injector, Type } from "@angular/core";
 import type { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import type { Option, Tuple } from "@helpers/advancedTypes";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";

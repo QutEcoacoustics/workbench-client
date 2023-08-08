@@ -278,18 +278,13 @@ class EventSummaryReportResolver extends BawResolver<
     route: ActivatedRouteSnapshot,
     api: EventSummaryReportService
   ): Observable<[EventSummaryReport, EventSummaryReportParameters]> {
-    const requiredEvents = [ 1, 2, 1950, 39, 277 ];
-    const requiredProvenances = [ 1 ];
+    const fakeEvents = [ 1, 2, 1950, 39, 277 ];
+    const fakeProvenances = [ 1 ];
 
     const parametersModel = new EventSummaryReportParameters(route.queryParams);
 
-    if (parametersModel.events) {
-      parametersModel.events = [ ...parametersModel.events, ...requiredEvents ];
-    } else {
-      parametersModel.events = requiredEvents;
-    }
-
-    parametersModel.provenances = requiredProvenances;
+    parametersModel.events = fakeEvents;
+    parametersModel.provenances = fakeProvenances;
 
     const filters: Filters<EventSummaryReport> = parametersModel.toFilter();
 
@@ -308,6 +303,11 @@ class EventSummaryReportResolver extends BawResolver<
         });
       }
     );
+  }
+}
+
+export class EventSummaryReportResolverNative {
+  public userResolver() {
   }
 }
 

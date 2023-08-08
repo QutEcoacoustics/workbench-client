@@ -241,7 +241,7 @@
   </div>
 
   <div [class.hide-in-print]="!showChart(chartTypes.speciesAccumulationCurve)">
-    <h4>
+    <h4 class="chart-heading">
       Species Accumulation Curve
 
       <a
@@ -291,7 +291,7 @@
   </div>
 
   <div [class.hide-in-print]="!showChart(chartTypes.speciesCompositionCurve)">
-    <h4>
+    <h4 class="chart-heading">
       Species Composition
 
       <a
@@ -345,7 +345,7 @@
     *ngIf="spectrogramUrls.length > 0"
     [class.hide-in-print]="!showChart(chartTypes.falseColorSpectrograms)"
   >
-    <h4>
+    <h4 class="chart-heading">
       False colour spectrogram(s)
 
       <a [href]="eventSummaryReportApi.eventDownloadUrl()">

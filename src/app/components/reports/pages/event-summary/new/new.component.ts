@@ -38,6 +38,7 @@ import {
 import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
 import { DateTime } from "luxon";
 import { Id } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
 import {
   BucketSize,
   EventSummaryReportParameters,
@@ -178,14 +179,15 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return reportMenuItems.view.project.route;
   }
 
-  protected getIdsFromAbstractModelArray(items: any[]): Id[] {
+  // since this function is typically used in conjunction with the typeahead inputs, an object is returned
+  protected getIdsFromAbstractModelArray(items: object[]): Id[] {
     // by default, typeahead inputs return an empty array if no items are selected
     // as we want to omit all conditions with no values in the qsp's, we should return null instead
     if (items.length === 0) {
       return null;
     }
 
-    return items.map((item): Id => item.id);
+    return items.map((item: AbstractModel): Id => item.id);
   }
 
   // because the DateTimeFilterModel is coming from a shared component, we need to serialize for use in the data model

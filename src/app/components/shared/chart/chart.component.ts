@@ -122,7 +122,7 @@ export class ChartComponent implements AfterViewInit {
     // this will cause this component to throw an error and have no effect/benefits
     if (this.vegaView) {
       this.vegaView.view.resize();
-      this.vegaView.view.run();
+      this.vegaView.view.runAsync();
     }
   }
 

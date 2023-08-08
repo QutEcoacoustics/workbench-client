@@ -22,6 +22,7 @@ $heading-sizes: (
   html {
     // A4 page size width
     width: 210mm;
+    min-width: 100%;
   }
 
   // hide branding during printing
