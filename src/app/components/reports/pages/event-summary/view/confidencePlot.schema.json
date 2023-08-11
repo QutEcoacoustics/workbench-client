@@ -28,7 +28,6 @@
         "domain": [0, 1],
         "padding": 0,
         "nice": true,
-        "tickCount": 10,
         "type": "linear",
         "round": true
       }
@@ -60,6 +59,9 @@
   "config": {
     "view": {
       "stroke": "transparent"
+    },
+    "axis": {
+      "gridScale": 5
     }
   }
 }

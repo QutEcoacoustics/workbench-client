@@ -241,8 +241,10 @@
   </div>
 
   <div [class.hide-in-print]="!showChart(chartTypes.speciesAccumulationCurve)">
-    <h4 class="chart-heading">
-      Species Accumulation Curve
+    <div class="chart-heading">
+      <h4 class="chart-title">
+        Species Accumulation Curve
+      </h4>
 
       <a
         href="javascript:void 0"
@@ -278,7 +280,7 @@
           "
         ></fa-icon>
       </button>
-    </h4>
+    </div>
 
     <div [ngbCollapse]="!showChart(chartTypes.speciesAccumulationCurve)">
       <baw-chart
@@ -291,8 +293,10 @@
   </div>
 
   <div [class.hide-in-print]="!showChart(chartTypes.speciesCompositionCurve)">
-    <h4 class="chart-heading">
-      Species Composition
+    <div class="chart-heading">
+      <h4 class="chart-title">
+        Species Composition
+      </h4>
 
       <a
         href="javascript:void 0"
@@ -328,7 +332,7 @@
           "
         ></fa-icon>
       </button>
-    </h4>
+    </div>
 
     <div [ngbCollapse]="!showChart(chartTypes.speciesCompositionCurve)">
       <baw-chart
@@ -346,8 +350,10 @@
     *ngIf="spectrogramUrls.length > 0"
     [class.hide-in-print]="!showChart(chartTypes.falseColorSpectrograms)"
   >
-    <h4 class="chart-heading">
-      False colour spectrogram(s)
+    <div class="chart-heading">
+      <h4 class="chart-title">
+        False colour spectrogram(s)
+      </h4>
 
       <a [href]="eventSummaryReportApi.eventDownloadUrl()">
         <fa-icon
@@ -381,7 +387,8 @@
           "
         ></fa-icon>
       </button>
-    </h4>
+    </div>
+
     <div [ngbCollapse]="!showChart(chartTypes.falseColorSpectrograms)">
       <div class="large-embedded-figure p-1">False colour spectrogram(s)</div>
     </div>

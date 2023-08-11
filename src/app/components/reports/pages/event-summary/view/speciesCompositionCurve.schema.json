@@ -8,9 +8,6 @@
   "config": {
     "customFormatTypes": true
   },
-  "autosize": {
-    "resize": true
-  },
   "mark": "area",
   "selection": {
     "hover": {
@@ -33,12 +30,13 @@
     "x": {
       "field": "date",
       "title": "Date",
-      "type": "nominal",
+      "type": "temporal",
       "axis": {
         "labelAngle": 45,
-        "labelFontSize": 11,
+        "labelFontSize": 12,
         "grid": true,
-        "title": null
+        "title": null,
+        "format": "%Y-%m-%d"
       },
       "scale": {
         "padding": 0
@@ -50,7 +48,7 @@
       "field": "ratio",
       "type": "quantitative",
       "axis": {
-        "labelFontSize": 11
+        "labelFontSize": 12
       }
     },
     "color": {
@@ -74,8 +72,10 @@
     },
     "tooltip": [
       {
+        "type": "temporal",
         "field": "date",
-        "title": "Date"
+        "title": "Date",
+        "format": "%Y-%m-%d"
       },
       {"field": "formatted_tagId", "title": "Event"},
       {"field": "formatted_ratio", "title": "Ratio"}

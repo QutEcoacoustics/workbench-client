@@ -1,11 +1,14 @@
 .chartContainer {
-  width: 100% !important;
+  width: 100%;
   height: 100%;
 }
 
-::ng-deep .chartContainer > .marks {
+::ng-deep .chartContainer .marks {
   width: inherit;
-  height: auto;
+  height: inherit;
+
+  & text {
+  }
 }
 
 @media print {

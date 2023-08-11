@@ -72,11 +72,15 @@ h3 {
 
 .large-embedded-figure {
   @extend .embedded-figure;
-  height: 25em;
+  height: 25rem;
 }
 
 .chart-heading {
   margin-top: 1rem;
+
+  & > .chart-title {
+    display: inline;
+  }
 }
 
 .toggle-graph-button {

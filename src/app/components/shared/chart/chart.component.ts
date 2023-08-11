@@ -26,7 +26,6 @@ const customFormatterName = "customFormatter";
     <div
       #chartContainer
       class="chartContainer marks"
-      (window:resize)="resizeEvent()"
       (window:beforeprint)="resizeEvent()"
       (window:afterprint)="resizeEvent()"
     >
@@ -75,10 +74,19 @@ export class ChartComponent implements AfterViewInit {
   private vegaFormatterFunction: ExpressionFunction;
 
   public async ngAfterViewInit() {
+    // default options are always applied for compatibility reasons
+    // while the default values for the @Input options can be overwritten by the calling component
     const defaultOptions: EmbedOptions = {
       // we always want to use svg as the renderer (unless unless explicitly overridden in the options) as it has sharper text
       // svg is currently buggy on Firefox (Window's) and results in bad rendered text https://bugzilla.mozilla.org/show_bug.cgi?id=1747705
-      renderer: "svg"
+      renderer: "svg",
+      config: {
+        // for some reason, reactive sizing is disabled by default
+        // we therefore enable it so that the graph will resize under certain conditions when the window resizes
+        autosize: {
+          resize: true,
+        },
+      },
     };
 
     if (this.formatter) {
@@ -112,6 +120,9 @@ export class ChartComponent implements AfterViewInit {
         this.legendClickEvent(value)
       );
     }
+
+    const observer = new ResizeObserver(() => this.resizeEvent());
+    observer.observe(this.element.nativeElement);
   }
 
   public async downloadChartAsCsv(): Promise<void> {
@@ -130,8 +141,10 @@ export class ChartComponent implements AfterViewInit {
     // it is possible to trigger the resize event before the vega chart is embedded
     // this will cause this component to throw an error and have no effect/benefits
     if (this.vegaView) {
-      this.vegaView.view.resize();
-      this.vegaView.view.runAsync();
+      // vega resize events are linked to window:resize events
+      // however, we want to resize the vega lite charts when the component (not the window) is resized
+      // therefore, we trigger a window:resize event when the component is resized
+      window.dispatchEvent(new Event("resize"));
     }
   }
 

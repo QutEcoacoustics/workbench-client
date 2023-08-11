@@ -24,8 +24,7 @@ $heading-sizes: (
     // divide the size of the page by the size of an A4 page
     // this is so that we can scale the page to be the same size as an A4 page
     max-width: 210mm;
-    margin: auto;
-    overflow: visible;
+    overflow: auto;
     zoom: 1;
   }
 

@@ -11,9 +11,6 @@
       "as": "count_subtract_error"
     }
   ],
-  "autosize": {
-    "resize": true
-  },
   "layer": [
     {
       "mark": {
@@ -50,7 +47,8 @@
           {
             "field": "date",
             "type": "temporal",
-            "title": "Date"
+            "title": "Date",
+            "format": "%Y-%m-%d"
           },
           {
             "field": "count",
@@ -120,7 +118,8 @@
           {
             "field": "date",
             "type": "temporal",
-            "title": "Date"
+            "title": "Date",
+            "format": "%Y-%m-%d"
           },
           {
             "field": "count",
