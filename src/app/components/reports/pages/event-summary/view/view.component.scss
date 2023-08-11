@@ -111,6 +111,7 @@ h3 {
   // we should allow the user to disable printing other background graphics in order to conserve ink
   .site-map {
     -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
     color-adjust: exact;
   }
 
