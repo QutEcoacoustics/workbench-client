@@ -16,6 +16,13 @@
   {{ report.generatedDate ?? DateTime.now() | dateTime }}
 </p>
 
+<div class="alert alert-info hide-in-print">
+  <p>When saving to PDF, use the "Save to PDF" as the destination to have clickable links.</p>
+  <p>Supported browsers: Chrome, Firefox, Edge</p>
+  <p>Supported page sizes: A2, A3, A4, A5, Letter, Legal</p>
+  <p>Supported layouts: Portrait</p>
+</div>
+
 <section id="search-parameters-container">
   <h3>Search Conditions</h3>
 
@@ -128,11 +135,9 @@
 <section>
   <h3>Coverage Summary</h3>
 
-  <div class="alert alert-warning p-3 my-3">
-    <strong>
+  <div class="alert alert-warning my-3">
       General warning about different recognisers, 'interpret with cation and
       validate' etc; qualifiers about performance in different regions, etc
-    </strong>
   </div>
 
   <baw-site-map
@@ -236,7 +241,7 @@
 <section id="charts-container">
   <h3>Charts</h3>
 
-  <div class="alert alert-info p-3 my-3">
+  <div class="alert alert-info my-3">
     Some kind of text to put these figures into context.
   </div>
 

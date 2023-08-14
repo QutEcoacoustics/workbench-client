@@ -3,16 +3,22 @@
 }
 
 $heading-sizes: (
-  h1: 40,
-  h2: 32,
-  h3: 28,
-  h4: 24,
-  h5: 20,
-  h6: 16
+  h1: 80,
+  h2: 64,
+  h3: 56,
+  h4: 48,
+  h5: 40,
+  h6: 32
 );
 
 @media print {
-  // Loop through the heading sizes map and apply the mixin
+  // for A4 page size and less, we want to zoom out the page so that it fits on the page
+  @media (max-width: 210mm) {
+    html {
+      zoom: 0.5;
+    }
+  }
+
   @each $heading, $size in $heading-sizes {
     #{$heading} {
       @include heading-size($size);
@@ -20,12 +26,19 @@ $heading-sizes: (
   }
 
   html {
-    width: 100%;
-    // divide the size of the page by the size of an A4 page
-    // this is so that we can scale the page to be the same size as an A4 page
-    max-width: 210mm;
+    // by making the page content A2 strictly A2 size, we can ensure that the page content will always fit to all pages below A2
+    // A2 size: 420mm x 594mm
+    min-width: 420mm;
+    max-width: 420mm;
+    height: 100%;
     overflow: auto;
-    zoom: 1;
+    transform-origin: top left;
+
+    // make all elements on the page two times the size
+    // but don't enlarge the html element
+    // this will make the page content fit to the page size
+    font-size: 200%;
+    border-width: 200%;
   }
 
   // hide branding during printing
@@ -76,6 +89,6 @@ $heading-sizes: (
   // every browser has their own custom headers, footers, default page size, and default margin sizes
   @page {
     margin: 0;
-    size: A4 portrait;
+    size: A2 portrait;
   }
 }
