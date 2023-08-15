@@ -107,7 +107,7 @@ describe("EventSummaryReportParameters", () => {
     expect(dataModel.sites).toEqual([4, 5, 6]);
     expect(dataModel.points).toEqual([7, 8, 9]);
     expect(dataModel.provenances).toEqual([11, 23, 2]);
-    expect(dataModel.events).toEqual([10, 11, 12]);
+    expect(dataModel.tags).toEqual([10, 11, 12]);
     expect(dataModel.score).toEqual(0.5);
     expect(dataModel.hiddenCharts).toEqual([
       Chart.speciesAccumulationCurve,

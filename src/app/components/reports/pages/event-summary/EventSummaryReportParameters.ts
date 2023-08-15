@@ -65,7 +65,7 @@ export interface IEventSummaryReportParameters {
   sites: Id[] | Ids;
   points: Id[] | Ids;
   provenances: Id[] | Ids;
-  events: Id[] | Ids;
+  tags: Id[] | Ids;
   score: number;
   bucketSize: BucketSize;
   daylightSavings: boolean;
@@ -95,7 +95,7 @@ export class EventSummaryReportParameters
   public sites: Id[] | Ids;
   public points: Id[] | Ids;
   public provenances: Id[] | Ids;
-  public events: Id[] | Ids;
+  public tags: Id[] | Ids;
   public score: number;
   public bucketSize: BucketSize = BucketSize.month;
   public daylightSavings: boolean;
@@ -107,7 +107,7 @@ export class EventSummaryReportParameters
   public regions: Region[];
   @hasMany<EventSummaryReportParameters, Site>(SHALLOW_SITE, "points")
   public siteModels: Site[];
-  @hasMany<EventSummaryReportParameters, Tag>(TAG, "events")
+  @hasMany<EventSummaryReportParameters, Tag>(TAG, "tags")
   public tagModels: Tag[];
   @hasMany<EventSummaryReportParameters, AudioEventProvenance>(
     AUDIO_EVENT_PROVENANCE,
@@ -150,8 +150,8 @@ export class EventSummaryReportParameters
       );
     }
 
-    if (this.events) {
-      filter = filterModelIds<EventSummaryReport>("tag", this.events, filter);
+    if (this.tags) {
+      filter = filterModelIds<EventSummaryReport>("tag", this.tags, filter);
     }
 
     // we use isInstantiated() here because 0 is a valid value for score

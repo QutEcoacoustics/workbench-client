@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -30,6 +30,7 @@ import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
 import { Location } from "@angular/common";
 import { Map } from "immutable";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import {
   Chart,
   EventSummaryReportParameters,
@@ -55,7 +56,8 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private session: BawSessionService,
-    private location: Location
+    private location: Location,
+    private modalService: NgbModal
   ) {
     super();
   }
@@ -74,6 +76,8 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   );
   protected speciesCompositionCurveSchema = Map(speciesCompositionCurveSchema);
   protected chartTypes = Chart;
+
+  @ViewChild("printingModal") public printingModal: ElementRef;
 
   public ngOnInit(): void {
     // we can use "as" here to provide stronger typing because the data property is a standard object type without any typing
@@ -94,6 +98,15 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     ][1] as EventSummaryReportParameters;
   }
 
+  // we override ctrl + P (most browsers default for window.print shortcut) so we can show a help modal
+  @HostListener("document:keydown", ["$event"])
+  public handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.ctrlKey && event.key === "p") {
+      event.preventDefault();
+      this.openPrintModal();
+    }
+  }
+
   protected get currentUser(): User {
     if (this.session.isLoggedIn) {
       return this.session.loggedInUser;
@@ -105,8 +118,29 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   protected vegaTagTextFormatter = (tagId: number): string =>
     this.getTag(tagId)?.text;
 
+  protected openPrintModal(): void {
+    if (this.shouldUsePrintModal()) {
+      this.modalService.open(this.printingModal);
+    } else {
+      this.printPage();
+    }
+  }
+
+  // we have to declare a function like this because we can't call window.print() from an angular template
   protected printPage(): void {
     window.print();
+  }
+
+  protected shouldUsePrintModal(): boolean {
+    return localStorage.getItem("hidePrintModal") === null;
+  }
+
+  protected changePrintModalPreference(shouldHide: boolean): void {
+    if (shouldHide) {
+      localStorage.setItem("hidePrintModal", "true");
+    } else {
+      localStorage.removeItem("hidePrintModal");
+    }
   }
 
   protected unixEpochToDuration(unixEpoch: number): Duration {

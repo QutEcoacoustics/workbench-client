@@ -283,7 +283,7 @@ class EventSummaryReportResolver extends BawResolver<
 
     const parametersModel = new EventSummaryReportParameters(route.queryParams);
 
-    parametersModel.events = fakeEvents;
+    parametersModel.tags = fakeEvents;
     parametersModel.provenances = fakeProvenances;
 
     const filters: Filters<EventSummaryReport> = parametersModel.toFilter();

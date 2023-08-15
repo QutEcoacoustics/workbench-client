@@ -80,7 +80,7 @@
     [inputPlaceholder]="'All'"
     [searchCallback]="eventsOfInterestSearchCallback"
     [resultTemplate]="tagsTypeaheadTemplate"
-    (modelChange)="model.events = getIdsFromAbstractModelArray($event)"
+    (modelChange)="model.tags = getIdsFromAbstractModelArray($event)"
   ></baw-typeahead-input>
 
   <a

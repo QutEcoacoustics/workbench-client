@@ -24,7 +24,6 @@
         "import"
       ],
       "rules": {
-        "@typescript-eslint/no-non-null-assertion": "error",
         "no-console": ["error", { "allow": ["warn", "error"] }],
         "import/no-unresolved": "off",
         "import/no-deprecated": "error",

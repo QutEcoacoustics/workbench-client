@@ -88,6 +88,7 @@ export class ChartComponent implements AfterViewInit {
     };
 
     if (this.formatter) {
+      console.log("I AM HERE I AM HERE");
       this.vegaFormatterFunction = vega.expressionFunction(
         customFormatterName,
         (datum: unknown) => this.formatter(datum)
@@ -105,13 +106,10 @@ export class ChartComponent implements AfterViewInit {
     this.vegaView = await embed(this.element.nativeElement, fullSpec, {
       ...defaultOptions,
       ...this.options,
+      expressionFunctions: {
+        [`${customFormatterName}`]: this.vegaFormatterFunction ?? {},
+      },
     });
-
-    if (this.formatter) {
-      this.vegaView.embedOptions.expressionFunctions = {
-        [`${customFormatterName}`]: this.vegaFormatterFunction,
-      };
-    }
 
     // we need to use a resize observer because if the chart is not visible on load, the width and height will be 0
     // but vega lite's autosize will only update when the window is resized

@@ -95,6 +95,14 @@ $heading-sizes: (
     display: none;
   }
 
+  // because modals are used for action items and user feedback, we don't want to print them as it's not part of the content
+  ngb-modal-window,
+  ngb-modal-backdrop {
+    // we can't use display: none; here because bootstrap uses display: block !important;
+    // therefore, to hide modals, we reduce the size to 0
+    scale: 0 !important;
+  }
+
   // hide the overlay container that is usually used to display user feedback (alerts, toasts, etc)
   .overlay-container {
     display: none;
