@@ -24,6 +24,7 @@
         "x": {
           "field": "startDate",
           "type": "temporal",
+          "timeUnit": "yearmonthdate",
           "axis": {
             "title": null,
             "labels": false,
@@ -74,6 +75,7 @@
             "x": {
               "field": "startDate",
               "type": "temporal",
+              "timeUnit": "yearmonthdate",
               "axis": {
                 "labelAngle": 45,
                 "labelFontSize": 12,
@@ -105,7 +107,8 @@
           "encoding": {
             "x": {
               "field": "startDate",
-              "type": "temporal"
+              "type": "temporal",
+              "timeUnit": "yearmonthdate"
             },
             "x2": {
               "field": "endDate"

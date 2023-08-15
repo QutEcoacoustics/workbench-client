@@ -17,6 +17,7 @@ h3 {
 
 .col {
   border: thin solid var(--baw-secondary-lightest);
+  // we divide 100 / 6 because we want 6 columns
   width: calc(100% / 6);
   overflow-wrap: break-word;
 
@@ -29,7 +30,7 @@ h3 {
   }
 }
 
-#print-button:not(.disabled) {
+#print-button {
   cursor: pointer;
 }
 
@@ -55,6 +56,7 @@ h3 {
 
 .download-button {
   font-size: 1.25rem;
+  cursor: pointer;
 }
 
 .site-map {
@@ -72,7 +74,8 @@ h3 {
 
 .large-embedded-figure {
   @extend .embedded-figure;
-  height: 25rem;
+  height: fit-content;
+  aspect-ratio: 2.39 / 1;
 }
 
 .chart-heading {
@@ -106,13 +109,18 @@ h3 {
     break-inside: avoid;
   }
 
+  // on Firefox, border sizes of 1px don't scale correctly (they are hidden when zoomed out and not re-rendered when zoomed in)
+  // to fix this, we explicitly make the border 2px so it's 1px when zoomed out
+  .col {
+    border-width: 2px;
+  }
+
   // since the Google maps component uses a canvas, it is hidden when "background graphics" (Chrome) is disabled
-  // this will cause an empty spot where the map should be, and therefore defective
-  // we should allow the user to disable printing other background graphics in order to conserve ink
+  // this will cause an empty spot where the map should be
+  // however, we should still allow the user to disable printing other background graphics, but the map should still be printed
   .site-map {
-    -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 
   #events-table-container,

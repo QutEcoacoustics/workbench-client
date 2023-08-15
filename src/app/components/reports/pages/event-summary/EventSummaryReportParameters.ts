@@ -7,6 +7,7 @@ import {
   TAG,
 } from "@baw-api/ServiceTokens";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { Tuple } from "@helpers/advancedTypes";
 import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -68,8 +69,8 @@ export interface IEventSummaryReportParameters {
   score: number;
   bucketSize: BucketSize;
   daylightSavings: boolean;
-  time: Duration[];
-  date: DateTime[];
+  time: Tuple<Duration, 2>;
+  date: Tuple<DateTime, 2>;
   charts: Chart[];
 }
 
@@ -98,8 +99,8 @@ export class EventSummaryReportParameters
   public score: number;
   public bucketSize: BucketSize = BucketSize.month;
   public daylightSavings: boolean;
-  public time: Duration[];
-  public date: DateTime[];
+  public time: Tuple<Duration, 2>;
+  public date: Tuple<DateTime, 2>;
   public charts: Chart[];
 
   @hasMany<EventSummaryReportParameters, Region>(SHALLOW_REGION, "sites")
@@ -211,9 +212,5 @@ export class EventSummaryReportParameters
       });
 
     return paramsObject;
-  }
-
-  public get viewUrl(): string {
-    throw new Error("Method not implemented.");
   }
 }

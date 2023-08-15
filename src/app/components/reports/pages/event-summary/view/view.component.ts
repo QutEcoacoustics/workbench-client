@@ -29,16 +29,15 @@ import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
 import { Location } from "@angular/common";
-import { Datasets } from "vega-lite/build/src/spec/toplevel";
 import { Map } from "immutable";
 import {
   Chart,
   EventSummaryReportParameters,
 } from "../EventSummaryReportParameters";
+import coveragePlotSchema from "./coveragePlot.schema.json";
+import confidencePlotSchema from "./confidencePlot.schema.json";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
-import confidencePlotSchema from "./confidencePlot.schema.json";
-import coveragePlotSchema from "./coveragePlot.schema.json";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -68,12 +67,12 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   public region?: Region;
   public site?: Site;
 
+  protected coveragePlotSchema = Map(coveragePlotSchema);
+  protected confidencePlotSchema = Map(confidencePlotSchema);
   protected speciesAccumulationCurveSchema = Map(
     speciesAccumulationCurveSchema
   );
   protected speciesCompositionCurveSchema = Map(speciesCompositionCurveSchema);
-  protected confidencePlotSchema = Map(confidencePlotSchema);
-  protected coveragePlotSchema = Map(coveragePlotSchema);
   protected chartTypes = Chart;
 
   public ngOnInit(): void {
@@ -105,13 +104,6 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
   protected vegaTagTextFormatter = (tagId: number): string =>
     this.getTag(tagId)?.text;
-
-  protected compositionCurveClickHandler = (value: unknown): void =>
-    console.log("here", value);
-
-  protected get spectrogramUrls(): string[] {
-    return [];
-  }
 
   protected printPage(): void {
     window.print();
@@ -182,13 +174,6 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     }
 
     this.updateQueryStringParameters();
-  }
-
-  protected coverageDataset(): Datasets {
-    return {
-      recordingCoverage: this.report.graphs.coverageData.recordingCoverage,
-      analysisCoverage: this.report.graphs.coverageData.analysisCoverage,
-    };
   }
 
   /** updates the query string parameters to the data models value */

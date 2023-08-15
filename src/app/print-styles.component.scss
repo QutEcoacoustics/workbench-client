@@ -11,14 +11,25 @@ $heading-sizes: (
   h6: 32
 );
 
+/*
+  When using Microsoft print to PDF (and printer drivers which us it), the browser will render the page content as if it were a screen
+  and a screenshot it taken of the page content and pasted into a PDF. If the image is larger than the PDF size, it'll be scaled down
+  This means that the PDF size cannot be specified with our @page css attribute.
+  Because we want all content to print the same (just scaled up or down), we have to get the browser to render content at A2 size
+  then get Microsoft print to PDF to downscale it to the size the user wants.
+*/
 @media print {
   // for A4 page size and less, we want to zoom out the page so that it fits on the page
+  // this is a Chromium specific requirement, however, it does not break Firefox
   @media (max-width: 210mm) {
     html {
       zoom: 0.5;
     }
   }
 
+  // since headings are responsive, and use em units, we want to replace them with their pixel equivalent
+  // since all content is being rendered at A2 size, all headings will be given their A2 em pixel equivalent
+  // the heading font sizes will be scaled down by the browser and Microsoft print to PDF to fit the user defined page
   @each $heading, $size in $heading-sizes {
     #{$heading} {
       @include heading-size($size);
@@ -27,18 +38,21 @@ $heading-sizes: (
 
   html {
     // by making the page content A2 strictly A2 size, we can ensure that the page content will always fit to all pages below A2
+    // this is because (with Microsoft print to PDF), the page content will be scaled down to fit the page, but will not be scaled up
     // A2 size: 420mm x 594mm
     min-width: 420mm;
     max-width: 420mm;
     height: 100%;
-    overflow: auto;
     transform-origin: top left;
 
-    // make all elements on the page two times the size
-    // but don't enlarge the html element
-    // this will make the page content fit to the page size
+    // some page sizes (eg. letter, legal) do not follow the same aspect ratio as A1-5
+    // as content assumes an A1-5 aspect ratio, and we want to maintain the same content aspect ratio, we center the page content
+    // essentially giving it a small margin on other aspect ratios that don't follow the contents aspect ratio
+    margin: auto;
+
+    // because the page size is A2, content will be small and unreadable
+    // by enlarging the page content, we can make it more readable
     font-size: 200%;
-    border-width: 200%;
   }
 
   // hide branding during printing
@@ -69,7 +83,13 @@ $heading-sizes: (
     max-width: 100%;
   }
 
-  // there are some bugs in ngBootstrap where tooltips that are present when printing are emitted in the printed file
+  #page {
+    // on small screen sizes, bootstrap adds a margin to the page content
+    // we therefore have to override this with the use of !important
+    margin: 0 !important;
+  }
+
+  // there are some bugs in ngBootstrap where tooltips are emitted during printing
   // as tooltips are an extension of the users mouse (which is hidden), we should also hide the tooltips
   .tooltip {
     display: none;
@@ -86,7 +106,6 @@ $heading-sizes: (
     break-inside: auto;
   }
 
-  // every browser has their own custom headers, footers, default page size, and default margin sizes
   @page {
     margin: 0;
     size: A2 portrait;

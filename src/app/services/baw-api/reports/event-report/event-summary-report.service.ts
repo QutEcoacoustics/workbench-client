@@ -5,6 +5,7 @@ import {
   id,
   option,
   ApiFilterShow,
+  emptyParam,
 } from "@baw-api/api-common";
 import { ApiResponse, BawApiService, Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -22,11 +23,10 @@ import {
 } from "@models/EventSummaryReport";
 import { Observable, map, of } from "rxjs";
 
-// at the current moment, the api does not support fetching saved reports from id. However, this is planned for the future
-// to backfill in preparation, this service has been backfilled
+// at the current moment, the api does not support fetching saved reports from id
+// however, this is planned for the future, so the service has been backfilled to support this
 const reportId: IdParamOptional<EventSummaryReport> = id;
 // TODO: remove this TypeScript exception once the API is fully functional
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const endpoint = stringTemplate`/reports/audio_event_summary/${reportId}${option}`;
 
 @Injectable()
@@ -230,8 +230,8 @@ export class EventSummaryReportService
     // return this.api.filterShow(EventSummaryReport, endpoint(emptyParam, filterParam), filters);
   }
 
-  public eventDownloadUrl(): string {
-    return "/";
+  public downloadEventsTableUrl(filters: Filters<EventSummaryReport>): string {
+    return endpoint(emptyParam, emptyParam) + "events.csv?" + this.api.encodeFilter(filters);
   }
 }
 

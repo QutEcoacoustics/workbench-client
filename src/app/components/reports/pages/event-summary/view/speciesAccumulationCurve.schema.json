@@ -24,6 +24,7 @@
         "x": {
           "field": "date",
           "type": "temporal",
+          "timeUnit": "yearmonthdate",
           "axis": {
             "labelAngle": 45,
             "labelFontSize": 12,
@@ -77,6 +78,7 @@
         "x": {
           "field": "date",
           "type": "temporal",
+          "timeUnit": "yearmonthdate",
           "axis": {
             "title": null
           }
@@ -102,9 +104,7 @@
           "title": "Date",
           "field": "date",
           "type": "temporal",
-          "scale": {
-            "padding": 0
-          }
+          "timeUnit": "yearmonthdate"
         },
         "y": {
           "title": "Count",

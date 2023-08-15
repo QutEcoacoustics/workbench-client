@@ -17,8 +17,8 @@ import { Datasets } from "vega-lite/build/src/spec/toplevel";
 
 const customFormatterName = "customFormatter";
 
-// this component exists for us to render vega-lite charts in an *ngFor loop
-// render multiple charts using different dynamically updating data from the same schema
+// this component exists so we can render vega-lite charts in an *ngFor loop
+// and use the same schema to render multiple charts with different data
 // and provide a unified error message format. All of the above cannot be done with vega-lite alone
 @Component({
   selector: "baw-chart",
@@ -39,20 +39,19 @@ export class ChartComponent implements AfterViewInit {
 
   @ViewChild("chartContainer") public element: ElementRef;
 
-  // vega lite spec and data are the same object, therefore, by separating the two at the component level
+  // in vega lite the spec and data are the same object, therefore, by separating the two at the component level
   // we can create multiple graphs with different data from the same spec
   // we use an immutablejs object because the only way to recreate a graph is to destroy it and recreate it
   // we therefore don't allow it to be updated with change detection or through an RxJS observable
-  //! look at https://vega.github.io/vega-lite/tutorials/streaming.html to double check if we can implement this
-  @Input() public spec: Immutable.Collection<unknown, unknown>;
-  /** A single data input */
+  @Input() public spec: Immutable.Collection<string, string | object>;
+  /** A single data set */
   @Input() public data?: Data;
   /**
    * Allows for multiple disjoint data sources
    * If your spec contains multiple graphs concatenated in one spec, use multiple dataset as it allows multiple data sources for one chart
    * If your spec contains one graph, use the `[data]` attribute instead
    */
-  @Input() public datasets?: Datasets;
+  @Input() public datasets?: Datasets | object;
   @Input() public options?: EmbedOptions = { actions: false };
   /**
    * Specifies a way to turn model values into user-facing values
@@ -68,22 +67,21 @@ export class ChartComponent implements AfterViewInit {
    * ```
    */
   @Input() public formatter?: (item: unknown) => string;
-  @Input() public legendClickEvent?: (item: unknown) => void;
 
   private vegaView: Result;
   private vegaFormatterFunction: ExpressionFunction;
 
   public async ngAfterViewInit() {
-    // default options are always applied for compatibility reasons
-    // while the default values for the @Input options can be overwritten by the calling component
+    // default options exist because they are always applied for compatibility reasons and cannot be overwritten by the @Input() options
     const defaultOptions: EmbedOptions = {
       // we always want to use svg as the renderer (unless unless explicitly overridden in the options) as it has sharper text
-      // svg is currently buggy on Firefox (Window's) and results in bad rendered text https://bugzilla.mozilla.org/show_bug.cgi?id=1747705
+      // svg is currently buggy on Windows Firefox and results in poorly rendered text https://bugzilla.mozilla.org/show_bug.cgi?id=1747705
       renderer: "svg",
       config: {
-        // for some reason, reactive sizing is disabled by default
-        // we therefore enable it so that the graph will resize under certain conditions when the window resizes
+        // for optimization reason, reactive sizing is disabled by default
+        // however we enable it so that the graph will resize when the window resizes
         autosize: {
+          type: "fit",
           resize: true,
         },
       },
@@ -115,12 +113,9 @@ export class ChartComponent implements AfterViewInit {
       };
     }
 
-    if (this.legendClickEvent) {
-      this.vegaView.view.addEventListener("click", (value) =>
-        this.legendClickEvent(value)
-      );
-    }
-
+    // we need to use a resize observer because if the chart is not visible on load, the width and height will be 0
+    // but vega lite's autosize will only update when the window is resized
+    // therefore, we also need to trigger a resize event when the component is resized
     const observer = new ResizeObserver(() => this.resizeEvent());
     observer.observe(this.element.nativeElement);
   }
@@ -141,11 +136,11 @@ export class ChartComponent implements AfterViewInit {
     // it is possible to trigger the resize event before the vega chart is embedded
     // this will cause this component to throw an error and have no effect/benefits
     if (this.vegaView) {
-      // since we have used the autosize config, the vega-embed resize event will trigger on window.resize
-      // however, this is not 100% reliable and doesn't trigger under some specific conditions (eg. printing)
-      // we therefore manually trigger the resize event on the vega view to ensure that the graph is resized
-      this.vegaView.view.resize();
-      this.vegaView.view.runAsync();
+      // vega resize events are linked to window:resize events
+      // however, we want to resize the vega lite charts when the component (not the window) is resized
+      // therefore, we trigger a window:resize event when the component is resized
+      // using the vega-embed resize event will work asynchronously, meaning that it will not resize the chart when printing
+      window.dispatchEvent(new Event("resize"));
     }
   }
 

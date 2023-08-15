@@ -31,12 +31,14 @@
       "field": "date",
       "title": "Date",
       "type": "temporal",
+      "timeUnit": "yearmonthdate",
       "axis": {
         "labelAngle": 45,
         "labelFontSize": 12,
         "grid": true,
         "title": null,
-        "format": "%Y-%m-%d"
+        "format": "%Y-%m-%d",
+        "zindex": 1
       },
       "scale": {
         "padding": 0

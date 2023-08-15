@@ -19,8 +19,7 @@
 <div class="alert alert-info hide-in-print">
   <p>When saving to PDF, use the "Save to PDF" as the destination to have clickable links.</p>
   <p>Supported browsers: Chrome, Firefox, Edge</p>
-  <p>Supported page sizes: A2, A3, A4, A5, Letter, Legal</p>
-  <p>Supported layouts: Portrait</p>
+  <p>Supported page sizes: A2, A3, A4, A5, Letter</p>
 </div>
 
 <section id="search-parameters-container">
@@ -62,6 +61,20 @@
     >
       {{ parameterDataModel.timeStartedAfter | time }} –
       {{ parameterDataModel.timeFinishedBefore | time }}
+    </span>
+  </div>
+
+  <div class="search-parameter">
+    <b>Daylight Savings: </b>
+
+    <span
+      *ngIf="
+        parameterDataModel.timeStartedAfter ||
+          parameterDataModel.timeFinishedBefore;
+        else defaultConditionTemplate
+      "
+    >
+      {{ parameterDataModel.daylightSavings ? "Yes" : "No" }}
     </span>
   </div>
 
@@ -125,7 +138,7 @@
       "
     >
       <span *ngFor="let item of reportEvents; last as isLast">
-        <a [href]="getTag(item).viewUrl">{{ getTag(item)?.text }}</a>
+        <a [href]="getTag(item)?.viewUrl">{{ getTag(item)?.text }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
     </ng-container>
@@ -149,7 +162,7 @@
 
   <baw-chart
     [spec]="coveragePlotSchema"
-    [datasets]="coverageDataset()"
+    [datasets]="report.graphs.coverageData"
   ></baw-chart>
 
   <div>
@@ -176,7 +189,9 @@
   <h3>
     Events Table
 
-    <a [href]="eventSummaryReportApi.eventDownloadUrl()">
+    <a [href]="eventSummaryReportApi.downloadEventsTableUrl(
+      parameterDataModel.toFilter()
+    )">
       <fa-icon
         class="download-button"
         [icon]="['fas', 'file-arrow-down']"
@@ -252,11 +267,10 @@
       </h4>
 
       <a
-        href="javascript:void 0"
+        class="download-button"
         (click)="accumulationChart.downloadChartAsCsv()"
       >
         <fa-icon
-          class="download-button"
           [icon]="['fas', 'file-arrow-down']"
           [ngbTooltip]="'Download this graphs data'"
         ></fa-icon>
@@ -304,11 +318,10 @@
       </h4>
 
       <a
-        href="javascript:void 0"
+        class="download-button"
         (click)="compositionChart.downloadChartAsCsv()"
       >
         <fa-icon
-          class="download-button"
           [icon]="['fas', 'file-arrow-down']"
           [ngbTooltip]="'Download this graphs data'"
         ></fa-icon>
@@ -346,13 +359,13 @@
         [spec]="speciesCompositionCurveSchema"
         [data]="report.graphs?.speciesCompositionData"
         [formatter]="vegaTagTextFormatter"
-        [legendClickEvent]="compositionCurveClickHandler"
       ></baw-chart>
     </div>
   </div>
 
+  <!-- TODO: Enable this chart once false colour spectrograms are functional -->
   <div
-    *ngIf="spectrogramUrls.length > 0"
+    *ngIf="false"
     [class.hide-in-print]="!showChart(chartTypes.falseColorSpectrograms)"
   >
     <div class="chart-heading">
@@ -360,9 +373,11 @@
         False colour spectrogram(s)
       </h4>
 
-      <a [href]="eventSummaryReportApi.eventDownloadUrl()">
+      <a
+        class="download-button"
+        (click)="compositionChart.downloadChartAsCsv()"
+      >
         <fa-icon
-          class="download-button"
           [icon]="['fas', 'file-arrow-down']"
           [ngbTooltip]="'Download false colour spectrogram(s)'"
         ></fa-icon>
@@ -378,7 +393,6 @@
         "
       >
         <fa-icon
-          class="toggle-graph-button btn btn-secondary btn-sm"
           [icon]="[
             'fas',
             showChart(chartTypes.falseColorSpectrograms)
