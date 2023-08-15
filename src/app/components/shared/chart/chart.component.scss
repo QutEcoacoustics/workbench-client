@@ -12,4 +12,9 @@
   .chartContainer {
     break-inside: avoid;
   }
+
+  ::ng-deep .chartContainer .marks {
+    & text {
+    }
+  }
 }

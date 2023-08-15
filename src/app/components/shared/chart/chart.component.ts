@@ -141,10 +141,11 @@ export class ChartComponent implements AfterViewInit {
     // it is possible to trigger the resize event before the vega chart is embedded
     // this will cause this component to throw an error and have no effect/benefits
     if (this.vegaView) {
-      // vega resize events are linked to window:resize events
-      // however, we want to resize the vega lite charts when the component (not the window) is resized
-      // therefore, we trigger a window:resize event when the component is resized
-      window.dispatchEvent(new Event("resize"));
+      // since we have used the autosize config, the vega-embed resize event will trigger on window.resize
+      // however, this is not 100% reliable and doesn't trigger under some specific conditions (eg. printing)
+      // we therefore manually trigger the resize event on the vega view to ensure that the graph is resized
+      this.vegaView.view.resize();
+      this.vegaView.view.runAsync();
     }
   }
 
