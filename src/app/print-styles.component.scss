@@ -21,7 +21,7 @@ $heading-sizes: (
 @media print {
   // for A4 page size and less, we want to zoom out the page so that it fits on the page
   // this is a Chromium specific requirement, however, it does not break Firefox
-  @media (max-width: 210mm) {
+  @media print and (max-width: 210mm) {
     html {
       zoom: 0.5;
     }
@@ -117,5 +117,9 @@ $heading-sizes: (
   @page {
     margin: 0;
     size: A2 portrait;
+  }
+
+  @page:empty {
+    display: none !important;
   }
 }

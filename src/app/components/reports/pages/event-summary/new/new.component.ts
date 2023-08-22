@@ -83,7 +83,6 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return `Project: ${this.project.name}`;
   }
 
-
   protected get availableBucketSizes() {
     return Object.keys(BucketSize);
   }
@@ -196,8 +195,12 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   ): void {
     if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
       this.model.date = [
-        dateTimeModel.dateStartedAfter ? DateTime.fromObject(dateTimeModel.dateStartedAfter) : null,
-        dateTimeModel.dateFinishedBefore ? DateTime.fromObject(dateTimeModel.dateFinishedBefore) : null,
+        dateTimeModel.dateStartedAfter
+          ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
+          : null,
+        dateTimeModel.dateFinishedBefore
+          ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
+          : null,
       ];
     }
 

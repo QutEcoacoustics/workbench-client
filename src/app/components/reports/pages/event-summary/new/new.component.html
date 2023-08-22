@@ -40,8 +40,8 @@
   <input
     #provenanceCutOffInput="ngModel"
     [(ngModel)]="model.score"
+    id="provenancesCutOffInput"
     type="number"
-    name="provenancesCutOffInput"
     class="form-control"
     placeholder="0"
     step="0.01"
@@ -61,6 +61,7 @@
   <div>
     <label for="bucketSizeInput">Bucket Size</label>
     <select
+      id="bucketSizeInput"
       name="bucketSizeInput"
       class="form-select"
       [(ngModel)]="model.bucketSize"

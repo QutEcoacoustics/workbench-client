@@ -105,9 +105,7 @@
           last as isLast
         "
       >
-        <a [href]="provenance.viewUrl">{{
-          provenance.name
-        }}</a>
+        <a [href]="provenance.viewUrl">{{ provenance.name }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
     </ng-container>
@@ -195,6 +193,7 @@
     Events Table
 
     <a
+      class="download-button"
       [href]="
         eventSummaryReportApi.downloadEventsTableUrl(
           parameterDataModel.toFilter()
@@ -202,7 +201,6 @@
       "
     >
       <fa-icon
-        class="download-button"
         [icon]="['fas', 'file-arrow-down']"
         [ngbTooltip]="'Download this table'"
       ></fa-icon>
@@ -269,7 +267,12 @@
     Some kind of text to put these figures into context.
   </div>
 
-  <div [class.hide-in-print]="!shouldShowChart(chartTypes.speciesAccumulationCurve)">
+  <div
+    class="chart-container"
+    [class.hide-in-print]="
+      !shouldShowChart(chartTypes.speciesAccumulationCurve)
+    "
+  >
     <div class="chart-heading">
       <h4 class="chart-title">Species Accumulation Curve</h4>
 
@@ -318,7 +321,10 @@
     </div>
   </div>
 
-  <div [class.hide-in-print]="!shouldShowChart(chartTypes.speciesCompositionCurve)">
+  <div
+    class="chart-container"
+    [class.hide-in-print]="!shouldShowChart(chartTypes.speciesCompositionCurve)"
+  >
     <div class="chart-heading">
       <h4 class="chart-title">Species Composition</h4>
 
@@ -371,6 +377,7 @@
   <!-- TODO: Enable this chart once false colour spectrograms are functional -->
   <div
     *ngIf="false"
+    class="chart-container"
     [class.hide-in-print]="!shouldShowChart(chartTypes.falseColorSpectrograms)"
   >
     <div class="chart-heading">
@@ -447,7 +454,7 @@
       >
       <input
         #doNotShowAgainCheckbox
-        name="dont-show-again"
+        id="dont-show-again"
         class="form-check-input"
         type="checkbox"
         (change)="changePrintModalPreference(doNotShowAgainCheckbox.checked)"
@@ -466,10 +473,7 @@
     <button
       type="button"
       class="btn btn-primary float-end"
-      (click)="
-      printPage();
-      modal.close()
-      "
+      (click)="modal.close(); printPage();"
     >
       Print
     </button>

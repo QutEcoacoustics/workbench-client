@@ -5,6 +5,9 @@
   "data": {
     "values": []
   },
+    "params": [
+    { "name": "bawFontSize", "value": 16 }
+  ],
   "config": {
     "customFormatTypes": true
   },
@@ -34,11 +37,13 @@
       "timeUnit": "yearmonthdate",
       "axis": {
         "labelAngle": 45,
-        "labelFontSize": 12,
         "grid": true,
         "title": null,
         "format": "%Y-%m-%d",
-        "zindex": 1
+        "zindex": 1,
+        "labelFontSize": {
+          "expr": "bawFontSize"
+        }
       },
       "scale": {
         "padding": 0
@@ -50,7 +55,12 @@
       "field": "ratio",
       "type": "quantitative",
       "axis": {
-        "labelFontSize": 12
+        "titleFontSize": {
+          "expr": "bawFontSize"
+        },
+        "labelFontSize": {
+          "expr": "bawFontSize"
+        }
       }
     },
     "color": {
@@ -62,14 +72,25 @@
       "legend": {
         "orient": "top",
         "formatType": "customFormatter",
-        "labelFontSize": 14,
         "title": "Events",
-        "titleFontSize": 16,
-        "titleFontWeight": "normal"
+        "titleFontSize": {
+          "expr": "bawFontSize"
+        },
+        "titleFontWeight": "normal",
+        "labelLimit": 500,
+        "symbolSize": {
+          "expr": "bawFontSize * 16"
+        },
+        "labelFontSize": {
+          "expr": "bawFontSize"
+        }
       }
     },
     "opacity": {
-      "condition": {"selection": "hover", "value": 0.85},
+      "condition": {
+        "selection": "hover",
+        "value": 0.85
+      },
       "value": 1
     },
     "tooltip": [

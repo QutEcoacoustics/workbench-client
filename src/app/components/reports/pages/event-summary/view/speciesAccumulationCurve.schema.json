@@ -11,6 +11,9 @@
       "as": "count_subtract_error"
     }
   ],
+  "params": [
+    { "name": "bawFontSize", "value": 16 }
+  ],
   "layer": [
     {
       "mark": {
@@ -27,10 +30,12 @@
           "timeUnit": "yearmonthdate",
           "axis": {
             "labelAngle": 45,
-            "labelFontSize": 12,
             "title": null,
             "grid": true,
-            "format": "%Y-%m-%d"
+            "format": "%Y-%m-%d",
+            "labelFontSize": {
+              "expr": "bawFontSize"
+            }
           },
           "scale": {
             "padding": 0
@@ -88,7 +93,12 @@
           "field": "count",
           "type": "quantitative",
           "axis": {
-            "labelAngle": 0
+            "titleFontSize": {
+              "expr": "bawFontSize"
+            },
+            "labelFontSize": {
+              "expr": "bawFontSize"
+            }
           }
         }
       }
@@ -109,10 +119,7 @@
         "y": {
           "title": "Count",
           "field": "count",
-          "type": "quantitative",
-          "axis": {
-            "labelAngle": 0
-          }
+          "type": "quantitative"
         },
         "tooltip": [
           {

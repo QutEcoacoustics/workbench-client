@@ -1,6 +1,9 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "datasets": {},
+  "params": [
+    { "name": "bawFontSize", "value": 16 }
+  ],
   "resolve": {
     "scale": {
       "x": "shared"
@@ -14,8 +17,10 @@
       "title": {
         "text": "Audio Recording Coverage",
         "anchor": "start",
-        "fontSize": 16,
-        "fontWeight": "normal"
+        "fontWeight": "normal",
+        "fontSize": {
+          "expr": "bawFontSize"
+        }
       },
       "width": "container",
       "height": 50,
@@ -63,8 +68,10 @@
       "title": {
         "text": "Analysis Coverage",
         "anchor": "start",
-        "fontSize": 16,
-        "fontWeight": "normal"
+        "fontWeight": "normal",
+        "fontSize": {
+          "expr": "bawFontSize"
+        }
       },
       "width": "container",
       "height": 50,
@@ -78,13 +85,15 @@
               "timeUnit": "yearmonthdate",
               "axis": {
                 "labelAngle": 45,
-                "labelFontSize": 12,
                 "title": null,
                 "grid": true,
                 "format": "%Y-%m-%d",
                 "tickCount": {
                   "interval": "month",
                   "step": 1
+                },
+                "labelFontSize": {
+                  "expr": "bawFontSize"
                 }
               },
               "scale": {
