@@ -24,8 +24,6 @@ import {
   EventSummaryReportService,
   eventSummaryResolvers,
 } from "@baw-api/reports/event-report/event-summary-report.service";
-import { Id } from "@interfaces/apiInterfaces";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
 import { Location } from "@angular/common";
@@ -116,7 +114,9 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   }
 
   protected vegaTagTextFormatter = (tagId: number): string =>
-    this.getTag(tagId)?.text;
+    this.parameterDataModel.tagModels.find(
+      (tagModel: Tag) => tagModel.id === tagId
+    ).text;
 
   protected openPrintModal(): void {
     if (this.shouldUsePrintModal()) {
@@ -147,18 +147,6 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return Duration.fromMillis(unixEpoch * 1000);
   }
 
-  protected getProvenance(provenanceId: Id): AudioEventProvenance {
-    return this.parameterDataModel.provenanceModels.find(
-      (provenance: AudioEventProvenance) => provenance.id === provenanceId
-    );
-  }
-
-  protected getTag(tagId: Id): Tag {
-    return this.parameterDataModel.tagModels.find(
-      (tagModel: Tag) => tagModel.id === tagId
-    );
-  }
-
   protected filteredSites(): Site[] {
     // the most common case is when the user has selected sites using the site selector
     if (this.report.sites.length > 0) {
@@ -175,7 +163,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return this.project.sites;
   }
 
-  protected showChart(chart: Chart): boolean {
+  protected shouldShowChart(chart: Chart): boolean {
     // we should display all charts if a subset hasn't been specified
     if (!this.parameterDataModel.charts) {
       return true;

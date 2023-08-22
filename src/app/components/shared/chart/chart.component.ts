@@ -26,6 +26,7 @@ const customFormatterName = "customFormatter";
     <div
       #chartContainer
       class="chartContainer marks"
+      (window:resize)="windowResize()"
       (window:beforeprint)="resizeEvent()"
       (window:afterprint)="resizeEvent()"
     >
@@ -81,6 +82,8 @@ export class ChartComponent implements AfterViewInit {
         // for optimization reason, reactive sizing is disabled by default
         // however we enable it so that the graph will resize when the window resizes
         autosize: {
+          // if you use vconcat or hconcat, this autosize type will show an error and will default to "pad"
+          // while annoying, we should use "fit" as it'll make the chart fill its container, allowing us to control its size with css
           type: "fit",
           resize: true,
         },
@@ -88,7 +91,6 @@ export class ChartComponent implements AfterViewInit {
     };
 
     if (this.formatter) {
-      console.log("I AM HERE I AM HERE");
       this.vegaFormatterFunction = vega.expressionFunction(
         customFormatterName,
         (datum: unknown) => this.formatter(datum)
@@ -139,6 +141,11 @@ export class ChartComponent implements AfterViewInit {
       // therefore, we trigger a window:resize event when the component is resized
       // using the vega-embed resize event will work asynchronously, meaning that it will not resize the chart when printing
       window.dispatchEvent(new Event("resize"));
+    }
+  }
+
+  public windowResize(): void {
+    if (this.vegaView) {
     }
   }
 

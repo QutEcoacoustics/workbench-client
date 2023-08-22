@@ -22,7 +22,8 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   @Input() public selected: List<Site>;
   @Input() public project: Project;
   @Input() public region: Region;
-  @Input() public sites: Site[];
+  /** Display a subset of sites from the project/region */
+  @Input() public sitesSubset: Site[];
   public markers: List<MapMarkerOptions> = List([]);
 
   public constructor(private sitesApi: SitesService) {
@@ -36,7 +37,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
 
     this.markers = List([]);
 
-    if ((this.project || this.region) && !(this.sites?.length <= 0)) {
+    if ((this.project || this.region) && !(this.sitesSubset?.length <= 0)) {
       this.getFilter(filters, this.project, this.region)
         .pipe(
           switchMap((models) => this.getMarkers(models)),
@@ -48,7 +49,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
         });
     }
 
-    this.pushMarkers(this.sites ?? []);
+    this.pushMarkers(this.sitesSubset ?? []);
   }
 
   private getFilter(

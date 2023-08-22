@@ -108,6 +108,6 @@ export class EventSummaryReport
   public sites?: Site[];
 
   public get viewUrl(): string {
-    throw new Error("Method not implemented.");
+    return "";
   }
 }

@@ -70,8 +70,9 @@ export class EventSummaryReportService
           score: {
             histogram: [
               // these values should be rounded to 1 decimal place in the confidence plot
-              0.91, 0.82, 0.71, 0.71, 0.62, 0.63, 0.54, 0.52, 0.51, 0.51, 0.41, 0.4, 0.30,
-              0.32, 0.22, 0.13,
+              0.91,
+              0.82, 0.71, 0.71, 0.62, 0.63, 0.54, 0.52, 0.51, 0.51, 0.41, 0.4,
+              0.3, 0.32, 0.22, 0.13,
             ],
             standardDeviation: 0.2,
             mean: 0.5,
@@ -88,7 +89,7 @@ export class EventSummaryReportService
           score: {
             histogram: [
               0.1, 0.2, 0.3, 0.3, 0.6, 0.6, 0.5, 0.2, 0.5, 0.5, 0.4, 0.4, 0.3,
-              0.3, 0.5, 0.1, 0.7, 0.7, 0.6, 0.7, 0.8, 0.8, 0.9
+              0.3, 0.5, 0.1, 0.7, 0.7, 0.6, 0.7, 0.8, 0.8, 0.9,
             ],
             standardDeviation: 0.4,
             mean: 0.6,
@@ -105,7 +106,7 @@ export class EventSummaryReportService
           score: {
             histogram: [
               0.2, 0.5, 0.4, 0.4, 0.3, 0.3, 0.6, 0.2, 0.4, 0.3, 0.1, 0.4, 0.3,
-              0.3, 0.3, 0.1, 0.6, 0.7, 0.8, 0.9
+              0.3, 0.3, 0.1, 0.6, 0.7, 0.8, 0.9,
             ],
             standardDeviation: 0.1,
             mean: 0.3,
@@ -231,7 +232,11 @@ export class EventSummaryReportService
   }
 
   public downloadEventsTableUrl(filters: Filters<EventSummaryReport>): string {
-    return endpoint(emptyParam, emptyParam) + "events.csv?" + this.api.encodeFilter(filters);
+    return (
+      endpoint(emptyParam, emptyParam) +
+      "events.csv?" +
+      this.api.encodeFilter(filters)
+    );
   }
 }
 
@@ -278,8 +283,8 @@ class EventSummaryReportResolver extends BawResolver<
     route: ActivatedRouteSnapshot,
     api: EventSummaryReportService
   ): Observable<[EventSummaryReport, EventSummaryReportParameters]> {
-    const fakeEvents = [ 1, 2, 1950, 39, 277 ];
-    const fakeProvenances = [ 1 ];
+    const fakeEvents = [1, 2, 1950, 39, 277];
+    const fakeProvenances = [1];
 
     const parametersModel = new EventSummaryReportParameters(route.queryParams);
 
@@ -295,10 +300,11 @@ class EventSummaryReportResolver extends BawResolver<
         api.filterShow(filters).subscribe((data: EventSummaryReport) => {
           parametersModel.injector = data["injector"];
 
-          subscriber.next([
-            data,
-            parametersModel
-          ]);
+          data.eventGroups.forEach(
+            (eventGroup) => (eventGroup["injector"] = data["injector"])
+          );
+
+          subscriber.next([data, parametersModel]);
           subscriber.complete();
         });
       }
@@ -307,8 +313,7 @@ class EventSummaryReportResolver extends BawResolver<
 }
 
 export class EventSummaryReportResolverNative {
-  public userResolver() {
-  }
+  public userResolver() {}
 }
 
 export const eventSummaryResolvers = new EventSummaryReportResolver([

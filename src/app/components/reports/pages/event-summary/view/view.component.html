@@ -97,16 +97,16 @@
     <b>Recognisers: </b>
 
     <ng-container
-      *ngIf="parameterDataModel.provenances; else defaultConditionTemplate"
+      *ngIf="parameterDataModel.provenanceModels; else defaultConditionTemplate"
     >
       <span
         *ngFor="
-          let provenance of parameterDataModel.provenances;
+          let provenance of parameterDataModel.provenanceModels;
           last as isLast
         "
       >
-        <a [href]="getProvenance(provenance)?.viewUrl">{{
-          getProvenance(provenance)?.name
+        <a [href]="provenance.viewUrl">{{
+          provenance.name
         }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
@@ -129,12 +129,12 @@
 
     <ng-container
       *ngIf="
-        parameterDataModel.tags as reportEvents;
+        parameterDataModel.tagModels as reportEvents;
         else defaultConditionTemplate
       "
     >
       <span *ngFor="let item of reportEvents; last as isLast">
-        <a [href]="getTag(item)?.viewUrl">{{ getTag(item)?.text }}</a>
+        <a [href]="item.viewUrl">{{ item.text }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
     </ng-container>
@@ -151,7 +151,7 @@
 
   <baw-site-map
     class="site-map"
-    [sites]="filteredSites()"
+    [sitesSubset]="filteredSites()"
     [project]="project"
     [region]="region"
   ></baw-site-map>
@@ -226,13 +226,13 @@
     <ng-container *ngFor="let item of report.eventGroups">
       <tr class="row">
         <td class="col">
-          <a [href]="getTag(item.tagId)?.viewUrl">
-            {{ getTag(item.tagId)?.text }}
+          <a [href]="item.tag.viewUrl">
+            {{ item.tag.text }}
           </a>
         </td>
         <td class="col">
-          <a [href]="getProvenance(item.provenanceId)?.viewUrl">
-            {{ getProvenance(item.provenanceId)?.name }}
+          <a [href]="item.provenance.viewUrl">
+            {{ item.provenance.name }}
           </a>
         </td>
         <td class="col">{{ item.detections | number }}</td>
@@ -269,7 +269,7 @@
     Some kind of text to put these figures into context.
   </div>
 
-  <div [class.hide-in-print]="!showChart(chartTypes.speciesAccumulationCurve)">
+  <div [class.hide-in-print]="!shouldShowChart(chartTypes.speciesAccumulationCurve)">
     <div class="chart-heading">
       <h4 class="chart-title">Species Accumulation Curve</h4>
 
@@ -288,19 +288,19 @@
         (click)="
           toggleChart(
             chartTypes.speciesAccumulationCurve,
-            !showChart(chartTypes.speciesAccumulationCurve)
+            !shouldShowChart(chartTypes.speciesAccumulationCurve)
           )
         "
       >
         <fa-icon
           [icon]="[
             'fas',
-            showChart(chartTypes.speciesAccumulationCurve)
+            shouldShowChart(chartTypes.speciesAccumulationCurve)
               ? 'minimize'
               : 'maximize'
           ]"
           [ngbTooltip]="
-            showChart(chartTypes.speciesAccumulationCurve)
+            shouldShowChart(chartTypes.speciesAccumulationCurve)
               ? 'Minimize'
               : 'Maximize'
           "
@@ -308,7 +308,7 @@
       </button>
     </div>
 
-    <div [ngbCollapse]="!showChart(chartTypes.speciesAccumulationCurve)">
+    <div [ngbCollapse]="!shouldShowChart(chartTypes.speciesAccumulationCurve)">
       <baw-chart
         #accumulationChart
         class="large-embedded-figure"
@@ -318,7 +318,7 @@
     </div>
   </div>
 
-  <div [class.hide-in-print]="!showChart(chartTypes.speciesCompositionCurve)">
+  <div [class.hide-in-print]="!shouldShowChart(chartTypes.speciesCompositionCurve)">
     <div class="chart-heading">
       <h4 class="chart-title">Species Composition</h4>
 
@@ -337,19 +337,19 @@
         (click)="
           toggleChart(
             chartTypes.speciesCompositionCurve,
-            !showChart(chartTypes.speciesCompositionCurve)
+            !shouldShowChart(chartTypes.speciesCompositionCurve)
           )
         "
       >
         <fa-icon
           [icon]="[
             'fas',
-            showChart(chartTypes.speciesCompositionCurve)
+            shouldShowChart(chartTypes.speciesCompositionCurve)
               ? 'minimize'
               : 'maximize'
           ]"
           [ngbTooltip]="
-            showChart(chartTypes.speciesCompositionCurve)
+            shouldShowChart(chartTypes.speciesCompositionCurve)
               ? 'Minimize'
               : 'Maximize'
           "
@@ -357,7 +357,7 @@
       </button>
     </div>
 
-    <div [ngbCollapse]="!showChart(chartTypes.speciesCompositionCurve)">
+    <div [ngbCollapse]="!shouldShowChart(chartTypes.speciesCompositionCurve)">
       <baw-chart
         #compositionChart
         class="large-embedded-figure"
@@ -371,7 +371,7 @@
   <!-- TODO: Enable this chart once false colour spectrograms are functional -->
   <div
     *ngIf="false"
-    [class.hide-in-print]="!showChart(chartTypes.falseColorSpectrograms)"
+    [class.hide-in-print]="!shouldShowChart(chartTypes.falseColorSpectrograms)"
   >
     <div class="chart-heading">
       <h4 class="chart-title">False colour spectrogram(s)</h4>
@@ -391,19 +391,19 @@
         (click)="
           toggleChart(
             chartTypes.falseColorSpectrograms,
-            !showChart(chartTypes.falseColorSpectrograms)
+            !shouldShowChart(chartTypes.falseColorSpectrograms)
           )
         "
       >
         <fa-icon
           [icon]="[
             'fas',
-            showChart(chartTypes.falseColorSpectrograms)
+            shouldShowChart(chartTypes.falseColorSpectrograms)
               ? 'minimize'
               : 'maximize'
           ]"
           [ngbTooltip]="
-            showChart(chartTypes.falseColorSpectrograms)
+            shouldShowChart(chartTypes.falseColorSpectrograms)
               ? 'Minimize'
               : 'Maximize'
           "
@@ -411,7 +411,7 @@
       </button>
     </div>
 
-    <div [ngbCollapse]="!showChart(chartTypes.falseColorSpectrograms)">
+    <div [ngbCollapse]="!shouldShowChart(chartTypes.falseColorSpectrograms)">
       <div class="large-embedded-figure p-1">False colour spectrogram(s)</div>
     </div>
   </div>
