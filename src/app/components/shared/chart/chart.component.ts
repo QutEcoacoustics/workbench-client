@@ -1,11 +1,14 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
+  NgZone,
   ViewChild,
 } from "@angular/core";
 import { Data } from "@angular/router";
+import { take } from "rxjs";
 import embed, {
   EmbedOptions,
   ExpressionFunction,
@@ -26,14 +29,20 @@ const customFormatterName = "customFormatter";
     <div
       #chartContainer
       class="chartContainer marks"
-      (window:beforeprint)="resizeEvent()"
-      (window:afterprint)="resizeEvent()"
-    >Chart loading</div>
+      [ngClass]="{ pseudoPrintMedia: isPrinting }"
+      (window:beforeprint)="isPrinting = true; resizeEvent(); "
+    >
+      Chart loading
+    </div>
   `,
   styleUrls: ["chart.component.scss"],
 })
 export class ChartComponent implements AfterViewInit {
-  public constructor(private elements: ElementRef) {}
+  public constructor(
+    private elements: ElementRef,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
+  ) {}
 
   @ViewChild("chartContainer") public chartContainer: ElementRef;
   private d3svg: SVGElement;
@@ -72,6 +81,8 @@ export class ChartComponent implements AfterViewInit {
   private vegaFormatterFunction: ExpressionFunction;
   private fullSpec: VisualizationSpec;
 
+  protected isPrinting: boolean;
+
   public async ngAfterViewInit() {
     if (this.formatter) {
       this.vegaFormatterFunction = vega.expressionFunction(
@@ -100,6 +111,34 @@ export class ChartComponent implements AfterViewInit {
     // under certain conditions using v/h concat will cause the chart to only fit to the first chart
     // to fix this, we fire a resize event once the component has been loaded
     this.resizeEvent();
+
+    // monkey patch the window.print function to trigger the resize event and ensure that zone.js (angular change detection) is stable
+    const windowPrintOriginal = window.print;
+    window.print = () => {
+      this.isPrinting = true;
+      const newParams = [
+        { name: "bawTitleSize", value: 24 },
+        { name: "bawFontSize", value: 21 },
+      ];
+
+      this.vegaView.spec["params"] = newParams;
+      this.vegaView.vgSpec["params"] = newParams;
+
+      this.resizeEvent();
+
+      this.ngZone.runOutsideAngular(() => this.resizeEvent());
+      this.ngZone.runTask(() => this.resizeEvent());
+      this.cdr.detectChanges();
+      this.cdr.markForCheck();
+
+      this.ngZone.onStable
+        .pipe(take(1))
+        // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+        .subscribe(() => {
+          windowPrintOriginal();
+          this.isPrinting = false;
+        });
+    };
   }
 
   public downloadChartAsCsv(): void {
@@ -121,7 +160,8 @@ export class ChartComponent implements AfterViewInit {
       //? https://vega.github.io/vega-lite/docs/size.html#autosize
       window.dispatchEvent(new Event("resize"));
       // since the resize event will resize the container, we also need to update the font size after the container has resized
-      this.adjustViewBox();
+      // this.adjustViewBox();
+      this.vegaView.view.run();
     }
   }
 
