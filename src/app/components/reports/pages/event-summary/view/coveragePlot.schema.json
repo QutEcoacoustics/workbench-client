@@ -2,7 +2,8 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "datasets": {},
   "params": [
-    { "name": "bawFontSize", "value": 16 }
+    { "name": "bawTitleSize", "value": 16 },
+    { "name": "bawFontSize", "value": 14 }
   ],
   "resolve": {
     "scale": {
@@ -19,7 +20,7 @@
         "anchor": "start",
         "fontWeight": "normal",
         "fontSize": {
-          "expr": "bawFontSize"
+          "expr": "bawTitleSize"
         }
       },
       "width": "container",
@@ -70,7 +71,7 @@
         "anchor": "start",
         "fontWeight": "normal",
         "fontSize": {
-          "expr": "bawFontSize"
+          "expr": "bawTitleSize"
         }
       },
       "width": "container",

@@ -26,8 +26,6 @@ const customFormatterName = "customFormatter";
     <div
       #chartContainer
       class="chartContainer marks"
-      (window:beforeprint)="resizeFontForPrinting()"
-      (window:afterprint)="resizeFontForScreen()"
     >
       Chart loading
     </div>
@@ -35,9 +33,12 @@ const customFormatterName = "customFormatter";
   styleUrls: ["chart.component.scss"],
 })
 export class ChartComponent implements AfterViewInit {
-  public constructor() {}
+  public constructor(
+    private elements: ElementRef,
+  ) {}
 
-  @ViewChild("chartContainer") public element: ElementRef;
+  @ViewChild("chartContainer") public chartContainer: ElementRef;
+  private d3svg: SVGElement;
 
   // in vega lite the spec and data are the same object, therefore, by separating the two at the component level
   // we can create multiple graphs with different data from the same spec
@@ -72,7 +73,6 @@ export class ChartComponent implements AfterViewInit {
   private vegaView: Result;
   private vegaFormatterFunction: ExpressionFunction;
   private fullSpec: VisualizationSpec;
-  private static fontParameterName = "bawFontSize";
 
   public async ngAfterViewInit() {
     if (this.formatter) {
@@ -96,40 +96,18 @@ export class ChartComponent implements AfterViewInit {
     // but vega lite's autosize will only update when the window is resized
     // therefore, we also need to trigger a resize event when the component is resized
     const observer = new ResizeObserver(() => this.resizeEvent());
-    observer.observe(this.element.nativeElement);
+    observer.observe(this.chartContainer.nativeElement);
+    this.d3svg = this.elements.nativeElement.querySelectorAll(".marks")[0];
+
+    // under certain conditions using v/h concat will cause the chart to only fit to the first chart
+    // to fix this, we fire a resize event once the component has been loaded
+    this.resizeEvent();
   }
 
   public downloadChartAsCsv(): void {
     if (this.vegaView) {
       // TODO: call an api endpoint to download the chart as CSV
     }
-  }
-
-  public async setSpecParameter(
-    key: string,
-    value: string | number
-  ): Promise<void> {
-    const paramsKey = "params";
-
-    if (!(paramsKey in this.fullSpec)) {
-      this.fullSpec[paramsKey] = [];
-    }
-
-    const params = this.fullSpec[paramsKey] as object[];
-    const param = params.find((item) => item["name"] === key);
-
-    if (!param) {
-      params.push({
-        name: key,
-        value,
-      });
-      return;
-    }
-
-    param["value"] = value;
-
-    // because spec parameters are used for reactive values, we need to recreate the chart when they are updated
-    this.vegaView = await this.generateChart(this.fullSpec);
   }
 
   // this is triggered by the window.resize event, which will trigger on all browsers when the window or container is resized
@@ -145,28 +123,10 @@ export class ChartComponent implements AfterViewInit {
       //? https://vega.github.io/vega-lite/docs/size.html#autosize
       window.dispatchEvent(new Event("resize"));
       // since the resize event will resize the container, we also need to update the font size after the container has resized
-      this.resizeFont();
+      this.adjustViewBox();
     }
   }
 
-  protected resizeFont() {
-    const pxSize = parseInt(
-      window
-        .getComputedStyle(window.document.body)
-        .getPropertyValue("font-size"),
-      10
-    );
-
-    this.setSpecParameter(ChartComponent.fontParameterName, pxSize);
-  }
-
-  protected resizeFontForScreen() {
-    this.setSpecParameter(ChartComponent.fontParameterName, 16 /* px */);
-  }
-
-  protected resizeFontForPrinting() {
-    this.setSpecParameter(ChartComponent.fontParameterName, 72 /* px */);
-  }
 
   /**
    * Destroy and recreate the chart
@@ -190,13 +150,23 @@ export class ChartComponent implements AfterViewInit {
       },
     };
 
-    return embed(this.element.nativeElement, fullSpec, {
+    return embed(this.chartContainer.nativeElement, fullSpec, {
       ...defaultOptions,
       ...this.options,
       expressionFunctions: {
         [`${customFormatterName}`]: this.vegaFormatterFunction ?? {},
       },
     });
+  }
+
+  private adjustViewBox() {
+    const w = this.d3svg.getAttribute("width");
+    const h = this.d3svg.getAttribute("height");
+
+    this.d3svg.setAttribute("width", "100%");
+    this.d3svg.setAttribute("height", "100%");
+    this.d3svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    this.d3svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
   }
 
   // because data is inherently a field on the vega lite spec, but is separated in our component

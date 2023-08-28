@@ -12,7 +12,8 @@
     }
   ],
   "params": [
-    { "name": "bawFontSize", "value": 16 }
+    { "name": "bawTitleSize", "value": 16 },
+    { "name": "bawFontSize", "value": 14 }
   ],
   "layer": [
     {
@@ -94,7 +95,7 @@
           "type": "quantitative",
           "axis": {
             "titleFontSize": {
-              "expr": "bawFontSize"
+              "expr": "bawTitleSize"
             },
             "labelFontSize": {
               "expr": "bawFontSize"

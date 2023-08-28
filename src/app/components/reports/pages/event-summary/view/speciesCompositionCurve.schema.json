@@ -6,7 +6,8 @@
     "values": []
   },
     "params": [
-    { "name": "bawFontSize", "value": 16 }
+    { "name": "bawTitleSize", "value": 16 },
+    { "name": "bawFontSize", "value": 14 }
   ],
   "config": {
     "customFormatTypes": true
@@ -56,7 +57,7 @@
       "type": "quantitative",
       "axis": {
         "titleFontSize": {
-          "expr": "bawFontSize"
+          "expr": "bawTitleSize"
         },
         "labelFontSize": {
           "expr": "bawFontSize"
@@ -73,16 +74,17 @@
         "orient": "top",
         "formatType": "customFormatter",
         "title": "Events",
+        "columns": 6,
         "titleFontSize": {
-          "expr": "bawFontSize"
+          "expr": "bawTitleSize"
         },
         "titleFontWeight": "normal",
         "labelLimit": 500,
         "symbolSize": {
-          "expr": "bawFontSize * 16"
+          "expr": "bawTitleSize * 16"
         },
         "labelFontSize": {
-          "expr": "bawFontSize"
+          "expr": "bawTitleSize"
         }
       }
     },
