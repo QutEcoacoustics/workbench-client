@@ -43,7 +43,6 @@ $heading-sizes: (
     min-width: 420mm;
     max-width: 420mm;
     height: 100%;
-    transform-origin: top left;
 
     // some page sizes (eg. letter, legal) do not follow the same aspect ratio as A1-5
     // as content assumes an A1-5 aspect ratio, and we want to maintain the same content aspect ratio, we center the page content
@@ -53,6 +52,7 @@ $heading-sizes: (
     // because the page size is A2, content will be small and unreadable
     // by enlarging the page content, we can make it more readable
     font-size: 200%;
+    overflow-x: hidden;
   }
 
   // hide branding during printing
@@ -91,7 +91,8 @@ $heading-sizes: (
 
   // there are some bugs in ngBootstrap where tooltips are emitted during printing
   // as tooltips are an extension of the users mouse (which is hidden), we should also hide the tooltips
-  .tooltip {
+  .tooltip,
+  #vg-tooltip-element {
     display: none;
   }
 

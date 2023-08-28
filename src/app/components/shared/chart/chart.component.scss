@@ -19,4 +19,12 @@
   .chartContainer {
     break-inside: avoid;
   }
+
+  .chartContainer {
+    width: 50%;
+    height: 50%;
+    transform-origin: top left;
+    transform: scale(4);
+    margin-bottom: 12em;
+  }
 }

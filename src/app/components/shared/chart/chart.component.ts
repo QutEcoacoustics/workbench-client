@@ -26,16 +26,14 @@ const customFormatterName = "customFormatter";
     <div
       #chartContainer
       class="chartContainer marks"
-    >
-      Chart loading
-    </div>
+      (window:beforeprint)="resizeEvent()"
+      (window:afterprint)="resizeEvent()"
+    >Chart loading</div>
   `,
   styleUrls: ["chart.component.scss"],
 })
 export class ChartComponent implements AfterViewInit {
-  public constructor(
-    private elements: ElementRef,
-  ) {}
+  public constructor(private elements: ElementRef) {}
 
   @ViewChild("chartContainer") public chartContainer: ElementRef;
   private d3svg: SVGElement;
@@ -127,12 +125,11 @@ export class ChartComponent implements AfterViewInit {
     }
   }
 
-
   /**
    * Destroy and recreate the chart
    * This will not be optimal if you need to update the chart frequently
    */
-  private async generateChart(fullSpec): Promise<Result> {
+  private generateChart(fullSpec): Promise<Result> {
     // default options exist because they are always applied for compatibility reasons and cannot be overwritten by the @Input() options
     const defaultOptions: EmbedOptions = {
       // we always want to use svg as the renderer (unless unless explicitly overridden in the options) as it has sharper text
