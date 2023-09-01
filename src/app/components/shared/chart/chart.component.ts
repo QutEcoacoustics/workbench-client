@@ -126,7 +126,7 @@ export class ChartComponent implements AfterViewInit {
         // however we enable it so that the graph will resize when the window or component resizes
         autosize: {
           // if you use vconcat or hconcat, this autosize type will show a warning and will default to "pad"
-          // while annoying, we should use "fit" as it'll make the chart fill its container, allowing us to control its size with css
+          // while annoying, we should use "fit" where we can as it us to control the size with css
           type: "fit",
           resize: true,
         },

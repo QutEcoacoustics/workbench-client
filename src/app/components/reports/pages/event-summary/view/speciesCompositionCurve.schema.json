@@ -13,13 +13,6 @@
     "customFormatTypes": true
   },
   "mark": "area",
-  "selection": {
-    "hover": {
-      "type": "single",
-      "on": "mouseover",
-      "empty": "none"
-    }
-  },
   "transform": [
     {
       "calculate": "format(datum.ratio, '.2f')",
@@ -91,13 +84,6 @@
           "expr": "bawTitleSize"
         }
       }
-    },
-    "opacity": {
-      "condition": {
-        "selection": "hover",
-        "value": 0.85
-      },
-      "value": 1
     },
     "tooltip": [
       {
