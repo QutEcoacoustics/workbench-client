@@ -2,8 +2,8 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "datasets": {},
   "params": [
-    { "name": "bawTitleSize", "value": 16 },
-    { "name": "bawFontSize", "value": 14 }
+    { "name": "bawTitleSize", "value": 20 },
+    { "name": "bawFontSize", "value": 18 }
   ],
   "resolve": {
     "scale": {
@@ -36,9 +36,9 @@
             "labels": false,
             "ticks": false,
             "domain": false,
-            "grid": true,
+            "grid": false,
             "tickCount": {
-              "interval": "month",
+              "interval": "day",
               "step": 1
             }
           }
@@ -87,10 +87,11 @@
               "axis": {
                 "labelAngle": 45,
                 "title": null,
-                "grid": true,
+                "grid": false,
                 "format": "%Y-%m-%d",
+                "ticks": false,
                 "tickCount": {
-                  "interval": "month",
+                  "interval": "day",
                   "step": 1
                 },
                 "labelFontSize": {

@@ -6,8 +6,8 @@
     "values": []
   },
     "params": [
-    { "name": "bawTitleSize", "value": 16 },
-    { "name": "bawFontSize", "value": 14 }
+    { "name": "bawTitleSize", "value": 20 },
+    { "name": "bawFontSize", "value": 18 }
   ],
   "config": {
     "customFormatTypes": true
@@ -38,10 +38,14 @@
       "timeUnit": "yearmonthdate",
       "axis": {
         "labelAngle": 45,
-        "grid": true,
+        "grid": false,
         "title": null,
         "format": "%Y-%m-%d",
         "zindex": 1,
+        "tickCount": {
+          "interval": "day",
+          "step": 1
+        },
         "labelFontSize": {
           "expr": "bawFontSize"
         }

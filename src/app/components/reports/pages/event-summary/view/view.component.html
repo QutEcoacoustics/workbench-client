@@ -26,7 +26,7 @@
       *ngIf="report.regions as reportRegions; else defaultConditionTemplate"
     >
       <span *ngFor="let item of reportRegions; last as isLast">
-        <a [href]="item.viewUrl">{{ item.name }}</a>
+        <a *ngIf="item" [href]="item.viewUrl">{{ item.name }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
     </ng-container>
@@ -39,7 +39,7 @@
       *ngIf="report.sites as reportSites; else defaultConditionTemplate"
     >
       <span *ngFor="let item of reportSites; last as isLast">
-        <a [href]="item.viewUrl">{{ item.name }}</a>
+        <a *ngIf="item" [href]="item.viewUrl">{{ item.name }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
     </ng-container>
@@ -105,7 +105,9 @@
           last as isLast
         "
       >
-        <a [href]="provenance.viewUrl">{{ provenance.name }}</a>
+        <a *ngIf="provenance" [href]="provenance.viewUrl">{{
+          provenance.name
+        }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
     </ng-container>
@@ -132,7 +134,7 @@
       "
     >
       <span *ngFor="let item of reportEvents; last as isLast">
-        <a [href]="item.viewUrl">{{ item.text }}</a>
+        <a *ngIf="item" [href]="item.viewUrl">{{ item.text }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
     </ng-container>
@@ -224,12 +226,12 @@
     <ng-container *ngFor="let item of report.eventGroups">
       <tr class="row">
         <td class="col">
-          <a [href]="item.tag.viewUrl">
+          <a *ngIf="isResolvedModel(item.tag)" [href]="item.tag.viewUrl">
             {{ item.tag.text }}
           </a>
         </td>
         <td class="col">
-          <a [href]="item.provenance.viewUrl">
+          <a *ngIf="isResolvedModel(item.provenance)" [href]="item.provenance.viewUrl">
             {{ item.provenance.name }}
           </a>
         </td>
@@ -363,15 +365,17 @@
       </button>
     </div>
 
-    <div [ngbCollapse]="!shouldShowChart(chartTypes.speciesCompositionCurve)">
-      <baw-chart
-        #compositionChart
-        class="large-embedded-figure"
-        [spec]="speciesCompositionCurveSchema"
-        [data]="report.graphs?.speciesCompositionData"
-        [formatter]="vegaTagTextFormatter"
-      ></baw-chart>
-    </div>
+    <ng-container *ngIf="parameterDataModel.tagModels.length">
+      <div [ngbCollapse]="!shouldShowChart(chartTypes.speciesCompositionCurve)">
+        <baw-chart
+          #compositionChart
+          class="large-embedded-figure"
+          [spec]="speciesCompositionCurveSchema"
+          [data]="report.graphs?.speciesCompositionData"
+          [formatter]="vegaTagTextFormatter"
+        ></baw-chart>
+      </div>
+    </ng-container>
   </div>
 
   <!-- TODO: Enable this chart once false colour spectrograms are functional -->
@@ -473,7 +477,7 @@
     <button
       type="button"
       class="btn btn-primary float-end"
-      (click)="modal.close(); printPage();"
+      (click)="modal.close(); printPage()"
     >
       Print
     </button>

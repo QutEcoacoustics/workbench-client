@@ -35,6 +35,7 @@ import { Tag } from "@models/Tag";
 import { Location } from "@angular/common";
 import { Map } from "immutable";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { AbstractModel, isUnresolvedModel } from "@models/AbstractModel";
 import {
   Chart,
   EventSummaryReportParameters,
@@ -119,10 +120,14 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     return User.getUnknownUser(undefined);
   }
 
+  protected isResolvedModel(model: AbstractModel): boolean {
+    return !isUnresolvedModel(model);
+  }
+
   protected vegaTagTextFormatter = (tagId: number): string =>
     this.parameterDataModel.tagModels.find(
       (tagModel: Tag) => tagModel.id === tagId
-    ).text;
+    )?.text;
 
   protected openPrintModal(): void {
     if (this.shouldUsePrintModal()) {

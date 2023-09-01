@@ -12,8 +12,8 @@
     }
   ],
   "params": [
-    { "name": "bawTitleSize", "value": 16 },
-    { "name": "bawFontSize", "value": 14 }
+    { "name": "bawTitleSize", "value": 20 },
+    { "name": "bawFontSize", "value": 18 }
   ],
   "layer": [
     {
@@ -32,8 +32,12 @@
           "axis": {
             "labelAngle": 45,
             "title": null,
-            "grid": true,
+            "grid": false,
             "format": "%Y-%m-%d",
+            "tickCount": {
+              "interval": "day",
+              "step": 1
+            },
             "labelFontSize": {
               "expr": "bawFontSize"
             }

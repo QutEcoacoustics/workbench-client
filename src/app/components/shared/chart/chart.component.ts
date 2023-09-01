@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   Input,
@@ -26,12 +27,12 @@ const customFormatterName = "customFormatter";
     <div #chartContainer class="chartContainer marks">Chart loading</div>
   `,
   styleUrls: ["chart.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChartComponent implements AfterViewInit {
-  public constructor(private elements: ElementRef) {}
+  public constructor() {}
 
   @ViewChild("chartContainer") public chartContainer: ElementRef;
-  private d3svg: SVGElement;
 
   // in vega lite the spec and data are the same object, therefore, by separating the two at the component level
   // we can create multiple graphs with different data from the same spec
@@ -67,16 +68,7 @@ export class ChartComponent implements AfterViewInit {
   private vegaFormatterFunction: ExpressionFunction;
   private fullSpec: VisualizationSpec;
 
-  protected isPrinting: boolean;
-
   public async ngAfterViewInit() {
-    if (this.formatter) {
-      this.vegaFormatterFunction = vega.expressionFunction(
-        customFormatterName,
-        (datum: unknown) => this.formatter(datum)
-      );
-    }
-
     // since vega lite graphs are objects, we need to create the new component spec by value, rather than by reference
     // updating by reference will cause all other graphs to update as well
     this.fullSpec = this.addDataToSpec(
@@ -92,7 +84,6 @@ export class ChartComponent implements AfterViewInit {
     // therefore, we also need to trigger a resize event when the component is resized
     const observer = new ResizeObserver(() => this.resizeEvent());
     observer.observe(this.chartContainer.nativeElement);
-    this.d3svg = this.elements.nativeElement.querySelectorAll(".marks")[0];
 
     // under certain conditions using v/h concat will cause the chart to only fit to the first chart
     // to fix this, we fire a resize event once the component has been loaded
@@ -117,9 +108,6 @@ export class ChartComponent implements AfterViewInit {
       // using the vega-embed resize event will work asynchronously, meaning that it will not resize the chart when printing
       //? https://vega.github.io/vega-lite/docs/size.html#autosize
       window.dispatchEvent(new Event("resize"));
-      // since the resize event will resize the container, we also need to update the font size after the container has resized
-      // this.adjustViewBox();
-      this.vegaView.view.run();
     }
   }
 
@@ -127,7 +115,7 @@ export class ChartComponent implements AfterViewInit {
    * Destroy and recreate the chart
    * This will not be optimal if you need to update the chart frequently
    */
-  private generateChart(fullSpec): Promise<Result> {
+  private async generateChart(fullSpec): Promise<Result> {
     // default options exist because they are always applied for compatibility reasons and cannot be overwritten by the @Input() options
     const defaultOptions: EmbedOptions = {
       // we always want to use svg as the renderer (unless unless explicitly overridden in the options) as it has sharper text
@@ -145,23 +133,24 @@ export class ChartComponent implements AfterViewInit {
       },
     };
 
-    return embed(this.chartContainer.nativeElement, fullSpec, {
+    if (this.formatter) {
+      this.vegaFormatterFunction = vega.expressionFunction(
+        customFormatterName,
+        (datum: unknown) => this.formatter(datum)
+      );
+    }
+
+    const vegaChart: Result = await embed(this.chartContainer.nativeElement, fullSpec, {
       ...defaultOptions,
       ...this.options,
       expressionFunctions: {
         [`${customFormatterName}`]: this.vegaFormatterFunction ?? {},
       },
     });
-  }
 
-  private adjustViewBox() {
-    const w = this.d3svg.getAttribute("width");
-    const h = this.d3svg.getAttribute("height");
+    vegaChart.view.finalize();
 
-    this.d3svg.setAttribute("width", "100%");
-    this.d3svg.setAttribute("height", "100%");
-    this.d3svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
-    this.d3svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    return vegaChart;
   }
 
   // because data is inherently a field on the vega lite spec, but is separated in our component
