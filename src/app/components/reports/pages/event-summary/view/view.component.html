@@ -97,17 +97,15 @@
     <b>Recognisers: </b>
 
     <ng-container
-      *ngIf="parameterDataModel.provenanceModels; else defaultConditionTemplate"
+      *ngIf="
+        parameterDataModel.provenanceModels as provenances;
+        else defaultConditionTemplate
+      "
     >
-      <span
-        *ngFor="
-          let provenance of parameterDataModel.provenanceModels;
-          last as isLast
-        "
-      >
-        <a *ngIf="provenance" [href]="provenance.viewUrl">{{
-          provenance.name
-        }}</a>
+      <span *ngFor="let provenance of provenances; last as isLast">
+        <a *ngIf="provenance" [href]="provenance.viewUrl">
+          {{ provenance }}
+        </a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
     </ng-container>
@@ -133,8 +131,10 @@
         else defaultConditionTemplate
       "
     >
-      <span *ngFor="let item of reportEvents; last as isLast">
-        <a *ngIf="item" [href]="item.viewUrl">{{ item.text }}</a>
+      <span *ngFor="let event of reportEvents; last as isLast">
+        <a *ngIf="event" [href]="event.viewUrl">
+          {{ event }}
+        </a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
     </ng-container>
@@ -231,7 +231,10 @@
           </a>
         </td>
         <td class="col">
-          <a *ngIf="isResolvedModel(item.provenance)" [href]="item.provenance.viewUrl">
+          <a
+            *ngIf="isResolvedModel(item.provenance)"
+            [href]="item.provenance.viewUrl"
+          >
             {{ item.provenance.name }}
           </a>
         </td>
@@ -313,7 +316,7 @@
       </button>
     </div>
 
-    <ng-container ></ng-container>
+    <ng-container></ng-container>
     <div [ngbCollapse]="!shouldShowChart(chartTypes.speciesAccumulationCurve)">
       <baw-chart
         #accumulationChart

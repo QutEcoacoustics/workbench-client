@@ -150,6 +150,7 @@ export class EventSummaryReportService
           { date: "2023-05-27", count: 18, error: 2 },
           { date: "2023-05-28", count: 18, error: 2 },
           { date: "2023-05-29", count: 20, error: 3 },
+          { date: "2023-05-30", count: 21, error: 3 },
         ],
         speciesCompositionData: [
           { date: "2023-05-22", tagId: 1, ratio: 0.55 },
@@ -182,24 +183,14 @@ export class EventSummaryReportService
         ],
         coverageData: {
           recordingCoverage: [
-            { startDate: "2020-10-10", endDate: "2020-10-11" },
-            { startDate: "2020-10-12", endDate: "2020-10-15" },
-            { startDate: "2020-10-19", endDate: "2020-10-23" },
-            { startDate: "2020-10-26", endDate: "2020-11-01" },
-            { startDate: "2020-11-10", endDate: "2020-12-01" },
-            { startDate: "2020-12-01", endDate: "2020-12-28" },
-            { startDate: "2021-01-01", endDate: "2021-04-11" },
-            { startDate: "2021-08-10", endDate: "2021-10-11" },
+            { startDate: "2023-05-22", endDate: "2023-05-24" },
+            { startDate: "2023-05-26", endDate: "2023-05-27" },
+            { startDate: "2023-05-28", endDate: "2023-05-29" },
           ],
           analysisCoverage: [
-            { startDate: "2020-10-10", endDate: "2020-10-11" },
-            { startDate: "2020-10-12", endDate: "2020-10-15" },
-            { startDate: "2020-10-19", endDate: "2020-10-20" },
-            { startDate: "2020-10-26", endDate: "2020-11-01" },
-            { startDate: "2020-11-10", endDate: "2020-12-01" },
-            { startDate: "2020-12-01", endDate: "2020-12-18" },
-            { startDate: "2021-01-01", endDate: "2021-04-11" },
-            { startDate: "2021-08-10", endDate: "2021-10-11" },
+            { startDate: "2023-05-22", endDate: "2023-05-23" },
+            { startDate: "2023-05-26", endDate: "2023-05-27" },
+            { startDate: "2023-05-28", endDate: "2023-05-28" },
           ],
         },
         // TODO: I might be able to remove this

@@ -37,10 +37,7 @@
             "ticks": false,
             "domain": false,
             "grid": false,
-            "tickCount": {
-              "interval": "day",
-              "step": 1
-            }
+            "tickCount": "day"
           }
         },
         "x2": {
@@ -90,10 +87,7 @@
                 "grid": false,
                 "format": "%Y-%m-%d",
                 "ticks": false,
-                "tickCount": {
-                  "interval": "day",
-                  "step": 1
-                },
+                "tickCount": "day",
                 "labelFontSize": {
                   "expr": "bawFontSize"
                 }

@@ -34,10 +34,7 @@
             "title": null,
             "grid": false,
             "format": "%Y-%m-%d",
-            "tickCount": {
-              "interval": "day",
-              "step": 1
-            },
+            "tickCount": "day",
             "labelFontSize": {
               "expr": "bawFontSize"
             }

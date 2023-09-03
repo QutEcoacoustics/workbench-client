@@ -35,10 +35,7 @@
         "title": null,
         "format": "%Y-%m-%d",
         "zindex": 1,
-        "tickCount": {
-          "interval": "day",
-          "step": 1
-        },
+        "tickCount": "day",
         "labelFontSize": {
           "expr": "bawFontSize"
         }

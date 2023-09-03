@@ -9,12 +9,21 @@ import {
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
-import { Observable, of } from "rxjs";
+import { Observable, delay, of } from "rxjs";
 import { Resolvers } from "@baw-api/resolver-common";
 
 const audioEventProvenanceId: IdParamOptional<AudioEventProvenance> = id;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const endpoint = stringTemplate`/provenance/${audioEventProvenanceId}${option}`;
+
+const mockAudioEventProvenance: AudioEventProvenance =
+new AudioEventProvenance({
+  id: 1,
+  name: "Fake Audio Event Provenance",
+  version: "1.0",
+  description: "Mock Description",
+  score: 0.5,
+});
 
 // the baw-api functionality of this model is not currently complete, therefore we are returning mock data
 // TODO: remove mock data once the api is complete
@@ -24,28 +33,20 @@ export class AudioEventProvenanceService
 {
   public constructor(protected _api: BawApiService<AudioEventProvenance>) {}
 
-  private mockAudioEventProvenance: AudioEventProvenance =
-    new AudioEventProvenance({
-      id: 1,
-      name: "Fake Audio Event Provenance",
-      version: "1.0",
-      description: "Mock Description",
-      score: 0.5,
-    });
-
   public list(): Observable<AudioEventProvenance[]> {
-    return of([this.mockAudioEventProvenance]);
+    return of([mockAudioEventProvenance]);
     // return this.api.list(AudioEventProvenance, endpoint(emptyParam, emptyParam));
   }
 
   public filter(
     _filters: Filters<AudioEventProvenance>
   ): Observable<AudioEventProvenance[]> {
-    return of([this.mockAudioEventProvenance]);
+    return of([mockAudioEventProvenance])
+      .pipe(delay(100));
     // return this.api.filter(
-    // AudioEventProvenance,
-    // endpoint(emptyParam, filterParam),
-    // filters
+    //    AudioEventProvenance,
+    //    endpoint(emptyParam, filterParam),
+    //    filters
     // );
   }
 
@@ -53,30 +54,31 @@ export class AudioEventProvenanceService
   public show(
     _model: IdOr<AudioEventProvenance>
   ): Observable<AudioEventProvenance> {
-    return of(this.mockAudioEventProvenance);
+    return of(mockAudioEventProvenance)
+      .pipe(delay(100));
     // return this.api.show(AudioEventProvenance, endpoint(model, emptyParam));
   }
 
   public create(
     _model: AudioEventProvenance
   ): Observable<AudioEventProvenance> {
-    return of(this.mockAudioEventProvenance);
+    return of(mockAudioEventProvenance);
     // return this.api.create(
-    // AudioEventProvenance,
-    // endpoint(emptyParam, emptyParam),
-    // (audioEventProvenance) => endpoint(audioEventProvenance, emptyParam),
-    // model
+    //    AudioEventProvenance,
+    //    endpoint(emptyParam, emptyParam),
+    //    (audioEventProvenance) => endpoint(audioEventProvenance, emptyParam),
+    //    model
     // );
   }
 
   public update(
     _model: AudioEventProvenance
   ): Observable<AudioEventProvenance> {
-    return of(this.mockAudioEventProvenance);
+    return of(mockAudioEventProvenance);
     // return this.api.update(
-    // AudioEventProvenance,
-    // endpoint(model, emptyParam),
-    // model
+    //    AudioEventProvenance,
+    //    endpoint(model, emptyParam),
+    //    model
     // );
   }
 

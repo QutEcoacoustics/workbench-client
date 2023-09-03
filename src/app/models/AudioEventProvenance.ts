@@ -1,5 +1,6 @@
 import { Id } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
+import { bawPersistAttr } from "./AttributeDecorators";
 
 export interface IAudioEventProvenance {
   id: Id;
@@ -9,11 +10,19 @@ export interface IAudioEventProvenance {
   score: number;
 }
 
-export class AudioEventProvenance extends AbstractModel implements AudioEventProvenance {
+export class AudioEventProvenance
+  extends AbstractModel<IAudioEventProvenance>
+  implements IAudioEventProvenance
+{
+  @bawPersistAttr()
   public readonly id: Id;
+  @bawPersistAttr()
   public readonly name: string;
+  @bawPersistAttr()
   public readonly version: string;
+  @bawPersistAttr()
   public readonly description: string;
+  @bawPersistAttr()
   public readonly score: number;
 
   /**
@@ -22,5 +31,9 @@ export class AudioEventProvenance extends AbstractModel implements AudioEventPro
    */
   public get viewUrl(): string {
     return "";
+  }
+
+  public override toString(): string {
+    return `${this.name} (version ${this.version})`;
   }
 }

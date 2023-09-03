@@ -25,6 +25,7 @@ import {
 import { Id, Ids } from "@interfaces/apiInterfaces";
 import { ImplementsInjector } from "@models/AbstractModel";
 import { hasMany } from "@models/AssociationDecorators";
+import { bawCollection } from "@models/AttributeDecorators";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { Region } from "@models/Region";
@@ -62,10 +63,10 @@ const conversionTable = {
 };
 
 export interface IEventSummaryReportParameters {
-  sites: Id[] | Ids;
-  points: Id[] | Ids;
-  provenances: Id[] | Ids;
-  tags: Id[] | Ids;
+  sites: Ids | Id[];
+  points: Ids | Id[];
+  provenances: Ids | Id[];
+  tags: Ids | Id[];
   score: number;
   bucketSize: BucketSize;
   daylightSavings: boolean;
@@ -92,10 +93,14 @@ export class EventSummaryReportParameters
 
   // since these properties are exposed to the user in the form of query string parameters
   // we use the user friendly names
-  public sites: Id[] | Ids;
-  public points: Id[] | Ids;
-  public provenances: Id[] | Ids;
-  public tags: Id[] | Ids;
+  @bawCollection()
+  public sites: Ids | Id[];
+  @bawCollection()
+  public points: Ids | Id[];
+  @bawCollection()
+  public provenances: Ids | Id[];
+  @bawCollection()
+  public tags: Ids | Id[];
   public score: number;
   public bucketSize: BucketSize = BucketSize.month;
   public daylightSavings: boolean;
@@ -104,16 +109,16 @@ export class EventSummaryReportParameters
   public charts: Chart[];
 
   @hasMany<EventSummaryReportParameters, Region>(SHALLOW_REGION, "sites")
-  public regions: Region[];
+  public regions?: Region[];
   @hasMany<EventSummaryReportParameters, Site>(SHALLOW_SITE, "points")
-  public siteModels: Site[];
+  public siteModels?: Site[];
   @hasMany<EventSummaryReportParameters, Tag>(TAG, "tags")
-  public tagModels: Tag[];
+  public tagModels?: Tag[];
   @hasMany<EventSummaryReportParameters, AudioEventProvenance>(
     AUDIO_EVENT_PROVENANCE,
     "provenances"
   )
-  public provenanceModels: AudioEventProvenance[];
+  public provenanceModels?: AudioEventProvenance[];
 
   public get dateStartedAfter(): DateTime | null {
     return this.date ? this.date[0] : null;
