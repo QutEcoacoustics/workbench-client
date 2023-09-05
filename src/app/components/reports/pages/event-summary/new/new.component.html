@@ -78,9 +78,9 @@
   </div>
 
   <baw-typeahead-input
-    label="Events of Interest"
+    label="Tags of Interest"
     [inputPlaceholder]="'All'"
-    [searchCallback]="eventsOfInterestSearchCallback"
+    [searchCallback]="tagsOfInterestSearchCallback"
     [resultTemplate]="tagsTypeaheadTemplate"
     (modelChange)="model.tags = getIdsFromAbstractModelArray($event)"
   ></baw-typeahead-input>

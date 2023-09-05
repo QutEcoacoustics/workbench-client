@@ -13,16 +13,19 @@
   "data": {
     "name": "recordingCoverage"
   },
+  "config": {
+    "concat": {
+      "spacing": 0
+    },
+    "style": {
+      "cell": {
+        "stroke": "transparent"
+      }
+    }
+  },
   "vconcat": [
     {
-      "title": {
-        "text": "Audio Recording Coverage",
-        "anchor": "start",
-        "fontWeight": "normal",
-        "fontSize": {
-          "expr": "bawTitleSize"
-        }
-      },
+      "title": "",
       "width": "container",
       "height": 50,
       "mark": "bar",
@@ -63,14 +66,7 @@
       }
     },
     {
-      "title": {
-        "text": "Analysis Coverage",
-        "anchor": "start",
-        "fontWeight": "normal",
-        "fontSize": {
-          "expr": "bawTitleSize"
-        }
-      },
+      "title": "",
       "width": "container",
       "height": 50,
       "layer": [
@@ -100,6 +96,38 @@
             },
             "color": {
               "value": "var(--baw-warning)"
+            }
+          }
+        },
+        {
+          "data": {
+            "name": "failedAnalysisCoverage"
+          },
+          "mark": "bar",
+          "encoding": {
+            "x": {
+              "field": "startDate",
+              "type": "temporal",
+              "timeUnit": "yearmonthdate",
+              "axis": {
+                "labelAngle": 45,
+                "title": null,
+                "grid": false,
+                "format": "%Y-%m-%d",
+                "tickCount": "day",
+                "labelFontSize": {
+                  "expr": "bawFontSize"
+                }
+              },
+              "scale": {
+                "padding": 0
+              }
+            },
+            "x2": {
+              "field": "endDate"
+            },
+            "color": {
+              "value": "var(--baw-danger)"
             }
           }
         },

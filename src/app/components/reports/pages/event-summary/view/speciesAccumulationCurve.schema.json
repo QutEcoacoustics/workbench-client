@@ -44,7 +44,7 @@
           }
         },
         "y": {
-          "title": "Count",
+          "title": "Count of Tags",
           "field": "count_subtract_error",
           "type": "quantitative"
         },
@@ -61,7 +61,7 @@
           {
             "field": "count",
             "type": "quantitative",
-            "title": "Count"
+            "title": "Count of Tags"
           },
           {
             "field": "error",
@@ -91,7 +91,7 @@
           }
         },
         "y": {
-          "title": "Count",
+          "title": "Count of Tags",
           "field": "count",
           "type": "quantitative",
           "axis": {
@@ -119,7 +119,7 @@
           "timeUnit": "yearmonthdate"
         },
         "y": {
-          "title": "Count",
+          "title": "Count of Tags",
           "field": "count",
           "type": "quantitative"
         },
@@ -133,7 +133,7 @@
           {
             "field": "count",
             "type": "quantitative",
-            "title": "Count"
+            "title": "Count of Tags"
           },
           {
             "field": "error",

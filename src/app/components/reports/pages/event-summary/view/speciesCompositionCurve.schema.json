@@ -45,7 +45,7 @@
       }
     },
     "y": {
-      "title": "Ratio",
+      "title": "Ratio of Tags",
       "aggregate": "sum",
       "field": "ratio",
       "type": "quantitative",
@@ -67,7 +67,7 @@
       "legend": {
         "orient": "top",
         "formatType": "customFormatter",
-        "title": "Events",
+        "title": "Tags",
         "columns": 6,
         "titleFontSize": {
           "expr": "bawTitleSize"

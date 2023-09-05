@@ -49,6 +49,7 @@ export interface IAnalysisCoverageGraphData {
 }
 
 export interface ITimeSeriesGraph {
+  failedAnalysisCoverage: IDateRange[];
   analysisCoverage: IDateRange[];
   recordingCoverage: IDateRange[];
 }

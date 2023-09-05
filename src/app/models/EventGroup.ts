@@ -1,7 +1,7 @@
 import { Id } from "@interfaces/apiInterfaces";
 import { AUDIO_EVENT_PROVENANCE, TAG } from "@baw-api/ServiceTokens";
 import { AbstractModel } from "./AbstractModel";
-import { IEventScore, IReportEvent } from "./EventSummaryReport";
+import { IEventScore } from "./EventSummaryReport";
 import { hasOne } from "./AssociationDecorators";
 import { AudioEventProvenance } from "./AudioEventProvenance";
 import { Tag } from "./Tag";
@@ -12,7 +12,6 @@ export interface IEventGroup {
   detections: number;
   bucketsWithDetections: number;
   score: IEventScore;
-  bucketsWithInterference?: IReportEvent[];
 }
 
 export class EventGroup
@@ -24,7 +23,6 @@ export class EventGroup
   public detections: number;
   public bucketsWithDetections: number;
   public score: IEventScore;
-  public bucketsWithInterference?: IReportEvent[];
 
   // associations
   @hasOne<EventGroup, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenanceId")

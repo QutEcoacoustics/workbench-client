@@ -54,9 +54,15 @@ h3 {
   page-break-inside: avoid;
 }
 
+.bucket-size-label {
+  color: var(--baw-dark);
+  font-style: italic;
+}
+
 .download-button {
   font-size: 1.25rem;
-  margin-left: 0.25em;
+  float: right;
+  margin-right: 0.25em;
   cursor: pointer;
 }
 

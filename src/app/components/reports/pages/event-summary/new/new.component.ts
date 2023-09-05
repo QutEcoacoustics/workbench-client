@@ -154,7 +154,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
       ),
     });
 
-  public eventsOfInterestSearchCallback = (
+  public tagsOfInterestSearchCallback = (
     text: string,
     activeTags: Tag[]
   ): Observable<Tag[]> =>

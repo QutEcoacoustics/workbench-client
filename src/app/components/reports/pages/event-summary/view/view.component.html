@@ -90,7 +90,10 @@
   </div>
 
   <div class="search-parameter">
-    <b>Duration: </b> {{ parameterDataModel.bucketSize | titlecase }}
+    <b>Duration: </b>
+    <span class="bucket-size-label" [ngbTooltip]="'This is determined by your selected bucket size'">
+      {{ parameterDataModel.bucketSize | titlecase }}
+    </span>
   </div>
 
   <div class="search-parameter">
@@ -98,11 +101,16 @@
 
     <ng-container
       *ngIf="
-        parameterDataModel.provenanceModels as provenances;
+        !!parameterDataModel.provenanceModels;
         else defaultConditionTemplate
       "
     >
-      <span *ngFor="let provenance of provenances; last as isLast">
+      <span
+        *ngFor="
+          let provenance of parameterDataModel.provenanceModels;
+          last as isLast
+        "
+      >
         <a *ngIf="provenance" [href]="provenance.viewUrl">
           {{ provenance }}
         </a>
@@ -112,26 +120,26 @@
   </div>
 
   <div class="search-parameter">
-    <b>Score Cutoff: </b>
+    <b>Score Threshold: </b>
 
     <!--
       If the user doesn't explicitly define a provenance score, we should display 0 instead of (not specified)
-      This is because this a not specified provenance score allows through all events, which is equivalent to a score cut-off of 0
+      This is because this a not specified provenance score allows through all tags, which is equivalent to a score cut-off of 0
       To be verbose, we reflect this client side to the user by using 0.0 as the score cut-off instead of (not specified)
     -->
     {{ parameterDataModel.score ?? 0 | number : "1.2-2" }}
   </div>
 
   <div class="search-parameter">
-    <b>Events: </b>
+    <b>Tags: </b>
 
     <ng-container
       *ngIf="
-        parameterDataModel.tagModels as reportEvents;
+        parameterDataModel.tagModels as reportTags;
         else defaultConditionTemplate
       "
     >
-      <span *ngFor="let event of reportEvents; last as isLast">
+      <span *ngFor="let event of reportTags; last as isLast">
         <a *ngIf="event" [href]="event.viewUrl">
           {{ event }}
         </a>
@@ -149,6 +157,8 @@
     validate' etc; qualifiers about performance in different regions, etc
   </div>
 
+  <h4>Geographic Coverage</h4>
+
   <baw-site-map
     class="site-map"
     [sitesSubset]="filteredSites()"
@@ -156,43 +166,72 @@
     [region]="region"
   ></baw-site-map>
 
+  <h4>Coverage</h4>
+
   <baw-chart
     [spec]="coveragePlotSchema"
     [datasets]="report.graphs.coverageData"
   ></baw-chart>
 
   <div>
-    <div>
-      <b>Search condition range: </b>
-      {{
-        unixEpochToDuration(this.report.statistics?.totalSearchSpan)
-          | toRelative
-      }}
-    </div>
+    <table class="table">
+      <tr class="row">
+        <th class="col">Condition</th>
+        <th class="col">Duration</th>
+        <th class="col">Percent Coverage</th>
+      </tr>
 
-    <div>
-      <b>Total duration of selected audio recordings: </b>
-      {{
-        unixEpochToDuration(this.report.statistics?.audioCoverageOverSpan)
-          | toRelative
-      }}
-      (50% of search condition range)
-    </div>
+      <tr class="row">
+        <td class="col">Search Range</td>
+        <td class="col">
+          {{
+            unixEpochToDuration(this.report.statistics?.totalSearchSpan)
+              | toRelative
+          }}
+        </td>
+        <td class="col">
+          <span [ngbTooltip]="'The number of search range covered'">
+            100%
+          </span>
+        </td>
+      </tr>
 
-    <div>
-      <b>Total analysed duration of selected audio recordings: </b>
-      {{
-        unixEpochToDuration(this.report.statistics?.analysisCoverageOverSpan)
-          | toRelative
-      }}
-      (30% of search condition range)
-    </div>
+      <tr class="row">
+        <td class="col">Audio</td>
+        <td class="col">
+          {{
+            unixEpochToDuration(this.report.statistics?.audioCoverageOverSpan)
+              | toRelative
+          }}
+        </td>
+        <td class="col">
+          <span [ngbTooltip]="'The number of search range covered by recordings'">
+            80%
+          </span>
+        </td>
+      </tr>
+
+      <tr class="row">
+        <td class="col">Analysis</td>
+        <td class="col">
+          {{
+            unixEpochToDuration(this.report.statistics?.analysisCoverageOverSpan)
+              | toRelative
+          }}
+        </td>
+        <td class="col">
+          <span [ngbTooltip]="'The number of search range covered by analysis'">
+            60%
+          </span>
+        </td>
+      </tr>
+    </table>
   </div>
 </section>
 
 <section id="events-table-container">
   <h3>
-    Events Table
+    Summary of Events
 
     <a
       class="download-button"
@@ -211,16 +250,13 @@
 
   <table class="table">
     <tr class="row">
-      <th class="col">Events</th>
+      <th class="col">Tags</th>
       <th class="col">Recogniser</th>
       <th class="col">Detections</th>
       <th class="col">
-        % {{ parameterDataModel.bucketSize | titlecase }}s with Detections
+        %<span class="bucket-size-label" [ngbTooltip]="'This is determined by your selected bucket size'">{{ parameterDataModel.bucketSize | titlecase }}s</span>with Detections
       </th>
-      <th class="col">
-        % {{ parameterDataModel.bucketSize | titlecase }}s with Rain
-      </th>
-      <th class="col">Confidence Plot</th>
+      <th class="col">Score Plot</th>
     </tr>
 
     <ng-container *ngFor="let item of report.eventGroups">
@@ -232,18 +268,15 @@
         </td>
         <td class="col">
           <a
-            *ngIf="isResolvedModel(item.provenance)"
+            *ngIf="item.provenance"
             [href]="item.provenance.viewUrl"
           >
-            {{ item.provenance.name }}
+            {{ item.provenance }}
           </a>
         </td>
         <td class="col">{{ item.detections | number }}</td>
         <td class="col">
           {{ item.bucketsWithDetections | percent }}
-        </td>
-        <td class="col">
-          {{ item.bucketsWithInterference.length }}
         </td>
         <td class="col">
           <baw-chart
@@ -447,7 +480,7 @@
   </div>
 
   <div class="modal-body">
-    <div class="alert alert-info hide-in-print">
+    <div class="hide-in-print">
       <p>
         When saving to PDF, use the "Save to PDF" as the destination to have
         clickable links.

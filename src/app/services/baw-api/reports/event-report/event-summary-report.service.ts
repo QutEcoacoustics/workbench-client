@@ -66,7 +66,6 @@ export class EventSummaryReportService
           tagId: 1,
           detections: 55,
           bucketsWithDetections: 0.7,
-          bucketsWithInterference: [],
           score: {
             histogram: [
               // these values should be rounded to 1 decimal place in the confidence plot
@@ -85,7 +84,6 @@ export class EventSummaryReportService
           tagId: 1950,
           detections: 55,
           bucketsWithDetections: 0.7,
-          bucketsWithInterference: [],
           score: {
             histogram: [
               0.1, 0.2, 0.3, 0.3, 0.6, 0.6, 0.5, 0.2, 0.5, 0.5, 0.4, 0.4, 0.3,
@@ -102,7 +100,6 @@ export class EventSummaryReportService
           tagId: 39,
           detections: 55,
           bucketsWithDetections: 0.7,
-          bucketsWithInterference: [],
           score: {
             histogram: [
               0.2, 0.5, 0.4, 0.4, 0.3, 0.3, 0.6, 0.2, 0.4, 0.3, 0.1, 0.4, 0.3,
@@ -119,7 +116,6 @@ export class EventSummaryReportService
           tagId: 277,
           detections: 55,
           bucketsWithDetections: 0.7,
-          bucketsWithInterference: [],
           score: {
             histogram: [
               0.9, 0.1, 0.7, 0.7, 0.6, 0.3, 0.5, 0.3, 0.5, 0.2, 0.4, 0.4, 0.3,
@@ -189,8 +185,10 @@ export class EventSummaryReportService
           ],
           analysisCoverage: [
             { startDate: "2023-05-22", endDate: "2023-05-23" },
-            { startDate: "2023-05-26", endDate: "2023-05-27" },
             { startDate: "2023-05-28", endDate: "2023-05-28" },
+          ],
+          failedAnalysisCoverage: [
+            { startDate: "2023-05-26", endDate: "2023-05-27" },
           ],
         },
         // TODO: I might be able to remove this
