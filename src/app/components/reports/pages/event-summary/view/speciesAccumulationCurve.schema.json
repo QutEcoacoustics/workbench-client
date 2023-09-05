@@ -12,9 +12,29 @@
     }
   ],
   "params": [
-    { "name": "bawTitleSize", "value": 20 },
-    { "name": "bawFontSize", "value": 18 }
+    {
+      "name": "bawTitleSize",
+      "value": 20
+    },
+    {
+      "name": "bawFontSize",
+      "value": 18
+    }
   ],
+  "config": {
+    "legend": {
+      "title": null,
+      "labelFontSize": {
+        "expr": "bawFontSize"
+      },
+      "orient": "top"
+    }
+  },
+  "resolve": {
+    "legend": {
+      "color": "independent"
+    }
+  },
   "layer": [
     {
       "mark": {
@@ -51,6 +71,17 @@
         "y2": {
           "field": "count"
         },
+        "color": {
+          "field": "datum",
+          "legend": {
+            "values": [
+              "Error"
+            ],
+            "symbolStrokeColor": "black",
+            "symbolOpacity": 0.1,
+            "symbolStrokeWidth": 10
+          }
+        },
         "tooltip": [
           {
             "field": "date",
@@ -79,7 +110,8 @@
     {
       "mark": {
         "type": "line",
-        "interpolate": "linear"
+        "interpolate": "linear",
+        "color": "var(--baw-primary)"
       },
       "encoding": {
         "x": {
@@ -122,6 +154,15 @@
           "title": "Count of Tags",
           "field": "count",
           "type": "quantitative"
+        },
+        "color": {
+          "field": "datum",
+          "legend": {
+            "values": [ "Count of Tags" ],
+            "symbolType": "stroke",
+            "symbolStrokeColor": "var(--baw-primary)",
+            "symbolStrokeWidth": 4
+          }
         },
         "tooltip": [
           {

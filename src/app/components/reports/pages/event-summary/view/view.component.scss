@@ -17,6 +17,8 @@ h3 {
 
 .col {
   border: thin solid var(--baw-secondary-lightest);
+  border-right: none;
+  border-bottom: none;
   // we divide 100 / 6 because we want 6 columns
   width: calc(100% / 6);
   overflow-wrap: break-word;
@@ -28,6 +30,11 @@ h3 {
     word-break: normal;
     padding-left: 0em;
   }
+}
+
+.table {
+  border-bottom: thin solid var(--baw-secondary-lightest);
+  border-right: thin solid var(--baw-secondary-lightest);
 }
 
 #print-button {
@@ -50,6 +57,10 @@ h3 {
   }
 }
 
+#coverage-table {
+  margin-top: 1rem;
+}
+
 .charts-section {
   page-break-inside: avoid;
 }
@@ -60,8 +71,13 @@ h3 {
 }
 
 .download-button {
-  font-size: 1.25rem;
-  float: right;
+  font-size: 2rem;
+  margin-right: 0.25em;
+  cursor: pointer;
+}
+
+.info-icon {
+  font-size: 2rem;
   margin-right: 0.25em;
   cursor: pointer;
 }
@@ -91,12 +107,18 @@ h3 {
   & > .chart-title {
     display: inline;
   }
+
+  & > .chart-action-menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    float: right;
+    height: 1rem;
+  }
 }
 
 .toggle-graph-button {
-  float: right;
-  text-align: center;
-  vertical-align: middle;
   // since the maximize and minimize buttons are slightly different sizes, we have to set the size explicitly using css
   width: 2.5em;
   height: 2.5em;
@@ -106,6 +128,7 @@ h3 {
   #print-button,
   .toggle-graph-button,
   .download-button,
+  .info-icon,
   .hide-in-print {
     display: none;
   }
@@ -124,6 +147,11 @@ h3 {
   // to fix this, we explicitly make the border 2px so it's 1px when zoomed out
   .col {
     border-width: 2px;
+  }
+
+  .table {
+    border-right: 4px solid var(--baw-secondary-lightest);
+    border-bottom: 4px solid var(--baw-secondary-lightest);
   }
 
   // since the Google maps component uses a canvas, it is hidden when "background graphics" (Chrome) is disabled

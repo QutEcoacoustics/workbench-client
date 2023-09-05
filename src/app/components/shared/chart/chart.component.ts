@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   Input,
+  OnDestroy,
   ViewChild,
 } from "@angular/core";
 import { Data } from "@angular/router";
@@ -29,7 +30,7 @@ const customFormatterName = "customFormatter";
   styleUrls: ["chart.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ChartComponent implements AfterViewInit {
+export class ChartComponent implements AfterViewInit , OnDestroy {
   public constructor() {}
 
   @ViewChild("chartContainer") public chartContainer: ElementRef;
@@ -90,6 +91,14 @@ export class ChartComponent implements AfterViewInit {
     this.resizeEvent();
   }
 
+  public ngOnDestroy(): void {
+    if (this.vegaView) {
+      // using finalize before the component is destroyed will prevent memory leaks from unattached timers & events
+      // https://vega.github.io/vega/docs/api/view/#view_finalize
+      this.vegaView.view.finalize();
+    }
+  }
+
   public downloadChartAsCsv(): void {
     if (this.vegaView) {
       // TODO: call an api endpoint to download the chart as CSV
@@ -147,8 +156,6 @@ export class ChartComponent implements AfterViewInit {
         [`${customFormatterName}`]: this.vegaFormatterFunction ?? {},
       },
     });
-
-    vegaChart.view.finalize();
 
     return vegaChart;
   }

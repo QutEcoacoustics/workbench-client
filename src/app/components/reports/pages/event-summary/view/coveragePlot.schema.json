@@ -2,7 +2,6 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "datasets": {},
   "params": [
-    { "name": "bawTitleSize", "value": 20 },
     { "name": "bawFontSize", "value": 18 }
   ],
   "resolve": {
@@ -21,9 +20,80 @@
       "cell": {
         "stroke": "transparent"
       }
+    },
+    "legend": {
+      "symbolStrokeWidth": 10,
+      "offset": 0,
+      "orient": "bottom",
+      "labelLimit": 300,
+      "title": null,
+      "labelFontSize": {
+        "expr": "bawFontSize"
+      }
     }
   },
   "vconcat": [
+    {
+      "resolve": {
+        "legend": {
+          "color": "independent"
+        }
+      },
+      "view": {
+        "height": 0,
+        "padding": 0
+      },
+      "layer": [
+        {
+          "mark": "text",
+          "encoding": {
+            "color": {
+              "field": "startDate",
+              "legend": {
+                "values": [ "Recordings" ],
+                "symbolStrokeColor": "var(--baw-primary)"
+              }
+            }
+          }
+        },
+        {
+          "mark": "text",
+          "encoding": {
+            "color": {
+              "field": "startDate",
+              "legend": {
+                "values": [ "Analysis" ],
+                "symbolStrokeColor": "var(--baw-success)"
+              }
+            }
+          }
+        },
+        {
+          "mark": "text",
+          "encoding": {
+            "color": {
+              "field": "startDate",
+              "legend": {
+                "values": [ "Missing Analysis" ],
+                "symbolStrokeColor": "var(--baw-warning)"
+              }
+            }
+          }
+        },
+        {
+          "mark": "text",
+          "encoding": {
+            "color": {
+              "field": "startDate",
+              "legend": {
+                "values": [ "Failed Analysis" ],
+                "symbolStrokeColor": "var(--baw-danger)"
+              }
+            }
+          }
+        }
+      ]
+    },
     {
       "title": "",
       "width": "container",
@@ -128,7 +198,21 @@
             },
             "color": {
               "value": "var(--baw-danger)"
-            }
+            },
+            "tooltip": [
+              {
+                "type": "temporal",
+                "field": "startDate",
+                "title": "Failed Analysis Start Date",
+                "format": "%Y-%m-%d"
+              },
+              {
+                "type": "temporal",
+                "field": "endDate",
+                "title": "Failed Analysis End Date",
+                "format": "%Y-%m-%d"
+              }
+            ]
           }
         },
         {

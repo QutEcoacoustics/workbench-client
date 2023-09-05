@@ -91,7 +91,10 @@
 
   <div class="search-parameter">
     <b>Duration: </b>
-    <span class="bucket-size-label" [ngbTooltip]="'This is determined by your selected bucket size'">
+    <span
+      class="bucket-size-label"
+      [ngbTooltip]="'This is determined by your selected bucket size'"
+    >
       {{ parameterDataModel.bucketSize | titlecase }}
     </span>
   </div>
@@ -173,7 +176,7 @@
     [datasets]="report.graphs.coverageData"
   ></baw-chart>
 
-  <div>
+  <div id="coverage-table">
     <table class="table">
       <tr class="row">
         <th class="col">Condition</th>
@@ -205,7 +208,9 @@
           }}
         </td>
         <td class="col">
-          <span [ngbTooltip]="'The number of search range covered by recordings'">
+          <span
+            [ngbTooltip]="'The number of search range covered by recordings'"
+          >
             80%
           </span>
         </td>
@@ -215,8 +220,9 @@
         <td class="col">Analysis</td>
         <td class="col">
           {{
-            unixEpochToDuration(this.report.statistics?.analysisCoverageOverSpan)
-              | toRelative
+            unixEpochToDuration(
+              this.report.statistics?.analysisCoverageOverSpan
+            ) | toRelative
           }}
         </td>
         <td class="col">
@@ -234,7 +240,7 @@
     Summary of Events
 
     <a
-      class="download-button"
+      class="download-button float-end"
       [href]="
         eventSummaryReportApi.downloadEventsTableUrl(
           parameterDataModel.toFilter()
@@ -254,7 +260,11 @@
       <th class="col">Recogniser</th>
       <th class="col">Detections</th>
       <th class="col">
-        %<span class="bucket-size-label" [ngbTooltip]="'This is determined by your selected bucket size'">{{ parameterDataModel.bucketSize | titlecase }}s</span>with Detections
+        %<span
+          class="bucket-size-label"
+          [ngbTooltip]="'This is determined by your selected bucket size'"
+          >{{ parameterDataModel.bucketSize | titlecase }}s</span
+        >with Detections
       </th>
       <th class="col">Score Plot</th>
     </tr>
@@ -267,10 +277,7 @@
           </a>
         </td>
         <td class="col">
-          <a
-            *ngIf="item.provenance"
-            [href]="item.provenance.viewUrl"
-          >
+          <a *ngIf="item.provenance" [href]="item.provenance.viewUrl">
             {{ item.provenance }}
           </a>
         </td>
@@ -314,39 +321,41 @@
     <div class="chart-heading">
       <h4 class="chart-title">Species Accumulation Curve</h4>
 
-      <a
-        class="download-button"
-        (click)="accumulationChart.downloadChartAsCsv()"
-      >
-        <fa-icon
-          [icon]="['fas', 'file-arrow-down']"
-          [ngbTooltip]="'Download this graphs data'"
-        ></fa-icon>
-      </a>
+      <span class="chart-action-menu">
+        <a
+          class="download-button"
+          (click)="accumulationChart.downloadChartAsCsv()"
+        >
+          <fa-icon
+            [icon]="['fas', 'file-arrow-down']"
+            [ngbTooltip]="'Download this graphs data'"
+          ></fa-icon>
+        </a>
 
-      <button
-        class="toggle-graph-button btn btn-secondary btn-sm"
-        (click)="
-          toggleChart(
-            chartTypes.speciesAccumulationCurve,
-            !shouldShowChart(chartTypes.speciesAccumulationCurve)
-          )
-        "
-      >
-        <fa-icon
-          [icon]="[
-            'fas',
-            shouldShowChart(chartTypes.speciesAccumulationCurve)
-              ? 'minimize'
-              : 'maximize'
-          ]"
+        <button
+          class="toggle-graph-button btn btn-secondary btn-sm"
           [ngbTooltip]="
             shouldShowChart(chartTypes.speciesAccumulationCurve)
               ? 'Minimize'
               : 'Maximize'
           "
-        ></fa-icon>
-      </button>
+          (click)="
+            toggleChart(
+              chartTypes.speciesAccumulationCurve,
+              !shouldShowChart(chartTypes.speciesAccumulationCurve)
+            )
+          "
+        >
+          <fa-icon
+            [icon]="[
+              'fas',
+              shouldShowChart(chartTypes.speciesAccumulationCurve)
+                ? 'minimize'
+                : 'maximize'
+            ]"
+          ></fa-icon>
+        </button>
+      </span>
     </div>
 
     <ng-container></ng-container>
@@ -367,39 +376,49 @@
     <div class="chart-heading">
       <h4 class="chart-title">Species Composition</h4>
 
-      <a
-        class="download-button"
-        (click)="compositionChart.downloadChartAsCsv()"
-      >
-        <fa-icon
-          [icon]="['fas', 'file-arrow-down']"
-          [ngbTooltip]="'Download this graphs data'"
-        ></fa-icon>
-      </a>
+      <span class="chart-action-menu">
+        <span class="info-icon text-info">
+          <fa-icon
+            [icon]="['fas', 'info-circle']"
+            [ngbTooltip]="'Points with error represent that the recogniser had a lack of confidence when classifying the event'"
+          >
+          </fa-icon>
+        </span>
 
-      <button
-        class="toggle-graph-button btn btn-secondary btn-sm"
-        (click)="
-          toggleChart(
-            chartTypes.speciesCompositionCurve,
-            !shouldShowChart(chartTypes.speciesCompositionCurve)
-          )
-        "
-      >
-        <fa-icon
-          [icon]="[
-            'fas',
-            shouldShowChart(chartTypes.speciesCompositionCurve)
-              ? 'minimize'
-              : 'maximize'
-          ]"
+        <a
+          class="download-button"
+          (click)="compositionChart.downloadChartAsCsv()"
+        >
+          <fa-icon
+            [icon]="['fas', 'file-arrow-down']"
+            [ngbTooltip]="'Download this graphs data'"
+          ></fa-icon>
+        </a>
+
+        <button
+          class="toggle-graph-button btn btn-secondary btn-sm"
           [ngbTooltip]="
             shouldShowChart(chartTypes.speciesCompositionCurve)
               ? 'Minimize'
               : 'Maximize'
           "
-        ></fa-icon>
-      </button>
+          (click)="
+            toggleChart(
+              chartTypes.speciesCompositionCurve,
+              !shouldShowChart(chartTypes.speciesCompositionCurve)
+            )
+          "
+        >
+          <fa-icon
+            [icon]="[
+              'fas',
+              shouldShowChart(chartTypes.speciesCompositionCurve)
+                ? 'minimize'
+                : 'maximize'
+            ]"
+          ></fa-icon>
+        </button>
+      </span>
     </div>
 
     <ng-container *ngIf="parameterDataModel.tagModels.length">
@@ -424,39 +443,41 @@
     <div class="chart-heading">
       <h4 class="chart-title">False colour spectrogram(s)</h4>
 
-      <a
-        class="download-button"
-        (click)="compositionChart.downloadChartAsCsv()"
-      >
-        <fa-icon
-          [icon]="['fas', 'file-arrow-down']"
-          [ngbTooltip]="'Download false colour spectrogram(s)'"
-        ></fa-icon>
-      </a>
+      <span class="chart-action-menu">
+        <a
+          class="download-button"
+          (click)="compositionChart.downloadChartAsCsv()"
+        >
+          <fa-icon
+            [icon]="['fas', 'file-arrow-down']"
+            [ngbTooltip]="'Download false colour spectrogram(s)'"
+          ></fa-icon>
+        </a>
 
-      <button
-        class="toggle-graph-button btn btn-secondary btn-sm"
-        (click)="
-          toggleChart(
-            chartTypes.falseColorSpectrograms,
-            !shouldShowChart(chartTypes.falseColorSpectrograms)
-          )
-        "
-      >
-        <fa-icon
-          [icon]="[
-            'fas',
-            shouldShowChart(chartTypes.falseColorSpectrograms)
-              ? 'minimize'
-              : 'maximize'
-          ]"
+        <button
+          class="toggle-graph-button btn btn-secondary btn-sm"
           [ngbTooltip]="
             shouldShowChart(chartTypes.falseColorSpectrograms)
               ? 'Minimize'
               : 'Maximize'
           "
-        ></fa-icon>
-      </button>
+          (click)="
+            toggleChart(
+              chartTypes.falseColorSpectrograms,
+              !shouldShowChart(chartTypes.falseColorSpectrograms)
+            )
+          "
+        >
+          <fa-icon
+            [icon]="[
+              'fas',
+              shouldShowChart(chartTypes.falseColorSpectrograms)
+                ? 'minimize'
+                : 'maximize'
+            ]"
+          ></fa-icon>
+        </button>
+      </span>
     </div>
 
     <div [ngbCollapse]="!shouldShowChart(chartTypes.falseColorSpectrograms)">
