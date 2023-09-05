@@ -7,7 +7,6 @@
 */
 @media print {
   // for A4 page size and less, we want to zoom out the page so that it fits on the page
-  // this is a Chromium specific requirement, however, it does not break Firefox
   @media print and (max-width: 210mm) {
     html {
       zoom: 0.5;

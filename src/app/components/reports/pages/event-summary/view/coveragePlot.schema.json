@@ -86,7 +86,6 @@
                 "title": null,
                 "grid": false,
                 "format": "%Y-%m-%d",
-                "ticks": false,
                 "tickCount": "day",
                 "labelFontSize": {
                   "expr": "bawFontSize"
