@@ -21,7 +21,10 @@ export class WidgetMenuItem {
 export interface MenuModal extends Omit<MenuAction, "kind"> {
   kind: "MenuModal";
   component: Type<ModalComponent>;
+  /** Options to be passed to the bootstrap modal service */
   modalOpts?: NgbModalOptions;
+  /** Options to be passed to the modal component */
+  options?: Record<string, unknown>;
   assignComponentData(component: ModalComponent, modalRef: NgbModalRef): void;
   successCallback?: (componentInstance?: PageComponent) => void;
 }
@@ -47,6 +50,7 @@ export function menuModal<
         dismissModal: (reason: any) => modalRef.dismiss(reason),
         closeModal: (result: any) => modalRef.close(result),
         successCallback: item?.successCallback,
+        ...item.options,
       };
       Object.assign(component, defaultOpts);
     },

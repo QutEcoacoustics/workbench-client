@@ -12,6 +12,7 @@ import { SiteNewComponent } from "./pages/new/new.component";
 import { WizardComponent } from "./pages/wizard/wizard.component";
 import { pointsRoute } from "./points.routes";
 import { sitesRoute } from "./sites.routes";
+import { DeleteSiteModalComponent } from "./components/delete-site-modal/delete-site-modal.component";
 
 const components = [
   SiteComponent,
@@ -20,6 +21,7 @@ const components = [
   SiteNewComponent,
   WizardComponent,
   RecentAnnotationsComponent,
+  DeleteSiteModalComponent,
 ];
 
 const siteRoutes = sitesRoute.compileRoutes(getRouteConfigForPage);
