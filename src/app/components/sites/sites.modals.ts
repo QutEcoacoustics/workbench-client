@@ -1,9 +1,9 @@
 import { menuModal } from "@menu/widgetItem";
 import { AnnotationDownloadComponent } from "@shared/annotation-download/annotation-download.component";
-import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.component";
 import { defaultAnnotationDownloadIcon, defaultDeleteIcon, isProjectEditorPredicate } from "src/app/app.menus";
 import { siteMenuItem } from "./sites.menus";
 import { SiteDetailsComponent } from "./pages/details/details.component";
+import { DeleteSiteModalComponent } from "./components/delete-site-modal/delete-site-modal.component";
 
 export const siteAnnotationsModal = menuModal({
   icon: defaultAnnotationDownloadIcon,
@@ -19,6 +19,9 @@ export const deleteSiteModal = menuModal({
   parent: siteMenuItem,
   tooltip: () => "Delete this site",
   predicate: isProjectEditorPredicate,
-  component: DeleteModalComponent,
+  component: DeleteSiteModalComponent,
   successCallback: (pageComponentInstance?: SiteDetailsComponent) => pageComponentInstance.deleteModel(),
+  options: {
+    isPoint: false,
+  },
 });

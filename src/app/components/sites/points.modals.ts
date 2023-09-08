@@ -1,9 +1,9 @@
 import { menuModal } from "@menu/widgetItem";
 import { AnnotationDownloadComponent } from "@shared/annotation-download/annotation-download.component";
-import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.component";
 import { defaultAnnotationDownloadIcon } from "src/app/app.menus";
 import { pointMenuItem } from "./points.menus";
 import { deleteSiteModal } from "./sites.modals";
+import { DeleteSiteModalComponent } from "./components/delete-site-modal/delete-site-modal.component";
 
 export const pointAnnotationsModal = menuModal({
   icon: defaultAnnotationDownloadIcon,
@@ -18,5 +18,8 @@ export const deletePointModal = menuModal({
   label: "Delete point",
   parent: pointMenuItem,
   tooltip: () => "Delete this point",
-  component: DeleteModalComponent,
+  component: DeleteSiteModalComponent,
+  options: {
+    isPoint: true,
+  },
 });
