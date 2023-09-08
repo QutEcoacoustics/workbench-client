@@ -14,6 +14,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { map, takeUntil } from "rxjs";
+import { Harvest } from "@models/Harvest";
 import { WidgetComponent } from "../widget.component";
 
 /**
@@ -81,11 +82,13 @@ export class PermissionsShieldComponent
     }
 
     // Grab model in order of priority, site, then region, then project
+    // if the user is looking at a harvest, we should show the harvest information
     const priorityLevels = {
-      site: 0,
-      region: 1,
-      project: 2,
-      anyModel: 3,
+      harvest: 0,
+      site: 1,
+      region: 2,
+      project: 3,
+      anyModel: 4,
     };
 
     let outputModel: AbstractModel;
@@ -105,7 +108,9 @@ export class PermissionsShieldComponent
         this.project = model;
       }
 
-      if (model instanceof Site) {
+      if (model instanceof Harvest) {
+        assignModel(model , priorityLevels.harvest);
+      } else if (model instanceof Site) {
         assignModel(model, priorityLevels.site);
       } else if (priority > priorityLevels.region && model instanceof Region) {
         assignModel(model, priorityLevels.region);

@@ -10,7 +10,6 @@ import {
   newHarvestMenuItem,
 } from "@components/harvest/harvest.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
@@ -101,7 +100,6 @@ ListComponent.linkToRoute({
   category: harvestsCategory,
   menus: {
     actions: List(harvestsMenuItemActions),
-    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   pageRoute: harvestsMenuItem,
   resolvers: {
