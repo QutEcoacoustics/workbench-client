@@ -28,6 +28,15 @@
     </ng-template>
   </ngx-datatable-column>
 
+  <ngx-datatable-column prop="">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Creator
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <baw-user-link [user]="value.creator"></baw-user-link>
+    </ng-template>
+  </ngx-datatable-column>
+
   <ngx-datatable-column prop="streaming">
     <ng-template let-column="column" ngx-datatable-header-template>
       Upload Type

@@ -58,11 +58,11 @@
           Cyberduck and connect to our cloud.
         </li>
         <li>
-          On your first connection to our cloud, Cyberduck may prompt you with 
-          an "unknown fingerprint" message. Select "Allow".  
+          On your first connection to our cloud, Cyberduck may prompt you with
+          an "unknown fingerprint" message. Select "Allow".
         </li>
         <li>
-          Upload all of your files by dragging them into the cyberduck window and we will check them for you. This  
+          Upload all of your files by dragging them into the cyberduck window and we will check them for you. This
           <a target="_blank" href="https://docs.cyberduck.io/cyberduck/upload/"
             >guide</a
           >
@@ -78,7 +78,7 @@
   <li [ngbNavItem]="3">
     <a ngbNavLink>Linux</a>
     <ng-template ngbNavContent>
-      <p>These instructions use the SCP command program. Alternatively you might prefer <button class="btn btn-link" (click)="activateTab('RClone')">Rclone</button> 
+      <p>These instructions use the SCP command program. Alternatively you might prefer <button class="btn btn-link" (click)="activateTab('RClone')">Rclone</button>
         or a graphical sftp client (if you're in a graphical environment)
       </p>
       <ol>
@@ -87,8 +87,8 @@
           <ul>
             <li>
               <code>
-                scp -r -P {{ harvest.uploadPort }} 
-                "[path to your files]" 
+                scp -r -P {{ harvest.uploadPort }}
+                "[path to your files]"
                 {{ harvest.uploadUser }}@{{ harvest.uploadHost }}:/
               </code>
             </li>
@@ -98,8 +98,8 @@
           When prompted, enter the password <code>{{ harvest.uploadPassword }}</code>
           <ul>
             <li>
-              Note, if you are going to be running  this command multiple times, for example in a script, 
-              you might like to use <a href='https://www.linuxshelltips.com/pass-password-scp-command-linux/'>sshpass</a> 
+              Note, if you are going to be running  this command multiple times, for example in a script,
+              you might like to use <a href='https://www.linuxshelltips.com/pass-password-scp-command-linux/'>sshpass</a>
               to save having to interactively enter the password many times
             </li>
           </ul>
@@ -113,26 +113,26 @@
     <ng-template ngbNavContent>
       <ol>
         <li>
-           Rclone is a <b>command line</b> tool for transferring files, which you can download 
-           and install <a target="_blank" href="https://rclone.org/install/">here</a>. 
+           Rclone is a <b>command line</b> tool for transferring files, which you can download
+           and install <a target="_blank" href="https://rclone.org/install/">here</a>.
         </li>
         <li>
           Paste the following command into your terminal, making sure to replace the <code>[path to your files]</code>
           <ul>
             <li>
               <code>
-                rclone copy -v 
-                --sftp-user {{ harvest.uploadUser }} 
-                --sftp-pass $(rclone obscure {{ harvest.uploadPassword }}) 
-                --sftp-host {{ harvest.uploadHost }} 
-                --sftp-port {{ harvest.uploadPort }} 
+                rclone copy -v
+                --sftp-user {{ harvest.uploadUser }}
+                --sftp-pass $(rclone obscure {{ harvest.uploadPassword }})
+                --sftp-host {{ harvest.uploadHost }}
+                --sftp-port {{ harvest.uploadPort }}
                 "[path to your files]"
                 :sftp:/
-              </code>   
+              </code>
             </li>
             <li>
               Note that rclone will copy the <em>contents</em> of the <code>[path to your files]</code> folder to the destination, not the source folder itself.
-              So if you have a folder for each site, specify their parent folder as the <code>[path to your files]</code> value. 
+              So if you have a folder for each site, specify their parent folder as the <code>[path to your files]</code> value.
             </li>
           </ul>
       </ol>
@@ -154,7 +154,7 @@
         </fa-icon>
 
         Use a wired network connection instead of WiFi. The file transfer will
-        faster and more stable.
+        be faster and more stable.
       </div>
     </div>
   </div>

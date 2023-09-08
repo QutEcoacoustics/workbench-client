@@ -25,6 +25,8 @@ import {
 } from "@test/helpers/general";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { of, Subject } from "rxjs";
+import { Harvest } from "@models/Harvest";
+import { generateHarvest } from "@test/fakes/Harvest";
 import { PermissionsShieldComponent } from "./permissions-shield.component";
 
 const mockUserBadge = MockComponent(UserBadgeComponent);
@@ -33,6 +35,7 @@ describe("PermissionsShieldComponent", () => {
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
+  let defaultHarvest: Harvest;
   let defaultModel: MockModel;
   let defaultUser: User;
   let spec: Spectator<PermissionsShieldComponent>;
@@ -71,6 +74,7 @@ describe("PermissionsShieldComponent", () => {
     defaultProject["injector"] = injector;
     defaultRegion["injector"] = injector;
     defaultSite["injector"] = injector;
+    defaultHarvest["injector"] = injector;
     defaultModel["injector"] = injector;
 
     const userSubject = new Subject<User>();
@@ -91,6 +95,7 @@ describe("PermissionsShieldComponent", () => {
     defaultProject = new Project(generateProject());
     defaultRegion = new Region(generateRegion());
     defaultSite = new Site(generateSite());
+    defaultHarvest = new Harvest(generateHarvest());
     defaultModel = new MockModel({});
     defaultUser = new User(generateUser());
   });
@@ -102,7 +107,19 @@ describe("PermissionsShieldComponent", () => {
       expect(spec.component.model).toEqual(defaultModel);
     });
 
-    it("should prioritize site", () => {
+    it("should prioritize harvests", () => {
+      setup([
+        { model: defaultModel },
+        { model: defaultProject },
+        { model: defaultRegion },
+        { model: defaultSite },
+        { model: defaultHarvest },
+      ]);
+      spec.detectChanges();
+      expect(spec.component.model).toEqual(defaultHarvest);
+    });
+
+    it("should prioritize site if there is no harvest", () => {
       setup([
         { model: defaultModel },
         { model: defaultProject },

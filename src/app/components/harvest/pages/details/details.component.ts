@@ -13,6 +13,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
+import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { HarvestStagesService } from "../../services/harvest-stages.service";
 import { harvestsMenuItemActions } from "../list/list.component";
 
@@ -53,7 +54,10 @@ DetailsComponent.linkToRoute({
   category: harvestsCategory,
   menus: {
     actions: List([...harvestsMenuItemActions, newSiteMenuItem]),
-    actionWidgets: List([harvestValidationsWidgetMenuItem]),
+    actionWidgets: List([
+      harvestValidationsWidgetMenuItem,
+      permissionsWidgetMenuItem
+    ]),
   },
   pageRoute: harvestMenuItem,
   resolvers: {

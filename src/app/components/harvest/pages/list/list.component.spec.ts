@@ -14,17 +14,21 @@ import { ToastrService } from "ngx-toastr";
 import { of } from "rxjs";
 import { DateTime, Settings } from "luxon";
 import { assertPageInfo } from "@test/helpers/pageRoute";
+import { User } from "@models/User";
+import { generateUser } from "@test/fakes/User";
+import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
 import { ListComponent } from "./list.component";
 
 describe("ListComponent", () => {
   let spec: SpectatorRouting<ListComponent>;
   let defaultProject: Project;
   let defaultHarvest: Harvest;
+  let defaultUser: User;
   let modalService: NgbModal;
   let modalConfigService: NgbModalConfig;
 
   const createComponent = createRoutingFactory({
-    declarations: [ConfirmationComponent],
+    declarations: [ConfirmationComponent, UserLinkComponent],
     component: ListComponent,
     imports: [MockBawApiModule, SharedModule],
     mocks: [ToastrService],
@@ -43,11 +47,15 @@ describe("ListComponent", () => {
 
     const injector = spec.inject(Injector);
     project["injector"] = injector;
+    mockHarvest["injector"] = injector;
 
     const mockHarvestApi = spec.inject(HARVEST.token);
     mockHarvest.addMetadata({
       paging: { items: 1, page: 0, total: 1, maxPage: 5 },
     });
+
+    // since the harvest creator is a resolved model, we need to mock the creator property
+    spyOnProperty(mockHarvest, "creator").and.callFake(() => defaultUser);
 
     // inject the NgbModal service so that we can
     // dismiss all modals at the end of every test
@@ -63,6 +71,7 @@ describe("ListComponent", () => {
     const mockResponse = of([mockHarvest]);
     mockHarvestApi.filter.and.callFake(() => mockResponse);
     mockHarvestApi.transitionStatus.and.callFake(() => of(mockHarvest));
+
     spec.detectChanges();
 
     return mockHarvestApi;
@@ -88,6 +97,10 @@ describe("ListComponent", () => {
     );
   }
 
+  function getCreatorColumnElement(): HTMLElement {
+    return spec.query("baw-user-link");
+  }
+
   function getElementByInnerText<T extends HTMLElement>(
     text: string
   ): T {
@@ -100,6 +113,7 @@ describe("ListComponent", () => {
     defaultProject = new Project(generateProject());
     defaultProject.addMetadata(generateProjectMeta({}));
     defaultHarvest = new Harvest(generateHarvest({ status: "uploading" }));
+    defaultUser = new User(generateUser());
   });
 
   afterEach(() => {
@@ -182,5 +196,16 @@ describe("ListComponent", () => {
 
     const realizedTime = spec.component.formatDate(utcTime);
     expect(realizedTime).toEqual(expectedLocalTime);
+  });
+
+  // if you are using the association directive directly in the template, this test will fail
+  // this is because change detection will not trigger when the model is changed from an UnresolvedModel to a resolved model
+  it("should display a the harvest creator in the creators column", () => {
+    const expectedUserName: string = defaultUser.userName;
+    setup(defaultProject, defaultHarvest);
+
+    const creatorColumn: HTMLElement = getCreatorColumnElement();
+
+    expect(creatorColumn.innerText).toEqual(expectedUserName);
   });
 });
