@@ -80,6 +80,12 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     return this.toObject(this.getModelAttributes());
   }
 
+  public hasJsonOnlyAttributes(opts?: ModelSerializationOptions): boolean {
+    return this.getModelAttributes({ ...opts, formData: false }).some((attr) =>
+      isInstantiated(this[attr])
+    );
+  }
+
   /**
    * Convert model to JSON compatible object containing attributes which should
    * be sent in a JSON API request
@@ -114,22 +120,41 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     }
 
     for (const attr of Object.keys(data)) {
-      if (!isInstantiated(data[attr])) {
+      const dataValue = data[attr];
+
+      if (!isInstantiated(dataValue)) {
         continue;
       }
 
       /*
        * Do not surround attribute name in quotes, it is not a valid input and
        * baw-server will return a 500 response. Attributes are in the form of
-       * model_name[attribute_name]
+       * model_name[attribute_name] for scalar values and model_name[attribute_name][] for array values
        *
        * NOTE: For JSON data, our interceptor converts keys and values to
        * snakeCase, this case is more one-off and so an interceptor has not been built
        */
       const modelName = snakeCase(this.kind);
       const snakeCaseAttr = snakeCase(attr);
-      output.append(`${modelName}[${snakeCaseAttr}]`, data[attr]);
+
+      // file lists are commonly uploaded via FormData
+      // however, a FileList is actually an object and not an array that implements an iterator
+      // we therefore need to use a separate condition to handle this case
+      if (dataValue instanceof FileList) {
+       for (const value of dataValue) {
+          output.append(`${modelName}[${snakeCaseAttr}]`, value)
+       }
+      } else if (Array.isArray(dataValue)) {
+        if (dataValue.length === 0) {
+          continue;
+        }
+
+        output.append(`${modelName}[${snakeCaseAttr}][]`, dataValue as any);
+      } else {
+        output.append(`${modelName}[${snakeCaseAttr}]`, dataValue);
+      }
     }
+
     return output;
   }
 

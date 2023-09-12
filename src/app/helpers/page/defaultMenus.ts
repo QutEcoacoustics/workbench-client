@@ -2,6 +2,7 @@ import { Injectable, InjectionToken } from "@angular/core";
 import { audioAnalysesMenuItem } from "@components/audio-analysis/audio-analysis.menus";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import { homeCategory, homeMenuItem } from "@components/home/home.menus";
+import { annotationsImportMenuItem } from "@components/import-annotations/import-annotations.menu";
 import { libraryMenuItem } from "@components/library/library.menus";
 import {
   myAccountMenuItem,
@@ -50,6 +51,7 @@ export class DefaultMenu {
         sendAudioMenuItem,
         reportProblemMenuItem,
         statisticsMenuItem,
+        annotationsImportMenuItem,
       ]),
       defaultCategory: homeCategory,
     };

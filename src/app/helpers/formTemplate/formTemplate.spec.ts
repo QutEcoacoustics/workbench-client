@@ -369,7 +369,7 @@ describe("formTemplate", () => {
       const modelData = { id: 1 };
       const successMsg = (model: MockModel) =>
         "custom success message with id: " + model.id;
-      setup(undefined, { successMsg });
+      setup(undefined, { successMsg: successMsg });
       stubFormResets();
       spec.detectChanges();
       submitForm(modelData);
@@ -379,7 +379,7 @@ describe("formTemplate", () => {
     it("should display failure notification on failed submission", () => {
       const failureMsg = (err: BawApiError) =>
         "custom failure message with message: " + err.message;
-      setup(undefined, { failureMsg });
+      setup(undefined, { failureMsg: failureMsg });
       stubFormResets();
       interceptApiAction(errorResponse);
       spec.detectChanges();

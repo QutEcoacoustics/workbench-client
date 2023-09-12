@@ -1,0 +1,236 @@
+<h1>Import Annotations: {{ audioEventImport.name }}</h1>
+
+<p
+  *ngIf="audioEventImport.descriptionHtml; else defaultDescription"
+  [innerHTML]="audioEventImport.descriptionHtml"
+></p>
+
+<div>
+  <section>
+    <h2>Events</h2>
+    <ngx-datatable
+      bawDatatableDefaults
+      [bawDatatablePagination]="{ filters: filters$, getModels: getModels }"
+    >
+      <ngx-datatable-column prop="">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Audio Recording
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <baw-loading
+            *ngIf="value.audioRecording | isUnresolved; else audioRecordingTemplate"
+            size="sm"
+          ></baw-loading>
+
+          <ng-template #audioRecordingTemplate>
+            <a [bawUrl]="value.audioRecording.viewUrl">
+              {{ value.audioRecording.id }}
+            </a>
+          </ng-template>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column prop="createdAt">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Created At
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <span>
+            {{ value | dateTime : { includeTime: true, localTime: true } }}
+          </span>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column prop="">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Associated Tags
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <baw-loading
+            *ngIf="value.tags | isUnresolved; else tagsTemplate"
+            size="sm"
+          ></baw-loading>
+
+          <ng-template #tagsTemplate>
+            <baw-inline-list
+              [items]="value.tags"
+              [itemKey]="'text'"
+              [emptyTemplate]="noAssociatedTagsTemplate"
+            >
+            </baw-inline-list>
+          </ng-template>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </section>
+
+  <section>
+    <h2>Files</h2>
+
+    <table
+      *ngIf="audioEventImport.files.length > 0; else noFilesTemplate"
+      class="table"
+    >
+      <thead>
+        <tr>
+          <th scope="col">File Name</th>
+          <th scope="col">Date Imported</th>
+          <th scope="col">Additional Tags</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let file of audioEventImport.files" scope="row">
+          <td>{{ file.name }}</td>
+          <td>
+            <span>
+              {{ file.importedAt | dateTime : { includeTime: true, localTime: true } }}
+            </span>
+          </td>
+          <td>
+            <baw-inline-list
+              [items]="file.additionalTagModels"
+              [itemKey]="'text'"
+              [emptyTemplate]="noAdditionalTagsTemplate"
+            ></baw-inline-list>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<section>
+  <h2>Add more annotations</h2>
+  <form #ngForm="ngForm">
+    <div class="annotationsimportInput">
+      <div class="import-groups">
+        <ng-container *ngFor="let eventGroup of importGroups; let index = index">
+          <ng-template
+            [ngTemplateOutlet]="importGroupTemplate"
+            [ngTemplateOutletContext]="{ model: eventGroup, index: index }"
+          ></ng-template>
+        </ng-container>
+      </div>
+    </div>
+
+    <span [ngbTooltip]="areImportGroupsValid() ? 'Import all new annotations' : 'Please fill out all required fields or fix errors'">
+      <button
+        type="submit"
+        class="btn btn-primary import-btn mb-3"
+        [disabled]="!areImportGroupsValid() || uploading"
+        (click)="uploadImportGroups()"
+      >
+        Import All
+      </button>
+    </span>
+  </form>
+</section>
+
+<ng-template #importGroupTemplate let-model="model" let-index="index">
+  <section class="import-group rounded border p-4 my-3">
+    <h3>Import Group {{ index + 1 }}</h3>
+
+    <div *ngIf="model?.errors?.length > 0" class="annotationimportOutput">
+      <div class="alert alert-danger">
+        <ul>
+          <li *ngFor="let error of model.errors">
+            {{ error }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <label for="annotationsFileInput" class="form-label required">
+      Annotation File(s)
+    </label>
+    <input
+      id="annotationsFileInput"
+      type="file"
+      accept=".csv, .selections.txt, .json"
+      class="form-control border"
+      [ngClass]="{'is-invalid': model?.errors?.length}"
+      [files]="model?.files"
+      [disabled]="uploading"
+      (change)="pushToImportGroups(model, $event)"
+      multiple
+    />
+
+    <div class="mt-4">
+      <baw-typeahead-input
+        label="Associated Tags"
+        [inputPlaceholder]="'search for tags by name'"
+        [searchCallback]="searchTagsTypeaheadCallback"
+        [resultTemplate]="tagsTypeaheadTemplate"
+        [inputDisabled]="uploading"
+        (modelChange)="updateAdditionalTagIds(model, getIdsFromAbstractModelArray($event))"
+      ></baw-typeahead-input>
+    </div>
+
+    <div
+      *ngIf="model?.identifiedEvents?.length > 0"
+      class="identified-annotations mt-4"
+    >
+      <h4>Identified Events</h4>
+
+      <div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="col">Audio Recording</th>
+              <th>Tags</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let audioEvent of model?.identifiedEvents">
+              <td scope="row">
+                {{ audioEvent.audioRecordingId }}
+              </td>
+              <td>
+                <baw-inline-list
+                  [items]="audioEvent?.tags"
+                  [itemKey]="'text'"
+                  [emptyTemplate]="noAssociatedTagsTemplate"
+                ></baw-inline-list>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <button
+      *ngIf="model?.files?.length > 0"
+      class="remove-import-group-button btn btn-outline-danger mt-3"
+      [ngbTooltip]="'Remove this import group'"
+      [disabled]="uploading"
+      (click)="removeFromImport(model)"
+    >
+      Remove
+    </button>
+  </section>
+</ng-template>
+
+<ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
+</ng-template>
+
+<ng-template #noAssociatedTagsTemplate>
+  <span>No associated tags</span>
+</ng-template>
+
+<ng-template #noAdditionalTagsTemplate>
+  <span>No additional tags</span>
+</ng-template>
+
+<ng-template #defaultDescription>
+  <i>No description found</i>
+</ng-template>
+
+<ng-template #noFilesTemplate>
+  <i>No files found</i>
+</ng-template>

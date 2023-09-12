@@ -5,7 +5,9 @@
     "datatable",
     "luxon",
     "toastr",
+    "taggings",
     "typeahead",
-    "Ecoacoustics"
+    "Ecoacoustics",
+    "datatable"
   ]
 }

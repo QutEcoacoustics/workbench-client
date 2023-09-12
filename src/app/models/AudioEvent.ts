@@ -1,5 +1,9 @@
 import { Injector } from "@angular/core";
-import { AUDIO_EVENT_PROVENANCE, AUDIO_RECORDING, TAG } from "@baw-api/ServiceTokens";
+import {
+  AUDIO_EVENT_PROVENANCE,
+  AUDIO_RECORDING,
+  TAG,
+} from "@baw-api/ServiceTokens";
 import { annotationMenuItem } from "@components/library/library.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import {
@@ -73,7 +77,10 @@ export class AudioEvent
   public deleter?: User;
   @hasOne<AudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
-  @hasOne<AudioEvent, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenanceId")
+  @hasOne<AudioEvent, AudioEventProvenance>(
+    AUDIO_EVENT_PROVENANCE,
+    "provenanceId"
+  )
   public provenance?: AudioEventProvenance;
   @hasMany<AudioEvent, Tag>(TAG, "tagIds")
   public tags?: Tag[];

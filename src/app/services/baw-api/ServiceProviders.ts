@@ -11,6 +11,7 @@ import {
   analysisJobResolvers,
   AnalysisJobsService,
 } from "./analysis/analysis-jobs.service";
+import { AudioEventImportService, audioEventImportResolvers } from "./audio-event-import/audio-event-import.service";
 import {
   audioEventResolvers,
   AudioEventsService,
@@ -278,6 +279,11 @@ const serviceList = [
     serviceToken: Tokens.AUDIO_EVENT_SUMMARY_REPORT,
     service: EventSummaryReportService,
     resolvers: eventSummaryResolvers,
+  },
+  {
+    serviceToken: Tokens.AUDIO_EVENT_IMPORT,
+    service: AudioEventImportService,
+    resolvers: audioEventImportResolvers,
   },
 ];
 

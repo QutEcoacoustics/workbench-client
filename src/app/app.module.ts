@@ -22,6 +22,7 @@ import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { ToastrModule } from "ngx-toastr";
 import { environment } from "src/environments/environment";
 import { TitleStrategy } from "@angular/router";
+import { AnnotationsImportModule } from "@components/import-annotations/import-annotations.module";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { toastrRoot } from "./app.helper";
@@ -62,6 +63,7 @@ export const appImports = [
   DataRequestModule,
   HarvestModule,
   ReportsModule,
+  AnnotationsImportModule,
   LibraryModule,
   ListenModule,
   MyAccountModule,

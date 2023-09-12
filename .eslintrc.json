@@ -38,6 +38,12 @@
         "@typescript-eslint/no-inferrable-types": "off",
         "@typescript-eslint/prefer-as-const": "off",
         // beginning of explicitly enabled rules
+        "max-len": [
+          "error",
+          {
+            "code": 140
+          }
+        ],
         "no-console": [
           "error",
           {
