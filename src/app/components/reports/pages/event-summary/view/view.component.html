@@ -22,27 +22,22 @@
   <div class="search-parameter">
     <b>Sites: </b>
 
-    <ng-container
-      *ngIf="report.regions as reportRegions; else defaultConditionTemplate"
-    >
-      <span *ngFor="let item of reportRegions; last as isLast">
-        <a *ngIf="item" [href]="item.viewUrl">{{ item.name }}</a>
-        <ng-container *ngIf="!isLast">, </ng-container>
-      </span>
-    </ng-container>
+    <baw-inline-list
+      [items]="parameterDataModel.regions"
+      [itemKey]="'name'"
+      [emptyTemplate]="defaultConditionTemplate"
+    ></baw-inline-list>
   </div>
 
   <div class="search-parameter">
     <b>Points: </b>
 
-    <ng-container
-      *ngIf="report.sites as reportSites; else defaultConditionTemplate"
+    <baw-inline-list
+      [items]="parameterDataModel.siteModels"
+      [itemKey]="'name'"
+      [emptyTemplate]="defaultConditionTemplate"
     >
-      <span *ngFor="let item of reportSites; last as isLast">
-        <a *ngIf="item" [href]="item.viewUrl">{{ item.name }}</a>
-        <ng-container *ngIf="!isLast">, </ng-container>
-      </span>
-    </ng-container>
+    </baw-inline-list>
   </div>
 
   <div class="search-parameter">
@@ -102,24 +97,11 @@
   <div class="search-parameter">
     <b>Recognisers: </b>
 
-    <ng-container
-      *ngIf="
-        !!parameterDataModel.provenanceModels;
-        else defaultConditionTemplate
-      "
+    <baw-inline-list
+      [items]="parameterDataModel.provenanceModels"
+      [emptyTemplate]="defaultConditionTemplate"
     >
-      <span
-        *ngFor="
-          let provenance of parameterDataModel.provenanceModels;
-          last as isLast
-        "
-      >
-        <a *ngIf="provenance" [href]="provenance.viewUrl">
-          {{ provenance }}
-        </a>
-        <ng-container *ngIf="!isLast">, </ng-container>
-      </span>
-    </ng-container>
+    </baw-inline-list>
   </div>
 
   <div class="search-parameter">
@@ -193,8 +175,8 @@
           }}
         </td>
         <td class="col">
-          <span [ngbTooltip]="'The number of search range covered'">
-            100%
+          <span [ngbTooltip]="'The fraction of search range covered'">
+            {{ (this.report.statistics.totalSearchSpan / this.report.statistics.totalSearchSpan) * 100 }}%
           </span>
         </td>
       </tr>
@@ -209,9 +191,9 @@
         </td>
         <td class="col">
           <span
-            [ngbTooltip]="'The number of search range covered by recordings'"
+            [ngbTooltip]="'The fraction of search range covered by recordings'"
           >
-            80%
+            {{ (this.report.statistics.audioCoverageOverSpan / this.report.statistics.totalSearchSpan) * 100 }}%
           </span>
         </td>
       </tr>
@@ -226,8 +208,8 @@
           }}
         </td>
         <td class="col">
-          <span [ngbTooltip]="'The number of search range covered by analysis'">
-            60%
+          <span [ngbTooltip]="'The fraction of the search range covered by analysis'">
+            {{ (this.report.statistics.analysisCoverageOverSpan / this.report.statistics.totalSearchSpan) * 100 }}%
           </span>
         </td>
       </tr>
@@ -241,11 +223,7 @@
 
     <a
       class="download-button float-end"
-      [href]="
-        eventSummaryReportApi.downloadEventsTableUrl(
-          parameterDataModel.toFilter()
-        )
-      "
+      [href]="eventSummaryReportApi.downloadEventsTableUrl(parameterDataModel.toFilter())"
     >
       <fa-icon
         [icon]="['fas', 'file-arrow-down']"
@@ -272,7 +250,7 @@
     <ng-container *ngFor="let item of report.eventGroups">
       <tr class="row">
         <td class="col">
-          <a *ngIf="isResolvedModel(item.tag)" [href]="item.tag.viewUrl">
+          <a *ngIf="!(item.tag | isUnresolved)" [href]="item.tag.viewUrl">
             {{ item.tag.text }}
           </a>
         </td>
@@ -292,11 +270,17 @@
             [data]="item.score.histogram"
           ></baw-chart>
 
-          <small class="m-1 text-muted text-nowrap">
+          <small
+            [ngbTooltip]="'The mean of the recogniser score'"
+            class="m-1 text-muted text-nowrap"
+          >
             x̄: {{ item.score.mean | number : "1.2-2" }}
           </small>
           <wbr />
-          <small class="m-1 text-muted text-nowrap">
+          <small
+            [ngbTooltip]="'The standard deviation of the recogniser score'"
+            class="m-1 text-muted text-nowrap"
+          >
             σ: {{ item.score.standardDeviation | number : "1.2-2" }}
           </small>
         </td>
@@ -322,6 +306,14 @@
       <h4 class="chart-title">Species Accumulation Curve</h4>
 
       <span class="chart-action-menu">
+        <span class="info-icon text-info">
+          <fa-icon
+            [icon]="['fas', 'info-circle']"
+            [ngbTooltip]="'Points with error represent that the recogniser had a lack of confidence when classifying the event'"
+          >
+          </fa-icon>
+        </span>
+
         <a
           class="download-button"
           (click)="accumulationChart.downloadChartAsCsv()"
@@ -377,14 +369,6 @@
       <h4 class="chart-title">Species Composition</h4>
 
       <span class="chart-action-menu">
-        <span class="info-icon text-info">
-          <fa-icon
-            [icon]="['fas', 'info-circle']"
-            [ngbTooltip]="'Points with error represent that the recogniser had a lack of confidence when classifying the event'"
-          >
-          </fa-icon>
-        </span>
-
         <a
           class="download-button"
           (click)="compositionChart.downloadChartAsCsv()"
@@ -503,7 +487,7 @@
   <div class="modal-body">
     <div class="hide-in-print">
       <p>
-        When saving to PDF, use the "Save to PDF" as the destination to have
+        When saving to PDF, use <i>Save to PDF</i> as the destination to have
         clickable links.
       </p>
       <p>Supported browsers: Chrome, Firefox, Edge</p>

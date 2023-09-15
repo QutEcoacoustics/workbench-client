@@ -100,12 +100,12 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     // generating a report from the region, or site level will immutably scope the report to the model(s)
     if (models[regionKey]) {
       this.region = models[regionKey] as Region;
-      this.model.sites = [this.region.id];
+      this.model.sites = new Set<Id>([this.region.id]);
     }
 
     if (models[siteKey]) {
       this.site = models[siteKey] as Site;
-      this.model.points = [this.site.id];
+      this.model.points = new Set<Id>([this.site.id]);
     }
   }
 
@@ -179,14 +179,15 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   }
 
   // since this function is typically used in conjunction with the typeahead inputs, an object is returned
-  protected getIdsFromAbstractModelArray(items: object[]): Id[] {
+  protected getIdsFromAbstractModelArray(items: object[]): Set<Id> {
     // by default, typeahead inputs return an empty array if no items are selected
     // as we want to omit all conditions with no values in the qsp's, we should return null instead
     if (items.length === 0) {
       return null;
     }
 
-    return items.map((item: AbstractModel): Id => item.id);
+    const idsArray: Id[] = items.map((item: AbstractModel): Id => item.id);
+    return new Set<Id>(idsArray);
   }
 
   // because the DateTimeFilterModel is coming from a shared component, we need to serialize for use in the data model

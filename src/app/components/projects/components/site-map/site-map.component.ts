@@ -30,7 +30,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     super();
   }
 
-  // use are using ngOnChanges instead of ngOnInit for reactivity
+  // using ngOnChanges instead of ngOnInit for reactivity
   // this allows us to dynamically update the projects, regions, sites, etc... without destroying the entire component
   public ngOnChanges(): void {
     const filters: Filters<ISite> = { paging: { page: 1 } };

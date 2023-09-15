@@ -29,6 +29,7 @@ const reportId: IdParamOptional<EventSummaryReport> = id;
 // TODO: remove this TypeScript exception once the API is fully functional
 const endpoint = stringTemplate`/reports/audio_event_summary/${reportId}${option}`;
 
+//! the api endpoint associated with this service is not currently implemented. Therefore this service is a draft and subject to change
 @Injectable()
 export class EventSummaryReportService
   implements ApiFilterShow<EventSummaryReport>
@@ -275,7 +276,9 @@ class EventSummaryReportResolver extends BawResolver<
     const fakeEvents = [1, 2, 1950, 39, 277];
     const fakeProvenances = [1];
 
-    const parametersModel = new EventSummaryReportParameters(route.queryParams);
+    const parametersModel = new EventSummaryReportParameters({
+      ...route.queryParams
+    });
 
     parametersModel.tags = fakeEvents;
     parametersModel.provenances = fakeProvenances;

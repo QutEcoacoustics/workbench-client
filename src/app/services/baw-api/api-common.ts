@@ -114,7 +114,8 @@ export interface ApiShow<
 }
 
 /**
- * API Filter Show functionality
+ * This is used for specialized endpoints that return aggregations or other summarizations of data.
+ * The filter filters the input before it is aggregated into the specialized single item model.
  */
 export interface ApiFilterShow<M extends AbstractModel, P extends any[] = []> {
   /**

@@ -102,6 +102,7 @@ export class ChartComponent implements AfterViewInit , OnDestroy {
   public downloadChartAsCsv(): void {
     if (this.vegaView) {
       // TODO: call an api endpoint to download the chart as CSV
+      console.warn("Downloading a chart as CSV is not currently implemented");
     }
   }
 

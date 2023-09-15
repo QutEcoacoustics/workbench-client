@@ -23,11 +23,11 @@ import {
   queryStringToNumberArray,
 } from "@helpers/query-string-parameters/query-string-parameters";
 import { Id, Ids } from "@interfaces/apiInterfaces";
-import { ImplementsInjector } from "@models/AbstractModel";
 import { hasMany } from "@models/AssociationDecorators";
 import { bawCollection } from "@models/AttributeDecorators";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { EventSummaryReport } from "@models/EventSummaryReport";
+import { ImplementsInjector } from "@models/ImplementsInjector";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";

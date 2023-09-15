@@ -79,6 +79,7 @@ export interface IEventSummaryReport {
   graphs: IEventSummaryGraphs;
 }
 
+//! the api endpoint associated with this model is not currently implemented. Therefore this model is a draft and subject to change
 export class EventSummaryReport
   extends AbstractModel<IEventSummaryReport>
   implements IEventSummaryReport
