@@ -43,7 +43,7 @@ export type Option<T> = T | null;
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
 /** Create a tuple (extends Array type and sets fixed length) */
-export interface Tuple<T, L extends number> extends Array<T> {
+export interface MonoTuple<T, L extends number> extends Array<T> {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   0: T;
   length: L;

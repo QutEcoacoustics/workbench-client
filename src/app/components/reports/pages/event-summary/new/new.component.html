@@ -1,0 +1,106 @@
+<h1 class="text-muted">{{ componentTitle }}</h1>
+<h1 class="mb-5">New Event Summary Report</h1>
+
+<form #form="ngForm">
+  <baw-date-time-filter
+    (modelChange)="updateViewModelFromDateTimeModel($event)"
+  ></baw-date-time-filter>
+
+  <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
+  <baw-typeahead-input
+    *ngIf="!site || site?.isPoint"
+    label="Site(s)"
+    [inputPlaceholder]="region ? region.name : 'All'"
+    [searchCallback]="createSearchCallback(regionsApi)"
+    [resultTemplate]="nameTypeaheadTemplate"
+    [inputDisabled]="!!region"
+    (modelChange)="model.sites = getIdsFromAbstractModelArray($event)"
+  ></baw-typeahead-input>
+
+  <baw-typeahead-input
+    [label]="site ? (site?.isPoint ? 'Point(s)' : 'Site(s)') : 'Point(s)'"
+    [inputPlaceholder]="site ? site.name : 'All'"
+    [searchCallback]="createSearchCallback(sitesApi)"
+    [resultTemplate]="nameTypeaheadTemplate"
+    [inputDisabled]="!!site"
+    (modelChange)="model.points = getIdsFromAbstractModelArray($event)"
+  ></baw-typeahead-input>
+
+  <baw-typeahead-input
+    label="Recogniser(s)"
+    [inputPlaceholder]="'All'"
+    [searchCallback]="createSearchCallback(provenanceApi)"
+    [resultTemplate]="nameTypeaheadTemplate"
+    (modelChange)="model.provenances = getIdsFromAbstractModelArray($event)"
+  ></baw-typeahead-input>
+
+  <label for="provenancesCutOffInput" class="form-label">
+    Recogniser Score Cut-Off
+  </label>
+  <input
+    #provenanceCutOffInput="ngModel"
+    [(ngModel)]="model.score"
+    id="provenancesCutOffInput"
+    name="provenancesCutOffInput"
+    type="number"
+    class="form-control"
+    placeholder="0"
+    step="0.01"
+    max="1"
+    min="0"
+  />
+
+  <label
+    *ngIf="provenanceCutOffInput.invalid && provenanceCutOffInput.dirty"
+    for="provenancesCutOffInput"
+    class="text-danger"
+  >
+    The recogniser score cut-off are outside the permitted boundary. Ensure that
+    the value is between 0 and 1.
+  </label>
+
+  <div>
+    <label for="bucketSizeInput">Bucket Size</label>
+    <select
+      id="bucketSizeInput"
+      name="bucketSizeInput"
+      class="form-select"
+      [(ngModel)]="model.bucketSize"
+      required
+    >
+      <option
+        *ngFor="let bucketSize of availableBucketSizes"
+        [value]="bucketSize"
+      >
+        {{ bucketSize | titlecase }}
+      </option>
+    </select>
+  </div>
+
+  <baw-typeahead-input
+    label="Tags of Interest"
+    [inputPlaceholder]="'All'"
+    [searchCallback]="createSearchCallback(tagsApi, 'text', false)"
+    [resultTemplate]="tagsTypeaheadTemplate"
+    (modelChange)="model.tags = getIdsFromAbstractModelArray($event)"
+  ></baw-typeahead-input>
+
+  <a
+    id="generateReportButton"
+    type="submit"
+    class="btn btn-primary my-3"
+    [strongRoute]="viewReportRoute()"
+    [queryParams]="model.toQueryParams()"
+    [class.disabled]="form.invalid"
+  >
+    Generate
+  </a>
+</form>
+
+<ng-template #nameTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
+</ng-template>
+
+<ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
+</ng-template>

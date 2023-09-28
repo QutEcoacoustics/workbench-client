@@ -8,7 +8,7 @@ describe("ToRelativePipe", () => {
   const createPipe = createPipeFactory(ToRelativePipe);
 
   function assertPipe(value: string | string[] | ((text: string) => boolean)) {
-    expect(spec.element).toHaveText(value);
+    expect(spec.element).toHaveExactText(value);
   }
 
   function setup(
@@ -26,7 +26,7 @@ describe("ToRelativePipe", () => {
   });
 
   it("should handle null value", () => {
-    setup(undefined);
+    setup(null);
     assertPipe("(no value)");
   });
 

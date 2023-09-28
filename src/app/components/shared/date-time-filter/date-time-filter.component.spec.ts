@@ -15,15 +15,15 @@ import { TimeComponent } from "@shared/input/time/time.component";
 import { BehaviorSubject } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
 import { AudioRecording } from "@models/AudioRecording";
-import { AudioRecordingsFilterComponent } from "./audio-recordings-filter.component";
+import { DateTimeFilterComponent } from "./date-time-filter.component";
 
 describe("AudioRecordingsFilter", () => {
-  let spectator: Spectator<AudioRecordingsFilterComponent>;
+  let spectator: Spectator<DateTimeFilterComponent>;
   let defaultProject: Project;
   let filterChangeSpy: jasmine.Spy;
 
   const createComponent = createRoutingFactory({
-    component: AudioRecordingsFilterComponent,
+    component: DateTimeFilterComponent,
     imports: [SharedModule, NgbCollapseModule, MockConfigModule, CacheModule],
     declarations: [TimeComponent],
     providers: [mockProvider(ToastrService)],
@@ -122,7 +122,7 @@ describe("AudioRecordingsFilter", () => {
 
   // start of assertion
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(AudioRecordingsFilterComponent);
+    expect(spectator.component).toBeInstanceOf(DateTimeFilterComponent);
   });
 
   describe("date filter input", () => {

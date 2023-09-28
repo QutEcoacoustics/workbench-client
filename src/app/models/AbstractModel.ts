@@ -11,11 +11,14 @@ import {
   Meta,
 } from "../services/baw-api/baw-api.service";
 import { BawAttributeMeta } from "./AttributeDecorators";
+import { ImplementsInjector } from "./ImplementsInjector";
 
 export type AbstractModelConstructor<Model> = new (
   _: Record<string, any>,
   _injector?: Injector
 ) => Model;
+
+export type AssociationInjector = ImplementsInjector | AbstractModel;
 
 /**
  * BAW Server Abstract Model

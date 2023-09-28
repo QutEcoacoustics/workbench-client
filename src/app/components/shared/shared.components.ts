@@ -46,6 +46,10 @@ import { ProgressModule } from "./progress/progress.module";
 import { StepperModule } from "./stepper/stepper.module";
 import { UserLinkModule } from "./user-link/user-link.module";
 import { WIPComponent } from "./wip/wip.component";
+import { DateTimeFilterComponent } from "./date-time-filter/date-time-filter.component";
+import { TypeaheadInputComponent } from "./typeahead-input/typeahead-input.component";
+import { ChartComponent } from "./chart/chart.component";
+import { InlineListComponent } from "./inline-list/inline-list.component";
 
 export const sharedComponents = [
   AnnotationDownloadComponent,
@@ -57,6 +61,10 @@ export const sharedComponents = [
   WIPComponent,
   ModelSelectorComponent,
   DeleteModalComponent,
+  DateTimeFilterComponent,
+  TypeaheadInputComponent,
+  ChartComponent,
+  InlineListComponent,
 ];
 
 export const internalComponents = [];

@@ -1,0 +1,22 @@
+.chartContainer {
+  width: 100%;
+  height: 100%;
+}
+
+::ng-deep {
+  .chartContainer .marks {
+    width: inherit;
+    height: inherit;
+  }
+
+  .marks svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@media print {
+  .chartContainer {
+    break-inside: avoid;
+  }
+}

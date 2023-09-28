@@ -1,8 +1,8 @@
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
-import { Writeable } from "@helpers/advancedTypes";
-import { filterAnd, filterModel } from "./filters";
+import { Id } from "@interfaces/apiInterfaces";
+import { filterAnd, filterModel, filterModelIds } from "./filters";
 
 describe("ModelFilters", () => {
   describe("addFilters", () => {
@@ -88,17 +88,17 @@ describe("ModelFilters", () => {
 
   it("should return an empty filter if no model is specified", () => {
     const mockModel: Project = undefined;
-    const initialFilters: InnerFilter<Writeable<any>> = {};
+    const initialFilters: InnerFilter<Project> = {};
 
-    const observedResult = filterModel<Project, any>("projects", mockModel, initialFilters);
+    const observedResult = filterModel<Project, any>("projects", mockModel, initialFilters) as any;
     expect(observedResult).toEqual(initialFilters);
   });
 
   it("should return an empty filter if the model does not have an id property", () => {
     const mockModel = new Project(generateProject({ id: undefined }));
-    const initialFilters: InnerFilter<Writeable<any>> = {};
+    const initialFilters: InnerFilter<Project> = {};
 
-    const observedResult = filterModel<Project, any>("projects", mockModel, initialFilters);
+    const observedResult = filterModel<Project, any>("projects", mockModel, initialFilters) as any;
     expect(observedResult).toEqual(initialFilters);
   });
 
@@ -108,9 +108,9 @@ describe("ModelFilters", () => {
       ["regions.id"]: {
         eq: 1,
       },
-    };
+    } as InnerFilter<Project>;
 
-    const observedResult = filterModel<Project, any>("projects", mockModel, currentFilters);
+    const observedResult = filterModel<Project, any>("projects", mockModel, currentFilters) as any;
     expect(observedResult).toEqual(currentFilters);
   });
 
@@ -120,22 +120,35 @@ describe("ModelFilters", () => {
       ["regions.id"]: {
         eq: 1,
       },
-    };
+    } as InnerFilter<Project>;
 
-    const observedResult = filterModel<Project, any>("projects", mockModel, currentFilters);
+    const observedResult = filterModel<Project, any>("projects", mockModel, currentFilters) as any;
     expect(observedResult).toEqual(currentFilters);
   });
 
   it("should create the correct model filter for a project", () => {
     const mockProject = new Project(generateProject({ id: 11 }));
-    const initialFilters: InnerFilter = {};
+    const initialFilters: InnerFilter<Project> = {};
     const expectedResult = {
       ["projects.id"]: {
         eq: mockProject.id,
       },
+    } as InnerFilter<Project>;
+
+    const observedResult = filterModel<Project, any>("projects", mockProject, initialFilters) as any;
+    expect(observedResult).toEqual(expectedResult);
+  });
+
+  it("should create the correct modelId filter for an array of project ids", () => {
+    const mockProjectIds: Id[] = [12, 231, 4123];
+    const initialFilters: InnerFilter<Project> = {};
+    const expectedResult = {
+      ["projects.id"]: {
+        in: mockProjectIds,
+      },
     };
 
-    const observedResult = filterModel<Project, any>("projects", mockProject, initialFilters);
+    const observedResult = filterModelIds<Project>("projects", mockProjectIds, initialFilters);
     expect(observedResult).toEqual(expectedResult);
   });
 });

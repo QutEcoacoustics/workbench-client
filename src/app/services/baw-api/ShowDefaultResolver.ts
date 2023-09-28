@@ -1,6 +1,6 @@
 import { Type } from "@angular/core";
 import { Resolve } from "@angular/router";
-import { Tuple } from "@helpers/advancedTypes";
+import { MonoTuple } from "@helpers/advancedTypes";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { map } from "rxjs";
@@ -23,7 +23,7 @@ export class ShowDefaultResolver<
   public constructor(
     deps: Type<Service>[],
     uniqueId?: string,
-    params?: Tuple<string, Params["length"]>
+    params?: MonoTuple<string, Params["length"]>
   ) {
     super(deps, uniqueId, params);
   }

@@ -11,13 +11,13 @@ import {
   Ids,
 } from "@interfaces/apiInterfaces";
 import { Observable, Subscription } from "rxjs";
-import { AbstractModel, UnresolvedModel } from "./AbstractModel";
+import { AbstractModel, AssociationInjector, UnresolvedModel } from "./AbstractModel";
 import { User } from "./User";
 
 /**
  * Creates an association between the creatorId and its user model
  */
-export function creator<Parent extends AbstractModel & HasCreator>() {
+export function creator<Parent extends AssociationInjector & HasCreator>() {
   const key: keyof Parent = "creatorId";
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }
@@ -25,7 +25,7 @@ export function creator<Parent extends AbstractModel & HasCreator>() {
 /**
  * Creates an association between the updaterId and its user model
  */
-export function updater<Parent extends AbstractModel & HasUpdater>() {
+export function updater<Parent extends AssociationInjector & HasUpdater>() {
   const key: keyof Parent = "updaterId";
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }
@@ -33,7 +33,7 @@ export function updater<Parent extends AbstractModel & HasUpdater>() {
 /**
  * Creates an association between the deleterId and its user model
  */
-export function deleter<Parent extends AbstractModel & HasDeleter>() {
+export function deleter<Parent extends AssociationInjector & HasDeleter>() {
   const key: keyof Parent = "deleterId";
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }
@@ -49,7 +49,7 @@ export function deleter<Parent extends AbstractModel & HasDeleter>() {
  * This is a list of keys from the parent where the values can be retrieved
  */
 export function hasMany<
-  Parent extends AbstractModel,
+  Parent extends AssociationInjector,
   Child extends AbstractModel,
   Params extends any[] = []
 >(
@@ -88,7 +88,7 @@ export function hasMany<
  * @param failureValue Value to represent a failure to retrieve the model/s
  */
 export function hasOne<
-  Parent extends AbstractModel,
+  Parent extends AssociationInjector,
   Child extends AbstractModel,
   Params extends any[] = []
 >(
@@ -119,7 +119,7 @@ export function hasOne<
  * @param failureValue Value to represent a failure to retrieve the model/s
  */
 function createModelDecorator<
-  Parent extends AbstractModel,
+  Parent extends AssociationInjector,
   Child extends AbstractModel,
   Params extends any[],
   Service

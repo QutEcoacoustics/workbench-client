@@ -28,6 +28,7 @@ import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs";
 import { ConfigService } from "@services/config/config.service";
 import { shallowRegionsRoute } from "@components/regions/regions.routes";
+import { reportMenuItems } from "@components/reports/reports.menu";
 import {
   editSiteMenuItem,
   siteMenuItem,
@@ -41,6 +42,7 @@ export const siteMenuItemActions = [
   editSiteMenuItem,
   audioRecordingMenuItems.list.site,
   audioRecordingMenuItems.batch.site,
+  reportMenuItems.new.site,
 ];
 
 export const pointMenuItemActions = [
@@ -50,6 +52,7 @@ export const pointMenuItemActions = [
   editPointMenuItem,
   audioRecordingMenuItems.list.siteAndRegion,
   audioRecordingMenuItems.batch.siteAndRegion,
+  reportMenuItems.new.siteAndRegion,
 ];
 
 const projectKey = "project";

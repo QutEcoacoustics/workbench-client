@@ -51,6 +51,7 @@ import {
   ProgressEventsService,
 } from "./progress-event/progress-events.service";
 import { projectResolvers, ProjectsService } from "./project/projects.service";
+import { audioEventProvenanceResolvers, AudioEventProvenanceService } from "./AudioEventProvenance/AudioEventProvenance.service";
 import {
   regionResolvers,
   RegionsService,
@@ -90,6 +91,7 @@ import { tagGroupResolvers, TagGroupsService } from "./tag/tag-group.service";
 import { taggingResolvers, TaggingsService } from "./tag/taggings.service";
 import { tagResolvers, TagsService } from "./tag/tags.service";
 import { userResolvers, UserService } from "./user/user.service";
+import { EventSummaryReportService, eventSummaryResolvers } from "./reports/event-report/event-summary-report.service";
 
 const serviceList = [
   {
@@ -266,6 +268,16 @@ const serviceList = [
     serviceToken: Tokens.USER,
     service: UserService,
     resolvers: userResolvers,
+  },
+  {
+    serviceToken: Tokens.AUDIO_EVENT_PROVENANCE,
+    service: AudioEventProvenanceService,
+    resolvers: audioEventProvenanceResolvers,
+  },
+  {
+    serviceToken: Tokens.AUDIO_EVENT_SUMMARY_REPORT,
+    service: EventSummaryReportService,
+    resolvers: eventSummaryResolvers,
   },
 ];
 

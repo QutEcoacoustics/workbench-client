@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -17,29 +17,41 @@ import { switchMap, takeUntil } from "rxjs/operators";
   selector: "baw-site-map",
   template: '<baw-map [markers]="markers"></baw-map>',
 })
-export class SiteMapComponent extends withUnsubscribe() implements OnInit {
+export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   // TODO Implement system to change colour of selected sites
   @Input() public selected: List<Site>;
   @Input() public project: Project;
   @Input() public region: Region;
+  /** Display a subset of sites from the project/region */
+  @Input() public sitesSubset: Site[] = [];
   public markers: List<MapMarkerOptions> = List([]);
 
   public constructor(private sitesApi: SitesService) {
     super();
   }
 
-  public ngOnInit(): void {
+  // using ngOnChanges instead of ngOnInit for reactivity
+  // this allows us to dynamically update the projects, regions, sites, etc... without destroying the entire component
+  public ngOnChanges(): void {
     const filters: Filters<ISite> = { paging: { page: 1 } };
 
-    this.getFilter(filters, this.project, this.region)
-      .pipe(
-        switchMap((models) => this.getMarkers(models)),
-        takeUntil(this.unsubscribe)
-      )
-      .subscribe({
-        next: (sites) => this.pushMarkers(sites),
-        error: () => this.pushMarkers([]),
-      });
+    this.markers = List([]);
+
+    // we use a falsy assertion for sitesSubset here because if sitesSubset is undefined or the length is zero
+    // we want to fetch all markers for the project/region
+    if ((this.project || this.region) && !this.sitesSubset?.length) {
+      this.getFilter(filters, this.project, this.region)
+        .pipe(
+          switchMap((models) => this.getMarkers(models)),
+          takeUntil(this.unsubscribe)
+        )
+        .subscribe({
+          next: (sites) => this.pushMarkers(sites),
+          error: () => this.pushMarkers([]),
+        });
+    }
+
+    this.pushMarkers(this.sitesSubset ?? []);
   }
 
   private getFilter(

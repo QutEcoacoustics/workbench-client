@@ -1,0 +1,151 @@
+section {
+  border-top-style: solid;
+  border-top-width: thin;
+  border-color: var(--baw-secondary-lightest);
+  padding: 1.25rem 0;
+}
+
+h3 {
+  width: 100%;
+}
+
+#coverage-table {
+  width: 60%;
+  margin: 0 auto;
+}
+
+#print-button {
+  cursor: pointer;
+}
+
+// we do this in css because it's styling, not inline offset (<i>) or emphasis (<em>)
+// see https://stackoverflow.com/a/53095149 for more information
+#generatedByLabel {
+  font-style: italic;
+}
+
+#search-parameters-container {
+  display: flex;
+  flex-wrap: wrap;
+
+  & > .search-parameter {
+    margin: 0.5rem;
+    margin-right: 2rem;
+  }
+}
+
+#coverage-table {
+  margin-top: 1rem;
+}
+
+.table {
+  overflow-wrap: break-word;
+
+  // if there is a log tag name, event, etc...
+  // the name will be broken by words. This causes padding on the broken line to be 0, while the start is padded by 0.25rem
+  // to make the table consistent,  we therefore, remove start (left) padding of links
+  a {
+    word-break: normal;
+    padding-left: 0em;
+  }
+}
+
+.charts-section {
+  page-break-inside: avoid;
+}
+
+.bucket-size-label {
+  color: var(--baw-dark);
+  font-style: italic;
+}
+
+.download-button {
+  font-size: 2rem;
+  margin-right: 0.25em;
+  cursor: pointer;
+}
+
+.info-icon {
+  font-size: 2rem;
+  margin-right: 0.25em;
+  cursor: pointer;
+}
+
+.site-map {
+  display: inline-block;
+  width: 100%;
+  height: 20em;
+}
+
+.embedded-figure {
+  display: flex;
+  padding: 0;
+  height: 3rem;
+  width: 15rem;
+}
+
+.large-embedded-figure {
+  @extend .embedded-figure;
+  height: fit-content;
+  width: auto;
+  // we use an aspect ratio instead of width and height here to ensure that the charts scale with the page
+  // typically we'd use width here, however, vega charts will keep their height constant and change their width
+  // therefore, we need to use an aspect ratio to ensure that the charts scale with the page
+  aspect-ratio: 2.39 / 1;
+}
+
+.chart-heading {
+  margin-top: 1rem;
+
+  & > .chart-title {
+    display: inline;
+  }
+
+  & > .chart-action-menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    float: right;
+    height: 1rem;
+  }
+}
+
+.toggle-graph-button {
+  // since the maximize and minimize buttons are slightly different sizes, we have to set the size explicitly using css
+  width: 2.5em;
+  height: 2.5em;
+}
+
+@media print {
+  #print-button,
+  .toggle-graph-button,
+  .download-button,
+  .info-icon,
+  .hide-in-print {
+    display: none;
+  }
+
+  tr {
+    text-align: left;
+    vertical-align: middle;
+    break-inside: avoid;
+  }
+
+  .chart-container {
+    break-inside: avoid;
+  }
+
+  // since the Google maps component uses a canvas, it is hidden when "background graphics" (Chrome) is disabled
+  // this will cause an empty spot where the map should be
+  // however, we should still allow the user to disable printing other background graphics, but the map should still be printed
+  .site-map {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  #events-table-container,
+  #charts-container {
+    break-before: always;
+  }
+}

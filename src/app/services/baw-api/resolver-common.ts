@@ -1,8 +1,8 @@
 // !Be careful with imports, resolvers are string-ly typed and can easily create
 // circular dependencies which are not detected by typescript
-import type { Type } from "@angular/core";
+import { Type } from "@angular/core";
 import type { ActivatedRouteSnapshot, Resolve } from "@angular/router";
-import type { Option, Tuple } from "@helpers/advancedTypes";
+import type { Option, MonoTuple } from "@helpers/advancedTypes";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -19,6 +19,7 @@ import {
   ApiCreate,
   ApiDestroy,
   ApiFilter,
+  ApiFilterShow,
   ApiList,
   ApiShow,
   ApiUpdate,
@@ -45,7 +46,8 @@ export abstract class BawResolver<
     | ApiShow<ServiceModel, ServiceParams, IdOr<ServiceModel>>
     | ApiCreate<ServiceModel, ServiceParams>
     | ApiUpdate<ServiceModel, ServiceParams>
-    | ApiDestroy<ServiceModel, ServiceParams, IdOr<ServiceModel>>,
+    | ApiDestroy<ServiceModel, ServiceParams, IdOr<ServiceModel>>
+    | ApiFilterShow<ServiceModel, ServiceParams>,
   ResolverName = { customResolver: string }
 > {
   public constructor(
@@ -54,7 +56,7 @@ export abstract class BawResolver<
     /** Unique ID of model to retrieve */
     protected uniqueId?: string,
     /** Parameters supplied to service request */
-    protected params?: Tuple<string, ServiceParams["length"]>
+    protected params?: MonoTuple<string, ServiceParams["length"]>
   ) {}
 
   public create(
@@ -172,7 +174,7 @@ export class Resolvers<
   public constructor(
     private serviceDeps: Type<Service>[],
     private uniqueId?: string,
-    private params?: Tuple<string, Params["length"]>
+    private params?: MonoTuple<string, Params["length"]>
   ) {}
 
   /**
@@ -227,7 +229,7 @@ export class ListResolver<
 > extends BawResolver<Model[], Model, Params, Service, { list: string }> {
   public constructor(
     deps: Type<Service>[],
-    params?: Tuple<string, Params["length"]>
+    params?: MonoTuple<string, Params["length"]>
   ) {
     super(deps, undefined, params);
   }
@@ -265,7 +267,7 @@ export class ShowResolver<
   public constructor(
     deps: Type<Service>[],
     uniqueId?: string,
-    params?: Tuple<string, Params["length"]>
+    params?: MonoTuple<string, Params["length"]>
   ) {
     super(deps, uniqueId, params);
   }
@@ -308,7 +310,7 @@ export class ShowOptionalResolver<
   public constructor(
     deps: Type<Service>[],
     uniqueId?: string,
-    params?: Tuple<string, Params["length"]>
+    params?: MonoTuple<string, Params["length"]>
   ) {
     super(deps, uniqueId, params);
   }

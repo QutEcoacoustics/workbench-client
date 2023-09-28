@@ -7,6 +7,7 @@ import {
   TimezoneInformation,
 } from "@interfaces/apiInterfaces";
 import { faker } from "@faker-js/faker";
+import { DateTime, Duration } from "luxon";
 
 const specialCharRegex = /[^\w\s]/gi;
 
@@ -53,6 +54,8 @@ export const modelData = {
   ],
   latitude: () => parseFloat(faker.address.latitude()),
   longitude: () => parseFloat(faker.address.longitude()),
+  percentage: (): number =>
+    faker.datatype.float({ min: 0, max: 1, precision: 0.0001 }),
   notes: () => randomObject(1, 5),
   offset: () =>
     faker.helpers.arrayElement(["+", "-"]) +
@@ -78,6 +81,13 @@ export const modelData = {
       "Australia/Brisbane",
       "Asia/Makassar",
     ]),
+  time: (): Duration =>
+    Duration.fromObject({
+      hours: faker.datatype.number(23),
+      minutes: faker.datatype.number(59),
+      seconds: faker.datatype.number(59),
+    }),
+  dateTime: (): DateTime => DateTime.fromJSDate(faker.date.past()),
   uuid: () => faker.datatype.uuid(),
   hexaDecimal,
   randomArray,

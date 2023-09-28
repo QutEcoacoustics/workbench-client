@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { AudioRecordingsFilterComponent } from "@shared/date-time-filter/audio-recordings-filter.component";
 import { SharedModule } from "@shared/shared.module";
 import { audioRecordingsRoutes } from "./audio-recording.routes";
 import { DownloadTableComponent } from "./components/download-table/download-table.component";
@@ -19,7 +18,6 @@ const components = [
   AudioRecordingsListComponent,
   AudioRecordingsDetailsComponent,
   DownloadAudioRecordingsComponent,
-  AudioRecordingsFilterComponent,
 ];
 
 const routes = Object.values(audioRecordingsRoutes)

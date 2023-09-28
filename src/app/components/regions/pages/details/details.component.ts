@@ -16,6 +16,7 @@ import {
 import { deleteRegionModal } from "@components/regions/regions.modals";
 import { shallowRegionsRoute } from "@components/regions/regions.routes";
 import { newPointMenuItem } from "@components/sites/points.menus";
+import { reportMenuItems } from "@components/reports/reports.menu";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -37,6 +38,7 @@ export const regionMenuItemActions = [
   editRegionMenuItem,
   audioRecordingMenuItems.list.region,
   audioRecordingMenuItems.batch.region,
+  reportMenuItems.new.region,
 ];
 
 const projectKey = "project";

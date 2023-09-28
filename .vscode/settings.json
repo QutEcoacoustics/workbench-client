@@ -1,4 +1,8 @@
 {
   "typescript.tsdk": "node_modules\\typescript\\lib",
-  "cSpell.words": ["Datatable", "Ecoacoustics"]
+  "cSpell.words": [
+    "Datatable",
+    "typeahead",
+    "Ecoacoustics"
+  ]
 }

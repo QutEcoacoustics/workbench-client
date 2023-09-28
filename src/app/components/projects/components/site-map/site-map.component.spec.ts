@@ -38,12 +38,21 @@ describe("SiteMapComponent", () => {
     defaultRegion = new Region(generateRegion());
   });
 
-  function setup(project: Project, region?: Region) {
-    spec = createComponent({
-      detectChanges: false,
-      props: { project, region },
-    });
+  function setup(): void {
+    spec = createComponent({ detectChanges: false });
     api = spec.inject(SitesService);
+  }
+
+  function setComponentProps(
+    project: Project,
+    region?: Region,
+    sitesSubset?: Site[]
+  ): void {
+    spec.setInput({
+      project,
+      region,
+      sitesSubset,
+    });
   }
 
   function generatePagedSites(
@@ -107,48 +116,54 @@ describe("SiteMapComponent", () => {
   }
 
   it("should handle error", async () => {
-    setup(defaultProject);
+    setup();
     const promise = Promise.all(interceptApiRequest([generateBawApiError()]));
     await assertMapMarkers(promise, []);
   });
 
   describe("markers", () => {
     beforeEach(() => {
-      setup(defaultProject);
+      setup();
     });
 
     it("should display map placeholder box when no sites found", async () => {
       const promise = Promise.all(interceptApiRequest([[]]));
+      setComponentProps(defaultProject);
       await assertMapMarkers(promise, []);
     });
 
     it("should display map marker for single site", async () => {
       const sites = generatePagedSites(1);
       const promise = Promise.all(interceptApiRequest(sites));
+      setComponentProps(defaultProject);
       await assertMapMarkers(promise, sites);
     });
 
     it("should display map markers for multiple sites", async () => {
       const sites = generatePagedSites(25);
       const promise = Promise.all(interceptApiRequest(sites));
+      setComponentProps(defaultProject);
       await assertMapMarkers(promise, sites);
     });
 
     it("should request all pages if number of sites exceeds api page amount", async () => {
       const sites = generatePagedSites(26);
       const promise = Promise.all(interceptApiRequest(sites));
+      setComponentProps(defaultProject);
       await assertMapMarkers(promise, sites);
     });
 
     it("should display map markers for all sites over multiple pages", async () => {
       const sites = generatePagedSites(100);
       const promise = Promise.all(interceptApiRequest(sites));
+      setComponentProps(defaultProject);
       await assertMapMarkers(promise, sites);
     });
 
     it("should display map markers as requests return", async () => {
       const sites = generatePagedSites(100);
       const promises = interceptApiRequest(sites);
+      setComponentProps(defaultProject);
 
       await assertMapMarkers(promises[0], sites.slice(0, 1));
       await assertMapMarkers(promises[1], sites.slice(0, 2));
@@ -164,7 +179,11 @@ describe("SiteMapComponent", () => {
         customLongitude: undefined,
       });
       const promise = Promise.all(interceptApiRequest(sites));
+      setComponentProps(defaultProject);
       await assertMapMarkers(promise, []);
+    });
+
+    it("should only display markers in the markersSubset", () => {
     });
   });
 
@@ -181,12 +200,13 @@ describe("SiteMapComponent", () => {
     }
 
     it("should generate filter commands with initial filter", async () => {
-      setup(defaultProject);
+      setup();
 
       const sites = generatePagedSites(1);
       const promise = Promise.all(
         interceptApiRequest(sites, [assertFilter(1, defaultProject)])
       );
+      setComponentProps(defaultProject);
 
       spec.detectChanges();
       await promise;
@@ -194,7 +214,7 @@ describe("SiteMapComponent", () => {
     });
 
     it("should generate filter commands with incremental page numbers", async () => {
-      setup(defaultProject);
+      setup();
 
       const sites = generatePagedSites(100);
       const promise = Promise.all(
@@ -203,6 +223,7 @@ describe("SiteMapComponent", () => {
           [1, 2, 3, 4].map((page) => assertFilter(page, defaultProject))
         )
       );
+      setComponentProps(defaultProject);
 
       spec.detectChanges();
       await promise;
@@ -210,7 +231,7 @@ describe("SiteMapComponent", () => {
     });
 
     it("should generate filter commands with region id", async () => {
-      setup(defaultProject, defaultRegion);
+      setup();
 
       const sites = generatePagedSites(1);
       const promise = Promise.all(
@@ -220,6 +241,7 @@ describe("SiteMapComponent", () => {
           true
         )
       );
+      setComponentProps(defaultProject, defaultRegion);
 
       spec.detectChanges();
       await promise;
