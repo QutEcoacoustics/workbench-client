@@ -202,6 +202,17 @@ describe("DatatablePaginationDirective", () => {
       flushGetModels();
       assertLoading(false);
     }));
+
+    it("should only emit one api request when loaded", fakeAsync(() => {
+      const mockGetModels = jasmine.createSpy("getModels").and.callFake(() => of(defaultModels));
+
+      generateModels();
+      setup({ filters: {}, getModels: mockGetModels });
+
+      flushGetModels();
+
+      expect(mockGetModels).toHaveBeenCalledTimes(1);
+    }));
   });
 
   describe("total", () => {

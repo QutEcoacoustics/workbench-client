@@ -48,12 +48,25 @@ class ListComponent extends PageComponent implements OnInit {
   public ngOnInit(): void {
     this.project = this.route.snapshot.data[projectKey].model;
     this.canCreateHarvestCapability = this.project.can("createHarvest").can;
-    // A BehaviorSubject is need on fitlers$ to update the ngx-datatable harvest list & models
+    // A BehaviorSubject is need on filters$ to update the ngx-datatable harvest list & models
     // The this.filters$ is triggered in abortUpload()
     this.filters$ = new BehaviorSubject({
       sorting: {
         direction: "desc",
         orderBy: "createdAt",
+      },
+      // projection allows us only to emit the fields that we want
+      // this improves performance and reduces the amount of data sent
+      projection: {
+        include: [
+          "id",
+          "projectId",
+          "name",
+          "createdAt",
+          "creatorId",
+          "streaming",
+          "status",
+        ]
       }
     });
   }

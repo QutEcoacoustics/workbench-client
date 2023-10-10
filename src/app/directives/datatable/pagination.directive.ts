@@ -123,10 +123,6 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
    * retrieved from the api request
    */
   private rows$: Observable<any[]>;
-  /**
-   * Observable tracking the total number of models for the current base filter
-   */
-  private total$: Observable<number>;
   /** Observable tracking when the table is loading new data */
   private loading$ = new BehaviorSubject<boolean>(false);
   /**
@@ -182,12 +178,6 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
       tap((): void => this.loading$.next(false))
     );
 
-    this.total$ = this.rows$.pipe(
-      // Get the total number of models for the current filter from the
-      // responses metadata
-      map((models): number => models[0]?.getMetadata().paging.total ?? 0)
-    );
-
     this.subscribeToTableOutputs();
     this.setTableInputs();
   }
@@ -234,9 +224,10 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
 
   /** Sets table inputs with latest values from observables */
   private setTableInputs(): void {
-    // Set table rows on change
+    // Set table rows and the total number of rows on change
     this.rows$.pipe(takeUntil(this.unsubscribe)).subscribe((rows): void => {
       this.datatable.rows = rows;
+      this.datatable.count = rows[0]?.getMetadata().paging.total ?? 0;
     });
 
     // Set loading state on change
@@ -245,11 +236,6 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
       .subscribe((isLoading): void => {
         this.datatable.loadingIndicator = isLoading;
       });
-
-    // Set count on change
-    this.total$.pipe(takeUntil(this.unsubscribe)).subscribe((total): void => {
-      this.datatable.count = total;
-    });
 
     // Set page number on change
     this.pageAndSort$
