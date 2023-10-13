@@ -2,6 +2,9 @@
   "typescript.tsdk": "node_modules\\typescript\\lib",
   "cSpell.words": [
     "Datatable",
+    "datatable",
+    "luxon",
+    "toastr",
     "typeahead",
     "Ecoacoustics"
   ]

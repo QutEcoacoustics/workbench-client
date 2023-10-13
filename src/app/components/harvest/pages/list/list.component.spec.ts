@@ -1,5 +1,10 @@
 import { Injector } from "@angular/core";
-import { discardPeriodicTasks, fakeAsync, flush, tick } from "@angular/core/testing";
+import {
+  discardPeriodicTasks,
+  fakeAsync,
+  flush,
+  tick,
+} from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { HARVEST } from "@baw-api/ServiceTokens";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
@@ -34,10 +39,7 @@ describe("ListComponent", () => {
     mocks: [ToastrService],
   });
 
-  function setup(
-    project: Project,
-    mockHarvest: Harvest
-  ) {
+  function setup(project: Project, mockHarvest: Harvest) {
     spec = createComponent({
       detectChanges: false,
       data: {
@@ -101,9 +103,7 @@ describe("ListComponent", () => {
     return spec.query("baw-user-link");
   }
 
-  function getElementByInnerText<T extends HTMLElement>(
-    text: string
-  ): T {
+  function getElementByInnerText<T extends HTMLElement>(text: string): T {
     return spec.debugElement.query(
       (element) => element.nativeElement.innerText === text
     )?.nativeElement as T;
@@ -133,12 +133,11 @@ describe("ListComponent", () => {
 
   it("should not show abort button when harvest cannot be aborted", () => {
     // ensure harvest status is not an abortable state
-    const unAbortableHarvest = new Harvest( generateHarvest({ status: "scanning" }) );
-
-    setup(
-      defaultProject,
-      unAbortableHarvest
+    const unAbortableHarvest = new Harvest(
+      generateHarvest({ status: "scanning" })
     );
+
+    setup(defaultProject, unAbortableHarvest);
 
     // assert abort button is not rendered
     expect(spec.query("button[name='list-abort-button']")).toBeFalsy();
@@ -176,13 +175,17 @@ describe("ListComponent", () => {
     const mockUserTimeZone = "Australia/Perth"; // +08:00 UTC
     const harvestUtcCreatedAt = DateTime.fromISO("2020-01-01T00:00:00.000Z");
     const expectedLocalCreatedAt = "2020-01-01 08:00:00";
-    defaultHarvest = new Harvest(generateHarvest({ createdAt: harvestUtcCreatedAt }));
+    defaultHarvest = new Harvest(
+      generateHarvest({ createdAt: harvestUtcCreatedAt })
+    );
 
     // To simplify tests, set the Luxon.Settings.defaultZone to a mock timezone (+08:00 UTC)
     Settings.defaultZone = mockUserTimeZone;
     setup(defaultProject, defaultHarvest);
 
-    const createdAtLabel = getElementByInnerText<HTMLSpanElement>(expectedLocalCreatedAt);
+    const createdAtLabel = getElementByInnerText<HTMLSpanElement>(
+      expectedLocalCreatedAt
+    );
     expect(createdAtLabel).toExist();
   });
 
@@ -207,5 +210,33 @@ describe("ListComponent", () => {
     const creatorColumn: HTMLElement = getCreatorColumnElement();
 
     expect(creatorColumn.innerText).toEqual(expectedUserName);
+  });
+
+  it("should use projection in the api requests to load a subset of harvest properties", () => {
+    const harvestApi = setup(defaultProject, defaultHarvest);
+
+    expect(harvestApi.filter).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        projection: {
+          include: [
+            "id",
+            "projectId",
+            "name",
+            "createdAt",
+            "creatorId",
+            "streaming",
+            "status",
+          ],
+        },
+      }),
+      defaultProject
+    );
+  });
+
+  // if this test if failing, it is either because the harvest api is not called, or called twice (or more)
+  // either in the harvest list page is faulty or our datatable pagination directive is faulty
+  it("should call the harvest api once on load", () => {
+    const harvestApi = setup(defaultProject, defaultHarvest);
+    expect(harvestApi.filter).toHaveBeenCalledTimes(1);
   });
 });
