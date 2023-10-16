@@ -2,7 +2,7 @@ import {
   ActivatedRoute,
   Params,
   Router,
-  RouterLinkWithHref,
+  RouterLink,
 } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
@@ -34,7 +34,7 @@ describe("StrongRouteDirective", () => {
   });
 
   const createRouterLink = createDirectiveFactory({
-    directive: RouterLinkWithHref,
+    directive: RouterLink,
     declarations: [StrongRouteDirective],
     imports: [RouterTestingModule],
   });
@@ -107,8 +107,8 @@ describe("StrongRouteDirective", () => {
     );
     routerLinkSpec.detectChanges();
 
-    const routerLink = routerLinkSpec.query(RouterLinkWithHref);
-    expect(routerLink).toBeInstanceOf(RouterLinkWithHref);
+    const routerLink = routerLinkSpec.query(RouterLink);
+    expect(routerLink).toBeInstanceOf(RouterLink);
     expect(routerLink.href).toContain("/home?test=value");
   });
 

@@ -67,7 +67,7 @@ describe("AdminTagGroupsEditComponent", () => {
     defaultTagGroup = new TagGroup(generateTagGroup());
   });
 
-  xdescribe("form", () => {});
+  // xdescribe("form", () => {});
 
   describe("component", () => {
     it("should create", () => {

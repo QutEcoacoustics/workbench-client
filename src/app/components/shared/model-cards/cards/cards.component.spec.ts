@@ -22,7 +22,8 @@ describe("CardsComponent", () => {
   let defaultProject: Project;
   let defaultRegion: Region;
   let spec: Spectator<CardsComponent>;
-  const options: SpectatorOptions<CardsComponent> = {
+
+  const factoryOptions: SpectatorOptions<CardsComponent> = {
     component: CardsComponent,
     declarations: [MockComponent(CardComponent)],
     imports: [
@@ -32,8 +33,8 @@ describe("CardsComponent", () => {
       MockBawApiModule,
     ],
   };
-  const createComponent = createComponentFactory(options);
-  const createHost = createHostFactory(options);
+
+  const createComponent = createComponentFactory(factoryOptions);
 
   function getCards() {
     return spec.queryAll(CardComponent);
@@ -102,6 +103,7 @@ describe("CardsComponent", () => {
 
   describe("content", () => {
     let hostSpectator: SpectatorHost<CardsComponent>;
+    const createHost = createHostFactory(factoryOptions);
 
     it("should handle content", () => {
       hostSpectator = createHost(

@@ -42,11 +42,11 @@ describe("WizardComponent", () => {
   }
 
   function getNewSitesForm() {
-    return spectator.query(mock.newSite);
+    return spectator.query(SiteNewComponent);
   }
 
   function getNewRegionsForm() {
-    return spectator.query(mock.newRegion);
+    return spectator.query(NewComponent);
   }
 
   beforeEach(() => {

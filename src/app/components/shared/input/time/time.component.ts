@@ -87,10 +87,10 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   }
 
   /** Invoked when the model has been changed */
-  public onChange: (_: Duration) => void = () => {}
+  public onChange: (_: Duration) => void = () => this.dirty = true;
 
   /** Invoked when the model has been touched */
-  public onTouched: () => void = () => {};
+  public onTouched: () => void = () => this.touched = true;
 
   /** Method that is invoked on an update of a model. */
   public updateChanges = () => this.onChange(this.value);
@@ -190,7 +190,7 @@ export class TimeComponent implements ControlValueAccessor, Validator {
       return {};
     }
 
-    if (!value) {
+    if (!isInstantiated(value) || value === "") {
       // No value provided on required input
       return this.required ? { required: true } : null;
     } else if (value.length !== this.inputLength) {

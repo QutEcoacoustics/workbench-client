@@ -93,7 +93,8 @@ const rootMappingPath = "";
 })
 export class MetadataReviewComponent
   extends withUnsubscribe()
-  implements OnInit, UnsavedInputCheckingComponent {
+  implements OnInit, UnsavedInputCheckingComponent
+{
   /** Changes to harvest have not yet been saved to the server */
   public hasUnsavedChanges: boolean;
   public newSiteMenuItem = newSiteMenuItem;
@@ -248,7 +249,7 @@ export class MetadataReviewComponent
 
   public updateHarvestWithMappingChange(): void {
     // create a new "temporary" model of the Harvest mappings
-    const newMappings = new Map(this.harvest.mappings.map(x => [x.path, x]));
+    const newMappings = new Map(this.harvest.mappings.map((x) => [x.path, x]));
 
     /**
      * Iterate through all the rows, extract folders which have mappings and
@@ -256,7 +257,6 @@ export class MetadataReviewComponent
      * this, however it's likely less performant
      */
     this.rows.forEach((row): void => {
-
       if (row.rowType === RowType.folder && isInstantiated(row.mapping)) {
         const rowMapping = row.mapping;
         const existing = newMappings.get(rowMapping.path);
@@ -266,9 +266,7 @@ export class MetadataReviewComponent
         } else {
           newMappings.set(rowMapping.path, rowMapping);
         }
-
       }
-
     });
 
     const adjustedMappings = Array.from(newMappings.values());

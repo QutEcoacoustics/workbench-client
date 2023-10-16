@@ -5,12 +5,13 @@ import {
   HttpRequest,
   HttpResponse,
 } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
 import {
   makeStateKey,
   StateKey,
   TransferState,
-} from "@angular/platform-browser";
+  Inject,
+  Injectable
+} from "@angular/core";
 import httpStatus from "http-status";
 import { Observable, of } from "rxjs";
 import { tap } from "rxjs/operators";

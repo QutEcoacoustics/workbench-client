@@ -65,6 +65,8 @@ export class TypeaheadInputComponent {
     );
   };
 
+  public templateFormatter = (item: object): string => item.toString();
+
   public onItemSelected($event: NgbTypeaheadSelectItemEvent<object>): void {
     $event.preventDefault();
     const selectedItem: object = $event.item;

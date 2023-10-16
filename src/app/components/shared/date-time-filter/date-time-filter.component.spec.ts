@@ -3,7 +3,7 @@ import {
   createRoutingFactory,
   mockProvider,
 } from "@ngneat/spectator";
-import { NgbCollapse, NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
 import { CacheModule } from "@services/cache/cache.module";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { SharedModule } from "@shared/shared.module";
@@ -74,13 +74,13 @@ describe("AudioRecordingsFilter", () => {
   const getDateToggleInput = () =>
     spectator.query<HTMLInputElement>("#date-filtering");
   const getDateInputWrapper = () =>
-    spectator.query("#date-filters-wrapper", { read: NgbCollapse });
+    spectator.query<HTMLDivElement>("#date-filters-wrapper");
   const getDateStartedAfterInput = () =>
     spectator.query<HTMLInputElement>("#date-started-after");
   const getDateFinishedBeforeInput = () =>
     spectator.query<HTMLInputElement>("#date-finished-before");
   const getTimeOfDayInputWrapper = () =>
-    spectator.query("#time-filters-wrapper", { read: NgbCollapse });
+    spectator.query<HTMLDivElement>("#time-filters-wrapper");
   const getTimeOfDayToggleInput = () =>
     spectator.query<HTMLInputElement>("#time-filtering");
   const getIgnoreDaylightSavingsInput = () =>
@@ -96,7 +96,7 @@ describe("AudioRecordingsFilter", () => {
     updateForm();
   }
 
-  function toggleTimeOfDayFilters() {
+  function toggleTimeOfDayFilters(): void {
     const input = getTimeOfDayToggleInput();
     input.click();
     input.dispatchEvent(new Event("input"));
@@ -104,7 +104,7 @@ describe("AudioRecordingsFilter", () => {
     updateForm();
   }
 
-  function toggleDateFilters() {
+  function toggleDateFilters(): void {
     const input = getDateToggleInput();
     input.click();
     input.dispatchEvent(new Event("input"));
@@ -112,12 +112,20 @@ describe("AudioRecordingsFilter", () => {
     updateForm();
   }
 
-  function toggleIgnoreDaylightSavings() {
+  function toggleIgnoreDaylightSavings(): void {
     const input = getIgnoreDaylightSavingsInput();
     input.click();
     input.dispatchEvent(new Event("input"));
 
     updateForm();
+  }
+
+  /** predicates if the element is both collapsable and collapsed */
+  function isDivCollapsed(element: HTMLDivElement): boolean {
+    const isCollapsable: boolean = element.classList.contains("collapse");
+    const isCollapsed: boolean = !element.classList.contains("show");
+
+    return isCollapsable && isCollapsed;
   }
 
   // start of assertion
@@ -128,40 +136,40 @@ describe("AudioRecordingsFilter", () => {
   describe("date filter input", () => {
     it("should initially hide date filter input", fakeAsync(() => {
       expect(getDateToggleInput()).toExist();
-      expect(getDateInputWrapper().collapsed).toBeTrue();
+      expect(isDivCollapsed(getDateInputWrapper())).toBeTrue();
     }));
 
     it("should show date filter input when the date filter checkbox is set", fakeAsync(() => {
       toggleDateFilters();
       expect(getDateToggleInput()).toBeTruthy();
-      expect(getDateInputWrapper().collapsed).toBeFalse();
+      expect(isDivCollapsed(getDateInputWrapper())).toBeFalse();
     }));
 
     it("should hide date filter input when the date filter checkbox is clicked twice", fakeAsync(() => {
       toggleDateFilters();
       toggleDateFilters();
       expect(getDateToggleInput()).toExist();
-      expect(getDateInputWrapper().collapsed).toBeTrue();
+      expect(isDivCollapsed(getDateInputWrapper())).toBeTrue();
     }));
   });
 
   describe("time filter input", () => {
     it("should initially hide time of day filters", fakeAsync(() => {
       expect(getTimeOfDayToggleInput()).toExist();
-      expect(getTimeOfDayInputWrapper().collapsed).toBeTrue();
+      expect(isDivCollapsed(getTimeOfDayInputWrapper())).toBeTrue();
     }));
 
     it("should show time of day filter input when the time of day filter checkbox is set", fakeAsync(() => {
       toggleTimeOfDayFilters();
       expect(getTimeOfDayToggleInput()).toExist();
-      expect(getTimeOfDayInputWrapper().collapsed).toBeFalse();
+      expect(isDivCollapsed(getTimeOfDayInputWrapper())).toBeFalse();
     }));
 
     it("should hide timeOfDay filter input when the time of day filter checkbox is clicked twice", fakeAsync(() => {
       toggleTimeOfDayFilters();
       toggleTimeOfDayFilters();
       expect(getTimeOfDayToggleInput()).toExist();
-      expect(getTimeOfDayInputWrapper().collapsed).toBeTrue();
+      expect(isDivCollapsed(getTimeOfDayInputWrapper())).toBeTrue();
     }));
 
     it("should initially have day light savings time enabled", fakeAsync(() => {
@@ -297,13 +305,19 @@ describe("AudioRecordingsFilter", () => {
   });
 
   describe("filters events", () => {
-    function assertLastFilterUpdate(expectedFilter: Filters<AudioRecording>): void {
+    function assertLastFilterUpdate(
+      expectedFilter: Filters<AudioRecording>
+    ): void {
       const mostRecentFilterUpdate = filterChangeSpy.calls.mostRecent().args[0];
 
       const expectedFilterSerialized = JSON.stringify(expectedFilter);
-      const mostRecentFilterUpdateSerialized = JSON.stringify(mostRecentFilterUpdate);
+      const mostRecentFilterUpdateSerialized = JSON.stringify(
+        mostRecentFilterUpdate
+      );
 
-      expect(mostRecentFilterUpdateSerialized).toEqual(expectedFilterSerialized);
+      expect(mostRecentFilterUpdateSerialized).toEqual(
+        expectedFilterSerialized
+      );
     }
 
     // date events where a filter update should not be emitted
@@ -417,7 +431,7 @@ describe("AudioRecordingsFilter", () => {
 
       toggleDateFilters();
 
-      assertLastFilterUpdate({ });
+      assertLastFilterUpdate({});
     }));
 
     // time events where a filter update should not be emitted
@@ -452,7 +466,7 @@ describe("AudioRecordingsFilter", () => {
 
       toggleTimeOfDayFilters();
 
-      assertLastFilterUpdate({ });
+      assertLastFilterUpdate({});
     }));
 
     it("should not emit time filters if the time bounds are set, but the 'Filter by time of day' checkbox is not checked", fakeAsync(() => {

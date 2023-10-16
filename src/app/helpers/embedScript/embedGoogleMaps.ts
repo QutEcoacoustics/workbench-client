@@ -61,6 +61,8 @@ export function googleMapsLoaded(): boolean {
   let isDefined = false;
   try {
     isDefined = !!google;
-  } catch (err) {}
+  } catch (err) {
+    console.error(err);
+  }
   return isDefined;
 }

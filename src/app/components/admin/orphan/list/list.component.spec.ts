@@ -49,6 +49,6 @@ describe("AdminOrphansComponent", () => {
     expect(fixture.componentInstance).toBeInstanceOf(AdminOrphansComponent);
   });
 
-  xdescribe("rows", () => {});
-  xdescribe("actions", () => {});
+  // xdescribe("rows", () => {});
+  // xdescribe("actions", () => {});
 });

@@ -183,11 +183,11 @@ describe("SiteComponent", () => {
     });
 
     it("should create google maps component", () => {
-      expect(spec.query(mockMapComponent)).toBeTruthy();
+      expect(spec.query(MapComponent)).toBeTruthy();
     });
 
     it("should create site marker", () => {
-      const maps = spec.query(mockMapComponent);
+      const maps = spec.query(MapComponent);
       expect(maps.markers.toArray()).toEqual([defaultSite.getMapMarker()]);
     });
   });

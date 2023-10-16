@@ -67,7 +67,7 @@ describe("AdminScriptsEditComponent", () => {
     defaultModel = new Script(generateScript());
   });
 
-  xdescribe("form", () => {});
+  // xdescribe("form", () => {});
 
   describe("component", () => {
     it("should create", () => {

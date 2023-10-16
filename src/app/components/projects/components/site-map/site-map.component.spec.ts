@@ -93,7 +93,7 @@ describe("SiteMapComponent", () => {
   }
 
   function getMapMarkers() {
-    return spec.query(mockMap).markers.toArray();
+    return spec.query(MapComponent).markers.toArray();
   }
 
   function interceptApiRequest(

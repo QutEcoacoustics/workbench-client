@@ -9,6 +9,7 @@ import {
   isAdminPredicate,
   isLoggedInPredicate,
   isProjectEditorPredicate,
+  isWorkInProgressPredicate,
 } from "src/app/app.menus";
 import { CommonRouteTitles } from "src/app/stringConstants";
 import {
@@ -111,8 +112,8 @@ export const uploadAnnotationsProjectMenuItem = menuRoute({
   icon: ["fas", "file-import"],
   label: "Batch Upload Annotations",
   parent: projectMenuItem,
-  // TODO Change to isProjectEditorPredicate
-  predicate: isAdminPredicate,
+  // TODO: Once functionality is implemented, this should be changed to isProjectWriterPredicate
+  predicate: isWorkInProgressPredicate,
   route: projectMenuItem.route.add("batch-annotations"),
   tooltip: () =>
     "(UNDER DEVELOPMENT) Upload multiple annotations to this project",

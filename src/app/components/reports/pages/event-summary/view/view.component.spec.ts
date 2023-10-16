@@ -2,7 +2,7 @@ import { SpectatorRouting, createRoutingFactory } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
-import { MockComponent, MockedComponent } from "ng-mocks";
+import { MockComponent } from "ng-mocks";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { generateEventSummaryReport } from "@test/fakes/EventSummaryReport";
 import { Project } from "@models/Project";
@@ -73,8 +73,8 @@ describe("ViewEventReportComponent", () => {
   const printButtonElement = (): HTMLAnchorElement =>
     spectator.query<HTMLAnchorElement>("a#print-button");
   // there are two locations in the view where the raw events can be download from in the report
-  const pointMaps = (): MockedComponent<SiteMapComponent> =>
-    spectator.query(mockSiteMap);
+  const pointMaps = (): SiteMapComponent =>
+    spectator.query(SiteMapComponent);
 
   function setPrintDialogPreference(showPrintDialog: boolean): void {
     const localStorageKey = "hidePrintModal";
@@ -147,7 +147,7 @@ describe("ViewEventReportComponent", () => {
 
   // during the prototyping phase, the point maps are not implemented
   it("should show sensor points on point maps", () => {
-    const pointMapElement: MockedComponent<SiteMapComponent> = pointMaps();
+    const pointMapElement: SiteMapComponent = pointMaps();
     expect(pointMapElement).toExist();
   });
 

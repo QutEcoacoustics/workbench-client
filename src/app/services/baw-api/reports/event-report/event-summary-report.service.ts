@@ -1,5 +1,5 @@
 import { Injectable, Type, Inject } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import {
   IdParamOptional,
   id,
@@ -266,7 +266,12 @@ class EventSummaryReportResolver extends BawResolver<
   public createProviders(
     name: string,
     resolver: Type<
-      Resolve<ResolvedModel<[EventSummaryReport, EventSummaryReportParameters]>>
+      {
+    resolve: ResolveFn<ResolvedModel<[
+        EventSummaryReport,
+        EventSummaryReportParameters
+    ]>>;
+}
     >,
     deps: Type<EventSummaryReportService>[]
   ): ResolverNames & { providers: BawProvider[] } {

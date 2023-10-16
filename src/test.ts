@@ -13,8 +13,6 @@ import { htmlMatchers } from "@test/matchers/html";
 import { injectableMatchers } from "@test/matchers/injectables";
 import { environment } from "./environments/environment";
 
-declare const require: any;
-
 environment.testing = true;
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
@@ -39,8 +37,3 @@ getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting()
 );
-
-// Then we find all the tests.
-const context = require.context("./", true, /\.spec\.ts$/);
-// And load the modules.
-context.keys().map(context);

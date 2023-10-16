@@ -1,5 +1,5 @@
 import { Injectable, Type } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Tag, TagType } from "@models/Tag";
 import { User } from "@models/User";
@@ -117,7 +117,9 @@ class TagTypeResolvers extends BawResolver<
 
   public createProviders(
     name: string,
-    resolver: Type<Resolve<ResolvedModel<TagType[]>>>,
+    resolver: Type<{
+    resolve: ResolveFn<ResolvedModel<TagType[]>>;
+}>,
     deps: Type<TagsService>[]
   ): { tagTypes: string } & {
     providers: BawProvider[];

@@ -25,7 +25,7 @@ describe("ResolverHandlerComponent", () => {
   }
 
   function assertErrorHandler(error?: BawApiError) {
-    const handler = spec.query(mockErrorHandler);
+    const handler = spec.query(ErrorHandlerComponent);
 
     if (!error) {
       expect(handler).toBeFalsy();

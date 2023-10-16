@@ -49,6 +49,6 @@ describe("AdminScriptsComponent", () => {
     expect(fixture.componentInstance).toBeInstanceOf(AdminScriptsComponent);
   });
 
-  xdescribe("rows", () => {});
-  xdescribe("actions", () => {});
+  // xdescribe("rows", () => {});
+  // xdescribe("actions", () => {});
 });

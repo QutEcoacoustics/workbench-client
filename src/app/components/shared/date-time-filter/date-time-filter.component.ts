@@ -18,7 +18,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
-import { fromJS } from "immutable";
+import { FromJS, fromJS } from "immutable";
 import { DateTime, Duration } from "luxon";
 import {
   BehaviorSubject,
@@ -62,7 +62,7 @@ export class DateTimeFilterComponent
   @Output() public modelChange = new EventEmitter<DateTimeFilterModel>();
 
   public model: DateTimeFilterModel = { ignoreDaylightSavings: true };
-  private previousFilters: Immutable.Collection<unknown, unknown>;
+  private previousFilters: FromJS<Filters<AudioRecording>>;
 
   public ngAfterViewInit(): void {
     this.form.valueChanges
@@ -101,7 +101,7 @@ export class DateTimeFilterComponent
     }
   }
 
-  private generateFilters(previousFilters: Immutable.Collection<unknown, unknown>, model: DateTimeFilterModel): [boolean, Filters] {
+  private generateFilters(previousFilters: FromJS<Filters<AudioRecording>>, model: DateTimeFilterModel): [boolean, Filters] {
     let newInnerFilters: InnerFilter<AudioRecording> = {};
 
     newInnerFilters = this.setModelFilters(newInnerFilters);

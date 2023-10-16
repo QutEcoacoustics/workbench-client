@@ -1,7 +1,7 @@
 // !Be careful with imports, resolvers are string-ly typed and can easily create
 // circular dependencies which are not detected by typescript
 import { Type } from "@angular/core";
-import type { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import type { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import type { Option, MonoTuple } from "@helpers/advancedTypes";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -66,7 +66,7 @@ export abstract class BawResolver<
     // Store reference to 'this' values before 'this' is changed inside class
     const { uniqueId, params: serviceArgs, resolverFn } = this;
 
-    class Resolver implements Resolve<ResolvedModel<OutputModel>> {
+    class Resolver  {
       public constructor(private api: Service) {}
 
       /**
@@ -139,7 +139,9 @@ export abstract class BawResolver<
    */
   public abstract createProviders(
     name: string,
-    resolver: Type<Resolve<ResolvedModel<OutputModel>>>,
+    resolver: Type<{
+    resolve: ResolveFn<ResolvedModel<OutputModel>>;
+}>,
     deps: Type<Service>[]
   ): ResolverName & { providers: BawProvider[] };
 
@@ -236,7 +238,9 @@ export class ListResolver<
 
   public createProviders(
     name: string,
-    resolver: Type<Resolve<ResolvedModel<Model[]>>>,
+    resolver: Type<{
+    resolve: ResolveFn<ResolvedModel<Model[]>>;
+}>,
     deps: Type<Service>[]
   ) {
     return {
@@ -274,7 +278,9 @@ export class ShowResolver<
 
   public createProviders(
     name: string,
-    resolver: Type<Resolve<ResolvedModel<Model>>>,
+    resolver: Type<{
+    resolve: ResolveFn<ResolvedModel<Model>>;
+}>,
     deps: Type<Service>[]
   ) {
     return {
@@ -317,7 +323,9 @@ export class ShowOptionalResolver<
 
   public createProviders(
     name: string,
-    resolver: Type<Resolve<ResolvedModel<Model>>>,
+    resolver: Type<{
+    resolve: ResolveFn<ResolvedModel<Model>>;
+}>,
     deps: Type<Service>[]
   ) {
     return {
@@ -342,7 +350,9 @@ export class ShowOptionalResolver<
  */
 export interface BawProvider {
   provide: string;
-  useClass: Type<Resolve<any>>;
+  useClass: Type<{
+    resolve: ResolveFn<any>;
+}>;
   deps: Type<any>[];
 }
 
