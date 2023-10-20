@@ -69,3 +69,21 @@ p {
     }
   }
 }
+
+// use this style class for paragraphs
+.info-text {
+  color: var(--baw-highlight-contrast);
+
+  p {
+    font-size: 1.25rem;
+  }
+
+  a {
+    color: var(--baw-highlight-contrast);
+
+    &:hover,
+    &:focus {
+      filter: brightness(70%);
+    }
+  }
+}
