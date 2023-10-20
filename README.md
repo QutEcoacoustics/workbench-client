@@ -175,3 +175,12 @@ $ docker run -p 4000:4000 -v "$(pwd)/environment.json:/environment.json" -e DEBU
 ## Licence
 
 Apache License, Version 2.0
+
+## Acknowledgements
+
+This work has been supported through several grants.
+
+The most recent of which is the ARDC Platforms project. This project is currently sponsored by the Open Ecoacoustics
+ARDC Platforms project. See [doi.org/10.47486/PL050](https://doi.org/10.47486/PL050) for more details.
+
+[![The Open Ecoacoustics Logo](./src/assets/images/logos/OpenEcoAcoustics_horizontal_rgb.jpg)](https://openecoacoustics.org/)
