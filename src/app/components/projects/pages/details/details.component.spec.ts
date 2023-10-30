@@ -229,7 +229,7 @@ describe("ProjectDetailsComponent", () => {
 
   describe("maps", () => {
     function getMap() {
-      return spectator.query(mock.map);
+      return spectator.query(SiteMapComponent);
     }
 
     it("should hide maps component when no sites exist", async () => {
@@ -291,7 +291,7 @@ describe("ProjectDetailsComponent", () => {
     }
 
     function getCards() {
-      return spectator.queryAll(mock.card);
+      return spectator.queryAll(SiteCardComponent);
     }
 
     function assertSiteCard(

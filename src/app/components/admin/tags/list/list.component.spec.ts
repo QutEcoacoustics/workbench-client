@@ -96,6 +96,6 @@ describe("AdminTagsComponent", () => {
   });
 
   // TODO Write tests
-  xdescribe("rows", () => {});
-  xdescribe("actions", () => {});
+  // xdescribe("rows", () => {});
+  // xdescribe("actions", () => {});
 });

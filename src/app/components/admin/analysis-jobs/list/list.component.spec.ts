@@ -43,6 +43,6 @@ describe("AdminAnalysisJobsComponent", () => {
   });
 
   // TODO Write Tests
-  xdescribe("rows", () => {});
-  xdescribe("actions", () => {});
+  // xdescribe("rows", () => {});
+  // xdescribe("actions", () => {});
 });

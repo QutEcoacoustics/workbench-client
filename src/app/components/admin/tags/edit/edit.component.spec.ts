@@ -81,7 +81,7 @@ describe("AdminTagsEditComponent", () => {
     ];
   });
 
-  xdescribe("form", () => {});
+  // xdescribe("form", () => {});
 
   describe("component", () => {
     it("should create", () => {

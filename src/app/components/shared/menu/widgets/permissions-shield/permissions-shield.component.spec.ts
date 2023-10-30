@@ -46,7 +46,7 @@ describe("PermissionsShieldComponent", () => {
   });
 
   function getUserBadges() {
-    return spec.queryAll(mockUserBadge);
+    return spec.queryAll(UserBadgeComponent);
   }
 
   function setup(models: ResolvedModel[]): Promise<any> {

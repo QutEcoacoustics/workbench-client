@@ -21,7 +21,7 @@ describe("AdminTagGroupsNewComponent", () => {
 
   assertPageInfo(AdminTagGroupsNewComponent, "New Tag Group")
 
-  xdescribe("form", () => {});
+  // xdescribe("form", () => {});
 
   describe("component", () => {
     beforeEach(() => {

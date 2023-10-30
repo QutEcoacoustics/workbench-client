@@ -41,15 +41,10 @@ import {
 } from "@test/fakes/MenuItem";
 import { generateUser } from "@test/fakes/User";
 import { OrderedSet } from "immutable";
-import { MockComponent, MockedComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 import { MenuButtonComponent } from "../button/button.component";
 import { MenuLinkComponent } from "../link/link.component";
 import { MenuComponent } from "./menu.component";
-
-const mock = {
-  action: MockComponent(MenuButtonComponent),
-  link: MockComponent(MenuLinkComponent),
-};
 
 @Component({
   selector: "baw-test-widget",
@@ -82,8 +77,8 @@ describe("MenuComponent", () => {
   const createComponent = createRoutingFactory({
     component: MenuComponent,
     declarations: [
-      mock.action,
-      mock.link,
+      MenuButtonComponent,
+      MenuLinkComponent,
       WidgetDirective,
       MockWidgetComponent,
       MockModalComponent,
@@ -98,21 +93,21 @@ describe("MenuComponent", () => {
   });
   const menuTypes: MenuType[] = ["action", "secondary"];
 
-  function getMenuActions(): MockedComponent<MenuButtonComponent>[] {
-    return spec.queryAll(".action", { read: mock.action });
+  function getMenuActions(): MenuButtonComponent[] {
+    return spec.queryAll(".action", { read: MenuButtonComponent });
   }
 
-  function getMenuModals(): MockedComponent<MenuButtonComponent>[] {
-    return spec.queryAll(".button", { read: mock.action });
+  function getMenuModals(): MenuButtonComponent[] {
+    return spec.queryAll(".button", { read: MenuButtonComponent });
   }
 
-  function getMenuLinks(): MockedComponent<MenuLinkComponent>[] {
-    return spec.queryAll(mock.link).filter((item) => isExternalLink(item.link));
+  function getMenuLinks(): MenuLinkComponent[] {
+    return spec.queryAll(MenuLinkComponent).filter((item) => isExternalLink(item.link));
   }
 
-  function getMenuRoutes(): MockedComponent<MenuLinkComponent>[] {
+  function getMenuRoutes(): MenuLinkComponent[] {
     return spec
-      .queryAll(mock.link)
+      .queryAll(MenuLinkComponent)
       .filter((item) => isInternalRoute(item.link));
   }
 

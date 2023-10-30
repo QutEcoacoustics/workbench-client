@@ -1,10 +1,10 @@
 import { LocationStrategy } from "@angular/common";
-import { Directive, Input, OnInit } from "@angular/core";
+import { Directive, ElementRef, Input, OnInit, Renderer2 } from "@angular/core";
 import {
   ActivatedRoute,
   Params,
   Router,
-  RouterLinkWithHref,
+  RouterLink,
   UrlTree,
 } from "@angular/router";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
@@ -19,7 +19,7 @@ import { map, takeUntil, tap } from "rxjs/operators";
   selector: "a[strongRoute]",
 })
 export class StrongRouteDirective
-  extends withUnsubscribe(RouterLinkWithHref)
+  extends withUnsubscribe(RouterLink)
   implements OnInit
 {
   @Input() public strongRoute: StrongRoute;
@@ -32,7 +32,7 @@ export class StrongRouteDirective
    * Additional query parameters to apply to the StrongRoute. By default, all
    * of the angular route parameters are already given to the StrongRoute.
    */
-  @Input() public queryParams: Params;
+  @Input() public declare queryParams: Params;
 
   private routeState = {
     resolvedModels: {} as ResolvedModelList,
@@ -43,11 +43,15 @@ export class StrongRouteDirective
 
   public constructor(
     private _router: Router,
+    _element: ElementRef,
+    _renderer: Renderer2,
     _route: ActivatedRoute,
     private sharedRoute: SharedActivatedRouteService,
     _locationStrategy: LocationStrategy
   ) {
-    super(_router, _route, _locationStrategy);
+    // the `null` value in this constructor is used for the tabIndexAttribute
+    // since this is a generic directive, tab indexes should be set by the parent anchor element
+    super(_router, _route, null, _renderer, _element, _locationStrategy);
   }
 
   public ngOnInit(): void {
@@ -83,13 +87,12 @@ export class StrongRouteDirective
         next: () => {
           // Call change detection manually because the above observable does not
           // trigger the change detection. This is calling this function:
-          // eslint-disable-next-line max-len
-          // https://github.com/angular/angular/blob/e1e440d65af928e569533bb1725eefcdf0794ebf/packages/router/src/directives/router_link.ts#L417-L421
-          (this as RouterLinkWithHref)["updateTargetUrlAndHref"]();
+          // https://github.com/angular/angular/blob/16.0.x/packages/router/src/directives/router_link.ts#L328-L348
+          (this as RouterLink)["updateHref"]();
         },
       });
 
-    // Just in case angular updates the RouterLinkWithHref one day
+    // Just in case angular updates the RouterLink one day
     super.ngOnInit?.();
   }
 

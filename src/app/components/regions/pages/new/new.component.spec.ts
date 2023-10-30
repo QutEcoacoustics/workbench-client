@@ -162,7 +162,7 @@ describe("routing and resolvers", () => {
 
   function setup(path) {
     // boiler plate adapted from https://ng-mocks.sudo.eu/guides/route
-    const fixture = MockRender(RouterOutlet);
+    const fixture = MockRender(RouterOutlet, {});
     const router = fixture.point.injector.get(Router);
     const location = fixture.point.injector.get(Location);
 

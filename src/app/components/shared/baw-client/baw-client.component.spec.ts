@@ -15,7 +15,7 @@ import { BawClientComponent } from "./baw-client.component";
 
 // TODO Add tests for components page input if/when used
 describe("BawClientComponent", () => {
-  let loadClientTimer: NodeJS.Timer;
+  let loadClientTimer: NodeJS.Timeout;
   let events: BehaviorSubject<NavigationEnd>;
   let config: ConfigService;
   let sanitizer: DomSanitizer;

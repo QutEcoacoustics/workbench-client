@@ -35,7 +35,7 @@ describe("ShallowHarvestsService", () => {
   );
 
   // TODO Implement tests
-  xdescribe("transitionState", () => {});
+  // xdescribe("transitionState", () => {});
 
-  xdescribe("updateMappings", () => {});
+  // xdescribe("updateMappings", () => {});
 });

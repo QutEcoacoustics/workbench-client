@@ -19,7 +19,7 @@
 
         <ng-container *ngIf="resultTemplate; else defaultTemplate">
           <ng-container
-            [ngTemplateOutletContext]="{ result: item }"
+            [ngTemplateOutletContext]="{ result: item, term: inputModel, formatter: templateFormatter }"
             [ngTemplateOutlet]="resultTemplate"
           ></ng-container>
         </ng-container>

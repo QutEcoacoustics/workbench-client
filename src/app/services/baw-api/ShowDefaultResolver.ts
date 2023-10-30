@@ -1,5 +1,5 @@
 import { Type } from "@angular/core";
-import { Resolve } from "@angular/router";
+import { ResolveFn } from "@angular/router";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
@@ -30,7 +30,9 @@ export class ShowDefaultResolver<
 
   public createProviders(
     name: string,
-    resolver: Type<Resolve<ResolvedModel<Model>>>,
+    resolver: Type<{
+    resolve: ResolveFn<ResolvedModel<Model>>;
+}>,
     deps: Type<Service>[]
   ) {
     return {

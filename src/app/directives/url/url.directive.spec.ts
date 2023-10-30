@@ -2,7 +2,7 @@ import {
   ActivatedRoute,
   Params,
   Router,
-  RouterLinkWithHref,
+  RouterLink,
 } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
@@ -20,7 +20,7 @@ describe("UrlDirective", () => {
   });
 
   const createRouterLink = createDirectiveFactory({
-    directive: RouterLinkWithHref,
+    directive: RouterLink,
     declarations: [StrongRouteDirective],
     imports: [RouterTestingModule],
   });
@@ -55,8 +55,8 @@ describe("UrlDirective", () => {
     );
     spectator.detectChanges();
 
-    const routerLink = spectator.query(RouterLinkWithHref);
-    expect(routerLink).toBeInstanceOf(RouterLinkWithHref);
+    const routerLink = spectator.query(RouterLink);
+    expect(routerLink).toBeInstanceOf(RouterLink);
     expect(routerLink.href).toContain("/home?test=value");
   });
 

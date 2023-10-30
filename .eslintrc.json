@@ -1,21 +1,27 @@
 {
-  "ignorePatterns": ["projects/**/*"],
+  "ignorePatterns": [
+    "projects/**/*"
+  ],
   "overrides": [
     {
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:@angular-eslint/ng-cli-compat",
-        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
+        "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
         "plugin:import/errors",
         "plugin:import/warnings",
         "plugin:import/typescript"
       ],
-      "files": ["*.ts"],
+      "files": [
+        "*.ts"
+      ],
       "parserOptions": {
         "createDefaultProgram": true,
-        "project": ["tsconfig.json", "tsconfig.e2e.json"]
+        "project": [
+          "tsconfig.json",
+          "tsconfig.e2e.json"
+        ]
       },
       "plugins": [
         "eslint-plugin-rxjs",
@@ -24,13 +30,31 @@
         "import"
       ],
       "rules": {
-        "no-console": ["error", { "allow": ["warn", "error"] }],
+        // TODO: we should consider enabling these rules in the future as part of https://github.com/QutEcoacoustics/workbench-client/issues/2066
+        // they are disabled right now because we used to use the ng-cli-compat config which had these rules disabled
+        // since upgrading to the recommended angular eslint config, we have not had time to fix all the lint errors
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/prefer-as-const": "off",
+        // beginning of explicitly enabled rules
+        "no-console": [
+          "error",
+          {
+            "allow": [
+              "warn",
+              "error"
+            ]
+          }
+        ],
         "import/no-unresolved": "off",
         "import/no-deprecated": "error",
         "@angular-eslint/component-selector": [
           "error",
           {
-            "prefix": ["baw"],
+            "prefix": [
+              "baw"
+            ],
             "style": "kebab-case",
             "type": "element"
           }
@@ -38,7 +62,9 @@
         "@angular-eslint/directive-selector": [
           "error",
           {
-            "prefix": ["baw"],
+            "prefix": [
+              "baw"
+            ],
             "style": "camelCase",
             "type": "attribute"
           }
@@ -68,7 +94,9 @@
           }
         ],
         "@typescript-eslint/member-ordering": "off",
-        "@typescript-eslint/no-shadow": ["error"],
+        "@typescript-eslint/no-shadow": [
+          "error"
+        ],
         "@typescript-eslint/no-unused-vars": [
           "error",
           {
@@ -83,10 +111,21 @@
             "avoidEscape": true
           }
         ],
-        "@typescript-eslint/semi": ["off", null],
-        "arrow-parens": ["off", "always"],
-        "brace-style": ["off"],
-        "eqeqeq": ["error", "always"],
+        "@typescript-eslint/semi": [
+          "off",
+          null
+        ],
+        "arrow-parens": [
+          "off",
+          "always"
+        ],
+        "brace-style": [
+          "off"
+        ],
+        "eqeqeq": [
+          "error",
+          "always"
+        ],
         "guard-for-in": "off",
         "import/order": "error",
         "no-implicit-globals": "error",
@@ -115,8 +154,12 @@
       }
     },
     {
-      "extends": ["plugin:@angular-eslint/template/recommended"],
-      "files": ["*.html"],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ],
+      "files": [
+        "*.html"
+      ],
       "rules": {}
     }
   ],

@@ -5,12 +5,13 @@ import { MockModel } from "./mock/baseApiMock.service";
 import { hasResolvedSuccessfully, retrieveResolvers } from "./resolver-common";
 
 // TODO Write unit tests
-xdescribe("API Resolvers", () => {
-  xdescribe("BawResolvers", () => {});
-  xdescribe("Resolvers", () => {});
-  xdescribe("ListResolver", () => {});
-  xdescribe("ShowResolver", () => {});
-});
+//! I've commented these tests out because for some unknown reason, it breaks CI
+// xdescribe("API Resolvers", () => {
+//   xdescribe("BawResolvers", () => {});
+//   xdescribe("Resolvers", () => {});
+//   xdescribe("ListResolver", () => {});
+//   xdescribe("ShowResolver", () => {});
+// });
 
 describe("hasResolvedSuccessfully", () => {
   it("should return true if empty object", () => {

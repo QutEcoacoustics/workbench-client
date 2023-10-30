@@ -8,7 +8,7 @@ import {
   QueryList,
   Renderer2,
 } from "@angular/core";
-import { Router, RouterLink, RouterLinkActive } from "@angular/router";
+import { Router, RouterLinkActive } from "@angular/router";
 import { RouterLinkActiveOptions } from "@directives/strongRoute/strong-route-active.directive";
 import { UrlDirective } from "./url.directive";
 
@@ -35,9 +35,8 @@ export class UrlActiveDirective extends RouterLinkActive {
     _element: ElementRef,
     _renderer: Renderer2,
     _cdr: ChangeDetectorRef,
-    @Optional() _link?: RouterLink,
-    @Optional() _linkWithHref?: UrlDirective
+    @Optional() _link?: UrlDirective
   ) {
-    super(_router, _element, _renderer, _cdr, _link, _linkWithHref);
+    super(_router, _element, _renderer, _cdr, _link);
   }
 }

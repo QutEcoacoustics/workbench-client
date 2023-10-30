@@ -263,11 +263,11 @@ describe("StatisticsComponent", () => {
 
   describe("recent models", () => {
     function getRecentAnnotations() {
-      return spec.query(mock.recentAnnotationsComponent);
+      return spec.query(RecentAnnotationsComponent);
     }
 
     function getRecentAudioRecordings() {
-      return spec.query(mock.recentAudioRecordingsComponent);
+      return spec.query(RecentAudioRecordingsComponent);
     }
 
     it("should display recent annotations", async () => {

@@ -12,7 +12,7 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
 import { MapComponent } from "@shared/map/map.component";
 import { modelData } from "@test/helpers/faker";
-import { MockComponent, MockedComponent } from "ng-mocks";
+import { MockComponent } from "ng-mocks";
 import { formlyConfig } from "./custom-inputs.module";
 import { LocationInputComponent } from "./location-input.component";
 
@@ -91,7 +91,7 @@ describe("FormlyLocationInput", () => {
   }
 
   function assertMapModelCoordinates(
-    map: MockedComponent<MapComponent>,
+    map: MapComponent,
     longitude: number,
     latitude: number
   ) {
@@ -119,7 +119,7 @@ describe("FormlyLocationInput", () => {
 
   it("should update the marker model if the location is updated through the input field/form", () => {
     setup();
-    const map = spectator.query(mockMapComponent);
+    const map = spectator.query(MapComponent);
     const defaultLongitudeValue = modelData.longitude();
     const defaultLatitudeValue = modelData.latitude();
 
@@ -138,7 +138,7 @@ describe("FormlyLocationInput", () => {
 
   it("should update the marker model if the marker is dragged", () => {
     setup();
-    const map = spectator.query(mockMapComponent);
+    const map = spectator.query(MapComponent);
     const defaultLongitudeValue = modelData.longitude();
     const defaultLatitudeValue = modelData.latitude();
 

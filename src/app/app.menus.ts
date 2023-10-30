@@ -1,5 +1,6 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { IPageInfo } from "@helpers/page/pageInfo";
+import { environment } from "src/environments/environment";
 import { Project } from "./models/Project";
 import { User } from "./models/User";
 import { retrieveResolvedModel } from "./services/baw-api/resolver-common";
@@ -41,9 +42,32 @@ export const isProjectEditorPredicate = (
 };
 
 /**
+ * Returns true only if user is an admin or user has write access to the project
+ *
+ * @param user Session User Data
+ * @param data Page Data
+ */
+export const isProjectWriterPredicate = (
+  user: User,
+  data: IPageInfo
+): boolean => {
+  const project = retrieveResolvedModel(data, Project);
+  return isAdminPredicate(user) || !!project?.canContribute;
+};
+
+/**
  * Returns true only if user is an admin
  *
  * @param user Session User Data
  */
 export const isAdminPredicate = (user: User): boolean =>
   isLoggedInPredicate(user) && user.isAdmin;
+
+/**
+ * Returns true only if the user is an admin and is not in a production environment
+ * This predicate exists so that we can implement work in progress menu items
+ *
+ * @param user User session data. This will be used to check if the user is an admin
+ */
+export const isWorkInProgressPredicate = (user: User): boolean =>
+  environment.production && isAdminPredicate(user);

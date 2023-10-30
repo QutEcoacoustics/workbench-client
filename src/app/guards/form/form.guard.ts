@@ -5,7 +5,7 @@ import {
   Type,
   ViewChildren,
 } from "@angular/core";
-import { CanDeactivate } from "@angular/router";
+
 import { FormComponent } from "@shared/form/form.component";
 
 /**
@@ -54,7 +54,7 @@ export function withFormCheck<T extends Type<any>>(base: T = class {} as any) {
  * modified by the user in any way.
  */
 @Injectable()
-export class FormTouchedGuard implements CanDeactivate<FormCheckingComponent> {
+export class FormTouchedGuard  {
   @ViewChildren(FormComponent) public appForms: QueryList<FormComponent>;
 
   public canDeactivate(component: FormCheckingComponent): boolean {

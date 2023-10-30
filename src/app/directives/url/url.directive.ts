@@ -1,26 +1,30 @@
 import { LocationStrategy } from "@angular/common";
-import { Directive, Input } from "@angular/core";
+import { Directive, ElementRef, Input, Renderer2 } from "@angular/core";
 import {
   ActivatedRoute,
   DefaultUrlSerializer,
   Params,
   Router,
-  RouterLinkWithHref,
+  RouterLink,
   UrlTree,
 } from "@angular/router";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 
 @Directive({ selector: "a[bawUrl]" })
-export class UrlDirective extends withUnsubscribe(RouterLinkWithHref) {
+export class UrlDirective extends withUnsubscribe(RouterLink) {
   @Input() public bawUrl: string;
   @Input() public queryParams: Params;
 
   public constructor(
+    _element: ElementRef,
+    _renderer: Renderer2,
     router: Router,
     route: ActivatedRoute,
-    locationStrategy: LocationStrategy
+    locationStrategy: LocationStrategy,
   ) {
-    super(router, route, locationStrategy);
+    // the `null` value in this constructor is used for the tabIndexAttribute
+    // since this is a generic directive, tab indexes should be set by the parent anchor element
+    super(router, route, null, _renderer, _element, locationStrategy);
   }
 
   public get urlTree(): UrlTree {
