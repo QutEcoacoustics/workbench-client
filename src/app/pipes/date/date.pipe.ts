@@ -1,4 +1,3 @@
-import { DatePipe } from "@angular/common";
 import { Pipe, PipeTransform } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { DateTime } from "luxon";
@@ -9,19 +8,21 @@ import { DateTime } from "luxon";
 // having to cast to a JavaScript Date object in each component
 // using this pipe also allows us to standardise the date format throughout the client
 @Pipe({
-  name: "dateTime"
+  name: "dateTime",
 })
 export class DateTimePipe implements PipeTransform {
-  public constructor(
-    private angularDatePipe: DatePipe
-  ) {}
+  public constructor() {}
 
-  public transform(value?: DateTime): string {
+  public transform(value?: DateTime, includeTime = false, localTime = false): string {
     if (!isInstantiated(value)) {
       return "";
     }
 
     const dateFormat = "yyyy-MM-dd";
-    return this.angularDatePipe.transform(value.toJSDate(), dateFormat);
+    const dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
+    const localizedDate = localTime ? value.toLocal() : value;
+
+    return localizedDate.toFormat(includeTime ? dateTimeFormat : dateFormat);
   }
 }

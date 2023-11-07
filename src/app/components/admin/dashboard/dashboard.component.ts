@@ -8,6 +8,7 @@ import {
   adminDashboardMenuItem,
   adminJobStatusMenuItem,
   adminThemeMenuItem,
+  adminUploadsMenuItem,
   adminUserListMenuItem,
 } from "../admin.menus";
 import { adminOrphansMenuItem } from "../orphan/orphans.menus";
@@ -27,6 +28,7 @@ export const adminMenuItemActions = [
   adminTagsMenuItem,
   adminThemeMenuItem,
   adminUserListMenuItem,
+  adminUploadsMenuItem,
 ];
 
 @Component({
