@@ -12,6 +12,7 @@ import { TagGroupsModule } from "./tag-group/tag-groups.module";
 import { TagsModule } from "./tags/tags.module";
 import { AdminThemeTemplateComponent } from "./theme-template/theme-template.component";
 import { AdminUserListComponent } from "./users/user.component";
+import { AllUploadsComponent } from "./all-uploads/all-uploads.component";
 
 const modules = [
   AnalysisJobsModule,
@@ -25,6 +26,7 @@ const components = [
   AdminDashboardComponent,
   AdminUserListComponent,
   AdminThemeTemplateComponent,
+  AllUploadsComponent,
 ];
 const routes = adminRoute.compileRoutes(getRouteConfigForPage);
 

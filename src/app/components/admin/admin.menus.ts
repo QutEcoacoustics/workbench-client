@@ -59,4 +59,14 @@ export const adminThemeMenuItem = menuRoute({
   route: adminRoute.add("theme"),
   tooltip: () => "View and experiment with website theme",
   parent: adminDashboardMenuItem,
+  predicate: isAdminPredicate,
+});
+
+export const adminUploadsMenuItem = menuRoute({
+  icon: ["fas", "cloud"],
+  label: "All Recording Uploads",
+  route: adminRoute.add("all_uploads"),
+  tooltip: () => "View all uploads",
+  parent: adminDashboardMenuItem,
+  predicate: isAdminPredicate,
 });

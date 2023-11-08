@@ -21,6 +21,7 @@ import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { NgxCaptchaModule } from "ngx-captcha";
 import { ToastrModule } from "ngx-toastr";
 import { DirectivesModule } from "src/app/directives/directives.module";
+import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { AnnotationDownloadComponent } from "./annotation-download/annotation-download.component";
 import { BawClientModule } from "./baw-client/baw-client.module";
 import { BreadcrumbModule } from "./breadcrumb/breadcrumb.module";
@@ -65,6 +66,9 @@ export const sharedComponents = [
   TypeaheadInputComponent,
   ChartComponent,
   InlineListComponent,
+
+  // modals
+  ConfirmationComponent,
 ];
 
 export const internalComponents = [];

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Filters } from "@baw-api/baw-api.service";
-import { HarvestsService } from "@baw-api/harvest/harvest.service";
+import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import {
@@ -16,12 +16,7 @@ import { List } from "immutable";
 import { DateTime } from "luxon";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import {
-  BehaviorSubject,
-  catchError,
-  takeUntil,
-  throwError
-} from "rxjs";
+import { BehaviorSubject, catchError, takeUntil, throwError } from "rxjs";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 
 export const harvestsMenuItemActions = [newHarvestMenuItem];
@@ -33,21 +28,31 @@ const projectKey = "project";
 })
 class ListComponent extends PageComponent implements OnInit {
   public contactUs = contactUsMenuItem;
-  public project: Project;
   public filters$: BehaviorSubject<Filters<Harvest>>;
   public canCreateHarvestCapability: boolean;
 
   public constructor(
     public modals: NgbModal,
-    private harvestsApi: HarvestsService,
+    private harvestsApi: ShallowHarvestsService,
     private route: ActivatedRoute
   ) {
     super();
   }
 
+  // this is in a getter so that we can override it in the AllUploadsComponent
+  public get project(): Project {
+    return this.route.snapshot.data[projectKey].model;
+  }
+
   public ngOnInit(): void {
-    this.project = this.route.snapshot.data[projectKey].model;
-    this.canCreateHarvestCapability = this.project.can("createHarvest").can;
+    this.canCreateHarvestCapability = this.project?.can("createHarvest")?.can;
+
+    // we cannot use the project.id directly in the filter because
+    // if the project is null, then the filter will be { projectId: null }
+    // this will cause nothing to return because every harvest should have a projectId
+    const filterByProject: Filters<Harvest> = { filter: { projectId: { eq: this.project?.id } } };
+    const projectScopeFilter: Filters<Harvest> = this.project ? filterByProject : {};
+
     // A BehaviorSubject is need on filters$ to update the ngx-datatable harvest list & models
     // The this.filters$ is triggered in abortUpload()
     this.filters$ = new BehaviorSubject({
@@ -66,8 +71,9 @@ class ListComponent extends PageComponent implements OnInit {
           "creatorId",
           "streaming",
           "status",
-        ]
-      }
+        ],
+      },
+      ...projectScopeFilter,
     });
   }
 
@@ -98,7 +104,7 @@ class ListComponent extends PageComponent implements OnInit {
   }
 
   public getModels = (filters: Filters<Harvest>) =>
-    this.harvestsApi.filter(filters, this.project);
+    this.harvestsApi.filter(filters);
 
   public asHarvest(model: any): Harvest {
     return model;

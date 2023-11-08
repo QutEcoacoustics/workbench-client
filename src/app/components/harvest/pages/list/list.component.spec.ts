@@ -6,7 +6,7 @@ import {
   tick,
 } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { HARVEST } from "@baw-api/ServiceTokens";
+import { SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
@@ -39,7 +39,7 @@ describe("ListComponent", () => {
     mocks: [ToastrService],
   });
 
-  function setup(project: Project, mockHarvest: Harvest) {
+  function setup(project: Project | null, mockHarvest: Harvest) {
     spec = createComponent({
       detectChanges: false,
       data: {
@@ -48,16 +48,25 @@ describe("ListComponent", () => {
     });
 
     const injector = spec.inject(Injector);
-    project["injector"] = injector;
+
+    if (project) {
+      project["injector"] = injector;
+    }
+
     mockHarvest["injector"] = injector;
 
-    const mockHarvestApi = spec.inject(HARVEST.token);
+    spyOnProperty(spec.component, "project").and.callFake(() => project);
+
+    const mockHarvestApi = spec.inject(SHALLOW_HARVEST.token);
     mockHarvest.addMetadata({
       paging: { items: 1, page: 0, total: 1, maxPage: 5 },
     });
 
     // since the harvest creator is a resolved model, we need to mock the creator property
     spyOnProperty(mockHarvest, "creator").and.callFake(() => defaultUser);
+
+    const mockHarvestProject: Project = project ? project : new Project(generateProject());
+    spyOnProperty(mockHarvest, "project").and.callFake(() => mockHarvestProject);
 
     // inject the NgbModal service so that we can
     // dismiss all modals at the end of every test
@@ -124,7 +133,7 @@ describe("ListComponent", () => {
     Settings.defaultZone = null;
   });
 
-  assertPageInfo(ListComponent, "Recording Uploads");
+  assertPageInfo(ListComponent, ["Recording Uploads", "All Recording Uploads"]);
 
   it("should create", () => {
     setup(defaultProject, defaultHarvest);
@@ -166,7 +175,10 @@ describe("ListComponent", () => {
     getModalNextButton().click();
     tick();
 
-    expect(harvestApi.transitionStatus).toHaveBeenCalledWith(defaultHarvest, "complete");
+    expect(harvestApi.transitionStatus).toHaveBeenCalledWith(
+      defaultHarvest,
+      "complete"
+    );
     discardPeriodicTasks();
     flush();
   }));
@@ -229,7 +241,6 @@ describe("ListComponent", () => {
           ],
         },
       }),
-      defaultProject
     );
   });
 
@@ -238,5 +249,46 @@ describe("ListComponent", () => {
   it("should call the harvest api once on load", () => {
     const harvestApi = setup(defaultProject, defaultHarvest);
     expect(harvestApi.filter).toHaveBeenCalledTimes(1);
+  });
+
+  it("should make the correct api calls for a harvest list scoped to a project", () => {
+    const harvestApi = setup(defaultProject, defaultHarvest);
+    expect(harvestApi.filter).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        filter: {
+          projectId: {
+            eq: defaultProject.id,
+          },
+        },
+      }),
+    );
+  });
+
+  it("should make the correct api calls for an unscoped harvest list", () => {
+    // to unscope the harvest list, we return `null` from the project getter
+    const harvestApi = setup(null, defaultHarvest);
+    expect(harvestApi.filter).not.toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        filter: jasmine.any(Object),
+      })
+    );
+  });
+
+  it("should not display the harvest project name in the project column if the harvest list is scoped to a project", () => {
+    setup(defaultProject, defaultHarvest);
+    const projectColumnHeader =
+      getElementByInnerText<HTMLTableCellElement>("Project");
+    expect(projectColumnHeader).not.toExist();
+  });
+
+  it("should display the harvest project name in the project column if the harvest list is not scoped to a project", () => {
+    setup(null, defaultHarvest);
+
+    const expectedProject: Project = defaultHarvest.project;
+    const expectedProjectName: string = expectedProject.name;
+
+    const projectNameColumnValue: HTMLTableCellElement = getElementByInnerText(expectedProjectName);
+
+    expect(projectNameColumnValue).toExist();
   });
 });
