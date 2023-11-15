@@ -105,8 +105,12 @@ export class LocationInputComponent extends FieldType implements OnInit {
       latitude: this.latitude,
       longitude: this.longitude,
     });
+
     this.model["latitude"] = this.latitude;
     this.model["longitude"] = this.longitude;
+    this.model["customLatitude"] = this.latitude;
+    this.model["customLongitude"] = this.longitude;
+
     this.setMarker(this.latitude, this.longitude);
   }
 

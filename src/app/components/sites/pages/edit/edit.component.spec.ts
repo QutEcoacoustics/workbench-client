@@ -23,6 +23,8 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
+import { MockComponent } from "ng-mocks";
+import { MapComponent } from "@shared/map/map.component";
 import pointSchema from "../../point.base.json";
 import siteSchema from "../../site.base.json";
 import { SiteEditComponent } from "./edit.component";
@@ -32,7 +34,7 @@ describe("SiteEditComponent", () => {
   const createComponent = createRoutingFactory({
     component: SiteEditComponent,
     imports: [...testFormImports, MockBawApiModule],
-    declarations: [FormComponent],
+    declarations: [FormComponent, MockComponent(MapComponent)],
     mocks: [ToastrService],
     stubsEnabled: true,
   });
@@ -86,7 +88,7 @@ describe("SiteEditComponent", () => {
     let defaultRegion: Region;
     let defaultSite: Site;
 
-    assertPageInfo(SiteEditComponent, "Edit")
+    assertPageInfo(SiteEditComponent, "Edit");
 
     function setup(
       project: Errorable<Project>,
@@ -116,6 +118,11 @@ describe("SiteEditComponent", () => {
       api = spec.inject(SitesService);
       spec.detectChanges();
     }
+
+    const longitudeInputElement = (): HTMLInputElement =>
+      spec.query<HTMLInputElement>("#longitude");
+    const latitudeInputElement = (): HTMLInputElement =>
+      spec.query<HTMLInputElement>("#latitude");
 
     [true, false].forEach((withRegion) => {
       describe(withRegion ? "withRegion" : "withoutRegion", () => {
@@ -169,6 +176,28 @@ describe("SiteEditComponent", () => {
           spec.component.submit({});
           expect(spec.router.navigateByUrl).toHaveBeenCalledWith(
             site.getViewUrl(defaultProject)
+          );
+        });
+
+        it("should handle being modified to have a null location", () => {
+          setup(defaultProject, defaultSite, defaultRegion);
+          api.update.and.callFake(() => new Subject());
+
+          // by setting longitude and latitude to empty strings, we should see the model set location properties to null
+          const longitudeInput = longitudeInputElement();
+          const latitudeInput = latitudeInputElement();
+
+          spec.typeInElement("", longitudeInput);
+          spec.typeInElement("", latitudeInput);
+          spec.detectChanges();
+
+          spec.component.submit(spec.component.model);
+          expect(api.update).toHaveBeenCalledWith(
+            jasmine.objectContaining({
+              longitude: null,
+              latitude: null,
+            }),
+            defaultProject
           );
         });
       });
