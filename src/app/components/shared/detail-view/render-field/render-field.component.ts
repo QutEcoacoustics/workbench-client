@@ -9,7 +9,6 @@ import {
   toRelative,
 } from "@interfaces/apiInterfaces";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
-import { Site } from "@models/Site";
 import { AbstractModelWithSite } from "@shared/timezone/timezone.component";
 import { DateTime, Duration } from "luxon";
 import { Observable } from "rxjs";
@@ -69,11 +68,11 @@ type FieldTypes =
 
     <!-- Display date -->
     <dl *ngIf="isDateField(field)">
-      <baw-timezone
+      <baw-date
         id="timezone"
         [dateTime]="field.date"
         [site]="model.site"
-      ></baw-timezone>
+      ></baw-date>
     </dl>
 
     <!-- Display code/objects -->
@@ -245,7 +244,6 @@ export class RenderFieldComponent
 
     try {
       this.display = JSON.stringify(value, null, 4);
-      this.styling = FieldStyling.code;
     } catch (err) {
       this.setError();
     }

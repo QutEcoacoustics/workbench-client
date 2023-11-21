@@ -1,10 +1,8 @@
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { ImageUrl, toRelative } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "@models/AbstractModel";
-import { Site } from "@models/Site";
 import { AbstractModelWithSite } from "@shared/timezone/timezone.component";
 import { DateTime, Duration } from "luxon";
-import { assertImage, assertTooltip } from "./html";
+import { assertTooltip } from "./html";
 
 /**
  * Find a label from a list of detail view items
@@ -101,7 +99,7 @@ function assertDateTime(
   view: HTMLDListElement,
   value: { model?: AbstractModelWithSite; dateTime: DateTime }
 ) {
-  const timezone: HTMLElement = view.querySelector("baw-timezone");
+  const timezone: HTMLElement = view.querySelector("baw-date");
   expect(timezone).toHaveText(value.dateTime.toFormat("yyyy-LL-dd HH:mm"));
 
   // Validate model was passed through

@@ -8,7 +8,7 @@ import {
 import { Site } from "@models/Site";
 
 @Component({
-  selector: "baw-timezone",
+  selector: "baw-date",
   template: `
     <span [ngbTooltip]="timezone">
       {{ formattedDate }}

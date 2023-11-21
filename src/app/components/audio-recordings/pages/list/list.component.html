@@ -25,10 +25,10 @@
   >
     <ngx-datatable-column name="Recorded">
       <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        <baw-timezone
+        <baw-date
           [dateTime]="value.recordedDate"
           [site]="value.site"
-        ></baw-timezone>
+        ></baw-date>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Duration"> </ngx-datatable-column>
