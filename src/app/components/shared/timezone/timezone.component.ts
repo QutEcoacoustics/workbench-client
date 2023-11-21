@@ -39,7 +39,7 @@ export class TimezoneComponent implements OnChanges {
     }
 
     if (isUnresolvedModel(this.site)) {
-      this.timezone = "loading, hover over text again to refresh";
+      this.timezone = "loading...";
       this.formattedDate = this.dateFormat(
         this.dateTime.setZone(this.timezone)
       );
