@@ -12,10 +12,13 @@ import { computedStyleMatchers } from "@test/matchers/computedStyle";
 import { htmlMatchers } from "@test/matchers/html";
 import { injectableMatchers } from "@test/matchers/injectables";
 import { environment } from "./environments/environment";
+import { applyMonkeyPatches } from "./patches/patches";
 
 environment.testing = true;
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+
+applyMonkeyPatches();
 
 beforeEach(function () {
   // Load matchers into jasmine

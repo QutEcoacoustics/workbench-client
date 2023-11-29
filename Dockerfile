@@ -51,7 +51,7 @@ RUN apk add wget ca-certificates
 # drop privileges
 USER node
 
-RUN mkdir -p  /home/node/workbench-client
+RUN mkdir -p /home/node/workbench-client
 WORKDIR /home/node/workbench-client
 
 COPY --from=BUILD_IMAGE /home/node/workbench-client/dist ./dist

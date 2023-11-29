@@ -80,3 +80,9 @@ pre {
   word-break: break-all;
   word-wrap: break-word;
 }
+
+// a helper class that provides semantic meaning
+// indicates that there is an action on hover, click, etc.
+.has-context {
+  border-bottom: 1px dotted;
+}

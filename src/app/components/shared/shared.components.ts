@@ -51,6 +51,10 @@ import { DateTimeFilterComponent } from "./date-time-filter/date-time-filter.com
 import { TypeaheadInputComponent } from "./typeahead-input/typeahead-input.component";
 import { ChartComponent } from "./chart/chart.component";
 import { InlineListComponent } from "./inline-list/inline-list.component";
+import { TimeSinceComponent } from "./datetime-formats/time-since/time-since.component";
+import { DurationComponent } from "./datetime-formats/duration/duration.component";
+import { ZonedDateTimeComponent } from "./datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
+import { DatetimeComponent } from "./datetime-formats/datetime/datetime/datetime.component";
 
 export const sharedComponents = [
   AnnotationDownloadComponent,
@@ -112,6 +116,12 @@ export const sharedModules = [
   ProgressModule,
   StepperModule,
   UserLinkModule,
+
+  // date time components
+  TimeSinceComponent,
+  DurationComponent,
+  ZonedDateTimeComponent,
+  DatetimeComponent,
 ];
 
 export const internalModules = [...sharedModules, NgxCaptchaModule];

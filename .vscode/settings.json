@@ -8,6 +8,7 @@
     "taggings",
     "typeahead",
     "Ecoacoustics",
-    "datatable"
+    "datatable",
+    "datetime"
   ]
 }

@@ -17,11 +17,12 @@ import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject, generateProjectMeta } from "@test/fakes/Project";
 import { ToastrService } from "ngx-toastr";
 import { of } from "rxjs";
-import { DateTime, Settings } from "luxon";
+import { DateTime } from "luxon";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
+import { withDefaultZone } from "@test/helpers/mocks";
 import { ListComponent } from "./list.component";
 
 describe("ListComponent", () => {
@@ -129,9 +130,8 @@ describe("ListComponent", () => {
     // dismiss all bootstrap modals, so if a test fails
     // it doesn't impact future tests by using a stale modal
     modalService?.dismissAll();
-    // some tests mock the luxon timezone. To ensure all tests default to using the users timezone, set luxon.Settings.defaultTime to null
-    Settings.defaultZone = null;
   });
+
 
   assertPageInfo(ListComponent, ["Recording Uploads", "All Recording Uploads"]);
 
@@ -183,34 +183,31 @@ describe("ListComponent", () => {
     flush();
   }));
 
-  it("should show created dates in the users local dateTime", () => {
-    const mockUserTimeZone = "Australia/Perth"; // +08:00 UTC
-    const harvestUtcCreatedAt = DateTime.fromISO("2020-01-01T00:00:00.000Z");
-    const expectedLocalCreatedAt = "2020-01-01 08:00:00";
-    defaultHarvest = new Harvest(
-      generateHarvest({ createdAt: harvestUtcCreatedAt })
-    );
+  withDefaultZone("Australia/Perth", () => {
+    it("should show created dates in the users local dateTime", () => {
+      const harvestUtcCreatedAt = DateTime.fromISO("2020-01-01T00:00:00.000Z");
+      const expectedLocalCreatedAt = "2020-01-01 08:00:00";
+      defaultHarvest = new Harvest(
+        generateHarvest({ createdAt: harvestUtcCreatedAt })
+      );
 
-    // To simplify tests, set the Luxon.Settings.defaultZone to a mock timezone (+08:00 UTC)
-    Settings.defaultZone = mockUserTimeZone;
-    setup(defaultProject, defaultHarvest);
+      setup(defaultProject, defaultHarvest);
 
-    const createdAtLabel = getElementByInnerText<HTMLSpanElement>(
-      expectedLocalCreatedAt
-    );
-    expect(createdAtLabel).toExist();
-  });
+      const createdAtLabel = getElementByInnerText<HTMLSpanElement>(
+        expectedLocalCreatedAt
+      );
+      expect(createdAtLabel).toExist();
+    });
 
-  it("formatDate should return a dateTime object in the users local time zone when a UTC+0 date is passed to it", () => {
-    const mockUserTimeZone = "Australia/Perth"; // +08:00 UTC
-    const utcTime = DateTime.fromISO("2022-11-04T20:12:31.000Z");
-    const expectedLocalTime = "2022-11-05 04:12:31";
+    it("formatDate should return a dateTime object in the users local time zone when a UTC+0 date is passed to it", () => {
+      const utcTime = DateTime.fromISO("2022-11-04T20:12:31.000Z");
+      const expectedLocalTime = "2022-11-05 04:12:31";
 
-    Settings.defaultZone = mockUserTimeZone;
-    setup(defaultProject, defaultHarvest);
+      setup(defaultProject, defaultHarvest);
 
-    const realizedTime = spec.component.formatDate(utcTime);
-    expect(realizedTime).toEqual(expectedLocalTime);
+      const realizedTime = spec.component.formatDate(utcTime);
+      expect(realizedTime).toEqual(expectedLocalTime);
+    });
   });
 
   // if you are using the association directive directly in the template, this test will fail
