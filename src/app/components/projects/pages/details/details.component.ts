@@ -17,7 +17,6 @@ import {
   projectCategory,
   projectMenuItem,
   projectsMenuItem,
-  uploadAnnotationsProjectMenuItem,
 } from "@components/projects/projects.menus";
 import { deleteProjectModal } from "@components/projects/projects.modals";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
@@ -48,7 +47,6 @@ export const projectMenuItemActions = [
   audioRecordingMenuItems.list.project,
   audioRecordingMenuItems.batch.project,
   harvestsMenuItem,
-  uploadAnnotationsProjectMenuItem,
   reportMenuItems.new.project,
 ];
 

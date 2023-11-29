@@ -189,5 +189,5 @@ function durationArrayToQueryString(value: Duration[]): string {
 }
 
 function arrayToQueryString(value: unknown[]): string {
-  return value.join(",");
+  return Array.from(value).join(",");
 }

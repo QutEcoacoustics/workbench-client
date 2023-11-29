@@ -18,8 +18,8 @@ import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { API_ROOT } from "@services/config/config.tokens";
 import { ToastrService } from "ngx-toastr";
-import { Observable, throwError } from "rxjs";
-import { catchError, map, mergeMap, switchMap, tap } from "rxjs/operators";
+import { Observable, iif, of, throwError } from "rxjs";
+import { catchError, concatMap, map, switchMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { BawSessionService } from "./baw-session.service";
 
@@ -258,26 +258,40 @@ export class BawApiService<
     model: AbstractModel,
     opts?: NotificationsOpt
   ): Observable<Model> {
-    const jsonData = model?.getJsonAttributes?.({ create: true });
+    const jsonData = model.getJsonAttributes?.({ create: true });
+    const formData = model.getFormDataOnlyAttributes({ create: true });
     const body = model.kind
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
 
-    const request = this.httpPost(createPath, body).pipe(
-      map(this.handleSingleResponse(classBuilder))
-    );
-
-    if (model?.hasFormDataOnlyAttributes({ create: true })) {
-      const formData = model.getFormDataOnlyAttributes({ create: true });
-      return request.pipe(
-        mergeMap((data) =>
-          this.httpPut(updatePath(data), formData, multiPartApiHeaders)
-        ),
-        map(this.handleSingleResponse(classBuilder))
-      );
-    }
-
-    return request.pipe(
+    // as part of the multi part request, if there is only a JSON body, we want to return the output of the JSON POST request
+    // if there is only a formData body, we want to return the output of the formData PUT request
+    // if there is both a JSON body and formData, we want to return the output of the last request sent (formData PUT request)
+    // we default to returning null if there is no JSON or formData body
+    return of(null).pipe(
+      concatMap(
+        model.hasJsonOnlyAttributes({ create: true })
+          ? () => this.httpPost(createPath, body).pipe()
+          : (data) => of(data)
+      ),
+      // we create a class from the POST response so that we can construct an update route for the formData PUT request
+      // using the updatePath callback. We do this before the concatMap below because the updatePath callback is dependent
+      // on the instantiated class from the POST response object
+      map(this.handleSingleResponse(classBuilder)),
+      // using concatMap here ensures that the httpPost request completes before the httpPut request is made
+      concatMap((data) =>
+        // we use an if statement here because we want to create a new observable and apply a map function to it
+        // using ternary logic here (similar to the update function) would result in poor readability and a lot of nesting
+        iif(
+          () => model.hasFormDataOnlyAttributes({ create: true }),
+          this.httpPut(updatePath(data), formData, multiPartApiHeaders).pipe(
+            map(this.handleSingleResponse(classBuilder))
+          ),
+          of(data)
+        )
+      ),
+      // there is no map function here, because the handleSingleResponse method is invoked on the POST and PUT requests
+      // individually. Moving the handleSingleResponse mapping here would result in the response object being instantiated twice
       catchError((err) => this.handleError(err, opts?.disableNotification))
     );
   }
@@ -297,23 +311,30 @@ export class BawApiService<
     opts?: NotificationsOpt
   ): Observable<Model> {
     const jsonData = model.getJsonAttributes?.({ update: true });
+    const formData = model.getFormDataOnlyAttributes({ update: true });
     const body = model.kind
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
 
-    const request = this.httpPatch(path, body).pipe(
-      map(this.handleSingleResponse(classBuilder))
-    );
-
-    if (model?.hasFormDataOnlyAttributes({ update: true })) {
-      const formData = model.getFormDataOnlyAttributes({ update: true });
-      return request.pipe(
-        mergeMap(() => this.httpPut(path, formData, multiPartApiHeaders)),
-        map(this.handleSingleResponse(classBuilder))
-      );
-    }
-
-    return request.pipe(
+    // as part of the multi part request, if there is only a JSON body, we want to return the output of the JSON PATCH request
+    // if there is only a formData body, we want to return the output of the formData PUT request
+    // if there is both a JSON body and formData, we want to return the output of the last request sent (formData PUT request)
+    // we default to returning null if there is no JSON or formData body
+    return of(null).pipe(
+      concatMap(
+        // we use (data) => of(data) here instead of the identity function because the identify function
+        // returns a value, and not an observable. Because we use concatMap below, we need the existing
+        // value to be emitted as an observable instead. Therefore, we create a static observable using of()
+        model.hasJsonOnlyAttributes({ update: true })
+          ? () => this.httpPatch(path, body)
+          : (data) => of(data)
+      ),
+      concatMap(
+        model.hasFormDataOnlyAttributes({ update: true })
+          ? () => this.httpPut(path, formData, multiPartApiHeaders)
+          : (data) => of(data)
+      ),
+      map(this.handleSingleResponse(classBuilder)),
       catchError((err) => this.handleError(err, opts?.disableNotification))
     );
   }

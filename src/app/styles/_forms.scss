@@ -1,0 +1,4 @@
+// this mimics the required star used on ng-formly forms
+.required::after {
+  content: "*";
+}

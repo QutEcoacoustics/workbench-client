@@ -8,7 +8,6 @@ import {
   CollectionIds,
   DateTimeTimezone,
   Id,
-  Ids,
   Param,
 } from "@interfaces/apiInterfaces";
 import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/EventSummaryReportParameters";
@@ -30,10 +29,10 @@ export interface IEventSummaryReport {
   generatedDate: DateTimeTimezone | string;
   statistics: IAudioEventSummaryReportStatistics;
   eventGroups: EventGroup[];
-  siteIds: Id[] | Ids;
-  regionIds: Id[] | Ids;
-  tagIds: Id[] | Ids;
-  provenanceIds: Id[] | Ids;
+  siteIds: CollectionIds;
+  regionIds: CollectionIds;
+  tagIds: CollectionIds;
+  provenanceIds: CollectionIds;
   graphs: IEventSummaryGraphs;
 }
 

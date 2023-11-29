@@ -70,4 +70,4 @@ export const isAdminPredicate = (user: User): boolean =>
  * @param user User session data. This will be used to check if the user is an admin
  */
 export const isWorkInProgressPredicate = (user: User): boolean =>
-  environment.production && isAdminPredicate(user);
+  !environment.production || isAdminPredicate(user);

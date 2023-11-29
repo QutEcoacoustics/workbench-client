@@ -1,0 +1,83 @@
+<h1>Batch Annotation Import History</h1>
+
+<ngx-datatable
+  bawDatatableDefaults
+  [bawDatatablePagination]="{ filters: filters$, getModels: getModels }"
+>
+  <ngx-datatable-column prop="name">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Name
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="createdAt">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Created at
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>
+        {{ value | dateTime : { includeTime: true, localTime: true } }}
+      </span>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Created By
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <baw-user-link [user]="value.creator"></baw-user-link>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Action
+    </ng-template>
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <a
+        name="view-button"
+        class="btn btn-sm btn-primary"
+        [bawUrl]="value.viewUrl"
+      >
+        View
+      </a>
+
+      <a
+        name="delete-button"
+        class="btn btn-sm btn-outline-danger ms-1"
+        (click)="deleteEventImport(deleteEventImportModal, value)"
+      >
+        Delete
+      </a>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
+
+<ng-template #deleteEventImportModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Delete Annotation Import</h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.close()"
+    ></button>
+  </div>
+
+  <div class="modal-body">
+    <span id="subTitle">
+      <p>Are you certain you wish to delete this annotation import?</p>
+
+      <p>All annotations imported will be lost</p>
+    </span>
+  </div>
+
+  <div class="modal-footer">
+    <a class="btn btn-outline-primary" (click)="modal.close()">Cancel</a>
+    <a class="btn btn-danger text-white" (click)="modal.close(true)">Delete</a>
+  </div>
+</ng-template>

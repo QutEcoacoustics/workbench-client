@@ -103,6 +103,7 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
 
     this.formControl.setValue(images.item(0));
   }
+
   public removeImage(): void {
     this.model.image = null;
     this.imageInput.nativeElement.value = null;

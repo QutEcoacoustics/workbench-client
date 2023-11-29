@@ -3,7 +3,11 @@ import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { API_ROOT } from "@services/config/config.tokens";
 import fileSize from "filesize";
 import { DateTime, Duration } from "luxon";
-import { AbstractModel, AssociationInjector } from "./AbstractModel";
+import {
+  AbstractModel,
+  AbstractModelConstructor,
+  AssociationInjector,
+} from "./AbstractModel";
 
 export interface BawAttributeOptions {
   create: boolean;
@@ -64,13 +68,13 @@ export function bawPersistAttr(opts?: Partial<BawAttributeOptions>) {
  * camel case.
  * ! DO NOT USE IN CONJUNCTION WITH bawPersistAttr
  */
-export function bawReadonlyConvertCase() {
+export function bawReadonlyConvertCase(convertCase = true) {
   return function (model: AbstractModel, key: string): void {
     persistAttr(model, key, {
       create: false,
       update: false,
-      convertCase: true,
       supportedFormats: [],
+      convertCase,
     });
   };
 }
@@ -177,6 +181,43 @@ export function bawCollection<Model>(opts?: BawDecoratorOptions<Model>) {
 
     model[key] = new Set(ids ?? []);
   });
+}
+
+/**
+ * Converts an unstructured sub model returned by the baw-api into a classed object
+ *
+ * If the model can be fetched from the baw-api through a separate request, the `@hasOne` and `@hasMany`
+ * decorators should be used
+ */
+export function bawSubModel<ParentModel, SubModel>(
+  classConstructor: AbstractModelConstructor<SubModel>,
+  opts?: BawDecoratorOptions<ParentModel>
+) {
+  return createDecorator<ParentModel>(
+    opts,
+    (model: AssociationInjector, key: symbol, value: SubModel) =>
+      (model[key] = new classConstructor(value, model["injector"]))
+  );
+}
+
+/**
+ * Converts a list or array of unstructured sub models returned by the baw-api into a
+ * an array of classed objects
+ *
+ * If the model can be fetched from the baw-api through a seperate request, the `@hasOne` and `@hasMany`
+ * decorators should be used
+ */
+export function bawSubModelCollection<ParentModel, SubModel>(
+  classConstructor: AbstractModelConstructor<SubModel>,
+  opts?: BawDecoratorOptions<ParentModel>
+) {
+  return createDecorator<ParentModel>(
+    opts,
+    (model: AssociationInjector, key: symbol, values: SubModel[]) =>
+      (model[key] = values?.map(
+        (value) => new classConstructor(value, model["injector"])
+      ))
+  );
 }
 
 /**

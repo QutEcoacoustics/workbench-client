@@ -354,5 +354,4 @@ describe("MetadataReviewComponent", () => {
     flush();
     discardPeriodicTasks();
   }));
-
 });

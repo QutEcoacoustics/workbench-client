@@ -169,7 +169,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   }
 
   // we need a default filter to scope to projects, regions, sites
-  private defaultFilter(): InnerFilter<Region | Site> {
+  private defaultFilter(): InnerFilter<Project | Region | Site> {
     // we don't need to filter for every route, we only need to filter for the lowest level
     // this is because all sites have a region, all regions have a project, etc..
     // so it can be logically inferred
