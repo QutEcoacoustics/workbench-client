@@ -61,6 +61,9 @@ This website can be customised through the environment file located at `./src/as
 | `settings.links`         | This is a list of external links used throughout the website. Check the template for the list of modifiable links                          |
 | `settings.customMenu`    | This is a list of custom menu items which changes the contents of the header with instance specific links. Check the template for examples |
 
+To use the embedded Google Maps in both development and production, it is required that the `keys.googleMaps` property is set.
+If you have not set this value the embedded maps will not work, and an error will be thrown in the console with the message "Google Maps JavaScript API error: InvalidKeyMapError".
+
 ### Testing
 
 #### Unit tests

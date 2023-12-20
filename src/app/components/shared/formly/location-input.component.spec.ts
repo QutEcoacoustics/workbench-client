@@ -64,12 +64,19 @@ describe("FormlyLocationInput", () => {
 
   beforeAll(async () => await embedGoogleMaps());
 
-  const getLatitudeInput = () => spectator.query<HTMLInputElement>("#latitude");
+  beforeEach(() => setup());
 
+  const getLatitudeInput = () =>
+    spectator.query<HTMLInputElement>("#latitude");
   const getLongitudeInput = () =>
     spectator.query<HTMLInputElement>("#longitude");
+  const getErrorElements = () =>
+    spectator.queryAll<HTMLDivElement>(".invalid-feedback");
 
-  function updateMarkerThroughInput(longitude: number, latitude: number) {
+  function updateMarkerThroughInput(
+    longitude: number | string,
+    latitude: number | string
+  ) {
     const latitudeInput = getLatitudeInput();
     const longitudeInput = getLongitudeInput();
 
@@ -100,12 +107,10 @@ describe("FormlyLocationInput", () => {
   }
 
   it("should create", () => {
-    setup();
     expect(spectator.component).toBeInstanceOf(LocationInputComponent);
   });
 
   it("should display the position of the marker in input boxes", fakeAsync(() => {
-    setup();
     const defaultLongitudeValue = modelData.longitude();
     const defaultLatitudeValue = modelData.latitude();
 
@@ -118,7 +123,6 @@ describe("FormlyLocationInput", () => {
   }));
 
   it("should update the marker model if the location is updated through the input field/form", () => {
-    setup();
     const map = spectator.query(MapComponent);
     const defaultLongitudeValue = modelData.longitude();
     const defaultLatitudeValue = modelData.latitude();
@@ -137,7 +141,6 @@ describe("FormlyLocationInput", () => {
   });
 
   it("should update the marker model if the marker is dragged", () => {
-    setup();
     const map = spectator.query(MapComponent);
     const defaultLongitudeValue = modelData.longitude();
     const defaultLatitudeValue = modelData.latitude();
@@ -151,13 +154,13 @@ describe("FormlyLocationInput", () => {
     const updatedLongitude = modelData.longitude();
     const updatedLatitude = modelData.latitude();
     // simulate dragging and dropping the marker by sending a drag event to the map
-    const newPosition = {
+    const newPosition: google.maps.LatLng = {
       lng: () => updatedLongitude,
       lat: () => updatedLatitude,
       equals: () => null,
       toJSON: () => null,
       toUrlValue: () => null,
-    } as google.maps.LatLng;
+    };
 
     map.newLocation.emit({
       domEvent: new Event("mapDragend"),
@@ -172,5 +175,39 @@ describe("FormlyLocationInput", () => {
       newPosition.lat()
     );
     assertMapModelCoordinates(map, updatedLongitude, updatedLatitude);
+  });
+
+  it("should emit 'null' if both the input fields are empty", () => {
+    const expectedValue = { longitude: null, latitude: null };
+    updateMarkerThroughInput("", "");
+
+    expect(spectator.component.formControl.value).toEqual(expectedValue);
+  });
+
+  it("should display an error if there is a longitude but no latitude", () => {
+    const expectedError =
+      "Both latitude and longitude must be set or left empty";
+    const longitude = modelData.longitude();
+
+    updateMarkerThroughInput(longitude, "");
+
+    expect(getErrorElements()).toEqual(
+      jasmine.arrayContaining([
+        jasmine.objectContaining({ innerText: expectedError }),
+      ])
+    );
+  });
+
+  it("should display an error if there is a latitude but no longitude", () => {
+    const expectedError = "Both latitude and longitude must be set or left empty";
+    const latitude = modelData.latitude();
+
+    updateMarkerThroughInput("", latitude);
+
+    expect(getErrorElements()).toEqual(
+      jasmine.arrayContaining([
+        jasmine.objectContaining({ innerText: expectedError }),
+      ])
+    );
   });
 });
