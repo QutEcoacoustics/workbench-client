@@ -38,6 +38,7 @@ import type { User } from "@models/User";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { AudioEventImport } from "@models/AudioEventImport";
+import { WebsiteStatus } from "@models/WebsiteStatus";
 import type { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
@@ -88,6 +89,7 @@ import type { AnalysisJobItemResultsService } from "./analysis/analysis-job-item
 import { AudioEventProvenanceService } from "./AudioEventProvenance/AudioEventProvenance.service";
 import { EventSummaryReportService } from "./reports/event-report/event-summary-report.service";
 import { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
+import { WebsiteStatusService } from "./website-status/website-status.service";
 
 /**
  * Wrapper for InjectionToken class. This is required because of
@@ -208,3 +210,4 @@ export const USER = new ServiceToken<UserService, User>("USER");
 export const AUDIO_EVENT_PROVENANCE = new ServiceToken<AudioEventProvenanceService, AudioEventProvenance>("AUDIO_EVENT_PROVENANCE");
 export const AUDIO_EVENT_SUMMARY_REPORT = new ServiceToken<EventSummaryReportService, EventSummaryReport>("AUDIO_EVENT_SUMMARY_REPORT");
 export const AUDIO_EVENT_IMPORT = new ServiceToken<AudioEventImportService, AudioEventImport>("AUDIO_EVENT_IMPORT");
+export const WEBSITE_STATUS = new ServiceToken<WebsiteStatusService, WebsiteStatus>("WEBSITE_STATUS");

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { MenuRoute } from "@interfaces/menusInterfaces";
 import { ConfigService } from "@services/config/config.service";
+import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
 import {
   contactUsMenuItem,
   creditsMenuItem,
@@ -47,6 +48,7 @@ export class FooterComponent implements OnInit {
   public year = new Date().getFullYear();
   public links: MenuRoute[] = [
     statisticsMenuItem,
+    websiteStatusMenuItem,
     disclaimersMenuItem,
     creditsMenuItem,
     ethicsMenuItem,
