@@ -23,6 +23,7 @@ import { ToastrModule } from "ngx-toastr";
 import { environment } from "src/environments/environment";
 import { TitleStrategy } from "@angular/router";
 import { AnnotationsImportModule } from "@components/import-annotations/import-annotations.module";
+import { WebsiteStatusModule } from "@components/website-status/website-status.module";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { toastrRoot } from "./app.helper";
@@ -75,6 +76,7 @@ export const appImports = [
   SendAudioModule,
   SitesModule,
   StatisticsModule,
+  WebsiteStatusModule,
   VisualizeModule,
   // these last two must be last!
   HomeModule,

@@ -127,12 +127,23 @@ export class BawApiInterceptor implements HttpInterceptor {
 
     // Response timed out
     if (response.status === CLIENT_TIMEOUT) {
-      const error = new BawApiError(
-        CLIENT_TIMEOUT,
+      // check if this is the fault of the server or the client
+      const clientHasInternet = navigator.onLine;
+
+      const noClientInternetMessage =
+        "You are not be connected to the internet. " +
+        "Please check your internet (or VPN) connection and try again.";
+      const serverTimeoutMessage =
         "A request took longer than expected to return, " +
-          "this may be an issue with your connection to us, " +
-          "or a temporary issue with our services."
-      );
+        "this may be an issue with your connection to us, " +
+        "or a temporary issue with our services.";
+
+      const errorMessage = clientHasInternet
+        ? serverTimeoutMessage
+        : noClientInternetMessage;
+
+      const error = new BawApiError(CLIENT_TIMEOUT, errorMessage);
+
       return throwError(() => error);
     }
 

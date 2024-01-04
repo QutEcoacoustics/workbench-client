@@ -28,8 +28,6 @@ RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./sr
 
 RUN npm run build:ssr
 
-
-
 FROM node:18-alpine
 
 ARG GIT_COMMIT
@@ -37,7 +35,7 @@ ARG WORKBENCH_CLIENT_VERSION
 
 WORKDIR /home/node/workbench-client
 
-LABEL maintainer="Charles Alleman <alleman@qut.edu.au>" \
+LABEL maintainer="Hudson Newey <neweyh@qut.edu.au>" \
   description="Production environment for workbench client server" \
   version=${WORKBENCH_CLIENT_VERSION} \
   name="Workbench Client" \
@@ -48,8 +46,7 @@ LABEL maintainer="Charles Alleman <alleman@qut.edu.au>" \
   schema-version="1.0"
 
 # Add ability to make https wget requests
-RUN apk upgrade libssl1.1 --update-cache && \
-  apk add wget ca-certificates
+RUN apk add wget ca-certificates
 
 # drop privileges
 USER node

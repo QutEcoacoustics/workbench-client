@@ -17,6 +17,7 @@ import {
 } from "@components/security/security.menus";
 import { sendAudioMenuItem } from "@components/send-audio/send-audio.menus";
 import { statisticsMenuItem } from "@components/statistics/statistics.menus";
+import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
 import { Category, NavigableMenuItem } from "@interfaces/menusInterfaces";
 import { ConfigService } from "@services/config/config.service";
 import { OrderedSet } from "immutable";
@@ -52,6 +53,7 @@ export class DefaultMenu {
         reportProblemMenuItem,
         statisticsMenuItem,
         annotationsImportMenuItem,
+        websiteStatusMenuItem,
       ]),
       defaultCategory: homeCategory,
     };

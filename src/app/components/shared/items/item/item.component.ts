@@ -20,7 +20,11 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
       <span id="name">{{ name }}</span>
 
       <!-- Item value -->
-      <span id="value" class="badge rounded text-bg-secondary float-end">
+      <span
+        id="value"
+        class="badge rounded text-bg-secondary float-end"
+        [ngClass]="color && 'bg-' + color"
+      >
         {{ value ?? "Unknown" }}
       </span>
     </div>
@@ -33,6 +37,7 @@ export class ItemComponent {
   @Input() public name: string;
   @Input() public tooltip: () => string;
   @Input() public value: string | number;
+  @Input() public color: string;
 
   public get tooltipText(): string {
     return this.tooltip?.() ?? undefined;
@@ -44,4 +49,5 @@ export interface IItem {
   name: string;
   tooltip?: () => string;
   value?: string | number;
+  color?: string;
 }
