@@ -70,3 +70,12 @@ export const adminUploadsMenuItem = menuRoute({
   parent: adminDashboardMenuItem,
   predicate: isAdminPredicate,
 });
+
+export const adminDateTimeTemplateMenuItem = menuRoute({
+  icon: ["fas", "calendar"],
+  label: "Date & Time",
+  route: adminRoute.add("datetime_templates"),
+  tooltip: () => "View website date and time templates",
+  parent: adminDashboardMenuItem,
+  predicate: isAdminPredicate,
+});

@@ -1,6 +1,7 @@
 import { HumanizeDurationOptions } from "@interfaces/apiInterfaces";
 import { createPipeFactory, SpectatorPipe } from "@ngneat/spectator";
 import { DateTime, Duration, ToRelativeOptions } from "luxon";
+import { withDefaultZone } from "@test/helpers/mocks";
 import { ToRelativePipe } from "./to-relative.pipe";
 
 describe("ToRelativePipe", () => {
@@ -19,6 +20,15 @@ describe("ToRelativePipe", () => {
       hostProps: { value, options },
     });
   }
+
+  beforeEach(() => {
+    jasmine.clock().install();
+    jasmine.clock().mockDate(new Date("2020-01-01T00:00:00.000+09:30"));
+  });
+
+  afterEach(() => {
+    jasmine.clock().uninstall();
+  });
 
   it("should handle undefined value", () => {
     setup(undefined);
@@ -40,17 +50,25 @@ describe("ToRelativePipe", () => {
     assertPipe("28 minutes 38 seconds");
   });
 
-  it("should display datetime", () => {
-    setup(DateTime.utc());
-    assertPipe("0 seconds ago");
-  });
+  withDefaultZone("Australia/Darwin", () => {
+    it("should display current datetime", () => {
+      setup(DateTime.fromISO("2020-01-01T00:00:00.000"));
+      assertPipe("in 0 seconds");
+    });
 
-  it("should display datetime with custom options", () => {
-    setup(DateTime.utc(), { style: "short" });
-    // This test seems to be dependant on local settings, it sometimes will
-    // fail with the value '0 sec ago'. Check with CI before changing
-    assertPipe(
-      (text): boolean => text === "0 sec. ago" || text === "0 sec ago"
-    );
+    it("should display current datetime with custom options", () => {
+      setup(DateTime.fromISO("2020-01-01T00:00:00.000"), { style: "short" });
+      assertPipe("in 0 sec.");
+    });
+
+    it("should display a past datetime", () => {
+      setup(DateTime.fromISO("2019-12-31T21:59:59.000"));
+      assertPipe("2 hours ago");
+    });
+
+    it("should display a past datetime with custom options", () => {
+      setup(DateTime.fromISO("2019-12-31T21:59:59.000"), { style: "short" });
+      assertPipe("2 hr. ago");
+    });
   });
 });

@@ -1,0 +1,215 @@
+<h1>DateTime Examples</h1>
+
+<section class="mb-3">
+  <form>
+    <label for="datetime-input">Date/Time</label>
+    <input
+      type="datetime"
+      name="datetime-input"
+      id="datetime-input"
+      class="form-control"
+      placeholder="yyyy-mm-dd hh:mm:ss"
+      [ngModel]="formatDate(fakeDate)"
+      (keyup)="updateFakeDate($event)"
+    />
+
+    <label for="timezone-input">Timezone</label>
+    <input
+      type="text"
+      name="timezone-input"
+      id="timezone-input"
+      class="form-control"
+      placeholder="utc, UTC+08:00, Australia/Darwin, etc."
+      [(ngModel)]="fakeImplicitTimezone"
+    />
+
+    <label for="site-timezone-input">Site Timezone</label>
+    <input
+      type="text"
+      name="site-timezone-input"
+      id="site-timezone-input"
+      class="form-control"
+      placeholder="utc, UTC+08:00, Australia/Darwin, etc."
+      [(ngModel)]="fakeSiteTimezone"
+    />
+
+    <label for="duration-input">Duration</label>
+    <input
+      id="duration-input"
+      name="duration-input"
+      class="form-control"
+      type="text"
+      placeholder="PTnHnMnS"
+      [ngModel]="fakeDuration"
+      (keyup)="updateFakeDuration($event)"
+    />
+  </form>
+</section>
+
+<div>
+  <section class="mt-4">
+    <h2>baw-datetime</h2>
+
+    <div class="mt-3">
+      <strong>Date & Time Instants:</strong>
+
+      <code>
+        <pre>&lt;baw-datetime [value]="fakeDate" /&gt;</pre>
+      </code>
+
+      <baw-datetime [value]="fakeDate" />
+    </div>
+
+    <div class="mt-3">
+      <strong>Date Instants:</strong>
+
+      <code>
+        <pre>&lt;baw-datetime [value]="fakeDate" date /&gt;</pre>
+      </code>
+
+      <baw-datetime [value]="fakeDate" date />
+    </div>
+
+    <div class="mt-3">
+      <strong>Time Instants:</strong>
+
+      <code>
+        <pre>&lt;baw-datetime [value]="fakeDate" time /&gt;</pre>
+      </code>
+
+      <baw-datetime [value]="fakeDate" time />
+    </div>
+  </section>
+
+  <section class="mt-4">
+    <h2>baw-zoned-datetime (Implicit)</h2>
+
+    <div class="mt-3">
+      <strong>Zoned Date & Time Instants:</strong>
+
+      <code>
+        <pre>&lt;baw-zoned-datetime [value]="fakeDate" /&gt;</pre>
+      </code>
+
+      <baw-zoned-datetime [value]="fakeDate" />
+    </div>
+
+    <div class="mt-3">
+      <strong>Zoned Date & Time Instants:</strong>
+
+      <code>
+        <pre>&lt;baw-zoned-datetime [value]="fakeDate" date /&gt;</pre>
+      </code>
+
+      <baw-zoned-datetime [value]="fakeDate" date />
+    </div>
+
+    <div class="mt-3">
+      <strong>Zoned Date & Time Instants:</strong>
+
+      <code>
+        <pre>&lt;baw-zoned-datetime [value]="fakeDate" time /&gt;</pre>
+      </code>
+
+      <baw-zoned-datetime [value]="fakeDate" time />
+    </div>
+
+    <h2>baw-zoned-datetime (Explicit)</h2>
+
+    <div class="mt-3">
+      <strong>Zoned Date & Times:</strong>
+
+      <code>
+        <pre>&lt;baw-zoned-datetime [value]="fakeDate" [timezone]="fakeSiteTimezone" /&gt;</pre>
+      </code>
+
+      <baw-zoned-datetime [value]="fakeDate" [timezone]="fakeSiteTimezone" />
+    </div>
+
+    <div class="mt-3">
+      <strong>Zoned Dates:</strong>
+
+      <code>
+        <pre>&lt;baw-zoned-datetime [value]="fakeDate" [timezone]="fakeSiteTimezone" date /&gt;</pre>
+      </code>
+
+      <baw-zoned-datetime
+        [value]="fakeDate"
+        [timezone]="fakeSiteTimezone"
+        date
+      />
+    </div>
+
+    <div class="mt-3">
+      <strong>Zoned Times:</strong>
+
+      <code>
+        <pre>&lt;baw-zoned-datetime [value]="fakeDate" [timezone]="fakeSiteTimezone" time /&gt;</pre>
+      </code>
+
+      <baw-zoned-datetime
+        [value]="fakeDate"
+        [timezone]="fakeSiteTimezone"
+        time
+      />
+    </div>
+  </section>
+
+  <section class="mt-4">
+    <h2>baw-duration</h2>
+
+    <div class="mt-3">
+      <strong>Durations (sexagesimal):</strong>
+
+      <code>
+        <pre>&lt;baw-duration [value]="fakeDuration" /&gt;</pre>
+      </code>
+
+      <baw-duration [value]="fakeDuration" />
+    </div>
+
+    <div class="mt-3">
+      <strong>Duration (ISO 8601):</strong>
+
+      <code>
+        <pre>&lt;baw-duration [value]="fakeDuration" iso8601 /&gt;</pre>
+      </code>
+
+      <baw-duration [value]="fakeDuration" iso8601 />
+    </div>
+
+    <div class="mt-3">
+      <strong>Duration (Humanized):</strong>
+
+      <code>
+        <pre>&lt;baw-duration [value]="fakeDuration" humanized /&gt;</pre>
+      </code>
+
+      <baw-duration [value]="fakeDuration" humanized />
+    </div>
+  </section>
+
+  <section class="mt-4">
+    <h2>baw-time-since</h2>
+
+    <div class="mt-3">
+      <strong>Relative Time Instants:</strong>
+
+      <code>
+        <pre>&lt;baw-time-since [value]="fakeDuration" /&gt;</pre>
+      </code>
+
+      <baw-time-since [value]="fakeDuration" />
+    </div>
+
+    <div class="mt-3">
+      <strong>Relative Date Instants:</strong>
+
+      <code>
+        <pre>&lt;baw-time-since [value]="fakeDate" /&gt;</pre>
+      </code>
+
+      <baw-time-since [value]="fakeDate" />
+    </div>
+  </section>
+</div>

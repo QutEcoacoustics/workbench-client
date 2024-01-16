@@ -57,3 +57,20 @@ export function assertSpinner(
     expectation.toBeFalsy("Expected Spinner not to Exist");
   }
 }
+
+/**
+ * Assert the bootstrap tooltip contents of an element
+ *
+ * @param element Element to check
+ * @param content Expected tooltip content
+ */
+export function assertTooltip(element: HTMLElement, content: string) {
+  element.dispatchEvent(new MouseEvent("mouseenter"));
+
+  const tooltipElement = document.querySelector("ngb-tooltip-window");
+
+  expect(tooltipElement).toExist();
+  expect(tooltipElement).toHaveExactText(content);
+
+  element.dispatchEvent(new MouseEvent("mouseleave"));
+}

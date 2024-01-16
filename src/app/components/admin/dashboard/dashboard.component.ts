@@ -10,6 +10,7 @@ import {
   adminThemeMenuItem,
   adminUploadsMenuItem,
   adminUserListMenuItem,
+  adminDateTimeTemplateMenuItem,
 } from "../admin.menus";
 import { adminOrphansMenuItem } from "../orphan/orphans.menus";
 import { adminScriptsMenuItem } from "../scripts/scripts.menus";
@@ -29,6 +30,7 @@ export const adminMenuItemActions = [
   adminThemeMenuItem,
   adminUserListMenuItem,
   adminUploadsMenuItem,
+  adminDateTimeTemplateMenuItem,
 ];
 
 @Component({

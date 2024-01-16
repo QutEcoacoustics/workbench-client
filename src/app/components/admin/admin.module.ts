@@ -13,6 +13,7 @@ import { TagsModule } from "./tags/tags.module";
 import { AdminThemeTemplateComponent } from "./theme-template/theme-template.component";
 import { AdminUserListComponent } from "./users/user.component";
 import { AllUploadsComponent } from "./all-uploads/all-uploads.component";
+import { DateTimeExampleComponent } from "./datetime-example/datetime-example.component";
 
 const modules = [
   AnalysisJobsModule,
@@ -27,6 +28,7 @@ const components = [
   AdminUserListComponent,
   AdminThemeTemplateComponent,
   AllUploadsComponent,
+  DateTimeExampleComponent,
 ];
 const routes = adminRoute.compileRoutes(getRouteConfigForPage);
 
