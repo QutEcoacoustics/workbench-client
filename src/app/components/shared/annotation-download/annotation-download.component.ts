@@ -116,10 +116,16 @@ export class AnnotationDownloadComponent
   }
 
   public getAnnotationsPath(): string {
+    // if the timezone is UTC, vvo/tzdb will return Etc/UTC
+    // because the API expects UTC timezones to have the value "UTC", we change "Etc/UTC" to "UTC" when we send the
+    // download request to the API
+    const timezone =
+      this.model.timezone === "Etc/UTC" ? "UTC" : this.model.timezone;
+
     return this.siteApi.downloadAnnotations(
       this.site,
       this.region?.projectId ?? this.project,
-      this.model.timezone
+      timezone
     );
   }
 }

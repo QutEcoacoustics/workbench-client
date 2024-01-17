@@ -1,5 +1,5 @@
 /*
- * This is the server for the Angular Universal version of the app.
+ * This is the server for the server side rendered (SSR) version of the app.
  * It is an express server that allows for rendering a page while the rest of
  * the application bundle downloads.
  */
@@ -11,20 +11,21 @@ import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { APP_BASE_HREF } from "@angular/common";
 import { Configuration } from "@helpers/app-initializer/app-initializer";
-import { ngExpressEngine } from "@nguniversal/express-engine";
+import { CommonEngine } from "@angular/ssr";
 import { assetRoot } from "@services/config/config.service";
 import express from "express";
 import { environment } from "src/environments/environment";
 import { API_CONFIG } from "@services/config/config.tokens";
 import { AppServerModule } from "./src/main.server";
+import { REQUEST, RESPONSE } from "./src/express.tokens";
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(path: string): express.Express {
   const server = express();
   const distFolder = join(process.cwd(), "dist/workbench-client/browser");
   const indexHtml = existsSync(join(distFolder, "index.original.html"))
-    ? "index.original.html"
-    : "index";
+    ? join(distFolder, "index.original.html")
+    : join(distFolder, "index.html");
 
   const configPath = [
     path,
@@ -40,15 +41,10 @@ export function app(path: string): express.Express {
   const config = new Configuration(JSON.parse(rawConfig));
   const apiConfig = { provide: API_CONFIG, useValue: config };
 
-  // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
-  server.engine(
-    "html",
-    ngExpressEngine({
-      bootstrap: AppServerModule,
-      // a similar provider exists in main.ts
-      providers: [apiConfig],
-    })
-  );
+  const commonEngine = new CommonEngine({
+    bootstrap: AppServerModule,
+    providers: [apiConfig],
+  });
 
   server.set("view engine", "html");
   server.set("views", distFolder);
@@ -78,12 +74,25 @@ export function app(path: string): express.Express {
     })
   );
 
-  // All regular routes use the Universal engine
-  server.get("*", (req, res) => {
-    res.render(indexHtml, {
-      req,
-      providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }, apiConfig],
-    });
+  // All regular routes use the Angular engine
+  server.get("*", (req, res, next) => {
+    const { protocol, originalUrl, baseUrl, headers } = req;
+
+    commonEngine
+      .render({
+        bootstrap: AppServerModule,
+        documentFilePath: indexHtml,
+        url: `${protocol}://${headers.host}${originalUrl}`,
+        publicPath: distFolder,
+        providers: [
+          { provide: APP_BASE_HREF, useValue: baseUrl },
+          { provide: RESPONSE, useValue: res },
+          { provide: REQUEST, useValue: req },
+          apiConfig,
+        ],
+      })
+      .then((html) => res.send(html))
+      .catch((err) => next(err));
   });
 
   return server;

@@ -1,4 +1,4 @@
-FROM node:18-alpine as BUILD_IMAGE
+FROM node:20-alpine as BUILD_IMAGE
 
 ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION
@@ -13,9 +13,7 @@ WORKDIR /home/node/workbench-client
 COPY --chown=node package*.json ./
 
 # install deps
-RUN npm ci --force \
-  # run the ng compatibility compiler to speed up (and cache) subsequent compilation steps
-  && npx ngcc
+RUN npm ci --force
 
 # copy rest of app.
 # Doing it like this prevents the container from rebuilding when just the app
@@ -28,7 +26,7 @@ RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./sr
 
 RUN npm run build:ssr
 
-FROM node:18-alpine
+FROM node:20-alpine
 
 ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION

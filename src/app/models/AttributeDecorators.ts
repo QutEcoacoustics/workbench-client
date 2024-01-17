@@ -1,7 +1,7 @@
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { API_ROOT } from "@services/config/config.tokens";
-import fileSize from "filesize";
+import { filesize } from "filesize";
 import { DateTime, Duration } from "luxon";
 import {
   AbstractModel,
@@ -276,7 +276,7 @@ export function bawBytes<Model>(opts?: BawDecoratorOptions<Model>) {
     if (typeof bytes === "string") {
       return;
     }
-    model[key] = isInstantiated(bytes) ? fileSize(bytes) : "No data";
+    model[key] = isInstantiated(bytes) ? filesize(bytes) : "No data";
   });
 }
 

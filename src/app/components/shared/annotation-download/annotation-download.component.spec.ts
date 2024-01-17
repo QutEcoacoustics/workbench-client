@@ -158,7 +158,15 @@ describe("AnnotationDownloadComponent", () => {
     it("should default to UTC if no timezone exists for site", () => {
       setup([projectKey, siteKey], [defaultProject, siteWithoutTimezone]);
       spec.detectChanges();
-      expect(spec.component.model.timezone).toBe("UTC");
+      expect(spec.component.model.timezone).toBe("Etc/UTC");
+    });
+
+    it("should display the correct text for a UTC timezone", () => {
+      setup([projectKey, siteKey], [defaultProject, siteWithoutTimezone]);
+      spec.detectChanges();
+
+      const shortZoneElement = getBody().querySelector(".input-group-text");
+      expect(shortZoneElement).toHaveExactTrimmedText("UTC");
     });
 
     it("should update with timezone for site", () => {
@@ -220,6 +228,25 @@ describe("AnnotationDownloadComponent", () => {
         defaultSite,
         defaultRegion.projectId,
         "Australia/Brisbane"
+      );
+    });
+
+    it("should not emit Etc in UTC timezone on submit", () => {
+      setup(
+        [projectKey, regionKey, siteKey],
+        [defaultProject, defaultRegion, defaultSite]
+      );
+      spec.detectChanges();
+
+      // because vvo/tzdb sets the timezone identifier of UTC to Etc/UTC we want to mock this behavior
+      // however, we should see that the timezone sent to the api is UTC and not Etc/UTC
+      spec.component.model.timezone = "Etc/UTC";
+      spec.detectChanges();
+
+      expect(siteApi.downloadAnnotations).toHaveBeenCalledWith(
+        defaultSite,
+        defaultRegion.projectId,
+        "UTC"
       );
     });
   });
