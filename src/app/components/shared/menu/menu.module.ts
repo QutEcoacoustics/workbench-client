@@ -29,6 +29,7 @@ import { PrimaryMenuComponent } from "./primary-menu/primary-menu.component";
 import { SecondaryMenuComponent } from "./secondary-menu/secondary-menu.component";
 import { SideNavComponent } from "./side-nav/side-nav.component";
 import { UserBadgeComponent } from "./user-badge/user-badge.component";
+import { WebsiteStatusIndicatorComponent } from "./website-status-indicator/website-status-indicator.component";
 
 const privateComponents = [
   MenuButtonComponent,
@@ -36,6 +37,7 @@ const privateComponents = [
   UserBadgeComponent,
   HeaderDropdownComponent,
   HeaderItemComponent,
+  WebsiteStatusIndicatorComponent,
 ];
 
 const publicComponents = [

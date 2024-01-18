@@ -160,6 +160,11 @@ export class MenuComponent implements OnChanges, AfterViewInit {
    */
   private insertWidget(widget: WidgetMenuItem): void {
     const temp = this.menuWidget.createComponent(widget.component);
+
+    Object.keys(widget.options ?? {}).forEach((key) => {
+      temp.instance[key] = widget.options[key];
+    });
+
     // This is needed, otherwise widgets sometimes throw
     // ExpressionChangedAfterItHasBeenCheckedError
     temp.changeDetectorRef.detectChanges();

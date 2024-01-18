@@ -18,6 +18,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { BehaviorSubject, catchError, takeUntil, throwError } from "rxjs";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
+import { WidgetMenuItem } from "@menu/widgetItem";
+import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 
 export const harvestsMenuItemActions = [newHarvestMenuItem];
 const projectKey = "project";
@@ -119,6 +121,15 @@ ListComponent.linkToRoute({
   category: harvestsCategory,
   menus: {
     actions: List(harvestsMenuItemActions),
+    actionWidgets: List([
+      new WidgetMenuItem(WebsiteStatusWarningComponent, undefined, {
+        feature: "isUploadingHealthy",
+        message: `
+          Uploading is temporarily unavailable.
+          Please try again later.
+        `,
+      }),
+    ]),
   },
   pageRoute: harvestsMenuItem,
   resolvers: {

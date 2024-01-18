@@ -52,6 +52,10 @@ import { MenuComponent } from "./menu.component";
 })
 export class MockWidgetComponent implements WidgetComponent {
   public pageData!: any;
+
+  // you should be able to change this property using the options object
+  // eg. options = { testProperty: "test" }
+  public testProperty?: any;
 }
 
 @Component({
@@ -269,6 +273,18 @@ describe("MenuComponent", () => {
         });
         spec.detectChanges();
         validateNumWidgets(0);
+      });
+
+      it("should set the widget data using the options provided", () => {
+        setup({
+          widgets: OrderedSet([
+            new WidgetMenuItem(MockWidgetComponent, undefined, { testProperty: "test" }),
+          ]),
+        });
+        spec.detectChanges();
+
+        const widget = spec.query(MockWidgetComponent);
+        expect(widget.testProperty).toBe("test");
       });
     });
 

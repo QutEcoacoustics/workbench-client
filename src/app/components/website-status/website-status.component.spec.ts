@@ -4,9 +4,11 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { WebsiteStatus } from "@models/WebsiteStatus";
 import { MockProvider } from "ng-mocks";
 import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
-import { of } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { ActivatedRoute } from "@angular/router";
 import { mockActivatedRoute } from "@test/helpers/testbed";
+import { assertPageInfo } from "@test/helpers/pageRoute";
+import { generateWebsiteStatus } from "@test/fakes/WebsiteStatus";
 import { WebsiteStatusComponent } from "./website-status.component";
 
 interface GridItem {
@@ -16,7 +18,6 @@ interface GridItem {
 
 describe("WebsiteStatusComponent", () => {
   let spectator: Spectator<WebsiteStatusComponent>;
-  let fakeWebsiteStatus: WebsiteStatus;
   let userHasInternet: boolean;
   let mockApi: jasmine.SpyObj<WebsiteStatusService>;
 
@@ -32,18 +33,17 @@ describe("WebsiteStatusComponent", () => {
     ],
   });
 
-  function setup() {
+  function setup(
+    fakeWebsiteStatus = new WebsiteStatus(generateWebsiteStatus())
+  ) {
     spectator = createComponent({ detectChanges: false });
 
     mockApi = spectator.inject(WebsiteStatusService);
+    mockApi.status$ = new BehaviorSubject(fakeWebsiteStatus);
 
-    // we use a callback here so that we can set the "fakeWebsiteStatus" value emitted by the
-    // fake api without us having to re-mock the api
-    mockApi.show = jasmine
-      .createSpy("show")
-      .and.callFake(() => of(fakeWebsiteStatus));
-
-    spyOnProperty(navigator, "onLine", "get").and.callFake(() => userHasInternet);
+    spyOnProperty(navigator, "onLine", "get").and.callFake(
+      () => userHasInternet
+    );
 
     spectator.detectChanges();
   }
@@ -55,15 +55,11 @@ describe("WebsiteStatusComponent", () => {
     expect(gridElementValue).toHaveExactTrimmedText(expectedValue);
   }
 
+  assertPageInfo(WebsiteStatusComponent, "Website Status");
+
   it("should create", () => {
     setup();
     expect(spectator.component).toBeInstanceOf(WebsiteStatusComponent);
-  });
-
-  it("should call the api once correctly", () => {
-    setup();
-    // intentionally left the body of "OnceWith" empty because it should be a GET request
-    expect(mockApi.show).toHaveBeenCalledOnceWith();
   });
 
   it("should display the correct text for a healthy response", () => {
@@ -78,7 +74,7 @@ describe("WebsiteStatusComponent", () => {
     ];
 
     userHasInternet = true;
-    fakeWebsiteStatus = new WebsiteStatus({
+    const fakeWebsiteStatus = new WebsiteStatus({
       status: "good",
       database: true,
       timedOut: false,
@@ -87,7 +83,7 @@ describe("WebsiteStatusComponent", () => {
       upload: "Alive",
     });
 
-    setup();
+    setup(fakeWebsiteStatus);
 
     expectedValues.forEach((item) =>
       assertGridItemText(item.name, item.value.toString())
@@ -106,7 +102,7 @@ describe("WebsiteStatusComponent", () => {
     ];
 
     userHasInternet = true;
-    fakeWebsiteStatus = new WebsiteStatus({
+    const fakeWebsiteStatus = new WebsiteStatus({
       status: "bad",
       database: false,
       timedOut: true,
@@ -115,7 +111,7 @@ describe("WebsiteStatusComponent", () => {
       upload: "Dead",
     });
 
-    setup();
+    setup(fakeWebsiteStatus);
 
     expectedValues.forEach((item) =>
       assertGridItemText(item.name, item.value.toString())
@@ -134,7 +130,7 @@ describe("WebsiteStatusComponent", () => {
     ];
 
     userHasInternet = true;
-    fakeWebsiteStatus = new WebsiteStatus({
+    const fakeWebsiteStatus = new WebsiteStatus({
       status: "bad",
       timedOut: false,
       database: false,
@@ -143,7 +139,7 @@ describe("WebsiteStatusComponent", () => {
       upload: "Dead",
     });
 
-    setup();
+    setup(fakeWebsiteStatus);
 
     expectedValues.forEach((item) =>
       assertGridItemText(item.name, item.value.toString())
@@ -162,9 +158,9 @@ describe("WebsiteStatusComponent", () => {
     ];
 
     userHasInternet = false;
-    fakeWebsiteStatus = null;
+    const fakeWebsiteStatus = null;
 
-    setup();
+    setup(fakeWebsiteStatus);
 
     expectedValues.forEach((item) =>
       assertGridItemText(item.name, item.value.toString())

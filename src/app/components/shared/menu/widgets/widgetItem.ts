@@ -13,7 +13,9 @@ export class WidgetMenuItem {
     /** Component to display */
     public component: Type<WidgetComponent>,
     /** Whether or not to show this link */
-    public predicate?: UserCallback<boolean>
+    public predicate?: UserCallback<boolean>,
+    /** Options to be passed to the component */
+    public options?: Record<string, unknown>
   ) {}
 }
 

@@ -13,7 +13,11 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
-import { permissionsWidgetMenuItem } from "@menu/widget.menus";
+import {
+  permissionsWidgetMenuItem,
+} from "@menu/widget.menus";
+import { WidgetMenuItem } from "@menu/widgetItem";
+import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { HarvestStagesService } from "../../services/harvest-stages.service";
 import { harvestsMenuItemActions } from "../list/list.component";
 
@@ -56,7 +60,14 @@ DetailsComponent.linkToRoute({
     actions: List([...harvestsMenuItemActions, newSiteMenuItem]),
     actionWidgets: List([
       harvestValidationsWidgetMenuItem,
-      permissionsWidgetMenuItem
+      permissionsWidgetMenuItem,
+      new WidgetMenuItem(WebsiteStatusWarningComponent, undefined, {
+        feature: "isUploadingHealthy",
+        message: `
+         Uploading is temporarily unavailable.
+          Please try again later.
+        `,
+      }),
     ]),
   },
   pageRoute: harvestMenuItem,

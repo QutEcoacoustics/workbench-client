@@ -9,6 +9,7 @@ import { MenuService } from "@services/menu/menu.service";
 import { viewports } from "@test/helpers/general";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
+import { WebsiteStatusIndicatorComponent } from "@menu/website-status-indicator/website-status-indicator.component";
 import { HeaderComponent } from "./header.component";
 
 describe("HeaderComponent", () => {
@@ -24,6 +25,7 @@ describe("HeaderComponent", () => {
     declarations: [
       MockComponent(MenuToggleComponent),
       MockComponent(PrimaryMenuComponent),
+      MockComponent(WebsiteStatusIndicatorComponent),
     ],
     imports: [RouterTestingModule, MockBawApiModule, MockDirectivesModule],
   });
@@ -75,6 +77,21 @@ describe("HeaderComponent", () => {
       expect(getPrimaryMenu()).toHaveComputedStyle({
         flexGrow: "1",
       });
+    });
+  });
+
+  describe("status indicator", () => {
+    const statusIndicatorElement = (): HTMLElement =>
+      spec.query("baw-website-status-indicator");
+
+    it("should show when in mobile view", () => {
+      viewport.set(viewports.small);
+      expect(statusIndicatorElement()).toBeVisible();
+    });
+
+    it("should hide when in desktop view", () => {
+      viewport.set(viewports.large);
+      expect(statusIndicatorElement()).toBeHidden();
     });
   });
 });

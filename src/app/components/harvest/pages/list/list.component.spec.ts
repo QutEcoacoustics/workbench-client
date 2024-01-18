@@ -23,6 +23,7 @@ import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
 import { withDefaultZone } from "@test/helpers/mocks";
+import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { ListComponent } from "./list.component";
 
 describe("ListComponent", () => {
@@ -34,7 +35,11 @@ describe("ListComponent", () => {
   let modalConfigService: NgbModalConfig;
 
   const createComponent = createRoutingFactory({
-    declarations: [ConfirmationComponent, UserLinkComponent],
+    declarations: [
+      ConfirmationComponent,
+      UserLinkComponent,
+      WebsiteStatusWarningComponent,
+    ],
     component: ListComponent,
     imports: [MockBawApiModule, SharedModule],
     mocks: [ToastrService],
@@ -131,7 +136,6 @@ describe("ListComponent", () => {
     // it doesn't impact future tests by using a stale modal
     modalService?.dismissAll();
   });
-
 
   assertPageInfo(ListComponent, ["Recording Uploads", "All Recording Uploads"]);
 
@@ -237,7 +241,7 @@ describe("ListComponent", () => {
             "status",
           ],
         },
-      }),
+      })
     );
   });
 
@@ -257,7 +261,7 @@ describe("ListComponent", () => {
             eq: defaultProject.id,
           },
         },
-      }),
+      })
     );
   });
 
@@ -284,7 +288,8 @@ describe("ListComponent", () => {
     const expectedProject: Project = defaultHarvest.project;
     const expectedProjectName: string = expectedProject.name;
 
-    const projectNameColumnValue: HTMLTableCellElement = getElementByInnerText(expectedProjectName);
+    const projectNameColumnValue: HTMLTableCellElement =
+      getElementByInnerText(expectedProjectName);
 
     expect(projectNameColumnValue).toExist();
   });
