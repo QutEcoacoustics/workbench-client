@@ -30,6 +30,7 @@ import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { CacheModule } from "@services/cache/cache.module";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
+import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
 import { DownloadTableComponent } from "../../components/download-table/download-table.component";
 import { DownloadAudioRecordingsComponent } from "./download.component";
@@ -47,6 +48,7 @@ describe("DownloadAudioRecordingsComponent", () => {
     declarations: [
       MockComponent(SitesWithoutTimezonesComponent),
       MockComponent(DownloadTableComponent),
+      MockComponent(WebsiteStatusWarningComponent),
       DateTimeFilterComponent,
     ],
     // We are relying on AudioRecordingsService's batchDownloadUrl so we will

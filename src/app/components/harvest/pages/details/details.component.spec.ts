@@ -18,6 +18,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponents } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { PageTitleStrategy } from "src/app/app.component";
+import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { DetailsComponent } from "./details.component";
 
 describe("DetailsComponent", () => {
@@ -33,7 +34,8 @@ describe("DetailsComponent", () => {
       MetadataExtractionComponent,
       ProcessingComponent,
       MetadataReviewComponent,
-      CompleteComponent
+      CompleteComponent,
+      WebsiteStatusWarningComponent,
     ),
     providers: [
       mockProvider(HarvestStagesService),

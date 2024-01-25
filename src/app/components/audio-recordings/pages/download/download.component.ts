@@ -9,16 +9,22 @@ import { regionResolvers } from "@baw-api/region/regions.service";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { contactUsMenuItem } from "@components/about/about.menus";
-import { audioRecordingMenuItems, audioRecordingsCategory } from "@components/audio-recordings/audio-recording.menus";
+import {
+  audioRecordingMenuItems,
+  audioRecordingsCategory,
+} from "@components/audio-recordings/audio-recording.menus";
 import { myAccountMenuItem } from "@components/profile/profile.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { List } from "immutable";
 import { BehaviorSubject, takeUntil } from "rxjs";
 import { loginMenuItem } from "src/app/components/security/security.menus";
 
@@ -33,7 +39,8 @@ const siteKey = "site";
 class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   @ViewChild(NgForm) public form: NgForm;
 
-  public filters$: BehaviorSubject<Filters<AudioRecording>> = new BehaviorSubject({});
+  public filters$: BehaviorSubject<Filters<AudioRecording>> =
+    new BehaviorSubject({});
 
   public contactUs = contactUsMenuItem;
   public href = "";
@@ -48,7 +55,7 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   public constructor(
     public session: BawSessionService,
     private route: ActivatedRoute,
-    private recordingsApi: AudioRecordingsService,
+    private recordingsApi: AudioRecordingsService
   ) {
     super();
   }
@@ -92,8 +99,18 @@ function getPageInfo(
   subRoute: keyof typeof audioRecordingMenuItems.batch
 ): IPageInfo {
   return {
-    pageRoute: audioRecordingMenuItems.batch[subRoute],
     category: audioRecordingsCategory,
+    pageRoute: audioRecordingMenuItems.batch[subRoute],
+    menus: {
+      actionWidgets: List([
+        new WidgetMenuItem(WebsiteStatusWarningComponent, () => true, {
+          message: `
+            Downloading audio is temporarily unavailable.
+            Please try again later.
+          `,
+        }),
+      ]),
+    },
     resolvers: {
       [projectKey]: projectResolvers.show,
       [regionKey]: regionResolvers.showOptional,

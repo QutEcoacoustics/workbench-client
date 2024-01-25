@@ -37,9 +37,10 @@ import { modelData } from "@test/helpers/faker";
 import { viewports } from "@test/helpers/general";
 import { websiteHttpUrl } from "@test/helpers/url";
 import camelCase from "just-camel-case";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
+import { WebsiteStatusIndicatorComponent } from "@menu/website-status-indicator/website-status-indicator.component";
 import { HeaderDropdownComponent } from "../header-dropdown/header-dropdown.component";
 import { HeaderItemComponent } from "../header-item/header-item.component";
 import { PrimaryMenuComponent } from "./primary-menu.component";
@@ -52,7 +53,11 @@ describe("PrimaryMenuComponent", () => {
   const createComponent = createComponentFactory({
     component: PrimaryMenuComponent,
     providers: [MockProvider(ToastrService)],
-    declarations: [HeaderItemComponent, HeaderDropdownComponent],
+    declarations: [
+      MockComponent(WebsiteStatusIndicatorComponent),
+      HeaderItemComponent,
+      HeaderDropdownComponent,
+    ],
     imports: [
       RouterTestingModule,
       MockBawApiModule,
@@ -393,6 +398,38 @@ describe("PrimaryMenuComponent", () => {
       const link = spec.query<HTMLElement>(getLinkId(loginMenuItem));
       expect(link).toContainText(loginMenuItem.label);
     }));
+  });
+
+  describe("status indicator", () => {
+    const statusIndicatorElement = (): HTMLElement =>
+      spec.query("baw-website-status-indicator");
+
+    // the functionality of the status indicator is tested within the website-status-indicator component
+    // therefore, we only need to assert that the indicator is shown under the correct conditions
+    it("should show the status indicator when not in the sidebar and on desktop", () => {
+      setup({
+        user: null,
+        isFullscreen: false,
+        isSideNav: false,
+      });
+      viewport.set(viewports.large);
+
+      spec.detectChanges();
+
+      expect(statusIndicatorElement()).toExist();
+    });
+
+    it("should hide the status indicator when in the sidebar", () => {
+      setup({
+        user: null,
+        isFullscreen: false,
+        isSideNav: true,
+      });
+
+      spec.detectChanges();
+
+      expect(statusIndicatorElement()).not.toExist();
+    });
   });
 
   describe("display logic", () => {

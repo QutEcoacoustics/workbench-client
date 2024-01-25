@@ -33,13 +33,9 @@ class WebsiteStatusComponent extends PageComponent implements OnInit {
   protected reportProblemRoute = reportProblemMenuItem.route;
 
   public ngOnInit(): void {
-    this.api
-      .show()
+    this.api.status$
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe({
-        next: (model) => (this.model = model),
-        error: () => (this.model = null),
-      });
+      .subscribe((model) => (this.model = model));
   }
 
   protected model: WebsiteStatus;

@@ -28,6 +28,16 @@ import { MenuService } from "@services/menu/menu.service";
 
         <!-- Header Links, only visible on desktop viewports -->
         <baw-primary-menu class="flex-grow-1"></baw-primary-menu>
+
+        <!--
+          Because on desktop we have the website status indicator next to the user login/logout elements.
+          The indicator will be hidden when the primary menu is hidden on mobile views.
+          We therefore add another indicator when in mobile view so that there is always a warning indicator
+          for a bad website status.
+        -->
+        <baw-website-status-indicator
+          class="d-block d-lg-none"
+        ></baw-website-status-indicator>
       </div>
     </nav>
 

@@ -22,6 +22,8 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
+import { WidgetMenuItem } from "@menu/widgetItem";
+import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import schema from "./audio-recording.schema.json";
 
 const audioRecordingKey = "audioRecording";
@@ -78,7 +80,17 @@ function getPageInfo(
   return {
     pageRoute: audioRecordingMenuItems.details[subRoute],
     category: audioRecordingsCategory,
-    menus: { actions: List([downloadAudioRecordingMenuItem, downloadAudioRecordingAnalysesMenuItem]) },
+    menus: {
+      actions: List([downloadAudioRecordingMenuItem, downloadAudioRecordingAnalysesMenuItem]),
+      actionWidgets: List([
+        new WidgetMenuItem(WebsiteStatusWarningComponent, undefined, {
+          message: `
+            Downloading audio is temporarily unavailable.
+            Please try again later.
+          `,
+        }),
+      ]),
+    },
     resolvers: {
       [audioRecordingKey]: audioRecordingResolvers.show,
       [projectKey]: projectResolvers.showOptional,

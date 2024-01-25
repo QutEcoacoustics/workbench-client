@@ -14,6 +14,8 @@ import { filterModel } from "@helpers/filters/filters";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { toRelative } from "@interfaces/apiInterfaces";
+import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
+import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -176,7 +178,17 @@ function getPageInfo(subRoute: keyof typeof menuItems): IPageInfo {
   return {
     category: audioRecordingsCategory,
     pageRoute: menuItems[subRoute],
-    menus: { actions: List([downloadMenuItems[subRoute], visualizeMenuItem]) },
+    menus: {
+      actions: List([downloadMenuItems[subRoute], visualizeMenuItem]),
+      actionWidgets: List([
+        new WidgetMenuItem(WebsiteStatusWarningComponent, undefined, {
+          message: `
+            Downloading and playing audio is temporarily unavailable.
+            Please try again later.
+          `,
+        }),
+      ]),
+    },
     resolvers: {
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,

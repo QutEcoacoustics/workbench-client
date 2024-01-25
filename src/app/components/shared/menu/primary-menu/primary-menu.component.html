@@ -20,6 +20,8 @@
 
   <!-- Right aligned links -->
   <ul class="navbar-nav">
+    <baw-website-status-indicator *ngIf="!isSideNav"></baw-website-status-indicator>
+
     <ng-container
       *ngTemplateOutlet="user ? userTemplate : guestTemplate"
     ></ng-container>
