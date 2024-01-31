@@ -1,6 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
-import { hsl, HSLColor } from "d3-color";
+import { hsl, rgb, HSLColor, RGBColor } from "d3-color";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 const themeColors = [
@@ -14,16 +14,23 @@ const themeColors = [
   "light",
   "dark",
 ] as const;
-export type ThemeColor = typeof themeColors[number];
+export type ThemeColor = (typeof themeColors)[number];
 
-const themeVariants = [
-  "",
-  "-lighter",
-  "-lightest",
-  "-darker",
-  "-darkest",
-] as const;
-export type ThemeVariant = typeof themeVariants[number];
+// mimics our create-variable function in _functions.scss that creates different lightness variants of a colour
+const themeVariants: Record<string, number> = {
+  default: 0,
+  lighter: 0.1,
+  lightest: 0.25,
+  darker: -0.1,
+  darkest: -0.25,
+} as const;
+export type ThemeVariant = keyof typeof themeVariants;
+
+const bootstrapVariables: [string, number][] = [
+  ["--bs-link-color", themeVariants.default],
+  ["--bs-link-hover-color", themeVariants.darker],
+];
+export type BootstrapVariable = (typeof bootstrapVariables)[number][0];
 
 /** Configuration theme settings */
 export type BawTheme = { [color in ThemeColor]?: string };
@@ -35,7 +42,7 @@ export class ThemeService {
   /** List of colour options in theme */
   public themeColors = themeColors;
   /** List of variants for each colour option in theme */
-  public themeVariants = themeVariants;
+  public themeVariants = Object.keys(themeVariants);
 
   /** Tracks config changes to theme */
   private theme: BawTheme;
@@ -62,6 +69,8 @@ export class ThemeService {
     for (const themeColor of Object.keys(this.theme)) {
       this.setColor(themeColor as ThemeColor, this.theme[themeColor]);
     }
+
+    this.overrideBootstrapColors(this.theme.highlight);
   }
 
   /**
@@ -100,6 +109,59 @@ export class ThemeService {
     if (color) {
       this.setColorInSsr(colorName, color);
     }
+  }
+
+  // We are overriding bootstrap at runtime because bootstrap uses a custom SCSS RGB() function to extract red, green
+  // blue values from a color. This does not work with our --baw-highlight variable because we do not know the value at
+  // compile time.
+  // we override the bootstrap variables with our own rgb() function at runtime when we know the value of baw-highlight
+  // TODO: We can replace this with the CSS rgb() function when it is supported by all browsers
+  // https://caniuse.com/mdn-css_types_color_rgb_relative_syntax
+  private overrideBootstrapColors(color: string) {
+    const targetColor = hsl(color);
+
+    bootstrapVariables.forEach(([variable, lightnessAdjustment]) => {
+      const hslColor = targetColor
+        .copy({ l: targetColor.l + lightnessAdjustment })
+        .clamp();
+
+      const rgbColor = rgb(hslColor);
+
+      if (!this.isServer) {
+        this.setBootstrapColorInBrowser(variable, rgbColor);
+        return;
+      }
+
+      this.setBootstrapColorInSsr(variable, rgbColor);
+    });
+  }
+
+  private setBootstrapColorInBrowser(
+    variable: BootstrapVariable,
+    rgbColor: RGBColor
+  ): void {
+    this.root.style.setProperty(variable, rgbColor.toString());
+
+    // bootstrap seems to double define css color variables, one with the RGB color (as per above)
+    // and one as an array of r, g, and b, values which can be inserted into other constructs
+    this.root.style.setProperty(
+      `${variable}-rgb`,
+      `${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}`
+    );
+  }
+
+  private setBootstrapColorInSsr(
+    variable: BootstrapVariable,
+    rgbColor: RGBColor
+  ): void {
+    const style = this.document.createElement("style");
+    style.innerHTML = `
+      :root {
+        ${variable}: ${rgbColor.toString()};
+        ${variable}-rgb: ${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b};
+      }
+    `;
+    this.document.head.appendChild(style);
   }
 
   private setColorInBrowser(

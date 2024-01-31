@@ -47,7 +47,10 @@ class AdminThemeTemplateComponent
 
   public ngOnInit(): void {
     this.themeColors = this.theme.themeColors;
-    this.themeVariants = this.theme.themeVariants;
+    this.themeVariants = this.theme.themeVariants.map(
+      (variant) => `-${variant}`
+    );
+
     this.resetSelection();
   }
 

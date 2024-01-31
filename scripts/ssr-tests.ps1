@@ -97,7 +97,7 @@ Assert-Contains "<h1>Not Found<\/h1>" $brokenFile
 # Tests for angular production build
 Format-Info "Retrieve angular bundle"
 $bundleFile = "main.js"
-Get-Page $((Select-String -Pattern "main\..+?\.js" -Path $indexFile).Matches.Value) $bundleFile
+Get-Page $((Select-String -Pattern "main-.+?\.js" -Path $indexFile).Matches.Value) $bundleFile
 Format-Info "Validate footer contains version"
 Assert-Contains "version:`"\d{2}\.\d{1,2}\.\d{1,2}.+?`"" $bundleFile
 
