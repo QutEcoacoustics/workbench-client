@@ -94,15 +94,13 @@ class AssignComponent
       (newId) => !this.oldSiteIds.some((id) => id === newId)
     );
 
-    // Weird filter because of https://github.com/QutEcoacoustics/baw-server/issues/502
+    // this is not related to baw-server/issues/502 because baw-api.service always emits the model kind
+    // in the request body. Meaning that project_ids is retained in the request body.
     const createFilter = (site: Site) =>
-      this.api.update({
-        id: site.id,
-        site: { projectIds: Array.from(site.projectIds) },
-      } as any);
+      this.api.update(site);
 
     // Workaround required because API ignores changes to project ids
-    forkJoin([
+    forkJoin<Site[]>([
       // Add project id to new site
       ...newSites.map((id) =>
         this.api.show(id).pipe(
@@ -131,6 +129,13 @@ class AssignComponent
           this.error = err;
         },
       });
+
+    // we initialize the the oldSiteIds variable in onInit
+    // Because when the user submits they don't navigate, it's possible for multiple update requests in one page load
+    // therefore, we update the oldSiteIds here so that the user can perform an action such as
+    // select site > update > de-select same site > update
+    // this would not be possible without updating the oldSiteIds here as oldSiteIds would only be updated on page load
+    this.oldSiteIds = newSiteIds;
   }
 
   public getPageData() {

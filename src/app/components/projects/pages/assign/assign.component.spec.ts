@@ -1,91 +1,221 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { projectResolvers } from "@baw-api/project/projects.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
-import { SpyObject } from "@ngneat/spectator";
+import { Spectator, SpyObject, createRoutingFactory } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { mockActivatedRoute } from "@test/helpers/testbed";
-import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
+import { of } from "rxjs";
+import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { ToastrService } from "ngx-toastr";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { Site } from "@models/Site";
+import { generateSite } from "@test/fakes/Site";
+import { modelData } from "@test/helpers/faker";
 import { AssignComponent } from "./assign.component";
 
-// TODO
+// some functionality for the sites table is not tested in this component because it is tested by the PagedTableTemplate
+// eg. filtering, sorting, pagination, etc.
 describe("AssignComponent", () => {
-  let api: SpyObject<ShallowSitesService>;
-  let component: AssignComponent;
-  let defaultProject: Project;
-  let fixture: ComponentFixture<AssignComponent>;
+  let mockApi: SpyObject<ShallowSitesService>;
+  let spectator: Spectator<AssignComponent>;
+  let mockProject: Project;
+  let mockSites: Site[];
 
-  function configureTestingModule(model: Project, error?: BawApiError) {
-    TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [AssignComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { project: projectResolvers.show },
-            { project: { model, error } }
-          ),
-        },
-      ],
-    }).compileComponents();
+  const createComponent = createRoutingFactory({
+    component: AssignComponent,
+    imports: [MockBawApiModule, SharedModule],
+    mocks: [ToastrService],
+  });
 
-    fixture = TestBed.createComponent(AssignComponent);
-    component = fixture.componentInstance;
-    api = TestBed.inject(ShallowSitesService) as SpyObject<ShallowSitesService>;
-    api.filter.and.callFake(() => new Subject());
+  function setup(): void {
+    spectator = createComponent({ detectChanges: false });
 
-    fixture.detectChanges();
+    mockApi = spectator.inject(SHALLOW_SITE.token);
+
+    // by using a callback for the mockApi, we can update defaultSites to change the mock return value
+    mockApi.filter = jasmine.createSpy("filter") as any;
+    mockApi.filter.and.callFake(() => of(mockSites));
+
+    mockApi.show = jasmine.createSpy("show") as any;
+    mockApi.show.and.callFake((id) =>
+      of(mockSites.find((site) => site.id === id))
+    );
+
+    mockApi.update = jasmine.createSpy("update") as any;
+    mockApi.update.and.callFake((model: Site) => of(model));
+
+    spyOnProperty(spectator.component, "project", "get").and.callFake(
+      () => mockProject
+    );
+
+    spectator.detectChanges();
+  }
+
+  const projectHeader = (): HTMLHeadingElement =>
+    spectator.query<HTMLHeadingElement>("h1");
+  const updateButton = (): HTMLButtonElement =>
+    spectator.query<HTMLButtonElement>("button[type='submit']");
+
+  function getElementByInnerText<T extends HTMLElement>(text: string): T {
+    return spectator.debugElement.query(
+      (element) => element.nativeElement.innerText === text
+    )?.nativeElement as T;
+  }
+
+  function submitForm(): void {
+    const updateButtonElement = updateButton();
+    updateButtonElement.click();
+    spectator.detectChanges();
+  }
+
+  function getSiteRow(siteName: string): HTMLElement {
+    return getElementByInnerText(siteName).parentElement.parentElement;
+  }
+
+  function getSiteCheckbox(siteName: string): HTMLInputElement {
+    const siteRow = getSiteRow(siteName);
+    const siteCheckbox = siteRow.querySelector<HTMLInputElement>(
+      "input[type='checkbox']"
+    );
+
+    return siteCheckbox;
+  }
+
+  function selectSite(model: Site): void {
+    const siteCheckbox = getSiteCheckbox(model.name);
+
+    if (!siteCheckbox.checked) {
+      siteCheckbox.click();
+      spectator.detectChanges();
+    }
+  }
+
+  function deselectSite(model: Site): void {
+    const siteCheckbox = getSiteCheckbox(model.name);
+
+    if (siteCheckbox.checked) {
+      siteCheckbox.click();
+      spectator.detectChanges();
+    }
   }
 
   beforeEach(() => {
-    defaultProject = new Project(generateProject());
+    const defaultMetadata = {
+      paging: { items: 1, page: 0, total: 1, maxPage: 5 },
+    };
+
+    // I set the id to the index of the array and use the index in the name so that each name and id is unique
+    // this is because without unique names and ids, there is a possibility that the tests will fail because
+    // two sites with the same id and name will be generated
+    mockSites = modelData.randomArray(5, 10, (id: number) => {
+      const site = new Site(
+        generateSite({
+          id,
+          name: `${modelData.param()}-${id}`,
+          projectIds: [],
+        })
+      );
+
+      site.addMetadata(defaultMetadata);
+
+      return site;
+    });
+
+    mockProject = new Project(generateProject({ id: 0, siteIds: [] }));
   });
 
   assertPageInfo(AssignComponent, "Assign Sites");
 
   it("should create", () => {
-    configureTestingModule(defaultProject);
-    expect(component).toBeTruthy();
+    setup();
+    expect(spectator.component).toBeInstanceOf(AssignComponent);
   });
 
-  xit("should display project in title", () => {});
-  xit("should display descriptive text", () => {});
-
-  xdescribe("projects api", () => {
-    it("should request project using project id", () => {});
-    it("should request project using random project id", () => {});
+  it("should display project in title", () => {
+    setup();
+    const expectedText = mockProject.name;
+    expect(projectHeader()).toHaveExactTrimmedText(expectedText);
   });
 
-  xdescribe("sites api", () => {
-    it("should send filter request", () => {});
-    it("should request first page of data on load", () => {});
-    it("should request custom page of data on table page change", () => {});
+  it("should display descriptive text", () => {
+    setup();
+    const descriptionElementText = [
+      "Select the sites to be part of this project, and click 'Update' at the bottom of this page.",
+      "Only the selected sites will be part of this project.",
+    ];
+
+    descriptionElementText.forEach((text) => {
+      expect(getElementByInnerText(text)).toExist();
+    });
   });
 
-  xdescribe("table", () => {
-    it("should contain table", () => {});
-    it("should have checkbox option", () => {});
-    it("should handle single selection", () => {});
-    it("should handle multiple selections", () => {});
-    it("should handle change page", () => {});
-    it("should handle skipping to last page", () => {});
-    it("should not be sortable", () => {});
-    it("should handle single page table", () => {});
-    it("should handle multi page table", () => {});
-    it("should display total number of sites with single page", () => {});
-    it("should display total number of sites with multiple pages", () => {});
+  it("should send the correct filter request on initialization", () => {
+    setup();
+    const expectedRequest = {};
+    expect(mockApi.filter).toHaveBeenCalledOnceWith(expectedRequest);
+  });
+
+  it("should call onSubmit when the update button is clicked", () => {
+    setup();
+    spyOn(spectator.component, "onSubmit");
+
+    submitForm();
+
+    expect(spectator.component.onSubmit).toHaveBeenCalled();
+  });
+
+  it("should make the correct api call for removing a site from a project", () => {
+    // because we are removing the site from the project, we will be expecting the site to be called with no projectIds
+    const expectedProjectIds = new Set([]);
+
+    const mockProjectId = 0;
+    const mockSiteId = 42;
+
+    const mockSite = new Site(
+      generateSite({ id: mockSiteId, projectIds: [mockProjectId] })
+    );
+    mockSite.addMetadata({
+      paging: { items: 1, page: 0, total: 1, maxPage: 5 },
+    });
+
+    mockSites = [mockSite];
+    mockProject = new Project(
+      generateProject({ id: 0, siteIds: [mockSiteId] })
+    );
+
+    setup();
+
+    deselectSite(mockSites[0]);
+    submitForm();
+
+    expect(mockApi.update).toHaveBeenCalledOnceWith(
+      jasmine.objectContaining({
+        projectIds: expectedProjectIds,
+      })
+    );
+  });
+
+  it("should make the correct api call for adding a site to a project", () => {
+    setup();
+    selectSite(mockSites[0]);
+    const expectedProjectIds = new Set([mockProject.id]);
+
+    submitForm();
+
+    expect(mockApi.update).toHaveBeenCalledOnceWith(
+      jasmine.objectContaining({
+        projectIds: expectedProjectIds,
+      })
+    );
+  });
+
+  it("should not make any api requests when selecting and deselecting the same site", () => {
+    setup();
+    selectSite(mockSites[0]);
+    deselectSite(mockSites[0]);
+
+    submitForm();
+
+    expect(mockApi.update).not.toHaveBeenCalled();
   });
 });
