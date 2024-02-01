@@ -1,9 +1,15 @@
-import { Component, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  WritableSignal,
+  effect,
+  signal,
+} from "@angular/core";
 import { toRelative } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
-import { interval } from "rxjs";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractTemplateComponent } from "../abstract-template.component";
 import { AbstractDatetimeComponent } from "../datetime/abstract-datetime.component";
 
@@ -15,56 +21,58 @@ type InputType = Duration | DateTime | Date;
   styleUrls: ["time-since.component.scss"],
   standalone: true,
   imports: [NgbTooltipModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TimeSinceComponent
-  extends AbstractTemplateComponent<InputType, DateTime>
-  implements OnInit
-{
-  public constructor() {
+export class TimeSinceComponent extends AbstractTemplateComponent<
+  InputType,
+  DateTime
+> {
+  public constructor(private changeDetector: ChangeDetectorRef) {
     super();
-  }
 
-  private tick = TimeSinceComponent.tick$.pipe(takeUntilDestroyed());
-  private lastChange = DateTime.now();
+    effect(() => {
+      const now = TimeSinceComponent.tick();
+      const valueDelta = now.diff(this.value());
+      const lastChangeDelta = now.diff(this.lastChange);
 
-  public ngOnInit(): void {
-    // because we are using takeUntilDestroyed, we don't need a takeUntil
-    // this is because all the functionality is handled by takeUntilDestroyed
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.tick.subscribe(() => {
-      const valueDelta = this.value.diffNow();
-      const lastChangeDelta = this.lastChange.diffNow();
-
-      // we want to update the "time since" every second if the time is less than a minute
-      // if the time since is greater than a minute, we want to update the value every minute
-      // because the observable will trigger every second, using elapsedTime.seconds < 1
-      // will cause the value to update roughly every minute
       if (
         Math.abs(valueDelta.as("seconds")) <= 60 ||
         Math.abs(lastChangeDelta.as("seconds")) >= 60
       ) {
         this.update();
+
+        // normal input signal fields mark a component for changes
+        // since the static tick() function is an ordinary writable signal
+        // we need to manually mark the component as dirty to trigger change detection
+        this.changeDetector.markForCheck();
+        this.lastChange = now;
       }
     });
   }
 
+  private lastChange = DateTime.now();
+
   public update(): void {
-    const tooltipDate = this.value.toFormat(
+    const value = this.value();
+
+    const tooltipDate = value.toFormat(
       AbstractTemplateComponent.TOOLTIP_DATETIME
     );
     const tooltipZone = AbstractDatetimeComponent.formatTimezone(
-      this.value.zone,
-      this.value
+      value.zone,
+      value
     );
 
-    const durationSince = this.value.diffNow().rescale();
+    const durationSince = value.diffNow().rescale();
 
-    this.tooltipText = `${tooltipDate} ${tooltipZone}`;
-    this.isoDateTime = durationSince.toISO();
-    this.documentText = toRelative(durationSince, {
+    const relativeTime = toRelative(durationSince, {
       largest: 2,
       round: true,
     });
+
+    this.tooltipText = `${tooltipDate} ${tooltipZone}`;
+    this.isoDateTime = durationSince.toISO();
+    this.documentText = relativeTime;
 
     // if the duration is positive, it implies that the date/time is in the future
     // therefore, we want to change the suffix from "ago" to "from now"
@@ -73,8 +81,6 @@ export class TimeSinceComponent
     } else {
       this.suffix = "ago";
     }
-
-    this.lastChange = DateTime.now();
   }
 
   protected override normalizeValue(value: InputType): DateTime {
@@ -91,5 +97,17 @@ export class TimeSinceComponent
     return dateTimeObject.toLocal();
   }
 
-  public static readonly tick$ = interval(1000);
+  private static tickValue: WritableSignal<DateTime>;
+
+  public static get tick(): WritableSignal<DateTime> {
+    if (!isInstantiated(TimeSinceComponent.tickValue)) {
+      TimeSinceComponent.tickValue = signal(DateTime.now());
+
+      setInterval(() => {
+        TimeSinceComponent.tickValue.set(DateTime.now());
+      }, 1000);
+    }
+
+    return TimeSinceComponent.tickValue;
+  }
 }

@@ -69,8 +69,10 @@ export function assertTooltip(element: HTMLElement, content: string) {
 
   const tooltipElement = document.querySelector("ngb-tooltip-window");
 
-  expect(tooltipElement).toExist();
-  expect(tooltipElement).toHaveExactText(content);
+  // we do not use toExist() and toHaveExactText() here because they are ngNeat assertions and do not work when used
+  // with Angular's TestBed
+  expect(tooltipElement).toBeTruthy();
+  expect(tooltipElement.textContent.trim()).toBe(content);
 
   element.dispatchEvent(new MouseEvent("mouseleave"));
 }

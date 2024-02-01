@@ -1,4 +1,9 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnChanges,
+  input,
+} from "@angular/core";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { DateTime, Duration } from "luxon";
 
@@ -8,6 +13,7 @@ type InputTypes = DateTime | Date | Duration | string;
   templateUrl: "./abstract-template.component.html",
   standalone: true,
   imports: [NgbTooltipModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export abstract class AbstractTemplateComponent<
   InputType extends InputTypes,
@@ -16,31 +22,24 @@ export abstract class AbstractTemplateComponent<
 {
   public constructor() {}
 
-  // we use getters and setters on the [input] prop so that we can change the shape of the input
+  // we use a transform function on the [input] prop so that we can change the shape of the input
   // to a uniform type. This allows us to take multiple types as input and convert them into a single type
   // eg. the [input] can take a Luxon DateTime, JS Date, or string and convert this.value into a Luxon DateTime
-  @Input({ required: true })
-  public set value(value: InputType) {
-    this._value = this.normalizeValue(value);
-  }
-
-  public get value(): NormalizedType {
-    return this._value;
-  }
+  public readonly value = input.required<NormalizedType, InputType>({
+    transform: (newValue) => this.normalizeValue(newValue),
+  });
 
   // the ISO dateTime is used in the <time> elements "datetime" attribute
   // this attribute is used by screen readers and web scrapers to determine the date and time
-  public isoDateTime: string;
-  public documentText: string;
-  public tooltipText: string;
-  public suffix = "";
-  private _value: NormalizedType;
+  protected isoDateTime: string;
+  protected documentText: string;
+  protected tooltipText: string;
+  protected suffix: string;
 
   /**
    * A method that should update formattedValue, tooltipValue, and rawDateTime
    * before each change detection cycle
    */
-
   public ngOnChanges(): void {
     this.update();
   }

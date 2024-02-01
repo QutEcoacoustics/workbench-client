@@ -1,10 +1,11 @@
-import { Spectator, createComponentFactory } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { Duration, DurationLikeObject } from "luxon";
 import { modelData } from "@test/helpers/faker";
 import { assertTooltip } from "@test/helpers/html";
 import { withDefaultZone } from "@test/helpers/mocks";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
 import { DurationComponent } from "./duration.component";
 
 // I have created this interface for TypeScript LSP typing and auto completion
@@ -70,43 +71,45 @@ const testCases: TestCase[] = [
 /* eslint-enable max-len */
 
 describe("DurationComponent", () => {
-  let spectator: Spectator<DurationComponent>;
-
-  const createComponent = createComponentFactory({
-    component: DurationComponent,
-    imports: [SharedModule, MockBawApiModule],
-  });
-
-  function update(): void {
-    spectator.detectChanges();
-    spectator.component.ngOnChanges();
-    spectator.detectChanges();
-  }
+  let fixture: ComponentFixture<DurationComponent>;
+  let component: DurationComponent;
 
   function timeElement(): HTMLTimeElement {
-    return spectator.element.querySelector<HTMLTimeElement>("time");
+    return fixture.debugElement.query(By.css("time")).nativeElement;
   }
 
-  beforeEach(() => (spectator = createComponent()));
+  // because signal inputs are not supported by ngNeat/spectator, I have used the Angular native TestBed
+  // so that using setInput() correctly updates the input signal
+  // TODO: replace with ngNeat/spectator once https://github.com/ngneat/spectator/issues/637 is resolved
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [SharedModule, MockBawApiModule],
+    });
+
+    fixture = TestBed.createComponent(DurationComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+  });
 
   it("should create", () => {
-    spectator.component.value = modelData.time();
-    expect(spectator.component).toBeInstanceOf(DurationComponent);
+    fixture.componentRef.setInput("value", modelData.time());
+    expect(component).toBeInstanceOf(DurationComponent);
   });
 
   withDefaultZone("Australia/Perth", () => {
     testCases.forEach((testCase) => {
       describe(testCase.name, () => {
         beforeEach(() => {
-          spectator.component.value = testCase.value;
-          spectator.component.iso8601 = testCase.iso8601;
-          spectator.component.humanized = testCase.humanized;
-          spectator.component.sexagesimal = testCase.sexagesimal;
-          update();
+          fixture.componentRef.setInput("value", testCase.value);
+          fixture.componentRef.setInput("iso8601", testCase.iso8601);
+          fixture.componentRef.setInput("humanized", testCase.humanized);
+          fixture.componentRef.setInput("sexagesimal", testCase.sexagesimal);
+          fixture.detectChanges();
         });
 
         it("should have the correct text", () => {
-          expect(timeElement()).toHaveExactTrimmedText(testCase.expectedText);
+          expect(timeElement().textContent.trim()).toBe(testCase.expectedText);
         });
 
         it("should have the correct tooltip", () => {
