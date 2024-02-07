@@ -1,4 +1,9 @@
-import { Component, Input, booleanAttribute } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  booleanAttribute,
+  input
+} from "@angular/core";
 import { toRelative } from "@interfaces/apiInterfaces";
 import { Duration } from "luxon";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
@@ -11,6 +16,7 @@ type InputType = Duration | string;
   templateUrl: "../abstract-template.component.html",
   standalone: true,
   imports: [NgbTooltipModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DurationComponent extends AbstractTemplateComponent<InputType, Duration> {
   public constructor() {
@@ -19,33 +25,39 @@ export class DurationComponent extends AbstractTemplateComponent<InputType, Dura
 
   // an empty string is used to indicate that the attribute is present
   // eg. <baw-duration humanized> will cause the humanized attribute to be set to an empty string ("")
-  @Input({ transform: booleanAttribute }) public humanized?: boolean;
-  @Input({ transform: booleanAttribute }) public iso8601?: boolean;
-  @Input({ transform: booleanAttribute }) public sexagesimal?: boolean;
+  public humanized = input<boolean, string>(false, { transform: booleanAttribute });
+  public iso8601 = input<boolean, string>(false, { transform: booleanAttribute });
+  public sexagesimal = input<boolean, string>(false, { transform: booleanAttribute });
 
   public update(): void {
-    this.isoDateTime = this.value.toISO();
-    this.documentText = this.formattedValue();
-    this.tooltipText = this.tooltipValue();
+    const value = this.value();
+
+    this.isoDateTime = value.toISO();
+    this.documentText = this.formattedValue(value);
+    this.tooltipText = this.tooltipValue(value);
   }
 
   // if no format operator is supplied, the component will default to sexagesimal format
-  public formattedValue(): string {
-    if (this.humanized) {
-      const relativePrefix = this.value.valueOf() < 0 ? "-" : "";
-      return relativePrefix + toRelative(this.value, { largest: 2, round: true });
-    } else if (this.iso8601) {
-      return this.value.toISO();
-    } else if (this.sexagesimal) {
-      return this.value.toFormat(DurationComponent.DURATION_SEXAGESIMAL);
+  public formattedValue(value: Duration): string {
+    const humanizedFormat = this.humanized();
+    const iso8601Format = this.iso8601();
+    const sexagesimalFormat = this.sexagesimal();
+
+    if (humanizedFormat) {
+      const relativePrefix = value.valueOf() < 0 ? "-" : "";
+      return relativePrefix + toRelative(value, { largest: 2, round: true });
+    } else if (iso8601Format) {
+      return value.toISO();
+    } else if (sexagesimalFormat) {
+      return value.toFormat(DurationComponent.DURATION_SEXAGESIMAL);
     }
 
-    return this.value.toFormat(DurationComponent.DURATION_SEXAGESIMAL);
+    return value.toFormat(DurationComponent.DURATION_SEXAGESIMAL);
   }
 
-  public tooltipValue(): string {
+  public tooltipValue(value: Duration): string {
     const tooltipFormat = DurationComponent.DURATION_SEXAGESIMAL;
-    const sexagesimalDuration = this.value.toFormat(tooltipFormat);
+    const sexagesimalDuration = value.toFormat(tooltipFormat);
 
     return `${sexagesimalDuration} (${this.isoDateTime})`;
   }

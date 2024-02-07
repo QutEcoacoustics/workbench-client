@@ -1,9 +1,10 @@
-import { Spectator, createComponentFactory } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { DateTime } from "luxon";
 import { assertTooltip } from "@test/helpers/html";
 import { withDefaultZone } from "@test/helpers/mocks";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
 import { DatetimeComponent } from "./datetime.component";
 
 // I have created this interface for TypeScript LSP typing and auto completion
@@ -39,31 +40,30 @@ function test(
 }
 
 describe("DatetimeComponent", () => {
-  let spectator: Spectator<DatetimeComponent>;
-
-  const createComponent = createComponentFactory({
-    component: DatetimeComponent,
-    imports: [SharedModule, MockBawApiModule],
-  });
-
-  function update(): void {
-    spectator.detectChanges();
-    spectator.component.ngOnChanges();
-    spectator.detectChanges();
-  }
+  let fixture: ComponentFixture<DatetimeComponent>;
+  let component: DatetimeComponent;
 
   function timeElement(): HTMLTimeElement {
-    return spectator.query<HTMLTimeElement>("time");
+    return fixture.debugElement.query(By.css("time")).nativeElement;
   }
 
-  beforeEach(() => (spectator = createComponent()));
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [SharedModule, MockBawApiModule],
+    });
+
+    fixture = TestBed.createComponent(DatetimeComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+  });
 
   it("should create", () => {
     const fakeDateTime = DateTime.fromISO("2020-01-01T12:10:11.000Z");
-    spectator.component.value = fakeDateTime;
-    update();
+    fixture.componentRef.setInput("value", fakeDateTime);
+    fixture.detectChanges();
 
-    expect(spectator.component).toBeInstanceOf(DatetimeComponent);
+    expect(component).toBeInstanceOf(DatetimeComponent);
   });
 
   const localTimezone = "Australia/Perth";
@@ -104,17 +104,17 @@ describe("DatetimeComponent", () => {
     testCases.forEach((testCase) => {
       describe(`with ${testCase.name}`, () => {
         beforeEach(() => {
-          spectator.component.value = testCase.value;
-          spectator.component.date = testCase.date;
-          spectator.component.time = testCase.time;
+          fixture.componentRef.setInput("value", testCase.value);
+          fixture.componentRef.setInput("date", testCase.date);
+          fixture.componentRef.setInput("time", testCase.time);
 
-          update();
+          fixture.detectChanges();
         });
 
         // by using withDefaultZone we are able to mock the test runners timezone and correctly reset the test runners timezone
         // so that it doesn't impact any other tests
         it("should have the correct text", () => {
-          expect(timeElement()).toHaveExactTrimmedText(testCase.expectedText);
+          expect(timeElement().textContent.trim()).toBe(testCase.expectedText);
         });
 
         it("should have the correct tooltip", () => {

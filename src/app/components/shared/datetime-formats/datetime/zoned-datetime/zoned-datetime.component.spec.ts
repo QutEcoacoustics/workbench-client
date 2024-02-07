@@ -1,13 +1,13 @@
-import { Spectator, createComponentFactory } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { DateTime, FixedOffsetZone, IANAZone } from "luxon";
 import { modelData } from "@test/helpers/faker";
 import { assertTooltip } from "@test/helpers/html";
 import { TimezoneInformation } from "@interfaces/apiInterfaces";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { withDefaultZone } from "@test/helpers/mocks";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
 import { ZonedDateTimeComponent } from "./zoned-datetime.component";
 
 // I have created this interface for TypeScript LSP typing and auto completion
@@ -51,29 +51,28 @@ function test(
 }
 
 describe("ZonedDateTimeComponent", () => {
-  let spectator: Spectator<ZonedDateTimeComponent>;
-
-  const createComponent = createComponentFactory({
-    component: ZonedDateTimeComponent,
-    imports: [SharedModule, MockBawApiModule, NgbModule],
-  });
-
-  function update(): void {
-    spectator.detectChanges();
-    spectator.component.ngOnChanges();
-    spectator.detectChanges();
-  }
+  let component: ZonedDateTimeComponent;
+  let fixture: ComponentFixture<ZonedDateTimeComponent>;
 
   function timeElement(): HTMLTimeElement {
-    return spectator.query<HTMLTimeElement>("time");
+    return fixture.debugElement.query(By.css("time")).nativeElement;
   }
 
-  beforeEach(() => (spectator = createComponent()));
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [SharedModule, MockBawApiModule],
+    });
+
+    fixture = TestBed.createComponent(ZonedDateTimeComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+  });
 
   it("should create", () => {
-    spectator.component.value = modelData.dateTime();
-    update();
-    expect(spectator.component).toBeInstanceOf(ZonedDateTimeComponent);
+    fixture.componentRef.setInput("value", modelData.dateTime());
+    fixture.detectChanges();
+    expect(component).toBeInstanceOf(ZonedDateTimeComponent);
   });
 
   const localTimezone = "Australia/Darwin";
@@ -144,30 +143,32 @@ describe("ZonedDateTimeComponent", () => {
     /* eslint-enable max-len */
 
     it("should update correctly when updating from explicit to implicit timezone", () => {
-      spectator.component.value = DateTime.fromISO(
-        "2020-01-01T12:10:11.123+09:30"
-      );
-      spectator.component.timezone = "Australia/Perth";
-      update();
+      const mockDateTime = DateTime.fromISO("2020-01-01T12:10:11.123+09:30");
 
-      expect(timeElement()).toHaveExactTrimmedText("2020-01-01 10:40:11");
-      spectator.component.timezone = null;
-      update();
+      fixture.componentRef.setInput("value", mockDateTime);
+      fixture.componentRef.setInput("timezone", "Australia/Perth");
+      fixture.detectChanges();
 
-      expect(timeElement()).toHaveExactTrimmedText("2020-01-01 12:10:11");
+      expect(timeElement().textContent.trim()).toBe("2020-01-01 10:40:11");
+      fixture.componentRef.setInput("timezone", null);
+      fixture.detectChanges();
+
+      expect(timeElement().textContent.trim()).toBe("2020-01-01 12:10:11");
     });
 
     it("should update correctly when updating from an implicit to explicit timezone", () => {
       // because we have not set an explicit timezone, the component should default to using the implicit timezone
-      spectator.component.value = DateTime.fromISO("2020-01-01T12:10:11.123+09:30");
-      update();
+      const mockDateTime = DateTime.fromISO("2020-01-01T12:10:11.123+09:30");
 
-      expect(timeElement()).toHaveExactTrimmedText("2020-01-01 12:10:11");
+      fixture.componentRef.setInput("value", mockDateTime);
+      fixture.detectChanges();
 
-      spectator.component.timezone = "Australia/Perth";
-      update();
+      expect(timeElement().textContent.trim()).toBe("2020-01-01 12:10:11");
 
-      expect(timeElement()).toHaveExactTrimmedText("2020-01-01 10:40:11");
+      fixture.componentRef.setInput("timezone", "Australia/Perth");
+      fixture.detectChanges();
+
+      expect(timeElement().textContent.trim()).toBe("2020-01-01 10:40:11");
     });
 
     for (const testCase of testCases) {
@@ -222,17 +223,17 @@ describe("ZonedDateTimeComponent", () => {
         for (const timezone of componentTimezones()) {
           describe(`with timezone type: ${timezone.name}`, () => {
             beforeEach(() => {
-              spectator.component.timezone = timezone.value;
-              spectator.component.value = testCase.value;
-              spectator.component.date = testCase.date;
-              spectator.component.time = testCase.time;
+              fixture.componentRef.setInput("timezone", timezone.value);
+              fixture.componentRef.setInput("value", testCase.value);
+              fixture.componentRef.setInput("date", testCase.date);
+              fixture.componentRef.setInput("time", testCase.time);
 
-              update();
+              fixture.detectChanges();
             });
 
             it("should display the correct text", () => {
               const expectedValue = testCase.text;
-              expect(timeElement()).toHaveExactTrimmedText(expectedValue);
+              expect(timeElement().textContent.trim()).toBe(expectedValue);
             });
 
             it("should display the correct tooltip", () => {

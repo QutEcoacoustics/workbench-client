@@ -1,4 +1,9 @@
-import { Component, Input, booleanAttribute } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  booleanAttribute,
+  input,
+} from "@angular/core";
 import { DateTime, IANAZone, Zone } from "luxon";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { AbstractTemplateComponent } from "../abstract-template.component";
@@ -9,6 +14,7 @@ export type InputTypes = DateTime | Date | string;
   templateUrl: "../abstract-template.component.html",
   standalone: true,
   imports: [NgbTooltipModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export abstract class AbstractDatetimeComponent extends AbstractTemplateComponent<
   InputTypes,
@@ -18,8 +24,8 @@ export abstract class AbstractDatetimeComponent extends AbstractTemplateComponen
     super();
   }
 
-  @Input({ transform: booleanAttribute }) public date?: boolean;
-  @Input({ transform: booleanAttribute }) public time?: boolean;
+  public date = input<boolean, string>(false, { transform: booleanAttribute });
+  public time = input<boolean, string>(false, { transform: booleanAttribute });
 
   protected abstract extractTimezone(): Zone;
 
@@ -39,10 +45,11 @@ export abstract class AbstractDatetimeComponent extends AbstractTemplateComponen
   }
 
   public update(): void {
+    const value = this.value();
     const zone = this.extractTimezone();
-    const valueInZone = this.value.setZone(zone);
+    const valueInZone = value.setZone(zone);
 
-    const timezoneName = AbstractDatetimeComponent.formatTimezone(zone, this.value);
+    const timezoneName = AbstractDatetimeComponent.formatTimezone(zone, value);
 
     const tooltipDateTime = valueInZone.toFormat(
       AbstractTemplateComponent.TOOLTIP_DATETIME
@@ -65,11 +72,14 @@ export abstract class AbstractDatetimeComponent extends AbstractTemplateComponen
   }
 
   private dateTimeFormat(): string {
-    if (this.date && this.time) {
+    const showDate = this.date();
+    const showTime = this.time();
+
+    if (showDate && showTime) {
       return AbstractDatetimeComponent.FULL_DATETIME;
-    } else if (this.date) {
+    } else if (showDate) {
       return AbstractDatetimeComponent.DATE_ONLY;
-    } else if (this.time) {
+    } else if (showTime) {
       return AbstractDatetimeComponent.SEXAGESIMAL;
     }
 

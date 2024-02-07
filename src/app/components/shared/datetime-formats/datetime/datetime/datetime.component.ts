@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { Settings, SystemZone, Zone } from "luxon";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { AbstractDatetimeComponent } from "../abstract-datetime.component";
@@ -15,6 +15,7 @@ import { AbstractDatetimeComponent } from "../abstract-datetime.component";
   templateUrl: "../../abstract-template.component.html",
   standalone: true,
   imports: [NgbTooltipModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatetimeComponent extends AbstractDatetimeComponent {
   public constructor() {

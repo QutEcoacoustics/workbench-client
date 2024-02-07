@@ -17,16 +17,10 @@ class DateTimeExampleComponent extends PageComponent {
   protected fakeImplicitTimezone = "Australia/Perth";
   protected fakeSiteTimezone = "Australia/Perth";
   protected fakeDuration = Duration.fromObject({ hours: 1, minutes: 30 });
+  protected fakeDate = DateTime.now().setZone(this.fakeImplicitTimezone, {
+    keepLocalTime: true,
+  });
   private dateTimeFormat = "yyyy-MM-dd HH:mm:ss.SSS";
-  private _fakeDate = DateTime.now();
-
-  // we use a getter for the fakeDate so that when either the implicit timezone or
-  // _fakeDate is updated, the document updates accordingly
-  protected get fakeDate(): DateTime {
-    return this._fakeDate.setZone(this.fakeImplicitTimezone, {
-      keepLocalTime: true,
-    }) as any;
-  }
 
   protected updateFakeDuration(event): void {
     const inputValue: string = event.target.value;
@@ -39,10 +33,26 @@ class DateTimeExampleComponent extends PageComponent {
 
   protected updateFakeDate(event): void {
     const inputValue: string = event.target.value;
-    const newDate = DateTime.fromFormat(inputValue, this.dateTimeFormat);
+    let newDate = DateTime.fromFormat(inputValue, this.dateTimeFormat);
+
+    newDate = newDate.setZone(this.fakeImplicitTimezone, {
+      keepLocalTime: true,
+    });
 
     if (newDate.isValid) {
-      this._fakeDate = newDate;
+      this.fakeDate = newDate;
+    }
+  }
+
+  protected updateFakeImplicitTimezone(event): void {
+    this.fakeImplicitTimezone = event.target.value;
+
+    const newFakeDate = this.fakeDate.setZone(this.fakeImplicitTimezone, {
+      keepLocalTime: true,
+    });
+
+    if (newFakeDate.isValid) {
+      this.fakeDate = newFakeDate;
     }
   }
 

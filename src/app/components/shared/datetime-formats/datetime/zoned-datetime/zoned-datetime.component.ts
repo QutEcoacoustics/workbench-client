@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { FixedOffsetZone, IANAZone, Zone } from "luxon";
 import { TimezoneInformation } from "@interfaces/apiInterfaces";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
@@ -13,32 +13,26 @@ type BawTimezoneUnion = Zone | TimezoneInformation | string;
   styleUrls: ["zoned-datetime.component.scss"],
   standalone: true,
   imports: [NgbTooltipModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZonedDateTimeComponent extends AbstractDatetimeComponent {
   public constructor() {
     super();
   }
 
-  // if we set the timezone to null or undefined, we want to remove the explicit timezone
-  // which will result in any implicit time zone taking effect
-  @Input()
-  public set timezone(inputValue: BawTimezoneUnion) {
-    if (isInstantiated(inputValue)) {
-      const timezoneIdentifier = inputValue?.["identifier"] ?? inputValue;
-      this._timezone = this.normalizeTimezone(timezoneIdentifier);
-    } else {
-      this._timezone = null;
-    }
-  }
+  public timezone = input<Zone, BawTimezoneUnion>(null, {
+    transform: (newValue) => {
+      if (isInstantiated(newValue)) {
+        const timezoneIdentifier = newValue?.["identifier"] ?? newValue;
+        return this.normalizeTimezone(timezoneIdentifier);
+      }
 
-  public get timezone(): Zone {
-    return this._timezone;
-  }
-
-  private _timezone: Zone;
+      return null;
+    },
+  });
 
   public override extractTimezone(): Zone {
-    return this.timezone ? this.timezone : this.value.zone;
+    return this.timezone?.() ? this.timezone() : this.value().zone;
   }
 
   private normalizeTimezone(timezoneIdentifier: Zone | string): Zone | FixedOffsetZone {

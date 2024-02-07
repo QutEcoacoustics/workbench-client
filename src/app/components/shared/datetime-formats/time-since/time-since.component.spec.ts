@@ -1,10 +1,11 @@
-import { Spectator, createComponentFactory } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
 import { assertTooltip } from "@test/helpers/html";
 import { withDefaultZone } from "@test/helpers/mocks";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { SharedModule } from "@shared/shared.module";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { By } from "@angular/platform-browser";
 import { TimeSinceComponent } from "./time-since.component";
 
 // I have created this interface for TypeScript LSP typing and auto completion
@@ -34,24 +35,25 @@ function test(
 }
 
 describe("TimeSince", () => {
-  let spectator: Spectator<TimeSinceComponent>;
+  let fixture: ComponentFixture<TimeSinceComponent>;
+  let component: TimeSinceComponent;
   let updateSpy: jasmine.Spy;
-
-  const createComponent = createComponentFactory({
-    component: TimeSinceComponent,
-    imports: [SharedModule, MockBawApiModule],
-  });
 
   withDefaultZone("Australia/Darwin", () => {
     function setup(): void {
-      spectator = createComponent({ detectChanges: false });
+      TestBed.configureTestingModule({
+        imports: [SharedModule, MockBawApiModule],
+      });
 
-      updateSpy = spyOn(spectator.component, "update").and.callThrough();
+      fixture = TestBed.createComponent(TimeSinceComponent);
+      component = fixture.componentInstance;
+
+      updateSpy = spyOn(component, "update").and.callThrough();
 
       jasmine.clock().install();
       jasmine.clock().mockDate(new Date("2020-01-01T00:00:00.000+09:30"));
 
-      spectator.detectChanges();
+      fixture.detectChanges();
     }
 
     // prettier-ignore
@@ -80,83 +82,88 @@ describe("TimeSince", () => {
     ];
     /* eslint-enable max-len */
 
-    function update(): void {
-      spectator.detectChanges();
-      spectator.component.ngOnChanges();
-      spectator.detectChanges();
-    }
-
     function timeElement(): HTMLTimeElement {
-      return spectator.query<HTMLTimeElement>("time");
+      return fixture.debugElement.query(By.css("time")).nativeElement;
     }
 
-    beforeEach(() => setup());
+    beforeEach(() => {
+      setup();
+    });
 
     afterEach(() => {
       jasmine.clock().uninstall();
+
+      // because the tickValue is a singleton, if we don't set it to undefined
+      // the tickValue from the previous test will leak into the next test
+      TimeSinceComponent["tickValue"] = undefined;
     });
 
     it("should create", () => {
-      spectator.component.value = modelData.time();
-      expect(spectator.component).toBeInstanceOf(TimeSinceComponent);
+      fixture.componentRef.setInput("value", modelData.time());
+      expect(component).toBeInstanceOf(TimeSinceComponent);
     });
 
     it("should update every second if the time since is under 1 minute", () => {
       const secondInMilliseconds = 1000;
 
-      spectator.component.value = Duration.fromObject({ seconds: -30 });
-      update();
+      const fakeDuration = Duration.fromObject({ seconds: -30 });
+      fixture.componentRef.setInput("value", fakeDuration);
+
+      fixture.detectChanges();
       updateSpy.calls.reset();
 
-      expect(timeElement()).toHaveExactTrimmedText("30 seconds ago");
+      expect(timeElement().textContent.trim()).toBe("30 seconds ago");
 
       jasmine.clock().tick(secondInMilliseconds);
-      spectator.detectChanges();
+      fixture.detectChanges();
 
       expect(updateSpy).toHaveBeenCalledTimes(1);
-      expect(timeElement()).toHaveExactTrimmedText("31 seconds ago");
+      expect(timeElement().textContent.trim()).toBe("31 seconds ago");
     });
 
     it("should update every minute if the time since is over 1 minute", () => {
       const secondInMilliseconds = 1000;
       const minuteInMilliseconds = secondInMilliseconds * 60;
 
-      spectator.component.value = Duration.fromObject({ seconds: -59 });
-      update();
-      expect(timeElement()).toHaveExactTrimmedText("59 seconds ago");
+      const fakeDuration = Duration.fromObject({ seconds: -59 });
+      fixture.componentRef.setInput("value", fakeDuration);
+
+      fixture.detectChanges();
+      expect(timeElement().textContent.trim()).toBe("59 seconds ago");
 
       updateSpy.calls.reset();
       jasmine.clock().tick(secondInMilliseconds);
-      spectator.detectChanges();
+      fixture.detectChanges();
 
       // we should observe the update method be called when updating to the 1 minute mark
       expect(updateSpy).toHaveBeenCalledTimes(1);
-      expect(timeElement()).toHaveExactTrimmedText("1 minute ago");
+      expect(timeElement().textContent.trim()).toBe("1 minute ago");
 
       // every second after the one minute mark should not cause an update unless exactly 1 minute has passed
       updateSpy.calls.reset();
       jasmine.clock().tick(secondInMilliseconds);
-      spectator.detectChanges();
+      fixture.detectChanges();
 
       expect(updateSpy).not.toHaveBeenCalled();
-      expect(timeElement()).toHaveExactTrimmedText("1 minute ago");
+      expect(timeElement().textContent.trim()).toBe("1 minute ago");
 
-      jasmine.clock().tick(minuteInMilliseconds);
-      spectator.detectChanges();
+      // because we have already ticked 1 second, we need to tick 59 more seconds to reach the 2 minute mark
+      jasmine.clock().tick(minuteInMilliseconds - secondInMilliseconds);
+      fixture.detectChanges();
 
       expect(updateSpy).toHaveBeenCalledTimes(1);
-      expect(timeElement()).toHaveExactTrimmedText("2 minutes ago");
+      expect(timeElement().textContent.trim()).toBe("2 minutes ago");
     });
 
     testCases.forEach((testCase) => {
       describe(testCase.name, () => {
         beforeEach(() => {
-          spectator.component.value = testCase.value;
-          update();
+          fixture.componentRef.setInput("value", testCase.value);
+          fixture.detectChanges();
         });
 
         it("should have the correct text", () => {
-          expect(timeElement()).toHaveExactTrimmedText(testCase.expectedText);
+          expect(timeElement().textContent.trim()).toBe(testCase.expectedText);
         });
 
         it("should have the correct tooltip", () => {

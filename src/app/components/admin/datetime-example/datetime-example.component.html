@@ -20,7 +20,8 @@
       id="timezone-input"
       class="form-control"
       placeholder="utc, UTC+08:00, Australia/Darwin, etc."
-      [(ngModel)]="fakeImplicitTimezone"
+      [ngModel]="fakeImplicitTimezone"
+      (keyup)="updateFakeImplicitTimezone($event)"
     />
 
     <label for="site-timezone-input">Site Timezone</label>
