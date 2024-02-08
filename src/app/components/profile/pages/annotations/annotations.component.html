@@ -34,7 +34,7 @@
       </ngx-datatable-column>
       <ngx-datatable-column name="Updated">
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
+          <baw-time-since [value]="value" />
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column name="Tags" [sortable]="false">

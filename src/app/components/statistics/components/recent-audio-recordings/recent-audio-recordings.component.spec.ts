@@ -5,7 +5,6 @@ import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
-import { toRelative } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { ISite, Site } from "@models/Site";
 import {
@@ -24,6 +23,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { interceptShowApiRequest } from "@test/helpers/general";
 import { ToastrService } from "ngx-toastr";
+import { humanizedDuration } from "@test/helpers/dateTime";
 import { RecentAudioRecordingsComponent } from "./recent-audio-recordings.component";
 
 describe("RecentAudioRecordingsComponent", () => {
@@ -160,7 +160,8 @@ describe("RecentAudioRecordingsComponent", () => {
       const getUpdatedCellElement = () => getCellElements()[1];
 
       function assertTimestamp(cell: Element, recording: AudioRecording) {
-        expect(cell).toContainText(toRelative(recording.duration));
+        const expectedText = humanizedDuration(recording.duration);
+        expect(cell).toHaveExactTrimmedText(expectedText);
       }
 
       it("should display time since updated", async () => {
@@ -173,7 +174,8 @@ describe("RecentAudioRecordingsComponent", () => {
       const getUpdatedCellElement = () => getCellElements()[2];
 
       function assertTimestamp(cell: Element, recording: AudioRecording) {
-        expect(cell).toContainText(recording.recordedDate.toRelative());
+        const expectedText = humanizedDuration(recording.recordedDate);
+        expect(cell).toHaveExactTrimmedText(`${expectedText} ago`);
       }
 
       it("should display time since updated", async () => {

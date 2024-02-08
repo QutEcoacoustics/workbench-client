@@ -27,6 +27,7 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { BehaviorSubject, Subject } from "rxjs";
+import { humanizedDuration } from "@test/helpers/dateTime";
 import { TheirSitesComponent } from "./their-sites.component";
 
 describe("TheirSitesComponent", () => {
@@ -148,7 +149,9 @@ describe("TheirSitesComponent", () => {
       interceptProjectRequest([]);
       spec.detectChanges();
 
-      expect(getCells()[1]).toHaveText(defaultSite.updatedAt.toRelative());
+      const expectedText = humanizedDuration(defaultSite.updatedAt);
+
+      expect(getCells()[1]).toHaveExactTrimmedText(`${expectedText} ago`);
     });
 
     describe("access level", () => {

@@ -12,6 +12,8 @@ import { UserLinkComponent } from "@shared/user-link/user-link/user-link.compone
 import { generateUser } from "@test/fakes/User";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime } from "luxon";
+import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
+import { humanizedDuration } from "@test/helpers/dateTime";
 import { UserBadgeComponent } from "./user-badge.component";
 
 describe("UserBadgeComponent", () => {
@@ -27,6 +29,7 @@ describe("UserBadgeComponent", () => {
       MockBawApiModule,
       LoadingModule,
       PipesModule,
+      TimeSinceComponent,
     ],
   });
 
@@ -162,7 +165,10 @@ describe("UserBadgeComponent", () => {
       const date = DateTime.utc();
       setup({ timestamp: date });
       spec.detectChanges();
-      expect(getTimespan()[0]).toHaveText(date.toRelative());
+
+      const expectedText = humanizedDuration(date);
+
+      expect(getTimespan()[0]).toHaveExactTrimmedText(`${expectedText} ago`);
     });
   });
 

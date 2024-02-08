@@ -65,7 +65,7 @@ export class AudioRecording
   public readonly id?: Id;
   public readonly uuid?: Uuid;
   public readonly uploaderId?: Id;
-  @bawDateTime()
+  @bawDateTime(undefined, "recordedDateTimezone")
   public readonly recordedDate?: DateTimeTimezone;
   public readonly siteId?: Id;
   @bawDuration<IAudioRecording>({ key: "durationSeconds" })

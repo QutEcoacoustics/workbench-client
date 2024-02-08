@@ -104,7 +104,7 @@ export class TimeSinceComponent extends AbstractTemplateComponent<
       TimeSinceComponent.tickValue = signal(DateTime.now());
 
       setInterval(() => {
-        TimeSinceComponent.tickValue.set(DateTime.now());
+        TimeSinceComponent.tickValue?.set(DateTime.now());
       }, 1000);
     }
 

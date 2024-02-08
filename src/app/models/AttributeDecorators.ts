@@ -223,7 +223,10 @@ export function bawSubModelCollection<ParentModel, SubModel>(
 /**
  * Convert timestamp string into DateTimeTimezone
  */
-export function bawDateTime<Model>(opts?: BawDecoratorOptions<Model>) {
+export function bawDateTime<Model>(
+  opts?: BawDecoratorOptions<Model>,
+  zoneKey?: keyof Model
+) {
   return createDecorator<Model>(
     opts,
     (model, key, timestamp: string | DateTime) => {
@@ -232,7 +235,11 @@ export function bawDateTime<Model>(opts?: BawDecoratorOptions<Model>) {
       } else if (timestamp instanceof DateTime) {
         model[key] = timestamp;
       } else {
-        model[key] = DateTime.fromISO(timestamp, { setZone: true });
+        if (zoneKey) {
+          model[key] = DateTime.fromISO(timestamp).setZone(model[zoneKey]);
+        } else {
+          model[key] = DateTime.fromISO(timestamp, { setZone: true });
+        }
       }
     }
   );

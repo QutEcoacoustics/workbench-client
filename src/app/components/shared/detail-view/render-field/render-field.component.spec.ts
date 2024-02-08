@@ -13,6 +13,11 @@ import { modelData } from "@test/helpers/faker";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Subject } from "rxjs";
+import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
+import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
+import { ZonedDateTimeComponent } from "@shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
+import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
+import { withDefaultZone } from "@test/helpers/mocks";
 import { ModelLinkComponent } from "../model-link/model-link.component";
 import { ModelView, RenderFieldComponent } from "./render-field.component";
 
@@ -28,6 +33,10 @@ describe("RenderFieldComponent", () => {
       MockBawApiModule,
       RouterTestingModule,
       PipesModule,
+      DatetimeComponent,
+      ZonedDateTimeComponent,
+      DurationComponent,
+      TimeSinceComponent,
     ],
   });
 
@@ -38,6 +47,9 @@ describe("RenderFieldComponent", () => {
     ghost: () => spec.queryAll<HTMLSpanElement>("#ghost"),
     image: () => spec.queryAll<HTMLImageElement>("dl #image"),
     checkbox: () => spec.queryAll<HTMLElement>("dl #checkbox"),
+    duration: () => spec.queryAll<HTMLElement>("baw-duration"),
+    zonedDateTime: () => spec.queryAll<HTMLElement>("baw-zoned-datetime"),
+    localizedDateTime: () => spec.queryAll<HTMLElement>("baw-datetime"),
     values: () =>
       spec.queryAll("dl").map((el) => el.firstElementChild as HTMLElement),
   };
@@ -212,33 +224,59 @@ describe("RenderFieldComponent", () => {
     });
   });
 
-  describe("DateTime input", () => {
-    let dateTime: DateTime;
+  withDefaultZone("Australia/Perth", () => {
+    describe("DateTime input with implicit timezone", () => {
+      let dateTime: DateTime;
 
-    beforeEach(() => {
-      dateTime = DateTime.local();
-      spyOn(dateTime, "toRelative").and.callFake(() => "toRelative");
-      spyOn(dateTime, "toISO").and.callFake(() => "toISO");
-      setup(dateTime);
-      spec.detectChanges();
+      beforeEach(() => {
+        dateTime = modelData
+          .dateTime()
+          .setZone(modelData.timezone().identifier);
+
+        spyOn(dateTime, "toISO").and.callFake(() => "toISO");
+        setup(dateTime);
+        spec.detectChanges();
+      });
+
+      it("should handle DateTime value with implicit timezone", () => {
+        expect(getElement.values()).toHaveLength(1);
+        expect(getElement.zonedDateTime()).toHaveLength(1);
+      });
+
+      it("should display DateTime value with implicit timezone", () => {
+        const value = getElement.zonedDateTime()[0];
+        const expectedValue = dateTime.toFormat("yyyy-MM-dd HH:mm:ss");
+
+        expect(value).toHaveExactTrimmedText(expectedValue);
+      });
     });
+  });
 
-    it("should handle DateTime value", () => {
-      expect(getElement.values().length).toBe(1);
-      expect(getElement.normal().length).toBe(1);
-    });
+  withDefaultZone(null, () => {
+    describe("DateTime input without zone", () => {
+      let dateTime: DateTime;
 
-    it("should call toRelative", () => {
-      expect(dateTime.toRelative).toHaveBeenCalled();
-    });
+      beforeEach(() => {
+        dateTime = DateTime.fromISO("2020-10-10T00:00:00");
 
-    it("should call toISO", () => {
-      expect(dateTime.toISO).toHaveBeenCalled();
-    });
+        spyOn(dateTime, "toISO").and.callFake(() => "toISO");
+        setup(dateTime);
+        spec.detectChanges();
+      });
 
-    it("should display DateTime value", () => {
-      const value = getElement.normal()[0];
-      expect(value).toHaveExactText("toISO (toRelative)");
+      // date/time's without a timezone should be localized to the users local timezone
+      // while date/time's with an implicit timezone should be localized to the set timezone
+      it("should handle DateTime value without timezone", () => {
+        expect(getElement.values()).toHaveLength(1);
+        expect(getElement.localizedDateTime()).toHaveLength(1);
+      });
+
+      it("should display DateTime value without timezone", () => {
+        const value = getElement.localizedDateTime()[0];
+        const expectedValue = dateTime.toFormat("yyyy-MM-dd HH:mm:ss");
+
+        expect(value).toHaveExactTrimmedText(expectedValue);
+      });
     });
   });
 
@@ -252,15 +290,15 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should handle Duration value", () => {
+      // because we display the ISO 8601 format and the humanized format in brackets
+      // we expect there to be two duration elements with one shard value
       expect(getElement.values().length).toBe(1);
-      expect(getElement.normal().length).toBe(1);
+      expect(getElement.duration().length).toBe(2);
     });
 
     it("should display Duration value", () => {
-      const value = getElement.normal()[0];
-      expect(value).toHaveExactText(
-        "PT1H10M50S (1 hour 10 minutes 50 seconds)"
-      );
+      const value = getElement.duration()[0];
+      expect(value).toHaveExactTrimmedText("PT1H10M50S");
     });
   });
 

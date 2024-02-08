@@ -120,6 +120,7 @@ export const sharedModules = [
   UserLinkModule,
 
   // date time components
+  // because they are standalone components, they get imported/exported as modules
   TimeSinceComponent,
   DurationComponent,
   ZonedDateTimeComponent,

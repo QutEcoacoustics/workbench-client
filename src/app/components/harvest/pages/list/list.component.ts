@@ -13,7 +13,6 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
-import { DateTime } from "luxon";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { BehaviorSubject, catchError, takeUntil, throwError } from "rxjs";
@@ -110,10 +109,6 @@ class ListComponent extends PageComponent implements OnInit {
 
   public asHarvest(model: any): Harvest {
     return model;
-  }
-
-  public formatDate(date: DateTime): string {
-    return date.toLocal().toFormat("yyyy-MM-dd HH:mm:ss");
   }
 }
 

@@ -40,7 +40,7 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value | toRelative }}
+          <baw-duration [value]="value" humanized />
         </ng-template>
       </ngx-datatable-column>
 
@@ -52,7 +52,7 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value | toRelative }}
+          <baw-time-since [value]="value" />
         </ng-template>
       </ngx-datatable-column>
 

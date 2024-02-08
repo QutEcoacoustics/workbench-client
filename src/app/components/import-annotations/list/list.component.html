@@ -18,9 +18,7 @@
       Created at
     </ng-template>
     <ng-template let-value="value" ngx-datatable-cell-template>
-      <span>
-        {{ value | dateTime : { includeTime: true, localTime: true } }}
-      </span>
+      <baw-datetime [value]="value" />
     </ng-template>
   </ngx-datatable-column>
 

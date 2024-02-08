@@ -1,10 +1,8 @@
 import { Component, Input } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
-import { toRelative } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { ColumnMode } from "@swimlane/ngx-datatable";
-import { DateTime, Duration } from "luxon";
 import { BehaviorSubject } from "rxjs";
 
 @Component({
@@ -24,16 +22,5 @@ export class DownloadTableComponent {
 
   public asRecording(model: any): AudioRecording {
     return model;
-  }
-
-  public formatDuration(duration: Duration): string {
-    return toRelative(duration, {
-      largest: 2,
-      round: true,
-    });
-  }
-
-  public formatDate(date: DateTime): string {
-    return date.toFormat("yyyy-MM-dd HH:mm:ss");
   }
 }

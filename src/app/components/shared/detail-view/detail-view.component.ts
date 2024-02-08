@@ -9,7 +9,8 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
       <dt
         class="col-sm-3 text-start text-sm-end fw-bold"
         [innerText]="field.props.label"
-      ></dt>
+        ></dt>
+
       <baw-render-field
         class="col-sm-9"
         [value]="getValue(field)"
@@ -29,6 +30,8 @@ export class DetailViewComponent {
   @Input() public model: AbstractModel;
 
   public getValue(field: FormlyFieldConfig) {
-    return this.model[field.key as string];
+    // because formly fields can be numbers as well as string
+    // we use toString() so that we always convert the number types to a string
+    return this.model[field.key.toString()];
   }
 }

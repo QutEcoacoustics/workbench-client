@@ -133,25 +133,6 @@ describe("DownloadTableComponent", () => {
       // Brisbane time (+10:00)
       expect(getCell()).toContainText("2017-08-14 19:33:24");
     });
-
-    it("should have tooltip with recorded date timezone", async () => {
-      setup(new BehaviorSubject({}));
-      await loadRows([defaultRecording], defaultSite);
-      expect(getCell()).toHaveTooltip(defaultRecording.recordedDateTimezone);
-    });
-
-    it("should have tooltip with UTC if recorded date timezone is undefined", async () => {
-      setup(new BehaviorSubject({}));
-      const recording = new AudioRecording(
-        generateAudioRecording({
-          recordedDate: "2017-08-14T09:33:24.000Z",
-          recordedDateTimezone: undefined,
-        }),
-        injector
-      );
-      await loadRows([recording], defaultSite);
-      expect(getCell()).toHaveTooltip("UTC");
-    });
   });
 
   it("should show formatted duration in table row", async () => {

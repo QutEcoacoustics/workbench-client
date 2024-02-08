@@ -37,9 +37,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <span>
-            {{ value | dateTime : { includeTime: true, localTime: true } }}
-          </span>
+          <baw-datetime [value]="value" />
         </ng-template>
       </ngx-datatable-column>
 
@@ -86,9 +84,7 @@
         <tr *ngFor="let file of audioEventImport.files" scope="row">
           <td>{{ file.name }}</td>
           <td>
-            <span>
-              {{ file.importedAt | dateTime : { includeTime: true, localTime: true } }}
-            </span>
+            <baw-datetime [value]="file.importedAt" />
           </td>
           <td>
             <baw-inline-list

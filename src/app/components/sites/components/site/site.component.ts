@@ -12,7 +12,6 @@ import {
   sanitizeMapMarkers,
 } from "@shared/map/map.component";
 import { List } from "immutable";
-import { DateTime } from "luxon";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
@@ -45,16 +44,6 @@ class SiteComponent extends PageComponent implements OnInit {
 
     this.getNewestDates();
     this.getOldestDates();
-  }
-
-  public humanizeDate(audioRecording: AudioRecording): string {
-    if (audioRecording) {
-      return audioRecording.recordedDate.toLocaleString(DateTime.DATETIME_FULL);
-    } else if (audioRecording === null) {
-      return "unknown";
-    } else {
-      return "(loading)";
-    }
   }
 
   private getNewestDates() {

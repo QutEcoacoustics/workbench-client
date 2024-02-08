@@ -9,6 +9,7 @@
     "typeahead",
     "Ecoacoustics",
     "datatable",
-    "datetime"
+    "datetime",
+    "formly"
   ]
 }
