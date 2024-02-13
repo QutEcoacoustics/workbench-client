@@ -41,6 +41,10 @@ describe("TimeSince", () => {
 
   withDefaultZone("Australia/Darwin", () => {
     function setup(): void {
+      // because the tickValue is a singleton, if we don't set it to undefined
+      // the tickValue from the previous test will leak into the next test
+      TimeSinceComponent["tickValue"] = undefined;
+
       TestBed.configureTestingModule({
         imports: [SharedModule, MockBawApiModule],
       });

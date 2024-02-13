@@ -41,6 +41,7 @@ import {
   interceptFilterApiRequest,
   interceptShowApiRequest,
 } from "@test/helpers/general";
+import { humanizedDuration } from "@test/helpers/dateTime";
 import { RecentAnnotationsComponent } from "./recent-annotations.component";
 
 describe("RecentAnnotationsComponent", () => {
@@ -402,7 +403,8 @@ describe("RecentAnnotationsComponent", () => {
         getCellElements()[isLoggedIn ? 3 : 1];
 
       function assertTimestamp(cell: Element, annotation: AudioEvent) {
-        expect(cell).toContainText(annotation.updatedAt.toRelative());
+        const expectedText = humanizedDuration(annotation.updatedAt);
+        expect(cell).toContainText(expectedText);
       }
 
       it("should display time since updated when logged in", async () => {

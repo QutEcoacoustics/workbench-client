@@ -45,7 +45,9 @@ import { DateTime } from "luxon";
             id="lengthOfTime"
             style="word-wrap: break-word"
           >
-            <small>{{ timestamp | toRelative }}</small>
+            <small>
+              <baw-time-since [value]="timestamp" />
+            </small>
           </span>
         </div>
       </div>

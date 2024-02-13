@@ -13,7 +13,6 @@ import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { filterModel } from "@helpers/filters/filters";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { toRelative } from "@interfaces/apiInterfaces";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
@@ -23,6 +22,7 @@ import { Site } from "@models/Site";
 import { ConfigService } from "@services/config/config.service";
 import { API_ROOT } from "@services/config/config.tokens";
 import { List } from "immutable";
+import { Duration } from "luxon";
 import { BehaviorSubject, Observable, takeUntil } from "rxjs";
 
 const projectKey = "project";
@@ -74,10 +74,7 @@ class AudioRecordingsListComponent
             site: recording,
             // yyyy-mm-dd hh:mm
             recorded: recording,
-            duration: toRelative(recording.duration, {
-              largest: 2,
-              round: true,
-            }),
+            duration: recording.duration,
             model: recording,
           })
         ),
@@ -132,10 +129,6 @@ class AudioRecordingsListComponent
     }
   }
 
-  public getRecordingDate(recording: AudioRecording): string {
-    return recording.recordedDate.toFormat("yyyy-LL-dd HH:mm");
-  }
-
   public updateFilters(incomingFilters: Filters<AudioRecording>): void {
     // since sorting is handled by the pagination table, when the filter is updated, it would remove the sorting order
     // to ensure that sorting is retained throughout filtering, retain the previous sorting information
@@ -165,7 +158,7 @@ class AudioRecordingsListComponent
 interface TableRow {
   recorded: AudioRecording;
   timezone: AudioRecording;
-  duration: string;
+  duration: Duration;
   uploader: AudioRecording;
   site: AudioRecording;
   model: AudioRecording;

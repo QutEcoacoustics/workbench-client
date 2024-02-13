@@ -202,16 +202,6 @@ describe("ListComponent", () => {
       );
       expect(createdAtLabel).toExist();
     });
-
-    it("formatDate should return a dateTime object in the users local time zone when a UTC+0 date is passed to it", () => {
-      const utcTime = DateTime.fromISO("2022-11-04T20:12:31.000Z");
-      const expectedLocalTime = "2022-11-05 04:12:31";
-
-      setup(defaultProject, defaultHarvest);
-
-      const realizedTime = spec.component.formatDate(utcTime);
-      expect(realizedTime).toEqual(expectedLocalTime);
-    });
   });
 
   // if you are using the association directive directly in the template, this test will fail

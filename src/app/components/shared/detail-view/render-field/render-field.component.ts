@@ -1,12 +1,7 @@
 import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import {
-  ImageSizes,
-  ImageUrl,
-  isImageUrl,
-  toRelative,
-} from "@interfaces/apiInterfaces";
+import { ImageSizes, ImageUrl, isImageUrl } from "@interfaces/apiInterfaces";
 import {
   AbstractModel,
   unknownViewUrl,
@@ -54,6 +49,21 @@ import { takeUntil } from "rxjs/operators";
       <img id="image" alt="model image alt" [src]="getSource()" />
     </dl>
 
+    <!-- Display Duration -->
+    <dl *ngIf="styling === fieldStyling.duration && isDuration(display)">
+      <baw-duration [value]="display" iso8601 /> (<baw-duration [value]="display" humanized />)
+    </dl>
+
+    <!-- Display Date/Time that has an implicit timezone -->
+    <dl *ngIf="styling === fieldStyling.zonedDateTime && isDateTime(display)">
+      <baw-zoned-datetime [value]="display" /> (<baw-time-since [value]="display" />)
+    </dl>
+
+    <!-- Display Date/Time that should be localized to the users timezone -->
+    <dl *ngIf="styling === fieldStyling.dateTime && isDateTime(display)">
+      <baw-datetime [value]="display" /> (<baw-time-since [value]="display" />)
+    </dl>
+
     <!-- Display nested fields -->
     <ng-container *ngIf="styling === fieldStyling.children">
       <baw-render-field
@@ -85,7 +95,7 @@ export class RenderFieldComponent
 {
   @Input() public value: ModelView;
   public children: ModelView[];
-  public display: string | number | boolean | ImageUrl[];
+  public display: Display;
   public fieldStyling = FieldStyling;
   public model: AbstractModel;
   public styling: FieldStyling = FieldStyling.plain;
@@ -106,6 +116,17 @@ export class RenderFieldComponent
     return this.display as ImageUrl[];
   }
 
+  // I don't like using "as" for type casting because it just disables TS compiler checks
+  // by using a type guard here we can ensure that the type is correct and correctly implicitly type cast Durations
+  // in the template
+  public isDuration(value): value is Duration {
+    return value instanceof Duration;
+  }
+
+  public isDateTime(value): value is DateTime {
+    return value instanceof DateTime;
+  }
+
   public hasViewUrl() {
     try {
       return (
@@ -121,9 +142,21 @@ export class RenderFieldComponent
     if (!isInstantiated(value)) {
       this.setNoValue();
     } else if (value instanceof DateTime) {
-      this.display = humanizeDateTime(value);
+      // if we have explicitly defined an implicit timezone during the model
+      // creation we want to use the zonedDateTime otherwise, we want to use the localized baw-datetime
+      // to check if the zone object has been explicitly set, we look at the zone objects "valid" property
+      // if the zone has been explicitly set, the zone object will be instantiated with its own "valid" property
+      // if the zone is not set, "valid" will come from the objects prototype where "zone" is the users timezone
+      if ("valid" in value.zone) {
+        this.styling = FieldStyling.zonedDateTime;
+      } else {
+        this.styling = FieldStyling.dateTime;
+      }
+
+      this.display = value;
     } else if (value instanceof Duration) {
-      this.display = `${value.toISO()} (${toRelative(value)})`;
+      this.styling = FieldStyling.duration;
+      this.display = value;
     } else if (value instanceof Array) {
       this.humanizeArray(value);
     } else if (value instanceof Blob) {
@@ -330,6 +363,8 @@ export type ModelView =
   | ImageUrl[]
   | ModelView[];
 
+type Display = string | number | boolean | ImageUrl[] | Duration | DateTime;
+
 enum FieldStyling {
   checkbox,
   code,
@@ -338,4 +373,7 @@ enum FieldStyling {
   model,
   image,
   children,
+  duration,
+  zonedDateTime,
+  dateTime,
 }

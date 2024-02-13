@@ -45,8 +45,20 @@
       <!-- Description -->
       <p id="recording-dates">
         This site contains recordings from
-        {{ humanizeDate(oldestRecording) }} to
-        {{ humanizeDate(newestRecording) }}.
+        <!--
+          I use the site timezone information so that the start & end dates
+          are in the same timezone. This should not be a problem because all
+          recordings in the site should be in the same timezone. But I have covered
+          potential edge case as a precaution.
+         -->
+        <baw-zoned-datetime
+          [value]="oldestRecording.recordedDate"
+          [timezone]="site.timezoneInformation"
+        /> to
+        <baw-zoned-datetime
+          [value]="newestRecording.recordedDate"
+          [timezone]="site.timezoneInformation"
+        />.
       </p>
 
       <!-- TODO Statistics about recordings -->

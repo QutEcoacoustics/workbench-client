@@ -12,6 +12,7 @@ import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
 import { User } from "@models/User";
 import { List } from "immutable";
+import { DateTimeTimezone } from "@interfaces/apiInterfaces";
 import { myAccountActions } from "../profile/my-profile.component";
 
 const userKey = "user";
@@ -35,7 +36,7 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
       (audioEvents) =>
         audioEvents.map((audioEvent) => ({
           site: audioEvent,
-          updated: audioEvent.updatedAt.toRelative(),
+          updated: audioEvent.updatedAt,
           tags: audioEvent,
           model: audioEvent,
         })),
@@ -63,7 +64,7 @@ export { MyAnnotationsComponent };
 
 interface TableRow {
   site: AudioEvent;
-  updated: string;
+  updated: DateTimeTimezone;
   tags: AudioEvent;
   model: AudioEvent;
 }

@@ -32,7 +32,7 @@
       </ngx-datatable-column>
       <ngx-datatable-column name="Last Modified" [width]="150" [maxWidth]="150">
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value | toRelative }}
+          <baw-time-since [value]="value" />
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column

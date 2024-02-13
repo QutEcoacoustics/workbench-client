@@ -25,12 +25,17 @@
   >
     <ngx-datatable-column name="Recorded">
       <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        <span [ngbTooltip]="value.recordedDateTimezone" placement="right">
-          {{ getRecordingDate(value) }}
-        </span>
+        <baw-zoned-datetime
+          [value]="value.recordedDate"
+          [timezone]="value.recordedDateTimezone"
+        />
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column name="Duration"> </ngx-datatable-column>
+    <ngx-datatable-column name="Duration">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <baw-duration [value]="value" humanized />
+      </ng-template>
+    </ngx-datatable-column>
     <ngx-datatable-column name="Uploader">
       <ng-template let-value="value" ngx-datatable-cell-template>
         <baw-user-link [user]="value.uploader"></baw-user-link>

@@ -1,6 +1,5 @@
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { ImageUrl, toRelative } from "@interfaces/apiInterfaces";
-import { humanizeDateTime } from "@shared/detail-view/render-field/render-field.component";
+import { ImageUrl } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
 
 /**
@@ -59,6 +58,10 @@ function assertValue(
     assertModel(views[index], detail.model);
   } else if (isInstantiated(detail.image)) {
     assertImages(views[index], detail.image);
+  } else if (isInstantiated(detail.duration)) {
+    assertDuration(views[index], detail.duration);
+  } else if (isInstantiated(detail.dateTime)) {
+    assertDateTime(views[index], detail.dateTime);
   } else if (isInstantiated(detail.children)) {
     assertChildren(index, views, detail.children);
   } else {
@@ -81,17 +84,23 @@ function assertPlainText(
   value: string | number | DateTime | Duration
 ) {
   const plainText: HTMLElement = view.querySelector("#plain");
-  let result: string;
-
-  if (value instanceof DateTime) {
-    result = humanizeDateTime(value);
-  } else if (value instanceof Duration) {
-    result = `${value.toISO()} (${toRelative(value)})`;
-  } else {
-    result = value.toString();
-  }
+  const result = value.toString();
 
   expect(plainText.innerText).toContain(result);
+}
+
+function assertDuration(view: HTMLDListElement, value: Duration) {
+  const element: HTMLElement = view.querySelector("baw-duration");
+  const expectedText = value.toISO();
+
+  expect(element.textContent.trim()).toBe(expectedText);
+}
+
+function assertDateTime(view: HTMLDListElement, value: DateTime) {
+  const element: HTMLElement = view.querySelector("baw-datetime");
+  const expectedText = value.toLocal().toFormat("yyyy-MM-dd HH:mm:ss");
+
+  expect(element.textContent.trim()).toBe(expectedText);
 }
 
 function assertModel(view: HTMLDListElement, value: string) {
@@ -124,8 +133,10 @@ export interface Detail extends View {
 interface View {
   checkbox?: boolean;
   code?: Record<string, any>;
-  plain?: string | number | DateTime | Duration;
+  plain?: string | number;
   model?: string;
   image?: string | ImageUrl[];
+  duration?: Duration;
+  dateTime?: DateTime;
   children?: View[];
 }

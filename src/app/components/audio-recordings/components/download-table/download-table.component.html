@@ -26,8 +26,11 @@
     [maxWidth]="150"
   >
     <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-      <span [ngbTooltip]="asRecording(row).recordedDateTimezone ?? 'UTC'">
-        {{ formatDate(value) }}
+      <span>
+        <baw-zoned-datetime
+          [value]="asRecording(row).recordedDate"
+          [timezone]="asRecording(row).recordedDateTimezone"
+        />
       </span>
     </ng-template>
   </ngx-datatable-column>
@@ -39,7 +42,9 @@
     [maxWidth]="170"
   >
     <ng-template let-value="value" ngx-datatable-cell-template>
-      {{ formatDuration(value) }}
+      <span>
+        <baw-duration [value]="value" humanized />
+      </span>
     </ng-template>
   </ngx-datatable-column>
 

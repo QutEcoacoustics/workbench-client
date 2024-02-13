@@ -16,6 +16,7 @@ import { ConfigService } from "@services/config/config.service";
 import { MenuService } from "@services/menu/menu.service";
 import { IconsModule } from "@shared/icons/icons.module";
 import { UserLinkModule } from "@shared/user-link/user-link.module";
+import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
 import { LoadingModule } from "../loading/loading.module";
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { MenuButtonComponent } from "./button/button.component";
@@ -69,6 +70,8 @@ const publicComponents = [
     PipesModule,
     DirectivesModule,
     UserLinkModule,
+
+    TimeSinceComponent,
   ],
   providers: [
     {

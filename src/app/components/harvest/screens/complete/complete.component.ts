@@ -10,7 +10,6 @@ import { toRelative } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { HarvestReport } from "@models/Harvest";
 import { Project } from "@models/Project";
-import { DateTime, Duration } from "luxon";
 
 @Component({
   selector: "baw-harvest-complete",
@@ -104,16 +103,5 @@ export class CompleteComponent implements OnInit {
       value: "",
       label: "",
     };
-  }
-
-  public humanizeDurationLong(duration: Duration): string {
-    return toRelative(duration, {
-      largest: 2,
-      round: true,
-    });
-  }
-
-  public formatDate(date: DateTime): string {
-    return date.toFormat("yyyy-MM-dd HH:mm:ss");
   }
 }
