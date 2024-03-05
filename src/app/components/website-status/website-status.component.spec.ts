@@ -1,7 +1,7 @@
 import { Spectator, createComponentFactory } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { WebsiteStatus } from "@models/WebsiteStatus";
+import { ServerTimeout, SsrContext, WebsiteStatus } from "@models/WebsiteStatus";
 import { MockProvider } from "ng-mocks";
 import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
 import { BehaviorSubject } from "rxjs";
@@ -146,8 +146,29 @@ describe("WebsiteStatusComponent", () => {
     );
   });
 
-  it("should display the correct text for a response with no internet connection", () => {
+  it("should display the correct text if the server does not give a response", () => {
     const expectedValues: GridItem[] = [
+      { name: "Overall Server Health", value: "Unknown" },
+      { name: "Server Connection", value: "Unhealthy" },
+      { name: "Database", value: "Unknown" },
+      { name: "Cache", value: "Unknown" },
+      { name: "Storage", value: "Unknown" },
+      { name: "User Uploads", value: "Unknown" },
+      { name: "User Internet Connection", value: "Healthy" },
+    ];
+
+    userHasInternet = true;
+    const fakeWebsiteStatus = ServerTimeout.instance;
+
+    setup(fakeWebsiteStatus);
+
+    expectedValues.forEach((item) =>
+      assertGridItemText(item.name, item.value.toString())
+    );
+  });
+
+  it("should display the correct text if in a SSR context", () => {
+    const expectedValue: GridItem[] = [
       { name: "Overall Server Health", value: "Unknown" },
       { name: "Server Connection", value: "Unknown" },
       { name: "Database", value: "Unknown" },
@@ -158,11 +179,11 @@ describe("WebsiteStatusComponent", () => {
     ];
 
     userHasInternet = false;
-    const fakeWebsiteStatus = null;
+    const fakeWebsiteStatus = SsrContext.instance;
 
     setup(fakeWebsiteStatus);
 
-    expectedValues.forEach((item) =>
+    expectedValue.forEach((item) =>
       assertGridItemText(item.name, item.value.toString())
     );
   });

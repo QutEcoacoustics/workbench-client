@@ -1,36 +1,54 @@
 import { HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { BawApiService, unknownErrorCode } from "@baw-api/baw-api.service";
 import {
   BawApiError,
   isBawApiError,
 } from "@helpers/custom-errors/baw-api-error";
-import { IWebsiteStatus, WebsiteStatus } from "@models/WebsiteStatus";
+import {
+  IWebsiteStatus,
+  ServerTimeout,
+  SsrContext,
+  WebsiteStatus,
+} from "@models/WebsiteStatus";
 import {
   Observable,
   catchError,
   defer,
-  distinct,
   interval,
   map,
+  of,
   shareReplay,
   startWith,
   switchMap,
   throwError,
 } from "rxjs";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 @Injectable()
 export class WebsiteStatusService {
-  public constructor(private api: BawApiService<WebsiteStatus>) {
-    this.status$ = this.tick$.pipe(
-      switchMap(() => this.show()),
-      distinct(),
-      shareReplay(1)
-    );
+  public constructor(
+    private api: BawApiService<WebsiteStatus>,
+    @Inject(IS_SERVER_PLATFORM) private isSsr: boolean
+  ) {
+    if (this.isSsr) {
+      this.status$ = of(SsrContext.instance);
+    } else {
+      // we only create the tick$ singleton client side so that we don't make
+      // continuous requests on the SSR server for the status
+      this.tick$ = defer(() => interval(30_000).pipe(startWith(-1)));
+
+      this.status$ = this.tick$.pipe(
+        switchMap(() =>
+          this.show().pipe(catchError(() => of(ServerTimeout.instance)))
+        ),
+        shareReplay(1)
+      );
+    }
   }
 
   public status$: Observable<WebsiteStatus>;
-  private tick$ = defer(() => interval(30_000).pipe(startWith(-1)));
+  private tick$: Observable<number>;
 
   // by making this a service level field, we don't have to recreate the headers every time we make a request
   private readonly requestHeaders = new HttpHeaders({

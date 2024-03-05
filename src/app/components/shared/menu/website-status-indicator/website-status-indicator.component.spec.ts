@@ -1,6 +1,6 @@
 import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
 import { Spectator, createComponentFactory } from "@ngneat/spectator";
-import { WebsiteStatus } from "@models/WebsiteStatus";
+import { ServerTimeout, WebsiteStatus } from "@models/WebsiteStatus";
 import { generateWebsiteStatus } from "@test/fakes/WebsiteStatus";
 import { assertTooltip } from "@test/helpers/html";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -8,12 +8,13 @@ import { SharedModule } from "@shared/shared.module";
 import { ActivatedRoute } from "@angular/router";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { MockProvider } from "ng-mocks";
-import { of } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { WebsiteStatusIndicatorComponent } from "./website-status-indicator.component";
 
 describe("WebsiteStatusIndicatorComponent", () => {
   let spectator: Spectator<WebsiteStatusIndicatorComponent>;
   let mockApi: jasmine.SpyObj<WebsiteStatusService>;
+  let mockStatus: BehaviorSubject<WebsiteStatus>;
 
   const indicatorElement = (): HTMLAnchorElement =>
     spectator.query<HTMLAnchorElement>("a");
@@ -30,11 +31,12 @@ describe("WebsiteStatusIndicatorComponent", () => {
   function setup(
     websiteStatus: WebsiteStatus = new WebsiteStatus(generateWebsiteStatus())
   ): void {
-
     spectator = createComponent({ detectChanges: false });
 
+    mockStatus = new BehaviorSubject(websiteStatus);
+
     mockApi = spectator.inject(WebsiteStatusService);
-    mockApi.status$ = of(websiteStatus);
+    mockApi.status$ = mockStatus;
 
     jasmine.clock().install();
 
@@ -65,7 +67,7 @@ describe("WebsiteStatusIndicatorComponent", () => {
 
     expect(indicatorElement()).not.toExist();
 
-    mockApi.status$ = of(badStatus);
+    mockStatus.next(badStatus);
     spectator.detectChanges();
 
     expect(indicatorElement()).toExist();
@@ -86,7 +88,7 @@ describe("WebsiteStatusIndicatorComponent", () => {
 
     expect(indicatorElement()).toExist();
 
-    mockApi.status$ = of(goodStatus);
+    mockStatus.next(goodStatus);
     spectator.detectChanges();
 
     expect(indicatorElement()).not.toExist();
@@ -127,5 +129,10 @@ describe("WebsiteStatusIndicatorComponent", () => {
     setup(testStatus);
 
     assertTooltip(indicatorElement(), expectedTooltip);
+  });
+
+  it("should be visible if the server does not give a response", () => {
+    setup(ServerTimeout.instance);
+    expect(indicatorElement()).toExist();
   });
 });
