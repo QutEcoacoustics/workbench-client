@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
 import { WebsiteStatus } from "@models/WebsiteStatus";
 import { List } from "immutable";
@@ -7,6 +7,7 @@ import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import {
   websiteStatusCategory,
   websiteStatusMenuItem,
@@ -26,7 +27,10 @@ import {
   `,
 })
 class WebsiteStatusComponent extends PageComponent implements OnInit {
-  public constructor(private api: WebsiteStatusService) {
+  public constructor(
+    private api: WebsiteStatusService,
+    @Inject(IS_SERVER_PLATFORM) public isSsr: boolean
+  ) {
     super();
   }
 
@@ -39,18 +43,11 @@ class WebsiteStatusComponent extends PageComponent implements OnInit {
   }
 
   protected model: WebsiteStatus;
+  private healthyListItem = { value: "Healthy", color: "success" } as const;
+  private unhealthyListItem = { value: "Unhealthy", color: "danger" } as const;
+  private unknownListItem = { value: "Unknown", color: "secondary" } as const;
 
   protected statusItems(): List<IItem> {
-    // if we get no response from the server, the model will be "null"
-    // if we want to see if the server connection is healthy, we want to negate this.model?.timedOut
-    // (so that true) means the server did not time out
-    // however, because "null" is a falsey value, negating "null" will return true (representing that the server connection is healthy)
-    // if we didn't receive a response from the server, we want to keep "null" so that we can display "Unknown" in the template
-    // we therefore need to check if the model is instantiated before we negate it
-    const serverTimeout: boolean = isInstantiated(this.model?.timedOut)
-      ? !this.model.timedOut
-      : null;
-
     return List<IItem>([
       {
         name: "Overall Server Health",
@@ -60,12 +57,12 @@ class WebsiteStatusComponent extends PageComponent implements OnInit {
       {
         name: "Server Connection",
         icon: ["fas", "network-wired"],
-        ...this.listItemContent(serverTimeout),
+        ...this.listItemContent(this.model?.isServerConnectionHealthy),
       },
       {
         name: "Database",
         icon: ["fas", "database"],
-        ...this.listItemContent(this.model?.database),
+        ...this.listItemContent(this.model?.isDatabaseHealthy),
       },
       {
         name: "Cache",
@@ -85,23 +82,19 @@ class WebsiteStatusComponent extends PageComponent implements OnInit {
       {
         name: "User Internet Connection",
         icon: ["fas", "wifi"],
-        ...this.listItemContent(navigator.onLine),
+        ...this.listItemContent(this.model?.onLine),
       },
     ]);
   }
 
-  private listItemContent(healthy?: boolean): Partial<IItem> {
+  // if we don't receive a response from the server, we won't know the status of a service
+  // eg. the database. In these cases we want to show "Unknown"
+  private listItemContent(healthy: boolean | null): Partial<IItem> {
     if (!isInstantiated(healthy)) {
-      return {
-        value: "Unknown",
-        color: "secondary",
-      };
+      return this.unknownListItem;
     }
 
-    const value = healthy ? "Healthy" : "Unhealthy";
-    const color = healthy ? "success" : "danger";
-
-    return { value, color };
+    return healthy ? this.healthyListItem : this.unhealthyListItem;
   }
 }
 

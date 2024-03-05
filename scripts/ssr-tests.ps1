@@ -87,6 +87,10 @@ Assert-Contains "<\/router-outlet><baw-home.*<\/baw-home>" $indexFile
 Format-Info "Validate footer contains version"
 Assert-Contains "id=`"version`".+?>\d{2}\.\d{1,2}\.\d{1,2}.+?<\/p>" $indexFile
 
+# Check that the website status icon is not shown in SSR
+Format-Info "Validate website status icon is not shown"
+Assert-NotContains "website-status-warning" $indexFile
+
 # Not found page tests
 Format-Info "Retrieve not found page"
 $brokenFile = "broken.html"

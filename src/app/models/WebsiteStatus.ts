@@ -1,5 +1,6 @@
 import { Injector } from "@angular/core";
 import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModelWithoutId } from "./AbstractModel";
 
 export type WebsiteOverallStatus = "good" | "bad";
@@ -10,47 +11,83 @@ export type StorageStatus =
   | `${number} audio recording storage directory available.`;
 
 export interface IWebsiteStatus {
-  status: WebsiteOverallStatus;
-  timedOut: boolean;
-  database: boolean;
-  redis: RedisStatus;
-  storage: StorageStatus;
-  upload: UploadStatus;
+  status: WebsiteOverallStatus | undefined;
+  timedOut: boolean | undefined;
+  database: boolean | undefined;
+  redis: RedisStatus | undefined;
+  storage: StorageStatus | undefined;
+  upload: UploadStatus | undefined;
 }
 
 export class WebsiteStatus
-  extends AbstractModelWithoutId<IWebsiteStatus>
+  extends AbstractModelWithoutId<Partial<IWebsiteStatus>>
   implements IWebsiteStatus
 {
-  public constructor(model: IWebsiteStatus, injector?: Injector) {
+  public constructor(model: Partial<IWebsiteStatus>, injector?: Injector) {
     super(model, injector);
   }
 
   public readonly kind = "status";
-  public readonly status: WebsiteOverallStatus;
-  public readonly timedOut: boolean;
-  public readonly database: boolean;
-  public readonly redis: RedisStatus;
-  public readonly storage: StorageStatus;
-  public readonly upload: UploadStatus;
+  public readonly status: WebsiteOverallStatus | undefined;
+  public readonly timedOut: boolean | undefined;
+  public readonly database: boolean | undefined;
+  public readonly redis: RedisStatus | undefined;
+  public readonly storage: StorageStatus | undefined;
+  public readonly upload: UploadStatus | undefined;
 
-  public get isStatusHealthy(): boolean {
-    return this.status === "good";
+  public get isStatusHealthy(): boolean | null {
+    return isInstantiated(this.status) ? this.status === "good" : null;
   }
 
-  public get isRedisHealthy(): boolean {
-    return this.redis === "PONG";
+  public get isServerConnectionHealthy(): boolean | null {
+    return isInstantiated(this.timedOut) ? !this.timedOut : null;
   }
 
-  public get isStorageHealthy(): boolean {
-    return this.storage !== "No audio recording storage directories are available.";
+  public get isDatabaseHealthy(): boolean | null {
+    return isInstantiated(this.database) ? this.database : null;
   }
 
-  public get isUploadingHealthy(): boolean {
-    return this.upload === "Alive";
+  public get isRedisHealthy(): boolean | null {
+    return isInstantiated(this.redis) ? this.redis === "PONG" : null;
+  }
+
+  public get isStorageHealthy(): boolean | null {
+    return isInstantiated(this.storage)
+      ? this.storage !== "No audio recording storage directories are available."
+      : null;
+  }
+
+  public get isUploadingHealthy(): boolean | null {
+    return isInstantiated(this.upload) ? this.upload === "Alive" : null;
+  }
+
+  public get onLine(): boolean {
+    return navigator.onLine;
   }
 
   public get viewUrl(): string {
     return websiteStatusMenuItem.route.toRouterLink();
+  }
+}
+
+export class ServerTimeout extends WebsiteStatus {
+  private constructor() {
+    super({
+      timedOut: true,
+    });
+  }
+
+  public static readonly instance = new ServerTimeout();
+}
+
+export class SsrContext extends WebsiteStatus {
+  private constructor() {
+    super({});
+  }
+
+  public static readonly instance = new SsrContext();
+
+  public override get onLine(): boolean {
+    return false;
   }
 }
