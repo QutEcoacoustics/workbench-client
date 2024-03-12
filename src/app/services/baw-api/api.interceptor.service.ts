@@ -1,4 +1,5 @@
 import {
+  HttpContextToken,
   HttpErrorResponse,
   HttpEvent,
   HttpHandler,
@@ -24,6 +25,10 @@ import { ApiResponse } from "./baw-api.service";
 import { BawSessionService } from "./baw-session.service";
 
 export const CLIENT_TIMEOUT = 0;
+
+// the authentication context token can be used to hide/show the authentication in requests
+// a true value will include the authentication header and cookies
+export const CREDENTIALS_CONTEXT = new HttpContextToken<boolean>(() => true);
 
 /**
  * BAW API Interceptor.
@@ -53,8 +58,10 @@ export class BawApiInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
+    const shouldSendCredentials = request.context.get(CREDENTIALS_CONTEXT);
+
     // If logged in, add authorization token
-    if (this.session.isLoggedIn) {
+    if (this.session.isLoggedIn && shouldSendCredentials) {
       request = request.clone({
         setHeaders: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -64,8 +71,9 @@ export class BawApiInterceptor implements HttpInterceptor {
     }
 
     // Convert outgoing data
+    // if withCredentials is false, the request will not include cookies (such as the _baw_session cookie)
     request = request.clone({
-      withCredentials: true,
+      withCredentials: shouldSendCredentials,
       body: toSnakeCase(request.body),
     });
 
