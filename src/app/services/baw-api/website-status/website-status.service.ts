@@ -61,9 +61,12 @@ export class WebsiteStatusService {
   private show(): Observable<WebsiteStatus | null> {
     const endpoint = "/status";
 
-    // we use our custom api.httpGet so that this service using our site wide
-    // caching config (and can be overwritten by the caller in a uniform manner)
-    return (this.api.httpGet(endpoint, this.requestHeaders) as any).pipe(
+    return (
+      this.api.httpGet(endpoint, this.requestHeaders, {
+        cacheOptions: { cache: false },
+        withCredentials: false,
+      }) as any
+    ).pipe(
       map((response: IWebsiteStatus) => new WebsiteStatus(response)),
       catchError((err: BawApiError | Error) => {
         const bawError = isBawApiError(err)

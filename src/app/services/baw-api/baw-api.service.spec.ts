@@ -1,10 +1,14 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TestRequest } from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
-import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
+import {
+  CREDENTIALS_CONTEXT,
+  BawApiInterceptor,
+} from "@baw-api/api.interceptor.service";
 import {
   ApiResponse,
   BawApiService,
+  BawServiceOptions,
   defaultApiHeaders,
   Filters,
   Meta,
@@ -277,7 +281,7 @@ describe("BawApiService", () => {
     httpMethods.forEach((httpMethod) => {
       describe(httpMethod.functionName, () => {
         function functionCall(
-          opts: (string | number)[] = [],
+          opts: unknown[] = [],
           next: (value: any) => void = noop,
           error: (err: any) => void = noop,
           complete: () => void = noop
@@ -312,6 +316,74 @@ describe("BawApiService", () => {
           signIn(defaultUser, defaultAuthToken);
           functionCall();
           verifyAuthHeaders(catchFunctionCall(), defaultAuthToken);
+        });
+
+        it("should create a request with authentication headers when withCredentials is not set", () => {
+          signIn(defaultUser, defaultAuthToken);
+
+          let functionCallOptions: unknown[];
+
+          // we have a special case for GET and GET because these function signatures don't take a body argument
+          // (the third argument in every other function)
+          if (httpMethod.method === HttpMethod.DELETE || httpMethod.method === HttpMethod.GET) {
+            functionCallOptions = [undefined, { withCredentials: false }];
+          } else {
+            functionCallOptions = [
+              undefined,
+              undefined,
+              { withCredentials: false },
+            ];
+          }
+
+          functionCall(functionCallOptions);
+
+          const request = catchFunctionCall();
+          verifyHeaders(request);
+          expect(request.request.headers.get("Authorization")).toBeNull();
+        });
+
+        it("should create a request with authentication headers when withCredentials is explicitly set to true", () => {
+          signIn(defaultUser, defaultAuthToken);
+
+          let functionCallOptions: unknown[];
+
+          if (httpMethod.method === HttpMethod.DELETE || httpMethod.method === HttpMethod.GET) {
+            functionCallOptions = [undefined, { withCredentials: true }];
+          } else {
+            functionCallOptions = [
+              undefined,
+              undefined,
+              { withCredentials: true },
+            ];
+          }
+
+          functionCall(functionCallOptions);
+
+          const request = catchFunctionCall();
+          verifyAuthHeaders(request, defaultAuthToken);
+          expect(request.request.headers.get("Authorization")).toBeDefined();
+        });
+
+        it("should not create a request with authentication headers when withCredentials is set to false", () => {
+          signIn(defaultUser, defaultAuthToken);
+
+          let functionCallOptions: unknown[];
+
+          if (httpMethod.method === HttpMethod.DELETE || httpMethod.method === HttpMethod.GET) {
+            functionCallOptions = [undefined, { withCredentials: false }];
+          } else {
+            functionCallOptions = [
+              undefined,
+              undefined,
+              { withCredentials: false },
+            ];
+          }
+
+          functionCall(functionCallOptions);
+
+          const request = catchFunctionCall();
+          verifyHeaders(request);
+          expect(request.request.headers.get("Authorization")).toBeNull();
         });
 
         it("should return single response", (done) => {
@@ -423,34 +495,63 @@ describe("BawApiService", () => {
       });
 
       it("should cache results when given", () => {
+        const cacheOptions = { cache: true };
+
         service
-          .httpGet("/broken_link", defaultApiHeaders, { cache: true })
+          .httpGet("/broken_link", defaultApiHeaders, { cacheOptions })
           .subscribe();
+
         const context = catchFunctionCall().request.context;
-        expect(context).toEqual(withCache({ cache: true, ...defaultCache }));
+        const expectedContext = withCache({
+          cache: true,
+          ...defaultCache,
+        }).set(CREDENTIALS_CONTEXT, true);
+
+        expect(context).toEqual(expectedContext);
       });
 
       it("should override default cache settings", () => {
         const cacheOptions: ContextOptions = { cache: true, ttl: 10000 };
         service
-          .httpGet("/broken_link", defaultApiHeaders, cacheOptions)
+          .httpGet("/broken_link", defaultApiHeaders, { cacheOptions })
           .subscribe();
         const context = catchFunctionCall().request.context;
-        expect(context).toEqual(
-          withCache({ ...defaultCache, ...cacheOptions })
-        );
+        const expectedContext = withCache({
+          ...defaultCache,
+          ...cacheOptions,
+        }).set(CREDENTIALS_CONTEXT, true);
+
+        expect(context).toEqual(expectedContext);
       });
 
       it("should not cache results when not given", () => {
         service.httpGet("/broken_link").subscribe();
         const context = catchFunctionCall().request.context;
-        expect(context).toEqual(
-          withCache({
-            cache: false,
-            ttl: cacheSettings.httpGetTtlMs,
-            context: withCacheLogging(),
-          })
-        );
+        const expectedContext = withCache({
+          cache: false,
+          ttl: cacheSettings.httpGetTtlMs,
+          context: withCacheLogging(),
+        }).set(CREDENTIALS_CONTEXT, true);
+
+        expect(context).toEqual(expectedContext);
+      });
+
+      it("should allow settings both cache and authentication contexts to non-default values", () => {
+        const cacheOptions: ContextOptions = { cache: true, ttl: 10000 };
+        const options: BawServiceOptions = {
+          cacheOptions,
+          withCredentials: false,
+        };
+
+        service.httpGet("/broken_link", defaultApiHeaders, options).subscribe();
+
+        const context = catchFunctionCall().request.context;
+        const expectedContext = withCache({
+          ...defaultCache,
+          ...cacheOptions,
+        }).set(CREDENTIALS_CONTEXT, false);
+
+        expect(context).toEqual(expectedContext);
       });
     });
   });
@@ -504,10 +605,17 @@ describe("BawApiService", () => {
         describe(method, () => {
           let defaultBody: IMockModel;
           let defaultFilter: Filters<IMockModel>;
+          // the default options for the baw service methods eg. show, create, list, filterShow, filter, etc...
+          // because the default options are applied in lower level methods eg. httpGet, httpPost, etc...
+          // we expect that low level methods are called by high level methods with an empty options object as their default
+          // (indicating no options were passed in by the programmer)
+          // if options are passed in by the programmer, the options object will be a partial options object
+          let defaultBawMethodOptions: BawServiceOptions;
 
           beforeEach(() => {
             defaultBody = { id: 1, name: "test", caseConversion: {} };
             defaultFilter = { paging: { page: 1 } };
+            defaultBawMethodOptions = { };
           });
 
           function errorRequest(error: BawApiError): jasmine.Spy {
@@ -574,21 +682,35 @@ describe("BawApiService", () => {
                 expect(spy).toHaveBeenCalledWith(
                   "/broken_link",
                   defaultApiHeaders,
-                  { cache: true }
+                  defaultBawMethodOptions
                 );
                 break;
               case "filter":
-                expect(spy).toHaveBeenCalledWith("/broken_link", defaultFilter);
+                expect(spy).toHaveBeenCalledWith(
+                  "/broken_link",
+                  defaultFilter,
+                  undefined,
+                  defaultBawMethodOptions
+                );
                 break;
               case "create":
               case "update":
-                expect(spy).toHaveBeenCalledWith("/broken_link", {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  "Mock Model": defaultBody,
-                });
+                expect(spy).toHaveBeenCalledWith(
+                  "/broken_link",
+                  {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    "Mock Model": defaultBody,
+                  },
+                  undefined,
+                  defaultBawMethodOptions
+                );
                 break;
               case "destroy":
-                expect(spy).toHaveBeenCalledWith("/broken_link");
+                expect(spy).toHaveBeenCalledWith(
+                  "/broken_link",
+                  undefined,
+                  defaultBawMethodOptions
+                );
                 break;
             }
           });

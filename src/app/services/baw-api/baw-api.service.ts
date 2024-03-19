@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, Injector } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
 import { toSnakeCase } from "@helpers/case-converter/case-converter";
@@ -13,7 +13,6 @@ import {
   AbstractModelWithoutId,
 } from "@models/AbstractModel";
 import { HttpCacheManager, withCache } from "@ngneat/cashew";
-import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { API_ROOT } from "@services/config/config.tokens";
@@ -21,17 +20,22 @@ import { ToastrService } from "ngx-toastr";
 import { Observable, iif, of, throwError } from "rxjs";
 import { catchError, concatMap, map, switchMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import { BawSessionService } from "./baw-session.service";
+import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
 
 export const defaultApiPageSize = 25;
 export const unknownErrorCode = -1;
 
-interface NotificationsOpt {
+export interface BawServiceOptions {
+  /** If set and a request fails, an error notification won't be shown to the user */
   disableNotification?: boolean;
-}
 
-interface CacheOpt {
-  disableCache?: boolean;
+  /** If set, requests will include the users authentication token and cookies */
+  withCredentials?: boolean;
+
+  /** Allows you to modify the cashew cache options per request */
+  cacheOptions?: ContextOptions;
 }
 
 /** Default headers for API requests */
@@ -48,6 +52,11 @@ export const multiPartApiHeaders = new HttpHeaders({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Accept: "application/json",
 });
+export const defaultBawServiceOptions: Required<BawServiceOptions> = {
+  disableNotification: false,
+  withCredentials: true,
+  cacheOptions: { cache: false },
+};
 
 /**
  * Interface with BAW Server Rest API
@@ -100,6 +109,36 @@ export class BawApiService<
   private clearCache = (path: string) => {
     this.manager.delete(path);
   };
+
+  // because users can create a partial options object, we need to merge the partial options with the default options
+  // so that we don't have "undefined" values being passed as options
+  private buildServiceOptions(
+    options: Partial<BawServiceOptions>
+  ): Required<BawServiceOptions> {
+    return {
+      ...defaultBawServiceOptions,
+      ...options,
+    };
+  }
+
+  // the "context" headers are passed to the interceptor to determine if the request should be cached and if
+  // the Authentication token and cookies should be sent in requests
+  private credentialsHttpContext(
+    options: Required<BawServiceOptions>,
+    baseContext: HttpContext = new HttpContext()
+  ): HttpContext {
+    return baseContext.set(CREDENTIALS_CONTEXT, options.withCredentials);
+  }
+
+  // because users can input a partial options object, it is possible for the disableNotification property to be undefined
+  // this can be a problem because it will default to a falsy value, not the default option
+  // therefore, this method should be used to check if we should show a toast notification if the request fails
+  private shouldNotify(options: Partial<BawServiceOptions>): boolean {
+    return (
+      options?.disableNotification ??
+      defaultBawServiceOptions.disableNotification
+    );
+  }
 
   public constructor(
     @Inject(API_ROOT) protected apiRoot: string,
@@ -167,16 +206,12 @@ export class BawApiService<
   public list(
     classBuilder: ClassBuilder,
     path: string,
-    opts?: CacheOpt & NotificationsOpt
+    options: BawServiceOptions = {}
   ): Observable<Model[]> {
     return this.session.authTrigger.pipe(
-      switchMap(() =>
-        this.httpGet(path, defaultApiHeaders, {
-          cache: this.cacheSettings.enabled && !opts?.disableCache,
-        })
-      ),
+      switchMap(() => this.httpGet(path, defaultApiHeaders, options)),
       map(this.handleCollectionResponse(classBuilder)),
-      catchError((err) => this.handleError(err, opts?.disableNotification))
+      catchError((err) => this.handleError(err, this.shouldNotify(options)))
     );
   }
 
@@ -191,12 +226,12 @@ export class BawApiService<
     classBuilder: ClassBuilder,
     path: string,
     filters: Filters<Model>,
-    opts?: NotificationsOpt
+    options: BawServiceOptions = {}
   ): Observable<Model[]> {
     return this.session.authTrigger.pipe(
-      switchMap(() => this.httpPost(path, filters)),
+      switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleCollectionResponse(classBuilder)),
-      catchError((err) => this.handleError(err, opts?.disableNotification))
+      catchError((err) => this.handleError(err, this.shouldNotify(options)))
     );
   }
 
@@ -211,12 +246,12 @@ export class BawApiService<
     classBuilder: ClassBuilder,
     path: string,
     filters: Filters<Model>,
-    opts?: NotificationsOpt
+    options: BawServiceOptions = {}
   ): Observable<Model> {
     return this.session.authTrigger.pipe(
-      switchMap(() => this.httpPost(path, filters)),
+      switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleSingleResponse(classBuilder)),
-      catchError((err) => this.handleError(err, opts?.disableNotification))
+      catchError((err) => this.handleError(err, this.shouldNotify(options)))
     );
   }
 
@@ -229,16 +264,12 @@ export class BawApiService<
   public show(
     classBuilder: ClassBuilder,
     path: string,
-    opts?: CacheOpt & NotificationsOpt
+    options: BawServiceOptions = {}
   ): Observable<Model> {
     return this.session.authTrigger.pipe(
-      switchMap(() =>
-        this.httpGet(path, defaultApiHeaders, {
-          cache: this.cacheSettings.enabled && !opts?.disableCache,
-        })
-      ),
+      switchMap(() => this.httpGet(path, defaultApiHeaders, options)),
       map(this.handleSingleResponse(classBuilder)),
-      catchError((err) => this.handleError(err, opts?.disableNotification))
+      catchError((err) => this.handleError(err, this.shouldNotify(options)))
     );
   }
 
@@ -256,7 +287,7 @@ export class BawApiService<
     createPath: string,
     updatePath: (model: Model) => string,
     model: AbstractModel,
-    opts?: NotificationsOpt
+    options: BawServiceOptions = {}
   ): Observable<Model> {
     const jsonData = model.getJsonAttributes?.({ create: true });
     const formData = model.getFormDataOnlyAttributes({ create: true });
@@ -271,7 +302,7 @@ export class BawApiService<
     return of(null).pipe(
       concatMap(
         model.hasJsonOnlyAttributes({ create: true })
-          ? () => this.httpPost(createPath, body).pipe()
+          ? () => this.httpPost(createPath, body, undefined, options).pipe()
           : (data) => of(data)
       ),
       // we create a class from the POST response so that we can construct an update route for the formData PUT request
@@ -284,15 +315,18 @@ export class BawApiService<
         // using ternary logic here (similar to the update function) would result in poor readability and a lot of nesting
         iif(
           () => model.hasFormDataOnlyAttributes({ create: true }),
-          this.httpPut(updatePath(data), formData, multiPartApiHeaders).pipe(
-            map(this.handleSingleResponse(classBuilder))
-          ),
+          this.httpPut(
+            updatePath(data),
+            formData,
+            multiPartApiHeaders,
+            options
+          ).pipe(map(this.handleSingleResponse(classBuilder))),
           of(data)
         )
       ),
       // there is no map function here, because the handleSingleResponse method is invoked on the POST and PUT requests
       // individually. Moving the handleSingleResponse mapping here would result in the response object being instantiated twice
-      catchError((err) => this.handleError(err, opts?.disableNotification))
+      catchError((err) => this.handleError(err, this.shouldNotify(options)))
     );
   }
 
@@ -308,7 +342,7 @@ export class BawApiService<
     classBuilder: ClassBuilder,
     path: string,
     model: AbstractModel,
-    opts?: NotificationsOpt
+    options: BawServiceOptions = {}
   ): Observable<Model> {
     const jsonData = model.getJsonAttributes?.({ update: true });
     const formData = model.getFormDataOnlyAttributes({ update: true });
@@ -326,16 +360,16 @@ export class BawApiService<
         // returns a value, and not an observable. Because we use concatMap below, we need the existing
         // value to be emitted as an observable instead. Therefore, we create a static observable using of()
         model.hasJsonOnlyAttributes({ update: true })
-          ? () => this.httpPatch(path, body)
+          ? () => this.httpPatch(path, body, undefined, options)
           : (data) => of(data)
       ),
       concatMap(
         model.hasFormDataOnlyAttributes({ update: true })
-          ? () => this.httpPut(path, formData, multiPartApiHeaders)
+          ? () => this.httpPut(path, formData, multiPartApiHeaders, options)
           : (data) => of(data)
       ),
       map(this.handleSingleResponse(classBuilder)),
-      catchError((err) => this.handleError(err, opts?.disableNotification))
+      catchError((err) => this.handleError(err, this.shouldNotify(options)))
     );
   }
 
@@ -344,11 +378,14 @@ export class BawApiService<
    *
    * @param path API path
    */
-  public destroy(path: string, opts?: NotificationsOpt): Observable<null> {
-    return this.httpDelete(path).pipe(
+  public destroy(
+    path: string,
+    options: BawServiceOptions = {}
+  ): Observable<null> {
+    return this.httpDelete(path, undefined, options).pipe(
       map(this.handleEmptyResponse),
       tap(() => this.clearCache(path)),
-      catchError((err) => this.handleError(err, opts?.disableNotification))
+      catchError((err) => this.handleError(err, this.shouldNotify(options)))
     );
   }
 
@@ -358,20 +395,31 @@ export class BawApiService<
    * whenever the users authenticated state changes.
    *
    * @param path API path
+   * @param headers Request headers
+   *
+   * @param options Options to modify the request
+   * eg. `{ withCredentials: false }` will not include the users authentication token and cookies in the request
    */
   public httpGet(
     path: string,
-    options: any = defaultApiHeaders,
-    cacheOptions: ContextOptions = { cache: false }
+    headers: HttpHeaders = defaultApiHeaders,
+    options: BawServiceOptions = {}
   ): Observable<ApiResponse<Model | Model[]>> {
+    const fullOptions = this.buildServiceOptions(options);
+
+    const cacheContext: HttpContext = withCache({
+      ttl: this.cacheSettings.httpGetTtlMs,
+      context: withCacheLogging(),
+      ...options.cacheOptions,
+      cache: this.cacheSettings.enabled && fullOptions.cacheOptions.cache,
+    });
+
+    const context = this.credentialsHttpContext(fullOptions, cacheContext);
+
     return this.http.get<ApiResponse<Model>>(this.getPath(path), {
       responseType: "json",
-      headers: options,
-      context: withCache({
-        ttl: this.cacheSettings.httpGetTtlMs,
-        context: withCacheLogging(),
-        ...cacheOptions,
-      }),
+      headers,
+      context,
     });
   }
 
@@ -381,14 +429,24 @@ export class BawApiService<
    * whenever the users authenticated state changes.
    *
    * @param path API path
+   * @param headers Request headers
+   *
+   * @param options Options to modify the request
+   * eg. `{ withCredentials: false }` will not include the users authentication token and cookies in the request
    */
   public httpDelete(
     path: string,
-    options: any = defaultApiHeaders
+    headers: HttpHeaders = defaultApiHeaders,
+    options: BawServiceOptions = {}
   ): Observable<ApiResponse<Model | void>> {
+    const fullOptions = this.buildServiceOptions(options);
+
+    const context = this.credentialsHttpContext(fullOptions);
+
     return this.http.delete<ApiResponse<null>>(this.getPath(path), {
       responseType: "json",
-      headers: options,
+      headers,
+      context,
     });
   }
 
@@ -399,18 +457,28 @@ export class BawApiService<
    *
    * @param path API path
    * @param body Request body
+   * @param headers Request headers
+   *
+   * @param options Options to modify the request
+   * eg. `{ withCredentials: false }` will not include the users authentication token and cookies in the request
    */
   public httpPost(
     path: string,
     body?: any,
-    options: any = defaultApiHeaders
+    headers: HttpHeaders = defaultApiHeaders,
+    options: BawServiceOptions = {}
   ): Observable<ApiResponse<Model | Model[]>> {
+    const fullOptions = this.buildServiceOptions(options);
+
+    const context = this.credentialsHttpContext(fullOptions);
+
     return this.http.post<ApiResponse<Model | Model[]>>(
       this.getPath(path),
       body,
       {
         responseType: "json",
-        headers: options,
+        headers,
+        context,
       }
     );
   }
@@ -422,15 +490,25 @@ export class BawApiService<
    *
    * @param path API path
    * @param body Request body
+   * @param headers Request headers
+   *
+   * @param options Options to modify the request
+   * eg. `{ withCredentials: false }` will not include the users authentication token and cookies in the request
    */
   public httpPut(
     path: string,
     body?: any,
-    options: any = defaultApiHeaders
+    headers: HttpHeaders = defaultApiHeaders,
+    options: BawServiceOptions = {}
   ): Observable<ApiResponse<Model>> {
+    const fullOptions = this.buildServiceOptions(options);
+
+    const context = this.credentialsHttpContext(fullOptions);
+
     return this.http.put<ApiResponse<Model>>(this.getPath(path), body, {
       responseType: "json",
-      headers: options,
+      headers,
+      context,
     });
   }
 
@@ -441,19 +519,33 @@ export class BawApiService<
    *
    * @param path API path
    * @param body Request body
+   * @param headers Request headers
+   *
+   * @param options Options to modify the request
+   * eg. `{ withCredentials: false }` will not include the users authentication token and cookies in the request
    */
   public httpPatch(
     path: string,
     body?: any,
-    options: any = defaultApiHeaders
+    headers: HttpHeaders = defaultApiHeaders,
+    options: BawServiceOptions = {}
   ): Observable<ApiResponse<Model>> {
+    const fullOptions = this.buildServiceOptions(options);
+
+    const context = this.credentialsHttpContext(fullOptions);
+
     return this.http.patch<ApiResponse<Model>>(this.getPath(path), body, {
       responseType: "json",
-      headers: options,
+      headers,
+      context,
     });
   }
 
-  public encodeFilter(filter: Filters<Model>, disablePaging?: boolean): string {
+  public encodeFilter(
+    filter: Filters<Model>,
+    disablePaging?: boolean,
+    withCredentials: boolean = true
+  ): string {
     const body: Record<string, string> = {
       // Base64 RFC 4648 §5 encoding
       filterEncoded: toBase64Url(JSON.stringify(toSnakeCase(filter))),
@@ -463,7 +555,7 @@ export class BawApiService<
       body["disablePaging"] = "true";
     }
 
-    if (this.session.isLoggedIn) {
+    if (this.session.isLoggedIn && withCredentials) {
       body["authToken"] = this.session.authToken;
     }
 
