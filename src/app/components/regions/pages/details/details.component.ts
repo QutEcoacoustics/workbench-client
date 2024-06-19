@@ -30,6 +30,7 @@ import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs";
+import { verificationMenuItems } from "@components/verification/verification.menu";
 
 export const regionMenuItemActions = [
   deleteRegionModal,
@@ -39,6 +40,7 @@ export const regionMenuItemActions = [
   audioRecordingMenuItems.list.region,
   audioRecordingMenuItems.batch.region,
   reportMenuItems.new.region,
+  verificationMenuItems.new.region,
 ];
 
 const projectKey = "project";

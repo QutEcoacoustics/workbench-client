@@ -38,7 +38,9 @@
                 "node_modules"
               ]
             },
-            "scripts": [],
+            "scripts": [
+              "node_modules/@ecoacoustics/web-components/components.js"
+            ],
             "sourceMap": true,
             "allowedCommonJsDependencies": [
               "zone.js/dist/zone-error",
@@ -83,7 +85,13 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "workbench-client:build"
+            "buildTarget": "workbench-client:build",
+            "headers": {
+              "Cross-Origin-Opener-Policy": "same-origin",
+              "Cross-Origin-Embedder-Policy": "require-corp",
+              "Cross-Origin-Resource-Policy": "cross-origin",
+              "Access-Control-Allow-Origin": "*"
+            }
           },
           "configurations": {
             "production": {
