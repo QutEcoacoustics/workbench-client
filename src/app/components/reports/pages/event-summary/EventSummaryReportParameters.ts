@@ -31,6 +31,7 @@ import { ImplementsInjector } from "@models/ImplementsInjector";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
+import { IParameterModel } from "@models/data/parametersModel";
 import { DateTime, Duration } from "luxon";
 
 export enum Chart {
@@ -76,7 +77,10 @@ const serializationTable: IQueryStringParameterSpec = {
 };
 
 export class EventSummaryReportParameters
-  implements IEventSummaryReportParameters, ImplementsInjector
+  implements
+    IEventSummaryReportParameters,
+    ImplementsInjector,
+    IParameterModel<EventSummaryReport>
 {
   public constructor(
     queryStringParameters: Params = {},
@@ -207,10 +211,11 @@ export class EventSummaryReportParameters
   }
 
   public toQueryParams(): Params {
-    const queryParameters = serializeObjectToParams<IEventSummaryReportParameters>(
-      this,
-      serializationTable
-    );
+    const queryParameters =
+      serializeObjectToParams<IEventSummaryReportParameters>(
+        this,
+        serializationTable
+      );
 
     return queryParameters;
   }

@@ -52,9 +52,9 @@ export class AnnotationSearchFormComponent implements OnChanges {
   public site?: Site;
 
   @Input()
-  public form?: VerificationSearch;
+  public model?: VerificationSearch;
   @Output()
-  public formChange = new EventEmitter<VerificationSearch>();
+  public modelChange = new EventEmitter<VerificationSearch>();
 
   // because the model is a two way data-binding, we need to emit changes
   // whenever the model changes
@@ -62,7 +62,7 @@ export class AnnotationSearchFormComponent implements OnChanges {
   // part of the same detection cycle, which keeps overhead to a minimum
   public ngOnChanges(changes: SimpleChanges): void {
     if ("model" in changes) {
-      this.formChange.emit(this.form);
+      this.modelChange.emit(this.model);
     }
   }
 
