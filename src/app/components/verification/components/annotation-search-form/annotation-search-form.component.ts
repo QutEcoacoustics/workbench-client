@@ -1,38 +1,31 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { StandardApi } from "@baw-api/api-common";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
+import { VerificationParameters } from "@components/verification/pages/verificationParameters";
 import {
   filterAnd,
   notIn,
   filterModel,
   contains,
 } from "@helpers/filters/filters";
+import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { Tag } from "@models/Tag";
 import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
 import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
+import { DateTime } from "luxon";
 import { Observable } from "rxjs";
-
-export interface VerificationSearch {
-  tags?: Tag[];
-  project?: Project;
-  regions?: Region[];
-  sites?: Site[];
-  dateFilters?: DateTimeFilterModel;
-  onlyUnverified?: boolean;
-}
 
 @Component({
   selector: "baw-annotation-search-form",
   templateUrl: "annotation-search-form.component.html",
 })
-export class AnnotationSearchFormComponent implements OnChanges {
+export class AnnotationSearchFormComponent {
   public constructor(
     protected sitesApi: ShallowSitesService,
     protected regionsApi: ShallowRegionsService,
@@ -52,19 +45,9 @@ export class AnnotationSearchFormComponent implements OnChanges {
   public site?: Site;
 
   @Input()
-  public model?: VerificationSearch;
+  public model: VerificationParameters = new VerificationParameters();
   @Output()
-  public modelChange = new EventEmitter<VerificationSearch>();
-
-  // because the model is a two way data-binding, we need to emit changes
-  // whenever the model changes
-  // if we do this inside the ngOnChanges, the data binding updates will be a
-  // part of the same detection cycle, which keeps overhead to a minimum
-  public ngOnChanges(changes: SimpleChanges): void {
-    if ("model" in changes) {
-      this.modelChange.emit(this.model);
-    }
-  }
+  public modelChange = new EventEmitter<VerificationParameters>();
 
   protected createSearchCallback<T extends AbstractModel>(
     api: StandardApi<T>,
@@ -84,6 +67,46 @@ export class AnnotationSearchFormComponent implements OnChanges {
       });
   }
 
+  // because the DateTimeFilterModel is coming from a shared component, we need to serialize for use in the data model
+  protected updateDateTime(
+    dateTimeModel: DateTimeFilterModel
+  ): void {
+    if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
+      this.model.date = [
+        dateTimeModel.dateStartedAfter
+          ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
+          : null,
+        dateTimeModel.dateFinishedBefore
+          ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
+          : null,
+      ];
+    }
+
+    if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
+      this.model.time = [
+        dateTimeModel.timeStartedAfter,
+        dateTimeModel.timeFinishedBefore,
+      ];
+
+      // because the daylight savings filter is a modifier on the time filter we do not need to update it unless the time filter has a value
+      // this.model.daylightSavings = !dateTimeModel.ignoreDaylightSavings;
+    }
+  }
+
+  protected updateModel(key: keyof VerificationParameters, value: any): void {
+    this.model[key] = value;
+    this.modelChange.emit(this.model);
+  }
+
+  protected getIdsFromAbstractModelArray(items: object[]): Id[] {
+    if (items.length === 0) {
+      return null;
+    }
+
+    const idsArray: Id[] = items.map((item: AbstractModel): Id => item.id);
+    return idsArray;
+  }
+
   // we need a default filter to scope to projects, regions, sites
   private defaultFilter(): InnerFilter<Project | Region | Site> {
     // we don't need to filter for every route, we only need to filter for the lowest level
@@ -96,17 +119,5 @@ export class AnnotationSearchFormComponent implements OnChanges {
     } else {
       return filterModel("projects", this.project);
     }
-  }
-
-  protected convertToTag(model: object[]): Tag[] {
-    return model as Tag[];
-  }
-
-  protected convertToRegion(model: object[]): Region[] {
-    return model as Region[];
-  }
-
-  protected convertToSite(model: object[]): Site[] {
-    return model as Site[];
   }
 }

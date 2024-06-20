@@ -6,7 +6,6 @@ import {
   deserializeParamsToObject,
   IQueryStringParameterSpec,
   jsBoolean,
-  jsNumber,
   jsNumberArray,
   luxonDateArray,
   luxonDurationArray,
@@ -21,9 +20,9 @@ import { DateTime, Duration } from "luxon";
 export interface IVerificationParameters {}
 
 const serializationTable: IQueryStringParameterSpec = {
-  projectId: jsNumber,
-  regionIds: jsNumberArray,
-  siteIds: jsNumberArray,
+  projects: jsNumberArray,
+  regions: jsNumberArray,
+  sites: jsNumberArray,
   tags: jsNumberArray,
   onlyUnverified: jsBoolean,
   date: luxonDateArray,
@@ -51,9 +50,9 @@ export class VerificationParameters
     });
   }
 
-  public projectId: CollectionIds;
-  public regionIds: CollectionIds;
-  public siteIds: CollectionIds;
+  public projects: CollectionIds;
+  public regions: CollectionIds;
+  public sites: CollectionIds;
   public tags: CollectionIds;
   public onlyUnverified: boolean;
   public date: MonoTuple<DateTime, 2>;

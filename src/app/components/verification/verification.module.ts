@@ -6,13 +6,9 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { verificationRoute } from "./verification.routes";
 import { NewVerificationComponent } from "./pages/new/new.component";
 import { ViewVerificationComponent } from "./pages/view/view.component";
-import { AnnotationSearchPreviewComponent } from "./components/annotation-search-preview/annotation-search-preview.component";
 import { AnnotationSearchFormComponent } from "./components/annotation-search-form/annotation-search-form.component";
 
-const internalComponents = [
-  AnnotationSearchPreviewComponent,
-  AnnotationSearchFormComponent,
-];
+const internalComponents = [AnnotationSearchFormComponent];
 
 const components = [
   NewVerificationComponent,
