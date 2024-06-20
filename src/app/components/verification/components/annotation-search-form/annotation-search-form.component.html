@@ -2,7 +2,7 @@
 
 <form #ngForm="ngForm">
   <baw-date-time-filter
-    (modelChange)="model.dateFilters = $event"
+    (modelChange)="updateDateTime($event)"
   ></baw-date-time-filter>
 
   <baw-typeahead-input
@@ -10,7 +10,7 @@
     [inputPlaceholder]="'All'"
     [searchCallback]="createSearchCallback(tagsApi, 'text', false)"
     [resultTemplate]="tagsTypeaheadTemplate"
-    (modelChange)="model.tags = convertToTag($event)"
+    (modelChange)="updateModel('tags', getIdsFromAbstractModelArray($event))"
   ></baw-typeahead-input>
 
   <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
@@ -21,7 +21,7 @@
     [searchCallback]="createSearchCallback(regionsApi)"
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!region"
-    (modelChange)="model.regions = convertToRegion($event)"
+    (modelChange)="updateModel('regions', getIdsFromAbstractModelArray($event))"
   ></baw-typeahead-input>
 
   <baw-typeahead-input
@@ -30,7 +30,7 @@
     [searchCallback]="createSearchCallback(sitesApi)"
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!site"
-    (modelChange)="model.sites = convertToSite($event)"
+    (modelChange)="updateModel('sites', getIdsFromAbstractModelArray($event))"
   ></baw-typeahead-input>
 
   <div class="form-check">

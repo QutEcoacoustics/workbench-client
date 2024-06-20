@@ -1,22 +1,31 @@
 <h1 class="text-muted">{{ pageTitle }}</h1>
 
-<baw-annotation-search-form
-  [project]="project"
-  [region]="region"
-  [site]="site"
-  [(model)]="model"
-></baw-annotation-search-form>
+<div>
+  <baw-annotation-search-form
+    [project]="project"
+    [region]="region"
+    [site]="site"
+    (modelChange)="updateModel($event)"
+  ></baw-annotation-search-form>
+</div>
 
 <hr />
 
-<!-- We can check when the model is initialized by checking when the project gets instantiated -->
-@if (model.project) {
-  <baw-annotation-search-preview
-    [project]="model.project"
-    [regions]="model.regions"
-    [sites]="model.sites"
-    [tags]="model.tags"
-    [dateFilters]="model.dateFilters"
-    [onlyUnverified]="model.onlyUnverified"
-  ></baw-annotation-search-preview>
-}
+<div class="preview-container">
+  <ng-container *ngIf="audioEvents.length > 0; else noResultsTemplate">
+    <div class="spectrogram-grid placeholder-wave">
+      @for (audioEvent of audioEvents; track $index) {
+      <oe-spectrogram
+        class="placeholder"
+        [src]="buildAudioUrl(audioEvent)"
+        window-size="1024"
+        scaling="stretch"
+      ></oe-spectrogram>
+      }
+    </div>
+  </ng-container>
+
+  <ng-template #noResultsTemplate>
+    <h2>No audio events found</h2>
+  </ng-template>
+</div>
