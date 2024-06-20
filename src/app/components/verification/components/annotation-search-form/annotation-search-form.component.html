@@ -1,0 +1,50 @@
+<h2 class="mb-2">Annotation Search</h2>
+
+<form #ngForm="ngForm">
+  <baw-date-time-filter
+    (modelChange)="form.dateFilters = $event"
+  ></baw-date-time-filter>
+
+  <baw-typeahead-input
+    label="Tags of Interest"
+    [inputPlaceholder]="'All'"
+    [searchCallback]="createSearchCallback(tagsApi, 'text', false)"
+    [resultTemplate]="tagsTypeaheadTemplate"
+    (modelChange)="form.tags = convertToTag($event)"
+  ></baw-typeahead-input>
+
+  <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
+  <baw-typeahead-input
+    *ngIf="!site || site?.isPoint"
+    label="Site(s)"
+    [inputPlaceholder]="region ? region.name : 'All'"
+    [searchCallback]="createSearchCallback(regionsApi)"
+    [resultTemplate]="nameTypeaheadTemplate"
+    [inputDisabled]="!!region"
+    (modelChange)="form.regions = convertToRegion($event)"
+  ></baw-typeahead-input>
+
+  <baw-typeahead-input
+    [label]="site ? (site?.isPoint ? 'Point(s)' : 'Site(s)') : 'Point(s)'"
+    [inputPlaceholder]="site ? site.name : 'All'"
+    [searchCallback]="createSearchCallback(sitesApi)"
+    [resultTemplate]="nameTypeaheadTemplate"
+    [inputDisabled]="!!site"
+    (modelChange)="form.sites = convertToSite($event)"
+  ></baw-typeahead-input>
+
+  <div class="form-check">
+    <input id="filterValidated" type="checkbox" class="form-check-input" />
+    <label for="filterValidated" class="form-check-label">
+      Only show un-validated
+    </label>
+  </div>
+
+  <ng-template #nameTypeaheadTemplate let-result="result" let-searchTerm="term">
+    <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
+  </ng-template>
+
+  <ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
+    <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
+  </ng-template>
+</form>

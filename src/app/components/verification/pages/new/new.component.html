@@ -1,55 +1,22 @@
 <h1 class="text-muted">{{ pageTitle }}</h1>
-<h2 class="mb-2">Annotation Search</h2>
 
-<baw-date-time-filter
-  (modelChange)="model.dateFilters = $event"
-></baw-date-time-filter>
-
-<baw-typeahead-input
-  label="Tags of Interest"
-  [inputPlaceholder]="'All'"
-  [searchCallback]="createSearchCallback(tagsApi, 'text', false)"
-  [resultTemplate]="tagsTypeaheadTemplate"
-  (modelChange)="model.tags = convertToTag($event)"
-></baw-typeahead-input>
-
-<!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
-<baw-typeahead-input
-  *ngIf="!site || site?.isPoint"
-  label="Site(s)"
-  [inputPlaceholder]="region ? region.name : 'All'"
-  [searchCallback]="createSearchCallback(regionsApi)"
-  [resultTemplate]="nameTypeaheadTemplate"
-  [inputDisabled]="!!region"
-  (modelChange)="model.regions = convertToRegion($event)"
-></baw-typeahead-input>
-
-<baw-typeahead-input
-  [label]="site ? (site?.isPoint ? 'Point(s)' : 'Site(s)') : 'Point(s)'"
-  [inputPlaceholder]="site ? site.name : 'All'"
-  [searchCallback]="createSearchCallback(sitesApi)"
-  [resultTemplate]="nameTypeaheadTemplate"
-  [inputDisabled]="!!site"
-  (modelChange)="model.sites = convertToSite($event)"
-></baw-typeahead-input>
-
-<div class="form-check">
-  <input id="filterValidated" type="checkbox" class="form-check-input" />
-  <label for="filterValidated" class="form-check-label">
-    Only show un-validated
-  </label>
-</div>
+<baw-annotation-search-form
+  [project]="project"
+  [region]="region"
+  [site]="site"
+  [(form)]="form"
+></baw-annotation-search-form>
 
 <hr />
 
 <!-- We can check when the model is initialized by checking when the project gets instantiated -->
-@if (model.project) {
+@if (form.project) {
   <baw-annotation-search-preview
-    [project]="model.project"
-    [regions]="model.regions"
-    [sites]="model.sites"
-    [tags]="model.tags"
-    [dateFilters]="model.dateFilters"
-    [onlyUnverified]="model.onlyUnverified"
+    [project]="form.project"
+    [regions]="form.regions"
+    [sites]="form.sites"
+    [tags]="form.tags"
+    [dateFilters]="form.dateFilters"
+    [onlyUnverified]="form.onlyUnverified"
   ></baw-annotation-search-preview>
 }
