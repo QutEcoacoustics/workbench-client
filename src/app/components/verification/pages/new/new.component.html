@@ -4,19 +4,19 @@
   [project]="project"
   [region]="region"
   [site]="site"
-  [(form)]="form"
+  [(model)]="model"
 ></baw-annotation-search-form>
 
 <hr />
 
 <!-- We can check when the model is initialized by checking when the project gets instantiated -->
-@if (form.project) {
+@if (model.project) {
   <baw-annotation-search-preview
-    [project]="form.project"
-    [regions]="form.regions"
-    [sites]="form.sites"
-    [tags]="form.tags"
-    [dateFilters]="form.dateFilters"
-    [onlyUnverified]="form.onlyUnverified"
+    [project]="model.project"
+    [regions]="model.regions"
+    [sites]="model.sites"
+    [tags]="model.tags"
+    [dateFilters]="model.dateFilters"
+    [onlyUnverified]="model.onlyUnverified"
   ></baw-annotation-search-preview>
 }

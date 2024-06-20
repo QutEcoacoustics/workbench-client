@@ -37,7 +37,7 @@ class NewVerificationComponent extends PageComponent implements OnInit {
   protected project: Project;
   protected region?: Region;
   protected site?: Site;
-  public form: VerificationSearch = {
+  public model: VerificationSearch = {
     regions: [],
     sites: [],
     tags: [],
@@ -64,12 +64,12 @@ class NewVerificationComponent extends PageComponent implements OnInit {
     // generating a report from the region, or site level will immutably scope the report to the model(s)
     if (models[regionKey]) {
       this.region = models[regionKey] as Region;
-      this.form.regions = [this.region];
+      this.model.regions = [this.region];
     }
 
     if (models[siteKey]) {
       this.site = models[siteKey] as Site;
-      this.form.sites = [this.site];
+      this.model.sites = [this.site];
     }
   }
 }
