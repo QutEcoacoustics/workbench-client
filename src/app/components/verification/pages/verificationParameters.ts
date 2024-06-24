@@ -1,6 +1,7 @@
 import { Injector } from "@angular/core";
 import { Params } from "@angular/router";
 import { Filters } from "@baw-api/baw-api.service";
+import { PROJECT, SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
 import {
   deserializeParamsToObject,
@@ -12,9 +13,14 @@ import {
   serializeObjectToParams,
 } from "@helpers/query-string-parameters/query-string-parameters";
 import { CollectionIds } from "@interfaces/apiInterfaces";
+import { hasMany } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { IParameterModel } from "@models/data/parametersModel";
 import { ImplementsInjector } from "@models/ImplementsInjector";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { Tag } from "@models/Tag";
 import { DateTime, Duration } from "luxon";
 
 export interface IVerificationParameters {}
@@ -57,6 +63,31 @@ export class VerificationParameters
   public onlyUnverified: boolean;
   public date: MonoTuple<DateTime, 2>;
   public time: MonoTuple<Duration, 2>;
+
+  @hasMany<VerificationParameters, Project>(PROJECT, "projects")
+  public projectModels?: Project[];
+  @hasMany<VerificationParameters, Region>(SHALLOW_REGION, "regions")
+  public regionModels?: Region[];
+  @hasMany<VerificationParameters, Site>(SHALLOW_SITE, "sites")
+  public siteModels?: Site[];
+  @hasMany<VerificationParameters, Tag>(TAG, "tags")
+  public tagModels?: Tag[];
+
+  public get dateStartedAfter(): DateTime | null {
+    return this.date ? this.date[0] : null;
+  }
+
+  public get dateFinishedBefore(): DateTime | null {
+    return this.date ? this.date[1] : null;
+  }
+
+  public get timeStartedAfter(): Duration | null {
+    return this.time ? this.time[0] : null;
+  }
+
+  public get timeFinishedBefore(): Duration | null {
+    return this.time ? this.time[1] : null;
+  }
 
   public toFilter(): Filters<AudioEvent> {
     return {};

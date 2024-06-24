@@ -94,6 +94,7 @@ import { tagResolvers, TagsService } from "./tag/tags.service";
 import { userResolvers, UserService } from "./user/user.service";
 import { EventSummaryReportService, eventSummaryResolvers } from "./reports/event-report/event-summary-report.service";
 import { WebsiteStatusService } from "./website-status/website-status.service";
+import { VerificationService } from "./verification/verification.service";
 
 const serviceList = [
   {
@@ -289,6 +290,10 @@ const serviceList = [
   {
     serviceToken: Tokens.WEBSITE_STATUS,
     service: WebsiteStatusService,
+  },
+  {
+    serviceToken: Tokens.VERIFICATION,
+    service: VerificationService,
   },
 ];
 
