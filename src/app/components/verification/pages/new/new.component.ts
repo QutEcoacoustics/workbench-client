@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -17,7 +17,9 @@ import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.c
 import { Verification } from "@models/Verification";
 import { Filters } from "@baw-api/baw-api.service";
 import { first, takeUntil } from "rxjs";
-import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
+import { StrongRoute } from "@interfaces/strongRoute";
+import { VerificationService } from "@baw-api/verification/verification.service";
 import { VerificationParameters } from "../verificationParameters";
 
 const projectKey = "project";
@@ -32,12 +34,13 @@ const siteKey = "site";
 class NewVerificationComponent extends PageComponent implements OnInit {
   public constructor(
     private route: ActivatedRoute,
-    private api: ShallowAudioEventsService
+    private api: VerificationService,
+    private session: BawSessionService,
   ) {
     super();
   }
 
-  protected model = new VerificationParameters();
+  protected model: VerificationParameters;
   protected audioEvents: Verification[] = [];
   protected project: Project;
   protected region?: Region;
@@ -61,6 +64,7 @@ class NewVerificationComponent extends PageComponent implements OnInit {
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+    this.model = this.model || new VerificationParameters({}, this.injector);
     this.project = models[projectKey] as Project;
 
     // generating a report from the region, or site level will immutably scope the report to the model(s)
@@ -75,9 +79,23 @@ class NewVerificationComponent extends PageComponent implements OnInit {
     }
   }
 
+  protected verifyAnnotationsRoute(): StrongRoute {
+    if (this.site) {
+      return this.site.isPoint
+        ? verificationMenuItems.view.siteAndRegion.route
+        : verificationMenuItems.view.site.route;
+    } else if (this.region) {
+      return verificationMenuItems.view.region.route;
+    }
+
+    return verificationMenuItems.view.project.route;
+  }
+
   protected buildAudioUrl(audioEvent: Verification): string {
     const basePath = `https://api.staging.ecosounds.org/audio_recordings/${audioEvent.audioRecordingId}/original`;
-    const urlParams = `?end_offset=${audioEvent.endTimeSeconds}&start_offset=${audioEvent.startTimeSeconds}`;
+    const urlParams =
+      `?end_offset=${audioEvent.endTimeSeconds}&start_offset=${audioEvent.startTimeSeconds}` +
+      `&user_token=${this.session.authToken}`;
     return basePath + urlParams;
   }
 

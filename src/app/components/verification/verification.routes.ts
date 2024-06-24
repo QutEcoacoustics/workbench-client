@@ -8,7 +8,15 @@ const verificationRouteName = "verification";
 
 const verificationRouteQueryParamResolver = (params) =>
   params
-    ? {}
+    ? {
+      projects: params.projects,
+      regions: params.regions,
+      sites: params.sties,
+      tags: params.tags,
+      onlyUnverified: params.onlyUnverified,
+      date: params.date,
+      time: params.time,
+    }
     : {};
 
 export type VerificationRoute = "project" | "region" | "site" | "siteAndRegion";

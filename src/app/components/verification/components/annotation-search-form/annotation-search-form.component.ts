@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Injector, Input, OnInit, Output } from "@angular/core";
 import { StandardApi } from "@baw-api/api-common";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
@@ -25,11 +25,12 @@ import { Observable } from "rxjs";
   selector: "baw-annotation-search-form",
   templateUrl: "annotation-search-form.component.html",
 })
-export class AnnotationSearchFormComponent {
+export class AnnotationSearchFormComponent implements OnInit {
   public constructor(
     protected sitesApi: ShallowSitesService,
     protected regionsApi: ShallowRegionsService,
-    protected tagsApi: TagsService
+    protected tagsApi: TagsService,
+    private injector: Injector,
   ) {}
 
   @Input({ required: true })
@@ -45,9 +46,13 @@ export class AnnotationSearchFormComponent {
   public site?: Site;
 
   @Input()
-  public model: VerificationParameters = new VerificationParameters();
+  public model: VerificationParameters;
   @Output()
   public modelChange = new EventEmitter<VerificationParameters>();
+
+  public ngOnInit(): void {
+    this.model = this.model || new VerificationParameters({}, this.injector);
+  }
 
   protected createSearchCallback<T extends AbstractModel>(
     api: StandardApi<T>,
@@ -94,7 +99,7 @@ export class AnnotationSearchFormComponent {
   }
 
   protected updateModel(key: keyof VerificationParameters, value: any): void {
-    this.model[key] = value;
+    this.model[key as any] = value;
     this.modelChange.emit(this.model);
   }
 

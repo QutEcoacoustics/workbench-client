@@ -10,6 +10,7 @@
     [inputPlaceholder]="'All'"
     [searchCallback]="createSearchCallback(tagsApi, 'text', false)"
     [resultTemplate]="tagsTypeaheadTemplate"
+    [model]="model.tagModels"
     (modelChange)="updateModel('tags', getIdsFromAbstractModelArray($event))"
   ></baw-typeahead-input>
 
@@ -21,6 +22,7 @@
     [searchCallback]="createSearchCallback(regionsApi)"
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!region"
+    [model]="model.regionModels"
     (modelChange)="updateModel('regions', getIdsFromAbstractModelArray($event))"
   ></baw-typeahead-input>
 
@@ -30,11 +32,18 @@
     [searchCallback]="createSearchCallback(sitesApi)"
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!site"
+    [model]="model.siteModels"
     (modelChange)="updateModel('sites', getIdsFromAbstractModelArray($event))"
   ></baw-typeahead-input>
 
-  <div class="form-check">
-    <input id="filterValidated" type="checkbox" class="form-check-input" />
+  <div class="form-check mt-2">
+    <input
+      id="filterValidated"
+      type="checkbox"
+      class="form-check-input"
+      [checked]="model.onlyUnverified"
+      (change)="updateModel('onlyUnverified', $event.target['checked'])"
+    />
     <label for="filterValidated" class="form-check-label">
       Only show un-validated
     </label>
