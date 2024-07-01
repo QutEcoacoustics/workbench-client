@@ -20,6 +20,8 @@ import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { testFormImports } from "@test/helpers/testbed";
 import { BehaviorSubject } from "rxjs";
+import { ProjectsService } from "@baw-api/project/projects.service";
+import { PROJECT, SITE } from "@baw-api/ServiceTokens";
 import { AnnotationDownloadComponent } from "./annotation-download.component";
 
 const projectKey = "project";
@@ -30,6 +32,7 @@ describe("AnnotationDownloadComponent", () => {
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
+  let projectApi: SpyObject<ProjectsService>;
   let siteApi: SpyObject<SitesService>;
   let spec: Spectator<AnnotationDownloadComponent>;
   const createComponent = createComponentFactory({
@@ -71,7 +74,9 @@ describe("AnnotationDownloadComponent", () => {
         }),
       ],
     });
-    siteApi = spec.inject(SitesService);
+
+    projectApi = spec.inject(PROJECT.token);
+    siteApi = spec.inject(SITE.token);
 
     spec.component.dismissModal = jasmine.createSpy("dismissModal").and.stub();
     spec.component.closeModal = jasmine.createSpy("closeModal").and.stub();
@@ -190,7 +195,7 @@ describe("AnnotationDownloadComponent", () => {
       expect(getSubmitButton().href).toBe("http://www.broken.com/broken_link");
     });
 
-    it("should call downloadAnnotations with site and project", () => {
+    it("should call the site downloadAnnotations api with site and project", () => {
       setup([projectKey, siteKey], [defaultProject, defaultSite]);
       spec.detectChanges();
       // Button href will call this function on load
@@ -201,7 +206,7 @@ describe("AnnotationDownloadComponent", () => {
       );
     });
 
-    it("should call downloadAnnotations with site and regions project if region exists", () => {
+    it("should call the site downloadAnnotations api with site and regions project if region exists", () => {
       setup(
         [projectKey, regionKey, siteKey],
         [defaultProject, defaultRegion, defaultSite]
@@ -215,7 +220,32 @@ describe("AnnotationDownloadComponent", () => {
       );
     });
 
-    it("should call downloadAnnotations with timezone", () => {
+    it("should call the projects api with the UTC timezone if there is no explicit timezone", () => {
+      setup([projectKey], [defaultProject]);
+      spec.detectChanges();
+
+      expect(projectApi.downloadAnnotations).toHaveBeenCalledWith(
+        defaultProject,
+        "UTC",
+      );
+    });
+
+    // explicit timezones can be set by the user using the timezone dropdown
+    // while this feature
+    it("should call the projects api correctly if there is an explicit timezone", () => {
+      const explicitTimezone = "Australia/Brisbane";
+      setup([projectKey], [defaultProject]);
+      spec.detectChanges();
+      spec.component.model.timezone = explicitTimezone;
+      spec.detectChanges();
+
+      expect(projectApi.downloadAnnotations).toHaveBeenCalledWith(
+        defaultProject,
+        explicitTimezone
+      );
+    });
+
+    it("should call the site apis downloadAnnotations with timezone", () => {
       setup(
         [projectKey, regionKey, siteKey],
         [defaultProject, defaultRegion, defaultSite]
