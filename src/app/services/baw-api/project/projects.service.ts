@@ -10,6 +10,7 @@ import {
   IdOr,
   IdParamOptional,
   option,
+  param,
   StandardApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
@@ -18,6 +19,7 @@ import { ShowDefaultResolver } from "../ShowDefaultResolver";
 
 const projectId: IdParamOptional<Project> = id;
 const endpoint = stringTemplate`/projects/${projectId}${option}`;
+const annotationsEndpoint = stringTemplate`/projects/${projectId}/audio_events/download?${param}`;
 
 /**
  * Projects Service.
@@ -64,6 +66,17 @@ export class ProjectsService implements StandardApi<Project> {
     return this.filter(
       this.api.filterThroughAssociation(filters, "creatorId", user)
     );
+  }
+
+  public downloadAnnotations(
+    model: IdOr<Project>,
+    selectedTimezone: string
+  ): string {
+    const url = new URL(
+      this.api.getPath(annotationsEndpoint(model, emptyParam))
+    );
+    url.searchParams.set("selected_timezone_name", selectedTimezone);
+    return url.toString();
   }
 }
 
