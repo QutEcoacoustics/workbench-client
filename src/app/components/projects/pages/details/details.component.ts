@@ -18,7 +18,7 @@ import {
   projectMenuItem,
   projectsMenuItem,
 } from "@components/projects/projects.menus";
-import { deleteProjectModal } from "@components/projects/projects.modals";
+import { deleteProjectModal, projectAnnotationsModal } from "@components/projects/projects.modals";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { reportMenuItems } from "@components/reports/reports.menu";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
@@ -45,6 +45,7 @@ export const projectMenuItemActions = [
   deleteProjectModal,
   newSiteMenuItem,
   assignSiteMenuItem,
+  projectAnnotationsModal,
   audioRecordingMenuItems.list.project,
   audioRecordingMenuItems.batch.project,
   harvestsMenuItem,

@@ -15,6 +15,7 @@ import { Site } from "@models/Site";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { takeUntil } from "rxjs";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import schema from "./annotations-download.schema.json";
 
 interface TimezoneModel {
@@ -40,19 +41,21 @@ interface TimezoneModel {
         <span id="subTitle">
           <p>
             The annotations in the CSV will have all their dates and times set
-            to a time zone of your choice. The default time zone is the local
-            time for the
-            {{ region ? "point" : "site" }} where the audio was recorded.
+            to a time zone of your choice.
+            <ng-container *ngIf="site">
+              The default time zone is the local time for the
+              {{ region ? "point" : "site" }} where the audio was recorded.
+            </ng-container>
           </p>
-          <p>
+          <p *ngIf="site">
             For example, annotations created for audio from Brisbane will have
-            dates and times set to AEST (+10).
+            dates and times set to AEST (+10:00).
           </p>
           <p>
-            However, if you have recordings from Brisbane and Perth, which time
+            If you have recordings from Brisbane and Perth, which time
             zone do we choose for all downloaded events?
           </p>
-          <p>AEST (+10) or AWST (+8) or UTC (+0)?</p>
+          <p>AEST (+10:00) or AWST (+08:00) or UTC (+00:00)?</p>
           <p>
             It depends on how you want to work with your data, so the choice is
             yours. Please select the time zone you wish to use:
@@ -85,12 +88,13 @@ export class AnnotationDownloadComponent
   public fields: FormlyFieldConfig[] = schema.fields;
   public form = new FormGroup({});
   public model: TimezoneModel = { timezone: "UTC" };
-  public project?: Project;
+  public project: Project;
   public region?: Region;
   public site?: Site;
 
   public constructor(
     private siteApi: SitesService,
+    private projectApi: ProjectsService,
     private sharedRoute: SharedActivatedRouteService
   ) {
     super();
@@ -111,10 +115,11 @@ export class AnnotationDownloadComponent
         this.project = retrieveResolvedModel(pageInfo, Project);
         this.region = retrieveResolvedModel(pageInfo, Region);
         this.site = retrieveResolvedModel(pageInfo, Site);
-        this.model.timezone = this.site.tzinfoTz ?? this.model.timezone;
+        this.model.timezone = this.site?.tzinfoTz ?? this.model.timezone;
       });
   }
 
+  // TODO: add support for region scoped annotation downloads
   public getAnnotationsPath(): string {
     // if the timezone is UTC, vvo/tzdb will return Etc/UTC
     // because the API expects UTC timezones to have the value "UTC", we change "Etc/UTC" to "UTC" when we send the
@@ -122,10 +127,14 @@ export class AnnotationDownloadComponent
     const timezone =
       this.model.timezone === "Etc/UTC" ? "UTC" : this.model.timezone;
 
-    return this.siteApi.downloadAnnotations(
-      this.site,
-      this.region?.projectId ?? this.project,
-      timezone
-    );
+    if (this.site) {
+      return this.siteApi.downloadAnnotations(
+        this.site,
+        this.region?.projectId ?? this.project,
+        timezone
+      );
+    }
+
+    return this.projectApi.downloadAnnotations(this.project, timezone);
   }
 }
