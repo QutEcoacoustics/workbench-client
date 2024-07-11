@@ -37,6 +37,6 @@
   </ng-container>
 
   <ng-template #noResultsTemplate>
-    <h2>No audio events found</h2>
+    <h2>No {{ model.onlyUnverified ? "unverified" : "" }} annotations found</h2>
   </ng-template>
 </div>

@@ -2,7 +2,6 @@ import { Component, Injector, OnInit } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
-import { verificationMenuItems } from "@components/verification/verification.menu";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import {
@@ -19,8 +18,9 @@ import { Location } from "@angular/common";
 import { PageFetcher } from "@ecoacoustics/web-components/@types/src/components/verification-grid/verification-grid";
 import { VerificationService } from "@baw-api/verification/verification.service";
 import { takeUntil } from "rxjs";
-import { VerificationParameters } from "../verificationParameters";
 import "@components/web-components/components";
+import { annotationMenuItems } from "@components/annotations/annotation.menu";
+import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -29,10 +29,10 @@ const siteKey = "site";
 
 @Component({
   selector: "baw-verification",
-  templateUrl: "view.component.html",
-  styleUrl: "view.component.scss",
+  templateUrl: "verification.component.html",
+  styleUrl: "verification.component.scss",
 })
-class ViewVerificationComponent extends PageComponent implements OnInit {
+class VerificationComponent extends PageComponent implements OnInit {
   public constructor(
     private route: ActivatedRoute,
     private location: Location,
@@ -42,7 +42,7 @@ class ViewVerificationComponent extends PageComponent implements OnInit {
     super();
   }
 
-  protected searchParameters: VerificationParameters;
+  protected searchParameters: AnnotationSearchParameters;
   protected areParametersCollapsed = true;
   protected project: Project;
   protected region?: Region;
@@ -63,7 +63,7 @@ class ViewVerificationComponent extends PageComponent implements OnInit {
     this.route.queryParams
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((params) => {
-        this.searchParameters = new VerificationParameters(
+        this.searchParameters = new AnnotationSearchParameters(
           { ...params },
           this.injector
         );
@@ -86,11 +86,11 @@ class ViewVerificationComponent extends PageComponent implements OnInit {
 }
 
 function getPageInfo(
-  subRoute: keyof typeof verificationMenuItems.view
+  subRoute: keyof typeof annotationMenuItems.verify
 ): IPageInfo {
   return {
-    pageRoute: verificationMenuItems.view[subRoute],
-    category: verificationMenuItems.view[subRoute],
+    pageRoute: annotationMenuItems.verify[subRoute],
+    category: annotationMenuItems.verify[subRoute],
     resolvers: {
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
@@ -99,9 +99,9 @@ function getPageInfo(
   };
 }
 
-ViewVerificationComponent.linkToRoute(getPageInfo("project"))
+VerificationComponent.linkToRoute(getPageInfo("project"))
   .linkToRoute(getPageInfo("region"))
   .linkToRoute(getPageInfo("site"))
   .linkToRoute(getPageInfo("siteAndRegion"));
 
-export { ViewVerificationComponent };
+export { VerificationComponent };

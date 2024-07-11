@@ -1,11 +1,9 @@
-import { Component, Injector, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
-import { siteAnnotationsModal } from "@components/sites/sites.modals";
-import { verificationMenuItems } from "@components/verification/verification.menu";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { Project } from "@models/Project";
@@ -20,18 +18,20 @@ import { first, takeUntil } from "rxjs";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { VerificationService } from "@baw-api/verification/verification.service";
-import { VerificationParameters } from "../verificationParameters";
+import { annotationMenuItems } from "@components/annotations/annotation.menu";
+import { projectAnnotationsModal } from "@components/projects/projects.modals";
+import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
 @Component({
-  selector: "baw-new-verification",
-  templateUrl: "new.component.html",
-  styleUrl: "new.component.scss",
+  selector: "baw-annotation-search",
+  templateUrl: "search.component.html",
+  styleUrl: "search.component.scss",
 })
-class NewVerificationComponent extends PageComponent implements OnInit {
+class AnnotationSearchComponent extends PageComponent implements OnInit {
   public constructor(
     private route: ActivatedRoute,
     private api: VerificationService,
@@ -40,23 +40,11 @@ class NewVerificationComponent extends PageComponent implements OnInit {
     super();
   }
 
-  protected model: VerificationParameters;
+  protected model: AnnotationSearchParameters;
   protected audioEvents: Verification[] = [];
   protected project: Project;
   protected region?: Region;
   protected site?: Site;
-
-  protected get pageTitle(): string {
-    if (this.site) {
-      return this.site.isPoint
-        ? `Point: ${this.site.name}`
-        : `Site: ${this.site.name}`;
-    } else if (this.region) {
-      return `Site: ${this.region.name}`;
-    }
-
-    return `Project: ${this.project.name}`;
-  }
 
   public get dateFilters(): DateTimeFilterModel {
     return {};
@@ -64,7 +52,7 @@ class NewVerificationComponent extends PageComponent implements OnInit {
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.model = this.model || new VerificationParameters({}, this.injector);
+    this.model = this.model || new AnnotationSearchParameters({}, this.injector);
     this.project = models[projectKey] as Project;
 
     // generating a report from the region, or site level will immutably scope the report to the model(s)
@@ -82,13 +70,13 @@ class NewVerificationComponent extends PageComponent implements OnInit {
   protected verifyAnnotationsRoute(): StrongRoute {
     if (this.site) {
       return this.site.isPoint
-        ? verificationMenuItems.view.siteAndRegion.route
-        : verificationMenuItems.view.site.route;
+        ? annotationMenuItems.verify.siteAndRegion.route
+        : annotationMenuItems.verify.site.route;
     } else if (this.region) {
-      return verificationMenuItems.view.region.route;
+      return annotationMenuItems.verify.region.route;
     }
 
-    return verificationMenuItems.view.project.route;
+    return annotationMenuItems.verify.project.route;
   }
 
   protected buildAudioUrl(audioEvent: Verification): string {
@@ -99,11 +87,7 @@ class NewVerificationComponent extends PageComponent implements OnInit {
     return basePath + urlParams;
   }
 
-  protected updateModel(newModel: VerificationParameters): void {
-    if (!newModel.tags || !Array.from(newModel.tags).length) {
-      return;
-    }
-
+  protected updateModel(newModel: AnnotationSearchParameters): void {
     this.model = newModel;
 
     const filters = this.buildFilter(
@@ -164,15 +148,15 @@ class NewVerificationComponent extends PageComponent implements OnInit {
 }
 
 function getPageInfo(
-  subRoute: keyof typeof verificationMenuItems.new
+  subRoute: keyof typeof annotationMenuItems.search
 ): IPageInfo {
   return {
-    pageRoute: verificationMenuItems.new[subRoute],
-    category: verificationMenuItems.new[subRoute],
+    pageRoute: annotationMenuItems.search[subRoute],
+    category: annotationMenuItems.search[subRoute],
     menus: {
       actions: List([
-        verificationMenuItems.view[subRoute],
-        siteAnnotationsModal,
+        annotationMenuItems.verify[subRoute],
+        projectAnnotationsModal,
       ]),
     },
     resolvers: {
@@ -183,9 +167,9 @@ function getPageInfo(
   };
 }
 
-NewVerificationComponent.linkToRoute(getPageInfo("project"))
+AnnotationSearchComponent.linkToRoute(getPageInfo("project"))
   .linkToRoute(getPageInfo("region"))
   .linkToRoute(getPageInfo("site"))
   .linkToRoute(getPageInfo("siteAndRegion"));
 
-export { NewVerificationComponent };
+export { AnnotationSearchComponent };

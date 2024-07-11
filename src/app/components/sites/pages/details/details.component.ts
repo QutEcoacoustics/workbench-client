@@ -29,7 +29,7 @@ import { takeUntil } from "rxjs";
 import { ConfigService } from "@services/config/config.service";
 import { shallowRegionsRoute } from "@components/regions/regions.routes";
 import { reportMenuItems } from "@components/reports/reports.menu";
-import { verificationMenuItems } from "@components/verification/verification.menu";
+import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import {
   editSiteMenuItem,
   siteMenuItem,
@@ -44,7 +44,7 @@ export const siteMenuItemActions = [
   audioRecordingMenuItems.list.site,
   audioRecordingMenuItems.batch.site,
   reportMenuItems.new.site,
-  verificationMenuItems.new.site,
+  annotationMenuItems.search.site,
 ];
 
 export const pointMenuItemActions = [
@@ -55,7 +55,7 @@ export const pointMenuItemActions = [
   audioRecordingMenuItems.list.siteAndRegion,
   audioRecordingMenuItems.batch.siteAndRegion,
   reportMenuItems.new.siteAndRegion,
-  verificationMenuItems.new.siteAndRegion,
+  annotationMenuItems.search.siteAndRegion,
 ];
 
 const projectKey = "project";
