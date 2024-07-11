@@ -1,13 +1,11 @@
-<h1 class="text-muted">{{ pageTitle }}</h1>
+<h1 class="mb-2">Annotation Search</h1>
 
-<div>
-  <baw-annotation-search-form
-    [project]="project"
-    [region]="region"
-    [site]="site"
-    (modelChange)="updateModel($event)"
-  ></baw-annotation-search-form>
-</div>
+<baw-annotation-search-form
+  [project]="project"
+  [region]="region"
+  [site]="site"
+  (modelChange)="updateModel($event)"
+></baw-annotation-search-form>
 
 <div class="mt-2">
   <a
