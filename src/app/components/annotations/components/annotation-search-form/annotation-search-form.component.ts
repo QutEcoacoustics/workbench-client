@@ -4,7 +4,7 @@ import { InnerFilter } from "@baw-api/baw-api.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { VerificationParameters } from "@components/verification/pages/verificationParameters";
+import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import {
   filterAnd,
   notIn,
@@ -46,12 +46,12 @@ export class AnnotationSearchFormComponent implements OnInit {
   public site?: Site;
 
   @Input()
-  public model: VerificationParameters;
+  public model: AnnotationSearchParameters;
   @Output()
-  public modelChange = new EventEmitter<VerificationParameters>();
+  public modelChange = new EventEmitter<AnnotationSearchParameters>();
 
   public ngOnInit(): void {
-    this.model = this.model || new VerificationParameters({}, this.injector);
+    this.model = this.model || new AnnotationSearchParameters({}, this.injector);
   }
 
   protected createSearchCallback<T extends AbstractModel>(
@@ -98,7 +98,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     }
   }
 
-  protected updateModel(key: keyof VerificationParameters, value: any): void {
+  protected updateModel(key: keyof AnnotationSearchParameters, value: any): void {
     this.model[key as any] = value;
     this.modelChange.emit(this.model);
   }

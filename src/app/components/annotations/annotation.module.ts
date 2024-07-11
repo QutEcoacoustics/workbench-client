@@ -3,16 +3,16 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { SharedModule } from "@shared/shared.module";
 import { RouterModule } from "@angular/router";
 import { StrongRoute } from "@interfaces/strongRoute";
-import { verificationRoute } from "./verification.routes";
-import { NewVerificationComponent } from "./pages/new/new.component";
-import { ViewVerificationComponent } from "./pages/view/view.component";
+import { verificationRoute } from "./annotation.routes";
 import { AnnotationSearchFormComponent } from "./components/annotation-search-form/annotation-search-form.component";
+import { AnnotationSearchComponent } from "./pages/search/search.component";
+import { VerificationComponent } from "./pages/verification/verification.component";
 
 const internalComponents = [AnnotationSearchFormComponent];
 
 const components = [
-  NewVerificationComponent,
-  ViewVerificationComponent,
+  AnnotationSearchComponent,
+  VerificationComponent,
 ];
 
 const routes = Object.values(verificationRoute)
@@ -25,4 +25,4 @@ const routes = Object.values(verificationRoute)
   exports: [RouterModule, ...components],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class VerificationModule {}
+export class AnnotationModule {}

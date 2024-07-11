@@ -36,7 +36,7 @@ import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { merge, Observable, takeUntil } from "rxjs";
-import { verificationMenuItems } from "@components/verification/verification.menu";
+import { annotationMenuItems } from "@components/annotations/annotation.menu";
 
 export const projectMenuItemActions = [
   visualizeMenuItem,
@@ -50,7 +50,7 @@ export const projectMenuItemActions = [
   audioRecordingMenuItems.batch.project,
   harvestsMenuItem,
   reportMenuItems.new.project,
-  verificationMenuItems.new.project,
+  annotationMenuItems.search.project,
 ];
 
 const projectKey = "project";

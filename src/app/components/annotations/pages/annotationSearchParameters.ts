@@ -23,7 +23,7 @@ import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { DateTime, Duration } from "luxon";
 
-export interface IVerificationParameters {}
+export interface IAnnotationSearchParameters {}
 
 const serializationTable: IQueryStringParameterSpec = {
   projects: jsNumberArray,
@@ -35,9 +35,9 @@ const serializationTable: IQueryStringParameterSpec = {
   time: luxonDurationArray,
 };
 
-export class VerificationParameters
+export class AnnotationSearchParameters
   implements
-    IVerificationParameters,
+    IAnnotationSearchParameters,
     ImplementsInjector,
     IParameterModel<AudioEvent>
 {
@@ -45,8 +45,8 @@ export class VerificationParameters
     protected queryStringParameters: Params = {},
     public injector?: Injector
   ) {
-    const deserializedObject: IVerificationParameters =
-      deserializeParamsToObject<IVerificationParameters>(
+    const deserializedObject: IAnnotationSearchParameters =
+      deserializeParamsToObject<IAnnotationSearchParameters>(
         queryStringParameters,
         serializationTable
       );
@@ -64,13 +64,13 @@ export class VerificationParameters
   public date: MonoTuple<DateTime, 2>;
   public time: MonoTuple<Duration, 2>;
 
-  @hasMany<VerificationParameters, Project>(PROJECT, "projects")
+  @hasMany<AnnotationSearchParameters, Project>(PROJECT, "projects")
   public projectModels?: Project[];
-  @hasMany<VerificationParameters, Region>(SHALLOW_REGION, "regions")
+  @hasMany<AnnotationSearchParameters, Region>(SHALLOW_REGION, "regions")
   public regionModels?: Region[];
-  @hasMany<VerificationParameters, Site>(SHALLOW_SITE, "sites")
+  @hasMany<AnnotationSearchParameters, Site>(SHALLOW_SITE, "sites")
   public siteModels?: Site[];
-  @hasMany<VerificationParameters, Tag>(TAG, "tags")
+  @hasMany<AnnotationSearchParameters, Tag>(TAG, "tags")
   public tagModels?: Tag[];
 
   public get dateStartedAfter(): DateTime | null {
@@ -94,7 +94,7 @@ export class VerificationParameters
   }
 
   public toQueryParams(): Params {
-    return serializeObjectToParams<IVerificationParameters>(
+    return serializeObjectToParams<IAnnotationSearchParameters>(
       this,
       serializationTable
     );
