@@ -1,14 +1,14 @@
-oe-spectrogram {
-  position: relative;
-  display: inline-block;
-  width: calc(25% - (0.5rem * 2));
-  margin: 0.5rem;
-}
-
-.verification-grid {
+.spectrogram-grid {
   position: relative;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   flex-direction: row;
+  gap: 0.5em;
+}
+
+.preview-item {
+  position: relative;
+  display: inline-block;
+  flex: 1;
 }

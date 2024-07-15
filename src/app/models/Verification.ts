@@ -6,4 +6,6 @@ export type IVerification = IAudioEvent;
 
 // TODO: this shouldn't extend AudioEvent, but I have done this for testing
 // while there is not verification endpoint on the api
-export class Verification extends AudioEvent implements IVerification {}
+export class Verification extends AudioEvent implements IVerification {
+  public audioLink: string;
+}

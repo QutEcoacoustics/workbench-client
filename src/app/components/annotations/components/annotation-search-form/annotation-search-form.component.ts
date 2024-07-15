@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Injector, Input, OnInit, Output } from "@angular/core";
 import { StandardApi } from "@baw-api/api-common";
 import { InnerFilter } from "@baw-api/baw-api.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
@@ -27,8 +28,9 @@ import { Observable } from "rxjs";
 })
 export class AnnotationSearchFormComponent implements OnInit {
   public constructor(
-    protected sitesApi: ShallowSitesService,
+    protected projectsApi: ProjectsService,
     protected regionsApi: ShallowRegionsService,
+    protected sitesApi: ShallowSitesService,
     protected tagsApi: TagsService,
     private injector: Injector,
   ) {}

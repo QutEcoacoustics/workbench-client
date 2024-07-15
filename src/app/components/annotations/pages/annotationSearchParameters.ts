@@ -1,8 +1,9 @@
 import { Injector } from "@angular/core";
 import { Params } from "@angular/router";
-import { Filters } from "@baw-api/baw-api.service";
+import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { PROJECT, SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
+import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import {
   deserializeParamsToObject,
   IQueryStringParameterSpec,
@@ -21,6 +22,8 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
+import { Verification } from "@models/Verification";
+import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
 import { DateTime, Duration } from "luxon";
 
 export interface IAnnotationSearchParameters {}
@@ -90,7 +93,16 @@ export class AnnotationSearchParameters
   }
 
   public toFilter(): Filters<AudioEvent> {
-    return {};
+    const modelFilters = this.modelFilter();
+    const tagFilters = filterModelIds<Tag>("tags", this.tags);
+    const dateTimeFilters = this.dateTimeFilters();
+
+    const filter = filterAnd<AudioEvent>(
+      dateTimeFilters,
+      filterAnd<Verification>(modelFilters as any, tagFilters),
+    );
+
+    return { filter };
   }
 
   public toQueryParams(): Params {
@@ -98,5 +110,19 @@ export class AnnotationSearchParameters
       this,
       serializationTable
     );
+  }
+
+  private modelFilter(): InnerFilter<Project | Region | Site> {
+    if (this.sites) {
+      return filterModelIds("sites", this.sites);
+    } else if (this.regions) {
+      return filterModelIds("regions", this.regions);
+    } else {
+      return filterModelIds("projects", this.projects);
+    }
+  }
+
+  private dateTimeFilters(): DateTimeFilterModel {
+    return {};
   }
 }

@@ -11,25 +11,23 @@
     Show Parameters
   </button>
 
-
-<div
-  id="search-parameters"
-  [(ngbCollapse)]="areParametersCollapsed"
->
-  <div id="search-parameters-body" class="card">
-    <div class="card-body">
-      <baw-annotation-search-form
-        [project]="project"
-        [(model)]="searchParameters"
-      ></baw-annotation-search-form>
+  <div id="search-parameters" [(ngbCollapse)]="areParametersCollapsed">
+    <div id="search-parameters-body" class="card">
+      <div class="card-body">
+        <baw-annotation-search-form
+          [project]="project"
+          [region]="region"
+          [site]="site"
+          [model]="searchParameters"
+          (modelChange)="updateModel($event)"
+        ></baw-annotation-search-form>
+      </div>
     </div>
   </div>
 </div>
-</div>
-
 
 <div id="verification-container">
-  <oe-verification-grid id="verification-grid" grid-size="3">
+  <oe-verification-grid #verificationGrid grid-size="3">
     <template>
       <oe-axes>
         <oe-indicator>
@@ -40,7 +38,7 @@
         </oe-indicator>
       </oe-axes>
       <oe-media-controls for="spectrogram"></oe-media-controls>
-      <oe-info-card></oe-info-card>
+      <!-- <oe-info-card></oe-info-card> -->
     </template>
 
     <oe-decision
@@ -48,22 +46,19 @@
       tag="koala"
       additional-tags="female"
       shortcut="H"
-      >Koala</oe-decision
     >
-    <oe-decision verified="true" tag="koala" additional-tags="male" shortcut="J"
-      >Koala</oe-decision
+      Koala
+    </oe-decision>
+    <oe-decision
+      verified="true"
+      tag="koala"
+      additional-tags="male"
+      shortcut="J"
     >
+      Koala
+    </oe-decision>
     <oe-decision verified="true" tag="cow" shortcut="k">Cow</oe-decision>
     <oe-decision verified="false" tag="*" shortcut="L">Negative</oe-decision>
     <oe-decision verified="false" shortcut="S" skip>Skip</oe-decision>
-
-    <!--
-      local would use a file picker UI, while src would allow a remote file
-      This should probably use a data service.
-      This service would
-  -->
-    <!-- <oe-data-source for="verification-grid" local></oe-data-source> -->
-    <oe-data-source slot="data-source" for="verification-grid">
-    </oe-data-source>
   </oe-verification-grid>
 </div>
