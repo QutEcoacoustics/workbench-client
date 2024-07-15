@@ -39,6 +39,21 @@ module.exports = function (config) {
     browsers: ["Chrome"],
     singleRun: false,
     restartOnFileChange: true,
+    // we add some headers to the Karma test server to ensure that we can use SharedArrayBuffer
+    customHeaders: [
+      { match: ".*", name: "Cross-Origin-Opener-Policy", value: "same-origin" },
+      {
+        match: ".*",
+        name: "Cross-Origin-Embedder-Policy",
+        value: "require-corp",
+      },
+      {
+        match: ".*",
+        name: "Cross-Origin-Resource-Policy",
+        value: "cross-origin",
+      },
+      { match: ".*", name: "Access-Control-Allow-Origin", value: "*" },
+    ],
     viewport: {
       // Ensure you modify the viewports object (@test/helpers/general.ts) to match
       // the values declared here.

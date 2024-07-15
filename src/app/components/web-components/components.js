@@ -1351,7 +1351,8 @@ let AxesComponent = class extends e$4(AbstractComponent(s$7)) {
     const F = (Y, X) => Y > 0 && Y < X.length - 1, U = (Y) => {
       const X = this.unitConverter.scaleX.value(Y);
       return b$1`<line
-        x="${X}"
+        x1="${X}"
+        x2="${X}"
         y1="0"
         y2="${O.height}"
         class="grid-line"
@@ -1361,18 +1362,19 @@ let AxesComponent = class extends e$4(AbstractComponent(s$7)) {
       return b$1`<line
         x1="0"
         x2="${O.width}"
-        y="${X}"
+        y1="${X}"
+        y2="${X}"
         class="grid-line"
       ></line>`;
     }, B = b$1`${z.map(
-      (Y, X) => b$1`${F(X, z) && U(Y)}`
+      (Y, X) => b$1`${F(X, z) ? U(Y) : T}`
     )}`, K = b$1`${D.map(
-      (Y, X) => b$1`${F(X, D) && W(Y)}`
+      (Y, X) => b$1`${F(X, D) ? W(Y) : T}`
     )}`;
     return b$1`
       <g part="grid">
-        ${this.showXGrid ? b$1`<g part="x-grid">${B}</g>` : ""}
-        ${this.showYGrid ? b$1`<g part="y-grid">${K}</g>` : ""}
+        ${this.showXGrid ? b$1`<g part="x-grid">${B}</g>` : T}
+        ${this.showYGrid ? b$1`<g part="y-grid">${K}</g>` : T}
       </g>
     `;
   }
@@ -15911,7 +15913,7 @@ let VerificationGridComponent = class extends AbstractComponent(s$7) {
   }
   async updated(z) {
     const D = ["gridSize"], O = ["getPage", "dataSource"];
-    ["selectionBehavior"].some((U) => z.has(U)) && this.handleTileInvalidation(), O.some((U) => z.has(U)) && await this.handleSourceInvalidation(), D.some((U) => z.has(U)) && this.handleRenderInvalidation();
+    ["selectionBehavior"].some((U) => z.has(U)) && this.handleTileInvalidation(), O.some((U) => z.has(U)) && (console.log("invalidating source"), await this.handleSourceInvalidation()), D.some((U) => z.has(U)) && this.handleRenderInvalidation();
   }
   handleTileInvalidation() {
     let z = this.selectionBehavior;
@@ -16364,19 +16366,18 @@ let VerificationGridComponent = class extends AbstractComponent(s$7) {
   // TODO: clean up this function
   // TODO: there is a "null" in additional tags (if none)
   downloadResults() {
-    var X, Q;
-    if (!((X = this.dataSource) != null && X.fileName))
+    if (!this.dataSource)
       throw new Error("No input data source found");
     const z = "oe-";
     let D = "";
-    const O = ((Q = this.dataSource) == null ? void 0 : Q.fileType) ?? "json", F = this.decisions.map((J) => {
-      var q;
-      const ee = J.decisions.at(0), ne = J.subject, re = ((q = ee.tag) == null ? void 0 : q.text) ?? "", ie = ee.confirmed, ue = J.additionalTags;
+    const O = this.dataSource.fileType ?? "json", F = this.decisions.map((X) => {
+      var ie;
+      const Q = X.decisions.at(0), J = X.subject, ee = ((ie = Q.tag) == null ? void 0 : ie.text) ?? "", ne = Q.confirmed, re = X.additionalTags;
       return {
-        ...ne,
-        [`${z}tag`]: re,
-        [`${z}confirmed`]: ie,
-        [`${z}additional-tags`]: ue
+        ...J,
+        [`${z}tag`]: ee,
+        [`${z}confirmed`]: ne,
+        [`${z}additional-tags`]: re
       };
     });
     O === "json" ? D = JSON.stringify(F) : O === "csv" ? D = new JSON2CSVParser().parse(F) : O === "tsv" && (D = new JSON2CSVParser({ delimiter: "	" }).parse(F));

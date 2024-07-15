@@ -10,16 +10,16 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
-import { CollectionIds, Id } from "@interfaces/apiInterfaces";
-import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
+import { Id } from "@interfaces/apiInterfaces";
 import { Verification } from "@models/Verification";
-import { Filters } from "@baw-api/baw-api.service";
+import { Filters, Paging } from "@baw-api/baw-api.service";
 import { first, takeUntil } from "rxjs";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { VerificationService } from "@baw-api/verification/verification.service";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { projectAnnotationsModal } from "@components/projects/projects.modals";
+import { AudioEvent } from "@models/AudioEvent";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -35,24 +35,23 @@ class AnnotationSearchComponent extends PageComponent implements OnInit {
   public constructor(
     private route: ActivatedRoute,
     private api: VerificationService,
-    private session: BawSessionService,
+    private session: BawSessionService
   ) {
     super();
   }
 
-  protected model: AnnotationSearchParameters;
-  protected audioEvents: Verification[] = [];
-  protected project: Project;
-  protected region?: Region;
-  protected site?: Site;
-
-  public get dateFilters(): DateTimeFilterModel {
-    return {};
-  }
+  public model: AnnotationSearchParameters;
+  public audioEvents: Verification[] = [];
+  public project: Project;
+  public region?: Region;
+  public site?: Site;
+  public previewPage = 1;
+  private previewSize = 3;
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.model = this.model || new AnnotationSearchParameters({}, this.injector);
+    this.model =
+      this.model || new AnnotationSearchParameters({}, this.injector);
     this.project = models[projectKey] as Project;
 
     // generating a report from the region, or site level will immutably scope the report to the model(s)
@@ -63,7 +62,7 @@ class AnnotationSearchComponent extends PageComponent implements OnInit {
 
     if (models[siteKey]) {
       this.site = models[siteKey] as Site;
-      this.model.sites = new Set<Id>([this.region.id]);
+      this.model.sites = new Set<Id>([this.site.id]);
     }
   }
 
@@ -80,9 +79,10 @@ class AnnotationSearchComponent extends PageComponent implements OnInit {
   }
 
   protected buildAudioUrl(audioEvent: Verification): string {
-    const basePath = `https://api.staging.ecosounds.org/audio_recordings/${audioEvent.audioRecordingId}/original`;
+    const basePath = `https://api.staging.ecosounds.org/audio_recordings/${audioEvent.audioRecordingId}/media.flac`;
     const urlParams =
-      `?end_offset=${audioEvent.endTimeSeconds}&start_offset=${audioEvent.startTimeSeconds}` +
+      `?audio_event_id=${audioEvent.id}` +
+      `&end_offset=${audioEvent.endTimeSeconds}&start_offset=${audioEvent.startTimeSeconds}` +
       `&user_token=${this.session.authToken}`;
     return basePath + urlParams;
   }
@@ -90,60 +90,43 @@ class AnnotationSearchComponent extends PageComponent implements OnInit {
   protected updateModel(newModel: AnnotationSearchParameters): void {
     this.model = newModel;
 
-    const filters = this.buildFilter(
-      this.model.projects?.[0],
-      this.model.regions,
-      this.model.sites,
-      this.model.tags,
-      this.dateFilters
-    );
+    const filters = this.buildFilter();
+    const tagsArray = Array.from(this.model.tags);
 
-    this.api
-      .filter(filters)
-      .pipe(first(), takeUntil(this.unsubscribe))
-      .subscribe((audioEvents) => {
-        this.audioEvents = audioEvents;
-      });
+    if (tagsArray.length > 0) {
+      this.api
+        .filter(filters)
+        .pipe(first(), takeUntil(this.unsubscribe))
+        .subscribe((audioEvents) => {
+          this.audioEvents = audioEvents;
+        });
+    } else {
+      this.audioEvents = [];
+    }
   }
 
-  private buildFilter(
-    _project: Project,
-    _regions: CollectionIds,
-    _sites: CollectionIds,
-    tags: CollectionIds,
-    _dateFilters: DateTimeFilterModel
-  ): Filters<Verification> {
-    return {
-      filter: {
-        isReference: {
-          eq: true,
-        },
-        "tags.id": {
-          in: tags ?? [],
-        },
-      },
-    } as Filters<Verification>;
+  protected pagePreviewNext(): void {
+    this.previewPage++;
+  }
 
-    // TODO: this is disabled because the API is not yet implemented
-    // return {
-    //   filter: {
-    //     isReference: {
-    //       eq: true,
-    //     },
-    //     "tags.id": {
-    //       in: tags,
-    //     },
-    //     "projects.id": {
-    //       eq: project.id,
-    //     },
-    //     "regions.id": {
-    //       in: regions,
-    //     },
-    //     "sites.id": {
-    //       in: sites,
-    //     },
-    //   },
-    // } as Filters<Verification>;
+  protected pagePreviewPrevious(): void {
+    if (this.pagedItems <= 0) {
+      this.pagedItems = 0;
+      return;
+    }
+
+    this.previewPage--;
+  }
+
+  private buildFilter(): Filters<AudioEvent> {
+    const filter: Filters<AudioEvent> = this.model.toFilter();
+    const paging: Paging = {
+      page: this.previewPage,
+      items: this.previewSize,
+    };
+
+    filter.paging = paging;
+    return filter;
   }
 }
 

@@ -1,4 +1,11 @@
-import { Component, Injector, OnInit } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Injector,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
@@ -13,14 +20,19 @@ import { retrieveResolvers } from "@baw-api/resolver-common";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { PageFetcher } from "@ecoacoustics/web-components/@types/src/components/verification-grid/verification-grid";
+import {
+  PageFetcher,
+  VerificationGrid,
+} from "@ecoacoustics/web-components/@types/src/components/verification-grid/verification-grid";
 import { VerificationService } from "@baw-api/verification/verification.service";
-import { takeUntil } from "rxjs";
-import "@components/web-components/components";
+import { firstValueFrom, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
+import { Filters } from "@baw-api/baw-api.service";
+import { Verification } from "@models/Verification";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
+import "@components/web-components/components";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -32,9 +44,13 @@ const siteKey = "site";
   templateUrl: "verification.component.html",
   styleUrl: "verification.component.scss",
 })
-class VerificationComponent extends PageComponent implements OnInit {
+class VerificationComponent
+  extends PageComponent
+  implements OnInit, AfterViewInit
+{
   public constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private location: Location,
     private verificationApi: VerificationService,
     private injector: Injector
@@ -42,11 +58,14 @@ class VerificationComponent extends PageComponent implements OnInit {
     super();
   }
 
-  protected searchParameters: AnnotationSearchParameters;
-  protected areParametersCollapsed = true;
-  protected project: Project;
-  protected region?: Region;
-  protected site?: Site;
+  public searchParameters: AnnotationSearchParameters;
+  public areParametersCollapsed = true;
+  public project: Project;
+  public region?: Region;
+  public site?: Site;
+
+  @ViewChild("verificationGrid")
+  private verificationGridElement: ElementRef<VerificationGrid>;
 
   protected get chevronIcon(): IconProp {
     const prefix: IconPrefix = "fas" as const;
@@ -60,13 +79,27 @@ class VerificationComponent extends PageComponent implements OnInit {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     this.project = models[projectKey] as Project;
 
+    if (models[regionKey]) {
+      this.region = models[regionKey] as Region;
+    }
+    if (models[siteKey]) {
+      this.site = models[siteKey] as Site;
+    }
+  }
+
+  public ngAfterViewInit(): void {
+    this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
+
     this.route.queryParams
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((params) => {
         this.searchParameters = new AnnotationSearchParameters(
-          { ...params },
+          params,
           this.injector
         );
+
+        this.verificationGridElement.nativeElement.getPage =
+          this.getPageCallback();
       });
   }
 
@@ -75,11 +108,25 @@ class VerificationComponent extends PageComponent implements OnInit {
   }
 
   protected getPageCallback(): PageFetcher {
-    return this.verificationApi.list.bind(this.verificationApi);
+    return async (pagedItems: number) => {
+      const filters = this.filterConditions(pagedItems);
+      const serviceObservable = this.verificationApi.filter(filters);
+      return await firstValueFrom(serviceObservable);
+    };
+  }
+
+  protected updateModel(newModel: AnnotationSearchParameters): void {
+    this.searchParameters = newModel;
+    this.updateSearchParameters();
+    this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
+  }
+
+  private filterConditions(_pagedItems: number): Filters<Verification> {
+    return this.searchParameters.toFilter();
   }
 
   private updateSearchParameters(): void {
-    const queryParams = this.parameterDataModel.toQueryParams();
+    const queryParams = this.searchParameters.toQueryParams();
     const urlTree = this.router.createUrlTree([], { queryParams });
     this.location.replaceState(urlTree.toString());
   }
