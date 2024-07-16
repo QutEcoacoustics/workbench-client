@@ -26,7 +26,15 @@ import { Verification } from "@models/Verification";
 import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
 import { DateTime, Duration } from "luxon";
 
-export interface IAnnotationSearchParameters {}
+export interface IAnnotationSearchParameters {
+  projects: CollectionIds;
+  regions: CollectionIds;
+  sites: CollectionIds;
+  tags: CollectionIds;
+  onlyUnverified: boolean;
+  date: MonoTuple<DateTime, 2>;
+  time: MonoTuple<Duration, 2>;
+}
 
 const serializationTable: IQueryStringParameterSpec = {
   projects: jsNumberArray,
@@ -54,9 +62,10 @@ export class AnnotationSearchParameters
         serializationTable
       );
 
-    Object.keys(deserializedObject).forEach((key: string) => {
+    const objectKeys = Object.keys(deserializedObject);
+    for (const key of objectKeys) {
       this[key] = deserializedObject[key];
-    });
+    }
   }
 
   public projects: CollectionIds;

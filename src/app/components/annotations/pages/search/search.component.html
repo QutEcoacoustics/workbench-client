@@ -22,27 +22,31 @@
 <div class="preview-container">
   <hr />
 
-  <ng-container *ngIf="audioEvents.length > 0; else noResultsTemplate">
-    <div class="spectrogram-grid">
-      @for (audioEvent of audioEvents; track $index) {
-      <div class="preview-item border">
-        <oe-spectrogram
-          [id]="'spectrogram-' + audioEvent.id"
-          [src]="buildAudioUrl(audioEvent)"
-          window-size="1024"
-          scaling="stretch"
-          color-map="audacity"
-        ></oe-spectrogram>
-      </div>
-      }
+  @if (audioEvents.length > 0) {
+  <div class="spectrogram-grid">
+    @for (audioEvent of audioEvents; track $index) {
+    <div class="preview-item border">
+      <oe-spectrogram
+        [id]="'spectrogram-' + audioEvent.id"
+        [src]="buildAudioUrl(audioEvent)"
+        window-size="1024"
+        scaling="stretch"
+        color-map="audacity"
+      ></oe-spectrogram>
     </div>
-  </ng-container>
+    }
+  </div>
+  } @else if (model.tagModels.length > 0) {
+  <h2 id="no-results-error">
+    No {{ model.onlyUnverified ? "unverified" : "" }} annotations found
+  </h2>
+  }
 
   <div class="preview-controls my-2">
     <button
       type="button"
       class="btn btn-secondary me-2"
-      [ngClass]="{ disabled: audioEvents.length === 0 }"
+      [disabled]="audioEvents.length === 0"
       (click)="pagePreviewPrevious()"
     >
       Previous Page
@@ -51,14 +55,10 @@
     <button
       type="button"
       class="btn btn-secondary"
-      [ngClass]="{ disabled: audioEvents.length === 0}"
+      [disabled]="audioEvents.length === 0"
       (click)="pagePreviewNext()"
     >
       Next Page
     </button>
   </div>
-
-  <ng-template #noResultsTemplate>
-    <h2>No {{ model.onlyUnverified ? "unverified" : "" }} annotations found</h2>
-  </ng-template>
 </div>

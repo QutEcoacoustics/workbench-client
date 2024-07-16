@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -35,7 +35,8 @@ class AnnotationSearchComponent extends PageComponent implements OnInit {
   public constructor(
     private route: ActivatedRoute,
     private api: VerificationService,
-    private session: BawSessionService
+    private session: BawSessionService,
+    private injector: Injector
   ) {
     super();
   }
@@ -50,8 +51,7 @@ class AnnotationSearchComponent extends PageComponent implements OnInit {
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.model =
-      this.model || new AnnotationSearchParameters({}, this.injector);
+    this.model ||= new AnnotationSearchParameters({}, this.injector);
     this.project = models[projectKey] as Project;
 
     // generating a report from the region, or site level will immutably scope the report to the model(s)

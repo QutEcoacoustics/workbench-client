@@ -40,7 +40,7 @@ export const regionMenuItemActions = [
   audioRecordingMenuItems.list.region,
   audioRecordingMenuItems.batch.region,
   reportMenuItems.new.region,
-  annotationMenuItems.search.region,
+  annotationMenuItems.verify.region,
 ];
 
 const projectKey = "project";

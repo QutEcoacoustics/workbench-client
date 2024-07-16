@@ -32,7 +32,7 @@ import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters } from "@baw-api/baw-api.service";
 import { Verification } from "@models/Verification";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
-import "@components/web-components/components";
+// import "@components/web-components/components";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -85,6 +85,12 @@ class VerificationComponent
     if (models[siteKey]) {
       this.site = models[siteKey] as Site;
     }
+
+    // if there are no search parameters, we can assume that the user wants to
+    // create a new verification task. We therefore show the parameters by
+    // default
+    this.areParametersCollapsed =
+      Object.keys(this.route.snapshot.queryParams).length > 0;
   }
 
   public ngAfterViewInit(): void {
