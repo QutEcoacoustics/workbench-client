@@ -50,7 +50,7 @@ export const projectMenuItemActions = [
   audioRecordingMenuItems.batch.project,
   harvestsMenuItem,
   reportMenuItems.new.project,
-  annotationMenuItems.search.project,
+  annotationMenuItems.verify.project,
 ];
 
 const projectKey = "project";

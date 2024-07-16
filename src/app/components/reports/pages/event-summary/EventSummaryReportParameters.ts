@@ -23,7 +23,7 @@ import {
   luxonDurationArray,
   jsStringArray,
 } from "@helpers/query-string-parameters/query-string-parameters";
-import { CollectionIds, Id, Ids } from "@interfaces/apiInterfaces";
+import { CollectionIds } from "@interfaces/apiInterfaces";
 import { hasMany } from "@models/AssociationDecorators";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { EventSummaryReport } from "@models/EventSummaryReport";
@@ -51,10 +51,10 @@ export enum BucketSize {
 }
 
 export interface IEventSummaryReportParameters {
-  sites: Ids | Id[];
-  points: Ids | Id[];
-  provenances: Ids | Id[];
-  tags: Ids | Id[];
+  sites: CollectionIds;
+  points: CollectionIds;
+  provenances: CollectionIds;
+  tags: CollectionIds;
   score: number;
   bucketSize: BucketSize;
   daylightSavings: boolean;

@@ -35,12 +35,12 @@ export const annotationSearchRoute: AnnotationStrongRoute = {
 };
 
 export const verificationRoute: AnnotationStrongRoute = {
-  /** /project/:projectId/site/:siteId/annotations/verification */
-  site: annotationSearchRoute.site.add(verificationRouteName, annotationSearchRouteQueryParamResolver),
-  /** /project/:projectId/region/:regionId/site/:siteId/annotations/verification */
-  siteAndRegion: annotationSearchRoute.siteAndRegion.add(verificationRouteName, annotationSearchRouteQueryParamResolver),
-  /** /project/:projectId/region/:regionId/annotations/verification */
-  region: annotationSearchRoute.region.add(verificationRouteName, annotationSearchRouteQueryParamResolver),
-  /** /project/:projectId/annotations/verification */
-  project: annotationSearchRoute.project.add(verificationRouteName, annotationSearchRouteQueryParamResolver),
+  /** /project/:projectId/site/:siteId/verification */
+  site: siteRoute.add(verificationRouteName, annotationSearchRouteQueryParamResolver),
+  /** /project/:projectId/region/:regionId/site/:siteId/verification */
+  siteAndRegion: pointRoute.add(verificationRouteName, annotationSearchRouteQueryParamResolver),
+  /** /project/:projectId/region/:regionId/verification */
+  region: regionRoute.add(verificationRouteName, annotationSearchRouteQueryParamResolver),
+  /** /project/:projectId/verification */
+  project: projectRoute.add(verificationRouteName, annotationSearchRouteQueryParamResolver),
 };

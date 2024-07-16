@@ -4,7 +4,6 @@
   <button
     class="show-parameters-button btn btn-link text-light m-2"
     (click)="toggleParameters()"
-    [ariaExpanded]="!isShowingParameters"
     aria-controls="search-parameters"
   >
     <fa-icon [icon]="chevronIcon"></fa-icon>
@@ -41,24 +40,7 @@
       <!-- <oe-info-card></oe-info-card> -->
     </template>
 
-    <oe-decision
-      verified="true"
-      tag="koala"
-      additional-tags="female"
-      shortcut="H"
-    >
-      Koala
-    </oe-decision>
-    <oe-decision
-      verified="true"
-      tag="koala"
-      additional-tags="male"
-      shortcut="J"
-    >
-      Koala
-    </oe-decision>
-    <oe-decision verified="true" tag="cow" shortcut="k">Cow</oe-decision>
-    <oe-decision verified="false" tag="*" shortcut="L">Negative</oe-decision>
-    <oe-decision verified="false" shortcut="S" skip>Skip</oe-decision>
+    <oe-decision verified="true" shortcut="Y">Yes</oe-decision>
+    <oe-decision verified="true" shortcut="N">No</oe-decision>
   </oe-verification-grid>
 </div>

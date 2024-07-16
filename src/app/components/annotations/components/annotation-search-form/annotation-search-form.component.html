@@ -46,13 +46,13 @@
 
   <div class="form-check mt-2">
     <input
-      id="filterValidated"
+      id="filter-verified"
       type="checkbox"
       class="form-check-input"
       [checked]="model.onlyUnverified"
       (change)="updateModel('onlyUnverified', $event.target['checked'])"
     />
-    <label for="filterValidated" class="form-check-label">
+    <label for="filter-verified" class="form-check-label">
       Only show un-verified annotations
     </label>
   </div>

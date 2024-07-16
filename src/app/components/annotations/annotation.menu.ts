@@ -29,8 +29,8 @@ function makeVerificationMenuItem(
 ) {
   return menuRoute({
     icon: ["fas", "circle-check"],
-    label: "Verify this list",
-    tooltip: () => "Verify this list",
+    label: "Verify Annotations",
+    tooltip: () => "Verify Annotations",
     route: verificationRoute[subRoute],
     parent,
   });
@@ -42,8 +42,8 @@ function makeAnnotationSearchMenuItem(
 ) {
   return menuRoute({
     icon: ["fas", "layer-group"],
-    label: "Search annotations",
-    tooltip: () => "Search annotations",
+    label: "Search Annotations",
+    tooltip: () => "Search Annotations",
     route: annotationSearchRoute[subRoute],
     parent,
   });

@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Injector, Input, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Injector,
+  Input,
+  OnInit,
+  Output,
+} from "@angular/core";
 import { StandardApi } from "@baw-api/api-common";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -25,6 +32,7 @@ import { Observable } from "rxjs";
 @Component({
   selector: "baw-annotation-search-form",
   templateUrl: "annotation-search-form.component.html",
+  styleUrl: "annotation-search-form.component.scss",
 })
 export class AnnotationSearchFormComponent implements OnInit {
   public constructor(
@@ -32,7 +40,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     protected regionsApi: ShallowRegionsService,
     protected sitesApi: ShallowSitesService,
     protected tagsApi: TagsService,
-    private injector: Injector,
+    private injector: Injector
   ) {}
 
   @Input({ required: true })
@@ -53,7 +61,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   public modelChange = new EventEmitter<AnnotationSearchParameters>();
 
   public ngOnInit(): void {
-    this.model = this.model || new AnnotationSearchParameters({}, this.injector);
+    this.model ||= new AnnotationSearchParameters({}, this.injector);
   }
 
   protected createSearchCallback<T extends AbstractModel>(
@@ -75,9 +83,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   }
 
   // because the DateTimeFilterModel is coming from a shared component, we need to serialize for use in the data model
-  protected updateDateTime(
-    dateTimeModel: DateTimeFilterModel
-  ): void {
+  protected updateDateTime(dateTimeModel: DateTimeFilterModel): void {
     if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
       this.model.date = [
         dateTimeModel.dateStartedAfter
@@ -100,7 +106,10 @@ export class AnnotationSearchFormComponent implements OnInit {
     }
   }
 
-  protected updateModel(key: keyof AnnotationSearchParameters, value: any): void {
+  protected updateModel(
+    key: keyof AnnotationSearchParameters,
+    value: any
+  ): void {
     this.model[key as any] = value;
     this.modelChange.emit(this.model);
   }
