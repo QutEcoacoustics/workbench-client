@@ -26,21 +26,9 @@
 </div>
 
 <div id="verification-container">
-  <oe-verification-grid #verificationGrid grid-size="3">
-    <template>
-      <oe-axes>
-        <oe-indicator>
-          <oe-spectrogram
-            id="spectrogram"
-            color-map="audacity"
-          ></oe-spectrogram>
-        </oe-indicator>
-      </oe-axes>
-      <oe-media-controls for="spectrogram"></oe-media-controls>
-      <!-- <oe-info-card></oe-info-card> -->
-    </template>
+  <oe-verification-grid #verificationGrid id="verification-grid" grid-size="9"> <oe-verification verified="true" shortcut="Y">Yes</oe-verification>
+    <oe-verification verified="false" shortcut="N">No</oe-verification>
 
-    <oe-decision verified="true" shortcut="Y">Yes</oe-decision>
-    <oe-decision verified="true" shortcut="N">No</oe-decision>
+    <oe-data-source slot="data-source" for="verification-grid" local> </oe-data-source>
   </oe-verification-grid>
 </div>

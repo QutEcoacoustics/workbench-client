@@ -32,7 +32,7 @@ import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters } from "@baw-api/baw-api.service";
 import { Verification } from "@models/Verification";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
-// import "@components/web-components/components";
+import "@components/web-components/components";
 
 const projectKey = "project";
 const regionKey = "region";
