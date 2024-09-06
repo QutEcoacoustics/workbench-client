@@ -117,7 +117,6 @@ describe("SiteNewComponent", () => {
           expect(spec.component).toBeTruthy();
         });
 
-        // TODO Validate region id is set in api call
         it("should call api", () => {
           setup(defaultProject, defaultRegion);
           api.create.and.callFake(() => new Subject());
@@ -128,6 +127,27 @@ describe("SiteNewComponent", () => {
           spec.component.submit({ ...site });
           expect(api.create).toHaveBeenCalledWith(
             new Site({ ...site }),
+            defaultProject
+          );
+        });
+
+        it("should contain the region and project id in the api calls site model", () => {
+          setup(defaultProject, defaultRegion);
+          api.create.and.callFake(() => new Subject());
+          const site = new Site(
+            generateSite(withRegion ? { regionId: defaultRegion.id } : {})
+          );
+
+          spec.component.submit({ ...site });
+
+          const expectedSiteModel = new Site({
+            ...site,
+            projectIds: [defaultProject.id],
+            regionId: withRegion ? defaultRegion.id : undefined,
+          });
+
+          expect(api.create).toHaveBeenCalledWith(
+            expectedSiteModel,
             defaultProject
           );
         });
