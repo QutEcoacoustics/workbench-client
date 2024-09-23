@@ -22,17 +22,13 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import {
-  PageFetcher,
-  VerificationGrid,
-} from "@ecoacoustics/web-components/@types/src/components/verification-grid/verification-grid";
 import { VerificationService } from "@baw-api/verification/verification.service";
 import { firstValueFrom, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters } from "@baw-api/baw-api.service";
 import { Verification } from "@models/Verification";
+import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/src/components/verification-grid/verification-grid";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
-import "@components/web-components/components";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -65,7 +61,7 @@ class VerificationComponent
   public site?: Site;
 
   @ViewChild("verificationGrid")
-  private verificationGridElement: ElementRef<VerificationGrid>;
+  private verificationGridElement: ElementRef<VerificationGridComponent>;
 
   protected get chevronIcon(): IconProp {
     const prefix: IconPrefix = "fas" as const;
@@ -113,12 +109,18 @@ class VerificationComponent
     this.areParametersCollapsed = !this.areParametersCollapsed;
   }
 
-  protected getPageCallback(): PageFetcher {
+  protected getPageCallback(): any {
     return async (pagedItems: number) => {
-      const filters = this.filterConditions(pagedItems);
-      const serviceObservable = this.verificationApi.filter(filters);
-      return await firstValueFrom(serviceObservable);
-    };
+        const filters = this.filterConditions(pagedItems);
+        const serviceObservable = this.verificationApi.filter(filters);
+        const items = await firstValueFrom(serviceObservable);
+
+        return new Object({
+        subjects: items,
+        context: { page: 1 },
+        totalItems: items.length,
+      });
+    }
   }
 
   protected updateModel(newModel: AnnotationSearchParameters): void {

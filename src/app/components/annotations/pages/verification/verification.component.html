@@ -25,10 +25,9 @@
   </div>
 </div>
 
-<div id="verification-container">
-  <oe-verification-grid #verificationGrid id="verification-grid" grid-size="9"> <oe-verification verified="true" shortcut="Y">Yes</oe-verification>
-    <oe-verification verified="false" shortcut="N">No</oe-verification>
+<oe-verification-grid #verificationGrid id="verification-grid" grid-size="2">
+  <oe-verification verified="true" shortcut="Y"></oe-verification>
+  <oe-verification verified="false" shortcut="N"></oe-verification>
 
-    <oe-data-source slot="data-source" for="verification-grid" local> </oe-data-source>
-  </oe-verification-grid>
-</div>
+  <oe-data-source slot="data-source" for="verification-grid"></oe-data-source>
+</oe-verification-grid>
