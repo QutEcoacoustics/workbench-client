@@ -28,6 +28,7 @@ import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters } from "@baw-api/baw-api.service";
 import { Verification } from "@models/Verification";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/src/components/verification-grid/verification-grid";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -49,6 +50,7 @@ class VerificationComponent
     private router: Router,
     private location: Location,
     private verificationApi: VerificationService,
+    private session: BawSessionService,
     private injector: Injector
   ) {
     super();
@@ -113,7 +115,13 @@ class VerificationComponent
     return async (pagedItems: number) => {
         const filters = this.filterConditions(pagedItems);
         const serviceObservable = this.verificationApi.filter(filters);
-        const items = await firstValueFrom(serviceObservable);
+        let items: Verification[] = await firstValueFrom(serviceObservable);
+
+        // add the auth token to all the audio urls
+        items = items.map((item) => {
+          item.audioLink = this.buildAudioUrl(item);
+          return item;
+        });
 
         return new Object({
         subjects: items,
@@ -121,6 +129,15 @@ class VerificationComponent
         totalItems: items.length,
       });
     }
+  }
+
+  protected buildAudioUrl(audioEvent: Verification): string {
+    const basePath = `https://api.staging.ecosounds.org/audio_recordings/${audioEvent.audioRecordingId}/media.flac`;
+    const urlParams =
+      `?audio_event_id=${audioEvent.id}` +
+      `&end_offset=${audioEvent.endTimeSeconds}&start_offset=${audioEvent.startTimeSeconds}` +
+      `&user_token=${this.session.authToken}`;
+    return basePath + urlParams;
   }
 
   protected updateModel(newModel: AnnotationSearchParameters): void {
