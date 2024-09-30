@@ -6,9 +6,18 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import { regionResolvers } from "@baw-api/region/regions.service";
-import { siteResolvers } from "@baw-api/site/sites.service";
+import {
+  projectResolvers,
+  ProjectsService,
+} from "@baw-api/project/projects.service";
+import {
+  regionResolvers,
+  ShallowRegionsService,
+} from "@baw-api/region/regions.service";
+import {
+  ShallowSitesService,
+  siteResolvers,
+} from "@baw-api/site/sites.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import {
@@ -23,12 +32,26 @@ import { Site } from "@models/Site";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { Location } from "@angular/common";
 import { VerificationService } from "@baw-api/verification/verification.service";
-import { firstValueFrom, takeUntil } from "rxjs";
+import { first, firstValueFrom, Observable, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
-import { Filters } from "@baw-api/baw-api.service";
+import { Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
 import { Verification } from "@models/Verification";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/src/components/verification-grid/verification-grid";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { StandardApi } from "@baw-api/api-common";
+import {
+  contains,
+  filterAnd,
+  filterModel,
+  notIn,
+} from "@helpers/filters/filters";
+import { AbstractModel } from "@models/AbstractModel";
+import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
+import { DateTime } from "luxon";
+import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
+import { Id } from "@interfaces/apiInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -46,10 +69,15 @@ class VerificationComponent
   implements OnInit, AfterViewInit
 {
   public constructor(
+    protected verificationApi: VerificationService,
+    protected projectsApi: ProjectsService,
+    protected regionsApi: ShallowRegionsService,
+    protected sitesApi: ShallowSitesService,
+    protected tagsApi: TagsService,
+
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    private verificationApi: VerificationService,
     private session: BawSessionService,
     private injector: Injector
   ) {
@@ -61,6 +89,9 @@ class VerificationComponent
   public project: Project;
   public region?: Region;
   public site?: Site;
+  public previewAudioEvents: Verification[] = [];
+  public previewPage = 1;
+  public previewSize = 3;
 
   @ViewChild("verificationGrid")
   private verificationGridElement: ElementRef<VerificationGridComponent>;
@@ -74,6 +105,8 @@ class VerificationComponent
   }
 
   public ngOnInit(): void {
+    this.searchParameters ||= new AnnotationSearchParameters({}, this.injector);
+
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     this.project = models[projectKey] as Project;
 
@@ -101,6 +134,18 @@ class VerificationComponent
 
   protected toggleParameters(): void {
     this.areParametersCollapsed = !this.areParametersCollapsed;
+  }
+
+  protected verifyAnnotationsRoute(): StrongRoute {
+    if (this.site) {
+      return this.site.isPoint
+        ? annotationMenuItems.verify.siteAndRegion.route
+        : annotationMenuItems.verify.site.route;
+    } else if (this.region) {
+      return annotationMenuItems.verify.region.route;
+    }
+
+    return annotationMenuItems.verify.project.route;
   }
 
   protected getPageCallback(): any {
@@ -132,10 +177,55 @@ class VerificationComponent
     return basePath + urlParams;
   }
 
-  protected updateModel(newModel: AnnotationSearchParameters): void {
-    this.searchParameters = newModel;
+  protected updateModel(
+    key: keyof AnnotationSearchParameters,
+    value: any
+  ): void {
+    this.searchParameters[key as any] = value;
     this.updateSearchParameters();
-    this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
+
+    if (this.areParametersCollapsed) {
+      // if the search parameters are collapsed, then the user is performing
+      // verifications using the verification component
+      // and we should update the verification grid
+      this.verificationGridElement.nativeElement.getPage =
+        this.getPageCallback();
+    } else {
+      // if the search parameters form is not collapsed then we want to show a
+      // preview of the audio events that the verification grid will display
+      const filters = this.buildFilter();
+      const tagsArray = Array.from(this.searchParameters.tags);
+
+      if (tagsArray.length > 0) {
+        this.verificationApi
+          .filter(filters)
+          .pipe(first(), takeUntil(this.unsubscribe))
+          .subscribe((model) => {
+            this.previewAudioEvents = model;
+          });
+      } else {
+        this.audioEvents = [];
+      }
+    }
+  }
+
+  protected pagePreviewNext(): void {
+    this.previewPage++;
+  }
+
+  protected pagePreviewPrevious(): void {
+    if (this.pagedItems <= 0) {
+      this.pagedItems = 0;
+      return;
+    }
+
+    this.previewPage--;
+  }
+
+  protected downloadAnnotationsUrl(): string {
+    return this.verificationApi.downloadVerificationsTableUrl(
+      this.buildFilter()
+    );
   }
 
   private updatePagingCallback(params: Params): void {
@@ -152,6 +242,17 @@ class VerificationComponent
     this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
   }
 
+  private buildFilter(): Filters<Verification> {
+    const filter: Filters<Verification> = this.searchParameters.toFilter();
+    const paging: Paging = {
+      page: this.previewPage,
+      items: this.previewSize,
+    };
+
+    filter.paging = paging;
+    return filter;
+  }
+
   private filterConditions(_pagedItems: number): Filters<Verification> {
     return this.searchParameters.toFilter();
   }
@@ -160,6 +261,71 @@ class VerificationComponent
     const queryParams = this.searchParameters.toQueryParams();
     const urlTree = this.router.createUrlTree([], { queryParams });
     this.location.replaceState(urlTree.toString());
+  }
+
+  protected createSearchCallback<T extends AbstractModel>(
+    api: StandardApi<T>,
+    key: string = "name",
+    includeDefaultFilters: boolean = true
+  ): TypeaheadSearchCallback {
+    return (text: string, activeItems: T[]): Observable<T[]> =>
+      api.filter({
+        filter: filterAnd(
+          contains<T, keyof T>(
+            key as keyof T,
+            text as any,
+            includeDefaultFilters && this.defaultFilter()
+          ),
+          notIn<T>(key as keyof AbstractModel, activeItems)
+        ),
+      });
+  }
+
+  // because the DateTimeFilterModel is coming from a shared component, we need to serialize for use in the data model
+  protected updateDateTime(dateTimeModel: DateTimeFilterModel): void {
+    if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
+      this.searchParameters.date = [
+        dateTimeModel.dateStartedAfter
+          ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
+          : null,
+        dateTimeModel.dateFinishedBefore
+          ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
+          : null,
+      ];
+    }
+
+    if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
+      this.searchParameters.time = [
+        dateTimeModel.timeStartedAfter,
+        dateTimeModel.timeFinishedBefore,
+      ];
+
+      // because the daylight savings filter is a modifier on the time filter we do not need to update it unless the time filter has a value
+      // this.searchParameters.daylightSavings = !dateTimeModel.ignoreDaylightSavings;
+    }
+  }
+
+  protected getIdsFromAbstractModelArray(items: object[]): Id[] {
+    if (items.length === 0) {
+      return null;
+    }
+
+    const idsArray: Id[] = items.map((item: AbstractModel): Id => item.id);
+    return idsArray;
+  }
+
+  // we need a default filter to scope to projects, regions, sites
+  private defaultFilter(): InnerFilter<Project | Region | Site> {
+    // we don't need to filter for every route, we only need to filter for the lowest level
+    // this is because all sites have a region, all regions have a project, etc..
+    // so it can be logically inferred
+    if (this.site) {
+      return filterModel("sites", this.site);
+    } else if (this.region) {
+      return filterModel("regions", this.region);
+    } else {
+      return filterModel("projects", this.project);
+    }
   }
 }
 

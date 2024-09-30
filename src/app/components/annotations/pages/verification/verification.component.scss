@@ -1,3 +1,18 @@
 #search-parameters-body {
   padding: 0.5rem;
 }
+
+.spectrogram-grid {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 0.5em;
+}
+
+.preview-item {
+  position: relative;
+  display: inline-block;
+  flex: 1;
+}

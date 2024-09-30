@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import {
   emptyParam,
   filterParam,
@@ -13,6 +13,7 @@ import { BawSessionService } from "@baw-api/baw-session.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Verification } from "@models/Verification";
+import { API_ROOT } from "@services/config/config.tokens";
 import { map, Observable } from "rxjs";
 
 // TODO: this is currently using the audio_events endpoint because the
@@ -25,6 +26,7 @@ export class VerificationService implements StandardApi<Verification> {
   public constructor(
     private api: BawApiService<Verification>,
     private session: BawSessionService,
+    @Inject(API_ROOT) private apiRoot: string
   ) {}
 
   public list(): Observable<Verification[]> {
@@ -50,7 +52,7 @@ export class VerificationService implements StandardApi<Verification> {
           }
 
           return models;
-        }),
+        })
       );
   }
 
@@ -63,7 +65,7 @@ export class VerificationService implements StandardApi<Verification> {
       Verification,
       endpoint(emptyParam, emptyParam),
       (verification) => endpoint(verification, emptyParam),
-      model,
+      model
     );
   }
 
@@ -74,9 +76,18 @@ export class VerificationService implements StandardApi<Verification> {
   public destroy(model: IdOr<Verification>): Observable<Verification | void> {
     return this.api.destroy(endpoint(model, emptyParam));
   }
+
+  public downloadVerificationsTableUrl(filters: Filters<Verification>): string {
+    return (
+      this.apiRoot +
+      endpoint(emptyParam, emptyParam) +
+      "events.csv?" +
+      this.api.encodeFilter(filters)
+    );
+  }
 }
 
 export const verificationResolvers = new Resolvers<Verification, []>(
   [VerificationService],
-  "verificationId",
+  "verificationId"
 ).create("Verification");

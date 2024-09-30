@@ -32,14 +32,15 @@ import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
-import { VerificationComponent as VerificationButton } from "@ecoacoustics/web-components/@types/components/decision/verification/verification";
+import { VerificationComponent as DecisionButton } from "@ecoacoustics/web-components/@types/components/decision/verification/verification";
+import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import { fakeAsync, tick } from "@angular/core/testing";
 import { defaultDebounceTime } from "src/app/app.helper";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
-import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 
 describe("AnnotationSearchComponent", () => {
   let spectator: SpectatorRouting<VerificationComponent>;
@@ -55,6 +56,7 @@ describe("AnnotationSearchComponent", () => {
   let injector: SpyObject<Injector>;
   let defaultFakeSites: Site[];
   let defaultFakeRegions: Region[];
+  let defaultFakeProjects: Project[];
   let defaultFakeTags: Tag[];
 
   const createComponent = createRoutingFactory({
@@ -86,22 +88,28 @@ describe("AnnotationSearchComponent", () => {
       ],
     });
 
+    defaultFakeProjects = modelData.randomArray(
+      3,
+      10,
+      () => new Project(generateProject())
+    );
+
     defaultFakeRegions = modelData.randomArray(
       3,
       10,
-      () => new Region(generateRegion({ projectId: defaultProject.id })),
+      () => new Region(generateRegion({ projectId: defaultProject.id }))
     );
 
     defaultFakeSites = modelData.randomArray(
       3,
       10,
-      () => new Site(generateSite()),
+      () => new Site(generateSite())
     );
 
     defaultFakeTags = modelData.randomArray(
       3,
       10,
-      () => new Tag(generateSite()),
+      () => new Tag(generateSite())
     );
 
     spectator.component.project = defaultProject;
@@ -122,19 +130,19 @@ describe("AnnotationSearchComponent", () => {
     mockSitesApi = spectator.inject(SHALLOW_SITE.token);
     mockTagsApi = spectator.inject(TAG.token);
 
-    mockProjectsApi.filter.and.returnValue(of([]));
-    mockRegionsApi.filter.and.returnValue(of(defaultFakeRegions));
-    mockSitesApi.filter.and.returnValue(of(defaultFakeSites));
-    mockTagsApi.filter.and.returnValue(of(defaultFakeTags));
+    mockProjectsApi.filter.and.callFake(() => of(defaultFakeProjects));
+    mockRegionsApi.filter.and.callFake(() => of(defaultFakeRegions));
+    mockSitesApi.filter.and.callFake(() => of(defaultFakeSites));
+    mockTagsApi.filter.and.callFake(() => of(defaultFakeTags));
 
     const mockParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(),
-      injector,
+      injector
     );
     spectator.component.searchParameters = mockParameters;
 
     mockVerificationsResponse = Array.from<Verification>({ length: 3 }).fill(
-      new Verification(generateVerification(), injector),
+      new Verification(generateVerification(), injector)
     );
 
     // we do not detect changes here because some tests require router params
@@ -146,7 +154,7 @@ describe("AnnotationSearchComponent", () => {
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultRegion = new Region(
-      generateRegion({ projectId: defaultProject.id }),
+      generateRegion({ projectId: defaultProject.id })
     );
     defaultSite = new Site(generateSite({ regionId: defaultRegion.id }));
 
@@ -164,11 +172,18 @@ describe("AnnotationSearchComponent", () => {
     spectator.query<any>("[label='Tags of Interest']");
   const tagsTypeaheadInput = (): HTMLInputElement =>
     spectator.query<HTMLInputElement>(
-      "[label='Tags of interest'] #typeahead-input",
+      "[label='Tags of interest'] #typeahead-input"
     );
 
+  const spectrogramElements = (): SpectrogramComponent[] =>
+    spectator.queryAll<SpectrogramComponent>("oe-spectrogram");
+  const previewNextPageButton = (): HTMLButtonElement =>
+    getElementByInnerText<HTMLButtonElement>("Next Page");
+  const previewPreviousPageButton = (): HTMLButtonElement =>
+    getElementByInnerText<HTMLButtonElement>("Previous Page");
+
   const verificationButtons = () =>
-    spectator.queryAll<VerificationButton>("oe-verification");
+    spectator.queryAll<DecisionButton>("oe-verification");
   const verificationGrid = () =>
     spectator.query<VerificationGridComponent>("oe-verification-grid");
 
@@ -178,12 +193,12 @@ describe("AnnotationSearchComponent", () => {
 
   function getElementByInnerText<T extends HTMLElement>(text: string): T {
     return spectator.debugElement.query(
-      (element) => element.nativeElement.innerText === text,
+      (element) => element.nativeElement.innerText === text
     )?.nativeElement as T;
   }
 
   function clickByInnerText<T extends HTMLElement>(text: string): void {
-    const targetElement = getElementByInnerText("Show Parameters");
+    const targetElement = getElementByInnerText<T>(text);
     targetElement.click();
     spectator.detectChanges();
   }
@@ -225,7 +240,7 @@ describe("AnnotationSearchComponent", () => {
         // correct, and we should use a custom matcher to compare that the
         // object is empty (excluding the injector property)
         expect(spectator.component.searchParameters.toQueryParams()).toEqual(
-          jasmine.empty(),
+          jasmine.empty()
         );
       });
 
@@ -247,26 +262,23 @@ describe("AnnotationSearchComponent", () => {
 
       it("should update the verification grids getPage callback correctly when filter conditions added", () => {});
 
-      it(
-        "should update the search parameters when filter conditions are added",
-        fakeAsync(() => {
-          const targetTag = defaultFakeTags[0];
-          const tagText = targetTag.text;
-          const expectedTagId = targetTag.id;
+      it("should update the search parameters when filter conditions are added", fakeAsync(() => {
+        const targetTag = defaultFakeTags[0];
+        const tagText = targetTag.text;
+        const expectedTagId = targetTag.id;
 
-          selectFromTypeahead(tagsTypeaheadInput(), tagText);
+        selectFromTypeahead(tagsTypeaheadInput(), tagText);
 
-          const realizedRouterParams = spectator.inject(ActivatedRoute).params;
-          const realizedComponentParams = spectator.component.searchParameters;
+        const realizedRouterParams = spectator.inject(ActivatedRoute).params;
+        const realizedComponentParams = spectator.component.searchParameters;
 
-          expect(realizedRouterParams).toEqual(
-            jasmine.objectContaining({
-              tags: jasmine.arrayContaining([expectedTagId]),
-            }),
-          );
-          expect(realizedComponentParams.tags).toContain(expectedTagId);
-        }),
-      );
+        expect(realizedRouterParams).toEqual(
+          jasmine.objectContaining({
+            tags: jasmine.arrayContaining([expectedTagId]),
+          })
+        );
+        expect(realizedComponentParams.tags).toContain(expectedTagId);
+      }));
 
       it("should make the correct api calls when search parameters are added", async () => {
         const targetTag = defaultFakeTags[0];
@@ -284,7 +296,7 @@ describe("AnnotationSearchComponent", () => {
         expect(realizedRouterParams).toEqual(
           jasmine.objectContaining({
             tags: jasmine.arrayContaining([expectedTagId]),
-          }),
+          })
         );
         expect(realizedComponentParams.tags).toContain(expectedTagId);
       });
@@ -302,21 +314,103 @@ describe("AnnotationSearchComponent", () => {
         expandSearchParameters();
         expect(parametersCollapsable()).toHaveClass(expectedExpandedClass);
       });
+
+      describe("Search results preview", () => {
+        beforeEach(() => {
+          spectator.component.model.tags = defaultFakeTags.map(
+            (tag) => tag.id
+          );
+        });
+
+        it("should make the correct api call", () => {
+          const expectedBody = {};
+          expect(mockVerificationsApi.filter).toHaveBeenCalledWith(expectedBody);
+        });
+
+        it("should display an error if there are no search results", () => {
+          const expectedText = "No annotations found";
+          defaultFakeTags = [];
+          spectator.detectChanges();
+
+          const element =
+            getElementByInnerText<HTMLHeadingElement>(expectedText);
+          expect(element).toExist();
+        });
+
+        it("should use a different error message if there are no unverified annotations found", () => {
+          const expectedText = "No unverified annotations found";
+          mockVerificationsResponse = [];
+          toggleOnlyVerifiedCheckbox();
+
+          const element =
+            getElementByInnerText<HTMLHeadingElement>(expectedText);
+          expect(element).toExist();
+        });
+
+        it("should have disabled pagination buttons if there are no search results", () => {});
+
+        it("should display a search preview for a full page of results", () => {
+          const expectedResults = mockVerificationsResponse.length;
+          const realizedResults = spectrogramElements().length;
+          expect(realizedResults).toEqual(expectedResults);
+        });
+
+        it("should display a reduced search preview for a partial page of results", () => {
+          mockVerificationsResponse = mockVerificationsResponse.slice(0, 2);
+
+          const expectedResults = mockVerificationsResponse.length;
+          const realizedResults = spectrogramElements().length;
+          expect(realizedResults).toEqual(expectedResults);
+        });
+
+        it("should page forward correctly", () => {
+          previewNextPageButton().click();
+          spectator.detectChanges();
+
+          const expectedPageNumber = 2;
+          const realizedPageNumber = spectator.component.previewPage;
+          expect(realizedPageNumber).toEqual(expectedPageNumber);
+        });
+
+        it("should page to previous pages correctly", () => {
+          previewNextPageButton().click();
+          spectator.detectChanges();
+          previewPreviousPageButton().click();
+          spectator.detectChanges();
+
+          const expectedPageNumber = 1;
+          const realizedPageNumber = spectator.component.previewPage;
+          expect(realizedPageNumber).toEqual(expectedPageNumber);
+        });
+
+        it("should not be possible to page back past the first page", () => {
+          const initialPageNumber = spectator.component.previewPage;
+          const expectedPageNumber = 1;
+
+          expect(initialPageNumber).toEqual(expectedPageNumber);
+
+          previewPreviousPageButton().click();
+          spectator.detectChanges();
+
+          const realizedPageNumber = spectator.component.previewPage;
+          expect(realizedPageNumber).toEqual(expectedPageNumber);
+        });
+      });
     });
 
     describe("with initial search parameters", () => {
       beforeEach(async () => {
         spectator.setRouteQueryParam(
           "tags",
-          defaultFakeTags.map((tag) => tag.id).toString(),
+          defaultFakeTags.map((tag) => tag.id).toString()
         );
         spectator.setRouteQueryParam(
           "sites",
-          defaultFakeSites.map((site) => site.id).toString(),
+          defaultFakeSites.map((site) => site.id).toString()
         );
         spectator.setRouteQueryParam(
           "regions",
-          defaultFakeRegions.map((region) => region.id).toString(),
+          defaultFakeRegions.map((region) => region.id).toString()
         );
         spectator.detectChanges();
         await spectator.fixture.whenStable();
@@ -338,7 +432,7 @@ describe("AnnotationSearchComponent", () => {
             tags: jasmine.arrayContaining(expectedTagIds),
             sites: jasmine.arrayContaining(expectedSiteIds),
             regions: jasmine.arrayContaining(expectedRegionIds),
-          }),
+          })
         );
       });
 
@@ -350,21 +444,21 @@ describe("AnnotationSearchComponent", () => {
       it("should make the correct api calls when first loaded", () => {
         const expectedFilterBody = {};
         expect(mockVerificationsApi.filter).toHaveBeenCalledWith(
-          expectedFilterBody,
+          expectedFilterBody
         );
       });
 
       it("should cache client side with GET requests", () => {
         const expectedRequestCount = 10;
         expect(mockVerificationsApi.filter).toHaveBeenCalledTimes(
-          expectedRequestCount,
+          expectedRequestCount
         );
       });
 
       it("should cache server side with HEAD requests", () => {
         const expectedRequestCount = 50;
         expect(mockVerificationsApi.filter).toHaveBeenCalledTimes(
-          expectedRequestCount,
+          expectedRequestCount
         );
       });
 

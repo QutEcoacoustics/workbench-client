@@ -5,13 +5,11 @@ import { RouterModule } from "@angular/router";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { verificationRoute } from "./annotation.routes";
 import { AnnotationSearchFormComponent } from "./components/annotation-search-form/annotation-search-form.component";
-import { AnnotationSearchComponent } from "./pages/search/search.component";
 import { VerificationComponent } from "./pages/verification/verification.component";
 
 const internalComponents = [AnnotationSearchFormComponent];
 
 const components = [
-  AnnotationSearchComponent,
   VerificationComponent,
 ];
 
