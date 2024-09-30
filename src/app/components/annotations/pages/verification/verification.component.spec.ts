@@ -31,8 +31,15 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
+import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
+import { VerificationComponent as VerificationButton } from "@ecoacoustics/web-components/@types/components/decision/verification/verification";
+import { modelData } from "@test/helpers/faker";
+import { Tag } from "@models/Tag";
+import { fakeAsync, tick } from "@angular/core/testing";
+import { defaultDebounceTime } from "src/app/app.helper";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 
 describe("AnnotationSearchComponent", () => {
   let spectator: SpectatorRouting<VerificationComponent>;
@@ -46,6 +53,9 @@ describe("AnnotationSearchComponent", () => {
   let mockSitesApi: SpyObject<ShallowSitesService>;
   let mockTagsApi: SpyObject<TagsService>;
   let injector: SpyObject<Injector>;
+  let defaultFakeSites: Site[];
+  let defaultFakeRegions: Region[];
+  let defaultFakeTags: Tag[];
 
   const createComponent = createRoutingFactory({
     declarations: [AnnotationSearchFormComponent],
@@ -76,6 +86,24 @@ describe("AnnotationSearchComponent", () => {
       ],
     });
 
+    defaultFakeRegions = modelData.randomArray(
+      3,
+      10,
+      () => new Region(generateRegion({ projectId: defaultProject.id })),
+    );
+
+    defaultFakeSites = modelData.randomArray(
+      3,
+      10,
+      () => new Site(generateSite()),
+    );
+
+    defaultFakeTags = modelData.randomArray(
+      3,
+      10,
+      () => new Tag(generateSite()),
+    );
+
     spectator.component.project = defaultProject;
     spectator.component.region = defaultRegion;
     spectator.component.site = defaultSite;
@@ -95,18 +123,18 @@ describe("AnnotationSearchComponent", () => {
     mockTagsApi = spectator.inject(TAG.token);
 
     mockProjectsApi.filter.and.returnValue(of([]));
-    mockRegionsApi.filter.and.returnValue(of([]));
-    mockSitesApi.filter.and.returnValue(of([]));
-    mockTagsApi.filter.and.returnValue(of([]));
+    mockRegionsApi.filter.and.returnValue(of(defaultFakeRegions));
+    mockSitesApi.filter.and.returnValue(of(defaultFakeSites));
+    mockTagsApi.filter.and.returnValue(of(defaultFakeTags));
 
     const mockParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(),
-      injector
+      injector,
     );
     spectator.component.searchParameters = mockParameters;
 
     mockVerificationsResponse = Array.from<Verification>({ length: 3 }).fill(
-      new Verification(generateVerification(), injector)
+      new Verification(generateVerification(), injector),
     );
 
     // we do not detect changes here because some tests require router params
@@ -118,34 +146,66 @@ describe("AnnotationSearchComponent", () => {
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultRegion = new Region(
-      generateRegion({ projectId: defaultProject.id })
+      generateRegion({ projectId: defaultProject.id }),
     );
     defaultSite = new Site(generateSite({ regionId: defaultRegion.id }));
 
     setup();
   });
 
-  // TODO: remove these prettier-ignore comments
-  // prettier-ignore
-  const dialogCloseButton = () => getElementByInnerText<HTMLButtonElement>("Close");
-  // prettier-ignore
-  const parametersCollapsable = () => spectator.query<HTMLDivElement>("#search-parameters");
-  // prettier-ignore
-  const verificationGrid = () => spectator.query<HTMLElement>("oe-verification-grid");
+  const parametersCollapsable = () =>
+    spectator.query<HTMLDivElement>("#search-parameters");
+  const onlyVerifiedCheckbox = () =>
+    spectator.query<HTMLInputElement>("#filter-verified");
+
+  const selectedTypeaheadOption = (): HTMLButtonElement =>
+    spectator.query<HTMLButtonElement>("button.dropdown-item.active");
+  const tagsTypeahead = (): TypeaheadInputComponent =>
+    spectator.query<any>("[label='Tags of Interest']");
+  const tagsTypeaheadInput = (): HTMLInputElement =>
+    spectator.query<HTMLInputElement>(
+      "[label='Tags of interest'] #typeahead-input",
+    );
+
+  const verificationButtons = () =>
+    spectator.queryAll<VerificationButton>("oe-verification");
+  const verificationGrid = () =>
+    spectator.query<VerificationGridComponent>("oe-verification-grid");
+
   const dialogElement = () => spectator.query<HTMLDialogElement>("dialog");
-  const decisionButtons = () => spectator.queryAll<HTMLElement>("oe-decision");
-  // prettier-ignore
-  const onlyVerifiedCheckbox = () => spectator.query<HTMLInputElement>("#filter-verified");
+  const dialogCloseButton = () =>
+    getElementByInnerText<HTMLButtonElement>("Close");
 
   function getElementByInnerText<T extends HTMLElement>(text: string): T {
     return spectator.debugElement.query(
-      (element) => element.nativeElement.innerText === text
+      (element) => element.nativeElement.innerText === text,
     )?.nativeElement as T;
   }
 
-  function toggleOnlyVerifiedCheckbox() {
+  function clickByInnerText<T extends HTMLElement>(text: string): void {
+    const targetElement = getElementByInnerText("Show Parameters");
+    targetElement.click();
+    spectator.detectChanges();
+  }
+
+  function toggleOnlyVerifiedCheckbox(): void {
     onlyVerifiedCheckbox().click();
     spectator.detectChanges();
+  }
+
+  function expandSearchParameters(): void {
+    clickByInnerText("Show Parameters");
+  }
+
+  function collapseSearchParameters(): void {
+    clickByInnerText("Hide Parameters");
+  }
+
+  function selectFromTypeahead(target: HTMLInputElement, text: string): void {
+    spectator.typeInElement(text, target);
+    spectator.detectChanges();
+    tick(defaultDebounceTime);
+    selectedTypeaheadOption().click();
   }
 
   assertPageInfo(VerificationComponent, "Verify Annotations");
@@ -165,7 +225,7 @@ describe("AnnotationSearchComponent", () => {
         // correct, and we should use a custom matcher to compare that the
         // object is empty (excluding the injector property)
         expect(spectator.component.searchParameters.toQueryParams()).toEqual(
-          jasmine.empty()
+          jasmine.empty(),
         );
       });
 
@@ -181,39 +241,162 @@ describe("AnnotationSearchComponent", () => {
         expect(parametersCollapsable()).toHaveClass("show");
       });
 
-      fit("should not have a getPage callback set on the verification grid", () => {
-        expect(verificationGrid()).not.toHaveProperty("getPage");
+      it("should not have a getPage callback set on the verification grid", () => {
+        expect(verificationGrid().getPage).not.toBeDefined();
       });
 
-      it("should update the verification grids getPage callback correctly when search parameters are added", () => {});
+      it("should update the verification grids getPage callback correctly when filter conditions added", () => {});
 
-      it("should make the correct api calls when search parameters are added", () => {});
+      it(
+        "should update the search parameters when filter conditions are added",
+        fakeAsync(() => {
+          const targetTag = defaultFakeTags[0];
+          const tagText = targetTag.text;
+          const expectedTagId = targetTag.id;
+
+          selectFromTypeahead(tagsTypeaheadInput(), tagText);
+
+          const realizedRouterParams = spectator.inject(ActivatedRoute).params;
+          const realizedComponentParams = spectator.component.searchParameters;
+
+          expect(realizedRouterParams).toEqual(
+            jasmine.objectContaining({
+              tags: jasmine.arrayContaining([expectedTagId]),
+            }),
+          );
+          expect(realizedComponentParams.tags).toContain(expectedTagId);
+        }),
+      );
+
+      it("should make the correct api calls when search parameters are added", async () => {
+        const targetTag = defaultFakeTags[0];
+        const tagText = targetTag.text;
+        const expectedTagId = targetTag.id;
+
+        selectFromTypeahead(tagsTypeaheadInput(), tagText);
+
+        spectator.setRouteQueryParam("tags", defaultFakeTags[0].id.toString());
+        await spectator.fixture.whenStable();
+
+        const realizedRouterParams = spectator.inject(ActivatedRoute).params;
+        const realizedComponentParams = spectator.component.searchParameters;
+
+        expect(realizedRouterParams).toEqual(
+          jasmine.objectContaining({
+            tags: jasmine.arrayContaining([expectedTagId]),
+          }),
+        );
+        expect(realizedComponentParams.tags).toContain(expectedTagId);
+      });
+
+      it("should show and hide the search paramters box correctly", () => {
+        const expectedExpandedClass = "show";
+
+        // the search parameters box should start expanded because there were
+        // no initial query search parameters
+        expect(parametersCollapsable()).toHaveClass(expectedExpandedClass);
+
+        collapseSearchParameters();
+        expect(parametersCollapsable()).not.toHaveClass(expectedExpandedClass);
+
+        expandSearchParameters();
+        expect(parametersCollapsable()).toHaveClass(expectedExpandedClass);
+      });
     });
 
     describe("with initial search parameters", () => {
-      beforeEach(() => {
+      beforeEach(async () => {
+        spectator.setRouteQueryParam(
+          "tags",
+          defaultFakeTags.map((tag) => tag.id).toString(),
+        );
+        spectator.setRouteQueryParam(
+          "sites",
+          defaultFakeSites.map((site) => site.id).toString(),
+        );
+        spectator.setRouteQueryParam(
+          "regions",
+          defaultFakeRegions.map((region) => region.id).toString(),
+        );
         spectator.detectChanges();
+        await spectator.fixture.whenStable();
       });
 
       it("should have a collapsed search parameters box", () => {
         expect(parametersCollapsable()).toHaveClass("hide");
       });
 
-      it("should create the correct search parameter model from query string parameters", () => {});
+      it("should create the correct search parameter model from query string parameters", () => {
+        const realizedParameterModel = spectator.component.searchParameters;
 
-      it("should pre-populate the search parameters box from the query string parameters", () => {});
+        const expectedSiteIds = defaultFakeSites.map((site) => site.id);
+        const expectedRegionIds = defaultFakeRegions.map((region) => region.id);
+        const expectedTagIds = defaultFakeTags.map((tag) => tag.id);
+
+        expect(realizedParameterModel).toEqual(
+          jasmine.objectContaining({
+            tags: jasmine.arrayContaining(expectedTagIds),
+            sites: jasmine.arrayContaining(expectedSiteIds),
+            regions: jasmine.arrayContaining(expectedRegionIds),
+          }),
+        );
+      });
+
+      it("should pre-populate the search parameters box from the query string parameters", () => {
+        const realizedTagModels = tagsTypeahead().model;
+        expect(realizedTagModels).toEqual(defaultFakeTags);
+      });
+
+      it("should make the correct api calls when first loaded", () => {
+        const expectedFilterBody = {};
+        expect(mockVerificationsApi.filter).toHaveBeenCalledWith(
+          expectedFilterBody,
+        );
+      });
+
+      it("should cache client side with GET requests", () => {
+        const expectedRequestCount = 10;
+        expect(mockVerificationsApi.filter).toHaveBeenCalledTimes(
+          expectedRequestCount,
+        );
+      });
+
+      it("should cache server side with HEAD requests", () => {
+        const expectedRequestCount = 50;
+        expect(mockVerificationsApi.filter).toHaveBeenCalledTimes(
+          expectedRequestCount,
+        );
+      });
 
       it("should have a verification grid component populated with the first page", () => {});
 
       it("should make the correct api calls when the search parameters are changed", () => {});
 
-      it("should reset the verification grids getPage function when the search parameters are changed", () => {});
+      it("should perform client-side caching if the search parameters change", () => {});
+
+      it("should perform server-side caching if the search parameters change", () => {});
 
       // this functionality is handled by the verification grid component
-      // however, we test it here to test the interop between the two components
-      it("should reset the verifications grid page to zero when the search parameters change", () => {});
+      // however, we test it here to test the interaction between the
+      // two components
+      it("should reset the verification grids page to one if the search parameters change", () => {
+        expandSearchParameters();
+        selectFromTypeahead(tagsTypeaheadInput(), defaultFakeTags[0].text);
 
-      it("should have the correct behavior when removing all the search parameters", () => {});
+        const expectedPagedItems = 0;
+        const realizedPagedItems = verificationGrid().pagedItems;
+        expect(realizedPagedItems).toEqual(expectedPagedItems);
+      });
+
+      it("should reset the verification grids getPage function when the search parameters are changed", () => {
+        const initialPagingCallback = verificationGrid().getPage;
+
+        expandSearchParameters();
+        selectFromTypeahead(tagsTypeaheadInput(), defaultFakeTags[0].text);
+        const newPagingCallback = verificationGrid().getPage;
+
+        expect(newPagingCallback).not.toEqual(initialPagingCallback);
+      });
     });
   });
 
@@ -222,44 +405,52 @@ describe("AnnotationSearchComponent", () => {
       spectator.detectChanges();
     });
 
-    it("should be mount all the required Open-Ecoacoustics web components as custom elements", () => {
-      const expectedCustomElements: string[] = [
-        "oe-verification-grid",
-        "oe-verification-grid-tile",
-        "oe-decision",
-        "oe-media-controls",
-        "oe-info-card",
-        "oe-indicator",
-        "oe-axes",
-      ];
+    describe("initial state", () => {
+      it("should be mount all the required Open-Ecoacoustics web components as custom elements", () => {
+        const expectedCustomElements: string[] = [
+          "oe-verification-grid",
+          "oe-verification-grid-tile",
+          "oe-verification",
+          "oe-media-controls",
+          "oe-indicator",
+          "oe-axes",
+        ];
 
-      for (const selector of expectedCustomElements) {
-        const customElementClass = customElements.get(selector);
-        expect(customElementClass).withContext(selector).toBeDefined();
-      }
+        for (const selector of expectedCustomElements) {
+          const customElementClass = customElements.get(selector);
+          expect(customElementClass).withContext(selector).toBeDefined();
+        }
+      });
+
+      it("should show an initial help dialog when the page is first loaded", () => {
+        expect(dialogElement()).toHaveProperty("open", true);
+
+        // we test closing the dialog element in this test to assert both the
+        // dialog element is open and that the close button works
+        // and that the test will fail under the correct conditions
+        dialogCloseButton().click();
+        expect(dialogElement()).toHaveProperty("open", false);
+      });
     });
 
-    it("should show an initial help dialog when the page is first loaded", () => {
-      expect(dialogElement()).toHaveProperty("open", true);
+    describe("after help-dialog dismissed", () => {
+      beforeEach(() => {
+        dialogCloseButton().click();
+        spectator.detectChanges();
+      });
 
-      // we test closing the dialog element in this test to assert both the
-      // dialog element is open and that the close button works
-      // and that the test will fail under the correct conditions
-      dialogCloseButton().click();
-      expect(dialogElement()).toHaveProperty("open", false);
+      it("should make the correct api calls when a decision is made", () => {
+        verificationButtons()[0].click();
+        spectator.detectChanges();
+      });
+
+      it("should make the correct api calls when a sub-selection decision is made", () => {});
+
+      it("should populate the verification grid correctly for the first page", () => {});
+
+      it("should populate the verification grid correctly for a full page pagination", () => {});
+
+      it("should populate the verification grid correctly for a partial page pagination", () => {});
     });
-
-    it("should make the correct api calls when a decision is made", () => {
-      decisionButtons()[0].click();
-      spectator.detectChanges();
-    });
-
-    it("should make the correct api calls when a sub-selection decision is made", () => {});
-
-    it("should populate the verification grid correctly for the first page", () => {});
-
-    it("should populate the verification grid correctly for a full page pagination", () => {});
-
-    it("should populate the verification grid correctly for a partial page pagination", () => {});
   });
 });

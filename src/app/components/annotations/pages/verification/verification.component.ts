@@ -20,7 +20,7 @@ import { retrieveResolvers } from "@baw-api/resolver-common";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { Location } from "@angular/common";
 import { VerificationService } from "@baw-api/verification/verification.service";
 import { firstValueFrom, takeUntil } from "rxjs";
@@ -92,18 +92,10 @@ class VerificationComponent
   }
 
   public ngAfterViewInit(): void {
-    this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
-
     this.route.queryParams
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe((params) => {
-        this.searchParameters = new AnnotationSearchParameters(
-          params,
-          this.injector
-        );
-
-        this.verificationGridElement.nativeElement.getPage =
-          this.getPageCallback();
+      .subscribe((params: Params) => {
+        this.updatePagingCallback(params);
       });
   }
 
@@ -113,22 +105,22 @@ class VerificationComponent
 
   protected getPageCallback(): any {
     return async (pagedItems: number) => {
-        const filters = this.filterConditions(pagedItems);
-        const serviceObservable = this.verificationApi.filter(filters);
-        let items: Verification[] = await firstValueFrom(serviceObservable);
+      const filters = this.filterConditions(pagedItems);
+      const serviceObservable = this.verificationApi.filter(filters);
+      let items: Verification[] = await firstValueFrom(serviceObservable);
 
-        // add the auth token to all the audio urls
-        items = items.map((item) => {
-          item.audioLink = this.buildAudioUrl(item);
-          return item;
-        });
+      // add the auth token to all the audio urls
+      items = items.map((item) => {
+        item.audioLink = this.buildAudioUrl(item);
+        return item;
+      });
 
-        return new Object({
+      return new Object({
         subjects: items,
         context: { page: 1 },
         totalItems: items.length,
       });
-    }
+    };
   }
 
   protected buildAudioUrl(audioEvent: Verification): string {
@@ -143,6 +135,20 @@ class VerificationComponent
   protected updateModel(newModel: AnnotationSearchParameters): void {
     this.searchParameters = newModel;
     this.updateSearchParameters();
+    this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
+  }
+
+  private updatePagingCallback(params: Params): void {
+    if (!this.verificationGridElement) {
+      console.warn("Could not find verification grid element");
+      return;
+    }
+
+    this.searchParameters = new AnnotationSearchParameters(
+      params,
+      this.injector
+    );
+
     this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
   }
 

@@ -7,7 +7,7 @@
     aria-controls="search-parameters"
   >
     <fa-icon [icon]="chevronIcon"></fa-icon>
-    Show Parameters
+    {{ areParametersCollapsed ? "Show Parameters" : "Hide Parameters" }}
   </button>
 
   <div id="search-parameters" [(ngbCollapse)]="areParametersCollapsed">
@@ -25,7 +25,7 @@
   </div>
 </div>
 
-<oe-verification-grid #verificationGrid id="verification-grid" grid-size="2">
+<oe-verification-grid #verificationGrid id="verification-grid" grid-size="1">
   <oe-verification verified="true" shortcut="Y"></oe-verification>
   <oe-verification verified="false" shortcut="N"></oe-verification>
 
