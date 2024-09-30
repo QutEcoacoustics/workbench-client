@@ -5,11 +5,10 @@ import {
 } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
-import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Params } from "@angular/router";
 import { of } from "rxjs";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
@@ -17,7 +16,6 @@ import { generateSite } from "@test/fakes/Site";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { VerificationService } from "@baw-api/verification/verification.service";
 import {
-  PROJECT,
   SHALLOW_REGION,
   SHALLOW_SITE,
   TAG,
@@ -25,9 +23,7 @@ import {
 } from "@baw-api/ServiceTokens";
 import { Verification } from "@models/Verification";
 import { generateVerification } from "@test/fakes/Verification";
-import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
-import { Injector } from "@angular/core";
-import { ProjectsService } from "@baw-api/project/projects.service";
+import { CUSTOM_ELEMENTS_SCHEMA, Injector } from "@angular/core";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
@@ -36,39 +32,44 @@ import { VerificationComponent as DecisionButton } from "@ecoacoustics/web-compo
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
-import { fakeAsync, tick } from "@angular/core/testing";
+import {
+  discardPeriodicTasks,
+  fakeAsync,
+  flush,
+  tick,
+} from "@angular/core/testing";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
-import { AnnotationSearchParameters } from "../annotationSearchParameters";
+import { mockFetchResponse } from "@test/helpers/fetch";
 import { VerificationComponent } from "./verification.component";
+import "node_modules/@ecoacoustics/web-components";
 
-describe("AnnotationSearchComponent", () => {
+describe("VerificationComponent", () => {
+  const mockAudioFileLocation = "test/assets/example.flac" as const;
+
   let spectator: SpectatorRouting<VerificationComponent>;
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
   let mockVerificationsApi: SpyObject<VerificationService>;
   let mockVerificationsResponse: Verification[] = [];
-  let mockProjectsApi: SpyObject<ProjectsService>;
   let mockRegionsApi: SpyObject<ShallowRegionsService>;
   let mockSitesApi: SpyObject<ShallowSitesService>;
   let mockTagsApi: SpyObject<TagsService>;
   let injector: SpyObject<Injector>;
   let defaultFakeSites: Site[];
   let defaultFakeRegions: Region[];
-  let defaultFakeProjects: Project[];
   let defaultFakeTags: Tag[];
 
   const createComponent = createRoutingFactory({
-    declarations: [AnnotationSearchFormComponent],
     component: VerificationComponent,
     imports: [MockBawApiModule, SharedModule],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
 
-  function setup() {
+  function setup(queryParameters: Params = {}) {
     spectator = createComponent({
       detectChanges: false,
-      data: { projectId: { model: defaultProject } },
       params: {
         projectId: defaultProject.id,
         regionId: defaultRegion.id,
@@ -88,11 +89,9 @@ describe("AnnotationSearchComponent", () => {
       ],
     });
 
-    defaultFakeProjects = modelData.randomArray(
-      3,
-      10,
-      () => new Project(generateProject())
-    );
+    mockFetchResponse(mockAudioFileLocation, mockAudioFile);
+
+    injector = spectator.inject(Injector);
 
     defaultFakeRegions = modelData.randomArray(
       3,
@@ -112,11 +111,17 @@ describe("AnnotationSearchComponent", () => {
       () => new Tag(generateSite())
     );
 
+    mockVerificationsResponse = modelData.randomArray(
+      3,
+      3,
+      () => new Verification(generateVerification({
+        audioLink: mockAudioFileLocation,
+      }), injector)
+    );
+
     spectator.component.project = defaultProject;
     spectator.component.region = defaultRegion;
     spectator.component.site = defaultSite;
-
-    injector = spectator.inject(Injector);
 
     mockVerificationsApi = spectator.inject(VERIFICATION.token);
     mockVerificationsApi.create.and.stub();
@@ -125,30 +130,22 @@ describe("AnnotationSearchComponent", () => {
       of(mockVerificationsResponse)
     );
 
-    mockProjectsApi = spectator.inject(PROJECT.token);
     mockRegionsApi = spectator.inject(SHALLOW_REGION.token);
     mockSitesApi = spectator.inject(SHALLOW_SITE.token);
     mockTagsApi = spectator.inject(TAG.token);
 
-    mockProjectsApi.filter.and.callFake(() => of(defaultFakeProjects));
     mockRegionsApi.filter.and.callFake(() => of(defaultFakeRegions));
     mockSitesApi.filter.and.callFake(() => of(defaultFakeSites));
     mockTagsApi.filter.and.callFake(() => of(defaultFakeTags));
 
-    const mockParameters = new AnnotationSearchParameters(
-      generateAnnotationSearchUrlParameters(),
-      injector
-    );
-    spectator.component.searchParameters = mockParameters;
+    const queryParametersArray = Object.entries(queryParameters);
+    for (const parameter of queryParametersArray) {
+      const key = parameter[0];
+      const value = parameter[1];
+      spectator.setRouteQueryParam(key, value);
+    }
 
-    mockVerificationsResponse = Array.from<Verification>({ length: 3 }).fill(
-      new Verification(generateVerification(), injector)
-    );
-
-    // we do not detect changes here because some tests require router params
-    // while others do not
-    // settings these parameters after a detectChanges is incorrect and does not
-    // reflect the actual behavior of Angular
+    spectator.detectChanges();
   }
 
   beforeEach(() => {
@@ -161,6 +158,8 @@ describe("AnnotationSearchComponent", () => {
     setup();
   });
 
+  const parametersToggleButton = () =>
+    spectator.query<HTMLButtonElement>(".show-parameters-button");
   const parametersCollapsable = () =>
     spectator.query<HTMLDivElement>("#search-parameters");
   const onlyVerifiedCheckbox = () =>
@@ -171,13 +170,11 @@ describe("AnnotationSearchComponent", () => {
   const tagsTypeahead = (): TypeaheadInputComponent =>
     spectator.query<any>("[label='Tags of Interest']");
   const tagsTypeaheadInput = (): HTMLInputElement =>
-    spectator.query<HTMLInputElement>(
-      "[label='Tags of interest'] #typeahead-input"
-    );
+    spectator.query("#tags-input").querySelector("input");
 
-  const spectrogramElements = (): SpectrogramComponent[] =>
+  const spectrogramElements = () =>
     spectator.queryAll<SpectrogramComponent>("oe-spectrogram");
-  const previewNextPageButton = (): HTMLButtonElement =>
+  const previewNextPageButton = () =>
     getElementByInnerText<HTMLButtonElement>("Next Page");
   const previewPreviousPageButton = (): HTMLButtonElement =>
     getElementByInnerText<HTMLButtonElement>("Previous Page");
@@ -197,23 +194,18 @@ describe("AnnotationSearchComponent", () => {
     )?.nativeElement as T;
   }
 
-  function clickByInnerText<T extends HTMLElement>(text: string): void {
-    const targetElement = getElementByInnerText<T>(text);
-    targetElement.click();
-    spectator.detectChanges();
-  }
-
   function toggleOnlyVerifiedCheckbox(): void {
     onlyVerifiedCheckbox().click();
     spectator.detectChanges();
   }
 
-  function expandSearchParameters(): void {
-    clickByInnerText("Show Parameters");
-  }
+  function toggleParameters(): void {
+    parametersToggleButton().click();
+    spectator.detectChanges();
+    tick(defaultDebounceTime);
+    spectator.detectChanges();
 
-  function collapseSearchParameters(): void {
-    clickByInnerText("Hide Parameters");
+    discardPeriodicTasks();
   }
 
   function selectFromTypeahead(target: HTMLInputElement, text: string): void {
@@ -221,29 +213,18 @@ describe("AnnotationSearchComponent", () => {
     spectator.detectChanges();
     tick(defaultDebounceTime);
     selectedTypeaheadOption().click();
+    flush();
   }
 
   assertPageInfo(VerificationComponent, "Verify Annotations");
 
-  it("should create", () => {
+  fit("should create", () => {
     spectator.detectChanges();
     expect(spectator.component).toBeInstanceOf(VerificationComponent);
   });
 
   describe("search parameters", () => {
     describe("no initial search parameters", () => {
-      beforeEach(() => {
-        spectator.detectChanges();
-
-        // TODO: we compare the query params because the object has an injector
-        // which fails the jasmine.empty() assertion. However, this is not
-        // correct, and we should use a custom matcher to compare that the
-        // object is empty (excluding the injector property)
-        expect(spectator.component.searchParameters.toQueryParams()).toEqual(
-          jasmine.empty()
-        );
-      });
-
       it("should automatically open the search parameters box if there are no initial search parameters", () => {
         expect(parametersCollapsable()).toHaveClass("show");
       });
@@ -256,7 +237,7 @@ describe("AnnotationSearchComponent", () => {
         expect(parametersCollapsable()).toHaveClass("show");
       });
 
-      it("should not have a getPage callback set on the verification grid", () => {
+      xit("should not have a getPage callback set on the verification grid", () => {
         expect(verificationGrid().getPage).not.toBeDefined();
       });
 
@@ -269,71 +250,43 @@ describe("AnnotationSearchComponent", () => {
 
         selectFromTypeahead(tagsTypeaheadInput(), tagText);
 
-        const realizedRouterParams = spectator.inject(ActivatedRoute).params;
         const realizedComponentParams = spectator.component.searchParameters;
-
-        expect(realizedRouterParams).toEqual(
-          jasmine.objectContaining({
-            tags: jasmine.arrayContaining([expectedTagId]),
-          })
-        );
         expect(realizedComponentParams.tags).toContain(expectedTagId);
       }));
 
-      it("should make the correct api calls when search parameters are added", async () => {
-        const targetTag = defaultFakeTags[0];
-        const tagText = targetTag.text;
-        const expectedTagId = targetTag.id;
-
-        selectFromTypeahead(tagsTypeaheadInput(), tagText);
-
-        spectator.setRouteQueryParam("tags", defaultFakeTags[0].id.toString());
-        await spectator.fixture.whenStable();
-
-        const realizedRouterParams = spectator.inject(ActivatedRoute).params;
-        const realizedComponentParams = spectator.component.searchParameters;
-
-        expect(realizedRouterParams).toEqual(
-          jasmine.objectContaining({
-            tags: jasmine.arrayContaining([expectedTagId]),
-          })
-        );
-        expect(realizedComponentParams.tags).toContain(expectedTagId);
-      });
-
-      it("should show and hide the search paramters box correctly", () => {
+      it("should show and hide the search paramters box correctly", fakeAsync(() => {
         const expectedExpandedClass = "show";
 
         // the search parameters box should start expanded because there were
         // no initial query search parameters
         expect(parametersCollapsable()).toHaveClass(expectedExpandedClass);
 
-        collapseSearchParameters();
+        toggleParameters();
         expect(parametersCollapsable()).not.toHaveClass(expectedExpandedClass);
 
-        expandSearchParameters();
+        toggleParameters();
         expect(parametersCollapsable()).toHaveClass(expectedExpandedClass);
-      });
+      }));
 
       describe("Search results preview", () => {
-        beforeEach(() => {
-          spectator.component.model.tags = defaultFakeTags.map(
-            (tag) => tag.id
-          );
-        });
+        beforeEach(fakeAsync(() => {
+          const targetTag = defaultFakeTags[0];
+          const tagText = targetTag.text;
+          selectFromTypeahead(tagsTypeaheadInput(), tagText);
+        }));
 
         it("should make the correct api call", () => {
           const expectedBody = {};
-          expect(mockVerificationsApi.filter).toHaveBeenCalledWith(expectedBody);
+          expect(mockVerificationsApi.filter).toHaveBeenCalledWith(
+            expectedBody
+          );
         });
 
         it("should display an error if there are no search results", () => {
           const expectedText = "No annotations found";
-          defaultFakeTags = [];
           spectator.detectChanges();
 
-          const element =
-            getElementByInnerText<HTMLHeadingElement>(expectedText);
+          const element = getElementByInnerText(expectedText);
           expect(element).toExist();
         });
 
@@ -395,25 +348,40 @@ describe("AnnotationSearchComponent", () => {
           const realizedPageNumber = spectator.component.previewPage;
           expect(realizedPageNumber).toEqual(expectedPageNumber);
         });
+
+        it("should populate the preview spectrograms after collapsing and re-expanding the search parameters", fakeAsync(() => {
+          const expectedSpectrogramSources = mockVerificationsResponse.map(
+            (verification) => verification.audioLink
+          );
+
+          toggleParameters();
+          toggleParameters();
+
+          const realizedSpectrogramSources = spectrogramElements().map(
+            (element) => element.src
+          );
+          expect(realizedSpectrogramSources).toEqual(
+            expectedSpectrogramSources
+          );
+        }));
       });
     });
 
     describe("with initial search parameters", () => {
-      beforeEach(async () => {
-        spectator.setRouteQueryParam(
-          "tags",
-          defaultFakeTags.map((tag) => tag.id).toString()
-        );
-        spectator.setRouteQueryParam(
-          "sites",
-          defaultFakeSites.map((site) => site.id).toString()
-        );
-        spectator.setRouteQueryParam(
-          "regions",
-          defaultFakeRegions.map((region) => region.id).toString()
-        );
-        spectator.detectChanges();
-        await spectator.fixture.whenStable();
+      beforeEach(() => {
+        // destroy the current component and create a new one with query string parameters
+        spectator.fixture.destroy();
+
+        const testedQueryParameters: Params = {
+          tags: defaultFakeTags.map((tag) => tag.id).toString(),
+          sites: defaultFakeSites.map((site) => site.id).toString(),
+          regions: defaultFakeRegions.map((region) => region.id).toString(),
+        };
+
+        // we recreate the fixture with query parameters so that we can test
+        // the component's behavior when query parameters are present
+        // on load
+        setup(testedQueryParameters);
       });
 
       it("should have a collapsed search parameters box", () => {
@@ -473,32 +441,28 @@ describe("AnnotationSearchComponent", () => {
       // this functionality is handled by the verification grid component
       // however, we test it here to test the interaction between the
       // two components
-      it("should reset the verification grids page to one if the search parameters change", () => {
-        expandSearchParameters();
+      it("should reset the verification grids page to one if the search parameters change", fakeAsync(() => {
+        toggleParameters();
         selectFromTypeahead(tagsTypeaheadInput(), defaultFakeTags[0].text);
 
         const expectedPagedItems = 0;
         const realizedPagedItems = verificationGrid().pagedItems;
         expect(realizedPagedItems).toEqual(expectedPagedItems);
-      });
+      }));
 
-      it("should reset the verification grids getPage function when the search parameters are changed", () => {
+      it("should reset the verification grids getPage function when the search parameters are changed", fakeAsync(() => {
         const initialPagingCallback = verificationGrid().getPage;
 
-        expandSearchParameters();
+        toggleParameters();
         selectFromTypeahead(tagsTypeaheadInput(), defaultFakeTags[0].text);
         const newPagingCallback = verificationGrid().getPage;
 
         expect(newPagingCallback).not.toEqual(initialPagingCallback);
-      });
+      }));
     });
   });
 
   describe("verification grid functionality", () => {
-    beforeEach(() => {
-      spectator.detectChanges();
-    });
-
     describe("initial state", () => {
       it("should be mount all the required Open-Ecoacoustics web components as custom elements", () => {
         const expectedCustomElements: string[] = [

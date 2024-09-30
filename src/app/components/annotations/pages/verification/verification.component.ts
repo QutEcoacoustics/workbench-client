@@ -134,6 +134,12 @@ class VerificationComponent
 
   protected toggleParameters(): void {
     this.areParametersCollapsed = !this.areParametersCollapsed;
+
+    if (this.areParametersCollapsed) {
+      this.updateGridCallback();
+    } else {
+      this.updatePreviewResults();
+    }
   }
 
   protected verifyAnnotationsRoute(): StrongRoute {
@@ -188,24 +194,11 @@ class VerificationComponent
       // if the search parameters are collapsed, then the user is performing
       // verifications using the verification component
       // and we should update the verification grid
-      this.verificationGridElement.nativeElement.getPage =
-        this.getPageCallback();
+      this.updateGridCallback();
     } else {
       // if the search parameters form is not collapsed then we want to show a
       // preview of the audio events that the verification grid will display
-      const filters = this.buildFilter();
-      const tagsArray = Array.from(this.searchParameters.tags);
-
-      if (tagsArray.length > 0) {
-        this.verificationApi
-          .filter(filters)
-          .pipe(first(), takeUntil(this.unsubscribe))
-          .subscribe((model) => {
-            this.previewAudioEvents = model;
-          });
-      } else {
-        this.audioEvents = [];
-      }
+      this.updatePreviewResults();
     }
   }
 
@@ -226,6 +219,32 @@ class VerificationComponent
     return this.verificationApi.downloadVerificationsTableUrl(
       this.buildFilter()
     );
+  }
+
+  private updateGridCallback(): void {
+    if (!this.verificationGridElement) {
+      console.error("Could not find verification grid element");
+      return;
+    }
+
+    this.verificationGridElement.nativeElement.getPage =
+      this.getPageCallback();
+  }
+
+  private updatePreviewResults(): void {
+      const filters = this.buildFilter();
+      const tagsArray = Array.from(this.searchParameters.tags);
+
+      if (tagsArray.length > 0) {
+        this.verificationApi
+          .filter(filters)
+          .pipe(first(), takeUntil(this.unsubscribe))
+          .subscribe((model) => {
+            this.previewAudioEvents = model;
+          });
+      } else {
+        this.audioEvents = [];
+      }
   }
 
   private updatePagingCallback(params: Params): void {

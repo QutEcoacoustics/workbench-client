@@ -19,6 +19,7 @@
           ></baw-date-time-filter>
 
           <baw-typeahead-input
+            id="tags-input"
             label="Tags of Interest"
             [inputPlaceholder]="'All'"
             [searchCallback]="createSearchCallback(tagsApi, 'text', false)"
@@ -30,6 +31,7 @@
           ></baw-typeahead-input>
 
           <baw-typeahead-input
+            id="projects-input"
             label="Project(s)"
             [inputPlaceholder]="project ? project.name : 'All'"
             [searchCallback]="createSearchCallback(projectsApi)"
@@ -43,6 +45,7 @@
 
           <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
           <baw-typeahead-input
+            id="region-input"
             *ngIf="!site || site?.isPoint"
             label="Site(s)"
             [inputPlaceholder]="region ? region.name : 'All'"
@@ -56,6 +59,7 @@
           ></baw-typeahead-input>
 
           <baw-typeahead-input
+            id="sites-input"
             [label]="
               site ? (site?.isPoint ? 'Point(s)' : 'Site(s)') : 'Point(s)'
             "
@@ -127,11 +131,20 @@
 </div>
 
 <div>
-  @if (areParametersCollapsed) {
-  <ng-container [ngTemplateOutlet]="verificationGridTemplate"></ng-container>
-  } @else {
-  <ng-container [ngTemplateOutlet]="searchPreviewTemplate"></ng-container>
+  @if (!areParametersCollapsed) {
+    <ng-container [ngTemplateOutlet]="searchPreviewTemplate"></ng-container>
   }
+
+  <!--
+    Because destroying and recreating the verification grid is computationally
+    expensive, we hide it using css when the parameters are being shown.
+
+    We also do this so that state is preserved when the user toggles the
+    parameters dropdown card.
+   -->
+  <div [ngClass]="{ hidden: !areParametersCollapsed }">
+    <ng-container [ngTemplateOutlet]="verificationGridTemplate"></ng-container>
+  </div>
 </div>
 
 <ng-template #searchPreviewTemplate>

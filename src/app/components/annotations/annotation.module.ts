@@ -4,10 +4,9 @@ import { SharedModule } from "@shared/shared.module";
 import { RouterModule } from "@angular/router";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { verificationRoute } from "./annotation.routes";
-import { AnnotationSearchFormComponent } from "./components/annotation-search-form/annotation-search-form.component";
 import { VerificationComponent } from "./pages/verification/verification.component";
 
-const internalComponents = [AnnotationSearchFormComponent];
+const internalComponents = [];
 
 const components = [
   VerificationComponent,

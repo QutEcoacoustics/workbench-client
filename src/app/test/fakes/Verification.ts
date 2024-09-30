@@ -5,5 +5,8 @@ import { generateAudioEvent } from "./AudioEvent";
 export function generateVerification(
   data?: Partial<IVerification>
 ): Required<IVerification> {
-  return generateAudioEvent(data);
+  return {
+    ...generateAudioEvent(data),
+    audioLink: data.audioLink,
+  };
 }
