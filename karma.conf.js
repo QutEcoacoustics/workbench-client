@@ -42,11 +42,7 @@ module.exports = function (config) {
     // we add some headers to the Karma test server to ensure that we can use SharedArrayBuffer
     customHeaders: [
       { match: ".*", name: "Cross-Origin-Opener-Policy", value: "same-origin" },
-      {
-        match: ".*",
-        name: "Cross-Origin-Embedder-Policy",
-        value: "require-corp",
-      },
+      { match: ".*", name: "Cross-Origin-Embedder-Policy", value: "require-corp" },
       {
         match: ".*",
         name: "Cross-Origin-Resource-Policy",

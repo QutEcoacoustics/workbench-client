@@ -30,47 +30,46 @@ export class VerificationService implements StandardApi<Verification> {
   ) {}
 
   public list(): Observable<Verification[]> {
-    return this.api.list(Verification, endpoint(emptyParam, emptyParam));
+    return this.api
+      .list(Verification, endpoint(emptyParam, emptyParam))
+      .pipe(
+        map((models: Verification[]) =>
+          models.map((model) => this.addAudioLink(model))
+        )
+      );
   }
 
-  // TODO: I'm only piping this through a map so that each verification model
-  // has an audio URL
   public filter(filters: Filters<Verification>): Observable<Verification[]> {
     return this.api
       .filter(Verification, endpoint(emptyParam, filterParam), filters)
       .pipe(
-        map((models: Verification[]) => {
-          for (const model of models) {
-            const basePath = `https://api.staging.ecosounds.org/audio_recordings/${model.audioRecordingId}/media.flac`;
-            const urlParams =
-              `?audio_event_id=${model.id}` +
-              `&end_offset=${model.endTimeSeconds}&start_offset=${model.startTimeSeconds}` +
-              `&user_token=${this.session.authToken}`;
-            const audioLink = basePath + urlParams;
-
-            model.audioLink = audioLink;
-          }
-
-          return models;
-        })
+        map((models: Verification[]) =>
+          models.map((model) => this.addAudioLink(model))
+        )
       );
   }
 
   public show(model: IdOr<Verification>): Observable<Verification> {
-    return this.api.show(Verification, endpoint(model, emptyParam));
+    return this.api
+      .show(Verification, endpoint(model, emptyParam))
+      .pipe(map((responseModel) => this.addAudioLink(responseModel)));
   }
 
   public create(model: Verification): Observable<Verification> {
-    return this.api.create(
-      Verification,
-      endpoint(emptyParam, emptyParam),
-      (verification) => endpoint(verification, emptyParam),
-      model
-    );
+    return this.api
+      .create(
+        Verification,
+        endpoint(emptyParam, emptyParam),
+        (verification) => endpoint(verification, emptyParam),
+        model
+      )
+      .pipe(map((responseModel) => this.addAudioLink(responseModel)));
   }
 
   public update(model: Verification): Observable<Verification> {
-    return this.api.update(Verification, endpoint(model, emptyParam), model);
+    return this.api
+      .update(Verification, endpoint(model, emptyParam), model)
+      .pipe(map((responseModel) => this.addAudioLink(responseModel)));
   }
 
   public destroy(model: IdOr<Verification>): Observable<Verification | void> {
@@ -84,6 +83,21 @@ export class VerificationService implements StandardApi<Verification> {
       "events.csv?" +
       this.api.encodeFilter(filters)
     );
+  }
+
+  // because we are currently using the AudioEvents endpoint for verifications
+  // we need to add the audioLink manually
+  // TODO: remove this once the verification endpoint is available
+  private addAudioLink(model: Verification): Verification {
+    const basePath = `https://api.staging.ecosounds.org/audio_recordings/${model.audioRecordingId}/media.flac`;
+    const urlParams =
+      `?audio_event_id=${model.id}` +
+      `&end_offset=${model.endTimeSeconds}&start_offset=${model.startTimeSeconds}` +
+      `&user_token=${this.session.authToken}`;
+    const audioLink = basePath + urlParams;
+
+    model.audioLink = audioLink;
+    return model;
   }
 }
 

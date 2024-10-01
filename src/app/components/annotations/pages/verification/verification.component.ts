@@ -52,7 +52,7 @@ import { DateTime } from "luxon";
 import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
 import { Id } from "@interfaces/apiInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
-import { AnnotationSearchParameters } from "../annotationSearchParameters";
+import { AnnotationSearchParameters, IAnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -92,6 +92,8 @@ class VerificationComponent
   public previewAudioEvents: Verification[] = [];
   public previewPage = 1;
   public previewSize = 3;
+  protected hasShownVerificationGrid = false;
+  protected hasShownPreview = false;
 
   @ViewChild("verificationGrid")
   private verificationGridElement: ElementRef<VerificationGridComponent>;
@@ -122,6 +124,12 @@ class VerificationComponent
     // default
     this.areParametersCollapsed =
       Object.keys(this.route.snapshot.queryParams).length > 0;
+
+    if (this.areParametersCollapsed) {
+      this.hasShownVerificationGrid = true;
+    } else {
+      this.hasShownPreview = true;
+    }
   }
 
   public ngAfterViewInit(): void {
@@ -137,8 +145,10 @@ class VerificationComponent
 
     if (this.areParametersCollapsed) {
       this.updateGridCallback();
+      this.hasShownVerificationGrid = true;
     } else {
       this.updatePreviewResults();
+      this.hasShownPreview = true;
     }
   }
 
@@ -158,13 +168,7 @@ class VerificationComponent
     return async (pagedItems: number) => {
       const filters = this.filterConditions(pagedItems);
       const serviceObservable = this.verificationApi.filter(filters);
-      let items: Verification[] = await firstValueFrom(serviceObservable);
-
-      // add the auth token to all the audio urls
-      items = items.map((item) => {
-        item.audioLink = this.buildAudioUrl(item);
-        return item;
-      });
+      const items: Verification[] = await firstValueFrom(serviceObservable);
 
       return new Object({
         subjects: items,
@@ -174,20 +178,11 @@ class VerificationComponent
     };
   }
 
-  protected buildAudioUrl(audioEvent: Verification): string {
-    const basePath = `https://api.staging.ecosounds.org/audio_recordings/${audioEvent.audioRecordingId}/media.flac`;
-    const urlParams =
-      `?audio_event_id=${audioEvent.id}` +
-      `&end_offset=${audioEvent.endTimeSeconds}&start_offset=${audioEvent.startTimeSeconds}` +
-      `&user_token=${this.session.authToken}`;
-    return basePath + urlParams;
-  }
-
   protected updateModel(
-    key: keyof AnnotationSearchParameters,
+    key: keyof IAnnotationSearchParameters,
     value: any
   ): void {
-    this.searchParameters[key as any] = value;
+    this.searchParameters[key] = value;
     this.updateSearchParameters();
 
     if (this.areParametersCollapsed) {
@@ -227,24 +222,28 @@ class VerificationComponent
       return;
     }
 
-    this.verificationGridElement.nativeElement.getPage =
-      this.getPageCallback();
+    this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
   }
 
   private updatePreviewResults(): void {
-      const filters = this.buildFilter();
-      const tagsArray = Array.from(this.searchParameters.tags);
+    if (!this.searchParameters.tags) {
+      this.previewAudioEvents = [];
+      return;
+    }
 
-      if (tagsArray.length > 0) {
-        this.verificationApi
-          .filter(filters)
-          .pipe(first(), takeUntil(this.unsubscribe))
-          .subscribe((model) => {
-            this.previewAudioEvents = model;
-          });
-      } else {
-        this.audioEvents = [];
-      }
+    const filters = this.buildFilter();
+    const tagsArray = Array.from(this.searchParameters.tags);
+
+    if (tagsArray.length > 0) {
+      this.verificationApi
+        .filter(filters)
+        .pipe(first(), takeUntil(this.unsubscribe))
+        .subscribe((model) => {
+          this.previewAudioEvents = model;
+        });
+    } else {
+      this.audioEvents = [];
+    }
   }
 
   private updatePagingCallback(params: Params): void {
@@ -279,7 +278,11 @@ class VerificationComponent
   private updateSearchParameters(): void {
     const queryParams = this.searchParameters.toQueryParams();
     const urlTree = this.router.createUrlTree([], { queryParams });
-    this.location.replaceState(urlTree.toString());
+
+    // TODO: remove this guard before review. For some reason urlTree is null during testing
+    if (urlTree) {
+      this.location.replaceState(urlTree.toString());
+    }
   }
 
   protected createSearchCallback<T extends AbstractModel>(

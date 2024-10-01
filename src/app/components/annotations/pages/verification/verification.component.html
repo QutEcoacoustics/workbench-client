@@ -131,8 +131,10 @@
 </div>
 
 <div>
-  @if (!areParametersCollapsed) {
+  @if (hasShownPreview) {
+  <div [ngClass]="{ hidden: areParametersCollapsed }">
     <ng-container [ngTemplateOutlet]="searchPreviewTemplate"></ng-container>
+  </div>
   }
 
   <!--
@@ -142,22 +144,24 @@
     We also do this so that state is preserved when the user toggles the
     parameters dropdown card.
    -->
+  @if (hasShownVerificationGrid) {
   <div [ngClass]="{ hidden: !areParametersCollapsed }">
     <ng-container [ngTemplateOutlet]="verificationGridTemplate"></ng-container>
   </div>
+  }
 </div>
 
 <ng-template #searchPreviewTemplate>
   <div class="preview-container">
     <h3>Audio Events Preview</h3>
 
-    @if (previewAudioEvents.length > -1) {
+    @if (previewAudioEvents.length > 0) {
     <div class="spectrogram-grid">
       @for (audioEvent of previewAudioEvents; track $index) {
       <div class="preview-item border">
         <oe-spectrogram
           [id]="'spectrogram-' + audioEvent.id"
-          [src]="buildAudioUrl(audioEvent)"
+          [src]="audioEvent.audioLink"
           scaling="stretch"
           color-map="audacity"
         ></oe-spectrogram>

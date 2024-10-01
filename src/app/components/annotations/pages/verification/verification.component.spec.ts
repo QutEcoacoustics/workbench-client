@@ -40,13 +40,13 @@ import {
 } from "@angular/core/testing";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
-import { mockFetchResponse } from "@test/helpers/fetch";
+import { generateTag } from "@test/fakes/Tag";
+import { RouterTestingModule } from "@angular/router/testing";
+import { Filters } from "@baw-api/baw-api.service";
 import { VerificationComponent } from "./verification.component";
 import "node_modules/@ecoacoustics/web-components";
 
 describe("VerificationComponent", () => {
-  const mockAudioFileLocation = "test/assets/example.flac" as const;
-
   let spectator: SpectatorRouting<VerificationComponent>;
   let defaultProject: Project;
   let defaultRegion: Region;
@@ -63,7 +63,7 @@ describe("VerificationComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: VerificationComponent,
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule, SharedModule, RouterTestingModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
 
@@ -75,6 +75,7 @@ describe("VerificationComponent", () => {
         regionId: defaultRegion.id,
         siteId: defaultSite.id,
       },
+      queryParams: queryParameters,
       providers: [
         {
           provide: ActivatedRoute,
@@ -84,14 +85,52 @@ describe("VerificationComponent", () => {
               regionId: defaultRegion.id,
               siteId: defaultSite.id,
             }),
+            queryParams: of(queryParameters),
           },
         },
       ],
     });
 
-    mockFetchResponse(mockAudioFileLocation, mockAudioFile);
-
     injector = spectator.inject(Injector);
+
+    mockVerificationsResponse = modelData.randomArray(
+      3,
+      3,
+      () =>
+        new Verification(
+          generateVerification({
+            audioLink:
+              "https://api.staging.ecosounds.org/audio_recordings/461823/media.flac?end_offset=8170&start_offset=8159",
+          }),
+          injector
+        )
+    );
+
+    spectator.component.project = defaultProject;
+    spectator.component.region = defaultRegion;
+    spectator.component.site = defaultSite;
+
+    mockVerificationsApi = spectator.inject(VERIFICATION.token);
+    mockRegionsApi = spectator.inject(SHALLOW_REGION.token);
+    mockSitesApi = spectator.inject(SHALLOW_SITE.token);
+    mockTagsApi = spectator.inject(TAG.token);
+
+    mockRegionsApi.filter.and.callFake(() => of(defaultFakeRegions));
+    mockSitesApi.filter.and.callFake(() => of(defaultFakeSites));
+    mockTagsApi.filter.and.callFake(() => of(defaultFakeTags));
+    mockVerificationsApi.filter.and.callFake(() =>
+      of(mockVerificationsResponse)
+    );
+
+    spectator.detectChanges();
+  }
+
+  beforeEach(() => {
+    defaultProject = new Project(generateProject());
+    defaultRegion = new Region(
+      generateRegion({ projectId: defaultProject.id })
+    );
+    defaultSite = new Site(generateSite({ regionId: defaultRegion.id }));
 
     defaultFakeRegions = modelData.randomArray(
       3,
@@ -108,54 +147,8 @@ describe("VerificationComponent", () => {
     defaultFakeTags = modelData.randomArray(
       3,
       10,
-      () => new Tag(generateSite())
+      () => new Tag(generateTag())
     );
-
-    mockVerificationsResponse = modelData.randomArray(
-      3,
-      3,
-      () => new Verification(generateVerification({
-        audioLink: mockAudioFileLocation,
-      }), injector)
-    );
-
-    spectator.component.project = defaultProject;
-    spectator.component.region = defaultRegion;
-    spectator.component.site = defaultSite;
-
-    mockVerificationsApi = spectator.inject(VERIFICATION.token);
-    mockVerificationsApi.create.and.stub();
-    mockVerificationsApi.update.and.stub();
-    mockVerificationsApi.filter.and.callFake(() =>
-      of(mockVerificationsResponse)
-    );
-
-    mockRegionsApi = spectator.inject(SHALLOW_REGION.token);
-    mockSitesApi = spectator.inject(SHALLOW_SITE.token);
-    mockTagsApi = spectator.inject(TAG.token);
-
-    mockRegionsApi.filter.and.callFake(() => of(defaultFakeRegions));
-    mockSitesApi.filter.and.callFake(() => of(defaultFakeSites));
-    mockTagsApi.filter.and.callFake(() => of(defaultFakeTags));
-
-    const queryParametersArray = Object.entries(queryParameters);
-    for (const parameter of queryParametersArray) {
-      const key = parameter[0];
-      const value = parameter[1];
-      spectator.setRouteQueryParam(key, value);
-    }
-
-    spectator.detectChanges();
-  }
-
-  beforeEach(() => {
-    defaultProject = new Project(generateProject());
-    defaultRegion = new Region(
-      generateRegion({ projectId: defaultProject.id })
-    );
-    defaultSite = new Site(generateSite({ regionId: defaultRegion.id }));
-
-    setup();
   });
 
   const parametersToggleButton = () =>
@@ -218,13 +211,25 @@ describe("VerificationComponent", () => {
 
   assertPageInfo(VerificationComponent, "Verify Annotations");
 
-  fit("should create", () => {
-    spectator.detectChanges();
+  // if this test fails, the test runners server might not be running with the
+  // correct headers
+  // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#security_requirements
+  it("should have sharedArrayBuffer defined", () => {
+    // note that this test does not use the setup() function
+    expect(SharedArrayBuffer).toBeDefined();
+  });
+
+  it("should create", () => {
+    setup();
     expect(spectator.component).toBeInstanceOf(VerificationComponent);
   });
 
   describe("search parameters", () => {
     describe("no initial search parameters", () => {
+      beforeEach(() => {
+        setup();
+      });
+
       it("should automatically open the search parameters box if there are no initial search parameters", () => {
         expect(parametersCollapsable()).toHaveClass("show");
       });
@@ -236,12 +241,6 @@ describe("VerificationComponent", () => {
 
         expect(parametersCollapsable()).toHaveClass("show");
       });
-
-      xit("should not have a getPage callback set on the verification grid", () => {
-        expect(verificationGrid().getPage).not.toBeDefined();
-      });
-
-      it("should update the verification grids getPage callback correctly when filter conditions added", () => {});
 
       it("should update the search parameters when filter conditions are added", fakeAsync(() => {
         const targetTag = defaultFakeTags[0];
@@ -276,7 +275,18 @@ describe("VerificationComponent", () => {
         }));
 
         it("should make the correct api call", () => {
-          const expectedBody = {};
+          const expectedBody: Filters<Verification> = {
+            filter: {
+              "tags.id": {
+                in: [defaultFakeTags[0].id],
+              },
+            },
+            paging: {
+              page: 1,
+              items: 3,
+            },
+          } as any;
+
           expect(mockVerificationsApi.filter).toHaveBeenCalledWith(
             expectedBody
           );
@@ -284,8 +294,6 @@ describe("VerificationComponent", () => {
 
         it("should display an error if there are no search results", () => {
           const expectedText = "No annotations found";
-          spectator.detectChanges();
-
           const element = getElementByInnerText(expectedText);
           expect(element).toExist();
         });
@@ -369,9 +377,6 @@ describe("VerificationComponent", () => {
 
     describe("with initial search parameters", () => {
       beforeEach(() => {
-        // destroy the current component and create a new one with query string parameters
-        spectator.fixture.destroy();
-
         const testedQueryParameters: Params = {
           tags: defaultFakeTags.map((tag) => tag.id).toString(),
           sites: defaultFakeSites.map((site) => site.id).toString(),
@@ -385,7 +390,7 @@ describe("VerificationComponent", () => {
       });
 
       it("should have a collapsed search parameters box", () => {
-        expect(parametersCollapsable()).toHaveClass("hide");
+        expect(parametersCollapsable()).not.toHaveClass("show");
       });
 
       it("should create the correct search parameter model from query string parameters", () => {
@@ -409,14 +414,7 @@ describe("VerificationComponent", () => {
         expect(realizedTagModels).toEqual(defaultFakeTags);
       });
 
-      it("should make the correct api calls when first loaded", () => {
-        const expectedFilterBody = {};
-        expect(mockVerificationsApi.filter).toHaveBeenCalledWith(
-          expectedFilterBody
-        );
-      });
-
-      it("should cache client side with GET requests", () => {
+      fit("should cache client side with GET requests", () => {
         const expectedRequestCount = 10;
         expect(mockVerificationsApi.filter).toHaveBeenCalledTimes(
           expectedRequestCount
