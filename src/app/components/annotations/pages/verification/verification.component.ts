@@ -52,6 +52,8 @@ import { DateTime } from "luxon";
 import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
 import { Id } from "@interfaces/apiInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { ResetProgressWarningComponent } from "@components/annotations/components/reset-progress-warning/reset-progress-warning";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AnnotationSearchParameters, IAnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -75,6 +77,7 @@ class VerificationComponent
     protected sitesApi: ShallowSitesService,
     protected tagsApi: TagsService,
 
+    private modals: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
@@ -94,6 +97,9 @@ class VerificationComponent
   public previewSize = 3;
   protected hasShownVerificationGrid = false;
   protected hasShownPreview = false;
+
+  @ViewChild("progressWarningModal")
+  private lostProgressWarningModal: ElementRef<ResetProgressWarningComponent>;
 
   @ViewChild("verificationGrid")
   private verificationGridElement: ElementRef<VerificationGridComponent>;
@@ -138,6 +144,15 @@ class VerificationComponent
       .subscribe((params: Params) => {
         this.updatePagingCallback(params);
       });
+  }
+
+  protected requestToggleParameters(): void {
+    if (this.shouldUpdatePagingCallback()) {
+      this.modals.open(this.lostProgressWarningModal);
+      return;
+    }
+
+    this.toggleParameters();
   }
 
   protected toggleParameters(): void {
@@ -244,6 +259,10 @@ class VerificationComponent
     } else {
       this.audioEvents = [];
     }
+  }
+
+  private shouldUpdatePagingCallback(): boolean {
+    return !this.areParametersCollapsed;
   }
 
   private updatePagingCallback(params: Params): void {

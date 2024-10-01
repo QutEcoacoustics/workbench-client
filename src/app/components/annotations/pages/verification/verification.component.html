@@ -3,7 +3,7 @@
 <div class="collapsed-search bg-dark mb-3 rounded">
   <button
     class="show-parameters-button btn btn-link text-light m-2"
-    (click)="toggleParameters()"
+    (click)="requestToggleParameters()"
     aria-controls="search-parameters"
   >
     <fa-icon [icon]="chevronIcon"></fa-icon>
@@ -114,7 +114,7 @@
         <a
           type="submit"
           class="btn btn-primary me-2"
-          (click)="toggleParameters()"
+          (click)="requestToggleParameters()"
         >
           Verify This List
         </a>
@@ -198,10 +198,18 @@
 </ng-template>
 
 <ng-template #verificationGridTemplate>
-  <oe-verification-grid #verificationGrid id="verification-grid">
+  <oe-verification-grid #verificationGrid id="verification-grid" grid-size="1">
     <oe-verification verified="true" shortcut="Y"></oe-verification>
     <oe-verification verified="false" shortcut="N"></oe-verification>
 
     <oe-data-source slot="data-source" for="verification-grid"></oe-data-source>
   </oe-verification-grid>
+</ng-template>
+
+<ng-template #progressWarningModal let-modal>
+  <baw-reset-progress-warning-modal
+    [modal]="modal"
+    [successCallback]="toggleParameters.bind(this)"
+  >
+  </baw-reset-progress-warning-modal>
 </ng-template>

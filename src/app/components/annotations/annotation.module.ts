@@ -5,12 +5,11 @@ import { RouterModule } from "@angular/router";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { verificationRoute } from "./annotation.routes";
 import { VerificationComponent } from "./pages/verification/verification.component";
+import { ResetProgressWarningComponent } from "./components/reset-progress-warning/reset-progress-warning";
 
-const internalComponents = [];
+const internalComponents = [ResetProgressWarningComponent];
 
-const components = [
-  VerificationComponent,
-];
+const components = [VerificationComponent];
 
 const routes = Object.values(verificationRoute)
   .map((route: StrongRoute) => route.compileRoutes(getRouteConfigForPage))
