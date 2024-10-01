@@ -30,6 +30,7 @@ import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { VerificationComponent as DecisionButton } from "@ecoacoustics/web-components/@types/components/decision/verification/verification";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
+import { VerificationHelpDialogComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/help-dialog";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import {
@@ -176,15 +177,20 @@ describe("VerificationComponent", () => {
     spectator.queryAll<DecisionButton>("oe-verification");
   const verificationGrid = () =>
     spectator.query<VerificationGridComponent>("oe-verification-grid");
+  const verificationGridRoot = (): ShadowRoot =>
+    verificationGrid().shadowRoot;
 
-  const dialogElement = () => spectator.query<HTMLDialogElement>("dialog");
-  const dialogCloseButton = () =>
-    getElementByInnerText<HTMLButtonElement>("Close");
+  // a lot of the web components elements of interest are in the shadow DOM
+  // therefore, we have to chain some query selectors to get to the elements
+  const dialogElement = (): VerificationHelpDialogComponent =>
+    verificationGridRoot().querySelector("oe-verification-help-dialog");
+  const dialogCloseButton = (): HTMLButtonElement =>
+    dialogElement().shadowRoot.querySelector(".close-btn");
 
   function getElementByInnerText<T extends HTMLElement>(text: string): T {
     return spectator.debugElement.query(
       (element) => element.nativeElement.innerText === text
-    )?.nativeElement as T;
+    )?.nativeElement;
   }
 
   function toggleOnlyVerifiedCheckbox(): void {
@@ -414,7 +420,7 @@ describe("VerificationComponent", () => {
         expect(realizedTagModels).toEqual(defaultFakeTags);
       });
 
-      fit("should cache client side with GET requests", () => {
+      it("should cache client side with GET requests", () => {
         const expectedRequestCount = 10;
         expect(mockVerificationsApi.filter).toHaveBeenCalledTimes(
           expectedRequestCount
@@ -457,56 +463,77 @@ describe("VerificationComponent", () => {
 
         expect(newPagingCallback).not.toEqual(initialPagingCallback);
       }));
-    });
-  });
 
-  describe("verification grid functionality", () => {
-    describe("initial state", () => {
-      it("should be mount all the required Open-Ecoacoustics web components as custom elements", () => {
-        const expectedCustomElements: string[] = [
-          "oe-verification-grid",
-          "oe-verification-grid-tile",
-          "oe-verification",
-          "oe-media-controls",
-          "oe-indicator",
-          "oe-axes",
-        ];
+      describe("verification grid functionality", () => {
+        describe("initial state", () => {
+          it("should be mount all the required Open-Ecoacoustics web components as custom elements", () => {
+            const expectedCustomElements: string[] = [
+              "oe-verification-grid",
+              "oe-verification-grid-tile",
+              "oe-verification",
+              "oe-media-controls",
+              "oe-indicator",
+              "oe-axes",
+            ];
 
-        for (const selector of expectedCustomElements) {
-          const customElementClass = customElements.get(selector);
-          expect(customElementClass).withContext(selector).toBeDefined();
-        }
+            for (const selector of expectedCustomElements) {
+              const customElementClass = customElements.get(selector);
+              expect(customElementClass).withContext(selector).toBeDefined();
+            }
+          });
+
+          it("should have the correct grid size target", () => {
+            const expectedTarget = 10;
+            const realizedTarget = verificationGrid().targetGridSize;
+            expect(realizedTarget).toEqual(expectedTarget);
+          });
+        });
+
+        describe("after help-dialog dismissed", () => {
+          beforeEach(() => {
+            dialogCloseButton().click();
+            spectator.detectChanges();
+          });
+
+          it("should fetch the next page when a full page of results has a decision applied", () => {});
+
+          it("should pre-fetch client and server side cache when a full page of results has a decision applied", () => {});
+
+          it("should populate the verification grid correctly for the first page", () => {});
+
+          it("should populate the verification grid correctly for a full page pagination", () => {});
+
+          it("should populate the verification grid correctly for a partial page pagination with skip decision", () => {});
+
+          it("should not display a warning if the search parameters are changed without progress", () => {});
+
+          it("should display a warning if the search parameters are changed with progress", () => {});
+
+          it("should not reset decisions if the search parameters are opened and closed without change", () => {});
+
+          it("should reset decisions if the search parameters are changed", () => {});
+
+          it("should not change the paging callback if the change warning is dismissed", () => {});
+
+          it("should change the paging callback if the search parameters are changed", () => {});
+
+          it("should not change the paging callback if the search parameters are opened and closed without change", () => {});
+
+          it("should download the correct results if the user has not made a full page of decisions", () => {});
+
+          it("should download the correct results if the user has made a full page of decisions", () => {});
+
+          it("should display a progress meter with the correct value after a full page of decisions", () => {});
+
+          it("should be able to navigate back in history", () => {});
+
+          it("should be able to resume verification after navigating back in history", () => {});
+
+          it("should be able to play and pause audio", () => {});
+
+          it("should have the correct tag name in the verification grid tiles", () => {});
+        });
       });
-
-      it("should show an initial help dialog when the page is first loaded", () => {
-        expect(dialogElement()).toHaveProperty("open", true);
-
-        // we test closing the dialog element in this test to assert both the
-        // dialog element is open and that the close button works
-        // and that the test will fail under the correct conditions
-        dialogCloseButton().click();
-        expect(dialogElement()).toHaveProperty("open", false);
-      });
-    });
-
-    describe("after help-dialog dismissed", () => {
-      beforeEach(() => {
-        dialogCloseButton().click();
-        spectator.detectChanges();
-      });
-
-      it("should make the correct api calls when a decision is made", () => {
-        verificationButtons()[0].click();
-        spectator.detectChanges();
-      });
-
-      it("should make the correct api calls when a sub-selection decision is made", () => {});
-
-      it("should populate the verification grid correctly for the first page", () => {});
-
-      it("should populate the verification grid correctly for a full page pagination", () => {});
-
-      it("should populate the verification grid correctly for a partial page pagination", () => {});
     });
   });
 });

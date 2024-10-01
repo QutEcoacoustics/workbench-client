@@ -36,7 +36,7 @@ import { first, firstValueFrom, Observable, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
 import { Verification } from "@models/Verification";
-import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/src/components/verification-grid/verification-grid";
+import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { StandardApi } from "@baw-api/api-common";
