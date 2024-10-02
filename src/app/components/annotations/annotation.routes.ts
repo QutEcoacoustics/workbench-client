@@ -5,9 +5,9 @@ import { siteRoute } from "@components/sites/sites.routes";
 import { StrongRoute } from "@interfaces/strongRoute";
 
 const annotationsRouteName = "annotations";
-const verificationRouteName = "verification";
+const verificationRouteName = "verify";
 
-const annotationSearchRouteQueryParamResolver = (params) =>
+const annotationSearchRouteQueryParamResolver = (params: Record<string, string>) =>
   params
     ? {
       projects: params.projects,

@@ -1,210 +1,74 @@
-<h1 class="mb-2">Annotation Verification</h1>
+<!--
+  Because the verification grid component uses a fullscreen page layout
+  the header and content will be aligned to the top left of the view container
+  with no padding.
 
-<div class="collapsed-search bg-dark mb-3 rounded">
-  <button
-    class="show-parameters-button btn btn-link text-light m-2"
-    (click)="requestToggleParameters()"
-    aria-controls="search-parameters"
-  >
-    <fa-icon [icon]="chevronIcon"></fa-icon>
-    {{ areParametersCollapsed ? "Show Parameters" : "Hide Parameters" }}
-  </button>
+  To keep the website consistent, we will add a container to the chrome content
+  to ensure that the chrome content looks the same across all pages.
+-->
+<div class="container">
+  <h1 class="mb-2">Annotation Verification</h1>
 
-  <div id="search-parameters" [(ngbCollapse)]="areParametersCollapsed">
-    <div id="search-parameters-body" class="card">
-      <div class="card-body">
-        <form #ngForm="ngForm">
-          <baw-date-time-filter
-            (modelChange)="updateDateTime($event)"
-          ></baw-date-time-filter>
+  <div class="collapsed-search bg-dark mb-3 rounded">
+    <button
+      class="show-parameters-button btn btn-link text-light m-2"
+      (click)="requestToggleParameters()"
+      aria-controls="search-parameters"
+    >
+      <fa-icon [icon]="chevronIcon"></fa-icon>
+      {{ areParametersCollapsed ? "Show Parameters" : "Hide Parameters" }}
+    </button>
 
-          <baw-typeahead-input
-            id="tags-input"
-            label="Tags of Interest"
-            [inputPlaceholder]="'All'"
-            [searchCallback]="createSearchCallback(tagsApi, 'text', false)"
-            [resultTemplate]="tagsTypeaheadTemplate"
-            [model]="searchParameters.tagModels"
-            (modelChange)="
-              updateModel('tags', getIdsFromAbstractModelArray($event))
-            "
-          ></baw-typeahead-input>
+    <div id="search-parameters" [(ngbCollapse)]="areParametersCollapsed">
+      <div id="search-parameters-body" class="card">
+        <div class="card-body">
+          <baw-annotation-search-form
+            [searchParameters]="searchParameters"
+            [project]="project"
+            [region]="region"
+            [site]="site"
+          ></baw-annotation-search-form>
+        </div>
 
-          <baw-typeahead-input
-            id="projects-input"
-            label="Project(s)"
-            [inputPlaceholder]="project ? project.name : 'All'"
-            [searchCallback]="createSearchCallback(projectsApi)"
-            [resultTemplate]="nameTypeaheadTemplate"
-            [inputDisabled]="!!project"
-            [model]="searchParameters.projectModels"
-            (modelChange)="
-              updateModel('projects', getIdsFromAbstractModelArray($event))
-            "
-          ></baw-typeahead-input>
+        <div class="card-footer">
+          @if (shouldUpdatePagingCallback()) {
+          <p>
+            <strong>
+              You have unapplied search parameters. If you update the
+              verification grid, your progress will be lost.
+            </strong>
+          </p>
+          }
 
-          <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
-          <baw-typeahead-input
-            id="region-input"
-            *ngIf="!site || site?.isPoint"
-            label="Site(s)"
-            [inputPlaceholder]="region ? region.name : 'All'"
-            [searchCallback]="createSearchCallback(regionsApi)"
-            [resultTemplate]="nameTypeaheadTemplate"
-            [inputDisabled]="!!region"
-            [model]="searchParameters.regionModels"
-            (modelChange)="
-              updateModel('regions', getIdsFromAbstractModelArray($event))
-            "
-          ></baw-typeahead-input>
-
-          <baw-typeahead-input
-            id="sites-input"
-            [label]="
-              site ? (site?.isPoint ? 'Point(s)' : 'Site(s)') : 'Point(s)'
-            "
-            [inputPlaceholder]="site ? site.name : 'All'"
-            [searchCallback]="createSearchCallback(sitesApi)"
-            [resultTemplate]="nameTypeaheadTemplate"
-            [inputDisabled]="!!site"
-            [model]="searchParameters.siteModels"
-            (modelChange)="
-              updateModel('sites', getIdsFromAbstractModelArray($event))
-            "
-          ></baw-typeahead-input>
-
-          <div class="form-check mt-2">
-            <input
-              id="filter-verified"
-              type="checkbox"
-              class="form-check-input"
-              [checked]="searchParameters.onlyUnverified"
-              (change)="updateModel('onlyUnverified', $event.target['checked'])"
-            />
-            <label for="filter-verified" class="form-check-label">
-              Only show un-verified annotations
-            </label>
+          <div class="mt-2">
+            <button
+              class="btn btn-warning me-2"
+              (click)="requestToggleParameters()"
+              [ngClass]="{
+                'btn-primary': !shouldUpdatePagingCallback(),
+                'btn-warning': shouldUpdatePagingCallback()
+              }"
+            >
+              Update Search Parameters
+            </button>
+            <button class="btn btn-outline-primary">Undo Changes</button>
           </div>
-
-          <ng-template
-            #nameTypeaheadTemplate
-            let-result="result"
-            let-searchTerm="term"
-          >
-            <ngb-highlight
-              [result]="result.name"
-              [term]="searchTerm"
-            ></ngb-highlight>
-          </ng-template>
-
-          <ng-template
-            #tagsTypeaheadTemplate
-            let-result="result"
-            let-searchTerm="term"
-          >
-            <ngb-highlight
-              [result]="result.text"
-              [term]="searchTerm"
-            ></ngb-highlight>
-          </ng-template>
-        </form>
-      </div>
-
-      <div class="mt-2">
-        <a
-          type="submit"
-          class="btn btn-primary me-2"
-          (click)="requestToggleParameters()"
-        >
-          Verify This List
-        </a>
-
-        <!-- <a
-          class="btn btn-secondary"
-          [href]="downloadAnnotationsUrl()"
-        >
-          Download Annotations
-        </a> -->
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<div>
-  @if (hasShownPreview) {
-  <div [ngClass]="{ hidden: areParametersCollapsed }">
-    <ng-container [ngTemplateOutlet]="searchPreviewTemplate"></ng-container>
-  </div>
-  }
+<oe-verification-grid
+  #verificationGrid
+  id="verification-grid"
+  (loaded)="handleSpectrogramLoaded()"
+>
+  <oe-verification verified="true" shortcut="Y"></oe-verification>
+  <oe-verification verified="false" shortcut="N"></oe-verification>
 
-  <!--
-    Because destroying and recreating the verification grid is computationally
-    expensive, we hide it using css when the parameters are being shown.
-
-    We also do this so that state is preserved when the user toggles the
-    parameters dropdown card.
-   -->
-  @if (hasShownVerificationGrid) {
-  <div [ngClass]="{ hidden: !areParametersCollapsed }">
-    <ng-container [ngTemplateOutlet]="verificationGridTemplate"></ng-container>
-  </div>
-  }
-</div>
-
-<ng-template #searchPreviewTemplate>
-  <div class="preview-container">
-    <h3>Audio Events Preview</h3>
-
-    @if (previewAudioEvents.length > 0) {
-    <div class="spectrogram-grid">
-      @for (audioEvent of previewAudioEvents; track $index) {
-      <div class="preview-item border">
-        <oe-spectrogram
-          [id]="'spectrogram-' + audioEvent.id"
-          [src]="audioEvent.audioLink"
-          scaling="stretch"
-          color-map="audacity"
-        ></oe-spectrogram>
-      </div>
-      }
-    </div>
-    } @else if (searchParameters.tagModels.length > 0) {
-    <h2 id="no-results-error">
-      No {{ searchParameters.onlyUnverified ? "unverified" : "" }} annotations
-      found
-    </h2>
-    }
-
-    <div class="preview-controls my-2">
-      <button
-        type="button"
-        class="btn btn-secondary me-2"
-        [disabled]="previewAudioEvents.length === 0"
-        (click)="pagePreviewPrevious()"
-      >
-        Previous Page
-      </button>
-
-      <button
-        type="button"
-        class="btn btn-secondary"
-        [disabled]="previewAudioEvents.length === 0"
-        (click)="pagePreviewNext()"
-      >
-        Next Page
-      </button>
-    </div>
-  </div>
-</ng-template>
-
-<ng-template #verificationGridTemplate>
-  <oe-verification-grid #verificationGrid id="verification-grid" grid-size="1">
-    <oe-verification verified="true" shortcut="Y"></oe-verification>
-    <oe-verification verified="false" shortcut="N"></oe-verification>
-
-    <oe-data-source slot="data-source" for="verification-grid"></oe-data-source>
-  </oe-verification-grid>
-</ng-template>
+  <oe-data-source slot="data-source" for="verification-grid"></oe-data-source>
+</oe-verification-grid>
 
 <ng-template #progressWarningModal let-modal>
   <baw-reset-progress-warning-modal

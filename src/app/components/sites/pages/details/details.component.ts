@@ -44,7 +44,7 @@ export const siteMenuItemActions = [
   audioRecordingMenuItems.list.site,
   audioRecordingMenuItems.batch.site,
   reportMenuItems.new.site,
-  annotationMenuItems.verify.site,
+  annotationMenuItems.search.site,
 ];
 
 export const pointMenuItemActions = [
@@ -55,7 +55,7 @@ export const pointMenuItemActions = [
   audioRecordingMenuItems.list.siteAndRegion,
   audioRecordingMenuItems.batch.siteAndRegion,
   reportMenuItems.new.siteAndRegion,
-  annotationMenuItems.verify.siteAndRegion,
+  annotationMenuItems.search.siteAndRegion,
 ];
 
 const projectKey = "project";

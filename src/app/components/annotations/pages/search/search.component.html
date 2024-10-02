@@ -1,0 +1,70 @@
+<h1>Annotations Search</h1>
+
+<div>
+  <baw-annotation-search-form
+    [searchParameters]="searchParameters"
+    (searchParametersChange)="updateSearchParameters($event)"
+    [project]="project"
+    [region]="region"
+    [site]="site"
+  ></baw-annotation-search-form>
+
+  <div class="mt-2">
+    <a
+      class="btn btn-primary me-2"
+      [strongRoute]="verificationRoute"
+      [queryParams]="searchParameters.toQueryParams()"
+    >
+      Verify This List
+    </a>
+
+    <a class="btn btn-secondary" [href]="downloadAnnotationsUrl()">
+      Download Annotations
+    </a>
+  </div>
+</div>
+
+<hr>
+
+<div class="annotations-grid my-2">
+  @for (item of searchResults; track $index) {
+  <div class="preview-item border">
+    @if (item) {
+    <oe-spectrogram
+      [id]="'spectrogram-' + item.id"
+      [src]="item.audioLink"
+      scaling="stretch"
+      color-map="audacity"
+    ></oe-spectrogram>
+    }
+  </div>
+  }
+</div>
+
+@if (searchResults.length === 0) {
+<h2 class="no-results-error">
+  No {{ searchParameters.onlyUnverified ? "unverified" : "" }} annotations found
+</h2>
+}
+
+<div class="annotation-grid-controls">
+  <div class="preview-controls my-2">
+    <button
+      type="button"
+      class="btn btn-secondary me-2"
+      [disabled]="searchResults.length === 0"
+      (click)="pagePreviewPrevious()"
+    >
+      Previous Page
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-secondary"
+      [disabled]="searchResults.length === 0"
+      (click)="pagePreviewNext()"
+    >
+      Next Page
+    </button>
+  </div>
+</div>
