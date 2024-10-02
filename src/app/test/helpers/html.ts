@@ -22,10 +22,10 @@ export function inputValue(wrapper: any, selector: string, value: string) {
  */
 export function selectFromTypeahead<T>(
   spectator: Spectator<T>,
-  target: HTMLElement,
+  target: Element | HTMLElement,
   text: string
 ): void {
-  const inputElement = target.querySelector("input");
+  const inputElement = target.querySelector<HTMLInputElement>("input");
   spectator.typeInElement(text, inputElement);
 
   // wait for the typeahead items to populate the dropdown with options
@@ -38,7 +38,6 @@ export function selectFromTypeahead<T>(
   );
   selectedTypeaheadOption.click();
 
-  spectator.detectChanges();
   flush();
 }
 

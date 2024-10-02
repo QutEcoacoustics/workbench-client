@@ -40,7 +40,7 @@ export class AnnotationSearchFormComponent {
   @Input({ required: true }) public searchParameters: AnnotationSearchParameters;
   @Output() public searchParametersChange = new EventEmitter<AnnotationSearchParameters>();
 
-  @Input({ required: true }) public project: Project;
+  @Input() public project: Project;
   @Input() public region?: Region;
   @Input() public site?: Site;
 

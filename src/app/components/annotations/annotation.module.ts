@@ -7,6 +7,7 @@ import { verificationRoute } from "./annotation.routes";
 import { VerificationComponent } from "./pages/verification/verification.component";
 import { ResetProgressWarningComponent } from "./components/reset-progress-warning/reset-progress-warning";
 import { AnnotationSearchFormComponent } from "./components/annotation-search-form/annotation-search-form.component";
+import { AnnotationSearchComponent } from "./pages/search/search.component";
 
 const internalComponents = [
   ResetProgressWarningComponent,
@@ -15,7 +16,7 @@ const internalComponents = [
 
 const components = [
   VerificationComponent,
-  AnnotationSearchFormComponent,
+  AnnotationSearchComponent,
 ];
 
 const routes = Object.values(verificationRoute)
