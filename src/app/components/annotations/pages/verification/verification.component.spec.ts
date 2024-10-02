@@ -23,7 +23,7 @@ import {
 } from "@baw-api/ServiceTokens";
 import { Verification } from "@models/Verification";
 import { generateVerification } from "@test/fakes/Verification";
-import { CUSTOM_ELEMENTS_SCHEMA, Injector } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, INJECTOR, Injector } from "@angular/core";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
@@ -77,22 +77,9 @@ describe("VerificationComponent", () => {
         siteId: defaultSite.id,
       },
       queryParams: queryParameters,
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            params: of({
-              projectId: defaultProject.id,
-              regionId: defaultRegion.id,
-              siteId: defaultSite.id,
-            }),
-            queryParams: of(queryParameters),
-          },
-        },
-      ],
     });
 
-    injector = spectator.inject(Injector);
+    injector = spectator.inject(INJECTOR);
 
     mockVerificationsResponse = modelData.randomArray(
       3,

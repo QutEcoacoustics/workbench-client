@@ -27,7 +27,7 @@ const siteKey = "site";
   templateUrl: "search.component.html",
   styleUrl: "search.component.scss",
 })
-class AnnotationsSearchComponent extends PageComponent implements OnInit {
+class AnnotationSearchComponent extends PageComponent implements OnInit {
   public constructor(
     protected verificationApi: VerificationService,
     private route: ActivatedRoute,
@@ -156,9 +156,9 @@ function getPageInfo(
   };
 }
 
-AnnotationsSearchComponent.linkToRoute(getPageInfo("project"))
+AnnotationSearchComponent.linkToRoute(getPageInfo("project"))
   .linkToRoute(getPageInfo("region"))
   .linkToRoute(getPageInfo("site"))
   .linkToRoute(getPageInfo("siteAndRegion"));
 
-export { AnnotationsSearchComponent };
+export { AnnotationSearchComponent };
