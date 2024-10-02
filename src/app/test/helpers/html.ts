@@ -1,4 +1,6 @@
-import { ComponentFixture } from "@angular/core/testing";
+import { ComponentFixture, flush, tick } from "@angular/core/testing";
+import { Spectator } from "@ngneat/spectator";
+import { defaultDebounceTime } from "src/app/app.helper";
 
 /**
  * TODO Replace with spectator method
@@ -12,6 +14,41 @@ export function inputValue(wrapper: any, selector: string, value: string) {
   const input = wrapper.querySelector(selector);
   input.value = value;
   input.dispatchEvent(new Event("input"));
+}
+
+/**
+ * Selects an item from a typeahead component
+ * This function must be used inside a fakeAsync block
+ */
+export function selectFromTypeahead<T>(
+  spectator: Spectator<T>,
+  target: HTMLElement,
+  text: string
+): void {
+  const inputElement = target.querySelector("input");
+  spectator.typeInElement(text, inputElement);
+
+  // wait for the typeahead items to populate the dropdown with options
+  spectator.detectChanges();
+  tick(defaultDebounceTime);
+
+  // click the first option in the dropdown
+  const selectedTypeaheadOption = spectator.query<HTMLButtonElement>(
+    "button.dropdown-item.active"
+  );
+  selectedTypeaheadOption.click();
+
+  spectator.detectChanges();
+  flush();
+}
+
+export function getElementByInnerText<T extends HTMLElement>(
+  spectator: Spectator<unknown>,
+  text: string
+): T | null {
+  return spectator.debugElement.query(
+    (element) => element.nativeElement.innerText === text
+  )?.nativeElement;
 }
 
 /**

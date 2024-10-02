@@ -8,7 +8,7 @@ import { SharedModule } from "@shared/shared.module";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { ActivatedRoute, Params } from "@angular/router";
+import { Params } from "@angular/router";
 import { of } from "rxjs";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
@@ -29,23 +29,21 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { VerificationComponent as DecisionButton } from "@ecoacoustics/web-components/@types/components/decision/verification/verification";
-import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { VerificationHelpDialogComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/help-dialog";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import {
   discardPeriodicTasks,
   fakeAsync,
-  flush,
   tick,
 } from "@angular/core/testing";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { generateTag } from "@test/fakes/Tag";
 import { RouterTestingModule } from "@angular/router/testing";
-import { Filters } from "@baw-api/baw-api.service";
+import { selectFromTypeahead } from "@test/helpers/html";
 import { VerificationComponent } from "./verification.component";
-import "node_modules/@ecoacoustics/web-components";
+import "@ecoacoustics/web-components";
 
 describe("VerificationComponent", () => {
   let spectator: SpectatorRouting<VerificationComponent>;
@@ -146,21 +144,12 @@ describe("VerificationComponent", () => {
   const onlyVerifiedCheckbox = () =>
     spectator.query<HTMLInputElement>("#filter-verified");
 
-  const selectedTypeaheadOption = (): HTMLButtonElement =>
-    spectator.query<HTMLButtonElement>("button.dropdown-item.active");
   const tagsTypeahead = (): TypeaheadInputComponent =>
     spectator.query<any>("[label='Tags of Interest']");
   const tagsTypeaheadInput = (): HTMLInputElement =>
-    spectator.query("#tags-input").querySelector("input");
+    spectator.query("#tags-input");
   const progressLossWarning = () =>
     spectator.query<HTMLDivElement>("baw-reset-progress-warning-modal");
-
-  const spectrogramElements = () =>
-    spectator.queryAll<SpectrogramComponent>("oe-spectrogram");
-  const previewNextPageButton = () =>
-    getElementByInnerText<HTMLButtonElement>("Next Page");
-  const previewPreviousPageButton = (): HTMLButtonElement =>
-    getElementByInnerText<HTMLButtonElement>("Previous Page");
 
   const verificationButtons = () =>
     spectator.queryAll<DecisionButton>("oe-verification");
@@ -175,12 +164,6 @@ describe("VerificationComponent", () => {
   const dialogCloseButton = (): HTMLButtonElement =>
     dialogElement().shadowRoot.querySelector(".close-btn");
 
-  function getElementByInnerText<T extends HTMLElement>(text: string): T {
-    return spectator.debugElement.query(
-      (element) => element.nativeElement.innerText === text
-    )?.nativeElement;
-  }
-
   function toggleOnlyVerifiedCheckbox(): void {
     onlyVerifiedCheckbox().click();
     spectator.detectChanges();
@@ -193,14 +176,6 @@ describe("VerificationComponent", () => {
     spectator.detectChanges();
 
     discardPeriodicTasks();
-  }
-
-  function selectFromTypeahead(target: HTMLInputElement, text: string): void {
-    spectator.typeInElement(text, target);
-    spectator.detectChanges();
-    tick(defaultDebounceTime);
-    selectedTypeaheadOption().click();
-    flush();
   }
 
   assertPageInfo(VerificationComponent, "Verify Annotations");
@@ -241,7 +216,7 @@ describe("VerificationComponent", () => {
         const tagText = targetTag.text;
         const expectedTagId = targetTag.id;
 
-        selectFromTypeahead(tagsTypeaheadInput(), tagText);
+        selectFromTypeahead(spectator, tagsTypeaheadInput(), tagText);
 
         const realizedComponentParams = spectator.component.searchParameters;
         expect(realizedComponentParams.tags).toContain(expectedTagId);
@@ -260,113 +235,6 @@ describe("VerificationComponent", () => {
         toggleParameters();
         expect(parametersCollapsable()).toHaveClass(expectedExpandedClass);
       }));
-
-      describe("Search results preview", () => {
-        beforeEach(fakeAsync(() => {
-          const targetTag = defaultFakeTags[0];
-          const tagText = targetTag.text;
-          selectFromTypeahead(tagsTypeaheadInput(), tagText);
-        }));
-
-        it("should make the correct api call", () => {
-          const expectedBody: Filters<Verification> = {
-            filter: {
-              "tags.id": {
-                in: [defaultFakeTags[0].id],
-              },
-            },
-            paging: {
-              page: 1,
-              items: 3,
-            },
-          } as any;
-
-          expect(mockVerificationsApi.filter).toHaveBeenCalledWith(
-            expectedBody
-          );
-        });
-
-        it("should display an error if there are no search results", () => {
-          const expectedText = "No annotations found";
-          const element = getElementByInnerText(expectedText);
-          expect(element).toExist();
-        });
-
-        it("should use a different error message if there are no unverified annotations found", () => {
-          const expectedText = "No unverified annotations found";
-          mockVerificationsResponse = [];
-          toggleOnlyVerifiedCheckbox();
-
-          const element =
-            getElementByInnerText<HTMLHeadingElement>(expectedText);
-          expect(element).toExist();
-        });
-
-        it("should have disabled pagination buttons if there are no search results", () => {});
-
-        it("should display a search preview for a full page of results", () => {
-          const expectedResults = mockVerificationsResponse.length;
-          const realizedResults = spectrogramElements().length;
-          expect(realizedResults).toEqual(expectedResults);
-        });
-
-        it("should display a reduced search preview for a partial page of results", () => {
-          mockVerificationsResponse = mockVerificationsResponse.slice(0, 2);
-
-          const expectedResults = mockVerificationsResponse.length;
-          const realizedResults = spectrogramElements().length;
-          expect(realizedResults).toEqual(expectedResults);
-        });
-
-        it("should page forward correctly", () => {
-          previewNextPageButton().click();
-          spectator.detectChanges();
-
-          const expectedPageNumber = 2;
-          const realizedPageNumber = spectator.component.previewPage;
-          expect(realizedPageNumber).toEqual(expectedPageNumber);
-        });
-
-        it("should page to previous pages correctly", () => {
-          previewNextPageButton().click();
-          spectator.detectChanges();
-          previewPreviousPageButton().click();
-          spectator.detectChanges();
-
-          const expectedPageNumber = 1;
-          const realizedPageNumber = spectator.component.previewPage;
-          expect(realizedPageNumber).toEqual(expectedPageNumber);
-        });
-
-        it("should not be possible to page back past the first page", () => {
-          const initialPageNumber = spectator.component.previewPage;
-          const expectedPageNumber = 1;
-
-          expect(initialPageNumber).toEqual(expectedPageNumber);
-
-          previewPreviousPageButton().click();
-          spectator.detectChanges();
-
-          const realizedPageNumber = spectator.component.previewPage;
-          expect(realizedPageNumber).toEqual(expectedPageNumber);
-        });
-
-        it("should populate the preview spectrograms after collapsing and re-expanding the search parameters", fakeAsync(() => {
-          const expectedSpectrogramSources = mockVerificationsResponse.map(
-            (verification) => verification.audioLink
-          );
-
-          toggleParameters();
-          toggleParameters();
-
-          const realizedSpectrogramSources = spectrogramElements().map(
-            (element) => element.src
-          );
-          expect(realizedSpectrogramSources).toEqual(
-            expectedSpectrogramSources
-          );
-        }));
-      });
     });
 
     describe("with initial search parameters", () => {
@@ -435,7 +303,7 @@ describe("VerificationComponent", () => {
       // two components
       it("should reset the verification grids page to one if the search parameters change", fakeAsync(() => {
         toggleParameters();
-        selectFromTypeahead(tagsTypeaheadInput(), defaultFakeTags[0].text);
+        selectFromTypeahead(spectator, tagsTypeaheadInput(), defaultFakeTags[0].text);
 
         const expectedPagedItems = 0;
         const realizedPagedItems = verificationGrid().pagedItems;
@@ -446,7 +314,7 @@ describe("VerificationComponent", () => {
         const initialPagingCallback = verificationGrid().getPage;
 
         toggleParameters();
-        selectFromTypeahead(tagsTypeaheadInput(), defaultFakeTags[0].text);
+        selectFromTypeahead(spectator, tagsTypeaheadInput(), defaultFakeTags[0].text);
         const newPagingCallback = verificationGrid().getPage;
 
         expect(newPagingCallback).not.toEqual(initialPagingCallback);

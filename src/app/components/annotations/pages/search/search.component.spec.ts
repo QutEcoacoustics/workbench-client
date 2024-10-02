@@ -10,7 +10,6 @@ import { TAG, VERIFICATION } from "@baw-api/ServiceTokens";
 import { Tag } from "@models/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { generateTag } from "@test/fakes/Tag";
-import "node_modules/@ecoacoustics/web-components";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -20,7 +19,11 @@ import { Site } from "@models/Site";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
+import { fakeAsync } from "@angular/core/testing";
+import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
+import { getElementByInnerText, selectFromTypeahead } from "@test/helpers/html";
 import { AnnotationSearchComponent } from "./search.component";
+import "@ecoacoustics/web-components";
 
 describe("AnnotationSearchComponent", () => {
   let spectator: Spectator<AnnotationSearchComponent>;
@@ -85,15 +88,127 @@ describe("AnnotationSearchComponent", () => {
     spectator.detectChanges();
   }
 
-  beforeEach(() => {
+  const spectrogramElements = () =>
+    spectator.queryAll<SpectrogramComponent>("oe-spectrogram");
+  const previewNextPageButton = () =>
+    getElementByInnerText<HTMLButtonElement>(spectator, "Next Page");
+  const previewPreviousPageButton = (): HTMLButtonElement =>
+    getElementByInnerText<HTMLButtonElement>(spectator, "Previous Page");
+  const tagsTypeaheadInput = (): HTMLElement =>
+    spectator.query("#tags-input");
+
+  beforeEach(fakeAsync(() => {
     routeProject = new Project(generateProject());
     routeRegion = new Region(generateRegion());
     routeSite = new Site(generateSite());
 
+    const targetTag = defaultFakeTags[0];
+    const tagText = targetTag.text;
+    selectFromTypeahead(spectator, tagsTypeaheadInput(), tagText);
+
     setup();
-  });
+  }));
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(AnnotationSearchComponent);
   });
+
+        it("should make the correct api call", () => {
+          const expectedBody: Filters<Verification> = {
+            filter: {
+              "tags.id": {
+                in: [defaultFakeTags[0].id],
+              },
+            },
+            paging: {
+              page: 1,
+              items: 3,
+            },
+          } as any;
+
+          expect(mockVerificationsApi.filter).toHaveBeenCalledWith(
+            expectedBody
+          );
+        });
+
+        it("should display an error if there are no search results", () => {
+          const expectedText = "No annotations found";
+          const element = getElementByInnerText(expectedText);
+          expect(element).toExist();
+        });
+
+        it("should use a different error message if there are no unverified annotations found", () => {
+          const expectedText = "No unverified annotations found";
+          mockVerificationsResponse = [];
+          toggleOnlyVerifiedCheckbox();
+
+          const element =
+            getElementByInnerText<HTMLHeadingElement>(expectedText);
+          expect(element).toExist();
+        });
+
+        it("should have disabled pagination buttons if there are no search results", () => {});
+
+        it("should display a search preview for a full page of results", () => {
+          const expectedResults = mockVerificationsResponse.length;
+          const realizedResults = spectrogramElements().length;
+          expect(realizedResults).toEqual(expectedResults);
+        });
+
+        it("should display a reduced search preview for a partial page of results", () => {
+          mockVerificationsResponse = mockVerificationsResponse.slice(0, 2);
+
+          const expectedResults = mockVerificationsResponse.length;
+          const realizedResults = spectrogramElements().length;
+          expect(realizedResults).toEqual(expectedResults);
+        });
+
+        it("should page forward correctly", () => {
+          previewNextPageButton().click();
+          spectator.detectChanges();
+
+          const expectedPageNumber = 2;
+          const realizedPageNumber = spectator.component.previewPage;
+          expect(realizedPageNumber).toEqual(expectedPageNumber);
+        });
+
+        it("should page to previous pages correctly", () => {
+          previewNextPageButton().click();
+          spectator.detectChanges();
+          previewPreviousPageButton().click();
+          spectator.detectChanges();
+
+          const expectedPageNumber = 1;
+          const realizedPageNumber = spectator.component.previewPage;
+          expect(realizedPageNumber).toEqual(expectedPageNumber);
+        });
+
+        it("should not be possible to page back past the first page", () => {
+          const initialPageNumber = spectator.component.previewPage;
+          const expectedPageNumber = 1;
+
+          expect(initialPageNumber).toEqual(expectedPageNumber);
+
+          previewPreviousPageButton().click();
+          spectator.detectChanges();
+
+          const realizedPageNumber = spectator.component.previewPage;
+          expect(realizedPageNumber).toEqual(expectedPageNumber);
+        });
+
+        it("should populate the preview spectrograms after collapsing and re-expanding the search parameters", fakeAsync(() => {
+          const expectedSpectrogramSources = mockVerificationsResponse.map(
+            (verification) => verification.audioLink
+          );
+
+          toggleParameters();
+          toggleParameters();
+
+          const realizedSpectrogramSources = spectrogramElements().map(
+            (element) => element.src
+          );
+          expect(realizedSpectrogramSources).toEqual(
+            expectedSpectrogramSources
+          );
+        }));
 });
