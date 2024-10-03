@@ -1,0 +1,23 @@
+<div class="card p-2">
+  <oe-axes>
+    <oe-indicator>
+      <oe-spectrogram
+        [id]="'spectrogram-' + audioEvent.id"
+        [src]="audioEvent.audioLink"
+        scaling="stretch"
+        color-map="audacity"
+      ></oe-spectrogram>
+    </oe-indicator>
+  </oe-axes>
+
+  <div class="card-header">
+    <h5 class="card-title text-truncate">{{ audioEvent.tags }}</h5>
+  </div>
+
+  <div class="card-body">
+    <a class="info-line" [href]="audioEvent.listenViewUrl">{{
+      audioEvent.startTimeSeconds | date
+    }}</a>
+    <a class="info-line" [href]="audioEvent.viewUrl">More information</a>
+  </div>
+</div>

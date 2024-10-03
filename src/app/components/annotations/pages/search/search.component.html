@@ -24,47 +24,37 @@
   </div>
 </div>
 
-<hr />
+<hr>
 
-<div class="annotations-grid my-2">
-  @for (item of searchResults; track $index) {
-  <div class="preview-item border">
-    @if (item) {
-    <oe-spectrogram
-      [id]="'spectrogram-' + item.id"
-      [src]="item.audioLink"
-      scaling="stretch"
-      color-map="audacity"
-    ></oe-spectrogram>
+<div>
+  <p>
+    Displaying <span class="fw-bold">{{ pageSize }}</span> of
+    <span class="fw-bold">all {{ totalModels }}</span> audio events.
+  </p>
+
+  <div class="annotations-grid my-2">
+    @for (verificationModel of searchResults; track $index) {
+    <div>
+      @if (verificationModel) {
+      <baw-audio-event-card
+        [audioEvent]="verificationModel"
+      ></baw-audio-event-card>
+      }
+    </div>
     }
   </div>
+
+  @if (searchResults.length === 0) {
+  <h2 class="no-results-error">
+    No {{ searchParameters.onlyUnverified ? "unverified" : "" }} annotations
+    found
+  </h2>
   }
-</div>
 
-@if (searchResults.length === 0) {
-<h2 class="no-results-error">
-  No {{ searchParameters.onlyUnverified ? "unverified" : "" }} annotations found
-</h2>
-}
-
-<div class="annotation-grid-controls">
-  <div class="preview-controls my-2">
-    <button
-      type="button"
-      class="btn btn-secondary me-2"
-      [disabled]="searchResults.length === 0"
-      (click)="pagePreviewPrevious()"
-    >
-      Previous Page
-    </button>
-
-    <button
-      type="button"
-      class="btn btn-secondary"
-      [disabled]="searchResults.length === 0"
-      (click)="pagePreviewNext()"
-    >
-      Next Page
-    </button>
-  </div>
+  <ngb-pagination
+    class="d-flex justify-content-center mt-4"
+    [(page)]="previewPage"
+    [collectionSize]="searchResults.length"
+  >
+  </ngb-pagination>
 </div>

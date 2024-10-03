@@ -38,9 +38,8 @@ class AnnotationSearchComponent extends PageComponent implements OnInit {
     super();
   }
 
-  public previewPage = 1;
-  public previewSize = 15;
-  protected searchResults: Verification[] = Array.from({ length: this.previewSize });
+  public paginationInfo: Paging;
+  protected searchResults: Verification[] = Array.from({ length: 15 });
   protected searchParameters: AnnotationSearchParameters;
   protected verificationRoute: StrongRoute;
   protected project: Project;

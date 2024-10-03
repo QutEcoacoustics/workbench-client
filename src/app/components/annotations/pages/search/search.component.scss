@@ -1,23 +1,11 @@
-$gap-size: 0.5em;
-
 .annotations-grid {
   display: flex;
-  justify-content: start;
+  justify-content: space-evenly;
   flex-wrap: wrap;
-  flex-direction: row;
 
   position: relative;
-  gap: $gap-size;
+  gap: 1em;
   min-height: 2rem;
-}
-
-.preview-item {
-  display: inline-block;
-  flex: 0 0 calc(20% - $gap-size);
-
-  position: relative;
-  min-width: calc(20% - $gap-size);
-  min-height: 133px;
 }
 
 .annotation-grid-controls {
