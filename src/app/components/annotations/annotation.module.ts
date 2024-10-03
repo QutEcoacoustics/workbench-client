@@ -5,14 +5,17 @@ import { RouterModule } from "@angular/router";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { verificationRoute } from "./annotation.routes";
 import { VerificationComponent } from "./pages/verification/verification.component";
-import { ResetProgressWarningComponent } from "./components/reset-progress-warning/reset-progress-warning";
+import { ResetProgressWarningComponent } from "./components/reset-progress-warning/reset-progress-warning.component";
 import { AnnotationSearchFormComponent } from "./components/annotation-search-form/annotation-search-form.component";
 import { AnnotationSearchComponent } from "./pages/search/search.component";
 import { SearchFiltersModalComponent } from "./components/search-filters-modal/search-filters-modal.component";
+import { BroadFiltersWarningModalComponent } from "./components/broad-filters-warning/broad-filters-warning.component";
 
 const internalComponents = [
   SearchFiltersModalComponent,
   ResetProgressWarningComponent,
+  BroadFiltersWarningModalComponent,
+
   AnnotationSearchFormComponent,
 ];
 

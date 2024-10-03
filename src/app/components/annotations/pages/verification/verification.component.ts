@@ -34,7 +34,7 @@ import { Verification } from "@models/Verification";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { StrongRoute } from "@interfaces/strongRoute";
-import { ResetProgressWarningComponent } from "@components/annotations/components/reset-progress-warning/reset-progress-warning";
+import { ResetProgressWarningComponent } from "@components/annotations/components/reset-progress-warning/reset-progress-warning.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/search-filters-modal/search-filters-modal.component";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
@@ -68,16 +68,6 @@ class VerificationComponent
     super();
   }
 
-  public searchParameters: AnnotationSearchParameters;
-  public project: Project;
-  public region?: Region;
-  public site?: Site;
-  public previewAudioEvents: Verification[] = [];
-  public previewPage = 1;
-  public previewSize = 3;
-  protected hasShownVerificationGrid = false;
-  protected hasShownPreview = false;
-
   @ViewChild("progressWarningModal")
   private lostProgressWarningModal: ElementRef<ResetProgressWarningComponent>;
 
@@ -86,6 +76,12 @@ class VerificationComponent
 
   @ViewChild("verificationGrid")
   private verificationGridElement: ElementRef<VerificationGridComponent>;
+
+  public searchParameters: AnnotationSearchParameters;
+  public project: Project;
+  public region?: Region;
+  public site?: Site;
+  protected isDirty = false;
 
   public ngOnInit(): void {
     this.route.queryParams
@@ -109,14 +105,6 @@ class VerificationComponent
   }
 
   public ngAfterViewInit(): void {
-    // if there are no search parameters, we can assume that the user wants to
-    // create a new verification task. We therefore show the parameters by
-    // default
-    if (Object.keys(this.route.snapshot.queryParams).length === 0) {
-      this.openSearchFiltersModal();
-      return;
-    }
-
     this.updateGridCallback();
   }
 
@@ -124,14 +112,24 @@ class VerificationComponent
     this.modals.open(this.searchFiltersModal, { size: "xl" });
   }
 
-  protected handleSpectrogramLoaded(): void {
+  protected handleGridLoaded(): void {
     this.verificationGridElement.nativeElement.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
   }
 
+  protected handleDecision(): void {
+    this.isDirty = true;
+  }
+
   protected requestModelUpdate(newModel: AnnotationSearchParameters) {
+    if (!this.isDirty) {
+      this.searchParameters = newModel;
+      this.updateGridCallback();
+      return
+    }
+
     // if the user has unsaved changes, we want to warn them that their progress
     // will be lost if they update the search parameters
     const confirmationModal = this.modals.open(this.lostProgressWarningModal);
@@ -179,6 +177,7 @@ class VerificationComponent
 
     this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
     this.updateUrlParameters();
+    this.isDirty = false;
   }
 
   private filterConditions(_pagedItems: number): Filters<Verification> {

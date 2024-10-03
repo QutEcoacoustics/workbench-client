@@ -28,7 +28,6 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
       <div class="clearfix">
         <button
-          id="cancel-btn"
           class="btn btn-outline-primary float-start"
           (click)="closeModal(false)"
         >
@@ -36,9 +35,8 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
         </button>
 
         <button
-          id="next-btn"
           class="btn btn-danger text-white float-end"
-          (click)="success()"
+          (click)="closeModal(true)"
         >
           Reset Progress and Continue
         </button>
@@ -51,9 +49,5 @@ export class ResetProgressWarningComponent implements ModalComponent {
 
   public closeModal(status: boolean): void {
     this.modal.close(status);
-  }
-
-  public success(): void {
-    this.closeModal(true);
   }
 }

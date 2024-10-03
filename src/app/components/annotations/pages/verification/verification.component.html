@@ -21,7 +21,8 @@
 <oe-verification-grid
   #verificationGrid
   id="verification-grid"
-  (loaded)="handleSpectrogramLoaded()"
+  (loaded)="handleGridLoaded()"
+  (decision-made)="handleDecision()"
 >
   <oe-verification verified="true" shortcut="Y"></oe-verification>
   <oe-verification verified="false" shortcut="N"></oe-verification>
@@ -39,6 +40,7 @@
   <baw-search-filters-modal
     [modal]="filtersModal"
     [formValue]="searchParameters"
+    [hasDecisions]="isDirty"
     [project]="project"
     [region]="region"
     [site]="site"

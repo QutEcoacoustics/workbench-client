@@ -18,6 +18,7 @@
       class="btn btn-primary"
       [strongRoute]="verificationRoute"
       [queryParams]="searchParameters.toQueryParams()"
+      (click)="modals.open(broadSearchWarningModal)"
     >
       Verify This List
     </a>
@@ -28,8 +29,10 @@
 
 <div>
   <p>
-    Displaying <span class="fw-bold">{{ paginationInformation?.items }}</span> of
-    <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio events.
+    Displaying
+    <span class="fw-bold">{{ paginationInformation?.items }}</span> of
+    <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
+    events.
   </p>
 
   <div class="annotations-grid my-2">
@@ -55,3 +58,9 @@
     [collectionSize]="paginationInformation?.total ?? 0"
   ></ngb-pagination>
 </div>
+
+<ng-template #broadSearchWarningModal let-warningModal>
+  <baw-broad-filters-warning-modal
+    [modal]="warningModal"
+  ></baw-broad-filters-warning-modal>
+</ng-template>

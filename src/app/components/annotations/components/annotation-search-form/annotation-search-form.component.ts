@@ -51,7 +51,6 @@ export class AnnotationSearchFormComponent {
   @Input() public region?: Region;
   @Input() public site?: Site;
 
-  // because the DateTimeFilterModel is coming from a shared component, we need to serialize for use in the data model
   protected updateDateTime(dateTimeModel: DateTimeFilterModel): void {
     if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
       this.searchParameters.date = [
@@ -69,9 +68,6 @@ export class AnnotationSearchFormComponent {
         dateTimeModel.timeStartedAfter,
         dateTimeModel.timeFinishedBefore,
       ];
-
-      // because the daylight savings filter is a modifier on the time filter we do not need to update it unless the time filter has a value
-      // this.searchParameters.daylightSavings = !dateTimeModel.ignoreDaylightSavings;
     }
   }
 

@@ -24,7 +24,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
     <div class="modal-footer justify-content-start">
       <div>
-        @if (dirty) {
+        @if (isDirty) {
         <p>
           <strong>
             You have unapplied search filters. If you update the verification
@@ -37,16 +37,16 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
           <button
             class="btn btn-outline-primary me-2"
             (click)="closeModal()"
-            [disabled]="!this.dirty"
+            [disabled]="!this.isFormDirty"
           >
-            Undo Changes
+            Exit without Updating
           </button>
           <button
             class="btn btn-warning"
             (click)="success()"
             [ngClass]="{
-              'btn-primary': !dirty,
-              'btn-warning': dirty
+              'btn-primary': !isDirty,
+              'btn-warning': isDirty
             }"
           >
             Update Search Filters
@@ -64,15 +64,20 @@ export class SearchFiltersModalComponent implements ModalComponent {
   @Input() public project: Project;
   @Input() public region: Region;
   @Input() public site: Site;
+  @Input() public hasDecisions: boolean;
 
-  protected dirty = true;
+  protected isFormDirty = true;
+
+  protected get isDirty(): boolean {
+    return this.isFormDirty && this.hasDecisions;
+  }
 
   public closeModal(): void {
     this.modal.close();
   }
 
   public success(): void {
-    if (this.dirty) {
+    if (this.isFormDirty) {
       this.successCallback(this.formValue);
       this.closeModal();
       return;

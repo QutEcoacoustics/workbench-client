@@ -10,13 +10,13 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { VerificationService } from "@baw-api/verification/verification.service";
-import { Filters, Paging } from "@baw-api/baw-api.service";
+import { Paging } from "@baw-api/baw-api.service";
 import { takeUntil } from "rxjs";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { Location } from "@angular/common";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -37,6 +37,7 @@ class AnnotationSearchComponent
     protected route: ActivatedRoute,
     protected router: Router,
     protected config: NgbPaginationConfig,
+    protected modals: NgbModal,
     private location: Location,
     private injector: Injector
   ) {
@@ -48,7 +49,7 @@ class AnnotationSearchComponent
       "id",
       () => [],
       (newResults: Verification[]) => (this.searchResults = newResults),
-      () => this.searchParameters.toFilter().filter,
+      () => this.searchParameters.toFilter().filter
     );
   }
 
@@ -119,7 +120,7 @@ class AnnotationSearchComponent
 
   protected downloadAnnotationsUrl(): string {
     return this.verificationApi.downloadVerificationsTableUrl(
-      this.buildFilter()
+      this.searchParameters.toFilter()
     );
   }
 
@@ -131,17 +132,6 @@ class AnnotationSearchComponent
     if (urlTree) {
       this.location.replaceState(urlTree.toString());
     }
-  }
-
-  private buildFilter(): Filters<Verification> {
-    const filter: Filters<Verification> = this.searchParameters.toFilter();
-    const paging: Paging = {
-      page: this.previewPage,
-      items: this.previewSize,
-    };
-
-    filter.paging = paging;
-    return filter;
   }
 }
 
