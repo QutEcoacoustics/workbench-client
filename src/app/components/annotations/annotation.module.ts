@@ -10,19 +10,22 @@ import { AnnotationSearchFormComponent } from "./components/annotation-search-fo
 import { AnnotationSearchComponent } from "./pages/search/search.component";
 import { SearchFiltersModalComponent } from "./components/search-filters-modal/search-filters-modal.component";
 import { BroadFiltersWarningModalComponent } from "./components/broad-filters-warning/broad-filters-warning.component";
+import { GridTileContentComponent } from "./components/grid-tile-content/grid-tile-content.component";
 
 const internalComponents = [
   SearchFiltersModalComponent,
   ResetProgressWarningComponent,
   BroadFiltersWarningModalComponent,
-
   AnnotationSearchFormComponent,
 ];
 
-const components = [
-  VerificationComponent,
-  AnnotationSearchComponent,
+const internalModules = [
+  // the grid tile content component is a standalone component
+  // this is why I have imported it as a module
+  GridTileContentComponent,
 ];
+
+const components = [VerificationComponent, AnnotationSearchComponent];
 
 const routes = Object.values(verificationRoute)
   .map((route: StrongRoute) => route.compileRoutes(getRouteConfigForPage))
@@ -30,7 +33,7 @@ const routes = Object.values(verificationRoute)
 
 @NgModule({
   declarations: [...internalComponents, ...components],
-  imports: [SharedModule, RouterModule.forChild(routes)],
+  imports: [SharedModule, RouterModule.forChild(routes), ...internalModules],
   exports: [RouterModule, ...components],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

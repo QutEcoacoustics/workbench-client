@@ -1,4 +1,10 @@
-import { Component, Injector, OnInit } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  Injector,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
@@ -53,6 +59,9 @@ class AnnotationSearchComponent
     );
   }
 
+  @ViewChild("broadSearchWarningModal")
+  public broadSearchWarningModal: ElementRef;
+
   protected paginationInformation: Paging;
   protected searchResults: Verification[] = Array.from({ length: 15 });
   protected searchParameters: AnnotationSearchParameters;
@@ -86,6 +95,15 @@ class AnnotationSearchComponent
     this.verificationRoute = this.verifyAnnotationsRoute();
 
     super.ngOnInit();
+  }
+
+  protected checkFilterConditions(): void {
+    const proposedQueryParameters = this.searchParameters.toQueryParams();
+    const numberOfParameters = Object.keys(proposedQueryParameters).length;
+
+    if (numberOfParameters === 0) {
+      this.modals.open(this.broadSearchWarningModal);
+    }
   }
 
   protected updateSearchResults(): void {
