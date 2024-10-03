@@ -2,7 +2,6 @@ import { Component, Injector, OnInit } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
-import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { Verification } from "@models/Verification";
 import { retrieveResolvers } from "@baw-api/resolver-common";
@@ -16,6 +15,8 @@ import { takeUntil } from "rxjs";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { Location } from "@angular/common";
+import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
+import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -27,18 +28,31 @@ const siteKey = "site";
   templateUrl: "search.component.html",
   styleUrl: "search.component.scss",
 })
-class AnnotationSearchComponent extends PageComponent implements OnInit {
+class AnnotationSearchComponent
+  extends PaginationTemplate<Verification>
+  implements OnInit
+{
   public constructor(
     protected verificationApi: VerificationService,
-    private route: ActivatedRoute,
-    private router: Router,
+    protected route: ActivatedRoute,
+    protected router: Router,
+    protected config: NgbPaginationConfig,
     private location: Location,
     private injector: Injector
   ) {
-    super();
+    super(
+      router,
+      route,
+      config,
+      verificationApi,
+      "id",
+      () => [],
+      (newResults: Verification[]) => (this.searchResults = newResults),
+      () => this.searchParameters.toFilter().filter,
+    );
   }
 
-  public paginationInfo: Paging;
+  protected paginationInformation: Paging;
   protected searchResults: Verification[] = Array.from({ length: 15 });
   protected searchParameters: AnnotationSearchParameters;
   protected verificationRoute: StrongRoute;
@@ -69,16 +83,19 @@ class AnnotationSearchComponent extends PageComponent implements OnInit {
     }
 
     this.verificationRoute = this.verifyAnnotationsRoute();
+
+    super.ngOnInit();
   }
 
   protected updateSearchResults(): void {
-    const filterBody = this.buildFilter();
-
-    this.verificationApi
-      .filter(filterBody)
+    this.getModels()
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe((results) => {
+      .subscribe((results: Verification[]) => {
         this.searchResults = results;
+
+        if (results.length > 0) {
+          this.paginationInformation = results[0].getMetadata().paging;
+        }
       });
   }
 
@@ -104,19 +121,6 @@ class AnnotationSearchComponent extends PageComponent implements OnInit {
     return this.verificationApi.downloadVerificationsTableUrl(
       this.buildFilter()
     );
-  }
-
-  protected pagePreviewNext(): void {
-    this.previewPage++;
-  }
-
-  protected pagePreviewPrevious(): void {
-    if (this.pagedItems <= 0) {
-      this.pagedItems = 0;
-      return;
-    }
-
-    this.previewPage--;
   }
 
   private updateUrlParameters(): void {

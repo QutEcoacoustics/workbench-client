@@ -8,7 +8,10 @@
 -->
 <div class="centered-content">
   <h2 class="mb-2">
-    <button class="btn btn-outline-secondary" (click)="modals.open(searchFiltersModal, { size: 'xl' })">
+    <button
+      class="btn btn-outline-secondary"
+      (click)="openSearchFiltersModal()"
+    >
       <fa-icon [icon]="['fas', 'filter']"></fa-icon>
     </button>
     Annotation Verification
@@ -29,7 +32,6 @@
 <ng-template #progressWarningModal let-warningModal>
   <baw-reset-progress-warning-modal
     [modal]="warningModal"
-    [successCallback]="toggleParameters.bind(this)"
   ></baw-reset-progress-warning-modal>
 </ng-template>
 
@@ -40,5 +42,6 @@
     [project]="project"
     [region]="region"
     [site]="site"
+    [successCallback]="requestModelUpdate.bind(this)"
   ></baw-search-filters-modal>
 </ng-template>

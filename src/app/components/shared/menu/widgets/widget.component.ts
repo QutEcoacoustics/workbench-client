@@ -8,5 +8,5 @@ export interface WidgetComponent {}
 export interface ModalComponent extends WidgetComponent {
   closeModal: (result: any) => void;
   dismissModal?: (reason: any) => void;
-  successCallback?: () => void;
+  successCallback?: (...params: unknown[]) => void;
 }

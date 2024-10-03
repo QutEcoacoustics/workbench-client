@@ -36,6 +36,7 @@ import { TagsService } from "@baw-api/tag/tags.service";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { ResetProgressWarningComponent } from "@components/annotations/components/reset-progress-warning/reset-progress-warning";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { SearchFiltersModalComponent } from "@components/annotations/components/search-filters-modal/search-filters-modal.component";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -68,7 +69,6 @@ class VerificationComponent
   }
 
   public searchParameters: AnnotationSearchParameters;
-  public areParametersCollapsed = true;
   public project: Project;
   public region?: Region;
   public site?: Site;
@@ -80,6 +80,9 @@ class VerificationComponent
 
   @ViewChild("progressWarningModal")
   private lostProgressWarningModal: ElementRef<ResetProgressWarningComponent>;
+
+  @ViewChild("searchFiltersModal")
+  private searchFiltersModal: ElementRef<SearchFiltersModalComponent>;
 
   @ViewChild("verificationGrid")
   private verificationGridElement: ElementRef<VerificationGridComponent>;
@@ -103,46 +106,43 @@ class VerificationComponent
     if (models[siteKey]) {
       this.site = models[siteKey] as Site;
     }
-
-    // if there are no search parameters, we can assume that the user wants to
-    // create a new verification task. We therefore show the parameters by
-    // default
-    this.areParametersCollapsed =
-      Object.keys(this.route.snapshot.queryParams).length > 0;
-
-    if (this.areParametersCollapsed) {
-      this.hasShownVerificationGrid = true;
-    } else {
-      this.hasShownPreview = true;
-    }
   }
 
   public ngAfterViewInit(): void {
-    this.updateGridCallback();
-  }
-
-  protected handleSpectrogramLoaded(): void {
-    this.verificationGridElement.nativeElement.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  protected requestToggleParameters(): void {
-    // if the user has unsaved changes, we want to warn them that their progress
-    // will be lost if they update the search parameters
-    if (this.shouldUpdatePagingCallback()) {
-      this.modals.open(this.lostProgressWarningModal);
+    // if there are no search parameters, we can assume that the user wants to
+    // create a new verification task. We therefore show the parameters by
+    // default
+    if (Object.keys(this.route.snapshot.queryParams).length === 0) {
+      this.openSearchFiltersModal();
       return;
     }
 
-    this.toggleParameters();
+    this.updateGridCallback();
   }
 
-  protected toggleParameters(): void {
-    this.areParametersCollapsed = !this.areParametersCollapsed;
+  protected openSearchFiltersModal(): void {
+    this.modals.open(this.searchFiltersModal, { size: "xl" });
+  }
 
-    if (this.areParametersCollapsed) {
-      this.updateGridCallback();
-      this.updateUrlParameters();
-    }
+  protected handleSpectrogramLoaded(): void {
+    this.verificationGridElement.nativeElement.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+
+  protected requestModelUpdate(newModel: AnnotationSearchParameters) {
+    // if the user has unsaved changes, we want to warn them that their progress
+    // will be lost if they update the search parameters
+    const confirmationModal = this.modals.open(this.lostProgressWarningModal);
+    confirmationModal.result.then((success: boolean) => {
+      if (success) {
+        this.searchParameters = newModel;
+        this.updateGridCallback();
+      } else {
+        this.openSearchFiltersModal();
+      }
+    });
   }
 
   protected verifyAnnotationsRoute(): StrongRoute {
@@ -171,13 +171,14 @@ class VerificationComponent
     };
   }
 
-  private updateGridCallback(): void {
+  protected updateGridCallback(): void {
     if (!this.verificationGridElement) {
       console.error("Could not find verification grid element");
       return;
     }
 
     this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
+    this.updateUrlParameters();
   }
 
   private filterConditions(_pagedItems: number): Filters<Verification> {

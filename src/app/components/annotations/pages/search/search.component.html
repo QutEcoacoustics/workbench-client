@@ -1,4 +1,4 @@
-<h1>Annotations Search</h1>
+<h1>Annotation Search</h1>
 
 <div>
   <baw-annotation-search-form
@@ -24,22 +24,20 @@
   </div>
 </div>
 
-<hr>
+<hr />
 
 <div>
   <p>
-    Displaying <span class="fw-bold">{{ pageSize }}</span> of
-    <span class="fw-bold">all {{ totalModels }}</span> audio events.
+    Displaying <span class="fw-bold">{{ paginationInformation?.items }}</span> of
+    <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio events.
   </p>
 
   <div class="annotations-grid my-2">
     @for (verificationModel of searchResults; track $index) {
-    <div>
-      @if (verificationModel) {
+    <div *ngIf="verificationModel">
       <baw-audio-event-card
         [audioEvent]="verificationModel"
       ></baw-audio-event-card>
-      }
     </div>
     }
   </div>
@@ -53,8 +51,7 @@
 
   <ngb-pagination
     class="d-flex justify-content-center mt-4"
-    [(page)]="previewPage"
-    [collectionSize]="searchResults.length"
-  >
-  </ngb-pagination>
+    [(page)]="page"
+    [collectionSize]="paginationInformation?.total ?? 0"
+  ></ngb-pagination>
 </div>

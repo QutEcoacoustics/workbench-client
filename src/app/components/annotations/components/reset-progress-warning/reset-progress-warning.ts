@@ -11,7 +11,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
         type="button"
         class="btn-close"
         aria-label="Close"
-        (click)="closeModal()"
+        (click)="closeModal(false)"
       ></button>
     </div>
 
@@ -30,9 +30,9 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
         <button
           id="cancel-btn"
           class="btn btn-outline-primary float-start"
-          (click)="closeModal()"
+          (click)="closeModal(false)"
         >
-          Undo Changes
+          Cancel
         </button>
 
         <button
@@ -48,14 +48,12 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class ResetProgressWarningComponent implements ModalComponent {
   @Input() public modal: NgbActiveModal;
-  @Input() public successCallback: () => void;
 
-  public closeModal(): void {
-    this.modal.close();
+  public closeModal(status: boolean): void {
+    this.modal.close(status);
   }
 
   public success(): void {
-    this.successCallback();
-    this.modal.close();
+    this.closeModal(true);
   }
 }

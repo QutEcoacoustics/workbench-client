@@ -24,7 +24,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
     <div class="modal-footer justify-content-start">
       <div>
-        @if (shouldUpdatePagingCallback()) {
+        @if (dirty) {
         <p>
           <strong>
             You have unapplied search filters. If you update the verification
@@ -34,13 +34,19 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
         }
 
         <div class="mt-2">
-          <button class="btn btn-outline-primary me-2">Undo Changes</button>
+          <button
+            class="btn btn-outline-primary me-2"
+            (click)="closeModal()"
+            [disabled]="!this.dirty"
+          >
+            Undo Changes
+          </button>
           <button
             class="btn btn-warning"
             (click)="success()"
             [ngClass]="{
-              'btn-primary': !shouldUpdatePagingCallback(),
-              'btn-warning': shouldUpdatePagingCallback()
+              'btn-primary': !dirty,
+              'btn-warning': dirty
             }"
           >
             Update Search Filters
@@ -53,22 +59,25 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 export class SearchFiltersModalComponent implements ModalComponent {
   @Input() public modal: NgbActiveModal;
   @Input() public formValue: AnnotationSearchParameters;
-  @Input() public successCallback: () => void;
+  @Input() public successCallback: (newModel: AnnotationSearchParameters) => void;
 
   @Input() public project: Project;
   @Input() public region: Region;
   @Input() public site: Site;
+
+  protected dirty = true;
 
   public closeModal(): void {
     this.modal.close();
   }
 
   public success(): void {
-    this.successCallback();
-    this.modal.dismiss();
-  }
+    if (this.dirty) {
+      this.successCallback(this.formValue);
+      this.closeModal();
+      return;
+    }
 
-  protected shouldUpdatePagingCallback(): boolean {
-    return true;
+    this.closeModal();
   }
 }

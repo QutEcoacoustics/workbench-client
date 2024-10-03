@@ -98,10 +98,9 @@ export class AnnotationSearchFormComponent {
   ): TypeaheadSearchCallback {
     return (id: string, activeItems: T[]): Observable<T[]> =>
       api.filter({
-        filter: filterAnd(
-          notIn<T>("id", activeItems),
-          { id: { eq: id } } as any
-        ),
+        filter: filterAnd(notIn<T>("id", activeItems), {
+          id: { eq: id },
+        } as any),
       });
   }
 
