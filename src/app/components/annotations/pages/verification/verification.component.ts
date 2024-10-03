@@ -20,11 +20,6 @@ import {
 } from "@baw-api/site/sites.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import {
-  IconName,
-  IconPrefix,
-  IconProp,
-} from "@fortawesome/fontawesome-svg-core";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -62,8 +57,8 @@ class VerificationComponent
     protected regionsApi: ShallowRegionsService,
     protected sitesApi: ShallowSitesService,
     protected tagsApi: TagsService,
+    protected modals: NgbModal,
 
-    private modals: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
@@ -73,7 +68,6 @@ class VerificationComponent
   }
 
   public searchParameters: AnnotationSearchParameters;
-  public searchFormParameters: AnnotationSearchParameters;
   public areParametersCollapsed = true;
   public project: Project;
   public region?: Region;
@@ -89,14 +83,6 @@ class VerificationComponent
 
   @ViewChild("verificationGrid")
   private verificationGridElement: ElementRef<VerificationGridComponent>;
-
-  protected get chevronIcon(): IconProp {
-    const prefix: IconPrefix = "fas" as const;
-    const name: IconName = this.areParametersCollapsed
-      ? "chevron-down"
-      : "chevron-up";
-    return [prefix, name];
-  }
 
   public ngOnInit(): void {
     this.route.queryParams
@@ -140,6 +126,8 @@ class VerificationComponent
   }
 
   protected requestToggleParameters(): void {
+    // if the user has unsaved changes, we want to warn them that their progress
+    // will be lost if they update the search parameters
     if (this.shouldUpdatePagingCallback()) {
       this.modals.open(this.lostProgressWarningModal);
       return;
@@ -181,12 +169,6 @@ class VerificationComponent
         totalItems: items.length,
       });
     };
-  }
-
-  protected shouldUpdatePagingCallback(): boolean {
-    const hasChangedParameters = !!this.searchParameters.tagModels.length;
-    const areParametersOpen = !this.areParametersCollapsed;
-    return hasChangedParameters && areParametersOpen;
   }
 
   private updateGridCallback(): void {

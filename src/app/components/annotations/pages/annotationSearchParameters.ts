@@ -1,7 +1,7 @@
 import { Injector } from "@angular/core";
 import { Params } from "@angular/router";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
-import { PROJECT, SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
+import { AUDIO_RECORDING, PROJECT, SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import {
@@ -16,6 +16,7 @@ import {
 import { CollectionIds } from "@interfaces/apiInterfaces";
 import { hasMany } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
+import { AudioRecording } from "@models/AudioRecording";
 import { IParameterModel } from "@models/data/parametersModel";
 import { ImplementsInjector } from "@models/ImplementsInjector";
 import { Project } from "@models/Project";
@@ -27,6 +28,7 @@ import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.c
 import { DateTime, Duration } from "luxon";
 
 export interface IAnnotationSearchParameters {
+  audioRecordings: CollectionIds;
   projects: CollectionIds;
   regions: CollectionIds;
   sites: CollectionIds;
@@ -36,7 +38,8 @@ export interface IAnnotationSearchParameters {
   time: MonoTuple<Duration, 2>;
 }
 
-const serializationTable: IQueryStringParameterSpec = {
+const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> = {
+  audioRecordings: jsNumberArray,
   projects: jsNumberArray,
   regions: jsNumberArray,
   sites: jsNumberArray,
@@ -68,6 +71,7 @@ export class AnnotationSearchParameters
     }
   }
 
+  public audioRecordings: CollectionIds;
   public projects: CollectionIds;
   public regions: CollectionIds;
   public sites: CollectionIds;
@@ -76,6 +80,8 @@ export class AnnotationSearchParameters
   public date: MonoTuple<DateTime, 2>;
   public time: MonoTuple<Duration, 2>;
 
+  @hasMany<AnnotationSearchParameters, AudioRecording>(AUDIO_RECORDING, "audioRecordings")
+  public audioRecordingModels?: AudioRecording[];
   @hasMany<AnnotationSearchParameters, Project>(PROJECT, "projects")
   public projectModels?: Project[];
   @hasMany<AnnotationSearchParameters, Region>(SHALLOW_REGION, "regions")
@@ -102,6 +108,14 @@ export class AnnotationSearchParameters
   }
 
   public toFilter(): Filters<AudioEvent> {
+    // TODO: this is a test dataset
+    return {
+      filter: {
+        "audio_recordings.id": {
+          eq: 461823,
+        },
+      },
+    } as any;
     const modelFilters = this.modelFilter();
     const tagFilters = filterModelIds<Tag>("tags", this.tags);
     const dateTimeFilters = this.dateTimeFilters();

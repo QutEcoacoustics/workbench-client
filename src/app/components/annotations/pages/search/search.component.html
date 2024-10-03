@@ -10,21 +10,21 @@
   ></baw-annotation-search-form>
 
   <div class="mt-2">
+    <a class="btn btn-secondary me-2" [href]="downloadAnnotationsUrl()">
+      Download Annotations
+    </a>
+
     <a
-      class="btn btn-primary me-2"
+      class="btn btn-primary"
       [strongRoute]="verificationRoute"
       [queryParams]="searchParameters.toQueryParams()"
     >
       Verify This List
     </a>
-
-    <a class="btn btn-secondary" [href]="downloadAnnotationsUrl()">
-      Download Annotations
-    </a>
   </div>
 </div>
 
-<hr>
+<hr />
 
 <div class="annotations-grid my-2">
   @for (item of searchResults; track $index) {

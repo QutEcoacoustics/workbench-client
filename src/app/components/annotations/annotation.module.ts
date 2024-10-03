@@ -8,8 +8,10 @@ import { VerificationComponent } from "./pages/verification/verification.compone
 import { ResetProgressWarningComponent } from "./components/reset-progress-warning/reset-progress-warning";
 import { AnnotationSearchFormComponent } from "./components/annotation-search-form/annotation-search-form.component";
 import { AnnotationSearchComponent } from "./pages/search/search.component";
+import { SearchFiltersModalComponent } from "./components/search-filters-modal/search-filters-modal.component";
 
 const internalComponents = [
+  SearchFiltersModalComponent,
   ResetProgressWarningComponent,
   AnnotationSearchFormComponent,
 ];

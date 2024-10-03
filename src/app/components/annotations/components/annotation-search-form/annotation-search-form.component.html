@@ -4,9 +4,21 @@
   ></baw-date-time-filter>
 
   <baw-typeahead-input
+    id="recordings-input"
+    label="Recordings of interest"
+    inputPlaceholder="All"
+    [searchCallback]="createIdSearchCallback(recordingsApi)"
+    [resultTemplate]="idTypeaheadTemplate"
+    [model]="searchParameters.audioRecordingModels"
+    (modelChange)="
+      updateModel('audioRecordings', getIdsFromAbstractModelArray($event))
+    "
+  ></baw-typeahead-input>
+
+  <baw-typeahead-input
     id="tags-input"
     label="Tags of Interest"
-    [inputPlaceholder]="'All'"
+    inputPlaceholder="All"
     [searchCallback]="createSearchCallback(tagsApi, 'text', false)"
     [resultTemplate]="tagsTypeaheadTemplate"
     [model]="searchParameters.tagModels"
@@ -62,6 +74,10 @@
       Only show un-verified annotations
     </label>
   </div>
+
+  <ng-template #idTypeaheadTemplate let-result="result" let-searchTerm="term">
+    <ngb-highlight [result]="result.id" [term]="searchTerm"></ngb-highlight>
+  </ng-template>
 
   <ng-template #nameTypeaheadTemplate let-result="result" let-searchTerm="term">
     <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>

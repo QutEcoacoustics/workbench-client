@@ -1,0 +1,10 @@
+#verification-grid {
+  // this should be be 100dvh subtracting the height of the header
+  height: 90dvh;
+}
+
+.centered-content {
+  max-width: 1320px;
+  margin-left: auto;
+  margin-right: auto;
+}

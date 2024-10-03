@@ -6,57 +6,13 @@
   To keep the website consistent, we will add a container to the chrome content
   to ensure that the chrome content looks the same across all pages.
 -->
-<div class="container">
-  <h1 class="mb-2">Annotation Verification</h1>
-
-  <div class="collapsed-search bg-dark mb-3 rounded">
-    <button
-      class="show-parameters-button btn btn-link text-light m-2"
-      (click)="requestToggleParameters()"
-      aria-controls="search-parameters"
-    >
-      <fa-icon [icon]="chevronIcon"></fa-icon>
-      {{ areParametersCollapsed ? "Show Parameters" : "Hide Parameters" }}
+<div class="centered-content">
+  <h2 class="mb-2">
+    <button class="btn btn-outline-secondary" (click)="modals.open(searchFiltersModal, { size: 'xl' })">
+      <fa-icon [icon]="['fas', 'filter']"></fa-icon>
     </button>
-
-    <div id="search-parameters" [(ngbCollapse)]="areParametersCollapsed">
-      <div id="search-parameters-body" class="card">
-        <div class="card-body">
-          <baw-annotation-search-form
-            [searchParameters]="searchParameters"
-            [project]="project"
-            [region]="region"
-            [site]="site"
-          ></baw-annotation-search-form>
-        </div>
-
-        <div class="card-footer">
-          @if (shouldUpdatePagingCallback()) {
-          <p>
-            <strong>
-              You have unapplied search parameters. If you update the
-              verification grid, your progress will be lost.
-            </strong>
-          </p>
-          }
-
-          <div class="mt-2">
-            <button
-              class="btn btn-warning me-2"
-              (click)="requestToggleParameters()"
-              [ngClass]="{
-                'btn-primary': !shouldUpdatePagingCallback(),
-                'btn-warning': shouldUpdatePagingCallback()
-              }"
-            >
-              Update Search Parameters
-            </button>
-            <button class="btn btn-outline-primary">Undo Changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    Annotation Verification
+  </h2>
 </div>
 
 <oe-verification-grid
@@ -70,10 +26,19 @@
   <oe-data-source slot="data-source" for="verification-grid"></oe-data-source>
 </oe-verification-grid>
 
-<ng-template #progressWarningModal let-modal>
+<ng-template #progressWarningModal let-warningModal>
   <baw-reset-progress-warning-modal
-    [modal]="modal"
+    [modal]="warningModal"
     [successCallback]="toggleParameters.bind(this)"
-  >
-  </baw-reset-progress-warning-modal>
+  ></baw-reset-progress-warning-modal>
+</ng-template>
+
+<ng-template #searchFiltersModal let-filtersModal>
+  <baw-search-filters-modal
+    [modal]="filtersModal"
+    [formValue]="searchParameters"
+    [project]="project"
+    [region]="region"
+    [site]="site"
+  ></baw-search-filters-modal>
 </ng-template>

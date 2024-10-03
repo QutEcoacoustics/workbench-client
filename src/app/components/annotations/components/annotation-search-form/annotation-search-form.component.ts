@@ -1,12 +1,16 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { StandardApi } from "@baw-api/api-common";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationService } from "@baw-api/verification/verification.service";
-import { AnnotationSearchParameters, IAnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
+import {
+  AnnotationSearchParameters,
+  IAnnotationSearchParameters,
+} from "@components/annotations/pages/annotationSearchParameters";
 import {
   contains,
   filterAnd,
@@ -30,6 +34,7 @@ import { Observable } from "rxjs";
 })
 export class AnnotationSearchFormComponent {
   public constructor(
+    protected recordingsApi: AudioRecordingsService,
     protected verificationApi: VerificationService,
     protected projectsApi: ProjectsService,
     protected regionsApi: ShallowRegionsService,
@@ -37,8 +42,10 @@ export class AnnotationSearchFormComponent {
     protected tagsApi: TagsService
   ) {}
 
-  @Input({ required: true }) public searchParameters: AnnotationSearchParameters;
-  @Output() public searchParametersChange = new EventEmitter<AnnotationSearchParameters>();
+  @Input({ required: true })
+  public searchParameters: AnnotationSearchParameters;
+  @Output() public searchParametersChange =
+    new EventEmitter<AnnotationSearchParameters>();
 
   @Input() public project: Project;
   @Input() public region?: Region;
@@ -69,7 +76,7 @@ export class AnnotationSearchFormComponent {
   }
 
   protected createSearchCallback<T extends AbstractModel>(
-    api: StandardApi<T>,
+    api: StandardApi<T> | any,
     key: string = "name",
     includeDefaultFilters: boolean = true
   ): TypeaheadSearchCallback {
@@ -82,6 +89,18 @@ export class AnnotationSearchFormComponent {
             includeDefaultFilters && this.defaultFilter()
           ),
           notIn<T>(key as keyof AbstractModel, activeItems)
+        ),
+      });
+  }
+
+  protected createIdSearchCallback<T extends AbstractModel>(
+    api: StandardApi<T> | any
+  ): TypeaheadSearchCallback {
+    return (id: string, activeItems: T[]): Observable<T[]> =>
+      api.filter({
+        filter: filterAnd(
+          notIn<T>("id", activeItems),
+          { id: { eq: id } } as any
         ),
       });
   }

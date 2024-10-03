@@ -2,9 +2,9 @@ import { Params } from "@angular/router";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { DateTime, Duration } from "luxon";
 
-export interface IQueryStringParameterSpec {
-  [key: string]: ISerializationTechnique;
-}
+export type IQueryStringParameterSpec<T = Record<string, unknown>> = {
+  [K in keyof T]: ISerializationTechnique;
+};
 
 interface ISerializationTechnique {
   serialize: (value: any) => string;
