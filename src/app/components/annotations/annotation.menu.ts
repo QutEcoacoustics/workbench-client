@@ -3,6 +3,7 @@ import { siteMenuItem } from "@components/sites/sites.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { projectMenuItem } from "@components/projects/projects.menus";
+import { isLoggedInPredicate } from "src/app/app.menus";
 import { annotationSearchRoute, verificationRoute, AnnotationRoute } from "./annotation.routes";
 
 export type AnnotationMenuRoutes = Record<AnnotationRoute, MenuRoute>;
@@ -31,6 +32,7 @@ function makeVerificationMenuItem(
     icon: ["fas", "circle-check"],
     label: "Verify Annotations",
     tooltip: () => "Verify Annotations",
+    predicate: isLoggedInPredicate,
     route: verificationRoute[subRoute],
     parent,
   });
@@ -44,6 +46,7 @@ function makeAnnotationSearchMenuItem(
     icon: ["fas", "layer-group"],
     label: "Search Annotations",
     tooltip: () => "Search Annotations",
+    predicate: isLoggedInPredicate,
     route: annotationSearchRoute[subRoute],
     parent,
   });

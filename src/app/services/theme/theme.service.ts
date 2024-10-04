@@ -102,19 +102,11 @@ export class ThemeService {
   public setColor(colorName: ThemeColor, color?: HSLColor | string): void {
     if (!this.isServer) {
       this.setColorInBrowser(colorName, color);
-
-      if (colorName === "highlight") {
-        this.setOeColorsInBrowser(color as HSLColor);
-      }
       return;
     }
 
     // Can only set color on SSR if it exists
     if (color) {
-      if (colorName === "highlight") {
-        this.setOeColorsInSsr(color as HSLColor);
-      }
-
       this.setColorInSsr(colorName, color);
     }
   }
@@ -220,47 +212,6 @@ export class ThemeService {
         ${hue}: ${this.readHslValue(hslColor.h)}deg;
         ${saturation}: ${this.readHslValue(hslColor.s, true)}%;
         ${lightness}: ${this.readHslValue(hslColor.l, true)}%
-      }
-    `;
-    this.document.head.appendChild(style);
-  }
-
-  // oe colours are used in third party web components such as the oe-verification-grid
-  // because they expose theming options via css variables, we want to set these colours
-  // to the same as our theme colours so that the components match the rest of the site
-  private setOeColorsInBrowser(highlightColor: HSLColor | string): void {
-    const hslColor = typeof highlightColor === "string" ? hsl(highlightColor) : highlightColor;
-
-    const h = this.readHslValue(hslColor.h);
-    const s = this.readHslValue(hslColor.s, true);
-    const l = this.readHslValue(hslColor.l, true);
-
-    const style = this.document.createElement("style");
-
-    style.innerHTML = `
-      :root {
-        --oe-theme-hue: ${h}deg !important;
-        --oe-theme-saturation: ${s}% !important;
-        --oe-theme-lightness: ${l}% !important;
-      }
-    `;
-
-    this.document.head.appendChild(style);
-  }
-
-  private setOeColorsInSsr(highlightColor: HSLColor | string): void {
-    const hslColor = typeof highlightColor === "string" ? hsl(highlightColor) : highlightColor;
-
-    const style = this.document.createElement("style");
-    const h = this.readHslValue(hslColor.h);
-    const s = this.readHslValue(hslColor.s, true);
-    const l = this.readHslValue(hslColor.l, true);
-
-    style.innerHTML = `
-      :root {
-        --oe-theme-hue: ${h}deg !important;
-        --oe-theme-saturation: ${s}% !important;
-        --oe-theme-lightness: ${l}% !important;
       }
     `;
     this.document.head.appendChild(style);

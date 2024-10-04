@@ -2,7 +2,7 @@
   <oe-axes>
     <oe-indicator>
       <oe-spectrogram
-        [id]="'spectrogram-' + audioEvent.id"
+        [id]="spectrogramId"
         [src]="audioEvent.audioLink"
         scaling="stretch"
         color-map="audacity"
@@ -11,7 +11,8 @@
   </oe-axes>
 
   <div class="card-header">
-    <h5 class="card-title text-truncate">{{ audioEvent.tags }}</h5>
+    <h5 class="card-title text-truncate m-0">{{ audioEvent.tags }}</h5>
+    <oe-media-controls #mediaControls></oe-media-controls>
   </div>
 
   <div class="card-body">
@@ -27,7 +28,10 @@
     <span class="info-line">
       <fa-icon class="me-2" [icon]="['fas', 'record-vinyl']"></fa-icon>
       <a [href]="audioEvent.listenViewUrl">
-        {{ audioEvent.startTimeSeconds | date }}
+        <baw-zoned-datetime
+          [value]="audioEvent.audioRecording.recordedDate"
+          [timezone]="audioEvent.audioRecording.recordedDateTimezone"
+        ></baw-zoned-datetime>
       </a>
     </span>
 
