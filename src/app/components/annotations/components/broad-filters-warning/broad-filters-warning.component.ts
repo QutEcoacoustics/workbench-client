@@ -4,7 +4,7 @@ import { ModalComponent } from "@menu/widget.component";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
-  selector: "baw-broad-filters-warning-modal",
+  selector: "baw-filters-warning-modal",
   template: `
     <div class="modal-header">
       <h4 class="modal-title">Confirm Broad Filter Conditions</h4>
@@ -12,7 +12,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
         type="button"
         class="btn-close"
         aria-label="Close"
-        (click)="cancel()"
+        (click)="closeModal(false)"
       ></button>
     </div>
 
@@ -30,7 +30,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
       <div class="clearfix">
         <button
           class="btn btn-outline-primary float-start"
-          (click)="cancel()"
+          (click)="closeModal(false)"
         >
           Cancel
         </button>
@@ -42,17 +42,12 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
     </div>
   `,
 })
-export class BroadFiltersWarningModalComponent implements ModalComponent {
+export class FiltersWarningModalComponent implements ModalComponent {
   public constructor(private location: Location) {}
 
   @Input() public modal: NgbActiveModal;
 
   public closeModal(status: boolean): void {
     this.modal.close(status);
-  }
-
-  public cancel(): void {
-    this.modal.close(false);
-    this.location.back();
   }
 }

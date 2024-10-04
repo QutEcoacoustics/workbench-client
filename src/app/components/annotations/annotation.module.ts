@@ -9,13 +9,13 @@ import { ResetProgressWarningComponent } from "./components/reset-progress-warni
 import { AnnotationSearchFormComponent } from "./components/annotation-search-form/annotation-search-form.component";
 import { AnnotationSearchComponent } from "./pages/search/search.component";
 import { SearchFiltersModalComponent } from "./components/search-filters-modal/search-filters-modal.component";
-import { BroadFiltersWarningModalComponent } from "./components/broad-filters-warning/broad-filters-warning.component";
+import { FiltersWarningModalComponent } from "./components/broad-filters-warning/broad-filters-warning.component";
 import { GridTileContentComponent } from "./components/grid-tile-content/grid-tile-content.component";
 
 const internalComponents = [
   SearchFiltersModalComponent,
   ResetProgressWarningComponent,
-  BroadFiltersWarningModalComponent,
+  FiltersWarningModalComponent,
   AnnotationSearchFormComponent,
 ];
 

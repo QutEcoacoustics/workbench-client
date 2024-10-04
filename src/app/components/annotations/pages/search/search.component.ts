@@ -21,6 +21,7 @@ import { takeUntil } from "rxjs";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { Location } from "@angular/common";
+import { FiltersWarningModalComponent } from "@components/annotations/components/broad-filters-warning/broad-filters-warning.component";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { NgbModal, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
@@ -60,7 +61,7 @@ class AnnotationSearchComponent
   }
 
   @ViewChild("broadSearchWarningModal")
-  public broadSearchWarningModal: ElementRef;
+  public broadFilterWarningModal: ElementRef<FiltersWarningModalComponent>;
 
   protected paginationInformation: Paging;
   protected searchResults: Verification[] = Array.from({ length: 15 });
@@ -97,13 +98,27 @@ class AnnotationSearchComponent
     super.ngOnInit();
   }
 
-  protected checkFilterConditions(): void {
-    const proposedQueryParameters = this.searchParameters.toQueryParams();
-    const numberOfParameters = Object.keys(proposedQueryParameters).length;
+  protected async checkFilterConditions(): Promise<void> {
+    const queryParameters = this.searchParameters.toQueryParams();
+    const numberOfParameters = Object.keys(queryParameters).length;
 
+    // if the user has not added any search filters, we want to confirm that the
+    // user wanted to create a verification task over all annotations in the
+    // project, region or site
     if (numberOfParameters === 0) {
-      this.modals.open(this.broadSearchWarningModal);
+      const warningModal = this.modals.open(this.broadFilterWarningModal);
+      const success = await warningModal.result.catch((_) => false);
+
+      // the user doesn't want to continue with the search
+      // we return early to prevent router navigation
+      if (success) {
+        return;
+      }
     }
+
+    this.router.navigate([
+      this.verificationRoute.toRouterLink(queryParameters),
+    ]);
   }
 
   protected updateSearchResults(): void {

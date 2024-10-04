@@ -37,6 +37,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { ResetProgressWarningComponent } from "@components/annotations/components/reset-progress-warning/reset-progress-warning.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/search-filters-modal/search-filters-modal.component";
+import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -50,7 +51,7 @@ const siteKey = "site";
 })
 class VerificationComponent
   extends PageComponent
-  implements OnInit, AfterViewInit
+  implements OnInit, AfterViewInit, UnsavedInputCheckingComponent
 {
   public constructor(
     protected verificationApi: VerificationService,
@@ -77,11 +78,11 @@ class VerificationComponent
   @ViewChild("verificationGrid")
   private verificationGridElement: ElementRef<VerificationGridComponent>;
 
+  public hasUnsavedChanges = false;
   public searchParameters: AnnotationSearchParameters;
   public project: Project;
   public region?: Region;
   public site?: Site;
-  protected isDirty = false;
 
   public ngOnInit(): void {
     this.route.queryParams
@@ -120,14 +121,14 @@ class VerificationComponent
   }
 
   protected handleDecision(): void {
-    this.isDirty = true;
+    this.hasUnsavedChanges = true;
   }
 
   protected requestModelUpdate(newModel: AnnotationSearchParameters) {
-    if (!this.isDirty) {
+    if (!this.hasUnsavedChanges) {
       this.searchParameters = newModel;
       this.updateGridCallback();
-      return
+      return;
     }
 
     // if the user has unsaved changes, we want to warn them that their progress
@@ -177,7 +178,7 @@ class VerificationComponent
 
     this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
     this.updateUrlParameters();
-    this.isDirty = false;
+    this.hasUnsavedChanges = false;
   }
 
   private filterConditions(_pagedItems: number): Filters<Verification> {

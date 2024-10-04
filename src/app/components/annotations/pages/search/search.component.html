@@ -14,14 +14,9 @@
       Download Annotations
     </a>
 
-    <a
-      class="btn btn-primary"
-      [strongRoute]="verificationRoute"
-      [queryParams]="searchParameters.toQueryParams()"
-      (click)="checkFilterConditions()"
-    >
+    <button class="btn btn-primary" (click)="checkFilterConditions()">
       Verify This List
-    </a>
+    </button>
   </div>
 </div>
 
@@ -60,7 +55,5 @@
 </div>
 
 <ng-template #broadSearchWarningModal let-warningModal>
-  <baw-broad-filters-warning-modal
-    [modal]="warningModal"
-  ></baw-broad-filters-warning-modal>
+  <baw-filters-warning-modal [modal]="warningModal"></baw-filters-warning-modal>
 </ng-template>
