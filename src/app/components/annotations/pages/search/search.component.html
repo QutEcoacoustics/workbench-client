@@ -10,11 +10,15 @@
   ></baw-annotation-search-form>
 
   <div class="mt-2">
-    <a class="btn btn-secondary me-2" [href]="downloadAnnotationsUrl()">
+    <!--
+      TODO: Once the audio events download route supports url encoded filters
+      we should uncomment this buttons functionality
+     -->
+    <!-- <a class="btn btn-secondary me-2" [href]="downloadAnnotationsUrl()">
       Download Annotations
-    </a>
+    </a> -->
 
-    <button class="btn btn-primary" (click)="checkFilterConditions()">
+    <button class="btn btn-primary" (click)="navigateToVerificationGrid()">
       Verify This List
     </button>
   </div>
@@ -23,12 +27,16 @@
 <hr />
 
 <div>
+  @if (!loading) {
   <p>
     Displaying
     <span class="fw-bold">{{ paginationInformation?.items }}</span> of
     <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
     events.
   </p>
+  } @else {
+  <p>Loading...</p>
+  }
 
   <div class="annotations-grid my-2">
     @for (verificationModel of searchResults; track $index) {
@@ -40,7 +48,7 @@
     }
   </div>
 
-  @if (searchResults.length === 0) {
+  @if (searchResults.length === 0 && !loading) {
   <h2 class="no-results-error">
     No {{ searchParameters.onlyUnverified ? "unverified" : "" }} annotations
     found

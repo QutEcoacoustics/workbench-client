@@ -47,6 +47,11 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    */
   public filter: string;
   /**
+    * A configuraiton property that can be used to overwrite how many
+    * items are fetched in a page of results
+    */
+  public pageSize?: number;
+  /**
    * Tracks the current filter page
    */
   private _page: number;
@@ -85,6 +90,8 @@ export abstract class PaginationTemplate<M extends AbstractModel>
 
   public ngOnInit() {
     // Set pagination defaults
+    // TODO: this is overwriting the global NgbPagination config every time
+    // a component that uses this paginationTemplate is created
     this.config.maxSize = 3;
     this.config.pageSize = defaultApiPageSize;
     this.config.rotate = true;
@@ -179,7 +186,10 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    */
   protected generateFilter(): Filters<M> {
     return {
-      paging: { page: this.page },
+      paging: {
+        page: this.page,
+        items: this.pageSize ?? this.config.pageSize,
+      },
       filter: this.filter
         ? ({
             ...this.defaultInnerFilter(),

@@ -80,7 +80,7 @@ export class VerificationService implements StandardApi<Verification> {
     return (
       this.apiRoot +
       endpoint(emptyParam, emptyParam) +
-      "events.csv?" +
+      "download.csv?" +
       this.api.encodeFilter(filters)
     );
   }

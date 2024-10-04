@@ -1,4 +1,3 @@
-import { Location } from "@angular/common";
 import { Component, Input } from "@angular/core";
 import { ModalComponent } from "@menu/widget.component";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
@@ -43,8 +42,6 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
   `,
 })
 export class FiltersWarningModalComponent implements ModalComponent {
-  public constructor(private location: Location) {}
-
   @Input() public modal: NgbActiveModal;
 
   public closeModal(status: boolean): void {

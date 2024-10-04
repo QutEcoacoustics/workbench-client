@@ -17,10 +17,8 @@ import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { VerificationService } from "@baw-api/verification/verification.service";
 import { Paging } from "@baw-api/baw-api.service";
-import { takeUntil } from "rxjs";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import { Location } from "@angular/common";
 import { FiltersWarningModalComponent } from "@components/annotations/components/broad-filters-warning/broad-filters-warning.component";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { NgbModal, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
@@ -45,7 +43,6 @@ class AnnotationSearchComponent
     protected router: Router,
     protected config: NgbPaginationConfig,
     protected modals: NgbModal,
-    private location: Location,
     private injector: Injector
   ) {
     super(
@@ -55,16 +52,26 @@ class AnnotationSearchComponent
       verificationApi,
       "id",
       () => [],
-      (newResults: Verification[]) => (this.searchResults = newResults),
+      (newResults: Verification[]) => {
+        this.searchResults = newResults;
+
+        if (newResults.length > 0) {
+          this.paginationInformation = newResults[0].getMetadata().paging;
+        }
+      },
       () => this.searchParameters.toFilter().filter
     );
+
+    // we make the page size an even number so that the page of results is more
+    // likely to fit on the screen in a nice way
+    this.pageSize = 24;
   }
 
   @ViewChild("broadSearchWarningModal")
   public broadFilterWarningModal: ElementRef<FiltersWarningModalComponent>;
 
   protected paginationInformation: Paging;
-  protected searchResults: Verification[] = Array.from({ length: 15 });
+  protected searchResults: Verification[] = [];
   protected searchParameters: AnnotationSearchParameters;
   protected verificationRoute: StrongRoute;
   protected project: Project;
@@ -72,16 +79,11 @@ class AnnotationSearchComponent
   protected site?: Site;
 
   public ngOnInit(): void {
-    this.route.queryParams
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((params) => {
-        this.searchParameters = new AnnotationSearchParameters(
-          params,
-          this.injector
-        );
-
-        this.updateSearchResults();
-      });
+    const params = this.route.snapshot.queryParams;
+    this.searchParameters = new AnnotationSearchParameters(
+      params,
+      this.injector
+    );
 
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     this.project = models[projectKey] as Project;
@@ -98,7 +100,7 @@ class AnnotationSearchComponent
     super.ngOnInit();
   }
 
-  protected async checkFilterConditions(): Promise<void> {
+  protected async navigateToVerificationGrid(): Promise<void> {
     const queryParameters = this.searchParameters.toQueryParams();
     const numberOfParameters = Object.keys(queryParameters).length;
 
@@ -111,32 +113,23 @@ class AnnotationSearchComponent
 
       // the user doesn't want to continue with the search
       // we return early to prevent router navigation
-      if (success) {
+      if (!success) {
         return;
       }
     }
 
-    this.router.navigate([
-      this.verificationRoute.toRouterLink(queryParameters),
-    ]);
-  }
+    const queryParams = this.searchParameters.toQueryParams();
 
-  protected updateSearchResults(): void {
-    this.getModels()
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((results: Verification[]) => {
-        this.searchResults = results;
-
-        if (results.length > 0) {
-          this.paginationInformation = results[0].getMetadata().paging;
-        }
-      });
-  }
-
-  protected updateSearchParameters(model: AnnotationSearchParameters): void {
-    this.searchParameters = model;
-    this.updateSearchResults();
-    this.updateUrlParameters();
+    this.router.navigate(
+      [
+        this.verificationRoute.toRouterLink({
+          projectId: this.project.id,
+          regionId: this.region?.id,
+          siteId: this.site?.id,
+        }),
+      ],
+      { queryParams }
+    );
   }
 
   protected verifyAnnotationsRoute(): StrongRoute {
@@ -155,16 +148,6 @@ class AnnotationSearchComponent
     return this.verificationApi.downloadVerificationsTableUrl(
       this.searchParameters.toFilter()
     );
-  }
-
-  private updateUrlParameters(): void {
-    const queryParams = this.searchParameters.toQueryParams();
-    const urlTree = this.router.createUrlTree([], { queryParams });
-
-    // TODO: remove this guard before review. For some reason urlTree is null during testing
-    if (urlTree) {
-      this.location.replaceState(urlTree.toString());
-    }
   }
 }
 

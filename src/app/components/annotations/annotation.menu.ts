@@ -31,7 +31,7 @@ function makeVerificationMenuItem(
   return menuRoute({
     icon: ["fas", "circle-check"],
     label: "Verify Annotations",
-    tooltip: () => "Verify Annotations",
+    tooltip: () => "(BETA) Verify Annotations",
     predicate: isLoggedInPredicate,
     route: verificationRoute[subRoute],
     parent,
@@ -45,7 +45,7 @@ function makeAnnotationSearchMenuItem(
   return menuRoute({
     icon: ["fas", "layer-group"],
     label: "Search Annotations",
-    tooltip: () => "Search Annotations",
+    tooltip: () => "(BETA) Search Annotations",
     predicate: isLoggedInPredicate,
     route: annotationSearchRoute[subRoute],
     parent,

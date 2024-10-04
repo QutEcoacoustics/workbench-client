@@ -108,14 +108,6 @@ export class AnnotationSearchParameters
   }
 
   public toFilter(): Filters<AudioEvent> {
-    // TODO: this is a test dataset
-    return {
-      filter: {
-        "audio_recordings.id": {
-          eq: 461823,
-        },
-      },
-    } as any;
     const modelFilters = this.modelFilter();
     const tagFilters = filterModelIds<Tag>("tags", this.tags);
     const dateTimeFilters = this.dateTimeFilters();

@@ -63,12 +63,17 @@
   ></baw-typeahead-input>
 
   <div class="form-check mt-2">
+    <!--
+      Because the verifications endpoint is not available yet, we cannot filter
+      by verified annotations. This is a placeholder for future functionality.
+     -->
     <input
       id="filter-verified"
       type="checkbox"
       class="form-check-input"
       [checked]="searchParameters.onlyUnverified"
       (change)="updateModel('onlyUnverified', $event.target['checked'])"
+      disabled
     />
     <label for="filter-verified" class="form-check-label">
       Only show un-verified annotations
