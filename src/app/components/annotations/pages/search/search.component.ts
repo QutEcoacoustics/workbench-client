@@ -112,7 +112,9 @@ class AnnotationSearchComponent
   protected override updateQueryParams(page: number): void {
     const queryParams: Params = this.searchParameters.toQueryParams()
 
-    if (queryParams) {
+    // we have this condition so that undefined page numbers and
+    // the first (default) page number is not shown in the query parameters
+    if (page && page !== 1) {
       queryParams.page = page;
     }
 
