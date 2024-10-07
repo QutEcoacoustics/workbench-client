@@ -363,7 +363,7 @@ describe("VerificationComponent", () => {
 
           it("should populate the verification grid correctly for a partial page pagination with skip decision", () => {});
 
-          fit("should not display a warning when opening the search parameters", fakeAsync(() => {
+          it("should not display a warning when opening the search parameters", fakeAsync(() => {
             toggleParameters();
             expect(progressLossWarning()).not.toExist();
           }));

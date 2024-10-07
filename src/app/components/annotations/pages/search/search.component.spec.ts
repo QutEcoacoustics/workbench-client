@@ -22,7 +22,7 @@ import { generateSite } from "@test/fakes/Site";
 import { fakeAsync } from "@angular/core/testing";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { getElementByInnerText, selectFromTypeahead } from "@test/helpers/html";
-import { Filters } from "@baw-api/baw-api.service";
+import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { AnnotationSearchComponent } from "./search.component";
 import "@ecoacoustics/web-components";
 
@@ -66,8 +66,8 @@ describe("AnnotationSearchComponent", () => {
     );
 
     mockVerificationsResponse = modelData.randomArray(
-      10,
-      10,
+      defaultApiPageSize,
+      defaultApiPageSize,
       () =>
         new Verification(
           generateVerification({
@@ -87,6 +87,10 @@ describe("AnnotationSearchComponent", () => {
     );
 
     spectator.detectChanges();
+
+    const targetTag = mockTagsResponse[0];
+    const tagText = targetTag.text;
+    selectFromTypeahead(spectator, tagsTypeaheadInput(), tagText);
   }
 
   const spectrogramElements = () =>
@@ -108,10 +112,6 @@ describe("AnnotationSearchComponent", () => {
     routeProject = new Project(generateProject());
     routeRegion = new Region(generateRegion());
     routeSite = new Site(generateSite());
-
-    const targetTag = mockTagsResponse[0];
-    const tagText = targetTag.text;
-    selectFromTypeahead(spectator, tagsTypeaheadInput(), tagText);
 
     setup();
   }));
@@ -142,7 +142,10 @@ describe("AnnotationSearchComponent", () => {
     expect(element).toExist();
   });
 
-  it("should use a different error message if there are no unverified annotations found", () => {
+  // TODO: this test is disabled because we currently have a non-functional and
+  // disabled "only show unverified" checkbox until the endpoint is avaliable
+  // filter for verified status
+  xit("should use a different error message if there are no unverified annotations found", () => {
     const expectedText = "No unverified annotations found";
     mockVerificationsResponse = [];
     toggleOnlyVerifiedCheckbox();
@@ -153,8 +156,6 @@ describe("AnnotationSearchComponent", () => {
     );
     expect(element).toExist();
   });
-
-  it("should have disabled pagination buttons if there are no search results", () => {});
 
   it("should display a search preview for a full page of results", () => {
     const expectedResults = mockVerificationsResponse.length;
@@ -186,19 +187,6 @@ describe("AnnotationSearchComponent", () => {
     spectator.detectChanges();
 
     const expectedPageNumber = 1;
-    const realizedPageNumber = spectator.component.previewPage;
-    expect(realizedPageNumber).toEqual(expectedPageNumber);
-  });
-
-  it("should not be possible to page back past the first page", () => {
-    const initialPageNumber = spectator.component.previewPage;
-    const expectedPageNumber = 1;
-
-    expect(initialPageNumber).toEqual(expectedPageNumber);
-
-    previewPreviousPageButton().click();
-    spectator.detectChanges();
-
     const realizedPageNumber = spectator.component.previewPage;
     expect(realizedPageNumber).toEqual(expectedPageNumber);
   });

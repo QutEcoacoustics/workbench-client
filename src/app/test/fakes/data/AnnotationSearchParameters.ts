@@ -6,6 +6,7 @@ export function generateAnnotationSearchParameters(
   data?: Partial<IAnnotationSearchParameters>
 ): Required<IAnnotationSearchParameters> {
   return {
+    audioRecordings: modelData.ids(),
     projects: modelData.ids(),
     regions: modelData.ids(),
     sites: modelData.ids(),

@@ -27,39 +27,44 @@
 <hr />
 
 <div>
-  @if (!loading) {
-  <p>
-    Displaying
-    <span class="fw-bold">{{ paginationInformation?.items }}</span> of
-    <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
-    events.
-  </p>
-  } @else {
-  <p>Loading...</p>
-  }
-
-  <div class="annotations-grid my-2">
-    @for (verificationModel of searchResults; track $index) {
-    <div *ngIf="verificationModel">
-      <baw-audio-event-card
-        [audioEvent]="verificationModel"
-      ></baw-audio-event-card>
-    </div>
+  <ng-container *ngIf="!error">
+    @if (!loading) {
+    <p>
+      Displaying
+      <span class="fw-bold">{{ paginationInformation?.items }}</span> of
+      <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
+      events.
+    </p>
+    } @else {
+    <p>Loading...</p>
     }
-  </div>
 
-  @if (searchResults.length === 0 && !loading) {
-  <h2 class="no-results-error">
-    No {{ searchParameters.onlyUnverified ? "unverified" : "" }} annotations
-    found
-  </h2>
-  }
+    <div class="annotations-grid my-2">
+      @for (verificationModel of searchResults; track $index) {
+      <div *ngIf="verificationModel">
+        <baw-audio-event-card
+          [audioEvent]="verificationModel"
+        ></baw-audio-event-card>
+      </div>
+      }
+    </div>
 
-  <ngb-pagination
-    class="d-flex justify-content-center mt-4"
-    [(page)]="page"
-    [collectionSize]="paginationInformation?.total ?? 0"
-  ></ngb-pagination>
+    @if (searchResults.length === 0 && !loading) {
+    <h2 class="no-results-error">
+      No {{ searchParameters.onlyUnverified ? "unverified" : "" }} annotations
+      found
+    </h2>
+    }
+
+    @if(displayPagination) {
+    <ngb-pagination
+      class="d-flex justify-content-center mt-4"
+      [collectionSize]="paginationInformation?.total ?? 0"
+      [(page)]="page"
+    ></ngb-pagination>
+    }
+  </ng-container>
+  <baw-error-handler [error]="error"></baw-error-handler>
 </div>
 
 <ng-template #broadSearchWarningModal let-warningModal>

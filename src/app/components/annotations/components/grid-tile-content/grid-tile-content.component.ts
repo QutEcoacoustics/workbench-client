@@ -8,8 +8,8 @@ import { gridTileContext } from "@ecoacoustics/web-components";
   selector: "baw-grid-tile-content",
   template: `
     <div #wrapper>
-      <div>{{ listenLink }}</div>
-      <div>{{ contextLink }}</div>
+      <a id="listen-link">{{ listenLink }}</a>
+      <a id="context-link">{{ contextLink }}</a>
     </div>
   `,
 })
@@ -29,7 +29,7 @@ export class GridTileContentComponent implements AfterViewInit {
     );
   }
 
-  private handleContextChange = (subjectModel: IVerification) => {
+  public handleContextChange(subjectModel: IVerification): void {
     console.debug(subjectModel);
     this.listenLink = subjectModel.audioLink;
     this.contextLink = subjectModel.audioLink;

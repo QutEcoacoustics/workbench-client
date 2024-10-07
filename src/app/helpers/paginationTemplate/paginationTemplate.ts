@@ -30,8 +30,14 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    * Maximum number of elements for current filter
    */
   public collectionSize: number;
+  // TODO: this condition seems to be an artifact of an underlying bug
+  // we should find why we have to use this condition with ngb-pagination and
+  // fix the root cause of the bug
   /**
    * Tracks whether to display the pagination buttons
+   * if you do not place the paginations inside an if condition using this value
+   * all query string parameters (such as page=2) will be removed when the page
+   * first loads
    */
   public displayPagination: boolean;
   /**

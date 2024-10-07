@@ -14,7 +14,7 @@ import { retrieveResolvers } from "@baw-api/resolver-common";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { VerificationService } from "@baw-api/verification/verification.service";
 import { Paging } from "@baw-api/baw-api.service";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -97,7 +97,31 @@ class AnnotationSearchComponent
 
     this.verificationRoute = this.verifyAnnotationsRoute();
 
+    // calling the pagination templates ngOnInit() method causes the first page
+    // of results to be fetched and displayed
     super.ngOnInit();
+  }
+
+  // the PaginationTemplate that we extend only supports a single filter
+  // query string paramter e.g. a projects name
+  // since we have multiple conditions, I have overridden the updateQueryParms
+  // method
+  //
+  // TODO: the correct fix here would be to add support for any length qsps
+  // to the pagination template
+  protected override updateQueryParams(page: number): void {
+    const queryParams: Params = this.searchParameters.toQueryParams()
+
+    if (queryParams) {
+      queryParams.page = page;
+    }
+
+    this.router.navigate([], { relativeTo: this.route, queryParams });
+  }
+
+  protected updateSearchParameters(model: AnnotationSearchParameters): void {
+    this.searchParameters = model;
+    this.updateQueryParams(this.page);
   }
 
   protected async navigateToVerificationGrid(): Promise<void> {

@@ -1,13 +1,20 @@
 import { Injector } from "@angular/core";
 import { Params } from "@angular/router";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
-import { AUDIO_RECORDING, PROJECT, SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
+import {
+  AUDIO_RECORDING,
+  PROJECT,
+  SHALLOW_REGION,
+  SHALLOW_SITE,
+  TAG,
+} from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import {
   deserializeParamsToObject,
   IQueryStringParameterSpec,
   jsBoolean,
+  jsNumber,
   jsNumberArray,
   luxonDateArray,
   luxonDurationArray,
@@ -38,16 +45,17 @@ export interface IAnnotationSearchParameters {
   time: MonoTuple<Duration, 2>;
 }
 
-const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> = {
-  audioRecordings: jsNumberArray,
-  projects: jsNumberArray,
-  regions: jsNumberArray,
-  sites: jsNumberArray,
-  tags: jsNumberArray,
-  onlyUnverified: jsBoolean,
-  date: luxonDateArray,
-  time: luxonDurationArray,
-};
+const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> =
+  {
+    audioRecordings: jsNumberArray,
+    projects: jsNumberArray,
+    regions: jsNumberArray,
+    sites: jsNumberArray,
+    tags: jsNumberArray,
+    onlyUnverified: jsBoolean,
+    date: luxonDateArray,
+    time: luxonDurationArray,
+  };
 
 export class AnnotationSearchParameters
   implements
@@ -108,13 +116,22 @@ export class AnnotationSearchParameters
   }
 
   public toFilter(): Filters<AudioEvent> {
+    // TODO: this is a test dataset
+    return {
+      filter: {
+        "audio_recordings.id": {
+          eq: 461823,
+        },
+      },
+    } as any;
+
     const modelFilters = this.modelFilter();
     const tagFilters = filterModelIds<Tag>("tags", this.tags);
     const dateTimeFilters = this.dateTimeFilters();
 
     const filter = filterAnd<AudioEvent>(
       dateTimeFilters,
-      filterAnd<Verification>(modelFilters as any, tagFilters),
+      filterAnd<Verification>(modelFilters as any, tagFilters)
     );
 
     return { filter };

@@ -19,7 +19,10 @@ import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
 import { selectFromTypeahead } from "@test/helpers/html";
 import { fakeAsync } from "@angular/core/testing";
+import { modelData } from "@test/helpers/faker";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
+import { defaultDebounceTime } from "src/app/app.helper";
+import { DateTime } from "luxon";
 
 describe("AnnotationSearchFormComponent", () => {
   let spectator: Spectator<AnnotationSearchFormComponent>;
@@ -79,6 +82,16 @@ describe("AnnotationSearchFormComponent", () => {
   const projectsInput = () => projectsTypeahead().querySelector("input");
   const regionsInput = () => regionsTypeahead().querySelector("input");
   const sitesInput = () => sitesTypeahead().querySelector("input");
+  const startDateInput = () => spectator.query("#date-started-after");
+
+  const dateToggleInput = () => spectator.query("#date-filtering");
+  const tagPills = () => tagsTypeahead().querySelector(".item-pill");
+
+  function toggleDateFilters(): void {
+    spectator.click(dateToggleInput());
+    spectator.detectChanges();
+    spectator.tick(defaultDebounceTime);
+  }
 
   beforeEach(() => {
     defaultFakeProject = new Project(generateProject());
@@ -99,13 +112,27 @@ describe("AnnotationSearchFormComponent", () => {
     });
 
     // check the population of a typeahead input that does not use a property backing
-    xit("should pre-populate the tags typeahead input if provided in the search parameters model", () => {});
+    it("should pre-populate the tags typeahead input if provided in the search parameters model", () => {
+      const testTag = mockTagsResponse[0];
+      spectator.component.searchParameters.tags = new Set([testTag.id]);
+      spectator.detectChanges();
+
+      expect(tagPills()).toHaveLength(1);
+      expect(tagPills()[0].innerText).toEqual([testTag]);
+    });
 
     // check the population of an external component that is not a typeahead input
-    it("should pre-populate the date-time filters if provided in the search parameters model", () => {});
+    it("should pre-populate the date-time filters if provided in the search parameters model", () => {
+      const testStartDate = modelData.dateTime();
+      spectator.component.searchParameters.date = [testStartDate] as any;
+      expect(startDateInput()).toHaveValue(testStartDate.toFormat("yyyy-MM-dd"))
+    });
 
     // check the population of a checkbox boolean input
-    it("should pre-populate the only verified checkbox if provided in the search parameters model", () => {});
+    // TODO: enable this test once we have the endpoint avaliable to filter by verified status
+    xit("should pre-populate the only verified checkbox if provided in the search parameters model", () => {
+      expect(spectator.component.searchParameters.onlyUnverified).toBeTrue();
+    });
   });
 
   describe("update emission", () => {
@@ -134,17 +161,33 @@ describe("AnnotationSearchFormComponent", () => {
     }));
 
     // check an external component that is not a typeahead input
-    fit("should emit the correct model if the date-time filters are updated", () => {
-      const newStartDate = new Date(2020, 1, 1);
-    });
+    it("should emit the correct model if the date-time filters are updated", fakeAsync(() => {
+      const testedDate = "2021-10-10";
+      const expectedNewModel = {};
 
-    // check a checkbox boolean input
-    it("should emit the correct model if the only verified checkbox is updated", () => {
+      toggleDateFilters();
+      spectator.typeInElement(testedDate, startDateInput())
+
+      expect(modelChangeSpy).toHaveBeenCalledOnceWith(expectedNewModel);
+    }));
+
+    it("should not emit a new model if the date-time filters are updated with an invalid value", fakeAsync(() => {
+      const testedDate = "2021109-12"
+      const expectedNewModel = {};
+
+      toggleDateFilters();
+      spectator.typeInElement(testedDate, startDateInput());
+
+      expect(modelChangeSpy).toHaveBeenCalledOnceWith(expectedNewModel);
+    }));
+
+    // TODO: enable this test once we have the endpoint avaliable to filter by verified status
+    xit("should emit the correct model if the only verified checkbox is updated", () => {
       spectator.click(onlyVerifiedCheckbox());
 
       expect(spectator.component.searchParameters.onlyUnverified).toBeTrue();
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(
-        spectator.component.searchParameters
+        jasmine.objectContaining({ onlyUnverified: true })
       );
     });
   });
