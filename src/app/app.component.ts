@@ -2,6 +2,7 @@ import {
   Component,
   Inject,
   Injectable,
+  Injector,
   OnInit,
   ViewEncapsulation,
 } from "@angular/core";
@@ -27,6 +28,8 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IS_SERVER_PLATFORM } from "./app.helper";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "./services/config/config.service";
+import { GridTileContentComponent, gridTileContextSelector } from "@components/annotations/components/grid-tile-content/grid-tile-content.component";
+import { createCustomElement } from "@angular/elements";
 
 declare const gtag: Gtag.Gtag;
 
@@ -52,6 +55,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
 
   public constructor(
     public menu: MenuService,
+    protected injector: Injector,
     private sharedRoute: SharedActivatedRouteService,
     private router: Router,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
@@ -64,6 +68,12 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
      */
     this.router.initialNavigation();
     globals.initialize();
+
+    const webComponentElement = createCustomElement(
+      GridTileContentComponent,
+      { injector }
+    );
+    customElements.define(gridTileContextSelector, webComponentElement);
   }
 
   public ngOnInit(): void {

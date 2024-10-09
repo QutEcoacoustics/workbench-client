@@ -13,13 +13,12 @@ import { ContextRequestEvent } from "@helpers/context/context";
 import { Verification } from "@models/Verification";
 import { gridTileContext } from "@ecoacoustics/web-components";
 import {
-  createCustomElement,
   NgElement,
   WithProperties,
 } from "@angular/elements";
 import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
 
-const elementSelector = "baw-grid-tile-content" as const;
+export const gridTileContextSelector = "baw-grid-tile-content" as const;
 
 @Component({
   standalone: true,
@@ -27,23 +26,11 @@ const elementSelector = "baw-grid-tile-content" as const;
   encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
 
-  selector: elementSelector,
+  selector: "baw-ng-grid-tile-content",
   templateUrl: "grid-tile-content.component.html",
   styleUrl: "grid-tile-content.component.scss",
 })
 export class GridTileContentComponent implements AfterViewInit {
-  public constructor(injector: Injector) {
-    const isCustomElementRegistered = customElements.get(elementSelector);
-
-    if (!isCustomElementRegistered) {
-      const webComponentElement = createCustomElement(
-        GridTileContentComponent,
-        { injector }
-      );
-      customElements.define(elementSelector, webComponentElement);
-    }
-  }
-
   @ViewChild("wrapper")
   private wrapper: ElementRef<HTMLDivElement>;
 
