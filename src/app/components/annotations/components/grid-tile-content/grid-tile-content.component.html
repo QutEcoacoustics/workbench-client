@@ -1,0 +1,21 @@
+<div #wrapper class="content-wrapper">
+  <a [href]="listenLink" class="content-link">Listen</a>
+
+  <a
+    (click)="toggleContext()"
+    class="content-link"
+    aria-label="Show additional context around audio event"
+  >
+    Context
+  </a>
+</div>
+
+@if (contextExpanded) {
+<div class="context-card">
+  <oe-axes>
+    <oe-indicator>
+      <oe-spectrogram [src]="contextSource" color-map="audacity"></oe-spectrogram>
+    </oe-indicator>
+  </oe-axes>
+</div>
+}

@@ -34,6 +34,7 @@
     "@angular/common": "17.1.2",
     "@angular/compiler": "17.1.2",
     "@angular/core": "17.1.2",
+    "@angular/elements": "^17.1.2",
     "@angular/forms": "17.1.2",
     "@angular/google-maps": "^17.0.5",
     "@angular/localize": "17.1.2",

@@ -1,39 +1,100 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ElementRef,
+  Injector,
+  signal,
+  ViewChild,
+  ViewEncapsulation,
+} from "@angular/core";
 import { ContextRequestEvent } from "@helpers/context/context";
-import { IVerification } from "@models/Verification";
+import { Verification } from "@models/Verification";
 import { gridTileContext } from "@ecoacoustics/web-components";
-import { interval } from "rxjs";
+import {
+  createCustomElement,
+  NgElement,
+  WithProperties,
+} from "@angular/elements";
+import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
+
+const elementSelector = "baw-grid-tile-content" as const;
 
 @Component({
   standalone: true,
-  selector: "baw-grid-tile-content",
-  template: `
-    <div #wrapper style="display: flex; justify-content: space-evenly;">
-      <a [href]="listenLink">Listen</a>
-      <a [href]="contextLink">Context</a>
-    </div>
-  `,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  encapsulation: ViewEncapsulation.ShadowDom,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
+  selector: elementSelector,
+  templateUrl: "grid-tile-content.component.html",
+  styleUrl: "grid-tile-content.component.scss",
 })
 export class GridTileContentComponent implements AfterViewInit {
-  @ViewChild("wrapper") private wrapper: ElementRef<HTMLDivElement>;
+  public constructor(injector: Injector) {
+    const isCustomElementRegistered = customElements.get(elementSelector);
 
-  protected listenLink: string = "test";
-  protected contextLink: string = "abc";
+    if (!isCustomElementRegistered) {
+      const webComponentElement = createCustomElement(
+        GridTileContentComponent,
+        { injector }
+      );
+      customElements.define(elementSelector, webComponentElement);
+    }
+  }
+
+  @ViewChild("wrapper")
+  private wrapper: ElementRef<HTMLDivElement>;
+
+  protected model = signal<Verification>(undefined);
+  protected contextExpanded = false;
+
+  public get listenLink(): string {
+    if (!this.model()) {
+      return "";
+    }
+
+    return this.model().viewUrl;
+  }
+
+  public get contextSource(): string {
+    if (!this.model()) {
+      return "";
+    }
+
+    const contextSize = 30;
+
+    const startTime = this.model().startTimeSeconds;
+    const endTime = this.model().endTimeSeconds;
+
+    // TODO: the end time should check that it is less than the duration of the audio file
+    const newStart = Math.max(0, startTime - contextSize);
+    const newEnd = endTime + contextSize;
+
+    const existingUrl = new URL(this.model().audioLink);
+    const searchParams = new URLSearchParams(existingUrl.search);
+
+    searchParams.set("start_offset", newStart.toString());
+    searchParams.set("end_offset", newEnd.toString());
+    searchParams.delete("audio_event_id");
+
+    const newUrl = new URL(existingUrl.origin + existingUrl.pathname);
+    newUrl.search = searchParams.toString();
+
+    return newUrl.toString();
+  }
 
   public ngAfterViewInit(): void {
-    // interval(1000)
-    //   // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    //   .subscribe(() => {
-    //     this.requestContext();
-    //   });
-    console.count("ngAfterViewInit");
     this.requestContext();
   }
 
-  public handleContextChange(subjectModel: IVerification): void {
-    console.debug(subjectModel);
-    this.listenLink = subjectModel.audioLink;
-    this.contextLink = subjectModel.audioLink;
+  public handleContextChange(subjectWrapper: SubjectWrapper): void {
+    this.model.set(new Verification(subjectWrapper.subject));
+  }
+
+  protected toggleContext(): void {
+    this.contextExpanded = !this.contextExpanded;
   }
 
   private requestContext(): void {
@@ -44,5 +105,12 @@ export class GridTileContentComponent implements AfterViewInit {
         true
       )
     );
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "baw-grid-tile-content": NgElement &
+      WithProperties<typeof GridTileContentComponent>;
   }
 }

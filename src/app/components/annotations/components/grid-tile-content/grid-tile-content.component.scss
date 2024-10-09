@@ -1,0 +1,15 @@
+@import "../../../../../styles.scss";
+
+.content-wrapper {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.context-card {
+  position: fixed;
+  width: 800px;
+  height: 600px;
+
+  overflow: visible;
+  z-index: 99999;
+}
