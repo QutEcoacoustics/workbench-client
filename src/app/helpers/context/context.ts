@@ -42,13 +42,17 @@ export type ContextCallback<ValueType> = (
 
 export class ContextRequestEvent<T extends UnknownContext> extends Event {
   public constructor(
-    public readonly context: T,
-    public readonly callback: ContextCallback<ContextType<T>>,
-    public readonly subscribe?: boolean
+    context: T,
+    callback: ContextCallback<ContextType<T>>,
+    subscribe: boolean = false
   ) {
     super("context-request", { bubbles: true, composed: true });
     this.context = context;
     this.callback = callback;
     this.subscribe = subscribe;
   }
+
+  public readonly context: T;
+  public readonly callback: ContextCallback<ContextType<T>>;
+  public readonly subscribe: boolean;
 }

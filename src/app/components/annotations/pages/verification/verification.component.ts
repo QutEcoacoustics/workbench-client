@@ -116,7 +116,7 @@ class VerificationComponent
   protected handleGridLoaded(): void {
     this.verificationGridElement.nativeElement.scrollIntoView({
       behavior: "smooth",
-      block: "start",
+      block: "end",
     });
   }
 
