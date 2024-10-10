@@ -50,7 +50,6 @@ import { TagGroupsService } from "./tag/tag-group.service";
 import { TaggingsService } from "./tag/taggings.service";
 import { TagsService } from "./tag/tags.service";
 import { UserService } from "./user/user.service";
-import { VerificationService } from "./verification/verification.service";
 
 // If you get the following error while trying to stub a service:
 //
@@ -92,7 +91,6 @@ const mockProviders: Provider[] = [
   mockProvider(TagGroupsService),
   mockProvider(TaggingsService),
   mockProvider(UserService),
-  mockProvider(VerificationService),
 ];
 
 @NgModule({

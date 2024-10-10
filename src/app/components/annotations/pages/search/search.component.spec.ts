@@ -2,11 +2,8 @@ import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { Params } from "@angular/router";
 import { of } from "rxjs";
 import { CUSTOM_ELEMENTS_SCHEMA, INJECTOR, Injector } from "@angular/core";
-import { generateVerification } from "@test/fakes/Verification";
-import { Verification } from "@models/Verification";
 import { modelData } from "@test/helpers/faker";
-import { VerificationService } from "@baw-api/verification/verification.service";
-import { TAG, VERIFICATION } from "@baw-api/ServiceTokens";
+import { SHALLOW_AUDIO_EVENT, TAG } from "@baw-api/ServiceTokens";
 import { Tag } from "@models/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { generateTag } from "@test/fakes/Tag";
@@ -23,6 +20,9 @@ import { fakeAsync } from "@angular/core/testing";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { getElementByInnerText, selectFromTypeahead } from "@test/helpers/html";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { AudioEvent } from "@models/AudioEvent";
+import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { AnnotationSearchComponent } from "./search.component";
 import "@ecoacoustics/web-components";
 
@@ -30,14 +30,14 @@ describe("AnnotationSearchComponent", () => {
   let spectator: Spectator<AnnotationSearchComponent>;
   let injector: Injector;
 
-  let mockVerificationsApi: SpyObject<VerificationService>;
+  let mockAudioEventsApi: SpyObject<ShallowAudioEventsService>;
   let mockTagsApi: SpyObject<TagsService>;
 
   let routeProject: Project;
   let routeRegion: Region;
   let routeSite: Site;
 
-  let mockVerificationsResponse: Verification[] = [];
+  let mockAudioEventsResponse: AudioEvent[] = [];
   let mockTagsResponse: Tag[] = [];
 
   const createComponent = createRoutingFactory({
@@ -65,15 +65,12 @@ describe("AnnotationSearchComponent", () => {
       () => new Tag(generateTag(), injector)
     );
 
-    mockVerificationsResponse = modelData.randomArray(
+    mockAudioEventsResponse = modelData.randomArray(
       defaultApiPageSize,
       defaultApiPageSize,
       () =>
-        new Verification(
-          generateVerification({
-            audioLink:
-              "https://api.staging.ecosounds.org/audio_recordings/461823/media.flac?end_offset=8170&start_offset=8159",
-          }),
+        new AudioEvent(
+          generateAudioEvent(),
           injector
         )
     );
@@ -81,9 +78,9 @@ describe("AnnotationSearchComponent", () => {
     mockTagsApi = spectator.inject(TAG.token);
     mockTagsApi.filter.and.callFake(() => of(mockTagsResponse));
 
-    mockVerificationsApi = spectator.inject(VERIFICATION.token);
-    mockVerificationsApi.filter.and.callFake(() =>
-      of(mockVerificationsResponse)
+    mockAudioEventsApi = spectator.inject(SHALLOW_AUDIO_EVENT.token);
+    mockAudioEventsApi.filter.and.callFake(() =>
+      of(mockAudioEventsResponse)
     );
 
     spectator.detectChanges();
@@ -121,7 +118,7 @@ describe("AnnotationSearchComponent", () => {
   });
 
   it("should make the correct api call", () => {
-    const expectedBody: Filters<Verification> = {
+    const expectedBody: Filters<AudioEvent> = {
       filter: {
         "tags.id": {
           in: [mockTagsResponse[0].id],
@@ -133,7 +130,7 @@ describe("AnnotationSearchComponent", () => {
       },
     } as any;
 
-    expect(mockVerificationsApi.filter).toHaveBeenCalledWith(expectedBody);
+    expect(mockAudioEventsApi.filter).toHaveBeenCalledWith(expectedBody);
   });
 
   it("should display an error if there are no search results", () => {
@@ -147,7 +144,7 @@ describe("AnnotationSearchComponent", () => {
   // filter for verified status
   xit("should use a different error message if there are no unverified annotations found", () => {
     const expectedText = "No unverified annotations found";
-    mockVerificationsResponse = [];
+    mockAudioEventsResponse = [];
     toggleOnlyVerifiedCheckbox();
 
     const element = getElementByInnerText<HTMLHeadingElement>(
@@ -158,15 +155,15 @@ describe("AnnotationSearchComponent", () => {
   });
 
   it("should display a search preview for a full page of results", () => {
-    const expectedResults = mockVerificationsResponse.length;
+    const expectedResults = mockAudioEventsResponse.length;
     const realizedResults = spectrogramElements().length;
     expect(realizedResults).toEqual(expectedResults);
   });
 
   it("should display a reduced search preview for a partial page of results", () => {
-    mockVerificationsResponse = mockVerificationsResponse.slice(0, 2);
+    mockAudioEventsResponse = mockAudioEventsResponse.slice(0, 2);
 
-    const expectedResults = mockVerificationsResponse.length;
+    const expectedResults = mockAudioEventsResponse.length;
     const realizedResults = spectrogramElements().length;
     expect(realizedResults).toEqual(expectedResults);
   });

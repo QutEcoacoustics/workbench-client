@@ -26,11 +26,9 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { VerificationService } from "@baw-api/verification/verification.service";
 import { firstValueFrom, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
-import { Verification } from "@models/Verification";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -39,6 +37,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/search-filters-modal/search-filters-modal.component";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { Tag } from "@models/Tag";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { AudioEvent } from "@models/AudioEvent";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
@@ -62,7 +62,7 @@ class VerificationComponent
   implements OnInit, AfterViewInit, UnsavedInputCheckingComponent
 {
   public constructor(
-    protected verificationApi: VerificationService,
+    protected audioEventApi: ShallowAudioEventsService,
     protected projectsApi: ProjectsService,
     protected regionsApi: ShallowRegionsService,
     protected sitesApi: ShallowSitesService,
@@ -181,8 +181,8 @@ class VerificationComponent
     return async ({ page }: PagingContext) => {
       const nextPage = (page ?? 0) + 1;
       const filters = this.filterConditions(nextPage);
-      const serviceObservable = this.verificationApi.filter(filters);
-      const items: Verification[] = await firstValueFrom(serviceObservable);
+      const serviceObservable = this.audioEventApi.filter(filters);
+      const items: AudioEvent[] = await firstValueFrom(serviceObservable);
 
       for (const item of items) {
         const tags: Tag[] = [];
@@ -222,8 +222,8 @@ class VerificationComponent
     });
   }
 
-  private filterConditions(page: number): Filters<Verification> {
-    const filter: InnerFilter<Verification> =
+  private filterConditions(page: number): Filters<AudioEvent> {
+    const filter: InnerFilter<AudioEvent> =
       this.searchParameters.toFilter().filter;
     const paging: Paging = { page };
 

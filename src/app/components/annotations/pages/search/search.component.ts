@@ -9,19 +9,19 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { Verification } from "@models/Verification";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { VerificationService } from "@baw-api/verification/verification.service";
 import { Paging } from "@baw-api/baw-api.service";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { FiltersWarningModalComponent } from "@components/annotations/components/broad-filters-warning/broad-filters-warning.component";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { NgbModal, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { AudioEvent } from "@models/AudioEvent";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -34,11 +34,11 @@ const siteKey = "site";
   styleUrl: "search.component.scss",
 })
 class AnnotationSearchComponent
-  extends PaginationTemplate<Verification>
+  extends PaginationTemplate<AudioEvent>
   implements OnInit
 {
   public constructor(
-    protected verificationApi: VerificationService,
+    protected audioEventApi: ShallowAudioEventsService,
     protected route: ActivatedRoute,
     protected router: Router,
     protected config: NgbPaginationConfig,
@@ -49,10 +49,10 @@ class AnnotationSearchComponent
       router,
       route,
       config,
-      verificationApi,
+      audioEventApi,
       "id",
       () => [],
-      (newResults: Verification[]) => {
+      (newResults: AudioEvent[]) => {
         this.searchResults = newResults;
 
         if (newResults.length > 0) {
@@ -71,7 +71,7 @@ class AnnotationSearchComponent
   public broadFilterWarningModal: ElementRef<FiltersWarningModalComponent>;
 
   protected paginationInformation: Paging;
-  protected searchResults: Verification[] = [];
+  protected searchResults: AudioEvent[] = [];
   protected searchParameters: AnnotationSearchParameters;
   protected verificationRoute: StrongRoute;
   protected project: Project;
@@ -168,12 +168,6 @@ class AnnotationSearchComponent
     }
 
     return annotationMenuItems.verify.project.route;
-  }
-
-  protected downloadAnnotationsUrl(): string {
-    return this.verificationApi.downloadVerificationsTableUrl(
-      this.searchParameters.toFilter()
-    );
   }
 }
 

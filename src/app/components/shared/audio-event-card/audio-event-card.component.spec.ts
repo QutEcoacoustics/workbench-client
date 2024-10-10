@@ -5,8 +5,6 @@ import {
 } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
-import { Verification } from "@models/Verification";
-import { generateVerification } from "@test/fakes/Verification";
 import { INJECTOR, Injector } from "@angular/core";
 import { AudioRecording } from "@models/AudioRecording";
 import { Tag } from "@models/Tag";
@@ -19,7 +17,9 @@ import { of } from "rxjs";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
+import { AudioEvent } from "@models/AudioEvent";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
+import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { AudioEventCardComponent } from "./audio-event-card.component";
 
 describe("AudioEventCardComponent", () => {
@@ -29,7 +29,7 @@ describe("AudioEventCardComponent", () => {
   let tagApiSpy: SpyObject<TagsService>;
   let siteApiSpy: SpyObject<ShallowSitesService>;
 
-  let mockVerification: Verification;
+  let mockAudioEvent: AudioEvent;
   let mockAudioRecording: AudioRecording;
   let mockTag: Tag;
   let mockSite: Site;
@@ -44,7 +44,7 @@ describe("AudioEventCardComponent", () => {
 
     injectorSpy = spectator.inject(INJECTOR);
 
-    mockVerification = new Verification(generateVerification(), injectorSpy);
+    mockAudioEvent = new AudioEvent(generateAudioEvent(), injectorSpy);
     mockTag = new Tag(generateTag(), injectorSpy);
     mockSite = new Site(generateSite(), injectorSpy);
     mockAudioRecording = new AudioRecording(
@@ -64,7 +64,7 @@ describe("AudioEventCardComponent", () => {
     siteApiSpy.show.andCallFake(() => of(mockSite));
     siteApiSpy.filter.andCallFake(() => of([mockSite]));
 
-    spectator.setInput("audioEvent", mockVerification);
+    spectator.setInput("audioEvent", mockAudioEvent);
   }
 
   const spectrogram = () =>
@@ -82,13 +82,13 @@ describe("AudioEventCardComponent", () => {
   });
 
   it("should have the correct spectrogram source", () => {
-    const expectedSource = mockVerification.audioLink;
+    const expectedSource = mockAudioEvent.audioLink;
     const realizedSource = spectrogram().src;
     expect(realizedSource).toEqual(expectedSource);
   });
 
   it("should have the correct link to the listen page", () => {
-    const expectedHref = mockVerification.viewUrl;
+    const expectedHref = mockAudioEvent.viewUrl;
     expect(listenLink()).toHaveAttribute("href", expectedHref);
   });
 

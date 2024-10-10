@@ -2,15 +2,15 @@ import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { getElementByInnerText } from "@test/helpers/html";
-import { Verification } from "@models/Verification";
-import { generateVerification } from "@test/fakes/Verification";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
+import { AudioEvent } from "@models/AudioEvent";
+import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
   let spectator: Spectator<GridTileContentComponent>;
   let contextRequestSpy: jasmine.Spy;
-  let mockVerification: Verification;
+  let mockAudioEvent: AudioEvent;
 
   const createComponent = createComponentFactory({
     component: GridTileContentComponent,
@@ -19,10 +19,10 @@ describe("GridTileContentComponent", () => {
 
   function setup(): void {
     spectator = createComponent({ detectChanges: false });
-    updateContext(mockVerification);
+    updateContext(mockAudioEvent);
   }
 
-  function updateContext(model: Verification): void {
+  function updateContext(model: AudioEvent): void {
     spectator.component.handleContextChange({ subject: model } as any);
 
     contextRequestSpy = jasmine.createSpy("event");
@@ -39,11 +39,8 @@ describe("GridTileContentComponent", () => {
     spectator.query<SpectrogramComponent>("oe-spectrogram");
 
   beforeEach(() => {
-    mockVerification = new Verification(
-      generateVerification({
-        audioLink:
-          "https://test.com/audio.mp3?audio_event_id=1&start_offset=0&end_offset=10",
-      })
+    mockAudioEvent = new AudioEvent(
+      generateAudioEvent()
     );
 
     setup();
@@ -62,12 +59,12 @@ describe("GridTileContentComponent", () => {
 
   describe("listen link", () => {
     it("should have the audio link for the event", () => {
-      const expectedHref = mockVerification.viewUrl;
+      const expectedHref = mockAudioEvent.viewUrl;
       expect(listenLink()).toHaveAttribute("href", expectedHref);
     });
 
     it("should have the correct audio link if a new subject is provided", () => {
-      const newTestSubject = new Verification(generateVerification());
+      const newTestSubject = new AudioEvent(generateAudioEvent());
       updateContext(newTestSubject);
 
       const expectedHref = newTestSubject.viewUrl;
@@ -89,8 +86,8 @@ describe("GridTileContentComponent", () => {
       spectator.click(contextButton());
 
       const expectedBase = "https://test.com/audio.mp3";
-      const expectedStartOffset = mockVerification.startTimeSeconds - 30;
-      const expectedEndOffset = mockVerification.endTimeSeconds + 30;
+      const expectedStartOffset = mockAudioEvent.startTimeSeconds - 30;
+      const expectedEndOffset = mockAudioEvent.endTimeSeconds + 30;
       const expectedSpectrogramSource = `${expectedBase}?start_offset=${expectedStartOffset}&end_offset=${expectedEndOffset}`;
 
       const realizedSpectrogramSource = spectrogram().src;
@@ -101,12 +98,10 @@ describe("GridTileContentComponent", () => {
     // if the audio event is at the start of the recording, we limit the context to the end of the recording (0 seconds)
     // because if we subtract 30 seconds from 0, we get -30 seconds, which is invalid
     it("should have the correct context source if the audio event is at the start of the recording", () => {
-      const testVerification = new Verification(
-        generateVerification({
+      const testVerification = new AudioEvent(
+        new AudioEvent({
           startTimeSeconds: 0,
           endTimeSeconds: 10,
-          audioLink:
-            "https://test.com/audio.mp3?audio_event_id=1&start_offset=0&end_offset=10",
         })
       );
       updateContext(testVerification);

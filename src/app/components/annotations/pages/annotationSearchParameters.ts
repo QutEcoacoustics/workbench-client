@@ -29,7 +29,6 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
-import { Verification } from "@models/Verification";
 import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
 import { DateTime, Duration } from "luxon";
 
@@ -130,7 +129,7 @@ export class AnnotationSearchParameters
 
     const filter = filterAnd<AudioEvent>(
       dateTimeFilters,
-      filterAnd<Verification>(modelFilters as any, tagFilters)
+      filterAnd<AudioEvent>(modelFilters as any, tagFilters)
     );
 
     return { filter };

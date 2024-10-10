@@ -9,12 +9,12 @@ import {
   ViewEncapsulation,
 } from "@angular/core";
 import { ContextRequestEvent } from "@helpers/context/context";
-import { Verification } from "@models/Verification";
 import { gridTileContext } from "@ecoacoustics/web-components";
 import { NgElement, WithProperties } from "@angular/elements";
 import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
+import { AudioEvent } from "@models/AudioEvent";
 
 export const gridTileContextSelector = "baw-grid-tile-content" as const;
 
@@ -38,7 +38,7 @@ export class GridTileContentComponent implements AfterViewInit {
   @ViewChild("context-media-controls")
   private contextMediaControls: ElementRef<MediaControlsComponent>;
 
-  protected model = signal<Verification>(undefined);
+  protected model = signal<AudioEvent>(undefined);
   protected contextExpanded = false;
 
   public get listenLink(): string {
@@ -85,7 +85,7 @@ export class GridTileContentComponent implements AfterViewInit {
   }
 
   public handleContextChange(subjectWrapper: SubjectWrapper): void {
-    this.model.set(new Verification(subjectWrapper.subject));
+    this.model.set(new AudioEvent(subjectWrapper.subject));
   }
 
   protected toggleContext(): void {

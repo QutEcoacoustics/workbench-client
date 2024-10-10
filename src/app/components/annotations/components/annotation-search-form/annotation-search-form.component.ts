@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { StandardApi } from "@baw-api/api-common";
+import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { VerificationService } from "@baw-api/verification/verification.service";
 import {
   AnnotationSearchParameters,
   IAnnotationSearchParameters,
@@ -35,7 +35,7 @@ import { Observable } from "rxjs";
 export class AnnotationSearchFormComponent {
   public constructor(
     protected recordingsApi: AudioRecordingsService,
-    protected verificationApi: VerificationService,
+    protected audioEventsApi: AudioEventsService,
     protected projectsApi: ProjectsService,
     protected regionsApi: ShallowRegionsService,
     protected sitesApi: ShallowSitesService,

@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
-import { Verification } from "@models/Verification";
 import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
+import { AudioEvent } from "@models/AudioEvent";
 
 @Component({
   selector: "baw-audio-event-card",
@@ -8,7 +8,7 @@ import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/comp
   styleUrl: "audio-event-card.component.scss",
 })
 export class AudioEventCardComponent implements OnInit, AfterViewInit {
-  @Input({ required: true }) public audioEvent: Verification;
+  @Input({ required: true }) public audioEvent: AudioEvent;
   protected spectrogramId: string;
 
   @ViewChild("mediaControls")

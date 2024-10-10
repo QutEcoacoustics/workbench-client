@@ -14,15 +14,12 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { VerificationService } from "@baw-api/verification/verification.service";
 import {
+  SHALLOW_AUDIO_EVENT,
   SHALLOW_REGION,
   SHALLOW_SITE,
   TAG,
-  VERIFICATION,
 } from "@baw-api/ServiceTokens";
-import { Verification } from "@models/Verification";
-import { generateVerification } from "@test/fakes/Verification";
 import { CUSTOM_ELEMENTS_SCHEMA, INJECTOR, Injector } from "@angular/core";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
@@ -42,6 +39,9 @@ import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input
 import { generateTag } from "@test/fakes/Tag";
 import { RouterTestingModule } from "@angular/router/testing";
 import { selectFromTypeahead } from "@test/helpers/html";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { AudioEvent } from "@models/AudioEvent";
+import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { VerificationComponent } from "./verification.component";
 import "@ecoacoustics/web-components";
 
@@ -50,8 +50,8 @@ describe("VerificationComponent", () => {
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
-  let mockVerificationsApi: SpyObject<VerificationService>;
-  let mockVerificationsResponse: Verification[] = [];
+  let mockAudioEventsApi: SpyObject<ShallowAudioEventsService>;
+  let mockAudioEventsResponse: AudioEvent[] = [];
   let mockRegionsApi: SpyObject<ShallowRegionsService>;
   let mockSitesApi: SpyObject<ShallowSitesService>;
   let mockTagsApi: SpyObject<TagsService>;
@@ -79,15 +79,12 @@ describe("VerificationComponent", () => {
 
     injector = spectator.inject(INJECTOR);
 
-    mockVerificationsResponse = modelData.randomArray(
+    mockAudioEventsResponse = modelData.randomArray(
       3,
       3,
       () =>
-        new Verification(
-          generateVerification({
-            audioLink:
-              "https://api.staging.ecosounds.org/audio_recordings/461823/media.flac?end_offset=8170&start_offset=8159",
-          }),
+        new AudioEvent(
+          generateAudioEvent(),
           injector
         )
     );
@@ -96,7 +93,7 @@ describe("VerificationComponent", () => {
     spectator.component.region = defaultRegion;
     spectator.component.site = defaultSite;
 
-    mockVerificationsApi = spectator.inject(VERIFICATION.token);
+    mockAudioEventsApi = spectator.inject(SHALLOW_AUDIO_EVENT.token);
     mockRegionsApi = spectator.inject(SHALLOW_REGION.token);
     mockSitesApi = spectator.inject(SHALLOW_SITE.token);
     mockTagsApi = spectator.inject(TAG.token);
@@ -104,8 +101,8 @@ describe("VerificationComponent", () => {
     mockRegionsApi.filter.and.callFake(() => of(defaultFakeRegions));
     mockSitesApi.filter.and.callFake(() => of(defaultFakeSites));
     mockTagsApi.filter.and.callFake(() => of(defaultFakeTags));
-    mockVerificationsApi.filter.and.callFake(() =>
-      of(mockVerificationsResponse)
+    mockAudioEventsApi.filter.and.callFake(() =>
+      of(mockAudioEventsResponse)
     );
 
     spectator.detectChanges();
@@ -278,14 +275,14 @@ describe("VerificationComponent", () => {
 
       it("should cache client side with GET requests", () => {
         const expectedRequestCount = 10;
-        expect(mockVerificationsApi.filter).toHaveBeenCalledTimes(
+        expect(mockAudioEventsApi.filter).toHaveBeenCalledTimes(
           expectedRequestCount
         );
       });
 
       it("should cache server side with HEAD requests", () => {
         const expectedRequestCount = 50;
-        expect(mockVerificationsApi.filter).toHaveBeenCalledTimes(
+        expect(mockAudioEventsApi.filter).toHaveBeenCalledTimes(
           expectedRequestCount
         );
       });
