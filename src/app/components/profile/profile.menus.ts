@@ -37,7 +37,11 @@ export const myAccountMenuItem = menuRoute({
     retrieveResolvedModel(pageInfo, User)?.userName,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
-    return `${componentModel.account.model.userName}'s Profile`;
+
+    // when viewing another persons profile, the route model will be under the
+    // "account" key. However, when viewing "my profile", the key will be "user"
+    const accountModel = componentModel.account ?? componentModel.user;
+    return `${accountModel.model.userName}'s Profile`;
   },
 });
 

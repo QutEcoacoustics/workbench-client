@@ -30,8 +30,14 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    * Maximum number of elements for current filter
    */
   public collectionSize: number;
+  // TODO: this condition seems to be an artifact of an underlying bug
+  // we should find why we have to use this condition with ngb-pagination and
+  // fix the root cause of the bug
   /**
    * Tracks whether to display the pagination buttons
+   * if you do not place the paginations inside an if condition using this value
+   * all query string parameters (such as page=2) will be removed when the page
+   * first loads
    */
   public displayPagination: boolean;
   /**
@@ -46,6 +52,11 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    * Tracks the current user filter input
    */
   public filter: string;
+  /**
+    * A configuraiton property that can be used to overwrite how many
+    * items are fetched in a page of results
+    */
+  public pageSize?: number;
   /**
    * Tracks the current filter page
    */
@@ -85,6 +96,8 @@ export abstract class PaginationTemplate<M extends AbstractModel>
 
   public ngOnInit() {
     // Set pagination defaults
+    // TODO: this is overwriting the global NgbPagination config every time
+    // a component that uses this paginationTemplate is created
     this.config.maxSize = 3;
     this.config.pageSize = defaultApiPageSize;
     this.config.rotate = true;
@@ -179,7 +192,10 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    */
   protected generateFilter(): Filters<M> {
     return {
-      paging: { page: this.page },
+      paging: {
+        page: this.page,
+        items: this.pageSize ?? this.config.pageSize,
+      },
       filter: this.filter
         ? ({
             ...this.defaultInnerFilter(),
