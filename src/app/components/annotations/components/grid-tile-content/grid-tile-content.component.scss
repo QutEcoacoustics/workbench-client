@@ -3,13 +3,46 @@
 .content-wrapper {
   display: flex;
   justify-content: space-evenly;
+  align-items: center;
+
+  font-size: 0.8em;
+}
+
+.context-anchor {
+  anchor-name: --context-anchor;
+}
+
+.context-anchor-item {
+  position: absolute;
+
+  position-anchor: --context-anchor;
+  left: anchor(left);
+  top: anchor(bottom);
 }
 
 .context-card {
   position: fixed;
-  width: 800px;
-  height: 600px;
+  width: 600px;
+  height: 380px;
+  padding: 1rem;
+  padding-right: 3rem;
+
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
 
   overflow: visible;
   z-index: 99999;
+}
+
+.context-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-bottom: 1rem;
+}
+
+.context-card-title {
+  font-weight: bold;
 }

@@ -1,3 +1,8 @@
+// TODO: This should probably be computed so that if the navbar height changes
+// in the future, the header height will update correctly
+// we probably shouldn't compute it at runtime because it it unlikely to change
+// during runtime, but we should make the header height a computed variable
+// that is defined by the height of the `.nav` bootstrap class
 $header-height: 56px;
 
 #verification-grid {
@@ -12,4 +17,8 @@ $header-height: 56px;
   max-width: 1320px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.filter-button {
+  height: fit-content;
 }

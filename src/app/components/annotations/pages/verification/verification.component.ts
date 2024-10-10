@@ -78,11 +78,12 @@ class VerificationComponent
   @ViewChild("verificationGrid")
   private verificationGridElement: ElementRef<VerificationGridComponent>;
 
-  public hasUnsavedChanges = false;
   public searchParameters: AnnotationSearchParameters;
   public project: Project;
   public region?: Region;
   public site?: Site;
+  public hasUnsavedChanges = false;
+  private doneInitialScroll = false;
 
   public ngOnInit(): void {
     this.route.queryParams
@@ -114,10 +115,22 @@ class VerificationComponent
   }
 
   protected handleGridLoaded(): void {
-    this.verificationGridElement.nativeElement.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-    });
+    if (this.doneInitialScroll) {
+      return;
+    }
+
+    const timeoutDuration = 1000;
+
+    // we wait a second after the verification grid has loaded to give the user
+    // some time to see the grid in the context of the website before we scroll
+    // them down to the grid
+    setTimeout(() => {
+      this.scrollToVerificationGrid();
+    }, timeoutDuration);
+
+    // we set the done initial scroll value before the timeout so that we don't
+    // send two scroll events if the user makes a decision before the timeout
+    this.doneInitialScroll = true;
   }
 
   protected handleDecision(): void {
@@ -179,6 +192,13 @@ class VerificationComponent
     this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
     this.updateUrlParameters();
     this.hasUnsavedChanges = false;
+  }
+
+  private scrollToVerificationGrid(): void {
+    this.verificationGridElement.nativeElement.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
   }
 
   private filterConditions(_pagedItems: number): Filters<Verification> {

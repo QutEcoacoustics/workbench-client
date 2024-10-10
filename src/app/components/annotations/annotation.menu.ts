@@ -52,27 +52,28 @@ function makeAnnotationSearchMenuItem(
   });
 }
 
-const verificationMenuItem: AnnotationMenuRoutes = {
-  /** /project/:projectId/site/:siteId/verification */
-  site: makeVerificationMenuItem("site", siteMenuItem),
-  /** /project/:projectId/region/:regionId/site/:siteId/verification */
-  siteAndRegion: makeVerificationMenuItem("siteAndRegion", pointMenuItem),
-  /** /project/:projectId/region/:regionId/verification */
-  region: makeVerificationMenuItem("region", regionMenuItem),
-  /** /project/:projectId/verification */
-  project: makeVerificationMenuItem("project", projectMenuItem),
-};
-
 const annotationSearchMenuitem: AnnotationMenuRoutes = {
-  /** /project/:projectId/site/:siteId/verification */
+  /** /project/:projectId/site/:siteId/annotations */
   site: makeAnnotationSearchMenuItem("site", siteMenuItem),
-  /** /project/:projectId/region/:regionId/site/:siteId/verification */
+  /** /project/:projectId/region/:regionId/site/:siteId/annotations */
   siteAndRegion: makeAnnotationSearchMenuItem("siteAndRegion", pointMenuItem),
-  /** /project/:projectId/region/:regionId/verification */
+  /** /project/:projectId/region/:regionId/annotations */
   region: makeAnnotationSearchMenuItem("region", regionMenuItem),
-  /** /project/:projectId/verification */
+  /** /project/:projectId/annotations */
   project: makeAnnotationSearchMenuItem("project", projectMenuItem),
 };
+
+const verificationMenuItem: AnnotationMenuRoutes = {
+  /** /project/:projectId/site/:siteId/annotations/verify */
+  site: makeVerificationMenuItem("site", annotationSearchMenuitem.site),
+  /** /project/:projectId/region/:regionId/site/:siteId/annotations/verify */
+  siteAndRegion: makeVerificationMenuItem("siteAndRegion", annotationSearchMenuitem.siteAndRegion),
+  /** /project/:projectId/region/:regionId/annotations/verify */
+  region: makeVerificationMenuItem("region", annotationSearchMenuitem.region),
+  /** /project/:projectId/annotations/verify */
+  project: makeVerificationMenuItem("project", annotationSearchMenuitem.project),
+};
+
 
 const verificationCategory = {
   site: makeVerificationCategory("site"),

@@ -4,7 +4,6 @@ import {
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
-  Injector,
   signal,
   ViewChild,
   ViewEncapsulation,
@@ -12,11 +11,10 @@ import {
 import { ContextRequestEvent } from "@helpers/context/context";
 import { Verification } from "@models/Verification";
 import { gridTileContext } from "@ecoacoustics/web-components";
-import {
-  NgElement,
-  WithProperties,
-} from "@angular/elements";
+import { NgElement, WithProperties } from "@angular/elements";
 import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
+import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
+import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
 
 export const gridTileContextSelector = "baw-grid-tile-content" as const;
 
@@ -34,6 +32,12 @@ export class GridTileContentComponent implements AfterViewInit {
   @ViewChild("wrapper")
   private wrapper: ElementRef<HTMLDivElement>;
 
+  @ViewChild("context-spectrogram")
+  private contextSpectrogram: ElementRef<SpectrogramComponent>;
+
+  @ViewChild("context-media-controls")
+  private contextMediaControls: ElementRef<MediaControlsComponent>;
+
   protected model = signal<Verification>(undefined);
   protected contextExpanded = false;
 
@@ -43,6 +47,10 @@ export class GridTileContentComponent implements AfterViewInit {
     }
 
     return this.model().viewUrl;
+  }
+
+  public get contextSpectrogramId(): string {
+    return `spectrogram-${this.model().id}-context`;
   }
 
   public get contextSource(): string {

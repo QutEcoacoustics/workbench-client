@@ -19,8 +19,8 @@ describe("GridTileContentComponent", () => {
     spectator = createComponent({ detectChanges: false });
   }
 
-  const listenLink = () => spectator.query<HTMLAnchorElement>("listen-link");
-  const contextLink = () => spectator.query<HTMLAnchorElement>("context-link");
+  const listenLink = () => spectator.query<HTMLAnchorElement>("#listen-link");
+  const contextLink = () => spectator.query<HTMLAnchorElement>("#context-link");
 
   beforeEach(() => {
     mockAudioEvent = new AudioEvent(generateAudioEvent());
@@ -45,14 +45,20 @@ describe("GridTileContentComponent", () => {
     );
   });
 
-  it("should have the correct content for the audio model", () => {
+  it("should have the audio link for the event", () => {
     spectator.detectChanges();
     const listenLinkElement = listenLink();
     expect(listenLinkElement).toHaveHref(mockAudioEvent.viewUrl);
     expect(listenLinkElement).toHaveText(mockAudioEvent.viewUrl);
+  });
 
-    const contextLinkElement = contextLink();
-    expect(contextLinkElement).toHaveHref(mockAudioEvent.viewUrl);
-    expect(contextLinkElement).toHaveText(mockAudioEvent.viewUrl);
+  it("should toggle a context card when the context button is clicked", () => {
+    // test that the context card opens
+
+    // test that the context card closes if clicked again
+  });
+
+  it("should have the correct context source", () => {
+    const expectedSoure = "";
   });
 });
