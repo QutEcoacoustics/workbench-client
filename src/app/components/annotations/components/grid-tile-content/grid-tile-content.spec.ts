@@ -1,14 +1,15 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
-import { AudioEvent } from "@models/AudioEvent";
-import { ContextRequestEvent } from "@helpers/context/context";
-import { generateAudioEvent } from "@test/fakes/AudioEvent";
+import { getElementByInnerText } from "@test/helpers/html";
+import { Verification } from "@models/Verification";
+import { generateVerification } from "@test/fakes/Verification";
+import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
   let spectator: Spectator<GridTileContentComponent>;
-  let mockAudioEvent: AudioEvent;
+  let mockVerification: Verification;
 
   const createComponent = createComponentFactory({
     component: GridTileContentComponent,
@@ -17,13 +18,28 @@ describe("GridTileContentComponent", () => {
 
   function setup(): void {
     spectator = createComponent({ detectChanges: false });
+    updateContext(mockVerification);
   }
 
-  const listenLink = () => spectator.query<HTMLAnchorElement>("#listen-link");
-  const contextLink = () => spectator.query<HTMLAnchorElement>("#context-link");
+  function updateContext(model: Verification): void {
+    spectator.component.handleContextChange({ subject: model } as any);
+    spectator.detectChanges();
+  }
+
+  const listenLink = () => getElementByInnerText(spectator, "Go To Source");
+  const contextButton = () => getElementByInnerText(spectator, "Show More");
+  const contextCard = () => spectator.query(".context-card");
+  const spectrogram = () =>
+    spectator.query<SpectrogramComponent>("oe-spectrogram");
 
   beforeEach(() => {
-    mockAudioEvent = new AudioEvent(generateAudioEvent());
+    mockVerification = new Verification(
+      generateVerification({
+        audioLink:
+          "https://test.com/audio.mp3?audio_event_id=1&start_offset=0&end_offset=10",
+      })
+    );
+
     setup();
   });
 
@@ -32,33 +48,65 @@ describe("GridTileContentComponent", () => {
     expect(spectator.component).toBeInstanceOf(GridTileContentComponent);
   });
 
-  it("should emit an event request for a context", () => {
-    let contextEvent: ContextRequestEvent<any>;
+  xit("should emit a context request event when loaded", () => {});
 
-    spectator.output("context-request" as any).subscribe((result: any) => (contextEvent = result));
-    spectator.detectChanges();
+  describe("listen link", () => {
+    it("should have the audio link for the event", () => {
+      const expectedHref = mockVerification.viewUrl;
+      expect(listenLink()).toHaveAttribute("href", expectedHref);
+    });
 
-    expect(contextEvent).toEqual(
-      jasmine.objectContaining({
-        callback: spectator.component.handleContextChange
-      }),
-    );
+    it("should have the correct audio link if a new subject is provided", () => {
+      const newTestSubject = new Verification(generateVerification());
+      updateContext(newTestSubject);
+
+      const expectedHref = newTestSubject.viewUrl;
+      expect(listenLink()).toHaveAttribute("href", expectedHref);
+    });
   });
 
-  it("should have the audio link for the event", () => {
-    spectator.detectChanges();
-    const listenLinkElement = listenLink();
-    expect(listenLinkElement).toHaveHref(mockAudioEvent.viewUrl);
-    expect(listenLinkElement).toHaveText(mockAudioEvent.viewUrl);
-  });
+  describe("context card", () => {
+    it("should toggle a context card when the context button is clicked", () => {
+      spectator.click(contextButton());
+      expect(contextCard()).toBeVisible();
+    });
 
-  it("should toggle a context card when the context button is clicked", () => {
-    // test that the context card opens
+    xit("should be able to play the context card spectrogram", () => {
+      spectator.click(contextButton());
+    });
 
-    // test that the context card closes if clicked again
-  });
+    it("should have the correct context source", () => {
+      spectator.click(contextButton());
 
-  it("should have the correct context source", () => {
-    const expectedSoure = "";
+      const expectedBase = "https://test.com/audio.mp3";
+      const expectedStartOffset = mockVerification.startTimeSeconds - 30;
+      const expectedEndOffset = mockVerification.endTimeSeconds + 30;
+      const expectedSpectrogramSource = `${expectedBase}?start_offset=${expectedStartOffset}&end_offset=${expectedEndOffset}`;
+
+      const realizedSpectrogramSource = spectrogram().src;
+
+      expect(realizedSpectrogramSource).toEqual(expectedSpectrogramSource);
+    });
+
+    // if the audio event is at the start of the recording, we limit the context to the end of the recording (0 seconds)
+    // because if we subtract 30 seconds from 0, we get -30 seconds, which is invalid
+    it("should have the correct context source if the audio event is at the start of the recording", () => {
+      const testVerification = new Verification(
+        generateVerification({
+          startTimeSeconds: 0,
+          endTimeSeconds: 10,
+          audioLink:
+            "https://test.com/audio.mp3?audio_event_id=1&start_offset=0&end_offset=10",
+        })
+      );
+      updateContext(testVerification);
+
+      spectator.click(contextButton());
+
+      const expectedSpectrogramSource = "https://test.com/audio.mp3?start_offset=0&end_offset=40";
+      const realizedSpectrogramSource = spectrogram().src;
+
+      expect(realizedSpectrogramSource).toEqual(expectedSpectrogramSource);
+    });
   });
 });

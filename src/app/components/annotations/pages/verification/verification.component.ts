@@ -193,7 +193,7 @@ class VerificationComponent
           tags.push(tag);
         }
 
-        Object.defineProperty(item, "tags", { value: tags });
+        Object.defineProperty(item, "tags", { value: tags.join(",") });
       }
 
       return new Object({
