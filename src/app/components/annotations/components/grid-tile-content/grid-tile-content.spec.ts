@@ -9,6 +9,7 @@ import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
   let spectator: Spectator<GridTileContentComponent>;
+  let contextRequestSpy: jasmine.Spy;
   let mockVerification: Verification;
 
   const createComponent = createComponentFactory({
@@ -23,12 +24,17 @@ describe("GridTileContentComponent", () => {
 
   function updateContext(model: Verification): void {
     spectator.component.handleContextChange({ subject: model } as any);
+
+    contextRequestSpy = jasmine.createSpy("event");
+    contentWrapper().addEventListener("context-request", contextRequestSpy);
+
     spectator.detectChanges();
   }
 
   const listenLink = () => getElementByInnerText(spectator, "Go To Source");
   const contextButton = () => getElementByInnerText(spectator, "Show More");
   const contextCard = () => spectator.query(".context-card");
+  const contentWrapper = () => spectator.query(".content-wrapper");
   const spectrogram = () =>
     spectator.query<SpectrogramComponent>("oe-spectrogram");
 
@@ -48,7 +54,11 @@ describe("GridTileContentComponent", () => {
     expect(spectator.component).toBeInstanceOf(GridTileContentComponent);
   });
 
-  xit("should emit a context request event when loaded", () => {});
+  it("should emit a context request event when loaded", () => {
+    expect(contextRequestSpy).toHaveBeenCalledOnceWith(
+      jasmine.objectContaining({ callback: jasmine.any(Function) })
+    );
+  });
 
   describe("listen link", () => {
     it("should have the audio link for the event", () => {
