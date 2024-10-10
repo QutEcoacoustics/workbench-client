@@ -1,11 +1,21 @@
 @import "../../../../../styles.scss";
 
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 .content-wrapper {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
+}
 
-  font-size: 0.8em;
+.content-link {
+  font-size: 0.75em;
+  line-height: 0.75em;
 }
 
 .context-anchor {
