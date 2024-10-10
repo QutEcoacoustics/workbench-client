@@ -19,7 +19,7 @@
     <span class="info-line">
       @if (audioEvent.audioRecording.site) {
       <fa-icon class="me-2" [icon]="['fas', 'location-dot']"></fa-icon>
-      <a [href]="">
+      <a [href]="audioEvent.audioRecording.site.viewUrl">
         {{ audioEvent.audioRecording.site.name }}
       </a>
       }
@@ -37,7 +37,9 @@
 
     <span class="info-line">
       <fa-icon class="me-2" [icon]="['fas', 'circle-info']"></fa-icon>
-      <a [href]="audioEvent.viewUrl">More information</a>
+      <a class="more-information-link" [href]="audioEvent.viewUrl">
+        More information
+      </a>
     </span>
   </div>
 </div>
