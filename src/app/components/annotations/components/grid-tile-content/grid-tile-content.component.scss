@@ -22,10 +22,9 @@
 
 .context-card {
   position: fixed;
-  width: 600px;
-  height: 380px;
+  max-width: 700px;
+  width: 100%;
   padding: 1rem;
-  padding-right: 3rem;
 
   background-color: white;
   border-radius: 10px;
@@ -41,8 +40,14 @@
   align-items: center;
 
   padding-bottom: 1rem;
+
+  .context-card-title {
+    font-weight: bold;
+  }
 }
 
-.context-card-title {
-  font-weight: bold;
+// TODO: remove this flexbox container once ecoacoustics/web-components#214 is resolved
+.context-card-elements {
+  display: flex;
+  flex-direction: column;
 }
