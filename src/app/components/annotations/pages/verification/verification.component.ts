@@ -29,7 +29,7 @@ import { Location } from "@angular/common";
 import { VerificationService } from "@baw-api/verification/verification.service";
 import { firstValueFrom, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
-import { Filters } from "@baw-api/baw-api.service";
+import { Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
 import { Verification } from "@models/Verification";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { TagsService } from "@baw-api/tag/tags.service";
@@ -38,7 +38,15 @@ import { ResetProgressWarningComponent } from "@components/annotations/component
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/search-filters-modal/search-filters-modal.component";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
+import { Tag } from "@models/Tag";
+import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
+
+// TODO: using extends here makes the interface loosely typed
+// we should some sort of "satisfies" operation instead
+interface PagingContext extends PageFetcherContext {
+  page: number;
+}
 
 const projectKey = "project";
 const regionKey = "region";
@@ -170,14 +178,27 @@ class VerificationComponent
   }
 
   protected getPageCallback(): any {
-    return async (pagedItems: number) => {
-      const filters = this.filterConditions(pagedItems);
+    return async ({ page }: PagingContext) => {
+      const nextPage = (page ?? 0) + 1;
+      const filters = this.filterConditions(nextPage);
       const serviceObservable = this.verificationApi.filter(filters);
       const items: Verification[] = await firstValueFrom(serviceObservable);
 
+      for (const item of items) {
+        const tags: Tag[] = [];
+        const tagIds = item.taggings.map((tagging) => tagging.tagId);
+
+        for (const tagId of tagIds) {
+          const tag = await firstValueFrom(this.tagsApi.show(tagId));
+          tags.push(tag);
+        }
+
+        Object.defineProperty(item, "tags", { value: tags });
+      }
+
       return new Object({
         subjects: items,
-        context: { page: 1 },
+        context: { page: nextPage },
         totalItems: items.length,
       });
     };
@@ -201,8 +222,12 @@ class VerificationComponent
     });
   }
 
-  private filterConditions(_pagedItems: number): Filters<Verification> {
-    return this.searchParameters.toFilter();
+  private filterConditions(page: number): Filters<Verification> {
+    const filter: InnerFilter<Verification> =
+      this.searchParameters.toFilter().filter;
+    const paging: Paging = { page };
+
+    return { filter, paging };
   }
 
   private updateUrlParameters(): void {
