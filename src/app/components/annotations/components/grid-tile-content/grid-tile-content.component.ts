@@ -9,11 +9,10 @@ import {
   ViewEncapsulation,
 } from "@angular/core";
 import { ContextRequestEvent } from "@helpers/context/context";
-import { gridTileContext } from "@ecoacoustics/web-components";
 import { NgElement, WithProperties } from "@angular/elements";
-import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
-import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
-import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
+import type { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
+import type { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
+import type { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
 import { Annotation } from "@models/data/Annotation";
 
 export const gridTileContextSelector = "baw-grid-tile-content" as const;
@@ -95,7 +94,7 @@ export class GridTileContentComponent implements AfterViewInit {
   private requestContext(): void {
     this.wrapper.nativeElement.dispatchEvent(
       new ContextRequestEvent(
-        gridTileContext,
+        "grid-tile-context" as any,
         this.handleContextChange.bind(this),
         true
       )

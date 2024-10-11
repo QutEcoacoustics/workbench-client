@@ -57,10 +57,17 @@ export class AnnotationService {
 
   private createAudioLink(audioEvent: AudioEvent): string {
     const basePath = `/audio_recordings/${audioEvent.audioRecordingId}/media.flac`;
-    const urlParams =
+    let urlParams =
       `?audio_event_id=${audioEvent.id}` +
-      `&end_offset=${audioEvent.endTimeSeconds}&start_offset=${audioEvent.startTimeSeconds}` +
-      `&user_token=${this.session.authToken}`;
+      `&end_offset=${audioEvent.endTimeSeconds}&start_offset=${audioEvent.startTimeSeconds}`;
+
+    // if the user is logged in, we want to add their auth token to the
+    // query string parameters
+    // we do not add the auth token if the user is not logged in because the
+    // auth token will be undefined, resulting in `&user_token=undefined`
+    if (this.session.authToken) {
+      urlParams += `&user_id=${this.session.authToken}`;
+    }
 
     return this.apiRoot + basePath + urlParams;
   }

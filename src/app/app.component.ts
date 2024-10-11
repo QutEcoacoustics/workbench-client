@@ -25,11 +25,14 @@ import { MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { filter, Observable, takeUntil } from "rxjs";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { createCustomElement } from "@angular/elements";
+import {
+  GridTileContentComponent,
+  gridTileContextSelector,
+} from "@components/annotations/components/grid-tile-content/grid-tile-content.component";
 import { IS_SERVER_PLATFORM } from "./app.helper";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "./services/config/config.service";
-import { GridTileContentComponent, gridTileContextSelector } from "@components/annotations/components/grid-tile-content/grid-tile-content.component";
-import { createCustomElement } from "@angular/elements";
 
 declare const gtag: Gtag.Gtag;
 
@@ -69,11 +72,15 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     this.router.initialNavigation();
     globals.initialize();
 
-    const webComponentElement = createCustomElement(
-      GridTileContentComponent,
-      { injector }
-    );
-    customElements.define(gridTileContextSelector, webComponentElement);
+    if (!this.isServer) {
+      const webComponentElement = createCustomElement(
+        GridTileContentComponent,
+        {
+          injector,
+        }
+      );
+      customElements.define(gridTileContextSelector, webComponentElement);
+    }
   }
 
   public ngOnInit(): void {
@@ -92,6 +99,8 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     if (this.isServer) {
       return;
     }
+
+    import("@ecoacoustics/web-components");
 
     // Tell google analytics about each page which is visited
     this.router.events
@@ -115,10 +124,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
 
 @Injectable()
 export class PageTitleStrategy extends TitleStrategy {
-  public constructor(
-    private title: Title,
-    private config: ConfigService,
-  ) {
+  public constructor(private title: Title, private config: ConfigService) {
     super();
   }
 
@@ -141,7 +147,10 @@ export class PageTitleStrategy extends TitleStrategy {
         const hideProjects: boolean = this.config.settings.hideProjects;
         const titleOptions: TitleOptionsHash = { hideProjects };
 
-        const routeFragmentTitle = subRoute.title(this.routerState, titleOptions);
+        const routeFragmentTitle = subRoute.title(
+          this.routerState,
+          titleOptions
+        );
 
         // to explicitly omit a route title fragment, the title callback will return null
         if (isInstantiated(routeFragmentTitle)) {
@@ -159,8 +168,8 @@ export class PageTitleStrategy extends TitleStrategy {
     }
 
     return subRoute?.parent
-        ? this.buildHierarchicalTitle(subRoute.parent) + componentTitle
-        : componentTitle;
+      ? this.buildHierarchicalTitle(subRoute.parent) + componentTitle
+      : componentTitle;
   }
 
   // all site titles should follow the format <<brandName>> | ...PageComponentTitles
