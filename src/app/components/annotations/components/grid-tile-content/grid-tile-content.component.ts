@@ -91,10 +91,14 @@ export class GridTileContentComponent implements AfterViewInit {
     this.contextExpanded = !this.contextExpanded;
   }
 
-  private requestContext(): void {
+  private async requestContext(): Promise<void> {
+    // TODO: remove this once @ecoacoustics/web-components#219 is resolved
+    const webComponents = await import("@ecoacoustics/web-components")
+    const token = webComponents.gridTileContext;
+
     this.wrapper.nativeElement.dispatchEvent(
       new ContextRequestEvent(
-        "grid-tile-context" as any,
+        token,
         this.handleContextChange.bind(this),
         true
       )
