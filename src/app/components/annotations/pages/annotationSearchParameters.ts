@@ -115,13 +115,13 @@ export class AnnotationSearchParameters
 
   public toFilter(): Filters<AudioEvent> {
     // TODO: remove this test dataset of audio files that exist on staging
-    return {
-      filter: {
-        "audio_recordings.id": {
-          eq: 461823,
-        },
-      },
-    } as any;
+    // return {
+    //   filter: {
+    //     "audio_recordings.id": {
+    //       eq: 461823,
+    //     },
+    //   },
+    // } as any;
 
     const modelFilters = this.modelFilter();
     const tagFilters = filterModelIds<Tag>("tags", this.tags);
