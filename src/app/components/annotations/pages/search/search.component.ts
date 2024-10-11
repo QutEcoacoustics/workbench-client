@@ -22,6 +22,8 @@ import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTempla
 import { NgbModal, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
+import { Annotation } from "@models/data/Annotation";
+import { AnnotationService } from "@services/models/annotation.service";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -43,6 +45,7 @@ class AnnotationSearchComponent
     protected router: Router,
     protected config: NgbPaginationConfig,
     protected modals: NgbModal,
+    private annotationService: AnnotationService,
     private injector: Injector
   ) {
     super(
@@ -52,8 +55,12 @@ class AnnotationSearchComponent
       audioEventApi,
       "id",
       () => [],
-      (newResults: AudioEvent[]) => {
-        this.searchResults = newResults;
+      async (newResults: AudioEvent[]) => {
+        this.searchResults = await Promise.all(
+          newResults.map(
+            async (result) => await annotationService.buildAnnotation(result)
+          )
+        );
 
         if (newResults.length > 0) {
           this.paginationInformation = newResults[0].getMetadata().paging;
@@ -71,7 +78,7 @@ class AnnotationSearchComponent
   public broadFilterWarningModal: ElementRef<FiltersWarningModalComponent>;
 
   protected paginationInformation: Paging;
-  protected searchResults: AudioEvent[] = [];
+  protected searchResults: Annotation[] = [];
   protected searchParameters: AnnotationSearchParameters;
   protected verificationRoute: StrongRoute;
   protected project: Project;
@@ -110,7 +117,7 @@ class AnnotationSearchComponent
   // TODO: the correct fix here would be to add support for any length qsps
   // to the pagination template
   protected override updateQueryParams(page: number): void {
-    const queryParams: Params = this.searchParameters.toQueryParams()
+    const queryParams: Params = this.searchParameters.toQueryParams();
 
     // we have this condition so that undefined page numbers and
     // the first (default) page number is not shown in the query parameters

@@ -36,10 +36,10 @@ import { ResetProgressWarningComponent } from "@components/annotations/component
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/search-filters-modal/search-filters-modal.component";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
-import { Tag } from "@models/Tag";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
+import { AnnotationService } from "@services/models/annotation.service";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 // TODO: using extends here makes the interface loosely typed
@@ -67,8 +67,9 @@ class VerificationComponent
     protected regionsApi: ShallowRegionsService,
     protected sitesApi: ShallowSitesService,
     protected tagsApi: TagsService,
-    protected modals: NgbModal,
+    protected annotationsService: AnnotationService,
 
+    protected modals: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
@@ -182,22 +183,14 @@ class VerificationComponent
       const nextPage = (page ?? 0) + 1;
       const filters = this.filterConditions(nextPage);
       const serviceObservable = this.audioEventApi.filter(filters);
+
       const items: AudioEvent[] = await firstValueFrom(serviceObservable);
-
-      for (const item of items) {
-        const tags: Tag[] = [];
-        const tagIds = item.taggings.map((tagging) => tagging.tagId);
-
-        for (const tagId of tagIds) {
-          const tag = await firstValueFrom(this.tagsApi.show(tagId));
-          tags.push(tag);
-        }
-
-        Object.defineProperty(item, "tags", { value: tags.join(",") });
-      }
+      const annotations = await Promise.all(
+        items.map((item) => this.annotationsService.buildAnnotation(item))
+      );
 
       return new Object({
-        subjects: items,
+        subjects: annotations,
         context: { page: nextPage },
         totalItems: items.length,
       });

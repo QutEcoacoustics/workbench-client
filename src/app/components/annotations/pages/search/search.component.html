@@ -42,9 +42,9 @@
     <div class="annotations-grid my-2">
       @for (verificationModel of searchResults; track $index) {
       <div *ngIf="verificationModel">
-        <baw-audio-event-card
-          [audioEvent]="verificationModel"
-        ></baw-audio-event-card>
+        <baw-annotation-event-card
+          [annotation]="verificationModel"
+        ></baw-annotation-event-card>
       </div>
       }
     </div>

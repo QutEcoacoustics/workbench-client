@@ -17,25 +17,25 @@ import { of } from "rxjs";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
-import { AudioEvent } from "@models/AudioEvent";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
-import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import { AudioEventCardComponent } from "./audio-event-card.component";
+import { Annotation } from "@models/data/Annotation";
+import { generateAnnotation } from "@test/fakes/data/Annotation";
+import { AnnotationEventCardComponent } from "./annotation-event-card.component";
 
 describe("AudioEventCardComponent", () => {
-  let spectator: Spectator<AudioEventCardComponent>;
+  let spectator: Spectator<AnnotationEventCardComponent>;
   let injectorSpy: SpyObject<Injector>;
   let audioRecordingApiSpy: SpyObject<AudioRecordingsService>;
   let tagApiSpy: SpyObject<TagsService>;
   let siteApiSpy: SpyObject<ShallowSitesService>;
 
-  let mockAudioEvent: AudioEvent;
+  let mockAnnotation: Annotation;
   let mockAudioRecording: AudioRecording;
   let mockTag: Tag;
   let mockSite: Site;
 
   const createComponent = createComponentFactory({
-    component: AudioEventCardComponent,
+    component: AnnotationEventCardComponent,
     imports: [MockBawApiModule, SharedModule],
   });
 
@@ -44,7 +44,7 @@ describe("AudioEventCardComponent", () => {
 
     injectorSpy = spectator.inject(INJECTOR);
 
-    mockAudioEvent = new AudioEvent(generateAudioEvent(), injectorSpy);
+    mockAnnotation = new Annotation(generateAnnotation(), injectorSpy);
     mockTag = new Tag(generateTag(), injectorSpy);
     mockSite = new Site(generateSite(), injectorSpy);
     mockAudioRecording = new AudioRecording(
@@ -64,7 +64,7 @@ describe("AudioEventCardComponent", () => {
     siteApiSpy.show.andCallFake(() => of(mockSite));
     siteApiSpy.filter.andCallFake(() => of([mockSite]));
 
-    spectator.setInput("audioEvent", mockAudioEvent);
+    spectator.setInput("annotation", mockAnnotation);
   }
 
   const spectrogram = () =>
@@ -78,17 +78,17 @@ describe("AudioEventCardComponent", () => {
   });
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(AudioEventCardComponent);
+    expect(spectator.component).toBeInstanceOf(AnnotationEventCardComponent);
   });
 
   it("should have the correct spectrogram source", () => {
-    const expectedSource = mockAudioEvent.audioLink;
+    const expectedSource = mockAnnotation.audioLink;
     const realizedSource = spectrogram().src;
     expect(realizedSource).toEqual(expectedSource);
   });
 
   it("should have the correct link to the listen page", () => {
-    const expectedHref = mockAudioEvent.viewUrl;
+    const expectedHref = mockAnnotation.viewUrl;
     expect(listenLink()).toHaveAttribute("href", expectedHref);
   });
 

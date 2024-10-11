@@ -1,3 +1,4 @@
+import { AnnotationService } from "@services/models/annotation.service";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
   analysisJobItemResultResolvers,
@@ -290,6 +291,10 @@ const serviceList = [
     serviceToken: Tokens.WEBSITE_STATUS,
     service: WebsiteStatusService,
   },
+  {
+    serviceToken: Tokens.ANNOTATION,
+    service: AnnotationService,
+  }
 ];
 
 const services = serviceList.map(({ service }) => service);

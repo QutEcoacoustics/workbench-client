@@ -56,7 +56,7 @@ import { TimeSinceComponent } from "./datetime-formats/time-since/time-since.com
 import { DurationComponent } from "./datetime-formats/duration/duration.component";
 import { ZonedDateTimeComponent } from "./datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { DatetimeComponent } from "./datetime-formats/datetime/datetime/datetime.component";
-import { AudioEventCardModule } from "./audio-event-card/audio-event-card.module";
+import { AudioEventCardModule } from "./audio-event-card/annotation-event-card.module";
 
 export const sharedComponents = [
   AnnotationDownloadComponent,

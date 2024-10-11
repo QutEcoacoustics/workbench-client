@@ -113,13 +113,4 @@ export class AudioEvent
   public get tagIds(): Ids {
     return new Set((this.taggings ?? []).map((tagging) => tagging.tagId));
   }
-
-  public get audioLink(): string {
-    const basePath = `https://api.staging.ecosounds.org/audio_recordings/${this.audioRecordingId}/media.flac`;
-    const urlParams =
-      `?audio_event_id=${this.id}` +
-      `&end_offset=${this.endTimeSeconds}&start_offset=${this.startTimeSeconds}`;
-      // `&user_token=${authToken}`;
-    return basePath + urlParams;
-  }
 }

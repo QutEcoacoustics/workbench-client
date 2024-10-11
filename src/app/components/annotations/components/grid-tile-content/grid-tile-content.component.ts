@@ -14,7 +14,7 @@ import { NgElement, WithProperties } from "@angular/elements";
 import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
-import { AudioEvent } from "@models/AudioEvent";
+import { Annotation } from "@models/data/Annotation";
 
 export const gridTileContextSelector = "baw-grid-tile-content" as const;
 
@@ -38,7 +38,7 @@ export class GridTileContentComponent implements AfterViewInit {
   @ViewChild("context-media-controls")
   private contextMediaControls: ElementRef<MediaControlsComponent>;
 
-  protected model = signal<AudioEvent>(undefined);
+  protected model = signal<Annotation>(undefined);
   protected contextExpanded = false;
 
   public get listenLink(): string {
@@ -85,7 +85,7 @@ export class GridTileContentComponent implements AfterViewInit {
   }
 
   public handleContextChange(subjectWrapper: SubjectWrapper): void {
-    this.model.set(new AudioEvent(subjectWrapper.subject));
+    this.model.set(new Annotation(subjectWrapper.subject));
   }
 
   protected toggleContext(): void {

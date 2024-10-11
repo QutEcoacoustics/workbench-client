@@ -159,6 +159,8 @@ function createModelDecorator<
     });
   }
 
+  // check if the backing field + async property exists on the models prototype
+
   /**
    * Get the associated model for a target model
    *
