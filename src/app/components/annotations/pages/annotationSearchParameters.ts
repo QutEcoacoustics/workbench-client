@@ -8,7 +8,8 @@ import {
   SHALLOW_SITE,
   TAG,
 } from "@baw-api/ServiceTokens";
-import { MonoTuple } from "@helpers/advancedTypes";
+import { MonoTuple, Writeable } from "@helpers/advancedTypes";
+import { filterDate, filterTime } from "@helpers/filters/audioEventFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import {
   deserializeParamsToObject,
@@ -20,6 +21,7 @@ import {
   serializeObjectToParams,
 } from "@helpers/query-string-parameters/query-string-parameters";
 import { CollectionIds } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
 import { hasMany } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
@@ -29,7 +31,6 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
-import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
 import { DateTime, Duration } from "luxon";
 
 export interface IAnnotationSearchParameters {
@@ -39,36 +40,38 @@ export interface IAnnotationSearchParameters {
   sites: CollectionIds;
   tags: CollectionIds;
   onlyUnverified: boolean;
+  daylightSavings: boolean,
   date: MonoTuple<DateTime, 2>;
   time: MonoTuple<Duration, 2>;
 }
 
-const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> =
-  {
-    audioRecordings: jsNumberArray,
-    projects: jsNumberArray,
-    regions: jsNumberArray,
-    sites: jsNumberArray,
-    tags: jsNumberArray,
-    onlyUnverified: jsBoolean,
-    date: luxonDateArray,
-    time: luxonDurationArray,
-  };
+const serializationTable: IQueryStringParameterSpec<
+  IAnnotationSearchParameters
+> = {
+  audioRecordings: jsNumberArray,
+  projects: jsNumberArray,
+  regions: jsNumberArray,
+  sites: jsNumberArray,
+  tags: jsNumberArray,
+  onlyUnverified: jsBoolean,
+  daylightSavings: jsBoolean,
+  date: luxonDateArray,
+  time: luxonDurationArray,
+};
 
 export class AnnotationSearchParameters
   implements
     IAnnotationSearchParameters,
     ImplementsInjector,
-    IParameterModel<AudioEvent>
-{
+    IParameterModel<AudioEvent> {
   public constructor(
     protected queryStringParameters: Params = {},
-    public injector?: Injector
+    public injector?: Injector,
   ) {
     const deserializedObject: IAnnotationSearchParameters =
       deserializeParamsToObject<IAnnotationSearchParameters>(
         queryStringParameters,
-        serializationTable
+        serializationTable,
       );
 
     const objectKeys = Object.keys(deserializedObject);
@@ -83,6 +86,7 @@ export class AnnotationSearchParameters
   public sites: CollectionIds;
   public tags: CollectionIds;
   public onlyUnverified: boolean;
+  public daylightSavings: boolean;
   public date: MonoTuple<DateTime, 2>;
   public time: MonoTuple<Duration, 2>;
 
@@ -114,22 +118,13 @@ export class AnnotationSearchParameters
   }
 
   public toFilter(): Filters<AudioEvent> {
-    // TODO: remove this test dataset of audio files that exist on staging
-    // return {
-    //   filter: {
-    //     "audio_recordings.id": {
-    //       eq: 461823,
-    //     },
-    //   },
-    // } as any;
-
     const modelFilters = this.modelFilter();
     const tagFilters = filterModelIds<Tag>("tags", this.tags);
-    const dateTimeFilters = this.dateTimeFilters();
+    const dateTimeFilters = this.dateTimeFilters(tagFilters);
 
     const filter = filterAnd<AudioEvent>(
       dateTimeFilters,
-      filterAnd<AudioEvent>(modelFilters as any, tagFilters)
+      filterAnd<AudioEvent>(modelFilters, tagFilters),
     );
 
     return { filter };
@@ -138,21 +133,24 @@ export class AnnotationSearchParameters
   public toQueryParams(): Params {
     return serializeObjectToParams<IAnnotationSearchParameters>(
       this,
-      serializationTable
+      serializationTable,
     );
   }
 
-  private modelFilter(): InnerFilter<Project | Region | Site> {
+  private modelFilter(): InnerFilter<Writeable<AbstractModel>> {
     if (this.sites) {
       return filterModelIds("sites", this.sites);
     } else if (this.regions) {
       return filterModelIds("regions", this.regions);
-    } else {
-      return filterModelIds("projects", this.projects);
     }
+
+    return filterModelIds("projects", this.projects);
   }
 
-  private dateTimeFilters(): DateTimeFilterModel {
-    return {};
+  //! FOR PR REVIEWER: THIS IS WHERE I AM CURRENTLY UP TO
+  private dateTimeFilters(initialFilter: InnerFilter<AudioEvent>): InnerFilter<AudioEvent> {
+    const dateFilter = filterDate(initialFilter, this.dateStartedAfter, this.dateFinishedBefore);
+    const dateTimeFilter = filterTime(dateFilter, this.daylightSavings, this.timeStartedAfter, this.timeFinishedBefore);
+    return dateTimeFilter;
   }
 }
