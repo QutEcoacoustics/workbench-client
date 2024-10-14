@@ -22,9 +22,13 @@ export class AnnotationService {
     const audioRecording = await this.createAudioRecording(audioEvent);
     const audioLink = this.createAudioLink(audioEvent);
 
+    // TODO: this is a tempoary patch for ecoacoustics/web-components#213
+    // until it is fixed upstream
+    const tagDescriptor = tags.map((tag) => tag.text).join(", ");
+
     const data = {
       ...audioEvent,
-      tags,
+      tags: tagDescriptor,
       audioLink,
       audioRecording,
     };
