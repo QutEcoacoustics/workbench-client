@@ -8,9 +8,9 @@ import {
   SHALLOW_SITE,
   TAG,
 } from "@baw-api/ServiceTokens";
-import { MonoTuple, Writeable } from "@helpers/advancedTypes";
-import { filterDate, filterTime } from "@helpers/filters/audioEventFilters";
-import { filterAnd, filterModelIds } from "@helpers/filters/filters";
+import { MonoTuple } from "@helpers/advancedTypes";
+import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
+import { filterModelIds } from "@helpers/filters/filters";
 import {
   deserializeParamsToObject,
   IQueryStringParameterSpec,
@@ -21,7 +21,6 @@ import {
   serializeObjectToParams,
 } from "@helpers/query-string-parameters/query-string-parameters";
 import { CollectionIds } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "@models/AbstractModel";
 import { hasMany } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
@@ -45,13 +44,12 @@ export interface IAnnotationSearchParameters {
   time: MonoTuple<Duration, 2>;
 }
 
+// we exclude project, region, and site from the serialization table because
+// we do not want them emitted in the query string
 const serializationTable: IQueryStringParameterSpec<
-  IAnnotationSearchParameters
+  Partial<IAnnotationSearchParameters>
 > = {
   audioRecordings: jsNumberArray,
-  projects: jsNumberArray,
-  regions: jsNumberArray,
-  sites: jsNumberArray,
   tags: jsNumberArray,
   onlyUnverified: jsBoolean,
   daylightSavings: jsBoolean,
@@ -118,15 +116,8 @@ export class AnnotationSearchParameters
   }
 
   public toFilter(): Filters<AudioEvent> {
-    const modelFilters = this.modelFilter();
     const tagFilters = filterModelIds<Tag>("tags", this.tags);
-    const dateTimeFilters = this.dateTimeFilters(tagFilters);
-
-    const filter = filterAnd<AudioEvent>(
-      dateTimeFilters,
-      filterAnd<AudioEvent>(modelFilters, tagFilters),
-    );
-
+    const filter = this.dateTimeFilters(tagFilters);
     return { filter };
   }
 
@@ -137,17 +128,6 @@ export class AnnotationSearchParameters
     );
   }
 
-  private modelFilter(): InnerFilter<Writeable<AbstractModel>> {
-    if (this.sites) {
-      return filterModelIds("sites", this.sites);
-    } else if (this.regions) {
-      return filterModelIds("regions", this.regions);
-    }
-
-    return filterModelIds("projects", this.projects);
-  }
-
-  //! FOR PR REVIEWER: THIS IS WHERE I AM CURRENTLY UP TO
   private dateTimeFilters(initialFilter: InnerFilter<AudioEvent>): InnerFilter<AudioEvent> {
     const dateFilter = filterDate(initialFilter, this.dateStartedAfter, this.dateFinishedBefore);
     const dateTimeFilter = filterTime(dateFilter, this.daylightSavings, this.timeStartedAfter, this.timeFinishedBefore);

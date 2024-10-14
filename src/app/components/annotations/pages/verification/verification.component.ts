@@ -29,7 +29,7 @@ import { Location } from "@angular/common";
 import { firstValueFrom, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
-import type { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
+import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { ResetProgressWarningComponent } from "@components/annotations/components/reset-progress-warning/reset-progress-warning.component";
@@ -38,8 +38,9 @@ import { SearchFiltersModalComponent } from "@components/annotations/components/
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
-import type { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
+import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
 import { AnnotationService } from "@services/models/annotation.service";
+import { filterAnd } from "@helpers/filters/filters";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 // TODO: using extends here makes the interface loosely typed
@@ -216,8 +217,7 @@ class VerificationComponent
   }
 
   private filterConditions(page: number): Filters<AudioEvent> {
-    const filter: InnerFilter<AudioEvent> =
-      this.searchParameters.toFilter().filter;
+    const filter: InnerFilter<AudioEvent> = this.searchFilters().filter;
     const paging: Paging = { page };
 
     return { filter, paging };
@@ -231,6 +231,29 @@ class VerificationComponent
     if (urlTree) {
       this.location.replaceState(urlTree.toString());
     }
+  }
+
+  private searchFilters(): Filters<AudioEvent> {
+    const initialFilter = this.searchParameters.toFilter();
+    if (this.site) {
+      initialFilter.filter = filterAnd(initialFilter.filter, {
+        "audioRecordings.siteId": { in: [this.site.id] },
+      } as any);
+      return initialFilter;
+    }
+
+    if (this.region) {
+      initialFilter.filter = filterAnd(initialFilter.filter, {
+        "audioRecordings.siteId": { in: Array.from(this.region.siteIds) },
+      } as any);
+      return initialFilter;
+    }
+
+    initialFilter.filter = filterAnd(initialFilter.filter, {
+      "audioRecordings.siteId": { in: Array.from(this.project.siteIds) },
+    } as any);
+
+    return initialFilter;
   }
 }
 

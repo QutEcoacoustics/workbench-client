@@ -14,7 +14,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { Paging } from "@baw-api/baw-api.service";
+import { Filters, Paging } from "@baw-api/baw-api.service";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { FiltersWarningModalComponent } from "@components/annotations/components/broad-filters-warning/broad-filters-warning.component";
@@ -24,6 +24,7 @@ import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.ser
 import { AudioEvent } from "@models/AudioEvent";
 import { Annotation } from "@models/data/Annotation";
 import { AnnotationService } from "@services/models/annotation.service";
+import { filterAnd } from "@helpers/filters/filters";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -45,7 +46,7 @@ class AnnotationSearchComponent
     protected router: Router,
     protected config: NgbPaginationConfig,
     protected modals: NgbModal,
-    private annotationService: AnnotationService,
+    protected annotationService: AnnotationService,
     private injector: Injector
   ) {
     super(
@@ -66,7 +67,7 @@ class AnnotationSearchComponent
           this.paginationInformation = newResults[0].getMetadata().paging;
         }
       },
-      () => this.searchParameters.toFilter().filter
+      () => this.searchFilters().filter
     );
 
     // we make the page size an even number so that the page of results is more
@@ -175,6 +176,29 @@ class AnnotationSearchComponent
     }
 
     return annotationMenuItems.verify.project.route;
+  }
+
+  private searchFilters(): Filters<AudioEvent> {
+    const initialFilter = this.searchParameters.toFilter();
+    if (this.site) {
+      initialFilter.filter = filterAnd(initialFilter.filter, {
+        "audioRecordings.siteId": { in: [this.site.id] },
+      } as any);
+      return initialFilter;
+    }
+
+    if (this.region) {
+      initialFilter.filter = filterAnd(initialFilter.filter, {
+        "audioRecordings.siteId": { in: Array.from(this.region.siteIds) },
+      } as any);
+      return initialFilter;
+    }
+
+    initialFilter.filter = filterAnd(initialFilter.filter, {
+      "audioRecordings.siteId": { in: Array.from(this.project.siteIds) },
+    } as any);
+
+    return initialFilter;
   }
 }
 

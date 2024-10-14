@@ -4,18 +4,6 @@
   ></baw-date-time-filter>
 
   <baw-typeahead-input
-    id="recordings-input"
-    label="Recordings of interest"
-    inputPlaceholder="All"
-    [searchCallback]="createIdSearchCallback(recordingsApi)"
-    [resultTemplate]="idTypeaheadTemplate"
-    [model]="searchParameters.audioRecordingModels"
-    (modelChange)="
-      updateModel('audioRecordings', getIdsFromAbstractModelArray($event))
-    "
-  ></baw-typeahead-input>
-
-  <baw-typeahead-input
     id="tags-input"
     label="Tags of Interest"
     inputPlaceholder="All"
@@ -32,7 +20,7 @@
     [searchCallback]="createSearchCallback(projectsApi)"
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!project"
-    [model]="searchParameters.projectModels"
+    [model]="project ? [] : searchParameters.projectModels"
     (modelChange)="
       updateModel('projects', getIdsFromAbstractModelArray($event))
     "
@@ -47,7 +35,7 @@
     [searchCallback]="createSearchCallback(regionsApi)"
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!region"
-    [model]="searchParameters.regionModels"
+    [model]="region ? [] : searchParameters.regionModels"
     (modelChange)="updateModel('regions', getIdsFromAbstractModelArray($event))"
   ></baw-typeahead-input>
 
@@ -58,8 +46,20 @@
     [searchCallback]="createSearchCallback(sitesApi)"
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!site"
-    [model]="searchParameters.siteModels"
+    [model]="region ? [] : searchParameters.siteModels"
     (modelChange)="updateModel('sites', getIdsFromAbstractModelArray($event))"
+  ></baw-typeahead-input>
+
+  <baw-typeahead-input
+    id="recordings-input"
+    label="Recording ids of interest"
+    inputPlaceholder="All"
+    [searchCallback]="createIdSearchCallback(recordingsApi)"
+    [resultTemplate]="idTypeaheadTemplate"
+    [model]="searchParameters.audioRecordingModels"
+    (modelChange)="
+      updateModel('audioRecordings', getIdsFromAbstractModelArray($event))
+    "
   ></baw-typeahead-input>
 
   <div class="form-check mt-2">
