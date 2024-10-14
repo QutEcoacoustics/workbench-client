@@ -17,13 +17,16 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
     <div class="modal-body">
       <p>
-        You no applied filter conditions. The verification grid will display all
-        available tasks.
+        You are seeing <em>all</em> annotations because no search filters were
+        used. All annotations will be shown.
       </p>
 
       <p>
-        This can result in a verification grid that is difficult to navigate and
-        may take a long time to complete.
+        You can verify all the annotations in one go, but it may take a long
+        time to complete and it will be difficult to navigate. We suggest
+        breaking up the task into smaller chunks. This can result in a
+        verification grid that is difficult to navigate and may take a long time
+        to complete.
       </p>
 
       <div class="clearfix">
