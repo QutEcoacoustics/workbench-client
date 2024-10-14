@@ -17,13 +17,19 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
     <div class="modal-body">
       <p>
-        Because you have changed the verification tasks search parameters, your
+        Because you have changed the verification search parameters, your
         progress will be reset if you continue.
       </p>
 
       <p>
         Do you wish to reset your progress and continue with the new search
         parameters?
+      </p>
+
+      <p>
+        <!-- TODO: replace with don't worry everything have been saved when we implement server persistence -->
+        If you do wish to continue, make sure you download the annotations you
+        have already done first.
       </p>
 
       <div class="clearfix">

@@ -46,7 +46,6 @@ function makeAnnotationSearchMenuItem(
     icon: ["fas", "layer-group"],
     label: "Search Annotations",
     tooltip: () => "(BETA) Search Annotations",
-    predicate: isLoggedInPredicate,
     route: annotationSearchRoute[subRoute],
     parent,
   });

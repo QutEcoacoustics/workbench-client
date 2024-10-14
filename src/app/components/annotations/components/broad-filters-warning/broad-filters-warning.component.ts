@@ -23,10 +23,13 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
       <p>
         You can verify all the annotations in one go, but it may take a long
-        time to complete and it will be difficult to navigate. We suggest
-        breaking up the task into smaller chunks. This can result in a
-        verification grid that is difficult to navigate and may take a long time
-        to complete.
+        time to complete and it will be difficult to navigate.
+      </p>
+
+      <p>
+        We suggest breaking up the task into smaller chunks. This can result in
+        a verification grid that is difficult to navigate and may take a long
+        time to complete.
       </p>
 
       <div class="clearfix">

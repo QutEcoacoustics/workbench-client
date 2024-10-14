@@ -18,9 +18,25 @@
       Download Annotations
     </a> -->
 
-    <button class="btn btn-primary" (click)="navigateToVerificationGrid()">
-      Verify This List
-    </button>
+    <!--
+      We add the tooltip to a wrapping span because if the button is disabled
+      ng-boostrap will not show the tooltip
+     -->
+    <span
+      [ngbTooltip]="
+        session.isLoggedIn
+          ? 'Verify the annotations in the list'
+          : 'You must be logged in to verify annotations'
+      "
+    >
+      <button
+        class="btn btn-primary"
+        (click)="navigateToVerificationGrid()"
+        [disabled]="!session.isLoggedIn"
+      >
+        Verify This List
+      </button>
+    </span>
   </div>
 </div>
 
@@ -54,9 +70,7 @@
       No {{ searchParameters.onlyUnverified ? "unverified" : "" }} annotations
       found
     </h2>
-    }
-
-    @if(displayPagination) {
+    } @if(displayPagination) {
     <ngb-pagination
       class="d-flex justify-content-center mt-4"
       [collectionSize]="paginationInformation?.total ?? 0"

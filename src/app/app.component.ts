@@ -72,6 +72,9 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     this.router.initialNavigation();
     globals.initialize();
 
+    // register all web components here
+    // we make some of our standalone angular components into standards based web components
+    // so that they can operate entirely independently - e.g. in shadow dom
     if (!this.isServer) {
       const webComponentElement = createCustomElement(
         GridTileContentComponent,
@@ -100,6 +103,11 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
       return;
     }
 
+    // we have dynamically imported the web components after the SSR guard
+    // so that Lit doesn't try to run in an SSR context
+    // If Lit does end up running inside an SSR context, it will throw an error
+    // because it can't bootstrap itself to the document, and cannot find the
+    // custom elements registry
     import("@ecoacoustics/web-components");
 
     // Tell google analytics about each page which is visited

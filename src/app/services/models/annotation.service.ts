@@ -66,7 +66,7 @@ export class AnnotationService {
     // we do not add the auth token if the user is not logged in because the
     // auth token will be undefined, resulting in `&user_token=undefined`
     if (this.session.authToken) {
-      urlParams += `&user_id=${this.session.authToken}`;
+      urlParams += `&user_token=${this.session.authToken}`;
     }
 
     return this.apiRoot + basePath + urlParams;
