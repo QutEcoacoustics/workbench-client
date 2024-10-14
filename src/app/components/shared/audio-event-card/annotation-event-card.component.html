@@ -6,6 +6,7 @@
         [src]="annotation.audioLink"
         scaling="stretch"
         color-map="audacity"
+        class="spectrogram"
       ></oe-spectrogram>
     </oe-indicator>
   </oe-axes>
@@ -19,9 +20,7 @@
     <span class="info-line">
       @if (annotation.audioRecording.site) {
       <fa-icon class="me-2" [icon]="['fas', 'location-dot']"></fa-icon>
-      <a [href]="annotation.audioRecording.site.viewUrl">
-        {{ annotation.audioRecording.site.name }}
-      </a>
+      <a [href]="annotation.audioRecording.site.viewUrl">{{ annotation.audioRecording.site.name }}</a>
       }
     </span>
 
@@ -37,9 +36,7 @@
 
     <span class="info-line">
       <fa-icon class="me-2" [icon]="['fas', 'circle-info']"></fa-icon>
-      <a class="more-information-link" [href]="annotation.viewUrl">
-        More information
-      </a>
+      <a class="more-information-link" [href]="annotation.viewUrl">More information</a>
     </span>
   </div>
 </div>

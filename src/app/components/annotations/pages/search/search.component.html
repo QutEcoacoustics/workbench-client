@@ -44,15 +44,17 @@
 
 <div>
   <ng-container *ngIf="!error">
-    @if (!loading) {
-    <p>
-      Displaying
-      <span class="fw-bold">{{ paginationInformation?.items }}</span> of
-      <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
-      events.
-    </p>
-    } @else {
-    <p>Loading...</p>
+    @if (searchResults.length > 0) {
+      @if (!loading) {
+      <p>
+        Displaying
+        <span class="fw-bold">{{ searchResults.length }}</span> of
+        <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
+        events.
+      </p>
+      } @else {
+      <p>Loading...</p>
+      }
     }
 
     <div class="annotations-grid my-2">
