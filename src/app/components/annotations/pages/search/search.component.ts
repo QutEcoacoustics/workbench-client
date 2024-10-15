@@ -61,7 +61,7 @@ class AnnotationSearchComponent
       async (newResults: AudioEvent[]) => {
         this.searchResults = await Promise.all(
           newResults.map(
-            async (result) => await annotationService.buildAnnotation(result)
+            async (result) => await annotationService.show(result)
           )
         );
 

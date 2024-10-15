@@ -52,6 +52,8 @@ export class AnnotationSearchFormComponent {
   @Input() public region?: Region;
   @Input() public site?: Site;
 
+  protected hideAdvancedFilters = true;
+
   protected updateDateTime(dateTimeModel: DateTimeFilterModel): void {
     if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
       this.searchParameters.date = [

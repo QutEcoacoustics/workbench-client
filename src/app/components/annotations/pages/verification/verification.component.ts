@@ -187,7 +187,7 @@ class VerificationComponent
 
       const items: AudioEvent[] = await firstValueFrom(serviceObservable);
       const annotations = await Promise.all(
-        items.map((item) => this.annotationsService.buildAnnotation(item))
+        items.map((item) => this.annotationsService.show(item))
       );
 
       return new Object({

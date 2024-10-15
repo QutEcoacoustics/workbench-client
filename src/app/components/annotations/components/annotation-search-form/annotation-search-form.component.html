@@ -50,45 +50,68 @@
     (modelChange)="updateModel('sites', getIdsFromAbstractModelArray($event))"
   ></baw-typeahead-input>
 
-  <baw-typeahead-input
-    id="recordings-input"
-    label="Recording IDs of interest"
-    inputPlaceholder="All"
-    [searchCallback]="createIdSearchCallback(recordingsApi)"
-    [resultTemplate]="idTypeaheadTemplate"
-    [model]="searchParameters.audioRecordingModels"
-    (modelChange)="
-      updateModel('audioRecordings', getIdsFromAbstractModelArray($event))
-    "
-  ></baw-typeahead-input>
-
-  <div class="form-check mt-2">
-    <!--
+  <baw-wip>
+    <div class="form-check mt-2">
+      <!--
       Because the verifications endpoint is not available yet, we cannot filter
       by verified annotations. This is a placeholder for future functionality.
      -->
-    <input
-      id="filter-verified"
-      type="checkbox"
-      class="form-check-input"
-      [checked]="searchParameters.onlyUnverified"
-      (change)="updateModel('onlyUnverified', $event.target['checked'])"
-      disabled
-    />
-    <label for="filter-verified" class="form-check-label">
-      Only show un-verified annotations
-    </label>
+      <input
+        id="filter-verified"
+        type="checkbox"
+        class="form-check-input"
+        [checked]="searchParameters.onlyUnverified"
+        (change)="updateModel('onlyUnverified', $event.target['checked'])"
+      />
+      <label for="filter-verified" class="form-check-label">
+        Only show un-verified annotations
+      </label>
+    </div>
+  </baw-wip>
+
+  <div class="mt-2">
+    <div class="form-check">
+      <input
+        id="advanced-filters"
+        type="checkbox"
+        class="form-check-input"
+        (change)="hideAdvancedFilters = !$event.target['checked']"
+      />
+      <label for="advanced-filters" class="form-check-label">
+        Show Advanced Filters
+      </label>
+    </div>
+
+    <div
+      #advancedSettings="ngbCollapse"
+      [ngbCollapse]="hideAdvancedFilters"
+      class="card"
+    >
+      <div class="card-body">
+        <baw-typeahead-input
+          id="recordings-input"
+          label="Recording IDs of interest"
+          inputPlaceholder="All"
+          [searchCallback]="createIdSearchCallback(recordingsApi)"
+          [resultTemplate]="idTypeaheadTemplate"
+          [model]="searchParameters.audioRecordingModels"
+          (modelChange)="
+            updateModel('audioRecordings', getIdsFromAbstractModelArray($event))
+          "
+        ></baw-typeahead-input>
+      </div>
+    </div>
   </div>
-
-  <ng-template #idTypeaheadTemplate let-result="result" let-searchTerm="term">
-    <ngb-highlight [result]="result.id" [term]="searchTerm"></ngb-highlight>
-  </ng-template>
-
-  <ng-template #nameTypeaheadTemplate let-result="result" let-searchTerm="term">
-    <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
-  </ng-template>
-
-  <ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
-    <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
-  </ng-template>
 </form>
+
+<ng-template #idTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.id" [term]="searchTerm"></ngb-highlight>
+</ng-template>
+
+<ng-template #nameTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
+</ng-template>
+
+<ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
+</ng-template>

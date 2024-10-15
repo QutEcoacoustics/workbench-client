@@ -36,7 +36,9 @@
                 class="form-control"
                 placeholder="yyyy-mm-dd"
                 [maxDate]="model.dateFinishedBefore"
-                [class.is-invalid]="dateStartedAfterForm.errors?.ngbDate?.invalid"
+                [class.is-invalid]="
+                  dateStartedAfterForm.errors?.ngbDate?.invalid
+                "
                 [(ngModel)]="model.dateStartedAfter"
               />
               <button
@@ -64,7 +66,9 @@
                 name="dateFinishedBefore"
                 class="form-control"
                 placeholder="yyyy-mm-dd"
-                [class.is-invalid]="dateFinishedBeforeForm.errors?.ngbDate?.invalid"
+                [class.is-invalid]="
+                  dateFinishedBeforeForm.errors?.ngbDate?.invalid
+                "
                 [minDate]="model.dateStartedAfter"
                 [(ngModel)]="model.dateFinishedBefore"
               />

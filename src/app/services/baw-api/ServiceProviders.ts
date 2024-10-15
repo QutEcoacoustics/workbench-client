@@ -1,4 +1,5 @@
 import { AnnotationService } from "@services/models/annotation.service";
+import { MediaService } from "@services/media/media.service";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
   analysisJobItemResultResolvers,
@@ -294,6 +295,10 @@ const serviceList = [
   {
     serviceToken: Tokens.ANNOTATION,
     service: AnnotationService,
+  },
+  {
+    serviceToken: Tokens.MEDIA,
+    service: MediaService,
   }
 ];
 

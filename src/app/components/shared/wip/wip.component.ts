@@ -29,11 +29,9 @@ import { ConfigService } from "@services/config/config.service";
         ngbTooltip="This feature is a work in progress"
       >
         <ng-container *ngTemplateOutlet="icon"></ng-container>
-        <div>
-          <span>
-            This section is a work in progress. Expect new things here soon!
-          </span>
-        </div>
+        <p class="wip-text">
+          This section is a work in progress. Expect new things here soon!
+        </p>
       </div>
     </ng-template>
 

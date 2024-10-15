@@ -41,6 +41,7 @@ import { AudioEventImport } from "@models/AudioEventImport";
 import { WebsiteStatus } from "@models/WebsiteStatus";
 import { Annotation } from "@models/data/Annotation";
 import { AnnotationService } from "@services/models/annotation.service";
+import { MediaService } from "@services/media/media.service";
 import type { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
@@ -214,3 +215,4 @@ export const AUDIO_EVENT_SUMMARY_REPORT = new ServiceToken<EventSummaryReportSer
 export const AUDIO_EVENT_IMPORT = new ServiceToken<AudioEventImportService, AudioEventImport>("AUDIO_EVENT_IMPORT");
 export const WEBSITE_STATUS = new ServiceToken<WebsiteStatusService, WebsiteStatus>("WEBSITE_STATUS");
 export const ANNOTATION = new ServiceToken<AnnotationService, Annotation>("ANNOTATION");
+export const MEDIA = new ServiceToken<MediaService, never>("MEDIA");
