@@ -18,10 +18,15 @@
 
   <div class="card-body">
     <span class="info-line">
-      @if (annotation.audioRecording.site) {
-      <fa-icon class="me-2" [icon]="['fas', 'location-dot']"></fa-icon>
-      <a [href]="annotation.audioRecording.site.viewUrl">{{ annotation.audioRecording.site.name }}</a>
-      }
+      <baw-loading
+        *ngIf="annotation.audioRecording.site | isUnresolved; else site"
+        size="sm"
+      ></baw-loading>
+
+      <ng-template #site>
+        <fa-icon class="me-2" [icon]="['fas', 'location-dot']"></fa-icon>
+        <a [href]="annotation.audioRecording.site.viewUrl">{{ annotation.audioRecording.site.name }}</a>
+      </ng-template>
     </span>
 
     <span class="info-line">

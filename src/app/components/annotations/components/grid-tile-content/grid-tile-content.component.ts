@@ -84,7 +84,7 @@ export class GridTileContentComponent implements AfterViewInit {
   }
 
   public handleContextChange(subjectWrapper: SubjectWrapper): void {
-    this.model.set(new Annotation(subjectWrapper.subject));
+    this.model.set(subjectWrapper.subject as any);
   }
 
   protected toggleContext(): void {

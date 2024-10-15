@@ -74,9 +74,12 @@ export class AnnotationSearchFormComponent {
     }
   }
 
-  protected createSearchCallback<T extends AbstractModel>(
+  // create a callback that can be used to filter for items in a typeahead
+  protected createSearchCallback<
+    T extends AbstractModel & { name: string; text: string }
+  >(
     api: StandardApi<T> | any,
-    key: string = "name",
+    key: keyof T = "name",
     includeDefaultFilters: boolean = true
   ): TypeaheadSearchCallback {
     return (text: string, activeItems: T[]): Observable<T[]> =>
@@ -87,7 +90,9 @@ export class AnnotationSearchFormComponent {
             text as any,
             includeDefaultFilters && this.defaultFilter()
           ),
-          notIn<T>(key as keyof AbstractModel, activeItems)
+
+          // we add a "not in" condition to exclude items that are already selected
+          notIn<T>(key, activeItems)
         ),
       });
   }
