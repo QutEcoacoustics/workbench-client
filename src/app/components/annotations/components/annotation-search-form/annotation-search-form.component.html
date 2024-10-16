@@ -72,7 +72,7 @@
   <div class="advanced-filters mt-2">
     <button class="btn btn-outline-secondary w-100" (click)="advancedSettings.toggle()">Toggle Advanced Filters</button>
 
-    <div #advancedSettings="ngbCollapse" [ngbCollapse]="" class="card card-body border-top-0">
+    <div #advancedSettings="ngbCollapse" [ngbCollapse]="true" class="card card-body border-top-0">
       <baw-typeahead-input
         id="recordings-input"
         label="Recording IDs of interest"

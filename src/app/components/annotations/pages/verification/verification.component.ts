@@ -24,9 +24,9 @@ import { retrieveResolvers } from "@baw-api/resolver-common";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { ActivatedRoute, Params, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { firstValueFrom, takeUntil } from "rxjs";
+import { firstValueFrom } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
@@ -39,7 +39,7 @@ import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
-import { AnnotationService } from "@services/models/annotation.service";
+import { annotationResolvers, AnnotationService } from "@services/models/annotation.service";
 import { filterAnd } from "@helpers/filters/filters";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
@@ -52,6 +52,7 @@ interface PagingContext extends PageFetcherContext {
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
+const annotationsKey = "annotations";
 
 @Component({
   selector: "baw-verification",
@@ -96,18 +97,11 @@ class VerificationComponent
   private doneInitialScroll = false;
 
   public ngOnInit(): void {
-    this.route.queryParams
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((params: Params) => {
-        this.searchParameters = new AnnotationSearchParameters(
-          params,
-          this.injector
-        );
-      });
-
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.project = models[projectKey] as Project;
+    this.searchParameters = models[annotationsKey] as AnnotationSearchParameters;
+    this.searchParameters.injector = this.injector;
 
+    this.project = models[projectKey] as Project;
     if (models[regionKey]) {
       this.region = models[regionKey] as Region;
     }
@@ -267,6 +261,7 @@ function getPageInfo(
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
+      [annotationsKey]: annotationResolvers.showOptional,
     },
     fullscreen: true,
   };

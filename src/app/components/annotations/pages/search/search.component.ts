@@ -23,13 +23,14 @@ import { NgbModal, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { Annotation } from "@models/data/Annotation";
-import { AnnotationService } from "@services/models/annotation.service";
+import { annotationResolvers, AnnotationService } from "@services/models/annotation.service";
 import { filterAnd } from "@helpers/filters/filters";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
+const annotationsKey = "annotations";
 
 @Component({
   selector: "baw-annotations-search",
@@ -87,15 +88,11 @@ class AnnotationSearchComponent
   protected site?: Site;
 
   public ngOnInit(): void {
-    const params = this.route.snapshot.queryParams;
-    this.searchParameters = new AnnotationSearchParameters(
-      params,
-      this.injector
-    );
-
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.project = models[projectKey] as Project;
+    this.searchParameters = models[annotationsKey] as AnnotationSearchParameters;
+    this.searchParameters.injector = this.injector;
 
+    this.project = models[projectKey] as Project;
     if (models[regionKey]) {
       this.region = models[regionKey] as Region;
     }
@@ -212,6 +209,7 @@ function getPageInfo(
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
+      [annotationsKey]: annotationResolvers.showOptional,
     },
   };
 }

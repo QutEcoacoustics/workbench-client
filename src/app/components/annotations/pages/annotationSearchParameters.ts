@@ -21,6 +21,7 @@ import {
   serializeObjectToParams,
 } from "@helpers/query-string-parameters/query-string-parameters";
 import { CollectionIds } from "@interfaces/apiInterfaces";
+import { AbstractData } from "@models/AbstractData";
 import { hasMany } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
@@ -39,7 +40,7 @@ export interface IAnnotationSearchParameters {
   sites: CollectionIds;
   tags: CollectionIds;
   onlyUnverified: boolean;
-  daylightSavings: boolean,
+  daylightSavings: boolean;
   date: MonoTuple<DateTime, 2>;
   time: MonoTuple<Duration, 2>;
 }
@@ -58,24 +59,29 @@ const serializationTable: IQueryStringParameterSpec<
 };
 
 export class AnnotationSearchParameters
+  extends AbstractData
   implements
     IAnnotationSearchParameters,
     ImplementsInjector,
-    IParameterModel<AudioEvent> {
+    IParameterModel<AudioEvent>
+{
   public constructor(
     protected queryStringParameters: Params = {},
-    public injector?: Injector,
+    public injector?: Injector
   ) {
     const deserializedObject: IAnnotationSearchParameters =
       deserializeParamsToObject<IAnnotationSearchParameters>(
         queryStringParameters,
-        serializationTable,
+        serializationTable
       );
 
+    const objectData = {};
     const objectKeys = Object.keys(deserializedObject);
     for (const key of objectKeys) {
-      this[key] = deserializedObject[key];
+      objectData[key] = deserializedObject[key];
     }
+
+    super(objectData);
   }
 
   public audioRecordings: CollectionIds;
@@ -88,7 +94,10 @@ export class AnnotationSearchParameters
   public date: MonoTuple<DateTime, 2>;
   public time: MonoTuple<Duration, 2>;
 
-  @hasMany<AnnotationSearchParameters, AudioRecording>(AUDIO_RECORDING, "audioRecordings")
+  @hasMany<AnnotationSearchParameters, AudioRecording>(
+    AUDIO_RECORDING,
+    "audioRecordings"
+  )
   public audioRecordingModels?: AudioRecording[];
   @hasMany<AnnotationSearchParameters, Project>(PROJECT, "projects")
   public projectModels?: Project[];
@@ -124,13 +133,24 @@ export class AnnotationSearchParameters
   public toQueryParams(): Params {
     return serializeObjectToParams<IAnnotationSearchParameters>(
       this,
-      serializationTable,
+      serializationTable
     );
   }
 
-  private dateTimeFilters(initialFilter: InnerFilter<AudioEvent>): InnerFilter<AudioEvent> {
-    const dateFilter = filterDate(initialFilter, this.dateStartedAfter, this.dateFinishedBefore);
-    const dateTimeFilter = filterTime(dateFilter, this.daylightSavings, this.timeStartedAfter, this.timeFinishedBefore);
+  private dateTimeFilters(
+    initialFilter: InnerFilter<AudioEvent>
+  ): InnerFilter<AudioEvent> {
+    const dateFilter = filterDate(
+      initialFilter,
+      this.dateStartedAfter,
+      this.dateFinishedBefore
+    );
+    const dateTimeFilter = filterTime(
+      dateFilter,
+      this.daylightSavings,
+      this.timeStartedAfter,
+      this.timeFinishedBefore
+    );
     return dateTimeFilter;
   }
 }

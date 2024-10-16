@@ -1,12 +1,19 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Type } from "@angular/core";
+import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import {
+  BawProvider,
+  BawResolver,
+  ResolvedModel,
+} from "@baw-api/resolver-common";
 import { TagsService } from "@baw-api/tag/tags.service";
+import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Annotation } from "@models/data/Annotation";
 import { Tag } from "@models/Tag";
 import { MediaService } from "@services/media/media.service";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, Observable, of } from "rxjs";
 
 @Injectable()
 export class AnnotationService {
@@ -22,7 +29,7 @@ export class AnnotationService {
     const audioLink = this.mediaService.createMediaUrl(
       audioRecording,
       audioEvent.startTimeSeconds,
-      audioEvent.endTimeSeconds,
+      audioEvent.endTimeSeconds
     );
 
     // TODO: this is a tempoary patch for ecoacoustics/web-components#213
@@ -62,3 +69,47 @@ export class AnnotationService {
     );
   }
 }
+
+interface ResolverNames {
+  showOptional: string;
+}
+
+class AnnotationResolver extends BawResolver<
+  AnnotationSearchParameters,
+  undefined,
+  [],
+  undefined,
+  ResolverNames
+> {
+  public createProviders(
+    name: string,
+    resolver: Type<{
+      resolve: ResolveFn<ResolvedModel<AnnotationSearchParameters>>;
+    }>,
+    deps: []
+  ): ResolverNames & { providers: BawProvider[] } {
+    const showOptionalProvider = {
+      showOptional: name + "ShowOptionalResolver",
+      providers: [
+        {
+          provide: name + "ShowOptionalResolver",
+          useClass: resolver,
+          deps,
+        },
+      ],
+    };
+
+    return showOptionalProvider;
+  }
+
+  public resolverFn(
+    route: ActivatedRouteSnapshot
+  ): Observable<AnnotationSearchParameters> {
+    const parameterModel = new AnnotationSearchParameters(route.queryParams);
+    return of(parameterModel);
+  }
+}
+
+export const annotationResolvers = new AnnotationResolver([]).create(
+  "Annotations"
+);
