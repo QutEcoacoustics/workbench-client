@@ -6,11 +6,11 @@ import { IAudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { ITag } from "@models/Tag";
 import { ITagging, Tagging } from "@models/Tagging";
+import { MediaService } from "@services/media/media.service";
 
 export interface IAnnotation extends Required<IAudioEvent> {
   tags: ITag[];
   audioRecording: AudioRecording;
-  audioLink: string;
 }
 
 // this class is not backed by the api or a database table
@@ -19,6 +19,11 @@ export interface IAnnotation extends Required<IAudioEvent> {
 //
 // this model is created from the AnnotationService and MediaService's
 export class Annotation extends AbstractModelWithoutId implements IAnnotation {
+  public constructor(data: IAnnotation, mediaService: MediaService) {
+    super(data);
+    this.mediaService = mediaService;
+  }
+
   public id: number;
   public audioRecordingId: number;
   public startTimeSeconds: number;
@@ -36,7 +41,8 @@ export class Annotation extends AbstractModelWithoutId implements IAnnotation {
   public deletedAt: string | DateTimeTimezone;
   public tags: ITag[];
   public audioRecording: AudioRecording;
-  public audioLink: string;
+
+  private mediaService: MediaService;
 
   public get viewUrl(): string {
     return annotationMenuItem.route.format({
@@ -49,6 +55,23 @@ export class Annotation extends AbstractModelWithoutId implements IAnnotation {
     return listenRecordingMenuItem.route.format(
       { audioRecordingId: this.audioRecordingId },
       { start: this.startTimeSeconds, padding: 10 }
+    );
+  }
+
+  public get audioLink(): string {
+    return this.mediaService.createMediaUrl(
+      this.audioRecording,
+      this.startTimeSeconds,
+      this.endTimeSeconds
+    );
+  }
+
+  public contextUrl(contextSize: number): string {
+    return this.mediaService.createMediaUrl(
+      this.audioRecording,
+      this.startTimeSeconds - contextSize,
+      this.endTimeSeconds + contextSize,
+      contextSize,
     );
   }
 }

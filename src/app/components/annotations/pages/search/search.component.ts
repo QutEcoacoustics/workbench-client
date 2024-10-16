@@ -23,8 +23,12 @@ import { NgbModal, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { Annotation } from "@models/data/Annotation";
-import { annotationResolvers, AnnotationService } from "@services/models/annotation.service";
+import {
+  annotationResolvers,
+  AnnotationService,
+} from "@services/models/annotation.service";
 import { filterAnd } from "@helpers/filters/filters";
+import { firstValueFrom } from "rxjs";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -59,9 +63,7 @@ class AnnotationSearchComponent
       () => [],
       async (newResults: AudioEvent[]) => {
         this.searchResults = await Promise.all(
-          newResults.map(
-            async (result) => await annotationService.show(result)
-          )
+          newResults.map(async (result) => await annotationService.show(result))
         );
 
         if (newResults.length > 0) {
@@ -89,7 +91,9 @@ class AnnotationSearchComponent
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters = models[annotationsKey] as AnnotationSearchParameters;
+    this.searchParameters = models[
+      annotationsKey
+    ] as AnnotationSearchParameters;
     this.searchParameters.injector = this.injector;
 
     this.project = models[projectKey] as Project;
@@ -139,13 +143,28 @@ class AnnotationSearchComponent
     // user wanted to create a verification task over all annotations in the
     // project, region or site
     if (numberOfParameters === 0) {
-      const warningModal = this.modals.open(this.broadFilterWarningModal);
-      const success = await warningModal.result.catch((_) => false);
+      // if the verification task has less than 1,000 annotations, we don't need
+      // to show an error modal
+      const request = this.audioEventApi.filter({
+        filter: this.searchFilters().filter,
+        paging: { items: 1 },
+      });
 
-      // the user doesn't want to continue with the search
-      // we return early to prevent router navigation
-      if (!success) {
-        return;
+      const response = await firstValueFrom(request);
+
+      const itemWarningThreshold = 1_000 as const;
+      const responseMetadata = response[0].getMetadata();
+      const numberOfItems = responseMetadata.paging.total;
+
+      if (numberOfItems > itemWarningThreshold) {
+        const warningModal = this.modals.open(this.broadFilterWarningModal);
+        const success = await warningModal.result.catch((_) => false);
+
+        // the user doesn't want to continue with the search
+        // we return early to prevent router navigation
+        if (!success) {
+          return;
+        }
       }
     }
 

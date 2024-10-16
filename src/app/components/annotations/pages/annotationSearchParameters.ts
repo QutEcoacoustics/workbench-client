@@ -41,8 +41,14 @@ export interface IAnnotationSearchParameters {
   tags: CollectionIds;
   onlyUnverified: boolean;
   daylightSavings: boolean;
-  date: MonoTuple<DateTime, 2>;
-  time: MonoTuple<Duration, 2>;
+  recordingDate: MonoTuple<DateTime, 2>;
+  recordingTime: MonoTuple<Duration, 2>;
+
+  // TODO: this is a placeholder for future implementation once the api
+  // supports filtering by event date time
+  // https://github.com/QutEcoacoustics/baw-server/issues/687
+  eventDate: MonoTuple<DateTime, 2>;
+  eventTime: MonoTuple<Duration, 2>;
 }
 
 // we exclude project, region, and site from the serialization table because
@@ -54,8 +60,8 @@ const serializationTable: IQueryStringParameterSpec<
   tags: jsNumberArray,
   onlyUnverified: jsBoolean,
   daylightSavings: jsBoolean,
-  date: luxonDateArray,
-  time: luxonDurationArray,
+  recordingDate: luxonDateArray,
+  recordingTime: luxonDurationArray,
 };
 
 export class AnnotationSearchParameters
@@ -91,8 +97,14 @@ export class AnnotationSearchParameters
   public tags: CollectionIds;
   public onlyUnverified: boolean;
   public daylightSavings: boolean;
-  public date: MonoTuple<DateTime, 2>;
-  public time: MonoTuple<Duration, 2>;
+  public recordingDate: MonoTuple<DateTime, 2>;
+  public recordingTime: MonoTuple<Duration, 2>;
+
+  // TODO: this is a placeholder for future implementation once the api
+  // supports filtering by event date time
+  // https://github.com/QutEcoacoustics/baw-server/issues/687
+  public eventDate: MonoTuple<DateTime, 2>;
+  public eventTime: MonoTuple<Duration, 2>;
 
   @hasMany<AnnotationSearchParameters, AudioRecording>(
     AUDIO_RECORDING,
@@ -108,25 +120,26 @@ export class AnnotationSearchParameters
   @hasMany<AnnotationSearchParameters, Tag>(TAG, "tags")
   public tagModels?: Tag[];
 
-  public get dateStartedAfter(): DateTime | null {
-    return this.date ? this.date[0] : null;
+  public get recordingDateStartedAfter(): DateTime | null {
+    return this.recordingDate ? this.recordingDate[0] : null;
   }
 
-  public get dateFinishedBefore(): DateTime | null {
-    return this.date ? this.date[1] : null;
+  public get recordingDateFinishedBefore(): DateTime | null {
+    return this.recordingDate ? this.recordingDate[1] : null;
   }
 
-  public get timeStartedAfter(): Duration | null {
-    return this.time ? this.time[0] : null;
+  public get recordingTimeStartedAfter(): Duration | null {
+    return this.recordingTime ? this.recordingTime[0] : null;
   }
 
-  public get timeFinishedBefore(): Duration | null {
-    return this.time ? this.time[1] : null;
+  public get recordingTimeFinishedBefore(): Duration | null {
+    return this.recordingTime ? this.recordingTime[1] : null;
   }
 
   public toFilter(): Filters<AudioEvent> {
     const tagFilters = filterModelIds<Tag>("tags", this.tags);
-    const filter = this.dateTimeFilters(tagFilters);
+    const recordingDateTimeFilters = this.recordingDateTimeFilters(tagFilters);
+    const filter = this.eventDateTimeFilters(recordingDateTimeFilters);
     return { filter };
   }
 
@@ -137,20 +150,29 @@ export class AnnotationSearchParameters
     );
   }
 
-  private dateTimeFilters(
+  private recordingDateTimeFilters(
     initialFilter: InnerFilter<AudioEvent>
   ): InnerFilter<AudioEvent> {
     const dateFilter = filterDate(
       initialFilter,
-      this.dateStartedAfter,
-      this.dateFinishedBefore
+      this.recordingDateStartedAfter,
+      this.recordingDateFinishedBefore
     );
     const dateTimeFilter = filterTime(
       dateFilter,
       this.daylightSavings,
-      this.timeStartedAfter,
-      this.timeFinishedBefore
+      this.recordingTimeStartedAfter,
+      this.recordingTimeFinishedBefore
     );
     return dateTimeFilter;
+  }
+
+  // TODO: this function is a placeholder for future implementation once the api
+  // supports filtering by event date time
+  // https://github.com/QutEcoacoustics/baw-server/issues/687
+  private eventDateTimeFilters(
+    initialFilter: InnerFilter<AudioEvent>
+  ): InnerFilter<AudioEvent> {
+    return initialFilter;
   }
 }

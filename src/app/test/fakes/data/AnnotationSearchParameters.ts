@@ -12,8 +12,8 @@ export function generateAnnotationSearchParameters(
     sites: modelData.ids(),
     tags: modelData.ids(),
     onlyUnverified: modelData.bool(),
-    time: [modelData.time(), modelData.time()],
-    date: [modelData.dateTime(), modelData.dateTime()],
+    recordingTime: [modelData.time(), modelData.time()],
+    recordingDate: [modelData.dateTime(), modelData.dateTime()],
     ...data,
   };
 }

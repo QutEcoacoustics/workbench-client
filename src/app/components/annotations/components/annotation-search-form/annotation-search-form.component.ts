@@ -54,7 +54,7 @@ export class AnnotationSearchFormComponent {
 
   protected updateDateTime(dateTimeModel: DateTimeFilterModel): void {
     if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
-      this.searchParameters.date = [
+      this.searchParameters.recordingDate = [
         dateTimeModel.dateStartedAfter
           ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
           : null,
@@ -65,7 +65,7 @@ export class AnnotationSearchFormComponent {
     }
 
     if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
-      this.searchParameters.time = [
+      this.searchParameters.recordingTime = [
         dateTimeModel.timeStartedAfter,
         dateTimeModel.timeFinishedBefore,
       ];

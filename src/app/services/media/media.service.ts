@@ -25,6 +25,7 @@ export class MediaService {
     audioRecording: AudioRecording,
     start: number,
     end: number,
+    padding: number = 0,
     params: Params = {}
   ) {
     if (start < 0) {
@@ -50,7 +51,7 @@ export class MediaService {
     const [paddedStart, paddedEnd] = this.padAudioUrl(
       start,
       end,
-      requiredPaddingAmount
+      requiredPaddingAmount + padding
     );
 
     const [fitStart, fitEnd] = this.fitAudioUrl(

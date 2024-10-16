@@ -124,7 +124,7 @@ describe("AnnotationSearchFormComponent", () => {
     // check the population of an external component that is not a typeahead input
     it("should pre-populate the date-time filters if provided in the search parameters model", () => {
       const testStartDate = modelData.dateTime();
-      spectator.component.searchParameters.date = [testStartDate] as any;
+      spectator.component.searchParameters.recordingDate = [testStartDate] as any;
       expect(startDateInput()).toHaveValue(testStartDate.toFormat("yyyy-MM-dd"))
     });
 

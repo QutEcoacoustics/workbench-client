@@ -57,26 +57,8 @@ export class GridTileContentComponent implements AfterViewInit {
       return "";
     }
 
-    const contextSize = 30;
-
-    const startTime = this.model().startTimeSeconds;
-    const endTime = this.model().endTimeSeconds;
-
-    // TODO: the end time should check that it is less than the duration of the audio file
-    const newStart = Math.max(0, startTime - contextSize);
-    const newEnd = endTime + contextSize;
-
-    const existingUrl = new URL(this.model().audioLink);
-    const searchParams = new URLSearchParams(existingUrl.search);
-
-    searchParams.set("start_offset", newStart.toString());
-    searchParams.set("end_offset", newEnd.toString());
-    searchParams.delete("audio_event_id");
-
-    const newUrl = new URL(existingUrl.origin + existingUrl.pathname);
-    newUrl.search = searchParams.toString();
-
-    return newUrl.toString();
+    const contextSize = 30 as const;
+    return this.model().contextUrl(contextSize);
   }
 
   public ngAfterViewInit(): void {

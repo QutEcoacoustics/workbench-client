@@ -26,11 +26,6 @@ export class AnnotationService {
   public async show(audioEvent: AudioEvent): Promise<Annotation> {
     const tags = await this.showTags(audioEvent);
     const audioRecording = await this.showAudioRecording(audioEvent);
-    const audioLink = this.mediaService.createMediaUrl(
-      audioRecording,
-      audioEvent.startTimeSeconds,
-      audioEvent.endTimeSeconds
-    );
 
     // TODO: this is a tempoary patch for ecoacoustics/web-components#213
     // until it is fixed upstream
@@ -39,11 +34,10 @@ export class AnnotationService {
     const data = {
       ...audioEvent,
       tags: tagDescriptor,
-      audioLink,
       audioRecording,
     };
 
-    return new Annotation(data);
+    return new Annotation(data as any, this.mediaService);
   }
 
   private async showTags(audioEvent: AudioEvent): Promise<Tag[]> {

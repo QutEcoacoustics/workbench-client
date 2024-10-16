@@ -10,13 +10,9 @@ import { BawSessionService } from "@baw-api/baw-session.service";
 @Component({
   selector: "baw-if-logged-in",
   template: `
-    @if (session.isLoggedIn) {
-    <ng-content></ng-content>
-    } @else {
-    <span ngbTooltip="You must be logged in" aria-disabled="true">
+    <span [ngbTooltip]="session.isLoggedIn ? null : 'You must be logged in'">
       <ng-content></ng-content>
     </span>
-    }
   `,
 })
 export class IfLoggedInComponent implements AfterContentInit {
