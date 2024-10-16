@@ -10,7 +10,6 @@ import { AnnotationSearchFormComponent } from "./components/annotation-search-fo
 import { AnnotationSearchComponent } from "./pages/search/search.component";
 import { SearchFiltersModalComponent } from "./components/search-filters-modal/search-filters-modal.component";
 import { FiltersWarningModalComponent } from "./components/broad-filters-warning/broad-filters-warning.component";
-import { GridTileContentComponent } from "./components/grid-tile-content/grid-tile-content.component";
 
 const internalComponents = [
   SearchFiltersModalComponent,
@@ -19,11 +18,7 @@ const internalComponents = [
   AnnotationSearchFormComponent,
 ];
 
-const internalModules = [
-  // the grid tile content component is a standalone component
-  // this is why I have imported it as a module
-  GridTileContentComponent,
-];
+const internalModules = [];
 
 const components = [VerificationComponent, AnnotationSearchComponent];
 

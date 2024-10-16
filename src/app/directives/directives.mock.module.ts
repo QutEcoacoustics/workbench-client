@@ -7,6 +7,7 @@ import { StrongRouteActiveDirective } from "./strongRoute/strong-route-active.di
 import { StrongRouteDirective } from "./strongRoute/strong-route.directive";
 import { UrlActiveDirective } from "./url/url-active.directive";
 import { UrlDirective } from "./url/url.directive";
+import { RequireLoggedInDirective } from "./logged-in/logged-in.directive";
 
 const directives = [
   AuthenticatedImageDirective,
@@ -14,7 +15,8 @@ const directives = [
     StrongRouteDirective,
     StrongRouteActiveDirective,
     UrlDirective,
-    UrlActiveDirective
+    UrlActiveDirective,
+    RequireLoggedInDirective,
   ),
 ];
 

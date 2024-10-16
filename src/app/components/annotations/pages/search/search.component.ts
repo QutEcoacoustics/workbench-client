@@ -25,7 +25,6 @@ import { AudioEvent } from "@models/AudioEvent";
 import { Annotation } from "@models/data/Annotation";
 import { AnnotationService } from "@services/models/annotation.service";
 import { filterAnd } from "@helpers/filters/filters";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -48,7 +47,6 @@ class AnnotationSearchComponent
     protected config: NgbPaginationConfig,
     protected modals: NgbModal,
     protected annotationService: AnnotationService,
-    protected session: BawSessionService,
     private injector: Injector
   ) {
     super(

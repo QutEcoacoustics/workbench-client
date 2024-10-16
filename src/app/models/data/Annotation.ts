@@ -13,6 +13,11 @@ export interface IAnnotation extends Required<IAudioEvent> {
   audioLink: string;
 }
 
+// this class is not backed by the api or a database table
+// I have created this model so that we can pass around a single model that
+// contains all the information we need about an annotation
+//
+// this model is created from the AnnotationService and MediaService's
 export class Annotation extends AbstractModelWithoutId implements IAnnotation {
   public id: number;
   public audioRecordingId: number;

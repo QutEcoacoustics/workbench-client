@@ -1,7 +1,7 @@
 export const environment = {
   testing: false,
   /** Is the current environment running in production mode */
-  production: false,
+  production: true,
   /** Timeout for web requests in server side renderer */
   ssrTimeout: 1_000,
   /** Timeout for web requests in browser */

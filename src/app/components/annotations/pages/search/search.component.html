@@ -18,25 +18,11 @@
       Download Annotations
     </a> -->
 
-    <!--
-      We add the tooltip to a wrapping span because if the button is disabled
-      ng-boostrap will not show the tooltip
-     -->
-    <span
-      [ngbTooltip]="
-        session.isLoggedIn
-          ? 'Verify the annotations in the list'
-          : 'You must be logged in to verify annotations'
-      "
-    >
-      <button
-        class="btn btn-primary"
-        (click)="navigateToVerificationGrid()"
-        [disabled]="!session.isLoggedIn"
-      >
+    <baw-if-logged-in>
+      <button class="btn btn-primary" (click)="navigateToVerificationGrid()">
         Verify This List
       </button>
-    </span>
+    </baw-if-logged-in>
   </div>
 </div>
 
@@ -44,18 +30,16 @@
 
 <div>
   <ng-container *ngIf="!error">
-    @if (searchResults.length > 0) {
-      @if (!loading) {
-      <p>
-        Displaying
-        <span class="fw-bold">{{ searchResults.length }}</span> of
-        <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
-        events.
-      </p>
-      } @else {
-      <p>Loading...</p>
-      }
-    }
+    @if (searchResults.length > 0) { @if (!loading) {
+    <p>
+      Displaying
+      <span class="fw-bold">{{ searchResults.length }}</span> of
+      <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
+      events.
+    </p>
+    } @else {
+    <p>Loading...</p>
+    } }
 
     <div class="annotations-grid my-2">
       @for (verificationModel of searchResults; track $index) {

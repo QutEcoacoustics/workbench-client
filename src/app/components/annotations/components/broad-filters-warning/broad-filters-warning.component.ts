@@ -18,7 +18,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
     <div class="modal-body">
       <p>
         You are seeing <em>all</em> annotations because no search filters were
-        used. All annotations will be shown.
+        used.
       </p>
 
       <p>
@@ -26,11 +26,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
         time to complete and it will be difficult to navigate.
       </p>
 
-      <p>
-        We suggest breaking up the task into smaller chunks. This can result in
-        a verification grid that is difficult to navigate and may take a long
-        time to complete.
-      </p>
+      <p>We suggest breaking up the task into smaller chunks.</p>
 
       <div class="clearfix">
         <button

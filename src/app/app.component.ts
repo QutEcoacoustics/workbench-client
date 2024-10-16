@@ -29,7 +29,7 @@ import { createCustomElement } from "@angular/elements";
 import {
   GridTileContentComponent,
   gridTileContextSelector,
-} from "@components/annotations/components/grid-tile-content/grid-tile-content.component";
+} from "@components/web-components/grid-tile-content/grid-tile-content.component";
 import { IS_SERVER_PLATFORM } from "./app.helper";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "./services/config/config.service";
