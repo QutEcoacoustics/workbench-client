@@ -25,7 +25,7 @@ export class MediaService {
     audioRecording: AudioRecording,
     start: number,
     end: number,
-    params: Params = {},
+    params: Params = {}
   ) {
     if (start < 0) {
       throw new Error("Start time must be greater than or equal to 0");
@@ -35,28 +35,34 @@ export class MediaService {
       throw new Error("End time must be greater than start time");
     }
 
-    const minimumDuration = 0.05 as const;
-    const proposedDuration = end - start;
-    const proposedDifference = proposedDuration - minimumDuration;
-    const requiredPaddingAmount = Math.max(proposedDifference, 0);
-    const startEndTimes = this.padAudioUrl(
-      start,
-      end,
-      audioRecording,
-      requiredPaddingAmount
-    );
-
     // this is here to get around a rounding bug with range requests in the api
     // see: https://github.com/QutEcoacoustics/baw-server/issues/681
     // TODO: remove the rounding patch once the api is fixed
     // TODO: this ceil might result in the audio being rounded to longer than the recording. We should add a condition
-    startEndTimes.endTimeSeconds = Math.ceil(startEndTimes.endTimeSeconds);
-    startEndTimes.startTimeSeconds = Math.floor(startEndTimes.startTimeSeconds);
+    const safeStartTime = Math.floor(start);
+    const safeEndTime = Math.ceil(end);
+
+    const minimumDuration = 0.05 as const;
+    const proposedDuration = safeStartTime - safeEndTime;
+    const proposedDifference = proposedDuration - minimumDuration;
+    const requiredPaddingAmount = Math.max(proposedDifference, 0);
+
+    const [paddedStart, paddedEnd] = this.padAudioUrl(
+      start,
+      end,
+      requiredPaddingAmount
+    );
+
+    const [fitStart, fitEnd] = this.fitAudioUrl(
+      paddedStart,
+      paddedEnd,
+      audioRecording
+    );
 
     let path =
       `/audio_recordings/${audioRecording.id}/media.flac` +
-      `?start_offset=${startEndTimes.startTimeSeconds}` +
-      `&end_offset=${startEndTimes.endTimeSeconds}`;
+      `?start_offset=${fitStart}` +
+      `&end_offset=${fitEnd}`;
 
     // if the user is logged in, we want to add their auth token to the
     // query string parameters
@@ -77,30 +83,49 @@ export class MediaService {
   private padAudioUrl(
     start: number,
     end: number,
-    audioRecording: AudioRecording,
-    padAmount
-  ) {
+    padAmount: number = 0
+  ): [start: number, end: number] {
     const sidePadding = padAmount / 2;
 
-    let proposedStartTime = start - sidePadding;
-    let proposedEndTime = end + sidePadding;
+    start -= sidePadding;
+    end += sidePadding;
 
-    if (proposedStartTime < 0) {
-      const difference = Math.abs(proposedStartTime);
-      proposedStartTime += difference;
-      proposedEndTime += difference;
+    return [start, end];
+  }
+
+  private fitAudioUrl(
+    start: number,
+    end: number,
+    audioRecording: AudioRecording
+  ): [start: number, end: number] {
+    if (start < 0) {
+      // because we don't want to create fractional start/end times, we need to
+      // round up the difference to the nearest whole number
+      // we round up to guarantee that the start time is at least 0
+      //
+      // TODO: remove this ceil once the following api issue is fixed
+      // https://github.com/QutEcoacoustics/baw-server/issues/681
+      const difference = Math.ceil(Math.abs(start));
+
+      start += difference;
+      end += difference;
     }
 
     const recordingDuration = audioRecording.durationSeconds;
-    if (proposedEndTime > recordingDuration) {
-      const difference = proposedEndTime - recordingDuration;
-      proposedStartTime -= difference;
-      proposedEndTime -= difference;
+    if (end > recordingDuration) {
+      // similar to the start time, we need to round up the difference to the
+      // nearest whole number to avoid fractional start/end times
+      // we round up to guarantee that the end time is at most the recording
+      // duration
+      // this might result in some of the end of the audio being cut off
+      //
+      // TODO: remove this ceil once the following api issue is fixed
+      // https://github.com/QutEcoacoustics/baw-server/issues/681
+      const difference = Math.ceil(end - recordingDuration);
+      start -= difference;
+      end -= difference;
     }
 
-    return {
-      startTimeSeconds: proposedStartTime,
-      endTimeSeconds: proposedEndTime,
-    };
+    return [start, end];
   }
 }
