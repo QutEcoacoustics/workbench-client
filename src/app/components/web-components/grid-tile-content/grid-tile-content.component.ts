@@ -66,6 +66,7 @@ export class GridTileContentComponent implements AfterViewInit {
   }
 
   public handleContextChange(subjectWrapper: SubjectWrapper): void {
+    this.contextExpanded = false;
     this.model.set(subjectWrapper.subject as any);
   }
 
@@ -75,15 +76,11 @@ export class GridTileContentComponent implements AfterViewInit {
 
   private async requestContext(): Promise<void> {
     // TODO: remove this once @ecoacoustics/web-components#219 is resolved
-    const webComponents = await import("@ecoacoustics/web-components")
+    const webComponents = await import("@ecoacoustics/web-components");
     const token = webComponents.gridTileContext;
 
     this.wrapper.nativeElement.dispatchEvent(
-      new ContextRequestEvent(
-        token,
-        this.handleContextChange.bind(this),
-        true
-      )
+      new ContextRequestEvent(token, this.handleContextChange.bind(this), true)
     );
   }
 }
