@@ -20,7 +20,7 @@
     </span>
 
     <span class="context-card-actions">
-      <button (click)="contextExpanded = false" class="btn btn-outline-danger">
+      <button (click)="closeContext()" class="btn btn-outline-danger">
         Close
       </button>
     </span>
@@ -38,7 +38,7 @@
       </oe-indicator>
     </oe-axes>
 
-    <!-- <oe-media-controls [for]="contextSpectrogramId"></oe-media-controls> -->
+    <oe-media-controls [for]="contextSpectrogramId"></oe-media-controls>
   </div>
 </div>
 }

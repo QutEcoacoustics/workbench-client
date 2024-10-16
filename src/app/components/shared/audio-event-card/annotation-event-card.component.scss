@@ -6,8 +6,10 @@
 .card-header {
   display: flex;
   justify-content: space-between;
-}
 
-.card-title {
-  align-content: center;
+  .card-title {
+    flex: 0 0 auto;
+    max-width: 210px;
+    align-content: center;
+  }
 }

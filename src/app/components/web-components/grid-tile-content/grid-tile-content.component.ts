@@ -74,6 +74,10 @@ export class GridTileContentComponent implements AfterViewInit {
     this.contextExpanded = !this.contextExpanded;
   }
 
+  protected closeContext(): void {
+    this.contextExpanded = false;
+  }
+
   private async requestContext(): Promise<void> {
     // TODO: remove this once @ecoacoustics/web-components#219 is resolved
     const webComponents = await import("@ecoacoustics/web-components");

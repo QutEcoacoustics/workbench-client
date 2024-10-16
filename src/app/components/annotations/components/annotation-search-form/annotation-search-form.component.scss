@@ -1,5 +1,5 @@
 .advanced-filters {
-  :not(:last-child) {
+  :not(:last-child):has(~ .show, ~ .collapsing) {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   }
