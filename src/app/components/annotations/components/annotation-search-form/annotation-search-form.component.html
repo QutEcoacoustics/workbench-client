@@ -1,6 +1,10 @@
 <form #form="ngForm">
   <baw-date-time-filter
+    #dateTimeFiltersElement
     (modelChange)="updateRecordingDateTime($event)"
+    [disableStartDate]="true"
+    [disableStartTime]="true"
+    [disableEndTime]="true"
   ></baw-date-time-filter>
 
   <baw-typeahead-input
@@ -83,7 +87,7 @@
 
     <div
       #advancedSettings="ngbCollapse"
-      [ngbCollapse]="true"
+      [(ngbCollapse)]="hideAdvancedFilters"
       class="card card-body border-top-0"
     >
       <baw-typeahead-input

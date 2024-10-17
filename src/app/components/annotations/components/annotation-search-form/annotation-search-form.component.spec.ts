@@ -33,7 +33,7 @@ describe("AnnotationSearchFormComponent", () => {
 
   let mockTagsResponse: Tag[] = [];
   let mockSitesResponse: Site[] = [];
-  let defaultFakeProject: Project;
+  let mockProject: Project;
 
   const createComponent = createComponentFactory({
     component: AnnotationSearchFormComponent,
@@ -55,31 +55,25 @@ describe("AnnotationSearchFormComponent", () => {
       { length: 10 },
       () => new Site(generateSite(), injector)
     );
+    mockProject = new Project(generateProject(), injector);
 
     modelChangeSpy = spyOn(spectator.component.searchParametersChange, "emit");
 
     mockTagsApi.filter.andCallFake(() => of(mockTagsResponse));
     mockSitesApi.filter.andCallFake(() => of(mockSitesResponse));
 
-    spectator.component.searchParameters = new AnnotationSearchParameters(
-      {},
-      injector
-    );
-
-    spectator.detectChanges();
+    const searchParameters = new AnnotationSearchParameters({}, injector);
+    searchParameters.routeProjectModel = mockProject;
+    spectator.setInput("searchParameters", searchParameters);
   }
 
   const tagsTypeahead = () => spectator.query("#tags-input");
   const projectsTypeahead = () => spectator.query("#projects-input");
-  const regionsTypeahead = () => spectator.query("#regions-input");
   const sitesTypeahead = () => spectator.query("#sites-input");
   const onlyVerifiedCheckbox = () =>
     spectator.query<HTMLInputElement>("#filter-verified");
 
-  const tagsInput = () => tagsTypeahead().querySelector("input");
   const projectsInput = () => projectsTypeahead().querySelector("input");
-  const regionsInput = () => regionsTypeahead().querySelector("input");
-  const sitesInput = () => sitesTypeahead().querySelector("input");
   const startDateInput = () => spectator.query("#date-started-after");
 
   const dateToggleInput = () => spectator.query("#date-filtering");
@@ -92,7 +86,6 @@ describe("AnnotationSearchFormComponent", () => {
   }
 
   beforeEach(() => {
-    defaultFakeProject = new Project(generateProject());
     setup();
   });
 
@@ -103,10 +96,7 @@ describe("AnnotationSearchFormComponent", () => {
   describe("pre-population from first load", () => {
     // check the population of a typeahead input that uses a property backing
     it("should pre-populate the project typeahead input if provided", () => {
-      expect(projectsInput()).toHaveProperty(
-        "placeholder",
-        defaultFakeProject.name
-      );
+      expect(projectsInput()).toHaveProperty("placeholder", mockProject.name);
     });
 
     // check the population of a typeahead input that does not use a property backing
@@ -122,8 +112,12 @@ describe("AnnotationSearchFormComponent", () => {
     // check the population of an external component that is not a typeahead input
     it("should pre-populate the date-time filters if provided in the search parameters model", () => {
       const testStartDate = modelData.dateTime();
-      spectator.component.searchParameters.recordingDate = [testStartDate] as any;
-      expect(startDateInput()).toHaveValue(testStartDate.toFormat("yyyy-MM-dd"))
+      spectator.component.searchParameters.recordingDate = [
+        testStartDate,
+      ] as any;
+      expect(startDateInput()).toHaveValue(
+        testStartDate.toFormat("yyyy-MM-dd")
+      );
     });
 
     // check the population of a checkbox boolean input
@@ -164,19 +158,18 @@ describe("AnnotationSearchFormComponent", () => {
       const expectedNewModel = {};
 
       toggleDateFilters();
-      spectator.typeInElement(testedDate, startDateInput())
+      spectator.typeInElement(testedDate, startDateInput());
 
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(expectedNewModel);
     }));
 
     it("should not emit a new model if the date-time filters are updated with an invalid value", fakeAsync(() => {
-      const testedDate = "2021109-12"
-      const expectedNewModel = {};
+      const testedDate = "2021109-12";
 
       toggleDateFilters();
       spectator.typeInElement(testedDate, startDateInput());
 
-      expect(modelChangeSpy).toHaveBeenCalledOnceWith(expectedNewModel);
+      expect(modelChangeSpy).not.toHaveBeenCalled();
     }));
 
     // TODO: enable this test once we have the endpoint avaliable to filter by verified status

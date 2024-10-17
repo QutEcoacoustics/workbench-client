@@ -231,13 +231,15 @@ export class AnnotationSearchParameters
     const dateFilter = filterDate(
       initialFilter,
       this.recordingDateStartedAfter,
-      this.recordingDateFinishedBefore
+      this.recordingDateFinishedBefore,
+      "audioRecordings."
     );
     const dateTimeFilter = filterTime(
       dateFilter,
       this.daylightSavings,
       this.recordingTimeStartedAfter,
-      this.recordingTimeFinishedBefore
+      this.recordingTimeFinishedBefore,
+      "audioRecordings."
     );
     return dateTimeFilter;
   }
