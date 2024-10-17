@@ -1,11 +1,14 @@
 import { Injectable, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
+import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import {
   BawProvider,
   BawResolver,
   ResolvedModel,
 } from "@baw-api/resolver-common";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { AudioEvent } from "@models/AudioEvent";
@@ -72,15 +75,19 @@ class AnnotationResolver extends BawResolver<
   AnnotationSearchParameters,
   undefined,
   [],
-  undefined,
+  any,
   ResolverNames
 > {
+  public constructor() {
+    super([ProjectsService, ShallowRegionsService, ShallowSitesService]);
+  }
+
   public createProviders(
     name: string,
     resolver: Type<{
       resolve: ResolveFn<ResolvedModel<AnnotationSearchParameters>>;
     }>,
-    deps: []
+    deps: Type<ProjectsService | ShallowRegionsService | ShallowSitesService>[]
   ): ResolverNames & { providers: BawProvider[] } {
     const showOptionalProvider = {
       showOptional: name + "ShowOptionalResolver",
@@ -99,11 +106,22 @@ class AnnotationResolver extends BawResolver<
   public resolverFn(
     route: ActivatedRouteSnapshot
   ): Observable<AnnotationSearchParameters> {
-    const parameterModel = new AnnotationSearchParameters(route.queryParams);
+    const routeProjectId = route.params["projectId"];
+    const routeRegionId = route.params["regionId"];
+    const routeSiteId = route.params["regionId"];
+
+    const data = {
+      routeProjectId: routeProjectId,
+      routeRegionId: routeRegionId,
+      routeSiteId: routeSiteId,
+      ...route.queryParams,
+    };
+
+    const parameterModel = new AnnotationSearchParameters(data);
     return of(parameterModel);
   }
 }
 
-export const annotationResolvers = new AnnotationResolver([]).create(
+export const annotationResolvers = new AnnotationResolver().create(
   "Annotations"
 );

@@ -40,7 +40,6 @@ import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.ser
 import { AudioEvent } from "@models/AudioEvent";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
 import { annotationResolvers, AnnotationService } from "@services/models/annotation.service";
-import { filterAnd } from "@helpers/filters/filters";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 // TODO: using extends here makes the interface loosely typed
@@ -90,9 +89,6 @@ class VerificationComponent
   private verificationGridElement: ElementRef<VerificationGridComponent>;
 
   public searchParameters: AnnotationSearchParameters;
-  public project: Project;
-  public region?: Region;
-  public site?: Site;
   public hasUnsavedChanges = false;
   private doneInitialScroll = false;
 
@@ -101,12 +97,12 @@ class VerificationComponent
     this.searchParameters = models[annotationsKey] as AnnotationSearchParameters;
     this.searchParameters.injector = this.injector;
 
-    this.project = models[projectKey] as Project;
+    this.searchParameters.routeProjectModel = models[projectKey] as Project;
     if (models[regionKey]) {
-      this.region = models[regionKey] as Region;
+      this.searchParameters.routeRegionModel = models[regionKey] as Region;
     }
     if (models[siteKey]) {
-      this.site = models[siteKey] as Site;
+      this.searchParameters.routeSiteModel = models[siteKey] as Site;
     }
   }
 
@@ -123,7 +119,7 @@ class VerificationComponent
       return;
     }
 
-    const timeoutDuration = 1000;
+    const timeoutDuration = 1_000 as const;
 
     // we wait a second after the verification grid has loaded to give the user
     // some time to see the grid in the context of the website before we scroll
@@ -211,7 +207,7 @@ class VerificationComponent
   }
 
   private filterConditions(page: number): Filters<AudioEvent> {
-    const filter: InnerFilter<AudioEvent> = this.searchFilters().filter;
+    const filter: InnerFilter<AudioEvent> = this.searchParameters.toFilter().filter;
     const paging: Paging = { page };
 
     return { filter, paging };
@@ -225,29 +221,6 @@ class VerificationComponent
     if (urlTree) {
       this.location.replaceState(urlTree.toString());
     }
-  }
-
-  private searchFilters(): Filters<AudioEvent> {
-    const initialFilter = this.searchParameters.toFilter();
-    if (this.site) {
-      initialFilter.filter = filterAnd(initialFilter.filter, {
-        "audioRecordings.siteId": { in: [this.site.id] },
-      } as any);
-      return initialFilter;
-    }
-
-    if (this.region) {
-      initialFilter.filter = filterAnd(initialFilter.filter, {
-        "audioRecordings.siteId": { in: Array.from(this.region.siteIds) },
-      } as any);
-      return initialFilter;
-    }
-
-    initialFilter.filter = filterAnd(initialFilter.filter, {
-      "audioRecordings.siteId": { in: Array.from(this.project.siteIds) },
-    } as any);
-
-    return initialFilter;
   }
 }
 

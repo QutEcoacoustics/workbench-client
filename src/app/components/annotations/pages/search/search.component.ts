@@ -10,11 +10,8 @@ import { siteResolvers } from "@baw-api/site/sites.service";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { retrieveResolvers } from "@baw-api/resolver-common";
-import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { Site } from "@models/Site";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { Filters, Paging } from "@baw-api/baw-api.service";
+import { Paging } from "@baw-api/baw-api.service";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { FiltersWarningModalComponent } from "@components/annotations/components/broad-filters-warning/broad-filters-warning.component";
@@ -27,8 +24,10 @@ import {
   annotationResolvers,
   AnnotationService,
 } from "@services/models/annotation.service";
-import { filterAnd } from "@helpers/filters/filters";
 import { firstValueFrom } from "rxjs";
+import { Region } from "@models/Region";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -70,7 +69,7 @@ class AnnotationSearchComponent
           this.paginationInformation = newResults[0].getMetadata().paging;
         }
       },
-      () => this.searchFilters().filter
+      () => this.searchParameters.toFilter().filter
     );
 
     // we make the page size an even number so that the page of results is more
@@ -85,9 +84,6 @@ class AnnotationSearchComponent
   protected searchResults: Annotation[] = [];
   protected searchParameters: AnnotationSearchParameters;
   protected verificationRoute: StrongRoute;
-  protected project: Project;
-  protected region?: Region;
-  protected site?: Site;
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -96,12 +92,12 @@ class AnnotationSearchComponent
     ] as AnnotationSearchParameters;
     this.searchParameters.injector = this.injector;
 
-    this.project = models[projectKey] as Project;
+    this.searchParameters.routeProjectModel = models[projectKey] as Project;
     if (models[regionKey]) {
-      this.region = models[regionKey] as Region;
+      this.searchParameters.routeRegionModel = models[regionKey] as Region;
     }
     if (models[siteKey]) {
-      this.site = models[siteKey] as Site;
+      this.searchParameters.routeSiteModel = models[siteKey] as Site;
     }
 
     this.verificationRoute = this.verifyAnnotationsRoute();
@@ -112,7 +108,7 @@ class AnnotationSearchComponent
   }
 
   // the PaginationTemplate that we extend only supports a single filter
-  // query string paramter e.g. a projects name
+  // query string parameter e.g. a projects name
   // since we have multiple conditions, I have overridden the updateQueryParms
   // method
   //
@@ -146,7 +142,7 @@ class AnnotationSearchComponent
       // if the verification task has less than 1,000 annotations, we don't need
       // to show an error modal
       const request = this.audioEventApi.filter({
-        filter: this.searchFilters().filter,
+        filter: this.searchParameters.toFilter().filter,
         paging: { items: 1 },
       });
 
@@ -173,9 +169,9 @@ class AnnotationSearchComponent
     this.router.navigate(
       [
         this.verificationRoute.toRouterLink({
-          projectId: this.project.id,
-          regionId: this.region?.id,
-          siteId: this.site?.id,
+          projectId: this.searchParameters.routeProjectId,
+          regionId: this.searchParameters.routeRegionId,
+          siteId: this.searchParameters.routeSiteId,
         }),
       ],
       { queryParams }
@@ -183,38 +179,15 @@ class AnnotationSearchComponent
   }
 
   protected verifyAnnotationsRoute(): StrongRoute {
-    if (this.site) {
-      return this.site.isPoint
+    if (this.searchParameters.routeSiteId) {
+      return this.searchParameters.routeSiteModel.isPoint
         ? annotationMenuItems.verify.siteAndRegion.route
         : annotationMenuItems.verify.site.route;
-    } else if (this.region) {
+    } else if (this.searchParameters.routeRegionId) {
       return annotationMenuItems.verify.region.route;
     }
 
     return annotationMenuItems.verify.project.route;
-  }
-
-  private searchFilters(): Filters<AudioEvent> {
-    const initialFilter = this.searchParameters.toFilter();
-    if (this.site) {
-      initialFilter.filter = filterAnd(initialFilter.filter, {
-        "audioRecordings.siteId": { in: [this.site.id] },
-      } as any);
-      return initialFilter;
-    }
-
-    if (this.region) {
-      initialFilter.filter = filterAnd(initialFilter.filter, {
-        "audioRecordings.siteId": { in: Array.from(this.region.siteIds) },
-      } as any);
-      return initialFilter;
-    }
-
-    initialFilter.filter = filterAnd(initialFilter.filter, {
-      "audioRecordings.siteId": { in: Array.from(this.project.siteIds) },
-    } as any);
-
-    return initialFilter;
   }
 }
 

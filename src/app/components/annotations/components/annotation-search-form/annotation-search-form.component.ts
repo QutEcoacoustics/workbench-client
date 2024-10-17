@@ -6,7 +6,6 @@ import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
-import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -35,15 +34,23 @@ export class AnnotationSearchFormComponent {
   public searchParametersChange =
     new EventEmitter<AnnotationSearchParameters>();
 
-  @Input() public project: Project;
-  @Input() public region?: Region;
-  @Input() public site?: Site;
-
   protected createSearchCallback = createSearchCallback;
+
+  protected get project(): Project {
+    return this.searchParameters.routeProjectModel;
+  }
+
+  protected get region(): Region {
+    return this.searchParameters.routeRegionModel;
+  }
+
+  protected get site(): Site {
+    return this.searchParameters.routeSiteModel;
+  }
 
   protected updateSubModel(
     key: keyof AnnotationSearchParameters,
-    subModels: AbstractModel[]
+    subModels: any[]
   ): void {
     const ids = subModels.map((model) => model.id);
     this.searchParameters[key as any] = ids;
