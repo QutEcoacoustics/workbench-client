@@ -108,7 +108,7 @@ class AnnotationResolver extends BawResolver<
   ): Observable<AnnotationSearchParameters> {
     const routeProjectId = route.params["projectId"];
     const routeRegionId = route.params["regionId"];
-    const routeSiteId = route.params["regionId"];
+    const routeSiteId = route.params["siteId"];
 
     const data = {
       routeProjectId: routeProjectId,

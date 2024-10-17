@@ -11,7 +11,6 @@ export function generateAnnotation(
 ): Required<IAnnotation> {
   return {
     ...generateAudioEvent(),
-    audioLink: modelData.internet.url(),
     audioRecording: new AudioRecording(generateAudioRecording()),
     tags: modelData.randomArray(0, 10, () => new Tag(generateTag())),
     ...data,

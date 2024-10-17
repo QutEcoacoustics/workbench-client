@@ -1,14 +1,21 @@
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { getElementByInnerText } from "@test/helpers/html";
-import type { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
+import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
+import { MediaService } from "@services/media/media.service";
+import { MEDIA } from "@baw-api/ServiceTokens";
 import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
   let spectator: Spectator<GridTileContentComponent>;
+  let mediaServiceSpy: SpyObject<MediaService>;
   let contextRequestSpy: jasmine.Spy;
   let mockAnnotation: Annotation;
 
@@ -19,6 +26,11 @@ describe("GridTileContentComponent", () => {
 
   function setup(): void {
     spectator = createComponent({ detectChanges: false });
+
+    mediaServiceSpy = spectator.inject(MEDIA.token);
+
+    mockAnnotation = new Annotation(generateAnnotation(), mediaServiceSpy);
+
     updateContext(mockAnnotation);
   }
 
@@ -39,10 +51,6 @@ describe("GridTileContentComponent", () => {
     spectator.query<SpectrogramComponent>("oe-spectrogram");
 
   beforeEach(() => {
-    mockAnnotation = new Annotation(
-      generateAnnotation()
-    );
-
     setup();
   });
 
@@ -64,7 +72,10 @@ describe("GridTileContentComponent", () => {
     });
 
     it("should have the correct audio link if a new subject is provided", () => {
-      const newTestSubject = new Annotation(generateAnnotation());
+      const newTestSubject = new Annotation(
+        generateAnnotation(),
+        mediaServiceSpy
+      );
       updateContext(newTestSubject);
 
       const expectedHref = newTestSubject.viewUrl;
@@ -99,16 +110,15 @@ describe("GridTileContentComponent", () => {
     // because if we subtract 30 seconds from 0, we get -30 seconds, which is invalid
     it("should have the correct context source if the audio event is at the start of the recording", () => {
       const testVerification = new Annotation(
-        new Annotation({
-          startTimeSeconds: 0,
-          endTimeSeconds: 10,
-        })
+        generateAnnotation({ startTimeSeconds: 0, endTimeSeconds: 10 }),
+        mediaServiceSpy
       );
       updateContext(testVerification);
 
       spectator.click(contextButton());
 
-      const expectedSpectrogramSource = "https://test.com/audio.mp3?start_offset=0&end_offset=40";
+      const expectedSpectrogramSource =
+        "https://test.com/audio.mp3?start_offset=0&end_offset=40";
       const realizedSpectrogramSource = spectrogram().src;
 
       expect(realizedSpectrogramSource).toEqual(expectedSpectrogramSource);

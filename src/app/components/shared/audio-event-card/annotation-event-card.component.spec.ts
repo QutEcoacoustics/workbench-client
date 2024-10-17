@@ -12,19 +12,27 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { generateTag } from "@test/fakes/Tag";
-import { AUDIO_RECORDING, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
+import {
+  AUDIO_RECORDING,
+  MEDIA,
+  SHALLOW_SITE,
+  TAG,
+} from "@baw-api/ServiceTokens";
 import { of } from "rxjs";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
-import type { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
+import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
+import { MediaService } from "@services/media/media.service";
 import { AnnotationEventCardComponent } from "./annotation-event-card.component";
 
 describe("AudioEventCardComponent", () => {
   let spectator: Spectator<AnnotationEventCardComponent>;
   let injectorSpy: SpyObject<Injector>;
+
+  let mediaServiceSpy: SpyObject<MediaService>;
   let audioRecordingApiSpy: SpyObject<AudioRecordingsService>;
   let tagApiSpy: SpyObject<TagsService>;
   let siteApiSpy: SpyObject<ShallowSitesService>;
@@ -43,13 +51,20 @@ describe("AudioEventCardComponent", () => {
     spectator = createComponent({ detectChanges: false });
 
     injectorSpy = spectator.inject(INJECTOR);
+    mediaServiceSpy = spectator.inject(MEDIA.token);
 
-    mockAnnotation = new Annotation(generateAnnotation(), injectorSpy);
     mockTag = new Tag(generateTag(), injectorSpy);
     mockSite = new Site(generateSite(), injectorSpy);
     mockAudioRecording = new AudioRecording(
       generateAudioRecording(),
       injectorSpy
+    );
+    mockAnnotation = new Annotation(
+      generateAnnotation({
+        audioRecording: mockAudioRecording,
+        tags: [mockTag],
+      }),
+      mediaServiceSpy
     );
 
     audioRecordingApiSpy = spectator.inject(AUDIO_RECORDING.token);

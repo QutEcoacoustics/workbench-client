@@ -8,7 +8,9 @@ import { Annotation } from "@models/data/Annotation";
   styleUrl: "annotation-event-card.component.scss",
 })
 export class AnnotationEventCardComponent implements OnInit, AfterViewInit {
-  @Input({ required: true }) public annotation: Annotation;
+  @Input({ required: true })
+  public annotation: Annotation;
+
   protected spectrogramId: string;
 
   @ViewChild("mediaControls")

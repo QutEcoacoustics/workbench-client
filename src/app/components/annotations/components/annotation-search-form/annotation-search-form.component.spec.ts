@@ -20,9 +20,8 @@ import { generateSite } from "@test/fakes/Site";
 import { selectFromTypeahead } from "@test/helpers/html";
 import { fakeAsync } from "@angular/core/testing";
 import { modelData } from "@test/helpers/faker";
-import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 import { defaultDebounceTime } from "src/app/app.helper";
-import { DateTime } from "luxon";
+import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
   let spectator: Spectator<AnnotationSearchFormComponent>;
@@ -62,7 +61,6 @@ describe("AnnotationSearchFormComponent", () => {
     mockTagsApi.filter.andCallFake(() => of(mockTagsResponse));
     mockSitesApi.filter.andCallFake(() => of(mockSitesResponse));
 
-    spectator.component.project = defaultFakeProject;
     spectator.component.searchParameters = new AnnotationSearchParameters(
       {},
       injector
