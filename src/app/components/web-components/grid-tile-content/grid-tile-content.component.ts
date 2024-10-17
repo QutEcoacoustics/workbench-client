@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
@@ -8,12 +7,13 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from "@angular/core";
-import { ContextRequestEvent } from "@helpers/context/context";
 import { NgElement, WithProperties } from "@angular/elements";
-import type { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
-import type { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
-import type { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
+import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
+import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
+import { gridTileContext } from "@ecoacoustics/web-components";
+import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
 import { Annotation } from "@models/data/Annotation";
+import { ContextHandler } from "@helpers/context/context-decorators";
 
 export const gridTileContextSelector = "baw-grid-tile-content" as const;
 
@@ -27,7 +27,9 @@ export const gridTileContextSelector = "baw-grid-tile-content" as const;
   templateUrl: "grid-tile-content.component.html",
   styleUrl: "grid-tile-content.component.scss",
 })
-export class GridTileContentComponent implements AfterViewInit {
+export class GridTileContentComponent {
+  public constructor(public elementRef: ElementRef) { }
+
   @ViewChild("wrapper")
   private wrapper: ElementRef<HTMLDivElement>;
 
@@ -61,10 +63,7 @@ export class GridTileContentComponent implements AfterViewInit {
     return this.model().contextUrl(contextSize);
   }
 
-  public ngAfterViewInit(): void {
-    this.requestContext();
-  }
-
+  @ContextHandler(gridTileContext)
   public handleContextChange(subjectWrapper: SubjectWrapper): void {
     this.contextExpanded = false;
     this.model.set(subjectWrapper.subject as any);
@@ -76,16 +75,6 @@ export class GridTileContentComponent implements AfterViewInit {
 
   protected closeContext(): void {
     this.contextExpanded = false;
-  }
-
-  private async requestContext(): Promise<void> {
-    // TODO: remove this once @ecoacoustics/web-components#219 is resolved
-    const webComponents = await import("@ecoacoustics/web-components");
-    const token = webComponents.gridTileContext;
-
-    this.wrapper.nativeElement.dispatchEvent(
-      new ContextRequestEvent(token, this.handleContextChange.bind(this), true)
-    );
   }
 }
 

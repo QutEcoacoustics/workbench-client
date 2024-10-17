@@ -1,3 +1,5 @@
+import { ContextRequestEvent, UnknownContext } from "./context";
+
 /**
  * You can use this decorator to bind a context subscription to a class property.
  *
@@ -11,8 +13,21 @@
  * }
  * ```
  */
-export function ContextHandler(context: unknown) {
+export function ContextHandler(token: UnknownContext) {
   return (target: any, propertyKey: string) => {
-    console.log(target, propertyKey, context);
+    const originalNgAfterViewInit = target.ngAfterViewInit;
+
+    target.ngAfterViewInit = function() {
+      // invoke the original ngAfterViewInit method if it exists
+      if (originalNgAfterViewInit) {
+        originalNgAfterViewInit();
+      }
+
+      const handler = target[propertyKey].bind(this);
+      const contextRequest = new ContextRequestEvent(token, handler, true);
+
+      const element = this.elementRef.nativeElement;
+      element.dispatchEvent(contextRequest);
+    };
   }
 }

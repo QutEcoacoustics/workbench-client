@@ -1,29 +1,29 @@
 <form #form="ngForm">
   <baw-date-time-filter
-    (modelChange)="updateDateTime($event)"
+    (modelChange)="updateRecordingDateTime($event)"
   ></baw-date-time-filter>
 
   <baw-typeahead-input
     id="tags-input"
     label="Tags of Interest"
     inputPlaceholder="All"
-    [searchCallback]="createSearchCallback(tagsApi, 'text', false)"
+    [searchCallback]="createSearchCallback(tagsApi, 'text')"
     [resultTemplate]="tagsTypeaheadTemplate"
     [model]="searchParameters.tagModels"
-    (modelChange)="updateModel('tags', getIdsFromAbstractModelArray($event))"
+    (modelChange)="updateSubModel('tags', $event)"
   ></baw-typeahead-input>
 
   <baw-typeahead-input
     id="projects-input"
     label="Project(s)"
     [inputPlaceholder]="project ? project.name : 'All'"
-    [searchCallback]="createSearchCallback(projectsApi)"
+    [searchCallback]="
+      createSearchCallback(projectsApi, 'name', searchParameters.modelFilters())
+    "
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!project"
     [model]="project ? [] : searchParameters.projectModels"
-    (modelChange)="
-      updateModel('projects', getIdsFromAbstractModelArray($event))
-    "
+    (modelChange)="updateSubModel('projects', $event)"
   ></baw-typeahead-input>
 
   <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
@@ -32,22 +32,26 @@
     *ngIf="!site || site?.isPoint"
     label="Site(s)"
     [inputPlaceholder]="region ? region.name : 'All'"
-    [searchCallback]="createSearchCallback(regionsApi)"
+    [searchCallback]="
+      createSearchCallback(regionsApi, 'name', searchParameters.modelFilters())
+    "
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!region"
     [model]="region ? [] : searchParameters.regionModels"
-    (modelChange)="updateModel('regions', getIdsFromAbstractModelArray($event))"
+    (modelChange)="updateSubModel('regions', $event)"
   ></baw-typeahead-input>
 
   <baw-typeahead-input
     id="sites-input"
     [label]="site ? (site?.isPoint ? 'Point(s)' : 'Site(s)') : 'Point(s)'"
     [inputPlaceholder]="site ? site.name : 'All'"
-    [searchCallback]="createSearchCallback(sitesApi)"
+    [searchCallback]="
+      createSearchCallback(sitesApi, 'name', searchParameters.modelFilters())
+    "
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!site"
     [model]="region ? [] : searchParameters.siteModels"
-    (modelChange)="updateModel('sites', getIdsFromAbstractModelArray($event))"
+    (modelChange)="updateSubModel('sites', $event)"
   ></baw-typeahead-input>
 
   <baw-wip>
@@ -61,7 +65,7 @@
         type="checkbox"
         class="form-check-input"
         [checked]="searchParameters.onlyUnverified"
-        (change)="updateModel('onlyUnverified', $event.target['checked'])"
+        (change)="updateSubModel('onlyUnverified', $event.target['checked'])"
       />
       <label for="filter-verified" class="form-check-label">
         Only show un-verified annotations
@@ -70,19 +74,32 @@
   </baw-wip>
 
   <div class="advanced-filters mt-2">
-    <button class="btn btn-outline-secondary w-100" (click)="advancedSettings.toggle()">Toggle Advanced Filters</button>
+    <button
+      class="btn btn-outline-secondary w-100"
+      (click)="advancedSettings.toggle()"
+    >
+      Toggle Advanced Filters
+    </button>
 
-    <div #advancedSettings="ngbCollapse" [ngbCollapse]="true" class="card card-body border-top-0">
+    <div
+      #advancedSettings="ngbCollapse"
+      [ngbCollapse]="true"
+      class="card card-body border-top-0"
+    >
       <baw-typeahead-input
         id="recordings-input"
         label="Recording IDs of interest"
         inputPlaceholder="All"
-        [searchCallback]="createIdSearchCallback(recordingsApi)"
+        [searchCallback]="
+          createSearchCallback(
+            recordingsApi,
+            'id',
+            searchParameters.modelFilters()
+          )
+        "
         [resultTemplate]="idTypeaheadTemplate"
         [model]="searchParameters.audioRecordingModels"
-        (modelChange)="
-          updateModel('audioRecordings', getIdsFromAbstractModelArray($event))
-        "
+        (modelChange)="updateSubModel('audioRecordings', $event)"
       ></baw-typeahead-input>
     </div>
   </div>

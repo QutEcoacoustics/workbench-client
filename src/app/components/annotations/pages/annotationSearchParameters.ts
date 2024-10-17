@@ -150,6 +150,16 @@ export class AnnotationSearchParameters
     );
   }
 
+  public modelFilters(): InnerFilter<Project | Region | Site> {
+    if (this.siteModels.length > 0) {
+      return filterModelIds("sites", this.sites);
+    } else if (this.regionModels.length > 0) {
+      return filterModelIds("regions", this.regions);
+    } else {
+      return filterModelIds("projects", this.projects);
+    }
+  }
+
   private recordingDateTimeFilters(
     initialFilter: InnerFilter<AudioEvent>
   ): InnerFilter<AudioEvent> {
