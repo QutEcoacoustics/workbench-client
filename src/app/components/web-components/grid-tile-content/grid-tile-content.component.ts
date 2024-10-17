@@ -13,7 +13,7 @@ import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/compon
 import { gridTileContext } from "@ecoacoustics/web-components";
 import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
 import { Annotation } from "@models/data/Annotation";
-import { ContextHandler } from "@helpers/context/context-decorators";
+import { ContextSubscription, WithContext } from "@helpers/context/context-decorators";
 
 export const gridTileContextSelector = "baw-grid-tile-content" as const;
 
@@ -27,7 +27,7 @@ export const gridTileContextSelector = "baw-grid-tile-content" as const;
   templateUrl: "grid-tile-content.component.html",
   styleUrl: "grid-tile-content.component.scss",
 })
-export class GridTileContentComponent {
+export class GridTileContentComponent implements WithContext  {
   public constructor(public elementRef: ElementRef) { }
 
   @ViewChild("wrapper")
@@ -63,7 +63,7 @@ export class GridTileContentComponent {
     return this.model().contextUrl(contextSize);
   }
 
-  @ContextHandler(gridTileContext)
+  @ContextSubscription(gridTileContext)
   public handleContextChange(subjectWrapper: SubjectWrapper): void {
     this.contextExpanded = false;
     this.model.set(subjectWrapper.subject as any);

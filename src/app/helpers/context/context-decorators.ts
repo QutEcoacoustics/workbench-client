@@ -1,4 +1,10 @@
+import { ElementRef } from "@angular/core";
 import { ContextRequestEvent, UnknownContext } from "./context";
+
+export interface WithContext {
+  elementRef: ElementRef;
+  ngAfterViewInit?(): void;
+}
 
 /**
  * You can use this decorator to bind a context subscription to a class property.
@@ -13,8 +19,8 @@ import { ContextRequestEvent, UnknownContext } from "./context";
  * }
  * ```
  */
-export function ContextHandler(token: UnknownContext) {
-  return (target: any, propertyKey: string) => {
+export function ContextSubscription(token: UnknownContext) {
+  return (target: WithContext, propertyKey: string) => {
     const originalNgAfterViewInit = target.ngAfterViewInit;
 
     target.ngAfterViewInit = function() {
