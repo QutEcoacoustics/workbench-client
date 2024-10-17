@@ -1,0 +1,45 @@
+<!--
+  Because the verification grid component uses a fullscreen page layout
+  the header and content will be aligned to the top left of the view container
+  with no padding.
+
+  To keep the website consistent, we will add a container to the chrome content
+  to ensure that the chrome content looks the same across all pages.
+-->
+<div class="header-content">
+  <h2 class="mb-2">Annotation Verification</h2>
+  <button class="filter-button btn btn-sm btn-secondary" (click)="openSearchFiltersModal()">
+    <fa-icon [icon]="['fas', 'filter']"></fa-icon>
+  </button>
+</div>
+
+<oe-verification-grid
+  #verificationGrid
+  id="verification-grid"
+  (loaded)="handleGridLoaded()"
+  (decision-made)="handleDecision()"
+>
+  <template>
+    <baw-grid-tile-content></baw-grid-tile-content>
+  </template>
+
+  <oe-verification verified="true" shortcut="Y"></oe-verification>
+  <oe-verification verified="false" shortcut="N"></oe-verification>
+
+  <oe-data-source slot="data-source" for="verification-grid"></oe-data-source>
+</oe-verification-grid>
+
+<ng-template #progressWarningModal let-warningModal>
+  <baw-reset-progress-warning-modal
+    [modal]="warningModal"
+  ></baw-reset-progress-warning-modal>
+</ng-template>
+
+<ng-template #searchFiltersModal let-filtersModal>
+  <baw-search-filters-modal
+    [modal]="filtersModal"
+    [formValue]="searchParameters"
+    [hasDecisions]="hasUnsavedChanges"
+    [successCallback]="requestModelUpdate.bind(this)"
+  ></baw-search-filters-modal>
+</ng-template>

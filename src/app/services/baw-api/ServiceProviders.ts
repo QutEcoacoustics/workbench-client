@@ -1,3 +1,5 @@
+import { annotationResolvers, AnnotationService } from "@services/models/annotation.service";
+import { MediaService } from "@services/media/media.service";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
   analysisJobItemResultResolvers,
@@ -290,6 +292,15 @@ const serviceList = [
     serviceToken: Tokens.WEBSITE_STATUS,
     service: WebsiteStatusService,
   },
+  {
+    serviceToken: Tokens.ANNOTATION,
+    service: AnnotationService,
+    resolvers: annotationResolvers,
+  },
+  {
+    serviceToken: Tokens.MEDIA,
+    service: MediaService,
+  }
 ];
 
 const services = serviceList.map(({ service }) => service);

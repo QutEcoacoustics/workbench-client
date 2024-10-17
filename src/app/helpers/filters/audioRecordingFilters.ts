@@ -14,14 +14,15 @@ import { filterAnd } from "./filters";
 export function filterDate(
   filters: InnerFilter<AudioRecording>,
   startDate?: DateTime,
-  endDate?: DateTime
+  endDate?: DateTime,
+  prefix?: string
 ): InnerFilter<AudioRecording> {
   if (startDate) {
     // to return the most data that matches the date range interval we want to return any audio recordings that have any audio that overlaps
     // with the date range interval. But we don't want to return any recordings that just touch on the ends
     // therefore, the conditions should be `recordedEndDate > startFilterDate && recordedDate < endFilterDate`
     const startDateFilter = {
-      recordedEndDate: { greaterThan: startDate },
+      [`${prefix}recordedEndDate`]: { greaterThan: startDate },
     } as InnerFilter<AudioRecording>;
 
     filters = filterAnd<AudioRecording>(filters, startDateFilter);
@@ -29,8 +30,8 @@ export function filterDate(
 
   if (endDate) {
     const endDateFilters: InnerFilter<AudioRecording> = {
-      recordedDate: { lessThan: endDate },
-    };
+      [`${prefix}recordedDate`]: { lessThan: endDate },
+    } as any;
 
     filters = filterAnd<AudioRecording>(filters, endDateFilters);
   }
@@ -51,7 +52,8 @@ export function filterTime(
   filters: InnerFilter<AudioRecording>,
   ignoreDayLightSavings: boolean,
   startTime?: Duration,
-  endTime?: Duration
+  endTime?: Duration,
+  prefix?: string
 ): InnerFilter<AudioRecording> {
   // the api expects time filters to be in the format of "hh:mm" (e.g. 08:12)
   // since Luxon's Duration toJSON() method outputs the times in the ISO 8601 period format (e.g. P23DT23H)
@@ -69,20 +71,20 @@ export function filterTime(
   const isMidnightFilter = startTime && endTime && startTime > endTime;
 
   if (isMidnightFilter) {
-    const timeInnerFilter: InnerFilter<AudioRecording> = {
+    const timeInnerFilter: InnerFilter = {
       or: [
         {
-          recordedEndDate: {
+          [`${prefix}recordedEndDate`]: {
             greaterThanOrEqual: { expressions, value: formattedStartTime },
           },
         },
         {
-          recordedDate: {
+          [`${prefix}recordedDate`]: {
             lessThanOrEqual: { expressions, value: formattedEndTime },
           },
         },
         {
-          recordedEndDate: {
+          [`${prefix}recordedEndDate`]: {
             lessThanOrEqual: { expressions, value: formattedEndTime },
           },
         },
@@ -93,7 +95,7 @@ export function filterTime(
   } else {
     if (startTime) {
       const startTimeFilter = {
-        recordedEndDate: {
+        [`${prefix}recordedEndDate`]: {
           greaterThan: { expressions, value: formattedStartTime },
         },
       };
@@ -103,7 +105,7 @@ export function filterTime(
 
     if (endTime) {
       const endTimeFilter = {
-        recordedDate: {
+        [`${prefix}recordedDate`]: {
           lessThan: { expressions, value: formattedEndTime },
         },
       };

@@ -1,0 +1,13 @@
+.annotations-grid {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+
+  position: relative;
+  gap: 1em;
+  min-height: 2rem;
+}
+
+.annotation-grid-controls {
+  position: relative;
+}

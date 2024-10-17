@@ -59,9 +59,16 @@ export class DateTimeFilterComponent
   @Input() public region: Region;
   @Input() public site: Site;
   @Input() public constructedFilters: BehaviorSubject<Filters<AudioRecording>>;
-  @Output() public modelChange = new EventEmitter<DateTimeFilterModel>();
 
+  @Input() public disableStartDate = false;
+  @Input() public disableEndDate = false;
+  @Input() public disableStartTime = false;
+  @Input() public disableEndTime = false;
+  @Input() public disableIgnoreDaylightSavings = false;
+
+  @Output() public modelChange = new EventEmitter<DateTimeFilterModel>();
   public model: DateTimeFilterModel = { ignoreDaylightSavings: true };
+
   private previousFilters: FromJS<Filters<AudioRecording>>;
 
   public ngAfterViewInit(): void {
