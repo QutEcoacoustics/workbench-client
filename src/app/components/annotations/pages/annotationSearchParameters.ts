@@ -9,7 +9,7 @@ import {
   TAG,
 } from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
-import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
+import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import {
   deserializeParamsToObject,
@@ -228,20 +228,18 @@ export class AnnotationSearchParameters
   private recordingDateTimeFilters(
     initialFilter: InnerFilter<AudioEvent>
   ): InnerFilter<AudioEvent> {
-    const dateFilter = filterDate(
+    const dateFilter = filterEventRecordingDate(
       initialFilter,
       this.recordingDateStartedAfter,
-      this.recordingDateFinishedBefore,
-      "audioRecordings."
+      this.recordingDateFinishedBefore
     );
-    const dateTimeFilter = filterTime(
-      dateFilter,
-      this.daylightSavings,
-      this.recordingTimeStartedAfter,
-      this.recordingTimeFinishedBefore,
-      "audioRecordings."
-    );
-    return dateTimeFilter;
+    // const dateTimeFilter = filterTime(
+    //   dateFilter,
+    //   this.daylightSavings,
+    //   this.recordingTimeStartedAfter,
+    //   this.recordingTimeFinishedBefore
+    // );
+    return dateFilter;
   }
 
   // TODO: this function is a placeholder for future implementation once the api

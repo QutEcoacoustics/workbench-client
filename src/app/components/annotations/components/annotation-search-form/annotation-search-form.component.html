@@ -13,7 +13,7 @@
     inputPlaceholder="All"
     [searchCallback]="createSearchCallback(tagsApi, 'text')"
     [resultTemplate]="tagsTypeaheadTemplate"
-    [model]="searchParameters.tagModels"
+    [value]="searchParameters.tagModels"
     (modelChange)="updateSubModel('tags', $event)"
   ></baw-typeahead-input>
 
@@ -26,7 +26,7 @@
     "
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!project"
-    [model]="project ? [] : searchParameters.projectModels"
+    [value]="project ? [] : searchParameters.projectModels"
     (modelChange)="updateSubModel('projects', $event)"
   ></baw-typeahead-input>
 
@@ -41,7 +41,7 @@
     "
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!region"
-    [model]="region ? [] : searchParameters.regionModels"
+    [value]="region ? [] : searchParameters.regionModels"
     (modelChange)="updateSubModel('regions', $event)"
   ></baw-typeahead-input>
 
@@ -54,7 +54,7 @@
     "
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!site"
-    [model]="region ? [] : searchParameters.siteModels"
+    [value]="region ? [] : searchParameters.siteModels"
     (modelChange)="updateSubModel('sites', $event)"
   ></baw-typeahead-input>
 
@@ -102,7 +102,7 @@
           )
         "
         [resultTemplate]="idTypeaheadTemplate"
-        [model]="searchParameters.audioRecordingModels"
+        [value]="searchParameters.audioRecordingModels"
         (modelChange)="updateSubModel('audioRecordings', $event)"
       ></baw-typeahead-input>
     </div>

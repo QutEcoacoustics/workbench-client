@@ -47,7 +47,7 @@ export class TypeaheadInputComponent {
   // if multiple items are enabled, they will be added to the value
   // if multiple inputs are disabled, the value will always be an array with a single element
   // we use the variable name "value" so the component can be used in ngForms and can bind to [(ngModel)]
-  @Input() public model: object[] = [];
+  @Input() public value: object[] = [];
   /** An event emitter when a user adds, removes, or selects and item from the typeahead input */
   @Output() public modelChange = new EventEmitter<object[]>();
 
@@ -59,7 +59,7 @@ export class TypeaheadInputComponent {
     return text$.pipe(
       debounceTime(defaultDebounceTime),
       distinctUntilChanged(),
-      switchMap((term: string) => this.searchCallback(term, this.model)),
+      switchMap((term: string) => this.searchCallback(term, this.value)),
       map((items: object[]) => items.slice(0, maximumResults))
     );
   };
@@ -71,8 +71,8 @@ export class TypeaheadInputComponent {
     const selectedItem: object = $event.item;
 
     if (this.multipleInputs) {
-      this.model.push(selectedItem);
-      this.modelChange.emit(this.model);
+      this.value.push(selectedItem);
+      this.modelChange.emit(this.value);
 
       this.inputModel = null;
     } else {
@@ -81,20 +81,20 @@ export class TypeaheadInputComponent {
   }
 
   public removeLastItem(): void {
-    if (this.multipleInputs && this.model.length > 0 && !this.inputModel) {
-      this.model.pop();
-      this.modelChange.emit(this.model);
+    if (this.multipleInputs && this.value.length > 0 && !this.inputModel) {
+      this.value.pop();
+      this.modelChange.emit(this.value);
     }
   }
 
   public removeItem(indexToRemove: number): void {
     // if the "value" array has a length of 1, the splice function doesn't return an empty array
     // therefore, we use length === 1 as an edge case
-    if (this.model.length === 1) {
-      this.model = [];
+    if (this.value.length === 1) {
+      this.value = [];
     } else {
-      this.model.splice(indexToRemove, 1);
-      this.modelChange.emit(this.model);
+      this.value.splice(indexToRemove, 1);
+      this.modelChange.emit(this.value);
     }
   }
 }

@@ -1,6 +1,6 @@
-import { DateExpressions, InnerFilter } from "@baw-api/baw-api.service";
+import { InnerFilter } from "@baw-api/baw-api.service";
 import { AudioRecording } from "@models/AudioRecording";
-import { DateTime, Duration } from "luxon";
+import { DateTime } from "luxon";
 import { filterAnd } from "./filters";
 
 /**
@@ -11,7 +11,7 @@ import { filterAnd } from "./filters";
  * @param endDate (optional) The maximum `recordedEndDate` allowed
  * @returns A new filter with all the same conditions as the initial filter, with the date range conditions added in an `and` expression
  */
-export function filterDate(
+export function filterEventRecordingDate(
   filters: InnerFilter<AudioRecording>,
   startDate?: DateTime,
   endDate?: DateTime
@@ -33,83 +33,6 @@ export function filterDate(
     } as InnerFilter<AudioRecording>;
 
     filters = filterAnd<AudioRecording>(filters, endDateFilters);
-  }
-
-  return filters;
-}
-
-/**
- * Adds time range conditions to an existing filter
- *
- * @param filters An existing filter to add the time range conditions to. If no filter is provided, a new filter will be created
- * @param ignoreDayLightSavings Describes if the time filters use local (daylight savings) time
- * @param startTime (optional) The minimum `recordedDate` allowed
- * @param endTime (optional) The maximum `recordedEndDate` allowed
- * @returns A new filter with all the same conditions as the initial filter, with the time range conditions added in an `and` expression
- */
-export function filterTime(
-  filters: InnerFilter<AudioRecording>,
-  ignoreDayLightSavings: boolean,
-  startTime?: Duration,
-  endTime?: Duration
-): InnerFilter<AudioRecording> {
-  // the api expects time filters to be in the format of "hh:mm" (e.g. 08:12)
-  // since Luxon's Duration toJSON() method outputs the times in the ISO 8601 period format (e.g. P23DT23H)
-  // we have to format times at filter creation to the expected hh:mm format
-  const timeFormat = "hh:mm";
-  const expressions: DateExpressions[] = ignoreDayLightSavings
-    ? ["local_offset", "time_of_day"]
-    : ["local_tz", "time_of_day"];
-
-  const formattedStartTime = startTime?.toFormat(timeFormat);
-  const formattedEndTime = endTime?.toFormat(timeFormat);
-
-  // a midnight filter is a filter circumstance where the time range overlaps two days e.g. 10PM to 1AM
-  // therefore, midnight filters can only occur if both a start and end time are specified and the start time occurs after the end time
-  const isMidnightFilter = startTime && endTime && startTime > endTime;
-
-  if (isMidnightFilter) {
-    const timeInnerFilter: InnerFilter<AudioRecording> = {
-      or: [
-        {
-          "audioRecording.recordedEndDate": {
-            greaterThanOrEqual: { expressions, value: formattedStartTime },
-          },
-        },
-        {
-          "audioRecording.recordedDate": {
-            lessThanOrEqual: { expressions, value: formattedEndTime },
-          },
-        },
-        {
-          "audioRecording.recordedEndDate": {
-            lessThanOrEqual: { expressions, value: formattedEndTime },
-          },
-        },
-      ],
-    };
-
-    filters = filterAnd<AudioRecording>(filters, timeInnerFilter);
-  } else {
-    if (startTime) {
-      const startTimeFilter = {
-        "audioRecording.recordedEndDate": {
-          greaterThan: { expressions, value: formattedStartTime },
-        },
-      };
-
-      filters = filterAnd<AudioRecording>(filters, startTimeFilter);
-    }
-
-    if (endTime) {
-      const endTimeFilter = {
-        "audioRecording.recordedDate": {
-          lessThan: { expressions, value: formattedEndTime },
-        },
-      };
-
-      filters = filterAnd<AudioRecording>(filters, endTimeFilter);
-    }
   }
 
   return filters;

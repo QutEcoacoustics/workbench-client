@@ -5,7 +5,7 @@
   <div class="typeahead-input-container form-control">
     <ng-container *ngIf="multipleInputs">
       <span
-        *ngFor="let item of model; let i = index"
+        *ngFor="let item of value; let i = index"
         class="item-pill badge"
         tabindex="0"
         (keydown.backspace)="removeItem(i)"
@@ -35,7 +35,7 @@
       name="typeahead-input"
       type="text"
       class="form-control"
-      [placeholder]="model.length < 1 ? inputPlaceholder : ''"
+      [placeholder]="value.length < 1 ? inputPlaceholder : ''"
       [ngbTypeahead]="findOptions"
       [resultTemplate]="resultTemplate"
       [(ngModel)]="inputModel"

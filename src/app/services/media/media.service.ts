@@ -61,6 +61,7 @@ export class MediaService {
     );
 
     let path =
+      this.apiRoot +
       `/audio_recordings/${audioRecording.id}/media.flac` +
       `?start_offset=${fitStart}` +
       `&end_offset=${fitEnd}`;
@@ -70,7 +71,7 @@ export class MediaService {
     // we do not add the auth token if the user is not logged in because the
     // auth token will be undefined, resulting in `&user_token=undefined`
     if (this.session.authToken) {
-      path += `&user_token=${this.session.authToken}`;
+      path = this.session.addAuthTokenToUrl(path);
     }
 
     // add any additional query string parameters
@@ -78,7 +79,7 @@ export class MediaService {
       path += `&${new URLSearchParams(params).toString()}`;
     }
 
-    return this.apiRoot + path;
+    return path;
   }
 
   private padAudioUrl(

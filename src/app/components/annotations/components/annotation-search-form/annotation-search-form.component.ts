@@ -98,7 +98,7 @@ export class AnnotationSearchFormComponent implements OnInit, AfterViewInit {
         this.searchParameters.recordingDateFinishedBefore.day
       );
 
-      this.dateTimeFilters.nativeElement.model = {
+      this.dateTimeFilters.nativeElement.value = {
         dateFiltering: true,
         dateFinishedBefore,
       };

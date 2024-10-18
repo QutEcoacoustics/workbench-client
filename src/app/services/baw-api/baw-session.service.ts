@@ -63,6 +63,13 @@ export class BawSessionService {
   }
 
   public addAuthTokenToUrl(url: string): string {
-    return url;
+    if (!this.authToken) {
+      return url;
+    }
+
+    const urlObj = new URL(url);
+    urlObj.searchParams.set("user_token", this.authToken);
+
+    return urlObj.toString();
   }
 }

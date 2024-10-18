@@ -32,9 +32,9 @@ import { Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { StrongRoute } from "@interfaces/strongRoute";
-import { ResetProgressWarningComponent } from "@components/annotations/components/reset-progress-warning/reset-progress-warning.component";
+import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { SearchFiltersModalComponent } from "@components/annotations/components/search-filters-modal/search-filters-modal.component";
+import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
@@ -80,7 +80,7 @@ class VerificationComponent
   }
 
   @ViewChild("progressWarningModal")
-  private lostProgressWarningModal: ElementRef<ResetProgressWarningComponent>;
+  private lostProgressWarningModal: ElementRef<ProgressWarningComponent>;
 
   @ViewChild("searchFiltersModal")
   private searchFiltersModal: ElementRef<SearchFiltersModalComponent>;

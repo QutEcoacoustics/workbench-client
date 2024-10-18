@@ -78,9 +78,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     if (!this.isServer) {
       const webComponentElement = createCustomElement(
         GridTileContentComponent,
-        {
-          injector,
-        }
+        { injector }
       );
       customElements.define(gridTileContextSelector, webComponentElement);
     }

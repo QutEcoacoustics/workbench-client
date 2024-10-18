@@ -16,7 +16,7 @@ import { BawSessionService } from "@baw-api/baw-session.service";
   `,
 })
 export class IfLoggedInComponent implements AfterContentInit {
-  public constructor(protected session: BawSessionService) {}
+  public constructor(public session: BawSessionService) {}
 
   @ContentChildren(ElementRef, { descendants: true })
   private contentChildren: QueryList<ElementRef>;

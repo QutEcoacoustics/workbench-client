@@ -14,7 +14,7 @@ const directives = [
     StrongRouteDirective,
     StrongRouteActiveDirective,
     UrlDirective,
-    UrlActiveDirective,
+    UrlActiveDirective
   ),
 ];
 

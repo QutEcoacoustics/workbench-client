@@ -20,7 +20,6 @@ import { generateSite } from "@test/fakes/Site";
 import { selectFromTypeahead } from "@test/helpers/html";
 import { fakeAsync } from "@angular/core/testing";
 import { modelData } from "@test/helpers/faker";
-import { defaultDebounceTime } from "src/app/app.helper";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
@@ -67,22 +66,25 @@ describe("AnnotationSearchFormComponent", () => {
     spectator.setInput("searchParameters", searchParameters);
   }
 
-  const tagsTypeahead = () => spectator.query("#tags-input");
-  const projectsTypeahead = () => spectator.query("#projects-input");
   const sitesTypeahead = () => spectator.query("#sites-input");
-  const onlyVerifiedCheckbox = () =>
-    spectator.query<HTMLInputElement>("#filter-verified");
+  const onlyVerifiedCheckbox = () => spectator.query("#filter-verified");
+
+  const tagsTypeahead = () => spectator.query("#tags-input");
+  const tagPills = () => tagsTypeahead().querySelector(".item-pill");
 
   const projectsInput = () => projectsTypeahead().querySelector("input");
-  const startDateInput = () => spectator.query("#date-started-after");
+  const projectsTypeahead = () => spectator.query("#projects-input");
 
-  const dateToggleInput = () => spectator.query("#date-filtering");
-  const tagPills = () => tagsTypeahead().querySelector(".item-pill");
+  const dateToggleInput = () =>
+    spectator.query<HTMLInputElement>("#date-filtering");
+  const endDateInput = () =>
+    spectator.query<HTMLInputElement>("#date-finished-before");
 
   function toggleDateFilters(): void {
     spectator.click(dateToggleInput());
     spectator.detectChanges();
-    spectator.tick(defaultDebounceTime);
+    spectator.tick(1000);
+    spectator.detectChanges();
   }
 
   beforeEach(() => {
@@ -110,15 +112,15 @@ describe("AnnotationSearchFormComponent", () => {
     });
 
     // check the population of an external component that is not a typeahead input
-    it("should pre-populate the date-time filters if provided in the search parameters model", () => {
+    it("should pre-populate the date-time filters if provided in the search parameters model", fakeAsync(() => {
+      toggleDateFilters();
+
       const testStartDate = modelData.dateTime();
       spectator.component.searchParameters.recordingDate = [
         testStartDate,
       ] as any;
-      expect(startDateInput()).toHaveValue(
-        testStartDate.toFormat("yyyy-MM-dd")
-      );
-    });
+      expect(endDateInput()).toHaveValue(testStartDate.toFormat("yyyy-MM-dd"));
+    }));
 
     // check the population of a checkbox boolean input
     // TODO: enable this test once we have the endpoint avaliable to filter by verified status
@@ -158,7 +160,7 @@ describe("AnnotationSearchFormComponent", () => {
       const expectedNewModel = {};
 
       toggleDateFilters();
-      spectator.typeInElement(testedDate, startDateInput());
+      spectator.typeInElement(testedDate, endDateInput());
 
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(expectedNewModel);
     }));
@@ -167,12 +169,12 @@ describe("AnnotationSearchFormComponent", () => {
       const testedDate = "2021109-12";
 
       toggleDateFilters();
-      spectator.typeInElement(testedDate, startDateInput());
+      spectator.typeInElement(testedDate, endDateInput());
 
       expect(modelChangeSpy).not.toHaveBeenCalled();
     }));
 
-    // TODO: enable this test once we have the endpoint avaliable to filter by verified status
+    // TODO: enable this test once we have the endpoint available to filter by verified status
     xit("should emit the correct model if the only verified checkbox is updated", () => {
       spectator.click(onlyVerifiedCheckbox());
 

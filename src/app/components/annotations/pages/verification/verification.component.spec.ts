@@ -268,7 +268,7 @@ describe("VerificationComponent", () => {
       });
 
       it("should pre-populate the search parameters box from the query string parameters", () => {
-        const realizedTagModels = tagsTypeahead().model;
+        const realizedTagModels = tagsTypeahead().value;
         expect(realizedTagModels).toEqual(defaultFakeTags);
       });
 

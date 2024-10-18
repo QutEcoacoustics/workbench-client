@@ -1,48 +1,60 @@
-import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { SharedModule } from "@shared/shared.module";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { IfLoggedInComponent } from "./if-logged-in.component";
 
 describe("IsLoggedInComponent", () => {
   let spectator: Spectator<IfLoggedInComponent>;
-
-  let sessionSpy: SpyObject<BawSessionService>
-  let mockLoggedInResponse = true;
+  let sessionSpy: SpyObject<BawSessionService>;
 
   const createComponent = createComponentFactory({
     component: IfLoggedInComponent,
+    imports: [SharedModule, HttpClientTestingModule, MockBawApiModule],
   });
 
-  function setup() {
+  function setup(isLoggedIn: boolean) {
     spectator = createComponent({ detectChanges: false });
 
     sessionSpy = spectator.inject(BawSessionService);
-    (sessionSpy.isLoggedIn as any).andCallFake(() => mockLoggedInResponse);
+    spyOnProperty(sessionSpy, "isLoggedIn").and.returnValue(isLoggedIn);
 
     spectator.detectChanges();
   }
 
-  beforeEach(() => {
-    mockLoggedInResponse = true;
-    setup();
-  });
+  const wrapperSpan = () => spectator.query<HTMLSpanElement>("span");
 
   it("should create", () => {
+    setup(false);
     expect(spectator.component).toBeInstanceOf(IfLoggedInComponent);
   });
 
   describe("when the user is logged in", () => {
-    it("should not have a tooltip", () => {});
+    beforeEach(() => {
+      setup(true);
+    });
 
-    it("should display the content unmodified", () => {});
+    it("should not have a tooltip", () => {
+      expect(wrapperSpan()).not.toHaveAttribute("ngbTooltip");
+    });
   });
 
   describe("when the user is not logged in", () => {
-    it("should have a tooltip", () => {});
+    beforeEach(() => {
+      setup(false);
+    });
 
-    it("should display the content inside a span", () => {});
-
-    it("should disable disable interactive content", () => {});
-
-    it("should not add a disabled attribute to non-interactive content", () => {});
+    it("should have a tooltip", () => {
+      const expectedContent = "You must be logged in";
+      expect(wrapperSpan()).toHaveAttribute(
+        "ng-reflect-ngb-tooltip",
+        expectedContent
+      );
+    });
   });
 });

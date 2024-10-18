@@ -3,7 +3,7 @@ import { ModalComponent } from "@menu/widget.component";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
-  selector: "baw-reset-progress-warning-modal",
+  selector: "baw-progress-warning-modal",
   template: `
     <div class="modal-header">
       <h4 class="modal-title">Confirm Loss of Progress</h4>
@@ -50,7 +50,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
     </div>
   `,
 })
-export class ResetProgressWarningComponent implements ModalComponent {
+export class ProgressWarningComponent implements ModalComponent {
   @Input() public modal: NgbActiveModal;
 
   public closeModal(status: boolean): void {
