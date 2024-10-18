@@ -27,13 +27,21 @@ export class MediaService {
     end: number,
     padding: number = 0,
     params: Params = {}
-  ) {
+  ): string {
+    // check the start and end times are valid
     if (start < 0) {
       throw new Error("Start time must be greater than or equal to 0");
     } else if (end < 0) {
       throw new Error("End time must be greater than or equal to 0");
     } else if (end < start) {
       throw new Error("End time must be greater than start time");
+    }
+
+    // check the start and end times fit inside the audio recording
+    if (start > audioRecording.durationSeconds) {
+      throw new Error("Start time is greater than the duration of the audio recording");
+    } else if (end > audioRecording.durationSeconds) {
+      throw new Error("End time is greater than the duration of the audio recording");
     }
 
     // this is here to get around a rounding bug with range requests in the api
@@ -43,22 +51,52 @@ export class MediaService {
     const safeStartTime = Math.floor(start);
     const safeEndTime = Math.ceil(end);
 
+    // the baw-api enforces that split audio recordings must have a minimum
+    // duration of 0.5 seconds
+    // because it is possible to create events less than 0.5 seconds, we need to
+    // pad the start and end times around the audio event to ensure that the
+    // split audio is at least 0.5 seconds
     const minimumDuration = 0.05 as const;
     const proposedDuration = safeStartTime - safeEndTime;
     const proposedDifference = proposedDuration - minimumDuration;
-    const requiredPaddingAmount = Math.max(proposedDifference, 0);
+    const requiredPaddingAmount = Math.max(proposedDifference, padding);
 
     const [paddedStart, paddedEnd] = this.padAudioUrl(
-      start,
-      end,
-      requiredPaddingAmount + padding
+      safeStartTime,
+      safeEndTime,
+      requiredPaddingAmount
     );
 
-    const [fitStart, fitEnd] = this.fitAudioUrl(
+    let [fitStart, fitEnd] = this.fitAudioUrl(
       paddedStart,
       paddedEnd,
       audioRecording
     );
+
+    // we round here again so that we get a nice round number
+    // we don't have to worry about checks to see if the recording is a minimum
+    // length because we only ever add more information when rounding
+    //
+    // we do however, have to ensure that the end-time is within the bounds of
+    // the audio recording
+    // to do this, we check if rounded end time would be longer than the
+    // duration of the recording. In this case, we have no option but to round
+    // round down and add the lost duration to the start time
+    fitStart = Math.floor(fitStart);
+
+    const roundedEnd = Math.ceil(fitEnd);
+    if (fitEnd + roundedEnd > audioRecording.durationSeconds) {
+      const newEnd = Math.floor(fitEnd);
+      const subtractedDifference = fitEnd - newEnd;
+
+      // we know that there must be room at the start of the recording
+      // because there is a minimum recording time when uploading that is the
+      // same length as the minimum split duration
+      fitStart -= subtractedDifference;
+      fitEnd = newEnd;
+    } else {
+      fitEnd = roundedEnd;
+    }
 
     let path =
       this.apiRoot +
