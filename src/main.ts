@@ -4,10 +4,6 @@ import { AppModule } from "./app/app.module";
 import { environment } from "./environments/environment";
 import { applyMonkeyPatches } from "./patches/patches";
 
-// we do not use the angular.json scripts section to load web-components so that
-// we can get some nice tree-shaking
-// https://github.com/angular/angular-cli/issues/24592#issuecomment-2049684550
-
 applyMonkeyPatches();
 
 if (environment.production) {

@@ -62,6 +62,9 @@ describe("AudioEventCardComponent", () => {
     mockAnnotation = new Annotation(
       generateAnnotation({
         audioRecording: mockAudioRecording,
+        audioRecordingId: mockAudioRecording.id,
+        startTimeSeconds: 0,
+        endTimeSeconds: 5,
         tags: [mockTag],
       }),
       mediaServiceSpy
