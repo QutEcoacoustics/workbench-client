@@ -9,7 +9,7 @@ import { ProgressWarningComponent } from "./components/modals/progress-warning/p
 import { AnnotationSearchFormComponent } from "./components/annotation-search-form/annotation-search-form.component";
 import { AnnotationSearchComponent } from "./pages/search/search.component";
 import { SearchFiltersModalComponent } from "./components/modals/search-filters/search-filters.component";
-import { FiltersWarningModalComponent } from "./components/modals/broad-filters-warning/broad-filters-warning.component";
+import { FiltersWarningModalComponent } from "./components/modals/filters-warning/filters-warning.component";
 
 const internalComponents = [
   SearchFiltersModalComponent,

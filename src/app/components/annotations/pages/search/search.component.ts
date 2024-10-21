@@ -14,7 +14,7 @@ import { ActivatedRoute, Params, Router } from "@angular/router";
 import { Paging } from "@baw-api/baw-api.service";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import { FiltersWarningModalComponent } from "@components/annotations/components/modals/broad-filters-warning/broad-filters-warning.component";
+import { FiltersWarningModalComponent } from "@components/annotations/components/modals/filters-warning/filters-warning.component";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { NgbModal, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
@@ -80,24 +80,24 @@ class AnnotationSearchComponent
   @ViewChild("broadSearchWarningModal")
   public broadFilterWarningModal: ElementRef<FiltersWarningModalComponent>;
 
+  public searchParameters: AnnotationSearchParameters;
   protected paginationInformation: Paging;
   protected searchResults: Annotation[] = [];
-  protected searchParameters: AnnotationSearchParameters;
   protected verificationRoute: StrongRoute;
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters = models[
+    this.searchParameters ??= models[
       annotationsKey
     ] as AnnotationSearchParameters;
     this.searchParameters.injector = this.injector;
 
-    this.searchParameters.routeProjectModel = models[projectKey] as Project;
+    this.searchParameters.routeProjectModel ??= models[projectKey] as Project;
     if (models[regionKey]) {
-      this.searchParameters.routeRegionModel = models[regionKey] as Region;
+      this.searchParameters.routeRegionModel ??= models[regionKey] as Region;
     }
     if (models[siteKey]) {
-      this.searchParameters.routeSiteModel = models[siteKey] as Site;
+      this.searchParameters.routeSiteModel ??= models[siteKey] as Site;
     }
 
     this.verificationRoute = this.verifyAnnotationsRoute();

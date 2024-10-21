@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
-import type { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
+import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
 import { Annotation } from "@models/data/Annotation";
 
 @Component({

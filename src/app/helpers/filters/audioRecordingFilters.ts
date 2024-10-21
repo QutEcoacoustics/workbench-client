@@ -30,7 +30,7 @@ export function filterDate(
   if (endDate) {
     const endDateFilters: InnerFilter<AudioRecording> = {
       recordedDate: { lessThan: endDate },
-    } as any;
+    };
 
     filters = filterAnd<AudioRecording>(filters, endDateFilters);
   }
@@ -69,7 +69,7 @@ export function filterTime(
   const isMidnightFilter = startTime && endTime && startTime > endTime;
 
   if (isMidnightFilter) {
-    const timeInnerFilter: InnerFilter = {
+    const timeInnerFilter: InnerFilter<AudioRecording> = {
       or: [
         {
           recordedEndDate: {

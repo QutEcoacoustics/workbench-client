@@ -6,14 +6,22 @@ export function generateAnnotationSearchParameters(
   data?: Partial<IAnnotationSearchParameters>
 ): Required<IAnnotationSearchParameters> {
   return {
-    audioRecordings: modelData.ids(),
     projects: modelData.ids(),
     regions: modelData.ids(),
     sites: modelData.ids(),
+
+    routeProjectId: modelData.id(),
+    routeRegionId: modelData.id(),
+    routeSiteId: modelData.id(),
+
+    audioRecordings: modelData.ids(),
     tags: modelData.ids(),
     onlyUnverified: modelData.bool(),
     recordingTime: [modelData.time(), modelData.time()],
     recordingDate: [modelData.dateTime(), modelData.dateTime()],
+    eventDate: [modelData.dateTime(), modelData.dateTime()],
+    eventTime: [modelData.time(), modelData.time()],
+    daylightSavings: modelData.bool(),
     ...data,
   };
 }
