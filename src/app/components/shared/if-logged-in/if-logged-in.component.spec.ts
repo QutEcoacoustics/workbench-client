@@ -1,8 +1,4 @@
-import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createHostFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SharedModule } from "@shared/shared.module";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
@@ -13,13 +9,27 @@ describe("IsLoggedInComponent", () => {
   let spectator: Spectator<IfLoggedInComponent>;
   let sessionSpy: SpyObject<BawSessionService>;
 
-  const createComponent = createComponentFactory({
+  const createHost = createHostFactory({
     component: IfLoggedInComponent,
     imports: [SharedModule, HttpClientTestingModule, MockBawApiModule],
   });
 
   function setup(isLoggedIn: boolean) {
-    spectator = createComponent({ detectChanges: false });
+    const template = `
+      <baw-if-logged-in>
+        <p id="non-interactive-p">non-interactive element</p>
+
+        <button id="shallow-button">Test</button>
+        <input id="shallow-input" />
+
+        <div>
+          <button id="nested-button">Test</button>
+          <input id="nested-input" />
+        </div>
+      </baw-if-logged-in>
+    `;
+
+    spectator = createHost(template, { detectChanges: false });
 
     sessionSpy = spectator.inject(BawSessionService);
     spyOnProperty(sessionSpy, "isLoggedIn").and.returnValue(isLoggedIn);
@@ -28,6 +38,12 @@ describe("IsLoggedInComponent", () => {
   }
 
   const wrapperSpan = () => spectator.query<HTMLSpanElement>("span");
+
+  const nonInteractiveElement = () => spectator.query("#non-interactive-p");
+  const shallowButton = () => spectator.query("#shallow-button");
+  const shallowInput = () => spectator.query("#shallow-input");
+  const nestedButton = () => spectator.query("#nested-button");
+  const nestedInput = () => spectator.query("#nested-input");
 
   it("should create", () => {
     setup(false);
@@ -42,6 +58,15 @@ describe("IsLoggedInComponent", () => {
     it("should not have a tooltip", () => {
       expect(wrapperSpan()).not.toHaveAttribute("ngbTooltip");
     });
+
+    it("should not disable any button and input elements", () => {
+      expect(shallowButton()).not.toHaveAttribute("disabled");
+      expect(shallowInput()).not.toHaveAttribute("disabled");
+      expect(nestedButton()).not.toHaveAttribute("disabled");
+      expect(nestedInput()).not.toHaveAttribute("disabled");
+
+      expect(nonInteractiveElement()).not.toHaveAttribute("disabled");
+    });
   });
 
   describe("when the user is not logged in", () => {
@@ -55,6 +80,20 @@ describe("IsLoggedInComponent", () => {
         "ng-reflect-ngb-tooltip",
         expectedContent
       );
+    });
+
+    it("should disable buttons and input elements", () => {
+      expect(shallowButton()).toHaveAttribute("disabled");
+      expect(shallowInput()).toHaveAttribute("disabled");
+    });
+
+    it("should disable nested buttons and input elements", () => {
+      expect(nestedButton()).toHaveAttribute("disabled");
+      expect(nestedInput()).toHaveAttribute("disabled");
+    });
+
+    it("should not disable any non-interactive elements", () => {
+      expect(nonInteractiveElement()).not.toHaveAttribute("disabled");
     });
   });
 });

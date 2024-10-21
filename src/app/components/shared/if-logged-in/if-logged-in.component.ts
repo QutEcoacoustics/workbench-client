@@ -1,9 +1,7 @@
 import {
   AfterContentInit,
   Component,
-  ContentChildren,
   ElementRef,
-  QueryList,
 } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 
@@ -16,10 +14,10 @@ import { BawSessionService } from "@baw-api/baw-session.service";
   `,
 })
 export class IfLoggedInComponent implements AfterContentInit {
-  public constructor(public session: BawSessionService) {}
-
-  @ContentChildren(ElementRef, { descendants: true })
-  private contentChildren: QueryList<ElementRef>;
+  public constructor(
+    public session: BawSessionService,
+    public elementRef: ElementRef
+  ) {}
 
   public ngAfterContentInit(): void {
     if (!this.session.isLoggedIn) {
@@ -28,13 +26,14 @@ export class IfLoggedInComponent implements AfterContentInit {
   }
 
   private disableInteractiveContent(): void {
-    for (const content of this.contentChildren) {
-      const nativeElement = content.nativeElement;
+    // TODO: use a ContentChild decorator here
+    const content = this.elementRef.nativeElement.querySelectorAll("button, input");
 
+    for (const element of content) {
       // if the disabled attribute is in the elements prototype, we want to
       // set it to true
-      if ("disabled" in nativeElement) {
-        content.nativeElement.setAttribute("disabled", "true");
+      if ("disabled" in element) {
+        element.setAttribute("disabled", "true");
       }
     }
   }
