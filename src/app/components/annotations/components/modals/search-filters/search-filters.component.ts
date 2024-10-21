@@ -35,13 +35,15 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
         <div class="mt-2">
           <button
+            id="exit-btn"
             class="btn btn-outline-primary me-2"
             (click)="closeModal()"
             [disabled]="!this.isFormDirty"
           >
-            Exit without Updating
+            Exit without updating
           </button>
           <button
+            id="update-filters-btn"
             class="btn btn-warning"
             (click)="success()"
             [ngClass]="{
@@ -49,7 +51,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
               'btn-warning': isDirty
             }"
           >
-            Update Search Filters
+            Update search filters
           </button>
         </div>
       </div>

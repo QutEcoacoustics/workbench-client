@@ -181,4 +181,8 @@ describe("AnnotationSearchComponent", () => {
     const realizedResults = spectrogramElements().length;
     expect(realizedResults).toEqual(expectedResults);
   });
+
+  it("should add a query string parameters when a filter condition is added", () => {});
+
+  it("should remove a query string parameter when a filter condition is removed", () => {});
 });

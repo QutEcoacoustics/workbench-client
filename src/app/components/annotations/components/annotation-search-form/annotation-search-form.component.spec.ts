@@ -95,6 +95,8 @@ describe("AnnotationSearchFormComponent", () => {
     expect(spectator.component).toBeInstanceOf(AnnotationSearchFormComponent);
   });
 
+  it("should have a collapsable advanced filters section", () => {});
+
   describe("pre-population from first load", () => {
     // check the population of a typeahead input that uses a property backing
     it("should pre-populate the project typeahead input if provided", () => {
