@@ -13,7 +13,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
       <h4 class="modal-title">Change Search Filters</h4>
     </div>
 
-    <div class="modal-body modal-large">
+    <div class="filters-modal-body modal-body modal-large">
       <baw-annotation-search-form
         [(searchParameters)]="formValue"
         [project]="project"

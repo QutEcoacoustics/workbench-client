@@ -63,6 +63,8 @@ class VerificationComponent
   implements OnInit, AfterViewInit, UnsavedInputCheckingComponent
 {
   public constructor(
+    public modals: NgbModal,
+
     protected audioEventApi: ShallowAudioEventsService,
     protected projectsApi: ProjectsService,
     protected regionsApi: ShallowRegionsService,
@@ -70,7 +72,6 @@ class VerificationComponent
     protected tagsApi: TagsService,
     protected annotationsService: AnnotationService,
 
-    protected modals: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
@@ -94,15 +95,15 @@ class VerificationComponent
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters = models[annotationsKey] as AnnotationSearchParameters;
+    this.searchParameters ??= models[annotationsKey] as AnnotationSearchParameters;
     this.searchParameters.injector = this.injector;
 
-    this.searchParameters.routeProjectModel = models[projectKey] as Project;
+    this.searchParameters.routeProjectModel ??= models[projectKey] as Project;
     if (models[regionKey]) {
-      this.searchParameters.routeRegionModel = models[regionKey] as Region;
+      this.searchParameters.routeRegionModel ??= models[regionKey] as Region;
     }
     if (models[siteKey]) {
-      this.searchParameters.routeSiteModel = models[siteKey] as Site;
+      this.searchParameters.routeSiteModel ??= models[siteKey] as Site;
     }
   }
 

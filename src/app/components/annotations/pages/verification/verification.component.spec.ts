@@ -14,26 +14,15 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import {
-  SHALLOW_AUDIO_EVENT,
-  SHALLOW_REGION,
-  SHALLOW_SITE,
-  TAG,
-} from "@baw-api/ServiceTokens";
+import { SHALLOW_AUDIO_EVENT, TAG } from "@baw-api/ServiceTokens";
 import { CUSTOM_ELEMENTS_SCHEMA, INJECTOR, Injector } from "@angular/core";
-import { ShallowRegionsService } from "@baw-api/region/regions.service";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { VerificationComponent as DecisionButton } from "@ecoacoustics/web-components/@types/components/decision/verification/verification";
 import { VerificationHelpDialogComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/help-dialog";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
-import {
-  discardPeriodicTasks,
-  fakeAsync,
-  tick,
-} from "@angular/core/testing";
+import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { generateTag } from "@test/fakes/Tag";
@@ -43,21 +32,36 @@ import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.ser
 import { AudioEvent } from "@models/AudioEvent";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { VerificationComponent } from "./verification.component";
+import { AnnotationService } from "@services/models/annotation.service";
+import { AudioRecording } from "@models/AudioRecording";
+import { Annotation } from "@models/data/Annotation";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { generateAnnotation } from "@test/fakes/data/Annotation";
+import { MediaService } from "@services/media/media.service";
+import { AnnotationSearchParameters } from "../annotationSearchParameters";
+import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
+import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 
 describe("VerificationComponent", () => {
   let spectator: SpectatorRouting<VerificationComponent>;
-  let defaultProject: Project;
-  let defaultRegion: Region;
-  let defaultSite: Site;
-  let mockAudioEventsApi: SpyObject<ShallowAudioEventsService>;
-  let mockAudioEventsResponse: AudioEvent[] = [];
-  let mockRegionsApi: SpyObject<ShallowRegionsService>;
-  let mockSitesApi: SpyObject<ShallowSitesService>;
-  let mockTagsApi: SpyObject<TagsService>;
   let injector: SpyObject<Injector>;
-  let defaultFakeSites: Site[];
-  let defaultFakeRegions: Region[];
+
+  let mockAudioEventsApi: SpyObject<ShallowAudioEventsService>;
+  let mockTagsApi: SpyObject<TagsService>;
+  let mediaServiceSpy: SpyObject<MediaService>;
+
+  let modalsSpy: NgbModal;
+  let modalConfigService: NgbModalConfig;
+
+  let routeProject: Project;
+  let routeRegion: Region;
+  let routeSite: Site;
+
+  let mockSearchParameters: AnnotationSearchParameters;
+  let mockAudioEventsResponse: AudioEvent[] = [];
   let defaultFakeTags: Tag[];
+  let mockAudioRecording: AudioRecording;
+  let mockAnnotationResponse: Annotation;
 
   const createComponent = createRoutingFactory({
     component: VerificationComponent,
@@ -69,76 +73,76 @@ describe("VerificationComponent", () => {
     spectator = createComponent({
       detectChanges: false,
       params: {
-        projectId: defaultProject.id,
-        regionId: defaultRegion.id,
-        siteId: defaultSite.id,
+        projectId: routeProject.id,
+        regionId: routeRegion.id,
+        siteId: routeSite.id,
       },
+      providers: [
+        {
+          provide: AnnotationService,
+          useValue: { show: () => mockAnnotationResponse },
+        },
+      ],
       queryParams: queryParameters,
     });
 
     injector = spectator.inject(INJECTOR);
 
-    mockAudioEventsResponse = modelData.randomArray(
-      3,
-      3,
-      () =>
-        new AudioEvent(
-          generateAudioEvent(),
-          injector
-        )
+    mockSearchParameters = new AnnotationSearchParameters(
+      generateAnnotationSearchUrlParameters(queryParameters),
+      injector,
     );
 
-    spectator.component.project = defaultProject;
-    spectator.component.region = defaultRegion;
-    spectator.component.site = defaultSite;
+    defaultFakeTags = modelData.randomArray(
+      3, 10, () => new Tag(generateTag(), injector),
+    );
+
+    mockAudioEventsResponse = modelData.randomArray(
+      3, 3, () => new AudioEvent( generateAudioEvent(), injector),
+    );
+
+    mockAudioRecording = new AudioRecording(
+      generateAudioRecording({ siteId: routeSite.id }),
+      injector,
+    );
+
+    mockAnnotationResponse = new Annotation(
+      generateAnnotation({ audioRecording: mockAudioRecording }),
+      mediaServiceSpy,
+    );
+
+    spectator.component.searchParameters = mockSearchParameters;
+    spectator.component.project = routeProject;
+    spectator.component.region = routeRegion;
+    spectator.component.site = routeSite;
 
     mockAudioEventsApi = spectator.inject(SHALLOW_AUDIO_EVENT.token);
-    mockRegionsApi = spectator.inject(SHALLOW_REGION.token);
-    mockSitesApi = spectator.inject(SHALLOW_SITE.token);
     mockTagsApi = spectator.inject(TAG.token);
+    modalsSpy = spectator.inject(NgbModal);
 
-    mockRegionsApi.filter.and.callFake(() => of(defaultFakeRegions));
-    mockSitesApi.filter.and.callFake(() => of(defaultFakeSites));
+    // inject the bootstrap modal config service so that we can disable animations
+    // this is needed so that buttons can be clicked without waiting for the async animation
+    modalConfigService = spectator.inject(NgbModalConfig);
+    modalConfigService.animation = false;
+
+    modalsSpy.open = jasmine.createSpy("open");
+
     mockTagsApi.filter.and.callFake(() => of(defaultFakeTags));
-    mockAudioEventsApi.filter.and.callFake(() =>
-      of(mockAudioEventsResponse)
-    );
+    mockAudioEventsApi.filter.and.callFake(() => of(mockAudioEventsResponse));
 
     spectator.detectChanges();
   }
 
   beforeEach(() => {
-    defaultProject = new Project(generateProject());
-    defaultRegion = new Region(
-      generateRegion({ projectId: defaultProject.id })
+    routeProject = new Project(generateProject());
+    routeRegion = new Region(
+      generateRegion({ projectId: routeProject.id }),
     );
-    defaultSite = new Site(generateSite({ regionId: defaultRegion.id }));
-
-    defaultFakeRegions = modelData.randomArray(
-      3,
-      10,
-      () => new Region(generateRegion({ projectId: defaultProject.id }))
-    );
-
-    defaultFakeSites = modelData.randomArray(
-      3,
-      10,
-      () => new Site(generateSite())
-    );
-
-    defaultFakeTags = modelData.randomArray(
-      3,
-      10,
-      () => new Tag(generateTag())
-    );
+    routeSite = new Site(generateSite({ regionId: routeRegion.id }));
   });
 
-  const parametersToggleButton = () =>
-    spectator.query<HTMLButtonElement>(".show-parameters-button");
-  const parametersCollapsable = () =>
-    spectator.query<HTMLDivElement>("#search-parameters");
-  const onlyVerifiedCheckbox = () =>
-    spectator.query<HTMLInputElement>("#filter-verified");
+  const dialogToggleButton = () =>
+    spectator.query<HTMLButtonElement>(".filter-button");
 
   const tagsTypeahead = (): TypeaheadInputComponent =>
     spectator.query<any>("[label='Tags of Interest']");
@@ -155,22 +159,14 @@ describe("VerificationComponent", () => {
 
   // a lot of the web components elements of interest are in the shadow DOM
   // therefore, we have to chain some query selectors to get to the elements
-  const dialogElement = (): VerificationHelpDialogComponent =>
+  const helpElement = (): VerificationHelpDialogComponent =>
     verificationGridRoot().querySelector("oe-verification-help-dialog");
-  const dialogCloseButton = (): HTMLButtonElement =>
-    dialogElement().shadowRoot.querySelector(".close-btn");
-
-  function toggleOnlyVerifiedCheckbox(): void {
-    onlyVerifiedCheckbox().click();
-    spectator.detectChanges();
-  }
+  const helpCloseButton = (): HTMLButtonElement =>
+    helpElement().shadowRoot.querySelector(".close-btn");
 
   function toggleParameters(): void {
-    parametersToggleButton().click();
-    spectator.detectChanges();
+    spectator.click(dialogToggleButton());
     tick(defaultDebounceTime);
-    spectator.detectChanges();
-
     discardPeriodicTasks();
   }
 
@@ -195,18 +191,6 @@ describe("VerificationComponent", () => {
         setup();
       });
 
-      it("should automatically open the search parameters box if there are no initial search parameters", () => {
-        expect(parametersCollapsable()).toHaveClass("show");
-      });
-
-      it("should not automatically hide the search parameters box once search parameters are added", () => {
-        toggleOnlyVerifiedCheckbox();
-        expect(onlyVerifiedCheckbox()).toBeChecked();
-        expect(spectator.component.searchParameters.onlyUnverified).toBeTrue();
-
-        expect(parametersCollapsable()).toHaveClass("show");
-      });
-
       it("should update the search parameters when filter conditions are added", fakeAsync(() => {
         const targetTag = defaultFakeTags[0];
         const tagText = targetTag.text;
@@ -216,29 +200,25 @@ describe("VerificationComponent", () => {
 
         const realizedComponentParams = spectator.component.searchParameters;
         expect(realizedComponentParams.tags).toContain(expectedTagId);
-      }));
+        }),
+      );
 
-      it("should show and hide the search paramters box correctly", fakeAsync(() => {
-        const expectedExpandedClass = "show";
-
-        // the search parameters box should start expanded because there were
-        // no initial query search parameters
-        expect(parametersCollapsable()).toHaveClass(expectedExpandedClass);
-
+      it("should show and hide the search paramters dialog correctly", fakeAsync(() => {
+        expect(modalsSpy.open).not.toHaveBeenCalled();
         toggleParameters();
-        expect(parametersCollapsable()).not.toHaveClass(expectedExpandedClass);
-
-        toggleParameters();
-        expect(parametersCollapsable()).toHaveClass(expectedExpandedClass);
-      }));
+        expect(modalsSpy.open).toHaveBeenCalledTimes(1);
+        }),
+      );
     });
 
     describe("with initial search parameters", () => {
+      let mockTagIds: number[];
+
       beforeEach(() => {
+        mockTagIds = modelData.ids();
+
         const testedQueryParameters: Params = {
-          tags: defaultFakeTags.map((tag) => tag.id).toString(),
-          sites: defaultFakeSites.map((site) => site.id).toString(),
-          regions: defaultFakeRegions.map((region) => region.id).toString(),
+          tags: mockTagIds.join(","),
         };
 
         // we recreate the fixture with query parameters so that we can test
@@ -247,74 +227,47 @@ describe("VerificationComponent", () => {
         setup(testedQueryParameters);
       });
 
-      it("should have a collapsed search parameters box", () => {
-        expect(parametersCollapsable()).not.toHaveClass("show");
-      });
-
       it("should create the correct search parameter model from query string parameters", () => {
         const realizedParameterModel = spectator.component.searchParameters;
 
-        const expectedSiteIds = defaultFakeSites.map((site) => site.id);
-        const expectedRegionIds = defaultFakeRegions.map((region) => region.id);
-        const expectedTagIds = defaultFakeTags.map((tag) => tag.id);
-
         expect(realizedParameterModel).toEqual(
           jasmine.objectContaining({
-            tags: jasmine.arrayContaining(expectedTagIds),
-            sites: jasmine.arrayContaining(expectedSiteIds),
-            regions: jasmine.arrayContaining(expectedRegionIds),
-          })
+            tags: jasmine.arrayContaining(mockTagIds),
+          }),
         );
       });
-
-      it("should pre-populate the search parameters box from the query string parameters", () => {
-        const realizedTagModels = tagsTypeahead().value;
-        expect(realizedTagModels).toEqual(defaultFakeTags);
-      });
-
-      it("should cache client side with GET requests", () => {
-        const expectedRequestCount = 10;
-        expect(mockAudioEventsApi.filter).toHaveBeenCalledTimes(
-          expectedRequestCount
-        );
-      });
-
-      it("should cache server side with HEAD requests", () => {
-        const expectedRequestCount = 50;
-        expect(mockAudioEventsApi.filter).toHaveBeenCalledTimes(
-          expectedRequestCount
-        );
-      });
-
-      it("should have a verification grid component populated with the first page", () => {});
-
-      it("should make the correct api calls when the search parameters are changed", () => {});
-
-      it("should perform client-side caching if the search parameters change", () => {});
-
-      it("should perform server-side caching if the search parameters change", () => {});
 
       // this functionality is handled by the verification grid component
       // however, we test it here to test the interaction between the
       // two components
       it("should reset the verification grids page to one if the search parameters change", fakeAsync(() => {
-        toggleParameters();
-        selectFromTypeahead(spectator, tagsTypeaheadInput(), defaultFakeTags[0].text);
+          toggleParameters();
+          selectFromTypeahead(
+            spectator,
+            tagsTypeaheadInput(),
+            defaultFakeTags[0].text,
+          );
 
-        const expectedPagedItems = 0;
-        const realizedPagedItems = verificationGrid().pagedItems;
-        expect(realizedPagedItems).toEqual(expectedPagedItems);
-      }));
+          const expectedPagedItems = 0;
+          const realizedPagedItems = verificationGrid().pagedItems;
+          expect(realizedPagedItems).toEqual(expectedPagedItems);
+        }),
+      );
 
       it("should reset the verification grids getPage function when the search parameters are changed", fakeAsync(() => {
-        const initialPagingCallback = verificationGrid().getPage;
+          const initialPagingCallback = verificationGrid().getPage;
 
-        toggleParameters();
-        selectFromTypeahead(spectator, tagsTypeaheadInput(), defaultFakeTags[0].text);
-        const newPagingCallback = verificationGrid().getPage;
+          toggleParameters();
+          selectFromTypeahead(
+            spectator,
+            tagsTypeaheadInput(),
+            defaultFakeTags[0].text,
+          );
+          const newPagingCallback = verificationGrid().getPage;
 
-        expect(newPagingCallback).not.toEqual(initialPagingCallback);
-      }));
+          expect(newPagingCallback).not.toEqual(initialPagingCallback);
+        }),
+      );
 
       describe("verification grid functionality", () => {
         describe("initial state", () => {
@@ -351,46 +304,15 @@ describe("VerificationComponent", () => {
 
           it("should fetch the next page when a full page of results has a decision applied", () => {});
 
-          it("should pre-fetch client and server side cache when a full page of results has a decision applied", () => {});
-
           it("should populate the verification grid correctly for the first page", () => {});
 
           it("should populate the verification grid correctly for a full page pagination", () => {});
-
-          it("should populate the verification grid correctly for a partial page pagination with skip decision", () => {});
-
-          it("should not display a warning when opening the search parameters", fakeAsync(() => {
-            toggleParameters();
-            expect(progressLossWarning()).not.toExist();
-          }));
-
-          it("should not display a warning if the search parameters are not changed with progress", () => {});
-
-          it("should not display a warning if the search parameters are changed without progress", () => {});
-
-          it("should display a warning if the search parameters are changed with progress", () => {});
-
-          it("should not reset decisions if the search parameters are opened and closed without change", () => {});
-
-          it("should reset decisions if the search parameters are changed", () => {});
 
           it("should not change the paging callback if the change warning is dismissed", () => {});
 
           it("should change the paging callback if the search parameters are changed", () => {});
 
           it("should not change the paging callback if the search parameters are opened and closed without change", () => {});
-
-          it("should download the correct results if the user has not made a full page of decisions", () => {});
-
-          it("should download the correct results if the user has made a full page of decisions", () => {});
-
-          it("should display a progress meter with the correct value after a full page of decisions", () => {});
-
-          it("should be able to navigate back in history", () => {});
-
-          it("should be able to resume verification after navigating back in history", () => {});
-
-          it("should be able to play and pause audio", () => {});
 
           it("should have the correct tag name in the verification grid tiles", () => {});
         });
