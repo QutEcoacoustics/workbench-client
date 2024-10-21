@@ -23,11 +23,16 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": true,
+            "aot": false,
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/manifest.json"
+              "src/manifest.json",
+              {
+                "glob": "*",
+                "input": "node_modules/@ecoacoustics/web-components/assets",
+                "output": "assets"
+              }
             ],
             "styles": [
               "src/styles.scss"
@@ -38,7 +43,6 @@
                 "node_modules"
               ]
             },
-            "scripts": [],
             "sourceMap": true,
             "allowedCommonJsDependencies": [
               "zone.js/dist/zone-error",
@@ -48,6 +52,7 @@
           },
           "configurations": {
             "production": {
+              "aot": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -83,7 +88,13 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "workbench-client:build"
+            "buildTarget": "workbench-client:build",
+            "headers": {
+              "Cross-Origin-Opener-Policy": "same-origin",
+              "Cross-Origin-Embedder-Policy": "require-corp",
+              "Cross-Origin-Resource-Policy": "cross-origin",
+              "Access-Control-Allow-Origin": "*"
+            }
           },
           "configurations": {
             "production": {

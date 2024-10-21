@@ -1,0 +1,66 @@
+@import "../../../../styles.scss";
+
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.content-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content-link {
+  font-size: 0.75em;
+  line-height: 0.75em;
+}
+
+.context-anchor {
+  anchor-name: --context-anchor;
+}
+
+.context-anchor-item {
+  position: absolute;
+
+  position-anchor: --context-anchor;
+  left: anchor(left);
+  top: anchor(bottom);
+
+  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+  position-try: flip-block, flip-inline, flip-block flip-inline;
+}
+
+.context-card {
+  position: fixed;
+  max-width: 700px;
+  width: 100%;
+  padding: 1rem;
+
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+
+  overflow: visible;
+  z-index: 99999;
+}
+
+.context-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-bottom: 1rem;
+
+  .context-card-title {
+    font-weight: bold;
+  }
+}
+
+// TODO: remove this flexbox container once ecoacoustics/web-components#214 is resolved
+.context-card-elements {
+  display: flex;
+  flex-direction: column;
+}

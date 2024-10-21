@@ -192,7 +192,7 @@ export class EventSummaryReportService
           ],
           missingAnalysisCoverage: [
             { startDate: "2023-05-23", endDate: "2023-05-24" },
-            { startDate: "2023-05-28", endDate: "2023-05-29" }
+            { startDate: "2023-05-28", endDate: "2023-05-29" },
           ],
           failedAnalysisCoverage: [
             { startDate: "2023-05-26", endDate: "2023-05-27" },
@@ -215,7 +215,10 @@ export class EventSummaryReportService
     // we need to fill in the metadata object that would usually come with responses
     fakeReport.eventGroups.forEach((eventGroup) =>
       eventGroup.addMetadata({
-        paging: { total: fakeReport.eventGroups.length, items: fakeReport.eventGroups.length },
+        paging: {
+          total: fakeReport.eventGroups.length,
+          items: fakeReport.eventGroups.length,
+        },
       })
     );
 
@@ -265,14 +268,11 @@ class EventSummaryReportResolver extends BawResolver<
 
   public createProviders(
     name: string,
-    resolver: Type<
-      {
-    resolve: ResolveFn<ResolvedModel<[
-        EventSummaryReport,
-        EventSummaryReportParameters
-    ]>>;
-}
-    >,
+    resolver: Type<{
+      resolve: ResolveFn<
+        ResolvedModel<[EventSummaryReport, EventSummaryReportParameters]>
+      >;
+    }>,
     deps: Type<EventSummaryReportService>[]
   ): ResolverNames & { providers: BawProvider[] } {
     const filterShowProvider = {
@@ -297,7 +297,7 @@ class EventSummaryReportResolver extends BawResolver<
     const fakeProvenances = [1];
 
     const parametersModel = new EventSummaryReportParameters({
-      ...route.queryParams
+      ...route.queryParams,
     });
 
     parametersModel.tags = fakeEvents;
@@ -322,10 +322,6 @@ class EventSummaryReportResolver extends BawResolver<
       }
     );
   }
-}
-
-export class EventSummaryReportResolverNative {
-  public userResolver() {}
 }
 
 export const eventSummaryResolvers = new EventSummaryReportResolver([
