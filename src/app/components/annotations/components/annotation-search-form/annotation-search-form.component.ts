@@ -49,7 +49,7 @@ export class AnnotationSearchFormComponent implements OnInit, AfterViewInit {
     new EventEmitter<AnnotationSearchParameters>();
 
   @ViewChild("dateTimeFiltersElement")
-  private dateTimeFilters: ElementRef<DateTimeFilterComponent>;
+  private dateTimeFilters: DateTimeFilterComponent;
 
   protected hideAdvancedFilters = true;
   protected createSearchCallback = createSearchCallback;
@@ -98,7 +98,7 @@ export class AnnotationSearchFormComponent implements OnInit, AfterViewInit {
         this.searchParameters.recordingDateFinishedBefore.day
       );
 
-      this.dateTimeFilters.nativeElement.value = {
+      this.dateTimeFilters.model = {
         dateFiltering: true,
         dateFinishedBefore,
       };

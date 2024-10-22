@@ -21,7 +21,7 @@ export function filterEventRecordingDate(
     // with the date range interval. But we don't want to return any recordings that just touch on the ends
     // therefore, the conditions should be `recordedEndDate > startFilterDate && recordedDate < endFilterDate`
     const startDateFilter = {
-      "audioRecording.recordedEndDate": { greaterThan: startDate },
+      "audioRecordings.recordedEndDate": { greaterThan: startDate },
     } as InnerFilter<AudioRecording>;
 
     filters = filterAnd<AudioRecording>(filters, startDateFilter);
@@ -29,7 +29,7 @@ export function filterEventRecordingDate(
 
   if (endDate) {
     const endDateFilters: InnerFilter<AudioRecording> = {
-      "audioRecording.recordedDate": { lessThan: endDate },
+      "audioRecordings.recordedDate": { lessThan: endDate },
     } as InnerFilter<AudioRecording>;
 
     filters = filterAnd<AudioRecording>(filters, endDateFilters);
