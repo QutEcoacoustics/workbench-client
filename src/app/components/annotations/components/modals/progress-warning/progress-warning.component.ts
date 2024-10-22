@@ -34,6 +34,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
       <div class="clearfix">
         <button
+          id="close-btn"
           class="btn btn-outline-primary float-start"
           (click)="closeModal(false)"
         >
@@ -41,6 +42,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
         </button>
 
         <button
+          id="success-btn"
           class="btn btn-danger text-white float-end"
           (click)="closeModal(true)"
         >

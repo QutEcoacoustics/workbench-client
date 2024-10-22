@@ -33,10 +33,11 @@ export function selectFromTypeahead<T>(
   tick(defaultDebounceTime);
 
   // click the first option in the dropdown
-  const selectedTypeaheadOption = spectator.query<HTMLButtonElement>(
+  const selectedTypeaheadOption = document.querySelector<HTMLButtonElement>(
     "button.dropdown-item.active"
   );
-  selectedTypeaheadOption.click();
+  console.log(inputElement);
+  spectator.click(selectedTypeaheadOption);
 
   flush();
 }

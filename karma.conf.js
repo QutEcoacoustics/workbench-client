@@ -43,12 +43,18 @@ module.exports = function (config) {
     customHeaders: [
       { match: ".*", name: "Cross-Origin-Opener-Policy", value: "same-origin" },
       { match: ".*", name: "Cross-Origin-Embedder-Policy", value: "require-corp" },
-      {
-        match: ".*",
-        name: "Cross-Origin-Resource-Policy",
-        value: "cross-origin",
-      },
+      { match: ".*", name: "Cross-Origin-Resource-Policy", value: "cross-origin" },
       { match: ".*", name: "Access-Control-Allow-Origin", value: "*" },
+    ],
+    // serve these files through the karma server
+    // by serving these files through the karma server we can fetch and test
+    // against real files during testing
+    files: [
+      {
+        pattern: "src/assets/test-assets/example.flac",
+        included: false,
+        served: false,
+      },
     ],
     viewport: {
       // Ensure you modify the viewports object (@test/helpers/general.ts) to match
