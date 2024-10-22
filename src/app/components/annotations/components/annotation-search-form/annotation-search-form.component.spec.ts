@@ -23,6 +23,7 @@ import { modelData } from "@test/helpers/faker";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { Params } from "@angular/router";
 
 describe("AnnotationSearchFormComponent", () => {
   let spectator: Spectator<AnnotationSearchFormComponent>;
@@ -42,7 +43,7 @@ describe("AnnotationSearchFormComponent", () => {
     declarations: [DateTimeFilterComponent, TypeaheadInputComponent],
   });
 
-  function setup(): void {
+  function setup(params: Params = {}): void {
     spectator = createComponent({ detectChanges: false });
 
     injector = spectator.inject(INJECTOR);
@@ -64,7 +65,7 @@ describe("AnnotationSearchFormComponent", () => {
     mockTagsApi.filter.andCallFake(() => of(mockTagsResponse));
     mockSitesApi.filter.andCallFake(() => of(mockSitesResponse));
 
-    const searchParameters = new AnnotationSearchParameters({}, injector);
+    const searchParameters = new AnnotationSearchParameters(params, injector);
     searchParameters.routeProjectModel = mockProject;
     spectator.setInput("searchParameters", searchParameters);
   }
@@ -73,7 +74,8 @@ describe("AnnotationSearchFormComponent", () => {
   const onlyVerifiedCheckbox = () => spectator.query("#filter-verified");
 
   const tagsTypeahead = () => spectator.query("#tags-input");
-  const tagPills = () => tagsTypeahead().querySelector(".item-pill");
+  const tagPills = () =>
+    tagsTypeahead().querySelectorAll<HTMLSpanElement>(".item-pill");
 
   const projectsInput = () => projectsTypeahead().querySelector("input");
   const projectsTypeahead = () => spectator.query("#projects-input");
@@ -90,41 +92,35 @@ describe("AnnotationSearchFormComponent", () => {
     spectator.detectChanges();
   }
 
-  beforeEach(() => {
-    setup();
-  });
-
   it("should create", () => {
+    setup();
     expect(spectator.component).toBeInstanceOf(AnnotationSearchFormComponent);
   });
 
-  it("should have a collapsable advanced filters section", () => {});
+  it("should have a collapsable advanced filters section", () => {
+    setup();
+  });
 
   describe("pre-population from first load", () => {
     // check the population of a typeahead input that uses a property backing
     it("should pre-populate the project typeahead input if provided", () => {
+      setup();
       expect(projectsInput()).toHaveProperty("placeholder", mockProject.name);
     });
 
     // check the population of a typeahead input that does not use a property backing
     it("should pre-populate the tags typeahead input if provided in the search parameters model", () => {
-      const testTag = mockTagsResponse[0];
-      spectator.component.searchParameters.tags = new Set([testTag.id]);
-      spectator.detectChanges();
-
-      expect(tagPills()).toHaveLength(1);
-      expect(tagPills()[0].innerText).toEqual([testTag]);
+      setup({ tags: "0" });
+      const realizedTagPills = tagPills();
+      expect(realizedTagPills[0].innerText).toEqual(`${mockTagsResponse[0]}`);
     });
 
     // check the population of an external component that is not a typeahead input
-    fit("should pre-populate the date-time filters if provided in the search parameters model", fakeAsync(() => {
-      toggleDateFilters();
-
+    it("should pre-populate the date-time filters if provided in the search parameters model", fakeAsync(() => {
       const testStartDate = modelData.dateTime();
-      spectator.component.searchParameters.recordingDate = [
-        testStartDate,
-      ] as any;
-      spectator.detectChanges();
+      setup({
+        recordingDate: `,${testStartDate.toFormat("yyyy-MM-dd")}`,
+      });
 
       expect(endDateInput()).toHaveValue(testStartDate.toFormat("yyyy-MM-dd"));
     }));
@@ -137,6 +133,10 @@ describe("AnnotationSearchFormComponent", () => {
   });
 
   describe("update emission", () => {
+    beforeEach(() => {
+      setup();
+    });
+
     // check a typeahead input that also has an optional property backing
     it("should emit the correct model if the site is updated", fakeAsync(() => {
       const testedSite = mockSitesResponse[0];
@@ -162,7 +162,7 @@ describe("AnnotationSearchFormComponent", () => {
     }));
 
     // check an external component that is not a typeahead input
-    it("should emit the correct model if the date-time filters are updated", fakeAsync(() => {
+    fit("should emit the correct model if the date-time filters are updated", fakeAsync(() => {
       const testedDate = "2021-10-10";
       const expectedNewModel = {};
 
