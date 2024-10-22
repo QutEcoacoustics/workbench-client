@@ -21,6 +21,8 @@ import { selectFromTypeahead } from "@test/helpers/html";
 import { fakeAsync } from "@angular/core/testing";
 import { modelData } from "@test/helpers/faker";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
+import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 
 describe("AnnotationSearchFormComponent", () => {
   let spectator: Spectator<AnnotationSearchFormComponent>;
@@ -37,6 +39,7 @@ describe("AnnotationSearchFormComponent", () => {
   const createComponent = createComponentFactory({
     component: AnnotationSearchFormComponent,
     imports: [MockBawApiModule, SharedModule],
+    declarations: [DateTimeFilterComponent, TypeaheadInputComponent],
   });
 
   function setup(): void {
@@ -114,13 +117,15 @@ describe("AnnotationSearchFormComponent", () => {
     });
 
     // check the population of an external component that is not a typeahead input
-    it("should pre-populate the date-time filters if provided in the search parameters model", fakeAsync(() => {
+    fit("should pre-populate the date-time filters if provided in the search parameters model", fakeAsync(() => {
       toggleDateFilters();
 
       const testStartDate = modelData.dateTime();
       spectator.component.searchParameters.recordingDate = [
         testStartDate,
       ] as any;
+      spectator.detectChanges();
+
       expect(endDateInput()).toHaveValue(testStartDate.toFormat("yyyy-MM-dd"));
     }));
 

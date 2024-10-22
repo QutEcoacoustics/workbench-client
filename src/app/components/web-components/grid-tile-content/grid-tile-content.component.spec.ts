@@ -12,15 +12,15 @@ import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
 import { MEDIA } from "@baw-api/ServiceTokens";
 import { GridTileContentComponent } from "./grid-tile-content.component";
-import { AudioRecording } from "@models/AudioRecording";
+import { AnnotationService } from "@services/models/annotation.service";
 
 describe("GridTileContentComponent", () => {
   let spectator: Spectator<GridTileContentComponent>;
+
   let mediaServiceSpy: SpyObject<MediaService>;
   let contextRequestSpy: jasmine.Spy;
 
   let mockAnnotation: Annotation;
-  let mockAudioRecording: AudioRecording;
 
   const createComponent = createComponentFactory({
     component: GridTileContentComponent,
@@ -28,15 +28,20 @@ describe("GridTileContentComponent", () => {
   });
 
   function setup(): void {
-    spectator = createComponent({ detectChanges: false });
+    spectator = createComponent({
+      detectChanges: false,
+      providers: [
+        {
+          provide: AnnotationService,
+          useValue: { show: () => mockAnnotation },
+        }
+      ],
+    });
 
     mediaServiceSpy = spectator.inject(MEDIA.token);
 
     mockAnnotation = new Annotation(
-      generateAnnotation({
-        audioRecording: mockAudioRecording,
-        audioRecordingId: mockAudioRecording.id
-      }),
+      generateAnnotation(),
       mediaServiceSpy
     );
 

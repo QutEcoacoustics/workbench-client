@@ -99,7 +99,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
     // TODO: this is overwriting the global NgbPagination config every time
     // a component that uses this paginationTemplate is created
     this.config.maxSize = 3;
-    this.config.pageSize = defaultApiPageSize;
+    this.config.pageSize = this.pageSize ?? defaultApiPageSize;
     this.config.rotate = true;
     this.displayPagination = false;
 
@@ -191,10 +191,16 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    * Generate the filter for the api request
    */
   protected generateFilter(): Filters<M> {
+    // if the template has an explicit page size set, we should add the number
+    // of items to the request body
+    // if the user has not set an explit page size, we want to use the default
+    // returned by the api
+    const pageItemFilters = this.pageSize ? { items: this.pageSize } : {};
+
     return {
       paging: {
         page: this.page,
-        items: this.pageSize ?? this.config.pageSize,
+        ...pageItemFilters,
       },
       filter: this.filter
         ? ({

@@ -120,6 +120,16 @@ class VerificationComponent
       return;
     }
 
+    // because the verification grid keybindings are scoped at the component
+    // level, we automatically focus the verification grid component so that
+    // users don't have to manually focus the verification grid to start using
+    // shortcuts
+    //
+    // without this automatic focusing, the user would have to click on the
+    // verification grid (e.g. to make a sub-selection) before being able to
+    // use the shortcut keys
+    this.verificationGridElement.nativeElement.focus();
+
     const timeoutDuration = 1_000 as const;
 
     // we wait a second after the verification grid has loaded to give the user

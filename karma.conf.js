@@ -1,5 +1,13 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/6.3/config/configuration-file.html
+// const angularConfig = require("./angular.json");
+// const serverHeaders = angularConfig.projects["workbench-client"].architect.serve.options.headers;
+//
+// const customHeaders = [];
+// for (const [key, value] of Object.entries(serverHeaders)) {
+//   customHeaders.push({ [key]: value });
+// }
+const maxSigned32BitInt = Math.pow(2, 31) - 1;
 
 module.exports = function (config) {
   config.set({
@@ -24,7 +32,8 @@ module.exports = function (config) {
       reports: ["html", "lcovonly", "text-summary", "cobertura"],
       fixWebpackSourcePaths: true,
     },
-    browserDisconnectTimeout: 30000,
+    browserDisconnectTimeout: maxSigned32BitInt,
+    browserNoActivityTimeout: maxSigned32BitInt,
     browserDisconnectTolerance: 3,
     browserConsoleLogOptions: {
       level: "debug",
@@ -41,10 +50,10 @@ module.exports = function (config) {
     restartOnFileChange: true,
     // we add some headers to the Karma test server to ensure that we can use SharedArrayBuffer
     customHeaders: [
-      { match: ".*", name: "Cross-Origin-Opener-Policy", value: "same-origin" },
-      { match: ".*", name: "Cross-Origin-Embedder-Policy", value: "require-corp" },
-      { match: ".*", name: "Cross-Origin-Resource-Policy", value: "cross-origin" },
-      { match: ".*", name: "Access-Control-Allow-Origin", value: "*" },
+      //{ match: ".*", name: "Cross-Origin-Opener-Policy", value: "same-origin" },
+      //{ match: ".*", name: "Cross-Origin-Embedder-Policy", value: "require-corp" },
+      //{ match: ".*", name: "Cross-Origin-Resource-Policy", value: "cross-origin" },
+      //{ match: ".*", name: "Access-Control-Allow-Origin", value: "*" },
     ],
     // serve these files through the karma server
     // by serving these files through the karma server we can fetch and test

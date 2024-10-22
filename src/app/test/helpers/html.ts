@@ -36,7 +36,6 @@ export function selectFromTypeahead<T>(
   const selectedTypeaheadOption = document.querySelector<HTMLButtonElement>(
     "button.dropdown-item.active"
   );
-  console.log(inputElement);
   spectator.click(selectedTypeaheadOption);
 
   flush();

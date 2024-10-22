@@ -76,11 +76,15 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     // we make some of our standalone angular components into standards based web components
     // so that they can operate entirely independently - e.g. in shadow dom
     if (!this.isServer) {
-      const webComponentElement = createCustomElement(
-        GridTileContentComponent,
-        { injector }
-      );
-      customElements.define(gridTileContextSelector, webComponentElement);
+      const hasCustomElement = !!customElements.get(gridTileContextSelector);
+
+      if (!hasCustomElement) {
+        const webComponentElement = createCustomElement(
+          GridTileContentComponent,
+          { injector }
+        );
+        customElements.define(gridTileContextSelector, webComponentElement);
+      }
     }
   }
 

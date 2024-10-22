@@ -10,7 +10,7 @@ export function generateAnnotation(
   data?: Partial<IAnnotation>
 ): Required<IAnnotation> {
   const audioRecording =
-    data.audioRecording ?? new AudioRecording(generateAudioRecording());
+    data?.audioRecording ?? new AudioRecording(generateAudioRecording());
 
   const audioEvent = generateAudioEvent({
     audioRecordingId: audioRecording.id,
