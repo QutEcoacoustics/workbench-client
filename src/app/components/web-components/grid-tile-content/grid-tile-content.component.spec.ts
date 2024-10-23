@@ -14,6 +14,7 @@ import { MEDIA } from "@baw-api/ServiceTokens";
 import { AnnotationService } from "@services/models/annotation.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
@@ -82,6 +83,7 @@ describe("GridTileContentComponent", () => {
     spectator.query<SpectrogramComponent>("oe-spectrogram");
 
   beforeEach(() => {
+    patchSharedArrayBuffer();
     setup();
   });
 

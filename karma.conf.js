@@ -52,27 +52,15 @@ module.exports = function (config) {
     browsers: ["Chrome"],
     singleRun: false,
     restartOnFileChange: true,
-    // we add some headers to the Karma test server to ensure that we can use SharedArrayBuffer
-    customHeaders: [
-      { match: ".*", name: "Cross-Origin-Opener-Policy", value: "same-origin" },
-      {
-        match: ".*",
-        name: "Cross-Origin-Embedder-Policy",
-        value: "require-corp",
-      },
-      {
-        match: ".*",
-        name: "Cross-Origin-Resource-Policy",
-        value: "cross-origin",
-      },
-      { match: ".*", name: "Access-Control-Allow-Origin", value: "*" },
-    ],
     // serve these files through the karma server
     // by serving these files through the karma server we can fetch and test
     // against real files during testing
     files: [
       { pattern: "src/assets/test-assets/*", included: false, served: true },
       {
+        // TODO: this should expose all of node_modules through the karma server
+        // so that we can dynamically import anything from node_modules
+        // without adding it to this list
         pattern: __dirname + "/node_modules/@ecoacoustics/web-components/**",
         included: false,
         served: true,

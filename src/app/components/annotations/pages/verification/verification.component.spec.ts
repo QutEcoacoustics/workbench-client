@@ -53,6 +53,7 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { detectChanges } from "@test/helpers/changes";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { nodeModule, testAsset } from "@test/helpers/karma";
+import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
@@ -183,6 +184,8 @@ describe("VerificationComponent", () => {
   }
 
   beforeEach(async () => {
+    patchSharedArrayBuffer();
+
     // we import the web components using a dynamic import statement so that
     // the web components are loaded through the karma test server
     //
@@ -248,7 +251,7 @@ describe("VerificationComponent", () => {
     expect(SharedArrayBuffer).toBeDefined();
   });
 
-  fit("should create", async () => {
+  it("should create", async () => {
     await setup();
     expect(spectator.component).toBeInstanceOf(VerificationComponent);
   });

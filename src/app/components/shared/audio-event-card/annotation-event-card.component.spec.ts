@@ -26,6 +26,8 @@ import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/compon
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
+import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
+import { testAsset } from "@test/helpers/karma";
 import { AnnotationEventCardComponent } from "./annotation-event-card.component";
 
 describe("AudioEventCardComponent", () => {
@@ -51,7 +53,12 @@ describe("AudioEventCardComponent", () => {
     spectator = createComponent({ detectChanges: false });
 
     injectorSpy = spectator.inject(INJECTOR);
+
     mediaServiceSpy = spectator.inject(MEDIA.token);
+    mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
+    mediaServiceSpy.createMediaUrl.and.returnValue(
+      testAsset("example.flac")
+    );
 
     mockTag = new Tag(generateTag(), injectorSpy);
     mockSite = new Site(generateSite(), injectorSpy);
@@ -80,6 +87,7 @@ describe("AudioEventCardComponent", () => {
 
     siteApiSpy = spectator.inject(SHALLOW_SITE.token);
     siteApiSpy.show.andCallFake(() => of(mockSite));
+
     siteApiSpy.filter.andCallFake(() => of([mockSite]));
 
     spectator.setInput("annotation", mockAnnotation);
@@ -92,6 +100,7 @@ describe("AudioEventCardComponent", () => {
   const cardTitle = () => spectator.query(".card-title");
 
   beforeEach(() => {
+    patchSharedArrayBuffer();
     setup();
   });
 

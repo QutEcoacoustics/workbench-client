@@ -28,6 +28,8 @@ import { MediaService } from "@services/media/media.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
+import { testAsset } from "@test/helpers/karma";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { AnnotationSearchComponent } from "./search.component";
 
@@ -75,6 +77,10 @@ describe("AnnotationSearchComponent", () => {
 
     injector = spectator.inject(INJECTOR);
     mediaServiceSpy = spectator.inject(MEDIA.token);
+    mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
+    mediaServiceSpy.createMediaUrl.and.returnValue(
+      testAsset("example.flac")
+    );
 
     spectator.component.searchParameters = mockSearchParameters;
 
@@ -125,6 +131,8 @@ describe("AnnotationSearchComponent", () => {
     spectator.queryAll<SpectrogramComponent>("oe-spectrogram");
 
   beforeEach(fakeAsync(() => {
+    patchSharedArrayBuffer();
+
     routeProject = new Project(generateProject());
     routeRegion = new Region(generateRegion());
     routeSite = new Site(generateSite());
