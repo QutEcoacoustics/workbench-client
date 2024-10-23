@@ -14,7 +14,14 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { MEDIA, PROJECT, SHALLOW_AUDIO_EVENT, SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
+import {
+  MEDIA,
+  PROJECT,
+  SHALLOW_AUDIO_EVENT,
+  SHALLOW_REGION,
+  SHALLOW_SITE,
+  TAG,
+} from "@baw-api/ServiceTokens";
 import { CUSTOM_ELEMENTS_SCHEMA, INJECTOR, Injector } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
@@ -43,6 +50,9 @@ import { SearchFiltersModalComponent } from "@components/annotations/components/
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { detectChanges } from "@test/helpers/changes";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { testAsset } from "@test/helpers/karma";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
@@ -74,11 +84,15 @@ describe("VerificationComponent", () => {
   const createComponent = createRoutingFactory({
     component: VerificationComponent,
     imports: [MockBawApiModule, SharedModule, RouterTestingModule],
-    declarations: [AnnotationSearchFormComponent, SearchFiltersModalComponent],
+    declarations: [
+      AnnotationSearchFormComponent,
+      SearchFiltersModalComponent,
+      TypeaheadInputComponent,
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
 
-  function setup(queryParameters: Params = {}) {
+  async function setup(queryParameters: Params = {}) {
     spectator = createComponent({
       detectChanges: false,
       params: {
@@ -99,11 +113,13 @@ describe("VerificationComponent", () => {
 
     mediaServiceSpy = spectator.inject(MEDIA.token);
     mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
-    mediaServiceSpy.createMediaUrl.and.returnValue("/assets/test-assets/example.flac");
+    mediaServiceSpy.createMediaUrl.and.returnValue(
+      testAsset("example.flac")
+    );
 
     mockSearchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(queryParameters),
-      injector,
+      injector
     );
     mockSearchParameters.routeSiteModel = routeSite;
     mockSearchParameters.routeSiteId = routeSite.id;
@@ -115,21 +131,25 @@ describe("VerificationComponent", () => {
     mockSearchParameters.routeProjectId = routeProject.id;
 
     defaultFakeTags = modelData.randomArray(
-      3, 10, () => new Tag(generateTag(), injector),
+      3,
+      10,
+      () => new Tag(generateTag(), injector)
     );
 
     mockAudioEventsResponse = modelData.randomArray(
-      3, 3, () => new AudioEvent( generateAudioEvent(), injector),
+      3,
+      3,
+      () => new AudioEvent(generateAudioEvent(), injector)
     );
 
     mockAudioRecording = new AudioRecording(
       generateAudioRecording({ siteId: routeSite.id }),
-      injector,
+      injector
     );
 
     mockAnnotationResponse = new Annotation(
       generateAnnotation({ audioRecording: mockAudioRecording }),
-      mediaServiceSpy,
+      mediaServiceSpy
     );
 
     spectator.component.searchParameters = mockSearchParameters;
@@ -159,22 +179,20 @@ describe("VerificationComponent", () => {
     regionApiSpy.filter.and.callFake(() => of([routeRegion]));
     sitesApiSpy.filter.and.callFake(() => of([routeSite]));
 
-    spectator.detectChanges();
+    await detectChanges(spectator);
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // we import the web components using a dynamic import statement so that
     // the web components are loaded through the karma test server
     //
     // we have to import through the testing server so that when the spectrogram
     // components request their buffer-builder-processor and high-accuracy-time
     // workers, they get loaded through http and not the file protocol
-    // import("@ecoacoustics/web-components");
+    await import("@ecoacoustics/web-components");
 
     routeProject = new Project(generateProject());
-    routeRegion = new Region(
-      generateRegion({ projectId: routeProject.id }),
-    );
+    routeRegion = new Region(generateRegion({ projectId: routeProject.id }));
     routeSite = new Site(generateSite({ regionId: routeRegion.id }));
   });
 
@@ -182,10 +200,7 @@ describe("VerificationComponent", () => {
     // modals can persist between tests, meaning that we might have multiple
     // modal windows open at the same time if we do not explicitly dismiss them
     // after each test
-    // TODO: remove this condition
-    if (modalsSpy) {
-      modalsSpy.dismissAll();
-    }
+    modalsSpy?.dismissAll();
   });
 
   const dialogToggleButton = () =>
@@ -198,7 +213,8 @@ describe("VerificationComponent", () => {
   const verificationGrid = () =>
     spectator.query<VerificationGridComponent>("oe-verification-grid");
   const verificationGridRoot = (): ShadowRoot => verificationGrid().shadowRoot;
-  const verificationGridTiles =() => verificationGridRoot().querySelectorAll("oe-verification-grid-tile");
+  const verificationGridTiles = () =>
+    verificationGridRoot().querySelectorAll("oe-verification-grid-tile");
 
   // a lot of the web components elements of interest are in the shadow DOM
   // therefore, we have to chain some query selectors to get to the elements
@@ -230,15 +246,18 @@ describe("VerificationComponent", () => {
     expect(SharedArrayBuffer).toBeDefined();
   });
 
-  it("should create", () => {
-    setup();
+  fit("should create", async () => {
+    await setup();
     expect(spectator.component).toBeInstanceOf(VerificationComponent);
   });
 
   describe("search parameters", () => {
     describe("no initial search parameters", () => {
-      beforeEach(() => {
-        setup();
+      beforeEach(async () => {
+        await setup();
+
+        helpCloseButton().click();
+        await detectChanges(spectator);
       });
 
       it("should update the search parameters when filter conditions are added", fakeAsync(() => {
@@ -251,21 +270,19 @@ describe("VerificationComponent", () => {
 
         const realizedComponentParams = spectator.component.searchParameters;
         expect(realizedComponentParams.tags).toContain(expectedTagId);
-        }),
-      );
+      }));
 
       it("should show and hide the search paramters dialog correctly", fakeAsync(() => {
         expect(modalsSpy.open).not.toHaveBeenCalled();
         toggleParameters();
         expect(modalsSpy.open).toHaveBeenCalledTimes(1);
-        }),
-      );
+      }));
     });
 
     describe("with initial search parameters", () => {
       let mockTagIds: number[];
 
-      beforeEach(() => {
+      beforeEach(async () => {
         mockTagIds = modelData.ids();
 
         const testedQueryParameters: Params = {
@@ -275,7 +292,10 @@ describe("VerificationComponent", () => {
         // we recreate the fixture with query parameters so that we can test
         // the component's behavior when query parameters are present
         // on load
-        setup(testedQueryParameters);
+        await setup(testedQueryParameters);
+
+        helpCloseButton().click();
+        await detectChanges(spectator);
       });
 
       it("should create the correct search parameter model from query string parameters", () => {
@@ -284,11 +304,11 @@ describe("VerificationComponent", () => {
         expect(realizedParameterModel).toEqual(
           jasmine.objectContaining({
             tags: jasmine.arrayContaining(mockTagIds),
-          }),
+          })
         );
       });
 
-      xdescribe("verification grid functionality", () => {
+      describe("verification grid functionality", () => {
         describe("initial state", () => {
           it("should be mount all the required Open-Ecoacoustics web components as custom elements", () => {
             const expectedCustomElements: string[] = [
@@ -313,63 +333,40 @@ describe("VerificationComponent", () => {
           });
         });
 
-        describe("after help-dialog dismissed", () => {
-          beforeEach(() => {
-            helpCloseButton().click();
-            spectator.detectChanges();
+        it("should reset the verification grids getPage function when the search parameters are changed", fakeAsync(() => {
+          const initialPagingCallback = verificationGrid().getPage;
+          const targetTag = defaultFakeTags[0];
+          const tagText = targetTag.text;
+
+          toggleParameters();
+          selectFromTypeahead(spectator, tagsTypeahead(), tagText);
+          const newPagingCallback = verificationGrid().getPage;
+
+          expect(newPagingCallback).not.toBe(initialPagingCallback);
+        }));
+
+        it("should fetch the next page when a full page of results has a decision applied", () => {
+          const gridSize = verificationGrid().populatedTileCount;
+          verificationButtons()[0].click();
+          expect(verificationGrid().subjectHistory).toHaveLength(gridSize);
+        });
+
+        it("should populate the verification grid correctly for the first page", () => {
+          const realizedTileCount = verificationGrid().populatedTileCount;
+          expect(realizedTileCount).toBeGreaterThan(0);
+        });
+
+        it("should have the correct tag name in the verification grid tiles", () => {
+          const tileCount = verificationGrid().populatedTileCount;
+          const targetTile = modelData.datatype.number({
+            min: 0,
+            max: tileCount,
           });
 
-          // this functionality is handled by the verification grid component
-          // however, we test it here to test the interaction between the
-          // two components
-          it("should reset the verification grids page to one if the search parameters change", fakeAsync(() => {
-              const targetTag = defaultFakeTags[0];
-              const tagText = targetTag.text;
+          const expectedTileText = mockAnnotationResponse.tags as any;
+          const tileTags = gridTileTag(targetTile);
 
-              toggleParameters();
-              selectFromTypeahead(spectator, tagsTypeahead(), tagText);
-
-              const expectedPagedItems = 0;
-              const realizedPagedItems = verificationGrid().pagedItems;
-              expect(realizedPagedItems).toEqual(expectedPagedItems);
-            }),
-          );
-
-          it("should reset the verification grids getPage function when the search parameters are changed", fakeAsync(() => {
-              const initialPagingCallback = verificationGrid().getPage;
-
-              toggleParameters();
-              selectFromTypeahead(
-                spectator,
-                tagsTypeahead(),
-                defaultFakeTags[0].text,
-              );
-              const newPagingCallback = verificationGrid().getPage;
-
-              expect(newPagingCallback).not.toBe(initialPagingCallback);
-            }),
-          );
-
-          it("should fetch the next page when a full page of results has a decision applied", () => {
-            const gridSize = verificationGrid().populatedTileCount;
-            verificationButtons()[0].click();
-            expect(verificationGrid().subjectHistory).toHaveLength(gridSize);
-          });
-
-          it("should populate the verification grid correctly for the first page", () => {
-            const realizedTileCount = verificationGrid().populatedTileCount;
-            expect(realizedTileCount).toBeGreaterThan(0);
-          });
-
-          it("should have the correct tag name in the verification grid tiles", () => {
-            const tileCount = verificationGrid().populatedTileCount;
-            const targetTile = modelData.datatype.number({ min: 0, max: tileCount });
-
-            const expectedTileText = mockAnnotationResponse.tags as any;
-            const tileTags = gridTileTag(targetTile);
-
-            expect(tileTags).toEqual(expectedTileText);
-          });
+          expect(tileTags).toEqual(expectedTileText);
         });
       });
     });

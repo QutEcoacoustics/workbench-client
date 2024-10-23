@@ -41,6 +41,16 @@ export function selectFromTypeahead<T>(
   flush();
 }
 
+/** Toggles a component decorated with ngb-dropdown and waits for it to open */
+export function toggleDropdown<T>(
+  spectator: Spectator<T>,
+  target: Element | HTMLElement
+): void {
+  // bootstrap dropdowns take a full second to open
+  spectator.click(target);
+  spectator.tick(1000);
+}
+
 export function getElementByInnerText<T extends HTMLElement>(
   spectator: Spectator<unknown>,
   text: string

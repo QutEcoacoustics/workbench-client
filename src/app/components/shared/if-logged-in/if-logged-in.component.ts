@@ -1,8 +1,4 @@
-import {
-  AfterContentInit,
-  Component,
-  ElementRef,
-} from "@angular/core";
+import { AfterContentInit, Component, ElementRef } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 
 @Component({
@@ -20,14 +16,19 @@ export class IfLoggedInComponent implements AfterContentInit {
   ) {}
 
   public ngAfterContentInit(): void {
-    if (!this.session.isLoggedIn) {
-      this.disableInteractiveContent();
-    }
+    this.session.authTrigger
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      .subscribe(() => {
+        if (!this.session.isLoggedIn) {
+          this.disableInteractiveContent();
+        }
+      });
   }
 
   private disableInteractiveContent(): void {
     // TODO: use a ContentChild decorator here
-    const content = this.elementRef.nativeElement.querySelectorAll("button, input");
+    const content =
+      this.elementRef.nativeElement.querySelectorAll("button, input");
 
     for (const element of content) {
       // if the disabled attribute is in the elements prototype, we want to

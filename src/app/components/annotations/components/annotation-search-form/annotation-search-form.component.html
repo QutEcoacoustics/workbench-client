@@ -79,14 +79,15 @@
 
   <div class="advanced-filters mt-2">
     <button
+      id="advanced-filters-toggle"
       class="btn btn-outline-secondary w-100"
-      (click)="advancedSettings.toggle()"
+      (click)="toggleAdvancedFilters()"
     >
       Toggle Advanced Filters
     </button>
 
     <div
-      #advancedSettings="ngbCollapse"
+      #advancedFilters="ngbCollapse"
       [(ngbCollapse)]="hideAdvancedFilters"
       class="card card-body border-top-0"
     >

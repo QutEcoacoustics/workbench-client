@@ -1,7 +1,6 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   OnInit,
@@ -19,7 +18,7 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { NgbCollapse, NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import {
   DateTimeFilterComponent,
   DateTimeFilterModel,
@@ -50,6 +49,9 @@ export class AnnotationSearchFormComponent implements OnInit, AfterViewInit {
 
   @ViewChild("dateTimeFiltersElement")
   private dateTimeFilters: DateTimeFilterComponent;
+
+  @ViewChild("advancedFilters")
+  private advancedFilters: HTMLDivElement & NgbCollapse;
 
   protected hideAdvancedFilters = true;
   protected createSearchCallback = createSearchCallback;
@@ -103,6 +105,10 @@ export class AnnotationSearchFormComponent implements OnInit, AfterViewInit {
         dateFinishedBefore,
       };
     }
+  }
+
+  protected toggleAdvancedFilters(): void {
+    this.advancedFilters.toggle();
   }
 
   protected updateSubModel(

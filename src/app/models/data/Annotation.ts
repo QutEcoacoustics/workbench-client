@@ -69,8 +69,8 @@ export class Annotation extends AbstractModelWithoutId implements IAnnotation {
   public contextUrl(contextSize: number): string {
     return this.mediaService.createMediaUrl(
       this.audioRecording,
-      this.startTimeSeconds - contextSize,
-      this.endTimeSeconds + contextSize,
+      this.startTimeSeconds,
+      this.endTimeSeconds,
       contextSize,
     );
   }

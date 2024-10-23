@@ -7,7 +7,11 @@
 // for (const [key, value] of Object.entries(serverHeaders)) {
 //   customHeaders.push({ [key]: value });
 // }
-const maxSigned32BitInt = Math.pow(2, 31) - 1;
+var maxSigned32BitInt = Math.pow(2, 31) - 1;
+
+// GitHub Actions sets the CI environment variable to true
+// see: https://github.blog/changelog/2020-04-15-github-actions-sets-the-ci-environment-variable-to-true
+var isCi = process.env.CI === "true";
 
 module.exports = function (config) {
   config.set({
@@ -32,8 +36,8 @@ module.exports = function (config) {
       reports: ["html", "lcovonly", "text-summary", "cobertura"],
       fixWebpackSourcePaths: true,
     },
-    browserDisconnectTimeout: maxSigned32BitInt,
-    browserNoActivityTimeout: maxSigned32BitInt,
+    browserDisconnectTimeout: isCi ? 30000 : maxSigned32BitInt,
+    browserNoActivityTimeout: isCi ? 3 : maxSigned32BitInt,
     browserDisconnectTolerance: 3,
     browserConsoleLogOptions: {
       level: "debug",
@@ -50,20 +54,34 @@ module.exports = function (config) {
     restartOnFileChange: true,
     // we add some headers to the Karma test server to ensure that we can use SharedArrayBuffer
     customHeaders: [
-      //{ match: ".*", name: "Cross-Origin-Opener-Policy", value: "same-origin" },
-      //{ match: ".*", name: "Cross-Origin-Embedder-Policy", value: "require-corp" },
-      //{ match: ".*", name: "Cross-Origin-Resource-Policy", value: "cross-origin" },
-      //{ match: ".*", name: "Access-Control-Allow-Origin", value: "*" },
+      { match: ".*", name: "Cross-Origin-Opener-Policy", value: "same-origin" },
+      {
+        match: ".*",
+        name: "Cross-Origin-Embedder-Policy",
+        value: "require-corp",
+      },
+      {
+        match: ".*",
+        name: "Cross-Origin-Resource-Policy",
+        value: "cross-origin",
+      },
+      { match: ".*", name: "Access-Control-Allow-Origin", value: "*" },
     ],
     // serve these files through the karma server
     // by serving these files through the karma server we can fetch and test
     // against real files during testing
     files: [
+      { pattern: "src/assets/test-assets/*", included: false, served: true },
       {
-        pattern: "src/assets/test-assets/example.flac",
+        pattern: __dirname + "/node_modules/@ecoacoustics/web-components/**",
         included: false,
-        served: false,
+        served: true,
       },
+      {
+        pattern: __dirname + "/node_modules/@ecoacoustics/web-components/assets/*",
+        included: true,
+        served: true,
+      }
     ],
     viewport: {
       // Ensure you modify the viewports object (@test/helpers/general.ts) to match

@@ -11,8 +11,10 @@ import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
 import { MEDIA } from "@baw-api/ServiceTokens";
-import { GridTileContentComponent } from "./grid-tile-content.component";
 import { AnnotationService } from "@services/models/annotation.service";
+import { AudioRecording } from "@models/AudioRecording";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
   let spectator: Spectator<GridTileContentComponent>;
@@ -21,6 +23,7 @@ describe("GridTileContentComponent", () => {
   let contextRequestSpy: jasmine.Spy;
 
   let mockAnnotation: Annotation;
+  let mockAudioRecording: AudioRecording;
 
   const createComponent = createComponentFactory({
     component: GridTileContentComponent,
@@ -40,8 +43,22 @@ describe("GridTileContentComponent", () => {
 
     mediaServiceSpy = spectator.inject(MEDIA.token);
 
+    // I hard code the audio recording duration and event start/end times so
+    // that I know the audio event will neatly fit within the audio recording
+    // when context is added
+    mockAudioRecording = new AudioRecording(
+      generateAudioRecording({
+        durationSeconds: 600,
+      }),
+    );
+
     mockAnnotation = new Annotation(
-      generateAnnotation(),
+      generateAnnotation({
+        startTimeSeconds: 60,
+        endTimeSeconds: 120,
+        audioRecording: mockAudioRecording,
+        audioRecordingId: mockAudioRecording.id,
+      }),
       mediaServiceSpy
     );
 
@@ -52,15 +69,15 @@ describe("GridTileContentComponent", () => {
     spectator.component.handleContextChange({ subject: model } as any);
 
     contextRequestSpy = jasmine.createSpy("event");
-    contentWrapper().addEventListener("context-request", contextRequestSpy);
+    spectator.component.elementRef.nativeElement.addEventListener("context-request", contextRequestSpy);
 
     spectator.detectChanges();
   }
 
   const listenLink = () => getElementByInnerText(spectator, "Go To Source");
   const contextButton = () => getElementByInnerText(spectator, "Show More");
+  const contextCloseButton = () => spectator.query("#close-btn");
   const contextCard = () => spectator.query(".context-card");
-  const contentWrapper = () => spectator.query(".content-wrapper");
   const spectrogram = () =>
     spectator.query<SpectrogramComponent>("oe-spectrogram");
 
@@ -101,41 +118,42 @@ describe("GridTileContentComponent", () => {
     it("should toggle a context card when the context button is clicked", () => {
       spectator.click(contextButton());
       expect(contextCard()).toBeVisible();
+
+      // test that we can close the context card again by clicking the button
+      // while the context card is open
+      spectator.click(contextButton());
+      expect(contextCard()).not.toBeVisible();
+    });
+
+    it("should close the context card when the close button is clicked", () => {
+      spectator.click(contextButton());
+      expect(contextCard()).toBeVisible();
+
+      spectator.click(contextCloseButton());
+      expect(contextCard()).not.toBeVisible();
     });
 
     xit("should be able to play the context card spectrogram", () => {
       spectator.click(contextButton());
     });
 
+    // because we have hard coded the audio recording duration and event
+    // start/end times to "nice" value, we know that the context will be neatly
+    // added to either size of the audio event
+    //
+    // padding rounding and overflow is tested in the media service tests and
+    // so we don't have to retest the overflow logic here
     it("should have the correct context source", () => {
       spectator.click(contextButton());
 
-      const expectedBase = "https://test.com/audio.mp3";
-      const expectedStartOffset = mockAnnotation.startTimeSeconds - 30;
-      const expectedEndOffset = mockAnnotation.endTimeSeconds + 30;
-      const expectedSpectrogramSource = `${expectedBase}?start_offset=${expectedStartOffset}&end_offset=${expectedEndOffset}`;
+      const expectedContextSize = 15;
+      const expectedStartOffset = mockAnnotation.startTimeSeconds - expectedContextSize;
+      const expectedEndOffset = mockAnnotation.endTimeSeconds + expectedContextSize;
+      const expectedOffsetParameters = `?start_offset=${expectedStartOffset}&end_offset=${expectedEndOffset}`;
 
       const realizedSpectrogramSource = spectrogram().src;
 
-      expect(realizedSpectrogramSource).toEqual(expectedSpectrogramSource);
-    });
-
-    // if the audio event is at the start of the recording, we limit the context to the end of the recording (0 seconds)
-    // because if we subtract 30 seconds from 0, we get -30 seconds, which is invalid
-    it("should have the correct context source if the audio event is at the start of the recording", () => {
-      const testVerification = new Annotation(
-        generateAnnotation({ startTimeSeconds: 0, endTimeSeconds: 10 }),
-        mediaServiceSpy
-      );
-      updateContext(testVerification);
-
-      spectator.click(contextButton());
-
-      const expectedSpectrogramSource =
-        "https://test.com/audio.mp3?start_offset=0&end_offset=40";
-      const realizedSpectrogramSource = spectrogram().src;
-
-      expect(realizedSpectrogramSource).toEqual(expectedSpectrogramSource);
+      expect(realizedSpectrogramSource).toContain(expectedOffsetParameters);
     });
   });
 });
