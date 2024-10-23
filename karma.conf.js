@@ -77,11 +77,6 @@ module.exports = function (config) {
         included: false,
         served: true,
       },
-      {
-        pattern: __dirname + "/node_modules/@ecoacoustics/web-components/assets/*",
-        included: true,
-        served: true,
-      }
     ],
     viewport: {
       // Ensure you modify the viewports object (@test/helpers/general.ts) to match

@@ -52,7 +52,7 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { detectChanges } from "@test/helpers/changes";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
-import { testAsset } from "@test/helpers/karma";
+import { nodeModule, testAsset } from "@test/helpers/karma";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
@@ -186,10 +186,12 @@ describe("VerificationComponent", () => {
     // we import the web components using a dynamic import statement so that
     // the web components are loaded through the karma test server
     //
-    // we have to import through the testing server so that when the spectrogram
-    // components request their buffer-builder-processor and high-accuracy-time
-    // workers, they get loaded through http and not the file protocol
-    await import("@ecoacoustics/web-components");
+    // we also use the webpackIgnore comment so that the webpack bundler does
+    // not bundle the web components when dynamically imported
+    // if we were to bundle the assets first, the web components would be served
+    // under the __karma_webpack__ sub-path, but workers dynamically loaded by
+    // the web components would be served under the root path
+    await import(/* webpackIgnore: true */ nodeModule("@ecoacoustics/web-components/components.js"));
 
     routeProject = new Project(generateProject());
     routeRegion = new Region(generateRegion({ projectId: routeProject.id }));
