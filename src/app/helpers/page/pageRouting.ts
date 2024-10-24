@@ -4,6 +4,7 @@ import { FormTouchedGuard } from "@guards/form/form.guard";
 import { Option } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { UnsavedInputGuard } from "@guards/input/input.guard";
 import { getPageInfos } from "./pageComponent";
 
 /**
@@ -32,7 +33,7 @@ export function getRouteConfigForPage(strongRoute: StrongRoute): Option<Route> {
         path: "",
         pathMatch: "full",
         component: pageInfo.component,
-        canDeactivate: [FormTouchedGuard],
+        canDeactivate: [FormTouchedGuard, UnsavedInputGuard],
       },
       {
         path: "",

@@ -1,5 +1,17 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/6.3/config/configuration-file.html
+// const angularConfig = require("./angular.json");
+// const serverHeaders = angularConfig.projects["workbench-client"].architect.serve.options.headers;
+//
+// const customHeaders = [];
+// for (const [key, value] of Object.entries(serverHeaders)) {
+//   customHeaders.push({ [key]: value });
+// }
+var maxSigned32BitInt = Math.pow(2, 31) - 1;
+
+// GitHub Actions sets the CI environment variable to true
+// see: https://github.blog/changelog/2020-04-15-github-actions-sets-the-ci-environment-variable-to-true
+var isCi = process.env.CI === "true";
 
 module.exports = function (config) {
   config.set({
@@ -24,7 +36,8 @@ module.exports = function (config) {
       reports: ["html", "lcovonly", "text-summary", "cobertura"],
       fixWebpackSourcePaths: true,
     },
-    browserDisconnectTimeout: 30000,
+    browserDisconnectTimeout: isCi ? 30000 : maxSigned32BitInt,
+    browserNoActivityTimeout: isCi ? 3 : maxSigned32BitInt,
     browserDisconnectTolerance: 3,
     browserConsoleLogOptions: {
       level: "debug",
@@ -39,6 +52,20 @@ module.exports = function (config) {
     browsers: ["Chrome"],
     singleRun: false,
     restartOnFileChange: true,
+    // serve these files through the karma server
+    // by serving these files through the karma server we can fetch and test
+    // against real files during testing
+    files: [
+      { pattern: "src/assets/test-assets/*", included: false, served: true },
+      {
+        // TODO: this should expose all of node_modules through the karma server
+        // so that we can dynamically import anything from node_modules
+        // without adding it to this list
+        pattern: __dirname + "/node_modules/@ecoacoustics/web-components/**",
+        included: false,
+        served: true,
+      },
+    ],
     viewport: {
       // Ensure you modify the viewports object (@test/helpers/general.ts) to match
       // the values declared here.

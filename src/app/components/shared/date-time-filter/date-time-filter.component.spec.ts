@@ -802,4 +802,40 @@ describe("AudioRecordingsFilter", () => {
       }));
     });
   });
+
+  describe("disabled inputs", () => {
+    it("should disable the start date input if 'disableStartDate' is set", () => {
+      spectator.setInput("disableStartDate", true);
+      expect(getDateStartedAfterInput()).toBeDisabled();
+    });
+
+    it("should disable the end date input if 'disableEndDate' is set", () => {
+      spectator.setInput("disableEndDate", true);
+      expect(getDateFinishedBeforeInput()).toBeDisabled();
+    });
+
+    it("should disable the start time input if 'disableStartTime' is set", () => {
+      spectator.setInput("disableStartTime", true);
+      expect(getTimeOfDayStartedAfterInput()).toBeDisabled();
+    });
+
+    it("should disable the end time input if 'disableEndTime' is set", () => {
+      spectator.setInput("disableEndTime", true);
+      expect(getTimeOfDayFinishedBeforeInput()).toBeDisabled();
+    });
+
+    it("should not show a toggle for date inputs if both start and end dates are disabled", () => {
+      spectator.setInput("disableStartDate", true);
+      spectator.setInput("disableEndDate", true);
+
+      expect(getDateToggleInput()).not.toExist();
+    });
+
+    it("should not show a toggle for time inputs if both start and end times are disabled", () => {
+      spectator.setInput("disableStartTime", true);
+      spectator.setInput("disableEndTime", true);
+
+      expect(getTimeOfDayToggleInput()).not.toExist();
+    });
+  });
 });

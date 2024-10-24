@@ -119,4 +119,61 @@ describe("BawSessionService", () => {
       logout();
     });
   });
+
+  describe("addAuthTokenToUrl", () => {
+    beforeEach(() => {
+      defaultUser = new User(generateUser());
+      defaultAuthToken = modelData.authToken();
+      spec.service.setLoggedInUser(defaultUser, defaultAuthToken);
+    });
+
+    it("should not modify the url if the user is logged out", () => {
+      logout();
+
+      const testUrl = modelData.internet.url();
+      const result = spec.service.addAuthTokenToUrl(testUrl);
+      expect(result).toBe(testUrl);
+    });
+
+    it("should update the auth token if it has changed", () => {
+      const testUrl = modelData.internet.url();
+      const initialUrl = spec.service.addAuthTokenToUrl(testUrl);
+
+      defaultUser = new User(generateUser());
+      defaultAuthToken = modelData.authToken();
+      login();
+
+      const newUrl = spec.service.addAuthTokenToUrl(testUrl);
+      expect(initialUrl).not.toEqual(newUrl);
+    });
+
+    it("should not update the auth token if it has not changed", () => {
+      const testUrl = modelData.internet.url();
+      const initialUrl = spec.service.addAuthTokenToUrl(testUrl);
+
+      login();
+
+      const newUrl = spec.service.addAuthTokenToUrl(testUrl);
+      expect(initialUrl).toEqual(newUrl);
+    });
+
+    // because there are no url parameters, we expect that the auth token
+    // will be added with the "?" prefix
+    it("should add an auth token to a url without any parameters", () => {
+      const testUrl = modelData.internet.url();
+      const result = spec.service.addAuthTokenToUrl(testUrl);
+      expect(result).toEqual(`${testUrl}/?user_token=${defaultAuthToken}`);
+    });
+
+    // because there are already url parameters, we expect that the auth token
+    // will be added with the "&" prefix
+    it("should add an auth token to a url with url parameters", () => {
+      const testUrl = `${modelData.internet.url()}/?token=foo&param2=bar`;
+
+      const expected = `${testUrl}&user_token=${defaultAuthToken}`;
+      const realized = spec.service.addAuthTokenToUrl(testUrl);
+
+      expect(realized).toEqual(expected);
+    });
+  });
 });

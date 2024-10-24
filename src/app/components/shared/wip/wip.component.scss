@@ -4,20 +4,21 @@
   --wip-border-color: #f39c12;
 }
 
+// the wrapper that is used in production
 .wip-placeholder {
   height: 100px;
   display: flex;
   flex-direction: row;
   border: var(--wip-border-color) 1px solid;
 
-  & > div {
+  & > .wip-text {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
   }
 
-  & > :first-child {
+  & > .wip-icon {
     width: 100px;
     background-color: var(--wip-bg-color);
     color: var(--wip-color);
@@ -29,12 +30,13 @@
   }
 }
 
+// the wrapper that is used in development
 .wip-wrapper {
   display: flex;
   flex-direction: column;
   border: var(--wip-border-color) 1px solid;
 
-  & > :first-child {
+  & > .wip-icon {
     background-color: var(--wip-bg-color);
     color: var(--wip-color);
     display: flex;

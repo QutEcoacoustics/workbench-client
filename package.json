@@ -11,7 +11,7 @@
     "build": "ng build --configuration production",
     "e2e": "ng e2e",
     "e2e:debug": "node --max_old_space_size=4096 --inspect-brk ./node_modules/protractor/bin/protractor e2e/protractor.conf.js",
-    "lint": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js .",
+    "lint": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js . --no-unused-vars --no-console",
     "ng": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng",
     "start": "ng serve --ssl --host 0.0.0.0 --disable-host-check",
     "stats": "ng build --configuration development --stats-json && webpack-bundle-analyzer dist/workbench-client/browser/stats.json",
@@ -34,6 +34,7 @@
     "@angular/common": "17.1.2",
     "@angular/compiler": "17.1.2",
     "@angular/core": "17.1.2",
+    "@angular/elements": "^17.1.2",
     "@angular/forms": "17.1.2",
     "@angular/google-maps": "^17.0.5",
     "@angular/localize": "17.1.2",
@@ -42,6 +43,7 @@
     "@angular/platform-server": "17.1.2",
     "@angular/router": "17.1.2",
     "@angular/ssr": "^17.1.2",
+    "@ecoacoustics/web-components": "^1.1.5",
     "@fortawesome/angular-fontawesome": "^0.14.1",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
@@ -81,6 +83,7 @@
     "zone.js": "~0.14.3"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "^17.0.2",
     "@angular-devkit/build-angular": "17.2.2",
     "@angular-eslint/builder": "17.2.0",
     "@angular-eslint/eslint-plugin": "17.2.0",
