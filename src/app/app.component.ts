@@ -28,7 +28,7 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { createCustomElement } from "@angular/elements";
 import {
   GridTileContentComponent,
-  gridTileContextSelector,
+  gridTileContentSelector,
 } from "@components/web-components/grid-tile-content/grid-tile-content.component";
 import { IS_SERVER_PLATFORM } from "./app.helper";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
@@ -76,14 +76,14 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     // we make some of our standalone angular components into standards based web components
     // so that they can operate entirely independently - e.g. in shadow dom
     if (!this.isServer) {
-      const hasCustomElement = !!customElements.get(gridTileContextSelector);
+      const hasCustomElement = !!customElements.get(gridTileContentSelector);
 
       if (!hasCustomElement) {
         const webComponentElement = createCustomElement(
           GridTileContentComponent,
           { injector }
         );
-        customElements.define(gridTileContextSelector, webComponentElement);
+        customElements.define(gridTileContentSelector, webComponentElement);
       }
     }
   }

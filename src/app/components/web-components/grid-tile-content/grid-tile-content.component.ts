@@ -15,7 +15,7 @@ import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/comp
 import { Annotation } from "@models/data/Annotation";
 import { ContextSubscription, WithContext } from "@helpers/context/context-decorators";
 
-export const gridTileContextSelector = "baw-grid-tile-content" as const;
+export const gridTileContentSelector = "baw-grid-tile-content" as const;
 
 @Component({
   standalone: true,
@@ -27,7 +27,7 @@ export const gridTileContextSelector = "baw-grid-tile-content" as const;
   templateUrl: "grid-tile-content.component.html",
   styleUrl: "grid-tile-content.component.scss",
 })
-export class GridTileContentComponent implements WithContext  {
+export class GridTileContentComponent implements WithContext {
   public constructor(public elementRef: ElementRef) { }
 
   @ViewChild("wrapper")

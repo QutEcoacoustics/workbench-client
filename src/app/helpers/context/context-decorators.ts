@@ -23,7 +23,7 @@ export function ContextSubscription(token: UnknownContext) {
   return (target: WithContext, propertyKey: string) => {
     const originalNgAfterViewInit = target.ngAfterViewInit;
 
-    target.ngAfterViewInit = function() {
+    target.ngAfterViewInit = function () {
       // invoke the original ngAfterViewInit method if it exists
       if (originalNgAfterViewInit) {
         originalNgAfterViewInit();
@@ -35,5 +35,5 @@ export function ContextSubscription(token: UnknownContext) {
       const element = this.elementRef.nativeElement;
       element.dispatchEvent(contextRequest);
     };
-  }
+  };
 }
