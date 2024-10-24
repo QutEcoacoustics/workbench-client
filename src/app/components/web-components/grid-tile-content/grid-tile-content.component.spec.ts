@@ -15,6 +15,7 @@ import { AnnotationService } from "@services/models/annotation.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
+import { detectChanges } from "@test/helpers/changes";
 import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
@@ -85,6 +86,7 @@ describe("GridTileContentComponent", () => {
   beforeEach(() => {
     patchSharedArrayBuffer();
     setup();
+    detectChanges(spectator);
   });
 
   it("should create", () => {

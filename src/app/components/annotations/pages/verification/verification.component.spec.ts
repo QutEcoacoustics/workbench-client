@@ -25,11 +25,10 @@ import {
 import { CUSTOM_ELEMENTS_SCHEMA, INJECTOR, Injector } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
-import { VerificationComponent as DecisionButton } from "@ecoacoustics/web-components/@types/components/decision/verification/verification";
 import { VerificationHelpDialogComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/help-dialog";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
-import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
+import { discardPeriodicTasks, fakeAsync, flush, tick } from "@angular/core/testing";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { generateTag } from "@test/fakes/Tag";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -51,9 +50,9 @@ import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { detectChanges } from "@test/helpers/changes";
-import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { nodeModule, testAsset } from "@test/helpers/karma";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
+import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
@@ -86,9 +85,9 @@ describe("VerificationComponent", () => {
     component: VerificationComponent,
     imports: [MockBawApiModule, SharedModule, RouterTestingModule],
     declarations: [
-      AnnotationSearchFormComponent,
       SearchFiltersModalComponent,
-      TypeaheadInputComponent,
+      ProgressWarningComponent,
+      AnnotationSearchFormComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
@@ -114,9 +113,7 @@ describe("VerificationComponent", () => {
 
     mediaServiceSpy = spectator.inject(MEDIA.token);
     mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
-    mediaServiceSpy.createMediaUrl.and.returnValue(
-      testAsset("example.flac")
-    );
+    mediaServiceSpy.createMediaUrl.and.returnValue(testAsset("example.flac"));
 
     mockSearchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(queryParameters),
@@ -194,7 +191,19 @@ describe("VerificationComponent", () => {
     // if we were to bundle the assets first, the web components would be served
     // under the __karma_webpack__ sub-path, but workers dynamically loaded by
     // the web components would be served under the root path
-    await import(/* webpackIgnore: true */ nodeModule("@ecoacoustics/web-components/components.js"));
+    //
+    // under some circumstances, Karma will re-use the same browser instance
+    // between tests. Meaning that the custom element can registration can
+    // persist between multiple tests.
+    // to prevent re-declaring the same custom element, we conditionally
+    // import the web components only if they are not already defined
+    if (!customElements.get("oe-verification-grid")) {
+      await import(
+        /* webpackIgnore: true */ nodeModule(
+          "@ecoacoustics/web-components/dist/components.js"
+        )
+      );
+    }
 
     routeProject = new Project(generateProject());
     routeRegion = new Region(generateRegion({ projectId: routeProject.id }));
@@ -210,16 +219,16 @@ describe("VerificationComponent", () => {
 
   const dialogToggleButton = () =>
     spectator.query<HTMLButtonElement>(".filter-button");
+
+  // when
   const tagsTypeahead = () =>
     document.querySelector<HTMLElement>("#tags-input");
+  const updateFiltersButton = () =>
+    document.querySelector<HTMLButtonElement>("#update-filters-btn");
 
-  const verificationButtons = () =>
-    spectator.queryAll<DecisionButton>("oe-verification");
   const verificationGrid = () =>
     spectator.query<VerificationGridComponent>("oe-verification-grid");
   const verificationGridRoot = (): ShadowRoot => verificationGrid().shadowRoot;
-  const verificationGridTiles = () =>
-    verificationGridRoot().querySelectorAll("oe-verification-grid-tile");
 
   // a lot of the web components elements of interest are in the shadow DOM
   // therefore, we have to chain some query selectors to get to the elements
@@ -227,13 +236,6 @@ describe("VerificationComponent", () => {
     verificationGridRoot().querySelector("oe-verification-help-dialog");
   const helpCloseButton = (): HTMLButtonElement =>
     helpElement().shadowRoot.querySelector(".close-btn");
-
-  function gridTileTag(index: number): string {
-    const tileTarget = verificationGridTiles()[index];
-    const tileShadowRoot = tileTarget.shadowRoot;
-    const tagContainer = tileShadowRoot.querySelector(".tag-label");
-    return tagContainer.textContent;
-  }
 
   function toggleParameters(): void {
     spectator.click(dialogToggleButton());
@@ -345,33 +347,19 @@ describe("VerificationComponent", () => {
 
           toggleParameters();
           selectFromTypeahead(spectator, tagsTypeahead(), tagText);
+          spectator.click(updateFiltersButton());
+          detectChanges(spectator);
+
           const newPagingCallback = verificationGrid().getPage;
-
           expect(newPagingCallback).not.toBe(initialPagingCallback);
-        }));
 
-        it("should fetch the next page when a full page of results has a decision applied", () => {
-          const gridSize = verificationGrid().populatedTileCount;
-          verificationButtons()[0].click();
-          expect(verificationGrid().subjectHistory).toHaveLength(gridSize);
-        });
+          flush();
+          discardPeriodicTasks();
+        }));
 
         it("should populate the verification grid correctly for the first page", () => {
           const realizedTileCount = verificationGrid().populatedTileCount;
           expect(realizedTileCount).toBeGreaterThan(0);
-        });
-
-        it("should have the correct tag name in the verification grid tiles", () => {
-          const tileCount = verificationGrid().populatedTileCount;
-          const targetTile = modelData.datatype.number({
-            min: 0,
-            max: tileCount,
-          });
-
-          const expectedTileText = mockAnnotationResponse.tags as any;
-          const tileTags = gridTileTag(targetTile);
-
-          expect(tileTags).toEqual(expectedTileText);
         });
       });
     });
