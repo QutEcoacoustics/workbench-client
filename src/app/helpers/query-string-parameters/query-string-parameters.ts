@@ -79,6 +79,7 @@ export function serializeObjectToParams<T>(
       // null and undefined values are omitted when used on angular HTTPParams
       // therefore, we should not serialize them as they will have no effect on the query string
       // we use isInstantiated here because we want to serialize "falsey" values such as 0 and empty strings
+      // we also omit empty arrays so that we don't end up with empty query string parameters for arrays
       if (!isInstantiated(value)) {
         return;
       }

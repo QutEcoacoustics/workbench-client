@@ -1,6 +1,6 @@
 <form #form="ngForm">
   <baw-date-time-filter
-    #dateTimeFiltersElement
+    [(model)]="recordingDateTimeFilters"
     (modelChange)="updateRecordingDateTime($event)"
     [disableStartDate]="true"
     [disableStartTime]="true"
@@ -26,7 +26,6 @@
     "
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!project"
-    [value]="project ? [] : searchParameters.projectModels"
     (modelChange)="updateSubModel('projects', $event)"
   ></baw-typeahead-input>
 
@@ -41,7 +40,6 @@
     "
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!region"
-    [value]="region ? [] : searchParameters.regionModels"
     (modelChange)="updateSubModel('regions', $event)"
   ></baw-typeahead-input>
 
@@ -54,7 +52,6 @@
     "
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!site"
-    [value]="region ? [] : searchParameters.siteModels"
     (modelChange)="updateSubModel('sites', $event)"
   ></baw-typeahead-input>
 
@@ -92,16 +89,11 @@
       class="card card-body border-top-0"
     >
       <baw-typeahead-input
+        #recordingsTypeahead
         id="recordings-input"
         label="Recording IDs of interest"
         inputPlaceholder="All"
-        [searchCallback]="
-          createSearchCallback(
-            recordingsApi,
-            'id',
-            searchParameters.routeFilters()
-          )
-        "
+        [searchCallback]="createIdSearchCallback(recordingsApi, 'id')"
         [resultTemplate]="idTypeaheadTemplate"
         [value]="searchParameters.audioRecordingModels"
         (modelChange)="updateSubModel('audioRecordings', $event)"

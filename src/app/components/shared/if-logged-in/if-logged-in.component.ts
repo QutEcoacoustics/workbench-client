@@ -18,14 +18,14 @@ export class IfLoggedInComponent implements AfterContentInit {
   public ngAfterContentInit(): void {
     this.session.authTrigger
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-      .subscribe(() => {
-        if (!this.session.isLoggedIn) {
-          this.disableInteractiveContent();
-        }
-      });
+      .subscribe(() => this.updateState());
   }
 
-  private disableInteractiveContent(): void {
+  public updateState(): void {
+    this.disableInteractiveContent(!this.session.isLoggedIn);
+  }
+
+  private disableInteractiveContent(state: boolean): void {
     // TODO: use a ContentChild decorator here
     const content =
       this.elementRef.nativeElement.querySelectorAll("button, input");
@@ -34,7 +34,11 @@ export class IfLoggedInComponent implements AfterContentInit {
       // if the disabled attribute is in the elements prototype, we want to
       // set it to true
       if ("disabled" in element) {
-        element.setAttribute("disabled", "true");
+        if (state) {
+          element.setAttribute("disabled", "true");
+        } else {
+          element.removeAttribute("disabled");
+        }
       }
     }
   }

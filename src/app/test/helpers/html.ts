@@ -23,7 +23,8 @@ export function inputValue(wrapper: any, selector: string, value: string) {
 export function selectFromTypeahead<T>(
   spectator: Spectator<T>,
   target: Element | HTMLElement,
-  text: string
+  text: string,
+  detectChanges = true
 ): void {
   const inputElement = target.querySelector<HTMLInputElement>("input");
   spectator.typeInElement(text, inputElement);
@@ -36,7 +37,11 @@ export function selectFromTypeahead<T>(
   const selectedTypeaheadOption = document.querySelector<HTMLButtonElement>(
     "button.dropdown-item.active"
   );
-  spectator.click(selectedTypeaheadOption);
+  selectedTypeaheadOption.click();
+
+  if (detectChanges) {
+    spectator.detectChanges();
+  }
 
   flush();
 }
@@ -48,7 +53,11 @@ export function toggleDropdown<T>(
 ): void {
   // bootstrap dropdowns take a full second to open
   spectator.click(target);
-  spectator.tick(1000);
+  waitForDropdown(spectator);
+}
+
+export function waitForDropdown<T>(spectator: Spectator<T>): void {
+  spectator.tick(1_000);
 }
 
 export function getElementByInnerText<T extends HTMLElement>(

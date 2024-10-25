@@ -67,7 +67,7 @@ export class DateTimeFilterComponent
   @Input() public disableIgnoreDaylightSavings = false;
 
   @Output() public modelChange = new EventEmitter<DateTimeFilterModel>();
-  public model: DateTimeFilterModel = { ignoreDaylightSavings: true };
+  @Input() public model: DateTimeFilterModel = { ignoreDaylightSavings: true };
 
   private previousFilters: FromJS<Filters<AudioRecording>>;
 

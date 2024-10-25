@@ -21,3 +21,20 @@ export function createSearchCallback<T extends AbstractModelWithoutId>(
       ),
     });
 }
+
+export function createIdSearchCallback<T extends AbstractModelWithoutId>(
+  api: ApiFilter<T>,
+  key: keyof T,
+  filters: InnerFilter<T> = {}
+): TypeaheadSearchCallback {
+  return (text: any): Observable<T[]> => {
+    const id = Number(text);
+    if (!isFinite(id)) {
+      throw new Error("Invalid id");
+    }
+
+    return api.filter({
+      filter: filterAnd({ [key]: { eq: id } }, filters),
+    });
+  };
+}

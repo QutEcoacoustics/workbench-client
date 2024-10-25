@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -15,15 +14,17 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbCollapse, NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
 import {
-  DateTimeFilterComponent,
-  DateTimeFilterModel,
-} from "@shared/date-time-filter/date-time-filter.component";
-import { createSearchCallback } from "@shared/typeahead-input/typeahead-callbacks";
+  createIdSearchCallback,
+  createSearchCallback,
+} from "@shared/typeahead-input/typeahead-callbacks";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { DateTime } from "luxon";
 
 @Component({
@@ -31,7 +32,7 @@ import { DateTime } from "luxon";
   templateUrl: "annotation-search-form.component.html",
   styleUrl: "annotation-search-form.component.scss",
 })
-export class AnnotationSearchFormComponent implements OnInit, AfterViewInit {
+export class AnnotationSearchFormComponent implements OnInit {
   public constructor(
     protected recordingsApi: AudioRecordingsService,
     protected audioEventsApi: AudioEventsService,
@@ -47,14 +48,13 @@ export class AnnotationSearchFormComponent implements OnInit, AfterViewInit {
   public searchParametersChange =
     new EventEmitter<AnnotationSearchParameters>();
 
-  @ViewChild("dateTimeFiltersElement")
-  private dateTimeFilters: DateTimeFilterComponent;
+  @ViewChild("recordingsTypeahead")
+  private recordingsTypeahead: TypeaheadInputComponent;
 
-  @ViewChild("advancedFilters")
-  private advancedFilters: HTMLDivElement & NgbCollapse;
-
+  protected recordingDateTimeFilters: DateTimeFilterModel = {};
   protected hideAdvancedFilters = true;
   protected createSearchCallback = createSearchCallback;
+  protected createIdSearchCallback = createIdSearchCallback;
 
   protected get project(): Project {
     return this.searchParameters.routeProjectModel;
@@ -87,9 +87,7 @@ export class AnnotationSearchFormComponent implements OnInit, AfterViewInit {
         break;
       }
     }
-  }
 
-  public ngAfterViewInit(): void {
     // we want to set the initial model the date/time filters
     // TODO: this should probably be moved to a different spot
     const hasDateFilters = this.searchParameters.recordingDate?.length > 0;
@@ -100,7 +98,7 @@ export class AnnotationSearchFormComponent implements OnInit, AfterViewInit {
         this.searchParameters.recordingDateFinishedBefore.day
       );
 
-      this.dateTimeFilters.model = {
+      this.recordingDateTimeFilters = {
         dateFiltering: true,
         dateFinishedBefore,
       };
@@ -108,13 +106,35 @@ export class AnnotationSearchFormComponent implements OnInit, AfterViewInit {
   }
 
   protected toggleAdvancedFilters(): void {
-    this.advancedFilters.toggle();
+    this.hideAdvancedFilters = !this.hideAdvancedFilters;
+
+    if (this.hideAdvancedFilters) {
+      this.searchParameters.audioRecordings = null;
+    } else {
+      const recordingIds = this.recordingsTypeahead.value.map(
+        (model: AudioRecording) => model.id
+      );
+
+      if (recordingIds.length > 0) {
+        this.searchParameters.audioRecordings = recordingIds;
+      }
+    }
+
+    this.searchParametersChange.emit(this.searchParameters);
   }
 
   protected updateSubModel(
     key: keyof AnnotationSearchParameters,
     subModels: any[]
   ): void {
+    // if the subModels array is empty, the user has not selected any models
+    // we should set the search parameter to null so that it is not emitted
+    if (subModels.length === 0) {
+      this.searchParameters[key as any] = null;
+      this.searchParametersChange.emit(this.searchParameters);
+      return;
+    }
+
     const ids = subModels.map((model) => model.id);
     this.searchParameters[key as any] = ids;
     this.searchParametersChange.emit(this.searchParameters);
@@ -137,6 +157,13 @@ export class AnnotationSearchFormComponent implements OnInit, AfterViewInit {
         dateTimeModel.timeStartedAfter,
         dateTimeModel.timeFinishedBefore,
       ];
+    }
+
+    if (!dateTimeModel.dateFiltering) {
+      this.searchParameters.recordingDate = null;
+    }
+    if (!dateTimeModel.timeFiltering) {
+      this.searchParameters.recordingTime = null;
     }
 
     this.searchParametersChange.emit(this.searchParameters);

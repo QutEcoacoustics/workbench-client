@@ -17,8 +17,12 @@ import { generateTag } from "@test/fakes/Tag";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
-import { selectFromTypeahead, toggleDropdown } from "@test/helpers/html";
-import { fakeAsync } from "@angular/core/testing";
+import {
+  selectFromTypeahead,
+  toggleDropdown,
+  waitForDropdown,
+} from "@test/helpers/html";
+import { discardPeriodicTasks, fakeAsync, flush, tick } from "@angular/core/testing";
 import { modelData } from "@test/helpers/faker";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
@@ -95,14 +99,9 @@ describe("AnnotationSearchFormComponent", () => {
 
   const advancedFiltersToggle = () =>
     spectator.query<HTMLButtonElement>("#advanced-filters-toggle");
+  const advancedFitlersCollapsable = () =>
+    spectator.query(".advanced-filters>[ng-reflect-collapsed]");
   const recordingsTypeahead = () => spectator.query("#recordings-input");
-
-  function toggleDateFilters(): void {
-    spectator.click(dateToggleInput());
-    spectator.detectChanges();
-    spectator.tick(1000);
-    spectator.detectChanges();
-  }
 
   it("should create", () => {
     setup();
@@ -131,13 +130,39 @@ describe("AnnotationSearchFormComponent", () => {
     });
 
     // check the population of an external component that is not a typeahead input
-    it("should pre-populate the date-time filters if provided in the search parameters model", fakeAsync(() => {
-      const testStartDate = modelData.dateTime();
-      setup({
-        recordingDate: `,${testStartDate.toFormat("yyyy-MM-dd")}`,
-      });
+    it("should pre-populate the date filters if provided in the search parameters model", fakeAsync(() => {
+      const testEndDate = modelData.dateTime();
+      const testEndDateString = testEndDate.toFormat("yyyy-MM-dd");
 
-      expect(endDateInput()).toHaveValue(testStartDate.toFormat("yyyy-MM-dd"));
+      setup({ recordingDate: `,${testEndDateString}` });
+      waitForDropdown(spectator);
+
+      expect(endDateInput()).toHaveValue(testEndDate.toFormat("yyyy-MM-dd"));
+      expect(spectator.component.searchParameters.recordingDateStartedAfter).toBeFalsy();
+      expect(spectator.component.searchParameters.recordingDateFinishedBefore).toBeTruthy();
+
+      flush();
+      discardPeriodicTasks();
+    }));
+
+    it("should not apply date filters if the dropdown is closed", fakeAsync(() => {
+      const testEndDate = modelData.dateTime();
+      const testEndDateString = testEndDate.toFormat("yyyy-MM-dd");
+
+      setup({ recordingDate: `,${testEndDateString}` });
+      // wait for the initial date/time filters to open
+      waitForDropdown(spectator);
+
+      // close the date/time filters and assert that the filter conditions are
+      // no longer applied
+      spectator.click(dateToggleInput());
+      waitForDropdown(spectator);
+
+      expect(spectator.component.searchParameters.recordingDateStartedAfter).toBeFalsy();
+      expect(spectator.component.searchParameters.recordingDateFinishedBefore).toBeFalsy();
+
+      flush();
+      discardPeriodicTasks();
     }));
 
     // check the population of a checkbox boolean input
@@ -146,13 +171,26 @@ describe("AnnotationSearchFormComponent", () => {
       expect(spectator.component.searchParameters.onlyUnverified).toBeTrue();
     });
 
-    it("should open the advanced filters if the search parameters have advanced filters", () => {
+    it("should automatically open the advanced filters if the search parameters have advanced filters", fakeAsync(() => {
       setup({ audioRecordings: "1" });
       const expectedText = `Recording IDs of interest ${mockRecording.id}`;
 
+      waitForDropdown(spectator);
+
       expect(recordingsTypeahead()).toBeVisible();
       expect(recordingsTypeahead()).toHaveExactTrimmedText(expectedText);
-    });
+      expect(advancedFitlersCollapsable()).toHaveClass("show");
+    }));
+
+    it("should not apply the advanced filters if the dropdown is closed", fakeAsync(() => {
+      setup({ audioRecordings: "1" });
+      expect(spectator.component.searchParameters.audioRecordings).toHaveLength(1);
+
+      toggleDropdown(spectator, advancedFiltersToggle());
+
+      const realizedModel = spectator.component.searchParameters;
+      expect(realizedModel.audioRecordings).toHaveLength(0);
+    }));
   });
 
   describe("update emission", () => {
@@ -176,7 +214,7 @@ describe("AnnotationSearchFormComponent", () => {
     // check a typeahead input that does not have an optional property backing
     it("should emit the correct model if the tags are updated", fakeAsync(() => {
       const testedTag = mockTagsResponse[0];
-      selectFromTypeahead(spectator, tagsTypeahead(), testedTag.text);
+      selectFromTypeahead(spectator, tagsTypeahead(), testedTag.text, false);
 
       expect(spectator.component.searchParameters.tags).toEqual([testedTag.id]);
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(
@@ -185,23 +223,37 @@ describe("AnnotationSearchFormComponent", () => {
     }));
 
     // check an external component that is not a typeahead input
-    xit("should emit the correct model if the date-time filters are updated", fakeAsync(() => {
+    //
+    // TODO: I have sunk a lot of time into this test, and I have determined
+    // that the extra effort to get this test working will not reap benefits
+    // we should eventually finish this test
+    // at the moment the date/time filter components form is not triggering
+    // its form change event when the input is changed and the dropdown is not
+    // opening when the checkbox is toggled
+    xit("should emit the correct model if the date filters are updated", fakeAsync(() => {
       const testedDate = "2021-10-10";
       const expectedNewModel = {};
 
-      toggleDateFilters();
+      spectator.click(dateToggleInput());
+      waitForDropdown(spectator);
+
       spectator.typeInElement(testedDate, endDateInput());
 
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(expectedNewModel);
     }));
 
-    it("should not emit a new model if the date-time filters are updated with an invalid value", fakeAsync(() => {
+    it("should not emit a new model if the date filters are updated with an invalid value", fakeAsync(() => {
       const testedDate = "2021109-12";
 
-      toggleDateFilters();
+      spectator.click(dateToggleInput());
+      waitForDropdown(spectator);
+
       spectator.typeInElement(testedDate, endDateInput());
 
       expect(modelChangeSpy).not.toHaveBeenCalled();
+
+      flush();
+      discardPeriodicTasks();
     }));
 
     // TODO: enable this test once we have the endpoint available to filter by verified status
@@ -213,24 +265,5 @@ describe("AnnotationSearchFormComponent", () => {
         jasmine.objectContaining({ onlyUnverified: true })
       );
     });
-
-    it("should not apply the advanced filters if the dropdown is closed", fakeAsync(() => {
-      toggleDropdown(spectator, advancedFiltersToggle());
-      selectFromTypeahead(
-        spectator,
-        recordingsTypeahead(),
-        mockRecording.id.toString()
-      );
-
-      // while the dropdown is open, check that the search parameters have been
-      // updated with the new audio recording ids
-      const initialModel = spectator.component.searchParameters;
-      expect(initialModel.audioRecordings).toEqual([mockRecording.id]);
-
-      toggleDropdown(spectator, advancedFiltersToggle());
-
-      const realizedModel = spectator.component.searchParameters;
-      expect(realizedModel.audioRecordings).toHaveLength(0);
-    }));
   });
 });
