@@ -22,7 +22,7 @@ import {
   toggleDropdown,
   waitForDropdown,
 } from "@test/helpers/html";
-import { discardPeriodicTasks, fakeAsync, flush, tick } from "@angular/core/testing";
+import { discardPeriodicTasks, fakeAsync, flush } from "@angular/core/testing";
 import { modelData } from "@test/helpers/faker";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
