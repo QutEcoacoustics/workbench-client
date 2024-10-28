@@ -34,8 +34,9 @@ export function selectFromTypeahead<T>(
 
   // we do a document level querySelector so that if the dropdown is not in the
   // spectator hosts template, we can still select it
-  const selectedTypeaheadOption =
-    document.querySelector<HTMLButtonElement>(".dropdown-item");
+  const selectedTypeaheadOption = document.querySelector<HTMLButtonElement>(
+    ".dropdown-item.active"
+  );
   selectedTypeaheadOption.click();
 
   if (detectChanges) {
