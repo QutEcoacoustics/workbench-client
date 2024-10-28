@@ -1,6 +1,5 @@
 import { ComponentFixture, flush, tick } from "@angular/core/testing";
 import { Spectator } from "@ngneat/spectator";
-import { defaultDebounceTime } from "src/app/app.helper";
 
 /**
  * TODO Replace with spectator method
@@ -31,11 +30,13 @@ export function selectFromTypeahead<T>(
 
   // wait for the typeahead items to populate the dropdown with options
   spectator.detectChanges();
-  tick(defaultDebounceTime);
+  tick(1_000);
+  flush();
+  spectator.detectChanges();
 
   // click the first option in the dropdown
   const selectedTypeaheadOption = document.querySelector<HTMLButtonElement>(
-    "button.dropdown-item.active"
+    ".dropdown-item.active"
   );
   selectedTypeaheadOption.click();
 
