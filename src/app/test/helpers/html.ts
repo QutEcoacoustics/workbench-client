@@ -31,13 +31,11 @@ export function selectFromTypeahead<T>(
   // wait for the typeahead items to populate the dropdown with options
   spectator.detectChanges();
   tick(1_000);
-  flush();
-  spectator.detectChanges();
 
-  // click the first option in the dropdown
-  const selectedTypeaheadOption = document.querySelector<HTMLButtonElement>(
-    ".dropdown-item.active"
-  );
+  // we do a document level querySelector so that if the dropdown is not in the
+  // spectator hosts template, we can still select it
+  const selectedTypeaheadOption =
+    document.querySelector<HTMLButtonElement>(".dropdown-item");
   selectedTypeaheadOption.click();
 
   if (detectChanges) {
