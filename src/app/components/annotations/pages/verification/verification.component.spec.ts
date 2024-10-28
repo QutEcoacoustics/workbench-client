@@ -340,6 +340,7 @@ describe("VerificationComponent", () => {
           });
         });
 
+        // TODO: this test seems to fail only when running in CI because the tags typeahead isn't populated correctly
         xit("should reset the verification grids getPage function when the search parameters are changed", fakeAsync(() => {
           const initialPagingCallback = verificationGrid().getPage;
           const targetTag = defaultFakeTags[0];

@@ -105,13 +105,6 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
       return;
     }
 
-    // we have dynamically imported the web components after the SSR guard
-    // so that Lit doesn't try to run in an SSR context
-    // If Lit does end up running inside an SSR context, it will throw an error
-    // because it can't bootstrap itself to the document, and cannot find the
-    // custom elements registry
-    import("@ecoacoustics/web-components");
-
     // Tell google analytics about each page which is visited
     this.router.events
       .pipe(
