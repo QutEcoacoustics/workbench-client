@@ -8,7 +8,7 @@ export interface IParameterModel<T extends AbstractModelWithoutId> {
   toFilter(): Filters<T>;
 }
 
-export function ParameterModel(serialization: IQueryStringParameterSpec) {
+export function ParameterModel(_serialization: IQueryStringParameterSpec) {
   return class Base<T extends AbstractModelWithoutId> implements IParameterModel<T> {
     public toQueryParams(): Params {
       throw new Error("Method not implemented.");

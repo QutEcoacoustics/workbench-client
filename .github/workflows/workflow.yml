@@ -117,7 +117,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Unit Test Results (OS ${{ matrix.os }})
+          name: Unit Test Results (OS ${{ matrix.os }} ${{ matrix.browsers }})
           path: TESTS-*.xml
 
       - name: Lint project

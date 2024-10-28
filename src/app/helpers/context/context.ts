@@ -19,6 +19,7 @@ export type UnknownContext = Context<unknown, unknown>;
  * A helper type which can extract a Context value type from a Context type
  */
 export type ContextType<T extends UnknownContext> = T extends Context<
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   infer _,
   infer V
 >

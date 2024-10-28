@@ -3,7 +3,6 @@ import {
   SpectatorService,
   SpyObject,
 } from "@ngneat/spectator";
-import { AnnotationService } from "./annotation.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MediaService } from "@services/media/media.service";
@@ -16,6 +15,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateTag } from "@test/fakes/Tag";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { AnnotationService } from "./annotation.service";
 
 describe("AnnotationService", () => {
   let spec: SpectatorService<AnnotationService>;
