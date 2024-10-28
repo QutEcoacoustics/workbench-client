@@ -37,7 +37,7 @@ module.exports = function (config) {
       fixWebpackSourcePaths: true,
     },
     browserDisconnectTimeout: isCi ? 30000 : maxSigned32BitInt,
-    browserNoActivityTimeout: isCi ? 3 : maxSigned32BitInt,
+    browserNoActivityTimeout: isCi ? 30000 : maxSigned32BitInt,
     browserDisconnectTolerance: 3,
     browserConsoleLogOptions: {
       level: "debug",
