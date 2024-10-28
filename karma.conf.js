@@ -1,12 +1,6 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/6.3/config/configuration-file.html
-// const angularConfig = require("./angular.json");
-// const serverHeaders = angularConfig.projects["workbench-client"].architect.serve.options.headers;
-//
-// const customHeaders = [];
-// for (const [key, value] of Object.entries(serverHeaders)) {
-//   customHeaders.push({ [key]: value });
-// }
+
 var maxSigned32BitInt = Math.pow(2, 31) - 1;
 
 // GitHub Actions sets the CI environment variable to true
@@ -36,6 +30,16 @@ module.exports = function (config) {
       reports: ["html", "lcovonly", "text-summary", "cobertura"],
       fixWebpackSourcePaths: true,
     },
+    // when running Karma locally, we do not want it to timeout
+    // if we added a timeout to locally run tests, we would only have the
+    // timeout duration of time to debug why the tests failed
+    //
+    // the timeout is a signed 32 bit integer and does not accept a JS Infinity
+    // therefore, we set the timeout to the maximum signed 32 bit integer value
+    // this gives us ~596 hours of time to debug the tests
+    //
+    // we reset the timeout to 30 seconds when running in CI so that CI tests
+    // do not hang indefinitely due to a test failure
     browserDisconnectTimeout: isCi ? 30000 : maxSigned32BitInt,
     browserNoActivityTimeout: isCi ? 30000 : maxSigned32BitInt,
     browserDisconnectTolerance: 3,

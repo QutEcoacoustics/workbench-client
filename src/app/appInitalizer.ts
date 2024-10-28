@@ -15,9 +15,9 @@ async function initializeApp(isServer: boolean): ReturnType<AppInitializer> {
   // because it can't bootstrap itself to the document, and cannot find the
   // custom elements registry
   //
-  // we have to use a APP_INITIALIZER so that we run the async dynamic import
-  // before the app starts
-  // we cannot put this in the AppComponent's ngOnInit because we need to await
-  // the import to prevent race conditions
+  // we use a APP_INITIALIZER so that we can await the dynamic import to prevent
+  // race conditions in defining custom elements and using the web components
+  // we cannot put this in the AppComponent's ngOnInit because ngOnInit does
+  // not support async operations
   await import("@ecoacoustics/web-components");
 }

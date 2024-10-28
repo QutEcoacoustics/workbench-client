@@ -15,25 +15,20 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser-esbuild",
+          "builder": "@angular-devkit/build-angular:application",
           "defaultConfiguration": "development",
           "options": {
             "outputPath": "dist/workbench-client/browser",
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "browser": "src/main.ts",
+            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
             "aot": false,
             "optimization": false,
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/manifest.json",
-              {
-                "glob": "*",
-                "input": "node_modules/@ecoacoustics/web-components/assets",
-                "output": "assets"
-              }
+              "src/manifest.json"
             ],
             "styles": [
               "src/styles.scss"
@@ -64,7 +59,6 @@
               "outputHashing": "all",
               "sourceMap": false,
               "extractLicenses": true,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -81,8 +75,7 @@
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
-              "extractLicenses": true,
-              "buildOptimizer": false
+              "extractLicenses": true
             }
           }
         },
