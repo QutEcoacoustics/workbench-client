@@ -14,12 +14,15 @@ import {
   IdOr,
   IdParamOptional,
   option,
+  param,
   ReadonlyApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
 const audioRecordingId: IdParamOptional<AudioRecording> = id;
+const fileExtension = param;
+
 const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}${option}`;
 const downloadEndpoint = stringTemplate`/audio_recordings/downloader`;
 
@@ -29,6 +32,12 @@ const downloadEndpoint = stringTemplate`/audio_recordings/downloader`;
  * TODO This should be an absolute path
  */
 export const audioRecordingOriginalEndpoint = stringTemplate`/audio_recordings/${audioRecordingId}/original`;
+
+/**
+ * A path that can be used to download audio recordings that have been split
+ * with start_offset and end_offset url parameters
+ */
+export const audioRecordingSplitableEndpoint = stringTemplate`/audio_recordings/${audioRecordingId}/media.${fileExtension}`;
 
 @Injectable()
 export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {

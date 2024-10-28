@@ -39,9 +39,13 @@ export class MediaService {
 
     // check the start and end times fit inside the audio recording
     if (start > audioRecording.durationSeconds) {
-      throw new Error("Start time is greater than the duration of the audio recording");
+      throw new Error(
+        "Start time is greater than the duration of the audio recording"
+      );
     } else if (end > audioRecording.durationSeconds) {
-      throw new Error("End time is greater than the duration of the audio recording");
+      throw new Error(
+        "End time is greater than the duration of the audio recording"
+      );
     }
 
     // this is here to get around a rounding bug with range requests in the api
@@ -99,8 +103,7 @@ export class MediaService {
     }
 
     let path =
-      this.apiRoot +
-      `/audio_recordings/${audioRecording.id}/media.flac` +
+      audioRecording.getSplittableUrl(this.apiRoot) +
       `?start_offset=${fitStart}` +
       `&end_offset=${fitEnd}`;
 

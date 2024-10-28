@@ -16,6 +16,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { detectChanges } from "@test/helpers/changes";
+import { testAsset } from "@test/helpers/karma";
 import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
@@ -39,7 +40,7 @@ describe("GridTileContentComponent", () => {
         {
           provide: AnnotationService,
           useValue: { show: () => mockAnnotation },
-        }
+        },
       ],
     });
 
@@ -51,8 +52,12 @@ describe("GridTileContentComponent", () => {
     mockAudioRecording = new AudioRecording(
       generateAudioRecording({
         durationSeconds: 600,
-      }),
+      })
     );
+
+    mockAudioRecording.getSplittableUrl = jasmine
+      .createSpy("getSplittableUrl")
+      .and.returnValue(testAsset("example.flac"));
 
     mockAnnotation = new Annotation(
       generateAnnotation({
