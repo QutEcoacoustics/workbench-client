@@ -6,9 +6,23 @@
   To keep the website consistent, we will add a container to the chrome content
   to ensure that the chrome content looks the same across all pages.
 -->
-<div class="header-content">
-  <h2 class="mb-2">Annotation Verification</h2>
-  <button class="filter-button btn btn-sm btn-secondary" (click)="openSearchFiltersModal()">
+<div class="header-content mb-2">
+  <div>
+    <h2>
+      @if (!verificationGridFocused) {
+      <fa-icon
+        ngbTooltip="Shortcut keys are disabled because the verification grid has lost focus. Select a verification grid tile to enable shortcut keys."
+        [icon]="['fas', 'triangle-exclamation']"
+        class="inline text-warning"
+      ></fa-icon>
+      } Annotation Verification
+    </h2>
+  </div>
+
+  <button
+    class="filter-button btn btn-sm btn-secondary"
+    (click)="openSearchFiltersModal()"
+  >
     <fa-icon [icon]="['fas', 'filter']"></fa-icon>
   </button>
 </div>
@@ -18,6 +32,8 @@
   id="verification-grid"
   (loaded)="handleGridLoaded()"
   (decision-made)="handleDecision()"
+  (focus)="verificationGridFocused = true"
+  (blur)="verificationGridFocused = false"
 >
   <template>
     <baw-grid-tile-content></baw-grid-tile-content>

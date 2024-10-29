@@ -91,6 +91,7 @@ class VerificationComponent
 
   public searchParameters: AnnotationSearchParameters;
   public hasUnsavedChanges = false;
+  protected verificationGridFocused = true;
   private doneInitialScroll = false;
 
   public ngOnInit(): void {
@@ -109,10 +110,7 @@ class VerificationComponent
 
   public ngAfterViewInit(): void {
     this.updateGridCallback();
-  }
-
-  protected openSearchFiltersModal(): void {
-    this.modals.open(this.searchFiltersModal, { size: "xl" });
+    this.updateGridShape();
   }
 
   protected handleGridLoaded(): void {
@@ -128,7 +126,7 @@ class VerificationComponent
     // without this automatic focusing, the user would have to click on the
     // verification grid (e.g. to make a sub-selection) before being able to
     // use the shortcut keys
-    this.verificationGridElement.nativeElement.focus();
+    this.focusVerificationGrid();
 
     const timeoutDurationMilliseconds = 1_000 as const;
 
@@ -146,6 +144,14 @@ class VerificationComponent
 
   protected handleDecision(): void {
     this.hasUnsavedChanges = true;
+  }
+
+  protected focusVerificationGrid(): void {
+    this.verificationGridElement.nativeElement.focus();
+  }
+
+  protected openSearchFiltersModal(): void {
+    this.modals.open(this.searchFiltersModal, { size: "xl" });
   }
 
   protected requestModelUpdate(newModel: AnnotationSearchParameters) {
@@ -208,6 +214,10 @@ class VerificationComponent
     this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
     this.updateUrlParameters();
     this.hasUnsavedChanges = false;
+  }
+
+  private updateGridShape(): void {
+    this.verificationGridElement.nativeElement.targetGridSize = 12;
   }
 
   private scrollToVerificationGrid(): void {

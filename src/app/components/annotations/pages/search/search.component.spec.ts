@@ -176,9 +176,25 @@ describe("AnnotationSearchComponent", () => {
 
   it("should display an error if there are no search results", () => {
     const expectedText = "No annotations found";
+
+    spectator.component.searchResults = [];
+    spectator.component.loading = false;
+    spectator.detectChanges();
+
     const element = getElementByInnerText(spectator, expectedText);
     expect(element).toExist();
   });
+
+  it("should not display an error if the search results are still loading", () => {
+    const expectedText = "No annotations found";
+
+    spectator.component.searchResults = [];
+    spectator.component.loading = true;
+    spectator.detectChanges();
+
+    const element = getElementByInnerText(spectator, expectedText);
+    expect(element).not.toExist();
+  })
 
   it("should display a page of search results", () => {
     spectator.detectChanges();

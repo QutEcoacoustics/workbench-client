@@ -210,6 +210,13 @@ export class AnnotationSearchParameters
   public routeFilters(): InnerFilter<AudioEvent> {
     let siteIds: number[] = [];
 
+    // because this filter is constructed for audio events, but the project
+    // model is associated with the audio recording model, we need to do a
+    // association of an association filter
+    // e.g. audioRecordings.projects.id: { in: [1, 2, 3] }
+    // however, the api doesn't currently support this functionality
+    // therefore, we do a virtual join by filtering on the project/region site
+    // ids on the client
     if (this.routeSiteId) {
       siteIds = [this.routeSiteId];
     } else if (this.routeRegionId) {

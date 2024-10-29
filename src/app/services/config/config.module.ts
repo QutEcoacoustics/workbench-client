@@ -3,7 +3,7 @@ import { APP_INITIALIZER, NgModule, Optional } from "@angular/core";
 import { AppInitializer } from "@helpers/app-initializer/app-initializer";
 import { ToastrModule } from "ngx-toastr";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import { ImportsService } from "@services/imports/imports.service";
+import { ImportsService } from "@services/import/import.service";
 import { ConfigService } from "./config.service";
 import { API_CONFIG, API_ROOT } from "./config.tokens";
 

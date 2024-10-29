@@ -1,8 +1,9 @@
-import { ElementRef } from "@angular/core";
+import { ChangeDetectorRef, ElementRef } from "@angular/core";
 import { ContextRequestEvent, UnknownContext } from "./context";
 
 export interface WithContext {
   elementRef: ElementRef;
+  changeDetectorRef: ChangeDetectorRef;
   ngAfterViewInit?(): void;
 }
 
@@ -29,7 +30,16 @@ export function ContextSubscription(token: UnknownContext) {
         originalNgAfterViewInit();
       }
 
-      const handler = target[propertyKey].bind(this);
+      const handler = (...args: unknown[]) => {
+        // call the original method with the correct context
+        target[propertyKey].apply(this, args);
+
+        // request a zone.js change detection cycle
+        // we do this so that when a context change occurs, the Angular's zone
+        // detection cycle is triggered
+        this.changeDetectorRef.detectChanges();
+      };
+
       const contextRequest = new ContextRequestEvent(token, handler, true);
 
       const element = this.elementRef.nativeElement;

@@ -57,7 +57,7 @@ import { DurationComponent } from "./datetime-formats/duration/duration.componen
 import { ZonedDateTimeComponent } from "./datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { DatetimeComponent } from "./datetime-formats/datetime/datetime/datetime.component";
 import { AudioEventCardModule } from "./audio-event-card/annotation-event-card.module";
-import { IfLoggedInComponent } from "./if-logged-in/if-logged-in.component";
+import { IfLoggedInComponent } from "./can/can.component";
 
 export const sharedComponents = [
   AnnotationDownloadComponent,

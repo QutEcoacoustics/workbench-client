@@ -16,11 +16,17 @@
     <span class="context-card-information">
       <span class="context-card-title">Context</span>
 
-      <span class="context-card-description ms-2">(Showing 30 seconds around audio event)</span>
+      <span class="context-card-description">
+        (Showing 30 seconds around audio event)
+      </span>
     </span>
 
     <span class="context-card-actions">
-      <button id="close-btn" class="btn btn-outline-danger" (click)="closeContext()">
+      <button
+        id="close-btn"
+        class="btn btn-outline-danger"
+        (click)="closeContext()"
+      >
         Close
       </button>
     </span>
@@ -30,15 +36,17 @@
     <oe-axes>
       <oe-indicator>
         <oe-spectrogram
+          #contextSpectrogram
           [id]="contextSpectrogramId"
           [src]="contextSource"
+          (loaded)="contextSpectrogramLoaded()"
           color-map="audacity"
           scaling="stretch"
         ></oe-spectrogram>
       </oe-indicator>
     </oe-axes>
 
-    <oe-media-controls [for]="contextSpectrogramId"></oe-media-controls>
+    <oe-media-controls #contextMediaControls></oe-media-controls>
   </div>
 </div>
 }

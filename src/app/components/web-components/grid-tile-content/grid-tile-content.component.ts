@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
@@ -13,7 +14,10 @@ import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/compon
 import { gridTileContext } from "@ecoacoustics/web-components/dist/components/helpers/constants/contextTokens";
 import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
 import { Annotation } from "@models/data/Annotation";
-import { ContextSubscription, WithContext } from "@helpers/context/context-decorators";
+import {
+  ContextSubscription,
+  WithContext,
+} from "@helpers/context/context-decorators";
 
 export const gridTileContentSelector = "baw-grid-tile-content" as const;
 
@@ -28,30 +32,26 @@ export const gridTileContentSelector = "baw-grid-tile-content" as const;
   styleUrl: "grid-tile-content.component.scss",
 })
 export class GridTileContentComponent implements WithContext {
-  public constructor(public elementRef: ElementRef) { }
+  public constructor(
+    public elementRef: ElementRef,
+    public changeDetectorRef: ChangeDetectorRef
+  ) {}
 
-  @ViewChild("wrapper")
-  private wrapper: ElementRef<HTMLDivElement>;
-
-  @ViewChild("context-spectrogram")
+  @ViewChild("contextSpectrogram")
   private contextSpectrogram: ElementRef<SpectrogramComponent>;
 
-  @ViewChild("context-media-controls")
+  @ViewChild("contextMediaControls")
   private contextMediaControls: ElementRef<MediaControlsComponent>;
 
   protected model = signal<Annotation>(undefined);
   protected contextExpanded = false;
 
   public get listenLink(): string {
-    if (!this.model()) {
-      return "";
-    }
-
-    return this.model().viewUrl;
+    return this.model()?.viewUrl;
   }
 
   public get contextSpectrogramId(): string {
-    return `spectrogram-${this.model().id}-context`;
+    return `spectrogram-${this.model()?.id}-context`;
   }
 
   public get contextSource(): string {
@@ -75,6 +75,10 @@ export class GridTileContentComponent implements WithContext {
 
   protected closeContext(): void {
     this.contextExpanded = false;
+  }
+
+  protected contextSpectrogramLoaded(): void {
+    this.contextMediaControls.nativeElement.for = this.contextSpectrogramId;
   }
 }
 

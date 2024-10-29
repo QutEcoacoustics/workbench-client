@@ -1,7 +1,7 @@
 import { Inject, Injectable, Optional } from "@angular/core";
 import { ConfigService } from "@services/config/config.service";
 import { API_CONFIG } from "@services/config/config.tokens";
-import { ImportsService } from "@services/imports/imports.service";
+import { ImportsService } from "@services/import/import.service";
 import { BawTheme } from "@services/theme/theme.service";
 
 type AppInitializerType = () => Promise<unknown>;

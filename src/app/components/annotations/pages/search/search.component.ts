@@ -84,7 +84,7 @@ class AnnotationSearchComponent
 
   public searchParameters: AnnotationSearchParameters;
   protected paginationInformation: Paging;
-  protected searchResults: Annotation[] = [];
+  public searchResults: Annotation[] = [];
   protected verificationRoute: StrongRoute;
 
   public ngOnInit(): void {

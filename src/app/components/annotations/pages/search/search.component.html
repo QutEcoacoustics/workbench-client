@@ -16,11 +16,11 @@
       Download Annotations
     </a> -->
 
-    <baw-if-logged-in>
+    <baw-can [ifLoggedIn]="true">
       <button class="btn btn-primary" (click)="navigateToVerificationGrid()">
         Verify This List
       </button>
-    </baw-if-logged-in>
+    </baw-can>
   </div>
 </div>
 
