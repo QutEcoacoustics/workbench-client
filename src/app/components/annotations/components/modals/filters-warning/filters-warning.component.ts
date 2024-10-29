@@ -17,8 +17,8 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
     <div class="modal-body">
       <p>
-        You are seeing <em>all</em> annotations because no search filters were
-        used.
+        You are seeing <em>all</em> ({{ itemCount | number }}) annotations because no
+        search filters were used.
       </p>
 
       <p>
@@ -45,6 +45,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class FiltersWarningModalComponent implements ModalComponent {
   @Input() public modal: NgbActiveModal;
+  @Input() public itemCount: number;
 
   public closeModal(status: boolean): void {
     this.modal.close(status);

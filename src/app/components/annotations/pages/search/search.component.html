@@ -28,18 +28,15 @@
 
 <div>
   <ng-container *ngIf="!error">
-    @if (searchResults.length > 0) {
-      @if (!loading) {
-      <p>
-        Displaying
-        <span class="fw-bold">{{ searchResults.length }}</span> of
-        <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
-        events.
-      </p>
-      }
-      @else {
-      <p>Loading...</p>
-      }
+    @if (!loading) { @if (searchResults.length > 0) {
+    <p>
+      Displaying
+      <span class="fw-bold">{{ searchResults.length }}</span> of
+      <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
+      events.
+    </p>
+    } } @else {
+    <h3>Loading...</h3>
     }
 
     <div class="annotations-grid my-2">
@@ -69,5 +66,8 @@
 </div>
 
 <ng-template #broadSearchWarningModal let-warningModal>
-  <baw-filters-warning-modal [modal]="warningModal"></baw-filters-warning-modal>
+  <baw-filters-warning-modal
+    [modal]="warningModal"
+    [itemCount]="paginationInformation.total"
+  ></baw-filters-warning-modal>
 </ng-template>

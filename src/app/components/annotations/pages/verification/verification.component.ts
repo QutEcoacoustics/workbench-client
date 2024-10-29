@@ -130,14 +130,14 @@ class VerificationComponent
     // use the shortcut keys
     this.verificationGridElement.nativeElement.focus();
 
-    const timeoutDuration = 1_000 as const;
+    const timeoutDurationMilliseconds = 1_000 as const;
 
     // we wait a second after the verification grid has loaded to give the user
     // some time to see the grid in the context of the website before we scroll
     // them down to the grid
     setTimeout(() => {
       this.scrollToVerificationGrid();
-    }, timeoutDuration);
+    }, timeoutDurationMilliseconds);
 
     // we set the done initial scroll value before the timeout so that we don't
     // send two scroll events if the user makes a decision before the timeout

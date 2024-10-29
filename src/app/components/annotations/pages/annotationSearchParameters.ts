@@ -233,12 +233,19 @@ export class AnnotationSearchParameters
       this.recordingDateStartedAfter,
       this.recordingDateFinishedBefore
     );
+
+    // time filtering is currently disabled until we can filter on custom fields
+    // and association
+    // see https://github.com/QutEcoacoustics/baw-server/issues/689
+    // TODO: enable time filtering once the api adds support
+    //
     // const dateTimeFilter = filterTime(
     //   dateFilter,
     //   this.daylightSavings,
     //   this.recordingTimeStartedAfter,
     //   this.recordingTimeFinishedBefore
     // );
+
     return dateFilter;
   }
 

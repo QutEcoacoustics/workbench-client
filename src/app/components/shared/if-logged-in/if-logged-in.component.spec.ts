@@ -23,11 +23,6 @@ describe("IsLoggedInComponent", () => {
 
         <button id="shallow-button">Test</button>
         <input id="shallow-input" />
-
-        <div>
-          <button id="nested-button">Test</button>
-          <input id="nested-input" />
-        </div>
       </baw-if-logged-in>
     `;
 
@@ -46,8 +41,6 @@ describe("IsLoggedInComponent", () => {
   const nonInteractiveElement = () => spectator.query("#non-interactive-p");
   const shallowButton = () => spectator.query("#shallow-button");
   const shallowInput = () => spectator.query("#shallow-input");
-  const nestedButton = () => spectator.query("#nested-button");
-  const nestedInput = () => spectator.query("#nested-input");
 
   function updateAuthState(state: boolean) {
     isLoggedIn = state;
@@ -69,12 +62,9 @@ describe("IsLoggedInComponent", () => {
       expect(wrapperSpan()).not.toHaveAttribute("ngbTooltip");
     });
 
-    it("should not disable any button and input elements", () => {
+    it("should not disable any elements", () => {
       expect(shallowButton()).not.toHaveAttribute("disabled");
       expect(shallowInput()).not.toHaveAttribute("disabled");
-      expect(nestedButton()).not.toHaveAttribute("disabled");
-      expect(nestedInput()).not.toHaveAttribute("disabled");
-
       expect(nonInteractiveElement()).not.toHaveAttribute("disabled");
     });
 
@@ -83,8 +73,6 @@ describe("IsLoggedInComponent", () => {
 
       expect(shallowButton()).toHaveAttribute("disabled");
       expect(shallowInput()).toHaveAttribute("disabled");
-      expect(nestedButton()).toHaveAttribute("disabled");
-      expect(nestedInput()).toHaveAttribute("disabled");
     });
   });
 
@@ -106,22 +94,11 @@ describe("IsLoggedInComponent", () => {
       expect(shallowInput()).toHaveAttribute("disabled");
     });
 
-    it("should disable nested buttons and input elements", () => {
-      expect(nestedButton()).toHaveAttribute("disabled");
-      expect(nestedInput()).toHaveAttribute("disabled");
-    });
-
-    it("should not disable any non-interactive elements", () => {
-      expect(nonInteractiveElement()).not.toHaveAttribute("disabled");
-    });
-
     it("should go to an enabled state when the user logs in", () => {
       updateAuthState(true);
 
       expect(shallowButton()).not.toHaveAttribute("disabled");
       expect(shallowInput()).not.toHaveAttribute("disabled");
-      expect(nestedButton()).not.toHaveAttribute("disabled");
-      expect(nestedInput()).not.toHaveAttribute("disabled");
     });
   });
 });

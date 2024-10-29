@@ -103,7 +103,7 @@ export class MediaService {
     }
 
     let path =
-      audioRecording.getSplittableUrl(this.apiRoot) +
+      audioRecording.getMediaUrl(this.apiRoot) +
       `?start_offset=${fitStart}` +
       `&end_offset=${fitEnd}`;
 

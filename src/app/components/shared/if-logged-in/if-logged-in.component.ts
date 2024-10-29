@@ -31,14 +31,10 @@ export class IfLoggedInComponent implements AfterContentInit {
       this.elementRef.nativeElement.querySelectorAll("button, input");
 
     for (const element of content) {
-      // if the disabled attribute is in the elements prototype, we want to
-      // set it to true
-      if ("disabled" in element) {
-        if (state) {
-          element.setAttribute("disabled", "true");
-        } else {
-          element.removeAttribute("disabled");
-        }
+      if (state) {
+        element.setAttribute("disabled", "true");
+      } else {
+        element.removeAttribute("disabled");
       }
     }
   }

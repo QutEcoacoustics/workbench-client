@@ -17,6 +17,8 @@ export class AppInitializer {
     // SSR Sets a default config
     @Optional() @Inject(API_CONFIG) config: Promise<Configuration>,
     configService: ConfigService,
+    _httpBackend: any,
+    _IS_SERVER_PLATFORM: any,
     importsService: ImportsService
   ): AppInitializerType {
     const instantiatedConfig = configService.init(config);

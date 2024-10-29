@@ -37,7 +37,7 @@ export const audioRecordingOriginalEndpoint = stringTemplate`/audio_recordings/$
  * A path that can be used to download audio recordings that have been split
  * with start_offset and end_offset url parameters
  */
-export const audioRecordingSplitableEndpoint = stringTemplate`/audio_recordings/${audioRecordingId}/media.${fileExtension}`;
+export const audioRecordingMediaEndpoint = stringTemplate`/audio_recordings/${audioRecordingId}/media.${fileExtension}`;
 
 @Injectable()
 export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {

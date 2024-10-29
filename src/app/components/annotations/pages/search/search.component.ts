@@ -61,6 +61,7 @@ class AnnotationSearchComponent
       "id",
       () => [],
       async (newResults: AudioEvent[]) => {
+        this.loading = true;
         this.searchResults = await Promise.all(
           newResults.map(async (result) => await annotationService.show(result))
         );
@@ -68,6 +69,7 @@ class AnnotationSearchComponent
         if (newResults.length > 0) {
           this.paginationInformation = newResults[0].getMetadata().paging;
         }
+        this.loading = false;
       },
       () => this.searchParameters.toFilter().filter
     );

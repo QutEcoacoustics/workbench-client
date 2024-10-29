@@ -55,7 +55,7 @@ describe("GridTileContentComponent", () => {
       })
     );
 
-    mockAudioRecording.getSplittableUrl = jasmine
+    mockAudioRecording.getMediaUrl = jasmine
       .createSpy("getSplittableUrl")
       .and.returnValue(testAsset("example.flac"));
 

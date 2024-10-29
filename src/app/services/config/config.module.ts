@@ -16,9 +16,9 @@ import { API_CONFIG, API_ROOT } from "./config.tokens";
       deps: [
         [new Optional(), API_CONFIG],
         ConfigService,
-        ImportsService,
         HttpBackend,
         IS_SERVER_PLATFORM,
+        ImportsService,
       ],
       multi: true,
     },

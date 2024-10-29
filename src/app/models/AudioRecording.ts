@@ -1,6 +1,9 @@
 import { Injector } from "@angular/core";
 import { id, IdOr } from "@baw-api/api-common";
-import { audioRecordingOriginalEndpoint, audioRecordingSplitableEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
+import {
+  audioRecordingOriginalEndpoint,
+  audioRecordingMediaEndpoint,
+} from "@baw-api/audio-recording/audio-recordings.service";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import {
   audioRecordingBatchRoutes,
@@ -131,8 +134,14 @@ export class AudioRecording
     return apiRoot + audioRecordingOriginalEndpoint(this.id);
   }
 
-  public getSplittableUrl(apiRoot: string): string {
-    return apiRoot + audioRecordingSplitableEndpoint(this.id, this.originalFileExtension);
+  /**
+   * An api endpoint that can be used to split media using start_offset and
+   * end_offset url parameters
+   */
+  public getMediaUrl(apiRoot: string): string {
+    return (
+      apiRoot + audioRecordingMediaEndpoint(this.id, this.originalFileExtension)
+    );
   }
 
   /** Routes to the batch download page */

@@ -71,6 +71,9 @@ interface ResolverNames {
   showOptional: string;
 }
 
+// we use a custom resolver here because the annotation service is a virtual
+// service that does not have an api backing
+// therefore, we cannot use the standard BawApiResolver here
 class AnnotationResolver extends BawResolver<
   AnnotationSearchParameters,
   undefined,
