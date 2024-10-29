@@ -52,9 +52,9 @@ export class AnnotationSearchFormComponent implements OnInit {
   private recordingsTypeahead: TypeaheadInputComponent;
 
   protected recordingDateTimeFilters: DateTimeFilterModel = {};
-  protected hideAdvancedFilters = true;
   protected createSearchCallback = createSearchCallback;
   protected createIdSearchCallback = createIdSearchCallback;
+  protected hideAdvancedFilters = true;
 
   protected get project(): Project {
     return this.searchParameters.routeProjectModel;
