@@ -1,7 +1,10 @@
 import { Inject, Injectable, Optional } from "@angular/core";
 import { ConfigService } from "@services/config/config.service";
 import { API_CONFIG } from "@services/config/config.tokens";
+import { ImportsService } from "@services/imports/imports.service";
 import { BawTheme } from "@services/theme/theme.service";
+
+type AppInitializerType = () => Promise<unknown>;
 
 /**
  * App Initializer class.
@@ -13,9 +16,13 @@ export class AppInitializer {
   public static initializerFactory(
     // SSR Sets a default config
     @Optional() @Inject(API_CONFIG) config: Promise<Configuration>,
-    configService: ConfigService
-  ): () => Promise<void> {
-    return async (): Promise<void> => configService.init(config);
+    configService: ConfigService,
+    importsService: ImportsService
+  ): AppInitializerType {
+    const instantiatedConfig = configService.init(config);
+    const dynamicImports = importsService.init();
+
+    return async () => await Promise.all([instantiatedConfig, dynamicImports]);
   }
 
   public static apiRootFactory(configService: ConfigService): string {

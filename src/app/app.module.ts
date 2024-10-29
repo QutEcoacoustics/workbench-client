@@ -1,5 +1,4 @@
 import {
-  APP_INITIALIZER,
   CUSTOM_ELEMENTS_SCHEMA,
   DoBootstrap,
   NgModule,
@@ -32,7 +31,7 @@ import { WebsiteStatusModule } from "@components/website-status/website-status.m
 import { AnnotationModule } from "@components/annotations/annotation.module";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
-import { IS_SERVER_PLATFORM, toastrRoot } from "./app.helper";
+import { toastrRoot } from "./app.helper";
 import { AboutModule } from "./components/about/about.module";
 import { AdminModule } from "./components/admin/admin.module";
 import { DataRequestModule } from "./components/data-request/data-request.module";
@@ -50,7 +49,6 @@ import { SendAudioModule } from "./components/send-audio/send-audio.module";
 import { SharedModule } from "./components/shared/shared.module";
 import { SitesModule } from "./components/sites/sites.module";
 import { StatisticsModule } from "./components/statistics/statistics.module";
-import { appInitializerFactory } from "./appInitalizer";
 
 export const appLibraryImports = [
   BrowserModule,
@@ -109,12 +107,6 @@ export const appImports = [
   ],
   providers: [
     { provide: TitleStrategy, useClass: PageTitleStrategy },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFactory,
-      deps: [IS_SERVER_PLATFORM],
-      multi: true,
-    },
     // Show loading animation after 3 seconds
     { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
   ],
