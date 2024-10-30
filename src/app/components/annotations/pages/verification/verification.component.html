@@ -6,7 +6,7 @@
   To keep the website consistent, we will add a container to the chrome content
   to ensure that the chrome content looks the same across all pages.
 -->
-<div class="header-content mb-2">
+<div class="container header-content mb-2">
   <div>
     <h2>
       @if (!verificationGridFocused) {
@@ -27,9 +27,19 @@
   </button>
 </div>
 
+<!--
+  TODO: remove this grid size of one and use the oe-verification-grid defaults.
+  I have set the grid size to one so that when the verification grid loads in
+  we can change it to a sensible default of 10 while triggering a dynamic-grid
+  shape recalculation.
+
+  For some reason, we need to manually trigger a recalculation of the grid shape
+  otherwise it can sporadically fall back to a 1x1 grid
+-->
 <oe-verification-grid
   #verificationGrid
   id="verification-grid"
+  grid-size="1"
   (loaded)="handleGridLoaded()"
   (decision-made)="handleDecision()"
   (focus)="verificationGridFocused = true"

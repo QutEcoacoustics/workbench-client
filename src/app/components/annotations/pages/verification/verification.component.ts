@@ -110,7 +110,6 @@ class VerificationComponent
 
   public ngAfterViewInit(): void {
     this.updateGridCallback();
-    this.updateGridShape();
   }
 
   protected handleGridLoaded(): void {
@@ -127,6 +126,7 @@ class VerificationComponent
     // verification grid (e.g. to make a sub-selection) before being able to
     // use the shortcut keys
     this.focusVerificationGrid();
+    this.updateGridShape();
 
     const timeoutDurationMilliseconds = 1_000 as const;
 
@@ -217,7 +217,7 @@ class VerificationComponent
   }
 
   private updateGridShape(): void {
-    this.verificationGridElement.nativeElement.targetGridSize = 12;
+    this.verificationGridElement.nativeElement.targetGridSize = 10;
   }
 
   private scrollToVerificationGrid(): void {
