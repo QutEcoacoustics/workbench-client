@@ -1,6 +1,9 @@
 import { Injector } from "@angular/core";
 import { id, IdOr } from "@baw-api/api-common";
-import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
+import {
+  audioRecordingOriginalEndpoint,
+  audioRecordingMediaEndpoint,
+} from "@baw-api/audio-recording/audio-recordings.service";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import {
   audioRecordingBatchRoutes,
@@ -131,6 +134,16 @@ export class AudioRecording
     return apiRoot + audioRecordingOriginalEndpoint(this.id);
   }
 
+  /**
+   * An api endpoint that can be used to split media using start_offset and
+   * end_offset url parameters
+   */
+  public getMediaUrl(apiRoot: string): string {
+    return (
+      apiRoot + audioRecordingMediaEndpoint(this.id, this.originalFileExtension)
+    );
+  }
+
   /** Routes to the batch download page */
   public getBatchDownloadUrl(
     project?: IdOr<Project>,
@@ -144,6 +157,10 @@ export class AudioRecording
   /** Routes to the base details page */
   public get detailsUrl(): string {
     return this.getDetailsUrl();
+  }
+
+  public get originalFileExtension(): string {
+    return this.originalFileName?.split(".").pop() ?? "";
   }
 
   /** Routes to the details page relative to the parent models */

@@ -1,0 +1,73 @@
+<h1>Annotation Search</h1>
+
+<div>
+  <baw-annotation-search-form
+    [searchParameters]="searchParameters"
+    (searchParametersChange)="updateSearchParameters($event)"
+  ></baw-annotation-search-form>
+
+  <div class="mt-2">
+    <!--
+      TODO: Once the audio events download route supports url encoded filters
+      we should uncomment this buttons functionality
+      see: https://github.com/QutEcoacoustics/baw-server/issues/688
+     -->
+    <!-- <a class="btn btn-secondary me-2" [href]="downloadAnnotationsUrl()">
+      Download Annotations
+    </a> -->
+
+    <baw-can [ifLoggedIn]="true">
+      <button class="btn btn-primary" (click)="navigateToVerificationGrid()">
+        Verify This List
+      </button>
+    </baw-can>
+  </div>
+</div>
+
+<hr />
+
+<div>
+  <ng-container *ngIf="!error">
+    @if (!loading) { @if (searchResults.length > 0) {
+    <p>
+      Displaying
+      <span class="fw-bold">{{ searchResults.length }}</span> of
+      <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
+      events.
+    </p>
+    } } @else {
+    <h3>Loading...</h3>
+    }
+
+    <div class="annotations-grid my-2">
+      @for (verificationModel of searchResults; track $index) {
+      <div *ngIf="verificationModel">
+        <baw-annotation-event-card
+          [annotation]="verificationModel"
+        ></baw-annotation-event-card>
+      </div>
+      }
+    </div>
+
+    @if (searchResults.length === 0 && !loading) {
+    <h2 class="no-results-error">
+      No {{ searchParameters.onlyUnverified ? "unverified" : "" }} annotations
+      found
+    </h2>
+    } @if(displayPagination) {
+    <ngb-pagination
+      class="d-flex justify-content-center mt-4"
+      [collectionSize]="paginationInformation?.total ?? 0"
+      [(page)]="page"
+    ></ngb-pagination>
+    }
+  </ng-container>
+  <baw-error-handler [error]="error"></baw-error-handler>
+</div>
+
+<ng-template #broadSearchWarningModal let-warningModal>
+  <baw-filters-warning-modal
+    [modal]="warningModal"
+    [itemCount]="paginationInformation.total"
+  ></baw-filters-warning-modal>
+</ng-template>

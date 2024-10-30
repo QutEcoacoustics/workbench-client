@@ -2,6 +2,7 @@ import {
   Component,
   Inject,
   Injectable,
+  Injector,
   OnInit,
   ViewEncapsulation,
 } from "@angular/core";
@@ -24,6 +25,11 @@ import { MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { filter, Observable, takeUntil } from "rxjs";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { createCustomElement } from "@angular/elements";
+import {
+  GridTileContentComponent,
+  gridTileContentSelector,
+} from "@components/web-components/grid-tile-content/grid-tile-content.component";
 import { IS_SERVER_PLATFORM } from "./app.helper";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "./services/config/config.service";
@@ -52,6 +58,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
 
   public constructor(
     public menu: MenuService,
+    protected injector: Injector,
     private sharedRoute: SharedActivatedRouteService,
     private router: Router,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
@@ -64,6 +71,21 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
      */
     this.router.initialNavigation();
     globals.initialize();
+
+    // register all web components here
+    // we make some of our standalone angular components into standards based web components
+    // so that they can operate entirely independently - e.g. in shadow dom
+    if (!this.isServer) {
+      const hasCustomElement = !!customElements.get(gridTileContentSelector);
+
+      if (!hasCustomElement) {
+        const webComponentElement = createCustomElement(
+          GridTileContentComponent,
+          { injector }
+        );
+        customElements.define(gridTileContentSelector, webComponentElement);
+      }
+    }
   }
 
   public ngOnInit(): void {
@@ -105,10 +127,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
 
 @Injectable()
 export class PageTitleStrategy extends TitleStrategy {
-  public constructor(
-    private title: Title,
-    private config: ConfigService,
-  ) {
+  public constructor(private title: Title, private config: ConfigService) {
     super();
   }
 
@@ -131,7 +150,10 @@ export class PageTitleStrategy extends TitleStrategy {
         const hideProjects: boolean = this.config.settings.hideProjects;
         const titleOptions: TitleOptionsHash = { hideProjects };
 
-        const routeFragmentTitle = subRoute.title(this.routerState, titleOptions);
+        const routeFragmentTitle = subRoute.title(
+          this.routerState,
+          titleOptions
+        );
 
         // to explicitly omit a route title fragment, the title callback will return null
         if (isInstantiated(routeFragmentTitle)) {
@@ -149,8 +171,8 @@ export class PageTitleStrategy extends TitleStrategy {
     }
 
     return subRoute?.parent
-        ? this.buildHierarchicalTitle(subRoute.parent) + componentTitle
-        : componentTitle;
+      ? this.buildHierarchicalTitle(subRoute.parent) + componentTitle
+      : componentTitle;
   }
 
   // all site titles should follow the format <<brandName>> | ...PageComponentTitles

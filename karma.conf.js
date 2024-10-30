@@ -1,6 +1,12 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/6.3/config/configuration-file.html
 
+var maxSigned32BitInt = Math.pow(2, 31) - 1;
+
+// GitHub Actions sets the CI environment variable to true
+// see: https://github.blog/changelog/2020-04-15-github-actions-sets-the-ci-environment-variable-to-true
+var isCi = process.env.CI === "true";
+
 module.exports = function (config) {
   config.set({
     basePath: "",
@@ -24,7 +30,18 @@ module.exports = function (config) {
       reports: ["html", "lcovonly", "text-summary", "cobertura"],
       fixWebpackSourcePaths: true,
     },
-    browserDisconnectTimeout: 30000,
+    // when running Karma locally, we do not want it to timeout
+    // if we added a timeout to locally run tests, we would only have the
+    // timeout duration of time to debug why the tests failed
+    //
+    // the timeout is a signed 32 bit integer and does not accept a JS Infinity
+    // therefore, we set the timeout to the maximum signed 32 bit integer value
+    // this gives us ~596 hours of time to debug the tests
+    //
+    // we reset the timeout to 30 seconds when running in CI so that CI tests
+    // do not hang indefinitely due to a test failure
+    browserDisconnectTimeout: isCi ? 30000 : maxSigned32BitInt,
+    browserNoActivityTimeout: isCi ? 30000 : maxSigned32BitInt,
     browserDisconnectTolerance: 3,
     browserConsoleLogOptions: {
       level: "debug",
@@ -39,6 +56,20 @@ module.exports = function (config) {
     browsers: ["Chrome"],
     singleRun: false,
     restartOnFileChange: true,
+    // serve these files through the karma server
+    // by serving these files through the karma server we can fetch and test
+    // against real files during testing
+    files: [
+      { pattern: "src/assets/test-assets/*", included: false, served: true },
+      {
+        // TODO: this should expose all of node_modules through the karma server
+        // so that we can dynamically import anything from node_modules
+        // without adding it to this list
+        pattern: __dirname + "/node_modules/@ecoacoustics/web-components/**",
+        included: false,
+        served: true,
+      },
+    ],
     viewport: {
       // Ensure you modify the viewports object (@test/helpers/general.ts) to match
       // the values declared here.

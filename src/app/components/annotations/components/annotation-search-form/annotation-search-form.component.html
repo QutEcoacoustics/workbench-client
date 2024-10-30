@@ -1,0 +1,115 @@
+<form #form="ngForm">
+  <baw-date-time-filter
+    [(model)]="recordingDateTimeFilters"
+    (modelChange)="updateRecordingDateTime($event)"
+    [disableStartDate]="true"
+    [disableStartTime]="true"
+    [disableEndTime]="true"
+  ></baw-date-time-filter>
+
+  <baw-typeahead-input
+    id="tags-input"
+    label="Tags of Interest"
+    inputPlaceholder="All"
+    [searchCallback]="createSearchCallback(tagsApi, 'text')"
+    [resultTemplate]="tagsTypeaheadTemplate"
+    [value]="searchParameters.tagModels"
+    (modelChange)="updateSubModel('tags', $event)"
+  ></baw-typeahead-input>
+
+  <baw-typeahead-input
+    id="projects-input"
+    label="Project(s)"
+    [inputPlaceholder]="project ? project.name : 'All'"
+    [searchCallback]="
+      createSearchCallback(projectsApi, 'name', searchParameters.modelFilters())
+    "
+    [resultTemplate]="nameTypeaheadTemplate"
+    [inputDisabled]="!!project"
+    (modelChange)="updateSubModel('projects', $event)"
+  ></baw-typeahead-input>
+
+  <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
+  <baw-typeahead-input
+    id="region-input"
+    *ngIf="!site || site?.isPoint"
+    label="Site(s)"
+    [inputPlaceholder]="region ? region.name : 'All'"
+    [searchCallback]="
+      createSearchCallback(regionsApi, 'name', searchParameters.modelFilters())
+    "
+    [resultTemplate]="nameTypeaheadTemplate"
+    [inputDisabled]="!!region"
+    (modelChange)="updateSubModel('regions', $event)"
+  ></baw-typeahead-input>
+
+  <baw-typeahead-input
+    id="sites-input"
+    [label]="site ? (site?.isPoint ? 'Point(s)' : 'Site(s)') : 'Point(s)'"
+    [inputPlaceholder]="site ? site.name : 'All'"
+    [searchCallback]="
+      createSearchCallback(sitesApi, 'name', searchParameters.modelFilters())
+    "
+    [resultTemplate]="nameTypeaheadTemplate"
+    [inputDisabled]="!!site"
+    (modelChange)="updateSubModel('sites', $event)"
+  ></baw-typeahead-input>
+
+  <baw-wip>
+    <div class="form-check mt-2">
+      <!--
+      Because the verifications endpoint is not available yet, we cannot filter
+      by verified annotations. This is a placeholder for future functionality.
+     -->
+      <input
+        id="filter-verified"
+        type="checkbox"
+        class="form-check-input"
+        [checked]="searchParameters.onlyUnverified"
+        (change)="updateSubModel('onlyUnverified', $event.target['checked'])"
+      />
+      <label for="filter-verified" class="form-check-label">
+        Only show un-verified annotations
+      </label>
+    </div>
+  </baw-wip>
+
+  <div class="advanced-filters mt-2">
+    <button
+      id="advanced-filters-toggle"
+      class="btn btn-outline-secondary w-100"
+      (click)="toggleAdvancedFilters()"
+    >
+      {{ hideAdvancedFilters ? "Show" : "Hide" }} Advanced Filters
+    </button>
+
+    <div
+      #advancedFilters="ngbCollapse"
+      [(ngbCollapse)]="hideAdvancedFilters"
+      class="card card-body border-top-0"
+    >
+      <baw-typeahead-input
+        #recordingsTypeahead
+        id="recordings-input"
+        label="Recording IDs of interest"
+        inputPlaceholder="All"
+        [searchCallback]="createIdSearchCallback(recordingsApi, 'id')"
+        [resultTemplate]="idTypeaheadTemplate"
+        [value]="searchParameters.audioRecordingModels"
+        (modelChange)="updateSubModel('audioRecordings', $event)"
+      ></baw-typeahead-input>
+    </div>
+  </div>
+</form>
+
+<ng-template #idTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.id" [term]="searchTerm"></ngb-highlight>
+</ng-template>
+
+<ng-template #nameTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
+</ng-template>
+
+<ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
+</ng-template>

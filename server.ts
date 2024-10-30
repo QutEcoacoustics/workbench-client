@@ -18,6 +18,7 @@ import { environment } from "src/environments/environment";
 import { API_CONFIG } from "@services/config/config.tokens";
 import { AppServerModule } from "./src/main.server";
 import { REQUEST, RESPONSE } from "./src/express.tokens";
+import angularConfig from "./angular.json";
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(path: string): express.Express {
@@ -57,6 +58,21 @@ export function app(path: string): express.Express {
     res.setHeader("X-Frame-Options", "SAMEORIGIN");
     next();
   });
+
+  // we add the COOP and COEP headers so that we can use SharedArrayBuffer
+  // if you want to update these headers, update the angular.json file
+  // so that the headers are updated in the dev server as well
+  server.use((_, res, next) => {
+    // we use the angular.json config as the source of truth for headers
+    // so that we don't have to maintain the same headers for both the dev
+    // server and the production SSR server
+    const serverHeaders = angularConfig.projects["workbench-client"].architect.serve.options.headers;
+    for (const [key, value] of Object.entries(serverHeaders)) {
+      res.setHeader(key, value);
+    }
+
+    next();
+  })
 
   // special case rendering our settings file - we already have it loaded
   server.get(`${assetRoot}/environment.json`, (request, response) => {

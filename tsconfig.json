@@ -24,6 +24,7 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "strict": false,
+    "skipLibCheck": true,
     "target": "ES2022",
     "types": [
       "@types/gtag.js"

@@ -23,11 +23,17 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": true,
+            "aot": false,
+            "optimization": false,
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/manifest.json"
+              "src/manifest.json",
+              {
+                "glob": "**/*",
+                "input": "node_modules/@ecoacoustics/web-components/dist",
+                "output": "@ecoacoustics/web-components"
+              }
             ],
             "styles": [
               "src/styles.scss"
@@ -38,7 +44,6 @@
                 "node_modules"
               ]
             },
-            "scripts": [],
             "sourceMap": true,
             "allowedCommonJsDependencies": [
               "zone.js/dist/zone-error",
@@ -48,6 +53,7 @@
           },
           "configurations": {
             "production": {
+              "aot": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -58,7 +64,6 @@
               "outputHashing": "all",
               "sourceMap": false,
               "extractLicenses": true,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -75,15 +80,20 @@
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
-              "extractLicenses": true,
-              "buildOptimizer": false
+              "extractLicenses": true
             }
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "workbench-client:build"
+            "buildTarget": "workbench-client:build",
+            "headers": {
+              "Cross-Origin-Opener-Policy": "same-origin",
+              "Cross-Origin-Embedder-Policy": "require-corp",
+              "Cross-Origin-Resource-Policy": "cross-origin",
+              "Access-Control-Allow-Origin": "*"
+            }
           },
           "configurations": {
             "production": {
@@ -92,13 +102,16 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/custom-webpack:karma",
           "options": {
             "codeCoverage": true,
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
+            "customWebpackConfig": {
+              "path": "./webpack.config.js"
+            },
             "assets": [
               "src/assets",
               "src/manifest.json"

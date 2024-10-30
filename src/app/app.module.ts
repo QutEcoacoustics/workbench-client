@@ -1,4 +1,8 @@
-import { DoBootstrap, NgModule } from "@angular/core";
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  DoBootstrap,
+  NgModule,
+} from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -24,6 +28,7 @@ import { environment } from "src/environments/environment";
 import { TitleStrategy } from "@angular/router";
 import { AnnotationsImportModule } from "@components/import-annotations/import-annotations.module";
 import { WebsiteStatusModule } from "@components/website-status/website-status.module";
+import { AnnotationModule } from "@components/annotations/annotation.module";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { toastrRoot } from "./app.helper";
@@ -64,6 +69,7 @@ export const appImports = [
   DataRequestModule,
   HarvestModule,
   ReportsModule,
+  AnnotationModule,
   AnnotationsImportModule,
   LibraryModule,
   ListenModule,
@@ -105,6 +111,7 @@ export const appImports = [
     { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
   ],
   exports: [],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule implements DoBootstrap {
   public ngDoBootstrap(app: any): void {

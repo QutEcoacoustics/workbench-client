@@ -23,7 +23,7 @@ import {
   luxonDurationArray,
   jsStringArray,
 } from "@helpers/query-string-parameters/query-string-parameters";
-import { CollectionIds, Id, Ids } from "@interfaces/apiInterfaces";
+import { CollectionIds } from "@interfaces/apiInterfaces";
 import { hasMany } from "@models/AssociationDecorators";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { EventSummaryReport } from "@models/EventSummaryReport";
@@ -31,6 +31,7 @@ import { ImplementsInjector } from "@models/ImplementsInjector";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
+import { IParameterModel } from "@models/data/parametersModel";
 import { DateTime, Duration } from "luxon";
 
 export enum Chart {
@@ -50,10 +51,10 @@ export enum BucketSize {
 }
 
 export interface IEventSummaryReportParameters {
-  sites: Ids | Id[];
-  points: Ids | Id[];
-  provenances: Ids | Id[];
-  tags: Ids | Id[];
+  sites: CollectionIds;
+  points: CollectionIds;
+  provenances: CollectionIds;
+  tags: CollectionIds;
   score: number;
   bucketSize: BucketSize;
   daylightSavings: boolean;
@@ -76,7 +77,10 @@ const serializationTable: IQueryStringParameterSpec = {
 };
 
 export class EventSummaryReportParameters
-  implements IEventSummaryReportParameters, ImplementsInjector
+  implements
+    IEventSummaryReportParameters,
+    ImplementsInjector,
+    IParameterModel<EventSummaryReport>
 {
   public constructor(
     queryStringParameters: Params = {},
@@ -207,10 +211,11 @@ export class EventSummaryReportParameters
   }
 
   public toQueryParams(): Params {
-    const queryParameters = serializeObjectToParams<IEventSummaryReportParameters>(
-      this,
-      serializationTable
-    );
+    const queryParameters =
+      serializeObjectToParams<IEventSummaryReportParameters>(
+        this,
+        serializationTable
+      );
 
     return queryParameters;
   }

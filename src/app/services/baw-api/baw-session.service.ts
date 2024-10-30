@@ -61,4 +61,15 @@ export class BawSessionService {
   public get authTrigger(): Observable<AuthTriggerData> {
     return this._authTrigger;
   }
+
+  public addAuthTokenToUrl(url: string): string {
+    if (!this.authToken) {
+      return url;
+    }
+
+    const urlObj = new URL(url);
+    urlObj.searchParams.set("user_token", this.authToken);
+
+    return urlObj.toString();
+  }
 }

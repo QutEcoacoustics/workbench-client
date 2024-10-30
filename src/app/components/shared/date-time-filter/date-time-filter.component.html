@@ -2,6 +2,7 @@
   <!-- Toggle filtering by date -->
   <div class="form-check">
     <input
+      *ngIf="!disableStartDate || !disableEndDate"
       id="date-filtering"
       name="dateFiltering"
       type="checkbox"
@@ -16,6 +17,7 @@
 
   <!-- Date filters -->
   <div
+    *ngIf="!disableStartDate || !disableEndDate"
     id="date-filters-wrapper"
     #collapse="ngbCollapse"
     [ngbCollapse]="!model.dateFiltering"
@@ -36,13 +38,17 @@
                 class="form-control"
                 placeholder="yyyy-mm-dd"
                 [maxDate]="model.dateFinishedBefore"
-                [class.is-invalid]="dateStartedAfterForm.errors?.ngbDate?.invalid"
+                [class.is-invalid]="
+                  dateStartedAfterForm.errors?.ngbDate?.invalid
+                "
                 [(ngModel)]="model.dateStartedAfter"
+                [disabled]="disableStartDate"
               />
               <button
                 class="btn btn-outline-secondary"
-                (click)="dateStartedAfter.toggle()"
                 type="button"
+                (click)="dateStartedAfter.toggle()"
+                [disabled]="disableStartDate"
               >
                 <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
               </button>
@@ -64,14 +70,18 @@
                 name="dateFinishedBefore"
                 class="form-control"
                 placeholder="yyyy-mm-dd"
-                [class.is-invalid]="dateFinishedBeforeForm.errors?.ngbDate?.invalid"
+                [class.is-invalid]="
+                  dateFinishedBeforeForm.errors?.ngbDate?.invalid
+                "
                 [minDate]="model.dateStartedAfter"
                 [(ngModel)]="model.dateFinishedBefore"
+                [disabled]="disableEndDate"
               />
               <button
                 class="btn btn-outline-secondary"
-                (click)="dateFinishedBefore.toggle()"
                 type="button"
+                (click)="dateFinishedBefore.toggle()"
+                [disabled]="disableEndDate"
               >
                 <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
               </button>
@@ -102,7 +112,7 @@
   </div>
 
   <!-- Toggle filtering by time of day -->
-  <div class="form-check mt-3">
+  <div *ngIf="!disableStartTime || !disableEndTime" class="form-check mt-3">
     <input
       id="time-filtering"
       name="timeFiltering"
@@ -137,6 +147,7 @@
               name="timeStartedAfter"
               label="Start Time"
               [(ngModel)]="model.timeStartedAfter"
+              [disabled]="disableStartTime"
             ></baw-time>
           </div>
 
@@ -147,6 +158,7 @@
               name="timeFinishedBefore"
               label="End Time"
               [(ngModel)]="model.timeFinishedBefore"
+              [disabled]="disableEndTime"
             ></baw-time>
           </div>
         </div>
@@ -158,7 +170,7 @@
             name="ignoreDaylightSavings"
             type="checkbox"
             class="form-check-input"
-            [disabled]="!model.timeFiltering"
+            [disabled]="!model.timeFiltering || disableIgnoreDaylightSavings"
             [(ngModel)]="model.ignoreDaylightSavings"
           />
 

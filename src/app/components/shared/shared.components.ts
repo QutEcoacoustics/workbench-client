@@ -56,6 +56,8 @@ import { TimeSinceComponent } from "./datetime-formats/time-since/time-since.com
 import { DurationComponent } from "./datetime-formats/duration/duration.component";
 import { ZonedDateTimeComponent } from "./datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { DatetimeComponent } from "./datetime-formats/datetime/datetime/datetime.component";
+import { AudioEventCardModule } from "./audio-event-card/annotation-event-card.module";
+import { IfLoggedInComponent } from "./can/can.component";
 
 export const sharedComponents = [
   AnnotationDownloadComponent,
@@ -72,6 +74,7 @@ export const sharedComponents = [
   ChartComponent,
   InlineListComponent,
   WebsiteStatusWarningComponent,
+  IfLoggedInComponent,
 
   // modals
   ConfirmationComponent,
@@ -114,6 +117,7 @@ export const sharedModules = [
   LoadingModule,
   MenuModule,
   ModelCardsModule,
+  AudioEventCardModule,
   PipesModule,
   ProgressModule,
   StepperModule,

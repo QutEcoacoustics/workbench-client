@@ -1,4 +1,5 @@
-import { ComponentFixture } from "@angular/core/testing";
+import { ComponentFixture, flush, tick } from "@angular/core/testing";
+import { Spectator } from "@ngneat/spectator";
 
 /**
  * TODO Replace with spectator method
@@ -12,6 +13,60 @@ export function inputValue(wrapper: any, selector: string, value: string) {
   const input = wrapper.querySelector(selector);
   input.value = value;
   input.dispatchEvent(new Event("input"));
+}
+
+/**
+ * Selects an item from a typeahead component
+ * This function must be used inside a fakeAsync block
+ */
+export function selectFromTypeahead<T>(
+  spectator: Spectator<T>,
+  target: Element | HTMLElement,
+  text: string,
+  detectChanges = true
+): void {
+  const inputElement = target.querySelector<HTMLInputElement>("input");
+  spectator.typeInElement(text, inputElement);
+
+  // wait for the typeahead items to populate the dropdown with options
+  spectator.detectChanges();
+  tick(1_000);
+
+  // we do a document level querySelector so that if the dropdown is not in the
+  // spectator hosts template, we can still select it
+  const selectedTypeaheadOption = document.querySelector<HTMLButtonElement>(
+    ".dropdown-item.active"
+  );
+  selectedTypeaheadOption.click();
+
+  if (detectChanges) {
+    spectator.detectChanges();
+  }
+
+  flush();
+}
+
+/** Toggles a component decorated with ngb-dropdown and waits for it to open */
+export function toggleDropdown<T>(
+  spectator: Spectator<T>,
+  target: Element | HTMLElement
+): void {
+  // bootstrap dropdowns take a full second to open
+  spectator.click(target);
+  waitForDropdown(spectator);
+}
+
+export function waitForDropdown<T>(spectator: Spectator<T>): void {
+  spectator.tick(1_000);
+}
+
+export function getElementByInnerText<T extends HTMLElement>(
+  spectator: Spectator<unknown>,
+  text: string
+): T | null {
+  return spectator.debugElement.query(
+    (element) => element.nativeElement.innerText === text
+  )?.nativeElement;
 }
 
 /**

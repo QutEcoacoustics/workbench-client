@@ -27,8 +27,6 @@ export type TypeaheadSearchCallback = (
   styleUrls: ["typeahead-input.component.scss"],
 })
 export class TypeaheadInputComponent {
-  public constructor() {}
-
   /**
    * The options callback is typically linked to a service as it should return a list observable of options that the user could select
    * Active items are included in the callback as the api request should have a filter condition to filter these results out
@@ -45,14 +43,15 @@ export class TypeaheadInputComponent {
    */
   @Input() public inputPlaceholder = "";
   @Input() public inputDisabled = false;
-  /** An event emitter when a user adds, removes, or selects and item from the typeahead input */
-  @Output() public modelChange = new EventEmitter<object[]>();
 
   // if multiple items are enabled, they will be added to the value
   // if multiple inputs are disabled, the value will always be an array with a single element
   // we use the variable name "value" so the component can be used in ngForms and can bind to [(ngModel)]
-  public value: object[] = [];
-  protected inputModel!: string | null;
+  @Input() public value: object[] = [];
+  /** An event emitter when a user adds, removes, or selects and item from the typeahead input */
+  @Output() public modelChange = new EventEmitter<object[]>();
+
+  protected inputModel: string | null;
 
   public findOptions = (text$: Observable<string>): Observable<object[]> => {
     const maximumResults = 10;
