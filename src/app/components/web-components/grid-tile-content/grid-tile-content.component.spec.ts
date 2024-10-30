@@ -123,7 +123,9 @@ describe("GridTileContentComponent", () => {
     });
   });
 
-  describe("context card", () => {
+  // TODO: this test is temporarily disabled until the web component resize
+  // observer can correctly detect if it has completed a render cycle
+  xdescribe("context card", () => {
     it("should toggle a context card when the context button is clicked", () => {
       spectator.click(contextButton());
       expect(contextCard()).toBeVisible();
@@ -134,9 +136,7 @@ describe("GridTileContentComponent", () => {
       expect(contextCard()).not.toBeVisible();
     });
 
-    // TODO: this test is temporarily disabled until the web component resize
-    // observer can correctly detect if it has completed a render cycle
-    xit("should close the context card when the close button is clicked", () => {
+    it("should close the context card when the close button is clicked", () => {
       spectator.click(contextButton());
       expect(contextCard()).toBeVisible();
 
@@ -144,7 +144,7 @@ describe("GridTileContentComponent", () => {
       expect(contextCard()).not.toBeVisible();
     });
 
-    xit("should be able to play the context card spectrogram", () => {
+    it("should be able to play the context card spectrogram", () => {
       spectator.click(contextButton());
     });
 

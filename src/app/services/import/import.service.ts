@@ -3,18 +3,12 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 @Injectable()
 export class ImportsService {
-  public constructor(@Inject(IS_SERVER_PLATFORM) private isServer: boolean) {
-    this.clientOrigin = window.location.origin;
-  }
-
-  private clientOrigin: string;
+  public constructor(@Inject(IS_SERVER_PLATFORM) private isServer: boolean) {}
 
   public async init(): Promise<void> {
     if (this.isServer) {
       return;
     }
-
-    // const clientOrigin = "https://development.ecosounds.org:4200";
 
     // we have dynamically imported the web components after the SSR guard
     // so that Lit doesn't try to run in an SSR context
@@ -30,7 +24,8 @@ export class ImportsService {
   }
 
   public async importDynamicModule(path: string): Promise<void> {
-    const importUrl = `${this.clientOrigin}/${path}`;
+    const clientOrigin = window.location.origin;
+    const importUrl = `${clientOrigin}/${path}`;
 
     // we have to use vite ignore so that vite doesn't bundle and cache the import
     // allowing the module to be dynamically imported
