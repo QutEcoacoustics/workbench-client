@@ -217,7 +217,7 @@ class VerificationComponent
   }
 
   private updateGridShape(): void {
-    this.verificationGridElement.nativeElement.targetGridSize = 10;
+    this.verificationGridElement.nativeElement.targetGridSize = 12;
   }
 
   private scrollToVerificationGrid(): void {
