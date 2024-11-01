@@ -1,3 +1,4 @@
+import { MEDIA } from "@baw-api/ServiceTokens";
 import { annotationMenuItem } from "@components/library/library.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { DateTimeTimezone } from "@interfaces/apiInterfaces";
@@ -19,11 +20,6 @@ export interface IAnnotation extends Required<IAudioEvent> {
 //
 // this model is created from the AnnotationService and MediaService's
 export class Annotation extends AbstractModelWithoutId implements IAnnotation {
-  public constructor(data: IAnnotation, mediaService: MediaService) {
-    super(data);
-    this.mediaService = mediaService;
-  }
-
   public id: number;
   public audioRecordingId: number;
   public startTimeSeconds: number;
@@ -42,7 +38,9 @@ export class Annotation extends AbstractModelWithoutId implements IAnnotation {
   public tags: ITag[];
   public audioRecording: AudioRecording;
 
-  private mediaService: MediaService;
+  public get mediaService(): MediaService {
+    return this.injector.get(MEDIA.token);
+  }
 
   public get viewUrl(): string {
     return annotationMenuItem.route.format({

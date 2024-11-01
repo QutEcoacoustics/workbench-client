@@ -15,15 +15,13 @@ import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Annotation } from "@models/data/Annotation";
 import { Tag } from "@models/Tag";
-import { MediaService } from "@services/media/media.service";
 import { firstValueFrom, Observable, of } from "rxjs";
 
 @Injectable()
 export class AnnotationService {
   public constructor(
     private tagsApi: TagsService,
-    private audioRecordingsApi: AudioRecordingsService,
-    private mediaService: MediaService
+    private audioRecordingsApi: AudioRecordingsService
   ) {}
 
   public async show(audioEvent: AudioEvent): Promise<Annotation> {
@@ -40,7 +38,7 @@ export class AnnotationService {
       audioRecording,
     };
 
-    return new Annotation(data as any, this.mediaService);
+    return new Annotation(data);
   }
 
   private async showTags(audioEvent: AudioEvent): Promise<Tag[]> {

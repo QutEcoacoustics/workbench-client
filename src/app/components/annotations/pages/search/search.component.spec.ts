@@ -3,7 +3,11 @@ import { Params } from "@angular/router";
 import { of } from "rxjs";
 import { CUSTOM_ELEMENTS_SCHEMA, INJECTOR, Injector } from "@angular/core";
 import { modelData } from "@test/helpers/faker";
-import { MEDIA, SHALLOW_AUDIO_EVENT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import {
+  MEDIA,
+  SHALLOW_AUDIO_EVENT,
+  SHALLOW_SITE,
+} from "@baw-api/ServiceTokens";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -113,7 +117,7 @@ describe("AnnotationSearchComponent", () => {
       generateAnnotation({
         audioRecording: mockAudioRecording,
       }),
-      mediaServiceSpy
+      injector
     );
 
     audioEventsApiSpy = spectator.inject(SHALLOW_AUDIO_EVENT.token);
@@ -194,7 +198,7 @@ describe("AnnotationSearchComponent", () => {
 
     const element = getElementByInnerText(spectator, expectedText);
     expect(element).not.toExist();
-  })
+  });
 
   it("should display a page of search results", () => {
     spectator.detectChanges();

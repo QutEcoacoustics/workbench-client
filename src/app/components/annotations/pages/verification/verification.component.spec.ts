@@ -28,10 +28,15 @@ import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/c
 import { VerificationHelpDialogComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/help-dialog";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
-import { discardPeriodicTasks, fakeAsync, flush, tick } from "@angular/core/testing";
+import {
+  discardPeriodicTasks,
+  fakeAsync,
+  flush,
+  tick,
+} from "@angular/core/testing";
 import { generateTag } from "@test/fakes/Tag";
 import { RouterTestingModule } from "@angular/router/testing";
-import { selectFromTypeahead } from "@test/helpers/html";
+import { selectFromTypeahead, waitUntil } from "@test/helpers/html";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
@@ -61,6 +66,8 @@ describe("VerificationComponent", () => {
 
   let mockAudioEventsApi: SpyObject<ShallowAudioEventsService>;
   let mediaServiceSpy: SpyObject<MediaService>;
+  let fileWriteSpy: jasmine.Spy;
+
 
   let tagsApiSpy: SpyObject<TagsService>;
   let projectApiSpy: SpyObject<ProjectsService>;
@@ -146,7 +153,7 @@ describe("VerificationComponent", () => {
 
     mockAnnotationResponse = new Annotation(
       generateAnnotation({ audioRecording: mockAudioRecording }),
-      mediaServiceSpy
+      injector
     );
 
     spectator.component.searchParameters = mockSearchParameters;
@@ -181,6 +188,7 @@ describe("VerificationComponent", () => {
 
   beforeEach(async () => {
     patchSharedArrayBuffer();
+    fileWriteSpy = saveFilePickerApiSpy();
 
     // we import the web components using a dynamic import statement so that
     // the web components are loaded through the karma test server
@@ -219,7 +227,6 @@ describe("VerificationComponent", () => {
   const dialogToggleButton = () =>
     spectator.query<HTMLButtonElement>(".filter-button");
 
-  // when
   const tagsTypeahead = () =>
     document.querySelector<HTMLElement>("#tags-input");
   const updateFiltersButton = () =>
@@ -236,10 +243,57 @@ describe("VerificationComponent", () => {
   const helpCloseButton = (): HTMLButtonElement =>
     helpElement().shadowRoot.querySelector(".close-btn");
 
+  const decisionButtons = (): NodeListOf<HTMLButtonElement> =>
+    document.querySelectorAll("oe-verification");
+
+  const dataSourceComponent = (): HTMLElement =>
+    document.querySelector("oe-data-source");
+  const dataSourceRoot = (): ShadowRoot =>
+    dataSourceComponent().shadowRoot;
+  const downloadResultsButton = (): HTMLButtonElement =>
+    dataSourceRoot().querySelector("[data-testid='download-results-button']");
+
   function toggleParameters(): void {
     spectator.click(dialogToggleButton());
     tick(1_000);
     discardPeriodicTasks();
+  }
+
+  async function makeDecision(index: number) {
+    const decisionButtonTarget = decisionButtons()[index];
+    decisionButtonTarget.click();
+    verificationGrid().dispatchEvent(new CustomEvent("decision-made"));
+
+    detectChanges(spectator);
+  }
+
+  async function downloadResults() {
+    const downloadButton = downloadResultsButton();
+
+    await waitUntil(() => !downloadButton.disabled);
+
+    expect(downloadButton).not.toBeDisabled();
+    downloadButton.click();
+
+    await waitUntil(() => fileWriteSpy.calls.count() > 0);
+
+    detectChanges(spectator);
+  }
+
+  function saveFilePickerApiSpy(): jasmine.Spy {
+    const fileWriteApi = jasmine.createSpy("write").and.stub();
+
+    const mockApi = () =>
+      Object({
+        createWritable: () =>
+          Object({
+            write: fileWriteApi,
+            close: jasmine.createSpy("close").and.stub(),
+          }),
+      });
+
+    window["showSaveFilePicker"] = mockApi;
+    return fileWriteApi;
   }
 
   assertPageInfo(VerificationComponent, "Verify Annotations");
@@ -361,6 +415,20 @@ describe("VerificationComponent", () => {
         it("should populate the verification grid correctly for the first page", () => {
           const realizedTileCount = verificationGrid().populatedTileCount;
           expect(realizedTileCount).toBeGreaterThan(0);
+        });
+
+        // jasmine will automatically fail if an error is thrown in a test
+        // by clicking the download button we can assert that the download
+        // functionality was called without throwing an error
+        // we also assert that the file write api was called with a file
+        it("should download results without error", async () => {
+          // the verification grid will not allow us to download results if
+          // there is no history to download. Therefore, we have to make a
+          // decision before testing downloading results
+          await makeDecision(0);
+          await downloadResults();
+
+          expect(fileWriteSpy).toHaveBeenCalledOnceWith(jasmine.any(File));
         });
       });
     });

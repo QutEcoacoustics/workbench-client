@@ -9,20 +9,19 @@ import { getElementByInnerText } from "@test/helpers/html";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
-import { MediaService } from "@services/media/media.service";
-import { MEDIA } from "@baw-api/ServiceTokens";
 import { AnnotationService } from "@services/models/annotation.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { detectChanges } from "@test/helpers/changes";
 import { testAsset } from "@test/helpers/karma";
+import { INJECTOR, Injector } from "@angular/core";
 import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
   let spectator: Spectator<GridTileContentComponent>;
 
-  let mediaServiceSpy: SpyObject<MediaService>;
+  let injectorSpy: SpyObject<Injector>;
   let contextRequestSpy: jasmine.Spy;
 
   let mockAnnotation: Annotation;
@@ -44,15 +43,14 @@ describe("GridTileContentComponent", () => {
       ],
     });
 
-    mediaServiceSpy = spectator.inject(MEDIA.token);
+    injectorSpy = spectator.inject(INJECTOR);
 
     // I hard code the audio recording duration and event start/end times so
     // that I know the audio event will neatly fit within the audio recording
     // when context is added
     mockAudioRecording = new AudioRecording(
-      generateAudioRecording({
-        durationSeconds: 600,
-      })
+      generateAudioRecording({ durationSeconds: 600 }),
+      injectorSpy
     );
 
     mockAudioRecording.getMediaUrl = jasmine
@@ -66,7 +64,7 @@ describe("GridTileContentComponent", () => {
         audioRecording: mockAudioRecording,
         audioRecordingId: mockAudioRecording.id,
       }),
-      mediaServiceSpy
+      injectorSpy
     );
 
     updateContext(mockAnnotation);
@@ -112,10 +110,7 @@ describe("GridTileContentComponent", () => {
     });
 
     it("should have the correct audio link if a new subject is provided", () => {
-      const newTestSubject = new Annotation(
-        generateAnnotation(),
-        mediaServiceSpy
-      );
+      const newTestSubject = new Annotation(generateAnnotation(), injectorSpy);
       updateContext(newTestSubject);
 
       const expectedHref = newTestSubject.viewUrl;

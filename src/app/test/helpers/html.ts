@@ -131,3 +131,21 @@ export function assertTooltip(element: HTMLElement, content: string) {
 
   element.dispatchEvent(new MouseEvent("mouseleave"));
 }
+
+export async function waitUntil(
+  condition: () => boolean,
+  timeout = 5_000,
+  interval = 100
+): Promise<void> {
+  const endTime = Date.now() + timeout;
+
+  while (Date.now() < endTime) {
+    if (condition()) {
+      return;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, interval));
+  }
+
+  throw new Error("Timeout exceeded while waiting for condition");
+}

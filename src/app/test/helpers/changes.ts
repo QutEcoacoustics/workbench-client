@@ -11,9 +11,7 @@ import { Spectator } from "@ngneat/spectator";
  *
  * @param spectator The spectator instance to detect changes on
  */
-export async function detectChanges<T>(
-  spectator: Spectator<T>
-) {
+export async function detectChanges<T>(spectator: Spectator<T>) {
   do {
     // Detect changes in Angular components
     spectator.detectChanges();
@@ -37,6 +35,7 @@ export async function detectChanges<T>(
       "oe-indicator",
       "oe-axes",
       "oe-verification-grid",
+      "oe-data-source",
     ];
 
     const webComponents: any[] = [];
