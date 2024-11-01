@@ -74,7 +74,7 @@ describe("AudioEventCardComponent", () => {
         endTimeSeconds: 5,
         tags: [mockTag],
       }),
-      mediaServiceSpy
+      injectorSpy
     );
 
     audioRecordingApiSpy = spectator.inject(AUDIO_RECORDING.token);
