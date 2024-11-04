@@ -1,5 +1,9 @@
-import { ApiFilter, ApiShow } from "@baw-api/api-common";
-import { Filters } from "@baw-api/baw-api.service";
+import {
+  ApiFilter,
+  ApiShow,
+  BawServiceImplementorOptions,
+} from "@baw-api/api-common";
+import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { KeysOfType } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -11,7 +15,12 @@ import {
   Ids,
 } from "@interfaces/apiInterfaces";
 import { Observable, Subscription } from "rxjs";
-import { AbstractModel, AssociationInjector, UnresolvedModel } from "./AbstractModel";
+import { Injector } from "@angular/core";
+import {
+  AbstractModel,
+  AssociationInjector,
+  UnresolvedModel,
+} from "./AbstractModel";
 import { User } from "./User";
 
 /**
@@ -174,7 +183,7 @@ function createModelDecorator<
     }
 
     // Get Angular Injector Service
-    const injector = parent["injector"];
+    const injector: Injector = parent["injector"];
     if (!injector) {
       throw new Error(
         `${parent} does not have injector service. Tried to access ${identifierKey.toString()}`
@@ -200,8 +209,22 @@ function createModelDecorator<
       return paramValue;
     }) as Params;
 
-    // Create service and request from API
-    const service = injector.get(serviceToken.token);
+    const serviceInjector = serviceToken.service
+      ? Injector.create({
+          name: "AssociationInjector",
+          parent: injector,
+          providers: [
+            { provide: serviceToken.token, useClass: serviceToken.service },
+            { provide: BawApiService, useClass: BawApiService },
+            {
+              provide: BawServiceImplementorOptions,
+              useValue: { disableNotification: true },
+            },
+          ],
+        })
+      : injector;
+
+    const service = serviceInjector.get(serviceToken.token);
 
     // Set initial value for field
     updateBackingField(parent, backingFieldKey, unresolvedValue);

@@ -3,7 +3,9 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
-import { Filters } from "./baw-api.service";
+import { Injectable } from "@angular/core";
+import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
+import { BawServiceOptions, Filters } from "./baw-api.service";
 
 /**
  * Variable is an id or AbstractModel
@@ -70,6 +72,16 @@ export type Filter = "filter";
 export const emptyParam: Empty = "";
 export const newParam: New = "new";
 export const filterParam: Filter = "filter";
+
+/**
+ * A service that can be configured using an injected BawServiceOptions object
+ */
+@Injectable({ providedIn: "root" })
+export class BawServiceImplementorOptions implements BawServiceOptions {
+  public disableNotification?: boolean;
+  public withCredentials?: boolean;
+  public cacheOptions?: ContextOptions;
+}
 
 /**
  * API List functionality

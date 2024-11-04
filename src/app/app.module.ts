@@ -1,4 +1,5 @@
 import {
+  ApplicationRef,
   CUSTOM_ELEMENTS_SCHEMA,
   DoBootstrap,
   NgModule,
@@ -114,7 +115,7 @@ export const appImports = [
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule implements DoBootstrap {
-  public ngDoBootstrap(app: any): void {
+  public ngDoBootstrap(app: ApplicationRef): void {
     app.bootstrap(AppComponent);
   }
 }

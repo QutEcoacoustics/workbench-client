@@ -34,9 +34,11 @@ export class AccountsService implements StandardApi<User> {
   public list(): Observable<User[]> {
     return this.api.list(User, endpoint(emptyParam, emptyParam));
   }
+
   public filter(filters: Filters<User>): Observable<User[]> {
     return this.api.filter(User, endpoint(emptyParam, filterParam), filters);
   }
+
   public show(model: IdOr<User>): Observable<User> {
     return this.api.show(User, endpoint(model, emptyParam)).pipe(
       // Return unknown or deleted user depending on error code
@@ -54,6 +56,7 @@ export class AccountsService implements StandardApi<User> {
       })
     );
   }
+
   public create(model: User): Observable<User> {
     return this.api.create(
       User,
@@ -62,9 +65,11 @@ export class AccountsService implements StandardApi<User> {
       model
     );
   }
+
   public update(model: User): Observable<User> {
     return this.api.update(User, endpoint(model, emptyParam), model);
   }
+
   public destroy(model: IdOr<User>): Observable<User | void> {
     return this.api.destroy(endpoint(model, emptyParam));
   }

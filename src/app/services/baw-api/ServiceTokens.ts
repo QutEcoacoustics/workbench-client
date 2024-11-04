@@ -42,7 +42,7 @@ import { WebsiteStatus } from "@models/WebsiteStatus";
 import { Annotation } from "@models/data/Annotation";
 import { AnnotationService } from "@services/models/annotation.service";
 import { MediaService } from "@services/media/media.service";
-import type { AccountsService } from "./account/accounts.service";
+import { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
 import type {
@@ -73,7 +73,7 @@ import type { ContactUsService } from "./report/contact-us.service";
 import type { ReportProblemService } from "./report/report-problem.service";
 import type { SavedSearchesService } from "./saved-search/saved-searches.service";
 import type { ScriptsService } from "./script/scripts.service";
-import type { ShallowSitesService, SitesService } from "./site/sites.service";
+import { ShallowSitesService, SitesService } from "./site/sites.service";
 import type { StatisticsService } from "./statistics/statistics.service";
 import type {
   QuestionsService,
@@ -103,18 +103,23 @@ export class ServiceToken<
   Child extends AbstractModel = AbstractModel,
   Params extends any[] = []
 > {
-  public kind: Service;
+  public kind: Readonly<string>;
   public model: Child;
   public params: Params;
   public token: InjectionToken<Service>;
+  public service: any;
 
-  public constructor(_desc: string) {
-    this.kind = _desc as unknown as Service;
+  public constructor(_desc: string, service?: any) {
+    this.kind = _desc;
     this.token = new InjectionToken<Service>(_desc);
+    this.service = service;
   }
 }
 
-export const ACCOUNT = new ServiceToken<AccountsService, User>("ACCOUNT");
+export const ACCOUNT = new ServiceToken<AccountsService, User>(
+  "ACCOUNT",
+  AccountsService
+);
 export const ANALYSIS_JOB = new ServiceToken<AnalysisJobsService, AnalysisJob>(
   "A_JOB"
 );
@@ -197,7 +202,8 @@ export const SAVED_SEARCH = new ServiceToken<SavedSearchesService, SavedSearch>(
 );
 export const SCRIPT = new ServiceToken<ScriptsService, Script>("SCRIPT");
 export const SHALLOW_SITE = new ServiceToken<ShallowSitesService, Site>(
-  "S_SITE"
+  "S_SITE",
+  ShallowSitesService
 );
 export const SITE = new ServiceToken<SitesService, Site>("SITE");
 export const STATISTICS = new ServiceToken<StatisticsService, Statistics>(
