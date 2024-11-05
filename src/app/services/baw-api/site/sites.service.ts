@@ -38,6 +38,7 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
   public list(project: IdOr<Project>): Observable<Site[]> {
     return this.api.list(Site, endpoint(project, emptyParam, emptyParam));
   }
+
   public filter(
     filters: Filters<Site>,
     project: IdOr<Project>
@@ -48,9 +49,11 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
       filters
     );
   }
+
   public show(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
     return this.api.show(Site, endpoint(project, model, emptyParam));
   }
+
   public create(model: Site, project: IdOr<Project>): Observable<Site> {
     return this.api.create(
       Site,
@@ -59,9 +62,11 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
       model
     );
   }
+
   public update(model: Site, project: IdOr<Project>): Observable<Site> {
     return this.api.update(Site, endpoint(project, model, emptyParam), model);
   }
+
   public destroy(
     model: IdOr<Site>,
     project: IdOr<Project>

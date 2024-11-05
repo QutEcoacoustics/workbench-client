@@ -107,19 +107,14 @@ export class ServiceToken<
   public model: Child;
   public params: Params;
   public token: InjectionToken<Service>;
-  public service: any;
 
-  public constructor(_desc: string, service?: any) {
+  public constructor(_desc: string) {
     this.kind = _desc;
     this.token = new InjectionToken<Service>(_desc);
-    this.service = service;
   }
 }
 
-export const ACCOUNT = new ServiceToken<AccountsService, User>(
-  "ACCOUNT",
-  AccountsService
-);
+export const ACCOUNT = new ServiceToken<AccountsService, User>("ACCOUNT");
 export const ANALYSIS_JOB = new ServiceToken<AnalysisJobsService, AnalysisJob>(
   "A_JOB"
 );
@@ -202,8 +197,7 @@ export const SAVED_SEARCH = new ServiceToken<SavedSearchesService, SavedSearch>(
 );
 export const SCRIPT = new ServiceToken<ScriptsService, Script>("SCRIPT");
 export const SHALLOW_SITE = new ServiceToken<ShallowSitesService, Site>(
-  "S_SITE",
-  ShallowSitesService
+  "S_SITE"
 );
 export const SITE = new ServiceToken<SitesService, Site>("SITE");
 export const STATISTICS = new ServiceToken<StatisticsService, Statistics>(
@@ -216,9 +210,9 @@ export const TAG_GROUP = new ServiceToken<TagGroupsService, TagGroup>(
 );
 export const TAGGING = new ServiceToken<TaggingsService, Tagging>("TAGGING");
 export const USER = new ServiceToken<UserService, User>("USER");
-export const AUDIO_EVENT_PROVENANCE = new ServiceToken<AudioEventProvenanceService, AudioEventProvenance>("AUDIO_EVENT_PROVENANCE");
-export const AUDIO_EVENT_SUMMARY_REPORT = new ServiceToken<EventSummaryReportService, EventSummaryReport>("AUDIO_EVENT_SUMMARY_REPORT");
-export const AUDIO_EVENT_IMPORT = new ServiceToken<AudioEventImportService, AudioEventImport>("AUDIO_EVENT_IMPORT");
-export const WEBSITE_STATUS = new ServiceToken<WebsiteStatusService, WebsiteStatus>("WEBSITE_STATUS");
-export const ANNOTATION = new ServiceToken<AnnotationService, Annotation>("ANNOTATION");
+export const AUDIO_EVENT_PROVENANCE = new ServiceToken< AudioEventProvenanceService, AudioEventProvenance >("AUDIO_EVENT_PROVENANCE");
+export const AUDIO_EVENT_SUMMARY_REPORT = new ServiceToken< EventSummaryReportService, EventSummaryReport >("AUDIO_EVENT_SUMMARY_REPORT");
+export const AUDIO_EVENT_IMPORT = new ServiceToken< AudioEventImportService, AudioEventImport >("AUDIO_EVENT_IMPORT");
+export const WEBSITE_STATUS = new ServiceToken< WebsiteStatusService, WebsiteStatus >("WEBSITE_STATUS");
+export const ANNOTATION = new ServiceToken<AnnotationService, Annotation>( "ANNOTATION");
 export const MEDIA = new ServiceToken<MediaService, never>("MEDIA");

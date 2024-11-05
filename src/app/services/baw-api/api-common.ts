@@ -3,8 +3,7 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
-import { Injectable } from "@angular/core";
-import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
+import { InjectionToken } from "@angular/core";
 import { BawServiceOptions, Filters } from "./baw-api.service";
 
 /**
@@ -76,12 +75,7 @@ export const filterParam: Filter = "filter";
 /**
  * A service that can be configured using an injected BawServiceOptions object
  */
-@Injectable({ providedIn: "root" })
-export class BawServiceImplementorOptions implements BawServiceOptions {
-  public disableNotification?: boolean;
-  public withCredentials?: boolean;
-  public cacheOptions?: ContextOptions;
-}
+export const BAW_SERVICE_OPTIONS = new InjectionToken<BawServiceOptions>("baw.api.options");
 
 /**
  * API List functionality

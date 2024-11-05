@@ -1,9 +1,8 @@
 import {
   ApiFilter,
   ApiShow,
-  BawServiceImplementorOptions,
 } from "@baw-api/api-common";
-import { BawApiService, Filters } from "@baw-api/baw-api.service";
+import { Filters } from "@baw-api/baw-api.service";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { KeysOfType } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -209,22 +208,7 @@ function createModelDecorator<
       return paramValue;
     }) as Params;
 
-    const serviceInjector = serviceToken.service
-      ? Injector.create({
-          name: "AssociationInjector",
-          parent: injector,
-          providers: [
-            { provide: serviceToken.token, useClass: serviceToken.service },
-            { provide: BawApiService, useClass: BawApiService },
-            {
-              provide: BawServiceImplementorOptions,
-              useValue: { disableNotification: true },
-            },
-          ],
-        })
-      : injector;
-
-    const service = serviceInjector.get(serviceToken.token);
+    const service = injector.get(serviceToken.token);
 
     // Set initial value for field
     updateBackingField(parent, backingFieldKey, unresolvedValue);

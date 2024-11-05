@@ -308,6 +308,7 @@ const serviceTokens = serviceList.map(({ service, serviceToken }) => ({
   provide: serviceToken.token,
   useExisting: service,
 }));
+
 const serviceResolvers: BawProvider[] = [];
 serviceList.forEach(({ resolvers }) => {
   if (resolvers) {

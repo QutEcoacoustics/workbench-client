@@ -32,12 +32,15 @@ export class ProjectsService implements StandardApi<Project> {
   public list(): Observable<Project[]> {
     return this.api.list(Project, endpoint(emptyParam, emptyParam));
   }
+
   public filter(filters: Filters<Project>): Observable<Project[]> {
     return this.api.filter(Project, endpoint(emptyParam, filterParam), filters);
   }
+
   public show(model: IdOr<Project>): Observable<Project> {
     return this.api.show(Project, endpoint(model, emptyParam));
   }
+
   public create(model: Project): Observable<Project> {
     return this.api.create(
       Project,
@@ -46,9 +49,11 @@ export class ProjectsService implements StandardApi<Project> {
       model
     );
   }
+
   public update(model: Project): Observable<Project> {
     return this.api.update(Project, endpoint(model, emptyParam), model);
   }
+
   public destroy(model: IdOr<Project>): Observable<Project | void> {
     return this.api.destroy(endpoint(model, emptyParam));
   }
