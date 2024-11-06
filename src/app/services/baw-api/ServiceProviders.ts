@@ -69,6 +69,7 @@ import {
   savedSearchResolvers,
 } from "./saved-search/saved-searches.service";
 import { scriptResolvers, ScriptsService } from "./script/scripts.service";
+import * as Tokens from "./ServiceTokens";
 import {
   shallowSiteResolvers,
   ShallowSitesService,
@@ -95,9 +96,14 @@ import { tagResolvers, TagsService } from "./tag/tags.service";
 import { userResolvers, UserService } from "./user/user.service";
 import { EventSummaryReportService, eventSummaryResolvers } from "./reports/event-report/event-summary-report.service";
 import { WebsiteStatusService } from "./website-status/website-status.service";
-import * as Tokens from "./ServiceTokens";
 
-const serviceList = [
+interface ServiceProvider<T> {
+  serviceToken: Tokens.ServiceToken<T>;
+  service: T;
+  resolvers?: any;
+}
+
+export const serviceList = [
   {
     serviceToken: Tokens.ACCOUNT,
     service: AccountsService,
@@ -301,7 +307,7 @@ const serviceList = [
     serviceToken: Tokens.MEDIA,
     service: MediaService,
   }
-];
+] satisfies ServiceProvider<unknown>[];
 
 const services = serviceList.map(({ service }) => service);
 const serviceTokens = serviceList.map(({ service, serviceToken }) => ({
