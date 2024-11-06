@@ -21,15 +21,11 @@ export class AssociationInjectorService {
   public constructor(private injector: Injector) {
     // TODO: fix this potential race condition
     this.createInstance().then((instance) => {
-      this._instance = instance;
+      this.instance = instance;
     });
   }
 
-  public _instance?: Injector;
-
-  public get instance(): Injector {
-    return this._instance;
-  }
+  public instance?: Injector;
 
   public async createInstance(): Promise<Injector> {
     const imported = await import("../baw-api/ServiceProviders");

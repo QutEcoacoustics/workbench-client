@@ -34,6 +34,7 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { testAsset } from "@test/helpers/karma";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { AnnotationSearchComponent } from "./search.component";
 
@@ -148,6 +149,8 @@ describe("AnnotationSearchComponent", () => {
 
     setup();
   }));
+
+  assertPageInfo(AnnotationSearchComponent, "Search Annotations");
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(AnnotationSearchComponent);
