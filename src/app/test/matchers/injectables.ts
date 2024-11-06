@@ -12,6 +12,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { Ng } from "@test/types/ng";
+import { Injectable, Injector } from "@angular/core";
 import { matcherFailure, matcherSuccess } from ".";
 
 import CustomMatcherFactories = jasmine.CustomMatcherFactories;
@@ -206,10 +207,7 @@ const toHaveRoute = (util: MatchersUtil): CustomMatcher => ({
       return matcherFailure("Target element should exist");
     }
 
-    const directive = getDirective<RouterLink>(
-      target,
-      RouterLink
-    );
+    const directive = getDirective<RouterLink>(target, RouterLink);
     if (!directive) {
       return matcherFailure("RouterLinkWithHref directive should exist");
     }
@@ -319,7 +317,7 @@ const toHaveUrlActive = (util: MatchersUtil): CustomMatcher => ({
     !target ? matcherSuccess() : matcherFailure("Link should not exist"),
   compare: (
     target: HTMLAnchorElement,
-    klass: string = "active",
+    className: string = "active",
     options: RouterLinkActiveOptions = { exact: false }
   ): CustomMatcherResult => {
     if (!target) {
@@ -335,10 +333,31 @@ const toHaveUrlActive = (util: MatchersUtil): CustomMatcher => ({
     }
 
     const results = validateAttributes(util, directive, {
-      routerLinkActive: klass,
+      routerLinkActive: className,
       routerLinkActiveOptions: options,
     });
     return results ? results : matcherSuccess();
+  },
+});
+
+const toBeProvidedBy = (): CustomMatcher => ({
+  negativeCompare: (target: Injectable): CustomMatcherResult =>
+    target
+      ? matcherSuccess()
+      : matcherFailure("Expected target to be provided by"),
+  compare: (target: Injectable, injector: Injector): CustomMatcherResult => {
+    if (!target) {
+      return matcherFailure("Injectable was not defined");
+    }
+
+    const targetProvider = target["injector"];
+    if (!targetProvider) {
+      return matcherFailure("Injectable does not have a provider");
+    }
+
+    return targetProvider === injector
+      ? matcherSuccess()
+      : matcherFailure("Injectable was not provided by expected injector");
   },
 });
 
@@ -351,4 +370,5 @@ export const injectableMatchers: CustomMatcherFactories = {
   toHaveStrongRouteActive,
   toHaveUrl,
   toHaveUrlActive,
+  toBeProvidedBy,
 };

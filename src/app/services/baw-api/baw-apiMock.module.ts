@@ -57,7 +57,7 @@ import { UserService } from "./user/user.service";
 //
 // ...it is likely because your new service has not been setup for automatic
 // mocking. Add it to the list below!
-const mockProviders: Provider[] = [
+export const mockProviders: Provider[] = [
   { provide: SecurityService, useClass: MockSecurityService },
   mockProvider(BawApiService),
   mockProvider(BawFormApiService),

@@ -45,6 +45,7 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
   public list(): Observable<AudioRecording[]> {
     return this.api.list(AudioRecording, endpoint(emptyParam, emptyParam));
   }
+
   public filter(
     filters: Filters<AudioRecording>
   ): Observable<AudioRecording[]> {
@@ -54,6 +55,7 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
       filters
     );
   }
+
   public show(model: IdOr<AudioRecording>): Observable<AudioRecording> {
     return this.api.show(AudioRecording, endpoint(model, emptyParam));
   }

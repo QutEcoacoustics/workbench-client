@@ -29,6 +29,7 @@ export class PermissionsService
   public list(project: IdOr<Project>): Observable<Permission[]> {
     return this.api.list(Permission, endpoint(project, emptyParam, emptyParam));
   }
+
   public filter(
     filters: Filters<Permission>,
     project: IdOr<Project>
@@ -39,12 +40,14 @@ export class PermissionsService
       filters
     );
   }
+
   public show(
     model: IdOr<Permission>,
     project: IdOr<Project>
   ): Observable<Permission> {
     return this.api.show(Permission, endpoint(project, model, emptyParam));
   }
+
   public create(
     model: Permission,
     project: IdOr<Project>
@@ -56,6 +59,7 @@ export class PermissionsService
       model
     );
   }
+
   public update(
     model: Permission,
     project: IdOr<Project>
@@ -66,6 +70,7 @@ export class PermissionsService
       model
     );
   }
+
   public destroy(
     model: IdOr<Permission>,
     project: IdOr<Project>

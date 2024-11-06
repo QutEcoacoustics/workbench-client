@@ -28,6 +28,7 @@ export class AnalysisJobsService implements ReadAndUpdateApi<AnalysisJob> {
   public list(): Observable<AnalysisJob[]> {
     return this.api.list(AnalysisJob, endpoint(emptyParam, emptyParam));
   }
+
   public filter(filters: Filters<AnalysisJob>): Observable<AnalysisJob[]> {
     return this.api.filter(
       AnalysisJob,
@@ -35,9 +36,11 @@ export class AnalysisJobsService implements ReadAndUpdateApi<AnalysisJob> {
       filters
     );
   }
+
   public show(model: IdOr<AnalysisJob>): Observable<AnalysisJob> {
     return this.api.show(AnalysisJob, endpoint(model, emptyParam));
   }
+
   public update(model: AnalysisJob): Observable<AnalysisJob> {
     return this.api.update(AnalysisJob, endpoint(model, emptyParam), model);
   }

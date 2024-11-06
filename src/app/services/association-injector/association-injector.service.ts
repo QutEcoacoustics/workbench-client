@@ -1,20 +1,40 @@
 import { Injectable, Injector } from "@angular/core";
-import { BAW_SERVICE_OPTIONS } from "@baw-api/api-common";
-import { BawApiService } from "@baw-api/baw-api.service";
-import { serviceList } from "@baw-api/ServiceProviders";
+import { BAW_SERVICE_OPTIONS } from "../baw-api/api-common";
+// import {
+//   ShallowSitesService,
+//   shallowSiteResolvers,
+// } from "../baw-api/site/sites.service";
+import { BawApiService } from "../baw-api/baw-api.service";
+// import * as Tokens from "../baw-api/ServiceTokens";
+// import { serviceList } from "../baw-api/ServiceProviders";
+
+// const serviceList = [
+//   {
+//     serviceToken: Tokens.SHALLOW_SITE,
+//     service: ShallowSitesService,
+//     resolvers: shallowSiteResolvers,
+//   },
+// ];
 
 @Injectable({ providedIn: "root" })
 export class AssociationInjectorService {
-  public constructor(private injector: Injector) {}
+  public constructor(private injector: Injector) {
+    // TODO: fix this potential race condition
+    this.createInstance().then((instance) => {
+      this._instance = instance;
+    });
+  }
 
   public _instance?: Injector;
 
   public get instance(): Injector {
-    this._instance ??= this.createInstance();
     return this._instance;
   }
 
-  private createInstance(): Injector {
+  public async createInstance(): Promise<Injector> {
+    const imported = await import("../baw-api/ServiceProviders");
+    const serviceList = imported.serviceList;
+
     const providedServices = serviceList.map(({ service, serviceToken }) => {
       return { provide: serviceToken.token, useClass: service };
     });

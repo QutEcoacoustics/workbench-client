@@ -36,6 +36,7 @@ export class AudioEventsService
       endpoint(audioRecording, emptyParam, emptyParam)
     );
   }
+
   public filter(
     filters: Filters<AudioEvent>,
     audioRecording: IdOr<AudioRecording>
@@ -46,6 +47,7 @@ export class AudioEventsService
       filters
     );
   }
+
   public show(
     model: IdOr<AudioEvent>,
     audioRecording: IdOr<AudioRecording>
@@ -55,6 +57,7 @@ export class AudioEventsService
       endpoint(audioRecording, model, emptyParam)
     );
   }
+
   public create(
     model: AudioEvent,
     audioRecording: IdOr<AudioRecording>
@@ -66,6 +69,7 @@ export class AudioEventsService
       model
     );
   }
+
   public update(
     model: AudioEvent,
     audioRecording: IdOr<AudioRecording>
@@ -76,6 +80,7 @@ export class AudioEventsService
       model
     );
   }
+
   public destroy(
     model: IdOr<AudioEvent>,
     audioRecording: IdOr<AudioRecording>

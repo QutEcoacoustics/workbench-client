@@ -24,12 +24,15 @@ export class DatasetsService implements StandardApi<Dataset> {
   public list(): Observable<Dataset[]> {
     return this.api.list(Dataset, endpoint(emptyParam, emptyParam));
   }
+
   public filter(filters: Filters<Dataset>): Observable<Dataset[]> {
     return this.api.filter(Dataset, endpoint(emptyParam, filterParam), filters);
   }
+
   public show(model: IdOr<Dataset>): Observable<Dataset> {
     return this.api.show(Dataset, endpoint(model, emptyParam));
   }
+
   public create(model: Dataset): Observable<Dataset> {
     return this.api.create(
       Dataset,
@@ -38,9 +41,11 @@ export class DatasetsService implements StandardApi<Dataset> {
       model
     );
   }
+
   public update(model: Dataset): Observable<Dataset> {
     return this.api.update(Dataset, endpoint(model, emptyParam), model);
   }
+
   public destroy(model: IdOr<Dataset>): Observable<Dataset | void> {
     return this.api.destroy(endpoint(model, emptyParam));
   }

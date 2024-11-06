@@ -32,6 +32,7 @@ export class AnalysisJobItemsService
       endpoint(analysisJob, emptyParam, emptyParam)
     );
   }
+
   public filter(
     filters: Filters<AnalysisJobItem>,
     analysisJob: IdOr<AnalysisJob>
@@ -42,6 +43,7 @@ export class AnalysisJobItemsService
       filters
     );
   }
+
   public show(
     model: IdOr<AnalysisJobItem>,
     analysisJob: IdOr<AnalysisJob>

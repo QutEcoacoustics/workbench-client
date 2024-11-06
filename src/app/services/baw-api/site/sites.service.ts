@@ -129,6 +129,7 @@ export class ShallowSitesService implements StandardApi<Site> {
   public list(): Observable<Site[]> {
     return this.api.list(Site, endpointShallow(emptyParam, emptyParam));
   }
+
   public filter(filters: Filters<Site>): Observable<Site[]> {
     return this.api.filter(
       Site,
@@ -136,9 +137,11 @@ export class ShallowSitesService implements StandardApi<Site> {
       filters
     );
   }
+
   public show(model: IdOr<Site>): Observable<Site> {
     return this.api.show(Site, endpointShallow(model, emptyParam));
   }
+
   public create(model: Site): Observable<Site> {
     return this.api.create(
       Site,
@@ -147,9 +150,11 @@ export class ShallowSitesService implements StandardApi<Site> {
       model
     );
   }
+
   public update(model: Site): Observable<Site> {
     return this.api.update(Site, endpointShallow(model, emptyParam), model);
   }
+
   public destroy(model: IdOr<Site>): Observable<Site | void> {
     return this.api.destroy(endpointShallow(model, emptyParam));
   }
