@@ -3,6 +3,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { NgModule, Provider } from "@angular/core";
 import { mockProvider } from "@ngneat/spectator";
 import { CacheModule } from "@services/cache/cache.module";
+import { AssociationInjectorService } from "@services/association-injector/association-injector.service";
 import { MockConfigModule } from "../config/configMock.module";
 import { AccountsService } from "./account/accounts.service";
 import { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
@@ -50,7 +51,7 @@ import { TagGroupsService } from "./tag/tag-group.service";
 import { TaggingsService } from "./tag/taggings.service";
 import { TagsService } from "./tag/tags.service";
 import { UserService } from "./user/user.service";
-// import { ASSOCIATION_INJECTOR } from "./ServiceTokens";
+import { ASSOCIATION_INJECTOR } from "./ServiceTokens";
 import { WebsiteStatusService } from "./website-status/website-status.service";
 
 // If you get the following error while trying to stub a service:
@@ -104,10 +105,10 @@ const mockProviders: Provider[] = [
       useClass: BawApiInterceptor,
       multi: true,
     },
-    // {
-    //   provide: ASSOCIATION_INJECTOR.token,
-    //   useExisting: AssociationInjectorService,
-    // },
+    {
+      provide: ASSOCIATION_INJECTOR.token,
+      useExisting: AssociationInjectorService,
+    },
     BawSessionService,
     ...services,
     ...serviceTokens,

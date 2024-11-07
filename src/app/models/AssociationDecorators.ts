@@ -181,7 +181,11 @@ function createModelDecorator<
       return parent[backingFieldKey];
     }
 
-    // Get Angular Injector Service
+    // the injector should be an AssociationInjector that was provided by the
+    // baw-api.service
+    // we use a different injector for associations so that the the we can
+    // inject the correct options for the baw-api service without affecting
+    // the options for the rest of the application
     const injector: Injector = parent["injector"];
     if (!injector) {
       throw new Error(
@@ -208,6 +212,7 @@ function createModelDecorator<
       return paramValue;
     }) as Params;
 
+    // Create service and request from API
     const service = injector.get(serviceToken.token);
 
     // Set initial value for field

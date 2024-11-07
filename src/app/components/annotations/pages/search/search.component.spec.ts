@@ -152,7 +152,7 @@ describe("AnnotationSearchComponent", () => {
 
   assertPageInfo(AnnotationSearchComponent, "Search Annotations");
 
-  fit("should create", () => {
+  it("should create", () => {
     expect(spectator.component).toBeInstanceOf(AnnotationSearchComponent);
   });
 

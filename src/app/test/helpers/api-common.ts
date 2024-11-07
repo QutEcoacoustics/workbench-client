@@ -13,6 +13,8 @@ import { CmsComponent } from "@shared/cms/cms.component";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { Provider } from "@angular/core";
+import { AssociationInjectorService } from "@services/association-injector/association-injector.service";
+import { ASSOCIATION_INJECTOR } from "@baw-api/ServiceTokens";
 import {
   ApiCreate,
   ApiDestroy,
@@ -41,7 +43,7 @@ export const mockServiceProviders: Provider[] = [
   BawFormApiService,
   BawSessionService,
   mockProvider(ToastrService),
-  // { provide: ASSOCIATION_INJECTOR.token, useClass: AssociationInjectorService },
+  { provide: ASSOCIATION_INJECTOR.token, useClass: AssociationInjectorService },
 ];
 
 type CustomList<Model extends AbstractModel, Params extends any[]> = (

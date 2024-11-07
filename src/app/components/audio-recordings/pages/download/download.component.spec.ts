@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { fakeAsync } from "@angular/core/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
@@ -31,6 +30,8 @@ import { Subject } from "rxjs";
 import { CacheModule } from "@services/cache/cache.module";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
+import { AssociationInjectorService } from "@services/association-injector/association-injector.service";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
 import { DownloadTableComponent } from "../../components/download-table/download-table.component";
 import { DownloadAudioRecordingsComponent } from "./download.component";
@@ -44,7 +45,13 @@ describe("DownloadAudioRecordingsComponent", () => {
   let spec: SpectatorRouting<DownloadAudioRecordingsComponent>;
   const createComponent = createRoutingFactory({
     component: DownloadAudioRecordingsComponent,
-    imports: [SharedModule, NgbCollapseModule, MockConfigModule, CacheModule],
+    imports: [
+      SharedModule,
+      NgbCollapseModule,
+      MockConfigModule,
+      CacheModule,
+      MockBawApiModule,
+    ],
     declarations: [
       MockComponent(SitesWithoutTimezonesComponent),
       MockComponent(DownloadTableComponent),
@@ -55,6 +62,7 @@ describe("DownloadAudioRecordingsComponent", () => {
     // mock out any API calls
     providers: [
       mockProvider(ToastrService),
+      mockProvider(AssociationInjectorService),
       BawSessionService,
       BawApiService,
       AudioRecordingsService,

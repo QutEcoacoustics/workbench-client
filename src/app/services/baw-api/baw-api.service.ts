@@ -1,5 +1,5 @@
 import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
-import { Inject, Injectable, Injector, Optional } from "@angular/core";
+import { Inject, Injectable, Optional } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
 import { toSnakeCase } from "@helpers/case-converter/case-converter";
 import {
@@ -24,6 +24,7 @@ import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import { BawSessionService } from "./baw-session.service";
 import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
 import { BAW_SERVICE_OPTIONS } from "./api-common";
+import { ASSOCIATION_INJECTOR } from "./ServiceTokens";
 
 export const defaultApiPageSize = 25;
 export const unknownErrorCode = -1;
@@ -152,12 +153,11 @@ export class BawApiService<
     protected session: BawSessionService,
     protected notifications: ToastrService,
     @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
-    protected injector: Injector,
-    // @Inject(ASSOCIATION_INJECTOR.token) protected associationInjector: any,
+    @Inject(ASSOCIATION_INJECTOR.token) protected associationInjector: any,
     @Optional() @Inject(BAW_SERVICE_OPTIONS) private options: BawServiceOptions
   ) {
     const createModel = (cb: ClassBuilder, data: Model, meta: Meta): Model => {
-      const model = new cb(data, this.injector);
+      const model = new cb(data, this.associationInjector.instance);
       model.addMetadata(meta);
       return model;
     };

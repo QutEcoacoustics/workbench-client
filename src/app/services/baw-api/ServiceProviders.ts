@@ -104,7 +104,7 @@ interface ServiceProvider<T> {
   resolvers?: unknown;
 }
 
-export const serviceList = [
+const serviceList = [
   {
     serviceToken: Tokens.ACCOUNT,
     service: AccountsService,
@@ -313,7 +313,7 @@ export const serviceList = [
 const services = serviceList.map(({ service }) => service) satisfies Provider[];
 const serviceTokens = serviceList.map(({ service, serviceToken }) => ({
   provide: serviceToken.token,
-  useClass: service,
+  useExisting: service,
 })) satisfies Provider[];
 
 const serviceResolvers: BawProvider[] = [];
