@@ -1,6 +1,6 @@
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { BAW_SERVICE_OPTIONS } from "@baw-api/api-common";
-import { ACCOUNT, ASSOCIATION_INJECTOR } from "@baw-api/ServiceTokens";
+import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastrService } from "ngx-toastr";
 import { GlobalsService } from "@services/globals/globals.service";
@@ -14,12 +14,6 @@ describe("AssociationInjectorService", () => {
     service: AssociationInjectorService,
     imports: [MockBawApiModule],
     mocks: [ToastrService],
-    providers: [
-      {
-        provide: ASSOCIATION_INJECTOR.token,
-        useExisting: AssociationInjectorService,
-      },
-    ],
   });
 
   function associationInjector(): Injector {

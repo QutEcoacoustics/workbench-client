@@ -1,5 +1,6 @@
 import { annotationResolvers, AnnotationService } from "@services/models/annotation.service";
 import { MediaService } from "@services/media/media.service";
+import { Provider } from "@angular/core";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
   analysisJobItemResultResolvers,
@@ -100,10 +101,10 @@ import { WebsiteStatusService } from "./website-status/website-status.service";
 interface ServiceProvider<T> {
   serviceToken: Tokens.ServiceToken<T>;
   service: T;
-  resolvers?: any;
+  resolvers?: unknown;
 }
 
-export const serviceList = [
+const serviceList = [
   {
     serviceToken: Tokens.ACCOUNT,
     service: AccountsService,
@@ -309,11 +310,11 @@ export const serviceList = [
   }
 ] satisfies ServiceProvider<unknown>[];
 
-const services = serviceList.map(({ service }) => service);
+const services = serviceList.map(({ service }) => service) satisfies Provider[];
 const serviceTokens = serviceList.map(({ service, serviceToken }) => ({
   provide: serviceToken.token,
-  useExisting: service,
-}));
+  useClass: service,
+})) satisfies Provider[];
 
 const serviceResolvers: BawProvider[] = [];
 serviceList.forEach(({ resolvers }) => {

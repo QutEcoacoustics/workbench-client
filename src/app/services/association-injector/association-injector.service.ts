@@ -1,7 +1,11 @@
 import { Injectable, Injector } from "@angular/core";
 import { BAW_SERVICE_OPTIONS } from "../baw-api/api-common";
 import { BawApiService } from "../baw-api/baw-api.service";
-import { services, serviceTokens, serviceResolvers } from "../baw-api/ServiceProviders";
+import {
+  services,
+  serviceTokens,
+  serviceResolvers,
+} from "../baw-api/ServiceProviders";
 
 //! WARNING: to prevent a circular dependency issue, this service should be imported
 // through its "ASSOCIATION_INJECTOR" token
@@ -28,7 +32,7 @@ export class AssociationInjectorService {
         },
         ...services,
         ...serviceTokens,
-        ...serviceResolvers
+        ...serviceResolvers,
       ],
     });
   }

@@ -30,8 +30,6 @@ import { TitleStrategy } from "@angular/router";
 import { AnnotationsImportModule } from "@components/import-annotations/import-annotations.module";
 import { WebsiteStatusModule } from "@components/website-status/website-status.module";
 import { AnnotationModule } from "@components/annotations/annotation.module";
-import { ASSOCIATION_INJECTOR } from "@baw-api/ServiceTokens";
-import { AssociationInjectorService } from "@services/association-injector/association-injector.service";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { toastrRoot } from "./app.helper";
@@ -109,7 +107,6 @@ export const appImports = [
     ...appImports,
   ],
   providers: [
-    { provide: ASSOCIATION_INJECTOR.token, useClass: AssociationInjectorService },
     { provide: TitleStrategy, useClass: PageTitleStrategy },
     // Show loading animation after 3 seconds
     { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },

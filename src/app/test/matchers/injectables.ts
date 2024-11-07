@@ -317,7 +317,7 @@ const toHaveUrlActive = (util: MatchersUtil): CustomMatcher => ({
     !target ? matcherSuccess() : matcherFailure("Link should not exist"),
   compare: (
     target: HTMLAnchorElement,
-    className: string = "active",
+    klass: string = "active",
     options: RouterLinkActiveOptions = { exact: false }
   ): CustomMatcherResult => {
     if (!target) {
@@ -333,7 +333,7 @@ const toHaveUrlActive = (util: MatchersUtil): CustomMatcher => ({
     }
 
     const results = validateAttributes(util, directive, {
-      routerLinkActive: className,
+      routerLinkActive: klass,
       routerLinkActiveOptions: options,
     });
     return results ? results : matcherSuccess();

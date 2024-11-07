@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { Injector } from "@angular/core";
-import { TestBed } from "@angular/core/testing";
+import { discardPeriodicTasks, fakeAsync, flush, TestBed } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
@@ -10,12 +10,15 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { nStepObservable } from "@test/helpers/general";
 import { UNAUTHORIZED } from "http-status";
 import { Subject } from "rxjs";
+import { ToastrService } from "ngx-toastr";
+import { mockProvider } from "@ngneat/spectator";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { hasMany, hasOne } from "./AssociationDecorators";
 
 describe("Association Decorators", () => {
   let injector: Injector;
   let api: MockStandardApiService;
+  let toastSpy: ToastrService;
 
   function updateDecorator<T extends Record<string, any>>(
     model: T,
@@ -44,11 +47,15 @@ describe("Association Decorators", () => {
       providers: [
         MockStandardApiService,
         { provide: MOCK.token, useExisting: MockStandardApiService },
+        mockProvider(ToastrService),
       ],
     });
 
     api = TestBed.inject(MockStandardApiService);
     injector = TestBed.inject(Injector);
+
+    toastSpy = TestBed.inject(ToastrService);
+    toastSpy.error = jasmine.createSpy("error");
   });
 
   describe("HasMany", () => {
@@ -102,6 +109,15 @@ describe("Association Decorators", () => {
       const model = createModel({ ids: [1] }, injector);
       expect(model.childModels).toEqual(UnresolvedModel.many);
     });
+
+    it("should not raise a failure to the user", fakeAsync(() => {
+      interceptApiRequest(undefined, generateBawApiError(UNAUTHORIZED));
+      createModel({ id: 1 }, injector);
+      expect(toastSpy.error).not.toHaveBeenCalled();
+
+      flush();
+      discardPeriodicTasks();
+    }));
 
     [
       {
@@ -341,5 +357,14 @@ describe("Association Decorators", () => {
       const model = createModel({ id: 1 }, injector, [], true);
       await assertModel(promise, model, "childModel", true as any);
     });
+
+    it("should not raise a failure to the user", fakeAsync(() => {
+      interceptApiRequest(undefined, generateBawApiError(UNAUTHORIZED));
+      createModel({ id: 1 }, injector, [], false);
+      expect(toastSpy.error).not.toHaveBeenCalled();
+
+      flush();
+      discardPeriodicTasks();
+    }));
   });
 });
