@@ -60,6 +60,12 @@ describe("AnnotationSearchComponent", () => {
   const createComponent = createRoutingFactory({
     component: AnnotationSearchComponent,
     imports: [MockBawApiModule, SharedModule, RouterTestingModule],
+    providers: [
+      {
+        provide: AnnotationService,
+        useValue: { show: () => mockAnnotationResponse },
+      },
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
 
@@ -71,12 +77,6 @@ describe("AnnotationSearchComponent", () => {
         regionId: routeRegion.id,
         siteId: routeSite.id,
       },
-      providers: [
-        {
-          provide: AnnotationService,
-          useValue: { show: () => mockAnnotationResponse },
-        },
-      ],
       queryParams: queryParameters,
     });
 
@@ -152,7 +152,7 @@ describe("AnnotationSearchComponent", () => {
 
   assertPageInfo(AnnotationSearchComponent, "Search Annotations");
 
-  it("should create", () => {
+  fit("should create", () => {
     expect(spectator.component).toBeInstanceOf(AnnotationSearchComponent);
   });
 

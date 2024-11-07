@@ -104,7 +104,7 @@ interface ServiceProvider<T> {
   resolvers?: unknown;
 }
 
-const serviceList = [
+export const serviceList = [
   {
     serviceToken: Tokens.ACCOUNT,
     service: AccountsService,
