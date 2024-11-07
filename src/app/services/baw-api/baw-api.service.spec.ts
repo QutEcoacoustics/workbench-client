@@ -40,14 +40,13 @@ import { assertOk } from "@test/helpers/general";
 import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, noop, Observable, Subject } from "rxjs";
-import { AssociationInjectorService } from "@services/association-injector/association-injector.service";
+import { associationInjectorProvider } from "@services/association-injector/association-injector.factory";
 import {
   BawSessionService,
   guestAuthToken,
   guestUser,
 } from "./baw-session.service";
 import { MockShowApiService } from "./mock/apiMocks.service";
-import { ASSOCIATION_INJECTOR } from "./ServiceTokens";
 
 export const shouldNotSucceed = () => {
   fail("Service should not produce a data output");
@@ -129,14 +128,11 @@ describe("BawApiService", () => {
       { provide: SecurityService, useClass: MockSecurityService },
       { provide: UserService, useClass: MockShowApiService },
       {
-        provide: ASSOCIATION_INJECTOR.token,
-        useClass: AssociationInjectorService,
-      },
-      {
         provide: HTTP_INTERCEPTORS,
         useClass: BawApiInterceptor,
         multi: true,
       },
+      associationInjectorProvider,
     ],
   });
 
@@ -184,7 +180,8 @@ describe("BawApiService", () => {
     service = spec.service;
     apiRoot = spec.inject(API_ROOT);
     session = spec.inject(BawSessionService);
-    associationInjector = spec.inject(ASSOCIATION_INJECTOR.token).instance;
+    // associationInjector = spec.inject(ASSOCIATION_INJECTOR);
+    associationInjector = {} as any;
 
     cacheSettings = spec.inject(CACHE_SETTINGS);
     cacheSettings.setCaching(true);

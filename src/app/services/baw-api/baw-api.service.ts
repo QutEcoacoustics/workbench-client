@@ -21,10 +21,10 @@ import { Observable, iif, of, throwError } from "rxjs";
 import { catchError, concatMap, map, switchMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { BawSessionService } from "./baw-session.service";
 import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
 import { BAW_SERVICE_OPTIONS } from "./api-common";
-import { ASSOCIATION_INJECTOR } from "./ServiceTokens";
 
 export const defaultApiPageSize = 25;
 export const unknownErrorCode = -1;
@@ -153,11 +153,11 @@ export class BawApiService<
     protected session: BawSessionService,
     protected notifications: ToastrService,
     @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
-    @Inject(ASSOCIATION_INJECTOR.token) protected associationInjector: any,
+    @Inject(ASSOCIATION_INJECTOR) protected associationInjector: any,
     @Optional() @Inject(BAW_SERVICE_OPTIONS) private options: BawServiceOptions
   ) {
     const createModel = (cb: ClassBuilder, data: Model, meta: Meta): Model => {
-      const model = new cb(data, this.associationInjector.instance);
+      const model = new cb(data, this.associationInjector);
       model.addMetadata(meta);
       return model;
     };

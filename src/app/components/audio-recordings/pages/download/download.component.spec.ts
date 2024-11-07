@@ -30,7 +30,6 @@ import { Subject } from "rxjs";
 import { CacheModule } from "@services/cache/cache.module";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
-import { AssociationInjectorService } from "@services/association-injector/association-injector.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
 import { DownloadTableComponent } from "../../components/download-table/download-table.component";
@@ -62,7 +61,6 @@ describe("DownloadAudioRecordingsComponent", () => {
     // mock out any API calls
     providers: [
       mockProvider(ToastrService),
-      mockProvider(AssociationInjectorService),
       BawSessionService,
       BawApiService,
       AudioRecordingsService,

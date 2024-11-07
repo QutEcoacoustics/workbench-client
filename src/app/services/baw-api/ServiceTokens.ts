@@ -42,7 +42,6 @@ import type { WebsiteStatus } from "@models/WebsiteStatus";
 import type { Annotation } from "@models/data/Annotation";
 import type { AnnotationService } from "@services/models/annotation.service";
 import type { MediaService } from "@services/media/media.service";
-import type { AssociationInjectorService } from "@services/association-injector/association-injector.service";
 import { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
@@ -157,4 +156,3 @@ export const AUDIO_EVENT_IMPORT = new ServiceToken<AudioEventImportService, Audi
 export const WEBSITE_STATUS = new ServiceToken<WebsiteStatusService, WebsiteStatus>("WEBSITE_STATUS");
 export const ANNOTATION = new ServiceToken<AnnotationService, Annotation>("ANNOTATION");
 export const MEDIA = new ServiceToken<MediaService, never>("MEDIA");
-export const ASSOCIATION_INJECTOR = new ServiceToken<AssociationInjectorService, never>("ASSOCIATION_INJECTOR");
