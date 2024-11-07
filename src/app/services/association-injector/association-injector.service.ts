@@ -1,40 +1,22 @@
 import { Injectable, Injector } from "@angular/core";
 import { BAW_SERVICE_OPTIONS } from "../baw-api/api-common";
-// import {
-//   ShallowSitesService,
-//   shallowSiteResolvers,
-// } from "../baw-api/site/sites.service";
 import { BawApiService } from "../baw-api/baw-api.service";
-// import * as Tokens from "../baw-api/ServiceTokens";
-// import { serviceList } from "../baw-api/ServiceProviders";
+import { services, serviceTokens, serviceResolvers } from "../baw-api/ServiceProviders";
 
-// const serviceList = [
-//   {
-//     serviceToken: Tokens.SHALLOW_SITE,
-//     service: ShallowSitesService,
-//     resolvers: shallowSiteResolvers,
-//   },
-// ];
-
-@Injectable({ providedIn: "root" })
+//! WARNING: to prevent a circular dependency issue, this service should be imported
+// through its "ASSOCIATION_INJECTOR" token
+@Injectable()
 export class AssociationInjectorService {
-  public constructor(private injector: Injector) {
-    // TODO: fix this potential race condition
-    this.createInstance().then((instance) => {
-      this.instance = instance;
-    });
+  public constructor(private injector: Injector) {}
+
+  public get instance(): Injector {
+    this._instance ??= this.createInstance();
+    return this._instance;
   }
 
-  public instance?: Injector;
+  private _instance?: Injector;
 
-  public async createInstance(): Promise<Injector> {
-    const imported = await import("../baw-api/ServiceProviders");
-    const serviceList = imported.serviceList;
-
-    const providedServices = serviceList.map(({ service, serviceToken }) => {
-      return { provide: serviceToken.token, useClass: service };
-    });
-
+  private createInstance(): Injector {
     return Injector.create({
       name: "AssociationInjector",
       parent: this.injector,
@@ -44,7 +26,9 @@ export class AssociationInjectorService {
           provide: BAW_SERVICE_OPTIONS,
           useValue: { disableNotification: true },
         },
-        ...providedServices,
+        ...services,
+        ...serviceTokens,
+        ...serviceResolvers
       ],
     });
   }

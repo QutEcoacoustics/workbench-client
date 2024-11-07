@@ -35,13 +35,14 @@ import type { Tag } from "@models/Tag";
 import type { Tagging } from "@models/Tagging";
 import type { TagGroup } from "@models/TagGroup";
 import type { User } from "@models/User";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
-import { EventSummaryReport } from "@models/EventSummaryReport";
-import { AudioEventImport } from "@models/AudioEventImport";
-import { WebsiteStatus } from "@models/WebsiteStatus";
-import { Annotation } from "@models/data/Annotation";
-import { AnnotationService } from "@services/models/annotation.service";
-import { MediaService } from "@services/media/media.service";
+import type { AudioEventProvenance } from "@models/AudioEventProvenance";
+import type { EventSummaryReport } from "@models/EventSummaryReport";
+import type { AudioEventImport } from "@models/AudioEventImport";
+import type { WebsiteStatus } from "@models/WebsiteStatus";
+import type { Annotation } from "@models/data/Annotation";
+import type { AnnotationService } from "@services/models/annotation.service";
+import type { MediaService } from "@services/media/media.service";
+import type { AssociationInjectorService } from "@services/association-injector/association-injector.service";
 import { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
@@ -89,10 +90,10 @@ import type { TaggingsService } from "./tag/taggings.service";
 import type { TagsService } from "./tag/tags.service";
 import type { UserService } from "./user/user.service";
 import type { AnalysisJobItemResultsService } from "./analysis/analysis-job-item-result.service";
-import { AudioEventProvenanceService } from "./AudioEventProvenance/AudioEventProvenance.service";
-import { EventSummaryReportService } from "./reports/event-report/event-summary-report.service";
-import { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
-import { WebsiteStatusService } from "./website-status/website-status.service";
+import type { AudioEventProvenanceService } from "./AudioEventProvenance/AudioEventProvenance.service";
+import type { EventSummaryReportService } from "./reports/event-report/event-summary-report.service";
+import type { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
+import type { WebsiteStatusService } from "./website-status/website-status.service";
 
 /**
  * Wrapper for InjectionToken class. This is required because of
@@ -115,99 +116,39 @@ export class ServiceToken<
 }
 
 export const ACCOUNT = new ServiceToken<AccountsService, User>("ACCOUNT");
-export const ANALYSIS_JOB = new ServiceToken<AnalysisJobsService, AnalysisJob>(
-  "A_JOB"
-);
-export const ANALYSIS_JOB_ITEM = new ServiceToken<
-  AnalysisJobItemsService,
-  AnalysisJobItem
->("A_JOB_ITEM");
-export const ANALYSIS_JOB_ITEM_RESULTS = new ServiceToken<
-  AnalysisJobItemResultsService,
-  AnalysisJobItemResult
->("A_JOB_ITEM_RESULTS");
-export const AUDIO_EVENT = new ServiceToken<AudioEventsService, AudioEvent>(
-  "AUDIO"
-);
-export const SHALLOW_AUDIO_EVENT = new ServiceToken<
-  ShallowAudioEventsService,
-  AudioEvent
->("S_AUDIO");
-export const AUDIO_RECORDING = new ServiceToken<
-  AudioRecordingsService,
-  AudioRecording
->("RECORDING");
-export const CONTACT_US = new ServiceToken<ContactUsService, ContactUs>(
-  "CONTACT_US"
-);
-export const BOOKMARK = new ServiceToken<BookmarksService, Bookmark>(
-  "BOOKMARK"
-);
+export const ANALYSIS_JOB = new ServiceToken<AnalysisJobsService, AnalysisJob>("A_JOB");
+export const ANALYSIS_JOB_ITEM = new ServiceToken<AnalysisJobItemsService, AnalysisJobItem>("A_JOB_ITEM");
+export const ANALYSIS_JOB_ITEM_RESULTS = new ServiceToken<AnalysisJobItemResultsService, AnalysisJobItemResult>("A_JOB_ITEM_RESULTS");
+export const AUDIO_EVENT = new ServiceToken<AudioEventsService, AudioEvent>("AUDIO");
+export const SHALLOW_AUDIO_EVENT = new ServiceToken<ShallowAudioEventsService, AudioEvent>("S_AUDIO");
+export const AUDIO_RECORDING = new ServiceToken<AudioRecordingsService, AudioRecording>("RECORDING");
+export const CONTACT_US = new ServiceToken<ContactUsService, ContactUs>("CONTACT_US");
+export const BOOKMARK = new ServiceToken<BookmarksService, Bookmark>("BOOKMARK");
 export const DATASET = new ServiceToken<DatasetsService, Dataset>("DATASET");
-export const DATASET_ITEM = new ServiceToken<DatasetItemsService, DatasetItem>(
-  "D_ITEM"
-);
-export const DATA_REQUEST = new ServiceToken<DataRequestService, DataRequest>(
-  "DATA_REQUEST"
-);
+export const DATASET_ITEM = new ServiceToken<DatasetItemsService, DatasetItem>("D_ITEM");
+export const DATA_REQUEST = new ServiceToken<DataRequestService, DataRequest>("DATA_REQUEST");
 export const HARVEST = new ServiceToken<HarvestsService, Harvest>("HARVEST");
-export const SHALLOW_HARVEST = new ServiceToken<
-  ShallowHarvestsService,
-  Harvest
->("SHALLOW_HARVEST");
-export const HARVEST_ITEM = new ServiceToken<HarvestItemsService, HarvestItem>(
-  "HARVEST_ITEM"
-);
-export const SHALLOW_HARVEST_ITEM = new ServiceToken<
-  ShallowHarvestItemsService,
-  HarvestItem
->("SHALLOW_HARVEST_ITEM");
-export const PERMISSION = new ServiceToken<PermissionsService, Permission>(
-  "PROGRESS"
-);
-export const PROGRESS_EVENT = new ServiceToken<
-  ProgressEventsService,
-  ProgressEvent
->("PROGRESS");
+export const SHALLOW_HARVEST = new ServiceToken<ShallowHarvestsService, Harvest>("SHALLOW_HARVEST");
+export const HARVEST_ITEM = new ServiceToken<HarvestItemsService, HarvestItem>("HARVEST_ITEM");
+export const SHALLOW_HARVEST_ITEM = new ServiceToken<ShallowHarvestItemsService, HarvestItem>("SHALLOW_HARVEST_ITEM");
+export const PERMISSION = new ServiceToken<PermissionsService, Permission>("PROGRESS");
+export const PROGRESS_EVENT = new ServiceToken<ProgressEventsService, ProgressEvent>("PROGRESS");
 export const PROJECT = new ServiceToken<ProjectsService, Project>("PROJECT");
-export const QUESTION = new ServiceToken<QuestionsService, Question>(
-  "QUESTION"
-);
-export const SHALLOW_QUESTION = new ServiceToken<
-  ShallowQuestionsService,
-  Question
->("S_QUESTION");
+export const QUESTION = new ServiceToken<QuestionsService, Question>("QUESTION");
+export const SHALLOW_QUESTION = new ServiceToken<ShallowQuestionsService, Question>("S_QUESTION");
 export const REGION = new ServiceToken<RegionsService, Region>("REGION");
-export const SHALLOW_REGION = new ServiceToken<ShallowRegionsService, Region>(
-  "S_REGION"
-);
-export const REPORT_PROBLEM = new ServiceToken<
-  ReportProblemService,
-  ReportProblem
->("REPORT_PROBLEM");
-export const RESPONSE = new ServiceToken<ResponsesService, Response>(
-  "RESPONSE"
-);
-export const SHALLOW_RESPONSE = new ServiceToken<
-  ShallowResponsesService,
-  Response
->("S_RESPONSE");
-export const SAVED_SEARCH = new ServiceToken<SavedSearchesService, SavedSearch>(
-  "SAVED_SEARCH"
-);
+export const SHALLOW_REGION = new ServiceToken<ShallowRegionsService, Region>("S_REGION");
+export const REPORT_PROBLEM = new ServiceToken<ReportProblemService, ReportProblem>("REPORT_PROBLEM");
+export const RESPONSE = new ServiceToken<ResponsesService, Response>("RESPONSE");
+export const SHALLOW_RESPONSE = new ServiceToken<ShallowResponsesService, Response>("S_RESPONSE");
+export const SAVED_SEARCH = new ServiceToken<SavedSearchesService, SavedSearch>("SAVED_SEARCH");
 export const SCRIPT = new ServiceToken<ScriptsService, Script>("SCRIPT");
-export const SHALLOW_SITE = new ServiceToken<ShallowSitesService, Site>(
-  "S_SITE"
-);
+export const SHALLOW_SITE = new ServiceToken<ShallowSitesService, Site>("S_SITE");
 export const SITE = new ServiceToken<SitesService, Site>("SITE");
-export const STATISTICS = new ServiceToken<StatisticsService, Statistics>(
-  "STATISTICS"
-);
+export const STATISTICS = new ServiceToken<StatisticsService, Statistics>("STATISTICS");
 export const STUDY = new ServiceToken<StudiesService, Study>("STUDY");
 export const TAG = new ServiceToken<TagsService, Tag>("TAG");
-export const TAG_GROUP = new ServiceToken<TagGroupsService, TagGroup>(
-  "TAG_GROUP"
-);
+export const TAG_GROUP = new ServiceToken<TagGroupsService, TagGroup>("TAG_GROUP");
 export const TAGGING = new ServiceToken<TaggingsService, Tagging>("TAGGING");
 export const USER = new ServiceToken<UserService, User>("USER");
 export const AUDIO_EVENT_PROVENANCE = new ServiceToken< AudioEventProvenanceService, AudioEventProvenance >("AUDIO_EVENT_PROVENANCE");
@@ -216,3 +157,4 @@ export const AUDIO_EVENT_IMPORT = new ServiceToken< AudioEventImportService, Aud
 export const WEBSITE_STATUS = new ServiceToken< WebsiteStatusService, WebsiteStatus >("WEBSITE_STATUS");
 export const ANNOTATION = new ServiceToken<AnnotationService, Annotation>( "ANNOTATION");
 export const MEDIA = new ServiceToken<MediaService, never>("MEDIA");
+export const ASSOCIATION_INJECTOR = new ServiceToken<AssociationInjectorService, never>("ASSOCIATION_INJECTOR");
