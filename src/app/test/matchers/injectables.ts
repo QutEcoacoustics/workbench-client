@@ -340,22 +340,30 @@ const toHaveUrlActive = (util: MatchersUtil): CustomMatcher => ({
   },
 });
 
+/**
+ * Expect an injectable to be provided by a specific injector
+ * This can be useful for testing services that are provided by multiple
+ * injectors
+ */
 const toBeProvidedBy = (): CustomMatcher => ({
   negativeCompare: (target: Injectable): CustomMatcherResult =>
     target
       ? matcherSuccess()
       : matcherFailure("Expected target to be provided by"),
-  compare: (target: Injectable, injector: Injector): CustomMatcherResult => {
+  compare: (
+    target: Injectable,
+    expectedInjector: Injector
+  ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Injectable was not defined");
     }
 
-    const targetProvider = target["injector"];
-    if (!targetProvider) {
+    const actualInjector = target["injector"];
+    if (!actualInjector) {
       return matcherFailure("Injectable does not have a provider");
     }
 
-    return targetProvider === injector
+    return actualInjector === expectedInjector
       ? matcherSuccess()
       : matcherFailure("Injectable was not provided by expected injector");
   },
