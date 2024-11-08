@@ -56,11 +56,11 @@ export const multiPartApiHeaders = new HttpHeaders({
   Accept: "application/json",
 });
 
-export const defaultBawServiceOptions = {
+export const defaultBawServiceOptions = Object.freeze({
   disableNotification: false,
   withCredentials: true,
   cacheOptions: { cache: false },
-} satisfies Required<BawServiceOptions>;
+}) satisfies Required<BawServiceOptions>;
 
 /**
  * Interface with BAW Server Rest API
@@ -120,7 +120,7 @@ export class BawApiService<
     options: Partial<BawServiceOptions>
   ): Required<BawServiceOptions> {
     return {
-      ...defaultBawServiceOptions,
+      ...this.instanceOptions,
       ...options,
     };
   }
@@ -138,12 +138,11 @@ export class BawApiService<
   // this can be a problem because it will default to a falsy value, not the default option
   // therefore, this method should be used to check if we should show a toast notification if the request fails
   private suppressErrors(options: Partial<BawServiceOptions>): boolean {
-    return (
-      options?.disableNotification ??
-      this.options?.disableNotification ??
-      defaultBawServiceOptions.disableNotification
-    );
+    const realizedOptions = this.buildServiceOptions(options);
+    return realizedOptions.disableNotification;
   }
+
+  private instanceOptions: Required<BawServiceOptions>;
 
   public constructor(
     @Inject(API_ROOT) protected apiRoot: string,
@@ -156,6 +155,19 @@ export class BawApiService<
     @Inject(ASSOCIATION_INJECTOR) protected associationInjector: any,
     @Optional() @Inject(BAW_SERVICE_OPTIONS) private options: BawServiceOptions
   ) {
+    // by merging the default options with the injected options, we can override
+    // the default options by injecting a partial options object
+    // by having a full default options object, we can ensure that all options
+    // are set
+    //
+    // the following order of precedence is used:
+    // parameter options > injected options > default options
+    this.instanceOptions = Object.assign(
+      {},
+      defaultBawServiceOptions,
+      this.options
+    );
+
     const createModel = (cb: ClassBuilder, data: Model, meta: Meta): Model => {
       const model = new cb(data, this.associationInjector);
       model.addMetadata(meta);

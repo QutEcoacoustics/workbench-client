@@ -1,6 +1,6 @@
 import { Injector, Provider } from "@angular/core";
 import { BAW_SERVICE_OPTIONS } from "../baw-api/api-common";
-import { BawApiService } from "../baw-api/baw-api.service";
+import { BawApiService, BawServiceOptions } from "../baw-api/baw-api.service";
 import {
   services,
   serviceTokens,
@@ -18,19 +18,19 @@ export const associationInjectorProvider: Provider = {
 };
 
 function associationInjectorFactory(parentInjector: Injector): Injector {
+  const associationApiOptions = Object.freeze({
+    disableNotification: true,
+  }) satisfies BawServiceOptions;
+
   return Injector.create({
     name: "AssociationInjector",
     parent: parentInjector,
     providers: [
       { provide: BawApiService, useClass: BawApiService },
-      {
-        provide: BAW_SERVICE_OPTIONS,
-        useValue: { disableNotification: true },
-      },
+      { provide: BAW_SERVICE_OPTIONS, useValue: associationApiOptions },
       ...services,
       ...serviceTokens,
       ...serviceResolvers,
     ],
   });
 }
-
