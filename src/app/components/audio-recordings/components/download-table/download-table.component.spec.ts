@@ -20,8 +20,6 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { DownloadTableComponent } from "./download-table.component";
-import { Injector } from "@angular/core";
-import { ToastrService } from "ngx-toastr";
 
 describe("DownloadTableComponent", () => {
   let defaultSite: Site;
