@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { harvestRoute } from "@components/harvest/harvest.routes";
 import {
@@ -18,6 +17,7 @@ import {
 import type { Project } from "./Project";
 import type { Site } from "./Site";
 import type { User } from "./User";
+import { AssociationInjector } from "./ImplementsInjector";
 
 /**
  * Status of a harvest
@@ -67,7 +67,7 @@ export class HarvestMapping
   @hasOne<HarvestMapping, Site>(SHALLOW_SITE, "siteId")
   public site?: Site;
 
-  public constructor(data: IHarvestMapping, injector?: Injector) {
+  public constructor(data: IHarvestMapping, injector?: AssociationInjector) {
     super(data, injector);
   }
 
@@ -138,7 +138,7 @@ export class Harvest extends AbstractModel implements IHarvest {
   @updater<Harvest>()
   public updater?: User;
 
-  public constructor(data: IHarvest, injector?: Injector) {
+  public constructor(data: IHarvest, injector?: AssociationInjector) {
     super(data, injector);
     this.mappings = ((data.mappings as IHarvestMapping[]) ?? []).map(
       (mapping) => new HarvestMapping(mapping, injector)
@@ -223,7 +223,7 @@ export class HarvestReport
   public readonly latestActivityAt?: DateTimeTimezone;
   public readonly runTimeSeconds?: number;
 
-  public constructor(data: IHarvestReport, injector?: Injector) {
+  public constructor(data: IHarvestReport, injector?: AssociationInjector) {
     super(data, injector);
   }
 

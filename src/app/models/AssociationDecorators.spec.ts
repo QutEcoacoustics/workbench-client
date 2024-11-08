@@ -1,5 +1,4 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { Injector } from "@angular/core";
 import { discardPeriodicTasks, fakeAsync, flush, TestBed } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
@@ -12,11 +11,13 @@ import { UNAUTHORIZED } from "http-status";
 import { Subject } from "rxjs";
 import { ToastrService } from "ngx-toastr";
 import { mockProvider } from "@ngneat/spectator";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { hasMany, hasOne } from "./AssociationDecorators";
+import { AssociationInjector } from "./ImplementsInjector";
 
 describe("Association Decorators", () => {
-  let injector: Injector;
+  let injector: AssociationInjector;
   let api: MockStandardApiService;
   let toastSpy: ToastrService;
 
@@ -52,7 +53,7 @@ describe("Association Decorators", () => {
     });
 
     api = TestBed.inject(MockStandardApiService);
-    injector = TestBed.inject(Injector);
+    injector = TestBed.inject(ASSOCIATION_INJECTOR);
 
     toastSpy = TestBed.inject(ToastrService);
     toastSpy.error = jasmine.createSpy("error");
@@ -61,7 +62,7 @@ describe("Association Decorators", () => {
   describe("HasMany", () => {
     function createModel(
       data: any,
-      modelInjector: Injector,
+      modelInjector: AssociationInjector,
       key?: string,
       ...modelParameters: string[]
     ) {
@@ -237,7 +238,7 @@ describe("Association Decorators", () => {
   describe("HasOne", () => {
     function createModel(
       data: any,
-      modelInjector: Injector,
+      modelInjector: AssociationInjector,
       modelParameters?: string[],
       failureValue?: any
     ) {

@@ -1,7 +1,7 @@
 import {
   Component,
   EventEmitter,
-  Injector,
+  Inject,
   Input,
   Output,
 } from "@angular/core";
@@ -11,7 +11,9 @@ import {
 } from "@components/harvest/screens/metadata-review/metadata-review.component";
 import { Harvest, HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { Project } from "@models/Project";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 
 @Component({
   selector: "baw-meta-review-folder-row",
@@ -146,7 +148,9 @@ export class FolderRowComponent {
     return this.harvestItem.report;
   }
 
-  public constructor(private injector: Injector) {}
+  public constructor(
+    @Inject(ASSOCIATION_INJECTOR) protected injector: AssociationInjector,
+  ) {}
 
   public createMapping(row: MetaReviewFolder): void {
     const mapping = new HarvestMapping(

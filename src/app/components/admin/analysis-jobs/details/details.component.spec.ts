@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -21,10 +20,12 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { PageTitleStrategy } from "src/app/app.component";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { AdminAnalysisJobComponent } from "./details.component";
 
 describe("AdminAnalysisJobComponent", () => {
-  let injector: Injector;
+  let injector: AssociationInjector;
   let spec: Spectator<AdminAnalysisJobComponent>;
   const createComponent = createComponentFactory({
     component: AdminAnalysisJobComponent,
@@ -54,7 +55,7 @@ describe("AdminAnalysisJobComponent", () => {
       ],
     });
 
-    injector = spec.inject(Injector);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
     const accountsApi = spec.inject(ACCOUNT.token);
     const scriptsApi = spec.inject(SCRIPT.token);
     const savedSearchesApi = spec.inject(SAVED_SEARCH.token);

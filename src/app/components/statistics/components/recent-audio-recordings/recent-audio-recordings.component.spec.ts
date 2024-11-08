@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
@@ -24,12 +23,14 @@ import { generateSite } from "@test/fakes/Site";
 import { interceptShowApiRequest } from "@test/helpers/general";
 import { ToastrService } from "ngx-toastr";
 import { humanizedDuration } from "@test/helpers/dateTime";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { RecentAudioRecordingsComponent } from "./recent-audio-recordings.component";
 
 describe("RecentAudioRecordingsComponent", () => {
   let api: SpyObject<ShallowSitesService>;
   let defaultRecording: AudioRecording;
-  let injector: Injector;
+  let injector: AssociationInjector;
   let spec: Spectator<RecentAudioRecordingsComponent>;
   const createComponent = createComponentFactory({
     component: RecentAudioRecordingsComponent,
@@ -65,7 +66,7 @@ describe("RecentAudioRecordingsComponent", () => {
 
   beforeEach(() => {
     spec = createComponent({ detectChanges: false });
-    injector = spec.inject(Injector);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
     api = spec.inject(SHALLOW_SITE.token);
     defaultRecording = new AudioRecording(generateAudioRecording(), injector);
   });

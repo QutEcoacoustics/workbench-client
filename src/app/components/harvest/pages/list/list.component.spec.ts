@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import {
   discardPeriodicTasks,
   fakeAsync,
@@ -24,6 +23,7 @@ import { generateUser } from "@test/fakes/User";
 import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
 import { withDefaultZone } from "@test/helpers/mocks";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ListComponent } from "./list.component";
 
 describe("ListComponent", () => {
@@ -53,7 +53,7 @@ describe("ListComponent", () => {
       },
     });
 
-    const injector = spec.inject(Injector);
+    const injector = spec.inject(ASSOCIATION_INJECTOR);
 
     if (project) {
       project["injector"] = injector;

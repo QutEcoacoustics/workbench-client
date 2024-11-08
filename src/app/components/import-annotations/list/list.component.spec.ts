@@ -12,7 +12,6 @@ import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
 import { AUDIO_EVENT_IMPORT } from "@baw-api/ServiceTokens";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { of } from "rxjs";
-import { Injector } from "@angular/core";
 import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
@@ -20,6 +19,7 @@ import { Filters } from "@baw-api/baw-api.service";
 import { DateTime, Settings } from "luxon";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { fakeAsync, tick } from "@angular/core/testing";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AnnotationsListComponent } from "./list.component";
 
 describe("AnnotationsListComponent", () => {
@@ -59,7 +59,7 @@ describe("AnnotationsListComponent", () => {
       detectChanges: false,
     });
 
-    const injector = spectator.inject(Injector);
+    const injector = spectator.inject(ASSOCIATION_INJECTOR);
     mockApi = spectator.inject(AUDIO_EVENT_IMPORT.token);
 
     fakeAnnotationImport["injector"] = injector;

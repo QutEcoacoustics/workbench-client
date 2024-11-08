@@ -22,7 +22,7 @@ import {
   SHALLOW_SITE,
   TAG,
 } from "@baw-api/ServiceTokens";
-import { CUSTOM_ELEMENTS_SCHEMA, INJECTOR, Injector } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { VerificationHelpDialogComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/help-dialog";
@@ -57,12 +57,14 @@ import { detectChanges } from "@test/helpers/changes";
 import { nodeModule, testAsset } from "@test/helpers/karma";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
 describe("VerificationComponent", () => {
   let spectator: SpectatorRouting<VerificationComponent>;
-  let injector: SpyObject<Injector>;
+  let injector: SpyObject<AssociationInjector>;
 
   let mockAudioEventsApi: SpyObject<ShallowAudioEventsService>;
   let mediaServiceSpy: SpyObject<MediaService>;
@@ -115,7 +117,7 @@ describe("VerificationComponent", () => {
       queryParams: queryParameters,
     });
 
-    injector = spectator.inject(INJECTOR);
+    injector = spectator.inject(ASSOCIATION_INJECTOR);
 
     mediaServiceSpy = spectator.inject(MEDIA.token);
     mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;

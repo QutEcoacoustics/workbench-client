@@ -1,10 +1,10 @@
-import { Injector } from "@angular/core";
 import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { Id, Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { AnalysisJob } from "./AnalysisJob";
 import { hasOne } from "./AssociationDecorators";
 import { AudioRecording } from "./AudioRecording";
+import { AssociationInjector } from "./ImplementsInjector";
 
 export type ResultsItemType = "directory" | "file";
 
@@ -27,7 +27,7 @@ export class AnalysisJobItemResult
 {
   public constructor(
     analysisJobItemResults: IAnalysisJobItemResult,
-    injector?: Injector
+    injector?: AssociationInjector
   ) {
     super(analysisJobItemResults, injector);
   }

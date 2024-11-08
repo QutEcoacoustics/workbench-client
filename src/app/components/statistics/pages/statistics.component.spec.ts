@@ -29,6 +29,8 @@ import {
 } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { RecentAnnotationsComponent } from "../components/recent-annotations/recent-annotations.component";
 import { RecentAudioRecordingsComponent } from "../components/recent-audio-recordings/recent-audio-recordings.component";
 import { StatisticsComponent } from "./statistics.component";
@@ -42,7 +44,7 @@ describe("StatisticsComponent", () => {
   let statsApi: SpyObject<StatisticsService>;
   let audioEventsApi: SpyObject<ShallowAudioEventsService>;
   let audioRecordingsApi: SpyObject<AudioRecordingsService>;
-  let injector: Injector;
+  let injector: AssociationInjector;
   let spec: Spectator<StatisticsComponent>;
   const createComponent = createComponentFactory({
     component: StatisticsComponent,
@@ -92,7 +94,7 @@ describe("StatisticsComponent", () => {
     statsApi = spec.inject(StatisticsService);
     audioEventsApi = spec.inject(SHALLOW_AUDIO_EVENT.token);
     audioRecordingsApi = spec.inject(AUDIO_RECORDING.token);
-    injector = spec.inject(Injector);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
 
     return {
       initial: interceptStatisticsRequest(statisticsData),

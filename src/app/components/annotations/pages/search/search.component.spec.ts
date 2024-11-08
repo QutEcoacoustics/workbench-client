@@ -1,7 +1,7 @@
 import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { Params } from "@angular/router";
 import { of } from "rxjs";
-import { CUSTOM_ELEMENTS_SCHEMA, INJECTOR, Injector } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { modelData } from "@test/helpers/faker";
 import {
   MEDIA,
@@ -35,6 +35,8 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { testAsset } from "@test/helpers/karma";
 import { assertPageInfo } from "@test/helpers/pageRoute";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { AnnotationSearchComponent } from "./search.component";
 
@@ -42,7 +44,7 @@ describe("AnnotationSearchComponent", () => {
   const responsePageSize = 24;
 
   let spectator: Spectator<AnnotationSearchComponent>;
-  let injector: Injector;
+  let injector: AssociationInjector;
 
   let audioEventsApiSpy: SpyObject<ShallowAudioEventsService>;
   let mediaServiceSpy: SpyObject<MediaService>;
@@ -80,7 +82,7 @@ describe("AnnotationSearchComponent", () => {
       queryParams: queryParameters,
     });
 
-    injector = spectator.inject(INJECTOR);
+    injector = spectator.inject(ASSOCIATION_INJECTOR);
     mediaServiceSpy = spectator.inject(MEDIA.token);
     mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
     mediaServiceSpy.createMediaUrl.and.returnValue(testAsset("example.flac"));

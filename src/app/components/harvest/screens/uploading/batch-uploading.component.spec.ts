@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
@@ -21,6 +20,8 @@ import { nStepObservable } from "@test/helpers/general";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { BatchUploadingComponent } from "./batch-uploading.component";
 
 describe("BatchUploadingComponent", () => {
@@ -29,7 +30,7 @@ describe("BatchUploadingComponent", () => {
   let defaultHarvest: Harvest;
   let defaultSite: Site;
   let stages: SpyObject<HarvestStagesService>;
-  let injector: Injector;
+  let injector: AssociationInjector;
   const createComponent = createRoutingFactory({
     declarations: [MockComponent(UploadUrlComponent), ConfirmationComponent],
     component: BatchUploadingComponent,
@@ -39,8 +40,8 @@ describe("BatchUploadingComponent", () => {
         harvest: undefined,
         startPolling: jasmine.createSpy("start polling") as any,
         stopPolling: jasmine.createSpy("stop polling") as any,
-        transition: (_stage: HarvestStatus) => {}
-      })
+        transition: (_stage: HarvestStatus) => {},
+      }),
     ],
     imports: [MockBawApiModule, SharedModule],
     mocks: [ToastrService],
@@ -48,7 +49,7 @@ describe("BatchUploadingComponent", () => {
 
   function setup(project: Project, harvest: Harvest, sites: Site[]) {
     spec = createComponent({ detectChanges: false });
-    injector = spec.inject(Injector);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
     project["injector"] = injector;
     harvest["injector"] = injector;
     stages = spec.inject<SpyObject<HarvestStagesService>>(
@@ -67,11 +68,17 @@ describe("BatchUploadingComponent", () => {
   }
 
   function getModalNextBtn() {
-      return spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #next-btn", { root: true });
+    return spec.query<HTMLButtonElement>(
+      "baw-harvest-confirmation-modal #next-btn",
+      { root: true }
+    );
   }
 
   function getModalCancelBtn() {
-    return spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #cancel-btn", { root: true });
+    return spec.query<HTMLButtonElement>(
+      "baw-harvest-confirmation-modal #cancel-btn",
+      { root: true }
+    );
   }
 
   function getModal() {
@@ -98,20 +105,20 @@ describe("BatchUploadingComponent", () => {
     spec.click(btn);
     spec.detectChanges();
     const interval = setInterval(() => {
-        spec.detectChanges();
-        if (!getModal()) {
-            // if the click worked, the modal will disappear and we can check the button action
-            callback()
-            clearInterval(interval);
-        }
+      spec.detectChanges();
+      if (!getModal()) {
+        // if the click worked, the modal will disappear and we can check the button action
+        callback();
+        clearInterval(interval);
+      }
     }, 50);
   }
 
   function cancelModal(done) {
     clickModal("cancel", () => {
       expect(stages.transition).not.toHaveBeenCalled();
-      done()
-    })
+      done();
+    });
   }
 
   function clickModalNext(callback) {
@@ -147,23 +154,23 @@ describe("BatchUploadingComponent", () => {
     }
 
     const tabs = [
-        {
-            label: "Windows",
-            description: "WinSCP"
-        },
-        {
-            label: "MacOS",
-            description: "Cyberduck"
-        },
-        {
-            label: "Linux",
-            description: "SCP"
-        },
-        {
-            label: "R Clone",
-            description: "rclone copy"
-        }
-    ]
+      {
+        label: "Windows",
+        description: "WinSCP",
+      },
+      {
+        label: "MacOS",
+        description: "Cyberduck",
+      },
+      {
+        label: "Linux",
+        description: "SCP",
+      },
+      {
+        label: "R Clone",
+        description: "rclone copy",
+      },
+    ];
 
     tabs.forEach(({ label, description }) => {
       it(`should show ${label} tab title`, () => {
@@ -180,21 +187,18 @@ describe("BatchUploadingComponent", () => {
         setCurrentTab(label);
         spec.detectChanges();
         const interval = setInterval(() => {
-            spec.detectChanges();
-            if (getCurrentTabBody().innerText.includes(description)) {
-                expect(getCurrentTabBody()).toContainText(description);
-                clearInterval(interval);
-                done();
-            }
+          spec.detectChanges();
+          if (getCurrentTabBody().innerText.includes(description)) {
+            expect(getCurrentTabBody()).toContainText(description);
+            clearInterval(interval);
+            done();
+          }
         }, 50);
-
-      })
-
+      });
     });
   });
 
   describe("Buttons", () => {
-
     let modalService: NgbModal;
 
     beforeEach(() => {
@@ -203,10 +207,10 @@ describe("BatchUploadingComponent", () => {
     });
 
     afterEach(() => {
-        modalService.dismissAll();
+      modalService.dismissAll();
     });
 
-    it ("should abort upload when abort is clicked and the 'abort upload' modal button is clicked", (done) => {
+    it("should abort upload when abort is clicked and the 'abort upload' modal button is clicked", (done) => {
       launchModal(
         "#cancel-btn",
         "Are you sure you want to abort this upload? Aborting will not process any uploaded files, and cannot be undone."
@@ -214,18 +218,18 @@ describe("BatchUploadingComponent", () => {
       clickModalNext(() => {
         expect(stages.transition).toHaveBeenCalledWith("complete");
         done();
-      })
+      });
     });
 
-    it ("should change harvest stage when 'Finished uploading' is clicked and scan files modal button is clicked", (done) => {
+    it("should change harvest stage when 'Finished uploading' is clicked and scan files modal button is clicked", (done) => {
       launchModal("#finish-btn", "Are you sure your upload is finished");
       clickModalNext(() => {
         expect(stages.transition).toHaveBeenCalledWith("scanning");
         done();
-      })
+      });
     });
 
-    it ("should launch and cancel modal when 'cancel' button is clicked and then 'return' is clicked", (done) => {
+    it("should launch and cancel modal when 'cancel' button is clicked and then 'return' is clicked", (done) => {
       launchModal(
         "#cancel-btn",
         "Are you sure you want to abort this upload? Aborting will not process any uploaded files, and cannot be undone."
@@ -233,11 +237,9 @@ describe("BatchUploadingComponent", () => {
       cancelModal(done);
     });
 
-    it ("should launch and cancel modal when 'finished uploading' button is clicked and then cancel is clicked", (done) => {
+    it("should launch and cancel modal when 'finished uploading' button is clicked and then cancel is clicked", (done) => {
       launchModal("#finish-btn", "Are you sure your upload is finished");
       cancelModal(done);
     });
-
   });
-
 });

@@ -3,11 +3,8 @@ import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { API_ROOT } from "@services/config/config.tokens";
 import { filesize } from "filesize";
 import { DateTime, Duration } from "luxon";
-import {
-  AbstractModel,
-  AbstractModelConstructor,
-  AssociationInjector,
-} from "./AbstractModel";
+import { AbstractModel, AbstractModelConstructor } from "./AbstractModel";
+import { HasAssociationInjector, ImplementsAssociations } from "./ImplementsInjector";
 
 export interface BawAttributeOptions {
   create: boolean;
@@ -195,7 +192,7 @@ export function bawSubModel<ParentModel, SubModel>(
 ) {
   return createDecorator<ParentModel>(
     opts,
-    (model: AssociationInjector, key: symbol, value: SubModel) =>
+    (model: HasAssociationInjector, key: symbol, value: SubModel) =>
       (model[key] = new classConstructor(value, model["injector"]))
   );
 }
@@ -213,7 +210,7 @@ export function bawSubModelCollection<ParentModel, SubModel>(
 ) {
   return createDecorator<ParentModel>(
     opts,
-    (model: AssociationInjector, key: symbol, values: SubModel[]) =>
+    (model: HasAssociationInjector, key: symbol, values: SubModel[]) =>
       (model[key] = values?.map(
         (value) => new classConstructor(value, model["injector"])
       ))
@@ -297,7 +294,7 @@ function createDecorator<Model>(
   opts: BawDecoratorOptions<Model> = {},
   setValue: (model: any, key: symbol, ...args: any[]) => void
 ) {
-  return function (model: AssociationInjector, key: string): void {
+  return function (model: ImplementsAssociations, key: string): void {
     // Store decorated keys value
     const decoratedKey = Symbol("_" + key);
     let keySetter: (args: any) => void;

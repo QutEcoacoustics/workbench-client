@@ -22,6 +22,7 @@ import { catchError, concatMap, map, switchMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { BawSessionService } from "./baw-session.service";
 import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
 import { BAW_SERVICE_OPTIONS } from "./api-common";
@@ -152,7 +153,7 @@ export class BawApiService<
     protected session: BawSessionService,
     protected notifications: ToastrService,
     @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
-    @Inject(ASSOCIATION_INJECTOR) protected associationInjector: any,
+    @Inject(ASSOCIATION_INJECTOR) protected associationInjector: AssociationInjector,
     @Optional() @Inject(BAW_SERVICE_OPTIONS) private options: BawServiceOptions
   ) {
     // by merging the default options with the injected options, we can override

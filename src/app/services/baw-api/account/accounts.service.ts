@@ -1,10 +1,12 @@
-import { Injectable, Injector } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { User } from "@models/User";
 import httpCodes from "http-status";
 import { Observable, of, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import {
   emptyParam,
   filterParam,
@@ -28,7 +30,7 @@ const endpoint = stringTemplate`/user_accounts/${userId}${option}`;
 export class AccountsService implements StandardApi<User> {
   public constructor(
     private api: BawApiService<User>,
-    private injector: Injector
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
   ) {}
 
   public list(): Observable<User[]> {

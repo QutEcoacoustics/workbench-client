@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import {
   AUDIO_EVENT_PROVENANCE,
   AUDIO_RECORDING,
@@ -26,6 +25,7 @@ import type { Tag } from "./Tag";
 import { ITagging, Tagging } from "./Tagging";
 import type { User } from "./User";
 import { AudioEventProvenance } from "./AudioEventProvenance";
+import { AssociationInjector } from "./ImplementsInjector";
 
 export interface IAudioEvent extends HasAllUsers {
   id?: Id;
@@ -85,7 +85,7 @@ export class AudioEvent
   @hasMany<AudioEvent, Tag>(TAG, "tagIds")
   public tags?: Tag[];
 
-  public constructor(audioEvent: IAudioEvent, injector?: Injector) {
+  public constructor(audioEvent: IAudioEvent, injector?: AssociationInjector) {
     super(audioEvent, injector);
     this.taggings = ((audioEvent.taggings ?? []) as ITagging[]).map(
       (tagging) => new Tagging(tagging, injector)

@@ -1,7 +1,7 @@
-import { Injector } from "@angular/core";
 import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModelWithoutId } from "./AbstractModel";
+import { AssociationInjector } from "./ImplementsInjector";
 
 export type WebsiteOverallStatus = "good" | "bad";
 export type RedisStatus = "PONG" | "";
@@ -23,7 +23,7 @@ export class WebsiteStatus
   extends AbstractModelWithoutId<Partial<IWebsiteStatus>>
   implements IWebsiteStatus
 {
-  public constructor(model: Partial<IWebsiteStatus>, injector?: Injector) {
+  public constructor(model: Partial<IWebsiteStatus>, injector?: AssociationInjector) {
     super(model, injector);
   }
 

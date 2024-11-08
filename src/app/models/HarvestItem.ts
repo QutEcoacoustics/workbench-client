@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import {
   ACCOUNT,
   AUDIO_RECORDING,
@@ -18,6 +17,7 @@ import { AbstractModel, AbstractModelWithoutId } from "./AbstractModel";
 import { hasOne } from "./AssociationDecorators";
 import { Harvest } from "./Harvest";
 import { User } from "./User";
+import { AssociationInjector } from "./ImplementsInjector";
 
 /**
  * State of a harvest item
@@ -79,7 +79,7 @@ export class HarvestItemValidation
   public readonly status?: "fixable" | "notFixable";
   public readonly message?: string;
 
-  public constructor(data: IHarvestItemValidation, injector?: Injector) {
+  public constructor(data: IHarvestItemValidation, injector?: AssociationInjector) {
     super(data, injector);
   }
 
@@ -128,7 +128,7 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
   @hasOne<HarvestItem, User>(ACCOUNT, "uploaderId")
   public uploader?: User;
 
-  public constructor(data: IHarvestItem, injector?: Injector) {
+  public constructor(data: IHarvestItem, injector?: AssociationInjector) {
     super(data, injector);
 
     this.report = new HarvestItemReport(data.report, injector);
@@ -201,7 +201,7 @@ export class HarvestItemReport
   public readonly itemsCompleted?: number;
   public readonly itemsErrored?: number;
 
-  public constructor(data: IHarvestItemReport, injector?: Injector) {
+  public constructor(data: IHarvestItemReport, injector?: AssociationInjector) {
     super(data, injector);
   }
 

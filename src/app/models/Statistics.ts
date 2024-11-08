@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { AUDIO_RECORDING, SHALLOW_AUDIO_EVENT } from "@baw-api/ServiceTokens";
 import { statisticsMenuItem } from "@components/statistics/statistics.menus";
 import { DateTimeTimezone, Id, Ids } from "@interfaces/apiInterfaces";
@@ -12,6 +11,7 @@ import {
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Duration } from "luxon";
+import { AssociationInjector } from "./ImplementsInjector";
 
 export interface IStatisticsSummary {
   usersOnline: number;
@@ -101,7 +101,7 @@ export class Statistics extends AbstractModelWithoutId {
   public readonly summary: StatisticsSummary;
   public readonly recent: StatisticsRecent;
 
-  public constructor(model: IStatistics, injector?: Injector) {
+  public constructor(model: IStatistics, injector?: AssociationInjector) {
     super(model, injector);
     this.summary = new StatisticsSummary(model.summary, injector);
     this.recent = new StatisticsRecent(model.recent, injector);

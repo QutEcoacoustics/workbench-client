@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
@@ -11,12 +10,14 @@ import { CheckboxModule } from "@shared/checkbox/checkbox.module";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { nStepObservable, viewports } from "@test/helpers/general";
 import { Subject } from "rxjs";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { DetailViewComponent } from "./detail-view.component";
 import { ModelLinkComponent } from "./model-link/model-link.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
 
 describe("DetailViewComponent", () => {
-  let injector: Injector;
+  let injector: AssociationInjector;
   let api: MockStandardApiService;
   let spec: Spectator<DetailViewComponent>;
   const createComponent = createComponentFactory({
@@ -52,7 +53,7 @@ describe("DetailViewComponent", () => {
   beforeEach(() => {
     spec = createComponent();
     api = spec.inject(MockStandardApiService);
-    injector = spec.inject(Injector);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
   });
 
   afterAll(() => {

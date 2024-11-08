@@ -5,7 +5,6 @@ import {
 } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
-import { INJECTOR, Injector } from "@angular/core";
 import { AudioRecording } from "@models/AudioRecording";
 import { Tag } from "@models/Tag";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
@@ -28,11 +27,13 @@ import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { testAsset } from "@test/helpers/karma";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AnnotationEventCardComponent } from "./annotation-event-card.component";
 
 describe("AudioEventCardComponent", () => {
   let spectator: Spectator<AnnotationEventCardComponent>;
-  let injectorSpy: SpyObject<Injector>;
+  let injectorSpy: SpyObject<AssociationInjector>;
 
   let mediaServiceSpy: SpyObject<MediaService>;
   let audioRecordingApiSpy: SpyObject<AudioRecordingsService>;
@@ -52,7 +53,7 @@ describe("AudioEventCardComponent", () => {
   function setup(): void {
     spectator = createComponent({ detectChanges: false });
 
-    injectorSpy = spectator.inject(INJECTOR);
+    injectorSpy = spectator.inject(ASSOCIATION_INJECTOR);
 
     mediaServiceSpy = spectator.inject(MEDIA.token);
     mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;

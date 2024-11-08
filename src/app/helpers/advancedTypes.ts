@@ -63,3 +63,11 @@ export type RecursivePartial<T> = {
 
 /** This value may be asynchronous */
 export type PotentiallyAsync<T> = T | Promise<T>;
+
+// this brand symbol should never be used at runtime
+// it is only used to have a type that cannot be instantiated by TypeScript
+// outside of the Brand function
+const brandSymbol = Symbol("brand");
+export type Brand<T, BrandName extends string> = T & {
+  [key in typeof brandSymbol]: BrandName;
+};

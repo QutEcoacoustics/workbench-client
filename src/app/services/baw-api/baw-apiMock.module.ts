@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { NgModule, Provider } from "@angular/core";
 import { mockProvider } from "@ngneat/spectator";
 import { CacheModule } from "@services/cache/cache.module";
-import { associationInjectorProvider } from "@services/association-injector/association-injector.factory";
+import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
 import { MockConfigModule } from "../config/configMock.module";
 import { AccountsService } from "./account/accounts.service";
 import { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
@@ -59,7 +59,7 @@ import { WebsiteStatusService } from "./website-status/website-status.service";
 //
 // ...it is likely because your new service has not been setup for automatic
 // mocking. Add it to the list below!
-const mockProviders: Provider[] = [
+export const mockProviders: Provider[] = [
   { provide: SecurityService, useClass: MockSecurityService },
   mockProvider(BawApiService),
   mockProvider(BawFormApiService),
@@ -104,7 +104,7 @@ const mockProviders: Provider[] = [
       useClass: BawApiInterceptor,
       multi: true,
     },
-    associationInjectorProvider,
+    mockAssociationInjector,
     BawSessionService,
     ...services,
     ...serviceTokens,

@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -18,12 +17,16 @@ import { generateSite } from "@test/fakes/Site";
 import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { BehaviorSubject, Subject } from "rxjs";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { DownloadTableComponent } from "./download-table.component";
+import { Injector } from "@angular/core";
+import { ToastrService } from "ngx-toastr";
 
 describe("DownloadTableComponent", () => {
   let defaultSite: Site;
   let defaultRecording: AudioRecording;
-  let injector: Injector;
+  let injector: AssociationInjector;
   let siteApi: SpyObject<ShallowSitesService>;
   let recordingApi: SpyObject<AudioRecordingsService>;
   let spec: Spectator<DownloadTableComponent>;
@@ -55,7 +58,9 @@ describe("DownloadTableComponent", () => {
     spec = createComponent({ detectChanges: false, props: { filters$ } });
     recordingApi = spec.inject(AudioRecordingsService);
     siteApi = spec.inject(SHALLOW_SITE.token);
-    injector = spec.inject(Injector);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
+    // injector = spec.inject(Injector as any);
+    // console.log("service", injector.get(ToastrService));
     defaultRecording = new AudioRecording(generateAudioRecording(), injector);
     defaultSite = new Site(generateSite(), injector);
   }

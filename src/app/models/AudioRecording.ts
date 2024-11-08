@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { id, IdOr } from "@baw-api/api-common";
 import {
   audioRecordingOriginalEndpoint,
@@ -34,6 +33,7 @@ import { Project } from "./Project";
 import { Region } from "./Region";
 import type { Site } from "./Site";
 import type { User } from "./User";
+import { AssociationInjector } from "./ImplementsInjector";
 
 /**
  * An audio recording model
@@ -119,7 +119,7 @@ export class AudioRecording
     return listenRecordingMenuItem.route.format({ audioRecordingId: this.id });
   }
 
-  public constructor(data: IAudioRecording, injector?: Injector) {
+  public constructor(data: IAudioRecording, injector?: AssociationInjector) {
     super(data, injector);
 
     // TODO Remove this, and replace with solution for #1815

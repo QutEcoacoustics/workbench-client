@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { Writeable, XOR } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import camelCase from "just-camel-case";
@@ -11,20 +10,18 @@ import {
   Meta,
 } from "../services/baw-api/baw-api.service";
 import { BawAttributeMeta } from "./AttributeDecorators";
-import { ImplementsInjector } from "./ImplementsInjector";
+import { AssociationInjector } from "./ImplementsInjector";
 
 export type AbstractModelConstructor<Model> = new (
   _: Record<string, any>,
-  _injector?: Injector
+  _injector?: AssociationInjector
 ) => Model;
-
-export type AssociationInjector = ImplementsInjector | AbstractModel;
 
 /**
  * BAW Server Abstract Model
  */
 export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
-  public constructor(raw: Model, protected injector?: Injector) {
+  public constructor(raw: Model, protected injector?: AssociationInjector) {
     this.getPersistentAttributes()
       .filter((attr) => attr.convertCase)
       .forEach((attr) => {
@@ -141,9 +138,9 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
       // however, a FileList is actually an object and not an array that implements an iterator
       // we therefore need to use a separate condition to handle this case
       if (dataValue instanceof FileList) {
-       for (const value of dataValue) {
-          output.append(`${modelName}[${snakeCaseAttr}]`, value)
-       }
+        for (const value of dataValue) {
+          output.append(`${modelName}[${snakeCaseAttr}]`, value);
+        }
       } else if (Array.isArray(dataValue)) {
         if (dataValue.length === 0) {
           continue;

@@ -1,6 +1,5 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TestRequest } from "@angular/common/http/testing";
-import { Injector } from "@angular/core";
 import {
   CREDENTIALS_CONTEXT,
   BawApiInterceptor,
@@ -40,7 +39,9 @@ import { assertOk } from "@test/helpers/general";
 import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, noop, Observable, Subject } from "rxjs";
-import { associationInjectorProvider } from "@services/association-injector/association-injector.factory";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
 import {
   BawSessionService,
   guestAuthToken,
@@ -77,7 +78,7 @@ class MockModel extends AbstractModel implements IMockModel {
     testConvert?: string;
   };
 
-  public constructor(data: IMockModel, modelInjector?: Injector) {
+  public constructor(data: IMockModel, modelInjector?: AssociationInjector) {
     super(data, modelInjector);
   }
 
@@ -116,7 +117,7 @@ describe("BawApiService", () => {
   let apiRoot: string;
   let session: BawSessionService;
   let service: BawApiService<MockModel>;
-  let associationInjector: Injector;
+  let associationInjector: AssociationInjector;
   let spec: SpectatorHttp<BawApiService<MockModel>>;
 
   const createService = createHttpFactory<BawApiService<MockModel>>({
@@ -132,7 +133,7 @@ describe("BawApiService", () => {
         useClass: BawApiInterceptor,
         multi: true,
       },
-      associationInjectorProvider,
+      mockAssociationInjector,
     ],
   });
 
@@ -180,8 +181,7 @@ describe("BawApiService", () => {
     service = spec.service;
     apiRoot = spec.inject(API_ROOT);
     session = spec.inject(BawSessionService);
-    // associationInjector = spec.inject(ASSOCIATION_INJECTOR);
-    associationInjector = {} as any;
+    associationInjector = spec.inject(ASSOCIATION_INJECTOR);
 
     cacheSettings = spec.inject(CACHE_SETTINGS);
     cacheSettings.setCaching(true);

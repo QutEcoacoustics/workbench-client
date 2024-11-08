@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { id, IdOr } from "@baw-api/api-common";
 import { PROJECT } from "@baw-api/ServiceTokens";
 import { adminOrphanMenuItem } from "@components/admin/orphan/orphans.menus";
@@ -32,6 +31,7 @@ import {
 } from "./AttributeDecorators";
 import type { Project } from "./Project";
 import type { User } from "./User";
+import { AssociationInjector } from "./ImplementsInjector";
 
 /**
  * A site model.
@@ -103,7 +103,7 @@ export class Site extends AbstractModel<ISite> implements ISite {
   @hasMany<Site, Project>(PROJECT, "projectIds")
   public projects?: Project[];
 
-  public constructor(site: ISite, injector?: Injector) {
+  public constructor(site: ISite, injector?: AssociationInjector) {
     super(site, injector);
 
     this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;

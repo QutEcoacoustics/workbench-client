@@ -1,4 +1,5 @@
 import { Injector, Provider } from "@angular/core";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { BAW_SERVICE_OPTIONS } from "../baw-api/api-common";
 import { BawApiService, BawServiceOptions } from "../baw-api/baw-api.service";
 import {
@@ -17,12 +18,16 @@ export const associationInjectorProvider: Provider = {
   deps: [Injector],
 };
 
-function associationInjectorFactory(parentInjector: Injector): Injector {
-  const associationApiOptions = Object.freeze({
-    disableNotification: true,
-  }) satisfies BawServiceOptions;
+export const associationApiOptions = Object.freeze({
+  disableNotification: true,
+}) satisfies BawServiceOptions;
 
-  return Injector.create({
+function associationInjectorFactory(
+  parentInjector: Injector
+): AssociationInjector {
+  // I assign associationInjector to a variable first so that TypeScript will
+  // type-check the Injector before we disable type-checking in the brand cast
+  const associationInjector = Injector.create({
     name: "AssociationInjector",
     parent: parentInjector,
     providers: [
@@ -33,4 +38,10 @@ function associationInjectorFactory(parentInjector: Injector): Injector {
       ...serviceResolvers,
     ],
   });
+
+  // cast associationInjector so that we return the correct branded type
+  // warning: using "as" here disables type-checking for this line. Make sure
+  // that you have correctly type-checked the association injector before this
+  // type cast
+  return associationInjector as AssociationInjector;
 }

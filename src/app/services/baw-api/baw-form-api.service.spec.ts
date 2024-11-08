@@ -19,7 +19,7 @@ import { assertOk, getCallArgs, nStepObservable } from "@test/helpers/general";
 import { INTERNAL_SERVER_ERROR } from "http-status";
 import { ToastrService } from "ngx-toastr";
 import { noop, Subject } from "rxjs";
-import { associationInjectorProvider } from "@services/association-injector/association-injector.factory";
+import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
 import { BawApiInterceptor } from "./api.interceptor.service";
 import { BawApiService, unknownErrorCode } from "./baw-api.service";
 import { shouldNotFail, shouldNotSucceed } from "./baw-api.service.spec";
@@ -37,7 +37,7 @@ describe("BawFormApiService", () => {
       BawSessionService,
       BawApiService,
       mockProvider(ToastrService),
-      associationInjectorProvider,
+      mockAssociationInjector,
       {
         provide: HTTP_INTERCEPTORS,
         useClass: BawApiInterceptor,
