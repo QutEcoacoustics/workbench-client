@@ -23,7 +23,7 @@ import { AudioRecordingsService } from "./audio-recordings.service";
 type Model = AudioRecording;
 type Service = AudioRecordingsService;
 
-describe("AudioRecordingsService", function () {
+describe("AudioRecordingsService", () => {
   const createModel = () =>
     new AudioRecording(generateAudioRecording({ id: 5 }));
   const baseUrl = "/audio_recordings/";
@@ -35,7 +35,7 @@ describe("AudioRecordingsService", function () {
     providers: mockServiceProviders,
   });
 
-  beforeEach(function () {
+  beforeEach(() => {
     spec = createService();
     session = spec.inject(BawSessionService);
   });

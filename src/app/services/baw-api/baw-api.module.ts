@@ -2,6 +2,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { CacheModule } from "@services/cache/cache.module";
 import { ToastrModule } from "ngx-toastr";
+import { associationInjectorProvider } from "@services/association-injector/association-injector.factory";
 import { ConfigModule } from "../config/config.module";
 import { BawApiInterceptor } from "./api.interceptor.service";
 import { BawApiService } from "./baw-api.service";
@@ -19,6 +20,7 @@ import { serviceResolvers, services, serviceTokens } from "./ServiceProviders";
       useClass: BawApiInterceptor,
       multi: true,
     },
+    associationInjectorProvider,
     BawApiService,
     BawFormApiService,
     BawSessionService,

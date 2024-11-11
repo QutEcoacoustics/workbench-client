@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
 import { adminAnalysisJobMenuItem } from "@components/admin/analysis-jobs/analysis-jobs.menus";
 import { audioAnalysisMenuItem } from "@components/audio-analysis/audio-analysis.menus";
@@ -23,6 +22,7 @@ import {
 import type { SavedSearch } from "./SavedSearch";
 import type { Script } from "./Script";
 import type { User } from "./User";
+import { AssociationInjector } from "./ImplementsInjector";
 
 /**
  * An analysis job model.
@@ -97,7 +97,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   @hasOne<AnalysisJob, SavedSearch>(SAVED_SEARCH, "savedSearchId")
   public savedSearch?: SavedSearch;
 
-  public constructor(analysisJob: IAnalysisJob, injector?: Injector) {
+  public constructor(analysisJob: IAnalysisJob, injector?: AssociationInjector) {
     super(analysisJob, injector);
   }
 

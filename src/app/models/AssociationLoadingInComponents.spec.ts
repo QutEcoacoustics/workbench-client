@@ -1,4 +1,4 @@
-import { Component, Injector, Input } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -10,8 +10,10 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { nStepObservable } from "@test/helpers/general";
 import { NOT_FOUND } from "http-status";
 import { Subject } from "rxjs";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { hasMany, hasOne } from "./AssociationDecorators";
+import { AssociationInjector } from "./ImplementsInjector";
 
 class MockModel extends AbstractModel {
   public id: Id;
@@ -21,7 +23,7 @@ class MockModel extends AbstractModel {
   @hasMany<MockModel, AbstractModel>(MOCK, "ids")
   public readonly childModels: AssociatedModel[];
 
-  public constructor(opts: any, injector?: Injector) {
+  public constructor(opts: any, injector?: AssociationInjector) {
     super(opts, injector);
   }
 
@@ -62,7 +64,7 @@ describe("Association Decorators Loading In Components", () => {
   let api: MockStandardApiService;
   let component: MockComponent;
   let fixture: ComponentFixture<MockComponent>;
-  let injector: Injector;
+  let injector: AssociationInjector;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -76,7 +78,7 @@ describe("Association Decorators Loading In Components", () => {
 
     fixture = TestBed.createComponent(MockComponent);
     api = TestBed.inject(MockStandardApiService);
-    injector = TestBed.inject(Injector);
+    injector = TestBed.inject(ASSOCIATION_INJECTOR);
     component = fixture.componentInstance;
   });
 

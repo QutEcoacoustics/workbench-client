@@ -32,12 +32,15 @@ export class TagsService implements StandardApi<Tag> {
   public list(): Observable<Tag[]> {
     return this.api.list(Tag, endpoint(emptyParam, emptyParam));
   }
+
   public filter(filters: Filters<Tag>): Observable<Tag[]> {
     return this.api.filter(Tag, endpoint(emptyParam, filterParam), filters);
   }
+
   public show(model: IdOr<Tag>): Observable<Tag> {
     return this.api.show(Tag, endpoint(model, emptyParam));
   }
+
   public create(model: Tag): Observable<Tag> {
     return this.api.create(
       Tag,
@@ -46,10 +49,12 @@ export class TagsService implements StandardApi<Tag> {
       model
     );
   }
+
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/449
   public update(model: Tag): Observable<Tag> {
     return this.api.update(Tag, endpoint(model, emptyParam), model);
   }
+
   public destroy(model: IdOr<Tag>): Observable<Tag | void> {
     return this.api.destroy(endpoint(model, emptyParam));
   }

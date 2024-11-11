@@ -12,6 +12,8 @@ import { MockConfigModule } from "@services/config/configMock.module";
 import { CmsComponent } from "@shared/cms/cms.component";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { Provider } from "@angular/core";
+import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
 import {
   ApiCreate,
   ApiDestroy,
@@ -35,10 +37,11 @@ export const mockServiceImports = [
   CacheModule,
 ];
 
-export const mockServiceProviders = [
+export const mockServiceProviders: Provider[] = [
   BawApiService,
   BawFormApiService,
   BawSessionService,
+  mockAssociationInjector,
   mockProvider(ToastrService),
 ];
 

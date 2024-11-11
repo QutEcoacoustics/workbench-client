@@ -44,6 +44,7 @@ declare global {
         klass: string,
         options?: RouterLinkActiveOptions
       ): boolean;
+      toBeProvidedBy(injector: Injector): boolean;
     }
   }
 }

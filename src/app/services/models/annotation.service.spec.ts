@@ -8,18 +8,19 @@ import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recording
 import { MediaService } from "@services/media/media.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import { INJECTOR, Injector } from "@angular/core";
 import { of } from "rxjs";
 import { Tag } from "@models/Tag";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateTag } from "@test/fakes/Tag";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AnnotationService } from "./annotation.service";
 
 describe("AnnotationService", () => {
   let spec: SpectatorService<AnnotationService>;
-  let injector: SpyObject<Injector>;
+  let injector: SpyObject<AssociationInjector>;
 
   let mockAudioEvent: AudioEvent;
   let mockRecording: AudioRecording;
@@ -45,7 +46,7 @@ describe("AnnotationService", () => {
 
   function setup(): void {
     spec = createService();
-    injector = spec.inject(INJECTOR);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
 
     mockAudioEvent = new AudioEvent(generateAudioEvent(), injector);
     mockRecording = new AudioRecording(generateAudioRecording(), injector);

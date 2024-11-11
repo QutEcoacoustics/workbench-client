@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -32,6 +32,8 @@ import {
   switchMap,
   takeUntil,
 } from "rxjs";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { projectMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
@@ -95,7 +97,7 @@ class PermissionsComponent
     private permissionsApi: PermissionsService,
     private accountsApi: AccountsService,
     private route: ActivatedRoute,
-    private injector: Injector
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
   ) {
     super();
   }

@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
@@ -27,6 +26,7 @@ import { MockComponent, MockProvider } from "ng-mocks";
 import { of, Subject } from "rxjs";
 import { Harvest } from "@models/Harvest";
 import { generateHarvest } from "@test/fakes/Harvest";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { PermissionsShieldComponent } from "./permissions-shield.component";
 
 const mockUserBadge = MockComponent(UserBadgeComponent);
@@ -59,7 +59,7 @@ describe("PermissionsShieldComponent", () => {
         }),
       ],
     });
-    const injector = spec.inject(Injector);
+    const injector = spec.inject(ASSOCIATION_INJECTOR);
     const userApi = spec.inject(ACCOUNT.token);
     const projectApi = spec.inject(PROJECT.token);
 

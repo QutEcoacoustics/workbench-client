@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -21,12 +20,14 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AdminOrphanComponent } from "./details.component";
 
 describe("AdminOrphanComponent", () => {
   let component: AdminOrphanComponent;
   let fixture: ComponentFixture<AdminOrphanComponent>;
-  let injector: Injector;
+  let injector: AssociationInjector;
 
   function configureTestingModule(model: Site, error?: BawApiError) {
     TestBed.configureTestingModule({
@@ -48,7 +49,7 @@ describe("AdminOrphanComponent", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminOrphanComponent);
-    injector = TestBed.inject(Injector);
+    injector = TestBed.inject(ASSOCIATION_INJECTOR);
     const accountsApi = TestBed.inject(
       ACCOUNT.token
     ) as SpyObject<AccountsService>;

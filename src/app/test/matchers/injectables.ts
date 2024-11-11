@@ -12,6 +12,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { Ng } from "@test/types/ng";
+import { Injectable, Injector } from "@angular/core";
 import { matcherFailure, matcherSuccess } from ".";
 
 import CustomMatcherFactories = jasmine.CustomMatcherFactories;
@@ -206,10 +207,7 @@ const toHaveRoute = (util: MatchersUtil): CustomMatcher => ({
       return matcherFailure("Target element should exist");
     }
 
-    const directive = getDirective<RouterLink>(
-      target,
-      RouterLink
-    );
+    const directive = getDirective<RouterLink>(target, RouterLink);
     if (!directive) {
       return matcherFailure("RouterLinkWithHref directive should exist");
     }
@@ -342,6 +340,35 @@ const toHaveUrlActive = (util: MatchersUtil): CustomMatcher => ({
   },
 });
 
+/**
+ * Expect an injectable to be provided by a specific injector
+ * This can be useful for testing services that are provided by multiple
+ * injectors
+ */
+const toBeProvidedBy = (): CustomMatcher => ({
+  negativeCompare: (target: Injectable): CustomMatcherResult =>
+    target
+      ? matcherSuccess()
+      : matcherFailure("Expected target to be provided by"),
+  compare: (
+    target: Injectable,
+    expectedInjector: Injector
+  ): CustomMatcherResult => {
+    if (!target) {
+      return matcherFailure("Injectable was not defined");
+    }
+
+    const actualInjector = target["injector"];
+    if (!actualInjector) {
+      return matcherFailure("Injectable does not have a provider");
+    }
+
+    return actualInjector === expectedInjector
+      ? matcherSuccess()
+      : matcherFailure("Injectable was not provided by expected injector");
+  },
+});
+
 export const injectableMatchers: CustomMatcherFactories = {
   toHaveIcon,
   toHaveImage,
@@ -351,4 +378,5 @@ export const injectableMatchers: CustomMatcherFactories = {
   toHaveStrongRouteActive,
   toHaveUrl,
   toHaveUrlActive,
+  toBeProvidedBy,
 };

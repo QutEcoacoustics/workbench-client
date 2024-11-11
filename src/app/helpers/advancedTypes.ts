@@ -63,3 +63,34 @@ export type RecursivePartial<T> = {
 
 /** This value may be asynchronous */
 export type PotentiallyAsync<T> = T | Promise<T>;
+
+// this brand symbol should never be used at runtime
+// it is only used to have a type that cannot be instantiated by TypeScript
+// outside of the Brand function
+const brandSymbol = Symbol("brand");
+
+/**
+ * @summary
+ * a brand is a way of creating a type-alias that isn't compatible with its
+ * base type
+ * this is done by adding a symbol property key to the TypeScript type that only
+ * exists at compile time
+ *
+ * This can be used to create a discriminated union of two types at compile time
+ * that are otherwise identical at runtime
+ *
+ * @example
+ * ```ts
+ * type Pixel = Brand<number, "PxUnit">;
+ * type EmUnit = Brand<number, "EmUnit">;
+ *
+ * const width: Pixel = 10;
+ * const height: EmUnit = 10;
+ *
+ * // this will throw a type error
+ * const total = width + height;
+ * ```
+ */
+export type Brand<T, BrandName extends string> = T & {
+  [key in typeof brandSymbol]: BrandName;
+};

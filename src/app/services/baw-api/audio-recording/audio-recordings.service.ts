@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioRecording } from "@models/AudioRecording";
 import { Harvest } from "@models/Harvest";
@@ -41,14 +40,12 @@ export const audioRecordingMediaEndpoint = stringTemplate`/audio_recordings/${au
 
 @Injectable()
 export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
-  public constructor(
-    private api: BawApiService<AudioRecording>,
-    private session: BawSessionService
-  ) {}
+  public constructor(private api: BawApiService<AudioRecording>) {}
 
   public list(): Observable<AudioRecording[]> {
     return this.api.list(AudioRecording, endpoint(emptyParam, emptyParam));
   }
+
   public filter(
     filters: Filters<AudioRecording>
   ): Observable<AudioRecording[]> {
@@ -58,6 +55,7 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
       filters
     );
   }
+
   public show(model: IdOr<AudioRecording>): Observable<AudioRecording> {
     return this.api.show(AudioRecording, endpoint(model, emptyParam));
   }

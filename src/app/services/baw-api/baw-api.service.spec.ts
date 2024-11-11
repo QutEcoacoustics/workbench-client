@@ -1,6 +1,5 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TestRequest } from "@angular/common/http/testing";
-import { Injector } from "@angular/core";
 import {
   CREDENTIALS_CONTEXT,
   BawApiInterceptor,
@@ -40,6 +39,9 @@ import { assertOk } from "@test/helpers/general";
 import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, noop, Observable, Subject } from "rxjs";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
 import {
   BawSessionService,
   guestAuthToken,
@@ -76,7 +78,7 @@ class MockModel extends AbstractModel implements IMockModel {
     testConvert?: string;
   };
 
-  public constructor(data: IMockModel, modelInjector?: Injector) {
+  public constructor(data: IMockModel, modelInjector?: AssociationInjector) {
     super(data, modelInjector);
   }
 
@@ -115,7 +117,9 @@ describe("BawApiService", () => {
   let apiRoot: string;
   let session: BawSessionService;
   let service: BawApiService<MockModel>;
+  let associationInjector: AssociationInjector;
   let spec: SpectatorHttp<BawApiService<MockModel>>;
+
   const createService = createHttpFactory<BawApiService<MockModel>>({
     service: BawApiService,
     imports: [MockConfigModule, CacheModule],
@@ -129,6 +133,7 @@ describe("BawApiService", () => {
         useClass: BawApiInterceptor,
         multi: true,
       },
+      mockAssociationInjector,
     ],
   });
 
@@ -176,6 +181,7 @@ describe("BawApiService", () => {
     service = spec.service;
     apiRoot = spec.inject(API_ROOT);
     session = spec.inject(BawSessionService);
+    associationInjector = spec.inject(ASSOCIATION_INJECTOR);
 
     cacheSettings = spec.inject(CACHE_SETTINGS);
     cacheSettings.setCaching(true);
@@ -325,7 +331,10 @@ describe("BawApiService", () => {
 
           // we have a special case for GET and GET because these function signatures don't take a body argument
           // (the third argument in every other function)
-          if (httpMethod.method === HttpMethod.DELETE || httpMethod.method === HttpMethod.GET) {
+          if (
+            httpMethod.method === HttpMethod.DELETE ||
+            httpMethod.method === HttpMethod.GET
+          ) {
             functionCallOptions = [undefined, { withCredentials: false }];
           } else {
             functionCallOptions = [
@@ -347,7 +356,10 @@ describe("BawApiService", () => {
 
           let functionCallOptions: unknown[];
 
-          if (httpMethod.method === HttpMethod.DELETE || httpMethod.method === HttpMethod.GET) {
+          if (
+            httpMethod.method === HttpMethod.DELETE ||
+            httpMethod.method === HttpMethod.GET
+          ) {
             functionCallOptions = [undefined, { withCredentials: true }];
           } else {
             functionCallOptions = [
@@ -369,7 +381,10 @@ describe("BawApiService", () => {
 
           let functionCallOptions: unknown[];
 
-          if (httpMethod.method === HttpMethod.DELETE || httpMethod.method === HttpMethod.GET) {
+          if (
+            httpMethod.method === HttpMethod.DELETE ||
+            httpMethod.method === HttpMethod.GET
+          ) {
             functionCallOptions = [undefined, { withCredentials: false }];
           } else {
             functionCallOptions = [
@@ -615,7 +630,7 @@ describe("BawApiService", () => {
           beforeEach(() => {
             defaultBody = { id: 1, name: "test", caseConversion: {} };
             defaultFilter = { paging: { page: 1 } };
-            defaultBawMethodOptions = { };
+            defaultBawMethodOptions = {};
           });
 
           function errorRequest(error: BawApiError): jasmine.Spy {
@@ -656,13 +671,13 @@ describe("BawApiService", () => {
                   MockModel,
                   "/broken_link",
                   (model) => "/broken_link/" + model.id,
-                  new MockModel(defaultBody, service["injector"])
+                  new MockModel(defaultBody, associationInjector)
                 );
               case "update":
                 return service[method](
                   MockModel,
                   "/broken_link",
-                  new MockModel(defaultBody, service["injector"])
+                  new MockModel(defaultBody, associationInjector)
                 );
               case "destroy":
                 return service[method]("/broken_link");
@@ -718,7 +733,10 @@ describe("BawApiService", () => {
           if (singleResult) {
             it("should handle response", (done) => {
               const response = { meta: meta.single, data: responses.single };
-              const model = new MockModel(response.data, service["injector"]);
+              const model = new MockModel(
+                response.data,
+                associationInjector
+              );
               model.addMetadata(response.meta);
 
               successRequest(response);
@@ -752,7 +770,7 @@ describe("BawApiService", () => {
             it("should handle response", (done) => {
               const response = { meta: meta.multi, data: responses.multi };
               const models = response.data.map((_data) => {
-                const model = new MockModel(_data, service["injector"]);
+                const model = new MockModel(_data, associationInjector);
                 model.addMetadata(response.meta);
                 return model;
               });
@@ -797,7 +815,7 @@ describe("BawApiService", () => {
                 const response = { meta: meta.single, data: responses.single };
                 const model = new MockModel(
                   responses.single,
-                  service["injector"]
+                  associationInjector
                 );
                 model.addMetadata(response.meta);
 
@@ -823,7 +841,7 @@ describe("BawApiService", () => {
                 let count = 0;
                 const response = { meta: meta.multi, data: responses.multi };
                 const models = responses.multi.map((_data) => {
-                  const model = new MockModel(_data, service["injector"]);
+                  const model = new MockModel(_data, associationInjector);
                   model.addMetadata(response.meta);
                   return model;
                 });

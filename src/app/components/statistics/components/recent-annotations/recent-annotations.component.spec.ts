@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
@@ -42,6 +41,8 @@ import {
   interceptShowApiRequest,
 } from "@test/helpers/general";
 import { humanizedDuration } from "@test/helpers/dateTime";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { RecentAnnotationsComponent } from "./recent-annotations.component";
 
 describe("RecentAnnotationsComponent", () => {
@@ -54,8 +55,9 @@ describe("RecentAnnotationsComponent", () => {
   };
   let session: BawSessionService;
   let defaultAnnotation: AudioEvent;
-  let injector: Injector;
+  let injector: AssociationInjector;
   let spec: Spectator<RecentAnnotationsComponent>;
+
   const createComponent = createComponentFactory({
     component: RecentAnnotationsComponent,
     imports: [SharedModule, MockBawApiModule, RouterTestingModule],
@@ -148,7 +150,7 @@ describe("RecentAnnotationsComponent", () => {
 
   beforeEach(() => {
     spec = createComponent({ detectChanges: false });
-    injector = spec.inject(Injector);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
     api = {
       sites: spec.inject(SHALLOW_SITE.token),
       users: spec.inject(ACCOUNT.token),

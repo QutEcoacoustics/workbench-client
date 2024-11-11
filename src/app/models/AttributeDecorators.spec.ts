@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
@@ -6,6 +5,8 @@ import { API_ROOT } from "@services/config/config.tokens";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { INJECTOR } from "@angular/core";
 import { AbstractModel } from "./AbstractModel";
 import {
   BawAttributeMeta,
@@ -16,6 +17,7 @@ import {
   bawImage,
   bawPersistAttr,
 } from "./AttributeDecorators";
+import { AssociationInjector } from "./ImplementsInjector";
 
 class BaseModel extends AbstractModel {
   public get viewUrl(): string {
@@ -240,7 +242,7 @@ describe("Attribute Decorators", () => {
     function createModel(
       data?: { images?: ImageUrl[] | string; imageUrls?: ImageUrl[] },
       opts?: BawDecoratorOptions<any>,
-      injector?: Injector
+      injector?: AssociationInjector
     ) {
       class MockModel extends BaseModel {
         @bawImage(defaultImageUrl.url, opts)
@@ -339,14 +341,15 @@ describe("Attribute Decorators", () => {
     });
 
     describe("prepend api root", () => {
-      let injector: Injector;
+      let injector: AssociationInjector;
       let apiRoot: string;
 
       beforeEach(() => {
         TestBed.configureTestingModule({
           imports: [MockConfigModule],
+          providers: [{ provide: ASSOCIATION_INJECTOR, useExisting: INJECTOR }],
         }).compileComponents();
-        injector = TestBed.inject(Injector);
+        injector = TestBed.inject(ASSOCIATION_INJECTOR);
         apiRoot = TestBed.inject(API_ROOT);
       });
 

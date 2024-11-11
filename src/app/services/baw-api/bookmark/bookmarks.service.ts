@@ -25,6 +25,7 @@ export class BookmarksService implements StandardApi<Bookmark> {
   public list(): Observable<Bookmark[]> {
     return this.api.list(Bookmark, endpoint(emptyParam, emptyParam));
   }
+
   public filter(filters: Filters<Bookmark>): Observable<Bookmark[]> {
     return this.api.filter(
       Bookmark,
@@ -32,9 +33,11 @@ export class BookmarksService implements StandardApi<Bookmark> {
       filters
     );
   }
+
   public show(model: IdOr<Bookmark>): Observable<Bookmark> {
     return this.api.show(Bookmark, endpoint(model, emptyParam));
   }
+
   public create(model: Bookmark): Observable<Bookmark> {
     return this.api.create(
       Bookmark,
@@ -43,9 +46,11 @@ export class BookmarksService implements StandardApi<Bookmark> {
       model
     );
   }
+
   public update(model: Bookmark): Observable<Bookmark> {
     return this.api.update(Bookmark, endpoint(model, emptyParam), model);
   }
+
   public destroy(model: IdOr<Bookmark>): Observable<Bookmark | void> {
     return this.api.destroy(endpoint(model, emptyParam));
   }

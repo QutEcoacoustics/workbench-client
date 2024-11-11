@@ -2,11 +2,12 @@ import { Injector } from "@angular/core";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel, getUnknownViewUrl } from "./AbstractModel";
 import { bawPersistAttr } from "./AttributeDecorators";
+import { AssociationInjector } from "./ImplementsInjector";
 
 export class MockModel extends AbstractModel {
   public kind = "Mock Model";
 
-  public constructor(raw: Record<string, any>, protected injector?: Injector) {
+  public constructor(raw: Record<string, any>, protected injector?: AssociationInjector) {
     super(raw, injector);
   }
 
@@ -96,7 +97,7 @@ describe("AbstractModel", () => {
           return undefined;
         }
       }
-      const mockInjector: Injector = new MockInjector();
+      const mockInjector = new MockInjector() as AssociationInjector ;
       const model = new MockModel(defaultData, mockInjector);
       expect(model["injector"]).toEqual(mockInjector);
       expect<any>(Object.keys(model.getJsonAttributes())).not.toContain(
@@ -413,7 +414,7 @@ describe("AbstractModel", () => {
           return undefined;
         }
       }
-      const mockInjector: Injector = new MockInjector();
+      const mockInjector = new MockInjector() as AssociationInjector;
       const model = new MockModel(defaultData, mockInjector);
       expect(model["injector"]).toEqual(mockInjector);
       expect<any>(Object.keys(model.getFormDataOnlyAttributes())).not.toContain(

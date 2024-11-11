@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  Injector,
+  Inject,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -40,6 +40,8 @@ import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.ser
 import { AudioEvent } from "@models/AudioEvent";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
 import { annotationResolvers, AnnotationService } from "@services/models/annotation.service";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 // TODO: using extends here makes the interface loosely typed
@@ -75,7 +77,7 @@ class VerificationComponent
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    private injector: Injector
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
   ) {
     super();
   }

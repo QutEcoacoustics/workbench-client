@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -28,10 +27,12 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { BehaviorSubject, Subject } from "rxjs";
 import { humanizedDuration } from "@test/helpers/dateTime";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { TheirSitesComponent } from "./their-sites.component";
 
 describe("TheirSitesComponent", () => {
-  let injector: Injector;
+  let injector: AssociationInjector;
   let defaultUser: User;
   let defaultSite: Site;
   let sitesApi: SpyObject<ShallowSitesService>;
@@ -51,7 +52,7 @@ describe("TheirSitesComponent", () => {
         account: { model, error },
       },
     });
-    injector = spec.inject(Injector);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
     sitesApi = spec.inject(ShallowSitesService);
     projectsApi = spec.inject(PROJECT.token);
   }

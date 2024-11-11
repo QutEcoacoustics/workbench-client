@@ -15,13 +15,14 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { detectChanges } from "@test/helpers/changes";
 import { testAsset } from "@test/helpers/karma";
-import { INJECTOR, Injector } from "@angular/core";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
   let spectator: Spectator<GridTileContentComponent>;
 
-  let injectorSpy: SpyObject<Injector>;
+  let injectorSpy: SpyObject<AssociationInjector>;
   let contextRequestSpy: jasmine.Spy;
 
   let mockAnnotation: Annotation;
@@ -43,7 +44,7 @@ describe("GridTileContentComponent", () => {
       ],
     });
 
-    injectorSpy = spectator.inject(INJECTOR);
+    injectorSpy = spectator.inject(ASSOCIATION_INJECTOR);
 
     // I hard code the audio recording duration and event start/end times so
     // that I know the audio event will neatly fit within the audio recording

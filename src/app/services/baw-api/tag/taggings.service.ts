@@ -37,6 +37,7 @@ export class TaggingsService
       endpoint(analysisJob, audioEvent, emptyParam, emptyParam)
     );
   }
+
   public filter(
     filters: Filters<Tagging>,
     analysisJob: IdOr<AnalysisJob>,
@@ -48,6 +49,7 @@ export class TaggingsService
       filters
     );
   }
+
   public show(
     model: IdOr<Tagging>,
     analysisJob: IdOr<AnalysisJob>,
@@ -58,6 +60,7 @@ export class TaggingsService
       endpoint(analysisJob, audioEvent, model, emptyParam)
     );
   }
+
   public create(
     model: Tagging,
     analysisJob: IdOr<AnalysisJob>,
@@ -70,6 +73,7 @@ export class TaggingsService
       model
     );
   }
+
   public update(
     model: Tagging,
     analysisJob: IdOr<AnalysisJob>,
@@ -81,6 +85,7 @@ export class TaggingsService
       model
     );
   }
+
   public destroy(
     model: IdOr<Tagging>,
     analysisJob: IdOr<AnalysisJob>,

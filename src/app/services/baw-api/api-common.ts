@@ -3,7 +3,8 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
-import { Filters } from "./baw-api.service";
+import { InjectionToken } from "@angular/core";
+import { BawServiceOptions, Filters } from "./baw-api.service";
 
 /**
  * Variable is an id or AbstractModel
@@ -70,6 +71,11 @@ export type Filter = "filter";
 export const emptyParam: Empty = "";
 export const newParam: New = "new";
 export const filterParam: Filter = "filter";
+
+/**
+ * A service that can be configured using an injected BawServiceOptions object
+ */
+export const BAW_SERVICE_OPTIONS = new InjectionToken<BawServiceOptions>("baw.api.options");
 
 /**
  * API List functionality

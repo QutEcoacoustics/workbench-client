@@ -24,6 +24,7 @@ export class SavedSearchesService implements ImmutableApi<SavedSearch> {
   public list(): Observable<SavedSearch[]> {
     return this.api.list(SavedSearch, endpoint(emptyParam, emptyParam));
   }
+
   public filter(filters: Filters<SavedSearch>): Observable<SavedSearch[]> {
     return this.api.filter(
       SavedSearch,
@@ -31,9 +32,11 @@ export class SavedSearchesService implements ImmutableApi<SavedSearch> {
       filters
     );
   }
+
   public show(model: IdOr<SavedSearch>): Observable<SavedSearch> {
     return this.api.show(SavedSearch, endpoint(model, emptyParam));
   }
+
   public create(model: SavedSearch): Observable<SavedSearch> {
     return this.api.create(
       SavedSearch,
@@ -42,6 +45,7 @@ export class SavedSearchesService implements ImmutableApi<SavedSearch> {
       model
     );
   }
+
   public destroy(model: IdOr<SavedSearch>): Observable<SavedSearch | void> {
     return this.api.destroy(endpoint(model, emptyParam));
   }

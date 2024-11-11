@@ -1,7 +1,7 @@
 import {
   Component,
   ElementRef,
-  Injector,
+  Inject,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -28,6 +28,8 @@ import { firstValueFrom } from "rxjs";
 import { Region } from "@models/Region";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -51,7 +53,7 @@ class AnnotationSearchComponent
     protected config: NgbPaginationConfig,
     protected modals: NgbModal,
     protected annotationService: AnnotationService,
-    private injector: Injector
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
   ) {
     super(
       router,

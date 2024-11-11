@@ -1,5 +1,6 @@
 import { annotationResolvers, AnnotationService } from "@services/models/annotation.service";
 import { MediaService } from "@services/media/media.service";
+import { Provider } from "@angular/core";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
   analysisJobItemResultResolvers,
@@ -96,6 +97,12 @@ import { tagResolvers, TagsService } from "./tag/tags.service";
 import { userResolvers, UserService } from "./user/user.service";
 import { EventSummaryReportService, eventSummaryResolvers } from "./reports/event-report/event-summary-report.service";
 import { WebsiteStatusService } from "./website-status/website-status.service";
+
+interface ServiceProvider<T> {
+  serviceToken: Tokens.ServiceToken<T>;
+  service: T;
+  resolvers?: unknown;
+}
 
 const serviceList = [
   {
@@ -301,13 +308,14 @@ const serviceList = [
     serviceToken: Tokens.MEDIA,
     service: MediaService,
   }
-];
+] satisfies ServiceProvider<unknown>[];
 
-const services = serviceList.map(({ service }) => service);
+const services = serviceList.map(({ service }) => service) satisfies Provider[];
 const serviceTokens = serviceList.map(({ service, serviceToken }) => ({
   provide: serviceToken.token,
   useExisting: service,
-}));
+})) satisfies Provider[];
+
 const serviceResolvers: BawProvider[] = [];
 serviceList.forEach(({ resolvers }) => {
   if (resolvers) {

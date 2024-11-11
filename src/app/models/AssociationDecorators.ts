@@ -1,4 +1,7 @@
-import { ApiFilter, ApiShow } from "@baw-api/api-common";
+import {
+  ApiFilter,
+  ApiShow,
+} from "@baw-api/api-common";
 import { Filters } from "@baw-api/baw-api.service";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { KeysOfType } from "@helpers/advancedTypes";
@@ -11,13 +14,17 @@ import {
   Ids,
 } from "@interfaces/apiInterfaces";
 import { Observable, Subscription } from "rxjs";
-import { AbstractModel, AssociationInjector, UnresolvedModel } from "./AbstractModel";
+import {
+  AbstractModel,
+  UnresolvedModel,
+} from "./AbstractModel";
 import { User } from "./User";
+import { AssociationInjector, ImplementsAssociations } from "./ImplementsInjector";
 
 /**
  * Creates an association between the creatorId and its user model
  */
-export function creator<Parent extends AssociationInjector & HasCreator>() {
+export function creator<Parent extends ImplementsAssociations & HasCreator>() {
   const key: keyof Parent = "creatorId";
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }
@@ -25,7 +32,7 @@ export function creator<Parent extends AssociationInjector & HasCreator>() {
 /**
  * Creates an association between the updaterId and its user model
  */
-export function updater<Parent extends AssociationInjector & HasUpdater>() {
+export function updater<Parent extends ImplementsAssociations & HasUpdater>() {
   const key: keyof Parent = "updaterId";
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }
@@ -33,7 +40,7 @@ export function updater<Parent extends AssociationInjector & HasUpdater>() {
 /**
  * Creates an association between the deleterId and its user model
  */
-export function deleter<Parent extends AssociationInjector & HasDeleter>() {
+export function deleter<Parent extends ImplementsAssociations & HasDeleter>() {
   const key: keyof Parent = "deleterId";
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }
@@ -49,7 +56,7 @@ export function deleter<Parent extends AssociationInjector & HasDeleter>() {
  * This is a list of keys from the parent where the values can be retrieved
  */
 export function hasMany<
-  Parent extends AssociationInjector,
+  Parent extends ImplementsAssociations,
   Child extends AbstractModel,
   Params extends any[] = []
 >(
@@ -88,7 +95,7 @@ export function hasMany<
  * @param failureValue Value to represent a failure to retrieve the model/s
  */
 export function hasOne<
-  Parent extends AssociationInjector,
+  Parent extends ImplementsAssociations,
   Child extends AbstractModel,
   Params extends any[] = []
 >(
@@ -119,7 +126,7 @@ export function hasOne<
  * @param failureValue Value to represent a failure to retrieve the model/s
  */
 function createModelDecorator<
-  Parent extends AssociationInjector,
+  Parent extends ImplementsAssociations,
   Child extends AbstractModel,
   Params extends any[],
   Service
@@ -173,8 +180,12 @@ function createModelDecorator<
       return parent[backingFieldKey];
     }
 
-    // Get Angular Injector Service
-    const injector = parent["injector"];
+    // the injector should be an AssociationInjector that was provided by the
+    // baw-api.service
+    // we use a different injector for associations so that the the we can
+    // inject the correct options for the baw-api service without affecting
+    // the options for the rest of the application
+    const injector: AssociationInjector = parent["injector"];
     if (!injector) {
       throw new Error(
         `${parent} does not have injector service. Tried to access ${identifierKey.toString()}`

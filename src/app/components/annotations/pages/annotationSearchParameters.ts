@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { Params } from "@angular/router";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import {
@@ -27,7 +26,7 @@ import { hasMany } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { IParameterModel } from "@models/data/parametersModel";
-import { ImplementsInjector } from "@models/ImplementsInjector";
+import { AssociationInjector, HasAssociationInjector } from "@models/ImplementsInjector";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -99,12 +98,12 @@ export class AnnotationSearchParameters
   extends AbstractData
   implements
     IAnnotationSearchParameters,
-    ImplementsInjector,
+    HasAssociationInjector,
     IParameterModel<AudioEvent>
 {
   public constructor(
     protected queryStringParameters: Params = {},
-    public injector?: Injector
+    public injector?: AssociationInjector
   ) {
     const deserializedObject: IAnnotationSearchParameters =
       deserializeParamsToObject<IAnnotationSearchParameters>(

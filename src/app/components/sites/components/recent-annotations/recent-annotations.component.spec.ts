@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -22,6 +21,8 @@ import { nStepObservable } from "@test/helpers/general";
 import { MockProvider } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { RecentAnnotationsComponent } from "./recent-annotations.component";
 
 describe("RecentAnnotationsComponent", () => {
@@ -29,7 +30,7 @@ describe("RecentAnnotationsComponent", () => {
   let defaultTagging: Tagging;
   let defaultUser: User;
   let defaultTag: Tag;
-  let injector: Injector;
+  let injector: AssociationInjector;
   let spec: Spectator<RecentAnnotationsComponent>;
   const createComponent = createComponentFactory({
     component: RecentAnnotationsComponent,
@@ -117,7 +118,7 @@ describe("RecentAnnotationsComponent", () => {
       props: { site: defaultSite },
     });
 
-    injector = spec.inject(Injector);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
     defaultSite["injector"] = injector;
     defaultTagging = new Tagging(generateTagging(), injector);
     defaultUser = new User(generateUser(), injector);

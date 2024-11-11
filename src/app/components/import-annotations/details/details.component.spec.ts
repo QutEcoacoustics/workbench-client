@@ -9,7 +9,6 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastrService } from "ngx-toastr";
 import { AudioEventImport, IAudioEventImport } from "@models/AudioEventImport";
 import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
-import { Injector } from "@angular/core";
 import {
   AudioEventImportFileRead,
   IAudioEventImportFileRead,
@@ -37,12 +36,14 @@ import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { Filters } from "@baw-api/baw-api.service";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { fakeAsync, flush, tick } from "@angular/core/testing";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AnnotationsDetailsComponent } from "./details.component";
 
 describe("AnnotationsDetailsComponent", () => {
   let spectator: SpectatorRouting<AnnotationsDetailsComponent>;
 
-  let injector: SpyObject<Injector>;
+  let injector: SpyObject<AssociationInjector>;
   let mockTagsService: SpyObject<TagsService>;
   let mockEventsService: SpyObject<ShallowAudioEventsService>;
   let mockAudioEventImportService: SpyObject<AudioEventImportService>;
@@ -72,7 +73,7 @@ describe("AnnotationsDetailsComponent", () => {
       },
     });
 
-    injector = spectator.inject(Injector);
+    injector = spectator.inject(ASSOCIATION_INJECTOR);
     mockAudioEventImport["injector"] = injector;
 
     mockAudioEventImport.files.map(

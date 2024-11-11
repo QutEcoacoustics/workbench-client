@@ -1,5 +1,5 @@
 import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
+import { Inject, Injectable, Optional } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
 import { toSnakeCase } from "@helpers/case-converter/case-converter";
 import {
@@ -21,8 +21,11 @@ import { Observable, iif, of, throwError } from "rxjs";
 import { catchError, concatMap, map, switchMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { BawSessionService } from "./baw-session.service";
 import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
+import { BAW_SERVICE_OPTIONS } from "./api-common";
 
 export const defaultApiPageSize = 25;
 export const unknownErrorCode = -1;
@@ -45,6 +48,7 @@ export const defaultApiHeaders = new HttpHeaders({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   "Content-Type": "application/json",
 });
+
 /** Headers for MultiPart API requests */
 export const multiPartApiHeaders = new HttpHeaders({
   // Do not set Content-Type for this request, otherwise web browsers wont calculate boundaries automatically
@@ -52,11 +56,12 @@ export const multiPartApiHeaders = new HttpHeaders({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Accept: "application/json",
 });
-export const defaultBawServiceOptions: Required<BawServiceOptions> = {
+
+export const defaultBawServiceOptions = Object.freeze({
   disableNotification: false,
   withCredentials: true,
   cacheOptions: { cache: false },
-};
+}) satisfies Required<BawServiceOptions>;
 
 /**
  * Interface with BAW Server Rest API
@@ -116,7 +121,7 @@ export class BawApiService<
     options: Partial<BawServiceOptions>
   ): Required<BawServiceOptions> {
     return {
-      ...defaultBawServiceOptions,
+      ...this.instanceOptions,
       ...options,
     };
   }
@@ -133,25 +138,39 @@ export class BawApiService<
   // because users can input a partial options object, it is possible for the disableNotification property to be undefined
   // this can be a problem because it will default to a falsy value, not the default option
   // therefore, this method should be used to check if we should show a toast notification if the request fails
-  private shouldNotify(options: Partial<BawServiceOptions>): boolean {
-    return (
-      options?.disableNotification ??
-      defaultBawServiceOptions.disableNotification
-    );
+  private suppressErrors(options: Partial<BawServiceOptions>): boolean {
+    const realizedOptions = this.buildServiceOptions(options);
+    return realizedOptions.disableNotification;
   }
+
+  private instanceOptions: Required<BawServiceOptions>;
 
   public constructor(
     @Inject(API_ROOT) protected apiRoot: string,
     @Inject(IS_SERVER_PLATFORM) protected isServer: boolean,
     protected manager: HttpCacheManager,
     protected http: HttpClient,
-    protected injector: Injector,
     protected session: BawSessionService,
     protected notifications: ToastrService,
-    @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings
+    @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
+    @Inject(ASSOCIATION_INJECTOR) protected associationInjector: AssociationInjector,
+    @Optional() @Inject(BAW_SERVICE_OPTIONS) private options: BawServiceOptions
   ) {
+    // by merging the default options with the injected options, we can override
+    // the default options by injecting a partial options object
+    // by having a full default options object, we can ensure that all options
+    // are set
+    //
+    // the following order of precedence is used:
+    // parameter options > injected options > default options
+    this.instanceOptions = Object.assign(
+      {},
+      defaultBawServiceOptions,
+      this.options
+    );
+
     const createModel = (cb: ClassBuilder, data: Model, meta: Meta): Model => {
-      const model = new cb(data, this.injector);
+      const model = new cb(data, this.associationInjector);
       model.addMetadata(meta);
       return model;
     };
@@ -211,7 +230,7 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpGet(path, defaultApiHeaders, options)),
       map(this.handleCollectionResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.shouldNotify(options)))
+      catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }
 
@@ -231,7 +250,7 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleCollectionResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.shouldNotify(options)))
+      catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }
 
@@ -251,7 +270,7 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleSingleResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.shouldNotify(options)))
+      catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }
 
@@ -269,7 +288,7 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpGet(path, defaultApiHeaders, options)),
       map(this.handleSingleResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.shouldNotify(options)))
+      catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }
 
@@ -326,7 +345,7 @@ export class BawApiService<
       ),
       // there is no map function here, because the handleSingleResponse method is invoked on the POST and PUT requests
       // individually. Moving the handleSingleResponse mapping here would result in the response object being instantiated twice
-      catchError((err) => this.handleError(err, this.shouldNotify(options)))
+      catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }
 
@@ -369,7 +388,7 @@ export class BawApiService<
           : (data) => of(data)
       ),
       map(this.handleSingleResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.shouldNotify(options)))
+      catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }
 
@@ -385,7 +404,7 @@ export class BawApiService<
     return this.httpDelete(path, undefined, options).pipe(
       map(this.handleEmptyResponse),
       tap(() => this.clearCache(path)),
-      catchError((err) => this.handleError(err, this.shouldNotify(options)))
+      catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }
 

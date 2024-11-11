@@ -24,6 +24,7 @@ export class ProgressEventsService implements ReadAndCreateApi<ProgressEvent> {
   public list(): Observable<ProgressEvent[]> {
     return this.api.list(ProgressEvent, endpoint(emptyParam, emptyParam));
   }
+
   public filter(filters: Filters<ProgressEvent>): Observable<ProgressEvent[]> {
     return this.api.filter(
       ProgressEvent,
@@ -31,9 +32,11 @@ export class ProgressEventsService implements ReadAndCreateApi<ProgressEvent> {
       filters
     );
   }
+
   public show(model: IdOr<ProgressEvent>): Observable<ProgressEvent> {
     return this.api.show(ProgressEvent, endpoint(model, emptyParam));
   }
+
   public create(model: ProgressEvent): Observable<ProgressEvent> {
     return this.api.create(
       ProgressEvent,

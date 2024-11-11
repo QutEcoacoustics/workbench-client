@@ -29,6 +29,7 @@ export class TagGroupsService implements StandardApi<TagGroup> {
   public list(): Observable<TagGroup[]> {
     return this.api.list(TagGroup, endpoint(emptyParam, emptyParam));
   }
+
   public filter(filters: Filters<TagGroup>): Observable<TagGroup[]> {
     return this.api.filter(
       TagGroup,
@@ -36,9 +37,11 @@ export class TagGroupsService implements StandardApi<TagGroup> {
       filters
     );
   }
+
   public show(model: IdOr<TagGroup>): Observable<TagGroup> {
     return this.api.show(TagGroup, endpoint(model, emptyParam));
   }
+
   public create(model: TagGroup): Observable<TagGroup> {
     return this.api.create(
       TagGroup,
@@ -47,9 +50,11 @@ export class TagGroupsService implements StandardApi<TagGroup> {
       model
     );
   }
+
   public update(model: TagGroup): Observable<TagGroup> {
     return this.api.update(TagGroup, endpoint(model, emptyParam), model);
   }
+
   public destroy(model: IdOr<TagGroup>): Observable<TagGroup | void> {
     return this.api.destroy(endpoint(model, emptyParam));
   }

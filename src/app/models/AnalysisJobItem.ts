@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
@@ -6,6 +5,7 @@ import type { AnalysisJob } from "./AnalysisJob";
 import { hasOne } from "./AssociationDecorators";
 import { bawDateTime, bawReadonlyConvertCase } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
+import { AssociationInjector } from "./ImplementsInjector";
 
 export interface IAnalysisJobItem {
   id?: Id;
@@ -45,7 +45,7 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   @hasOne<AnalysisJobItem, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
 
-  public constructor(analysisJobItem: IAnalysisJobItem, injector?: Injector) {
+  public constructor(analysisJobItem: IAnalysisJobItem, injector?: AssociationInjector) {
     super(analysisJobItem, injector);
   }
 

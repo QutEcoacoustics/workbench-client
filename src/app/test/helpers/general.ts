@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { ApiFilter, ApiShow } from "@baw-api/api-common";
 import { Filters } from "@baw-api/baw-api.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
@@ -10,6 +9,7 @@ import {
 } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { SpyObject } from "@ngneat/spectator";
 import { Subject } from "rxjs";
 
@@ -93,7 +93,7 @@ export function interceptCustomApiRequest<
 >(
   service: Service,
   method: keyof Service,
-  injector: Injector,
+  injector: AssociationInjector,
   model: Errorable<Data> | Errorable<Data[]>,
   callback: AbstractModelConstructor<Model>
 ) {
@@ -123,7 +123,7 @@ export function interceptCustomApiRequest<
  */
 export function interceptShowApiRequest<Data, Model extends AbstractModel>(
   service: SpyObject<ApiShow<Model>>,
-  injector: Injector,
+  injector: AssociationInjector,
   model: Errorable<Data>,
   callback: AbstractModelConstructor<Model>
 ): Promise<any> {
@@ -140,7 +140,7 @@ export function interceptShowApiRequest<Data, Model extends AbstractModel>(
  */
 export function interceptFilterApiRequest<Data, Model extends AbstractModel>(
   service: SpyObject<ApiFilter<Model>>,
-  injector: Injector,
+  injector: AssociationInjector,
   models: Errorable<Data[]>,
   callback: AbstractModelConstructor<Model>
 ): Promise<any> {

@@ -28,12 +28,15 @@ export class ScriptsService implements NonDestructibleApi<Script> {
   public list(): Observable<Script[]> {
     return this.api.list(Script, endpoint(emptyParam, emptyParam));
   }
+
   public filter(filters: Filters<IScript>): Observable<Script[]> {
     return this.api.filter(Script, endpoint(emptyParam, filterParam), filters);
   }
+
   public show(model: IdOr<Script>): Observable<Script> {
     return this.api.show(Script, endpoint(model, emptyParam));
   }
+
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
   public create(model: Script): Observable<Script> {
     return this.api.create(
@@ -43,6 +46,7 @@ export class ScriptsService implements NonDestructibleApi<Script> {
       model
     );
   }
+
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
   public update(model: Script): Observable<Script> {
     return this.api.update(Script, endpoint(model, emptyParam), model);

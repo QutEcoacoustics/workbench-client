@@ -32,6 +32,7 @@ export class RegionsService implements StandardApi<Region, [IdOr<Project>]> {
   public list(project: IdOr<Project>): Observable<Region[]> {
     return this.api.list(Region, endpoint(project, emptyParam, emptyParam));
   }
+
   public filter(
     filters: Filters<IRegion>,
     project: IdOr<Project>
@@ -42,9 +43,11 @@ export class RegionsService implements StandardApi<Region, [IdOr<Project>]> {
       filters
     );
   }
+
   public show(model: IdOr<Region>, project: IdOr<Project>): Observable<Region> {
     return this.api.show(Region, endpoint(project, model, emptyParam));
   }
+
   public create(model: Region, project: IdOr<Project>): Observable<Region> {
     return this.api.create(
       Region,
@@ -53,9 +56,11 @@ export class RegionsService implements StandardApi<Region, [IdOr<Project>]> {
       model
     );
   }
+
   public update(model: Region, project: IdOr<Project>): Observable<Region> {
     return this.api.update(Region, endpoint(project, model, emptyParam), model);
   }
+
   public destroy(
     model: IdOr<Region>,
     project: IdOr<Project>
@@ -75,6 +80,7 @@ export class ShallowRegionsService implements StandardApi<Region> {
   public list(): Observable<Region[]> {
     return this.api.list(Region, endpointShallow(emptyParam, emptyParam));
   }
+
   public filter(filters: Filters<Region>): Observable<Region[]> {
     return this.api.filter(
       Region,
@@ -82,9 +88,11 @@ export class ShallowRegionsService implements StandardApi<Region> {
       filters
     );
   }
+
   public show(model: IdOr<Region>): Observable<Region> {
     return this.api.show(Region, endpointShallow(model, emptyParam));
   }
+
   public create(model: Region): Observable<Region> {
     return this.api.create(
       Region,
@@ -93,9 +101,11 @@ export class ShallowRegionsService implements StandardApi<Region> {
       model
     );
   }
+
   public update(model: Region): Observable<Region> {
     return this.api.update(Region, endpointShallow(model, emptyParam), model);
   }
+
   public destroy(model: IdOr<Region>): Observable<Region | void> {
     return this.api.destroy(endpointShallow(model, emptyParam));
   }

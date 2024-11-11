@@ -6,7 +6,6 @@ import { ToastrService } from "ngx-toastr";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
-import { Injector } from "@angular/core";
 import { SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
@@ -16,6 +15,7 @@ import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { generateHarvest } from "@test/fakes/Harvest";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AllUploadsComponent } from "./all-uploads.component";
 
 // the functionality that the project names are shown in the harvest list
@@ -38,7 +38,7 @@ describe("AllUploadsComponent", () => {
 
     spectator = createComponent({ detectChanges: false });
 
-    const injector = spectator.inject(Injector);
+    const injector = spectator.inject(ASSOCIATION_INJECTOR);
     fakeHarvest["injector"] = injector;
 
     fakeHarvestApi = spectator.inject(SHALLOW_HARVEST.token);

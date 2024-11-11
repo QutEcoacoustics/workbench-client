@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { Params } from "@angular/router";
 import {
   AUDIO_EVENT_PROVENANCE,
@@ -27,7 +26,7 @@ import { CollectionIds } from "@interfaces/apiInterfaces";
 import { hasMany } from "@models/AssociationDecorators";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { EventSummaryReport } from "@models/EventSummaryReport";
-import { ImplementsInjector } from "@models/ImplementsInjector";
+import { AssociationInjector, HasAssociationInjector } from "@models/ImplementsInjector";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
@@ -79,12 +78,12 @@ const serializationTable: IQueryStringParameterSpec = {
 export class EventSummaryReportParameters
   implements
     IEventSummaryReportParameters,
-    ImplementsInjector,
+    HasAssociationInjector,
     IParameterModel<EventSummaryReport>
 {
   public constructor(
     queryStringParameters: Params = {},
-    public injector?: Injector
+    public injector?: AssociationInjector
   ) {
     const deserializedObject: IEventSummaryReportParameters =
       deserializeParamsToObject<IEventSummaryReportParameters>(

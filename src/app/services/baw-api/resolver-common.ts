@@ -66,7 +66,7 @@ export abstract class BawResolver<
     // Store reference to 'this' values before 'this' is changed inside class
     const { uniqueId, params: serviceArgs, resolverFn } = this;
 
-    class Resolver  {
+    class Resolver {
       public constructor(private api: Service) {}
 
       /**
@@ -140,8 +140,8 @@ export abstract class BawResolver<
   public abstract createProviders(
     name: string,
     resolver: Type<{
-    resolve: ResolveFn<ResolvedModel<OutputModel>>;
-}>,
+      resolve: ResolveFn<ResolvedModel<OutputModel>>;
+    }>,
     deps: Type<Service>[]
   ): ResolverName & { providers: BawProvider[] };
 
@@ -239,8 +239,8 @@ export class ListResolver<
   public createProviders(
     name: string,
     resolver: Type<{
-    resolve: ResolveFn<ResolvedModel<Model[]>>;
-}>,
+      resolve: ResolveFn<ResolvedModel<Model[]>>;
+    }>,
     deps: Type<Service>[]
   ) {
     return {
@@ -279,8 +279,8 @@ export class ShowResolver<
   public createProviders(
     name: string,
     resolver: Type<{
-    resolve: ResolveFn<ResolvedModel<Model>>;
-}>,
+      resolve: ResolveFn<ResolvedModel<Model>>;
+    }>,
     deps: Type<Service>[]
   ) {
     return {
@@ -324,8 +324,8 @@ export class ShowOptionalResolver<
   public createProviders(
     name: string,
     resolver: Type<{
-    resolve: ResolveFn<ResolvedModel<Model>>;
-}>,
+      resolve: ResolveFn<ResolvedModel<Model>>;
+    }>,
     deps: Type<Service>[]
   ) {
     return {
@@ -351,8 +351,8 @@ export class ShowOptionalResolver<
 export interface BawProvider {
   provide: string;
   useClass: Type<{
-    resolve: ResolveFn<any>;
-}>;
+    resolve: ResolveFn<any>
+  }>;
   deps: Type<any>[];
 }
 

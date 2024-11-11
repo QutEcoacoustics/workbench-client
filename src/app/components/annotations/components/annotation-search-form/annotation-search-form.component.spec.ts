@@ -6,7 +6,6 @@ import {
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
-import { Injector, INJECTOR } from "@angular/core";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { TagsService } from "@baw-api/tag/tags.service";
@@ -30,11 +29,13 @@ import { Params } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
   let spectator: Spectator<AnnotationSearchFormComponent>;
-  let injector: SpyObject<Injector>;
+  let injector: SpyObject<AssociationInjector>;
 
   let tagsApiSpy: SpyObject<TagsService>;
   let sitesApiSpy: SpyObject<ShallowSitesService>;
@@ -55,7 +56,7 @@ describe("AnnotationSearchFormComponent", () => {
   function setup(params: Params = {}): void {
     spectator = createComponent({ detectChanges: false });
 
-    injector = spectator.inject(INJECTOR);
+    injector = spectator.inject(ASSOCIATION_INJECTOR);
     tagsApiSpy = spectator.inject(TAG.token);
     sitesApiSpy = spectator.inject(SHALLOW_SITE.token);
     recordingsApiSpy = spectator.inject(AUDIO_RECORDING.token);

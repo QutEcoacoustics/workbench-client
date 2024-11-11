@@ -1,4 +1,3 @@
-import { Injector } from "@angular/core";
 import { assetRoot } from "@services/config/config.service";
 import {
   myAccountMenuItem,
@@ -14,6 +13,7 @@ import {
 } from "../interfaces/apiInterfaces";
 import { AbstractModel, AbstractModelWithoutId } from "./AbstractModel";
 import { bawDateTime, bawImage, bawPersistAttr } from "./AttributeDecorators";
+import { AssociationInjector } from "./ImplementsInjector";
 
 const deletedUserId = -1;
 const unknownUserId = -2;
@@ -54,7 +54,7 @@ export class User extends AbstractModel<IUser> implements IUser {
    * Deleted User. This is used when a user has been soft deleted
    * from the API.
    */
-  public static getDeletedUser(injector: Injector): User {
+  public static getDeletedUser(injector: AssociationInjector): User {
     return new User(
       {
         id: deletedUserId,
@@ -68,7 +68,7 @@ export class User extends AbstractModel<IUser> implements IUser {
    * Unknown User. This is used when the current logged in user/guest
    * does not have the permissions to view a user.
    */
-  public static getUnknownUser(injector: Injector): User {
+  public static getUnknownUser(injector: AssociationInjector): User {
     return new User(
       {
         id: unknownUserId,
@@ -118,7 +118,7 @@ export class User extends AbstractModel<IUser> implements IUser {
   @bawDateTime()
   public readonly lastSeenAt?: DateTimeTimezone;
 
-  public constructor(user: IUser, injector?: Injector) {
+  public constructor(user: IUser, injector?: AssociationInjector) {
     super(user, injector);
     this.tzinfoTz = this.tzinfoTz ?? this.timezoneInformation?.identifier;
   }
