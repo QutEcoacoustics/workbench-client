@@ -82,16 +82,19 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
-          # TODO: Re-enable. This is currently disabled because the CI can't find the FIREFOX_BIN environment variable
-          # this might be a bug with the macOS image provided by GitHub or the karma-firefox-launcher that we use
-          # (which is deprecated)
-          # - macOS-latest
+          - macOS-latest
         browsers:
           - ChromeHeadless
           - FirefoxHeadless
     steps:
       - name: Checkout Workbench Client
         uses: actions/checkout@v4
+
+      # macos latest points to the arm MacOS runner that doesn't come with
+      # Firefox installed. Therefore, we install Firefox manually
+      - name: Install Firefox
+        if: matrix.os == 'macOS-latest'
+        run: brew install --cask firefox
 
       - name: Install Node.js
         uses: actions/setup-node@v4
