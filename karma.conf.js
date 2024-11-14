@@ -6,6 +6,7 @@ var maxSigned32BitInt = Math.pow(2, 31) - 1;
 // GitHub Actions sets the CI environment variable to true
 // see: https://github.blog/changelog/2020-04-15-github-actions-sets-the-ci-environment-variable-to-true
 var isCi = process.env.CI === "true";
+var isMacOS = process.platform === "darwin";
 
 module.exports = function (config) {
   config.set({
@@ -23,7 +24,14 @@ module.exports = function (config) {
       require("karma-junit-reporter"),
     ],
     client: {
-      clearContext: false, // leave Jasmine Spec Runner output visible in browser
+      // clearContext will clear the context window (the iframe that the tests
+      // run in) after each test completes
+      //
+      // clearContext has to be set to false when running tests on on
+      // MacOS Chrome otherwise tests will fail with the error
+      // "Some of your tests did a full page reload!"
+      // see: https://github.com/karma-runner/karma/issues/3887
+      clearContext: isMacOS,
     },
     coverageIstanbulReporter: {
       dir: require("path").join(__dirname, "./coverage/workbench-client"),
