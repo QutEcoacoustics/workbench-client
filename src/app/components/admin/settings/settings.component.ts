@@ -27,7 +27,7 @@ import { adminSettingsMenuItem } from "./settings.menus";
         (change)="cacheSettings.setCaching($any($event.target).checked)"
       />
       <label class="form-check-label" for="enable-cache">
-        Enable/Disable caching of API requests
+        Enable caching of API requests
       </label>
     </div>
 
@@ -41,7 +41,7 @@ import { adminSettingsMenuItem } from "./settings.menus";
         (change)="cacheSettings.setLogging($any($event.target).checked)"
       />
       <label class="form-check-label" for="enable-cache-logging">
-        Enable/Disable cache logging in the console
+        Enable cache logging in the console
       </label>
     </div>
   `,

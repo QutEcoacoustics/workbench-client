@@ -24,6 +24,7 @@ import {
   switchMap,
   tap,
 } from "rxjs/operators";
+import { NgHttpCachingService } from "ng-http-caching";
 import { UserService } from "../user/user.service";
 
 const signUpParam = "sign_up" as const;
@@ -44,7 +45,8 @@ export class SecurityService {
     private formApi: BawFormApiService<Session>,
     private userService: UserService,
     private cookies: CookieService,
-    private session: BawSessionService
+    private session: BawSessionService,
+    private httpCache: NgHttpCachingService
   ) {
     this.updateAuthToken();
   }
@@ -244,6 +246,10 @@ export class SecurityService {
    * Clear session and cookie data
    */
   private clearData(): void {
+    // we clear the http cache when changing the authentication state so that
+    // the user doesn't see stale data from the previous user
+    this.httpCache.clearCache();
+
     this.session.clearLoggedInUser();
     this.cookies.deleteAll();
   }

@@ -30,6 +30,8 @@ import { TitleStrategy } from "@angular/router";
 import { AnnotationsImportModule } from "@components/import-annotations/import-annotations.module";
 import { WebsiteStatusModule } from "@components/website-status/website-status.module";
 import { AnnotationModule } from "@components/annotations/annotation.module";
+import { NgHttpCachingConfig, NgHttpCachingModule } from "ng-http-caching";
+import { HttpRequest } from "@angular/common/http";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { toastrRoot } from "./app.helper";
@@ -90,6 +92,13 @@ export const appImports = [
   ErrorModule,
 ];
 
+// this is here just for testing and is not its final location
+const cachingConfig: NgHttpCachingConfig = {
+  isCacheable: (request: HttpRequest<any>) => {
+    return request.method === "POST" && request.url.endsWith("/filter")
+  },
+};
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -99,6 +108,10 @@ export const appImports = [
     AppRoutingModule,
     ConfigModule,
     BawApiModule,
+
+    // for http request batching and caching
+    NgHttpCachingModule.forRoot(cachingConfig),
+
     // Rehydrate data from SSR. This must be set after BawApiModule so that the
     // interceptor runs after the API interceptor
     RehydrationModule,
