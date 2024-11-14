@@ -25,16 +25,12 @@ export class AnnotationService {
   ) {}
 
   public async show(audioEvent: AudioEvent): Promise<Annotation> {
-    const tags = await this.showTags(audioEvent);
+    const audioEventTags = await this.showTags(audioEvent);
     const audioRecording = await this.showAudioRecording(audioEvent);
-
-    // TODO: this is a tempoary patch for ecoacoustics/web-components#213
-    // until it is fixed upstream
-    const tagDescriptor = tags.map((tag) => tag.text).join(", ");
 
     const data = {
       ...audioEvent,
-      tags: tagDescriptor,
+      tags: audioEventTags,
       audioRecording,
     };
 
