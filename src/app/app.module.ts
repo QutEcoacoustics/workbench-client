@@ -95,7 +95,22 @@ export const appImports = [
 // this is here just for testing and is not its final location
 const cachingConfig: NgHttpCachingConfig = {
   isCacheable: (request: HttpRequest<any>) => {
-    return request.method === "POST" && request.url.endsWith("/filter")
+    if (request.method === "GET" || request.method === "HEAD") {
+      return true;
+    }
+
+    return request.method === "POST" && request.url.endsWith("/filter");
+  },
+  getKey: (req: HttpRequest<any>) => {
+    const base = req.method + "@" + req.urlWithParams;
+    const requestBody = req.body;
+    if (!requestBody || typeof requestBody !== "object") {
+      return base;
+    }
+
+    // base64 encode the body
+    const body = JSON.stringify(req.body);
+    return base + ":" + btoa(body);
   },
 };
 
