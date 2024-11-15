@@ -1,9 +1,4 @@
-import {
-  HttpClient,
-  HttpContext,
-  HttpHeaders,
-  HttpRequest,
-} from "@angular/common/http";
+import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, Optional } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
 import { toSnakeCase } from "@helpers/case-converter/case-converter";
@@ -30,7 +25,7 @@ import {
   NgHttpCachingService,
   withNgHttpCachingContext,
 } from "ng-http-caching";
-import { defaultCachingConfig } from "@services/cache/cache.module";
+import { defaultCachingConfig } from "@services/cache/ngHttpCachingConfig";
 import { BawSessionService } from "./baw-session.service";
 import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
 import { BAW_SERVICE_OPTIONS } from "./api-common";
@@ -119,8 +114,19 @@ export class BawApiService<
    *
    * @param req API request
    */
-  private clearCache = (req: HttpRequest<any>) => {
-    // this.cacheManager.deleteFromCache(req);
+  private clearCache = (_path: string) => {
+    // TODO: we should do targeting cache invalidation and invalidate all cache
+    // keys that contain the item being deleted
+    //
+    // this is harder than expected because cached requests sometimes contain
+    // url parameters, we also need to invalidate all cache items for filter
+    // requests where the body contains the item being deleted, and we would
+    // need to invalidate all cached models which reference the item being
+    // deleted as an associated model.
+    //
+    // in the interest of time, I have decided to invalidate all cache items
+    // to prevent any potential issues with stale data
+    this.cacheManager.clearCache();
   };
 
   // because users can create a partial options object, we need to merge the partial options with the default options
@@ -134,7 +140,9 @@ export class BawApiService<
     };
   }
 
-  private buildCachingOptions(options: Partial<BawServiceOptions>): NgHttpCachingConfig {
+  private buildCachingOptions(
+    options: Partial<BawServiceOptions>
+  ): NgHttpCachingConfig {
     return {
       ...this.instanceOptions.cacheOptions,
       ...options.cacheOptions,
@@ -419,7 +427,7 @@ export class BawApiService<
   ): Observable<null> {
     return this.httpDelete(path, undefined, options).pipe(
       map(this.handleEmptyResponse),
-      tap((req) => this.clearCache(req)),
+      tap(() => this.clearCache(path)),
       catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }

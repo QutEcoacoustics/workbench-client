@@ -11,7 +11,7 @@ import {
   SsrContext,
   WebsiteStatus,
 } from "@models/WebsiteStatus";
-import { disableCache } from "@services/cache/cache.module";
+import { disableCache } from "@services/cache/ngHttpCachingConfig";
 import {
   Observable,
   catchError,

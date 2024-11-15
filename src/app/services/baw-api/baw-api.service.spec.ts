@@ -2,6 +2,7 @@ import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TestRequest } from "@angular/common/http/testing";
 import {
   BawApiInterceptor,
+  CREDENTIALS_CONTEXT,
 } from "@baw-api/api.interceptor.service";
 import {
   ApiResponse,
@@ -39,7 +40,12 @@ import { BehaviorSubject, noop, Observable, Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
-import { NgHttpCachingService } from "ng-http-caching";
+import {
+  NgHttpCachingConfig,
+  NgHttpCachingService,
+  withNgHttpCachingContext,
+} from "ng-http-caching";
+import { disableCache, enableCache } from "@services/cache/ngHttpCachingConfig";
 import {
   BawSessionService,
   guestAuthToken,
@@ -118,6 +124,7 @@ describe("BawApiService", () => {
   let associationInjector: AssociationInjector;
   let cachingSpy: SpyObject<NgHttpCachingService>;
   let spec: SpectatorHttp<BawApiService<MockModel>>;
+  const testedApiPath = "/broken_link" as const;
 
   const createService = createHttpFactory<BawApiService<MockModel>>({
     service: BawApiService,
@@ -183,6 +190,9 @@ describe("BawApiService", () => {
     associationInjector = spec.inject(ASSOCIATION_INJECTOR);
 
     cachingSpy = spec.inject(NgHttpCachingService);
+    cachingSpy.clearCache = jasmine.createSpy("clearCache") as any;
+    cachingSpy.clearCache.and.callThrough();
+
     cacheSettings = spec.inject(CACHE_SETTINGS);
     cacheSettings.setCaching(true);
 
@@ -295,7 +305,7 @@ describe("BawApiService", () => {
         ): void {
           (
             service[httpMethod.functionName](
-              "/broken_link",
+              testedApiPath,
               ...opts
             ) as Observable<ApiResponse<unknown>>
           ).subscribe({
@@ -306,7 +316,7 @@ describe("BawApiService", () => {
         }
 
         function catchFunctionCall() {
-          return catchRequest("/broken_link", httpMethod.method);
+          return catchRequest(testedApiPath, httpMethod.method);
         }
 
         it(`should create ${httpMethod.method} request`, () => {
@@ -458,35 +468,35 @@ describe("BawApiService", () => {
         // If http method can accept body inputs
         if (httpMethod.hasBody) {
           it("should accept empty body", () => {
-            service[httpMethod.functionName]("/broken_link", {}).subscribe();
-            const req = catchRequest("/broken_link", httpMethod.method);
+            service[httpMethod.functionName](testedApiPath, {}).subscribe();
+            const req = catchRequest(testedApiPath, httpMethod.method);
             expect(req.request.body).toEqual({});
           });
 
           it("should accept body", () => {
-            service[httpMethod.functionName]("/broken_link", {
+            service[httpMethod.functionName](testedApiPath, {
               key: "value",
             }).subscribe();
-            const req = catchRequest("/broken_link", httpMethod.method);
+            const req = catchRequest(testedApiPath, httpMethod.method);
             expect(req.request.body).toEqual({ key: "value" });
           });
 
           it("should convert body keys", () => {
-            service[httpMethod.functionName]("/broken_link", {
+            service[httpMethod.functionName](testedApiPath, {
               caseConversion: "value",
             }).subscribe();
-            const req = catchRequest("/broken_link", httpMethod.method);
+            const req = catchRequest(testedApiPath, httpMethod.method);
             // eslint-disable-next-line @typescript-eslint/naming-convention
             expect(req.request.body).toEqual({ case_conversion: "value" });
           });
 
           it("should convert nested body keys", () => {
-            service[httpMethod.functionName]("/broken_link", {
+            service[httpMethod.functionName](testedApiPath, {
               caseConversion: {
                 nestedConversion: 42,
               },
             }).subscribe();
-            const req = catchRequest("/broken_link", httpMethod.method);
+            const req = catchRequest(testedApiPath, httpMethod.method);
             expect(req.request.body).toEqual({
               // eslint-disable-next-line @typescript-eslint/naming-convention
               case_conversion: { nested_conversion: 42 },
@@ -496,80 +506,108 @@ describe("BawApiService", () => {
       });
     });
 
-    // describe("httpGet", () => {
-    //   let defaultCache: ContextOptions;
+    describe("httpGet", () => {
+      let defaultConfig: NgHttpCachingConfig;
 
-    //   function catchFunctionCall() {
-    //     return catchRequest("/broken_link", HttpMethod.GET);
-    //   }
+      function catchFunctionCall() {
+        return catchRequest(testedApiPath, HttpMethod.GET);
+      }
 
-    //   beforeEach(() => {
-    //     defaultCache = {
-    //       ttl: cacheSettings.httpGetTtlMs,
-    //       context: withCacheLogging(),
-    //     };
-    //   });
+      beforeEach(() => {
+        defaultConfig = {
+          lifetime: cacheSettings.cacheTtlMs,
+          isCacheable: enableCache,
+        };
+      });
 
-    //   it("should cache results when given", () => {
-    //     const cacheOptions = { cache: true };
+      it("should cache results when given", () => {
+        const cacheOptions: NgHttpCachingConfig = {
+          isCacheable: enableCache,
+        };
 
-    //     service
-    //       .httpGet("/broken_link", defaultApiHeaders, { cacheOptions })
-    //       .subscribe();
+        service
+          .httpGet(testedApiPath, defaultApiHeaders, { cacheOptions })
+          .subscribe();
 
-    //     const context = catchFunctionCall().request.context;
-    //     const expectedContext = withCache({
-    //       cache: true,
-    //       ...defaultCache,
-    //     }).set(CREDENTIALS_CONTEXT, true);
+        const context = catchFunctionCall().request.context;
+        const expectedContext = withNgHttpCachingContext({
+          ...defaultConfig,
+          ...cacheOptions,
+        });
 
-    //     expect(context).toEqual(expectedContext);
-    //   });
+        expectedContext.set(CREDENTIALS_CONTEXT, true);
 
-    //   it("should override default cache settings", () => {
-    //     const cacheOptions: ContextOptions = { cache: true, ttl: 10000 };
-    //     service
-    //       .httpGet("/broken_link", defaultApiHeaders, { cacheOptions })
-    //       .subscribe();
-    //     const context = catchFunctionCall().request.context;
-    //     const expectedContext = withCache({
-    //       ...defaultCache,
-    //       ...cacheOptions,
-    //     }).set(CREDENTIALS_CONTEXT, true);
+        expect(context).toEqual(expectedContext);
+      });
 
-    //     expect(context).toEqual(expectedContext);
-    //   });
+      it("should override default cache settings", () => {
+        const cacheOptions: NgHttpCachingConfig = {
+          isCacheable: enableCache,
+          lifetime: 10_000,
+        };
+        service
+          .httpGet(testedApiPath, defaultApiHeaders, { cacheOptions })
+          .subscribe();
 
-    //   it("should not cache results when not explicitly provided", () => {
-    //     service.httpGet("/broken_link").subscribe();
-    //     const context = catchFunctionCall().request.context;
-    //     const expectedContext = withCache({
-    //       cache: false,
-    //       ttl: cacheSettings.httpGetTtlMs,
-    //       context: withCacheLogging(),
-    //     }).set(CREDENTIALS_CONTEXT, true);
+        const context = catchFunctionCall().request.context;
+        const expectedContext = withNgHttpCachingContext({
+          ...defaultConfig,
+          ...cacheOptions,
+        });
 
-    //     expect(context).toEqual(expectedContext);
-    //   });
+        expectedContext.set(CREDENTIALS_CONTEXT, true);
 
-    //   it("should allow settings both cache and authentication contexts to non-default values", () => {
-    //     const cacheOptions: ContextOptions = { cache: true, ttl: 10000 };
-    //     const options: BawServiceOptions = {
-    //       cacheOptions,
-    //       withCredentials: false,
-    //     };
+        expect(context).toEqual(expectedContext);
+      });
 
-    //     service.httpGet("/broken_link", defaultApiHeaders, options).subscribe();
+      it("should not cache results when not explicitly provided", () => {
+        service.httpGet(testedApiPath).subscribe();
+        const context = catchFunctionCall().request.context;
+        const expectedContext = withNgHttpCachingContext({
+          isCacheable: disableCache,
+        });
 
-    //     const context = catchFunctionCall().request.context;
-    //     const expectedContext = withCache({
-    //       ...defaultCache,
-    //       ...cacheOptions,
-    //     }).set(CREDENTIALS_CONTEXT, false);
+        expectedContext.set(CREDENTIALS_CONTEXT, true);
 
-    //     expect(context).toEqual(expectedContext);
-    //   });
-    // });
+        expect(context).toEqual(expectedContext);
+      });
+
+      it("should allow settings both cache and authentication contexts to non-default values", () => {
+        const cacheOptions: NgHttpCachingConfig = {
+          isCacheable: enableCache,
+          lifetime: 10_000,
+        };
+
+        const options: BawServiceOptions = {
+          cacheOptions,
+          withCredentials: false,
+        };
+
+        service.httpGet(testedApiPath, defaultApiHeaders, options).subscribe();
+
+        const context = catchFunctionCall().request.context;
+        const expectedContext = withNgHttpCachingContext({
+          ...defaultConfig,
+          ...cacheOptions,
+        });
+
+        expectedContext.set(CREDENTIALS_CONTEXT, false);
+
+        expect(context).toEqual(expectedContext);
+      });
+    });
+
+    describe("httpDelete", () => {
+      function catchFunctionCall() {
+        return catchRequest(testedApiPath, HttpMethod.DELETE);
+      }
+
+      it("should clear the http cache", () => {
+        service.httpDelete(testedApiPath).subscribe();
+        catchFunctionCall();
+        expect(cachingSpy.clearCache).toHaveBeenCalledTimes(1);
+      });
+    });
   });
 
   describe("API Request Methods", () => {
@@ -660,28 +698,24 @@ describe("BawApiService", () => {
             switch (method) {
               case "list":
               case "show":
-                return service[method](MockModel, "/broken_link");
+                return service[method](MockModel, testedApiPath);
               case "filter":
-                return service[method](
-                  MockModel,
-                  "/broken_link",
-                  defaultFilter
-                );
+                return service[method](MockModel, testedApiPath, defaultFilter);
               case "create":
                 return service[method](
                   MockModel,
-                  "/broken_link",
-                  (model) => "/broken_link/" + model.id,
+                  testedApiPath,
+                  (model) => testedApiPath + model.id,
                   new MockModel(defaultBody, associationInjector)
                 );
               case "update":
                 return service[method](
                   MockModel,
-                  "/broken_link",
+                  testedApiPath,
                   new MockModel(defaultBody, associationInjector)
                 );
               case "destroy":
-                return service[method]("/broken_link");
+                return service[method](testedApiPath);
             }
           }
 
@@ -696,14 +730,14 @@ describe("BawApiService", () => {
               case "list":
               case "show":
                 expect(spy).toHaveBeenCalledWith(
-                  "/broken_link",
+                  testedApiPath,
                   defaultApiHeaders,
                   defaultBawMethodOptions
                 );
                 break;
               case "filter":
                 expect(spy).toHaveBeenCalledWith(
-                  "/broken_link",
+                  testedApiPath,
                   defaultFilter,
                   undefined,
                   defaultBawMethodOptions
@@ -712,7 +746,7 @@ describe("BawApiService", () => {
               case "create":
               case "update":
                 expect(spy).toHaveBeenCalledWith(
-                  "/broken_link",
+                  testedApiPath,
                   {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     "Mock Model": defaultBody,
@@ -723,7 +757,7 @@ describe("BawApiService", () => {
                 break;
               case "destroy":
                 expect(spy).toHaveBeenCalledWith(
-                  "/broken_link",
+                  testedApiPath,
                   undefined,
                   defaultBawMethodOptions
                 );
@@ -734,10 +768,7 @@ describe("BawApiService", () => {
           if (singleResult) {
             it("should handle response", (done) => {
               const response = { meta: meta.single, data: responses.single };
-              const model = new MockModel(
-                response.data,
-                associationInjector
-              );
+              const model = new MockModel(response.data, associationInjector);
               model.addMetadata(response.meta);
 
               successRequest(response);
