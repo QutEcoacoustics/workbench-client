@@ -48,7 +48,6 @@
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@ng-bootstrap/ng-bootstrap": "^16.0.0",
-    "@ngneat/cashew": "^3.0.0",
     "@ngx-formly/bootstrap": "^6.2.2",
     "@ngx-formly/core": "^6.2.2",
     "@ngx-loading-bar/core": "^6.0.2",

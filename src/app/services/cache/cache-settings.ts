@@ -1,10 +1,15 @@
 import { InjectionToken } from "@angular/core";
 
 export class CacheSettings {
-  /** TTL for HTTP GET requests */
-  public httpGetTtlMs = 1000;
+  public constructor(_enabled: boolean, withLogging: boolean) {
+    this._enabled = _enabled;
+    this.withLogging = withLogging;
+  }
 
-  public constructor(private _enabled: boolean, private withLogging: boolean) {}
+  /** TTL for HTTP GET requests */
+  public httpGetTtlMs = 1_000;
+  private withLogging: boolean;
+  private _enabled: boolean;
 
   /** Is cache logging enabled */
   public get showLogging(): boolean {

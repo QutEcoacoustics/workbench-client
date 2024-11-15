@@ -1,4 +1,9 @@
-import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
+import {
+  HttpClient,
+  HttpContext,
+  HttpHeaders,
+  HttpRequest,
+} from "@angular/common/http";
 import { Inject, Injectable, Optional } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
 import { toSnakeCase } from "@helpers/case-converter/case-converter";
@@ -12,17 +17,20 @@ import {
   AbstractModelConstructor,
   AbstractModelWithoutId,
 } from "@models/AbstractModel";
-import { HttpCacheManager, withCache } from "@ngneat/cashew";
-import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { API_ROOT } from "@services/config/config.tokens";
 import { ToastrService } from "ngx-toastr";
 import { Observable, iif, of, throwError } from "rxjs";
 import { catchError, concatMap, map, switchMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AssociationInjector } from "@models/ImplementsInjector";
+import {
+  NgHttpCachingConfig,
+  NgHttpCachingService,
+  withNgHttpCachingContext,
+} from "ng-http-caching";
+import { defaultCachingConfig } from "@services/cache/cache.module";
 import { BawSessionService } from "./baw-session.service";
 import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
 import { BAW_SERVICE_OPTIONS } from "./api-common";
@@ -38,7 +46,7 @@ export interface BawServiceOptions {
   withCredentials?: boolean;
 
   /** Allows you to modify the cashew cache options per request */
-  cacheOptions?: ContextOptions;
+  cacheOptions?: NgHttpCachingConfig;
 }
 
 /** Default headers for API requests */
@@ -60,7 +68,7 @@ export const multiPartApiHeaders = new HttpHeaders({
 export const defaultBawServiceOptions = Object.freeze({
   disableNotification: false,
   withCredentials: true,
-  cacheOptions: { cache: false },
+  cacheOptions: defaultCachingConfig,
 }) satisfies Required<BawServiceOptions>;
 
 /**
@@ -109,10 +117,10 @@ export class BawApiService<
    * Clear an API call from the cache. Note: This does not currently work with
    * API requests which include QSP and may be an issue in the future.
    *
-   * @param path API path
+   * @param req API request
    */
-  private clearCache = (path: string) => {
-    this.manager.delete(path);
+  private clearCache = (req: HttpRequest<any>) => {
+    this.cacheManager.deleteFromCache(req);
   };
 
   // because users can create a partial options object, we need to merge the partial options with the default options
@@ -148,12 +156,13 @@ export class BawApiService<
   public constructor(
     @Inject(API_ROOT) protected apiRoot: string,
     @Inject(IS_SERVER_PLATFORM) protected isServer: boolean,
-    protected manager: HttpCacheManager,
+    protected cacheManager: NgHttpCachingService,
     protected http: HttpClient,
     protected session: BawSessionService,
     protected notifications: ToastrService,
     @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
-    @Inject(ASSOCIATION_INJECTOR) protected associationInjector: AssociationInjector,
+    @Inject(ASSOCIATION_INJECTOR)
+    protected associationInjector: AssociationInjector,
     @Optional() @Inject(BAW_SERVICE_OPTIONS) private options: BawServiceOptions
   ) {
     // by merging the default options with the injected options, we can override
@@ -403,7 +412,7 @@ export class BawApiService<
   ): Observable<null> {
     return this.httpDelete(path, undefined, options).pipe(
       map(this.handleEmptyResponse),
-      tap(() => this.clearCache(path)),
+      tap((req) => this.clearCache(req)),
       catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }
@@ -426,12 +435,13 @@ export class BawApiService<
   ): Observable<ApiResponse<Model | Model[]>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    const cacheContext: HttpContext = withCache({
-      ttl: this.cacheSettings.httpGetTtlMs,
-      context: withCacheLogging(),
-      ...options.cacheOptions,
-      cache: this.cacheSettings.enabled && fullOptions.cacheOptions.cache,
-    });
+    // const cacheContext: HttpContext = withCache({
+    //   ttl: this.cacheSettings.httpGetTtlMs,
+    //   context: withCacheLogging(),
+    //   ...options.cacheOptions,
+    //   cache: this.cacheSettings.enabled && fullOptions.cacheOptions.cache,
+    // });
+    const cacheContext = withNgHttpCachingContext({});
 
     const context = this.credentialsHttpContext(fullOptions, cacheContext);
 

@@ -63,7 +63,7 @@ export class WebsiteStatusService {
 
     return (
       this.api.httpGet(endpoint, this.requestHeaders, {
-        cacheOptions: { cache: false },
+        cacheOptions: { isCacheable: () => false },
         withCredentials: false,
       }) as any
     ).pipe(

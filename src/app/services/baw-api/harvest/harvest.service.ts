@@ -61,7 +61,7 @@ export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
     project: IdOr<Project>
   ): Observable<Harvest> {
     return this.api.show(Harvest, endpoint(project, model, emptyParam), {
-      cacheOptions: { cache: false },
+      cacheOptions: { isCacheable: () => false },
     });
   }
 

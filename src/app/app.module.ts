@@ -30,8 +30,6 @@ import { TitleStrategy } from "@angular/router";
 import { AnnotationsImportModule } from "@components/import-annotations/import-annotations.module";
 import { WebsiteStatusModule } from "@components/website-status/website-status.module";
 import { AnnotationModule } from "@components/annotations/annotation.module";
-import { NgHttpCachingConfig, NgHttpCachingModule } from "ng-http-caching";
-import { HttpRequest } from "@angular/common/http";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { toastrRoot } from "./app.helper";
@@ -92,28 +90,6 @@ export const appImports = [
   ErrorModule,
 ];
 
-// this is here just for testing and is not its final location
-const cachingConfig: NgHttpCachingConfig = {
-  isCacheable: (request: HttpRequest<any>) => {
-    if (request.method === "GET" || request.method === "HEAD") {
-      return true;
-    }
-
-    return request.method === "POST" && request.url.endsWith("/filter");
-  },
-  getKey: (req: HttpRequest<any>) => {
-    const base = req.method + "@" + req.urlWithParams;
-    const requestBody = req.body;
-    if (!requestBody || typeof requestBody !== "object") {
-      return base;
-    }
-
-    // base64 encode the body
-    const body = JSON.stringify(req.body);
-    return base + ":" + btoa(body);
-  },
-};
-
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -123,10 +99,6 @@ const cachingConfig: NgHttpCachingConfig = {
     AppRoutingModule,
     ConfigModule,
     BawApiModule,
-
-    // for http request batching and caching
-    NgHttpCachingModule.forRoot(cachingConfig),
-
     // Rehydrate data from SSR. This must be set after BawApiModule so that the
     // interceptor runs after the API interceptor
     RehydrationModule,

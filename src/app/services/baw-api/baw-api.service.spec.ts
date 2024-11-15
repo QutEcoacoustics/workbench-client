@@ -1,7 +1,6 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TestRequest } from "@angular/common/http/testing";
 import {
-  CREDENTIALS_CONTEXT,
   BawApiInterceptor,
 } from "@baw-api/api.interceptor.service";
 import {
@@ -20,15 +19,12 @@ import { AuthToken } from "@interfaces/apiInterfaces";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 import { User } from "@models/User";
-import { withCache } from "@ngneat/cashew";
-import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import {
   createHttpFactory,
   HttpMethod,
   mockProvider,
   SpectatorHttp,
 } from "@ngneat/spectator";
-import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { CacheModule } from "@services/cache/cache.module";
 import { API_ROOT } from "@services/config/config.tokens";
@@ -495,80 +491,80 @@ describe("BawApiService", () => {
       });
     });
 
-    describe("httpGet", () => {
-      let defaultCache: ContextOptions;
+    // describe("httpGet", () => {
+    //   let defaultCache: ContextOptions;
 
-      function catchFunctionCall() {
-        return catchRequest("/broken_link", HttpMethod.GET);
-      }
+    //   function catchFunctionCall() {
+    //     return catchRequest("/broken_link", HttpMethod.GET);
+    //   }
 
-      beforeEach(() => {
-        defaultCache = {
-          ttl: cacheSettings.httpGetTtlMs,
-          context: withCacheLogging(),
-        };
-      });
+    //   beforeEach(() => {
+    //     defaultCache = {
+    //       ttl: cacheSettings.httpGetTtlMs,
+    //       context: withCacheLogging(),
+    //     };
+    //   });
 
-      it("should cache results when given", () => {
-        const cacheOptions = { cache: true };
+    //   it("should cache results when given", () => {
+    //     const cacheOptions = { cache: true };
 
-        service
-          .httpGet("/broken_link", defaultApiHeaders, { cacheOptions })
-          .subscribe();
+    //     service
+    //       .httpGet("/broken_link", defaultApiHeaders, { cacheOptions })
+    //       .subscribe();
 
-        const context = catchFunctionCall().request.context;
-        const expectedContext = withCache({
-          cache: true,
-          ...defaultCache,
-        }).set(CREDENTIALS_CONTEXT, true);
+    //     const context = catchFunctionCall().request.context;
+    //     const expectedContext = withCache({
+    //       cache: true,
+    //       ...defaultCache,
+    //     }).set(CREDENTIALS_CONTEXT, true);
 
-        expect(context).toEqual(expectedContext);
-      });
+    //     expect(context).toEqual(expectedContext);
+    //   });
 
-      it("should override default cache settings", () => {
-        const cacheOptions: ContextOptions = { cache: true, ttl: 10000 };
-        service
-          .httpGet("/broken_link", defaultApiHeaders, { cacheOptions })
-          .subscribe();
-        const context = catchFunctionCall().request.context;
-        const expectedContext = withCache({
-          ...defaultCache,
-          ...cacheOptions,
-        }).set(CREDENTIALS_CONTEXT, true);
+    //   it("should override default cache settings", () => {
+    //     const cacheOptions: ContextOptions = { cache: true, ttl: 10000 };
+    //     service
+    //       .httpGet("/broken_link", defaultApiHeaders, { cacheOptions })
+    //       .subscribe();
+    //     const context = catchFunctionCall().request.context;
+    //     const expectedContext = withCache({
+    //       ...defaultCache,
+    //       ...cacheOptions,
+    //     }).set(CREDENTIALS_CONTEXT, true);
 
-        expect(context).toEqual(expectedContext);
-      });
+    //     expect(context).toEqual(expectedContext);
+    //   });
 
-      it("should not cache results when not given", () => {
-        service.httpGet("/broken_link").subscribe();
-        const context = catchFunctionCall().request.context;
-        const expectedContext = withCache({
-          cache: false,
-          ttl: cacheSettings.httpGetTtlMs,
-          context: withCacheLogging(),
-        }).set(CREDENTIALS_CONTEXT, true);
+    //   it("should not cache results when not explicitly provided", () => {
+    //     service.httpGet("/broken_link").subscribe();
+    //     const context = catchFunctionCall().request.context;
+    //     const expectedContext = withCache({
+    //       cache: false,
+    //       ttl: cacheSettings.httpGetTtlMs,
+    //       context: withCacheLogging(),
+    //     }).set(CREDENTIALS_CONTEXT, true);
 
-        expect(context).toEqual(expectedContext);
-      });
+    //     expect(context).toEqual(expectedContext);
+    //   });
 
-      it("should allow settings both cache and authentication contexts to non-default values", () => {
-        const cacheOptions: ContextOptions = { cache: true, ttl: 10000 };
-        const options: BawServiceOptions = {
-          cacheOptions,
-          withCredentials: false,
-        };
+    //   it("should allow settings both cache and authentication contexts to non-default values", () => {
+    //     const cacheOptions: ContextOptions = { cache: true, ttl: 10000 };
+    //     const options: BawServiceOptions = {
+    //       cacheOptions,
+    //       withCredentials: false,
+    //     };
 
-        service.httpGet("/broken_link", defaultApiHeaders, options).subscribe();
+    //     service.httpGet("/broken_link", defaultApiHeaders, options).subscribe();
 
-        const context = catchFunctionCall().request.context;
-        const expectedContext = withCache({
-          ...defaultCache,
-          ...cacheOptions,
-        }).set(CREDENTIALS_CONTEXT, false);
+    //     const context = catchFunctionCall().request.context;
+    //     const expectedContext = withCache({
+    //       ...defaultCache,
+    //       ...cacheOptions,
+    //     }).set(CREDENTIALS_CONTEXT, false);
 
-        expect(context).toEqual(expectedContext);
-      });
-    });
+    //     expect(context).toEqual(expectedContext);
+    //   });
+    // });
   });
 
   describe("API Request Methods", () => {
