@@ -134,9 +134,16 @@ export class BawApiService<
     };
   }
 
+  private buildCachingOptions(options: Partial<BawServiceOptions>): NgHttpCachingConfig {
+    return {
+      ...this.instanceOptions.cacheOptions,
+      ...options.cacheOptions,
+    };
+  }
+
   // the "context" headers are passed to the interceptor to determine if the request should be cached and if
   // the Authentication token and cookies should be sent in requests
-  private credentialsHttpContext(
+  private withCredentialsHttpContext(
     options: Required<BawServiceOptions>,
     baseContext: HttpContext = new HttpContext()
   ): HttpContext {
@@ -435,15 +442,10 @@ export class BawApiService<
   ): Observable<ApiResponse<Model | Model[]>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    // const cacheContext: HttpContext = withCache({
-    //   ttl: this.cacheSettings.httpGetTtlMs,
-    //   context: withCacheLogging(),
-    //   ...options.cacheOptions,
-    //   cache: this.cacheSettings.enabled && fullOptions.cacheOptions.cache,
-    // });
-    const cacheContext = withNgHttpCachingContext({});
+    const cachingOptions = this.buildCachingOptions(options);
+    const cacheContext = withNgHttpCachingContext(cachingOptions);
 
-    const context = this.credentialsHttpContext(fullOptions, cacheContext);
+    const context = this.withCredentialsHttpContext(fullOptions, cacheContext);
 
     return this.http.get<ApiResponse<Model>>(this.getPath(path), {
       responseType: "json",
@@ -470,7 +472,7 @@ export class BawApiService<
   ): Observable<ApiResponse<Model | void>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    const context = this.credentialsHttpContext(fullOptions);
+    const context = this.withCredentialsHttpContext(fullOptions);
 
     return this.http.delete<ApiResponse<null>>(this.getPath(path), {
       responseType: "json",
@@ -499,7 +501,12 @@ export class BawApiService<
   ): Observable<ApiResponse<Model | Model[]>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    const context = this.credentialsHttpContext(fullOptions);
+    // we support caching filter requests by indexing the cache
+    // by the base64 encoded filter body
+    const cachingOptions = this.buildCachingOptions(options);
+    const cacheContext = withNgHttpCachingContext(cachingOptions);
+
+    const context = this.withCredentialsHttpContext(fullOptions, cacheContext);
 
     return this.http.post<ApiResponse<Model | Model[]>>(
       this.getPath(path),
@@ -532,7 +539,7 @@ export class BawApiService<
   ): Observable<ApiResponse<Model>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    const context = this.credentialsHttpContext(fullOptions);
+    const context = this.withCredentialsHttpContext(fullOptions);
 
     return this.http.put<ApiResponse<Model>>(this.getPath(path), body, {
       responseType: "json",
@@ -561,7 +568,7 @@ export class BawApiService<
   ): Observable<ApiResponse<Model>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    const context = this.credentialsHttpContext(fullOptions);
+    const context = this.withCredentialsHttpContext(fullOptions);
 
     return this.http.patch<ApiResponse<Model>>(this.getPath(path), body, {
       responseType: "json",

@@ -1,17 +1,21 @@
 import { HTTP_INTERCEPTORS, HttpRequest } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { NgHttpCachingConfig, NgHttpCachingModule } from "ng-http-caching";
-import { CacheLoggingService } from "./cache-logging.service";
+import { CacheLoggingService, withCacheLogging } from "./cache-logging.service";
 import { cacheSettings, CACHE_SETTINGS } from "./cache-settings";
 
 // this is here just for testing and is not its final location
-export const defaultCachingConfig: NgHttpCachingConfig = {
-  isCacheable: (request: HttpRequest<any>) => {
-    if (request.method === "GET" || request.method === "HEAD") {
-      return true;
-    }
+export const defaultCachingConfig = {
+  isCacheable: (req: HttpRequest<any>) => {
+    const shouldCacheMethod = req.method === "GET" || req.method === "HEAD"
+    const isFilterRequest = req.method === "POST" && req.url.endsWith("/filter");
 
-    return request.method === "POST" && request.url.endsWith("/filter");
+    if (shouldCacheMethod || isFilterRequest) {
+      withCacheLogging(req);
+      return true;
+    } else {
+      return false;
+    }
   },
   getKey: (req: HttpRequest<any>) => {
     const base = req.method + "@" + req.urlWithParams;
@@ -24,7 +28,7 @@ export const defaultCachingConfig: NgHttpCachingConfig = {
     const body = JSON.stringify(req.body);
     return base + ":" + btoa(body);
   },
-};
+} as const satisfies NgHttpCachingConfig;
 
 @NgModule({
   imports: [NgHttpCachingModule.forRoot(defaultCachingConfig)],

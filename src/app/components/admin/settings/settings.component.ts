@@ -44,6 +44,11 @@ import { adminSettingsMenuItem } from "./settings.menus";
         Enable cache logging in the console
       </label>
     </div>
+
+    <label class="mt-2">
+      Cache Time to Live (ms)
+      <input class="form-control" type="number" [(ngModel)]="cacheSettings.cacheTtlMs" />
+    </label>
   `,
 })
 class AdminSettingsComponent extends PageComponent {

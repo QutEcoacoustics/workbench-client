@@ -1,4 +1,5 @@
 import { InjectionToken } from "@angular/core";
+import { NgHttpCachingConfigDefault } from "ng-http-caching";
 
 export class CacheSettings {
   public constructor(_enabled: boolean, withLogging: boolean) {
@@ -7,7 +8,7 @@ export class CacheSettings {
   }
 
   /** TTL for HTTP GET requests */
-  public httpGetTtlMs = 1_000;
+  public cacheTtlMs = NgHttpCachingConfigDefault.lifetime;
   private withLogging: boolean;
   private _enabled: boolean;
 
@@ -24,6 +25,7 @@ export class CacheSettings {
   /** Enable/Disable caching */
   public setCaching(enable: boolean): void {
     this._enabled = enable;
+    this.logToConsole(`Cache is now ${this.enabled ? "enabled" : "disabled"}`);
   }
 
   /**
@@ -32,10 +34,16 @@ export class CacheSettings {
    */
   public setLogging(enable: boolean): void {
     this.withLogging = enable;
+    this.logToConsole(`Cache logging is now ${this.showLogging ? "enabled" : "disabled"}`);
+  }
+
+  private logToConsole(message: string): void {
+    // eslint-disable-next-line no-console
+    console.debug(`(Cache Settings) ${message}`);
   }
 }
 
 export const CACHE_SETTINGS = new InjectionToken<CacheSettings>(
-  "baw.cache.settings"
+  "baw.cache.settings",
 );
 export const cacheSettings = new CacheSettings(true, false);
