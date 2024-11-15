@@ -24,6 +24,7 @@ import {
   HttpMethod,
   mockProvider,
   SpectatorHttp,
+  SpyObject,
 } from "@ngneat/spectator";
 import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { CacheModule } from "@services/cache/cache.module";
@@ -38,6 +39,7 @@ import { BehaviorSubject, noop, Observable, Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
+import { NgHttpCachingService } from "ng-http-caching";
 import {
   BawSessionService,
   guestAuthToken,
@@ -114,6 +116,7 @@ describe("BawApiService", () => {
   let session: BawSessionService;
   let service: BawApiService<MockModel>;
   let associationInjector: AssociationInjector;
+  let cachingSpy: SpyObject<NgHttpCachingService>;
   let spec: SpectatorHttp<BawApiService<MockModel>>;
 
   const createService = createHttpFactory<BawApiService<MockModel>>({
@@ -179,6 +182,7 @@ describe("BawApiService", () => {
     session = spec.inject(BawSessionService);
     associationInjector = spec.inject(ASSOCIATION_INJECTOR);
 
+    cachingSpy = spec.inject(NgHttpCachingService);
     cacheSettings = spec.inject(CACHE_SETTINGS);
     cacheSettings.setCaching(true);
 
@@ -227,6 +231,7 @@ describe("BawApiService", () => {
 
   afterEach(() => {
     spec.controller.verify();
+    cachingSpy.clearCache();
   });
 
   describe("Session Tracking", () => {

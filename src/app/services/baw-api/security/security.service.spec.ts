@@ -37,6 +37,7 @@ import { FORBIDDEN, UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
 import { ToastrService } from "ngx-toastr";
 import { noop, Subject, throwError } from "rxjs";
+import { NgHttpCachingService } from "ng-http-caching";
 import { shouldNotFail, shouldNotSucceed } from "../baw-api.service.spec";
 import { UserService } from "../user/user.service";
 import { SecurityService } from "./security.service";
@@ -63,12 +64,14 @@ describe("SecurityService", () => {
   let cookies: CookieService;
   let api: BawApiService<Session>;
   let spec: SpectatorHttp<SecurityService>;
+
   const createService = createHttpFactory({
     service: SecurityService,
     imports: [MockConfigModule],
     providers: [
       BawSessionService,
       CookieService,
+      NgHttpCachingService,
       mockProvider(ToastrService),
       {
         provide: HTTP_INTERCEPTORS,

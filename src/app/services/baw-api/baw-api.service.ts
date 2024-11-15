@@ -120,7 +120,7 @@ export class BawApiService<
    * @param req API request
    */
   private clearCache = (req: HttpRequest<any>) => {
-    this.cacheManager.deleteFromCache(req);
+    // this.cacheManager.deleteFromCache(req);
   };
 
   // because users can create a partial options object, we need to merge the partial options with the default options

@@ -42,20 +42,23 @@ describe("WebsiteStatusService", () => {
   it("should create", () => {
     expect(spec.service).toBeInstanceOf(WebsiteStatusService);
   });
-
   it("should call httpGet with the correct options", () => {
     const expectedHeaders = spec.service["requestHeaders"];
     const expectedOptions = {
-      cacheOptions: { cache: false },
+      cacheOptions: { isCacheable: jasmine.any(Function) },
       withCredentials: false,
     };
 
     spec.service["show"]().subscribe();
 
-    expect(mockApi.httpGet).toHaveBeenCalledWith(
-      "/status",
-      expectedHeaders,
-      expectedOptions
-    );
+    const [realizedUrl, realizedHeaders, realizedOptions] =
+      mockApi.httpGet.calls.mostRecent().args;
+
+    expect(realizedUrl).toBe("/status");
+    expect(realizedHeaders).toEqual(expectedHeaders);
+    expect(realizedOptions).toEqual(expectedOptions);
+
+    const realizedShouldCache = realizedOptions.cacheOptions.isCacheable();
+    return expect(realizedShouldCache).toBeFalse();
   });
 });

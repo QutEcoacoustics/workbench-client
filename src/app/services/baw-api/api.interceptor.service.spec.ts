@@ -11,6 +11,7 @@ import {
   createHttpFactory,
   HttpMethod,
   SpectatorHttp,
+  SpyObject,
 } from "@ngneat/spectator";
 import { noop } from "rxjs";
 import { generateUser } from "@test/fakes/User";
@@ -21,6 +22,7 @@ import {
 } from "@helpers/custom-errors/baw-api-error";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { NOT_FOUND, UNPROCESSABLE_ENTITY } from "http-status";
+import { NgHttpCachingService } from "ng-http-caching";
 import { BawSessionService } from "./baw-session.service";
 import { shouldNotFail, shouldNotSucceed } from "./baw-api.service.spec";
 import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
@@ -28,7 +30,9 @@ import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
 describe("BawApiInterceptor", () => {
   let apiRoot: string;
   let http: HttpClient;
+  let cachingSpy: SpyObject<NgHttpCachingService>;
   let spec: SpectatorHttp<BawSessionService>;
+
   const createService = createHttpFactory({
     service: BawSessionService,
     imports: [HttpClientModule, MockBawApiModule],
@@ -55,8 +59,14 @@ describe("BawApiInterceptor", () => {
 
   beforeEach(() => {
     spec = createService();
+
     http = spec.inject(HttpClient);
     apiRoot = spec.inject(API_ROOT);
+    cachingSpy = spec.inject(NgHttpCachingService);
+  });
+
+  afterEach(() => {
+    cachingSpy.clearCache();
   });
 
   describe("error handling", () => {

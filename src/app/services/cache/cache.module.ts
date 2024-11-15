@@ -4,6 +4,8 @@ import { NgHttpCachingConfig, NgHttpCachingModule } from "ng-http-caching";
 import { CacheLoggingService, withCacheLogging } from "./cache-logging.service";
 import { cacheSettings, CACHE_SETTINGS } from "./cache-settings";
 
+export const disableCache = () => false;
+
 // this is here just for testing and is not its final location
 export const defaultCachingConfig = {
   isCacheable: (req: HttpRequest<any>) => {

@@ -11,6 +11,7 @@ import {
   SsrContext,
   WebsiteStatus,
 } from "@models/WebsiteStatus";
+import { disableCache } from "@services/cache/cache.module";
 import {
   Observable,
   catchError,
@@ -64,7 +65,7 @@ export class WebsiteStatusService {
 
     return (
       this.api.httpGet(endpoint, this.requestHeaders, {
-        cacheOptions: { isCacheable: () => false },
+        cacheOptions: { isCacheable: disableCache },
         withCredentials: false,
       }) as any
     ).pipe(

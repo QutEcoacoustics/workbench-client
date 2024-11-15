@@ -10,6 +10,7 @@ import {
   HttpMethod,
   mockProvider,
   SpectatorHttp,
+  SpyObject,
 } from "@ngneat/spectator";
 import { CacheModule } from "@services/cache/cache.module";
 import { MockConfigModule } from "@services/config/configMock.module";
@@ -20,6 +21,7 @@ import { INTERNAL_SERVER_ERROR } from "http-status";
 import { ToastrService } from "ngx-toastr";
 import { noop, Subject } from "rxjs";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
+import { NgHttpCachingService } from "ng-http-caching";
 import { BawApiInterceptor } from "./api.interceptor.service";
 import { BawApiService, unknownErrorCode } from "./baw-api.service";
 import { shouldNotFail, shouldNotSucceed } from "./baw-api.service.spec";
@@ -29,7 +31,9 @@ import { MockForm } from "./mock/bawFormApiMock.service";
 
 describe("BawFormApiService", () => {
   let api: BawApiService<MockForm>;
+  let cachingSpy: SpyObject<NgHttpCachingService>;
   let spec: SpectatorHttp<BawFormApiService<MockForm>>;
+
   const createService = createHttpFactory<BawFormApiService<MockForm>>({
     service: BawFormApiService,
     imports: [MockConfigModule, CacheModule],
@@ -61,6 +65,11 @@ describe("BawFormApiService", () => {
   beforeEach(() => {
     spec = createService();
     api = spec.inject<BawApiService<MockForm>>(BawApiService);
+    cachingSpy = spec.inject(NgHttpCachingService);
+  });
+
+  afterEach(() => {
+    cachingSpy.clearCache();
   });
 
   describe("makeFormRequest", () => {
