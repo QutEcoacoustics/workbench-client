@@ -271,7 +271,6 @@ export class BawApiService<
     filters: Filters<Model>,
     options: BawServiceOptions = {}
   ): Observable<Model[]> {
-    console.debug(this.cacheManager);
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleCollectionResponse(classBuilder)),

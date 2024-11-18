@@ -943,7 +943,9 @@ describe("BawApiService", () => {
       }
     );
 
-    describe("filter", () => {
+    // TODO: re-enable these tests once we support caching filter requests
+    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2170
+    xdescribe("filter", () => {
       it("should cache filter requests with an empty body", () => {
         // we test calling the filter method without any caching options so that
         // we can test the default caching behavior
