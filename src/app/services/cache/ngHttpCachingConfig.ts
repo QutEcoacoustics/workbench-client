@@ -39,12 +39,16 @@ export const defaultCachingConfig = {
 function isCacheableDefault(req: HttpRequest<any>): boolean {
   const shouldCacheMethod = req.method === "GET" || req.method === "HEAD";
   const isFilterRequest = req.method === "POST" && req.url.endsWith("/filter");
+  const isCacheable = shouldCacheMethod || isFilterRequest;
 
-  if (shouldCacheMethod || isFilterRequest) {
+  // we support debug logging of requests that will be cached through the sites
+  // admin panel
+  // this is useful for debugging caching issues
+  if (isCacheable) {
     withCacheLogging(req);
   }
 
-  return shouldCacheMethod || isFilterRequest;
+  return isCacheable;
 }
 
 function cacheKeyDefault(req: HttpRequest<any>): string {

@@ -114,9 +114,9 @@ export class BawApiService<
    *
    * @param req API request
    */
-  private clearCache = (_path: string) => {
+  private clearCache = () => {
     // TODO: we should do targeting cache invalidation and invalidate all cache
-    // keys that contain the item being deleted
+    // keys that contain the item being deleted from cache
     //
     // this is harder than expected because cached requests sometimes contain
     // url parameters, we also need to invalidate all cache items for filter
@@ -229,6 +229,7 @@ export class BawApiService<
     err: BawApiError | Error,
     disableNotification?: boolean
   ): Observable<never> => {
+    console.debug(err, disableNotification);
     const error = isBawApiError(err)
       ? err
       : new BawApiError(unknownErrorCode, err.message);
@@ -367,6 +368,10 @@ export class BawApiService<
           of(data)
         )
       ),
+      // TODO: this should be a more targeted cache invalidation
+      // we have to clear the cache when creating new models because the new
+      // models might be included in cached filter responses
+      tap(() => this.clearCache()),
       // there is no map function here, because the handleSingleResponse method is invoked on the POST and PUT requests
       // individually. Moving the handleSingleResponse mapping here would result in the response object being instantiated twice
       catchError((err) => this.handleError(err, this.suppressErrors(options)))
@@ -412,6 +417,16 @@ export class BawApiService<
           : (data) => of(data)
       ),
       map(this.handleSingleResponse(classBuilder)),
+      // TODO: This should be a more targeted cache invalidation
+      // I have decided to invalidate all of the cache items so that if a model
+      // is updated, we will not get an old stale version of the model from the
+      // cache when we request it
+      //
+      // I cannot simply invalidate only the cache item for the model being
+      // because other requests such as cached filter requests have the
+      // potentially stale model in their response and not the request which is
+      // used as the cache key
+      tap(() => this.clearCache()),
       catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }
@@ -427,7 +442,7 @@ export class BawApiService<
   ): Observable<null> {
     return this.httpDelete(path, undefined, options).pipe(
       map(this.handleEmptyResponse),
-      tap(() => this.clearCache(path)),
+      tap(() => this.clearCache()),
       catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }
@@ -510,7 +525,7 @@ export class BawApiService<
     const fullOptions = this.buildServiceOptions(options);
 
     // we support caching filter requests by indexing the cache
-    // by the base64 encoded filter body
+    // by the filter body
     const cachingOptions = this.buildCachingOptions(options);
     const cacheContext = withNgHttpCachingContext(cachingOptions);
 

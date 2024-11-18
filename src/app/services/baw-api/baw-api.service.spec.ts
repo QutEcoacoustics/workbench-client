@@ -45,7 +45,11 @@ import {
   NgHttpCachingService,
   withNgHttpCachingContext,
 } from "ng-http-caching";
-import { disableCache, enableCache } from "@services/cache/ngHttpCachingConfig";
+import {
+  defaultCachingConfig,
+  disableCache,
+  enableCache,
+} from "@services/cache/ngHttpCachingConfig";
 import {
   BawSessionService,
   guestAuthToken,
@@ -62,6 +66,18 @@ export const shouldNotFail = () => {
 export const shouldNotComplete = () => {
   fail("Service should not complete");
 };
+
+interface ApiRequestMethodTest {
+  method: keyof BawApiService<AbstractModel>;
+  http: keyof BawApiService<AbstractModel>;
+  hasBody?: boolean;
+  hasFilter?: boolean;
+  singleResult?: boolean;
+  multiResult?: boolean;
+  updateOnAuthTrigger?: boolean;
+  shouldCache?: boolean;
+  shouldClearCache: boolean;
+}
 
 class IMockModel {
   public id?: number;
@@ -190,8 +206,6 @@ describe("BawApiService", () => {
     associationInjector = spec.inject(ASSOCIATION_INJECTOR);
 
     cachingSpy = spec.inject(NgHttpCachingService);
-    cachingSpy.clearCache = jasmine.createSpy("clearCache") as any;
-    cachingSpy.clearCache.and.callThrough();
 
     cacheSettings = spec.inject(CACHE_SETTINGS);
     cacheSettings.setCaching(true);
@@ -507,20 +521,11 @@ describe("BawApiService", () => {
     });
 
     describe("httpGet", () => {
-      let defaultConfig: NgHttpCachingConfig;
-
       function catchFunctionCall() {
         return catchRequest(testedApiPath, HttpMethod.GET);
       }
 
-      beforeEach(() => {
-        defaultConfig = {
-          lifetime: cacheSettings.cacheTtlMs,
-          isCacheable: enableCache,
-        };
-      });
-
-      it("should cache results when given", () => {
+      it("should cache results when explicitly provided", () => {
         const cacheOptions: NgHttpCachingConfig = {
           isCacheable: enableCache,
         };
@@ -531,10 +536,29 @@ describe("BawApiService", () => {
 
         const context = catchFunctionCall().request.context;
         const expectedContext = withNgHttpCachingContext({
-          ...defaultConfig,
+          ...defaultCachingConfig,
           ...cacheOptions,
         });
+        expectedContext.set(CREDENTIALS_CONTEXT, true);
 
+        expect(context).toEqual(expectedContext);
+      });
+
+      it("should not cache results when explicitly disabled", () => {
+        const cacheOptions: NgHttpCachingConfig = {
+          isCacheable: disableCache,
+        };
+
+        service
+          .httpGet(testedApiPath, defaultApiHeaders, { cacheOptions })
+          .subscribe();
+
+        const context = catchFunctionCall().request.context;
+
+        const expectedContext = withNgHttpCachingContext({
+          ...defaultCachingConfig,
+          ...cacheOptions,
+        });
         expectedContext.set(CREDENTIALS_CONTEXT, true);
 
         expect(context).toEqual(expectedContext);
@@ -543,7 +567,7 @@ describe("BawApiService", () => {
       it("should override default cache settings", () => {
         const cacheOptions: NgHttpCachingConfig = {
           isCacheable: enableCache,
-          lifetime: 10_000,
+          lifetime: 32_821,
         };
         service
           .httpGet(testedApiPath, defaultApiHeaders, { cacheOptions })
@@ -551,22 +575,9 @@ describe("BawApiService", () => {
 
         const context = catchFunctionCall().request.context;
         const expectedContext = withNgHttpCachingContext({
-          ...defaultConfig,
+          ...defaultCachingConfig,
           ...cacheOptions,
         });
-
-        expectedContext.set(CREDENTIALS_CONTEXT, true);
-
-        expect(context).toEqual(expectedContext);
-      });
-
-      it("should not cache results when not explicitly provided", () => {
-        service.httpGet(testedApiPath).subscribe();
-        const context = catchFunctionCall().request.context;
-        const expectedContext = withNgHttpCachingContext({
-          isCacheable: disableCache,
-        });
-
         expectedContext.set(CREDENTIALS_CONTEXT, true);
 
         expect(context).toEqual(expectedContext);
@@ -580,6 +591,11 @@ describe("BawApiService", () => {
 
         const options: BawServiceOptions = {
           cacheOptions,
+
+          // by default, we will set the CREDENTIALS_CONTEXT to true if it is
+          // not provided in the options object
+          // therefore, we test changing the value of CREDENTIALS_CONTEXT to false
+          // to a non-default value
           withCredentials: false,
         };
 
@@ -587,75 +603,74 @@ describe("BawApiService", () => {
 
         const context = catchFunctionCall().request.context;
         const expectedContext = withNgHttpCachingContext({
-          ...defaultConfig,
+          ...defaultCachingConfig,
           ...cacheOptions,
         });
-
         expectedContext.set(CREDENTIALS_CONTEXT, false);
 
         expect(context).toEqual(expectedContext);
       });
     });
-
-    describe("httpDelete", () => {
-      function catchFunctionCall() {
-        return catchRequest(testedApiPath, HttpMethod.DELETE);
-      }
-
-      it("should clear the http cache", () => {
-        service.httpDelete(testedApiPath).subscribe();
-        catchFunctionCall();
-        expect(cachingSpy.clearCache).toHaveBeenCalledTimes(1);
-      });
-    });
   });
 
   describe("API Request Methods", () => {
-    const tests: {
-      method: keyof BawApiService<AbstractModel>;
-      http: keyof BawApiService<AbstractModel>;
-      hasBody?: boolean;
-      hasFilter?: boolean;
-      singleResult?: boolean;
-      multiResult?: boolean;
-      updateOnAuthTrigger?: boolean;
-    }[] = [
+    const tests: ApiRequestMethodTest[] = [
       {
         method: "list",
         http: "httpGet",
         multiResult: true,
         updateOnAuthTrigger: true,
+        shouldCache: true,
+        shouldClearCache: false,
       },
       {
         method: "filter",
         http: "httpPost",
         multiResult: true,
         updateOnAuthTrigger: true,
+        shouldCache: true,
+        shouldClearCache: false,
       },
       {
         method: "show",
         http: "httpGet",
         singleResult: true,
         updateOnAuthTrigger: true,
+        shouldCache: true,
+        shouldClearCache: false,
       },
       {
         method: "create",
         http: "httpPost",
         singleResult: true,
+        shouldCache: false,
+        shouldClearCache: true,
       },
       {
         method: "update",
         http: "httpPatch",
         singleResult: true,
+        shouldCache: false,
+        shouldClearCache: true,
       },
       {
         method: "destroy",
         http: "httpDelete",
         singleResult: true,
+        shouldCache: false,
+        shouldClearCache: true,
       },
     ];
     tests.forEach(
-      ({ method, http, singleResult, multiResult, updateOnAuthTrigger }) => {
+      ({
+        method,
+        http,
+        singleResult,
+        multiResult,
+        updateOnAuthTrigger,
+        shouldCache,
+        shouldClearCache,
+      }) => {
         describe(method, () => {
           let defaultBody: IMockModel;
           let defaultFilter: Filters<IMockModel>;
@@ -840,6 +855,28 @@ describe("BawApiService", () => {
             });
           });
 
+          // prettier wants to break this up into multiple lines with the
+          // ternary operator being on a separate line. However, this makes it
+          // harder to read and understand the logic
+          // prettier-ignore
+          it(`should ${shouldClearCache ? "clear" : "not clear"} the cache`, (done) => {
+            const expectedCacheCleans = shouldClearCache ? 1 : 0;
+
+            cachingSpy.clearCache = jasmine.createSpy("clearCache") as any;
+            cachingSpy.clearCache.and.callThrough();
+
+            const response = { meta: meta.single, data: responses.single };
+            successRequest(response);
+
+            functionCall().subscribe({
+              next: () => {
+                expect(cachingSpy.clearCache).toHaveBeenCalledTimes(expectedCacheCleans);
+                done();
+              },
+              error: shouldNotFail,
+            });
+          });
+
           if (updateOnAuthTrigger) {
             if (singleResult) {
               it("should retrigger if auth changes", (done) => {
@@ -912,5 +949,85 @@ describe("BawApiService", () => {
         });
       }
     );
+
+    describe("filter", () => {
+      it("should cache filter requests with an empty body", () => {
+        // we test calling the filter method without any caching options so that
+        // we can test the default caching behavior
+        const filterBody: Filters = {};
+        service.filter(MockModel, testedApiPath, filterBody).subscribe();
+        catchRequest(testedApiPath, HttpMethod.POST);
+
+        const expectedFilterKey = service.encodeFilter(filterBody);
+        const expectedCacheKey = `POST@${testedApiPath}/filter:${expectedFilterKey}`;
+
+        const requestCache = cachingSpy.getStore();
+        const cachedResponse = requestCache.get(expectedCacheKey);
+        const cacheSize = requestCache.size;
+
+        expect(cachedResponse).toBeDefined();
+        expect(cacheSize).toEqual(1);
+      });
+
+      it("should cache filter requests with a filter body", () => {
+        const filterBody: any = {
+          filter: {
+            name: { eq: modelData.name.jobTitle() },
+          },
+          paging: {
+            page: 2,
+          },
+          sorting: {
+            orderBy: "id",
+            direction: "asc",
+          },
+        };
+
+        service.filter(MockModel, testedApiPath, filterBody).subscribe();
+        catchRequest(testedApiPath, HttpMethod.POST);
+
+        const expectedFilterKey = service.encodeFilter(filterBody);
+        const expectedCacheKey = `POST@${testedApiPath}/filter:${expectedFilterKey}`;
+
+        const requestCache = cachingSpy.getStore();
+        const cachedResponse = requestCache.get(expectedCacheKey);
+        const cacheSize = requestCache.size;
+
+        expect(cachedResponse).toBeDefined();
+        expect(cacheSize).toEqual(1);
+      });
+
+      it("should cache filter requests with a base64 url encoded filter", () => {
+        const filterBody: any = {
+          filter: {
+            name: { eq: modelData.name.jobTitle() },
+          },
+          paging: {
+            page: 2,
+          },
+          sorting: {
+            orderBy: "id",
+            direction: "asc",
+          },
+        };
+        const base64Filter = service.encodeFilter(filterBody);
+        const encodedFilterUrlPath = `${testedApiPath}?filter_encoded=${base64Filter}`;
+
+        service.httpGet(encodedFilterUrlPath).subscribe();
+        catchRequest(encodedFilterUrlPath, HttpMethod.GET);
+
+        // because we made the filter request with a GET request where the
+        // filters are encoded in the query string parameters, we expect that
+        // the cache key will just be the encoded filter url path
+        const expectedCacheKey = `GET@${encodedFilterUrlPath}`;
+
+        const requestCache = cachingSpy.getStore();
+        const cachedResponse = requestCache.get(expectedCacheKey);
+        const cacheSize = requestCache.size;
+
+        expect(cachedResponse).toBeDefined();
+        expect(cacheSize).toEqual(1);
+      });
+    });
   });
 });

@@ -37,8 +37,7 @@ export class WebsiteStatusService {
     } else {
       // we only create the tick$ singleton client side so that we don't make
       // continuous requests on the SSR server for the status
-      this.tick$ = defer(() => interval(3_000).pipe(startWith(-1)));
-      // this.tick$ = defer(() => interval(30_000).pipe(startWith(-1)));
+      this.tick$ = defer(() => interval(30_000).pipe(startWith(-1)));
 
       this.status$ = this.tick$.pipe(
         switchMap(() =>

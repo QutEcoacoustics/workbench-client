@@ -8,10 +8,14 @@ import { UniversalDeviceDetectorService } from "@services/universal-device-detec
 import { DeviceDetectorService } from "ngx-device-detector";
 import { environment } from "src/environments/environment";
 import { NgHttpCachingConfig, NgHttpCachingModule, NgHttpCachingStrategy } from "ng-http-caching";
+import { disableCache } from "@services/cache/ngHttpCachingConfig";
 import { AppComponent } from "./app.component";
 import { AppModule } from "./app.module";
 
+// we disable caching on the server to prevent potentially serving stale data
+// and data that requires authorization to unauthenticated users
 export const serverCacheConfig = {
+  isCacheable: disableCache,
   cacheStrategy: NgHttpCachingStrategy.DISALLOW_ALL,
 } as const satisfies NgHttpCachingConfig;
 
