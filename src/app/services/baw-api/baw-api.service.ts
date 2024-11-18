@@ -229,7 +229,6 @@ export class BawApiService<
     err: BawApiError | Error,
     disableNotification?: boolean
   ): Observable<never> => {
-    console.debug(err, disableNotification);
     const error = isBawApiError(err)
       ? err
       : new BawApiError(unknownErrorCode, err.message);
@@ -272,6 +271,7 @@ export class BawApiService<
     filters: Filters<Model>,
     options: BawServiceOptions = {}
   ): Observable<Model[]> {
+    console.debug(this.cacheManager);
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleCollectionResponse(classBuilder)),

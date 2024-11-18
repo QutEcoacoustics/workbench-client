@@ -76,6 +76,7 @@
     "ngx-cookie-service": "^17.0.1",
     "ngx-device-detector": "^7.0.0",
     "ngx-toastr": "^18.0.0",
+    "object-hash": "^3.0.0",
     "rxjs": "^7.8.1",
     "tslib": "^2.6.2",
     "vega-embed": "^6.24.0",

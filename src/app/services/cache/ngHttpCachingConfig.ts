@@ -1,6 +1,7 @@
 import { HttpRequest } from "@angular/common/http";
 import { NgHttpCachingConfig } from "ng-http-caching";
 import { environment } from "src/environments/environment";
+import hash from "object-hash";
 import { withCacheLogging } from "./cache-logging.service";
 
 type IsCacheablePredicate = NgHttpCachingConfig["isCacheable"];
@@ -62,7 +63,16 @@ function cacheKeyDefault(req: HttpRequest<any>): string {
   // the cache key so that requests to the same endpoint with different bodies
   // (e.g. filter requests) do not incorrectly return the same cached response
   // for different requests
-  const serializedBody = req.serializeBody();
-  const cacheKey = `${cacheKeyBase}:${serializedBody}`;
+  //
+  // we do this by hashing the request body and appending it to the cache key
+  //
+  // while md5 is not a secure hashing algorithm for, we use it for
+  // request caching keys because it is faster than more secure hashing
+  // algorithms such as sha256, and we are not storing any sensitive data from
+  // other uses in the cache key
+  // since we might be performing this hashing operation many times per second
+  // we want to use the fastest hashing algorithm possible
+  const hashedBody = hash(requestBody, { algorithm: "md5" });
+  const cacheKey = `${cacheKeyBase}@${hashedBody}`;
   return cacheKey;
 }

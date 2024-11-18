@@ -620,7 +620,6 @@ describe("BawApiService", () => {
         http: "httpGet",
         multiResult: true,
         updateOnAuthTrigger: true,
-        shouldCache: true,
         shouldClearCache: false,
       },
       {
@@ -628,7 +627,6 @@ describe("BawApiService", () => {
         http: "httpPost",
         multiResult: true,
         updateOnAuthTrigger: true,
-        shouldCache: true,
         shouldClearCache: false,
       },
       {
@@ -636,28 +634,24 @@ describe("BawApiService", () => {
         http: "httpGet",
         singleResult: true,
         updateOnAuthTrigger: true,
-        shouldCache: true,
         shouldClearCache: false,
       },
       {
         method: "create",
         http: "httpPost",
         singleResult: true,
-        shouldCache: false,
         shouldClearCache: true,
       },
       {
         method: "update",
         http: "httpPatch",
         singleResult: true,
-        shouldCache: false,
         shouldClearCache: true,
       },
       {
         method: "destroy",
         http: "httpDelete",
         singleResult: true,
-        shouldCache: false,
         shouldClearCache: true,
       },
     ];
@@ -668,7 +662,6 @@ describe("BawApiService", () => {
         singleResult,
         multiResult,
         updateOnAuthTrigger,
-        shouldCache,
         shouldClearCache,
       }) => {
         describe(method, () => {
