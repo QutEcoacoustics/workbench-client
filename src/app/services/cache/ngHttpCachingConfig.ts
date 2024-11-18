@@ -44,6 +44,10 @@ export const enableCache: IsCacheablePredicate = () => true;
 export const defaultCachingConfig = {
   isCacheable: isCacheableDefault,
 
+  // we set the lifetime to 1,000 milliseconds (1 second) so that duplicated
+  // associations will be loaded from the cache instead of the server
+  lifetime: 1_000,
+
   // by setting the workbench clients version as the cache version,
   // ng-http-caching will automatically invalidate the cache when the client
   // updates to a new version
@@ -69,6 +73,12 @@ function isCacheableDefault(req: HttpRequest<any>): boolean {
 
 // TODO: when we add support for caching filter requests we will need to use a
 // custom cache key function that includes the request body in the cache key
+//
+// the commented out code below uses an object hash which is not ideal
+// we should instead use an immutable.js object that has a hash method
+// we can use the hash method to compare the two request bodies for equality
+// without the overhead of hashing the entire object
+//
 // see: https://github.com/QutEcoacoustics/workbench-client/issues/2170
 //
 // function cacheKeyDefault(req: HttpRequest<any>): string {

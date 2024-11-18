@@ -120,15 +120,6 @@ export class BawApiService<
 
   /** Clears the entire http cache */
   private clearCache = () => {
-    // TODO: we should do targeting cache invalidation and invalidate all cache
-    // keys that contain the item being deleted from cache
-    //
-    // this is harder than expected because cached requests sometimes contain
-    // url parameters, we also need to invalidate all cache items that which
-    // reference the item being deleted as an associated model.
-    //
-    // in the interest of time, I have decided to invalidate all cache items
-    // to prevent any potential issues with stale data
     this.cacheService.clearCache();
   };
 
