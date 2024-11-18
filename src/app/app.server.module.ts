@@ -26,7 +26,8 @@ export const serverCacheConfig = {
     ServerTransferStateModule,
     // Timeout API requests after set period
     BawTimeoutModule.forRoot({ timeout: environment.ssrTimeout }),
-    // Cache explicit API requests
+    // we explicitly provide NgHttpCachingModule with a disabled cache strategy
+    // to prevent caching on the server
     NgHttpCachingModule.forRoot(serverCacheConfig),
   ],
   providers: [

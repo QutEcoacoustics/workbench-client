@@ -11,6 +11,12 @@ type IsCacheablePredicate = NgHttpCachingConfig["isCacheable"];
  *
  * @example
  * ```ts
+ * const cacheOptions: NgHttpCachingConfig = { isCacheable: disableCache };
+ * bawApi.show("/api/endpoint", { cache: cacheOptions });
+ * ```
+ *
+ * @example
+ * ```ts
  * const cacheContext = withNgHttpCachingContext({ isCacheable: disableCache });
  * httpClient.get("/api/endpoint", cacheContext);
  * ```
@@ -23,15 +29,24 @@ export const disableCache: IsCacheablePredicate = () => false;
  *
  * @example
  * ```ts
+ * const cacheOptions: NgHttpCachingConfig = { isCacheable: enableCache };
+ * bawApi.show("/api/endpoint", { cache: cacheOptions });
+ * ```
+ *
+ * @example
+ * ```ts
  * const cacheContext = withNgHttpCachingContext({ isCacheable: enableCache });
  * httpClient.get("/api/endpoint", cacheContext);
  * ```
  */
 export const enableCache: IsCacheablePredicate = () => true;
 
-// this is here just for testing and is not its final location
 export const defaultCachingConfig = {
   isCacheable: isCacheableDefault,
+
+  // by setting the workbench clients version as the cache version,
+  // ng-http-caching will automatically invalidate the cache when the client
+  // updates to a new version
   version: environment.version,
 } as const satisfies NgHttpCachingConfig;
 
@@ -46,7 +61,7 @@ function isCacheableDefault(req: HttpRequest<any>): boolean {
   // admin panel
   // this is useful for debugging caching issues
   if (isCacheable) {
-    withCacheLogging(req);
+    withCacheLogging(req.context);
   }
 
   return isCacheable;

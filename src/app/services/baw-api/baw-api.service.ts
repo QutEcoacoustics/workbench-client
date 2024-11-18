@@ -40,7 +40,17 @@ export interface BawServiceOptions {
   /** If set, requests will include the users authentication token and cookies */
   withCredentials?: boolean;
 
-  /** Allows you to modify the cashew cache options per request */
+  /**
+   * Allows you to modify the http cache options per request
+   *
+   * @example
+   * You can disable caching for a specific request by using the "disableCache"
+   * helper
+   *
+   * ```
+   * api.show("/status", { isCachable: disableCache })
+   * ```
+   */
   cacheOptions?: NgHttpCachingConfig;
 }
 
@@ -108,25 +118,18 @@ export class BawApiService<
    */
   private handleEmptyResponse = () => null;
 
-  /**
-   * Clear an API call from the cache. Note: This does not currently work with
-   * API requests which include QSP and may be an issue in the future.
-   *
-   * @param req API request
-   */
+  /** Clears the entire http cache */
   private clearCache = () => {
     // TODO: we should do targeting cache invalidation and invalidate all cache
     // keys that contain the item being deleted from cache
     //
     // this is harder than expected because cached requests sometimes contain
-    // url parameters, we also need to invalidate all cache items for filter
-    // requests where the body contains the item being deleted, and we would
-    // need to invalidate all cached models which reference the item being
-    // deleted as an associated model.
+    // url parameters, we also need to invalidate all cache items that which
+    // reference the item being deleted as an associated model.
     //
     // in the interest of time, I have decided to invalidate all cache items
     // to prevent any potential issues with stale data
-    this.cacheManager.clearCache();
+    this.cacheService.clearCache();
   };
 
   // because users can create a partial options object, we need to merge the partial options with the default options
@@ -171,13 +174,12 @@ export class BawApiService<
   public constructor(
     @Inject(API_ROOT) protected apiRoot: string,
     @Inject(IS_SERVER_PLATFORM) protected isServer: boolean,
-    protected cacheManager: NgHttpCachingService,
+    protected cacheService: NgHttpCachingService,
     protected http: HttpClient,
     protected session: BawSessionService,
     protected notifications: ToastrService,
     @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
-    @Inject(ASSOCIATION_INJECTOR)
-    protected associationInjector: AssociationInjector,
+    @Inject(ASSOCIATION_INJECTOR) protected associationInjector: AssociationInjector,
     @Optional() @Inject(BAW_SERVICE_OPTIONS) private options: BawServiceOptions
   ) {
     // by merging the default options with the injected options, we can override
@@ -369,7 +371,7 @@ export class BawApiService<
       ),
       // TODO: this should be a more targeted cache invalidation
       // we have to clear the cache when creating new models because the new
-      // models might be included in cached filter responses
+      // models might be included in cached associations
       tap(() => this.clearCache()),
       // there is no map function here, because the handleSingleResponse method is invoked on the POST and PUT requests
       // individually. Moving the handleSingleResponse mapping here would result in the response object being instantiated twice
@@ -422,9 +424,8 @@ export class BawApiService<
       // cache when we request it
       //
       // I cannot simply invalidate only the cache item for the model being
-      // because other requests such as cached filter requests have the
-      // potentially stale model in their response and not the request which is
-      // used as the cache key
+      // because other requests such as cached associations will still return a
+      // stale model in their response
       tap(() => this.clearCache()),
       catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
@@ -523,12 +524,12 @@ export class BawApiService<
   ): Observable<ApiResponse<Model | Model[]>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    // we support caching filter requests by indexing the cache
-    // by the filter body
-    const cachingOptions = this.buildCachingOptions(options);
-    const cacheContext = withNgHttpCachingContext(cachingOptions);
+    // TODO: update this method when we add support for caching filter requests
+    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2170
+    // const cachingOptions = this.buildCachingOptions(options);
+    // const cacheContext = withNgHttpCachingContext(cachingOptions);
 
-    const context = this.withCredentialsHttpContext(fullOptions, cacheContext);
+    const context = this.withCredentialsHttpContext(fullOptions);
 
     return this.http.post<ApiResponse<Model | Model[]>>(
       this.getPath(path),

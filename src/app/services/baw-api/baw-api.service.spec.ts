@@ -75,7 +75,6 @@ interface ApiRequestMethodTest {
   singleResult?: boolean;
   multiResult?: boolean;
   updateOnAuthTrigger?: boolean;
-  shouldCache?: boolean;
   shouldClearCache: boolean;
 }
 

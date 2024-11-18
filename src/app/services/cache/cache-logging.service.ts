@@ -1,4 +1,5 @@
 import {
+  HttpContext,
   HttpContextToken,
   HttpEvent,
   HttpHandler,
@@ -15,14 +16,14 @@ const CACHE_LOGGING = new HttpContextToken<boolean>(() => false);
  * Log that a request was cached. This should be used in conjunction with the
  * `withCache()` context
  *
- * ```typescript
+ * ```ts
  * return this.http.get("http://api/1", {
-      context: withCache({context: withCacheLogging()}),
-   });
+ *    context: withCache({context: withCacheLogging()}),
+ * });
  * ```
  */
-export const withCacheLogging = (req: HttpRequest<any>) =>
-  req.context.set(CACHE_LOGGING, true);
+export const withCacheLogging = (context = new HttpContext()) =>
+  context.set(CACHE_LOGGING, true);
 
 @Injectable()
 export class CacheLoggingService implements HttpInterceptor {
@@ -35,10 +36,8 @@ export class CacheLoggingService implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if (this.cacheSettings.showLogging && req.context.get(CACHE_LOGGING)) {
-      // I include the body in the debug log so that request body of filter POST
-      // requests can be debugged
       // eslint-disable-next-line no-console
-      console.debug("(CacheLoggingService) Caching requests for ", req.url, "body:", req.body);
+      console.debug("(CacheLoggingService) Caching requests for ", req.url);
     }
 
     return next.handle(req);

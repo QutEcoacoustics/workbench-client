@@ -7,7 +7,7 @@ export class CacheSettings {
     this.withLogging = withLogging;
   }
 
-  /** TTL for HTTP GET requests */
+  /** time to live for cached HTTP requests */
   public cacheTtlMs = NgHttpCachingConfigDefault.lifetime;
   private withLogging: boolean;
   private _enabled: boolean;
