@@ -44,15 +44,6 @@ import { adminSettingsMenuItem } from "./settings.menus";
         Enable cache logging in the console
       </label>
     </div>
-
-    <label class="mt-2">
-      Cache Time to Live (seconds)
-      <input
-        id="cache-lifetime"
-        class="form-control"
-        type="number"
-      />
-    </label>
   `,
 })
 class AdminSettingsComponent extends PageComponent {

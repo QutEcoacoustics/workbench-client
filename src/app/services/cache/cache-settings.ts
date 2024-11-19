@@ -9,8 +9,6 @@ export class CacheSettings {
     this.withLogging = withLogging;
   }
 
-  /** time to live for cached HTTP requests */
-  public cacheLifetimeSeconds: number;
   private withLogging: boolean;
   private _enabled: boolean;
 

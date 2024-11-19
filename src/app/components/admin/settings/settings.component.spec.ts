@@ -2,8 +2,7 @@ import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { CacheSettings } from "@services/cache/cache-settings";
-import { modelData } from "@test/helpers/faker";
+import { CACHE_SETTINGS, CacheSettings } from "@services/cache/cache-settings";
 import { AdminSettingsComponent } from "./settings.component";
 
 describe("AdminSettingsComponent", () => {
@@ -12,14 +11,15 @@ describe("AdminSettingsComponent", () => {
   const createComponent = createComponentFactory({
     component: AdminSettingsComponent,
     imports: [MockBawApiModule, SharedModule],
+    providers: [
+      { provide: CACHE_SETTINGS, useValue: new CacheSettings(true, false) },
+    ],
   });
 
   const cacheEnabledInput = () =>
     spectator.query<HTMLInputElement>("#enable-cache");
   const cacheLoggingInput = () =>
     spectator.query<HTMLInputElement>("#enable-cache-logging");
-  const cacheLifetimeInput = () =>
-    spectator.query<HTMLInputElement>("#cache-lifetime");
 
   function cacheSettings(): CacheSettings {
     return spectator.component.cacheSettings;
@@ -49,11 +49,5 @@ describe("AdminSettingsComponent", () => {
 
     spectator.click(cacheLoggingInput());
     expect(cacheSettings().showLogging).toBeFalse();
-  });
-
-  it("should update the cache lifetime correctly", () => {
-    const testedValue = modelData.seconds();
-    spectator.typeInElement(testedValue.toString(), cacheLifetimeInput());
-    expect(cacheSettings().cacheLifetimeSeconds).toEqual(testedValue);
   });
 });
