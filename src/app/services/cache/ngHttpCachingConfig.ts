@@ -1,6 +1,7 @@
 import { HttpRequest } from "@angular/common/http";
 import { NgHttpCachingConfig } from "ng-http-caching";
 import { environment } from "src/environments/environment";
+import { secondsToMilliseconds } from "@helpers/unitConverters/unitConverters";
 import { withCacheLogging } from "./cache-logging.service";
 
 type IsCacheablePredicate = NgHttpCachingConfig["isCacheable"];
@@ -44,9 +45,23 @@ export const enableCache: IsCacheablePredicate = () => true;
 export const defaultCachingConfig = {
   isCacheable: isCacheableDefault,
 
-  // we set the lifetime to 1,000 milliseconds (1 second) so that duplicated
-  // associations will be loaded from the cache instead of the server
-  lifetime: 1_000,
+  // ng-http-caching has two methods to save network requests: debouncing and
+  // caching of completed requests
+  // this lifetime modifies the caching of completed requests
+  //
+  // after performance testing, we have found that:
+  // - debouncing is effective at de-duplicating requests for the same data on a
+  //   page that is loading.
+  // - TTL has no effect on page load time unless more data is requested later
+  //   by the user. E.g. paging through a list of items
+  // see: https://github.com/QutEcoacoustics/workbench-client/pull/2171#issuecomment-2484676601
+  //
+  // we are trialing a 10 second cache lifetime in the hope that users doing any
+  // quick succession actions, they'll see a benefit from the cache
+  // e.g. flicking through a page of results
+  // while users who perform actions on a page are likely to take longer than 10
+  // seconds, which will hopefully prevent stale caching issues
+  lifetime: secondsToMilliseconds(10),
 
   // by setting the workbench clients version as the cache version,
   // ng-http-caching will automatically invalidate the cache when the client

@@ -47,7 +47,11 @@ import { adminSettingsMenuItem } from "./settings.menus";
 
     <label class="mt-2">
       Cache Time to Live (seconds)
-      <input class="form-control" type="number" [(ngModel)]="cacheSettings.cacheLifetimeSeconds" />
+      <input
+        id="cache-lifetime"
+        class="form-control"
+        type="number"
+      />
     </label>
   `,
 })

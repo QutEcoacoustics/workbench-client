@@ -1,15 +1,12 @@
 import { InjectionToken } from "@angular/core";
-import { NgHttpCachingConfigDefault } from "ng-http-caching";
 
 export class CacheSettings {
   public constructor(
     enabled: boolean,
     withLogging: boolean,
-    cacheLifetimeSeconds = NgHttpCachingConfigDefault.lifetime / 100
   ) {
     this._enabled = enabled;
     this.withLogging = withLogging;
-    this.cacheLifetimeSeconds = cacheLifetimeSeconds;
   }
 
   /** time to live for cached HTTP requests */
