@@ -50,6 +50,7 @@ import {
   disableCache,
   enableCache,
 } from "@services/cache/ngHttpCachingConfig";
+import { withCacheLogging } from "@services/cache/cache-logging.service";
 import {
   BawSessionService,
   guestAuthToken,
@@ -534,10 +535,10 @@ describe("BawApiService", () => {
           .subscribe();
 
         const context = catchFunctionCall().request.context;
-        const expectedContext = withNgHttpCachingContext({
-          ...defaultCachingConfig,
-          ...cacheOptions,
-        });
+        const expectedContext = withNgHttpCachingContext(
+          { ...defaultCachingConfig, ...cacheOptions },
+          withCacheLogging()
+        );
         expectedContext.set(CREDENTIALS_CONTEXT, true);
 
         expect(context).toEqual(expectedContext);
@@ -554,10 +555,10 @@ describe("BawApiService", () => {
 
         const context = catchFunctionCall().request.context;
 
-        const expectedContext = withNgHttpCachingContext({
-          ...defaultCachingConfig,
-          ...cacheOptions,
-        });
+        const expectedContext = withNgHttpCachingContext(
+          { ...defaultCachingConfig, ...cacheOptions },
+          withCacheLogging()
+        );
         expectedContext.set(CREDENTIALS_CONTEXT, true);
 
         expect(context).toEqual(expectedContext);
@@ -573,10 +574,10 @@ describe("BawApiService", () => {
           .subscribe();
 
         const context = catchFunctionCall().request.context;
-        const expectedContext = withNgHttpCachingContext({
-          ...defaultCachingConfig,
-          ...cacheOptions,
-        });
+        const expectedContext = withNgHttpCachingContext(
+          { ...defaultCachingConfig, ...cacheOptions },
+          withCacheLogging()
+        );
         expectedContext.set(CREDENTIALS_CONTEXT, true);
 
         expect(context).toEqual(expectedContext);
@@ -601,10 +602,10 @@ describe("BawApiService", () => {
         service.httpGet(testedApiPath, defaultApiHeaders, options).subscribe();
 
         const context = catchFunctionCall().request.context;
-        const expectedContext = withNgHttpCachingContext({
-          ...defaultCachingConfig,
-          ...cacheOptions,
-        });
+        const expectedContext = withNgHttpCachingContext(
+          { ...defaultCachingConfig, ...cacheOptions },
+          withCacheLogging()
+        );
         expectedContext.set(CREDENTIALS_CONTEXT, false);
 
         expect(context).toEqual(expectedContext);

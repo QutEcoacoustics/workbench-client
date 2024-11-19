@@ -26,6 +26,7 @@ import {
   withNgHttpCachingContext,
 } from "ng-http-caching";
 import { defaultCachingConfig } from "@services/cache/ngHttpCachingConfig";
+import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { BawSessionService } from "./baw-session.service";
 import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
 import { BAW_SERVICE_OPTIONS } from "./api-common";
@@ -457,7 +458,7 @@ export class BawApiService<
     const fullOptions = this.buildServiceOptions(options);
 
     const cachingOptions = this.buildCachingOptions(options);
-    const cacheContext = withNgHttpCachingContext(cachingOptions);
+    const cacheContext = withNgHttpCachingContext(cachingOptions, withCacheLogging());
 
     const context = this.withCredentialsHttpContext(fullOptions, cacheContext);
 

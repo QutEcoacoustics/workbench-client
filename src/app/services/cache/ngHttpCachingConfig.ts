@@ -2,7 +2,6 @@ import { HttpRequest } from "@angular/common/http";
 import { NgHttpCachingConfig } from "ng-http-caching";
 import { environment } from "src/environments/environment";
 import { secondsToMilliseconds } from "@helpers/unitConverters/unitConverters";
-import { withCacheLogging } from "./cache-logging.service";
 
 type IsCacheablePredicate = NgHttpCachingConfig["isCacheable"];
 
@@ -74,16 +73,7 @@ export const defaultCachingConfig = {
 function isCacheableDefault(req: HttpRequest<any>): boolean {
   const shouldCacheMethod = req.method === "GET" || req.method === "HEAD";
   // const isFilterRequest = req.method === "POST" && req.url.endsWith("/filter");
-  const isCacheable = shouldCacheMethod;
-
-  // we support debug logging of requests that will be cached through the sites
-  // admin panel
-  // this is useful for debugging caching issues
-  if (isCacheable) {
-    withCacheLogging(req.context);
-  }
-
-  return isCacheable;
+  return shouldCacheMethod;
 }
 
 // TODO: when we add support for caching filter requests we will need to use a

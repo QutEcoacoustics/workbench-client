@@ -12,16 +12,7 @@ import { CacheSettings, CACHE_SETTINGS } from "./cache-settings";
 
 const CACHE_LOGGING = new HttpContextToken<boolean>(() => false);
 
-/**
- * Log that a request was cached. This should be used in conjunction with the
- * `withCache()` context
- *
- * ```ts
- * return this.http.get("http://api/1", {
- *    context: withCache({context: withCacheLogging()}),
- * });
- * ```
- */
+/** Log a request that was cached */
 export const withCacheLogging = (context = new HttpContext()) =>
   context.set(CACHE_LOGGING, true);
 
