@@ -55,9 +55,17 @@ export const defaultCachingConfig = {
   //   by the user. E.g. paging through a list of items
   // see: https://github.com/QutEcoacoustics/workbench-client/pull/2171#issuecomment-2484676601
   //
-  // we are trialing a 10 second cache lifetime in the hope that users doing any
-  // quick succession actions, they'll see a benefit from the cache
-  // e.g. flicking through a page of results
+  // I have temporarily set the cache lifetime to 0 seconds because the
+  // @bawReadonlyConvertCase decorator attempts to modify frozen cached objects
+  // when recalling items from the cache
+  // this causes an an error similar to "status is read-only"
+  // by setting the cache lifetime to 0 seconds, we can get the performance
+  // gains of request debouncing without having potential errors due to items
+  // being recalled from the cache
+  //
+  // in the future we should use a 10 second cache lifetime in the hope that
+  // users doing any quick succession actions, they'll see a benefit from the
+  // cache e.g. flicking through a page of results
   // while users who perform actions on a page are likely to take longer than 10
   // seconds, which will hopefully prevent stale caching issues
   lifetime: secondsToMilliseconds(10),

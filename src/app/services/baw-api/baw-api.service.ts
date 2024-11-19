@@ -22,6 +22,7 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { AssociationInjector } from "@models/ImplementsInjector";
 import {
   NgHttpCachingConfig,
+  NgHttpCachingContext,
   NgHttpCachingService,
   withNgHttpCachingContext,
 } from "ng-http-caching";
@@ -137,7 +138,7 @@ export class BawApiService<
 
   private buildCachingOptions(
     options: Partial<BawServiceOptions>
-  ): NgHttpCachingConfig {
+  ): NgHttpCachingContext {
     return {
       ...this.instanceOptions.cacheOptions,
       ...options.cacheOptions,
@@ -458,7 +459,10 @@ export class BawApiService<
     const fullOptions = this.buildServiceOptions(options);
 
     const cachingOptions = this.buildCachingOptions(options);
-    const cacheContext = withNgHttpCachingContext(cachingOptions, withCacheLogging());
+    const cacheContext = withNgHttpCachingContext(
+      cachingOptions,
+      withCacheLogging()
+    );
 
     const context = this.withCredentialsHttpContext(fullOptions, cacheContext);
 

@@ -53,11 +53,9 @@ export class AnnotationService {
   private async showAudioRecording(
     audioEvent: AudioEvent
   ): Promise<AudioRecording> {
-    return new AudioRecording(
-      await firstValueFrom(
-        this.audioRecordingsApi.show(audioEvent.audioRecordingId)
-      )
-    );
+    return await firstValueFrom(
+      this.audioRecordingsApi.show(audioEvent.audioRecordingId)
+    )
   }
 }
 
