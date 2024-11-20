@@ -230,19 +230,17 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    */
   private getModelAttributes(opts?: ModelSerializationOptions): string[] {
     if (opts?.create || opts?.update) {
-      return (
-        this.getPersistentAttributes()
-          .filter((meta) => (opts.create ? meta.create : meta.update))
-          // The following filter splits values for attributes that support both json and formData formats
-          // when a  null value is present, we send the value in the json request
-          // when a File value is present, we send the value in the formData request
-          // The null/json scenario is used to support deleting images.
-          .filter((meta) => this[meta.key] instanceof File ? opts.formData : true)
-          .filter((meta) =>
-            meta.supportedFormats.includes(opts.formData ? "formData" : "json")
-          )
-          .map((meta) => meta.key)
-      );
+      return this.getPersistentAttributes()
+        .filter((meta) => (opts.create ? meta.create : meta.update))
+        // The following filter splits values for attributes that support both json and formData formats
+        // when a  null value is present, we send the value in the json request
+        // when a File value is present, we send the value in the formData request
+        // The null/json scenario is used to support deleting images.
+        .filter((meta) => this[meta.key] instanceof File ? opts.formData : true)
+        .filter((meta) =>
+          meta.supportedFormats.includes(opts.formData ? "formData" : "json")
+        )
+        .map((meta) => meta.key);
     } else {
       return Object.keys(this).filter((key) => key !== "injector");
     }
