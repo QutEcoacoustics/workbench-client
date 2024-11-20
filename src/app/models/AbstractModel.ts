@@ -237,9 +237,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
           // when a  null value is present, we send the value in the json request
           // when a File value is present, we send the value in the formData request
           // The null/json scenario is used to support deleting images.
-          .filter((meta) =>
-            this[meta.key] instanceof File ? opts.formData : true
-          )
+          .filter((meta) => this[meta.key] instanceof File ? opts.formData : true)
           .filter((meta) =>
             meta.supportedFormats.includes(opts.formData ? "formData" : "json")
           )
