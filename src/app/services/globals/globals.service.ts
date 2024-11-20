@@ -7,7 +7,7 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
  */
 @Injectable({ providedIn: "root" })
 export class GlobalsService {
-  private namespace = "__bawWorkbenchClient";
+  private namespace = "__bawWorkbenchClient" as const;
 
   public constructor(
     @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
@@ -37,9 +37,6 @@ export class GlobalsService {
 
   public set cacheEnabled(enabled: boolean) {
     this.cacheSettings.setCaching(enabled);
-    this.logToConsole(
-      "Cache is now " + (this.cacheSettings.enabled ? "enabled" : "disabled")
-    );
   }
 
   private get cacheEnabledDescription(): string {
@@ -53,10 +50,6 @@ export class GlobalsService {
 
   public set cacheLoggingEnabled(enabled: boolean) {
     this.cacheSettings.setLogging(enabled);
-    this.logToConsole(
-      "Cache logging is now " +
-        (this.cacheSettings.showLogging ? "enabled" : "disabled")
-    );
   }
 
   private get cacheLoggingEnabledDescription(): string {

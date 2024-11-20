@@ -12,17 +12,22 @@ import {
   AbstractModelConstructor,
   AbstractModelWithoutId,
 } from "@models/AbstractModel";
-import { HttpCacheManager, withCache } from "@ngneat/cashew";
-import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { API_ROOT } from "@services/config/config.tokens";
 import { ToastrService } from "ngx-toastr";
 import { Observable, iif, of, throwError } from "rxjs";
 import { catchError, concatMap, map, switchMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AssociationInjector } from "@models/ImplementsInjector";
+import {
+  NgHttpCachingConfig,
+  NgHttpCachingContext,
+  NgHttpCachingService,
+  withNgHttpCachingContext,
+} from "ng-http-caching";
+import { defaultCachingConfig } from "@services/cache/ngHttpCachingConfig";
+import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { BawSessionService } from "./baw-session.service";
 import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
 import { BAW_SERVICE_OPTIONS } from "./api-common";
@@ -37,8 +42,18 @@ export interface BawServiceOptions {
   /** If set, requests will include the users authentication token and cookies */
   withCredentials?: boolean;
 
-  /** Allows you to modify the cashew cache options per request */
-  cacheOptions?: ContextOptions;
+  /**
+   * Allows you to modify the http cache options per request
+   *
+   * @example
+   * You can disable caching for a specific request by using the "disableCache"
+   * helper
+   *
+   * ```
+   * api.show("/status", { isCachable: disableCache })
+   * ```
+   */
+  cacheOptions?: NgHttpCachingConfig;
 }
 
 /** Default headers for API requests */
@@ -60,7 +75,7 @@ export const multiPartApiHeaders = new HttpHeaders({
 export const defaultBawServiceOptions = Object.freeze({
   disableNotification: false,
   withCredentials: true,
-  cacheOptions: { cache: false },
+  cacheOptions: defaultCachingConfig,
 }) satisfies Required<BawServiceOptions>;
 
 /**
@@ -105,14 +120,9 @@ export class BawApiService<
    */
   private handleEmptyResponse = () => null;
 
-  /**
-   * Clear an API call from the cache. Note: This does not currently work with
-   * API requests which include QSP and may be an issue in the future.
-   *
-   * @param path API path
-   */
-  private clearCache = (path: string) => {
-    this.manager.delete(path);
+  /** Clears the entire http cache */
+  private clearCache = () => {
+    this.cacheService.clearCache();
   };
 
   // because users can create a partial options object, we need to merge the partial options with the default options
@@ -126,9 +136,18 @@ export class BawApiService<
     };
   }
 
+  private buildCachingOptions(
+    options: Partial<BawServiceOptions>
+  ): NgHttpCachingContext {
+    return {
+      ...this.instanceOptions.cacheOptions,
+      ...options.cacheOptions,
+    };
+  }
+
   // the "context" headers are passed to the interceptor to determine if the request should be cached and if
   // the Authentication token and cookies should be sent in requests
-  private credentialsHttpContext(
+  private withCredentialsHttpContext(
     options: Required<BawServiceOptions>,
     baseContext: HttpContext = new HttpContext()
   ): HttpContext {
@@ -148,7 +167,7 @@ export class BawApiService<
   public constructor(
     @Inject(API_ROOT) protected apiRoot: string,
     @Inject(IS_SERVER_PLATFORM) protected isServer: boolean,
-    protected manager: HttpCacheManager,
+    protected cacheService: NgHttpCachingService,
     protected http: HttpClient,
     protected session: BawSessionService,
     protected notifications: ToastrService,
@@ -343,6 +362,10 @@ export class BawApiService<
           of(data)
         )
       ),
+      // TODO: this should be a more targeted cache invalidation
+      // we have to clear the cache when creating new models because the new
+      // models might be included in cached associations
+      tap(() => this.clearCache()),
       // there is no map function here, because the handleSingleResponse method is invoked on the POST and PUT requests
       // individually. Moving the handleSingleResponse mapping here would result in the response object being instantiated twice
       catchError((err) => this.handleError(err, this.suppressErrors(options)))
@@ -388,6 +411,15 @@ export class BawApiService<
           : (data) => of(data)
       ),
       map(this.handleSingleResponse(classBuilder)),
+      // TODO: This should be a more targeted cache invalidation
+      // I have decided to invalidate all of the cache items so that if a model
+      // is updated, we will not get an old stale version of the model from the
+      // cache when we request it
+      //
+      // I cannot simply invalidate only the cache item for the model being
+      // because other requests such as cached associations will still return a
+      // stale model in their response
+      tap(() => this.clearCache()),
       catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }
@@ -403,7 +435,7 @@ export class BawApiService<
   ): Observable<null> {
     return this.httpDelete(path, undefined, options).pipe(
       map(this.handleEmptyResponse),
-      tap(() => this.clearCache(path)),
+      tap(() => this.clearCache()),
       catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }
@@ -426,14 +458,13 @@ export class BawApiService<
   ): Observable<ApiResponse<Model | Model[]>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    const cacheContext: HttpContext = withCache({
-      ttl: this.cacheSettings.httpGetTtlMs,
-      context: withCacheLogging(),
-      ...options.cacheOptions,
-      cache: this.cacheSettings.enabled && fullOptions.cacheOptions.cache,
-    });
+    const cachingOptions = this.buildCachingOptions(options);
+    const cacheContext = withNgHttpCachingContext(
+      cachingOptions,
+      withCacheLogging()
+    );
 
-    const context = this.credentialsHttpContext(fullOptions, cacheContext);
+    const context = this.withCredentialsHttpContext(fullOptions, cacheContext);
 
     return this.http.get<ApiResponse<Model>>(this.getPath(path), {
       responseType: "json",
@@ -460,7 +491,7 @@ export class BawApiService<
   ): Observable<ApiResponse<Model | void>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    const context = this.credentialsHttpContext(fullOptions);
+    const context = this.withCredentialsHttpContext(fullOptions);
 
     return this.http.delete<ApiResponse<null>>(this.getPath(path), {
       responseType: "json",
@@ -489,7 +520,12 @@ export class BawApiService<
   ): Observable<ApiResponse<Model | Model[]>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    const context = this.credentialsHttpContext(fullOptions);
+    // TODO: update this method when we add support for caching filter requests
+    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2170
+    // const cachingOptions = this.buildCachingOptions(options);
+    // const cacheContext = withNgHttpCachingContext(cachingOptions);
+
+    const context = this.withCredentialsHttpContext(fullOptions);
 
     return this.http.post<ApiResponse<Model | Model[]>>(
       this.getPath(path),
@@ -522,7 +558,7 @@ export class BawApiService<
   ): Observable<ApiResponse<Model>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    const context = this.credentialsHttpContext(fullOptions);
+    const context = this.withCredentialsHttpContext(fullOptions);
 
     return this.http.put<ApiResponse<Model>>(this.getPath(path), body, {
       responseType: "json",
@@ -551,7 +587,7 @@ export class BawApiService<
   ): Observable<ApiResponse<Model>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    const context = this.credentialsHttpContext(fullOptions);
+    const context = this.withCredentialsHttpContext(fullOptions);
 
     return this.http.patch<ApiResponse<Model>>(this.getPath(path), body, {
       responseType: "json",

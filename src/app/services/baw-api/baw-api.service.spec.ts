@@ -1,8 +1,8 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TestRequest } from "@angular/common/http/testing";
 import {
-  CREDENTIALS_CONTEXT,
   BawApiInterceptor,
+  CREDENTIALS_CONTEXT,
 } from "@baw-api/api.interceptor.service";
 import {
   ApiResponse,
@@ -20,15 +20,13 @@ import { AuthToken } from "@interfaces/apiInterfaces";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 import { User } from "@models/User";
-import { withCache } from "@ngneat/cashew";
-import { ContextOptions } from "@ngneat/cashew/lib/cache-context";
 import {
   createHttpFactory,
   HttpMethod,
   mockProvider,
   SpectatorHttp,
+  SpyObject,
 } from "@ngneat/spectator";
-import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { CacheModule } from "@services/cache/cache.module";
 import { API_ROOT } from "@services/config/config.tokens";
@@ -42,6 +40,17 @@ import { BehaviorSubject, noop, Observable, Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
+import {
+  NgHttpCachingConfig,
+  NgHttpCachingService,
+  withNgHttpCachingContext,
+} from "ng-http-caching";
+import {
+  defaultCachingConfig,
+  disableCache,
+  enableCache,
+} from "@services/cache/ngHttpCachingConfig";
+import { withCacheLogging } from "@services/cache/cache-logging.service";
 import {
   BawSessionService,
   guestAuthToken,
@@ -58,6 +67,17 @@ export const shouldNotFail = () => {
 export const shouldNotComplete = () => {
   fail("Service should not complete");
 };
+
+interface ApiRequestMethodTest {
+  method: keyof BawApiService<AbstractModel>;
+  http: keyof BawApiService<AbstractModel>;
+  hasBody?: boolean;
+  hasFilter?: boolean;
+  singleResult?: boolean;
+  multiResult?: boolean;
+  updateOnAuthTrigger?: boolean;
+  shouldClearCache: boolean;
+}
 
 class IMockModel {
   public id?: number;
@@ -118,7 +138,9 @@ describe("BawApiService", () => {
   let session: BawSessionService;
   let service: BawApiService<MockModel>;
   let associationInjector: AssociationInjector;
+  let cachingSpy: SpyObject<NgHttpCachingService>;
   let spec: SpectatorHttp<BawApiService<MockModel>>;
+  const testedApiPath = "/broken_link" as const;
 
   const createService = createHttpFactory<BawApiService<MockModel>>({
     service: BawApiService,
@@ -183,6 +205,8 @@ describe("BawApiService", () => {
     session = spec.inject(BawSessionService);
     associationInjector = spec.inject(ASSOCIATION_INJECTOR);
 
+    cachingSpy = spec.inject(NgHttpCachingService);
+
     cacheSettings = spec.inject(CACHE_SETTINGS);
     cacheSettings.setCaching(true);
 
@@ -231,6 +255,7 @@ describe("BawApiService", () => {
 
   afterEach(() => {
     spec.controller.verify();
+    cachingSpy.clearCache();
   });
 
   describe("Session Tracking", () => {
@@ -294,7 +319,7 @@ describe("BawApiService", () => {
         ): void {
           (
             service[httpMethod.functionName](
-              "/broken_link",
+              testedApiPath,
               ...opts
             ) as Observable<ApiResponse<unknown>>
           ).subscribe({
@@ -305,7 +330,7 @@ describe("BawApiService", () => {
         }
 
         function catchFunctionCall() {
-          return catchRequest("/broken_link", httpMethod.method);
+          return catchRequest(testedApiPath, httpMethod.method);
         }
 
         it(`should create ${httpMethod.method} request`, () => {
@@ -457,35 +482,35 @@ describe("BawApiService", () => {
         // If http method can accept body inputs
         if (httpMethod.hasBody) {
           it("should accept empty body", () => {
-            service[httpMethod.functionName]("/broken_link", {}).subscribe();
-            const req = catchRequest("/broken_link", httpMethod.method);
+            service[httpMethod.functionName](testedApiPath, {}).subscribe();
+            const req = catchRequest(testedApiPath, httpMethod.method);
             expect(req.request.body).toEqual({});
           });
 
           it("should accept body", () => {
-            service[httpMethod.functionName]("/broken_link", {
+            service[httpMethod.functionName](testedApiPath, {
               key: "value",
             }).subscribe();
-            const req = catchRequest("/broken_link", httpMethod.method);
+            const req = catchRequest(testedApiPath, httpMethod.method);
             expect(req.request.body).toEqual({ key: "value" });
           });
 
           it("should convert body keys", () => {
-            service[httpMethod.functionName]("/broken_link", {
+            service[httpMethod.functionName](testedApiPath, {
               caseConversion: "value",
             }).subscribe();
-            const req = catchRequest("/broken_link", httpMethod.method);
+            const req = catchRequest(testedApiPath, httpMethod.method);
             // eslint-disable-next-line @typescript-eslint/naming-convention
             expect(req.request.body).toEqual({ case_conversion: "value" });
           });
 
           it("should convert nested body keys", () => {
-            service[httpMethod.functionName]("/broken_link", {
+            service[httpMethod.functionName](testedApiPath, {
               caseConversion: {
                 nestedConversion: 42,
               },
             }).subscribe();
-            const req = catchRequest("/broken_link", httpMethod.method);
+            const req = catchRequest(testedApiPath, httpMethod.method);
             expect(req.request.body).toEqual({
               // eslint-disable-next-line @typescript-eslint/naming-convention
               case_conversion: { nested_conversion: 42 },
@@ -496,75 +521,92 @@ describe("BawApiService", () => {
     });
 
     describe("httpGet", () => {
-      let defaultCache: ContextOptions;
-
       function catchFunctionCall() {
-        return catchRequest("/broken_link", HttpMethod.GET);
+        return catchRequest(testedApiPath, HttpMethod.GET);
       }
 
-      beforeEach(() => {
-        defaultCache = {
-          ttl: cacheSettings.httpGetTtlMs,
-          context: withCacheLogging(),
+      it("should cache results when explicitly provided", () => {
+        const cacheOptions: NgHttpCachingConfig = {
+          isCacheable: enableCache,
         };
-      });
-
-      it("should cache results when given", () => {
-        const cacheOptions = { cache: true };
 
         service
-          .httpGet("/broken_link", defaultApiHeaders, { cacheOptions })
+          .httpGet(testedApiPath, defaultApiHeaders, { cacheOptions })
           .subscribe();
 
         const context = catchFunctionCall().request.context;
-        const expectedContext = withCache({
-          cache: true,
-          ...defaultCache,
-        }).set(CREDENTIALS_CONTEXT, true);
+        const expectedContext = withNgHttpCachingContext(
+          { ...defaultCachingConfig, ...cacheOptions },
+          withCacheLogging()
+        );
+        expectedContext.set(CREDENTIALS_CONTEXT, true);
+
+        expect(context).toEqual(expectedContext);
+      });
+
+      it("should not cache results when explicitly disabled", () => {
+        const cacheOptions: NgHttpCachingConfig = {
+          isCacheable: disableCache,
+        };
+
+        service
+          .httpGet(testedApiPath, defaultApiHeaders, { cacheOptions })
+          .subscribe();
+
+        const context = catchFunctionCall().request.context;
+
+        const expectedContext = withNgHttpCachingContext(
+          { ...defaultCachingConfig, ...cacheOptions },
+          withCacheLogging()
+        );
+        expectedContext.set(CREDENTIALS_CONTEXT, true);
 
         expect(context).toEqual(expectedContext);
       });
 
       it("should override default cache settings", () => {
-        const cacheOptions: ContextOptions = { cache: true, ttl: 10000 };
+        const cacheOptions: NgHttpCachingConfig = {
+          isCacheable: enableCache,
+          lifetime: 32_821,
+        };
         service
-          .httpGet("/broken_link", defaultApiHeaders, { cacheOptions })
+          .httpGet(testedApiPath, defaultApiHeaders, { cacheOptions })
           .subscribe();
-        const context = catchFunctionCall().request.context;
-        const expectedContext = withCache({
-          ...defaultCache,
-          ...cacheOptions,
-        }).set(CREDENTIALS_CONTEXT, true);
 
-        expect(context).toEqual(expectedContext);
-      });
-
-      it("should not cache results when not given", () => {
-        service.httpGet("/broken_link").subscribe();
         const context = catchFunctionCall().request.context;
-        const expectedContext = withCache({
-          cache: false,
-          ttl: cacheSettings.httpGetTtlMs,
-          context: withCacheLogging(),
-        }).set(CREDENTIALS_CONTEXT, true);
+        const expectedContext = withNgHttpCachingContext(
+          { ...defaultCachingConfig, ...cacheOptions },
+          withCacheLogging()
+        );
+        expectedContext.set(CREDENTIALS_CONTEXT, true);
 
         expect(context).toEqual(expectedContext);
       });
 
       it("should allow settings both cache and authentication contexts to non-default values", () => {
-        const cacheOptions: ContextOptions = { cache: true, ttl: 10000 };
+        const cacheOptions: NgHttpCachingConfig = {
+          isCacheable: enableCache,
+          lifetime: 10_000,
+        };
+
         const options: BawServiceOptions = {
           cacheOptions,
+
+          // by default, we will set the CREDENTIALS_CONTEXT to true if it is
+          // not provided in the options object
+          // therefore, we test changing the value of CREDENTIALS_CONTEXT to false
+          // to a non-default value
           withCredentials: false,
         };
 
-        service.httpGet("/broken_link", defaultApiHeaders, options).subscribe();
+        service.httpGet(testedApiPath, defaultApiHeaders, options).subscribe();
 
         const context = catchFunctionCall().request.context;
-        const expectedContext = withCache({
-          ...defaultCache,
-          ...cacheOptions,
-        }).set(CREDENTIALS_CONTEXT, false);
+        const expectedContext = withNgHttpCachingContext(
+          { ...defaultCachingConfig, ...cacheOptions },
+          withCacheLogging()
+        );
+        expectedContext.set(CREDENTIALS_CONTEXT, false);
 
         expect(context).toEqual(expectedContext);
       });
@@ -572,51 +614,56 @@ describe("BawApiService", () => {
   });
 
   describe("API Request Methods", () => {
-    const tests: {
-      method: keyof BawApiService<AbstractModel>;
-      http: keyof BawApiService<AbstractModel>;
-      hasBody?: boolean;
-      hasFilter?: boolean;
-      singleResult?: boolean;
-      multiResult?: boolean;
-      updateOnAuthTrigger?: boolean;
-    }[] = [
+    const tests: ApiRequestMethodTest[] = [
       {
         method: "list",
         http: "httpGet",
         multiResult: true,
         updateOnAuthTrigger: true,
+        shouldClearCache: false,
       },
       {
         method: "filter",
         http: "httpPost",
         multiResult: true,
         updateOnAuthTrigger: true,
+        shouldClearCache: false,
       },
       {
         method: "show",
         http: "httpGet",
         singleResult: true,
         updateOnAuthTrigger: true,
+        shouldClearCache: false,
       },
       {
         method: "create",
         http: "httpPost",
         singleResult: true,
+        shouldClearCache: true,
       },
       {
         method: "update",
         http: "httpPatch",
         singleResult: true,
+        shouldClearCache: true,
       },
       {
         method: "destroy",
         http: "httpDelete",
         singleResult: true,
+        shouldClearCache: true,
       },
     ];
     tests.forEach(
-      ({ method, http, singleResult, multiResult, updateOnAuthTrigger }) => {
+      ({
+        method,
+        http,
+        singleResult,
+        multiResult,
+        updateOnAuthTrigger,
+        shouldClearCache,
+      }) => {
         describe(method, () => {
           let defaultBody: IMockModel;
           let defaultFilter: Filters<IMockModel>;
@@ -659,28 +706,24 @@ describe("BawApiService", () => {
             switch (method) {
               case "list":
               case "show":
-                return service[method](MockModel, "/broken_link");
+                return service[method](MockModel, testedApiPath);
               case "filter":
-                return service[method](
-                  MockModel,
-                  "/broken_link",
-                  defaultFilter
-                );
+                return service[method](MockModel, testedApiPath, defaultFilter);
               case "create":
                 return service[method](
                   MockModel,
-                  "/broken_link",
-                  (model) => "/broken_link/" + model.id,
+                  testedApiPath,
+                  (model) => testedApiPath + model.id,
                   new MockModel(defaultBody, associationInjector)
                 );
               case "update":
                 return service[method](
                   MockModel,
-                  "/broken_link",
+                  testedApiPath,
                   new MockModel(defaultBody, associationInjector)
                 );
               case "destroy":
-                return service[method]("/broken_link");
+                return service[method](testedApiPath);
             }
           }
 
@@ -695,14 +738,14 @@ describe("BawApiService", () => {
               case "list":
               case "show":
                 expect(spy).toHaveBeenCalledWith(
-                  "/broken_link",
+                  testedApiPath,
                   defaultApiHeaders,
                   defaultBawMethodOptions
                 );
                 break;
               case "filter":
                 expect(spy).toHaveBeenCalledWith(
-                  "/broken_link",
+                  testedApiPath,
                   defaultFilter,
                   undefined,
                   defaultBawMethodOptions
@@ -711,7 +754,7 @@ describe("BawApiService", () => {
               case "create":
               case "update":
                 expect(spy).toHaveBeenCalledWith(
-                  "/broken_link",
+                  testedApiPath,
                   {
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     "Mock Model": defaultBody,
@@ -722,7 +765,7 @@ describe("BawApiService", () => {
                 break;
               case "destroy":
                 expect(spy).toHaveBeenCalledWith(
-                  "/broken_link",
+                  testedApiPath,
                   undefined,
                   defaultBawMethodOptions
                 );
@@ -733,10 +776,7 @@ describe("BawApiService", () => {
           if (singleResult) {
             it("should handle response", (done) => {
               const response = { meta: meta.single, data: responses.single };
-              const model = new MockModel(
-                response.data,
-                associationInjector
-              );
+              const model = new MockModel(response.data, associationInjector);
               model.addMetadata(response.meta);
 
               successRequest(response);
@@ -805,6 +845,28 @@ describe("BawApiService", () => {
                 expect(err).toEqual(responses.errorInfo);
                 done();
               },
+            });
+          });
+
+          // prettier wants to break this up into multiple lines with the
+          // ternary operator being on a separate line. However, this makes it
+          // harder to read and understand the logic
+          // prettier-ignore
+          it(`should ${shouldClearCache ? "clear" : "not clear"} the cache`, (done) => {
+            const expectedCacheCleans = shouldClearCache ? 1 : 0;
+
+            cachingSpy.clearCache = jasmine.createSpy("clearCache") as any;
+            cachingSpy.clearCache.and.callThrough();
+
+            const response = { meta: meta.single, data: responses.single };
+            successRequest(response);
+
+            functionCall().subscribe({
+              next: () => {
+                expect(cachingSpy.clearCache).toHaveBeenCalledTimes(expectedCacheCleans);
+                done();
+              },
+              error: shouldNotFail,
             });
           });
 
@@ -880,5 +942,87 @@ describe("BawApiService", () => {
         });
       }
     );
+
+    // TODO: re-enable these tests once we support caching filter requests
+    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2170
+    xdescribe("filter", () => {
+      it("should cache filter requests with an empty body", () => {
+        // we test calling the filter method without any caching options so that
+        // we can test the default caching behavior
+        const filterBody: Filters = {};
+        service.filter(MockModel, testedApiPath, filterBody).subscribe();
+        catchRequest(testedApiPath, HttpMethod.POST);
+
+        const expectedFilterKey = service.encodeFilter(filterBody);
+        const expectedCacheKey = `POST@${testedApiPath}/filter:${expectedFilterKey}`;
+
+        const requestCache = cachingSpy.getStore();
+        const cachedResponse = requestCache.get(expectedCacheKey);
+        const cacheSize = requestCache.size;
+
+        expect(cachedResponse).toBeDefined();
+        expect(cacheSize).toEqual(1);
+      });
+
+      it("should cache filter requests with a filter body", () => {
+        const filterBody: any = {
+          filter: {
+            name: { eq: modelData.name.jobTitle() },
+          },
+          paging: {
+            page: 2,
+          },
+          sorting: {
+            orderBy: "id",
+            direction: "asc",
+          },
+        };
+
+        service.filter(MockModel, testedApiPath, filterBody).subscribe();
+        catchRequest(testedApiPath, HttpMethod.POST);
+
+        const expectedFilterKey = service.encodeFilter(filterBody);
+        const expectedCacheKey = `POST@${testedApiPath}/filter:${expectedFilterKey}`;
+
+        const requestCache = cachingSpy.getStore();
+        const cachedResponse = requestCache.get(expectedCacheKey);
+        const cacheSize = requestCache.size;
+
+        expect(cachedResponse).toBeDefined();
+        expect(cacheSize).toEqual(1);
+      });
+
+      it("should cache filter requests with a base64 url encoded filter", () => {
+        const filterBody: any = {
+          filter: {
+            name: { eq: modelData.name.jobTitle() },
+          },
+          paging: {
+            page: 2,
+          },
+          sorting: {
+            orderBy: "id",
+            direction: "asc",
+          },
+        };
+        const base64Filter = service.encodeFilter(filterBody);
+        const encodedFilterUrlPath = `${testedApiPath}?filter_encoded=${base64Filter}`;
+
+        service.httpGet(encodedFilterUrlPath).subscribe();
+        catchRequest(encodedFilterUrlPath, HttpMethod.GET);
+
+        // because we made the filter request with a GET request where the
+        // filters are encoded in the query string parameters, we expect that
+        // the cache key will just be the encoded filter url path
+        const expectedCacheKey = `GET@${encodedFilterUrlPath}`;
+
+        const requestCache = cachingSpy.getStore();
+        const cachedResponse = requestCache.get(expectedCacheKey);
+        const cacheSize = requestCache.size;
+
+        expect(cachedResponse).toBeDefined();
+        expect(cacheSize).toEqual(1);
+      });
+    });
   });
 });

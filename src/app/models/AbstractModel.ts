@@ -22,14 +22,15 @@ export type AbstractModelConstructor<Model> = new (
  */
 export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   public constructor(raw: Model, protected injector?: AssociationInjector) {
-    this.getPersistentAttributes()
+    const transformedRaw = this.getPersistentAttributes()
       .filter((attr) => attr.convertCase)
-      .forEach((attr) => {
+      .reduce((acc, attr) => {
         const value = raw[attr.key];
-        raw[attr.key] = isInstantiated(value) ? camelCase(value) : value;
-      });
+        acc[attr.key] = isInstantiated(value) ? camelCase(value) : value;
+        return acc;
+      }, {});
 
-    return Object.assign(this, raw);
+    Object.assign(this, transformedRaw, raw);
   }
 
   /** Keys for accessing hidden data associated with a model */
@@ -235,7 +236,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
         // when a  null value is present, we send the value in the json request
         // when a File value is present, we send the value in the formData request
         // The null/json scenario is used to support deleting images.
-        .filter((meta) => this[meta.key] instanceof(File) ? opts.formData : true)
+        .filter((meta) => this[meta.key] instanceof File ? opts.formData : true)
         .filter((meta) =>
           meta.supportedFormats.includes(opts.formData ? "formData" : "json")
         )

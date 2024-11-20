@@ -10,11 +10,13 @@ import {
 import { BawApiService } from "@baw-api/baw-api.service";
 import { WebsiteStatus } from "@models/WebsiteStatus";
 import { of } from "rxjs";
+import { NgHttpCachingService } from "ng-http-caching";
 import { WebsiteStatusService } from "./website-status.service";
 
 describe("WebsiteStatusService", () => {
   let spec: SpectatorService<WebsiteStatusService>;
   let mockApi: SpyObject<BawApiService<WebsiteStatus>>;
+  let cachingSpy: SpyObject<NgHttpCachingService>;
 
   const createService = createServiceFactory({
     service: WebsiteStatusService,
@@ -24,6 +26,8 @@ describe("WebsiteStatusService", () => {
 
   function setup(): void {
     spec = createService({});
+
+    cachingSpy = spec.inject(NgHttpCachingService);
 
     mockApi = spec.inject(BawApiService<WebsiteStatus>);
     mockApi.httpGet = jasmine.createSpy("httpGet") as any;
@@ -46,16 +50,27 @@ describe("WebsiteStatusService", () => {
   it("should call httpGet with the correct options", () => {
     const expectedHeaders = spec.service["requestHeaders"];
     const expectedOptions = {
-      cacheOptions: { cache: false },
+      cacheOptions: { isCacheable: jasmine.any(Function) },
       withCredentials: false,
     };
 
     spec.service["show"]().subscribe();
 
-    expect(mockApi.httpGet).toHaveBeenCalledWith(
-      "/status",
-      expectedHeaders,
-      expectedOptions
-    );
+    const [realizedUrl, realizedHeaders, realizedOptions] =
+      mockApi.httpGet.calls.mostRecent().args;
+
+    expect(realizedUrl).toBe("/status");
+    expect(realizedHeaders).toEqual(expectedHeaders);
+    expect(realizedOptions).toEqual(expectedOptions);
+
+    const realizedShouldCache = realizedOptions.cacheOptions.isCacheable();
+    return expect(realizedShouldCache).toBeFalse();
+  });
+
+  it("should not cache the request", () => {
+    spec.service["show"]().subscribe();
+
+    const cacheSize = cachingSpy.getStore().size;
+    expect(cacheSize).toEqual(0);
   });
 });

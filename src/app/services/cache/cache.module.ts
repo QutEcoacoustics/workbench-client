@@ -1,27 +1,12 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { NgModule } from "@angular/core";
-import { ApiResponse } from "@baw-api/baw-api.service";
-import { HttpCacheInterceptorModule } from "@ngneat/cashew";
+import { NgHttpCachingModule } from "ng-http-caching";
 import { CacheLoggingService } from "./cache-logging.service";
 import { cacheSettings, CACHE_SETTINGS } from "./cache-settings";
+import { defaultCachingConfig } from "./ngHttpCachingConfig";
 
 @NgModule({
-  imports: [
-    // Cache API requests
-    HttpCacheInterceptorModule.forRoot({
-      strategy: "explicit",
-      responseSerializer(body: ApiResponse<unknown>) {
-        if (cacheSettings.showLogging) {
-          // eslint-disable-next-line no-console
-          console.debug(
-            "(HttpCacheInterceptorModule) Returned cached response: ",
-            body
-          );
-        }
-        return body;
-      },
-    }),
-  ],
+  imports: [NgHttpCachingModule.forRoot(defaultCachingConfig)],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

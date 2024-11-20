@@ -19,8 +19,9 @@ import {
   IHarvestMapping,
 } from "@models/Harvest";
 import { Project } from "@models/Project";
-import snakeCase from "just-snake-case";
+import { disableCache } from "@services/cache/ngHttpCachingConfig";
 import { map, Observable } from "rxjs";
+import snakeCase from "just-snake-case";
 
 const projectId: IdParam<Project> = id;
 const harvestId: IdParamOptional<Harvest> = id;
@@ -61,7 +62,7 @@ export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
     project: IdOr<Project>
   ): Observable<Harvest> {
     return this.api.show(Harvest, endpoint(project, model, emptyParam), {
-      cacheOptions: { cache: false },
+      cacheOptions: { isCacheable: disableCache },
     });
   }
 
