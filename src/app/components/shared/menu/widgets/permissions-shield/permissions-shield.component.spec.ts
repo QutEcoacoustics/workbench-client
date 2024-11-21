@@ -39,6 +39,7 @@ describe("PermissionsShieldComponent", () => {
   let defaultModel: MockModel;
   let defaultUser: User;
   let spec: Spectator<PermissionsShieldComponent>;
+
   const createComponent = createComponentFactory({
     component: PermissionsShieldComponent,
     declarations: [mockUserBadge],
@@ -59,6 +60,7 @@ describe("PermissionsShieldComponent", () => {
         }),
       ],
     });
+
     const injector = spec.inject(ASSOCIATION_INJECTOR);
     const userApi = spec.inject(ACCOUNT.token);
     const projectApi = spec.inject(PROJECT.token);
@@ -92,12 +94,20 @@ describe("PermissionsShieldComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project(generateProject());
-    defaultRegion = new Region(generateRegion());
-    defaultSite = new Site(generateSite());
-    defaultHarvest = new Harvest(generateHarvest());
-    defaultModel = new MockModel({});
     defaultUser = new User(generateUser());
+    const userData = {
+      creatorId: defaultUser.id,
+      updaterId: defaultUser.id,
+    } as const;
+
+    defaultProject = new Project(
+      generateProject({ ownerIds: [defaultUser.id], ...userData })
+    );
+    defaultRegion = new Region(generateRegion(userData));
+    defaultSite = new Site(generateSite(userData));
+    defaultHarvest = new Harvest(generateHarvest(userData));
+
+    defaultModel = new MockModel({});
   });
 
   describe("model prioritization", () => {

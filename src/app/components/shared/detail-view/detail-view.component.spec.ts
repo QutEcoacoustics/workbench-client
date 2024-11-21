@@ -9,9 +9,10 @@ import { PipesModule } from "@pipes/pipes.module";
 import { CheckboxModule } from "@shared/checkbox/checkbox.module";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { nStepObservable, viewports } from "@test/helpers/general";
-import { Subject } from "rxjs";
+import { of, Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { Id } from "@interfaces/apiInterfaces";
 import { DetailViewComponent } from "./detail-view.component";
 import { ModelLinkComponent } from "./model-link/model-link.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
@@ -20,6 +21,7 @@ describe("DetailViewComponent", () => {
   let injector: AssociationInjector;
   let api: MockStandardApiService;
   let spec: Spectator<DetailViewComponent>;
+
   const createComponent = createComponentFactory({
     component: DetailViewComponent,
     declarations: [RenderFieldComponent, ModelLinkComponent],
@@ -153,7 +155,7 @@ describe("DetailViewComponent", () => {
       function setupComponent(key: string) {
         spec.setInput({
           fields: [{ key, props: { label: "custom label" } }],
-          model: new MockModel({ id: 0, ids: 0 }, injector),
+          model: new MockModel({ id: 0, ids: [1, 2] }, injector),
         });
         spec.detectChanges();
       }
@@ -196,15 +198,13 @@ describe("DetailViewComponent", () => {
       });
 
       it("should handle hasMany associated model", async () => {
-        const subject = new Subject<AssociatedModel[]>();
-        const promise = nStepObservable(subject, () => [
-          new AssociatedModel({ id: 1 }),
-          new AssociatedModel({ id: 2 }),
+        const mockApiResponses = new Map<Id, AssociatedModel>([
+          [1, new AssociatedModel({ id: 1 })],
+          [2, new AssociatedModel({ id: 2 })],
         ]);
-        spyOn(api, "filter").and.callFake(() => subject);
+        spyOn(api, "show").and.callFake((id: Id) => of(mockApiResponses.get(id)));
 
         setupComponent("childModels");
-        await promise;
         spec.detectChanges();
 
         const values = getValues();
