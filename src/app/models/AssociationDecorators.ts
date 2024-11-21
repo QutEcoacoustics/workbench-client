@@ -9,7 +9,7 @@ import {
   Id,
   Ids,
 } from "@interfaces/apiInterfaces";
-import { forkJoin, Observable, Subscription } from "rxjs";
+import { Observable, Subscription, zip } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { User } from "./User";
@@ -122,7 +122,7 @@ export function hasMany<
   ): Observable<Child[]> => {
     const associatedModelIds = Array.from(parentModel[identifierKeys] as any);
     // Use forkJoin to combine multiple observables into a single observable that emits an array
-    return forkJoin(
+    return zip<Child[]>(
       associatedModelIds.map((model: Id) => service.show(model, ...params))
     );
   };

@@ -18,6 +18,7 @@ import { ToastrService } from "ngx-toastr";
 import { mockProvider } from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { modelData } from "@test/helpers/faker";
+import { Errorable } from "@helpers/advancedTypes";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { hasMany, hasOne } from "./AssociationDecorators";
 import { AssociationInjector } from "./ImplementsInjector";
@@ -66,8 +67,9 @@ describe("Association Decorators", () => {
   });
 
   describe("HasMany", () => {
-    let mockApiResponses: Map<Id, ChildModel | BawApiError>;
+    let mockApiResponses: Map<Id, Errorable<ChildModel>>;
     let apiShowSpy: jasmine.Spy;
+
     const responseWait = (): Promise<void> =>
       new Promise((resolve) => {
         setTimeout(() => resolve(), 0);

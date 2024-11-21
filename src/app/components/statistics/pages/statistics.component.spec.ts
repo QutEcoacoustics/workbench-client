@@ -30,6 +30,8 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { Id } from "@interfaces/apiInterfaces";
+import { of } from "rxjs";
 import { RecentAnnotationsComponent } from "../components/recent-annotations/recent-annotations.component";
 import { RecentAudioRecordingsComponent } from "../components/recent-audio-recordings/recent-audio-recordings.component";
 import { StatisticsComponent } from "./statistics.component";
@@ -43,8 +45,10 @@ describe("StatisticsComponent", () => {
   let statsApi: SpyObject<StatisticsService>;
   let audioEventsApi: SpyObject<ShallowAudioEventsService>;
   let audioRecordingsApi: SpyObject<AudioRecordingsService>;
+  let mockAudioRecordingResponses: Map<Id, Errorable<AudioRecording>>;
   let injector: AssociationInjector;
   let spec: Spectator<StatisticsComponent>;
+
   const createComponent = createComponentFactory({
     component: StatisticsComponent,
     imports: [SharedModule, MockBawApiModule],
@@ -62,8 +66,8 @@ describe("StatisticsComponent", () => {
     return interceptShowApiRequest(statsApi, injector, data, Statistics);
   }
 
-  function interceptAudioEventsRequest(
-    data: Errorable<AudioEvent[]>
+  function interceptAudioEventsRequests(
+    data: Errorable<AudioEvent>[]
   ): Promise<any> {
     return interceptFilterApiRequest(
       audioEventsApi,
@@ -73,22 +77,23 @@ describe("StatisticsComponent", () => {
     );
   }
 
-  function interceptAudioRecordingsRequest(
-    data: Errorable<AudioRecording[]>
-  ): Promise<any> {
-    return interceptFilterApiRequest(
-      audioRecordingsApi,
-      injector,
-      data,
-      AudioRecording
+  function interceptAudioRecordingsRequests(data: AudioRecording[]) {
+    for (const audioRecording of data) {
+      mockAudioRecordingResponses.set(audioRecording.id, audioRecording);
+    }
+
+    audioRecordingsApi.show.and.callFake((modelId: Id) =>
+      of(mockAudioRecordingResponses.get(modelId))
     );
   }
 
   function setup(
     statisticsData: Errorable<IStatistics> = generateStatistics(),
-    audioEventsData: Errorable<AudioEvent[]> = [],
-    audioRecordingsData: Errorable<AudioRecording[]> = []
+    audioEventsData: Errorable<AudioEvent>[] = [],
+    audioRecordingsData: AudioRecording[] = []
   ): { initial: Promise<any>; final: Promise<any> } {
+    mockAudioRecordingResponses = new Map();
+
     spec = createComponent({ detectChanges: false });
     statsApi = spec.inject(StatisticsService);
     audioEventsApi = spec.inject(SHALLOW_AUDIO_EVENT.token);
@@ -98,8 +103,8 @@ describe("StatisticsComponent", () => {
     return {
       initial: interceptStatisticsRequest(statisticsData),
       final: Promise.all([
-        interceptAudioEventsRequest(audioEventsData),
-        interceptAudioRecordingsRequest(audioRecordingsData),
+        interceptAudioEventsRequests(audioEventsData),
+        interceptAudioRecordingsRequests(audioRecordingsData),
       ]),
     };
   }
@@ -288,12 +293,14 @@ describe("StatisticsComponent", () => {
       expect(getRecentAnnotations().annotations).toEqual(audioEvents);
     });
 
-    it("should display recent audio recordings", async () => {
-      const audioRecordings = [1, 2, 3].map(
+    fit("should display recent audio recordings", async () => {
+      const audioRecordingIds = [1, 2, 3];
+      const audioRecordings = audioRecordingIds.map(
         (id) => new AudioRecording(generateAudioRecording({ id }))
       );
+
       const promise = setup(
-        generateStatistics({ audioRecordingIds: [1, 2, 3] }),
+        generateStatistics({ audioRecordingIds }),
         [],
         audioRecordings
       );
@@ -303,6 +310,7 @@ describe("StatisticsComponent", () => {
       spec.detectChanges();
       await promise.final;
       spec.detectChanges();
+
       expect(getRecentAudioRecordings().audioRecordings).toEqual(
         audioRecordings
       );
