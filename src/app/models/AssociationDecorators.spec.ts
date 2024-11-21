@@ -1,5 +1,10 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { discardPeriodicTasks, fakeAsync, flush, TestBed } from "@angular/core/testing";
+import {
+  discardPeriodicTasks,
+  fakeAsync,
+  flush,
+  TestBed,
+} from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
@@ -60,7 +65,14 @@ describe("Association Decorators", () => {
     toastSpy.error = jasmine.createSpy("error");
   });
 
-  fdescribe("HasMany", () => {
+  describe("HasMany", () => {
+    let mockApiResponses: Map<Id, ChildModel | BawApiError>;
+    let apiShowSpy: jasmine.Spy;
+    const responseWait = (): Promise<void> =>
+      new Promise((resolve) => {
+        setTimeout(() => resolve(), 0);
+      });
+
     function createModel(
       data: any,
       modelInjector: AssociationInjector,
@@ -70,11 +82,7 @@ describe("Association Decorators", () => {
         public readonly ids: Ids;
         public readonly param1: Id;
         public readonly param2: Id;
-        @hasMany<MockModel, AbstractModel>(
-          MOCK,
-          "ids",
-          modelParameters as any
-        )
+        @hasMany<MockModel, AbstractModel>(MOCK, "ids", modelParameters as any)
         public readonly childModels: AbstractModel[];
 
         public get viewUrl(): string {
@@ -89,24 +97,23 @@ describe("Association Decorators", () => {
       return new MockModel(data, modelInjector);
     }
 
-    function interceptApiRequest(models?: ChildModel[], error?: BawApiError) {
-      function* mockApi() {
-        for (const model of models) {
-          yield of(model);
-        }
-
-        yield error;
-      }
-
-      const subject = new Subject<ChildModel>();
-      const promise = nStepObservable(
-        subject,
-        mockApi as any,
-        !models
-      );
-      spyOn(api, "show").and.callFake(() => subject);
-      return promise;
+    function interceptApiRequest(
+      modelId: Id,
+      response: ChildModel | BawApiError
+    ): Promise<void> {
+      mockApiResponses.set(modelId, response);
+      return responseWait();
     }
+
+    function mockApiModel(model: ChildModel): Promise<void> {
+      return interceptApiRequest(model.id, model);
+    }
+
+    beforeEach(() => {
+      mockApiResponses = new Map();
+      apiShowSpy = spyOn(api, "show");
+      apiShowSpy.and.callFake((id: Id) => of(mockApiResponses.get(id)));
+    });
 
     it("should handle undefined modelIdentifier", () => {
       const model = createModel({ ids: undefined }, injector);
@@ -138,16 +145,16 @@ describe("Association Decorators", () => {
     ].forEach((idsType) => {
       describe(idsType.type, () => {
         it("should handle empty", async () => {
-          const promise = interceptApiRequest([]);
           const model = createModel({ ids: idsType.empty }, injector);
-          await assertModel(promise, model, "childModels", []);
+          await assertModel(responseWait(), model, "childModels", []);
         });
 
         it("should handle single modelIdentifier", async () => {
-          const childModels = [new ChildModel({ id: 1 })];
-          const promise = interceptApiRequest(childModels);
+          const childModel = new ChildModel({ id: 1 });
+          const promise = mockApiModel(childModel)
+
           const model = createModel({ ids: idsType.single }, injector);
-          await assertModel(promise, model, "childModels", childModels);
+          await assertModel(promise, model, "childModels", [childModel]);
         });
 
         it("should handle multiple modelIdentifiers", async () => {
@@ -155,7 +162,14 @@ describe("Association Decorators", () => {
             new ChildModel({ id: 1 }),
             new ChildModel({ id: 2 }),
           ];
-          const promise = interceptApiRequest(response);
+
+          const mockedApiResponses = [
+            mockApiModel(response[0]),
+            mockApiModel(response[1]),
+          ];
+
+          const promise = Promise.allSettled(mockedApiResponses);
+
           const model = createModel({ ids: idsType.multiple }, injector);
           await assertModel(promise, model, "childModels", response);
         });
@@ -164,7 +178,6 @@ describe("Association Decorators", () => {
           const testedIds = idsType.multiple;
           const parameterValue = modelData.datatype.number();
 
-          interceptApiRequest([]);
           const model = createModel(
             { ids: testedIds, param1: parameterValue },
             injector,
@@ -178,11 +191,10 @@ describe("Association Decorators", () => {
         });
 
         it("should handle multiple parameters", () => {
-          const testedIds  = idsType.multiple;
+          const testedIds = idsType.multiple;
           const param1 = modelData.datatype.number();
           const param2 = modelData.datatype.number();
 
-          interceptApiRequest([]);
           const model = createModel(
             { ids: testedIds, param1, param2 },
             injector,
@@ -205,11 +217,11 @@ describe("Association Decorators", () => {
           await assertModel(promise, model, "childModels", []);
         });
 
-        fit("should load cached data", async () => {
+        it("should load cached data", async () => {
           const testedIds = idsType.single;
 
-          const childModels = [new ChildModel({ id: 1 })];
-          const promise = interceptApiRequest(childModels);
+          const childModel = new ChildModel({ id: 1 });
+          const promise = mockApiModel(childModel);
 
           // request the associated models multiple times without changing the
           // association ids on the parent model
@@ -220,7 +232,7 @@ describe("Association Decorators", () => {
             updateDecorator(model, "childModels");
           }
 
-          await assertModel(promise, model, "childModels", childModels);
+          await assertModel(promise, model, "childModels", [childModel]);
           expect(api.show).toHaveBeenCalledTimes(1);
         });
       });

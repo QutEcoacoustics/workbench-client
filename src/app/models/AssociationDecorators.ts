@@ -10,6 +10,7 @@ import {
   Ids,
 } from "@interfaces/apiInterfaces";
 import { forkJoin, Observable, Subscription } from "rxjs";
+import { Filters } from "@baw-api/baw-api.service";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { User } from "./User";
 import {
@@ -41,14 +42,58 @@ export function deleter<Parent extends ImplementsAssociations & HasDeleter>() {
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }
 
+
+/**
+ * Abstract model parameter decorator which automates the process
+ * of retrieving models request linked by a group of ids in the parent model.
+ *
+ * @param serviceToken Injection token for API service used to retrieve the child models
+ * @param identifierKeys Parent model key used to retrieve the list of ids for the child models
+ * @param routeParams Additional route params required for the filter request.
+ * This is a list of keys from the parent where the values can be retrieved
+ *
+ * @deprecated
+ * Prefer to use `hasMany` instead as it provides improved performance through
+ * debouncing and improved caching of requests.
+ *
+ * ?You may have to use this decorator for request that do not support `show`
+ * ?requests
+ */
+export function hasManyFilter<
+  Parent extends ImplementsAssociations,
+  Child extends AbstractModel,
+  Params extends any[] = []
+>(
+  serviceToken: ServiceToken<ApiFilter<Child, Params>>,
+  identifierKeys?: KeysOfType<Parent, Id[] | Set<Id>>,
+  routeParams: ReadonlyArray<keyof Parent> = []
+) {
+  /** Create filter to retrieve association models */
+  const modelFilter = (parent: Parent) =>
+    ({
+      filter: {
+        id: { in: Array.from(parent[identifierKeys] as any) },
+      },
+    } as Filters<Child>);
+
+  return createModelDecorator<Parent, Child, Params, ApiFilter<Child, Params>>(
+    serviceToken,
+    identifierKeys,
+    routeParams,
+    (service, parent: Parent, params: Params) =>
+      service.filter(modelFilter(parent), ...params),
+    UnresolvedModel.many,
+    []
+  );
+}
+
 /**
  * Abstract model parameter decorator which automates the process
  * of retrieving models linked by a group of ids in the parent model.
  *
  * @param serviceToken Injection token for API service used to retrieve the child models
  * @param identifierKeys Parent model key used to retrieve the list of ids for the child models
- * @param childIdentifier field used to filter child models by, typically `id`
- * @param routeParams Additional route params required for the filter request.
+ * @param routeParams Additional route params required for the show request.
  * This is a list of keys from the parent where the values can be retrieved
  */
 export function hasMany<
@@ -56,7 +101,7 @@ export function hasMany<
   Child extends AbstractModel,
   Params extends any[] = []
 >(
-  serviceToken: ServiceToken<ApiFilter<Child, Params>>,
+  serviceToken: ServiceToken<ApiShow<Child, Params>>,
   identifierKeys?: KeysOfType<Parent, Id[] | Set<Id>>,
   routeParams: ReadonlyArray<keyof Parent> = []
 ) {

@@ -2,7 +2,7 @@ import { AUDIO_RECORDING, SHALLOW_AUDIO_EVENT } from "@baw-api/ServiceTokens";
 import { statisticsMenuItem } from "@components/statistics/statistics.menus";
 import { DateTimeTimezone, Id, Ids } from "@interfaces/apiInterfaces";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
-import { hasMany } from "@models/AssociationDecorators";
+import { hasMany, hasManyFilter } from "@models/AssociationDecorators";
 import {
   bawCollection,
   bawDateTime,
@@ -79,7 +79,7 @@ export class StatisticsRecent extends AbstractModelWithoutId {
     "audioRecordingIds"
   )
   public audioRecordings: AudioRecording[];
-  @hasMany<StatisticsRecent, AudioEvent>(SHALLOW_AUDIO_EVENT, "audioEventIds")
+  @hasManyFilter<StatisticsRecent, AudioEvent>(SHALLOW_AUDIO_EVENT, "audioEventIds")
   public audioEvents: AudioEvent[];
 
   public get viewUrl(): string {
