@@ -1,8 +1,4 @@
-import {
-  ApiFilter,
-  ApiShow,
-} from "@baw-api/api-common";
-import { Filters } from "@baw-api/baw-api.service";
+import { ApiFilter, ApiShow } from "@baw-api/api-common";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { KeysOfType } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -13,13 +9,13 @@ import {
   Id,
   Ids,
 } from "@interfaces/apiInterfaces";
-import { Observable, Subscription } from "rxjs";
-import {
-  AbstractModel,
-  UnresolvedModel,
-} from "./AbstractModel";
+import { forkJoin, Observable, Subscription } from "rxjs";
+import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { User } from "./User";
-import { AssociationInjector, ImplementsAssociations } from "./ImplementsInjector";
+import {
+  AssociationInjector,
+  ImplementsAssociations,
+} from "./ImplementsInjector";
 
 /**
  * Creates an association between the creatorId and its user model
@@ -62,23 +58,36 @@ export function hasMany<
 >(
   serviceToken: ServiceToken<ApiFilter<Child, Params>>,
   identifierKeys?: KeysOfType<Parent, Id[] | Set<Id>>,
-  childIdentifier: keyof Child = "id",
+  _childIdentifier: keyof Child = "id",
   routeParams: ReadonlyArray<keyof Parent> = []
 ) {
-  /** Create filter to retrieve association models */
-  const modelFilter = (parent: Parent) =>
-    ({
-      filter: {
-        [childIdentifier]: { in: Array.from(parent[identifierKeys] as any) },
-      },
-    } as Filters<Child>);
+  // we use multiple show (GET) requests in the hasMany associations so when
+  // multiple models have the same associated models in a hasMany relationship
+  // they can get debounced and the same model can be shared between the
+  // different models
+  //
+  // e.g. projects can have multiple owners, but one updater/creator
+  // it is likely that one of the owners is the updater/creator, so the http
+  // debouncing interceptor should be able to combine the requests and prevent
+  // requesting the same user model twice (once for the creator, and once for
+  // owner/updater)
+  const modelRequester = (
+    service: ApiShow<Child, Params>,
+    parentModel: Parent,
+    params: Params
+  ): Observable<Child[]> => {
+    const associatedModelIds = Array.from(parentModel[identifierKeys] as any);
+    // Use forkJoin to combine multiple observables into a single observable that emits an array
+    return forkJoin(
+      associatedModelIds.map((model: Id) => service.show(model, ...params))
+    );
+  };
 
-  return createModelDecorator<Parent, Child, Params, ApiFilter<Child, Params>>(
+  return createModelDecorator<Parent, Child, Params, ApiShow<Child, Params>>(
     serviceToken,
     identifierKeys,
     routeParams,
-    (service, parent: Parent, params: Params) =>
-      service.filter(modelFilter(parent), ...params),
+    modelRequester,
     UnresolvedModel.many,
     []
   );
