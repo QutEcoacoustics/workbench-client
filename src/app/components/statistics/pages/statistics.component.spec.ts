@@ -293,7 +293,7 @@ describe("StatisticsComponent", () => {
       expect(getRecentAnnotations().annotations).toEqual(audioEvents);
     });
 
-    fit("should display recent audio recordings", async () => {
+    it("should display recent audio recordings", async () => {
       const audioRecordingIds = [1, 2, 3];
       const audioRecordings = audioRecordingIds.map(
         (id) => new AudioRecording(generateAudioRecording({ id }))

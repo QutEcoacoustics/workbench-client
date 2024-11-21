@@ -108,7 +108,7 @@ describe("AdminOrphanComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  fdescribe("details", () => {
+  describe("details", () => {
     const model = new Site(
       generateSite({ locationObfuscated: true, projectIds: siteProjectIds })
     );
