@@ -58,7 +58,6 @@ export function hasMany<
 >(
   serviceToken: ServiceToken<ApiFilter<Child, Params>>,
   identifierKeys?: KeysOfType<Parent, Id[] | Set<Id>>,
-  _childIdentifier: keyof Child = "id",
   routeParams: ReadonlyArray<keyof Parent> = []
 ) {
   // we use multiple show (GET) requests in the hasMany associations so when
