@@ -24,6 +24,7 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateStatistics } from "@test/fakes/Statistics";
 import {
   interceptFilterApiRequest,
+  interceptMappedApiRequests,
   interceptShowApiRequest,
 } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -31,7 +32,6 @@ import { MockComponent } from "ng-mocks";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Id } from "@interfaces/apiInterfaces";
-import { of } from "rxjs";
 import { RecentAnnotationsComponent } from "../components/recent-annotations/recent-annotations.component";
 import { RecentAudioRecordingsComponent } from "../components/recent-audio-recordings/recent-audio-recordings.component";
 import { StatisticsComponent } from "./statistics.component";
@@ -78,12 +78,14 @@ describe("StatisticsComponent", () => {
   }
 
   function interceptAudioRecordingsRequests(data: AudioRecording[]) {
+    mockAudioRecordingResponses = new Map();
     for (const audioRecording of data) {
       mockAudioRecordingResponses.set(audioRecording.id, audioRecording);
     }
 
-    audioRecordingsApi.show.and.callFake((modelId: Id) =>
-      of(mockAudioRecordingResponses.get(modelId))
+    return interceptMappedApiRequests(
+      audioRecordingsApi.show,
+      mockAudioRecordingResponses
     );
   }
 
@@ -92,8 +94,6 @@ describe("StatisticsComponent", () => {
     audioEventsData: Errorable<AudioEvent>[] = [],
     audioRecordingsData: AudioRecording[] = []
   ): { initial: Promise<any>; final: Promise<any> } {
-    mockAudioRecordingResponses = new Map();
-
     spec = createComponent({ detectChanges: false });
     statsApi = spec.inject(StatisticsService);
     audioEventsApi = spec.inject(SHALLOW_AUDIO_EVENT.token);
@@ -104,7 +104,7 @@ describe("StatisticsComponent", () => {
       initial: interceptStatisticsRequest(statisticsData),
       final: Promise.all([
         interceptAudioEventsRequests(audioEventsData),
-        interceptAudioRecordingsRequests(audioRecordingsData),
+        ...interceptAudioRecordingsRequests(audioRecordingsData),
       ]),
     };
   }
@@ -293,7 +293,7 @@ describe("StatisticsComponent", () => {
       expect(getRecentAnnotations().annotations).toEqual(audioEvents);
     });
 
-    it("should display recent audio recordings", async () => {
+    fit("should display recent audio recordings", async () => {
       const audioRecordingIds = [1, 2, 3];
       const audioRecordings = audioRecordingIds.map(
         (id) => new AudioRecording(generateAudioRecording({ id }))

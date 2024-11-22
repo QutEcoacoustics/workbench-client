@@ -77,7 +77,7 @@ describe("AdminOrphanComponent", () => {
         accountsSubject,
         () => new User({ id: 1, userName: "custom username" })
       ),
-      interceptMappedApiRequests(projectsApi.show, mockProjectApiResponses),
+      ...interceptMappedApiRequests(projectsApi.show, mockProjectApiResponses),
     ]);
 
     // Catch associated models

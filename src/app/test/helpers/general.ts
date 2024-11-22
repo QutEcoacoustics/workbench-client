@@ -193,7 +193,7 @@ export function interceptRepeatApiRequests<
 
 export function interceptMappedApiRequests<
   Models extends AbstractModel | AbstractModel[]
->(apiRequestType: jasmine.Spy, responses: Map<any, any>) {
+>(apiRequestType: jasmine.Spy, responses: Map<any, any>): Promise<void>[] {
   const subjects = new Map<any, Subject<Models>>();
   const promises: Promise<void>[] = [];
 
