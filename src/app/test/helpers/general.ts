@@ -10,7 +10,7 @@ import {
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { AssociationInjector } from "@models/ImplementsInjector";
-import { SpyObject } from "@ngneat/spectator";
+import { CompatibleSpy, SpyObject } from "@ngneat/spectator";
 import { Subject } from "rxjs";
 
 /**
@@ -164,7 +164,7 @@ export function interceptRepeatApiRequests<
   ModelData,
   Models extends AbstractModel | AbstractModel[]
 >(
-  apiRequestType: any,
+  apiRequestType: CompatibleSpy,
   responses: Errorable<Models>[],
   expectations?: FilterExpectations<ModelData>[]
 ): Promise<void>[] {
@@ -193,17 +193,22 @@ export function interceptRepeatApiRequests<
 
 export function interceptMappedApiRequests<
   Models extends AbstractModel | AbstractModel[]
->(apiRequestType: jasmine.Spy, responses: Map<any, any>): Promise<void>[] {
+>(
+  apiRequestType: CompatibleSpy,
+  responses: Map<PropertyKey, Errorable<Models>>
+): Promise<void>[] {
   const subjects = new Map<any, Subject<Models>>();
   const promises: Promise<void>[] = [];
 
   responses.forEach((value, key) => {
     const subject = new Subject<Models>();
+    const isError = isBawApiError(value);
+
     subjects.set(key, subject);
-    promises.push(nStepObservable(subject, () => value));
+    promises.push(nStepObservable(subject, () => value, isError));
   });
 
-  apiRequestType.and.callFake((params: unknown) => subjects.get(params));
+  apiRequestType.andCallFake((params: unknown) => subjects.get(params));
 
   return promises;
 }
