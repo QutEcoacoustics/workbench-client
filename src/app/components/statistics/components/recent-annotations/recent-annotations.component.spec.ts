@@ -36,13 +36,15 @@ import { generateSite } from "@test/fakes/Site";
 import { generateTag } from "@test/fakes/Tag";
 import { generateTagging } from "@test/fakes/Tagging";
 import { generateUser } from "@test/fakes/User";
-import { interceptShowApiRequest } from "@test/helpers/general";
+import {
+  interceptMappedApiRequests,
+  interceptShowApiRequest,
+} from "@test/helpers/general";
 import { humanizedDuration } from "@test/helpers/dateTime";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Id } from "@interfaces/apiInterfaces";
 import { modelData } from "@test/helpers/faker";
-import { of } from "rxjs";
 import { RecentAnnotationsComponent } from "./recent-annotations.component";
 
 describe("RecentAnnotationsComponent", () => {
@@ -91,31 +93,32 @@ describe("RecentAnnotationsComponent", () => {
     );
   }
 
-  function interceptTagsRequest(data: any = []) {
+  function interceptTagsRequest(
+    data: Errorable<Partial<ITag>>[] = []
+  ): Promise<void>[] {
     const response = isBawApiError(data)
       ? data
-      : (data ?? []).map((model) => generateTag(model));
+      : (data ?? []).map((model) => generateTag(model as Partial<ITag>));
 
     const tagsApiResponses = new Map<Id, Errorable<Tag>>();
     response.forEach((tag: Tag) => {
       tagsApiResponses.set(tag.id, tag);
     });
 
-    api.tags.show.andCallFake((id: Id) => of(tagsApiResponses.get(id)));
+    return interceptMappedApiRequests(api.tags.show, tagsApiResponses);
   }
 
   function interceptRequests(data?: {
     site?: Errorable<Partial<ISite>>;
     user?: Errorable<Partial<IUser>>;
     recording?: Errorable<Partial<IAudioRecording>>;
-    tags?: Errorable<Partial<ITag>[]>;
+    tags?: Errorable<Partial<ITag>>[];
   }): { initial: Promise<any>; final: Promise<any> } {
-    interceptTagsRequest(data?.tags);
-
     return {
       initial: Promise.all([
         interceptUserRequest(data?.user),
         interceptAudioRecordingsRequest(data?.recording),
+        ...interceptTagsRequest(data?.tags),
       ]),
       final: interceptSiteRequest(data?.site),
     };
@@ -129,7 +132,7 @@ describe("RecentAnnotationsComponent", () => {
     site?: Errorable<Partial<ISite>>;
     user?: Errorable<Partial<IUser>>;
     recording?: Errorable<Partial<IAudioRecording>>;
-    tags?: Errorable<Partial<ITag>[]>;
+    tags?: Errorable<Partial<ITag>>[];
   }) {
     if (data) {
       data.tags ??= defaultTags;

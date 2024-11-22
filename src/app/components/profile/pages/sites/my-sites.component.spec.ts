@@ -38,6 +38,7 @@ describe("MySitesComponent", () => {
   let sitesApi: SpyObject<ShallowSitesService>;
   let projectsApi: SpyObject<ProjectsService>;
   let spec: SpectatorRouting<MySitesComponent>;
+
   const createComponent = createRoutingFactory({
     component: MySitesComponent,
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
