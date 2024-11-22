@@ -67,7 +67,7 @@ describe("StatisticsComponent", () => {
   }
 
   function interceptAudioEventsRequests(
-    data: Errorable<AudioEvent>[]
+    data: Errorable<AudioEvent[]>
   ): Promise<any> {
     return interceptFilterApiRequest(
       audioEventsApi,
@@ -91,7 +91,7 @@ describe("StatisticsComponent", () => {
 
   function setup(
     statisticsData: Errorable<IStatistics> = generateStatistics(),
-    audioEventsData: Errorable<AudioEvent>[] = [],
+    audioEventsData: Errorable<AudioEvent[]> = [],
     audioRecordingsData: AudioRecording[] = []
   ): { initial: Promise<any>; final: Promise<any> } {
     spec = createComponent({ detectChanges: false });
