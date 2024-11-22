@@ -15,7 +15,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
-import { nStepObservable } from "@test/helpers/general";
+import { interceptMappedApiRequests, nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { of, Subject } from "rxjs";
@@ -62,7 +62,7 @@ describe("AdminOrphanComponent", () => {
 
     component = fixture.componentInstance;
 
-    const mockProjectApiResponses = new Map<Id, Project>([
+    const mockProjectApiResponses = new Map<any, Project>([
       [1, new Project({ id: 1, siteIds: [1], name: "custom project" })],
       [2, new Project({ id: 2, siteIds: [1], name: "custom project" })],
       [3, new Project({ id: 3, siteIds: [1], name: "custom project" })],
@@ -72,15 +72,16 @@ describe("AdminOrphanComponent", () => {
     );
 
     const accountsSubject = new Subject<User>();
-    const projectsSubject = new Subject<Project[]>();
-    const promise = nStepObservable(
-      accountsSubject,
-      () => new User({ id: 1, userName: "custom username" })
-    );
+    const promise = Promise.all([
+      nStepObservable(
+        accountsSubject,
+        () => new User({ id: 1, userName: "custom username" })
+      ),
+      interceptMappedApiRequests(projectsApi.show, mockProjectApiResponses),
+    ]);
 
     // Catch associated models
     accountsApi.show.and.callFake(() => accountsSubject);
-    projectsApi.filter.and.callFake(() => projectsSubject);
 
     // Update model to contain injector
     if (model) {
