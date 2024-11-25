@@ -13,12 +13,11 @@ import {
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Errorable } from "@helpers/advancedTypes";
-import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AudioEvent } from "@models/AudioEvent";
-import { AudioRecording, IAudioRecording } from "@models/AudioRecording";
-import { ISite, Site } from "@models/Site";
-import { ITag, Tag } from "@models/Tag";
-import { IUser, User } from "@models/User";
+import { AudioRecording } from "@models/AudioRecording";
+import { Site } from "@models/Site";
+import { Tag } from "@models/Tag";
+import { User } from "@models/User";
 import {
   createComponentFactory,
   Spectator,
@@ -35,7 +34,6 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { generateTag } from "@test/fakes/Tag";
 import { generateTagging } from "@test/fakes/Tagging";
-import { generateUser } from "@test/fakes/User";
 import {
   interceptMappedApiRequests,
   interceptShowApiRequest,
@@ -46,6 +44,7 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { Id } from "@interfaces/apiInterfaces";
 import { modelData } from "@test/helpers/faker";
 import { RecentAnnotationsComponent } from "./recent-annotations.component";
+import { generateUser } from "@test/fakes/User";
 
 describe("RecentAnnotationsComponent", () => {
   let api: {
@@ -59,7 +58,10 @@ describe("RecentAnnotationsComponent", () => {
   let injector: AssociationInjector;
   let spec: Spectator<RecentAnnotationsComponent>;
 
+  let defaultUser: User;
   let defaultAnnotation: AudioEvent;
+  let defaultSite: Site;
+  let defaultRecording: AudioRecording;
   let defaultTags: Tag[];
 
   const createComponent = createComponentFactory({
@@ -67,91 +69,72 @@ describe("RecentAnnotationsComponent", () => {
     imports: [SharedModule, MockBawApiModule, RouterTestingModule],
   });
 
-  function interceptSiteRequest(
-    data?: Errorable<Partial<ISite>>
-  ): Promise<any> {
-    const response = isBawApiError(data) ? data : generateSite(data);
-    return interceptShowApiRequest(api.sites, injector, response, Site);
+  function interceptSiteRequest(data: Errorable<Site>): Promise<any> {
+    return interceptShowApiRequest(api.sites, injector, data, Site);
   }
 
-  function interceptUserRequest(
-    data?: Errorable<Partial<IUser>>
-  ): Promise<any> {
-    const response = isBawApiError(data) ? data : generateUser(data);
-    return interceptShowApiRequest(api.users, injector, response, User);
+  function interceptUserRequest(data: Errorable<User>): Promise<any> {
+    return interceptShowApiRequest(api.users, injector, data, User);
   }
 
   function interceptAudioRecordingsRequest(
-    data?: Errorable<Partial<IAudioRecording>>
+    data: Errorable<AudioRecording>,
   ): Promise<any> {
-    const response = isBawApiError(data) ? data : generateAudioRecording(data);
     return interceptShowApiRequest(
       api.recordings,
       injector,
-      response,
-      AudioRecording
+      data,
+      AudioRecording,
     );
   }
 
-  function interceptTagsRequest(
-    data: Errorable<Partial<ITag>>[] = []
-  ): Promise<void>[] {
-    const response = isBawApiError(data)
-      ? data
-      : (data ?? []).map((model) => generateTag(model as Partial<ITag>));
-
+  function interceptTagsRequest(data: Errorable<Tag>[]): Promise<void>[] {
     const tagsApiResponses = new Map<Id, Errorable<Tag>>();
-    response.forEach((tag: Tag) => {
+    data.forEach((tag: Tag) => {
       tagsApiResponses.set(tag.id, tag);
     });
 
     return interceptMappedApiRequests(api.tags.show, tagsApiResponses);
   }
 
-  function interceptRequests(data?: {
-    site?: Errorable<Partial<ISite>>;
-    user?: Errorable<Partial<IUser>>;
-    recording?: Errorable<Partial<IAudioRecording>>;
-    tags?: Errorable<Partial<ITag>>[];
-  }): { initial: Promise<any>; final: Promise<any> } {
+  function interceptRequests(
+    site: Errorable<Site>,
+    user: Errorable<User>,
+    recording: Errorable<AudioRecording>,
+    tags: Errorable<Tag>[],
+  ): { initial: Promise<any>; final: Promise<any> } {
     return {
       initial: Promise.all([
-        interceptUserRequest(data?.user),
-        interceptAudioRecordingsRequest(data?.recording),
-        ...interceptTagsRequest(data?.tags),
+        interceptUserRequest(user),
+        interceptAudioRecordingsRequest(recording),
+        ...interceptTagsRequest(tags),
       ]),
-      final: interceptSiteRequest(data?.site),
+      final: interceptSiteRequest(site),
     };
   }
 
-  async function setup(data?: {
-    annotations?: AudioEvent[];
-    awaitInitialRequests?: boolean;
-    awaitFinalRequests?: boolean;
-    isLoggedIn?: boolean;
-    site?: Errorable<Partial<ISite>>;
-    user?: Errorable<Partial<IUser>>;
-    recording?: Errorable<Partial<IAudioRecording>>;
-    tags?: Errorable<Partial<ITag>>[];
-  }) {
-    if (data) {
-      data.tags ??= defaultTags;
-    } else {
-      data = {
-        tags: defaultTags,
-      };
-    }
-
-    const promise = interceptRequests(data);
-    setLoggedInState(data?.isLoggedIn);
-    setAnnotations(data?.annotations ?? []);
+  async function setup(
+    state?: {
+      awaitInitialRequests?: boolean;
+      awaitFinalRequests?: boolean;
+      isLoggedIn?: boolean;
+    },
+    annotations: AudioEvent[] = [defaultAnnotation],
+    site: Errorable<Site> = defaultSite,
+    user: Errorable<User> = defaultUser,
+    recording: Errorable<AudioRecording> = defaultRecording,
+    tags: Errorable<Tag>[] = defaultTags,
+  ) {
+    const promise = interceptRequests(site, user, recording, tags);
+    setLoggedInState(state?.isLoggedIn);
+    setAnnotations(annotations);
     spec.detectChanges();
 
-    if (data?.awaitInitialRequests) {
+    if (state?.awaitInitialRequests) {
       await promise.initial;
       spec.detectChanges();
 
-      if (data?.awaitFinalRequests) {
+      if (state?.awaitFinalRequests) {
         await promise.final;
         spec.detectChanges();
       }
@@ -178,16 +161,36 @@ describe("RecentAnnotationsComponent", () => {
     };
     session = spec.inject(BawSessionService);
 
-    defaultTags = modelData.randomArray(2, 5, () => new Tag(generateTag()));
+    defaultUser = new User(generateUser(), injector);
+    defaultSite = new Site(generateSite(), injector);
+    defaultRecording = new AudioRecording(
+      generateAudioRecording({ siteId: defaultSite.id }),
+      injector,
+    );
+
+    defaultTags = modelData.randomArray(2, 5, () =>
+      new Tag(
+        generateTag({ creatorId: defaultUser.id }),
+        injector,
+      ));
 
     // the audio events use the "taggings" property for the tag associations
     // therefore, the tagging ids and the tag ids must match
+    const audioEventId = modelData.id();
     const taggings = defaultTags.map((tag) =>
-      generateTagging({ tagId: tag.id })
+      generateTagging({
+        audioEventId: audioEventId,
+        tagId: tag.id,
+        creatorId: defaultUser.id,
+      })
     );
     defaultAnnotation = new AudioEvent(
-      generateAudioEvent({ taggings }),
-      injector
+      generateAudioEvent({
+        id: audioEventId,
+        creatorId: defaultUser.id,
+        taggings,
+      }),
+      injector,
     );
   });
 
@@ -237,40 +240,27 @@ describe("RecentAnnotationsComponent", () => {
       const getSiteCellElement = () => getCellElements()[0];
 
       it("should not display column if not logged in", async () => {
-        await setup({
-          annotations: [defaultAnnotation],
-          isLoggedIn: false,
-          awaitInitialRequests: true,
-        });
+        await setup({ isLoggedIn: false, awaitInitialRequests: true });
         expect(getSiteCell().column.name).not.toBe("Site");
       });
 
       it("should display column if logged in", async () => {
-        await setup({
-          annotations: [defaultAnnotation],
-          isLoggedIn: true,
-          awaitInitialRequests: true,
-        });
+        await setup({ isLoggedIn: true, awaitInitialRequests: true });
         expect(getSiteCell().column.name).toBe("Site");
       });
 
       it("should display loading spinner while audio recording unresolved", async () => {
-        await setup({ annotations: [defaultAnnotation], isLoggedIn: true });
+        await setup({ isLoggedIn: true });
         assertCellLoading(getSiteCellElement(), true);
       });
 
       it("should display loading spinner while site unresolved", async () => {
-        await setup({
-          annotations: [defaultAnnotation],
-          isLoggedIn: true,
-          awaitInitialRequests: true,
-        });
+        await setup({ isLoggedIn: true, awaitInitialRequests: true });
         assertCellLoading(getSiteCellElement(), true);
       });
 
       it("should not display loading spinner when site resolved", async () => {
         await setup({
-          annotations: [defaultAnnotation],
           isLoggedIn: true,
           awaitInitialRequests: true,
           awaitFinalRequests: true,
@@ -280,23 +270,26 @@ describe("RecentAnnotationsComponent", () => {
 
       it("should display site name when resolved", async () => {
         await setup({
-          annotations: [defaultAnnotation],
           isLoggedIn: true,
           awaitInitialRequests: true,
           awaitFinalRequests: true,
-          site: { name: "Example Site" },
         });
-        expect(getSiteCellElement()).toContainText("Example Site");
+        expect(getSiteCellElement()).toContainText(defaultSite.name);
       });
 
       it("should display unknown site if unauthorized", async () => {
-        await setup({
-          annotations: [defaultAnnotation],
-          isLoggedIn: true,
-          awaitInitialRequests: true,
-          awaitFinalRequests: true,
-          site: generateBawApiError(),
-        });
+        const site = generateBawApiError();
+
+        await setup(
+          {
+            isLoggedIn: true,
+            awaitInitialRequests: true,
+            awaitFinalRequests: true,
+          },
+          [defaultAnnotation],
+          site,
+        );
+
         expect(getSiteCellElement()).toContainText("Unknown Site");
       });
     });
@@ -306,31 +299,22 @@ describe("RecentAnnotationsComponent", () => {
       const getUsernameCellElement = () => getCellElements()[1];
 
       it("should not display column if not logged in", async () => {
-        await setup({
-          annotations: [defaultAnnotation],
-          isLoggedIn: false,
-          awaitInitialRequests: true,
-        });
+        await setup({ isLoggedIn: false, awaitInitialRequests: true });
         expect(getUsernameCell().column.name).not.toBe("User");
       });
 
       it("should display column if logged in", async () => {
-        await setup({
-          annotations: [defaultAnnotation],
-          isLoggedIn: true,
-          awaitInitialRequests: true,
-        });
+        await setup({ isLoggedIn: true, awaitInitialRequests: true });
         expect(getUsernameCell().column.name).toBe("User");
       });
 
       it("should display loading spinner while user is unresolved", async () => {
-        await setup({ annotations: [defaultAnnotation], isLoggedIn: true });
+        await setup({ isLoggedIn: true });
         assertCellLoading(getUsernameCellElement(), true);
       });
 
       it("should not display loading spinner when user resolved", async () => {
         await setup({
-          annotations: [defaultAnnotation],
           isLoggedIn: true,
           awaitInitialRequests: true,
           awaitFinalRequests: true,
@@ -340,13 +324,11 @@ describe("RecentAnnotationsComponent", () => {
 
       it("should display user name when resolved", async () => {
         await setup({
-          annotations: [defaultAnnotation],
           isLoggedIn: true,
           awaitInitialRequests: true,
           awaitFinalRequests: true,
-          user: { userName: "Example Username" },
         });
-        expect(getUsernameCellElement()).toContainText("Example Username");
+        expect(getUsernameCellElement()).toContainText(defaultUser.userName);
       });
     });
 
@@ -357,35 +339,22 @@ describe("RecentAnnotationsComponent", () => {
         getCellElements()[isLoggedIn ? 2 : 0];
 
       it("should display column if not logged in", async () => {
-        await setup({
-          annotations: [defaultAnnotation],
-          isLoggedIn: false,
-          awaitInitialRequests: true,
-        });
+        await setup({ isLoggedIn: false, awaitInitialRequests: true });
         expect(getTagsCell(false).column.name).toBe("Tags");
       });
 
       it("should display column if logged in", async () => {
-        await setup({
-          annotations: [defaultAnnotation],
-          isLoggedIn: true,
-          awaitInitialRequests: true,
-        });
+        await setup({ isLoggedIn: true, awaitInitialRequests: true });
         expect(getTagsCell(true).column.name).toBe("Tags");
       });
 
-      // TODO: re-enable this test
-      xit("should display loading spinner while tags are unresolved", async () => {
-        await setup({
-          annotations: [defaultAnnotation],
-          isLoggedIn: true,
-        });
+      it("should display loading spinner while tags are unresolved", async () => {
+        await setup({ isLoggedIn: true });
         assertCellLoading(getTagsCellElement(true), true);
       });
 
       it("should not display loading spinner when tags resolved", async () => {
         await setup({
-          annotations: [defaultAnnotation],
           isLoggedIn: true,
           awaitInitialRequests: true,
           awaitFinalRequests: true,
@@ -394,29 +363,34 @@ describe("RecentAnnotationsComponent", () => {
       });
 
       it("should display (none) text if no tags exist when resolved", async () => {
-        await setup({
-          annotations: [
-            new AudioEvent(generateAudioEvent({ taggings: [] }), injector),
-          ],
-          isLoggedIn: true,
-          awaitInitialRequests: true,
-          awaitFinalRequests: true,
-          tags: [],
-        });
+        const annotations = [
+          new AudioEvent(generateAudioEvent({ taggings: [] }), injector),
+        ];
+
+        await setup(
+          {
+            isLoggedIn: true,
+            awaitInitialRequests: true,
+            awaitFinalRequests: true,
+          },
+          annotations,
+          defaultSite,
+          defaultUser,
+          defaultRecording,
+          [],
+        );
 
         expect(getTagsCellElement(true)).toContainText("(none)");
       });
 
       it("should displays tags when resolved", async () => {
         await setup({
-          annotations: [defaultAnnotation],
           isLoggedIn: true,
           awaitInitialRequests: true,
           awaitFinalRequests: true,
-          tags: defaultTags,
         });
 
-        for (const tag of defaultTags) {
+        for (const tag of defaultAnnotation.tags) {
           expect(getTagsCellElement(true)).toContainText(tag.text);
         }
       });
@@ -432,12 +406,12 @@ describe("RecentAnnotationsComponent", () => {
       }
 
       it("should display time since updated when logged in", async () => {
-        await setup({ annotations: [defaultAnnotation], isLoggedIn: true });
+        await setup({ isLoggedIn: true });
         assertTimestamp(getUpdatedCellElement(true), defaultAnnotation);
       });
 
       it("should display time since updated when not logged in", async () => {
-        await setup({ annotations: [defaultAnnotation], isLoggedIn: false });
+        await setup({ isLoggedIn: false });
         assertTimestamp(getUpdatedCellElement(false), defaultAnnotation);
       });
     });
@@ -447,31 +421,37 @@ describe("RecentAnnotationsComponent", () => {
         getCellElements()[isLoggedIn ? 4 : 2];
       const getPlayButton = (isLoggedIn: boolean) =>
         getActionCellElement(isLoggedIn).querySelector<HTMLAnchorElement>(
-          "#playBtn"
+          "#playBtn",
         );
       const getAnnotationButton = (isLoggedIn: boolean) =>
         getActionCellElement(isLoggedIn).querySelector<HTMLAnchorElement>(
-          "#annotationBtn"
+          "#annotationBtn",
         );
 
       [false, true].forEach((isLoggedIn) => {
-        it(`should link to listen page when ${
-          isLoggedIn ? "" : "not "
-        }logged in`, async () => {
-          await setup({ annotations: [defaultAnnotation], isLoggedIn });
-          expect(getPlayButton(isLoggedIn)).toHaveUrl(
-            defaultAnnotation.listenViewUrl
-          );
-        });
+        it(
+          `should link to listen page when ${
+            isLoggedIn ? "" : "not "
+          }logged in`,
+          async () => {
+            await setup({ isLoggedIn });
+            expect(getPlayButton(isLoggedIn)).toHaveUrl(
+              defaultAnnotation.listenViewUrl,
+            );
+          },
+        );
 
-        it(`should link to annotations page when ${
-          isLoggedIn ? "" : "not "
-        }logged in`, async () => {
-          await setup({ annotations: [defaultAnnotation], isLoggedIn });
-          expect(getAnnotationButton(isLoggedIn)).toHaveUrl(
-            defaultAnnotation.annotationViewUrl
-          );
-        });
+        it(
+          `should link to annotations page when ${
+            isLoggedIn ? "" : "not "
+          }logged in`,
+          async () => {
+            await setup({ isLoggedIn });
+            expect(getAnnotationButton(isLoggedIn)).toHaveUrl(
+              defaultAnnotation.annotationViewUrl,
+            );
+          },
+        );
       });
     });
   });
