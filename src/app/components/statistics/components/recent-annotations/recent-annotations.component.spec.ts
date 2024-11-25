@@ -429,11 +429,9 @@ describe("RecentAnnotationsComponent", () => {
         );
 
       [false, true].forEach((isLoggedIn) => {
-        it(
-          `should link to listen page when ${
-            isLoggedIn ? "" : "not "
-          }logged in`,
-          async () => {
+        it(`should link to listen page when ${
+          isLoggedIn ? "" : "not "
+        }logged in`, async () => {
             await setup({ isLoggedIn });
             expect(getPlayButton(isLoggedIn)).toHaveUrl(
               defaultAnnotation.listenViewUrl,
@@ -441,11 +439,9 @@ describe("RecentAnnotationsComponent", () => {
           },
         );
 
-        it(
-          `should link to annotations page when ${
-            isLoggedIn ? "" : "not "
-          }logged in`,
-          async () => {
+        it(`should link to annotations page when ${
+          isLoggedIn ? "" : "not "
+        }logged in`, async () => {
             await setup({ isLoggedIn });
             expect(getAnnotationButton(isLoggedIn)).toHaveUrl(
               defaultAnnotation.annotationViewUrl,
