@@ -121,7 +121,7 @@ export function hasMany<
     params: Params
   ): Observable<Child[]> => {
     const associatedModelIds = Array.from(parentModel[identifierKeys] as any);
-    // Use forkJoin to combine multiple observables into a single observable that emits an array
+    // Use zip to combine multiple observables into a single observable that emits an array
     return zip<Child[]>(
       associatedModelIds.map((model: Id) => service.show(model, ...params))
     );
