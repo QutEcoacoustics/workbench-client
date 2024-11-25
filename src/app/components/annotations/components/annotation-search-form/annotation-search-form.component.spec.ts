@@ -31,6 +31,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { Id } from "@interfaces/apiInterfaces";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
@@ -61,22 +62,30 @@ describe("AnnotationSearchFormComponent", () => {
     sitesApiSpy = spectator.inject(SHALLOW_SITE.token);
     recordingsApiSpy = spectator.inject(AUDIO_RECORDING.token);
 
-    mockTagsResponse = Array.from(
-      { length: 10 },
-      () => new Tag(generateTag(), injector)
-    );
-    mockSitesResponse = Array.from(
-      { length: 10 },
-      () => new Site(generateSite(), injector)
-    );
-    mockProject = new Project(generateProject(), injector);
-    mockRecording = new AudioRecording(generateAudioRecording(), injector);
+    // so that the models can use their associations, we need to provide the
+    // association injector to the mock models
+    mockTagsResponse.forEach((tag) => (tag["injector"] = injector));
+    mockSitesResponse.forEach((site) => (site["injector"] = injector));
+    mockProject["injector"] = injector;
+    mockRecording["injector"] = injector
 
     modelChangeSpy = spyOn(spectator.component.searchParametersChange, "emit");
 
+    // we mock both filter and show requests because we need to have consistent
+    // mock data for the typeahead queries that use filter requests, and the
+    // has-many associations that use show requests
     tagsApiSpy.filter.andCallFake(() => of(mockTagsResponse));
+    tagsApiSpy.show.andCallFake((id: Id) =>
+      of(mockTagsResponse.find((tag) => tag.id === id))
+    );
+
     sitesApiSpy.filter.andCallFake(() => of(mockSitesResponse));
+    sitesApiSpy.show.andCallFake((id: Id) =>
+      of(mockSitesResponse.find((site) => site.id === id))
+    );
+
     recordingsApiSpy.filter.andCallFake(() => of([mockRecording]));
+    recordingsApiSpy.show.andCallFake(() => of(mockRecording));
 
     const searchParameters = new AnnotationSearchParameters(params, injector);
     searchParameters.routeProjectModel = mockProject;
@@ -104,6 +113,19 @@ describe("AnnotationSearchFormComponent", () => {
     spectator.query(".advanced-filters>[ng-reflect-collapsed]");
   const recordingsTypeahead = () => spectator.query("#recordings-input");
 
+  beforeEach(() => {
+    mockTagsResponse = Array.from(
+      { length: 10 },
+      () => new Tag(generateTag())
+    );
+    mockSitesResponse = Array.from(
+      { length: 10 },
+      () => new Site(generateSite())
+    );
+    mockProject = new Project(generateProject());
+    mockRecording = new AudioRecording(generateAudioRecording());
+  });
+
   it("should create", () => {
     setup();
     expect(spectator.component).toBeInstanceOf(AnnotationSearchFormComponent);
@@ -125,9 +147,11 @@ describe("AnnotationSearchFormComponent", () => {
 
     // check the population of a typeahead input that does not use a property backing
     it("should pre-populate the tags typeahead input if provided in the search parameters model", () => {
-      setup({ tags: "0" });
+      const testedTag = mockTagsResponse[0];
+
+      setup({ tags: testedTag.id.toString() });
       const realizedTagPills = tagPills();
-      expect(realizedTagPills[0].innerText).toEqual(`${mockTagsResponse[0]}`);
+      expect(realizedTagPills[0].innerText).toEqual(`${testedTag.text}`);
     });
 
     // check the population of an external component that is not a typeahead input

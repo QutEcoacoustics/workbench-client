@@ -1,5 +1,10 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { discardPeriodicTasks, fakeAsync, flush, TestBed } from "@angular/core/testing";
+import {
+  discardPeriodicTasks,
+  fakeAsync,
+  flush,
+  TestBed,
+} from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
@@ -8,10 +13,12 @@ import { Id, Ids } from "@interfaces/apiInterfaces";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { nStepObservable } from "@test/helpers/general";
 import { UNAUTHORIZED } from "http-status";
-import { Subject } from "rxjs";
+import { of, Subject } from "rxjs";
 import { ToastrService } from "ngx-toastr";
 import { mockProvider } from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { modelData } from "@test/helpers/faker";
+import { Errorable } from "@helpers/advancedTypes";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { hasMany, hasOne } from "./AssociationDecorators";
 import { AssociationInjector } from "./ImplementsInjector";
@@ -60,22 +67,24 @@ describe("Association Decorators", () => {
   });
 
   describe("HasMany", () => {
+    let mockApiResponses: Map<Id, Errorable<ChildModel>>;
+    let apiShowSpy: jasmine.Spy;
+
+    const responseWait = (): Promise<void> =>
+      new Promise((resolve) => {
+        setTimeout(() => resolve(), 0);
+      });
+
     function createModel(
       data: any,
       modelInjector: AssociationInjector,
-      key?: string,
       ...modelParameters: string[]
     ) {
       class MockModel extends AbstractModel {
         public readonly ids: Ids;
         public readonly param1: Id;
         public readonly param2: Id;
-        @hasMany<MockModel, AbstractModel>(
-          MOCK,
-          "ids",
-          key as any,
-          modelParameters as any
-        )
+        @hasMany<MockModel, AbstractModel>(MOCK, "ids", modelParameters as any)
         public readonly childModels: AbstractModel[];
 
         public get viewUrl(): string {
@@ -90,16 +99,23 @@ describe("Association Decorators", () => {
       return new MockModel(data, modelInjector);
     }
 
-    function interceptApiRequest(models?: ChildModel[], error?: BawApiError) {
-      const subject = new Subject<ChildModel[]>();
-      const promise = nStepObservable(
-        subject,
-        () => (models ? models : error),
-        !models
-      );
-      spyOn(api, "filter").and.callFake(() => subject);
-      return promise;
+    function interceptApiRequest(
+      modelId: Id,
+      response: ChildModel | BawApiError
+    ): Promise<void> {
+      mockApiResponses.set(modelId, response);
+      return responseWait();
     }
+
+    function mockApiModel(model: ChildModel): Promise<void> {
+      return interceptApiRequest(model.id, model);
+    }
+
+    beforeEach(() => {
+      mockApiResponses = new Map();
+      apiShowSpy = spyOn(api, "show");
+      apiShowSpy.and.callFake((id: Id) => of(mockApiResponses.get(id)));
+    });
 
     it("should handle undefined modelIdentifier", () => {
       const model = createModel({ ids: undefined }, injector);
@@ -131,16 +147,16 @@ describe("Association Decorators", () => {
     ].forEach((idsType) => {
       describe(idsType.type, () => {
         it("should handle empty", async () => {
-          const promise = interceptApiRequest([]);
           const model = createModel({ ids: idsType.empty }, injector);
-          await assertModel(promise, model, "childModels", []);
+          await assertModel(responseWait(), model, "childModels", []);
         });
 
         it("should handle single modelIdentifier", async () => {
-          const childModels = [new ChildModel({ id: 1 })];
-          const promise = interceptApiRequest(childModels);
+          const childModel = new ChildModel({ id: 1 });
+          const promise = mockApiModel(childModel)
+
           const model = createModel({ ids: idsType.single }, injector);
-          await assertModel(promise, model, "childModels", childModels);
+          await assertModel(promise, model, "childModels", [childModel]);
         });
 
         it("should handle multiple modelIdentifiers", async () => {
@@ -148,41 +164,50 @@ describe("Association Decorators", () => {
             new ChildModel({ id: 1 }),
             new ChildModel({ id: 2 }),
           ];
-          const promise = interceptApiRequest(response);
+
+          const mockedApiResponses = [
+            mockApiModel(response[0]),
+            mockApiModel(response[1]),
+          ];
+
+          const promise = Promise.allSettled(mockedApiResponses);
+
           const model = createModel({ ids: idsType.multiple }, injector);
           await assertModel(promise, model, "childModels", response);
         });
 
         it("should handle single parameter", () => {
-          interceptApiRequest([]);
+          const testedIds = idsType.multiple;
+          const parameterValue = modelData.datatype.number();
+
           const model = createModel(
-            { ids: idsType.multiple, param1: 5 },
+            { ids: testedIds, param1: parameterValue },
             injector,
-            undefined,
             "param1"
           );
           updateDecorator(model, "childModels");
-          expect(api.filter).toHaveBeenCalledWith(
-            { filter: { id: { in: [1, 2] } } },
-            5
-          );
+
+          for (const associatedId of testedIds) {
+            expect(api.show).toHaveBeenCalledWith(associatedId, parameterValue);
+          }
         });
 
         it("should handle multiple parameters", () => {
-          interceptApiRequest([]);
+          const testedIds = idsType.multiple;
+          const param1 = modelData.datatype.number();
+          const param2 = modelData.datatype.number();
+
           const model = createModel(
-            { ids: idsType.multiple, param1: 5, param2: 10 },
+            { ids: testedIds, param1, param2 },
             injector,
-            undefined,
             "param1",
             "param2"
           );
           updateDecorator(model, "childModels");
-          expect(api.filter).toHaveBeenCalledWith(
-            { filter: { id: { in: [1, 2] } } },
-            5,
-            10
-          );
+
+          for (const associatedId of testedIds) {
+            expect(api.show).toHaveBeenCalledWith(associatedId, param1, param2);
+          }
         });
 
         it("should handle error", async () => {
@@ -194,42 +219,23 @@ describe("Association Decorators", () => {
           await assertModel(promise, model, "childModels", []);
         });
 
-        it("should handle default primary key", () => {
-          interceptApiRequest([]);
-          const model = createModel({ ids: idsType.multiple }, injector);
-          updateDecorator(model, "childModels");
-          expect(api.filter).toHaveBeenCalledWith({
-            filter: { id: { in: [1, 2] } },
-          });
-        });
-
-        it("should handle custom primary key", () => {
-          interceptApiRequest([]);
-          const model = createModel(
-            { ids: idsType.multiple },
-            injector,
-            "customKey"
-          );
-          updateDecorator(model, "childModels");
-          expect(api.filter).toHaveBeenCalledWith({
-            filter: { customKey: { in: [1, 2] } },
-          });
-        });
-
         it("should load cached data", async () => {
-          const childModels = [new ChildModel({ id: 1 })];
-          const subject = new Subject<ChildModel[]>();
-          const promise = nStepObservable(subject, () => childModels);
+          const testedIds = idsType.single;
 
-          spyOn(api, "filter").and.callFake(() => subject);
+          const childModel = new ChildModel({ id: 1 });
+          const promise = mockApiModel(childModel);
 
-          const model = createModel({ ids: idsType.single }, injector);
+          // request the associated models multiple times without changing the
+          // association ids on the parent model
+          // because we have not change the associated ids on the parent model
+          // we should see that the api is only called once
+          const model = createModel({ ids: testedIds }, injector);
           for (let i = 0; i < 5; i++) {
             updateDecorator(model, "childModels");
           }
 
-          await assertModel(promise, model, "childModels", childModels);
-          expect(api.filter).toHaveBeenCalledTimes(1);
+          await assertModel(promise, model, "childModels", [childModel]);
+          expect(api.show).toHaveBeenCalledTimes(1);
         });
       });
     });

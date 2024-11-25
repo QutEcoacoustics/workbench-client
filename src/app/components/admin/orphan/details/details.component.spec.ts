@@ -15,21 +15,23 @@ import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
-import { nStepObservable } from "@test/helpers/general";
+import { interceptMappedApiRequests, nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
-import { Subject } from "rxjs";
+import { of, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { Id } from "@interfaces/apiInterfaces";
 import { AdminOrphanComponent } from "./details.component";
 
 describe("AdminOrphanComponent", () => {
   let component: AdminOrphanComponent;
   let fixture: ComponentFixture<AdminOrphanComponent>;
   let injector: AssociationInjector;
+  const siteProjectIds = [1, 2, 3];
 
-  function configureTestingModule(model: Site, error?: BawApiError) {
+  function setup(model: Site, error?: BawApiError) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -50,31 +52,36 @@ describe("AdminOrphanComponent", () => {
 
     fixture = TestBed.createComponent(AdminOrphanComponent);
     injector = TestBed.inject(ASSOCIATION_INJECTOR);
+
     const accountsApi = TestBed.inject(
       ACCOUNT.token
     ) as SpyObject<AccountsService>;
     const projectsApi = TestBed.inject(
       PROJECT.token
     ) as SpyObject<ProjectsService>;
+
     component = fixture.componentInstance;
 
+    const mockProjectApiResponses = new Map<any, Project>([
+      [1, new Project({ id: 1, siteIds: [1], name: "custom project" })],
+      [2, new Project({ id: 2, siteIds: [1], name: "custom project" })],
+      [3, new Project({ id: 3, siteIds: [1], name: "custom project" })],
+    ]);
+    projectsApi.show.and.callFake((id: Id) =>
+      of(mockProjectApiResponses.get(id))
+    );
+
     const accountsSubject = new Subject<User>();
-    const projectsSubject = new Subject<Project[]>();
     const promise = Promise.all([
       nStepObservable(
         accountsSubject,
         () => new User({ id: 1, userName: "custom username" })
       ),
-      nStepObservable(projectsSubject, () =>
-        [1, 2, 3].map(
-          (id) => new Project({ id, siteIds: [1], name: "custom project" })
-        )
-      ),
+      ...interceptMappedApiRequests(projectsApi.show, mockProjectApiResponses),
     ]);
 
     // Catch associated models
     accountsApi.show.and.callFake(() => accountsSubject);
-    projectsApi.filter.and.callFake(() => projectsSubject);
 
     // Update model to contain injector
     if (model) {
@@ -87,28 +94,28 @@ describe("AdminOrphanComponent", () => {
   assertPageInfo<Site>(AdminOrphanComponent, "Test Orphaned Site", {
     site: {
       model: new Site(generateSite({ name: "Test Orphaned Site" })),
-    }
+    },
   });
 
   it("should create", () => {
-    configureTestingModule(new Site(generateSite()));
+    setup(new Site(generateSite()));
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it("should handle error", () => {
-    configureTestingModule(undefined, generateBawApiError());
+    setup(undefined, generateBawApiError());
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   describe("details", () => {
     const model = new Site(
-      generateSite({ locationObfuscated: true, projectIds: [1, 2, 3] })
+      generateSite({ locationObfuscated: true, projectIds: siteProjectIds })
     );
 
     beforeEach(async function () {
-      const promise = configureTestingModule(model);
+      const promise = setup(model);
       fixture.detectChanges();
       await promise;
       fixture.detectChanges();
@@ -150,7 +157,7 @@ describe("AdminOrphanComponent", () => {
       {
         label: "Projects",
         key: "projects",
-        children: [1, 2, 3].map((id) => ({
+        children: siteProjectIds.map((id) => ({
           model: `Project: custom project (${id})`,
         })),
       },

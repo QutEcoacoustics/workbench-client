@@ -1,8 +1,4 @@
-import {
-  ApiFilter,
-  ApiShow,
-} from "@baw-api/api-common";
-import { Filters } from "@baw-api/baw-api.service";
+import { ApiFilter, ApiShow } from "@baw-api/api-common";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { KeysOfType } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -13,13 +9,14 @@ import {
   Id,
   Ids,
 } from "@interfaces/apiInterfaces";
-import { Observable, Subscription } from "rxjs";
-import {
-  AbstractModel,
-  UnresolvedModel,
-} from "./AbstractModel";
+import { Observable, Subscription, zip } from "rxjs";
+import { Filters } from "@baw-api/baw-api.service";
+import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { User } from "./User";
-import { AssociationInjector, ImplementsAssociations } from "./ImplementsInjector";
+import {
+  AssociationInjector,
+  ImplementsAssociations,
+} from "./ImplementsInjector";
 
 /**
  * Creates an association between the creatorId and its user model
@@ -45,31 +42,37 @@ export function deleter<Parent extends ImplementsAssociations & HasDeleter>() {
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }
 
+
 /**
  * Abstract model parameter decorator which automates the process
- * of retrieving models linked by a group of ids in the parent model.
+ * of retrieving models request linked by a group of ids in the parent model.
  *
  * @param serviceToken Injection token for API service used to retrieve the child models
  * @param identifierKeys Parent model key used to retrieve the list of ids for the child models
- * @param childIdentifier field used to filter child models by, typically `id`
  * @param routeParams Additional route params required for the filter request.
  * This is a list of keys from the parent where the values can be retrieved
+ *
+ * @deprecated
+ * Prefer to use `hasMany` instead as it provides improved performance through
+ * debouncing and improved caching of requests.
+ *
+ * ?You may have to use this decorator for request that do not support `show`
+ * ?requests
  */
-export function hasMany<
+export function hasManyFilter<
   Parent extends ImplementsAssociations,
   Child extends AbstractModel,
   Params extends any[] = []
 >(
   serviceToken: ServiceToken<ApiFilter<Child, Params>>,
   identifierKeys?: KeysOfType<Parent, Id[] | Set<Id>>,
-  childIdentifier: keyof Child = "id",
   routeParams: ReadonlyArray<keyof Parent> = []
 ) {
   /** Create filter to retrieve association models */
   const modelFilter = (parent: Parent) =>
     ({
       filter: {
-        [childIdentifier]: { in: Array.from(parent[identifierKeys] as any) },
+        id: { in: Array.from(parent[identifierKeys] as any) },
       },
     } as Filters<Child>);
 
@@ -79,6 +82,56 @@ export function hasMany<
     routeParams,
     (service, parent: Parent, params: Params) =>
       service.filter(modelFilter(parent), ...params),
+    UnresolvedModel.many,
+    []
+  );
+}
+
+/**
+ * Abstract model parameter decorator which automates the process
+ * of retrieving models linked by a group of ids in the parent model.
+ *
+ * @param serviceToken Injection token for API service used to retrieve the child models
+ * @param identifierKeys Parent model key used to retrieve the list of ids for the child models
+ * @param routeParams Additional route params required for the show request.
+ * This is a list of keys from the parent where the values can be retrieved
+ */
+export function hasMany<
+  Parent extends ImplementsAssociations,
+  Child extends AbstractModel,
+  Params extends any[] = []
+>(
+  serviceToken: ServiceToken<ApiShow<Child, Params>>,
+  identifierKeys?: KeysOfType<Parent, Id[] | Set<Id>>,
+  routeParams: ReadonlyArray<keyof Parent> = []
+) {
+  // we use multiple show (GET) requests in the hasMany associations so when
+  // multiple models have the same associated models in a hasMany relationship
+  // they can get debounced and the same model can be shared between the
+  // different models
+  //
+  // e.g. projects can have multiple owners, but one updater/creator
+  // it is likely that one of the owners is the updater/creator, so the http
+  // debouncing interceptor should be able to combine the requests and prevent
+  // requesting the same user model twice (once for the creator, and once for
+  // owner/updater)
+  const modelRequester = (
+    service: ApiShow<Child, Params>,
+    parentModel: Parent,
+    params: Params
+  ): Observable<Child[]> => {
+    const associatedModelIds = Array.from(parentModel[identifierKeys] as any);
+    // Use zip to combine multiple observables into a single observable that emits an array
+    return zip<Child[]>(
+      associatedModelIds.map((model: Id) => service.show(model, ...params))
+    );
+  };
+
+  return createModelDecorator<Parent, Child, Params, ApiShow<Child, Params>>(
+    serviceToken,
+    identifierKeys,
+    routeParams,
+    modelRequester,
     UnresolvedModel.many,
     []
   );
