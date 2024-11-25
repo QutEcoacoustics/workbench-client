@@ -43,8 +43,8 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Id } from "@interfaces/apiInterfaces";
 import { modelData } from "@test/helpers/faker";
-import { RecentAnnotationsComponent } from "./recent-annotations.component";
 import { generateUser } from "@test/fakes/User";
+import { RecentAnnotationsComponent } from "./recent-annotations.component";
 
 describe("RecentAnnotationsComponent", () => {
   let api: {
