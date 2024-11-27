@@ -30,7 +30,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
         return acc;
       }, {});
 
-    Object.assign(this, transformedRaw, raw);
+    Object.assign(this, raw, transformedRaw);
   }
 
   /** Keys for accessing hidden data associated with a model */
