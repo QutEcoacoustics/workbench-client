@@ -77,9 +77,11 @@ export class HarvestStagesService implements OnDestroy {
     { label: "Processing", icon: ["fas", "arrows-spin"] },
     { label: "Complete", icon: ["fas", "flag-checkered"] },
   ];
+
   private _streamingStages: Step[] = [0, 1, 6].map(
     (step): Step => this._stages[step]
   );
+
   public get stages(): Step[] {
     return this.harvest?.streaming ? this._streamingStages : this._stages;
   }
@@ -89,7 +91,7 @@ export class HarvestStagesService implements OnDestroy {
   }
 
   public get currentStage(): number {
-    const temp: Record<HarvestStatus, number> = {
+    const temp = {
       newHarvest: 0,
       uploading: 1,
       scanning: 2,
@@ -97,7 +99,7 @@ export class HarvestStagesService implements OnDestroy {
       metadataReview: 4,
       processing: 5,
       complete: this.harvest?.streaming ? 2 : 6,
-    };
+    } as const satisfies Record<HarvestStatus, number>;
     return temp[this.stage];
   }
 

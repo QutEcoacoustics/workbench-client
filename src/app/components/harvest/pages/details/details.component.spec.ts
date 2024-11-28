@@ -9,25 +9,31 @@ import { StreamUploadingComponent } from "@components/harvest/screens/uploading/
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { Harvest, HarvestStatus } from "@models/Harvest";
 import { Project } from "@models/Project";
-import { createRoutingFactory, mockProvider, SpectatorRouting } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  mockProvider,
+  SpectatorRouting,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { StepperComponent } from "@shared/stepper/stepper.component";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { MockComponents } from "ng-mocks";
 import { ToastrService } from "ngx-toastr";
 import { PageTitleStrategy } from "src/app/app.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
+import { TitleComponent } from "@components/harvest/components/shared/title.component";
+import { getElementByInnerText } from "@test/helpers/html";
 import { DetailsComponent } from "./details.component";
 
 describe("DetailsComponent", () => {
   let spec: SpectatorRouting<DetailsComponent>;
   let defaultProject: Project;
+  let defaultHarvest: Harvest;
 
   const createComponent = createRoutingFactory({
     component: DetailsComponent,
-    declarations: MockComponents(
+    declarations: [
       ScanningComponent,
       StreamUploadingComponent,
       BatchUploadingComponent,
@@ -36,31 +42,31 @@ describe("DetailsComponent", () => {
       MetadataReviewComponent,
       CompleteComponent,
       WebsiteStatusWarningComponent,
-    ),
-    providers: [
-      mockProvider(HarvestStagesService),
-      PageTitleStrategy,
+      TitleComponent,
     ],
+    providers: [mockProvider(HarvestStagesService), PageTitleStrategy],
     imports: [MockBawApiModule, SharedModule],
     mocks: [ToastrService],
   });
 
   assertPageInfo<Harvest>(DetailsComponent, "test name", {
     harvest: {
-      model: new Harvest(generateHarvest({ name: "test name" }))
+      model: new Harvest(generateHarvest({ name: "test name" })),
     },
   });
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
+    defaultHarvest = new Harvest(generateHarvest());
   });
 
-  function setup(project: Project = defaultProject) {
+  function setup(): void {
     spec = createComponent({
-      detectChanges: false,
-      data: { project: { model: project } },
+      data: {
+        project: { model: defaultProject },
+        harvest: { model: defaultHarvest },
+      },
     });
-    spec.detectChanges();
   }
 
   it("should create", () => {
@@ -68,10 +74,22 @@ describe("DetailsComponent", () => {
     expect(spec.component).toBeInstanceOf(DetailsComponent);
   });
 
-  xit("should show project name", () => {
+  it("should show project name", () => {
     setup();
-    spec.detectChanges();
-    expect(spec.query("h1")).toHaveText(defaultProject.name);
+
+    const expectedTitle = `Project: ${defaultProject.name}`;
+    const titleElement = getElementByInnerText(spec, expectedTitle);
+
+    expect(titleElement).toExist();
+  });
+
+  it("should show the harvest name", () => {
+    setup();
+
+    const expectedTitle = `Upload Recordings: ${defaultHarvest.name}`;
+    const titleElement = getElementByInnerText(spec, expectedTitle);
+
+    expect(titleElement).toExist();
   });
 
   // TODO: Re-implement tests
