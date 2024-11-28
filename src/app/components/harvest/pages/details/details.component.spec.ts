@@ -24,7 +24,6 @@ import { PageTitleStrategy } from "src/app/app.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { TitleComponent } from "@components/harvest/components/shared/title.component";
 import { getElementByInnerText } from "@test/helpers/html";
-import { Type } from "@angular/core";
 import { DetailsComponent } from "./details.component";
 
 describe("DetailsComponent", () => {
@@ -102,7 +101,7 @@ describe("DetailsComponent", () => {
       spec.detectChanges();
     }
 
-    function assertStage(stage: number, component: any): void {
+    function assertStage(stage: number, component: any) {
       expect(spec.query(component)).toBeInstanceOf(component);
       expect(spec.query(StepperComponent).activeStep).toBe(stage);
     }

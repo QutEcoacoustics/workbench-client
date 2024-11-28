@@ -535,9 +535,7 @@ describe("AbstractModel", () => {
       expect(model.userDescription).toEqual("this should be left untouched");
     });
 
-    it("should add new persistent attributes correctly", () => {});
-
-    it("should correctly modify an existing attribute when becoming persistent", () => {
+    it("should correctly add persistent attributes", () => {
       const addedAttribute = {
         key: "userDescription",
         create: true,
