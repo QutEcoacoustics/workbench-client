@@ -4,7 +4,11 @@ import { By } from "@angular/platform-browser";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
-import { SpectatorHost, createHostFactory, SpyObject } from "@ngneat/spectator";
+import {
+  SpyObject,
+  createComponentFactory,
+  Spectator,
+} from "@ngneat/spectator";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
 import { MockProvider } from "ng-mocks";
@@ -12,33 +16,28 @@ import { ToastrService } from "ngx-toastr";
 import { TitleComponent } from "./title.component";
 
 describe("titleComponent", () => {
-  let spectator: SpectatorHost<TitleComponent>;
+  let spectator: Spectator<TitleComponent>;
   let mockHarvest: Harvest;
   let mockProject: Project;
 
-  const createHost = createHostFactory({
+  const createComponent = createComponentFactory({
     component: TitleComponent,
     imports: [FormsModule],
     mocks: [ToastrService],
   });
 
   function setup(): SpyObject<ShallowHarvestsService> {
-    spectator = createHost(
-      `
-      <baw-harvest-title></baw-harvest-title>
-      `,
-      {
-        props: {
-          project: mockProject,
-          harvest: mockHarvest
-        },
-        providers: [
-          MockProvider(ShallowHarvestsService, {}),
-        ],
-      }
-    );
+    spectator = createComponent({
+      props: {
+        project: mockProject,
+        harvest: mockHarvest,
+      },
+      providers: [MockProvider(ShallowHarvestsService, {})],
+    });
 
-    const mockHarvestApi = spectator.inject<SpyObject<ShallowHarvestsService>>( ShallowHarvestsService as any );
+    const mockHarvestApi = spectator.inject<SpyObject<ShallowHarvestsService>>(
+      ShallowHarvestsService as any
+    );
     mockHarvestApi.updateName = jasmine.createSpy("updateName") as any;
 
     spectator.detectChanges();
@@ -72,7 +71,7 @@ describe("titleComponent", () => {
     expect(getHarvestTitle().innerText).toEqual(expectedTitle);
   });
 
-  it("should not attempt to load the harvest name when a Harvest model is not initialized" , () => {
+  it("should not attempt to load the harvest name when a Harvest model is not initialized", () => {
     mockHarvest = undefined;
     setup();
 

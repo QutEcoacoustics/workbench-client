@@ -1,7 +1,12 @@
 import { Injector } from "@angular/core";
 import { DateTime, Duration } from "luxon";
+import { modelData } from "@test/helpers/faker";
 import { AbstractModel, getUnknownViewUrl } from "./AbstractModel";
-import { bawPersistAttr } from "./AttributeDecorators";
+import {
+  BawAttributeMeta,
+  bawPersistAttr,
+  bawReadonlyConvertCase,
+} from "./AttributeDecorators";
 import { AssociationInjector } from "./ImplementsInjector";
 
 export class MockModel extends AbstractModel {
@@ -97,7 +102,7 @@ describe("AbstractModel", () => {
           return undefined;
         }
       }
-      const mockInjector = new MockInjector() as AssociationInjector ;
+      const mockInjector = new MockInjector() as AssociationInjector;
       const model = new MockModel(defaultData, mockInjector);
       expect(model["injector"]).toEqual(mockInjector);
       expect<any>(Object.keys(model.getJsonAttributes())).not.toContain(
@@ -144,7 +149,7 @@ describe("AbstractModel", () => {
       const model = new Model({ id: 1, image: null });
       const actual = model.getJsonAttributes({ create: true });
       expect(actual).toEqual(jasmine.objectContaining({
-        image: null
+        image: null,
       }));
     });
 
@@ -305,7 +310,7 @@ describe("AbstractModel", () => {
             @bawPersistAttr({ supportedFormats: ["json", "formData"] })
             public image: any;
           }
-          const model = new Model({image: null});
+          const model = new Model({ image: null });
           expect(hasFormDataOnlyAttributes(model)).toBeFalse();
         });
 
@@ -314,7 +319,7 @@ describe("AbstractModel", () => {
             @bawPersistAttr({ supportedFormats: ["json", "formData"] })
             public image: any;
           }
-          const model = new Model({image: testFile});
+          const model = new Model({ image: testFile });
           expect(hasFormDataOnlyAttributes(model)).toBeTrue();
         });
       });
@@ -467,6 +472,104 @@ describe("AbstractModel", () => {
 
     it("should retrieve empty metadata", () => {
       expect(model.getMetadata()).toBe(undefined);
+    });
+  });
+
+  describe("persistent attributes", () => {
+    let model: any;
+
+    beforeEach(() => {
+      class Model extends MockModel {
+        @bawPersistAttr()
+        public name: string;
+        @bawPersistAttr()
+        public age: number;
+        @bawPersistAttr({ convertCase: true })
+        public occupation: string;
+        @bawReadonlyConvertCase()
+        public birthCountry: string;
+
+        public userDescription: string;
+      }
+
+      model = new Model({
+        id: modelData.id(),
+        name: "John Doe",
+        age: modelData.datatype.number(),
+        occupation: "software_developer",
+        birthCountry: "united_states",
+        userDescription: "this should be left untouched",
+      });
+    });
+
+    it("should correctly handle a persistent attribute with a null value", () => {
+      const testedContent = { id: modelData.id(), name: null };
+      model = new MockModel(testedContent);
+      expect(model.toJSON()).toEqual(jasmine.objectContaining(testedContent));
+    });
+
+    it("should correctly handle a persistent attribute with a falsy value", () => {
+      const testedContent = { id: modelData.id(), age: 0 };
+      model = new MockModel(testedContent);
+      expect(model.toJSON()).toEqual(jasmine.objectContaining(testedContent));
+    });
+
+    it("should correctly initialize persistent attributes", () => {
+      // although the name field has the bawPersistAttr decorator, it does not
+      // have the "caseConvert" option set. We therefore expect that the value
+      // was left untouched by the case-conversion
+      expect(model.name).toBe("John Doe");
+
+      // we expect that when the model was initialized, the "occupation"
+      // property value was converted to camel case because it has "convertCase"
+      // set in its bawPersistAttr decorator
+      expect(model.occupation).toBe("softwareDeveloper");
+
+      // because the "birthCountry" property has the bawReadonlyConvertCase
+      // we expect that the value was converted to camel case
+      expect(model.birthCountry).toBe("unitedStates");
+
+      // we expect that the "userDescription" property was not initialized
+      // with the persisted attribute decorator the value should be left
+      // untouched
+      expect(model.userDescription).toEqual("this should be left untouched");
+    });
+
+    it("should add new persistent attributes correctly", () => {});
+
+    it("should correctly modify an existing attribute when becoming persistent", () => {
+      const addedAttribute = {
+        key: "userDescription",
+        create: true,
+        update: true,
+        convertCase: false,
+        supportedFormats: ["json"],
+      } satisfies BawAttributeMeta;
+
+      model.addPersistentAttribute(addedAttribute);
+
+      const realized = model.getPersistentAttributes();
+      expect(realized).toContain(addedAttribute);
+    });
+
+    it("should get persistent attributes correctly", () => {
+      // Prettier wants to break all of these object properties onto their own
+      // line.
+      // However, I think that breaking each property onto its own line is
+      // less readable.
+      // Therefore, I am ignoring prettier for this array of expected values so
+      // that I can keep each condition on its own line.
+      // prettier-ignore
+      const expected = [
+        { key: "name", create: true, update: true, convertCase: false, supportedFormats: ["json"] },
+        { key: "age", create: true, update: true, convertCase: false, supportedFormats: ["json"] },
+        { key: "occupation", create: true, update: true, convertCase: true, supportedFormats: ["json"] },
+        { key: "birthCountry", create: false, update: false, convertCase: true, supportedFormats: [] },
+      ] satisfies BawAttributeMeta[];
+
+      const realized = model.getPersistentAttributes();
+
+      expect(realized).toEqual(expected);
     });
   });
 });

@@ -21,7 +21,7 @@ export type AbstractModelConstructor<Model> = new (
  * BAW Server Abstract Model
  */
 export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
-  public constructor(raw: Model, protected injector?: AssociationInjector) {
+  public constructor(raw: Readonly<Model>, protected injector?: AssociationInjector) {
     const transformedRaw = this.getPersistentAttributes()
       .filter((attr) => attr.convertCase)
       .reduce((acc, attr) => {
