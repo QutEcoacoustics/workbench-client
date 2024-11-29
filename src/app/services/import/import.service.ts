@@ -20,15 +20,19 @@ export class ImportsService {
     // race conditions in defining custom elements and using the web components
     // we cannot put this in the AppComponent's ngOnInit because ngOnInit does
     // not support async operations
-    await this.importDynamicModule("@ecoacoustics/web-components/components.js");
-  }
-
-  public async importDynamicModule(path: string): Promise<void> {
-    const clientOrigin = window.location.origin;
-    const importUrl = `${clientOrigin}/${path}`;
-
-    // we have to use vite ignore so that vite doesn't bundle and cache the import
-    // allowing the module to be dynamically imported
-    await import(/* @vite-ignore */ importUrl);
+    //
+    // there have been rare circumstances where the web components would be
+    // re-declared twice, causing a hard failure of the entire website.
+    // I believe this was fixed when we started bundling the web components with
+    // the client bundle.
+    // However, I have still added this condition as a defensive programming
+    // measure so that if this bug resurfaces, it will not cause the entire
+    // website to fail.
+    if (customElements.get("oe-verification-grid") === undefined) {
+      await import("node_modules/@ecoacoustics/web-components/dist/components.js");
+    } else {
+      console.warn("Attempted to import web components, but they are already defined");
+      console.warn("Skipping re-declaration of web components to prevent a hard failure");
+    }
   }
 }
