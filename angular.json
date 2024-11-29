@@ -31,8 +31,8 @@
               "src/manifest.json",
               {
                 "glob": "**/*",
-                "input": "node_modules/@ecoacoustics/web-components/dist",
-                "output": "@ecoacoustics/web-components"
+                "input": "node_modules/@ecoacoustics/web-components/dist/assets",
+                "output": "assets/"
               }
             ],
             "styles": [
