@@ -33,9 +33,27 @@ export class RehydrationInterceptorService implements HttpInterceptor {
   ) {}
 
   public intercept(
-    req: HttpRequest<any>,
+    unauthenticatedReq: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    // By default, SSR will not pass through cookies with requests. This means
+    // that a lot of SSR requests will fail for private projects.
+    // Additionally, it means that the server might hydrate the client page with
+    // incorrect data.
+    //
+    // e.g. if a project is private, and a request is made to the API without
+    // authentication headers, the server will create the menu saying that the
+    // user doesn't have access to the project. Meaning when we hydrate the
+    // client where the user is authenticated, the menu will still say that the
+    // user doesn't have access to the project even though they do.
+    //
+    // By using withCredentials, the server will send the api request with
+    // credentials (cookies) attached
+    // see: https://angular.dev/api/common/http/HttpRequest#withCredentials
+    const req = unauthenticatedReq.clone({
+      withCredentials: true,
+    });
+
     // Ignore any requests which are not GET or filter
     const isGetRequest = req.method === "GET";
     const isFilterRequest = req.url.endsWith("/filter");

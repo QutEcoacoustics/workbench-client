@@ -1,8 +1,9 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IProject, Project } from "@models/Project";
 import type { User } from "@models/User";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import {
   emptyParam,
   filterParam,
@@ -27,7 +28,10 @@ const annotationsEndpoint = stringTemplate`/projects/${projectId}/audio_events/d
  */
 @Injectable()
 export class ProjectsService implements StandardApi<Project> {
-  public constructor(private api: BawApiService<Project>) {}
+  public constructor(
+    private api: BawApiService<Project>,
+    @Inject(IS_SERVER_PLATFORM) private isServer: boolean
+  ) {}
 
   public list(): Observable<Project[]> {
     return this.api.list(Project, endpoint(emptyParam, emptyParam));
@@ -38,7 +42,14 @@ export class ProjectsService implements StandardApi<Project> {
   }
 
   public show(model: IdOr<Project>): Observable<Project> {
-    return this.api.show(Project, endpoint(model, emptyParam));
+    return this.api.show(Project, endpoint(model, emptyParam)).pipe(
+      map((project: any) => {
+        if (this.isServer) {
+          project["name"] = project.name + "re-hydrated"
+        }
+        return project;
+      })
+    );
   }
 
   public create(model: Project): Observable<Project> {
