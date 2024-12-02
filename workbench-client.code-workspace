@@ -20,7 +20,11 @@
       "toastr",
       "tzinfo",
       "unprocessable",
-      "vocalisations"
+      "vocalisations",
+      "ecoacoustics",
+      "datatable",
+      "luxon",
+      "datetime"
     ],
     "cSpell.ignorePaths": [
       "**/.git/objects/**",
@@ -61,7 +65,10 @@
       "cyrilletuzi.angular-schematics",
       "dbaeumer.vscode-eslint",
       "streetsidesoftware.code-spell-checker",
-      "xabikos.jasminesnippets"
+      "xabikos.jasminesnippets",
+
+      // needed for intellisense and linting smocker mock .yaml files
+      "redhat.vscode-yaml"
     ]
-  }
+  },
 }

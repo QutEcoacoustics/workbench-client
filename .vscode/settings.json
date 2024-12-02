@@ -1,15 +1,6 @@
 {
   "typescript.tsdk": "node_modules\\typescript\\lib",
-  "cSpell.words": [
-    "Datatable",
-    "datatable",
-    "luxon",
-    "toastr",
-    "taggings",
-    "typeahead",
-    "Ecoacoustics",
-    "datatable",
-    "datetime",
-    "formly"
-  ]
+  "yaml.schemas": {
+    "https://smocker.dev/smocker.schema.json": "/src/smocker-mocks/**/*.mock.yml"
+  }
 }

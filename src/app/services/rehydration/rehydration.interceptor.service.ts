@@ -112,6 +112,8 @@ export class RehydrationInterceptorService implements HttpInterceptor {
     return next.handle(req).pipe(
       tap((event) => {
         if (event instanceof HttpResponse && event.status === httpStatus.OK) {
+          event.body.ssrFetched = true;
+
           /*
            * Only transferring body because http responses are not POJO and
            * would require a custom serialization/deserialization solution

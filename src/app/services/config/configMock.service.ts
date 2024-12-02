@@ -81,3 +81,12 @@ export const testApiConfig = new Configuration({
     ],
   },
 });
+
+export const ssrTestApiConfig = new Configuration({
+  ...testApiConfig,
+  endpoints: {
+    ...testApiConfig.endpoints,
+    environment: "ssr-testing",
+    apiRoot: "http://localhost:8080",
+  },
+});

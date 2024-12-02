@@ -1,0 +1,31 @@
+- request:
+    method: GET
+    path: /projects
+  response:
+    status: 200
+    headers:
+      Content-Type: application/json
+    body: >
+      [
+        {
+          "id": 1,
+          "name": "Project 1"
+        },
+        {
+          "id": 2,
+          "name": "Project 2"
+        }
+      ]
+
+- request:
+    method: GET
+    path: /projects/1
+  response:
+    status: 200
+    headers:
+      Content-Type: application/json
+    body: >
+      {
+        "id": 1,
+        "name": "Project 1"
+      }

@@ -61,6 +61,13 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   public readonly kind: string;
 
   /**
+   * A property that is set if the model was fetched from the server during
+   * server side rendering.
+   * This is typically used for debugging purposes
+   */
+  public readonly ssrFetched: boolean;
+
+  /**
    * Redirect path to view model on website. This is a string which can be used
    * by the UrlDirective (`[bawUrl]`) to navigate. For example using the project
    * abstract model, this path would direct to the project page. The url may
