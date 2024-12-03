@@ -87,7 +87,8 @@ export class RehydrationInterceptorService implements HttpInterceptor {
       return next.handle(req);
     }
 
-    this.transferState.remove(key); // cached response should be used for the very first time
+    // cached response should be used for the very first time
+    this.transferState.remove(key);
     return of(
       new HttpResponse({
         body: cachedResponse.body,
@@ -112,8 +113,6 @@ export class RehydrationInterceptorService implements HttpInterceptor {
     return next.handle(req).pipe(
       tap((event) => {
         if (event instanceof HttpResponse && event.status === httpStatus.OK) {
-          event.body.ssrFetched = true;
-
           /*
            * Only transferring body because http responses are not POJO and
            * would require a custom serialization/deserialization solution

@@ -1,3 +1,4 @@
+# this is an example smocker mock file that returns partial project models
 - request:
     method: GET
     path: /projects

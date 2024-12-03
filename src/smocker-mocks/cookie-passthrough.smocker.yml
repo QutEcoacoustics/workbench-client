@@ -1,0 +1,11 @@
+# we can use the cookie-passthrough smocker endpoints to assert that a certain
+# cookie is present in the request
+# smocker will respond with a 200 status code to represent a passed assertion
+# if the cookie is not present, smocker will respond with a 400 status code
+request:
+  method: GET
+  path: /projects/200413
+
+  headers:
+    matcher:
+      Cookie: "cookie1=value1; cookie2=value2"
