@@ -10,8 +10,8 @@ import {
   ViewChildren,
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
-import { googleMapsLoaded } from "@helpers/embedScript/embedGoogleMaps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { MapsService } from "@services/maps/maps.service";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 
@@ -57,6 +57,10 @@ export class MapComponent
   extends withUnsubscribe()
   implements OnChanges, AfterViewChecked
 {
+  public constructor(private maps: MapsService) {
+    super();
+  }
+
   @ViewChild(GoogleMap, { static: false }) public map: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) public info: MapInfoWindow;
   @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
@@ -75,7 +79,7 @@ export class MapComponent
   private updateMap: boolean;
 
   public get googleMapsLoaded(): boolean {
-    return googleMapsLoaded();
+    return this.maps.googleMapsLoaded();
   }
 
   public ngOnChanges(): void {
