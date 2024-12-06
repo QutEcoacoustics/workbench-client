@@ -1,0 +1,33 @@
+@if (hasMarkers && googleMapsLoaded === true) {
+<google-map
+  height="100%"
+  width="100%"
+  [options]="mapOptions"
+  (mapClick)="markerOptions?.draggable && newLocation.emit($event)"
+>
+  <map-marker
+    #markerRef="mapMarker"
+    *ngFor="let individualMarkerOptions of validMarkersOptions"
+    [options]="markerOptions"
+    [position]="individualMarkerOptions.position"
+    (mapDragend)="newLocation.emit($event)"
+    (mapMouseover)="addMapMarkerInfo(individualMarkerOptions, markerRef)"
+    (positionChanged)="focusMarkers()"
+    (markerInitialized)="focusMarkers()"
+  ></map-marker>
+  <map-info-window>{{ infoContent }}</map-info-window>
+</google-map>
+} @else {
+<div class="map-placeholder">
+  @if (googleMapsLoaded === false) {
+  <p class="text-danger">Failure loading map</p>
+  <p class="error-hint">
+    Please ensure your ad-block is not blocking Google Maps
+  </p>
+  } @else if (googleMapsLoaded === null) {
+  <baw-loading></baw-loading>
+  } @else if (!hasMarkers) {
+  <p>No locations specified</p>
+  }
+</div>
+}

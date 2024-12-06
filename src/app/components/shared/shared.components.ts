@@ -58,6 +58,7 @@ import { ZonedDateTimeComponent } from "./datetime-formats/datetime/zoned-dateti
 import { DatetimeComponent } from "./datetime-formats/datetime/datetime/datetime.component";
 import { AudioEventCardModule } from "./audio-event-card/annotation-event-card.module";
 import { IfLoggedInComponent } from "./can/can.component";
+import { MapModule } from "./map/map.module";
 
 export const sharedComponents = [
   AnnotationDownloadComponent,
@@ -115,6 +116,7 @@ export const sharedModules = [
   InputModule,
   ItemsModule,
   LoadingModule,
+  MapModule,
   MenuModule,
   ModelCardsModule,
   AudioEventCardModule,
