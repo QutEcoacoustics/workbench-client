@@ -35,7 +35,22 @@ export class MapsService {
   private static embeddedService = false;
 
   public mapsState = signal<MapState>(MapState.NotLoaded);
+  private promises: {
+    res: (...args: any) => void;
+    rej: (...args: any) => void;
+  }[] = [];
   private googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js";
+
+  public loadedAsync(): Promise<unknown> {
+    if (this.mapsState() === MapState.Loaded) {
+      return Promise.resolve();
+    }
+
+    const newPromise = new Promise((res, rej) => {
+      this.promises.push({ res, rej });
+    });
+    return newPromise;
+  }
 
   /**
    * Embed google maps script into the document. This makes use of the document
@@ -65,31 +80,37 @@ export class MapsService {
     node.src = googleMapsUrl;
 
     node.addEventListener("error", () => {
-      this.mapsState.set(MapState.Failed);
+      this.handleGoogleMapsFailed();
     });
 
     document.head.appendChild(node);
 
     // Detect when google maps properly embeds
     const instantiationRetries = 10;
+    let count = 0;
 
-    await new Promise<void>((resolve, reject) => {
-      let count = 0;
+    const mapLoaded = () => {
+      if (typeof google !== "undefined") {
+        this.handleGoogleMapsLoaded();
+      } else if (count > instantiationRetries) {
+        console.error("Failed to load google maps.");
+        this.handleGoogleMapsFailed();
+      } else {
+        count++;
+        setTimeout(() => mapLoaded(), defaultDebounceTime);
+      }
+    };
 
-      const mapLoaded = () => {
-        if (typeof google !== "undefined") {
-          this.mapsState.set(MapState.Loaded);
-          resolve();
-        } else if (count > instantiationRetries) {
-          console.error("Failed to load google maps.");
-          reject("Google Maps API Bundle took too long to download.");
-        } else {
-          count++;
-          setTimeout(() => mapLoaded(), defaultDebounceTime);
-        }
-      };
+    mapLoaded();
+  }
 
-      mapLoaded();
-    });
+  private handleGoogleMapsLoaded(): void {
+    this.mapsState.set(MapState.Loaded);
+    this.promises.forEach(({ res }) => res());
+  }
+
+  private handleGoogleMapsFailed(): void {
+    this.mapsState.set(MapState.Failed);
+    this.promises.forEach(({ rej }) => rej());
   }
 }
