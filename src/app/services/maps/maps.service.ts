@@ -9,14 +9,17 @@ export enum MapState {
   Failed,
 }
 
+interface WrappedPromise {
+  promise: Promise<unknown>;
+  resolve: (...args: any) => void;
+  reject: (...args: any) => void;
+}
+
 @Injectable({ providedIn: "root" })
 export class MapsService {
   // By embedding the google maps script in the services constructor, we can
   // start loading the script as soon as the service is injected, and we don't
   // have to wait for the underlying component to be created.
-  //
-  // The underlying component can subscribe to the mapsState signal to know
-  // when the google maps script has been loaded.
   public constructor(@Inject(IS_SERVER_PLATFORM) private isServer: boolean) {
     // while angular services are singletons, it is still possible to create
     // multiple instances of the service with hacky code
@@ -26,6 +29,16 @@ export class MapsService {
     // in normal use, but is defensive programming against misuse.
     if (!MapsService.embeddedService) {
       MapsService.embeddedService = true;
+
+      let resolver: (value: unknown) => void;
+      let rejector: (reason?: unknown) => void;
+      const promise = new Promise((res, rej) => {
+        resolver = res;
+        rejector = rej;
+      });
+
+      this.loadPromise = { promise, resolve: resolver, reject: rejector };
+
       this.embedGoogleMaps();
     } else {
       console.warn("Google Maps Service already embedded.");
@@ -35,21 +48,17 @@ export class MapsService {
   private static embeddedService = false;
 
   public mapsState = signal<MapState>(MapState.NotLoaded);
-  private promises: {
-    res: (...args: any) => void;
-    rej: (...args: any) => void;
-  }[] = [];
+  private loadPromise: WrappedPromise;
   private googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js";
 
-  public loadedAsync(): Promise<unknown> {
+  public loadAsync(): Promise<unknown> {
     if (this.mapsState() === MapState.Loaded) {
       return Promise.resolve();
+    } else if (this.mapsState() === MapState.Failed) {
+      return Promise.reject();
     }
 
-    const newPromise = new Promise((res, rej) => {
-      this.promises.push({ res, rej });
-    });
-    return newPromise;
+    return this.loadPromise.promise;
   }
 
   /**
@@ -106,11 +115,11 @@ export class MapsService {
 
   private handleGoogleMapsLoaded(): void {
     this.mapsState.set(MapState.Loaded);
-    this.promises.forEach(({ res }) => res());
+    this.loadPromise.resolve();
   }
 
   private handleGoogleMapsFailed(): void {
     this.mapsState.set(MapState.Failed);
-    this.promises.forEach(({ rej }) => rej());
+    this.loadPromise.reject();
   }
 }
