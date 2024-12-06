@@ -1,24 +1,41 @@
-import { Injectable } from "@angular/core";
-import { defaultDebounceTime } from "src/app/app.helper";
+import { Inject, Injectable, signal } from "@angular/core";
+import { defaultDebounceTime, IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
+
+export enum MapState {
+  NotLoaded,
+  Loading,
+  Loaded,
+  Failed,
+}
 
 @Injectable({ providedIn: "root" })
 export class MapsService {
-  public constructor() {
-    this.embedGoogleMaps();
-  }
-
-  private googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js";
-
-  public googleMapsLoaded(): boolean {
-    let isDefined = false;
-    try {
-      isDefined = !!google;
-    } catch (err) {
-      console.error(err);
+  // By embedding the google maps script in the services constructor, we can
+  // start loading the script as soon as the service is injected, and we don't
+  // have to wait for the underlying component to be created.
+  //
+  // The underlying component can subscribe to the mapsState signal to know
+  // when the google maps script has been loaded.
+  public constructor(@Inject(IS_SERVER_PLATFORM) private isServer: boolean) {
+    // while angular services are singletons, it is still possible to create
+    // multiple instances of the service with hacky code
+    // e.g. new MapsService()
+    // This is a safeguard to prevent multiple instances of the service
+    // from embedding the google maps script. It should not be triggered
+    // in normal use, but is defensive programming against misuse.
+    if (!MapsService.embeddedService) {
+      MapsService.embeddedService = true;
+      this.embedGoogleMaps();
+    } else {
+      console.warn("Google Maps Service already embedded.");
     }
-    return isDefined;
   }
+
+  private static embeddedService = false;
+
+  public mapsState = signal<MapState>(MapState.NotLoaded);
+  private googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js";
 
   /**
    * Embed google maps script into the document. This makes use of the document
@@ -27,14 +44,18 @@ export class MapsService {
    * @param key Google maps API key
    */
   private async embedGoogleMaps(key?: string): Promise<void> {
-    // Do not insert during testing
-    if (environment.testing) {
+    // TODO: during SSR we might be able to render a static image of the map
+    // using the StaticMapService
+    // https://developers.google.com/maps/documentation/maps-static/overview
+    if (environment.testing || this.isServer) {
       return;
     }
 
+    this.mapsState.set(MapState.Loading);
+
     let googleMapsUrl = this.googleMapsBaseUrl;
     if (key) {
-      googleMapsUrl += "?key=" + key;
+      googleMapsUrl += `?key=${key}&callback=initMap`;
     }
 
     const node: HTMLScriptElement = document.createElement("script");
@@ -42,33 +63,33 @@ export class MapsService {
     node.type = "text/javascript";
     node.async = true;
     node.src = googleMapsUrl;
-    document.getElementsByTagName("head")[0].appendChild(node);
+
+    node.addEventListener("error", () => {
+      this.mapsState.set(MapState.Failed);
+    });
+
+    document.head.appendChild(node);
 
     // Detect when google maps properly embeds
+    const instantiationRetries = 10;
+
     await new Promise<void>((resolve, reject) => {
       let count = 0;
 
-      function mapLoaded(): void {
+      const mapLoaded = () => {
         if (typeof google !== "undefined") {
+          this.mapsState.set(MapState.Loaded);
           resolve();
-        } else if (count > 10) {
+        } else if (count > instantiationRetries) {
           console.error("Failed to load google maps.");
           reject("Google Maps API Bundle took too long to download.");
         } else {
           count++;
           setTimeout(() => mapLoaded(), defaultDebounceTime);
         }
-      }
+      };
 
       mapLoaded();
     });
-  }
-
-  /**
-   * Remove the google maps script from the document. This should
-   * only be accessed by unit tests.
-   */
-  private destroyGoogleMaps(): void {
-    document.getElementById("google-maps").remove();
   }
 }

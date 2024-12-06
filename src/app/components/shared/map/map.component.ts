@@ -1,6 +1,7 @@
 import {
   AfterViewChecked,
   Component,
+  computed,
   EventEmitter,
   Input,
   OnChanges,
@@ -11,7 +12,7 @@ import {
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { MapsService } from "@services/maps/maps.service";
+import { MapsService, MapState } from "@services/maps/maps.service";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 
@@ -21,48 +22,19 @@ import { takeUntil } from "rxjs/operators";
  */
 @Component({
   selector: "baw-map",
-  template: `
-    <!-- Display map -->
-    <ng-container *ngIf="hasMarkers && googleMapsLoaded">
-      <google-map
-        height="100%"
-        width="100%"
-        [options]="mapOptions"
-        (mapClick)="markerOptions?.draggable && newLocation.emit($event)"
-      >
-        <map-marker
-          *ngFor="let marker of filteredMarkers"
-          [options]="markerOptions"
-          [position]="marker.position"
-          (mapDragend)="newLocation.emit($event)"
-        >
-        </map-marker>
-        <map-info-window>{{ infoContent }}</map-info-window>
-      </google-map>
-    </ng-container>
-
-    <!-- Map is loading -->
-    <ng-container *ngIf="hasMarkers && !googleMapsLoaded">
-      <div class="map-placeholder"><p>Map loading</p></div>
-    </ng-container>
-
-    <!-- No map markers to display -->
-    <ng-container *ngIf="!hasMarkers">
-      <div class="map-placeholder"><p>No locations specified</p></div>
-    </ng-container>
-  `,
-  styleUrls: ["./map.component.scss"],
+  templateUrl: "./map.component.html",
+  styleUrl: "./map.component.scss",
 })
 export class MapComponent
   extends withUnsubscribe()
   implements OnChanges, AfterViewChecked
 {
-  public constructor(private maps: MapsService) {
+  public constructor(protected maps: MapsService) {
     super();
   }
 
-  @ViewChild(GoogleMap, { static: false }) public map: GoogleMap;
-  @ViewChild(MapInfoWindow, { static: false }) public info: MapInfoWindow;
+  @ViewChild(GoogleMap) public map: GoogleMap;
+  @ViewChild(MapInfoWindow) public info: MapInfoWindow;
   @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
 
   @Input() public markers: List<MapMarkerOptions>;
@@ -76,24 +48,24 @@ export class MapComponent
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public mapOptions: MapOptions = { mapTypeId: "satellite" };
   public bounds: google.maps.LatLngBounds;
+  protected googleMapsLoaded = computed(
+    () => this.maps.mapsState() === MapState.Loaded
+  );
+  protected mapStates = MapState;
   private updateMap: boolean;
-
-  public get googleMapsLoaded(): boolean {
-    return this.maps.googleMapsLoaded();
-  }
 
   public ngOnChanges(): void {
     this.hasMarkers = false;
     this.filteredMarkers = [];
 
     // Google global may not be declared
-    if (!this.googleMapsLoaded) {
+    if (this.maps.mapsState() !== MapState.Loaded) {
       return;
     }
 
     // Calculate pin boundaries so that map can be auto-focused properly
     this.bounds = new google.maps.LatLngBounds();
-    this.markers?.forEach((marker): void => {
+    this.markers?.forEach((marker) => {
       if (isMarkerValid(marker)) {
         this.hasMarkers = true;
         this.filteredMarkers.push(marker);
@@ -114,12 +86,13 @@ export class MapComponent
     // Setup info windows for each marker
     this.mapMarkers?.forEach((marker, index) => {
       marker.mapMouseover.pipe(takeUntil(this.unsubscribe)).subscribe({
-        next: (): void => {
+        next: () => {
           this.infoContent = this.filteredMarkers[index].label as string;
           this.info.open(marker);
         },
-        error: (): void =>
-          console.error("Failed to create info content for map marker"),
+        error: () => {
+          console.error("Failed to create info content for map marker");
+        },
       });
     });
   }

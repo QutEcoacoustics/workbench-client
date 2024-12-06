@@ -1,0 +1,29 @@
+@if (hasMarkers && googleMapsLoaded()) {
+<ng-container *ngIf="hasMarkers && googleMapsLoaded()">
+  <google-map
+    height="100%"
+    width="100%"
+    [options]="mapOptions"
+    (mapClick)="markerOptions?.draggable && newLocation.emit($event)"
+  >
+    <map-marker
+      *ngFor="let marker of filteredMarkers"
+      [options]="markerOptions"
+      [position]="marker.position"
+      (mapDragend)="newLocation.emit($event)"
+    >
+    </map-marker>
+    <map-info-window>{{ infoContent }}</map-info-window>
+  </google-map>
+</ng-container>
+}
+
+<div class="map-placeholder">
+  @if(googleMapsLoaded()) {
+  <p>Map loading</p>
+  } @else if (maps.mapsState() === mapStates.Failed) {
+  <p class="text-danger">Failure loading maps</p>
+  } @else if (!hasMarkers) {
+  <p>No locations specified</p>
+  }
+</div>

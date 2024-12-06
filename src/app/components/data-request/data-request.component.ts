@@ -19,14 +19,13 @@ import schema from "./data-request.schema.json";
     <p>To download a standard CSV of annotations</p>
 
     <ol>
-      <li>Open the site or point page you're interested in</li>
+      <li>Open the project, site, or point page you're interested in</li>
       <li>
         Use the <i>Download Annotations</i> button to download annotations
       </li>
     </ol>
 
     <baw-form
-      title="Custom Data Request"
       submitLabel="Submit"
       [model]="model"
       [fields]="fields"
