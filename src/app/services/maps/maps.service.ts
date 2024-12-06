@@ -9,7 +9,7 @@ export enum MapState {
   Failed,
 }
 
-interface WrappedPromise {
+interface SharedPromise  {
   promise: Promise<unknown>;
   resolve: (...args: any) => void;
   reject: (...args: any) => void;
@@ -47,11 +47,19 @@ export class MapsService {
 
   private static embeddedService = false;
 
-  public mapsState = signal<MapState>(MapState.NotLoaded);
-  private loadPromise: WrappedPromise;
-  private googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js";
+  public readonly mapsState = signal<MapState>(MapState.NotLoaded);
+  private readonly loadPromise: SharedPromise ;
+  private readonly googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js";
 
   public loadAsync(): Promise<unknown> {
+    // if we have previously loaded the maps, return immediately with the
+    // correct resolved/rejected state
+    //
+    // we obviously can't return "this.loadPromise" directly as it'd never
+    // resolve because the res() and rej() functions would not be called because
+    // the maps loaded state has already settled
+    // (promises only resolve/reject once and do not emit their last value
+    // to new awaiters)
     if (this.mapsState() === MapState.Loaded) {
       return Promise.resolve();
     } else if (this.mapsState() === MapState.Failed) {
