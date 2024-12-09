@@ -1,4 +1,5 @@
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import { MockConfigModule } from "@services/config/configMock.module";
 import { MapsService } from "./maps.service";
 
 describe("MapsService", () => {
@@ -6,6 +7,7 @@ describe("MapsService", () => {
 
   const createService = createServiceFactory({
     service: MapsService,
+    imports: [MockConfigModule],
   });
 
   beforeEach(() => {
