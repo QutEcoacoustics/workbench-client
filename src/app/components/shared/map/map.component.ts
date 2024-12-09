@@ -36,7 +36,7 @@ export class MapComponent
 
     // we use "finally" here so that we will trigger a change detection cycle
     // if Google Maps successfully or unsuccessfully embeds
-    this.mapService.loadAsync().finally(() => this.ngOnChanges());
+    this.mapService.loadAsync().finally(() => this.updateMapMarkers());
   }
 
   @ViewChild(GoogleMap) public map: GoogleMap;
@@ -72,16 +72,7 @@ export class MapComponent
       return;
     }
 
-    // Calculate pin boundaries so that map can be auto-focused properly
-    this.bounds = new google.maps.LatLngBounds();
-    this.markers?.forEach((marker) => {
-      if (isMarkerValid(marker)) {
-        this.hasMarkers = true;
-        this.filteredMarkers.push(marker);
-        this.bounds.extend(marker.position);
-      }
-    });
-    this.updateMap = true;
+    this.updateMapMarkers();
   }
 
   public ngAfterViewChecked(): void {
@@ -106,6 +97,19 @@ export class MapComponent
       });
     });
   }
+
+  private updateMapMarkers(): void {
+    // Calculate pin boundaries so that map can be auto-focused properly
+    this.bounds = new google.maps.LatLngBounds();
+    this.markers?.forEach((marker) => {
+      if (isMarkerValid(marker)) {
+        this.hasMarkers = true;
+        this.filteredMarkers.push(marker);
+        this.bounds.extend(marker.position);
+      }
+    });
+    this.updateMap = true;
+  }
 }
 
 /**
@@ -124,7 +128,7 @@ function isMarkerValid(marker: MapMarkerOptions): boolean {
  * Handles sanitization of map markers so change detection will run properly
  */
 export function sanitizeMapMarkers(
-  markers: MapMarkerOptions | MapMarkerOptions[]
+  markers: MapMarkerOptions | MapMarkerOptions[],
 ): List<MapMarkerOptions> {
   const output: MapMarkerOptions[] = [];
 
