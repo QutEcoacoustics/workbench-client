@@ -12,7 +12,7 @@ import schema from "./data-request.schema.json";
 @Component({
   selector: "baw-data-request",
   template: `
-    <h1>Data Request</h1>
+    <h1>Custom Data Request</h1>
 
     <h2>Annotations Download</h2>
 
