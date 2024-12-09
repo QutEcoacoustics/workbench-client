@@ -7,10 +7,8 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import {
-  MapMarkerOptions,
-  sanitizeMapMarkers,
-} from "@shared/map/map.component";
+import { MapMarkerOptions } from "@services/maps/maps.service";
+import { sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -73,11 +71,11 @@ class SiteComponent extends PageComponent implements OnInit {
 
   private filterByDates(
     direction: Direction,
-    filters: Filters<AudioRecording> = {}
+    filters: Filters<AudioRecording> = {},
   ): Observable<AudioRecording[]> {
     return this.audioRecordingsApi.filterBySite(
       { sorting: { orderBy: "recordedDate", direction }, ...filters },
-      this.site
+      this.site,
     );
   }
 }

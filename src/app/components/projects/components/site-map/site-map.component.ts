@@ -5,10 +5,8 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
-import {
-  MapMarkerOptions,
-  sanitizeMapMarkers,
-} from "@shared/map/map.component";
+import { MapMarkerOptions } from "@services/maps/maps.service";
+import { sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
 import { merge, Observable } from "rxjs";
 import { switchMap, takeUntil } from "rxjs/operators";
@@ -43,7 +41,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
       this.getFilter(filters, this.project, this.region)
         .pipe(
           switchMap((models: Site[]) => this.getMarkers(models)),
-          takeUntil(this.unsubscribe)
+          takeUntil(this.unsubscribe),
         )
         .subscribe({
           next: (sites: Site[]) => this.pushMarkers(sites),
@@ -57,7 +55,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   private getFilter(
     filters: Filters<ISite>,
     project: Project,
-    region?: Region
+    region?: Region,
   ): Observable<Site[]> {
     return this.region
       ? this.sitesApi.filterByRegion(filters, project, region)
@@ -74,7 +72,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     // Can skip first page because initial filter produces the results
     for (let page = 2; page <= numPages; page++) {
       observables.push(
-        this.getFilter({ paging: { page } }, this.project, this.region)
+        this.getFilter({ paging: { page } }, this.project, this.region),
       );
     }
 
@@ -87,7 +85,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
    */
   private pushMarkers(sites: Site[]): void {
     this.markers = this.markers.concat(
-      sanitizeMapMarkers(sites.map((site) => site.getMapMarker()))
+      sanitizeMapMarkers(sites.map((site) => site.getMapMarker())),
     );
   }
 }

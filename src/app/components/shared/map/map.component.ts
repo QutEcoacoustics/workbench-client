@@ -11,12 +11,14 @@ import {
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { GoogleMapsState, MapsService } from "@services/maps/maps.service";
+import {
+  GoogleMapsState,
+  MapMarkerOptions,
+  MapOptions,
+  MapsService,
+} from "@services/maps/maps.service";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
-
-export type MapMarkerOptions = google.maps.MarkerOptions;
-export type MapOptions = google.maps.MapOptions;
 
 /**
  * Google Maps Wrapper Component

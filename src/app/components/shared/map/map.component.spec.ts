@@ -15,8 +15,8 @@ import { modelData } from "@test/helpers/faker";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { MapsService } from "@services/maps/maps.service";
-import { MapMarkerOptions, MapComponent } from "./map.component";
+import { MapMarkerOptions, MapsService } from "@services/maps/maps.service";
+import { MapComponent } from "./map.component";
 
 // Disabled because google maps bundle interferes with other tests
 describe("MapComponent", () => {
@@ -107,7 +107,7 @@ describe("MapComponent", () => {
     });
   });
 
-  xdescribe("markers", () => {
+  describe("markers", () => {
     it("should display map", () => {
       const markers = [new Site(generateSite()).getMapMarker()];
 
@@ -133,7 +133,7 @@ describe("MapComponent", () => {
 
     it("should display multiple markers", () => {
       const markers = modelData.randomArray(3, 3, () =>
-        new Site(generateSite()).getMapMarker()
+        new Site(generateSite()).getMapMarker(),
       );
       setup(markers);
 

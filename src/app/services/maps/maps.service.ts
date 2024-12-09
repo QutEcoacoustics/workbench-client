@@ -10,6 +10,9 @@ export enum GoogleMapsState {
   Failed,
 }
 
+export type MapMarkerOptions = google.maps.MarkerOptions;
+export type MapOptions = google.maps.MapOptions;
+
 interface SharedPromise {
   promise: Promise<unknown>;
   resolve: (...args: void[]) => void;
