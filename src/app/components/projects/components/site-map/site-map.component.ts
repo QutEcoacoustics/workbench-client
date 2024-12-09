@@ -42,11 +42,11 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     if ((this.project || this.region) && !this.sitesSubset?.length) {
       this.getFilter(filters, this.project, this.region)
         .pipe(
-          switchMap((models) => this.getMarkers(models)),
+          switchMap((models: Site[]) => this.getMarkers(models)),
           takeUntil(this.unsubscribe)
         )
         .subscribe({
-          next: (sites) => this.pushMarkers(sites),
+          next: (sites: Site[]) => this.pushMarkers(sites),
           error: () => this.pushMarkers([]),
         });
     }
@@ -58,7 +58,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     filters: Filters<ISite>,
     project: Project,
     region?: Region
-  ) {
+  ): Observable<Site[]> {
     return this.region
       ? this.sitesApi.filterByRegion(filters, project, region)
       : this.sitesApi.filter(filters, project);
@@ -67,7 +67,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   /**
    * Retrieve map markers from api
    */
-  private getMarkers(sites: Site[]) {
+  private getMarkers(sites: Site[]): Observable<Site[]> {
     const numPages = sites?.[0]?.getMetadata()?.paging?.maxPage || 1;
     const observables: Observable<Site[]>[] = [];
 
@@ -85,7 +85,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   /**
    * Push new sites to markers list
    */
-  private pushMarkers(sites: Site[]) {
+  private pushMarkers(sites: Site[]): void {
     this.markers = this.markers.concat(
       sanitizeMapMarkers(sites.map((site) => site.getMapMarker()))
     );

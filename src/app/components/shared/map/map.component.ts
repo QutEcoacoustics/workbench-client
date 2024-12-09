@@ -32,15 +32,12 @@ export class MapComponent
   extends withUnsubscribe()
   implements OnChanges, AfterViewChecked
 {
-  public constructor(
-    private mapService: MapsService,
-    private cdr: ChangeDetectorRef
-  ) {
+  public constructor(private mapService: MapsService) {
     super();
 
     // we use "finally" here so that we will trigger a change detection cycle
     // if Google Maps successfully or unsuccessfully embeds
-    this.mapService.loadAsync().finally(() => this.cdr.markForCheck());
+    this.mapService.loadAsync().finally(() => this.ngOnChanges());
   }
 
   @ViewChild(GoogleMap) public map: GoogleMap;
@@ -69,18 +66,18 @@ export class MapComponent
   }
 
   public ngOnChanges(): void {
+    this.hasMarkers = false;
+    this.filteredMarkers = [];
+
     if (!this.googleMapsLoaded) {
       return;
     }
-
-    this.hasMarkers = this.markers?.size > 0;
-    this.filteredMarkers = [];
 
     // Calculate pin boundaries so that map can be auto-focused properly
     this.bounds = new google.maps.LatLngBounds();
     this.markers?.forEach((marker) => {
       if (isMarkerValid(marker)) {
-        this.markersLoaded = true;
+        this.hasMarkers = true;
         this.filteredMarkers.push(marker);
         this.bounds.extend(marker.position);
       }
@@ -89,7 +86,7 @@ export class MapComponent
   }
 
   public ngAfterViewChecked(): void {
-    if (!this.map || !this.updateMap) {
+    if (!this.map || !this.hasMarkers || !this.updateMap) {
       return;
     }
 
