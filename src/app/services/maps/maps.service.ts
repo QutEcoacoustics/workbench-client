@@ -3,7 +3,7 @@ import { ConfigService } from "@services/config/config.service";
 import { defaultDebounceTime, IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
 
-enum MapState {
+export enum GoogleMapsState {
   NotLoaded,
   Loading,
   Loaded,
@@ -51,7 +51,7 @@ export class MapsService {
 
   private static embeddedService = false;
 
-  public mapsState: MapState = MapState.NotLoaded;
+  public mapsState: GoogleMapsState = GoogleMapsState.NotLoaded;
   private readonly loadPromise: SharedPromise;
 
   // using loading=async requests a version of the google maps api that does not
@@ -69,9 +69,9 @@ export class MapsService {
     // the maps loaded state has already settled
     // (promises only resolve/reject once and do not emit their last value
     // to new awaiters)
-    if (this.mapsState === MapState.Loaded) {
+    if (this.mapsState === GoogleMapsState.Loaded) {
       return Promise.resolve();
-    } else if (this.mapsState === MapState.Failed) {
+    } else if (this.mapsState === GoogleMapsState.Failed) {
       return Promise.reject();
     }
 
@@ -92,7 +92,7 @@ export class MapsService {
       return;
     }
 
-    this.mapsState = MapState.Loading;
+    this.mapsState = GoogleMapsState.Loading;
 
     let googleMapsUrl = this.googleMapsBaseUrl;
     if (key) {
@@ -135,13 +135,13 @@ export class MapsService {
   }
 
   private handleGoogleMapsLoaded(): void {
-    this.mapsState = MapState.Loaded;
+    this.mapsState = GoogleMapsState.Loaded;
     this.loadPromise.resolve();
   }
 
   private handleGoogleMapsFailed(): void {
     console.error("Failed to load google maps.");
-    this.mapsState = MapState.Failed;
+    this.mapsState = GoogleMapsState.Failed;
     this.loadPromise.reject();
   }
 }

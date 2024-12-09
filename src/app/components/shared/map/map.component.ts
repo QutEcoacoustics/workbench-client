@@ -1,5 +1,6 @@
 import {
   AfterViewChecked,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -11,7 +12,7 @@ import {
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { MapsService } from "@services/maps/maps.service";
+import { GoogleMapsState, MapsService } from "@services/maps/maps.service";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 
@@ -31,13 +32,15 @@ export class MapComponent
   extends withUnsubscribe()
   implements OnChanges, AfterViewChecked
 {
-  public constructor(protected maps: MapsService) {
+  public constructor(
+    private maps: MapsService,
+    private cdr: ChangeDetectorRef
+  ) {
     super();
 
     this.maps
       .loadAsync()
-      .then(() => (this.mapsLoaded = true))
-      .catch(() => (this.mapsFailed = true));
+      .finally(() => this.cdr.markForCheck());
   }
 
   @ViewChild(GoogleMap) public map: GoogleMap;
@@ -56,12 +59,18 @@ export class MapComponent
   public mapOptions: MapOptions = { mapTypeId: "satellite" };
   public bounds: google.maps.LatLngBounds;
   public markersLoaded = false;
-  protected mapsLoaded = false;
-  protected mapsFailed = false;
   private updateMap: boolean;
 
+  public get googleMapsLoaded(): boolean {
+    return this.maps.mapsState === GoogleMapsState.Loaded;
+  }
+
+  public get googleMapsFailed(): boolean {
+    return this.maps.mapsState === GoogleMapsState.Failed;
+  }
+
   public ngOnChanges(): void {
-    if (!this.mapsLoaded) {
+    if (!this.googleMapsLoaded) {
       return;
     }
 

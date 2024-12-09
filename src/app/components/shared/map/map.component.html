@@ -1,4 +1,4 @@
-@if (mapsLoaded && mapsLoaded && markersLoaded) {
+@if (googleMapsLoaded && markersLoaded) {
 <google-map
   height="100%"
   width="100%"
@@ -15,12 +15,12 @@
 </google-map>
 } @else {
 <div class="map-placeholder">
-  @if (mapsFailed) {
+  @if (googleMapsFailed) {
   <p class="text-danger">Failure loading map</p>
   <p class="error-hint">
     Please ensure your ad-block is not blocking Google Maps
   </p>
-  } @else if(!mapsLoaded || !markersLoaded) {
+  } @else if(!googleMapsLoaded || !markersLoaded) {
   <baw-loading></baw-loading>
   } @else if (!hasMarkers) {
   <p>No locations specified</p>
