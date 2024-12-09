@@ -21,7 +21,7 @@ import { takeUntil } from "rxjs/operators";
 @Component({
   selector: "baw-site",
   templateUrl: "./site.component.html",
-  styleUrls: ["./site.component.scss"],
+  styleUrl: "./site.component.scss",
 })
 class SiteComponent extends PageComponent implements OnInit {
   @Input() public project: Project;

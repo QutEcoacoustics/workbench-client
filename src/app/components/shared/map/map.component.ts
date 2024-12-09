@@ -33,14 +33,14 @@ export class MapComponent
   implements OnChanges, AfterViewChecked
 {
   public constructor(
-    private maps: MapsService,
+    private mapService: MapsService,
     private cdr: ChangeDetectorRef
   ) {
     super();
 
-    this.maps
-      .loadAsync()
-      .finally(() => this.cdr.markForCheck());
+    // we use "finally" here so that we will trigger a change detection cycle
+    // if Google Maps successfully or unsuccessfully embeds
+    this.mapService.loadAsync().finally(() => this.cdr.markForCheck());
   }
 
   @ViewChild(GoogleMap) public map: GoogleMap;
@@ -58,15 +58,14 @@ export class MapComponent
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public mapOptions: MapOptions = { mapTypeId: "satellite" };
   public bounds: google.maps.LatLngBounds;
-  public markersLoaded = false;
-  private updateMap: boolean;
+  private updateMap: boolean = false;
 
   public get googleMapsLoaded(): boolean {
-    return this.maps.mapsState === GoogleMapsState.Loaded;
+    return this.mapService.mapsState === GoogleMapsState.Loaded;
   }
 
   public get googleMapsFailed(): boolean {
-    return this.maps.mapsState === GoogleMapsState.Failed;
+    return this.mapService.mapsState === GoogleMapsState.Failed;
   }
 
   public ngOnChanges(): void {
@@ -90,13 +89,14 @@ export class MapComponent
   }
 
   public ngAfterViewChecked(): void {
-    if (!this.map || !this.markersLoaded || !this.updateMap) {
+    if (!this.map || !this.updateMap) {
       return;
     }
 
     this.updateMap = false;
     this.map.fitBounds(this.bounds);
     this.map.panToBounds(this.bounds);
+
     // Setup info windows for each marker
     this.mapMarkers?.forEach((marker, index) => {
       marker.mapMouseover.pipe(takeUntil(this.unsubscribe)).subscribe({
