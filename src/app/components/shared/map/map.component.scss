@@ -1,8 +1,14 @@
 .map-placeholder {
-  border: 1px solid black;
   display: flex;
-  height: 100%;
-  min-height: 400px;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  border: 1px solid black;
+  height: 100%;
+  min-height: 400px;
+}
+
+.error-hint {
+  text-align: center;
 }
