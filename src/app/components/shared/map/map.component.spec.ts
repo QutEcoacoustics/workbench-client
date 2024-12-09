@@ -44,7 +44,7 @@ describe("MapComponent", () => {
     return spectator.query(LoadingComponent);
   }
 
-  function placeholderElement(): HTMLDivElement {
+  function placeholderElement() {
     return spectator.query<HTMLDivElement>("div.map-placeholder");
   }
 

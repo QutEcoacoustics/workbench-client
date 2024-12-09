@@ -23,7 +23,7 @@ export class MapsService {
   // have to wait for the underlying component to be created.
   public constructor(
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
-    private config: ConfigService
+    private config: ConfigService,
   ) {
     // while angular services are singletons, it is still possible to create
     // multiple instances of the service with hacky code
@@ -43,7 +43,7 @@ export class MapsService {
 
       this.loadPromise = { promise, resolve: resolver, reject: rejector };
 
-      this.embedGoogleMaps(this.config.keys.googleMaps);
+      this.embedGoogleMaps();
     } else {
       console.warn("Google Maps Service already embedded.");
     }
@@ -53,12 +53,6 @@ export class MapsService {
 
   public mapsState: GoogleMapsState = GoogleMapsState.NotLoaded;
   private readonly loadPromise: SharedPromise;
-
-  // using loading=async requests a version of the google maps api that does not
-  // block the main thread while loading
-  // this can improve performance and removes a warning from the dev console
-  private readonly googleMapsBaseUrl =
-    "https://maps.googleapis.com/maps/api/js?loading=async";
 
   public loadAsync(): Promise<unknown> {
     // if we have previously loaded the maps, return immediately with the
@@ -84,7 +78,7 @@ export class MapsService {
    *
    * @param key Google maps API key
    */
-  private async embedGoogleMaps(key: string): Promise<void> {
+  private async embedGoogleMaps(): Promise<void> {
     // TODO: during SSR we might be able to render a static image of the map
     // using the StaticMapService
     // https://developers.google.com/maps/documentation/maps-static/overview
@@ -94,13 +88,7 @@ export class MapsService {
 
     this.mapsState = GoogleMapsState.Loading;
 
-    let googleMapsUrl = this.googleMapsBaseUrl;
-    if (key) {
-      // TODO: migrate to google.maps.AdvancedMarkerElement once we bump the
-      // Angular version
-      // https://developers.google.com/maps/documentation/javascript/advanced-markers/migration
-      googleMapsUrl += `&key=${key}`;
-    }
+    const googleMapsUrl = this.googleMapsBundleUrl();
 
     const node: HTMLScriptElement = document.createElement("script");
     node.addEventListener("error", () => {
@@ -132,6 +120,26 @@ export class MapsService {
     };
 
     mapLoaded();
+  }
+
+  private googleMapsBundleUrl(): string {
+    // using loading=async requests a version of the google maps api that does not
+    // block the main thread while loading
+    // this can improve performance and removes a warning from the dev console
+    const googleMapsBaseUrl =
+      "https://maps.googleapis.com/maps/api/js?loading=async";
+
+    const mapsKey = this.config.keys.googleMaps;
+
+    let googleMapsUrl = googleMapsBaseUrl;
+    if (mapsKey) {
+      // TODO: migrate to google.maps.AdvancedMarkerElement once we bump the
+      // Angular version
+      // https://developers.google.com/maps/documentation/javascript/advanced-markers/migration
+      googleMapsUrl += `&key=${mapsKey}`;
+    }
+
+    return googleMapsUrl;
   }
 
   private handleGoogleMapsLoaded(): void {
