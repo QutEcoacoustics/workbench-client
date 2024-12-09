@@ -61,7 +61,8 @@
       "cyrilletuzi.angular-schematics",
       "dbaeumer.vscode-eslint",
       "streetsidesoftware.code-spell-checker",
-      "xabikos.jasminesnippets"
+      "xabikos.jasminesnippets",
+      "aaron-bond.better-comments"
     ]
   }
 }
