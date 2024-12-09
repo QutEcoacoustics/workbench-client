@@ -1,7 +1,6 @@
 import {
   AfterViewChecked,
   Component,
-  computed,
   EventEmitter,
   Input,
   OnChanges,
@@ -12,9 +11,12 @@ import {
 } from "@angular/core";
 import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { MapsService, MapState } from "@services/maps/maps.service";
+import { MapsService } from "@services/maps/maps.service";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
+
+export type MapMarkerOptions = google.maps.MarkerOptions;
+export type MapOptions = google.maps.MapOptions;
 
 /**
  * Google Maps Wrapper Component
@@ -31,6 +33,11 @@ export class MapComponent
 {
   public constructor(protected maps: MapsService) {
     super();
+
+    this.maps
+      .loadAsync()
+      .then(() => (this.mapsLoaded = true))
+      .catch(() => (this.mapsFailed = true));
   }
 
   @ViewChild(GoogleMap) public map: GoogleMap;
@@ -48,26 +55,24 @@ export class MapComponent
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public mapOptions: MapOptions = { mapTypeId: "satellite" };
   public bounds: google.maps.LatLngBounds;
-  protected googleMapsLoaded = computed(
-    () => this.maps.mapsState() === MapState.Loaded
-  );
-  protected mapStates = MapState;
+  public markersLoaded = false;
+  protected mapsLoaded = false;
+  protected mapsFailed = false;
   private updateMap: boolean;
 
   public ngOnChanges(): void {
-    this.hasMarkers = false;
-    this.filteredMarkers = [];
-
-    // Google global may not be declared
-    if (this.maps.mapsState() !== MapState.Loaded) {
+    if (!this.mapsLoaded) {
       return;
     }
+
+    this.hasMarkers = this.markers?.size > 0;
+    this.filteredMarkers = [];
 
     // Calculate pin boundaries so that map can be auto-focused properly
     this.bounds = new google.maps.LatLngBounds();
     this.markers?.forEach((marker) => {
       if (isMarkerValid(marker)) {
-        this.hasMarkers = true;
+        this.markersLoaded = true;
         this.filteredMarkers.push(marker);
         this.bounds.extend(marker.position);
       }
@@ -76,7 +81,7 @@ export class MapComponent
   }
 
   public ngAfterViewChecked(): void {
-    if (!this.map || !this.hasMarkers || !this.updateMap) {
+    if (!this.map || !this.markersLoaded || !this.updateMap) {
       return;
     }
 
@@ -132,6 +137,3 @@ export function sanitizeMapMarkers(
 
   return List(output);
 }
-
-export type MapMarkerOptions = google.maps.MarkerOptions;
-export type MapOptions = google.maps.MapOptions;

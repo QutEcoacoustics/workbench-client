@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { MapModule } from "@shared/map/map.module";
 import { SharedModule } from "@shared/shared.module";
 import { SiteCardComponent } from "./components/site-card/site-card.component";
 import { SiteMapComponent } from "./components/site-map/site-map.component";
@@ -30,7 +29,7 @@ const routes = projectsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: components,
-  imports: [MapModule, SharedModule, RouterModule.forChild(routes)],
+  imports: [SharedModule, RouterModule.forChild(routes)],
   exports: [RouterModule, ...components],
 })
 export class ProjectsModule {}

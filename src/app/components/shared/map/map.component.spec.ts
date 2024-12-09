@@ -1,17 +1,16 @@
 import { GoogleMapsModule } from "@angular/google-maps";
-import {
-  embedGoogleMaps,
-  destroyGoogleMaps,
-} from "@helpers/embedScript/embedGoogleMaps";
 import { Site } from "@models/Site";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { generateSite } from "@test/fakes/Site";
 import { List } from "immutable";
-import { MapComponent } from "./map.component";
+import { destroyGoogleMaps } from "@test/helpers/googleMaps";
+import { modelData } from "@test/helpers/faker";
+import { MapMarkerOptions, MapComponent } from "./map.component";
 
 // Disabled because google maps bundle interferes with other tests
-xdescribe("MapComponent", () => {
+describe("MapComponent", () => {
   let spectator: Spectator<MapComponent>;
+
   const createComponent = createComponentFactory({
     component: MapComponent,
     imports: [GoogleMapsModule],
@@ -29,61 +28,66 @@ xdescribe("MapComponent", () => {
     return spectator.queryAll<HTMLElement>("map-marker");
   }
 
-  beforeAll(async () => await embedGoogleMaps());
-  beforeEach(async () => (spectator = createComponent()));
-  afterAll(() => destroyGoogleMaps());
+  function setup(markers: MapMarkerOptions[] = []): void {
+    spectator = createComponent({ detectChanges: false });
+    spectator.setInput("markers", List(markers));
+  }
+
+  afterEach(() => {
+    destroyGoogleMaps();
+  });
 
   it("should create", () => {
-    spectator.setInput("markers", List([]));
-    spectator.detectChanges();
+    setup();
     expect(spectator.component).toBeTruthy();
   });
 
-  it("should display placeholder", () => {
-    spectator.setInput("markers", List([]));
-    spectator.detectChanges();
+  it("should display a placeholder when loading the google maps bundle", () => {
+    setup();
+  });
+
+  it("should display a placeholder when the markers are loading", () => {
+    setup();
+  });
+
+  it("should display placeholder when there are no markers", () => {
+    setup();
+
     const label = spectator
       .query<HTMLDivElement>("div.map-placeholder")
       .innerText.trim();
+
     expect(label).toBe("No locations specified");
   });
 
+  it("should display an error if the google maps bundle fails to load", () => {});
+
   it("should display map", () => {
-    spectator.setInput(
-      "markers",
-      List([new Site(generateSite()).getMapMarker()])
-    );
-    spectator.detectChanges();
+    const markers = [new Site(generateSite()).getMapMarker()];
+    setup(markers);
 
     expect(getMap()).toBeTruthy();
   });
 
   it("should have info window", () => {
-    spectator.setInput(
-      "markers",
-      List([new Site(generateSite()).getMapMarker()])
-    );
-    spectator.detectChanges();
+    const markers = [new Site(generateSite()).getMapMarker()];
+    setup(markers);
 
     expect(getMap()).toBeTruthy();
   });
 
   it("should display single site", () => {
-    spectator.setInput(
-      "markers",
-      List([new Site(generateSite()).getMapMarker()])
-    );
-    spectator.detectChanges();
+    const markers = [new Site(generateSite()).getMapMarker()];
+    setup(markers);
 
     expect(getInfoWindow()).toBeTruthy();
   });
 
   it("should display multiple markers", () => {
-    const markers = List(
-      [1, 2, 3].map(() => new Site(generateSite()).getMapMarker())
+    const markers = modelData.randomArray(3, 3, () =>
+      new Site(generateSite()).getMapMarker()
     );
-    spectator.setInput("markers", markers);
-    spectator.detectChanges();
+    setup(markers);
 
     expect(getMarker().length).toBe(3);
   });

@@ -6,7 +6,6 @@ import {
   ReactiveFormsModule,
 } from "@angular/forms";
 import { GoogleMapsModule } from "@angular/google-maps";
-import { embedGoogleMaps } from "@helpers/embedScript/embedGoogleMaps";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
@@ -61,8 +60,6 @@ describe("FormlyLocationInput", () => {
 
     return spectator;
   }
-
-  beforeAll(async () => await embedGoogleMaps());
 
   beforeEach(() => setup());
 
