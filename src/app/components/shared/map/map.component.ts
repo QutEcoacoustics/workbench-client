@@ -36,9 +36,15 @@ export class MapComponent
   public constructor(private mapService: MapsService) {
     super();
 
-    // we use "finally" here so that we will trigger a change detection cycle
-    // if Google Maps successfully or unsuccessfully embeds
-    this.mapService.loadAsync().finally(() => this.updateMapMarkers());
+    this.mapService.loadAsync()
+      .then((success: boolean) => {
+        if (success) {
+          this.updateMapMarkers();
+        } else {
+          console.warn("Failed to load Google Maps");
+        }
+      })
+      .catch(() => console.warn("Failed to load Google Maps"));
   }
 
   @ViewChild(GoogleMap) public map: GoogleMap;
