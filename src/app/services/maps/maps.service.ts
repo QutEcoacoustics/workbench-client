@@ -53,7 +53,7 @@ export class MapsService {
 
     const node: HTMLScriptElement = document.createElement("script");
     node.addEventListener("error", () => {
-      throw new Error("Failed to load Google Maps script.");
+      this.mapsState = GoogleMapsState.Failed;
     });
 
     node.id = "google-maps";
@@ -69,13 +69,27 @@ export class MapsService {
     const instantiationRetries = 10;
 
     for (let retry = 0; retry < instantiationRetries; retry++) {
-      await sleep(defaultDebounceTime);
+      // because the "failed" state can be asynchronously updated by the script
+      // elements error event listener, we check if the state has changed to
+      // a "failed" state so that we can return false from this functions
+      // promise
+      if ((this.mapsState as GoogleMapsState) === GoogleMapsState.Failed) {
+        return false;
+      }
+
+      // because the "google" global namespace is loaded by the google maps
+      // script, we can check if it is defined to determine if the script has
+      // been successfully loaded
       if (typeof google !== "undefined") {
         this.mapsState = GoogleMapsState.Loaded;
         return true;
       }
+
+      await sleep(defaultDebounceTime);
     }
 
+    // if we reach this point, the "google" namespace was never defined in the
+    // global scope, so we assume the script failed to load
     this.mapsState = GoogleMapsState.Failed;
     return false;
   }

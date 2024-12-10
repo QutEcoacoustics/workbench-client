@@ -49,46 +49,38 @@ describe("MapsService", () => {
   it("should resolve all promises with 'true' when google maps is successfully embedded", (done) => {
     triggerLoadSuccess();
 
-    spec.service
-      .loadAsync()
-      .then((success: boolean) => {
-        expect(success).toBeTrue();
-        done();
-      });
+    spec.service.loadAsync().then((success: boolean) => {
+      expect(success).toBeTrue();
+      done();
+    });
   });
 
   it("should result all promises with 'false' when google maps fails to embed", (done) => {
     triggerLoadFailure();
 
-    spec.service
-      .loadAsync()
-      .then((success: boolean) => {
-        expect(success).toBeFalse();
-        done();
-      });
+    spec.service.loadAsync().then((success: boolean) => {
+      expect(success).toBeFalse();
+      done();
+    });
   });
 
   it("should immediately resolve a 'loadAsync' with 'true' after google maps has been embedded", (done) => {
     triggerLoadSuccess();
 
-    spec.service
-      .loadAsync()
-      .then(async () => {
-        const success = await spec.service.loadAsync();
-        expect(success).toBeTrue();
-        done();
-      });
+    spec.service.loadAsync().then(async () => {
+      const success = await spec.service.loadAsync();
+      expect(success).toBeTrue();
+      done();
+    });
   });
 
   it("should immediately resolve a 'loadAsync' with 'false' after google maps failed to embed", (done) => {
     triggerLoadFailure();
 
-    spec.service
-      .loadAsync()
-      .then(async () => {
-        const success = await spec.service.loadAsync();
-        expect(success).toBeFalse();
-        done();
-      });
+    spec.service.loadAsync().then(async () => {
+      const success = await spec.service.loadAsync();
+      expect(success).toBeFalse();
+      done();
+    });
   });
 });
