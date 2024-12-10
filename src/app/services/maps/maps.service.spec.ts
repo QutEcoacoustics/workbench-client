@@ -2,7 +2,7 @@ import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { testApiConfig } from "@services/config/configMock.service";
 import { destroyGoogleMaps } from "@test/helpers/googleMaps";
-import { MapsService } from "./maps.service";
+import { GoogleMapsState, MapsService } from "./maps.service";
 
 describe("MapsService", () => {
   let spec: SpectatorService<MapsService>;
@@ -17,11 +17,13 @@ describe("MapsService", () => {
   }
 
   function triggerLoadSuccess(): void {
-    spec.service["handleGoogleMapsLoaded"]();
+    spec.service.mapsState = GoogleMapsState.Loaded;
+    spec.service.loadAsync = async () => true;
   }
 
   function triggerLoadFailure(): void {
-    spec.service["handleGoogleMapsFailed"]();
+    spec.service.mapsState = GoogleMapsState.Failed;
+    spec.service.loadAsync = async () => false;
   }
 
   beforeEach(() => {
@@ -30,7 +32,6 @@ describe("MapsService", () => {
 
   afterEach(() => {
     destroyGoogleMaps();
-    MapsService["embeddedService"] = false;
   });
 
   it("should create", () => {
@@ -45,52 +46,49 @@ describe("MapsService", () => {
     expect(realizedUrl).toEqual(expectedUrl);
   });
 
-  it("should resolve all promises when google maps is successfully embedded", (done) => {
-    spec.service
-      .loadAsync()
-      .catch(() => fail("Promise should have resolved"))
-      .finally(() => done());
-
+  it("should resolve all promises with 'true' when google maps is successfully embedded", (done) => {
     triggerLoadSuccess();
-  });
 
-  it("should reject all promises when google maps fails to embed", (done) => {
     spec.service
       .loadAsync()
-      .then(() => fail("Promise should have rejected"))
-      .finally(() => done());
-
-    triggerLoadFailure();
+      .then((success: boolean) => {
+        expect(success).toBeTrue();
+        done();
+      });
   });
 
-  it("should immediately resolve a 'loadAsync' after google maps has been embedded", (done) => {
+  it("should result all promises with 'false' when google maps fails to embed", (done) => {
+    triggerLoadFailure();
+
+    spec.service
+      .loadAsync()
+      .then((success: boolean) => {
+        expect(success).toBeFalse();
+        done();
+      });
+  });
+
+  it("should immediately resolve a 'loadAsync' with 'true' after google maps has been embedded", (done) => {
+    triggerLoadSuccess();
+
     spec.service
       .loadAsync()
       .then(async () => {
-        // because this await does not have a catch clause, causing this test to
-        // fail if the promise is rejected
-        await spec.service.loadAsync();
-        done();
-      })
-      .catch(() => {
-        fail("Promise should have resolved");
+        const success = await spec.service.loadAsync();
+        expect(success).toBeTrue();
         done();
       });
-
-    triggerLoadSuccess();
   });
 
-  it("should immediately reject a 'loadAsync' after google maps failed to embed", (done) => {
+  it("should immediately resolve a 'loadAsync' with 'false' after google maps failed to embed", (done) => {
+    triggerLoadFailure();
+
     spec.service
       .loadAsync()
-      .then(() => fail("Promise should have rejected"))
-      .catch(() => {
-        spec.service
-          .loadAsync()
-          .then(() => fail("Promise should have rejected"))
-          .catch(() => done());
+      .then(async () => {
+        const success = await spec.service.loadAsync();
+        expect(success).toBeFalse();
+        done();
       });
-
-    triggerLoadFailure();
   });
 });

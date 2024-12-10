@@ -15,7 +15,7 @@ import { modelData } from "@test/helpers/faker";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { MapMarkerOptions, MapsService } from "@services/maps/maps.service";
+import { GoogleMapsState, MapMarkerOptions, MapsService } from "@services/maps/maps.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MockModule } from "ng-mocks";
 import { MapComponent } from "./map.component";
@@ -57,13 +57,13 @@ describe("MapComponent", () => {
 
   /** Causes all pending 'loadAsync' promises to resolve */
   function triggerLoadSuccess(): void {
-    mapsServiceSpy["handleGoogleMapsLoaded"]();
+    mapsServiceSpy.mapsState = GoogleMapsState.Loaded;
     spectator.detectChanges();
   }
 
   /** Causes all pending 'loadAsync' promises to reject */
   function triggerLoadFailure(): void {
-    mapsServiceSpy["handleGoogleMapsFailed"]();
+    mapsServiceSpy.mapsState = GoogleMapsState.Failed;
     spectator.detectChanges();
   }
 

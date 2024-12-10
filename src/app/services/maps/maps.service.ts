@@ -23,22 +23,8 @@ export class MapsService {
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
     private config: ConfigService
   ) {
-    // while angular services are singletons, it is still possible to create
-    // multiple instances of the service with hacky code
-    // e.g. new MapsService()
-    // This is a safeguard to prevent multiple instances of the service
-    // from embedding the google maps script. It should not be triggered
-    // in normal use, but is defensive programming against misuse.
-    if (!MapsService.embedded) {
-      MapsService.embedded = true;
-      this.loadPromise = this.embedGoogleMaps();
-    } else {
-      console.warn("Google Maps Service already embedded.");
-    }
+    this.loadPromise = this.embedGoogleMaps();
   }
-
-  /** A static field to track if the Google Maps script has been embedded */
-  private static embedded = false;
 
   public mapsState: GoogleMapsState = GoogleMapsState.NotLoaded;
   private loadPromise: Promise<boolean>;
