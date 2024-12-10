@@ -1,4 +1,5 @@
 import { Inject, Injectable } from "@angular/core";
+import { sleep } from "@helpers/timing/sleep";
 import { ConfigService } from "@services/config/config.service";
 import { defaultDebounceTime, IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
@@ -12,12 +13,6 @@ export enum GoogleMapsState {
 
 export type MapMarkerOptions = google.maps.MarkerOptions;
 export type MapOptions = google.maps.MapOptions;
-
-interface SharedPromise {
-  promise: Promise<unknown>;
-  resolve: (...args: void[]) => void;
-  reject: (...args: void[]) => void;
-}
 
 @Injectable({ providedIn: "root" })
 export class MapsService {
@@ -34,52 +29,21 @@ export class MapsService {
     // This is a safeguard to prevent multiple instances of the service
     // from embedding the google maps script. It should not be triggered
     // in normal use, but is defensive programming against misuse.
-    if (!MapsService.embeddedService) {
-      MapsService.embeddedService = true;
-      this.createLoadPromise();
-      this.embedGoogleMaps();
+    if (!MapsService.embedded) {
+      MapsService.embedded = true;
+      this.loadPromise = this.embedGoogleMaps();
     } else {
       console.warn("Google Maps Service already embedded.");
     }
   }
 
-  private static embeddedService = false;
+  /** A static field to track if the Google Maps script has been embedded */
+  private static embedded = false;
 
   public mapsState: GoogleMapsState = GoogleMapsState.NotLoaded;
-  private loadPromise: SharedPromise;
+  private loadPromise: Promise<boolean>;
 
-  public loadAsync(): Promise<unknown> {
-    // if we have previously loaded the maps, return immediately with the
-    // correct resolved/rejected state
-    //
-    // we obviously can't return "this.loadPromise" directly as it'd never
-    // resolve because the res() and rej() functions would not be called because
-    // the maps loaded state has already settled
-    // (promises only resolve/reject once and do not emit their last value
-    // to new awaiters)
-    if (this.mapsState === GoogleMapsState.Loaded) {
-      return Promise.resolve();
-    } else if (this.mapsState === GoogleMapsState.Failed) {
-      return Promise.reject();
-    }
-
-    if (this.loadPromise) {
-      return this.loadPromise.promise;
-    }
-
-    return this.createLoadPromise().promise;
-  }
-
-  private createLoadPromise(): SharedPromise {
-    let resolver: (value: unknown) => void;
-    let rejector: (reason?: unknown) => void;
-    const promise = new Promise((res, rej) => {
-      resolver = res;
-      rejector = rej;
-    });
-
-    this.loadPromise = { promise, resolve: resolver, reject: rejector };
-
+  public loadAsync(): Promise<boolean> {
     return this.loadPromise;
   }
 
@@ -89,7 +53,7 @@ export class MapsService {
    *
    * @param key Google maps API key
    */
-  private async embedGoogleMaps(): Promise<void> {
+  private async embedGoogleMaps(): Promise<boolean> {
     // TODO: during SSR we might be able to render a static image of the map
     // using the StaticMapService
     // https://developers.google.com/maps/documentation/maps-static/overview
@@ -103,7 +67,7 @@ export class MapsService {
 
     const node: HTMLScriptElement = document.createElement("script");
     node.addEventListener("error", () => {
-      this.handleGoogleMapsFailed();
+      throw new Error("Failed to load Google Maps script.");
     });
 
     node.id = "google-maps";
@@ -117,20 +81,17 @@ export class MapsService {
     // TODO: This is a bit of a hack and we should find a better way to detect
     // when the google namespace is available
     const instantiationRetries = 10;
-    let count = 0;
 
-    const mapLoaded = () => {
+    for (let retry = 0; retry < instantiationRetries; retry++) {
+      await sleep(defaultDebounceTime);
       if (typeof google !== "undefined") {
-        this.handleGoogleMapsLoaded();
-      } else if (count > instantiationRetries) {
-        this.handleGoogleMapsFailed();
-      } else {
-        count++;
-        setTimeout(() => mapLoaded(), defaultDebounceTime);
+        this.mapsState = GoogleMapsState.Loaded;
+        return true;
       }
-    };
+    }
 
-    mapLoaded();
+    this.mapsState = GoogleMapsState.Failed;
+    return false;
   }
 
   private googleMapsBundleUrl(): string {
@@ -151,16 +112,5 @@ export class MapsService {
     }
 
     return googleMapsUrl;
-  }
-
-  private handleGoogleMapsLoaded(): void {
-    this.mapsState = GoogleMapsState.Loaded;
-    this.loadPromise.resolve();
-  }
-
-  private handleGoogleMapsFailed(): void {
-    console.error("Failed to load google maps.");
-    this.mapsState = GoogleMapsState.Failed;
-    this.loadPromise.reject();
   }
 }
