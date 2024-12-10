@@ -26,7 +26,7 @@ export class MapsService {
   // have to wait for the underlying component to be created.
   public constructor(
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
-    private config: ConfigService,
+    private config: ConfigService
   ) {
     // while angular services are singletons, it is still possible to create
     // multiple instances of the service with hacky code
@@ -36,16 +36,7 @@ export class MapsService {
     // in normal use, but is defensive programming against misuse.
     if (!MapsService.embeddedService) {
       MapsService.embeddedService = true;
-
-      let resolver: (value: unknown) => void;
-      let rejector: (reason?: unknown) => void;
-      const promise = new Promise((res, rej) => {
-        resolver = res;
-        rejector = rej;
-      });
-
-      this.loadPromise = { promise, resolve: resolver, reject: rejector };
-
+      this.createLoadPromise();
       this.embedGoogleMaps();
     } else {
       console.warn("Google Maps Service already embedded.");
@@ -55,7 +46,7 @@ export class MapsService {
   private static embeddedService = false;
 
   public mapsState: GoogleMapsState = GoogleMapsState.NotLoaded;
-  private readonly loadPromise: SharedPromise;
+  private loadPromise: SharedPromise;
 
   public loadAsync(): Promise<unknown> {
     // if we have previously loaded the maps, return immediately with the
@@ -72,7 +63,24 @@ export class MapsService {
       return Promise.reject();
     }
 
-    return this.loadPromise.promise;
+    if (this.loadPromise) {
+      return this.loadPromise.promise;
+    }
+
+    return this.createLoadPromise().promise;
+  }
+
+  private createLoadPromise(): SharedPromise {
+    let resolver: (value: unknown) => void;
+    let rejector: (reason?: unknown) => void;
+    const promise = new Promise((res, rej) => {
+      resolver = res;
+      rejector = rej;
+    });
+
+    this.loadPromise = { promise, resolve: resolver, reject: rejector };
+
+    return this.loadPromise;
   }
 
   /**

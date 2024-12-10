@@ -9,7 +9,7 @@ export function destroyGoogleMaps(): void {
 export function mockGoogleNamespace(): void {
   window.google = {
     maps: {
-      LatLngBounds: jasmine.createSpy("LatLngBounds"),
+      LatLngBounds: MockLatLngBounds,
       Marker: jasmine.createSpy("Marker"),
       Map: jasmine.createSpy("Map"),
       InfoWindow: jasmine.createSpy("InfoWindow"),
@@ -18,4 +18,8 @@ export function mockGoogleNamespace(): void {
       },
     },
   } as any;
+}
+
+class MockLatLngBounds {
+  public extend = jasmine.createSpy("extend");
 }
