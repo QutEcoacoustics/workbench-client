@@ -7,7 +7,7 @@ import { siteRoute } from "@components/sites/sites.routes";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { assetRoot } from "@services/config/config.service";
-import { MapMarkerOptions } from "@shared/map/map.component";
+import { MapMarkerOptions } from "@services/maps/maps.service";
 import {
   PermissionLevel,
   DateTimeTimezone,

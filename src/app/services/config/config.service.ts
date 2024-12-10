@@ -9,7 +9,6 @@ import {
   Settings,
 } from "@helpers/app-initializer/app-initializer";
 import { embedGoogleAnalytics } from "@helpers/embedScript/embedGoogleAnalytics";
-import { embedGoogleMaps } from "@helpers/embedScript/embedGoogleMaps";
 import { ThemeService } from "@services/theme/theme.service";
 import { ToastrService } from "ngx-toastr";
 import { catchError, firstValueFrom, mergeMap, of, retry } from "rxjs";
@@ -45,7 +44,6 @@ export class ConfigService {
       // Only insert if valid config, and not SSR
       if (this.validConfig && !this.isServer) {
         embedGoogleAnalytics(this.keys.googleAnalytics.trackingId);
-        await embedGoogleMaps(this.keys.googleMaps);
       }
     };
 

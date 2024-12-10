@@ -42,7 +42,7 @@ export const testApiConfig = new Configuration({
     oldClientBase: `${assetRoot}/old-client/index.html`,
   },
   keys: {
-    googleMaps: "",
+    googleMaps: "mock-api-key",
     googleAnalytics: {
       domain: "",
       trackingId: "",

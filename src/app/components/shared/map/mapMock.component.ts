@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { List } from "immutable";
-import { MapMarkerOptions, sanitizeMapMarkers } from "./map.component";
+import { MapMarkerOptions } from "@services/maps/maps.service";
+import { sanitizeMapMarkers } from "./map.component";
 
 @Component({
   selector: "baw-map",

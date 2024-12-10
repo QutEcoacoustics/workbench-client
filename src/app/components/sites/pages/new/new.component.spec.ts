@@ -18,6 +18,8 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject, Subject } from "rxjs";
+import { MockComponent } from "ng-mocks";
+import { MapComponent } from "@shared/map/map.component";
 import pointSchema from "../../point.base.json";
 import siteSchema from "../../site.base.json";
 import { SiteNewComponent } from "./new.component";
@@ -27,7 +29,7 @@ describe("SiteNewComponent", () => {
   const createComponent = createRoutingFactory({
     component: SiteNewComponent,
     imports: [...testFormImports, MockBawApiModule],
-    declarations: [FormComponent],
+    declarations: [FormComponent, MockComponent(MapComponent)],
     mocks: [ToastrService],
   });
 

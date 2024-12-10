@@ -19,7 +19,7 @@ import schema from "./data-request.schema.json";
     <p>To download a standard CSV of annotations</p>
 
     <ol>
-      <li>Open the site or point page you're interested in</li>
+      <li>Open the project, site, or point page you're interested in</li>
       <li>
         Use the <i>Download Annotations</i> button to download annotations
       </li>
@@ -54,7 +54,7 @@ class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
     private api: DataRequestService,
     notifications: ToastrService,
     route: ActivatedRoute,
-    router: Router
+    router: Router,
   ) {
     super(notifications, route, router, {
       successMsg: () =>
