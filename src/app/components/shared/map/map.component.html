@@ -6,7 +6,7 @@
   (mapClick)="markerOptions?.draggable && newLocation.emit($event)"
 >
   <map-marker
-    *ngFor="let marker of filteredMarkers"
+    *ngFor="let marker of validMarkers"
     [options]="markerOptions"
     [position]="marker.position"
     (mapDragend)="newLocation.emit($event)"

@@ -6,6 +6,7 @@ import {
   OnChanges,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChild,
   ViewChildren,
 } from "@angular/core";
@@ -36,33 +37,34 @@ export class MapComponent
   public constructor(private mapService: MapsService) {
     super();
 
-    this.mapService.loadAsync()
-      .then((success: boolean) => {
-        if (success) {
-          this.updateMapMarkers();
-        } else {
-          console.warn("Failed to load Google Maps");
-        }
-      })
+    this.mapService
+      .loadAsync()
       .catch(() => console.warn("Failed to load Google Maps"));
   }
 
-  @ViewChild(GoogleMap) public map: GoogleMap;
-  @ViewChild(MapInfoWindow) public info: MapInfoWindow;
-  @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
+  // TODO: These ViewChild decorators are making the ngAfterViewChecked hook
+  // continuously run. We should refactor this component to improve performance
+  @ViewChild(GoogleMap) public map?: GoogleMap;
+  @ViewChild(MapInfoWindow) public info?: MapInfoWindow;
+  @ViewChildren(MapMarker) public mapMarkers?: QueryList<MapMarker>;
 
   @Input() public markers: List<MapMarkerOptions>;
   @Input() public markerOptions: MapMarkerOptions;
   @Output() public newLocation = new EventEmitter<google.maps.MapMouseEvent>();
 
-  public filteredMarkers: MapMarkerOptions[];
+  public validMarkers: MapMarkerOptions[];
   public hasMarkers = false;
   public infoContent = "";
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public mapOptions: MapOptions = { mapTypeId: "satellite" };
   public bounds: google.maps.LatLngBounds;
-  private updateMap: boolean = false;
+
+  /**
+   * By setting this flag, the next change detection cycle will cause the
+   * map bounds and marker information to be updated
+   */
+  private shouldUpdateMapElement: boolean = false;
 
   public get googleMapsLoaded(): boolean {
     return this.mapService.mapsState === GoogleMapsState.Loaded;
@@ -72,31 +74,66 @@ export class MapComponent
     return this.mapService.mapsState === GoogleMapsState.Failed;
   }
 
-  public ngOnChanges(): void {
-    this.hasMarkers = false;
-    this.filteredMarkers = [];
-
-    if (!this.googleMapsLoaded) {
-      return;
+  /**
+   * Runs when new markers are added/removed
+   * This is possible because the markers are an immutable list
+   */
+  public ngOnChanges(changes: SimpleChanges): void {
+    if ("markers" in changes) {
+      this.updateFilteredMarkers();
+      this.shouldUpdateMapElement = true;
     }
-
-    this.updateMapMarkers();
   }
 
   public ngAfterViewChecked(): void {
-    if (!this.map || !this.hasMarkers || !this.updateMap) {
+    if (!this.map || !this.hasMarkers || !this.shouldUpdateMapElement) {
       return;
     }
+    this.shouldUpdateMapElement = false;
 
-    this.updateMap = false;
+    this.focusMapMarkers();
+    this.addMarkerInformation();
+  }
+
+  /**
+   * Extracts valid markers into `validMarkers`
+   */
+  private updateFilteredMarkers(): void {
+    this.hasMarkers = false;
+    this.validMarkers = [];
+
+    this.markers?.forEach((marker) => {
+      if (isMarkerValid(marker)) {
+        this.hasMarkers = true;
+        this.validMarkers.push(marker);
+      }
+    });
+  }
+
+  /**
+   * Moves the maps viewport to fit all `filteredMarkers` by calculating marker
+   * boundaries so that the map has all markers in focus
+   */
+  private focusMapMarkers(): void {
+    this.bounds = new google.maps.LatLngBounds();
+    this.validMarkers.forEach((marker) => {
+      this.bounds.extend(marker.position);
+    });
+
     this.map.fitBounds(this.bounds);
     this.map.panToBounds(this.bounds);
+  }
 
-    // Setup info windows for each marker
+  /**
+   * Adds a map-info-window to each map marker
+   * This is done to provide a label for each marker when the user hovers over
+   * the marker
+   */
+  private addMarkerInformation(): void {
     this.mapMarkers?.forEach((marker, index) => {
       marker.mapMouseover.pipe(takeUntil(this.unsubscribe)).subscribe({
         next: () => {
-          this.infoContent = this.filteredMarkers[index].label as string;
+          this.infoContent = this.validMarkers[index].label as string;
           this.info.open(marker);
         },
         error: () => {
@@ -104,19 +141,6 @@ export class MapComponent
         },
       });
     });
-  }
-
-  private updateMapMarkers(): void {
-    // Calculate pin boundaries so that map can be auto-focused properly
-    this.bounds = new google.maps.LatLngBounds();
-    this.markers?.forEach((marker) => {
-      if (isMarkerValid(marker)) {
-        this.hasMarkers = true;
-        this.filteredMarkers.push(marker);
-        this.bounds.extend(marker.position);
-      }
-    });
-    this.updateMap = true;
   }
 }
 
@@ -136,7 +160,7 @@ function isMarkerValid(marker: MapMarkerOptions): boolean {
  * Handles sanitization of map markers so change detection will run properly
  */
 export function sanitizeMapMarkers(
-  markers: MapMarkerOptions | MapMarkerOptions[],
+  markers: MapMarkerOptions | MapMarkerOptions[]
 ): List<MapMarkerOptions> {
   const output: MapMarkerOptions[] = [];
 
