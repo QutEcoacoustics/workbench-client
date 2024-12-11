@@ -24,10 +24,10 @@
   <p class="error-hint">
     Please ensure your ad-block is not blocking Google Maps
   </p>
+  } @else if (googleMapsLoaded === null) {
+  <baw-loading></baw-loading>
   } @else if (!hasMarkers) {
   <p>No locations specified</p>
-  } @else {
-  <baw-loading></baw-loading>
   }
 </div>
 }

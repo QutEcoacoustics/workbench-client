@@ -58,12 +58,14 @@ describe("MapComponent", () => {
   /** Causes all pending 'loadAsync' promises to resolve */
   function triggerLoadSuccess(): void {
     mapsServiceSpy.mapsState = GoogleMapsState.Loaded;
+    spectator.component["googleMapsLoaded"] = true;
     spectator.detectChanges();
   }
 
   /** Causes all pending 'loadAsync' promises to reject */
   function triggerLoadFailure(): void {
     mapsServiceSpy.mapsState = GoogleMapsState.Failed;
+    spectator.component["googleMapsLoaded"] = false;
     spectator.detectChanges();
   }
 
