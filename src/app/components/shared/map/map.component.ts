@@ -24,10 +24,7 @@ import { List } from "immutable";
   templateUrl: "./map.component.html",
   styleUrl: "./map.component.scss",
 })
-export class MapComponent
-  extends withUnsubscribe()
-  implements OnChanges
-{
+export class MapComponent extends withUnsubscribe() implements OnChanges {
   public constructor(private mapService: MapsService) {
     super();
 

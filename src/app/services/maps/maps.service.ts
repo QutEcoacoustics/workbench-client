@@ -52,8 +52,13 @@ export class MapsService {
     const googleMapsUrl = this.googleMapsBundleUrl();
 
     const node: HTMLScriptElement = document.createElement("script");
-    node.addEventListener("error", () => {
-      this.mapsState = GoogleMapsState.Failed;
+
+    const scriptErrorPromise = new Promise<boolean>((res) => {
+      node.addEventListener("error", () => {
+        this.logWarning("Error thrown in external script");
+        this.mapsState = GoogleMapsState.Failed;
+        res(false);
+      });
     });
 
     node.id = "google-maps";
@@ -63,24 +68,24 @@ export class MapsService {
 
     document.head.appendChild(node);
 
-    // Detect when google maps properly embeds
-    // TODO: This is a bit of a hack and we should find a better way to detect
-    // when the google namespace is available
+    return Promise.race([
+      scriptErrorPromise,
+      this.waitForGoogleNamespace(),
+    ]) as Promise<boolean>;
+  }
+
+  private async waitForGoogleNamespace(): Promise<boolean> {
     const instantiationRetries = 10;
 
     for (let retry = 0; retry < instantiationRetries; retry++) {
-      // because the "failed" state can be asynchronously updated by the script
-      // elements error event listener, we check if the state has changed to
-      // a "failed" state so that we can return false from this functions
-      // promise
-      if ((this.mapsState as GoogleMapsState) === GoogleMapsState.Failed) {
-        return false;
-      }
-
       // because the "google" global namespace is loaded by the google maps
       // script, we can check if it is defined to determine if the script has
       // been successfully loaded
-      if (typeof google !== "undefined") {
+      if (
+        typeof google !== "undefined" &&
+        typeof google.maps !== "undefined" &&
+        typeof google.maps.importLibrary !== "undefined"
+      ) {
         this.mapsState = GoogleMapsState.Loaded;
         return true;
       }
@@ -88,9 +93,8 @@ export class MapsService {
       await sleep(defaultDebounceTime);
     }
 
-    // if we reach this point, the "google" namespace was never defined in the
-    // global scope, so we assume the script failed to load
-    this.mapsState = GoogleMapsState.Failed;
+    this.logWarning("Unable to find 'google' namespace");
+
     return false;
   }
 
@@ -112,5 +116,9 @@ export class MapsService {
     }
 
     return googleMapsUrl;
+  }
+
+  private logWarning(message: string): void {
+    console.warn(`Maps: ${message}`);
   }
 }
