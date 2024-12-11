@@ -1,122 +1,106 @@
 import {
-  AfterViewChecked,
   Component,
   EventEmitter,
   Input,
   OnChanges,
   Output,
-  QueryList,
+  SimpleChanges,
   ViewChild,
-  ViewChildren,
 } from "@angular/core";
-import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
-import { googleMapsLoaded } from "@helpers/embedScript/embedGoogleMaps";
+import { GoogleMap, MapAnchorPoint, MapInfoWindow } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import {
+  MapMarkerOptions,
+  MapOptions,
+  MapsService,
+} from "@services/maps/maps.service";
 import { List } from "immutable";
-import { takeUntil } from "rxjs/operators";
 
 /**
  * Google Maps Wrapper Component
- * ! Manually test when editing, unit test coverage is poor
  */
 @Component({
   selector: "baw-map",
-  template: `
-    <!-- Display map -->
-    <ng-container *ngIf="hasMarkers && googleMapsLoaded">
-      <google-map
-        height="100%"
-        width="100%"
-        [options]="mapOptions"
-        (mapClick)="markerOptions?.draggable && newLocation.emit($event)"
-      >
-        <map-marker
-          *ngFor="let marker of filteredMarkers"
-          [options]="markerOptions"
-          [position]="marker.position"
-          (mapDragend)="newLocation.emit($event)"
-        >
-        </map-marker>
-        <map-info-window>{{ infoContent }}</map-info-window>
-      </google-map>
-    </ng-container>
-
-    <!-- Map is loading -->
-    <ng-container *ngIf="hasMarkers && !googleMapsLoaded">
-      <div class="map-placeholder"><p>Map loading</p></div>
-    </ng-container>
-
-    <!-- No map markers to display -->
-    <ng-container *ngIf="!hasMarkers">
-      <div class="map-placeholder"><p>No locations specified</p></div>
-    </ng-container>
-  `,
-  styleUrls: ["./map.component.scss"],
+  templateUrl: "./map.component.html",
+  styleUrl: "./map.component.scss",
 })
-export class MapComponent
-  extends withUnsubscribe()
-  implements OnChanges, AfterViewChecked
-{
-  @ViewChild(GoogleMap, { static: false }) public map: GoogleMap;
-  @ViewChild(MapInfoWindow, { static: false }) public info: MapInfoWindow;
-  @ViewChildren(MapMarker) public mapMarkers: QueryList<MapMarker>;
+export class MapComponent extends withUnsubscribe() implements OnChanges {
+  public constructor(private mapService: MapsService) {
+    super();
+
+    this.mapService
+      .loadAsync()
+      .then((success: boolean) => (this.googleMapsLoaded = success))
+      .catch(() => console.warn("Failed to load Google Maps"));
+  }
+
+  @ViewChild(MapInfoWindow) public info?: MapInfoWindow;
+
+  @ViewChild(GoogleMap)
+  private set map(value: GoogleMap) {
+    this._map = value;
+    this.focusMarkers();
+  }
 
   @Input() public markers: List<MapMarkerOptions>;
   @Input() public markerOptions: MapMarkerOptions;
   @Output() public newLocation = new EventEmitter<google.maps.MapMouseEvent>();
 
-  public filteredMarkers: MapMarkerOptions[];
+  public validMarkersOptions: MapMarkerOptions[];
   public hasMarkers = false;
   public infoContent = "";
+  private _map: GoogleMap;
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public mapOptions: MapOptions = { mapTypeId: "satellite" };
   public bounds: google.maps.LatLngBounds;
-  private updateMap: boolean;
+  protected googleMapsLoaded: boolean | null = null;
 
-  public get googleMapsLoaded(): boolean {
-    return googleMapsLoaded();
+  /**
+   * Runs when new markers are added/removed
+   * This is possible because the markers are an immutable list
+   */
+  public ngOnChanges(changes: SimpleChanges): void {
+    if ("markers" in changes) {
+      this.updateFilteredMarkers();
+    }
   }
 
-  public ngOnChanges(): void {
-    this.hasMarkers = false;
-    this.filteredMarkers = [];
+  protected addMapMarkerInfo(options: MapMarkerOptions, marker: MapAnchorPoint): void {
+    this.infoContent = options.label as string;
+    this.info.open(marker);
+  }
 
-    // Google global may not be declared
-    if (!this.googleMapsLoaded) {
+  /**
+   * Moves the maps viewport to fit all `filteredMarkers` by calculating marker
+   * boundaries so that the map has all markers in focus
+   */
+  protected focusMarkers(): void {
+    if (!this._map || !this.hasMarkers) {
       return;
     }
 
-    // Calculate pin boundaries so that map can be auto-focused properly
     this.bounds = new google.maps.LatLngBounds();
-    this.markers?.forEach((marker): void => {
+    this.validMarkersOptions.forEach((marker) => {
+      this.bounds.extend(marker.position);
+    });
+
+    this._map.fitBounds(this.bounds);
+    this._map.panToBounds(this.bounds);
+  }
+
+  /**
+   * Extracts valid markers into `validMarkers`
+   */
+  private updateFilteredMarkers(): void {
+    this.hasMarkers = false;
+    this.validMarkersOptions = [];
+
+    this.markers?.forEach((marker) => {
       if (isMarkerValid(marker)) {
         this.hasMarkers = true;
-        this.filteredMarkers.push(marker);
-        this.bounds.extend(marker.position);
+        this.validMarkersOptions.push(marker);
       }
-    });
-    this.updateMap = true;
-  }
-
-  public ngAfterViewChecked(): void {
-    if (!this.map || !this.hasMarkers || !this.updateMap) {
-      return;
-    }
-
-    this.updateMap = false;
-    this.map.fitBounds(this.bounds);
-    this.map.panToBounds(this.bounds);
-    // Setup info windows for each marker
-    this.mapMarkers?.forEach((marker, index) => {
-      marker.mapMouseover.pipe(takeUntil(this.unsubscribe)).subscribe({
-        next: (): void => {
-          this.infoContent = this.filteredMarkers[index].label as string;
-          this.info.open(marker);
-        },
-        error: (): void =>
-          console.error("Failed to create info content for map marker"),
-      });
     });
   }
 }
@@ -155,6 +139,3 @@ export function sanitizeMapMarkers(
 
   return List(output);
 }
-
-export type MapMarkerOptions = google.maps.MarkerOptions;
-export type MapOptions = google.maps.MapOptions;

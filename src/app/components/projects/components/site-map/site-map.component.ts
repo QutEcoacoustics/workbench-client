@@ -5,10 +5,8 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
-import {
-  MapMarkerOptions,
-  sanitizeMapMarkers,
-} from "@shared/map/map.component";
+import { MapMarkerOptions } from "@services/maps/maps.service";
+import { sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
 import { merge, Observable } from "rxjs";
 import { switchMap, takeUntil } from "rxjs/operators";
@@ -42,11 +40,11 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     if ((this.project || this.region) && !this.sitesSubset?.length) {
       this.getFilter(filters, this.project, this.region)
         .pipe(
-          switchMap((models) => this.getMarkers(models)),
-          takeUntil(this.unsubscribe)
+          switchMap((models: Site[]) => this.getMarkers(models)),
+          takeUntil(this.unsubscribe),
         )
         .subscribe({
-          next: (sites) => this.pushMarkers(sites),
+          next: (sites: Site[]) => this.pushMarkers(sites),
           error: () => this.pushMarkers([]),
         });
     }
@@ -57,8 +55,8 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   private getFilter(
     filters: Filters<ISite>,
     project: Project,
-    region?: Region
-  ) {
+    region?: Region,
+  ): Observable<Site[]> {
     return this.region
       ? this.sitesApi.filterByRegion(filters, project, region)
       : this.sitesApi.filter(filters, project);
@@ -67,14 +65,14 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   /**
    * Retrieve map markers from api
    */
-  private getMarkers(sites: Site[]) {
+  private getMarkers(sites: Site[]): Observable<Site[]> {
     const numPages = sites?.[0]?.getMetadata()?.paging?.maxPage || 1;
     const observables: Observable<Site[]>[] = [];
 
     // Can skip first page because initial filter produces the results
     for (let page = 2; page <= numPages; page++) {
       observables.push(
-        this.getFilter({ paging: { page } }, this.project, this.region)
+        this.getFilter({ paging: { page } }, this.project, this.region),
       );
     }
 
@@ -85,9 +83,9 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   /**
    * Push new sites to markers list
    */
-  private pushMarkers(sites: Site[]) {
+  private pushMarkers(sites: Site[]): void {
     this.markers = this.markers.concat(
-      sanitizeMapMarkers(sites.map((site) => site.getMapMarker()))
+      sanitizeMapMarkers(sites.map((site) => site.getMapMarker())),
     );
   }
 }

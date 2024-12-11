@@ -6,8 +6,9 @@
       "source.fixAll": "explicit"
     },
     "cSpell.words": [
-      "Ecosounds",
-      "Formly",
+      "ecosounds",
+      "ecoacoustics",
+      "formly",
       "Mixins",
       "dropdown",
       "fontawesome",
@@ -20,7 +21,13 @@
       "toastr",
       "tzinfo",
       "unprocessable",
-      "vocalisations"
+      "vocalisations",
+      "deleter",
+      "typeahead",
+      "datatable",
+      "datetime",
+      "luxon",
+      "datatable",
     ],
     "cSpell.ignorePaths": [
       "**/.git/objects/**",
@@ -61,7 +68,8 @@
       "cyrilletuzi.angular-schematics",
       "dbaeumer.vscode-eslint",
       "streetsidesoftware.code-spell-checker",
-      "xabikos.jasminesnippets"
+      "xabikos.jasminesnippets",
+      "aaron-bond.better-comments"
     ]
   }
 }
