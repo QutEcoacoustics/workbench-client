@@ -7,7 +7,7 @@ import {
   SimpleChanges,
   ViewChild,
 } from "@angular/core";
-import { GoogleMap, MapInfoWindow } from "@angular/google-maps";
+import { GoogleMap, MapAnchorPoint, MapInfoWindow } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
   MapMarkerOptions,
@@ -66,7 +66,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     }
   }
 
-  protected addMapMarkerInfo(options: MapMarkerOptions, marker: any): void {
+  protected addMapMarkerInfo(options: MapMarkerOptions, marker: MapAnchorPoint): void {
     this.infoContent = options.label as string;
     this.info.open(marker);
   }
