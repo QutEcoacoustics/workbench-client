@@ -1,4 +1,4 @@
-@if (hasMarkers && googleMapsLoaded) {
+@if (hasMarkers && googleMapsLoaded === true) {
 <google-map
   height="100%"
   width="100%"
@@ -6,24 +6,28 @@
   (mapClick)="markerOptions?.draggable && newLocation.emit($event)"
 >
   <map-marker
-    *ngFor="let marker of validMarkers"
+    #marker="mapMarker"
+    *ngFor="let markerOptions of validMarkersOptions"
     [options]="markerOptions"
-    [position]="marker.position"
+    [position]="markerOptions.position"
     (mapDragend)="newLocation.emit($event)"
+    (mapMouseover)="addMapMarkerInfo(markerOptions, marker)"
+    (positionChanged)="focusMarkers()"
+    (markerInitialized)="focusMarkers()"
   ></map-marker>
   <map-info-window>{{ infoContent }}</map-info-window>
 </google-map>
 } @else {
 <div class="map-placeholder">
-  @if (googleMapsFailed) {
+  @if (googleMapsLoaded === false) {
   <p class="text-danger">Failure loading map</p>
   <p class="error-hint">
     Please ensure your ad-block is not blocking Google Maps
   </p>
-  } @else if(!googleMapsLoaded) {
-  <baw-loading></baw-loading>
   } @else if (!hasMarkers) {
   <p>No locations specified</p>
+  } @else {
+  <baw-loading></baw-loading>
   }
 </div>
 }

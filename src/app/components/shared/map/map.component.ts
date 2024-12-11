@@ -1,29 +1,23 @@
 import {
-  AfterViewChecked,
   Component,
   EventEmitter,
   Input,
   OnChanges,
   Output,
-  QueryList,
   SimpleChanges,
   ViewChild,
-  ViewChildren,
 } from "@angular/core";
-import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
+import { GoogleMap, MapInfoWindow } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
-  GoogleMapsState,
   MapMarkerOptions,
   MapOptions,
   MapsService,
 } from "@services/maps/maps.service";
 import { List } from "immutable";
-import { takeUntil } from "rxjs/operators";
 
 /**
  * Google Maps Wrapper Component
- * ! Manually test when editing, unit test coverage is poor
  */
 @Component({
   selector: "baw-map",
@@ -32,47 +26,38 @@ import { takeUntil } from "rxjs/operators";
 })
 export class MapComponent
   extends withUnsubscribe()
-  implements OnChanges, AfterViewChecked
+  implements OnChanges
 {
   public constructor(private mapService: MapsService) {
     super();
 
     this.mapService
       .loadAsync()
+      .then((success: boolean) => (this.googleMapsLoaded = success))
       .catch(() => console.warn("Failed to load Google Maps"));
   }
 
-  // TODO: These ViewChild decorators are making the ngAfterViewChecked hook
-  // continuously run. We should refactor this component to improve performance
-  @ViewChild(GoogleMap) public map?: GoogleMap;
   @ViewChild(MapInfoWindow) public info?: MapInfoWindow;
-  @ViewChildren(MapMarker) public mapMarkers?: QueryList<MapMarker>;
+
+  @ViewChild(GoogleMap)
+  private set map(value: GoogleMap) {
+    this._map = value;
+    this.focusMarkers();
+  }
 
   @Input() public markers: List<MapMarkerOptions>;
   @Input() public markerOptions: MapMarkerOptions;
   @Output() public newLocation = new EventEmitter<google.maps.MapMouseEvent>();
 
-  public validMarkers: MapMarkerOptions[];
+  public validMarkersOptions: MapMarkerOptions[];
   public hasMarkers = false;
   public infoContent = "";
+  private _map: GoogleMap;
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public mapOptions: MapOptions = { mapTypeId: "satellite" };
   public bounds: google.maps.LatLngBounds;
-
-  /**
-   * By setting this flag, the next change detection cycle will cause the
-   * map bounds and marker information to be updated
-   */
-  private shouldUpdateMapElement: boolean = false;
-
-  public get googleMapsLoaded(): boolean {
-    return this.mapService.mapsState === GoogleMapsState.Loaded;
-  }
-
-  public get googleMapsFailed(): boolean {
-    return this.mapService.mapsState === GoogleMapsState.Failed;
-  }
+  protected googleMapsLoaded: boolean | null = null;
 
   /**
    * Runs when new markers are added/removed
@@ -81,18 +66,30 @@ export class MapComponent
   public ngOnChanges(changes: SimpleChanges): void {
     if ("markers" in changes) {
       this.updateFilteredMarkers();
-      this.shouldUpdateMapElement = true;
     }
   }
 
-  public ngAfterViewChecked(): void {
-    if (!this.map || !this.hasMarkers || !this.shouldUpdateMapElement) {
+  protected addMapMarkerInfo(options: MapMarkerOptions, marker: any): void {
+    this.infoContent = options.label as string;
+    this.info.open(marker);
+  }
+
+  /**
+   * Moves the maps viewport to fit all `filteredMarkers` by calculating marker
+   * boundaries so that the map has all markers in focus
+   */
+  protected focusMarkers(): void {
+    if (!this._map || !this.hasMarkers) {
       return;
     }
-    this.shouldUpdateMapElement = false;
 
-    this.focusMapMarkers();
-    this.addMarkerInformation();
+    this.bounds = new google.maps.LatLngBounds();
+    this.validMarkersOptions.forEach((marker) => {
+      this.bounds.extend(marker.position);
+    });
+
+    this._map.fitBounds(this.bounds);
+    this._map.panToBounds(this.bounds);
   }
 
   /**
@@ -100,46 +97,13 @@ export class MapComponent
    */
   private updateFilteredMarkers(): void {
     this.hasMarkers = false;
-    this.validMarkers = [];
+    this.validMarkersOptions = [];
 
     this.markers?.forEach((marker) => {
       if (isMarkerValid(marker)) {
         this.hasMarkers = true;
-        this.validMarkers.push(marker);
+        this.validMarkersOptions.push(marker);
       }
-    });
-  }
-
-  /**
-   * Moves the maps viewport to fit all `filteredMarkers` by calculating marker
-   * boundaries so that the map has all markers in focus
-   */
-  private focusMapMarkers(): void {
-    this.bounds = new google.maps.LatLngBounds();
-    this.validMarkers.forEach((marker) => {
-      this.bounds.extend(marker.position);
-    });
-
-    this.map.fitBounds(this.bounds);
-    this.map.panToBounds(this.bounds);
-  }
-
-  /**
-   * Adds a map-info-window to each map marker
-   * This is done to provide a label for each marker when the user hovers over
-   * the marker
-   */
-  private addMarkerInformation(): void {
-    this.mapMarkers?.forEach((marker, index) => {
-      marker.mapMouseover.pipe(takeUntil(this.unsubscribe)).subscribe({
-        next: () => {
-          this.infoContent = this.validMarkers[index].label as string;
-          this.info.open(marker);
-        },
-        error: () => {
-          console.error("Failed to create info content for map marker");
-        },
-      });
     });
   }
 }
