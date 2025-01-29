@@ -78,7 +78,7 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 export class HiddenCopyComponent {
   @Input() public color: BootstrapColorTypes = "secondary";
   @Input() public tooltip: string;
-  @Input() public disabled: string | boolean | undefined;
+  @Input() public disabled: string | undefined;
   @Input() public value: string;
   @Input() public content: string;
   public visible: boolean;

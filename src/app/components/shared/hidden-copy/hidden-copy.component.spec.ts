@@ -170,7 +170,7 @@ describe("HiddenCopyComponent", () => {
     });
 
     it("should not copy if disabled and the copy button is clicked", () => {
-      setup({ content: modelData.authToken(), disabled: true });
+      setup({ content: modelData.authToken(), disabled: "true" });
       spec.click(getCopyButton());
       expect(clipboardService.copyFromContent).not.toHaveBeenCalled();
     });
