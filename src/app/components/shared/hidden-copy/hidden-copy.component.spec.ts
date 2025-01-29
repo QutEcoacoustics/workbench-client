@@ -1,19 +1,21 @@
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
-import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
+import { createHostFactory, SpectatorHost, SpyObject } from "@ngneat/spectator";
 import { IconsModule } from "@shared/icons/icons.module";
 import { modelData } from "@test/helpers/faker";
-import { ClipboardModule } from "ngx-clipboard";
+import { ClipboardModule, ClipboardService } from "ngx-clipboard";
 import { HiddenCopyComponent } from "./hidden-copy.component";
 
 describe("HiddenCopyComponent", () => {
   let spec: SpectatorHost<HiddenCopyComponent>;
+  let clipboardService: SpyObject<ClipboardService>;
+
   const createHost = createHostFactory({
     component: HiddenCopyComponent,
     imports: [IconsModule, NgbTooltipModule, ClipboardModule],
   });
 
-  function setup(props: Partial<HiddenCopyComponent>) {
+  function setup(props: Partial<HiddenCopyComponent> = {}) {
     props.value ??= "value";
     props.content ??= "content";
     props.tooltip ??= "tooltip";
@@ -21,6 +23,9 @@ describe("HiddenCopyComponent", () => {
     spec = createHost("<baw-hidden-copy></baw-hidden-copy>", {
       props,
     });
+
+    clipboardService = spec.inject(ClipboardService);
+    clipboardService.copyFromContent = jasmine.createSpy("copyFromContent") as any;
   }
 
   function getVisibilityButton() {
@@ -29,6 +34,14 @@ describe("HiddenCopyComponent", () => {
 
   function getCopyButton() {
     return spec.query<HTMLButtonElement>("#copy-btn");
+  }
+
+  function getCopyIcon() {
+    return spec.query("#copy-icon");
+  }
+
+  function getCopiedTooltip() {
+    return spec.query<HTMLSpanElement>("[ngbTooltip='Coped!']");
   }
 
   it("should create", () => {
@@ -45,7 +58,7 @@ describe("HiddenCopyComponent", () => {
     it("should have tooltip", () => {
       const tooltip = modelData.random.words();
       setup({ tooltip });
-      // Container is body so that we dont have issues with the tooltip
+      // Container is body so that we don't have issues with the tooltip
       // breaking css and clipping
       expect(getVisibilityButton()).toHaveTooltip(tooltip, {
         container: "body",
@@ -75,18 +88,38 @@ describe("HiddenCopyComponent", () => {
     it("should have tooltip", () => {
       const tooltip = modelData.random.words();
       setup({ tooltip });
-      // Container is body so that we dont have issues with the tooltip
+      // Container is body so that we don't have issues with the tooltip
       // breaking css and clipping
+
+      // if we hover over the "Copied!" tooltip element, it should not show
+      spec.focus(getCopyButton());
+
       // Tooltip should only show on click
-      expect(getCopyButton()).toHaveTooltip("Copied!", {
-        triggers: "manual",
-        container: "body",
-      });
+      expect(getCopiedTooltip()).not.toBeVisible();
+
+      // after the button is clicked, we expect that the tooltip will be visible
+      spec.click(getCopyButton());
+      expect(getCopiedTooltip()).not.toBeVisible();
     });
 
     it("should not be disabled", () => {
       setup({ disabled: undefined });
       expect(getCopyButton()).not.toHaveAttribute("disabled");
+    });
+
+    // these tests were not always present which resulted in bugs such as the
+    // copy button not copying the text
+    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2146
+    it("should copy if the copy icon is clicked", () => {
+      setup({ content: modelData.authToken() });
+      spec.click(getCopyIcon());
+      expect(clipboardService.copyFromContent).toHaveBeenCalledTimes(1);
+    });
+
+    it("should copy if the copy button is clicked", () => {
+      setup({ content: modelData.authToken() });
+      spec.click(getCopyButton());
+      expect(clipboardService.copyFromContent).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -134,6 +167,12 @@ describe("HiddenCopyComponent", () => {
       const disabled = modelData.random.words();
       setup({ disabled });
       expect(getCopyButton()).toHaveAttribute("disabled");
+    });
+
+    it("should not copy if disabled and the copy button is clicked", () => {
+      setup({ content: modelData.authToken(), disabled: "true" });
+      spec.click(getCopyButton());
+      expect(clipboardService.copyFromContent).not.toHaveBeenCalled();
     });
   });
 
