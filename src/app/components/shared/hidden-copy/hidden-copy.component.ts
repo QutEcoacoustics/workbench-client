@@ -1,9 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 
-/**
- * Loading Animation
- */
 @Component({
   selector: "baw-hidden-copy",
   template: `
@@ -22,29 +19,36 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
         <fa-icon [icon]="['fas', 'eye']"></fa-icon>
       </button>
 
-      <pre
-        class="text-center form-control">{{ visible ? content : "..." }}<ng-content *ngIf="visible"></ng-content></pre>
+      <pre class="text-center form-control">{{ visible ? content : "..." }}<ng-content *ngIf="visible"></ng-content></pre>
 
-      <button
+      <!--
+        We use a manual trigger for the "Copied!" tooltip so that so that it is
+        only triggered by the cbOnSuccess event.
+
+        We also add the container="body" so that the tooltip can go above this
+        components top level container.
+
+        We can't add the ngbTooltip with the ngxClipboard directive otherwise
+        the content fails to copy.
+      -->
+      <span
         #copyTooltip="ngbTooltip"
-        id="copy-btn"
-        type="button"
-        class="btn"
+        ngbTooltip="Copied!"
         triggers="manual"
         container="body"
-        ngbTooltip="Copied!"
-        [ngClass]="'btn-outline-' + color"
-        [disabled]="disabled"
       >
-        <!-- ! Be careful changing how the clipboard works. It is not tested -->
-        <span
+        <button
+          id="copy-btn"
+          class="btn"
+          [ngClass]="'btn-outline-' + color"
+          [disabled]="disabled"
           ngxClipboard
           [cbContent]="value"
           (cbOnSuccess)="copyTooltip.open()"
         >
-          <fa-icon [icon]="['fas', 'copy']"></fa-icon>
-        </span>
-      </button>
+          <fa-icon id="copy-icon" [icon]="['fas', 'copy']"></fa-icon>
+        </button>
+      </span>
     </div>
   `,
   styles: [
@@ -53,13 +57,28 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
         margin: 0;
         white-space: pre-wrap;
       }
+
+      /*
+        In bootstrap, any element that is inside the same form-control has
+        its edge border radius set to 0 so that all inner form-control
+        elements are flush.
+        However, because we have wrapped the copy-btn inside a tooltip <span>,
+        bootstrap attempts to flatten the span's border radius (which is not
+        visible) instead of the copy buttons.
+        to keep consistent with the bootstrap styling, I manually flatten the
+        left edges of the copy button.
+      */
+      #copy-btn {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
     `,
   ],
 })
 export class HiddenCopyComponent {
   @Input() public color: BootstrapColorTypes = "secondary";
   @Input() public tooltip: string;
-  @Input() public disabled: string | undefined;
+  @Input() public disabled: string | boolean | undefined;
   @Input() public value: string;
   @Input() public content: string;
   public visible: boolean;
