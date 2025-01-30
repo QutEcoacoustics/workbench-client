@@ -7,7 +7,6 @@ import {
   ExecutableCommand,
   HasCreator,
   HasDescription,
-  Hash,
   Id,
   Param,
 } from "../interfaces/apiInterfaces";
@@ -33,7 +32,6 @@ export interface IScript extends HasCreator, HasDescription {
   executableSettingsMediaType?: string;
   executableSettingsName?: string;
   resources?: PbsResources;
-  analysisActionParams?: Hash;
   isLastVersion?: boolean;
   isFirstVersion?: boolean;
 }
@@ -68,8 +66,6 @@ export class Script extends AbstractModel<IScript> implements IScript {
   public readonly executableSettingsMediaType?: string;
   @bawPersistAttr()
   public readonly resources?: PbsResources;
-  @bawPersistAttr()
-  public readonly analysisActionParams?: Hash;
   public readonly isLastVersion?: boolean;
   public readonly isFirstVersion?: boolean;
 

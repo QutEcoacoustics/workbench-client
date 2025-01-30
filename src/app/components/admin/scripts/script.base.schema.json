@@ -73,15 +73,6 @@
       }
     },
     {
-      "key": "analysisActionParams",
-      "type": "textarea",
-      "props": {
-        "label": "Analysis Action Parameters",
-        "required": false,
-        "rows": 8
-      }
-    },
-    {
       "key": "verified",
       "type": "checkbox",
       "props": {
@@ -89,10 +80,43 @@
       }
     },
     {
+      "key": "isLastVersion",
+      "type": "checkbox",
+      "props": {
+        "label": "Is Last Version",
+        "disabled": true
+      }
+    },
+    {
+      "key": "isFirstVersion",
+      "type": "checkbox",
+      "props": {
+        "label": "Is First Version",
+        "disabled": true
+      }
+    },
+    {
       "key": "groupId",
       "hide": true,
       "props": {
         "label": "Group Id",
+        "disabled": true
+      }
+    },
+    {
+      "key": "provenanceId",
+      "hide": true,
+      "props": {
+        "label": "Provenance Id",
+        "disabled": true
+      }
+    },
+    {
+      "key": "resources",
+      "type": "textarea",
+      "props": {
+        "label": "PBS Resources",
+        "rows": 8,
         "disabled": true
       }
     }

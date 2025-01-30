@@ -102,6 +102,15 @@
       }
     },
     {
+      "key": "overallProgress",
+      "type": "textarea",
+      "props": {
+        "label": "Overall Progress",
+        "rows": 8,
+        "disabled": true
+      }
+    },
+    {
       "key": "overallStatus",
       "hide": true,
       "props": {
