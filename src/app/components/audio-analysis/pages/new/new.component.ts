@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import {
   audioAnalysisCategory,
-  newAudioAnalysisMenuItem,
+  newAudioAnalysisJobMenuItem,
 } from "@components/audio-analysis/audio-analysis.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 
@@ -14,7 +14,7 @@ class NewAudioAnalysisComponent extends PageComponent {}
 
 NewAudioAnalysisComponent.linkToRoute({
   category: audioAnalysisCategory,
-  pageRoute: newAudioAnalysisMenuItem,
+  pageRoute: newAudioAnalysisJobMenuItem,
 });
 
 export { NewAudioAnalysisComponent };

@@ -1,16 +1,14 @@
 import { RouterStateSnapshot } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuAction, menuRoute } from "@interfaces/menusInterfaces";
-import { StrongRoute } from "@interfaces/strongRoute";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { defaultDeleteIcon, defaultNewIcon } from "src/app/app.menus";
-
-export const audioAnalysesRoute = StrongRoute.newRoot().add("audio_analysis");
+import { analysisJobRoute, audioAnalysisRoutes } from "./audio-analysis.routes";
 
 export const audioAnalysisCategory: Category = {
   icon: ["fas", "server"],
   label: "Audio Analysis",
-  route: audioAnalysesRoute,
+  route: analysisJobRoute,
 };
 
 export const audioAnalysesMenuItem = menuRoute({
@@ -18,24 +16,22 @@ export const audioAnalysesMenuItem = menuRoute({
   label: "Audio Analysis",
   tooltip: () => "View audio analysis jobs",
   order: 5,
-  route: audioAnalysesRoute,
+  route: audioAnalysisRoutes,
 });
 
-export const newAudioAnalysisMenuItem = menuRoute({
+export const newAudioAnalysisJobMenuItem = menuRoute({
   icon: defaultNewIcon,
   label: "New Analysis Job",
   tooltip: () => "Create a custom analysis job",
-  route: audioAnalysesRoute.add("new"),
+  route: audioAnalysisRoutes.add("new"),
   parent: audioAnalysesMenuItem,
 });
 
-export const audioAnalysisRoute = audioAnalysesRoute.add(":analysisJobId");
-
-export const audioAnalysisMenuItem = menuRoute({
+export const audioAnalysisMenuJobItem = menuRoute({
   icon: ["fas", "tasks"],
   label: "Analysis Job",
   tooltip: () => "View audio analysis job",
-  route: audioAnalysisRoute,
+  route: analysisJobRoute,
   parent: audioAnalysesMenuItem,
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, AnalysisJob)?.name,
@@ -45,12 +41,12 @@ export const audioAnalysisMenuItem = menuRoute({
   },
 });
 
-export const audioAnalysisResultsMenuItem = menuRoute({
+export const audioAnalysisJobResultsMenuItem = menuRoute({
   icon: ["fas", "table"],
   label: "Results",
   tooltip: () => "View results for this analysis job",
-  route: audioAnalysisRoute.add("results"),
-  parent: audioAnalysisMenuItem,
+  route: analysisJobRoute.add("results"),
+  parent: audioAnalysisMenuJobItem,
 });
 
 export const retryFailedItemsMenuItem = menuAction({

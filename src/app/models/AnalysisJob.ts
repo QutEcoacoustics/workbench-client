@@ -1,6 +1,6 @@
 import { AUDIO_EVENT_IMPORT, SCRIPT } from "@baw-api/ServiceTokens";
 import { adminAnalysisJobMenuItem } from "@components/admin/analysis-jobs/analysis-jobs.menus";
-import { audioAnalysisMenuItem } from "@components/audio-analysis/audio-analysis.menus";
+import { audioAnalysisMenuJobItem } from "@components/audio-analysis/audio-analysis.menus";
 import { Duration } from "luxon";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import {
@@ -143,7 +143,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   }
 
   public get viewUrl(): string {
-    return audioAnalysisMenuItem.route.format({
+    return audioAnalysisMenuJobItem.route.format({
       analysisJobId: this.id,
     });
   }

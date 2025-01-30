@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import {
   audioAnalysesMenuItem,
   audioAnalysisCategory,
-  newAudioAnalysisMenuItem,
+  newAudioAnalysisJobMenuItem,
 } from "@components/audio-analysis/audio-analysis.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { List } from "immutable";
@@ -17,7 +17,7 @@ class AudioAnalysesComponent extends PageComponent {}
 AudioAnalysesComponent.linkToRoute({
   category: audioAnalysisCategory,
   pageRoute: audioAnalysesMenuItem,
-  menus: { actions: List([newAudioAnalysisMenuItem]) },
+  menus: { actions: List([newAudioAnalysisJobMenuItem]) },
 });
 
 export { AudioAnalysesComponent };

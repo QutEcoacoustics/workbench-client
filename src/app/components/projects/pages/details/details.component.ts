@@ -37,6 +37,7 @@ import { List } from "immutable";
 import { ToastrService } from "ngx-toastr";
 import { merge, Observable, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
+import { audioAnalysesMenuItem } from "@components/audio-analysis/audio-analysis.menus";
 
 export const projectMenuItemActions = [
   visualizeMenuItem,
@@ -51,6 +52,7 @@ export const projectMenuItemActions = [
   harvestsMenuItem,
   reportMenuItems.new.project,
   annotationMenuItems.search.project,
+  audioAnalysesMenuItem,
 ];
 
 const projectKey = "project";

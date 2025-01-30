@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
 import {
   audioAnalysisCategory,
-  audioAnalysisResultsMenuItem,
+  audioAnalysisJobResultsMenuItem,
   downloadAudioAnalysisResultsMenuItem,
 } from "@components/audio-analysis/audio-analysis.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -20,7 +20,7 @@ class AudioAnalysisResultsComponent extends PageComponent {}
 
 AudioAnalysisResultsComponent.linkToRoute({
   category: audioAnalysisCategory,
-  pageRoute: audioAnalysisResultsMenuItem,
+  pageRoute: audioAnalysisJobResultsMenuItem,
   menus: {
     actions: List([downloadAudioAnalysisResultsMenuItem]),
     actionWidgets: List([permissionsWidgetMenuItem]),

@@ -2,8 +2,8 @@ import { Component } from "@angular/core";
 import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
 import {
   audioAnalysisCategory,
-  audioAnalysisMenuItem,
-  audioAnalysisResultsMenuItem,
+  audioAnalysisMenuJobItem,
+  audioAnalysisJobResultsMenuItem,
   deleteAudioAnalysisMenuItem,
   pauseProcessingMenuItem,
   retryFailedItemsMenuItem,
@@ -23,10 +23,10 @@ class AudioAnalysisComponent extends PageComponent {}
 
 AudioAnalysisComponent.linkToRoute({
   category: audioAnalysisCategory,
-  pageRoute: audioAnalysisMenuItem,
+  pageRoute: audioAnalysisMenuJobItem,
   menus: {
     actions: List([
-      audioAnalysisResultsMenuItem,
+      audioAnalysisJobResultsMenuItem,
       retryFailedItemsMenuItem,
       pauseProcessingMenuItem,
       deleteAudioAnalysisMenuItem,
