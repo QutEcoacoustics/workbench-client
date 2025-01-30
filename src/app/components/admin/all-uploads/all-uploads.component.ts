@@ -1,9 +1,6 @@
 import { Component } from "@angular/core";
 import { List } from "immutable";
 import { ListComponent } from "@components/harvest/pages/list/list.component";
-import { ActivatedRoute } from "@angular/router";
-import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { adminCategory, adminUploadsMenuItem } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
 
@@ -12,14 +9,6 @@ import { adminMenuItemActions } from "../dashboard/dashboard.component";
   templateUrl: "../../harvest/pages/list/list.component.html",
 })
 class AllUploadsComponent extends ListComponent {
-  public constructor(
-    private modal: NgbModal,
-    private api: ShallowHarvestsService,
-    private activatedRoute: ActivatedRoute
-  ) {
-    super(modal, api, activatedRoute);
-  }
-
   public override get project() {
     return null;
   }
