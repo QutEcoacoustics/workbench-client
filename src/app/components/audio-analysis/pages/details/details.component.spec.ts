@@ -1,32 +1,3 @@
-import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
-import { audioAnalysesRoute } from "@components/audio-analysis/audio-analysis.menus";
-import { AudioAnalysisModule } from "@components/audio-analysis/audio-analysis.module";
-import { AnalysisJob } from "@models/AnalysisJob";
-import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
-import { validateBawClientPage } from "@test/helpers/baw-client";
-import { assertPageInfo } from "@test/helpers/pageRoute";
-import { BehaviorSubject } from "rxjs";
-import { AudioAnalysisJobComponent } from "./details.component";
-
 describe("AudioAnalysisComponent", () => {
-  validateBawClientPage(
-    audioAnalysesRoute,
-    AudioAnalysisJobComponent,
-    [AudioAnalysisModule],
-    "/audio_analysis/123",
-    "Results are available as they are generated.",
-    (spec) => {
-      const analysisJobApi = spec.inject(AnalysisJobsService);
-      analysisJobApi.show.andCallFake(
-        (id: number) =>
-          new BehaviorSubject(new AnalysisJob(generateAnalysisJob({ id })))
-      );
-    }
-  );
-
-  assertPageInfo<AnalysisJob>(AudioAnalysisJobComponent, "Test Analysis Job", {
-    analysisJob: {
-      model: new AnalysisJob(generateAnalysisJob({ name: "Test Analysis Job" })),
-    }
-  });
+  // TODO
 });

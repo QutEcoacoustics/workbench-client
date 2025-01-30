@@ -4,7 +4,7 @@ import { Category, menuAction, menuRoute } from "@interfaces/menusInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { defaultDeleteIcon, defaultNewIcon, isAdminPredicate, isProjectWriterPredicate } from "src/app/app.menus";
 import { projectMenuItem } from "@components/projects/projects.menus";
-import { analysisJobRoute, audioAnalysisRoutes } from "./audio-analysis.routes";
+import { analysisJobRoute, audioAnalysisRoute } from "./audio-analysis.routes";
 
 export const audioAnalysisCategory = {
   icon: ["fas", "server"],
@@ -18,14 +18,14 @@ export const audioAnalysesMenuItem = menuRoute({
   tooltip: () => "View audio analysis jobs",
   order: 5,
   parent: projectMenuItem,
-  route: audioAnalysisRoutes,
+  route: audioAnalysisRoute,
 });
 
 export const newAudioAnalysisJobMenuItem = menuRoute({
   icon: defaultNewIcon,
   label: "New Analysis Job",
   tooltip: () => "Create a custom analysis job",
-  route: audioAnalysisRoutes.add("new"),
+  route: audioAnalysisRoute.add("new"),
   parent: audioAnalysesMenuItem,
   primaryBackground: true,
 

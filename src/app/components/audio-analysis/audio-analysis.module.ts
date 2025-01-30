@@ -6,7 +6,7 @@ import { AudioAnalysisJobComponent } from "./pages/details/details.component";
 import { AudioAnalysesComponent } from "./pages/list/list.component";
 import { NewAudioAnalysisComponent } from "./pages/new/new.component";
 import { AudioAnalysisResultsComponent } from "./pages/results/results.component";
-import { audioAnalysisRoutes } from "./audio-analysis.routes";
+import { audioAnalysisRoute } from "./audio-analysis.routes";
 
 const components = [
   AudioAnalysesComponent,
@@ -15,7 +15,7 @@ const components = [
   AudioAnalysisResultsComponent,
 ];
 
-const routes = audioAnalysisRoutes.compileRoutes(getRouteConfigForPage);
+const routes = audioAnalysisRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: components,

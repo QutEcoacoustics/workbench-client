@@ -1,15 +1,15 @@
 import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
-import { audioAnalysesRoute } from "@components/audio-analysis/audio-analysis.menus";
 import { AudioAnalysisModule } from "@components/audio-analysis/audio-analysis.module";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
 import { validateBawClientPage } from "@test/helpers/baw-client";
 import { BehaviorSubject } from "rxjs";
+import { audioAnalysisRoute } from "@components/audio-analysis/audio-analysis.routes";
 import { AudioAnalysisResultsComponent } from "./results.component";
 
 describe("AudioAnalysisResultsComponent", () => {
   validateBawClientPage(
-    audioAnalysesRoute,
+    audioAnalysisRoute,
     AudioAnalysisResultsComponent,
     [AudioAnalysisModule],
     "/audio_analysis/123/results",
