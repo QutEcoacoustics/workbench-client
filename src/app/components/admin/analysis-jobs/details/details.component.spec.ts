@@ -34,7 +34,7 @@ describe("AdminAnalysisJobComponent", () => {
 
   assertPageInfo<AnalysisJob>(AdminAnalysisJobComponent, "test name", {
     analysisJob: {
-      model: new AnalysisJob(generateAnalysisJob({ name: "test name" }))
+      model: new AnalysisJob(generateAnalysisJob({ name: "test name" })),
     },
   });
 

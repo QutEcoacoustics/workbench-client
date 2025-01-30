@@ -3,19 +3,21 @@ import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuAction, menuRoute } from "@interfaces/menusInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { defaultDeleteIcon, defaultNewIcon } from "src/app/app.menus";
+import { projectMenuItem } from "@components/projects/projects.menus";
 import { analysisJobRoute, audioAnalysisRoutes } from "./audio-analysis.routes";
 
-export const audioAnalysisCategory: Category = {
+export const audioAnalysisCategory = {
   icon: ["fas", "server"],
   label: "Audio Analysis",
   route: analysisJobRoute,
-};
+} satisfies Category;
 
 export const audioAnalysesMenuItem = menuRoute({
   icon: ["fas", "server"],
   label: "Audio Analysis",
   tooltip: () => "View audio analysis jobs",
   order: 5,
+  parent: projectMenuItem,
   route: audioAnalysisRoutes,
 });
 
@@ -25,6 +27,7 @@ export const newAudioAnalysisJobMenuItem = menuRoute({
   tooltip: () => "Create a custom analysis job",
   route: audioAnalysisRoutes.add("new"),
   parent: audioAnalysesMenuItem,
+  primaryBackground: true,
 });
 
 export const audioAnalysisMenuJobItem = menuRoute({

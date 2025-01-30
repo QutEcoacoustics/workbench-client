@@ -1,4 +1,4 @@
-import { AUDIO_EVENT_IMPORT, SCRIPT } from "@baw-api/ServiceTokens";
+import { AUDIO_EVENT_IMPORT, PROJECT, SCRIPT } from "@baw-api/ServiceTokens";
 import { adminAnalysisJobMenuItem } from "@components/admin/analysis-jobs/analysis-jobs.menus";
 import { audioAnalysisMenuJobItem } from "@components/audio-analysis/audio-analysis.menus";
 import { Duration } from "luxon";
@@ -14,7 +14,7 @@ import {
   Param,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { creator, deleter, hasMany, updater } from "./AssociationDecorators";
+import { creator, deleter, hasMany, hasOne, updater } from "./AssociationDecorators";
 import {
   bawBytes,
   bawCollection,
@@ -26,6 +26,7 @@ import type { Script } from "./Script";
 import type { User } from "./User";
 import { AssociationInjector } from "./ImplementsInjector";
 import { AudioEventImport } from "./AudioEventImport";
+import { Project } from "./Project";
 
 export type AnalysisJobStatus =
   | "beforeSave"
@@ -60,6 +61,7 @@ export interface IAnalysisJob extends HasAllUsers, HasDescription, HasFilter {
   name?: Param;
   scriptIds?: Id[] | Ids;
   audioEventImportIds?: Id[] | Ids;
+  projectId?: Id;
 
   ongoing?: boolean;
   systemJob?: boolean;
@@ -96,6 +98,8 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
+  @bawPersistAttr()
+  public readonly projectId?: Id;
   @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
   @bawDateTime()
@@ -133,6 +137,8 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public updater?: User;
   @deleter<AnalysisJob>()
   public deleter?: User;
+  @hasOne<AnalysisJob, Project>(PROJECT, "projectId")
+  public project?: Project;
   @hasMany<AnalysisJob, Script>(SCRIPT, "scriptIds")
   public scripts?: Script[];
   @hasMany<AnalysisJob, AudioEventImport>(AUDIO_EVENT_IMPORT, "audioEventImportIds")
@@ -143,8 +149,13 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   }
 
   public get viewUrl(): string {
+    if (this.systemJob || this.projectId === null) {
+      return this.adminViewUrl;
+    }
+
     return audioAnalysisMenuJobItem.route.format({
       analysisJobId: this.id,
+      projectId: this.projectId,
     });
   }
 

@@ -16,10 +16,13 @@ import { ActivatedRoute } from "@angular/router";
 import { retrieveResolvers, hasResolvedSuccessfully } from "@baw-api/resolver-common";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AnalysisJob } from "@models/AnalysisJob";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { Project } from "@models/Project";
 import schema from "../../analysis-job.schema.json";
 
 const audioAnalysisKey = "audioAnalysis";
 const analysisJobKey = "analysisJob";
+const projectKey = "project";
 
 @Component({
   selector: "baw-audio-analysis",
@@ -32,6 +35,7 @@ class AudioAnalysisJobComponent
   public analysisJob: AnalysisJob;
   public failure: boolean;
   public fields = schema.fields;
+  public project: Project;
 
   public constructor(private route: ActivatedRoute) {
     super();
@@ -47,6 +51,7 @@ class AudioAnalysisJobComponent
     }
 
     this.analysisJob = models[analysisJobKey] as AnalysisJob;
+    this.project = models[projectKey] as Project;
   }
 }
 
@@ -62,7 +67,10 @@ AudioAnalysisJobComponent.linkToRoute({
     ]),
     actionWidgets: List([permissionsWidgetMenuItem]),
   },
-  resolvers: { [audioAnalysisKey]: analysisJobResolvers.show },
+  resolvers: {
+    [audioAnalysisKey]: analysisJobResolvers.show,
+    [projectKey]: projectResolvers.show,
+  },
 });
 
 export { AudioAnalysisJobComponent };
