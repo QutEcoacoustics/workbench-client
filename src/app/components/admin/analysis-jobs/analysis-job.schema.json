@@ -46,35 +46,51 @@
       }
     },
     {
-      "key": "script",
+      "key": "scripts",
       "hide": true,
       "props": {
-        "label": "Script",
+        "label": "Scripts",
         "disabled": true
       }
     },
     {
-      "key": "scriptId",
+      "key": "scriptIds",
       "type": "input",
       "props": {
-        "label": "Script Id",
+        "label": "Script Ids",
         "type": "text"
       }
     },
     {
-      "key": "savedSearch",
+      "key": "audioEventImports",
       "hide": true,
       "props": {
-        "label": "Saved Search",
-        "disabled": true
+        "label": "Audio Event Imports",
+        "type": "text"
       }
     },
     {
-      "key": "savedSearchId",
+      "key": "audioEventImportIds",
       "type": "input",
       "props": {
-        "label": "Saved Search Id",
+        "label": "Audio Event Import Ids",
         "type": "text"
+      }
+    },
+    {
+      "key": "ongoing",
+      "type": "checkbox",
+      "props": {
+        "label": "Ongoing",
+        "type": "checkbox"
+      }
+    },
+    {
+      "key": "systemJon",
+      "type": "checkbox",
+      "props": {
+        "label": "System Job",
+        "type": "checkbox"
       }
     },
     {
@@ -131,6 +147,38 @@
       "props": {
         "label": "Overall Data Length Humanized",
         "disabled": true
+      }
+    },
+    {
+      "key": "amendCount",
+      "type": "text",
+      "props": {
+        "label": "Amend Count",
+        "type": "text"
+      }
+    },
+    {
+      "key": "resumeCount",
+      "type": "text",
+      "props": {
+        "label": "Resume Count",
+        "type": "text"
+      }
+    },
+    {
+      "key": "retryCount",
+      "type": "text",
+      "props": {
+        "label": "Retry Count",
+        "type": "text"
+      }
+    },
+    {
+      "key": "suspendCount",
+      "type": "text",
+      "props": {
+        "label": "Suspend Count",
+        "type": "text"
       }
     },
     {

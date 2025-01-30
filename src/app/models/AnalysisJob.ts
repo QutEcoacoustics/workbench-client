@@ -9,7 +9,6 @@ import {
   HasAllUsers,
   HasDescription,
   HasFilter,
-  Hash,
   Id,
   Ids,
   Param,
@@ -69,7 +68,7 @@ export interface IAnalysisJob extends HasAllUsers, HasDescription, HasFilter {
 
   overallStatus?: AnalysisJobStatus;
   overallStatusModifiedAt?: DateTimeTimezone | string;
-  overallProgress?: Hash;
+  overallProgress?: OverallProgress;
   overallProgressModifiedAt?: DateTimeTimezone | string;
   overallCount?: number;
   overallDurationSeconds?: number;
@@ -117,7 +116,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly overallStatus?: AnalysisJobStatus;
   @bawDateTime()
   public readonly overallStatusModifiedAt?: DateTimeTimezone;
-  public readonly overallProgress?: Hash;
+  public readonly overallProgress?: OverallProgress;
   @bawDateTime()
   public readonly overallProgressModifiedAt?: DateTimeTimezone;
   public readonly overallCount?: number;
@@ -136,7 +135,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   @deleter<AnalysisJob>()
   public deleter?: User;
   @hasMany<AnalysisJob, Script>(SCRIPT, "scriptIds")
-  public script?: Script[];
+  public scripts?: Script[];
   @hasMany<AnalysisJob, AudioEventImport>(AUDIO_EVENT_IMPORT, "audioEventImportIds")
   public audioEventImports?: AudioEventImport[];
 

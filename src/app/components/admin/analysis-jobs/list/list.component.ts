@@ -3,7 +3,7 @@ import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
 import { adminAnalysisJobsMenuItem } from "@components/admin/admin.menus";
 import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.component";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { Id, Param } from "@interfaces/apiInterfaces";
+import { Id, Ids, Param } from "@interfaces/apiInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { List } from "immutable";
 import { adminAnalysisJobsCategory } from "../analysis-jobs.menus";
@@ -39,7 +39,7 @@ class AdminAnalysisJobsComponent
       analysisJobs.map((analysisJob) => ({
         id: analysisJob.id,
         name: analysisJob.name,
-        script: analysisJob.scriptId,
+        scripts: analysisJob.scriptIds,
         creator: analysisJob.creatorId,
         started: analysisJob.startedAt?.toRelative(),
         status: analysisJob.overallStatus,
@@ -61,7 +61,7 @@ export { AdminAnalysisJobsComponent };
 interface TableRow {
   id: Id;
   name: Param;
-  script: Id;
+  scripts: Ids;
   creator: Id;
   started: string;
   status: string;
