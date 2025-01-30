@@ -6,12 +6,12 @@ import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
 import { validateBawClientPage } from "@test/helpers/baw-client";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { BehaviorSubject } from "rxjs";
-import { AudioAnalysisComponent } from "./details.component";
+import { AudioAnalysisJobComponent } from "./details.component";
 
 describe("AudioAnalysisComponent", () => {
   validateBawClientPage(
     audioAnalysesRoute,
-    AudioAnalysisComponent,
+    AudioAnalysisJobComponent,
     [AudioAnalysisModule],
     "/audio_analysis/123",
     "Results are available as they are generated.",
@@ -24,7 +24,7 @@ describe("AudioAnalysisComponent", () => {
     }
   );
 
-  assertPageInfo<AnalysisJob>(AudioAnalysisComponent, "Test Analysis Job", {
+  assertPageInfo<AnalysisJob>(AudioAnalysisJobComponent, "Test Analysis Job", {
     analysisJob: {
       model: new AnalysisJob(generateAnalysisJob({ name: "Test Analysis Job" })),
     }
