@@ -1,8 +1,10 @@
-import { SCRIPT } from "@baw-api/ServiceTokens";
+import { AUDIO_EVENT_PROVENANCE, SCRIPT } from "@baw-api/ServiceTokens";
 import { adminScriptMenuItem } from "@components/admin/scripts/scripts.menus";
+import { PbsResources } from "@interfaces/pbsInterfaces";
 import {
   DateTimeTimezone,
   Description,
+  ExecutableCommand,
   HasCreator,
   HasDescription,
   Hash,
@@ -13,6 +15,7 @@ import { AbstractModel } from "./AbstractModel";
 import { creator, hasOne } from "./AssociationDecorators";
 import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import type { User } from "./User";
+import { AudioEventProvenance } from "./AudioEventProvenance";
 
 /**
  * A script model
@@ -24,10 +27,15 @@ export interface IScript extends HasCreator, HasDescription {
   version?: number;
   verified?: boolean;
   groupId?: Id;
-  executableCommand?: string;
+  provenanceId?: Id;
+  executableCommand?: ExecutableCommand;
   executableSettings?: string;
   executableSettingsMediaType?: string;
+  executableSettingsName?: string;
+  resources?: PbsResources;
   analysisActionParams?: Hash;
+  isLastVersion?: boolean;
+  isFirstVersion?: boolean;
 }
 
 export class Script extends AbstractModel<IScript> implements IScript {
@@ -46,6 +54,7 @@ export class Script extends AbstractModel<IScript> implements IScript {
   @bawPersistAttr()
   public readonly verified?: boolean;
   public readonly groupId?: Id;
+  public readonly provenanceId?: Id;
   public readonly creatorId?: Id;
   @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
@@ -54,15 +63,23 @@ export class Script extends AbstractModel<IScript> implements IScript {
   @bawPersistAttr()
   public readonly executableSettings?: string;
   @bawPersistAttr()
+  public readonly executableSettingsName?: string;
+  @bawPersistAttr()
   public readonly executableSettingsMediaType?: string;
   @bawPersistAttr()
+  public readonly resources?: PbsResources;
+  @bawPersistAttr()
   public readonly analysisActionParams?: Hash;
+  public readonly isLastVersion?: boolean;
+  public readonly isFirstVersion?: boolean;
 
   // Associations
   @creator<Script>()
   public creator?: User;
   @hasOne<Script, Script>(SCRIPT, "groupId")
   public group?: Script;
+  @hasOne<Script, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenanceId")
+  public provenance?: AudioEventProvenance;
 
   public get viewUrl(): string {
     throw new Error("Script viewUrl not implemented.");
