@@ -8,6 +8,7 @@ import {
 } from "@interfaces/apiInterfaces";
 import { faker } from "@faker-js/faker";
 import { DateTime, Duration } from "luxon";
+import { PbsResources } from "@interfaces/pbsInterfaces";
 
 const specialCharRegex = /[^\w\s]/gi;
 
@@ -89,6 +90,12 @@ export const modelData = {
     }),
   dateTime: (): DateTime => DateTime.fromJSDate(faker.date.past()),
   uuid: () => faker.datatype.uuid(),
+  pbsResources: (): Required<PbsResources> => ({
+    ncpus: modelData.datatype.number(),
+    ngpus: modelData.datatype.number(),
+    mem: modelData.datatype.number(),
+    walltime: modelData.datatype.number(),
+  }),
   hexaDecimal,
   randomArray,
   randomObject,

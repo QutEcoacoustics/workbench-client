@@ -28,6 +28,9 @@
       "datetime",
       "luxon",
       "datatable",
+      "ncpus",
+      "ngpus",
+      "walltime"
     ],
     "cSpell.ignorePaths": [
       "**/.git/objects/**",

@@ -38,19 +38,22 @@ export type AnalysisJobStatus =
 
 export interface OverallProgress {
   statusNewCount?: number;
-  resultEmptyCount?: number;
+
+  resultSuccessCount?: number;
   resultFailedCount?: number;
   resultKilledCount?: number;
+  resultCancelledCount?: number;
+  resultEmptyCount?: number;
+
   statusQueuedCount?: number;
-  resultSuccessCount?: number;
   statusWorkingCount?: number;
   statusFinishedCount?: number;
-  resultCancelledCount?: number;
-  transitionEmptyCount?: number;
+
   transitionQueueCount?: number;
+  transitionFinishedCount?: number;
   transitionRetryCount?: number;
   transitionCancelCount?: number;
-  transitionFinishedCount?: number;
+  transitionEmptyCount?: number;
 }
 
 /**
