@@ -9,7 +9,11 @@ import { adminAnalysisJobsCategory } from "../analysis-jobs.menus";
   selector: "baw-admin-analysis-jobs",
   templateUrl: "../../../audio-analysis/pages/list/list.component.html",
 })
-class AdminAnalysisJobsComponent extends AudioAnalysesComponent { }
+class AdminAnalysisJobsComponent extends AudioAnalysesComponent {
+  public override get project() {
+    return null;
+  }
+ }
 
 AdminAnalysisJobsComponent.linkToRoute({
   category: adminAnalysisJobsCategory,

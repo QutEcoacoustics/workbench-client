@@ -1,23 +1,20 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
+import { Filters } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import {
-  hasResolvedSuccessfully,
-  retrieveResolvers,
-} from "@baw-api/resolver-common";
 import {
   audioAnalysesMenuItem,
   audioAnalysisCategory,
   newAudioAnalysisJobMenuItem,
 } from "@components/audio-analysis/audio-analysis.menus";
-import { IPageInfo } from "@helpers/page/pageInfo";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Param } from "@interfaces/apiInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { DateTime } from "luxon";
+import { Observable } from "rxjs";
 
 interface TableRow {
   name: Param;
@@ -35,10 +32,24 @@ const projectKey = "project";
   selector: "baw-audio-analyses",
   templateUrl: "list.component.html",
 })
-class AudioAnalysesComponent
-  extends PagedTableTemplate<TableRow, AnalysisJob>
-  implements OnInit
-{
+class AudioAnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
+  public constructor(
+    protected api: AnalysisJobsService,
+    protected route: ActivatedRoute
+  ) {
+    super(api, (analysisJobs) =>
+      analysisJobs.map((analysisJob) => ({
+        name: analysisJob.name,
+        scripts: analysisJob,
+        creator: analysisJob,
+        started: analysisJob.startedAt,
+        status: analysisJob.overallStatus,
+        statusUpdated: analysisJob.overallStatusModifiedAt,
+        model: analysisJob,
+      }))
+    );
+  }
+
   public columns = [
     { name: "Id" },
     { name: "Name" },
@@ -58,37 +69,36 @@ class AudioAnalysesComponent
     statusUpdated: "overallStatusModifiedAt",
   };
 
-  public constructor(
-    protected api: AnalysisJobsService,
-    protected route: ActivatedRoute
-  ) {
-    super(api, (analysisJobs) =>
-      analysisJobs.map((analysisJob) => ({
-        name: analysisJob.name,
-        scripts: analysisJob,
-        creator: analysisJob,
-        started: analysisJob.startedAt,
-        status: analysisJob.overallStatus,
-        statusUpdated: analysisJob.overallStatusModifiedAt,
-        model: analysisJob,
-      }))
-    );
+  public get project(): Project {
+    return this.route.snapshot.data[projectKey].model;
   }
 
-  public project: Project;
+  protected override apiAction(
+    filters: Filters<AnalysisJob>
+  ): Observable<AnalysisJob[]> {
+    const filterByProject: Filters<AnalysisJob> = {
+      filter: {
+        or: {
+          projectId: { eq: this.project?.id },
+          systemJob: { eq: true },
+        },
+      },
+    };
 
-  public ngOnInit(): void {
-    const data = this.route.snapshot.data;
-    const models = retrieveResolvers(data as IPageInfo);
+    const projectScopeFilter: Filters<AnalysisJob> = this.project
+      ? filterByProject
+      : {};
 
-    if (!hasResolvedSuccessfully(models)) {
-      this.failure = true;
-      return;
+    const actionedFilters = {
+      ...projectScopeFilter,
+      ...filters,
+    } satisfies Filters<AnalysisJob>;
+
+    if (this.project) {
+      return this.api.filter(actionedFilters);
     }
 
-    this.project = models[projectKey] as Project;
-
-    super.ngOnInit();
+    return this.api.filter(actionedFilters);
   }
 }
 
