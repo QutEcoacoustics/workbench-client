@@ -105,6 +105,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   @bawDateTime()
   public readonly startedAt?: DateTimeTimezone;
   @bawPersistAttr({ create: true, update: true, convertCase: true })
+  public readonly overallStatus?: AnalysisJobStatus;
 
   public readonly amendCount?: number;
   public readonly ongoing?: boolean;
@@ -112,8 +113,6 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly resumeCount?: number;
   public readonly retryCount?: number;
   public readonly suspendCount?: number;
-
-  public readonly overallStatus?: AnalysisJobStatus;
   @bawDateTime()
   public readonly overallStatusModifiedAt?: DateTimeTimezone;
   public readonly overallProgress?: OverallProgress;
