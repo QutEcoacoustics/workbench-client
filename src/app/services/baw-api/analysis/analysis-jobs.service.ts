@@ -9,7 +9,7 @@ import {
   IdOr,
   IdParamOptional,
   option,
-  ReadAndUpdateApi,
+  StandardApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
@@ -22,8 +22,21 @@ const endpoint = stringTemplate`/analysis_jobs/${analysisJobId}${option}`;
  * Handles API routes pertaining to analysis job models.
  */
 @Injectable()
-export class AnalysisJobsService implements ReadAndUpdateApi<AnalysisJob> {
+export class AnalysisJobsService implements StandardApi<AnalysisJob> {
   public constructor(private api: BawApiService<AnalysisJob>) {}
+
+  public destroy(): Observable<AnalysisJob> {
+    throw new Error("Method not implemented.");
+  }
+
+  public create(model: AnalysisJob): Observable<AnalysisJob> {
+    return this.api.create(
+      AnalysisJob,
+      endpoint(emptyParam, emptyParam),
+      (analysisJob) => endpoint(analysisJob, emptyParam),
+      model
+    );
+  }
 
   public list(): Observable<AnalysisJob[]> {
     return this.api.list(AnalysisJob, endpoint(emptyParam, emptyParam));

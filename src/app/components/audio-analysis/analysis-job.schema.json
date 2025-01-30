@@ -86,7 +86,7 @@
       }
     },
     {
-      "key": "systemJon",
+      "key": "systemJob",
       "type": "checkbox",
       "props": {
         "label": "System Job",
@@ -104,6 +104,7 @@
     {
       "key": "overallProgress",
       "type": "textarea",
+      "hide": true,
       "props": {
         "label": "Overall Progress",
         "rows": 8,

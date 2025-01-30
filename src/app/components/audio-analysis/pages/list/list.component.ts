@@ -80,7 +80,7 @@ class AudioAnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
       filter: {
         or: {
           projectId: { eq: this.project?.id },
-          systemJob: { eq: true },
+          systemJob: { eq: true }
         },
       },
     };

@@ -82,6 +82,7 @@
     {
       "key": "isLastVersion",
       "type": "checkbox",
+      "hide": true,
       "props": {
         "label": "Is Last Version",
         "disabled": true
@@ -90,6 +91,7 @@
     {
       "key": "isFirstVersion",
       "type": "checkbox",
+      "hide": true,
       "props": {
         "label": "Is First Version",
         "disabled": true
@@ -114,6 +116,7 @@
     {
       "key": "resources",
       "type": "textarea",
+      "hide": true,
       "props": {
         "label": "PBS Resources",
         "rows": 8,

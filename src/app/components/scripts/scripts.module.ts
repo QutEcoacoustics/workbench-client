@@ -6,7 +6,7 @@ import { AdminScriptComponent } from "./details/details.component";
 import { AdminScriptsEditComponent } from "./edit/edit.component";
 import { AdminScriptsComponent } from "./list/list.component";
 import { AdminScriptsNewComponent } from "./new/new.component";
-import { adminScriptsRoute } from "./scripts.menus";
+import { scriptsRoute } from "./scripts.routes";
 
 const components = [
   AdminScriptsComponent,
@@ -14,7 +14,7 @@ const components = [
   AdminScriptsNewComponent,
   AdminScriptsEditComponent,
 ];
-const routes = adminScriptsRoute.compileRoutes(getRouteConfigForPage);
+const routes = scriptsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: components,

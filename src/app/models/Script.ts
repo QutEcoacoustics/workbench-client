@@ -1,6 +1,6 @@
 import { AUDIO_EVENT_PROVENANCE, SCRIPT } from "@baw-api/ServiceTokens";
-import { adminScriptMenuItem } from "@components/admin/scripts/scripts.menus";
 import { PbsResources } from "@interfaces/pbsInterfaces";
+import { scriptMenuItem } from "@components/scripts/scripts.menus";
 import {
   DateTimeTimezone,
   Description,
@@ -78,10 +78,6 @@ export class Script extends AbstractModel<IScript> implements IScript {
   public provenance?: AudioEventProvenance;
 
   public get viewUrl(): string {
-    throw new Error("Script viewUrl not implemented.");
-  }
-
-  public get adminViewUrl(): string {
-    return adminScriptMenuItem.route.format({ scriptId: this.id });
+    return scriptMenuItem.route.format({ scriptId: this.id });
   }
 }

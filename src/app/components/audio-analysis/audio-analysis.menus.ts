@@ -2,7 +2,7 @@ import { RouterStateSnapshot } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuAction, menuRoute } from "@interfaces/menusInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { defaultDeleteIcon, defaultNewIcon, isProjectWriterPredicate } from "src/app/app.menus";
+import { defaultDeleteIcon, defaultNewIcon, isAdminPredicate, isProjectWriterPredicate } from "src/app/app.menus";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { analysisJobRoute, audioAnalysisRoutes } from "./audio-analysis.routes";
 
@@ -28,7 +28,10 @@ export const newAudioAnalysisJobMenuItem = menuRoute({
   route: audioAnalysisRoutes.add("new"),
   parent: audioAnalysesMenuItem,
   primaryBackground: true,
-  predicate: isProjectWriterPredicate,
+
+  // TODO: I have hidden the new analysis job menu item behind the isAdmin
+  // predicate because it is not currently functional
+  predicate: isAdminPredicate,
 });
 
 export const audioAnalysisMenuJobItem = menuRoute({

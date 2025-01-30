@@ -30,6 +30,7 @@ import { TitleStrategy } from "@angular/router";
 import { AnnotationsImportModule } from "@components/import-annotations/import-annotations.module";
 import { WebsiteStatusModule } from "@components/website-status/website-status.module";
 import { AnnotationModule } from "@components/annotations/annotation.module";
+import { ScriptsModule } from "@components/scripts/scripts.module";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { toastrRoot } from "./app.helper";
@@ -65,6 +66,7 @@ export const appImports = [
   AboutModule,
   AdminModule,
   AudioAnalysisModule,
+  ScriptsModule,
   AudioRecordingModule,
   CitizenScienceModule,
   DataRequestModule,
