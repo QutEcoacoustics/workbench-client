@@ -37,7 +37,7 @@ export const adminAnalysisJobsMenuItem = menuRoute({
 
 export const adminJobStatusMenuItem = menuLink({
   icon: ["fas", "tasks"],
-  label: "Job Status",
+  label: "Worker Status",
   tooltip: () => "Job queue status overview",
   uri: () => "/job_queue_status/overview",
   parent: adminDashboardMenuItem,

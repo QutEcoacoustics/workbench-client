@@ -1,40 +1,72 @@
-import { SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
+import { AUDIO_EVENT_IMPORT, SCRIPT } from "@baw-api/ServiceTokens";
 import { adminAnalysisJobMenuItem } from "@components/admin/analysis-jobs/analysis-jobs.menus";
 import { audioAnalysisMenuItem } from "@components/audio-analysis/audio-analysis.menus";
 import { Duration } from "luxon";
+import { InnerFilter } from "@baw-api/baw-api.service";
 import {
   DateTimeTimezone,
   Description,
   HasAllUsers,
   HasDescription,
+  HasFilter,
   Hash,
   Id,
+  Ids,
   Param,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { creator, deleter, hasOne, updater } from "./AssociationDecorators";
+import { creator, deleter, hasMany, updater } from "./AssociationDecorators";
 import {
   bawBytes,
+  bawCollection,
   bawDateTime,
   bawDuration,
   bawPersistAttr,
 } from "./AttributeDecorators";
-import type { SavedSearch } from "./SavedSearch";
 import type { Script } from "./Script";
 import type { User } from "./User";
 import { AssociationInjector } from "./ImplementsInjector";
+import { AudioEventImport } from "./AudioEventImport";
+
+export type AnalysisJobStatus =
+  | "beforeSave"
+  | "new"
+  | "preparing"
+  | "processing"
+  | "suspended"
+  | "completed";
+
+export interface OverallProgress {
+  statusNewCount?: number;
+  resultEmptyCount?: number;
+  resultFailedCount?: number;
+  resultKilledCount?: number;
+  statusQueuedCount?: number;
+  resultSuccessCount?: number;
+  statusWorkingCount?: number;
+  statusFinishedCount?: number;
+  resultCancelledCount?: number;
+  transitionEmptyCount?: number;
+  transitionQueueCount?: number;
+  transitionRetryCount?: number;
+  transitionCancelCount?: number;
+  transitionFinishedCount?: number;
+}
 
 /**
  * An analysis job model.
  */
-export interface IAnalysisJob extends HasAllUsers, HasDescription {
+export interface IAnalysisJob extends HasAllUsers, HasDescription, HasFilter {
   id?: Id;
   name?: Param;
-  annotationName?: Param;
-  customSettings?: Hash;
-  scriptId?: Id;
-  savedSearchId?: Id;
+  scriptIds?: Id[] | Ids;
+  audioEventImportIds?: Id[] | Ids;
+
+  ongoing?: boolean;
+  systemJob?: boolean;
+
   startedAt?: DateTimeTimezone | string;
+
   overallStatus?: AnalysisJobStatus;
   overallStatusModifiedAt?: DateTimeTimezone | string;
   overallProgress?: Hash;
@@ -42,6 +74,11 @@ export interface IAnalysisJob extends HasAllUsers, HasDescription {
   overallCount?: number;
   overallDurationSeconds?: number;
   overallDataLengthBytes?: number;
+
+  amendCount?: number;
+  resumeCount?: number;
+  retryCount?: number;
+  suspendCount?: number;
 }
 
 export class AnalysisJob extends AbstractModel implements IAnalysisJob {
@@ -49,15 +86,14 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly id?: Id;
   @bawPersistAttr()
   public readonly name?: Param;
-  @bawPersistAttr()
-  public readonly annotationName?: Param;
-  @bawPersistAttr()
-  public readonly customSettings?: Hash;
+  public readonly filter?: InnerFilter;
   @bawPersistAttr()
   public readonly description?: Description;
   public readonly descriptionHtml?: Description;
   public readonly descriptionHtmlTagline?: Description;
-  public readonly scriptId?: Id;
+  @bawCollection({ persist: false })
+  public readonly scriptIds?: Ids;
+  public readonly audioEventImportIds?: Id[] | Ids;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
@@ -67,10 +103,17 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly updatedAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
-  public readonly savedSearchId?: Id;
   @bawDateTime()
   public readonly startedAt?: DateTimeTimezone;
   @bawPersistAttr({ create: true, update: true, convertCase: true })
+
+  public readonly amendCount?: number;
+  public readonly ongoing?: boolean;
+  public readonly systemJob?: boolean;
+  public readonly resumeCount?: number;
+  public readonly retryCount?: number;
+  public readonly suspendCount?: number;
+
   public readonly overallStatus?: AnalysisJobStatus;
   @bawDateTime()
   public readonly overallStatusModifiedAt?: DateTimeTimezone;
@@ -92,10 +135,10 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public updater?: User;
   @deleter<AnalysisJob>()
   public deleter?: User;
-  @hasOne<AnalysisJob, Script>(SCRIPT, "scriptId")
-  public script?: Script;
-  @hasOne<AnalysisJob, SavedSearch>(SAVED_SEARCH, "savedSearchId")
-  public savedSearch?: SavedSearch;
+  @hasMany<AnalysisJob, Script>(SCRIPT, "scriptIds")
+  public script?: Script[];
+  @hasMany<AnalysisJob, AudioEventImport>(AUDIO_EVENT_IMPORT, "audioEventImportIds")
+  public audioEventImports?: AudioEventImport[];
 
   public constructor(analysisJob: IAnalysisJob, injector?: AssociationInjector) {
     super(analysisJob, injector);
@@ -116,11 +159,3 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
     });
   }
 }
-
-export type AnalysisJobStatus =
-  | "beforeSave"
-  | "new"
-  | "preparing"
-  | "processing"
-  | "suspended"
-  | "completed";
