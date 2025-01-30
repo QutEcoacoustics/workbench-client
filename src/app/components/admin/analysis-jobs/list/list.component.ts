@@ -3,10 +3,21 @@ import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
 import { adminAnalysisJobsMenuItem } from "@components/admin/admin.menus";
 import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.component";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
-import { Id, Ids, Param } from "@interfaces/apiInterfaces";
+import { Param } from "@interfaces/apiInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { List } from "immutable";
+import { DateTime } from "luxon";
 import { adminAnalysisJobsCategory } from "../analysis-jobs.menus";
+
+interface TableRow {
+  name: Param;
+  scripts: AnalysisJob;
+  creator: AnalysisJob;
+  started: DateTime;
+  status: string;
+  statusUpdated: DateTime;
+  model: AnalysisJob;
+}
 
 @Component({
   selector: "baw-admin-analysis-jobs",
@@ -19,7 +30,7 @@ class AdminAnalysisJobsComponent
   public columns = [
     { name: "Id" },
     { name: "Name" },
-    { name: "Script" },
+    { name: "Scripts" },
     { name: "Creator" },
     { name: "Started" },
     { name: "Status" },
@@ -37,13 +48,12 @@ class AdminAnalysisJobsComponent
   public constructor(api: AnalysisJobsService) {
     super(api, (analysisJobs) =>
       analysisJobs.map((analysisJob) => ({
-        id: analysisJob.id,
         name: analysisJob.name,
-        scripts: analysisJob.scriptIds,
-        creator: analysisJob.creatorId,
-        started: analysisJob.startedAt?.toRelative(),
+        scripts: analysisJob,
+        creator: analysisJob,
+        started: analysisJob.startedAt,
         status: analysisJob.overallStatus,
-        statusUpdated: analysisJob.overallStatusModifiedAt?.toRelative(),
+        statusUpdated: analysisJob.overallStatusModifiedAt,
         model: analysisJob,
       }))
     );
@@ -57,14 +67,3 @@ AdminAnalysisJobsComponent.linkToRoute({
 });
 
 export { AdminAnalysisJobsComponent };
-
-interface TableRow {
-  id: Id;
-  name: Param;
-  scripts: Ids;
-  creator: Id;
-  started: string;
-  status: string;
-  statusUpdated: string;
-  model: AnalysisJob;
-}

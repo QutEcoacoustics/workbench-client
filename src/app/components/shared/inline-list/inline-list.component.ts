@@ -8,18 +8,17 @@ import { AbstractModel } from "@models/AbstractModel";
   template: `
     <ng-container *ngIf="!!items && items.length > 0; else emptyTemplate">
       <span *ngFor="let item of items; last as isLast">
-        <a [href]="item.viewUrl">{{ itemText(item) }}</a>
+        <a [href]="item[itemLinkKey]">{{ itemText(item) }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
     </ng-container>
   `
 })
 export class InlineListComponent {
-  public constructor() {}
-
   @Input() public items: AbstractModel[];
   @Input() public emptyTemplate: TemplateRef<NgIfContext<boolean>>;
   @Input() public itemKey?: string;
+  @Input() public itemLinkKey: string = "viewUrl";
 
   protected itemText(item: AbstractModel): string {
     if (isInstantiated(this.itemKey)) {
