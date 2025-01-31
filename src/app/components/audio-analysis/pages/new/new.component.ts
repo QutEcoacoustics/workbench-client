@@ -25,7 +25,7 @@ import schema from "../../analysis-job.schema.json";
     ></baw-form>
   `,
 })
-class NewAudioAnalysisJobComponent extends PageComponent {
+class NewAnalysisJobComponent extends PageComponent {
   public fields = schema.fields;
 
   public constructor(
@@ -51,9 +51,9 @@ class NewAudioAnalysisJobComponent extends PageComponent {
   }
 }
 
-NewAudioAnalysisJobComponent.linkToRoute({
+NewAnalysisJobComponent.linkToRoute({
   category: audioAnalysisCategory,
   pageRoute: newAudioAnalysisJobMenuItem,
 });
 
-export { NewAudioAnalysisJobComponent as NewAudioAnalysisComponent };
+export { NewAnalysisJobComponent };

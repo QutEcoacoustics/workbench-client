@@ -27,7 +27,7 @@ const projectKey = "project";
   selector: "baw-audio-analysis",
   templateUrl: "details.component.html",
 })
-class AudioAnalysisJobComponent
+class AnalysisJobComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit
 {
@@ -54,7 +54,7 @@ class AudioAnalysisJobComponent
   }
 }
 
-AudioAnalysisJobComponent.linkToRoute({
+AnalysisJobComponent.linkToRoute({
   category: audioAnalysisCategory,
   pageRoute: audioAnalysisMenuJobItem,
   menus: {
@@ -72,4 +72,4 @@ AudioAnalysisJobComponent.linkToRoute({
   },
 });
 
-export { AudioAnalysisJobComponent };
+export { AnalysisJobComponent };

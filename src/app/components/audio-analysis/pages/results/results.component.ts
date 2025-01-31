@@ -16,9 +16,9 @@ const audioAnalysisKey = "audioAnalysis";
   selector: "baw-audio-analysis-results",
   template: "<baw-client></baw-client>",
 })
-class AudioAnalysisJobResultsComponent extends PageComponent {}
+class AnalysisJobResultsComponent extends PageComponent {}
 
-AudioAnalysisJobResultsComponent.linkToRoute({
+AnalysisJobResultsComponent.linkToRoute({
   category: audioAnalysisCategory,
   pageRoute: audioAnalysisJobResultsMenuItem,
   menus: {
@@ -28,4 +28,4 @@ AudioAnalysisJobResultsComponent.linkToRoute({
   resolvers: { [audioAnalysisKey]: analysisJobResolvers.show },
 });
 
-export { AudioAnalysisJobResultsComponent as AudioAnalysisResultsComponent };
+export { AnalysisJobResultsComponent };

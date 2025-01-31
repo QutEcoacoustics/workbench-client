@@ -32,7 +32,7 @@ const projectKey = "project";
   selector: "baw-audio-analyses",
   templateUrl: "list.component.html",
 })
-class AudioAnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
+class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
   public constructor(
     protected api: AnalysisJobsService,
     protected route: ActivatedRoute
@@ -69,8 +69,13 @@ class AudioAnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
     statusUpdated: "overallStatusModifiedAt",
   };
 
-  public get project(): Project {
-    return this.route.snapshot.data[projectKey].model;
+  public get project(): Project | null {
+    const routeProjectModel = this.route.snapshot.data[projectKey];
+    if (routeProjectModel) {
+      return routeProjectModel.model;
+    }
+
+    return null;
   }
 
   protected override apiAction(
@@ -102,7 +107,7 @@ class AudioAnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
   }
 }
 
-AudioAnalysesComponent.linkToRoute({
+AnalysesComponent.linkToRoute({
   category: audioAnalysisCategory,
   pageRoute: audioAnalysesMenuItem,
   menus: { actions: List([newAudioAnalysisJobMenuItem]) },
@@ -111,4 +116,4 @@ AudioAnalysesComponent.linkToRoute({
   },
 });
 
-export { AudioAnalysesComponent };
+export { AnalysesComponent };

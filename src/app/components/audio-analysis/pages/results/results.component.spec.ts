@@ -5,12 +5,12 @@ import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
 import { validateBawClientPage } from "@test/helpers/baw-client";
 import { BehaviorSubject } from "rxjs";
 import { audioAnalysisRoute } from "@components/audio-analysis/audio-analysis.routes";
-import { AudioAnalysisResultsComponent } from "./results.component";
+import { AnalysisJobResultsComponent } from "./results.component";
 
 describe("AudioAnalysisResultsComponent", () => {
   validateBawClientPage(
     audioAnalysisRoute,
-    AudioAnalysisResultsComponent,
+    AnalysisJobResultsComponent,
     [AudioAnalysisModule],
     "/audio_analysis/123/results",
     "Results are available as they are generated. There is a basic file explorer below",

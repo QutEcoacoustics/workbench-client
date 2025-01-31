@@ -2,17 +2,17 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
-import { AudioAnalysisJobComponent } from "./pages/details/details.component";
-import { AudioAnalysesComponent } from "./pages/list/list.component";
-import { NewAudioAnalysisComponent } from "./pages/new/new.component";
-import { AudioAnalysisResultsComponent } from "./pages/results/results.component";
+import { AnalysisJobComponent } from "./pages/details/details.component";
+import { AnalysesComponent } from "./pages/list/list.component";
 import { audioAnalysisRoute } from "./audio-analysis.routes";
+import { AnalysisJobResultsComponent } from "./pages/results/results.component";
+import { NewAnalysisJobComponent } from "./pages/new/new.component";
 
 const components = [
-  AudioAnalysesComponent,
-  NewAudioAnalysisComponent,
-  AudioAnalysisJobComponent,
-  AudioAnalysisResultsComponent,
+  AnalysesComponent,
+  NewAnalysisJobComponent,
+  AnalysisJobComponent,
+  AnalysisJobResultsComponent,
 ];
 
 const routes = audioAnalysisRoute.compileRoutes(getRouteConfigForPage);

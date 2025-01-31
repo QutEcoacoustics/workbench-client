@@ -18,7 +18,7 @@ import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { AdminAnalysisJobsComponent } from "./list.component";
 
-describe("AdminAnalysisJobsComponent", () => {
+describe("AnalysisJobComponent", () => {
   let spec: Spectator<AdminAnalysisJobsComponent>;
 
   let api: SpyObject<AnalysisJobsService>;
