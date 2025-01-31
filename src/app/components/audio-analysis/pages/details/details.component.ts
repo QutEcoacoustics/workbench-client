@@ -20,7 +20,6 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
 import schema from "../../analysis-job.schema.json";
 
-const audioAnalysisKey = "audioAnalysis";
 const analysisJobKey = "analysisJob";
 const projectKey = "project";
 
@@ -68,7 +67,7 @@ AudioAnalysisJobComponent.linkToRoute({
     actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
-    [audioAnalysisKey]: analysisJobResolvers.show,
+    [analysisJobKey]: analysisJobResolvers.show,
     [projectKey]: projectResolvers.show,
   },
 });

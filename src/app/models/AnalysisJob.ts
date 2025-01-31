@@ -152,15 +152,20 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
     super(analysisJob, injector);
   }
 
-  public get viewUrl(): string {
-    if (this.systemJob || this.projectId === null) {
+  public createViewUrl(fakeProjectId?: Id): string {
+    const projectId = this.projectId ?? fakeProjectId;
+    if (!projectId) {
       return this.adminViewUrl;
     }
 
     return audioAnalysisMenuJobItem.route.format({
       analysisJobId: this.id,
-      projectId: this.projectId,
+      projectId,
     });
+  }
+
+  public get viewUrl(): string {
+    throw new Error("method not implemented");
   }
 
   /**

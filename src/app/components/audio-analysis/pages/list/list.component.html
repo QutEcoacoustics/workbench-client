@@ -48,7 +48,7 @@
     </ngx-datatable-column>
     <ngx-datatable-column name="Model" [sortable]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <a class="btn btn-sm btn-primary" [bawUrl]="value.viewUrl">
+        <a class="btn btn-sm btn-primary" [bawUrl]="value?.createViewUrl(project?.id)">
           View
         </a>
       </ng-template>
