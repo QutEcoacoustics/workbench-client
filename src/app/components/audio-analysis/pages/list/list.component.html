@@ -19,11 +19,7 @@
     <ngx-datatable-column name="Name"></ngx-datatable-column>
     <ngx-datatable-column name="Scripts" [width]="50" [sortable]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <baw-inline-list
-          [items]="value.scripts"
-          itemKey="name"
-          itemLinkKey="viewUrl"
-        ></baw-inline-list>
+        <baw-inline-list [items]="value.scripts" itemKey="name"></baw-inline-list>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Creator" [sortable]="false">

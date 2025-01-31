@@ -28,7 +28,7 @@ export const adminUserListMenuItem = menuRoute({
 
 export const adminAnalysisJobsMenuItem = menuRoute({
   icon: ["fas", "server"],
-  label: "Audio Analysis",
+  label: "Analysis Jobs",
   route: adminRoute.add("analysis_jobs"),
   tooltip: () => "Manage analysis jobs",
   parent: adminDashboardMenuItem,
@@ -37,7 +37,7 @@ export const adminAnalysisJobsMenuItem = menuRoute({
 
 export const adminJobStatusMenuItem = menuLink({
   icon: ["fas", "tasks"],
-  label: "Worker Status",
+  label: "Job Status",
   tooltip: () => "Job queue status overview",
   uri: () => "/job_queue_status/overview",
   parent: adminDashboardMenuItem,

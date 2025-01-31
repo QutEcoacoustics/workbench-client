@@ -4,18 +4,18 @@ import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { AnalysisJobComponent } from "./pages/details/details.component";
 import { AnalysesComponent } from "./pages/list/list.component";
-import { audioAnalysisRoute } from "./audio-analysis.routes";
+import { audioAnalysesRoute } from "./audio-analysis.routes";
 import { AnalysisJobResultsComponent } from "./pages/results/results.component";
-import { NewAnalysisJobComponent } from "./pages/new/new.component";
+import { NewAudioAnalysisJobComponent } from "./pages/new/new.component";
 
 const components = [
   AnalysesComponent,
-  NewAnalysisJobComponent,
+  NewAudioAnalysisJobComponent,
   AnalysisJobComponent,
   AnalysisJobResultsComponent,
 ];
 
-const routes = audioAnalysisRoute.compileRoutes(getRouteConfigForPage);
+const routes = audioAnalysesRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: components,

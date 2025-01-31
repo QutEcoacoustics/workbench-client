@@ -2,14 +2,14 @@ import { RouterStateSnapshot } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuAction, menuRoute } from "@interfaces/menusInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { defaultDeleteIcon, defaultNewIcon, isAdminPredicate } from "src/app/app.menus";
+import { defaultDeleteIcon, defaultNewIcon, isAdminPredicate, isWorkInProgressPredicate } from "src/app/app.menus";
 import { projectMenuItem } from "@components/projects/projects.menus";
-import { analysisJobRoute, audioAnalysisRoute } from "./audio-analysis.routes";
+import { audioAnalysisJobRoute, audioAnalysesRoute } from "./audio-analysis.routes";
 
 export const audioAnalysisCategory = {
   icon: ["fas", "server"],
   label: "Audio Analysis",
-  route: analysisJobRoute,
+  route: audioAnalysisJobRoute,
 } satisfies Category;
 
 export const audioAnalysesMenuItem = menuRoute({
@@ -18,14 +18,14 @@ export const audioAnalysesMenuItem = menuRoute({
   tooltip: () => "View audio analysis jobs",
   order: 5,
   parent: projectMenuItem,
-  route: audioAnalysisRoute,
+  route: audioAnalysesRoute,
 });
 
 export const newAudioAnalysisJobMenuItem = menuRoute({
   icon: defaultNewIcon,
   label: "New Analysis Job",
   tooltip: () => "Create a custom analysis job",
-  route: audioAnalysisRoute.add("new"),
+  route: audioAnalysesRoute.add("new"),
   parent: audioAnalysesMenuItem,
   primaryBackground: true,
 
@@ -38,7 +38,7 @@ export const audioAnalysisMenuJobItem = menuRoute({
   icon: ["fas", "tasks"],
   label: "Analysis Job",
   tooltip: () => "View audio analysis job",
-  route: analysisJobRoute,
+  route: audioAnalysisJobRoute,
   parent: audioAnalysesMenuItem,
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, AnalysisJob)?.name,
@@ -52,7 +52,7 @@ export const audioAnalysisJobResultsMenuItem = menuRoute({
   icon: ["fas", "table"],
   label: "Results",
   tooltip: () => "View results for this analysis job",
-  route: analysisJobRoute.add("results"),
+  route: audioAnalysisJobRoute.add("results"),
   parent: audioAnalysisMenuJobItem,
 });
 

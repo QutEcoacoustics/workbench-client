@@ -4,12 +4,12 @@ import { AnalysisJob } from "@models/AnalysisJob";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
 import { validateBawClientPage } from "@test/helpers/baw-client";
 import { BehaviorSubject } from "rxjs";
-import { audioAnalysisRoute } from "@components/audio-analysis/audio-analysis.routes";
+import { audioAnalysesRoute } from "@components/audio-analysis/audio-analysis.routes";
 import { AnalysisJobResultsComponent } from "./results.component";
 
 describe("AudioAnalysisResultsComponent", () => {
   validateBawClientPage(
-    audioAnalysisRoute,
+    audioAnalysesRoute,
     AnalysisJobResultsComponent,
     [AudioAnalysisModule],
     "/audio_analysis/123/results",
