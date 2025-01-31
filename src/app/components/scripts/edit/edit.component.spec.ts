@@ -18,6 +18,8 @@ import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AdminScriptsEditComponent } from "./edit.component";
 
 describe("AdminScriptsEditComponent", () => {
@@ -27,8 +29,9 @@ describe("AdminScriptsEditComponent", () => {
   let fixture: ComponentFixture<AdminScriptsEditComponent>;
   let notifications: ToastrService;
   let router: Router;
+  let injector: AssociationInjector;
 
-  function configureTestingModule(model: Script, error?: BawApiError) {
+  function configureTestingModule(model?: Script, error?: BawApiError) {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
@@ -52,6 +55,12 @@ describe("AdminScriptsEditComponent", () => {
     api = TestBed.inject(ScriptsService) as SpyObject<ScriptsService>;
     router = TestBed.inject(Router);
     notifications = TestBed.inject(ToastrService);
+
+    injector = TestBed.inject(ASSOCIATION_INJECTOR);
+    if (model) {
+      model["injector"] = injector;
+    }
+
     component = fixture.componentInstance;
 
     spyOn(notifications, "success").and.stub();
