@@ -114,6 +114,14 @@
       }
     },
     {
+      "key": "provenance",
+      "hide": true,
+      "props": {
+        "label": "Provenance",
+        "type": "text"
+      }
+    },
+    {
       "key": "resources",
       "type": "textarea",
       "hide": true,

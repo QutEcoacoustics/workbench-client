@@ -1,17 +1,15 @@
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { ACCOUNT, SAVED_SEARCH, SCRIPT } from "@baw-api/ServiceTokens";
+import { ACCOUNT, SCRIPT } from "@baw-api/ServiceTokens";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { SavedSearch } from "@models/SavedSearch";
 import { Script } from "@models/Script";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
 import { generateBawApiError } from "@test/fakes/BawApiError";
-import { generateSavedSearch } from "@test/fakes/SavedSearch";
 import { generateScript } from "@test/fakes/Script";
 import { generateUser } from "@test/fakes/User";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
@@ -19,14 +17,15 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
-import { PageTitleStrategy } from "src/app/app.component";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AssociationInjector } from "@models/ImplementsInjector";
+import { modelData } from "@test/helpers/faker";
 import { AdminAnalysisJobComponent } from "./details.component";
 
 describe("AdminAnalysisJobComponent", () => {
   let injector: AssociationInjector;
   let spec: Spectator<AdminAnalysisJobComponent>;
+
   const createComponent = createComponentFactory({
     component: AdminAnalysisJobComponent,
     imports: [SharedModule, MockBawApiModule, RouterTestingModule],
@@ -38,7 +37,7 @@ describe("AdminAnalysisJobComponent", () => {
     },
   });
 
-  function setup(model: AnalysisJob, error?: BawApiError) {
+  function setup(model?: AnalysisJob, error?: BawApiError) {
     spec = createComponent({
       detectChanges: false,
       providers: [
@@ -49,20 +48,20 @@ describe("AdminAnalysisJobComponent", () => {
             { analysisJob: { model, error } }
           ),
         },
-        {
-          provide: PageTitleStrategy,
-        },
       ],
     });
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
+    if (model) {
+      model["injector"] = injector;
+    }
+
     const accountsApi = spec.inject(ACCOUNT.token);
     const scriptsApi = spec.inject(SCRIPT.token);
-    const savedSearchesApi = spec.inject(SAVED_SEARCH.token);
 
     const accountsSubject = new Subject<User>();
     const scriptsSubject = new Subject<Script>();
-    const savedSearchesSubject = new Subject<SavedSearch>();
+
     const promise = Promise.all([
       nStepObservable(
         accountsSubject,
@@ -72,24 +71,11 @@ describe("AdminAnalysisJobComponent", () => {
         scriptsSubject,
         () => new Script(generateScript({ id: 1, name: "custom script" }))
       ),
-      nStepObservable(
-        savedSearchesSubject,
-        () =>
-          new SavedSearch(
-            generateSavedSearch({ id: 1, name: "custom saved search" })
-          )
-      ),
     ]);
 
     // Catch associated models
     accountsApi.show.and.callFake(() => accountsSubject);
     scriptsApi.show.and.callFake(() => scriptsSubject);
-    savedSearchesApi.show.and.callFake(() => savedSearchesSubject);
-
-    // Update model to contain injector
-    if (model) {
-      model["injector"] = injector;
-    }
 
     return promise;
   }
@@ -107,7 +93,17 @@ describe("AdminAnalysisJobComponent", () => {
   });
 
   describe("details", () => {
-    const model = new AnalysisJob(generateAnalysisJob());
+    // when asserting the details page, I use an analysis job model with only
+    // one associated script and audioEventImport model because the assertDetail()
+    // function will not work correctly if there is an array of associated models
+    //
+    // TODO: This should be fixed correctly by fixing the bugs in assertDetail()
+    const model = new AnalysisJob(
+      generateAnalysisJob({
+        scriptIds: [modelData.id()],
+        audioEventImportIds: [modelData.id()],
+      })
+    );
 
     beforeEach(async function () {
       const promise = setup(model);
@@ -120,11 +116,10 @@ describe("AdminAnalysisJobComponent", () => {
     const details: Detail[] = [
       { label: "Id", key: "id", plain: model.id },
       { label: "Name", key: "name", plain: model.name },
-      { label: "Script", key: "script", model: "Script: custom script (1)" },
       {
-        label: "Saved Search",
-        key: "savedSearch",
-        model: "Saved Search: custom saved search (1)",
+        label: "Scripts",
+        key: "script",
+        children: [{ model: "Script: custom script (1)" }],
       },
       { label: "Started At", key: "startedAt", dateTime: model.startedAt },
       {

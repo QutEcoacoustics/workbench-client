@@ -54,26 +54,10 @@
       }
     },
     {
-      "key": "scriptIds",
-      "type": "input",
-      "props": {
-        "label": "Script Ids",
-        "type": "text"
-      }
-    },
-    {
       "key": "audioEventImports",
       "hide": true,
       "props": {
         "label": "Audio Event Imports",
-        "type": "text"
-      }
-    },
-    {
-      "key": "audioEventImportIds",
-      "type": "input",
-      "props": {
-        "label": "Audio Event Import Ids",
         "type": "text"
       }
     },

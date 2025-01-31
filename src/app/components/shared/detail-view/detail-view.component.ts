@@ -9,7 +9,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
       <dt
         class="col-sm-3 text-start text-sm-end fw-bold"
         [innerText]="field.props.label"
-        ></dt>
+      ></dt>
 
       <baw-render-field
         class="col-sm-9"

@@ -97,7 +97,8 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly descriptionHtmlTagline?: Description;
   @bawCollection({ persist: false })
   public readonly scriptIds?: Ids;
-  public readonly audioEventImportIds?: Id[] | Ids;
+  @bawCollection({ persist: false })
+  public readonly audioEventImportIds?: Ids;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;

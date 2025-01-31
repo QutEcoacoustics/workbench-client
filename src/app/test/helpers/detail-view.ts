@@ -8,15 +8,17 @@ import { DateTime, Duration } from "luxon";
  * @param nativeElement Fixture native element
  * @param label Label to find
  */
-function findDetailIndex(nativeElement: HTMLElement, label: string) {
+function findDetailIndex(nativeElement: HTMLElement, label: string): number {
   let detailIndex = -1;
   const details = nativeElement.querySelectorAll("dt");
+
   details.forEach((detail, index) => {
     if (detail.innerText.trim() === label) {
       detailIndex = index;
       return;
     }
   });
+
   return detailIndex;
 }
 
