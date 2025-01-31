@@ -11,7 +11,7 @@ import { ToastrService } from "ngx-toastr";
 import { adminScriptsMenuItemActions } from "../list/list.component";
 import schema from "../script.base.schema.json";
 import {
-  adminNewScriptsMenuItem,
+  newScriptMenuItem,
   adminScriptsCategory,
 } from "../scripts.menus";
 
@@ -34,8 +34,6 @@ import {
   `,
 })
 class AdminScriptsNewComponent extends FormTemplate<Script> {
-  public fields = schema.fields;
-
   public constructor(
     private api: ScriptsService,
     notifications: ToastrService,
@@ -48,6 +46,8 @@ class AdminScriptsNewComponent extends FormTemplate<Script> {
     });
   }
 
+  public fields = schema.fields;
+
   protected apiAction(model: Partial<Script>) {
     return this.api.create(new Script(model));
   }
@@ -55,7 +55,7 @@ class AdminScriptsNewComponent extends FormTemplate<Script> {
 
 AdminScriptsNewComponent.linkToRoute({
   category: adminScriptsCategory,
-  pageRoute: adminNewScriptsMenuItem,
+  pageRoute: newScriptMenuItem,
   menus: { actions: List(adminScriptsMenuItemActions) },
 });
 

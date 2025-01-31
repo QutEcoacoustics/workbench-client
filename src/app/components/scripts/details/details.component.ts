@@ -15,7 +15,7 @@ import baseSchema from "../script.base.schema.json";
 import extendedSchema from "../script.extended.schema.json";
 import {
   adminEditScriptMenuItem,
-  adminScriptMenuItem,
+  scriptMenuItem,
   adminScriptsCategory,
 } from "../scripts.menus";
 
@@ -35,13 +35,13 @@ class AdminScriptComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit
 {
-  public script: Script;
-  public failure: boolean;
-  public fields = [...baseSchema.fields, ...extendedSchema.fields];
-
   public constructor(private route: ActivatedRoute) {
     super();
   }
+
+  public script: Script;
+  public failure: boolean;
+  public fields = [...baseSchema.fields, ...extendedSchema.fields];
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -57,7 +57,7 @@ class AdminScriptComponent
 
 AdminScriptComponent.linkToRoute({
   category: adminScriptsCategory,
-  pageRoute: adminScriptMenuItem,
+  pageRoute: scriptMenuItem,
   menus: {
     actions: List(adminScriptActions),
     actionWidgets: List([permissionsWidgetMenuItem]),

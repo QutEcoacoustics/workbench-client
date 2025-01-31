@@ -8,7 +8,7 @@ import { MenuService } from "@services/menu/menu.service";
       <ng-content></ng-content>
     </div>
   `,
-  styleUrls: ["side-nav.component.scss"],
+  styleUrl: "side-nav.component.scss",
 })
 export class SideNavComponent {
   public constructor(public menu: MenuService) {}

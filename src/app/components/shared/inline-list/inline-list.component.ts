@@ -15,8 +15,6 @@ import { AbstractModel } from "@models/AbstractModel";
   `
 })
 export class InlineListComponent {
-  public constructor() {}
-
   @Input() public items: AbstractModel[];
   @Input() public emptyTemplate: TemplateRef<NgIfContext<boolean>>;
   @Input() public itemKey?: string;

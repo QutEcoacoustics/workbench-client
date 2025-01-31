@@ -1,5 +1,4 @@
 import { Injectable, InjectionToken } from "@angular/core";
-import { audioAnalysesMenuItem } from "@components/audio-analysis/audio-analysis.menus";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import { homeCategory, homeMenuItem } from "@components/home/home.menus";
 import { annotationsImportMenuItem } from "@components/import-annotations/import-annotations.menu";
@@ -46,7 +45,6 @@ export class DefaultMenu {
         registerMenuItem,
         myAccountMenuItem,
         myAnnotationsMenuItem,
-        audioAnalysesMenuItem,
         libraryMenuItem,
         dataRequestMenuItem,
         sendAudioMenuItem,

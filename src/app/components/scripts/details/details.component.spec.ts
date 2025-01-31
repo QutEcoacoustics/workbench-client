@@ -136,11 +136,6 @@ describe("ScriptComponent", () => {
         key: "executableSettingsMediaType",
         plain: model.executableSettingsMediaType,
       },
-      {
-        label: "Analysis Action Parameters",
-        key: "analysisActionParams",
-        code: model.analysisActionParams,
-      },
       { label: "Verified", key: "verified", checkbox: model.verified },
       { label: "Group Id", key: "groupId", plain: model.groupId },
       { label: "Group", key: "group", model: "Script: custom script (1)" },

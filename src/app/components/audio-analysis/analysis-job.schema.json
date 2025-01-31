@@ -46,35 +46,35 @@
       }
     },
     {
-      "key": "script",
+      "key": "scripts",
       "hide": true,
       "props": {
-        "label": "Script",
+        "label": "Scripts",
         "disabled": true
       }
     },
     {
-      "key": "scriptId",
-      "type": "input",
-      "props": {
-        "label": "Script Id",
-        "type": "text"
-      }
-    },
-    {
-      "key": "savedSearch",
+      "key": "audioEventImports",
       "hide": true,
       "props": {
-        "label": "Saved Search",
-        "disabled": true
+        "label": "Audio Event Imports",
+        "type": "text"
       }
     },
     {
-      "key": "savedSearchId",
-      "type": "input",
+      "key": "ongoing",
+      "type": "checkbox",
       "props": {
-        "label": "Saved Search Id",
-        "type": "text"
+        "label": "Ongoing",
+        "type": "checkbox"
+      }
+    },
+    {
+      "key": "systemJob",
+      "type": "checkbox",
+      "props": {
+        "label": "System Job",
+        "type": "checkbox"
       }
     },
     {
@@ -82,6 +82,16 @@
       "hide": true,
       "props": {
         "label": "Started At",
+        "disabled": true
+      }
+    },
+    {
+      "key": "overallProgress",
+      "type": "textarea",
+      "hide": true,
+      "props": {
+        "label": "Overall Progress",
+        "rows": 8,
         "disabled": true
       }
     },
@@ -131,6 +141,38 @@
       "props": {
         "label": "Overall Data Length Humanized",
         "disabled": true
+      }
+    },
+    {
+      "key": "amendCount",
+      "type": "text",
+      "props": {
+        "label": "Amend Count",
+        "type": "text"
+      }
+    },
+    {
+      "key": "resumeCount",
+      "type": "text",
+      "props": {
+        "label": "Resume Count",
+        "type": "text"
+      }
+    },
+    {
+      "key": "retryCount",
+      "type": "text",
+      "props": {
+        "label": "Retry Count",
+        "type": "text"
+      }
+    },
+    {
+      "key": "suspendCount",
+      "type": "text",
+      "props": {
+        "label": "Suspend Count",
+        "type": "text"
       }
     },
     {

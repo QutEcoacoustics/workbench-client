@@ -1,41 +1,44 @@
 import { RouterStateSnapshot } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuAction, menuRoute } from "@interfaces/menusInterfaces";
-import { StrongRoute } from "@interfaces/strongRoute";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { defaultDeleteIcon, defaultNewIcon } from "src/app/app.menus";
+import { defaultDeleteIcon, defaultNewIcon, isAdminPredicate } from "src/app/app.menus";
+import { projectMenuItem } from "@components/projects/projects.menus";
+import { audioAnalysisJobRoute, audioAnalysesRoute } from "./audio-analysis.routes";
 
-export const audioAnalysesRoute = StrongRoute.newRoot().add("audio_analysis");
-
-export const audioAnalysisCategory: Category = {
+export const audioAnalysisCategory = {
   icon: ["fas", "server"],
   label: "Audio Analysis",
-  route: audioAnalysesRoute,
-};
+  route: audioAnalysisJobRoute,
+} satisfies Category;
 
 export const audioAnalysesMenuItem = menuRoute({
   icon: ["fas", "server"],
   label: "Audio Analysis",
   tooltip: () => "View audio analysis jobs",
   order: 5,
+  parent: projectMenuItem,
   route: audioAnalysesRoute,
 });
 
-export const newAudioAnalysisMenuItem = menuRoute({
+export const newAudioAnalysisJobMenuItem = menuRoute({
   icon: defaultNewIcon,
   label: "New Analysis Job",
   tooltip: () => "Create a custom analysis job",
   route: audioAnalysesRoute.add("new"),
   parent: audioAnalysesMenuItem,
+
+  // TODO: I have hidden the new analysis job menu item behind the isAdmin
+  // predicate because the old baw client interface doesn't support scoping
+  // to projects
+  predicate: isAdminPredicate,
 });
 
-export const audioAnalysisRoute = audioAnalysesRoute.add(":analysisJobId");
-
-export const audioAnalysisMenuItem = menuRoute({
+export const audioAnalysisMenuJobItem = menuRoute({
   icon: ["fas", "tasks"],
   label: "Analysis Job",
   tooltip: () => "View audio analysis job",
-  route: audioAnalysisRoute,
+  route: audioAnalysisJobRoute,
   parent: audioAnalysesMenuItem,
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, AnalysisJob)?.name,
@@ -45,12 +48,12 @@ export const audioAnalysisMenuItem = menuRoute({
   },
 });
 
-export const audioAnalysisResultsMenuItem = menuRoute({
+export const audioAnalysisJobResultsMenuItem = menuRoute({
   icon: ["fas", "table"],
   label: "Results",
   tooltip: () => "View results for this analysis job",
-  route: audioAnalysisRoute.add("results"),
-  parent: audioAnalysisMenuItem,
+  route: audioAnalysisJobRoute.add("results"),
+  parent: audioAnalysisMenuJobItem,
 });
 
 export const retryFailedItemsMenuItem = menuAction({
