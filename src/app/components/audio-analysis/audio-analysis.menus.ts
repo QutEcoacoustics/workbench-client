@@ -29,7 +29,8 @@ export const newAudioAnalysisJobMenuItem = menuRoute({
   parent: audioAnalysesMenuItem,
 
   // TODO: I have hidden the new analysis job menu item behind the isAdmin
-  // predicate because it is not currently functional
+  // predicate because the old baw client interface doesn't support scoping
+  // to projects
   predicate: isAdminPredicate,
 });
 

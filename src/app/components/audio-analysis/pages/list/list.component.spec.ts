@@ -16,10 +16,10 @@ import { Script } from "@models/Script";
 import { generateScript } from "@test/fakes/Script";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
-import { AnalysesComponent } from "./list.component";
+import { AudioAnalysesComponent } from "./list.component";
 
 describe("AnalysesComponent", () => {
-  let spec: Spectator<AnalysesComponent>;
+  let spec: Spectator<AudioAnalysesComponent>;
 
   let api: SpyObject<AnalysisJobsService>;
   let defaultModels: AnalysisJob[];
@@ -27,7 +27,7 @@ describe("AnalysesComponent", () => {
   let injector: SpyObject<AssociationInjector>;
 
   const createComponent = createComponentFactory({
-    component: AnalysesComponent,
+    component: AudioAnalysesComponent,
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
   });
 
@@ -54,10 +54,10 @@ describe("AnalysesComponent", () => {
 
   assertPagination<AnalysisJob, AnalysisJobsService>();
 
-  assertPageInfo(AnalysesComponent, "Audio Analysis")
+  assertPageInfo(AudioAnalysesComponent, "Audio Analysis")
 
   it("should create", () => {
-    expect(spec.component).toBeInstanceOf(AnalysesComponent);
+    expect(spec.component).toBeInstanceOf(AudioAnalysesComponent);
   });
 
   // TODO Write Tests

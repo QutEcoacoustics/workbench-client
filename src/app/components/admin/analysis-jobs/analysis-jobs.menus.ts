@@ -9,13 +9,13 @@ export const adminAnalysisJobsRoute = adminRoute.addFeatureModule(
 
 export const adminAnalysisJobsCategory = {
   icon: ["fas", "server"],
-  label: "Analysis Jobs",
+  label: "Audio Analysis",
   route: adminAnalysisJobsRoute,
 } satisfies Category;
 
 export const adminAnalysisJobsMenuItem = menuRoute({
   icon: ["fas", "server"],
-  label: "Analysis Jobs",
+  label: "Audio Analysis",
   route: adminAnalysisJobsCategory.route,
   tooltip: () => "Manage analysis jobs",
   parent: adminDashboardMenuItem,

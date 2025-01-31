@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { List } from "immutable";
-import { AnalysisJobComponent } from "@components/audio-analysis/pages/details/details.component";
+import { AudioAnalysisJobComponent } from "@components/audio-analysis/pages/details/details.component";
 import {
   audioAnalysisJobResultsMenuItem,
   deleteAudioAnalysisMenuItem,
@@ -20,7 +20,7 @@ const analysisJobKey = "analysisJob";
   selector: "baw-admin-analysis-job",
   templateUrl: "../../../audio-analysis/pages/details/details.component.html",
 })
-class AdminAnalysisJobComponent extends AnalysisJobComponent {}
+class AdminAnalysisJobComponent extends AudioAnalysisJobComponent {}
 
 AdminAnalysisJobComponent.linkToRoute({
   category: adminAnalysisJobsCategory,

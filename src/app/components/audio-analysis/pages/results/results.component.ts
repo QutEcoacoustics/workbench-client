@@ -17,7 +17,7 @@ import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { List } from "immutable";
 
-const analysisJobKey = "analysisJob";
+const analysisJobKey = "audioAnalysis";
 
 //! Warning: This component is untested
 //TODO: OLD-CLIENT REMOVE
@@ -26,7 +26,7 @@ const analysisJobKey = "analysisJob";
   // template: "<baw-client [page]='oldClientRoute'></baw-client>",
   template: "<baw-client page='/audio_analysis/123/results'></baw-client>",
 })
-class AnalysisJobResultsComponent extends PageComponent implements OnInit {
+class AudioAnalysisJobResultsComponent extends PageComponent implements OnInit {
   public constructor(private route: ActivatedRoute) {
     super();
   }
@@ -47,7 +47,7 @@ class AnalysisJobResultsComponent extends PageComponent implements OnInit {
   }
 }
 
-AnalysisJobResultsComponent.linkToRoute({
+AudioAnalysisJobResultsComponent.linkToRoute({
   category: audioAnalysisCategory,
   pageRoute: audioAnalysisJobResultsMenuItem,
   menus: {
@@ -57,4 +57,4 @@ AnalysisJobResultsComponent.linkToRoute({
   resolvers: { [analysisJobKey]: analysisJobResolvers.show },
 });
 
-export { AnalysisJobResultsComponent };
+export { AudioAnalysisJobResultsComponent };

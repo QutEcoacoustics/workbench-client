@@ -20,20 +20,20 @@ import { Subject } from "rxjs";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { modelData } from "@test/helpers/faker";
-import { AnalysisJobComponent } from "./details.component";
+import { AudioAnalysisJobComponent } from "./details.component";
 
 describe("AnalysisJobComponent", () => {
   let injector: AssociationInjector;
-  let spec: Spectator<AnalysisJobComponent>;
+  let spec: Spectator<AudioAnalysisJobComponent>;
 
   const createComponent = createComponentFactory({
-    component: AnalysisJobComponent,
+    component: AudioAnalysisJobComponent,
     imports: [SharedModule, MockBawApiModule, RouterTestingModule],
   });
 
-  assertPageInfo<AnalysisJob>(AnalysisJobComponent, "test name", {
+  assertPageInfo<AnalysisJob>(AudioAnalysisJobComponent, "Test Analysis Job", {
     analysisJob: {
-      model: new AnalysisJob(generateAnalysisJob({ name: "test name" })),
+      model: new AnalysisJob(generateAnalysisJob({ name: "Test Analysis Job" })),
     },
   });
 

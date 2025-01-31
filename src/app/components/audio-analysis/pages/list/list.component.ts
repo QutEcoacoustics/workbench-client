@@ -32,7 +32,7 @@ const projectKey = "project";
   selector: "baw-audio-analyses",
   templateUrl: "list.component.html",
 })
-class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
+class AudioAnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
   public constructor(
     protected api: AnalysisJobsService,
     protected route: ActivatedRoute
@@ -107,7 +107,7 @@ class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
   }
 }
 
-AnalysesComponent.linkToRoute({
+AudioAnalysesComponent.linkToRoute({
   category: audioAnalysisCategory,
   pageRoute: audioAnalysesMenuItem,
   menus: { actions: List([newAudioAnalysisJobMenuItem]) },
@@ -116,4 +116,4 @@ AnalysesComponent.linkToRoute({
   },
 });
 
-export { AnalysesComponent };
+export { AudioAnalysesComponent };
