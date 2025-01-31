@@ -4,7 +4,7 @@ import { Category, menuAction, menuRoute } from "@interfaces/menusInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { defaultDeleteIcon, defaultNewIcon, isAdminPredicate } from "src/app/app.menus";
 import { projectMenuItem } from "@components/projects/projects.menus";
-import { audioAnalysisJobRoute, audioAnalysesRoute, oldBawClientAnalysisJobRoute } from "./audio-analysis.routes";
+import { audioAnalysisJobRoute, audioAnalysesRoute } from "./audio-analysis.routes";
 
 export const audioAnalysisCategory = {
   icon: ["fas", "server"],
@@ -27,7 +27,6 @@ export const newAudioAnalysisJobMenuItem = menuRoute({
   tooltip: () => "Create a custom analysis job",
   route: audioAnalysesRoute.add("new"),
   parent: audioAnalysesMenuItem,
-  primaryBackground: true,
 
   // TODO: I have hidden the new analysis job menu item behind the isAdmin
   // predicate because it is not currently functional
@@ -52,7 +51,7 @@ export const audioAnalysisJobResultsMenuItem = menuRoute({
   icon: ["fas", "table"],
   label: "Results",
   tooltip: () => "View results for this analysis job",
-  route: oldBawClientAnalysisJobRoute.add("results"),
+  route: audioAnalysisJobRoute.add("results"),
   parent: audioAnalysisMenuJobItem,
 });
 

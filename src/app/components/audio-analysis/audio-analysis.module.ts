@@ -4,7 +4,7 @@ import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { SharedModule } from "@shared/shared.module";
 import { AnalysisJobComponent } from "./pages/details/details.component";
 import { AnalysesComponent } from "./pages/list/list.component";
-import { audioAnalysesRoute, oldBawClientAnalysesRoute } from "./audio-analysis.routes";
+import { audioAnalysesRoute, oldClientAnalysesRoute } from "./audio-analysis.routes";
 import { AnalysisJobResultsComponent } from "./pages/results/results.component";
 import { NewAudioAnalysisJobComponent } from "./pages/new/new.component";
 
@@ -16,7 +16,7 @@ const components = [
 ];
 
 const newRoutes = audioAnalysesRoute.compileRoutes(getRouteConfigForPage);
-const oldClientRoutes = oldBawClientAnalysesRoute.compileRoutes(getRouteConfigForPage);
+const oldClientRoutes = oldClientAnalysesRoute.compileRoutes(getRouteConfigForPage);
 const routes = [...newRoutes, ...oldClientRoutes];
 
 @NgModule({
