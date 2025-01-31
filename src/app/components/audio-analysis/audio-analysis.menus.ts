@@ -2,7 +2,7 @@ import { RouterStateSnapshot } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuAction, menuRoute } from "@interfaces/menusInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { defaultDeleteIcon, defaultNewIcon, isAdminPredicate, isProjectWriterPredicate } from "src/app/app.menus";
+import { defaultDeleteIcon, defaultNewIcon, isAdminPredicate } from "src/app/app.menus";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { analysisJobRoute, audioAnalysisRoute } from "./audio-analysis.routes";
 

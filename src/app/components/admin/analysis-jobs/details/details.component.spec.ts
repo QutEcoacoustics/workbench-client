@@ -120,16 +120,6 @@ describe("AdminAnalysisJobComponent", () => {
     const details: Detail[] = [
       { label: "Id", key: "id", plain: model.id },
       { label: "Name", key: "name", plain: model.name },
-      {
-        label: "Annotation Name",
-        key: "annotationName",
-        plain: model.annotationName,
-      },
-      {
-        label: "Custom Settings",
-        key: "customSettings",
-        code: model.customSettings,
-      },
       { label: "Script", key: "script", model: "Script: custom script (1)" },
       {
         label: "Saved Search",
