@@ -1,4 +1,11 @@
 import { projectRoute } from "@components/projects/projects.routes";
+import { StrongRoute } from "@interfaces/strongRoute";
 
-export const audioAnalysesRoute = projectRoute.addFeatureModule("analysis_jobs");
-export const audioAnalysisJobRoute = audioAnalysesRoute.add(":analysisJobId");
+const analysesPath = "analysis_jobs";
+const analysisJobPath = ":analysisJobId";
+
+export const oldBawClientAnalysesRoute = StrongRoute.newRoot().add(analysesPath);
+export const oldBawClientAnalysisJobRoute = oldBawClientAnalysesRoute.add(analysisJobPath);
+
+export const audioAnalysesRoute = projectRoute.addFeatureModule(analysesPath);
+export const audioAnalysisJobRoute = audioAnalysesRoute.add(analysisJobPath);

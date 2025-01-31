@@ -2,9 +2,9 @@ import { RouterStateSnapshot } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuAction, menuRoute } from "@interfaces/menusInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { defaultDeleteIcon, defaultNewIcon, isAdminPredicate, isWorkInProgressPredicate } from "src/app/app.menus";
+import { defaultDeleteIcon, defaultNewIcon, isAdminPredicate } from "src/app/app.menus";
 import { projectMenuItem } from "@components/projects/projects.menus";
-import { audioAnalysisJobRoute, audioAnalysesRoute } from "./audio-analysis.routes";
+import { audioAnalysisJobRoute, audioAnalysesRoute, oldBawClientAnalysisJobRoute } from "./audio-analysis.routes";
 
 export const audioAnalysisCategory = {
   icon: ["fas", "server"],
@@ -52,7 +52,7 @@ export const audioAnalysisJobResultsMenuItem = menuRoute({
   icon: ["fas", "table"],
   label: "Results",
   tooltip: () => "View results for this analysis job",
-  route: audioAnalysisJobRoute.add("results"),
+  route: oldBawClientAnalysisJobRoute.add("results"),
   parent: audioAnalysisMenuJobItem,
 });
 
