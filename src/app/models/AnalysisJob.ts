@@ -1,8 +1,8 @@
 import { AUDIO_EVENT_IMPORT, PROJECT, SCRIPT } from "@baw-api/ServiceTokens";
 import { adminAnalysisJobMenuItem } from "@components/admin/analysis-jobs/analysis-jobs.menus";
-import { audioAnalysisMenuJobItem } from "@components/audio-analysis/audio-analysis.menus";
 import { Duration } from "luxon";
 import { InnerFilter } from "@baw-api/baw-api.service";
+import { analysisJobMenuItem } from "@components/audio-analysis/analysis-jobs.menus";
 import {
   DateTimeTimezone,
   Description,
@@ -158,14 +158,22 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
       return this.adminViewUrl;
     }
 
-    return audioAnalysisMenuJobItem.route.format({
+    return analysisJobMenuItem.route.format({
       analysisJobId: this.id,
       projectId,
     });
   }
 
   public get viewUrl(): string {
-    throw new Error("method not implemented");
+    const projectId = this.projectId;
+    if (!projectId) {
+      return this.adminViewUrl;
+    }
+
+    return analysisJobMenuItem.route.format({
+      analysisJobId: this.id,
+      projectId,
+    });
   }
 
   /**

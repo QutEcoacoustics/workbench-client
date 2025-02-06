@@ -1,13 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
-import {
-  audioAnalysisCategory,
-  audioAnalysisMenuJobItem,
-  audioAnalysisJobResultsMenuItem,
-  deleteAudioAnalysisMenuItem,
-  pauseProcessingMenuItem,
-  retryFailedItemsMenuItem,
-} from "@components/audio-analysis/audio-analysis.menus";
+import { analysisCategory, analysisJobMenuItem } from "@components/audio-analysis/analysis-jobs.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
@@ -27,7 +20,7 @@ const projectKey = "project";
   selector: "baw-audio-analysis",
   templateUrl: "details.component.html",
 })
-class AudioAnalysisJobComponent
+class AnalysisJobComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit
 {
@@ -54,16 +47,10 @@ class AudioAnalysisJobComponent
   }
 }
 
-AudioAnalysisJobComponent.linkToRoute({
-  category: audioAnalysisCategory,
-  pageRoute: audioAnalysisMenuJobItem,
+AnalysisJobComponent.linkToRoute({
+  category: analysisCategory,
+  pageRoute: analysisJobMenuItem,
   menus: {
-    actions: List([
-      audioAnalysisJobResultsMenuItem,
-      retryFailedItemsMenuItem,
-      pauseProcessingMenuItem,
-      deleteAudioAnalysisMenuItem,
-    ]),
     actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: {
@@ -72,4 +59,4 @@ AudioAnalysisJobComponent.linkToRoute({
   },
 });
 
-export { AudioAnalysisJobComponent };
+export { AnalysisJobComponent };

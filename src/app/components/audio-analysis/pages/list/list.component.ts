@@ -4,15 +4,13 @@ import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
-  audioAnalysesMenuItem,
-  audioAnalysisCategory,
-  newAudioAnalysisJobMenuItem,
-} from "@components/audio-analysis/audio-analysis.menus";
+  analysesMenuItem,
+  analysisCategory,
+} from "@components/audio-analysis/analysis-jobs.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Param } from "@interfaces/apiInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { Project } from "@models/Project";
-import { List } from "immutable";
 import { DateTime } from "luxon";
 import { Observable } from "rxjs";
 
@@ -32,7 +30,7 @@ const projectKey = "project";
   selector: "baw-audio-analyses",
   templateUrl: "list.component.html",
 })
-class AudioAnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
+class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
   public constructor(
     protected api: AnalysisJobsService,
     protected route: ActivatedRoute
@@ -44,7 +42,7 @@ class AudioAnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
         creator: analysisJob,
         started: analysisJob.startedAt,
         status: analysisJob.overallStatus,
-        statusUpdated: analysisJob.overallStatusModifiedAt,
+        statusUpdated: analysisJob.updatedAt,
         model: analysisJob,
       }))
     );
@@ -57,7 +55,7 @@ class AudioAnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
     { name: "Creator" },
     { name: "Started" },
     { name: "Status" },
-    { name: "Status Updated" },
+    { name: "Updated" },
     { name: "Actions" },
   ];
 
@@ -75,7 +73,10 @@ class AudioAnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
       return routeProjectModel.model;
     }
 
-    return null;
+    // we should never reach this case but I throw an error in this case so that
+    // the page will hard fail and the user won't be stuck in untested and
+    // partial/buggy site state
+    throw new Error("Project is not defined in route");
   }
 
   protected override apiAction(
@@ -107,13 +108,12 @@ class AudioAnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
   }
 }
 
-AudioAnalysesComponent.linkToRoute({
-  category: audioAnalysisCategory,
-  pageRoute: audioAnalysesMenuItem,
-  menus: { actions: List([newAudioAnalysisJobMenuItem]) },
+AnalysesComponent.linkToRoute({
+  category: analysisCategory,
+  pageRoute: analysesMenuItem,
   resolvers: {
     [projectKey]: projectResolvers.show,
   },
 });
 
-export { AudioAnalysesComponent };
+export { AnalysesComponent };

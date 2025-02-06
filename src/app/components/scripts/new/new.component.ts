@@ -29,8 +29,7 @@ import {
       [fields]="fields"
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
-    >
-    </baw-form>
+    ></baw-form>
   `,
 })
 class AdminScriptsNewComponent extends FormTemplate<Script> {
