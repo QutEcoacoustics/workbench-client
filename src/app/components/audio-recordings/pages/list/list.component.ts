@@ -140,7 +140,7 @@ class AudioRecordingsListComponent
     this.getPageData();
   }
 
-  protected apiAction(
+  protected override apiAction(
     filters: Filters<AudioRecording>
   ): Observable<AudioRecording[]> {
     if (this.site) {

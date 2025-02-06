@@ -1,0 +1,55 @@
+<ng-container *ngIf="rows && !error">
+  <h1>Analysis Jobs</h1>
+
+  <p>
+    Displaying <strong>{{ pageSize }}</strong> of
+    <strong>all {{ totalModels }}</strong> analysis jobs.
+  </p>
+
+  <ngx-datatable
+    #table
+    bawDatatableDefaults
+    [columns]="columns"
+    [rows]="rows"
+    [count]="totalModels"
+    [offset]="pageNumber"
+    (page)="setPage($event)"
+    (sort)="onSort($event)"
+  >
+    <ngx-datatable-column name="Name"></ngx-datatable-column>
+    <ngx-datatable-column name="Scripts" [width]="50" [sortable]="false">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <baw-inline-list [items]="value.scripts" itemKey="name"></baw-inline-list>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Creator" [sortable]="false">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <baw-user-link [user]="value.creator"></baw-user-link>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Started" [width]="110" [maxWidth]="110">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        @if (value) {
+        <baw-datetime [value]="value"></baw-datetime>
+        } @else {
+        <span>Unknown</span>
+        }
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Status"></ngx-datatable-column>
+    <ngx-datatable-column name="Status Updated" [width]="115" [maxWidth]="115">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <baw-datetime [value]="value"></baw-datetime>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Model" [sortable]="false">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <a class="btn btn-sm btn-primary" [bawUrl]="value?.createViewUrl(project?.id)">
+          View
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</ng-container>
+
+<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>

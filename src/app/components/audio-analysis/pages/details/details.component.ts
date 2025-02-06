@@ -1,39 +1,62 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
-import {
-  audioAnalysisCategory,
-  audioAnalysisMenuItem,
-  audioAnalysisResultsMenuItem,
-  deleteAudioAnalysisMenuItem,
-  pauseProcessingMenuItem,
-  retryFailedItemsMenuItem,
-} from "@components/audio-analysis/audio-analysis.menus";
+import { analysisCategory, analysisJobMenuItem } from "@components/audio-analysis/analysis-jobs.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { List } from "immutable";
+import { ActivatedRoute } from "@angular/router";
+import { retrieveResolvers, hasResolvedSuccessfully } from "@baw-api/resolver-common";
+import { IPageInfo } from "@helpers/page/pageInfo";
+import { AnalysisJob } from "@models/AnalysisJob";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { Project } from "@models/Project";
+import schema from "../../analysis-job.schema.json";
 
-const audioAnalysisKey = "audioAnalysis";
+const analysisJobKey = "analysisJob";
+const projectKey = "project";
 
-//TODO: OLD-CLIENT REMOVE
 @Component({
-  selector: "baw-audio-analysis",
-  template: "<baw-client></baw-client>",
+  selector: "baw-analysis",
+  templateUrl: "details.component.html",
 })
-class AudioAnalysisComponent extends PageComponent {}
+class AnalysisJobComponent
+  extends withUnsubscribe(PageComponent)
+  implements OnInit
+{
+  public analysisJob: AnalysisJob;
+  public failure: boolean;
+  public fields = schema.fields;
+  public project: Project;
 
-AudioAnalysisComponent.linkToRoute({
-  category: audioAnalysisCategory,
-  pageRoute: audioAnalysisMenuItem,
+  public constructor(private route: ActivatedRoute) {
+    super();
+  }
+
+  public ngOnInit(): void {
+    const data = this.route.snapshot.data;
+    const models = retrieveResolvers(data as IPageInfo);
+
+    if (!hasResolvedSuccessfully(models)) {
+      this.failure = true;
+      return;
+    }
+
+    this.analysisJob = models[analysisJobKey] as AnalysisJob;
+    this.project = models[projectKey] as Project;
+  }
+}
+
+AnalysisJobComponent.linkToRoute({
+  category: analysisCategory,
+  pageRoute: analysisJobMenuItem,
   menus: {
-    actions: List([
-      audioAnalysisResultsMenuItem,
-      retryFailedItemsMenuItem,
-      pauseProcessingMenuItem,
-      deleteAudioAnalysisMenuItem,
-    ]),
     actionWidgets: List([permissionsWidgetMenuItem]),
   },
-  resolvers: { [audioAnalysisKey]: analysisJobResolvers.show },
+  resolvers: {
+    [analysisJobKey]: analysisJobResolvers.show,
+    [projectKey]: projectResolvers.show,
+  },
 });
 
-export { AudioAnalysisComponent };
+export { AnalysisJobComponent };

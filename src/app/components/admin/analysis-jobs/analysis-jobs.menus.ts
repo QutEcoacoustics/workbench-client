@@ -7,11 +7,11 @@ export const adminAnalysisJobsRoute = adminRoute.addFeatureModule(
   "analysis_jobs"
 );
 
-export const adminAnalysisJobsCategory: Category = {
+export const adminAnalysisJobsCategory = {
   icon: ["fas", "server"],
   label: "Analysis Jobs",
   route: adminAnalysisJobsRoute,
-};
+} satisfies Category;
 
 export const adminAnalysisJobsMenuItem = menuRoute({
   icon: ["fas", "server"],

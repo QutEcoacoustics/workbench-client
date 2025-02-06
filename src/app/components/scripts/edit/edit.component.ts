@@ -35,9 +35,6 @@ const scriptKey = "script";
   `,
 })
 class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
-  public fields = schema.fields;
-  public title: string;
-
   public constructor(
     private api: ScriptsService,
     notifications: ToastrService,
@@ -50,6 +47,9 @@ class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   }
+
+  public fields = schema.fields;
+  public title: string;
 
   public ngOnInit() {
     super.ngOnInit();

@@ -115,8 +115,8 @@ export class ServiceToken<
 }
 
 export const ACCOUNT = new ServiceToken<AccountsService, User>("ACCOUNT");
-export const ANALYSIS_JOB = new ServiceToken<AnalysisJobsService, AnalysisJob>("A_JOB");
-export const ANALYSIS_JOB_ITEM = new ServiceToken<AnalysisJobItemsService, AnalysisJobItem>("A_JOB_ITEM");
+export const ANALYSIS_JOB = new ServiceToken<AnalysisJobsService, AnalysisJob>("ANALYSIS_JOB");
+export const ANALYSIS_JOB_ITEM = new ServiceToken<AnalysisJobItemsService, AnalysisJobItem>("ANALYSIS_JOB_ITEM");
 export const ANALYSIS_JOB_ITEM_RESULTS = new ServiceToken<AnalysisJobItemResultsService, AnalysisJobItemResult>("A_JOB_ITEM_RESULTS");
 export const AUDIO_EVENT = new ServiceToken<AudioEventsService, AudioEvent>("AUDIO");
 export const SHALLOW_AUDIO_EVENT = new ServiceToken<ShallowAudioEventsService, AudioEvent>("S_AUDIO");

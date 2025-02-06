@@ -1,3 +1,4 @@
+import { InnerFilter } from "@baw-api/baw-api.service";
 import humanizeDuration from "humanize-duration";
 import { DateTime, Duration } from "luxon";
 
@@ -35,6 +36,8 @@ export type UserName = string;
  * BAW API Authentication Token
  */
 export type AuthToken = string;
+
+export type ExecutableCommand = string;
 
 /**
  * BAW API Permission Levels
@@ -193,6 +196,14 @@ export interface HasDescription {
   description?: Description;
   descriptionHtml?: Description;
   descriptionHtmlTagline?: Description;
+}
+
+/**
+ * An interface that can be implemented if a model echos back a filter object
+ * representation.
+ */
+export interface HasFilter {
+  filter?: InnerFilter;
 }
 
 export type HasAllUsers = HasCreator & HasUpdater & HasDeleter;

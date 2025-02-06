@@ -8,7 +8,6 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BawApiModule } from "@baw-api/baw-api.module";
-import { AudioAnalysisModule } from "@components/audio-analysis/audio-analysis.module";
 import { AudioRecordingModule } from "@components/audio-recordings/audio-recording.module";
 import { ReportsModule } from "@components/reports/reports.module";
 import { CitizenScienceModule } from "@components/citizen-science/citizen-science.module";
@@ -30,6 +29,8 @@ import { TitleStrategy } from "@angular/router";
 import { AnnotationsImportModule } from "@components/import-annotations/import-annotations.module";
 import { WebsiteStatusModule } from "@components/website-status/website-status.module";
 import { AnnotationModule } from "@components/annotations/annotation.module";
+import { ScriptsModule } from "@components/scripts/scripts.module";
+import { AnalysisModule } from "@components/audio-analysis/analysis-jobs.module";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { toastrRoot } from "./app.helper";
@@ -64,7 +65,8 @@ export const appImports = [
   SharedModule,
   AboutModule,
   AdminModule,
-  AudioAnalysisModule,
+  AnalysisModule,
+  ScriptsModule,
   AudioRecordingModule,
   CitizenScienceModule,
   DataRequestModule,

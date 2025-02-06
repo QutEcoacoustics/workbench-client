@@ -30,24 +30,22 @@
     <ngx-datatable-column name="Command" [sortable]="false">
     </ngx-datatable-column>
     <ngx-datatable-column
+      *ngIf="session.isLoggedIn"
       name="Model"
       [width]="155"
       [maxWidth]="155"
       [sortable]="false"
     >
       <ng-template let-column="column" ngx-datatable-header-template>
+        Actions
       </ng-template>
+
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <a
-          class="btn btn-sm btn-default me-1"
-          [strongRoute]="updatePath"
-          [routeParams]="{ scriptId: value.id }"
-        >
-          Update
-        </a>
-        <a class="btn btn-sm btn-default" [bawUrl]="value.adminViewUrl">
-          Details
-        </a>
+        <baw-can [ifLoggedIn]="true">
+          <a class="btn btn-sm btn-primary me-1" [bawUrl]="value.viewUrl">
+            View
+          </a>
+        </baw-can>
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>

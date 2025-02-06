@@ -4,45 +4,32 @@ import {
   defaultEditIcon,
   defaultNewIcon,
   isAdminPredicate,
+  isLoggedInPredicate,
 } from "src/app/app.menus";
 import { CommonRouteTitles } from "src/app/stringConstants";
-import { adminDashboardMenuItem, adminRoute } from "../admin.menus";
-
-export const adminScriptsRoute = adminRoute.addFeatureModule("scripts");
+import { scriptRoute, scriptsRoute } from "./scripts.routes";
 
 export const adminScriptsCategory: Category = {
   icon: ["fas", "scroll"],
   label: "Scripts",
-  route: adminScriptsRoute,
+  route: scriptsRoute,
 };
 
-export const adminScriptsMenuItem = menuRoute({
+export const scriptsMenuItem = menuRoute({
   icon: ["fas", "scroll"],
   label: "Scripts",
   route: adminScriptsCategory.route,
   tooltip: () => "Manage custom scripts",
-  parent: adminDashboardMenuItem,
-  predicate: isAdminPredicate,
+  predicate: isLoggedInPredicate,
 });
 
-export const adminNewScriptsMenuItem = menuRoute({
-  icon: defaultNewIcon,
-  label: "New Script",
-  route: adminScriptsMenuItem.route.add("new"),
-  tooltip: () => "Create a new script",
-  parent: adminScriptsMenuItem,
-  predicate: isAdminPredicate,
-});
-
-const adminScriptRoute = adminScriptsRoute.add(":scriptId");
-
-export const adminScriptMenuItem = menuRoute({
+export const scriptMenuItem = menuRoute({
   icon: ["fas", "scroll"],
   label: "Script",
-  route: adminScriptRoute,
+  route: scriptRoute,
   tooltip: () => "Manage script",
-  parent: adminScriptsMenuItem,
-  predicate: isAdminPredicate,
+  predicate: isLoggedInPredicate,
+  parent: scriptsMenuItem,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
     const scriptName = componentModel.script.model.name;
@@ -50,12 +37,21 @@ export const adminScriptMenuItem = menuRoute({
   }
 });
 
+export const newScriptMenuItem = menuRoute({
+  icon: defaultNewIcon,
+  label: "New Script",
+  route: scriptsMenuItem.route.add("new"),
+  parent: scriptsMenuItem,
+  tooltip: () => "Create a new script",
+  predicate: isAdminPredicate,
+});
+
 export const adminEditScriptMenuItem = menuRoute({
   icon: defaultEditIcon,
   label: "New Version",
-  route: adminScriptRoute.add("edit"),
+  route: scriptRoute.add("edit"),
   tooltip: () => "Create new version of this script",
-  parent: adminScriptMenuItem,
   predicate: isAdminPredicate,
+  parent: scriptMenuItem,
   title: () => CommonRouteTitles.routeEditTitle,
 });
