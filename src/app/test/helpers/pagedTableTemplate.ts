@@ -1,7 +1,12 @@
 import { ComponentFixture } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { ApiFilter } from "@baw-api/api-common";
-import { defaultApiPageSize, Filters, Paging } from "@baw-api/baw-api.service";
+import {
+  defaultApiPageSize,
+  Filters,
+  InnerFilter,
+  Paging,
+} from "@baw-api/baw-api.service";
 import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { AbstractModel } from "@models/AbstractModel";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
@@ -67,19 +72,26 @@ export function datatableApiResponse<M extends AbstractModel>(
  * arrow function re-declares `this` and tests will fail.
  */
 export function assertPagination<
-  M extends AbstractModel,
-  S extends ApiFilter<M, any[]>
+  MockModel extends AbstractModel,
+  TestedService extends ApiFilter<MockModel, any[]>
 >(apiAction: string = "filter") {
   describe("pagination", function () {
-    let api: S;
-    let defaultModels: M[];
+    let api: TestedService;
+    let defaultModels: MockModel[];
+
+    /**
+     * Default inner filters that will be present in all requests.
+     * This is useful if the pagination table is scoped to a model
+     * e.g. project.
+     */
+    let defaultInnerFilters: InnerFilter<MockModel> = {};
     let defaultPaging: Paging;
     let fixture: ComponentFixture<any>;
 
     function assertSecondRequestFilters(
       done: () => void,
       expectation: Filters,
-      models: M[]
+      models: MockModel[]
     ) {
       let secondRequest = false;
       const paging = {
@@ -97,13 +109,13 @@ export function assertPagination<
         }
 
         secondRequest = true;
-        return new BehaviorSubject<M[]>(models);
+        return new BehaviorSubject<MockModel[]>(models);
       });
     }
 
     function apiErrorResponse(error: ApiErrorDetails) {
       api[apiAction].and.callFake(() => {
-        const subject = new Subject<M[]>();
+        const subject = new Subject<MockModel[]>();
         subject.error(error);
         return subject;
       });
@@ -130,10 +142,27 @@ export function assertPagination<
       }, 0);
     }
 
+    function buildExpectedFilters(
+      paging?: Paging,
+      filter: InnerFilter<MockModel> = defaultInnerFilters
+    ): Filters {
+      const result: Filters = {};
+
+      if (filter) {
+        result.filter = filter;
+      }
+      if (paging) {
+        result.paging = paging;
+      }
+
+      return result;
+    }
+
     beforeEach(function () {
       api = this.api;
       fixture = this.fixture;
       defaultModels = this.defaultModels;
+      defaultInnerFilters = this.defaultInnerFilters;
       defaultPaging = {
         page: 1,
         items: defaultApiPageSize,
@@ -142,14 +171,14 @@ export function assertPagination<
       };
     });
 
-    it("should send " + apiAction + " request", () => {
+    it(`should send ${apiAction} request`, () => {
       datatableApiResponse(api, [], undefined, apiAction);
       fixture.detectChanges();
-      expect(api[apiAction]).toHaveBeenCalledWith({});
+      expect(api[apiAction]).toHaveBeenCalledWith(buildExpectedFilters());
     });
 
     it("should request the second page from api", (done) => {
-      assertSecondRequestFilters(done, { paging: { page: 2 } }, [
+      assertSecondRequestFilters(done, buildExpectedFilters({ page: 2 }), [
         defaultModels[0],
       ]);
       fixture.detectChanges();
@@ -159,7 +188,7 @@ export function assertPagination<
     });
 
     it("should request next page from api", (done) => {
-      assertSecondRequestFilters(done, { paging: { page: 2 } }, [
+      assertSecondRequestFilters(done, buildExpectedFilters({ page: 2 }), [
         defaultModels[0],
       ]);
       fixture.detectChanges();
@@ -170,7 +199,7 @@ export function assertPagination<
     });
 
     it("should request final page from api", (done) => {
-      assertSecondRequestFilters(done, { paging: { page: 4 } }, [
+      assertSecondRequestFilters(done, buildExpectedFilters({ page: 4 }), [
         defaultModels[0],
       ]);
       fixture.detectChanges();

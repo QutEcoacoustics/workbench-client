@@ -27,7 +27,7 @@ interface TableRow {
 const projectKey = "project";
 
 @Component({
-  selector: "baw-audio-analyses",
+  selector: "baw-analyses",
   templateUrl: "list.component.html",
 })
 class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
@@ -82,27 +82,23 @@ class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
   protected override apiAction(
     filters: Filters<AnalysisJob>
   ): Observable<AnalysisJob[]> {
+    if (!this.project) {
+      return this.api.filter(filters);
+    }
+
     const filterByProject: Filters<AnalysisJob> = {
       filter: {
         or: {
-          projectId: { eq: this.project?.id },
-          systemJob: { eq: true }
+          projectId: { eq: this.project.id },
+          systemJob: { eq: true },
         },
       },
     };
 
-    const projectScopeFilter: Filters<AnalysisJob> = this.project
-      ? filterByProject
-      : {};
-
     const actionedFilters = {
-      ...projectScopeFilter,
       ...filters,
+      ...filterByProject,
     } satisfies Filters<AnalysisJob>;
-
-    if (this.project) {
-      return this.api.filter(actionedFilters);
-    }
 
     return this.api.filter(actionedFilters);
   }

@@ -28,6 +28,7 @@
       "datetime",
       "luxon",
       "datatable",
+      "ngneat",
       "ncpus",
       "ngpus",
       "walltime"

@@ -1,9 +1,9 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
-import { defaultApiPageSize } from "@baw-api/baw-api.service";
+import { defaultApiPageSize, InnerFilter } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -16,6 +16,8 @@ import { Script } from "@models/Script";
 import { generateScript } from "@test/fakes/Script";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
+import { Project } from "@models/Project";
+import { generateProject } from "@test/fakes/Project";
 import { AnalysesComponent } from "./list.component";
 
 describe("AnalysesComponent", () => {
@@ -26,13 +28,20 @@ describe("AnalysesComponent", () => {
 
   let injector: SpyObject<AssociationInjector>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: AnalysesComponent,
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
   });
 
   beforeEach(function () {
-    spec = createComponent({ detectChanges: false });
+    const mockProject = new Project(generateProject());
+
+    spec = createComponent({
+      detectChanges: false,
+      data: {
+        project: { model: mockProject },
+      },
+    });
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
     api = spec.inject(ANALYSIS_JOB.token);
@@ -44,9 +53,17 @@ describe("AnalysesComponent", () => {
       defaultModels.push(new AnalysisJob(generateAnalysisJob(), injector));
     }
 
+    const expectedInnerFilters = {
+      or: {
+        projectId: { eq: mockProject.id },
+        systemJob: { eq: true },
+      },
+    } as const satisfies InnerFilter<AnalysisJob>;
+
     mockScriptsApi.show.and.returnValue(() => of(new Script(generateScript(), injector)));
     mockAccountsApi.show.and.callFake(() => of(new User(generateUser(), injector)));
 
+    this.defaultInnerFilters = expectedInnerFilters;
     this.defaultModels = defaultModels;
     this.fixture = spec.fixture;
     this.api = api;

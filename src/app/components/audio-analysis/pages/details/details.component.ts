@@ -17,7 +17,7 @@ const analysisJobKey = "analysisJob";
 const projectKey = "project";
 
 @Component({
-  selector: "baw-audio-analysis",
+  selector: "baw-analysis",
   templateUrl: "details.component.html",
 })
 class AnalysisJobComponent
