@@ -14,7 +14,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { AudioEvent } from "@models/AudioEvent";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { AudioEventImportFileWrite } from "@models/AudioEventImport/AudioEventImportFileWrite";
-import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { Filters } from "@baw-api/baw-api.service";
 import { AbstractModel } from "@models/AbstractModel";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { ToastrService } from "ngx-toastr";
@@ -25,6 +25,8 @@ import {
   AudioEventError,
   ImportedAudioEvent,
 } from "@models/AudioEventImport/ImportedAudioEvent";
+import { AudioEventImportFile } from "@models/AudioEventImportFile";
+import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { deleteAnnotationImportModal } from "../import-annotations.modals";
 import {
   annotationsImportMenuItem,
@@ -58,12 +60,6 @@ interface ImportGroup {
   uploaded: boolean;
 }
 
-/**
- * ! This component is subject to change due to forecasted breaking api changes
- * Most of the breaking changes address performance concerns with large annotation imports
- *
- * @see https://github.com/QutEcoacoustics/baw-server/issues/664
- */
 @Component({
   selector: "baw-annotation-import",
   templateUrl: "details.component.html",
@@ -75,6 +71,7 @@ class AnnotationsDetailsComponent extends PageComponent implements OnInit {
     private tagsApi: TagsService,
     private eventsApi: ShallowAudioEventsService,
     private eventImportsApi: AudioEventImportService,
+    private eventImportFileApi: AudioEventImportFileService,
     private notifications: ToastrService,
     private router: Router
   ) {
@@ -86,13 +83,23 @@ class AnnotationsDetailsComponent extends PageComponent implements OnInit {
   public audioEventImport: AudioEventImport;
   // we use this boolean to disable the import form when an upload is in progress
   public uploading: boolean = false;
-  protected filters$: BehaviorSubject<Filters<AudioEvent>>;
-  private defaultFilters: Filters<AudioEvent> = {
+
+  protected eventFilters$: BehaviorSubject<Filters<AudioEvent>>;
+  protected fileFilters$: BehaviorSubject<Filters<AudioEventImportFile>>;
+
+  private defaultEventFilters = {
     sorting: {
       direction: "desc",
       orderBy: "createdAt",
     },
-  };
+  } as const satisfies Filters<AudioEvent>;
+
+  private defaultFileFilters = {
+    sorting: {
+      direction: "desc",
+      orderBy: "createdAt",
+    },
+  } as const satisfies Filters<AudioEventImportFile>;
 
   // we want to create each new import group from a template by value
   // if it is done by reference, we would be modifying the same import group
@@ -111,11 +118,12 @@ class AnnotationsDetailsComponent extends PageComponent implements OnInit {
     const routeData = this.route.snapshot.data;
     this.audioEventImport = routeData[audioEventImportKey].model;
 
-    this.filters$ = new BehaviorSubject(this.defaultFilters);
+    this.eventFilters$ = new BehaviorSubject(this.defaultEventFilters);
+    this.fileFilters$ = new BehaviorSubject(this.defaultFileFilters);
   }
 
   // used to fetch all previously imported events for the events ngx-datatable
-  protected getModels = (
+  protected getEventModels = (
     filters: Filters<AudioEvent>
   ): Observable<AudioEvent[]> => {
     const eventImportFilters: Filters<AudioEvent> = {
@@ -128,6 +136,14 @@ class AnnotationsDetailsComponent extends PageComponent implements OnInit {
     };
 
     return this.eventsApi.filter(eventImportFilters);
+  };
+
+  protected getFileModels = (): Observable<AudioEventImportFile[]> => {
+    const eventFileFilters = {} satisfies Filters<AudioEventImportFile>;
+    return this.eventImportFileApi.filter(
+      eventFileFilters,
+      this.audioEventImport
+    );
   };
 
   protected deleteModel(): void {
@@ -222,7 +238,10 @@ class AnnotationsDetailsComponent extends PageComponent implements OnInit {
     }
   }
 
-  private uploadFile(model: ImportGroup, file: File): Promise<void | AudioEventImport> {
+  private uploadFile(
+    model: ImportGroup,
+    file: File
+  ): Promise<void | AudioEventImport> {
     const audioEventImportModel: AudioEventImportFileWrite =
       new AudioEventImportFileWrite({
         id: this.audioEventImport.id,
@@ -315,7 +334,7 @@ class AnnotationsDetailsComponent extends PageComponent implements OnInit {
     // we use the default filter here to prevent two api requests being sent
     // e.g. if we set the filters to {} here, it would make an api call with the {} filters
     // then another one with the default filters
-    this.filters$.next(this.defaultFilters);
+    this.eventFilters$.next(this.defaultEventFilters);
 
     // because the "files" property is a sub model on the audio event import model
     // we have to refetch the audio event import model to update the files table

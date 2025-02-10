@@ -21,9 +21,6 @@ const endpoint = stringTemplate`/audio_event_imports/${eventImportId}${option}`;
 /**
  * Audio event import service.
  * Handles API routes pertaining to audio event imports (e.g. annotation imports).
- *
- * ! This service is subject to change due to forecasted breaking api changes.
- * @see https://github.com/QutEcoacoustics/baw-server/issues/664
  */
 @Injectable()
 export class AudioEventImportService implements StandardApi<AudioEventImport> {
