@@ -10,8 +10,6 @@ import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/au
 import { Observable, takeUntil } from "rxjs";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
-import { FORBIDDEN } from "http-status";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { ActivatedRoute } from "@angular/router";
 import { Tag } from "@models/Tag";
 import { contains, filterAnd, notIn } from "@helpers/filters/filters";
@@ -55,9 +53,13 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
     super();
   }
 
+  protected uploading: boolean = false;
   protected importGroup: ImportGroup = this.emptyImportGroup;
   protected audioEventImport: AudioEventImport;
-  protected uploading: boolean = false;
+
+  // we use an array for the audio event import files because users can upload
+  // multiple files through the file input
+  protected importFiles: AudioEventImportFile[] = [];
 
   // we want to create each new import group from a template by value
   // if it is done by reference, we would be modifying the same import group
@@ -128,7 +130,6 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
           id: this.audioEventImport.id,
           file,
           additionalTagIds: this.importGroup.additionalTagIds,
-          commit: false,
         },
         this.injector
       );
@@ -138,6 +139,7 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
         .pipe(takeUntil(this.unsubscribe))
         .subscribe((result: AudioEventImportFile) => {
           console.debug(result);
+          this.importFiles = [...this.importFiles, result];
         });
     }
   }
@@ -146,33 +148,7 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
     model: ImportGroup,
     file: File
   ): Promise<void | AudioEventImportFile> {
-    const audioEventImportModel: AudioEventImportFile =
-      new AudioEventImportFile(
-        {
-          id: this.audioEventImport.id,
-          file,
-          additionalTagIds: model.additionalTagIds,
-          commit: true,
-        },
-        this.injector
-      );
-
-    return this.api
-      .create(audioEventImportModel, this.audioEventImport)
-      .pipe(takeUntil(this.unsubscribe))
-      .toPromise()
-      .finally(() => {
-        model.uploaded = true;
-      })
-      .catch((error: BawApiError) => {
-        // some of the default error messages are ambiguous on this page
-        // e.g. "you do not have access to this page" means that the user doesn't have access to the audio recording
-        if (error.status === FORBIDDEN) {
-          model.errors.push(
-            "You do not have access to all the audio recordings or tags in your files."
-          );
-        }
-      });
+    console.debug(model, file);
   }
 
   // deserialization converts all object keys to camelCase

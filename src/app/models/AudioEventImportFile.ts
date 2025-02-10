@@ -4,24 +4,27 @@ import {
   AUDIO_EVENT_IMPORT,
   TAG,
 } from "@baw-api/ServiceTokens";
-import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
+import { bawDateTime, bawPersistAttr, bawSubModelCollection } from "./AttributeDecorators";
 import { AbstractModel } from "./AbstractModel";
 import { hasMany, hasOne } from "./AssociationDecorators";
 import { AnalysisJobItem } from "./AnalysisJobItem";
 import { Tag } from "./Tag";
 import { AudioEventImport } from "./AudioEventImport";
+import { IImportedAudioEvent, ImportedAudioEvent } from "./AudioEventImport/ImportedAudioEvent";
 
 export interface IAudioEventImportFile {
   id?: Id;
   fileHash?: string;
   path?: FilePath;
   createdAt?: DateTimeTimezone;
+  name?: string;
+  committed?: boolean;
+  importedEvents?: IImportedAudioEvent[];
 
   analysisJobsItemId?: Id;
   audioEventImportId?: Id;
   file?: File;
   additionalTagIds?: CollectionIds;
-  commit?: boolean;
 }
 
 export class AudioEventImportFile
@@ -30,12 +33,16 @@ export class AudioEventImportFile
 {
   public readonly kind = "audio_event_import_file";
   public readonly id?: Id;
+  public readonly name?: string;
   @bawPersistAttr()
   public readonly fileHash?: string;
   @bawPersistAttr()
   public readonly path?: FilePath;
   @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+  public readonly committed?: boolean;
+  @bawSubModelCollection<AudioEventImportFile, ImportedAudioEvent>(ImportedAudioEvent)
+  public readonly importedEvents?: ImportedAudioEvent[];
 
   // form data fields
   @bawPersistAttr({ supportedFormats: ["formData"], create: true })
@@ -46,8 +53,6 @@ export class AudioEventImportFile
   public readonly file: File;
   @bawPersistAttr({ supportedFormats: ["formData"], create: true })
   public readonly additionalTagIds: CollectionIds;
-  @bawPersistAttr({ supportedFormats: ["formData"], create: true })
-  public readonly commit: boolean;
 
   // Associations
   @hasMany<AudioEventImportFile, Tag>(TAG, "additionalTagIds")

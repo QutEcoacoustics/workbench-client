@@ -543,7 +543,10 @@ export class BawApiService<
         headers,
         context,
       }
-    );
+    ).pipe(
+      // TODO: REMOVE THIS BEFORE REVIEW
+      catchError((err) => of(err))
+    ) as any;
   }
 
   /**
