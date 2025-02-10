@@ -30,13 +30,16 @@ import { AssociationInjector } from "./ImplementsInjector";
 export interface IAudioEvent extends HasAllUsers {
   id?: Id;
   audioRecordingId?: Id;
+  channel?: number;
   startTimeSeconds?: number;
   endTimeSeconds?: number;
   lowFrequencyHertz?: number;
   highFrequencyHertz?: number;
   isReference?: boolean;
+  score?: number;
   taggings?: ITagging[] | Tagging[];
   provenanceId?: Id;
+  audioEventImportFileId?: Id;
 }
 
 export class AudioEvent
@@ -47,6 +50,8 @@ export class AudioEvent
   @bawPersistAttr()
   public readonly audioRecordingId?: Id;
   @bawPersistAttr()
+  public readonly channel?: number;
+  @bawPersistAttr()
   public readonly startTimeSeconds?: number;
   @bawPersistAttr()
   public readonly endTimeSeconds?: number;
@@ -56,6 +61,8 @@ export class AudioEvent
   public readonly highFrequencyHertz?: number;
   @bawPersistAttr()
   public readonly isReference?: boolean;
+  @bawPersistAttr()
+  public readonly score?: number;
   public readonly taggings?: Tagging[];
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
@@ -67,6 +74,7 @@ export class AudioEvent
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
   public readonly provenanceId?: Id;
+  public readonly audioEventImportFileId?: Id;
 
   // Associations
   @creator<AudioEvent>()

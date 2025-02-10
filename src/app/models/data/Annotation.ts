@@ -37,6 +37,9 @@ export class Annotation extends AbstractModelWithoutId implements IAnnotation {
   public deletedAt: string | DateTimeTimezone;
   public tags: ITag[];
   public audioRecording: AudioRecording;
+  public score: number;
+  public channel: number;
+  public audioEventImportFileId: number;
 
   public get mediaService(): MediaService {
     return this.injector.get(MEDIA.token);
