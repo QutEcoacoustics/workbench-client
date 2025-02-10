@@ -72,16 +72,6 @@
           </table>
         </div>
       </div>
-
-      <button
-        *ngIf="model?.files?.length > 0"
-        class="remove-import-group-button btn btn-outline-danger mt-3"
-        [ngbTooltip]="'Remove this import group'"
-        [disabled]="uploading"
-        (click)="removeFromImport(model)"
-      >
-        Remove
-      </button>
     </div>
   </div>
 
