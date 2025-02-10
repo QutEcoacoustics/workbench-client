@@ -16,11 +16,12 @@ export interface IAudioEventImportFile {
   fileHash?: string;
   path?: FilePath;
   createdAt?: DateTimeTimezone;
-  additionalTagIds?: CollectionIds;
+
   analysisJobsItemId?: Id;
   audioEventImportId?: Id;
-  commit?: boolean;
   file?: File;
+  additionalTagIds?: CollectionIds;
+  commit?: boolean;
 }
 
 export class AudioEventImportFile
@@ -37,15 +38,15 @@ export class AudioEventImportFile
   public readonly createdAt?: DateTimeTimezone;
 
   // form data fields
-  @bawPersistAttr({ supportedFormats: ["formData"] })
+  @bawPersistAttr({ supportedFormats: ["formData"], create: true })
   public readonly analysisJobsItemId?: Id;
-  @bawPersistAttr({ supportedFormats: ["formData"] })
+  @bawPersistAttr({ supportedFormats: ["formData"], create: true })
   public readonly audioEventImportId?: Id;
-  @bawPersistAttr({ supportedFormats: ["formData"] })
+  @bawPersistAttr({ supportedFormats: ["formData"], create: true })
   public readonly file: File;
-  @bawPersistAttr({ supportedFormats: ["formData"] })
+  @bawPersistAttr({ supportedFormats: ["formData"], create: true })
   public readonly additionalTagIds: CollectionIds;
-  @bawPersistAttr({ supportedFormats: ["formData"] })
+  @bawPersistAttr({ supportedFormats: ["formData"], create: true })
   public readonly commit: boolean;
 
   // Associations

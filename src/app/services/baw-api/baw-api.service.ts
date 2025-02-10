@@ -204,6 +204,10 @@ export class BawApiService<
     this.handleSingleResponse =
       (cb: ClassBuilder) =>
       (resp: ApiResponse<Model>): Model => {
+        if (!resp) {
+          return;
+        }
+
         if (resp.data instanceof Array) {
           throw new Error(
             "Received an array of API results when only a single result was expected"
@@ -333,6 +337,10 @@ export class BawApiService<
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
 
+    const formDataMethod = model.hasJsonOnlyAttributes({ create: true })
+      ? "httpPut"
+      : "httpPost";
+
     // as part of the multi part request, if there is only a JSON body, we want to return the output of the JSON POST request
     // if there is only a formData body, we want to return the output of the formData PUT request
     // if there is both a JSON body and formData, we want to return the output of the last request sent (formData PUT request)
@@ -353,7 +361,7 @@ export class BawApiService<
         // using ternary logic here (similar to the update function) would result in poor readability and a lot of nesting
         iif(
           () => model.hasFormDataOnlyAttributes({ create: true }),
-          this.httpPut(
+          this[formDataMethod](
             updatePath(data),
             formData,
             multiPartApiHeaders,

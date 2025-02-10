@@ -1,7 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { AudioEventError, ImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
+import {
+  AudioEventError,
+  ImportedAudioEvent,
+} from "@models/AudioEventImport/ImportedAudioEvent";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { Observable, takeUntil } from "rxjs";
@@ -13,6 +16,8 @@ import { ActivatedRoute } from "@angular/router";
 import { Tag } from "@models/Tag";
 import { contains, filterAnd, notIn } from "@helpers/filters/filters";
 import { AbstractModel } from "@models/AbstractModel";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
@@ -45,6 +50,7 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
   public constructor(
     private api: AudioEventImportFileService,
     private route: ActivatedRoute,
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
   ) {
     super();
   }
@@ -85,23 +91,18 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
     // we use a "for-of" loop here because if we use a forEach loop (with async callbacks)
     // it doesn't properly await for each import group to finish uploading
     for (const model of this.importGroups) {
-      await this.importEventGroup(model);
+      if (!model.files) {
+        continue;
+      }
+
+      for (const file of model.files) {
+        await this.uploadFile(model, file);
+      }
     }
 
     this.importGroups = this.importGroups.filter((model) => !model.uploaded);
 
-    this.refreshTables();
     this.uploading = false;
-  }
-
-  protected async importEventGroup(model: ImportGroup): Promise<void> {
-    if (!model.files) {
-      return;
-    }
-
-    for (const file of model.files) {
-      await this.uploadFile(model, file);
-    }
   }
 
   // callback used by the typeahead input to search for associated tags
@@ -116,18 +117,21 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
       ),
     });
 
-  private performDryRun(model: ImportGroup) {
-    model.errors = [];
-    model.identifiedEvents = [];
+  private performDryRun() {
+    this.importGroup.errors = [];
+    this.importGroup.identifiedEvents = [];
 
     // we perform a dry run of the import to check for errors
-    for (const file of model.files) {
-      const sentModel: AudioEventImportFile = new AudioEventImportFile({
-        id: this.audioEventImport.id,
-        file,
-        additionalTagIds: model.additionalTagIds,
-        commit: false,
-      });
+    for (const file of this.importGroup.files) {
+      const sentModel: AudioEventImportFile = new AudioEventImportFile(
+        {
+          id: this.audioEventImport.id,
+          file,
+          additionalTagIds: this.importGroup.additionalTagIds,
+          commit: false,
+        },
+        this.injector
+      );
 
       this.api
         .create(sentModel, this.audioEventImport)
@@ -138,17 +142,20 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
     }
   }
 
-  private uploadFile(
+  private async uploadFile(
     model: ImportGroup,
     file: File
   ): Promise<void | AudioEventImportFile> {
     const audioEventImportModel: AudioEventImportFile =
-      new AudioEventImportFile({
-        id: this.audioEventImport.id,
-        file,
-        additionalTagIds: model.additionalTagIds,
-        commit: true,
-      });
+      new AudioEventImportFile(
+        {
+          id: this.audioEventImport.id,
+          file,
+          additionalTagIds: model.additionalTagIds,
+          commit: true,
+        },
+        this.injector
+      );
 
     return this.api
       .create(audioEventImportModel, this.audioEventImport)
@@ -166,12 +173,6 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
           );
         }
       });
-  }
-
-  // because we create a new empty import group if all import groups are full
-  // we use this predicate to check if every import group has files
-  private areImportGroupsFull(): boolean {
-    return this.importGroups.every((model) => model.files !== null);
   }
 
   // deserialization converts all object keys to camelCase
@@ -202,33 +203,23 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
     return items.map((item: AbstractModel): Id => item.id);
   }
 
-  protected pushToImportGroups(model: ImportGroup, event): void {
+  protected pushToImportGroups(event: any): void {
     const files: FileList = event.target.files;
-    model.files = files;
+    this.importGroup.files = files;
 
-    this.performDryRun(model);
-
-    // if the user updates an existing import group, we don't want to create a new one
-    // however, if the user uses the last empty import group, we want to create a new empty one
-    // that they can use to create a new import group
-    if (this.areImportGroupsFull()) {
-      this.importGroups.push(this.emptyImportGroup);
-    }
+    this.performDryRun();
   }
 
   // uses a reference to the ImportGroup object and update the additional tag ids property
-  protected updateAdditionalTagIds(
-    model: ImportGroup,
-    additionalTagIds: Id[]
-  ): void {
-    model.additionalTagIds = additionalTagIds;
-    this.performDryRun(model);
+  protected updateAdditionalTagIds(additionalTagIds: Id[]): void {
+    this.importGroup.additionalTagIds = additionalTagIds;
+    this.performDryRun();
   }
 
   // a predicate to check if every import group is valid
   // this is used for form validation
   protected areImportGroupsValid(): boolean {
-    return this.importGroup.errors.length === 0;
+    return this.importGroup.errors.length === 0 && !!this.importGroup.files;
   }
 
   protected removeFromImport(model: ImportGroup): void {
