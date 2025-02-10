@@ -1,0 +1,125 @@
+<h2>Add New Annotations</h2>
+<form #ngForm="ngForm">
+  <div class="annotationsimportInput">
+    <div class="import-groups">
+      <div *ngIf="model?.errors?.length > 0" class="annotationimportOutput">
+        <div class="alert alert-danger">
+          <ul>
+            <li *ngFor="let error of model.errors">
+              {{ error }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <label for="annotationsFileInput" class="form-label required">
+        Annotation File(s)
+      </label>
+      <input
+        id="annotationsFileInput"
+        type="file"
+        accept=".csv, .selections.txt, .json"
+        class="form-control border"
+        [ngClass]="{ 'is-invalid': model?.errors?.length }"
+        [files]="model?.files"
+        [disabled]="uploading"
+        (change)="pushToImportGroups(model, $event)"
+        multiple
+      />
+
+      <div class="mt-4">
+        <baw-typeahead-input
+          label="Associated Tags"
+          [inputPlaceholder]="'search for tags by name'"
+          [searchCallback]="searchTagsTypeaheadCallback"
+          [resultTemplate]="tagsTypeaheadTemplate"
+          [inputDisabled]="uploading"
+          (modelChange)="
+            updateAdditionalTagIds(model, getIdsFromAbstractModelArray($event))
+          "
+        ></baw-typeahead-input>
+      </div>
+
+      <div
+        *ngIf="model?.identifiedEvents?.length > 0"
+        class="identified-annotations mt-4"
+      >
+        <h4>Identified Events</h4>
+
+        <div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="col">Audio Recording</th>
+                <th>Tags</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let audioEvent of model?.identifiedEvents">
+                <td scope="row">
+                  {{ audioEvent.audioRecordingId }}
+                </td>
+                <td>
+                  <baw-inline-list
+                    [items]="audioEvent?.tags"
+                    [itemKey]="'text'"
+                    [emptyTemplate]="noAssociatedTagsTemplate"
+                  ></baw-inline-list>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <button
+        *ngIf="model?.files?.length > 0"
+        class="remove-import-group-button btn btn-outline-danger mt-3"
+        [ngbTooltip]="'Remove this import group'"
+        [disabled]="uploading"
+        (click)="removeFromImport(model)"
+      >
+        Remove
+      </button>
+    </div>
+  </div>
+
+  <span
+    [ngbTooltip]="
+      areImportGroupsValid()
+        ? 'Import all new annotations'
+        : 'Please fill out all required fields or fix errors'
+    "
+  >
+    <button
+      type="submit"
+      class="btn btn-primary import-btn mb-3"
+      [disabled]="!areImportGroupsValid() || uploading"
+      (click)="uploadImportGroups()"
+    >
+      Import Annotations
+    </button>
+  </span>
+</form>
+
+<ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
+</ng-template>
+
+<ng-template #noAssociatedTagsTemplate>
+  <span>No associated tags</span>
+</ng-template>
+
+<ng-template #noAdditionalTagsTemplate>
+  <span>No additional tags</span>
+</ng-template>
+
+<ng-template #defaultDescription>
+  <i>No description found</i>
+</ng-template>
+
+<ng-template #noFilesTemplate>
+  <i>No files found</i>
+</ng-template>
+

@@ -1,10 +1,11 @@
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
-import { defaultEditIcon, isLoggedInPredicate } from "src/app/app.menus";
+import { defaultEditIcon, isLoggedInPredicate, isProjectWriterPredicate } from "src/app/app.menus";
 import { CommonRouteTitles } from "src/app/stringConstants";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { RouterStateSnapshot } from "@angular/router";
 import {
+  addAnnotationImportRoute,
   annotationImportRoute,
   annotationsImportRoute,
   newAnnotationImportRoute,
@@ -17,8 +18,10 @@ export const annotationsImportCategory: Category = {
 };
 
 // we cannot include a route guard predicate for "project editor"
-// as the annotation imports are monted under the root path "http://ecosounds.org/batch_annotations"
-// therefore, we validate capabilities in the import component during the dry run
+// as the annotation imports are mounted under the root path
+// "http://ecosounds.org/batch_annotations"
+// therefore, we validate capabilities in the import component during the dry
+// run
 export const annotationsImportMenuItem = menuRoute({
   icon: ["fas", "file-import"],
   label: "Batch Import Annotations",
@@ -60,4 +63,14 @@ export const editAnnotationImportMenuItem = menuRoute({
   route: annotationImportMenuItem.route.add("edit"),
   tooltip: () => "(BETA) Edit this annotation import",
   title: () => CommonRouteTitles.routeEditTitle,
+});
+
+export const addAnnotationImportMenuItem = menuRoute({
+  icon: ["fas", "plus"],
+  label: "Add New Annotations",
+  parent: annotationImportMenuItem,
+  predicate: isProjectWriterPredicate,
+  route: addAnnotationImportRoute,
+  tooltip: () => "(BETA) Add new annotations to this project",
+  title: () => "Add New Annotations",
 });

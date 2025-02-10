@@ -7,6 +7,7 @@ import { AnnotationsListComponent } from "./list/list.component";
 import { AnnotationsDetailsComponent } from "./details/details.component";
 import { NewAnnotationsComponent } from "./new/new.component";
 import { EditAnnotationsComponent } from "./edit/edit.component";
+import { AddAnnotationsComponent } from "./add-annotations/add-annotations.component";
 
 const components = [
   // Pages
@@ -14,6 +15,7 @@ const components = [
   AnnotationsDetailsComponent,
   NewAnnotationsComponent,
   EditAnnotationsComponent,
+  AddAnnotationsComponent,
 ];
 
 const routes = annotationsImportRoute.compileRoutes(getRouteConfigForPage);
