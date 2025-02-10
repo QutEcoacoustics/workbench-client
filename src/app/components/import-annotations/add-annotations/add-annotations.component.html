@@ -1,13 +1,4 @@
 <h2>Add New Annotations</h2>
-<div *ngIf="importGroup?.errors?.length > 0" class="annotationimportOutput">
-  <div class="alert alert-danger">
-    <ul>
-      <li *ngFor="let error of importGroup.errors">
-        {{ error }}
-      </li>
-    </ul>
-  </div>
-</div>
 
 <form #ngForm="ngForm">
   <div class="annotationsimportInput">
@@ -39,39 +30,6 @@
           "
         ></baw-typeahead-input>
       </div>
-
-      <div
-        *ngIf="importGroup?.identifiedEvents?.length > 0"
-        class="identified-annotations mt-4"
-      >
-        <h4>Identified Events</h4>
-
-        <div>
-          <table class="table">
-            <thead>
-              <tr>
-                <th class="col">Audio Recording</th>
-                <th>Tags</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr *ngFor="let audioEvent of importGroup?.identifiedEvents">
-                <td scope="row">
-                  {{ audioEvent.audioRecordingId }}
-                </td>
-                <td>
-                  <!-- <baw-inline-list
-                    [items]="audioEvent?.tags"
-                    [itemKey]="'text'"
-                    [emptyTemplate]="noAssociatedTagsTemplate"
-                  ></baw-inline-list> -->
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -92,6 +50,47 @@
     </button>
   </span>
 </form>
+
+<hr />
+
+<div class="identified-annotations mt-4">
+  <h4>Identified Events</h4>
+
+  <div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Audio Recording</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Low Frequency</th>
+          <th>High Frequency</th>
+          <th>Tags</th>
+          <th>Errors</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let file of importFiles">
+          @for (audioEvent of file.importedEvents; track audioEvent) {
+          <td>{{ audioEvent.audioRecordingId }}</td>
+          <td>{{ audioEvent.startTimeSeconds }}</td>
+          <td>{{ audioEvent.endTimeSeconds }}</td>
+          <td>{{ audioEvent.lowFrequencyHertz }}</td>
+          <td>{{ audioEvent.highFrequencyHertz }}</td>
+          <td>
+            <baw-inline-list
+              [items]="audioEvent?.tags"
+              [itemKey]="'text'"
+              [emptyTemplate]="noAssociatedTagsTemplate"
+            ></baw-inline-list>
+          </td>
+          }
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
   <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>

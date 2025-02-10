@@ -24,10 +24,6 @@ export interface IAudioEventImport {
   analysisJobId?: Id;
 }
 
-/**
- * ! Due to planned api changes, this model is subject to change
- * @see https://github.com/QutEcoacoustics/baw-server/issues/664
- */
 export class AudioEventImport
   extends AbstractModel<IAudioEventImport>
   implements IAudioEventImport

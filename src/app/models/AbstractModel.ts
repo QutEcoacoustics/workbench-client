@@ -17,6 +17,15 @@ export type AbstractModelConstructor<Model> = new (
   _injector?: AssociationInjector
 ) => Model;
 
+interface SerializationConversionOptions {
+  convertCase?: boolean;
+  formData?: boolean;
+}
+
+type SerializationTargets = XOR<{ create: boolean }, { update: boolean }>;
+type ModelSerializationOptions = SerializationTargets &
+  SerializationConversionOptions;
+
 /**
  * BAW Server Abstract Model
  */
@@ -345,11 +354,3 @@ export function getUnknownViewUrl(errorMsg: string) {
   console.warn(errorMsg);
   return unknownViewUrl;
 }
-
-export type ModelSerializationOptions = XOR<
-  { create: boolean },
-  { update: boolean }
-> & {
-  convertCase?: boolean;
-  formData?: boolean;
-};

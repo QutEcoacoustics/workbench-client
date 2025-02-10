@@ -71,6 +71,7 @@ export type Filter = "filter";
 export const emptyParam: Empty = "";
 export const newParam: New = "new";
 export const filterParam: Filter = "filter";
+export const commitParam = "?commit";
 
 /**
  * A service that can be configured using an injected BawServiceOptions object
