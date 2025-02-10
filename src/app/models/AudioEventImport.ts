@@ -1,12 +1,12 @@
 import { DateTimeTimezone, Description, Id } from "@interfaces/apiInterfaces";
-import { USER } from "@baw-api/ServiceTokens";
+import { ANALYSIS_JOB, USER } from "@baw-api/ServiceTokens";
 import { annotationImportRoute } from "@components/import-annotations/import-annotations.routes";
 import { AbstractModel } from "./AbstractModel";
 import { bawDateTime, bawPersistAttr, bawSubModelCollection } from "./AttributeDecorators";
 import { hasOne } from "./AssociationDecorators";
 import { User } from "./User";
-import { AudioEventImportFileRead, IAudioEventImportFileRead } from "./AudioEventImport/AudioEventImportFileRead";
 import { IImportedAudioEvent, ImportedAudioEvent } from "./AudioEventImport/ImportedAudioEvent";
+import { AnalysisJob } from "./AnalysisJob";
 
 export interface IAudioEventImport {
   id?: Id;
@@ -20,8 +20,8 @@ export interface IAudioEventImport {
   creatorId?: Id;
   deleterId?: Id;
   updaterId?: Id;
-  files?: IAudioEventImportFileRead[];
   importedEvents?: IImportedAudioEvent[];
+  analysisJobId?: Id;
 }
 
 /**
@@ -49,8 +49,7 @@ export class AudioEventImport
   public readonly creatorId?: Id;
   public readonly deleterId?: Id;
   public readonly updaterId?: Id;
-  @bawSubModelCollection<AudioEventImport, AudioEventImportFileRead>(AudioEventImportFileRead)
-  public readonly files?: AudioEventImportFileRead[];
+  public readonly analysisJobId?: Id;
   @bawSubModelCollection<AudioEventImport, ImportedAudioEvent>(ImportedAudioEvent)
   public readonly importedEvents?: ImportedAudioEvent[];
 
@@ -61,6 +60,8 @@ export class AudioEventImport
   public deleter?: User;
   @hasOne<AudioEventImport, User>(USER, "updaterId")
   public updater?: User;
+  @hasOne<AudioEventImport, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
+  public analysisJob?: AnalysisJob;
 
   public get viewUrl(): string {
     return annotationImportRoute.format({
