@@ -331,13 +331,13 @@ export class BawApiService<
     model: AbstractModel,
     options: BawServiceOptions = {}
   ): Observable<Model> {
-    const jsonData = model.getJsonAttributes?.({ create: true });
-    const formData = model.getFormDataOnlyAttributes({ create: true });
+    const jsonData = model.getJsonAttributesForCreate();
+    const formData = model.getFormDataOnlyAttributesForCreate();
     const body = model.kind
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
 
-    const formDataMethod = model.hasJsonOnlyAttributes({ create: true })
+    const formDataMethod = model.hasJsonOnlyAttributesForCreate()
       ? "httpPut"
       : "httpPost";
 
@@ -347,7 +347,7 @@ export class BawApiService<
     // we default to returning null if there is no JSON or formData body
     return of(null).pipe(
       concatMap(
-        model.hasJsonOnlyAttributes({ create: true })
+        model.hasJsonOnlyAttributesForCreate()
           ? () => this.httpPost(createPath, body, undefined, options).pipe()
           : (data) => of(data)
       ),
@@ -360,7 +360,7 @@ export class BawApiService<
         // we use an if statement here because we want to create a new observable and apply a map function to it
         // using ternary logic here (similar to the update function) would result in poor readability and a lot of nesting
         iif(
-          () => model.hasFormDataOnlyAttributes({ create: true }),
+          () => model.hasFormDataOnlyAttributesForCreate(),
           this[formDataMethod](
             updatePath(data),
             formData,
@@ -394,8 +394,8 @@ export class BawApiService<
     model: AbstractModel,
     options: BawServiceOptions = {}
   ): Observable<Model> {
-    const jsonData = model.getJsonAttributes?.({ update: true });
-    const formData = model.getFormDataOnlyAttributes({ update: true });
+    const jsonData = model.getJsonAttributesForUpdate();
+    const formData = model.getFormDataOnlyAttributesForUpdate();
     const body = model.kind
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
@@ -409,12 +409,12 @@ export class BawApiService<
         // we use (data) => of(data) here instead of the identity function because the identify function
         // returns a value, and not an observable. Because we use concatMap below, we need the existing
         // value to be emitted as an observable instead. Therefore, we create a static observable using of()
-        model.hasJsonOnlyAttributes({ update: true })
+        model.hasJsonOnlyAttributesForUpdate()
           ? () => this.httpPatch(path, body, undefined, options)
           : (data) => of(data)
       ),
       concatMap(
-        model.hasFormDataOnlyAttributes({ update: true })
+        model.hasFormDataOnlyAttributesForUpdate()
           ? () => this.httpPut(path, formData, multiPartApiHeaders, options)
           : (data) => of(data)
       ),
