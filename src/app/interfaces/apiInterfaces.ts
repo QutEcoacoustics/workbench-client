@@ -39,6 +39,8 @@ export type AuthToken = string;
 
 export type ExecutableCommand = string;
 
+export type FilePath = string;
+
 /**
  * BAW API Permission Levels
  */

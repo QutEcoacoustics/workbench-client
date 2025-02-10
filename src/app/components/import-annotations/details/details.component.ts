@@ -31,10 +31,11 @@ import {
   editAnnotationImportMenuItem,
   annotationsImportCategory,
   annotationImportMenuItem,
+  addAnnotationImportMenuItem,
 } from "../import-annotations.menu";
 
 export const annotationMenuActions = [
-  annotationsImportMenuItem,
+  addAnnotationImportMenuItem,
   editAnnotationImportMenuItem,
   deleteAnnotationImportModal,
 ];
@@ -66,7 +67,7 @@ interface ImportGroup {
 @Component({
   selector: "baw-annotation-import",
   templateUrl: "details.component.html",
-  styleUrls: ["details.component.scss"],
+  styleUrl: "details.component.scss",
 })
 class AnnotationsDetailsComponent extends PageComponent implements OnInit {
   public constructor(
@@ -80,6 +81,7 @@ class AnnotationsDetailsComponent extends PageComponent implements OnInit {
     super();
   }
 
+  public active = 1;
   public importGroups: ImportGroup[] = [this.emptyImportGroup];
   public audioEventImport: AudioEventImport;
   // we use this boolean to disable the import form when an upload is in progress
@@ -117,11 +119,11 @@ class AnnotationsDetailsComponent extends PageComponent implements OnInit {
     filters: Filters<AudioEvent>
   ): Observable<AudioEvent[]> => {
     const eventImportFilters: Filters<AudioEvent> = {
-      filter: {
-        audio_event_import_id: {
-          eq: this.audioEventImport.id,
-        },
-      } as InnerFilter<AudioEvent>,
+      // filter: {
+      //   audio_event_import_id: {
+      //     eq: this.audioEventImport.id,
+      //   },
+      // } as InnerFilter<AudioEvent>,
       ...filters,
     };
 
@@ -250,7 +252,7 @@ class AnnotationsDetailsComponent extends PageComponent implements OnInit {
   private performDryRun(model: ImportGroup) {
     model.errors = [];
     model.identifiedEvents = [];
-    
+
     // we perform a dry run of the import to check for errors
     for (const file of model.files) {
       const audioEventImportModel: AudioEventImportFileWrite =
