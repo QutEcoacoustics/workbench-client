@@ -61,7 +61,7 @@ export class AudioEventImportFileService
   ): Observable<AudioEventImportFile> {
     return this.api.create(
       AudioEventImportFile,
-      endpoint(emptyParam, emptyParam, emptyParam),
+      endpoint(audioEventImport, emptyParam, emptyParam),
       (event) => endpoint(audioEventImport, event, emptyParam),
       model
     );
