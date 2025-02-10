@@ -12,7 +12,6 @@ import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEventImport } from "@models/AudioEventImport";
-import { AudioEventImportFileWrite } from "@models/AudioEventImport/AudioEventImportFileWrite";
 import { Observable } from "rxjs";
 
 const eventImportId: IdParamOptional<AudioEventImport> = id;
@@ -57,14 +56,6 @@ export class AudioEventImportService implements StandardApi<AudioEventImport> {
     return this.api.update(
       AudioEventImport,
       endpoint(model, emptyParam),
-      model
-    );
-  }
-
-  public importFile(model: AudioEventImportFileWrite): Observable<AudioEventImport> {
-    return this.api.update(
-      AudioEventImport,
-      endpoint(model.id, emptyParam),
       model
     );
   }
