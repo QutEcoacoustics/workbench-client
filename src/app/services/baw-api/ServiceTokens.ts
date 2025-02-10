@@ -42,6 +42,7 @@ import type { WebsiteStatus } from "@models/WebsiteStatus";
 import type { Annotation } from "@models/data/Annotation";
 import type { AnnotationService } from "@services/models/annotation.service";
 import type { MediaService } from "@services/media/media.service";
+import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
@@ -91,7 +92,7 @@ import type { UserService } from "./user/user.service";
 import type { AnalysisJobItemResultsService } from "./analysis/analysis-job-item-result.service";
 import type { AudioEventProvenanceService } from "./AudioEventProvenance/AudioEventProvenance.service";
 import type { EventSummaryReportService } from "./reports/event-report/event-summary-report.service";
-import type { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
+import { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
 import type { WebsiteStatusService } from "./website-status/website-status.service";
 
 /**
@@ -153,6 +154,7 @@ export const USER = new ServiceToken<UserService, User>("USER");
 export const AUDIO_EVENT_PROVENANCE = new ServiceToken<AudioEventProvenanceService, AudioEventProvenance>("AUDIO_EVENT_PROVENANCE");
 export const AUDIO_EVENT_SUMMARY_REPORT = new ServiceToken<EventSummaryReportService, EventSummaryReport>("AUDIO_EVENT_SUMMARY_REPORT");
 export const AUDIO_EVENT_IMPORT = new ServiceToken<AudioEventImportService, AudioEventImport>("AUDIO_EVENT_IMPORT");
+export const AUDIO_EVENT_IMPORT_FILE = new ServiceToken<AudioEventImportService, AudioEventImportFile>("AUDIO_EVENT_IMPORT_FILE")
 export const WEBSITE_STATUS = new ServiceToken<WebsiteStatusService, WebsiteStatus>("WEBSITE_STATUS");
 export const ANNOTATION = new ServiceToken<AnnotationService, Annotation>("ANNOTATION");
 export const MEDIA = new ServiceToken<MediaService, never>("MEDIA");

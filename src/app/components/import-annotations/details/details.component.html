@@ -13,10 +13,9 @@
     <li [ngbNavItem]="1">
       <a ngbNavLink>Events</a>
       <ng-template ngbNavContent>
-        <h2>Events</h2>
         <ngx-datatable
           bawDatatableDefaults
-          [bawDatatablePagination]="{ filters: filters$, getModels: getModels }"
+          [bawDatatablePagination]="{ filters: eventFilters$, getModels: getEventModels }"
         >
           <ngx-datatable-column prop="">
             <ng-template let-column="column" ngx-datatable-header-template>
@@ -78,10 +77,9 @@
     <li [ngbNavItem]="2">
       <a ngbNavLink>Files</a>
       <ng-template ngbNavContent>
-        <h2>Files</h2>
         <ngx-datatable
           bawDatatableDefaults
-          [bawDatatablePagination]="{ filters: filters$, getModels: getModels }"
+          [bawDatatablePagination]="{ filters: filters$, getModels: getFileModels }"
         >
           <ngx-datatable-column prop="">
             <ng-template let-column="column" ngx-datatable-header-template>
@@ -89,19 +87,7 @@
             </ng-template>
 
             <ng-template let-value="value" ngx-datatable-cell-template>
-              <baw-loading
-                *ngIf="
-                  value.audioRecording | isUnresolved;
-                  else audioRecordingTemplate
-                "
-                size="sm"
-              ></baw-loading>
-
-              <ng-template #audioRecordingTemplate>
-                <a [bawUrl]="value.audioRecording.viewUrl">
-                  {{ value.audioRecording.id }}
-                </a>
-              </ng-template>
+              {{ value.path }}
             </ng-template>
           </ngx-datatable-column>
 
@@ -122,13 +108,13 @@
 
             <ng-template let-value="value" ngx-datatable-cell-template>
               <baw-loading
-                *ngIf="value.tags | isUnresolved; else tagsTemplate"
+                *ngIf="value.additionalTags | isUnresolved; else additionalTagsTemplate"
                 size="sm"
               ></baw-loading>
 
-              <ng-template #tagsTemplate>
+              <ng-template #additionalTagsTemplate>
                 <baw-inline-list
-                  [items]="value.tags"
+                  [items]="value.additionalTags"
                   [itemKey]="'text'"
                   [emptyTemplate]="noAssociatedTagsTemplate"
                 >
@@ -137,35 +123,6 @@
             </ng-template>
           </ngx-datatable-column>
         </ngx-datatable>
-
-        <!-- <table
-          *ngIf="audioEventImport.files.length > 0; else noFilesTemplate"
-          class="table"
-        >
-          <thead>
-            <tr>
-              <th scope="col">File Name</th>
-              <th scope="col">Date Imported</th>
-              <th scope="col">Additional Tags</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr *ngFor="let file of audioEventImport.files" scope="row">
-              <td>{{ file.name }}</td>
-              <td>
-                <baw-datetime [value]="file.importedAt" />
-              </td>
-              <td>
-                <baw-inline-list
-                  [items]="file.additionalTagModels"
-                  [itemKey]="'text'"
-                  [emptyTemplate]="noAdditionalTagsTemplate"
-                ></baw-inline-list>
-              </td>
-            </tr>
-          </tbody>
-        </table> -->
       </ng-template>
     </li>
   </ul>
