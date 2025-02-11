@@ -59,6 +59,7 @@ import { DatetimeComponent } from "./datetime-formats/datetime/datetime/datetime
 import { AudioEventCardModule } from "./audio-event-card/annotation-event-card.module";
 import { IfLoggedInComponent } from "./can/can.component";
 import { MapModule } from "./map/map.module";
+import { ErrorCardComponent } from "./error-card/error-card.component";
 
 export const sharedComponents = [
   AnnotationDownloadComponent,
@@ -76,6 +77,7 @@ export const sharedComponents = [
   InlineListComponent,
   WebsiteStatusWarningComponent,
   IfLoggedInComponent,
+  ErrorCardComponent,
 
   // modals
   ConfirmationComponent,

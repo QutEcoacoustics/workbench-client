@@ -1,0 +1,16 @@
+<!-- prettier-ignore -->
+@for (error of errors(); track error) {
+  @for (errorKey of extractErrorKeys(error); track errorKey) {
+    <!-- <summary>
+      <strong>{{ humanReadableKey(errorKey) }}</strong>
+      <span class="chevron">
+        <fa-icon [icon]="['fas', 'chevron-up']"></fa-icon>
+      </span>
+    </summary> -->
+
+    <div class="callout callout-danger">
+      {{ errorKey }}:
+      {{ extractErrorValues(error, errorKey) }}
+    </div>
+  }
+}
