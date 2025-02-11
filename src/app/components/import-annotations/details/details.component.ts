@@ -10,7 +10,7 @@ import {
 import { takeUntil, Observable, BehaviorSubject } from "rxjs";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEvent } from "@models/AudioEvent";
-import { Filters } from "@baw-api/baw-api.service";
+import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { ToastrService } from "ngx-toastr";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
@@ -116,11 +116,11 @@ class AnnotationsDetailsComponent extends PageComponent implements OnInit {
     filters: Filters<AudioEvent>
   ): Observable<AudioEvent[]> => {
     const eventImportFilters: Filters<AudioEvent> = {
-      // filter: {
-      //   audio_event_import_id: {
-      //     eq: this.audioEventImport.id,
-      //   },
-      // } as InnerFilter<AudioEvent>,
+      filter: {
+        "audio_event_imports.id": {
+          eq: this.audioEventImport.id,
+        },
+      } as InnerFilter<AudioEvent>,
       ...filters,
     };
 

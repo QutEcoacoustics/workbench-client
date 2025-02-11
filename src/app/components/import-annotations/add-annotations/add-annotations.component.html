@@ -11,7 +11,7 @@
         type="file"
         accept=".csv, .selections.txt, .json, .txt"
         class="form-control border"
-        [ngClass]="{ 'is-invalid': importGroup?.errors?.length }"
+        [ngClass]="{ 'is-invalid': !ngForm.valid }"
         [files]="importGroup?.files"
         [disabled]="uploading"
         (change)="pushToImportGroups($event)"
@@ -33,18 +33,16 @@
     </div>
   </div>
 
+  <!-- we use attr.ngbTooltip because we want to conditionally add a tooltip -->
   <span
-    [ngbTooltip]="
-      areImportGroupsValid()
-        ? 'Import all new annotations'
-        : 'Please fill out all required fields or fix errors'
-    "
+    [ngbTooltip]="uploadTooltip"
+    [attr.ngbTooltip]="uploadTooltip !== null"
   >
     <button
       type="submit"
       class="btn btn-primary import-btn mt-3"
-      [disabled]="!areImportGroupsValid() || uploading"
-      (click)="uploadImportGroups()"
+      [disabled]="!canCommitUploads() || uploading"
+      (click)="commitImports()"
     >
       Import Annotations
     </button>
@@ -61,53 +59,90 @@
       bawDatatableDefaults
       [bawDatatablePagination]="{ getModels: getEventModels }"
     >
-      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="audioRecordingId">
+      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="">
         <ng-template let-column="column" ngx-datatable-header-template>
           Recording
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
+          {{ value.audioRecordingId }}
+          <!-- <baw-loading
+            *ngIf="
+              value.audioRecording | isUnresolved;
+              else audioRecordingTemplate
+            "
+            size="sm"
+          ></baw-loading>
+
+          <ng-template #audioRecordingTemplate>
+            <a [bawUrl]="value.audioRecording.viewUrl">
+              {{ value.audioRecording.id }}
+            </a>
+          </ng-template> -->
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="startTimeSeconds">
+      <ngx-datatable-column
+        [sortable]="false"
+        [maxWidth]="100"
+        prop="startTimeSeconds"
+      >
         <ng-template let-column="column" ngx-datatable-header-template>
           Start Time
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
+          <ng-container *ngIf="value; else missingTemplate">
+            {{ value | number }}
+          </ng-container>
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="endTimeSeconds">
+      <ngx-datatable-column
+        [sortable]="false"
+        [maxWidth]="100"
+        prop="endTimeSeconds"
+      >
         <ng-template let-column="column" ngx-datatable-header-template>
           End Time
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
+          <ng-container *ngIf="value; else missingTemplate">
+            {{ value | number }}
+          </ng-container>
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" [maxWidth]="120" prop="lowFrequencyHertz">
+      <ngx-datatable-column
+        [sortable]="false"
+        [maxWidth]="120"
+        prop="lowFrequencyHertz"
+      >
         <ng-template let-column="column" ngx-datatable-header-template>
           Low Frequency
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
+          <ng-container *ngIf="value; else missingTemplate">
+            {{ value | number }}
+          </ng-container>
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" [maxWidth]="120" prop="highFrequencyHertz">
+      <ngx-datatable-column
+        [sortable]="false"
+        [maxWidth]="120"
+        prop="highFrequencyHertz"
+      >
         <ng-template let-column="column" ngx-datatable-header-template>
           High Frequency
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
+          <ng-container *ngIf="value; else missingTemplate">
+            {{ value | number }}
+          </ng-container>
         </ng-template>
       </ngx-datatable-column>
 
@@ -156,4 +191,14 @@
 
 <ng-template #noFilesTemplate>
   <i>No files found</i>
+</ng-template>
+
+<ng-template #missingTemplate>
+  <strong
+    class="d-flex align-items-center text-warning font-semibold"
+    ngbTooltip="This field is could not be found in the uploaded file"
+  >
+    <fa-icon [icon]="['fas', 'exclamation-triangle']" class="me-1"></fa-icon>
+    <span class="text-decoration-underline">Missing</span>
+  </strong>
 </ng-template>

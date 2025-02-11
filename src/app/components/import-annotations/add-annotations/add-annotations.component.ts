@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { ImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
@@ -21,6 +21,7 @@ import { AbstractModel } from "@models/AbstractModel";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ToastrService } from "ngx-toastr";
+import { NgForm } from "@angular/forms";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
@@ -30,8 +31,6 @@ import { annotationImportRoute } from "../import-annotations.routes";
 interface ImportGroup {
   /** The iterator object of files to be imported */
   files: FileList;
-  /** An array of errors encountered during a dry run */
-  errors: string[];
   /**
    * List of additional tag IDs that are not found within the imported file and will be associated with every event within the import group
    * This is separate from the identified events because additional tags are typically used for grouping events eg. "testing" and "training"
@@ -39,8 +38,6 @@ interface ImportGroup {
   additionalTagIds: Id[];
   /** An array of events that were found within the imported file during the dry run */
   identifiedEvents: ImportedAudioEvent[];
-  /** Defines whether an import group has uploaded to the baw-api without any errors */
-  uploaded: boolean;
 }
 
 const audioEventImportKey = "audioEventImport";
@@ -61,6 +58,13 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
     super();
   }
 
+  @ViewChild(NgForm) private form: NgForm;
+
+  /**
+   * A boolean value indicating if the currently buffered audio event import can
+   * be successfully committed
+   */
+  protected valid: boolean = false;
   protected uploading: boolean = false;
   protected importGroup: ImportGroup = this.emptyImportGroup;
   protected audioEventImport: AudioEventImport;
@@ -74,6 +78,32 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
   );
   private importFilesSubscriber$: Subscriber<AudioEventImportFile[]>;
 
+  // if the "Import Annotations" button is disabled, we want to provide some
+  // feedback to the user outlining why they cannot submit the form using a
+  // tooltip
+  protected get uploadTooltip(): string | null {
+    // by returning null, the tooltip will not be displayed
+    if (this.canCommitUploads()) {
+      return null;
+    }
+
+    if (!this.hasFiles) {
+      return "Please select a file to upload";
+    } else if (!this.valid || !this.form.valid) {
+      return "Please fix all errors before submitting";
+    } else if (this.uploading) {
+      return "Please wait for the current upload to complete";
+    }
+
+    // we should never hit this condition, but if we do, I return null so that
+    // we don't end up in an unknown state
+    return null;
+  }
+
+  private get hasFiles(): boolean {
+    return !!this.importGroup.files;
+  }
+
   // we want to create each new import group from a template by value
   // if it is done by reference, we would be modifying the same import group
   // therefore, we use a getter because they internally work like methods, and return a new object each time
@@ -81,9 +111,7 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
     return {
       files: null,
       additionalTagIds: [],
-      errors: [],
       identifiedEvents: [],
-      uploaded: false,
     };
   }
 
@@ -92,11 +120,31 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
     this.audioEventImport = routeData[audioEventImportKey].model;
   }
 
+  protected getEventModels = (): Observable<ImportedAudioEvent[]> => {
+    return this.importFiles$.pipe(
+      mergeMap((files: AudioEventImportFile[]) => {
+        return files.map((file) => file.importedEvents);
+      })
+    );
+  };
+
+  // callback used by the typeahead input to search for associated tags
+  protected searchTagsTypeaheadCallback = (
+    text: string,
+    activeItems: Tag[]
+  ): Observable<Tag[]> =>
+    this.tagsApi.filter({
+      filter: filterAnd(
+        contains<Tag, "text">("text", text),
+        notIn<Tag>("text", activeItems)
+      ),
+    });
+
   // sends all import groups to the api if there are no errors
   protected commitImports(): Promise<void> {
     // importing invalid annotation imports results in an internal server error
     // we should therefore not submit any upload groups if there are any errors
-    if (!this.areImportGroupsValid()) {
+    if (!this.canCommitUploads()) {
       return;
     }
 
@@ -120,46 +168,39 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
           );
         },
       });
-
-    this.uploading = false;
   }
 
-  protected getEventModels = (): Observable<ImportedAudioEvent[]> => {
-    return this.importFiles$.pipe(
-      mergeMap((files: AudioEventImportFile[]) => {
-        return files.map((file) => {
-          const events = file.importedEvents;
-          // for each event, double the errors for testing
-          events.forEach((event) => {
-            event.errors = event.errors.concat(event.errors);
-          });
-
-          return events;
-        });
-      })
-    );
-  };
-
-  // callback used by the typeahead input to search for associated tags
-  protected searchTagsTypeaheadCallback = (
-    text: string,
-    activeItems: Tag[]
-  ): Observable<Tag[]> =>
-    this.tagsApi.filter({
-      filter: filterAnd(
-        contains<Tag, "text">("text", text),
-        notIn<Tag>("text", activeItems)
-      ),
-    });
-
   private performDryRun() {
-    this.importGroup.errors = [];
+    // even though we are not committing the import, we still want to lock the
+    // form so that the user cannot submit before we check the files for errors
+    this.uploading = true;
+    this.valid = true;
+
     this.importGroup.identifiedEvents = [];
 
-    // we perform a dry run of the import to check for errors
+    // we perform a dry run of the import to check for errors and extract a
+    // preview of the events that will be imported
     for (const file of this.importGroup.files) {
       this.dryRunFile(file);
     }
+
+    const fileUploadObservables = Array.from(this.importGroup.files).map(
+      (file) => this.dryRunFile(file)
+    );
+
+    forkJoin(fileUploadObservables)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        next: (result: AudioEventImportFile[]) => {
+          this.importFilesSubscriber$.next(result);
+        },
+        error: () => {
+          this.valid = false;
+        },
+        complete: () => {
+          this.uploading = false;
+        },
+      });
   }
 
   private uploadFile(file: File): Observable<AudioEventImportFile> {
@@ -170,15 +211,12 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
       .pipe(first());
   }
 
-  private dryRunFile(file: File): void {
+  private dryRunFile(file: File): Observable<AudioEventImportFile> {
     const importFileModel = this.createAudioEventImportFile(file);
 
-    this.api
+    return this.api
       .dryCreate(importFileModel, this.audioEventImport)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((result: AudioEventImportFile) => {
-        this.importFilesSubscriber$.next([result]);
-      });
+      .pipe(first());
   }
 
   private createAudioEventImportFile(file: File): AudioEventImportFile {
@@ -198,8 +236,13 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
     return items.map((item: AbstractModel): Id => item.id);
   }
 
-  protected pushToImportGroups(event: any): void {
-    const files: FileList = event.target.files;
+  protected pushToImportGroups(event: Event): void {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement)) {
+      throw new Error("Target is not an input element");
+    }
+
+    const files: FileList = target.files;
     this.importGroup.files = files;
 
     this.performDryRun();
@@ -213,8 +256,8 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
 
   // a predicate to check if every import group is valid
   // this is used for form validation
-  protected areImportGroupsValid(): boolean {
-    return this.importGroup.errors.length === 0 && !!this.importGroup.files;
+  protected canCommitUploads(): boolean {
+    return this.valid && !this.uploading && this.form.valid && this.hasFiles;
   }
 
   protected removeFromImport(model: ImportGroup): void {

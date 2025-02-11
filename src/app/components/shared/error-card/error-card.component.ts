@@ -1,10 +1,15 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
-
-export type BawDataError = any;
+import { BawDataError } from "@interfaces/apiInterfaces";
 
 @Component({
   selector: "baw-error-card",
   template: `
+    @if (errors().length === 0) {
+      <div class="error-card callout callout-success">
+        No errors
+      </div>
+    }
+
     <!-- prettier-ignore -->
     @for (error of errors(); track error) {
       @for (errorKey of extractErrorKeys(error); track errorKey) {
