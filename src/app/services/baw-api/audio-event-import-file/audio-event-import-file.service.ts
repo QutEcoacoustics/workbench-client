@@ -74,7 +74,8 @@ export class AudioEventImportFileService
       AudioEventImportFile,
       endpoint(audioEventImport, emptyParam, emptyParam),
       (event) => endpoint(audioEventImport, event, emptyParam),
-      model
+      model,
+      { params: { commit: true } }
     );
   }
 
@@ -84,16 +85,18 @@ export class AudioEventImportFileService
   ) {
     // we don't want to raise non-200 responses as errors because the api will
     // respond with a 422 (unprocessable content) error if a dry run fails
-    return this.api.create(
-      AudioEventImportFile,
-      endpoint(audioEventImport, emptyParam, emptyParam),
-      (event) => endpoint(audioEventImport, event, emptyParam),
-      model,
-      {
-        disableNotification: true,
-        params: { commit: false },
-      }
-    ).pipe(catchError(this.unwrapError));
+    return this.api
+      .create(
+        AudioEventImportFile,
+        endpoint(audioEventImport, emptyParam, emptyParam),
+        (event) => endpoint(audioEventImport, event, emptyParam),
+        model,
+        {
+          disableNotification: true,
+          params: { commit: false },
+        }
+      )
+      .pipe(catchError(this.unwrapError));
   }
 
   // TODO: move this to a different spot

@@ -1,25 +1,31 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import {
-  AudioEventError,
-  ImportedAudioEvent,
-} from "@models/AudioEventImport/ImportedAudioEvent";
+import { ImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
-import { mergeMap, Observable, Subscriber, takeUntil } from "rxjs";
+import {
+  first,
+  forkJoin,
+  mergeMap,
+  Observable,
+  Subscriber,
+  takeUntil,
+} from "rxjs";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Tag } from "@models/Tag";
 import { contains, filterAnd, notIn } from "@helpers/filters/filters";
 import { AbstractModel } from "@models/AbstractModel";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ToastrService } from "ngx-toastr";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
 } from "../import-annotations.menu";
+import { annotationImportRoute } from "../import-annotations.routes";
 
 interface ImportGroup {
   /** The iterator object of files to be imported */
@@ -48,6 +54,8 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
   public constructor(
     private api: AudioEventImportFileService,
     private route: ActivatedRoute,
+    private router: Router,
+    private notifications: ToastrService,
     @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
   ) {
     super();
@@ -85,7 +93,7 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
   }
 
   // sends all import groups to the api if there are no errors
-  protected async uploadImportGroups(): Promise<void> {
+  protected commitImports(): Promise<void> {
     // importing invalid annotation imports results in an internal server error
     // we should therefore not submit any upload groups if there are any errors
     if (!this.areImportGroupsValid()) {
@@ -95,17 +103,23 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
     // creates a lock so that no more files can be added to the upload queue while the upload is in progress
     this.uploading = true;
 
-    // we use a "for-of" loop here because if we use a forEach loop (with async callbacks)
-    // it doesn't properly await for each import group to finish uploading
-    for (const model of this.importGroups) {
-      if (!model.files) {
-        continue;
-      }
+    const fileUploadObservables = Array.from(this.importGroup.files).map(
+      (file) => this.uploadFile(file)
+    );
 
-      for (const file of model.files) {
-        await this.uploadFile(model, file);
-      }
-    }
+    forkJoin(fileUploadObservables)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        complete: () => {
+          this.notifications.success("Successfully imported annotations");
+
+          this.router.navigateByUrl(
+            annotationImportRoute.toRouterLink({
+              annotationId: this.audioEventImport.id,
+            })
+          );
+        },
+      });
 
     this.uploading = false;
   }
@@ -144,51 +158,38 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
 
     // we perform a dry run of the import to check for errors
     for (const file of this.importGroup.files) {
-      const sentModel: AudioEventImportFile = new AudioEventImportFile(
-        {
-          id: this.audioEventImport.id,
-          file,
-          additionalTagIds: this.importGroup.additionalTagIds,
-        },
-        this.injector
-      );
-
-      this.api
-        .dryCreate(sentModel, this.audioEventImport)
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe((result: AudioEventImportFile) => {
-          this.importFilesSubscriber$.next([result]);
-        });
+      this.dryRunFile(file);
     }
   }
 
-  private async uploadFile(
-    model: ImportGroup,
-    file: File
-  ): Promise<void | AudioEventImportFile> {
-    console.debug(model, file);
+  private uploadFile(file: File): Observable<AudioEventImportFile> {
+    const importFileModel = this.createAudioEventImportFile(file);
+
+    return this.api
+      .create(importFileModel, this.audioEventImport)
+      .pipe(first());
   }
 
-  // deserialization converts all object keys to camelCase
-  // therefore, to make them human readable we add spaces
-  private errorToHumanReadable(error: AudioEventError): string[] {
-    const errors: string[] = [];
+  private dryRunFile(file: File): void {
+    const importFileModel = this.createAudioEventImportFile(file);
 
-    const errorKeys: string[] = Object.keys(error);
+    this.api
+      .dryCreate(importFileModel, this.audioEventImport)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((result: AudioEventImportFile) => {
+        this.importFilesSubscriber$.next([result]);
+      });
+  }
 
-    for (const errorKey of errorKeys) {
-      let errorValue: string = error[errorKey].join(", ");
-
-      // sometimes the error value includes the key e.g. "startTimeSeconds is not a number"
-      // in this case, we should not prepend the key to the error value
-      if (!errorValue.includes(errorKey)) {
-        errorValue = `${errorKey} ${errorValue}`;
-      }
-
-      errors.push(errorValue);
-    }
-
-    return errors;
+  private createAudioEventImportFile(file: File): AudioEventImportFile {
+    return new AudioEventImportFile(
+      {
+        id: this.audioEventImport.id,
+        file,
+        additionalTagIds: this.importGroup.additionalTagIds,
+      },
+      this.injector
+    );
   }
 
   // since the typeahead input returns an array of models, but the api wants the associated tags as an array of id's
