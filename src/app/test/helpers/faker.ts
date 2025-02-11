@@ -90,6 +90,7 @@ export const modelData = {
     }),
   dateTime: (): DateTime => DateTime.fromJSDate(faker.date.past()),
   uuid: () => faker.datatype.uuid(),
+  file: () => new File([], faker.system.fileName()),
   pbsResources: (): Required<PbsResources> => ({
     ncpus: modelData.datatype.number(),
     ngpus: modelData.datatype.number(),

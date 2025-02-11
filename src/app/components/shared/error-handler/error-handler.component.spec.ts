@@ -26,7 +26,8 @@ class MockComponent implements OnInit {
   public ngOnInit() {
     this.error = new BawApiError(
       UNAUTHORIZED,
-      "You need to log in or register before continuing."
+      "You need to log in or register before continuing.",
+      null
     );
     this.ref.detectChanges();
   }
