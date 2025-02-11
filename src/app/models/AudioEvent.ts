@@ -73,6 +73,7 @@ export class AudioEvent
   public readonly updatedAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
+  @bawPersistAttr()
   public readonly provenanceId?: Id;
   public readonly audioEventImportFileId?: Id;
 
