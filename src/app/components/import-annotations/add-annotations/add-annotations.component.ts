@@ -113,7 +113,15 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
   protected getEventModels = (): Observable<ImportedAudioEvent[]> => {
     return this.importFiles$.pipe(
       mergeMap((files: AudioEventImportFile[]) => {
-        return files.map((file) => file.importedEvents);
+        return files.map((file) => {
+          const events = file.importedEvents;
+          // for each event, double the errors for testing
+          events.forEach((event) => {
+            event.errors = event.errors.concat(event.errors);
+          });
+
+          return events;
+        });
       })
     );
   };

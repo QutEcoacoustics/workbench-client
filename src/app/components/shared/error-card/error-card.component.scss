@@ -1,0 +1,12 @@
+summary {
+  display: flex;
+  justify-content: space-between;
+}
+
+details[open] > summary > .chevron {
+  transform: rotate(180deg);
+}
+
+div:not(:last-child) {
+  margin-bottom: 1em;
+}

@@ -61,9 +61,9 @@
       bawDatatableDefaults
       [bawDatatablePagination]="{ getModels: getEventModels }"
     >
-      <ngx-datatable-column prop="audioRecordingId">
+      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="audioRecordingId">
         <ng-template let-column="column" ngx-datatable-header-template>
-          Audio Recording
+          Recording
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
@@ -71,7 +71,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column prop="startTimeSeconds">
+      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="startTimeSeconds">
         <ng-template let-column="column" ngx-datatable-header-template>
           Start Time
         </ng-template>
@@ -81,7 +81,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column prop="endTimeSeconds">
+      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="endTimeSeconds">
         <ng-template let-column="column" ngx-datatable-header-template>
           End Time
         </ng-template>
@@ -91,7 +91,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column prop="lowFrequencyHertz">
+      <ngx-datatable-column [sortable]="false" [maxWidth]="120" prop="lowFrequencyHertz">
         <ng-template let-column="column" ngx-datatable-header-template>
           Low Frequency
         </ng-template>
@@ -101,7 +101,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column prop="highFrequencyHertz">
+      <ngx-datatable-column [sortable]="false" [maxWidth]="120" prop="highFrequencyHertz">
         <ng-template let-column="column" ngx-datatable-header-template>
           High Frequency
         </ng-template>
@@ -111,7 +111,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column prop="tags">
+      <ngx-datatable-column [sortable]="false" prop="tags">
         <ng-template let-column="column" ngx-datatable-header-template>
           Tags
         </ng-template>
@@ -125,13 +125,13 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column prop="errors">
+      <ngx-datatable-column [sortable]="false" prop="errors">
         <ng-template let-column="column" ngx-datatable-header-template>
           Errors
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
+          <baw-error-card [errors]="value"></baw-error-card>
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
