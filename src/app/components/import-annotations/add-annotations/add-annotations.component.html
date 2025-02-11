@@ -18,7 +18,7 @@
         multiple
       />
 
-      <div class="mt-4">
+      <div class="mt-3">
         <baw-typeahead-input
           label="Associated Tags"
           [inputPlaceholder]="'search for tags by name'"
@@ -42,7 +42,7 @@
   >
     <button
       type="submit"
-      class="btn btn-primary import-btn mb-3"
+      class="btn btn-primary import-btn mt-3"
       [disabled]="!areImportGroupsValid() || uploading"
       (click)="uploadImportGroups()"
     >
@@ -57,38 +57,84 @@
   <h4>Identified Events</h4>
 
   <div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Audio Recording</th>
-          <th>Start Time</th>
-          <th>End Time</th>
-          <th>Low Frequency</th>
-          <th>High Frequency</th>
-          <th>Tags</th>
-          <th>Errors</th>
-        </tr>
-      </thead>
+    <ngx-datatable
+      bawDatatableDefaults
+      [bawDatatablePagination]="{ getModels: getEventModels }"
+    >
+      <ngx-datatable-column>
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Audio Recording
+        </ng-template>
 
-      <tbody>
-        <tr *ngFor="let file of importFiles">
-          @for (audioEvent of file.importedEvents; track audioEvent) {
-          <td>{{ audioEvent.audioRecordingId }}</td>
-          <td>{{ audioEvent.startTimeSeconds }}</td>
-          <td>{{ audioEvent.endTimeSeconds }}</td>
-          <td>{{ audioEvent.lowFrequencyHertz }}</td>
-          <td>{{ audioEvent.highFrequencyHertz }}</td>
-          <td>
-            <baw-inline-list
-              [items]="audioEvent?.tags"
-              [itemKey]="'text'"
-              [emptyTemplate]="noAssociatedTagsTemplate"
-            ></baw-inline-list>
-          </td>
-          }
-        </tr>
-      </tbody>
-    </table>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value.audioRecordingId }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column>
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Start Time
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value.startTimeSeconds }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column>
+        <ng-template let-column="column" ngx-datatable-header-template>
+          End Time
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value.endTimeSeconds }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column>
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Low Frequency
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value.lowFrequencyHertz }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column>
+        <ng-template let-column="column" ngx-datatable-header-template>
+          High Frequency
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value.highFrequencyHertz }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column>
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Tags
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <baw-inline-list
+            [items]="value?.tags"
+            [itemKey]="'text'"
+            [emptyTemplate]="noAssociatedTagsTemplate"
+        ></baw-inline-list>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column>
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Errors
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
   </div>
 </div>
 

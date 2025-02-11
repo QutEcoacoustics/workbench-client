@@ -113,11 +113,19 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     return this[AbstractModel.keys.meta];
   }
 
+  public addUnscopedAttribute(attribute: unknown) {
+    return this.getUnscopedAttributes().push(attribute);
+  }
+
+  public getUnscopedAttributes(): any[] {
+    return [];
+  }
+
   public addPersistentAttribute(meta: BawAttributeMeta) {
     return this.getPersistentAttributes().push(meta);
   }
 
-  public getPersistentAttributes(): Array<BawAttributeMeta> {
+  public getPersistentAttributes(): BawAttributeMeta[] {
     // TODO #1005 Store this statically in the model
     return (this[AbstractModel.keys.attributes] ??= []);
   }

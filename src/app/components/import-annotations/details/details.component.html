@@ -83,11 +83,11 @@
         >
           <ngx-datatable-column prop="">
             <ng-template let-column="column" ngx-datatable-header-template>
-              File Name
+              File Path
             </ng-template>
 
             <ng-template let-value="value" ngx-datatable-cell-template>
-              {{ value.path }}
+              {{ value.path ?? "Unknown" }}
             </ng-template>
           </ngx-datatable-column>
 

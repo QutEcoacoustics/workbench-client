@@ -7,7 +7,7 @@ import {
 } from "@models/AudioEventImport/ImportedAudioEvent";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
-import { Observable, takeUntil } from "rxjs";
+import { Observable, of, takeUntil } from "rxjs";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { ActivatedRoute } from "@angular/router";
@@ -16,6 +16,7 @@ import { contains, filterAnd, notIn } from "@helpers/filters/filters";
 import { AbstractModel } from "@models/AbstractModel";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { unscopedAttribute } from "@models/AttributeDecorators";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
@@ -37,6 +38,11 @@ interface ImportGroup {
   uploaded: boolean;
 }
 
+class ViewModel extends AudioEventImportFile {
+  @unscopedAttribute()
+  public readonly commit?: boolean;
+}
+
 const audioEventImportKey = "audioEventImport";
 
 @Component({
@@ -48,7 +54,7 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
   public constructor(
     private api: AudioEventImportFileService,
     private route: ActivatedRoute,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
   ) {
     super();
   }
@@ -107,6 +113,14 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
     this.uploading = false;
   }
 
+  protected getEventModels = (): Observable<ImportedAudioEvent[]> => {
+    return of(
+      this.importFiles.flatMap(
+        (importFile: AudioEventImportFile) => importFile.importedEvents
+      )
+    );
+  };
+
   // callback used by the typeahead input to search for associated tags
   protected searchTagsTypeaheadCallback = (
     text: string,
@@ -138,7 +152,7 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
         .create(sentModel, this.audioEventImport)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe((result: AudioEventImportFile) => {
-          console.debug(result);
+          // console.debug(result);
           this.importFiles = [...this.importFiles, result];
         });
     }
