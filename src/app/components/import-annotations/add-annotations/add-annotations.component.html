@@ -9,7 +9,7 @@
       <input
         id="annotationsFileInput"
         type="file"
-        accept=".csv, .selections.txt, .json"
+        accept=".csv, .selections.txt, .json, .txt"
         class="form-control border"
         [ngClass]="{ 'is-invalid': importGroup?.errors?.length }"
         [files]="importGroup?.files"
@@ -61,71 +61,71 @@
       bawDatatableDefaults
       [bawDatatablePagination]="{ getModels: getEventModels }"
     >
-      <ngx-datatable-column>
+      <ngx-datatable-column prop="audioRecordingId">
         <ng-template let-column="column" ngx-datatable-header-template>
           Audio Recording
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value.audioRecordingId }}
+          {{ value }}
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column>
+      <ngx-datatable-column prop="startTimeSeconds">
         <ng-template let-column="column" ngx-datatable-header-template>
           Start Time
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value.startTimeSeconds }}
+          {{ value }}
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column>
+      <ngx-datatable-column prop="endTimeSeconds">
         <ng-template let-column="column" ngx-datatable-header-template>
           End Time
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value.endTimeSeconds }}
+          {{ value }}
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column>
+      <ngx-datatable-column prop="lowFrequencyHertz">
         <ng-template let-column="column" ngx-datatable-header-template>
           Low Frequency
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value.lowFrequencyHertz }}
+          {{ value }}
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column>
+      <ngx-datatable-column prop="highFrequencyHertz">
         <ng-template let-column="column" ngx-datatable-header-template>
           High Frequency
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value.highFrequencyHertz }}
+          {{ value }}
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column>
+      <ngx-datatable-column prop="tags">
         <ng-template let-column="column" ngx-datatable-header-template>
           Tags
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           <baw-inline-list
-            [items]="value?.tags"
+            [items]="value"
             [itemKey]="'text'"
             [emptyTemplate]="noAssociatedTagsTemplate"
-        ></baw-inline-list>
+          ></baw-inline-list>
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column>
+      <ngx-datatable-column prop="errors">
         <ng-template let-column="column" ngx-datatable-header-template>
           Errors
         </ng-template>

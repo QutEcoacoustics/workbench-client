@@ -7,7 +7,7 @@ import {
 } from "@models/AudioEventImport/ImportedAudioEvent";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
-import { Observable, of, takeUntil } from "rxjs";
+import { mergeMap, Observable, Subscriber, takeUntil } from "rxjs";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { ActivatedRoute } from "@angular/router";
@@ -16,7 +16,6 @@ import { contains, filterAnd, notIn } from "@helpers/filters/filters";
 import { AbstractModel } from "@models/AbstractModel";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { unscopedAttribute } from "@models/AttributeDecorators";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
@@ -36,11 +35,6 @@ interface ImportGroup {
   identifiedEvents: ImportedAudioEvent[];
   /** Defines whether an import group has uploaded to the baw-api without any errors */
   uploaded: boolean;
-}
-
-class ViewModel extends AudioEventImportFile {
-  @unscopedAttribute()
-  public readonly commit?: boolean;
 }
 
 const audioEventImportKey = "audioEventImport";
@@ -65,7 +59,12 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
 
   // we use an array for the audio event import files because users can upload
   // multiple files through the file input
-  protected importFiles: AudioEventImportFile[] = [];
+  protected importFiles$ = new Observable<AudioEventImportFile[]>(
+    (subscriber: Subscriber<AudioEventImportFile[]>) => {
+      this.importFilesSubscriber$ = subscriber;
+    }
+  );
+  private importFilesSubscriber$: Subscriber<AudioEventImportFile[]>;
 
   // we want to create each new import group from a template by value
   // if it is done by reference, we would be modifying the same import group
@@ -108,16 +107,14 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
       }
     }
 
-    this.importGroups = this.importGroups.filter((model) => !model.uploaded);
-
     this.uploading = false;
   }
 
   protected getEventModels = (): Observable<ImportedAudioEvent[]> => {
-    return of(
-      this.importFiles.flatMap(
-        (importFile: AudioEventImportFile) => importFile.importedEvents
-      )
+    return this.importFiles$.pipe(
+      mergeMap((files: AudioEventImportFile[]) => {
+        return files.map((file) => file.importedEvents);
+      })
     );
   };
 
@@ -149,11 +146,10 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
       );
 
       this.api
-        .create(sentModel, this.audioEventImport)
+        .dryCreate(sentModel, this.audioEventImport)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe((result: AudioEventImportFile) => {
-          // console.debug(result);
-          this.importFiles = [...this.importFiles, result];
+          this.importFilesSubscriber$.next([result]);
         });
     }
   }

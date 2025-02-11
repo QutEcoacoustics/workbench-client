@@ -123,11 +123,14 @@ export class BawApiInterceptor implements HttpInterceptor {
       return throwError(() => response);
     }
 
+    const responseData = response.error.data;
+
     // Standard API error response, extract relevant data
     if (isErrorResponse(response)) {
       const error = new BawApiError(
         response.status,
         response.error.meta.error.details,
+        responseData,
         toCamelCase(response.error.meta.error?.info)
       );
       return throwError(() => error);
@@ -150,7 +153,7 @@ export class BawApiInterceptor implements HttpInterceptor {
         ? serverTimeoutMessage
         : noClientInternetMessage;
 
-      const error = new BawApiError(CLIENT_TIMEOUT, errorMessage);
+      const error = new BawApiError(CLIENT_TIMEOUT, errorMessage, responseData);
 
       return throwError(() => error);
     }
@@ -160,14 +163,15 @@ export class BawApiInterceptor implements HttpInterceptor {
       const error = new BawApiError(
         NOT_FOUND,
         "The following action does not exist, " +
-          "if you believe this is an error please report a problem."
+          "if you believe this is an error please report a problem.",
+          responseData,
       );
       return throwError(() => error);
     }
 
     // Unknown error occurred, throw generic error
     console.error("Unknown error occurred: ", response);
-    return throwError(() => new BawApiError(response.status, response.message));
+    return throwError(() => new BawApiError(response.status, response.message, responseData));
   };
 }
 

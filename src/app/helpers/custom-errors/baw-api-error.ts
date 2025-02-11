@@ -1,12 +1,13 @@
 /** Error thrown by API services whenever the API returns a non 2xx response */
-export class BawApiError extends Error {
+export class BawApiError<T = Record<PropertyKey, unknown>> extends Error {
   public name = "BawApiError";
   public info: Record<string, string | string[]>;
 
   public constructor(
     public status: number,
     public _message: string,
-    info?: Record<string, string | string[]>
+    public data: T | T[],
+    info?: Record<string, string | string[]>,
   ) {
     super(_message);
     this.info = info || {};

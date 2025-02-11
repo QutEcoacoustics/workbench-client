@@ -42,6 +42,9 @@ export interface BawServiceOptions {
   /** If set, requests will include the users authentication token and cookies */
   withCredentials?: boolean;
 
+  /** Unscoped form data to be sent with the request */
+  params?: Record<any, any>;
+
   /**
    * Allows you to modify the http cache options per request
    *
@@ -76,6 +79,7 @@ export const defaultBawServiceOptions = Object.freeze({
   disableNotification: false,
   withCredentials: true,
   cacheOptions: defaultCachingConfig,
+  params: undefined,
 }) satisfies Required<BawServiceOptions>;
 
 /**
@@ -230,7 +234,7 @@ export class BawApiService<
   ): Observable<never> => {
     const error = isBawApiError(err)
       ? err
-      : new BawApiError(unknownErrorCode, err.message);
+      : new BawApiError(unknownErrorCode, err.message, {});
     // Do not show error notifications during SSR, otherwise they cannot be
     // cleared
     if (!disableNotification && !this.isServer) {
