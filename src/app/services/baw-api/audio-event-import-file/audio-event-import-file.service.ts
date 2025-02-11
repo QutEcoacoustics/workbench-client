@@ -9,10 +9,12 @@ import {
   option,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
+import { toCamelCase } from "@helpers/case-converter/case-converter";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
-import { Observable } from "rxjs";
+import { catchError, Observable, of } from "rxjs";
 
 const eventImportId: IdParamOptional<AudioEventImport> = id;
 const eventImportFileId: IdParamOptional<AudioEventImportFile> = id;
@@ -55,10 +57,19 @@ export class AudioEventImportFileService
     );
   }
 
+  public destroy(
+    model: IdOr<AudioEventImportFile>,
+    audioEventImport: AudioEventImport
+  ): Observable<void | AudioEventImportFile> {
+    return this.api.destroy(endpoint(audioEventImport, model, emptyParam));
+  }
+
   public create(
     model: AudioEventImportFile,
     audioEventImport: AudioEventImport
   ): Observable<AudioEventImportFile> {
+    // unlike the dry run, we want to raise errors to the user if the api
+    // responses with a 422 (unprocessable content) error
     return this.api.create(
       AudioEventImportFile,
       endpoint(audioEventImport, emptyParam, emptyParam),
@@ -67,10 +78,32 @@ export class AudioEventImportFileService
     );
   }
 
-  public destroy(
-    model: IdOr<AudioEventImportFile>,
+  public dryCreate(
+    model: AudioEventImportFile,
     audioEventImport: AudioEventImport
-  ): Observable<void | AudioEventImportFile> {
-    return this.api.destroy(endpoint(audioEventImport, model, emptyParam));
+  ) {
+    // we don't want to raise non-200 responses as errors because the api will
+    // respond with a 422 (unprocessable content) error if a dry run fails
+    return this.api.create(
+      AudioEventImportFile,
+      endpoint(audioEventImport, emptyParam, emptyParam),
+      (event) => endpoint(audioEventImport, event, emptyParam),
+      model,
+      {
+        disableNotification: true,
+        params: { commit: false },
+      }
+    ).pipe(catchError(this.unwrapError));
+  }
+
+  // TODO: move this to a different spot
+  private unwrapError(
+    error: BawApiError<AudioEventImportFile>
+  ): Observable<AudioEventImportFile> {
+    if (Array.isArray(error.data)) {
+      throw new Error("Multiple errors returned from API");
+    }
+
+    return of(toCamelCase(error.data) as any);
   }
 }

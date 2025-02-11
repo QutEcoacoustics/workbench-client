@@ -57,7 +57,8 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
         if (!isInstantiated(token)) {
           throw new BawApiError(
             BAD_REQUEST,
-            "Unable to retrieve authenticity token for form request."
+            "Unable to retrieve authenticity token for form request.",
+            {}
           );
         }
         return token;
@@ -72,7 +73,8 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
         if (response.includes(errorMsg)) {
           throw new BawApiError(
             BAD_REQUEST,
-            "Captcha response was not correct."
+            "Captcha response was not correct.",
+            {}
           );
         }
       }),
@@ -108,7 +110,11 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
         const action = values?.[2];
 
         if (!seed || !action) {
-          throw new BawApiError(unknownErrorCode, "Unable to setup recaptcha.");
+          throw new BawApiError(
+            unknownErrorCode,
+            "Unable to setup recaptcha.",
+            {}
+          );
         }
         return { seed, action };
       }),

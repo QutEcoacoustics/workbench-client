@@ -413,7 +413,8 @@ export function retrieveResolvers(data: IPageInfo): ResolvedModelList {
     if (!resolvedModel) {
       models[key] = new BawApiError(
         unknownErrorCode,
-        "Model could not be resolved"
+        "Model could not be resolved",
+        {}
       );
     } else if (resolvedModel.error) {
       models[key] = resolvedModel.error;

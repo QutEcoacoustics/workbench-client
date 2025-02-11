@@ -58,7 +58,8 @@ export class TimeoutInterceptor implements HttpInterceptor {
               new BawApiError(
                 REQUEST_TIMEOUT,
                 "Resource request took too long to complete. " +
-                  "This may be an issue with your connection to us, or a temporary issue with our services."
+                  "This may be an issue with your connection to us, or a temporary issue with our services.",
+                {}
               )
           );
         }
