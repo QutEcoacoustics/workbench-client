@@ -91,10 +91,7 @@ export class AudioEventImportFileService
         endpoint(audioEventImport, emptyParam, emptyParam),
         (event) => endpoint(audioEventImport, event, emptyParam),
         model,
-        {
-          disableNotification: true,
-          params: { commit: false },
-        }
+        { disableNotification: true }
       )
       .pipe(catchError(this.unwrapError));
   }

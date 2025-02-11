@@ -22,6 +22,7 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ToastrService } from "ngx-toastr";
 import { NgForm } from "@angular/forms";
+import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
@@ -47,7 +48,10 @@ const audioEventImportKey = "audioEventImport";
   templateUrl: "add-annotations.component.html",
   styleUrl: "add-annotations.component.scss",
 })
-class AddAnnotationsComponent extends PageComponent implements OnInit {
+class AddAnnotationsComponent
+  extends PageComponent
+  implements OnInit, UnsavedInputCheckingComponent
+{
   public constructor(
     private api: AudioEventImportFileService,
     private route: ActivatedRoute,
@@ -77,6 +81,10 @@ class AddAnnotationsComponent extends PageComponent implements OnInit {
     }
   );
   private importFilesSubscriber$: Subscriber<AudioEventImportFile[]>;
+
+  public get hasUnsavedChanges(): boolean {
+    return  this.importGroup?.files !== null && this.importGroup.files.length > 0;
+  }
 
   // if the "Import Annotations" button is disabled, we want to provide some
   // feedback to the user outlining why they cannot submit the form using a
