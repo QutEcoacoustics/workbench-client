@@ -1,4 +1,4 @@
-import { DateTimeTimezone, Description, Id } from "@interfaces/apiInterfaces";
+import { DateTimeTimezone, Description, HasAllUsers, HasDescription, Id } from "@interfaces/apiInterfaces";
 import { ANALYSIS_JOB, USER } from "@baw-api/ServiceTokens";
 import { annotationImportRoute } from "@components/import-annotations/import-annotations.routes";
 import { AbstractModel } from "./AbstractModel";
@@ -8,18 +8,9 @@ import { User } from "./User";
 import { IImportedAudioEvent, ImportedAudioEvent } from "./AudioEventImport/ImportedAudioEvent";
 import { AnalysisJob } from "./AnalysisJob";
 
-export interface IAudioEventImport {
+export interface IAudioEventImport extends HasAllUsers, HasDescription {
   id?: Id;
   name?: string;
-  description?: Description;
-  descriptionHtml?: Description;
-  descriptionHtmlTagline?: Description;
-  createdAt?: DateTimeTimezone;
-  updatedAt?: DateTimeTimezone;
-  deletedAt?: DateTimeTimezone;
-  creatorId?: Id;
-  deleterId?: Id;
-  updaterId?: Id;
   importedEvents?: IImportedAudioEvent[];
   analysisJobId?: Id;
 }

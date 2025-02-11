@@ -9,8 +9,9 @@ import httpCodes, {
 export function generateBawApiError(
   status: number = UNAUTHORIZED,
   message?: string,
+  data: any = null,
   info?: Record<string, string | string[]>
-): BawApiError {
+): BawApiError<any> {
   if (!message) {
     switch (status) {
       case UNPROCESSABLE_ENTITY:
@@ -27,5 +28,5 @@ export function generateBawApiError(
     }
   }
 
-  return new BawApiError(status, message, info);
+  return new BawApiError(status, message, data, info);
 }

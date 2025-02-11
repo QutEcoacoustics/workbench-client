@@ -20,6 +20,9 @@ export function generateAudioEvent(
     taggings: modelData.randomArray(0, 5, (id) => generateTagging({ id })),
     isReference: modelData.bool(),
     provenanceId: modelData.id(),
+    channel: modelData.datatype.number({ min: 1, max: 3 }),
+    score: modelData.datatype.number({ min: 0, max: 1 }),
+    audioEventImportFileId: modelData.id(),
     ...modelData.model.generateAllUsers(),
     ...data,
   };

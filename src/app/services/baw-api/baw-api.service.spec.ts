@@ -244,7 +244,7 @@ describe("BawApiService", () => {
     responses = {
       single: model,
       multi: [model],
-      error: new BawApiError(UNAUTHORIZED, "Unauthorized Access"),
+      error: new BawApiError(UNAUTHORIZED, "Unauthorized Access", null),
       errorInfo: new BawApiError(
         UNPROCESSABLE_ENTITY,
         "Record could not be saved",

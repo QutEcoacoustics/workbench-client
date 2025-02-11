@@ -1,10 +1,27 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 
-type BawDataError = any;
+export type BawDataError = any;
 
 @Component({
   selector: "baw-error-card",
-  templateUrl: "error-card.component.html",
+  template: `
+    <!-- prettier-ignore -->
+    @for (error of errors(); track error) {
+      @for (errorKey of extractErrorKeys(error); track errorKey) {
+        <!-- <summary>
+          <strong>{{ errorKey }}</strong>
+          <span class="chevron">
+            <fa-icon [icon]="['fas', 'chevron-up']"></fa-icon>
+          </span>
+        </summary> -->
+
+        <div class="error-card callout callout-danger">
+          {{ errorKey }}:
+          {{ extractErrorValues(error, errorKey) }}
+        </div>
+      }
+    }
+ `,
   styleUrl: "error-card.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -17,11 +34,5 @@ export class ErrorCardComponent {
 
   protected extractErrorValues(error: BawDataError, key: keyof BawDataError) {
     return error[key];
-  }
-
-  protected humanReadableKey(key: string) {
-    return key
-      .replace(/([A-Z])/g, " $1")
-      .replace(/^./, (str) => str.toUpperCase());
   }
 }

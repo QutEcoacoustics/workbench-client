@@ -26,7 +26,7 @@ describe("BawApiError", () => {
 
   describe("message", () => {
     it("should return message", () => {
-      const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access");
+      const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access", null);
       expect(error.message).toEqual("Unauthorized Access");
     });
 
@@ -59,7 +59,7 @@ describe("BawApiError", () => {
 
   describe("formattedMessage", () => {
     it("should return error message", () => {
-      const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access");
+      const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access", null);
       expect(error.formattedMessage("___")).toBe("Unauthorized Access");
     });
 
@@ -93,7 +93,7 @@ describe("BawApiError", () => {
 
 describe("isBawApiError", () => {
   it("should return true for bawApiError", () => {
-    const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access");
+    const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access", null);
     expect(isBawApiError(error)).toBeTrue();
   });
 
