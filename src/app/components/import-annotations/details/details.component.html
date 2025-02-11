@@ -81,13 +81,13 @@
           bawDatatableDefaults
           [bawDatatablePagination]="{ filters: filters$, getModels: getFileModels }"
         >
-          <ngx-datatable-column prop="">
+          <ngx-datatable-column prop="name">
             <ng-template let-column="column" ngx-datatable-header-template>
-              File Path
+              File Name
             </ng-template>
 
             <ng-template let-value="value" ngx-datatable-cell-template>
-              {{ value.path ?? "Unknown" }}
+              {{ value ?? "Unknown" }}
             </ng-template>
           </ngx-datatable-column>
 
@@ -107,7 +107,7 @@
             </ng-template>
 
             <ng-template let-value="value" ngx-datatable-cell-template>
-              <baw-loading
+              <!-- <baw-loading
                 *ngIf="value.additionalTags | isUnresolved; else additionalTagsTemplate"
                 size="sm"
               ></baw-loading>
@@ -117,9 +117,35 @@
                   [items]="value.additionalTags"
                   [itemKey]="'text'"
                   [emptyTemplate]="noAssociatedTagsTemplate"
-                >
-                </baw-inline-list>
-              </ng-template>
+                ></baw-inline-list>
+              </ng-template> -->
+              <baw-inline-list
+                [items]="value.additionalTags"
+                [itemKey]="'text'"
+                [emptyTemplate]="noAssociatedTagsTemplate"
+              ></baw-inline-list>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column [sortable]="false" prop="">
+            <ng-template ngx-datatable-header-template>
+              Actions
+            </ng-template>
+
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              <!--
+                we use an anchor element here instead of a button so that users
+                can middle click to download and open in a new tab.
+                Opening in a new tab only apply if the browser has inbuilt
+                file viewer for the file type.
+              -->
+              <a
+                class="btn btn-sm btn-outline-primary"
+                [href]="value.path"
+                target="_blank"
+              >
+                Download
+              </a>
             </ng-template>
           </ngx-datatable-column>
         </ngx-datatable>

@@ -176,7 +176,8 @@ export class BawApiService<
     protected session: BawSessionService,
     protected notifications: ToastrService,
     @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
-    @Inject(ASSOCIATION_INJECTOR) protected associationInjector: AssociationInjector,
+    @Inject(ASSOCIATION_INJECTOR)
+    protected associationInjector: AssociationInjector,
     @Optional() @Inject(BAW_SERVICE_OPTIONS) private options: BawServiceOptions
   ) {
     // by merging the default options with the injected options, we can override
@@ -336,10 +337,14 @@ export class BawApiService<
     options: BawServiceOptions = {}
   ): Observable<Model> {
     const jsonData = model.getJsonAttributesForCreate();
-    const formData = model.getFormDataOnlyAttributesForCreate();
     const body = model.kind
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
+
+    let formData = model.getFormDataOnlyAttributesForCreate();
+    if (options.params) {
+      formData = this.addUnscopedParams(formData, options.params);
+    }
 
     const formDataMethod = model.hasJsonOnlyAttributesForCreate()
       ? "httpPut"
@@ -399,10 +404,14 @@ export class BawApiService<
     options: BawServiceOptions = {}
   ): Observable<Model> {
     const jsonData = model.getJsonAttributesForUpdate();
-    const formData = model.getFormDataOnlyAttributesForUpdate();
     const body = model.kind
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
+
+    let formData = model.getFormDataOnlyAttributesForUpdate();
+    if (options.params) {
+      formData = this.addUnscopedParams(formData, options.params);
+    }
 
     // as part of the multi part request, if there is only a JSON body, we want to return the output of the JSON PATCH request
     // if there is only a formData body, we want to return the output of the formData PUT request
@@ -702,6 +711,17 @@ export class BawApiService<
         },
       },
     };
+  }
+
+  private addUnscopedParams(
+    data: FormData,
+    params: BawServiceOptions["params"]
+  ): FormData {
+    for (const [key, value] of Object.entries(params)) {
+      data.append(key, value);
+    }
+
+    return data;
   }
 }
 
