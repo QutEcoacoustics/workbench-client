@@ -9,12 +9,10 @@ import {
   option,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
-import { toCamelCase } from "@helpers/case-converter/case-converter";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
-import { catchError, Observable, of } from "rxjs";
+import { Observable } from "rxjs";
 
 const eventImportId: IdParamOptional<AudioEventImport> = id;
 const eventImportFileId: IdParamOptional<AudioEventImportFile> = id;
@@ -92,18 +90,6 @@ export class AudioEventImportFileService
         (event) => endpoint(audioEventImport, event, emptyParam),
         model,
         { disableNotification: true }
-      )
-      .pipe(catchError(this.unwrapError));
-  }
-
-  // TODO: move this to a different spot
-  private unwrapError(
-    error: BawApiError<AudioEventImportFile>
-  ): Observable<AudioEventImportFile> {
-    if (Array.isArray(error.data)) {
-      throw new Error("Multiple errors returned from API");
-    }
-
-    return of(toCamelCase(error.data) as any);
+      );
   }
 }
