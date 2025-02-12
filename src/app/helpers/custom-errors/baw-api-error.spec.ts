@@ -133,7 +133,7 @@ describe("isApiErrorDetails", () => {
     const error = {
       status: UNAUTHORIZED,
       message: "Unauthorized Access",
-    } as const satisfies ApiErrorDetails;
+    } satisfies ApiErrorDetails;
     expect(isApiErrorDetails(error)).toBeTrue();
   });
 
@@ -142,7 +142,7 @@ describe("isApiErrorDetails", () => {
       status: UNPROCESSABLE_ENTITY,
       message: "Unprocessable Entity",
       info: { name: ["Duplicate name for entity"] },
-    } as const satisfies ApiErrorDetails;
+    } satisfies ApiErrorDetails;
     expect(isApiErrorDetails(error)).toBeTrue();
   });
 
