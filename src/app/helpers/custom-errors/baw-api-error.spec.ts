@@ -19,6 +19,7 @@ describe("BawApiError", () => {
     const error = new BawApiError(
       UNPROCESSABLE_ENTITY,
       "Unprocessable Entity",
+      null,
       info
     );
     expect(error.info).toEqual(info);
@@ -35,6 +36,7 @@ describe("BawApiError", () => {
       const error = new BawApiError(
         UNPROCESSABLE_ENTITY,
         "Unprocessable Entity",
+        null,
         info
       );
       expect(error.message).toEqual(
@@ -49,6 +51,7 @@ describe("BawApiError", () => {
       const error = new BawApiError(
         UNPROCESSABLE_ENTITY,
         "Unprocessable Entity",
+        null,
         info
       );
       expect(error.message).toEqual(
@@ -68,6 +71,7 @@ describe("BawApiError", () => {
       const error = new BawApiError(
         UNPROCESSABLE_ENTITY,
         "Unprocessable Entity",
+        null,
         info
       );
       expect(error.formattedMessage("___")).toEqual(
@@ -82,6 +86,7 @@ describe("BawApiError", () => {
       const error = new BawApiError(
         UNPROCESSABLE_ENTITY,
         "Unprocessable Entity",
+        null,
         info
       );
       expect(error.formattedMessage("___")).toEqual(
@@ -101,6 +106,7 @@ describe("isBawApiError", () => {
     const error = new BawApiError(
       UNPROCESSABLE_ENTITY,
       "Unprocessable Entity",
+      null,
       { name: ["Duplicate name for entity"] }
     );
     expect(isBawApiError(error)).toBeTrue();
@@ -124,19 +130,19 @@ describe("isBawApiError", () => {
 
 describe("isApiErrorDetails", () => {
   it("should return true for ApiErrorDetails", () => {
-    const error: ApiErrorDetails = {
+    const error = {
       status: UNAUTHORIZED,
       message: "Unauthorized Access",
-    };
+    } as const satisfies ApiErrorDetails;
     expect(isApiErrorDetails(error)).toBeTrue();
   });
 
   it("should return true for ApiErrorDetails with info", () => {
-    const error: ApiErrorDetails = {
+    const error = {
       status: UNPROCESSABLE_ENTITY,
       message: "Unprocessable Entity",
       info: { name: ["Duplicate name for entity"] },
-    };
+    } as const satisfies ApiErrorDetails;
     expect(isApiErrorDetails(error)).toBeTrue();
   });
 
