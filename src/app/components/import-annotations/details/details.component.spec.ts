@@ -52,16 +52,16 @@ describe("AnnotationsDetailsComponent", () => {
     mocks: [ToastrService],
   });
 
-  function fileTabButton(): Element | null{
-    const fileTabs = spectator.queryAll(".nav-link");
-    for (const tab of fileTabs) {
-      if (tab.textContent === "Files") {
-        return tab;
-      }
-    }
+  // function fileTabButton(): Element | null{
+  //   const fileTabs = spectator.queryAll(".nav-link");
+  //   for (const tab of fileTabs) {
+  //     if (tab.textContent === "Files") {
+  //       return tab;
+  //     }
+  //   }
 
-    return null;
-  }
+  //   return null;
+  // }
 
   function activeTabContent(): Element | null {
     return spectator.query(".tab-content");

@@ -26,6 +26,8 @@ import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
 import { TagsService } from "@baw-api/tag/tags.service";
+import { ErrorCardStyle } from "@shared/error-card/error-card.component";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
@@ -56,6 +58,8 @@ class AddAnnotationsComponent
 
   @ViewChild(NgForm) private form: NgForm;
 
+  protected errorCardStyles = ErrorCardStyle;
+
   /**
    * A boolean value indicating if the currently buffered audio event import can
    * be successfully committed
@@ -65,6 +69,14 @@ class AddAnnotationsComponent
   protected importFiles: File[] = [];
   protected additionalTagIds: Id[] = [];
 
+  /**
+   * Errors that apply to the entire file that we cannot display in the events
+   * table.
+   * E.g. duplicate file uploads, names, etc...
+   */
+  protected importErrors: BawApiError[] = [];
+
+  /** The route model that the annotation import is scoped to */
   protected audioEventImport: AudioEventImport;
 
   // we use an array for the audio event import files because users can upload
@@ -72,6 +84,10 @@ class AddAnnotationsComponent
   protected importFiles$ = new Observable<AudioEventImportFile[]>(
     (subscriber: Subscriber<AudioEventImportFile[]>) => {
       this.importFilesSubscriber$ = subscriber;
+
+      // we return an initial empty value to the subscriber so that the table
+      // doesn't get stuck in a loading state
+      subscriber.next([{} as any]);
     }
   );
 
