@@ -25,6 +25,7 @@ import { NgForm } from "@angular/forms";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
+import { TagsService } from "@baw-api/tag/tags.service";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
@@ -37,7 +38,6 @@ const audioEventImportKey = "audioEventImport";
 @Component({
   selector: "baw-add-annotations",
   templateUrl: "add-annotations.component.html",
-  styleUrl: "add-annotations.component.scss",
 })
 class AddAnnotationsComponent
   extends PageComponent
@@ -45,6 +45,7 @@ class AddAnnotationsComponent
 {
   public constructor(
     private api: AudioEventImportFileService,
+    private tagsApi: TagsService,
     private route: ActivatedRoute,
     private router: Router,
     private notifications: ToastrService,
