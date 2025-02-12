@@ -51,7 +51,8 @@
 <div class="identified-annotations mt-4">
   <h4>Identified Events</h4>
   <p>
-    The following events have been identified in your dataset, but have not been saved.
+    The following events have been identified in your dataset, but have not been
+    saved.
   </p>
 
   <p>
@@ -171,7 +172,10 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <baw-error-card [errors]="value"></baw-error-card>
+          <baw-error-card
+            [errors]="value"
+            [showSuccessState]="true"
+          ></baw-error-card>
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
