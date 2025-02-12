@@ -2,13 +2,16 @@ import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { ImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
-import { Id } from "@interfaces/apiInterfaces";
+import { BawDataError, Id } from "@interfaces/apiInterfaces";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import {
+  catchError,
   first,
   forkJoin,
   mergeMap,
   Observable,
+  of,
+  startWith,
   Subscriber,
   takeUntil,
 } from "rxjs";
@@ -24,16 +27,19 @@ import { ToastrService } from "ngx-toastr";
 import { NgForm } from "@angular/forms";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { ErrorCardStyle } from "@shared/error-card/error-card.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { toCamelCase } from "@helpers/case-converter/case-converter";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
 } from "../import-annotations.menu";
 import { annotationImportRoute } from "../import-annotations.routes";
-
 
 const audioEventImportKey = "audioEventImport";
 
@@ -74,7 +80,7 @@ class AddAnnotationsComponent
    * table.
    * E.g. duplicate file uploads, names, etc...
    */
-  protected importErrors: BawApiError[] = [];
+  protected importErrors: BawDataError[] = [];
 
   /** The route model that the annotation import is scoped to */
   protected audioEventImport: AudioEventImport;
@@ -84,17 +90,13 @@ class AddAnnotationsComponent
   protected importFiles$ = new Observable<AudioEventImportFile[]>(
     (subscriber: Subscriber<AudioEventImportFile[]>) => {
       this.importFilesSubscriber$ = subscriber;
-
-      // we return an initial empty value to the subscriber so that the table
-      // doesn't get stuck in a loading state
-      subscriber.next([{} as any]);
     }
-  );
+  ).pipe(startWith([{} as any]));
 
   private importFilesSubscriber$: Subscriber<AudioEventImportFile[]>;
 
   public get hasUnsavedChanges(): boolean {
-    return  this.hasFiles || this.hasAdditionalTags;
+    return this.hasFiles || this.hasAdditionalTags;
   }
 
   // if the "Import Annotations" button is disabled, we want to provide some
@@ -158,94 +160,6 @@ class AddAnnotationsComponent
       ),
     });
 
-  // sends all import groups to the api if there are no errors
-  protected commitImports(): Promise<void> {
-    // importing invalid annotation imports results in an internal server error
-    // we should therefore not submit any upload groups if there are any errors
-    if (!this.canCommitUploads()) {
-      return;
-    }
-
-    // creates a lock so that no more files can be added to the upload queue while the upload is in progress
-    this.uploading = true;
-
-    const fileUploadObservables = this.importFiles.map(
-      (file) => this.uploadFile(file)
-    );
-
-    forkJoin(fileUploadObservables)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe({
-        complete: () => {
-          this.notifications.success("Successfully imported annotations");
-
-          this.router.navigateByUrl(
-            annotationImportRoute.toRouterLink({
-              annotationId: this.audioEventImport.id,
-            })
-          );
-        },
-      });
-  }
-
-  private performDryRun() {
-    // even though we are not committing the import, we still want to lock the
-    // form so that the user cannot submit before we check the files for errors
-    this.uploading = true;
-    this.valid = true;
-
-    // we perform a dry run of the import to check for errors and extract a
-    // preview of the events that will be imported
-    for (const file of this.importFiles) {
-      this.dryRunFile(file);
-    }
-
-    const fileUploadObservables = this.importFiles.map(
-      (file) => this.dryRunFile(file)
-    );
-
-    forkJoin(fileUploadObservables)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe({
-        next: (result: AudioEventImportFile[]) => {
-          this.importFilesSubscriber$.next(result);
-        },
-        error: () => {
-          this.valid = false;
-        },
-        complete: () => {
-          this.uploading = false;
-        },
-      });
-  }
-
-  private uploadFile(file: File): Observable<AudioEventImportFile> {
-    const importFileModel = this.createAudioEventImportFile(file);
-
-    return this.api
-      .create(importFileModel, this.audioEventImport)
-      .pipe(first());
-  }
-
-  private dryRunFile(file: File): Observable<AudioEventImportFile> {
-    const importFileModel = this.createAudioEventImportFile(file);
-
-    return this.api
-      .dryCreate(importFileModel, this.audioEventImport)
-      .pipe(first());
-  }
-
-  private createAudioEventImportFile(file: File): AudioEventImportFile {
-    return new AudioEventImportFile(
-      {
-        id: this.audioEventImport.id,
-        file,
-        additionalTagIds: this.additionalTagIds,
-      },
-      this.injector
-    );
-  }
-
   // since the typeahead input returns an array of models, but the api wants the associated tags as an array of id's
   // we use this helper function to convert the array of models to an array of id's that can be sent in the api request
   protected getIdsFromAbstractModelArray(items: object[]): Id[] {
@@ -274,6 +188,105 @@ class AddAnnotationsComponent
   // this is used for form validation
   protected canCommitUploads(): boolean {
     return this.valid && !this.uploading && this.form.valid && this.hasFiles;
+  }
+
+  // sends all import groups to the api if there are no errors
+  protected commitImports(): Promise<void> {
+    // importing invalid annotation imports results in an internal server error
+    // we should therefore not submit any upload groups if there are any errors
+    if (!this.canCommitUploads()) {
+      return;
+    }
+
+    // creates a lock so that no more files can be added to the upload queue while the upload is in progress
+    this.uploading = true;
+
+    const fileUploadObservables = this.importFiles.map((file) =>
+      this.uploadFile(file)
+    );
+
+    forkJoin(fileUploadObservables)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        complete: () => {
+          this.notifications.success("Successfully imported annotations");
+
+          this.router.navigateByUrl(
+            annotationImportRoute.toRouterLink({
+              annotationId: this.audioEventImport.id,
+            })
+          );
+        },
+      });
+  }
+
+  private performDryRun() {
+    // even though we are not committing the import, we still want to lock the
+    // form so that the user cannot submit before we check the files for errors
+    this.uploading = true;
+    this.valid = true;
+
+    this.clearIdentifiedEvents();
+
+    // we perform a dry run of the import to check for errors and extract a
+    // preview of the events that will be imported
+    for (const file of this.importFiles) {
+      this.dryRunFile(file);
+    }
+
+    const fileUploadObservables = this.importFiles.map((file) =>
+      this.dryRunFile(file)
+    );
+
+    forkJoin(fileUploadObservables)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        next: (result: AudioEventImportFile[]) => {
+          this.importFilesSubscriber$.next(result);
+        },
+        error: () => {
+          this.valid = false;
+        },
+        complete: () => {
+          this.uploading = false;
+        },
+      });
+  }
+
+  private uploadFile(file: File): Observable<AudioEventImportFile> {
+    const importFileModel = this.createAudioEventImportFile(file);
+
+    return this.api
+      .create(importFileModel, this.audioEventImport)
+      .pipe(first());
+  }
+
+  private dryRunFile(file: File): Observable<AudioEventImportFile> {
+    const importFileModel = this.createAudioEventImportFile(file);
+
+    return this.api.dryCreate(importFileModel, this.audioEventImport).pipe(
+      first(),
+      catchError((error: BawApiError<AudioEventImportFile>) => {
+        this.importErrors = [error.info] as any;
+        return of(toCamelCase(error.data) as any);
+      })
+    );
+  }
+
+  private createAudioEventImportFile(file: File): AudioEventImportFile {
+    return new AudioEventImportFile(
+      {
+        id: this.audioEventImport.id,
+        file,
+        additionalTagIds: this.additionalTagIds,
+      },
+      this.injector
+    );
+  }
+
+  private clearIdentifiedEvents(): void {
+    this.importFilesSubscriber$.next([]);
+    this.importErrors = [];
   }
 }
 
