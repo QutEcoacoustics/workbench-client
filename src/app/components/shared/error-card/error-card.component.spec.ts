@@ -63,7 +63,7 @@ describe("ErrorCardComponent", () => {
       errors: [
         generateErrorMessage("property", ["1", "2"]),
       ],
-      expected: ["property: 1, 2"],
+      expected: ["property: 1,2"],
     },
     {
       name: "should render multiple errors correctly",
@@ -79,7 +79,7 @@ describe("ErrorCardComponent", () => {
         generateErrorMessage("property", ["1"]),
         generateErrorMessage("second property", ["2", "3"]),
       ],
-      expected: ["property: 1", "second property: 2, 3"],
+      expected: ["property: 1", "second property: 2,3"],
     }
   ] satisfies ErrorCardTest[];
 
