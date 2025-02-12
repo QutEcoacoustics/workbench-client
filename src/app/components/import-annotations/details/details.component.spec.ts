@@ -28,10 +28,11 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
-import { AnnotationsDetailsComponent } from "./details.component";
+import { assertDatatable } from "@test/helpers/datatable";
+import { AnnotationImportDetailsComponent } from "./details.component";
 
 describe("AnnotationsDetailsComponent", () => {
-  let spectator: SpectatorRouting<AnnotationsDetailsComponent>;
+  let spectator: SpectatorRouting<AnnotationImportDetailsComponent>;
 
   let injector: SpyObject<AssociationInjector>;
   let mockTagsService: SpyObject<TagsService>;
@@ -45,11 +46,26 @@ describe("AnnotationsDetailsComponent", () => {
   let mockAudioEventImportFiles: AudioEventImportFile[];
 
   const createComponent = createRoutingFactory({
-    component: AnnotationsDetailsComponent,
+    component: AnnotationImportDetailsComponent,
     declarations: [InlineListComponent, LoadingComponent],
     imports: [SharedModule, MockBawApiModule],
     mocks: [ToastrService],
   });
+
+  function fileTabButton(): Element | null{
+    const fileTabs = spectator.queryAll(".nav-link");
+    for (const tab of fileTabs) {
+      if (tab.textContent === "Files") {
+        return tab;
+      }
+    }
+
+    return null;
+  }
+
+  function activeTabContent(): Element | null {
+    return spectator.query(".tab-content");
+  }
 
   function setup(): void {
     spectator = createComponent({
@@ -75,7 +91,12 @@ describe("AnnotationsDetailsComponent", () => {
     mockEventsService.filter.and.callFake(() => of(mockAudioEvents));
 
     mockAudioEventFileService = spectator.inject(AUDIO_EVENT_IMPORT_FILE.token);
-    mockAudioEventFileService.list.and.callFake(() => of(mockAudioEventImportFiles));
+    mockAudioEventFileService.list.and.callFake(() =>
+      of(mockAudioEventImportFiles)
+    );
+    mockAudioEventFileService.filter.and.callFake(() =>
+      of(mockAudioEventImportFiles)
+    );
 
     mockAudioEventImportService = spectator.inject(AUDIO_EVENT_IMPORT.token);
     mockAudioEventImportService.show.and.callFake(() =>
@@ -90,166 +111,53 @@ describe("AnnotationsDetailsComponent", () => {
     spectator.detectChanges();
   }
 
-  // function getElementByInnerText<T extends HTMLElement>(text: string): T {
-  //   return spectator.debugElement.query(
-  //     (element) => element.nativeElement.innerText === text
-  //   )?.nativeElement as T;
-  // }
-
-  // function addFileToImportGroup(index: number, file: File): void {
-  //   const requestedInputElement = getFileInputElement(index);
-
-  //   const dataTransfer = new DataTransfer();
-  //   dataTransfer.items.add(file);
-  //   requestedInputElement.files = dataTransfer.files;
-
-  //   requestedInputElement.dispatchEvent(new Event("change"));
-  //   spectator.detectChanges();
-  // }
-
-  // function generateMockFile(): File {
-  //   return new File(
-  //     [modelData.descriptionLong()],
-  //     modelData.system.commonFileName("csv")
-  //   );
-  // }
-
   beforeEach(() => {
     mockAudioEventImport = new AudioEventImport(generateAudioEventImport());
     setup();
   });
 
-  assertPageInfo<AudioEventImport>(AnnotationsDetailsComponent, "test name", {
-    audioEventImport: {
-      model: new AudioEventImport(
-        generateAudioEventImport({ name: "test name" })
-      ),
-    },
-  });
+  assertPageInfo<AudioEventImport>(
+    AnnotationImportDetailsComponent,
+    "test name",
+    {
+      audioEventImport: {
+        model: new AudioEventImport(
+          generateAudioEventImport({ name: "test name" })
+        ),
+      },
+    }
+  );
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(AnnotationsDetailsComponent);
+    expect(spectator.component).toBeInstanceOf(
+      AnnotationImportDetailsComponent
+    );
   });
 
-  // it("should make one correct audio event request", () => {
-  //   const expectedFilters = {
-  //     // eslint-disable-next-line @typescript-eslint/naming-convention
-  //     filter: { audio_event_import_id: { eq: mockAudioEventImport.id } },
-  //     sorting: { direction: "desc", orderBy: "createdAt" },
-  //     paging: { page: 1 },
-  //   };
+  describe("audio event table", () => {
+    assertDatatable(() => ({
+      service: mockEventsService,
+      columns: ["Audio Recording", "Created At", "Tags", "Actions"],
+      rows: [],
+      root: () => activeTabContent(),
+    }));
+  });
 
-  //   expect(mockEventsService.filter).toHaveBeenCalledOnceWith(expectedFilters);
-  // });
+  // describe("file table", () => {
+  //   beforeEach(() => {
+  //     const target = fileTabButton();
+  //     if (target === null) {
+  //       throw new Error("Could not find file tab");
+  //     }
 
-  // it("should make one correct file request when changing to the files tab", () => {});
-
-  // it("should use a local dateTime format for events table rows", () => {
-  //   const importedAt = DateTime.fromISO("2022-11-04T20:12:31.000Z");
-  //   // relative to UTC+8
-  //   const expectedDateTime = "2022-11-05 04:12:31";
-
-  //   // we use the interface here because we are using it as a sub-model on the AudioEventImport constructor
-  //   // this means that the mockImportedFile will be called with the AudioEventImportFileRead constructor
-  //   const mockImportedFile: IAudioEventImportFileRead = {
-  //     name: modelData.system.commonFileName("csv"),
-  //     importedAt,
-  //     additionalTags: [],
-  //   };
-
-  //   mockAudioEventImport = new AudioEventImport(
-  //     generateAudioEventImport({
-  //       files: [mockImportedFile],
-  //     })
-  //   );
-
-  //   mockAudioEventImport["injector"] = injector;
-
-  //   mockAudioEventImport.files.map(
-  //     (fileModel: AudioEventImportFileRead) =>
-  //       (fileModel["injector"] = injector)
-  //   );
-
-  //   spectator.component.audioEventImport = mockAudioEventImport;
-
-  //   spectator.detectChanges();
-
-  //   const importedAtColumn =
-  //     getElementByInnerText<HTMLTableCellElement>(expectedDateTime);
-
-  //   expect(importedAtColumn).toExist();
-  // });
-
-  // it("should use a local dateTime format for the file table rows", () => {
-  //   const importedAt = DateTime.fromISO("2022-11-04T20:12:31.000Z");
-  //   // relative to UTC+8
-  //   const expectedDateTime = "2022-11-05 04:12:31";
-
-  //   // we use the interface here because we are using it as a sub-model on the AudioEventImport constructor
-  //   // this means that the mockImportedFile will be called with the AudioEventImportFileRead constructor
-  //   const mockImportedFile: IAudioEventImportFileRead = {
-  //     name: modelData.system.commonFileName("csv"),
-  //     importedAt,
-  //     additionalTags: [],
-  //   };
-
-  //   mockAudioEventImport = new AudioEventImport(
-  //     generateAudioEventImport({
-  //       files: [mockImportedFile],
-  //     })
-  //   );
-
-  //   mockAudioEventImport["injector"] = injector;
-
-  //   mockAudioEventImport.files.map(
-  //     (fileModel: AudioEventImportFileRead) =>
-  //       (fileModel["injector"] = injector)
-  //   );
-
-  //   spectator.component.audioEventImport = mockAudioEventImport;
-
-  //   spectator.detectChanges();
-
-  //   const importedAtColumn =
-  //     getElementByInnerText<HTMLTableCellElement>(expectedDateTime);
-
-  //   expect(importedAtColumn).toExist();
-  // });
-
-  // it("should make the correct dry run calls for multiple event groups", fakeAsync(() => {
-  //   const mockFiles: File[] = modelData.randomArray(4, 10, () =>
-  //     generateMockFile()
-  //   );
-
-  //   mockFiles.forEach((file: File, i: number) => {
-  //     addFileToImportGroup(i, file);
-
-  //     expect(mockAudioEventImportService.importFile).toHaveBeenCalledWith(
-  //       jasmine.objectContaining({ file })
-  //     );
+  //     spectator.click(target);
   //   });
 
-  //   expect(mockAudioEventImportService.importFile).toHaveBeenCalledTimes(
-  //     mockFiles.length
-  //   );
-  // }));
-
-  // it("should not display a remove button for an import group with no files", () => {
-  //   // we want to add a new import group and assert that the empty import group does not include a remove button
-  //   addFileToImportGroup(0, generateMockFile());
-  //   const removeButtons: HTMLButtonElement[] =
-  //     spectator.queryAll<HTMLButtonElement>(".remove-import-group-button");
-  //   expect(removeButtons).toHaveLength(1);
-  // });
-
-  // it("should disable the 'import All' button when there is an error in an import group", () => {
-  //   const fakeErrors: string[] = ["audio_recording_id must be greater than 0"];
-
-  //   addFileToImportGroup(0, generateMockFile());
-
-  //   spectator.component.importGroups[0].errors = fakeErrors;
-  //   spectator.detectChanges();
-
-  //   expect(importAllButton()).toBeDisabled();
+  //   assertDatatable(() => ({
+  //     service: mockAudioEventFileService,
+  //     columns: ["File Name", "Date Imported", "Additional Tags", "Actions"],
+  //     rows: [],
+  //     root: () => activeTabContent(),
+  //   }));
   // });
 });

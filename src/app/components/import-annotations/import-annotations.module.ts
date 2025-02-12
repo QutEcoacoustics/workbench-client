@@ -4,7 +4,7 @@ import { SharedModule } from "@shared/shared.module";
 import { RouterModule } from "@angular/router";
 import { annotationsImportRoute } from "./import-annotations.routes";
 import { AnnotationsListComponent } from "./list/list.component";
-import { AnnotationsDetailsComponent } from "./details/details.component";
+import { AnnotationImportDetailsComponent } from "./details/details.component";
 import { NewAnnotationsComponent } from "./new/new.component";
 import { EditAnnotationsComponent } from "./edit/edit.component";
 import { AddAnnotationsComponent } from "./add-annotations/add-annotations.component";
@@ -12,7 +12,7 @@ import { AddAnnotationsComponent } from "./add-annotations/add-annotations.compo
 const components = [
   // Pages
   AnnotationsListComponent,
-  AnnotationsDetailsComponent,
+  AnnotationImportDetailsComponent,
   NewAnnotationsComponent,
   EditAnnotationsComponent,
   AddAnnotationsComponent,

@@ -29,6 +29,7 @@
       "luxon",
       "datatable",
       "ngneat",
+      "pageable",
       "ncpus",
       "ngpus",
       "walltime"
