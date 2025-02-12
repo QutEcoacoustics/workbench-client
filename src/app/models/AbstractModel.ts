@@ -139,7 +139,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   }
 
   public getJsonAttributesForCreate(): Partial<this> {
-    return this.getJsonAttributes({ create: true });
+    return this.jsonAttributes({ create: true });
   }
 
   public hasJsonOnlyAttributesForUpdate(): boolean {
@@ -147,7 +147,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   }
 
   public getJsonAttributesForUpdate(): Partial<this> {
-    return this.getJsonAttributes({ update: true });
+    return this.jsonAttributes({ update: true });
   }
 
   public hasFormDataOnlyAttributesForCreate(): boolean {
@@ -155,7 +155,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   }
 
   public getFormDataOnlyAttributesForCreate(): FormData {
-    return this.getFormDataOnlyAttributes({ create: true });
+    return this.formDataOnlyAttributes({ create: true });
   }
 
   public hasFormDataOnlyAttributesForUpdate(): boolean {
@@ -163,7 +163,15 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   }
 
   public getFormDataOnlyAttributesForUpdate(): FormData {
-    return this.getFormDataOnlyAttributes({ update: true });
+    return this.formDataOnlyAttributes({ update: true });
+  }
+
+  public getFormDataOnlyAttributes(): FormData {
+    return this.formDataOnlyAttributes();
+  }
+
+  public getJsonAttributes(): Partial<this> {
+    return this.jsonAttributes();
   }
 
   private hasJsonOnlyAttributes(opts?: ModelSerializationOptions): boolean {
@@ -176,7 +184,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * Convert model to JSON compatible object containing attributes which should
    * be sent in a JSON API request
    */
-  private getJsonAttributes(opts?: ModelSerializationOptions): Partial<this> {
+  private jsonAttributes(opts?: ModelSerializationOptions): Partial<this> {
     return this.toObject(this.getModelAttributes(opts), opts);
   }
 
@@ -195,7 +203,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * multipart form API request. Call `hasFormDataOnlyAttributes` before using
    * this value.
    */
-  private getFormDataOnlyAttributes(
+  private formDataOnlyAttributes(
     opts?: ModelSerializationOptions
   ): FormData {
     const output = new FormData();
