@@ -8,12 +8,14 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastrService } from "ngx-toastr";
 import { assertDatatable } from "@test/helpers/datatable";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
+import { AUDIO_EVENT_IMPORT_FILE } from "@baw-api/ServiceTokens";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
   let spectator: Spectator<AddAnnotationsComponent>;
 
   let eventFileImportApi: SpyObject<AudioEventImportFileService>;
+  let notificationsSpy: SpyObject<ToastrService>;
 
   let audioEventImport: AudioEventImport;
 
@@ -37,6 +39,13 @@ describe("AddAnnotationsComponent", () => {
 
   function setup(): void {
     spectator = createComponent({ detectChanges: false });
+
+    eventFileImportApi = spectator.inject(AUDIO_EVENT_IMPORT_FILE.token);
+    notificationsSpy = spectator.inject(ToastrService);
+
+    spyOn(notificationsSpy, "success").and.stub();
+    spyOn(notificationsSpy, "error").and.stub();
+
     spectator.detectChanges();
   }
 
