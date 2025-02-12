@@ -94,6 +94,7 @@ import type { AudioEventProvenanceService } from "./AudioEventProvenance/AudioEv
 import type { EventSummaryReportService } from "./reports/event-report/event-summary-report.service";
 import { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
 import type { WebsiteStatusService } from "./website-status/website-status.service";
+import { AudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
 
 /**
  * Wrapper for InjectionToken class. This is required because of
@@ -154,7 +155,7 @@ export const USER = new ServiceToken<UserService, User>("USER");
 export const AUDIO_EVENT_PROVENANCE = new ServiceToken<AudioEventProvenanceService, AudioEventProvenance>("AUDIO_EVENT_PROVENANCE");
 export const AUDIO_EVENT_SUMMARY_REPORT = new ServiceToken<EventSummaryReportService, EventSummaryReport>("AUDIO_EVENT_SUMMARY_REPORT");
 export const AUDIO_EVENT_IMPORT = new ServiceToken<AudioEventImportService, AudioEventImport>("AUDIO_EVENT_IMPORT");
-export const AUDIO_EVENT_IMPORT_FILE = new ServiceToken<AudioEventImportService, AudioEventImportFile>("AUDIO_EVENT_IMPORT_FILE")
+export const AUDIO_EVENT_IMPORT_FILE = new ServiceToken<AudioEventImportFileService, AudioEventImportFile>("AUDIO_EVENT_IMPORT_FILE")
 export const WEBSITE_STATUS = new ServiceToken<WebsiteStatusService, WebsiteStatus>("WEBSITE_STATUS");
 export const ANNOTATION = new ServiceToken<AnnotationService, Annotation>("ANNOTATION");
 export const MEDIA = new ServiceToken<MediaService, never>("MEDIA");

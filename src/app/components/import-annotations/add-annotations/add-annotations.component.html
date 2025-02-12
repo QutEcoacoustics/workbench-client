@@ -34,10 +34,7 @@
   </div>
 
   <!-- we use attr.ngbTooltip because we want to conditionally add a tooltip -->
-  <span
-    [ngbTooltip]="uploadTooltip"
-    [attr.ngbTooltip]="uploadTooltip !== null"
-  >
+  <span [ngbTooltip]="uploadTooltip" [attr.ngbTooltip]="uploadTooltip !== null">
     <button
       type="submit"
       class="btn btn-primary import-btn mt-3"
@@ -53,6 +50,14 @@
 
 <div class="identified-annotations mt-4">
   <h4>Identified Events</h4>
+  <p>
+    The following events have been identified in your dataset, but have not been saved.
+  </p>
+
+  <p>
+    You can review and edit these events before saving them with the "Import
+    Annotations" button.
+  </p>
 
   <div>
     <ngx-datatable
