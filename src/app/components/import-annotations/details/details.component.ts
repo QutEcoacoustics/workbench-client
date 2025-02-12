@@ -55,7 +55,7 @@ interface ImportGroup {
   templateUrl: "details.component.html",
   styleUrl: "details.component.scss",
 })
-class AnnotationsDetailsComponent extends PageComponent implements OnInit {
+class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
   public constructor(
     private route: ActivatedRoute,
     private eventsApi: ShallowAudioEventsService,
@@ -127,10 +127,11 @@ class AnnotationsDetailsComponent extends PageComponent implements OnInit {
     return this.eventsApi.filter(eventImportFilters);
   };
 
-  protected getFileModels = (): Observable<AudioEventImportFile[]> => {
-    const eventFileFilters = {} satisfies Filters<AudioEventImportFile>;
+  protected getFileModels = (
+    filters: Filters<AudioEventImportFile>
+  ): Observable<AudioEventImportFile[]> => {
     return this.eventImportFileApi.filter(
-      eventFileFilters,
+      filters,
       this.audioEventImport
     );
   };
@@ -152,7 +153,7 @@ class AnnotationsDetailsComponent extends PageComponent implements OnInit {
   }
 }
 
-AnnotationsDetailsComponent.linkToRoute({
+AnnotationImportDetailsComponent.linkToRoute({
   category: annotationsImportCategory,
   pageRoute: annotationImportMenuItem,
   menus: {
@@ -163,4 +164,4 @@ AnnotationsDetailsComponent.linkToRoute({
   },
 });
 
-export { AnnotationsDetailsComponent };
+export { AnnotationImportDetailsComponent };

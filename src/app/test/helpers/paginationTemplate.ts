@@ -4,6 +4,13 @@ import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { Spectator } from "@ngneat/spectator";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 
+/**
+ * Asserts that an NgbPagination component behaves as expected and can be
+ * filtered.
+ * This function can be used to test pages that have pageable content outside
+ * of a table.
+ * e.g. The project list page
+ */
 export function assertPaginationTemplate<
   M extends AbstractModel,
   T extends PaginationTemplate<M>
@@ -44,7 +51,7 @@ export function assertPaginationTemplate<
         return spectator.query(NgbPagination);
       }
 
-      it("should hide pagination buttons if less than one pages is displayed", () => {
+      it("should hide pagination buttons if less than one page is displayed", () => {
         spectator.component.displayPagination = false;
         spectator.detectChanges();
         expect(getPagination()).toBeFalsy();

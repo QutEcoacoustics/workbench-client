@@ -51,7 +51,7 @@
 
           <ngx-datatable-column prop="">
             <ng-template let-column="column" ngx-datatable-header-template>
-              Associated Tags
+              Tags
             </ng-template>
 
             <ng-template let-value="value" ngx-datatable-cell-template>
@@ -94,7 +94,7 @@
       <ng-template ngbNavContent>
         <ngx-datatable
           bawDatatableDefaults
-          [bawDatatablePagination]="{ filters: filters$, getModels: getFileModels }"
+          [bawDatatablePagination]="{ filters: fileFilters$, getModels: getFileModels }"
         >
           <ngx-datatable-column prop="name">
             <ng-template let-column="column" ngx-datatable-header-template>
