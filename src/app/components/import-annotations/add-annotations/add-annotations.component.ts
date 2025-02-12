@@ -31,17 +31,6 @@ import {
 } from "../import-annotations.menu";
 import { annotationImportRoute } from "../import-annotations.routes";
 
-interface ImportGroup {
-  /** The iterator object of files to be imported */
-  files: FileList;
-  /**
-   * List of additional tag IDs that are not found within the imported file and will be associated with every event within the import group
-   * This is separate from the identified events because additional tags are typically used for grouping events eg. "testing" and "training"
-   */
-  additionalTagIds: Id[];
-  /** An array of events that were found within the imported file during the dry run */
-  identifiedEvents: ImportedAudioEvent[];
-}
 
 const audioEventImportKey = "audioEventImport";
 
@@ -72,7 +61,9 @@ class AddAnnotationsComponent
    */
   protected valid: boolean = false;
   protected uploading: boolean = false;
-  protected importGroup: ImportGroup = this.emptyImportGroup;
+  protected importFiles: File[] = [];
+  protected additionalTagIds: Id[] = [];
+
   protected audioEventImport: AudioEventImport;
 
   // we use an array for the audio event import files because users can upload
@@ -82,10 +73,11 @@ class AddAnnotationsComponent
       this.importFilesSubscriber$ = subscriber;
     }
   );
+
   private importFilesSubscriber$: Subscriber<AudioEventImportFile[]>;
 
   public get hasUnsavedChanges(): boolean {
-    return  this.importGroup?.files !== null && this.importGroup.files.length > 0;
+    return  this.hasFiles || this.hasAdditionalTags;
   }
 
   // if the "Import Annotations" button is disabled, we want to provide some
@@ -111,18 +103,11 @@ class AddAnnotationsComponent
   }
 
   private get hasFiles(): boolean {
-    return !!this.importGroup.files;
+    return this.importFiles.length > 0;
   }
 
-  // we want to create each new import group from a template by value
-  // if it is done by reference, we would be modifying the same import group
-  // therefore, we use a getter because they internally work like methods, and return a new object each time
-  private get emptyImportGroup(): ImportGroup {
-    return {
-      files: null,
-      additionalTagIds: [],
-      identifiedEvents: [],
-    };
+  private get hasAdditionalTags(): boolean {
+    return this.additionalTagIds.length > 0;
   }
 
   public ngOnInit(): void {
@@ -167,7 +152,7 @@ class AddAnnotationsComponent
     // creates a lock so that no more files can be added to the upload queue while the upload is in progress
     this.uploading = true;
 
-    const fileUploadObservables = Array.from(this.importGroup.files).map(
+    const fileUploadObservables = this.importFiles.map(
       (file) => this.uploadFile(file)
     );
 
@@ -192,15 +177,13 @@ class AddAnnotationsComponent
     this.uploading = true;
     this.valid = true;
 
-    this.importGroup.identifiedEvents = [];
-
     // we perform a dry run of the import to check for errors and extract a
     // preview of the events that will be imported
-    for (const file of this.importGroup.files) {
+    for (const file of this.importFiles) {
       this.dryRunFile(file);
     }
 
-    const fileUploadObservables = Array.from(this.importGroup.files).map(
+    const fileUploadObservables = this.importFiles.map(
       (file) => this.dryRunFile(file)
     );
 
@@ -240,7 +223,7 @@ class AddAnnotationsComponent
       {
         id: this.audioEventImport.id,
         file,
-        additionalTagIds: this.importGroup.additionalTagIds,
+        additionalTagIds: this.additionalTagIds,
       },
       this.injector
     );
@@ -259,14 +242,14 @@ class AddAnnotationsComponent
     }
 
     const files: FileList = target.files;
-    this.importGroup.files = files;
+    this.importFiles = Array.from(files);
 
     this.performDryRun();
   }
 
   // uses a reference to the ImportGroup object and update the additional tag ids property
   protected updateAdditionalTagIds(additionalTagIds: Id[]): void {
-    this.importGroup.additionalTagIds = additionalTagIds;
+    this.additionalTagIds = additionalTagIds;
     this.performDryRun();
   }
 
@@ -274,13 +257,6 @@ class AddAnnotationsComponent
   // this is used for form validation
   protected canCommitUploads(): boolean {
     return this.valid && !this.uploading && this.form.valid && this.hasFiles;
-  }
-
-  protected removeFromImport(model: ImportGroup): void {
-    const index = this.importGroups.indexOf(model);
-    if (index !== -1) {
-      this.importGroups.splice(index, 1);
-    }
   }
 }
 
