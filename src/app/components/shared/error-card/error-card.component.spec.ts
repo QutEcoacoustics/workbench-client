@@ -1,5 +1,6 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { BawDataError, ErrorCardComponent } from "./error-card.component";
+import { BawDataError } from "@interfaces/apiInterfaces";
+import { ErrorCardComponent } from "./error-card.component";
 
 interface ErrorCardTest {
   name: string;
