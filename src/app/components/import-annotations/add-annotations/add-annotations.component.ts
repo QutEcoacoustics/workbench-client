@@ -35,6 +35,7 @@ import { TagsService } from "@baw-api/tag/tags.service";
 import { ErrorCardStyle } from "@shared/error-card/error-card.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { toCamelCase } from "@helpers/case-converter/case-converter";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
@@ -91,7 +92,7 @@ class AddAnnotationsComponent
     (subscriber: Subscriber<AudioEventImportFile[]>) => {
       this.importFilesSubscriber$ = subscriber;
     }
-  ).pipe(startWith([{} as any]));
+  ).pipe(startWith([{}]));
 
   private importFilesSubscriber$: Subscriber<AudioEventImportFile[]>;
 
@@ -187,7 +188,7 @@ class AddAnnotationsComponent
   // a predicate to check if every import group is valid
   // this is used for form validation
   protected canCommitUploads(): boolean {
-    return this.valid && !this.uploading && this.form.valid && this.hasFiles;
+    return !this.uploading && this.hasFiles && this.importErrors.length === 0;
   }
 
   // sends all import groups to the api if there are no errors
@@ -228,12 +229,6 @@ class AddAnnotationsComponent
 
     this.clearIdentifiedEvents();
 
-    // we perform a dry run of the import to check for errors and extract a
-    // preview of the events that will be imported
-    for (const file of this.importFiles) {
-      this.dryRunFile(file);
-    }
-
     const fileUploadObservables = this.importFiles.map((file) =>
       this.dryRunFile(file)
     );
@@ -242,7 +237,8 @@ class AddAnnotationsComponent
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         next: (result: AudioEventImportFile[]) => {
-          this.importFilesSubscriber$.next(result);
+          const instantiatedResults = result.filter((model) => isInstantiated(model));
+          this.importFilesSubscriber$.next(instantiatedResults);
         },
         error: () => {
           this.valid = false;
@@ -267,7 +263,7 @@ class AddAnnotationsComponent
     return this.api.dryCreate(importFileModel, this.audioEventImport).pipe(
       first(),
       catchError((error: BawApiError<AudioEventImportFile>) => {
-        this.importErrors = [error.info] as any;
+        this.importErrors.push(...this.extractFileErrors(error));
         return of(toCamelCase(error.data) as any);
       })
     );
@@ -287,6 +283,10 @@ class AddAnnotationsComponent
   private clearIdentifiedEvents(): void {
     this.importFilesSubscriber$.next([]);
     this.importErrors = [];
+  }
+
+  private extractFileErrors(error: BawApiError<AudioEventImportFile>): BawDataError[] {
+    return [error.info as any];
   }
 }
 

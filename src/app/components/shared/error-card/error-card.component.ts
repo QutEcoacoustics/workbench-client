@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { BawDataError } from "@interfaces/apiInterfaces";
 
 export enum ErrorCardStyle {
@@ -27,7 +27,6 @@ export enum ErrorCardStyle {
     }
  `,
   styleUrl: "error-card.component.scss",
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ErrorCardComponent {
   public errors = input.required<BawDataError[]>();
