@@ -23,6 +23,8 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { ToastrService } from "ngx-toastr";
 import { NgForm } from "@angular/forms";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
+import { IPageInfo } from "@helpers/page/pageInfo";
+import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
@@ -124,8 +126,14 @@ class AddAnnotationsComponent
   }
 
   public ngOnInit(): void {
-    const routeData = this.route.snapshot.data;
-    this.audioEventImport = routeData[audioEventImportKey].model;
+    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+
+    if (!hasResolvedSuccessfully(models)) {
+      this.failure = true;
+      return;
+    }
+
+    this.audioEventImport = models[audioEventImportKey] as AudioEventImport;
   }
 
   protected getEventModels = (): Observable<ImportedAudioEvent[]> => {
