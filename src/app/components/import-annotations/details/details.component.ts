@@ -67,11 +67,11 @@ class AnnotationsDetailsComponent extends PageComponent implements OnInit {
     super();
   }
 
-  public active = 1;
-  public importGroups: ImportGroup[] = [this.emptyImportGroup];
-  public audioEventImport: AudioEventImport;
+  protected active = 1;
+  protected importGroups: ImportGroup[] = [this.emptyImportGroup];
+  protected audioEventImport: AudioEventImport;
   // we use this boolean to disable the import form when an upload is in progress
-  public uploading: boolean = false;
+  protected uploading: boolean = false;
 
   protected eventFilters$: BehaviorSubject<Filters<AudioEvent>>;
   protected fileFilters$: BehaviorSubject<Filters<AudioEventImportFile>>;

@@ -70,6 +70,21 @@
               </ng-template>
             </ng-template>
           </ngx-datatable-column>
+
+          <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="">
+            <ng-template let-column="column" ngx-datatable-header-template>
+              Actions
+            </ng-template>
+
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              <a
+                class="btn btn-sm btn-outline-primary"
+                [href]="value.viewUrl"
+              >
+                View
+              </a>
+            </ng-template>
+          </ngx-datatable-column>
         </ngx-datatable>
       </ng-template>
     </li>
