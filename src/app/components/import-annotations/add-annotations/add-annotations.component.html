@@ -42,7 +42,11 @@
   </div>
 
   <!-- we use attr.ngbTooltip because we want to conditionally add a tooltip -->
-  <span class="d-inline-block mt-2" [ngbTooltip]="uploadTooltip" [attr.ngbTooltip]="uploadTooltip !== null">
+  <span
+    class="d-inline-block mt-2"
+    [ngbTooltip]="uploadTooltip"
+    [attr.ngbTooltip]="uploadTooltip !== null"
+  >
     <button
       id="import-btn"
       type="submit"
@@ -65,8 +69,8 @@
   </p>
 
   <p>
-    You can review and edit these events before saving them with the "Import
-    Annotations" button.
+    You can review these events before saving them with the "Import Annotations"
+    button.
   </p>
 
   <div>
