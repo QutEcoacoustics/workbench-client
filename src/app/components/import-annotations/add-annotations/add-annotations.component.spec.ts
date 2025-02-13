@@ -241,7 +241,7 @@ describe("AddAnnotationsComponent", () => {
       });
     });
 
-    fit("should update the identified event table when a dry run completes", () => {
+    it("should update the identified event table when a dry run completes", () => {
       addFiles([modelData.file()]);
 
       const mockResponse = mockImportResponse as AudioEventImportFile[];
@@ -392,11 +392,12 @@ describe("AddAnnotationsComponent", () => {
         throwError(() => mockImportResponse)
       );
 
-      addFiles([modelData.file()]);
+      const mockUploadedFile = modelData.file();
+      addFiles([mockUploadedFile]);
 
       expect(fileAlerts()).toHaveLength(1);
 
-      const expectedErrorAlert = `file: ${mockErrorMessage}`;
+      const expectedErrorAlert = `${mockUploadedFile.name}: ${mockErrorMessage}`;
       expect(fileAlerts()[0]).toHaveExactTrimmedText(expectedErrorAlert);
     });
 
@@ -414,7 +415,8 @@ describe("AddAnnotationsComponent", () => {
         throwError(() => mockImportResponse)
       );
 
-      addFiles([modelData.file(), modelData.file()]);
+      const mockAudioFiles = [modelData.file(), modelData.file()];
+      addFiles(mockAudioFiles);
 
       // even though the files could have different error messages, we expect
       // that the error message for both files will be the same because
@@ -424,8 +426,8 @@ describe("AddAnnotationsComponent", () => {
       // time, for not much benefit).
       // TODO: given time, make this test test against different errors
       const expectedErrorAlerts = [
-        `file: ${mockErrorMessage}`,
-        `file: ${mockErrorMessage}`,
+        `${mockAudioFiles[0].name}: ${mockErrorMessage}`,
+        `${mockAudioFiles[1].name}: ${mockErrorMessage}`,
       ];
 
       expect(fileAlerts()).toHaveLength(expectedErrorAlerts.length);
